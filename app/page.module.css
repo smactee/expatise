@@ -167,7 +167,7 @@
 /* "Test Mode", "Overall", "My" */
 .sectionTitle {
   margin: 0 0 12px;
-  font-size: 22px;
+  font-size: 23px;
   font-weight: 700;
   color: #222435;
 }
@@ -194,14 +194,15 @@
 /* Individual card – same shape as Figma 211 x 260 */
 .featureCard {
   position: relative;
-  flex: 0 0 70%;               /* takes ~70% of width on phone */
+  flex: 0 0 70%;               /* 0 0 70%takes ~70% of width on phone */
   max-width: 260px;
   min-width: 211px;
+  flex-shrink: 0;
   aspect-ratio: 211 / 260;
 
   border-radius: 28px;
-  background: #e9f2ff;         /* placeholder until we plug real art */
-  box-shadow: 0 12px 28px rgba(15, 33, 70, 0.18);
+  background: transparent;         /* placeholder until we plug real art */
+  box-shadow: none;
   overflow: hidden;
 
   display: flex;
@@ -234,3 +235,25 @@
     font-size: 1.7rem;
   }
 }
+
+.dragRow {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  padding: 8px 0 24px;
+  scrollbar-width: none;          /* Firefox */
+}
+
+.dragRow::-webkit-scrollbar {
+  display: none;                  /* Chrome / Safari */
+}
+
+/* Optional cursor styling */
+.dragRow {
+  cursor: grab;
+}
+
+.dragRow:active {
+  cursor: grabbing;
+}
+

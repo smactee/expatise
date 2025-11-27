@@ -1,8 +1,11 @@
 'use client';
 
 import {useState} from 'react';
-import styles from "./page.module.css";
+import styles from './page.module.css';
 import Image from 'next/image';
+import DragScrollRow from "../components/DragScrollRow";
+
+
 
 const DEFAULT_TEST_DATE = "2025-04-20"; // YYYY-MM-DD
 
@@ -94,7 +97,7 @@ export default function Home() {
           {/* Test Mode */}
           <div className={styles.sectionGroup}>
             <h2 className={styles.sectionTitle}>Test Mode</h2>
-            <div className={styles.cardRow}>
+            <DragScrollRow className={styles.dragRow}>
               <article className={styles.featureCard}>
                 <p className={styles.cardTitle}>Real Test</p>
               </article>
@@ -104,33 +107,34 @@ export default function Home() {
               <article className={styles.featureCard}>
                 <p className={styles.cardTitle}>Rapid Fire</p>
               </article>
-            </div>
+            </DragScrollRow>
           </div>
 
           {/* Overall */}
           <div className={styles.sectionGroup}>
             <h2 className={styles.sectionTitle}>Overall</h2>
-            <div className={styles.cardRow}>
+            <DragScrollRow className={styles.dragRow}>
               <article className={styles.featureCard}>
                 <p className={styles.cardTitle}>All Questions</p>
               </article>
               <article className={styles.featureCard}>
                 <p className={styles.cardTitle}>Global Common Mistakes</p>
               </article>
-            </div>
+            </DragScrollRow>
           </div>
+        
 
           {/* My */}
           <div className={styles.sectionGroup}>
             <h2 className={styles.sectionTitle}>My</h2>
-            <div className={styles.cardRow}>
+            <DragScrollRow className={styles.dragRow}>
               <article className={styles.featureCard}>
                 <p className={styles.cardTitle}>Bookmarks</p>
               </article>
               <article className={styles.featureCard}>
                 <p className={styles.cardTitle}>My Mistakes</p>
               </article>
-            </div>
+            </DragScrollRow>
           </div>
         </section>
       </div>
