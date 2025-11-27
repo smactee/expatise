@@ -45,47 +45,93 @@ export default function Home() {
               type="button"
               className={styles.myTestDayButton}
               onClick={() => setIsEditingDate((prev) => !prev)}
-              >
-                My Test Day
-              </button>
+            >
+              My Test Day
+            </button>
 
-              {isEditingDate && (
-                <input
-                  type="date"
-                  className={styles.dateInput}
-                  value={testDate}
-                  onChange={(e) => setTestDate(e.target.value)}
-                  />
-              )}
-
-              {/* Date + time */}
-              <div className={styles.dateRow}>
-                  <div className={styles.bigDate}>{formattedDate}</div>
-                  <div className={styles.timeBlock}>
-                  <div className={styles.timeText}>9:00 AM</div>
-                  <div className={styles.caption}> Test Date</div>
-                </div>
-              </div>
-
-              {/* Days left - now sits BELOW, still in the left column */}
-                <div className={styles.daysLeftContainer}>
-                  <div className={styles.daysLeftNumber}>
-                    {daysLeft !== null ? daysLeft : "-"}
-                  </div>
-                  <div className={styles.caption}>Days Left</div>
-                </div>
-              </div>
-              {/* Right side: blue car placeholder */}
-              <div className={styles.carHero}>
-                <Image
-                src="/images/home/blue-car.png"
-                alt="Blue car" 
-                width={493}
-                height={437} 
-                priority
-                className={styles.carImage}
+            {isEditingDate && (
+              <input
+                type="date"
+                className={styles.dateInput}
+                value={testDate}
+                onChange={(e) => setTestDate(e.target.value)}
               />
+            )}
+
+            {/* Date + time */}
+            <div className={styles.dateRow}>
+              <div className={styles.bigDate}>{formattedDate}</div>
+              <div className={styles.timeBlock}>
+                <div className={styles.timeText}>9:00 AM</div>
+                <div className={styles.caption}>Test Date</div>
               </div>
+            </div>
+
+            {/* Days left */}
+            <div className={styles.daysLeftContainer}>
+              <div className={styles.daysLeftNumber}>
+                {daysLeft !== null ? daysLeft : "-"}
+              </div>
+              <div className={styles.caption}>Days Left</div>
+            </div>
+          </div>
+
+          {/* Right side: blue car */}
+          <div className={styles.carHero}>
+            <Image
+              src="/images/home/blue-car.png"
+              alt="Blue car"
+              width={493}
+              height={437}
+              priority
+              className={styles.carImage}
+            />
+          </div>
+        </section>
+
+        {/* ===== Sections under the exam card ===== */}
+        <section className={styles.sections}>
+          {/* Test Mode */}
+          <div className={styles.sectionGroup}>
+            <h2 className={styles.sectionTitle}>Test Mode</h2>
+            <div className={styles.cardRow}>
+              <article className={styles.featureCard}>
+                <p className={styles.cardTitle}>Real Test</p>
+              </article>
+              <article className={styles.featureCard}>
+                <p className={styles.cardTitle}>Practice</p>
+              </article>
+              <article className={styles.featureCard}>
+                <p className={styles.cardTitle}>Rapid Fire</p>
+              </article>
+            </div>
+          </div>
+
+          {/* Overall */}
+          <div className={styles.sectionGroup}>
+            <h2 className={styles.sectionTitle}>Overall</h2>
+            <div className={styles.cardRow}>
+              <article className={styles.featureCard}>
+                <p className={styles.cardTitle}>All Questions</p>
+              </article>
+              <article className={styles.featureCard}>
+                <p className={styles.cardTitle}>Global Common Mistakes</p>
+              </article>
+            </div>
+          </div>
+
+          {/* My */}
+          <div className={styles.sectionGroup}>
+            <h2 className={styles.sectionTitle}>My</h2>
+            <div className={styles.cardRow}>
+              <article className={styles.featureCard}>
+                <p className={styles.cardTitle}>Bookmarks</p>
+              </article>
+              <article className={styles.featureCard}>
+                <p className={styles.cardTitle}>My Mistakes</p>
+              </article>
+            </div>
+          </div>
         </section>
       </div>
     </main>

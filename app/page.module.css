@@ -13,8 +13,11 @@
 
 .content {
   width: 100%;
-  max-width: 420px;
+  max-width: 560px;                /* roughly modern phone width */
+  margin: 60px auto 40px;             /* center column on desktop */
+  padding: 0 16px;            /* small side padding */
 }
+
 
 /* Exam card */
 .examCard {
@@ -32,8 +35,8 @@
       rgba(255, 197, 66, 0.2) 100%  /* #FFC542 @ 20% */
     ),
     #eaf3ff;                         /* light base like your frame */
-
-  box-shadow: 0 18px 40px rgba(15, 33, 70, 0.26);
+  
+    box-shadow: 0 18px 40px rgba(15, 33, 70, 0.26);
   overflow: hidden;
 }
 
@@ -43,7 +46,7 @@
   flex: 1;
   display: flex;
   justify-content: flex-end;
-  align-items: center;
+  align-items: flex-end;
   margin-left: 16px;
   /* no background here – card background shows through */
   background: transparent;
@@ -68,15 +71,14 @@
 
 .examLabel {
   margin: 0;
-  font-size: 1.1rem;
+  font-size: 34px;
   font-weight: 600;
-  letter-spacing: 0.03em;
   color: #222435;
 }
 
 .examTitle {
-  margin: 0.1rem 0 0.4rem;
-  font-size: 1.8rem;
+  margin: 0;
+  font-size: 34px;
   font-weight: 700;
   color: #222435;
 }
@@ -85,10 +87,10 @@
 .myTestDayButton {
   align-self: flex-start;
   padding: 0;
-  margin: 0 0 0.9rem;
+  margin: 0;
   border: none;
   background: none;
-  font-size: 0.95rem;
+  font-size: 23px;
   font-weight: 600;
   color: #2a6ddc;
   text-decoration: underline;
@@ -99,7 +101,7 @@
 .dateInput {
   font-size: 0.9rem;
   padding: 0.25rem 0.5rem;
-  margin-bottom: 0.8rem;
+  margin-bottom: 0;
   border-radius: 8px;
   border: 1px solid rgba(0, 0, 0, 0.15);
 }
@@ -118,22 +120,23 @@
 }
 
 .bigDate {
-  font-size: 1.9rem;
+  font-size: 34px;
   font-weight: 700;
   letter-spacing: 0.08em;
   color: #222435;
 }
 
+/* test time text */
 .timeText {
-  font-size: 0.85rem;
+  font-size: 16px;
   font-weight: 500;
   margin-top: 0.2rem;
   color: #555b70;
 }
 
+/* days left text */
 .caption {
-  font-size: 0.75rem;
-  margin-top: 0.1rem;
+  font-size: 9px; 
   color: #8a92aa;
 }
 
@@ -142,12 +145,79 @@
 }
 
 .daysLeftNumber {
-  font-size: 1.6rem;
+  font-size: 34px;
+  font-weight: 700;
+  margin-bottom: 0px;
+  color: #222435;
+}
+
+.sections {
+  margin-top: 32px;          /* space under Exam card */
+  display: flex;
+  flex-direction: column;
+  row-gap: 32px;             /* gap between Test Mode / Overall / My */
+  padding-bottom: 80px;      /* some breathing room at bottom */
+}
+
+/* Whole group: title + card row */
+.sectionGroup {
+  width: 100%;
+}
+
+/* "Test Mode", "Overall", "My" */
+.sectionTitle {
+  margin: 0 0 12px;
+  font-size: 22px;
   font-weight: 700;
   color: #222435;
 }
 
+/* HORIZONTAL scroll row of cards */
+.cardRow {
+  display: flex;
+  flex-wrap: nowrap;            /* stay on one line */
+  gap: 16px;
+  overflow-x: auto;             /* 🔹 horizontal scroll */
+  padding: 4px 0 12px;
+  margin: 0 -16px;              /* let cards touch screen edges a bit */
+  padding-inline: 16px;         /* match page side padding */
 
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch; /* smooth scroll on iOS */
+}
+
+/* hide scrollbar in WebKit (Chrome/Safari) – cosmetic only */
+.cardRow::-webkit-scrollbar {
+  display: none;
+}
+
+/* Individual card – same shape as Figma 211 x 260 */
+.featureCard {
+  position: relative;
+  flex: 0 0 70%;               /* takes ~70% of width on phone */
+  max-width: 260px;
+  min-width: 211px;
+  aspect-ratio: 211 / 260;
+
+  border-radius: 28px;
+  background: #e9f2ff;         /* placeholder until we plug real art */
+  box-shadow: 0 12px 28px rgba(15, 33, 70, 0.18);
+  overflow: hidden;
+
+  display: flex;
+  align-items: flex-end;       /* put text near the bottom */
+  padding: 12px 10px;
+
+  scroll-snap-align: start;    /* 🔹 snaps card nicely to left edge */
+}
+
+/* Card title text like "Real Test" */
+.cardTitle {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: #111827;
+}
 
 
 /* Mobile tweaks (small screens) */
