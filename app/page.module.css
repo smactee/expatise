@@ -92,19 +92,20 @@
   background: none;
   font-size: 23px;
   font-weight: 600;
-  color: #2a6ddc;
+  color: #222435;
   text-decoration: underline;
-  cursor: pointer;
 }
 
 /* Date input */
 .dateInput {
-  font-size: 0.9rem;
-  padding: 0.25rem 0.5rem;
-  margin-bottom: 0;
-  border-radius: 8px;
-  border: 1px solid rgba(0, 0, 0, 0.15);
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+  width: 0;
+  height: 0;
+  border: 0;
 }
+
 
 /* Date + days row */
 .dateRow {
@@ -112,7 +113,9 @@
   align-items: flex-end;
   gap: 8px;
   margin-top: 12px;
+  position: relative; /* so the hidden input can sit here */
 }
+
 
 .timeBlock {
   display: flex;
@@ -132,7 +135,23 @@
   font-weight: 500;
   margin-top: 0.2rem;
   color: #555b70;
+
+  /* make it look like plain text but clickable */
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
 }
+
+.timeInput {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+  width: 0;
+  height: 0;
+  border: 0;
+}
+
 
 /* days left text */
 .caption {
@@ -200,7 +219,7 @@
   flex-shrink: 0;
   aspect-ratio: 211 / 260;
 
-  border-radius: 28px;
+  border-radius: 44px;
   overflow: hidden;
 
   display: flex;
@@ -210,6 +229,7 @@
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
+  box-shadow: 0px 6px 8px 0px #848487;
 
   scroll-snap-align: start;    /* 🔹 snaps card nicely to left edge */
 }
@@ -291,6 +311,15 @@
     font-size: 1.7rem;
   }
 }
+
+.bigDateButton {
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+}
+
 
 .dragRow {
   display: flex;

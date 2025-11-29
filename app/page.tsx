@@ -1,6 +1,6 @@
 'use client';
 
-import {useState} from 'react';
+import {useState, useRef} from 'react';
 import styles from './page.module.css';
 import Image from 'next/image';
 import DragScrollRow from "../components/DragScrollRow";
@@ -8,10 +8,52 @@ import DragScrollRow from "../components/DragScrollRow";
 
 
 const DEFAULT_TEST_DATE = "2025-04-20"; // YYYY-MM-DD
+function formatTimeLabel(time: string): string {
+  if (!time) return "--:--";
+  const [hStr, mStr] = time.split(":");
+  const h = parseInt(hStr, 10);
+  const ampm = h >= 12 ? "PM" : "AM";
+  const displayH = h % 12 || 12; // 0/12 -> 12
+  return `${displayH}:${mStr} ${ampm}`;
+}
+
+const DEFAULT_TEST_TIME = "09:00"; // 9 AM in 24h format
+
 
 export default function Home() {
   const [testDate, setTestDate] = useState<string>(DEFAULT_TEST_DATE);
-  const [isEditingDate, setIsEditingDate] = useState(false);
+  const [testTime, setTestTime] = useState<string>(DEFAULT_TEST_TIME);
+  const timeInputRef = useRef<HTMLInputElement | null>(null);
+
+  const displayTime = formatTimeLabel(testTime);
+
+const dateInputRef = useRef<HTMLInputElement | null>(null);
+
+const openDatePicker = () => {
+  const input = dateInputRef.current;
+  if (!input) return;
+  // @ts-ignore
+  if (input.showPicker) {
+    // @ts-ignore
+    input.showPicker();
+  } else {
+    input.click();
+  }
+};
+
+
+  const openTimePicker = () => {
+    const input = timeInputRef.current;
+    if (!input) return;
+    // Some browsers support showPicker()
+    // @ts-ignore
+    if (input.showPicker) {
+      // @ts-ignore
+      input.showPicker();
+    } else {
+      input.click();
+    }
+  };
 
   // Calculate formatted date and days left countdown
   let formattedDate = "-";
@@ -44,31 +86,49 @@ export default function Home() {
             <p className={styles.examLabel}>Exam</p>
             <h1 className={styles.examTitle}>Registration</h1>
 
-            <button
-              type="button"
-              className={styles.myTestDayButton}
-              onClick={() => setIsEditingDate((prev) => !prev)}
-            >
-              My Test Day
-            </button>
+            <p className={styles.myTestDayButton}>My Test Day:</p>
 
-            {isEditingDate && (
-              <input
-                type="date"
-                className={styles.dateInput}
-                value={testDate}
-                onChange={(e) => setTestDate(e.target.value)}
-              />
-            )}
 
             {/* Date + time */}
-            <div className={styles.dateRow}>
-              <div className={styles.bigDate}>{formattedDate}</div>
-              <div className={styles.timeBlock}>
-                <div className={styles.timeText}>9:00 AM</div>
-                <div className={styles.caption}>Test Date</div>
-              </div>
-            </div>
+             <div className={styles.dateRow}>
+  {/* Clickable date label */}
+  <button
+    type="button"
+    className={styles.bigDateButton}
+    onClick={openDatePicker}
+  >
+    <span className={styles.bigDate}>{formattedDate}</span>
+  </button>
+
+  {/* Hidden native date input */}
+  <input
+    ref={dateInputRef}
+    type="date"
+    className={styles.dateInput}
+    value={testDate}
+    onChange={(e) => setTestDate(e.target.value)}
+  />
+
+  <div className={styles.timeBlock}>
+    <button
+      type="button"
+      className={styles.timeText}
+      onClick={openTimePicker}
+    >
+      {displayTime}
+    </button>
+    <input
+      ref={timeInputRef}
+      type="time"
+      className={styles.timeInput}
+      value={testTime}
+      onChange={(e) => setTestTime(e.target.value)}
+    />
+    <div className={styles.caption}>Test Time</div>
+  </div>
+</div>
+
+
 
             {/* Days left */}
             <div className={styles.daysLeftContainer}>
@@ -118,7 +178,7 @@ export default function Home() {
                     draggable={false}
                   />
                 </div>
-                <p className={styles.cardTopText}>Practice like it's the real thing!</p>
+                <p className={styles.cardTopText}>Practice under real exam conditions with a timer.</p>
                 </div>
                 <div className={styles.cardContent}>
                 <p className={styles.cardTitle}>Real Test</p>
@@ -143,7 +203,7 @@ export default function Home() {
                   draggable={false}
                 />
                 </div>
-                <p className={styles.cardTopText}>Take as much time as you need. No time limit!</p>
+                <p className={styles.cardTopText}>Study at your own pace. No time limit!</p>
                 </div>
                 <div className={styles.cardContent}>
                 <p className={styles.cardTitle}>Practice</p>
@@ -168,7 +228,7 @@ export default function Home() {
                   draggable={false}
                 />
                 </div>
-                <p className={styles.cardTopText}>Ready for a rapid challenge?</p>
+                <p className={styles.cardTopText}>Sharpen your reflexes and memory in bursts.</p>
                 </div>
                 <div className={styles.cardContent}>
                 <p className={styles.cardTitle}>Rapid Fire</p>
@@ -199,7 +259,7 @@ export default function Home() {
                   draggable={false}
                 />
                 </div>
-                <p className={styles.cardTopText}>Browse through all questions!</p>
+                <p className={styles.cardTopText}>Filter through the entire questions bank.</p>
                 </div>
                 <div className={styles.cardContent}>
                 <p className={styles.cardTitle}>All Questions</p>
@@ -225,7 +285,7 @@ export default function Home() {
                   draggable={false}
                 />
                 </div>
-                <p className={styles.cardTopText}>What questions are others struggling with?</p>
+                <p className={styles.cardTopText}>See which questions others miss most.</p>
                 </div>
                 <div className={styles.cardContent}>
                 <p className={styles.cardTitle}>Global Common Mistakes</p>
@@ -257,7 +317,7 @@ export default function Home() {
                   draggable={false}
                 />
                 </div>
-                <p className={styles.cardTopText}>Save questions for later!</p>
+                <p className={styles.cardTopText}>Save questions and build your own study list.</p>
                 </div>
                 <div className={styles.cardContent}>
                 <p className={styles.cardTitle}>Bookmark</p>
@@ -281,7 +341,7 @@ export default function Home() {
                   draggable={false}
                 />
                 </div>
-                <p className={styles.cardTopText}>Review your past mistakes!</p>
+                <p className={styles.cardTopText}>Revisit questions you got wrong.</p>
                 </div>
                 <div className={styles.cardContent}>
                 <p className={styles.cardTitle}>My Mistakes</p>
