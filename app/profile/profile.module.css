@@ -1,0 +1,203 @@
+.page {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  background: linear-gradient(180deg, #e6f3ff, #f4f7ff);
+  padding: 24px 16px 40px;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'SF Pro Text',
+    'Segoe UI', sans-serif;
+}
+
+.content {
+  width: 100%;
+  max-width: 560px;
+  margin: 24px auto 96px; /* extra bottom room for nav bar */
+}
+
+/* ===== Header ===== */
+
+.headerRow {
+  margin-bottom: 16px;
+}
+
+.backButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  text-decoration: none;
+  color: #111827;
+}
+
+.backIcon {
+  font-size: 24px;
+  line-height: 1;
+}
+
+.backText {
+  font-size: 20px;
+  font-weight: 600;
+}
+
+/* ===== Profile card ===== */
+
+.profileCard {
+  background: linear-gradient(135deg, #f5fbff, #eef2ff);
+  border-radius: 32px;
+  padding: 24px 20px 28px;
+  box-shadow: 0 20px 50px rgba(15, 33, 70, 0.16);
+}
+
+/* Avatar + name block */
+
+.avatarBlock {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.avatarCircle {
+  position: relative;
+  width: 112px;
+  height: 112px;
+  border-radius: 999px;
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+
+.avatarImage {
+  object-fit: cover;
+}
+
+.nameRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+
+.username {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1f2933;
+}
+
+.crown {
+  font-size: 18px;
+}
+
+.email {
+  margin: 0;
+  font-size: 14px;
+  color: #6b7280;
+}
+
+/* Premium bar */
+
+.premiumCard {
+  margin-top: 16px;
+  margin-bottom: 16px;
+  border-radius: 24px;
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: linear-gradient(90deg, #d3e6ff 0%, #e9f4ff 45%, #f5ebc5 100%);
+}
+
+.premiumIcon {
+  font-size: 20px;
+}
+
+.premiumText {
+  font-size: 16px;
+  font-weight: 600;
+  color: #111827;
+}
+
+/* Settings list */
+
+.settingsList {
+  background: #f9fbff;
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 16px 40px rgba(15, 33, 70, 0.12);
+}
+
+.settingsRow {
+  width: 100%;
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: transparent;
+  border: none;
+  outline: none;
+  cursor: pointer;
+}
+
+.settingsRow + .settingsRow {
+  border-top: 1px solid rgba(148, 163, 184, 0.25);
+}
+
+.settingsLeft {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.settingsIcon {
+  font-size: 20px;
+}
+
+.settingsLabel {
+  font-size: 16px;
+  font-weight: 500;
+  color: #111827;
+}
+
+.chevron {
+  font-size: 20px;
+  color: #9ca3af;
+}
+
+/* Toggle (static ON state for now) */
+
+.toggle {
+  width: 50px;
+  height: 28px;
+  border-radius: 999px;
+  background: #1f2933;
+  padding: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end; /* knob on the right */
+}
+
+.toggleKnob {
+  width: 20px;
+  height: 20px;
+  border-radius: 999px;
+  background: #ffffff;
+}
+
+/* ===== Logout button ===== */
+
+.logoutWrapper {
+  margin-top: 32px;
+  display: flex;
+  justify-content: center;
+}
+
+.logoutButton {
+  min-width: 220px;
+  padding: 14px 24px;
+  border-radius: 20px;
+  border: 1px solid #d2c79a;
+  background: linear-gradient(90deg, #e9f4ff 0%, #f7e9c3 100%);
+  box-shadow: 0 14px 30px rgba(15, 33, 70, 0.16);
+  font-size: 18px;
+  font-weight: 600;
+  color: #111827;
+  cursor: pointer;
+}

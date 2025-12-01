@@ -1,11 +1,10 @@
 'use client';
 
 import {useState, useRef} from 'react';
-import {usePathname} from 'next/navigation';
-import Link from 'next/link';
 import styles from './page.module.css';
 import Image from 'next/image';
 import DragScrollRow from "../components/DragScrollRow";
+import BottomNav from '../components/BottomNav'; 
 
 
 
@@ -30,13 +29,6 @@ export default function Home() {
   const displayTime = formatTimeLabel(testTime);
 
 const dateInputRef = useRef<HTMLInputElement | null>(null);
-
-  const pathname = usePathname();
-
-  const isHome = pathname === '/';
-  const isStats = pathname === '/stats';
-  const isProfile = pathname === '/profile';
-
 
 const openDatePicker = () => {
   const input = dateInputRef.current;
@@ -359,106 +351,7 @@ const openDatePicker = () => {
             </DragScrollRow>
           </div>
         </section>
-                {/* ===== Bottom Nav (static for now) ===== */}
-       {/* Bottom Nav */}
-<div className={styles.bottomNavWrapper}>
-  <nav className={styles.bottomNav}>
-    {/* Home */}
-    <Link
-      href="/"
-      className={`${styles.navItem} ${isHome ? styles.navItemActive : ''}`}
-    >
-      {isHome ? (
-        // ACTIVE: show blue pill + icon + text
-        <div className={styles.navPill}>
-          <span className={styles.navIcon}>
-            <Image
-              src="/images/home/icons/navbar-home-icon.png"
-              alt="Navigation bar Home Icon"
-              width={30}
-              height={30}
-              draggable={false}
-            />
-          </span>
-          <span className={styles.navLabel}>Home</span>
-        </div>
-      ) : (
-        // INACTIVE: icon only
-        <span className={styles.navIcon}>
-          <Image
-            src="/images/home/icons/navbar-home-icon.png"
-            alt="Navigation bar Home Icon"
-            width={30}
-            height={30}
-            draggable={false}
-          />
-        </span>
-      )}
-    </Link>
-
-    {/* Stats */}
-    <Link
-      href="/stats"
-      className={`${styles.navItem} ${isStats ? styles.navItemActive : ''}`}
-    >
-      {isStats ? (
-        <div className={styles.navPill}>
-          <span className={styles.navIcon}>
-            <Image
-              src="/images/home/icons/navbar-stats-icon.png"
-              alt="Navigation bar Stats Icon"
-              width={30}
-              height={30}
-              draggable={false}
-            />
-          </span>
-          <span className={styles.navLabel}>Stats</span>
-        </div>
-      ) : (
-        <span className={styles.navIcon}>
-          <Image
-            src="/images/home/icons/navbar-stats-icon.png"
-            alt="Navigation bar Stats Icon"
-            width={30}
-            height={30}
-            draggable={false}
-          />
-        </span>
-      )}
-    </Link>
-
-    {/* Profile */}
-    <Link
-      href="/profile"
-      className={`${styles.navItem} ${isProfile ? styles.navItemActive : ''}`}
-    >
-      {isProfile ? (
-        <div className={styles.navPill}>
-          <span className={styles.navIcon}>
-            <Image
-              src="/images/home/icons/navbar-profile-icon.png"
-              alt="Navigation bar Profile Icon"
-              width={30}
-              height={30}
-              draggable={false}
-            />
-          </span>
-          <span className={styles.navLabel}>Profile</span>
-        </div>
-      ) : (
-        <span className={styles.navIcon}>
-          <Image
-            src="/images/home/icons/navbar-profile-icon.png"
-            alt="Navigation bar Profile Icon"
-            width={30}
-            height={30}
-            draggable={false}
-          />
-        </span>
-      )}
-    </Link>
-  </nav>
-</div>
+        <BottomNav />
 
 
       </div>

@@ -346,14 +346,14 @@
   position: fixed;          /* float on top of content */
   left: 50%;
   bottom: 24px;             /* distance from bottom of screen */
-  transform: translateX(-50%);
   width: 100%;
   max-width: 560px;         /* same as .content max-width */
   display: flex;
   justify-content: center;
   pointer-events: none;     /* only nav itself should catch clicks */
-  z-index: 40;
+  z-index: 50;
 }
+
 
 .bottomNav {
   width: 390px;             /* Figma: 352 x 66 */
