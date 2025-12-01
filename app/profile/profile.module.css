@@ -63,11 +63,24 @@
   border-radius: 999px;
   overflow: hidden;
   margin-bottom: 12px;
+  cursor: pointer;
 }
+
+.avatarInput {
+  display: none;
+}
+
 
 .avatarImage {
   object-fit: cover;
 }
+
+.avatarPlaceholder {
+  object-fit: contain;   /* show whole icon */
+  transform: scale(0.6); /* 0.6 = 60% of the circle size; tweak as you like */
+  background: transparent;
+}
+
 
 .nameRow {
   display: flex;
