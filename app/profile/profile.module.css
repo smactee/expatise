@@ -247,3 +247,49 @@
   color: #111827;
   cursor: pointer;
 }
+
+/* ========================= */
+/* DARK MODE OVERRIDES ONLY  */
+/* ========================= */
+
+:root[data-theme='dark'] .page {
+  background:
+    radial-gradient(circle at top, rgba(15, 23, 42, 0.7), transparent 55%),
+    #050816;
+  color: #f9fafb;
+}
+
+/* Main profile card */
+:root[data-theme='dark'] .profileCard {
+  background:
+    linear-gradient(
+      135deg,
+      rgba(43, 124, 175, 0.35) 0%,
+      rgba(255, 197, 66, 0.35) 100%
+    ),
+    #111827;
+  color: #f9fafb;
+}
+
+/* Settings list background */
+:root[data-theme='dark'] .settingsList {
+  background: #020617;
+}
+
+/* Text colors */
+:root[data-theme='dark'] .backButton,
+:root[data-theme='dark'] .settingsLabel,
+:root[data-theme='dark'] .logoutButton,
+:root[data-theme='dark'] .premiumText,
+:root[data-theme='dark'] .crown {
+  color: #f9fafb;
+}
+
+:root[data-theme='dark'] .email {
+  color: #9ca3af;
+}
+
+/* Crown/premium text can stay bright */
+:root[data-theme='dark'] .username {
+  color: #38bdf8; /* nice highlight in dark mode */
+}
