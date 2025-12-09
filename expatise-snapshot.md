@@ -548,6 +548,53 @@ export default function RootLayout({
   );
 }
 
+/* ========================= */
+/* DARK MODE OVERRIDES ONLY  */
+/* ========================= */
+
+:root[data-theme='dark'] .page {
+  background:
+    radial-gradient(circle at top, rgba(15, 23, 42, 0.7), transparent 55%),
+    #050816;
+  color: #f9fafb;
+}
+
+/* Exam card container */
+:root[data-theme='dark'] .examCard {
+  background:
+    linear-gradient(
+      135deg,
+      rgba(43, 124, 175, 0.35) 0%,
+      rgba(255, 197, 66, 0.35) 100%
+    ),
+    #111827;
+  color: #f9fafb;
+}
+
+/* Main text elements */
+:root[data-theme='dark'] .examLabel,
+:root[data-theme='dark'] .examTitle,
+:root[data-theme='dark'] .myTestDayButton,
+:root[data-theme='dark'] .bigDate,
+:root[data-theme='dark'] .daysLeftNumber,
+:root[data-theme='dark'] .sectionTitle,
+:root[data-theme='dark'] .cardTitle {
+  color: #f9fafb;
+}
+
+/* Secondary/muted text */
+:root[data-theme='dark'] .timeText,
+:root[data-theme='dark'] .caption{
+  color: #9ca3af;
+}
+
+:root[data-theme='dark'] .cardTopText {
+  color: #222435;
+}
+/* Optional: make feature cards feel darker */
+:root[data-theme='dark'] .featureCard {
+  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.75);
+}
 
 ```
 
@@ -1366,6 +1413,52 @@ export default function ProfilePage() {
   font-weight: 600;
   color: #111827;
   cursor: pointer;
+}
+
+/* ========================= */
+/* DARK MODE OVERRIDES ONLY  */
+/* ========================= */
+
+:root[data-theme='dark'] .page {
+  background:
+    radial-gradient(circle at top, rgba(15, 23, 42, 0.7), transparent 55%),
+    #050816;
+  color: #f9fafb;
+}
+
+/* Main profile card */
+:root[data-theme='dark'] .profileCard {
+  background:
+    linear-gradient(
+      135deg,
+      rgba(43, 124, 175, 0.35) 0%,
+      rgba(255, 197, 66, 0.35) 100%
+    ),
+    #111827;
+  color: #f9fafb;
+}
+
+/* Settings list background */
+:root[data-theme='dark'] .settingsList {
+  background: #020617;
+}
+
+/* Text colors */
+:root[data-theme='dark'] .backButton,
+:root[data-theme='dark'] .settingsLabel,
+:root[data-theme='dark'] .logoutButton,
+:root[data-theme='dark'] .premiumText,
+:root[data-theme='dark'] .crown {
+  color: #f9fafb;
+}
+
+:root[data-theme='dark'] .email {
+  color: #9ca3af;
+}
+
+/* Crown/premium text can stay bright */
+:root[data-theme='dark'] .username {
+  color: #38bdf8; /* nice highlight in dark mode */
 }
 
 ```

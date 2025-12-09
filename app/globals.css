@@ -48,6 +48,39 @@
   --border-subtle: rgba(209, 213, 219, 1);
   --accent: #6366f1;
   --accent-soft: rgba(79, 70, 229, 0.08);
+
+  /* ==== Expatise UI design tokens (light palette values) ==== */
+
+  /* Page & card backgrounds */
+  --color-page-bg: linear-gradient(180deg, #e6f3ff, #f4f7ff);
+  --color-profile-card-bg: linear-gradient(135deg, #f5fbff, #eef2ff);
+
+  /* Common text colors */
+  --color-heading-strong: #222435;   /* big headings, main labels */
+  --color-heading-card: #111827;     /* card titles, important labels */
+  --color-text-main-muted: #555b70;  /* secondary body text */
+  --color-text-caption: #8a92aa;     /* tiny captions (e.g. Days Left) */
+  --color-text-card-muted: #0f172a;  /* small text inside cards */
+
+  /* Profile / settings text */
+  --color-username: #2b7caf;
+  --color-email-muted: #6b7280;
+  --color-settings-label: #41414d;
+
+  /* Bottom nav + accents */
+  --color-nav-bg: rgba(30, 30, 31, 0.85);
+  --color-nav-border: rgba(0, 0, 0, 0.9);
+  --color-nav-muted: #9ca3af;
+
+  /* Shared gradients */
+  --color-premium-gradient: linear-gradient(
+    90deg,
+    rgba(43, 124, 175, 0.4) 0%,
+    rgba(255, 197, 66, 0.4) 100%
+  );
+  --color-settings-bg: #f1f5f8;
+  --color-logout-border: #d2c79a;
+
 }
 
 /* Base page background + text color */
