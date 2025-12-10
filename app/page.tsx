@@ -27,21 +27,44 @@ export default function Home() {
   const [testTime, setTestTime] = useState<string>(DEFAULT_TEST_TIME);
   const timeInputRef = useRef<HTMLInputElement | null>(null);
 
-  const displayTime = formatTimeLabel(testTime);
+// Modal state for "When's your test?" sheet
+const [isTestModalOpen, setIsTestModalOpen] = useState(false);
+const [pendingDate, setPendingDate] = useState<string | null>(null);
+const modalDateInputRef = useRef<HTMLInputElement | null>(null);
 
-const dateInputRef = useRef<HTMLInputElement | null>(null);
+const displayTime = formatTimeLabel(testTime);
 
-const openDatePicker = () => {
-  const input = dateInputRef.current;
-  if (!input) return;
-  // @ts-ignore
-  if (input.showPicker) {
+  // ===== modal helpers =====
+  const openTestModal = () => {
+    // start with current testDate
+    setPendingDate(testDate);
+    setIsTestModalOpen(true);
+  };
+
+  const closeTestModal = () => {
+    setIsTestModalOpen(false);
+    setPendingDate(null);
+  };
+
+  const openModalDatePicker = () => {
+    const input = modalDateInputRef.current;
+    if (!input) return;
     // @ts-ignore
-    input.showPicker();
-  } else {
-    input.click();
-  }
-};
+    if (input.showPicker) {
+      // @ts-ignore
+      input.showPicker();
+    } else {
+      input.click();
+    }
+  };
+
+  const handleConfirmTestDay = () => {
+    if (pendingDate) {
+      setTestDate(pendingDate);
+    }
+    closeTestModal();
+  };
+
 
 
   const openTimePicker = () => {
@@ -78,6 +101,20 @@ const openDatePicker = () => {
     formattedDate = `${month}/${day}`;
   }
 
+    // values to show inside the modal boxes
+  const modalSourceDate = pendingDate || testDate;
+  let modalYear = 'YYYY';
+  let modalMonth = 'MM';
+  let modalDay = 'DD';
+
+  if (modalSourceDate) {
+    const [y, m, d] = modalSourceDate.split('-');
+    modalYear = y;
+    modalMonth = m;
+    modalDay = d;
+  }
+
+
   return (
     <main className={styles.page}>
       <div className={styles.content}>
@@ -88,34 +125,33 @@ const openDatePicker = () => {
             <p className={styles.examLabel}>Exam</p>
             <h1 className={styles.examTitle}>Registration</h1>
 
-            <p className={styles.myTestDayButton}>My Test Day:</p>
+            <button
+  type="button"
+  className={styles.myTestDayButton}
+  onClick={openTestModal}
+>
+  My Test Day:
+</button>
+
 
 
             {/* Date + time */}
-             <div className={styles.dateRow}>
-  {/* Clickable date label */}
-  <button
-    type="button"
-    className={styles.bigDateButton}
-    onClick={openDatePicker}
-  >
-    <span className={styles.bigDate}>{formattedDate}</span>
-  </button>
-
-  {/* Hidden native date input */}
-  <input
-    ref={dateInputRef}
-    type="date"
-    className={styles.dateInput}
-    value={testDate}
-    onChange={(e) => setTestDate(e.target.value)}
-  />
+<div
+  className={styles.dateRow}
+  onClick={openTestModal} // clicking anywhere opens modal
+>
+  {/* Just show the date text now */}
+  <span className={styles.bigDate}>{formattedDate}</span>
 
   <div className={styles.timeBlock}>
+    {/* Time still uses the native time picker directly */}
     <button
       type="button"
       className={styles.timeText}
-      onClick={openTimePicker}
+      onClick={(e) => {
+        e.stopPropagation(); // prevent opening modal
+        openTimePicker();
+      }}
     >
       {displayTime}
     </button>
@@ -129,6 +165,7 @@ const openDatePicker = () => {
     <div className={styles.caption}>Test Time</div>
   </div>
 </div>
+
 
 
 
@@ -352,10 +389,97 @@ const openDatePicker = () => {
             </DragScrollRow>
           </div>
         </section>
-        <BottomNav />
-
-
+                <BottomNav />
       </div>
+
+      {/* Test Day Modal (fake page) */}
+      {isTestModalOpen && (
+        <div
+          className={styles.testModalBackdrop}
+          onClick={closeTestModal}
+        >
+          <div
+            className={styles.testModalSheet}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Header with back */}
+            <div className={styles.testModalHeader}>
+              <button
+                type="button"
+                className={styles.testModalBackButton}
+                onClick={closeTestModal}
+              >
+                <span className={styles.testModalBackIcon}>‹</span>
+                <span className={styles.testModalBackText}>Back</span>
+              </button>
+            </div>
+
+            {/* Main card */}
+            <div className={styles.testModalMainCard}>
+              <h2 className={styles.testModalTitle}>
+                When&apos;s your <span>Test?</span>
+              </h2>
+              <p className={styles.testModalDescription}>
+                Your test date will be beautifully updated on the home page
+                hero banner, making it easy to see and remember.
+              </p>
+
+              {/* MM / DD / YYYY row (click triggers native picker) */}
+              <div
+                className={styles.testModalDateRow}
+                onClick={openModalDatePicker}
+              >
+                <div className={styles.testModalDateBox}>
+                  <span className={styles.testModalDateLabel}>MM</span>
+                  <span className={styles.testModalDateValue}>
+                    {modalMonth}
+                  </span>
+                </div>
+                <div className={styles.testModalDateBox}>
+                  <span className={styles.testModalDateLabel}>DD</span>
+                  <span className={styles.testModalDateValue}>
+                    {modalDay}
+                  </span>
+                </div>
+                <div className={styles.testModalDateBox}>
+                  <span className={styles.testModalDateLabel}>YYYY</span>
+                  <span className={styles.testModalDateValue}>
+                    {modalYear}
+                  </span>
+                </div>
+              </div>
+
+              {/* Hidden native date input */}
+              <input
+                ref={modalDateInputRef}
+                type="date"
+                className={styles.testModalHiddenDateInput}
+                value={modalSourceDate}
+                onChange={(e) => setPendingDate(e.target.value)}
+              />
+
+              {/* Buttons */}
+              <div className={styles.testModalButtons}>
+                <button
+                  type="button"
+                  className={styles.testModalPrimaryButton}
+                  onClick={handleConfirmTestDay}
+                >
+                  Set The Day
+                </button>
+                <button
+                  type="button"
+                  className={styles.testModalSecondaryButton}
+                  onClick={closeTestModal}
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </main>
   );
 }
+

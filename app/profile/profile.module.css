@@ -283,3 +283,23 @@
 :root[data-theme='dark'] .username {
   color: #38bdf8; /* nice highlight in dark mode */
 }
+
+/* Keep the same logout gradient in dark mode */
+:root[data-theme='dark'] .logoutButton {
+  background: linear-gradient(
+    90deg,
+    rgba(43, 124, 175, 0.4) 0%,
+    rgba(255, 197, 66, 0.4) 100%
+  );
+  border-color: #d2c79a; /* optional, but makes sure border doesn’t change */
+}
+
+/* Keep the same logout gradient in dark mode */
+:root[data-theme='dark'] .premiumCard {
+  background: linear-gradient(
+    90deg,
+    rgba(43, 124, 175, 0.4) 0%,
+    rgba(255, 197, 66, 0.4) 100%
+  );
+  border-color: #d2c79a; /* optional, but makes sure border doesn’t change */
+}

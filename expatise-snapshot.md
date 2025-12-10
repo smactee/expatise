@@ -50,6 +50,39 @@
   --border-subtle: rgba(209, 213, 219, 1);
   --accent: #6366f1;
   --accent-soft: rgba(79, 70, 229, 0.08);
+
+  /* ==== Expatise UI design tokens (light palette values) ==== */
+
+  /* Page & card backgrounds */
+  --color-page-bg: linear-gradient(180deg, #e6f3ff, #f4f7ff);
+  --color-profile-card-bg: linear-gradient(135deg, #f5fbff, #eef2ff);
+
+  /* Common text colors */
+  --color-heading-strong: #222435;   /* big headings, main labels */
+  --color-heading-card: #111827;     /* card titles, important labels */
+  --color-text-main-muted: #555b70;  /* secondary body text */
+  --color-text-caption: #8a92aa;     /* tiny captions (e.g. Days Left) */
+  --color-text-card-muted: #0f172a;  /* small text inside cards */
+
+  /* Profile / settings text */
+  --color-username: #2b7caf;
+  --color-email-muted: #6b7280;
+  --color-settings-label: #41414d;
+
+  /* Bottom nav + accents */
+  --color-nav-bg: rgba(30, 30, 31, 0.85);
+  --color-nav-border: rgba(0, 0, 0, 0.9);
+  --color-nav-muted: #9ca3af;
+
+  /* Shared gradients */
+  --color-premium-gradient: linear-gradient(
+    90deg,
+    rgba(43, 124, 175, 0.4) 0%,
+    rgba(255, 197, 66, 0.4) 100%
+  );
+  --color-settings-bg: #f1f5f8;
+  --color-logout-border: #d2c79a;
+
 }
 
 /* Base page background + text color */
@@ -119,10 +152,7 @@ export default function RootLayout({
   min-height: 100vh;
   display: flex;
   justify-content: center;
-  background: linear-gradient(180deg, #e6f3ff, #f4f7ff);
-  padding: 24px 16px 40px;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
-    "Segoe UI", sans-serif;
+  background: var(--color-page-bg);
 }
 
 .content {
@@ -187,14 +217,14 @@ export default function RootLayout({
   margin: 0;
   font-size: 34px;
   font-weight: 600;
-  color: #222435;
+  color: var(--color-heading-strong);
 }
 
 .examTitle {
   margin: 0;
   font-size: 34px;
   font-weight: 700;
-  color: #222435;
+  color: var(--color-heading-strong);
 }
 
 /* "My Test Day" link-style button */
@@ -206,7 +236,7 @@ export default function RootLayout({
   background: none;
   font-size: 23px;
   font-weight: 600;
-  color: #222435;
+  color: var(--color-heading-strong);
 }
 
 /* Date input */
@@ -238,7 +268,7 @@ export default function RootLayout({
   font-size: 34px;
   font-weight: 700;
   letter-spacing: 0.08em;
-  color: #222435;
+  color: var(--color-heading-strong);
 }
 
 /* test time text */
@@ -246,7 +276,7 @@ export default function RootLayout({
   font-size: 16px;
   font-weight: 500;
   margin-top: 0.2rem;
-  color: #555b70;
+  color: var(--color-text-main-muted);
 
   /* make it look like plain text but clickable */
   background: none;
@@ -268,7 +298,7 @@ export default function RootLayout({
 /* days left text */
 .caption {
   font-size: 9px; 
-  color: #8a92aa;
+  color: var(--color-text-caption);
 }
 
 .daysLeftContainer {
@@ -279,7 +309,7 @@ export default function RootLayout({
   font-size: 34px;
   font-weight: 700;
   margin-bottom: 0px;
-  color: #222435;
+  color: var(--color-heading-strong);
 }
 
 .sections {
@@ -300,7 +330,7 @@ export default function RootLayout({
   margin: 0 0 12px;
   font-size: 23px;
   font-weight: 700;
-  color: #222435;
+  color: var(--color-heading-strong);
 }
 
 /* HORIZONTAL scroll row of cards */
@@ -385,7 +415,7 @@ export default function RootLayout({
   font-size: 12px;      /* bump to 13–14 if you want */
   font-weight: 600;
   line-height: 1.3;
-  color: #0f172a;
+  color: var(--color-text-card-muted);
   max-width: 150px;
 }
 
@@ -402,7 +432,7 @@ export default function RootLayout({
   margin: 0;
   font-size: 28px;
   font-weight: 700;
-  color: #111827;
+  color: var(--color-heading-card);
 }
 
 
@@ -474,8 +504,8 @@ export default function RootLayout({
   height: 66px;
   padding: 9px;             /* Figma padding */
   border-radius: 25px;      /* Figma corner radius */
-  background: rgba(30, 30, 31, 0.85); /* #1E1E1F at 85% */
-  border: 1px solid rgba(0, 0, 0, 0.9);
+  background: var(--color-nav-bg);
+  border: 1px solid var(--color-nav-border);
   box-shadow: 0 14px 28px rgba(15, 23, 42, 0.55);
 
   display: flex;
@@ -499,7 +529,7 @@ export default function RootLayout({
   border-radius: 999px;
   border: none;
   background: transparent;
-  color: #9ca3af;
+  color: var(--color-nav-muted);
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
@@ -522,7 +552,7 @@ export default function RootLayout({
 .navLabel {
   white-space: nowrap;
   /* (optional) default color for inactive items */
-  color: #9ca3af;
+  color: var(--color-nav-muted);
 }
 
 /* Make text & icon blue when active */
@@ -535,7 +565,7 @@ export default function RootLayout({
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 28px;              /* 28px gap between icon and text */
+  gap: 8px;              /* 28px gap between icon and text */
   width: 130px;
   height: 48px;
   border-radius: 25px;    /* Figma corner radius */
@@ -1169,7 +1199,7 @@ export default function ProfilePage() {
   min-height: 100vh;
   display: flex;
   justify-content: center;
-  background: linear-gradient(180deg, #e6f3ff, #f4f7ff);
+  background: var(--color-page-bg);
   padding: 24px 16px 40px;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, 'SF Pro Text',
     'Segoe UI', sans-serif;
@@ -1192,7 +1222,7 @@ export default function ProfilePage() {
   align-items: center;
   gap: 6px;
   text-decoration: none;
-  color: #111827;
+  color: var(--color-heading-strong);
 }
 
 .backIcon {
@@ -1208,8 +1238,7 @@ export default function ProfilePage() {
 /* ===== Profile card ===== */
 
 .profileCard {
-  background: linear-gradient(135deg, #f5fbff, #eef2ff);
-  border-radius: 32px;
+  background: var(--color-profile-card-bg);
   padding: 24px 20px 28px;
   box-shadow: 0 20px 50px rgba(15, 33, 70, 0.16);
 }
@@ -1259,7 +1288,7 @@ export default function ProfilePage() {
 .username {
   font-size: 20px;
   font-weight: 700;
-  color: #2B7CAF;
+  color: var(--color-username);
 }
 
 .crown {
@@ -1273,7 +1302,7 @@ export default function ProfilePage() {
 .email {
   margin: 0;
   font-size: 14px;
-  color: #6b7280;
+  color: var(--color-email-muted);
 }
 
 /* Premium bar */
@@ -1287,12 +1316,7 @@ export default function ProfilePage() {
   align-items: center;
   justify-content: center;
   gap: 10px;
-    background: linear-gradient(
-    90deg,
-    rgba(43, 124, 175, 0.4) 0%,
-    rgba(255, 197, 66, 0.4) 100%
-  );
-
+  background: var(--color-premium-gradient);
 }
 
 .premiumIcon {
@@ -1308,7 +1332,7 @@ export default function ProfilePage() {
 /* Settings list */
 
 .settingsList {
-  background: #F1F5F8;
+  background: var(--color-settings-bg);
   border-radius: 24px;
   overflow: hidden;
   box-shadow: 0 16px 40px rgba(15, 33, 70, 0.12);
@@ -1402,16 +1426,12 @@ export default function ProfilePage() {
   min-width: 220px;
   padding: 14px 24px;
   border-radius: 20px;
-  border: 1px solid #d2c79a;
-    background: linear-gradient(
-    90deg,
-    rgba(43, 124, 175, 0.4) 0%,
-    rgba(255, 197, 66, 0.4) 100%
-  );
+  border: 1px solid var(--color-logout-border);
+  background: var(--color-premium-gradient);
   box-shadow: 0 18px 40px rgba(15, 33, 70, 0.26);
   font-size: 18px;
   font-weight: 600;
-  color: #111827;
+  color: var(--color-heading-card);
   cursor: pointer;
 }
 
@@ -1461,25 +1481,155 @@ export default function ProfilePage() {
   color: #38bdf8; /* nice highlight in dark mode */
 }
 
+/* Keep the same logout gradient in dark mode */
+:root[data-theme='dark'] .logoutButton {
+  background: linear-gradient(
+    90deg,
+    rgba(43, 124, 175, 0.4) 0%,
+    rgba(255, 197, 66, 0.4) 100%
+  );
+  border-color: #d2c79a; /* optional, but makes sure border doesn’t change */
+}
+
+/* Keep the same logout gradient in dark mode */
+:root[data-theme='dark'] .premiumCard {
+  background: linear-gradient(
+    90deg,
+    rgba(43, 124, 175, 0.4) 0%,
+    rgba(255, 197, 66, 0.4) 100%
+  );
+  border-color: #d2c79a; /* optional, but makes sure border doesn’t change */
+}
 ```
 
 ### app/stats/page.tsx
 ```tsx
+// app/stats/page.tsx
 'use client';
 
 import BottomNav from '../../components/BottomNav';
-import styles from '../page.module.css'; // re-use your existing layout styles
-// import Image etc. if you need them
+import styles from './stats.module.css'; // reuse shared layout + new stats classes
 
 export default function StatsPage() {
   return (
     <main className={styles.page}>
       <div className={styles.content}>
-        {/* Your stats content here */}
-        <h1>Stats</h1>
-        <p>Stats screen coming soon…</p>
+        {/* ==== Top Accuracy / Gauge Card ==== */}
+        <section className={styles.statsSummaryCard}>
+          <div className={styles.statsSummaryInner}>
+            <div className={styles.statsGaugeWrapper}>
+              <div className={styles.statsGaugeCircleOuter}>
+                <div className={styles.statsGaugeCircleInner}>
+                  <div className={styles.statsGaugeNumber}>70</div>
+                  <div className={styles.statsGaugeLabel}>
+                    Accuracy
+                    <br />
+                    Rate
+                  </div>
+                </div>
+              </div>
+            </div>
 
-        {/* Bottom navigation */}
+            <button className={styles.statsTestButton}>Test ▸</button>
+          </div>
+        </section>
+
+        {/* ==== Stack of statistic cards ==== */}
+       {/* ==== Big panel + stack of statistic cards ==== */}
+<section className={styles.statsLongPanel}>
+  <div className={styles.statsBlocks}>
+    {/* Screen Time */}
+    <article className={styles.statsCard}>
+      <header className={styles.statsCardHeader}>
+        <h2 className={styles.statsCardTitle}>Screen Time</h2>
+        <div className={styles.statsLegend}>
+          <span
+            className={`${styles.statsLegendDot} ${styles.statsLegendDotBlue}`}
+          />
+          <span className={styles.statsLegendLabel}>Global</span>
+          <span
+            className={`${styles.statsLegendDot} ${styles.statsLegendDotYellow}`}
+          />
+          <span className={styles.statsLegendLabel}>You</span>
+        </div>
+      </header>
+
+      <div className={styles.statsGraphArea}>
+        <div className={styles.statsGraphPlaceholder}>
+          Screen time chart coming soon
+        </div>
+      </div>
+    </article>
+
+    {/* Score */}
+    <article className={styles.statsCard}>
+      <header className={styles.statsCardHeader}>
+        <h2 className={styles.statsCardTitle}>Score</h2>
+      </header>
+
+      <div className={styles.statsGraphArea}>
+        <div className={styles.statsGraphPlaceholder}>
+          Score chart coming soon
+        </div>
+      </div>
+    </article>
+
+    {/* Weekly Progress */}
+    <article className={styles.statsCard}>
+      <header className={styles.statsCardHeader}>
+        <h2 className={styles.statsCardTitle}>Weekly Progress</h2>
+        <div className={styles.statsLegend}>
+          <span
+            className={`${styles.statsLegendDot} ${styles.statsLegendDotBlue}`}
+          />
+          <span className={styles.statsLegendLabel}>Global</span>
+          <span
+            className={`${styles.statsLegendDot} ${styles.statsLegendDotYellow}`}
+          />
+          <span className={styles.statsLegendLabel}>You</span>
+        </div>
+      </header>
+
+      <div className={styles.statsGraphArea}>
+        <div className={styles.statsGraphPlaceholder}>
+          Weekly progress chart coming soon
+        </div>
+      </div>
+    </article>
+
+    {/* Best Time */}
+    <article className={styles.statsCard}>
+      <header className={styles.statsCardHeader}>
+        <h2 className={styles.statsCardTitle}>Best Time</h2>
+        <div className={styles.statsLegend}>
+          <span
+            className={`${styles.statsLegendDot} ${styles.statsLegendDotBlue}`}
+          />
+          <span className={styles.statsLegendLabel}>Global</span>
+          <span
+            className={`${styles.statsLegendDot} ${styles.statsLegendDotYellow}`}
+          />
+          <span className={styles.statsLegendLabel}>You</span>
+        </div>
+      </header>
+
+      <div className={styles.statsGraphArea}>
+        <div className={styles.statsGraphPlaceholder}>
+          Best time chart coming soon
+        </div>
+      </div>
+    </article>
+  </div>
+</section>
+
+
+        {/* Review button at the bottom */}
+        <div className={styles.statsReviewWrapper}>
+          <button className={styles.statsReviewButton}>
+            Review Your Mistakes
+          </button>
+        </div>
+
         <BottomNav />
       </div>
     </main>

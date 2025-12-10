@@ -418,7 +418,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 28px;              /* 28px gap between icon and text */
+  gap: 8px;              /* 28px gap between icon and text */
   width: 130px;
   height: 48px;
   border-radius: 25px;    /* Figma corner radius */
@@ -430,6 +430,168 @@
     rgba(55, 178, 255, 0) 100%
   );
 }
+
+/* ========================= */
+/* Test Day Modal (fake page)*/
+/* ========================= */
+
+.testModalBackdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 70; /* above bottom nav */
+  background: rgba(15, 23, 42, 0.45);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.testModalSheet {
+  width: 100%;
+  max-width: 420px;
+  max-height: calc(100vh - 40px);
+  border-radius: 32px;
+  padding: 20px 20px 28px;
+  background: linear-gradient(180deg, #e6f3ff 0%, #f4f0dc 100%);
+  box-shadow: 0 24px 60px rgba(15, 33, 70, 0.35);
+  overflow-y: auto;
+}
+
+.testModalHeader {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.testModalBackButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: none;
+  background: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.testModalBackIcon {
+  font-size: 22px;
+}
+
+.testModalBackText {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.testModalMainCard {
+  margin-top: 8px;
+  border-radius: 28px;
+  padding: 32px 18px 24px;
+  background: linear-gradient(180deg, #f5fbff 0%, #f4f0dc 100%);
+  box-shadow: 0 18px 40px rgba(15, 33, 70, 0.18);
+  text-align: center;
+}
+
+.testModalTitle {
+  margin: 0 0 8px;
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--color-heading-strong);
+}
+
+.testModalTitle span {
+  color: #2b7caf;
+}
+
+.testModalDescription {
+  margin: 0 0 24px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--color-text-main-muted);
+}
+
+.testModalDateRow {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  margin-bottom: 28px;
+  cursor: pointer;
+}
+
+.testModalDateBox {
+  width: 90px;
+  padding: 10px 8px;
+  border-radius: 14px;
+  border: 1px solid rgba(148, 163, 184, 0.7);
+  background: #f9fbff;
+  box-shadow: 0 8px 16px rgba(15, 23, 42, 0.08);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.testModalDateLabel {
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #9ca3af;
+}
+
+.testModalDateValue {
+  font-size: 17px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.testModalHiddenDateInput {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+  width: 0;
+  height: 0;
+  border: 0;
+}
+
+.testModalButtons {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.testModalPrimaryButton {
+  padding: 12px 18px;
+  border-radius: 20px;
+  border: 1px solid #d2c79a;
+  background: linear-gradient(
+    90deg,
+    rgba(43, 124, 175, 0.4) 0%,
+    rgba(255, 197, 66, 0.4) 100%
+  );
+  box-shadow: 0 18px 40px rgba(15, 33, 70, 0.26);
+  font-size: 16px;
+  font-weight: 600;
+  color: #111827;
+  cursor: pointer;
+}
+
+.testModalSecondaryButton {
+  padding: 10px 18px;
+  border-radius: 20px;
+  border: none;
+  background: transparent;
+  font-size: 16px;
+  font-weight: 500;
+  color: #6b7280;
+  cursor: pointer;
+}
+
+@media (max-width: 430px) {
+  .testModalSheet {
+    border-radius: 0;
+    max-width: 100%;
+    max-height: 100vh;
+  }
+}
+
 
 /* ========================= */
 /* DARK MODE OVERRIDES ONLY  */
