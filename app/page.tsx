@@ -25,26 +25,29 @@ const DEFAULT_TEST_TIME = "09:00"; // 9 AM in 24h format
 export default function Home() {
   const [testDate, setTestDate] = useState<string>(DEFAULT_TEST_DATE);
   const [testTime, setTestTime] = useState<string>(DEFAULT_TEST_TIME);
-  const timeInputRef = useRef<HTMLInputElement | null>(null);
 
 // Modal state for "When's your test?" sheet
 const [isTestModalOpen, setIsTestModalOpen] = useState(false);
 const [pendingDate, setPendingDate] = useState<string | null>(null);
 const modalDateInputRef = useRef<HTMLInputElement | null>(null);
+const [pendingTime, setPendingTime] = useState<string | null>(null);
+const modalTimeInputRef = useRef<HTMLInputElement | null>(null);
 
 const displayTime = formatTimeLabel(testTime);
 
   // ===== modal helpers =====
-  const openTestModal = () => {
-    // start with current testDate
-    setPendingDate(testDate);
-    setIsTestModalOpen(true);
-  };
+const openTestModal = () => {
+  setPendingDate(testDate);
+  setPendingTime(testTime);
+  setIsTestModalOpen(true);
+};
 
-  const closeTestModal = () => {
-    setIsTestModalOpen(false);
-    setPendingDate(null);
-  };
+const closeTestModal = () => {
+  setIsTestModalOpen(false);
+  setPendingDate(null);
+  setPendingTime(null);
+};
+
 
   const openModalDatePicker = () => {
     const input = modalDateInputRef.current;
@@ -58,27 +61,29 @@ const displayTime = formatTimeLabel(testTime);
     }
   };
 
-  const handleConfirmTestDay = () => {
-    if (pendingDate) {
-      setTestDate(pendingDate);
-    }
-    closeTestModal();
-  };
-
-
-
-  const openTimePicker = () => {
-    const input = timeInputRef.current;
-    if (!input) return;
-    // Some browsers support showPicker()
+  const openModalTimePicker = () => {
+  const input = modalTimeInputRef.current;
+  if (!input) return;
+  // Some browsers support showPicker()
+  // @ts-ignore
+  if (input.showPicker) {
     // @ts-ignore
-    if (input.showPicker) {
-      // @ts-ignore
-      input.showPicker();
-    } else {
-      input.click();
-    }
-  };
+    input.showPicker();
+  } else {
+    input.click();
+  }
+};
+
+
+const handleConfirmTestDay = () => {
+  if (pendingDate) {
+    setTestDate(pendingDate);
+  }
+  if (pendingTime) {
+    setTestTime(pendingTime);
+  }
+  closeTestModal();
+};
 
   // Calculate formatted date and days left countdown
   let formattedDate = "-";
@@ -102,17 +107,20 @@ const displayTime = formatTimeLabel(testTime);
   }
 
     // values to show inside the modal boxes
-  const modalSourceDate = pendingDate || testDate;
-  let modalYear = 'YYYY';
-  let modalMonth = 'MM';
-  let modalDay = 'DD';
+ // Which date/time should the modal show?
+// If the user has already picked something in the modal (pending*),
+// use that; otherwise fall back to the saved values.
+const modalSourceDate: string = pendingDate ?? testDate;
+const modalSourceTime: string = pendingTime ?? testTime;
 
-  if (modalSourceDate) {
-    const [y, m, d] = modalSourceDate.split('-');
-    modalYear = y;
-    modalMonth = m;
-    modalDay = d;
-  }
+// Break date into pieces for the MM / DD / YYYY labels
+const modalDate = new Date(modalSourceDate + 'T00:00:00');
+const modalYear = modalDate.getFullYear();
+const modalMonth = modalDate.getMonth() + 1;
+const modalDay = modalDate.getDate();
+
+// Pretty label for the time in the modal ("9:00 AM")
+const modalTimeLabel = formatTimeLabel(modalSourceTime);
 
 
   return (
@@ -138,33 +146,16 @@ const displayTime = formatTimeLabel(testTime);
             {/* Date + time */}
 <div
   className={styles.dateRow}
-  onClick={openTestModal} // clicking anywhere opens modal
+  onClick={openTestModal}
 >
-  {/* Just show the date text now */}
   <span className={styles.bigDate}>{formattedDate}</span>
 
   <div className={styles.timeBlock}>
-    {/* Time still uses the native time picker directly */}
-    <button
-      type="button"
-      className={styles.timeText}
-      onClick={(e) => {
-        e.stopPropagation(); // prevent opening modal
-        openTimePicker();
-      }}
-    >
-      {displayTime}
-    </button>
-    <input
-      ref={timeInputRef}
-      type="time"
-      className={styles.timeInput}
-      value={testTime}
-      onChange={(e) => setTestTime(e.target.value)}
-    />
+    <span className={styles.timeText}>{displayTime}</span>
     <div className={styles.caption}>Test Time</div>
   </div>
 </div>
+
 
 
 
@@ -449,14 +440,26 @@ const displayTime = formatTimeLabel(testTime);
                 </div>
               </div>
 
-              {/* Hidden native date input */}
-              <input
-                ref={modalDateInputRef}
-                type="date"
-                className={styles.testModalHiddenDateInput}
-                value={modalSourceDate}
-                onChange={(e) => setPendingDate(e.target.value)}
-              />
+            {/* Time row */}
+<div
+  className={styles.testModalTimeRow}
+  onClick={openModalTimePicker}
+>
+  <div className={styles.testModalTimeBox}>
+    <span className={styles.testModalDateLabel}>Time</span>
+    <span className={styles.testModalDateValue}>{modalTimeLabel}</span>
+  </div>
+</div>
+
+{/* Hidden native time input */}
+<input
+  ref={modalTimeInputRef}
+  type="time"
+  className={styles.testModalHiddenDateInput}
+  value={modalSourceTime}
+  onChange={(e) => setPendingTime(e.target.value)}
+/>
+
 
               {/* Buttons */}
               <div className={styles.testModalButtons}>

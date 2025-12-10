@@ -90,6 +90,7 @@
   font-size: 23px;
   font-weight: 600;
   color: var(--color-heading-strong);
+  cursor: pointer;
 }
 
 /* Date input */
@@ -109,6 +110,7 @@
   align-items: flex-end;
   gap: 8px;
   position: relative; /* so the hidden input can sit here */
+  cursor: pointer;
 }
 
 
@@ -590,6 +592,27 @@
     max-width: 100%;
     max-height: 100vh;
   }
+}
+
+.testModalTimeRow {
+  display: flex;
+  justify-content: center;
+  margin-top: -6px;    /* tweak spacing as you like */
+  margin-bottom: 24px;
+  cursor: pointer;
+}
+
+.testModalTimeBox {
+  width: 100%;
+  max-width: 260px;
+  padding: 10px 12px;
+  border-radius: 16px;
+  border: 1px solid rgba(148, 163, 184, 0.7);
+  background: #f9fbff;
+  box-shadow: 0 8px 16px rgba(15, 23, 42, 0.08);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 
