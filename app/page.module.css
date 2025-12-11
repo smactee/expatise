@@ -451,12 +451,88 @@
   width: 100%;
   max-width: 420px;
   max-height: calc(100vh - 40px);
-  border-radius: 32px;
+  border-radius: 36px;
   padding: 20px 20px 28px;
   background: linear-gradient(180deg, #e6f3ff 0%, #f4f0dc 100%);
   box-shadow: 0 24px 60px rgba(15, 33, 70, 0.35);
   overflow-y: auto;
 }
+
+/* === "Have a good day" header card inside modal === */
+
+.testModalHeaderCard {
+  width: 100%;
+  max-width: 375px;          /* matches Figma width */
+  height: 110px;             /* matches Figma height */
+  margin: 0 auto 24px;       /* center horizontally, space below */
+
+  padding: 16px 18px;
+  border-radius: 25px;
+
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.2) 0%,
+    rgba(43, 124, 175, 0.2) 100%
+  );
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.18); /* approximate Figma drop shadow */
+}
+
+/* Left side (texts) */
+.testModalHeaderLeft {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* "Have a good day" + sun */
+.testModalGreetingRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.testModalGreetingText {
+  font-size: 13px;
+  font-weight: 500;
+  color: #4b5563; /* softer grey, adjust from Figma */
+}
+
+.testModalSunIcon {
+  font-size: 16px;
+}
+
+/* Name ("Kang") */
+.testModalName {
+  font-size: 22px;
+  font-weight: 700;
+  color: #111827;
+}
+
+/* Subtitle */
+.testModalSubtext {
+  font-size: 13px;
+  font-weight: 400;
+  color: #6b7280;
+}
+
+/* Avatar on the right */
+.testModalAvatarWrapper {
+  flex-shrink: 0;
+}
+
+.testModalAvatar {
+  width: 66px;
+  height: 66px;
+  border-radius: 20px; /* or 50% if the Figma avatar is fully round */
+  object-fit: cover;
+}
+
 
 .testModalHeader {
   display: flex;
@@ -486,27 +562,29 @@
 .testModalMainCard {
   margin-top: 8px;
   border-radius: 28px;
-  padding: 32px 18px 24px;
+  padding: 36px 22px 28px;
   background: linear-gradient(180deg, #f5fbff 0%, #f4f0dc 100%);
   box-shadow: 0 18px 40px rgba(15, 33, 70, 0.18);
   text-align: center;
 }
 
 .testModalTitle {
-  margin: 0 0 8px;
-  font-size: 28px;
+  margin: 0 0 10px;
+  font-size: 30px;
   font-weight: 700;
+  line-height: 1.15;
   color: var(--color-heading-strong);
 }
 
 .testModalTitle span {
   color: #2b7caf;
+  display: block;
 }
 
 .testModalDescription {
-  margin: 0 0 24px;
+  margin: 0 0 26px;
   font-size: 14px;
-  line-height: 1.5;
+  line-height: 1.6;
   color: var(--color-text-main-muted);
 }
 
@@ -519,9 +597,9 @@
 }
 
 .testModalDateBox {
-  width: 90px;
+  width: 96px;
   padding: 10px 8px;
-  border-radius: 14px;
+  border-radius: 16px;
   border: 1px solid rgba(148, 163, 184, 0.7);
   background: #f9fbff;
   box-shadow: 0 8px 16px rgba(15, 23, 42, 0.08);
@@ -532,25 +610,39 @@
 
 .testModalDateLabel {
   font-size: 11px;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   color: #9ca3af;
 }
 
 .testModalDateValue {
-  font-size: 17px;
+  font-size: 18px;
   font-weight: 600;
   color: #111827;
 }
 
+/* The "real" date/time inputs that sit on top of the pretty boxes */
 .testModalHiddenDateInput {
   position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
   opacity: 0;
-  pointer-events: none;
-  width: 0;
-  height: 0;
-  border: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  z-index: 5;
 }
+
+
+/* Make the rows a positioning context */
+.testModalDateRow,
+.testModalTimeRow {
+  position: relative;
+  display: flex;
+  gap:12px;
+}
+
 
 .testModalButtons {
   display: flex;

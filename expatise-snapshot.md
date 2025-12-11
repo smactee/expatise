@@ -237,6 +237,7 @@ export default function RootLayout({
   font-size: 23px;
   font-weight: 600;
   color: var(--color-heading-strong);
+  cursor: pointer;
 }
 
 /* Date input */
@@ -256,6 +257,7 @@ export default function RootLayout({
   align-items: flex-end;
   gap: 8px;
   position: relative; /* so the hidden input can sit here */
+  cursor: pointer;
 }
 
 
@@ -579,6 +581,281 @@ export default function RootLayout({
 }
 
 /* ========================= */
+/* Test Day Modal (fake page)*/
+/* ========================= */
+
+.testModalBackdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 70; /* above bottom nav */
+  background: rgba(15, 23, 42, 0.45);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.testModalSheet {
+  width: 100%;
+  max-width: 420px;
+  max-height: calc(100vh - 40px);
+  border-radius: 36px;
+  padding: 20px 20px 28px;
+  background: linear-gradient(180deg, #e6f3ff 0%, #f4f0dc 100%);
+  box-shadow: 0 24px 60px rgba(15, 33, 70, 0.35);
+  overflow-y: auto;
+}
+
+/* === "Have a good day" header card inside modal === */
+
+.testModalHeaderCard {
+  width: 100%;
+  max-width: 375px;          /* matches Figma width */
+  height: 110px;             /* matches Figma height */
+  margin: 0 auto 24px;       /* center horizontally, space below */
+
+  padding: 16px 18px;
+  border-radius: 25px;
+
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.2) 0%,
+    rgba(43, 124, 175, 0.2) 100%
+  );
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.18); /* approximate Figma drop shadow */
+}
+
+/* Left side (texts) */
+.testModalHeaderLeft {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* "Have a good day" + sun */
+.testModalGreetingRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.testModalGreetingText {
+  font-size: 13px;
+  font-weight: 500;
+  color: #4b5563; /* softer grey, adjust from Figma */
+}
+
+.testModalSunIcon {
+  font-size: 16px;
+}
+
+/* Name ("Kang") */
+.testModalName {
+  font-size: 22px;
+  font-weight: 700;
+  color: #111827;
+}
+
+/* Subtitle */
+.testModalSubtext {
+  font-size: 13px;
+  font-weight: 400;
+  color: #6b7280;
+}
+
+/* Avatar on the right */
+.testModalAvatarWrapper {
+  flex-shrink: 0;
+}
+
+.testModalAvatar {
+  width: 66px;
+  height: 66px;
+  border-radius: 20px; /* or 50% if the Figma avatar is fully round */
+  object-fit: cover;
+}
+
+
+.testModalHeader {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.testModalBackButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: none;
+  background: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.testModalBackIcon {
+  font-size: 22px;
+}
+
+.testModalBackText {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.testModalMainCard {
+  margin-top: 8px;
+  border-radius: 28px;
+  padding: 36px 22px 28px;
+  background: linear-gradient(180deg, #f5fbff 0%, #f4f0dc 100%);
+  box-shadow: 0 18px 40px rgba(15, 33, 70, 0.18);
+  text-align: center;
+}
+
+.testModalTitle {
+  margin: 0 0 10px;
+  font-size: 30px;
+  font-weight: 700;
+  line-height: 1.15;
+  color: var(--color-heading-strong);
+}
+
+.testModalTitle span {
+  color: #2b7caf;
+  display: block;
+}
+
+.testModalDescription {
+  margin: 0 0 26px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--color-text-main-muted);
+}
+
+.testModalDateRow {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  margin-bottom: 28px;
+  cursor: pointer;
+}
+
+.testModalDateBox {
+  width: 96px;
+  padding: 10px 8px;
+  border-radius: 16px;
+  border: 1px solid rgba(148, 163, 184, 0.7);
+  background: #f9fbff;
+  box-shadow: 0 8px 16px rgba(15, 23, 42, 0.08);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.testModalDateLabel {
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #9ca3af;
+}
+
+.testModalDateValue {
+  font-size: 18px;
+  font-weight: 600;
+  color: #111827;
+}
+
+/* The "real" date/time inputs that sit on top of the pretty boxes */
+.testModalHiddenDateInput {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  z-index: 5;
+}
+
+
+/* Make the rows a positioning context */
+.testModalDateRow,
+.testModalTimeRow {
+  position: relative;
+  display: flex;
+  gap:12px;
+}
+
+
+.testModalButtons {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.testModalPrimaryButton {
+  padding: 12px 18px;
+  border-radius: 20px;
+  border: 1px solid #d2c79a;
+  background: linear-gradient(
+    90deg,
+    rgba(43, 124, 175, 0.4) 0%,
+    rgba(255, 197, 66, 0.4) 100%
+  );
+  box-shadow: 0 18px 40px rgba(15, 33, 70, 0.26);
+  font-size: 16px;
+  font-weight: 600;
+  color: #111827;
+  cursor: pointer;
+}
+
+.testModalSecondaryButton {
+  padding: 10px 18px;
+  border-radius: 20px;
+  border: none;
+  background: transparent;
+  font-size: 16px;
+  font-weight: 500;
+  color: #6b7280;
+  cursor: pointer;
+}
+
+@media (max-width: 430px) {
+  .testModalSheet {
+    border-radius: 0;
+    max-width: 100%;
+    max-height: 100vh;
+  }
+}
+
+.testModalTimeRow {
+  display: flex;
+  justify-content: center;
+  margin-top: -6px;    /* tweak spacing as you like */
+  margin-bottom: 24px;
+  cursor: pointer;
+}
+
+.testModalTimeBox {
+  width: 100%;
+  max-width: 260px;
+  padding: 10px 12px;
+  border-radius: 16px;
+  border: 1px solid rgba(148, 163, 184, 0.7);
+  background: #f9fbff;
+  box-shadow: 0 8px 16px rgba(15, 23, 42, 0.08);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+
+/* ========================= */
 /* DARK MODE OVERRIDES ONLY  */
 /* ========================= */
 
@@ -637,11 +914,16 @@ import styles from './page.module.css';
 import Image from 'next/image';
 import DragScrollRow from "../components/DragScrollRow";
 import BottomNav from '../components/BottomNav'; 
+import { useUserProfile } from '../components/UserProfile';
 
 
 
 
-const DEFAULT_TEST_DATE = "2025-04-20"; // YYYY-MM-DD
+const CURRENT_YEAR = new Date().getFullYear();
+
+const DEFAULT_TEST_DATE = `${CURRENT_YEAR}-04-20`; // default 04/20 THIS year
+const DEFAULT_TEST_TIME = "09:00"; // 9 AM in 24h format
+
 function formatTimeLabel(time: string): string {
   if (!time) return "--:--";
   const [hStr, mStr] = time.split(":");
@@ -651,43 +933,45 @@ function formatTimeLabel(time: string): string {
   return `${displayH}:${mStr} ${ampm}`;
 }
 
-const DEFAULT_TEST_TIME = "09:00"; // 9 AM in 24h format
 
 
 export default function Home() {
   const [testDate, setTestDate] = useState<string>(DEFAULT_TEST_DATE);
   const [testTime, setTestTime] = useState<string>(DEFAULT_TEST_TIME);
-  const timeInputRef = useRef<HTMLInputElement | null>(null);
 
-  const displayTime = formatTimeLabel(testTime);
+// Modal state for "When's your test?" sheet
+const [isTestModalOpen, setIsTestModalOpen] = useState(false);
+const [pendingDate, setPendingDate] = useState<string | null>(null);
+const [pendingTime, setPendingTime] = useState<string | null>(null);
 
-const dateInputRef = useRef<HTMLInputElement | null>(null);
+const displayTime = formatTimeLabel(testTime);
 
-const openDatePicker = () => {
-  const input = dateInputRef.current;
-  if (!input) return;
-  // @ts-ignore
-  if (input.showPicker) {
-    // @ts-ignore
-    input.showPicker();
-  } else {
-    input.click();
-  }
+// Pull user profile info
+const { name: userName, avatarUrl: userAvatarSrc } = useUserProfile();
+
+
+  // ===== modal helpers =====
+const openTestModal = () => {
+  setPendingDate(testDate);
+  setPendingTime(testTime);
+  setIsTestModalOpen(true);
 };
 
+const closeTestModal = () => {
+  setIsTestModalOpen(false);
+  setPendingDate(null);
+  setPendingTime(null);
+};
 
-  const openTimePicker = () => {
-    const input = timeInputRef.current;
-    if (!input) return;
-    // Some browsers support showPicker()
-    // @ts-ignore
-    if (input.showPicker) {
-      // @ts-ignore
-      input.showPicker();
-    } else {
-      input.click();
-    }
-  };
+const handleConfirmTestDay = () => {
+  if (pendingDate) {
+    setTestDate(pendingDate);
+  }
+  if (pendingTime) {
+    setTestTime(pendingTime);
+  }
+  closeTestModal();
+};
 
   // Calculate formatted date and days left countdown
   let formattedDate = "-";
@@ -710,6 +994,23 @@ const openDatePicker = () => {
     formattedDate = `${month}/${day}`;
   }
 
+    // values to show inside the modal boxes
+ // Which date/time should the modal show?
+// If the user has already picked something in the modal (pending*),
+// use that; otherwise fall back to the saved values.
+const modalSourceDate: string = pendingDate ?? testDate;
+const modalSourceTime: string = pendingTime ?? testTime;
+
+// Break date into pieces for the MM / DD / YYYY labels
+const modalDate = new Date(modalSourceDate + 'T00:00:00');
+const modalYear = modalDate.getFullYear();
+const modalMonth = modalDate.getMonth() + 1;
+const modalDay = modalDate.getDate();
+
+// Pretty label for the time in the modal ("9:00 AM")
+const modalTimeLabel = formatTimeLabel(modalSourceTime);
+
+
   return (
     <main className={styles.page}>
       <div className={styles.content}>
@@ -720,47 +1021,30 @@ const openDatePicker = () => {
             <p className={styles.examLabel}>Exam</p>
             <h1 className={styles.examTitle}>Registration</h1>
 
-            <p className={styles.myTestDayButton}>My Test Day:</p>
+            <button
+  type="button"
+  className={styles.myTestDayButton}
+  onClick={openTestModal}
+>
+  My Test Day:
+</button>
+
 
 
             {/* Date + time */}
-             <div className={styles.dateRow}>
-  {/* Clickable date label */}
-  <button
-    type="button"
-    className={styles.bigDateButton}
-    onClick={openDatePicker}
-  >
-    <span className={styles.bigDate}>{formattedDate}</span>
-  </button>
-
-  {/* Hidden native date input */}
-  <input
-    ref={dateInputRef}
-    type="date"
-    className={styles.dateInput}
-    value={testDate}
-    onChange={(e) => setTestDate(e.target.value)}
-  />
+<div
+  className={styles.dateRow}
+  onClick={openTestModal}
+>
+  <span className={styles.bigDate}>{formattedDate}</span>
 
   <div className={styles.timeBlock}>
-    <button
-      type="button"
-      className={styles.timeText}
-      onClick={openTimePicker}
-    >
-      {displayTime}
-    </button>
-    <input
-      ref={timeInputRef}
-      type="time"
-      className={styles.timeInput}
-      value={testTime}
-      onChange={(e) => setTestTime(e.target.value)}
-    />
+    <span className={styles.timeText}>{displayTime}</span>
     <div className={styles.caption}>Test Time</div>
   </div>
 </div>
+
+
 
 
 
@@ -984,14 +1268,133 @@ const openDatePicker = () => {
             </DragScrollRow>
           </div>
         </section>
-        <BottomNav />
-
-
+                <BottomNav />
       </div>
+
+      {/* Test Day Modal */}
+      {isTestModalOpen && (
+        <div
+          className={styles.testModalBackdrop}
+          onClick={closeTestModal}
+        >
+          <div
+            className={styles.testModalSheet}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Header with back */}
+            <div className={styles.testModalHeader}>
+              <button
+                type="button"
+                className={styles.testModalBackButton}
+                onClick={closeTestModal}
+              >
+                <span className={styles.testModalBackIcon}>‹</span>
+                <span className={styles.testModalBackText}>Back</span>
+              </button>
+            </div>
+
+{/* Top greeting card */}
+<div className={styles.testModalHeaderCard}>
+  <div className={styles.testModalHeaderLeft}>
+    <div className={styles.testModalGreetingRow}>
+      <span className={styles.testModalGreetingText}>Have a good day</span>
+      <span className={styles.testModalSunIcon}>☀️</span>
+      {/* later: replace with your sun Image */}
+    </div>
+
+    <div className={styles.testModalName}>{userName}</div>
+    <div className={styles.testModalSubtext}>
+      Don&apos;t miss your exam date
+    </div>
+  </div>
+
+  <div className={styles.testModalAvatarWrapper}>
+    <Image
+      src={userAvatarSrc}
+      alt={`${userName} avatar`}
+      width={66}
+      height={66}
+      className={styles.testModalAvatar}
+    />
+  </div>
+</div>
+
+            {/* Main card */}
+            <div className={styles.testModalMainCard}>
+              <h2 className={styles.testModalTitle}>
+                When&apos;s your <span>Test?</span>
+              </h2>
+              <p className={styles.testModalDescription}>
+                Your test date will be updated on the home page,
+                making it easy for you to see and remember.
+              </p>
+
+{/* MM / DD / YYYY row */}
+<div className={styles.testModalDateRow}>
+  {/* Invisible native date input covering the whole row */}
+  <input
+    type="date"
+    className={styles.testModalHiddenDateInput}
+    value={modalSourceDate}
+    onChange={(e) => setPendingDate(e.target.value)}
+  />
+
+  <div className={styles.testModalDateBox}>
+    <span className={styles.testModalDateLabel}>MM</span>
+    <span className={styles.testModalDateValue}>{modalMonth}</span>
+  </div>
+  <div className={styles.testModalDateBox}>
+    <span className={styles.testModalDateLabel}>DD</span>
+    <span className={styles.testModalDateValue}>{modalDay}</span>
+  </div>
+  <div className={styles.testModalDateBox}>
+    <span className={styles.testModalDateLabel}>YYYY</span>
+    <span className={styles.testModalDateValue}>{modalYear}</span>
+  </div>
+</div>
+
+{/* Time row */}
+<div className={styles.testModalTimeRow}>
+  {/* Invisible native time input covering the whole row */}
+  <input
+    type="time"
+    className={styles.testModalHiddenDateInput}
+    value={modalSourceTime}
+    onChange={(e) => setPendingTime(e.target.value)}
+  />
+
+  <div className={styles.testModalTimeBox}>
+    <span className={styles.testModalDateLabel}>TIME</span>
+    <span className={styles.testModalDateValue}>{modalTimeLabel}</span>
+  </div>
+</div>
+
+
+
+              {/* Buttons */}
+              <div className={styles.testModalButtons}>
+                <button
+                  type="button"
+                  className={styles.testModalPrimaryButton}
+                  onClick={handleConfirmTestDay}
+                >
+                  Set The Day
+                </button>
+                <button
+                  type="button"
+                  className={styles.testModalSecondaryButton}
+                  onClick={closeTestModal}
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </main>
   );
 }
-
 ```
 
 ### app/profile/page.tsx
@@ -1634,6 +2037,259 @@ export default function StatsPage() {
       </div>
     </main>
   );
+}
+
+```
+
+### app/stats/stats.module.css
+```css
+/* app/stats/stats.module.css */
+
+/* Same outer layout as Home page */
+.page {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  background: linear-gradient(180deg, #e6f3ff, #f4f7ff);
+}
+
+.content {
+  width: 100%;
+  max-width: 480px;
+  padding: 16px 16px 96px; /* extra bottom space for bottom nav */
+  box-sizing: border-box;
+  margin: 0 auto;
+}
+
+/* Big gradient panel behind Screen Time / Score / Weekly / Best Time */
+.statsLongPanel {
+  width: 100%;
+  max-width: 480px;              /* Figma width */
+  margin: 24px auto 0;           /* space under the gauge */
+  border-radius: 40px;           /* nice big corners */
+  padding: 24px 18px 32px;       /* space for the inner cards */
+
+  /* Figma: Linear, 0% #2B7CAF → 100% #FFC542, 20% opacity */
+  background: linear-gradient(
+    90deg,
+    rgba(43, 124, 175, 0.2) 0%,
+    rgba(255, 197, 66, 0.2) 100%
+  );
+
+  box-shadow: 0 20px 40px rgba(15, 33, 70, 0.16); /* optional but very Figma */
+}
+
+/* Column of cards inside that panel */
+.statsLongPanelInner {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;                     /* space between the four cards */
+}
+
+
+/* ================================= */
+/* STATS PAGE                        */
+/* ================================= */
+
+/* Top accuracy / gauge card */
+.statsSummaryCard {
+  margin-top: 16px;
+  width: 100%;
+  border-radius: 32px;
+  padding: 24px 24px 28px;
+  background:
+    radial-gradient(circle at top, rgba(255, 255, 255, 0.9), transparent 60%),
+    linear-gradient(180deg, #eaf3ff, #f4f7ff);
+  box-shadow: 0 18px 40px rgba(15, 33, 70, 0.16);
+}
+
+.statsSummaryInner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+}
+
+.statsGaugeWrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+/* Outer ring (gradient arc) */
+.statsGaugeCircleOuter {
+  width: 220px;
+  height: 220px;
+  border-radius: 999px;
+  background: conic-gradient(
+    from 220deg,
+    #70c1ff 0deg,
+    #70c1ff 220deg,
+    #f7d36b 320deg,
+    #e4e4e4 360deg
+  );
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Inner circle */
+.statsGaugeCircleInner {
+  width: 160px;
+  height: 160px;
+  border-radius: 999px;
+  background: #f8fbff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.statsGaugeNumber {
+  font-size: 54px;
+  font-weight: 700;
+  color: #111827;
+  line-height: 1;
+}
+
+.statsGaugeLabel {
+  margin-top: 6px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #4b5563;
+  text-align: center;
+}
+
+/* “Test” pill button */
+.statsTestButton {
+  margin-top: 8px;
+  width: 122px;              /* Figma width */
+  height: 29px;              /* Figma height */
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 999px;      /* full pill */
+  border: 1px solid var(--color-logout-border);
+  /* Same gradient as Premium / Logout */
+  background: var(--color-premium-gradient);
+
+  font-size: 14px;
+  font-weight: 600;
+  color: #000000;            /* matches Figma “Selection color: 000000” */
+  cursor: pointer;
+
+  box-shadow: 0 8px 18px rgba(15, 33, 70, 0.2);
+}
+
+
+/* Stack of cards underneath */
+.statsBlocks {
+  margin-top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Generic stats card container */
+.statsCard {
+  border-radius: 28px;
+  padding: 18px 18px 20px;
+  background: #f5fbff;
+  box-shadow: 0 14px 30px rgba(15, 33, 70, 0.14);
+}
+
+.statsCardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.statsCardTitle {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+  color: #222435;
+}
+
+/* Legend “Global / You” */
+.statsLegend {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: #6b7280;
+}
+
+.statsLegendDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+}
+
+.statsLegendDotBlue {
+  background: #2b7caf;
+}
+
+.statsLegendDotYellow {
+  background: #ffc542;
+}
+
+.statsLegendLabel {
+  white-space: nowrap;
+}
+
+/* Graph area placeholder */
+.statsGraphArea {
+  border-radius: 22px;
+  padding: 12px;
+  background: linear-gradient(
+    180deg,
+    rgba(37, 99, 235, 0.05),
+    rgba(255, 255, 255, 0.9)
+  );
+  min-height: 120px;
+}
+
+.statsGraphPlaceholder {
+  width: 100%;
+  height: 100%;
+  border-radius: 16px;
+  border: 1px dashed rgba(148, 163, 184, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  color: #9ca3af;
+}
+
+/* “Review Your Mistakes” button at bottom */
+.statsReviewWrapper {
+  margin: 24px 0 96px; /* extra bottom room for nav bar */
+  display: flex;
+  justify-content: center;
+}
+
+.statsReviewButton {
+  width: 100%;
+  max-width: 360px;
+  padding: 14px 20px;
+  border-radius: 22px;
+  border: 1px solid var(--color-logout-border);
+  background: var(--color-premium-gradient);
+  box-shadow: 0 18px 40px rgba(15, 33, 70, 0.22);
+  font-size: 16px;
+  font-weight: 600;
+  color: #111827;
+  cursor: pointer;
+}
+
+@media (min-width: 768px) {
+  .statsSummaryCard {
+    margin-top: 24px;
+  }
 }
 
 ```
