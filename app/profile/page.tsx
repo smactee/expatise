@@ -1,34 +1,51 @@
 'use client';
 
-import { useRef, useState, type ChangeEvent } from 'react';
+import React, { useRef, useState, useEffect, type ChangeEvent } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import styles from './profile.module.css';
 import BottomNav from '../../components/BottomNav';
 import { useTheme } from '../../components/ThemeProvider';
+import { useUserProfile } from '../../components/UserProfile';
+import { UserProfileProvider } from '../../components/UserProfile';
 
 export default function ProfilePage() {
-    // ---- avatar upload state + handlers ----
+  const { avatarUrl, setAvatarUrl, name, email } = useUserProfile(); // from context
+
+  // ---- avatar upload state + handlers ----
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const { theme, toggleTheme } = useTheme();
+
+  // when the context avatar changes (e.g. after reload), update preview
+  useEffect(() => {
+    setAvatarPreview(avatarUrl || null);
+  }, [avatarUrl]);
+
 
   const handleAvatarClick = () => {
     fileInputRef.current?.click();
   };
 
-  const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleAvatarChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    const url = URL.createObjectURL(file);
+    const reader = new FileReader();
 
-    setAvatarPreview((prev) => {
-      // clean up previous blob url if there was one
-      if (prev) URL.revokeObjectURL(prev);
-      return url;
-    });
+    reader.onloadend = () => {
+      const base64 = reader.result as string; // "data:image/jpeg;base64,..."
+
+      // 1) update local preview for this page
+      setAvatarPreview(base64);
+
+      // 2) update global profile (context + localStorage)
+      setAvatarUrl(base64);
+    };
+
+    reader.readAsDataURL(file);
   };
+
 
   return (
     <main className={styles.page}>
@@ -47,19 +64,22 @@ export default function ProfilePage() {
     {/* Clickable avatar */}
     <div className={styles.avatarCircle} onClick={handleAvatarClick}>
       {avatarPreview ? (
-        <img
+        <Image
           src={avatarPreview}
           alt="User avatar"
+          width={120}
+          height={120}
           className={styles.avatarImage}
         />
       ) : (
+   // default before user uploads anything
         <Image
-          src="/images/profile/imageupload-icon.png"
-          alt="image upload icon"
-          fill
-          className={styles.avatarPlaceholder}
-          sizes="120px"
-        />
+  src="/images/profile/imageupload-icon.png"
+  alt="image upload icon"
+  fill
+  className={styles.avatarPlaceholder}
+  onClick={handleAvatarClick}
+/>
       )}
     </div>
 
@@ -68,12 +88,16 @@ export default function ProfilePage() {
       ref={fileInputRef}
       type="file"
       accept="image/*"
-      className={styles.avatarInput}
+      style={{ display: 'none' }}
       onChange={handleAvatarChange}
     />
 
     <div className={styles.nameRow}>
-      <span className={styles.username}>@Expatise</span>
+      <input 
+      className={styles.username}
+      value={name}
+      onChange={(e) => setName(e.target.value)}
+      />
         <Image 
           src="/images/profile/yellowcrown-icon.png"
           alt="Crown Icon"
@@ -81,9 +105,9 @@ export default function ProfilePage() {
           height={23}
           className={styles.crownIcon}
         />
-      
     </div>
-    <p className={styles.email}>user@expatise.com</p>
+
+    <p className={styles.email}>{email}</p>
   </div>
 
   {/* Premium plan bar */}

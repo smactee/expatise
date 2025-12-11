@@ -108,6 +108,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from '../components/ThemeProvider';
+import { UserProfileProvider } from "@/components/UserProfile";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -135,7 +136,11 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <ThemeProvider>{children}</ThemeProvider>
+        <ThemeProvider>
+          <UserProfileProvider>
+          {children}
+          </UserProfileProvider>
+          </ThemeProvider>
       </body>
     </html>
   );
@@ -645,13 +650,13 @@ export default function RootLayout({
 }
 
 .testModalGreetingText {
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 500;
   color: #4b5563; /* softer grey, adjust from Figma */
 }
 
 .testModalSunIcon {
-  font-size: 16px;
+  font-size: 18px;
 }
 
 /* Name ("Kang") */
@@ -918,7 +923,6 @@ import { useUserProfile } from '../components/UserProfile';
 
 
 
-
 const CURRENT_YEAR = new Date().getFullYear();
 
 const DEFAULT_TEST_DATE = `${CURRENT_YEAR}-04-20`; // default 04/20 THIS year
@@ -943,12 +947,15 @@ export default function Home() {
 const [isTestModalOpen, setIsTestModalOpen] = useState(false);
 const [pendingDate, setPendingDate] = useState<string | null>(null);
 const [pendingTime, setPendingTime] = useState<string | null>(null);
+// NEW: refs for hidden date/time inputs in the modal
+  const modalDateInputRef = useRef<HTMLInputElement | null>(null);
+  const modalTimeInputRef = useRef<HTMLInputElement | null>(null);
 
 const displayTime = formatTimeLabel(testTime);
 
 // Pull user profile info
 const { name: userName, avatarUrl: userAvatarSrc } = useUserProfile();
-
+const avatarSrc = userAvatarSrc || '/images/profile/profile-placeholder.png';
 
   // ===== modal helpers =====
 const openTestModal = () => {
@@ -972,6 +979,35 @@ const handleConfirmTestDay = () => {
   }
   closeTestModal();
 };
+
+  // NEW: force open native date picker
+  const openModalDatePicker = () => {
+    const input = modalDateInputRef.current;
+    if (!input) return;
+
+    // Some browsers support .showPicker()
+    // @ts-ignore
+    if (input.showPicker) {
+      // @ts-ignore
+      input.showPicker();
+    } else {
+      input.click();
+    }
+  };
+
+  // NEW: force open native time picker
+  const openModalTimePicker = () => {
+    const input = modalTimeInputRef.current;
+    if (!input) return;
+
+    // @ts-ignore
+    if (input.showPicker) {
+      // @ts-ignore
+      input.showPicker();
+    } else {
+      input.click();
+    }
+  };
 
   // Calculate formatted date and days left countdown
   let formattedDate = "-";
@@ -1297,20 +1333,26 @@ const modalTimeLabel = formatTimeLabel(modalSourceTime);
 <div className={styles.testModalHeaderCard}>
   <div className={styles.testModalHeaderLeft}>
     <div className={styles.testModalGreetingRow}>
-      <span className={styles.testModalGreetingText}>Have a good day</span>
-      <span className={styles.testModalSunIcon}>☀️</span>
-      {/* later: replace with your sun Image */}
+      <span className={styles.testModalGreetingText}>Have a great day!</span>
+      <span className={styles.testModalSunIcon}></span>
+      <Image 
+        src="/images/home/icons/sun.png"
+        alt="Sun icon"
+        width={16}
+        height={16}
+        className={styles.testModalSunImage}
+      />
     </div>
 
     <div className={styles.testModalName}>{userName}</div>
     <div className={styles.testModalSubtext}>
-      Don&apos;t miss your exam date
+      Don&apos;t miss your exam date!
     </div>
   </div>
 
   <div className={styles.testModalAvatarWrapper}>
     <Image
-      src={userAvatarSrc}
+      src={avatarSrc}
       alt={`${userName} avatar`}
       width={66}
       height={66}
@@ -1330,10 +1372,12 @@ const modalTimeLabel = formatTimeLabel(modalSourceTime);
               </p>
 
 {/* MM / DD / YYYY row */}
-<div className={styles.testModalDateRow}>
+<div className={styles.testModalDateRow}
+  onClick={openModalDatePicker}>
   {/* Invisible native date input covering the whole row */}
   <input
     type="date"
+    ref={modalDateInputRef}
     className={styles.testModalHiddenDateInput}
     value={modalSourceDate}
     onChange={(e) => setPendingDate(e.target.value)}
@@ -1354,9 +1398,12 @@ const modalTimeLabel = formatTimeLabel(modalSourceTime);
 </div>
 
 {/* Time row */}
-<div className={styles.testModalTimeRow}>
+<div className={styles.testModalTimeRow}
+  onClick={openModalTimePicker} 
+  >
   {/* Invisible native time input covering the whole row */}
   <input
+    ref={modalTimeInputRef}
     type="time"
     className={styles.testModalHiddenDateInput}
     value={modalSourceTime}
@@ -1401,35 +1448,52 @@ const modalTimeLabel = formatTimeLabel(modalSourceTime);
 ```tsx
 'use client';
 
-import { useRef, useState, type ChangeEvent } from 'react';
+import React, { useRef, useState, useEffect, type ChangeEvent } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import styles from './profile.module.css';
 import BottomNav from '../../components/BottomNav';
 import { useTheme } from '../../components/ThemeProvider';
+import { useUserProfile } from '../../components/UserProfile';
+import { UserProfileProvider } from '../../components/UserProfile';
 
 export default function ProfilePage() {
-    // ---- avatar upload state + handlers ----
+  const { avatarUrl, setAvatarUrl, name, email } = useUserProfile(); // from context
+
+  // ---- avatar upload state + handlers ----
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const { theme, toggleTheme } = useTheme();
+
+  // when the context avatar changes (e.g. after reload), update preview
+  useEffect(() => {
+    setAvatarPreview(avatarUrl || null);
+  }, [avatarUrl]);
+
 
   const handleAvatarClick = () => {
     fileInputRef.current?.click();
   };
 
-  const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleAvatarChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    const url = URL.createObjectURL(file);
+    const reader = new FileReader();
 
-    setAvatarPreview((prev) => {
-      // clean up previous blob url if there was one
-      if (prev) URL.revokeObjectURL(prev);
-      return url;
-    });
+    reader.onloadend = () => {
+      const base64 = reader.result as string; // "data:image/jpeg;base64,..."
+
+      // 1) update local preview for this page
+      setAvatarPreview(base64);
+
+      // 2) update global profile (context + localStorage)
+      setAvatarUrl(base64);
+    };
+
+    reader.readAsDataURL(file);
   };
+
 
   return (
     <main className={styles.page}>
@@ -1448,19 +1512,22 @@ export default function ProfilePage() {
     {/* Clickable avatar */}
     <div className={styles.avatarCircle} onClick={handleAvatarClick}>
       {avatarPreview ? (
-        <img
+        <Image
           src={avatarPreview}
           alt="User avatar"
+          width={120}
+          height={120}
           className={styles.avatarImage}
         />
       ) : (
+   // default before user uploads anything
         <Image
-          src="/images/profile/imageupload-icon.png"
-          alt="image upload icon"
-          fill
-          className={styles.avatarPlaceholder}
-          sizes="120px"
-        />
+  src="/images/profile/imageupload-icon.png"
+  alt="image upload icon"
+  fill
+  className={styles.avatarPlaceholder}
+  onClick={handleAvatarClick}
+/>
       )}
     </div>
 
@@ -1469,7 +1536,7 @@ export default function ProfilePage() {
       ref={fileInputRef}
       type="file"
       accept="image/*"
-      className={styles.avatarInput}
+      style={{ display: 'none' }}
       onChange={handleAvatarChange}
     />
 
@@ -2707,6 +2774,11 @@ export function useTheme() {
     }
     return ctx;
 }
+
+```
+
+### components/UserProfile.ts
+```tsx
 
 ```
 

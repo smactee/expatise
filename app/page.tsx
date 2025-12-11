@@ -9,7 +9,6 @@ import { useUserProfile } from '../components/UserProfile';
 
 
 
-
 const CURRENT_YEAR = new Date().getFullYear();
 
 const DEFAULT_TEST_DATE = `${CURRENT_YEAR}-04-20`; // default 04/20 THIS year
@@ -42,7 +41,7 @@ const displayTime = formatTimeLabel(testTime);
 
 // Pull user profile info
 const { name: userName, avatarUrl: userAvatarSrc } = useUserProfile();
-
+const avatarSrc = userAvatarSrc || '/images/profile/profile-placeholder.png';
 
   // ===== modal helpers =====
 const openTestModal = () => {
@@ -420,20 +419,28 @@ const modalTimeLabel = formatTimeLabel(modalSourceTime);
 <div className={styles.testModalHeaderCard}>
   <div className={styles.testModalHeaderLeft}>
     <div className={styles.testModalGreetingRow}>
-      <span className={styles.testModalGreetingText}>Have a good day</span>
-      <span className={styles.testModalSunIcon}>☀️</span>
-      {/* later: replace with your sun Image */}
+      <span className={styles.testModalGreetingText}>Have a great day!</span>
+      <span className={styles.testModalSunIcon}></span>
+      <Image 
+        src="/images/home/icons/sun.png"
+        alt="Sun icon"
+        width={16}
+        height={16}
+        className={styles.testModalSunImage}
+      />
     </div>
 
-    <div className={styles.testModalName}>{userName}</div>
+    <div className={styles.testModalName}>
+      {userName || 'Expat Expertise'}
+      </div>
     <div className={styles.testModalSubtext}>
-      Don&apos;t miss your exam date
+      Don&apos;t miss your exam date!
     </div>
   </div>
 
   <div className={styles.testModalAvatarWrapper}>
     <Image
-      src={userAvatarSrc}
+      src={avatarSrc}
       alt={`${userName} avatar`}
       width={66}
       height={66}
