@@ -40,7 +40,10 @@ const [pendingTime, setPendingTime] = useState<string | null>(null);
 const displayTime = formatTimeLabel(testTime);
 
 // Pull user profile info
-const { name: userName, avatarUrl: userAvatarSrc } = useUserProfile();
+const { 
+  name: userName, 
+  avatarUrl: userAvatarSrc,
+} = useUserProfile();
 const avatarSrc = userAvatarSrc || '/images/profile/profile-placeholder.png';
 
   // ===== modal helpers =====

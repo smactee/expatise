@@ -10,7 +10,7 @@ import { useUserProfile } from '../../components/UserProfile';
 import { UserProfileProvider } from '../../components/UserProfile';
 
 export default function ProfilePage() {
-  const { avatarUrl, setAvatarUrl, name, email } = useUserProfile(); // from context
+  const { avatarUrl, setAvatarUrl, name, setName, email, setEmail } = useUserProfile(); // from context
 
   // ---- avatar upload state + handlers ----
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
@@ -21,6 +21,17 @@ export default function ProfilePage() {
   useEffect(() => {
     setAvatarPreview(avatarUrl || null);
   }, [avatarUrl]);
+
+  const nameSpanRef = useRef<HTMLSpanElement | null>(null);
+
+  useEffect(() => {
+  if (!nameSpanRef.current) return;
+
+  // Only update DOM text if it doesn't already match state
+  if (nameSpanRef.current.innerText !== name) {
+    nameSpanRef.current.innerText = name;
+  }
+}, [name]);
 
 
   const handleAvatarClick = () => {
@@ -45,6 +56,27 @@ export default function ProfilePage() {
 
     reader.readAsDataURL(file);
   };
+
+  // add these handlers just under your avatar handlers:
+const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  setName(e.target.value);
+};
+
+const handleNameInput = (e: React.FormEvent<HTMLSpanElement>) => {
+  const text = (e.currentTarget as HTMLSpanElement).innerText;
+  setName(text);
+};
+
+const handleNameBlur = (e: React.FocusEvent<HTMLSpanElement>) => {
+  const trimmed = e.currentTarget.innerText.trim();
+  if (!trimmed) {
+    setName('@Expatise');
+    e.currentTarget.innerText = '@Expatise';
+  } else {
+    setName(trimmed);
+  }
+};
+
 
 
   return (
@@ -92,22 +124,39 @@ export default function ProfilePage() {
       onChange={handleAvatarChange}
     />
 
-    <div className={styles.nameRow}>
-      <input 
-      className={styles.username}
-      value={name}
-      onChange={(e) => setName(e.target.value)}
-      />
-        <Image 
-          src="/images/profile/yellowcrown-icon.png"
-          alt="Crown Icon"
-          width={23}
-          height={23}
-          className={styles.crownIcon}
-        />
-    </div>
+<div className={styles.nameRow}>
+  <span
+    ref={nameSpanRef }
+    className={styles.usernameEditable}
+    contentEditable
+    suppressContentEditableWarning
+    onInput={handleNameInput}
+    onBlur={handleNameBlur}
+  >
+  </span>
 
-    <p className={styles.email}>{email}</p>
+  <Image
+    src="/images/profile/yellowcrown-icon.png"
+    alt="Crown Icon"
+    width={23}
+    height={23}
+    className={styles.crownIcon}
+  />
+</div>
+
+
+   <input
+  type="email"
+  className={styles.email}
+  value={email}
+  onChange={(e) => setEmail(e.target.value)}
+  onBlur={(e) => {
+    const trimmed = e.target.value.trim();
+    // fallback to default if empty
+    setEmail(trimmed || 'user@expatise.com');
+  }}
+  placeholder="user@expatise.com"
+/>
   </div>
 
   {/* Premium plan bar */}

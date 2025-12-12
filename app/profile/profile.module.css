@@ -84,8 +84,31 @@
 .nameRow {
   display: flex;
   align-items: center;
-  gap: 6px;
+  justify-content: center;
   margin-bottom: 4px;
+  width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.usernameEditable {
+  display: inline-block;    /* width = text width */
+  font-size: 22px;
+  font-weight: 700;
+  color: #1D72D8;
+  cursor: text;
+  white-space: nowrap;      /* keep username on one line */
+}
+
+.usernameEditable:focus {
+  outline: none;
+  border-bottom: 2px solid rgba(29, 114, 216, 0.3);
+}
+
+.nameRowInner {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .username {
@@ -98,14 +121,20 @@
   border: none;
   background: transparent;
   text-align: center;
+  margin: 0;
   font-size: 20px;
   font-weight: 700;
   color: var(--color-username);
   outline: none;
   padding: 0;
-  width: 140px; /* tweak so it doesn't jump around */
+  max-width: 180px; /* tweak so it doesn't jump around */
+  min-width: 80px;
 }
 
+.usernameInput:focus {
+  outline: none;
+  border-bottom: 2px solid rgba(29, 114, 216, 0.4);
+}
 
 .crown {
   font-size: 18px;
@@ -113,12 +142,21 @@
 
 .crownIcon {
   display: inline-block;
+  flex-shrink: 0;
 }
 
 .email {
-  margin: 0;
+  margin-top: 6px;
   font-size: 14px;
-  color: var(--color-email-muted);
+  line-height: 1.4;
+  text-align: center;
+  color: #7b8ba1;
+
+  /* make it look like plain text */
+  border: none;
+  background: transparent;
+  outline: none;
+  width: 100%;
 }
 
 /* Premium bar */
