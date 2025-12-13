@@ -1530,6 +1530,20 @@ const handleNameBlur = (e: React.FocusEvent<HTMLSpanElement>) => {
   }
 };
 
+// ---- email state + handlers ----
+const [emailError, setEmailError] = useState<string | null>(null);
+
+const isValidEmail = (value: string) => {
+  // very simple rule: something@something.something
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+};
+
+
+// true when there's something in the field, no error, and it passes regex
+const isEmailValid =
+  !!email.trim() && !emailError && isValidEmail(email.trim());
+
+
 
 
   return (
@@ -1567,6 +1581,7 @@ const handleNameBlur = (e: React.FocusEvent<HTMLSpanElement>) => {
 />
       )}
     </div>
+  </div>
 
     {/* Hidden file input */}
     <input
@@ -1597,20 +1612,62 @@ const handleNameBlur = (e: React.FocusEvent<HTMLSpanElement>) => {
   />
 </div>
 
+<div className={styles.emailWrapper}>
+  <div className={styles.emailInputRow}>
+  <input
+    type="email"
+    className={`${styles.email} ${
+      emailError ? styles.emailInvalid : ''
+    }`}
+    value={email}
+    size={Math.max(email.length, 20)}   // 👈 keeps width in sync with text
+    onChange={(e) => {
+      const value = e.target.value;
+      setEmail(value);
+      // clear error while they are typing
+      if (emailError) setEmailError(null);
+    }}
+    onBlur={(e) => {
+      const trimmed = e.target.value.trim();
 
-   <input
-  type="email"
-  className={styles.email}
-  value={email}
-  onChange={(e) => setEmail(e.target.value)}
-  onBlur={(e) => {
-    const trimmed = e.target.value.trim();
-    // fallback to default if empty
-    setEmail(trimmed || 'user@expatise.com');
-  }}
-  placeholder="user@expatise.com"
-/>
+      if (!trimmed) {
+        // empty → fallback to default & clear error
+        setEmail('user@expatise.com');
+        setEmailError(null);
+        return;
+      }
+
+      if (!isValidEmail(trimmed)) {
+        setEmailError('Please enter a valid email address.');
+        // keep what they typed
+        setEmail(trimmed);
+        return;
+      }
+
+      // valid email → save it
+      setEmail(trimmed);
+      setEmailError(null);
+    }}
+    placeholder="user@expatise.com"
+  />
+
+    {isEmailValid && (
+      <span className={styles.emailValidIcon}>
+      <Image src="/images/profile/checkmark-icon.png" 
+      alt="Valid Email Icon" 
+      width={20} 
+      height={20} 
+      />
+      </span>
+    )} 
+    
   </div>
+
+  {emailError && (
+    <div className={styles.emailErrorText}>{emailError}</div>
+  )}
+</div>
+
 
   {/* Premium plan bar */}
   <div className={styles.premiumCard}>
@@ -1870,19 +1927,55 @@ const handleNameBlur = (e: React.FocusEvent<HTMLSpanElement>) => {
   flex-shrink: 0;
 }
 
-.email {
+.emailWrapper {
   margin-top: 6px;
+  display: flex;
+  flex-direction: column;   /* stack input + error vertically */
+  align-items: center;      /* center under avatar */
+}
+
+.emailInputRow {
+  display: inline-flex;
+  justify-content: center;
+}
+
+.email {
+  margin: 0;
   font-size: 14px;
   line-height: 1.4;
   text-align: center;
   color: #7b8ba1;
-
-  /* make it look like plain text */
   border: none;
   background: transparent;
   outline: none;
-  width: 100%;
+  border-bottom: 2px solid transparent; /* only visible on focus/error */
+  padding: 0 0 2px;
 }
+
+/* underline when editing (optional, can be your blue instead) */
+.email:focus {
+  border-bottom-color: rgba(29, 114, 216, 0.4);
+}
+
+/* red underline / text color when invalid */
+.emailInvalid {
+  border-bottom-color: rgba(239, 68, 68, 0.9);
+  color: #ef4444;
+}
+
+/* error message under the input */
+.emailErrorText {
+  margin-top: 4px;
+  font-size: 12px;
+  color: #ef4444;
+}
+
+.emailValidIcon {
+  font-size: 14px;
+  color: #3b82f6;
+  margin-right: 5px;
+}
+
 
 /* Premium bar */
 
