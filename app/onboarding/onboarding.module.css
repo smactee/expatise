@@ -1,0 +1,107 @@
+.page {
+  min-height: 100svh;
+  display: flex;
+  justify-content: center;
+  padding: 18px 14px;
+  background: #1f1f1f;
+  flex-direction: column;
+}
+
+.header {
+  padding-top: calc(16px + env(safe-area-inset-top, 0px));
+  padding-left: 16px;
+  padding-right: 16px;
+  padding-bottom: 10px;
+  background: #ffffff;
+  flex: 0 0 auto;
+}
+
+.main {
+  flex: 1 1 auto;
+  display: grid;
+  grid-template-rows: 1fr auto;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.frame {
+  height: 100svh;
+  width: 100%;
+  max-width: 420px;
+  border-radius: 18px;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+  display: flex;
+  flex-direction: column;
+}
+
+.hero {
+  position: relative;
+  width: 100%;
+  height: 420px;
+  background: #111;
+  overflow: hidden;
+  flex: 1 1 auto;
+}
+
+.heroImg {
+  object-fit: cover;
+  object-position: center;
+}
+
+.heroFade {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0) 55%, rgba(255, 255, 255, 1) 96%);
+}
+
+.content {
+  flex: 0 0 auto;
+  padding: 18px 20px min(60px, calc(24px + env(safe-area-inset-bottom, 0px)));
+  text-align: center;
+}
+
+.sheet {
+  padding: 26px 22px 30px;
+  text-align: center;
+}
+
+.title {
+  margin: 0;
+  font-size: 28px;
+  line-height: 1.15;
+  font-weight: 800;
+  color: #111827;
+}
+
+.highlight {
+  background: var(--onboarding-highlight, #b9dcff); /* default light blue fallback */
+  padding: 0 4px;
+  border-radius: 2px;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+  white-space: nowrap; /* keeps Driver's License together */
+}
+
+.subtitle {
+  margin: 14px 0 22px;
+  font-size: 16px;
+  color: #6b7280;
+}
+
+.cta {
+  width: 100%;
+  max-width: 320px;
+  padding: 14px 18px;
+  border-radius: 18px;
+  border: 1px solid var(--color-logout-border);
+  background: var(--color-premium-gradient);
+  box-shadow: 0 18px 40px rgba(15, 33, 70, 0.18);
+  font-size: 20px;
+  font-weight: 700;
+  color: #111827;
+  cursor: pointer;
+}
+

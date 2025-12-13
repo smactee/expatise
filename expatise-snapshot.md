@@ -2319,7 +2319,7 @@ export default function StatsPage() {
   min-height: 100vh;
   display: flex;
   justify-content: center;
-  background: linear-gradient(180deg, #e6f3ff, #f4f7ff);
+  background: var(--color-page-bg);
 }
 
 .content {
@@ -2559,6 +2559,97 @@ export default function StatsPage() {
   .statsSummaryCard {
     margin-top: 24px;
   }
+}
+
+
+
+/* ========================= */
+/* DARK MODE OVERRIDES ONLY  */
+/* ========================= */
+
+:root[data-theme='dark'] .page {
+  background:
+    radial-gradient(circle at top, rgba(15, 23, 42, 0.7), transparent 55%),
+    #050816;
+  color: #f9fafb;
+}
+
+/* Top summary / gauge card */
+:root[data-theme='dark'] .statsSummaryCard {
+  background:
+    linear-gradient(
+      135deg,
+      rgba(43, 124, 175, 0.35) 0%,
+      rgba(255, 197, 66, 0.35) 100%
+    ),
+    #111827;
+  color: #f9fafb;
+}
+
+/* Gauge inner + text */
+:root[data-theme='dark'] .statsGaugeCircleInner {
+  background: #0b1020;
+}
+
+:root[data-theme='dark'] .statsGaugeNumber {
+  color: #f9fafb;
+}
+
+:root[data-theme='dark'] .statsGaugeLabel {
+  color: #9ca3af;
+}
+
+/* Big panel behind the stack of cards */
+:root[data-theme='dark'] .statsLongPanel {
+  background:
+    linear-gradient(
+      90deg,
+      rgba(43, 124, 175, 0.35) 0%,
+      rgba(255, 197, 66, 0.25) 100%
+    ),
+    #0b1020;
+  box-shadow: 0 20px 40px rgba(15, 23, 42, 0.55);
+}
+
+/* Individual stat cards */
+:root[data-theme='dark'] .statsCard {
+  background: #111827;
+  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.55);
+  color: #f9fafb;
+}
+
+:root[data-theme='dark'] .statsCardTitle {
+  color: #f9fafb;
+}
+
+:root[data-theme='dark'] .statsLegend {
+  color: #9ca3af;
+}
+
+/* Graph area placeholder */
+:root[data-theme='dark'] .statsGraphArea {
+  background: linear-gradient(
+    180deg,
+    rgba(43, 124, 175, 0.18),
+    rgba(2, 6, 23, 0.92)
+  );
+}
+
+:root[data-theme='dark'] .statsGraphPlaceholder {
+  border: 1px dashed rgba(148, 163, 184, 0.35);
+  color: #9ca3af;
+}
+
+/* Buttons (avoid relying on light-theme-only CSS vars) */
+:root[data-theme='dark'] .statsTestButton,
+:root[data-theme='dark'] .statsReviewButton {
+  background: linear-gradient(
+    90deg,
+    rgba(43, 124, 175, 0.4) 0%,
+    rgba(255, 197, 66, 0.4) 100%
+  );
+  border-color: #d2c79a;
+  color: #f9fafb;
 }
 
 ```
