@@ -954,7 +954,10 @@ const [pendingTime, setPendingTime] = useState<string | null>(null);
 const displayTime = formatTimeLabel(testTime);
 
 // Pull user profile info
-const { name: userName, avatarUrl: userAvatarSrc } = useUserProfile();
+const { 
+  name: userName, 
+  avatarUrl: userAvatarSrc,
+} = useUserProfile();
 const avatarSrc = userAvatarSrc || '/images/profile/profile-placeholder.png';
 
   // ===== modal helpers =====
@@ -1460,7 +1463,7 @@ import { useUserProfile } from '../../components/UserProfile';
 import { UserProfileProvider } from '../../components/UserProfile';
 
 export default function ProfilePage() {
-  const { avatarUrl, setAvatarUrl, name, setName, email } = useUserProfile(); // from context
+  const { avatarUrl, setAvatarUrl, name, setName, email, setEmail } = useUserProfile(); // from context
 
   // ---- avatar upload state + handlers ----
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
@@ -1471,6 +1474,17 @@ export default function ProfilePage() {
   useEffect(() => {
     setAvatarPreview(avatarUrl || null);
   }, [avatarUrl]);
+
+  const nameSpanRef = useRef<HTMLSpanElement | null>(null);
+
+  useEffect(() => {
+  if (!nameSpanRef.current) return;
+
+  // Only update DOM text if it doesn't already match state
+  if (nameSpanRef.current.innerText !== name) {
+    nameSpanRef.current.innerText = name;
+  }
+}, [name]);
 
 
   const handleAvatarClick = () => {
@@ -1495,6 +1509,27 @@ export default function ProfilePage() {
 
     reader.readAsDataURL(file);
   };
+
+  // add these handlers just under your avatar handlers:
+const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  setName(e.target.value);
+};
+
+const handleNameInput = (e: React.FormEvent<HTMLSpanElement>) => {
+  const text = (e.currentTarget as HTMLSpanElement).innerText;
+  setName(text);
+};
+
+const handleNameBlur = (e: React.FocusEvent<HTMLSpanElement>) => {
+  const trimmed = e.currentTarget.innerText.trim();
+  if (!trimmed) {
+    setName('@Expatise');
+    e.currentTarget.innerText = '@Expatise';
+  } else {
+    setName(trimmed);
+  }
+};
+
 
 
   return (
@@ -1542,24 +1577,39 @@ export default function ProfilePage() {
       onChange={handleAvatarChange}
     />
 
-    <div className={styles.nameRow}>
-      <input 
-      className={styles.username}
-      value={name ?? ''}
-      onChange={(e) => setName(e.target.value)}
-      maxLength={30}
-      placeholder="Expat Expertise"
-      />
-        <Image 
-          src="/images/profile/yellowcrown-icon.png"
-          alt="Crown Icon"
-          width={23}
-          height={23}
-          className={styles.crownIcon}
-        />
-    </div>
+<div className={styles.nameRow}>
+  <span
+    ref={nameSpanRef }
+    className={styles.usernameEditable}
+    contentEditable
+    suppressContentEditableWarning
+    onInput={handleNameInput}
+    onBlur={handleNameBlur}
+  >
+  </span>
 
-    <p className={styles.email}>{email ?? 'user@expatise.com'}</p>
+  <Image
+    src="/images/profile/yellowcrown-icon.png"
+    alt="Crown Icon"
+    width={23}
+    height={23}
+    className={styles.crownIcon}
+  />
+</div>
+
+
+   <input
+  type="email"
+  className={styles.email}
+  value={email}
+  onChange={(e) => setEmail(e.target.value)}
+  onBlur={(e) => {
+    const trimmed = e.target.value.trim();
+    // fallback to default if empty
+    setEmail(trimmed || 'user@expatise.com');
+  }}
+  placeholder="user@expatise.com"
+/>
   </div>
 
   {/* Premium plan bar */}
@@ -1760,8 +1810,30 @@ export default function ProfilePage() {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
   margin-bottom: 4px;
+  width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.usernameEditable {
+  display: inline-block;    /* width = text width */
+  font-size: 22px;
+  font-weight: 700;
+  color: #1D72D8;
+  cursor: text;
+  white-space: nowrap;      /* keep username on one line */
+}
+
+.usernameEditable:focus {
+  outline: none;
+  border-bottom: 2px solid rgba(29, 114, 216, 0.3);
+}
+
+.nameRowInner {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .username {
@@ -1780,10 +1852,14 @@ export default function ProfilePage() {
   color: var(--color-username);
   outline: none;
   padding: 0;
-  width: 140px; /* tweak so it doesn't jump around */
-  min-width: 0;
+  max-width: 180px; /* tweak so it doesn't jump around */
+  min-width: 80px;
 }
 
+.usernameInput:focus {
+  outline: none;
+  border-bottom: 2px solid rgba(29, 114, 216, 0.4);
+}
 
 .crown {
   font-size: 18px;
@@ -1791,12 +1867,21 @@ export default function ProfilePage() {
 
 .crownIcon {
   display: inline-block;
+  flex-shrink: 0;
 }
 
 .email {
-  margin: 0;
+  margin-top: 6px;
   font-size: 14px;
-  color: var(--color-email-muted);
+  line-height: 1.4;
+  text-align: center;
+  color: #7b8ba1;
+
+  /* make it look like plain text */
+  border: none;
+  background: transparent;
+  outline: none;
+  width: 100%;
 }
 
 /* Premium bar */
