@@ -2,26 +2,72 @@
 
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import styles from './login.module.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 
 export default function LoginPage() {
   const router = useRouter();
-  const [username, setUsername] = useState('Huni');
+  const [email, setEmail] = useState('user@expatise.com');
   const [password, setPassword] = useState('');
 
-  const onSubmit = (e: React.FormEvent) => {
+ // ✅ (1) Eye toggle
+  const [showPassword, setShowPassword] = useState(false);
+
+  // ✅ (2) Caps Lock warning
+  const [capsLockOn, setCapsLockOn] = useState(false);
+
+  // ✅ (4) Friendly error state
+  const [error, setError] = useState<string | null>(null);
+
+  // ✅ (6) Loading state
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // ✅ (5) Disable sign-in until password not empty
+  const canSubmit = useMemo(() => {
+    return password.trim().length > 0 && !isSubmitting;
+  }, [password, isSubmitting]);
+
+  const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: wire real auth later
-    router.push('/');
+    if (!canSubmit) return;
+
+    setError(null);
+    setIsSubmitting(true);
+
+    try {
+      // TODO: replace with real auth later.
+      // Temporary demo rule: password must be "password123"
+      const ok = password === "password123";
+
+      // simulate network delay (so you can see loading state)
+      await new Promise((r) => setTimeout(r, 700));
+
+      if (!ok) {
+        setError("Email or password doesn’t match. Try again or reset your password.");
+        return;
+      }
+
+      router.push("/");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
+
+  const handleCaps = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    // Works in modern browsers
+    const caps = e.getModifierState?.("CapsLock") ?? false;
+    setCapsLockOn(caps);
+  };
+
 
   return (
     <main className={styles.page}>
       <div className={styles.frame}>
         <div className={styles.hero}>
           <Image
-            src="/images/auth/onboarding-hero.jpg"
+            src="/images/auth/login-screen.png"
             alt="Welcome background"
             fill
             priority
@@ -36,34 +82,80 @@ export default function LoginPage() {
 
           <form onSubmit={onSubmit} className={styles.form}>
             <label className={styles.row}>
-              <span className={styles.icon}>👤</span>
+              <span className={styles.icon}>
+                <Image 
+                src="/images/auth/username-icon.png"
+                alt="Username"
+                width={22}
+                height={22}
+                />
+              </span>
               <input
                 className={styles.input}
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                placeholder="Username"
-                autoComplete="username"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Email"
+                autoComplete="email"
+                type="email"
               />
             </label>
 
             <label className={styles.row}>
-              <span className={styles.icon}>🔒</span>
+              <span className={styles.icon}>
+                <Image 
+                src="/images/auth/password-icon.png"
+                alt="Password"
+                width={22}
+                height={22}
+                />
+              </span>
               <input
                 className={styles.input}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="Password"
-                type="password"
+                type={showPassword ? "text" : "password"}
                 autoComplete="current-password"
+                onKeyUp={handleCaps}
+                onKeyDown={handleCaps}
+                onFocus={() => setError(null)}
               />
-              <span className={styles.eye}>👁️</span>
+{/* ✅ (1) Eye toggle using Font Awesome */}
+              <button
+                type="button"
+                className={styles.eyeBtn}
+                onClick={() => setShowPassword((v) => !v)}
+                aria-label={showPassword ? "Hide password" : "Show password"}
+              >
+                <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
+              </button>
             </label>
 
-            <button type="submit" className={styles.cta}>
-              <span>Sign In</span>
+            {/* ✅ (2) Caps Lock warning */}
+            {capsLockOn && (
+              <div className={styles.capsWarning}>Caps Lock is on</div>
+            )}
+
+            {/* ✅ (4) Friendly error state */}
+            {error && <div className={styles.errorBox}>{error}</div>}
+
+            {/* ✅ (3) Forgot password link */}
+            <div className={styles.forgotRow}>
+              <button
+                type="button"
+                className={styles.linkInline}
+                onClick={() => router.push("/forgot-password")}
+              >
+                Forgot password?
+              </button>
+            </div>
+
+            <button type="submit" className={styles.cta} disabled={!canSubmit}>
+              {/* ✅ (6) Loading state */}
+              <span>{isSubmitting ? "Signing in..." : "Sign In"}</span>
               <span className={styles.arrow}>→</span>
             </button>
           </form>
+
 
           <div className={styles.links}>
             <button type="button" className={styles.linkBtn}>Create an account</button>

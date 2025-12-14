@@ -1,3 +1,23 @@
+### app/api/onboarding/route.ts
+```tsx
+import { NextResponse } from 'next/server';
+import { ONBOARDING_COOKIE } from '@/lib/middleware/paths';
+
+export async function POST() {
+  const res = NextResponse.json({ ok: true });
+
+  res.cookies.set({
+    name: ONBOARDING_COOKIE,
+    value: '1',
+    path: '/',
+    maxAge: 60 * 60 * 24 * 365, // 1 year
+  });
+
+  return res;
+}
+
+```
+
 ### app/globals.css
 ```css
 @import "tailwindcss";
@@ -109,6 +129,9 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from '../components/ThemeProvider';
 import { UserProfileProvider } from "@/components/UserProfile";
+import "@fortawesome/fontawesome-svg-core/styles.css";
+import { config } from "@fortawesome/fontawesome-svg-core";
+config.autoAddCss = false; // Prevent fontawesome from adding its CSS since we did it manually above  
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -143,6 +166,550 @@ export default function RootLayout({
           </ThemeProvider>
       </body>
     </html>
+  );
+}
+
+```
+
+### app/login/login.module.css
+```css
+.page {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  padding: 18px 14px;
+  background: #1f1f1f;
+}
+
+.frame {
+  min-height: 100svh;
+  width: 100%;
+  max-width: 420px;
+  border-radius: 18px;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+  display: flex;
+  flex-direction: column;
+}
+
+.hero {
+  position: relative;
+  width: 100%;
+  height: clamp(420px, 80svh, 560px);
+  background: #111;
+}
+
+.heroImg {
+  object-fit: cover;
+  object-position: center;
+}
+
+.heroOverlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.35) 70%, #ffffff 99%);
+}
+
+.sheet {
+  padding: 22px 22px 30px;
+  margin-top: -100px;
+  position: relative;
+}
+
+.title {
+  margin: 0;
+  font-size: 34px;
+  font-weight: 800;
+  color: #000;
+}
+
+.subtitle {
+  margin: 6px 0 18px;
+  font-size: 18px;
+  color: #6b7280;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.18);
+}
+
+.icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px; /* keeps alignment consistent with password row */
+  height: 34px;
+}
+
+.iconImg {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+  opacity: 0.9; /* optional */
+}
+
+
+.input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 16px;
+  background: transparent;
+}
+
+.eye {
+  opacity: 0.6;
+}
+
+.cta {
+  margin-top: 6px;
+  width: 100%;
+  padding: 14px 18px;
+  border-radius: 18px;
+  border: 1px solid var(--color-logout-border);
+  background: var(--color-premium-gradient);
+  box-shadow: 0 18px 40px rgba(15, 33, 70, 0.18);
+  font-size: 18px;
+  font-weight: 700;
+  color: #111827;
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.arrow {
+  font-size: 22px;
+}
+
+.links {
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+}
+
+.linkBtn {
+  border: none;
+  background: transparent;
+  color: #6b7280;
+  font-size: 14px;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.eyeBtn {
+  background: transparent;
+  border: 0;
+  padding: 0;
+  margin-left: 10px;
+  cursor: pointer;
+  color: rgba(17, 24, 39, 0.55);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+}
+
+.eyeBtn:active {
+  transform: translateY(1px);
+}
+
+.capsWarning {
+  margin: 10px 0 0;
+  font-size: 13px;
+  color: #8b5cf6;
+  text-align: left;
+}
+
+.errorBox {
+  margin: 10px 0 0;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.28);
+  color: #b91c1c;
+  font-size: 13px;
+  line-height: 1.4;
+  text-align: left;
+}
+
+.forgotRow {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 10px;
+}
+
+.linkInline {
+  background: transparent;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  text-decoration: underline;
+  font-size: 14px;
+  color: rgba(107, 114, 128, 1);
+}
+
+.cta:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+}
+
+
+/* No Dark mode*/
+
+```
+
+### app/login/page.tsx
+```tsx
+'use client';
+
+import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+import { useState, useMemo } from 'react';
+import styles from './login.module.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+
+export default function LoginPage() {
+  const router = useRouter();
+  const [email, setEmail] = useState('user@expatise.com');
+  const [password, setPassword] = useState('');
+
+ // ✅ (1) Eye toggle
+  const [showPassword, setShowPassword] = useState(false);
+
+  // ✅ (2) Caps Lock warning
+  const [capsLockOn, setCapsLockOn] = useState(false);
+
+  // ✅ (4) Friendly error state
+  const [error, setError] = useState<string | null>(null);
+
+  // ✅ (6) Loading state
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // ✅ (5) Disable sign-in until password not empty
+  const canSubmit = useMemo(() => {
+    return password.trim().length > 0 && !isSubmitting;
+  }, [password, isSubmitting]);
+
+  const onSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!canSubmit) return;
+
+    setError(null);
+    setIsSubmitting(true);
+
+    try {
+      // TODO: replace with real auth later.
+      // Temporary demo rule: password must be "password123"
+      const ok = password === "password123";
+
+      // simulate network delay (so you can see loading state)
+      await new Promise((r) => setTimeout(r, 700));
+
+      if (!ok) {
+        setError("Email or password doesn’t match. Try again or reset your password.");
+        return;
+      }
+
+      router.push("/");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleCaps = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    // Works in modern browsers
+    const caps = e.getModifierState?.("CapsLock") ?? false;
+    setCapsLockOn(caps);
+  };
+
+
+  return (
+    <main className={styles.page}>
+      <div className={styles.frame}>
+        <div className={styles.hero}>
+          <Image
+            src="/images/auth/login-screen.png"
+            alt="Welcome background"
+            fill
+            priority
+            className={styles.heroImg}
+          />
+          <div className={styles.heroOverlay} />
+        </div>
+
+        <section className={styles.sheet}>
+          <h1 className={styles.title}>Welcome!</h1>
+          <p className={styles.subtitle}>Sign in to continue</p>
+
+          <form onSubmit={onSubmit} className={styles.form}>
+            <label className={styles.row}>
+              <span className={styles.icon}>
+                <Image 
+                src="/images/auth/username-icon.png"
+                alt="Username"
+                width={22}
+                height={22}
+                />
+              </span>
+              <input
+                className={styles.input}
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Email"
+                autoComplete="email"
+                type="email"
+              />
+            </label>
+
+            <label className={styles.row}>
+              <span className={styles.icon}>
+                <Image 
+                src="/images/auth/password-icon.png"
+                alt="Password"
+                width={22}
+                height={22}
+                />
+              </span>
+              <input
+                className={styles.input}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                type={showPassword ? "text" : "password"}
+                autoComplete="current-password"
+                onKeyUp={handleCaps}
+                onKeyDown={handleCaps}
+                onFocus={() => setError(null)}
+              />
+{/* ✅ (1) Eye toggle using Font Awesome */}
+              <button
+                type="button"
+                className={styles.eyeBtn}
+                onClick={() => setShowPassword((v) => !v)}
+                aria-label={showPassword ? "Hide password" : "Show password"}
+              >
+                <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
+              </button>
+            </label>
+
+            {/* ✅ (2) Caps Lock warning */}
+            {capsLockOn && (
+              <div className={styles.capsWarning}>Caps Lock is on</div>
+            )}
+
+            {/* ✅ (4) Friendly error state */}
+            {error && <div className={styles.errorBox}>{error}</div>}
+
+            {/* ✅ (3) Forgot password link */}
+            <div className={styles.forgotRow}>
+              <button
+                type="button"
+                className={styles.linkInline}
+                onClick={() => router.push("/forgot-password")}
+              >
+                Forgot password?
+              </button>
+            </div>
+
+            <button type="submit" className={styles.cta} disabled={!canSubmit}>
+              {/* ✅ (6) Loading state */}
+              <span>{isSubmitting ? "Signing in..." : "Sign In"}</span>
+              <span className={styles.arrow}>→</span>
+            </button>
+          </form>
+
+
+          <div className={styles.links}>
+            <button type="button" className={styles.linkBtn}>Create an account</button>
+            <button type="button" className={styles.linkBtn} onClick={() => router.push('/')}>
+              Skip as guest
+            </button>
+          </div>
+        </section>
+      </div>
+    </main>
+  );
+}
+
+```
+
+### app/onboarding/onboarding.module.css
+```css
+.page {
+  min-height: 100svh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 18px 14px;
+  background: #1f1f1f;
+  flex-direction: column;
+}
+
+.header {
+  padding-top: calc(16px + env(safe-area-inset-top, 0px));
+  padding-left: 16px;
+  padding-right: 16px;
+  padding-bottom: 10px;
+  background: #ffffff;
+  flex: 0 0 auto;
+}
+
+.main {
+  flex: 1 1 auto;
+  display: grid;
+  grid-template-rows: 1fr auto;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.frame {
+  height: 100svh;
+  width: 100%;
+  max-width: 420px;
+  border-radius: 18px;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+  display: flex;
+  flex-direction: column;
+}
+
+.hero {
+  position: relative;
+  width: 100%;
+  height: 420px;
+  background: #111;
+  overflow: hidden;
+  flex: 1 1 auto;
+}
+
+.heroImg {
+  object-fit: cover;
+  object-position: center;
+}
+
+.heroFade {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0) 55%, rgba(255, 255, 255, 1) 96%);
+}
+
+.content {
+  flex: 0 0 auto;
+  padding: 18px 20px min(60px, calc(24px + env(safe-area-inset-bottom, 0px)));
+  text-align: center;
+}
+
+.sheet {
+  padding: 26px 22px 30px;
+  text-align: center;
+}
+
+.title {
+  margin: 0;
+  font-size: 28px;
+  line-height: 1.15;
+  font-weight: 800;
+  color: #111827;
+}
+
+.highlight {
+  background: var(--onboarding-highlight, #b9dcff); /* default light blue fallback */
+  padding: 0 4px;
+  border-radius: 2px;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+  white-space: nowrap; /* keeps Driver's License together */
+}
+
+.subtitle {
+  margin: 14px 0 22px;
+  font-size: 16px;
+  color: #6b7280;
+}
+
+.cta {
+  width: 100%;
+  max-width: 320px;
+  padding: 14px 18px;
+  border-radius: 18px;
+  border: 1px solid var(--color-logout-border);
+  background: var(--color-premium-gradient);
+  box-shadow: 0 18px 40px rgba(15, 33, 70, 0.18);
+  font-size: 20px;
+  font-weight: 700;
+  color: #111827;
+  cursor: pointer;
+}
+
+
+```
+
+### app/onboarding/page.tsx
+```tsx
+'use client';
+
+import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+import styles from './onboarding.module.css';
+
+export default function OnboardingPage() {
+  const router = useRouter();
+
+  const handleGetStarted = async () => {
+    const res = await fetch('/api/onboarding', { method: 'POST' });
+    if (!res.ok) return;
+    router.replace('/login'); // replace = “don’t show onboarding on back”
+  };
+
+  return (
+    <main className={styles.page}>
+      <div className={styles.frame}>
+        <div className={styles.hero}>
+          <Image
+            src="/images/auth/onboarding-girl.png"
+            alt="Onboarding hero"
+            fill
+            priority
+            className={styles.heroImg}
+          />
+          <div className={styles.heroFade} />
+        </div>
+
+        <section className={styles.sheet}>
+          <h1 className={styles.title}>
+  Study For The <span className={styles.highlight}>Driver&apos;s&nbsp;License</span>
+  <br />
+  Test Wherever You Are
+</h1>
+
+          <p className={styles.subtitle}>Get easy access to prepare for your license.</p>
+
+          <button className={styles.cta} onClick={handleGetStarted}>
+            Get Started
+          </button>
+        </section>
+      </div>
+    </main>
   );
 }
 
