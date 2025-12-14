@@ -2,32 +2,36 @@
 
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import styles from './login.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+import CreateAccountModal from './CreateAccountModal';
 
 export default function LoginPage() {
   const router = useRouter();
   const [email, setEmail] = useState('user@expatise.com');
   const [password, setPassword] = useState('');
 
+  // ✅ modal open/close state (this was missing)
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
+  
  // ✅ (1) Eye toggle
   const [showPassword, setShowPassword] = useState(false);
-
   // ✅ (2) Caps Lock warning
   const [capsLockOn, setCapsLockOn] = useState(false);
-
   // ✅ (4) Friendly error state
   const [error, setError] = useState<string | null>(null);
-
   // ✅ (6) Loading state
   const [isSubmitting, setIsSubmitting] = useState(false);
-
   // ✅ (5) Disable sign-in until password not empty
   const canSubmit = useMemo(() => {
     return password.trim().length > 0 && !isSubmitting;
   }, [password, isSubmitting]);
+
+  useEffect (() => {
+  document.documentElement.dataset.theme = 'light';
+}, []);
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -158,11 +162,25 @@ export default function LoginPage() {
 
 
           <div className={styles.links}>
-            <button type="button" className={styles.linkBtn}>Create an account</button>
+            <button 
+            type="button" 
+            className={styles.linkBtn}
+            onClick={() => setIsCreateOpen(true)}
+            >
+              Create an account
+              </button>
+
             <button type="button" className={styles.linkBtn} onClick={() => router.push('/')}>
               Skip as guest
             </button>
           </div>
+          <CreateAccountModal
+            open={isCreateOpen}
+            onClose={() => setIsCreateOpen(false)}
+            onCreated={(newEmail) => {
+              setEmail(newEmail);
+            }}
+            />  
         </section>
       </div>
     </main>
