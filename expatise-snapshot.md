@@ -18,6 +18,21 @@ export async function POST() {
 
 ```
 
+### app/forgot-password/page.tsx
+```tsx
+export default function ForgotPasswordPage() {
+  return (
+    <main style={{ padding: 24 }}>
+      <h1 style={{ margin: 0 }}>Reset password</h1>
+      <p style={{ marginTop: 12 }}>
+        This is a placeholder screen. Later we’ll add an email reset flow here.
+      </p>
+    </main>
+  );
+}
+
+```
+
 ### app/globals.css
 ```css
 @import "tailwindcss";
@@ -171,6 +186,337 @@ export default function RootLayout({
 
 ```
 
+### app/login/CreateAccountModal.tsx
+```tsx
+'use client';
+
+import { useMemo, useState } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faGoogle, faApple, faWeixin } from '@fortawesome/free-brands-svg-icons';
+import { faChevronLeft, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+import styles from './create-account-modal.module.css';
+
+type Props = {
+  open: boolean;
+  onClose: () => void;
+  onCreated?: (email: string) => void;
+};
+
+function isValidEmail(email: string) {
+  return /^\S+@\S+\.\S+$/.test(email.trim());
+}
+
+export default function CreateAccountModal({ open, onClose, onCreated }: Props) {
+  const [email, setEmail] = useState('user@expatise.com');
+  const [pw, setPw] = useState('');
+  const [pw2, setPw2] = useState('');
+  const [showPw, setShowPw] = useState(false);
+  const [showPw2, setShowPw2] = useState(false);
+
+  const [error, setError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const canSubmit = useMemo(() => {
+    if (isSubmitting) return false;
+    if (!isValidEmail(email)) return false;
+    if (pw.trim().length < 6) return false; // keep simple for now
+    if (pw !== pw2) return false;
+    return true;
+  }, [email, pw, pw2, isSubmitting]);
+
+  if (!open) return null;
+
+  const submit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(null);
+
+    if (!isValidEmail(email)) return setError('Please enter a valid email.');
+    if (pw.trim().length < 6) return setError('Password must be at least 6 characters.');
+    if (pw !== pw2) return setError('Passwords do not match.');
+
+    setIsSubmitting(true);
+    try {
+      // TODO: real register API later
+      await new Promise((r) => setTimeout(r, 700));
+      onCreated?.(email.trim());
+      onClose();
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  return (
+    <div className={styles.overlay} role="dialog" aria-modal="true">
+      <div className={styles.modal}>
+        <button type="button" className={styles.backBtn} onClick={onClose} aria-label="Back">
+          <FontAwesomeIcon icon={faChevronLeft} />
+        </button>
+
+        <h2 className={styles.title}>Create Account</h2>
+        <p className={styles.subtitle}>Sign up to get started</p>
+
+        <form onSubmit={submit} className={styles.form}>
+          <label className={styles.row}>
+            <span className={styles.label}>Email</span>
+            <input
+              className={styles.input}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="user@expatise.com"
+              type="email"
+              autoComplete="email"
+              onFocus={() => setError(null)}
+            />
+          </label>
+
+          <label className={styles.row}>
+            <span className={styles.label}>Password</span>
+            <div className={styles.pwWrap}>
+              <input
+                className={styles.input}
+                value={pw}
+                onChange={(e) => setPw(e.target.value)}
+                placeholder="Password"
+                type={showPw ? 'text' : 'password'}
+                autoComplete="new-password"
+                onFocus={() => setError(null)}
+              />
+              <button
+                type="button"
+                className={styles.eyeBtn}
+                onClick={() => setShowPw((v) => !v)}
+                aria-label={showPw ? 'Hide password' : 'Show password'}
+              >
+                <FontAwesomeIcon icon={showPw ? faEyeSlash : faEye} />
+              </button>
+            </div>
+          </label>
+
+          <label className={styles.row}>
+            <span className={styles.label}>Confirm</span>
+            <div className={styles.pwWrap}>
+              <input
+                className={styles.input}
+                value={pw2}
+                onChange={(e) => setPw2(e.target.value)}
+                placeholder="Confirm password"
+                type={showPw2 ? 'text' : 'password'}
+                autoComplete="new-password"
+                onFocus={() => setError(null)}
+              />
+              <button
+                type="button"
+                className={styles.eyeBtn}
+                onClick={() => setShowPw2((v) => !v)}
+                aria-label={showPw2 ? 'Hide password' : 'Show password'}
+              >
+                <FontAwesomeIcon icon={showPw2 ? faEyeSlash : faEye} />
+              </button>
+            </div>
+          </label>
+
+          {error && <div className={styles.errorBox}>{error}</div>}
+
+          <button type="submit" className={styles.cta} disabled={!canSubmit}>
+            {isSubmitting ? 'Creating...' : 'Create new account'}
+          </button>
+        </form>
+
+        <div className={styles.dividerRow}>
+          <span className={styles.dividerLine} />
+          <span className={styles.dividerText}>or continue with</span>
+          <span className={styles.dividerLine} />
+        </div>
+
+        <div className={styles.snsRow}>
+          <button type="button" className={styles.snsBtn} aria-label="Sign up with Google">
+            <FontAwesomeIcon icon={faGoogle} />
+          </button>
+          <button type="button" className={styles.snsBtn} aria-label="Sign up with Apple">
+            <FontAwesomeIcon icon={faApple} />
+          </button>
+          <button type="button" className={styles.snsBtn} aria-label="Sign up with WeChat">
+            <FontAwesomeIcon icon={faWeixin} />
+          </button>
+        </div>
+      </div>
+
+      {/* click outside to close */}
+      <button type="button" className={styles.backdropClose} onClick={onClose} aria-label="Close" />
+    </div>
+  );
+}
+
+```
+
+### app/login/create-account-modal.module.css
+```css
+.overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 20px;
+}
+
+.backdropClose {
+  position: absolute;
+  inset: 0;
+  background: rgba(17, 24, 39, 0.28);
+  backdrop-filter: blur(6px);
+  border: none;
+}
+
+.modal {
+  position: relative;
+  z-index: 60;
+  width: 100%;
+  max-width: 380px;
+   overflow: auto;                /* scroll inside if needed */
+  -webkit-overflow-scrolling: touch;
+  border-radius: 26px;
+  background: #ffffff;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.28);
+  padding: 20px 18px 18px;
+}
+
+.backBtn {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  border: none;
+  background: transparent;
+  font-size: 18px;
+  cursor: pointer;
+  opacity: 0.75;
+}
+
+.title {
+  margin: 6px 0 0;
+  font-size: 26px;
+  font-weight: 800;
+  color: #111827;
+  text-align: center;
+}
+
+.subtitle {
+  margin: 6px 0 14px;
+  text-align: center;
+  color: #6b7280;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.row {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.label {
+  font-size: 14px;
+  color: #374151;
+  padding-left: 6px;
+}
+
+.pwWrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input {
+  width: 100%;
+  border: 1px solid rgba(0, 0, 0, 0.14);
+  outline: none;
+  border-radius: 999px;
+  padding: 14px 44px 14px 16px;
+  font-size: 16px;
+  background: #fff;
+}
+
+.eyeBtn {
+  position: absolute;
+  right: 14px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  opacity: 0.6;
+}
+
+.errorBox {
+  margin-top: 2px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.22);
+  color: #b91c1c;
+  font-size: 13px;
+}
+
+.cta {
+  margin-top: 6px;
+  width: 100%;
+  padding: 14px 18px;
+  border-radius: 18px;
+  border: 1px solid var(--color-logout-border);
+  background: var(--color-premium-gradient);
+  box-shadow: 0 18px 40px rgba(15, 33, 70, 0.18);
+  font-size: 16px;
+  font-weight: 700;
+  color: #111827;
+  cursor: pointer;
+}
+
+.cta:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.dividerRow {
+  margin: 14px 0 10px;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 10px;
+}
+
+.dividerLine {
+  height: 1px;
+  background: rgba(0, 0, 0, 0.12);
+}
+
+.dividerText {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.snsRow {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  padding-bottom: 20px;
+}
+
+.snsBtn {
+  width: 46px;
+  height: 46px;
+  border-radius: 999px;
+  border: 1px solid rgba(0, 0, 0, 0.14);
+  background: #ffffff;
+  box-shadow: 0 12px 30px rgba(15, 33, 70, 0.12);
+  cursor: pointer;
+  font-size: 18px;
+}
+
+```
+
 ### app/login/login.module.css
 ```css
 .page {
@@ -191,6 +537,7 @@ export default function RootLayout({
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
   display: flex;
   flex-direction: column;
+  position: relative;
 }
 
 .hero {
@@ -382,32 +729,36 @@ export default function RootLayout({
 
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import styles from './login.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+import CreateAccountModal from './CreateAccountModal';
 
 export default function LoginPage() {
   const router = useRouter();
   const [email, setEmail] = useState('user@expatise.com');
   const [password, setPassword] = useState('');
 
+  // ✅ modal open/close state (this was missing)
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
+  
  // ✅ (1) Eye toggle
   const [showPassword, setShowPassword] = useState(false);
-
   // ✅ (2) Caps Lock warning
   const [capsLockOn, setCapsLockOn] = useState(false);
-
   // ✅ (4) Friendly error state
   const [error, setError] = useState<string | null>(null);
-
   // ✅ (6) Loading state
   const [isSubmitting, setIsSubmitting] = useState(false);
-
   // ✅ (5) Disable sign-in until password not empty
   const canSubmit = useMemo(() => {
     return password.trim().length > 0 && !isSubmitting;
   }, [password, isSubmitting]);
+
+  useEffect (() => {
+  document.documentElement.dataset.theme = 'light';
+}, []);
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -538,11 +889,25 @@ export default function LoginPage() {
 
 
           <div className={styles.links}>
-            <button type="button" className={styles.linkBtn}>Create an account</button>
+            <button 
+            type="button" 
+            className={styles.linkBtn}
+            onClick={() => setIsCreateOpen(true)}
+            >
+              Create an account
+              </button>
+
             <button type="button" className={styles.linkBtn} onClick={() => router.push('/')}>
               Skip as guest
             </button>
           </div>
+          <CreateAccountModal
+            open={isCreateOpen}
+            onClose={() => setIsCreateOpen(false)}
+            onCreated={(newEmail) => {
+              setEmail(newEmail);
+            }}
+            />  
         </section>
       </div>
     </main>
