@@ -5,7 +5,7 @@ import { NextResponse } from 'next/server';
 import { isBypassPath } from './lib/middleware/paths';
 import { applyOnboardingGate } from './lib/middleware/onboarding';
 
-export function middleware(req: NextRequest) {
+export function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
   if (isBypassPath(pathname)) return NextResponse.next();

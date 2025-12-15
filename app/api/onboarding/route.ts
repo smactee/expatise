@@ -8,7 +8,7 @@ export async function POST() {
     name: ONBOARDING_COOKIE,
     value: '1',
     path: '/',
-    maxAge: 60 * 60 * 24 * 365, // 1 year
+    maxAge: 60 * 60 * 24 * 1000, // 1 year
   });
 
   return res;

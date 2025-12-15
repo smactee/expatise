@@ -7,6 +7,11 @@ import styles from './login.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import CreateAccountModal from './CreateAccountModal';
+import { faGoogle, faApple, faWeixin } from '@fortawesome/free-brands-svg-icons';
+import {signIn, getProviders} from "next-auth/react";
+import { get } from 'http';
+import { sign } from 'crypto';
+
 
 export default function LoginPage() {
   const router = useRouter();
@@ -28,6 +33,12 @@ export default function LoginPage() {
   const canSubmit = useMemo(() => {
     return password.trim().length > 0 && !isSubmitting;
   }, [password, isSubmitting]);
+
+  const [providers, setProviders] = useState<Record<string, any> | null>(null);
+
+useEffect(() => {
+  getProviders().then(setProviders);
+}, []);
 
   useEffect (() => {
   document.documentElement.dataset.theme = 'light';
@@ -181,6 +192,31 @@ export default function LoginPage() {
               setEmail(newEmail);
             }}
             />  
+            <div className={styles.snsBlock}>
+  <div className={styles.snsDivider}>
+    <span>or continue with</span>
+  </div>
+
+  <div className={styles.snsRowSmall}>
+    <button type="button" 
+    className={styles.snsBtnSmall} 
+    aria-label="Continue with Google"
+    onClick={() => signIn("google", { callbackUrl: "/" })}>
+    <FontAwesomeIcon icon={faGoogle} />
+    </button>
+
+    <button type="button" className={styles.snsBtnSmall} aria-label="Continue with Apple"
+      onClick={() => alert('TODO: Apple OAuth')}>
+      <FontAwesomeIcon icon={faApple} />
+    </button>
+
+    <button type="button" className={styles.snsBtnSmall} aria-label="Continue with WeChat"
+      onClick={() => alert('TODO: WeChat OAuth')}>
+      <FontAwesomeIcon icon={faWeixin} />
+    </button>
+  </div>
+</div>
+
         </section>
       </div>
     </main>

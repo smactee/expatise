@@ -197,5 +197,88 @@
   transform: none;
 }
 
+.snsBlock { margin-top: 14px; }
+
+.snsDivider{
+  display:flex; align-items:center; gap:12px;
+  color: rgba(107,114,128,1);
+  font-size: 13px;
+}
+.snsDivider::before,
+.snsDivider::after{
+  content:"";
+  flex:1;
+  height:1px;
+  background: rgba(0,0,0,0.12);
+}
+
+.snsRowSmall{
+  margin-top: 12px;
+  display:flex;
+  justify-content:center;
+  gap: 14px;
+}
+
+.snsBtnSmall{
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  border: 1px solid rgba(0,0,0,0.14);
+  background: #fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor: pointer;
+}
+.snsBtnSmall svg{
+  width: 14px;   /* <- this makes it “half-ish” */
+  height: 14px;
+  opacity: 0.95;
+}
+
+.dividerRow {
+  margin: 14px 0 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.dividerLine {
+  flex: 1;
+  height: 1px;
+  background: rgba(17, 24, 39, 0.12);
+}
+
+.dividerText {
+  font-size: 12px;
+  color: rgba(107, 114, 128, 1);
+  white-space: nowrap;
+}
+
+.snsRowSmall {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.snsBtnSmall {
+  width: 42px;
+  height: 42px;
+  border-radius: 999px;
+  border: 1px solid rgba(17, 24, 39, 0.12);
+  background: rgba(255, 255, 255, 0.7);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+
+  /* ✅ “half-ish” size vs modal feel */
+  font-size: 14px;
+}
+
+.snsBtnSmall:active {
+  transform: translateY(1px);
+}
 
 /* No Dark mode*/
