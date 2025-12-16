@@ -1,3 +1,11 @@
+### app/api/auth/[...nextauth]/route.ts
+```tsx
+import { handlers } from "../../../auth";
+
+export const { GET, POST } = handlers;
+
+```
+
 ### app/api/onboarding/route.ts
 ```tsx
 import { NextResponse } from 'next/server';
@@ -10,11 +18,61 @@ export async function POST() {
     name: ONBOARDING_COOKIE,
     value: '1',
     path: '/',
-    maxAge: 60 * 60 * 24 * 365, // 1 year
+    maxAge: 60 * 60 * 24 * 1000, // 1 year
   });
 
   return res;
 }
+
+```
+
+### app/auth.ts
+```tsx
+import NextAuth from "next-auth";
+import Google from "next-auth/providers/google";
+import Apple from "next-auth/providers/apple";
+import WeChat from "next-auth/providers/wechat";
+
+const providers = [] as any[];
+
+// ✅ add providers only if env vars exist (prevents dev crashes)
+if (process.env.AUTH_GOOGLE_ID && process.env.AUTH_GOOGLE_SECRET) {
+  providers.push(
+    Google({
+      clientId: process.env.AUTH_GOOGLE_ID,
+      clientSecret: process.env.AUTH_GOOGLE_SECRET,
+    })
+  );
+}
+
+if (process.env.AUTH_APPLE_ID && process.env.AUTH_APPLE_SECRET) {
+  providers.push(
+    Apple({
+      clientId: process.env.AUTH_APPLE_ID,
+      clientSecret: process.env.AUTH_APPLE_SECRET,
+    })
+  );
+}
+
+if (process.env.AUTH_WECHAT_APP_ID && process.env.AUTH_WECHAT_APP_SECRET) {
+  providers.push(
+    WeChat({
+      clientId: process.env.AUTH_WECHAT_APP_ID!,
+      clientSecret: process.env.AUTH_WECHAT_APP_SECRET!,
+      platformType: "WebsiteApp",
+    })
+  );
+}
+
+export const { handlers, auth, signIn, signOut } = NextAuth({
+  providers,
+  trustHost: true,
+  session: {
+    strategy: "jwt",
+    // “indefinite” isn’t literal, but you can set a long maxAge
+    maxAge: 60 * 60 * 24 * 365, // 1 year (change to longer if you want)
+  },
+});
 
 ```
 
@@ -718,6 +776,89 @@ export default function CreateAccountModal({ open, onClose, onCreated }: Props) 
   transform: none;
 }
 
+.snsBlock { margin-top: 14px; }
+
+.snsDivider{
+  display:flex; align-items:center; gap:12px;
+  color: rgba(107,114,128,1);
+  font-size: 13px;
+}
+.snsDivider::before,
+.snsDivider::after{
+  content:"";
+  flex:1;
+  height:1px;
+  background: rgba(0,0,0,0.12);
+}
+
+.snsRowSmall{
+  margin-top: 12px;
+  display:flex;
+  justify-content:center;
+  gap: 14px;
+}
+
+.snsBtnSmall{
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  border: 1px solid rgba(0,0,0,0.14);
+  background: #fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor: pointer;
+}
+.snsBtnSmall svg{
+  width: 14px;   /* <- this makes it “half-ish” */
+  height: 14px;
+  opacity: 0.95;
+}
+
+.dividerRow {
+  margin: 14px 0 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.dividerLine {
+  flex: 1;
+  height: 1px;
+  background: rgba(17, 24, 39, 0.12);
+}
+
+.dividerText {
+  font-size: 12px;
+  color: rgba(107, 114, 128, 1);
+  white-space: nowrap;
+}
+
+.snsRowSmall {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.snsBtnSmall {
+  width: 42px;
+  height: 42px;
+  border-radius: 999px;
+  border: 1px solid rgba(17, 24, 39, 0.12);
+  background: rgba(255, 255, 255, 0.7);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+
+  /* ✅ “half-ish” size vs modal feel */
+  font-size: 14px;
+}
+
+.snsBtnSmall:active {
+  transform: translateY(1px);
+}
 
 /* No Dark mode*/
 
@@ -734,6 +875,11 @@ import styles from './login.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import CreateAccountModal from './CreateAccountModal';
+import { faGoogle, faApple, faWeixin } from '@fortawesome/free-brands-svg-icons';
+import {signIn, getProviders} from "next-auth/react";
+import { get } from 'http';
+import { sign } from 'crypto';
+
 
 export default function LoginPage() {
   const router = useRouter();
@@ -755,6 +901,12 @@ export default function LoginPage() {
   const canSubmit = useMemo(() => {
     return password.trim().length > 0 && !isSubmitting;
   }, [password, isSubmitting]);
+
+  const [providers, setProviders] = useState<Record<string, any> | null>(null);
+
+useEffect(() => {
+  getProviders().then(setProviders);
+}, []);
 
   useEffect (() => {
   document.documentElement.dataset.theme = 'light';
@@ -908,6 +1060,37 @@ export default function LoginPage() {
               setEmail(newEmail);
             }}
             />  
+            <div className={styles.snsBlock}>
+  <div className={styles.snsDivider}>
+    <span>or continue with</span>
+  </div>
+
+  <div className={styles.snsRowSmall}>
+    <button type="button" 
+    className={styles.snsBtnSmall} 
+    aria-label="Continue with Google"
+    onClick={() => signIn("google", { callbackUrl: "/" })}>
+    <FontAwesomeIcon icon={faGoogle} />
+    </button>
+
+    <button 
+    type="button" 
+    className={styles.snsBtnSmall} 
+    aria-label="Continue with Apple"
+    onClick={() => signIn("apple", { callbackUrl: "/" })}>
+    <FontAwesomeIcon icon={faApple} />
+    </button>
+
+    <button 
+    type="button" 
+    className={styles.snsBtnSmall} 
+    aria-label="Continue with WeChat"
+    onClick={() => signIn("wechat", { callbackUrl: "/" })}>
+    <FontAwesomeIcon icon={faWeixin} />
+    </button>
+  </div>
+</div>
+
         </section>
       </div>
     </main>

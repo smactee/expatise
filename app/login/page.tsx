@@ -9,8 +9,7 @@ import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import CreateAccountModal from './CreateAccountModal';
 import { faGoogle, faApple, faWeixin } from '@fortawesome/free-brands-svg-icons';
 import {signIn, getProviders} from "next-auth/react";
-import { get } from 'http';
-import { sign } from 'crypto';
+
 
 
 export default function LoginPage() {
@@ -93,7 +92,7 @@ useEffect(() => {
 
         <section className={styles.sheet}>
           <h1 className={styles.title}>Welcome!</h1>
-          <p className={styles.subtitle}>Sign in to continue</p>
+          <p className={styles.subtitle}>Sign in to continue.</p>
 
           <form onSubmit={onSubmit} className={styles.form}>
             <label className={styles.row}>
@@ -178,11 +177,11 @@ useEffect(() => {
             className={styles.linkBtn}
             onClick={() => setIsCreateOpen(true)}
             >
-              Create an account
+              Create a new account
               </button>
 
             <button type="button" className={styles.linkBtn} onClick={() => router.push('/')}>
-              Skip as guest
+              Continue as guest
             </button>
           </div>
           <CreateAccountModal
@@ -198,22 +197,34 @@ useEffect(() => {
   </div>
 
   <div className={styles.snsRowSmall}>
+    {providers?.google && (
     <button type="button" 
     className={styles.snsBtnSmall} 
     aria-label="Continue with Google"
     onClick={() => signIn("google", { callbackUrl: "/" })}>
     <FontAwesomeIcon icon={faGoogle} />
     </button>
+    )}
 
-    <button type="button" className={styles.snsBtnSmall} aria-label="Continue with Apple"
-      onClick={() => alert('TODO: Apple OAuth')}>
-      <FontAwesomeIcon icon={faApple} />
+    {providers?.apple && (
+    <button 
+    type="button" 
+    className={styles.snsBtnSmall} 
+    aria-label="Continue with Apple"
+    onClick={() => signIn("apple", { callbackUrl: "/" })}>
+    <FontAwesomeIcon icon={faApple} />
     </button>
+    )}
 
-    <button type="button" className={styles.snsBtnSmall} aria-label="Continue with WeChat"
-      onClick={() => alert('TODO: WeChat OAuth')}>
-      <FontAwesomeIcon icon={faWeixin} />
+    {providers?.wechat && (
+    <button 
+    type="button" 
+    className={styles.snsBtnSmall} 
+    aria-label="Continue with WeChat"
+    onClick={() => signIn("wechat", { callbackUrl: "/" })}>
+    <FontAwesomeIcon icon={faWeixin} />
     </button>
+    )}
   </div>
 </div>
 

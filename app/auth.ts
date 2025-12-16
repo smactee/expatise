@@ -1,6 +1,7 @@
 import NextAuth from "next-auth";
 import Google from "next-auth/providers/google";
 import Apple from "next-auth/providers/apple";
+import WeChat from "next-auth/providers/wechat";
 
 const providers = [] as any[];
 
@@ -23,7 +24,22 @@ if (process.env.AUTH_APPLE_ID && process.env.AUTH_APPLE_SECRET) {
   );
 }
 
+if (
+  process.env.NODE_ENV === "production" &&
+  process.env.AUTH_WECHAT_APP_ID &&
+  process.env.AUTH_WECHAT_APP_SECRET
+) {
+  providers.push(
+    WeChat({
+      clientId: process.env.AUTH_WECHAT_APP_ID,
+      clientSecret: process.env.AUTH_WECHAT_APP_SECRET,
+      platformType: "WebsiteApp",
+    })
+  );
+}
+
 export const { handlers, auth, signIn, signOut } = NextAuth({
+  secret: process.env.NEXTAUTH_SECRET,
   providers,
   trustHost: true,
   session: {

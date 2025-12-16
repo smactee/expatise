@@ -6,13 +6,7 @@
   --foreground: #171717;
 }
 
-/* Hook Tailwind theme to our CSS vars */
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+
 
 /* Prefer dark if no explicit theme stored (only for the old bg/fg vars) */
 @media (prefers-color-scheme: dark) {
