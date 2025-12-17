@@ -31,6 +31,33 @@ export function setUserPassword(email: string, newPassword: string) {
   return true;
 }
 
+export function createUser(email: string, password: string) {
+  const key = email.trim().toLowerCase();
+  if (!key) return { ok: false, message: "Email is required." };
+  if (users.has(key)) return { ok: false, message: "This email is already registered." };
+
+  users.set(key, { email: key, passwordHash: hashPassword(password) });
+  return { ok: true };
+}
+
+
+export function checkUserPassword(email: string, password: string) {
+  const key = email.trim().toLowerCase();
+  const u = users.get(key);
+  if (!u) return false;
+
+  const [salt, storedHash] = u.passwordHash.split(":");
+  if (!salt || !storedHash) return false;
+
+  const incomingHash = crypto.scryptSync(password, salt, 64).toString("hex");
+
+  // constant-time compare
+  const a = Buffer.from(storedHash, "hex");
+  const b = Buffer.from(incomingHash, "hex");
+  if (a.length !== b.length) return false;
+  return crypto.timingSafeEqual(a, b);
+}
+
 // Seed a demo user so you can test reset immediately
 (function seed() {
   const email = "user@expatise.com";

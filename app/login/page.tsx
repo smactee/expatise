@@ -12,6 +12,7 @@ import {signIn, getProviders} from "next-auth/react";
 
 
 
+
 export default function LoginPage() {
   const router = useRouter();
   const [email, setEmail] = useState('user@expatise.com');
@@ -50,23 +51,28 @@ useEffect(() => {
     setError(null);
     setIsSubmitting(true);
 
-    try {
-      // TODO: replace with real auth later.
-      // Temporary demo rule: password must be "password123"
-      const ok = password === "password123";
+try {
+  // call server to check password against the same store reset uses
+  const res = await fetch("/api/local-login", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, password }),
+  });
 
-      // simulate network delay (so you can see loading state)
-      await new Promise((r) => setTimeout(r, 700));
+  const data = await res.json().catch(() => ({ ok: false }));
 
-      if (!ok) {
-        setError("Email or password doesn’t match. Try again or reset your password.");
-        return;
-      }
+  // simulate network delay (optional)
+  await new Promise((r) => setTimeout(r, 700));
 
-      router.push("/");
-    } finally {
-      setIsSubmitting(false);
-    }
+  if (!data.ok) {
+    setError("Email or password doesn’t match. Try again or reset your password.");
+    return;
+  }
+
+  router.push("/");
+} finally {
+  setIsSubmitting(false);
+}
   };
 
   const handleCaps = (e: React.KeyboardEvent<HTMLInputElement>) => {

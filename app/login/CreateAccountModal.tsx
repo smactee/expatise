@@ -17,7 +17,7 @@ function isValidEmail(email: string) {
 }
 
 export default function CreateAccountModal({ open, onClose, onCreated }: Props) {
-  const [email, setEmail] = useState('user@expatise.com');
+  const [email, setEmail] = useState('');
   const [pw, setPw] = useState('');
   const [pw2, setPw2] = useState('');
   const [showPw, setShowPw] = useState(false);
@@ -29,7 +29,7 @@ export default function CreateAccountModal({ open, onClose, onCreated }: Props) 
   const canSubmit = useMemo(() => {
     if (isSubmitting) return false;
     if (!isValidEmail(email)) return false;
-    if (pw.trim().length < 6) return false; // keep simple for now
+    if (pw.trim().length < 8) return false; // keep simple for now
     if (pw !== pw2) return false;
     return true;
   }, [email, pw, pw2, isSubmitting]);
@@ -40,20 +40,39 @@ export default function CreateAccountModal({ open, onClose, onCreated }: Props) 
     e.preventDefault();
     setError(null);
 
+    const trimmedEmail = email.trim().toLowerCase();
+
     if (!isValidEmail(email)) return setError('Please enter a valid email.');
-    if (pw.trim().length < 6) return setError('Password must be at least 6 characters.');
+    if (pw.trim().length < 8) return setError('Password must be at least 8 characters.');
     if (pw !== pw2) return setError('Passwords do not match.');
 
     setIsSubmitting(true);
     try {
-      // TODO: real register API later
-      await new Promise((r) => setTimeout(r, 700));
-      onCreated?.(email.trim());
-      onClose();
-    } finally {
-      setIsSubmitting(false);
+    const res = await fetch('/api/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email: trimmedEmail,
+        password: pw,
+        confirmPassword: pw2,
+      }),
+    });
+
+    const data = await res.json().catch(() => ({}));
+
+    if (!res.ok || !data.ok) {
+      setError(data?.message || 'Could not create account.');
+      return;
     }
-  };
+
+    onCreated?.(trimmedEmail);
+    onClose();
+  } catch {
+    setError('Network error. Please try again.');
+  } finally {
+    setIsSubmitting(false);
+  }
+};
 
   return (
     <div className={styles.overlay} role="dialog" aria-modal="true">
