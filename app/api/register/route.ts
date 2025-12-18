@@ -1,17 +1,14 @@
 import { NextResponse } from "next/server";
-import { createUser } from "../../../lib/user-store"; // no @ imports
-
-const isValidEmail = (value: string) =>
-  /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+import { createUser } from "../../../lib/user-store";
+import { isValidEmail, normalizeEmail } from "../../../lib/auth";
 
 export async function POST(req: Request) {
   const body = await req.json().catch(() => ({}));
 
-  const email = String(body?.email || "").trim().toLowerCase();
+  const email = normalizeEmail(body?.email);
   const password = String(body?.password || "");
   const confirmPassword = String(body?.confirmPassword || "");
 
-  // basic validation
   if (!email || !isValidEmail(email)) {
     return NextResponse.json({ ok: false, message: "Please enter a valid email address." }, { status: 400 });
   }

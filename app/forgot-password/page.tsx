@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import styles from "./forgot-password.module.css";
+import { isValidEmail, normalizeEmail } from "../../lib/auth";
 
 type Step = "email" | "verify" | "done";
 

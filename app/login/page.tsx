@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useState, useMemo, useEffect } from 'react';
 import styles from './login.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -9,32 +9,37 @@ import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import CreateAccountModal from './CreateAccountModal';
 import { faGoogle, faApple, faWeixin } from '@fortawesome/free-brands-svg-icons';
 import {signIn, getProviders} from "next-auth/react";
-
+import { isValidEmail, normalizeEmail, safeNextPath } from '../../lib/auth';
 
 
 
 export default function LoginPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const nextParam = safeNextPath(searchParams.get("next"), "/");
+
+
   const [email, setEmail] = useState('user@expatise.com');
   const [password, setPassword] = useState('');
 
-  // ✅ modal open/close state (this was missing)
-  const [isCreateOpen, setIsCreateOpen] = useState(false);
-  
- // ✅ (1) Eye toggle
-  const [showPassword, setShowPassword] = useState(false);
-  // ✅ (2) Caps Lock warning
-  const [capsLockOn, setCapsLockOn] = useState(false);
-  // ✅ (4) Friendly error state
-  const [error, setError] = useState<string | null>(null);
-  // ✅ (6) Loading state
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  // ✅ (5) Disable sign-in until password not empty
-  const canSubmit = useMemo(() => {
-    return password.trim().length > 0 && !isSubmitting;
-  }, [password, isSubmitting]);
+  const [isCreateOpen, setIsCreateOpen] = useState(false);   // modal open/close state
+  const [showPassword, setShowPassword] = useState(false);   //  Eye toggle
+  const [capsLockOn, setCapsLockOn] = useState(false);      // Caps Lock warning
+  const [error, setError] = useState<string | null>(null); // Friendly error state
+  const [isSubmitting, setIsSubmitting] = useState(false);// Loading state
+  const [emailTouched, setEmailTouched] = useState(false);
+
 
   const [providers, setProviders] = useState<Record<string, any> | null>(null);
+
+  const emailNorm = normalizeEmail(email);
+  const emailOK = isValidEmail(emailNorm);
+
+  const canSubmit = useMemo(() => {
+  return emailOK && password.trim().length > 0 && !isSubmitting;
+}, [emailOK, password, isSubmitting]);
+
+
 
 useEffect(() => {
   getProviders().then(setProviders);
@@ -46,31 +51,35 @@ useEffect(() => {
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!canSubmit) return;
-
+    setEmailTouched(true);
     setError(null);
+
+    if (!emailOK) {
+      setError("Please enter a valid email address.");
+      return;
+    }
+    if (!canSubmit) return;
     setIsSubmitting(true);
-
-try {
-  // call server to check password against the same store reset uses
-  const res = await fetch("/api/local-login", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email, password }),
-  });
-
-  const data = await res.json().catch(() => ({ ok: false }));
-
-  // simulate network delay (optional)
-  await new Promise((r) => setTimeout(r, 700));
-
-  if (!data.ok) {
+    try {   // call server to check password against the same store reset uses
+      const res = await fetch("/api/local-login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ email: emailNorm, password }),
+      });
+      const data = await res.json().catch(() => ({ ok: false }));
+      await new Promise((r) => setTimeout(r, 300)); // simulate network delay (optional)
+  
+      if (!data.ok) {
     setError("Email or password doesn’t match. Try again or reset your password.");
     return;
   }
 
-  router.push("/");
-} finally {
+  router.replace(nextParam);
+} catch {
+  setError("Network error. Please try again.");
+}
+  finally {
   setIsSubmitting(false);
 }
   };
@@ -207,7 +216,7 @@ try {
     <button type="button" 
     className={styles.snsBtnSmall} 
     aria-label="Continue with Google"
-    onClick={() => signIn("google", { callbackUrl: "/" })}>
+    onClick={() => signIn("google", { callbackUrl: nextParam })}>
     <FontAwesomeIcon icon={faGoogle} />
     </button>
     )}

@@ -130,7 +130,8 @@ export const { GET, POST } = handlers;
 ### app/api/local-login/route.ts
 ```tsx
 import { NextResponse } from "next/server";
-import { checkUserPassword } from "@/lib/user-store"; // if you don't use @, switch to relative
+import { checkUserPassword } from "../../../lib/user-store"; // if you don't use @, switch to relative
+import { AUTH_COOKIE, normalizeEmail } from "../../../lib/auth";
 
 export async function POST(req: Request) {
   const body = await req.json().catch(() => ({}));
@@ -144,7 +145,42 @@ export async function POST(req: Request) {
   }
 
   const ok = checkUserPassword(email, password);
-  return NextResponse.json({ ok }, { status: 200 });
+  const res = NextResponse.json({ ok }, { status: 200 });
+  if (ok) {
+    // DEV session cookie (replace with real session management later)
+    res.cookies.set(AUTH_COOKIE, email, {
+      name: AUTH_COOKIE,
+      value: email,
+      httpOnly: true,
+      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production",
+      path: "/",
+      maxAge: 60 * 60 * 24 * 300, // 300 days
+    });
+  }
+
+
+  return res;
+}
+
+```
+
+### app/api/logout/route.ts
+```tsx
+import { NextResponse } from "next/server";
+import { AUTH_COOKIE } from "../../../lib/auth";
+
+export async function POST() {
+  const res = NextResponse.json({ ok: true });
+
+  res.cookies.set({
+    name: AUTH_COOKIE,
+    value: "",
+    path: "/",
+    maxAge: 0,
+  });
+
+  return res;
 }
 
 ```
@@ -233,19 +269,16 @@ export async function POST(req: Request) {
 ### app/api/register/route.ts
 ```tsx
 import { NextResponse } from "next/server";
-import { createUser } from "../../../lib/user-store"; // no @ imports
-
-const isValidEmail = (value: string) =>
-  /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+import { createUser } from "../../../lib/user-store";
+import { isValidEmail, normalizeEmail } from "../../../lib/auth";
 
 export async function POST(req: Request) {
   const body = await req.json().catch(() => ({}));
 
-  const email = String(body?.email || "").trim().toLowerCase();
+  const email = normalizeEmail(body?.email);
   const password = String(body?.password || "");
   const confirmPassword = String(body?.confirmPassword || "");
 
-  // basic validation
   if (!email || !isValidEmail(email)) {
     return NextResponse.json({ ok: false, message: "Please enter a valid email address." }, { status: 400 });
   }
@@ -262,6 +295,21 @@ export async function POST(req: Request) {
   }
 
   return NextResponse.json({ ok: true }, { status: 200 });
+}
+
+```
+
+### app/api/session/route.ts
+```tsx
+// app/api/session/route.ts
+import { NextResponse } from "next/server";
+import { cookies } from "next/headers";
+import { AUTH_COOKIE } from "../../../lib/auth";
+
+export async function GET() {
+    const cookieStore = await cookies();
+    const authed = Boolean(cookieStore.get(AUTH_COOKIE)?.value);
+    return NextResponse.json({ authed });
 }
 
 ```
@@ -456,6 +504,19 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   text-align: left;
 }
 
+.hint {
+  margin-top: 10px;
+  font-size: 13px;
+  color: #6b7280;
+  line-height: 1.4;
+}
+
+.warn {
+  margin-top: 8px;
+  font-size: 13px;
+  color: #b45309;
+}
+
 ```
 
 ### app/forgot-password/page.tsx
@@ -465,6 +526,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import styles from "./forgot-password.module.css";
+import { isValidEmail, normalizeEmail } from "../../lib/auth";
 
 type Step = "email" | "verify" | "done";
 
@@ -819,6 +881,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGoogle, faApple, faWeixin } from '@fortawesome/free-brands-svg-icons';
 import { faChevronLeft, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import styles from './create-account-modal.module.css';
+import { isValidEmail, normalizeEmail } from '../../lib/auth';
 
 type Props = {
   open: boolean;
@@ -826,16 +889,13 @@ type Props = {
   onCreated?: (email: string) => void;
 };
 
-function isValidEmail(email: string) {
-  return /^\S+@\S+\.\S+$/.test(email.trim());
-}
-
 export default function CreateAccountModal({ open, onClose, onCreated }: Props) {
   const [email, setEmail] = useState('');
   const [pw, setPw] = useState('');
   const [pw2, setPw2] = useState('');
   const [showPw, setShowPw] = useState(false);
   const [showPw2, setShowPw2] = useState(false);
+
 
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -854,9 +914,9 @@ export default function CreateAccountModal({ open, onClose, onCreated }: Props) 
     e.preventDefault();
     setError(null);
 
-    const trimmedEmail = email.trim().toLowerCase();
+    const trimmedEmail = normalizeEmail(email);
 
-    if (!isValidEmail(email)) return setError('Please enter a valid email.');
+    if (!isValidEmail(trimmedEmail)) return setError('Please enter a valid email.');
     if (pw.trim().length < 8) return setError('Password must be at least 8 characters.');
     if (pw !== pw2) return setError('Passwords do not match.');
 
@@ -1454,7 +1514,7 @@ export default function CreateAccountModal({ open, onClose, onCreated }: Props) 
 'use client';
 
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useState, useMemo, useEffect } from 'react';
 import styles from './login.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -1462,32 +1522,37 @@ import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import CreateAccountModal from './CreateAccountModal';
 import { faGoogle, faApple, faWeixin } from '@fortawesome/free-brands-svg-icons';
 import {signIn, getProviders} from "next-auth/react";
-
+import { isValidEmail, normalizeEmail, safeNextPath } from '../../lib/auth';
 
 
 
 export default function LoginPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const nextParam = safeNextPath(searchParams.get("next"), "/");
+
+
   const [email, setEmail] = useState('user@expatise.com');
   const [password, setPassword] = useState('');
 
-  // ✅ modal open/close state (this was missing)
-  const [isCreateOpen, setIsCreateOpen] = useState(false);
-  
- // ✅ (1) Eye toggle
-  const [showPassword, setShowPassword] = useState(false);
-  // ✅ (2) Caps Lock warning
-  const [capsLockOn, setCapsLockOn] = useState(false);
-  // ✅ (4) Friendly error state
-  const [error, setError] = useState<string | null>(null);
-  // ✅ (6) Loading state
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  // ✅ (5) Disable sign-in until password not empty
-  const canSubmit = useMemo(() => {
-    return password.trim().length > 0 && !isSubmitting;
-  }, [password, isSubmitting]);
+  const [isCreateOpen, setIsCreateOpen] = useState(false);   // modal open/close state
+  const [showPassword, setShowPassword] = useState(false);   //  Eye toggle
+  const [capsLockOn, setCapsLockOn] = useState(false);      // Caps Lock warning
+  const [error, setError] = useState<string | null>(null); // Friendly error state
+  const [isSubmitting, setIsSubmitting] = useState(false);// Loading state
+  const [emailTouched, setEmailTouched] = useState(false);
+
 
   const [providers, setProviders] = useState<Record<string, any> | null>(null);
+
+  const emailNorm = normalizeEmail(email);
+  const emailOK = isValidEmail(emailNorm);
+
+  const canSubmit = useMemo(() => {
+  return emailOK && password.trim().length > 0 && !isSubmitting;
+}, [emailOK, password, isSubmitting]);
+
+
 
 useEffect(() => {
   getProviders().then(setProviders);
@@ -1499,31 +1564,35 @@ useEffect(() => {
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!canSubmit) return;
-
+    setEmailTouched(true);
     setError(null);
+
+    if (!emailOK) {
+      setError("Please enter a valid email address.");
+      return;
+    }
+    if (!canSubmit) return;
     setIsSubmitting(true);
-
-try {
-  // call server to check password against the same store reset uses
-  const res = await fetch("/api/local-login", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email, password }),
-  });
-
-  const data = await res.json().catch(() => ({ ok: false }));
-
-  // simulate network delay (optional)
-  await new Promise((r) => setTimeout(r, 700));
-
-  if (!data.ok) {
+    try {   // call server to check password against the same store reset uses
+      const res = await fetch("/api/local-login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ email: emailNorm, password }),
+      });
+      const data = await res.json().catch(() => ({ ok: false }));
+      await new Promise((r) => setTimeout(r, 300)); // simulate network delay (optional)
+  
+      if (!data.ok) {
     setError("Email or password doesn’t match. Try again or reset your password.");
     return;
   }
 
-  router.push("/");
-} finally {
+  router.replace(nextParam);
+} catch {
+  setError("Network error. Please try again.");
+}
+  finally {
   setIsSubmitting(false);
 }
   };
@@ -1660,7 +1729,7 @@ try {
     <button type="button" 
     className={styles.snsBtnSmall} 
     aria-label="Continue with Google"
-    onClick={() => signIn("google", { callbackUrl: "/" })}>
+    onClick={() => signIn("google", { callbackUrl: nextParam })}>
     <FontAwesomeIcon icon={faGoogle} />
     </button>
     )}
@@ -3172,14 +3241,30 @@ import BottomNav from '../../components/BottomNav';
 import { useTheme } from '../../components/ThemeProvider';
 import { useUserProfile } from '../../components/UserProfile';
 import { UserProfileProvider } from '../../components/UserProfile';
+import { useRouter } from 'next/navigation';
+import { useAuthStatus } from '../../components/useAuthStatus';
+import { isValidEmail } from '../../lib/auth';
 
 export default function ProfilePage() {
-  const { avatarUrl, setAvatarUrl, name, setName, email, setEmail } = useUserProfile(); // from context
+  const { avatarUrl, setAvatarUrl, name, setName, email, setEmail, saveProfile, clearProfile } = useUserProfile(); // from context
 
   // ---- avatar upload state + handlers ----
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const { theme, toggleTheme } = useTheme();
+
+  const { authed, loading: authLoading, refresh } = useAuthStatus();
+  const [showGuestModal, setShowGuestModal] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [saveMsg, setSaveMsg] = useState<string | null>(null);
+
+function requireLogin(e?: React.SyntheticEvent) {
+  if (authed) return true;
+  e?.preventDefault();
+  e?.stopPropagation();
+  setShowGuestModal(true);   // ✅ this matches your modal renderer
+  return false;
+}
 
   // when the context avatar changes (e.g. after reload), update preview
   useEffect(() => {
@@ -3244,15 +3329,55 @@ const handleNameBlur = (e: React.FocusEvent<HTMLSpanElement>) => {
 // ---- email state + handlers ----
 const [emailError, setEmailError] = useState<string | null>(null);
 
-const isValidEmail = (value: string) => {
-  // very simple rule: something@something.something
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
-};
-
 
 // true when there's something in the field, no error, and it passes regex
 const isEmailValid =
   !!email.trim() && !emailError && isValidEmail(email.trim());
+
+const router = useRouter();
+const [loggingOut, setLoggingOut] = useState(false);
+
+const handleLogout = async () => {
+  if (loggingOut) return;
+  setLoggingOut(true);
+  try {
+    await fetch("/api/logout", { method: "POST", credentials: "include" });
+
+    // Clear local profile store (dev-only)
+    if (typeof window !== "undefined") {
+      window.localStorage.removeItem("expatise-user-profile");
+    }
+
+    // Reset the UI state
+    setAvatarUrl(null);
+    setName("@Expatise");
+    setEmail("user@expatise.com");
+
+    router.replace("/login");
+  } finally {
+    setLoggingOut(false);
+  }
+};
+
+const handleSave = async (e: React.SyntheticEvent) => {
+  if (!requireLogin(e)) return;
+
+  setSaveMsg(null);
+
+  if (!isValidEmail(email)) {
+    setEmailError("Please enter a valid email address.");
+    return;
+  }
+
+  setSaving(true);
+  try {
+    saveProfile();
+    setSaveMsg("Saved!");
+    setTimeout(() => setSaveMsg(null), 450);
+  } finally {
+    setSaving(false);
+  }
+};
 
 
 
@@ -3272,7 +3397,12 @@ const isEmailValid =
        <section className={styles.profileCard}>
   <div className={styles.avatarBlock}>
     {/* Clickable avatar */}
-    <div className={styles.avatarCircle} onClick={handleAvatarClick}>
+    <div 
+    className={styles.avatarCircle} 
+    onClick={(e) => {
+    if (!requireLogin(e)) return;
+    handleAvatarClick();
+  }}>
       {avatarPreview ? (
         <Image
           src={avatarPreview}
@@ -3286,9 +3416,9 @@ const isEmailValid =
         <Image
   src="/images/profile/imageupload-icon.png"
   alt="image upload icon"
-  fill
+  width={56}
+  height={56}  
   className={styles.avatarPlaceholder}
-  onClick={handleAvatarClick}
 />
       )}
     </div>
@@ -3306,11 +3436,13 @@ const isEmailValid =
 <div className={styles.nameRow}>
   <span
     ref={nameSpanRef }
-    className={styles.usernameEditable}
-    contentEditable
+    className={`${styles.usernameEditable} ${!authed ? styles.lockedClickable : ""}`}
+    contentEditable={authed}
     suppressContentEditableWarning
-    onInput={handleNameInput}
-    onBlur={handleNameBlur}
+    onMouseDown={(e) => { if (!authed) requireLogin(e); }}
+    onFocus={(e) => {if (!authed) (e.currentTarget as HTMLElement).blur(); }}
+    onInput={(e) => { if (!authed) return; handleNameInput(e); }}
+    onBlur={(e) => { if (!authed) return; handleNameBlur(e); }}
   >
   </span>
 
@@ -3327,18 +3459,20 @@ const isEmailValid =
   <div className={styles.emailInputRow}>
   <input
     type="email"
-    className={`${styles.email} ${
-      emailError ? styles.emailInvalid : ''
-    }`}
-    value={email}
+    className={`${styles.email} ${emailError ? styles.emailInvalid : ""} ${!authed ? styles.lockedClickable : ""}`}    value={email}
     size={Math.max(email.length, 20)}   // 👈 keeps width in sync with text
+    readOnly={!authed}
+    onMouseDown={(e) => { if (!authed) requireLogin(e); }}
+    onFocus={(e) => {if (!authed) e.currentTarget.blur(); }}
     onChange={(e) => {
+      if (!authed)  return;
       const value = e.target.value;
       setEmail(value);
       // clear error while they are typing
       if (emailError) setEmailError(null);
     }}
     onBlur={(e) => {
+      if (!authed) return;
       const trimmed = e.target.value.trim();
 
       if (!trimmed) {
@@ -3381,7 +3515,13 @@ const isEmailValid =
 
 
   {/* Premium plan bar */}
-  <div className={styles.premiumCard}>
+<button
+  type="button"
+  className={styles.premiumCard}
+  onClick={(e) => {
+  if (!requireLogin(e)) return;
+  }}
+>
     <span className={styles.premiumIcon}>
       <Image 
         src="/images/profile/crown-icon.png"
@@ -3391,7 +3531,7 @@ const isEmailValid =
       />
     </span>
     <span className={styles.premiumText}>Premium Plan</span>
-  </div>
+</button>
         {/* Settings list */}
       <div className={styles.settingsList}>
                     {/* Light / Dark Mode */}
@@ -3475,10 +3615,69 @@ const isEmailValid =
 
 </section>
 
-        {/* Log out button */}
-        <div className={styles.logoutWrapper}>
-          <button className={styles.logoutButton}>Log Out</button>
-        </div>
+{/* Save & Log out button */}
+<div className={styles.actionRow}>
+ <button
+  className={styles.saveButton}
+  onClick={handleSave}
+>
+  {saving ? "Saving..." : "Save"}
+</button>
+
+
+  {authed ? (
+    <button
+      className={styles.logoutButton}
+      onClick={handleLogout}
+      disabled={loggingOut}
+    >
+      {loggingOut ? "Logging Out..." : "Log Out"}
+    </button>
+  ) : (
+    <Link className={styles.loginButton} href="/login?next=/profile">
+      Log in
+    </Link>
+  )}
+</div>
+
+{saveMsg ? (
+  <div className={styles.toastOverlay} aria-live="polite">
+    <div className={styles.toastCard}>
+      <Image
+        src="/images/profile/greencheck-icon.png"
+        alt="Checkmark Icon"
+        width={16}
+        height={16}
+        className={styles.toastIcon}
+        priority
+      />
+      <span className={styles.toastText}>{saveMsg}</span>
+      </div>
+  </div>
+) : null}
+
+{showGuestModal ? (
+  <div className={styles.guestOverlay} onClick={() => setShowGuestModal(false)}>
+    <div className={styles.guestModal} onClick={(e) => e.stopPropagation()}>
+      <div className={styles.guestTitle}>Log in to save your changes.</div>
+      <div className={styles.guestText}>
+        You can continue as a guest, but changes won’t be saved. Log in to keep your data.
+      </div>
+      <div className={styles.guestButtons}>
+        <Link className={styles.guestPrimary} href="/login?next=/profile">
+          Log in
+        </Link>
+        <button
+          className={styles.guestSecondary}
+          onClick={() => setShowGuestModal(false)}
+        >
+          Continue as guest
+        </button>
+      </div>
+    </div>
+  </div>
+) : null}
+
       </div>
 
       {/* Re-use the existing bottom navigation */}
@@ -3486,6 +3685,7 @@ const isEmailValid =
     </main>
   );
 }
+
 
 ```
 
@@ -3556,6 +3756,11 @@ const isEmailValid =
   overflow: hidden;
   margin-bottom: 12px;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(243, 244, 246, 1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .avatarInput {
@@ -3569,7 +3774,7 @@ const isEmailValid =
 
 .avatarPlaceholder {
   object-fit: contain;   /* show whole icon */
-  transform: scale(0.3); /* 0.6 = 60% of the circle size; tweak as you like */
+  transform: scale(0.6); /* 0.6 = 60% of the circle size; tweak as you like */
   background: transparent;
 }
 
@@ -3691,6 +3896,8 @@ const isEmailValid =
 /* Premium bar */
 
 .premiumCard {
+  width: 100%;
+  box-sizing: border-box;
   margin-top: 16px;
   margin-bottom: 16px;
   border-radius: 24px;
@@ -3700,6 +3907,8 @@ const isEmailValid =
   justify-content: center;
   gap: 10px;
   background: var(--color-premium-gradient);
+  border: none;
+  cursor: pointer;
 }
 
 .premiumIcon {
@@ -3883,6 +4092,145 @@ const isEmailValid =
   );
   border-color: #d2c79a; /* optional, but makes sure border doesn’t change */
 }
+
+.actionRow {
+  display: flex;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.saveButton {
+  flex: 1;
+  height: 52px;
+  border-radius: 14px;
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  background: var(--color-premium-gradient);
+  color: var(--color-heading-strong);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.loginButton {
+  flex: 1;
+  height: 52px;
+  border-radius: 14px;
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  color: var(--color-heading-strong);
+  background: var(--color-premium-gradient);
+  font-weight: 700;
+}
+
+.toastOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+
+  display: grid;
+  place-items: center;
+
+
+}
+
+.toastCard {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  font: inherit;              /* ✅ uses same font as app */
+  font-size: 14px;
+  font-weight: 700;
+
+  padding: 10px 14px;
+  border-radius: 14px;
+
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+
+  color: inherit;
+}
+
+.toastIcon {
+  display: block;
+}
+
+.toastText {
+  font: inherit;
+}
+
+/* Modal overlay */
+.guestOverlay {
+  position: fixed;
+  inset: 0;
+  backdrop-filter: blur(8px);
+  background: rgba(0, 0, 0, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 9999;
+}
+
+.guestModal {
+  width: 100%;
+  max-width: 420px;
+  border-radius: 18px;
+  padding: 18px 16px;
+  background: var(--color-profile-card-bg);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+}
+
+.guestTitle {
+  font-size: 18px;
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+
+.guestText {
+  font-size: 14px;
+  opacity: 0.9;
+  line-height: 1.4;
+}
+
+.guestButtons {
+  display: flex;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.guestPrimary {
+  flex: 1;
+  height: 44px;
+  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  background: rgba(59, 130, 246, 0.18);
+  border: 1px solid rgba(59, 130, 246, 0.35);
+  background: var(--color-premium-gradient);
+  font-weight: 700;
+}
+
+.guestSecondary {
+  flex: 1;
+  height: 44px;
+  border-radius: 12px;
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  background: transparent;
+  color: var(--color-heading-strong);
+  font-weight: 700;
+}
+
+.lockedClickable {
+  cursor: pointer !important;
+}
+
 ```
 
 ### app/stats/page.tsx
@@ -4800,6 +5148,8 @@ type UserProfileContextValue = {
   setName: (name: string) => void;
   setEmail: (email: string) => void;
   setAvatarUrl: (url: string | null) => void;
+  saveProfile: () => void;
+  clearProfile: () => void;
 };
 
 const UserProfileContext = createContext<UserProfileContextValue | undefined>(
@@ -4828,22 +5178,32 @@ export function UserProfileProvider({ children }: { children: ReactNode }) {
 
       if (parsed.name) setName(parsed.name);
       if (parsed.email) setEmail(parsed.email);
-      if (parsed.avatarUrl) setAvatarUrlState(parsed.avatarUrl);
+      if ('avatarUrl' in parsed) setAvatarUrlState(parsed.avatarUrl ?? null);
     } catch {
       // ignore bad JSON
     }
   }, []);
 
-  // save to localStorage whenever something changes
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-    const payload = JSON.stringify({ name, email, avatarUrl });
-    window.localStorage.setItem(STORAGE_KEY, payload);
-  }, [name, email, avatarUrl]);
+
 
   const setAvatarUrl = (url: string | null) => {
     setAvatarUrlState(url);
   };
+
+  const saveProfile = () => {
+    if (typeof window === 'undefined') return;
+    const payload = JSON.stringify({ name, email, avatarUrl });
+    window.localStorage.setItem(STORAGE_KEY, payload);
+  };
+
+  const clearProfile = () => {
+    if (typeof window === 'undefined') return;
+    window.localStorage.removeItem(STORAGE_KEY);
+    setName('@Expatise');
+    setEmail('user@expatise.com');
+    setAvatarUrlState(null);
+  };
+
 
   const value: UserProfileContextValue = {
     name,
@@ -4852,6 +5212,8 @@ export function UserProfileProvider({ children }: { children: ReactNode }) {
     setName,
     setEmail,
     setAvatarUrl,
+    saveProfile,
+    clearProfile
   };
 
   return (
@@ -4867,6 +5229,79 @@ export function useUserProfile() {
     throw new Error('useUserProfile must be used inside <UserProfileProvider>');
   }
   return ctx;
+}
+
+```
+
+### components/useAuthStatus.ts
+```tsx
+// components/useAuthStatus.ts
+"use client";
+
+import { useCallback, useEffect, useState } from "react";
+
+export function useAuthStatus() {
+  const [authed, setAuthed] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  const refresh = useCallback(async () => {
+    setLoading(true);
+    try {
+      const res = await fetch("/api/session", { cache: "no-store" });
+      const data = await res.json().catch(() => ({ authed: false }));
+      setAuthed(Boolean(data.authed));
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    void refresh();
+  }, [refresh]);
+
+  return { authed, loading, refresh };
+}
+
+```
+
+### lib/auth.ts
+```tsx
+// lib/auth.ts
+export const AUTH_COOKIE = "expatise_auth";
+
+// One regex everywhere (client + server)
+export const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+export function normalizeEmail(input: string) {
+  return String(input || "").trim().toLowerCase();
+}
+
+export function isValidEmail(input: string) {
+  return EMAIL_REGEX.test(String(input || "").trim());
+}
+
+// Prevent open-redirects
+export function safeNextPath(next: string | null, fallback = "/") {
+  if (!next) return fallback;
+  if (!next.startsWith("/")) return fallback;
+  if (next.startsWith("//")) return fallback;
+  return next;
+}
+
+```
+
+### lib/middleware/auth.ts
+```tsx
+// lib/middleware/auth.ts
+import type { NextRequest } from "next/server";
+
+// No hard redirects. Guest UX is handled in the UI (modal/blur overlays).
+export function authMiddleware(_req: NextRequest) {
+  return null;
+}
+
+export function applyAuthGate(req: NextRequest) {
+  return authMiddleware(req);
 }
 
 ```
@@ -11869,6 +12304,7 @@ import { NextResponse } from 'next/server';
 
 import { isBypassPath } from './lib/middleware/paths';
 import { applyOnboardingGate } from './lib/middleware/onboarding';
+import { applyAuthGate } from './lib/middleware/auth';
 
 export function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl;
@@ -11877,6 +12313,9 @@ export function proxy(req: NextRequest) {
 
   const onboardingRes = applyOnboardingGate(req);
   if (onboardingRes) return onboardingRes;
+
+  const authRes = applyAuthGate(req);
+  if (authRes) return authRes;
 
   return NextResponse.next();
 }

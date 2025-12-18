@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGoogle, faApple, faWeixin } from '@fortawesome/free-brands-svg-icons';
 import { faChevronLeft, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import styles from './create-account-modal.module.css';
+import { isValidEmail, normalizeEmail } from '../../lib/auth';
 
 type Props = {
   open: boolean;
@@ -12,16 +13,13 @@ type Props = {
   onCreated?: (email: string) => void;
 };
 
-function isValidEmail(email: string) {
-  return /^\S+@\S+\.\S+$/.test(email.trim());
-}
-
 export default function CreateAccountModal({ open, onClose, onCreated }: Props) {
   const [email, setEmail] = useState('');
   const [pw, setPw] = useState('');
   const [pw2, setPw2] = useState('');
   const [showPw, setShowPw] = useState(false);
   const [showPw2, setShowPw2] = useState(false);
+
 
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -40,9 +38,9 @@ export default function CreateAccountModal({ open, onClose, onCreated }: Props) 
     e.preventDefault();
     setError(null);
 
-    const trimmedEmail = email.trim().toLowerCase();
+    const trimmedEmail = normalizeEmail(email);
 
-    if (!isValidEmail(email)) return setError('Please enter a valid email.');
+    if (!isValidEmail(trimmedEmail)) return setError('Please enter a valid email.');
     if (pw.trim().length < 8) return setError('Password must be at least 8 characters.');
     if (pw !== pw2) return setError('Passwords do not match.');
 

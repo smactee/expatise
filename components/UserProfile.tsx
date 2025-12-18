@@ -15,6 +15,8 @@ type UserProfileContextValue = {
   setName: (name: string) => void;
   setEmail: (email: string) => void;
   setAvatarUrl: (url: string | null) => void;
+  saveProfile: () => void;
+  clearProfile: () => void;
 };
 
 const UserProfileContext = createContext<UserProfileContextValue | undefined>(
@@ -43,22 +45,32 @@ export function UserProfileProvider({ children }: { children: ReactNode }) {
 
       if (parsed.name) setName(parsed.name);
       if (parsed.email) setEmail(parsed.email);
-      if (parsed.avatarUrl) setAvatarUrlState(parsed.avatarUrl);
+      if ('avatarUrl' in parsed) setAvatarUrlState(parsed.avatarUrl ?? null);
     } catch {
       // ignore bad JSON
     }
   }, []);
 
-  // save to localStorage whenever something changes
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-    const payload = JSON.stringify({ name, email, avatarUrl });
-    window.localStorage.setItem(STORAGE_KEY, payload);
-  }, [name, email, avatarUrl]);
+
 
   const setAvatarUrl = (url: string | null) => {
     setAvatarUrlState(url);
   };
+
+  const saveProfile = () => {
+    if (typeof window === 'undefined') return;
+    const payload = JSON.stringify({ name, email, avatarUrl });
+    window.localStorage.setItem(STORAGE_KEY, payload);
+  };
+
+  const clearProfile = () => {
+    if (typeof window === 'undefined') return;
+    window.localStorage.removeItem(STORAGE_KEY);
+    setName('@Expatise');
+    setEmail('user@expatise.com');
+    setAvatarUrlState(null);
+  };
+
 
   const value: UserProfileContextValue = {
     name,
@@ -67,6 +79,8 @@ export function UserProfileProvider({ children }: { children: ReactNode }) {
     setName,
     setEmail,
     setAvatarUrl,
+    saveProfile,
+    clearProfile
   };
 
   return (

@@ -63,6 +63,11 @@
   overflow: hidden;
   margin-bottom: 12px;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(243, 244, 246, 1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .avatarInput {
@@ -76,7 +81,7 @@
 
 .avatarPlaceholder {
   object-fit: contain;   /* show whole icon */
-  transform: scale(0.3); /* 0.6 = 60% of the circle size; tweak as you like */
+  transform: scale(0.6); /* 0.6 = 60% of the circle size; tweak as you like */
   background: transparent;
 }
 
@@ -198,6 +203,8 @@
 /* Premium bar */
 
 .premiumCard {
+  width: 100%;
+  box-sizing: border-box;
   margin-top: 16px;
   margin-bottom: 16px;
   border-radius: 24px;
@@ -207,6 +214,8 @@
   justify-content: center;
   gap: 10px;
   background: var(--color-premium-gradient);
+  border: none;
+  cursor: pointer;
 }
 
 .premiumIcon {
@@ -389,4 +398,142 @@
     rgba(255, 197, 66, 0.4) 100%
   );
   border-color: #d2c79a; /* optional, but makes sure border doesn’t change */
+}
+
+.actionRow {
+  display: flex;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.saveButton {
+  flex: 1;
+  height: 52px;
+  border-radius: 14px;
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  background: var(--color-premium-gradient);
+  color: var(--color-heading-strong);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.loginButton {
+  flex: 1;
+  height: 52px;
+  border-radius: 14px;
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  color: var(--color-heading-strong);
+  background: var(--color-premium-gradient);
+  font-weight: 700;
+}
+
+.toastOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+
+  display: grid;
+  place-items: center;
+
+
+}
+
+.toastCard {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  font: inherit;              /* ✅ uses same font as app */
+  font-size: 14px;
+  font-weight: 700;
+
+  padding: 10px 14px;
+  border-radius: 14px;
+
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+
+  color: inherit;
+}
+
+.toastIcon {
+  display: block;
+}
+
+.toastText {
+  font: inherit;
+}
+
+/* Modal overlay */
+.guestOverlay {
+  position: fixed;
+  inset: 0;
+  backdrop-filter: blur(8px);
+  background: rgba(0, 0, 0, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 9999;
+}
+
+.guestModal {
+  width: 100%;
+  max-width: 420px;
+  border-radius: 18px;
+  padding: 18px 16px;
+  background: var(--color-profile-card-bg);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+}
+
+.guestTitle {
+  font-size: 18px;
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+
+.guestText {
+  font-size: 14px;
+  opacity: 0.9;
+  line-height: 1.4;
+}
+
+.guestButtons {
+  display: flex;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.guestPrimary {
+  flex: 1;
+  height: 44px;
+  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  background: rgba(59, 130, 246, 0.18);
+  border: 1px solid rgba(59, 130, 246, 0.35);
+  background: var(--color-premium-gradient);
+  font-weight: 700;
+}
+
+.guestSecondary {
+  flex: 1;
+  height: 44px;
+  border-radius: 12px;
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  background: transparent;
+  color: var(--color-heading-strong);
+  font-weight: 700;
+}
+
+.lockedClickable {
+  cursor: pointer !important;
 }

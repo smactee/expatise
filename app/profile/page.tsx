@@ -8,14 +8,30 @@ import BottomNav from '../../components/BottomNav';
 import { useTheme } from '../../components/ThemeProvider';
 import { useUserProfile } from '../../components/UserProfile';
 import { UserProfileProvider } from '../../components/UserProfile';
+import { useRouter } from 'next/navigation';
+import { useAuthStatus } from '../../components/useAuthStatus';
+import { isValidEmail } from '../../lib/auth';
 
 export default function ProfilePage() {
-  const { avatarUrl, setAvatarUrl, name, setName, email, setEmail } = useUserProfile(); // from context
+  const { avatarUrl, setAvatarUrl, name, setName, email, setEmail, saveProfile, clearProfile } = useUserProfile(); // from context
 
   // ---- avatar upload state + handlers ----
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const { theme, toggleTheme } = useTheme();
+
+  const { authed, loading: authLoading, refresh } = useAuthStatus();
+  const [showGuestModal, setShowGuestModal] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [saveMsg, setSaveMsg] = useState<string | null>(null);
+
+function requireLogin(e?: React.SyntheticEvent) {
+  if (authed) return true;
+  e?.preventDefault();
+  e?.stopPropagation();
+  setShowGuestModal(true);   // ✅ this matches your modal renderer
+  return false;
+}
 
   // when the context avatar changes (e.g. after reload), update preview
   useEffect(() => {
@@ -80,15 +96,55 @@ const handleNameBlur = (e: React.FocusEvent<HTMLSpanElement>) => {
 // ---- email state + handlers ----
 const [emailError, setEmailError] = useState<string | null>(null);
 
-const isValidEmail = (value: string) => {
-  // very simple rule: something@something.something
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
-};
-
 
 // true when there's something in the field, no error, and it passes regex
 const isEmailValid =
   !!email.trim() && !emailError && isValidEmail(email.trim());
+
+const router = useRouter();
+const [loggingOut, setLoggingOut] = useState(false);
+
+const handleLogout = async () => {
+  if (loggingOut) return;
+  setLoggingOut(true);
+  try {
+    await fetch("/api/logout", { method: "POST", credentials: "include" });
+
+    // Clear local profile store (dev-only)
+    if (typeof window !== "undefined") {
+      window.localStorage.removeItem("expatise-user-profile");
+    }
+
+    // Reset the UI state
+    setAvatarUrl(null);
+    setName("@Expatise");
+    setEmail("user@expatise.com");
+
+    router.replace("/login");
+  } finally {
+    setLoggingOut(false);
+  }
+};
+
+const handleSave = async (e: React.SyntheticEvent) => {
+  if (!requireLogin(e)) return;
+
+  setSaveMsg(null);
+
+  if (!isValidEmail(email)) {
+    setEmailError("Please enter a valid email address.");
+    return;
+  }
+
+  setSaving(true);
+  try {
+    saveProfile();
+    setSaveMsg("Saved!");
+    setTimeout(() => setSaveMsg(null), 450);
+  } finally {
+    setSaving(false);
+  }
+};
 
 
 
@@ -108,7 +164,12 @@ const isEmailValid =
        <section className={styles.profileCard}>
   <div className={styles.avatarBlock}>
     {/* Clickable avatar */}
-    <div className={styles.avatarCircle} onClick={handleAvatarClick}>
+    <div 
+    className={styles.avatarCircle} 
+    onClick={(e) => {
+    if (!requireLogin(e)) return;
+    handleAvatarClick();
+  }}>
       {avatarPreview ? (
         <Image
           src={avatarPreview}
@@ -122,9 +183,9 @@ const isEmailValid =
         <Image
   src="/images/profile/imageupload-icon.png"
   alt="image upload icon"
-  fill
+  width={56}
+  height={56}  
   className={styles.avatarPlaceholder}
-  onClick={handleAvatarClick}
 />
       )}
     </div>
@@ -142,11 +203,13 @@ const isEmailValid =
 <div className={styles.nameRow}>
   <span
     ref={nameSpanRef }
-    className={styles.usernameEditable}
-    contentEditable
+    className={`${styles.usernameEditable} ${!authed ? styles.lockedClickable : ""}`}
+    contentEditable={authed}
     suppressContentEditableWarning
-    onInput={handleNameInput}
-    onBlur={handleNameBlur}
+    onMouseDown={(e) => { if (!authed) requireLogin(e); }}
+    onFocus={(e) => {if (!authed) (e.currentTarget as HTMLElement).blur(); }}
+    onInput={(e) => { if (!authed) return; handleNameInput(e); }}
+    onBlur={(e) => { if (!authed) return; handleNameBlur(e); }}
   >
   </span>
 
@@ -163,18 +226,20 @@ const isEmailValid =
   <div className={styles.emailInputRow}>
   <input
     type="email"
-    className={`${styles.email} ${
-      emailError ? styles.emailInvalid : ''
-    }`}
-    value={email}
+    className={`${styles.email} ${emailError ? styles.emailInvalid : ""} ${!authed ? styles.lockedClickable : ""}`}    value={email}
     size={Math.max(email.length, 20)}   // 👈 keeps width in sync with text
+    readOnly={!authed}
+    onMouseDown={(e) => { if (!authed) requireLogin(e); }}
+    onFocus={(e) => {if (!authed) e.currentTarget.blur(); }}
     onChange={(e) => {
+      if (!authed)  return;
       const value = e.target.value;
       setEmail(value);
       // clear error while they are typing
       if (emailError) setEmailError(null);
     }}
     onBlur={(e) => {
+      if (!authed) return;
       const trimmed = e.target.value.trim();
 
       if (!trimmed) {
@@ -217,7 +282,13 @@ const isEmailValid =
 
 
   {/* Premium plan bar */}
-  <div className={styles.premiumCard}>
+<button
+  type="button"
+  className={styles.premiumCard}
+  onClick={(e) => {
+  if (!requireLogin(e)) return;
+  }}
+>
     <span className={styles.premiumIcon}>
       <Image 
         src="/images/profile/crown-icon.png"
@@ -227,7 +298,7 @@ const isEmailValid =
       />
     </span>
     <span className={styles.premiumText}>Premium Plan</span>
-  </div>
+</button>
         {/* Settings list */}
       <div className={styles.settingsList}>
                     {/* Light / Dark Mode */}
@@ -311,10 +382,69 @@ const isEmailValid =
 
 </section>
 
-        {/* Log out button */}
-        <div className={styles.logoutWrapper}>
-          <button className={styles.logoutButton}>Log Out</button>
-        </div>
+{/* Save & Log out button */}
+<div className={styles.actionRow}>
+ <button
+  className={styles.saveButton}
+  onClick={handleSave}
+>
+  {saving ? "Saving..." : "Save"}
+</button>
+
+
+  {authed ? (
+    <button
+      className={styles.logoutButton}
+      onClick={handleLogout}
+      disabled={loggingOut}
+    >
+      {loggingOut ? "Logging Out..." : "Log Out"}
+    </button>
+  ) : (
+    <Link className={styles.loginButton} href="/login?next=/profile">
+      Log in
+    </Link>
+  )}
+</div>
+
+{saveMsg ? (
+  <div className={styles.toastOverlay} aria-live="polite">
+    <div className={styles.toastCard}>
+      <Image
+        src="/images/profile/greencheck-icon.png"
+        alt="Checkmark Icon"
+        width={16}
+        height={16}
+        className={styles.toastIcon}
+        priority
+      />
+      <span className={styles.toastText}>{saveMsg}</span>
+      </div>
+  </div>
+) : null}
+
+{showGuestModal ? (
+  <div className={styles.guestOverlay} onClick={() => setShowGuestModal(false)}>
+    <div className={styles.guestModal} onClick={(e) => e.stopPropagation()}>
+      <div className={styles.guestTitle}>Log in to save your changes.</div>
+      <div className={styles.guestText}>
+        You can continue as a guest, but changes won’t be saved. Log in to keep your data.
+      </div>
+      <div className={styles.guestButtons}>
+        <Link className={styles.guestPrimary} href="/login?next=/profile">
+          Log in
+        </Link>
+        <button
+          className={styles.guestSecondary}
+          onClick={() => setShowGuestModal(false)}
+        >
+          Continue as guest
+        </button>
+      </div>
+    </div>
+  </div>
+) : null}
+
       </div>
 
       {/* Re-use the existing bottom navigation */}
@@ -322,3 +452,4 @@ const isEmailValid =
     </main>
   );
 }
+
