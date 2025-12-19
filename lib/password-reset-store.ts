@@ -63,3 +63,18 @@ export function verifyOtp(email: string, code: string) {
 export function consumeOtp(email: string) {
   resets.delete(email.toLowerCase());
 }
+
+// lib/password-reset-store.ts
+// (기존 createOtp/verifyOtp/consumeOtp는 그대로 두고)
+
+export function createResetOtp(email: string) {
+  return createOtp(email).code;
+}
+
+export function verifyResetOtp(email: string, code: string) {
+  return verifyOtp(email, code);
+}
+
+export function consumeResetOtp(email: string, code: string) {
+  return consumeOtp(email);
+}

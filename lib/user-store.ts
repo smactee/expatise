@@ -65,3 +65,9 @@ export function checkUserPassword(email: string, password: string) {
     users.set(email, { email, passwordHash: hashPassword("password123") });
   }
 })();
+
+// lib/user-store.ts
+export function getUserByEmail(email: string) {
+  const key = email.trim().toLowerCase();
+  return users.get(key) ?? null; // users가 Map이라면
+}

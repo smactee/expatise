@@ -20,10 +20,38 @@ export default function ProfilePage() {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const { theme, toggleTheme } = useTheme();
 
-  const { authed, loading: authLoading, refresh } = useAuthStatus();
+  const { authed, method, email: sessionEmail, provider, loading } = useAuthStatus();
   const [showGuestModal, setShowGuestModal] = useState(false);
   const [saving, setSaving] = useState(false);
   const [saveMsg, setSaveMsg] = useState<string | null>(null);
+
+const signInDisplay = (() => {
+  // 1) guest
+  if (!authed) {
+    return { label: "Signed in as guest.", iconSrc: null as string | null };
+  }
+
+  // 2) email/password local account
+  if (method === "email") {
+    return { label: sessionEmail ?? "Email sign-in", iconSrc: null };
+  }
+
+  // 3) social providers
+  if (provider === "google") {
+    return { label: "Google sign-in", iconSrc: "/images/profile/google-icon.png" };
+  }
+  if (provider === "apple") {
+    return { label: "Apple ID", iconSrc: "/images/profile/apple-icon.png" };
+  }
+  if (provider === "wechat") {
+    return { label: "WeChat", iconSrc: "/images/profile/wechat-icon.png" };
+  }
+
+  // fallback (still show method, not email)
+  return { label: "Social sign-in", iconSrc: null };
+})();
+
+
 
 function requireLogin(e?: React.SyntheticEvent) {
   if (authed) return true;
@@ -57,19 +85,14 @@ function requireLogin(e?: React.SyntheticEvent) {
   const handleAvatarChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-
     const reader = new FileReader();
-
     reader.onloadend = () => {
       const base64 = reader.result as string; // "data:image/jpeg;base64,..."
-
       // 1) update local preview for this page
       setAvatarPreview(base64);
-
       // 2) update global profile (context + localStorage)
       setAvatarUrl(base64);
     };
-
     reader.readAsDataURL(file);
   };
 
@@ -94,12 +117,10 @@ const handleNameBlur = (e: React.FocusEvent<HTMLSpanElement>) => {
 };
 
 // ---- email state + handlers ----
-const [emailError, setEmailError] = useState<string | null>(null);
 
 
 // true when there's something in the field, no error, and it passes regex
-const isEmailValid =
-  !!email.trim() && !emailError && isValidEmail(email.trim());
+
 
 const router = useRouter();
 const [loggingOut, setLoggingOut] = useState(false);
@@ -127,15 +148,10 @@ const handleLogout = async () => {
 };
 
 const handleSave = async (e: React.SyntheticEvent) => {
-  if (!requireLogin(e)) return;
-
-  setSaveMsg(null);
-
-  if (!isValidEmail(email)) {
-    setEmailError("Please enter a valid email address.");
+   if (!authed) {
+    requireLogin(e);
     return;
   }
-
   setSaving(true);
   try {
     saveProfile();
@@ -222,63 +238,35 @@ const handleSave = async (e: React.SyntheticEvent) => {
   />
 </div>
 
-<div className={styles.emailWrapper}>
+
+
+<div
+  className={`${styles.emailWrapper} ${!authed ? styles.lockedClickable : ""}`}
+  role="button"
+  tabIndex={0}
+  onMouseDown={(e) => {
+    if (!authed) requireLogin(e);
+  }}
+  onKeyDown={(e) => {
+    if (!authed && (e.key === "Enter" || e.key === " ")) requireLogin(e as any);
+  }}
+>
   <div className={styles.emailInputRow}>
-  <input
-    type="email"
-    className={`${styles.email} ${emailError ? styles.emailInvalid : ""} ${!authed ? styles.lockedClickable : ""}`}    value={email}
-    size={Math.max(email.length, 20)}   // 👈 keeps width in sync with text
-    readOnly={!authed}
-    onMouseDown={(e) => { if (!authed) requireLogin(e); }}
-    onFocus={(e) => {if (!authed) e.currentTarget.blur(); }}
-    onChange={(e) => {
-      if (!authed)  return;
-      const value = e.target.value;
-      setEmail(value);
-      // clear error while they are typing
-      if (emailError) setEmailError(null);
-    }}
-    onBlur={(e) => {
-      if (!authed) return;
-      const trimmed = e.target.value.trim();
-
-      if (!trimmed) {
-        // empty → fallback to default & clear error
-        setEmail('user@expatise.com');
-        setEmailError(null);
-        return;
-      }
-
-      if (!isValidEmail(trimmed)) {
-        setEmailError('Please enter a valid email address.');
-        // keep what they typed
-        setEmail(trimmed);
-        return;
-      }
-
-      // valid email → save it
-      setEmail(trimmed);
-      setEmailError(null);
-    }}
-    placeholder="user@expatise.com"
+    {signInDisplay.iconSrc ? (
+  <Image
+    src={signInDisplay.iconSrc}
+    alt=""
+    width={18}
+    height={18}
   />
+) : null}
 
-    {isEmailValid && (
-      <span className={styles.emailValidIcon}>
-      <Image src="/images/profile/checkmark-icon.png" 
-      alt="Valid Email Icon" 
-      width={20} 
-      height={20} 
-      />
-      </span>
-    )} 
-    
+<span className={styles.emailDisplayText}>{signInDisplay.label}</span>
+
   </div>
-
-  {emailError && (
-    <div className={styles.emailErrorText}>{emailError}</div>
-  )}
 </div>
+
+
 
 
   {/* Premium plan bar */}
@@ -428,7 +416,7 @@ const handleSave = async (e: React.SyntheticEvent) => {
     <div className={styles.guestModal} onClick={(e) => e.stopPropagation()}>
       <div className={styles.guestTitle}>Log in to save your changes.</div>
       <div className={styles.guestText}>
-        You can continue as a guest, but changes won’t be saved. Log in to keep your data.
+        Some features may be disabled. You can continue as a guest, but changes won’t be saved.
       </div>
       <div className={styles.guestButtons}>
         <Link className={styles.guestPrimary} href="/login?next=/profile">

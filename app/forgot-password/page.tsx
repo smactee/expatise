@@ -21,8 +21,6 @@ export default function ForgotPasswordPage() {
 
 const [emailError, setEmailError] = useState<string | null>(null);
 
-const isValidEmail = (value: string) =>
-  /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 
   
   // Pre-login: force light mode
@@ -44,22 +42,35 @@ const canSend = useMemo(() => {
   }, [code, newPw, confirmPw, loading]);
 
   const sendCode = async () => {
-    if (!canSend) return;
-    setError(null);
-    setLoading(true);
-    try {
-      await fetch("/api/password-reset/start", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
-      });
-      setStep("verify");
-    } catch {
-      setError("Couldn’t start password reset. Try again.");
-    } finally {
-      setLoading(false);
+  setError("");
+
+  const emailNorm = normalizeEmail(email);
+  if (!isValidEmail(emailNorm)) {
+    setError("Please enter a valid email.");
+    return;
+  }
+
+  setIsLoading(true);
+  try {
+    const res = await fetch("/api/password-reset/start", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email: emailNorm }),
+    });
+
+    const data = await res.json().catch(() => null);
+
+    if (!res.ok || !data?.ok) {
+      setError(data?.message ?? "Unable to start reset. Please try again.");
+      return;
     }
-  };
+
+    setStep("verify");
+  } finally {
+    setIsLoading(false);
+  }
+};
+
 
   const resetPassword = async () => {
     if (!canReset) return;

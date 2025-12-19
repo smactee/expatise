@@ -242,26 +242,39 @@ export async function POST(req: Request) {
 
 ### app/api/password-reset/start/route.ts
 ```tsx
+// app/api/password-reset/start/route.ts
 import { NextResponse } from "next/server";
-import { createOtp } from "@/lib/password-reset-store"; // if you don’t use @, change to relative import
-import { userExists } from "@/lib/user-store";
+import { normalizeEmail, isValidEmail } from "../../../../lib/auth";
+import { getUserByEmail } from "../../../../lib/user-store";
+import { createResetOtp } from "../../../../lib/password-reset-store";
 
 export async function POST(req: Request) {
-  const body = await req.json().catch(() => ({}));
-  const email = String(body?.email || "").trim().toLowerCase();
+  const body = await req.json().catch(() => null);
+  const email = normalizeEmail(body?.email ?? "");
 
-  // Always respond the same to avoid account enumeration. :contentReference[oaicite:3]{index=3}
-  if (!email) return NextResponse.json({ ok: true });
-
-  // Only generate OTP if user exists (but don’t reveal that to the client)
-  if (userExists(email)) {
-    const { code, expiresAt } = createOtp(email);
-
-    // DEV ONLY: log OTP to your terminal (later replace with email provider)
-    console.log(`[password-reset] OTP for ${email}: ${code} (expires ${new Date(expiresAt).toLocaleString()})`);
+  if (!isValidEmail(email)) {
+    return NextResponse.json(
+      { ok: false, message: "Please enter a valid email." },
+      { status: 400 }
+    );
   }
 
-  return NextResponse.json({ ok: true });
+  const user = getUserByEmail(email);
+
+  // Only allow OTP reset for LOCAL accounts
+  if (!user || !user.passwordHash) {
+    return NextResponse.json({
+      ok: false,
+      mode: "social",
+      message:
+        "This email is linked to a social sign-in. Please sign in with Google/Apple/WeChat.",
+    });
+  }
+
+  const otp = createResetOtp(email);
+  console.log(`✅ Password reset OTP for ${email}: ${otp}`);
+
+  return NextResponse.json({ ok: true, mode: "otp" });
 }
 
 ```
@@ -305,23 +318,53 @@ export async function POST(req: Request) {
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { AUTH_COOKIE } from "../../../lib/auth";
+import { auth } from "../../auth";
 
 export async function GET() {
-    const cookieStore = await cookies();
-    const authed = Boolean(cookieStore.get(AUTH_COOKIE)?.value);
-    return NextResponse.json({ authed });
+  const cookieStore = await cookies();
+
+  // Local email/password login (your AUTH_COOKIE stores the email)
+  const localEmail = cookieStore.get(AUTH_COOKIE)?.value;
+  if (localEmail) {
+    return NextResponse.json({
+      authed: true,
+      method: "email",
+      email: localEmail,
+      provider: null,
+    });
+  }
+
+  // NextAuth social login (Google/Apple/etc.)
+  const session = await auth();
+  if (session) {
+    return NextResponse.json({
+      authed: true,
+      method: "social",
+      email: session.user?.email ?? null,
+      provider: (session as any).provider ?? null,
+    });
+  }
+
+  // Guest
+  return NextResponse.json({
+    authed: false,
+    method: "guest",
+    email: null,
+    provider: null,
+  });
 }
 
 ```
 
 ### app/auth.ts
 ```tsx
+// app/auth.ts
 import NextAuth from "next-auth";
 import Google from "next-auth/providers/google";
 import Apple from "next-auth/providers/apple";
 import WeChat from "next-auth/providers/wechat";
 
-const providers = [] as any[];
+const providers: any[] = [];
 
 // ✅ add providers only if env vars exist (prevents dev crashes)
 if (process.env.AUTH_GOOGLE_ID && process.env.AUTH_GOOGLE_SECRET) {
@@ -360,10 +403,24 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   secret: process.env.NEXTAUTH_SECRET,
   providers,
   trustHost: true,
+
   session: {
     strategy: "jwt",
-    // “indefinite” isn’t literal, but you can set a long maxAge
-    maxAge: 60 * 60 * 24 * 365, // 1 year (change to longer if you want)
+    maxAge: 60 * 60 * 24 * 300, // 300 days
+  }, // ✅ IMPORTANT: close session and add comma
+
+  callbacks: {
+    async jwt({ token, account }: { token: any; account?: any }) {
+      // store provider on token when signing in via OAuth
+      if (account?.provider) token.provider = account.provider;
+      return token;
+    },
+
+    async session({ session, token }: { session: any; token: any }) {
+      // expose provider to client
+      session.provider = token.provider ?? null;
+      return session;
+    },
   },
 });
 
@@ -544,8 +601,6 @@ export default function ForgotPasswordPage() {
 
 const [emailError, setEmailError] = useState<string | null>(null);
 
-const isValidEmail = (value: string) =>
-  /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 
   
   // Pre-login: force light mode
@@ -567,22 +622,35 @@ const canSend = useMemo(() => {
   }, [code, newPw, confirmPw, loading]);
 
   const sendCode = async () => {
-    if (!canSend) return;
-    setError(null);
-    setLoading(true);
-    try {
-      await fetch("/api/password-reset/start", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
-      });
-      setStep("verify");
-    } catch {
-      setError("Couldn’t start password reset. Try again.");
-    } finally {
-      setLoading(false);
+  setError("");
+
+  const emailNorm = normalizeEmail(email);
+  if (!isValidEmail(emailNorm)) {
+    setError("Please enter a valid email.");
+    return;
+  }
+
+  setIsLoading(true);
+  try {
+    const res = await fetch("/api/password-reset/start", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email: emailNorm }),
+    });
+
+    const data = await res.json().catch(() => null);
+
+    if (!res.ok || !data?.ok) {
+      setError(data?.message ?? "Unable to start reset. Please try again.");
+      return;
     }
-  };
+
+    setStep("verify");
+  } finally {
+    setIsLoading(false);
+  }
+};
+
 
   const resetPassword = async () => {
     if (!canReset) return;
@@ -3253,10 +3321,20 @@ export default function ProfilePage() {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const { theme, toggleTheme } = useTheme();
 
-  const { authed, loading: authLoading, refresh } = useAuthStatus();
+  const { authed, method, email: sessionEmail, provider } = useAuthStatus();
   const [showGuestModal, setShowGuestModal] = useState(false);
   const [saving, setSaving] = useState(false);
   const [saveMsg, setSaveMsg] = useState<string | null>(null);
+
+  const accountText = (() => {
+  if (!authed) return "Guest";
+  if (method === "email") return sessionEmail ?? "Email account";
+  // social:
+  if (provider === "google") return "Google sign-in";
+  if (provider === "apple") return "Apple ID";
+  if (provider === "wechat") return "WeChat";
+  return sessionEmail ?? "Not shared by your sign-in method.";
+})();
 
 function requireLogin(e?: React.SyntheticEvent) {
   if (authed) return true;
@@ -3455,46 +3533,19 @@ const handleSave = async (e: React.SyntheticEvent) => {
   />
 </div>
 
-<div className={styles.emailWrapper}>
+<div className={styles.emailWrapper}
+  className={styles.emailWrapper}
+  role="button"
+  tabIndex={0}
+  onMouseDown={(e) => {
+    if (!authed) requireLogin(e);
+  }}
+>
   <div className={styles.emailInputRow}>
-  <input
-    type="email"
-    className={`${styles.email} ${emailError ? styles.emailInvalid : ""} ${!authed ? styles.lockedClickable : ""}`}    value={email}
-    size={Math.max(email.length, 20)}   // 👈 keeps width in sync with text
-    readOnly={!authed}
-    onMouseDown={(e) => { if (!authed) requireLogin(e); }}
-    onFocus={(e) => {if (!authed) e.currentTarget.blur(); }}
-    onChange={(e) => {
-      if (!authed)  return;
-      const value = e.target.value;
-      setEmail(value);
-      // clear error while they are typing
-      if (emailError) setEmailError(null);
-    }}
-    onBlur={(e) => {
-      if (!authed) return;
-      const trimmed = e.target.value.trim();
+    <span className={styles.emailDisplayText}>{accountText}</span>
+  </div>
+</div>
 
-      if (!trimmed) {
-        // empty → fallback to default & clear error
-        setEmail('user@expatise.com');
-        setEmailError(null);
-        return;
-      }
-
-      if (!isValidEmail(trimmed)) {
-        setEmailError('Please enter a valid email address.');
-        // keep what they typed
-        setEmail(trimmed);
-        return;
-      }
-
-      // valid email → save it
-      setEmail(trimmed);
-      setEmailError(null);
-    }}
-    placeholder="user@expatise.com"
-  />
 
     {isEmailValid && (
       <span className={styles.emailValidIcon}>
@@ -3661,7 +3712,7 @@ const handleSave = async (e: React.SyntheticEvent) => {
     <div className={styles.guestModal} onClick={(e) => e.stopPropagation()}>
       <div className={styles.guestTitle}>Log in to save your changes.</div>
       <div className={styles.guestText}>
-        You can continue as a guest, but changes won’t be saved. Log in to keep your data.
+        Some features may be disabled. You can continue as a guest, but changes won’t be saved.
       </div>
       <div className={styles.guestButtons}>
         <Link className={styles.guestPrimary} href="/login?next=/profile">
@@ -4229,6 +4280,14 @@ const handleSave = async (e: React.SyntheticEvent) => {
 
 .lockedClickable {
   cursor: pointer !important;
+}
+
+
+.emailDisplayText {
+  width: 100%;
+  display: block;
+  text-align: center;
+  opacity: 0.95;
 }
 
 ```
