@@ -119,6 +119,376 @@ If usage and adoption grows, Expatise may expand into:
 
 ```
 
+### app/account-security/account-security.module.css
+```css
+.page {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  padding: 24px 16px;
+  background: var(--color-page-bg);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'SF Pro Text',
+    'Segoe UI', sans-serif;
+}
+
+.card {
+  width: 100%;
+  max-width: 520px;
+  border-radius: 20px;
+  padding: 18px;
+  background: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(12px);
+}
+
+.backBtn {
+  border: none;
+  background: transparent;
+  font-size: 18px;
+  cursor: pointer;
+  margin-bottom: 10px;
+}
+
+.title {
+  font-size: 24px;
+  margin: 8px 0 12px;
+}
+
+.text {
+  opacity: 0.8;
+}
+
+.section {
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(0,0,0,0.08);
+}
+
+.sectionTitle {
+  font-size: 16px;
+  margin-bottom: 10px;
+}
+
+.input {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1px solid rgba(0,0,0,0.15);
+  outline: none;
+  margin-bottom: 10px;
+  background: rgba(255,255,255,0.9);
+}
+
+.primaryBtn {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  cursor: pointer;
+  background: var(--color-premium-gradient);
+  color: var(--color-heading-strong);
+  font-weight: 700;
+}
+
+.msg {
+  margin: 10px 0;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: rgba(0,0,0,0.06);
+}
+
+.row {
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.linkBtn {
+  display: inline-block;
+  padding: 10px 12px;
+  border-radius: 12px;
+  text-decoration: none;
+  background: rgba(0,0,0,0.08);
+}
+
+.ghostBtn {
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(0,0,0,0.15);
+  background: transparent;
+  cursor: pointer;
+}
+
+```
+
+### app/account-security/page.tsx
+```tsx
+'use client';
+
+import React, { useMemo, useState } from 'react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import styles from './account-security.module.css';
+import { useAuthStatus } from '../../components/useAuthStatus';
+
+export default function AccountSecurityPage() {
+  const router = useRouter();
+  const { authed, method, loading } = useAuthStatus();
+
+  const allowed = useMemo(() => authed && method === 'email', [authed, method]);
+
+  const [pwCurrent, setPwCurrent] = useState('');
+  const [pwNext, setPwNext] = useState('');
+  const [pwNext2, setPwNext2] = useState('');
+
+  const [emailNext, setEmailNext] = useState('');
+  const [emailPw, setEmailPw] = useState('');
+
+  const [msg, setMsg] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
+
+  async function changePassword() {
+    setMsg(null);
+
+    if (!pwCurrent || !pwNext || !pwNext2) {
+      setMsg('Please fill all password fields.');
+      return;
+    }
+    if (pwNext !== pwNext2) {
+      setMsg('New passwords do not match.');
+      return;
+    }
+
+    setBusy(true);
+    try {
+      const res = await fetch('/api/account/change-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          currentPassword: pwCurrent,
+          newPassword: pwNext,
+        }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        setMsg(data?.error ?? 'Failed to change password.');
+        return;
+      }
+
+      setPwCurrent('');
+      setPwNext('');
+      setPwNext2('');
+      setMsg('Password updated.');
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function changeEmail() {
+    setMsg(null);
+
+    if (!emailNext || !emailPw) {
+      setMsg('Please enter your new email and password.');
+      return;
+    }
+
+    setBusy(true);
+    try {
+      const res = await fetch('/api/account/change-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          newEmail: emailNext,
+          password: emailPw,
+        }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        setMsg(data?.error ?? 'Failed to change email.');
+        return;
+      }
+
+      setEmailNext('');
+      setEmailPw('');
+      setMsg('Email updated.');
+      // optional: send user back to profile
+      // router.push('/profile');
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  if (loading) return null;
+
+  if (!allowed) {
+    return (
+      <main className={styles.page}>
+        <div className={styles.card}>
+          <h1 className={styles.title}>Account Security</h1>
+          <p className={styles.text}>
+            This page is only available for accounts created with Email + Password.
+          </p>
+          <div className={styles.row}>
+            <Link className={styles.linkBtn} href="/login">
+              Go to login
+            </Link>
+            <button className={styles.ghostBtn} onClick={() => router.back()}>
+              Back
+            </button>
+          </div>
+        </div>
+      </main>
+    );
+  }
+
+  return (
+    <main className={styles.page}>
+      <div className={styles.card}>
+        <button className={styles.backBtn} onClick={() => router.back()}>
+          ‹ Back
+        </button>
+
+        <h1 className={styles.title}>Change Email / Password</h1>
+
+        {msg && <div className={styles.msg}>{msg}</div>}
+
+        <section className={styles.section}>
+          <h2 className={styles.sectionTitle}>Change Email</h2>
+          <input
+            className={styles.input}
+            placeholder="New email"
+            value={emailNext}
+            onChange={(e) => setEmailNext(e.target.value)}
+          />
+          <input
+            className={styles.input}
+            placeholder="Current password"
+            type="password"
+            value={emailPw}
+            onChange={(e) => setEmailPw(e.target.value)}
+          />
+          <button className={styles.primaryBtn} disabled={busy} onClick={changeEmail}>
+            Update Email
+          </button>
+        </section>
+
+        <section className={styles.section}>
+          <h2 className={styles.sectionTitle}>Change Password</h2>
+          <input
+            className={styles.input}
+            placeholder="Current password"
+            type="password"
+            value={pwCurrent}
+            onChange={(e) => setPwCurrent(e.target.value)}
+          />
+          <input
+            className={styles.input}
+            placeholder="New password"
+            type="password"
+            value={pwNext}
+            onChange={(e) => setPwNext(e.target.value)}
+          />
+          <input
+            className={styles.input}
+            placeholder="Confirm new password"
+            type="password"
+            value={pwNext2}
+            onChange={(e) => setPwNext2(e.target.value)}
+          />
+          <button className={styles.primaryBtn} disabled={busy} onClick={changePassword}>
+            Update Password
+          </button>
+        </section>
+      </div>
+    </main>
+  );
+}
+
+```
+
+### app/api/account/change-email/route.ts
+```tsx
+import { NextResponse } from 'next/server';
+import { cookies } from 'next/headers';
+import { AUTH_COOKIE, cookieOptions, isValidEmail } from '../../../../lib/auth';
+import { checkUserPassword, updateUserEmail } from '../../../../lib/user-store';
+
+export async function POST(req: Request) {
+  const cookieStore = await cookies();
+  const oldEmail = cookieStore.get(AUTH_COOKIE)?.value;
+
+  if (!oldEmail) {
+    return NextResponse.json({ error: 'Not logged in.' }, { status: 401 });
+  }
+
+  const body = await req.json().catch(() => null);
+  const newEmail = (body?.newEmail as string | undefined)?.trim();
+  const password = body?.password as string | undefined;
+
+  if (!newEmail || !password) {
+    return NextResponse.json({ error: 'Missing fields.' }, { status: 400 });
+  }
+
+  if (!isValidEmail(newEmail)) {
+    return NextResponse.json({ error: 'Invalid email format.' }, { status: 400 });
+  }
+
+  const ok = await checkUserPassword(oldEmail, password);
+  if (!ok) {
+    return NextResponse.json({ error: 'Password is incorrect.' }, { status: 400 });
+  }
+
+  const moved = await updateUserEmail(oldEmail, newEmail);
+  if (!moved.ok) {
+    if (moved.reason === 'exists') {
+      return NextResponse.json({ error: 'That email is already in use.' }, { status: 400 });
+    }
+    return NextResponse.json({ error: 'Account not found.' }, { status: 404 });
+  }
+
+  // update auth cookie to new email
+  cookieStore.set(AUTH_COOKIE, newEmail.toLowerCase(), cookieOptions());
+
+  return NextResponse.json({ ok: true });
+}
+
+```
+
+### app/api/account/change-password/route.ts
+```tsx
+import { NextResponse } from 'next/server';
+import { cookies } from 'next/headers';
+import { AUTH_COOKIE } from '../../../../lib/auth';
+import { checkUserPassword, setUserPassword } from '../../../../lib/user-store';
+
+export async function POST(req: Request) {
+  const cookieStore = await cookies();
+  const email = cookieStore.get(AUTH_COOKIE)?.value;
+
+  if (!email) {
+    return NextResponse.json({ error: 'Not logged in.' }, { status: 401 });
+  }
+
+  const body = await req.json().catch(() => null);
+  const currentPassword = body?.currentPassword as string | undefined;
+  const newPassword = body?.newPassword as string | undefined;
+
+  if (!currentPassword || !newPassword) {
+    return NextResponse.json({ error: 'Missing fields.' }, { status: 400 });
+  }
+
+  const ok = await checkUserPassword(email, currentPassword);
+  if (!ok) {
+    return NextResponse.json({ error: 'Current password is incorrect.' }, { status: 400 });
+  }
+
+  await setUserPassword(email, newPassword);
+  return NextResponse.json({ ok: true });
+}
+
+```
+
 ### app/api/auth/[...nextauth]/route.ts
 ```tsx
 import { handlers } from "../../../auth";
@@ -242,29 +612,21 @@ export async function POST(req: Request) {
 
 ### app/api/password-reset/start/route.ts
 ```tsx
-// app/api/password-reset/start/route.ts
 import { NextResponse } from "next/server";
-import { normalizeEmail, isValidEmail } from "../../../../lib/auth";
 import { getUserByEmail } from "../../../../lib/user-store";
 import { createResetOtp } from "../../../../lib/password-reset-store";
 
 export async function POST(req: Request) {
-  const body = await req.json().catch(() => null);
-  const email = normalizeEmail(body?.email ?? "");
+  const body = await req.json().catch(() => ({}));
+  const email = String(body.email ?? "").trim().toLowerCase();
 
-  if (!isValidEmail(email)) {
-    return NextResponse.json(
-      { ok: false, message: "Please enter a valid email." },
-      { status: 400 }
-    );
-  }
-
+  // MVP: 항상 200 OK로 응답(계정 존재 유무 노출 방지)
   const user = getUserByEmail(email);
 
-  // Only allow OTP reset for LOCAL accounts
+  // local 계정(비번 있는 계정)만 OTP 발급
   if (!user || !user.passwordHash) {
     return NextResponse.json({
-      ok: false,
+      ok: true,
       mode: "social",
       message:
         "This email is linked to a social sign-in. Please sign in with Google/Apple/WeChat.",
@@ -272,9 +634,9 @@ export async function POST(req: Request) {
   }
 
   const otp = createResetOtp(email);
-  console.log(`✅ Password reset OTP for ${email}: ${otp}`);
+  console.log(`[DEV OTP] ${email}: ${otp}`);
 
-  return NextResponse.json({ ok: true, mode: "otp" });
+  return NextResponse.json({ ok: true, mode: "local" });
 }
 
 ```
@@ -323,29 +685,28 @@ import { auth } from "../../auth";
 export async function GET() {
   const cookieStore = await cookies();
 
-  // Local email/password login (your AUTH_COOKIE stores the email)
-  const localEmail = cookieStore.get(AUTH_COOKIE)?.value;
+  // Local/email login (your custom auth cookie)
+  const localEmail = cookieStore.get(AUTH_COOKIE)?.value ?? null;
   if (localEmail) {
     return NextResponse.json({
       authed: true,
       method: "email",
-      email: localEmail,
-      provider: null,
+      email: localEmail,      // optional: only if you store it somewhere
+      provider: "local",
     });
   }
 
-  // NextAuth social login (Google/Apple/etc.)
+  // NextAuth social login
   const session = await auth();
-  if (session) {
+  if (session?.user) {
     return NextResponse.json({
       authed: true,
       method: "social",
-      email: session.user?.email ?? null,
-      provider: (session as any).provider ?? null,
+      email: session.user.email ?? null,
+      provider: (session as any).provider ?? null, // "google" | "apple" | "wechat"
     });
   }
 
-  // Guest
   return NextResponse.json({
     authed: false,
     method: "guest",
@@ -360,6 +721,9 @@ export async function GET() {
 ```tsx
 // app/auth.ts
 import NextAuth from "next-auth";
+import type { Account, Session } from "next-auth";
+import type { JWT } from "next-auth/jwt";
+
 import Google from "next-auth/providers/google";
 import Apple from "next-auth/providers/apple";
 import WeChat from "next-auth/providers/wechat";
@@ -407,18 +771,16 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   session: {
     strategy: "jwt",
     maxAge: 60 * 60 * 24 * 300, // 300 days
-  }, // ✅ IMPORTANT: close session and add comma
+  },
 
   callbacks: {
-    async jwt({ token, account }: { token: any; account?: any }) {
-      // store provider on token when signing in via OAuth
-      if (account?.provider) token.provider = account.provider;
+    async jwt({ token, account }: { token: JWT; account?: Account | null }) {
+      if (account?.provider) (token as any).provider = account.provider;
       return token;
     },
 
-    async session({ session, token }: { session: any; token: any }) {
-      // expose provider to client
-      session.provider = token.provider ?? null;
+    async session({ session, token }: { session: Session; token: JWT }) {
+      (session as any).provider = (token as any).provider ?? null;
       return session;
     },
   },
@@ -2524,13 +2886,14 @@ export default function OnboardingPage() {
 /* Avatar on the right */
 .testModalAvatarWrapper {
   flex-shrink: 0;
+  position: relative;
+  width: 44px;
+  height: 66px;
 }
 
 .testModalAvatar {
-  width: 66px;
-  height: 66px;
   border-radius: 20px; /* or 50% if the Figma avatar is fully round */
-  object-fit: cover;
+  object-fit: contain;
 }
 
 
@@ -2806,7 +3169,7 @@ const {
   name: userName, 
   avatarUrl: userAvatarSrc,
 } = useUserProfile();
-const avatarSrc = userAvatarSrc || '/images/profile/profile-placeholder.png';
+const avatarSrc = userAvatarSrc || '/images/profile/imageupload-icon.png';
 
   // ===== modal helpers =====
 const openTestModal = () => {
@@ -3207,8 +3570,8 @@ const modalTimeLabel = formatTimeLabel(modalSourceTime);
     <Image
       src={avatarSrc}
       alt={`${userName} avatar`}
-      width={66}
-      height={66}
+      fill
+      sizes="44px"
       className={styles.testModalAvatar}
     />
   </div>
@@ -3321,20 +3684,40 @@ export default function ProfilePage() {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const { theme, toggleTheme } = useTheme();
 
-  const { authed, method, email: sessionEmail, provider } = useAuthStatus();
+  const { authed, method, loading: authLoading, refresh, email: sessionEmail, provider } = useAuthStatus();
   const [showGuestModal, setShowGuestModal] = useState(false);
   const [saving, setSaving] = useState(false);
   const [saveMsg, setSaveMsg] = useState<string | null>(null);
 
-  const accountText = (() => {
-  if (!authed) return "Guest";
-  if (method === "email") return sessionEmail ?? "Email account";
-  // social:
-  if (provider === "google") return "Google sign-in";
-  if (provider === "apple") return "Apple ID";
-  if (provider === "wechat") return "WeChat";
-  return sessionEmail ?? "Not shared by your sign-in method.";
+  const canManageCredentials = authed && (method === "email");
+
+const signInDisplay = (() => {
+  // 1) guest
+  if (!authed) {
+    return { label: "Signed in as guest.", iconSrc: null as string | null };
+  }
+
+  // 2) email/password local account
+  if (method === "email") {
+    return { label: sessionEmail ?? "Email sign-in", iconSrc: null };
+  }
+
+  // 3) social providers
+  if (provider === "google") {
+    return { label: "Google sign-in", iconSrc: "/images/profile/google-icon.png" };
+  }
+  if (provider === "apple") {
+    return { label: "Apple ID", iconSrc: "/images/profile/apple-icon.png" };
+  }
+  if (provider === "wechat") {
+    return { label: "WeChat", iconSrc: "/images/profile/wechat-icon.png" };
+  }
+
+  // fallback (still show method, not email)
+  return { label: "Social sign-in", iconSrc: null };
 })();
+
+
 
 function requireLogin(e?: React.SyntheticEvent) {
   if (authed) return true;
@@ -3368,19 +3751,14 @@ function requireLogin(e?: React.SyntheticEvent) {
   const handleAvatarChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-
     const reader = new FileReader();
-
     reader.onloadend = () => {
       const base64 = reader.result as string; // "data:image/jpeg;base64,..."
-
       // 1) update local preview for this page
       setAvatarPreview(base64);
-
       // 2) update global profile (context + localStorage)
       setAvatarUrl(base64);
     };
-
     reader.readAsDataURL(file);
   };
 
@@ -3405,12 +3783,10 @@ const handleNameBlur = (e: React.FocusEvent<HTMLSpanElement>) => {
 };
 
 // ---- email state + handlers ----
-const [emailError, setEmailError] = useState<string | null>(null);
 
 
 // true when there's something in the field, no error, and it passes regex
-const isEmailValid =
-  !!email.trim() && !emailError && isValidEmail(email.trim());
+
 
 const router = useRouter();
 const [loggingOut, setLoggingOut] = useState(false);
@@ -3438,15 +3814,10 @@ const handleLogout = async () => {
 };
 
 const handleSave = async (e: React.SyntheticEvent) => {
-  if (!requireLogin(e)) return;
-
-  setSaveMsg(null);
-
-  if (!isValidEmail(email)) {
-    setEmailError("Please enter a valid email address.");
+   if (!authed) {
+    requireLogin(e);
     return;
   }
-
   setSaving(true);
   try {
     saveProfile();
@@ -3533,36 +3904,35 @@ const handleSave = async (e: React.SyntheticEvent) => {
   />
 </div>
 
-<div className={styles.emailWrapper}
-  className={styles.emailWrapper}
+
+
+<div
+  className={`${styles.emailWrapper} ${!authed ? styles.lockedClickable : ""}`}
   role="button"
   tabIndex={0}
   onMouseDown={(e) => {
     if (!authed) requireLogin(e);
   }}
+  onKeyDown={(e) => {
+    if (!authed && (e.key === "Enter" || e.key === " ")) requireLogin(e as any);
+  }}
 >
   <div className={styles.emailInputRow}>
-    <span className={styles.emailDisplayText}>{accountText}</span>
+    {signInDisplay.iconSrc ? (
+  <Image
+    src={signInDisplay.iconSrc}
+    alt=""
+    width={18}
+    height={18}
+  />
+) : null}
+
+<span className={styles.emailDisplayText}>{signInDisplay.label}</span>
+
   </div>
 </div>
 
 
-    {isEmailValid && (
-      <span className={styles.emailValidIcon}>
-      <Image src="/images/profile/checkmark-icon.png" 
-      alt="Valid Email Icon" 
-      width={20} 
-      height={20} 
-      />
-      </span>
-    )} 
-    
-  </div>
-
-  {emailError && (
-    <div className={styles.emailErrorText}>{emailError}</div>
-  )}
-</div>
 
 
   {/* Premium plan bar */}
@@ -3617,6 +3987,29 @@ const handleSave = async (e: React.SyntheticEvent) => {
               </div>
             </button>
 
+{canManageCredentials && (
+  <button
+    type="button"
+    className={styles.settingsRow}
+    onClick={() => router.push("/account-security")}
+  >
+    <div className={styles.settingsLeft}>
+      <span className={styles.settingsIcon}>
+        <Image
+          src="/images/profile/lock-icon.png"
+          alt="Account security"
+          width={24}
+          height={24}
+        />
+      </span>
+
+      <span className={styles.settingsLabel}>Change Email/Password</span>
+    </div>
+
+    <span className={styles.chevron}>›</span>
+  </button>
+)}
+
 
         <button className={styles.settingsRow}>
           <div className={styles.settingsLeft}>
@@ -3647,6 +4040,8 @@ const handleSave = async (e: React.SyntheticEvent) => {
           </div>
           <span className={styles.chevron}>›</span>
         </button>
+
+
 
         <button className={styles.settingsRow}>
           <div className={styles.settingsLeft}>
@@ -5294,31 +5689,49 @@ export function useUserProfile() {
 
 ### components/useAuthStatus.ts
 ```tsx
-// components/useAuthStatus.ts
+// components/useAuthStatus.ts (or wherever it lives)
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
 
+type AuthStatus = {
+  authed: boolean;
+  method: "guest" | "email" | "social";
+  email: string | null;
+  provider: string | null;
+};
+
 export function useAuthStatus() {
-  const [authed, setAuthed] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [status, setStatus] = useState<AuthStatus>({
+    authed: false,
+    method: "guest",
+    email: null,
+    provider: null,
+  });
 
   const refresh = useCallback(async () => {
     setLoading(true);
     try {
       const res = await fetch("/api/session", { cache: "no-store" });
-      const data = await res.json().catch(() => ({ authed: false }));
-      setAuthed(Boolean(data.authed));
+      const data = (await res.json()) as Partial<AuthStatus>;
+
+      setStatus({
+        authed: Boolean(data.authed),
+        method: (data.method as any) ?? "guest",
+        email: data.email ?? null,
+        provider: data.provider ?? null,
+      });
     } finally {
       setLoading(false);
     }
   }, []);
 
   useEffect(() => {
-    void refresh();
+    refresh();
   }, [refresh]);
 
-  return { authed, loading, refresh };
+  return { ...status, loading, refresh };
 }
 
 ```
@@ -5347,6 +5760,15 @@ export function safeNextPath(next: string | null, fallback = "/") {
   return next;
 }
 
+export function cookieOptions() {
+  return {
+    httpOnly: true,
+    sameSite: "lax" as const,
+    secure: process.env.NODE_ENV === "production",
+    path: "/",
+    maxAge: 60 * 60 * 24 * 300, // 300 days (match your local-login route)
+  };
+}
 ```
 
 ### lib/middleware/auth.ts
@@ -5484,11 +5906,27 @@ export function consumeOtp(email: string) {
   resets.delete(email.toLowerCase());
 }
 
+// lib/password-reset-store.ts
+// (기존 createOtp/verifyOtp/consumeOtp는 그대로 두고)
+
+export function createResetOtp(email: string) {
+  return createOtp(email).code;
+}
+
+export function verifyResetOtp(email: string, code: string) {
+  return verifyOtp(email, code);
+}
+
+export function consumeResetOtp(email: string, code: string) {
+  return consumeOtp(email);
+}
+
 ```
 
 ### lib/user-store.ts
 ```tsx
 import crypto from "crypto";
+import { normalizeEmail } from "./auth";
 
 /**
  * DEV ONLY:
@@ -5555,6 +5993,27 @@ export function checkUserPassword(email: string, password: string) {
     users.set(email, { email, passwordHash: hashPassword("password123") });
   }
 })();
+
+// lib/user-store.ts
+export function getUserByEmail(email: string) {
+  const key = email.trim().toLowerCase();
+  return users.get(key) ?? null; // users가 Map이라면
+}
+
+export async function updateUserEmail(oldEmail: string, newEmail: string) {
+  const oldKey = normalizeEmail(oldEmail);
+  const newKey = normalizeEmail(newEmail);
+
+  const user = users.get(oldKey);
+  if (!user) return { ok: false as const, reason: 'missing' as const };
+
+  if (users.has(newKey)) return { ok: false as const, reason: 'exists' as const };
+
+  users.delete(oldKey);
+  users.set(newKey, { ...user, email: newKey });
+
+  return { ok: true as const };
+}
 
 ```
 

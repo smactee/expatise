@@ -20,10 +20,12 @@ export default function ProfilePage() {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const { theme, toggleTheme } = useTheme();
 
-  const { authed, method, email: sessionEmail, provider, loading } = useAuthStatus();
+  const { authed, method, loading: authLoading, refresh, email: sessionEmail, provider } = useAuthStatus();
   const [showGuestModal, setShowGuestModal] = useState(false);
   const [saving, setSaving] = useState(false);
   const [saveMsg, setSaveMsg] = useState<string | null>(null);
+
+  const canManageCredentials = authed && (method === "email");
 
 const signInDisplay = (() => {
   // 1) guest
@@ -321,6 +323,29 @@ const handleSave = async (e: React.SyntheticEvent) => {
               </div>
             </button>
 
+{canManageCredentials && (
+  <button
+    type="button"
+    className={styles.settingsRow}
+    onClick={() => router.push("/account-security")}
+  >
+    <div className={styles.settingsLeft}>
+      <span className={styles.settingsIcon}>
+        <Image
+          src="/images/profile/lock-icon.png"
+          alt="Account security"
+          width={24}
+          height={24}
+        />
+      </span>
+
+      <span className={styles.settingsLabel}>Change Email/Password</span>
+    </div>
+
+    <span className={styles.chevron}>›</span>
+  </button>
+)}
+
 
         <button className={styles.settingsRow}>
           <div className={styles.settingsLeft}>
@@ -351,6 +376,8 @@ const handleSave = async (e: React.SyntheticEvent) => {
           </div>
           <span className={styles.chevron}>›</span>
         </button>
+
+
 
         <button className={styles.settingsRow}>
           <div className={styles.settingsLeft}>

@@ -524,13 +524,14 @@
 /* Avatar on the right */
 .testModalAvatarWrapper {
   flex-shrink: 0;
+  position: relative;
+  width: 44px;
+  height: 66px;
 }
 
 .testModalAvatar {
-  width: 66px;
-  height: 66px;
   border-radius: 20px; /* or 50% if the Figma avatar is fully round */
-  object-fit: cover;
+  object-fit: contain;
 }
 
 

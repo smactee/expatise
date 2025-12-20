@@ -19,3 +19,13 @@ export function safeNextPath(next: string | null, fallback = "/") {
   if (next.startsWith("//")) return fallback;
   return next;
 }
+
+export function cookieOptions() {
+  return {
+    httpOnly: true,
+    sameSite: "lax" as const,
+    secure: process.env.NODE_ENV === "production",
+    path: "/",
+    maxAge: 60 * 60 * 24 * 300, // 300 days (match your local-login route)
+  };
+}

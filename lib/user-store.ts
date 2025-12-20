@@ -1,4 +1,5 @@
 import crypto from "crypto";
+import { normalizeEmail } from "./auth";
 
 /**
  * DEV ONLY:
@@ -70,4 +71,19 @@ export function checkUserPassword(email: string, password: string) {
 export function getUserByEmail(email: string) {
   const key = email.trim().toLowerCase();
   return users.get(key) ?? null; // users가 Map이라면
+}
+
+export async function updateUserEmail(oldEmail: string, newEmail: string) {
+  const oldKey = normalizeEmail(oldEmail);
+  const newKey = normalizeEmail(newEmail);
+
+  const user = users.get(oldKey);
+  if (!user) return { ok: false as const, reason: 'missing' as const };
+
+  if (users.has(newKey)) return { ok: false as const, reason: 'exists' as const };
+
+  users.delete(oldKey);
+  users.set(newKey, { ...user, email: newKey });
+
+  return { ok: true as const };
 }

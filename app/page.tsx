@@ -44,7 +44,7 @@ const {
   name: userName, 
   avatarUrl: userAvatarSrc,
 } = useUserProfile();
-const avatarSrc = userAvatarSrc || '/images/profile/profile-placeholder.png';
+const avatarSrc = userAvatarSrc || '/images/profile/imageupload-icon.png';
 
   // ===== modal helpers =====
 const openTestModal = () => {
@@ -445,8 +445,8 @@ const modalTimeLabel = formatTimeLabel(modalSourceTime);
     <Image
       src={avatarSrc}
       alt={`${userName} avatar`}
-      width={66}
-      height={66}
+      fill
+      sizes="44px"
       className={styles.testModalAvatar}
     />
   </div>
