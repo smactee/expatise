@@ -275,9 +275,7 @@ const handleSave = async (e: React.SyntheticEvent) => {
 <button
   type="button"
   className={styles.premiumCard}
-  onClick={(e) => {
-  if (!requireLogin(e)) return;
-  }}
+  onClick={() => router.push("/premium")}
 >
     <span className={styles.premiumIcon}>
       <Image 

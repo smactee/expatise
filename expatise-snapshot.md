@@ -788,6 +788,397 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
 ```
 
+### app/checkout/checkout.module.css
+```css
+.page {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  background: var(--color-page-bg, linear-gradient(180deg, #eaf5ff 0%, #f5f8ff 100%));
+}
+
+.frame {
+  width: 100%;
+  max-width: 390px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  background: transparent;
+}
+
+/* Top */
+.topBar {
+  height: 74px;
+  padding: 14px 22px 0;
+  box-sizing: border-box;
+}
+
+.backButton {
+  appearance: none;
+  border: none;
+  background: transparent;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  color: #111827;
+}
+
+.backIcon {
+  font-size: 30px;
+  line-height: 1;
+  color: rgba(0, 0, 0, 0.45);
+}
+
+.backText {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+/* Content area */
+.content {
+  flex: 1;
+  padding: 0 26px;
+  box-sizing: border-box;
+}
+
+.summaryRow {
+  margin-top: 24px;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.planLabel {
+  font-size: 18px;
+  color: rgba(17, 24, 39, 0.7);
+}
+
+.orderNo {
+  font-size: 18px;
+  color: rgba(17, 24, 39, 0.7);
+}
+
+.price {
+  margin-top: 10px;
+  font-size: 56px;
+  font-weight: 800;
+  color: rgba(75, 75, 75, 0.95);
+  letter-spacing: -1px;
+}
+
+.divider {
+  margin: 18px 0 18px;
+  height: 1px;
+  background: rgba(120, 120, 120, 0.55);
+}
+
+/* Payment methods row */
+.payRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 10px 0 6px;
+}
+
+/* Makes different-sized logos align nicely */
+.payLogoBox {
+  height: 34px;              /* consistent visual height */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Nunito Sans ONLY for the label text */
+.pgLabel {
+  font-family: var(--font-nunito-sans), system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(17, 24, 39, 0.75);
+  line-height: 1.1;
+}
+
+
+/* Form */
+.form {
+  margin-top: 18px;
+}
+
+.label {
+  display: block;
+  margin: 18px 0 10px;
+  font-size: 20px;
+  font-weight: 600;
+  color: rgba(17, 24, 39, 0.9);
+}
+
+.inputWrap {
+  height: 48px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.65);
+  border: 1px solid rgba(160, 170, 190, 0.45);
+  box-shadow: 0 6px 14px rgba(15, 23, 42, 0.10);
+
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 14px;
+  box-sizing: border-box;
+}
+
+.leftIcon {
+  opacity: 0.6;
+  font-size: 18px;
+}
+
+.input {
+  width: 100%;
+  border: none;
+  outline: none;
+  background: transparent;
+
+  font-size: 20px;
+  font-weight: 500;
+  color: rgba(17, 24, 39, 0.75);
+}
+
+.twoCol {
+  margin-top: 8px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+
+/* Bottom button */
+.footer {
+  padding: 16px 22px 22px;
+  box-sizing: border-box;
+}
+
+.checkoutBtn {
+  width: 100%;
+  height: 56px;
+  border: none;
+  border-radius: 14px;
+
+  background: linear-gradient(90deg, rgba(43, 124, 175, 0.65) 0%, rgba(255, 255, 255, 0.95) 100%);
+  box-shadow: 0 12px 24px rgba(15, 23, 42, 0.18);
+
+  font-size: 22px;
+  font-weight: 700;
+  color: rgba(75, 75, 75, 0.9);
+
+  cursor: pointer;
+}
+
+
+```
+
+### app/checkout/page.tsx
+```tsx
+"use client";
+
+import Image from "next/image";
+import { useMemo, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import styles from "./checkout.module.css";
+import { PLAN_MAP, toPlanId, type PlanId } from "../../lib/plans";
+
+
+
+type PayMethod = "alipay" | "gpay" | "applepay" | "wechat";
+
+
+
+function onlyDigits(s: string) {
+  return s.replace(/\D/g, "");
+}
+
+function formatCardNumber(raw: string) {
+  const digits = onlyDigits(raw).slice(0, 19); // allow up to 19
+  return digits.replace(/(.{4})/g, "$1 ").trim();
+}
+
+function formatExpiry(raw: string) {
+  const digits = onlyDigits(raw).slice(0, 4); // MMYY
+  if (digits.length <= 2) return digits;
+  return `${digits.slice(0, 2)}/${digits.slice(2)}`;
+}
+
+export default function CheckoutPage() {
+  const router = useRouter();
+  const sp = useSearchParams();
+
+  // simple “order no” for UI (you’ll replace with real order id later)
+  const orderNo = useMemo(() => {
+    const n = Date.now().toString().slice(-7);
+    return `№${n}`;
+  }, []);
+
+  const [method, setMethod] = useState<PayMethod>("wechat");
+  const [cardNumber, setCardNumber] = useState("");
+  const [expiry, setExpiry] = useState("");
+  const [cvv, setCvv] = useState("");
+
+const plan: PlanId = toPlanId(sp.get("plan"));
+const { checkoutTitle: title, price } = PLAN_MAP[plan];
+
+  return (
+    <main className={styles.page}>
+      <div className={styles.frame}>
+        {/* Top bar */}
+        <header className={styles.topBar}>
+          <button type="button" className={styles.backButton} onClick={() => router.back()}>
+            <span className={styles.backIcon}>‹</span>
+            <span className={styles.backText}>Back</span>
+          </button>
+        </header>
+
+        {/* Content */}
+        <div className={styles.content}>
+          <div className={styles.summaryRow}>
+            <div className={styles.planLabel}>{title}</div>
+            <div className={styles.orderNo}>Order {orderNo}</div>
+          </div>
+
+          <div className={styles.price}>{price}</div>
+
+          <div className={styles.divider} />
+
+          {/* Payment methods */}
+          <div className={styles.payRow} role="tablist" aria-label="Payment methods">
+  <button
+    type="button"
+    className={`${styles.payItem} ${method === "alipay" ? styles.payItemActive : ""}`}
+    onClick={() => setMethod("alipay")}
+  >
+    <span className={styles.payLogoBox}>
+      <Image src="/images/checkout/alipay-logo.png" alt="AliPay" width={34} height={34} />
+    </span>
+    <span className={styles.pgLabel}>AliPay</span>
+  </button>
+
+  <button
+    type="button"
+    className={`${styles.payItem} ${method === "gpay" ? styles.payItemActive : ""}`}
+    onClick={() => setMethod("gpay")}
+  >
+    <span className={styles.payLogoBox}>
+      <Image src="/images/checkout/googlepay-logo.png" alt="Google Pay" width={70} height={22} />
+    </span>
+    <span className={styles.pgLabel}>Google Pay</span>
+  </button>
+
+  <button
+    type="button"
+    className={`${styles.payItem} ${method === "applepay" ? styles.payItemActive : ""}`}
+    onClick={() => setMethod("applepay")}
+  >
+    <span className={styles.payLogoBox}>
+      <Image src="/images/checkout/applepay-logo.png" alt="Apple Pay" width={70} height={22} />
+    </span>
+    <span className={styles.pgLabel}>Apple Pay</span>
+  </button>
+
+  <button
+    type="button"
+    className={`${styles.payItem} ${method === "wechat" ? styles.payItemActive : ""}`}
+    onClick={() => setMethod("wechat")}
+  >
+    <span className={styles.payLogoBox}>
+      <Image src="/images/checkout/wechat-logo.png" alt="WeChat Pay" width={34} height={34} />
+    </span>
+    <span className={styles.pgLabel}>WeChat Pay</span>
+  </button>
+</div>
+
+          {/* Form */}
+          <div className={styles.form}>
+            <label className={styles.label}>Card Number</label>
+            <div className={styles.inputWrap}>
+              <span className={styles.leftIcon} aria-hidden="true">
+      <Image
+        src="/images/checkout/creditcard-icon.png"
+        alt="credit card"
+        width={18}
+        height={18}
+        priority={false}
+        />
+      </span>
+              <input
+                className={styles.input}
+                value={cardNumber}
+                onChange={(e) => setCardNumber(formatCardNumber(e.target.value))}
+                placeholder="Card number"
+                inputMode="numeric"
+                autoComplete="cc-number"
+              />
+            </div>
+
+            <div className={styles.twoCol}>
+              <div>
+                <label className={styles.label}>Expiry Date</label>
+                <div className={styles.inputWrap}>
+                  <input
+                    className={styles.input}
+                    value={expiry}
+                    onChange={(e) => setExpiry(formatExpiry(e.target.value))}
+                    placeholder="8/24"
+                    inputMode="numeric"
+                    autoComplete="cc-exp"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className={styles.label}>CVV/CVC</label>
+                <div className={styles.inputWrap}>
+                 <span className={styles.leftIcon} aria-hidden="true">
+      <Image
+        src="/images/checkout/lock-icon.png"
+        alt="lock icon"
+        width={18}
+        height={18}
+        priority={false}
+      />
+    </span>
+                   <input
+      className={styles.input}
+      value={cvv}
+      onChange={(e) => setCvv(onlyDigits(e.target.value).slice(0, 4))}
+      placeholder="•••"
+      inputMode="numeric"
+      autoComplete="cc-csc"
+    />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Bottom CTA */}
+        <footer className={styles.footer}>
+          <button
+            type="button"
+            className={styles.checkoutBtn}
+            onClick={() => {
+              console.log("Checkout:", { plan, method, cardNumber, expiry, cvv });
+              // TODO: integrate real payment provider later
+            }}
+          >
+            Checkout
+          </button>
+        </footer>
+      </div>
+    </main>
+  );
+}
+
+```
+
 ### app/forgot-password/forgot-password.module.css
 ```css
 .page {
@@ -1256,7 +1647,7 @@ body {
 ### app/layout.tsx
 ```tsx
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Nunito_Sans } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from '../components/ThemeProvider';
 import { UserProfileProvider } from "@/components/UserProfile";
@@ -1274,6 +1665,10 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const nunitoSans = Nunito_Sans({
+  variable: "--font-nunito-sans",
+  subsets: ["latin"]});
+
 export const metadata: Metadata = {
   title: "Expatise - Exam Preparation Made Easy",
   description: "Prepare for your Chinese driving exam with ease using Expatise. Practice, track your progress, and ace your test!",
@@ -1288,7 +1683,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${nunitoSans.variable} antialiased`}
       >
         <ThemeProvider>
           <UserProfileProvider>
@@ -3660,6 +4055,587 @@ const modalTimeLabel = formatTimeLabel(modalSourceTime);
 }
 ```
 
+### app/premium/page.tsx
+```tsx
+"use client";
+
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import styles from "./premium.module.css";
+import { PLAN_MAP, PLANS, type PlanId } from "../../lib/plans";
+
+
+
+export default function PremiumPage() {
+    const router = useRouter();
+    const [selected, setSelected] = useState<PlanId>("lifetime");
+    const [promo, setPromo] = useState("");
+    const [showPromo, setShowPromo] = useState(false);
+
+  return (
+    <main className={styles.page}>
+      <div className={styles.frame}>
+        {/* Top safe area + back */}
+        <header className={styles.topBar}>
+          <button
+            type="button"
+            className={styles.backButton}
+            onClick={() => router.back()}
+          >
+            <span className={styles.backIcon}>‹</span>
+          </button>
+        </header>
+
+        {/* Crown */}
+        <div className={styles.crownWrap}>
+          <Image
+            src="/images/premium/crown-icon.png"
+            alt="Premium"
+            width={66}
+            height={66}
+            className={styles.crownIcon}
+            priority
+          />
+        </div>
+
+        {/* Title block (290x62) */}
+        <div className={styles.titleBlock}>
+          <h1 className={styles.title}>Get premium today</h1>
+          <p className={styles.subtitle}>Remove ads and unlock all features:</p>
+        </div>
+
+        {/* Features grid (335.04 x 172) */}
+        <section className={styles.featuresBox} aria-label="Premium features">
+          <div className={styles.featureGrid}>
+            <div className={`${styles.featureCell} ${styles.cellTL}`}>
+              <div className={styles.featureHead}>
+                <Image
+                  src="/images/premium/stats-icon.png"
+                  alt=""
+                  width={28}
+                  height={28}
+                />
+                <span className={styles.featureTitle}>Personal Stats</span>
+              </div>
+              <p className={styles.featureDesc}>Track scores, time & progress</p>
+            </div>
+
+            <div className={`${styles.featureCell} ${styles.cellTR}`}>
+              <div className={styles.featureHead}>
+                <Image
+                  src="/images/premium/bolt-icon.png"
+                  alt=""
+                  width={28}
+                  height={28}
+                />
+                <span className={styles.featureTitle}>Test Modes</span>
+              </div>
+              <p className={styles.featureDesc}>
+                Real, Practice, Rapid Fire & more
+              </p>
+            </div>
+
+            <div className={`${styles.featureCell} ${styles.cellBL}`}>
+              <div className={styles.featureHead}>
+                <Image
+                  src="/images/premium/stopsign-icon.png"
+                  alt=""
+                  width={28}
+                  height={28}
+                />
+                <span className={styles.featureTitle}>Mistakes Hub</span>
+              </div>
+              <p className={styles.featureDesc}>
+                Global + My Mistakes review
+              </p>
+            </div>
+            <div className={`${styles.featureCell} ${styles.cellBR}`}>
+              <div className={styles.featureHead}>
+                <Image
+                  src="/images/premium/shield-icon.png"
+                  alt=""
+                  width={28}
+                  height={28}
+                />
+                <span className={styles.featureTitle}>Question Bank</span>
+              </div>
+              <p className={styles.featureDesc}>
+                All questions & Bookmarks
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* Plan pills (328 x 61, radius 20) */}
+        <section className={styles.planList} aria-label="Choose a plan">
+          {PLANS.map((p) => {
+            const active = selected === p.id;
+            return (
+              <button
+                key={p.id}
+                type="button"
+                className={`${styles.planPill} ${active ? styles.planPillActive : ""}`}
+                onClick={() => setSelected(p.id)}
+              >
+                <div className={styles.planLeft}>
+                  <div className={styles.planTitle}>{p.title}</div>
+                  <div className={styles.planSub}>{p.sub}</div>
+                </div>
+
+                <div className={styles.planRight}>
+                  <div className={styles.planPrice}>{p.price}</div>
+                  <span className={`${styles.radio} ${active ? styles.radioOn : ""}`} />
+                </div>
+              </button>
+            );
+          })}
+        </section>
+
+{/* Got a Promocode row (always visible) */}
+<div className={styles.gotPromoRow}>
+  <span className={styles.gotPromoText}>Got a Promocode?</span>
+
+  <button
+    type="button"
+    className={styles.applyHereBtn}
+    onClick={() => setShowPromo((v) => !v)}
+    aria-expanded={showPromo}
+  >
+    Apply Here
+  </button>
+</div>
+
+{/* Footer */}
+{showPromo && (
+  <>
+    <p className={styles.note}>
+      Leave a 5 star review on the app store, and send us the screenshot via our WeChat. We
+      will give you a <strong>30%</strong> discount code for ALL plans!
+    </p>
+
+    <div className={styles.promoRow}>
+      <input
+        className={styles.promoInput}
+        value={promo}
+        onChange={(e) => setPromo(e.target.value)}
+        placeholder="Enter Promo Code"
+      />
+      <button type="button" className={styles.promoApply}>
+        Apply Code
+      </button>
+    </div>
+  </>
+)}
+
+
+        {/* CTA (327 x 52) */}
+        <button
+          type="button"
+          className={styles.cta}
+          onClick={() => router.push(`/checkout?plan=${selected}`)}
+
+        >
+          <span className={styles.ctaText}>Get Premium Now</span>
+          <span className={styles.ctaChevron}>›</span>
+        </button>
+
+        
+      </div>
+    </main>
+  );
+}
+
+```
+
+### app/premium/premium.module.css
+```css
+.page {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+
+  /* Your background: 2B7CAF(51%) -> FFFFFF(100%) */
+  background: var(--color-page-bg);
+}
+
+.frame {
+  width: 100%;
+  max-width: 390px;     /* Figma frame width */
+  min-height: 1000px;   /* Figma frame height */
+  padding-bottom: 28px;
+  box-sizing: border-box;
+  background: transparent;
+}
+
+/* Top safe area */
+.topBar {
+  height: 40px;         /* safe area you measured */
+  padding: 0 22px;
+  display: flex;
+  align-items: center;
+}
+
+.backButton {
+  appearance: none;
+  border: none;
+  background: transparent;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  color: #111827;
+}
+
+.backIcon {
+  font-size: 28px;
+  line-height: 1;
+}
+
+.backText {
+  font-size: 22px;
+  font-weight: 600;
+}
+
+.crownWrap {
+  display: flex;
+  justify-content: center;
+  margin-top: 36px;
+}
+
+.crownIcon {
+  width: 66px;
+  height: 66px;
+}
+
+.titleBlock {
+  width: 290px; /* your measurement */
+  height: 62px;
+  margin: 18px auto 0;
+  text-align: center;
+}
+
+.title {
+  margin: 0;
+  font-size: 30px;
+  font-weight: 700;
+  color: #4b4b4b;
+  letter-spacing: 0.2px;
+  line-height: 1.05;
+}
+
+.subtitle {
+  margin: 6px 0 0;
+  font-size: 16px;
+  color: #9aa0a6;
+  line-height: 1.05;
+}
+
+.featuresBox {
+  margin-top: 9px;
+  display: flex;
+  justify-content: center;
+}
+
+/* 335.04 x 172 (we’ll use 335px for layout sanity) */
+.featureGrid {
+  width: 335px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: repeat(2, minmax(86px, auto));
+  display: grid;
+  /* no background in Figma (it sits on the page) */
+}
+
+.featureCell {
+  padding: 10px 12px;
+  box-sizing: border-box;
+}
+
+.featureHead {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 4px;
+}
+
+.featureTitle {
+  font-size: 20px;
+  font-weight: 700;
+  color: #3a3a3a;
+}
+
+.featureDesc {
+  margin: 0;
+  font-size: 12px;
+  color: #9aa0a6;
+  line-height: 1.25;
+}
+
+/* Divider lines */
+.cellTL,
+.cellTR {
+  border-bottom: 1px solid rgba(120, 120, 120, 0.35);
+}
+.cellTL,
+.cellBL {
+  border-right: 1px solid rgba(120, 120, 120, 0.35);
+}
+
+.planList {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: center;
+}
+
+.planPill {
+  width: 328px;  /* your measurement */
+  height: 61px;
+  border-radius: 20px;
+  border: 1px solid rgba(210, 199, 154, 0.9);
+  background: rgba(255, 255, 255, 0.6);
+  box-shadow: 0 10px 22px rgba(15, 23, 42, 0.12);
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  box-sizing: border-box;
+
+  cursor: pointer;
+
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.planPillActive {
+  border: 1px solid transparent;
+  border-radius: 20px;
+
+  /* base glass */
+  background-color: rgba(255, 255, 255, 0.60);
+
+  /* Figma: Fill 30% + Layer opacity 60% ≈ 0.18 */
+  background-image:
+    linear-gradient(90deg,
+      rgba(43, 124, 175, 0.12) 0%,
+      rgba(255, 197, 66, 0.12) 100%
+    ),
+    /* stroke (also affected by Figma opacity 느낌) */
+    linear-gradient(90deg,
+      rgba(43, 124, 175, 0.30) 0%,
+      rgba(255, 197, 66, 0.30) 100%
+    );
+
+  background-origin: padding-box, border-box;
+  background-clip: padding-box, border-box;
+
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+
+
+/* keep real content above the overlays */
+.planLeft,
+.planRight {
+  position: relative;
+  z-index: 1;
+}
+
+.planLeft {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  text-align: left;
+}
+
+.planTitle {
+  font-size: 22px;
+  font-weight: 700;
+  color: #4b4b4b;
+  line-height: 1.05;
+}
+
+.planSub {
+  font-size: 14px;
+  color: #9aa0a6;
+}
+
+.planRight {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.planPrice {
+  font-size: 34px;
+  font-weight: 700;
+  color: #4b4b4b;
+  letter-spacing: -0.5px;
+}
+
+.radio {
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  border: 2px solid rgba(210, 199, 154, 0.95);
+  background: transparent;
+}
+
+.radioOn {
+  background: rgba(210, 199, 154, 0.65);
+}
+
+.promoRow {
+  width: 327px;   /* your measurement */
+  height: 43px;
+  margin: 18px auto 0;
+
+  display: flex;
+  align-items: stretch;
+  gap: 12px;
+}
+
+.gotPromoRow {
+  width: 327px;
+  margin: 14px auto 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.gotPromoText {
+  font-size: 16px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.applyHereBtn {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #2b7caf;
+  cursor: pointer;
+}
+
+.applyHereBtn:hover {
+  text-decoration: underline;
+}
+
+
+.promoInput {
+  flex: 1;
+  border-radius: 12px;
+  border: 2px dashed rgba(43, 124, 175, 0.6);
+  background: rgba(255, 255, 255, 0.55);
+  padding: 0 16px;
+  font-size: 18px;
+  font-weight: 600;
+  color: #4b4b4b;
+  outline: none;
+}
+
+.promoApply {
+  width: 90px;
+  height: 43px;              /* match .promoRow height */
+  box-sizing: border-box;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0 12px;           /* override browser default padding */
+  white-space: nowrap;       /* keep “Apply Code” on one line */
+  line-height: 1;
+
+  border-radius: 12px;
+  border: 1px solid rgba(210, 199, 154, 0.9);
+  background: rgba(235, 235, 235, 0.8);
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.18);
+
+  font-size: 14px;
+  font-weight: 600;
+  color: #4b4b4b;
+  cursor: pointer;
+}
+
+
+.cta {
+  width: 327px;
+  height: 52px;
+  margin: 18px auto 0;
+  border-radius: 12px;
+
+  /* You already have a shared gradient var in globals if you want it later */
+  background: linear-gradient(
+    90deg,
+    rgba(43, 124, 175, 0.51) 0%,
+    rgba(255, 255, 255, 1) 100%
+  );
+
+  box-shadow: 0 12px 24px rgba(15, 23, 42, 0.18);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+
+  cursor: pointer;
+}
+
+.ctaText {
+  font-size: 20px;
+  font-weight: 700;
+  color: #4b4b4b;
+}
+
+.ctaChevron {
+  font-size: 26px;
+  line-height: 1;
+  color: rgba(75, 75, 75, 0.8);
+  transform: translateY(1px);
+}
+
+.promoFooter {
+  width: 327px;
+  margin: 20px auto 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.promoQuestion {
+  font-size: 18px;
+  font-weight: 600;
+  color: #4b4b4b;
+}
+
+.promoLink {
+  border: none;
+  background: transparent;
+  font-size: 18px;
+  font-weight: 700;
+  color: #2b7caf;
+  cursor: pointer;
+}
+
+.note {
+  width: 327px;
+  margin: 6px auto 0;
+  font-size: 13px;
+  color: #8a92aa;
+  line-height: 1.35;
+}
+
+```
+
 ### app/profile/page.tsx
 ```tsx
 'use client';
@@ -3939,9 +4915,7 @@ const handleSave = async (e: React.SyntheticEvent) => {
 <button
   type="button"
   className={styles.premiumCard}
-  onClick={(e) => {
-  if (!requireLogin(e)) return;
-  }}
+  onClick={() => router.push("/premium")}
 >
     <span className={styles.premiumIcon}>
       <Image 
@@ -5919,6 +6893,54 @@ export function verifyResetOtp(email: string, code: string) {
 
 export function consumeResetOtp(email: string, code: string) {
   return consumeOtp(email);
+}
+
+```
+
+### lib/plans.ts
+```tsx
+export type PlanId = "lifetime" | "month1" | "month3";
+
+export type Plan = {
+  id: PlanId;           // IMPORTANT: real id
+  title: string;        // shown on Premium pills
+  checkoutTitle: string; // shown on Checkout page header
+  sub: string;
+  price: string;
+};
+
+export const PLANS: Plan[] = [
+  {
+    id: "lifetime",
+    title: "Life Time",
+    checkoutTitle: "Life Time Plan",
+    sub: "With Promo Code: ¥149",
+    price: "¥199",
+  },
+  {
+    id: "month1",
+    title: "1 Month",
+    checkoutTitle: "1 Month Plan",
+    sub: "With Promo Code: ¥48",
+    price: "¥69",
+  },
+  {
+    id: "month3",
+    title: "3 Month",
+    checkoutTitle: "3 Month Plan",
+    sub: "With Promo Code: ¥97",
+    price: "¥139",
+  },
+];
+
+// For fast lookup by id (used in Checkout)
+export const PLAN_MAP: Record<PlanId, Plan> = PLANS.reduce((acc, p) => {
+  acc[p.id] = p;
+  return acc;
+}, {} as Record<PlanId, Plan>);
+
+export function toPlanId(v: string | null): PlanId {
+  return v === "lifetime" || v === "month1" || v === "month3" ? v : "lifetime";
 }
 
 ```

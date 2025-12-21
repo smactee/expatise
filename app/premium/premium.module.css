@@ -1,0 +1,383 @@
+.page {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+
+  /* Your background: 2B7CAF(51%) -> FFFFFF(100%) */
+  background: var(--color-page-bg);
+}
+
+.frame {
+  width: 100%;
+  max-width: 390px;     /* Figma frame width */
+  min-height: 1000px;   /* Figma frame height */
+  padding-bottom: 28px;
+  box-sizing: border-box;
+  background: transparent;
+}
+
+/* Top safe area */
+.topBar {
+  height: 40px;         /* safe area you measured */
+  padding: 0 22px;
+  display: flex;
+  align-items: center;
+}
+
+.backButton {
+  appearance: none;
+  border: none;
+  background: transparent;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  color: #111827;
+}
+
+.backIcon {
+  font-size: 28px;
+  line-height: 1;
+}
+
+.backText {
+  font-size: 22px;
+  font-weight: 600;
+}
+
+.crownWrap {
+  display: flex;
+  justify-content: center;
+  margin-top: 36px;
+}
+
+.crownIcon {
+  width: 66px;
+  height: 66px;
+}
+
+.titleBlock {
+  width: 290px; /* your measurement */
+  height: 62px;
+  margin: 18px auto 0;
+  text-align: center;
+}
+
+.title {
+  margin: 0;
+  font-size: 30px;
+  font-weight: 700;
+  color: #4b4b4b;
+  letter-spacing: 0.2px;
+  line-height: 1.05;
+}
+
+.subtitle {
+  margin: 6px 0 0;
+  font-size: 16px;
+  color: #9aa0a6;
+  line-height: 1.05;
+}
+
+.featuresBox {
+  margin-top: 9px;
+  display: flex;
+  justify-content: center;
+}
+
+/* 335.04 x 172 (we’ll use 335px for layout sanity) */
+.featureGrid {
+  width: 335px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: repeat(2, minmax(86px, auto));
+  display: grid;
+  /* no background in Figma (it sits on the page) */
+}
+
+.featureCell {
+  padding: 10px 12px;
+  box-sizing: border-box;
+}
+
+.featureHead {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 4px;
+}
+
+.featureTitle {
+  font-size: 20px;
+  font-weight: 700;
+  color: #3a3a3a;
+}
+
+.featureDesc {
+  margin: 0;
+  font-size: 12px;
+  color: #9aa0a6;
+  line-height: 1.25;
+}
+
+/* Divider lines */
+.cellTL,
+.cellTR {
+  border-bottom: 1px solid rgba(120, 120, 120, 0.35);
+}
+.cellTL,
+.cellBL {
+  border-right: 1px solid rgba(120, 120, 120, 0.35);
+}
+
+.planList {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: center;
+}
+
+.planPill {
+  width: 328px;  /* your measurement */
+  height: 61px;
+  border-radius: 20px;
+  border: 1px solid rgba(210, 199, 154, 0.9);
+  background: rgba(255, 255, 255, 0.6);
+  box-shadow: 0 10px 22px rgba(15, 23, 42, 0.12);
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  box-sizing: border-box;
+
+  cursor: pointer;
+
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.planPillActive {
+  border: 1px solid transparent;
+  border-radius: 20px;
+
+  /* base glass */
+  background-color: rgba(255, 255, 255, 0.60);
+
+  /* Figma: Fill 30% + Layer opacity 60% ≈ 0.18 */
+  background-image:
+    linear-gradient(90deg,
+      rgba(43, 124, 175, 0.12) 0%,
+      rgba(255, 197, 66, 0.12) 100%
+    ),
+    /* stroke (also affected by Figma opacity 느낌) */
+    linear-gradient(90deg,
+      rgba(43, 124, 175, 0.30) 0%,
+      rgba(255, 197, 66, 0.30) 100%
+    );
+
+  background-origin: padding-box, border-box;
+  background-clip: padding-box, border-box;
+
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+
+
+/* keep real content above the overlays */
+.planLeft,
+.planRight {
+  position: relative;
+  z-index: 1;
+}
+
+.planLeft {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  text-align: left;
+}
+
+.planTitle {
+  font-size: 22px;
+  font-weight: 700;
+  color: #4b4b4b;
+  line-height: 1.05;
+}
+
+.planSub {
+  font-size: 14px;
+  color: #9aa0a6;
+}
+
+.planRight {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.planPrice {
+  font-size: 34px;
+  font-weight: 700;
+  color: #4b4b4b;
+  letter-spacing: -0.5px;
+}
+
+.radio {
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  border: 2px solid rgba(210, 199, 154, 0.95);
+  background: transparent;
+}
+
+.radioOn {
+  background: rgba(210, 199, 154, 0.65);
+}
+
+.promoRow {
+  width: 327px;   /* your measurement */
+  height: 43px;
+  margin: 18px auto 0;
+
+  display: flex;
+  align-items: stretch;
+  gap: 12px;
+}
+
+.gotPromoRow {
+  width: 327px;
+  margin: 14px auto 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.gotPromoText {
+  font-size: 16px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.applyHereBtn {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #2b7caf;
+  cursor: pointer;
+}
+
+.applyHereBtn:hover {
+  text-decoration: underline;
+}
+
+
+.promoInput {
+  flex: 1;
+  border-radius: 12px;
+  border: 2px dashed rgba(43, 124, 175, 0.6);
+  background: rgba(255, 255, 255, 0.55);
+  padding: 0 16px;
+  font-size: 18px;
+  font-weight: 600;
+  color: #4b4b4b;
+  outline: none;
+}
+
+.promoApply {
+  width: 90px;
+  height: 43px;              /* match .promoRow height */
+  box-sizing: border-box;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0 12px;           /* override browser default padding */
+  white-space: nowrap;       /* keep “Apply Code” on one line */
+  line-height: 1;
+
+  border-radius: 12px;
+  border: 1px solid rgba(210, 199, 154, 0.9);
+  background: rgba(235, 235, 235, 0.8);
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.18);
+
+  font-size: 14px;
+  font-weight: 600;
+  color: #4b4b4b;
+  cursor: pointer;
+}
+
+
+.cta {
+  width: 327px;
+  height: 52px;
+  margin: 18px auto 0;
+  border-radius: 12px;
+
+  /* You already have a shared gradient var in globals if you want it later */
+  background: linear-gradient(
+    90deg,
+    rgba(43, 124, 175, 0.51) 0%,
+    rgba(255, 255, 255, 1) 100%
+  );
+
+  box-shadow: 0 12px 24px rgba(15, 23, 42, 0.18);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+
+  cursor: pointer;
+}
+
+.ctaText {
+  font-size: 20px;
+  font-weight: 700;
+  color: #4b4b4b;
+}
+
+.ctaChevron {
+  font-size: 26px;
+  line-height: 1;
+  color: rgba(75, 75, 75, 0.8);
+  transform: translateY(1px);
+}
+
+.promoFooter {
+  width: 327px;
+  margin: 20px auto 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.promoQuestion {
+  font-size: 18px;
+  font-weight: 600;
+  color: #4b4b4b;
+}
+
+.promoLink {
+  border: none;
+  background: transparent;
+  font-size: 18px;
+  font-weight: 700;
+  color: #2b7caf;
+  cursor: pointer;
+}
+
+.note {
+  width: 327px;
+  margin: 6px auto 0;
+  font-size: 13px;
+  color: #8a92aa;
+  line-height: 1.35;
+}
