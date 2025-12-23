@@ -381,3 +381,41 @@
   color: #8a92aa;
   line-height: 1.35;
 }
+
+
+.priceCombo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.oldPrice {
+  position: relative;
+  font-size: 18px;
+  font-weight: 700;
+  color: #4b4b4b;
+  opacity: 0.55;
+  padding: 0 2px;
+  line-height: 1;
+}
+
+/* diagonal slash: left-top -> right-bottom (\) */
+.oldPrice::after {
+  content: "";
+  position: absolute;
+  left: -6px;
+  right: -6px;
+  top: 50%;
+  height: 2px;
+  background: rgba(75, 75, 75, 0.75);
+  transform: translateY(-50%) rotate(12deg);
+  transform-origin: center;
+  pointer-events: none;
+}
+
+.promoError {
+  width: 327px;
+  margin: 8px auto 0;
+  font-size: 13px;
+  color: #b42318;
+}

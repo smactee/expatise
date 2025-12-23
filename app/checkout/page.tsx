@@ -6,10 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import styles from "./checkout.module.css";
 import { PLAN_MAP, toPlanId, type PlanId } from "../../lib/plans";
 
-
-
 type PayMethod = "alipay" | "gpay" | "applepay" | "wechat";
-
 
 
 function onlyDigits(s: string) {
@@ -31,19 +28,24 @@ export default function CheckoutPage() {
   const router = useRouter();
   const sp = useSearchParams();
 
+  const plan: PlanId = toPlanId(sp.get("plan"));
+  const promoApplied = sp.get("promo") === "1";
+
+  const planData = PLAN_MAP[plan];
+  const title = planData.checkoutTitle;
+  const price = promoApplied ? planData.promoPrice : planData.price;
+
   // simple “order no” for UI (you’ll replace with real order id later)
-  const orderNo = useMemo(() => {
+  /* const orderNo = useMemo(() => {
     const n = Date.now().toString().slice(-7);
     return `№${n}`;
-  }, []);
+  }, []); */
 
   const [method, setMethod] = useState<PayMethod>("wechat");
   const [cardNumber, setCardNumber] = useState("");
   const [expiry, setExpiry] = useState("");
   const [cvv, setCvv] = useState("");
 
-const plan: PlanId = toPlanId(sp.get("plan"));
-const { checkoutTitle: title, price } = PLAN_MAP[plan];
 
   return (
     <main className={styles.page}>
@@ -52,7 +54,7 @@ const { checkoutTitle: title, price } = PLAN_MAP[plan];
         <header className={styles.topBar}>
           <button type="button" className={styles.backButton} onClick={() => router.back()}>
             <span className={styles.backIcon}>‹</span>
-            <span className={styles.backText}>Back</span>
+            <span className={styles.backText}></span>
           </button>
         </header>
 
@@ -60,7 +62,7 @@ const { checkoutTitle: title, price } = PLAN_MAP[plan];
         <div className={styles.content}>
           <div className={styles.summaryRow}>
             <div className={styles.planLabel}>{title}</div>
-            <div className={styles.orderNo}>Order {orderNo}</div>
+            <div className={styles.orderNo}>Order Summary</div>
           </div>
 
           <div className={styles.price}>{price}</div>
@@ -184,7 +186,7 @@ const { checkoutTitle: title, price } = PLAN_MAP[plan];
             type="button"
             className={styles.checkoutBtn}
             onClick={() => {
-              console.log("Checkout:", { plan, method, cardNumber, expiry, cvv });
+              router.push("/checkout/success");
               // TODO: integrate real payment provider later
             }}
           >

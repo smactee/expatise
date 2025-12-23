@@ -820,7 +820,9 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   background: transparent;
   padding: 0;
   display: inline-flex;
+  flex-direction: row;
   align-items: center;
+  white-space: nowrap;
   gap: 10px;
   cursor: pointer;
   color: #111827;
@@ -839,7 +841,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
 /* Content area */
 .content {
-  flex: 1;
   padding: 0 26px;
   box-sizing: border-box;
 }
@@ -852,8 +853,20 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 }
 
 .planLabel {
-  font-size: 18px;
-  color: rgba(17, 24, 39, 0.7);
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -.9;
+  color: rgba(17, 24, 39, 0.75);
+}
+
+.planLabel::after {
+  content: "";
+  display: block;
+  margin-top: 6px;
+  height: 2px;
+  width: 42px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, rgba(43, 124, 175, 0.65) 0%, rgba(255, 255, 255, 0.95) 100%);
 }
 
 .orderNo {
@@ -901,6 +914,35 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   line-height: 1.1;
 }
 
+.payItem {
+  appearance: none;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+
+  padding: 6px 4px;
+  border-radius: 12px;
+
+  opacity: 0.9;
+  transition: opacity 120ms ease, transform 120ms ease;
+}
+
+.payItemActive {
+  opacity: 1;
+  transform: translateY(-1px);
+}
+
+/* nice keyboard focus */
+.payItem:focus-visible {
+  outline: 2px solid rgba(43, 124, 175, 0.45);
+  outline-offset: 3px;
+}
+
 
 /* Form */
 .form {
@@ -940,7 +982,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   outline: none;
   background: transparent;
 
-  font-size: 20px;
+  font-size: 15px;
   font-weight: 500;
   color: rgba(17, 24, 39, 0.75);
 }
@@ -954,6 +996,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
 /* Bottom button */
 .footer {
+  margin-top: 18px;  
   padding: 16px 22px 22px;
   box-sizing: border-box;
 }
@@ -987,10 +1030,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import styles from "./checkout.module.css";
 import { PLAN_MAP, toPlanId, type PlanId } from "../../lib/plans";
 
-
-
 type PayMethod = "alipay" | "gpay" | "applepay" | "wechat";
-
 
 
 function onlyDigits(s: string) {
@@ -1012,19 +1052,24 @@ export default function CheckoutPage() {
   const router = useRouter();
   const sp = useSearchParams();
 
+  const plan: PlanId = toPlanId(sp.get("plan"));
+  const promoApplied = sp.get("promo") === "1";
+
+  const planData = PLAN_MAP[plan];
+  const title = planData.checkoutTitle;
+  const price = promoApplied ? planData.promoPrice : planData.price;
+
   // simple “order no” for UI (you’ll replace with real order id later)
-  const orderNo = useMemo(() => {
+  /* const orderNo = useMemo(() => {
     const n = Date.now().toString().slice(-7);
     return `№${n}`;
-  }, []);
+  }, []); */
 
   const [method, setMethod] = useState<PayMethod>("wechat");
   const [cardNumber, setCardNumber] = useState("");
   const [expiry, setExpiry] = useState("");
   const [cvv, setCvv] = useState("");
 
-const plan: PlanId = toPlanId(sp.get("plan"));
-const { checkoutTitle: title, price } = PLAN_MAP[plan];
 
   return (
     <main className={styles.page}>
@@ -1033,7 +1078,7 @@ const { checkoutTitle: title, price } = PLAN_MAP[plan];
         <header className={styles.topBar}>
           <button type="button" className={styles.backButton} onClick={() => router.back()}>
             <span className={styles.backIcon}>‹</span>
-            <span className={styles.backText}>Back</span>
+            <span className={styles.backText}></span>
           </button>
         </header>
 
@@ -1041,7 +1086,7 @@ const { checkoutTitle: title, price } = PLAN_MAP[plan];
         <div className={styles.content}>
           <div className={styles.summaryRow}>
             <div className={styles.planLabel}>{title}</div>
-            <div className={styles.orderNo}>Order {orderNo}</div>
+            <div className={styles.orderNo}>Order Summary</div>
           </div>
 
           <div className={styles.price}>{price}</div>
@@ -1165,7 +1210,7 @@ const { checkoutTitle: title, price } = PLAN_MAP[plan];
             type="button"
             className={styles.checkoutBtn}
             onClick={() => {
-              console.log("Checkout:", { plan, method, cardNumber, expiry, cvv });
+              router.push("/checkout/success");
               // TODO: integrate real payment provider later
             }}
           >
@@ -1175,6 +1220,205 @@ const { checkoutTitle: title, price } = PLAN_MAP[plan];
       </div>
     </main>
   );
+}
+
+```
+
+### app/checkout/success/page.tsx
+```tsx
+"use client";
+
+import Image from "next/image";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import confetti from "canvas-confetti";
+import styles from "./success.module.css";
+
+export default function CheckoutSuccessPage() {
+  const router = useRouter();
+
+  useEffect(() => {
+    // Respect reduced motion
+    if (window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) return;
+
+    const duration = 1000;
+    const end = Date.now() + duration;
+
+    // A nice “burst for 3s” effect
+    (function frame() {
+      confetti({
+        particleCount: 4,
+        spread: 70,
+        startVelocity: 35,
+        ticks: 200,
+        origin: { x: 0.2, y: 0.35 },
+      });
+      confetti({
+        particleCount: 4,
+        spread: 70,
+        startVelocity: 35,
+        ticks: 200,
+        origin: { x: 0.8, y: 0.35 },
+      });
+
+      if (Date.now() < end) requestAnimationFrame(frame);
+    })();
+  }, []);
+
+  return (
+    <main className={styles.page}>
+      <div className={styles.frame}>
+        <div className={styles.confettieWrap}>
+        {/* Static confetti BG (stays after animation ends) */}
+        <Image
+          src="/images/checkout/confetti-bg.png"
+          alt="confetti background"
+          fill
+          priority
+          className={styles.confettiBg}
+          sizes="390px"
+        />
+        </div>
+
+        <div className={styles.centerBlock}>
+          {/* Center check icon */}
+          <Image
+            src="/images/checkout/bluecheck-icon.png"
+            alt="Payment successful"
+            width={100}
+            height={100}
+            priority
+            className={styles.checkIcon}
+          />
+
+          <h1 className={styles.title}>Payment Successful</h1>
+          <p className={styles.subtitle}>
+            Congratulations! Your purchase has been successful.
+          </p>
+        </div>
+
+        <footer className={styles.footer}>
+          <button
+            type="button"
+            className={styles.homeBtn}
+            onClick={() => router.push("/")}
+          >
+            Back to Home
+          </button>
+        </footer>
+      </div>
+    </main>
+  );
+}
+
+```
+
+### app/checkout/success/success.module.css
+```css
+.page {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  background: var(--color-page-bg);
+}
+
+.frame {
+  width: 100%;
+  max-width: 390px;
+  min-height: 844px;
+  position: relative;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+
+
+/* Static confetti image (stays visible) */
+.confettiWrap {
+  position: absolute;
+  left: 0;
+  top: 60px;            /* <-- move this up/down to match Figma */
+  width: 100%;
+  height: 353px;        /* your confetti image height */
+  z-index: 0;
+  pointer-events: none;
+}
+
+.confettiBg {
+  object-fit: contain;
+  object-position: center top;
+}
+
+/* Center content */
+.centerBlock {
+  position: relative;
+  z-index: 2;
+
+  /* Figma: check icon top at 351 */
+  padding-top: 351px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.checkIcon {
+  width: 100px;
+  height: 100px;
+}
+
+/* Figma: distance from check to title = 50 */
+.title {
+  margin-top: 50px;
+
+  font-family: var(--font-inter-tight, Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif);
+  font-weight: 600;
+  font-size: 22px;
+  line-height: 26px;
+  color: rgba(17, 24, 39, 0.95); /* neutral 900-ish */
+}
+
+.subtitle {
+  margin-top: 9px;
+
+  width: 320px;
+  max-width: calc(100% - 40px);
+
+  font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 20px;
+  color: rgba(17, 24, 39, 0.65);
+}
+
+/* Bottom button */
+.footer {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 250px;
+
+  padding: 10px; /* your container padding */
+  display: flex;
+  justify-content: center;
+  z-index: 2;
+}
+
+.homeBtn {
+  width: 70%;
+  height: 56px;
+  border: none;
+  border-radius: 14px;
+
+  background: linear-gradient(90deg, rgba(43, 124, 175, 0.65) 0%, rgba(255, 255, 255, 0.95) 100%);
+  box-shadow: 0 12px 24px rgba(15, 23, 42, 0.18);
+
+  font-size: 22px;
+  font-weight: 700;
+  color: rgba(75, 75, 75, 0.9);
+
+  cursor: pointer;
 }
 
 ```
@@ -4063,15 +4307,36 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import styles from "./premium.module.css";
-import { PLAN_MAP, PLANS, type PlanId } from "../../lib/plans";
+import { PLAN_LIST, type PlanId } from "../../lib/plans";
 
-
+const VALID_PROMO_CODES = ["EXP30"];
 
 export default function PremiumPage() {
     const router = useRouter();
     const [selected, setSelected] = useState<PlanId>("lifetime");
     const [promo, setPromo] = useState("");
     const [showPromo, setShowPromo] = useState(false);
+    const [promoApplied, setPromoApplied] = useState(false);
+    const [promoError, setPromoError] = useState("");
+
+    const handleApplyCode = () => {
+      const code = promo.trim().toUpperCase();
+      const ok = VALID_PROMO_CODES.includes(code);
+      if (!code) {
+        setPromoApplied(false);
+        setPromoError("Please enter a promo code.");
+        return;
+      }
+      if (!ok) {
+        setPromoApplied(false);
+        setPromoError("Invalid promo code.");
+        return;
+      }
+      setPromoApplied(true);
+      setPromoError("");
+      setShowPromo(false);
+    };
+
 
   return (
     <main className={styles.page}>
@@ -4169,8 +4434,9 @@ export default function PremiumPage() {
 
         {/* Plan pills (328 x 61, radius 20) */}
         <section className={styles.planList} aria-label="Choose a plan">
-          {PLANS.map((p) => {
+          {PLAN_LIST.map((p) => {
             const active = selected === p.id;
+            
             return (
               <button
                 key={p.id}
@@ -4179,12 +4445,23 @@ export default function PremiumPage() {
                 onClick={() => setSelected(p.id)}
               >
                 <div className={styles.planLeft}>
-                  <div className={styles.planTitle}>{p.title}</div>
-                  <div className={styles.planSub}>{p.sub}</div>
+                  <div className={styles.planTitle}>{p.pillTitle}</div>
+                
+               {/* 3) Subtext disappears after promo applied */}
+                  {!promoApplied && <div className={styles.planSub}>{p.sub}</div>}
                 </div>
 
-                <div className={styles.planRight}>
-                  <div className={styles.planPrice}>{p.price}</div>
+               <div className={styles.planRight}>
+                  {/* 4) Old price left w/ diagonal slash + promo price in original spot */}
+                  {!promoApplied ? (
+                    <div className={styles.planPrice}>{p.price}</div>
+                  ) : (
+                    <div className={styles.priceCombo}>
+                      <span className={styles.oldPrice}>{p.price}</span>
+                      <span className={styles.planPrice}>{p.promoPrice}</span>
+                    </div>
+                  )}
+
                   <span className={`${styles.radio} ${active ? styles.radioOn : ""}`} />
                 </div>
               </button>
@@ -4206,7 +4483,7 @@ export default function PremiumPage() {
   </button>
 </div>
 
-{/* Footer */}
+{/* Promo area */}
 {showPromo && (
   <>
     <p className={styles.note}>
@@ -4218,29 +4495,34 @@ export default function PremiumPage() {
       <input
         className={styles.promoInput}
         value={promo}
-        onChange={(e) => setPromo(e.target.value)}
+        onChange={(e) => {
+  setPromo(e.target.value);
+  if (promoError) setPromoError("");
+}}
+
         placeholder="Enter Promo Code"
       />
-      <button type="button" className={styles.promoApply}>
+       {/* 1) Apply Code button is an event listener */}
+      <button type="button" className={styles.promoApply} onClick={handleApplyCode}>
         Apply Code
       </button>
     </div>
+    {/* 2) Error message if invalid code */}
+    {promoError && <div className={styles.promoError}>{promoError}</div>}
+
   </>
 )}
-
-
         {/* CTA (327 x 52) */}
         <button
           type="button"
           className={styles.cta}
-          onClick={() => router.push(`/checkout?plan=${selected}`)}
-
+          onClick={() =>
+            router.push(`/checkout?plan=${selected}${promoApplied ? "&promo=1" : ""}`)
+          }
         >
           <span className={styles.ctaText}>Get Premium Now</span>
           <span className={styles.ctaChevron}>›</span>
         </button>
-
-        
       </div>
     </main>
   );
@@ -4632,6 +4914,44 @@ export default function PremiumPage() {
   font-size: 13px;
   color: #8a92aa;
   line-height: 1.35;
+}
+
+
+.priceCombo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.oldPrice {
+  position: relative;
+  font-size: 18px;
+  font-weight: 700;
+  color: #4b4b4b;
+  opacity: 0.55;
+  padding: 0 2px;
+  line-height: 1;
+}
+
+/* diagonal slash: left-top -> right-bottom (\) */
+.oldPrice::after {
+  content: "";
+  position: absolute;
+  left: -6px;
+  right: -6px;
+  top: 50%;
+  height: 2px;
+  background: rgba(75, 75, 75, 0.75);
+  transform: translateY(-50%) rotate(12deg);
+  transform-origin: center;
+  pointer-events: none;
+}
+
+.promoError {
+  width: 327px;
+  margin: 8px auto 0;
+  font-size: 13px;
+  color: #b42318;
 }
 
 ```
@@ -5116,7 +5436,7 @@ const handleSave = async (e: React.SyntheticEvent) => {
   display: flex;
   justify-content: center;
   background: var(--color-page-bg);
-  padding: 24px 16px 40px;
+  padding: 0px 16px 40px;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, 'SF Pro Text',
     'Segoe UI', sans-serif;
 }
@@ -5124,7 +5444,7 @@ const handleSave = async (e: React.SyntheticEvent) => {
 .content {
   width: 100%;
   max-width: 560px;
-  margin: 24px auto 96px; /* extra bottom room for nav bar */
+  margin: 0px auto 96px; /* extra bottom room for nav bar */
 }
 
 /* ===== Header ===== */
@@ -6903,41 +7223,42 @@ export type PlanId = "lifetime" | "month1" | "month3";
 
 export type Plan = {
   id: PlanId;           // IMPORTANT: real id
-  title: string;        // shown on Premium pills
+  pillTitle: string;        // shown on Premium pills
   checkoutTitle: string; // shown on Checkout page header
   sub: string;
   price: string;
+  promoPrice: string;
 };
 
-export const PLANS: Plan[] = [
-  {
+export const PLAN_MAP: Record<PlanId, Plan> = {
+  lifetime: {
     id: "lifetime",
-    title: "Life Time",
+    pillTitle: "Life Time",
     checkoutTitle: "Life Time Plan",
     sub: "With Promo Code: ¥149",
     price: "¥199",
+    promoPrice: "¥149",
   },
-  {
+  month1: {
     id: "month1",
-    title: "1 Month",
+    pillTitle: "1 Month",
     checkoutTitle: "1 Month Plan",
     sub: "With Promo Code: ¥48",
     price: "¥69",
+    promoPrice: "¥48",
   },
-  {
+  month3: {
     id: "month3",
-    title: "3 Month",
+    pillTitle: "3 Month",
     checkoutTitle: "3 Month Plan",
     sub: "With Promo Code: ¥97",
     price: "¥139",
+    promoPrice: "¥97",
   },
-];
+};
 
 // For fast lookup by id (used in Checkout)
-export const PLAN_MAP: Record<PlanId, Plan> = PLANS.reduce((acc, p) => {
-  acc[p.id] = p;
-  return acc;
-}, {} as Record<PlanId, Plan>);
+export const PLAN_LIST: Plan[] = [PLAN_MAP.lifetime, PLAN_MAP.month1, PLAN_MAP.month3];
 
 export function toPlanId(v: string | null): PlanId {
   return v === "lifetime" || v === "month1" || v === "month3" ? v : "lifetime";
@@ -7067,6 +7388,7 @@ export default nextConfig;
         "@fortawesome/free-brands-svg-icons": "^7.1.0",
         "@fortawesome/free-solid-svg-icons": "^7.1.0",
         "@fortawesome/react-fontawesome": "^3.1.1",
+        "canvas-confetti": "^1.9.4",
         "next": "^16.0.8",
         "next-auth": "^5.0.0-beta.30",
         "react": "19.2.0",
@@ -7074,6 +7396,7 @@ export default nextConfig;
       },
       "devDependencies": {
         "@tailwindcss/postcss": "^4",
+        "@types/canvas-confetti": "^1.9.0",
         "@types/node": "^20",
         "@types/react": "^19",
         "@types/react-dom": "^19",
@@ -8681,6 +9004,13 @@ export default nextConfig;
         "tslib": "^2.4.0"
       }
     },
+    "node_modules/@types/canvas-confetti": {
+      "version": "1.9.0",
+      "resolved": "https://registry.npmjs.org/@types/canvas-confetti/-/canvas-confetti-1.9.0.tgz",
+      "integrity": "sha512-aBGj/dULrimR1XDZLtG9JwxX1b4HPRF6CX9Yfwh3NvstZEm1ZL7RBnel4keCPSqs1ANRu1u2Aoz9R+VmtjYuTg==",
+      "dev": true,
+      "license": "MIT"
+    },
     "node_modules/@types/estree": {
       "version": "1.0.8",
       "resolved": "https://registry.npmjs.org/@types/estree/-/estree-1.0.8.tgz",
@@ -9742,6 +10072,16 @@ export default nextConfig;
         }
       ],
       "license": "CC-BY-4.0"
+    },
+    "node_modules/canvas-confetti": {
+      "version": "1.9.4",
+      "resolved": "https://registry.npmjs.org/canvas-confetti/-/canvas-confetti-1.9.4.tgz",
+      "integrity": "sha512-yxQbJkAVrFXWNbTUjPqjF7G+g6pDotOUHGbkZq2NELZUMDpiJ85rIEazVb8GTaAptNW2miJAXbs1BtioA251Pw==",
+      "license": "ISC",
+      "funding": {
+        "type": "donate",
+        "url": "https://www.paypal.me/kirilvatev"
+      }
     },
     "node_modules/chalk": {
       "version": "4.1.2",
@@ -13816,6 +14156,7 @@ export default nextConfig;
     "@fortawesome/free-brands-svg-icons": "^7.1.0",
     "@fortawesome/free-solid-svg-icons": "^7.1.0",
     "@fortawesome/react-fontawesome": "^3.1.1",
+    "canvas-confetti": "^1.9.4",
     "next": "^16.0.8",
     "next-auth": "^5.0.0-beta.30",
     "react": "19.2.0",
@@ -13823,6 +14164,7 @@ export default nextConfig;
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
+    "@types/canvas-confetti": "^1.9.0",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",

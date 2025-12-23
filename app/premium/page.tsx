@@ -4,15 +4,36 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import styles from "./premium.module.css";
-import { PLAN_MAP, PLANS, type PlanId } from "../../lib/plans";
+import { PLAN_LIST, type PlanId } from "../../lib/plans";
 
-
+const VALID_PROMO_CODES = ["EXP30"];
 
 export default function PremiumPage() {
     const router = useRouter();
     const [selected, setSelected] = useState<PlanId>("lifetime");
     const [promo, setPromo] = useState("");
     const [showPromo, setShowPromo] = useState(false);
+    const [promoApplied, setPromoApplied] = useState(false);
+    const [promoError, setPromoError] = useState("");
+
+    const handleApplyCode = () => {
+      const code = promo.trim().toUpperCase();
+      const ok = VALID_PROMO_CODES.includes(code);
+      if (!code) {
+        setPromoApplied(false);
+        setPromoError("Please enter a promo code.");
+        return;
+      }
+      if (!ok) {
+        setPromoApplied(false);
+        setPromoError("Invalid promo code.");
+        return;
+      }
+      setPromoApplied(true);
+      setPromoError("");
+      setShowPromo(false);
+    };
+
 
   return (
     <main className={styles.page}>
@@ -110,8 +131,9 @@ export default function PremiumPage() {
 
         {/* Plan pills (328 x 61, radius 20) */}
         <section className={styles.planList} aria-label="Choose a plan">
-          {PLANS.map((p) => {
+          {PLAN_LIST.map((p) => {
             const active = selected === p.id;
+            
             return (
               <button
                 key={p.id}
@@ -120,12 +142,23 @@ export default function PremiumPage() {
                 onClick={() => setSelected(p.id)}
               >
                 <div className={styles.planLeft}>
-                  <div className={styles.planTitle}>{p.title}</div>
-                  <div className={styles.planSub}>{p.sub}</div>
+                  <div className={styles.planTitle}>{p.pillTitle}</div>
+                
+               {/* 3) Subtext disappears after promo applied */}
+                  {!promoApplied && <div className={styles.planSub}>{p.sub}</div>}
                 </div>
 
-                <div className={styles.planRight}>
-                  <div className={styles.planPrice}>{p.price}</div>
+               <div className={styles.planRight}>
+                  {/* 4) Old price left w/ diagonal slash + promo price in original spot */}
+                  {!promoApplied ? (
+                    <div className={styles.planPrice}>{p.price}</div>
+                  ) : (
+                    <div className={styles.priceCombo}>
+                      <span className={styles.oldPrice}>{p.price}</span>
+                      <span className={styles.planPrice}>{p.promoPrice}</span>
+                    </div>
+                  )}
+
                   <span className={`${styles.radio} ${active ? styles.radioOn : ""}`} />
                 </div>
               </button>
@@ -147,7 +180,7 @@ export default function PremiumPage() {
   </button>
 </div>
 
-{/* Footer */}
+{/* Promo area */}
 {showPromo && (
   <>
     <p className={styles.note}>
@@ -159,29 +192,34 @@ export default function PremiumPage() {
       <input
         className={styles.promoInput}
         value={promo}
-        onChange={(e) => setPromo(e.target.value)}
+        onChange={(e) => {
+  setPromo(e.target.value);
+  if (promoError) setPromoError("");
+}}
+
         placeholder="Enter Promo Code"
       />
-      <button type="button" className={styles.promoApply}>
+       {/* 1) Apply Code button is an event listener */}
+      <button type="button" className={styles.promoApply} onClick={handleApplyCode}>
         Apply Code
       </button>
     </div>
+    {/* 2) Error message if invalid code */}
+    {promoError && <div className={styles.promoError}>{promoError}</div>}
+
   </>
 )}
-
-
         {/* CTA (327 x 52) */}
         <button
           type="button"
           className={styles.cta}
-          onClick={() => router.push(`/checkout?plan=${selected}`)}
-
+          onClick={() =>
+            router.push(`/checkout?plan=${selected}${promoApplied ? "&promo=1" : ""}`)
+          }
         >
           <span className={styles.ctaText}>Get Premium Now</span>
           <span className={styles.ctaChevron}>›</span>
         </button>
-
-        
       </div>
     </main>
   );
