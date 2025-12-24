@@ -188,54 +188,6 @@ def parse_question_block(qid: str, number: int, lines: list[str]):
     }
 
 
-    # MCQ parsing
-    prompt_parts = []
-    opt_map = {}      # key -> text
-    current_key = None
-
-    for ln in content_lines:
-        m = OPT_RE.match(ln)
-        if m:
-            current_key = m.group(1)
-            opt_map[current_key] = m.group(2).strip()
-        else:
-            if current_key:
-                opt_map[current_key] = (opt_map[current_key] + " " + ln).strip()
-            else:
-                prompt_parts.append(ln)
-
-    prompt = normalize_space(" ".join(prompt_parts))
-
-    # build options in A-D order
-    key_order = ["A", "B", "C", "D"]
-    options = []
-    key_to_id = {}
-    for idx, k in enumerate(key_order, start=1):
-        txt = opt_map.get(k, "").strip()
-        oid = f"{qid}_o{idx}"
-        key_to_id[k] = oid
-        if txt:
-            options.append({"id": oid, "originalKey": k, "text": normalize_space(txt)})
-
-    # answer mapping
-    correct_option_id = None
-    if answer_raw:
-        m = re.search(r"[A-D]", answer_raw.upper())
-        if m:
-            correct_option_id = key_to_id.get(m.group(0))
-
-    return {
-        "id": qid,
-        "number": number,
-        "type": "mcq",
-        "prompt": prompt,
-        "options": options,
-        "correctRow": None,
-        "correctOptionId": correct_option_id,
-        "answerRaw": answer_raw,
-    }
-
-
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--pdf", required=True, help="Path to source PDF")

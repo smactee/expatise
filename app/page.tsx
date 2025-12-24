@@ -6,7 +6,8 @@ import Image from 'next/image';
 import DragScrollRow from "../components/DragScrollRow";
 import BottomNav from '../components/BottomNav'; 
 import { useUserProfile } from '../components/UserProfile';
-
+import { ROUTES } from '../lib/routes';
+import FeatureCard from '../components/FeatureCard';
 
 
 const CURRENT_YEAR = new Date().getFullYear();
@@ -22,6 +23,95 @@ function formatTimeLabel(time: string): string {
   const displayH = h % 12 || 12; // 0/12 -> 12
   return `${displayH}:${mStr} ${ampm}`;
 }
+
+const TEST_MODE_CARDS = [
+    {
+    key: "real-test",
+    href: `${ROUTES.comingSoon}?feature=real-test`,
+    ariaLabel: "Open Real Test",
+    bgSrc: "/images/home/cards/realtest-bg.png",
+    bgAlt: "Real Test Background",
+    iconSrc: "/images/home/icons/realtest-icon.png",
+    iconAlt: "Real Test Icon",
+    topText: "Practice under real exam conditions with a timer.",
+    title:  "Real Test",
+   },
+    {
+    key: "practice-test",
+    href: `${ROUTES.comingSoon}?feature=practice-test`,
+    ariaLabel: "Open Practice Test",
+    bgSrc: "/images/home/cards/practice-bg.png",
+    bgAlt: "Practice Background",
+    iconSrc: "/images/home/icons/practice-icon.png",
+    iconAlt: "Practice Icon",
+    topText: "Study at your own pace. No time limit!",
+    title:  "Practice Test",
+   },
+    {
+    key: "rapid-fire-test",
+    href: `${ROUTES.comingSoon}?feature=rapid-fire-test`,
+    ariaLabel: "Open Rapid Fire Test",
+    bgSrc: "/images/home/cards/rapidfire-bg.png",
+    bgAlt: "Rapid Fire Background",
+    iconSrc: "/images/home/icons/rapidfire-icon.png",
+    iconAlt: "Rapid Fire Icon",
+    topText: "Sharpen your reflexes and memory in bursts.",
+    title:  "Rapid Fire Test",
+    },
+
+] as const;
+
+const OVERALL_CARDS = [
+  {
+    key: "all-questions",
+    href: ROUTES.questions,
+    ariaLabel: "Open All Questions",
+    bgSrc: "/images/home/cards/allquestions-bg.png",
+    bgAlt: "All Questions Background",
+    iconSrc: "/images/home/icons/allquestions-icon.png",
+    iconAlt: "All Questions Icon",
+    topText: "Filter through the entire questions bank.",
+    title: "All Questions",
+  },
+  {
+  key: "global-common-mistakes",
+  href: `${ROUTES.comingSoon}?feature=global-common-mistakes`,
+  ariaLabel: "Open Global Common Mistakes",
+  bgSrc: "/images/home/cards/globalmistakes-bg.png",
+  bgAlt: "Global Common Mistakes Background",
+  iconSrc: "/images/home/icons/globalmistakes-icon.png",
+  iconAlt: "Global Common Mistakes Icon",
+  topText: "See which questions others miss most.",
+  title: "Global Common Mistakes",
+},
+
+] as const;
+
+const MY_CARDS = [
+  {
+  key: "my-bookmarks",
+  href: `${ROUTES.comingSoon}?feature=my-bookmarks`,
+  ariaLabel: "Open My Bookmarks",
+  bgSrc: "/images/home/cards/bookmark-bg.png",
+  bgAlt: "My Bookmarks Background",
+  iconSrc: "/images/home/icons/bookmark-icon.png",
+  iconAlt: "Bookmark Icon",
+  topText: "Save questions and build your own study list.",
+  title: "My Bookmarks",
+  },
+  {
+  key: "my-mistakes",
+  href: `${ROUTES.comingSoon}?feature=my-mistakes`,
+  ariaLabel: "Open My Mistakes",
+  bgSrc: "/images/home/cards/mymistakes-bg.png",
+  bgAlt: "My Mistakes Background",
+  iconSrc: "/images/home/icons/mymistakes-icon.png",
+  iconAlt: "My Mistakes Icon",
+  topText: "Revisit questions you got wrong.",
+  title: "My Mistakes",
+  },
+
+] as const
 
 
 
@@ -170,9 +260,6 @@ const modalTimeLabel = formatTimeLabel(modalSourceTime);
 </div>
 
 
-
-
-
             {/* Days left */}
             <div className={styles.daysLeftContainer}>
               <div className={styles.daysLeftNumber}>
@@ -196,205 +283,81 @@ const modalTimeLabel = formatTimeLabel(modalSourceTime);
           </div>
         </section>
 
-        {/* ===== Sections under the exam card ===== */}
-        <section className={styles.sections}>
-          {/* Test Mode */}
-          <div className={styles.sectionGroup}>
-            <h2 className={styles.sectionTitle}>Test Mode</h2>
+{/* ===== Sections under the exam card ===== */}
+<section className={styles.sections}>
+{/* Test Mode */}
+<div className={styles.sectionGroup}>
+<h2 className={styles.sectionTitle}>Test Mode</h2>
             
-            {/* Real Test */}
-            <DragScrollRow className={styles.dragRow}>
-              <article className={styles.featureCard}>
-                <Image
-                  src="/images/home/cards/realtest-bg.png"
-                  alt="Real Test Background"
-                  fill
-                  className={styles.cardBgImage}
-                  draggable={false}
-                />
-                <div className={styles.cardTopRow}>
-                <div className={styles.cardIcon}>
-                  <Image
-                    src="/images/home/icons/realtest-icon.png"
-                    alt="Real Test Icon"
-                    fill
-                    draggable={false}
-                  />
-                </div>
-                <p className={styles.cardTopText}>Practice under real exam conditions with a timer.</p>
-                </div>
-                <div className={styles.cardContent}>
-                <p className={styles.cardTitle}>Real Test</p>
-                </div>
-              </article>
+{/* Real Test */}
+<DragScrollRow className={styles.dragRow}>
+{TEST_MODE_CARDS.map((card) => (
+    <FeatureCard
+      key={card.key}
+      href={card.href}
+      ariaLabel={card.ariaLabel}
+      bgSrc={card.bgSrc}
+      bgAlt={card.bgAlt}
+      iconSrc={card.iconSrc}
+      iconAlt={card.iconAlt}
+      topText={card.topText}
+      title={card.title}
+    />
+  ))}
 
-              {/* Practice */}
-              <article className={styles.featureCard}>
-                <Image
-                  src="/images/home/cards/practice-bg.png"
-                  alt="Practice Background"
-                  fill
-                  className={styles.cardBgImage}
-                  draggable={false}
-                />
-                <div className={styles.cardTopRow}>
-                <div className={styles.cardIcon}>
-                <Image 
-                  src="/images/home/icons/practice-icon.png"
-                  alt="Practice Icon"
-                  fill
-                  draggable={false}
-                />
-                </div>
-                <p className={styles.cardTopText}>Study at your own pace. No time limit!</p>
-                </div>
-                <div className={styles.cardContent}>
-                <p className={styles.cardTitle}>Practice</p>
-                </div>
-              </article>
-
-              {/* Rapid Fire */}
-              <article className={styles.featureCard}>
-                <Image
-                  src="/images/home/cards/rapidfire-bg.png"
-                  alt="Rapid Fire Background"
-                  fill
-                  className={styles.cardBgImage}
-                  draggable={false}
-                />
-                <div className={styles.cardTopRow}>
-                <div className={styles.cardIcon}>
-                <Image 
-                  src="/images/home/icons/rapidfire-icon.png"
-                  alt="Rapid Fire Icon"
-                  fill
-                  draggable={false}
-                />
-                </div>
-                <p className={styles.cardTopText}>Sharpen your reflexes and memory in bursts.</p>
-                </div>
-                <div className={styles.cardContent}>
-                <p className={styles.cardTitle}>Rapid Fire</p>
-                </div>
-              </article>
+{/* Practice */}
+{/* Rapid Fire */}
             </DragScrollRow>
           </div>
 
-          {/* Overall */}
-          <div className={styles.sectionGroup}>
-            <h2 className={styles.sectionTitle}>Overall</h2>
-            <DragScrollRow className={styles.dragRow}>
-              {/* All Questions */}
-              <article className={styles.featureCard}>
-                <Image
-                  src="/images/home/cards/allquestions-bg.png"
-                  alt="All Questions Background"
-                  fill
-                  className={styles.cardBgImage}
-                  draggable={false}
-                />
-                <div className={styles.cardTopRow}>
-                <div className={styles.cardIcon}>
-                <Image 
-                  src="/images/home/icons/allquestions-icon.png"
-                  alt="All Questions Icon"
-                  fill
-                  draggable={false}
-                />
-                </div>
-                <p className={styles.cardTopText}>Filter through the entire questions bank.</p>
-                </div>
-                <div className={styles.cardContent}>
-                <p className={styles.cardTitle}>All Questions</p>
-                </div>
-              </article>
-              
 
-              {/* Global Common Mistakes */}
-              <article className={styles.featureCard}>
-                <Image
-                  src="/images/home/cards/globalmistakes-bg.png"
-                  alt="Global Common Mistakes Background"
-                  fill
-                  className={styles.cardBgImage}
-                  draggable={false}
-                />
-                <div className={styles.cardTopRow}>
-                <div className={styles.cardIcon}>
-                <Image 
-                  src="/images/home/icons/globalmistakes-icon.png"
-                  alt="Global Common Mistakes Icon"
-                  fill
-                  draggable={false}
-                />
-                </div>
-                <p className={styles.cardTopText}>See which questions others miss most.</p>
-                </div>
-                <div className={styles.cardContent}>
-                <p className={styles.cardTitle}>Global Common Mistakes</p>
-                </div>
-              </article>
-            </DragScrollRow>
-          </div>
-        
+{/* Overall */}
+ <div className={styles.sectionGroup}>
+<h2 className={styles.sectionTitle}>Overall</h2>
+<DragScrollRow className={styles.dragRow}>
+{/* All Questions */}
+{OVERALL_CARDS.map((card) => (
+  <FeatureCard
+    key={card.key}
+    href={card.href}
+    ariaLabel={card.ariaLabel}
+    bgSrc={card.bgSrc}
+    bgAlt={card.bgAlt}
+    iconSrc={card.iconSrc}
+    iconAlt={card.iconAlt}
+    topText={card.topText}
+    title={card.title}
+  />
+))}
+{/* Global Common Mistakes */}
+</DragScrollRow>
+</div>
 
-          {/* My */}
+
+{/* My */}
           <div className={styles.sectionGroup}>
             <h2 className={styles.sectionTitle}>My</h2>
-            <DragScrollRow className={styles.dragRow}>
-              {/* Bookmark */}
-              <article className={styles.featureCard}>
-                <Image
-                  src="/images/home/cards/bookmark-bg.png"
-                  alt="Bookmarks Background"
-                  fill
-                  className={styles.cardBgImage}
-                  draggable={false}
-                />
-                <div className={styles.cardTopRow}>
-                <div className={styles.cardIcon}>
-                <Image 
-                  src="/images/home/icons/bookmark-icon.png"
-                  alt="Bookmark Icon"
-                  fill
-                  draggable={false}
-                />
-                </div>
-                <p className={styles.cardTopText}>Save questions and build your own study list.</p>
-                </div>
-                <div className={styles.cardContent}>
-                <p className={styles.cardTitle}>Bookmark</p>
-                </div>
-              </article>
-              {/* My Mistakes */}
-              <article className={styles.featureCard}>
-                <Image
-                  src="/images/home/cards/mymistakes-bg.png"
-                  alt="My Mistakes Background"
-                  fill
-                  className={styles.cardBgImage}
-                  draggable={false}
-                />
-                <div className={styles.cardTopRow}>
-                <div className={styles.cardIcon}>
-                <Image 
-                  src="/images/home/icons/mymistakes-icon.png"
-                  alt="My Mistakes Icon"
-                  fill
-                  draggable={false}
-                />
-                </div>
-                <p className={styles.cardTopText}>Revisit questions you got wrong.</p>
-                </div>
-                <div className={styles.cardContent}>
-                <p className={styles.cardTitle}>My Mistakes</p>
-                </div>
-              </article>
-            </DragScrollRow>
-          </div>
-        </section>
-                <BottomNav />
-      </div>
+<DragScrollRow className={styles.dragRow}>
+{/* Bookmark */}
+{MY_CARDS.map((card) => (
+    <FeatureCard
+      key={card.key}
+      href={card.href}
+      ariaLabel={card.ariaLabel}
+      bgSrc={card.bgSrc}
+      bgAlt={card.bgAlt}
+      iconSrc={card.iconSrc}
+      iconAlt={card.iconAlt}
+      topText={card.topText}
+      title={card.title}
+    />
+  ))}
+</DragScrollRow>
+</div>
+</section>
+
+<BottomNav />
+</div>
 
       {/* Test Day Modal */}
       {isTestModalOpen && (

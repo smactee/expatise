@@ -120,3 +120,57 @@
   padding: 6px 8px;
   border-radius: 999px;
 }
+
+.answerRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+
+.answerLabel {
+  font-size: 12px;
+  font-weight: 600;
+  opacity: 0.8;
+}
+
+.answerChip {
+  font-size: 12px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.06);
+}
+
+.answerCorrect {
+  color: white;
+}
+
+.options {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.option {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.optionCorrect {
+  color: white;
+}
+
+.optionKey {
+  font-weight: 800;
+  min-width: 22px;
+}
+
+.optionText {
+  line-height: 1.35;
+}

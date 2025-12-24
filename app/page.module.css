@@ -229,6 +229,18 @@
   box-shadow: 0px 6px 8px 0px #848487;
 
   scroll-snap-align: start;    /* 🔹 snaps card nicely to left edge */
+
+  text-decoration: none;
+  color: inherit;
+
+  user-select: none;
+  -webkit-user-drag: none;
+
+}
+
+.featureCard:focus-visible {
+  outline: 3px solid rgba(55, 178, 255, 0.9);
+  outline-offset: 4px;
 }
 
 /* Card background image */

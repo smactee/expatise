@@ -50,7 +50,7 @@ const canSend = useMemo(() => {
     return;
   }
 
-  setIsLoading(true);
+  setLoading(true);
   try {
     const res = await fetch("/api/password-reset/start", {
       method: "POST",
@@ -67,7 +67,7 @@ const canSend = useMemo(() => {
 
     setStep("verify");
   } finally {
-    setIsLoading(false);
+    setLoading(false);
   }
 };
 

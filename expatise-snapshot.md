@@ -1560,6 +1560,31 @@ export default function CheckoutSuccessPage() {
 
 ```
 
+### app/coming-soon/page.tsx
+```tsx
+import Link from "next/link";
+
+type Props = {
+  searchParams?: { feature?: string };
+};
+
+export default function ComingSoonPage({ searchParams }: Props) {
+  const feature = searchParams?.feature ? decodeURIComponent(searchParams.feature) : "This feature";
+
+  return (
+    <main style={{ padding: 24 }}>
+      <h1 style={{ fontSize: 24, fontWeight: 700 }}>Coming Soon</h1>
+      <p style={{ marginTop: 12 }}>{feature} is not ready yet.</p>
+
+      <div style={{ marginTop: 16 }}>
+        <Link href="/">← Back to Home</Link>
+      </div>
+    </main>
+  );
+}
+
+```
+
 ### app/forgot-password/forgot-password.module.css
 ```css
 .page {
@@ -1764,7 +1789,7 @@ const canSend = useMemo(() => {
     return;
   }
 
-  setIsLoading(true);
+  setLoading(true);
   try {
     const res = await fetch("/api/password-reset/start", {
       method: "POST",
@@ -1781,7 +1806,7 @@ const canSend = useMemo(() => {
 
     setStep("verify");
   } finally {
-    setIsLoading(false);
+    setLoading(false);
   }
 };
 
@@ -3367,6 +3392,18 @@ export default function OnboardingPage() {
   box-shadow: 0px 6px 8px 0px #848487;
 
   scroll-snap-align: start;    /* 🔹 snaps card nicely to left edge */
+
+  text-decoration: none;
+  color: inherit;
+
+  user-select: none;
+  -webkit-user-drag: none;
+
+}
+
+.featureCard:focus-visible {
+  outline: 3px solid rgba(55, 178, 255, 0.9);
+  outline-offset: 4px;
 }
 
 /* Card background image */
@@ -3907,7 +3944,8 @@ import Image from 'next/image';
 import DragScrollRow from "../components/DragScrollRow";
 import BottomNav from '../components/BottomNav'; 
 import { useUserProfile } from '../components/UserProfile';
-
+import { ROUTES } from '../lib/routes';
+import FeatureCard from '../components/FeatureCard';
 
 
 const CURRENT_YEAR = new Date().getFullYear();
@@ -3923,6 +3961,95 @@ function formatTimeLabel(time: string): string {
   const displayH = h % 12 || 12; // 0/12 -> 12
   return `${displayH}:${mStr} ${ampm}`;
 }
+
+const TEST_MODE_CARDS = [
+    {
+    key: "real-test",
+    href: `${ROUTES.comingSoon}?feature=real-test`,
+    ariaLabel: "Open Real Test",
+    bgSrc: "/images/home/cards/realtest-bg.png",
+    bgAlt: "Real Test Background",
+    iconSrc: "/images/home/icons/realtest-icon.png",
+    iconAlt: "Real Test Icon",
+    topText: "Practice under real exam conditions with a timer.",
+    title:  "Real Test",
+   },
+    {
+    key: "practice-test",
+    href: `${ROUTES.comingSoon}?feature=practice-test`,
+    ariaLabel: "Open Practice Test",
+    bgSrc: "/images/home/cards/practice-bg.png",
+    bgAlt: "Practice Background",
+    iconSrc: "/images/home/icons/practice-icon.png",
+    iconAlt: "Practice Icon",
+    topText: "Study at your own pace. No time limit!",
+    title:  "Practice Test",
+   },
+    {
+    key: "rapid-fire-test",
+    href: `${ROUTES.comingSoon}?feature=rapid-fire-test`,
+    ariaLabel: "Open Rapid Fire Test",
+    bgSrc: "/images/home/cards/rapidfire-bg.png",
+    bgAlt: "Rapid Fire Background",
+    iconSrc: "/images/home/icons/rapidfire-icon.png",
+    iconAlt: "Rapid Fire Icon",
+    topText: "Sharpen your reflexes and memory in bursts.",
+    title:  "Rapid Fire Test",
+    },
+
+] as const;
+
+const OVERALL_CARDS = [
+  {
+    key: "all-questions",
+    href: ROUTES.questions,
+    ariaLabel: "Open All Questions",
+    bgSrc: "/images/home/cards/allquestions-bg.png",
+    bgAlt: "All Questions Background",
+    iconSrc: "/images/home/icons/allquestions-icon.png",
+    iconAlt: "All Questions Icon",
+    topText: "Filter through the entire questions bank.",
+    title: "All Questions",
+  },
+  {
+  key: "global-common-mistakes",
+  href: `${ROUTES.comingSoon}?feature=global-common-mistakes`,
+  ariaLabel: "Open Global Common Mistakes",
+  bgSrc: "/images/home/cards/globalmistakes-bg.png",
+  bgAlt: "Global Common Mistakes Background",
+  iconSrc: "/images/home/icons/globalmistakes-icon.png",
+  iconAlt: "Global Common Mistakes Icon",
+  topText: "See which questions others miss most.",
+  title: "Global Common Mistakes",
+},
+
+] as const;
+
+const MY_CARDS = [
+  {
+  key: "my-bookmarks",
+  href: `${ROUTES.comingSoon}?feature=my-bookmarks`,
+  ariaLabel: "Open My Bookmarks",
+  bgSrc: "/images/home/cards/bookmark-bg.png",
+  bgAlt: "My Bookmarks Background",
+  iconSrc: "/images/home/icons/bookmark-icon.png",
+  iconAlt: "Bookmark Icon",
+  topText: "Save questions and build your own study list.",
+  title: "My Bookmarks",
+  },
+  {
+  key: "my-mistakes",
+  href: `${ROUTES.comingSoon}?feature=my-mistakes`,
+  ariaLabel: "Open My Mistakes",
+  bgSrc: "/images/home/cards/mymistakes-bg.png",
+  bgAlt: "My Mistakes Background",
+  iconSrc: "/images/home/icons/mymistakes-icon.png",
+  iconAlt: "My Mistakes Icon",
+  topText: "Revisit questions you got wrong.",
+  title: "My Mistakes",
+  },
+
+] as const
 
 
 
@@ -4071,9 +4198,6 @@ const modalTimeLabel = formatTimeLabel(modalSourceTime);
 </div>
 
 
-
-
-
             {/* Days left */}
             <div className={styles.daysLeftContainer}>
               <div className={styles.daysLeftNumber}>
@@ -4097,205 +4221,81 @@ const modalTimeLabel = formatTimeLabel(modalSourceTime);
           </div>
         </section>
 
-        {/* ===== Sections under the exam card ===== */}
-        <section className={styles.sections}>
-          {/* Test Mode */}
-          <div className={styles.sectionGroup}>
-            <h2 className={styles.sectionTitle}>Test Mode</h2>
+{/* ===== Sections under the exam card ===== */}
+<section className={styles.sections}>
+{/* Test Mode */}
+<div className={styles.sectionGroup}>
+<h2 className={styles.sectionTitle}>Test Mode</h2>
             
-            {/* Real Test */}
-            <DragScrollRow className={styles.dragRow}>
-              <article className={styles.featureCard}>
-                <Image
-                  src="/images/home/cards/realtest-bg.png"
-                  alt="Real Test Background"
-                  fill
-                  className={styles.cardBgImage}
-                  draggable={false}
-                />
-                <div className={styles.cardTopRow}>
-                <div className={styles.cardIcon}>
-                  <Image
-                    src="/images/home/icons/realtest-icon.png"
-                    alt="Real Test Icon"
-                    fill
-                    draggable={false}
-                  />
-                </div>
-                <p className={styles.cardTopText}>Practice under real exam conditions with a timer.</p>
-                </div>
-                <div className={styles.cardContent}>
-                <p className={styles.cardTitle}>Real Test</p>
-                </div>
-              </article>
+{/* Real Test */}
+<DragScrollRow className={styles.dragRow}>
+{TEST_MODE_CARDS.map((card) => (
+    <FeatureCard
+      key={card.key}
+      href={card.href}
+      ariaLabel={card.ariaLabel}
+      bgSrc={card.bgSrc}
+      bgAlt={card.bgAlt}
+      iconSrc={card.iconSrc}
+      iconAlt={card.iconAlt}
+      topText={card.topText}
+      title={card.title}
+    />
+  ))}
 
-              {/* Practice */}
-              <article className={styles.featureCard}>
-                <Image
-                  src="/images/home/cards/practice-bg.png"
-                  alt="Practice Background"
-                  fill
-                  className={styles.cardBgImage}
-                  draggable={false}
-                />
-                <div className={styles.cardTopRow}>
-                <div className={styles.cardIcon}>
-                <Image 
-                  src="/images/home/icons/practice-icon.png"
-                  alt="Practice Icon"
-                  fill
-                  draggable={false}
-                />
-                </div>
-                <p className={styles.cardTopText}>Study at your own pace. No time limit!</p>
-                </div>
-                <div className={styles.cardContent}>
-                <p className={styles.cardTitle}>Practice</p>
-                </div>
-              </article>
-
-              {/* Rapid Fire */}
-              <article className={styles.featureCard}>
-                <Image
-                  src="/images/home/cards/rapidfire-bg.png"
-                  alt="Rapid Fire Background"
-                  fill
-                  className={styles.cardBgImage}
-                  draggable={false}
-                />
-                <div className={styles.cardTopRow}>
-                <div className={styles.cardIcon}>
-                <Image 
-                  src="/images/home/icons/rapidfire-icon.png"
-                  alt="Rapid Fire Icon"
-                  fill
-                  draggable={false}
-                />
-                </div>
-                <p className={styles.cardTopText}>Sharpen your reflexes and memory in bursts.</p>
-                </div>
-                <div className={styles.cardContent}>
-                <p className={styles.cardTitle}>Rapid Fire</p>
-                </div>
-              </article>
+{/* Practice */}
+{/* Rapid Fire */}
             </DragScrollRow>
           </div>
 
-          {/* Overall */}
-          <div className={styles.sectionGroup}>
-            <h2 className={styles.sectionTitle}>Overall</h2>
-            <DragScrollRow className={styles.dragRow}>
-              {/* All Questions */}
-              <article className={styles.featureCard}>
-                <Image
-                  src="/images/home/cards/allquestions-bg.png"
-                  alt="All Questions Background"
-                  fill
-                  className={styles.cardBgImage}
-                  draggable={false}
-                />
-                <div className={styles.cardTopRow}>
-                <div className={styles.cardIcon}>
-                <Image 
-                  src="/images/home/icons/allquestions-icon.png"
-                  alt="All Questions Icon"
-                  fill
-                  draggable={false}
-                />
-                </div>
-                <p className={styles.cardTopText}>Filter through the entire questions bank.</p>
-                </div>
-                <div className={styles.cardContent}>
-                <p className={styles.cardTitle}>All Questions</p>
-                </div>
-              </article>
-              
 
-              {/* Global Common Mistakes */}
-              <article className={styles.featureCard}>
-                <Image
-                  src="/images/home/cards/globalmistakes-bg.png"
-                  alt="Global Common Mistakes Background"
-                  fill
-                  className={styles.cardBgImage}
-                  draggable={false}
-                />
-                <div className={styles.cardTopRow}>
-                <div className={styles.cardIcon}>
-                <Image 
-                  src="/images/home/icons/globalmistakes-icon.png"
-                  alt="Global Common Mistakes Icon"
-                  fill
-                  draggable={false}
-                />
-                </div>
-                <p className={styles.cardTopText}>See which questions others miss most.</p>
-                </div>
-                <div className={styles.cardContent}>
-                <p className={styles.cardTitle}>Global Common Mistakes</p>
-                </div>
-              </article>
-            </DragScrollRow>
-          </div>
-        
+{/* Overall */}
+ <div className={styles.sectionGroup}>
+<h2 className={styles.sectionTitle}>Overall</h2>
+<DragScrollRow className={styles.dragRow}>
+{/* All Questions */}
+{OVERALL_CARDS.map((card) => (
+  <FeatureCard
+    key={card.key}
+    href={card.href}
+    ariaLabel={card.ariaLabel}
+    bgSrc={card.bgSrc}
+    bgAlt={card.bgAlt}
+    iconSrc={card.iconSrc}
+    iconAlt={card.iconAlt}
+    topText={card.topText}
+    title={card.title}
+  />
+))}
+{/* Global Common Mistakes */}
+</DragScrollRow>
+</div>
 
-          {/* My */}
+
+{/* My */}
           <div className={styles.sectionGroup}>
             <h2 className={styles.sectionTitle}>My</h2>
-            <DragScrollRow className={styles.dragRow}>
-              {/* Bookmark */}
-              <article className={styles.featureCard}>
-                <Image
-                  src="/images/home/cards/bookmark-bg.png"
-                  alt="Bookmarks Background"
-                  fill
-                  className={styles.cardBgImage}
-                  draggable={false}
-                />
-                <div className={styles.cardTopRow}>
-                <div className={styles.cardIcon}>
-                <Image 
-                  src="/images/home/icons/bookmark-icon.png"
-                  alt="Bookmark Icon"
-                  fill
-                  draggable={false}
-                />
-                </div>
-                <p className={styles.cardTopText}>Save questions and build your own study list.</p>
-                </div>
-                <div className={styles.cardContent}>
-                <p className={styles.cardTitle}>Bookmark</p>
-                </div>
-              </article>
-              {/* My Mistakes */}
-              <article className={styles.featureCard}>
-                <Image
-                  src="/images/home/cards/mymistakes-bg.png"
-                  alt="My Mistakes Background"
-                  fill
-                  className={styles.cardBgImage}
-                  draggable={false}
-                />
-                <div className={styles.cardTopRow}>
-                <div className={styles.cardIcon}>
-                <Image 
-                  src="/images/home/icons/mymistakes-icon.png"
-                  alt="My Mistakes Icon"
-                  fill
-                  draggable={false}
-                />
-                </div>
-                <p className={styles.cardTopText}>Revisit questions you got wrong.</p>
-                </div>
-                <div className={styles.cardContent}>
-                <p className={styles.cardTitle}>My Mistakes</p>
-                </div>
-              </article>
-            </DragScrollRow>
-          </div>
-        </section>
-                <BottomNav />
-      </div>
+<DragScrollRow className={styles.dragRow}>
+{/* Bookmark */}
+{MY_CARDS.map((card) => (
+    <FeatureCard
+      key={card.key}
+      href={card.href}
+      ariaLabel={card.ariaLabel}
+      bgSrc={card.bgSrc}
+      bgAlt={card.bgAlt}
+      iconSrc={card.iconSrc}
+      iconAlt={card.iconAlt}
+      topText={card.topText}
+      title={card.title}
+    />
+  ))}
+</DragScrollRow>
+</div>
+</section>
+
+<BottomNav />
+</div>
 
       {/* Test Day Modal */}
       {isTestModalOpen && (
@@ -6130,11 +6130,16 @@ import { loadDataset } from '../../lib/qbank/loadDataset';
 import type { DatasetId } from '../../lib/qbank/datasets';
 import type { Question } from '../../lib/qbank/types';
 
+function isCorrectMcq(item: Question, optId: string, optKey?: string) {
+  if (item.type !== 'MCQ' || !item.correctOptionId) return false;
+  return item.correctOptionId === optId || (optKey && item.correctOptionId === optKey);
+}
+
 export default function AllQuestionsClient({ datasetId }: { datasetId: DatasetId }) {
   const [q, setQ] = useState<Question[]>([]);
   const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState('');
-  const [activeTags, setActiveTags] = useState<string[]>([]); // canonical tag ids
+  const [activeTags, setActiveTags] = useState<string[]>([]);
 
   useEffect(() => {
     let alive = true;
@@ -6155,12 +6160,15 @@ export default function AllQuestionsClient({ datasetId }: { datasetId: DatasetId
     const qNorm = query.trim().toLowerCase();
 
     return q.filter((item) => {
+      const autoTags = Array.isArray(item.autoTags) ? item.autoTags : [];
+      const manualTags = Array.isArray(item.tags) ? item.tags : [];
+
       const matchesText =
         !qNorm ||
         item.prompt.toLowerCase().includes(qNorm) ||
-        item.autoTags.some((t) => t.includes(qNorm));
+        autoTags.some((t) => t.toLowerCase().includes(qNorm));
 
-      const tags = new Set([...item.tags, ...item.autoTags]);
+      const tags = new Set([...manualTags, ...autoTags]);
       const matchesTags =
         activeTags.length === 0 || activeTags.every((t) => tags.has(t));
 
@@ -6222,12 +6230,40 @@ export default function AllQuestionsClient({ datasetId }: { datasetId: DatasetId
                     fill
                     className={styles.image}
                     draggable={false}
+                    unoptimized
+                    sizes="(max-width: 768px) 100vw, 600px"
                   />
                 </div>
               )}
 
+              {/* ✅ ANSWERS */}
+              {item.type === 'ROW' && item.correctRow && (
+                <div className={styles.answerRow}>
+                  <span className={styles.answerLabel}>Answer</span>
+                  <span className={styles.answerPill}>{item.correctRow}</span>
+                </div>
+              )}
+
+              {item.type === 'MCQ' && item.options?.length > 0 && (
+                <ul className={styles.optionList}>
+                  {item.options.map((opt) => {
+                    const key = opt.originalKey ?? opt.id;
+                    const correct = isCorrectMcq(item, opt.id, opt.originalKey);
+                    return (
+                      <li
+                        key={opt.id}
+                        className={`${styles.option} ${correct ? styles.optionCorrect : ''}`}
+                      >
+                        <span className={styles.optionKey}>{key}.</span>
+                        {opt.text}
+                      </li>
+                    );
+                  })}
+                </ul>
+              )}
+
               <div className={styles.tagRow}>
-                {item.autoTags.slice(0, 4).map((t) => (
+                {(item.autoTags ?? []).slice(0, 4).map((t) => (
                   <span key={t} className={styles.tagPill}>#{t}</span>
                 ))}
               </div>
@@ -6376,6 +6412,60 @@ export default function QuestionsPage() {
   background: rgba(0,0,0,0.06);
   padding: 6px 8px;
   border-radius: 999px;
+}
+
+.answerRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+
+.answerLabel {
+  font-size: 12px;
+  font-weight: 600;
+  opacity: 0.8;
+}
+
+.answerChip {
+  font-size: 12px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.06);
+}
+
+.answerCorrect {
+  color: white;
+}
+
+.options {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.option {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.optionCorrect {
+  color: white;
+}
+
+.optionKey {
+  font-weight: 800;
+  min-width: 22px;
+}
+
+.optionText {
+  line-height: 1.35;
 }
 
 ```
@@ -7193,6 +7283,128 @@ export default function DragScrollRow({
 
 ```
 
+### components/FeatureCard.tsx
+```tsx
+'use client';
+
+import Link from 'next/link';
+import Image from 'next/image';
+import styles from '../app/page.module.css';
+import { useRef } from 'react';
+import type { MouseEvent, PointerEvent } from 'react';
+
+type FeatureCardProps = {
+  href: string;
+  ariaLabel: string;
+
+  bgSrc: string;
+  bgAlt: string;
+
+  iconSrc: string;
+  iconAlt: string;
+
+  topText: string;
+  title: string;
+
+  // optional now, useful later
+  prefetch?: boolean;
+  onClick?: () => void;
+};
+
+export default function FeatureCard({
+    
+  href,
+  ariaLabel,
+  bgSrc,
+  bgAlt,
+  iconSrc,
+  iconAlt,
+  topText,
+  title,
+  prefetch,
+  onClick,
+}: FeatureCardProps) {
+      const dragRef = useRef({ x: 0, y: 0, moved: false });
+
+  const handlePointerDown = (e: PointerEvent<HTMLAnchorElement>) => {
+    dragRef.current.x = e.clientX;
+    dragRef.current.y = e.clientY;
+    dragRef.current.moved = false;
+  };
+
+  const handlePointerMove = (e: PointerEvent<HTMLAnchorElement>) => {
+    if (dragRef.current.moved) return;
+
+    const dx = Math.abs(e.clientX - dragRef.current.x);
+    const dy = Math.abs(e.clientY - dragRef.current.y);
+
+    // If user moved more than a few pixels, we treat it as a drag/scroll gesture
+    if (dx > 8 || dy > 8) dragRef.current.moved = true;
+  };
+
+  const handleClick = (e: MouseEvent<HTMLAnchorElement>) => {
+    // If the pointer moved, user was dragging — don't navigate
+    if (dragRef.current.moved) {
+      e.preventDefault();
+      e.stopPropagation();
+      return;
+    }
+
+    // Otherwise, it was a real click/tap
+    onClick?.();
+  };
+
+  const handlePointerUp = () => {
+    // reset after the click event has a chance to run
+    setTimeout(() => {
+      dragRef.current.moved = false;
+    }, 0);
+  };
+
+  return (
+    <Link
+      href={href}
+      prefetch={prefetch}
+      className={styles.featureCard}
+      aria-label={ariaLabel}
+      draggable={false}
+      onDragStart={(e) => e.preventDefault()}
+      onPointerDown={handlePointerDown}
+      onPointerMove={handlePointerMove}
+      onPointerUp={handlePointerUp}
+      onPointerCancel={handlePointerUp}
+      onClick={handleClick}
+    >
+      <Image
+        src={bgSrc}
+        alt={bgAlt}
+        fill
+        className={styles.cardBgImage}
+        draggable={false}
+      />
+
+      <div className={styles.cardTopRow}>
+        <div className={styles.cardIcon}>
+          <Image
+            src={iconSrc}
+            alt={iconAlt}
+            fill
+            draggable={false}
+          />
+        </div>
+
+        <p className={styles.cardTopText}>{topText}</p>
+      </div>
+
+      <div className={styles.cardContent}>
+        <p className={styles.cardTitle}>{title}</p>
+      </div>
+    </Link>
+  );
+}
+
+```
+
 ### components/ThemeProvider.tsx
 ```tsx
 'use client';
@@ -7684,43 +7896,72 @@ export const DATASETS: Record<
 
 ### lib/qbank/loadDataset.ts
 ```tsx
+// lib/qbank/loadDataset.ts
 import { DATASETS, type DatasetId } from './datasets';
-import type { Question, RawQBank, RawQuestion } from './types';
+import type { Question, RawQBank, RawQuestion, CorrectRow } from './types';
 import { suggestTags } from './suggestTags';
 
-function normalizeOne(raw: RawQuestion): Question {
-  const type = raw.type === 'mcq' ? 'MCQ' : 'ROW';
+function toArray<T>(v: unknown): T[] {
+  return Array.isArray(v) ? (v as T[]) : [];
+}
 
-  const options = raw.options.map((o) => ({
-    id: o.key,
-    text: o.text,
-  }));
+function normalizeCorrectRow(v: unknown): CorrectRow | null {
+  const s = String(v ?? '').trim();
+  if (!s) return null;
+  const low = s.toLowerCase();
+  if (low === 'right' || low === 'r') return low === 'r' ? 'R' : 'Right';
+  if (low === 'wrong' || low === 'w') return low === 'w' ? 'W' : 'Wrong';
+  return null;
+}
+
+function normalizeType(rawType: unknown): Question['type'] {
+  const t = String(rawType ?? '').trim().toLowerCase();
+  return t === 'mcq' ? 'MCQ' : 'ROW';
+}
+
+function normalizeOne(raw: RawQuestion): Question {
+  const type = normalizeType(raw.type);
+
+  const options = toArray<any>(raw.options)
+    .map((o) => ({
+      id: String(o?.id ?? o?.key ?? ''),
+      originalKey: o?.originalKey ? String(o.originalKey) : (o?.key ? String(o.key) : undefined),
+      text: String(o?.text ?? ''),
+    }))
+    .filter((o) => o.id && o.text);
+
+  const assets = toArray<any>(raw.assets)
+    .filter((a) => a?.src || a?.path)
+    .map((a) => {
+      const src = String(a.src ?? a.path);
+      return {
+        kind: 'image' as const,
+        src: src.startsWith('/') ? src : `/${src}`,
+        width: a.width,
+        height: a.height,
+      };
+    });
+
+  // answers can appear as correctRow / correctOptionId OR fallback to answer
+  const correctRow = type === 'ROW'
+    ? normalizeCorrectRow((raw as any).correctRow ?? (raw as any).answer)
+    : null;
 
   const correctOptionId =
-    raw.type === 'mcq'
-      ? raw.answer.trim() // "A".."D"
-      : raw.answer.trim().toLowerCase().startsWith('r')
-        ? 'R'
-        : 'W';
-
-  const assets = (raw.assets ?? [])
-    .filter((a) => !!a?.path)
-    .map((a) => ({
-      kind: 'image' as const,
-      src: a.path,
-      width: a.width,
-      height: a.height,
-    }));
+    type === 'MCQ'
+      ? String(((raw as any).correctOptionId ?? (raw as any).answer ?? '') || '').trim() || null
+      : null;
 
   const q: Question = {
-    id: raw.id,
-    number: raw.number,
+    id: String(raw.id),
+    number: Number(raw.number),
     type,
-    prompt: raw.prompt,
+    prompt: String(raw.prompt ?? ''),
     options,
+    correctRow,
     correctOptionId,
     assets,
-    tags: raw.tags ?? [],
+    tags: toArray<string>((raw as any).tags), // ✅ always array
     autoTags: [],
   };
 
@@ -7730,15 +7971,13 @@ function normalizeOne(raw: RawQuestion): Question {
 
 export async function loadDataset(datasetId: DatasetId): Promise<Question[]> {
   const ds = DATASETS[datasetId];
-  if (!ds) throw new Error(`Unknown datasetId: ${datasetId}`);
-
-  const res = await fetch(ds.url);
+  const res = await fetch(ds.url, { cache: 'force-cache' });
   if (!res.ok) throw new Error(`Failed to load dataset: ${datasetId}`);
 
-  const raw = (await res.json()) as RawQBank;
+  const json = (await res.json()) as RawQBank;
+  const list = Array.isArray(json) ? json : toArray<RawQuestion>((json as any).questions);
 
-  const rawQuestions = Array.isArray(raw) ? raw : raw.questions;
-  return rawQuestions.map(normalizeOne).sort((a, b) => a.number - b.number);
+  return list.map(normalizeOne).sort((a, b) => a.number - b.number);
 }
 
 ```
@@ -7808,56 +8047,63 @@ export const TAG_KEYWORDS: Record<CanonicalTagId, string[]> = {
 
 ### lib/qbank/types.ts
 ```tsx
-export type RawQuestionType = 'tf' | 'mcq';
+// lib/qbank/types.ts
 
-export type RawOption = { key: string; text: string };
+export type QuestionType = 'ROW' | 'MCQ';
+export type CorrectRow = 'Right' | 'Wrong' | 'R' | 'W';
 
-export type RawAsset = {
-  path: string;
-  page?: number;
-  width?: number;
-  height?: number;
-  ext?: string;
-};
-
-export type RawQuestion = {
-  id: string;
-  number: number;
-  type: RawQuestionType;
-  prompt: string;
-  options: RawOption[];
-  answer: string;
-  tags?: string[];
-  assets?: RawAsset[];
-  source?: unknown;
-};
-
-// Your JSON might be either an array OR { questions: [...] }
-export type RawQBank = RawQuestion[] | { questions: RawQuestion[]; meta?: unknown };
-
-export type QType = 'ROW' | 'MCQ';
-
-export type QAsset = {
+export interface QuestionAsset {
   kind: 'image';
   src: string;
   width?: number;
   height?: number;
-};
+}
 
-export type Question = {
+export interface QuestionOption {
+  id: string;            // internal id
+  text: string;
+  originalKey?: string;  // usually "A" | "B" | "C" | "D" if available
+}
+
+export interface Question {
   id: string;
   number: number;
-  type: QType;
+  type: QuestionType;        // ✅ uppercase everywhere
   prompt: string;
-
-  options: Array<{ id: string; text: string }>;
-  correctOptionId: string;
-
-  assets: QAsset[];
-
+  options: QuestionOption[];
+  correctRow: CorrectRow | null;
+  correctOptionId: string | null;
+  assets: QuestionAsset[];
   tags: string[];
   autoTags: string[];
-};
+}
+
+// Your processed JSON may be:
+// 1) { questions: [...] }
+// 2) just [...]
+export interface RawQuestion {
+  id: string;
+  number: number;
+  type: unknown;
+  prompt?: unknown;
+  options?: unknown;
+  correctRow?: unknown;
+  correctOptionId?: unknown;
+  answer?: unknown;
+  assets?: unknown;
+  tags?: unknown;
+}
+
+export type RawQBank = { questions: RawQuestion[] } | RawQuestion[];
+
+```
+
+### lib/routes.ts
+```tsx
+export const ROUTES = {
+  questions: "/questions",
+  comingSoon: "/coming-soon",
+} as const;
 
 ```
 
@@ -14842,7 +15088,7 @@ export const config = {
   "meta": {
     "slug": "2023-test1",
     "pdf": "2023 Driving test 1.pdf",
-    "extractedAt": "2025-12-23T14:19:15.487405Z",
+    "extractedAt": "2025-12-24T01:13:55.494559Z",
     "questionCount": 973
   },
   "questions": [
@@ -41814,11 +42060,11 @@ export const config = {
       "id": "q0530",
       "number": 530,
       "type": "row",
-      "prompt": "Move the switch up and down, the windscreen wipers start working. 46 Answer: Right",
+      "prompt": "Move the switch up and down, the windscreen wipers start working. 46",
       "options": [],
-      "correctRow": null,
+      "correctRow": "R",
       "correctOptionId": null,
-      "answerRaw": null,
+      "answerRaw": "Right",
       "regions": [
         {
           "page": 46,
@@ -42607,11 +42853,11 @@ export const config = {
       "id": "q0547",
       "number": 547,
       "type": "row",
-      "prompt": "The rear windshield defroster starts to work after pressing this switch. Answer: Wrong",
+      "prompt": "The rear windshield defroster starts to work after pressing this switch.",
       "options": [],
-      "correctRow": null,
+      "correctRow": "W",
       "correctOptionId": null,
-      "answerRaw": null,
+      "answerRaw": "Wrong",
       "regions": [
         {
           "page": 47,
@@ -44447,8 +44693,13 @@ export const config = {
       "id": "q0582",
       "number": 582,
       "type": "mcq",
-      "prompt": "What is this manipulation device? A .switch of the turn signal",
+      "prompt": "What is this manipulation device?",
       "options": [
+        {
+          "id": "q0582_o1",
+          "originalKey": "A",
+          "text": "switch of the turn signal"
+        },
         {
           "id": "q0582_o2",
           "originalKey": "B",
@@ -70355,11 +70606,11 @@ export const config = {
       "id": "q0958",
       "number": 958,
       "type": "row",
-      "prompt": "This sign indicates jammed section ahead and passing slowly. 103 Answer: Wrong",
+      "prompt": "This sign indicates jammed section ahead and passing slowly. 103",
       "options": [],
-      "correctRow": null,
+      "correctRow": "W",
       "correctOptionId": null,
-      "answerRaw": null,
+      "answerRaw": "Wrong",
       "regions": [
         {
           "page": 103,
@@ -71186,7 +71437,7 @@ export const config = {
   "meta": {
     "slug": "2023-test1",
     "pdf": "2023 Driving test 1.pdf",
-    "extractedAt": "2025-12-23T14:19:15.487405Z",
+    "extractedAt": "2025-12-24T01:13:55.494559Z",
     "questionCount": 973
   },
   "questions": [
@@ -91655,11 +91906,11 @@ export const config = {
       "id": "q0530",
       "number": 530,
       "type": "row",
-      "prompt": "Move the switch up and down, the windscreen wipers start working. 46 Answer: Right",
+      "prompt": "Move the switch up and down, the windscreen wipers start working. 46",
       "options": [],
-      "correctRow": null,
+      "correctRow": "R",
       "correctOptionId": null,
-      "answerRaw": null,
+      "answerRaw": "Right",
       "regions": [
         {
           "page": 46,
@@ -92250,11 +92501,11 @@ export const config = {
       "id": "q0547",
       "number": 547,
       "type": "row",
-      "prompt": "The rear windshield defroster starts to work after pressing this switch. Answer: Wrong",
+      "prompt": "The rear windshield defroster starts to work after pressing this switch.",
       "options": [],
-      "correctRow": null,
+      "correctRow": "W",
       "correctOptionId": null,
-      "answerRaw": null,
+      "answerRaw": "Wrong",
       "regions": [
         {
           "page": 47,
@@ -93700,8 +93951,13 @@ export const config = {
       "id": "q0582",
       "number": 582,
       "type": "mcq",
-      "prompt": "What is this manipulation device? A .switch of the turn signal",
+      "prompt": "What is this manipulation device?",
       "options": [
+        {
+          "id": "q0582_o1",
+          "originalKey": "A",
+          "text": "switch of the turn signal"
+        },
         {
           "id": "q0582_o2",
           "originalKey": "B",
@@ -114762,11 +115018,11 @@ export const config = {
       "id": "q0958",
       "number": 958,
       "type": "row",
-      "prompt": "This sign indicates jammed section ahead and passing slowly. 103 Answer: Wrong",
+      "prompt": "This sign indicates jammed section ahead and passing slowly. 103",
       "options": [],
-      "correctRow": null,
+      "correctRow": "W",
       "correctOptionId": null,
-      "answerRaw": null,
+      "answerRaw": "Wrong",
       "regions": [
         {
           "page": 103,

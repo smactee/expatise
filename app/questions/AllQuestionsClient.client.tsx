@@ -8,11 +8,16 @@ import { loadDataset } from '../../lib/qbank/loadDataset';
 import type { DatasetId } from '../../lib/qbank/datasets';
 import type { Question } from '../../lib/qbank/types';
 
+function isCorrectMcq(item: Question, optId: string, optKey?: string) {
+  if (item.type !== 'MCQ' || !item.correctOptionId) return false;
+  return item.correctOptionId === optId || (optKey && item.correctOptionId === optKey);
+}
+
 export default function AllQuestionsClient({ datasetId }: { datasetId: DatasetId }) {
   const [q, setQ] = useState<Question[]>([]);
   const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState('');
-  const [activeTags, setActiveTags] = useState<string[]>([]); // canonical tag ids
+  const [activeTags, setActiveTags] = useState<string[]>([]);
 
   useEffect(() => {
     let alive = true;
@@ -33,12 +38,15 @@ export default function AllQuestionsClient({ datasetId }: { datasetId: DatasetId
     const qNorm = query.trim().toLowerCase();
 
     return q.filter((item) => {
+      const autoTags = Array.isArray(item.autoTags) ? item.autoTags : [];
+      const manualTags = Array.isArray(item.tags) ? item.tags : [];
+
       const matchesText =
         !qNorm ||
         item.prompt.toLowerCase().includes(qNorm) ||
-        item.autoTags.some((t) => t.includes(qNorm));
+        autoTags.some((t) => t.toLowerCase().includes(qNorm));
 
-      const tags = new Set([...item.tags, ...item.autoTags]);
+      const tags = new Set([...manualTags, ...autoTags]);
       const matchesTags =
         activeTags.length === 0 || activeTags.every((t) => tags.has(t));
 
@@ -100,12 +108,40 @@ export default function AllQuestionsClient({ datasetId }: { datasetId: DatasetId
                     fill
                     className={styles.image}
                     draggable={false}
+                    unoptimized
+                    sizes="(max-width: 768px) 100vw, 600px"
                   />
                 </div>
               )}
 
+              {/* ✅ ANSWERS */}
+              {item.type === 'ROW' && item.correctRow && (
+                <div className={styles.answerRow}>
+                  <span className={styles.answerLabel}>Answer</span>
+                  <span className={styles.answerPill}>{item.correctRow}</span>
+                </div>
+              )}
+
+              {item.type === 'MCQ' && item.options?.length > 0 && (
+                <ul className={styles.optionList}>
+                  {item.options.map((opt) => {
+                    const key = opt.originalKey ?? opt.id;
+                    const correct = isCorrectMcq(item, opt.id, opt.originalKey);
+                    return (
+                      <li
+                        key={opt.id}
+                        className={`${styles.option} ${correct ? styles.optionCorrect : ''}`}
+                      >
+                        <span className={styles.optionKey}>{key}.</span>
+                        {opt.text}
+                      </li>
+                    );
+                  })}
+                </ul>
+              )}
+
               <div className={styles.tagRow}>
-                {item.autoTags.slice(0, 4).map((t) => (
+                {(item.autoTags ?? []).slice(0, 4).map((t) => (
                   <span key={t} className={styles.tagPill}>#{t}</span>
                 ))}
               </div>

@@ -1,40 +1,69 @@
+// lib/qbank/loadDataset.ts
 import { DATASETS, type DatasetId } from './datasets';
-import type { Question, RawQBank, RawQuestion } from './types';
+import type { Question, RawQBank, RawQuestion, CorrectRow } from './types';
 import { suggestTags } from './suggestTags';
 
-function normalizeOne(raw: RawQuestion): Question {
-  const type = raw.type === 'mcq' ? 'MCQ' : 'ROW';
+function toArray<T>(v: unknown): T[] {
+  return Array.isArray(v) ? (v as T[]) : [];
+}
 
-  const options = raw.options.map((o) => ({
-    id: o.key,
-    text: o.text,
-  }));
+function normalizeCorrectRow(v: unknown): CorrectRow | null {
+  const s = String(v ?? '').trim();
+  if (!s) return null;
+  const low = s.toLowerCase();
+  if (low === 'right' || low === 'r') return low === 'r' ? 'R' : 'Right';
+  if (low === 'wrong' || low === 'w') return low === 'w' ? 'W' : 'Wrong';
+  return null;
+}
+
+function normalizeType(rawType: unknown): Question['type'] {
+  const t = String(rawType ?? '').trim().toLowerCase();
+  return t === 'mcq' ? 'MCQ' : 'ROW';
+}
+
+function normalizeOne(raw: RawQuestion): Question {
+  const type = normalizeType(raw.type);
+
+  const options = toArray<any>(raw.options)
+    .map((o) => ({
+      id: String(o?.id ?? o?.key ?? ''),
+      originalKey: o?.originalKey ? String(o.originalKey) : (o?.key ? String(o.key) : undefined),
+      text: String(o?.text ?? ''),
+    }))
+    .filter((o) => o.id && o.text);
+
+  const assets = toArray<any>(raw.assets)
+    .filter((a) => a?.src || a?.path)
+    .map((a) => {
+      const src = String(a.src ?? a.path);
+      return {
+        kind: 'image' as const,
+        src: src.startsWith('/') ? src : `/${src}`,
+        width: a.width,
+        height: a.height,
+      };
+    });
+
+  // answers can appear as correctRow / correctOptionId OR fallback to answer
+  const correctRow = type === 'ROW'
+    ? normalizeCorrectRow((raw as any).correctRow ?? (raw as any).answer)
+    : null;
 
   const correctOptionId =
-    raw.type === 'mcq'
-      ? raw.answer.trim() // "A".."D"
-      : raw.answer.trim().toLowerCase().startsWith('r')
-        ? 'R'
-        : 'W';
-
-  const assets = (raw.assets ?? [])
-    .filter((a) => !!a?.path)
-    .map((a) => ({
-      kind: 'image' as const,
-      src: a.path,
-      width: a.width,
-      height: a.height,
-    }));
+    type === 'MCQ'
+      ? String(((raw as any).correctOptionId ?? (raw as any).answer ?? '') || '').trim() || null
+      : null;
 
   const q: Question = {
-    id: raw.id,
-    number: raw.number,
+    id: String(raw.id),
+    number: Number(raw.number),
     type,
-    prompt: raw.prompt,
+    prompt: String(raw.prompt ?? ''),
     options,
+    correctRow,
     correctOptionId,
     assets,
-    tags: raw.tags ?? [],
+    tags: toArray<string>((raw as any).tags), // ✅ always array
     autoTags: [],
   };
 
@@ -44,13 +73,11 @@ function normalizeOne(raw: RawQuestion): Question {
 
 export async function loadDataset(datasetId: DatasetId): Promise<Question[]> {
   const ds = DATASETS[datasetId];
-  if (!ds) throw new Error(`Unknown datasetId: ${datasetId}`);
-
-  const res = await fetch(ds.url);
+  const res = await fetch(ds.url, { cache: 'force-cache' });
   if (!res.ok) throw new Error(`Failed to load dataset: ${datasetId}`);
 
-  const raw = (await res.json()) as RawQBank;
+  const json = (await res.json()) as RawQBank;
+  const list = Array.isArray(json) ? json : toArray<RawQuestion>((json as any).questions);
 
-  const rawQuestions = Array.isArray(raw) ? raw : raw.questions;
-  return rawQuestions.map(normalizeOne).sort((a, b) => a.number - b.number);
+  return list.map(normalizeOne).sort((a, b) => a.number - b.number);
 }

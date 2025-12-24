@@ -1,50 +1,48 @@
-export type RawQuestionType = 'tf' | 'mcq';
+// lib/qbank/types.ts
 
-export type RawOption = { key: string; text: string };
+export type QuestionType = 'ROW' | 'MCQ';
+export type CorrectRow = 'Right' | 'Wrong' | 'R' | 'W';
 
-export type RawAsset = {
-  path: string;
-  page?: number;
-  width?: number;
-  height?: number;
-  ext?: string;
-};
-
-export type RawQuestion = {
-  id: string;
-  number: number;
-  type: RawQuestionType;
-  prompt: string;
-  options: RawOption[];
-  answer: string;
-  tags?: string[];
-  assets?: RawAsset[];
-  source?: unknown;
-};
-
-// Your JSON might be either an array OR { questions: [...] }
-export type RawQBank = RawQuestion[] | { questions: RawQuestion[]; meta?: unknown };
-
-export type QType = 'ROW' | 'MCQ';
-
-export type QAsset = {
+export interface QuestionAsset {
   kind: 'image';
   src: string;
   width?: number;
   height?: number;
-};
+}
 
-export type Question = {
+export interface QuestionOption {
+  id: string;            // internal id
+  text: string;
+  originalKey?: string;  // usually "A" | "B" | "C" | "D" if available
+}
+
+export interface Question {
   id: string;
   number: number;
-  type: QType;
+  type: QuestionType;        // ✅ uppercase everywhere
   prompt: string;
-
-  options: Array<{ id: string; text: string }>;
-  correctOptionId: string;
-
-  assets: QAsset[];
-
+  options: QuestionOption[];
+  correctRow: CorrectRow | null;
+  correctOptionId: string | null;
+  assets: QuestionAsset[];
   tags: string[];
   autoTags: string[];
-};
+}
+
+// Your processed JSON may be:
+// 1) { questions: [...] }
+// 2) just [...]
+export interface RawQuestion {
+  id: string;
+  number: number;
+  type: unknown;
+  prompt?: unknown;
+  options?: unknown;
+  correctRow?: unknown;
+  correctOptionId?: unknown;
+  answer?: unknown;
+  assets?: unknown;
+  tags?: unknown;
+}
+
+export type RawQBank = { questions: RawQuestion[] } | RawQuestion[];
