@@ -64,7 +64,7 @@ const TEST_MODE_CARDS = [
 const OVERALL_CARDS = [
   {
     key: "all-questions",
-    href: ROUTES.questions,
+    href: ROUTES.allQuestions,
     ariaLabel: "Open All Questions",
     bgSrc: "/images/home/cards/allquestions-bg.png",
     bgAlt: "All Questions Background",

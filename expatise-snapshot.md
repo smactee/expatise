@@ -544,6 +544,358 @@ export default function AccountSecurityPage() {
 
 ```
 
+### app/all-questions/AllQuestionsClient.client.tsx
+```tsx
+'use client';
+
+import { useEffect, useMemo, useState } from 'react';
+import Image from 'next/image';
+import BottomNav from '../../components/BottomNav';
+import styles from './all-questions.module.css';
+import { loadDataset } from '../../lib/qbank/loadDataset';
+import type { DatasetId } from '../../lib/qbank/datasets';
+import type { Question } from '../../lib/qbank/types';
+
+function isCorrectMcq(item: Question, optId: string, optKey?: string) {
+  if (item.type !== 'MCQ' || !item.correctOptionId) return false;
+  return item.correctOptionId === optId || (optKey && item.correctOptionId === optKey);
+}
+
+export default function AllQuestionsClient({ datasetId }: { datasetId: DatasetId }) {
+  const [q, setQ] = useState<Question[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [query, setQuery] = useState('');
+  const [activeTags, setActiveTags] = useState<string[]>([]);
+
+  useEffect(() => {
+    let alive = true;
+    (async () => {
+      try {
+        const data = await loadDataset(datasetId);
+        if (alive) setQ(data);
+      } finally {
+        if (alive) setLoading(false);
+      }
+    })();
+    return () => {
+      alive = false;
+    };
+  }, [datasetId]);
+
+  const filtered = useMemo(() => {
+    const qNorm = query.trim().toLowerCase();
+
+    return q.filter((item) => {
+      const autoTags = Array.isArray(item.autoTags) ? item.autoTags : [];
+      const manualTags = Array.isArray(item.tags) ? item.tags : [];
+
+      const matchesText =
+        !qNorm ||
+        item.prompt.toLowerCase().includes(qNorm) ||
+        autoTags.some((t) => t.toLowerCase().includes(qNorm));
+
+      const tags = new Set([...manualTags, ...autoTags]);
+      const matchesTags =
+        activeTags.length === 0 || activeTags.every((t) => tags.has(t));
+
+      return matchesText && matchesTags;
+    });
+  }, [q, query, activeTags]);
+
+  const toggleTag = (tag: string) => {
+    setActiveTags((prev) => (prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]));
+  };
+
+  return (
+    <main className={styles.page}>
+      <div className={styles.frame}>
+        <header className={styles.header}>
+          <h1 className={styles.title}>All Questions</h1>
+          <p className={styles.subtitle}>
+            {loading ? 'Loading…' : `${filtered.length} / ${q.length}`}
+          </p>
+        </header>
+
+        <div className={styles.searchRow}>
+          <input
+            className={styles.search}
+            placeholder="Search question text…"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+          />
+        </div>
+
+        <div className={styles.chips}>
+          {['row', 'mcq', 'pic', 'law', 'signals', 'safe-driving', 'expressway', 'violations', 'license', 'vehicle-knowledge'].map((t) => (
+            <button
+              key={t}
+              className={`${styles.chip} ${activeTags.includes(t) ? styles.chipActive : ''}`}
+              onClick={() => toggleTag(t)}
+              type="button"
+            >
+              #{t}
+            </button>
+          ))}
+        </div>
+
+        <section className={styles.list}>
+          {filtered.map((item) => (
+            <article key={item.id} className={styles.card}>
+              <div className={styles.cardTop}>
+                <span className={styles.qNo}>#{item.number}</span>
+                <span className={styles.qType}>{item.type}</span>
+              </div>
+
+              <p className={styles.prompt}>{item.prompt}</p>
+
+              {item.assets[0]?.kind === 'image' && (
+                <div className={styles.imageWrap}>
+                  <Image
+                    src={item.assets[0].src}
+                    alt={`Question ${item.number}`}
+                    fill
+                    className={styles.image}
+                    draggable={false}
+                    unoptimized
+                    sizes="(max-width: 768px) 100vw, 600px"
+                  />
+                </div>
+              )}
+
+              {/* ✅ ANSWERS */}
+              {item.type === 'ROW' && item.correctRow && (
+                <div className={styles.answerRow}>
+                  <span className={styles.answerLabel}>Answer</span>
+                  <span className={styles.answerPill}>{item.correctRow}</span>
+                </div>
+              )}
+
+              {item.type === 'MCQ' && item.options?.length > 0 && (
+                <ul className={styles.optionList}>
+                  {item.options.map((opt) => {
+                    const key = opt.originalKey ?? opt.id;
+                    const correct = isCorrectMcq(item, opt.id, opt.originalKey);
+                    return (
+                      <li
+                        key={opt.id}
+                        className={`${styles.option} ${correct ? styles.optionCorrect : ''}`}
+                      >
+                        <span className={styles.optionKey}>{key}.</span>
+                        {opt.text}
+                      </li>
+                    );
+                  })}
+                </ul>
+              )}
+
+              <div className={styles.tagRow}>
+                {(item.autoTags ?? []).slice(0, 4).map((t) => (
+                  <span key={t} className={styles.tagPill}>#{t}</span>
+                ))}
+              </div>
+            </article>
+          ))}
+        </section>
+
+        <BottomNav />
+      </div>
+    </main>
+  );
+}
+
+```
+
+### app/all-questions/all-questions.module.css
+```css
+.page {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  background: var(--color-page-bg);
+}
+
+.frame {
+  width: 100%;
+  max-width: 560px;
+  padding: 18px 16px 120px;
+}
+
+.header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 6px 0 14px;
+}
+
+.title {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 800;
+}
+
+.subtitle {
+  margin: 0;
+  opacity: 0.7;
+  font-size: 14px;
+}
+
+.searchRow {
+  margin: 10px 0 12px;
+}
+
+.search {
+  width: 100%;
+  border-radius: 16px;
+  border: 1px solid rgba(0,0,0,0.12);
+  padding: 12px 14px;
+  background: rgba(255,255,255,0.75);
+  backdrop-filter: blur(10px);
+  outline: none;
+}
+
+.chips {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+
+.chip {
+  border: 1px solid rgba(0,0,0,0.12);
+  background: rgba(255,255,255,0.6);
+  border-radius: 999px;
+  padding: 8px 10px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.chipActive {
+  border-color: rgba(55,178,255,0.9);
+  box-shadow: 0 6px 18px rgba(55,178,255,0.25);
+}
+
+.list {
+  display: grid;
+  gap: 12px;
+}
+
+.card {
+  border-radius: 20px;
+  padding: 14px 14px 12px;
+  background: rgba(255,255,255,0.65);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 12px 28px rgba(15, 33, 70, 0.12);
+}
+
+.cardTop {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  opacity: 0.8;
+  font-size: 13px;
+}
+
+.prompt {
+  margin: 0 0 10px;
+  font-size: 15px;
+  line-height: 1.35;
+}
+
+.imageWrap {
+  position: relative;
+  width: 100%;
+  height: 180px;
+  border-radius: 16px;
+  overflow: hidden;
+  margin-bottom: 10px;
+  background: rgba(0,0,0,0.06);
+}
+
+.image {
+  object-fit: contain;
+}
+
+.tagRow {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.tagPill {
+  font-size: 12px;
+  opacity: 0.8;
+  background: rgba(0,0,0,0.06);
+  padding: 6px 8px;
+  border-radius: 999px;
+}
+
+.answerRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+
+.answerLabel {
+  font-size: 12px;
+  font-weight: 600;
+  opacity: 0.8;
+}
+
+.answerChip {
+  font-size: 12px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.06);
+}
+
+.answerCorrect {
+  color: white;
+}
+
+.options {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.option {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.optionCorrect {
+  color: white;
+}
+
+.optionKey {
+  font-weight: 800;
+  min-width: 22px;
+}
+
+.optionText {
+  line-height: 1.35;
+}
+
+```
+
+### app/all-questions/page.tsx
+```tsx
+import AllQuestionsClient from './AllQuestionsClient.client';
+
+export default function QuestionsPage() {
+  return <AllQuestionsClient datasetId="cn-2023-test1" />;
+}
+
+```
+
 ### app/api/account/change-email/route.ts
 ```tsx
 import { NextResponse } from 'next/server';
@@ -4002,7 +4354,7 @@ const TEST_MODE_CARDS = [
 const OVERALL_CARDS = [
   {
     key: "all-questions",
-    href: ROUTES.questions,
+    href: ROUTES.allQuestions,
     ariaLabel: "Open All Questions",
     bgSrc: "/images/home/cards/allquestions-bg.png",
     bgAlt: "All Questions Background",
@@ -6118,358 +6470,6 @@ const handleSave = async (e: React.SyntheticEvent) => {
 
 ```
 
-### app/questions/AllQuestionsClient.client.tsx
-```tsx
-'use client';
-
-import { useEffect, useMemo, useState } from 'react';
-import Image from 'next/image';
-import BottomNav from '../../components/BottomNav';
-import styles from './questions.module.css';
-import { loadDataset } from '../../lib/qbank/loadDataset';
-import type { DatasetId } from '../../lib/qbank/datasets';
-import type { Question } from '../../lib/qbank/types';
-
-function isCorrectMcq(item: Question, optId: string, optKey?: string) {
-  if (item.type !== 'MCQ' || !item.correctOptionId) return false;
-  return item.correctOptionId === optId || (optKey && item.correctOptionId === optKey);
-}
-
-export default function AllQuestionsClient({ datasetId }: { datasetId: DatasetId }) {
-  const [q, setQ] = useState<Question[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [query, setQuery] = useState('');
-  const [activeTags, setActiveTags] = useState<string[]>([]);
-
-  useEffect(() => {
-    let alive = true;
-    (async () => {
-      try {
-        const data = await loadDataset(datasetId);
-        if (alive) setQ(data);
-      } finally {
-        if (alive) setLoading(false);
-      }
-    })();
-    return () => {
-      alive = false;
-    };
-  }, [datasetId]);
-
-  const filtered = useMemo(() => {
-    const qNorm = query.trim().toLowerCase();
-
-    return q.filter((item) => {
-      const autoTags = Array.isArray(item.autoTags) ? item.autoTags : [];
-      const manualTags = Array.isArray(item.tags) ? item.tags : [];
-
-      const matchesText =
-        !qNorm ||
-        item.prompt.toLowerCase().includes(qNorm) ||
-        autoTags.some((t) => t.toLowerCase().includes(qNorm));
-
-      const tags = new Set([...manualTags, ...autoTags]);
-      const matchesTags =
-        activeTags.length === 0 || activeTags.every((t) => tags.has(t));
-
-      return matchesText && matchesTags;
-    });
-  }, [q, query, activeTags]);
-
-  const toggleTag = (tag: string) => {
-    setActiveTags((prev) => (prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]));
-  };
-
-  return (
-    <main className={styles.page}>
-      <div className={styles.frame}>
-        <header className={styles.header}>
-          <h1 className={styles.title}>All Questions</h1>
-          <p className={styles.subtitle}>
-            {loading ? 'Loading…' : `${filtered.length} / ${q.length}`}
-          </p>
-        </header>
-
-        <div className={styles.searchRow}>
-          <input
-            className={styles.search}
-            placeholder="Search question text…"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-          />
-        </div>
-
-        <div className={styles.chips}>
-          {['row', 'mcq', 'pic', 'law', 'signals', 'safe-driving', 'expressway', 'violations', 'license', 'vehicle-knowledge'].map((t) => (
-            <button
-              key={t}
-              className={`${styles.chip} ${activeTags.includes(t) ? styles.chipActive : ''}`}
-              onClick={() => toggleTag(t)}
-              type="button"
-            >
-              #{t}
-            </button>
-          ))}
-        </div>
-
-        <section className={styles.list}>
-          {filtered.map((item) => (
-            <article key={item.id} className={styles.card}>
-              <div className={styles.cardTop}>
-                <span className={styles.qNo}>#{item.number}</span>
-                <span className={styles.qType}>{item.type}</span>
-              </div>
-
-              <p className={styles.prompt}>{item.prompt}</p>
-
-              {item.assets[0]?.kind === 'image' && (
-                <div className={styles.imageWrap}>
-                  <Image
-                    src={item.assets[0].src}
-                    alt={`Question ${item.number}`}
-                    fill
-                    className={styles.image}
-                    draggable={false}
-                    unoptimized
-                    sizes="(max-width: 768px) 100vw, 600px"
-                  />
-                </div>
-              )}
-
-              {/* ✅ ANSWERS */}
-              {item.type === 'ROW' && item.correctRow && (
-                <div className={styles.answerRow}>
-                  <span className={styles.answerLabel}>Answer</span>
-                  <span className={styles.answerPill}>{item.correctRow}</span>
-                </div>
-              )}
-
-              {item.type === 'MCQ' && item.options?.length > 0 && (
-                <ul className={styles.optionList}>
-                  {item.options.map((opt) => {
-                    const key = opt.originalKey ?? opt.id;
-                    const correct = isCorrectMcq(item, opt.id, opt.originalKey);
-                    return (
-                      <li
-                        key={opt.id}
-                        className={`${styles.option} ${correct ? styles.optionCorrect : ''}`}
-                      >
-                        <span className={styles.optionKey}>{key}.</span>
-                        {opt.text}
-                      </li>
-                    );
-                  })}
-                </ul>
-              )}
-
-              <div className={styles.tagRow}>
-                {(item.autoTags ?? []).slice(0, 4).map((t) => (
-                  <span key={t} className={styles.tagPill}>#{t}</span>
-                ))}
-              </div>
-            </article>
-          ))}
-        </section>
-
-        <BottomNav />
-      </div>
-    </main>
-  );
-}
-
-```
-
-### app/questions/page.tsx
-```tsx
-import AllQuestionsClient from './AllQuestionsClient.client';
-
-export default function QuestionsPage() {
-  return <AllQuestionsClient datasetId="cn-2023-test1" />;
-}
-
-```
-
-### app/questions/questions.module.css
-```css
-.page {
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  background: var(--color-page-bg);
-}
-
-.frame {
-  width: 100%;
-  max-width: 560px;
-  padding: 18px 16px 120px;
-}
-
-.header {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 12px;
-  margin: 6px 0 14px;
-}
-
-.title {
-  margin: 0;
-  font-size: 28px;
-  font-weight: 800;
-}
-
-.subtitle {
-  margin: 0;
-  opacity: 0.7;
-  font-size: 14px;
-}
-
-.searchRow {
-  margin: 10px 0 12px;
-}
-
-.search {
-  width: 100%;
-  border-radius: 16px;
-  border: 1px solid rgba(0,0,0,0.12);
-  padding: 12px 14px;
-  background: rgba(255,255,255,0.75);
-  backdrop-filter: blur(10px);
-  outline: none;
-}
-
-.chips {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-  margin-bottom: 14px;
-}
-
-.chip {
-  border: 1px solid rgba(0,0,0,0.12);
-  background: rgba(255,255,255,0.6);
-  border-radius: 999px;
-  padding: 8px 10px;
-  font-size: 13px;
-  cursor: pointer;
-}
-
-.chipActive {
-  border-color: rgba(55,178,255,0.9);
-  box-shadow: 0 6px 18px rgba(55,178,255,0.25);
-}
-
-.list {
-  display: grid;
-  gap: 12px;
-}
-
-.card {
-  border-radius: 20px;
-  padding: 14px 14px 12px;
-  background: rgba(255,255,255,0.65);
-  backdrop-filter: blur(12px);
-  box-shadow: 0 12px 28px rgba(15, 33, 70, 0.12);
-}
-
-.cardTop {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 8px;
-  opacity: 0.8;
-  font-size: 13px;
-}
-
-.prompt {
-  margin: 0 0 10px;
-  font-size: 15px;
-  line-height: 1.35;
-}
-
-.imageWrap {
-  position: relative;
-  width: 100%;
-  height: 180px;
-  border-radius: 16px;
-  overflow: hidden;
-  margin-bottom: 10px;
-  background: rgba(0,0,0,0.06);
-}
-
-.image {
-  object-fit: contain;
-}
-
-.tagRow {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.tagPill {
-  font-size: 12px;
-  opacity: 0.8;
-  background: rgba(0,0,0,0.06);
-  padding: 6px 8px;
-  border-radius: 999px;
-}
-
-.answerRow {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-  margin-top: 10px;
-}
-
-.answerLabel {
-  font-size: 12px;
-  font-weight: 600;
-  opacity: 0.8;
-}
-
-.answerChip {
-  font-size: 12px;
-  padding: 6px 10px;
-  border-radius: 999px;
-  background: rgba(0, 0, 0, 0.06);
-}
-
-.answerCorrect {
-  color: white;
-}
-
-.options {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin-top: 10px;
-}
-
-.option {
-  display: flex;
-  gap: 10px;
-  align-items: flex-start;
-  padding: 10px 12px;
-  border-radius: 14px;
-  background: rgba(0, 0, 0, 0.04);
-}
-
-.optionCorrect {
-  color: white;
-}
-
-.optionKey {
-  font-weight: 800;
-  min-width: 22px;
-}
-
-.optionText {
-  line-height: 1.35;
-}
-
-```
-
 ### app/stats/page.tsx
 ```tsx
 // app/stats/page.tsx
@@ -8045,6 +8045,96 @@ export const TAG_KEYWORDS: Record<CanonicalTagId, string[]> = {
 
 ```
 
+### lib/qbank/tagTaxonomy.ts
+```tsx
+// lib/qbank/tagTaxonomy.ts
+
+export type Topic = {
+  key: string;   // internal key (stable)
+  label: string; // what the user sees (pretty)
+  subtopics: { key: string; label: string }[];
+};
+
+export const TAG_TAXONOMY: Topic[] = [
+  {
+    key: "traffic-law",
+    label: "Traffic Law",
+    subtopics: [
+      { key: "traffic-law:all", label: "All" },
+      { key: "traffic-law:licensing", label: "Licensing" },
+      { key: "traffic-law:registration", label: "Vehicle Registration" },
+      { key: "traffic-law:violations-procedure", label: "Violations Procedure" },
+      { key: "traffic-law:accident-procedure", label: "Accident Procedure" },
+      { key: "traffic-law:responsibilities", label: "Rights & Responsibilities" },
+    ],
+  },
+  {
+    key: "local-rules",
+    label: "Local Rules",
+    subtopics: [
+      { key: "local-rules:all", label: "All" },
+      { key: "local-rules:key-points", label: "Local Key Points" },
+      { key: "local-rules:parking", label: "Local Parking" },
+      { key: "local-rules:speed", label: "Local Speed Rules" },
+      { key: "local-rules:enforcement", label: "Local Enforcement" },
+      { key: "local-rules:other", label: "Other Local Rules" },
+    ],
+  },
+  {
+    key: "traffic-signals",
+    label: "Traffic Signals",
+    subtopics: [
+      { key: "traffic-signals:all", label: "All" },
+      { key: "traffic-signals:traffic-lights", label: "Traffic Lights" },
+      { key: "traffic-signals:road-signs", label: "Road Signs" },
+      { key: "traffic-signals:road-markings", label: "Road Markings" },
+      { key: "traffic-signals:hand-signals", label: "Hand Signals" },
+      { key: "traffic-signals:special-signals", label: "Special Signals" },
+    ],
+  },
+  {
+    key: "safe-driving",
+    label: "Safe & Courteous Driving",
+    subtopics: [
+      { key: "safe-driving:all", label: "All" },
+      { key: "safe-driving:traffic-signs", label: "Traffic Signs" },
+      { key: "safe-driving:markings-signals", label: "Road Markings & Signals" },
+      { key: "safe-driving:right-of-way", label: "Rules & Right-of-Way" },
+      { key: "safe-driving:scenarios", label: "Driving Scenarios" },
+      { key: "safe-driving:violations", label: "Penalties & Violations" },
+    ],
+  },
+  {
+    key: "vehicle-operation",
+    label: "Vehicle Operation",
+    subtopics: [
+      { key: "vehicle-operation:all", label: "All" },
+      { key: "vehicle-operation:indicators", label: "Instruments & Indicators" },
+      { key: "vehicle-operation:lights", label: "Lights & Signals" },
+      { key: "vehicle-operation:controls", label: "Controls & Gears" },
+      { key: "vehicle-operation:safety-devices", label: "Safety Devices" },
+      { key: "vehicle-operation:checks", label: "Basic Checks" },
+    ],
+  },
+];
+
+// Optional helper (nice for tag pills)
+export function labelForTag(tagKey: string) {
+  for (const topic of TAG_TAXONOMY) {
+    if (topic.key === tagKey) return topic.label;
+    const found = topic.subtopics.find((s) => s.key === tagKey);
+    if (found) return found.label;
+  }
+  // fallback: turn "road-signs" into "Road Signs"
+  return tagKey
+    .split(":")
+    .pop()!
+    .replace(/-/g, " ")
+    .replace(/\b\w/g, (c) => c.toUpperCase());
+}
+
+```
+
 ### lib/qbank/types.ts
 ```tsx
 // lib/qbank/types.ts
@@ -8101,7 +8191,7 @@ export type RawQBank = { questions: RawQuestion[] } | RawQuestion[];
 ### lib/routes.ts
 ```tsx
 export const ROUTES = {
-  questions: "/questions",
+  allQuestions: "/all-questions",
   comingSoon: "/coming-soon",
 } as const;
 

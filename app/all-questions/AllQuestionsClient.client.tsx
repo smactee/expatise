@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import Image from 'next/image';
 import BottomNav from '../../components/BottomNav';
-import styles from './questions.module.css';
+import styles from './all-questions.module.css';
 import { loadDataset } from '../../lib/qbank/loadDataset';
 import type { DatasetId } from '../../lib/qbank/datasets';
 import type { Question } from '../../lib/qbank/types';

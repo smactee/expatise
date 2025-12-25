@@ -1,4 +1,4 @@
 export const ROUTES = {
-  questions: "/questions",
+  allQuestions: "/all-questions",
   comingSoon: "/coming-soon",
 } as const;
