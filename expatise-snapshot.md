@@ -555,6 +555,8 @@ import styles from './all-questions.module.css';
 import { loadDataset } from '../../lib/qbank/loadDataset';
 import type { DatasetId } from '../../lib/qbank/datasets';
 import type { Question } from '../../lib/qbank/types';
+import { TAG_TAXONOMY, labelForTag } from '../../lib/qbank/tagTaxonomy';
+import { deriveTopicSubtags } from '../../lib/qbank/deriveTopicSubtags';
 
 function isCorrectMcq(item: Question, optId: string, optKey?: string) {
   if (item.type !== 'MCQ' || !item.correctOptionId) return false;
@@ -565,7 +567,9 @@ export default function AllQuestionsClient({ datasetId }: { datasetId: DatasetId
   const [q, setQ] = useState<Question[]>([]);
   const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState('');
-  const [activeTags, setActiveTags] = useState<string[]>([]);
+  const [activeTopic, setActiveTopic] = useState<string | null>(null);
+  const [activeSub, setActiveSub] = useState<string | null>(null); // null = All
+
 
   useEffect(() => {
     let alive = true;
@@ -582,29 +586,80 @@ export default function AllQuestionsClient({ datasetId }: { datasetId: DatasetId
     };
   }, [datasetId]);
 
+  const derivedById = useMemo(() => {
+  const m = new Map<string, string[]>();
+  for (const item of q) {
+    m.set(item.id, deriveTopicSubtags(item));
+  }
+  return m;
+}, [q]);
+
+
+const unclassified = useMemo(() => {
+  return q.filter((item) => {
+    const tags = derivedById.get(item.id) ?? [];
+    const hasTopic = tags.some((t) => !t.includes(":")); // topic tags have no ":"
+    return !hasTopic;
+  });
+}, [q, derivedById]);
+
+useEffect(() => {
+  if (unclassified.length > 0) {
+    console.log("UNCLASSIFIED COUNT:", unclassified.length);
+    console.table(
+      unclassified.map((x) => ({
+        number: x.number,
+        id: x.id,
+        prompt: x.prompt,
+      }))
+    );
+  }
+}, [unclassified]);
+
   const filtered = useMemo(() => {
-    const qNorm = query.trim().toLowerCase();
+  const qNorm = query.trim().toLowerCase();
 
-    return q.filter((item) => {
-      const autoTags = Array.isArray(item.autoTags) ? item.autoTags : [];
-      const manualTags = Array.isArray(item.tags) ? item.tags : [];
+  return q.filter((item) => {
+    const derivedTags = new Set(derivedById.get(item.id) ?? []);
 
-      const matchesText =
-        !qNorm ||
-        item.prompt.toLowerCase().includes(qNorm) ||
-        autoTags.some((t) => t.toLowerCase().includes(qNorm));
+    const matchesText =
+      !qNorm ||
+      item.prompt.toLowerCase().includes(qNorm) ||
+      (item.autoTags ?? []).some((t) => t.toLowerCase().includes(qNorm));
 
-      const tags = new Set([...manualTags, ...autoTags]);
-      const matchesTags =
-        activeTags.length === 0 || activeTags.every((t) => tags.has(t));
+    // Topic/subtopic filtering
+    const matchesTopic = !activeTopic || derivedTags.has(activeTopic);
+    const matchesSub = !activeTopic || !activeSub || derivedTags.has(activeSub);
 
-      return matchesText && matchesTags;
-    });
-  }, [q, query, activeTags]);
+    return matchesText && matchesTopic && matchesSub;
+  });
+}, [q, query, activeTopic, activeSub, derivedById]);
 
-  const toggleTag = (tag: string) => {
-    setActiveTags((prev) => (prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]));
-  };
+const tagCounts = useMemo(() => {
+  const topicCounts: Record<string, number> = {};
+  const subCounts: Record<string, number> = {};
+
+  for (const item of q) {
+    const tags = new Set(derivedById.get(item.id) ?? []);
+
+    // count topics (no ":")
+    for (const t of tags) {
+      if (!t.includes(":")) {
+        topicCounts[t] = (topicCounts[t] ?? 0) + 1;
+      }
+    }
+
+    // count subtopics (has ":" but not ":all")
+    for (const t of tags) {
+      if (t.includes(":") && !t.endsWith(":all")) {
+        subCounts[t] = (subCounts[t] ?? 0) + 1;
+      }
+    }
+  }
+
+  return { topicCounts, subCounts };
+}, [q, derivedById]);
+
 
   return (
     <main className={styles.page}>
@@ -625,18 +680,62 @@ export default function AllQuestionsClient({ datasetId }: { datasetId: DatasetId
           />
         </div>
 
-        <div className={styles.chips}>
-          {['row', 'mcq', 'pic', 'law', 'signals', 'safe-driving', 'expressway', 'violations', 'license', 'vehicle-knowledge'].map((t) => (
-            <button
-              key={t}
-              className={`${styles.chip} ${activeTags.includes(t) ? styles.chipActive : ''}`}
-              onClick={() => toggleTag(t)}
-              type="button"
-            >
-              #{t}
-            </button>
-          ))}
-        </div>
+       {/* Row 1: Topics */}
+<div className={styles.chips}>
+  {TAG_TAXONOMY.map((topic) => {
+    const isActive = activeTopic === topic.key;
+    return (
+      <button
+        key={topic.key}
+        type="button"
+        className={`${styles.chip} ${isActive ? styles.chipActive : ""}`}
+        onClick={() => {
+          // click again to clear
+          if (isActive) {
+            setActiveTopic(null);
+            setActiveSub(null);
+          } else {
+            setActiveTopic(topic.key);
+            setActiveSub(null); // default to "All"
+          }
+        }}
+      >
+        {topic.label} ({tagCounts.topicCounts[topic.key] ?? 0})
+      </button>
+    );
+  })}
+</div>
+
+{/* Row 2: Subtopics (only show when a topic is selected) */}
+{activeTopic && (
+  <div className={styles.chips}>
+    {TAG_TAXONOMY.find((t) => t.key === activeTopic)!.subtopics.map((sub) => {
+      const isAll = sub.key.endsWith(":all");
+      const isActive = (isAll && activeSub === null) || activeSub === sub.key;
+
+      return (
+        <button
+          key={sub.key}
+          type="button"
+          className={`${styles.chip} ${isActive ? styles.chipActive : ""}`}
+          onClick={() => {
+            setActiveSub(isAll ? null : sub.key);
+          }}
+        >
+          {(() => {
+  const isAll = sub.key.endsWith(":all");
+  const count = isAll
+    ? (tagCounts.topicCounts[activeTopic] ?? 0)
+    : (tagCounts.subCounts[sub.key] ?? 0);
+  return `${sub.label} (${count})`;
+})()}
+
+        </button>
+      );
+    })}
+  </div>
+)}
+
 
         <section className={styles.list}>
           {filtered.map((item) => (
@@ -689,10 +788,21 @@ export default function AllQuestionsClient({ datasetId }: { datasetId: DatasetId
               )}
 
               <div className={styles.tagRow}>
-                {(item.autoTags ?? []).slice(0, 4).map((t) => (
-                  <span key={t} className={styles.tagPill}>#{t}</span>
-                ))}
-              </div>
+  {(() => {
+    const tags = derivedById.get(item.id) ?? [];
+    const topic = tags.find((t) => !t.includes(":"));
+    const sub = tags.find((t) => t.includes(":") && !t.endsWith(":all"));
+    const display = [topic, sub].filter(Boolean) as string[];
+
+    return display.map((t) => (
+      <span key={t} className={styles.tagPill}>
+        {labelForTag(t)}
+      </span>
+    ));
+  })()}
+</div>
+
+
             </article>
           ))}
         </section>
@@ -7879,18 +7989,273 @@ export function toPlanId(v: string | null): PlanId {
 
 ### lib/qbank/datasets.ts
 ```tsx
+
+
 export type DatasetId = 'cn-2023-test1';
 
-export const DATASETS: Record<
-  DatasetId,
-  { id: DatasetId; label: string; url: string }
-> = {
+export type DatasetConfig = {
+  id: DatasetId;
+  label: string;
+  url: string;
+  patchUrl?: string; // ✅ optional
+};
+
+export const DATASETS: Record<DatasetId, DatasetConfig> = {
   'cn-2023-test1': {
     id: 'cn-2023-test1',
     label: 'China · 2023 · Test 1',
     url: '/qbank/2023-test1/questions.json',
+    patchUrl: '/qbank/2023-test1/tags.patch.json', // ✅ new
   },
-};
+} as const;
+
+```
+
+### lib/qbank/deriveTopicSubtags.ts
+```tsx
+// lib/qbank/deriveTopicSubtags.ts
+import type { Question } from "./types";
+import { SYLLABUS_RULES } from "./syllabusKeywords";
+import type { TopicKey, SubtagKey } from "./syllabusKeywords";
+
+/**
+ * Exact classifier (strict):
+ * - Picks ONE best topic
+ * - Picks ONE best subtopic within that topic (anchor-gated)
+ * - Returns [] if no confident topic
+ * - Returns [topic] if topic is confident but no subtopic anchor matched
+ * - Returns [topic, subtopic] if subtopic matched
+ */
+export function deriveTopicSubtags(item: Question): string[] {
+  const text = buildText(item);
+
+  const tags = new Set(
+    [...(item.tags ?? []), ...(item.autoTags ?? [])]
+      .map((t) => String(t ?? "").trim().replace(/^#/, "").toLowerCase())
+      .filter(Boolean)
+  );
+
+  // ✅ Manual override first (from tags.patch.json or any manual tags)
+  const manualTopic = (Object.keys(SYLLABUS_RULES) as TopicKey[]).find((t) =>
+    tags.has(t)
+  );
+
+  if (manualTopic) {
+    const manualSub = Object.keys(SYLLABUS_RULES[manualTopic].subtopics).find(
+      (k) => tags.has(k)
+    ) as SubtagKey | undefined;
+
+    return manualSub ? [manualTopic, manualSub] : [manualTopic];
+  }
+
+  const topic = pickBestTopic(text, tags);
+  if (!topic) return [];
+
+  const sub = pickBestSubtopic(topic, text, tags);
+  return sub ? [topic, sub] : [topic];
+}
+
+
+function buildText(item: Question) {
+  const parts = [
+    item.prompt ?? "",
+    ...(item.options?.map((o) => `${o.originalKey ?? o.id}. ${o.text}`) ?? []),
+  ];
+  return parts.join(" ").toLowerCase();
+}
+
+function countHits(text: string, phrases: string[]) {
+  let s = 0;
+  for (const p of phrases) {
+    const needle = String(p ?? "").toLowerCase();
+    if (needle && text.includes(needle)) s++;
+  }
+  return s;
+}
+
+function hitsAny(text: string, phrases: string[]) {
+  return phrases.some((p) => {
+    const needle = String(p ?? "").toLowerCase();
+    return needle && text.includes(needle);
+  });
+}
+
+/**
+ * TOPIC PRIORITY (tie-breaker):
+ * If scores tie, we choose earlier in this list.
+ * Adjust if you want different behavior.
+ */
+const TOPIC_PRIORITY: TopicKey[] = [
+  "traffic-signals",
+  "vehicle-operation",
+  "traffic-law",
+  "safe-driving",
+  "local-rules",
+];
+
+function pickBestTopic(text: string, tags: Set<string>): TopicKey | null {
+  const topics = Object.keys(SYLLABUS_RULES) as TopicKey[];
+
+  let best: TopicKey | null = null;
+  let bestScore = 0;
+  let bestAnchorHits = 0;
+
+  for (const topic of topics) {
+    const rules = SYLLABUS_RULES[topic];
+
+    // IMPORTANT:
+    // - anchors are the main driver
+    // - tag boost is small, only used as a helper
+    const anchorHits = countHits(text, rules.topicAnchors);
+    const tagBoost = topicTagBoost(topic, tags);
+
+    const score = anchorHits * 2 + tagBoost;
+
+    if (
+      score > bestScore ||
+      (score === bestScore &&
+        anchorHits > bestAnchorHits) ||
+      (score === bestScore &&
+        anchorHits === bestAnchorHits &&
+        best &&
+        TOPIC_PRIORITY.indexOf(topic) < TOPIC_PRIORITY.indexOf(best))
+    ) {
+      bestScore = score;
+      bestAnchorHits = anchorHits;
+      best = topic;
+    }
+  }
+
+  // Strict confidence:
+  // must have at least 1 anchor hit OR a strong tag boost
+  if (!best) return null;
+  if (bestAnchorHits >= 1) return best;
+  if (bestScore >= 2) return best; // tagBoost-only cases (rare)
+  return null;
+}
+
+function pickBestSubtopic(topic: TopicKey, text: string, tags: Set<string>): SubtagKey | null {
+  const rules = SYLLABUS_RULES[topic].subtopics;
+  const keys = Object.keys(rules) as SubtagKey[];
+
+  // subtopic priority inside each topic (tie-breaker)
+  const priority = subtopicPriority(topic);
+
+  let best: SubtagKey | null = null;
+  let bestScore = 0;
+  let bestAnchorHits = 0;
+
+  for (const subKey of keys) {
+    if (tags.has(subKey)) return subKey; // ✅ manual override wins
+
+    if (!subKey.startsWith(topic + ":")) continue;
+
+    const rule = rules[subKey];
+    if (!rule?.anchors?.length) continue;
+
+    // Anchor-gated: must hit at least one anchor to be eligible
+    if (!hitsAny(text, rule.anchors)) continue;
+
+    const a = countHits(text, rule.anchors);
+    const k = countHits(text, rule.keywords ?? []);
+    const boost = subtopicTagBoost(subKey, tags);
+
+    const score = a * 3 + k + boost;
+
+    if (
+      score > bestScore ||
+      (score === bestScore && a > bestAnchorHits) ||
+      (score === bestScore &&
+        a === bestAnchorHits &&
+        best &&
+        priority.indexOf(subKey) < priority.indexOf(best))
+    ) {
+      bestScore = score;
+      bestAnchorHits = a;
+      best = subKey;
+    }
+  }
+
+  return bestScore >= 1 ? best : null;
+}
+
+function subtopicPriority(topic: TopicKey): SubtagKey[] {
+  // Priority rules you requested (example: license plate -> registration first)
+  // Adjust freely.
+  const p: Record<TopicKey, string[]> = {
+    "traffic-law": [
+      "traffic-law:vehicle-registration",
+      "traffic-law:driving-license",
+      "traffic-law:accident-procedure",
+      "traffic-law:violations-procedure",
+      "traffic-law:road-conditions-rules",
+    ],
+    "traffic-signals": [
+      "traffic-signals:signal-lights",
+      "traffic-signals:road-signs",
+      "traffic-signals:road-markings",
+      "traffic-signals:hand-signals",
+      "traffic-signals:special-signals",
+    ],
+    "safe-driving": [
+      "safe-driving:violation-penalties",
+      "safe-driving:expressway-breakdown",
+      "safe-driving:parking",
+      "safe-driving:yield",
+      "safe-driving:requirements",
+    ],
+    "vehicle-operation": [
+      "vehicle-operation:safety-devices",
+      "vehicle-operation:control-gears",
+      "vehicle-operation:instruments-indicators",
+    ],
+    "local-rules": ["local-rules:local-laws"],
+  };
+
+  return (p[topic] ?? []) as SubtagKey[];
+}
+
+function topicTagBoost(topic: TopicKey, tags: Set<string>) {
+  const hasAny = (arr: string[]) => arr.some((t) => tags.has(t));
+
+  if (topic === "traffic-signals") {
+    if (hasAny(["signals"])) return 2;
+  }
+  if (topic === "traffic-law") {
+    if (hasAny(["law", "license", "registration", "violations", "accidents"])) return 2;
+  }
+  if (topic === "safe-driving") {
+    if (hasAny(["safe-driving", "expressway"])) return 2;
+  }
+  if (topic === "vehicle-operation") {
+    if (hasAny(["vehicle-knowledge", "vehicle-operation"])) return 2;
+  }
+  if (topic === "local-rules") {
+    if (hasAny(["local", "local-rules"])) return 2;
+  }
+  return 0;
+}
+
+function subtopicTagBoost(subKey: SubtagKey, tags: Set<string>) {
+  const map: Record<string, string[]> = {
+    "traffic-law:driving-license": ["license"],
+    "traffic-law:vehicle-registration": ["registration", "license-plate"],
+    "traffic-law:accident-procedure": ["accidents", "accident"],
+    "traffic-law:violations-procedure": ["violations"],
+    "traffic-signals:signal-lights": ["signals"],
+    "traffic-signals:road-signs": ["signals"],
+    "traffic-signals:road-markings": ["signals"],
+    "traffic-signals:hand-signals": ["signals"],
+    "safe-driving:violation-penalties": ["drinking", "illegal", "overloaded"],
+    "safe-driving:expressway-breakdown": ["expressway"],
+    "vehicle-operation:instruments-indicators": ["vehicle-knowledge"],
+    "vehicle-operation:control-gears": ["vehicle-knowledge"],
+    "vehicle-operation:safety-devices": ["vehicle-knowledge"],
+  };
+
+  const needles = map[subKey] ?? [];
+  return needles.some((t) => tags.has(t)) ? 1 : 0;
+}
 
 ```
 
@@ -7904,6 +8269,81 @@ import { suggestTags } from './suggestTags';
 function toArray<T>(v: unknown): T[] {
   return Array.isArray(v) ? (v as T[]) : [];
 }
+
+function normalizeTag(s: unknown) {
+  return String(s ?? '').trim().replace(/^#/, '').toLowerCase();
+}
+
+
+function extractTagArrays(rawTags: any) {
+  const user = new Set<string>();
+  const auto = new Set<string>();
+
+  // Case 1: old format -> tags: ["#law", ...]
+  if (Array.isArray(rawTags)) {
+    rawTags.forEach((t) => {
+      const nt = normalizeTag(t);
+      if (nt) user.add(nt);
+    });
+    return { userTags: [...user], autoTags: [...auto] };
+  }
+
+  // Case 2: new format -> tags: { auto:[], user:[], suggested:[{tag, score}] }
+  if (rawTags && typeof rawTags === 'object') {
+    toArray<string>(rawTags.user).forEach((t) => {
+      const nt = normalizeTag(t);
+      if (nt) user.add(nt);
+    });
+
+    toArray<string>(rawTags.auto).forEach((t) => {
+      const nt = normalizeTag(t);
+      if (nt) auto.add(nt);
+    });
+
+    toArray<any>(rawTags.suggested).forEach((s) => {
+      const nt = normalizeTag(s?.tag);
+      if (nt) auto.add(nt);
+    });
+  }
+
+  return { userTags: [...user], autoTags: [...auto] };
+}
+
+type TagPatch = Record<string, string[]>;
+
+async function loadPatch(url?: string): Promise<TagPatch> {
+  if (!url) return {};
+  try {
+    const res = await fetch(url, { cache: 'no-store' });
+    if (!res.ok) {
+      console.warn('[qbank] Patch not loaded:', url, res.status);
+      return {};
+    }
+    const json = (await res.json()) as unknown;
+    if (!json || typeof json !== 'object') return {};
+    return json as TagPatch;
+  } catch (e) {
+    console.warn('[qbank] Patch fetch failed:', url, e);
+    return {};
+  }
+}
+
+function applyPatchTags(q: Question, patchTags: string[] | undefined): Question {
+  if (!patchTags || patchTags.length === 0) return q;
+
+  const clean = patchTags
+    .map((t) => String(t ?? '').trim().replace(/^#/, ''))
+    .filter(Boolean);
+
+  if (clean.length === 0) return q;
+
+  // Treat patch tags as "manual/user tags"
+  const merged = Array.from(new Set([...(q.tags ?? []), ...clean]));
+
+  return { ...q, tags: merged };
+}
+
+
 
 function normalizeCorrectRow(v: unknown): CorrectRow | null {
   const s = String(v ?? '').trim();
@@ -7952,6 +8392,8 @@ function normalizeOne(raw: RawQuestion): Question {
       ? String(((raw as any).correctOptionId ?? (raw as any).answer ?? '') || '').trim() || null
       : null;
 
+    const { userTags, autoTags: rawAutoTags } = extractTagArrays((raw as any).tags);
+
   const q: Question = {
     id: String(raw.id),
     number: Number(raw.number),
@@ -7961,23 +8403,36 @@ function normalizeOne(raw: RawQuestion): Question {
     correctRow,
     correctOptionId,
     assets,
-    tags: toArray<string>((raw as any).tags), // ✅ always array
+
+    // manual/user tags (if any)
+    tags: userTags,
+
+    // fill below
     autoTags: [],
   };
 
-  q.autoTags = suggestTags(q);
+  // merge parser auto tags + suggested tags + your runtime keyword tags
+  q.autoTags = Array.from(new Set([...suggestTags(q), ...rawAutoTags]));
   return q;
 }
 
 export async function loadDataset(datasetId: DatasetId): Promise<Question[]> {
   const ds = DATASETS[datasetId];
-  const res = await fetch(ds.url, { cache: 'force-cache' });
+
+  const [res, patch] = await Promise.all([
+    fetch(ds.url, { cache: 'force-cache' }),
+    loadPatch(ds.patchUrl),
+  ]);
+
   if (!res.ok) throw new Error(`Failed to load dataset: ${datasetId}`);
 
   const json = (await res.json()) as RawQBank;
   const list = Array.isArray(json) ? json : toArray<RawQuestion>((json as any).questions);
 
-  return list.map(normalizeOne).sort((a, b) => a.number - b.number);
+  return list
+    .map(normalizeOne)
+    .map((q) => applyPatchTags(q, patch[q.id]))
+    .sort((a, b) => a.number - b.number);
 }
 
 ```
@@ -8008,6 +8463,366 @@ export function suggestTags(q: Question): CanonicalTagId[] {
 
   return [...out];
 }
+
+```
+
+### lib/qbank/syllabusKeywords.ts
+```tsx
+// lib/qbank/syllabusKeywords.ts
+
+export type TopicKey =
+  | "traffic-law"
+  | "local-rules"
+  | "traffic-signals"
+  | "safe-driving"
+  | "vehicle-operation";
+
+export type TagKey =
+  | TopicKey
+  | `${TopicKey}:${string}`;
+
+export type SubtopicConfig = {
+  anchors: string[];   // strong signals
+  keywords: string[];  // weaker/extra signals
+};
+
+export type TopicConfig = {
+  topicAnchors: string[];                // decides the topic
+  subtopics: Record<string, SubtopicConfig>; // decides the subtopic
+};
+
+// NOTE: All strings are matched via text.includes(...)
+// so multi-word phrases must appear in that same order.
+export const SYLLABUS_KEYWORDS: Record<TopicKey, TopicConfig> = {
+  "traffic-law": {
+    // Section 1 objective includes “safe driving in various road conditions”
+    topicAnchors: [
+      // law/procedure core
+      "driving license",
+      "driving licence",
+      "penalty point",
+      "probation period",
+      "revocation",
+      "reissue",
+      "replacement",
+      "registration",
+      "license plate",
+      "vehicle license",
+      "temporary license plate",
+      "motor vehicle inspection",
+      "traffic accident",
+      "accident scene",
+      "report to the police",
+      "leave the scene",
+      "detain",
+      "detaining",
+      "procedural regulations",
+
+      // road conditions / road sections (these pull into Traffic Law by design)
+      "fog",
+      "foggy",
+      "snow",
+      "snowy",
+      "icy",
+      "ice",
+      "heavy rain",
+      "night",
+      "visibility",
+      "tunnel",
+      "sharp curve",
+      "mountain road",
+      "landslide",
+      "mudslide",
+      "mudflow",
+      "ramp",
+      "interchange",
+      "intersection",
+      "overtaking",
+      "following distance",
+      "lane changing",
+      "reverse",
+      "reversing",
+    ],
+    subtopics: {
+      "traffic-law:violations-procedure": {
+        anchors: ["procedural regulations", "detain", "detaining"],
+        keywords: ["cases for detaining", "punishment at the scene"],
+      },
+
+      "traffic-law:accident-procedure": {
+        anchors: ["traffic accident", "accident scene", "report to the police"],
+        keywords: ["voluntary negotiation", "leave the scene", "expressway"],
+      },
+
+      "traffic-law:driving-license": {
+        anchors: ["driving license", "driving licence", "probation period", "penalty point"],
+        keywords: [
+          "application for driving license",
+          "validity period",
+          "replacement",
+          "reissue",
+          "physical examination",
+          "inspection",
+          "revocation",
+          "pass mark",
+          "testing requirements",
+        ],
+      },
+
+      "traffic-law:vehicle-registration": {
+        anchors: ["registration", "license plate", "vehicle license", "temporary license plate"],
+        keywords: ["transfer", "modification", "mortgage", "revocation", "motor vehicle inspection"],
+      },
+
+      "traffic-law:road-conditions-rules": {
+        anchors: [
+          "fog",
+          "foggy",
+          "snow",
+          "snowy",
+          "icy",
+          "ice",
+          "heavy rain",
+          "night",
+          "visibility",
+          "tunnel",
+          "sharp curve",
+          "mountain road",
+          "landslide",
+          "mudslide",
+          "mudflow",
+          "ramp",
+          "interchange",
+          "intersection",
+        ],
+        keywords: [
+          "overtaking",
+          "following distance",
+          "lane changing",
+          "reverse",
+          "reversing",
+          "pedestrian",
+          "bicycle",
+        ],
+      },
+    },
+  },
+
+  "local-rules": {
+    topicAnchors: ["local laws", "local regulations"],
+    subtopics: {
+      "local-rules:local-laws": {
+        anchors: ["local laws", "local regulations"],
+        keywords: ["based on local laws", "local rules"],
+      },
+    },
+  },
+
+  "traffic-signals": {
+    topicAnchors: [
+      "traffic light",
+      "red light",
+      "green light",
+      "yellow light",
+      "signal light",
+      "arrow shape",
+      "flashing yellow",
+      "hazard light",
+      "level crossing",
+      "road sign",
+      "warning sign",
+      "prohibitive",
+      "indicative",
+      "directional",
+      "tourist area",
+      "road marking",
+      "hand signals",
+      "traffic police",
+      "guide arrow",
+      "yellow line",
+      "broken line",
+      "solid line",
+      "meaning of this sign",
+      "meaning of this sig n",
+      "mark",
+      "yellow lane",
+    ],
+    subtopics: {
+      "traffic-signals:signal-lights": {
+        anchors: ["red light", "green light", "yellow light", "signal light"],
+        keywords: ["arrow shape", "driving lanes"],
+      },
+      "traffic-signals:road-signs": {
+        anchors: ["road sign", "warning sign", "prohibitive", "indicative", "meaning of this sign"],
+        keywords: ["directional", "tourist area"],
+      },
+      "traffic-signals:road-markings": {
+        anchors: ["road marking", "markings", "guide arrow", "yellow line", "yellow broken line", "broken line","solid line", "meaning of this sig n", "yellow lane"],
+        keywords: ["indicative markings", "prohibitive markings", "warning markings", "stop line", "zebra", "mark"],
+      },
+      "traffic-signals:hand-signals": {
+        anchors: ["traffic police", "hand signals"],
+        keywords: ["stop signals", "going-straight", "left turn", "right turn", "lane changing", "slowdown", "pull over"],
+      },
+      "traffic-signals:special-signals": {
+        anchors: ["level crossing", "flashing yellow", "hazard light"],
+        keywords: ["signal lights on driving lanes"],
+      },
+    },
+  },
+
+  "safe-driving": {
+    topicAnchors: [
+      "safe driving",
+      "safety responsibility",
+      "yield",
+      "special vehicle",
+      "road maintenance",
+      "parking",
+      "expressway",
+      "breakdown",
+      "warning requirements",
+
+      // violation penalties list (section 4)
+      "prohibited",
+      "punishment",
+      "drinking",
+      "drugs",
+      "medicines",
+      "illegal driving license",
+      "illegal license plate",
+      "over-seated",
+      "overloaded",
+      "cancellation rules",
+    ],
+    subtopics: {
+      "safe-driving:requirements": {
+        anchors: ["safe driving", "requirements for safe driving", "safety responsibility"],
+        keywords: ["proper driving skills"],
+      },
+      "safe-driving:yield": {
+        anchors: ["yield", "special vehicle", "road maintenance"],
+        keywords: ["right of way"],
+      },
+      "safe-driving:parking": {
+        anchors: ["parking", "car park"],
+        keywords: ["parking rules"],
+      },
+      "safe-driving:expressway-breakdown": {
+        anchors: ["expressway", "breakdown"],
+        keywords: ["handling measures", "warning requirements"],
+      },
+      "safe-driving:violation-penalties": {
+        anchors: ["punishment", "prohibited"],
+        keywords: [
+          "traffic signal violations",
+          "drinking",
+          "drugs",
+          "medicines",
+          "illegal driving license",
+          "illegal license plate",
+          "punishment at the scene",
+          "obtaining driving license by illegal means",
+          "over-seated",
+          "overloaded",
+          "cancellation rules",
+        ],
+      },
+    },
+  },
+
+  "vehicle-operation": {
+    topicAnchors: [
+      "instruments",
+      "indicator",
+      "alarm light",
+      "fog lamp indicator",
+      "engine oil pressure",
+      "brake alarm",
+      "low fuel warning",
+      "water temperature",
+      "low-beam",
+      "high-beam",
+      "seatbelt alarm",
+      "flashing hazard light",
+      "turn signal",
+
+      "steering wheel",
+      "clutch pedal",
+      "brake pedal",
+      "accelerator pedal",
+      "gear shift",
+      "handbrake",
+      "ignition switch",
+      "light switch",
+      "windscreen wiper",
+      "defrost",
+      "defog",
+
+      "safe headrest",
+      "seatbelt",
+      "abs",
+      "srs",
+
+      "lights to",
+      "lights when",
+      "It lights",
+      "instrument",
+      "symbol indicate",
+      "displays",
+      "in strument",
+      "flashes",
+    ],
+    subtopics: {
+      "vehicle-operation:instruments-indicators": {
+        anchors: ["instruments", "indicator", "alarm light"],
+        keywords: [
+          "fog lamp indicator",
+          "engine oil pressure",
+          "brake alarm",
+          "low fuel warning",
+          "water temperature",
+          "seatbelt alarm",
+          "low-beam",
+          "high-beam",
+          "flashing hazard light",
+          "turn signal",
+          "lights to",
+          "lights when",
+          "It lights",
+          "instrument",
+          "symbol indicate",
+          "displays",
+          "in strument",
+          "flashes",
+        ],
+      },
+      "vehicle-operation:control-gears": {
+        anchors: ["steering wheel", "clutch pedal", "brake pedal", "accelerator pedal"],
+        keywords: ["gear shift", "handbrake", "ignition switch", "light switch", "windscreen wiper", "defrost", "defog"],
+      },
+      "vehicle-operation:safety-devices": {
+        anchors: ["safe headrest", "seatbelt", "abs", "srs"],
+        keywords: ["safety devices"],
+      },
+    },
+  },
+} as const;
+
+// --- exports for classifier ---
+export const SYLLABUS_RULES = SYLLABUS_KEYWORDS; // alias so your import works
+
+export type SyllabusRules = typeof SYLLABUS_RULES;
+
+// internal helper type (so we don't redeclare TopicKey)
+type RuleTopicKey = keyof SyllabusRules;
+
+// union of ALL subtopic keys across all topics
+export type SubtagKey =
+  {
+    [T in RuleTopicKey]: keyof SyllabusRules[T]["subtopics"];
+  }[RuleTopicKey] & string;
+
 
 ```
 
@@ -115737,6 +116552,18 @@ export const config = {
       }
     }
   ]
+}
+```
+
+### public/qbank/2023-test1/tags.patch.json
+```json
+{
+"q0009": ["vehicle-operation", "vehicle-operation:safety-devices"]
+
+
+
+
+
 }
 ```
 

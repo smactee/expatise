@@ -7,6 +7,8 @@ import styles from './all-questions.module.css';
 import { loadDataset } from '../../lib/qbank/loadDataset';
 import type { DatasetId } from '../../lib/qbank/datasets';
 import type { Question } from '../../lib/qbank/types';
+import { TAG_TAXONOMY, labelForTag } from '../../lib/qbank/tagTaxonomy';
+import { deriveTopicSubtags } from '../../lib/qbank/deriveTopicSubtags';
 
 function isCorrectMcq(item: Question, optId: string, optKey?: string) {
   if (item.type !== 'MCQ' || !item.correctOptionId) return false;
@@ -17,7 +19,9 @@ export default function AllQuestionsClient({ datasetId }: { datasetId: DatasetId
   const [q, setQ] = useState<Question[]>([]);
   const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState('');
-  const [activeTags, setActiveTags] = useState<string[]>([]);
+  const [activeTopic, setActiveTopic] = useState<string | null>(null);
+  const [activeSub, setActiveSub] = useState<string | null>(null); // null = All
+
 
   useEffect(() => {
     let alive = true;
@@ -34,29 +38,80 @@ export default function AllQuestionsClient({ datasetId }: { datasetId: DatasetId
     };
   }, [datasetId]);
 
+  const derivedById = useMemo(() => {
+  const m = new Map<string, string[]>();
+  for (const item of q) {
+    m.set(item.id, deriveTopicSubtags(item));
+  }
+  return m;
+}, [q]);
+
+
+const unclassified = useMemo(() => {
+  return q.filter((item) => {
+    const tags = derivedById.get(item.id) ?? [];
+    const hasTopic = tags.some((t) => !t.includes(":")); // topic tags have no ":"
+    return !hasTopic;
+  });
+}, [q, derivedById]);
+
+useEffect(() => {
+  if (unclassified.length > 0) {
+    console.log("UNCLASSIFIED COUNT:", unclassified.length);
+    console.table(
+      unclassified.map((x) => ({
+        number: x.number,
+        id: x.id,
+        prompt: x.prompt,
+      }))
+    );
+  }
+}, [unclassified]);
+
   const filtered = useMemo(() => {
-    const qNorm = query.trim().toLowerCase();
+  const qNorm = query.trim().toLowerCase();
 
-    return q.filter((item) => {
-      const autoTags = Array.isArray(item.autoTags) ? item.autoTags : [];
-      const manualTags = Array.isArray(item.tags) ? item.tags : [];
+  return q.filter((item) => {
+    const derivedTags = new Set(derivedById.get(item.id) ?? []);
 
-      const matchesText =
-        !qNorm ||
-        item.prompt.toLowerCase().includes(qNorm) ||
-        autoTags.some((t) => t.toLowerCase().includes(qNorm));
+    const matchesText =
+      !qNorm ||
+      item.prompt.toLowerCase().includes(qNorm) ||
+      (item.autoTags ?? []).some((t) => t.toLowerCase().includes(qNorm));
 
-      const tags = new Set([...manualTags, ...autoTags]);
-      const matchesTags =
-        activeTags.length === 0 || activeTags.every((t) => tags.has(t));
+    // Topic/subtopic filtering
+    const matchesTopic = !activeTopic || derivedTags.has(activeTopic);
+    const matchesSub = !activeTopic || !activeSub || derivedTags.has(activeSub);
 
-      return matchesText && matchesTags;
-    });
-  }, [q, query, activeTags]);
+    return matchesText && matchesTopic && matchesSub;
+  });
+}, [q, query, activeTopic, activeSub, derivedById]);
 
-  const toggleTag = (tag: string) => {
-    setActiveTags((prev) => (prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]));
-  };
+const tagCounts = useMemo(() => {
+  const topicCounts: Record<string, number> = {};
+  const subCounts: Record<string, number> = {};
+
+  for (const item of q) {
+    const tags = new Set(derivedById.get(item.id) ?? []);
+
+    // count topics (no ":")
+    for (const t of tags) {
+      if (!t.includes(":")) {
+        topicCounts[t] = (topicCounts[t] ?? 0) + 1;
+      }
+    }
+
+    // count subtopics (has ":" but not ":all")
+    for (const t of tags) {
+      if (t.includes(":") && !t.endsWith(":all")) {
+        subCounts[t] = (subCounts[t] ?? 0) + 1;
+      }
+    }
+  }
+
+  return { topicCounts, subCounts };
+}, [q, derivedById]);
+
 
   return (
     <main className={styles.page}>
@@ -77,18 +132,62 @@ export default function AllQuestionsClient({ datasetId }: { datasetId: DatasetId
           />
         </div>
 
-        <div className={styles.chips}>
-          {['row', 'mcq', 'pic', 'law', 'signals', 'safe-driving', 'expressway', 'violations', 'license', 'vehicle-knowledge'].map((t) => (
-            <button
-              key={t}
-              className={`${styles.chip} ${activeTags.includes(t) ? styles.chipActive : ''}`}
-              onClick={() => toggleTag(t)}
-              type="button"
-            >
-              #{t}
-            </button>
-          ))}
-        </div>
+       {/* Row 1: Topics */}
+<div className={styles.chips}>
+  {TAG_TAXONOMY.map((topic) => {
+    const isActive = activeTopic === topic.key;
+    return (
+      <button
+        key={topic.key}
+        type="button"
+        className={`${styles.chip} ${isActive ? styles.chipActive : ""}`}
+        onClick={() => {
+          // click again to clear
+          if (isActive) {
+            setActiveTopic(null);
+            setActiveSub(null);
+          } else {
+            setActiveTopic(topic.key);
+            setActiveSub(null); // default to "All"
+          }
+        }}
+      >
+        {topic.label} ({tagCounts.topicCounts[topic.key] ?? 0})
+      </button>
+    );
+  })}
+</div>
+
+{/* Row 2: Subtopics (only show when a topic is selected) */}
+{activeTopic && (
+  <div className={styles.chips}>
+    {TAG_TAXONOMY.find((t) => t.key === activeTopic)!.subtopics.map((sub) => {
+      const isAll = sub.key.endsWith(":all");
+      const isActive = (isAll && activeSub === null) || activeSub === sub.key;
+
+      return (
+        <button
+          key={sub.key}
+          type="button"
+          className={`${styles.chip} ${isActive ? styles.chipActive : ""}`}
+          onClick={() => {
+            setActiveSub(isAll ? null : sub.key);
+          }}
+        >
+          {(() => {
+  const isAll = sub.key.endsWith(":all");
+  const count = isAll
+    ? (tagCounts.topicCounts[activeTopic] ?? 0)
+    : (tagCounts.subCounts[sub.key] ?? 0);
+  return `${sub.label} (${count})`;
+})()}
+
+        </button>
+      );
+    })}
+  </div>
+)}
+
 
         <section className={styles.list}>
           {filtered.map((item) => (
@@ -141,10 +240,21 @@ export default function AllQuestionsClient({ datasetId }: { datasetId: DatasetId
               )}
 
               <div className={styles.tagRow}>
-                {(item.autoTags ?? []).slice(0, 4).map((t) => (
-                  <span key={t} className={styles.tagPill}>#{t}</span>
-                ))}
-              </div>
+  {(() => {
+    const tags = derivedById.get(item.id) ?? [];
+    const topic = tags.find((t) => !t.includes(":"));
+    const sub = tags.find((t) => t.includes(":") && !t.endsWith(":all"));
+    const display = [topic, sub].filter(Boolean) as string[];
+
+    return display.map((t) => (
+      <span key={t} className={styles.tagPill}>
+        {labelForTag(t)}
+      </span>
+    ));
+  })()}
+</div>
+
+
             </article>
           ))}
         </section>
