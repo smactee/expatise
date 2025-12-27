@@ -1,35 +1,37 @@
 // lib/qbank/deriveTopicSubtags.ts
 import type { Question } from "./types";
-import { SYLLABUS_RULES } from "./syllabusKeywords";
-import type { TopicKey, SubtagKey } from "./syllabusKeywords";
+import { SYLLABUS_RULES, type TopicKey, type SubtagKey } from "./syllabusKeywords";
 
 /**
- * Exact classifier (strict):
+ * Strict classifier:
  * - Picks ONE best topic
  * - Picks ONE best subtopic within that topic (anchor-gated)
  * - Returns [] if no confident topic
  * - Returns [topic] if topic is confident but no subtopic anchor matched
  * - Returns [topic, subtopic] if subtopic matched
+ *
+ * Also salvages legacy tags by mapping them into the new taxonomy.
  */
 export function deriveTopicSubtags(item: Question): string[] {
   const text = buildText(item);
 
-  const tags = new Set(
-    [...(item.tags ?? []), ...(item.autoTags ?? [])]
-      .map((t) => String(t ?? "").trim().replace(/^#/, "").toLowerCase())
-      .filter(Boolean)
-  );
+  const rawTags = [...(item.tags ?? []), ...(item.autoTags ?? [])]
+    .map((t) => String(t ?? "").trim().replace(/^#/, "").toLowerCase())
+    .filter(Boolean);
 
-  // ✅ Manual override first (from tags.patch.json or any manual tags)
-  const manualTopic = (Object.keys(SYLLABUS_RULES) as TopicKey[]).find((t) =>
-    tags.has(t)
-  );
+  // normalize + map legacy tags into new tag set
+  const tags = new Set<string>();
+  for (const t of rawTags) {
+    tags.add(t);
+    const mapped = LEGACY_TAG_MAP[t];
+    if (mapped) tags.add(mapped);
+  }
 
+  // ✅ manual override wins if user tags contain canonical topic/subtopic keys
+  const manualTopic = (Object.keys(SYLLABUS_RULES) as TopicKey[]).find((t) => tags.has(t));
   if (manualTopic) {
-    const manualSub = Object.keys(SYLLABUS_RULES[manualTopic].subtopics).find(
-      (k) => tags.has(k)
-    ) as SubtagKey | undefined;
-
+    const subObj = SYLLABUS_RULES[manualTopic].subtopics;
+    const manualSub = Object.keys(subObj).find((k) => tags.has(k)) as SubtagKey | undefined;
     return manualSub ? [manualTopic, manualSub] : [manualTopic];
   }
 
@@ -40,7 +42,6 @@ export function deriveTopicSubtags(item: Question): string[] {
   return sub ? [topic, sub] : [topic];
 }
 
-
 function buildText(item: Question) {
   const parts = [
     item.prompt ?? "",
@@ -49,7 +50,7 @@ function buildText(item: Question) {
   return parts.join(" ").toLowerCase();
 }
 
-function countHits(text: string, phrases: string[]) {
+function countHits(text: string, phrases: readonly string[]) {
   let s = 0;
   for (const p of phrases) {
     const needle = String(p ?? "").toLowerCase();
@@ -58,7 +59,7 @@ function countHits(text: string, phrases: string[]) {
   return s;
 }
 
-function hitsAny(text: string, phrases: string[]) {
+function hitsAny(text: string, phrases: readonly string[]) {
   return phrases.some((p) => {
     const needle = String(p ?? "").toLowerCase();
     return needle && text.includes(needle);
@@ -66,16 +67,13 @@ function hitsAny(text: string, phrases: string[]) {
 }
 
 /**
- * TOPIC PRIORITY (tie-breaker):
- * If scores tie, we choose earlier in this list.
- * Adjust if you want different behavior.
+ * Topic priority for tie-breaks.
  */
-const TOPIC_PRIORITY: TopicKey[] = [
+const TOPIC_PRIORITY: readonly TopicKey[] = [
   "traffic-signals",
-  "vehicle-operation",
-  "traffic-law",
-  "safe-driving",
-  "local-rules",
+  "driving-operations",
+  "road-safety",
+  "proper-driving",
 ];
 
 function pickBestTopic(text: string, tags: Set<string>): TopicKey | null {
@@ -88,18 +86,14 @@ function pickBestTopic(text: string, tags: Set<string>): TopicKey | null {
   for (const topic of topics) {
     const rules = SYLLABUS_RULES[topic];
 
-    // IMPORTANT:
-    // - anchors are the main driver
-    // - tag boost is small, only used as a helper
     const anchorHits = countHits(text, rules.topicAnchors);
-    const tagBoost = topicTagBoost(topic, tags);
+    const tagBoost = tags.has(topic) ? 2 : 0;
 
     const score = anchorHits * 2 + tagBoost;
 
     if (
       score > bestScore ||
-      (score === bestScore &&
-        anchorHits > bestAnchorHits) ||
+      (score === bestScore && anchorHits > bestAnchorHits) ||
       (score === bestScore &&
         anchorHits === bestAnchorHits &&
         best &&
@@ -111,49 +105,50 @@ function pickBestTopic(text: string, tags: Set<string>): TopicKey | null {
     }
   }
 
-  // Strict confidence:
-  // must have at least 1 anchor hit OR a strong tag boost
   if (!best) return null;
   if (bestAnchorHits >= 1) return best;
-  if (bestScore >= 2) return best; // tagBoost-only cases (rare)
+  if (bestScore >= 2) return best; // tag-only rare cases
   return null;
 }
 
-function pickBestSubtopic(topic: TopicKey, text: string, tags: Set<string>): SubtagKey | null {
-  const rules = SYLLABUS_RULES[topic].subtopics;
-  const keys = Object.keys(rules) as SubtagKey[];
+function pickBestSubtopic<T extends TopicKey>(
+  topic: T,
+  text: string,
+  tags: Set<string>
+): SubtagKey | null {
+  type LocalSubKey = Extract<SubtagKey, `${T}:${string}`>;
 
-  // subtopic priority inside each topic (tie-breaker)
-  const priority = subtopicPriority(topic);
+  // tell TS: for THIS topic, subtopics are only LocalSubKey -> SubtopicConfig
+  const rules = SYLLABUS_RULES[topic].subtopics as Record<
+    LocalSubKey,
+    { anchors: readonly string[]; keywords: readonly string[] }
+  >;
 
-  let best: SubtagKey | null = null;
+  const keys = Object.keys(rules) as LocalSubKey[];
+  const priority = SUBTOPIC_PRIORITY[topic] as readonly LocalSubKey[];
+
+  let best: LocalSubKey | null = null;
   let bestScore = 0;
   let bestAnchorHits = 0;
 
   for (const subKey of keys) {
-    if (tags.has(subKey)) return subKey; // ✅ manual override wins
-
-    if (!subKey.startsWith(topic + ":")) continue;
-
     const rule = rules[subKey];
-    if (!rule?.anchors?.length) continue;
-
-    // Anchor-gated: must hit at least one anchor to be eligible
+    if (!rule.anchors?.length) continue;
     if (!hitsAny(text, rule.anchors)) continue;
 
     const a = countHits(text, rule.anchors);
     const k = countHits(text, rule.keywords ?? []);
-    const boost = subtopicTagBoost(subKey, tags);
+    const score = a * 3 + k + (tags.has(subKey) ? 1 : 0);
 
-    const score = a * 3 + k + boost;
+    const currIdx = priority.indexOf(subKey);
+    const bestIdx = best ? priority.indexOf(best) : Number.POSITIVE_INFINITY;
+
+    const betterPriority = currIdx !== -1 && currIdx < bestIdx;
 
     if (
       score > bestScore ||
       (score === bestScore && a > bestAnchorHits) ||
-      (score === bestScore &&
-        a === bestAnchorHits &&
-        best &&
-        priority.indexOf(subKey) < priority.indexOf(best))
+      (score === bestScore && a === bestAnchorHits && betterPriority)
     ) {
       bestScore = score;
       bestAnchorHits = a;
@@ -161,83 +156,61 @@ function pickBestSubtopic(topic: TopicKey, text: string, tags: Set<string>): Sub
     }
   }
 
-  return bestScore >= 1 ? best : null;
+  return best ? (best as unknown as SubtagKey) : null;
 }
 
-function subtopicPriority(topic: TopicKey): SubtagKey[] {
-  // Priority rules you requested (example: license plate -> registration first)
-  // Adjust freely.
-  const p: Record<TopicKey, string[]> = {
-    "traffic-law": [
-      "traffic-law:vehicle-registration",
-      "traffic-law:driving-license",
-      "traffic-law:accident-procedure",
-      "traffic-law:violations-procedure",
-      "traffic-law:road-conditions-rules",
-    ],
-    "traffic-signals": [
-      "traffic-signals:signal-lights",
-      "traffic-signals:road-signs",
-      "traffic-signals:road-markings",
-      "traffic-signals:hand-signals",
-      "traffic-signals:special-signals",
-    ],
-    "safe-driving": [
-      "safe-driving:violation-penalties",
-      "safe-driving:expressway-breakdown",
-      "safe-driving:parking",
-      "safe-driving:yield",
-      "safe-driving:requirements",
-    ],
-    "vehicle-operation": [
-      "vehicle-operation:safety-devices",
-      "vehicle-operation:control-gears",
-      "vehicle-operation:instruments-indicators",
-    ],
-    "local-rules": ["local-rules:local-laws"],
-  };
 
-  return (p[topic] ?? []) as SubtagKey[];
-}
+const SUBTOPIC_PRIORITY: {
+  [T in TopicKey]: readonly Extract<SubtagKey, `${T}:${string}`>[];
+} = {
+  "road-safety": [
+    "road-safety:license",
+    "road-safety:registration",
+    "road-safety:accidents",
+    "road-safety:road-conditions",
+  ],
+  "traffic-signals": [
+    "traffic-signals:signal-lights",
+    "traffic-signals:road-signs",
+    "traffic-signals:road-markings",
+    "traffic-signals:police-signals",
+  ],
+  "proper-driving": ["proper-driving:traffic-laws", "proper-driving:safe-driving"],
+  "driving-operations": ["driving-operations:indicators", "driving-operations:control-gears"],
+};
 
-function topicTagBoost(topic: TopicKey, tags: Set<string>) {
-  const hasAny = (arr: string[]) => arr.some((t) => tags.has(t));
+/**
+ * Legacy tag mapping (salvage old work)
+ */
+const LEGACY_TAG_MAP: Record<string, TopicKey | SubtagKey> = {
+  // old topics -> new topics
+  "traffic-law": "road-safety",
+  "safe-driving": "proper-driving",
+  "vehicle-operation": "driving-operations",
+  "traffic-signals": "traffic-signals",
 
-  if (topic === "traffic-signals") {
-    if (hasAny(["signals"])) return 2;
-  }
-  if (topic === "traffic-law") {
-    if (hasAny(["law", "license", "registration", "violations", "accidents"])) return 2;
-  }
-  if (topic === "safe-driving") {
-    if (hasAny(["safe-driving", "expressway"])) return 2;
-  }
-  if (topic === "vehicle-operation") {
-    if (hasAny(["vehicle-knowledge", "vehicle-operation"])) return 2;
-  }
-  if (topic === "local-rules") {
-    if (hasAny(["local", "local-rules"])) return 2;
-  }
-  return 0;
-}
+  // old subtopics -> new subtopics
+  "traffic-law:driving-license": "road-safety:license",
+  "traffic-law:vehicle-registration": "road-safety:registration",
+  "traffic-law:accident-procedure": "road-safety:accidents",
+  "traffic-law:road-conditions-rules": "road-safety:road-conditions",
+  "traffic-law:violations-procedure": "proper-driving:traffic-laws",
 
-function subtopicTagBoost(subKey: SubtagKey, tags: Set<string>) {
-  const map: Record<string, string[]> = {
-    "traffic-law:driving-license": ["license"],
-    "traffic-law:vehicle-registration": ["registration", "license-plate"],
-    "traffic-law:accident-procedure": ["accidents", "accident"],
-    "traffic-law:violations-procedure": ["violations"],
-    "traffic-signals:signal-lights": ["signals"],
-    "traffic-signals:road-signs": ["signals"],
-    "traffic-signals:road-markings": ["signals"],
-    "traffic-signals:hand-signals": ["signals"],
-    "safe-driving:violation-penalties": ["drinking", "illegal", "overloaded"],
-    "safe-driving:expressway-breakdown": ["expressway"],
-    "vehicle-operation:instruments-indicators": ["vehicle-knowledge"],
-    "vehicle-operation:control-gears": ["vehicle-knowledge"],
-    "vehicle-operation:safety-devices": ["vehicle-knowledge"],
-  };
+  "safe-driving:violation-penalties": "proper-driving:traffic-laws",
+  "safe-driving:requirements": "proper-driving:safe-driving",
+  "safe-driving:yield": "proper-driving:safe-driving",
+  "safe-driving:parking": "proper-driving:safe-driving",
+  "safe-driving:expressway-breakdown": "proper-driving:safe-driving",
+  "safe-driving:scenarios": "proper-driving:safe-driving",
 
-  const needles = map[subKey] ?? [];
-  return needles.some((t) => tags.has(t)) ? 1 : 0;
-}
+  "traffic-signals:traffic-lights": "traffic-signals:signal-lights",
+  "traffic-signals:special-signals": "traffic-signals:signal-lights",
+  "traffic-signals:road-signs": "traffic-signals:road-signs",
+  "traffic-signals:road-markings": "traffic-signals:road-markings",
+  "traffic-signals:hand-signals": "traffic-signals:police-signals",
+
+  "vehicle-operation:instruments-indicators": "driving-operations:indicators",
+  "vehicle-operation:safety-devices": "driving-operations:indicators",
+  "vehicle-operation:controls": "driving-operations:control-gears",
+  "vehicle-operation:control-gears": "driving-operations:control-gears",
+};

@@ -217,7 +217,14 @@ const tagCounts = useMemo(() => {
               {item.type === 'ROW' && item.correctRow && (
                 <div className={styles.answerRow}>
                   <span className={styles.answerLabel}>Answer</span>
-                  <span className={styles.answerPill}>{item.correctRow}</span>
+                  <span className={styles.answerPill}>
+  {item.correctRow === "R"
+    ? "Right"
+    : item.correctRow === "W"
+    ? "Wrong"
+    : item.correctRow}
+</span>
+
                 </div>
               )}
 

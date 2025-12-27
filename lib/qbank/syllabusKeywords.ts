@@ -1,33 +1,45 @@
 // lib/qbank/syllabusKeywords.ts
 
 export type TopicKey =
-  | "traffic-law"
-  | "local-rules"
+  | "road-safety"
   | "traffic-signals"
-  | "safe-driving"
-  | "vehicle-operation";
+  | "proper-driving"
+  | "driving-operations";
 
-export type TagKey =
-  | TopicKey
-  | `${TopicKey}:${string}`;
+export type SubtagKey =
+  | "road-safety:license"
+  | "road-safety:registration"
+  | "road-safety:accidents"
+  | "road-safety:road-conditions"
+  | "traffic-signals:signal-lights"
+  | "traffic-signals:road-signs"
+  | "traffic-signals:road-markings"
+  | "traffic-signals:police-signals"
+  | "proper-driving:safe-driving"
+  | "proper-driving:traffic-laws"
+  | "driving-operations:indicators"
+  | "driving-operations:control-gears";
 
 export type SubtopicConfig = {
-  anchors: string[];   // strong signals
-  keywords: string[];  // weaker/extra signals
+  anchors: readonly string[];   // strong signals (must hit >= 1)
+  keywords: readonly string[];  // weaker signals (scoring only)
 };
 
-export type TopicConfig = {
-  topicAnchors: string[];                // decides the topic
-  subtopics: Record<string, SubtopicConfig>; // decides the subtopic
+// ✅ only allow subtopic keys that start with the topic prefix
+type SubtagKeyFor<T extends TopicKey> = Extract<SubtagKey, `${T}:${string}`>;
+// ✅ exact shape of SYLLABUS_RULES: each topic can ONLY have its own subtopics
+export type SyllabusRules = {
+  [T in TopicKey]: {
+    topicAnchors: readonly string[];
+    subtopics: Record<SubtagKeyFor<T>, SubtopicConfig>;
+  };
 };
-
-// NOTE: All strings are matched via text.includes(...)
-// so multi-word phrases must appear in that same order.
-export const SYLLABUS_KEYWORDS: Record<TopicKey, TopicConfig> = {
-  "traffic-law": {
-    // Section 1 objective includes “safe driving in various road conditions”
+// NOTE: strings are matched via text.includes(...)
+// multi-word phrases must appear in that order.
+export const SYLLABUS_RULES = {
+  "road-safety": {
     topicAnchors: [
-      // law/procedure core
+      // license/registration/accidents core
       "driving license",
       "driving licence",
       "penalty point",
@@ -48,7 +60,7 @@ export const SYLLABUS_KEYWORDS: Record<TopicKey, TopicConfig> = {
       "detaining",
       "procedural regulations",
 
-      // road conditions / road sections (these pull into Traffic Law by design)
+      // “safe driving in various road conditions” (syllabus section 1)
       "fog",
       "foggy",
       "snow",
@@ -74,18 +86,8 @@ export const SYLLABUS_KEYWORDS: Record<TopicKey, TopicConfig> = {
       "reversing",
     ],
     subtopics: {
-      "traffic-law:violations-procedure": {
-        anchors: ["procedural regulations", "detain", "detaining"],
-        keywords: ["cases for detaining", "punishment at the scene"],
-      },
-
-      "traffic-law:accident-procedure": {
-        anchors: ["traffic accident", "accident scene", "report to the police"],
-        keywords: ["voluntary negotiation", "leave the scene", "expressway"],
-      },
-
-      "traffic-law:driving-license": {
-        anchors: ["driving license", "driving licence", "probation period", "penalty point"],
+      "road-safety:license": {
+        anchors: ["driving license", "driving licence", "penalty point", "probation period", "revocation"],
         keywords: [
           "application for driving license",
           "validity period",
@@ -93,18 +95,19 @@ export const SYLLABUS_KEYWORDS: Record<TopicKey, TopicConfig> = {
           "reissue",
           "physical examination",
           "inspection",
-          "revocation",
           "pass mark",
           "testing requirements",
         ],
       },
-
-      "traffic-law:vehicle-registration": {
-        anchors: ["registration", "license plate", "vehicle license", "temporary license plate"],
-        keywords: ["transfer", "modification", "mortgage", "revocation", "motor vehicle inspection"],
+      "road-safety:registration": {
+        anchors: ["registration", "license plate", "vehicle license", "temporary license plate", "motor vehicle inspection"],
+        keywords: ["transfer", "modification", "mortgage", "revocation"],
       },
-
-      "traffic-law:road-conditions-rules": {
+      "road-safety:accidents": {
+        anchors: ["traffic accident", "accident scene", "report to the police", "leave the scene"],
+        keywords: ["voluntary negotiation", "expressway"],
+      },
+      "road-safety:road-conditions": {
         anchors: [
           "fog",
           "foggy",
@@ -138,16 +141,6 @@ export const SYLLABUS_KEYWORDS: Record<TopicKey, TopicConfig> = {
     },
   },
 
-  "local-rules": {
-    topicAnchors: ["local laws", "local regulations"],
-    subtopics: {
-      "local-rules:local-laws": {
-        anchors: ["local laws", "local regulations"],
-        keywords: ["based on local laws", "local rules"],
-      },
-    },
-  },
-
   "traffic-signals": {
     topicAnchors: [
       "traffic light",
@@ -156,64 +149,69 @@ export const SYLLABUS_KEYWORDS: Record<TopicKey, TopicConfig> = {
       "yellow light",
       "signal light",
       "arrow shape",
+      "signal lights on driving lanes",
+      "guide arrow",
       "flashing yellow",
-      "hazard light",
       "level crossing",
+
       "road sign",
       "warning sign",
       "prohibitive",
       "indicative",
       "directional",
       "tourist area",
+      "meaning of this sign",
+
       "road marking",
-      "hand signals",
-      "traffic police",
-      "guide arrow",
+      "markings",
       "yellow line",
       "broken line",
       "solid line",
-      "meaning of this sign",
-      "meaning of this sig n",
-      "mark",
-      "yellow lane",
+      "stop line",
+      "zebra",
+
+      "traffic police",
+      "hand signal",
+      "hand signals",
+      "pull over",
+      "slowdown",
+      "lane changing",
     ],
     subtopics: {
       "traffic-signals:signal-lights": {
-        anchors: ["red light", "green light", "yellow light", "signal light"],
-        keywords: ["arrow shape", "driving lanes"],
+        anchors: ["red light", "green light", "yellow light", "signal light", "flashing yellow", "level crossing"],
+        keywords: ["arrow shape", "signal lights on driving lanes", "guide arrow"],
       },
       "traffic-signals:road-signs": {
         anchors: ["road sign", "warning sign", "prohibitive", "indicative", "meaning of this sign"],
         keywords: ["directional", "tourist area"],
       },
       "traffic-signals:road-markings": {
-        anchors: ["road marking", "markings", "guide arrow", "yellow line", "yellow broken line", "broken line","solid line", "meaning of this sig n", "yellow lane"],
-        keywords: ["indicative markings", "prohibitive markings", "warning markings", "stop line", "zebra", "mark"],
+        anchors: ["road marking", "markings", "yellow line", "broken line", "solid line", "stop line", "zebra", "crosswalk"],
+        keywords: ["indicative markings", "prohibitive markings", "warning markings"],
       },
-      "traffic-signals:hand-signals": {
-        anchors: ["traffic police", "hand signals"],
-        keywords: ["stop signals", "going-straight", "left turn", "right turn", "lane changing", "slowdown", "pull over"],
-      },
-      "traffic-signals:special-signals": {
-        anchors: ["level crossing", "flashing yellow", "hazard light"],
-        keywords: ["signal lights on driving lanes"],
+      "traffic-signals:police-signals": {
+        anchors: ["traffic police", "hand signal", "hand signals", "pull over", "slowdown"],
+        keywords: ["stop signals", "going-straight", "left turn", "right turn", "lane changing"],
       },
     },
   },
 
-  "safe-driving": {
+  "proper-driving": {
     topicAnchors: [
+      // Safe driving content (syllabus section 4)
       "safe driving",
       "safety responsibility",
       "yield",
       "special vehicle",
       "road maintenance",
       "parking",
+      "car park",
       "expressway",
       "breakdown",
       "warning requirements",
 
-      // violation penalties list (section 4)
+      // Traffic laws / penalties (syllabus section 4)
       "prohibited",
       "punishment",
       "drinking",
@@ -224,46 +222,25 @@ export const SYLLABUS_KEYWORDS: Record<TopicKey, TopicConfig> = {
       "over-seated",
       "overloaded",
       "cancellation rules",
+      "punishment at the scene",
     ],
     subtopics: {
-      "safe-driving:requirements": {
-        anchors: ["safe driving", "requirements for safe driving", "safety responsibility"],
-        keywords: ["proper driving skills"],
+      "proper-driving:safe-driving": {
+        anchors: ["safe driving", "safety responsibility", "yield", "special vehicle", "road maintenance", "parking", "expressway", "breakdown"],
+        keywords: ["requirements for safe driving", "handling measures", "warning requirements"],
       },
-      "safe-driving:yield": {
-        anchors: ["yield", "special vehicle", "road maintenance"],
-        keywords: ["right of way"],
-      },
-      "safe-driving:parking": {
-        anchors: ["parking", "car park"],
-        keywords: ["parking rules"],
-      },
-      "safe-driving:expressway-breakdown": {
-        anchors: ["expressway", "breakdown"],
-        keywords: ["handling measures", "warning requirements"],
-      },
-      "safe-driving:violation-penalties": {
-        anchors: ["punishment", "prohibited"],
-        keywords: [
-          "traffic signal violations",
-          "drinking",
-          "drugs",
-          "medicines",
-          "illegal driving license",
-          "illegal license plate",
-          "punishment at the scene",
-          "obtaining driving license by illegal means",
-          "over-seated",
-          "overloaded",
-          "cancellation rules",
-        ],
+      "proper-driving:traffic-laws": {
+        anchors: ["prohibited", "punishment", "drinking", "drugs", "illegal", "over-seated", "overloaded", "cancellation rules"],
+        keywords: ["punishment at the scene", "traffic signal violations", "obtaining driving license by illegal means"],
       },
     },
   },
 
-  "vehicle-operation": {
+  "driving-operations": {
     topicAnchors: [
+      // instruments/indicators
       "instruments",
+      "instrument",
       "indicator",
       "alarm light",
       "fog lamp indicator",
@@ -276,12 +253,17 @@ export const SYLLABUS_KEYWORDS: Record<TopicKey, TopicConfig> = {
       "seatbelt alarm",
       "flashing hazard light",
       "turn signal",
+      "symbol",
+      "displays",
+      "flashes",
 
+      // controls
       "steering wheel",
       "clutch pedal",
       "brake pedal",
       "accelerator pedal",
       "gear shift",
+      "gear shift lever",
       "handbrake",
       "ignition switch",
       "light switch",
@@ -289,67 +271,40 @@ export const SYLLABUS_KEYWORDS: Record<TopicKey, TopicConfig> = {
       "defrost",
       "defog",
 
+      // safety devices (mapped into Indicators by your new taxonomy)
       "safe headrest",
       "seatbelt",
       "abs",
       "srs",
-
-      "lights to",
-      "lights when",
-      "It lights",
-      "instrument",
-      "symbol indicate",
-      "displays",
-      "in strument",
-      "flashes",
     ],
     subtopics: {
-      "vehicle-operation:instruments-indicators": {
-        anchors: ["instruments", "indicator", "alarm light"],
-        keywords: [
-          "fog lamp indicator",
+      "driving-operations:indicators": {
+        anchors: [
+          "indicator",
+          "alarm light",
           "engine oil pressure",
           "brake alarm",
           "low fuel warning",
           "water temperature",
-          "seatbelt alarm",
           "low-beam",
           "high-beam",
+          "seatbelt alarm",
           "flashing hazard light",
           "turn signal",
-          "lights to",
-          "lights when",
-          "It lights",
-          "instrument",
-          "symbol indicate",
+          "abs",
+          "srs",
+          "seatbelt",
+          "safe headrest",
+          "symbol",
           "displays",
-          "in strument",
           "flashes",
         ],
+        keywords: ["fog lamp indicator", "instruments", "instrument"],
       },
-      "vehicle-operation:control-gears": {
-        anchors: ["steering wheel", "clutch pedal", "brake pedal", "accelerator pedal"],
-        keywords: ["gear shift", "handbrake", "ignition switch", "light switch", "windscreen wiper", "defrost", "defog"],
-      },
-      "vehicle-operation:safety-devices": {
-        anchors: ["safe headrest", "seatbelt", "abs", "srs"],
-        keywords: ["safety devices"],
+      "driving-operations:control-gears": {
+        anchors: ["steering wheel", "clutch pedal", "brake pedal", "accelerator pedal", "gear shift", "handbrake", "ignition switch"],
+        keywords: ["light switch", "windscreen wiper", "defrost", "defog"],
       },
     },
   },
-} as const;
-
-// --- exports for classifier ---
-export const SYLLABUS_RULES = SYLLABUS_KEYWORDS; // alias so your import works
-
-export type SyllabusRules = typeof SYLLABUS_RULES;
-
-// internal helper type (so we don't redeclare TopicKey)
-type RuleTopicKey = keyof SyllabusRules;
-
-// union of ALL subtopic keys across all topics
-export type SubtagKey =
-  {
-    [T in RuleTopicKey]: keyof SyllabusRules[T]["subtopics"];
-  }[RuleTopicKey] & string;
-
+} as const satisfies SyllabusRules;

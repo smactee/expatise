@@ -765,7 +765,14 @@ const tagCounts = useMemo(() => {
               {item.type === 'ROW' && item.correctRow && (
                 <div className={styles.answerRow}>
                   <span className={styles.answerLabel}>Answer</span>
-                  <span className={styles.answerPill}>{item.correctRow}</span>
+                  <span className={styles.answerPill}>
+  {item.correctRow === "R"
+    ? "Right"
+    : item.correctRow === "W"
+    ? "Wrong"
+    : item.correctRow}
+</span>
+
                 </div>
               )}
 
@@ -919,7 +926,7 @@ const tagCounts = useMemo(() => {
   border-radius: 16px;
   overflow: hidden;
   margin-bottom: 10px;
-  background: rgba(0,0,0,0.06);
+  background: transparent;
 }
 
 .image {
@@ -938,7 +945,18 @@ const tagCounts = useMemo(() => {
   background: rgba(0,0,0,0.06);
   padding: 6px 8px;
   border-radius: 999px;
+  margin-top: 7px;
+
 }
+
+.answerPill {
+  font-size: 14px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: var(--color-premium-gradient-20);
+  font-weight: 500;
+}
+
 
 .answerRow {
   display: flex;
@@ -949,7 +967,7 @@ const tagCounts = useMemo(() => {
 }
 
 .answerLabel {
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
   opacity: 0.8;
 }
@@ -962,7 +980,7 @@ const tagCounts = useMemo(() => {
 }
 
 .answerCorrect {
-  color: white;
+  background: var(--color-premium-gradient-20);
 }
 
 .options {
@@ -982,7 +1000,8 @@ const tagCounts = useMemo(() => {
 }
 
 .optionCorrect {
-  color: white;
+  background: var(--color-premium-gradient-20);
+  font-weight: 500;
 }
 
 .optionKey {
@@ -2493,7 +2512,16 @@ const canSend = useMemo(() => {
   --color-settings-bg: #f1f5f8;
   --color-logout-border: #d2c79a;
 
+  --color-premium-gradient-20: linear-gradient(
+  90deg,
+  rgba(43, 124, 175, 0.2) 0%,
+  rgba(255, 197, 66, 0.2) 100%
+);
+
+
 }
+
+
 
 /* Base page background + text color */
 html,
@@ -8015,36 +8043,38 @@ export const DATASETS: Record<DatasetId, DatasetConfig> = {
 ```tsx
 // lib/qbank/deriveTopicSubtags.ts
 import type { Question } from "./types";
-import { SYLLABUS_RULES } from "./syllabusKeywords";
-import type { TopicKey, SubtagKey } from "./syllabusKeywords";
+import { SYLLABUS_RULES, type TopicKey, type SubtagKey } from "./syllabusKeywords";
 
 /**
- * Exact classifier (strict):
+ * Strict classifier:
  * - Picks ONE best topic
  * - Picks ONE best subtopic within that topic (anchor-gated)
  * - Returns [] if no confident topic
  * - Returns [topic] if topic is confident but no subtopic anchor matched
  * - Returns [topic, subtopic] if subtopic matched
+ *
+ * Also salvages legacy tags by mapping them into the new taxonomy.
  */
 export function deriveTopicSubtags(item: Question): string[] {
   const text = buildText(item);
 
-  const tags = new Set(
-    [...(item.tags ?? []), ...(item.autoTags ?? [])]
-      .map((t) => String(t ?? "").trim().replace(/^#/, "").toLowerCase())
-      .filter(Boolean)
-  );
+  const rawTags = [...(item.tags ?? []), ...(item.autoTags ?? [])]
+    .map((t) => String(t ?? "").trim().replace(/^#/, "").toLowerCase())
+    .filter(Boolean);
 
-  // ✅ Manual override first (from tags.patch.json or any manual tags)
-  const manualTopic = (Object.keys(SYLLABUS_RULES) as TopicKey[]).find((t) =>
-    tags.has(t)
-  );
+  // normalize + map legacy tags into new tag set
+  const tags = new Set<string>();
+  for (const t of rawTags) {
+    tags.add(t);
+    const mapped = LEGACY_TAG_MAP[t];
+    if (mapped) tags.add(mapped);
+  }
 
+  // ✅ manual override wins if user tags contain canonical topic/subtopic keys
+  const manualTopic = (Object.keys(SYLLABUS_RULES) as TopicKey[]).find((t) => tags.has(t));
   if (manualTopic) {
-    const manualSub = Object.keys(SYLLABUS_RULES[manualTopic].subtopics).find(
-      (k) => tags.has(k)
-    ) as SubtagKey | undefined;
-
+    const subObj = SYLLABUS_RULES[manualTopic].subtopics;
+    const manualSub = Object.keys(subObj).find((k) => tags.has(k)) as SubtagKey | undefined;
     return manualSub ? [manualTopic, manualSub] : [manualTopic];
   }
 
@@ -8055,7 +8085,6 @@ export function deriveTopicSubtags(item: Question): string[] {
   return sub ? [topic, sub] : [topic];
 }
 
-
 function buildText(item: Question) {
   const parts = [
     item.prompt ?? "",
@@ -8064,7 +8093,7 @@ function buildText(item: Question) {
   return parts.join(" ").toLowerCase();
 }
 
-function countHits(text: string, phrases: string[]) {
+function countHits(text: string, phrases: readonly string[]) {
   let s = 0;
   for (const p of phrases) {
     const needle = String(p ?? "").toLowerCase();
@@ -8073,7 +8102,7 @@ function countHits(text: string, phrases: string[]) {
   return s;
 }
 
-function hitsAny(text: string, phrases: string[]) {
+function hitsAny(text: string, phrases: readonly string[]) {
   return phrases.some((p) => {
     const needle = String(p ?? "").toLowerCase();
     return needle && text.includes(needle);
@@ -8081,16 +8110,13 @@ function hitsAny(text: string, phrases: string[]) {
 }
 
 /**
- * TOPIC PRIORITY (tie-breaker):
- * If scores tie, we choose earlier in this list.
- * Adjust if you want different behavior.
+ * Topic priority for tie-breaks.
  */
-const TOPIC_PRIORITY: TopicKey[] = [
+const TOPIC_PRIORITY: readonly TopicKey[] = [
   "traffic-signals",
-  "vehicle-operation",
-  "traffic-law",
-  "safe-driving",
-  "local-rules",
+  "driving-operations",
+  "road-safety",
+  "proper-driving",
 ];
 
 function pickBestTopic(text: string, tags: Set<string>): TopicKey | null {
@@ -8103,18 +8129,14 @@ function pickBestTopic(text: string, tags: Set<string>): TopicKey | null {
   for (const topic of topics) {
     const rules = SYLLABUS_RULES[topic];
 
-    // IMPORTANT:
-    // - anchors are the main driver
-    // - tag boost is small, only used as a helper
     const anchorHits = countHits(text, rules.topicAnchors);
-    const tagBoost = topicTagBoost(topic, tags);
+    const tagBoost = tags.has(topic) ? 2 : 0;
 
     const score = anchorHits * 2 + tagBoost;
 
     if (
       score > bestScore ||
-      (score === bestScore &&
-        anchorHits > bestAnchorHits) ||
+      (score === bestScore && anchorHits > bestAnchorHits) ||
       (score === bestScore &&
         anchorHits === bestAnchorHits &&
         best &&
@@ -8126,49 +8148,50 @@ function pickBestTopic(text: string, tags: Set<string>): TopicKey | null {
     }
   }
 
-  // Strict confidence:
-  // must have at least 1 anchor hit OR a strong tag boost
   if (!best) return null;
   if (bestAnchorHits >= 1) return best;
-  if (bestScore >= 2) return best; // tagBoost-only cases (rare)
+  if (bestScore >= 2) return best; // tag-only rare cases
   return null;
 }
 
-function pickBestSubtopic(topic: TopicKey, text: string, tags: Set<string>): SubtagKey | null {
-  const rules = SYLLABUS_RULES[topic].subtopics;
-  const keys = Object.keys(rules) as SubtagKey[];
+function pickBestSubtopic<T extends TopicKey>(
+  topic: T,
+  text: string,
+  tags: Set<string>
+): SubtagKey | null {
+  type LocalSubKey = Extract<SubtagKey, `${T}:${string}`>;
 
-  // subtopic priority inside each topic (tie-breaker)
-  const priority = subtopicPriority(topic);
+  // tell TS: for THIS topic, subtopics are only LocalSubKey -> SubtopicConfig
+  const rules = SYLLABUS_RULES[topic].subtopics as Record<
+    LocalSubKey,
+    { anchors: readonly string[]; keywords: readonly string[] }
+  >;
 
-  let best: SubtagKey | null = null;
+  const keys = Object.keys(rules) as LocalSubKey[];
+  const priority = SUBTOPIC_PRIORITY[topic] as readonly LocalSubKey[];
+
+  let best: LocalSubKey | null = null;
   let bestScore = 0;
   let bestAnchorHits = 0;
 
   for (const subKey of keys) {
-    if (tags.has(subKey)) return subKey; // ✅ manual override wins
-
-    if (!subKey.startsWith(topic + ":")) continue;
-
     const rule = rules[subKey];
-    if (!rule?.anchors?.length) continue;
-
-    // Anchor-gated: must hit at least one anchor to be eligible
+    if (!rule.anchors?.length) continue;
     if (!hitsAny(text, rule.anchors)) continue;
 
     const a = countHits(text, rule.anchors);
     const k = countHits(text, rule.keywords ?? []);
-    const boost = subtopicTagBoost(subKey, tags);
+    const score = a * 3 + k + (tags.has(subKey) ? 1 : 0);
 
-    const score = a * 3 + k + boost;
+    const currIdx = priority.indexOf(subKey);
+    const bestIdx = best ? priority.indexOf(best) : Number.POSITIVE_INFINITY;
+
+    const betterPriority = currIdx !== -1 && currIdx < bestIdx;
 
     if (
       score > bestScore ||
       (score === bestScore && a > bestAnchorHits) ||
-      (score === bestScore &&
-        a === bestAnchorHits &&
-        best &&
-        priority.indexOf(subKey) < priority.indexOf(best))
+      (score === bestScore && a === bestAnchorHits && betterPriority)
     ) {
       bestScore = score;
       bestAnchorHits = a;
@@ -8176,86 +8199,64 @@ function pickBestSubtopic(topic: TopicKey, text: string, tags: Set<string>): Sub
     }
   }
 
-  return bestScore >= 1 ? best : null;
+  return best ? (best as unknown as SubtagKey) : null;
 }
 
-function subtopicPriority(topic: TopicKey): SubtagKey[] {
-  // Priority rules you requested (example: license plate -> registration first)
-  // Adjust freely.
-  const p: Record<TopicKey, string[]> = {
-    "traffic-law": [
-      "traffic-law:vehicle-registration",
-      "traffic-law:driving-license",
-      "traffic-law:accident-procedure",
-      "traffic-law:violations-procedure",
-      "traffic-law:road-conditions-rules",
-    ],
-    "traffic-signals": [
-      "traffic-signals:signal-lights",
-      "traffic-signals:road-signs",
-      "traffic-signals:road-markings",
-      "traffic-signals:hand-signals",
-      "traffic-signals:special-signals",
-    ],
-    "safe-driving": [
-      "safe-driving:violation-penalties",
-      "safe-driving:expressway-breakdown",
-      "safe-driving:parking",
-      "safe-driving:yield",
-      "safe-driving:requirements",
-    ],
-    "vehicle-operation": [
-      "vehicle-operation:safety-devices",
-      "vehicle-operation:control-gears",
-      "vehicle-operation:instruments-indicators",
-    ],
-    "local-rules": ["local-rules:local-laws"],
-  };
 
-  return (p[topic] ?? []) as SubtagKey[];
-}
+const SUBTOPIC_PRIORITY: {
+  [T in TopicKey]: readonly Extract<SubtagKey, `${T}:${string}`>[];
+} = {
+  "road-safety": [
+    "road-safety:license",
+    "road-safety:registration",
+    "road-safety:accidents",
+    "road-safety:road-conditions",
+  ],
+  "traffic-signals": [
+    "traffic-signals:signal-lights",
+    "traffic-signals:road-signs",
+    "traffic-signals:road-markings",
+    "traffic-signals:police-signals",
+  ],
+  "proper-driving": ["proper-driving:traffic-laws", "proper-driving:safe-driving"],
+  "driving-operations": ["driving-operations:indicators", "driving-operations:control-gears"],
+};
 
-function topicTagBoost(topic: TopicKey, tags: Set<string>) {
-  const hasAny = (arr: string[]) => arr.some((t) => tags.has(t));
+/**
+ * Legacy tag mapping (salvage old work)
+ */
+const LEGACY_TAG_MAP: Record<string, TopicKey | SubtagKey> = {
+  // old topics -> new topics
+  "traffic-law": "road-safety",
+  "safe-driving": "proper-driving",
+  "vehicle-operation": "driving-operations",
+  "traffic-signals": "traffic-signals",
 
-  if (topic === "traffic-signals") {
-    if (hasAny(["signals"])) return 2;
-  }
-  if (topic === "traffic-law") {
-    if (hasAny(["law", "license", "registration", "violations", "accidents"])) return 2;
-  }
-  if (topic === "safe-driving") {
-    if (hasAny(["safe-driving", "expressway"])) return 2;
-  }
-  if (topic === "vehicle-operation") {
-    if (hasAny(["vehicle-knowledge", "vehicle-operation"])) return 2;
-  }
-  if (topic === "local-rules") {
-    if (hasAny(["local", "local-rules"])) return 2;
-  }
-  return 0;
-}
+  // old subtopics -> new subtopics
+  "traffic-law:driving-license": "road-safety:license",
+  "traffic-law:vehicle-registration": "road-safety:registration",
+  "traffic-law:accident-procedure": "road-safety:accidents",
+  "traffic-law:road-conditions-rules": "road-safety:road-conditions",
+  "traffic-law:violations-procedure": "proper-driving:traffic-laws",
 
-function subtopicTagBoost(subKey: SubtagKey, tags: Set<string>) {
-  const map: Record<string, string[]> = {
-    "traffic-law:driving-license": ["license"],
-    "traffic-law:vehicle-registration": ["registration", "license-plate"],
-    "traffic-law:accident-procedure": ["accidents", "accident"],
-    "traffic-law:violations-procedure": ["violations"],
-    "traffic-signals:signal-lights": ["signals"],
-    "traffic-signals:road-signs": ["signals"],
-    "traffic-signals:road-markings": ["signals"],
-    "traffic-signals:hand-signals": ["signals"],
-    "safe-driving:violation-penalties": ["drinking", "illegal", "overloaded"],
-    "safe-driving:expressway-breakdown": ["expressway"],
-    "vehicle-operation:instruments-indicators": ["vehicle-knowledge"],
-    "vehicle-operation:control-gears": ["vehicle-knowledge"],
-    "vehicle-operation:safety-devices": ["vehicle-knowledge"],
-  };
+  "safe-driving:violation-penalties": "proper-driving:traffic-laws",
+  "safe-driving:requirements": "proper-driving:safe-driving",
+  "safe-driving:yield": "proper-driving:safe-driving",
+  "safe-driving:parking": "proper-driving:safe-driving",
+  "safe-driving:expressway-breakdown": "proper-driving:safe-driving",
+  "safe-driving:scenarios": "proper-driving:safe-driving",
 
-  const needles = map[subKey] ?? [];
-  return needles.some((t) => tags.has(t)) ? 1 : 0;
-}
+  "traffic-signals:traffic-lights": "traffic-signals:signal-lights",
+  "traffic-signals:special-signals": "traffic-signals:signal-lights",
+  "traffic-signals:road-signs": "traffic-signals:road-signs",
+  "traffic-signals:road-markings": "traffic-signals:road-markings",
+  "traffic-signals:hand-signals": "traffic-signals:police-signals",
+
+  "vehicle-operation:instruments-indicators": "driving-operations:indicators",
+  "vehicle-operation:safety-devices": "driving-operations:indicators",
+  "vehicle-operation:controls": "driving-operations:control-gears",
+  "vehicle-operation:control-gears": "driving-operations:control-gears",
+};
 
 ```
 
@@ -8471,33 +8472,45 @@ export function suggestTags(q: Question): CanonicalTagId[] {
 // lib/qbank/syllabusKeywords.ts
 
 export type TopicKey =
-  | "traffic-law"
-  | "local-rules"
+  | "road-safety"
   | "traffic-signals"
-  | "safe-driving"
-  | "vehicle-operation";
+  | "proper-driving"
+  | "driving-operations";
 
-export type TagKey =
-  | TopicKey
-  | `${TopicKey}:${string}`;
+export type SubtagKey =
+  | "road-safety:license"
+  | "road-safety:registration"
+  | "road-safety:accidents"
+  | "road-safety:road-conditions"
+  | "traffic-signals:signal-lights"
+  | "traffic-signals:road-signs"
+  | "traffic-signals:road-markings"
+  | "traffic-signals:police-signals"
+  | "proper-driving:safe-driving"
+  | "proper-driving:traffic-laws"
+  | "driving-operations:indicators"
+  | "driving-operations:control-gears";
 
 export type SubtopicConfig = {
-  anchors: string[];   // strong signals
-  keywords: string[];  // weaker/extra signals
+  anchors: readonly string[];   // strong signals (must hit >= 1)
+  keywords: readonly string[];  // weaker signals (scoring only)
 };
 
-export type TopicConfig = {
-  topicAnchors: string[];                // decides the topic
-  subtopics: Record<string, SubtopicConfig>; // decides the subtopic
+// ✅ only allow subtopic keys that start with the topic prefix
+type SubtagKeyFor<T extends TopicKey> = Extract<SubtagKey, `${T}:${string}`>;
+// ✅ exact shape of SYLLABUS_RULES: each topic can ONLY have its own subtopics
+export type SyllabusRules = {
+  [T in TopicKey]: {
+    topicAnchors: readonly string[];
+    subtopics: Record<SubtagKeyFor<T>, SubtopicConfig>;
+  };
 };
-
-// NOTE: All strings are matched via text.includes(...)
-// so multi-word phrases must appear in that same order.
-export const SYLLABUS_KEYWORDS: Record<TopicKey, TopicConfig> = {
-  "traffic-law": {
-    // Section 1 objective includes “safe driving in various road conditions”
+// NOTE: strings are matched via text.includes(...)
+// multi-word phrases must appear in that order.
+export const SYLLABUS_RULES = {
+  "road-safety": {
     topicAnchors: [
-      // law/procedure core
+      // license/registration/accidents core
       "driving license",
       "driving licence",
       "penalty point",
@@ -8518,7 +8531,7 @@ export const SYLLABUS_KEYWORDS: Record<TopicKey, TopicConfig> = {
       "detaining",
       "procedural regulations",
 
-      // road conditions / road sections (these pull into Traffic Law by design)
+      // “safe driving in various road conditions” (syllabus section 1)
       "fog",
       "foggy",
       "snow",
@@ -8544,18 +8557,8 @@ export const SYLLABUS_KEYWORDS: Record<TopicKey, TopicConfig> = {
       "reversing",
     ],
     subtopics: {
-      "traffic-law:violations-procedure": {
-        anchors: ["procedural regulations", "detain", "detaining"],
-        keywords: ["cases for detaining", "punishment at the scene"],
-      },
-
-      "traffic-law:accident-procedure": {
-        anchors: ["traffic accident", "accident scene", "report to the police"],
-        keywords: ["voluntary negotiation", "leave the scene", "expressway"],
-      },
-
-      "traffic-law:driving-license": {
-        anchors: ["driving license", "driving licence", "probation period", "penalty point"],
+      "road-safety:license": {
+        anchors: ["driving license", "driving licence", "penalty point", "probation period", "revocation"],
         keywords: [
           "application for driving license",
           "validity period",
@@ -8563,18 +8566,19 @@ export const SYLLABUS_KEYWORDS: Record<TopicKey, TopicConfig> = {
           "reissue",
           "physical examination",
           "inspection",
-          "revocation",
           "pass mark",
           "testing requirements",
         ],
       },
-
-      "traffic-law:vehicle-registration": {
-        anchors: ["registration", "license plate", "vehicle license", "temporary license plate"],
-        keywords: ["transfer", "modification", "mortgage", "revocation", "motor vehicle inspection"],
+      "road-safety:registration": {
+        anchors: ["registration", "license plate", "vehicle license", "temporary license plate", "motor vehicle inspection"],
+        keywords: ["transfer", "modification", "mortgage", "revocation"],
       },
-
-      "traffic-law:road-conditions-rules": {
+      "road-safety:accidents": {
+        anchors: ["traffic accident", "accident scene", "report to the police", "leave the scene"],
+        keywords: ["voluntary negotiation", "expressway"],
+      },
+      "road-safety:road-conditions": {
         anchors: [
           "fog",
           "foggy",
@@ -8608,16 +8612,6 @@ export const SYLLABUS_KEYWORDS: Record<TopicKey, TopicConfig> = {
     },
   },
 
-  "local-rules": {
-    topicAnchors: ["local laws", "local regulations"],
-    subtopics: {
-      "local-rules:local-laws": {
-        anchors: ["local laws", "local regulations"],
-        keywords: ["based on local laws", "local rules"],
-      },
-    },
-  },
-
   "traffic-signals": {
     topicAnchors: [
       "traffic light",
@@ -8626,64 +8620,69 @@ export const SYLLABUS_KEYWORDS: Record<TopicKey, TopicConfig> = {
       "yellow light",
       "signal light",
       "arrow shape",
+      "signal lights on driving lanes",
+      "guide arrow",
       "flashing yellow",
-      "hazard light",
       "level crossing",
+
       "road sign",
       "warning sign",
       "prohibitive",
       "indicative",
       "directional",
       "tourist area",
+      "meaning of this sign",
+
       "road marking",
-      "hand signals",
-      "traffic police",
-      "guide arrow",
+      "markings",
       "yellow line",
       "broken line",
       "solid line",
-      "meaning of this sign",
-      "meaning of this sig n",
-      "mark",
-      "yellow lane",
+      "stop line",
+      "zebra",
+
+      "traffic police",
+      "hand signal",
+      "hand signals",
+      "pull over",
+      "slowdown",
+      "lane changing",
     ],
     subtopics: {
       "traffic-signals:signal-lights": {
-        anchors: ["red light", "green light", "yellow light", "signal light"],
-        keywords: ["arrow shape", "driving lanes"],
+        anchors: ["red light", "green light", "yellow light", "signal light", "flashing yellow", "level crossing"],
+        keywords: ["arrow shape", "signal lights on driving lanes", "guide arrow"],
       },
       "traffic-signals:road-signs": {
         anchors: ["road sign", "warning sign", "prohibitive", "indicative", "meaning of this sign"],
         keywords: ["directional", "tourist area"],
       },
       "traffic-signals:road-markings": {
-        anchors: ["road marking", "markings", "guide arrow", "yellow line", "yellow broken line", "broken line","solid line", "meaning of this sig n", "yellow lane"],
-        keywords: ["indicative markings", "prohibitive markings", "warning markings", "stop line", "zebra", "mark"],
+        anchors: ["road marking", "markings", "yellow line", "broken line", "solid line", "stop line", "zebra", "crosswalk"],
+        keywords: ["indicative markings", "prohibitive markings", "warning markings"],
       },
-      "traffic-signals:hand-signals": {
-        anchors: ["traffic police", "hand signals"],
-        keywords: ["stop signals", "going-straight", "left turn", "right turn", "lane changing", "slowdown", "pull over"],
-      },
-      "traffic-signals:special-signals": {
-        anchors: ["level crossing", "flashing yellow", "hazard light"],
-        keywords: ["signal lights on driving lanes"],
+      "traffic-signals:police-signals": {
+        anchors: ["traffic police", "hand signal", "hand signals", "pull over", "slowdown"],
+        keywords: ["stop signals", "going-straight", "left turn", "right turn", "lane changing"],
       },
     },
   },
 
-  "safe-driving": {
+  "proper-driving": {
     topicAnchors: [
+      // Safe driving content (syllabus section 4)
       "safe driving",
       "safety responsibility",
       "yield",
       "special vehicle",
       "road maintenance",
       "parking",
+      "car park",
       "expressway",
       "breakdown",
       "warning requirements",
 
-      // violation penalties list (section 4)
+      // Traffic laws / penalties (syllabus section 4)
       "prohibited",
       "punishment",
       "drinking",
@@ -8694,46 +8693,25 @@ export const SYLLABUS_KEYWORDS: Record<TopicKey, TopicConfig> = {
       "over-seated",
       "overloaded",
       "cancellation rules",
+      "punishment at the scene",
     ],
     subtopics: {
-      "safe-driving:requirements": {
-        anchors: ["safe driving", "requirements for safe driving", "safety responsibility"],
-        keywords: ["proper driving skills"],
+      "proper-driving:safe-driving": {
+        anchors: ["safe driving", "safety responsibility", "yield", "special vehicle", "road maintenance", "parking", "expressway", "breakdown"],
+        keywords: ["requirements for safe driving", "handling measures", "warning requirements"],
       },
-      "safe-driving:yield": {
-        anchors: ["yield", "special vehicle", "road maintenance"],
-        keywords: ["right of way"],
-      },
-      "safe-driving:parking": {
-        anchors: ["parking", "car park"],
-        keywords: ["parking rules"],
-      },
-      "safe-driving:expressway-breakdown": {
-        anchors: ["expressway", "breakdown"],
-        keywords: ["handling measures", "warning requirements"],
-      },
-      "safe-driving:violation-penalties": {
-        anchors: ["punishment", "prohibited"],
-        keywords: [
-          "traffic signal violations",
-          "drinking",
-          "drugs",
-          "medicines",
-          "illegal driving license",
-          "illegal license plate",
-          "punishment at the scene",
-          "obtaining driving license by illegal means",
-          "over-seated",
-          "overloaded",
-          "cancellation rules",
-        ],
+      "proper-driving:traffic-laws": {
+        anchors: ["prohibited", "punishment", "drinking", "drugs", "illegal", "over-seated", "overloaded", "cancellation rules"],
+        keywords: ["punishment at the scene", "traffic signal violations", "obtaining driving license by illegal means"],
       },
     },
   },
 
-  "vehicle-operation": {
+  "driving-operations": {
     topicAnchors: [
+      // instruments/indicators
       "instruments",
+      "instrument",
       "indicator",
       "alarm light",
       "fog lamp indicator",
@@ -8746,12 +8724,17 @@ export const SYLLABUS_KEYWORDS: Record<TopicKey, TopicConfig> = {
       "seatbelt alarm",
       "flashing hazard light",
       "turn signal",
+      "symbol",
+      "displays",
+      "flashes",
 
+      // controls
       "steering wheel",
       "clutch pedal",
       "brake pedal",
       "accelerator pedal",
       "gear shift",
+      "gear shift lever",
       "handbrake",
       "ignition switch",
       "light switch",
@@ -8759,70 +8742,43 @@ export const SYLLABUS_KEYWORDS: Record<TopicKey, TopicConfig> = {
       "defrost",
       "defog",
 
+      // safety devices (mapped into Indicators by your new taxonomy)
       "safe headrest",
       "seatbelt",
       "abs",
       "srs",
-
-      "lights to",
-      "lights when",
-      "It lights",
-      "instrument",
-      "symbol indicate",
-      "displays",
-      "in strument",
-      "flashes",
     ],
     subtopics: {
-      "vehicle-operation:instruments-indicators": {
-        anchors: ["instruments", "indicator", "alarm light"],
-        keywords: [
-          "fog lamp indicator",
+      "driving-operations:indicators": {
+        anchors: [
+          "indicator",
+          "alarm light",
           "engine oil pressure",
           "brake alarm",
           "low fuel warning",
           "water temperature",
-          "seatbelt alarm",
           "low-beam",
           "high-beam",
+          "seatbelt alarm",
           "flashing hazard light",
           "turn signal",
-          "lights to",
-          "lights when",
-          "It lights",
-          "instrument",
-          "symbol indicate",
+          "abs",
+          "srs",
+          "seatbelt",
+          "safe headrest",
+          "symbol",
           "displays",
-          "in strument",
           "flashes",
         ],
+        keywords: ["fog lamp indicator", "instruments", "instrument"],
       },
-      "vehicle-operation:control-gears": {
-        anchors: ["steering wheel", "clutch pedal", "brake pedal", "accelerator pedal"],
-        keywords: ["gear shift", "handbrake", "ignition switch", "light switch", "windscreen wiper", "defrost", "defog"],
-      },
-      "vehicle-operation:safety-devices": {
-        anchors: ["safe headrest", "seatbelt", "abs", "srs"],
-        keywords: ["safety devices"],
+      "driving-operations:control-gears": {
+        anchors: ["steering wheel", "clutch pedal", "brake pedal", "accelerator pedal", "gear shift", "handbrake", "ignition switch"],
+        keywords: ["light switch", "windscreen wiper", "defrost", "defog"],
       },
     },
   },
-} as const;
-
-// --- exports for classifier ---
-export const SYLLABUS_RULES = SYLLABUS_KEYWORDS; // alias so your import works
-
-export type SyllabusRules = typeof SYLLABUS_RULES;
-
-// internal helper type (so we don't redeclare TopicKey)
-type RuleTopicKey = keyof SyllabusRules;
-
-// union of ALL subtopic keys across all topics
-export type SubtagKey =
-  {
-    [T in RuleTopicKey]: keyof SyllabusRules[T]["subtopics"];
-  }[RuleTopicKey] & string;
-
+} as const satisfies SyllabusRules;
 
 ```
 
@@ -8866,33 +8822,20 @@ export const TAG_KEYWORDS: Record<CanonicalTagId, string[]> = {
 
 export type Topic = {
   key: string;   // internal key (stable)
-  label: string; // what the user sees (pretty)
+  label: string; // what the user sees
   subtopics: { key: string; label: string }[];
 };
 
 export const TAG_TAXONOMY: Topic[] = [
   {
-    key: "traffic-law",
-    label: "Traffic Law",
+    key: "road-safety",
+    label: "Road Safety",
     subtopics: [
-      { key: "traffic-law:all", label: "All" },
-      { key: "traffic-law:licensing", label: "Licensing" },
-      { key: "traffic-law:registration", label: "Vehicle Registration" },
-      { key: "traffic-law:violations-procedure", label: "Violations Procedure" },
-      { key: "traffic-law:accident-procedure", label: "Accident Procedure" },
-      { key: "traffic-law:responsibilities", label: "Rights & Responsibilities" },
-    ],
-  },
-  {
-    key: "local-rules",
-    label: "Local Rules",
-    subtopics: [
-      { key: "local-rules:all", label: "All" },
-      { key: "local-rules:key-points", label: "Local Key Points" },
-      { key: "local-rules:parking", label: "Local Parking" },
-      { key: "local-rules:speed", label: "Local Speed Rules" },
-      { key: "local-rules:enforcement", label: "Local Enforcement" },
-      { key: "local-rules:other", label: "Other Local Rules" },
+      { key: "road-safety:all", label: "All" },
+      { key: "road-safety:license", label: "#License" },
+      { key: "road-safety:registration", label: "#Registration" },
+      { key: "road-safety:accidents", label: "#Accidents" },
+      { key: "road-safety:road-conditions", label: "#Road Conditions" },
     ],
   },
   {
@@ -8900,35 +8843,28 @@ export const TAG_TAXONOMY: Topic[] = [
     label: "Traffic Signals",
     subtopics: [
       { key: "traffic-signals:all", label: "All" },
-      { key: "traffic-signals:traffic-lights", label: "Traffic Lights" },
-      { key: "traffic-signals:road-signs", label: "Road Signs" },
-      { key: "traffic-signals:road-markings", label: "Road Markings" },
-      { key: "traffic-signals:hand-signals", label: "Hand Signals" },
-      { key: "traffic-signals:special-signals", label: "Special Signals" },
+      { key: "traffic-signals:signal-lights", label: "#Signal Lights" },
+      { key: "traffic-signals:road-signs", label: "#Road Signs" },
+      { key: "traffic-signals:road-markings", label: "#Road Markings" },
+      { key: "traffic-signals:police-signals", label: "#Police Signals" },
     ],
   },
   {
-    key: "safe-driving",
-    label: "Safe & Courteous Driving",
+    key: "proper-driving",
+    label: "Proper Driving",
     subtopics: [
-      { key: "safe-driving:all", label: "All" },
-      { key: "safe-driving:traffic-signs", label: "Traffic Signs" },
-      { key: "safe-driving:markings-signals", label: "Road Markings & Signals" },
-      { key: "safe-driving:right-of-way", label: "Rules & Right-of-Way" },
-      { key: "safe-driving:scenarios", label: "Driving Scenarios" },
-      { key: "safe-driving:violations", label: "Penalties & Violations" },
+      { key: "proper-driving:all", label: "All" },
+      { key: "proper-driving:safe-driving", label: "#Safe Driving" },
+      { key: "proper-driving:traffic-laws", label: "#Traffic Laws" },
     ],
   },
   {
-    key: "vehicle-operation",
-    label: "Vehicle Operation",
+    key: "driving-operations",
+    label: "Driving Operations",
     subtopics: [
-      { key: "vehicle-operation:all", label: "All" },
-      { key: "vehicle-operation:indicators", label: "Instruments & Indicators" },
-      { key: "vehicle-operation:lights", label: "Lights & Signals" },
-      { key: "vehicle-operation:controls", label: "Controls & Gears" },
-      { key: "vehicle-operation:safety-devices", label: "Safety Devices" },
-      { key: "vehicle-operation:checks", label: "Basic Checks" },
+      { key: "driving-operations:all", label: "All" },
+      { key: "driving-operations:indicators", label: "#Indicators" },
+      { key: "driving-operations:control-gears", label: "#Control Gears" },
     ],
   },
 ];
@@ -8940,7 +8876,6 @@ export function labelForTag(tagKey: string) {
     const found = topic.subtopics.find((s) => s.key === tagKey);
     if (found) return found.label;
   }
-  // fallback: turn "road-signs" into "Road Signs"
   return tagKey
     .split(":")
     .pop()!
@@ -47572,7 +47507,7 @@ export const config = {
       "id": "q0609",
       "number": 609,
       "type": "mcq",
-      "prompt": "What is this in strument?",
+      "prompt": "What is this instrument?",
       "options": [
         {
           "id": "q0609_o1",
@@ -60235,7 +60170,7 @@ export const config = {
       "id": "q0788",
       "number": 788,
       "type": "mcq",
-      "prompt": "What’s the meaning of this sig n?",
+      "prompt": "What’s the meaning of this sign?",
       "options": [
         {
           "id": "q0788_o1",
@@ -66320,7 +66255,7 @@ export const config = {
       "id": "q0869",
       "number": 869,
       "type": "mcq",
-      "prompt": "What’s the meaning of this sig n?",
+      "prompt": "What’s the meaning of this sign?",
       "options": [
         {
           "id": "q0869_o1",
@@ -68414,7 +68349,7 @@ export const config = {
         {
           "id": "q0897_o2",
           "originalKey": "B",
-          "text": "multi-crossing of rail way and road"
+          "text": "multi-crossing of railway and road"
         },
         {
           "id": "q0897_o3",
@@ -68479,7 +68414,7 @@ export const config = {
       "id": "q0898",
       "number": 898,
       "type": "mcq",
-      "prompt": "What’s the meaning of this s ign?",
+      "prompt": "What’s the meaning of this sign?",
       "options": [
         {
           "id": "q0898_o1",
@@ -69950,7 +69885,7 @@ export const config = {
         {
           "id": "q0927_o1",
           "originalKey": "A",
-          "text": "Reminding the side of a reservoir, lake or river ahead"
+          "text": "Reminding the side of a reservoir, lake, or river ahead"
         },
         {
           "id": "q0927_o2",
@@ -106842,7 +106777,7 @@ export const config = {
       "id": "q0788",
       "number": 788,
       "type": "mcq",
-      "prompt": "What’s the meaning of this sig n?",
+      "prompt": "What’s the meaning of this sign?",
       "options": [
         {
           "id": "q0788_o1",
@@ -111817,7 +111752,7 @@ export const config = {
       "id": "q0869",
       "number": 869,
       "type": "mcq",
-      "prompt": "What’s the meaning of this sig n?",
+      "prompt": "What’s the meaning of this sign?",
       "options": [
         {
           "id": "q0869_o1",
@@ -116557,14 +116492,7 @@ export const config = {
 
 ### public/qbank/2023-test1/tags.patch.json
 ```json
-{
-"q0009": ["vehicle-operation", "vehicle-operation:safety-devices"]
 
-
-
-
-
-}
 ```
 
 ### tsconfig.json
