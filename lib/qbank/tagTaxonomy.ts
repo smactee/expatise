@@ -11,7 +11,6 @@ export const TAG_TAXONOMY: Topic[] = [
     key: "road-safety",
     label: "Road Safety",
     subtopics: [
-      { key: "road-safety:all", label: "All" },
       { key: "road-safety:license", label: "#License" },
       { key: "road-safety:registration", label: "#Registration" },
       { key: "road-safety:accidents", label: "#Accidents" },
@@ -22,7 +21,6 @@ export const TAG_TAXONOMY: Topic[] = [
     key: "traffic-signals",
     label: "Traffic Signals",
     subtopics: [
-      { key: "traffic-signals:all", label: "All" },
       { key: "traffic-signals:signal-lights", label: "#Signal Lights" },
       { key: "traffic-signals:road-signs", label: "#Road Signs" },
       { key: "traffic-signals:road-markings", label: "#Road Markings" },
@@ -33,7 +31,6 @@ export const TAG_TAXONOMY: Topic[] = [
     key: "proper-driving",
     label: "Proper Driving",
     subtopics: [
-      { key: "proper-driving:all", label: "All" },
       { key: "proper-driving:safe-driving", label: "#Safe Driving" },
       { key: "proper-driving:traffic-laws", label: "#Traffic Laws" },
     ],
@@ -42,7 +39,6 @@ export const TAG_TAXONOMY: Topic[] = [
     key: "driving-operations",
     label: "Driving Operations",
     subtopics: [
-      { key: "driving-operations:all", label: "All" },
       { key: "driving-operations:indicators", label: "#Indicators" },
       { key: "driving-operations:control-gears", label: "#Control Gears" },
     ],

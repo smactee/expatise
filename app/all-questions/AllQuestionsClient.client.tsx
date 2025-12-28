@@ -74,10 +74,16 @@ useEffect(() => {
   return q.filter((item) => {
     const derivedTags = new Set(derivedById.get(item.id) ?? []);
 
+        const qDigits = qNorm.replace(/[^0-9]/g, ""); // allows "103", "#103", "103."
+   const matchesNumber = qDigits.length > 0 && Number(qDigits) === item.number;
+
+
     const matchesText =
       !qNorm ||
+      matchesNumber ||
       item.prompt.toLowerCase().includes(qNorm) ||
       (item.autoTags ?? []).some((t) => t.toLowerCase().includes(qNorm));
+
 
     // Topic/subtopic filtering
     const matchesTopic = !activeTopic || derivedTags.has(activeTopic);
@@ -118,9 +124,6 @@ const tagCounts = useMemo(() => {
       <div className={styles.frame}>
         <header className={styles.header}>
           <h1 className={styles.title}>All Questions</h1>
-          <p className={styles.subtitle}>
-            {loading ? 'Loading…' : `${filtered.length} / ${q.length}`}
-          </p>
         </header>
 
         <div className={styles.searchRow}>
@@ -162,8 +165,7 @@ const tagCounts = useMemo(() => {
 {activeTopic && (
   <div className={styles.chips}>
     {TAG_TAXONOMY.find((t) => t.key === activeTopic)!.subtopics.map((sub) => {
-      const isAll = sub.key.endsWith(":all");
-      const isActive = (isAll && activeSub === null) || activeSub === sub.key;
+      const isActive = activeSub === sub.key;
 
       return (
         <button
@@ -171,17 +173,10 @@ const tagCounts = useMemo(() => {
           type="button"
           className={`${styles.chip} ${isActive ? styles.chipActive : ""}`}
           onClick={() => {
-            setActiveSub(isAll ? null : sub.key);
+            setActiveSub(isActive ? null : sub.key);
           }}
         >
-          {(() => {
-  const isAll = sub.key.endsWith(":all");
-  const count = isAll
-    ? (tagCounts.topicCounts[activeTopic] ?? 0)
-    : (tagCounts.subCounts[sub.key] ?? 0);
-  return `${sub.label} (${count})`;
-})()}
-
+          {sub.label.replace(/^#/, "")} ({tagCounts.subCounts[sub.key] ?? 0})
         </button>
       );
     })}
@@ -193,9 +188,19 @@ const tagCounts = useMemo(() => {
           {filtered.map((item) => (
             <article key={item.id} className={styles.card}>
               <div className={styles.cardTop}>
-                <span className={styles.qNo}>#{item.number}</span>
-                <span className={styles.qType}>{item.type}</span>
-              </div>
+  <span className={styles.qNo}>{item.number}.</span>
+
+  {(() => {
+    const tags = derivedById.get(item.id) ?? [];
+    const topicKey = tags.find((t) => !t.includes(":")); // topic = no ":"
+    return (
+      <span className={styles.qType}>
+        {topicKey ? labelForTag(topicKey) : "Unclassified"}
+      </span>
+    );
+  })()}
+</div>
+
 
               <p className={styles.prompt}>{item.prompt}</p>
 
@@ -246,20 +251,20 @@ const tagCounts = useMemo(() => {
                 </ul>
               )}
 
-              <div className={styles.tagRow}>
+<div className={styles.tagRow}>
   {(() => {
     const tags = derivedById.get(item.id) ?? [];
-    const topic = tags.find((t) => !t.includes(":"));
     const sub = tags.find((t) => t.includes(":") && !t.endsWith(":all"));
-    const display = [topic, sub].filter(Boolean) as string[];
+    if (!sub) return null;
 
-    return display.map((t) => (
-      <span key={t} className={styles.tagPill}>
-        {labelForTag(t)}
+    return (
+      <span className={styles.tagPill}>
+        {labelForTag(sub)}
       </span>
-    ));
+    );
   })()}
 </div>
+
 
 
             </article>

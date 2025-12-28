@@ -59,6 +59,9 @@ export const SYLLABUS_RULES = {
       "detain",
       "detaining",
       "procedural regulations",
+      "human casulaties",
+      "road accident",
+      "injured",
 
       // “safe driving in various road conditions” (syllabus section 1)
       "fog",
@@ -84,6 +87,11 @@ export const SYLLABUS_RULES = {
       "lane changing",
       "reverse",
       "reversing",
+      "uphill",
+      "downhill",
+      "wet",
+      "slippery",
+      "muddy",
     ],
     subtopics: {
       "road-safety:license": {
@@ -104,7 +112,7 @@ export const SYLLABUS_RULES = {
         keywords: ["transfer", "modification", "mortgage", "revocation"],
       },
       "road-safety:accidents": {
-        anchors: ["traffic accident", "accident scene", "report to the police", "leave the scene"],
+        anchors: ["traffic accident", "accident scene", "report to the police", "leave the scene", "human casualties", "injured"],
         keywords: ["voluntary negotiation", "expressway"],
       },
       "road-safety:road-conditions": {
@@ -127,6 +135,11 @@ export const SYLLABUS_RULES = {
           "ramp",
           "interchange",
           "intersection",
+          "uphill",
+          "downhill",
+          "wet",
+          "slippery",
+          "muddy",
         ],
         keywords: [
           "overtaking",
@@ -161,6 +174,7 @@ export const SYLLABUS_RULES = {
       "directional",
       "tourist area",
       "meaning of this sign",
+      "This sign",
 
       "road marking",
       "markings",
@@ -180,10 +194,10 @@ export const SYLLABUS_RULES = {
     subtopics: {
       "traffic-signals:signal-lights": {
         anchors: ["red light", "green light", "yellow light", "signal light", "flashing yellow", "level crossing"],
-        keywords: ["arrow shape", "signal lights on driving lanes", "guide arrow"],
+        keywords: ["arrow shape", "signal lights on driving lanes", "guide arrow", "level crossing"],
       },
       "traffic-signals:road-signs": {
-        anchors: ["road sign", "warning sign", "prohibitive", "indicative", "meaning of this sign"],
+        anchors: ["road sign", "warning sign", "prohibitive", "indicative", "meaning of this sign", "This sign"],
         keywords: ["directional", "tourist area"],
       },
       "traffic-signals:road-markings": {
@@ -256,6 +270,7 @@ export const SYLLABUS_RULES = {
       "symbol",
       "displays",
       "flashes",
+      "lights to indicate",
 
       // controls
       "steering wheel",
@@ -298,6 +313,7 @@ export const SYLLABUS_RULES = {
           "symbol",
           "displays",
           "flashes",
+          "lights to indicate"
         ],
         keywords: ["fog lamp indicator", "instruments", "instrument"],
       },

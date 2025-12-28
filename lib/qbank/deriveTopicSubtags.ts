@@ -3,51 +3,65 @@ import type { Question } from "./types";
 import { SYLLABUS_RULES, type TopicKey, type SubtagKey } from "./syllabusKeywords";
 
 /**
- * Strict classifier:
- * - Picks ONE best topic
- * - Picks ONE best subtopic within that topic (anchor-gated)
- * - Returns [] if no confident topic
- * - Returns [topic] if topic is confident but no subtopic anchor matched
- * - Returns [topic, subtopic] if subtopic matched
- *
- * Also salvages legacy tags by mapping them into the new taxonomy.
+ * Strict classifier with trust weighting:
+ * - Manual tags (item.tags) are highest trust
+ * - Prompt text is higher trust than MCQ option text
+ * - Auto tags (item.autoTags) are lowest trust
  */
 export function deriveTopicSubtags(item: Question): string[] {
-  const text = buildText(item);
+  const { promptText, optionsText } = buildTexts(item);
 
-  const rawTags = [...(item.tags ?? []), ...(item.autoTags ?? [])]
-    .map((t) => String(t ?? "").trim().replace(/^#/, "").toLowerCase())
-    .filter(Boolean);
+  // ✅ Manual user tags (highest trust)
+  const userTags = normalizeTagSet(item.tags);
 
-  // normalize + map legacy tags into new tag set
-  const tags = new Set<string>();
-  for (const t of rawTags) {
-    tags.add(t);
-    const mapped = LEGACY_TAG_MAP[t];
-    if (mapped) tags.add(mapped);
-  }
+  // ✅ Auto tags (lowest trust)
+  const autoTags = normalizeTagSet(item.autoTags);
 
-  // ✅ manual override wins if user tags contain canonical topic/subtopic keys
-  const manualTopic = (Object.keys(SYLLABUS_RULES) as TopicKey[]).find((t) => tags.has(t));
+  // ✅ Apply legacy mapping to BOTH sets (optional but useful during transition)
+  applyLegacyMap(userTags);
+  applyLegacyMap(autoTags);
+
+  // ✅ Manual override uses ONLY userTags (not autoTags)
+  const manualTopic = (Object.keys(SYLLABUS_RULES) as TopicKey[]).find((t) => userTags.has(t));
   if (manualTopic) {
     const subObj = SYLLABUS_RULES[manualTopic].subtopics;
-    const manualSub = Object.keys(subObj).find((k) => tags.has(k)) as SubtagKey | undefined;
+    const manualSub = Object.keys(subObj).find((k) => userTags.has(k)) as SubtagKey | undefined;
     return manualSub ? [manualTopic, manualSub] : [manualTopic];
   }
 
-  const topic = pickBestTopic(text, tags);
+  // ✅ Topic selection uses PROMPT ONLY + tag boosts (manual > auto)
+  const topic = pickBestTopic(promptText, userTags, autoTags);
   if (!topic) return [];
 
-  const sub = pickBestSubtopic(topic, text, tags);
+  // ✅ Subtopic anchors are prompt-only; keywords use prompt + options with weights
+  const sub = pickBestSubtopic(topic, promptText, optionsText, userTags, autoTags);
   return sub ? [topic, sub] : [topic];
 }
 
-function buildText(item: Question) {
-  const parts = [
-    item.prompt ?? "",
-    ...(item.options?.map((o) => `${o.originalKey ?? o.id}. ${o.text}`) ?? []),
-  ];
-  return parts.join(" ").toLowerCase();
+function normalizeTagSet(tags?: unknown[]): Set<string> {
+  return new Set(
+    (tags ?? [])
+      .map((t) => String(t ?? "").trim().replace(/^#/, "").toLowerCase())
+      .filter(Boolean)
+  );
+}
+
+function applyLegacyMap(tagSet: Set<string>) {
+  for (const t of [...tagSet]) {
+    const mapped = LEGACY_TAG_MAP[t];
+    if (mapped) tagSet.add(mapped);
+  }
+}
+
+function buildTexts(item: Question) {
+  const promptText = (item.prompt ?? "").toLowerCase();
+
+  const optionsText = (item.options ?? [])
+    .map((o) => `${o.originalKey ?? o.id}. ${o.text}`)
+    .join(" ")
+    .toLowerCase();
+
+  return { promptText, optionsText };
 }
 
 function countHits(text: string, phrases: readonly string[]) {
@@ -76,7 +90,7 @@ const TOPIC_PRIORITY: readonly TopicKey[] = [
   "proper-driving",
 ];
 
-function pickBestTopic(text: string, tags: Set<string>): TopicKey | null {
+function pickBestTopic(text: string, userTags: Set<string>, autoTags: Set<string>): TopicKey | null {
   const topics = Object.keys(SYLLABUS_RULES) as TopicKey[];
 
   let best: TopicKey | null = null;
@@ -86,10 +100,14 @@ function pickBestTopic(text: string, tags: Set<string>): TopicKey | null {
   for (const topic of topics) {
     const rules = SYLLABUS_RULES[topic];
 
+    // ✅ Topic anchors use PROMPT ONLY
     const anchorHits = countHits(text, rules.topicAnchors);
-    const tagBoost = tags.has(topic) ? 2 : 0;
 
-    const score = anchorHits * 2 + tagBoost;
+    // ✅ Manual tags > auto tags
+    const userBoost = userTags.has(topic) ? 3 : 0;
+    const autoBoost = autoTags.has(topic) ? 1 : 0;
+
+    const score = anchorHits * 2 + userBoost + autoBoost;
 
     if (
       score > bestScore ||
@@ -107,48 +125,57 @@ function pickBestTopic(text: string, tags: Set<string>): TopicKey | null {
 
   if (!best) return null;
   if (bestAnchorHits >= 1) return best;
-  if (bestScore >= 2) return best; // tag-only rare cases
+  if (bestScore >= 3) return best; // allow manual-tag-only topic
   return null;
 }
 
-function pickBestSubtopic<T extends TopicKey>(
-  topic: T,
-  text: string,
-  tags: Set<string>
+function pickBestSubtopic(
+  topic: TopicKey,
+  promptText: string, // high trust
+  optionsText: string, // low trust
+  userTags: Set<string>,
+  autoTags: Set<string>
 ): SubtagKey | null {
-  type LocalSubKey = Extract<SubtagKey, `${T}:${string}`>;
-
-  // tell TS: for THIS topic, subtopics are only LocalSubKey -> SubtopicConfig
+  // ✅ avoid union-key TS issues at runtime
   const rules = SYLLABUS_RULES[topic].subtopics as Record<
-    LocalSubKey,
+    string,
     { anchors: readonly string[]; keywords: readonly string[] }
   >;
 
-  const keys = Object.keys(rules) as LocalSubKey[];
-  const priority = SUBTOPIC_PRIORITY[topic] as readonly LocalSubKey[];
+  const keys = Object.keys(rules);
+  const priority = SUBTOPIC_PRIORITY[topic] as readonly string[];
 
-  let best: LocalSubKey | null = null;
+  let best: string | null = null;
   let bestScore = 0;
   let bestAnchorHits = 0;
 
   for (const subKey of keys) {
     const rule = rules[subKey];
-    if (!rule.anchors?.length) continue;
-    if (!hitsAny(text, rule.anchors)) continue;
+    if (!rule?.anchors?.length) continue;
 
-    const a = countHits(text, rule.anchors);
-    const k = countHits(text, rule.keywords ?? []);
-    const score = a * 3 + k + (tags.has(subKey) ? 1 : 0);
+    // ✅ anchor gating uses PROMPT ONLY
+    if (!hitsAny(promptText, rule.anchors)) continue;
 
-    const currIdx = priority.indexOf(subKey);
+    const a = countHits(promptText, rule.anchors);
+
+    // ✅ keywords: prompt gets more weight than options
+    const kPrompt = countHits(promptText, rule.keywords ?? []);
+    const kOpt = countHits(optionsText, rule.keywords ?? []);
+
+    // ✅ manual tag boost; auto tags do NOT decide subtopic
+    const userBoost = userTags.has(subKey) ? 2 : 0;
+    const autoBoost = 0;
+
+    // ✅ scoring: anchors >>> prompt keywords > option keywords
+    const score = a * 30 + kPrompt * 6 + kOpt * 1 + userBoost + autoBoost;
+
     const bestIdx = best ? priority.indexOf(best) : Number.POSITIVE_INFINITY;
-
-    const betterPriority = currIdx !== -1 && currIdx < bestIdx;
+    const currIdx = priority.indexOf(subKey);
 
     if (
       score > bestScore ||
       (score === bestScore && a > bestAnchorHits) ||
-      (score === bestScore && a === bestAnchorHits && betterPriority)
+      (score === bestScore && a === bestAnchorHits && currIdx !== -1 && currIdx < bestIdx)
     ) {
       bestScore = score;
       bestAnchorHits = a;
@@ -156,9 +183,8 @@ function pickBestSubtopic<T extends TopicKey>(
     }
   }
 
-  return best ? (best as unknown as SubtagKey) : null;
+  return best ? (best as SubtagKey) : null;
 }
-
 
 const SUBTOPIC_PRIORITY: {
   [T in TopicKey]: readonly Extract<SubtagKey, `${T}:${string}`>[];
@@ -181,6 +207,7 @@ const SUBTOPIC_PRIORITY: {
 
 /**
  * Legacy tag mapping (salvage old work)
+ * Safe to delete later once your dataset no longer contains old tag strings.
  */
 const LEGACY_TAG_MAP: Record<string, TopicKey | SubtagKey> = {
   // old topics -> new topics
