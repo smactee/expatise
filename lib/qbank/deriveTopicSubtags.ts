@@ -29,13 +29,11 @@ export function deriveTopicSubtags(item: Question): string[] {
     return manualSub ? [manualTopic, manualSub] : [manualTopic];
   }
 
-  // ✅ Topic selection uses PROMPT ONLY + tag boosts (manual > auto)
   const topic = pickBestTopic(promptText, userTags, autoTags);
   if (!topic) return [];
 
-  // ✅ Subtopic anchors are prompt-only; keywords use prompt + options with weights
-  const sub = pickBestSubtopic(topic, promptText, optionsText, userTags, autoTags);
-  return sub ? [topic, sub] : [topic];
+  const subs = pickTopSubtopics(topic, promptText, optionsText, userTags, autoTags);
+  return subs.length ? [topic, ...subs] : [topic];
 }
 
 function normalizeTagSet(tags?: unknown[]): Set<string> {
@@ -129,14 +127,13 @@ function pickBestTopic(text: string, userTags: Set<string>, autoTags: Set<string
   return null;
 }
 
-function pickBestSubtopic(
+function pickTopSubtopics(
   topic: TopicKey,
-  promptText: string, // high trust
-  optionsText: string, // low trust
+  promptText: string,   // prompt-only (high trust)
+  optionsText: string,  // options-only (low trust)
   userTags: Set<string>,
   autoTags: Set<string>
-): SubtagKey | null {
-  // ✅ avoid union-key TS issues at runtime
+): SubtagKey[] {
   const rules = SYLLABUS_RULES[topic].subtopics as Record<
     string,
     { anchors: readonly string[]; keywords: readonly string[] }
@@ -145,46 +142,71 @@ function pickBestSubtopic(
   const keys = Object.keys(rules);
   const priority = SUBTOPIC_PRIORITY[topic] as readonly string[];
 
-  let best: string | null = null;
-  let bestScore = 0;
-  let bestAnchorHits = 0;
+  // ---- tweak knobs here ----
+  const MAX_SUBS = 3;
+  const RELATIVE_THRESHOLD = 0.8;  // 2nd/3rd must be >= 65% of best
+  const MIN_SCORE_FOR_EXTRA = 80;   // prevents weak/noisy extras
+  // --------------------------
+
+  const scored: Array<{ key: string; score: number; anchorHits: number; prioIdx: number }> = [];
 
   for (const subKey of keys) {
     const rule = rules[subKey];
     if (!rule?.anchors?.length) continue;
 
-    // ✅ anchor gating uses PROMPT ONLY
-    if (!hitsAny(promptText, rule.anchors)) continue;
+    // ✅ allow manual subtag even if anchors don't hit
+    const manualHit = userTags.has(subKey);
 
-    const a = countHits(promptText, rule.anchors);
+    // ✅ anchor gating uses prompt-only unless manual tag exists
+    if (!manualHit && !hitsAny(promptText, rule.anchors)) continue;
 
-    // ✅ keywords: prompt gets more weight than options
+    const a = manualHit ? 1 : countHits(promptText, rule.anchors);
+
+    // ✅ keywords weighted: prompt > options
     const kPrompt = countHits(promptText, rule.keywords ?? []);
     const kOpt = countHits(optionsText, rule.keywords ?? []);
 
-    // ✅ manual tag boost; auto tags do NOT decide subtopic
-    const userBoost = userTags.has(subKey) ? 2 : 0;
-    const autoBoost = 0;
+    const userBoost = userTags.has(subKey) ? 6 : 0;
+    const autoBoost = autoTags.has(subKey) ? 1 : 0;
 
-    // ✅ scoring: anchors >>> prompt keywords > option keywords
+    // anchors >>> prompt keywords > option keywords
     const score = a * 30 + kPrompt * 6 + kOpt * 1 + userBoost + autoBoost;
 
-    const bestIdx = best ? priority.indexOf(best) : Number.POSITIVE_INFINITY;
-    const currIdx = priority.indexOf(subKey);
-
-    if (
-      score > bestScore ||
-      (score === bestScore && a > bestAnchorHits) ||
-      (score === bestScore && a === bestAnchorHits && currIdx !== -1 && currIdx < bestIdx)
-    ) {
-      bestScore = score;
-      bestAnchorHits = a;
-      best = subKey;
-    }
+    scored.push({
+      key: subKey,
+      score,
+      anchorHits: a,
+      prioIdx: priority.indexOf(subKey),
+    });
   }
 
-  return best ? (best as SubtagKey) : null;
+  if (scored.length === 0) return [];
+
+  scored.sort((x, y) => {
+    if (y.score !== x.score) return y.score - x.score;
+    if (y.anchorHits !== x.anchorHits) return y.anchorHits - x.anchorHits;
+
+    const xP = x.prioIdx === -1 ? Number.POSITIVE_INFINITY : x.prioIdx;
+    const yP = y.prioIdx === -1 ? Number.POSITIVE_INFINITY : y.prioIdx;
+    return xP - yP;
+  });
+
+  const bestScore = scored[0].score;
+  const picked: string[] = [scored[0].key];
+
+  for (let i = 1; i < scored.length && picked.length < MAX_SUBS; i++) {
+    const s = scored[i];
+    const significant =
+      s.score >= bestScore * RELATIVE_THRESHOLD &&
+      s.score >= MIN_SCORE_FOR_EXTRA;
+
+    if (significant) picked.push(s.key);
+  }
+
+  return picked as SubtagKey[];
 }
+
+
 
 const SUBTOPIC_PRIORITY: {
   [T in TopicKey]: readonly Extract<SubtagKey, `${T}:${string}`>[];
@@ -202,7 +224,7 @@ const SUBTOPIC_PRIORITY: {
     "traffic-signals:police-signals",
   ],
   "proper-driving": ["proper-driving:traffic-laws", "proper-driving:safe-driving"],
-  "driving-operations": ["driving-operations:indicators", "driving-operations:control-gears"],
+  "driving-operations": ["driving-operations:indicators", "driving-operations:gears"],
 };
 
 /**
@@ -238,6 +260,6 @@ const LEGACY_TAG_MAP: Record<string, TopicKey | SubtagKey> = {
 
   "vehicle-operation:instruments-indicators": "driving-operations:indicators",
   "vehicle-operation:safety-devices": "driving-operations:indicators",
-  "vehicle-operation:controls": "driving-operations:control-gears",
-  "vehicle-operation:control-gears": "driving-operations:control-gears",
+  "vehicle-operation:controls": "driving-operations:gears",
+  "vehicle-operation:gears": "driving-operations:gears",
 };

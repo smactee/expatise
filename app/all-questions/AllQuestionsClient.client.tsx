@@ -50,10 +50,15 @@ export default function AllQuestionsClient({ datasetId }: { datasetId: DatasetId
 const unclassified = useMemo(() => {
   return q.filter((item) => {
     const tags = derivedById.get(item.id) ?? [];
-    const hasTopic = tags.some((t) => !t.includes(":")); // topic tags have no ":"
-    return !hasTopic;
+
+    const hasTopic = tags.some((t) => !t.includes(":")); // e.g. "road-safety"
+    const hasSub = tags.some((t) => t.includes(":") && !t.endsWith(":all")); // e.g. "road-safety:accidents"
+
+    // ✅ require BOTH topic + subtopic to be considered "classified"
+    return !(hasTopic && hasSub);
   });
 }, [q, derivedById]);
+
 
 useEffect(() => {
   if (unclassified.length > 0) {
@@ -93,30 +98,7 @@ useEffect(() => {
   });
 }, [q, query, activeTopic, activeSub, derivedById]);
 
-const tagCounts = useMemo(() => {
-  const topicCounts: Record<string, number> = {};
-  const subCounts: Record<string, number> = {};
 
-  for (const item of q) {
-    const tags = new Set(derivedById.get(item.id) ?? []);
-
-    // count topics (no ":")
-    for (const t of tags) {
-      if (!t.includes(":")) {
-        topicCounts[t] = (topicCounts[t] ?? 0) + 1;
-      }
-    }
-
-    // count subtopics (has ":" but not ":all")
-    for (const t of tags) {
-      if (t.includes(":") && !t.endsWith(":all")) {
-        subCounts[t] = (subCounts[t] ?? 0) + 1;
-      }
-    }
-  }
-
-  return { topicCounts, subCounts };
-}, [q, derivedById]);
 
 
   return (
@@ -155,7 +137,7 @@ const tagCounts = useMemo(() => {
           }
         }}
       >
-        {topic.label} ({tagCounts.topicCounts[topic.key] ?? 0})
+        {topic.label}
       </button>
     );
   })}
@@ -176,7 +158,7 @@ const tagCounts = useMemo(() => {
             setActiveSub(isActive ? null : sub.key);
           }}
         >
-          {sub.label.replace(/^#/, "")} ({tagCounts.subCounts[sub.key] ?? 0})
+          {sub.label.replace(/^#/, "")}
         </button>
       );
     })}
@@ -254,16 +236,15 @@ const tagCounts = useMemo(() => {
 <div className={styles.tagRow}>
   {(() => {
     const tags = derivedById.get(item.id) ?? [];
-    const sub = tags.find((t) => t.includes(":") && !t.endsWith(":all"));
-    if (!sub) return null;
-
-    return (
-      <span className={styles.tagPill}>
-        {labelForTag(sub)}
+    const subs = tags.filter((t) => t.includes(":") && !t.endsWith(":all"));
+    return subs.map((t) => (
+      <span key={t} className={styles.tagPill}>
+        {labelForTag(t)}
       </span>
-    );
+    ));
   })()}
 </div>
+
 
 
 

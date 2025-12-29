@@ -18,7 +18,7 @@ export type SubtagKey =
   | "proper-driving:safe-driving"
   | "proper-driving:traffic-laws"
   | "driving-operations:indicators"
-  | "driving-operations:control-gears";
+  | "driving-operations:gears";
 
 export type SubtopicConfig = {
   anchors: readonly string[];   // strong signals (must hit >= 1)
@@ -41,7 +41,6 @@ export const SYLLABUS_RULES = {
     topicAnchors: [
       // license/registration/accidents core
       "driving license",
-      "driving licence",
       "penalty point",
       "probation period",
       "revocation",
@@ -62,7 +61,13 @@ export const SYLLABUS_RULES = {
       "human casulaties",
       "road accident",
       "injured",
-
+      "applicant",
+      "admission form",
+      "unregistered",
+      "test",
+      "authorized",
+      "qualified driver",
+      "years old",
       // “safe driving in various road conditions” (syllabus section 1)
       "fog",
       "foggy",
@@ -71,6 +76,7 @@ export const SYLLABUS_RULES = {
       "icy",
       "ice",
       "heavy rain",
+      "rainy",
       "night",
       "visibility",
       "tunnel",
@@ -92,10 +98,25 @@ export const SYLLABUS_RULES = {
       "wet",
       "slippery",
       "muddy",
+      "weather",
+      "railway",
+      "overtake",
+      "bridge",
+      "situation",
+      "conditions",
+      "U turn",
+      "When encountering",
+      "When driving",
+      "rainstorm",
+      "encounters",
+      "overtaking",
+      "When a vehicle",
+      "flood",
+      "road surface",
     ],
     subtopics: {
       "road-safety:license": {
-        anchors: ["driving license", "driving licence", "penalty point", "probation period", "revocation"],
+        anchors: ["test", "driving license", "driving licence", "penalty point", "probation period", "revocation"],
         keywords: [
           "application for driving license",
           "validity period",
@@ -108,8 +129,8 @@ export const SYLLABUS_RULES = {
         ],
       },
       "road-safety:registration": {
-        anchors: ["registration", "license plate", "vehicle license", "temporary license plate", "motor vehicle inspection"],
-        keywords: ["transfer", "modification", "mortgage", "revocation"],
+        anchors: ["years old","qualified driver","authorized","unregistered", "applicant", "admission form", "registration", "license plate", "vehicle license", "temporary license plate", "motor vehicle inspection"],
+        keywords: ["transfer", "modification", "mortgage", "revocation", "applicant"],
       },
       "road-safety:accidents": {
         anchors: ["traffic accident", "accident scene", "report to the police", "leave the scene", "human casualties", "injured"],
@@ -117,6 +138,12 @@ export const SYLLABUS_RULES = {
       },
       "road-safety:road-conditions": {
         anchors: [
+          "flood",
+          "When a vehicle",
+          "overtaking",
+          "When driving",
+          "When encountering",
+          "conditions",
           "fog",
           "foggy",
           "snow",
@@ -124,6 +151,7 @@ export const SYLLABUS_RULES = {
           "icy",
           "ice",
           "heavy rain",
+          "rainy",
           "night",
           "visibility",
           "tunnel",
@@ -140,6 +168,17 @@ export const SYLLABUS_RULES = {
           "wet",
           "slippery",
           "muddy",
+          "weather",
+          "railway",
+          "overtake",
+          "bridge",
+          "situation",
+          "U turn",
+          "rainstorm",
+          "encounters",
+          "road surface",
+          
+          
         ],
         keywords: [
           "overtaking",
@@ -149,6 +188,7 @@ export const SYLLABUS_RULES = {
           "reversing",
           "pedestrian",
           "bicycle",
+          "overtake",
         ],
       },
     },
@@ -166,6 +206,8 @@ export const SYLLABUS_RULES = {
       "guide arrow",
       "flashing yellow",
       "level crossing",
+      "yellow slash",
+      "green arrow",
 
       "road sign",
       "warning sign",
@@ -174,15 +216,24 @@ export const SYLLABUS_RULES = {
       "directional",
       "tourist area",
       "meaning of this sign",
+      "meaning of this s ign",
       "This sign",
+      "yellow sign",
+      "traffic sign",
+      "kind of sign",
+      "sig n",
+      "sign",
 
       "road marking",
       "markings",
+      "marking",
+      "mark",
       "yellow line",
       "broken line",
       "solid line",
       "stop line",
       "zebra",
+      "line",
 
       "traffic police",
       "hand signal",
@@ -193,16 +244,40 @@ export const SYLLABUS_RULES = {
     ],
     subtopics: {
       "traffic-signals:signal-lights": {
-        anchors: ["red light", "green light", "yellow light", "signal light", "flashing yellow", "level crossing"],
-        keywords: ["arrow shape", "signal lights on driving lanes", "guide arrow", "level crossing"],
+        anchors: [
+          "red light", 
+          "green light", 
+          "yellow light", 
+          "signal light", 
+          "flashing yellow", 
+          "level crossing",
+          "traffic light",
+          "green arrow",
+
+        ],
+        keywords: ["arrow shape", "signal lights on driving lanes", "level crossing"],
       },
       "traffic-signals:road-signs": {
-        anchors: ["road sign", "warning sign", "prohibitive", "indicative", "meaning of this sign", "This sign"],
+        anchors: ["road sign", "warning sign", "prohibitive", "indicative", "meaning of this sign", "sig n", "sign", "meaning of this s ign", "This sign", "yellow sign", "traffic sign", "kind of sign"],
         keywords: ["directional", "tourist area"],
       },
       "traffic-signals:road-markings": {
-        anchors: ["road marking", "markings", "yellow line", "broken line", "solid line", "stop line", "zebra", "crosswalk"],
-        keywords: ["indicative markings", "prohibitive markings", "warning markings"],
+        anchors: [
+          "road marking", 
+          "markings", 
+          "yellow line", 
+          "broken line", 
+          "solid line", 
+          "stop line", 
+          "zebra", 
+          "crosswalk", 
+          "marking", 
+          "mark",
+          "guide arrow",
+          "yellow slash",
+          "line",
+        ],
+        keywords: ["indicative markings", "prohibitive markings", "warning markings", "yellow slash"],
       },
       "traffic-signals:police-signals": {
         anchors: ["traffic police", "hand signal", "hand signals", "pull over", "slowdown"],
@@ -224,6 +299,28 @@ export const SYLLABUS_RULES = {
       "expressway",
       "breakdown",
       "warning requirements",
+      "probation",
+      "penalty",
+      "law",
+      "point",
+      "drunk",
+      "drinking",
+      "rest",
+      "not safe",
+      "safe",
+
+      "How to use lights",
+      "pedestrians",
+      "max speed",
+      "speed up",
+      "overtaking",
+
+      "while driving",
+      "Which is correct",
+
+      "minimum speed",
+
+      "collision",
 
       // Traffic laws / penalties (syllabus section 4)
       "prohibited",
@@ -237,14 +334,42 @@ export const SYLLABUS_RULES = {
       "overloaded",
       "cancellation rules",
       "punishment at the scene",
+      "violation",
+      "illegally",
+      "illegal",
+      "age",
+      "liabilities",
+      "subject to",
+      "allowed",
     ],
     subtopics: {
       "proper-driving:safe-driving": {
-        anchors: ["safe driving", "safety responsibility", "yield", "special vehicle", "road maintenance", "parking", "expressway", "breakdown"],
+        anchors: ["safe","not safe","rest","overtaking","collision","speed up","minimum speed","Which is correct","while driving","pedestrians","overtake","How to use lights", "safe driving", "safety responsibility", "yield", "special vehicle", "road maintenance", "parking", "expressway", "breakdown"],
         keywords: ["requirements for safe driving", "handling measures", "warning requirements"],
       },
       "proper-driving:traffic-laws": {
-        anchors: ["prohibited", "punishment", "drinking", "drugs", "illegal", "over-seated", "overloaded", "cancellation rules"],
+        anchors: [
+          "subject to",
+          "liabilities",
+          "age",
+          "illegal",
+          "drunk",
+          "max speed",
+          "illegally",
+          "point",
+          "law",
+          "penalty",
+          "probation", 
+          "violation", 
+          "prohibited", 
+          "punishment", 
+          "drinking", 
+          "drugs", "illegal", 
+          "over-seated", 
+          "overloaded", 
+          "cancellation rules",
+          "allowed",
+        ],
         keywords: ["punishment at the scene", "traffic signal violations", "obtaining driving license by illegal means"],
       },
     },
@@ -271,6 +396,10 @@ export const SYLLABUS_RULES = {
       "displays",
       "flashes",
       "lights to indicate",
+      "It lights",
+      "hazard lights",
+      "How to use lights",
+      "beam light",
 
       // controls
       "steering wheel",
@@ -285,12 +414,23 @@ export const SYLLABUS_RULES = {
       "windscreen wiper",
       "defrost",
       "defog",
+      "pedal",
+      "switch",
+      "safety bags",
 
       // safety devices (mapped into Indicators by your new taxonomy)
       "safe headrest",
       "seatbelt",
+      "seat belt",
+      "seat belts",
+      "safety",
       "abs",
       "srs",
+      "gear",
+      "gears",
+      "device",
+      "devices",
+      "tire",
     ],
     subtopics: {
       "driving-operations:indicators": {
@@ -313,13 +453,36 @@ export const SYLLABUS_RULES = {
           "symbol",
           "displays",
           "flashes",
-          "lights to indicate"
+          "lights to indicate",
+          "It lights",
+          "hazard lights",
+          "instrument",
+          "How to use lights",
+          "beam light",
         ],
         keywords: ["fog lamp indicator", "instruments", "instrument"],
       },
-      "driving-operations:control-gears": {
-        anchors: ["steering wheel", "clutch pedal", "brake pedal", "accelerator pedal", "gear shift", "handbrake", "ignition switch"],
-        keywords: ["light switch", "windscreen wiper", "defrost", "defog"],
+      "driving-operations:gears": {
+        anchors: [
+          "steering wheel", 
+          "clutch pedal", 
+          "brake pedal", 
+          "accelerator pedal", 
+          "gear shift", 
+          "handbrake", 
+          "ignition switch", 
+          "pedal", 
+          "switch",
+          "seat belts",
+          "seat belt",
+          "safety",
+          "gear",
+          "gears",
+          "device",
+          "devices",
+          "tire",
+        ],
+        keywords: ["light switch", "windscreen wiper", "defrost", "defog","seat belt", "safety bags"],
       },
     },
   },

@@ -156,10 +156,14 @@ function normalizeOne(raw: RawQuestion): Question {
 export async function loadDataset(datasetId: DatasetId): Promise<Question[]> {
   const ds = DATASETS[datasetId];
 
-  const [res, patch] = await Promise.all([
-    fetch(ds.url, { cache: 'force-cache' }),
-    loadPatch(ds.patchUrl),
-  ]);
+const isDev = process.env.NODE_ENV === 'development';
+const url = isDev ? `${ds.url}?v=${Date.now()}` : ds.url;
+
+const [res, patch] = await Promise.all([
+  fetch(url, { cache: isDev ? 'no-store' : 'force-cache' }),
+  loadPatch(ds.patchUrl),
+]);
+
 
   if (!res.ok) throw new Error(`Failed to load dataset: ${datasetId}`);
 

@@ -598,10 +598,15 @@ export default function AllQuestionsClient({ datasetId }: { datasetId: DatasetId
 const unclassified = useMemo(() => {
   return q.filter((item) => {
     const tags = derivedById.get(item.id) ?? [];
-    const hasTopic = tags.some((t) => !t.includes(":")); // topic tags have no ":"
-    return !hasTopic;
+
+    const hasTopic = tags.some((t) => !t.includes(":")); // e.g. "road-safety"
+    const hasSub = tags.some((t) => t.includes(":") && !t.endsWith(":all")); // e.g. "road-safety:accidents"
+
+    // ✅ require BOTH topic + subtopic to be considered "classified"
+    return !(hasTopic && hasSub);
   });
 }, [q, derivedById]);
+
 
 useEffect(() => {
   if (unclassified.length > 0) {
@@ -622,10 +627,16 @@ useEffect(() => {
   return q.filter((item) => {
     const derivedTags = new Set(derivedById.get(item.id) ?? []);
 
+        const qDigits = qNorm.replace(/[^0-9]/g, ""); // allows "103", "#103", "103."
+   const matchesNumber = qDigits.length > 0 && Number(qDigits) === item.number;
+
+
     const matchesText =
       !qNorm ||
+      matchesNumber ||
       item.prompt.toLowerCase().includes(qNorm) ||
       (item.autoTags ?? []).some((t) => t.toLowerCase().includes(qNorm));
+
 
     // Topic/subtopic filtering
     const matchesTopic = !activeTopic || derivedTags.has(activeTopic);
@@ -635,30 +646,7 @@ useEffect(() => {
   });
 }, [q, query, activeTopic, activeSub, derivedById]);
 
-const tagCounts = useMemo(() => {
-  const topicCounts: Record<string, number> = {};
-  const subCounts: Record<string, number> = {};
 
-  for (const item of q) {
-    const tags = new Set(derivedById.get(item.id) ?? []);
-
-    // count topics (no ":")
-    for (const t of tags) {
-      if (!t.includes(":")) {
-        topicCounts[t] = (topicCounts[t] ?? 0) + 1;
-      }
-    }
-
-    // count subtopics (has ":" but not ":all")
-    for (const t of tags) {
-      if (t.includes(":") && !t.endsWith(":all")) {
-        subCounts[t] = (subCounts[t] ?? 0) + 1;
-      }
-    }
-  }
-
-  return { topicCounts, subCounts };
-}, [q, derivedById]);
 
 
   return (
@@ -666,9 +654,6 @@ const tagCounts = useMemo(() => {
       <div className={styles.frame}>
         <header className={styles.header}>
           <h1 className={styles.title}>All Questions</h1>
-          <p className={styles.subtitle}>
-            {loading ? 'Loading…' : `${filtered.length} / ${q.length}`}
-          </p>
         </header>
 
         <div className={styles.searchRow}>
@@ -700,7 +685,7 @@ const tagCounts = useMemo(() => {
           }
         }}
       >
-        {topic.label} ({tagCounts.topicCounts[topic.key] ?? 0})
+        {topic.label}
       </button>
     );
   })}
@@ -710,8 +695,7 @@ const tagCounts = useMemo(() => {
 {activeTopic && (
   <div className={styles.chips}>
     {TAG_TAXONOMY.find((t) => t.key === activeTopic)!.subtopics.map((sub) => {
-      const isAll = sub.key.endsWith(":all");
-      const isActive = (isAll && activeSub === null) || activeSub === sub.key;
+      const isActive = activeSub === sub.key;
 
       return (
         <button
@@ -719,17 +703,10 @@ const tagCounts = useMemo(() => {
           type="button"
           className={`${styles.chip} ${isActive ? styles.chipActive : ""}`}
           onClick={() => {
-            setActiveSub(isAll ? null : sub.key);
+            setActiveSub(isActive ? null : sub.key);
           }}
         >
-          {(() => {
-  const isAll = sub.key.endsWith(":all");
-  const count = isAll
-    ? (tagCounts.topicCounts[activeTopic] ?? 0)
-    : (tagCounts.subCounts[sub.key] ?? 0);
-  return `${sub.label} (${count})`;
-})()}
-
+          {sub.label.replace(/^#/, "")}
         </button>
       );
     })}
@@ -741,9 +718,19 @@ const tagCounts = useMemo(() => {
           {filtered.map((item) => (
             <article key={item.id} className={styles.card}>
               <div className={styles.cardTop}>
-                <span className={styles.qNo}>#{item.number}</span>
-                <span className={styles.qType}>{item.type}</span>
-              </div>
+  <span className={styles.qNo}>{item.number}.</span>
+
+  {(() => {
+    const tags = derivedById.get(item.id) ?? [];
+    const topicKey = tags.find((t) => !t.includes(":")); // topic = no ":"
+    return (
+      <span className={styles.qType}>
+        {topicKey ? labelForTag(topicKey) : "Unclassified"}
+      </span>
+    );
+  })()}
+</div>
+
 
               <p className={styles.prompt}>{item.prompt}</p>
 
@@ -794,20 +781,20 @@ const tagCounts = useMemo(() => {
                 </ul>
               )}
 
-              <div className={styles.tagRow}>
+<div className={styles.tagRow}>
   {(() => {
     const tags = derivedById.get(item.id) ?? [];
-    const topic = tags.find((t) => !t.includes(":"));
     const sub = tags.find((t) => t.includes(":") && !t.endsWith(":all"));
-    const display = [topic, sub].filter(Boolean) as string[];
+    if (!sub) return null;
 
-    return display.map((t) => (
-      <span key={t} className={styles.tagPill}>
-        {labelForTag(t)}
+    return (
+      <span className={styles.tagPill}>
+        {labelForTag(sub)}
       </span>
-    ));
+    );
   })()}
 </div>
+
 
 
             </article>
@@ -8046,51 +8033,63 @@ import type { Question } from "./types";
 import { SYLLABUS_RULES, type TopicKey, type SubtagKey } from "./syllabusKeywords";
 
 /**
- * Strict classifier:
- * - Picks ONE best topic
- * - Picks ONE best subtopic within that topic (anchor-gated)
- * - Returns [] if no confident topic
- * - Returns [topic] if topic is confident but no subtopic anchor matched
- * - Returns [topic, subtopic] if subtopic matched
- *
- * Also salvages legacy tags by mapping them into the new taxonomy.
+ * Strict classifier with trust weighting:
+ * - Manual tags (item.tags) are highest trust
+ * - Prompt text is higher trust than MCQ option text
+ * - Auto tags (item.autoTags) are lowest trust
  */
 export function deriveTopicSubtags(item: Question): string[] {
-  const text = buildText(item);
+  const { promptText, optionsText } = buildTexts(item);
 
-  const rawTags = [...(item.tags ?? []), ...(item.autoTags ?? [])]
-    .map((t) => String(t ?? "").trim().replace(/^#/, "").toLowerCase())
-    .filter(Boolean);
+  // ✅ Manual user tags (highest trust)
+  const userTags = normalizeTagSet(item.tags);
 
-  // normalize + map legacy tags into new tag set
-  const tags = new Set<string>();
-  for (const t of rawTags) {
-    tags.add(t);
-    const mapped = LEGACY_TAG_MAP[t];
-    if (mapped) tags.add(mapped);
-  }
+  // ✅ Auto tags (lowest trust)
+  const autoTags = normalizeTagSet(item.autoTags);
 
-  // ✅ manual override wins if user tags contain canonical topic/subtopic keys
-  const manualTopic = (Object.keys(SYLLABUS_RULES) as TopicKey[]).find((t) => tags.has(t));
+  // ✅ Apply legacy mapping to BOTH sets (optional but useful during transition)
+  applyLegacyMap(userTags);
+  applyLegacyMap(autoTags);
+
+  // ✅ Manual override uses ONLY userTags (not autoTags)
+  const manualTopic = (Object.keys(SYLLABUS_RULES) as TopicKey[]).find((t) => userTags.has(t));
   if (manualTopic) {
     const subObj = SYLLABUS_RULES[manualTopic].subtopics;
-    const manualSub = Object.keys(subObj).find((k) => tags.has(k)) as SubtagKey | undefined;
+    const manualSub = Object.keys(subObj).find((k) => userTags.has(k)) as SubtagKey | undefined;
     return manualSub ? [manualTopic, manualSub] : [manualTopic];
   }
 
-  const topic = pickBestTopic(text, tags);
+  const topic = pickBestTopic(promptText, userTags, autoTags);
   if (!topic) return [];
 
-  const sub = pickBestSubtopic(topic, text, tags);
-  return sub ? [topic, sub] : [topic];
+  const subs = pickTopSubtopics(topic, promptText, optionsText, userTags, autoTags);
+  return subs.length ? [topic, ...subs] : [topic];
 }
 
-function buildText(item: Question) {
-  const parts = [
-    item.prompt ?? "",
-    ...(item.options?.map((o) => `${o.originalKey ?? o.id}. ${o.text}`) ?? []),
-  ];
-  return parts.join(" ").toLowerCase();
+function normalizeTagSet(tags?: unknown[]): Set<string> {
+  return new Set(
+    (tags ?? [])
+      .map((t) => String(t ?? "").trim().replace(/^#/, "").toLowerCase())
+      .filter(Boolean)
+  );
+}
+
+function applyLegacyMap(tagSet: Set<string>) {
+  for (const t of [...tagSet]) {
+    const mapped = LEGACY_TAG_MAP[t];
+    if (mapped) tagSet.add(mapped);
+  }
+}
+
+function buildTexts(item: Question) {
+  const promptText = (item.prompt ?? "").toLowerCase();
+
+  const optionsText = (item.options ?? [])
+    .map((o) => `${o.originalKey ?? o.id}. ${o.text}`)
+    .join(" ")
+    .toLowerCase();
+
+  return { promptText, optionsText };
 }
 
 function countHits(text: string, phrases: readonly string[]) {
@@ -8119,7 +8118,7 @@ const TOPIC_PRIORITY: readonly TopicKey[] = [
   "proper-driving",
 ];
 
-function pickBestTopic(text: string, tags: Set<string>): TopicKey | null {
+function pickBestTopic(text: string, userTags: Set<string>, autoTags: Set<string>): TopicKey | null {
   const topics = Object.keys(SYLLABUS_RULES) as TopicKey[];
 
   let best: TopicKey | null = null;
@@ -8129,10 +8128,14 @@ function pickBestTopic(text: string, tags: Set<string>): TopicKey | null {
   for (const topic of topics) {
     const rules = SYLLABUS_RULES[topic];
 
+    // ✅ Topic anchors use PROMPT ONLY
     const anchorHits = countHits(text, rules.topicAnchors);
-    const tagBoost = tags.has(topic) ? 2 : 0;
 
-    const score = anchorHits * 2 + tagBoost;
+    // ✅ Manual tags > auto tags
+    const userBoost = userTags.has(topic) ? 3 : 0;
+    const autoBoost = autoTags.has(topic) ? 1 : 0;
+
+    const score = anchorHits * 2 + userBoost + autoBoost;
 
     if (
       score > bestScore ||
@@ -8150,57 +8153,89 @@ function pickBestTopic(text: string, tags: Set<string>): TopicKey | null {
 
   if (!best) return null;
   if (bestAnchorHits >= 1) return best;
-  if (bestScore >= 2) return best; // tag-only rare cases
+  if (bestScore >= 3) return best; // allow manual-tag-only topic
   return null;
 }
 
-function pickBestSubtopic<T extends TopicKey>(
-  topic: T,
-  text: string,
-  tags: Set<string>
-): SubtagKey | null {
-  type LocalSubKey = Extract<SubtagKey, `${T}:${string}`>;
-
-  // tell TS: for THIS topic, subtopics are only LocalSubKey -> SubtopicConfig
+function pickTopSubtopics(
+  topic: TopicKey,
+  promptText: string,   // prompt-only (high trust)
+  optionsText: string,  // options-only (low trust)
+  userTags: Set<string>,
+  autoTags: Set<string>
+): SubtagKey[] {
   const rules = SYLLABUS_RULES[topic].subtopics as Record<
-    LocalSubKey,
+    string,
     { anchors: readonly string[]; keywords: readonly string[] }
   >;
 
-  const keys = Object.keys(rules) as LocalSubKey[];
-  const priority = SUBTOPIC_PRIORITY[topic] as readonly LocalSubKey[];
+  const keys = Object.keys(rules);
+  const priority = SUBTOPIC_PRIORITY[topic] as readonly string[];
 
-  let best: LocalSubKey | null = null;
-  let bestScore = 0;
-  let bestAnchorHits = 0;
+  // ---- tweak knobs here ----
+  const MAX_SUBS = 3;
+  const RELATIVE_THRESHOLD = 0.65;  // 2nd/3rd must be >= 65% of best
+  const MIN_SCORE_FOR_EXTRA = 10;   // prevents weak/noisy extras
+  // --------------------------
+
+  const scored: Array<{ key: string; score: number; anchorHits: number; prioIdx: number }> = [];
 
   for (const subKey of keys) {
     const rule = rules[subKey];
-    if (!rule.anchors?.length) continue;
-    if (!hitsAny(text, rule.anchors)) continue;
+    if (!rule?.anchors?.length) continue;
 
-    const a = countHits(text, rule.anchors);
-    const k = countHits(text, rule.keywords ?? []);
-    const score = a * 3 + k + (tags.has(subKey) ? 1 : 0);
+    // ✅ allow manual subtag even if anchors don't hit
+    const manualHit = userTags.has(subKey);
 
-    const currIdx = priority.indexOf(subKey);
-    const bestIdx = best ? priority.indexOf(best) : Number.POSITIVE_INFINITY;
+    // ✅ anchor gating uses prompt-only unless manual tag exists
+    if (!manualHit && !hitsAny(promptText, rule.anchors)) continue;
 
-    const betterPriority = currIdx !== -1 && currIdx < bestIdx;
+    const a = manualHit ? 1 : countHits(promptText, rule.anchors);
 
-    if (
-      score > bestScore ||
-      (score === bestScore && a > bestAnchorHits) ||
-      (score === bestScore && a === bestAnchorHits && betterPriority)
-    ) {
-      bestScore = score;
-      bestAnchorHits = a;
-      best = subKey;
-    }
+    // ✅ keywords weighted: prompt > options
+    const kPrompt = countHits(promptText, rule.keywords ?? []);
+    const kOpt = countHits(optionsText, rule.keywords ?? []);
+
+    const userBoost = userTags.has(subKey) ? 6 : 0;
+    const autoBoost = autoTags.has(subKey) ? 1 : 0;
+
+    // anchors >>> prompt keywords > option keywords
+    const score = a * 30 + kPrompt * 6 + kOpt * 1 + userBoost + autoBoost;
+
+    scored.push({
+      key: subKey,
+      score,
+      anchorHits: a,
+      prioIdx: priority.indexOf(subKey),
+    });
   }
 
-  return best ? (best as unknown as SubtagKey) : null;
+  if (scored.length === 0) return [];
+
+  scored.sort((x, y) => {
+    if (y.score !== x.score) return y.score - x.score;
+    if (y.anchorHits !== x.anchorHits) return y.anchorHits - x.anchorHits;
+
+    const xP = x.prioIdx === -1 ? Number.POSITIVE_INFINITY : x.prioIdx;
+    const yP = y.prioIdx === -1 ? Number.POSITIVE_INFINITY : y.prioIdx;
+    return xP - yP;
+  });
+
+  const bestScore = scored[0].score;
+  const picked: string[] = [scored[0].key];
+
+  for (let i = 1; i < scored.length && picked.length < MAX_SUBS; i++) {
+    const s = scored[i];
+    const significant =
+      s.score >= bestScore * RELATIVE_THRESHOLD &&
+      s.score >= MIN_SCORE_FOR_EXTRA;
+
+    if (significant) picked.push(s.key);
+  }
+
+  return picked as SubtagKey[];
 }
+
 
 
 const SUBTOPIC_PRIORITY: {
@@ -8224,6 +8259,7 @@ const SUBTOPIC_PRIORITY: {
 
 /**
  * Legacy tag mapping (salvage old work)
+ * Safe to delete later once your dataset no longer contains old tag strings.
  */
 const LEGACY_TAG_MAP: Record<string, TopicKey | SubtagKey> = {
   // old topics -> new topics
@@ -8420,10 +8456,14 @@ function normalizeOne(raw: RawQuestion): Question {
 export async function loadDataset(datasetId: DatasetId): Promise<Question[]> {
   const ds = DATASETS[datasetId];
 
-  const [res, patch] = await Promise.all([
-    fetch(ds.url, { cache: 'force-cache' }),
-    loadPatch(ds.patchUrl),
-  ]);
+const isDev = process.env.NODE_ENV === 'development';
+const url = isDev ? `${ds.url}?v=${Date.now()}` : ds.url;
+
+const [res, patch] = await Promise.all([
+  fetch(url, { cache: isDev ? 'no-store' : 'force-cache' }),
+  loadPatch(ds.patchUrl),
+]);
+
 
   if (!res.ok) throw new Error(`Failed to load dataset: ${datasetId}`);
 
@@ -8512,7 +8552,6 @@ export const SYLLABUS_RULES = {
     topicAnchors: [
       // license/registration/accidents core
       "driving license",
-      "driving licence",
       "penalty point",
       "probation period",
       "revocation",
@@ -8530,7 +8569,16 @@ export const SYLLABUS_RULES = {
       "detain",
       "detaining",
       "procedural regulations",
-
+      "human casulaties",
+      "road accident",
+      "injured",
+      "applicant",
+      "admission form",
+      "unregistered",
+      "test",
+      "authorized",
+      "qualified driver",
+      "years old",
       // “safe driving in various road conditions” (syllabus section 1)
       "fog",
       "foggy",
@@ -8539,6 +8587,7 @@ export const SYLLABUS_RULES = {
       "icy",
       "ice",
       "heavy rain",
+      "rainy",
       "night",
       "visibility",
       "tunnel",
@@ -8555,10 +8604,28 @@ export const SYLLABUS_RULES = {
       "lane changing",
       "reverse",
       "reversing",
+      "uphill",
+      "downhill",
+      "wet",
+      "slippery",
+      "muddy",
+      "weather",
+      "railway",
+      "overtake",
+      "bridge",
+      "situation",
+      "conditions",
+      "U turn",
+      "When encountering",
+      "When driving",
+      "rainstorm",
+      "encounters",
+      "overtaking",
+      "When a vehicle",
     ],
     subtopics: {
       "road-safety:license": {
-        anchors: ["driving license", "driving licence", "penalty point", "probation period", "revocation"],
+        anchors: ["test", "driving license", "driving licence", "penalty point", "probation period", "revocation"],
         keywords: [
           "application for driving license",
           "validity period",
@@ -8571,15 +8638,20 @@ export const SYLLABUS_RULES = {
         ],
       },
       "road-safety:registration": {
-        anchors: ["registration", "license plate", "vehicle license", "temporary license plate", "motor vehicle inspection"],
-        keywords: ["transfer", "modification", "mortgage", "revocation"],
+        anchors: ["years old","qualified driver","authorized","unregistered", "applicant", "admission form", "registration", "license plate", "vehicle license", "temporary license plate", "motor vehicle inspection"],
+        keywords: ["transfer", "modification", "mortgage", "revocation", "applicant"],
       },
       "road-safety:accidents": {
-        anchors: ["traffic accident", "accident scene", "report to the police", "leave the scene"],
+        anchors: ["traffic accident", "accident scene", "report to the police", "leave the scene", "human casualties", "injured"],
         keywords: ["voluntary negotiation", "expressway"],
       },
       "road-safety:road-conditions": {
         anchors: [
+          "When a vehicle",
+          "overtaking",
+          "When driving",
+          "When encountering",
+          "conditions",
           "fog",
           "foggy",
           "snow",
@@ -8587,6 +8659,7 @@ export const SYLLABUS_RULES = {
           "icy",
           "ice",
           "heavy rain",
+          "rainy",
           "night",
           "visibility",
           "tunnel",
@@ -8598,6 +8671,20 @@ export const SYLLABUS_RULES = {
           "ramp",
           "interchange",
           "intersection",
+          "uphill",
+          "downhill",
+          "wet",
+          "slippery",
+          "muddy",
+          "weather",
+          "railway",
+          "overtake",
+          "bridge",
+          "situation",
+          "U turn",
+          "rainstorm",
+          "encounters",
+          
         ],
         keywords: [
           "overtaking",
@@ -8607,6 +8694,7 @@ export const SYLLABUS_RULES = {
           "reversing",
           "pedestrian",
           "bicycle",
+          "overtake",
         ],
       },
     },
@@ -8624,6 +8712,8 @@ export const SYLLABUS_RULES = {
       "guide arrow",
       "flashing yellow",
       "level crossing",
+      "yellow slash",
+      "green arrow",
 
       "road sign",
       "warning sign",
@@ -8632,14 +8722,24 @@ export const SYLLABUS_RULES = {
       "directional",
       "tourist area",
       "meaning of this sign",
+      "meaning of this s ign",
+      "This sign",
+      "yellow sign",
+      "traffic sign",
+      "kind of sign",
+      "sig n",
+      "sign",
 
       "road marking",
       "markings",
+      "marking",
+      "mark",
       "yellow line",
       "broken line",
       "solid line",
       "stop line",
       "zebra",
+      "line",
 
       "traffic police",
       "hand signal",
@@ -8650,16 +8750,40 @@ export const SYLLABUS_RULES = {
     ],
     subtopics: {
       "traffic-signals:signal-lights": {
-        anchors: ["red light", "green light", "yellow light", "signal light", "flashing yellow", "level crossing"],
-        keywords: ["arrow shape", "signal lights on driving lanes", "guide arrow"],
+        anchors: [
+          "red light", 
+          "green light", 
+          "yellow light", 
+          "signal light", 
+          "flashing yellow", 
+          "level crossing",
+          "traffic light",
+          "green arrow",
+
+        ],
+        keywords: ["arrow shape", "signal lights on driving lanes", "level crossing"],
       },
       "traffic-signals:road-signs": {
-        anchors: ["road sign", "warning sign", "prohibitive", "indicative", "meaning of this sign"],
+        anchors: ["road sign", "warning sign", "prohibitive", "indicative", "meaning of this sign", "sig n", "sign", "meaning of this s ign", "This sign", "yellow sign", "traffic sign", "kind of sign"],
         keywords: ["directional", "tourist area"],
       },
       "traffic-signals:road-markings": {
-        anchors: ["road marking", "markings", "yellow line", "broken line", "solid line", "stop line", "zebra", "crosswalk"],
-        keywords: ["indicative markings", "prohibitive markings", "warning markings"],
+        anchors: [
+          "road marking", 
+          "markings", 
+          "yellow line", 
+          "broken line", 
+          "solid line", 
+          "stop line", 
+          "zebra", 
+          "crosswalk", 
+          "marking", 
+          "mark",
+          "guide arrow",
+          "yellow slash",
+          "line",
+        ],
+        keywords: ["indicative markings", "prohibitive markings", "warning markings", "yellow slash"],
       },
       "traffic-signals:police-signals": {
         anchors: ["traffic police", "hand signal", "hand signals", "pull over", "slowdown"],
@@ -8681,6 +8805,27 @@ export const SYLLABUS_RULES = {
       "expressway",
       "breakdown",
       "warning requirements",
+      "probation",
+      "penalty",
+      "law",
+      "point",
+      "drunk",
+      "drinking",
+      "rest",
+      "not safe",
+
+      "How to use lights",
+      "pedestrians",
+      "max speed",
+      "speed up",
+      "overtaking",
+
+      "while driving",
+      "Which is correct",
+
+      "minimum speed",
+
+      "collision",
 
       // Traffic laws / penalties (syllabus section 4)
       "prohibited",
@@ -8694,14 +8839,42 @@ export const SYLLABUS_RULES = {
       "overloaded",
       "cancellation rules",
       "punishment at the scene",
+      "violation",
+      "illegally",
+      "illegal",
+      "age",
+      "liabilities",
+      "subject to",
+      "allowed",
     ],
     subtopics: {
       "proper-driving:safe-driving": {
-        anchors: ["safe driving", "safety responsibility", "yield", "special vehicle", "road maintenance", "parking", "expressway", "breakdown"],
+        anchors: ["not safe","rest","overtaking","collision","speed up","minimum speed","Which is correct","while driving","pedestrians","overtake","How to use lights", "safe driving", "safety responsibility", "yield", "special vehicle", "road maintenance", "parking", "expressway", "breakdown"],
         keywords: ["requirements for safe driving", "handling measures", "warning requirements"],
       },
       "proper-driving:traffic-laws": {
-        anchors: ["prohibited", "punishment", "drinking", "drugs", "illegal", "over-seated", "overloaded", "cancellation rules"],
+        anchors: [
+          "subject to",
+          "liabilities",
+          "age",
+          "illegal",
+          "drunk",
+          "max speed",
+          "illegally",
+          "point",
+          "law",
+          "penalty",
+          "probation", 
+          "violation", 
+          "prohibited", 
+          "punishment", 
+          "drinking", 
+          "drugs", "illegal", 
+          "over-seated", 
+          "overloaded", 
+          "cancellation rules",
+          "allowed",
+        ],
         keywords: ["punishment at the scene", "traffic signal violations", "obtaining driving license by illegal means"],
       },
     },
@@ -8727,6 +8900,11 @@ export const SYLLABUS_RULES = {
       "symbol",
       "displays",
       "flashes",
+      "lights to indicate",
+      "It lights",
+      "hazard lights",
+      "How to use lights",
+      "beam light",
 
       // controls
       "steering wheel",
@@ -8741,12 +8919,23 @@ export const SYLLABUS_RULES = {
       "windscreen wiper",
       "defrost",
       "defog",
+      "pedal",
+      "switch",
+      "safety bags",
 
       // safety devices (mapped into Indicators by your new taxonomy)
       "safe headrest",
       "seatbelt",
+      "seat belt",
+      "seat belts",
+      "safety",
       "abs",
       "srs",
+      "gear",
+      "gears",
+      "device",
+      "devices",
+      "tire",
     ],
     subtopics: {
       "driving-operations:indicators": {
@@ -8769,12 +8958,36 @@ export const SYLLABUS_RULES = {
           "symbol",
           "displays",
           "flashes",
+          "lights to indicate",
+          "It lights",
+          "hazard lights",
+          "instrument",
+          "How to use lights",
+          "beam light",
         ],
         keywords: ["fog lamp indicator", "instruments", "instrument"],
       },
       "driving-operations:control-gears": {
-        anchors: ["steering wheel", "clutch pedal", "brake pedal", "accelerator pedal", "gear shift", "handbrake", "ignition switch"],
-        keywords: ["light switch", "windscreen wiper", "defrost", "defog"],
+        anchors: [
+          "steering wheel", 
+          "clutch pedal", 
+          "brake pedal", 
+          "accelerator pedal", 
+          "gear shift", 
+          "handbrake", 
+          "ignition switch", 
+          "pedal", 
+          "switch",
+          "seat belts",
+          "seat belt",
+          "safety",
+          "gear",
+          "gears",
+          "device",
+          "devices",
+          "tire",
+        ],
+        keywords: ["light switch", "windscreen wiper", "defrost", "defog","seat belt", "safety bags"],
       },
     },
   },
@@ -8831,7 +9044,6 @@ export const TAG_TAXONOMY: Topic[] = [
     key: "road-safety",
     label: "Road Safety",
     subtopics: [
-      { key: "road-safety:all", label: "All" },
       { key: "road-safety:license", label: "#License" },
       { key: "road-safety:registration", label: "#Registration" },
       { key: "road-safety:accidents", label: "#Accidents" },
@@ -8842,7 +9054,6 @@ export const TAG_TAXONOMY: Topic[] = [
     key: "traffic-signals",
     label: "Traffic Signals",
     subtopics: [
-      { key: "traffic-signals:all", label: "All" },
       { key: "traffic-signals:signal-lights", label: "#Signal Lights" },
       { key: "traffic-signals:road-signs", label: "#Road Signs" },
       { key: "traffic-signals:road-markings", label: "#Road Markings" },
@@ -8853,7 +9064,6 @@ export const TAG_TAXONOMY: Topic[] = [
     key: "proper-driving",
     label: "Proper Driving",
     subtopics: [
-      { key: "proper-driving:all", label: "All" },
       { key: "proper-driving:safe-driving", label: "#Safe Driving" },
       { key: "proper-driving:traffic-laws", label: "#Traffic Laws" },
     ],
@@ -8862,7 +9072,6 @@ export const TAG_TAXONOMY: Topic[] = [
     key: "driving-operations",
     label: "Driving Operations",
     subtopics: [
-      { key: "driving-operations:all", label: "All" },
       { key: "driving-operations:indicators", label: "#Indicators" },
       { key: "driving-operations:control-gears", label: "#Control Gears" },
     ],
@@ -16849,7 +17058,7 @@ export const config = {
       "id": "q0027",
       "number": 27,
       "type": "row",
-      "prompt": "When a vehicle passes a level crossing, the driver should use the low gear to pass and should not change gear halfway in order to avoid engine kill. 2",
+      "prompt": "When a vehicle passes a level crossing, the driver should use the low gear to pass and should not change gear halfway in order to avoid engine kill.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -17559,7 +17768,7 @@ export const config = {
       "id": "q0047",
       "number": 47,
       "type": "row",
-      "prompt": "When a vehicles turns, it should do so on the right side and refrain from occupying the lane of the other party. The left turn should be gentle and the right turn should be sharp. 3",
+      "prompt": "When a vehicles turns, it should do so on the right side and refrain from occupying the lane of the other party. The left turn should be gentle and the right turn should be sharp.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -26070,7 +26279,7 @@ export const config = {
       "id": "q0225",
       "number": 225,
       "type": "row",
-      "prompt": "Going though the intersection according to the traffic lights when traffic lights and command of the traffic police are inconsistency.",
+      "prompt": "Going though the intersection according to the traffic lights when traffic lights and command of the traffic police are inconsistent.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -28506,7 +28715,7 @@ export const config = {
       "id": "q0282",
       "number": 282,
       "type": "row",
-      "prompt": "A person who has taken the state-controlled psychiatric substances can drive motorized vehicle in short distance. 21",
+      "prompt": "A person who has taken the state-controlled psychiatric substances can drive motorized vehicle in short distance.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -30333,7 +30542,7 @@ export const config = {
       "id": "q0325",
       "number": 325,
       "type": "row",
-      "prompt": "A driver may drive on the road a motorized vehicle overhauled which has reached the scraped standard. 24",
+      "prompt": "A driver may drive on the road a motorized vehicle overhauled which has reached the scraped standard.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -34668,7 +34877,7 @@ export const config = {
       "id": "q0404",
       "number": 404,
       "type": "mcq",
-      "prompt": "What will be subject to if driving the vehicle reached write-off standard? 31",
+      "prompt": "What will be subject to if driving the vehicle reached write-off standard?",
       "options": [
         {
           "id": "q0404_o1",
@@ -35072,7 +35281,7 @@ export const config = {
       "id": "q0410",
       "number": 410,
       "type": "mcq",
-      "prompt": "What is the Minimum speed in this lane?",
+      "prompt": "What is the minimum speed in this lane?",
       "options": [
         {
           "id": "q0410_o1",
@@ -49824,7 +50033,7 @@ export const config = {
       "id": "q0646",
       "number": 646,
       "type": "row",
-      "prompt": "Choose the lane with the green arrow light on. 60",
+      "prompt": "Choose the lane with the green arrow light on.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -59004,7 +59213,7 @@ export const config = {
       "id": "q0772",
       "number": 772,
       "type": "mcq",
-      "prompt": "What’s the meaning of thi s sign?",
+      "prompt": "What’s the meaning of this sign?",
       "options": [
         {
           "id": "q0772_o1",
@@ -66550,7 +66759,7 @@ export const config = {
       "id": "q0873",
       "number": 873,
       "type": "mcq",
-      "prompt": "What’s the meaning of the yellow slash filled ar ea in the middle of the road? 94",
+      "prompt": "What’s the meaning of the yellow slash filled area in the middle of the road?",
       "options": [
         {
           "id": "q0873_o1",
@@ -67390,12 +67599,12 @@ export const config = {
         {
           "id": "q0884_o3",
           "originalKey": "C",
-          "text": "expresswa service area ahead y"
+          "text": "expresswa service area ahead"
         },
         {
           "id": "q0884_o4",
           "originalKey": "D",
-          "text": "expressw ay toll station ahead"
+          "text": "expressway toll station ahead"
         }
       ],
       "correctRow": null,
@@ -67450,7 +67659,7 @@ export const config = {
       "id": "q0885",
       "number": 885,
       "type": "mcq",
-      "prompt": "What’s the role of the i ndicative marking?",
+      "prompt": "What’s the role of the indicative marking?",
       "options": [
         {
           "id": "q0885_o1",
@@ -71635,7 +71844,7 @@ export const config = {
       "id": "q0962",
       "number": 962,
       "type": "row",
-      "prompt": "This sign ind ates landslide section ahead and ic bypassing.",
+      "prompt": "This sign indicates landslide section ahead and IC bypassing.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -71943,7 +72152,7 @@ export const config = {
       "id": "q0968",
       "number": 968,
       "type": "row",
-      "prompt": "This sign indicates intersection ahead. 104",
+      "prompt": "This sign indicates intersection ahead.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -116492,7 +116701,20 @@ export const config = {
 
 ### public/qbank/2023-test1/tags.patch.json
 ```json
+{
+  "q0012": ["proper-driving", "proper-driving:safe-driving"],
+"q0117": ["road-safety", "road-safety:road-conditions", "proper-driving:safe-driving"],
+ "q0119": ["road-safety", "road-safety:road-conditions", "proper-driving:safe-driving"],
+"q0135": ["road-safety", "road-safety:road-conditions", "proper-driving:safe-driving"],
+"q0154": ["proper-driving", "proper-driving:safe-driving"],
 
+
+
+
+
+
+
+}
 ```
 
 ### tsconfig.json

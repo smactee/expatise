@@ -40,7 +40,7 @@ export const TAG_TAXONOMY: Topic[] = [
     label: "Driving Operations",
     subtopics: [
       { key: "driving-operations:indicators", label: "#Indicators" },
-      { key: "driving-operations:control-gears", label: "#Control Gears" },
+      { key: "driving-operations:gears", label: "#Gears" },
     ],
   },
 ];
