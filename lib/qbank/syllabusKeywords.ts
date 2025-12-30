@@ -85,9 +85,10 @@ export const SYLLABUS_RULES = {
       "landslide",
       "mudslide",
       "mudflow",
+      "muddy",
       "ramp",
       "interchange",
-      "intersection",
+      
       "overtaking",
       "following distance",
       "lane changing",
@@ -133,8 +134,8 @@ export const SYLLABUS_RULES = {
         keywords: ["transfer", "modification", "mortgage", "revocation", "applicant"],
       },
       "road-safety:accidents": {
-        anchors: ["traffic accident", "accident scene", "report to the police", "leave the scene", "human casualties", "injured"],
-        keywords: ["voluntary negotiation", "expressway"],
+        anchors: ["accident", "accident scene", "report to the police", "leave the scene", "human casualties", "injured"],
+        keywords: ["voluntary negotiation", "expressway", "traffic accident"],
       },
       "road-safety:road-conditions": {
         anchors: [
@@ -177,7 +178,7 @@ export const SYLLABUS_RULES = {
           "rainstorm",
           "encounters",
           "road surface",
-          
+          "muddy",
           
         ],
         keywords: [
@@ -189,6 +190,7 @@ export const SYLLABUS_RULES = {
           "pedestrian",
           "bicycle",
           "overtake",
+          "intersection",
         ],
       },
     },
@@ -255,7 +257,7 @@ export const SYLLABUS_RULES = {
           "green arrow",
 
         ],
-        keywords: ["arrow shape", "signal lights on driving lanes", "level crossing"],
+        keywords: ["intersection","arrow shape", "signal lights on driving lanes", "level crossing"],
       },
       "traffic-signals:road-signs": {
         anchors: ["road sign", "warning sign", "prohibitive", "indicative", "meaning of this sign", "sig n", "sign", "meaning of this s ign", "This sign", "yellow sign", "traffic sign", "kind of sign"],
