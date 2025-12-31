@@ -784,16 +784,15 @@ useEffect(() => {
 <div className={styles.tagRow}>
   {(() => {
     const tags = derivedById.get(item.id) ?? [];
-    const sub = tags.find((t) => t.includes(":") && !t.endsWith(":all"));
-    if (!sub) return null;
-
-    return (
-      <span className={styles.tagPill}>
-        {labelForTag(sub)}
+    const subs = tags.filter((t) => t.includes(":") && !t.endsWith(":all"));
+    return subs.map((t) => (
+      <span key={t} className={styles.tagPill}>
+        {labelForTag(t)}
       </span>
-    );
+    ));
   })()}
 </div>
+
 
 
 
@@ -8174,8 +8173,8 @@ function pickTopSubtopics(
 
   // ---- tweak knobs here ----
   const MAX_SUBS = 3;
-  const RELATIVE_THRESHOLD = 0.65;  // 2nd/3rd must be >= 65% of best
-  const MIN_SCORE_FOR_EXTRA = 10;   // prevents weak/noisy extras
+  const RELATIVE_THRESHOLD = 0.8;  // 2nd/3rd must be >= 65% of best
+  const MIN_SCORE_FOR_EXTRA = 80;   // prevents weak/noisy extras
   // --------------------------
 
   const scored: Array<{ key: string; score: number; anchorHits: number; prioIdx: number }> = [];
@@ -8254,7 +8253,7 @@ const SUBTOPIC_PRIORITY: {
     "traffic-signals:police-signals",
   ],
   "proper-driving": ["proper-driving:traffic-laws", "proper-driving:safe-driving"],
-  "driving-operations": ["driving-operations:indicators", "driving-operations:control-gears"],
+  "driving-operations": ["driving-operations:indicators", "driving-operations:gears"],
 };
 
 /**
@@ -8290,8 +8289,8 @@ const LEGACY_TAG_MAP: Record<string, TopicKey | SubtagKey> = {
 
   "vehicle-operation:instruments-indicators": "driving-operations:indicators",
   "vehicle-operation:safety-devices": "driving-operations:indicators",
-  "vehicle-operation:controls": "driving-operations:control-gears",
-  "vehicle-operation:control-gears": "driving-operations:control-gears",
+  "vehicle-operation:controls": "driving-operations:gears",
+  "vehicle-operation:gears": "driving-operations:gears",
 };
 
 ```
@@ -8529,7 +8528,7 @@ export type SubtagKey =
   | "proper-driving:safe-driving"
   | "proper-driving:traffic-laws"
   | "driving-operations:indicators"
-  | "driving-operations:control-gears";
+  | "driving-operations:gears";
 
 export type SubtopicConfig = {
   anchors: readonly string[];   // strong signals (must hit >= 1)
@@ -8596,9 +8595,10 @@ export const SYLLABUS_RULES = {
       "landslide",
       "mudslide",
       "mudflow",
+      "muddy",
       "ramp",
       "interchange",
-      "intersection",
+      
       "overtaking",
       "following distance",
       "lane changing",
@@ -8622,6 +8622,8 @@ export const SYLLABUS_RULES = {
       "encounters",
       "overtaking",
       "When a vehicle",
+      "flood",
+      "road surface",
     ],
     subtopics: {
       "road-safety:license": {
@@ -8642,11 +8644,12 @@ export const SYLLABUS_RULES = {
         keywords: ["transfer", "modification", "mortgage", "revocation", "applicant"],
       },
       "road-safety:accidents": {
-        anchors: ["traffic accident", "accident scene", "report to the police", "leave the scene", "human casualties", "injured"],
-        keywords: ["voluntary negotiation", "expressway"],
+        anchors: ["accident", "accident scene", "report to the police", "leave the scene", "human casualties", "injured"],
+        keywords: ["voluntary negotiation", "expressway", "traffic accident"],
       },
       "road-safety:road-conditions": {
         anchors: [
+          "flood",
           "When a vehicle",
           "overtaking",
           "When driving",
@@ -8684,6 +8687,8 @@ export const SYLLABUS_RULES = {
           "U turn",
           "rainstorm",
           "encounters",
+          "road surface",
+          "muddy",
           
         ],
         keywords: [
@@ -8695,6 +8700,7 @@ export const SYLLABUS_RULES = {
           "pedestrian",
           "bicycle",
           "overtake",
+          "intersection",
         ],
       },
     },
@@ -8761,7 +8767,7 @@ export const SYLLABUS_RULES = {
           "green arrow",
 
         ],
-        keywords: ["arrow shape", "signal lights on driving lanes", "level crossing"],
+        keywords: ["intersection","arrow shape", "signal lights on driving lanes", "level crossing"],
       },
       "traffic-signals:road-signs": {
         anchors: ["road sign", "warning sign", "prohibitive", "indicative", "meaning of this sign", "sig n", "sign", "meaning of this s ign", "This sign", "yellow sign", "traffic sign", "kind of sign"],
@@ -8813,6 +8819,7 @@ export const SYLLABUS_RULES = {
       "drinking",
       "rest",
       "not safe",
+      "safe",
 
       "How to use lights",
       "pedestrians",
@@ -8849,7 +8856,7 @@ export const SYLLABUS_RULES = {
     ],
     subtopics: {
       "proper-driving:safe-driving": {
-        anchors: ["not safe","rest","overtaking","collision","speed up","minimum speed","Which is correct","while driving","pedestrians","overtake","How to use lights", "safe driving", "safety responsibility", "yield", "special vehicle", "road maintenance", "parking", "expressway", "breakdown"],
+        anchors: ["safe","not safe","rest","overtaking","collision","speed up","minimum speed","Which is correct","while driving","pedestrians","overtake","How to use lights", "safe driving", "safety responsibility", "yield", "special vehicle", "road maintenance", "parking", "expressway", "breakdown"],
         keywords: ["requirements for safe driving", "handling measures", "warning requirements"],
       },
       "proper-driving:traffic-laws": {
@@ -8967,7 +8974,7 @@ export const SYLLABUS_RULES = {
         ],
         keywords: ["fog lamp indicator", "instruments", "instrument"],
       },
-      "driving-operations:control-gears": {
+      "driving-operations:gears": {
         anchors: [
           "steering wheel", 
           "clutch pedal", 
@@ -9073,7 +9080,7 @@ export const TAG_TAXONOMY: Topic[] = [
     label: "Driving Operations",
     subtopics: [
       { key: "driving-operations:indicators", label: "#Indicators" },
-      { key: "driving-operations:control-gears", label: "#Control Gears" },
+      { key: "driving-operations:gears", label: "#Gears" },
     ],
   },
 ];
@@ -16183,7 +16190,7 @@ export const config = {
       "id": "q0002",
       "number": 2,
       "type": "row",
-      "prompt": "When a vehicle runs on an expressway at the speed of 100 kilometers per hour, its safe distance from the vehicle in front is not less than 100 meters.",
+      "prompt": "When a vehicle runs on an expressway at the speed of 100km/h, its safe distance from the vehicle in front is no less than 100 meters.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -16259,7 +16266,7 @@ export const config = {
       "id": "q0004",
       "number": 4,
       "type": "row",
-      "prompt": "When a vehicle changes lane, the driver should turn on the turn signal in advance,observe traffic conditions, maintain a safe distance and move into the new lane.",
+      "prompt": "When a vehicle changes lanes, the driver should turn on the turn signal in advance, observe traffic conditions, maintain a safe distance, and then move into the next lane.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -16363,7 +16370,7 @@ export const config = {
       "id": "q0007",
       "number": 7,
       "type": "row",
-      "prompt": "When passing a dangerous section of a mountain road, especially by the locations of frequent occurrence of landslides, mudslides, the driver should drive with care and avoid stopping.",
+      "prompt": "When passing a dangerous section of a mountain road, especially in locations of frequent occurrences of landslides and mudslides, the driver should drive with care and avoid stopping.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -16401,7 +16408,7 @@ export const config = {
       "id": "q0008",
       "number": 8,
       "type": "row",
-      "prompt": "In the course of reversing, the driver should move slowly, observe the conditions on both sides and in the rear and be ready to stop anytime.",
+      "prompt": "In the course of reversing, the driver should move slowly, observe the conditions on both sides and in the rear, and be ready to stop anytime.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -16434,7 +16441,7 @@ export const config = {
       "id": "q0009",
       "number": 9,
       "type": "row",
-      "prompt": "In a vehicle that has safety belts, the driver should request the passengers to buckle up. 1",
+      "prompt": "In a vehicle that has safety belts, the driver should request the passengers to buckle up.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -16467,7 +16474,7 @@ export const config = {
       "id": "q0010",
       "number": 10,
       "type": "row",
-      "prompt": "A vehicle is not allowed to make a U turn on the ramp of an expressway.",
+      "prompt": "A vehicle is not allowed to make a U-turn on the ramp of an expressway.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -16538,7 +16545,7 @@ export const config = {
       "id": "q0012",
       "number": 12,
       "type": "row",
-      "prompt": "The three principles for careful driving are concentration, careful observation and early prevention.",
+      "prompt": "The three principles for careful driving are concentration, careful observation, and early prevention.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -16571,7 +16578,7 @@ export const config = {
       "id": "q0013",
       "number": 13,
       "type": "row",
-      "prompt": "When a vehicle changes lane, the driver should turn on the turn signal and rapidly enter the new lane.",
+      "prompt": "When a vehicle changes lanes, the driver should turn on the turn signal and rapidly enter the new lane.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -16784,7 +16791,7 @@ export const config = {
       "id": "q0019",
       "number": 19,
       "type": "row",
-      "prompt": "When crossing each other on a narrow road, the driver should slow down, yield and stop first.",
+      "prompt": "When crossing each other on a narrow road, the driver should slow down, yield, and stop first.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -16822,7 +16829,7 @@ export const config = {
       "id": "q0020",
       "number": 20,
       "type": "row",
-      "prompt": "If discovering pedestrians abruptly cross the road while driving, the driver should immediately reduce speed and evade.",
+      "prompt": "If discovering pedestrians abruptly crossing the road while driving, the driver should immediately reduce speed and evade.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -16992,7 +16999,7 @@ export const config = {
       "id": "q0025",
       "number": 25,
       "type": "row",
-      "prompt": "When passing through an overflowing road, a high gear should be used to pass rapidly.",
+      "prompt": "When passing through an overflowing road, a higher gear should be used to pass rapidly.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -17058,7 +17065,7 @@ export const config = {
       "id": "q0027",
       "number": 27,
       "type": "row",
-      "prompt": "When a vehicle passes a level crossing, the driver should use the low gear to pass and should not change gear halfway in order to avoid engine kill.",
+      "prompt": "When a vehicle passes a level crossing, the driver should use a lower gear to pass and should not change gear halfway in order to avoid an engine kill.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -17129,7 +17136,7 @@ export const config = {
       "id": "q0029",
       "number": 29,
       "type": "row",
-      "prompt": "A driver should stop on the expressway at once to have a rest when he feel tired.",
+      "prompt": "A driver should stop on the expressway at once to have a rest when he feels tired.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -17233,7 +17240,7 @@ export const config = {
       "id": "q0032",
       "number": 32,
       "type": "row",
-      "prompt": "When the vehicles cross each other at night, the driver may continuous change lights to remind the vehicle coming in the opposite direction and at the same should reduce speed and go forward or stop on the right side.",
+      "prompt": "When the vehicles cross each other at night, the driver may continuously flicker lights to signal to the vehicle coming in the opposite direction and at the same time should reduce speed and go forward or stop on the right side.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -17266,7 +17273,7 @@ export const config = {
       "id": "q0033",
       "number": 33,
       "type": "row",
-      "prompt": "When driving in a heavy rain, the driver should control the speed to avoid the danger arising from water slide.",
+      "prompt": "When driving in a heavy rain, the driver should control the speed to avoid the danger arising from a water slide.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -17370,7 +17377,7 @@ export const config = {
       "id": "q0036",
       "number": 36,
       "type": "row",
-      "prompt": "When a vehicle runs on an expressway, the driver may ascertain the speed according to his feeling.",
+      "prompt": "When a vehicle runs on an expressway, the driver may determine the driving speed according to their feelings.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -17408,7 +17415,7 @@ export const config = {
       "id": "q0037",
       "number": 37,
       "type": "row",
-      "prompt": "When a vehicle goes downhill, it may fully use the neutral gear and slide.",
+      "prompt": "When a vehicle goes downhill, it may fully use the neutral gear and coast.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -17479,7 +17486,7 @@ export const config = {
       "id": "q0039",
       "number": 39,
       "type": "row",
-      "prompt": "When a motorized vehicle encounters the cut in by another vehicle in a roundabout, the driver may not evade as long as he has the right of way.",
+      "prompt": "When a motorized vehicle encounters a cut in by another vehicle in a roundabout, the driver may not evade as long as he has the right of way.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -17517,7 +17524,7 @@ export const config = {
       "id": "q0040",
       "number": 40,
       "type": "row",
-      "prompt": "When a vehicle has increased its speed to more than 60 kilometers per hour on the ramp of an expressway, it may directly enter the carriageway.",
+      "prompt": "When a vehicle has increased its speed to more than 60 km/h on the ramp of an expressway, it may directly enter the carriageway.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -17593,7 +17600,7 @@ export const config = {
       "id": "q0042",
       "number": 42,
       "type": "row",
-      "prompt": "A small bus driver should reduce speed rapidly when he suddenly feel bumpy on a flat expressway, to prevent tire blowout.",
+      "prompt": "A small bus driver should reduce speed quickly when he suddenly feels bumps on a flat expressway, to prevent a tire blowout.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -17631,7 +17638,7 @@ export const config = {
       "id": "q0043",
       "number": 43,
       "type": "row",
-      "prompt": "When a vehicle goes uphill on a mountain road, it should change to a lower gear in a timely, accurate and rapid manner so as to avoid a situation in which driving at a high gear can reduce the power of the engine.",
+      "prompt": "When a vehicle goes uphill on a mountain road, it should change to a lower gear in a timely, accurate, and rapid manner so as to avoid a situation in which driving at a higher gear can reduce the power of the engine.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -17735,7 +17742,7 @@ export const config = {
       "id": "q0046",
       "number": 46,
       "type": "row",
-      "prompt": "A driver should observe the dynamic situation of the rear side vehicles before driving into the traffic flow from other road.",
+      "prompt": "A driver should observe the dynamic situation of the rear side vehicles before driving into the traffic flow from another roadway.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -17948,7 +17955,7 @@ export const config = {
       "id": "q0052",
       "number": 52,
       "type": "row",
-      "prompt": "As the braking distance increases on a wet road in a rainy day, the driver should use the emergency brake as much as possible to reduce speed.",
+      "prompt": "As the braking distance increases on a wet road on a rainy day, the driver should use the emergency brake as much as possible to reduce speed.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -18131,7 +18138,7 @@ export const config = {
       "id": "q0057",
       "number": 57,
       "type": "row",
-      "prompt": "Before a vehicle enters an intersection, the driver should reduce speed, observe and make sure it is safe to do so.",
+      "prompt": "Before a vehicle enters an intersection, the driver should reduce speed, observe, and make sure it is safe to do so.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -18239,7 +18246,7 @@ export const config = {
       "id": "q0060",
       "number": 60,
       "type": "row",
-      "prompt": "According to rules on the road traffic safety, the maximum speed on the expressway is less than 120km/hr, thus, it will not be in violation of the traffic regulations as long as the speed does not exceed 120km/hr on the expressway.",
+      "prompt": "According to the rules on road traffic safety, the maximum speed on the expressway is less than 120km/hr, thus, it will not be in violation of the traffic regulations as long as the speed does not exceed 120km/hr on the expressway.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -18314,7 +18321,7 @@ export const config = {
       "id": "q0062",
       "number": 62,
       "type": "row",
-      "prompt": "A rear tire blowout can sway the tail of the vehicle. The driver should firmly hold the steering wheel with both hands to ensure the vehicle go straight, reduce speed and then stop.",
+      "prompt": "A rear tire blowout can sway the tail of the vehicle. The driver should firmly hold the steering wheel with both hands to ensure the vehicle goes straight, reduce speed, and then stop.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -18418,7 +18425,7 @@ export const config = {
       "id": "q0065",
       "number": 65,
       "type": "row",
-      "prompt": "It is a bad habit for a driver to put his left arm on the window of the vehicle or hold the gear lever in his right hand 4 for a long time.",
+      "prompt": "It is a bad habit for a driver to put his left arm on the window of the vehicle or hold the gear lever in his right hand for a long time.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -18499,7 +18506,7 @@ export const config = {
       "id": "q0067",
       "number": 67,
       "type": "row",
-      "prompt": "When a vehicle passes a sharp curve, it may overtake if traffic is light.",
+      "prompt": "When a vehicle passes a sharp curve, it may overtake if there is light traffic.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -18532,7 +18539,7 @@ export const config = {
       "id": "q0068",
       "number": 68,
       "type": "row",
-      "prompt": "After a vehicle enters the ramp, the driver should swiftly increase the speed to more than 60 kilometers per hour.",
+      "prompt": "After a vehicle enters the ramp, the driver should swiftly increase the speed to more than 60km/h.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -18607,7 +18614,7 @@ export const config = {
       "id": "q0070",
       "number": 70,
       "type": "row",
-      "prompt": "When a vehicle goes uphill, the driver should observe the road conditions and the length of the slope in advance and shift to the lower gear in a timely manner to ensure the vehicle has sufficient power.",
+      "prompt": "When a vehicle goes uphill, the driver should observe the road conditions and the length of the slope in advance and shift to a lower gear in a timely manner to ensure the vehicle has sufficient power.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -18640,7 +18647,7 @@ export const config = {
       "id": "q0071",
       "number": 71,
       "type": "row",
-      "prompt": "Honking in a foggy day can arouse the attention of the opposite side. After hearing the honking from the opposite side, the driver should also honk to respond.",
+      "prompt": "Honking in a foggy day can arouse the attention of the opposite side. After hearing the honking from the opposite side, the driver should also honk in response.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -18777,7 +18784,7 @@ export const config = {
       "id": "q0075",
       "number": 75,
       "type": "row",
-      "prompt": "In the course of making a U turn, the driver should strictly control the speed, carefully observe the road conditions before and behind the vehicle, and may advance or reverse only if it is safe to do so.",
+      "prompt": "In the course of making a U-turn, the driver should strictly control the speed, carefully observe the road conditions before and behind the vehicle, and may advance or reverse only if it is safe to do so.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -18810,7 +18817,7 @@ export const config = {
       "id": "q0076",
       "number": 76,
       "type": "row",
-      "prompt": "When reaching an intersection, a left-turning vehicle may enter the left-turn waiting area anytime.",
+      "prompt": "When reaching an intersection, a left-turning vehicle may enter the left-turn waiting area at any time.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -18980,7 +18987,7 @@ export const config = {
       "id": "q0081",
       "number": 81,
       "type": "row",
-      "prompt": "When driving in windy, rainy, snowy, foggy and other complex weather conditions, the driver should turn on the head light, honk continuously and overtake rapidly if the vehicle in front goes slowly.",
+      "prompt": "When driving in windy, rainy, snowy, foggy, or any other complex weather conditions, the driver should turn on the head light, honk continuously, and overtake rapidly if the vehicle in front is driving slowly.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -19013,7 +19020,7 @@ export const config = {
       "id": "q0082",
       "number": 82,
       "type": "row",
-      "prompt": "When there is a continuous rain, the shoulders of the mountain roads may become loose and the embankments may collapse. When driving in this weather, the driver should select the middle solid road and refrain from going close to the roadsides. 5",
+      "prompt": "When there is a continuous rain, the shoulders of the mountain roads may become loose and the embankments may collapse. When driving in this weather, the driver should select the middle solid road and refrain from going close to the roadsides.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -19117,7 +19124,7 @@ export const config = {
       "id": "q0085",
       "number": 85,
       "type": "row",
-      "prompt": "When encountering a traffic jam on the expressway, the driver should follow the front vehicle lining up, and immediately turn on the hazard light to prevent rear-end collision.",
+      "prompt": "When encountering a traffic jam on the expressway, the driver should follow the front vehicle lining up, and immediately turn on the hazard lights to prevent rear-end collision.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -19196,7 +19203,7 @@ export const config = {
       "id": "q0087",
       "number": 87,
       "type": "row",
-      "prompt": "When a vehicle reaches a muddy or burst-and-muddy section, the driver should stop, observe and select the level and solid section or the section with vehicle tracks.",
+      "prompt": "When a vehicle reaches a muddy or burst-and-muddy section, the driver should stop, observe, and select the level and solid section or the section with vehicle tracks.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -19229,7 +19236,7 @@ export const config = {
       "id": "q0088",
       "number": 88,
       "type": "row",
-      "prompt": "When a tire blows out suddenly on the road, the driver should refrain from violently depressing the brake pedal in panic. Instead, he should try his best to shift the gear to a low position and use the engine braking to reduce the speed of the vehicle.",
+      "prompt": "When a tire blows out suddenly on the road, the driver should refrain from violently depressing the brake pedal in panic. Instead, he should try his best to shift a lower gear and use engine braking to reduce the speed of the vehicle.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -19371,7 +19378,7 @@ export const config = {
       "id": "q0092",
       "number": 92,
       "type": "row",
-      "prompt": "When the traffic conditions at an intersection are complicated, the driver should be patiently waiting instead of taking chance.",
+      "prompt": "When the traffic conditions at an intersection are complicated, the driver should be waiting patiently instead of taking any chances.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -19414,7 +19421,7 @@ export const config = {
       "id": "q0093",
       "number": 93,
       "type": "row",
-      "prompt": "When a vehicle passes a curve on a mountain road, the driver should reduce speed, honk and stick to the right.",
+      "prompt": "When a vehicle passes a curve on a mountain road, the driver should reduce speed, honk, and stick to the right.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -19480,7 +19487,7 @@ export const config = {
       "id": "q0095",
       "number": 95,
       "type": "row",
-      "prompt": "When driving on a road covered by ice and snow, the driver must reduce speed and increase the safe distance.",
+      "prompt": "When driving on a road covered with ice and snow, the driver must reduce speed and increase the safe distance.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -19612,7 +19619,7 @@ export const config = {
       "id": "q0099",
       "number": 99,
       "type": "row",
-      "prompt": "When the driver discovers a tire is leaking and steers the vehicle off the main carriageway, he should refrain from applying emergency so as to avoid a vehicle turnover or a rear-end collision arising from the late braking of the following vehicle.",
+      "prompt": "When the driver discovers a tire is leaking and steers the vehicle off the main carriageway, he should refrain from applying the emergency break so as to avoid a vehicle turnover or a rear-end collision arising from the late braking of the following vehicle.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -19688,7 +19695,7 @@ export const config = {
       "id": "q0101",
       "number": 101,
       "type": "row",
-      "prompt": "When driving at night, the drivers observation ability is visibly poorer and his visibility range becomes shorter than driving in the daytime. 6",
+      "prompt": "When driving at night, the driver's observation ability is visibly poorer and his visibility range becomes shorter than driving in the daytime.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -19721,7 +19728,7 @@ export const config = {
       "id": "q0102",
       "number": 102,
       "type": "row",
-      "prompt": "Emergency braking on a road covered by ice and snow can easily cause side skidding. The driver should use the engine braking to reduce speed.",
+      "prompt": "Emergency braking on a road covered by ice and snow can easily cause side skidding. The driver should use engine braking to reduce speed.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -19825,7 +19832,7 @@ export const config = {
       "id": "q0105",
       "number": 105,
       "type": "mcq",
-      "prompt": "When encountering non-motorized vehicles cutting in on the road, the driver should ___.",
+      "prompt": "When encountering non-motorized vehicles cutting in on the road, the driver should ______.",
       "options": [
         {
           "id": "q0105_o1",
@@ -19884,7 +19891,7 @@ export const config = {
       "id": "q0106",
       "number": 106,
       "type": "mcq",
-      "prompt": "When a vehicle has to stop on an expressway due to a vehicle trouble, the driver should place a breakdown warning sign beyond ______ meters behind the vehicle.",
+      "prompt": "When a vehicle has to stop on an expressway due to vehicle trouble, the driver should place a breakdown warning sign beyond ______ meters behind the vehicle.",
       "options": [
         {
           "id": "q0106_o1",
@@ -19947,7 +19954,7 @@ export const config = {
       "id": "q0107",
       "number": 107,
       "type": "mcq",
-      "prompt": "When driving a vehicle through an inundated road with non-motorized vehicles on both sides, the driver should _________.",
+      "prompt": "When driving a vehicle through an flooded road with non-motorized vehicles on both sides, the driver should ______.",
       "options": [
         {
           "id": "q0107_o1",
@@ -20001,7 +20008,7 @@ export const config = {
       "id": "q0108",
       "number": 108,
       "type": "mcq",
-      "prompt": "When the green arrow for a lane is on and there are still pedestrians in the crosswalk before the vehicle, the driver should ___________.",
+      "prompt": "When the green arrow for a lane is on and there are still pedestrians on the crosswalk before the vehicle, the driver should ______.",
       "options": [
         {
           "id": "q0108_o1",
@@ -20070,7 +20077,7 @@ export const config = {
       "id": "q0109",
       "number": 109,
       "type": "mcq",
-      "prompt": "Before entering a level crossing, the vehicle should reduce speed and change to a lower gear, and _____ after entering the level crossing.",
+      "prompt": "Before entering a level crossing, the vehicle should reduce speed and change to a lower gear, and ______ after entering the level crossing.",
       "options": [
         {
           "id": "q0109_o1",
@@ -20129,7 +20136,7 @@ export const config = {
       "id": "q0110",
       "number": 110,
       "type": "mcq",
-      "prompt": "As the road is wet and slippery after rain, brake application when driving can easily ___.",
+      "prompt": "As the road is wet and slippery after rain, brake application when driving can easily ______.",
       "options": [
         {
           "id": "q0110_o1",
@@ -20192,7 +20199,7 @@ export const config = {
       "id": "q0111",
       "number": 111,
       "type": "mcq",
-      "prompt": "7.When a vehicle changes lane before an intersection, the driver should do so ______.",
+      "prompt": "When a vehicle changes lane before an intersection, the driver should do so ______.",
       "options": [
         {
           "id": "q0111_o1",
@@ -20251,7 +20258,7 @@ export const config = {
       "id": "q0112",
       "number": 112,
       "type": "mcq",
-      "prompt": "When passing an unmanned level crossing, the driver should ________.",
+      "prompt": "When passing an unmanned level crossing, the driver should ______.",
       "options": [
         {
           "id": "q0112_o1",
@@ -20271,7 +20278,7 @@ export const config = {
         {
           "id": "q0112_o4",
           "originalKey": "D",
-          "text": "Stop, look and pass"
+          "text": "Stop, look, and pass"
         }
       ],
       "correctRow": null,
@@ -20310,7 +20317,7 @@ export const config = {
       "id": "q0113",
       "number": 113,
       "type": "mcq",
-      "prompt": "The main impact of foggy weather on safe driving is _________.",
+      "prompt": "The main impact of foggy weather on safe driving is ______.",
       "options": [
         {
           "id": "q0113_o1",
@@ -20330,7 +20337,7 @@ export const config = {
         {
           "id": "q0113_o4",
           "originalKey": "D",
-          "text": "The visibility is low and the vision is poor 7"
+          "text": "The visibility is low and the vision is poor"
         }
       ],
       "correctRow": null,
@@ -20364,7 +20371,7 @@ export const config = {
       "id": "q0114",
       "number": 114,
       "type": "mcq",
-      "prompt": "When a vehicle stops temporarily in a snowy day, the driver should turn on _______.",
+      "prompt": "When a vehicle stops temporarily in a snowy day, the driver should turn on ______.",
       "options": [
         {
           "id": "q0114_o1",
@@ -20423,7 +20430,7 @@ export const config = {
       "id": "q0115",
       "number": 115,
       "type": "mcq",
-      "prompt": "Driving on the expressway with full signs and marking, the driver should run in the lane and at the speed according to _________.",
+      "prompt": "Driving on the expressway with full signs and marking, the driver should run in the lane and at the speed according to ______.",
       "options": [
         {
           "id": "q0115_o1",
@@ -20486,7 +20493,7 @@ export const config = {
       "id": "q0116",
       "number": 116,
       "type": "mcq",
-      "prompt": "The main feature of pedestrians participating in road traffic is that _________.",
+      "prompt": "The main feature of pedestrians participating in road traffic is that ______.",
       "options": [
         {
           "id": "q0116_o1",
@@ -20540,7 +20547,7 @@ export const config = {
       "id": "q0117",
       "number": 117,
       "type": "mcq",
-      "prompt": "When passing through an inundated road, the driver should ________.",
+      "prompt": "When passing through an flooded road, the driver should ______.",
       "options": [
         {
           "id": "q0117_o1",
@@ -20594,7 +20601,7 @@ export const config = {
       "id": "q0118",
       "number": 118,
       "type": "mcq",
-      "prompt": "When discovering a road congestion ahead, the correct way to deal with this situation is to _______.",
+      "prompt": "When discovering a road congestion ahead, the correct way to deal with this situation is to ______.",
       "options": [
         {
           "id": "q0118_o1",
@@ -20648,7 +20655,7 @@ export const config = {
       "id": "q0119",
       "number": 119,
       "type": "mcq",
-      "prompt": "When a driver needs to borrow a lane to bypass an obstacle in front and a vehicle in the opposite direction is approaching the obstacle, the driver should ___________.",
+      "prompt": "When a driver needs to borrow a lane to bypass an obstacle in front and a vehicle in the opposite direction is approaching the obstacle, the driver should ______.",
       "options": [
         {
           "id": "q0119_o1",
@@ -20717,7 +20724,7 @@ export const config = {
       "id": "q0120",
       "number": 120,
       "type": "mcq",
-      "prompt": "When encountering non-motorized vehicles intending to bypass a stopping vehicle, the driver should ________.",
+      "prompt": "When encountering non-motorized vehicles intending to bypass a stopping vehicle, the driver should ______.",
       "options": [
         {
           "id": "q0120_o1",
@@ -20780,7 +20787,7 @@ export const config = {
       "id": "q0121",
       "number": 121,
       "type": "mcq",
-      "prompt": "When running on an expressway, the driver should ____ if he has missed the exit.",
+      "prompt": "When running on the expressway, the driver should ______ if he has missed the exit.",
       "options": [
         {
           "id": "q0121_o1",
@@ -20800,7 +20807,7 @@ export const config = {
         {
           "id": "q0121_o4",
           "originalKey": "D",
-          "text": "Make a U turn from where he is"
+          "text": "Make a U-turn from where he is"
         }
       ],
       "correctRow": null,
@@ -20839,7 +20846,7 @@ export const config = {
       "id": "q0122",
       "number": 122,
       "type": "mcq",
-      "prompt": "When a motorized vehicle runs on an expressway, it ________.",
+      "prompt": "When a motorized vehicle runs on an expressway, it ______.",
       "options": [
         {
           "id": "q0122_o1",
@@ -20918,7 +20925,7 @@ export const config = {
         {
           "id": "q0123_o4",
           "originalKey": "D",
-          "text": "Reduce speed or stop to yield 8"
+          "text": "Reduce speed or stop to yield"
         }
       ],
       "correctRow": null,
@@ -20957,7 +20964,7 @@ export const config = {
       "id": "q0124",
       "number": 124,
       "type": "mcq",
-      "prompt": "Is there any effective auxiliary method to control the speed while driving on a long downhill road besides braking.",
+      "prompt": "Is there any effective auxiliary method to control the speed while driving on a long downhill road besides braking?",
       "options": [
         {
           "id": "q0124_o1",
@@ -21016,7 +21023,7 @@ export const config = {
       "id": "q0125",
       "number": 125,
       "type": "mcq",
-      "prompt": "The wrong measure to avoid tire blowout is to _________.",
+      "prompt": "The wrong measure to avoid tire blowout is to ______.",
       "options": [
         {
           "id": "q0125_o1",
@@ -21070,7 +21077,7 @@ export const config = {
       "id": "q0126",
       "number": 126,
       "type": "mcq",
-      "prompt": "The main impact of the road conditions at night on safe driving is ________.",
+      "prompt": "The main impact of the road conditions at night on safe driving is ______.",
       "options": [
         {
           "id": "q0126_o1",
@@ -21124,7 +21131,7 @@ export const config = {
       "id": "q0127",
       "number": 127,
       "type": "mcq",
-      "prompt": "When a vehicle coming in the opposite direction suddenly overtakes and occupies your lane, the correct way to deal with this situation is to __________.",
+      "prompt": "When a vehicle coming in the opposite direction suddenly overtakes and occupies your lane, the correct way to deal with this situation is to ______.",
       "options": [
         {
           "id": "q0127_o1",
@@ -21139,7 +21146,7 @@ export const config = {
         {
           "id": "q0127_o3",
           "originalKey": "C",
-          "text": "Reduce speed and avoid as much as possible, till stop"
+          "text": "Reduce speed and avoid the incoming vehicle as much as possible, halt if required"
         },
         {
           "id": "q0127_o4",
@@ -21178,7 +21185,7 @@ export const config = {
       "id": "q0128",
       "number": 128,
       "type": "mcq",
-      "prompt": "When a vehicle approaches a crosswalk, the driver should ________.",
+      "prompt": "When a vehicle approaches a crosswalk, the driver should ______.",
       "options": [
         {
           "id": "q0128_o1",
@@ -21241,7 +21248,7 @@ export const config = {
       "id": "q0129",
       "number": 129,
       "type": "mcq",
-      "prompt": "If a vehicle enters a left lane for overtaking but is unable to ensure a safe horizontal distance with the normally-running vehicle in front, the driver should ________.",
+      "prompt": "If a vehicle enters a left lane for overtaking but is unable to ensure a safe horizontal distance with the normally-running vehicle in front, the driver should ______.",
       "options": [
         {
           "id": "q0129_o1",
@@ -21403,7 +21410,7 @@ export const config = {
       "id": "q0132",
       "number": 132,
       "type": "mcq",
-      "prompt": "Continuously using the foot brake on a long downhill road ________.",
+      "prompt": "Continuously using the foot brake on a long downhill road ______.",
       "options": [
         {
           "id": "q0132_o1",
@@ -21457,7 +21464,7 @@ export const config = {
       "id": "q0133",
       "number": 133,
       "type": "mcq",
-      "prompt": "When a vehicle enters a two-way tunnel, the driver should turn on ________.",
+      "prompt": "When a vehicle enters a two-way tunnel, the driver should turn on ______.",
       "options": [
         {
           "id": "q0133_o1",
@@ -21477,7 +21484,7 @@ export const config = {
         {
           "id": "q0133_o4",
           "originalKey": "D",
-          "text": "The width light or the low beam light 9"
+          "text": "The width light or the low beam light"
         }
       ],
       "correctRow": null,
@@ -21634,7 +21641,7 @@ export const config = {
       "id": "q0136",
       "number": 136,
       "type": "mcq",
-      "prompt": "When a following vehicle gives the overtaking signal, the driver should ________ if conditions permit.",
+      "prompt": "When a following vehicle gives the overtaking signal, the driver should ______ if conditions permit.",
       "options": [
         {
           "id": "q0136_o1",
@@ -21697,7 +21704,7 @@ export const config = {
       "id": "q0137",
       "number": 137,
       "type": "mcq",
-      "prompt": "When a vehicle approaches an intersection without crosswalk, the driver should _______ if he finds people are crossing the street.",
+      "prompt": "When a vehicle approaches an intersection without a crosswalk, the driver should _______ if they find people are crossing the street.",
       "options": [
         {
           "id": "q0137_o1",
@@ -21760,7 +21767,7 @@ export const config = {
       "id": "q0138",
       "number": 138,
       "type": "mcq",
-      "prompt": "When encountering an ambulance rushing in the same lane in the opposite direction, the driver should ________.",
+      "prompt": "When encountering an ambulance rushing in the same lane in the opposite direction, the driver should ______.",
       "options": [
         {
           "id": "q0138_o1",
@@ -21819,7 +21826,7 @@ export const config = {
       "id": "q0139",
       "number": 139,
       "type": "mcq",
-      "prompt": "When a vehicle encounters a bike rider coming in the opposite direction on the road, the driver should ________.",
+      "prompt": "When a vehicle encounters a bike rider coming in the opposite direction on the road, the driver should ______.",
       "options": [
         {
           "id": "q0139_o1",
@@ -22001,7 +22008,7 @@ export const config = {
       "id": "q0142",
       "number": 142,
       "type": "mcq",
-      "prompt": "After entering the acceleration lane of an expressway, the driver should increase the speed to more than _________ kilometers per hour.",
+      "prompt": "After entering the acceleration lane of an expressway, the driver should increase the speed to more than ______ km/h.",
       "options": [
         {
           "id": "q0142_o1",
@@ -22060,27 +22067,27 @@ export const config = {
       "id": "q0143",
       "number": 143,
       "type": "mcq",
-      "prompt": "When running on an expressway that has four lanes in the same direction, the vehicles whose speed is higher than 110 kilometers per hour should run ______.",
+      "prompt": "When running on an expressway that has four lanes in the same direction, the vehicles whose speed is higher than 110 km/h should run on the ______.",
       "options": [
         {
           "id": "q0143_o1",
           "originalKey": "A",
-          "text": "The far left lane"
+          "text": "Far left lane"
         },
         {
           "id": "q0143_o2",
           "originalKey": "B",
-          "text": "The second left lane"
+          "text": "Second left lane"
         },
         {
           "id": "q0143_o3",
           "originalKey": "C",
-          "text": "The far right lane"
+          "text": "Far right lane"
         },
         {
           "id": "q0143_o4",
           "originalKey": "D",
-          "text": "The third left lane 10"
+          "text": "TThird left lane"
         }
       ],
       "correctRow": null,
@@ -22178,7 +22185,7 @@ export const config = {
       "id": "q0145",
       "number": 145,
       "type": "mcq",
-      "prompt": "When driving in a rainstorm and the windscreen wiper cannot totally wipe off the rain water, the driver should ________.",
+      "prompt": "When driving in a rainstorm and the windscreen wiper cannot totally wipe off the rain water, the driver should ______.",
       "options": [
         {
           "id": "q0145_o1",
@@ -22237,7 +22244,7 @@ export const config = {
       "id": "q0146",
       "number": 146,
       "type": "mcq",
-      "prompt": "The reason that a road destroyed by flood affects safe driving and smooth passage is __.",
+      "prompt": "The reason that a road destroyed by flood affects safe driving and smooth passage is _____.",
       "options": [
         {
           "id": "q0146_o1",
@@ -22296,7 +22303,7 @@ export const config = {
       "id": "q0147",
       "number": 147,
       "type": "mcq",
-      "prompt": "When encountering a traffic accident ahead and help is needed while driving, the driver should ________.",
+      "prompt": "When encountering a traffic accident ahead and help is needed while driving, the driver should ______.",
       "options": [
         {
           "id": "q0147_o1",
@@ -22355,7 +22362,7 @@ export const config = {
       "id": "q0148",
       "number": 148,
       "type": "mcq",
-      "prompt": "When overtaking a vehicle stopping on the right side, the driver should ________ in case that vehicle starts up suddenly or opens the door.",
+      "prompt": "When overtaking a vehicle stopping on the right side, the driver should ______ in case that vehicle starts up suddenly or opens the door.",
       "options": [
         {
           "id": "q0148_o1",
@@ -22375,7 +22382,7 @@ export const config = {
         {
           "id": "q0148_o4",
           "originalKey": "D",
-          "text": "Keep a safe horizontal distance from that vehicle, reduce speed and pass"
+          "text": "Keep a safe horizontal distance from that vehicle, reduce speed, and pass"
         }
       ],
       "correctRow": null,
@@ -22414,7 +22421,7 @@ export const config = {
       "id": "q0149",
       "number": 149,
       "type": "mcq",
-      "prompt": "When entering an expressway toll gate, the driver should select a gate where _______.",
+      "prompt": "When entering an expressway toll gate, the driver should select a gate where ______.",
       "options": [
         {
           "id": "q0149_o1",
@@ -22590,7 +22597,7 @@ export const config = {
       "id": "q0152",
       "number": 152,
       "type": "mcq",
-      "prompt": "When driving in icy and snowy weather, ________.",
+      "prompt": "When driving in icy and snowy weather, ______.",
       "options": [
         {
           "id": "q0152_o1",
@@ -22644,7 +22651,7 @@ export const config = {
       "id": "q0153",
       "number": 153,
       "type": "mcq",
-      "prompt": "When driving a vehicle through an inundated road with pedestrians on both sides, the driver should ________.",
+      "prompt": "When driving a vehicle through an flooded road with pedestrians on both sides, the driver should ______.",
       "options": [
         {
           "id": "q0153_o1",
@@ -22698,7 +22705,7 @@ export const config = {
       "id": "q0154",
       "number": 154,
       "type": "mcq",
-      "prompt": "When starting up a vehicle stopping at the roadside, the driver should first ________.",
+      "prompt": "When starting up a vehicle stopping at the roadside, the driver should first ______.",
       "options": [
         {
           "id": "q0154_o1",
@@ -22713,7 +22720,7 @@ export const config = {
         {
           "id": "q0154_o3",
           "originalKey": "C",
-          "text": "Increase engine rotation speed 11"
+          "text": "Increase engine rotation speed"
         },
         {
           "id": "q0154_o4",
@@ -22771,7 +22778,7 @@ export const config = {
       "id": "q0155",
       "number": 155,
       "type": "mcq",
-      "prompt": "When the green light at a congested intersection is on, the vehicles _______.",
+      "prompt": "When the green light at a congested intersection is on, the vehicles ______.",
       "options": [
         {
           "id": "q0155_o1",
@@ -22830,7 +22837,7 @@ export const config = {
       "id": "q0156",
       "number": 156,
       "type": "mcq",
-      "prompt": "When a vehicle passes a bumped road, the driver should ________.",
+      "prompt": "When a vehicle passes a bumped road, the driver should ______.",
       "options": [
         {
           "id": "q0156_o1",
@@ -22884,7 +22891,7 @@ export const config = {
       "id": "q0157",
       "number": 157,
       "type": "mcq",
-      "prompt": "When a vehicle overtakes the bike riders going in the same direction, the rational way to deal with is to ________.",
+      "prompt": "When a vehicle overtakes the bike riders going in the same direction, the rational way to deal with is to ______.",
       "options": [
         {
           "id": "q0157_o1",
@@ -22943,7 +22950,7 @@ export const config = {
       "id": "q0158",
       "number": 158,
       "type": "mcq",
-      "prompt": "When a motorized vehicle stops temporarily at the roadside, the driver ________.",
+      "prompt": "When a motorized vehicle stops temporarily at the roadside, the driver ______.",
       "options": [
         {
           "id": "q0158_o1",
@@ -22997,7 +23004,7 @@ export const config = {
       "id": "q0159",
       "number": 159,
       "type": "mcq",
-      "prompt": "When a vehicle follows another vehicle on a mountain road, it should ____.",
+      "prompt": "When a vehicle follows another vehicle on a mountain road, it should ______.",
       "options": [
         {
           "id": "q0159_o1",
@@ -23051,7 +23058,7 @@ export const config = {
       "id": "q0160",
       "number": 160,
       "type": "mcq",
-      "prompt": "If a front tire blowout has caused a turn in direction, the driver should not avoid excess adjustment. Instead, he should control the direction of the vehicle, ____, and slowly reduce the speed of the vehicle.",
+      "prompt": "If a front tire blowout has caused a turn in direction, the driver should not avoid excess adjustment. Instead, he should control the direction of the vehicle, ______, and slowly reduce the speed of the vehicle.",
       "options": [
         {
           "id": "q0160_o1",
@@ -23110,7 +23117,7 @@ export const config = {
       "id": "q0161",
       "number": 161,
       "type": "mcq",
-      "prompt": "At night, the drivers observation is markedly poorer than in the daytime and the range of visibility range is _______.",
+      "prompt": "At night, the drivers observation is markedly poorer than in the daytime and the range of visibility range is ______.",
       "options": [
         {
           "id": "q0161_o1",
@@ -23164,7 +23171,7 @@ export const config = {
       "id": "q0162",
       "number": 162,
       "type": "mcq",
-      "prompt": "When discovering a vehicle behind wanting to overtake while driving, the driver should _______.",
+      "prompt": "When discovering a vehicle behind wanting to overtake while driving, the driver should ______.",
       "options": [
         {
           "id": "q0162_o1",
@@ -23223,7 +23230,7 @@ export const config = {
       "id": "q0163",
       "number": 163,
       "type": "mcq",
-      "prompt": "When driving slowly in a congested road, the driver should ________ if another vehicle forcefully cuts in.",
+      "prompt": "When driving slowly in a congested road, the driver should ______ if another vehicle forcefully cuts in.",
       "options": [
         {
           "id": "q0163_o1",
@@ -23282,7 +23289,7 @@ export const config = {
       "id": "q0164",
       "number": 164,
       "type": "mcq",
-      "prompt": "When reversing on an ordinary road and discovering some vehicles are passing, the driver should _________.",
+      "prompt": "When reversing on an ordinary road and discovering some vehicles are passing, the driver should ______.",
       "options": [
         {
           "id": "q0164_o1",
@@ -23302,7 +23309,7 @@ export const config = {
         {
           "id": "q0164_o4",
           "originalKey": "D",
-          "text": "Continue to reverse 12"
+          "text": "Continue to reverse"
         }
       ],
       "correctRow": null,
@@ -23341,7 +23348,7 @@ export const config = {
       "id": "q0165",
       "number": 165,
       "type": "mcq",
-      "prompt": "When a vehicle reaches a sharp curve, the driver should _______.",
+      "prompt": "When a vehicle reaches a sharp curve, the driver should ______.",
       "options": [
         {
           "id": "q0165_o1",
@@ -23395,7 +23402,7 @@ export const config = {
       "id": "q0166",
       "number": 166,
       "type": "mcq",
-      "prompt": "When a vehicle stops temporarily in a rainy day, the driver should turn on ______.",
+      "prompt": "When a vehicle stops temporarily on a rainy day, the driver should turn on ______.",
       "options": [
         {
           "id": "q0166_o1",
@@ -23454,7 +23461,7 @@ export const config = {
       "id": "q0167",
       "number": 167,
       "type": "mcq",
-      "prompt": "When driving in a rainy day, the driver should _____ when a pedestrian holding umbrella or in raincoat is walking on the highway.",
+      "prompt": "When driving in a rainy day, the driver should ______ when a pedestrian holding umbrella or in raincoat is walking on the highway.",
       "options": [
         {
           "id": "q0167_o1",
@@ -23537,7 +23544,7 @@ export const config = {
         {
           "id": "q0168_o4",
           "originalKey": "D",
-          "text": "Poor braking performance and Side pulling"
+          "text": "Poor braking performance and side pulling"
         }
       ],
       "correctRow": null,
@@ -23571,27 +23578,27 @@ export const config = {
       "id": "q0169",
       "number": 169,
       "type": "mcq",
-      "prompt": "The main impact of muddy roads on safe driving is _________.",
+      "prompt": "The main impact of muddy roads on safe driving is that the ______.",
       "options": [
         {
           "id": "q0169_o1",
           "originalKey": "A",
-          "text": "The resistance to the vehicle becomes weaker"
+          "text": "Resistance to the vehicle becomes weaker"
         },
         {
           "id": "q0169_o2",
           "originalKey": "B",
-          "text": "The tires can easily spin and skid"
+          "text": "Tires can easily spin and skid"
         },
         {
           "id": "q0169_o3",
           "originalKey": "C",
-          "text": "The visibility become lower and blurs the field of vision"
+          "text": "Visibility becomes lower and blurs the field of vision"
         },
         {
           "id": "q0169_o4",
           "originalKey": "D",
-          "text": "The road grip becomes stronger"
+          "text": "Road grip becomes stronger"
         }
       ],
       "correctRow": null,
@@ -23625,7 +23632,7 @@ export const config = {
       "id": "q0170",
       "number": 170,
       "type": "mcq",
-      "prompt": "If an improper place is chosen for crossing another vehicle, the driver should immediately _______.",
+      "prompt": "If an improper place is chosen for crossing another vehicle, the driver should immediately ______.",
       "options": [
         {
           "id": "q0170_o1",
@@ -23915,27 +23922,27 @@ export const config = {
       "id": "q0175",
       "number": 175,
       "type": "mcq",
-      "prompt": "The main impact of rainy weather on safe driving is _______.",
+      "prompt": "The main impact of rainy weather on safe driving is that the ______.",
       "options": [
         {
           "id": "q0175_o1",
           "originalKey": "A",
-          "text": "The road is wet and slippery and the visibility is poor 13"
+          "text": "Road is wet and slippery and the visibility is poor"
         },
         {
           "id": "q0175_o2",
           "originalKey": "B",
-          "text": "The engine is prone to stop"
+          "text": "Engine is prone to stop"
         },
         {
           "id": "q0175_o3",
           "originalKey": "C",
-          "text": "The resistance to the vehicle increases"
+          "text": "Resistance to the vehicle increases"
         },
         {
           "id": "q0175_o4",
           "originalKey": "D",
-          "text": "The electric equipment is prone to getting wet and causing short circuit"
+          "text": "Electric equipment is prone to getting wet and causing short circuit"
         }
       ],
       "correctRow": null,
@@ -23979,7 +23986,7 @@ export const config = {
       "id": "q0176",
       "number": 176,
       "type": "mcq",
-      "prompt": "When encountering a vehicle in the opposite direction forcing its way by using his lane, the driver should _______.",
+      "prompt": "When encountering a vehicle in the opposite direction forcing its way by using his lane, the driver should ______.",
       "options": [
         {
           "id": "q0176_o1",
@@ -24038,7 +24045,7 @@ export const config = {
       "id": "q0177",
       "number": 177,
       "type": "mcq",
-      "prompt": "When a vehicle is being overtaken by another vehicle, the driver should _____.",
+      "prompt": "When a vehicle is being overtaken by another vehicle, the driver should ______.",
       "options": [
         {
           "id": "q0177_o1",
@@ -24097,7 +24104,7 @@ export const config = {
       "id": "q0178",
       "number": 178,
       "type": "mcq",
-      "prompt": "When encountering children on the road, the driver should _________.",
+      "prompt": "When encountering children on the road, the driver should ______.",
       "options": [
         {
           "id": "q0178_o1",
@@ -24156,7 +24163,7 @@ export const config = {
       "id": "q0179",
       "number": 179,
       "type": "mcq",
-      "prompt": "When the tire pressure is too low, the fast-running tire can change its shape like waves and increase its temperature, which in turn can cause ________.",
+      "prompt": "When the tire pressure is too low, the fast-running tire can change its shape like waves and increase its temperature, which in turn can cause a(n) ______.",
       "options": [
         {
           "id": "q0179_o1",
@@ -24210,27 +24217,27 @@ export const config = {
       "id": "q0180",
       "number": 180,
       "type": "mcq",
-      "prompt": "The main impact of mountain roads on safe driving is _______.",
+      "prompt": "The main impact of mountain roads on safe driving is that the ______.",
       "options": [
         {
           "id": "q0180_o1",
           "originalKey": "A",
-          "text": "The traffic conditions are boring"
+          "text": "Traffic conditions are boring"
         },
         {
           "id": "q0180_o2",
           "originalKey": "B",
-          "text": "The slopes are long, the curves are sharp and visibility range is shorter."
+          "text": "Slopes are long and the curves are sharp and visibility range is shorter."
         },
         {
           "id": "q0180_o3",
           "originalKey": "C",
-          "text": "The traffic flow is heavy"
+          "text": "Traffic flow is heavy"
         },
         {
           "id": "q0180_o4",
           "originalKey": "D",
-          "text": "The road signs are fewer"
+          "text": "Road signs are fewer"
         }
       ],
       "correctRow": null,
@@ -24274,12 +24281,12 @@ export const config = {
       "id": "q0181",
       "number": 181,
       "type": "mcq",
-      "prompt": "When discovering the persons injured in a traffic accident need rescue while driving, the driver should _________.",
+      "prompt": "When discovering the people injured in a traffic accident need rescue while driving, the driver should ______.",
       "options": [
         {
           "id": "q0181_o1",
           "originalKey": "A",
-          "text": "Send the injured persons to hospital in a timely manner or make emergency calls"
+          "text": "Send the injured people to hospital in a timely manner or make emergency calls"
         },
         {
           "id": "q0181_o2",
@@ -24333,7 +24340,7 @@ export const config = {
       "id": "q0182",
       "number": 182,
       "type": "mcq",
-      "prompt": "When discovering traffic congestion ahead while driving, the driver should ________.",
+      "prompt": "When discovering traffic congestion ahead while driving, the driver should ______.",
       "options": [
         {
           "id": "q0182_o1",
@@ -24348,7 +24355,7 @@ export const config = {
         {
           "id": "q0182_o3",
           "originalKey": "C",
-          "text": "Reduce speed, stop and wait in line"
+          "text": "Reduce speed, stop, and wait in line"
         },
         {
           "id": "q0182_o4",
@@ -24387,7 +24394,7 @@ export const config = {
       "id": "q0183",
       "number": 183,
       "type": "mcq",
-      "prompt": "When seeing a watch for children sign while driving, the driver should _______.",
+      "prompt": "When seeing a 'watch for children' sign while driving, the driver should ______.",
       "options": [
         {
           "id": "q0183_o1",
@@ -24441,7 +24448,7 @@ export const config = {
       "id": "q0184",
       "number": 184,
       "type": "mcq",
-      "prompt": "When driving in thick or extremely thick fog, the driver should ____ due to low visibility.",
+      "prompt": "When driving in thick or extremely thick fog, the driver should ______ due to low visibility.",
       "options": [
         {
           "id": "q0184_o1",
@@ -24500,7 +24507,7 @@ export const config = {
       "id": "q0185",
       "number": 185,
       "type": "mcq",
-      "prompt": "When overtaking, the driver should ________ if the vehicle in front refuses to reduce speed or yield.",
+      "prompt": "When overtaking, the driver should ______ if the vehicle in front refuses to reduce speed or yield.",
       "options": [
         {
           "id": "q0185_o1",
@@ -24569,7 +24576,7 @@ export const config = {
       "id": "q0186",
       "number": 186,
       "type": "mcq",
-      "prompt": "If a vehicle has the right of way at an intersection but encounters a vehicle cutting in, the driver should _________.",
+      "prompt": "If a vehicle has the right of way at an intersection but encounters a vehicle cutting in, the driver should ______.",
       "options": [
         {
           "id": "q0186_o1",
@@ -24628,7 +24635,7 @@ export const config = {
       "id": "q0187",
       "number": 187,
       "type": "row",
-      "prompt": "If a motorized vehicle driver has caused a major accident in violation of the traffic regulations which has caused serious injury, the driver is subject to a prison term of less than 3 years or a criminal detention.",
+      "prompt": "If a motorized vehicle driver has caused a major accident in violation of traffic regulations which has caused serious injury, the driver is subject to a prison term of less than 3 years or a criminal detention.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -24672,7 +24679,7 @@ export const config = {
       "id": "q0188",
       "number": 188,
       "type": "row",
-      "prompt": "Motorized vehicles should pass the intersections according to the traffic signals.",
+      "prompt": "Motorized vehicles should pass intersections according to the traffic signals.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -24760,7 +24767,7 @@ export const config = {
       "id": "q0190",
       "number": 190,
       "type": "row",
-      "prompt": "Driving a motorized vehicle on the road should be required to be with a license plate.",
+      "prompt": "Driving a motorized vehicle on the road is required to have a license plate.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -24800,7 +24807,7 @@ export const config = {
       "id": "q0191",
       "number": 191,
       "type": "row",
-      "prompt": "Driving a motorized vehicle in the city road which has no central line, the maximum speed can not exceed 50 kilometers per hour.",
+      "prompt": "Driving a motorized vehicle in the city road which has no central line, the maximum speed can not exceed 50 km/h.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -24885,7 +24892,7 @@ export const config = {
       "id": "q0193",
       "number": 193,
       "type": "row",
-      "prompt": "This motorized vehicle parked on the roadside has no illegal act.",
+      "prompt": "This motorized vehicle parked on the roadside has committed no illegal act.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -25025,7 +25032,7 @@ export const config = {
       "id": "q0196",
       "number": 196,
       "type": "row",
-      "prompt": "If a motorized vehicle driver has caused a major traffic accident in violation of the traffic regulations which has caused human death due to his escaping, the driver is subject to a prison term of 3 years ~ 7 years.",
+      "prompt": "If a motorized vehicle driver has caused a major traffic accident in violation of the traffic regulations which has caused human death due to him escaping, the driver is subject to a prison term of 3~7 years.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -25069,7 +25076,7 @@ export const config = {
       "id": "q0197",
       "number": 197,
       "type": "row",
-      "prompt": "Driving a motorized vehicle on the road in violation of road traffic regulations shall be subject to relevant 15 punishment.",
+      "prompt": "Driving a motorized vehicle on the road in violation of road traffic regulations shall be subject to relevant punishment.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -25159,7 +25166,7 @@ export const config = {
       "id": "q0199",
       "number": 199,
       "type": "row",
-      "prompt": "Driving a motorized vehicle on the highway which has no central line, the maximum speed can not exceed 70 kilometers per hour.",
+      "prompt": "Driving a motorized vehicle on the highway which has no central line, the maximum speed can not exceed 70 km/h.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -25282,7 +25289,7 @@ export const config = {
       "id": "q0202",
       "number": 202,
       "type": "row",
-      "prompt": "You can make an U turn at this intersection.",
+      "prompt": "You can make an U-turn at this intersection.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -25330,7 +25337,7 @@ export const config = {
       "id": "q0203",
       "number": 203,
       "type": "row",
-      "prompt": "Traffic Police can detain the vehicle according to law if it is without the mandatory traffic accident insurance in accordance with state regulations.",
+      "prompt": "Traffic police can detain the vehicle according to the law if it is without the mandatory traffic accident insurance in accordance with state regulations.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -25378,7 +25385,7 @@ export const config = {
       "id": "q0204",
       "number": 204,
       "type": "row",
-      "prompt": "A person can not apply the motorized vehicle driving license, if he has been held for criminal liabilities according to law because of driving after drinking and causing a major traffic accident.",
+      "prompt": "A person can not apply the motorized vehicle driving license, if he has been held for criminal liabilities according to the law because of driving after drinking and causing a major traffic accident.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -25470,7 +25477,7 @@ export const config = {
       "id": "q0206",
       "number": 206,
       "type": "row",
-      "prompt": "If the license plate of a motorized vehicle has been destroyed, the owner of the vehicle should apply for reissuing or changing to the vehicle management station at the registration place.",
+      "prompt": "If the license plate of a motorized vehicle has been destroyed, the owner of the vehicle should apply for re-issuing or changing to the vehicle management station at the registration place.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -25514,7 +25521,7 @@ export const config = {
       "id": "q0207",
       "number": 207,
       "type": "row",
-      "prompt": "A driver should drive the vehicles in accordance with the qualification listed on the driving license.",
+      "prompt": "A driver should drive the vehicles in accordance with the qualification listed on their driving license.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -25589,7 +25596,7 @@ export const config = {
       "id": "q0209",
       "number": 209,
       "type": "row",
-      "prompt": "Driving a motorized vehicle shall not overtake in tunnels, steep slopes and other special sections.",
+      "prompt": "Driving a motorized vehicle shall not overtake in tunnels, steep slopes, or other special sections.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -25624,7 +25631,7 @@ export const config = {
       "id": "q0210",
       "number": 210,
       "type": "row",
-      "prompt": "When a motorized vehicle breaks down on the expressway, the persons on board should swiftly move to the right side road shoulder or emergency lane, and report to the police rapidly.",
+      "prompt": "When a motorized vehicle breaks down on the expressway, the people on board should swiftly move to the right side road shoulder or emergency lane, and report to the police as soon as possible.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -25668,7 +25675,7 @@ export const config = {
       "id": "q0211",
       "number": 211,
       "type": "row",
-      "prompt": "Traffic Police can detain the vehicle according to law if it runs on the road failing to place a label of inspection.",
+      "prompt": "Traffic police can detain the vehicle according to the law if it runs on the road failing to place a label of inspection.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -25720,7 +25727,7 @@ export const config = {
       "id": "q0212",
       "number": 212,
       "type": "row",
-      "prompt": "Traffic Police can detain the accident vehicle according to law if it needs to be collected evidence of the road accident. 16",
+      "prompt": "Traffic police can detain the accident vehicle according to the law if it needs to be collected evidence of the road accident.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -25764,7 +25771,7 @@ export const config = {
       "id": "q0213",
       "number": 213,
       "type": "row",
-      "prompt": "Traffic Police can detain the vehicle according to law if it is suspected of using the label of inspection from other vehicle.",
+      "prompt": "Traffic police can detain the vehicle according to the law if it is suspected of using the label of inspection from other vehicle.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -25856,7 +25863,7 @@ export const config = {
       "id": "q0215",
       "number": 215,
       "type": "row",
-      "prompt": "When the driver is suspected of drinking or drunk in a traffic accident, preserve the scene and immediately report to the police.",
+      "prompt": "When the driver is suspected of drinking or under the influence in a traffic accident, preserve the scene and immediately report to the police.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -25900,7 +25907,7 @@ export const config = {
       "id": "q0216",
       "number": 216,
       "type": "row",
-      "prompt": "A driver applies for the driving license for the first time and is during the period of probation, he can drive a motorized vehicle on expressway alone.",
+      "prompt": "A driver who applies for a driving license for the first time can drive a motorized vehicle on the expressway alone during the probation period.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -25944,7 +25951,7 @@ export const config = {
       "id": "q0217",
       "number": 217,
       "type": "row",
-      "prompt": "Illegally assembled motorized vehicle can be drived on road as long as it is thought to be safe.",
+      "prompt": "An illegally assembled motorized vehicle can be driven on the road as long as it is thought to be safe.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -26117,7 +26124,7 @@ export const config = {
       "id": "q0221",
       "number": 221,
       "type": "row",
-      "prompt": "A driver should buckled up before the vehicle moves.",
+      "prompt": "A driver should be buckled up before the vehicle moves.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -26152,7 +26159,7 @@ export const config = {
       "id": "q0222",
       "number": 222,
       "type": "row",
-      "prompt": "If the vehicle has no license plate, label of inspection or label of insurance, preserve the scene and immediately report to the police.",
+      "prompt": "If the vehicle has no license plate, a label of inspection, or a label of insurance, preserve the scene and immediately report it to the police.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -26200,7 +26207,7 @@ export const config = {
       "id": "q0223",
       "number": 223,
       "type": "row",
-      "prompt": "One who runs away after causing a traffic accident and constitute a crime can not apply for motorized vehicle driving license.",
+      "prompt": "A person who flees the scene after causing a traffic accident and commits a crime cannot apply for a motor vehicle driving licence.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -26244,7 +26251,7 @@ export const config = {
       "id": "q0224",
       "number": 224,
       "type": "row",
-      "prompt": "One shall not drive a motorized vehicle during the period of deferred license checking due to military service, abroad and other reasons.",
+      "prompt": "One shall not drive a motorized vehicle during the period of deferred license checking due to military service, abroad or other reasons.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -26279,7 +26286,7 @@ export const config = {
       "id": "q0225",
       "number": 225,
       "type": "row",
-      "prompt": "Going though the intersection according to the traffic lights when traffic lights and command of the traffic police are inconsistent.",
+      "prompt": "It is okay to go through the intersection according to the traffic lights despite the commands of the traffic police are inconsistent.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -26319,7 +26326,7 @@ export const config = {
       "id": "q0226",
       "number": 226,
       "type": "row",
-      "prompt": "Top speed in this section is 50 kilometers per hour.",
+      "prompt": "Top speed in this section is 50km/h.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -26367,7 +26374,7 @@ export const config = {
       "id": "q0227",
       "number": 227,
       "type": "row",
-      "prompt": "You may not use the turn signal when you change to the right lane. 17",
+      "prompt": "You may not use the turn signal when you change to the right lane.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -26402,7 +26409,7 @@ export const config = {
       "id": "q0228",
       "number": 228,
       "type": "row",
-      "prompt": "You can overtake from both sides in this case.",
+      "prompt": "You can overtake from either side in this case.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -26450,7 +26457,7 @@ export const config = {
       "id": "q0229",
       "number": 229,
       "type": "row",
-      "prompt": "You can overtake from right side in this case.",
+      "prompt": "You can overtake from the right side in this case.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -26546,7 +26553,7 @@ export const config = {
       "id": "q0231",
       "number": 231,
       "type": "row",
-      "prompt": "Speeding up to go though the intersection before the light turns to red in this case.",
+      "prompt": "You can speed up to go through the intersection before the light turns red in this case.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -26594,7 +26601,7 @@ export const config = {
       "id": "q0232",
       "number": 232,
       "type": "row",
-      "prompt": "A motorized vehicle driver who escapes or commits other extremely serious acts after causing a major accident in violation of the traffic regulations is subject to a prison term of more than 7 years.",
+      "prompt": "A motorized vehicle driver who escapes or commits other extremely serious acts after causing a major accident in violation of traffic regulations is subject to a prison term of more than 7 years.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -26682,7 +26689,7 @@ export const config = {
       "id": "q0234",
       "number": 234,
       "type": "row",
-      "prompt": "The motorized vehicle driver is not allowed to drive a motorized vehicle when his driving license is detained.",
+      "prompt": "The motorized vehicle driver is not allowed to drive a motorized vehicle while his driving license is being detained.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -26726,7 +26733,7 @@ export const config = {
       "id": "q0235",
       "number": 235,
       "type": "row",
-      "prompt": "In this case, by the right side of the bus lane to overtake.",
+      "prompt": "In this case, you can overtake using the bus lane on the right side.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -26822,7 +26829,7 @@ export const config = {
       "id": "q0237",
       "number": 237,
       "type": "row",
-      "prompt": "When running on the road having maximum speed limit signs, the motorized vehicle is not allowed to exceed the marked maximum speed. 18",
+      "prompt": "When running on the road having maximum speed limit signs, the motorized vehicle is not allowed to exceed the marked maximum speed.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -26892,7 +26899,7 @@ export const config = {
       "id": "q0239",
       "number": 239,
       "type": "row",
-      "prompt": "A motorized vehicle is not allowed to make a U turn at the level crossing, bridge, steep slope, tunnel or dangerous road section.",
+      "prompt": "A motorized vehicle is not allowed to make a U-turn at the level crossing, bridge, steep slope, tunnel, or dangerous road section.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -26932,7 +26939,7 @@ export const config = {
       "id": "q0240",
       "number": 240,
       "type": "row",
-      "prompt": "A motorized vehicle can make a U turn on this road as long as it does not interfere other vehicles.",
+      "prompt": "A motorized vehicle can make a U-turn on this road as long as it does not interfere with other vehicles.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -27235,7 +27242,7 @@ export const config = {
       "id": "q0248",
       "number": 248,
       "type": "row",
-      "prompt": "Traffic Police can detain the vehicle according to law if it is suspected of using the label of insurance from other vehicle.",
+      "prompt": "Traffic police can detain the vehicle according to the law if it is suspected of using the label of insurance from another vehicle.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -27327,7 +27334,7 @@ export const config = {
       "id": "q0250",
       "number": 250,
       "type": "row",
-      "prompt": "When causing a road accident involving property damage, the party should leave the scene on his own but he does not leave, the traffic police can not order him to leave.",
+      "prompt": "When causing a road accident involving property damage, the party can leave the scene on his own but if he refuses to leave, the traffic police cannot order him to leave.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -27419,7 +27426,7 @@ export const config = {
       "id": "q0252",
       "number": 252,
       "type": "row",
-      "prompt": "If a motorized vehicle driver reaches 12 penalty points during the period of probation, the probation qualification should be revoked.",
+      "prompt": "If a motorized vehicle driver reaches 12 penalty points during the period of probation, the probation qualification will be revoked.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -27507,7 +27514,7 @@ export const config = {
       "id": "q0254",
       "number": 254,
       "type": "row",
-      "prompt": "May not turn on the turn signal when overtaking. 19",
+      "prompt": "You may not turn on the turn signal when overtaking.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -27542,7 +27549,7 @@ export const config = {
       "id": "q0255",
       "number": 255,
       "type": "row",
-      "prompt": "Can not overtake in this situation.",
+      "prompt": "You can not overtake in this situation.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -27590,7 +27597,7 @@ export const config = {
       "id": "q0256",
       "number": 256,
       "type": "row",
-      "prompt": "You have the priviledged passing right of way in this situation.",
+      "prompt": "You have the right of way in this situation.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -27678,7 +27685,7 @@ export const config = {
       "id": "q0258",
       "number": 258,
       "type": "row",
-      "prompt": "A motorized vehicle is not allowed to stop in the section 50 meters to the bridge, steep slope or tunnel.",
+      "prompt": "A motorized vehicle is not allowed to stop in the section 50 meters to the bridge, steep slope, or tunnel.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -27713,7 +27720,7 @@ export const config = {
       "id": "q0259",
       "number": 259,
       "type": "row",
-      "prompt": "Can leave the expressway into the ramp from this location directly.",
+      "prompt": "You can leave the expressway into the ramp from this location directly.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -27793,7 +27800,13 @@ export const config = {
           ]
         }
       ],
-      "assets": [],
+      "assets": [
+        {
+          "kind": "image",
+          "src": "/qbank/2023-test1/images/p20-260.jpg",
+          "page": 20
+        }
+      ],
       "source": {
         "pdf": "2023 Driving test 1.pdf"
       },
@@ -27816,7 +27829,7 @@ export const config = {
       "id": "q0261",
       "number": 261,
       "type": "row",
-      "prompt": "May watch car video in good road conditions.",
+      "prompt": "You may watch videos in good road conditions.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -27851,7 +27864,7 @@ export const config = {
       "id": "q0262",
       "number": 262,
       "type": "row",
-      "prompt": "May throw items to the road while driving.",
+      "prompt": "You may throw items onto the road while driving.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -27886,7 +27899,7 @@ export const config = {
       "id": "q0263",
       "number": 263,
       "type": "row",
-      "prompt": "When causing a road accident involving property damage, the party should leave the scene on his own but he does not leave and causes a traffic jam, he may be subject to a fine of 200 yuan.",
+      "prompt": "When causing a road accident involving property damage, the party can leave the scene on his own but he if he refuses to leave and causes a traffic jam, he may be subject to a fine of 200 yuan.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -27934,7 +27947,7 @@ export const config = {
       "id": "q0264",
       "number": 264,
       "type": "row",
-      "prompt": "Causing a traffic accident due to violating the law and regulations on road traffic safety is the rule-breaking act.",
+      "prompt": "Causing a traffic accident due to violating the law and regulations on road traffic safety is a rule-breaking act.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -27974,7 +27987,7 @@ export const config = {
       "id": "q0265",
       "number": 265,
       "type": "row",
-      "prompt": "A person who has falsified or altered the motorized vehicle driving license and if his act constitutes a crime, he should be held for criminal liabilities according to law.",
+      "prompt": "A person who has falsified or altered his motorized vehicle driving license and commits a crime, he will be held for criminal liabilities according to the law.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -28098,7 +28111,7 @@ export const config = {
       "id": "q0268",
       "number": 268,
       "type": "row",
-      "prompt": "When a motorized vehicle makes a U turn, turns around or goes down a slope, the maximum speed should not exceed 40 kilometers per hour.",
+      "prompt": "When a motorized vehicle makes a U-turn, turns around or goes down a slope, the maximum speed should not exceed 40 km/h.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -28133,7 +28146,7 @@ export const config = {
       "id": "q0269",
       "number": 269,
       "type": "row",
-      "prompt": "When a motorized vehicle crosses a non-motorized vehicle on a narrow road or a narrow bridge at night, the 20 motorized vehicle should use the high beam light.",
+      "prompt": "When a motorized vehicle crosses a non-motorized vehicle on a narrow road or a narrow bridge at night, the motorized vehicle should use the high beam light.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -28266,7 +28279,7 @@ export const config = {
       "id": "q0272",
       "number": 272,
       "type": "row",
-      "prompt": "May stop temporarily in the lane for non-motorized vehicles in this section.",
+      "prompt": "You may stop temporarily in the lane for non-motorized vehicles in this section.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -28349,7 +28362,7 @@ export const config = {
       "id": "q0274",
       "number": 274,
       "type": "row",
-      "prompt": "If a motorized vehicle driver has caused a major accident in violation of the traffic regulations which has caused heavy loss to public or private property, the driver is subject to a prison term of less than 3 years or a criminal detention.",
+      "prompt": "If a motorized vehicle driver has caused a major accident in violation of traffic regulations which has caused heavy loss to public or private property, the driver is subject to a prison term of less than 3 years or a criminal detention.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -28438,7 +28451,7 @@ export const config = {
       "id": "q0276",
       "number": 276,
       "type": "row",
-      "prompt": "A motorized vehicle runs on the road without a label of insurance, the traffic police can detain the vehicle license according to law.",
+      "prompt": "If a motorized vehicle running on the road without a label of insurance, the traffic police can detain the vehicle license according to the law.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -28486,7 +28499,7 @@ export const config = {
       "id": "q0277",
       "number": 277,
       "type": "row",
-      "prompt": "Traffic Police only imposes a fine if a vehicle is suspected of using the falsified or altered label of inspection.",
+      "prompt": "Traffic police only impose a fine if a vehicle is suspected of using falsified or altered labels of inspection.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -28503,7 +28516,8 @@ export const config = {
           ]
         }
       ],
-      "assets": [],
+      "assets": [
+      ],
       "source": {
         "pdf": "2023 Driving test 1.pdf"
       },
@@ -28838,7 +28852,7 @@ export const config = {
       "id": "q0285",
       "number": 285,
       "type": "row",
-      "prompt": "Driving in a dusty weather, it does not needed to turn on the head light, the contour light and the tail light.",
+      "prompt": "Driving in dusty weather, does not require you to turn on the head light, the contour light, or the tail light.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -28873,7 +28887,7 @@ export const config = {
       "id": "q0286",
       "number": 286,
       "type": "row",
-      "prompt": "Using the low beam light in such circumstances.",
+      "prompt": "Use the low beam light in such circumstances.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -28921,7 +28935,7 @@ export const config = {
       "id": "q0287",
       "number": 287,
       "type": "row",
-      "prompt": "Using the high and low beam lights alternately while driving on the road of this kind of sharp curve.",
+      "prompt": "Use the high and low beam lights alternately while driving on the road of this kind of sharp curve.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -28969,7 +28983,7 @@ export const config = {
       "id": "q0288",
       "number": 288,
       "type": "row",
-      "prompt": "When a motorized vehicle passes through narrow road or bridge, the maximum speed should not exceed 30 kilometers per hour.",
+      "prompt": "When a motorized vehicle passes through narrow road or bridge, the maximum speed should not exceed 30 km/h.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -29004,7 +29018,7 @@ export const config = {
       "id": "q0289",
       "number": 289,
       "type": "row",
-      "prompt": "You should speed up to change lane in front of the red car.",
+      "prompt": "You should speed up to change lanes in front of the red car.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -29052,7 +29066,7 @@ export const config = {
       "id": "q0290",
       "number": 290,
       "type": "row",
-      "prompt": "No U turn at this section.",
+      "prompt": "No U-turning at this section.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -29100,7 +29114,7 @@ export const config = {
       "id": "q0291",
       "number": 291,
       "type": "row",
-      "prompt": "When a motorized vehicle breaks down at night, and is difficult to move, the driver should turn on the hazard lights, the contour lights and the tail lights.",
+      "prompt": "When a motorized vehicle breaks down at night, and is difficult to move, the driver should turn on the hazard lights, the contour lights, and the tail lights.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -29193,7 +29207,7 @@ export const config = {
       "id": "q0293",
       "number": 293,
       "type": "row",
-      "prompt": "Traffic Police can detain the vehicle which is suspected of using the falsified or altered license plate and vehicle license. 22",
+      "prompt": "Traffic police can detain the vehicle which is suspected of using a falsified or altered license plate or vehicle license.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -29241,7 +29255,7 @@ export const config = {
       "id": "q0294",
       "number": 294,
       "type": "row",
-      "prompt": "Traffic Police can detain the vehicle which is suspected of using other vehicles license plate and vehicle license.",
+      "prompt": "Traffic police can detain the vehicle which is suspected of using other vehicles' license plates or vehicle licenses.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -29289,7 +29303,7 @@ export const config = {
       "id": "q0295",
       "number": 295,
       "type": "row",
-      "prompt": "If a motorized vehicle driver allows his vehicle to be driven by a person whose driving license has been detained, the traffic police will serve an oral warning.",
+      "prompt": "If a motorized vehicle driver allows his vehicle to be driven by a person whose driving license has been detained, the traffic police will serve him an oral warning.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -29337,7 +29351,7 @@ export const config = {
       "id": "q0296",
       "number": 296,
       "type": "row",
-      "prompt": "The motorized vehicle driver who lives outside the jurisdiction of the issuing vehicle management station may apply to the vehicle management station at the place where he is living, for license change.",
+      "prompt": "The motorized vehicle driver who lives outside the jurisdiction of the issuing vehicle management station may apply to the vehicle management station at the place where he is living, for a license change.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -29372,7 +29386,7 @@ export const config = {
       "id": "q0297",
       "number": 297,
       "type": "row",
-      "prompt": "A motorized vehicle driver who reverses, drives in the opposite direction or make a U turn by crossing the central dividing strip on the expressway is subject to a 6-point penalty.",
+      "prompt": "A motorized vehicle driver who reverses, drives in the opposite direction or make a U-turn by crossing the central dividing strip on the expressway is subject to a 6-point penalty.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -29416,7 +29430,7 @@ export const config = {
       "id": "q0298",
       "number": 298,
       "type": "row",
-      "prompt": "If the vehicle license of a motorized vehicle are lost, the vehicle owner should apply to the vehicle management station at the registration place for reissuing.",
+      "prompt": "If the vehicle license of a motorized vehicle is lost, the vehicle owner should apply to the vehicle management station at the registration place for reissuing.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -29460,7 +29474,7 @@ export const config = {
       "id": "q0299",
       "number": 299,
       "type": "row",
-      "prompt": "A person who has not obtained driving license drives a motorized vehicle, he will be held for legal liability.",
+      "prompt": "A person who has not obtained a driving license and drives a motorized vehicle, will be held for legal liability.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -29500,7 +29514,7 @@ export const config = {
       "id": "q0300",
       "number": 300,
       "type": "row",
-      "prompt": "If a person who has caused a major traffic accident and if his act constitutes a crime, he may not be held for criminal liabilities.",
+      "prompt": "If a person who has caused a major traffic accident and if his act constitutes as a crime, he may not be held for criminal liabilities.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -29540,7 +29554,7 @@ export const config = {
       "id": "q0301",
       "number": 301,
       "type": "row",
-      "prompt": "Traffic lights are divided into red, green and yellow light.",
+      "prompt": "Traffic lights are divided into red, green, and yellow light.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -29647,7 +29661,12 @@ export const config = {
           ]
         }
       ],
-      "assets": [],
+      "assets": [
+        {
+          "kind":"image",
+          "src": "/qbank/2023-test1/images/img-303.jpg"
+        }
+      ],
       "source": {
         "pdf": "2023 Driving test 1.pdf"
       },
@@ -29723,7 +29742,7 @@ export const config = {
       "id": "q0305",
       "number": 305,
       "type": "row",
-      "prompt": "When the fire engine, ambulance and wrecker are executing an emergency task, other vehicles should yield.",
+      "prompt": "When the fire engine, ambulance, and wrecker are executing an emergency task, other vehicles should yield.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -29838,7 +29857,7 @@ export const config = {
       "id": "q0308",
       "number": 308,
       "type": "row",
-      "prompt": "You can drive directly into the expressway from this position. 23",
+      "prompt": "You can drive directly into the expressway from this position.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -29891,7 +29910,7 @@ export const config = {
       "id": "q0309",
       "number": 309,
       "type": "row",
-      "prompt": "If a motorized vehicle causes a traffic accident on the expressway and cannot to run normally, the vehicle should be towed by a rescue vehicle or a tow truck.",
+      "prompt": "If a motorized vehicle causes a traffic accident on the expressway and cannot function properlyz, the vehicle should be towed by a rescue vehicle or a tow truck.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -30010,7 +30029,7 @@ export const config = {
       "id": "q0312",
       "number": 312,
       "type": "row",
-      "prompt": "The driving license of a motorized vehicle driver will be detained after his penalty scores reach 12 points in a scoring circle.",
+      "prompt": "The driving license of a motorized vehicle driver will be detained after his penalty scores reaches 12 points in a scoring circle.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -30225,7 +30244,7 @@ export const config = {
       "id": "q0317",
       "number": 317,
       "type": "row",
-      "prompt": "Turn on the left-turn signal in advance when making a U turn on the road.",
+      "prompt": "Turn on the left-turn signal in advance when making a U-turn on the road.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -30260,7 +30279,7 @@ export const config = {
       "id": "q0318",
       "number": 318,
       "type": "row",
-      "prompt": "Use the high and low beam lights alternately when passing the crosswalk at night.",
+      "prompt": "Use the high and low beam lights alternately when passing a crosswalk at night.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -30300,7 +30319,7 @@ export const config = {
       "id": "q0319",
       "number": 319,
       "type": "row",
-      "prompt": "Cannot make a U turn in this section.",
+      "prompt": "You cannot make a U-turn in this section.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -30423,7 +30442,7 @@ export const config = {
       "id": "q0322",
       "number": 322,
       "type": "row",
-      "prompt": "A motorized vehicle driver who uses other motorized vehicles license plate and vehicle license is subject to a 3-point penalty.",
+      "prompt": "A motorized vehicle driver who uses other motorized vehicles license plates or vehicle licenses is subject to a 3 point penalty.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -30467,7 +30486,7 @@ export const config = {
       "id": "q0323",
       "number": 323,
       "type": "row",
-      "prompt": "Violating the law and regulations on road traffic safety is the act of violation of the law.",
+      "prompt": "Violating the law and regulations of road traffic safety is the act of violation of the law.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -30617,7 +30636,7 @@ export const config = {
       "id": "q0327",
       "number": 327,
       "type": "row",
-      "prompt": "If the accumulated penalty points of a motorized vehicle driver reach 12 points and the driver refuses to participate in the study course and also refuses to take tests, it should be publicly announced that his driving license should no longer be used.",
+      "prompt": "If the accumulated penalty points of a motorized vehicle driver reaches 12 points and the driver refuses to participate in the study course and also refuses to take tests, it should be publicly announced that his driving license should no longer be used.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -30665,7 +30684,7 @@ export const config = {
       "id": "q0328",
       "number": 328,
       "type": "row",
-      "prompt": "Traffic signals include Traffic lights, Traffic signs and Command of the traffic police.",
+      "prompt": "Traffic signals include Traffic lights, Traffic signs, and Command of the traffic police.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -30709,7 +30728,7 @@ export const config = {
       "id": "q0329",
       "number": 329,
       "type": "row",
-      "prompt": "Driving a motorized vehicle on the road in this condition, the maximum speed can not exceed 50 kilometers per hour.",
+      "prompt": "Driving a motorized vehicle on the road in this condition, the maximum speed can not exceed 50 km/h.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -30810,7 +30829,7 @@ export const config = {
       "id": "q0331",
       "number": 331,
       "type": "row",
-      "prompt": "Driving a small passenger vehicle on the expressway, the minimum speed should not be less than 90 kilometers per hour.",
+      "prompt": "Driving a small passenger vehicle on the expressway, the minimum speed should not be less than 90km/h.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -30890,7 +30909,7 @@ export const config = {
       "id": "q0333",
       "number": 333,
       "type": "row",
-      "prompt": "When a motorized vehicle breaks down on the expressway, the driver should place a warning sign 50 meters ~ 100 meters in the coming direction.",
+      "prompt": "When a motorized vehicle breaks down on the expressway, the driver should place a warning sign 50~100 meters in the coming direction.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -30934,7 +30953,7 @@ export const config = {
       "id": "q0334",
       "number": 334,
       "type": "row",
-      "prompt": "Must reduce the frequency of honking in this section.",
+      "prompt": "You must reduce the frequency of honking in this section.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -30982,7 +31001,7 @@ export const config = {
       "id": "q0335",
       "number": 335,
       "type": "row",
-      "prompt": "Traffic Police can detain the vehicle according to law if it uses other vehicles license plate and vehicle license.",
+      "prompt": "Traffic police can detain the vehicle according to the law if it uses other vehicles' license plates or vehicle licenses.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -31030,7 +31049,7 @@ export const config = {
       "id": "q0336",
       "number": 336,
       "type": "row",
-      "prompt": "If a motorized vehicle hits a building or a public facility, the vehicle may leave the scene right away.",
+      "prompt": "If a motorized vehicle hits a building or a public facility, the vehicle can leave the scene right away.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -31114,7 +31133,7 @@ export const config = {
       "id": "q0338",
       "number": 338,
       "type": "row",
-      "prompt": "The age should be 18 ~ 70 years old when applying for the driving license of small vehicle or three-wheeled automobile.",
+      "prompt": "The age should be between 18~70 years old when applying for the driving license of a small vehicle or a three-wheeled automobile.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -31238,7 +31257,7 @@ export const config = {
       "id": "q0341",
       "number": 341,
       "type": "row",
-      "prompt": "Traffic Police can detain the vehicle according to law if the driver does not carry the ID card.",
+      "prompt": "Traffic police can detain the vehicle according to the law if the driver does not carry the ID card.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -31392,7 +31411,7 @@ export const config = {
       "id": "q0345",
       "number": 345,
       "type": "row",
-      "prompt": "Speed up when passing the overflowing road.",
+      "prompt": "Speed up when passing an overflowing road.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -31462,7 +31481,7 @@ export const config = {
       "id": "q0347",
       "number": 347,
       "type": "row",
-      "prompt": "A person who falsifies, alters driving license or uses falsified, altered driving license, and if his act constitutes a crime, he should be held for criminal liabilities according to law.",
+      "prompt": "A person who either falsifies or alters a driving license or uses a falsified altered driving license, and commits a crime, they should be held for criminal liabilities according to the law.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -31542,7 +31561,7 @@ export const config = {
       "id": "q0349",
       "number": 349,
       "type": "row",
-      "prompt": "If a motorized vehicle has reached the states mandatory write-off standard, its registration will not be handled.",
+      "prompt": "If a motorized vehicle has reached the state's mandatory write-off standard, its registration will not be handled.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -31829,7 +31848,7 @@ export const config = {
       "id": "q0356",
       "number": 356,
       "type": "row",
-      "prompt": "If a person has caused a traffic accident and run away, and constitutes a crime, his driving license should be revoked and he is banned for lifetime from re-obtaining a driving license.",
+      "prompt": "If a person causes a traffic accident and runs away and commits a crime, his driving license will be revoked and is banned for life from reobtaining a driving license.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -31873,7 +31892,7 @@ export const config = {
       "id": "q0357",
       "number": 357,
       "type": "row",
-      "prompt": "A person who has the expired driving license can drive motorized vehicle within 1 year.",
+      "prompt": "A person who has an expired driving license can drive a motorized vehicle within 1 year.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -31913,7 +31932,7 @@ export const config = {
       "id": "q0358",
       "number": 358,
       "type": "row",
-      "prompt": "A driver can park the vehicle by borrowing the sidewalk if he cannot find the parking area.",
+      "prompt": "A driver can park the vehicle by borrowing the sidewalk if he cannot find a parking area.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -31953,7 +31972,7 @@ export const config = {
       "id": "q0359",
       "number": 359,
       "type": "row",
-      "prompt": "Traffic Police can detain the driver according to law, if the driver drives a motorized vehicle which is suspected of 26 reaching the write-off standard.",
+      "prompt": "Traffic police can detain the driver according to the law, if the driver drives a motorized vehicle which is suspected of reaching the write-off standard.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -32007,7 +32026,7 @@ export const config = {
       "id": "q0360",
       "number": 360,
       "type": "row",
-      "prompt": "Reducing the speed when driving in sand, hail, rain, fog, ice and other weather conditions.",
+      "prompt": "Reduce speed when driving in sand, hail, rain, fog, ice, or other weather conditions.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -32042,7 +32061,7 @@ export const config = {
       "id": "q0361",
       "number": 361,
       "type": "row",
-      "prompt": "Reducing the speed to yield when encountering this situation in the intersection.",
+      "prompt": "Reduce speed to yield when encountering this situation in the intersection.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -32151,7 +32170,7 @@ export const config = {
       "id": "q0363",
       "number": 363,
       "type": "mcq",
-      "prompt": "If a driving license is obtained by deception, bribery or other illegal means, the driving license should be revoked and the applicant is not allowed to re-apply for it _____ .",
+      "prompt": "If a driving license is obtained by deception, bribery, or other illegal means, the driving license will be revoked and the applicant is not allowed to re-apply for it ______ .",
       "options": [
         {
           "id": "q0363_o1",
@@ -32300,22 +32319,22 @@ export const config = {
         {
           "id": "q0365_o1",
           "originalKey": "A",
-          "text": "make a U turn along the left lane"
+          "text": "make a U-turn along the left lane"
         },
         {
           "id": "q0365_o2",
           "originalKey": "B",
-          "text": "cannot make a U turn"
+          "text": "cannot make a U-turn"
         },
         {
           "id": "q0365_o3",
           "originalKey": "C",
-          "text": "make a U turn through the middle lane"
+          "text": "make a U-turn through the middle lane"
         },
         {
           "id": "q0365_o4",
           "originalKey": "D",
-          "text": "make a U turn inside the intersection"
+          "text": "make a U-turn inside the intersection"
         }
       ],
       "correctRow": null,
@@ -32443,7 +32462,7 @@ export const config = {
         {
           "id": "q0367_o1",
           "originalKey": "A",
-          "text": "100 km/hr 27"
+          "text": "100 km/hr"
         },
         {
           "id": "q0367_o2",
@@ -32517,7 +32536,7 @@ export const config = {
       "id": "q0368",
       "number": 368,
       "type": "mcq",
-      "prompt": "How far should be the distance from the vehicle in front at the speed of more than 100 km/hr when driving a small passenger vehicle on the expressway?",
+      "prompt": "How far should be the distance from the vehicle in front at the speed of more than 100km/hr when driving a small passenger vehicle on the expressway?",
       "options": [
         {
           "id": "q0368_o1",
@@ -32578,7 +32597,7 @@ export const config = {
       "id": "q0369",
       "number": 369,
       "type": "mcq",
-      "prompt": "The police can detain the vehicle if one drives a vehicle without ______",
+      "prompt": "The police can detain the vehicle if one drives a vehicle without a ______",
       "options": [
         {
           "id": "q0369_o1",
@@ -32598,7 +32617,7 @@ export const config = {
         {
           "id": "q0369_o4",
           "originalKey": "D",
-          "text": "pass paper"
+          "text": "passport"
         }
       ],
       "correctRow": null,
@@ -32643,7 +32662,7 @@ export const config = {
       "id": "q0370",
       "number": 370,
       "type": "mcq",
-      "prompt": "Which illegal conduct is subject to a 12-point penalty",
+      "prompt": "Which illegal conduct is subject to a 12-point penalty?",
       "options": [
         {
           "id": "q0370_o1",
@@ -32712,7 +32731,7 @@ export const config = {
       "id": "q0371",
       "number": 371,
       "type": "mcq",
-      "prompt": "A motorized vehicle driver who deliberately covered or stained the license plate and placed the license plate unproperly, is subject to a ________.",
+      "prompt": "A motorized vehicle driver who deliberately covers or stains the license plate and places the license plate unproperly, is subject to a ______.",
       "options": [
         {
           "id": "q0371_o1",
@@ -32777,7 +32796,7 @@ export const config = {
       "id": "q0372",
       "number": 372,
       "type": "mcq",
-      "prompt": "This traffic light means ______",
+      "prompt": "This traffic light means ______.",
       "options": [
         {
           "id": "q0372_o1",
@@ -32915,7 +32934,7 @@ export const config = {
       "id": "q0374",
       "number": 374,
       "type": "mcq",
-      "prompt": "Max speed when pass the narrow road or bridge is _______",
+      "prompt": "Max speed when pass the narrow road or bridge is ______.",
       "options": [
         {
           "id": "q0374_o1",
@@ -33093,27 +33112,27 @@ export const config = {
       "id": "q0377",
       "number": 377,
       "type": "mcq",
-      "prompt": "Registration alternation is not needed when _____",
+      "prompt": "Registration alternation is not needed when ______.",
       "options": [
         {
           "id": "q0377_o1",
           "originalKey": "A",
-          "text": "change engine"
+          "text": "changing the engine"
         },
         {
           "id": "q0377_o2",
           "originalKey": "B",
-          "text": "add anti-collision device"
+          "text": "adding an anti-collision device"
         },
         {
           "id": "q0377_o3",
           "originalKey": "C",
-          "text": "change vehicles colour"
+          "text": "changing the vehicle's color"
         },
         {
           "id": "q0377_o4",
           "originalKey": "D",
-          "text": "change the chassis"
+          "text": "changing the chassis/frame"
         }
       ],
       "correctRow": null,
@@ -33158,7 +33177,7 @@ export const config = {
       "id": "q0378",
       "number": 378,
       "type": "mcq",
-      "prompt": "How the front vehicle to run in this situation?",
+      "prompt": "How should the front vehicle drive in this situation?",
       "options": [
         {
           "id": "q0378_o1",
@@ -33301,7 +33320,7 @@ export const config = {
       "id": "q0380",
       "number": 380,
       "type": "mcq",
-      "prompt": "The traffic lights allow the vehicle to ______",
+      "prompt": "These traffic lights allow the vehicle to ______",
       "options": [
         {
           "id": "q0380_o1",
@@ -33562,7 +33581,7 @@ export const config = {
       "id": "q0384",
       "number": 384,
       "type": "mcq",
-      "prompt": "In which situation should a small car driver need check?",
+      "prompt": "In which situation should a small car driver need to check?",
       "options": [
         {
           "id": "q0384_o1",
@@ -33623,7 +33642,7 @@ export const config = {
       "id": "q0385",
       "number": 385,
       "type": "mcq",
-      "prompt": "What is the max speed when down slope, turning around and U turn?",
+      "prompt": "What is the max speed when going down slope, turning around, and U-turn?",
       "options": [
         {
           "id": "q0385_o1",
@@ -33679,12 +33698,12 @@ export const config = {
       "id": "q0386",
       "number": 386,
       "type": "mcq",
-      "prompt": "Which of the following vehicle in front in the same lane is not allowed to be overtaken?",
+      "prompt": "Which of the following vehicles in front in the same lane is not allowed to be overtaken?",
       "options": [
         {
           "id": "q0386_o1",
           "originalKey": "A",
-          "text": "police car on duty 29"
+          "text": "police car on duty"
         },
         {
           "id": "q0386_o2",
@@ -33750,7 +33769,7 @@ export const config = {
       "id": "q0387",
       "number": 387,
       "type": "mcq",
-      "prompt": "Which is correct when changing lane?",
+      "prompt": "Which is correct when changing lanes?",
       "options": [
         {
           "id": "q0387_o1",
@@ -33936,7 +33955,7 @@ export const config = {
       "id": "q0390",
       "number": 390,
       "type": "mcq",
-      "prompt": "Driving license will be detained if you allow to drive your car.",
+      "prompt": "Your driving license will be detained if you allow ______ to drive your car.",
       "options": [
         {
           "id": "q0390_o1",
@@ -34089,7 +34108,7 @@ export const config = {
       "id": "q0392",
       "number": 392,
       "type": "mcq",
-      "prompt": "How to do when causing a minor traffic accident with no human casualties and no dispute?",
+      "prompt": "What to do when causing a minor traffic accident with no human casualties and no dispute?",
       "options": [
         {
           "id": "q0392_o1",
@@ -34150,7 +34169,7 @@ export const config = {
       "id": "q0393",
       "number": 393,
       "type": "mcq",
-      "prompt": "In which situation the traffic police may detain the vehicle?",
+      "prompt": "In which situation can the traffic police detain the vehicle?",
       "options": [
         {
           "id": "q0393_o1",
@@ -34223,7 +34242,7 @@ export const config = {
       "id": "q0394",
       "number": 394,
       "type": "mcq",
-      "prompt": "The penalty points will be _____ if violating the traffic lights.",
+      "prompt": "The penalty points will be ______ if violating the traffic lights.",
       "options": [
         {
           "id": "q0394_o1",
@@ -34288,12 +34307,12 @@ export const config = {
       "id": "q0395",
       "number": 395,
       "type": "mcq",
-      "prompt": "Which is correct when learning driving on road?",
+      "prompt": "Which is correct when learning how to drive on the road?",
       "options": [
         {
           "id": "q0395_o1",
           "originalKey": "A",
-          "text": "drive the corresponding coach car with coach sitting by to guide"
+          "text": "drive the corresponding coach car with the coach sitting by to guide"
         },
         {
           "id": "q0395_o2",
@@ -34303,12 +34322,12 @@ export const config = {
         {
           "id": "q0395_o3",
           "originalKey": "C",
-          "text": "drive the corresponding coach car with other one who is not a coach sitting by to guide"
+          "text": "drive the corresponding coach car with another person who is not a coach sitting by to guide"
         },
         {
           "id": "q0395_o4",
           "originalKey": "D",
-          "text": "drive the private car with coach sitting by to guide"
+          "text": "drive the private car with the coach sitting by to guide"
         }
       ],
       "correctRow": null,
@@ -34344,7 +34363,7 @@ export const config = {
       "id": "q0396",
       "number": 396,
       "type": "mcq",
-      "prompt": "What is the max speed on muddy road?",
+      "prompt": "What is the max speed on a muddy road?",
       "options": [
         {
           "id": "q0396_o1",
@@ -34364,7 +34383,7 @@ export const config = {
         {
           "id": "q0396_o4",
           "originalKey": "D",
-          "text": "30km/hr 30"
+          "text": "30km/hr"
         }
       ],
       "correctRow": null,
@@ -34400,7 +34419,7 @@ export const config = {
       "id": "q0397",
       "number": 397,
       "type": "mcq",
-      "prompt": "How to do while entering this intersection?",
+      "prompt": "What to do while entering this intersection?",
       "options": [
         {
           "id": "q0397_o1",
@@ -34474,7 +34493,7 @@ export const config = {
       "id": "q0398",
       "number": 398,
       "type": "mcq",
-      "prompt": "How to run through this intersection?",
+      "prompt": "How to drive through this intersection?",
       "options": [
         {
           "id": "q0398_o1",
@@ -34691,7 +34710,7 @@ export const config = {
       "id": "q0401",
       "number": 401,
       "type": "mcq",
-      "prompt": "What is the max speed when visibility is less than 50m due to foggy, rainy or snowy?",
+      "prompt": "What is the max speed when visibility is less than 50m due to fog, rain, or snow?",
       "options": [
         {
           "id": "q0401_o1",
@@ -34747,7 +34766,7 @@ export const config = {
       "id": "q0402",
       "number": 402,
       "type": "mcq",
-      "prompt": "How to make a U turn in this intersection?",
+      "prompt": "How to make a U-turn in this intersection?",
       "options": [
         {
           "id": "q0402_o1",
@@ -34757,17 +34776,17 @@ export const config = {
         {
           "id": "q0402_o2",
           "originalKey": "B",
-          "text": "make a U turn from the right lane"
+          "text": "make a U-turn from the right lane"
         },
         {
           "id": "q0402_o3",
           "originalKey": "C",
-          "text": "enter the intersection and make a U turn"
+          "text": "enter the intersection and make a U-turn"
         },
         {
           "id": "q0402_o4",
           "originalKey": "D",
-          "text": "make a U turn in the crosswalk"
+          "text": "make a U-turn in the crosswalk"
         }
       ],
       "correctRow": null,
@@ -34821,7 +34840,7 @@ export const config = {
       "id": "q0403",
       "number": 403,
       "type": "mcq",
-      "prompt": "How long can a driver drives without rest?",
+      "prompt": "How long can a driver drive without rest?",
       "options": [
         {
           "id": "q0403_o1",
@@ -34877,7 +34896,7 @@ export const config = {
       "id": "q0404",
       "number": 404,
       "type": "mcq",
-      "prompt": "What will be subject to if driving the vehicle reached write-off standard?",
+      "prompt": "What will you be subject to if driving a vehicle that has reached the write-off standard?",
       "options": [
         {
           "id": "q0404_o1",
@@ -34952,7 +34971,7 @@ export const config = {
       "id": "q0405",
       "number": 405,
       "type": "mcq",
-      "prompt": "Fine will be 200~2000 yuan and driving license will be revoked if _____",
+      "prompt": "A fine of 200~2000 yuan and driving license will be revoked if ______.",
       "options": [
         {
           "id": "q0405_o1",
@@ -35021,7 +35040,7 @@ export const config = {
       "id": "q0406",
       "number": 406,
       "type": "mcq",
-      "prompt": "Which of the following vehicle in front in the same lane is not allowed to be overtaken?",
+      "prompt": "Which of the following vehicles in front in the same lane is not allowed to be overtaken?",
       "options": [
         {
           "id": "q0406_o1",
@@ -35036,7 +35055,7 @@ export const config = {
         {
           "id": "q0406_o3",
           "originalKey": "C",
-          "text": "the vehicle is taking a U turn"
+          "text": "the vehicle is taking a U-turn"
         },
         {
           "id": "q0406_o4",
@@ -35082,7 +35101,7 @@ export const config = {
       "id": "q0407",
       "number": 407,
       "type": "mcq",
-      "prompt": "On which kind of city road a vehicle is not allowed to overtake?",
+      "prompt": "On which kind of city road is a vehicle not allowed to overtake?",
       "options": [
         {
           "id": "q0407_o1",
@@ -35207,7 +35226,7 @@ export const config = {
       "id": "q0409",
       "number": 409,
       "type": "mcq",
-      "prompt": "What is the Minimum speed on this expressway?",
+      "prompt": "What is the minimum speed on this expressway?",
       "options": [
         {
           "id": "q0409_o1",
@@ -35431,7 +35450,7 @@ export const config = {
         {
           "id": "q0412_o4",
           "originalKey": "D",
-          "text": "run slowly in the road shoulder 32"
+          "text": "run slowly in the road shoulder"
         }
       ],
       "correctRow": null,
@@ -35537,7 +35556,7 @@ export const config = {
       "id": "q0414",
       "number": 414,
       "type": "mcq",
-      "prompt": "What does the traffic light mean?",
+      "prompt": "What does this traffic light mean?",
       "options": [
         {
           "id": "q0414_o1",
@@ -35606,7 +35625,7 @@ export const config = {
       "id": "q0415",
       "number": 415,
       "type": "mcq",
-      "prompt": "How to run on this road?",
+      "prompt": "How to drive on this road?",
       "options": [
         {
           "id": "q0415_o1",
@@ -35749,7 +35768,7 @@ export const config = {
       "id": "q0417",
       "number": 417,
       "type": "mcq",
-      "prompt": "Which of the following vehicle in front in the same lane is not allowed to be overtaken?",
+      "prompt": "Which of the following vehicles in front in the same lane is not allowed to be overtaken?",
       "options": [
         {
           "id": "q0417_o1",
@@ -35810,7 +35829,7 @@ export const config = {
       "id": "q0418",
       "number": 418,
       "type": "mcq",
-      "prompt": "How to do in this intersection?",
+      "prompt": "What to do in this intersection?",
       "options": [
         {
           "id": "q0418_o1",
@@ -35879,7 +35898,7 @@ export const config = {
       "id": "q0419",
       "number": 419,
       "type": "mcq",
-      "prompt": "What kind of violation does the red car have while temporarily stopping here? 33",
+      "prompt": "What kind of violation does the red car have while temporarily stopping here?",
       "options": [
         {
           "id": "q0419_o1",
@@ -35954,7 +35973,7 @@ export const config = {
       "id": "q0420",
       "number": 420,
       "type": "mcq",
-      "prompt": "Change driving license before of expiration.",
+      "prompt": "How many days before the expiration date should you renew your driving license?",
       "options": [
         {
           "id": "q0420_o1",
@@ -36015,7 +36034,7 @@ export const config = {
       "id": "q0421",
       "number": 421,
       "type": "mcq",
-      "prompt": "A motorized vehicle driver who does not hang the license plate is subject to a ________.",
+      "prompt": "A motorized vehicle driver who does not hang the license plate is subject to a ______.",
       "options": [
         {
           "id": "q0421_o1",
@@ -36080,7 +36099,7 @@ export const config = {
       "id": "q0422",
       "number": 422,
       "type": "mcq",
-      "prompt": "In which situation that a driver will not allowed to drive?",
+      "prompt": "In which situation will a driver not be allowed to drive?",
       "options": [
         {
           "id": "q0422_o1",
@@ -36153,7 +36172,7 @@ export const config = {
       "id": "q0423",
       "number": 423,
       "type": "mcq",
-      "prompt": "How to drive in sand, hail, rain, fog, ice and other weather conditions?",
+      "prompt": "How to drive in sand, hail, rain, fog, ice, or other weather conditions?",
       "options": [
         {
           "id": "q0423_o1",
@@ -36209,27 +36228,27 @@ export const config = {
       "id": "q0424",
       "number": 424,
       "type": "mcq",
-      "prompt": "What causes the rear-end collision?",
+      "prompt": "What caused the rear-end collision?",
       "options": [
         {
           "id": "q0424_o1",
           "originalKey": "A",
-          "text": "not observe through the rear-view mirror while the vehicle in front brakes"
+          "text": "not observing through the rear-view mirror while the vehicle in front brakes"
         },
         {
           "id": "q0424_o2",
           "originalKey": "B",
-          "text": "the vehicle in front brakes suddenly"
+          "text": "the vehicle in front braking suddenly"
         },
         {
           "id": "q0424_o3",
           "originalKey": "C",
-          "text": "distance from the vehicle in front is too close when the rear vehicle overtakes"
+          "text": "distance from the vehicle in front is too close when the rear vehicle was overtaking"
         },
         {
           "id": "q0424_o4",
           "originalKey": "D",
-          "text": "not maintain a safe distance from the vehicle in front"
+          "text": "not maintaining a safe distance from the vehicle in front"
         }
       ],
       "correctRow": null,
@@ -36283,7 +36302,7 @@ export const config = {
       "id": "q0425",
       "number": 425,
       "type": "mcq",
-      "prompt": "From which side to overtake?",
+      "prompt": "From which side should you overtake?",
       "options": [
         {
           "id": "q0425_o1",
@@ -36408,7 +36427,7 @@ export const config = {
       "id": "q0427",
       "number": 427,
       "type": "mcq",
-      "prompt": "How to do in this situation?",
+      "prompt": "What to do in this situation?",
       "options": [
         {
           "id": "q0427_o1",
@@ -36629,7 +36648,7 @@ export const config = {
       "id": "q0430",
       "number": 430,
       "type": "mcq",
-      "prompt": "In which situation the traffic police may detain the vehicle?",
+      "prompt": "In which situation can the traffic police detain the vehicle?",
       "options": [
         {
           "id": "q0430_o1",
@@ -36644,7 +36663,7 @@ export const config = {
         {
           "id": "q0430_o3",
           "originalKey": "C",
-          "text": "no lable of environmental protection"
+          "text": "no label of environmental protection"
         },
         {
           "id": "q0430_o4",
@@ -36708,7 +36727,7 @@ export const config = {
       "id": "q0431",
       "number": 431,
       "type": "mcq",
-      "prompt": "The police can detain the vehicle if one drives a vehicle without ______",
+      "prompt": "The police can detain the vehicle if one drives a vehicle without a ______.",
       "options": [
         {
           "id": "q0431_o1",
@@ -36773,7 +36792,7 @@ export const config = {
       "id": "q0432",
       "number": 432,
       "type": "mcq",
-      "prompt": "The age limit of applying for small vehicle is ________ .",
+      "prompt": "The age limit of applying for a small vehicle is ______.",
       "options": [
         {
           "id": "q0432_o1",
@@ -36902,7 +36921,7 @@ export const config = {
       "id": "q0434",
       "number": 434,
       "type": "mcq",
-      "prompt": "The behavior of a motorized vehicle driver who has violated the law and regulations on road traffic safety is _______ .",
+      "prompt": "The behavior of a motorized vehicle driver who has violated the law and regulations on road traffic safety is a ______.",
       "options": [
         {
           "id": "q0434_o1",
@@ -36963,12 +36982,12 @@ export const config = {
       "id": "q0435",
       "number": 435,
       "type": "mcq",
-      "prompt": "A driver who drives an illegally assembled motorized vehicle is subject to ______ .",
+      "prompt": "A driver who drives an illegally assembled motorized vehicle is subject to ______.",
       "options": [
         {
           "id": "q0435_o1",
           "originalKey": "A",
-          "text": "being held for criminal liabilities according to law"
+          "text": "being held for criminal liabilities according to the law"
         },
         {
           "id": "q0435_o2",
@@ -37028,7 +37047,7 @@ export const config = {
       "id": "q0436",
       "number": 436,
       "type": "mcq",
-      "prompt": "In which situation that a driver cannot drive?",
+      "prompt": "In which situation can a driver not drive?",
       "options": [
         {
           "id": "q0436_o1",
@@ -37089,7 +37108,7 @@ export const config = {
       "id": "q0437",
       "number": 437,
       "type": "mcq",
-      "prompt": "Besides the administrative punishment, what kind of system implemented by the traffic control department of the public security organ to the driver who violated the traffic regulations?",
+      "prompt": "Besides administrative punishment, what kind of system implemented by the traffic control department of the public security authority to the driver who violated the traffic regulations?",
       "options": [
         {
           "id": "q0437_o1",
@@ -37232,7 +37251,7 @@ export const config = {
       "id": "q0439",
       "number": 439,
       "type": "mcq",
-      "prompt": "Which of the following vehicle in front in the same lane is not allowed to be overtaken?",
+      "prompt": "Which of the following vehicles in front in the same lane is not allowed to be overtaken?",
       "options": [
         {
           "id": "q0439_o1",
@@ -37293,7 +37312,7 @@ export const config = {
       "id": "q0440",
       "number": 440,
       "type": "mcq",
-      "prompt": "Which of the following vehicle in front in the same lane is not allowed to be overtaken?",
+      "prompt": "Which of the following vehicles in front in the same lane is not allowed to be overtaken?",
       "options": [
         {
           "id": "q0440_o1",
@@ -37364,7 +37383,7 @@ export const config = {
       "id": "q0441",
       "number": 441,
       "type": "mcq",
-      "prompt": "A motorized vehicle that will turn right at an intersection but has a vehicle in front in the same lane waiting for the green light should ______________.",
+      "prompt": "A motorized vehicle that will turn right at an intersection but has a vehicle in front in the same lane waiting for the green light should ______.",
       "options": [
         {
           "id": "q0441_o1",
@@ -37498,7 +37517,7 @@ export const config = {
       "id": "q0443",
       "number": 443,
       "type": "mcq",
-      "prompt": "How to do first when encountering such kind of bridge?",
+      "prompt": "What to do first when encountering this kind of bridge?",
       "options": [
         {
           "id": "q0443_o1",
@@ -37567,7 +37586,7 @@ export const config = {
       "id": "q0444",
       "number": 444,
       "type": "mcq",
-      "prompt": "What kind of violation does this car have while stopping temporarily by the roadside? 36",
+      "prompt": "What kind of violation does this car have while stopping temporarily by the roadside?",
       "options": [
         {
           "id": "q0444_o1",
@@ -37615,7 +37634,14 @@ export const config = {
           ]
         }
       ],
-      "assets": [],
+      "assets": [
+        {
+          "kind": "image",
+          "src": "/qbank/2023-test1/images/p36-444.jpg",
+          "page": 36
+
+        }
+      ],
       "source": {
         "pdf": "2023 Driving test 1.pdf"
       },
@@ -37642,7 +37668,7 @@ export const config = {
       "id": "q0445",
       "number": 445,
       "type": "mcq",
-      "prompt": "If a driver has driven a motorized vehicle for more than four hours running, he should stop the vehicle and rest for at least ____________.",
+      "prompt": "If a driver has driven a motorized vehicle for more than four hours running, he should stop the vehicle and rest for at least ______.",
       "options": [
         {
           "id": "q0445_o1",
@@ -37763,7 +37789,7 @@ export const config = {
       "id": "q0447",
       "number": 447,
       "type": "mcq",
-      "prompt": "Within how long should a driver whose information has changed apply for new license?",
+      "prompt": "Within how many days should a driver whose information has changed apply for a new license?",
       "options": [
         {
           "id": "q0447_o1",
@@ -37824,7 +37850,7 @@ export const config = {
       "id": "q0448",
       "number": 448,
       "type": "mcq",
-      "prompt": "What is the time limit of deferred license checking due to military service, abroad and other reasons?",
+      "prompt": "What is the time limit of deferred license checking due to military service, abroad, or other reasons?",
       "options": [
         {
           "id": "q0448_o1",
@@ -37880,7 +37906,7 @@ export const config = {
       "id": "q0449",
       "number": 449,
       "type": "mcq",
-      "prompt": "A motorized vehicle driver who uses falsified and altered license plate is subject to a ________.",
+      "prompt": "A motorized vehicle driver who uses a falsified or altered license plate is subject to a ______.",
       "options": [
         {
           "id": "q0449_o1",
@@ -37945,7 +37971,7 @@ export const config = {
       "id": "q0450",
       "number": 450,
       "type": "mcq",
-      "prompt": "If one drives an illegally assembled motorized vehicle, he should not only pay the fine, but also ________ .",
+      "prompt": "If one drives an illegally assembled motorized vehicle, he should not only pay the fine, but also ______.",
       "options": [
         {
           "id": "q0450_o1",
@@ -38010,7 +38036,7 @@ export const config = {
       "id": "q0451",
       "number": 451,
       "type": "mcq",
-      "prompt": "What does the traffic light mean?",
+      "prompt": "What does this traffic light mean?",
       "options": [
         {
           "id": "q0451_o1",
@@ -38153,22 +38179,22 @@ export const config = {
       "id": "q0453",
       "number": 453,
       "type": "mcq",
-      "prompt": "How to use lights in this weather condition?",
+      "prompt": "Which lights to use in this weather condition?",
       "options": [
         {
           "id": "q0453_o1",
           "originalKey": "A",
-          "text": "use high beam lights"
+          "text": "use the high beam lights"
         },
         {
           "id": "q0453_o2",
           "originalKey": "B",
-          "text": "use fog lights"
+          "text": "use the fog lights"
         },
         {
           "id": "q0453_o3",
           "originalKey": "C",
-          "text": "not use any light"
+          "text": "don't use any lights"
         },
         {
           "id": "q0453_o4",
@@ -38291,7 +38317,7 @@ export const config = {
       "id": "q0455",
       "number": 455,
       "type": "mcq",
-      "prompt": "In which section when a vehicle runs is prohibited from overtaking.",
+      "prompt": "In which section when a vehicle runs is prohibited from overtaking?",
       "options": [
         {
           "id": "q0455_o1",
@@ -38347,7 +38373,7 @@ export const config = {
       "id": "q0456",
       "number": 456,
       "type": "mcq",
-      "prompt": "How to run in this situation?",
+      "prompt": "How to drive in this situation?",
       "options": [
         {
           "id": "q0456_o1",
@@ -38431,7 +38457,7 @@ export const config = {
       "id": "q0457",
       "number": 457,
       "type": "mcq",
-      "prompt": "When crossing each other at night, how far should change the high beam lights to low beam lights?",
+      "prompt": "When crossing each other at night, how far out should you start changing the high beam lights to low beam lights?",
       "options": [
         {
           "id": "q0457_o1",
@@ -38487,7 +38513,7 @@ export const config = {
       "id": "q0458",
       "number": 458,
       "type": "mcq",
-      "prompt": "How to do if there is a traffic jam in intersection?",
+      "prompt": "What to do if there is a traffic jam in an intersection?",
       "options": [
         {
           "id": "q0458_o1",
@@ -38543,7 +38569,7 @@ export const config = {
       "id": "q0459",
       "number": 459,
       "type": "mcq",
-      "prompt": "How to do when the vehicle breaks down on road and needs to stop to solve the problem?",
+      "prompt": "What to do when the vehicle breaks down on road and needs to stop to solve the problem?",
       "options": [
         {
           "id": "q0459_o1",
@@ -38553,7 +38579,7 @@ export const config = {
         {
           "id": "q0459_o2",
           "originalKey": "B",
-          "text": "stop the vehicle where will not interfere the traffic"
+          "text": "stop the vehicle where it will not interfere the traffic"
         },
         {
           "id": "q0459_o3",
@@ -38599,27 +38625,27 @@ export const config = {
       "id": "q0460",
       "number": 460,
       "type": "mcq",
-      "prompt": "What kind of violation does the vehicle have while temporarily stopping by the roadside?",
+      "prompt": "What kind of violation does the green vehicle have while temporarily stopping by the roadside?",
       "options": [
         {
           "id": "q0460_o1",
           "originalKey": "A",
-          "text": "stop in the crosswalk"
+          "text": "stopping in the crosswalk"
         },
         {
           "id": "q0460_o2",
           "originalKey": "B",
-          "text": "stop more than 30cm from the roadside"
+          "text": "stopping more than 30cm from the roadside"
         },
         {
           "id": "q0460_o3",
           "originalKey": "C",
-          "text": "stop in the section with no stopping marking"
+          "text": "stopping in the section with no stopping marking"
         },
         {
           "id": "q0460_o4",
           "originalKey": "D",
-          "text": "stop occupying the lane for non-motorized vehicles"
+          "text": "stopping and occupying the lane for non-motorized vehicles"
         }
       ],
       "correctRow": null,
@@ -38681,12 +38707,12 @@ export const config = {
       "id": "q0461",
       "number": 461,
       "type": "mcq",
-      "prompt": "In which situation the traffic police may detain the vehicle on road? 38",
+      "prompt": "In which situation can the traffic police detain a vehicle on road?",
       "options": [
         {
           "id": "q0461_o1",
           "originalKey": "A",
-          "text": "not hang the license plate"
+          "text": "not hanging the license plate"
         },
         {
           "id": "q0461_o2",
@@ -38701,7 +38727,7 @@ export const config = {
         {
           "id": "q0461_o4",
           "originalKey": "D",
-          "text": "no lable of environmental protection"
+          "text": "no label of environmental protection"
         }
       ],
       "correctRow": null,
@@ -38760,7 +38786,7 @@ export const config = {
       "id": "q0462",
       "number": 462,
       "type": "mcq",
-      "prompt": "A motorized vehicle driver who uses falsified and altered vehicle license is subject to a ________.",
+      "prompt": "A motorized vehicle driver who uses falsified and altered vehicle license is subject to a ______.",
       "options": [
         {
           "id": "q0462_o1",
@@ -38825,7 +38851,7 @@ export const config = {
       "id": "q0463",
       "number": 463,
       "type": "mcq",
-      "prompt": "What should a motorized vehicle has while running on the road?",
+      "prompt": "What should a motorized vehicle have while running on the road?",
       "options": [
         {
           "id": "q0463_o1",
@@ -38890,7 +38916,7 @@ export const config = {
       "id": "q0464",
       "number": 464,
       "type": "mcq",
-      "prompt": "How to run when encountering this situation at the intersection?",
+      "prompt": "How to drive when encountering this situation at the intersection?",
       "options": [
         {
           "id": "q0464_o1",
@@ -38959,7 +38985,7 @@ export const config = {
       "id": "q0465",
       "number": 465,
       "type": "mcq",
-      "prompt": "How to use light in this situation at the intersection?",
+      "prompt": "How to use the lights in this situation at the intersection?",
       "options": [
         {
           "id": "q0465_o1",
@@ -39099,7 +39125,7 @@ export const config = {
       "id": "q0467",
       "number": 467,
       "type": "mcq",
-      "prompt": "How to choose parking spot when needing to stop by the roadside?",
+      "prompt": "How to choose a parking spot when needing to stop by the roadside?",
       "options": [
         {
           "id": "q0467_o1",
@@ -39119,7 +39145,7 @@ export const config = {
         {
           "id": "q0467_o4",
           "originalKey": "D",
-          "text": "stop in the sidewalk"
+          "text": "stop on the sidewalk"
         }
       ],
       "correctRow": null,
@@ -39160,27 +39186,27 @@ export const config = {
       "id": "q0468",
       "number": 468,
       "type": "mcq",
-      "prompt": "Driving a small passenger vehicle at 100km/hr on the expressway, the minimum distance from the vehicle in front is _____ .",
+      "prompt": "While driving a small passenger vehicle at 100km/hr on the expressway, the minimum distance from the vehicle in front is ______ .",
       "options": [
         {
           "id": "q0468_o1",
           "originalKey": "A",
-          "text": "not less than 20 meters"
+          "text": "no less than 20 meters"
         },
         {
           "id": "q0468_o2",
           "originalKey": "B",
-          "text": "not less than 10 meters"
+          "text": "no less than 10 meters"
         },
         {
           "id": "q0468_o3",
           "originalKey": "C",
-          "text": "not less than 50 meters"
+          "text": "no less than 50 meters"
         },
         {
           "id": "q0468_o4",
           "originalKey": "D",
-          "text": "not less than 30 mete rs"
+          "text": "no less than 30 meters"
         }
       ],
       "correctRow": null,
@@ -39221,7 +39247,7 @@ export const config = {
       "id": "q0469",
       "number": 469,
       "type": "mcq",
-      "prompt": "How to run at this position when leaving the expressway?",
+      "prompt": "How to drive at this position when leaving the expressway?",
       "options": [
         {
           "id": "q0469_o1",
@@ -39231,7 +39257,7 @@ export const config = {
         {
           "id": "q0469_o2",
           "originalKey": "B",
-          "text": "keep runnin g forward"
+          "text": "keep running forward"
         },
         {
           "id": "q0469_o3",
@@ -39241,7 +39267,7 @@ export const config = {
         {
           "id": "q0469_o4",
           "originalKey": "D",
-          "text": "reduce the speed to less than 40km/hr 39"
+          "text": "reduce the speed to less than 40km/hr"
         }
       ],
       "correctRow": null,
@@ -39373,7 +39399,7 @@ export const config = {
       "id": "q0471",
       "number": 471,
       "type": "mcq",
-      "prompt": "If a motorized vehicle driver has caused a major traffic accident in violation of the traffic regulations which has caused human death due to his escaping, the driver is subject to a prison term of _________.",
+      "prompt": "If a motorized vehicle driver has caused a major traffic accident in violation of the traffic regulations which has caused human death due to his escaping, the driver is subject to a prison term of ______.",
       "options": [
         {
           "id": "q0471_o1",
@@ -39438,7 +39464,7 @@ export const config = {
       "id": "q0472",
       "number": 472,
       "type": "mcq",
-      "prompt": "In which situation the traffic police can detain the vehicle according to law?",
+      "prompt": "In which situation can the traffic police detain the vehicle according to the law?",
       "options": [
         {
           "id": "q0472_o1",
@@ -39503,7 +39529,7 @@ export const config = {
       "id": "q0473",
       "number": 473,
       "type": "mcq",
-      "prompt": "If the drivers household register has moved out of the original vehicle management station, the driver should apply to the vehicle management station _______ .",
+      "prompt": "If the driver's household register has moved out of the original vehicle management station, the driver should apply to the vehicle management station ______.",
       "options": [
         {
           "id": "q0473_o1",
@@ -39559,7 +39585,7 @@ export const config = {
       "id": "q0474",
       "number": 474,
       "type": "mcq",
-      "prompt": "The cycle for recording the accumulated penalty points for violating road traffic regulations is __________.",
+      "prompt": "The cycle for recording the accumulated penalty points for violating road traffic regulations is ______.",
       "options": [
         {
           "id": "q0474_o1",
@@ -39634,7 +39660,7 @@ export const config = {
       "id": "q0475",
       "number": 475,
       "type": "mcq",
-      "prompt": "Driving this kind of vehicle on road is ____",
+      "prompt": "Driving this kind of vehicle on the road is a ______.",
       "options": [
         {
           "id": "q0475_o1",
@@ -39708,27 +39734,27 @@ export const config = {
       "id": "q0476",
       "number": 476,
       "type": "mcq",
-      "prompt": "What kind of violation does this vehicle on road have?",
+      "prompt": "What kind of violation does this vehicle on the road have?",
       "options": [
         {
           "id": "q0476_o1",
           "originalKey": "A",
-          "text": "not hang the license plate as required"
+          "text": "not hanging the license plate as required"
         },
         {
           "id": "q0476_o2",
           "originalKey": "B",
-          "text": "deliberately cover the license plate"
+          "text": "deliberately covering the license plate"
         },
         {
           "id": "q0476_o3",
           "originalKey": "C",
-          "text": "occupy the lane for non-motorized vehicles"
+          "text": "occupying the lane for non-motorized vehicles"
         },
         {
           "id": "q0476_o4",
           "originalKey": "D",
-          "text": "run in the opposite direction"
+          "text": "running in the opposite direction"
         }
       ],
       "correctRow": null,
@@ -39786,7 +39812,7 @@ export const config = {
       "id": "q0477",
       "number": 477,
       "type": "mcq",
-      "prompt": "If the drivers accumulated penalty points reach the stipulated limit, he will be _______ by the traffic control department of the public security organ.",
+      "prompt": "If the drivers accumulated penalty points reach the stipulated limit, he will be ______ by the traffic control department of the public security authority.",
       "options": [
         {
           "id": "q0477_o1",
@@ -39806,7 +39832,7 @@ export const config = {
         {
           "id": "q0477_o4",
           "originalKey": "D",
-          "text": "held for criminal liabilities according to law 40"
+          "text": "held for criminal liabilities according to the law"
         }
       ],
       "correctRow": null,
@@ -39851,7 +39877,7 @@ export const config = {
       "id": "q0478",
       "number": 478,
       "type": "mcq",
-      "prompt": "How to pass when encountering this situation at the intersection?",
+      "prompt": "How to drive when encountering this situation at the intersection?",
       "options": [
         {
           "id": "q0478_o1",
@@ -39920,7 +39946,7 @@ export const config = {
       "id": "q0479",
       "number": 479,
       "type": "mcq",
-      "prompt": "How to use lights when changing to the left lane on road?",
+      "prompt": "How to use lights when changing to the left lane on the road?",
       "options": [
         {
           "id": "q0479_o1",
@@ -39930,7 +39956,7 @@ export const config = {
         {
           "id": "q0479_o2",
           "originalKey": "B",
-          "text": "not need to turn on any turn signal"
+          "text": "no need to turn on any turn signal"
         },
         {
           "id": "q0479_o3",
@@ -40177,7 +40203,7 @@ export const config = {
       "id": "q0483",
       "number": 483,
       "type": "mcq",
-      "prompt": "What should the driver do if conditions permit when a following vehicle gives the overtaking signal on a road without a central line?",
+      "prompt": "What should the driver do, if conditions permit, when a following vehicle gives the overtaking signal on a road without a central line?",
       "options": [
         {
           "id": "q0483_o1",
@@ -40242,7 +40268,7 @@ export const config = {
       "id": "q0484",
       "number": 484,
       "type": "mcq",
-      "prompt": "When encountering stopping in turn or slow-moving vehicles in front at an intersection where lanes are reduced, the motorized vehicle should _________.",
+      "prompt": "When encountering stopping in turn or slow-moving vehicles in front at an intersection where lanes are reduced, the motorized vehicle should ______.",
       "options": [
         {
           "id": "q0484_o1",
@@ -40313,12 +40339,12 @@ export const config = {
         {
           "id": "q0485_o2",
           "originalKey": "B",
-          "text": "turn on th e left-turn signal"
+          "text": "turn on the left-turn signal"
         },
         {
           "id": "q0485_o3",
           "originalKey": "C",
-          "text": "turn on the hazard lights 41"
+          "text": "turn on the hazard lights"
         },
         {
           "id": "q0485_o4",
@@ -40387,7 +40413,7 @@ export const config = {
       "id": "q0486",
       "number": 486,
       "type": "mcq",
-      "prompt": "What dangerous acts cant the driver conduct when driving downhill?",
+      "prompt": "What dangerous acts can the driver not conduct while driving downhill?",
       "options": [
         {
           "id": "q0486_o1",
@@ -40443,7 +40469,7 @@ export const config = {
       "id": "q0487",
       "number": 487,
       "type": "mcq",
-      "prompt": "A motorized vehicle driver who drives after drinking is subject to a ________.",
+      "prompt": "A motorized vehicle driver who drives after drinking is subject to a ______.",
       "options": [
         {
           "id": "q0487_o1",
@@ -40504,7 +40530,7 @@ export const config = {
       "id": "q0488",
       "number": 488,
       "type": "mcq",
-      "prompt": "When driving during the period of probation, the driver should paste or hang _____ on the rear part of the vehicle",
+      "prompt": "When driving during the period of probation, the driver should paste or hang ______ on the rear part of the vehicle.",
       "options": [
         {
           "id": "q0488_o1",
@@ -40560,7 +40586,7 @@ export const config = {
       "id": "q0489",
       "number": 489,
       "type": "mcq",
-      "prompt": "If one drives an illegally assembled motorized vehicle, he should not only pay the fine, but also ______ .",
+      "prompt": "If one drives an illegally assembled motorized vehicle, he should not only pay the fine, but also ______.",
       "options": [
         {
           "id": "q0489_o1",
@@ -40704,7 +40730,7 @@ export const config = {
       "id": "q0491",
       "number": 491,
       "type": "mcq",
-      "prompt": "How to do when encountering this situation of waiting in line?",
+      "prompt": "What to do when encountering this situation of waiting in line?",
       "options": [
         {
           "id": "q0491_o1",
@@ -40778,7 +40804,7 @@ export const config = {
       "id": "q0492",
       "number": 492,
       "type": "mcq",
-      "prompt": "When encountering stopping and waiting in turn or slow-moving vehicles in front, the motorized vehicle may _________.",
+      "prompt": "When encountering stopping and waiting in turn or slow-moving vehicles in front, the motorized vehicle may ______.",
       "options": [
         {
           "id": "q0492_o1",
@@ -40844,22 +40870,22 @@ export const config = {
         {
           "id": "q0493_o1",
           "originalKey": "A",
-          "text": "stop occupying the lane for non-motorized vehicles"
+          "text": "stopping and occupying the lane for non-motorized vehicles"
         },
         {
           "id": "q0493_o2",
           "originalKey": "B",
-          "text": "stop in the section with no stopping marking"
+          "text": "stopping in the section with no stopping marking"
         },
         {
           "id": "q0493_o3",
           "originalKey": "C",
-          "text": "stop at bus station"
+          "text": "stopping at bus station"
         },
         {
           "id": "q0493_o4",
           "originalKey": "D",
-          "text": "stop occupying sidewalk"
+          "text": "stopping and occupying the sidewalk"
         }
       ],
       "correctRow": null,
@@ -40917,7 +40943,7 @@ export const config = {
       "id": "q0494",
       "number": 494,
       "type": "mcq",
-      "prompt": "A motorized vehicle driver who drives the vehicle which permission is different is subject to a ________.",
+      "prompt": "A motorized vehicle driver who drives the vehicle which permission is different is subject to a ______.",
       "options": [
         {
           "id": "q0494_o1",
@@ -40927,7 +40953,7 @@ export const config = {
         {
           "id": "q0494_o2",
           "originalKey": "B",
-          "text": "3-point penalty 42"
+          "text": "3-point penalty"
         },
         {
           "id": "q0494_o3",
@@ -40988,7 +41014,7 @@ export const config = {
       "id": "q0495",
       "number": 495,
       "type": "mcq",
-      "prompt": "A motorized vehicle driver who escapes after causing a traffic accident but his conduct does not constitute a crime, is subject to a ________.",
+      "prompt": "A motorized vehicle driver who escapes after causing a traffic accident but his conduct does not constitute a crime, is subject to a ______.",
       "options": [
         {
           "id": "q0495_o1",
@@ -41243,7 +41269,7 @@ export const config = {
       "id": "q0499",
       "number": 499,
       "type": "mcq",
-      "prompt": "In which situation cannot overtake a vehicle in front?",
+      "prompt": "In which situation can you not overtake the vehicle in front?",
       "options": [
         {
           "id": "q0499_o1",
@@ -41365,7 +41391,7 @@ export const config = {
       "id": "q0501",
       "number": 501,
       "type": "mcq",
-      "prompt": "In which section cannot overtake?",
+      "prompt": "In which section can you not overtake?",
       "options": [
         {
           "id": "q0501_o1",
@@ -41482,7 +41508,7 @@ export const config = {
       "id": "q0503",
       "number": 503,
       "type": "mcq",
-      "prompt": "How to pass the intersection when running straight",
+      "prompt": "How to pass the intersection when running straight?",
       "options": [
         {
           "id": "q0503_o1",
@@ -41497,12 +41523,12 @@ export const config = {
         {
           "id": "q0503_o3",
           "originalKey": "C",
-          "text": "yield to the vehi cle from the right road m the left road"
+          "text": "yield to the vehicle from the right road"
         },
         {
           "id": "q0503_o4",
           "originalKey": "D",
-          "text": "yield to the vehicle fro"
+          "text": "yield to the vehicle from the left road"
         }
       ],
       "correctRow": null,
@@ -41560,12 +41586,12 @@ export const config = {
       "id": "q0504",
       "number": 504,
       "type": "mcq",
-      "prompt": "How to pass through the unmanned level crossing without traffic lights?",
+      "prompt": "How to pass through an unmanned level crossing without traffic lights?",
       "options": [
         {
           "id": "q0504_o1",
           "originalKey": "A",
-          "text": "properly reduce speed to pass 43"
+          "text": "properly reduce speed to pass"
         },
         {
           "id": "q0504_o2",
@@ -41700,7 +41726,7 @@ export const config = {
       "id": "q0506",
       "number": 506,
       "type": "mcq",
-      "prompt": "The driver who chases and races while driving on the road, and commits serious acts is subject to ______",
+      "prompt": "The driver who chases and races while driving on the road, and commits serious acts is subject to ______.",
       "options": [
         {
           "id": "q0506_o1",
@@ -41761,7 +41787,7 @@ export const config = {
       "id": "q0507",
       "number": 507,
       "type": "mcq",
-      "prompt": "The driver who drives after drunk is subject to ______",
+      "prompt": "The driver who drives after drunk is subject to ______.",
       "options": [
         {
           "id": "q0507_o1",
@@ -41832,7 +41858,7 @@ export const config = {
         {
           "id": "q0508_o2",
           "originalKey": "B",
-          "text": "12 month s"
+          "text": "12 months"
         },
         {
           "id": "q0508_o3",
@@ -41883,7 +41909,7 @@ export const config = {
       "id": "q0509",
       "number": 509,
       "type": "mcq",
-      "prompt": "How to use lights when pulling over on road?",
+      "prompt": "How to use lights when pulling over on the road?",
       "options": [
         {
           "id": "q0509_o1",
@@ -42043,7 +42069,7 @@ export const config = {
         {
           "id": "q0511_o4",
           "originalKey": "D",
-          "text": "using the high and low beam lights alternately"
+          "text": "use the high and low beam lights alternately"
         }
       ],
       "correctRow": null,
@@ -42135,7 +42161,7 @@ export const config = {
       "id": "q0513",
       "number": 513,
       "type": "mcq",
-      "prompt": "A motorized vehicle is not allowed to stop in the section within",
+      "prompt": "A motorized vehicle is not allowed to stop in the section within ______.",
       "options": [
         {
           "id": "q0513_o1",
@@ -42214,7 +42240,7 @@ export const config = {
       "id": "q0514",
       "number": 514,
       "type": "mcq",
-      "prompt": "May not drive if _____",
+      "prompt": "You may not drive if ______.",
       "options": [
         {
           "id": "q0514_o1",
@@ -42270,7 +42296,7 @@ export const config = {
       "id": "q0515",
       "number": 515,
       "type": "mcq",
-      "prompt": "If a motorized vehicle driver escapes after causing a major traffic accident which has caused human death, the driver is subject to a prison term of ________.",
+      "prompt": "If a motorized vehicle driver escapes after causing a major traffic accident which has caused human death, the driver is subject to a prison term of ______.",
       "options": [
         {
           "id": "q0515_o1",
@@ -42331,7 +42357,7 @@ export const config = {
       "id": "q0516",
       "number": 516,
       "type": "mcq",
-      "prompt": "If a person who has caused a major traffic accident and if his act constitutes a crime, he should be held for _________.",
+      "prompt": "If a person who has caused a major traffic accident and if his act constitutes a crime, he should be held for ______.",
       "options": [
         {
           "id": "q0516_o1",
@@ -42453,7 +42479,7 @@ export const config = {
       "id": "q0518",
       "number": 518,
       "type": "mcq",
-      "prompt": "The cycle for recording the accumulated penalty points for violating road traffic safety regulations is ____________.",
+      "prompt": "The cycle for recording the accumulated penalty points for violating road traffic safety regulations is ______.",
       "options": [
         {
           "id": "q0518_o1",
@@ -42587,7 +42613,7 @@ export const config = {
       "id": "q0520",
       "number": 520,
       "type": "mcq",
-      "prompt": "How to do when encountering slow-moving vehicles in front?",
+      "prompt": "What to do when encountering slow-moving vehicles in front?",
       "options": [
         {
           "id": "q0520_o1",
@@ -42661,22 +42687,22 @@ export const config = {
         {
           "id": "q0521_o1",
           "originalKey": "A",
-          "text": "use other vehicles vehicle license"
+          "text": "using other's vehicles' vehicle license"
         },
         {
           "id": "q0521_o2",
           "originalKey": "B",
-          "text": "run 50% faster than the prescribed speed limit"
+          "text": "running 50% faster than the prescribed speed limit"
         },
         {
           "id": "q0521_o3",
           "originalKey": "C",
-          "text": "illegally occupy emergency lane"
+          "text": "illegally occupying emergency lane"
         },
         {
           "id": "q0521_o4",
           "originalKey": "D",
-          "text": "drive after drinking"
+          "text": "drinking and driving"
         }
       ],
       "correctRow": null,
@@ -42725,7 +42751,7 @@ export const config = {
       "id": "q0522",
       "number": 522,
       "type": "row",
-      "prompt": "The braking system may malfunction if it lights. 45",
+      "prompt": "The braking system may malfunction if this lights up.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -42773,7 +42799,7 @@ export const config = {
       "id": "q0523",
       "number": 523,
       "type": "row",
-      "prompt": "The doors of both sides are not closed if it lights.",
+      "prompt": "The doors of both sides are not closed if this lights up.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -42869,7 +42895,7 @@ export const config = {
       "id": "q0525",
       "number": 525,
       "type": "row",
-      "prompt": "The light switch is in this position, front fog lights turn on",
+      "prompt": "When the light switch is in this position, the front fog lights turn on.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -42917,7 +42943,7 @@ export const config = {
       "id": "q0526",
       "number": 526,
       "type": "row",
-      "prompt": "It displays the current engine speed is 6000 rev / min.",
+      "prompt": "This displays the current engine speed is 6000 rev/min.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -42965,7 +42991,7 @@ export const config = {
       "id": "q0527",
       "number": 527,
       "type": "row",
-      "prompt": "The oil pressure of engine may be too high if it lights.",
+      "prompt": "The oil pressure of the engine may be too high if this lights up.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -43013,7 +43039,7 @@ export const config = {
       "id": "q0528",
       "number": 528,
       "type": "row",
-      "prompt": "It lights when turning on the front high beam lights.",
+      "prompt": "This lights up when turning on the front high beam lights.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -43109,7 +43135,7 @@ export const config = {
       "id": "q0530",
       "number": 530,
       "type": "row",
-      "prompt": "Move the switch up and down, the windscreen wipers start working. 46",
+      "prompt": "Move the switch up and down, and the windscreen wipers start working.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -43136,7 +43162,12 @@ export const config = {
           ]
         }
       ],
-      "assets": [],
+      "assets": [
+        {
+          "kind":"image",
+          "src": "/qbank/2023-test1/images/p46-530.jpg"
+        }
+      ],
       "source": {
         "pdf": "2023 Driving test 1.pdf"
       },
@@ -43199,7 +43230,7 @@ export const config = {
       "id": "q0532",
       "number": 532,
       "type": "row",
-      "prompt": "Driving motor vehicle with ABS system may occur side skidding when applying emergency braking.",
+      "prompt": "Driving a motor vehicle with an ABS system may occur side skidding when applying emergency braking.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -43239,7 +43270,7 @@ export const config = {
       "id": "q0533",
       "number": 533,
       "type": "row",
-      "prompt": "When the motor vehicle installed ABS system brakes, the braking distance will be greatly shortened, so you do not have to keep a safe distance between vehicles.",
+      "prompt": "When a motor vehicle installed with an ABS system brakes, the braking distance will be greatly shortened, so you do not have to keep a safe distance between vehicles.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -43332,7 +43363,7 @@ export const config = {
       "id": "q0535",
       "number": 535,
       "type": "row",
-      "prompt": "It lights to remind that engine coolant may be insufficient.",
+      "prompt": "It lights to remind the driver that the engine coolant may be insufficient.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -43380,7 +43411,7 @@ export const config = {
       "id": "q0536",
       "number": 536,
       "type": "row",
-      "prompt": "It flashes when breaking down.",
+      "prompt": "It flashes when the vehicle is breaking down.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -43428,7 +43459,7 @@ export const config = {
       "id": "q0537",
       "number": 537,
       "type": "row",
-      "prompt": "It lights if left door is not closed.",
+      "prompt": "It lights if the left door is not closed.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -43476,7 +43507,7 @@ export const config = {
       "id": "q0538",
       "number": 538,
       "type": "row",
-      "prompt": "Steering wheel will be locked if removing the key while the ignition switch is in the LOCK position.",
+      "prompt": "The steering wheel will be locked if you remove the key while the ignition switch is still in the LOCK position.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -43529,7 +43560,7 @@ export const config = {
       "id": "q0539",
       "number": 539,
       "type": "row",
-      "prompt": "When ignition switch is in the START position, the starter starts.",
+      "prompt": "When the ignition switch is in the START position, the starter engages.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -43582,7 +43613,7 @@ export const config = {
       "id": "q0540",
       "number": 540,
       "type": "row",
-      "prompt": "When the motor vehicle installed ABS system applys emergency braking, the driver can depress the brake pedal heavily.",
+      "prompt": "When the installed ABS system applys emergency braking, the driver can depress the brake pedal heavily.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -43622,7 +43653,7 @@ export const config = {
       "id": "q0541",
       "number": 541,
       "type": "row",
-      "prompt": "Does not affect normal driving when it lights 47",
+      "prompt": "This does not affect normal driving when it lights up.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -43670,7 +43701,7 @@ export const config = {
       "id": "q0542",
       "number": 542,
       "type": "row",
-      "prompt": "It lights to remind that engine needs to add oil.",
+      "prompt": "This lights up to remind the driver that the engine needs to add oil.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -43718,7 +43749,7 @@ export const config = {
       "id": "q0543",
       "number": 543,
       "type": "row",
-      "prompt": "It lights continuously to indicate that engine control system failed.",
+      "prompt": "It lights up continuously to indicate that the engine control system failed.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -43766,7 +43797,7 @@ export const config = {
       "id": "q0544",
       "number": 544,
       "type": "row",
-      "prompt": "Motor vehicle frontal collision, the double protection of the airbag and the safety belts can give full play to the role.",
+      "prompt": "In the event of a frontal collision, the double protection of the airbag and the safety belts can give full play to the role.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -43806,7 +43837,7 @@ export const config = {
       "id": "q0545",
       "number": 545,
       "type": "row",
-      "prompt": "It lights continuously to indicate that airbag is working.",
+      "prompt": "It lights continuously to indicate that the airbag is working.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -43955,7 +43986,7 @@ export const config = {
       "id": "q0548",
       "number": 548,
       "type": "row",
-      "prompt": "It lights to indicate that engine compartment is opened.",
+      "prompt": "It lights to indicate that the engine compartment is open.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -44051,7 +44082,7 @@ export const config = {
       "id": "q0550",
       "number": 550,
       "type": "row",
-      "prompt": "Ignition switch in the ON position, the vehicle can not use electrical appliances.",
+      "prompt": "If the ignition switch is in the ON position, the vehicle can not use electrical appliances.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -44104,7 +44135,7 @@ export const config = {
       "id": "q0551",
       "number": 551,
       "type": "row",
-      "prompt": "Displays the current speed is 20 km / h",
+      "prompt": "Displays the current speed is 20 km/h.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -44152,7 +44183,7 @@ export const config = {
       "id": "q0552",
       "number": 552,
       "type": "row",
-      "prompt": "It lights to indicate that right door is not closed. 48",
+      "prompt": "It lights to indicate that the right door is not closed.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -44200,7 +44231,7 @@ export const config = {
       "id": "q0553",
       "number": 553,
       "type": "row",
-      "prompt": "Move the turn signal switch upward, the left-turn signal lights.",
+      "prompt": "If you move the turn signal switch upward, the left-turn signal will flash.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -44253,7 +44284,7 @@ export const config = {
       "id": "q0554",
       "number": 554,
       "type": "row",
-      "prompt": "It lights to indicate that luggage compartment is open.",
+      "prompt": "It lights to indicate that the luggage compartment is open.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -44349,7 +44380,7 @@ export const config = {
       "id": "q0556",
       "number": 556,
       "type": "row",
-      "prompt": "It lights when ABS is open.",
+      "prompt": "It lights when the ABS is open.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -44477,7 +44508,13 @@ export const config = {
           ]
         }
       ],
-      "assets": [],
+      "assets": [
+        {
+          "kind": "image",
+          "src": "/qbank/2023-test1/images/p49-558.jpg",
+          "page": 49
+        }
+      ],
       "source": {
         "pdf": "2023 Driving test 1.pdf"
       },
@@ -44500,7 +44537,7 @@ export const config = {
       "id": "q0559",
       "number": 559,
       "type": "row",
-      "prompt": "It lights to indicate that engine oil may be insufficient.",
+      "prompt": "It lights to indicate that the engine oil may be insufficient.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -44548,7 +44585,7 @@ export const config = {
       "id": "q0560",
       "number": 560,
       "type": "row",
-      "prompt": "It lights to remind that engine oil needs to be filled.",
+      "prompt": "It lights to remind you that the engine oil needs to be filled.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -44596,7 +44633,7 @@ export const config = {
       "id": "q0561",
       "number": 561,
       "type": "row",
-      "prompt": "To hold the steering wheel like this is correct.",
+      "prompt": "Holding the steering wheel like this is correct.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -44649,7 +44686,7 @@ export const config = {
       "id": "q0562",
       "number": 562,
       "type": "row",
-      "prompt": "Rear fog light lights when the light switch is at this position. 49",
+      "prompt": "Rear fog light lights when the light switch is at this position.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -44676,7 +44713,12 @@ export const config = {
           ]
         }
       ],
-      "assets": [],
+      "assets": [
+        {
+          "kind":"image",
+          "src":"/qbank/2023-test1/images/p49-562.jpg"
+        }
+      ],
       "source": {
         "pdf": "2023 Driving test 1.pdf"
       },
@@ -44742,7 +44784,7 @@ export const config = {
       "id": "q0564",
       "number": 564,
       "type": "row",
-      "prompt": "It lights to indicate that the generator is charging to the batteries.",
+      "prompt": "It lights to indicate that the generator is charging the batteries.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -44790,7 +44832,7 @@ export const config = {
       "id": "q0565",
       "number": 565,
       "type": "row",
-      "prompt": "It lights when turning on the rear fog light.",
+      "prompt": "It lights when the rear fog light is turned on.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -44838,7 +44880,7 @@ export const config = {
       "id": "q0566",
       "number": 566,
       "type": "row",
-      "prompt": "The seat belts can reduce the injury of the driver and passengers when there is a collision.",
+      "prompt": "Seat belts can reduce the injury of the driver and passengers when there is a collision.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -44878,7 +44920,7 @@ export const config = {
       "id": "q0567",
       "number": 567,
       "type": "row",
-      "prompt": "It displays that the current temperature of the coolant is 90 degrees.",
+      "prompt": "It displays that the current temperature of the coolant is 90°C.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -44905,7 +44947,12 @@ export const config = {
           ]
         }
       ],
-      "assets": [],
+      "assets": [
+        {
+          "kind":"image",
+          "src":"/qbank/2023-test1/images/p50-567.jpg"
+        }
+      ],
       "source": {
         "pdf": "2023 Driving test 1.pdf"
       },
@@ -44971,7 +45018,7 @@ export const config = {
       "id": "q0569",
       "number": 569,
       "type": "row",
-      "prompt": "It lights to indicate that the handbrake may not loose in the end.",
+      "prompt": "It lights to indicate that the handbrake is not released.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -45024,7 +45071,7 @@ export const config = {
       "id": "q0570",
       "number": 570,
       "type": "row",
-      "prompt": "It lights to remind that the driver's seat is not adjusted properly.",
+      "prompt": "It lights to remind the driver that the driver's seat is not adjusted properly.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -45072,7 +45119,7 @@ export const config = {
       "id": "q0571",
       "number": 571,
       "type": "row",
-      "prompt": "It lights to remind that the driver has not buckled up. 50",
+      "prompt": "It lights to remind the driver that the driver has not buckled up.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -45120,7 +45167,7 @@ export const config = {
       "id": "q0572",
       "number": 572,
       "type": "row",
-      "prompt": "It flashes when turning on the hazard lights.",
+      "prompt": "This flashes when turning on the hazard lights.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -45221,7 +45268,7 @@ export const config = {
       "id": "q0574",
       "number": 574,
       "type": "row",
-      "prompt": "ABS system can k eep the steering capability of the front wheels while providing maximum braking force when the vehicle conduct an emergency braking.",
+      "prompt": "The ABS system can keep the steering capability of the front wheels while providing maximum braking force when the vehicle conducts an emergency braking.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -45261,7 +45308,7 @@ export const config = {
       "id": "q0575",
       "number": 575,
       "type": "row",
-      "prompt": "The vehicle with ABS system can minimize the braking distance when driving on a road covered by ice and snow.",
+      "prompt": "The vehicle with an ABS system can minimize the braking distance when driving on a road covered by ice and snow.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -45301,7 +45348,7 @@ export const config = {
       "id": "q0576",
       "number": 576,
       "type": "mcq",
-      "prompt": "It lights to indicate that ______",
+      "prompt": "It lights to indicate that ______.",
       "options": [
         {
           "id": "q0576_o1",
@@ -45454,7 +45501,7 @@ export const config = {
       "id": "q0578",
       "number": 578,
       "type": "mcq",
-      "prompt": "What is this manipulation device?",
+      "prompt": "What is this device?",
       "options": [
         {
           "id": "q0578_o1",
@@ -45528,7 +45575,7 @@ export const config = {
       "id": "q0579",
       "number": 579,
       "type": "mcq",
-      "prompt": "ABS system can maximize the braking efficiency when conducting _______",
+      "prompt": "The ABS system can maximize the braking efficiency when conducting ______.",
       "options": [
         {
           "id": "q0579_o1",
@@ -45589,7 +45636,7 @@ export const config = {
       "id": "q0580",
       "number": 580,
       "type": "mcq",
-      "prompt": "It lights to indicate that ______",
+      "prompt": "It lights to indicate that ______.",
       "options": [
         {
           "id": "q0580_o1",
@@ -45658,7 +45705,7 @@ export const config = {
       "id": "q0581",
       "number": 581,
       "type": "mcq",
-      "prompt": "What de ce does the switch of this symbol control? vi 51",
+      "prompt": "What device does the switch of this symbol control?",
       "options": [
         {
           "id": "q0581_o1",
@@ -45742,7 +45789,7 @@ export const config = {
       "id": "q0582",
       "number": 582,
       "type": "mcq",
-      "prompt": "What is this manipulation device?",
+      "prompt": "What is this device?",
       "options": [
         {
           "id": "q0582_o1",
@@ -45816,7 +45863,7 @@ export const config = {
       "id": "q0583",
       "number": 583,
       "type": "mcq",
-      "prompt": "It lights to indicate that ______",
+      "prompt": "It lights to indicate that ______.",
       "options": [
         {
           "id": "q0583_o1",
@@ -45885,7 +45932,7 @@ export const config = {
       "id": "q0584",
       "number": 584,
       "type": "mcq",
-      "prompt": "It lights to indicate that ______",
+      "prompt": "It lights to indicate that ______.",
       "options": [
         {
           "id": "q0584_o1",
@@ -45969,7 +46016,7 @@ export const config = {
       "id": "q0585",
       "number": 585,
       "type": "mcq",
-      "prompt": "What pedal is it?",
+      "prompt": "What pedal is this?",
       "options": [
         {
           "id": "q0585_o1",
@@ -46043,7 +46090,7 @@ export const config = {
       "id": "q0586",
       "number": 586,
       "type": "mcq",
-      "prompt": "It lights to indicate that ______",
+      "prompt": "It lights to indicate that ______.",
       "options": [
         {
           "id": "q0586_o1",
@@ -46053,7 +46100,7 @@ export const config = {
         {
           "id": "q0586_o2",
           "originalKey": "B",
-          "text": "handbrake is eleased r"
+          "text": "handbrake is released"
         },
         {
           "id": "q0586_o3",
@@ -46117,7 +46164,7 @@ export const config = {
       "id": "q0587",
       "number": 587,
       "type": "mcq",
-      "prompt": "What pedal is it? 52",
+      "prompt": "What pedal is this?",
       "options": [
         {
           "id": "q0587_o1",
@@ -46201,7 +46248,7 @@ export const config = {
       "id": "q0588",
       "number": 588,
       "type": "mcq",
-      "prompt": "What is this manipulation device?",
+      "prompt": "What is this device?",
       "options": [
         {
           "id": "q0588_o1",
@@ -46275,7 +46322,7 @@ export const config = {
       "id": "q0589",
       "number": 589,
       "type": "mcq",
-      "prompt": "What is the role of ABS system when applying emergency braking?",
+      "prompt": "What is the role of the ABS system when applying emergency braking?",
       "options": [
         {
           "id": "q0589_o1",
@@ -46349,7 +46396,7 @@ export const config = {
       "id": "q0590",
       "number": 590,
       "type": "mcq",
-      "prompt": "What pedal is it?",
+      "prompt": "What pedal is this?",
       "options": [
         {
           "id": "q0590_o1",
@@ -46423,7 +46470,7 @@ export const config = {
       "id": "q0591",
       "number": 591,
       "type": "mcq",
-      "prompt": "It lights continuously to indicate that ______",
+      "prompt": "It lights continuously to indicate ______.",
       "options": [
         {
           "id": "q0591_o1",
@@ -46497,7 +46544,7 @@ export const config = {
       "id": "q0592",
       "number": 592,
       "type": "mcq",
-      "prompt": "What is this manipulation device?",
+      "prompt": "What is this device?",
       "options": [
         {
           "id": "q0592_o1",
@@ -46571,17 +46618,17 @@ export const config = {
       "id": "q0593",
       "number": 593,
       "type": "mcq",
-      "prompt": "What kind of device the safety bags are?",
+      "prompt": "What kind of device are the safety bags for?",
       "options": [
         {
           "id": "q0593_o1",
           "originalKey": "A",
-          "text": "ABS system 53"
+          "text": "ABS system"
         },
         {
           "id": "q0593_o2",
           "originalKey": "B",
-          "text": "electronic brake forc e distribution system"
+          "text": "electronic brake force distribution system"
         },
         {
           "id": "q0593_o3",
@@ -46642,7 +46689,7 @@ export const config = {
       "id": "q0594",
       "number": 594,
       "type": "mcq",
-      "prompt": "It lights to indicate that ______",
+      "prompt": "It lights to indicate that the ______.",
       "options": [
         {
           "id": "q0594_o1",
@@ -46711,7 +46758,7 @@ export const config = {
       "id": "q0595",
       "number": 595,
       "type": "mcq",
-      "prompt": "The front safety bags play a fully protective role when used in conjunction with ______",
+      "prompt": "The front safety bags play a fully protective role when used in conjunction with a ______.",
       "options": [
         {
           "id": "q0595_o1",
@@ -46785,7 +46832,7 @@ export const config = {
       "id": "q0596",
       "number": 596,
       "type": "mcq",
-      "prompt": "The hazard lights can be used when ________",
+      "prompt": "The hazard lights can be used when ______.",
       "options": [
         {
           "id": "q0596_o1",
@@ -46894,7 +46941,13 @@ export const config = {
           ]
         }
       ],
-      "assets": [],
+      "assets": [
+        {
+          "kind": "image",
+          "src": "/qbank/2023-test1/images/p53-597.jpg",
+          "page": 53
+        }
+      ],
       "source": {
         "pdf": "2023 Driving test 1.pdf"
       },
@@ -47001,7 +47054,7 @@ export const config = {
         {
           "id": "q0599_o4",
           "originalKey": "D",
-          "text": "fuel consumption / 100 km"
+          "text": "fuel consumption per 100 km"
         }
       ],
       "correctRow": null,
@@ -47075,7 +47128,7 @@ export const config = {
         {
           "id": "q0600_o4",
           "originalKey": "D",
-          "text": "fuel meter 54"
+          "text": "fuel meter"
         }
       ],
       "correctRow": null,
@@ -47129,7 +47182,7 @@ export const config = {
       "id": "q0601",
       "number": 601,
       "type": "mcq",
-      "prompt": "It lights to indicate that ______",
+      "prompt": "It lights to indicate that ______.",
       "options": [
         {
           "id": "q0601_o1",
@@ -47149,7 +47202,7 @@ export const config = {
         {
           "id": "q0601_o4",
           "originalKey": "D",
-          "text": "handbra ke i s pulled up"
+          "text": "handbrake is pulled up"
         }
       ],
       "correctRow": null,
@@ -47203,7 +47256,7 @@ export const config = {
       "id": "q0602",
       "number": 602,
       "type": "mcq",
-      "prompt": "It lights to indicate that ______",
+      "prompt": "It lights to indicate that ______.",
       "options": [
         {
           "id": "q0602_o1",
@@ -47346,7 +47399,7 @@ export const config = {
       "id": "q0604",
       "number": 604,
       "type": "mcq",
-      "prompt": "It lights to indicate that ______",
+      "prompt": "It lights to indicate that ______.",
       "options": [
         {
           "id": "q0604_o1",
@@ -47420,7 +47473,7 @@ export const config = {
       "id": "q0605",
       "number": 605,
       "type": "mcq",
-      "prompt": "It lights to indicate that ______",
+      "prompt": "It lights to indicate that safety belts are ______.",
       "options": [
         {
           "id": "q0605_o1",
@@ -47430,12 +47483,12 @@ export const config = {
         {
           "id": "q0605_o2",
           "originalKey": "B",
-          "text": "safety belt malfunction"
+          "text": "malfunctioning"
         },
         {
           "id": "q0605_o3",
           "originalKey": "C",
-          "text": "the safety belts are too loose"
+          "text": "too loose"
         },
         {
           "id": "q0605_o4",
@@ -47558,7 +47611,7 @@ export const config = {
       "id": "q0607",
       "number": 607,
       "type": "mcq",
-      "prompt": "It lights to indicate that ______",
+      "prompt": "It lights to indicate that ______.",
       "options": [
         {
           "id": "q0607_o1",
@@ -47632,12 +47685,12 @@ export const config = {
       "id": "q0608",
       "number": 608,
       "type": "mcq",
-      "prompt": "What is this manipulation device?",
+      "prompt": "What is this device?",
       "options": [
         {
           "id": "q0608_o1",
           "originalKey": "A",
-          "text": "air conditioner switch 55"
+          "text": "air conditioner switch"
         },
         {
           "id": "q0608_o2",
@@ -47859,7 +47912,7 @@ export const config = {
       "id": "q0611",
       "number": 611,
       "type": "mcq",
-      "prompt": "After starting the engine, it lights to indicate that ______",
+      "prompt": "After starting the engine, it lights to indicate that ______.",
       "options": [
         {
           "id": "q0611_o1",
@@ -47933,7 +47986,7 @@ export const config = {
       "id": "q0612",
       "number": 612,
       "type": "mcq",
-      "prompt": "It lights to indicate that ______",
+      "prompt": "It lights to indicate that ______.",
       "options": [
         {
           "id": "q0612_o1",
@@ -48002,7 +48055,7 @@ export const config = {
       "id": "q0613",
       "number": 613,
       "type": "mcq",
-      "prompt": "It lights to indicate that ______",
+      "prompt": "It lights to indicate that ______.",
       "options": [
         {
           "id": "q0613_o1",
@@ -48145,12 +48198,12 @@ export const config = {
         {
           "id": "q0615_o1",
           "originalKey": "A",
-          "text": "windscreen defogger en wiper"
+          "text": "windscreen defogger wiper"
         },
         {
           "id": "q0615_o2",
           "originalKey": "B",
-          "text": "windscre 56"
+          "text": "windscreen"
         },
         {
           "id": "q0615_o3",
@@ -48228,27 +48281,27 @@ export const config = {
       "id": "q0616",
       "number": 616,
       "type": "mcq",
-      "prompt": "It lights to indicate that ______",
+      "prompt": "It lights to indicate that ______.",
       "options": [
         {
           "id": "q0616_o1",
           "originalKey": "A",
-          "text": "the hazard lights flash"
+          "text": "the hazard lights are flashing"
         },
         {
           "id": "q0616_o2",
           "originalKey": "B",
-          "text": "right-turn signal flashes"
+          "text": "right-turn signal is flashing"
         },
         {
           "id": "q0616_o3",
           "originalKey": "C",
-          "text": "left-turn signal flashes"
+          "text": "left-turn signal is flashing"
         },
         {
           "id": "q0616_o4",
           "originalKey": "D",
-          "text": "front and rear width lights flash"
+          "text": "front and rear width lights are flashing"
         }
       ],
       "correctRow": null,
@@ -48371,7 +48424,7 @@ export const config = {
       "id": "q0618",
       "number": 618,
       "type": "mcq",
-      "prompt": "What is this manipulation device?",
+      "prompt": "What is this device?",
       "options": [
         {
           "id": "q0618_o1",
@@ -48519,12 +48572,12 @@ export const config = {
       "id": "q0620",
       "number": 620,
       "type": "mcq",
-      "prompt": "It lights to indicate that ______",
+      "prompt": "It lights to indicate that the ______.",
       "options": [
         {
           "id": "q0620_o1",
           "originalKey": "A",
-          "text": "the head and tail fog lights are turned on"
+          "text": "head and tail fog lights are turned on"
         },
         {
           "id": "q0620_o2",
@@ -48534,12 +48587,12 @@ export const config = {
         {
           "id": "q0620_o3",
           "originalKey": "C",
-          "text": "the head lights are turned on"
+          "text": "head lights are turned on"
         },
         {
           "id": "q0620_o4",
           "originalKey": "D",
-          "text": "the hazard lights are turned on"
+          "text": "hazard lights are turned on"
         }
       ],
       "correctRow": null,
@@ -48593,7 +48646,7 @@ export const config = {
       "id": "q0621",
       "number": 621,
       "type": "mcq",
-      "prompt": "After starting the engine, it lights to indicate that ______",
+      "prompt": "After starting the engine, it lights to indicate that ______.",
       "options": [
         {
           "id": "q0621_o1",
@@ -48662,12 +48715,12 @@ export const config = {
       "id": "q0622",
       "number": 622,
       "type": "mcq",
-      "prompt": "It lights to indicate that ______",
+      "prompt": "It lights to indicate that ______.",
       "options": [
         {
           "id": "q0622_o1",
           "originalKey": "A",
-          "text": "front and rear width lights light on 57"
+          "text": "front and rear width lights light on"
         },
         {
           "id": "q0622_o2",
@@ -48741,7 +48794,7 @@ export const config = {
       "id": "q0623",
       "number": 623,
       "type": "mcq",
-      "prompt": "It lights to indicate that ______",
+      "prompt": "It lights to indicate that ______.",
       "options": [
         {
           "id": "q0623_o1",
@@ -49006,7 +49059,7 @@ export const config = {
       "id": "q0627",
       "number": 627,
       "type": "mcq",
-      "prompt": "It lights while driving to indicate that ______",
+      "prompt": "It lights while driving to indicate that ______.",
       "options": [
         {
           "id": "q0627_o1",
@@ -49075,7 +49128,7 @@ export const config = {
       "id": "q0628",
       "number": 628,
       "type": "mcq",
-      "prompt": "It lights to indicate that ______",
+      "prompt": "It lights to indicate that ______.",
       "options": [
         {
           "id": "q0628_o1",
@@ -49144,7 +49197,7 @@ export const config = {
       "id": "q0629",
       "number": 629,
       "type": "mcq",
-      "prompt": "It lights to indicate that ______",
+      "prompt": "It lights to indicate that ______.",
       "options": [
         {
           "id": "q0629_o1",
@@ -49218,7 +49271,7 @@ export const config = {
         {
           "id": "q0630_o1",
           "originalKey": "A",
-          "text": "the low beam lights 58"
+          "text": "the low beam lights"
         },
         {
           "id": "q0630_o2",
@@ -49500,7 +49553,7 @@ export const config = {
       "id": "q0635",
       "number": 635,
       "type": "row",
-      "prompt": "Speed up and pass when encountering this traffic light at the intersection",
+      "prompt": "Speed up and pass when encountering this traffic light at the intersection.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -49603,7 +49656,7 @@ export const config = {
       "id": "q0637",
       "number": 637,
       "type": "row",
-      "prompt": "The vehicle can not run straight or turn left in this situation.",
+      "prompt": "The vehicle can not drive straight or turn left in this situation.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -49652,7 +49705,7 @@ export const config = {
       "id": "q0638",
       "number": 638,
       "type": "row",
-      "prompt": "May directly turn left in front of the vehicle coming opposite when encountering this traffic light. 59",
+      "prompt": "You may directly turn left in front of the vehicle coming opposite when encountering this traffic light.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -49679,7 +49732,12 @@ export const config = {
           ]
         }
       ],
-      "assets": [],
+      "assets": [
+        {
+          "kind": "image",
+          "src": "/qbank/2023-test1/images/p59-638.png"
+        }
+      ],
       "source": {
         "pdf": "2023 Driving test 1.pdf"
       },
@@ -49747,7 +49805,7 @@ export const config = {
       "id": "q0640",
       "number": 640,
       "type": "row",
-      "prompt": "May turn right in this situation.",
+      "prompt": "You may turn right in this situation.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -49894,7 +49952,7 @@ export const config = {
       "id": "q0643",
       "number": 643,
       "type": "row",
-      "prompt": "May turn right when encountering this traffic light at the intersection.",
+      "prompt": "You may turn right when encountering this traffic light at the intersection.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -50561,7 +50619,7 @@ export const config = {
         {
           "id": "q0655_o1",
           "originalKey": "A",
-          "text": "no U turn"
+          "text": "no U-turn"
         },
         {
           "id": "q0655_o2",
@@ -51031,7 +51089,7 @@ export const config = {
         {
           "id": "q0661_o4",
           "originalKey": "D",
-          "text": "expressway beginning ahead 62"
+          "text": "expressway beginning ahead"
         }
       ],
       "correctRow": null,
@@ -51380,7 +51438,7 @@ export const config = {
       "id": "q0666",
       "number": 666,
       "type": "mcq",
-      "prompt": "The yellow lane-dividing line on the road is used to _____",
+      "prompt": "The yellow lane-dividing line on the road is used to ______.",
       "options": [
         {
           "id": "q0666_o1",
@@ -51525,7 +51583,7 @@ export const config = {
       "id": "q0668",
       "number": 668,
       "type": "mcq",
-      "prompt": "What’s the meaning of this sign? 63",
+      "prompt": "What’s the meaning of this sign?",
       "options": [
         {
           "id": "q0668_o1",
@@ -51625,7 +51683,7 @@ export const config = {
         {
           "id": "q0669_o4",
           "originalKey": "D",
-          "text": "no U turn"
+          "text": "no U-turn"
         }
       ],
       "correctRow": null,
@@ -52195,7 +52253,7 @@ export const config = {
       "id": "q0677",
       "number": 677,
       "type": "mcq",
-      "prompt": "This set of the hand signals of the traffic police indicates that the vehicles should ____ .",
+      "prompt": "This set of the hand signals of the traffic police indicates that vehicles should ______.",
       "options": [
         {
           "id": "q0677_o1",
@@ -52243,7 +52301,12 @@ export const config = {
           ]
         }
       ],
-      "assets": [],
+      "assets": [
+        {
+          "kind": "image",
+          "src": "/qbank/2023-test1/images/p65-677.png"
+        }
+      ],
       "source": {
         "pdf": "2023 Driving test 1.pdf"
       },
@@ -52271,7 +52334,7 @@ export const config = {
       "id": "q0678",
       "number": 678,
       "type": "mcq",
-      "prompt": "The vehicle is allowed to _______ at this intersection.",
+      "prompt": "The vehicle is allowed to ______ at this intersection.",
       "options": [
         {
           "id": "q0678_o1",
@@ -52416,7 +52479,7 @@ export const config = {
       "id": "q0680",
       "number": 680,
       "type": "mcq",
-      "prompt": "What is this traffic sign? 65",
+      "prompt": "What is this traffic sign?",
       "options": [
         {
           "id": "q0680_o1",
@@ -52651,7 +52714,7 @@ export const config = {
         {
           "id": "q0683_o1",
           "originalKey": "A",
-          "text": "no going traight and no changing to left lane s"
+          "text": "no going traight and no changing to left lanes"
         },
         {
           "id": "q0683_o2",
@@ -52769,7 +52832,13 @@ export const config = {
           ]
         }
       ],
-      "assets": [],
+      "assets": [
+        {
+          "kind": "image",
+          "src": "/qbank/2023-test1/images/p65-684.jpg",
+          "page": 65
+        }
+      ],
       "source": {
         "pdf": "2023 Driving test 1.pdf"
       },
@@ -53013,7 +53082,7 @@ export const config = {
         {
           "id": "q0688_o2",
           "originalKey": "B",
-          "text": "public pho ne on expressway 66"
+          "text": "public phone on expressway"
         },
         {
           "id": "q0688_o3",
@@ -53178,7 +53247,7 @@ export const config = {
         {
           "id": "q0690_o3",
           "originalKey": "C",
-          "text": "U turn guide lines"
+          "text": "U-turn guide lines"
         },
         {
           "id": "q0690_o4",
@@ -53317,7 +53386,7 @@ export const config = {
       "id": "q0692",
       "number": 692,
       "type": "mcq",
-      "prompt": "This set of the hand signals of the traffic police indicates that the vehicles should ____ .",
+      "prompt": "This set of the hand signals of the traffic police indicates that vehicles should ______.",
       "options": [
         {
           "id": "q0692_o1",
@@ -53536,12 +53605,12 @@ export const config = {
       "id": "q0695",
       "number": 695,
       "type": "mcq",
-      "prompt": "What’s the meaning of this sign? 67",
+      "prompt": "What’s the meaning of this sign?",
       "options": [
         {
           "id": "q0695_o1",
           "originalKey": "A",
-          "text": "no U turn"
+          "text": "no U-turn"
         },
         {
           "id": "q0695_o2",
@@ -53765,7 +53834,7 @@ export const config = {
       "id": "q0698",
       "number": 698,
       "type": "mcq",
-      "prompt": "What’s the role of indicative sign?",
+      "prompt": "What’s the role of an indicative sign?",
       "options": [
         {
           "id": "q0698_o1",
@@ -53827,7 +53896,7 @@ export const config = {
       "id": "q0699",
       "number": 699,
       "type": "mcq",
-      "prompt": "What’s the role of directional sign?",
+      "prompt": "What’s the role of a directional sign?",
       "options": [
         {
           "id": "q0699_o1",
@@ -54054,7 +54123,7 @@ export const config = {
         {
           "id": "q0702_o4",
           "originalKey": "D",
-          "text": "maximum speed in unusual weather 68"
+          "text": "maximum speed in unusual weather"
         }
       ],
       "correctRow": null,
@@ -54264,7 +54333,7 @@ export const config = {
         {
           "id": "q0705_o2",
           "originalKey": "B",
-          "text": "indicate turning right or making a U turn"
+          "text": "indicate turning right or making a U-turn"
         },
         {
           "id": "q0705_o3",
@@ -54274,7 +54343,7 @@ export const config = {
         {
           "id": "q0705_o4",
           "originalKey": "D",
-          "text": "indicate going straight or making a U turn"
+          "text": "indicate going straight or making a U-turn"
         }
       ],
       "correctRow": null,
@@ -54339,7 +54408,7 @@ export const config = {
         {
           "id": "q0706_o3",
           "originalKey": "C",
-          "text": "indicate making a U turn ahead"
+          "text": "indicate making a U-turn ahead"
         },
         {
           "id": "q0706_o4",
@@ -54399,7 +54468,7 @@ export const config = {
         {
           "id": "q0707_o1",
           "originalKey": "A",
-          "text": "indicate turning left or making a U turn ahead"
+          "text": "indicate turning left or making a U-turn ahead"
         },
         {
           "id": "q0707_o2",
@@ -54414,7 +54483,7 @@ export const config = {
         {
           "id": "q0707_o4",
           "originalKey": "D",
-          "text": "indicate going straight or making a U turn ahead"
+          "text": "indicate going straight or making a U-turn ahead"
         }
       ],
       "correctRow": null,
@@ -54845,12 +54914,12 @@ export const config = {
         {
           "id": "q0713_o1",
           "originalKey": "A",
-          "text": "watch for wildlife"
+          "text": "watch out for wildlife"
         },
         {
           "id": "q0713_o2",
           "originalKey": "B",
-          "text": "watch for animals"
+          "text": "watch out for animals"
         },
         {
           "id": "q0713_o3",
@@ -54860,7 +54929,7 @@ export const config = {
         {
           "id": "q0713_o4",
           "originalKey": "D",
-          "text": "opened pastoral area"
+          "text": "open pastoral area"
         }
       ],
       "correctRow": null,
@@ -55010,7 +55079,7 @@ export const config = {
         {
           "id": "q0715_o4",
           "originalKey": "D",
-          "text": "no U turn 70"
+          "text": "no U-turn"
         }
       ],
       "correctRow": null,
@@ -55070,7 +55139,7 @@ export const config = {
         {
           "id": "q0716_o1",
           "originalKey": "A",
-          "text": "no U turn at intersection"
+          "text": "no U-turn at intersection"
         },
         {
           "id": "q0716_o2",
@@ -55290,7 +55359,7 @@ export const config = {
         {
           "id": "q0719_o1",
           "originalKey": "A",
-          "text": "left one-wa y road"
+          "text": "left one-way road"
         },
         {
           "id": "q0719_o2",
@@ -55871,7 +55940,7 @@ export const config = {
       "id": "q0727",
       "number": 727,
       "type": "mcq",
-      "prompt": "This set of the hand signals of the traffic police indicates that the vehicles should ____ .",
+      "prompt": "This set of the hand signals of the traffic police indicates that vehicles should ______.",
       "options": [
         {
           "id": "q0727_o1",
@@ -55950,12 +56019,12 @@ export const config = {
       "id": "q0728",
       "number": 728,
       "type": "mcq",
-      "prompt": "How to run if this traffic light continuously flashes?",
+      "prompt": "How to drive if this traffic light continuously flashes?",
       "options": [
         {
           "id": "q0728_o1",
           "originalKey": "A",
-          "text": "speed up and pass as soon as possible 72"
+          "text": "speed up and pass as soon as possible"
         },
         {
           "id": "q0728_o2",
@@ -56030,7 +56099,7 @@ export const config = {
       "id": "q0729",
       "number": 729,
       "type": "mcq",
-      "prompt": "How to run when seeing this traffic light at level crossing?",
+      "prompt": "How to drive when seeing this traffic light at level crossing?",
       "options": [
         {
           "id": "q0729_o1",
@@ -56489,7 +56558,7 @@ export const config = {
         {
           "id": "q0735_o4",
           "originalKey": "D",
-          "text": "tell the direction information 73"
+          "text": "tell the direction information"
         }
       ],
       "correctRow": null,
@@ -56541,7 +56610,7 @@ export const config = {
         {
           "id": "q0736_o2",
           "originalKey": "B",
-          "text": "no U turn"
+          "text": "no U-turn"
         },
         {
           "id": "q0736_o3",
@@ -56616,12 +56685,12 @@ export const config = {
         {
           "id": "q0737_o2",
           "originalKey": "B",
-          "text": "lane for both U turn and left turn"
+          "text": "lane for both U-turn and left turn"
         },
         {
           "id": "q0737_o3",
           "originalKey": "C",
-          "text": "the lane of no left turn and no U turn"
+          "text": "the lane of no left turn and no U-turn"
         },
         {
           "id": "q0737_o4",
@@ -57284,7 +57353,7 @@ export const config = {
       "id": "q0746",
       "number": 746,
       "type": "mcq",
-      "prompt": "The vehicle is allowed to _______ at this intersection.",
+      "prompt": "The vehicle is allowed to ______ at this intersection.",
       "options": [
         {
           "id": "q0746_o1",
@@ -57504,7 +57573,7 @@ export const config = {
         {
           "id": "q0749_o1",
           "originalKey": "A",
-          "text": "exit and entry for disabled people 75"
+          "text": "exit and entry for disabled people"
         },
         {
           "id": "q0749_o2",
@@ -57953,7 +58022,7 @@ export const config = {
         {
           "id": "q0755_o2",
           "originalKey": "B",
-          "text": "U turn lane"
+          "text": "U-turn lane"
         },
         {
           "id": "q0755_o3",
@@ -58018,7 +58087,7 @@ export const config = {
         {
           "id": "q0756_o1",
           "originalKey": "A",
-          "text": "U turn"
+          "text": "U-turn"
         },
         {
           "id": "q0756_o2",
@@ -58028,7 +58097,7 @@ export const config = {
         {
           "id": "q0756_o3",
           "originalKey": "C",
-          "text": "left turn 76"
+          "text": "left turn"
         },
         {
           "id": "q0756_o4",
@@ -58548,7 +58617,7 @@ export const config = {
       "id": "q0763",
       "number": 763,
       "type": "mcq",
-      "prompt": "The vehicle is allowed to _______ at this intersection.",
+      "prompt": "The vehicle is allowed to ______ at this intersection.",
       "options": [
         {
           "id": "q0763_o1",
@@ -58988,7 +59057,7 @@ export const config = {
         {
           "id": "q0769_o1",
           "originalKey": "A",
-          "text": "streets on both sides 78"
+          "text": "streets on both sides"
         },
         {
           "id": "q0769_o2",
@@ -59073,7 +59142,7 @@ export const config = {
         {
           "id": "q0770_o1",
           "originalKey": "A",
-          "text": "U turn lane"
+          "text": "U-turn lane"
         },
         {
           "id": "q0770_o2",
@@ -59592,12 +59661,12 @@ export const config = {
         {
           "id": "q0777_o1",
           "originalKey": "A",
-          "text": "going straight and U turn are allowed ahead"
+          "text": "going straight and U-turn are allowed ahead"
         },
         {
           "id": "q0777_o2",
           "originalKey": "B",
-          "text": "left turn and U turn are a llowed ahead"
+          "text": "left turn and U-turn are a llowed ahead"
         },
         {
           "id": "q0777_o3",
@@ -59822,7 +59891,7 @@ export const config = {
         {
           "id": "q0780_o2",
           "originalKey": "B",
-          "text": "narrow brid ge"
+          "text": "narrow bridge"
         },
         {
           "id": "q0780_o3",
@@ -59832,7 +59901,7 @@ export const config = {
         {
           "id": "q0780_o4",
           "originalKey": "D",
-          "text": "road narrows on the right side 80"
+          "text": "road narrows on the right side"
         }
       ],
       "correctRow": null,
@@ -59887,12 +59956,12 @@ export const config = {
         {
           "id": "q0781_o1",
           "originalKey": "A",
-          "text": "watch for animals"
+          "text": "watch out for animals"
         },
         {
           "id": "q0781_o2",
           "originalKey": "B",
-          "text": "watch for wildlife"
+          "text": "watch out for wildlife"
         },
         {
           "id": "q0781_o3",
@@ -60145,7 +60214,13 @@ export const config = {
           ]
         }
       ],
-      "assets": [],
+      "assets": [
+        {
+          "kind": "image",
+          "src": "/qbank/2023-test1/images/p80-784.jpg",
+          "page": 80
+        }
+      ],
       "source": {
         "pdf": "2023 Driving test 1.pdf"
       },
@@ -60329,7 +60404,7 @@ export const config = {
         {
           "id": "q0787_o4",
           "originalKey": "D",
-          "text": "no entering 81"
+          "text": "no entering"
         }
       ],
       "correctRow": null,
@@ -60454,7 +60529,7 @@ export const config = {
       "id": "q0789",
       "number": 789,
       "type": "mcq",
-      "prompt": "Which kind of sign is it?",
+      "prompt": "Which kind of sign is this?",
       "options": [
         {
           "id": "q0789_o1",
@@ -60614,7 +60689,7 @@ export const config = {
         {
           "id": "q0791_o2",
           "originalKey": "B",
-          "text": "U turn lane"
+          "text": "U-turn lane"
         },
         {
           "id": "q0791_o3",
@@ -60899,7 +60974,7 @@ export const config = {
       "id": "q0795",
       "number": 795,
       "type": "mcq",
-      "prompt": "What’s the meaning of this sign? 82",
+      "prompt": "What’s the meaning of this sign?",
       "options": [
         {
           "id": "q0795_o1",
@@ -61670,12 +61745,12 @@ export const config = {
         {
           "id": "q0805_o2",
           "originalKey": "B",
-          "text": "allowed to make a U turn"
+          "text": "allowed to make a U-turn"
         },
         {
           "id": "q0805_o3",
           "originalKey": "C",
-          "text": "no U turn"
+          "text": "no U-turn"
         },
         {
           "id": "q0805_o4",
@@ -61730,7 +61805,7 @@ export const config = {
       "id": "q0806",
       "number": 806,
       "type": "mcq",
-      "prompt": "This set of the hand signals of the traffic police indicates that the vehicles should ___ . 84",
+      "prompt": "This set of the hand signals of the traffic police indicates that vehicles should ______.",
       "options": [
         {
           "id": "q0806_o1",
@@ -61778,7 +61853,12 @@ export const config = {
           ]
         }
       ],
-      "assets": [],
+      "assets": [
+        {
+          "kind": "image",
+          "src": "/qbank/2023-test1/images/p84-806.jpg"
+        }
+      ],
       "source": {
         "pdf": "2023 Driving test 1.pdf"
       },
@@ -61806,7 +61886,7 @@ export const config = {
       "id": "q0807",
       "number": 807,
       "type": "mcq",
-      "prompt": "What does the traffic light mean?",
+      "prompt": "What does this traffic light mean?",
       "options": [
         {
           "id": "q0807_o1",
@@ -62176,7 +62256,7 @@ export const config = {
       "id": "q0812",
       "number": 812,
       "type": "mcq",
-      "prompt": "What’s the meaning of this sign? 85",
+      "prompt": "What’s the meaning of this sign?",
       "options": [
         {
           "id": "q0812_o1",
@@ -62718,7 +62798,7 @@ export const config = {
         {
           "id": "q0819_o4",
           "originalKey": "D",
-          "text": "special lane for BRT vehicles 86"
+          "text": "special lane for BRT vehicles"
         }
       ],
       "correctRow": null,
@@ -64253,12 +64333,12 @@ export const config = {
         {
           "id": "q0839_o3",
           "originalKey": "C",
-          "text": "no overtaking 89"
+          "text": "no overtaking"
         },
         {
           "id": "q0839_o4",
           "originalKey": "D",
-          "text": "no U turn"
+          "text": "no U-turn"
         }
       ],
       "correctRow": null,
@@ -64843,7 +64923,7 @@ export const config = {
         {
           "id": "q0847_o2",
           "originalKey": "B",
-          "text": "service call number on expressway 90"
+          "text": "service call number on expressway"
         },
         {
           "id": "q0847_o3",
@@ -64933,7 +65013,7 @@ export const config = {
         {
           "id": "q0848_o3",
           "originalKey": "C",
-          "text": "U turn ahead"
+          "text": "U-turn ahead"
         },
         {
           "id": "q0848_o4",
@@ -65068,7 +65148,7 @@ export const config = {
       "id": "q0850",
       "number": 850,
       "type": "mcq",
-      "prompt": "How to run when encountering this situation?",
+      "prompt": "How to drive when encountering this situation?",
       "options": [
         {
           "id": "q0850_o1",
@@ -65373,7 +65453,7 @@ export const config = {
         {
           "id": "q0854_o3",
           "originalKey": "C",
-          "text": "no entry 91"
+          "text": "no entry"
         },
         {
           "id": "q0854_o4",
@@ -65822,7 +65902,7 @@ export const config = {
         {
           "id": "q0860_o1",
           "originalKey": "A",
-          "text": "going straight or U turn"
+          "text": "going straight or U-turn"
         },
         {
           "id": "q0860_o2",
@@ -65837,7 +65917,7 @@ export const config = {
         {
           "id": "q0860_o4",
           "originalKey": "D",
-          "text": "left turn or U turn"
+          "text": "left turn or U-turn"
         }
       ],
       "correctRow": null,
@@ -66199,7 +66279,7 @@ export const config = {
         {
           "id": "q0865_o4",
           "originalKey": "D",
-          "text": "cliffside r oad 93"
+          "text": "cliffside road"
         }
       ],
       "correctRow": null,
@@ -66544,7 +66624,7 @@ export const config = {
         {
           "id": "q0870_o1",
           "originalKey": "A",
-          "text": "lane for both going straight and U turn"
+          "text": "lane for both going straight and U-turn"
         },
         {
           "id": "q0870_o2",
@@ -66913,7 +66993,7 @@ export const config = {
       "id": "q0875",
       "number": 875,
       "type": "mcq",
-      "prompt": "This set of the hand signals of the traffic police indicates that the vehicles should ___ .",
+      "prompt": "This set of the hand signals of the traffic police indicates that vehicles should ______.",
       "options": [
         {
           "id": "q0875_o1",
@@ -66961,7 +67041,12 @@ export const config = {
           ]
         }
       ],
-      "assets": [],
+      "assets": [
+        {
+          "kind": "image",
+          "src": "/qbank/2023-test1/images/p95-875.jpg"
+        }
+      ],
       "source": {
         "pdf": "2023 Driving test 1.pdf"
       },
@@ -67000,7 +67085,7 @@ export const config = {
         {
           "id": "q0876_o3",
           "originalKey": "C",
-          "text": "speed recommended"
+          "text": "recommended speed"
         },
         {
           "id": "q0876_o4",
@@ -67140,7 +67225,7 @@ export const config = {
         {
           "id": "q0878_o2",
           "originalKey": "B",
-          "text": "U turn lane 95"
+          "text": "U-turn lane"
         },
         {
           "id": "q0878_o3",
@@ -67285,7 +67370,7 @@ export const config = {
       "id": "q0880",
       "number": 880,
       "type": "mcq",
-      "prompt": "This set of the hand signals of the traffic police indicates that the vehicles should ___ .",
+      "prompt": "This set of the hand signals of the traffic police indicates that vehicles should ______.",
       "options": [
         {
           "id": "q0880_o1",
@@ -67379,7 +67464,7 @@ export const config = {
         {
           "id": "q0881_o3",
           "originalKey": "C",
-          "text": "midsize bu s"
+          "text": "midsize bus"
         },
         {
           "id": "q0881_o4",
@@ -67801,7 +67886,7 @@ export const config = {
       "id": "q0887",
       "number": 887,
       "type": "mcq",
-      "prompt": "This set of the hand signals of the traffic police indicates that the vehicles should ___ .",
+      "prompt": "This set of the hand signals of the traffic police indicates that vehicles should ______.",
       "options": [
         {
           "id": "q0887_o1",
@@ -68100,7 +68185,7 @@ export const config = {
         {
           "id": "q0891_o2",
           "originalKey": "B",
-          "text": "maximum speed limit is 50km/hr 97"
+          "text": "maximum speed limit is 50km/hr"
         },
         {
           "id": "q0891_o3",
@@ -68390,7 +68475,7 @@ export const config = {
       "id": "q0895",
       "number": 895,
       "type": "mcq",
-      "prompt": "This sign indicates ______",
+      "prompt": "This sign indicates ______.",
       "options": [
         {
           "id": "q0895_o1",
@@ -68469,7 +68554,7 @@ export const config = {
       "id": "q0896",
       "number": 896,
       "type": "mcq",
-      "prompt": "This set of the hand signals of the traffic police indicates that the vehi cles sh ould ___ .",
+      "prompt": "This set of the hand signals of the traffic police indicates that vehicles should ______.",
       "options": [
         {
           "id": "q0896_o1",
@@ -68568,7 +68653,7 @@ export const config = {
         {
           "id": "q0897_o4",
           "originalKey": "D",
-          "text": "an unmanned level crossing 98"
+          "text": "an unmanned level crossing"
         }
       ],
       "correctRow": null,
@@ -68698,7 +68783,7 @@ export const config = {
       "id": "q0899",
       "number": 899,
       "type": "mcq",
-      "prompt": "This set of the hand signals of the traffic police indicates that the vehicles should ___ .",
+      "prompt": "This set of the hand signals of the traffic police indicates that vehicles should ______.",
       "options": [
         {
           "id": "q0899_o1",
@@ -68777,7 +68862,7 @@ export const config = {
       "id": "q0900",
       "number": 900,
       "type": "mcq",
-      "prompt": "The validity of the driving license which is initially applied for is ______",
+      "prompt": "The validity of the driving license which is initially applied for is ______.",
       "options": [
         {
           "id": "q0900_o1",
@@ -68837,7 +68922,7 @@ export const config = {
       "id": "q0901",
       "number": 901,
       "type": "mcq",
-      "prompt": "Which kind of vehicle can be driven if the authorized vehicle applied for is small motor vehicle?",
+      "prompt": "Which kind of vehicle can be driven if the authorized vehicle applied for is a small motor vehicle?",
       "options": [
         {
           "id": "q0901_o1",
@@ -68902,7 +68987,7 @@ export const config = {
       "id": "q0902",
       "number": 902,
       "type": "mcq",
-      "prompt": "Which kind of vehicle can be driven if the authorized vehicle applied for is small motor vehicle with automatic transmission?",
+      "prompt": "Which kind of vehicle can be driven if the authorized vehicle applied for is a small motor vehicle with an automatic transmission?",
       "options": [
         {
           "id": "q0902_o1",
@@ -68957,7 +69042,7 @@ export const config = {
       "id": "q0903",
       "number": 903,
       "type": "row",
-      "prompt": "The driving license of 10-year validity will be issued if the penalty points never reached 12 points in every scoring cycle during the 6-year validity of the license.",
+      "prompt": "The driving license of a 10-year validity will be issued if the penalty points never reached 12 points in every scoring cycle during the 6-year validity of the license.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -69004,7 +69089,7 @@ export const config = {
       "id": "q0904",
       "number": 904,
       "type": "row",
-      "prompt": "The validity of the driving license is divided into 6-year, 10-year and 20-year.",
+      "prompt": "The validity of the driving license is divided into a 6-year, 10-year, and 20-year.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -69043,7 +69128,7 @@ export const config = {
       "id": "q0905",
       "number": 905,
       "type": "row",
-      "prompt": "One can drive the small motor vehicle with automatic transmission if the authorized vehicle applied for is small motor vehicle.",
+      "prompt": "One can drive a small motor vehicle with an automatic transmission if the authorized vehicle applied for is for a small motor vehicle.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -69077,7 +69162,7 @@ export const config = {
       "id": "q0906",
       "number": 906,
       "type": "row",
-      "prompt": "One can drive the low-speed truck if the authorized vehicle applied for is small motor vehicle with automatic transmission.",
+      "prompt": "One can drive a low-speed truck if the authorized vehicle applied is for a small motor vehicle with an automatic transmission.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -69204,7 +69289,7 @@ export const config = {
         {
           "id": "q0909_o3",
           "originalKey": "C",
-          "text": "ordinary motor tricycle 99"
+          "text": "ordinary motor tricycle"
         },
         {
           "id": "q0909_o4",
@@ -69314,7 +69399,7 @@ export const config = {
       "id": "q0911",
       "number": 911,
       "type": "row",
-      "prompt": "The contents of subject 2 test for small motor vehicle include reversing stall parking, stopping at the appointed position and setting off on a slope, pulling over, driving by S-shaped line, sharp turning.",
+      "prompt": "The contents of subject 2 test for small motor vehicle include reversing stall parking, stopping at the appointed position, and setting off on a slope, pulling over, driving by S-shaped line, and sharp turning.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -69353,7 +69438,7 @@ export const config = {
       "id": "q0912",
       "number": 912,
       "type": "row",
-      "prompt": "The subject 3 test is divided into two parts including Driving Skills, Common Knowledge on Safe and Courteous Driving.",
+      "prompt": "The subject 3 test is divided into two parts including Driving Skills and Common Knowledge on Safe and Courteous Driving.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -69387,7 +69472,7 @@ export const config = {
       "id": "q0913",
       "number": 913,
       "type": "row",
-      "prompt": "The full mark of Driving Skills, Common Knowledge on Safe and Courteous Driving of the subject 3 test is 100, each of the passing mark is 80 and 90.",
+      "prompt": "The full mark of Driving Skills and Common Knowledge on Safe and Courteous Driving of the subject 3 test is 100, each of the passing mark is 80 and 90 respectively.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -69421,7 +69506,7 @@ export const config = {
       "id": "q0914",
       "number": 914,
       "type": "mcq",
-      "prompt": "Within the validity of the Admission Form, the times of test reservation for Driving Skills of subject 2 and subject 3 can not exceed ______",
+      "prompt": "Within the validity of the Admission Form, the times of test reservation for Driving Skills of subject 2 and subject 3 can not exceed ______.",
       "options": [
         {
           "id": "q0914_o1",
@@ -69476,7 +69561,7 @@ export const config = {
       "id": "q0915",
       "number": 915,
       "type": "mcq",
-      "prompt": "The validity of the Admission Form is _________",
+      "prompt": "The validity of the Admission Form is ______.",
       "options": [
         {
           "id": "q0915_o1",
@@ -69531,7 +69616,7 @@ export const config = {
       "id": "q0916",
       "number": 916,
       "type": "row",
-      "prompt": "The applicant should apply for the cancelation of the reservation one day in advance if he is unable to take the exam by appointment, the applicant will be judged as failed in the exam if he does not take the exam on the reserved examination time.",
+      "prompt": "The applicant should apply for the cancellation of the reservation one day in advance if (s)he is unable to take the exam on the appointed date. The applicant will be judged as failed for the exam if (s)he does not take the exam on the reserved examination date and time.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -69666,7 +69751,7 @@ export const config = {
       "id": "q0919",
       "number": 919,
       "type": "row",
-      "prompt": "The driving license will be revoked when the person is executed community drug treatment, forced isolation treatment or community-based rehabilitation measures.",
+      "prompt": "The driving license will be revoked when the person is undergoing community drug treatment, forced isolation treatment or community-based rehabilitation measures.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -69709,7 +69794,7 @@ export const config = {
       "id": "q0920",
       "number": 920,
       "type": "mcq",
-      "prompt": "If the registration paper, license plate and vehicle license of a motorized vehicle are lost or destroyed, the vehicle owner should apply for reissuing or replacing them to the _______________.",
+      "prompt": "If the registration paper, license plate, and vehicle license of a motorized vehicle are lost or destroyed, the vehicle owner should apply for reissuing or replacing them to the ______.",
       "options": [
         {
           "id": "q0920_o1",
@@ -69777,7 +69862,7 @@ export const config = {
       "id": "q0921",
       "number": 921,
       "type": "row",
-      "prompt": "If the registration paper, license plate and vehicle license of a motorized vehicle are lost or destroyed, the vehicle owner should apply for reissuing or replacing them to the vehicle management station at the residential place.",
+      "prompt": "If the registration paper, license plate and vehicle license of a motorized vehicle are lost or destroyed, the vehicle owner should apply for reissuing or replacing them to the vehicle management station at their residential place.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -69820,7 +69905,7 @@ export const config = {
       "id": "q0922",
       "number": 922,
       "type": "mcq",
-      "prompt": "An unregistered motorized vehicle should have _________ if it has to run on the road temporarily.",
+      "prompt": "An unregistered motorized vehicle should have a ______ if it has to run on the road temporarily.",
       "options": [
         {
           "id": "q0922_o1",
@@ -69880,7 +69965,7 @@ export const config = {
       "id": "q0923",
       "number": 923,
       "type": "mcq",
-      "prompt": "If a driving license has been revoked as it is obtained by deception, bribery or other illegal means, the applicant is not allowed to re-apply for it within ______",
+      "prompt": "If a driving license has been revoked as it is obtained by deception, bribery, or other illegal means, the applicant is not allowed to re-apply for it within ______.",
       "options": [
         {
           "id": "q0923_o1",
@@ -69978,7 +70063,7 @@ export const config = {
       "id": "q0925",
       "number": 925,
       "type": "mcq",
-      "prompt": "Driving across the double solid lines is _______",
+      "prompt": "Driving across the double solid lines is ______",
       "options": [
         {
           "id": "q0925_o1",
@@ -70042,7 +70127,7 @@ export const config = {
       "id": "q0926",
       "number": 926,
       "type": "row",
-      "prompt": "Stopping the vehicle temporarily in the crosswalk is the act of violation of the law.",
+      "prompt": "Stopping the vehicle temporarily in the crosswalk is an act of violation of the law.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -70488,7 +70573,7 @@ export const config = {
       "id": "q0934",
       "number": 934,
       "type": "row",
-      "prompt": "This sign warns a sharp left curve ahead. ht 101",
+      "prompt": "This sign warns a sharp left curve ahead.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -71069,7 +71154,7 @@ export const config = {
       "id": "q0946",
       "number": 946,
       "type": "row",
-      "prompt": "This sign reminds strong side wind ahead. 102",
+      "prompt": "This sign reminds strong side wind ahead.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -71655,7 +71740,7 @@ export const config = {
       "id": "q0958",
       "number": 958,
       "type": "row",
-      "prompt": "This sign indicates jammed section ahead and passing slowly. 103",
+      "prompt": "This sign indicates jammed section ahead and passing slowly.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -71682,7 +71767,13 @@ export const config = {
           ]
         }
       ],
-      "assets": [],
+      "assets": [
+        {
+          "kind": "image",
+          "src": "/qbank/2023-test1/images/p103-958.jpg",
+          "page": 103
+        }
+      ],
       "source": {
         "pdf": "2023 Driving test 1.pdf"
       },
@@ -72104,7 +72195,7 @@ export const config = {
       "id": "q0967",
       "number": 967,
       "type": "row",
-      "prompt": "The yellow lane-dividing line in the picture is used to separate the traffic flow in opposite directions, crossing the line to overtake or make a turn is allowed if it is safe.",
+      "prompt": "The yellow lane-dividing line in the picture is used to separate the traffic flow in opposite directions, crossing the line to overtake or make a turn is allowed if conditions are safe.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -72263,7 +72354,7 @@ export const config = {
         {
           "id": "q0970_o2",
           "originalKey": "B",
-          "text": "turn slightly to the right side, keep a safe horizontal distance"
+          "text": "turn slightly to the right side and keep a safe horizontal distance"
         },
         {
           "id": "q0970_o3",
@@ -72313,7 +72404,7 @@ export const config = {
       "id": "q0971",
       "number": 971,
       "type": "mcq",
-      "prompt": "For a driver who drives a commercial motor vehicle after drinking, bes ides revok ing his/her driving license, how long will he/she be banned from re-obtaining a motor vehicle driving license?",
+      "prompt": "For a driver who drives a commercial motor vehicle after drinking, besides revoking his/her driving license, how long will he/she be banned from re-obtaining a motor vehicle driving license?",
       "options": [
         {
           "id": "q0971_o1",
@@ -72323,17 +72414,17 @@ export const config = {
         {
           "id": "q0971_o2",
           "originalKey": "B",
-          "text": "2 year"
+          "text": "2 years"
         },
         {
           "id": "q0971_o3",
           "originalKey": "C",
-          "text": "5 year"
+          "text": "5 years"
         },
         {
           "id": "q0971_o4",
           "originalKey": "D",
-          "text": "10 year"
+          "text": "10 years"
         }
       ],
       "correctRow": null,
@@ -72377,7 +72468,7 @@ export const config = {
       "id": "q0972",
       "number": 972,
       "type": "mcq",
-      "prompt": "For a driver who drivers a commercial motor vehicle after drinking, besides being detained by the traffic management department of the public security organ till he/she sobers up, what will he/she be subject to?",
+      "prompt": "For a driver who drives a commercial motor vehicle after drinking, besides being detained by the traffic management department of the public security authority till he/she sobers up, what will he/she be subject to?",
       "options": [
         {
           "id": "q0972_o1",
@@ -116702,11 +116793,96 @@ export const config = {
 ### public/qbank/2023-test1/tags.patch.json
 ```json
 {
-  "q0012": ["proper-driving", "proper-driving:safe-driving"],
+"q0001": ["road-safety", "road-safety:road-conditions", "road-safety:accidents", "driving-operations:gears", "proper-driving:safe-driving"],
+"q0006": ["road-safety", "road-safety:road-conditions", "traffic-signals:road-signs", "proper-driving:safe-driving"],
+"q0012": ["proper-driving", "proper-driving:safe-driving"],
+"q0013": ["driving-operations", "driving-operations:indicators", "driving-operations:gears"],
+"q0014": ["road-safety", "road-safety:road-conditions", "proper-driving:safe-driving"],
+"q0015": ["road-safety", "road-safety:road-conditions", "proper-driving:safe-driving"],
+"q0017": ["road-safety", "road-safety:road-conditions", "proper-driving:safe-driving"],
+"q0018": ["road-safety", "road-safety:road-conditions", "proper-driving:safe-driving"],
+"q0022": ["road-safety", "road-safety:road-conditions", "proper-driving:safe-driving"],
+"q0024": ["road-safety", "road-safety:road-conditions", "proper-driving:safe-driving"],
+"q0026": ["road-safety", "road-safety:road-conditions", "proper-driving:safe-driving", "proper-driving:traffic-laws"],
+"q0028": ["road-safety", "road-safety:road-conditions", "proper-driving:safe-driving"],
+"q0031": ["road-safety", "road-safety:road-conditions", "proper-driving:safe-driving"],
+"q0033": ["road-safety", "road-safety:road-conditions", "proper-driving:safe-driving"],
+"q0034": ["road-safety", "road-safety:road-conditions", "proper-driving:safe-driving"],
+"q0035": ["road-safety", "road-safety:road-conditions", "proper-driving:traffic-laws"],
+"q0037": ["road-safety", "road-safety:road-conditions", "proper-driving:safe-driving"],
+"q0051": ["driving-operations", "driving-operations:indicators", "proper-driving:safe-driving"],
 "q0117": ["road-safety", "road-safety:road-conditions", "proper-driving:safe-driving"],
- "q0119": ["road-safety", "road-safety:road-conditions", "proper-driving:safe-driving"],
+"q0052": ["road-safety", "road-safety:road-conditions", "proper-driving:safe-driving"],
+"q0061": ["road-safety", "road-safety:road-conditions", "proper-driving:safe-driving"],
+"q0064": ["road-safety", "road-safety:road-conditions", "proper-driving:safe-driving"],
+"q0067": ["road-safety", "road-safety:road-conditions", "proper-driving:safe-driving"],
+"q0071": ["road-safety", "road-safety:road-conditions", "proper-driving:safe-driving"],
+"q0073": ["traffic-signals", "traffic-signals:signal-lights", "proper-driving:safe-driving"],
+
+"q0105": ["road-safety", "road-safety:road-conditions", "proper-driving:safe-driving"],
+"q0110": ["road-safety", "road-safety:road-conditions", "proper-driving:safe-driving"],
+"q0111": ["traffic-signals", "traffic-signals:road-markings", "road-safety:road-conditions", "proper-driving:safe-driving"],
+"q0114": ["road-safety", "road-safety:road-conditions", "proper-driving:safe-driving"],
+
+"q0119": ["road-safety", "road-safety:road-conditions", "proper-driving:safe-driving"],
 "q0135": ["road-safety", "road-safety:road-conditions", "proper-driving:safe-driving"],
-"q0154": ["proper-driving", "proper-driving:safe-driving"],
+"q0146": ["road-safety", "road-safety:road-conditions", "proper-driving:safe-driving"],
+"q0154": ["proper-driving", "proper-driving:safe-driving", "driving-operations:gears"],
+"q0158": ["proper-driving", "proper-driving:safe-driving"],
+"q0164": ["road-safety", "road-safety:road-conditions", "proper-driving:safe-driving"],
+"q0170": ["road-safety", "road-safety:road-conditions", "proper-driving:safe-driving"],
+"q0189": ["traffic-signals", "traffic-signals:signal-lights", "traffic-signals:road-signs","road-safety:road-conditions"],
+"q0194": ["proper-driving", "proper-driving:safe-driving", "traffic-signals:signal-lights"],
+
+"q0205": ["road-safety", "road-safety:license", "road-safety:accidents"],
+"q0218": ["traffic-signals", "traffic-signals:signal-lights", "traffic-signals:road-markings", "proper-driving:traffic-laws"],
+"q0219": ["traffic-signals", "traffic-signals:road-markings","road-safety:road-conditions"],
+"q0221": ["driving-operations", "driving-operations:gears", "proper-driving:traffic-laws"],
+"q0225": ["traffic-signals", "traffic-signals:police-signals", "traffic-signals:signal-lights"],
+"q0226": ["traffic-signals", "traffic-signals:road-signs"],
+"q0235": ["traffic-signals", "traffic-signals:road-markings","road-safety:road-conditions"],
+"q0231": ["proper-driving", "proper-driving:safe-driving", "traffic-signals:signal-lights"],
+
+"q0236": ["proper-driving", "proper-driving:safe-driving"],
+"q0240": ["road-safety", "road-safety:road-conditions", "proper-driving:road-markings"],
+"q0241": ["proper-driving", "proper-driving:traffic-laws", "driving-operations:gears"],
+"q0242": ["proper-driving", "proper-driving:traffic-laws", "driving-operations:gears"],
+"q0268": ["road-safety", "road-safety:road-conditions", "proper-driving:safe-driving"],
+"q0270": ["proper-driving", "proper-driving:traffic-laws", "traffic-signals:road-markings"],
+"q0272": ["proper-driving", "proper-driving:traffic-laws"],
+"q0282": ["proper-driving", "proper-driving:traffic-laws"],
+"q0284": ["proper-driving", "proper-driving:safe-driving", "traffic-signals:signal-lights"],
+
+"q0290": ["traffic-signals", "traffic-signals:road-signs", "traffic-signals:road-markings"],
+"q0311": ["proper-driving", "proper-driving:safe-driving"],
+"q0319": ["traffic-signals", "traffic-signals:road-signs", "traffic-signals:road-markings"],
+
+"q0320": ["proper-driving", "proper-driving:safe-driving"],
+"q0325": ["proper-driving", "proper-driving:traffic-laws"],
+"q0329": ["road-safety", "road-safety:road-conditions", "proper-driving:safe-driving"],
+"q0334": ["traffic-signals", "traffic-signals:road-signs"],
+"q0361": ["traffic-signals", "traffic-signals:road-markings","road-safety:road-conditions"],
+"q0373": ["traffic-signals", "traffic-signals:road-signs"],
+"q0379": ["road-safety", "road-safety:license"],
+"q0415": ["road-safety", "road-safety:road-conditions"],
+"q0416": ["traffic-signals", "traffic-signals:road-markings"],
+"q0459": ["proper-driving", "proper-driving:safe-driving"],
+"q0463": ["road-safety", "road-safety:registration"],
+"q0464": ["traffic-signals", "traffic-signals:police-signals"],
+"q0475": ["proper-driving", "proper-driving:traffic-laws"],
+"q0496": ["road-safety", "road-safety:license", "proper-driving:traffic-laws", "road-safety:accidents"],
+"q0514": ["proper-driving", "proper-driving:traffic-laws", "proper-driving:safe-driving"],
+"q0553": ["driving-operations", "driving-operations:gears"],
+"q0633": ["traffic-signals", "traffic-signals:signal-lights", "traffic-signals:road-signs"],
+
+"q0637": ["traffic-signals", "traffic-signals:signal-lights"],
+"q0639": ["traffic-signals", "traffic-signals:signal-lights"],
+"q0640": ["traffic-signals", "traffic-signals:signal-lights"],
+"q0641": ["traffic-signals", "traffic-signals:signal-lights"],
+"q0642": ["traffic-signals", "traffic-signals:road-markings", "proper-driving:traffic-laws"],
+"q0644": ["traffic-signals", "traffic-signals:signal-lights"],
+"q0850": ["traffic-signals", "traffic-signals:signal-lights"],
+"q0970": ["proper-driving", "proper-driving:safe-driving"]
 
 
 
