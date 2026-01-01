@@ -557,18 +557,28 @@ import type { DatasetId } from '../../lib/qbank/datasets';
 import type { Question } from '../../lib/qbank/types';
 import { TAG_TAXONOMY, labelForTag } from '../../lib/qbank/tagTaxonomy';
 import { deriveTopicSubtags } from '../../lib/qbank/deriveTopicSubtags';
+import { useBookmarks } from "../../lib/bookmarks/useBookmarks"; // adjust path if you use "@/lib/..."
+
 
 function isCorrectMcq(item: Question, optId: string, optKey?: string) {
   if (item.type !== 'MCQ' || !item.correctOptionId) return false;
   return item.correctOptionId === optId || (optKey && item.correctOptionId === optKey);
 }
 
-export default function AllQuestionsClient({ datasetId }: { datasetId: DatasetId }) {
+export default function AllQuestionsClient({
+  datasetId,
+  mode = 'all',
+}: {
+  datasetId: DatasetId;
+  mode?: 'all' | 'bookmarks';
+}) {
   const [q, setQ] = useState<Question[]>([]);
   const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState('');
   const [activeTopic, setActiveTopic] = useState<string | null>(null);
   const [activeSub, setActiveSub] = useState<string | null>(null); // null = All
+  const { idSet: bookmarkedSet, isBookmarked, toggle } = useBookmarks(datasetId);
+
 
 
   useEffect(() => {
@@ -646,6 +656,10 @@ useEffect(() => {
   });
 }, [q, query, activeTopic, activeSub, derivedById]);
 
+const visible = useMemo(() => {
+  if (mode !== 'bookmarks') return filtered;
+  return filtered.filter((item) => bookmarkedSet.has(item.id));
+}, [filtered, mode, bookmarkedSet]);
 
 
 
@@ -653,7 +667,7 @@ useEffect(() => {
     <main className={styles.page}>
       <div className={styles.frame}>
         <header className={styles.header}>
-          <h1 className={styles.title}>All Questions</h1>
+          <h1 className={styles.title}>{mode === 'bookmarks' ? 'Bookmarks' : 'All Questions'}</h1>
         </header>
 
         <div className={styles.searchRow}>
@@ -715,21 +729,34 @@ useEffect(() => {
 
 
         <section className={styles.list}>
-          {filtered.map((item) => (
+          {visible.map((item) => (
             <article key={item.id} className={styles.card}>
-              <div className={styles.cardTop}>
+ <div className={styles.cardTop}>
   <span className={styles.qNo}>{item.number}.</span>
 
-  {(() => {
-    const tags = derivedById.get(item.id) ?? [];
-    const topicKey = tags.find((t) => !t.includes(":")); // topic = no ":"
-    return (
-      <span className={styles.qType}>
-        {topicKey ? labelForTag(topicKey) : "Unclassified"}
-      </span>
-    );
-  })()}
+  <div className={styles.cardTopRight}>
+    {(() => {
+      const tags = derivedById.get(item.id) ?? [];
+      const topicKey = tags.find((t) => !t.includes(':'));
+      return (
+        <span className={styles.qType}>
+          {topicKey ? labelForTag(topicKey) : 'Unclassified'}
+        </span>
+      );
+    })()}
+
+    <button
+      type="button"
+      className={styles.bookmarkBtn}
+      onClick={() => toggle(item.id)}
+      aria-label={isBookmarked(item.id) ? 'Remove bookmark' : 'Add bookmark'}
+      title={isBookmarked(item.id) ? 'Bookmarked' : 'Bookmark'}
+    >
+      {isBookmarked(item.id) ? '★' : '☆'}
+    </button>
+  </div>
 </div>
+
 
 
               <p className={styles.prompt}>{item.prompt}</p>
@@ -998,6 +1025,27 @@ useEffect(() => {
 .optionText {
   line-height: 1.35;
 }
+
+.cardTopRight {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.bookmarkBtn {
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  font-size: 20px;
+  line-height: 1;
+  opacity: 0.85;
+  padding: 4px 6px;
+}
+
+.bookmarkBtn:hover {
+  opacity: 1;
+}
+
 
 ```
 
@@ -1389,6 +1437,20 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     },
   },
 });
+
+```
+
+### app/bookmarks/page.tsx
+```tsx
+import type { DatasetId } from '../../lib/qbank/datasets';
+import AllQuestionsClient from '../all-questions/AllQuestionsClient.client';
+
+export default function BookmarksPage() {
+  // IMPORTANT: use the same datasetId you use for /all-questions
+  const datasetId: DatasetId = '2023-test1' as DatasetId;
+
+  return <AllQuestionsClient datasetId={"cn-2023-test1" as DatasetId} mode="bookmarks" />;
+}
 
 ```
 
@@ -4504,7 +4566,7 @@ const OVERALL_CARDS = [
 const MY_CARDS = [
   {
   key: "my-bookmarks",
-  href: `${ROUTES.comingSoon}?feature=my-bookmarks`,
+  href: ROUTES.bookmarks,
   ariaLabel: "Open My Bookmarks",
   bgSrc: "/images/home/cards/bookmark-bg.png",
   bgAlt: "My Bookmarks Background",
@@ -7800,6 +7862,64 @@ export function cookieOptions() {
 }
 ```
 
+### lib/bookmarks/useBookmarks.ts
+```tsx
+"use client";
+
+import { useCallback, useEffect, useMemo, useState } from "react";
+
+const keyFor = (datasetId: string) => `expatise:bookmarks:${datasetId}`;
+
+function readIds(datasetId: string): string[] {
+  if (typeof window === "undefined") return [];
+  try {
+    const raw = localStorage.getItem(keyFor(datasetId));
+    const parsed = raw ? JSON.parse(raw) : [];
+    return Array.isArray(parsed) ? parsed.map(String) : [];
+  } catch {
+    return [];
+  }
+}
+
+function writeIds(datasetId: string, ids: string[]) {
+  try {
+    localStorage.setItem(keyFor(datasetId), JSON.stringify(ids));
+  } catch {
+    // ignore quota/private-mode errors
+  }
+}
+
+export function useBookmarks(datasetId: string) {
+  const [ids, setIds] = useState<string[]>([]);
+
+  useEffect(() => {
+    setIds(readIds(datasetId));
+  }, [datasetId]);
+
+  const idSet = useMemo(() => new Set(ids), [ids]);
+
+  const isBookmarked = useCallback((id: string) => idSet.has(id), [idSet]);
+
+  const toggle = useCallback(
+    (id: string) => {
+      setIds((prev) => {
+        const next = new Set(prev);
+        if (next.has(id)) next.delete(id);
+        else next.add(id);
+
+        const arr = Array.from(next);
+        writeIds(datasetId, arr);
+        return arr;
+      });
+    },
+    [datasetId]
+  );
+
+  return { ids, idSet, isBookmarked, toggle };
+}
+
+```
+
 ### lib/middleware/auth.ts
 ```tsx
 // lib/middleware/auth.ts
@@ -9158,6 +9278,7 @@ export type RawQBank = { questions: RawQuestion[] } | RawQuestion[];
 ```tsx
 export const ROUTES = {
   allQuestions: "/all-questions",
+  bookmarks: "/bookmarks",
   comingSoon: "/coming-soon",
 } as const;
 

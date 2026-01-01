@@ -90,7 +90,7 @@ const OVERALL_CARDS = [
 const MY_CARDS = [
   {
   key: "my-bookmarks",
-  href: `${ROUTES.comingSoon}?feature=my-bookmarks`,
+  href: ROUTES.bookmarks,
   ariaLabel: "Open My Bookmarks",
   bgSrc: "/images/home/cards/bookmark-bg.png",
   bgAlt: "My Bookmarks Background",

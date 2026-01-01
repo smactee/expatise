@@ -9,18 +9,28 @@ import type { DatasetId } from '../../lib/qbank/datasets';
 import type { Question } from '../../lib/qbank/types';
 import { TAG_TAXONOMY, labelForTag } from '../../lib/qbank/tagTaxonomy';
 import { deriveTopicSubtags } from '../../lib/qbank/deriveTopicSubtags';
+import { useBookmarks } from "../../lib/bookmarks/useBookmarks"; // adjust path if you use "@/lib/..."
+
 
 function isCorrectMcq(item: Question, optId: string, optKey?: string) {
   if (item.type !== 'MCQ' || !item.correctOptionId) return false;
   return item.correctOptionId === optId || (optKey && item.correctOptionId === optKey);
 }
 
-export default function AllQuestionsClient({ datasetId }: { datasetId: DatasetId }) {
+export default function AllQuestionsClient({
+  datasetId,
+  mode = 'all',
+}: {
+  datasetId: DatasetId;
+  mode?: 'all' | 'bookmarks';
+}) {
   const [q, setQ] = useState<Question[]>([]);
   const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState('');
   const [activeTopic, setActiveTopic] = useState<string | null>(null);
   const [activeSub, setActiveSub] = useState<string | null>(null); // null = All
+  const { idSet: bookmarkedSet, isBookmarked, toggle } = useBookmarks(datasetId);
+
 
 
   useEffect(() => {
@@ -98,6 +108,10 @@ useEffect(() => {
   });
 }, [q, query, activeTopic, activeSub, derivedById]);
 
+const visible = useMemo(() => {
+  if (mode !== 'bookmarks') return filtered;
+  return filtered.filter((item) => bookmarkedSet.has(item.id));
+}, [filtered, mode, bookmarkedSet]);
 
 
 
@@ -105,7 +119,7 @@ useEffect(() => {
     <main className={styles.page}>
       <div className={styles.frame}>
         <header className={styles.header}>
-          <h1 className={styles.title}>All Questions</h1>
+          <h1 className={styles.title}>{mode === 'bookmarks' ? 'Bookmarks' : 'All Questions'}</h1>
         </header>
 
         <div className={styles.searchRow}>
@@ -167,21 +181,34 @@ useEffect(() => {
 
 
         <section className={styles.list}>
-          {filtered.map((item) => (
+          {visible.map((item) => (
             <article key={item.id} className={styles.card}>
-              <div className={styles.cardTop}>
+ <div className={styles.cardTop}>
   <span className={styles.qNo}>{item.number}.</span>
 
-  {(() => {
-    const tags = derivedById.get(item.id) ?? [];
-    const topicKey = tags.find((t) => !t.includes(":")); // topic = no ":"
-    return (
-      <span className={styles.qType}>
-        {topicKey ? labelForTag(topicKey) : "Unclassified"}
-      </span>
-    );
-  })()}
+  <div className={styles.cardTopRight}>
+    {(() => {
+      const tags = derivedById.get(item.id) ?? [];
+      const topicKey = tags.find((t) => !t.includes(':'));
+      return (
+        <span className={styles.qType}>
+          {topicKey ? labelForTag(topicKey) : 'Unclassified'}
+        </span>
+      );
+    })()}
+
+    <button
+      type="button"
+      className={styles.bookmarkBtn}
+      onClick={() => toggle(item.id)}
+      aria-label={isBookmarked(item.id) ? 'Remove bookmark' : 'Add bookmark'}
+      title={isBookmarked(item.id) ? 'Bookmarked' : 'Bookmark'}
+    >
+      {isBookmarked(item.id) ? '★' : '☆'}
+    </button>
+  </div>
 </div>
+
 
 
               <p className={styles.prompt}>{item.prompt}</p>
