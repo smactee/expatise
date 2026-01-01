@@ -16228,7 +16228,7 @@ export const config = {
       "id": "q0003",
       "number": 3,
       "type": "row",
-      "prompt": "A vehicle running on an expressway may frequently change lanes.",
+      "prompt": "A vehicle driving on an expressway may frequently change lanes.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -16299,7 +16299,7 @@ export const config = {
       "id": "q0005",
       "number": 5,
       "type": "row",
-      "prompt": "When an accident has caused congestion on an expressway, the vehicles may run in the emergency strip on the right or in the shoulder of the road.",
+      "prompt": "When an accident has caused congestion on an expressway, the vehicles may drive in the emergency strip on the right or in the shoulder of the road.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -16862,7 +16862,7 @@ export const config = {
       "id": "q0021",
       "number": 21,
       "type": "row",
-      "prompt": "When there’s a diversion traffic control on the expressway, a driver can stop by the side to wait instead of leaving out of the expressway, for continually running after the traffic control.",
+      "prompt": "When there’s a diversion traffic control on the expressway, a driver can stop by the side to wait instead of leaving out of the expressway, for continually driving after the traffic control.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -17174,7 +17174,7 @@ export const config = {
       "id": "q0030",
       "number": 30,
       "type": "row",
-      "prompt": "When a vehicle goes down a long slope, it should run at a lower gear and fully use the engine to brake.",
+      "prompt": "When a vehicle goes down a long slope, it should drive at a lower gear and fully use the engine to brake.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -17377,7 +17377,7 @@ export const config = {
       "id": "q0036",
       "number": 36,
       "type": "row",
-      "prompt": "When a vehicle runs on an expressway, the driver may determine the driving speed according to their feelings.",
+      "prompt": "When a vehicle drives on an expressway, the driver may determine the driving speed according to their feelings.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -17524,7 +17524,7 @@ export const config = {
       "id": "q0040",
       "number": 40,
       "type": "row",
-      "prompt": "When a vehicle has increased its speed to more than 60 km/h on the ramp of an expressway, it may directly enter the carriageway.",
+      "prompt": "When a vehicle has increased its speed to more than 60km/h on the ramp of an expressway, it may directly enter the carriageway.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -18096,7 +18096,7 @@ export const config = {
       "id": "q0056",
       "number": 56,
       "type": "row",
-      "prompt": "When a vehicle passes a crosswalk, the driver should yield to the pedestrians.",
+      "prompt": "When a vehicle passes a crosswalk, the driver should yield to pedestrians.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -19619,7 +19619,7 @@ export const config = {
       "id": "q0099",
       "number": 99,
       "type": "row",
-      "prompt": "When the driver discovers a tire is leaking and steers the vehicle off the main carriageway, he should refrain from applying the emergency break so as to avoid a vehicle turnover or a rear-end collision arising from the late braking of the following vehicle.",
+      "prompt": "When the driver discovers a tire is leaking air and steers the vehicle off the main carriageway, he should refrain from applying the emergency break so as to avoid a vehicle turnover or a rear-end collision arising from the late braking of the following vehicle.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -19761,7 +19761,7 @@ export const config = {
       "id": "q0103",
       "number": 103,
       "type": "row",
-      "prompt": "The vehicles should run by the right shoulder of an expressway.",
+      "prompt": "Vehicles should drive on the right shoulder of an expressway.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -20199,7 +20199,7 @@ export const config = {
       "id": "q0111",
       "number": 111,
       "type": "mcq",
-      "prompt": "When a vehicle changes lane before an intersection, the driver should do so ______.",
+      "prompt": "When a vehicle changes lanes before an intersection, the driver should do so ______.",
       "options": [
         {
           "id": "q0111_o1",
@@ -20430,7 +20430,7 @@ export const config = {
       "id": "q0115",
       "number": 115,
       "type": "mcq",
-      "prompt": "Driving on the expressway with full signs and marking, the driver should run in the lane and at the speed according to ______.",
+      "prompt": "Driving on the expressway with full signs and markings, the driver should drive in the lane and at the speed according to the ______.",
       "options": [
         {
           "id": "q0115_o1",
@@ -20562,7 +20562,7 @@ export const config = {
         {
           "id": "q0117_o3",
           "originalKey": "C",
-          "text": "slide over in the neutral gear"
+          "text": "Slide over in the neutral gear"
         },
         {
           "id": "q0117_o4",
@@ -20787,7 +20787,7 @@ export const config = {
       "id": "q0121",
       "number": 121,
       "type": "mcq",
-      "prompt": "When running on the expressway, the driver should ______ if he has missed the exit.",
+      "prompt": "When driving on the expressway, the driver should ______ if he has missed the exit.",
       "options": [
         {
           "id": "q0121_o1",
@@ -20846,7 +20846,7 @@ export const config = {
       "id": "q0122",
       "number": 122,
       "type": "mcq",
-      "prompt": "When a motorized vehicle runs on an expressway, it ______.",
+      "prompt": "When a motorized vehicle drives on an expressway, it ______.",
       "options": [
         {
           "id": "q0122_o1",
@@ -21146,7 +21146,7 @@ export const config = {
         {
           "id": "q0127_o3",
           "originalKey": "C",
-          "text": "Reduce speed and avoid the incoming vehicle as much as possible, halt if required"
+          "text": "Reduce speed and avoid the incoming vehicle as much as possible and halt if required"
         },
         {
           "id": "q0127_o4",
@@ -21248,7 +21248,7 @@ export const config = {
       "id": "q0129",
       "number": 129,
       "type": "mcq",
-      "prompt": "If a vehicle enters a left lane for overtaking but is unable to ensure a safe horizontal distance with the normally-running vehicle in front, the driver should ______.",
+      "prompt": "If a vehicle enters a left lane for overtaking but is unable to ensure a safe horizontal distance with the normally-driving vehicle in front, the driver should ______.",
       "options": [
         {
           "id": "q0129_o1",
@@ -21258,7 +21258,7 @@ export const config = {
         {
           "id": "q0129_o2",
           "originalKey": "B",
-          "text": "Overtake after running a distance in parallel"
+          "text": "Overtake after driving some distance in parallel"
         },
         {
           "id": "q0129_o3",
@@ -21307,7 +21307,7 @@ export const config = {
         {
           "id": "q0130_o1",
           "originalKey": "A",
-          "text": "Should reduce speed, honk and drive on the right side"
+          "text": "Should reduce speed, honk, and drive on the right side"
         },
         {
           "id": "q0130_o2",
@@ -21772,7 +21772,7 @@ export const config = {
         {
           "id": "q0138_o1",
           "originalKey": "A",
-          "text": "Move to the road side, reduce speed or stop to yield"
+          "text": "Move to the road side, reduce speed, or stop to yield"
         },
         {
           "id": "q0138_o2",
@@ -21841,7 +21841,7 @@ export const config = {
         {
           "id": "q0139_o3",
           "originalKey": "C",
-          "text": "Use the low beam light, reduce speed or stop to evade"
+          "text": "Use the low beam light, reduce speed, or stop to evade"
         },
         {
           "id": "q0139_o4",
@@ -21900,7 +21900,7 @@ export const config = {
         {
           "id": "q0140_o2",
           "originalKey": "B",
-          "text": "Reduce speed in advance, observe and drive with care"
+          "text": "Reduce speed in advance, observe, and drive with care"
         },
         {
           "id": "q0140_o3",
@@ -22067,7 +22067,7 @@ export const config = {
       "id": "q0143",
       "number": 143,
       "type": "mcq",
-      "prompt": "When running on an expressway that has four lanes in the same direction, the vehicles whose speed is higher than 110 km/h should run on the ______.",
+      "prompt": "When driving on an expressway that has four lanes in the same direction, the vehicles whose speed is higher than 110 km/h should drive on the ______.",
       "options": [
         {
           "id": "q0143_o1",
@@ -22126,7 +22126,7 @@ export const config = {
       "id": "q0144",
       "number": 144,
       "type": "mcq",
-      "prompt": "When a vehicle runs on a narrow mountain road, the driver should ______ if the party close to the mountain mass refuses to yield.",
+      "prompt": "When a vehicle drives on a narrow mountain road, the driver should ______ if the party close to the mountain mass refuses to yield.",
       "options": [
         {
           "id": "q0144_o1",
@@ -22244,7 +22244,7 @@ export const config = {
       "id": "q0146",
       "number": 146,
       "type": "mcq",
-      "prompt": "The reason that a road destroyed by flood affects safe driving and smooth passage is _____.",
+      "prompt": "The reason that a road destroyed by flood affects safe driving and smooth passage is ______.",
       "options": [
         {
           "id": "q0146_o1",
@@ -23181,7 +23181,7 @@ export const config = {
         {
           "id": "q0162_o2",
           "originalKey": "B",
-          "text": "Reduce speed, observe and run by the right side to yield"
+          "text": "Reduce speed, observe and drive by the right side to yield"
         },
         {
           "id": "q0162_o3",
@@ -23814,7 +23814,7 @@ export const config = {
       "id": "q0173",
       "number": 173,
       "type": "mcq",
-      "prompt": "When a vehicle running at night encounters a curve ahead, its lighting ____.",
+      "prompt": "When a vehicle driving at night encounters a curve ahead, its lighting ______.",
       "options": [
         {
           "id": "q0173_o1",
@@ -24050,7 +24050,7 @@ export const config = {
         {
           "id": "q0177_o1",
           "originalKey": "A",
-          "text": "Run by the central line of the road"
+          "text": "Drive by the central line of the road"
         },
         {
           "id": "q0177_o2",
@@ -24060,12 +24060,12 @@ export const config = {
         {
           "id": "q0177_o3",
           "originalKey": "C",
-          "text": "Continue to speed up and run"
+          "text": "Continue to speed up and drive"
         },
         {
           "id": "q0177_o4",
           "originalKey": "D",
-          "text": "Reduce speed and run on the right side"
+          "text": "Reduce speed and drive on the right side"
         }
       ],
       "correctRow": null,
@@ -24458,7 +24458,7 @@ export const config = {
         {
           "id": "q0184_o2",
           "originalKey": "B",
-          "text": "Turn on the contour light, fog light and drive along the right side"
+          "text": "Turn on the contour light, fog light, and drive along the right side"
         },
         {
           "id": "q0184_o3",
@@ -24522,7 +24522,7 @@ export const config = {
         {
           "id": "q0185_o3",
           "originalKey": "C",
-          "text": "Speed up and continue to overtake 14"
+          "text": "Speed up and continue to overtake"
         },
         {
           "id": "q0185_o4",
@@ -24807,7 +24807,7 @@ export const config = {
       "id": "q0191",
       "number": 191,
       "type": "row",
-      "prompt": "Driving a motorized vehicle in the city road which has no central line, the maximum speed can not exceed 50 km/h.",
+      "prompt": "Driving a motorized vehicle in the city road which has no central line, the maximum speed can not exceed 50km/h.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -25166,7 +25166,7 @@ export const config = {
       "id": "q0199",
       "number": 199,
       "type": "row",
-      "prompt": "Driving a motorized vehicle on the highway which has no central line, the maximum speed can not exceed 70 km/h.",
+      "prompt": "Driving a motorized vehicle on the highway which has no central line, the maximum speed can not exceed 70km/h.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -25675,7 +25675,7 @@ export const config = {
       "id": "q0211",
       "number": 211,
       "type": "row",
-      "prompt": "Traffic police can detain the vehicle according to the law if it runs on the road failing to place a label of inspection.",
+      "prompt": "Traffic police can detain the vehicle according to the law if it drives on the road failing to place a label of inspection.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -26026,7 +26026,7 @@ export const config = {
       "id": "q0219",
       "number": 219,
       "type": "row",
-      "prompt": "May speed up to go through the crosswalk in this situation.",
+      "prompt": "You may speed up to go through the crosswalk in this situation.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -26106,7 +26106,13 @@ export const config = {
           ]
         }
       ],
-      "assets": [],
+      "assets": [
+        {
+          "kind": "image",
+          "src": "/qbank/2023-test1/images/p17-220.jpg",
+          "page": 17
+        }
+      ],
       "source": {
         "pdf": "2023 Driving test 1.pdf"
       },
@@ -26829,7 +26835,7 @@ export const config = {
       "id": "q0237",
       "number": 237,
       "type": "row",
-      "prompt": "When running on the road having maximum speed limit signs, the motorized vehicle is not allowed to exceed the marked maximum speed.",
+      "prompt": "When driving on the road with maximum speed limit signs, the motorized vehicle is not allowed to exceed the marked maximum speed.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -26987,7 +26993,7 @@ export const config = {
       "id": "q0241",
       "number": 241,
       "type": "row",
-      "prompt": "The passenger in the front seat does not need to buckle up when a motorized vehicle runs.",
+      "prompt": "The passenger in the front seat does not need to buckle up when a motorized vehicle drives.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -27022,7 +27028,7 @@ export const config = {
       "id": "q0242",
       "number": 242,
       "type": "row",
-      "prompt": "The child in the motorized vehicle does not need to buckle up when the vehicle runs.",
+      "prompt": "The child in the motorized vehicle does not need to buckle up when the vehicle is running.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -28027,7 +28033,7 @@ export const config = {
       "id": "q0266",
       "number": 266,
       "type": "row",
-      "prompt": "Traffic Signs and traffic markings are not traffic signals.",
+      "prompt": "Traffic signs and Traffic markings are not traffic signals.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -28071,7 +28077,7 @@ export const config = {
       "id": "q0267",
       "number": 267,
       "type": "row",
-      "prompt": "When a motorized vehicle runs in a foggy weather, the driver should turn on the fog light and the hazard lights.",
+      "prompt": "When a motorized vehicle drives in foggy weather, the driver should turn on the fog light and the hazard lights.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -28111,7 +28117,7 @@ export const config = {
       "id": "q0268",
       "number": 268,
       "type": "row",
-      "prompt": "When a motorized vehicle makes a U-turn, turns around or goes down a slope, the maximum speed should not exceed 40 km/h.",
+      "prompt": "When a motorized vehicle makes a U-turn, turns around or goes down a slope, the maximum speed should not exceed 40km/h.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -28327,7 +28333,7 @@ export const config = {
       "id": "q0273",
       "number": 273,
       "type": "row",
-      "prompt": "After causing a road accident, the vehicle driver needs to change the scene for rescuing the wounded, the driver should mark the location.",
+      "prompt": "After causing a road accident, the vehicle driver needs to change the scene for rescuing the wounded, and the driver should mark the location.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -28451,7 +28457,7 @@ export const config = {
       "id": "q0276",
       "number": 276,
       "type": "row",
-      "prompt": "If a motorized vehicle running on the road without a label of insurance, the traffic police can detain the vehicle license according to the law.",
+      "prompt": "If a motorized vehicle is driving on the road without a label of insurance, the traffic police can detain the vehicle license according to the law.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -28636,7 +28642,7 @@ export const config = {
       "id": "q0280",
       "number": 280,
       "type": "row",
-      "prompt": "If a motorized vehicle runs 50% faster than the specified speed limit, the driver is subject to a 3-point penalty.",
+      "prompt": "If a motorized vehicle drives 50% faster than the specified speed limit, the driver is subject to a 3-point penalty.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -28729,7 +28735,7 @@ export const config = {
       "id": "q0282",
       "number": 282,
       "type": "row",
-      "prompt": "A person who has taken the state-controlled psychiatric substances can drive motorized vehicle in short distance.",
+      "prompt": "A person who has taken state-controlled psychiatric substances can drive motorized vehicles for short distances.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -28764,7 +28770,7 @@ export const config = {
       "id": "q0283",
       "number": 283,
       "type": "row",
-      "prompt": "Traffic markings are divided into indication, warning and prohibition.",
+      "prompt": "Traffic markings are divided into indications, warnings, and prohibitions.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -28983,7 +28989,7 @@ export const config = {
       "id": "q0288",
       "number": 288,
       "type": "row",
-      "prompt": "When a motorized vehicle passes through narrow road or bridge, the maximum speed should not exceed 30 km/h.",
+      "prompt": "When a motorized vehicle passes through narrow road or bridge, the maximum speed should not exceed 30km/h.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -29351,7 +29357,7 @@ export const config = {
       "id": "q0296",
       "number": 296,
       "type": "row",
-      "prompt": "The motorized vehicle driver who lives outside the jurisdiction of the issuing vehicle management station may apply to the vehicle management station at the place where he is living, for a license change.",
+      "prompt": "The motorized vehicle driver who lives outside the jurisdiction of the issuing vehicle management station may apply to the vehicle management station at the place where he is living for a license change.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -29594,7 +29600,7 @@ export const config = {
       "id": "q0302",
       "number": 302,
       "type": "row",
-      "prompt": "Overtaking is allowed when passing a level crossing in city where no train passes.",
+      "prompt": "Overtaking is allowed when passing a level crossing in the city where no train passes.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -29910,7 +29916,7 @@ export const config = {
       "id": "q0309",
       "number": 309,
       "type": "row",
-      "prompt": "If a motorized vehicle causes a traffic accident on the expressway and cannot function properlyz, the vehicle should be towed by a rescue vehicle or a tow truck.",
+      "prompt": "If a motorized vehicle causes a traffic accident on the expressway and cannot function properly, the vehicle should be towed by a rescue vehicle or a tow truck.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -30073,7 +30079,7 @@ export const config = {
       "id": "q0313",
       "number": 313,
       "type": "row",
-      "prompt": "When causing a road accident involving property damage, the parties to the accident have no dispute over the fact and cause, they should take photos of the scene or mark the vehicles location when they move the vehicles.",
+      "prompt": "When causing a road accident involving property damage, if the parties of the accident have no dispute over the fact and cause, they should take photos of the scene or mark the vehicles' locations when they move the vehicles.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -30192,7 +30198,7 @@ export const config = {
       "id": "q0316",
       "number": 316,
       "type": "row",
-      "prompt": "A motorized vehicle runs on the road without a label of inspection, the traffic police can detain the vehicle.",
+      "prompt": "If a motorized vehicle drives on the road without a label of inspection, the traffic police can detain the vehicle.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -30442,7 +30448,7 @@ export const config = {
       "id": "q0322",
       "number": 322,
       "type": "row",
-      "prompt": "A motorized vehicle driver who uses other motorized vehicles license plates or vehicle licenses is subject to a 3 point penalty.",
+      "prompt": "A motorized vehicle driver who uses other motorized vehicles license plates or vehicle licenses is subject to a 3-point penalty.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -30526,7 +30532,7 @@ export const config = {
       "id": "q0324",
       "number": 324,
       "type": "row",
-      "prompt": "Before the motorized vehicle runs on the road, the driver should check the safety and technical performance of the vehicle.",
+      "prompt": "Before the motorized vehicle drives on the road, the driver should check the safety and technical performance of the vehicle.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -30728,7 +30734,7 @@ export const config = {
       "id": "q0329",
       "number": 329,
       "type": "row",
-      "prompt": "Driving a motorized vehicle on the road in this condition, the maximum speed can not exceed 50 km/h.",
+      "prompt": "Driving a motorized vehicle on the road in this condition, the maximum speed can not exceed 50km/h.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -31217,7 +31223,7 @@ export const config = {
       "id": "q0340",
       "number": 340,
       "type": "row",
-      "prompt": "A motorized vehicle driver who drives more than 50% faster than the prescribed speed limit is subject to a 12-point penalty. 25",
+      "prompt": "A motorized vehicle driver who drives more than 50% faster than the prescribed speed limit is subject to a 12-point penalty.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -32462,22 +32468,22 @@ export const config = {
         {
           "id": "q0367_o1",
           "originalKey": "A",
-          "text": "100 km/hr"
+          "text": "100km/hr"
         },
         {
           "id": "q0367_o2",
           "originalKey": "B",
-          "text": "90 km/hr"
+          "text": "90km/hr"
         },
         {
           "id": "q0367_o3",
           "originalKey": "C",
-          "text": "120 km/hr"
+          "text": "120km/hr"
         },
         {
           "id": "q0367_o4",
           "originalKey": "D",
-          "text": "110 km/hr"
+          "text": "110km/hr"
         }
       ],
       "correctRow": null,
@@ -32934,7 +32940,7 @@ export const config = {
       "id": "q0374",
       "number": 374,
       "type": "mcq",
-      "prompt": "Max speed when pass the narrow road or bridge is ______.",
+      "prompt": "Max speed when passing a narrow road or bridge is ______.",
       "options": [
         {
           "id": "q0374_o1",
@@ -33010,7 +33016,7 @@ export const config = {
         {
           "id": "q0375_o4",
           "originalKey": "D",
-          "text": "less than 80km/hr 28"
+          "text": "less than 80km/hr"
         }
       ],
       "correctRow": null,
@@ -33182,7 +33188,7 @@ export const config = {
         {
           "id": "q0378_o1",
           "originalKey": "A",
-          "text": "run as normal"
+          "text": "drive as normal"
         },
         {
           "id": "q0378_o2",
@@ -33320,7 +33326,7 @@ export const config = {
       "id": "q0380",
       "number": 380,
       "type": "mcq",
-      "prompt": "These traffic lights allow the vehicle to ______",
+      "prompt": "These traffic lights allow the vehicle to ______.",
       "options": [
         {
           "id": "q0380_o1",
@@ -33642,7 +33648,7 @@ export const config = {
       "id": "q0385",
       "number": 385,
       "type": "mcq",
-      "prompt": "What is the max speed when going down slope, turning around, and U-turn?",
+      "prompt": "What is the max speed when going downhill, turning around, or U-turning?",
       "options": [
         {
           "id": "q0385_o1",
@@ -33830,7 +33836,7 @@ export const config = {
       "id": "q0388",
       "number": 388,
       "type": "mcq",
-      "prompt": "What is the max speed at sharp curve?",
+      "prompt": "What is the max speed on a sharp curve?",
       "options": [
         {
           "id": "q0388_o1",
@@ -34710,7 +34716,7 @@ export const config = {
       "id": "q0401",
       "number": 401,
       "type": "mcq",
-      "prompt": "What is the max speed when visibility is less than 50m due to fog, rain, or snow?",
+      "prompt": "What is the max speed when visibility is less than 50 meters due to fog, rain, or snow?",
       "options": [
         {
           "id": "q0401_o1",
@@ -34845,22 +34851,22 @@ export const config = {
         {
           "id": "q0403_o1",
           "originalKey": "A",
-          "text": "less than 6hrs"
+          "text": "less than 6 hours"
         },
         {
           "id": "q0403_o2",
           "originalKey": "B",
-          "text": "less than 8hrs"
+          "text": "less than 8 hours"
         },
         {
           "id": "q0403_o3",
           "originalKey": "C",
-          "text": "less than 10hrs"
+          "text": "less than 10 hours"
         },
         {
           "id": "q0403_o4",
           "originalKey": "D",
-          "text": "less than 4hrs"
+          "text": "less than 4 hours"
         }
       ],
       "correctRow": null,
@@ -34981,7 +34987,7 @@ export const config = {
         {
           "id": "q0405_o2",
           "originalKey": "B",
-          "text": "running 50% faster than the specified speed limit"
+          "text": "driving 50% faster than the specified speed limit"
         },
         {
           "id": "q0405_o3",
@@ -35055,12 +35061,12 @@ export const config = {
         {
           "id": "q0406_o3",
           "originalKey": "C",
-          "text": "the vehicle is taking a U-turn"
+          "text": "the vehicle is making a U-turn"
         },
         {
           "id": "q0406_o4",
           "originalKey": "D",
-          "text": "the vehicle is running normally"
+          "text": "the vehicle is driving normally"
         }
       ],
       "correctRow": null,
@@ -35111,12 +35117,12 @@ export const config = {
         {
           "id": "q0407_o2",
           "originalKey": "B",
-          "text": "one-way section"
+          "text": "a one-way section"
         },
         {
           "id": "q0407_o3",
           "originalKey": "C",
-          "text": "section with heavy traffic flow"
+          "text": "a section with heavy traffic flow"
         },
         {
           "id": "q0407_o4",
@@ -35435,7 +35441,7 @@ export const config = {
         {
           "id": "q0412_o1",
           "originalKey": "A",
-          "text": "run in the emergency lane"
+          "text": "drive in the emergency lane"
         },
         {
           "id": "q0412_o2",
@@ -35450,7 +35456,7 @@ export const config = {
         {
           "id": "q0412_o4",
           "originalKey": "D",
-          "text": "run slowly in the road shoulder"
+          "text": "drive slowly in the road shoulder"
         }
       ],
       "correctRow": null,
@@ -35630,17 +35636,17 @@ export const config = {
         {
           "id": "q0415_o1",
           "originalKey": "A",
-          "text": "run in the middle of the road"
+          "text": "drive in the middle of the road"
         },
         {
           "id": "q0415_o2",
           "originalKey": "B",
-          "text": "run on both side of the road"
+          "text": "drive on both side of the road"
         },
         {
           "id": "q0415_o3",
           "originalKey": "C",
-          "text": "run according to lanes"
+          "text": "drive according to lanes"
         },
         {
           "id": "q0415_o4",
@@ -35694,7 +35700,7 @@ export const config = {
       "id": "q0416",
       "number": 416,
       "type": "mcq",
-      "prompt": "What kind of lane that the red car running in?",
+      "prompt": "What kind of lane is that red car driving in?",
       "options": [
         {
           "id": "q0416_o1",
@@ -35778,7 +35784,7 @@ export const config = {
         {
           "id": "q0417_o2",
           "originalKey": "B",
-          "text": "the vehicle is running normally"
+          "text": "the vehicle is driving normally"
         },
         {
           "id": "q0417_o3",
@@ -36177,7 +36183,7 @@ export const config = {
         {
           "id": "q0423_o1",
           "originalKey": "A",
-          "text": "run as normal"
+          "text": "drive as normal"
         },
         {
           "id": "q0423_o2",
@@ -36391,7 +36397,7 @@ export const config = {
         {
           "id": "q0426_o4",
           "originalKey": "D",
-          "text": "let the left vehicle go first 34"
+          "text": "let the left vehicle go first"
         }
       ],
       "correctRow": null,
@@ -36583,7 +36589,7 @@ export const config = {
       "id": "q0429",
       "number": 429,
       "type": "mcq",
-      "prompt": "If a motorized vehicle breaks down or causes a traffic accident on the expressway and cannot to run normally, the vehicle should be towed by ______.",
+      "prompt": "If a motorized vehicle breaks down or causes a traffic accident on the expressway and cannot to drive normally, the vehicle should be towed by ______.",
       "options": [
         {
           "id": "q0429_o1",
@@ -36792,7 +36798,7 @@ export const config = {
       "id": "q0432",
       "number": 432,
       "type": "mcq",
-      "prompt": "The age limit of applying for a small vehicle is ______.",
+      "prompt": "The age limit of applying for a small vehicle is between ______.",
       "options": [
         {
           "id": "q0432_o1",
@@ -36868,7 +36874,7 @@ export const config = {
         {
           "id": "q0433_o4",
           "originalKey": "D",
-          "text": "running with the license plate deliberately stained"
+          "text": "driving with the license plate deliberately stained"
         }
       ],
       "correctRow": null,
@@ -36992,7 +36998,7 @@ export const config = {
         {
           "id": "q0435_o2",
           "originalKey": "B",
-          "text": "a fine of 200 yuan ~ 2,000 yuan"
+          "text": "a fine of 200~2,000 yuan"
         },
         {
           "id": "q0435_o3",
@@ -37002,7 +37008,7 @@ export const config = {
         {
           "id": "q0435_o4",
           "originalKey": "D",
-          "text": "being detained for less than 15 days 35"
+          "text": "being detained for less than 15 days"
         }
       ],
       "correctRow": null,
@@ -37388,7 +37394,7 @@ export const config = {
         {
           "id": "q0441_o1",
           "originalKey": "A",
-          "text": "Stop and wait for his turn"
+          "text": "Stop and wait for their turn"
         },
         {
           "id": "q0441_o2",
@@ -37668,7 +37674,7 @@ export const config = {
       "id": "q0445",
       "number": 445,
       "type": "mcq",
-      "prompt": "If a driver has driven a motorized vehicle for more than four hours running, he should stop the vehicle and rest for at least ______.",
+      "prompt": "If a driver has driven a motorized vehicle for more than four hours, he should stop the vehicle and rest for at least ______.",
       "options": [
         {
           "id": "q0445_o1",
@@ -38056,7 +38062,7 @@ export const config = {
         {
           "id": "q0451_o4",
           "originalKey": "D",
-          "text": "speed and run straight"
+          "text": "speed and drive straight"
         }
       ],
       "correctRow": null,
@@ -38110,7 +38116,7 @@ export const config = {
       "id": "q0452",
       "number": 452,
       "type": "mcq",
-      "prompt": "Which kind of vehicles are allowed to run in the lane with this marking on road?",
+      "prompt": "Which kind of vehicles are allowed to drive in the lane with this marking on road?",
       "options": [
         {
           "id": "q0452_o1",
@@ -38130,7 +38136,7 @@ export const config = {
         {
           "id": "q0452_o4",
           "originalKey": "D",
-          "text": "official vehicles 37"
+          "text": "official vehicles"
         }
       ],
       "correctRow": null,
@@ -38317,7 +38323,7 @@ export const config = {
       "id": "q0455",
       "number": 455,
       "type": "mcq",
-      "prompt": "In which section when a vehicle runs is prohibited from overtaking?",
+      "prompt": "In which section is overtaking prohibited?",
       "options": [
         {
           "id": "q0455_o1",
@@ -38383,7 +38389,7 @@ export const config = {
         {
           "id": "q0456_o2",
           "originalKey": "B",
-          "text": "turn on the left-turn signal and run on the left side"
+          "text": "turn on the left-turn signal and drive on the left side"
         },
         {
           "id": "q0456_o3",
@@ -38462,7 +38468,7 @@ export const config = {
         {
           "id": "q0457_o1",
           "originalKey": "A",
-          "text": "not need to change lights"
+          "text": "no need to change lights"
         },
         {
           "id": "q0457_o2",
@@ -38851,7 +38857,7 @@ export const config = {
       "id": "q0463",
       "number": 463,
       "type": "mcq",
-      "prompt": "What should a motorized vehicle have while running on the road?",
+      "prompt": "What should a motorized vehicle have while driving on the road?",
       "options": [
         {
           "id": "q0463_o1",
@@ -38931,7 +38937,7 @@ export const config = {
         {
           "id": "q0464_o3",
           "originalKey": "C",
-          "text": "run straight on the right side"
+          "text": "drive straight on the right side"
         },
         {
           "id": "q0464_o4",
@@ -39257,7 +39263,7 @@ export const config = {
         {
           "id": "q0469_o2",
           "originalKey": "B",
-          "text": "keep running forward"
+          "text": "keep driving forward"
         },
         {
           "id": "q0469_o3",
@@ -39754,7 +39760,7 @@ export const config = {
         {
           "id": "q0476_o4",
           "originalKey": "D",
-          "text": "running in the opposite direction"
+          "text": "driving in the opposite direction"
         }
       ],
       "correctRow": null,
@@ -40124,7 +40130,13 @@ export const config = {
           ]
         }
       ],
-      "assets": [],
+      "assets": [
+        {
+          "kind": "image",
+          "src": "/qbank/2023-test1/images/p40-481.jpg",
+          "page": 40
+        }
+      ],
       "source": {
         "pdf": "2023 Driving test 1.pdf"
       },
@@ -40147,7 +40159,7 @@ export const config = {
       "id": "q0482",
       "number": 482,
       "type": "mcq",
-      "prompt": "What is the max speed on a road covered by ice and snow",
+      "prompt": "What is the max speed on a road covered by ice and snow?",
       "options": [
         {
           "id": "q0482_o1",
@@ -40875,12 +40887,12 @@ export const config = {
         {
           "id": "q0493_o2",
           "originalKey": "B",
-          "text": "stopping in the section with no stopping marking"
+          "text": "stopping in a section with no stopping marking"
         },
         {
           "id": "q0493_o3",
           "originalKey": "C",
-          "text": "stopping at bus station"
+          "text": "stopping at a bus stop"
         },
         {
           "id": "q0493_o4",
@@ -41330,7 +41342,7 @@ export const config = {
       "id": "q0500",
       "number": 500,
       "type": "mcq",
-      "prompt": "In which section cannot overtake?",
+      "prompt": "In which section can you not overtake?",
       "options": [
         {
           "id": "q0500_o1",
@@ -41472,7 +41484,7 @@ export const config = {
         {
           "id": "q0502_o4",
           "originalKey": "D",
-          "text": "run by using the lane for non-motorized vehicles"
+          "text": "drive by using the lane for non-motorized vehicles"
         }
       ],
       "correctRow": null,
@@ -41508,7 +41520,7 @@ export const config = {
       "id": "q0503",
       "number": 503,
       "type": "mcq",
-      "prompt": "How to pass the intersection when running straight?",
+      "prompt": "How to pass the intersection when driving straight?",
       "options": [
         {
           "id": "q0503_o1",
@@ -41909,7 +41921,7 @@ export const config = {
       "id": "q0509",
       "number": 509,
       "type": "mcq",
-      "prompt": "How to use lights when pulling over on the road?",
+      "prompt": "How to use 솓 lights when pulling over on the road?",
       "options": [
         {
           "id": "q0509_o1",
@@ -42105,7 +42117,7 @@ export const config = {
       "id": "q0512",
       "number": 512,
       "type": "mcq",
-      "prompt": "How to cross each other on a narrow mountain road without the central dividing line?",
+      "prompt": "How to cross each other on a narrow mountain road without a central dividing line?",
       "options": [
         {
           "id": "q0512_o1",
@@ -42171,7 +42183,7 @@ export const config = {
         {
           "id": "q0513_o2",
           "originalKey": "B",
-          "text": "10m 44"
+          "text": "10m"
         },
         {
           "id": "q0513_o3",
@@ -42687,12 +42699,12 @@ export const config = {
         {
           "id": "q0521_o1",
           "originalKey": "A",
-          "text": "using other's vehicles' vehicle license"
+          "text": "using other's vehicle's vehicle license"
         },
         {
           "id": "q0521_o2",
           "originalKey": "B",
-          "text": "running 50% faster than the prescribed speed limit"
+          "text": "driving 50% faster than the prescribed speed limit"
         },
         {
           "id": "q0521_o3",
@@ -42943,7 +42955,7 @@ export const config = {
       "id": "q0526",
       "number": 526,
       "type": "row",
-      "prompt": "This displays the current engine speed is 6000 rev/min.",
+      "prompt": "This displays the current engine speed is 6000rev/min.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -43087,7 +43099,7 @@ export const config = {
       "id": "q0529",
       "number": 529,
       "type": "row",
-      "prompt": "Pull down the switch of the turn signal, right-turn signal is on.",
+      "prompt": "Pulling down the switch of the turn signal, turns the right-turn signal on.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -43310,7 +43322,7 @@ export const config = {
       "id": "q0534",
       "number": 534,
       "type": "row",
-      "prompt": "It lights when the handbrake is pulled up.",
+      "prompt": "This lights up when the handbrake is pulled up.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -43363,7 +43375,7 @@ export const config = {
       "id": "q0535",
       "number": 535,
       "type": "row",
-      "prompt": "It lights to remind the driver that the engine coolant may be insufficient.",
+      "prompt": "This lights up to remind the driver that the engine coolant may be insufficient.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -43411,7 +43423,7 @@ export const config = {
       "id": "q0536",
       "number": 536,
       "type": "row",
-      "prompt": "It flashes when the vehicle is breaking down.",
+      "prompt": "This flashes when the vehicle is breaking down.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -43459,7 +43471,7 @@ export const config = {
       "id": "q0537",
       "number": 537,
       "type": "row",
-      "prompt": "It lights if the left door is not closed.",
+      "prompt": "This lights up if the left door is not closed.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -43749,7 +43761,7 @@ export const config = {
       "id": "q0543",
       "number": 543,
       "type": "row",
-      "prompt": "It lights up continuously to indicate that the engine control system failed.",
+      "prompt": "This lights up continuously to indicate that the engine control system failed.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -43837,7 +43849,7 @@ export const config = {
       "id": "q0545",
       "number": 545,
       "type": "row",
-      "prompt": "It lights continuously to indicate that the airbag is working.",
+      "prompt": "This lights up continuously to indicate that the airbag is working.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -43885,7 +43897,7 @@ export const config = {
       "id": "q0546",
       "number": 546,
       "type": "row",
-      "prompt": "It lights when turning on the right-turn signal.",
+      "prompt": "This lights up when turning on the right-turn signal.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -43986,7 +43998,7 @@ export const config = {
       "id": "q0548",
       "number": 548,
       "type": "row",
-      "prompt": "It lights to indicate that the engine compartment is open.",
+      "prompt": "This lights up to indicate that the engine compartment is open.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -44034,7 +44046,7 @@ export const config = {
       "id": "q0549",
       "number": 549,
       "type": "row",
-      "prompt": "It lights when turning on the left-turn signal.",
+      "prompt": "This lights up when turning on the left-turn signal.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -44135,7 +44147,7 @@ export const config = {
       "id": "q0551",
       "number": 551,
       "type": "row",
-      "prompt": "Displays the current speed is 20 km/h.",
+      "prompt": "This displays the current speed at 20 km/h.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -44183,7 +44195,7 @@ export const config = {
       "id": "q0552",
       "number": 552,
       "type": "row",
-      "prompt": "It lights to indicate that the right door is not closed.",
+      "prompt": "This lights up to indicate that the right door is not closed.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -44284,7 +44296,7 @@ export const config = {
       "id": "q0554",
       "number": 554,
       "type": "row",
-      "prompt": "It lights to indicate that the luggage compartment is open.",
+      "prompt": "This lights up to indicate that the luggage compartment is open.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -44332,7 +44344,7 @@ export const config = {
       "id": "q0555",
       "number": 555,
       "type": "row",
-      "prompt": "It lights when turning on the width light.",
+      "prompt": "This lights up when turning on the width light.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -44380,7 +44392,7 @@ export const config = {
       "id": "q0556",
       "number": 556,
       "type": "row",
-      "prompt": "It lights when the ABS is open.",
+      "prompt": "This lights up when the ABS is open.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -44433,7 +44445,7 @@ export const config = {
       "id": "q0557",
       "number": 557,
       "type": "row",
-      "prompt": "It lights when turning on the front low beam lights.",
+      "prompt": "This lights up when turning on the front low beam lights.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -44537,7 +44549,7 @@ export const config = {
       "id": "q0559",
       "number": 559,
       "type": "row",
-      "prompt": "It lights to indicate that the engine oil may be insufficient.",
+      "prompt": "This lights up to indicate that the engine oil may be insufficient.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -44585,7 +44597,7 @@ export const config = {
       "id": "q0560",
       "number": 560,
       "type": "row",
-      "prompt": "It lights to remind you that the engine oil needs to be filled.",
+      "prompt": "This lights up to remind you that the engine oil needs to be filled.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -44736,7 +44748,7 @@ export const config = {
       "id": "q0563",
       "number": 563,
       "type": "row",
-      "prompt": "It lights when turning on the front fog light.",
+      "prompt": "This lights up when turning on the front fog light.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -44784,7 +44796,7 @@ export const config = {
       "id": "q0564",
       "number": 564,
       "type": "row",
-      "prompt": "It lights to indicate that the generator is charging the batteries.",
+      "prompt": "This lights up to indicate that the generator is charging the batteries.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -44832,7 +44844,7 @@ export const config = {
       "id": "q0565",
       "number": 565,
       "type": "row",
-      "prompt": "It lights when the rear fog light is turned on.",
+      "prompt": "This lights up when the rear fog light is turned on.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -44920,7 +44932,7 @@ export const config = {
       "id": "q0567",
       "number": 567,
       "type": "row",
-      "prompt": "It displays that the current temperature of the coolant is 90°C.",
+      "prompt": "This displays the current temperature of the coolant at 90°C.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -44970,7 +44982,7 @@ export const config = {
       "id": "q0568",
       "number": 568,
       "type": "row",
-      "prompt": "It displays that oil in tank has less than the warning line",
+      "prompt": "This displays the oil in the tank at less than the warning line.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -45018,7 +45030,7 @@ export const config = {
       "id": "q0569",
       "number": 569,
       "type": "row",
-      "prompt": "It lights to indicate that the handbrake is not released.",
+      "prompt": "This lights up to indicate that the handbrake is not released.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -45071,7 +45083,7 @@ export const config = {
       "id": "q0570",
       "number": 570,
       "type": "row",
-      "prompt": "It lights to remind the driver that the driver's seat is not adjusted properly.",
+      "prompt": "This lights up to remind the driver that the driver's seat is not adjusted properly.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -45119,7 +45131,7 @@ export const config = {
       "id": "q0571",
       "number": 571,
       "type": "row",
-      "prompt": "It lights to remind the driver that the driver has not buckled up.",
+      "prompt": "This lights up to remind the driver that the driver has not buckled up.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -45220,7 +45232,7 @@ export const config = {
       "id": "q0573",
       "number": 573,
       "type": "row",
-      "prompt": "It lights to indicate enabling the floor and the front windscreen fan.",
+      "prompt": "This lights up to indicate enabling the floor and the front windscreen fan.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -45348,7 +45360,7 @@ export const config = {
       "id": "q0576",
       "number": 576,
       "type": "mcq",
-      "prompt": "It lights to indicate that ______.",
+      "prompt": "This lights up to indicate that ______.",
       "options": [
         {
           "id": "q0576_o1",
@@ -45575,17 +45587,17 @@ export const config = {
       "id": "q0579",
       "number": 579,
       "type": "mcq",
-      "prompt": "The ABS system can maximize the braking efficiency when conducting ______.",
+      "prompt": "The ABS system can maximize the braking efficiency when ______.",
       "options": [
         {
           "id": "q0579_o1",
           "originalKey": "A",
-          "text": "braking intermittently"
+          "text": "intermittently braking"
         },
         {
           "id": "q0579_o2",
           "originalKey": "B",
-          "text": "braking continuously"
+          "text": "continuously braking"
         },
         {
           "id": "q0579_o3",
@@ -45636,7 +45648,7 @@ export const config = {
       "id": "q0580",
       "number": 580,
       "type": "mcq",
-      "prompt": "It lights to indicate that ______.",
+      "prompt": "This lights up to indicate that ______.",
       "options": [
         {
           "id": "q0580_o1",
@@ -45863,7 +45875,7 @@ export const config = {
       "id": "q0583",
       "number": 583,
       "type": "mcq",
-      "prompt": "It lights to indicate that ______.",
+      "prompt": "This lights up to indicate that ______.",
       "options": [
         {
           "id": "q0583_o1",
@@ -45932,7 +45944,7 @@ export const config = {
       "id": "q0584",
       "number": 584,
       "type": "mcq",
-      "prompt": "It lights to indicate that ______.",
+      "prompt": "This lights up to indicate that ______.",
       "options": [
         {
           "id": "q0584_o1",
@@ -46090,7 +46102,7 @@ export const config = {
       "id": "q0586",
       "number": 586,
       "type": "mcq",
-      "prompt": "It lights to indicate that ______.",
+      "prompt": "This lights up to indicate that ______.",
       "options": [
         {
           "id": "q0586_o1",
@@ -46327,22 +46339,22 @@ export const config = {
         {
           "id": "q0589_o1",
           "originalKey": "A",
-          "text": "cut off the power output"
+          "text": "cutting off the power output"
         },
         {
           "id": "q0589_o2",
           "originalKey": "B",
-          "text": "control the direction automatically"
+          "text": "controlling the direction automatically"
         },
         {
           "id": "q0589_o3",
           "originalKey": "C",
-          "text": "reduce braking inertia"
+          "text": "reducing braking inertia"
         },
         {
           "id": "q0589_o4",
           "originalKey": "D",
-          "text": "prevent wheel blocking"
+          "text": "preventing wheel blocking"
         }
       ],
       "correctRow": null,
@@ -46470,7 +46482,7 @@ export const config = {
       "id": "q0591",
       "number": 591,
       "type": "mcq",
-      "prompt": "It lights continuously to indicate ______.",
+      "prompt": "This lights up continuously to indicate ______.",
       "options": [
         {
           "id": "q0591_o1",
@@ -46689,7 +46701,7 @@ export const config = {
       "id": "q0594",
       "number": 594,
       "type": "mcq",
-      "prompt": "It lights to indicate that the ______.",
+      "prompt": "This lights up to indicate that the ______.",
       "options": [
         {
           "id": "q0594_o1",
@@ -47054,7 +47066,7 @@ export const config = {
         {
           "id": "q0599_o4",
           "originalKey": "D",
-          "text": "fuel consumption per 100 km"
+          "text": "fuel consumption per 100km"
         }
       ],
       "correctRow": null,
@@ -47182,7 +47194,7 @@ export const config = {
       "id": "q0601",
       "number": 601,
       "type": "mcq",
-      "prompt": "It lights to indicate that ______.",
+      "prompt": "This lights up to indicate that ______.",
       "options": [
         {
           "id": "q0601_o1",
@@ -47256,7 +47268,7 @@ export const config = {
       "id": "q0602",
       "number": 602,
       "type": "mcq",
-      "prompt": "It lights to indicate that ______.",
+      "prompt": "This lights up to indicate that ______.",
       "options": [
         {
           "id": "q0602_o1",
@@ -47399,7 +47411,7 @@ export const config = {
       "id": "q0604",
       "number": 604,
       "type": "mcq",
-      "prompt": "It lights to indicate that ______.",
+      "prompt": "This lights up to indicate that ______.",
       "options": [
         {
           "id": "q0604_o1",
@@ -47473,7 +47485,7 @@ export const config = {
       "id": "q0605",
       "number": 605,
       "type": "mcq",
-      "prompt": "It lights to indicate that safety belts are ______.",
+      "prompt": "This lights up to indicate that safety belts are ______.",
       "options": [
         {
           "id": "q0605_o1",
@@ -47611,7 +47623,7 @@ export const config = {
       "id": "q0607",
       "number": 607,
       "type": "mcq",
-      "prompt": "It lights to indicate that ______.",
+      "prompt": "This lights up to indicate that ______.",
       "options": [
         {
           "id": "q0607_o1",
@@ -47779,7 +47791,7 @@ export const config = {
         {
           "id": "q0609_o2",
           "originalKey": "B",
-          "text": "driving spe d meter e"
+          "text": "driving speed meter"
         },
         {
           "id": "q0609_o3",
@@ -47789,7 +47801,7 @@ export const config = {
         {
           "id": "q0609_o4",
           "originalKey": "D",
-          "text": "fuel consumption / 100 km"
+          "text": "fuel consumption per 100km"
         }
       ],
       "correctRow": null,
@@ -47912,7 +47924,7 @@ export const config = {
       "id": "q0611",
       "number": 611,
       "type": "mcq",
-      "prompt": "After starting the engine, it lights to indicate that ______.",
+      "prompt": "After starting the engine, this lights up to indicate that ______.",
       "options": [
         {
           "id": "q0611_o1",
@@ -47986,7 +47998,7 @@ export const config = {
       "id": "q0612",
       "number": 612,
       "type": "mcq",
-      "prompt": "It lights to indicate that ______.",
+      "prompt": "This lights up to indicate that ______.",
       "options": [
         {
           "id": "q0612_o1",
@@ -48055,7 +48067,7 @@ export const config = {
       "id": "q0613",
       "number": 613,
       "type": "mcq",
-      "prompt": "It lights to indicate that ______.",
+      "prompt": "This lights up to indicate that ______.",
       "options": [
         {
           "id": "q0613_o1",
@@ -48281,7 +48293,7 @@ export const config = {
       "id": "q0616",
       "number": 616,
       "type": "mcq",
-      "prompt": "It lights to indicate that ______.",
+      "prompt": "This lights up to indicate that ______.",
       "options": [
         {
           "id": "q0616_o1",
@@ -48572,7 +48584,7 @@ export const config = {
       "id": "q0620",
       "number": 620,
       "type": "mcq",
-      "prompt": "It lights to indicate that the ______.",
+      "prompt": "This lights up to indicate that the ______.",
       "options": [
         {
           "id": "q0620_o1",
@@ -48646,7 +48658,7 @@ export const config = {
       "id": "q0621",
       "number": 621,
       "type": "mcq",
-      "prompt": "After starting the engine, it lights to indicate that ______.",
+      "prompt": "After starting the engine, this lights up to indicate that ______.",
       "options": [
         {
           "id": "q0621_o1",
@@ -48715,7 +48727,7 @@ export const config = {
       "id": "q0622",
       "number": 622,
       "type": "mcq",
-      "prompt": "It lights to indicate that ______.",
+      "prompt": "This lights up to indicate that ______.",
       "options": [
         {
           "id": "q0622_o1",
@@ -48794,7 +48806,7 @@ export const config = {
       "id": "q0623",
       "number": 623,
       "type": "mcq",
-      "prompt": "It lights to indicate that ______.",
+      "prompt": "This lights up to indicate that ______.",
       "options": [
         {
           "id": "q0623_o1",
@@ -49059,7 +49071,7 @@ export const config = {
       "id": "q0627",
       "number": 627,
       "type": "mcq",
-      "prompt": "It lights while driving to indicate that ______.",
+      "prompt": "This lights up while driving to indicate that ______.",
       "options": [
         {
           "id": "q0627_o1",
@@ -49128,7 +49140,7 @@ export const config = {
       "id": "q0628",
       "number": 628,
       "type": "mcq",
-      "prompt": "It lights to indicate that ______.",
+      "prompt": "This lights up to indicate that ______.",
       "options": [
         {
           "id": "q0628_o1",
@@ -49197,7 +49209,7 @@ export const config = {
       "id": "q0629",
       "number": 629,
       "type": "mcq",
-      "prompt": "It lights to indicate that ______.",
+      "prompt": "This lights up to indicate that ______.",
       "options": [
         {
           "id": "q0629_o1",
@@ -49529,7 +49541,13 @@ export const config = {
           ]
         }
       ],
-      "assets": [],
+      "assets": [
+        {
+          "kind": "image",
+          "src": "/qbank/2023-test1/images/p59-0634.jpg",
+          "page": 59
+        }
+      ],
       "source": {
         "pdf": "2023 Driving test 1.pdf"
       },
@@ -49903,7 +49921,7 @@ export const config = {
       "id": "q0642",
       "number": 642,
       "type": "row",
-      "prompt": "The red car can run in this lane.",
+      "prompt": "The red car can drive in that lane.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -50001,7 +50019,7 @@ export const config = {
       "id": "q0644",
       "number": 644,
       "type": "row",
-      "prompt": "No running into the middle lane when encountering this situation.",
+      "prompt": "No driving into the middle lane when encountering this situation.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -50564,7 +50582,7 @@ export const config = {
         {
           "id": "q0654_o4",
           "originalKey": "D",
-          "text": "central ci rcle 61"
+          "text": "central circle"
         }
       ],
       "correctRow": null,
@@ -52023,7 +52041,7 @@ export const config = {
       "id": "q0674",
       "number": 674,
       "type": "mcq",
-      "prompt": "What’s the meaning of the white solid lines at the edge of the carriageway on both sides of the road? 64",
+      "prompt": "What’s the meaning of the white solid lines at the edge of the carriageway on both sides of the road?",
       "options": [
         {
           "id": "q0674_o1",
@@ -52033,12 +52051,12 @@ export const config = {
         {
           "id": "q0674_o2",
           "originalKey": "B",
-          "text": "Vehicles are not allowed to cross."
+          "text": "Vehicles are not allowed to cross"
         },
         {
           "id": "q0674_o3",
           "originalKey": "C",
-          "text": "Motorized vehicles may cross temporarily."
+          "text": "Motorized vehicles may cross temporarily"
         },
         {
           "id": "q0674_o4",
@@ -52253,7 +52271,7 @@ export const config = {
       "id": "q0677",
       "number": 677,
       "type": "mcq",
-      "prompt": "This set of the hand signals of the traffic police indicates that vehicles should ______.",
+      "prompt": "This set of hand signals of the traffic police indicates that vehicles should ______.",
       "options": [
         {
           "id": "q0677_o1",
@@ -53307,7 +53325,7 @@ export const config = {
       "id": "q0691",
       "number": 691,
       "type": "mcq",
-      "prompt": "What’s the mean g of the white rectangle marking? in",
+      "prompt": "What’s the meaning of the white rectangle marking?",
       "options": [
         {
           "id": "q0691_o1",
@@ -53386,7 +53404,7 @@ export const config = {
       "id": "q0692",
       "number": 692,
       "type": "mcq",
-      "prompt": "This set of the hand signals of the traffic police indicates that vehicles should ______.",
+      "prompt": "This set of hand signals of the traffic police indicates that vehicles should ______.",
       "options": [
         {
           "id": "q0692_o1",
@@ -54603,7 +54621,7 @@ export const config = {
       "id": "q0709",
       "number": 709,
       "type": "mcq",
-      "prompt": "What’s the meaning of the yellow solid line on the curbstone? 69",
+      "prompt": "What’s the meaning of the yellow solid line on the curbstone?",
       "options": [
         {
           "id": "q0709_o1",
@@ -55299,12 +55317,12 @@ export const config = {
         {
           "id": "q0718_o3",
           "originalKey": "C",
-          "text": "running to right side"
+          "text": "driving to the right side"
         },
         {
           "id": "q0718_o4",
           "originalKey": "D",
-          "text": "running the roundabout"
+          "text": "driving the roundabout"
         }
       ],
       "correctRow": null,
@@ -55444,7 +55462,7 @@ export const config = {
         {
           "id": "q0720_o3",
           "originalKey": "C",
-          "text": "special lane for Bus Rapid Transit System"
+          "text": "special lane for the Bus Rapid Transit System"
         },
         {
           "id": "q0720_o4",
@@ -55639,7 +55657,7 @@ export const config = {
       "id": "q0723",
       "number": 723,
       "type": "mcq",
-      "prompt": "What marking is the com bination of the white broken lines and the triangle area? 71",
+      "prompt": "What marking is the combination of the white broken lines and the triangle area?",
       "options": [
         {
           "id": "q0723_o1",
@@ -55687,7 +55705,13 @@ export const config = {
           ]
         }
       ],
-      "assets": [],
+      "assets": [
+        {
+          "kind": "image",
+          "src": "/qbank/2023-test1/images/p71-723.jpg",
+          "page": 71
+        }
+      ],
       "source": {
         "pdf": "2023 Driving test 1.pdf"
       },
@@ -55940,7 +55964,7 @@ export const config = {
       "id": "q0727",
       "number": 727,
       "type": "mcq",
-      "prompt": "This set of the hand signals of the traffic police indicates that vehicles should ______.",
+      "prompt": "This set of hand signals of the traffic police indicates that vehicles should ______.",
       "options": [
         {
           "id": "q0727_o1",
@@ -57088,7 +57112,7 @@ export const config = {
         {
           "id": "q0742_o4",
           "originalKey": "D",
-          "text": "fixed direction parking 74"
+          "text": "fixed direction parking"
         }
       ],
       "correctRow": null,
@@ -58547,7 +58571,7 @@ export const config = {
         {
           "id": "q0762_o3",
           "originalKey": "C",
-          "text": "guide line 77"
+          "text": "guide line"
         },
         {
           "id": "q0762_o4",
@@ -59452,7 +59476,7 @@ export const config = {
         {
           "id": "q0774_o4",
           "originalKey": "D",
-          "text": "crosswalk dividing line 79"
+          "text": "crosswalk dividing line"
         }
       ],
       "correctRow": null,
@@ -61429,7 +61453,7 @@ export const config = {
       "id": "q0801",
       "number": 801,
       "type": "mcq",
-      "prompt": "What kind of marking is the yellow broken line in the center of the road? 83",
+      "prompt": "What kind of marking is the yellow broken line in the center of the road?",
       "options": [
         {
           "id": "q0801_o1",
@@ -61477,7 +61501,13 @@ export const config = {
           ]
         }
       ],
-      "assets": [],
+      "assets": [
+        {
+          "kind": "image",
+          "src": "/qbank/2023-test1/images/p83-801.jpg",
+          "page": 83
+        }
+      ],
       "source": {
         "pdf": "2023 Driving test 1.pdf"
       },
@@ -61580,12 +61610,12 @@ export const config = {
       "id": "q0803",
       "number": 803,
       "type": "mcq",
-      "prompt": "What marking is it?",
+      "prompt": "What marking is this?",
       "options": [
         {
           "id": "q0803_o1",
           "originalKey": "A",
-          "text": "A cross-hatched marking"
+          "text": "a cross-hatched marking"
         },
         {
           "id": "q0803_o2",
@@ -61805,7 +61835,7 @@ export const config = {
       "id": "q0806",
       "number": 806,
       "type": "mcq",
-      "prompt": "This set of the hand signals of the traffic police indicates that vehicles should ______.",
+      "prompt": "This set of hand signals of the traffic police indicates that vehicles should ______.",
       "options": [
         {
           "id": "q0806_o1",
@@ -62708,7 +62738,7 @@ export const config = {
         {
           "id": "q0818_o1",
           "originalKey": "A",
-          "text": "running by right side"
+          "text": "driving by the right side"
         },
         {
           "id": "q0818_o2",
@@ -63293,7 +63323,7 @@ export const config = {
         {
           "id": "q0826_o1",
           "originalKey": "A",
-          "text": "guide lanes lines 87"
+          "text": "guide lanes lines"
         },
         {
           "id": "q0826_o2",
@@ -63793,7 +63823,7 @@ export const config = {
         {
           "id": "q0832_o4",
           "originalKey": "D",
-          "text": "stop line 88"
+          "text": "stop line"
         }
       ],
       "correctRow": null,
@@ -63857,7 +63887,7 @@ export const config = {
         {
           "id": "q0833_o1",
           "originalKey": "A",
-          "text": "waiting to run line"
+          "text": "waiting to drive line"
         },
         {
           "id": "q0833_o2",
@@ -64633,7 +64663,7 @@ export const config = {
         {
           "id": "q0843_o4",
           "originalKey": "D",
-          "text": "run by the left side of the road"
+          "text": "drive on the left side of the road"
         }
       ],
       "correctRow": null,
@@ -65168,7 +65198,7 @@ export const config = {
         {
           "id": "q0850_o4",
           "originalKey": "D",
-          "text": "can not run in the lane of neither side"
+          "text": "can not drive in the lane of either side"
         }
       ],
       "correctRow": null,
@@ -65682,7 +65712,7 @@ export const config = {
         {
           "id": "q0857_o2",
           "originalKey": "B",
-          "text": "variable lan line e"
+          "text": "variable lane line"
         },
         {
           "id": "q0857_o3",
@@ -65842,7 +65872,7 @@ export const config = {
         {
           "id": "q0859_o4",
           "originalKey": "D",
-          "text": "one-way driving line 92"
+          "text": "one-way driving line"
         }
       ],
       "correctRow": null,
@@ -66052,7 +66082,7 @@ export const config = {
         {
           "id": "q0862_o1",
           "originalKey": "A",
-          "text": "average speed is 100km /hr"
+          "text": "average speed is 100km/hr"
         },
         {
           "id": "q0862_o2",
@@ -66062,7 +66092,7 @@ export const config = {
         {
           "id": "q0862_o3",
           "originalKey": "C",
-          "text": "100km/h r speed limit ban is lifted"
+          "text": "100km/hr speed limit ban is lifted"
         },
         {
           "id": "q0862_o4",
@@ -66165,7 +66195,13 @@ export const config = {
           ]
         }
       ],
-      "assets": [],
+      "assets": [
+        {
+          "kind": "image",
+          "src": "/qbank/2023-test1/images/p92-863.jpg",
+          "page": 92
+        }
+      ],
       "source": {
         "pdf": "2023 Driving test 1.pdf"
       },
@@ -66189,7 +66225,7 @@ export const config = {
         {
           "id": "q0864_o1",
           "originalKey": "A",
-          "text": "opposite irection lanes dividing line that can not be d crossed"
+          "text": "opposite direction lanes dividing line that can not be crossed"
         },
         {
           "id": "q0864_o2",
@@ -66769,7 +66805,7 @@ export const config = {
       "id": "q0872",
       "number": 872,
       "type": "mcq",
-      "prompt": "What’s th e meaning of this sign?",
+      "prompt": "What’s the meaning of this sign?",
       "options": [
         {
           "id": "q0872_o1",
@@ -66926,7 +66962,7 @@ export const config = {
         {
           "id": "q0874_o4",
           "originalKey": "D",
-          "text": "waiting to run line"
+          "text": "waiting to drive line"
         }
       ],
       "correctRow": null,
@@ -66993,7 +67029,7 @@ export const config = {
       "id": "q0875",
       "number": 875,
       "type": "mcq",
-      "prompt": "This set of the hand signals of the traffic police indicates that vehicles should ______.",
+      "prompt": "This set of hand signals of the traffic police indicates that vehicles should ______.",
       "options": [
         {
           "id": "q0875_o1",
@@ -67370,7 +67406,7 @@ export const config = {
       "id": "q0880",
       "number": 880,
       "type": "mcq",
-      "prompt": "This set of the hand signals of the traffic police indicates that vehicles should ______.",
+      "prompt": "This set of hand signals of the traffic police indicates that vehicles should ______.",
       "options": [
         {
           "id": "q0880_o1",
@@ -67744,22 +67780,22 @@ export const config = {
       "id": "q0885",
       "number": 885,
       "type": "mcq",
-      "prompt": "What’s the role of the indicative marking?",
+      "prompt": "What is the role of an indicative marking?",
       "options": [
         {
           "id": "q0885_o1",
           "originalKey": "A",
-          "text": "No passing 96"
+          "text": "no passing"
         },
         {
           "id": "q0885_o2",
           "originalKey": "B",
-          "text": "indicate vehicles to pass"
+          "text": "indicating vehicles to pass"
         },
         {
           "id": "q0885_o3",
           "originalKey": "C",
-          "text": "restrict from passing"
+          "text": "restriction from passing"
         },
         {
           "id": "q0885_o4",
@@ -67886,7 +67922,7 @@ export const config = {
       "id": "q0887",
       "number": 887,
       "type": "mcq",
-      "prompt": "This set of the hand signals of the traffic police indicates that vehicles should ______.",
+      "prompt": "This set of hand signals of the traffic police indicates that vehicles should ______.",
       "options": [
         {
           "id": "q0887_o1",
@@ -68420,7 +68456,7 @@ export const config = {
         {
           "id": "q0894_o3",
           "originalKey": "C",
-          "text": "three-dimensio na l mark"
+          "text": "three-dimensional mark"
         },
         {
           "id": "q0894_o4",
@@ -68475,7 +68511,7 @@ export const config = {
       "id": "q0895",
       "number": 895,
       "type": "mcq",
-      "prompt": "This sign indicates ______.",
+      "prompt": "This sign indicates that an ______.",
       "options": [
         {
           "id": "q0895_o1",
@@ -68554,7 +68590,7 @@ export const config = {
       "id": "q0896",
       "number": 896,
       "type": "mcq",
-      "prompt": "This set of the hand signals of the traffic police indicates that vehicles should ______.",
+      "prompt": "This set of hand signals of the traffic police indicates that vehicles should ______.",
       "options": [
         {
           "id": "q0896_o1",
@@ -68783,7 +68819,7 @@ export const config = {
       "id": "q0899",
       "number": 899,
       "type": "mcq",
-      "prompt": "This set of the hand signals of the traffic police indicates that vehicles should ______.",
+      "prompt": "This set of hand signals of the traffic police indicates that vehicles should ______.",
       "options": [
         {
           "id": "q0899_o1",
@@ -69905,7 +69941,7 @@ export const config = {
       "id": "q0922",
       "number": 922,
       "type": "mcq",
-      "prompt": "An unregistered motorized vehicle should have a ______ if it has to run on the road temporarily.",
+      "prompt": "An unregistered motorized vehicle should have a ______ if it has to drive on the road temporarily.",
       "options": [
         {
           "id": "q0922_o1",
@@ -69925,7 +69961,7 @@ export const config = {
         {
           "id": "q0922_o4",
           "originalKey": "D",
-          "text": "certificate of legal unit 100"
+          "text": "certificate of legal unit"
         }
       ],
       "correctRow": null,
@@ -70063,7 +70099,7 @@ export const config = {
       "id": "q0925",
       "number": 925,
       "type": "mcq",
-      "prompt": "Driving across the double solid lines is ______",
+      "prompt": "Driving across the double solid lines is a ______",
       "options": [
         {
           "id": "q0925_o1",
@@ -70429,7 +70465,7 @@ export const config = {
       "id": "q0931",
       "number": 931,
       "type": "row",
-      "prompt": "This sign warns the driver to run slowly with care and beware of the vehicles from horizontal road.",
+      "prompt": "This sign warns the driver to drive slowly with care and beware of the vehicles from horizontal road.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -70525,7 +70561,7 @@ export const config = {
       "id": "q0933",
       "number": 933,
       "type": "row",
-      "prompt": "This sign warns obstacles ahead and reducing speed to bypass.",
+      "prompt": "This sign warns that there are obstacles ahead and to reduce speed to bypass.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -70573,7 +70609,7 @@ export const config = {
       "id": "q0934",
       "number": 934,
       "type": "row",
-      "prompt": "This sign warns a sharp left curve ahead.",
+      "prompt": "This sign warns that there is a sharp left curve ahead.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -70621,7 +70657,7 @@ export const config = {
       "id": "q0935",
       "number": 935,
       "type": "row",
-      "prompt": "This sign warns slippery road ahead and running slowly with care.",
+      "prompt": "This sign warns that the road ahead is slippery and to drive slowly with care.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -70669,7 +70705,7 @@ export const config = {
       "id": "q0936",
       "number": 936,
       "type": "row",
-      "prompt": "This sign warns two neighboring inverse curves ahead.",
+      "prompt": "This sign warns that there are two neighboring inverse curves ahead.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -70717,7 +70753,7 @@ export const config = {
       "id": "q0937",
       "number": 937,
       "type": "row",
-      "prompt": "This sign reminds the width of the bridge narrows ahead.",
+      "prompt": "This sign is reminding the driver that the width of the bridge narrows ahead.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -70765,7 +70801,7 @@ export const config = {
       "id": "q0938",
       "number": 938,
       "type": "row",
-      "prompt": "This sign reminds the lane or the road narrows on the right side ahead.",
+      "prompt": "This sign is reminding the driver that the lane or the road narrows on the right side ahead.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -70813,7 +70849,7 @@ export const config = {
       "id": "q0939",
       "number": 939,
       "type": "row",
-      "prompt": "This sign reminds the lane or the road narrows on the left side ahead.",
+      "prompt": "This sign is reminding the driver that the lane or the road narrows on the left side ahead.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -70861,7 +70897,7 @@ export const config = {
       "id": "q0940",
       "number": 940,
       "type": "row",
-      "prompt": "This sign reminds the lane or the road narrows on both sides ahead.",
+      "prompt": "This sign is reminding the driver that the lane or the road narrows on both sides ahead.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -70909,7 +70945,7 @@ export const config = {
       "id": "q0941",
       "number": 941,
       "type": "row",
-      "prompt": "This sign reminds the road in front changes to inseparate two ways section.",
+      "prompt": "This sign is reminding the driver that the road in front changes to a separate two-ways section.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -70957,7 +70993,7 @@ export const config = {
       "id": "q0942",
       "number": 942,
       "type": "row",
-      "prompt": "This sign warns the driver there is a crosswalk ahead.",
+      "prompt": "This sign warns the driver that there is a crosswalk ahead.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -71010,7 +71046,7 @@ export const config = {
       "id": "q0943",
       "number": 943,
       "type": "row",
-      "prompt": "This sign warns the driver there is school area ahead.",
+      "prompt": "This sign warns the driver that there is a school area ahead.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -71058,7 +71094,7 @@ export const config = {
       "id": "q0944",
       "number": 944,
       "type": "row",
-      "prompt": "This sign warns the driver there have traffic lights ahead.",
+      "prompt": "This sign warns the driver that there are traffic lights ahead.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -71106,7 +71142,7 @@ export const config = {
       "id": "q0945",
       "number": 945,
       "type": "row",
-      "prompt": "This sign reminds dangerous hillside road ahead.",
+      "prompt": "This sign reminds the driver that there is a dangerous hillside road ahead.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -71154,7 +71190,7 @@ export const config = {
       "id": "q0946",
       "number": 946,
       "type": "row",
-      "prompt": "This sign reminds strong side wind ahead.",
+      "prompt": "This sign reminds the driver that there is strong side wind ahead.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -71202,7 +71238,7 @@ export const config = {
       "id": "q0947",
       "number": 947,
       "type": "row",
-      "prompt": "This sign reminds a sharp curve ahead.",
+      "prompt": "This sign reminds the driver that there is a sharp curve ahead.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -71250,7 +71286,7 @@ export const config = {
       "id": "q0948",
       "number": 948,
       "type": "row",
-      "prompt": "This sign reminds embankment road ahead.",
+      "prompt": "This sign reminds the driver that there is an embankment road ahead.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -71298,7 +71334,7 @@ export const config = {
       "id": "q0949",
       "number": 949,
       "type": "row",
-      "prompt": "This sign reminds the road ahead goes through the village or town.",
+      "prompt": "This sign reminds the driver that the road ahead goes through the village or town.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -71346,7 +71382,7 @@ export const config = {
       "id": "q0950",
       "number": 950,
       "type": "row",
-      "prompt": "This sign reminds there is a one-way and poor lighting culvert ahead.",
+      "prompt": "This sign reminds the driver that there is a one-way and poor lighting culvert ahead.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -71394,7 +71430,7 @@ export const config = {
       "id": "q0951",
       "number": 951,
       "type": "row",
-      "prompt": "This sign reminds there is a ferry ahead for vehicles.",
+      "prompt": "This sign reminds the driver that there is a ferry ahead for vehicles.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -71442,7 +71478,7 @@ export const config = {
       "id": "q0952",
       "number": 952,
       "type": "row",
-      "prompt": "This sign reminds serious bump road ahead.",
+      "prompt": "This sign reminds the driver that there is a serious bump road ahead.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -71490,7 +71526,7 @@ export const config = {
       "id": "q0953",
       "number": 953,
       "type": "row",
-      "prompt": "This sign reminds bump road ahead which may causes bump phenomenon.",
+      "prompt": "This sign reminds the driver that there is a bumpy road ahead which may cause a bump phenomenon.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -71538,7 +71574,7 @@ export const config = {
       "id": "q0954",
       "number": 954,
       "type": "row",
-      "prompt": "This sign reminds overflowing road or overflowing bridge ahead.",
+      "prompt": "This sign reminds the driver that there is an overflowing road or overflowing bridge ahead.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -71586,7 +71622,7 @@ export const config = {
       "id": "q0955",
       "number": 955,
       "type": "row",
-      "prompt": "This sign reminds an unmanned level crossing ahead.",
+      "prompt": "This sign reminds the driver that there is an unmanned level crossing ahead.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -71639,7 +71675,7 @@ export const config = {
       "id": "q0956",
       "number": 956,
       "type": "row",
-      "prompt": "This sign reminds an unmanned level crossing ahead.",
+      "prompt": "This sign reminds the driver that there is an unmanned level crossing ahead.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -71692,7 +71728,7 @@ export const config = {
       "id": "q0957",
       "number": 957,
       "type": "row",
-      "prompt": "This sign reminds the lane for non-motorized vehicles ahead.",
+      "prompt": "This sign reminds the driver that there is a lane for non-motorized vehicles ahead.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -71740,7 +71776,7 @@ export const config = {
       "id": "q0958",
       "number": 958,
       "type": "row",
-      "prompt": "This sign indicates jammed section ahead and passing slowly.",
+      "prompt": "This sign indicates a jammed section ahead and recommends passing slowly.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -71791,7 +71827,7 @@ export const config = {
       "id": "q0959",
       "number": 959,
       "type": "row",
-      "prompt": "This sign indicates construction section ahead and bypassing from left or right side.",
+      "prompt": "This sign indicates a construction section ahead and bypassing from the left or right side.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -71839,7 +71875,7 @@ export const config = {
       "id": "q0960",
       "number": 960,
       "type": "row",
-      "prompt": "This sign indicates obstacle ahead and bypassing from left side.",
+      "prompt": "This sign indicates an obstacle ahead and bypassing from left side.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -71887,7 +71923,7 @@ export const config = {
       "id": "q0961",
       "number": 961,
       "type": "row",
-      "prompt": "This sign indicates one-way section ahead.",
+      "prompt": "This sign indicates a one-way section ahead.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -71935,7 +71971,7 @@ export const config = {
       "id": "q0962",
       "number": 962,
       "type": "row",
-      "prompt": "This sign indicates landslide section ahead and IC bypassing.",
+      "prompt": "This sign indicates a landslide section ahead and IC bypassing.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -71983,7 +72019,7 @@ export const config = {
       "id": "q0963",
       "number": 963,
       "type": "row",
-      "prompt": "This sign indicates running slowly or stopping to let the vehicle on main road go first.",
+      "prompt": "This sign indicates driving slowly or stopping to let the vehicle on the main road go first.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -72089,7 +72125,7 @@ export const config = {
       "id": "q0965",
       "number": 965,
       "type": "row",
-      "prompt": "This sign indicates indoor car park here.",
+      "prompt": "This sign indicates an indoor car park here.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -72142,7 +72178,7 @@ export const config = {
       "id": "q0966",
       "number": 966,
       "type": "row",
-      "prompt": "This sign indicates indoor car park here.",
+      "prompt": "This sign indicates an indoor car park here.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -72243,7 +72279,7 @@ export const config = {
       "id": "q0968",
       "number": 968,
       "type": "row",
-      "prompt": "This sign indicates intersection ahead.",
+      "prompt": "This sign indicates an intersection ahead.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -72291,7 +72327,7 @@ export const config = {
       "id": "q0969",
       "number": 969,
       "type": "row",
-      "prompt": "The double yellow solid lines in the middle of the road w in opposite directions, are used to separate the traffic flo crossing the lines to overtake or make a turn is allowed if it is safe.",
+      "prompt": "The double yellow solid lines in the middle of the road in opposite directions, are used to separate the traffic flown crossing the lines to overtake or make a turn is allowed if it is safe.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -72349,7 +72385,7 @@ export const config = {
         {
           "id": "q0970_o1",
           "originalKey": "A",
-          "text": "continue to speed up and run"
+          "text": "continue to speed up and drive"
         },
         {
           "id": "q0970_o2",
@@ -72359,7 +72395,7 @@ export const config = {
         {
           "id": "q0970_o3",
           "originalKey": "C",
-          "text": "run by road center"
+          "text": "drive by road center"
         },
         {
           "id": "q0970_o4",
@@ -116799,6 +116835,7 @@ export const config = {
 "q0013": ["driving-operations", "driving-operations:indicators", "driving-operations:gears"],
 "q0014": ["road-safety", "road-safety:road-conditions", "proper-driving:safe-driving"],
 "q0015": ["road-safety", "road-safety:road-conditions", "proper-driving:safe-driving"],
+"q0016": ["road-safety", "road-safety:road-conditions", "proper-driving:safe-driving"],
 "q0017": ["road-safety", "road-safety:road-conditions", "proper-driving:safe-driving"],
 "q0018": ["road-safety", "road-safety:road-conditions", "proper-driving:safe-driving"],
 "q0022": ["road-safety", "road-safety:road-conditions", "proper-driving:safe-driving"],
@@ -116810,6 +116847,8 @@ export const config = {
 "q0034": ["road-safety", "road-safety:road-conditions", "proper-driving:safe-driving"],
 "q0035": ["road-safety", "road-safety:road-conditions", "proper-driving:traffic-laws"],
 "q0037": ["road-safety", "road-safety:road-conditions", "proper-driving:safe-driving"],
+"q0059": ["traffic-signals", "traffic-signals:road-markings", "proper-driving:safe-driving"],
+
 "q0051": ["driving-operations", "driving-operations:indicators", "proper-driving:safe-driving"],
 "q0117": ["road-safety", "road-safety:road-conditions", "proper-driving:safe-driving"],
 "q0052": ["road-safety", "road-safety:road-conditions", "proper-driving:safe-driving"],
@@ -116827,10 +116866,19 @@ export const config = {
 "q0119": ["road-safety", "road-safety:road-conditions", "proper-driving:safe-driving"],
 "q0135": ["road-safety", "road-safety:road-conditions", "proper-driving:safe-driving"],
 "q0146": ["road-safety", "road-safety:road-conditions", "proper-driving:safe-driving"],
+
+"q0149": ["traffic-signals", "traffic-signals:signal-lights"],
+
 "q0154": ["proper-driving", "proper-driving:safe-driving", "driving-operations:gears"],
 "q0158": ["proper-driving", "proper-driving:safe-driving"],
 "q0164": ["road-safety", "road-safety:road-conditions", "proper-driving:safe-driving"],
+"q0169": ["proper-driving", "proper-driving:safe-driving", "road-safety:road-conditions"],
+
+
 "q0170": ["road-safety", "road-safety:road-conditions", "proper-driving:safe-driving"],
+"q0175": ["proper-driving", "proper-driving:safe-driving", "road-safety:road-conditions"],
+"q0180": ["proper-driving", "proper-driving:safe-driving", "road-safety:road-conditions"],
+
 "q0189": ["traffic-signals", "traffic-signals:signal-lights", "traffic-signals:road-signs","road-safety:road-conditions"],
 "q0194": ["proper-driving", "proper-driving:safe-driving", "traffic-signals:signal-lights"],
 
@@ -116847,13 +116895,18 @@ export const config = {
 "q0240": ["road-safety", "road-safety:road-conditions", "proper-driving:road-markings"],
 "q0241": ["proper-driving", "proper-driving:traffic-laws", "driving-operations:gears"],
 "q0242": ["proper-driving", "proper-driving:traffic-laws", "driving-operations:gears"],
+
+"q0260": ["proper-driving", "proper-driving:safe-driving", "road-safety:road-markings"],
+
 "q0268": ["road-safety", "road-safety:road-conditions", "proper-driving:safe-driving"],
 "q0270": ["proper-driving", "proper-driving:traffic-laws", "traffic-signals:road-markings"],
 "q0272": ["proper-driving", "proper-driving:traffic-laws"],
 "q0282": ["proper-driving", "proper-driving:traffic-laws"],
-"q0284": ["proper-driving", "proper-driving:safe-driving", "traffic-signals:signal-lights"],
+"q0284": ["traffic-signals", "traffic-signals:signal-lights"],
 
 "q0290": ["traffic-signals", "traffic-signals:road-signs", "traffic-signals:road-markings"],
+"q0308": ["traffic-signals", "traffic-signals:road-markings", "proper-driving:safe-driving"],
+
 "q0311": ["proper-driving", "proper-driving:safe-driving"],
 "q0319": ["traffic-signals", "traffic-signals:road-signs", "traffic-signals:road-markings"],
 
@@ -116861,26 +116914,66 @@ export const config = {
 "q0325": ["proper-driving", "proper-driving:traffic-laws"],
 "q0329": ["road-safety", "road-safety:road-conditions", "proper-driving:safe-driving"],
 "q0334": ["traffic-signals", "traffic-signals:road-signs"],
-"q0361": ["traffic-signals", "traffic-signals:road-markings","road-safety:road-conditions"],
-"q0373": ["traffic-signals", "traffic-signals:road-signs"],
+
+"q0345": ["road-safety", "road-safety:road-conditions", "proper-driving:safe-driving"],
+
+
+"q0361": ["traffic-signals", "traffic-signals:road-markings"],
+"q0366": ["proper-driving", "proper-driving:traffic-laws", "driving-operations:gears"],
+
+
+"q0373": ["traffic-signals", "traffic-signals:road-signs", "traffic-signals:road-signs"],
 "q0379": ["road-safety", "road-safety:license"],
+
+"q0381": ["driving-operations", "driving-operations:indicators", "proper-driving:safe-driving"],
+"q0391": ["driving-operations", "driving-operations:indicators"],
+
+
 "q0415": ["road-safety", "road-safety:road-conditions"],
 "q0416": ["traffic-signals", "traffic-signals:road-markings"],
 "q0459": ["proper-driving", "proper-driving:safe-driving"],
 "q0463": ["road-safety", "road-safety:registration"],
 "q0464": ["traffic-signals", "traffic-signals:police-signals"],
 "q0475": ["proper-driving", "proper-driving:traffic-laws"],
+"q0479": ["driving-operations", "driving-operations:indicators"],
+"q0485": ["driving-operations", "driving-operations:indicators"],
+
 "q0496": ["road-safety", "road-safety:license", "proper-driving:traffic-laws", "road-safety:accidents"],
+"q0497": ["driving-operations", "driving-operations:indicators", "proper-driving:safe-driving"],
+"q0509": ["driving-operations", "driving-operations:indicators"],
+"q0512": ["road-safety", "road-safety:road-conditions", "traffic-signals:road-markings", "proper-driving:safe-driving"],
+
 "q0514": ["proper-driving", "proper-driving:traffic-laws", "proper-driving:safe-driving"],
-"q0553": ["driving-operations", "driving-operations:gears"],
+"q0517": ["proper-driving", "proper-driving:traffic-laws"],
+"q0531": ["driving-operations", "driving-operations:gears"],
+"q0534": ["driving-operations", "driving-operations:indicators"],
+"q0544": ["driving-operations", "driving-operations:gears"],
+"q0547": ["driving-operations", "driving-operations:indicators"],
+"q0553": ["driving-operations", "driving-operations:indicators"],
+
+"q0568": ["driving-operations", "driving-operations:indicators"],
+"q0569": ["driving-operations", "driving-operations:indicators"],
+"q0605": ["driving-operations", "driving-operations:indicators"],
+"q0625": ["driving-operations", "driving-operations:gears"],
+
+"q0631": ["traffic-signals", "traffic-signals:signal-lights", "traffic-signals:road-markings"],
 "q0633": ["traffic-signals", "traffic-signals:signal-lights", "traffic-signals:road-signs"],
+"q0634": ["traffic-signals", "traffic-signals:signal-lights", "traffic-signals:road-markings"],
+"q0636": ["traffic-signals", "traffic-signals:signal-lights", "traffic-signals:road-markings"],
+
 
 "q0637": ["traffic-signals", "traffic-signals:signal-lights"],
 "q0639": ["traffic-signals", "traffic-signals:signal-lights"],
 "q0640": ["traffic-signals", "traffic-signals:signal-lights"],
 "q0641": ["traffic-signals", "traffic-signals:signal-lights"],
-"q0642": ["traffic-signals", "traffic-signals:road-markings", "proper-driving:traffic-laws"],
+"q0642": ["traffic-signals", "proper-driving:traffic-lights"],
 "q0644": ["traffic-signals", "traffic-signals:signal-lights"],
+"q0678": ["traffic-signals", "traffic-signals:signal-lights"],
+"q0746": ["traffic-signals", "traffic-signals:signal-lights"],
+"q0763": ["traffic-signals", "traffic-signals:signal-lights"],
+
+
+
 "q0850": ["traffic-signals", "traffic-signals:signal-lights"],
 "q0970": ["proper-driving", "proper-driving:safe-driving"]
 
