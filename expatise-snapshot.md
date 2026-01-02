@@ -578,6 +578,8 @@ export default function AllQuestionsClient({
   const [activeTopic, setActiveTopic] = useState<string | null>(null);
   const [activeSub, setActiveSub] = useState<string | null>(null); // null = All
   const { idSet: bookmarkedSet, isBookmarked, toggle } = useBookmarks(datasetId);
+  // ✅ Selection (only used in Bookmarks mode)
+const [selectedIds, setSelectedIds] = useState<Set<string>>(() => new Set());
 
 
 
@@ -631,6 +633,13 @@ useEffect(() => {
   }
 }, [unclassified]);
 
+useEffect(() => {
+  if (mode !== "bookmarks") {
+    setSelectedIds(new Set());
+  }
+}, [mode]);
+
+
   const filtered = useMemo(() => {
   const qNorm = query.trim().toLowerCase();
 
@@ -661,6 +670,58 @@ const visible = useMemo(() => {
   return filtered.filter((item) => bookmarkedSet.has(item.id));
 }, [filtered, mode, bookmarkedSet]);
 
+function unselectCard(id: string) {
+  setSelectedIds((prev) => {
+    if (!prev.has(id)) return prev;
+    const next = new Set(prev);
+    next.delete(id);
+    return next;
+  });
+}
+
+function clearSelection() {
+  setSelectedIds(new Set());
+}
+
+function unbookmarkSelected() {
+  // Only unbookmark the currently selected ones
+  const ids = Array.from(selectedIds);
+
+  ids.forEach((id) => {
+    // In bookmarks mode these should already be bookmarked,
+    // but this guard keeps it safe.
+    if (bookmarkedSet.has(id)) toggle(id);
+  });
+
+  clearSelection();
+}
+
+
+const visibleIds = useMemo(() => visible.map((x) => x.id), [visible]);
+
+const allVisibleSelected = useMemo(() => {
+  return visibleIds.length > 0 && visibleIds.every((id) => selectedIds.has(id));
+}, [visibleIds, selectedIds]);
+
+function toggleSelectAllVisible() {
+  setSelectedIds((prev) => {
+    const next = new Set(prev);
+
+    const shouldClear =
+      visibleIds.length > 0 && visibleIds.every((id) => next.has(id));
+
+    if (shouldClear) {
+      // Clear only visible ones
+      visibleIds.forEach((id) => next.delete(id));
+    } else {
+      // Select all visible ones
+      visibleIds.forEach((id) => next.add(id));
+    }
+
+    return next;
+  });
+}
+
 
 
   return (
@@ -678,32 +739,68 @@ const visible = useMemo(() => {
             onChange={(e) => setQuery(e.target.value)}
           />
         </div>
+{/* Row 1: Topics */}
+<div className={styles.chipsRow}>
+  <div className={styles.chips}>
+    {TAG_TAXONOMY.map((topic) => {
+      const isActive = activeTopic === topic.key;
+      return (
+        <button
+          key={topic.key}
+          type="button"
+          className={`${styles.chip} ${isActive ? styles.chipActive : ""}`}
+          onClick={() => {
+            if (isActive) {
+              setActiveTopic(null);
+              setActiveSub(null);
+            } else {
+              setActiveTopic(topic.key);
+              setActiveSub(null);
+            }
+          }}
+        >
+          {topic.label}
+        </button>
+      );
+    })}
+  </div>
 
-       {/* Row 1: Topics */}
-<div className={styles.chips}>
-  {TAG_TAXONOMY.map((topic) => {
-    const isActive = activeTopic === topic.key;
-    return (
+{mode === "bookmarks" && (
+  <div className={styles.chipsRight}>
+    {selectedIds.size > 0 && (
       <button
-        key={topic.key}
         type="button"
-        className={`${styles.chip} ${isActive ? styles.chipActive : ""}`}
-        onClick={() => {
-          // click again to clear
-          if (isActive) {
-            setActiveTopic(null);
-            setActiveSub(null);
-          } else {
-            setActiveTopic(topic.key);
-            setActiveSub(null); // default to "All"
-          }
-        }}
+        className={styles.deleteBtn}
+        onClick={unbookmarkSelected}
+        aria-label={`Delete ${selectedIds.size} bookmarks`}
+        title={`Delete ${selectedIds.size} bookmarks`}
       >
-        {topic.label}
+        Delete
       </button>
-    );
-  })}
+    )}
+
+    <button
+      type="button"
+      className={styles.selectAllBtn}
+      onClick={toggleSelectAllVisible}
+      aria-label={allVisibleSelected ? "Clear selection" : "Select all visible"}
+      title={allVisibleSelected ? "Clear selection" : "Select all"}
+      data-active={allVisibleSelected ? "true" : "false"}
+    >
+      <Image
+        src="/images/home/icons/selection-box-icon.png"
+        alt=""
+        width={18}
+        height={18}
+        className={styles.selectAllIcon}
+        draggable={false}
+      />
+    </button>
+  </div>
+)}
 </div>
+
+
 
 {/* Row 2: Subtopics (only show when a topic is selected) */}
 {activeTopic && (
@@ -730,7 +827,22 @@ const visible = useMemo(() => {
 
         <section className={styles.list}>
           {visible.map((item) => (
-            <article key={item.id} className={styles.card}>
+<article
+  key={item.id}
+  className={`${styles.card} ${selectedIds.has(item.id) ? styles.cardSelected : ""}`}
+  onClick={(e) => {
+    // Only do anything if this card is currently selected
+    if (!selectedIds.has(item.id)) return;
+
+    // Ignore clicks that originate from interactive elements inside the card
+    const target = e.target as HTMLElement;
+    if (target.closest("button, a, input, textarea, select, label")) return;
+
+    // ✅ unselect on tap/click
+    unselectCard(item.id);
+  }}
+>
+
  <div className={styles.cardTop}>
   <span className={styles.qNo}>{item.number}.</span>
 
@@ -746,14 +858,21 @@ const visible = useMemo(() => {
     })()}
 
     <button
-      type="button"
-      className={styles.bookmarkBtn}
-      onClick={() => toggle(item.id)}
-      aria-label={isBookmarked(item.id) ? 'Remove bookmark' : 'Add bookmark'}
-      title={isBookmarked(item.id) ? 'Bookmarked' : 'Bookmark'}
-    >
-      {isBookmarked(item.id) ? '★' : '☆'}
-    </button>
+  type="button"
+  className={styles.bookmarkBtn}
+onClick={(e) => {
+  e.stopPropagation();
+  toggle(item.id);
+}}
+  aria-label={isBookmarked(item.id) ? 'Remove bookmark' : 'Add bookmark'}
+  title={isBookmarked(item.id) ? 'Bookmarked' : 'Bookmark'}
+  data-bookmarked={isBookmarked(item.id) ? 'true' : 'false'}
+>
+  <span className={styles.bookmarkIcon} aria-hidden="true" />
+
+
+</button>
+
   </div>
 </div>
 
@@ -891,6 +1010,75 @@ const visible = useMemo(() => {
   margin-bottom: 14px;
 }
 
+.chipsRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 14px; /* keeps spacing consistent */
+}
+
+/* Make the chips area take the remaining width */
+.chipsRow .chips {
+  flex: 1;
+  min-width: 0;
+  margin-bottom: 0; /* prevent double margin since chipsRow has margin-bottom */
+}
+
+.selectAllBtn {
+  flex: 0 0 auto;
+  width: 40px;
+  height: 40px;
+  border-radius: 14px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  background: rgba(255, 255, 255, 0.6);
+  cursor: pointer;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.selectAllBtn:hover {
+  background: rgba(255, 255, 255, 0.75);
+}
+
+.selectAllBtn[data-active="true"] {
+  border-color: rgba(55, 178, 255, 0.9);
+  box-shadow: 0 6px 18px rgba(55, 178, 255, 0.25);
+}
+
+.selectAllIcon {
+  object-fit: contain;
+}
+
+.cardSelected {
+  outline: 2px solid rgba(55, 178, 255, 0.65);
+}
+
+.chipsRight {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  flex: 0 0 auto;
+}
+
+.deleteBtn {
+  height: 40px;
+  padding: 0 12px;
+  border-radius: 14px;
+  border: 1px solid red;
+  background: rgba(255, 255, 255, 0.6);
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  color: red;
+}
+
+.deleteBtn:hover {
+  background: rgba(255, 255, 255, 0.75);
+}
+
+
 .chip {
   border: 1px solid rgba(0,0,0,0.12);
   background: rgba(255,255,255,0.6);
@@ -922,8 +1110,12 @@ const visible = useMemo(() => {
   display: flex;
   justify-content: space-between;
   margin-bottom: 8px;
-  opacity: 0.8;
   font-size: 13px;
+}
+
+.qNo,
+.qType {
+  opacity: 0.8;
 }
 
 .prompt {
@@ -1038,12 +1230,38 @@ const visible = useMemo(() => {
   cursor: pointer;
   font-size: 20px;
   line-height: 1;
-  opacity: 0.85;
+  opacity: 1;
   padding: 4px 6px;
 }
 
 .bookmarkBtn:hover {
   opacity: 1;
+}
+
+.bookmarkIcon {
+  width: 22px;
+  height: 22px;
+  display: inline-block;
+
+  /* Use the SVG as a stencil */
+  -webkit-mask-image: url("/images/test/bookmark-icon.png");
+  mask-image: url("/images/test/bookmark-icon.png");
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+}
+
+/* Default (not bookmarked): looks like an outline-ish dark icon */
+.bookmarkBtn[data-bookmarked='false'] .bookmarkIcon {
+  background: rgba(15, 23, 42, 0.95);
+}
+
+.bookmarkBtn[data-bookmarked='true'] .bookmarkIcon {
+  background: var(--color-premium-gradient);
+  filter: brightness(1) contrast(1.5) saturate(2);
 }
 
 
@@ -4503,7 +4721,7 @@ function formatTimeLabel(time: string): string {
 const TEST_MODE_CARDS = [
     {
     key: "real-test",
-    href: `${ROUTES.comingSoon}?feature=real-test`,
+    href: ROUTES.realTest,
     ariaLabel: "Open Real Test",
     bgSrc: "/images/home/cards/realtest-bg.png",
     bgAlt: "Real Test Background",
@@ -4512,6 +4730,7 @@ const TEST_MODE_CARDS = [
     topText: "Practice under real exam conditions with a timer.",
     title:  "Real Test",
    },
+   
     {
     key: "practice-test",
     href: `${ROUTES.comingSoon}?feature=practice-test`,
@@ -4523,6 +4742,18 @@ const TEST_MODE_CARDS = [
     topText: "Study at your own pace. No time limit!",
     title:  "Practice Test",
    },
+     {
+    key: "quick-test",
+    href: `${ROUTES.comingSoon}?feature=quick-test`,
+    ariaLabel: "Open Quick Test",
+    bgSrc: "/images/home/cards/quicktest-bg.png",
+    bgAlt: "Quick Test Background",
+    iconSrc: "/images/home/icons/globalmistakes-icon.png",
+    iconAlt: "Quick Test Icon",
+    topText: "Half the questions. Half the time.",
+    title: "Quick Test",
+  },
+
     {
     key: "rapid-fire-test",
     href: `${ROUTES.comingSoon}?feature=rapid-fire-test`,
@@ -4534,6 +4765,7 @@ const TEST_MODE_CARDS = [
     topText: "Sharpen your reflexes and memory in bursts.",
     title:  "Rapid Fire Test",
     },
+    
 
 ] as const;
 
@@ -4555,7 +4787,7 @@ const OVERALL_CARDS = [
   ariaLabel: "Open Global Common Mistakes",
   bgSrc: "/images/home/cards/globalmistakes-bg.png",
   bgAlt: "Global Common Mistakes Background",
-  iconSrc: "/images/home/icons/globalmistakes-icon.png",
+  iconSrc: "/images/home/icons/globalmistake-icon.png",
   iconAlt: "Global Common Mistakes Icon",
   topText: "See which questions others miss most.",
   title: "Global Common Mistakes",
@@ -4570,7 +4802,7 @@ const MY_CARDS = [
   ariaLabel: "Open My Bookmarks",
   bgSrc: "/images/home/cards/bookmark-bg.png",
   bgAlt: "My Bookmarks Background",
-  iconSrc: "/images/home/icons/bookmark-icon.png",
+  iconSrc: "/images/home/icons/bookmarks-icon.png",
   iconAlt: "Bookmark Icon",
   topText: "Save questions and build your own study list.",
   title: "My Bookmarks",
@@ -6652,6 +6884,535 @@ const handleSave = async (e: React.SyntheticEvent) => {
   display: block;
   text-align: center;
   opacity: 0.95;
+}
+
+```
+
+### app/real-test/RealTestClient.client.tsx
+```tsx
+// app/real-test/RealTestClient.client.tsx
+
+'use client';
+
+import { useEffect, useMemo, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import Image from 'next/image';
+
+import styles from './real-test.module.css';
+
+import { loadDataset } from '../../lib/qbank/loadDataset';
+import type { DatasetId } from '../../lib/qbank/datasets';
+import type { Question } from '../../lib/qbank/types';
+import { useBookmarks } from '../../lib/bookmarks/useBookmarks';
+
+function formatTime(secs: number) {
+  const m = Math.floor(secs / 60);
+  const s = secs % 60;
+  return `${m}:${String(s).padStart(2, '0')}`;
+}
+
+export default function RealTestClient({
+  datasetId,
+  timeLimitMinutes,
+}: {
+  datasetId: DatasetId;
+  timeLimitMinutes: number;
+}) {
+  const router = useRouter();
+
+  const [items, setItems] = useState<Question[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const [index, setIndex] = useState(0);
+  const [selectedKey, setSelectedKey] = useState<string | null>(null);
+
+  const total = items.length || 100;
+  const currentNo = Math.min(index + 1, total);
+
+  const [timeLeft, setTimeLeft] = useState(timeLimitMinutes * 60);
+
+  const { toggle, isBookmarked } = useBookmarks(datasetId);
+
+  useEffect(() => {
+    let mounted = true;
+
+    (async () => {
+      setLoading(true);
+      const ds = await loadDataset(datasetId);
+      if (!mounted) return;
+
+      setItems(ds);
+      setIndex(0);
+      setSelectedKey(null);
+      setTimeLeft(timeLimitMinutes * 60);
+      setLoading(false);
+    })();
+
+    return () => {
+      mounted = false;
+    };
+  }, [datasetId, timeLimitMinutes]);
+
+  // countdown
+  useEffect(() => {
+    if (loading) return;
+    if (timeLeft <= 0) return;
+
+    const t = setInterval(() => {
+      setTimeLeft((prev) => Math.max(0, prev - 1));
+    }, 1000);
+
+    return () => clearInterval(t);
+  }, [loading, timeLeft]);
+
+  const item = items[index];
+const imageAsset = item?.assets?.find((a) => a.kind === 'image');
+
+
+
+  const progressPct = useMemo(() => {
+    if (!items.length) return 0;
+    return ((index + 1) / items.length) * 100;
+  }, [index, items.length]);
+
+  const onNext = () => {
+    if (!items.length) return;
+
+    // (optional) require an answer before next
+    if (!selectedKey) return;
+
+    const next = index + 1;
+    if (next >= items.length) {
+      // finished (you can route to results later)
+      router.back();
+      return;
+    }
+
+    setIndex(next);
+    setSelectedKey(null);
+  };
+
+  if (loading) {
+    return (
+      <main className={styles.page}>
+        <div className={styles.frame}>
+          <div className={styles.loading}>Loading…</div>
+        </div>
+      </main>
+    );
+  }
+
+  if (!item) {
+    return (
+      <main className={styles.page}>
+        <div className={styles.frame}>
+          <div className={styles.loading}>No questions found.</div>
+        </div>
+      </main>
+    );
+  }
+
+  return (
+    <main className={styles.page}>
+      <div className={styles.frame}>
+        {/* Top bar */}
+        <div className={styles.topBar}>
+          <button
+            type="button"
+            className={styles.backBtn}
+            onClick={() => router.back()}
+            aria-label="Back"
+          >
+            <span className={styles.backIcon} aria-hidden="true">‹</span>
+            <span className={styles.backText}>Back</span>
+          </button>
+
+          <div className={styles.topRight}>
+            <div className={styles.timer}>
+              <span className={styles.timerIcon} aria-hidden="true" />
+              <span className={styles.timerText}>{timeLimitMinutes}Min</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Progress row */}
+        <div className={styles.progressRow}>
+          <div className={styles.progressTrack} aria-hidden="true">
+            <div
+              className={styles.progressFill}
+              style={{ width: `${progressPct}%` }}
+            />
+          </div>
+
+          <div className={styles.progressText}>{currentNo}/{items.length}</div>
+        </div>
+
+        {/* Question row (with bookmark icon on the right) */}
+        <div className={styles.questionRow}>
+          <p className={styles.questionText}>{item.prompt}</p>
+
+          <button
+            type="button"
+            className={styles.bookmarkBtn}
+            onClick={(e) => {
+              e.stopPropagation();
+              toggle(item.id);
+            }}
+            aria-label={isBookmarked(item.id) ? 'Remove bookmark' : 'Add bookmark'}
+            title={isBookmarked(item.id) ? 'Bookmarked' : 'Bookmark'}
+            data-bookmarked={isBookmarked(item.id) ? 'true' : 'false'}
+          >
+            {/* NOTE: this is where your class rename matters */}
+            <span className={styles.bookmarkIcon} aria-hidden="true" />
+          </button>
+        </div>
+
+        {/* Image (if exists) */}
+        {imageAsset && (
+  <div className={styles.imageWrap}>
+    <Image
+      src={imageAsset.src}
+      alt="Question image"
+      fill
+      className={styles.image}
+      priority
+    />
+  </div>
+)}
+
+
+{/* Answers */}
+<div className={styles.answers}>
+  {item.type === 'MCQ' &&
+    item.options.map((opt, idx) => {
+      const key = opt.originalKey ?? String.fromCharCode(65 + idx); // A, B, C, D...
+      const active = selectedKey === key;
+
+      return (
+        <button
+          key={opt.id} // safest key for React lists
+          type="button"
+          className={`${styles.optionBtn} ${active ? styles.optionActive : ''}`}
+          onClick={() => setSelectedKey(key)} // key is now always string
+        >
+          <span className={styles.optionKey}>{key}.</span>
+          <span className={styles.optionText}>{opt.text}</span>
+        </button>
+      );
+    })}
+</div>
+
+
+
+        {/* Next */}
+        <button
+          type="button"
+          className={styles.nextBtn}
+          onClick={onNext}
+          disabled={!selectedKey}
+        >
+          Next <span className={styles.nextArrow} aria-hidden="true">→</span>
+        </button>
+      </div>
+    </main>
+  );
+}
+
+```
+
+### app/real-test/page.tsx
+```tsx
+import type { DatasetId } from '../../lib/qbank/datasets';
+import RealTestClient from './RealTestClient.client';
+
+export default function RealTestPage() {
+  const datasetId: DatasetId = 'cn-2023-test1' as DatasetId;
+
+  return <RealTestClient datasetId={datasetId} timeLimitMinutes={45} />;
+}
+
+```
+
+### app/real-test/real-test.module.css
+```css
+.page {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  background: var(--color-page-bg);
+}
+
+.frame {
+  width: 100%;
+  max-width: 390px; /* Figma phone frame */
+  padding: 18px 16px 24px;
+}
+
+.loading {
+  padding: 40px 0;
+  opacity: 0.7;
+  text-align: center;
+}
+
+/* --- Top bar --- */
+.topBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0; /* your figma shows tight top */
+}
+
+.backBtn {
+  border: 0;
+  background: transparent;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  padding: 6px 2px;
+}
+
+.backIcon {
+  font-size: 22px;
+  line-height: 1;
+  opacity: 0.6;
+}
+
+.backText {
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.topRight {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* timer */
+.timer {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.timerIcon {
+  width: 20px;
+  height: 20px;
+  display: inline-block;
+  background: rgba(43, 124, 175, 0.95);
+
+  /* simple clock glyph via mask (optional) */
+  -webkit-mask-image: url("/images/test/timer-icon.png");
+  mask-image: url("/images/test/timer-icon.png");
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+}
+
+.timerText {
+  font-size: 14px;
+  font-weight: 600; /* semibold */
+  color: #2B7CAF;
+}
+
+/* --- Progress row --- */
+/* top bar → progress: 28 */
+.progressRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 28px;
+}
+
+.progressTrack {
+  flex: 1;
+  height: 4px; /* figma shows 1px; 4px reads better on web */
+  border-radius: 999px;
+  background: #E0E7EA; /* track */
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #2B7CAF 0%, #FFC542 100%);
+}
+
+.progressText {
+  font-size: 16px;
+  color: #21205A;
+  font-weight: 400;
+}
+
+/* progress → question: 29 */
+.questionRow {
+  margin-top: 29px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.questionText {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 28px;
+  letter-spacing: -0.24px;
+  color: #000;
+}
+
+/* Bookmark */
+.bookmarkBtn {
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  padding: 4px;
+}
+
+.bookmarkIcon {
+  width: 24px;
+  height: 24px;
+  display: inline-block;
+
+  /* Use the PNG as a stencil */
+  -webkit-mask-image: url("/images/test/bookmark-icon.png");
+  mask-image: url("/images/test/bookmark-icon.png");
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+}
+
+/* not bookmarked */
+.bookmarkBtn[data-bookmarked='false'] .bookmarkIcon {
+  background: rgba(15, 23, 42, 0.9);
+}
+
+/* bookmarked (keep your gradient) */
+.bookmarkBtn[data-bookmarked='true'] .bookmarkIcon {
+  background: var(--color-premium-gradient);
+  filter: brightness(1) contrast(1.5) saturate(2);
+}
+
+/* question → image: 4 */
+.imageWrap {
+  margin-top: 4px;
+  width: 187.72px;   /* from your figma screenshot */
+  height: 209.5px;
+  position: relative;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.image {
+  object-fit: contain;
+}
+
+/* image → answers: 30 */
+.answers {
+  margin-top: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px; /* gap between answers */
+}
+
+/* option card (315 x 41) */
+.optionBtn {
+  width: 315px;
+  min-height: 41px;
+  border-radius: 14px;
+  border: 1px solid rgba(43, 124, 175, 0.18);
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 6px 14px rgba(15, 33, 70, 0.12);
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+
+  padding: 10px 12px;
+  text-align: center;
+}
+
+.optionKey {
+  font-weight: 700;
+}
+
+.optionText {
+  font-size: 11px;
+  line-height: 20px;
+  letter-spacing: -0.24px;
+}
+
+.optionActive {
+  border-color: rgba(43, 124, 175, 0.7);
+  box-shadow: 0 10px 22px rgba(43, 124, 175, 0.18);
+}
+
+/* answers → next button: 30 */
+.nextBtn {
+  margin-top: 30px;
+  width: 315px;
+  height: 41px;
+  border-radius: 14px;
+  cursor: pointer;
+
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: -0.24px;
+
+  background: linear-gradient(
+    90deg,
+    rgba(43, 124, 175, 0.20) 0%,
+    rgba(255, 197, 66, 0.20) 100%
+  );
+
+  position: relative;
+  border: none;
+
+  box-shadow: 0 10px 22px rgba(15, 33, 70, 0.18);
+}
+
+.nextBtn::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 14px;
+  padding: 1px;
+  background: linear-gradient(90deg, #2B7CAF 0%, #FFC542 100%);
+  pointer-events: none;
+
+  /* Standard + WebKit versions */
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+}
+
+
+.nextBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.nextArrow {
+  margin-left: 6px;
 }
 
 ```
@@ -9277,6 +10038,7 @@ export type RawQBank = { questions: RawQuestion[] } | RawQuestion[];
 ### lib/routes.ts
 ```tsx
 export const ROUTES = {
+  realTest: "/real-test",
   allQuestions: "/all-questions",
   bookmarks: "/bookmarks",
   comingSoon: "/coming-soon",

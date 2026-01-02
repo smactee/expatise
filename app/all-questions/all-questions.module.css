@@ -52,6 +52,75 @@
   margin-bottom: 14px;
 }
 
+.chipsRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 14px; /* keeps spacing consistent */
+}
+
+/* Make the chips area take the remaining width */
+.chipsRow .chips {
+  flex: 1;
+  min-width: 0;
+  margin-bottom: 0; /* prevent double margin since chipsRow has margin-bottom */
+}
+
+.selectAllBtn {
+  flex: 0 0 auto;
+  width: 40px;
+  height: 40px;
+  border-radius: 14px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  background: rgba(255, 255, 255, 0.6);
+  cursor: pointer;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.selectAllBtn:hover {
+  background: rgba(255, 255, 255, 0.75);
+}
+
+.selectAllBtn[data-active="true"] {
+  border-color: rgba(55, 178, 255, 0.9);
+  box-shadow: 0 6px 18px rgba(55, 178, 255, 0.25);
+}
+
+.selectAllIcon {
+  object-fit: contain;
+}
+
+.cardSelected {
+  outline: 2px solid rgba(55, 178, 255, 0.65);
+}
+
+.chipsRight {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  flex: 0 0 auto;
+}
+
+.deleteBtn {
+  height: 40px;
+  padding: 0 12px;
+  border-radius: 14px;
+  border: 1px solid red;
+  background: rgba(255, 255, 255, 0.6);
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  color: red;
+}
+
+.deleteBtn:hover {
+  background: rgba(255, 255, 255, 0.75);
+}
+
+
 .chip {
   border: 1px solid rgba(0,0,0,0.12);
   background: rgba(255,255,255,0.6);
@@ -83,8 +152,12 @@
   display: flex;
   justify-content: space-between;
   margin-bottom: 8px;
-  opacity: 0.8;
   font-size: 13px;
+}
+
+.qNo,
+.qType {
+  opacity: 0.8;
 }
 
 .prompt {
@@ -199,11 +272,37 @@
   cursor: pointer;
   font-size: 20px;
   line-height: 1;
-  opacity: 0.85;
+  opacity: 1;
   padding: 4px 6px;
 }
 
 .bookmarkBtn:hover {
   opacity: 1;
+}
+
+.bookmarkIcon {
+  width: 22px;
+  height: 22px;
+  display: inline-block;
+
+  /* Use the SVG as a stencil */
+  -webkit-mask-image: url("/images/test/bookmark-icon.png");
+  mask-image: url("/images/test/bookmark-icon.png");
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+}
+
+/* Default (not bookmarked): looks like an outline-ish dark icon */
+.bookmarkBtn[data-bookmarked='false'] .bookmarkIcon {
+  background: rgba(15, 23, 42, 0.95);
+}
+
+.bookmarkBtn[data-bookmarked='true'] .bookmarkIcon {
+  background: var(--color-premium-gradient);
+  filter: brightness(1) contrast(1.5) saturate(2);
 }
 

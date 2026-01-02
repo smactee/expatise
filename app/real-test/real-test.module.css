@@ -1,0 +1,279 @@
+.page {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  background: var(--color-page-bg);
+}
+
+.frame {
+  width: 100%;
+  max-width: 390px; /* Figma phone frame */
+  padding: 18px 16px 24px;
+}
+
+.loading {
+  padding: 40px 0;
+  opacity: 0.7;
+  text-align: center;
+}
+
+/* --- Top bar --- */
+.topBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0; /* your figma shows tight top */
+}
+
+.backBtn {
+  border: 0;
+  background: transparent;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  padding: 6px 2px;
+}
+
+.backIcon {
+  font-size: 22px;
+  line-height: 1;
+  opacity: 0.6;
+}
+
+.backText {
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.topRight {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* timer */
+.timer {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.timerIcon {
+  width: 20px;
+  height: 20px;
+  display: inline-block;
+  background: rgba(43, 124, 175, 0.95);
+
+  /* simple clock glyph via mask (optional) */
+  -webkit-mask-image: url("/images/test/timer-icon.png");
+  mask-image: url("/images/test/timer-icon.png");
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+}
+
+.timerText {
+  font-size: 14px;
+  font-weight: 600; /* semibold */
+  color: #2B7CAF;
+}
+
+/* --- Progress row --- */
+/* top bar → progress: 28 */
+.progressRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 28px;
+}
+
+.progressTrack {
+  flex: 1;
+  height: 4px; /* figma shows 1px; 4px reads better on web */
+  border-radius: 999px;
+  background: #E0E7EA; /* track */
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #2B7CAF 0%, #FFC542 100%);
+}
+
+.progressText {
+  font-size: 16px;
+  color: #21205A;
+  font-weight: 400;
+}
+
+/* progress → question: 29 */
+.questionRow {
+  margin-top: 29px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.questionText {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 28px;
+  letter-spacing: -0.24px;
+  color: #000;
+}
+
+/* Bookmark */
+.bookmarkBtn {
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  padding: 4px;
+}
+
+.bookmarkIcon {
+  width: 24px;
+  height: 24px;
+  display: inline-block;
+
+  /* Use the PNG as a stencil */
+  -webkit-mask-image: url("/images/test/bookmark-icon.png");
+  mask-image: url("/images/test/bookmark-icon.png");
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+}
+
+/* not bookmarked */
+.bookmarkBtn[data-bookmarked='false'] .bookmarkIcon {
+  background: rgba(15, 23, 42, 0.9);
+}
+
+/* bookmarked (keep your gradient) */
+.bookmarkBtn[data-bookmarked='true'] .bookmarkIcon {
+  background: var(--color-premium-gradient);
+  filter: brightness(1) contrast(1.5) saturate(2);
+}
+
+/* question → image: 4 */
+.imageWrap {
+  margin-top: 4px;
+  width: 187.72px;   /* from your figma screenshot */
+  height: 209.5px;
+  position: relative;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.image {
+  object-fit: contain;
+}
+
+/* image → answers: 30 */
+.answers {
+  margin-top: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px; /* gap between answers */
+}
+
+/* option card (315 x 41) */
+.optionBtn {
+  width: 315px;
+  min-height: 41px;
+  border-radius: 14px;
+  border: 1px solid rgba(43, 124, 175, 0.18);
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 6px 14px rgba(15, 33, 70, 0.12);
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+
+  padding: 10px 12px;
+  text-align: center;
+}
+
+.optionKey {
+  font-weight: 700;
+}
+
+.optionText {
+  font-size: 11px;
+  line-height: 20px;
+  letter-spacing: -0.24px;
+}
+
+.optionActive {
+  border-color: rgba(43, 124, 175, 0.7);
+  box-shadow: 0 10px 22px rgba(43, 124, 175, 0.18);
+}
+
+/* answers → next button: 30 */
+.nextBtn {
+  margin-top: 30px;
+  width: 315px;
+  height: 41px;
+  border-radius: 14px;
+  cursor: pointer;
+
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: -0.24px;
+
+  background: linear-gradient(
+    90deg,
+    rgba(43, 124, 175, 0.20) 0%,
+    rgba(255, 197, 66, 0.20) 100%
+  );
+
+  position: relative;
+  border: none;
+
+  box-shadow: 0 10px 22px rgba(15, 33, 70, 0.18);
+}
+
+.nextBtn::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 14px;
+  padding: 1px;
+  background: linear-gradient(90deg, #2B7CAF 0%, #FFC542 100%);
+  pointer-events: none;
+
+  /* Standard + WebKit versions */
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+}
+
+
+.nextBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.nextArrow {
+  margin-left: 6px;
+}

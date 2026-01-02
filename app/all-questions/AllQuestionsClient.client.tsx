@@ -30,6 +30,8 @@ export default function AllQuestionsClient({
   const [activeTopic, setActiveTopic] = useState<string | null>(null);
   const [activeSub, setActiveSub] = useState<string | null>(null); // null = All
   const { idSet: bookmarkedSet, isBookmarked, toggle } = useBookmarks(datasetId);
+  // ✅ Selection (only used in Bookmarks mode)
+const [selectedIds, setSelectedIds] = useState<Set<string>>(() => new Set());
 
 
 
@@ -83,6 +85,13 @@ useEffect(() => {
   }
 }, [unclassified]);
 
+useEffect(() => {
+  if (mode !== "bookmarks") {
+    setSelectedIds(new Set());
+  }
+}, [mode]);
+
+
   const filtered = useMemo(() => {
   const qNorm = query.trim().toLowerCase();
 
@@ -113,6 +122,58 @@ const visible = useMemo(() => {
   return filtered.filter((item) => bookmarkedSet.has(item.id));
 }, [filtered, mode, bookmarkedSet]);
 
+function unselectCard(id: string) {
+  setSelectedIds((prev) => {
+    if (!prev.has(id)) return prev;
+    const next = new Set(prev);
+    next.delete(id);
+    return next;
+  });
+}
+
+function clearSelection() {
+  setSelectedIds(new Set());
+}
+
+function unbookmarkSelected() {
+  // Only unbookmark the currently selected ones
+  const ids = Array.from(selectedIds);
+
+  ids.forEach((id) => {
+    // In bookmarks mode these should already be bookmarked,
+    // but this guard keeps it safe.
+    if (bookmarkedSet.has(id)) toggle(id);
+  });
+
+  clearSelection();
+}
+
+
+const visibleIds = useMemo(() => visible.map((x) => x.id), [visible]);
+
+const allVisibleSelected = useMemo(() => {
+  return visibleIds.length > 0 && visibleIds.every((id) => selectedIds.has(id));
+}, [visibleIds, selectedIds]);
+
+function toggleSelectAllVisible() {
+  setSelectedIds((prev) => {
+    const next = new Set(prev);
+
+    const shouldClear =
+      visibleIds.length > 0 && visibleIds.every((id) => next.has(id));
+
+    if (shouldClear) {
+      // Clear only visible ones
+      visibleIds.forEach((id) => next.delete(id));
+    } else {
+      // Select all visible ones
+      visibleIds.forEach((id) => next.add(id));
+    }
+
+    return next;
+  });
+}
+
 
 
   return (
@@ -130,32 +191,68 @@ const visible = useMemo(() => {
             onChange={(e) => setQuery(e.target.value)}
           />
         </div>
+{/* Row 1: Topics */}
+<div className={styles.chipsRow}>
+  <div className={styles.chips}>
+    {TAG_TAXONOMY.map((topic) => {
+      const isActive = activeTopic === topic.key;
+      return (
+        <button
+          key={topic.key}
+          type="button"
+          className={`${styles.chip} ${isActive ? styles.chipActive : ""}`}
+          onClick={() => {
+            if (isActive) {
+              setActiveTopic(null);
+              setActiveSub(null);
+            } else {
+              setActiveTopic(topic.key);
+              setActiveSub(null);
+            }
+          }}
+        >
+          {topic.label}
+        </button>
+      );
+    })}
+  </div>
 
-       {/* Row 1: Topics */}
-<div className={styles.chips}>
-  {TAG_TAXONOMY.map((topic) => {
-    const isActive = activeTopic === topic.key;
-    return (
+{mode === "bookmarks" && (
+  <div className={styles.chipsRight}>
+    {selectedIds.size > 0 && (
       <button
-        key={topic.key}
         type="button"
-        className={`${styles.chip} ${isActive ? styles.chipActive : ""}`}
-        onClick={() => {
-          // click again to clear
-          if (isActive) {
-            setActiveTopic(null);
-            setActiveSub(null);
-          } else {
-            setActiveTopic(topic.key);
-            setActiveSub(null); // default to "All"
-          }
-        }}
+        className={styles.deleteBtn}
+        onClick={unbookmarkSelected}
+        aria-label={`Delete ${selectedIds.size} bookmarks`}
+        title={`Delete ${selectedIds.size} bookmarks`}
       >
-        {topic.label}
+        Delete
       </button>
-    );
-  })}
+    )}
+
+    <button
+      type="button"
+      className={styles.selectAllBtn}
+      onClick={toggleSelectAllVisible}
+      aria-label={allVisibleSelected ? "Clear selection" : "Select all visible"}
+      title={allVisibleSelected ? "Clear selection" : "Select all"}
+      data-active={allVisibleSelected ? "true" : "false"}
+    >
+      <Image
+        src="/images/home/icons/selection-box-icon.png"
+        alt=""
+        width={18}
+        height={18}
+        className={styles.selectAllIcon}
+        draggable={false}
+      />
+    </button>
+  </div>
+)}
 </div>
+
+
 
 {/* Row 2: Subtopics (only show when a topic is selected) */}
 {activeTopic && (
@@ -182,7 +279,22 @@ const visible = useMemo(() => {
 
         <section className={styles.list}>
           {visible.map((item) => (
-            <article key={item.id} className={styles.card}>
+<article
+  key={item.id}
+  className={`${styles.card} ${selectedIds.has(item.id) ? styles.cardSelected : ""}`}
+  onClick={(e) => {
+    // Only do anything if this card is currently selected
+    if (!selectedIds.has(item.id)) return;
+
+    // Ignore clicks that originate from interactive elements inside the card
+    const target = e.target as HTMLElement;
+    if (target.closest("button, a, input, textarea, select, label")) return;
+
+    // ✅ unselect on tap/click
+    unselectCard(item.id);
+  }}
+>
+
  <div className={styles.cardTop}>
   <span className={styles.qNo}>{item.number}.</span>
 
@@ -198,14 +310,21 @@ const visible = useMemo(() => {
     })()}
 
     <button
-      type="button"
-      className={styles.bookmarkBtn}
-      onClick={() => toggle(item.id)}
-      aria-label={isBookmarked(item.id) ? 'Remove bookmark' : 'Add bookmark'}
-      title={isBookmarked(item.id) ? 'Bookmarked' : 'Bookmark'}
-    >
-      {isBookmarked(item.id) ? '★' : '☆'}
-    </button>
+  type="button"
+  className={styles.bookmarkBtn}
+onClick={(e) => {
+  e.stopPropagation();
+  toggle(item.id);
+}}
+  aria-label={isBookmarked(item.id) ? 'Remove bookmark' : 'Add bookmark'}
+  title={isBookmarked(item.id) ? 'Bookmarked' : 'Bookmark'}
+  data-bookmarked={isBookmarked(item.id) ? 'true' : 'false'}
+>
+  <span className={styles.bookmarkIcon} aria-hidden="true" />
+
+
+</button>
+
   </div>
 </div>
 

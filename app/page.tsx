@@ -27,7 +27,7 @@ function formatTimeLabel(time: string): string {
 const TEST_MODE_CARDS = [
     {
     key: "real-test",
-    href: `${ROUTES.comingSoon}?feature=real-test`,
+    href: ROUTES.realTest,
     ariaLabel: "Open Real Test",
     bgSrc: "/images/home/cards/realtest-bg.png",
     bgAlt: "Real Test Background",
@@ -36,6 +36,7 @@ const TEST_MODE_CARDS = [
     topText: "Practice under real exam conditions with a timer.",
     title:  "Real Test",
    },
+   
     {
     key: "practice-test",
     href: `${ROUTES.comingSoon}?feature=practice-test`,
@@ -47,6 +48,18 @@ const TEST_MODE_CARDS = [
     topText: "Study at your own pace. No time limit!",
     title:  "Practice Test",
    },
+     {
+    key: "quick-test",
+    href: `${ROUTES.comingSoon}?feature=quick-test`,
+    ariaLabel: "Open Quick Test",
+    bgSrc: "/images/home/cards/quicktest-bg.png",
+    bgAlt: "Quick Test Background",
+    iconSrc: "/images/home/icons/globalmistakes-icon.png",
+    iconAlt: "Quick Test Icon",
+    topText: "Half the questions. Half the time.",
+    title: "Quick Test",
+  },
+
     {
     key: "rapid-fire-test",
     href: `${ROUTES.comingSoon}?feature=rapid-fire-test`,
@@ -58,6 +71,7 @@ const TEST_MODE_CARDS = [
     topText: "Sharpen your reflexes and memory in bursts.",
     title:  "Rapid Fire Test",
     },
+    
 
 ] as const;
 
@@ -79,7 +93,7 @@ const OVERALL_CARDS = [
   ariaLabel: "Open Global Common Mistakes",
   bgSrc: "/images/home/cards/globalmistakes-bg.png",
   bgAlt: "Global Common Mistakes Background",
-  iconSrc: "/images/home/icons/globalmistakes-icon.png",
+  iconSrc: "/images/home/icons/globalmistake-icon.png",
   iconAlt: "Global Common Mistakes Icon",
   topText: "See which questions others miss most.",
   title: "Global Common Mistakes",
@@ -94,7 +108,7 @@ const MY_CARDS = [
   ariaLabel: "Open My Bookmarks",
   bgSrc: "/images/home/cards/bookmark-bg.png",
   bgAlt: "My Bookmarks Background",
-  iconSrc: "/images/home/icons/bookmark-icon.png",
+  iconSrc: "/images/home/icons/bookmarks-icon.png",
   iconAlt: "Bookmark Icon",
   topText: "Save questions and build your own study list.",
   title: "My Bookmarks",
