@@ -6894,7 +6894,7 @@ const handleSave = async (e: React.SyntheticEvent) => {
 
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 
@@ -6922,6 +6922,7 @@ export default function RealTestClient({
 
   const [items, setItems] = useState<Question[]>([]);
   const [loading, setLoading] = useState(true);
+  
 
   const [index, setIndex] = useState(0);
   const [selectedKey, setSelectedKey] = useState<string | null>(null);
@@ -6930,8 +6931,33 @@ export default function RealTestClient({
   const currentNo = Math.min(index + 1, total);
 
   const [timeLeft, setTimeLeft] = useState(timeLimitMinutes * 60);
+  const endAtRef = useRef<number>(Date.now() + timeLimitMinutes * 60 * 1000);
+
 
   const { toggle, isBookmarked } = useBookmarks(datasetId);
+
+  const [answers, setAnswers] = useState<Record<string, string>>({});
+
+const finishedRef = useRef(false);
+
+const finishTest = (reason: 'time' | 'completed') => {
+  if (finishedRef.current) return;
+  finishedRef.current = true;
+
+  const limitSeconds = timeLimitMinutes * 60;
+  const usedSeconds = Math.min(limitSeconds, Math.max(0, limitSeconds - timeLeft));
+
+  const params = new URLSearchParams({
+    datasetId,
+    reason,
+    score: String(correctCount),
+    total: String(items.length),
+    usedSeconds: String(usedSeconds),
+    limitSeconds: String(limitSeconds),
+  });
+
+  router.push(`/real-test/results?${params.toString()}`);
+};
 
   useEffect(() => {
     let mounted = true;
@@ -6944,7 +6970,6 @@ export default function RealTestClient({
       setItems(ds);
       setIndex(0);
       setSelectedKey(null);
-      setTimeLeft(timeLimitMinutes * 60);
       setLoading(false);
     })();
 
@@ -6953,21 +6978,63 @@ export default function RealTestClient({
     };
   }, [datasetId, timeLimitMinutes]);
 
+  useEffect(() => {
+  endAtRef.current = Date.now() + timeLimitMinutes * 60 * 1000;
+  setTimeLeft(timeLimitMinutes * 60);
+}, [datasetId, timeLimitMinutes]);
+
+
   // countdown
   useEffect(() => {
-    if (loading) return;
-    if (timeLeft <= 0) return;
+  const tick = () => {
+    const left = Math.max(0, Math.ceil((endAtRef.current - Date.now()) / 1000));
+    setTimeLeft(left);
+  };
 
-    const t = setInterval(() => {
-      setTimeLeft((prev) => Math.max(0, prev - 1));
-    }, 1000);
+  tick(); // run once immediately so UI updates instantly
 
-    return () => clearInterval(t);
-  }, [loading, timeLeft]);
+  const id = window.setInterval(tick, 250);
+  return () => window.clearInterval(id);
+}, [datasetId, timeLimitMinutes]);
 
-  const item = items[index];
+useEffect(() => {
+  if (loading) return;
+  if (items.length === 0) return;
+
+  if (timeLeft <= 0) {
+    finishTest('time');
+  }
+}, [timeLeft, loading, items.length]); // intentionally NOT including finishTest
+
+
+
+const item = items[index];
 const imageAsset = item?.assets?.find((a) => a.kind === 'image');
 
+const correctCount = useMemo(() => {
+  let correct = 0;
+
+  for (const q of items) {
+    const chosenKey = answers[q.id];
+    if (!chosenKey) continue;
+
+    const chosenOpt = q.options.find((opt, idx) => {
+      const k = opt.originalKey ?? String.fromCharCode(65 + idx);
+      return k === chosenKey;
+    });
+
+    if (chosenOpt && q.correctOptionId && chosenOpt.id === q.correctOptionId) {
+      correct += 1;
+    }
+  }
+
+  return correct;
+}, [items, answers]);
+
+useEffect(() => {
+  if (!item) return;
+  setSelectedKey(answers[item.id] ?? null);
+}, [item?.id, answers]);
 
 
   const progressPct = useMemo(() => {
@@ -6976,21 +7043,30 @@ const imageAsset = item?.assets?.find((a) => a.kind === 'image');
   }, [index, items.length]);
 
   const onNext = () => {
-    if (!items.length) return;
+  if (!items.length || !item) return;
+  if (!selectedKey) return;
 
-    // (optional) require an answer before next
-    if (!selectedKey) return;
+  // 1) commit the answer for the current question
+  setAnswers((prev) => {
+    // avoid extra renders if unchanged
+    if (prev[item.id] === selectedKey) return prev;
+    return { ...prev, [item.id]: selectedKey };
+  });
 
-    const next = index + 1;
-    if (next >= items.length) {
-      // finished (you can route to results later)
-      router.back();
-      return;
-    }
+  // 2) move forward or finish
+  const next = index + 1;
 
-    setIndex(next);
-    setSelectedKey(null);
-  };
+  if (next >= items.length) {
+    // IMPORTANT: finish after committing the last answer
+    finishTest('completed');
+    return;
+  }
+
+  setIndex(next);
+  // do NOT manually setSelectedKey(null) here;
+  // the "restore selection" effect will set it for the next question.
+};
+
 
   if (loading) {
     return (
@@ -7030,7 +7106,7 @@ const imageAsset = item?.assets?.find((a) => a.kind === 'image');
           <div className={styles.topRight}>
             <div className={styles.timer}>
               <span className={styles.timerIcon} aria-hidden="true" />
-              <span className={styles.timerText}>{timeLimitMinutes}Min</span>
+              <span className={styles.timerText}>{formatTime(timeLeft)}</span>
             </div>
           </div>
         </div>
@@ -7093,7 +7169,7 @@ const imageAsset = item?.assets?.find((a) => a.kind === 'image');
           key={opt.id} // safest key for React lists
           type="button"
           className={`${styles.optionBtn} ${active ? styles.optionActive : ''}`}
-          onClick={() => setSelectedKey(key)} // key is now always string
+          onClick={() => setSelectedKey(key)}
         >
           <span className={styles.optionKey}>{key}.</span>
           <span className={styles.optionText}>{opt.text}</span>
@@ -7413,6 +7489,672 @@ export default function RealTestPage() {
 
 .nextArrow {
   margin-left: 6px;
+}
+
+```
+
+### app/real-test/results/page.tsx
+```tsx
+'use client';
+
+import { useMemo } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import styles from './results.module.css';
+
+function clamp(n: number, min: number, max: number) {
+  return Math.max(min, Math.min(max, n));
+}
+
+export default function RealTestResultsPage() {
+  const router = useRouter();
+  const sp = useSearchParams();
+
+  // For now, pull basic numbers from query params (safe defaults match your mock)
+  const score = Number(sp.get('score') ?? '50');
+  const total = Number(sp.get('total') ?? '100');
+  const timeMin = Number(sp.get('timeMin') ?? '40');
+
+  const pct = useMemo(() => {
+    const t = Number.isFinite(total) && total > 0 ? total : 100;
+    const s = Number.isFinite(score) ? score : 0;
+    return clamp(s / t, 0, 1);
+  }, [score, total]);
+
+  // Demo content to match the screenshot layout (swap with real data later)
+  const question =
+    sp.get('q') ??
+    'When skidding, if the rear end of the car is skidding to the right, turn your wheel to the:';
+
+  const explanationTitle = sp.get('exTitle') ?? 'Explanation:';
+  const explanation =
+    sp.get('ex') ??
+    "When your vehicle begins to skid, especially if the rear end is skidding to the right, you should turn the steering wheel in the direction of the skid (to the right, in this case). This action helps to regain control of the car and align the wheels with the direction of travel. It's crucial not to overcorrect, as that can lead to a counter-skid.";
+
+  const a =
+    sp.get('a') ??
+    'A. Slowly and safely accelerate while steering in the direction of the skid';
+  const b =
+    sp.get('b') ??
+    'B. Turn your front wheels in the same direction that the rear of the vehicle is sliding';
+  const c =
+    sp.get('c') ??
+    'C. If your car does start to skid, take your foot off the gas, keep both hands on the wheel';
+  const d =
+    sp.get('d') ??
+    'D. Turn your front wheels in the same direction that the rear of the vehicle is sliding';
+
+  return (
+    <div className={styles.viewport}>
+      <main className={styles.screen}>
+        {/* Background card (full screen) */}
+        <div className={styles.card} />
+
+        {/* Status bar is ignored visually in web build; your design has it, but we keep spacing. */}
+
+        {/* Back row (Frame 2793) */}
+        <div className={styles.backRow}>
+          <button
+            type="button"
+            className={styles.backBtn}
+            onClick={() => router.back()}
+            aria-label="Back"
+          >
+            <span className={styles.backChevron} aria-hidden="true" />
+            <span className={styles.backLabel}>Back</span>
+          </button>
+        </div>
+
+        {/* Title */}
+        <h1 className={styles.congrats}>Congratulation!</h1>
+
+        {/* Radial ring */}
+        <div className={styles.ringWrap} aria-label="Score progress">
+          <div
+            className={styles.ring}
+            style={
+              {
+                // conic progress, remainder is track
+                '--p': `${pct * 360}deg`,
+              } as React.CSSProperties
+            }
+          />
+          <div className={styles.ringCenterText}>You Win</div>
+        </div>
+
+        {/* Score/Time row container + divider lines */}
+        <div className={styles.scoreBox} aria-hidden="true">
+          <div className={styles.lineTop} />
+          <div className={styles.lineBottom} />
+          <div className={styles.lineMid} />
+
+          <div className={styles.scoreLeft}>
+            <div className={styles.scoreValue}>
+              {Number.isFinite(score) ? score : 0}/{Number.isFinite(total) ? total : 100}
+            </div>
+            <div className={styles.scoreLabel}>Results</div>
+          </div>
+
+          <div className={styles.scoreRight}>
+            <div className={styles.scoreValue}>{Number.isFinite(timeMin) ? timeMin : 0}Min</div>
+            <div className={styles.scoreLabel}>Time</div>
+          </div>
+        </div>
+
+        {/* Test Results title */}
+        <div className={styles.testResultsTitle}>Test Results</div>
+
+        {/* Incorrect row */}
+        <div className={styles.incorrectRow}>
+          <div className={styles.xIcon} aria-hidden="true">
+            <span className={styles.xStroke1} />
+            <span className={styles.xStroke2} />
+          </div>
+          <div className={styles.incorrectText}>Incorrect</div>
+        </div>
+
+        {/* Question */}
+        <div className={styles.question}>{question}</div>
+
+        {/* Small image placeholder (your design uses an image asset). Replace later with <Image />. */}
+        <div className={styles.qImage} aria-hidden="true" />
+
+        {/* Options */}
+        <div className={styles.optA}>{a}</div>
+        <div className={styles.optB}>{b}</div>
+        <div className={styles.optC}>{c}</div>
+        <div className={styles.optD}>{d}</div>
+
+        {/* Explanation */}
+        <div className={styles.exTitle}>{explanationTitle}</div>
+        <div className={styles.exBody}>{explanation}</div>
+
+        {/* Continue button */}
+        <button
+          type="button"
+          className={styles.continueBtn}
+          onClick={() => router.push('/real-test')}
+        >
+          <span className={styles.continueText}>Continue</span>
+          <span className={styles.continueArrow} aria-hidden="true">
+            <span className={styles.arrowStem} />
+            <span className={styles.arrowHead} />
+          </span>
+        </button>
+
+        {/* Home indicator */}
+        <div className={styles.homeIndicator} aria-hidden="true" />
+      </main>
+    </div>
+  );
+}
+
+```
+
+### app/real-test/results/results.module.css
+```css
+/* Desktop centering wrapper */
+.viewport {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: #111;
+}
+
+/* Figma: Test Result frame */
+.screen {
+  position: relative;
+  width: 390px;
+  height: 844px;
+  background: #f4f4f9;
+  overflow: hidden;
+}
+
+/* Figma: Rectangle (full screen overlay) */
+.card {
+  position: absolute;
+  left: 0%;
+  right: 0%;
+  top: 0%;
+  bottom: 0%;
+
+  background: linear-gradient(
+    90deg,
+    rgba(43, 124, 175, 0.15) 0%,
+    rgba(255, 197, 66, 0.15) 100%
+  );
+  box-shadow: 0px 2px 1.1px rgba(169, 171, 187, 0.27);
+  border-radius: 8px;
+}
+
+/* Back row placement (Frame 2801 starts at top 44; but we can place it at top visually) */
+.backRow {
+  position: absolute;
+  left: 0px;
+  top: 44px;
+  width: 390px;
+  height: 40px;
+}
+
+.backBtn {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+
+  width: 86px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+
+  padding: 10px 0px 10px 16px;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.backChevron {
+  width: 20px;
+  height: 20px;
+  position: relative;
+}
+
+.backChevron::before {
+  content: '';
+  position: absolute;
+  left: 25%;
+  right: 35%;
+  top: 10%;
+  bottom: 10%;
+  border-left: 2px solid #979797;
+  border-bottom: 2px solid #979797;
+  transform: rotate(45deg);
+  transform-origin: center;
+}
+
+.backLabel {
+  font-family: 'Lato', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 120%;
+  letter-spacing: 0.04em;
+  color: #000000;
+}
+
+/* Congratulation! */
+.congrats {
+  position: absolute;
+  width: 173px;
+  height: 20px;
+  left: 108px;
+  top: 103px;
+
+  margin: 0;
+  font-family: 'Poppins', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 22px;
+  line-height: 20px;
+  text-align: center;
+  letter-spacing: -0.24px;
+  text-transform: capitalize;
+  color: #383a44;
+}
+
+/* Ring wrapper */
+.ringWrap {
+  position: absolute;
+  width: 123px;
+  height: 123px;
+  left: 133px; /* centered: (390-123)/2 = 133.5 */
+  top: 145px;
+}
+
+/*
+  Ring:
+  - thickness: 8px (track #BDCCD3)
+  - progress: gradient-ish using conic-gradient
+*/
+.ring {
+  width: 123px;
+  height: 123px;
+  border-radius: 999px;
+
+  /* --p is degrees for the "colored" sweep */
+  background: conic-gradient(
+    from -90deg,
+    #2b7caf 0deg,
+    #ffc542 var(--p),
+    #bdccd3 var(--p),
+    #bdccd3 360deg
+  );
+
+  /* punch out center so it becomes a ring */
+  -webkit-mask: radial-gradient(
+    farthest-side,
+    transparent calc(100% - 8px),
+    #000 calc(100% - 8px)
+  );
+  mask: radial-gradient(
+    farthest-side,
+    transparent calc(100% - 8px),
+    #000 calc(100% - 8px)
+  );
+}
+
+.ringCenterText {
+  position: absolute;
+  width: 59px;
+  height: 20px;
+  left: 33px;
+  top: 52px;
+
+  font-family: 'Lato', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 20px;
+  text-align: center;
+  letter-spacing: -0.24px;
+  text-transform: capitalize;
+  color: #21205a;
+}
+
+/* Score/Time group container */
+.scoreBox {
+  position: absolute;
+  width: 330px;
+  height: 83px;
+  left: 30px;
+  top: 302px;
+}
+
+.lineTop {
+  position: absolute;
+  width: 330px;
+  height: 0px;
+  left: 0px;
+  top: 0px;
+  border: 1px solid #2b7caf;
+}
+
+.lineBottom {
+  position: absolute;
+  width: 330px;
+  height: 0px;
+  left: 0px;
+  top: 83px;
+  border: 1px solid #2b7caf;
+}
+
+.lineMid {
+  position: absolute;
+  width: 83px;
+  height: 0px;
+  left: 165px; /* 30 -> 195 in absolute screen coords, so inside box: 195-30=165 */
+  top: 0px;
+  border: 1px solid #2b7caf;
+  transform: rotate(90deg);
+  transform-origin: left top;
+}
+
+/* Left score group */
+.scoreLeft {
+  position: absolute;
+  width: 83px;
+  height: 43px;
+  left: 36px; /* 66-30 */
+  top: 20px;  /* approx: aligns with 322 in screen coords */
+  display: grid;
+  gap: 11px;
+}
+
+.scoreRight {
+  position: absolute;
+  width: 62px;
+  height: 43px;
+  left: 218px; /* 248-30 */
+  top: 20px;
+  display: grid;
+  gap: 11px;
+}
+
+.scoreValue {
+  font-family: 'Poppins', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 20px;
+  text-align: center;
+  letter-spacing: -0.24px;
+  color: #383a44;
+}
+
+.scoreLabel {
+  font-family: 'Poppins', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 20px;
+  text-align: center;
+  letter-spacing: -0.24px;
+  color: #383a44;
+}
+
+/* Test Results title */
+.testResultsTitle {
+  position: absolute;
+  width: 123px;
+  height: 20px;
+  left: 30px;
+  top: 422px;
+
+  font-family: 'Lato', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 24px;
+  line-height: 20px;
+  text-align: center;
+  letter-spacing: -0.24px;
+  color: #000000;
+}
+
+/* Incorrect row */
+.incorrectRow {
+  position: absolute;
+  left: 43px;
+  top: 457px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.xIcon {
+  position: relative;
+  width: 24px;
+  height: 24px;
+}
+
+.xStroke1,
+.xStroke2 {
+  position: absolute;
+  left: 25%;
+  right: 25%;
+  top: 25%;
+  bottom: 25%;
+  border: 2px solid #ff575f;
+  border-left: 0;
+  border-bottom: 0;
+  transform-origin: center;
+  background: transparent;
+}
+
+.xStroke1 {
+  transform: rotate(45deg);
+  border-right: 2px solid #ff575f;
+  border-top: 2px solid #ff575f;
+}
+
+.xStroke2 {
+  transform: rotate(-45deg);
+  border-right: 2px solid #ff575f;
+  border-top: 2px solid #ff575f;
+}
+
+.incorrectText {
+  position: relative;
+  width: 62px;
+  height: 20px;
+
+  font-family: 'Lato', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 20px;
+  text-align: center;
+  letter-spacing: -0.24px;
+  color: #ff575f;
+}
+
+/* Question line */
+.question {
+  position: absolute;
+  width: 328px;
+  height: 35px;
+  left: 31px;
+  top: 494px;
+
+  font-family: 'Lato', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 11px;
+  line-height: 20px;
+  letter-spacing: -0.24px;
+  color: #000000;
+}
+
+/* Placeholder image block (replace later with a real image) */
+.qImage {
+  position: absolute;
+  left: 30px;
+  top: 524px;
+  width: 65px;
+  height: 65px;
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.06);
+}
+
+/* Options */
+.optA,
+.optB,
+.optC,
+.optD {
+  position: absolute;
+  left: 100px;
+  font-family: 'Lato', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-style: normal;
+  font-weight: 300;
+  font-size: 8px;
+  line-height: 10px;
+  letter-spacing: -0.24px;
+}
+
+.optA {
+  width: 229px;
+  height: 10px;
+  top: 534px;
+  color: #000000;
+}
+
+.optB {
+  width: 263px;
+  height: 10px;
+  top: 547px;
+  color: #2b7caf;
+}
+
+.optC {
+  width: 263px;
+  height: 20px;
+  top: 560px;
+  color: #ff575f;
+}
+
+.optD {
+  width: 263px;
+  height: 20px;
+  top: 583px;
+  color: #000000;
+}
+
+/* Explanation block */
+.exTitle {
+  position: absolute;
+  width: 66px;
+  height: 12px;
+  left: 30px;
+  top: 611px;
+
+  font-family: 'Lato', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 12px;
+  line-height: 12px;
+  color: #000000;
+}
+
+.exBody {
+  position: absolute;
+  width: 338px;
+  height: 48px;
+  left: 30px;
+  top: 630px;
+
+  font-family: 'Lato', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 9px;
+  line-height: 12px;
+  color: #000000;
+}
+
+/* Continue button */
+.continueBtn {
+  box-sizing: border-box;
+  position: absolute;
+
+  width: 316px;
+  height: 41px;
+
+  left: calc(50% - 316px / 2 - 0.5px);
+  top: 764px;
+
+  background: linear-gradient(
+    135deg,
+    rgba(43, 124, 175, 0.2) 0%,
+    rgba(255, 197, 66, 0.2) 100%
+  );
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 14px;
+
+  border: 0;
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.continueText {
+  font-family: 'Lato', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-style: normal;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 130%;
+  letter-spacing: 0.04em;
+  color: #000000;
+}
+
+.continueArrow {
+  position: relative;
+  width: 16px;
+  height: 16px;
+}
+
+.arrowStem {
+  position: absolute;
+  left: 20.83%;
+  right: 20.84%;
+  top: 50%;
+  bottom: 50%;
+  border-top: 1.33333px solid #000000;
+}
+
+.arrowHead {
+  position: absolute;
+  left: 50%;
+  right: 20.83%;
+  top: 20.83%;
+  bottom: 20.83%;
+  border-right: 1.33333px solid #000000;
+  border-top: 1.33333px solid #000000;
+  transform: rotate(45deg);
+  transform-origin: center;
+}
+
+/* Home indicator */
+.homeIndicator {
+  position: absolute;
+  width: 133px;
+  height: 6px;
+  left: calc(50% - 133px / 2 - 0.5px);
+  top: 830px;
+
+  background: #1f2024;
+  border-radius: 3px;
 }
 
 ```

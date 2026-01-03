@@ -2,7 +2,7 @@
 
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 
@@ -30,6 +30,7 @@ export default function RealTestClient({
 
   const [items, setItems] = useState<Question[]>([]);
   const [loading, setLoading] = useState(true);
+  
 
   const [index, setIndex] = useState(0);
   const [selectedKey, setSelectedKey] = useState<string | null>(null);
@@ -38,8 +39,33 @@ export default function RealTestClient({
   const currentNo = Math.min(index + 1, total);
 
   const [timeLeft, setTimeLeft] = useState(timeLimitMinutes * 60);
+  const endAtRef = useRef<number>(Date.now() + timeLimitMinutes * 60 * 1000);
+
 
   const { toggle, isBookmarked } = useBookmarks(datasetId);
+
+  const [answers, setAnswers] = useState<Record<string, string>>({});
+
+const finishedRef = useRef(false);
+
+const finishTest = (reason: 'time' | 'completed') => {
+  if (finishedRef.current) return;
+  finishedRef.current = true;
+
+  const limitSeconds = timeLimitMinutes * 60;
+  const usedSeconds = Math.min(limitSeconds, Math.max(0, limitSeconds - timeLeft));
+
+  const params = new URLSearchParams({
+    datasetId,
+    reason,
+    score: String(correctCount),
+    total: String(items.length),
+    usedSeconds: String(usedSeconds),
+    limitSeconds: String(limitSeconds),
+  });
+
+  router.push(`/real-test/results?${params.toString()}`);
+};
 
   useEffect(() => {
     let mounted = true;
@@ -52,7 +78,6 @@ export default function RealTestClient({
       setItems(ds);
       setIndex(0);
       setSelectedKey(null);
-      setTimeLeft(timeLimitMinutes * 60);
       setLoading(false);
     })();
 
@@ -61,21 +86,63 @@ export default function RealTestClient({
     };
   }, [datasetId, timeLimitMinutes]);
 
+  useEffect(() => {
+  endAtRef.current = Date.now() + timeLimitMinutes * 60 * 1000;
+  setTimeLeft(timeLimitMinutes * 60);
+}, [datasetId, timeLimitMinutes]);
+
+
   // countdown
   useEffect(() => {
-    if (loading) return;
-    if (timeLeft <= 0) return;
+  const tick = () => {
+    const left = Math.max(0, Math.ceil((endAtRef.current - Date.now()) / 1000));
+    setTimeLeft(left);
+  };
 
-    const t = setInterval(() => {
-      setTimeLeft((prev) => Math.max(0, prev - 1));
-    }, 1000);
+  tick(); // run once immediately so UI updates instantly
 
-    return () => clearInterval(t);
-  }, [loading, timeLeft]);
+  const id = window.setInterval(tick, 250);
+  return () => window.clearInterval(id);
+}, [datasetId, timeLimitMinutes]);
 
-  const item = items[index];
+useEffect(() => {
+  if (loading) return;
+  if (items.length === 0) return;
+
+  if (timeLeft <= 0) {
+    finishTest('time');
+  }
+}, [timeLeft, loading, items.length]); // intentionally NOT including finishTest
+
+
+
+const item = items[index];
 const imageAsset = item?.assets?.find((a) => a.kind === 'image');
 
+const correctCount = useMemo(() => {
+  let correct = 0;
+
+  for (const q of items) {
+    const chosenKey = answers[q.id];
+    if (!chosenKey) continue;
+
+    const chosenOpt = q.options.find((opt, idx) => {
+      const k = opt.originalKey ?? String.fromCharCode(65 + idx);
+      return k === chosenKey;
+    });
+
+    if (chosenOpt && q.correctOptionId && chosenOpt.id === q.correctOptionId) {
+      correct += 1;
+    }
+  }
+
+  return correct;
+}, [items, answers]);
+
+useEffect(() => {
+  if (!item) return;
+  setSelectedKey(answers[item.id] ?? null);
+}, [item?.id, answers]);
 
 
   const progressPct = useMemo(() => {
@@ -84,21 +151,30 @@ const imageAsset = item?.assets?.find((a) => a.kind === 'image');
   }, [index, items.length]);
 
   const onNext = () => {
-    if (!items.length) return;
+  if (!items.length || !item) return;
+  if (!selectedKey) return;
 
-    // (optional) require an answer before next
-    if (!selectedKey) return;
+  // 1) commit the answer for the current question
+  setAnswers((prev) => {
+    // avoid extra renders if unchanged
+    if (prev[item.id] === selectedKey) return prev;
+    return { ...prev, [item.id]: selectedKey };
+  });
 
-    const next = index + 1;
-    if (next >= items.length) {
-      // finished (you can route to results later)
-      router.back();
-      return;
-    }
+  // 2) move forward or finish
+  const next = index + 1;
 
-    setIndex(next);
-    setSelectedKey(null);
-  };
+  if (next >= items.length) {
+    // IMPORTANT: finish after committing the last answer
+    finishTest('completed');
+    return;
+  }
+
+  setIndex(next);
+  // do NOT manually setSelectedKey(null) here;
+  // the "restore selection" effect will set it for the next question.
+};
+
 
   if (loading) {
     return (
@@ -138,7 +214,7 @@ const imageAsset = item?.assets?.find((a) => a.kind === 'image');
           <div className={styles.topRight}>
             <div className={styles.timer}>
               <span className={styles.timerIcon} aria-hidden="true" />
-              <span className={styles.timerText}>{timeLimitMinutes}Min</span>
+              <span className={styles.timerText}>{formatTime(timeLeft)}</span>
             </div>
           </div>
         </div>
@@ -201,7 +277,7 @@ const imageAsset = item?.assets?.find((a) => a.kind === 'image');
           key={opt.id} // safest key for React lists
           type="button"
           className={`${styles.optionBtn} ${active ? styles.optionActive : ''}`}
-          onClick={() => setSelectedKey(key)} // key is now always string
+          onClick={() => setSelectedKey(key)}
         >
           <span className={styles.optionKey}>{key}.</span>
           <span className={styles.optionText}>{opt.text}</span>

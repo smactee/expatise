@@ -1,0 +1,504 @@
+/* Desktop centering wrapper */
+.viewport {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: #111;
+}
+
+/* Figma: Test Result frame */
+.screen {
+  position: relative;
+  width: 390px;
+  height: 844px;
+  background: #f4f4f9;
+  overflow: hidden;
+}
+
+/* Figma: Rectangle (full screen overlay) */
+.card {
+  position: absolute;
+  left: 0%;
+  right: 0%;
+  top: 0%;
+  bottom: 0%;
+
+  background: linear-gradient(
+    90deg,
+    rgba(43, 124, 175, 0.15) 0%,
+    rgba(255, 197, 66, 0.15) 100%
+  );
+  box-shadow: 0px 2px 1.1px rgba(169, 171, 187, 0.27);
+  border-radius: 8px;
+}
+
+/* Back row placement (Frame 2801 starts at top 44; but we can place it at top visually) */
+.backRow {
+  position: absolute;
+  left: 0px;
+  top: 44px;
+  width: 390px;
+  height: 40px;
+}
+
+.backBtn {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+
+  width: 86px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+
+  padding: 10px 0px 10px 16px;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.backChevron {
+  width: 20px;
+  height: 20px;
+  position: relative;
+}
+
+.backChevron::before {
+  content: '';
+  position: absolute;
+  left: 25%;
+  right: 35%;
+  top: 10%;
+  bottom: 10%;
+  border-left: 2px solid #979797;
+  border-bottom: 2px solid #979797;
+  transform: rotate(45deg);
+  transform-origin: center;
+}
+
+.backLabel {
+  font-family: 'Lato', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 120%;
+  letter-spacing: 0.04em;
+  color: #000000;
+}
+
+/* Congratulation! */
+.congrats {
+  position: absolute;
+  width: 173px;
+  height: 20px;
+  left: 108px;
+  top: 103px;
+
+  margin: 0;
+  font-family: 'Poppins', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 22px;
+  line-height: 20px;
+  text-align: center;
+  letter-spacing: -0.24px;
+  text-transform: capitalize;
+  color: #383a44;
+}
+
+/* Ring wrapper */
+.ringWrap {
+  position: absolute;
+  width: 123px;
+  height: 123px;
+  left: 133px; /* centered: (390-123)/2 = 133.5 */
+  top: 145px;
+}
+
+/*
+  Ring:
+  - thickness: 8px (track #BDCCD3)
+  - progress: gradient-ish using conic-gradient
+*/
+.ring {
+  width: 123px;
+  height: 123px;
+  border-radius: 999px;
+
+  /* --p is degrees for the "colored" sweep */
+  background: conic-gradient(
+    from -90deg,
+    #2b7caf 0deg,
+    #ffc542 var(--p),
+    #bdccd3 var(--p),
+    #bdccd3 360deg
+  );
+
+  /* punch out center so it becomes a ring */
+  -webkit-mask: radial-gradient(
+    farthest-side,
+    transparent calc(100% - 8px),
+    #000 calc(100% - 8px)
+  );
+  mask: radial-gradient(
+    farthest-side,
+    transparent calc(100% - 8px),
+    #000 calc(100% - 8px)
+  );
+}
+
+.ringCenterText {
+  position: absolute;
+  width: 59px;
+  height: 20px;
+  left: 33px;
+  top: 52px;
+
+  font-family: 'Lato', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 20px;
+  text-align: center;
+  letter-spacing: -0.24px;
+  text-transform: capitalize;
+  color: #21205a;
+}
+
+/* Score/Time group container */
+.scoreBox {
+  position: absolute;
+  width: 330px;
+  height: 83px;
+  left: 30px;
+  top: 302px;
+}
+
+.lineTop {
+  position: absolute;
+  width: 330px;
+  height: 0px;
+  left: 0px;
+  top: 0px;
+  border: 1px solid #2b7caf;
+}
+
+.lineBottom {
+  position: absolute;
+  width: 330px;
+  height: 0px;
+  left: 0px;
+  top: 83px;
+  border: 1px solid #2b7caf;
+}
+
+.lineMid {
+  position: absolute;
+  width: 83px;
+  height: 0px;
+  left: 165px; /* 30 -> 195 in absolute screen coords, so inside box: 195-30=165 */
+  top: 0px;
+  border: 1px solid #2b7caf;
+  transform: rotate(90deg);
+  transform-origin: left top;
+}
+
+/* Left score group */
+.scoreLeft {
+  position: absolute;
+  width: 83px;
+  height: 43px;
+  left: 36px; /* 66-30 */
+  top: 20px;  /* approx: aligns with 322 in screen coords */
+  display: grid;
+  gap: 11px;
+}
+
+.scoreRight {
+  position: absolute;
+  width: 62px;
+  height: 43px;
+  left: 218px; /* 248-30 */
+  top: 20px;
+  display: grid;
+  gap: 11px;
+}
+
+.scoreValue {
+  font-family: 'Poppins', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 20px;
+  text-align: center;
+  letter-spacing: -0.24px;
+  color: #383a44;
+}
+
+.scoreLabel {
+  font-family: 'Poppins', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 20px;
+  text-align: center;
+  letter-spacing: -0.24px;
+  color: #383a44;
+}
+
+/* Test Results title */
+.testResultsTitle {
+  position: absolute;
+  width: 123px;
+  height: 20px;
+  left: 30px;
+  top: 422px;
+
+  font-family: 'Lato', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 24px;
+  line-height: 20px;
+  text-align: center;
+  letter-spacing: -0.24px;
+  color: #000000;
+}
+
+/* Incorrect row */
+.incorrectRow {
+  position: absolute;
+  left: 43px;
+  top: 457px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.xIcon {
+  position: relative;
+  width: 24px;
+  height: 24px;
+}
+
+.xStroke1,
+.xStroke2 {
+  position: absolute;
+  left: 25%;
+  right: 25%;
+  top: 25%;
+  bottom: 25%;
+  border: 2px solid #ff575f;
+  border-left: 0;
+  border-bottom: 0;
+  transform-origin: center;
+  background: transparent;
+}
+
+.xStroke1 {
+  transform: rotate(45deg);
+  border-right: 2px solid #ff575f;
+  border-top: 2px solid #ff575f;
+}
+
+.xStroke2 {
+  transform: rotate(-45deg);
+  border-right: 2px solid #ff575f;
+  border-top: 2px solid #ff575f;
+}
+
+.incorrectText {
+  position: relative;
+  width: 62px;
+  height: 20px;
+
+  font-family: 'Lato', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 20px;
+  text-align: center;
+  letter-spacing: -0.24px;
+  color: #ff575f;
+}
+
+/* Question line */
+.question {
+  position: absolute;
+  width: 328px;
+  height: 35px;
+  left: 31px;
+  top: 494px;
+
+  font-family: 'Lato', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 11px;
+  line-height: 20px;
+  letter-spacing: -0.24px;
+  color: #000000;
+}
+
+/* Placeholder image block (replace later with a real image) */
+.qImage {
+  position: absolute;
+  left: 30px;
+  top: 524px;
+  width: 65px;
+  height: 65px;
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.06);
+}
+
+/* Options */
+.optA,
+.optB,
+.optC,
+.optD {
+  position: absolute;
+  left: 100px;
+  font-family: 'Lato', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-style: normal;
+  font-weight: 300;
+  font-size: 8px;
+  line-height: 10px;
+  letter-spacing: -0.24px;
+}
+
+.optA {
+  width: 229px;
+  height: 10px;
+  top: 534px;
+  color: #000000;
+}
+
+.optB {
+  width: 263px;
+  height: 10px;
+  top: 547px;
+  color: #2b7caf;
+}
+
+.optC {
+  width: 263px;
+  height: 20px;
+  top: 560px;
+  color: #ff575f;
+}
+
+.optD {
+  width: 263px;
+  height: 20px;
+  top: 583px;
+  color: #000000;
+}
+
+/* Explanation block */
+.exTitle {
+  position: absolute;
+  width: 66px;
+  height: 12px;
+  left: 30px;
+  top: 611px;
+
+  font-family: 'Lato', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 12px;
+  line-height: 12px;
+  color: #000000;
+}
+
+.exBody {
+  position: absolute;
+  width: 338px;
+  height: 48px;
+  left: 30px;
+  top: 630px;
+
+  font-family: 'Lato', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 9px;
+  line-height: 12px;
+  color: #000000;
+}
+
+/* Continue button */
+.continueBtn {
+  box-sizing: border-box;
+  position: absolute;
+
+  width: 316px;
+  height: 41px;
+
+  left: calc(50% - 316px / 2 - 0.5px);
+  top: 764px;
+
+  background: linear-gradient(
+    135deg,
+    rgba(43, 124, 175, 0.2) 0%,
+    rgba(255, 197, 66, 0.2) 100%
+  );
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 14px;
+
+  border: 0;
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.continueText {
+  font-family: 'Lato', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-style: normal;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 130%;
+  letter-spacing: 0.04em;
+  color: #000000;
+}
+
+.continueArrow {
+  position: relative;
+  width: 16px;
+  height: 16px;
+}
+
+.arrowStem {
+  position: absolute;
+  left: 20.83%;
+  right: 20.84%;
+  top: 50%;
+  bottom: 50%;
+  border-top: 1.33333px solid #000000;
+}
+
+.arrowHead {
+  position: absolute;
+  left: 50%;
+  right: 20.83%;
+  top: 20.83%;
+  bottom: 20.83%;
+  border-right: 1.33333px solid #000000;
+  border-top: 1.33333px solid #000000;
+  transform: rotate(45deg);
+  transform-origin: center;
+}
+
+/* Home indicator */
+.homeIndicator {
+  position: absolute;
+  width: 133px;
+  height: 6px;
+  left: calc(50% - 133px / 2 - 0.5px);
+  top: 830px;
+
+  background: #1f2024;
+  border-radius: 3px;
+}
