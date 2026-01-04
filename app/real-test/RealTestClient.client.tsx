@@ -19,6 +19,18 @@ function formatTime(secs: number) {
   return `${m}:${String(s).padStart(2, '0')}`;
 }
 
+function normalizeRowChoice(v: string | null | undefined): 'R' | 'W' | null {
+  if (!v) return null;
+
+  const t = v.trim().toLowerCase();
+
+  if (t === 'r' || t === 'right') return 'R';
+  if (t === 'w' || t === 'wrong') return 'W';
+
+  return null;
+}
+
+
 export default function RealTestClient({
   datasetId,
   timeLimitMinutes,
@@ -126,6 +138,14 @@ const correctCount = useMemo(() => {
     const chosenKey = answers[q.id];
     if (!chosenKey) continue;
 
+    if (q.type === 'ROW') {
+      const chosen = normalizeRowChoice(chosenKey);
+      const expected = normalizeRowChoice(q.correctRow ?? null);
+      if (chosen && expected && chosen === expected) correct += 1;
+      continue;
+    }
+
+    // MCQ
     const chosenOpt = q.options.find((opt, idx) => {
       const k = opt.originalKey ?? String.fromCharCode(65 + idx);
       return k === chosenKey;
@@ -138,6 +158,7 @@ const correctCount = useMemo(() => {
 
   return correct;
 }, [items, answers]);
+
 
 useEffect(() => {
   if (!item) return;
@@ -267,14 +288,39 @@ useEffect(() => {
 
 {/* Answers */}
 <div className={styles.answers}>
+  {item.type === 'ROW' && (
+  <>
+    <button
+      type="button"
+      className={`${styles.optionBtn} ${styles.rowBtn} ${
+        selectedKey === 'R' ? styles.optionActive : ''
+      }`}
+      onClick={() => setSelectedKey('R')}
+    >
+      <span className={styles.optionText}>Right</span>
+    </button>
+
+    <button
+      type="button"
+      className={`${styles.optionBtn} ${styles.rowBtn} ${
+        selectedKey === 'W' ? styles.optionActive : ''
+      }`}
+      onClick={() => setSelectedKey('W')}
+    >
+      <span className={styles.optionText}>Wrong</span>
+    </button>
+  </>
+)}
+
+
   {item.type === 'MCQ' &&
     item.options.map((opt, idx) => {
-      const key = opt.originalKey ?? String.fromCharCode(65 + idx); // A, B, C, D...
+      const key = opt.originalKey ?? String.fromCharCode(65 + idx);
       const active = selectedKey === key;
 
       return (
         <button
-          key={opt.id} // safest key for React lists
+          key={opt.id}
           type="button"
           className={`${styles.optionBtn} ${active ? styles.optionActive : ''}`}
           onClick={() => setSelectedKey(key)}
@@ -285,6 +331,7 @@ useEffect(() => {
       );
     })}
 </div>
+
 
 
 

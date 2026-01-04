@@ -10,6 +10,7 @@ import type { Question } from '../../lib/qbank/types';
 import { TAG_TAXONOMY, labelForTag } from '../../lib/qbank/tagTaxonomy';
 import { deriveTopicSubtags } from '../../lib/qbank/deriveTopicSubtags';
 import { useBookmarks } from "../../lib/bookmarks/useBookmarks"; // adjust path if you use "@/lib/..."
+import BackButton from '../../components/BackButton';
 
 
 function isCorrectMcq(item: Question, optId: string, optKey?: string) {
@@ -178,9 +179,10 @@ function toggleSelectAllVisible() {
 
   return (
     <main className={styles.page}>
+       <BackButton />
       <div className={styles.frame}>
         <header className={styles.header}>
-          <h1 className={styles.title}>{mode === 'bookmarks' ? 'Bookmarks' : 'All Questions'}</h1>
+          <h1 className={styles.title}>{mode === 'bookmarks' ? 'My Bookmarks' : 'All Questions'}</h1>
         </header>
 
         <div className={styles.searchRow}>

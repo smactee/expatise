@@ -3,10 +3,12 @@
 
 import BottomNav from '../../components/BottomNav';
 import styles from './stats.module.css'; // reuse shared layout + new stats classes
+import BackButton from '../../components/BackButton';
 
 export default function StatsPage() {
   return (
     <main className={styles.page}>
+      <BackButton />
       <div className={styles.content}>
         {/* ==== Top Accuracy / Gauge Card ==== */}
         <section className={styles.statsSummaryCard}>

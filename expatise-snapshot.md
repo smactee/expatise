@@ -558,6 +558,7 @@ import type { Question } from '../../lib/qbank/types';
 import { TAG_TAXONOMY, labelForTag } from '../../lib/qbank/tagTaxonomy';
 import { deriveTopicSubtags } from '../../lib/qbank/deriveTopicSubtags';
 import { useBookmarks } from "../../lib/bookmarks/useBookmarks"; // adjust path if you use "@/lib/..."
+import BackButton from '../../components/BackButton';
 
 
 function isCorrectMcq(item: Question, optId: string, optKey?: string) {
@@ -726,9 +727,10 @@ function toggleSelectAllVisible() {
 
   return (
     <main className={styles.page}>
+       <BackButton />
       <div className={styles.frame}>
         <header className={styles.header}>
-          <h1 className={styles.title}>{mode === 'bookmarks' ? 'Bookmarks' : 'All Questions'}</h1>
+          <h1 className={styles.title}>{mode === 'bookmarks' ? 'My Bookmarks' : 'All Questions'}</h1>
         </header>
 
         <div className={styles.searchRow}>
@@ -1662,12 +1664,18 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 ```tsx
 import type { DatasetId } from '../../lib/qbank/datasets';
 import AllQuestionsClient from '../all-questions/AllQuestionsClient.client';
+import BackButton from '../../components/BackButton';
 
 export default function BookmarksPage() {
   // IMPORTANT: use the same datasetId you use for /all-questions
   const datasetId: DatasetId = '2023-test1' as DatasetId;
 
-  return <AllQuestionsClient datasetId={"cn-2023-test1" as DatasetId} mode="bookmarks" />;
+  return (
+    <>
+      <BackButton />
+      <AllQuestionsClient datasetId={"cn-2023-test1" as DatasetId} mode="bookmarks" />;
+    </>
+  );
 }
 
 ```
@@ -2856,6 +2864,7 @@ export default function RootLayout({
     </html>
   );
 }
+
 
 ```
 
@@ -5878,6 +5887,7 @@ import { UserProfileProvider } from '../../components/UserProfile';
 import { useRouter } from 'next/navigation';
 import { useAuthStatus } from '../../components/useAuthStatus';
 import { isValidEmail } from '../../lib/auth';
+import BackButton from '../../components/BackButton';
 
 export default function ProfilePage() {
   const { avatarUrl, setAvatarUrl, name, setName, email, setEmail, saveProfile, clearProfile } = useUserProfile(); // from context
@@ -6036,13 +6046,11 @@ const handleSave = async (e: React.SyntheticEvent) => {
 
   return (
     <main className={styles.page}>
+       <BackButton />
       <div className={styles.content}>
         {/* Top "Back" row */}
         <header className={styles.headerRow}>
-          <Link href="/" className={styles.backButton}>
-            <span className={styles.backIcon}>‹</span>
-            <span className={styles.backText}></span>
-          </Link>
+
         </header>
 
         {/* Main profile card */}
@@ -6357,7 +6365,7 @@ const handleSave = async (e: React.SyntheticEvent) => {
 /* ===== Header ===== */
 
 .headerRow {
-  margin-bottom: 16px;
+  margin-bottom: 30px;
 }
 
 .backButton {
@@ -6911,6 +6919,18 @@ function formatTime(secs: number) {
   return `${m}:${String(s).padStart(2, '0')}`;
 }
 
+function normalizeRowChoice(v: string | null | undefined): 'R' | 'W' | null {
+  if (!v) return null;
+
+  const t = v.trim().toLowerCase();
+
+  if (t === 'r' || t === 'right') return 'R';
+  if (t === 'w' || t === 'wrong') return 'W';
+
+  return null;
+}
+
+
 export default function RealTestClient({
   datasetId,
   timeLimitMinutes,
@@ -7018,6 +7038,14 @@ const correctCount = useMemo(() => {
     const chosenKey = answers[q.id];
     if (!chosenKey) continue;
 
+    if (q.type === 'ROW') {
+      const chosen = normalizeRowChoice(chosenKey);
+      const expected = normalizeRowChoice(q.correctRow ?? null);
+      if (chosen && expected && chosen === expected) correct += 1;
+      continue;
+    }
+
+    // MCQ
     const chosenOpt = q.options.find((opt, idx) => {
       const k = opt.originalKey ?? String.fromCharCode(65 + idx);
       return k === chosenKey;
@@ -7030,6 +7058,7 @@ const correctCount = useMemo(() => {
 
   return correct;
 }, [items, answers]);
+
 
 useEffect(() => {
   if (!item) return;
@@ -7159,14 +7188,39 @@ useEffect(() => {
 
 {/* Answers */}
 <div className={styles.answers}>
+  {item.type === 'ROW' && (
+  <>
+    <button
+      type="button"
+      className={`${styles.optionBtn} ${styles.rowBtn} ${
+        selectedKey === 'R' ? styles.optionActive : ''
+      }`}
+      onClick={() => setSelectedKey('R')}
+    >
+      <span className={styles.optionText}>Right</span>
+    </button>
+
+    <button
+      type="button"
+      className={`${styles.optionBtn} ${styles.rowBtn} ${
+        selectedKey === 'W' ? styles.optionActive : ''
+      }`}
+      onClick={() => setSelectedKey('W')}
+    >
+      <span className={styles.optionText}>Wrong</span>
+    </button>
+  </>
+)}
+
+
   {item.type === 'MCQ' &&
     item.options.map((opt, idx) => {
-      const key = opt.originalKey ?? String.fromCharCode(65 + idx); // A, B, C, D...
+      const key = opt.originalKey ?? String.fromCharCode(65 + idx);
       const active = selectedKey === key;
 
       return (
         <button
-          key={opt.id} // safest key for React lists
+          key={opt.id}
           type="button"
           className={`${styles.optionBtn} ${active ? styles.optionActive : ''}`}
           onClick={() => setSelectedKey(key)}
@@ -7177,6 +7231,7 @@ useEffect(() => {
       );
     })}
 </div>
+
 
 
 
@@ -7337,8 +7392,10 @@ export default function RealTestPage() {
 
 .questionText {
   margin: 0;
+    font-family: 'Lato', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  font-style: normal;
   font-size: 20px;
-  font-weight: 500;
+  font-weight: 300;
   line-height: 28px;
   letter-spacing: -0.24px;
   color: #000;
@@ -7401,6 +7458,28 @@ export default function RealTestPage() {
   gap: 20px; /* gap between answers */
 }
 
+/* ROW (Right/Wrong) button base from Figma rectangle */
+.rowBtn {
+  width: 100%;
+  max-width: 330px; /* from your % margins ≈ 390 - 32 - 29 = ~329 */
+  height: 46px;     /* if your design uses a different height, replace this */
+  border-radius: 8px;
+
+  background: linear-gradient(
+    90deg,
+    rgba(43, 124, 175, 0.15) 0%,
+    rgba(255, 197, 66, 0.15) 100%
+  );
+
+  box-shadow: 0px 2px 1.1px rgba(169, 171, 187, 0.27);
+
+  border: 0;                /* Figma snippet didn’t include stroke */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
 /* option card (315 x 41) */
 .optionBtn {
   width: 315px;
@@ -7426,9 +7505,18 @@ export default function RealTestPage() {
 }
 
 .optionText {
+  font-family: 'Lato', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  font-style: normal;
+  font-weight: 500;
   font-size: 11px;
   line-height: 20px;
   letter-spacing: -0.24px;
+  text-align: center;
+  color: #000000;
+
+  /* important: allow wrapping like the 295x40 text box */
+  display: block;
+  width: 295px;              /* from your pasted text layer */
 }
 
 .optionActive {
@@ -7490,6 +7578,7 @@ export default function RealTestPage() {
 .nextArrow {
   margin-left: 6px;
 }
+
 
 ```
 
@@ -8166,10 +8255,12 @@ export default function RealTestResultsPage() {
 
 import BottomNav from '../../components/BottomNav';
 import styles from './stats.module.css'; // reuse shared layout + new stats classes
+import BackButton from '../../components/BackButton';
 
 export default function StatsPage() {
   return (
     <main className={styles.page}>
+      <BackButton />
       <div className={styles.content}>
         {/* ==== Top Accuracy / Gauge Card ==== */}
         <section className={styles.statsSummaryCard}>
@@ -8635,6 +8726,49 @@ export default function StatsPage() {
   );
   border-color: #d2c79a;
   color: #f9fafb;
+}
+
+```
+
+### components/BackButton.tsx
+```tsx
+'use client';
+
+import { useRouter } from 'next/navigation';
+import Image from 'next/image';
+
+export default function BackButton() {
+  const router = useRouter();
+
+  return (
+    <button
+      type="button"
+      onClick={() => router.back()}
+      aria-label="Back"
+      style={{
+        position: 'fixed',
+        top: 'calc(env(safe-area-inset-top, 0px)',
+        left: 'calc(env(safe-area-inset-left, 0px) + 10px)', // ✅ top-left
+        zIndex: 9999,
+        border: 0,
+        background: 'transparent',
+        padding: 0,
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: 8,
+        cursor: 'pointer',
+        WebkitTapHighlightColor: 'transparent',
+      }}
+    >
+      <Image
+        src="/images/other/turn-back.png"
+        alt="Back"
+        width={24}
+        height={24}
+        priority
+      />
+    </button>
+  );
 }
 
 ```
@@ -9367,6 +9501,8 @@ export function cookieOptions() {
 
 ### lib/bookmarks/useBookmarks.ts
 ```tsx
+/* Bookmarks */
+
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";

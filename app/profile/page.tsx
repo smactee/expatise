@@ -11,6 +11,7 @@ import { UserProfileProvider } from '../../components/UserProfile';
 import { useRouter } from 'next/navigation';
 import { useAuthStatus } from '../../components/useAuthStatus';
 import { isValidEmail } from '../../lib/auth';
+import BackButton from '../../components/BackButton';
 
 export default function ProfilePage() {
   const { avatarUrl, setAvatarUrl, name, setName, email, setEmail, saveProfile, clearProfile } = useUserProfile(); // from context
@@ -169,13 +170,11 @@ const handleSave = async (e: React.SyntheticEvent) => {
 
   return (
     <main className={styles.page}>
+       <BackButton />
       <div className={styles.content}>
         {/* Top "Back" row */}
         <header className={styles.headerRow}>
-          <Link href="/" className={styles.backButton}>
-            <span className={styles.backIcon}>‹</span>
-            <span className={styles.backText}></span>
-          </Link>
+
         </header>
 
         {/* Main profile card */}

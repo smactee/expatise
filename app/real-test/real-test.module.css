@@ -124,8 +124,10 @@
 
 .questionText {
   margin: 0;
+    font-family: 'Lato', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  font-style: normal;
   font-size: 20px;
-  font-weight: 500;
+  font-weight: 300;
   line-height: 28px;
   letter-spacing: -0.24px;
   color: #000;
@@ -188,6 +190,28 @@
   gap: 20px; /* gap between answers */
 }
 
+/* ROW (Right/Wrong) button base from Figma rectangle */
+.rowBtn {
+  width: 100%;
+  max-width: 330px; /* from your % margins ≈ 390 - 32 - 29 = ~329 */
+  height: 46px;     /* if your design uses a different height, replace this */
+  border-radius: 8px;
+
+  background: linear-gradient(
+    90deg,
+    rgba(43, 124, 175, 0.15) 0%,
+    rgba(255, 197, 66, 0.15) 100%
+  );
+
+  box-shadow: 0px 2px 1.1px rgba(169, 171, 187, 0.27);
+
+  border: 0;                /* Figma snippet didn’t include stroke */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
 /* option card (315 x 41) */
 .optionBtn {
   width: 315px;
@@ -213,9 +237,18 @@
 }
 
 .optionText {
+  font-family: 'Lato', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  font-style: normal;
+  font-weight: 500;
   font-size: 11px;
   line-height: 20px;
   letter-spacing: -0.24px;
+  text-align: center;
+  color: #000000;
+
+  /* important: allow wrapping like the 295x40 text box */
+  display: block;
+  width: 295px;              /* from your pasted text layer */
 }
 
 .optionActive {
@@ -277,3 +310,4 @@
 .nextArrow {
   margin-left: 6px;
 }
+
