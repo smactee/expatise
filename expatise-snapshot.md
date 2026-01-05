@@ -6912,6 +6912,16 @@ import { loadDataset } from '../../lib/qbank/loadDataset';
 import type { DatasetId } from '../../lib/qbank/datasets';
 import type { Question } from '../../lib/qbank/types';
 import { useBookmarks } from '../../lib/bookmarks/useBookmarks';
+import BackButton from '../../components/BackButton';
+import { useAuthStatus } from '../../components/useAuthStatus';
+import {
+  computeNextUnansweredIndex,
+  getOrCreateAttempt,
+  normalizeUserKey,
+  writeAttempt,
+  type TestAttemptV1,
+} from '../../lib/test-engine/attemptStorage';
+
 
 function formatTime(secs: number) {
   const m = Math.floor(secs / 60);
@@ -6933,9 +6943,13 @@ function normalizeRowChoice(v: string | null | undefined): 'R' | 'W' | null {
 
 export default function RealTestClient({
   datasetId,
+  datasetVersion,
+  questionCount,
   timeLimitMinutes,
 }: {
   datasetId: DatasetId;
+  datasetVersion: string;
+  questionCount: number;
   timeLimitMinutes: number;
 }) {
   const router = useRouter();
@@ -6964,14 +6978,17 @@ const finishTest = (reason: 'time' | 'completed') => {
   if (finishedRef.current) return;
   finishedRef.current = true;
 
+  if (!attempt) {
+    router.push('/real-test/results?reason=' + reason);
+    return;
+  }
+
   const limitSeconds = timeLimitMinutes * 60;
   const usedSeconds = Math.min(limitSeconds, Math.max(0, limitSeconds - timeLeft));
 
   const params = new URLSearchParams({
-    datasetId,
+    attemptId: attempt.attemptId,
     reason,
-    score: String(correctCount),
-    total: String(items.length),
     usedSeconds: String(usedSeconds),
     limitSeconds: String(limitSeconds),
   });
@@ -6979,24 +6996,63 @@ const finishTest = (reason: 'time' | 'completed') => {
   router.push(`/real-test/results?${params.toString()}`);
 };
 
+
+const { loading: authLoading, email } = useAuthStatus();
+const userKey = normalizeUserKey(email);
+const [attempt, setAttempt] = useState<TestAttemptV1 | null>(null);
+
+
   useEffect(() => {
     let mounted = true;
 
     (async () => {
       setLoading(true);
-      const ds = await loadDataset(datasetId);
-      if (!mounted) return;
+const ds = await loadDataset(datasetId);
+if (!mounted) return;
 
-      setItems(ds);
-      setIndex(0);
-      setSelectedKey(null);
-      setLoading(false);
+// If auth is still loading, don't create attempts yet.
+if (authLoading) return;
+
+const allIds = ds.map((q) => q.id);
+
+const { attempt: a } = getOrCreateAttempt({
+  userKey,
+  modeKey: 'real-test',
+  datasetId,
+  datasetVersion,
+  allQuestionIds: allIds,
+  questionCount,
+  timeLimitSec: timeLimitMinutes * 60,
+});
+
+// Build the picked subset in the frozen random order
+const byId = new Map(ds.map((q) => [q.id, q] as const));
+const picked = a.questionIds.map((id) => byId.get(id)).filter(Boolean) as Question[];
+
+setAttempt(a);
+setItems(picked);
+
+// Restore answers into your existing UI answers state
+const restored: Record<string, string> = {};
+for (const [qid, rec] of Object.entries(a.answersByQid)) {
+  restored[qid] = rec.choice;
+}
+setAnswers(restored);
+
+// Resume to next unanswered
+const nextIdx = computeNextUnansweredIndex(a);
+setIndex(Math.min(nextIdx, Math.max(0, picked.length - 1)));
+
+setSelectedKey(null);
+setLoading(false);
+
     })();
 
     return () => {
       mounted = false;
     };
-  }, [datasetId, timeLimitMinutes]);
+  }, [datasetId, datasetVersion, questionCount, timeLimitMinutes, authLoading, userKey]);
+
 
   useEffect(() => {
   endAtRef.current = Date.now() + timeLimitMinutes * 60 * 1000;
@@ -7082,6 +7138,24 @@ useEffect(() => {
     return { ...prev, [item.id]: selectedKey };
   });
 
+if (attempt && item) {
+  const now = Date.now();
+
+  const updated: TestAttemptV1 = {
+    ...attempt,
+    status: 'in_progress',
+    lastActiveAt: now,
+    answersByQid: {
+      ...attempt.answersByQid,
+      [item.id]: { choice: selectedKey, answeredAt: now },
+    },
+  };
+
+  setAttempt(updated);
+  writeAttempt(updated);
+}
+
+
   // 2) move forward or finish
   const next = index + 1;
 
@@ -7120,18 +7194,10 @@ useEffect(() => {
   return (
     <main className={styles.page}>
       <div className={styles.frame}>
+        <BackButton />
         {/* Top bar */}
         <div className={styles.topBar}>
-          <button
-            type="button"
-            className={styles.backBtn}
-            onClick={() => router.back()}
-            aria-label="Back"
-          >
-            <span className={styles.backIcon} aria-hidden="true">‹</span>
-            <span className={styles.backText}>Back</span>
-          </button>
-
+<div className={styles.topLeftSpacer} aria-hidden="true" />
           <div className={styles.topRight}>
             <div className={styles.timer}>
               <span className={styles.timerIcon} aria-hidden="true" />
@@ -7253,13 +7319,27 @@ useEffect(() => {
 
 ### app/real-test/page.tsx
 ```tsx
+// app/real-test/page.tsx
 import type { DatasetId } from '../../lib/qbank/datasets';
 import RealTestClient from './RealTestClient.client';
 
 export default function RealTestPage() {
   const datasetId: DatasetId = 'cn-2023-test1' as DatasetId;
 
-  return <RealTestClient datasetId={datasetId} timeLimitMinutes={45} />;
+  // Change this only when your dataset content changes (e.g., yearly update).
+  const datasetVersion = 'cn-2023-test1@v1';
+
+  // Real Test fixed size
+  const questionCount = 50;
+
+  return (
+    <RealTestClient
+      datasetId={datasetId}
+      datasetVersion={datasetVersion}
+      questionCount={questionCount}
+      timeLimitMinutes={45}
+    />
+  );
 }
 
 ```
@@ -7579,6 +7659,10 @@ export default function RealTestPage() {
   margin-left: 6px;
 }
 
+.topLeftSpacer {
+  width: 60px; /* match the space your old "Back" button used */
+  height: 1px;
+}
 
 ```
 
@@ -7589,6 +7673,12 @@ export default function RealTestPage() {
 import { useMemo } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import styles from './results.module.css';
+import { useEffect, useState } from 'react';
+import { loadDataset } from '/lib/qbank/loadDataset.ts';
+import type { DatasetId } from '../../lib/qbank/datasets';
+import type { Question } from '../../lib/qbank/types';
+import { readAttemptById, type TestAttemptV1 } from '../../lib/test-engine/attemptStorage';
+
 
 function clamp(n: number, min: number, max: number) {
   return Math.max(min, Math.min(max, n));
@@ -8753,8 +8843,6 @@ export default function BackButton() {
         border: 0,
         background: 'transparent',
         padding: 0,
-        display: 'inline-flex',
-        alignItems: 'center',
         gap: 8,
         cursor: 'pointer',
         WebkitTapHighlightColor: 'transparent',
@@ -9417,7 +9505,7 @@ export function useUserProfile() {
 
 ### components/useAuthStatus.ts
 ```tsx
-// components/useAuthStatus.ts (or wherever it lives)
+// components/useAuthStatus.ts
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
@@ -10921,6 +11009,279 @@ export const ROUTES = {
   bookmarks: "/bookmarks",
   comingSoon: "/coming-soon",
 } as const;
+
+```
+
+### lib/test-engine/attemptStorage.ts
+```tsx
+// lib/test-engine/attemptStorage.ts
+
+export type AttemptStatus = 'in_progress' | 'paused' | 'submitted' | 'expired';
+
+export type AnswerRecord = {
+  choice: string;      // 'A'|'B'... or 'R'|'W'
+  answeredAt: number;  // Date.now()
+};
+
+export type TestAttemptV1 = {
+  schemaVersion: 1;
+
+  attemptId: string;
+  userKey: string;        // normalized email
+  modeKey: string;        // "real-test"
+  datasetId: string;
+  datasetVersion: string;
+
+  questionIds: string[];  // frozen random order, length=questionCount
+
+  answersByQid: Record<string, AnswerRecord>;
+  flaggedByQid: Record<string, true>;
+
+  timeLimitSec: number;
+  remainingSec: number;
+
+  status: AttemptStatus;
+
+  createdAt: number;
+  lastActiveAt: number;
+  pausedAt?: number;
+
+  submittedAt?: number;
+};
+
+const SCHEMA_VERSION = 1 as const;
+const ATTEMPT_KEY_PREFIX = 'expatise:attempt:v1:id';
+const ACTIVE_PTR_PREFIX = 'expatise:attempt:v1:active';
+
+export const EXPIRE_AFTER_MS = 30 * 60 * 1000; // 30 min
+
+export function normalizeUserKey(email: string | null | undefined) {
+  const s = String(email ?? '').trim().toLowerCase();
+  return s || 'guest';
+}
+
+function safeParse(raw: string | null): any {
+  if (!raw) return null;
+  try {
+    return JSON.parse(raw);
+  } catch {
+    return null;
+  }
+}
+
+function safeStringify(v: any): string | null {
+  try {
+    return JSON.stringify(v);
+  } catch {
+    return null;
+  }
+}
+
+function uuid(): string {
+  if (typeof crypto !== 'undefined' && 'randomUUID' in crypto) {
+    // @ts-ignore
+    return crypto.randomUUID();
+  }
+  return `att_${Date.now()}_${Math.random().toString(16).slice(2)}`;
+}
+
+function attemptKeyById(attemptId: string) {
+  return `${ATTEMPT_KEY_PREFIX}:${attemptId}`;
+}
+
+function activePtrKey(params: { userKey: string; modeKey: string; datasetId: string }) {
+  const { userKey, modeKey, datasetId } = params;
+  return `${ACTIVE_PTR_PREFIX}:${userKey}:${modeKey}:${datasetId}`;
+}
+
+export function readAttemptById(attemptId: string): TestAttemptV1 | null {
+  if (typeof window === 'undefined') return null;
+  const parsed = safeParse(window.localStorage.getItem(attemptKeyById(attemptId)));
+  if (!parsed || parsed.schemaVersion !== SCHEMA_VERSION) return null;
+  return parsed as TestAttemptV1;
+}
+
+export function writeAttempt(attempt: TestAttemptV1) {
+  if (typeof window === 'undefined') return;
+  const json = safeStringify(attempt);
+  if (!json) return;
+  try {
+    window.localStorage.setItem(attemptKeyById(attempt.attemptId), json);
+  } catch {
+    // ignore quota/private-mode errors
+  }
+}
+
+export function readActiveAttemptId(params: { userKey: string; modeKey: string; datasetId: string }) {
+  if (typeof window === 'undefined') return null;
+  const key = activePtrKey(params);
+  return window.localStorage.getItem(key);
+}
+
+export function writeActiveAttemptId(params: {
+  userKey: string;
+  modeKey: string;
+  datasetId: string;
+  attemptId: string;
+}) {
+  if (typeof window === 'undefined') return;
+  const key = activePtrKey(params);
+  try {
+    window.localStorage.setItem(key, params.attemptId);
+  } catch {
+    // ignore
+  }
+}
+
+export function sampleWithoutReplacement(ids: readonly string[], n: number): string[] {
+  if (ids.length < n) throw new Error(`Not enough ids: have ${ids.length}, need ${n}`);
+  const a = ids.slice();
+  for (let i = 0; i < n; i++) {
+    const j = i + Math.floor(Math.random() * (a.length - i));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a.slice(0, n);
+}
+
+function isExpired(attempt: TestAttemptV1, now: number) {
+  if (attempt.status === 'submitted') return false;
+  if (attempt.status === 'expired') return true;
+  const inactiveSince = attempt.pausedAt ?? attempt.lastActiveAt ?? attempt.createdAt;
+  return now - inactiveSince >= EXPIRE_AFTER_MS;
+}
+
+export function computeNextUnansweredIndex(attempt: TestAttemptV1): number {
+  for (let i = 0; i < attempt.questionIds.length; i++) {
+    const qid = attempt.questionIds[i];
+    if (!attempt.answersByQid[qid]) return i;
+  }
+  return attempt.questionIds.length;
+}
+
+export function getOrCreateAttempt(params: {
+  userKey: string;
+  modeKey: string;
+  datasetId: string;
+  datasetVersion: string;
+  allQuestionIds: string[];
+  questionCount: number;
+  timeLimitSec: number;
+}): { attempt: TestAttemptV1; reused: boolean } {
+  const now = Date.now();
+
+  // Try reuse via active pointer
+  const activeId = readActiveAttemptId({
+    userKey: params.userKey,
+    modeKey: params.modeKey,
+    datasetId: params.datasetId,
+  });
+
+  if (activeId) {
+    const existing = readAttemptById(activeId);
+    if (existing) {
+      const allSet = new Set(params.allQuestionIds);
+      const valid =
+        existing.schemaVersion === SCHEMA_VERSION &&
+        existing.userKey === params.userKey &&
+        existing.modeKey === params.modeKey &&
+        existing.datasetId === params.datasetId &&
+        existing.datasetVersion === params.datasetVersion &&
+        existing.questionIds.length === params.questionCount &&
+        new Set(existing.questionIds).size === existing.questionIds.length &&
+        existing.questionIds.every((id) => allSet.has(id)) &&
+        !isExpired(existing, now) &&
+        existing.status !== 'submitted' &&
+        existing.status !== 'expired';
+
+      if (valid) {
+        const resumed: TestAttemptV1 = {
+          ...existing,
+          status: 'in_progress',
+          lastActiveAt: now,
+          pausedAt: undefined,
+        };
+        writeAttempt(resumed);
+        // keep pointer the same
+        return { attempt: resumed, reused: true };
+      }
+    }
+  }
+
+  // Create new attempt
+  const picked = sampleWithoutReplacement(params.allQuestionIds, params.questionCount);
+
+  const fresh: TestAttemptV1 = {
+    schemaVersion: SCHEMA_VERSION,
+
+    attemptId: uuid(),
+    userKey: params.userKey,
+    modeKey: params.modeKey,
+    datasetId: params.datasetId,
+    datasetVersion: params.datasetVersion,
+
+    questionIds: picked,
+
+    answersByQid: {},
+    flaggedByQid: {},
+
+    timeLimitSec: params.timeLimitSec,
+    remainingSec: params.timeLimitSec,
+
+    status: 'in_progress',
+
+    createdAt: now,
+    lastActiveAt: now,
+  };
+
+  writeAttempt(fresh);
+  writeActiveAttemptId({
+    userKey: params.userKey,
+    modeKey: params.modeKey,
+    datasetId: params.datasetId,
+    attemptId: fresh.attemptId,
+  });
+
+  return { attempt: fresh, reused: false };
+}
+
+```
+
+### lib/test-engine/attemptTypes.ts
+```tsx
+// lib/test-engine/attemptTypes.ts
+
+export type AttemptStatus = "in_progress" | "paused" | "submitted" | "expired";
+
+export type AnswerRecord = {
+  choice: string;      // e.g. "A" | "B" | "C" | "D"
+  answeredAt: number;  // Date.now()
+};
+
+export type TestAttemptV1 = {
+  schemaVersion: 1;
+
+  attemptId: string;
+  userKey: string;         // local key (email or "anon")
+  modeKey: string;         // "real-test" (reusable)
+  datasetId: string;       // e.g. "cn-2023-test1"
+  datasetVersion: string;  // bump this when dataset changes
+
+  questionIds: string[];   // length=50, unique, frozen, random order
+
+  answersByQid: Record<string, AnswerRecord>;
+  flaggedByQid: Record<string, true>;
+
+  timeLimitSec: number;    // 2700 for 45 min
+  remainingSec: number;    // starts 2700 (timer persistence later)
+
+  status: AttemptStatus;
+
+  createdAt: number;
+  lastActiveAt: number;
+  pausedAt?: number;
+
+  submittedAt?: number;
+};
 
 ```
 
@@ -43682,7 +44043,7 @@ export const config = {
       "id": "q0509",
       "number": 509,
       "type": "mcq",
-      "prompt": "How to use 솓 lights when pulling over on the road?",
+      "prompt": "How to use the lights when pulling over on the road?",
       "options": [
         {
           "id": "q0509_o1",

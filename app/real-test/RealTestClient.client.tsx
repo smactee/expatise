@@ -12,6 +12,16 @@ import { loadDataset } from '../../lib/qbank/loadDataset';
 import type { DatasetId } from '../../lib/qbank/datasets';
 import type { Question } from '../../lib/qbank/types';
 import { useBookmarks } from '../../lib/bookmarks/useBookmarks';
+import BackButton from '../../components/BackButton';
+import { useAuthStatus } from '../../components/useAuthStatus';
+import {
+  computeNextUnansweredIndex,
+  getOrCreateAttempt,
+  normalizeUserKey,
+  writeAttempt,
+  type TestAttemptV1,
+} from '../../lib/test-engine/attemptStorage';
+
 
 function formatTime(secs: number) {
   const m = Math.floor(secs / 60);
@@ -33,9 +43,13 @@ function normalizeRowChoice(v: string | null | undefined): 'R' | 'W' | null {
 
 export default function RealTestClient({
   datasetId,
+  datasetVersion,
+  questionCount,
   timeLimitMinutes,
 }: {
   datasetId: DatasetId;
+  datasetVersion: string;
+  questionCount: number;
   timeLimitMinutes: number;
 }) {
   const router = useRouter();
@@ -64,14 +78,17 @@ const finishTest = (reason: 'time' | 'completed') => {
   if (finishedRef.current) return;
   finishedRef.current = true;
 
+  if (!attempt) {
+    router.push('/real-test/results?reason=' + reason);
+    return;
+  }
+
   const limitSeconds = timeLimitMinutes * 60;
   const usedSeconds = Math.min(limitSeconds, Math.max(0, limitSeconds - timeLeft));
 
   const params = new URLSearchParams({
-    datasetId,
+    attemptId: attempt.attemptId,
     reason,
-    score: String(correctCount),
-    total: String(items.length),
     usedSeconds: String(usedSeconds),
     limitSeconds: String(limitSeconds),
   });
@@ -79,24 +96,63 @@ const finishTest = (reason: 'time' | 'completed') => {
   router.push(`/real-test/results?${params.toString()}`);
 };
 
+
+const { loading: authLoading, email } = useAuthStatus();
+const userKey = normalizeUserKey(email);
+const [attempt, setAttempt] = useState<TestAttemptV1 | null>(null);
+
+
   useEffect(() => {
     let mounted = true;
 
     (async () => {
       setLoading(true);
-      const ds = await loadDataset(datasetId);
-      if (!mounted) return;
+const ds = await loadDataset(datasetId);
+if (!mounted) return;
 
-      setItems(ds);
-      setIndex(0);
-      setSelectedKey(null);
-      setLoading(false);
+// If auth is still loading, don't create attempts yet.
+if (authLoading) return;
+
+const allIds = ds.map((q) => q.id);
+
+const { attempt: a } = getOrCreateAttempt({
+  userKey,
+  modeKey: 'real-test',
+  datasetId,
+  datasetVersion,
+  allQuestionIds: allIds,
+  questionCount,
+  timeLimitSec: timeLimitMinutes * 60,
+});
+
+// Build the picked subset in the frozen random order
+const byId = new Map(ds.map((q) => [q.id, q] as const));
+const picked = a.questionIds.map((id) => byId.get(id)).filter(Boolean) as Question[];
+
+setAttempt(a);
+setItems(picked);
+
+// Restore answers into your existing UI answers state
+const restored: Record<string, string> = {};
+for (const [qid, rec] of Object.entries(a.answersByQid)) {
+  restored[qid] = rec.choice;
+}
+setAnswers(restored);
+
+// Resume to next unanswered
+const nextIdx = computeNextUnansweredIndex(a);
+setIndex(Math.min(nextIdx, Math.max(0, picked.length - 1)));
+
+setSelectedKey(null);
+setLoading(false);
+
     })();
 
     return () => {
       mounted = false;
     };
-  }, [datasetId, timeLimitMinutes]);
+  }, [datasetId, datasetVersion, questionCount, timeLimitMinutes, authLoading, userKey]);
+
 
   useEffect(() => {
   endAtRef.current = Date.now() + timeLimitMinutes * 60 * 1000;
@@ -182,6 +238,24 @@ useEffect(() => {
     return { ...prev, [item.id]: selectedKey };
   });
 
+if (attempt && item) {
+  const now = Date.now();
+
+  const updated: TestAttemptV1 = {
+    ...attempt,
+    status: 'in_progress',
+    lastActiveAt: now,
+    answersByQid: {
+      ...attempt.answersByQid,
+      [item.id]: { choice: selectedKey, answeredAt: now },
+    },
+  };
+
+  setAttempt(updated);
+  writeAttempt(updated);
+}
+
+
   // 2) move forward or finish
   const next = index + 1;
 
@@ -220,18 +294,10 @@ useEffect(() => {
   return (
     <main className={styles.page}>
       <div className={styles.frame}>
+        <BackButton />
         {/* Top bar */}
         <div className={styles.topBar}>
-          <button
-            type="button"
-            className={styles.backBtn}
-            onClick={() => router.back()}
-            aria-label="Back"
-          >
-            <span className={styles.backIcon} aria-hidden="true">‹</span>
-            <span className={styles.backText}>Back</span>
-          </button>
-
+<div className={styles.topLeftSpacer} aria-hidden="true" />
           <div className={styles.topRight}>
             <div className={styles.timer}>
               <span className={styles.timerIcon} aria-hidden="true" />

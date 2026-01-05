@@ -19,8 +19,6 @@ export default function BackButton() {
         border: 0,
         background: 'transparent',
         padding: 0,
-        display: 'inline-flex',
-        alignItems: 'center',
         gap: 8,
         cursor: 'pointer',
         WebkitTapHighlightColor: 'transparent',

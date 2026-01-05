@@ -1,4 +1,4 @@
-// components/useAuthStatus.ts (or wherever it lives)
+// components/useAuthStatus.ts
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
