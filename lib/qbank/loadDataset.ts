@@ -131,6 +131,12 @@ function normalizeOne(raw: RawQuestion): Question {
 
     const { userTags, autoTags: rawAutoTags } = extractTagArrays((raw as any).tags);
 
+const explanation =
+  typeof (raw as any).explanation === 'string'
+    ? (raw as any).explanation.trim()
+    : undefined;
+
+
   const q: Question = {
     id: String(raw.id),
     number: Number(raw.number),
@@ -140,12 +146,9 @@ function normalizeOne(raw: RawQuestion): Question {
     correctRow,
     correctOptionId,
     assets,
-
-    // manual/user tags (if any)
-    tags: userTags,
-
-    // fill below
-    autoTags: [],
+    explanation,
+    tags: userTags, // manual/user tags (if any)
+    autoTags: [],     // fill below
   };
 
   // merge parser auto tags + suggested tags + your runtime keyword tags

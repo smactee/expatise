@@ -1,20 +1,17 @@
-/* Desktop centering wrapper */
 .viewport {
   min-height: 100vh;
-  display: grid;
-  place-items: center;
-  padding: 24px;
-  background: #111;
+  padding: 0;
+  background: var(--color-page-bg);
 }
 
-/* Figma: Test Result frame */
 .screen {
   position: relative;
-  width: 390px;
-  height: 844px;
+  width: 100%;
+  min-height: 100vh;
   background: #f4f4f9;
   overflow: hidden;
 }
+
 
 /* Figma: Rectangle (full screen overlay) */
 .card {
@@ -113,9 +110,19 @@
   position: absolute;
   width: 123px;
   height: 123px;
-  left: 133px; /* centered: (390-123)/2 = 133.5 */
+  left: 133px;
   top: 145px;
+
+  display: grid;
+  place-items: center;
 }
+
+.ring,
+.ringCenterText {
+  grid-area: 1 / 1;
+}
+
+
 
 /*
   Ring:
@@ -129,7 +136,7 @@
 
   /* --p is degrees for the "colored" sweep */
   background: conic-gradient(
-    from -90deg,
+    from 0deg,
     #2b7caf 0deg,
     #ffc542 var(--p),
     #bdccd3 var(--p),
@@ -150,22 +157,22 @@
 }
 
 .ringCenterText {
-  position: absolute;
-  width: 59px;
-  height: 20px;
-  left: 33px;
-  top: 52px;
+  margin: 0;
+  text-align: center;
 
   font-family: 'Lato', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
   font-style: normal;
-  font-weight: 600;
-  font-size: 16px;
+  font-weight: 700;
+  font-size: 40px;
   line-height: 20px;
-  text-align: center;
   letter-spacing: -0.24px;
   text-transform: capitalize;
   color: #21205a;
+
+  /* optional: stop it from affecting layout, keeps it centered nicely */
+  pointer-events: none;
 }
+
 
 /* Score/Time group container */
 .scoreBox {
@@ -206,25 +213,29 @@
 }
 
 /* Left score group */
-.scoreLeft {
+.scoreLeft,
+.scoreRight {
   position: absolute;
-  width: 83px;
+  top: 20px;
+  width: 165px;          /* half of 330 */
   height: 43px;
-  left: 36px; /* 66-30 */
-  top: 20px;  /* approx: aligns with 322 in screen coords */
   display: grid;
+  place-items: center;
   gap: 11px;
 }
 
-.scoreRight {
-  position: absolute;
-  width: 62px;
-  height: 43px;
-  left: 218px; /* 248-30 */
-  top: 20px;
-  display: grid;
-  gap: 11px;
+.scoreLeft {
+  left: 0;
 }
+
+.scoreRight {
+  left: 165px;           /* start of right half */
+}
+
+.scoreRight .scoreValue {
+  white-space: nowrap;
+}
+
 
 .scoreValue {
   font-family: 'Poppins', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
@@ -251,62 +262,37 @@
 /* Test Results title */
 .testResultsTitle {
   position: absolute;
-  width: 123px;
-  height: 20px;
   left: 30px;
-  top: 422px;
+  top: 400px;
 
+  /* ✅ make the title span the usable screen width (390 - 30 - 30) */
+  width: calc(100% - 60px);
+
+  /* ✅ keep it on one line */
+  white-space: nowrap;
+
+  margin: 0;
   font-family: 'Lato', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-  font-style: normal;
-  font-weight: 500;
-  font-size: 24px;
-  line-height: 20px;
-  text-align: center;
+  font-weight: 700;
+  font-size: 32px;
+  line-height: 1.1;
   letter-spacing: -0.24px;
-  color: #000000;
+  color: #000;
+
+  /* Figma looks left-aligned */
+  text-align: left;
 }
+
 
 /* Incorrect row */
 .incorrectRow {
   position: absolute;
   left: 43px;
-  top: 457px;
+  top: 440px;
   height: 24px;
   display: flex;
   align-items: center;
   gap: 8px;
-}
-
-.xIcon {
-  position: relative;
-  width: 24px;
-  height: 24px;
-}
-
-.xStroke1,
-.xStroke2 {
-  position: absolute;
-  left: 25%;
-  right: 25%;
-  top: 25%;
-  bottom: 25%;
-  border: 2px solid #ff575f;
-  border-left: 0;
-  border-bottom: 0;
-  transform-origin: center;
-  background: transparent;
-}
-
-.xStroke1 {
-  transform: rotate(45deg);
-  border-right: 2px solid #ff575f;
-  border-top: 2px solid #ff575f;
-}
-
-.xStroke2 {
-  transform: rotate(-45deg);
-  border-right: 2px solid #ff575f;
-  border-top: 2px solid #ff575f;
 }
 
 .incorrectText {
@@ -324,107 +310,105 @@
   color: #ff575f;
 }
 
-/* Question line */
-.question {
-  position: absolute;
-  width: 328px;
-  height: 35px;
-  left: 31px;
-  top: 494px;
-
-  font-family: 'Lato', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-  font-style: normal;
-  font-weight: 400;
-  font-size: 11px;
-  line-height: 20px;
-  letter-spacing: -0.24px;
-  color: #000000;
-}
-
-/* Placeholder image block (replace later with a real image) */
-.qImage {
+/* A scrollable area for wrong-question details */
+.reviewArea {
   position: absolute;
   left: 30px;
-  top: 524px;
-  width: 65px;
-  height: 65px;
-  border-radius: 6px;
-  background: rgba(0, 0, 0, 0.06);
+  right: 30px;
+
+  /* Start below the "Incorrect" row */
+  top: 470px;
+
+  /* Leave space for the Home button */
+  bottom: 120px;
+
+  overflow-y: auto;
+  padding-right: 6px;
 }
 
-/* Options */
-.optA,
-.optB,
-.optC,
-.optD {
-  position: absolute;
-  left: 100px;
+/* Use normal flow instead of absolute positioning */
+.question {
+  position: static;
+  width: auto;
+  height: auto;
+  margin: 0 0 10px;
+
   font-family: 'Lato', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-  font-style: normal;
-  font-weight: 300;
-  font-size: 8px;
-  line-height: 10px;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 22px;
   letter-spacing: -0.24px;
+  color: #000;
 }
 
-.optA {
-  width: 229px;
-  height: 10px;
-  top: 534px;
-  color: #000000;
+.qImage {
+  position: static;
+  width: 120px;
+  height: 120px;
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.06);
+  margin: 0 0 12px;
 }
 
-.optB {
-  width: 263px;
-  height: 10px;
-  top: 547px;
+/* Options stack properly */
+.options {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+
+.option {
+  font-family: 'Lato', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 16px;
+  letter-spacing: -0.24px;
+
+  /* allow wrapping without breaking layout */
+  white-space: normal;
+}
+
+.optionNeutral {
+  color: #000;
+}
+
+.optionCorrect {
   color: #2b7caf;
 }
 
-.optC {
-  width: 263px;
-  height: 20px;
-  top: 560px;
+.optionWrong {
   color: #ff575f;
 }
 
-.optD {
-  width: 263px;
-  height: 20px;
-  top: 583px;
-  color: #000000;
-}
 
 /* Explanation block */
 .exTitle {
-  position: absolute;
-  width: 66px;
-  height: 12px;
-  left: 30px;
-  top: 611px;
+  position: static;
+  width: auto;
+  height: auto;
+  margin: 12px 0 6px;
 
   font-family: 'Lato', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-  font-style: normal;
-  font-weight: 600;
-  font-size: 12px;
-  line-height: 12px;
-  color: #000000;
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 16px;
+  color: #000;
 }
 
 .exBody {
-  position: absolute;
-  width: 338px;
-  height: 48px;
-  left: 30px;
-  top: 630px;
+  position: static;
+  width: auto;
+  height: auto;
+  margin: 0 0 18px;
 
   font-family: 'Lato', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-  font-style: normal;
   font-weight: 400;
-  font-size: 9px;
-  line-height: 12px;
-  color: #000000;
+  font-size: 13px;
+  line-height: 18px;
+  color: #000;
 }
+
 
 /* Continue button */
 .continueBtn {
@@ -464,41 +448,9 @@
   color: #000000;
 }
 
-.continueArrow {
-  position: relative;
-  width: 16px;
-  height: 16px;
-}
-
-.arrowStem {
-  position: absolute;
-  left: 20.83%;
-  right: 20.84%;
-  top: 50%;
-  bottom: 50%;
-  border-top: 1.33333px solid #000000;
-}
-
-.arrowHead {
-  position: absolute;
-  left: 50%;
-  right: 20.83%;
-  top: 20.83%;
-  bottom: 20.83%;
-  border-right: 1.33333px solid #000000;
-  border-top: 1.33333px solid #000000;
-  transform: rotate(45deg);
-  transform-origin: center;
-}
-
-/* Home indicator */
-.homeIndicator {
-  position: absolute;
-  width: 133px;
-  height: 6px;
-  left: calc(50% - 133px / 2 - 0.5px);
-  top: 830px;
-
-  background: #1f2024;
-  border-radius: 3px;
+.shiftUp {
+  position: relative;   /* ✅ critical */
+  min-height: 100vh;    /* ✅ critical */
+  width: 100%;
+  transform: translateY(-60px);
 }

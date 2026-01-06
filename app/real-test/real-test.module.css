@@ -168,19 +168,32 @@
   filter: brightness(1) contrast(1.5) saturate(2);
 }
 
-/* question → image: 4 */
+/* question → image */
 .imageWrap {
-  margin-top: 4px;
-  width: 187.72px;   /* from your figma screenshot */
-  height: 209.5px;
+  margin-top: 10px;
+
+  /* ✅ center the image box */
+  margin-left: auto;
+  margin-right: auto;
+
+  /* ✅ make it bigger without touching options styles */
+  width: 100%;
+  max-width: 330px;
+
+  /* pick a bigger height (safe + predictable) */
+height: clamp(240px, 52vw, 340px);
+
   position: relative;
-  border-radius: 10px;
+  border-radius: 12px;
   overflow: hidden;
+  background: transparent;
 }
 
 .image {
   object-fit: contain;
+  object-position: center;
 }
+
 
 /* image → answers: 30 */
 .answers {
@@ -307,9 +320,6 @@
   cursor: not-allowed;
 }
 
-.nextArrow {
-  margin-left: 6px;
-}
 
 .topLeftSpacer {
   width: 60px; /* match the space your old "Back" button used */

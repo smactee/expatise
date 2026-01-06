@@ -41,6 +41,8 @@ function normalizeRowChoice(v: string | null | undefined): 'R' | 'W' | null {
 }
 
 
+
+
 export default function RealTestClient({
   datasetId,
   datasetVersion,
@@ -215,6 +217,71 @@ const correctCount = useMemo(() => {
   return correct;
 }, [items, answers]);
 
+const advancingRef = useRef(false);
+
+// More reliable than e.detail: works even if state hasn’t re-rendered yet
+const lastTapRef = useRef<{ key: string; at: number } | null>(null);
+
+const commitAndAdvance = (choiceKey: string) => {
+  if (!items.length || !item) return;
+  if (!choiceKey) return;
+
+  if (advancingRef.current) return;
+  advancingRef.current = true;
+
+  const now = Date.now();
+
+  // 1) commit to UI state
+  setAnswers((prev) => {
+    if (prev[item.id] === choiceKey) return prev;
+    return { ...prev, [item.id]: choiceKey };
+  });
+
+  // 2) commit to attempt storage (so Results/Stats stay correct)
+  if (attempt) {
+    const updated: TestAttemptV1 = {
+      ...attempt,
+      status: 'in_progress',
+      lastActiveAt: now,
+      answersByQid: {
+        ...attempt.answersByQid,
+        [item.id]: { choice: choiceKey, answeredAt: now },
+      },
+    };
+    setAttempt(updated);
+    writeAttempt(updated);
+  }
+
+  // 3) move forward or finish
+  const next = index + 1;
+  if (next >= items.length) {
+    finishTest('completed');
+    return;
+  }
+
+  setIndex(next);
+
+  // release the guard next tick
+  setTimeout(() => {
+    advancingRef.current = false;
+  }, 0);
+};
+
+const onOptionTap = (key: string) => {
+  const now = Date.now();
+  const last = lastTapRef.current;
+
+  // If same option tapped twice quickly -> auto next
+  if (last && last.key === key && now - last.at < 450) {
+    lastTapRef.current = null;
+    commitAndAdvance(key);
+    return;
+  }
+
+  lastTapRef.current = { key, at: now };
+  setSelectedKey(key);
+};
+
 
 useEffect(() => {
   if (!item) return;
@@ -347,6 +414,7 @@ if (attempt && item) {
       fill
       className={styles.image}
       priority
+      unoptimized
     />
   </div>
 )}
@@ -361,7 +429,7 @@ if (attempt && item) {
       className={`${styles.optionBtn} ${styles.rowBtn} ${
         selectedKey === 'R' ? styles.optionActive : ''
       }`}
-      onClick={() => setSelectedKey('R')}
+      onClick={() => onOptionTap('R')}
     >
       <span className={styles.optionText}>Right</span>
     </button>
@@ -371,7 +439,7 @@ if (attempt && item) {
       className={`${styles.optionBtn} ${styles.rowBtn} ${
         selectedKey === 'W' ? styles.optionActive : ''
       }`}
-      onClick={() => setSelectedKey('W')}
+     onClick={() => onOptionTap('W')}
     >
       <span className={styles.optionText}>Wrong</span>
     </button>
@@ -389,7 +457,20 @@ if (attempt && item) {
           key={opt.id}
           type="button"
           className={`${styles.optionBtn} ${active ? styles.optionActive : ''}`}
-          onClick={() => setSelectedKey(key)}
+          onClick={(e) => {
+  // first click selects
+  if (selectedKey !== key) {
+    setSelectedKey(key);
+    return;
+  }
+
+  // second click on same option advances
+  // e.detail is 1,2,3... for click count (works great on desktop)
+  if (e.detail >= 2) {
+    commitAndAdvance(key);
+  }
+}}
+
         >
           <span className={styles.optionKey}>{key}.</span>
           <span className={styles.optionText}>{opt.text}</span>
@@ -401,11 +482,15 @@ if (attempt && item) {
 
 
 
+
+
         {/* Next */}
+
+
         <button
           type="button"
           className={styles.nextBtn}
-          onClick={onNext}
+          onClick={() => selectedKey && commitAndAdvance(selectedKey)}
           disabled={!selectedKey}
         >
           Next <span className={styles.nextArrow} aria-hidden="true">→</span>

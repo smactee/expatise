@@ -1,8 +1,10 @@
+/* app/real-test/results/page.tsx */
 'use client';
 
 import React, { useEffect, useMemo, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import styles from './results.module.css';
+import Image from 'next/image';
 
 import { loadDataset } from '../../../lib/qbank/loadDataset';
 import type { DatasetId } from '../../../lib/qbank/datasets';
@@ -28,15 +30,35 @@ export default function RealTestResultsPage() {
   // ✅ Option B: Results is driven by attemptId
   const attemptId = sp.get('attemptId');
 
-  // Your real-test currently pushes usedSeconds/limitSeconds (not timeMin)
-  const usedSeconds = Number(sp.get('usedSeconds') ?? '0');
-  const timeMin = Math.max(0, Math.round(usedSeconds / 60));
+// Your real-test currently pushes usedSeconds/limitSeconds
+const usedSecondsRaw = Number(sp.get('usedSeconds') ?? '0');
+const usedSeconds = Number.isFinite(usedSecondsRaw) && usedSecondsRaw > 0
+  ? Math.floor(usedSecondsRaw)
+  : 0;
+
+const timeMin = Math.floor(usedSeconds / 60);
+const timeSec = usedSeconds % 60;
+
+const timeText = `${timeMin}min ${timeSec}sec`;
+
 
   const [attempt, setAttempt] = useState<TestAttemptV1 | null>(null);
   const [computed, setComputed] = useState<{ correct: number; total: number }>({
     correct: 0,
     total: 0,
   });
+  
+
+  type ReviewItem = {
+  qid: string;
+  prompt: string;
+  imageSrc?: string;
+  options: { key: string; text: string; tone: "neutral" | "correct" | "wrong" }[];
+  explanation?: string;
+};
+
+const [reviewItems, setReviewItems] = useState<ReviewItem[]>([]);
+
 
   useEffect(() => {
     if (!attemptId) return;
@@ -82,6 +104,64 @@ export default function RealTestResultsPage() {
       }
 
       setComputed({ correct, total: picked.length });
+      // Prepare review items (simple version: first incorrect only)
+      const items: ReviewItem[] = [];
+
+for (const q of picked) {
+  const chosenKey = a.answersByQid[q.id]?.choice ?? null;
+
+  // Find correct option key for MCQ
+  if (q.type !== "ROW") {
+    const correctOptionId = (q as any).correctOptionId as string | undefined;
+
+    const correctIndex = q.options.findIndex(opt => opt.id === correctOptionId);
+    const correctKey =
+      correctIndex >= 0
+        ? (q.options[correctIndex].originalKey ?? String.fromCharCode(65 + correctIndex))
+        : null;
+
+    const isCorrect = chosenKey && correctKey && chosenKey === correctKey;
+
+    // If you only want WRONG questions on results page:
+    if (isCorrect) continue;
+
+    const options = q.options.map((opt, idx) => {
+      const key = opt.originalKey ?? String.fromCharCode(65 + idx);
+      const text = `${key}. ${opt.text}`;
+
+      let tone: "neutral" | "correct" | "wrong" = "neutral";
+      if (correctKey && key === correctKey) tone = "correct";
+      if (chosenKey && key === chosenKey && key !== correctKey) tone = "wrong";
+
+      return { key, text, tone };
+    });
+
+const imageAsset = q.assets?.find((a: any) => a.kind === "image");
+
+// Use ONLY .src (same as real-test)
+const imageSrc = imageAsset?.src;
+
+
+    items.push({
+      qid: q.id,
+      prompt: q.prompt,
+      imageSrc,
+      options,
+      explanation: q.explanation, // optional future field
+    });
+  }
+
+  // ROW questions can be added later similarly (R/W)
+}
+
+console.log(
+  "RESULTS image src sample:",
+  items.slice(0, 5).map((i) => ({ qid: i.qid, imageSrc: i.imageSrc }))
+);
+
+
+setReviewItems(items);
+
     })();
   }, [attemptId]);
 
@@ -89,6 +169,9 @@ export default function RealTestResultsPage() {
     const t = computed.total > 0 ? computed.total : 1;
     return clamp(computed.correct / t, 0, 1);
   }, [computed.correct, computed.total]);
+
+  const percent = useMemo(() => Math.round(pct * 100), [pct]);
+
 
   // Demo content to match your screenshot layout (keep this mock for now)
   const question =
@@ -120,10 +203,6 @@ export default function RealTestResultsPage() {
         <main className={styles.screen}>
           <div className={styles.card} />
           <div className={styles.backRow}>
-            <button type="button" className={styles.backBtn} onClick={() => router.back()}>
-              <span className={styles.backChevron} aria-hidden="true" />
-              <span className={styles.backLabel}>Back</span>
-            </button>
           </div>
           <div style={{ padding: 16 }}>Missing attemptId. Please re-take the test.</div>
         </main>
@@ -135,20 +214,8 @@ export default function RealTestResultsPage() {
     <div className={styles.viewport}>
       <main className={styles.screen}>
         <div className={styles.card} />
-
-        <div className={styles.backRow}>
-          <button
-            type="button"
-            className={styles.backBtn}
-            onClick={() => router.back()}
-            aria-label="Back"
-          >
-            <span className={styles.backChevron} aria-hidden="true" />
-            <span className={styles.backLabel}>Back</span>
-          </button>
-        </div>
-
-        <h1 className={styles.congrats}>Congratulation!</h1>
+<div className={styles.shiftUp}>
+        <h1 className={styles.congrats}>Congratulations!</h1>
 
         <div className={styles.ringWrap} aria-label="Score progress">
           <div
@@ -159,7 +226,7 @@ export default function RealTestResultsPage() {
               } as React.CSSProperties
             }
           />
-          <div className={styles.ringCenterText}>You Win</div>
+          <div className={styles.ringCenterText}>{percent}</div>
         </div>
 
         <div className={styles.scoreBox} aria-hidden="true">
@@ -171,11 +238,11 @@ export default function RealTestResultsPage() {
             <div className={styles.scoreValue}>
               {computed.correct}/{computed.total || 0}
             </div>
-            <div className={styles.scoreLabel}>Results</div>
+            <div className={styles.scoreLabel}>Score</div>
           </div>
 
           <div className={styles.scoreRight}>
-            <div className={styles.scoreValue}>{timeMin}Min</div>
+            <div className={styles.scoreValue}>{timeText}</div>
             <div className={styles.scoreLabel}>Time</div>
           </div>
         </div>
@@ -183,38 +250,81 @@ export default function RealTestResultsPage() {
         <div className={styles.testResultsTitle}>Test Results</div>
 
         <div className={styles.incorrectRow}>
-          <div className={styles.xIcon} aria-hidden="true">
-            <span className={styles.xStroke1} />
-            <span className={styles.xStroke2} />
-          </div>
+<Image
+    src="/images/test/red-x-icon.png"
+    alt="Red X Icon"
+    width={24}
+    height={24}
+    className={styles.btnIcon}
+  />
           <div className={styles.incorrectText}>Incorrect</div>
         </div>
 
-        <div className={styles.question}>{question}</div>
+<section className={styles.reviewArea}>
+  {reviewItems.length === 0 ? (
+    <p className={styles.question}>No incorrect questions 🎉</p>
+  ) : (
+    reviewItems.map((item, idx) => (
+      <article key={item.qid} style={{ marginBottom: 18 }}>
+        <p className={styles.question}>
+          {idx + 1}. {item.prompt}
+        </p>
 
-        <div className={styles.qImage} aria-hidden="true" />
+        {item.imageSrc ? (
+          <Image
+            src={item.imageSrc}
+            alt="Question image"
+            width={120}
+            height={120}
+            className={styles.qImage}
+          />
+        ) : null}
 
-        <div className={styles.optA}>{a}</div>
-        <div className={styles.optB}>{b}</div>
-        <div className={styles.optC}>{c}</div>
-        <div className={styles.optD}>{d}</div>
+        <div className={styles.options}>
+          {item.options.map((o) => (
+            <div
+              key={o.key}
+              className={[
+                styles.option,
+                o.tone === "correct"
+                  ? styles.optionCorrect
+                  : o.tone === "wrong"
+                  ? styles.optionWrong
+                  : styles.optionNeutral,
+              ].join(" ")}
+            >
+              {o.text}
+            </div>
+          ))}
+        </div>
 
-        <div className={styles.exTitle}>{explanationTitle}</div>
-        <div className={styles.exBody}>{explanation}</div>
+        <div className={styles.exTitle}>Explanation:</div>
+        <div className={styles.exBody}>
+          {item.explanation ?? "Explanation coming soon."}
+        </div>
+      </article>
+    ))
+  )}
+</section>
+
+
 
         <button
           type="button"
           className={styles.continueBtn}
           onClick={() => router.push('/real-test')}
         >
-          <span className={styles.continueText}>Continue</span>
-          <span className={styles.continueArrow} aria-hidden="true">
-            <span className={styles.arrowStem} />
-            <span className={styles.arrowHead} />
-          </span>
-        </button>
 
-        <div className={styles.homeIndicator} aria-hidden="true" />
+          <span className={styles.continueText}>Home</span>
+          <Image
+    src="/images/other/right-arrow.png"
+    alt="Home"
+    width={18}
+    height={18}
+    className={styles.btnIcon}
+  />
+        </button>
+</div>
       </main>
     </div>
   );

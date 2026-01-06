@@ -27,6 +27,7 @@ export interface Question {
   assets: QuestionAsset[];
   tags: string[];
   autoTags: string[];
+  explanation?: string;
 }
 
 // Your processed JSON may be:
@@ -43,6 +44,7 @@ export interface RawQuestion {
   answer?: unknown;
   assets?: unknown;
   tags?: unknown;
+  explanation?: unknown;
 }
 
 export type RawQBank = { questions: RawQuestion[] } | RawQuestion[];
