@@ -350,13 +350,35 @@
   margin: 0 0 12px;
 }
 
+.imageWrap {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  border-radius: 10px;
+  overflow: hidden;
+  margin: 0 0 12px;
+}
+
+.image {
+  object-fit: cover;
+}
+
+.qaRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin: 0 0 10px;
+}
+
 /* Options stack properly */
 .options {
+  flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  margin-bottom: 14px;
+  gap: 4px;
+  margin-bottom: 0;
 }
+
 
 .option {
   font-family: 'Lato', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;

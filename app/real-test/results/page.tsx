@@ -23,6 +23,26 @@ function normalizeRowChoice(v: string | null | undefined): 'R' | 'W' | null {
   return null;
 }
 
+function getQuestionNumber(q: any): number {
+  // 1) prefer q.number (can be number OR string)
+  const raw = q?.number;
+
+  const fromNumber = Number(raw);
+  if (Number.isFinite(fromNumber) && fromNumber > 0) return Math.floor(fromNumber);
+
+  // 2) fallback: extract digits from id (q0231 -> 231)
+  const idStr = String(q?.id ?? "");
+  const idMatch = idStr.match(/\d+/);
+  if (idMatch) {
+    const n = parseInt(idMatch[0], 10);
+    if (Number.isFinite(n) && n > 0) return n;
+  }
+
+  // 3) last resort: 0 (means “unknown”)
+  return 0;
+}
+
+
 export default function RealTestResultsPage() {
   const router = useRouter();
   const sp = useSearchParams();
@@ -51,6 +71,7 @@ const timeText = `${timeMin}min ${timeSec}sec`;
 
   type ReviewItem = {
   qid: string;
+  testNo: number;
   prompt: string;
   imageSrc?: string;
   options: { key: string; text: string; tone: "neutral" | "correct" | "wrong" }[];
@@ -58,6 +79,7 @@ const timeText = `${timeMin}min ${timeSec}sec`;
 };
 
 const [reviewItems, setReviewItems] = useState<ReviewItem[]>([]);
+const [brokenImages, setBrokenImages] = useState<Record<string, boolean>>({});
 
 
   useEffect(() => {
@@ -78,7 +100,11 @@ const [reviewItems, setReviewItems] = useState<ReviewItem[]>([]);
       // Compute score using attempt answers
       let correct = 0;
 
-      for (const q of picked) {
+      for (let i = 0; i < picked.length; i++) {
+  const q = picked[i];
+  const testNo = i + 1;          // ✅ position in THIS test
+  const bankNo = getQuestionNumber(q); // ✅ global/bank number
+
         const chosenKey = a.answersByQid[q.id]?.choice ?? null;
 
         // Your rule: unanswered at timeout = wrong
@@ -104,63 +130,118 @@ const [reviewItems, setReviewItems] = useState<ReviewItem[]>([]);
       }
 
       setComputed({ correct, total: picked.length });
-      // Prepare review items (simple version: first incorrect only)
-      const items: ReviewItem[] = [];
+// Prepare review items (WRONG ONLY)
+const items: ReviewItem[] = [];
 
-for (const q of picked) {
+for (let i = 0; i < picked.length; i++) {
+  const q = picked[i];
+  const testNo = i + 1;
+
   const chosenKey = a.answersByQid[q.id]?.choice ?? null;
+  const qType = String((q as any).type ?? "").toUpperCase();
 
-  // Find correct option key for MCQ
-  if (q.type !== "ROW") {
-    const correctOptionId = (q as any).correctOptionId as string | undefined;
+  // image
+  const assets = (q as any).assets;
+  const imageAsset = Array.isArray(assets)
+    ? assets.find((a: any) => a?.kind === "image" && typeof a?.src === "string")
+    : null;
+  const imageSrc = imageAsset?.src as string | undefined;
 
-    const correctIndex = q.options.findIndex(opt => opt.id === correctOptionId);
-    const correctKey =
-      correctIndex >= 0
-        ? (q.options[correctIndex].originalKey ?? String.fromCharCode(65 + correctIndex))
-        : null;
+  // -------------------------
+  // 1) ROW questions (Right/Wrong)
+  // -------------------------
+  if (qType === "ROW") {
+    const correctRow = normalizeRowChoice((q as any).correctRow ?? null);
+    const chosenRow = normalizeRowChoice(chosenKey);
 
-    const isCorrect = chosenKey && correctKey && chosenKey === correctKey;
+    const isCorrect = !!(chosenRow && correctRow && chosenRow === correctRow);
+    if (isCorrect) continue; // show only WRONG
 
-    // If you only want WRONG questions on results page:
-    if (isCorrect) continue;
-
-    const options = q.options.map((opt, idx) => {
-      const key = opt.originalKey ?? String.fromCharCode(65 + idx);
-      const text = `${key}. ${opt.text}`;
-
-      let tone: "neutral" | "correct" | "wrong" = "neutral";
-      if (correctKey && key === correctKey) tone = "correct";
-      if (chosenKey && key === chosenKey && key !== correctKey) tone = "wrong";
-
-      return { key, text, tone };
-    });
-
-const imageAsset = q.assets?.find((a: any) => a.kind === "image");
-
-// Use ONLY .src (same as real-test)
-const imageSrc = imageAsset?.src;
-
+    const options: ReviewItem["options"] = [
+      {
+        key: "R",
+        text: "R. Right",
+        tone:
+          correctRow === "R"
+            ? "correct"
+            : chosenRow === "R"
+            ? "wrong"
+            : "neutral",
+      },
+      {
+        key: "W",
+        text: "W. Wrong",
+        tone:
+          correctRow === "W"
+            ? "correct"
+            : chosenRow === "W"
+            ? "wrong"
+            : "neutral",
+      },
+    ];
 
     items.push({
-      qid: q.id,
-      prompt: q.prompt,
+      qid: (q as any).id,
+      testNo,
+      prompt: (q as any).prompt,
       imageSrc,
       options,
-      explanation: q.explanation, // optional future field
+      explanation: (q as any).explanation,
     });
+
+    continue;
   }
 
-  // ROW questions can be added later similarly (R/W)
+  // -------------------------
+  // 2) MCQ questions
+  // -------------------------
+  const correctOptionId = (q as any).correctOptionId as string | undefined;
+  const opts = Array.isArray((q as any).options) ? (q as any).options : [];
+
+  const chosenOpt =
+    chosenKey
+      ? opts.find((opt: any, idx: number) => {
+          const k = opt?.originalKey ?? String.fromCharCode(65 + idx);
+          return k === chosenKey;
+        })
+      : null;
+
+  const isCorrect = !!(chosenOpt && correctOptionId && chosenOpt.id === correctOptionId);
+  if (isCorrect) continue; // show only WRONG
+
+  const correctIndex = opts.findIndex((opt: any) => opt?.id === correctOptionId);
+  const correctKey =
+    correctIndex >= 0
+      ? (opts[correctIndex].originalKey ?? String.fromCharCode(65 + correctIndex))
+      : null;
+
+  const options: ReviewItem["options"] = opts.map((opt: any, idx: number) => {
+    const key = opt?.originalKey ?? String.fromCharCode(65 + idx);
+    const text = `${key}. ${opt?.text ?? ""}`;
+
+    let tone: "neutral" | "correct" | "wrong" = "neutral";
+    if (correctKey && key === correctKey) tone = "correct";
+    if (chosenKey && key === chosenKey && key !== correctKey) tone = "wrong";
+
+    return { key, text, tone };
+  });
+
+  items.push({
+    qid: (q as any).id,
+    testNo,
+    prompt: (q as any).prompt,
+    imageSrc,
+    options,
+    explanation: (q as any).explanation,
+  });
 }
 
-console.log(
-  "RESULTS image src sample:",
-  items.slice(0, 5).map((i) => ({ qid: i.qid, imageSrc: i.imageSrc }))
-);
-
-
+setBrokenImages({});
+items.sort((a, b) => a.testNo - b.testNo);
 setReviewItems(items);
+
+
+
 
     })();
   }, [attemptId]);
@@ -172,29 +253,6 @@ setReviewItems(items);
 
   const percent = useMemo(() => Math.round(pct * 100), [pct]);
 
-
-  // Demo content to match your screenshot layout (keep this mock for now)
-  const question =
-    sp.get('q') ??
-    'When skidding, if the rear end of the car is skidding to the right, turn your wheel to the:';
-
-  const explanationTitle = sp.get('exTitle') ?? 'Explanation:';
-  const explanation =
-    sp.get('ex') ??
-    "When your vehicle begins to skid, especially if the rear end is skidding to the right, you should turn the steering wheel in the direction of the skid (to the right, in this case). This action helps to regain control of the car and align the wheels with the direction of travel. It's crucial not to overcorrect, as that can lead to a counter-skid.";
-
-  const a =
-    sp.get('a') ??
-    'A. Slowly and safely accelerate while steering in the direction of the skid';
-  const b =
-    sp.get('b') ??
-    'B. Turn your front wheels in the same direction that the rear of the vehicle is sliding';
-  const c =
-    sp.get('c') ??
-    'C. If your car does start to skid, take your foot off the gas, keep both hands on the wheel';
-  const d =
-    sp.get('d') ??
-    'D. Turn your front wheels in the same direction that the rear of the vehicle is sliding';
 
   // Simple guard: if someone opens results without an attemptId
   if (!attemptId) {
@@ -262,46 +320,56 @@ setReviewItems(items);
 
 <section className={styles.reviewArea}>
   {reviewItems.length === 0 ? (
-    <p className={styles.question}>No incorrect questions 🎉</p>
+    <p className={styles.question}>Expatise! No incorrect questions! 🎉</p>
   ) : (
     reviewItems.map((item, idx) => (
       <article key={item.qid} style={{ marginBottom: 18 }}>
-        <p className={styles.question}>
-          {idx + 1}. {item.prompt}
-        </p>
+       <p className={styles.question}>
+  {item.testNo}. {item.prompt}
+</p>
 
-        {item.imageSrc ? (
-          <Image
-            src={item.imageSrc}
-            alt="Question image"
-            width={120}
-            height={120}
-            className={styles.qImage}
-          />
-        ) : null}
+<div className={styles.qaRow}>
+  {item.imageSrc && !brokenImages[item.qid] ? (
+    <div className={styles.imageWrap}>
+      <Image
+        src={item.imageSrc}
+        alt="Question image"
+        fill
+        sizes="120px"
+        className={styles.image}
+        unoptimized
+        onError={() => setBrokenImages((p) => ({ ...p, [item.qid]: true }))}
+      />
+    </div>
+  ) : null}
 
-        <div className={styles.options}>
-          {item.options.map((o) => (
-            <div
-              key={o.key}
-              className={[
-                styles.option,
-                o.tone === "correct"
-                  ? styles.optionCorrect
-                  : o.tone === "wrong"
-                  ? styles.optionWrong
-                  : styles.optionNeutral,
-              ].join(" ")}
-            >
-              {o.text}
-            </div>
-          ))}
-        </div>
+  <div className={styles.options}>
+    {item.options.map((o) => (
+      <div
+        key={o.key}
+        className={[
+          styles.option,
+          o.tone === "correct"
+            ? styles.optionCorrect
+            : o.tone === "wrong"
+            ? styles.optionWrong
+            : styles.optionNeutral,
+        ].join(" ")}
+      >
+        {o.text}
+      </div>
+    ))}
+  </div>
+</div>
 
-        <div className={styles.exTitle}>Explanation:</div>
-        <div className={styles.exBody}>
-          {item.explanation ?? "Explanation coming soon."}
-        </div>
+
+        {(item.explanation ?? "").trim().length > 0 && (
+  <>
+    <div className={styles.exTitle}>Explanation:</div>
+    <div className={styles.exBody}>{item.explanation}</div>
+  </>
+)}
+
       </article>
     ))
   )}

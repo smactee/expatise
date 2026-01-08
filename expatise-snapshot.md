@@ -7823,6 +7823,7 @@ const timeText = `${timeMin}min ${timeSec}sec`;
 };
 
 const [reviewItems, setReviewItems] = useState<ReviewItem[]>([]);
+const [brokenImages, setBrokenImages] = useState<Record<string, boolean>>({});
 
 
   useEffect(() => {
@@ -7869,28 +7870,82 @@ const [reviewItems, setReviewItems] = useState<ReviewItem[]>([]);
       }
 
       setComputed({ correct, total: picked.length });
-      // Prepare review items (simple version: first incorrect only)
-      const items: ReviewItem[] = [];
+// Prepare review items (WRONG ONLY)
+const items: ReviewItem[] = [];
 
 for (const q of picked) {
   const chosenKey = a.answersByQid[q.id]?.choice ?? null;
 
-  // Find correct option key for MCQ
-  if (q.type !== "ROW") {
-    const correctOptionId = (q as any).correctOptionId as string | undefined;
+  // IMPORTANT: handle both "ROW" and "row"
+  const qType = String((q as any).type ?? "").toUpperCase();
 
-    const correctIndex = q.options.findIndex(opt => opt.id === correctOptionId);
-    const correctKey =
-      correctIndex >= 0
-        ? (q.options[correctIndex].originalKey ?? String.fromCharCode(65 + correctIndex))
-        : null;
+  // Image: your JSON uses assets[].src like "/qbank/2023-test1/images/xxx.jpeg"
+  const imageAsset = (q as any).assets?.find((a: any) => a.kind === "image");
+  const imageSrc = imageAsset?.src;
 
-    const isCorrect = chosenKey && correctKey && chosenKey === correctKey;
+  // -------------------------
+  // 1) ROW questions (Right/Wrong)
+  // -------------------------
+  if (qType === "ROW") {
+    const correctRow = normalizeRowChoice((q as any).correctRow ?? null); // "R" | "W" | null
+    const chosenRow = normalizeRowChoice(chosenKey);                      // "R" | "W" | null
 
-    // If you only want WRONG questions on results page:
-    if (isCorrect) continue;
+    const isCorrect = !!(chosenRow && correctRow && chosenRow === correctRow);
+    if (isCorrect) continue; // show only WRONG
 
-    const options = q.options.map((opt, idx) => {
+    const options: ReviewItem["options"] = [
+      {
+        key: "R",
+        text: "R. Right",
+        tone:
+          correctRow === "R"
+            ? "correct"
+            : chosenRow === "R"
+            ? "wrong"
+            : "neutral",
+      },
+      {
+        key: "W",
+        text: "W. Wrong",
+        tone:
+          correctRow === "W"
+            ? "correct"
+            : chosenRow === "W"
+            ? "wrong"
+            : "neutral",
+      },
+    ];
+
+    items.push({
+      qid: (q as any).id,
+      prompt: (q as any).prompt,
+      imageSrc,
+      options,
+      explanation: (q as any).explanation,
+    });
+
+    continue;
+  }
+
+  // -------------------------
+  // 2) MCQ questions
+  // -------------------------
+  const correctOptionId = (q as any).correctOptionId as string | undefined;
+
+  const correctIndex =
+    ((q as any).options ?? []).findIndex((opt: any) => opt.id === correctOptionId);
+
+  const correctKey =
+    correctIndex >= 0
+      ? (((q as any).options[correctIndex].originalKey) ??
+         String.fromCharCode(65 + correctIndex))
+      : null;
+
+  const isCorrect = chosenKey && correctKey && chosenKey === correctKey;
+  if (isCorrect) continue; // show only WRONG
+
+  const options: ReviewItem["options"] = ((q as any).options ?? []).map(
+    (opt: any, idx: number) => {
       const key = opt.originalKey ?? String.fromCharCode(65 + idx);
       const text = `${key}. ${opt.text}`;
 
@@ -7899,33 +7954,27 @@ for (const q of picked) {
       if (chosenKey && key === chosenKey && key !== correctKey) tone = "wrong";
 
       return { key, text, tone };
-    });
+    }
+  );
 
-const imageAsset = q.assets?.find((a: any) => a.kind === "image");
-
-// Use ONLY .src (same as real-test)
-const imageSrc = imageAsset?.src;
-
-
-    items.push({
-      qid: q.id,
-      prompt: q.prompt,
-      imageSrc,
-      options,
-      explanation: q.explanation, // optional future field
-    });
-  }
-
-  // ROW questions can be added later similarly (R/W)
+  items.push({
+    qid: (q as any).id,
+    prompt: (q as any).prompt,
+    imageSrc,
+    options,
+    explanation: (q as any).explanation,
+  });
 }
 
 console.log(
   "RESULTS image src sample:",
-  items.slice(0, 5).map((i) => ({ qid: i.qid, imageSrc: i.imageSrc }))
+  items.slice(0, 10).map((i) => ({ qid: i.qid, imageSrc: i.imageSrc }))
 );
 
-
+setBrokenImages({});
 setReviewItems(items);
+
+
 
     })();
   }, [attemptId]);
@@ -8035,15 +8084,20 @@ setReviewItems(items);
           {idx + 1}. {item.prompt}
         </p>
 
-        {item.imageSrc ? (
-          <Image
-            src={item.imageSrc}
-            alt="Question image"
-            width={120}
-            height={120}
-            className={styles.qImage}
-          />
-        ) : null}
+{item.imageSrc && !brokenImages[item.qid] ? (
+  <div className={styles.imageWrap}>
+    <Image
+      src={item.imageSrc}
+      alt="Question image"
+      fill
+      className={styles.image}
+      unoptimized
+      onError={() => setBrokenImages((p) => ({ ...p, [item.qid]: true }))}
+    />
+  </div>
+) : null}
+
+
 
         <div className={styles.options}>
           {item.options.map((o) => (
@@ -8450,6 +8504,20 @@ setReviewItems(items);
   background: rgba(0, 0, 0, 0.06);
   margin: 0 0 12px;
 }
+
+.imageWrap {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  border-radius: 10px;
+  overflow: hidden;
+  margin: 0 0 12px;
+}
+
+.image {
+  object-fit: cover;
+}
+
 
 /* Options stack properly */
 .options {
