@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import Image from 'next/image';
 import BottomNav from '../../components/BottomNav';
 import styles from './all-questions.module.css';
@@ -33,6 +33,9 @@ export default function AllQuestionsClient({
   const { idSet: bookmarkedSet, isBookmarked, toggle } = useBookmarks(datasetId);
   // ✅ Selection (only used in Bookmarks mode)
 const [selectedIds, setSelectedIds] = useState<Set<string>>(() => new Set());
+const [showToTop, setShowToTop] = useState(false);
+const [navOffsetY, setNavOffsetY] = useState(0);
+const lastYRef = useRef(0);
 
 
 
@@ -174,6 +177,35 @@ function toggleSelectAllVisible() {
     return next;
   });
 }
+
+useEffect(() => {
+  if (typeof window === 'undefined') return;
+
+  lastYRef.current = window.scrollY;
+
+  const MIN_Y_TO_SHOW = 320; // don't show near top
+  const DELTA_THRESHOLD = 6; // prevents flicker
+
+  const onScroll = () => {
+    const y = window.scrollY;
+    const delta = y - lastYRef.current;
+
+    // show only when scrolling UP (delta < 0), and far enough down
+    if (y < MIN_Y_TO_SHOW) {
+      setShowToTop(false);
+    } else if (delta < -DELTA_THRESHOLD) {
+      setShowToTop(true);
+    } else if (delta > DELTA_THRESHOLD) {
+      setShowToTop(false);
+    }
+
+    lastYRef.current = y;
+  };
+
+  window.addEventListener('scroll', onScroll, { passive: true });
+  return () => window.removeEventListener('scroll', onScroll);
+}, []);
+
 
 
 
@@ -399,8 +431,28 @@ onClick={(e) => {
             </article>
           ))}
         </section>
+<div
+  className={styles.toTopWrap}
+  style={{ transform: `translateY(${navOffsetY}px)` }}
+>
+  <button
+    type="button"
+    className={`${styles.toTopBtn} ${showToTop ? styles.toTopBtnVisible : ''}`}
+    onClick={() => {
+      const prefersReduced =
+        typeof window !== 'undefined' &&
+        window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
 
-        <BottomNav />
+      window.scrollTo({ top: 0, behavior: prefersReduced ? 'auto' : 'smooth' });
+    }}
+    aria-label="Scroll to top"
+    title="Back to top"
+  >
+    <span className={styles.toTopIcon} aria-hidden="true">↑</span>
+  </button>
+</div>
+
+        <BottomNav onOffsetChange={setNavOffsetY} />
       </div>
     </main>
   );

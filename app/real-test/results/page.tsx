@@ -1,7 +1,7 @@
 /* app/real-test/results/page.tsx */
 'use client';
 
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import styles from './results.module.css';
 import Image from 'next/image';
@@ -10,6 +10,8 @@ import { loadDataset } from '../../../lib/qbank/loadDataset';
 import type { DatasetId } from '../../../lib/qbank/datasets';
 import type { Question } from '../../../lib/qbank/types';
 import { readAttemptById, type TestAttemptV1 } from '../../../lib/test-engine/attemptStorage';
+import { useBookmarks } from '../../../lib/bookmarks/useBookmarks';
+import { closeAttemptById } from '../../../lib/test-engine/attemptStorage';
 
 function clamp(n: number, min: number, max: number) {
   return Math.max(min, Math.min(max, n));
@@ -68,7 +70,6 @@ const timeText = `${timeMin}min ${timeSec}sec`;
     total: 0,
   });
   
-
   type ReviewItem = {
   qid: string;
   testNo: number;
@@ -81,6 +82,100 @@ const timeText = `${timeMin}min ${timeSec}sec`;
 const [reviewItems, setReviewItems] = useState<ReviewItem[]>([]);
 const [brokenImages, setBrokenImages] = useState<Record<string, boolean>>({});
 
+const datasetId = attempt?.datasetId ?? "";
+const { toggle, isBookmarked } = useBookmarks(datasetId || "pending");
+
+const [viewMode, setViewMode] = useState<'list' | 'carousel'>('list');
+const [activeSlide, setActiveSlide] = useState(0);
+const carouselRef = useRef<HTMLDivElement | null>(null);
+
+const [isDragging, setIsDragging] = useState(false);
+
+const dragRef = useRef({
+  down: false,
+  startX: 0,
+  startLeft: 0,
+  moved: false,
+});
+
+const onCarouselPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+  // Only enable “drag to scroll” for mouse. Touch keeps native swipe.
+  if (e.pointerType !== 'mouse') return;
+
+  // ✅ If user clicked a button (bookmark / toggle etc), do NOT capture pointer
+  const target = e.target as HTMLElement;
+  if (target.closest('button, a, input, textarea, select, label')) return;
+
+  const el = carouselRef.current;
+  if (!el) return;
+
+  dragRef.current.down = true;
+  dragRef.current.moved = false;
+  dragRef.current.startX = e.clientX;
+  dragRef.current.startLeft = el.scrollLeft;
+
+  setIsDragging(true);
+  el.setPointerCapture(e.pointerId);
+};
+
+
+const onCarouselPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+  if (e.pointerType !== 'mouse') return;
+  if (!dragRef.current.down) return;
+
+  const el = carouselRef.current;
+  if (!el) return;
+
+  const dx = e.clientX - dragRef.current.startX;
+  if (Math.abs(dx) > 3) dragRef.current.moved = true;
+
+  // Drag left -> show next slide (scrollRight), so we subtract dx
+  el.scrollLeft = dragRef.current.startLeft - dx;
+};
+
+const snapToNearestSlide = () => {
+  const el = carouselRef.current;
+  if (!el) return;
+
+  const w = el.clientWidth || 1;
+  const idx = Math.round(el.scrollLeft / w);
+  el.scrollTo({ left: idx * w, behavior: 'smooth' });
+};
+
+const onCarouselPointerUpOrCancel = (e: React.PointerEvent<HTMLDivElement>) => {
+  if (e.pointerType !== 'mouse') return;
+
+  const el = carouselRef.current;
+  if (!el) return;
+
+  dragRef.current.down = false;
+  setIsDragging(false);
+
+  try {
+    el.releasePointerCapture(e.pointerId);
+  } catch {}
+
+  // Force a clean snap on desktop after drag ends
+  snapToNearestSlide();
+};
+
+
+useEffect(() => {
+  if (viewMode !== 'carousel') return;
+
+  const el = carouselRef.current;
+  if (!el) return;
+
+  const onScroll = () => {
+    const w = el.clientWidth || 1;
+    const idx = Math.round(el.scrollLeft / w);
+    setActiveSlide(Math.max(0, Math.min(idx, reviewItems.length - 1)));
+  };
+
+  onScroll();
+  el.addEventListener('scroll', onScroll, { passive: true });
+  return () => el.removeEventListener('scroll', onScroll as any);
+}, [viewMode, reviewItems.length]);
 
   useEffect(() => {
     if (!attemptId) return;
@@ -239,12 +334,14 @@ for (let i = 0; i < picked.length; i++) {
 setBrokenImages({});
 items.sort((a, b) => a.testNo - b.testNo);
 setReviewItems(items);
-
-
-
-
     })();
   }, [attemptId]);
+
+useEffect(() => {
+  if (!attemptId) return;
+  closeAttemptById(attemptId);
+}, [attemptId]);
+
 
   const pct = useMemo(() => {
     const t = computed.total > 0 ? computed.total : 1;
@@ -308,79 +405,229 @@ setReviewItems(items);
         <div className={styles.testResultsTitle}>Test Results</div>
 
         <div className={styles.incorrectRow}>
-<Image
+  <Image
     src="/images/test/red-x-icon.png"
     alt="Red X Icon"
     width={24}
     height={24}
     className={styles.btnIcon}
   />
-          <div className={styles.incorrectText}>Incorrect</div>
-        </div>
 
-<section className={styles.reviewArea}>
-  {reviewItems.length === 0 ? (
-    <p className={styles.question}>Expatise! No incorrect questions! 🎉</p>
-  ) : (
-    reviewItems.map((item, idx) => (
-      <article key={item.qid} style={{ marginBottom: 18 }}>
-       <p className={styles.question}>
-  {item.testNo}. {item.prompt}
-</p>
+  <div className={styles.incorrectText}>Incorrect</div>
 
-<div className={styles.qaRow}>
-  {item.imageSrc && !brokenImages[item.qid] ? (
-    <div className={styles.imageWrap}>
-      <Image
-        src={item.imageSrc}
-        alt="Question image"
-        fill
-        sizes="120px"
-        className={styles.image}
-        unoptimized
-        onError={() => setBrokenImages((p) => ({ ...p, [item.qid]: true }))}
-      />
+  <div className={styles.incorrectSpacer} />
+
+  {reviewItems.length > 0 && viewMode === 'carousel' && (
+    <div className={styles.slideCounter}>
+      {activeSlide + 1}/{reviewItems.length}
     </div>
-  ) : null}
+  )}
 
-  <div className={styles.options}>
-    {item.options.map((o) => (
-      <div
-        key={o.key}
-        className={[
-          styles.option,
-          o.tone === "correct"
-            ? styles.optionCorrect
-            : o.tone === "wrong"
-            ? styles.optionWrong
-            : styles.optionNeutral,
-        ].join(" ")}
-      >
-        {o.text}
-      </div>
-    ))}
-  </div>
+<button
+  type="button"
+  className={styles.viewToggle}
+  onClick={() => setViewMode((v) => (v === 'list' ? 'carousel' : 'list'))}
+  aria-pressed={viewMode === 'carousel'}
+  aria-label={viewMode === 'carousel' ? 'Switch to list view' : 'Switch to swipe view'}
+  title={viewMode === 'carousel' ? 'List view' : 'Swipe view'}
+>
+  <Image
+    src={viewMode === 'carousel'
+      ? '/images/test/list-icon.png'     // ✅ your “list” icon
+      : '/images/test/carousel-icon.png'}   // ✅ your “swipe” icon
+    alt=""
+    width={18}
+    height={18}
+  />
+</button>
+
 </div>
 
 
-        {(item.explanation ?? "").trim().length > 0 && (
-  <>
-    <div className={styles.exTitle}>Explanation:</div>
-    <div className={styles.exBody}>{item.explanation}</div>
-  </>
-)}
+<section
+  className={[
+    styles.reviewArea,
+    viewMode === 'carousel' ? styles.reviewAreaCarousel : '',
+  ].join(' ')}
+>
+  {reviewItems.length === 0 ? (
+    <p className={styles.question}>Expatise! No incorrect questions! 🎉</p>
+  ) : viewMode === 'list' ? (
+    reviewItems.map((item) => (
+      <article key={item.qid} style={{ marginBottom: 18 }}>
+        <div className={styles.questionRow}>
+  <p className={[styles.question, styles.questionText].join(' ')}>
+    {item.testNo}. {item.prompt}
+  </p>
 
+  <button
+  type="button"
+  className={styles.bookmarkBtn}
+    onPointerDown={(e) => {
+    // ✅ prevents carousel from capturing pointer + also clears any leftover “moved”
+    e.stopPropagation();
+    dragRef.current.moved = false;
+  }}
+  onClick={(e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    toggle(item.qid);
+  }}
+  aria-label={isBookmarked(item.qid) ? 'Remove bookmark' : 'Add bookmark'}
+  title={isBookmarked(item.qid) ? 'Bookmarked' : 'Bookmark'}
+  data-bookmarked={isBookmarked(item.qid) ? 'true' : 'false'}
+>
+  <span className={styles.bookmarkIcon} aria-hidden="true" />
+</button>
+
+</div>
+
+
+        <div className={styles.qaRow}>
+          {item.imageSrc && !brokenImages[item.qid] ? (
+            <div className={styles.imageWrap}>
+              <Image
+                src={item.imageSrc}
+                alt="Question image"
+                fill
+                sizes="120px"
+                className={styles.image}
+                unoptimized
+                onError={() => setBrokenImages((p) => ({ ...p, [item.qid]: true }))}
+              />
+            </div>
+          ) : null}
+
+          <div className={styles.options}>
+            {item.options.map((o) => (
+              <div
+                key={o.key}
+                className={[
+                  styles.option,
+                  o.tone === 'correct'
+                    ? styles.optionCorrect
+                    : o.tone === 'wrong'
+                    ? styles.optionWrong
+                    : styles.optionNeutral,
+                ].join(' ')}
+              >
+                {o.text}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {(item.explanation ?? '').trim().length > 0 && (
+          <>
+            <div className={styles.exTitle}>Explanation:</div>
+            <div className={styles.exBody}>{item.explanation}</div>
+          </>
+        )}
       </article>
     ))
+  ) : (
+    <div
+  ref={carouselRef}
+  className={[
+    styles.carousel,
+    isDragging ? styles.carouselDragging : '',
+  ].join(' ')}
+  onPointerDown={onCarouselPointerDown}
+  onPointerMove={onCarouselPointerMove}
+  onPointerUp={onCarouselPointerUpOrCancel}
+  onPointerCancel={onCarouselPointerUpOrCancel}
+  onClickCapture={(e) => {
+    if (dragRef.current.moved) {
+      e.preventDefault();
+      e.stopPropagation();
+      dragRef.current.moved = false;
+    }
+  }}
+>
+      {reviewItems.map((item) => (
+        <div key={item.qid} className={styles.slide}>
+          <article>
+            <div className={styles.questionRow}>
+  <p className={[styles.question, styles.questionText].join(' ')}>
+    {item.testNo}. {item.prompt}
+  </p>
+
+ <button
+  type="button"
+  className={styles.bookmarkBtn}
+  onClick={(e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    toggle(item.qid);
+  }}
+  aria-label={isBookmarked(item.qid) ? 'Remove bookmark' : 'Add bookmark'}
+  title={isBookmarked(item.qid) ? 'Bookmarked' : 'Bookmark'}
+  data-bookmarked={isBookmarked(item.qid) ? 'true' : 'false'}
+>
+  <span className={styles.bookmarkIcon} aria-hidden="true" />
+</button>
+
+</div>
+
+
+            <div className={styles.qaRow}>
+              {item.imageSrc && !brokenImages[item.qid] ? (
+                <div className={styles.imageWrap}>
+                  <Image
+                    src={item.imageSrc}
+                    alt="Question image"
+                    fill
+                    sizes="120px"
+                    className={styles.image}
+                    unoptimized
+                    draggable={false}
+                    onError={() => setBrokenImages((p) => ({ ...p, [item.qid]: true }))}
+                  />
+                </div>
+              ) : null}
+
+              <div className={styles.options}>
+                {item.options.map((o) => (
+                  <div
+                    key={o.key}
+                    className={[
+                      styles.option,
+                      o.tone === 'correct'
+                        ? styles.optionCorrect
+                        : o.tone === 'wrong'
+                        ? styles.optionWrong
+                        : styles.optionNeutral,
+                    ].join(' ')}
+                  >
+                    {o.text}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {(item.explanation ?? '').trim().length > 0 && (
+              <>
+                <div className={styles.exTitle}>Explanation:</div>
+                <div className={styles.exBody}>{item.explanation}</div>
+              </>
+            )}
+          </article>
+        </div>
+      ))}
+    </div>
   )}
 </section>
+
 
 
 
         <button
           type="button"
           className={styles.continueBtn}
-          onClick={() => router.push('/real-test')}
+           onClick={() => {
+    if (attemptId) closeAttemptById(attemptId);
+    router.push('/');
+  }}
         >
 
           <span className={styles.continueText}>Home</span>

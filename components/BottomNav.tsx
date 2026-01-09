@@ -3,54 +3,64 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
-import styles from '../app/page.module.css';   // reuse your current CSS
-import  { useEffect, useState, useRef } from 'react';
+import styles from '../app/page.module.css';
+import { useEffect, useRef, useState } from 'react';
 
+type BottomNavProps = {
+  onOffsetChange?: (offsetY: number) => void;
+};
 
-export default function BottomNav() {
+export default function BottomNav({ onOffsetChange }: BottomNavProps) {
   const pathname = usePathname();
 
   const isHome = pathname === '/';
   const isStats = pathname === '/stats';
   const isProfile = pathname === '/profile';
 
-  // How far the nav is pushed down (0 = fully visible)
   const [offsetY, setOffsetY] = useState(0);
+
   const lastScrollYRef = useRef(0);
+  const offsetYRef = useRef(0);
+
+  // keep latest callback without re-binding scroll listener
+  const onOffsetChangeRef = useRef<BottomNavProps['onOffsetChange']>(onOffsetChange);
+  useEffect(() => {
+    onOffsetChangeRef.current = onOffsetChange;
+  }, [onOffsetChange]);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
-    // start from current scroll
     lastScrollYRef.current = window.scrollY;
+    offsetYRef.current = 0;
 
     const handleScroll = () => {
       const currentY = window.scrollY;
-      const delta = currentY - lastScrollYRef.current; // + when scrolling down
+      const delta = currentY - lastScrollYRef.current;
       lastScrollYRef.current = currentY;
 
-      setOffsetY((prev) => {
-        const maxOffset = 90; // how far we allow it to slide down (px)
-        let next = prev + delta;
+      const maxOffset = 90;
+      let next = offsetYRef.current + delta;
 
-        if (next < 0) next = 0;            // don’t go above original spot
-        if (next > maxOffset) next = maxOffset; // fully hidden past this
+      if (next < 0) next = 0;
+      if (next > maxOffset) next = maxOffset;
 
-        return next;
-      });
+      if (next !== offsetYRef.current) {
+        offsetYRef.current = next;
+        setOffsetY(next); // ✅ BottomNav state update
+        onOffsetChangeRef.current?.(next); // ✅ Parent update (safe: not inside updater)
+      }
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-
   return (
     <div
-  className={styles.bottomNavWrapper}
-  style={{ transform: `translate(-50%, ${offsetY}px)` }}
->
-
+      className={styles.bottomNavWrapper}
+      style={{ transform: `translate(-50%, ${offsetY}px)` }}
+    >
       <nav className={styles.bottomNav}>
         {/* Home */}
         <Link
@@ -117,9 +127,7 @@ export default function BottomNav() {
         {/* Profile */}
         <Link
           href="/profile"
-          className={`${styles.navItem} ${
-            isProfile ? styles.navItemActive : ''
-          }`}
+          className={`${styles.navItem} ${isProfile ? styles.navItemActive : ''}`}
         >
           {isProfile ? (
             <div className={styles.navPill}>

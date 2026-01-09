@@ -548,7 +548,7 @@ export default function AccountSecurityPage() {
 ```tsx
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import Image from 'next/image';
 import BottomNav from '../../components/BottomNav';
 import styles from './all-questions.module.css';
@@ -581,6 +581,9 @@ export default function AllQuestionsClient({
   const { idSet: bookmarkedSet, isBookmarked, toggle } = useBookmarks(datasetId);
   // ✅ Selection (only used in Bookmarks mode)
 const [selectedIds, setSelectedIds] = useState<Set<string>>(() => new Set());
+const [showToTop, setShowToTop] = useState(false);
+const [navOffsetY, setNavOffsetY] = useState(0);
+const lastYRef = useRef(0);
 
 
 
@@ -722,6 +725,35 @@ function toggleSelectAllVisible() {
     return next;
   });
 }
+
+useEffect(() => {
+  if (typeof window === 'undefined') return;
+
+  lastYRef.current = window.scrollY;
+
+  const MIN_Y_TO_SHOW = 320; // don't show near top
+  const DELTA_THRESHOLD = 6; // prevents flicker
+
+  const onScroll = () => {
+    const y = window.scrollY;
+    const delta = y - lastYRef.current;
+
+    // show only when scrolling UP (delta < 0), and far enough down
+    if (y < MIN_Y_TO_SHOW) {
+      setShowToTop(false);
+    } else if (delta < -DELTA_THRESHOLD) {
+      setShowToTop(true);
+    } else if (delta > DELTA_THRESHOLD) {
+      setShowToTop(false);
+    }
+
+    lastYRef.current = y;
+  };
+
+  window.addEventListener('scroll', onScroll, { passive: true });
+  return () => window.removeEventListener('scroll', onScroll);
+}, []);
+
 
 
 
@@ -947,8 +979,28 @@ onClick={(e) => {
             </article>
           ))}
         </section>
+<div
+  className={styles.toTopWrap}
+  style={{ transform: `translateY(${navOffsetY}px)` }}
+>
+  <button
+    type="button"
+    className={`${styles.toTopBtn} ${showToTop ? styles.toTopBtnVisible : ''}`}
+    onClick={() => {
+      const prefersReduced =
+        typeof window !== 'undefined' &&
+        window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
 
-        <BottomNav />
+      window.scrollTo({ top: 0, behavior: prefersReduced ? 'auto' : 'smooth' });
+    }}
+    aria-label="Scroll to top"
+    title="Back to top"
+  >
+    <span className={styles.toTopIcon} aria-hidden="true">↑</span>
+  </button>
+</div>
+
+        <BottomNav onOffsetChange={setNavOffsetY} />
       </div>
     </main>
   );
@@ -1266,6 +1318,52 @@ onClick={(e) => {
   filter: brightness(1) contrast(1.5) saturate(2);
 }
 
+/* Scroll-to-top button */
+.toTopWrap {
+  position: fixed;
+  right: 16px;
+
+  /* "above the nav bar by 50px"
+     If your nav height is slightly different, adjust 86px */
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 86px + 50px);
+
+  z-index: 80;
+  will-change: transform;
+}
+
+.toTopBtn {
+  width: 44px;
+  height: 44px;
+  border-radius: 16px;
+  border: 1px solid rgba(0,0,0,0.12);
+  background: rgba(255,255,255,0.75);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 12px 28px rgba(15, 33, 70, 0.18);
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  cursor: pointer;
+
+  opacity: 0;
+  pointer-events: none;
+  transform: scale(0.96);
+  transition: opacity 180ms ease, transform 180ms ease;
+}
+
+.toTopBtnVisible {
+  opacity: 1;
+  pointer-events: auto;
+  transform: scale(1);
+}
+
+.toTopIcon {
+  font-size: 18px;
+  font-weight: 900;
+  line-height: 1;
+  opacity: 0.9;
+}
 
 ```
 
@@ -6919,6 +7017,7 @@ import {
   getOrCreateAttempt,
   normalizeUserKey,
   writeAttempt,
+  closeAttemptById,
   type TestAttemptV1,
 } from '../../lib/test-engine/attemptStorage';
 
@@ -6980,6 +7079,11 @@ const finishTest = (reason: 'time' | 'completed') => {
   if (finishedRef.current) return;
   finishedRef.current = true;
 
+  // If attempt exists, close it BEFORE leaving this page
+  if (attempt?.attemptId) {
+    closeAttemptById(attempt.attemptId, { remainingSec: timeLeft });
+  }
+
   if (!attempt) {
     router.push('/real-test/results?reason=' + reason);
     return;
@@ -6997,6 +7101,7 @@ const finishTest = (reason: 'time' | 'completed') => {
 
   router.push(`/real-test/results?${params.toString()}`);
 };
+
 
 
 const { loading: authLoading, email } = useAuthStatus();
@@ -7766,7 +7871,7 @@ height: clamp(240px, 52vw, 340px);
 /* app/real-test/results/page.tsx */
 'use client';
 
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import styles from './results.module.css';
 import Image from 'next/image';
@@ -7775,6 +7880,8 @@ import { loadDataset } from '../../../lib/qbank/loadDataset';
 import type { DatasetId } from '../../../lib/qbank/datasets';
 import type { Question } from '../../../lib/qbank/types';
 import { readAttemptById, type TestAttemptV1 } from '../../../lib/test-engine/attemptStorage';
+import { useBookmarks } from '../../../lib/bookmarks/useBookmarks';
+import { closeAttemptById } from '../../../lib/test-engine/attemptStorage';
 
 function clamp(n: number, min: number, max: number) {
   return Math.max(min, Math.min(max, n));
@@ -7787,6 +7894,26 @@ function normalizeRowChoice(v: string | null | undefined): 'R' | 'W' | null {
   if (t === 'w' || t === 'wrong') return 'W';
   return null;
 }
+
+function getQuestionNumber(q: any): number {
+  // 1) prefer q.number (can be number OR string)
+  const raw = q?.number;
+
+  const fromNumber = Number(raw);
+  if (Number.isFinite(fromNumber) && fromNumber > 0) return Math.floor(fromNumber);
+
+  // 2) fallback: extract digits from id (q0231 -> 231)
+  const idStr = String(q?.id ?? "");
+  const idMatch = idStr.match(/\d+/);
+  if (idMatch) {
+    const n = parseInt(idMatch[0], 10);
+    if (Number.isFinite(n) && n > 0) return n;
+  }
+
+  // 3) last resort: 0 (means “unknown”)
+  return 0;
+}
+
 
 export default function RealTestResultsPage() {
   const router = useRouter();
@@ -7813,9 +7940,9 @@ const timeText = `${timeMin}min ${timeSec}sec`;
     total: 0,
   });
   
-
   type ReviewItem = {
   qid: string;
+  testNo: number;
   prompt: string;
   imageSrc?: string;
   options: { key: string; text: string; tone: "neutral" | "correct" | "wrong" }[];
@@ -7825,6 +7952,100 @@ const timeText = `${timeMin}min ${timeSec}sec`;
 const [reviewItems, setReviewItems] = useState<ReviewItem[]>([]);
 const [brokenImages, setBrokenImages] = useState<Record<string, boolean>>({});
 
+const datasetId = attempt?.datasetId ?? "";
+const { toggle, isBookmarked } = useBookmarks(datasetId || "pending");
+
+const [viewMode, setViewMode] = useState<'list' | 'carousel'>('list');
+const [activeSlide, setActiveSlide] = useState(0);
+const carouselRef = useRef<HTMLDivElement | null>(null);
+
+const [isDragging, setIsDragging] = useState(false);
+
+const dragRef = useRef({
+  down: false,
+  startX: 0,
+  startLeft: 0,
+  moved: false,
+});
+
+const onCarouselPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+  // Only enable “drag to scroll” for mouse. Touch keeps native swipe.
+  if (e.pointerType !== 'mouse') return;
+
+  // ✅ If user clicked a button (bookmark / toggle etc), do NOT capture pointer
+  const target = e.target as HTMLElement;
+  if (target.closest('button, a, input, textarea, select, label')) return;
+
+  const el = carouselRef.current;
+  if (!el) return;
+
+  dragRef.current.down = true;
+  dragRef.current.moved = false;
+  dragRef.current.startX = e.clientX;
+  dragRef.current.startLeft = el.scrollLeft;
+
+  setIsDragging(true);
+  el.setPointerCapture(e.pointerId);
+};
+
+
+const onCarouselPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+  if (e.pointerType !== 'mouse') return;
+  if (!dragRef.current.down) return;
+
+  const el = carouselRef.current;
+  if (!el) return;
+
+  const dx = e.clientX - dragRef.current.startX;
+  if (Math.abs(dx) > 3) dragRef.current.moved = true;
+
+  // Drag left -> show next slide (scrollRight), so we subtract dx
+  el.scrollLeft = dragRef.current.startLeft - dx;
+};
+
+const snapToNearestSlide = () => {
+  const el = carouselRef.current;
+  if (!el) return;
+
+  const w = el.clientWidth || 1;
+  const idx = Math.round(el.scrollLeft / w);
+  el.scrollTo({ left: idx * w, behavior: 'smooth' });
+};
+
+const onCarouselPointerUpOrCancel = (e: React.PointerEvent<HTMLDivElement>) => {
+  if (e.pointerType !== 'mouse') return;
+
+  const el = carouselRef.current;
+  if (!el) return;
+
+  dragRef.current.down = false;
+  setIsDragging(false);
+
+  try {
+    el.releasePointerCapture(e.pointerId);
+  } catch {}
+
+  // Force a clean snap on desktop after drag ends
+  snapToNearestSlide();
+};
+
+
+useEffect(() => {
+  if (viewMode !== 'carousel') return;
+
+  const el = carouselRef.current;
+  if (!el) return;
+
+  const onScroll = () => {
+    const w = el.clientWidth || 1;
+    const idx = Math.round(el.scrollLeft / w);
+    setActiveSlide(Math.max(0, Math.min(idx, reviewItems.length - 1)));
+  };
+
+  onScroll();
+  el.addEventListener('scroll', onScroll, { passive: true });
+  return () => el.removeEventListener('scroll', onScroll as any);
+}, [viewMode, reviewItems.length]);
 
   useEffect(() => {
     if (!attemptId) return;
@@ -7844,7 +8065,11 @@ const [brokenImages, setBrokenImages] = useState<Record<string, boolean>>({});
       // Compute score using attempt answers
       let correct = 0;
 
-      for (const q of picked) {
+      for (let i = 0; i < picked.length; i++) {
+  const q = picked[i];
+  const testNo = i + 1;          // ✅ position in THIS test
+  const bankNo = getQuestionNumber(q); // ✅ global/bank number
+
         const chosenKey = a.answersByQid[q.id]?.choice ?? null;
 
         // Your rule: unanswered at timeout = wrong
@@ -7873,22 +8098,26 @@ const [brokenImages, setBrokenImages] = useState<Record<string, boolean>>({});
 // Prepare review items (WRONG ONLY)
 const items: ReviewItem[] = [];
 
-for (const q of picked) {
-  const chosenKey = a.answersByQid[q.id]?.choice ?? null;
+for (let i = 0; i < picked.length; i++) {
+  const q = picked[i];
+  const testNo = i + 1;
 
-  // IMPORTANT: handle both "ROW" and "row"
+  const chosenKey = a.answersByQid[q.id]?.choice ?? null;
   const qType = String((q as any).type ?? "").toUpperCase();
 
-  // Image: your JSON uses assets[].src like "/qbank/2023-test1/images/xxx.jpeg"
-  const imageAsset = (q as any).assets?.find((a: any) => a.kind === "image");
-  const imageSrc = imageAsset?.src;
+  // image
+  const assets = (q as any).assets;
+  const imageAsset = Array.isArray(assets)
+    ? assets.find((a: any) => a?.kind === "image" && typeof a?.src === "string")
+    : null;
+  const imageSrc = imageAsset?.src as string | undefined;
 
   // -------------------------
   // 1) ROW questions (Right/Wrong)
   // -------------------------
   if (qType === "ROW") {
-    const correctRow = normalizeRowChoice((q as any).correctRow ?? null); // "R" | "W" | null
-    const chosenRow = normalizeRowChoice(chosenKey);                      // "R" | "W" | null
+    const correctRow = normalizeRowChoice((q as any).correctRow ?? null);
+    const chosenRow = normalizeRowChoice(chosenKey);
 
     const isCorrect = !!(chosenRow && correctRow && chosenRow === correctRow);
     if (isCorrect) continue; // show only WRONG
@@ -7918,6 +8147,7 @@ for (const q of picked) {
 
     items.push({
       qid: (q as any).id,
+      testNo,
       prompt: (q as any).prompt,
       imageSrc,
       options,
@@ -7931,34 +8161,39 @@ for (const q of picked) {
   // 2) MCQ questions
   // -------------------------
   const correctOptionId = (q as any).correctOptionId as string | undefined;
+  const opts = Array.isArray((q as any).options) ? (q as any).options : [];
 
-  const correctIndex =
-    ((q as any).options ?? []).findIndex((opt: any) => opt.id === correctOptionId);
-
-  const correctKey =
-    correctIndex >= 0
-      ? (((q as any).options[correctIndex].originalKey) ??
-         String.fromCharCode(65 + correctIndex))
+  const chosenOpt =
+    chosenKey
+      ? opts.find((opt: any, idx: number) => {
+          const k = opt?.originalKey ?? String.fromCharCode(65 + idx);
+          return k === chosenKey;
+        })
       : null;
 
-  const isCorrect = chosenKey && correctKey && chosenKey === correctKey;
+  const isCorrect = !!(chosenOpt && correctOptionId && chosenOpt.id === correctOptionId);
   if (isCorrect) continue; // show only WRONG
 
-  const options: ReviewItem["options"] = ((q as any).options ?? []).map(
-    (opt: any, idx: number) => {
-      const key = opt.originalKey ?? String.fromCharCode(65 + idx);
-      const text = `${key}. ${opt.text}`;
+  const correctIndex = opts.findIndex((opt: any) => opt?.id === correctOptionId);
+  const correctKey =
+    correctIndex >= 0
+      ? (opts[correctIndex].originalKey ?? String.fromCharCode(65 + correctIndex))
+      : null;
 
-      let tone: "neutral" | "correct" | "wrong" = "neutral";
-      if (correctKey && key === correctKey) tone = "correct";
-      if (chosenKey && key === chosenKey && key !== correctKey) tone = "wrong";
+  const options: ReviewItem["options"] = opts.map((opt: any, idx: number) => {
+    const key = opt?.originalKey ?? String.fromCharCode(65 + idx);
+    const text = `${key}. ${opt?.text ?? ""}`;
 
-      return { key, text, tone };
-    }
-  );
+    let tone: "neutral" | "correct" | "wrong" = "neutral";
+    if (correctKey && key === correctKey) tone = "correct";
+    if (chosenKey && key === chosenKey && key !== correctKey) tone = "wrong";
+
+    return { key, text, tone };
+  });
 
   items.push({
     qid: (q as any).id,
+    testNo,
     prompt: (q as any).prompt,
     imageSrc,
     options,
@@ -7966,18 +8201,17 @@ for (const q of picked) {
   });
 }
 
-console.log(
-  "RESULTS image src sample:",
-  items.slice(0, 10).map((i) => ({ qid: i.qid, imageSrc: i.imageSrc }))
-);
-
 setBrokenImages({});
+items.sort((a, b) => a.testNo - b.testNo);
 setReviewItems(items);
-
-
-
     })();
   }, [attemptId]);
+
+useEffect(() => {
+  if (!attemptId) return;
+  closeAttemptById(attemptId);
+}, [attemptId]);
+
 
   const pct = useMemo(() => {
     const t = computed.total > 0 ? computed.total : 1;
@@ -7986,29 +8220,6 @@ setReviewItems(items);
 
   const percent = useMemo(() => Math.round(pct * 100), [pct]);
 
-
-  // Demo content to match your screenshot layout (keep this mock for now)
-  const question =
-    sp.get('q') ??
-    'When skidding, if the rear end of the car is skidding to the right, turn your wheel to the:';
-
-  const explanationTitle = sp.get('exTitle') ?? 'Explanation:';
-  const explanation =
-    sp.get('ex') ??
-    "When your vehicle begins to skid, especially if the rear end is skidding to the right, you should turn the steering wheel in the direction of the skid (to the right, in this case). This action helps to regain control of the car and align the wheels with the direction of travel. It's crucial not to overcorrect, as that can lead to a counter-skid.";
-
-  const a =
-    sp.get('a') ??
-    'A. Slowly and safely accelerate while steering in the direction of the skid';
-  const b =
-    sp.get('b') ??
-    'B. Turn your front wheels in the same direction that the rear of the vehicle is sliding';
-  const c =
-    sp.get('c') ??
-    'C. If your car does start to skid, take your foot off the gas, keep both hands on the wheel';
-  const d =
-    sp.get('d') ??
-    'D. Turn your front wheels in the same direction that the rear of the vehicle is sliding';
 
   // Simple guard: if someone opens results without an attemptId
   if (!attemptId) {
@@ -8064,74 +8275,229 @@ setReviewItems(items);
         <div className={styles.testResultsTitle}>Test Results</div>
 
         <div className={styles.incorrectRow}>
-<Image
+  <Image
     src="/images/test/red-x-icon.png"
     alt="Red X Icon"
     width={24}
     height={24}
     className={styles.btnIcon}
   />
-          <div className={styles.incorrectText}>Incorrect</div>
-        </div>
 
-<section className={styles.reviewArea}>
+  <div className={styles.incorrectText}>Incorrect</div>
+
+  <div className={styles.incorrectSpacer} />
+
+  {reviewItems.length > 0 && viewMode === 'carousel' && (
+    <div className={styles.slideCounter}>
+      {activeSlide + 1}/{reviewItems.length}
+    </div>
+  )}
+
+<button
+  type="button"
+  className={styles.viewToggle}
+  onClick={() => setViewMode((v) => (v === 'list' ? 'carousel' : 'list'))}
+  aria-pressed={viewMode === 'carousel'}
+  aria-label={viewMode === 'carousel' ? 'Switch to list view' : 'Switch to swipe view'}
+  title={viewMode === 'carousel' ? 'List view' : 'Swipe view'}
+>
+  <Image
+    src={viewMode === 'carousel'
+      ? '/images/test/list-icon.png'     // ✅ your “list” icon
+      : '/images/test/carousel-icon.png'}   // ✅ your “swipe” icon
+    alt=""
+    width={18}
+    height={18}
+  />
+</button>
+
+</div>
+
+
+<section
+  className={[
+    styles.reviewArea,
+    viewMode === 'carousel' ? styles.reviewAreaCarousel : '',
+  ].join(' ')}
+>
   {reviewItems.length === 0 ? (
-    <p className={styles.question}>No incorrect questions 🎉</p>
-  ) : (
-    reviewItems.map((item, idx) => (
+    <p className={styles.question}>Expatise! No incorrect questions! 🎉</p>
+  ) : viewMode === 'list' ? (
+    reviewItems.map((item) => (
       <article key={item.qid} style={{ marginBottom: 18 }}>
-        <p className={styles.question}>
-          {idx + 1}. {item.prompt}
-        </p>
+        <div className={styles.questionRow}>
+  <p className={[styles.question, styles.questionText].join(' ')}>
+    {item.testNo}. {item.prompt}
+  </p>
 
-{item.imageSrc && !brokenImages[item.qid] ? (
-  <div className={styles.imageWrap}>
-    <Image
-      src={item.imageSrc}
-      alt="Question image"
-      fill
-      className={styles.image}
-      unoptimized
-      onError={() => setBrokenImages((p) => ({ ...p, [item.qid]: true }))}
-    />
-  </div>
-) : null}
+  <button
+  type="button"
+  className={styles.bookmarkBtn}
+    onPointerDown={(e) => {
+    // ✅ prevents carousel from capturing pointer + also clears any leftover “moved”
+    e.stopPropagation();
+    dragRef.current.moved = false;
+  }}
+  onClick={(e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    toggle(item.qid);
+  }}
+  aria-label={isBookmarked(item.qid) ? 'Remove bookmark' : 'Add bookmark'}
+  title={isBookmarked(item.qid) ? 'Bookmarked' : 'Bookmark'}
+  data-bookmarked={isBookmarked(item.qid) ? 'true' : 'false'}
+>
+  <span className={styles.bookmarkIcon} aria-hidden="true" />
+</button>
+
+</div>
 
 
-
-        <div className={styles.options}>
-          {item.options.map((o) => (
-            <div
-              key={o.key}
-              className={[
-                styles.option,
-                o.tone === "correct"
-                  ? styles.optionCorrect
-                  : o.tone === "wrong"
-                  ? styles.optionWrong
-                  : styles.optionNeutral,
-              ].join(" ")}
-            >
-              {o.text}
+        <div className={styles.qaRow}>
+          {item.imageSrc && !brokenImages[item.qid] ? (
+            <div className={styles.imageWrap}>
+              <Image
+                src={item.imageSrc}
+                alt="Question image"
+                fill
+                sizes="120px"
+                className={styles.image}
+                unoptimized
+                onError={() => setBrokenImages((p) => ({ ...p, [item.qid]: true }))}
+              />
             </div>
-          ))}
+          ) : null}
+
+          <div className={styles.options}>
+            {item.options.map((o) => (
+              <div
+                key={o.key}
+                className={[
+                  styles.option,
+                  o.tone === 'correct'
+                    ? styles.optionCorrect
+                    : o.tone === 'wrong'
+                    ? styles.optionWrong
+                    : styles.optionNeutral,
+                ].join(' ')}
+              >
+                {o.text}
+              </div>
+            ))}
+          </div>
         </div>
 
-        <div className={styles.exTitle}>Explanation:</div>
-        <div className={styles.exBody}>
-          {item.explanation ?? "Explanation coming soon."}
-        </div>
+        {(item.explanation ?? '').trim().length > 0 && (
+          <>
+            <div className={styles.exTitle}>Explanation:</div>
+            <div className={styles.exBody}>{item.explanation}</div>
+          </>
+        )}
       </article>
     ))
+  ) : (
+    <div
+  ref={carouselRef}
+  className={[
+    styles.carousel,
+    isDragging ? styles.carouselDragging : '',
+  ].join(' ')}
+  onPointerDown={onCarouselPointerDown}
+  onPointerMove={onCarouselPointerMove}
+  onPointerUp={onCarouselPointerUpOrCancel}
+  onPointerCancel={onCarouselPointerUpOrCancel}
+  onClickCapture={(e) => {
+    if (dragRef.current.moved) {
+      e.preventDefault();
+      e.stopPropagation();
+      dragRef.current.moved = false;
+    }
+  }}
+>
+      {reviewItems.map((item) => (
+        <div key={item.qid} className={styles.slide}>
+          <article>
+            <div className={styles.questionRow}>
+  <p className={[styles.question, styles.questionText].join(' ')}>
+    {item.testNo}. {item.prompt}
+  </p>
+
+ <button
+  type="button"
+  className={styles.bookmarkBtn}
+  onClick={(e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    toggle(item.qid);
+  }}
+  aria-label={isBookmarked(item.qid) ? 'Remove bookmark' : 'Add bookmark'}
+  title={isBookmarked(item.qid) ? 'Bookmarked' : 'Bookmark'}
+  data-bookmarked={isBookmarked(item.qid) ? 'true' : 'false'}
+>
+  <span className={styles.bookmarkIcon} aria-hidden="true" />
+</button>
+
+</div>
+
+
+            <div className={styles.qaRow}>
+              {item.imageSrc && !brokenImages[item.qid] ? (
+                <div className={styles.imageWrap}>
+                  <Image
+                    src={item.imageSrc}
+                    alt="Question image"
+                    fill
+                    sizes="120px"
+                    className={styles.image}
+                    unoptimized
+                    draggable={false}
+                    onError={() => setBrokenImages((p) => ({ ...p, [item.qid]: true }))}
+                  />
+                </div>
+              ) : null}
+
+              <div className={styles.options}>
+                {item.options.map((o) => (
+                  <div
+                    key={o.key}
+                    className={[
+                      styles.option,
+                      o.tone === 'correct'
+                        ? styles.optionCorrect
+                        : o.tone === 'wrong'
+                        ? styles.optionWrong
+                        : styles.optionNeutral,
+                    ].join(' ')}
+                  >
+                    {o.text}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {(item.explanation ?? '').trim().length > 0 && (
+              <>
+                <div className={styles.exTitle}>Explanation:</div>
+                <div className={styles.exBody}>{item.explanation}</div>
+              </>
+            )}
+          </article>
+        </div>
+      ))}
+    </div>
   )}
 </section>
+
 
 
 
         <button
           type="button"
           className={styles.continueBtn}
-          onClick={() => router.push('/real-test')}
+           onClick={() => {
+    if (attemptId) closeAttemptById(attemptId);
+    router.push('/');
+  }}
         >
 
           <span className={styles.continueText}>Home</span>
@@ -8155,6 +8521,7 @@ setReviewItems(items);
 ```css
 .viewport {
   min-height: 100vh;
+  min-height: 100dvh; /* ✅ mobile accurate */
   padding: 0;
   background: var(--color-page-bg);
 }
@@ -8163,9 +8530,12 @@ setReviewItems(items);
   position: relative;
   width: 100%;
   min-height: 100vh;
+  min-height: 100dvh; /* ✅ mobile accurate */
   background: #f4f4f9;
   overflow: hidden;
+  --contentW: min(390px, calc(100% - 60px)); /* ✅ content width */
 }
+
 
 
 /* Figma: Rectangle (full screen overlay) */
@@ -8243,14 +8613,16 @@ setReviewItems(items);
 /* Congratulation! */
 .congrats {
   position: absolute;
-  width: 173px;
-  height: 20px;
-  left: 108px;
   top: 103px;
+
+  left: 50%;
+  transform: translateX(-50%);
+
+  width: max-content;
+  max-width: calc(100% - 60px); /* prevents overflow on small screens */
 
   margin: 0;
   font-family: 'Poppins', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-  font-style: normal;
   font-weight: 500;
   font-size: 22px;
   line-height: 20px;
@@ -8260,17 +8632,22 @@ setReviewItems(items);
   color: #383a44;
 }
 
+
 /* Ring wrapper */
 .ringWrap {
   position: absolute;
+  top: 145px;
+
+  left: 50%;
+  transform: translateX(-50%);
+
   width: 123px;
   height: 123px;
-  left: 133px;
-  top: 145px;
 
   display: grid;
   place-items: center;
 }
+
 
 .ring,
 .ringCenterText {
@@ -8332,60 +8709,53 @@ setReviewItems(items);
 /* Score/Time group container */
 .scoreBox {
   position: absolute;
-  width: 330px;
-  height: 83px;
-  left: 30px;
   top: 302px;
+
+  left: 50%;
+  transform: translateX(-50%);
+
+  width: var(--contentW);
+  height: 83px;
 }
 
-.lineTop {
-  position: absolute;
-  width: 330px;
-  height: 0px;
-  left: 0px;
-  top: 0px;
-  border: 1px solid #2b7caf;
-}
 
+.lineTop,
 .lineBottom {
   position: absolute;
-  width: 330px;
+  left: 0;
+  width: 100%;       /* ✅ instead of 330px */
   height: 0px;
-  left: 0px;
-  top: 83px;
   border: 1px solid #2b7caf;
 }
+
+.lineTop { top: 0; }
+.lineBottom { top: 83px; }
+
 
 .lineMid {
   position: absolute;
-  width: 83px;
-  height: 0px;
-  left: 165px; /* 30 -> 195 in absolute screen coords, so inside box: 195-30=165 */
-  top: 0px;
-  border: 1px solid #2b7caf;
-  transform: rotate(90deg);
-  transform-origin: left top;
+  top: 0;
+  left: 50%;
+  height: 83px;
+  border-left: 1px solid #2b7caf;
 }
+
 
 /* Left score group */
 .scoreLeft,
 .scoreRight {
   position: absolute;
   top: 20px;
-  width: 165px;          /* half of 330 */
+  width: 50%;
   height: 43px;
   display: grid;
   place-items: center;
   gap: 11px;
 }
 
-.scoreLeft {
-  left: 0;
-}
+.scoreLeft { left: 0; }
+.scoreRight { left: 50%; }
 
-.scoreRight {
-  left: 165px;           /* start of right half */
-}
 
 .scoreRight .scoreValue {
   white-space: nowrap;
@@ -8443,11 +8813,16 @@ setReviewItems(items);
 .incorrectRow {
   position: absolute;
   left: 43px;
+  right: 30px; /* ✅ gives it room to push a button to the far right */
   top: 440px;
+
   height: 24px;
   display: flex;
   align-items: center;
   gap: 8px;
+}
+.incorrectSpacer {
+  flex: 1;
 }
 
 .incorrectText {
@@ -8469,17 +8844,20 @@ setReviewItems(items);
 .reviewArea {
   position: absolute;
   left: 30px;
-  right: 30px;
-
-  /* Start below the "Incorrect" row */
+  width: calc(100% - 60px);
   top: 470px;
 
-  /* Leave space for the Home button */
-  bottom: 120px;
-
+  bottom: -30; /* ✅ fill to bottom */
   overflow-y: auto;
+
   padding-right: 6px;
+
+  /* ✅ this creates "extra space" so the last question can scroll past the button */
+  padding-bottom: calc(41px + 16px + env(safe-area-inset-bottom) + 12px);
+
+  -webkit-overflow-scrolling: touch;
 }
+
 
 /* Use normal flow instead of absolute positioning */
 .question {
@@ -8518,14 +8896,22 @@ setReviewItems(items);
   object-fit: cover;
 }
 
+.qaRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin: 0 0 10px;
+}
 
 /* Options stack properly */
 .options {
+  flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  margin-bottom: 14px;
+  gap: 4px;
+  margin-bottom: 0;
 }
+
 
 .option {
   font-family: 'Lato', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
@@ -8582,13 +8968,14 @@ setReviewItems(items);
 /* Continue button */
 .continueBtn {
   box-sizing: border-box;
-  position: absolute;
+  position: fixed;               /* ✅ pin to screen */
+  left: 50%;
+  transform: translateX(-50%);   /* ✅ center */
+  top: auto;                     /* ✅ stop using top */
+  bottom: calc(-20px + env(safe-area-inset-bottom)); /* ✅ iPhone safe area */
 
-  width: 316px;
+  width: min(316px, calc(100% - 60px)); /* ✅ keeps same margins on small screens */
   height: 41px;
-
-  left: calc(50% - 316px / 2 - 0.5px);
-  top: 764px;
 
   background: linear-gradient(
     135deg,
@@ -8605,7 +8992,10 @@ setReviewItems(items);
   align-items: center;
   justify-content: center;
   gap: 10px;
+
+  z-index: 50; /* ✅ stays above scroll content */
 }
+
 
 .continueText {
   font-family: 'Lato', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
@@ -8622,6 +9012,151 @@ setReviewItems(items);
   min-height: 100vh;    /* ✅ critical */
   width: 100%;
   transform: translateY(-60px);
+}
+
+.questionRow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.questionText {
+  margin: 0;
+  flex: 1;
+}
+
+.bookmarkBtn {
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  padding: 4px;
+
+  /* keeps it from shrinking in flex row */
+  flex: 0 0 auto;
+
+  /* optional: better tap feel on mobile */
+  -webkit-tap-highlight-color: transparent;
+
+  /* ✅ press animation base */
+  transform: translateZ(0);
+  transition: transform 120ms ease, opacity 120ms ease;
+}
+
+/* ✅ while pressing */
+.bookmarkBtn:active {
+  transform: scale(0.9);
+}
+
+/* ✅ keyboard accessibility (tab focus) */
+.bookmarkBtn:focus-visible {
+  outline: 2px solid rgba(43, 124, 175, 0.55);
+  outline-offset: 3px;
+  border-radius: 10px;
+}
+
+/* Optional: slightly dim when not bookmarked */
+.bookmarkBtn[data-bookmarked='false'] {
+  opacity: 0.85;
+}
+
+/* Optional: full opacity when bookmarked */
+.bookmarkBtn[data-bookmarked='true'] {
+  opacity: 1;
+}
+
+.bookmarkIcon {
+  width: 24px;
+  height: 24px;
+  display: inline-block;
+
+  /* Use the PNG as a stencil */
+  -webkit-mask-image: url("/images/test/bookmark-icon.png");
+  mask-image: url("/images/test/bookmark-icon.png");
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+}
+
+/* not bookmarked */
+.bookmarkBtn[data-bookmarked='false'] .bookmarkIcon {
+  background: rgba(15, 23, 42, 0.9);
+}
+
+/* bookmarked (gradient) */
+.bookmarkBtn[data-bookmarked='true'] .bookmarkIcon {
+  background: var(--color-premium-gradient);
+  filter: brightness(1) contrast(1.5) saturate(2);
+}
+
+
+.viewToggle {
+  border: 0;
+  background: transparent;
+  border-radius: 10px;
+  padding: 6px 10px;
+  font-family: 'Lato', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-weight: 700;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.slideCounter {
+  font-family: 'Lato', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-weight: 600;
+  font-size: 12px;
+  opacity: 0.75;
+}
+
+/* When in carousel mode, reviewArea should not be vertically scrollable itself */
+.reviewAreaCarousel {
+  overflow: hidden;
+  padding-right: 0;
+}
+
+/* Horizontal swipe carousel */
+.carousel {
+  height: 100%;
+  display: flex;
+  overflow-x: auto;
+  overflow-y: hidden;
+
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+
+  scrollbar-width: none; /* Firefox */
+  overscroll-behavior-x: contain;
+}
+
+.carousel::-webkit-scrollbar {
+  display: none; /* Chrome/Safari */
+}
+
+/* Each slide takes the full width of the reviewArea */
+.slide {
+  flex: 0 0 100%;
+  scroll-snap-align: start;
+  scroll-snap-stop: always; /* helps “one swipe = one card” where supported */
+
+  padding-right: 6px; /* keeps your old “scrollbar breathing room” feel */
+  overflow-y: auto;   /* ✅ content can still scroll vertically inside each slide */
+  -webkit-overflow-scrolling: touch;
+}
+
+.carousel {
+  cursor: grab;
+}
+
+.carouselDragging {
+  cursor: grabbing;
+  user-select: none;
+}
+
+.carouselDragging * {
+  user-select: none;
 }
 
 ```
@@ -9156,54 +9691,64 @@ export default function BackButton() {
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
-import styles from '../app/page.module.css';   // reuse your current CSS
-import  { useEffect, useState, useRef } from 'react';
+import styles from '../app/page.module.css';
+import { useEffect, useRef, useState } from 'react';
 
+type BottomNavProps = {
+  onOffsetChange?: (offsetY: number) => void;
+};
 
-export default function BottomNav() {
+export default function BottomNav({ onOffsetChange }: BottomNavProps) {
   const pathname = usePathname();
 
   const isHome = pathname === '/';
   const isStats = pathname === '/stats';
   const isProfile = pathname === '/profile';
 
-  // How far the nav is pushed down (0 = fully visible)
   const [offsetY, setOffsetY] = useState(0);
+
   const lastScrollYRef = useRef(0);
+  const offsetYRef = useRef(0);
+
+  // keep latest callback without re-binding scroll listener
+  const onOffsetChangeRef = useRef<BottomNavProps['onOffsetChange']>(onOffsetChange);
+  useEffect(() => {
+    onOffsetChangeRef.current = onOffsetChange;
+  }, [onOffsetChange]);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
-    // start from current scroll
     lastScrollYRef.current = window.scrollY;
+    offsetYRef.current = 0;
 
     const handleScroll = () => {
       const currentY = window.scrollY;
-      const delta = currentY - lastScrollYRef.current; // + when scrolling down
+      const delta = currentY - lastScrollYRef.current;
       lastScrollYRef.current = currentY;
 
-      setOffsetY((prev) => {
-        const maxOffset = 90; // how far we allow it to slide down (px)
-        let next = prev + delta;
+      const maxOffset = 90;
+      let next = offsetYRef.current + delta;
 
-        if (next < 0) next = 0;            // don’t go above original spot
-        if (next > maxOffset) next = maxOffset; // fully hidden past this
+      if (next < 0) next = 0;
+      if (next > maxOffset) next = maxOffset;
 
-        return next;
-      });
+      if (next !== offsetYRef.current) {
+        offsetYRef.current = next;
+        setOffsetY(next); // ✅ BottomNav state update
+        onOffsetChangeRef.current?.(next); // ✅ Parent update (safe: not inside updater)
+      }
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-
   return (
     <div
-  className={styles.bottomNavWrapper}
-  style={{ transform: `translate(-50%, ${offsetY}px)` }}
->
-
+      className={styles.bottomNavWrapper}
+      style={{ transform: `translate(-50%, ${offsetY}px)` }}
+    >
       <nav className={styles.bottomNav}>
         {/* Home */}
         <Link
@@ -9270,9 +9815,7 @@ export default function BottomNav() {
         {/* Profile */}
         <Link
           href="/profile"
-          className={`${styles.navItem} ${
-            isProfile ? styles.navItemActive : ''
-          }`}
+          className={`${styles.navItem} ${isProfile ? styles.navItemActive : ''}`}
         >
           {isProfile ? (
             <div className={styles.navPill}>
@@ -11316,6 +11859,7 @@ export type AnswerRecord = {
   answeredAt: number;  // Date.now()
 };
 
+
 export type TestAttemptV1 = {
   schemaVersion: 1;
 
@@ -11404,6 +11948,52 @@ export function writeAttempt(attempt: TestAttemptV1) {
     // ignore quota/private-mode errors
   }
 }
+
+// ✅ clears the "active attempt pointer" so /real-test won't resume it
+export function clearActiveAttemptPointer(params: {
+  userKey: string;
+  modeKey: string;
+  datasetId: string;
+}) {
+  if (typeof window === 'undefined') return;
+  try {
+    window.localStorage.removeItem(activePtrKey(params));
+  } catch {}
+}
+
+
+
+// ✅ marks attempt as submitted AND clears active pointer
+export function closeAttemptById(
+  attemptId: string,
+  patch?: { remainingSec?: number }
+): TestAttemptV1 | null {
+  const a = readAttemptById(attemptId);
+  if (!a) return null;
+
+  // already closed -> still ensure pointer is cleared
+  if (a.status === "submitted") {
+    clearActiveAttemptPointer({ userKey: a.userKey, modeKey: a.modeKey, datasetId: a.datasetId });
+    return a;
+  }
+
+  const now = Date.now();
+
+  const closed: TestAttemptV1 = {
+    ...a,
+    status: "submitted",
+    submittedAt: now,         // your type already implies this (or add it if missing)
+    lastActiveAt: now,
+    pausedAt: undefined,
+    remainingSec: typeof patch?.remainingSec === "number" ? patch.remainingSec : a.remainingSec,
+  };
+
+  writeAttempt(closed);
+  clearActiveAttemptPointer({ userKey: closed.userKey, modeKey: closed.modeKey, datasetId: closed.datasetId });
+
+  return closed;
+}
+
 
 export function readActiveAttemptId(params: { userKey: string; modeKey: string; datasetId: string }) {
   if (typeof window === 'undefined') return null;
@@ -65862,7 +66452,13 @@ export const config = {
           ]
         }
       ],
-      "assets": [],
+      "assets": [
+        {
+          "kind": "image",
+          "src": "/qbank/2023-test1/images/p85-007.jpg",
+          "page": 85
+        }
+      ],
       "source": {
         "pdf": "2023 Driving test 1.pdf"
       },

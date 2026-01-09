@@ -19,6 +19,7 @@ import {
   getOrCreateAttempt,
   normalizeUserKey,
   writeAttempt,
+  closeAttemptById,
   type TestAttemptV1,
 } from '../../lib/test-engine/attemptStorage';
 
@@ -80,6 +81,11 @@ const finishTest = (reason: 'time' | 'completed') => {
   if (finishedRef.current) return;
   finishedRef.current = true;
 
+  // If attempt exists, close it BEFORE leaving this page
+  if (attempt?.attemptId) {
+    closeAttemptById(attempt.attemptId, { remainingSec: timeLeft });
+  }
+
   if (!attempt) {
     router.push('/real-test/results?reason=' + reason);
     return;
@@ -97,6 +103,7 @@ const finishTest = (reason: 'time' | 'completed') => {
 
   router.push(`/real-test/results?${params.toString()}`);
 };
+
 
 
 const { loading: authLoading, email } = useAuthStatus();

@@ -7,6 +7,7 @@ export type AnswerRecord = {
   answeredAt: number;  // Date.now()
 };
 
+
 export type TestAttemptV1 = {
   schemaVersion: 1;
 
@@ -95,6 +96,52 @@ export function writeAttempt(attempt: TestAttemptV1) {
     // ignore quota/private-mode errors
   }
 }
+
+// ✅ clears the "active attempt pointer" so /real-test won't resume it
+export function clearActiveAttemptPointer(params: {
+  userKey: string;
+  modeKey: string;
+  datasetId: string;
+}) {
+  if (typeof window === 'undefined') return;
+  try {
+    window.localStorage.removeItem(activePtrKey(params));
+  } catch {}
+}
+
+
+
+// ✅ marks attempt as submitted AND clears active pointer
+export function closeAttemptById(
+  attemptId: string,
+  patch?: { remainingSec?: number }
+): TestAttemptV1 | null {
+  const a = readAttemptById(attemptId);
+  if (!a) return null;
+
+  // already closed -> still ensure pointer is cleared
+  if (a.status === "submitted") {
+    clearActiveAttemptPointer({ userKey: a.userKey, modeKey: a.modeKey, datasetId: a.datasetId });
+    return a;
+  }
+
+  const now = Date.now();
+
+  const closed: TestAttemptV1 = {
+    ...a,
+    status: "submitted",
+    submittedAt: now,         // your type already implies this (or add it if missing)
+    lastActiveAt: now,
+    pausedAt: undefined,
+    remainingSec: typeof patch?.remainingSec === "number" ? patch.remainingSec : a.remainingSec,
+  };
+
+  writeAttempt(closed);
+  clearActiveAttemptPointer({ userKey: closed.userKey, modeKey: closed.modeKey, datasetId: closed.datasetId });
+
+  return closed;
+}
+
 
 export function readActiveAttemptId(params: { userKey: string; modeKey: string; datasetId: string }) {
   if (typeof window === 'undefined') return null;

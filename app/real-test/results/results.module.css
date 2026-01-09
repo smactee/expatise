@@ -1,5 +1,6 @@
 .viewport {
   min-height: 100vh;
+  min-height: 100dvh; /* ✅ mobile accurate */
   padding: 0;
   background: var(--color-page-bg);
 }
@@ -8,9 +9,12 @@
   position: relative;
   width: 100%;
   min-height: 100vh;
+  min-height: 100dvh; /* ✅ mobile accurate */
   background: #f4f4f9;
   overflow: hidden;
+  --contentW: min(390px, calc(100% - 60px)); /* ✅ content width */
 }
+
 
 
 /* Figma: Rectangle (full screen overlay) */
@@ -88,14 +92,16 @@
 /* Congratulation! */
 .congrats {
   position: absolute;
-  width: 173px;
-  height: 20px;
-  left: 108px;
   top: 103px;
+
+  left: 50%;
+  transform: translateX(-50%);
+
+  width: max-content;
+  max-width: calc(100% - 60px); /* prevents overflow on small screens */
 
   margin: 0;
   font-family: 'Poppins', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-  font-style: normal;
   font-weight: 500;
   font-size: 22px;
   line-height: 20px;
@@ -105,17 +111,22 @@
   color: #383a44;
 }
 
+
 /* Ring wrapper */
 .ringWrap {
   position: absolute;
+  top: 145px;
+
+  left: 50%;
+  transform: translateX(-50%);
+
   width: 123px;
   height: 123px;
-  left: 133px;
-  top: 145px;
 
   display: grid;
   place-items: center;
 }
+
 
 .ring,
 .ringCenterText {
@@ -177,60 +188,53 @@
 /* Score/Time group container */
 .scoreBox {
   position: absolute;
-  width: 330px;
-  height: 83px;
-  left: 30px;
   top: 302px;
+
+  left: 50%;
+  transform: translateX(-50%);
+
+  width: var(--contentW);
+  height: 83px;
 }
 
-.lineTop {
-  position: absolute;
-  width: 330px;
-  height: 0px;
-  left: 0px;
-  top: 0px;
-  border: 1px solid #2b7caf;
-}
 
+.lineTop,
 .lineBottom {
   position: absolute;
-  width: 330px;
+  left: 0;
+  width: 100%;       /* ✅ instead of 330px */
   height: 0px;
-  left: 0px;
-  top: 83px;
   border: 1px solid #2b7caf;
 }
+
+.lineTop { top: 0; }
+.lineBottom { top: 83px; }
+
 
 .lineMid {
   position: absolute;
-  width: 83px;
-  height: 0px;
-  left: 165px; /* 30 -> 195 in absolute screen coords, so inside box: 195-30=165 */
-  top: 0px;
-  border: 1px solid #2b7caf;
-  transform: rotate(90deg);
-  transform-origin: left top;
+  top: 0;
+  left: 50%;
+  height: 83px;
+  border-left: 1px solid #2b7caf;
 }
+
 
 /* Left score group */
 .scoreLeft,
 .scoreRight {
   position: absolute;
   top: 20px;
-  width: 165px;          /* half of 330 */
+  width: 50%;
   height: 43px;
   display: grid;
   place-items: center;
   gap: 11px;
 }
 
-.scoreLeft {
-  left: 0;
-}
+.scoreLeft { left: 0; }
+.scoreRight { left: 50%; }
 
-.scoreRight {
-  left: 165px;           /* start of right half */
-}
 
 .scoreRight .scoreValue {
   white-space: nowrap;
@@ -288,11 +292,16 @@
 .incorrectRow {
   position: absolute;
   left: 43px;
+  right: 30px; /* ✅ gives it room to push a button to the far right */
   top: 440px;
+
   height: 24px;
   display: flex;
   align-items: center;
   gap: 8px;
+}
+.incorrectSpacer {
+  flex: 1;
 }
 
 .incorrectText {
@@ -314,17 +323,20 @@
 .reviewArea {
   position: absolute;
   left: 30px;
-  right: 30px;
-
-  /* Start below the "Incorrect" row */
+  width: calc(100% - 60px);
   top: 470px;
 
-  /* Leave space for the Home button */
-  bottom: 120px;
-
+  bottom: -30; /* ✅ fill to bottom */
   overflow-y: auto;
+
   padding-right: 6px;
+
+  /* ✅ this creates "extra space" so the last question can scroll past the button */
+  padding-bottom: calc(41px + 16px + env(safe-area-inset-bottom) + 12px);
+
+  -webkit-overflow-scrolling: touch;
 }
+
 
 /* Use normal flow instead of absolute positioning */
 .question {
@@ -435,13 +447,14 @@
 /* Continue button */
 .continueBtn {
   box-sizing: border-box;
-  position: absolute;
+  position: fixed;               /* ✅ pin to screen */
+  left: 50%;
+  transform: translateX(-50%);   /* ✅ center */
+  top: auto;                     /* ✅ stop using top */
+  bottom: calc(-20px + env(safe-area-inset-bottom)); /* ✅ iPhone safe area */
 
-  width: 316px;
+  width: min(316px, calc(100% - 60px)); /* ✅ keeps same margins on small screens */
   height: 41px;
-
-  left: calc(50% - 316px / 2 - 0.5px);
-  top: 764px;
 
   background: linear-gradient(
     135deg,
@@ -458,7 +471,10 @@
   align-items: center;
   justify-content: center;
   gap: 10px;
+
+  z-index: 50; /* ✅ stays above scroll content */
 }
+
 
 .continueText {
   font-family: 'Lato', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
@@ -475,4 +491,149 @@
   min-height: 100vh;    /* ✅ critical */
   width: 100%;
   transform: translateY(-60px);
+}
+
+.questionRow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.questionText {
+  margin: 0;
+  flex: 1;
+}
+
+.bookmarkBtn {
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  padding: 4px;
+
+  /* keeps it from shrinking in flex row */
+  flex: 0 0 auto;
+
+  /* optional: better tap feel on mobile */
+  -webkit-tap-highlight-color: transparent;
+
+  /* ✅ press animation base */
+  transform: translateZ(0);
+  transition: transform 120ms ease, opacity 120ms ease;
+}
+
+/* ✅ while pressing */
+.bookmarkBtn:active {
+  transform: scale(0.9);
+}
+
+/* ✅ keyboard accessibility (tab focus) */
+.bookmarkBtn:focus-visible {
+  outline: 2px solid rgba(43, 124, 175, 0.55);
+  outline-offset: 3px;
+  border-radius: 10px;
+}
+
+/* Optional: slightly dim when not bookmarked */
+.bookmarkBtn[data-bookmarked='false'] {
+  opacity: 0.85;
+}
+
+/* Optional: full opacity when bookmarked */
+.bookmarkBtn[data-bookmarked='true'] {
+  opacity: 1;
+}
+
+.bookmarkIcon {
+  width: 24px;
+  height: 24px;
+  display: inline-block;
+
+  /* Use the PNG as a stencil */
+  -webkit-mask-image: url("/images/test/bookmark-icon.png");
+  mask-image: url("/images/test/bookmark-icon.png");
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+}
+
+/* not bookmarked */
+.bookmarkBtn[data-bookmarked='false'] .bookmarkIcon {
+  background: rgba(15, 23, 42, 0.9);
+}
+
+/* bookmarked (gradient) */
+.bookmarkBtn[data-bookmarked='true'] .bookmarkIcon {
+  background: var(--color-premium-gradient);
+  filter: brightness(1) contrast(1.5) saturate(2);
+}
+
+
+.viewToggle {
+  border: 0;
+  background: transparent;
+  border-radius: 10px;
+  padding: 6px 10px;
+  font-family: 'Lato', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-weight: 700;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.slideCounter {
+  font-family: 'Lato', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-weight: 600;
+  font-size: 12px;
+  opacity: 0.75;
+}
+
+/* When in carousel mode, reviewArea should not be vertically scrollable itself */
+.reviewAreaCarousel {
+  overflow: hidden;
+  padding-right: 0;
+}
+
+/* Horizontal swipe carousel */
+.carousel {
+  height: 100%;
+  display: flex;
+  overflow-x: auto;
+  overflow-y: hidden;
+
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+
+  scrollbar-width: none; /* Firefox */
+  overscroll-behavior-x: contain;
+}
+
+.carousel::-webkit-scrollbar {
+  display: none; /* Chrome/Safari */
+}
+
+/* Each slide takes the full width of the reviewArea */
+.slide {
+  flex: 0 0 100%;
+  scroll-snap-align: start;
+  scroll-snap-stop: always; /* helps “one swipe = one card” where supported */
+
+  padding-right: 6px; /* keeps your old “scrollbar breathing room” feel */
+  overflow-y: auto;   /* ✅ content can still scroll vertically inside each slide */
+  -webkit-overflow-scrolling: touch;
+}
+
+.carousel {
+  cursor: grab;
+}
+
+.carouselDragging {
+  cursor: grabbing;
+  user-select: none;
+}
+
+.carouselDragging * {
+  user-select: none;
 }
