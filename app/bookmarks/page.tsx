@@ -9,7 +9,7 @@ export default function BookmarksPage() {
   return (
     <>
       <BackButton />
-      <AllQuestionsClient datasetId={"cn-2023-test1" as DatasetId} mode="bookmarks" />;
+      <AllQuestionsClient datasetId={"cn-2023-test1" as DatasetId} mode="bookmarks" />
     </>
   );
 }

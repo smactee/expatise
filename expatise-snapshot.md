@@ -546,6 +546,8 @@ export default function AccountSecurityPage() {
 
 ### app/all-questions/AllQuestionsClient.client.tsx
 ```tsx
+// app/all-questions/AllQuestionsClient.client.tsx
+
 'use client';
 
 import { useEffect, useMemo, useRef, useState } from 'react';
@@ -559,6 +561,10 @@ import { TAG_TAXONOMY, labelForTag } from '../../lib/qbank/tagTaxonomy';
 import { deriveTopicSubtags } from '../../lib/qbank/deriveTopicSubtags';
 import { useBookmarks } from "../../lib/bookmarks/useBookmarks"; // adjust path if you use "@/lib/..."
 import BackButton from '../../components/BackButton';
+import { listAttempts } from '../../lib/test-engine/attemptStorage';
+import { normalizeUserKey } from '../../lib/test-engine/attemptStorage';
+import { useAuthStatus } from '../../components/useAuthStatus';
+
 
 
 function isCorrectMcq(item: Question, optId: string, optKey?: string) {
@@ -566,19 +572,22 @@ function isCorrectMcq(item: Question, optId: string, optKey?: string) {
   return item.correctOptionId === optId || (optKey && item.correctOptionId === optKey);
 }
 
-export default function AllQuestionsClient({
-  datasetId,
-  mode = 'all',
-}: {
-  datasetId: DatasetId;
-  mode?: 'all' | 'bookmarks';
-}) {
+export default function AllQuestionsClient({ datasetId, mode = 'all' }: { datasetId: DatasetId; mode?: 'all' | 'bookmarks' | 'mistakes' }) {
+  // ✅ 1) hooks first
+  const { email: sessionEmail } = useAuthStatus();
+
+  // ✅ 2) derive userKey (cheap, memo optional)
+  const userKey = useMemo(() => normalizeUserKey(sessionEmail), [sessionEmail]);
+
+  // ✅ 3) now it's safe to use userKey
+  const { idSet: bookmarkedSet, isBookmarked, toggle } = useBookmarks(datasetId, userKey);
+
   const [q, setQ] = useState<Question[]>([]);
   const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState('');
   const [activeTopic, setActiveTopic] = useState<string | null>(null);
-  const [activeSub, setActiveSub] = useState<string | null>(null); // null = All
-  const { idSet: bookmarkedSet, isBookmarked, toggle } = useBookmarks(datasetId);
+  const [activeSub, setActiveSub] = useState<string | null>(null);
+
   // ✅ Selection (only used in Bookmarks mode)
 const [selectedIds, setSelectedIds] = useState<Set<string>>(() => new Set());
 const [showToTop, setShowToTop] = useState(false);
@@ -669,19 +678,94 @@ useEffect(() => {
   });
 }, [q, query, activeTopic, activeSub, derivedById]);
 
-const visible = useMemo(() => {
-  if (mode !== 'bookmarks') return filtered;
-  return filtered.filter((item) => bookmarkedSet.has(item.id));
-}, [filtered, mode, bookmarkedSet]);
-
-function unselectCard(id: string) {
-  setSelectedIds((prev) => {
-    if (!prev.has(id)) return prev;
-    const next = new Set(prev);
-    next.delete(id);
-    return next;
-  });
+function normalizeRowChoice(v: string | null | undefined): 'R' | 'W' | null {
+  if (!v) return null;
+  const t = v.trim().toLowerCase();
+  if (t === 'r' || t === 'right') return 'R';
+  if (t === 'w' || t === 'wrong') return 'W';
+  return null;
 }
+
+
+type MistakeMeta = { wrongCount: number; lastWrongAt: number };
+
+const mistakesMetaById = useMemo(() => {
+  if (mode !== 'mistakes') return new Map<string, MistakeMeta>();
+  if (q.length === 0) return new Map<string, MistakeMeta>();
+
+  const byId = new Map(q.map((item) => [item.id, item] as const));
+
+  // ✅ use already-computed userKey
+  const attempts = listAttempts({ status: 'submitted', datasetId, userKey });
+
+  const meta = new Map<string, MistakeMeta>();
+
+  for (const a of attempts) {
+    for (const [qid, rec] of Object.entries(a.answersByQid ?? {})) {
+      const question = byId.get(qid);
+      if (!question) continue;
+
+      const chosenKey = rec?.choice ?? null;
+      if (!chosenKey) continue;
+
+      let isCorrect = false;
+
+      if (question.type === 'ROW') {
+        const chosen = normalizeRowChoice(chosenKey);
+        const expected = normalizeRowChoice(question.correctRow ?? null);
+        isCorrect = !!(chosen && expected && chosen === expected);
+      } else {
+        const chosenOpt = question.options?.find((opt, idx) => {
+          const k = opt.originalKey ?? String.fromCharCode(65 + idx);
+          return k === chosenKey;
+        });
+
+        isCorrect = !!(
+          chosenOpt &&
+          question.correctOptionId &&
+          chosenOpt.id === question.correctOptionId
+        );
+      }
+
+      if (isCorrect) continue;
+
+      const prev = meta.get(qid);
+      const answeredAt =
+        typeof rec.answeredAt === 'number' ? rec.answeredAt : (a.submittedAt ?? 0);
+
+      meta.set(qid, {
+        wrongCount: (prev?.wrongCount ?? 0) + 1,
+        lastWrongAt: Math.max(prev?.lastWrongAt ?? 0, answeredAt),
+      });
+    }
+  }
+
+  return meta;
+}, [mode, q, datasetId, userKey]);
+
+
+const visible = useMemo(() => {
+  if (mode === 'bookmarks') return filtered.filter((item) => bookmarkedSet.has(item.id));
+
+  if (mode === 'mistakes') {
+    const arr = filtered.filter((item) => mistakesMetaById.has(item.id));
+
+    // ✅ sort by lastWrongAt desc, then wrongCount desc
+    arr.sort((a, b) => {
+      const ma = mistakesMetaById.get(a.id)!;
+      const mb = mistakesMetaById.get(b.id)!;
+
+      if (mb.lastWrongAt !== ma.lastWrongAt) return mb.lastWrongAt - ma.lastWrongAt;
+      if (mb.wrongCount !== ma.wrongCount) return mb.wrongCount - ma.wrongCount;
+      return a.number - b.number;
+    });
+
+    return arr;
+  }
+
+  return filtered;
+}, [filtered, mode, bookmarkedSet, mistakesMetaById]);
+
 
 function clearSelection() {
   setSelectedIds(new Set());
@@ -726,6 +810,18 @@ function toggleSelectAllVisible() {
   });
 }
 
+function unselectCard(id: string) {
+  setSelectedIds((prev) => {
+    if (!prev.has(id)) return prev;
+    const next = new Set(prev);
+    next.delete(id);
+    return next;
+  });
+}
+
+
+
+
 useEffect(() => {
   if (typeof window === 'undefined') return;
 
@@ -758,11 +854,21 @@ useEffect(() => {
 
 
   return (
-    <main className={styles.page}>
-       <BackButton />
-      <div className={styles.frame}>
+<main className={styles.page}>
+  <div className={styles.backButtonFixed}>
+    <BackButton />
+  </div>
+
+  <div className={styles.frame}>
+
         <header className={styles.header}>
-          <h1 className={styles.title}>{mode === 'bookmarks' ? 'My Bookmarks' : 'All Questions'}</h1>
+<h1 className={styles.title}>
+  {mode === 'bookmarks'
+    ? 'My Bookmarks'
+    : mode === 'mistakes'
+    ? 'My Mistakes'
+    : 'All Questions'}
+</h1>
         </header>
 
         <div className={styles.searchRow}>
@@ -983,21 +1089,31 @@ onClick={(e) => {
   className={styles.toTopWrap}
   style={{ transform: `translateY(${navOffsetY}px)` }}
 >
-  <button
-    type="button"
-    className={`${styles.toTopBtn} ${showToTop ? styles.toTopBtnVisible : ''}`}
-    onClick={() => {
-      const prefersReduced =
-        typeof window !== 'undefined' &&
-        window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+<button
+  type="button"
+  className={`${styles.toTopBtn} ${showToTop ? styles.toTopBtnVisible : ''}`}
+  onClick={() => {
+    const prefersReduced =
+      typeof window !== 'undefined' &&
+      window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
 
-      window.scrollTo({ top: 0, behavior: prefersReduced ? 'auto' : 'smooth' });
-    }}
-    aria-label="Scroll to top"
-    title="Back to top"
-  >
-    <span className={styles.toTopIcon} aria-hidden="true">↑</span>
-  </button>
+    window.scrollTo({ top: 0, behavior: prefersReduced ? 'auto' : 'smooth' });
+  }}
+  aria-label="Scroll to top"
+  title="Back to top"
+>
+  <span className={styles.toTopIcon} aria-hidden="true">
+    <Image
+      src="/images/other/up-arrow.png"
+      alt=""
+      width={22}
+      height={22}
+      draggable={false}
+    />
+  </span>
+</button>
+
+
 </div>
 
         <BottomNav onOffsetChange={setNavOffsetY} />
@@ -1335,10 +1451,10 @@ onClick={(e) => {
   width: 44px;
   height: 44px;
   border-radius: 16px;
-  border: 1px solid rgba(0,0,0,0.12);
-  background: rgba(255,255,255,0.75);
-  backdrop-filter: blur(12px);
-  box-shadow: 0 12px 28px rgba(15, 33, 70, 0.18);
+  border: none;
+  background: transparent;
+  backdrop-filter: none;
+  box-shadow: none;
 
   display: inline-flex;
   align-items: center;
@@ -1363,6 +1479,14 @@ onClick={(e) => {
   font-weight: 900;
   line-height: 1;
   opacity: 0.9;
+  background: transparent;
+}
+
+.backButtonFixed {
+  position: fixed;
+  top: calc(env(safe-area-inset-top, 0px) + 12px);
+  left: 12px;
+  z-index: 200;
 }
 
 ```
@@ -1771,7 +1895,7 @@ export default function BookmarksPage() {
   return (
     <>
       <BackButton />
-      <AllQuestionsClient datasetId={"cn-2023-test1" as DatasetId} mode="bookmarks" />;
+      <AllQuestionsClient datasetId={"cn-2023-test1" as DatasetId} mode="bookmarks" />
     </>
   );
 }
@@ -3853,6 +3977,30 @@ useEffect(() => {
         </section>
       </div>
     </main>
+  );
+}
+
+```
+
+### app/my-mistakes/my-mistakes.module.css
+```css
+
+```
+
+### app/my-mistakes/page.tsx
+```tsx
+// app/my-mistakes/page.tsx
+
+import type { DatasetId } from '../../lib/qbank/datasets';
+import AllQuestionsClient from '../all-questions/AllQuestionsClient.client';
+import BackButton from '../../components/BackButton';
+
+export default function MyMistakesPage() {
+  return (
+    <>
+      <BackButton />
+      <AllQuestionsClient datasetId={"cn-2023-test1" as DatasetId} mode="mistakes" />
+    </>
   );
 }
 
@@ -10420,18 +10568,31 @@ export function cookieOptions() {
 
 ### lib/bookmarks/useBookmarks.ts
 ```tsx
-/* Bookmarks */
-
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 
-const keyFor = (datasetId: string) => `expatise:bookmarks:${datasetId}`;
+const legacyKeyFor = (datasetId: string) => `expatise:bookmarks:${datasetId}`;
+const keyFor = (userKey: string, datasetId: string) =>
+  `expatise:bookmarks:v1:user:${userKey}:dataset:${datasetId}`;
 
-function readIds(datasetId: string): string[] {
+function readIds(userKey: string, datasetId: string): string[] {
   if (typeof window === "undefined") return [];
+
   try {
-    const raw = localStorage.getItem(keyFor(datasetId));
+    const k = keyFor(userKey, datasetId);
+    let raw = localStorage.getItem(k);
+
+    // ✅ one-time migration for your existing dev bookmarks
+    if (!raw && userKey === "guest") {
+      const legacy = localStorage.getItem(legacyKeyFor(datasetId));
+      if (legacy) {
+        localStorage.setItem(k, legacy);
+        localStorage.removeItem(legacyKeyFor(datasetId));
+        raw = legacy;
+      }
+    }
+
     const parsed = raw ? JSON.parse(raw) : [];
     return Array.isArray(parsed) ? parsed.map(String) : [];
   } catch {
@@ -10439,23 +10600,22 @@ function readIds(datasetId: string): string[] {
   }
 }
 
-function writeIds(datasetId: string, ids: string[]) {
+function writeIds(userKey: string, datasetId: string, ids: string[]) {
   try {
-    localStorage.setItem(keyFor(datasetId), JSON.stringify(ids));
+    localStorage.setItem(keyFor(userKey, datasetId), JSON.stringify(ids));
   } catch {
     // ignore quota/private-mode errors
   }
 }
 
-export function useBookmarks(datasetId: string) {
+export function useBookmarks(datasetId: string, userKey: string = "guest") {
   const [ids, setIds] = useState<string[]>([]);
 
   useEffect(() => {
-    setIds(readIds(datasetId));
-  }, [datasetId]);
+    setIds(readIds(userKey, datasetId));
+  }, [datasetId, userKey]);
 
   const idSet = useMemo(() => new Set(ids), [ids]);
-
   const isBookmarked = useCallback((id: string) => idSet.has(id), [idSet]);
 
   const toggle = useCallback(
@@ -10466,11 +10626,11 @@ export function useBookmarks(datasetId: string) {
         else next.add(id);
 
         const arr = Array.from(next);
-        writeIds(datasetId, arr);
+        writeIds(userKey, datasetId, arr);
         return arr;
       });
     },
-    [datasetId]
+    [datasetId, userKey]
   );
 
   return { ids, idSet, isBookmarked, toggle };
@@ -12125,6 +12285,63 @@ export function getOrCreateAttempt(params: {
   });
 
   return { attempt: fresh, reused: false };
+}
+
+export function listAttempts(filter?: {
+  status?: AttemptStatus;
+  datasetId?: string;
+  modeKey?: string;
+  userKey?: string;
+  sort?: 'newest' | 'oldest'; // optional convenience
+}): TestAttemptV1[] {
+  if (typeof window === 'undefined') return [];
+
+  const out: TestAttemptV1[] = [];
+
+  for (let i = 0; i < window.localStorage.length; i++) {
+    const key = window.localStorage.key(i);
+    if (!key) continue;
+
+    // only attempt records
+    if (!key.startsWith(`${ATTEMPT_KEY_PREFIX}:`)) continue;
+
+    const parsed = safeParse(window.localStorage.getItem(key));
+    if (!parsed || parsed.schemaVersion !== SCHEMA_VERSION) continue;
+
+    const a = parsed as TestAttemptV1;
+
+    if (filter?.status && a.status !== filter.status) continue;
+    if (filter?.datasetId && a.datasetId !== filter.datasetId) continue;
+    if (filter?.modeKey && a.modeKey !== filter.modeKey) continue;
+    if (filter?.userKey && a.userKey !== filter.userKey) continue;
+
+    out.push(a);
+  }
+
+  // stable ordering (very useful for UI)
+  const dir = filter?.sort === 'oldest' ? 1 : -1; // default newest
+  out.sort(
+    (a, b) =>
+      dir *
+      ((a.submittedAt ?? a.lastActiveAt ?? a.createdAt ?? 0) -
+        (b.submittedAt ?? b.lastActiveAt ?? b.createdAt ?? 0))
+  );
+
+  return out;
+}
+
+export function listSubmittedAttempts(params: {
+  userKey: string;
+  datasetId?: string;
+  modeKey?: string;
+}): TestAttemptV1[] {
+  return listAttempts({
+    status: 'submitted',
+    userKey: params.userKey,
+    datasetId: params.datasetId,
+    modeKey: params.modeKey,
+    sort: 'newest',
+  });
 }
 
 ```

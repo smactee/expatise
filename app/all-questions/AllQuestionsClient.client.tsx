@@ -1,3 +1,5 @@
+// app/all-questions/AllQuestionsClient.client.tsx
+
 'use client';
 
 import { useEffect, useMemo, useRef, useState } from 'react';
@@ -11,6 +13,10 @@ import { TAG_TAXONOMY, labelForTag } from '../../lib/qbank/tagTaxonomy';
 import { deriveTopicSubtags } from '../../lib/qbank/deriveTopicSubtags';
 import { useBookmarks } from "../../lib/bookmarks/useBookmarks"; // adjust path if you use "@/lib/..."
 import BackButton from '../../components/BackButton';
+import { listAttempts } from '../../lib/test-engine/attemptStorage';
+import { normalizeUserKey } from '../../lib/test-engine/attemptStorage';
+import { useAuthStatus } from '../../components/useAuthStatus';
+
 
 
 function isCorrectMcq(item: Question, optId: string, optKey?: string) {
@@ -18,19 +24,22 @@ function isCorrectMcq(item: Question, optId: string, optKey?: string) {
   return item.correctOptionId === optId || (optKey && item.correctOptionId === optKey);
 }
 
-export default function AllQuestionsClient({
-  datasetId,
-  mode = 'all',
-}: {
-  datasetId: DatasetId;
-  mode?: 'all' | 'bookmarks';
-}) {
+export default function AllQuestionsClient({ datasetId, mode = 'all' }: { datasetId: DatasetId; mode?: 'all' | 'bookmarks' | 'mistakes' }) {
+  // ✅ 1) hooks first
+  const { email: sessionEmail } = useAuthStatus();
+
+  // ✅ 2) derive userKey (cheap, memo optional)
+  const userKey = useMemo(() => normalizeUserKey(sessionEmail), [sessionEmail]);
+
+  // ✅ 3) now it's safe to use userKey
+  const { idSet: bookmarkedSet, isBookmarked, toggle } = useBookmarks(datasetId, userKey);
+
   const [q, setQ] = useState<Question[]>([]);
   const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState('');
   const [activeTopic, setActiveTopic] = useState<string | null>(null);
-  const [activeSub, setActiveSub] = useState<string | null>(null); // null = All
-  const { idSet: bookmarkedSet, isBookmarked, toggle } = useBookmarks(datasetId);
+  const [activeSub, setActiveSub] = useState<string | null>(null);
+
   // ✅ Selection (only used in Bookmarks mode)
 const [selectedIds, setSelectedIds] = useState<Set<string>>(() => new Set());
 const [showToTop, setShowToTop] = useState(false);
@@ -121,19 +130,94 @@ useEffect(() => {
   });
 }, [q, query, activeTopic, activeSub, derivedById]);
 
-const visible = useMemo(() => {
-  if (mode !== 'bookmarks') return filtered;
-  return filtered.filter((item) => bookmarkedSet.has(item.id));
-}, [filtered, mode, bookmarkedSet]);
-
-function unselectCard(id: string) {
-  setSelectedIds((prev) => {
-    if (!prev.has(id)) return prev;
-    const next = new Set(prev);
-    next.delete(id);
-    return next;
-  });
+function normalizeRowChoice(v: string | null | undefined): 'R' | 'W' | null {
+  if (!v) return null;
+  const t = v.trim().toLowerCase();
+  if (t === 'r' || t === 'right') return 'R';
+  if (t === 'w' || t === 'wrong') return 'W';
+  return null;
 }
+
+
+type MistakeMeta = { wrongCount: number; lastWrongAt: number };
+
+const mistakesMetaById = useMemo(() => {
+  if (mode !== 'mistakes') return new Map<string, MistakeMeta>();
+  if (q.length === 0) return new Map<string, MistakeMeta>();
+
+  const byId = new Map(q.map((item) => [item.id, item] as const));
+
+  // ✅ use already-computed userKey
+  const attempts = listAttempts({ status: 'submitted', datasetId, userKey });
+
+  const meta = new Map<string, MistakeMeta>();
+
+  for (const a of attempts) {
+    for (const [qid, rec] of Object.entries(a.answersByQid ?? {})) {
+      const question = byId.get(qid);
+      if (!question) continue;
+
+      const chosenKey = rec?.choice ?? null;
+      if (!chosenKey) continue;
+
+      let isCorrect = false;
+
+      if (question.type === 'ROW') {
+        const chosen = normalizeRowChoice(chosenKey);
+        const expected = normalizeRowChoice(question.correctRow ?? null);
+        isCorrect = !!(chosen && expected && chosen === expected);
+      } else {
+        const chosenOpt = question.options?.find((opt, idx) => {
+          const k = opt.originalKey ?? String.fromCharCode(65 + idx);
+          return k === chosenKey;
+        });
+
+        isCorrect = !!(
+          chosenOpt &&
+          question.correctOptionId &&
+          chosenOpt.id === question.correctOptionId
+        );
+      }
+
+      if (isCorrect) continue;
+
+      const prev = meta.get(qid);
+      const answeredAt =
+        typeof rec.answeredAt === 'number' ? rec.answeredAt : (a.submittedAt ?? 0);
+
+      meta.set(qid, {
+        wrongCount: (prev?.wrongCount ?? 0) + 1,
+        lastWrongAt: Math.max(prev?.lastWrongAt ?? 0, answeredAt),
+      });
+    }
+  }
+
+  return meta;
+}, [mode, q, datasetId, userKey]);
+
+
+const visible = useMemo(() => {
+  if (mode === 'bookmarks') return filtered.filter((item) => bookmarkedSet.has(item.id));
+
+  if (mode === 'mistakes') {
+    const arr = filtered.filter((item) => mistakesMetaById.has(item.id));
+
+    // ✅ sort by lastWrongAt desc, then wrongCount desc
+    arr.sort((a, b) => {
+      const ma = mistakesMetaById.get(a.id)!;
+      const mb = mistakesMetaById.get(b.id)!;
+
+      if (mb.lastWrongAt !== ma.lastWrongAt) return mb.lastWrongAt - ma.lastWrongAt;
+      if (mb.wrongCount !== ma.wrongCount) return mb.wrongCount - ma.wrongCount;
+      return a.number - b.number;
+    });
+
+    return arr;
+  }
+
+  return filtered;
+}, [filtered, mode, bookmarkedSet, mistakesMetaById]);
+
 
 function clearSelection() {
   setSelectedIds(new Set());
@@ -178,6 +262,18 @@ function toggleSelectAllVisible() {
   });
 }
 
+function unselectCard(id: string) {
+  setSelectedIds((prev) => {
+    if (!prev.has(id)) return prev;
+    const next = new Set(prev);
+    next.delete(id);
+    return next;
+  });
+}
+
+
+
+
 useEffect(() => {
   if (typeof window === 'undefined') return;
 
@@ -210,11 +306,21 @@ useEffect(() => {
 
 
   return (
-    <main className={styles.page}>
-       <BackButton />
-      <div className={styles.frame}>
+<main className={styles.page}>
+  <div className={styles.backButtonFixed}>
+    <BackButton />
+  </div>
+
+  <div className={styles.frame}>
+
         <header className={styles.header}>
-          <h1 className={styles.title}>{mode === 'bookmarks' ? 'My Bookmarks' : 'All Questions'}</h1>
+<h1 className={styles.title}>
+  {mode === 'bookmarks'
+    ? 'My Bookmarks'
+    : mode === 'mistakes'
+    ? 'My Mistakes'
+    : 'All Questions'}
+</h1>
         </header>
 
         <div className={styles.searchRow}>
@@ -435,21 +541,31 @@ onClick={(e) => {
   className={styles.toTopWrap}
   style={{ transform: `translateY(${navOffsetY}px)` }}
 >
-  <button
-    type="button"
-    className={`${styles.toTopBtn} ${showToTop ? styles.toTopBtnVisible : ''}`}
-    onClick={() => {
-      const prefersReduced =
-        typeof window !== 'undefined' &&
-        window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+<button
+  type="button"
+  className={`${styles.toTopBtn} ${showToTop ? styles.toTopBtnVisible : ''}`}
+  onClick={() => {
+    const prefersReduced =
+      typeof window !== 'undefined' &&
+      window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
 
-      window.scrollTo({ top: 0, behavior: prefersReduced ? 'auto' : 'smooth' });
-    }}
-    aria-label="Scroll to top"
-    title="Back to top"
-  >
-    <span className={styles.toTopIcon} aria-hidden="true">↑</span>
-  </button>
+    window.scrollTo({ top: 0, behavior: prefersReduced ? 'auto' : 'smooth' });
+  }}
+  aria-label="Scroll to top"
+  title="Back to top"
+>
+  <span className={styles.toTopIcon} aria-hidden="true">
+    <Image
+      src="/images/other/up-arrow.png"
+      alt=""
+      width={22}
+      height={22}
+      draggable={false}
+    />
+  </span>
+</button>
+
+
 </div>
 
         <BottomNav onOffsetChange={setNavOffsetY} />

@@ -274,3 +274,60 @@ export function getOrCreateAttempt(params: {
 
   return { attempt: fresh, reused: false };
 }
+
+export function listAttempts(filter?: {
+  status?: AttemptStatus;
+  datasetId?: string;
+  modeKey?: string;
+  userKey?: string;
+  sort?: 'newest' | 'oldest'; // optional convenience
+}): TestAttemptV1[] {
+  if (typeof window === 'undefined') return [];
+
+  const out: TestAttemptV1[] = [];
+
+  for (let i = 0; i < window.localStorage.length; i++) {
+    const key = window.localStorage.key(i);
+    if (!key) continue;
+
+    // only attempt records
+    if (!key.startsWith(`${ATTEMPT_KEY_PREFIX}:`)) continue;
+
+    const parsed = safeParse(window.localStorage.getItem(key));
+    if (!parsed || parsed.schemaVersion !== SCHEMA_VERSION) continue;
+
+    const a = parsed as TestAttemptV1;
+
+    if (filter?.status && a.status !== filter.status) continue;
+    if (filter?.datasetId && a.datasetId !== filter.datasetId) continue;
+    if (filter?.modeKey && a.modeKey !== filter.modeKey) continue;
+    if (filter?.userKey && a.userKey !== filter.userKey) continue;
+
+    out.push(a);
+  }
+
+  // stable ordering (very useful for UI)
+  const dir = filter?.sort === 'oldest' ? 1 : -1; // default newest
+  out.sort(
+    (a, b) =>
+      dir *
+      ((a.submittedAt ?? a.lastActiveAt ?? a.createdAt ?? 0) -
+        (b.submittedAt ?? b.lastActiveAt ?? b.createdAt ?? 0))
+  );
+
+  return out;
+}
+
+export function listSubmittedAttempts(params: {
+  userKey: string;
+  datasetId?: string;
+  modeKey?: string;
+}): TestAttemptV1[] {
+  return listAttempts({
+    status: 'submitted',
+    userKey: params.userKey,
+    datasetId: params.datasetId,
+    modeKey: params.modeKey,
+    sort: 'newest',
+  });
+}
