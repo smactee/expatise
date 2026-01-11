@@ -564,6 +564,7 @@ import BackButton from '../../components/BackButton';
 import { listAttempts } from '../../lib/test-engine/attemptStorage';
 import { normalizeUserKey } from '../../lib/test-engine/attemptStorage';
 import { useAuthStatus } from '../../components/useAuthStatus';
+import { useClearedMistakes } from '../../lib/mistakes/useClearedMistakes';
 
 
 
@@ -581,7 +582,13 @@ export default function AllQuestionsClient({ datasetId, mode = 'all' }: { datase
 
   // ✅ 3) now it's safe to use userKey
   const { idSet: bookmarkedSet, isBookmarked, toggle } = useBookmarks(datasetId, userKey);
+  const {
+  ids: clearedMistakeIds,
+  idSet: clearedMistakesSet,
+  clearMany: clearMistakesMany,
+} = useClearedMistakes(datasetId, userKey);
 
+  
   const [q, setQ] = useState<Question[]>([]);
   const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState('');
@@ -647,10 +654,11 @@ useEffect(() => {
 }, [unclassified]);
 
 useEffect(() => {
-  if (mode !== "bookmarks") {
+  if (mode !== "bookmarks" && mode !== "mistakes") {
     setSelectedIds(new Set());
   }
 }, [mode]);
+
 
 
   const filtered = useMemo(() => {
@@ -747,24 +755,26 @@ const mistakesMetaById = useMemo(() => {
 const visible = useMemo(() => {
   if (mode === 'bookmarks') return filtered.filter((item) => bookmarkedSet.has(item.id));
 
-  if (mode === 'mistakes') {
-    const arr = filtered.filter((item) => mistakesMetaById.has(item.id));
+  if (mode === "mistakes") {
+  const arr = filtered
+    .filter((item) => mistakesMetaById.has(item.id))
+    .filter((item) => !clearedMistakesSet.has(item.id)); // ✅ hide cleared ones
 
-    // ✅ sort by lastWrongAt desc, then wrongCount desc
-    arr.sort((a, b) => {
-      const ma = mistakesMetaById.get(a.id)!;
-      const mb = mistakesMetaById.get(b.id)!;
+  arr.sort((a, b) => {
+    const ma = mistakesMetaById.get(a.id)!;
+    const mb = mistakesMetaById.get(b.id)!;
+    if (mb.lastWrongAt !== ma.lastWrongAt) return mb.lastWrongAt - ma.lastWrongAt;
+    if (mb.wrongCount !== ma.wrongCount) return mb.wrongCount - ma.wrongCount;
+    return a.number - b.number;
+  });
 
-      if (mb.lastWrongAt !== ma.lastWrongAt) return mb.lastWrongAt - ma.lastWrongAt;
-      if (mb.wrongCount !== ma.wrongCount) return mb.wrongCount - ma.wrongCount;
-      return a.number - b.number;
-    });
+  return arr;
+}
 
-    return arr;
-  }
 
   return filtered;
-}, [filtered, mode, bookmarkedSet, mistakesMetaById]);
+}, [filtered, mode, bookmarkedSet, mistakesMetaById, clearedMistakeIds]);
+
 
 
 function clearSelection() {
@@ -781,6 +791,14 @@ function unbookmarkSelected() {
     if (bookmarkedSet.has(id)) toggle(id);
   });
 
+  clearSelection();
+}
+
+function clearMistakesSelected() {
+  const ids = Array.from(selectedIds);
+  if (ids.length === 0) return;
+
+  clearMistakesMany(ids);  // ✅ hide them from mistakes view
   clearSelection();
 }
 
@@ -905,15 +923,27 @@ useEffect(() => {
     })}
   </div>
 
-{mode === "bookmarks" && (
+{(mode === "bookmarks" || mode === "mistakes") && (
   <div className={styles.chipsRight}>
-    {selectedIds.size > 0 && (
+    {selectedIds.size > 0 && mode === "bookmarks" && (
       <button
         type="button"
         className={styles.deleteBtn}
         onClick={unbookmarkSelected}
         aria-label={`Delete ${selectedIds.size} bookmarks`}
         title={`Delete ${selectedIds.size} bookmarks`}
+      >
+        Delete
+      </button>
+    )}
+
+    {selectedIds.size > 0 && mode === "mistakes" && (
+      <button
+        type="button"
+        className={styles.deleteBtn}
+        onClick={clearMistakesSelected}
+        aria-label={`Remove ${selectedIds.size} mistakes from view`}
+        title={`Remove ${selectedIds.size} mistakes from view`}
       >
         Delete
       </button>
@@ -938,6 +968,7 @@ useEffect(() => {
     </button>
   </div>
 )}
+
 </div>
 
 
@@ -1884,6 +1915,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
 ### app/bookmarks/page.tsx
 ```tsx
+// app/bookmarks/page.tsx
+
 import type { DatasetId } from '../../lib/qbank/datasets';
 import AllQuestionsClient from '../all-questions/AllQuestionsClient.client';
 import BackButton from '../../components/BackButton';
@@ -5064,7 +5097,7 @@ const MY_CARDS = [
   },
   {
   key: "my-mistakes",
-  href: `${ROUTES.comingSoon}?feature=my-mistakes`,
+  href: ROUTES.mistakes,
   ariaLabel: "Open My Mistakes",
   bgSrc: "/images/home/cards/mymistakes-bg.png",
   bgAlt: "My Mistakes Background",
@@ -10568,6 +10601,7 @@ export function cookieOptions() {
 
 ### lib/bookmarks/useBookmarks.ts
 ```tsx
+
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -10703,6 +10737,79 @@ export function isBypassPath(pathname: string) {
   }
   return false;
 }
+```
+
+### lib/mistakes/useClearedMistakes.ts
+```tsx
+"use client";
+
+import { useCallback, useEffect, useMemo, useState } from "react";
+
+const keyFor = (datasetId: string, userKey: string) =>
+  `expatise:mistakesCleared:${userKey}:${datasetId}`;
+
+function readIds(datasetId: string, userKey: string): string[] {
+  if (typeof window === "undefined") return [];
+  try {
+    const raw = localStorage.getItem(keyFor(datasetId, userKey));
+    const parsed = raw ? JSON.parse(raw) : [];
+    return Array.isArray(parsed) ? parsed.map(String) : [];
+  } catch {
+    return [];
+  }
+}
+
+function writeIds(datasetId: string, userKey: string, ids: string[]) {
+  try {
+    localStorage.setItem(keyFor(datasetId, userKey), JSON.stringify(ids));
+  } catch {
+    // ignore
+  }
+}
+
+export function useClearedMistakes(datasetId: string, userKey: string) {
+  const [ids, setIds] = useState<string[]>([]);
+
+  useEffect(() => {
+    setIds(readIds(datasetId, userKey));
+  }, [datasetId, userKey]);
+
+  const idSet = useMemo(() => new Set(ids), [ids]);
+
+  const clearMany = useCallback(
+    (qids: string[]) => {
+      setIds((prev) => {
+        const next = new Set(prev);
+        qids.forEach((id) => next.add(id));
+        const arr = Array.from(next);
+        writeIds(datasetId, userKey, arr);
+        return arr;
+      });
+    },
+    [datasetId, userKey]
+  );
+
+  const undoMany = useCallback(
+    (qids: string[]) => {
+      setIds((prev) => {
+        const next = new Set(prev);
+        qids.forEach((id) => next.delete(id));
+        const arr = Array.from(next);
+        writeIds(datasetId, userKey, arr);
+        return arr;
+      });
+    },
+    [datasetId, userKey]
+  );
+
+  const clearAll = useCallback(() => {
+    setIds([]);
+    writeIds(datasetId, userKey, []);
+  }, [datasetId, userKey]);
+
+  return { ids, idSet, clearMany, undoMany, clearAll };
+}
+
 ```
 
 ### lib/password-reset-store.ts
@@ -12003,6 +12110,7 @@ export const ROUTES = {
   realTest: "/real-test",
   allQuestions: "/all-questions",
   bookmarks: "/bookmarks",
+  mistakes: "/my-mistakes",
   comingSoon: "/coming-soon",
 } as const;
 

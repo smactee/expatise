@@ -115,7 +115,7 @@ const MY_CARDS = [
   },
   {
   key: "my-mistakes",
-  href: `${ROUTES.comingSoon}?feature=my-mistakes`,
+  href: ROUTES.mistakes,
   ariaLabel: "Open My Mistakes",
   bgSrc: "/images/home/cards/mymistakes-bg.png",
   bgAlt: "My Mistakes Background",

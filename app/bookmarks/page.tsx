@@ -1,3 +1,5 @@
+// app/bookmarks/page.tsx
+
 import type { DatasetId } from '../../lib/qbank/datasets';
 import AllQuestionsClient from '../all-questions/AllQuestionsClient.client';
 import BackButton from '../../components/BackButton';

@@ -16,6 +16,7 @@ import BackButton from '../../components/BackButton';
 import { listAttempts } from '../../lib/test-engine/attemptStorage';
 import { normalizeUserKey } from '../../lib/test-engine/attemptStorage';
 import { useAuthStatus } from '../../components/useAuthStatus';
+import { useClearedMistakes } from '../../lib/mistakes/useClearedMistakes';
 
 
 
@@ -33,7 +34,13 @@ export default function AllQuestionsClient({ datasetId, mode = 'all' }: { datase
 
   // ✅ 3) now it's safe to use userKey
   const { idSet: bookmarkedSet, isBookmarked, toggle } = useBookmarks(datasetId, userKey);
+  const {
+  ids: clearedMistakeIds,
+  idSet: clearedMistakesSet,
+  clearMany: clearMistakesMany,
+} = useClearedMistakes(datasetId, userKey);
 
+  
   const [q, setQ] = useState<Question[]>([]);
   const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState('');
@@ -99,10 +106,11 @@ useEffect(() => {
 }, [unclassified]);
 
 useEffect(() => {
-  if (mode !== "bookmarks") {
+  if (mode !== "bookmarks" && mode !== "mistakes") {
     setSelectedIds(new Set());
   }
 }, [mode]);
+
 
 
   const filtered = useMemo(() => {
@@ -199,24 +207,26 @@ const mistakesMetaById = useMemo(() => {
 const visible = useMemo(() => {
   if (mode === 'bookmarks') return filtered.filter((item) => bookmarkedSet.has(item.id));
 
-  if (mode === 'mistakes') {
-    const arr = filtered.filter((item) => mistakesMetaById.has(item.id));
+  if (mode === "mistakes") {
+  const arr = filtered
+    .filter((item) => mistakesMetaById.has(item.id))
+    .filter((item) => !clearedMistakesSet.has(item.id)); // ✅ hide cleared ones
 
-    // ✅ sort by lastWrongAt desc, then wrongCount desc
-    arr.sort((a, b) => {
-      const ma = mistakesMetaById.get(a.id)!;
-      const mb = mistakesMetaById.get(b.id)!;
+  arr.sort((a, b) => {
+    const ma = mistakesMetaById.get(a.id)!;
+    const mb = mistakesMetaById.get(b.id)!;
+    if (mb.lastWrongAt !== ma.lastWrongAt) return mb.lastWrongAt - ma.lastWrongAt;
+    if (mb.wrongCount !== ma.wrongCount) return mb.wrongCount - ma.wrongCount;
+    return a.number - b.number;
+  });
 
-      if (mb.lastWrongAt !== ma.lastWrongAt) return mb.lastWrongAt - ma.lastWrongAt;
-      if (mb.wrongCount !== ma.wrongCount) return mb.wrongCount - ma.wrongCount;
-      return a.number - b.number;
-    });
+  return arr;
+}
 
-    return arr;
-  }
 
   return filtered;
-}, [filtered, mode, bookmarkedSet, mistakesMetaById]);
+}, [filtered, mode, bookmarkedSet, mistakesMetaById, clearedMistakeIds]);
+
 
 
 function clearSelection() {
@@ -233,6 +243,14 @@ function unbookmarkSelected() {
     if (bookmarkedSet.has(id)) toggle(id);
   });
 
+  clearSelection();
+}
+
+function clearMistakesSelected() {
+  const ids = Array.from(selectedIds);
+  if (ids.length === 0) return;
+
+  clearMistakesMany(ids);  // ✅ hide them from mistakes view
   clearSelection();
 }
 
@@ -357,15 +375,27 @@ useEffect(() => {
     })}
   </div>
 
-{mode === "bookmarks" && (
+{(mode === "bookmarks" || mode === "mistakes") && (
   <div className={styles.chipsRight}>
-    {selectedIds.size > 0 && (
+    {selectedIds.size > 0 && mode === "bookmarks" && (
       <button
         type="button"
         className={styles.deleteBtn}
         onClick={unbookmarkSelected}
         aria-label={`Delete ${selectedIds.size} bookmarks`}
         title={`Delete ${selectedIds.size} bookmarks`}
+      >
+        Delete
+      </button>
+    )}
+
+    {selectedIds.size > 0 && mode === "mistakes" && (
+      <button
+        type="button"
+        className={styles.deleteBtn}
+        onClick={clearMistakesSelected}
+        aria-label={`Remove ${selectedIds.size} mistakes from view`}
+        title={`Remove ${selectedIds.size} mistakes from view`}
       >
         Delete
       </button>
@@ -390,6 +420,7 @@ useEffect(() => {
     </button>
   </div>
 )}
+
 </div>
 
 
