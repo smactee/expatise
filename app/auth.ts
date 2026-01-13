@@ -7,6 +7,8 @@ import Google from "next-auth/providers/google";
 import Apple from "next-auth/providers/apple";
 import WeChat from "next-auth/providers/wechat";
 
+import { SERVER_FLAGS } from "../lib/flags/server";
+
 const providers: any[] = [];
 
 // ✅ add providers only if env vars exist (prevents dev crashes)
@@ -29,7 +31,7 @@ if (process.env.AUTH_APPLE_ID && process.env.AUTH_APPLE_SECRET) {
 }
 
 if (
-  process.env.NODE_ENV === "production" &&
+  SERVER_FLAGS.enableWeChatAuth &&
   process.env.AUTH_WECHAT_APP_ID &&
   process.env.AUTH_WECHAT_APP_SECRET
 ) {

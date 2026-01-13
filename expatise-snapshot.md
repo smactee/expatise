@@ -1525,9 +1525,15 @@ onClick={(e) => {
 ### app/all-questions/page.tsx
 ```tsx
 import AllQuestionsClient from './AllQuestionsClient.client';
+import RequirePremium from '@/components/RequirePremium.client';
+
 
 export default function QuestionsPage() {
-  return <AllQuestionsClient datasetId="cn-2023-test1" />;
+  return (
+    <RequirePremium>
+      <AllQuestionsClient datasetId="cn-2023-test1" />
+    </RequirePremium>
+  );
 }
 
 ```
@@ -1624,6 +1630,8 @@ export const { GET, POST } = handlers;
 
 ### app/api/local-login/route.ts
 ```tsx
+// app/api/local-login/route.ts
+
 import { NextResponse } from "next/server";
 import { checkUserPassword } from "../../../lib/user-store"; // if you don't use @, switch to relative
 import { AUTH_COOKIE, normalizeEmail } from "../../../lib/auth";
@@ -1853,6 +1861,8 @@ import Google from "next-auth/providers/google";
 import Apple from "next-auth/providers/apple";
 import WeChat from "next-auth/providers/wechat";
 
+import { SERVER_FLAGS } from "../lib/flags/server";
+
 const providers: any[] = [];
 
 // ✅ add providers only if env vars exist (prevents dev crashes)
@@ -1875,7 +1885,7 @@ if (process.env.AUTH_APPLE_ID && process.env.AUTH_APPLE_SECRET) {
 }
 
 if (
-  process.env.NODE_ENV === "production" &&
+  SERVER_FLAGS.enableWeChatAuth &&
   process.env.AUTH_WECHAT_APP_ID &&
   process.env.AUTH_WECHAT_APP_SECRET
 ) {
@@ -2169,6 +2179,8 @@ export default function BookmarksPage() {
 
 ### app/checkout/page.tsx
 ```tsx
+// app/checkout/page.tsx
+
 "use client";
 
 import Image from "next/image";
@@ -2373,6 +2385,8 @@ export default function CheckoutPage() {
 
 ### app/checkout/success/page.tsx
 ```tsx
+// app/checkout/success/page.tsx
+
 "use client";
 
 import Image from "next/image";
@@ -3079,6 +3093,8 @@ import { UserProfileProvider } from "@/components/UserProfile";
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import { config } from "@fortawesome/fontawesome-svg-core";
 config.autoAddCss = false; // Prevent fontawesome from adding its CSS since we did it manually above  
+import { EntitlementsProvider } from "@/components/EntitlementsProvider.client";
+
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -3110,11 +3126,13 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${nunitoSans.variable} antialiased`}
       >
+        <EntitlementsProvider>
         <ThemeProvider>
           <UserProfileProvider>
           {children}
           </UserProfileProvider>
           </ThemeProvider>
+        </EntitlementsProvider>
       </body>
     </html>
   );
@@ -4992,6 +5010,7 @@ import { ROUTES } from '../lib/routes';
 import FeatureCard from '../components/FeatureCard';
 
 
+
 const CURRENT_YEAR = new Date().getFullYear();
 
 const DEFAULT_TEST_DATE = `${CURRENT_YEAR}-04-20`; // default 04/20 THIS year
@@ -5496,6 +5515,7 @@ const modalTimeLabel = formatTimeLabel(modalSourceTime);
 
 ### app/premium/page.tsx
 ```tsx
+// app/premium/page.tsx
 "use client";
 
 import Image from "next/image";
@@ -10206,8 +10226,100 @@ export default function DragScrollRow({
 
 ```
 
+### components/EntitlementsProvider.client.tsx
+```tsx
+"use client";
+
+import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { PUBLIC_FLAGS } from "@/lib/flags/public";
+import { FREE_ENTITLEMENTS, type EntitlementSource, type Entitlements } from "@/lib/entitlements/types";
+import { getLocalEntitlements, setLocalEntitlements, clearLocalEntitlements } from "@/lib/entitlements/localStore";
+
+type EntitlementsContextValue = {
+  userKey: string; // for now "guest" (we’ll upgrade to real user scoping later)
+  entitlements: Entitlements;
+  isPremium: boolean;
+  refresh: () => void;
+  setEntitlements: (e: Entitlements) => void;
+  grantPremium: (source: EntitlementSource, expiresAt?: number) => void;
+  revokePremium: () => void;
+};
+
+const EntitlementsContext = createContext<EntitlementsContextValue | null>(null);
+
+export function EntitlementsProvider({ children }: { children: React.ReactNode }) {
+  // ✅ for now everyone is "guest". We'll swap this to real userKey in the Identity step.
+  const userKey = "guest";
+
+  const [entitlements, setState] = useState<Entitlements>(() => {
+    if (!PUBLIC_FLAGS.enablePremiumGates) {
+      return { isPremium: true, source: "admin", updatedAt: Date.now() };
+    }
+    return FREE_ENTITLEMENTS;
+  });
+
+  const refresh = useCallback(() => {
+    if (!PUBLIC_FLAGS.enablePremiumGates) {
+      setState({ isPremium: true, source: "admin", updatedAt: Date.now() });
+      return;
+    }
+    const local = getLocalEntitlements(userKey);
+    setState(local);
+  }, [userKey]);
+
+  const setEntitlements = useCallback((e: Entitlements) => {
+    setLocalEntitlements(userKey, e);
+    setState(e);
+  }, [userKey]);
+
+  const grantPremium = useCallback((source: EntitlementSource, expiresAt?: number) => {
+    const next: Entitlements = {
+      isPremium: true,
+      source,
+      expiresAt,
+      updatedAt: Date.now(),
+    };
+    setLocalEntitlements(userKey, next);
+    setState(next);
+  }, [userKey]);
+
+  const revokePremium = useCallback(() => {
+    clearLocalEntitlements(userKey);
+    setState(FREE_ENTITLEMENTS);
+  }, [userKey]);
+
+  useEffect(() => {
+    refresh();
+  }, [refresh]);
+
+  const value = useMemo<EntitlementsContextValue>(() => ({
+    userKey,
+    entitlements,
+    isPremium: entitlements.isPremium,
+    refresh,
+    setEntitlements,
+    grantPremium,
+    revokePremium,
+  }), [userKey, entitlements, refresh, setEntitlements, grantPremium, revokePremium]);
+
+  return (
+    <EntitlementsContext.Provider value={value}>
+      {children}
+    </EntitlementsContext.Provider>
+  );
+}
+
+export function useEntitlements() {
+  const ctx = useContext(EntitlementsContext);
+  if (!ctx) throw new Error("useEntitlements must be used inside <EntitlementsProvider>");
+  return ctx;
+}
+
+```
+
 ### components/FeatureCard.tsx
 ```tsx
+// components/FeatureCard.tsx
 'use client';
 
 import Link from 'next/link';
@@ -10324,6 +10436,43 @@ export default function FeatureCard({
       </div>
     </Link>
   );
+}
+
+```
+
+### components/RequirePremium.client.tsx
+```tsx
+"use client";
+
+import { useEffect } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { PUBLIC_FLAGS } from "@/lib/flags/public";
+import { useEntitlements } from "@/components/EntitlementsProvider.client";
+
+function currentPath(pathname: string, sp: URLSearchParams) {
+  const qs = sp.toString();
+  return qs ? `${pathname}?${qs}` : pathname;
+}
+
+export default function RequirePremium({ children }: { children: React.ReactNode }) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const sp = useSearchParams();
+  const { isPremium } = useEntitlements();
+
+  useEffect(() => {
+    if (!PUBLIC_FLAGS.enablePremiumGates) return;
+    if (isPremium) return;
+
+    const next = encodeURIComponent(currentPath(pathname, sp));
+    router.replace(`/premium?next=${next}`);
+  }, [isPremium, pathname, sp, router]);
+
+  if (!PUBLIC_FLAGS.enablePremiumGates) return <>{children}</>;
+  if (isPremium) return <>{children}</>;
+
+  // while redirecting
+  return null;
 }
 
 ```
@@ -10672,6 +10821,121 @@ export function useBookmarks(datasetId: string, userKey: string = "guest") {
 
 ```
 
+### lib/entitlements/localStore.ts
+```tsx
+import { FREE_ENTITLEMENTS, type Entitlements, isExpired } from "./types";
+
+const NS = "expatise:entitlements";
+
+function keyFor(userKey: string) {
+  return `${NS}:${userKey || "guest"}`;
+}
+
+function safeParse<T>(raw: string | null): T | null {
+  if (!raw) return null;
+  try { return JSON.parse(raw) as T; } catch { return null; }
+}
+
+export function getLocalEntitlements(userKey = "guest"): Entitlements {
+  if (typeof window === "undefined") return FREE_ENTITLEMENTS;
+
+  const raw = window.localStorage.getItem(keyFor(userKey));
+  const parsed = safeParse<Entitlements>(raw);
+
+  if (!parsed) return FREE_ENTITLEMENTS;
+  if (isExpired(parsed)) return FREE_ENTITLEMENTS;
+
+  return parsed;
+}
+
+export function setLocalEntitlements(userKey = "guest", e: Entitlements) {
+  if (typeof window === "undefined") return;
+  window.localStorage.setItem(keyFor(userKey), JSON.stringify(e));
+}
+
+export function clearLocalEntitlements(userKey = "guest") {
+  if (typeof window === "undefined") return;
+  window.localStorage.removeItem(keyFor(userKey));
+}
+
+```
+
+### lib/entitlements/types.ts
+```tsx
+export type EntitlementSource =
+  | "none"
+  | "trial"
+  | "subscription"
+  | "lifetime"
+  | "admin"
+  | "dev";
+
+export type Entitlements = {
+  isPremium: boolean;
+  source: EntitlementSource;
+  expiresAt?: number; // unix ms
+  updatedAt: number;  // unix ms
+};
+
+export const FREE_ENTITLEMENTS: Entitlements = {
+  isPremium: false,
+  source: "none",
+  updatedAt: 0,
+};
+
+export function isExpired(e: Entitlements) {
+  return typeof e.expiresAt === "number" && Date.now() > e.expiresAt;
+}
+
+```
+
+### lib/flags/public.ts
+```tsx
+// lib/flags/public.ts
+export type PublicFlags = {
+  enablePayments: boolean;
+  enablePremiumGates: boolean;
+};
+
+function readBool(name: string, fallback: boolean) {
+  const v = process.env[name];
+  if (v == null) return fallback;
+  const s = String(v).trim().toLowerCase();
+  if (["1", "true", "yes", "on"].includes(s)) return true;
+  if (["0", "false", "no", "off"].includes(s)) return false;
+  return fallback;
+}
+
+export const PUBLIC_FLAGS: PublicFlags = {
+  // must be NEXT_PUBLIC_* to be available in client components
+  enablePayments: readBool("NEXT_PUBLIC_ENABLE_PAYMENTS", false),
+  enablePremiumGates: readBool("NEXT_PUBLIC_ENABLE_PREMIUM_GATES", true),
+};
+
+```
+
+### lib/flags/server.ts
+```tsx
+// lib/flags/server.ts
+import "server-only";
+import { PUBLIC_FLAGS } from "./public";
+
+function readBool(name: string, fallback: boolean) {
+  const v = process.env[name];
+  if (v == null) return fallback;
+  const s = String(v).trim().toLowerCase();
+  if (["1", "true", "yes", "on"].includes(s)) return true;
+  if (["0", "false", "no", "off"].includes(s)) return false;
+  return fallback;
+}
+
+export const SERVER_FLAGS = {
+  ...PUBLIC_FLAGS,
+  enableWeChatAuth: readBool("ENABLE_WECHAT_AUTH", false),
+} as const;
+
+```
+
 ### lib/middleware/auth.ts
 ```tsx
 // lib/middleware/auth.ts
@@ -10814,6 +11078,7 @@ export function useClearedMistakes(datasetId: string, userKey: string) {
 
 ### lib/password-reset-store.ts
 ```tsx
+// lib/password-reset-store.ts
 import crypto from "crypto";
 
 type ResetRecord = {

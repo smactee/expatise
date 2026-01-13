@@ -6,6 +6,8 @@ import { UserProfileProvider } from "@/components/UserProfile";
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import { config } from "@fortawesome/fontawesome-svg-core";
 config.autoAddCss = false; // Prevent fontawesome from adding its CSS since we did it manually above  
+import { EntitlementsProvider } from "@/components/EntitlementsProvider.client";
+
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -37,11 +39,13 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${nunitoSans.variable} antialiased`}
       >
+        <EntitlementsProvider>
         <ThemeProvider>
           <UserProfileProvider>
           {children}
           </UserProfileProvider>
           </ThemeProvider>
+        </EntitlementsProvider>
       </body>
     </html>
   );

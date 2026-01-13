@@ -1,3 +1,5 @@
+// app/api/local-login/route.ts
+
 import { NextResponse } from "next/server";
 import { checkUserPassword } from "../../../lib/user-store"; // if you don't use @, switch to relative
 import { AUTH_COOKIE, normalizeEmail } from "../../../lib/auth";
