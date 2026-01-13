@@ -1,3 +1,5 @@
+// app/checkout/page.tsx
+
 "use client";
 
 import Image from "next/image";
