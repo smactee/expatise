@@ -6,12 +6,12 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import styles from './results.module.css';
 import Image from 'next/image';
 
-import { loadDataset } from '../../../lib/qbank/loadDataset';
-import type { DatasetId } from '../../../lib/qbank/datasets';
-import type { Question } from '../../../lib/qbank/types';
-import { readAttemptById, type TestAttemptV1 } from '../../../lib/test-engine/attemptStorage';
-import { useBookmarks } from '../../../lib/bookmarks/useBookmarks';
-import { closeAttemptById } from '../../../lib/test-engine/attemptStorage';
+import { loadDataset } from '@/lib/qbank/loadDataset';
+import type { DatasetId } from '@/lib/qbank/datasets';
+import type { Question } from '@/lib/qbank/types';
+import { readAttemptById, type TestAttemptV1 } from '@/lib/test-engine/attemptStorage';
+import { useBookmarks } from '@/lib/bookmarks/useBookmarks';
+import { closeAttemptById } from '@/lib/test-engine/attemptStorage';
 
 function clamp(n: number, min: number, max: number) {
   return Math.max(min, Math.min(max, n));

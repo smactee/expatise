@@ -4,6 +4,7 @@
 import BottomNav from '../../components/BottomNav';
 import styles from './stats.module.css'; // reuse shared layout + new stats classes
 import BackButton from '../../components/BackButton';
+import RequirePremium from '@/components/RequirePremium.client';
 
 export default function StatsPage() {
   return (

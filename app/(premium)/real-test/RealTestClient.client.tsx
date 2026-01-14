@@ -8,12 +8,12 @@ import Image from 'next/image';
 
 import styles from './real-test.module.css';
 
-import { loadDataset } from '../../lib/qbank/loadDataset';
-import type { DatasetId } from '../../lib/qbank/datasets';
-import type { Question } from '../../lib/qbank/types';
-import { useBookmarks } from '../../lib/bookmarks/useBookmarks';
-import BackButton from '../../components/BackButton';
-import { useAuthStatus } from '../../components/useAuthStatus';
+import { loadDataset } from '@/lib/qbank/loadDataset';
+import type { DatasetId } from '@/lib/qbank/datasets';
+import type { Question } from '@/lib/qbank/types';
+import { useBookmarks } from '@/lib/bookmarks/useBookmarks';
+import BackButton from '@/components/BackButton';
+import { useAuthStatus } from '@/components/useAuthStatus';
 import {
   computeNextUnansweredIndex,
   getOrCreateAttempt,
@@ -21,7 +21,7 @@ import {
   writeAttempt,
   closeAttemptById,
   type TestAttemptV1,
-} from '../../lib/test-engine/attemptStorage';
+} from '@/lib/test-engine/attemptStorage';
 
 
 function formatTime(secs: number) {

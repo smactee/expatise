@@ -4,19 +4,19 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import Image from 'next/image';
-import BottomNav from '../../components/BottomNav';
+import BottomNav from '@/components/BottomNav';
 import styles from './all-questions.module.css';
-import { loadDataset } from '../../lib/qbank/loadDataset';
-import type { DatasetId } from '../../lib/qbank/datasets';
-import type { Question } from '../../lib/qbank/types';
-import { TAG_TAXONOMY, labelForTag } from '../../lib/qbank/tagTaxonomy';
-import { deriveTopicSubtags } from '../../lib/qbank/deriveTopicSubtags';
-import { useBookmarks } from "../../lib/bookmarks/useBookmarks"; // adjust path if you use "@/lib/..."
-import BackButton from '../../components/BackButton';
-import { listAttempts } from '../../lib/test-engine/attemptStorage';
-import { normalizeUserKey } from '../../lib/test-engine/attemptStorage';
-import { useAuthStatus } from '../../components/useAuthStatus';
-import { useClearedMistakes } from '../../lib/mistakes/useClearedMistakes';
+import { loadDataset } from '@/lib/qbank/loadDataset';
+import type { DatasetId } from '@/lib/qbank/datasets';
+import type { Question } from '@/lib/qbank/types';
+import { TAG_TAXONOMY, labelForTag } from '@/lib/qbank/tagTaxonomy';
+import { deriveTopicSubtags } from '@/lib/qbank/deriveTopicSubtags';
+import { useBookmarks } from "@/lib/bookmarks/useBookmarks"; // adjust path if you use "@/lib/..."
+import BackButton from '@/components/BackButton';
+import { listAttempts } from '@/lib/test-engine/attemptStorage';
+import { normalizeUserKey } from '@/lib/test-engine/attemptStorage';
+import { useAuthStatus } from '@/components/useAuthStatus';
+import { useClearedMistakes } from '@/lib/mistakes/useClearedMistakes';
 
 
 

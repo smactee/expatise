@@ -97,6 +97,46 @@ export function writeAttempt(attempt: TestAttemptV1) {
   }
 }
 
+// ✅ delete 1 attempt record
+export function deleteAttemptById(attemptId: string) {
+  if (typeof window === "undefined") return;
+  try {
+    window.localStorage.removeItem(attemptKeyById(attemptId));
+  } catch {}
+}
+
+// ✅ clear attempts by filter (bookmarks-style parity)
+export function clearAttemptsByFilter(filter: {
+  userKey: string;
+  datasetId?: string;
+  modeKey?: string;
+  status?: AttemptStatus;
+}) {
+  if (typeof window === "undefined") return;
+
+  const attempts = listAttempts({
+    userKey: filter.userKey,
+    datasetId: filter.datasetId,
+    modeKey: filter.modeKey,
+    status: filter.status,
+    sort: "newest",
+  });
+
+  for (const a of attempts) {
+    // remove stored record
+    deleteAttemptById(a.attemptId);
+
+    // clear active pointer for that mode+dataset
+    clearActiveAttemptPointer({
+      userKey: a.userKey,
+      modeKey: a.modeKey,
+      datasetId: a.datasetId,
+    });
+  }
+}
+
+
+
 // ✅ clears the "active attempt pointer" so /real-test won't resume it
 export function clearActiveAttemptPointer(params: {
   userKey: string;
@@ -181,6 +221,22 @@ function isExpired(attempt: TestAttemptV1, now: number) {
   return now - inactiveSince >= EXPIRE_AFTER_MS;
 }
 
+function markExpiredIfNeeded(a: TestAttemptV1, now: number): TestAttemptV1 {
+  if (!isExpired(a, now)) return a;
+  if (a.status === "expired") return a;
+
+  const expired: TestAttemptV1 = {
+    ...a,
+    status: "expired",
+    lastActiveAt: now,
+  };
+
+  writeAttempt(expired);
+  clearActiveAttemptPointer({ userKey: expired.userKey, modeKey: expired.modeKey, datasetId: expired.datasetId });
+  return expired;
+}
+
+
 export function computeNextUnansweredIndex(attempt: TestAttemptV1): number {
   for (let i = 0; i < attempt.questionIds.length; i++) {
     const qid = attempt.questionIds[i];
@@ -209,36 +265,67 @@ export function getOrCreateAttempt(params: {
 
   if (activeId) {
     const existing = readAttemptById(activeId);
-    if (existing) {
-      const allSet = new Set(params.allQuestionIds);
-      const valid =
-        existing.schemaVersion === SCHEMA_VERSION &&
-        existing.userKey === params.userKey &&
-        existing.modeKey === params.modeKey &&
-        existing.datasetId === params.datasetId &&
-        existing.datasetVersion === params.datasetVersion &&
-        existing.questionIds.length === params.questionCount &&
-        new Set(existing.questionIds).size === existing.questionIds.length &&
-        existing.questionIds.every((id) => allSet.has(id)) &&
-        !isExpired(existing, now) &&
-        existing.status !== 'submitted' &&
-        existing.status !== 'expired';
 
-      if (valid) {
-        const resumed: TestAttemptV1 = {
-          ...existing,
-          status: 'in_progress',
-          lastActiveAt: now,
-          pausedAt: undefined,
-        };
-        writeAttempt(resumed);
-        // keep pointer the same
-        return { attempt: resumed, reused: true };
+    // ✅ Edge case: pointer exists but record is missing/corrupt
+    if (!existing) {
+      clearActiveAttemptPointer({
+        userKey: params.userKey,
+        modeKey: params.modeKey,
+        datasetId: params.datasetId,
+      });
+    } else {
+      // ✅ NEW: persist expiration + clear pointer if needed
+      const maybeExpired = markExpiredIfNeeded(existing, now);
+
+      // If it expired, treat as invalid and fall through to "create new attempt"
+      if (maybeExpired.status !== "expired") {
+        const a = maybeExpired; // use a for the rest
+
+        const allSet = new Set(params.allQuestionIds);
+
+        const valid =
+          a.schemaVersion === SCHEMA_VERSION &&
+          a.userKey === params.userKey &&
+          a.modeKey === params.modeKey &&
+          a.datasetId === params.datasetId &&
+          a.datasetVersion === params.datasetVersion &&
+          a.questionIds.length === params.questionCount &&
+          new Set(a.questionIds).size === a.questionIds.length &&
+          a.questionIds.every((id) => allSet.has(id)) &&
+          // markExpiredIfNeeded already handled expiration
+          a.status !== "submitted" &&
+          a.status !== "expired";
+
+        if (valid) {
+          const resumed: TestAttemptV1 = {
+            ...a,
+            status: "in_progress",
+            lastActiveAt: now,
+            pausedAt: undefined,
+          };
+          writeAttempt(resumed);
+          // keep pointer the same
+          return { attempt: resumed, reused: true };
+        }
+
+        // ✅ Invalid attempt for other reasons (datasetVersion mismatch, wrong count, etc.)
+        // Clear pointer so the next open doesn’t keep trying to resume it.
+        clearActiveAttemptPointer({
+          userKey: params.userKey,
+          modeKey: params.modeKey,
+          datasetId: params.datasetId,
+        });
       }
+
+      // If maybeExpired.status === "expired", markExpiredIfNeeded already cleared pointer.
+      // We just fall through to creation below.
     }
   }
 
-  // Create new attempt
+  // -----------------------------
+  // Create new attempt (fallback)
+  // -----------------------------
+
   const picked = sampleWithoutReplacement(params.allQuestionIds, params.questionCount);
 
   const fresh: TestAttemptV1 = {
@@ -258,13 +345,14 @@ export function getOrCreateAttempt(params: {
     timeLimitSec: params.timeLimitSec,
     remainingSec: params.timeLimitSec,
 
-    status: 'in_progress',
+    status: "in_progress",
 
     createdAt: now,
     lastActiveAt: now,
   };
 
   writeAttempt(fresh);
+
   writeActiveAttemptId({
     userKey: params.userKey,
     modeKey: params.modeKey,
@@ -274,6 +362,7 @@ export function getOrCreateAttempt(params: {
 
   return { attempt: fresh, reused: false };
 }
+
 
 export function listAttempts(filter?: {
   status?: AttemptStatus;

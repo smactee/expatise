@@ -4,12 +4,20 @@
 
 import Image from "next/image";
 import { useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import confetti from "canvas-confetti";
 import styles from "./success.module.css";
 
+import { useEntitlements } from "../../../components/EntitlementsProvider.client";
+import { safeNextPath } from "../../../lib/auth";
+
 export default function CheckoutSuccessPage() {
   const router = useRouter();
+  const sp = useSearchParams();
+  const { grantPremium } = useEntitlements();
+
+  const next = safeNextPath(sp.get("next"), "/");
+  const plan = sp.get("plan");
 
   useEffect(() => {
     // Respect reduced motion
@@ -18,7 +26,6 @@ export default function CheckoutSuccessPage() {
     const duration = 1000;
     const end = Date.now() + duration;
 
-    // A nice “burst for 3s” effect
     (function frame() {
       confetti({
         particleCount: 4,
@@ -39,23 +46,28 @@ export default function CheckoutSuccessPage() {
     })();
   }, []);
 
+  useEffect(() => {
+    // Temporary: grant premium locally after “successful purchase”.
+    // Later: replace with real IAP verification + entitlements refresh.
+    const source = plan === "lifetime" ? "lifetime" : "subscription";
+    grantPremium(source);
+  }, [plan, grantPremium]);
+
   return (
     <main className={styles.page}>
       <div className={styles.frame}>
         <div className={styles.confettieWrap}>
-        {/* Static confetti BG (stays after animation ends) */}
-        <Image
-          src="/images/checkout/confetti-bg.png"
-          alt="confetti background"
-          fill
-          priority
-          className={styles.confettiBg}
-          sizes="390px"
-        />
+          <Image
+            src="/images/checkout/confetti-bg.png"
+            alt="confetti background"
+            fill
+            priority
+            className={styles.confettiBg}
+            sizes="390px"
+          />
         </div>
 
         <div className={styles.centerBlock}>
-          {/* Center check icon */}
           <Image
             src="/images/checkout/bluecheck-icon.png"
             alt="Payment successful"
@@ -75,9 +87,9 @@ export default function CheckoutSuccessPage() {
           <button
             type="button"
             className={styles.homeBtn}
-            onClick={() => router.push("/")}
+            onClick={() => router.push(next)}
           >
-            Back to Home
+            Back
           </button>
         </footer>
       </div>

@@ -1,5 +1,5 @@
 // app/real-test/page.tsx
-import type { DatasetId } from '../../lib/qbank/datasets';
+import type { DatasetId } from '@/lib/qbank/datasets';
 import RealTestClient from './RealTestClient.client';
 
 export default function RealTestPage() {

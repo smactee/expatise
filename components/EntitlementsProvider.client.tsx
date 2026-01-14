@@ -4,6 +4,10 @@ import React, { createContext, useCallback, useContext, useEffect, useMemo, useS
 import { PUBLIC_FLAGS } from "@/lib/flags/public";
 import { FREE_ENTITLEMENTS, type EntitlementSource, type Entitlements } from "@/lib/entitlements/types";
 import { getLocalEntitlements, setLocalEntitlements, clearLocalEntitlements } from "@/lib/entitlements/localStore";
+import { useUserKey } from "@/components/useUserKey.client";
+import EntitlementsDebugBadge from "@/components/EntitlementsDebugBadge.client";
+
+
 
 type EntitlementsContextValue = {
   userKey: string; // for now "guest" (we’ll upgrade to real user scoping later)
@@ -19,7 +23,7 @@ const EntitlementsContext = createContext<EntitlementsContextValue | null>(null)
 
 export function EntitlementsProvider({ children }: { children: React.ReactNode }) {
   // ✅ for now everyone is "guest". We'll swap this to real userKey in the Identity step.
-  const userKey = "guest";
+  const userKey = useUserKey();
 
   const [entitlements, setState] = useState<Entitlements>(() => {
     if (!PUBLIC_FLAGS.enablePremiumGates) {
@@ -35,7 +39,7 @@ export function EntitlementsProvider({ children }: { children: React.ReactNode }
     }
     const local = getLocalEntitlements(userKey);
     setState(local);
-  }, [userKey]);
+  }, [userKey, PUBLIC_FLAGS.enablePremiumGates]);
 
   const setEntitlements = useCallback((e: Entitlements) => {
     setLocalEntitlements(userKey, e);
@@ -60,7 +64,7 @@ export function EntitlementsProvider({ children }: { children: React.ReactNode }
 
   useEffect(() => {
     refresh();
-  }, [refresh]);
+  }, [refresh, userKey]);
 
   const value = useMemo<EntitlementsContextValue>(() => ({
     userKey,
@@ -75,7 +79,9 @@ export function EntitlementsProvider({ children }: { children: React.ReactNode }
   return (
     <EntitlementsContext.Provider value={value}>
       {children}
+       <EntitlementsDebugBadge />
     </EntitlementsContext.Provider>
+    
   );
 }
 

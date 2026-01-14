@@ -256,295 +256,7 @@ If usage and adoption grows, Expatise may expand into:
 
 ```
 
-### app/account-security/account-security.module.css
-```css
-.page {
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  padding: 24px 16px;
-  background: var(--color-page-bg);
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'SF Pro Text',
-    'Segoe UI', sans-serif;
-}
-
-.card {
-  width: 100%;
-  max-width: 520px;
-  border-radius: 20px;
-  padding: 18px;
-  background: rgba(255, 255, 255, 0.65);
-  backdrop-filter: blur(12px);
-}
-
-.backBtn {
-  border: none;
-  background: transparent;
-  font-size: 18px;
-  cursor: pointer;
-  margin-bottom: 10px;
-}
-
-.title {
-  font-size: 24px;
-  margin: 8px 0 12px;
-}
-
-.text {
-  opacity: 0.8;
-}
-
-.section {
-  margin-top: 18px;
-  padding-top: 14px;
-  border-top: 1px solid rgba(0,0,0,0.08);
-}
-
-.sectionTitle {
-  font-size: 16px;
-  margin-bottom: 10px;
-}
-
-.input {
-  width: 100%;
-  padding: 12px 14px;
-  border-radius: 14px;
-  border: 1px solid rgba(0,0,0,0.15);
-  outline: none;
-  margin-bottom: 10px;
-  background: rgba(255,255,255,0.9);
-}
-
-.primaryBtn {
-  width: 100%;
-  padding: 12px 14px;
-  border-radius: 14px;
-  border: 1px solid rgba(148, 163, 184, 0.35);
-  cursor: pointer;
-  background: var(--color-premium-gradient);
-  color: var(--color-heading-strong);
-  font-weight: 700;
-}
-
-.msg {
-  margin: 10px 0;
-  padding: 10px 12px;
-  border-radius: 12px;
-  background: rgba(0,0,0,0.06);
-}
-
-.row {
-  display: flex;
-  gap: 10px;
-  margin-top: 12px;
-}
-
-.linkBtn {
-  display: inline-block;
-  padding: 10px 12px;
-  border-radius: 12px;
-  text-decoration: none;
-  background: rgba(0,0,0,0.08);
-}
-
-.ghostBtn {
-  padding: 10px 12px;
-  border-radius: 12px;
-  border: 1px solid rgba(0,0,0,0.15);
-  background: transparent;
-  cursor: pointer;
-}
-
-```
-
-### app/account-security/page.tsx
-```tsx
-'use client';
-
-import React, { useMemo, useState } from 'react';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import styles from './account-security.module.css';
-import { useAuthStatus } from '../../components/useAuthStatus';
-
-export default function AccountSecurityPage() {
-  const router = useRouter();
-  const { authed, method, loading } = useAuthStatus();
-
-  const allowed = useMemo(() => authed && method === 'email', [authed, method]);
-
-  const [pwCurrent, setPwCurrent] = useState('');
-  const [pwNext, setPwNext] = useState('');
-  const [pwNext2, setPwNext2] = useState('');
-
-  const [emailNext, setEmailNext] = useState('');
-  const [emailPw, setEmailPw] = useState('');
-
-  const [msg, setMsg] = useState<string | null>(null);
-  const [busy, setBusy] = useState(false);
-
-  async function changePassword() {
-    setMsg(null);
-
-    if (!pwCurrent || !pwNext || !pwNext2) {
-      setMsg('Please fill all password fields.');
-      return;
-    }
-    if (pwNext !== pwNext2) {
-      setMsg('New passwords do not match.');
-      return;
-    }
-
-    setBusy(true);
-    try {
-      const res = await fetch('/api/account/change-password', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          currentPassword: pwCurrent,
-          newPassword: pwNext,
-        }),
-      });
-
-      const data = await res.json();
-      if (!res.ok) {
-        setMsg(data?.error ?? 'Failed to change password.');
-        return;
-      }
-
-      setPwCurrent('');
-      setPwNext('');
-      setPwNext2('');
-      setMsg('Password updated.');
-    } finally {
-      setBusy(false);
-    }
-  }
-
-  async function changeEmail() {
-    setMsg(null);
-
-    if (!emailNext || !emailPw) {
-      setMsg('Please enter your new email and password.');
-      return;
-    }
-
-    setBusy(true);
-    try {
-      const res = await fetch('/api/account/change-email', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          newEmail: emailNext,
-          password: emailPw,
-        }),
-      });
-
-      const data = await res.json();
-      if (!res.ok) {
-        setMsg(data?.error ?? 'Failed to change email.');
-        return;
-      }
-
-      setEmailNext('');
-      setEmailPw('');
-      setMsg('Email updated.');
-      // optional: send user back to profile
-      // router.push('/profile');
-    } finally {
-      setBusy(false);
-    }
-  }
-
-  if (loading) return null;
-
-  if (!allowed) {
-    return (
-      <main className={styles.page}>
-        <div className={styles.card}>
-          <h1 className={styles.title}>Account Security</h1>
-          <p className={styles.text}>
-            This page is only available for accounts created with Email + Password.
-          </p>
-          <div className={styles.row}>
-            <Link className={styles.linkBtn} href="/login">
-              Go to login
-            </Link>
-            <button className={styles.ghostBtn} onClick={() => router.back()}>
-              Back
-            </button>
-          </div>
-        </div>
-      </main>
-    );
-  }
-
-  return (
-    <main className={styles.page}>
-      <div className={styles.card}>
-        <button className={styles.backBtn} onClick={() => router.back()}>
-          ‹ Back
-        </button>
-
-        <h1 className={styles.title}>Change Email / Password</h1>
-
-        {msg && <div className={styles.msg}>{msg}</div>}
-
-        <section className={styles.section}>
-          <h2 className={styles.sectionTitle}>Change Email</h2>
-          <input
-            className={styles.input}
-            placeholder="New email"
-            value={emailNext}
-            onChange={(e) => setEmailNext(e.target.value)}
-          />
-          <input
-            className={styles.input}
-            placeholder="Current password"
-            type="password"
-            value={emailPw}
-            onChange={(e) => setEmailPw(e.target.value)}
-          />
-          <button className={styles.primaryBtn} disabled={busy} onClick={changeEmail}>
-            Update Email
-          </button>
-        </section>
-
-        <section className={styles.section}>
-          <h2 className={styles.sectionTitle}>Change Password</h2>
-          <input
-            className={styles.input}
-            placeholder="Current password"
-            type="password"
-            value={pwCurrent}
-            onChange={(e) => setPwCurrent(e.target.value)}
-          />
-          <input
-            className={styles.input}
-            placeholder="New password"
-            type="password"
-            value={pwNext}
-            onChange={(e) => setPwNext(e.target.value)}
-          />
-          <input
-            className={styles.input}
-            placeholder="Confirm new password"
-            type="password"
-            value={pwNext2}
-            onChange={(e) => setPwNext2(e.target.value)}
-          />
-          <button className={styles.primaryBtn} disabled={busy} onClick={changePassword}>
-            Update Password
-          </button>
-        </section>
-      </div>
-    </main>
-  );
-}
-
-```
-
-### app/all-questions/AllQuestionsClient.client.tsx
+### app/(premium)/all-questions/AllQuestionsClient.client.tsx
 ```tsx
 // app/all-questions/AllQuestionsClient.client.tsx
 
@@ -552,19 +264,19 @@ export default function AccountSecurityPage() {
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import Image from 'next/image';
-import BottomNav from '../../components/BottomNav';
+import BottomNav from '@/components/BottomNav';
 import styles from './all-questions.module.css';
-import { loadDataset } from '../../lib/qbank/loadDataset';
-import type { DatasetId } from '../../lib/qbank/datasets';
-import type { Question } from '../../lib/qbank/types';
-import { TAG_TAXONOMY, labelForTag } from '../../lib/qbank/tagTaxonomy';
-import { deriveTopicSubtags } from '../../lib/qbank/deriveTopicSubtags';
-import { useBookmarks } from "../../lib/bookmarks/useBookmarks"; // adjust path if you use "@/lib/..."
-import BackButton from '../../components/BackButton';
-import { listAttempts } from '../../lib/test-engine/attemptStorage';
-import { normalizeUserKey } from '../../lib/test-engine/attemptStorage';
-import { useAuthStatus } from '../../components/useAuthStatus';
-import { useClearedMistakes } from '../../lib/mistakes/useClearedMistakes';
+import { loadDataset } from '@/lib/qbank/loadDataset';
+import type { DatasetId } from '@/lib/qbank/datasets';
+import type { Question } from '@/lib/qbank/types';
+import { TAG_TAXONOMY, labelForTag } from '@/lib/qbank/tagTaxonomy';
+import { deriveTopicSubtags } from '@/lib/qbank/deriveTopicSubtags';
+import { useBookmarks } from "@/lib/bookmarks/useBookmarks"; // adjust path if you use "@/lib/..."
+import BackButton from '@/components/BackButton';
+import { listAttempts } from '@/lib/test-engine/attemptStorage';
+import { normalizeUserKey } from '@/lib/test-engine/attemptStorage';
+import { useAuthStatus } from '@/components/useAuthStatus';
+import { useClearedMistakes } from '@/lib/mistakes/useClearedMistakes';
 
 
 
@@ -1155,7 +867,7 @@ onClick={(e) => {
 
 ```
 
-### app/all-questions/all-questions.module.css
+### app/(premium)/all-questions/all-questions.module.css
 ```css
 .page {
   min-height: 100vh;
@@ -1522,17 +1234,3010 @@ onClick={(e) => {
 
 ```
 
-### app/all-questions/page.tsx
+### app/(premium)/all-questions/page.tsx
 ```tsx
 import AllQuestionsClient from './AllQuestionsClient.client';
-import RequirePremium from '@/components/RequirePremium.client';
 
 
 export default function QuestionsPage() {
   return (
-    <RequirePremium>
+    
       <AllQuestionsClient datasetId="cn-2023-test1" />
-    </RequirePremium>
+
+  );
+}
+
+```
+
+### app/(premium)/bookmarks/page.tsx
+```tsx
+// app/bookmarks/page.tsx
+
+import type { DatasetId } from '@/lib/qbank/datasets';
+import AllQuestionsClient from "@/app/(premium)/all-questions/AllQuestionsClient.client";
+import BackButton from '@/components/BackButton';
+
+export default function BookmarksPage() {
+  // IMPORTANT: use the same datasetId you use for /all-questions
+  const datasetId: DatasetId = '2023-test1' as DatasetId;
+
+  return (
+    <>
+      <BackButton />
+      <AllQuestionsClient datasetId={"cn-2023-test1" as DatasetId} mode="bookmarks" />
+    </>
+  );
+}
+
+```
+
+### app/(premium)/layout.tsx
+```tsx
+import RequirePremium from "@/components/RequirePremium.client";
+
+export default function PremiumLayout({ children }: { children: React.ReactNode }) {
+  return <RequirePremium>{children}</RequirePremium>;
+}
+
+```
+
+### app/(premium)/my-mistakes/my-mistakes.module.css
+```css
+
+```
+
+### app/(premium)/my-mistakes/page.tsx
+```tsx
+// app/my-mistakes/page.tsx
+
+import type { DatasetId } from '@/lib/qbank/datasets';
+import AllQuestionsClient from "@/app/(premium)/all-questions/AllQuestionsClient.client";
+import BackButton from '@/components/BackButton';
+
+export default function MyMistakesPage() {
+  return (
+    <>
+      <BackButton />
+      <AllQuestionsClient datasetId={"cn-2023-test1" as DatasetId} mode="mistakes" />
+    </>
+  );
+}
+
+```
+
+### app/(premium)/real-test/RealTestClient.client.tsx
+```tsx
+// app/real-test/RealTestClient.client.tsx
+
+'use client';
+
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import Image from 'next/image';
+
+import styles from './real-test.module.css';
+
+import { loadDataset } from '@/lib/qbank/loadDataset';
+import type { DatasetId } from '@/lib/qbank/datasets';
+import type { Question } from '@/lib/qbank/types';
+import { useBookmarks } from '@/lib/bookmarks/useBookmarks';
+import BackButton from '@/components/BackButton';
+import { useAuthStatus } from '@/components/useAuthStatus';
+import {
+  computeNextUnansweredIndex,
+  getOrCreateAttempt,
+  normalizeUserKey,
+  writeAttempt,
+  closeAttemptById,
+  type TestAttemptV1,
+} from '@/lib/test-engine/attemptStorage';
+
+
+function formatTime(secs: number) {
+  const m = Math.floor(secs / 60);
+  const s = secs % 60;
+  return `${m}:${String(s).padStart(2, '0')}`;
+}
+
+function normalizeRowChoice(v: string | null | undefined): 'R' | 'W' | null {
+  if (!v) return null;
+
+  const t = v.trim().toLowerCase();
+
+  if (t === 'r' || t === 'right') return 'R';
+  if (t === 'w' || t === 'wrong') return 'W';
+
+  return null;
+}
+
+
+
+
+export default function RealTestClient({
+  datasetId,
+  datasetVersion,
+  questionCount,
+  timeLimitMinutes,
+}: {
+  datasetId: DatasetId;
+  datasetVersion: string;
+  questionCount: number;
+  timeLimitMinutes: number;
+}) {
+  const router = useRouter();
+
+  const [items, setItems] = useState<Question[]>([]);
+  const [loading, setLoading] = useState(true);
+  
+
+  const [index, setIndex] = useState(0);
+  const [selectedKey, setSelectedKey] = useState<string | null>(null);
+
+  const total = items.length || 100;
+  const currentNo = Math.min(index + 1, total);
+
+  const [timeLeft, setTimeLeft] = useState(timeLimitMinutes * 60);
+  const endAtRef = useRef<number>(Date.now() + timeLimitMinutes * 60 * 1000);
+
+
+  const { toggle, isBookmarked } = useBookmarks(datasetId);
+
+  const [answers, setAnswers] = useState<Record<string, string>>({});
+
+const finishedRef = useRef(false);
+
+const finishTest = (reason: 'time' | 'completed') => {
+  if (finishedRef.current) return;
+  finishedRef.current = true;
+
+  // If attempt exists, close it BEFORE leaving this page
+  if (attempt?.attemptId) {
+    closeAttemptById(attempt.attemptId, { remainingSec: timeLeft });
+  }
+
+  if (!attempt) {
+    router.push('/real-test/results?reason=' + reason);
+    return;
+  }
+
+  const limitSeconds = timeLimitMinutes * 60;
+  const usedSeconds = Math.min(limitSeconds, Math.max(0, limitSeconds - timeLeft));
+
+  const params = new URLSearchParams({
+    attemptId: attempt.attemptId,
+    reason,
+    usedSeconds: String(usedSeconds),
+    limitSeconds: String(limitSeconds),
+  });
+
+  router.push(`/real-test/results?${params.toString()}`);
+};
+
+
+
+const { loading: authLoading, email } = useAuthStatus();
+const userKey = normalizeUserKey(email);
+const [attempt, setAttempt] = useState<TestAttemptV1 | null>(null);
+
+
+  useEffect(() => {
+    let mounted = true;
+
+    (async () => {
+      setLoading(true);
+const ds = await loadDataset(datasetId);
+if (!mounted) return;
+
+// If auth is still loading, don't create attempts yet.
+if (authLoading) return;
+
+const allIds = ds.map((q) => q.id);
+
+const { attempt: a } = getOrCreateAttempt({
+  userKey,
+  modeKey: 'real-test',
+  datasetId,
+  datasetVersion,
+  allQuestionIds: allIds,
+  questionCount,
+  timeLimitSec: timeLimitMinutes * 60,
+});
+
+// Build the picked subset in the frozen random order
+const byId = new Map(ds.map((q) => [q.id, q] as const));
+const picked = a.questionIds.map((id) => byId.get(id)).filter(Boolean) as Question[];
+
+setAttempt(a);
+setItems(picked);
+
+// Restore answers into your existing UI answers state
+const restored: Record<string, string> = {};
+for (const [qid, rec] of Object.entries(a.answersByQid)) {
+  restored[qid] = rec.choice;
+}
+setAnswers(restored);
+
+// Resume to next unanswered
+const nextIdx = computeNextUnansweredIndex(a);
+setIndex(Math.min(nextIdx, Math.max(0, picked.length - 1)));
+
+setSelectedKey(null);
+setLoading(false);
+
+    })();
+
+    return () => {
+      mounted = false;
+    };
+  }, [datasetId, datasetVersion, questionCount, timeLimitMinutes, authLoading, userKey]);
+
+
+  useEffect(() => {
+  endAtRef.current = Date.now() + timeLimitMinutes * 60 * 1000;
+  setTimeLeft(timeLimitMinutes * 60);
+}, [datasetId, timeLimitMinutes]);
+
+
+  // countdown
+  useEffect(() => {
+  const tick = () => {
+    const left = Math.max(0, Math.ceil((endAtRef.current - Date.now()) / 1000));
+    setTimeLeft(left);
+  };
+
+  tick(); // run once immediately so UI updates instantly
+
+  const id = window.setInterval(tick, 250);
+  return () => window.clearInterval(id);
+}, [datasetId, timeLimitMinutes]);
+
+useEffect(() => {
+  if (loading) return;
+  if (items.length === 0) return;
+
+  if (timeLeft <= 0) {
+    finishTest('time');
+  }
+}, [timeLeft, loading, items.length]); // intentionally NOT including finishTest
+
+
+
+const item = items[index];
+const imageAsset = item?.assets?.find((a) => a.kind === 'image');
+
+const correctCount = useMemo(() => {
+  let correct = 0;
+
+  for (const q of items) {
+    const chosenKey = answers[q.id];
+    if (!chosenKey) continue;
+
+    if (q.type === 'ROW') {
+      const chosen = normalizeRowChoice(chosenKey);
+      const expected = normalizeRowChoice(q.correctRow ?? null);
+      if (chosen && expected && chosen === expected) correct += 1;
+      continue;
+    }
+
+    // MCQ
+    const chosenOpt = q.options.find((opt, idx) => {
+      const k = opt.originalKey ?? String.fromCharCode(65 + idx);
+      return k === chosenKey;
+    });
+
+    if (chosenOpt && q.correctOptionId && chosenOpt.id === q.correctOptionId) {
+      correct += 1;
+    }
+  }
+
+  return correct;
+}, [items, answers]);
+
+const advancingRef = useRef(false);
+
+// More reliable than e.detail: works even if state hasn’t re-rendered yet
+const lastTapRef = useRef<{ key: string; at: number } | null>(null);
+
+const commitAndAdvance = (choiceKey: string) => {
+  if (!items.length || !item) return;
+  if (!choiceKey) return;
+
+  if (advancingRef.current) return;
+  advancingRef.current = true;
+
+  const now = Date.now();
+
+  // 1) commit to UI state
+  setAnswers((prev) => {
+    if (prev[item.id] === choiceKey) return prev;
+    return { ...prev, [item.id]: choiceKey };
+  });
+
+  // 2) commit to attempt storage (so Results/Stats stay correct)
+  if (attempt) {
+    const updated: TestAttemptV1 = {
+      ...attempt,
+      status: 'in_progress',
+      lastActiveAt: now,
+      answersByQid: {
+        ...attempt.answersByQid,
+        [item.id]: { choice: choiceKey, answeredAt: now },
+      },
+    };
+    setAttempt(updated);
+    writeAttempt(updated);
+  }
+
+  // 3) move forward or finish
+  const next = index + 1;
+  if (next >= items.length) {
+    finishTest('completed');
+    return;
+  }
+
+  setIndex(next);
+
+  // release the guard next tick
+  setTimeout(() => {
+    advancingRef.current = false;
+  }, 0);
+};
+
+const onOptionTap = (key: string) => {
+  const now = Date.now();
+  const last = lastTapRef.current;
+
+  // If same option tapped twice quickly -> auto next
+  if (last && last.key === key && now - last.at < 450) {
+    lastTapRef.current = null;
+    commitAndAdvance(key);
+    return;
+  }
+
+  lastTapRef.current = { key, at: now };
+  setSelectedKey(key);
+};
+
+
+useEffect(() => {
+  if (!item) return;
+  setSelectedKey(answers[item.id] ?? null);
+}, [item?.id, answers]);
+
+
+  const progressPct = useMemo(() => {
+    if (!items.length) return 0;
+    return ((index + 1) / items.length) * 100;
+  }, [index, items.length]);
+
+  const onNext = () => {
+  if (!items.length || !item) return;
+  if (!selectedKey) return;
+
+  // 1) commit the answer for the current question
+  setAnswers((prev) => {
+    // avoid extra renders if unchanged
+    if (prev[item.id] === selectedKey) return prev;
+    return { ...prev, [item.id]: selectedKey };
+  });
+
+if (attempt && item) {
+  const now = Date.now();
+
+  const updated: TestAttemptV1 = {
+    ...attempt,
+    status: 'in_progress',
+    lastActiveAt: now,
+    answersByQid: {
+      ...attempt.answersByQid,
+      [item.id]: { choice: selectedKey, answeredAt: now },
+    },
+  };
+
+  setAttempt(updated);
+  writeAttempt(updated);
+}
+
+
+  // 2) move forward or finish
+  const next = index + 1;
+
+  if (next >= items.length) {
+    // IMPORTANT: finish after committing the last answer
+    finishTest('completed');
+    return;
+  }
+
+  setIndex(next);
+  // do NOT manually setSelectedKey(null) here;
+  // the "restore selection" effect will set it for the next question.
+};
+
+
+  if (loading) {
+    return (
+      <main className={styles.page}>
+        <div className={styles.frame}>
+          <div className={styles.loading}>Loading…</div>
+        </div>
+      </main>
+    );
+  }
+
+  if (!item) {
+    return (
+      <main className={styles.page}>
+        <div className={styles.frame}>
+          <div className={styles.loading}>No questions found.</div>
+        </div>
+      </main>
+    );
+  }
+
+  return (
+    <main className={styles.page}>
+      <div className={styles.frame}>
+        <BackButton />
+        {/* Top bar */}
+        <div className={styles.topBar}>
+<div className={styles.topLeftSpacer} aria-hidden="true" />
+          <div className={styles.topRight}>
+            <div className={styles.timer}>
+              <span className={styles.timerIcon} aria-hidden="true" />
+              <span className={styles.timerText}>{formatTime(timeLeft)}</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Progress row */}
+        <div className={styles.progressRow}>
+          <div className={styles.progressTrack} aria-hidden="true">
+            <div
+              className={styles.progressFill}
+              style={{ width: `${progressPct}%` }}
+            />
+          </div>
+
+          <div className={styles.progressText}>{currentNo}/{items.length}</div>
+        </div>
+
+        {/* Question row (with bookmark icon on the right) */}
+        <div className={styles.questionRow}>
+          <p className={styles.questionText}>{item.prompt}</p>
+
+          <button
+            type="button"
+            className={styles.bookmarkBtn}
+            onClick={(e) => {
+              e.stopPropagation();
+              toggle(item.id);
+            }}
+            aria-label={isBookmarked(item.id) ? 'Remove bookmark' : 'Add bookmark'}
+            title={isBookmarked(item.id) ? 'Bookmarked' : 'Bookmark'}
+            data-bookmarked={isBookmarked(item.id) ? 'true' : 'false'}
+          >
+            {/* NOTE: this is where your class rename matters */}
+            <span className={styles.bookmarkIcon} aria-hidden="true" />
+          </button>
+        </div>
+
+        {/* Image (if exists) */}
+        {imageAsset && (
+  <div className={styles.imageWrap}>
+    <Image
+      src={imageAsset.src}
+      alt="Question image"
+      fill
+      className={styles.image}
+      priority
+      unoptimized
+    />
+  </div>
+)}
+
+
+{/* Answers */}
+<div className={styles.answers}>
+  {item.type === 'ROW' && (
+  <>
+    <button
+      type="button"
+      className={`${styles.optionBtn} ${styles.rowBtn} ${
+        selectedKey === 'R' ? styles.optionActive : ''
+      }`}
+      onClick={() => onOptionTap('R')}
+    >
+      <span className={styles.optionText}>Right</span>
+    </button>
+
+    <button
+      type="button"
+      className={`${styles.optionBtn} ${styles.rowBtn} ${
+        selectedKey === 'W' ? styles.optionActive : ''
+      }`}
+     onClick={() => onOptionTap('W')}
+    >
+      <span className={styles.optionText}>Wrong</span>
+    </button>
+  </>
+)}
+
+
+  {item.type === 'MCQ' &&
+    item.options.map((opt, idx) => {
+      const key = opt.originalKey ?? String.fromCharCode(65 + idx);
+      const active = selectedKey === key;
+
+      return (
+        <button
+          key={opt.id}
+          type="button"
+          className={`${styles.optionBtn} ${active ? styles.optionActive : ''}`}
+          onClick={(e) => {
+  // first click selects
+  if (selectedKey !== key) {
+    setSelectedKey(key);
+    return;
+  }
+
+  // second click on same option advances
+  // e.detail is 1,2,3... for click count (works great on desktop)
+  if (e.detail >= 2) {
+    commitAndAdvance(key);
+  }
+}}
+
+        >
+          <span className={styles.optionKey}>{key}.</span>
+          <span className={styles.optionText}>{opt.text}</span>
+        </button>
+      );
+    })}
+</div>
+
+
+
+
+
+
+        {/* Next */}
+
+
+        <button
+          type="button"
+          className={styles.nextBtn}
+          onClick={() => selectedKey && commitAndAdvance(selectedKey)}
+          disabled={!selectedKey}
+        >
+          Next <span className={styles.nextArrow} aria-hidden="true">→</span>
+        </button>
+      </div>
+    </main>
+  );
+}
+
+```
+
+### app/(premium)/real-test/page.tsx
+```tsx
+// app/real-test/page.tsx
+import type { DatasetId } from '@/lib/qbank/datasets';
+import RealTestClient from './RealTestClient.client';
+
+export default function RealTestPage() {
+  const datasetId: DatasetId = 'cn-2023-test1' as DatasetId;
+
+  // Change this only when your dataset content changes (e.g., yearly update).
+  const datasetVersion = 'cn-2023-test1@v1';
+
+  // Real Test fixed size
+  const questionCount = 50;
+
+  return (
+    <RealTestClient
+      datasetId={datasetId}
+      datasetVersion={datasetVersion}
+      questionCount={questionCount}
+      timeLimitMinutes={45}
+    />
+  );
+}
+
+```
+
+### app/(premium)/real-test/real-test.module.css
+```css
+.page {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  background: var(--color-page-bg);
+}
+
+.frame {
+  width: 100%;
+  max-width: 390px; /* Figma phone frame */
+  padding: 18px 16px 24px;
+}
+
+.loading {
+  padding: 40px 0;
+  opacity: 0.7;
+  text-align: center;
+}
+
+/* --- Top bar --- */
+.topBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0; /* your figma shows tight top */
+}
+
+.backBtn {
+  border: 0;
+  background: transparent;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  padding: 6px 2px;
+}
+
+.backIcon {
+  font-size: 22px;
+  line-height: 1;
+  opacity: 0.6;
+}
+
+.backText {
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.topRight {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* timer */
+.timer {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.timerIcon {
+  width: 20px;
+  height: 20px;
+  display: inline-block;
+  background: rgba(43, 124, 175, 0.95);
+
+  /* simple clock glyph via mask (optional) */
+  -webkit-mask-image: url("/images/test/timer-icon.png");
+  mask-image: url("/images/test/timer-icon.png");
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+}
+
+.timerText {
+  font-size: 14px;
+  font-weight: 600; /* semibold */
+  color: #2B7CAF;
+}
+
+/* --- Progress row --- */
+/* top bar → progress: 28 */
+.progressRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 28px;
+}
+
+.progressTrack {
+  flex: 1;
+  height: 4px; /* figma shows 1px; 4px reads better on web */
+  border-radius: 999px;
+  background: #E0E7EA; /* track */
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #2B7CAF 0%, #FFC542 100%);
+}
+
+.progressText {
+  font-size: 16px;
+  color: #21205A;
+  font-weight: 400;
+}
+
+/* progress → question: 29 */
+.questionRow {
+  margin-top: 29px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.questionText {
+  margin: 0;
+    font-family: 'Lato', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  font-style: normal;
+  font-size: 20px;
+  font-weight: 300;
+  line-height: 28px;
+  letter-spacing: -0.24px;
+  color: #000;
+}
+
+/* Bookmark */
+.bookmarkBtn {
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  padding: 4px;
+}
+
+.bookmarkIcon {
+  width: 24px;
+  height: 24px;
+  display: inline-block;
+
+  /* Use the PNG as a stencil */
+  -webkit-mask-image: url("/images/test/bookmark-icon.png");
+  mask-image: url("/images/test/bookmark-icon.png");
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+}
+
+/* not bookmarked */
+.bookmarkBtn[data-bookmarked='false'] .bookmarkIcon {
+  background: rgba(15, 23, 42, 0.9);
+}
+
+/* bookmarked (keep your gradient) */
+.bookmarkBtn[data-bookmarked='true'] .bookmarkIcon {
+  background: var(--color-premium-gradient);
+  filter: brightness(1) contrast(1.5) saturate(2);
+}
+
+/* question → image */
+.imageWrap {
+  margin-top: 10px;
+
+  /* ✅ center the image box */
+  margin-left: auto;
+  margin-right: auto;
+
+  /* ✅ make it bigger without touching options styles */
+  width: 100%;
+  max-width: 330px;
+
+  /* pick a bigger height (safe + predictable) */
+height: clamp(240px, 52vw, 340px);
+
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  background: transparent;
+}
+
+.image {
+  object-fit: contain;
+  object-position: center;
+}
+
+
+/* image → answers: 30 */
+.answers {
+  margin-top: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px; /* gap between answers */
+}
+
+/* ROW (Right/Wrong) button base from Figma rectangle */
+.rowBtn {
+  width: 100%;
+  max-width: 330px; /* from your % margins ≈ 390 - 32 - 29 = ~329 */
+  height: 46px;     /* if your design uses a different height, replace this */
+  border-radius: 8px;
+
+  background: linear-gradient(
+    90deg,
+    rgba(43, 124, 175, 0.15) 0%,
+    rgba(255, 197, 66, 0.15) 100%
+  );
+
+  box-shadow: 0px 2px 1.1px rgba(169, 171, 187, 0.27);
+
+  border: 0;                /* Figma snippet didn’t include stroke */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+/* option card (315 x 41) */
+.optionBtn {
+  width: 315px;
+  min-height: 41px;
+  border-radius: 14px;
+  border: 1px solid rgba(43, 124, 175, 0.18);
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 6px 14px rgba(15, 33, 70, 0.12);
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+
+  padding: 10px 12px;
+  text-align: center;
+}
+
+.optionKey {
+  font-weight: 700;
+}
+
+.optionText {
+  font-family: 'Lato', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 11px;
+  line-height: 20px;
+  letter-spacing: -0.24px;
+  text-align: center;
+  color: #000000;
+
+  /* important: allow wrapping like the 295x40 text box */
+  display: block;
+  width: 295px;              /* from your pasted text layer */
+}
+
+.optionActive {
+  border-color: rgba(43, 124, 175, 0.7);
+  box-shadow: 0 10px 22px rgba(43, 124, 175, 0.18);
+}
+
+/* answers → next button: 30 */
+.nextBtn {
+  margin-top: 30px;
+  width: 315px;
+  height: 41px;
+  border-radius: 14px;
+  cursor: pointer;
+
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: -0.24px;
+
+  background: linear-gradient(
+    90deg,
+    rgba(43, 124, 175, 0.20) 0%,
+    rgba(255, 197, 66, 0.20) 100%
+  );
+
+  position: relative;
+  border: none;
+
+  box-shadow: 0 10px 22px rgba(15, 33, 70, 0.18);
+}
+
+.nextBtn::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 14px;
+  padding: 1px;
+  background: linear-gradient(90deg, #2B7CAF 0%, #FFC542 100%);
+  pointer-events: none;
+
+  /* Standard + WebKit versions */
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+}
+
+
+.nextBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+
+.topLeftSpacer {
+  width: 60px; /* match the space your old "Back" button used */
+  height: 1px;
+}
+
+```
+
+### app/(premium)/real-test/results/page.tsx
+```tsx
+/* app/real-test/results/page.tsx */
+'use client';
+
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import styles from './results.module.css';
+import Image from 'next/image';
+
+import { loadDataset } from '@/lib/qbank/loadDataset';
+import type { DatasetId } from '@/lib/qbank/datasets';
+import type { Question } from '@/lib/qbank/types';
+import { readAttemptById, type TestAttemptV1 } from '@/lib/test-engine/attemptStorage';
+import { useBookmarks } from '@/lib/bookmarks/useBookmarks';
+import { closeAttemptById } from '@/lib/test-engine/attemptStorage';
+
+function clamp(n: number, min: number, max: number) {
+  return Math.max(min, Math.min(max, n));
+}
+
+function normalizeRowChoice(v: string | null | undefined): 'R' | 'W' | null {
+  if (!v) return null;
+  const t = v.trim().toLowerCase();
+  if (t === 'r' || t === 'right') return 'R';
+  if (t === 'w' || t === 'wrong') return 'W';
+  return null;
+}
+
+function getQuestionNumber(q: any): number {
+  // 1) prefer q.number (can be number OR string)
+  const raw = q?.number;
+
+  const fromNumber = Number(raw);
+  if (Number.isFinite(fromNumber) && fromNumber > 0) return Math.floor(fromNumber);
+
+  // 2) fallback: extract digits from id (q0231 -> 231)
+  const idStr = String(q?.id ?? "");
+  const idMatch = idStr.match(/\d+/);
+  if (idMatch) {
+    const n = parseInt(idMatch[0], 10);
+    if (Number.isFinite(n) && n > 0) return n;
+  }
+
+  // 3) last resort: 0 (means “unknown”)
+  return 0;
+}
+
+
+export default function RealTestResultsPage() {
+  const router = useRouter();
+  const sp = useSearchParams();
+
+  // ✅ Option B: Results is driven by attemptId
+  const attemptId = sp.get('attemptId');
+
+// Your real-test currently pushes usedSeconds/limitSeconds
+const usedSecondsRaw = Number(sp.get('usedSeconds') ?? '0');
+const usedSeconds = Number.isFinite(usedSecondsRaw) && usedSecondsRaw > 0
+  ? Math.floor(usedSecondsRaw)
+  : 0;
+
+const timeMin = Math.floor(usedSeconds / 60);
+const timeSec = usedSeconds % 60;
+
+const timeText = `${timeMin}min ${timeSec}sec`;
+
+
+  const [attempt, setAttempt] = useState<TestAttemptV1 | null>(null);
+  const [computed, setComputed] = useState<{ correct: number; total: number }>({
+    correct: 0,
+    total: 0,
+  });
+  
+  type ReviewItem = {
+  qid: string;
+  testNo: number;
+  prompt: string;
+  imageSrc?: string;
+  options: { key: string; text: string; tone: "neutral" | "correct" | "wrong" }[];
+  explanation?: string;
+};
+
+const [reviewItems, setReviewItems] = useState<ReviewItem[]>([]);
+const [brokenImages, setBrokenImages] = useState<Record<string, boolean>>({});
+
+const datasetId = attempt?.datasetId ?? "";
+const { toggle, isBookmarked } = useBookmarks(datasetId || "pending");
+
+const [viewMode, setViewMode] = useState<'list' | 'carousel'>('list');
+const [activeSlide, setActiveSlide] = useState(0);
+const carouselRef = useRef<HTMLDivElement | null>(null);
+
+const [isDragging, setIsDragging] = useState(false);
+
+const dragRef = useRef({
+  down: false,
+  startX: 0,
+  startLeft: 0,
+  moved: false,
+});
+
+const onCarouselPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+  // Only enable “drag to scroll” for mouse. Touch keeps native swipe.
+  if (e.pointerType !== 'mouse') return;
+
+  // ✅ If user clicked a button (bookmark / toggle etc), do NOT capture pointer
+  const target = e.target as HTMLElement;
+  if (target.closest('button, a, input, textarea, select, label')) return;
+
+  const el = carouselRef.current;
+  if (!el) return;
+
+  dragRef.current.down = true;
+  dragRef.current.moved = false;
+  dragRef.current.startX = e.clientX;
+  dragRef.current.startLeft = el.scrollLeft;
+
+  setIsDragging(true);
+  el.setPointerCapture(e.pointerId);
+};
+
+
+const onCarouselPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+  if (e.pointerType !== 'mouse') return;
+  if (!dragRef.current.down) return;
+
+  const el = carouselRef.current;
+  if (!el) return;
+
+  const dx = e.clientX - dragRef.current.startX;
+  if (Math.abs(dx) > 3) dragRef.current.moved = true;
+
+  // Drag left -> show next slide (scrollRight), so we subtract dx
+  el.scrollLeft = dragRef.current.startLeft - dx;
+};
+
+const snapToNearestSlide = () => {
+  const el = carouselRef.current;
+  if (!el) return;
+
+  const w = el.clientWidth || 1;
+  const idx = Math.round(el.scrollLeft / w);
+  el.scrollTo({ left: idx * w, behavior: 'smooth' });
+};
+
+const onCarouselPointerUpOrCancel = (e: React.PointerEvent<HTMLDivElement>) => {
+  if (e.pointerType !== 'mouse') return;
+
+  const el = carouselRef.current;
+  if (!el) return;
+
+  dragRef.current.down = false;
+  setIsDragging(false);
+
+  try {
+    el.releasePointerCapture(e.pointerId);
+  } catch {}
+
+  // Force a clean snap on desktop after drag ends
+  snapToNearestSlide();
+};
+
+
+useEffect(() => {
+  if (viewMode !== 'carousel') return;
+
+  const el = carouselRef.current;
+  if (!el) return;
+
+  const onScroll = () => {
+    const w = el.clientWidth || 1;
+    const idx = Math.round(el.scrollLeft / w);
+    setActiveSlide(Math.max(0, Math.min(idx, reviewItems.length - 1)));
+  };
+
+  onScroll();
+  el.addEventListener('scroll', onScroll, { passive: true });
+  return () => el.removeEventListener('scroll', onScroll as any);
+}, [viewMode, reviewItems.length]);
+
+  useEffect(() => {
+    if (!attemptId) return;
+
+    const a = readAttemptById(attemptId);
+    setAttempt(a);
+
+    if (!a) return;
+
+    (async () => {
+      const ds = await loadDataset(a.datasetId as DatasetId);
+      const byId = new Map(ds.map((q) => [q.id, q] as const));
+
+      // Keep the attempt's frozen random order
+      const picked = a.questionIds.map((id) => byId.get(id)).filter(Boolean) as Question[];
+
+      // Compute score using attempt answers
+      let correct = 0;
+
+      for (let i = 0; i < picked.length; i++) {
+  const q = picked[i];
+  const testNo = i + 1;          // ✅ position in THIS test
+  const bankNo = getQuestionNumber(q); // ✅ global/bank number
+
+        const chosenKey = a.answersByQid[q.id]?.choice ?? null;
+
+        // Your rule: unanswered at timeout = wrong
+        // Score counts only correct; total remains full picked length
+        if (!chosenKey) continue;
+
+        if (q.type === 'ROW') {
+          const chosen = normalizeRowChoice(chosenKey);
+          const expected = normalizeRowChoice((q as any).correctRow ?? null);
+          if (chosen && expected && chosen === expected) correct += 1;
+          continue;
+        }
+
+        // MCQ
+        const chosenOpt = q.options.find((opt, idx) => {
+          const k = opt.originalKey ?? String.fromCharCode(65 + idx);
+          return k === chosenKey;
+        });
+
+        if (chosenOpt && (q as any).correctOptionId && chosenOpt.id === (q as any).correctOptionId) {
+          correct += 1;
+        }
+      }
+
+      setComputed({ correct, total: picked.length });
+// Prepare review items (WRONG ONLY)
+const items: ReviewItem[] = [];
+
+for (let i = 0; i < picked.length; i++) {
+  const q = picked[i];
+  const testNo = i + 1;
+
+  const chosenKey = a.answersByQid[q.id]?.choice ?? null;
+  const qType = String((q as any).type ?? "").toUpperCase();
+
+  // image
+  const assets = (q as any).assets;
+  const imageAsset = Array.isArray(assets)
+    ? assets.find((a: any) => a?.kind === "image" && typeof a?.src === "string")
+    : null;
+  const imageSrc = imageAsset?.src as string | undefined;
+
+  // -------------------------
+  // 1) ROW questions (Right/Wrong)
+  // -------------------------
+  if (qType === "ROW") {
+    const correctRow = normalizeRowChoice((q as any).correctRow ?? null);
+    const chosenRow = normalizeRowChoice(chosenKey);
+
+    const isCorrect = !!(chosenRow && correctRow && chosenRow === correctRow);
+    if (isCorrect) continue; // show only WRONG
+
+    const options: ReviewItem["options"] = [
+      {
+        key: "R",
+        text: "R. Right",
+        tone:
+          correctRow === "R"
+            ? "correct"
+            : chosenRow === "R"
+            ? "wrong"
+            : "neutral",
+      },
+      {
+        key: "W",
+        text: "W. Wrong",
+        tone:
+          correctRow === "W"
+            ? "correct"
+            : chosenRow === "W"
+            ? "wrong"
+            : "neutral",
+      },
+    ];
+
+    items.push({
+      qid: (q as any).id,
+      testNo,
+      prompt: (q as any).prompt,
+      imageSrc,
+      options,
+      explanation: (q as any).explanation,
+    });
+
+    continue;
+  }
+
+  // -------------------------
+  // 2) MCQ questions
+  // -------------------------
+  const correctOptionId = (q as any).correctOptionId as string | undefined;
+  const opts = Array.isArray((q as any).options) ? (q as any).options : [];
+
+  const chosenOpt =
+    chosenKey
+      ? opts.find((opt: any, idx: number) => {
+          const k = opt?.originalKey ?? String.fromCharCode(65 + idx);
+          return k === chosenKey;
+        })
+      : null;
+
+  const isCorrect = !!(chosenOpt && correctOptionId && chosenOpt.id === correctOptionId);
+  if (isCorrect) continue; // show only WRONG
+
+  const correctIndex = opts.findIndex((opt: any) => opt?.id === correctOptionId);
+  const correctKey =
+    correctIndex >= 0
+      ? (opts[correctIndex].originalKey ?? String.fromCharCode(65 + correctIndex))
+      : null;
+
+  const options: ReviewItem["options"] = opts.map((opt: any, idx: number) => {
+    const key = opt?.originalKey ?? String.fromCharCode(65 + idx);
+    const text = `${key}. ${opt?.text ?? ""}`;
+
+    let tone: "neutral" | "correct" | "wrong" = "neutral";
+    if (correctKey && key === correctKey) tone = "correct";
+    if (chosenKey && key === chosenKey && key !== correctKey) tone = "wrong";
+
+    return { key, text, tone };
+  });
+
+  items.push({
+    qid: (q as any).id,
+    testNo,
+    prompt: (q as any).prompt,
+    imageSrc,
+    options,
+    explanation: (q as any).explanation,
+  });
+}
+
+setBrokenImages({});
+items.sort((a, b) => a.testNo - b.testNo);
+setReviewItems(items);
+    })();
+  }, [attemptId]);
+
+useEffect(() => {
+  if (!attemptId) return;
+  closeAttemptById(attemptId);
+}, [attemptId]);
+
+
+  const pct = useMemo(() => {
+    const t = computed.total > 0 ? computed.total : 1;
+    return clamp(computed.correct / t, 0, 1);
+  }, [computed.correct, computed.total]);
+
+  const percent = useMemo(() => Math.round(pct * 100), [pct]);
+
+
+  // Simple guard: if someone opens results without an attemptId
+  if (!attemptId) {
+    return (
+      <div className={styles.viewport}>
+        <main className={styles.screen}>
+          <div className={styles.card} />
+          <div className={styles.backRow}>
+          </div>
+          <div style={{ padding: 16 }}>Missing attemptId. Please re-take the test.</div>
+        </main>
+      </div>
+    );
+  }
+
+  return (
+    <div className={styles.viewport}>
+      <main className={styles.screen}>
+        <div className={styles.card} />
+<div className={styles.shiftUp}>
+        <h1 className={styles.congrats}>Congratulations!</h1>
+
+        <div className={styles.ringWrap} aria-label="Score progress">
+          <div
+            className={styles.ring}
+            style={
+              {
+                '--p': `${pct * 360}deg`,
+              } as React.CSSProperties
+            }
+          />
+          <div className={styles.ringCenterText}>{percent}</div>
+        </div>
+
+        <div className={styles.scoreBox} aria-hidden="true">
+          <div className={styles.lineTop} />
+          <div className={styles.lineBottom} />
+          <div className={styles.lineMid} />
+
+          <div className={styles.scoreLeft}>
+            <div className={styles.scoreValue}>
+              {computed.correct}/{computed.total || 0}
+            </div>
+            <div className={styles.scoreLabel}>Score</div>
+          </div>
+
+          <div className={styles.scoreRight}>
+            <div className={styles.scoreValue}>{timeText}</div>
+            <div className={styles.scoreLabel}>Time</div>
+          </div>
+        </div>
+
+        <div className={styles.testResultsTitle}>Test Results</div>
+
+        <div className={styles.incorrectRow}>
+  <Image
+    src="/images/test/red-x-icon.png"
+    alt="Red X Icon"
+    width={24}
+    height={24}
+    className={styles.btnIcon}
+  />
+
+  <div className={styles.incorrectText}>Incorrect</div>
+
+  <div className={styles.incorrectSpacer} />
+
+  {reviewItems.length > 0 && viewMode === 'carousel' && (
+    <div className={styles.slideCounter}>
+      {activeSlide + 1}/{reviewItems.length}
+    </div>
+  )}
+
+<button
+  type="button"
+  className={styles.viewToggle}
+  onClick={() => setViewMode((v) => (v === 'list' ? 'carousel' : 'list'))}
+  aria-pressed={viewMode === 'carousel'}
+  aria-label={viewMode === 'carousel' ? 'Switch to list view' : 'Switch to swipe view'}
+  title={viewMode === 'carousel' ? 'List view' : 'Swipe view'}
+>
+  <Image
+    src={viewMode === 'carousel'
+      ? '/images/test/list-icon.png'     // ✅ your “list” icon
+      : '/images/test/carousel-icon.png'}   // ✅ your “swipe” icon
+    alt=""
+    width={18}
+    height={18}
+  />
+</button>
+
+</div>
+
+
+<section
+  className={[
+    styles.reviewArea,
+    viewMode === 'carousel' ? styles.reviewAreaCarousel : '',
+  ].join(' ')}
+>
+  {reviewItems.length === 0 ? (
+    <p className={styles.question}>Expatise! No incorrect questions! 🎉</p>
+  ) : viewMode === 'list' ? (
+    reviewItems.map((item) => (
+      <article key={item.qid} style={{ marginBottom: 18 }}>
+        <div className={styles.questionRow}>
+  <p className={[styles.question, styles.questionText].join(' ')}>
+    {item.testNo}. {item.prompt}
+  </p>
+
+  <button
+  type="button"
+  className={styles.bookmarkBtn}
+    onPointerDown={(e) => {
+    // ✅ prevents carousel from capturing pointer + also clears any leftover “moved”
+    e.stopPropagation();
+    dragRef.current.moved = false;
+  }}
+  onClick={(e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    toggle(item.qid);
+  }}
+  aria-label={isBookmarked(item.qid) ? 'Remove bookmark' : 'Add bookmark'}
+  title={isBookmarked(item.qid) ? 'Bookmarked' : 'Bookmark'}
+  data-bookmarked={isBookmarked(item.qid) ? 'true' : 'false'}
+>
+  <span className={styles.bookmarkIcon} aria-hidden="true" />
+</button>
+
+</div>
+
+
+        <div className={styles.qaRow}>
+          {item.imageSrc && !brokenImages[item.qid] ? (
+            <div className={styles.imageWrap}>
+              <Image
+                src={item.imageSrc}
+                alt="Question image"
+                fill
+                sizes="120px"
+                className={styles.image}
+                unoptimized
+                onError={() => setBrokenImages((p) => ({ ...p, [item.qid]: true }))}
+              />
+            </div>
+          ) : null}
+
+          <div className={styles.options}>
+            {item.options.map((o) => (
+              <div
+                key={o.key}
+                className={[
+                  styles.option,
+                  o.tone === 'correct'
+                    ? styles.optionCorrect
+                    : o.tone === 'wrong'
+                    ? styles.optionWrong
+                    : styles.optionNeutral,
+                ].join(' ')}
+              >
+                {o.text}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {(item.explanation ?? '').trim().length > 0 && (
+          <>
+            <div className={styles.exTitle}>Explanation:</div>
+            <div className={styles.exBody}>{item.explanation}</div>
+          </>
+        )}
+      </article>
+    ))
+  ) : (
+    <div
+  ref={carouselRef}
+  className={[
+    styles.carousel,
+    isDragging ? styles.carouselDragging : '',
+  ].join(' ')}
+  onPointerDown={onCarouselPointerDown}
+  onPointerMove={onCarouselPointerMove}
+  onPointerUp={onCarouselPointerUpOrCancel}
+  onPointerCancel={onCarouselPointerUpOrCancel}
+  onClickCapture={(e) => {
+    if (dragRef.current.moved) {
+      e.preventDefault();
+      e.stopPropagation();
+      dragRef.current.moved = false;
+    }
+  }}
+>
+      {reviewItems.map((item) => (
+        <div key={item.qid} className={styles.slide}>
+          <article>
+            <div className={styles.questionRow}>
+  <p className={[styles.question, styles.questionText].join(' ')}>
+    {item.testNo}. {item.prompt}
+  </p>
+
+ <button
+  type="button"
+  className={styles.bookmarkBtn}
+  onClick={(e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    toggle(item.qid);
+  }}
+  aria-label={isBookmarked(item.qid) ? 'Remove bookmark' : 'Add bookmark'}
+  title={isBookmarked(item.qid) ? 'Bookmarked' : 'Bookmark'}
+  data-bookmarked={isBookmarked(item.qid) ? 'true' : 'false'}
+>
+  <span className={styles.bookmarkIcon} aria-hidden="true" />
+</button>
+
+</div>
+
+
+            <div className={styles.qaRow}>
+              {item.imageSrc && !brokenImages[item.qid] ? (
+                <div className={styles.imageWrap}>
+                  <Image
+                    src={item.imageSrc}
+                    alt="Question image"
+                    fill
+                    sizes="120px"
+                    className={styles.image}
+                    unoptimized
+                    draggable={false}
+                    onError={() => setBrokenImages((p) => ({ ...p, [item.qid]: true }))}
+                  />
+                </div>
+              ) : null}
+
+              <div className={styles.options}>
+                {item.options.map((o) => (
+                  <div
+                    key={o.key}
+                    className={[
+                      styles.option,
+                      o.tone === 'correct'
+                        ? styles.optionCorrect
+                        : o.tone === 'wrong'
+                        ? styles.optionWrong
+                        : styles.optionNeutral,
+                    ].join(' ')}
+                  >
+                    {o.text}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {(item.explanation ?? '').trim().length > 0 && (
+              <>
+                <div className={styles.exTitle}>Explanation:</div>
+                <div className={styles.exBody}>{item.explanation}</div>
+              </>
+            )}
+          </article>
+        </div>
+      ))}
+    </div>
+  )}
+</section>
+
+
+
+
+        <button
+          type="button"
+          className={styles.continueBtn}
+           onClick={() => {
+    if (attemptId) closeAttemptById(attemptId);
+    router.push('/');
+  }}
+        >
+
+          <span className={styles.continueText}>Home</span>
+          <Image
+    src="/images/other/right-arrow.png"
+    alt="Home"
+    width={18}
+    height={18}
+    className={styles.btnIcon}
+  />
+        </button>
+</div>
+      </main>
+    </div>
+  );
+}
+
+```
+
+### app/(premium)/real-test/results/results.module.css
+```css
+.viewport {
+  min-height: 100vh;
+  min-height: 100dvh; /* ✅ mobile accurate */
+  padding: 0;
+  background: var(--color-page-bg);
+}
+
+.screen {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  min-height: 100dvh; /* ✅ mobile accurate */
+  background: #f4f4f9;
+  overflow: hidden;
+  --contentW: min(390px, calc(100% - 60px)); /* ✅ content width */
+}
+
+
+
+/* Figma: Rectangle (full screen overlay) */
+.card {
+  position: absolute;
+  left: 0%;
+  right: 0%;
+  top: 0%;
+  bottom: 0%;
+
+  background: linear-gradient(
+    90deg,
+    rgba(43, 124, 175, 0.15) 0%,
+    rgba(255, 197, 66, 0.15) 100%
+  );
+  box-shadow: 0px 2px 1.1px rgba(169, 171, 187, 0.27);
+  border-radius: 8px;
+}
+
+/* Back row placement (Frame 2801 starts at top 44; but we can place it at top visually) */
+.backRow {
+  position: absolute;
+  left: 0px;
+  top: 44px;
+  width: 390px;
+  height: 40px;
+}
+
+.backBtn {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+
+  width: 86px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+
+  padding: 10px 0px 10px 16px;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.backChevron {
+  width: 20px;
+  height: 20px;
+  position: relative;
+}
+
+.backChevron::before {
+  content: '';
+  position: absolute;
+  left: 25%;
+  right: 35%;
+  top: 10%;
+  bottom: 10%;
+  border-left: 2px solid #979797;
+  border-bottom: 2px solid #979797;
+  transform: rotate(45deg);
+  transform-origin: center;
+}
+
+.backLabel {
+  font-family: 'Lato', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 120%;
+  letter-spacing: 0.04em;
+  color: #000000;
+}
+
+/* Congratulation! */
+.congrats {
+  position: absolute;
+  top: 103px;
+
+  left: 50%;
+  transform: translateX(-50%);
+
+  width: max-content;
+  max-width: calc(100% - 60px); /* prevents overflow on small screens */
+
+  margin: 0;
+  font-family: 'Poppins', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-weight: 500;
+  font-size: 22px;
+  line-height: 20px;
+  text-align: center;
+  letter-spacing: -0.24px;
+  text-transform: capitalize;
+  color: #383a44;
+}
+
+
+/* Ring wrapper */
+.ringWrap {
+  position: absolute;
+  top: 145px;
+
+  left: 50%;
+  transform: translateX(-50%);
+
+  width: 123px;
+  height: 123px;
+
+  display: grid;
+  place-items: center;
+}
+
+
+.ring,
+.ringCenterText {
+  grid-area: 1 / 1;
+}
+
+
+
+/*
+  Ring:
+  - thickness: 8px (track #BDCCD3)
+  - progress: gradient-ish using conic-gradient
+*/
+.ring {
+  width: 123px;
+  height: 123px;
+  border-radius: 999px;
+
+  /* --p is degrees for the "colored" sweep */
+  background: conic-gradient(
+    from 0deg,
+    #2b7caf 0deg,
+    #ffc542 var(--p),
+    #bdccd3 var(--p),
+    #bdccd3 360deg
+  );
+
+  /* punch out center so it becomes a ring */
+  -webkit-mask: radial-gradient(
+    farthest-side,
+    transparent calc(100% - 8px),
+    #000 calc(100% - 8px)
+  );
+  mask: radial-gradient(
+    farthest-side,
+    transparent calc(100% - 8px),
+    #000 calc(100% - 8px)
+  );
+}
+
+.ringCenterText {
+  margin: 0;
+  text-align: center;
+
+  font-family: 'Lato', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-style: normal;
+  font-weight: 700;
+  font-size: 40px;
+  line-height: 20px;
+  letter-spacing: -0.24px;
+  text-transform: capitalize;
+  color: #21205a;
+
+  /* optional: stop it from affecting layout, keeps it centered nicely */
+  pointer-events: none;
+}
+
+
+/* Score/Time group container */
+.scoreBox {
+  position: absolute;
+  top: 302px;
+
+  left: 50%;
+  transform: translateX(-50%);
+
+  width: var(--contentW);
+  height: 83px;
+}
+
+
+.lineTop,
+.lineBottom {
+  position: absolute;
+  left: 0;
+  width: 100%;       /* ✅ instead of 330px */
+  height: 0px;
+  border: 1px solid #2b7caf;
+}
+
+.lineTop { top: 0; }
+.lineBottom { top: 83px; }
+
+
+.lineMid {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  height: 83px;
+  border-left: 1px solid #2b7caf;
+}
+
+
+/* Left score group */
+.scoreLeft,
+.scoreRight {
+  position: absolute;
+  top: 20px;
+  width: 50%;
+  height: 43px;
+  display: grid;
+  place-items: center;
+  gap: 11px;
+}
+
+.scoreLeft { left: 0; }
+.scoreRight { left: 50%; }
+
+
+.scoreRight .scoreValue {
+  white-space: nowrap;
+}
+
+
+.scoreValue {
+  font-family: 'Poppins', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 20px;
+  text-align: center;
+  letter-spacing: -0.24px;
+  color: #383a44;
+}
+
+.scoreLabel {
+  font-family: 'Poppins', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 20px;
+  text-align: center;
+  letter-spacing: -0.24px;
+  color: #383a44;
+}
+
+/* Test Results title */
+.testResultsTitle {
+  position: absolute;
+  left: 30px;
+  top: 400px;
+
+  /* ✅ make the title span the usable screen width (390 - 30 - 30) */
+  width: calc(100% - 60px);
+
+  /* ✅ keep it on one line */
+  white-space: nowrap;
+
+  margin: 0;
+  font-family: 'Lato', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-weight: 700;
+  font-size: 32px;
+  line-height: 1.1;
+  letter-spacing: -0.24px;
+  color: #000;
+
+  /* Figma looks left-aligned */
+  text-align: left;
+}
+
+
+/* Incorrect row */
+.incorrectRow {
+  position: absolute;
+  left: 43px;
+  right: 30px; /* ✅ gives it room to push a button to the far right */
+  top: 440px;
+
+  height: 24px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.incorrectSpacer {
+  flex: 1;
+}
+
+.incorrectText {
+  position: relative;
+  width: 62px;
+  height: 20px;
+
+  font-family: 'Lato', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 20px;
+  text-align: center;
+  letter-spacing: -0.24px;
+  color: #ff575f;
+}
+
+/* A scrollable area for wrong-question details */
+.reviewArea {
+  position: absolute;
+  left: 30px;
+  width: calc(100% - 60px);
+  top: 470px;
+
+  bottom: -30; /* ✅ fill to bottom */
+  overflow-y: auto;
+
+  padding-right: 6px;
+
+  /* ✅ this creates "extra space" so the last question can scroll past the button */
+  padding-bottom: calc(41px + 16px + env(safe-area-inset-bottom) + 12px);
+
+  -webkit-overflow-scrolling: touch;
+}
+
+
+/* Use normal flow instead of absolute positioning */
+.question {
+  position: static;
+  width: auto;
+  height: auto;
+  margin: 0 0 10px;
+
+  font-family: 'Lato', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 22px;
+  letter-spacing: -0.24px;
+  color: #000;
+}
+
+.qImage {
+  position: static;
+  width: 120px;
+  height: 120px;
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.06);
+  margin: 0 0 12px;
+}
+
+.imageWrap {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  border-radius: 10px;
+  overflow: hidden;
+  margin: 0 0 12px;
+}
+
+.image {
+  object-fit: cover;
+}
+
+.qaRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin: 0 0 10px;
+}
+
+/* Options stack properly */
+.options {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 0;
+}
+
+
+.option {
+  font-family: 'Lato', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 16px;
+  letter-spacing: -0.24px;
+
+  /* allow wrapping without breaking layout */
+  white-space: normal;
+}
+
+.optionNeutral {
+  color: #000;
+}
+
+.optionCorrect {
+  color: #2b7caf;
+}
+
+.optionWrong {
+  color: #ff575f;
+}
+
+
+/* Explanation block */
+.exTitle {
+  position: static;
+  width: auto;
+  height: auto;
+  margin: 12px 0 6px;
+
+  font-family: 'Lato', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 16px;
+  color: #000;
+}
+
+.exBody {
+  position: static;
+  width: auto;
+  height: auto;
+  margin: 0 0 18px;
+
+  font-family: 'Lato', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 18px;
+  color: #000;
+}
+
+
+/* Continue button */
+.continueBtn {
+  box-sizing: border-box;
+  position: fixed;               /* ✅ pin to screen */
+  left: 50%;
+  transform: translateX(-50%);   /* ✅ center */
+  top: auto;                     /* ✅ stop using top */
+  bottom: calc(-20px + env(safe-area-inset-bottom)); /* ✅ iPhone safe area */
+
+  width: min(316px, calc(100% - 60px)); /* ✅ keeps same margins on small screens */
+  height: 41px;
+
+  background: linear-gradient(
+    135deg,
+    rgba(43, 124, 175, 0.2) 0%,
+    rgba(255, 197, 66, 0.2) 100%
+  );
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 14px;
+
+  border: 0;
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
+  z-index: 50; /* ✅ stays above scroll content */
+}
+
+
+.continueText {
+  font-family: 'Lato', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-style: normal;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 130%;
+  letter-spacing: 0.04em;
+  color: #000000;
+}
+
+.shiftUp {
+  position: relative;   /* ✅ critical */
+  min-height: 100vh;    /* ✅ critical */
+  width: 100%;
+  transform: translateY(-60px);
+}
+
+.questionRow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.questionText {
+  margin: 0;
+  flex: 1;
+}
+
+.bookmarkBtn {
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  padding: 4px;
+
+  /* keeps it from shrinking in flex row */
+  flex: 0 0 auto;
+
+  /* optional: better tap feel on mobile */
+  -webkit-tap-highlight-color: transparent;
+
+  /* ✅ press animation base */
+  transform: translateZ(0);
+  transition: transform 120ms ease, opacity 120ms ease;
+}
+
+/* ✅ while pressing */
+.bookmarkBtn:active {
+  transform: scale(0.9);
+}
+
+/* ✅ keyboard accessibility (tab focus) */
+.bookmarkBtn:focus-visible {
+  outline: 2px solid rgba(43, 124, 175, 0.55);
+  outline-offset: 3px;
+  border-radius: 10px;
+}
+
+/* Optional: slightly dim when not bookmarked */
+.bookmarkBtn[data-bookmarked='false'] {
+  opacity: 0.85;
+}
+
+/* Optional: full opacity when bookmarked */
+.bookmarkBtn[data-bookmarked='true'] {
+  opacity: 1;
+}
+
+.bookmarkIcon {
+  width: 24px;
+  height: 24px;
+  display: inline-block;
+
+  /* Use the PNG as a stencil */
+  -webkit-mask-image: url("/images/test/bookmark-icon.png");
+  mask-image: url("/images/test/bookmark-icon.png");
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+}
+
+/* not bookmarked */
+.bookmarkBtn[data-bookmarked='false'] .bookmarkIcon {
+  background: rgba(15, 23, 42, 0.9);
+}
+
+/* bookmarked (gradient) */
+.bookmarkBtn[data-bookmarked='true'] .bookmarkIcon {
+  background: var(--color-premium-gradient);
+  filter: brightness(1) contrast(1.5) saturate(2);
+}
+
+
+.viewToggle {
+  border: 0;
+  background: transparent;
+  border-radius: 10px;
+  padding: 6px 10px;
+  font-family: 'Lato', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-weight: 700;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.slideCounter {
+  font-family: 'Lato', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-weight: 600;
+  font-size: 12px;
+  opacity: 0.75;
+}
+
+/* When in carousel mode, reviewArea should not be vertically scrollable itself */
+.reviewAreaCarousel {
+  overflow: hidden;
+  padding-right: 0;
+}
+
+/* Horizontal swipe carousel */
+.carousel {
+  height: 100%;
+  display: flex;
+  overflow-x: auto;
+  overflow-y: hidden;
+
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+
+  scrollbar-width: none; /* Firefox */
+  overscroll-behavior-x: contain;
+}
+
+.carousel::-webkit-scrollbar {
+  display: none; /* Chrome/Safari */
+}
+
+/* Each slide takes the full width of the reviewArea */
+.slide {
+  flex: 0 0 100%;
+  scroll-snap-align: start;
+  scroll-snap-stop: always; /* helps “one swipe = one card” where supported */
+
+  padding-right: 6px; /* keeps your old “scrollbar breathing room” feel */
+  overflow-y: auto;   /* ✅ content can still scroll vertically inside each slide */
+  -webkit-overflow-scrolling: touch;
+}
+
+.carousel {
+  cursor: grab;
+}
+
+.carouselDragging {
+  cursor: grabbing;
+  user-select: none;
+}
+
+.carouselDragging * {
+  user-select: none;
+}
+
+```
+
+### app/(premium)/stats/page.tsx
+```tsx
+// app/stats/page.tsx
+'use client';
+
+import BottomNav from '../../components/BottomNav';
+import styles from './stats.module.css'; // reuse shared layout + new stats classes
+import BackButton from '../../components/BackButton';
+import RequirePremium from '@/components/RequirePremium.client';
+
+export default function StatsPage() {
+  return (
+    <main className={styles.page}>
+      <BackButton />
+      <div className={styles.content}>
+        {/* ==== Top Accuracy / Gauge Card ==== */}
+        <section className={styles.statsSummaryCard}>
+          <div className={styles.statsSummaryInner}>
+            <div className={styles.statsGaugeWrapper}>
+              <div className={styles.statsGaugeCircleOuter}>
+                <div className={styles.statsGaugeCircleInner}>
+                  <div className={styles.statsGaugeNumber}>70</div>
+                  <div className={styles.statsGaugeLabel}>
+                    Accuracy
+                    <br />
+                    Rate
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <button className={styles.statsTestButton}>Test ▸</button>
+          </div>
+        </section>
+
+        {/* ==== Stack of statistic cards ==== */}
+       {/* ==== Big panel + stack of statistic cards ==== */}
+<section className={styles.statsLongPanel}>
+  <div className={styles.statsBlocks}>
+    {/* Screen Time */}
+    <article className={styles.statsCard}>
+      <header className={styles.statsCardHeader}>
+        <h2 className={styles.statsCardTitle}>Screen Time</h2>
+        <div className={styles.statsLegend}>
+          <span
+            className={`${styles.statsLegendDot} ${styles.statsLegendDotBlue}`}
+          />
+          <span className={styles.statsLegendLabel}>Global</span>
+          <span
+            className={`${styles.statsLegendDot} ${styles.statsLegendDotYellow}`}
+          />
+          <span className={styles.statsLegendLabel}>You</span>
+        </div>
+      </header>
+
+      <div className={styles.statsGraphArea}>
+        <div className={styles.statsGraphPlaceholder}>
+          Screen time chart coming soon
+        </div>
+      </div>
+    </article>
+
+    {/* Score */}
+    <article className={styles.statsCard}>
+      <header className={styles.statsCardHeader}>
+        <h2 className={styles.statsCardTitle}>Score</h2>
+      </header>
+
+      <div className={styles.statsGraphArea}>
+        <div className={styles.statsGraphPlaceholder}>
+          Score chart coming soon
+        </div>
+      </div>
+    </article>
+
+    {/* Weekly Progress */}
+    <article className={styles.statsCard}>
+      <header className={styles.statsCardHeader}>
+        <h2 className={styles.statsCardTitle}>Weekly Progress</h2>
+        <div className={styles.statsLegend}>
+          <span
+            className={`${styles.statsLegendDot} ${styles.statsLegendDotBlue}`}
+          />
+          <span className={styles.statsLegendLabel}>Global</span>
+          <span
+            className={`${styles.statsLegendDot} ${styles.statsLegendDotYellow}`}
+          />
+          <span className={styles.statsLegendLabel}>You</span>
+        </div>
+      </header>
+
+      <div className={styles.statsGraphArea}>
+        <div className={styles.statsGraphPlaceholder}>
+          Weekly progress chart coming soon
+        </div>
+      </div>
+    </article>
+
+    {/* Best Time */}
+    <article className={styles.statsCard}>
+      <header className={styles.statsCardHeader}>
+        <h2 className={styles.statsCardTitle}>Best Time</h2>
+        <div className={styles.statsLegend}>
+          <span
+            className={`${styles.statsLegendDot} ${styles.statsLegendDotBlue}`}
+          />
+          <span className={styles.statsLegendLabel}>Global</span>
+          <span
+            className={`${styles.statsLegendDot} ${styles.statsLegendDotYellow}`}
+          />
+          <span className={styles.statsLegendLabel}>You</span>
+        </div>
+      </header>
+
+      <div className={styles.statsGraphArea}>
+        <div className={styles.statsGraphPlaceholder}>
+          Best time chart coming soon
+        </div>
+      </div>
+    </article>
+  </div>
+</section>
+
+
+        {/* Review button at the bottom */}
+        <div className={styles.statsReviewWrapper}>
+          <button className={styles.statsReviewButton}>
+            Review Your Mistakes
+          </button>
+        </div>
+
+        <BottomNav />
+      </div>
+    </main>
+  );
+}
+
+```
+
+### app/(premium)/stats/stats.module.css
+```css
+/* app/stats/stats.module.css */
+
+/* Same outer layout as Home page */
+.page {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  background: var(--color-page-bg);
+}
+
+.content {
+  width: 100%;
+  max-width: 480px;
+  padding: 16px 16px 96px; /* extra bottom space for bottom nav */
+  box-sizing: border-box;
+  margin: 0 auto;
+}
+
+/* Big gradient panel behind Screen Time / Score / Weekly / Best Time */
+.statsLongPanel {
+  width: 100%;
+  max-width: 480px;              /* Figma width */
+  margin: 24px auto 0;           /* space under the gauge */
+  border-radius: 40px;           /* nice big corners */
+  padding: 24px 18px 32px;       /* space for the inner cards */
+
+  /* Figma: Linear, 0% #2B7CAF → 100% #FFC542, 20% opacity */
+  background: linear-gradient(
+    90deg,
+    rgba(43, 124, 175, 0.2) 0%,
+    rgba(255, 197, 66, 0.2) 100%
+  );
+
+  box-shadow: 0 20px 40px rgba(15, 33, 70, 0.16); /* optional but very Figma */
+}
+
+/* Column of cards inside that panel */
+.statsLongPanelInner {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;                     /* space between the four cards */
+}
+
+
+/* ================================= */
+/* STATS PAGE                        */
+/* ================================= */
+
+/* Top accuracy / gauge card */
+.statsSummaryCard {
+  margin-top: 16px;
+  width: 100%;
+  border-radius: 32px;
+  padding: 24px 24px 28px;
+  background:
+    radial-gradient(circle at top, rgba(255, 255, 255, 0.9), transparent 60%),
+    linear-gradient(180deg, #eaf3ff, #f4f7ff);
+  box-shadow: 0 18px 40px rgba(15, 33, 70, 0.16);
+}
+
+.statsSummaryInner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+}
+
+.statsGaugeWrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+/* Outer ring (gradient arc) */
+.statsGaugeCircleOuter {
+  width: 220px;
+  height: 220px;
+  border-radius: 999px;
+  background: conic-gradient(
+    from 220deg,
+    #70c1ff 0deg,
+    #70c1ff 220deg,
+    #f7d36b 320deg,
+    #e4e4e4 360deg
+  );
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Inner circle */
+.statsGaugeCircleInner {
+  width: 160px;
+  height: 160px;
+  border-radius: 999px;
+  background: #f8fbff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.statsGaugeNumber {
+  font-size: 54px;
+  font-weight: 700;
+  color: #111827;
+  line-height: 1;
+}
+
+.statsGaugeLabel {
+  margin-top: 6px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #4b5563;
+  text-align: center;
+}
+
+/* “Test” pill button */
+.statsTestButton {
+  margin-top: 8px;
+  width: 122px;              /* Figma width */
+  height: 29px;              /* Figma height */
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 999px;      /* full pill */
+  border: 1px solid var(--color-logout-border);
+  /* Same gradient as Premium / Logout */
+  background: var(--color-premium-gradient);
+
+  font-size: 14px;
+  font-weight: 600;
+  color: #000000;            /* matches Figma “Selection color: 000000” */
+  cursor: pointer;
+
+  box-shadow: 0 8px 18px rgba(15, 33, 70, 0.2);
+}
+
+
+/* Stack of cards underneath */
+.statsBlocks {
+  margin-top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Generic stats card container */
+.statsCard {
+  border-radius: 28px;
+  padding: 18px 18px 20px;
+  background: #f5fbff;
+  box-shadow: 0 14px 30px rgba(15, 33, 70, 0.14);
+}
+
+.statsCardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.statsCardTitle {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+  color: #222435;
+}
+
+/* Legend “Global / You” */
+.statsLegend {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: #6b7280;
+}
+
+.statsLegendDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+}
+
+.statsLegendDotBlue {
+  background: #2b7caf;
+}
+
+.statsLegendDotYellow {
+  background: #ffc542;
+}
+
+.statsLegendLabel {
+  white-space: nowrap;
+}
+
+/* Graph area placeholder */
+.statsGraphArea {
+  border-radius: 22px;
+  padding: 12px;
+  background: linear-gradient(
+    180deg,
+    rgba(37, 99, 235, 0.05),
+    rgba(255, 255, 255, 0.9)
+  );
+  min-height: 120px;
+}
+
+.statsGraphPlaceholder {
+  width: 100%;
+  height: 100%;
+  border-radius: 16px;
+  border: 1px dashed rgba(148, 163, 184, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  color: #9ca3af;
+}
+
+/* “Review Your Mistakes” button at bottom */
+.statsReviewWrapper {
+  margin: 24px 0 96px; /* extra bottom room for nav bar */
+  display: flex;
+  justify-content: center;
+}
+
+.statsReviewButton {
+  width: 100%;
+  max-width: 360px;
+  padding: 14px 20px;
+  border-radius: 22px;
+  border: 1px solid var(--color-logout-border);
+  background: var(--color-premium-gradient);
+  box-shadow: 0 18px 40px rgba(15, 33, 70, 0.22);
+  font-size: 16px;
+  font-weight: 600;
+  color: #111827;
+  cursor: pointer;
+}
+
+@media (min-width: 768px) {
+  .statsSummaryCard {
+    margin-top: 24px;
+  }
+}
+
+
+
+/* ========================= */
+/* DARK MODE OVERRIDES ONLY  */
+/* ========================= */
+
+:root[data-theme='dark'] .page {
+  background:
+    radial-gradient(circle at top, rgba(15, 23, 42, 0.7), transparent 55%),
+    #050816;
+  color: #f9fafb;
+}
+
+/* Top summary / gauge card */
+:root[data-theme='dark'] .statsSummaryCard {
+  background:
+    linear-gradient(
+      135deg,
+      rgba(43, 124, 175, 0.35) 0%,
+      rgba(255, 197, 66, 0.35) 100%
+    ),
+    #111827;
+  color: #f9fafb;
+}
+
+/* Gauge inner + text */
+:root[data-theme='dark'] .statsGaugeCircleInner {
+  background: #0b1020;
+}
+
+:root[data-theme='dark'] .statsGaugeNumber {
+  color: #f9fafb;
+}
+
+:root[data-theme='dark'] .statsGaugeLabel {
+  color: #9ca3af;
+}
+
+/* Big panel behind the stack of cards */
+:root[data-theme='dark'] .statsLongPanel {
+  background:
+    linear-gradient(
+      90deg,
+      rgba(43, 124, 175, 0.35) 0%,
+      rgba(255, 197, 66, 0.25) 100%
+    ),
+    #0b1020;
+  box-shadow: 0 20px 40px rgba(15, 23, 42, 0.55);
+}
+
+/* Individual stat cards */
+:root[data-theme='dark'] .statsCard {
+  background: #111827;
+  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.55);
+  color: #f9fafb;
+}
+
+:root[data-theme='dark'] .statsCardTitle {
+  color: #f9fafb;
+}
+
+:root[data-theme='dark'] .statsLegend {
+  color: #9ca3af;
+}
+
+/* Graph area placeholder */
+:root[data-theme='dark'] .statsGraphArea {
+  background: linear-gradient(
+    180deg,
+    rgba(43, 124, 175, 0.18),
+    rgba(2, 6, 23, 0.92)
+  );
+}
+
+:root[data-theme='dark'] .statsGraphPlaceholder {
+  border: 1px dashed rgba(148, 163, 184, 0.35);
+  color: #9ca3af;
+}
+
+/* Buttons (avoid relying on light-theme-only CSS vars) */
+:root[data-theme='dark'] .statsTestButton,
+:root[data-theme='dark'] .statsReviewButton {
+  background: linear-gradient(
+    90deg,
+    rgba(43, 124, 175, 0.4) 0%,
+    rgba(255, 197, 66, 0.4) 100%
+  );
+  border-color: #d2c79a;
+  color: #f9fafb;
+}
+
+```
+
+### app/account-security/account-security.module.css
+```css
+.page {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  padding: 24px 16px;
+  background: var(--color-page-bg);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'SF Pro Text',
+    'Segoe UI', sans-serif;
+}
+
+.card {
+  width: 100%;
+  max-width: 520px;
+  border-radius: 20px;
+  padding: 18px;
+  background: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(12px);
+}
+
+.backBtn {
+  border: none;
+  background: transparent;
+  font-size: 18px;
+  cursor: pointer;
+  margin-bottom: 10px;
+}
+
+.title {
+  font-size: 24px;
+  margin: 8px 0 12px;
+}
+
+.text {
+  opacity: 0.8;
+}
+
+.section {
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(0,0,0,0.08);
+}
+
+.sectionTitle {
+  font-size: 16px;
+  margin-bottom: 10px;
+}
+
+.input {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1px solid rgba(0,0,0,0.15);
+  outline: none;
+  margin-bottom: 10px;
+  background: rgba(255,255,255,0.9);
+}
+
+.primaryBtn {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  cursor: pointer;
+  background: var(--color-premium-gradient);
+  color: var(--color-heading-strong);
+  font-weight: 700;
+}
+
+.msg {
+  margin: 10px 0;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: rgba(0,0,0,0.06);
+}
+
+.row {
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.linkBtn {
+  display: inline-block;
+  padding: 10px 12px;
+  border-radius: 12px;
+  text-decoration: none;
+  background: rgba(0,0,0,0.08);
+}
+
+.ghostBtn {
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(0,0,0,0.15);
+  background: transparent;
+  cursor: pointer;
+}
+
+```
+
+### app/account-security/page.tsx
+```tsx
+'use client';
+
+import React, { useMemo, useState } from 'react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import styles from './account-security.module.css';
+import { useAuthStatus } from '../../components/useAuthStatus';
+
+export default function AccountSecurityPage() {
+  const router = useRouter();
+  const { authed, method, loading } = useAuthStatus();
+
+  const allowed = useMemo(() => authed && method === 'email', [authed, method]);
+
+  const [pwCurrent, setPwCurrent] = useState('');
+  const [pwNext, setPwNext] = useState('');
+  const [pwNext2, setPwNext2] = useState('');
+
+  const [emailNext, setEmailNext] = useState('');
+  const [emailPw, setEmailPw] = useState('');
+
+  const [msg, setMsg] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
+
+  async function changePassword() {
+    setMsg(null);
+
+    if (!pwCurrent || !pwNext || !pwNext2) {
+      setMsg('Please fill all password fields.');
+      return;
+    }
+    if (pwNext !== pwNext2) {
+      setMsg('New passwords do not match.');
+      return;
+    }
+
+    setBusy(true);
+    try {
+      const res = await fetch('/api/account/change-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          currentPassword: pwCurrent,
+          newPassword: pwNext,
+        }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        setMsg(data?.error ?? 'Failed to change password.');
+        return;
+      }
+
+      setPwCurrent('');
+      setPwNext('');
+      setPwNext2('');
+      setMsg('Password updated.');
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function changeEmail() {
+    setMsg(null);
+
+    if (!emailNext || !emailPw) {
+      setMsg('Please enter your new email and password.');
+      return;
+    }
+
+    setBusy(true);
+    try {
+      const res = await fetch('/api/account/change-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          newEmail: emailNext,
+          password: emailPw,
+        }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        setMsg(data?.error ?? 'Failed to change email.');
+        return;
+      }
+
+      setEmailNext('');
+      setEmailPw('');
+      setMsg('Email updated.');
+      // optional: send user back to profile
+      // router.push('/profile');
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  if (loading) return null;
+
+  if (!allowed) {
+    return (
+      <main className={styles.page}>
+        <div className={styles.card}>
+          <h1 className={styles.title}>Account Security</h1>
+          <p className={styles.text}>
+            This page is only available for accounts created with Email + Password.
+          </p>
+          <div className={styles.row}>
+            <Link className={styles.linkBtn} href="/login">
+              Go to login
+            </Link>
+            <button className={styles.ghostBtn} onClick={() => router.back()}>
+              Back
+            </button>
+          </div>
+        </div>
+      </main>
+    );
+  }
+
+  return (
+    <main className={styles.page}>
+      <div className={styles.card}>
+        <button className={styles.backBtn} onClick={() => router.back()}>
+          ‹ Back
+        </button>
+
+        <h1 className={styles.title}>Change Email / Password</h1>
+
+        {msg && <div className={styles.msg}>{msg}</div>}
+
+        <section className={styles.section}>
+          <h2 className={styles.sectionTitle}>Change Email</h2>
+          <input
+            className={styles.input}
+            placeholder="New email"
+            value={emailNext}
+            onChange={(e) => setEmailNext(e.target.value)}
+          />
+          <input
+            className={styles.input}
+            placeholder="Current password"
+            type="password"
+            value={emailPw}
+            onChange={(e) => setEmailPw(e.target.value)}
+          />
+          <button className={styles.primaryBtn} disabled={busy} onClick={changeEmail}>
+            Update Email
+          </button>
+        </section>
+
+        <section className={styles.section}>
+          <h2 className={styles.sectionTitle}>Change Password</h2>
+          <input
+            className={styles.input}
+            placeholder="Current password"
+            type="password"
+            value={pwCurrent}
+            onChange={(e) => setPwCurrent(e.target.value)}
+          />
+          <input
+            className={styles.input}
+            placeholder="New password"
+            type="password"
+            value={pwNext}
+            onChange={(e) => setPwNext(e.target.value)}
+          />
+          <input
+            className={styles.input}
+            placeholder="Confirm new password"
+            type="password"
+            value={pwNext2}
+            onChange={(e) => setPwNext2(e.target.value)}
+          />
+          <button className={styles.primaryBtn} disabled={busy} onClick={changePassword}>
+            Update Password
+          </button>
+        </section>
+      </div>
+    </main>
   );
 }
 
@@ -1923,28 +4628,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
 ```
 
-### app/bookmarks/page.tsx
-```tsx
-// app/bookmarks/page.tsx
-
-import type { DatasetId } from '../../lib/qbank/datasets';
-import AllQuestionsClient from '../all-questions/AllQuestionsClient.client';
-import BackButton from '../../components/BackButton';
-
-export default function BookmarksPage() {
-  // IMPORTANT: use the same datasetId you use for /all-questions
-  const datasetId: DatasetId = '2023-test1' as DatasetId;
-
-  return (
-    <>
-      <BackButton />
-      <AllQuestionsClient datasetId={"cn-2023-test1" as DatasetId} mode="bookmarks" />
-    </>
-  );
-}
-
-```
-
 ### app/checkout/checkout.module.css
 ```css
 .page {
@@ -2184,10 +4867,11 @@ export default function BookmarksPage() {
 "use client";
 
 import Image from "next/image";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import styles from "./checkout.module.css";
 import { PLAN_MAP, toPlanId, type PlanId } from "../../lib/plans";
+import { safeNextPath } from "@/lib/auth";
 
 type PayMethod = "alipay" | "gpay" | "applepay" | "wechat";
 
@@ -2213,6 +4897,7 @@ export default function CheckoutPage() {
 
   const plan: PlanId = toPlanId(sp.get("plan"));
   const promoApplied = sp.get("promo") === "1";
+const next = safeNextPath(sp.get("next"), "/");
 
   const planData = PLAN_MAP[plan];
   const title = planData.checkoutTitle;
@@ -2369,7 +5054,9 @@ export default function CheckoutPage() {
             type="button"
             className={styles.checkoutBtn}
             onClick={() => {
-              router.push("/checkout/success");
+              router.push("/checkout/success");router.push(
+  `/checkout/success?plan=${encodeURIComponent(plan)}${promoApplied ? "&promo=1" : ""}&next=${encodeURIComponent(next)}`
+);
               // TODO: integrate real payment provider later
             }}
           >
@@ -2391,12 +5078,20 @@ export default function CheckoutPage() {
 
 import Image from "next/image";
 import { useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import confetti from "canvas-confetti";
 import styles from "./success.module.css";
 
+import { useEntitlements } from "../../../components/EntitlementsProvider.client";
+import { safeNextPath } from "../../../lib/auth";
+
 export default function CheckoutSuccessPage() {
   const router = useRouter();
+  const sp = useSearchParams();
+  const { grantPremium } = useEntitlements();
+
+  const next = safeNextPath(sp.get("next"), "/");
+  const plan = sp.get("plan");
 
   useEffect(() => {
     // Respect reduced motion
@@ -2405,7 +5100,6 @@ export default function CheckoutSuccessPage() {
     const duration = 1000;
     const end = Date.now() + duration;
 
-    // A nice “burst for 3s” effect
     (function frame() {
       confetti({
         particleCount: 4,
@@ -2426,23 +5120,28 @@ export default function CheckoutSuccessPage() {
     })();
   }, []);
 
+  useEffect(() => {
+    // Temporary: grant premium locally after “successful purchase”.
+    // Later: replace with real IAP verification + entitlements refresh.
+    const source = plan === "lifetime" ? "lifetime" : "subscription";
+    grantPremium(source);
+  }, [plan, grantPremium]);
+
   return (
     <main className={styles.page}>
       <div className={styles.frame}>
         <div className={styles.confettieWrap}>
-        {/* Static confetti BG (stays after animation ends) */}
-        <Image
-          src="/images/checkout/confetti-bg.png"
-          alt="confetti background"
-          fill
-          priority
-          className={styles.confettiBg}
-          sizes="390px"
-        />
+          <Image
+            src="/images/checkout/confetti-bg.png"
+            alt="confetti background"
+            fill
+            priority
+            className={styles.confettiBg}
+            sizes="390px"
+          />
         </div>
 
         <div className={styles.centerBlock}>
-          {/* Center check icon */}
           <Image
             src="/images/checkout/bluecheck-icon.png"
             alt="Payment successful"
@@ -2462,9 +5161,9 @@ export default function CheckoutSuccessPage() {
           <button
             type="button"
             className={styles.homeBtn}
-            onClick={() => router.push("/")}
+            onClick={() => router.push(next)}
           >
-            Back to Home
+            Back
           </button>
         </footer>
       </div>
@@ -4028,30 +6727,6 @@ useEffect(() => {
         </section>
       </div>
     </main>
-  );
-}
-
-```
-
-### app/my-mistakes/my-mistakes.module.css
-```css
-
-```
-
-### app/my-mistakes/page.tsx
-```tsx
-// app/my-mistakes/page.tsx
-
-import type { DatasetId } from '../../lib/qbank/datasets';
-import AllQuestionsClient from '../all-questions/AllQuestionsClient.client';
-import BackButton from '../../components/BackButton';
-
-export default function MyMistakesPage() {
-  return (
-    <>
-      <BackButton />
-      <AllQuestionsClient datasetId={"cn-2023-test1" as DatasetId} mode="mistakes" />
-    </>
   );
 }
 
@@ -7195,2655 +9870,6 @@ const handleSave = async (e: React.SyntheticEvent) => {
 
 ```
 
-### app/real-test/RealTestClient.client.tsx
-```tsx
-// app/real-test/RealTestClient.client.tsx
-
-'use client';
-
-import { useEffect, useMemo, useRef, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import Image from 'next/image';
-
-import styles from './real-test.module.css';
-
-import { loadDataset } from '../../lib/qbank/loadDataset';
-import type { DatasetId } from '../../lib/qbank/datasets';
-import type { Question } from '../../lib/qbank/types';
-import { useBookmarks } from '../../lib/bookmarks/useBookmarks';
-import BackButton from '../../components/BackButton';
-import { useAuthStatus } from '../../components/useAuthStatus';
-import {
-  computeNextUnansweredIndex,
-  getOrCreateAttempt,
-  normalizeUserKey,
-  writeAttempt,
-  closeAttemptById,
-  type TestAttemptV1,
-} from '../../lib/test-engine/attemptStorage';
-
-
-function formatTime(secs: number) {
-  const m = Math.floor(secs / 60);
-  const s = secs % 60;
-  return `${m}:${String(s).padStart(2, '0')}`;
-}
-
-function normalizeRowChoice(v: string | null | undefined): 'R' | 'W' | null {
-  if (!v) return null;
-
-  const t = v.trim().toLowerCase();
-
-  if (t === 'r' || t === 'right') return 'R';
-  if (t === 'w' || t === 'wrong') return 'W';
-
-  return null;
-}
-
-
-
-
-export default function RealTestClient({
-  datasetId,
-  datasetVersion,
-  questionCount,
-  timeLimitMinutes,
-}: {
-  datasetId: DatasetId;
-  datasetVersion: string;
-  questionCount: number;
-  timeLimitMinutes: number;
-}) {
-  const router = useRouter();
-
-  const [items, setItems] = useState<Question[]>([]);
-  const [loading, setLoading] = useState(true);
-  
-
-  const [index, setIndex] = useState(0);
-  const [selectedKey, setSelectedKey] = useState<string | null>(null);
-
-  const total = items.length || 100;
-  const currentNo = Math.min(index + 1, total);
-
-  const [timeLeft, setTimeLeft] = useState(timeLimitMinutes * 60);
-  const endAtRef = useRef<number>(Date.now() + timeLimitMinutes * 60 * 1000);
-
-
-  const { toggle, isBookmarked } = useBookmarks(datasetId);
-
-  const [answers, setAnswers] = useState<Record<string, string>>({});
-
-const finishedRef = useRef(false);
-
-const finishTest = (reason: 'time' | 'completed') => {
-  if (finishedRef.current) return;
-  finishedRef.current = true;
-
-  // If attempt exists, close it BEFORE leaving this page
-  if (attempt?.attemptId) {
-    closeAttemptById(attempt.attemptId, { remainingSec: timeLeft });
-  }
-
-  if (!attempt) {
-    router.push('/real-test/results?reason=' + reason);
-    return;
-  }
-
-  const limitSeconds = timeLimitMinutes * 60;
-  const usedSeconds = Math.min(limitSeconds, Math.max(0, limitSeconds - timeLeft));
-
-  const params = new URLSearchParams({
-    attemptId: attempt.attemptId,
-    reason,
-    usedSeconds: String(usedSeconds),
-    limitSeconds: String(limitSeconds),
-  });
-
-  router.push(`/real-test/results?${params.toString()}`);
-};
-
-
-
-const { loading: authLoading, email } = useAuthStatus();
-const userKey = normalizeUserKey(email);
-const [attempt, setAttempt] = useState<TestAttemptV1 | null>(null);
-
-
-  useEffect(() => {
-    let mounted = true;
-
-    (async () => {
-      setLoading(true);
-const ds = await loadDataset(datasetId);
-if (!mounted) return;
-
-// If auth is still loading, don't create attempts yet.
-if (authLoading) return;
-
-const allIds = ds.map((q) => q.id);
-
-const { attempt: a } = getOrCreateAttempt({
-  userKey,
-  modeKey: 'real-test',
-  datasetId,
-  datasetVersion,
-  allQuestionIds: allIds,
-  questionCount,
-  timeLimitSec: timeLimitMinutes * 60,
-});
-
-// Build the picked subset in the frozen random order
-const byId = new Map(ds.map((q) => [q.id, q] as const));
-const picked = a.questionIds.map((id) => byId.get(id)).filter(Boolean) as Question[];
-
-setAttempt(a);
-setItems(picked);
-
-// Restore answers into your existing UI answers state
-const restored: Record<string, string> = {};
-for (const [qid, rec] of Object.entries(a.answersByQid)) {
-  restored[qid] = rec.choice;
-}
-setAnswers(restored);
-
-// Resume to next unanswered
-const nextIdx = computeNextUnansweredIndex(a);
-setIndex(Math.min(nextIdx, Math.max(0, picked.length - 1)));
-
-setSelectedKey(null);
-setLoading(false);
-
-    })();
-
-    return () => {
-      mounted = false;
-    };
-  }, [datasetId, datasetVersion, questionCount, timeLimitMinutes, authLoading, userKey]);
-
-
-  useEffect(() => {
-  endAtRef.current = Date.now() + timeLimitMinutes * 60 * 1000;
-  setTimeLeft(timeLimitMinutes * 60);
-}, [datasetId, timeLimitMinutes]);
-
-
-  // countdown
-  useEffect(() => {
-  const tick = () => {
-    const left = Math.max(0, Math.ceil((endAtRef.current - Date.now()) / 1000));
-    setTimeLeft(left);
-  };
-
-  tick(); // run once immediately so UI updates instantly
-
-  const id = window.setInterval(tick, 250);
-  return () => window.clearInterval(id);
-}, [datasetId, timeLimitMinutes]);
-
-useEffect(() => {
-  if (loading) return;
-  if (items.length === 0) return;
-
-  if (timeLeft <= 0) {
-    finishTest('time');
-  }
-}, [timeLeft, loading, items.length]); // intentionally NOT including finishTest
-
-
-
-const item = items[index];
-const imageAsset = item?.assets?.find((a) => a.kind === 'image');
-
-const correctCount = useMemo(() => {
-  let correct = 0;
-
-  for (const q of items) {
-    const chosenKey = answers[q.id];
-    if (!chosenKey) continue;
-
-    if (q.type === 'ROW') {
-      const chosen = normalizeRowChoice(chosenKey);
-      const expected = normalizeRowChoice(q.correctRow ?? null);
-      if (chosen && expected && chosen === expected) correct += 1;
-      continue;
-    }
-
-    // MCQ
-    const chosenOpt = q.options.find((opt, idx) => {
-      const k = opt.originalKey ?? String.fromCharCode(65 + idx);
-      return k === chosenKey;
-    });
-
-    if (chosenOpt && q.correctOptionId && chosenOpt.id === q.correctOptionId) {
-      correct += 1;
-    }
-  }
-
-  return correct;
-}, [items, answers]);
-
-const advancingRef = useRef(false);
-
-// More reliable than e.detail: works even if state hasn’t re-rendered yet
-const lastTapRef = useRef<{ key: string; at: number } | null>(null);
-
-const commitAndAdvance = (choiceKey: string) => {
-  if (!items.length || !item) return;
-  if (!choiceKey) return;
-
-  if (advancingRef.current) return;
-  advancingRef.current = true;
-
-  const now = Date.now();
-
-  // 1) commit to UI state
-  setAnswers((prev) => {
-    if (prev[item.id] === choiceKey) return prev;
-    return { ...prev, [item.id]: choiceKey };
-  });
-
-  // 2) commit to attempt storage (so Results/Stats stay correct)
-  if (attempt) {
-    const updated: TestAttemptV1 = {
-      ...attempt,
-      status: 'in_progress',
-      lastActiveAt: now,
-      answersByQid: {
-        ...attempt.answersByQid,
-        [item.id]: { choice: choiceKey, answeredAt: now },
-      },
-    };
-    setAttempt(updated);
-    writeAttempt(updated);
-  }
-
-  // 3) move forward or finish
-  const next = index + 1;
-  if (next >= items.length) {
-    finishTest('completed');
-    return;
-  }
-
-  setIndex(next);
-
-  // release the guard next tick
-  setTimeout(() => {
-    advancingRef.current = false;
-  }, 0);
-};
-
-const onOptionTap = (key: string) => {
-  const now = Date.now();
-  const last = lastTapRef.current;
-
-  // If same option tapped twice quickly -> auto next
-  if (last && last.key === key && now - last.at < 450) {
-    lastTapRef.current = null;
-    commitAndAdvance(key);
-    return;
-  }
-
-  lastTapRef.current = { key, at: now };
-  setSelectedKey(key);
-};
-
-
-useEffect(() => {
-  if (!item) return;
-  setSelectedKey(answers[item.id] ?? null);
-}, [item?.id, answers]);
-
-
-  const progressPct = useMemo(() => {
-    if (!items.length) return 0;
-    return ((index + 1) / items.length) * 100;
-  }, [index, items.length]);
-
-  const onNext = () => {
-  if (!items.length || !item) return;
-  if (!selectedKey) return;
-
-  // 1) commit the answer for the current question
-  setAnswers((prev) => {
-    // avoid extra renders if unchanged
-    if (prev[item.id] === selectedKey) return prev;
-    return { ...prev, [item.id]: selectedKey };
-  });
-
-if (attempt && item) {
-  const now = Date.now();
-
-  const updated: TestAttemptV1 = {
-    ...attempt,
-    status: 'in_progress',
-    lastActiveAt: now,
-    answersByQid: {
-      ...attempt.answersByQid,
-      [item.id]: { choice: selectedKey, answeredAt: now },
-    },
-  };
-
-  setAttempt(updated);
-  writeAttempt(updated);
-}
-
-
-  // 2) move forward or finish
-  const next = index + 1;
-
-  if (next >= items.length) {
-    // IMPORTANT: finish after committing the last answer
-    finishTest('completed');
-    return;
-  }
-
-  setIndex(next);
-  // do NOT manually setSelectedKey(null) here;
-  // the "restore selection" effect will set it for the next question.
-};
-
-
-  if (loading) {
-    return (
-      <main className={styles.page}>
-        <div className={styles.frame}>
-          <div className={styles.loading}>Loading…</div>
-        </div>
-      </main>
-    );
-  }
-
-  if (!item) {
-    return (
-      <main className={styles.page}>
-        <div className={styles.frame}>
-          <div className={styles.loading}>No questions found.</div>
-        </div>
-      </main>
-    );
-  }
-
-  return (
-    <main className={styles.page}>
-      <div className={styles.frame}>
-        <BackButton />
-        {/* Top bar */}
-        <div className={styles.topBar}>
-<div className={styles.topLeftSpacer} aria-hidden="true" />
-          <div className={styles.topRight}>
-            <div className={styles.timer}>
-              <span className={styles.timerIcon} aria-hidden="true" />
-              <span className={styles.timerText}>{formatTime(timeLeft)}</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Progress row */}
-        <div className={styles.progressRow}>
-          <div className={styles.progressTrack} aria-hidden="true">
-            <div
-              className={styles.progressFill}
-              style={{ width: `${progressPct}%` }}
-            />
-          </div>
-
-          <div className={styles.progressText}>{currentNo}/{items.length}</div>
-        </div>
-
-        {/* Question row (with bookmark icon on the right) */}
-        <div className={styles.questionRow}>
-          <p className={styles.questionText}>{item.prompt}</p>
-
-          <button
-            type="button"
-            className={styles.bookmarkBtn}
-            onClick={(e) => {
-              e.stopPropagation();
-              toggle(item.id);
-            }}
-            aria-label={isBookmarked(item.id) ? 'Remove bookmark' : 'Add bookmark'}
-            title={isBookmarked(item.id) ? 'Bookmarked' : 'Bookmark'}
-            data-bookmarked={isBookmarked(item.id) ? 'true' : 'false'}
-          >
-            {/* NOTE: this is where your class rename matters */}
-            <span className={styles.bookmarkIcon} aria-hidden="true" />
-          </button>
-        </div>
-
-        {/* Image (if exists) */}
-        {imageAsset && (
-  <div className={styles.imageWrap}>
-    <Image
-      src={imageAsset.src}
-      alt="Question image"
-      fill
-      className={styles.image}
-      priority
-      unoptimized
-    />
-  </div>
-)}
-
-
-{/* Answers */}
-<div className={styles.answers}>
-  {item.type === 'ROW' && (
-  <>
-    <button
-      type="button"
-      className={`${styles.optionBtn} ${styles.rowBtn} ${
-        selectedKey === 'R' ? styles.optionActive : ''
-      }`}
-      onClick={() => onOptionTap('R')}
-    >
-      <span className={styles.optionText}>Right</span>
-    </button>
-
-    <button
-      type="button"
-      className={`${styles.optionBtn} ${styles.rowBtn} ${
-        selectedKey === 'W' ? styles.optionActive : ''
-      }`}
-     onClick={() => onOptionTap('W')}
-    >
-      <span className={styles.optionText}>Wrong</span>
-    </button>
-  </>
-)}
-
-
-  {item.type === 'MCQ' &&
-    item.options.map((opt, idx) => {
-      const key = opt.originalKey ?? String.fromCharCode(65 + idx);
-      const active = selectedKey === key;
-
-      return (
-        <button
-          key={opt.id}
-          type="button"
-          className={`${styles.optionBtn} ${active ? styles.optionActive : ''}`}
-          onClick={(e) => {
-  // first click selects
-  if (selectedKey !== key) {
-    setSelectedKey(key);
-    return;
-  }
-
-  // second click on same option advances
-  // e.detail is 1,2,3... for click count (works great on desktop)
-  if (e.detail >= 2) {
-    commitAndAdvance(key);
-  }
-}}
-
-        >
-          <span className={styles.optionKey}>{key}.</span>
-          <span className={styles.optionText}>{opt.text}</span>
-        </button>
-      );
-    })}
-</div>
-
-
-
-
-
-
-        {/* Next */}
-
-
-        <button
-          type="button"
-          className={styles.nextBtn}
-          onClick={() => selectedKey && commitAndAdvance(selectedKey)}
-          disabled={!selectedKey}
-        >
-          Next <span className={styles.nextArrow} aria-hidden="true">→</span>
-        </button>
-      </div>
-    </main>
-  );
-}
-
-```
-
-### app/real-test/page.tsx
-```tsx
-// app/real-test/page.tsx
-import type { DatasetId } from '../../lib/qbank/datasets';
-import RealTestClient from './RealTestClient.client';
-
-export default function RealTestPage() {
-  const datasetId: DatasetId = 'cn-2023-test1' as DatasetId;
-
-  // Change this only when your dataset content changes (e.g., yearly update).
-  const datasetVersion = 'cn-2023-test1@v1';
-
-  // Real Test fixed size
-  const questionCount = 50;
-
-  return (
-    <RealTestClient
-      datasetId={datasetId}
-      datasetVersion={datasetVersion}
-      questionCount={questionCount}
-      timeLimitMinutes={45}
-    />
-  );
-}
-
-```
-
-### app/real-test/real-test.module.css
-```css
-.page {
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  background: var(--color-page-bg);
-}
-
-.frame {
-  width: 100%;
-  max-width: 390px; /* Figma phone frame */
-  padding: 18px 16px 24px;
-}
-
-.loading {
-  padding: 40px 0;
-  opacity: 0.7;
-  text-align: center;
-}
-
-/* --- Top bar --- */
-.topBar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0; /* your figma shows tight top */
-}
-
-.backBtn {
-  border: 0;
-  background: transparent;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  cursor: pointer;
-  padding: 6px 2px;
-}
-
-.backIcon {
-  font-size: 22px;
-  line-height: 1;
-  opacity: 0.6;
-}
-
-.backText {
-  font-size: 20px;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-}
-
-.topRight {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-}
-
-/* timer */
-.timer {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.timerIcon {
-  width: 20px;
-  height: 20px;
-  display: inline-block;
-  background: rgba(43, 124, 175, 0.95);
-
-  /* simple clock glyph via mask (optional) */
-  -webkit-mask-image: url("/images/test/timer-icon.png");
-  mask-image: url("/images/test/timer-icon.png");
-  -webkit-mask-repeat: no-repeat;
-  mask-repeat: no-repeat;
-  -webkit-mask-position: center;
-  mask-position: center;
-  -webkit-mask-size: contain;
-  mask-size: contain;
-}
-
-.timerText {
-  font-size: 14px;
-  font-weight: 600; /* semibold */
-  color: #2B7CAF;
-}
-
-/* --- Progress row --- */
-/* top bar → progress: 28 */
-.progressRow {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  margin-top: 28px;
-}
-
-.progressTrack {
-  flex: 1;
-  height: 4px; /* figma shows 1px; 4px reads better on web */
-  border-radius: 999px;
-  background: #E0E7EA; /* track */
-  overflow: hidden;
-}
-
-.progressFill {
-  height: 100%;
-  border-radius: 999px;
-  background: linear-gradient(90deg, #2B7CAF 0%, #FFC542 100%);
-}
-
-.progressText {
-  font-size: 16px;
-  color: #21205A;
-  font-weight: 400;
-}
-
-/* progress → question: 29 */
-.questionRow {
-  margin-top: 29px;
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 12px;
-}
-
-.questionText {
-  margin: 0;
-    font-family: 'Lato', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
-  font-style: normal;
-  font-size: 20px;
-  font-weight: 300;
-  line-height: 28px;
-  letter-spacing: -0.24px;
-  color: #000;
-}
-
-/* Bookmark */
-.bookmarkBtn {
-  border: 0;
-  background: transparent;
-  cursor: pointer;
-  padding: 4px;
-}
-
-.bookmarkIcon {
-  width: 24px;
-  height: 24px;
-  display: inline-block;
-
-  /* Use the PNG as a stencil */
-  -webkit-mask-image: url("/images/test/bookmark-icon.png");
-  mask-image: url("/images/test/bookmark-icon.png");
-  -webkit-mask-repeat: no-repeat;
-  mask-repeat: no-repeat;
-  -webkit-mask-position: center;
-  mask-position: center;
-  -webkit-mask-size: contain;
-  mask-size: contain;
-}
-
-/* not bookmarked */
-.bookmarkBtn[data-bookmarked='false'] .bookmarkIcon {
-  background: rgba(15, 23, 42, 0.9);
-}
-
-/* bookmarked (keep your gradient) */
-.bookmarkBtn[data-bookmarked='true'] .bookmarkIcon {
-  background: var(--color-premium-gradient);
-  filter: brightness(1) contrast(1.5) saturate(2);
-}
-
-/* question → image */
-.imageWrap {
-  margin-top: 10px;
-
-  /* ✅ center the image box */
-  margin-left: auto;
-  margin-right: auto;
-
-  /* ✅ make it bigger without touching options styles */
-  width: 100%;
-  max-width: 330px;
-
-  /* pick a bigger height (safe + predictable) */
-height: clamp(240px, 52vw, 340px);
-
-  position: relative;
-  border-radius: 12px;
-  overflow: hidden;
-  background: transparent;
-}
-
-.image {
-  object-fit: contain;
-  object-position: center;
-}
-
-
-/* image → answers: 30 */
-.answers {
-  margin-top: 30px;
-  display: flex;
-  flex-direction: column;
-  gap: 20px; /* gap between answers */
-}
-
-/* ROW (Right/Wrong) button base from Figma rectangle */
-.rowBtn {
-  width: 100%;
-  max-width: 330px; /* from your % margins ≈ 390 - 32 - 29 = ~329 */
-  height: 46px;     /* if your design uses a different height, replace this */
-  border-radius: 8px;
-
-  background: linear-gradient(
-    90deg,
-    rgba(43, 124, 175, 0.15) 0%,
-    rgba(255, 197, 66, 0.15) 100%
-  );
-
-  box-shadow: 0px 2px 1.1px rgba(169, 171, 187, 0.27);
-
-  border: 0;                /* Figma snippet didn’t include stroke */
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-
-
-/* option card (315 x 41) */
-.optionBtn {
-  width: 315px;
-  min-height: 41px;
-  border-radius: 14px;
-  border: 1px solid rgba(43, 124, 175, 0.18);
-  background: rgba(255, 255, 255, 0.55);
-  backdrop-filter: blur(10px);
-  box-shadow: 0 6px 14px rgba(15, 33, 70, 0.12);
-  cursor: pointer;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-
-  padding: 10px 12px;
-  text-align: center;
-}
-
-.optionKey {
-  font-weight: 700;
-}
-
-.optionText {
-  font-family: 'Lato', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
-  font-style: normal;
-  font-weight: 500;
-  font-size: 11px;
-  line-height: 20px;
-  letter-spacing: -0.24px;
-  text-align: center;
-  color: #000000;
-
-  /* important: allow wrapping like the 295x40 text box */
-  display: block;
-  width: 295px;              /* from your pasted text layer */
-}
-
-.optionActive {
-  border-color: rgba(43, 124, 175, 0.7);
-  box-shadow: 0 10px 22px rgba(43, 124, 175, 0.18);
-}
-
-/* answers → next button: 30 */
-.nextBtn {
-  margin-top: 30px;
-  width: 315px;
-  height: 41px;
-  border-radius: 14px;
-  cursor: pointer;
-
-  font-size: 20px;
-  font-weight: 600;
-  letter-spacing: -0.24px;
-
-  background: linear-gradient(
-    90deg,
-    rgba(43, 124, 175, 0.20) 0%,
-    rgba(255, 197, 66, 0.20) 100%
-  );
-
-  position: relative;
-  border: none;
-
-  box-shadow: 0 10px 22px rgba(15, 33, 70, 0.18);
-}
-
-.nextBtn::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: 14px;
-  padding: 1px;
-  background: linear-gradient(90deg, #2B7CAF 0%, #FFC542 100%);
-  pointer-events: none;
-
-  /* Standard + WebKit versions */
-  -webkit-mask:
-    linear-gradient(#fff 0 0) content-box,
-    linear-gradient(#fff 0 0);
-  mask:
-    linear-gradient(#fff 0 0) content-box,
-    linear-gradient(#fff 0 0);
-
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-}
-
-
-.nextBtn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-
-.topLeftSpacer {
-  width: 60px; /* match the space your old "Back" button used */
-  height: 1px;
-}
-
-```
-
-### app/real-test/results/page.tsx
-```tsx
-/* app/real-test/results/page.tsx */
-'use client';
-
-import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
-import styles from './results.module.css';
-import Image from 'next/image';
-
-import { loadDataset } from '../../../lib/qbank/loadDataset';
-import type { DatasetId } from '../../../lib/qbank/datasets';
-import type { Question } from '../../../lib/qbank/types';
-import { readAttemptById, type TestAttemptV1 } from '../../../lib/test-engine/attemptStorage';
-import { useBookmarks } from '../../../lib/bookmarks/useBookmarks';
-import { closeAttemptById } from '../../../lib/test-engine/attemptStorage';
-
-function clamp(n: number, min: number, max: number) {
-  return Math.max(min, Math.min(max, n));
-}
-
-function normalizeRowChoice(v: string | null | undefined): 'R' | 'W' | null {
-  if (!v) return null;
-  const t = v.trim().toLowerCase();
-  if (t === 'r' || t === 'right') return 'R';
-  if (t === 'w' || t === 'wrong') return 'W';
-  return null;
-}
-
-function getQuestionNumber(q: any): number {
-  // 1) prefer q.number (can be number OR string)
-  const raw = q?.number;
-
-  const fromNumber = Number(raw);
-  if (Number.isFinite(fromNumber) && fromNumber > 0) return Math.floor(fromNumber);
-
-  // 2) fallback: extract digits from id (q0231 -> 231)
-  const idStr = String(q?.id ?? "");
-  const idMatch = idStr.match(/\d+/);
-  if (idMatch) {
-    const n = parseInt(idMatch[0], 10);
-    if (Number.isFinite(n) && n > 0) return n;
-  }
-
-  // 3) last resort: 0 (means “unknown”)
-  return 0;
-}
-
-
-export default function RealTestResultsPage() {
-  const router = useRouter();
-  const sp = useSearchParams();
-
-  // ✅ Option B: Results is driven by attemptId
-  const attemptId = sp.get('attemptId');
-
-// Your real-test currently pushes usedSeconds/limitSeconds
-const usedSecondsRaw = Number(sp.get('usedSeconds') ?? '0');
-const usedSeconds = Number.isFinite(usedSecondsRaw) && usedSecondsRaw > 0
-  ? Math.floor(usedSecondsRaw)
-  : 0;
-
-const timeMin = Math.floor(usedSeconds / 60);
-const timeSec = usedSeconds % 60;
-
-const timeText = `${timeMin}min ${timeSec}sec`;
-
-
-  const [attempt, setAttempt] = useState<TestAttemptV1 | null>(null);
-  const [computed, setComputed] = useState<{ correct: number; total: number }>({
-    correct: 0,
-    total: 0,
-  });
-  
-  type ReviewItem = {
-  qid: string;
-  testNo: number;
-  prompt: string;
-  imageSrc?: string;
-  options: { key: string; text: string; tone: "neutral" | "correct" | "wrong" }[];
-  explanation?: string;
-};
-
-const [reviewItems, setReviewItems] = useState<ReviewItem[]>([]);
-const [brokenImages, setBrokenImages] = useState<Record<string, boolean>>({});
-
-const datasetId = attempt?.datasetId ?? "";
-const { toggle, isBookmarked } = useBookmarks(datasetId || "pending");
-
-const [viewMode, setViewMode] = useState<'list' | 'carousel'>('list');
-const [activeSlide, setActiveSlide] = useState(0);
-const carouselRef = useRef<HTMLDivElement | null>(null);
-
-const [isDragging, setIsDragging] = useState(false);
-
-const dragRef = useRef({
-  down: false,
-  startX: 0,
-  startLeft: 0,
-  moved: false,
-});
-
-const onCarouselPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
-  // Only enable “drag to scroll” for mouse. Touch keeps native swipe.
-  if (e.pointerType !== 'mouse') return;
-
-  // ✅ If user clicked a button (bookmark / toggle etc), do NOT capture pointer
-  const target = e.target as HTMLElement;
-  if (target.closest('button, a, input, textarea, select, label')) return;
-
-  const el = carouselRef.current;
-  if (!el) return;
-
-  dragRef.current.down = true;
-  dragRef.current.moved = false;
-  dragRef.current.startX = e.clientX;
-  dragRef.current.startLeft = el.scrollLeft;
-
-  setIsDragging(true);
-  el.setPointerCapture(e.pointerId);
-};
-
-
-const onCarouselPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
-  if (e.pointerType !== 'mouse') return;
-  if (!dragRef.current.down) return;
-
-  const el = carouselRef.current;
-  if (!el) return;
-
-  const dx = e.clientX - dragRef.current.startX;
-  if (Math.abs(dx) > 3) dragRef.current.moved = true;
-
-  // Drag left -> show next slide (scrollRight), so we subtract dx
-  el.scrollLeft = dragRef.current.startLeft - dx;
-};
-
-const snapToNearestSlide = () => {
-  const el = carouselRef.current;
-  if (!el) return;
-
-  const w = el.clientWidth || 1;
-  const idx = Math.round(el.scrollLeft / w);
-  el.scrollTo({ left: idx * w, behavior: 'smooth' });
-};
-
-const onCarouselPointerUpOrCancel = (e: React.PointerEvent<HTMLDivElement>) => {
-  if (e.pointerType !== 'mouse') return;
-
-  const el = carouselRef.current;
-  if (!el) return;
-
-  dragRef.current.down = false;
-  setIsDragging(false);
-
-  try {
-    el.releasePointerCapture(e.pointerId);
-  } catch {}
-
-  // Force a clean snap on desktop after drag ends
-  snapToNearestSlide();
-};
-
-
-useEffect(() => {
-  if (viewMode !== 'carousel') return;
-
-  const el = carouselRef.current;
-  if (!el) return;
-
-  const onScroll = () => {
-    const w = el.clientWidth || 1;
-    const idx = Math.round(el.scrollLeft / w);
-    setActiveSlide(Math.max(0, Math.min(idx, reviewItems.length - 1)));
-  };
-
-  onScroll();
-  el.addEventListener('scroll', onScroll, { passive: true });
-  return () => el.removeEventListener('scroll', onScroll as any);
-}, [viewMode, reviewItems.length]);
-
-  useEffect(() => {
-    if (!attemptId) return;
-
-    const a = readAttemptById(attemptId);
-    setAttempt(a);
-
-    if (!a) return;
-
-    (async () => {
-      const ds = await loadDataset(a.datasetId as DatasetId);
-      const byId = new Map(ds.map((q) => [q.id, q] as const));
-
-      // Keep the attempt's frozen random order
-      const picked = a.questionIds.map((id) => byId.get(id)).filter(Boolean) as Question[];
-
-      // Compute score using attempt answers
-      let correct = 0;
-
-      for (let i = 0; i < picked.length; i++) {
-  const q = picked[i];
-  const testNo = i + 1;          // ✅ position in THIS test
-  const bankNo = getQuestionNumber(q); // ✅ global/bank number
-
-        const chosenKey = a.answersByQid[q.id]?.choice ?? null;
-
-        // Your rule: unanswered at timeout = wrong
-        // Score counts only correct; total remains full picked length
-        if (!chosenKey) continue;
-
-        if (q.type === 'ROW') {
-          const chosen = normalizeRowChoice(chosenKey);
-          const expected = normalizeRowChoice((q as any).correctRow ?? null);
-          if (chosen && expected && chosen === expected) correct += 1;
-          continue;
-        }
-
-        // MCQ
-        const chosenOpt = q.options.find((opt, idx) => {
-          const k = opt.originalKey ?? String.fromCharCode(65 + idx);
-          return k === chosenKey;
-        });
-
-        if (chosenOpt && (q as any).correctOptionId && chosenOpt.id === (q as any).correctOptionId) {
-          correct += 1;
-        }
-      }
-
-      setComputed({ correct, total: picked.length });
-// Prepare review items (WRONG ONLY)
-const items: ReviewItem[] = [];
-
-for (let i = 0; i < picked.length; i++) {
-  const q = picked[i];
-  const testNo = i + 1;
-
-  const chosenKey = a.answersByQid[q.id]?.choice ?? null;
-  const qType = String((q as any).type ?? "").toUpperCase();
-
-  // image
-  const assets = (q as any).assets;
-  const imageAsset = Array.isArray(assets)
-    ? assets.find((a: any) => a?.kind === "image" && typeof a?.src === "string")
-    : null;
-  const imageSrc = imageAsset?.src as string | undefined;
-
-  // -------------------------
-  // 1) ROW questions (Right/Wrong)
-  // -------------------------
-  if (qType === "ROW") {
-    const correctRow = normalizeRowChoice((q as any).correctRow ?? null);
-    const chosenRow = normalizeRowChoice(chosenKey);
-
-    const isCorrect = !!(chosenRow && correctRow && chosenRow === correctRow);
-    if (isCorrect) continue; // show only WRONG
-
-    const options: ReviewItem["options"] = [
-      {
-        key: "R",
-        text: "R. Right",
-        tone:
-          correctRow === "R"
-            ? "correct"
-            : chosenRow === "R"
-            ? "wrong"
-            : "neutral",
-      },
-      {
-        key: "W",
-        text: "W. Wrong",
-        tone:
-          correctRow === "W"
-            ? "correct"
-            : chosenRow === "W"
-            ? "wrong"
-            : "neutral",
-      },
-    ];
-
-    items.push({
-      qid: (q as any).id,
-      testNo,
-      prompt: (q as any).prompt,
-      imageSrc,
-      options,
-      explanation: (q as any).explanation,
-    });
-
-    continue;
-  }
-
-  // -------------------------
-  // 2) MCQ questions
-  // -------------------------
-  const correctOptionId = (q as any).correctOptionId as string | undefined;
-  const opts = Array.isArray((q as any).options) ? (q as any).options : [];
-
-  const chosenOpt =
-    chosenKey
-      ? opts.find((opt: any, idx: number) => {
-          const k = opt?.originalKey ?? String.fromCharCode(65 + idx);
-          return k === chosenKey;
-        })
-      : null;
-
-  const isCorrect = !!(chosenOpt && correctOptionId && chosenOpt.id === correctOptionId);
-  if (isCorrect) continue; // show only WRONG
-
-  const correctIndex = opts.findIndex((opt: any) => opt?.id === correctOptionId);
-  const correctKey =
-    correctIndex >= 0
-      ? (opts[correctIndex].originalKey ?? String.fromCharCode(65 + correctIndex))
-      : null;
-
-  const options: ReviewItem["options"] = opts.map((opt: any, idx: number) => {
-    const key = opt?.originalKey ?? String.fromCharCode(65 + idx);
-    const text = `${key}. ${opt?.text ?? ""}`;
-
-    let tone: "neutral" | "correct" | "wrong" = "neutral";
-    if (correctKey && key === correctKey) tone = "correct";
-    if (chosenKey && key === chosenKey && key !== correctKey) tone = "wrong";
-
-    return { key, text, tone };
-  });
-
-  items.push({
-    qid: (q as any).id,
-    testNo,
-    prompt: (q as any).prompt,
-    imageSrc,
-    options,
-    explanation: (q as any).explanation,
-  });
-}
-
-setBrokenImages({});
-items.sort((a, b) => a.testNo - b.testNo);
-setReviewItems(items);
-    })();
-  }, [attemptId]);
-
-useEffect(() => {
-  if (!attemptId) return;
-  closeAttemptById(attemptId);
-}, [attemptId]);
-
-
-  const pct = useMemo(() => {
-    const t = computed.total > 0 ? computed.total : 1;
-    return clamp(computed.correct / t, 0, 1);
-  }, [computed.correct, computed.total]);
-
-  const percent = useMemo(() => Math.round(pct * 100), [pct]);
-
-
-  // Simple guard: if someone opens results without an attemptId
-  if (!attemptId) {
-    return (
-      <div className={styles.viewport}>
-        <main className={styles.screen}>
-          <div className={styles.card} />
-          <div className={styles.backRow}>
-          </div>
-          <div style={{ padding: 16 }}>Missing attemptId. Please re-take the test.</div>
-        </main>
-      </div>
-    );
-  }
-
-  return (
-    <div className={styles.viewport}>
-      <main className={styles.screen}>
-        <div className={styles.card} />
-<div className={styles.shiftUp}>
-        <h1 className={styles.congrats}>Congratulations!</h1>
-
-        <div className={styles.ringWrap} aria-label="Score progress">
-          <div
-            className={styles.ring}
-            style={
-              {
-                '--p': `${pct * 360}deg`,
-              } as React.CSSProperties
-            }
-          />
-          <div className={styles.ringCenterText}>{percent}</div>
-        </div>
-
-        <div className={styles.scoreBox} aria-hidden="true">
-          <div className={styles.lineTop} />
-          <div className={styles.lineBottom} />
-          <div className={styles.lineMid} />
-
-          <div className={styles.scoreLeft}>
-            <div className={styles.scoreValue}>
-              {computed.correct}/{computed.total || 0}
-            </div>
-            <div className={styles.scoreLabel}>Score</div>
-          </div>
-
-          <div className={styles.scoreRight}>
-            <div className={styles.scoreValue}>{timeText}</div>
-            <div className={styles.scoreLabel}>Time</div>
-          </div>
-        </div>
-
-        <div className={styles.testResultsTitle}>Test Results</div>
-
-        <div className={styles.incorrectRow}>
-  <Image
-    src="/images/test/red-x-icon.png"
-    alt="Red X Icon"
-    width={24}
-    height={24}
-    className={styles.btnIcon}
-  />
-
-  <div className={styles.incorrectText}>Incorrect</div>
-
-  <div className={styles.incorrectSpacer} />
-
-  {reviewItems.length > 0 && viewMode === 'carousel' && (
-    <div className={styles.slideCounter}>
-      {activeSlide + 1}/{reviewItems.length}
-    </div>
-  )}
-
-<button
-  type="button"
-  className={styles.viewToggle}
-  onClick={() => setViewMode((v) => (v === 'list' ? 'carousel' : 'list'))}
-  aria-pressed={viewMode === 'carousel'}
-  aria-label={viewMode === 'carousel' ? 'Switch to list view' : 'Switch to swipe view'}
-  title={viewMode === 'carousel' ? 'List view' : 'Swipe view'}
->
-  <Image
-    src={viewMode === 'carousel'
-      ? '/images/test/list-icon.png'     // ✅ your “list” icon
-      : '/images/test/carousel-icon.png'}   // ✅ your “swipe” icon
-    alt=""
-    width={18}
-    height={18}
-  />
-</button>
-
-</div>
-
-
-<section
-  className={[
-    styles.reviewArea,
-    viewMode === 'carousel' ? styles.reviewAreaCarousel : '',
-  ].join(' ')}
->
-  {reviewItems.length === 0 ? (
-    <p className={styles.question}>Expatise! No incorrect questions! 🎉</p>
-  ) : viewMode === 'list' ? (
-    reviewItems.map((item) => (
-      <article key={item.qid} style={{ marginBottom: 18 }}>
-        <div className={styles.questionRow}>
-  <p className={[styles.question, styles.questionText].join(' ')}>
-    {item.testNo}. {item.prompt}
-  </p>
-
-  <button
-  type="button"
-  className={styles.bookmarkBtn}
-    onPointerDown={(e) => {
-    // ✅ prevents carousel from capturing pointer + also clears any leftover “moved”
-    e.stopPropagation();
-    dragRef.current.moved = false;
-  }}
-  onClick={(e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    toggle(item.qid);
-  }}
-  aria-label={isBookmarked(item.qid) ? 'Remove bookmark' : 'Add bookmark'}
-  title={isBookmarked(item.qid) ? 'Bookmarked' : 'Bookmark'}
-  data-bookmarked={isBookmarked(item.qid) ? 'true' : 'false'}
->
-  <span className={styles.bookmarkIcon} aria-hidden="true" />
-</button>
-
-</div>
-
-
-        <div className={styles.qaRow}>
-          {item.imageSrc && !brokenImages[item.qid] ? (
-            <div className={styles.imageWrap}>
-              <Image
-                src={item.imageSrc}
-                alt="Question image"
-                fill
-                sizes="120px"
-                className={styles.image}
-                unoptimized
-                onError={() => setBrokenImages((p) => ({ ...p, [item.qid]: true }))}
-              />
-            </div>
-          ) : null}
-
-          <div className={styles.options}>
-            {item.options.map((o) => (
-              <div
-                key={o.key}
-                className={[
-                  styles.option,
-                  o.tone === 'correct'
-                    ? styles.optionCorrect
-                    : o.tone === 'wrong'
-                    ? styles.optionWrong
-                    : styles.optionNeutral,
-                ].join(' ')}
-              >
-                {o.text}
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {(item.explanation ?? '').trim().length > 0 && (
-          <>
-            <div className={styles.exTitle}>Explanation:</div>
-            <div className={styles.exBody}>{item.explanation}</div>
-          </>
-        )}
-      </article>
-    ))
-  ) : (
-    <div
-  ref={carouselRef}
-  className={[
-    styles.carousel,
-    isDragging ? styles.carouselDragging : '',
-  ].join(' ')}
-  onPointerDown={onCarouselPointerDown}
-  onPointerMove={onCarouselPointerMove}
-  onPointerUp={onCarouselPointerUpOrCancel}
-  onPointerCancel={onCarouselPointerUpOrCancel}
-  onClickCapture={(e) => {
-    if (dragRef.current.moved) {
-      e.preventDefault();
-      e.stopPropagation();
-      dragRef.current.moved = false;
-    }
-  }}
->
-      {reviewItems.map((item) => (
-        <div key={item.qid} className={styles.slide}>
-          <article>
-            <div className={styles.questionRow}>
-  <p className={[styles.question, styles.questionText].join(' ')}>
-    {item.testNo}. {item.prompt}
-  </p>
-
- <button
-  type="button"
-  className={styles.bookmarkBtn}
-  onClick={(e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    toggle(item.qid);
-  }}
-  aria-label={isBookmarked(item.qid) ? 'Remove bookmark' : 'Add bookmark'}
-  title={isBookmarked(item.qid) ? 'Bookmarked' : 'Bookmark'}
-  data-bookmarked={isBookmarked(item.qid) ? 'true' : 'false'}
->
-  <span className={styles.bookmarkIcon} aria-hidden="true" />
-</button>
-
-</div>
-
-
-            <div className={styles.qaRow}>
-              {item.imageSrc && !brokenImages[item.qid] ? (
-                <div className={styles.imageWrap}>
-                  <Image
-                    src={item.imageSrc}
-                    alt="Question image"
-                    fill
-                    sizes="120px"
-                    className={styles.image}
-                    unoptimized
-                    draggable={false}
-                    onError={() => setBrokenImages((p) => ({ ...p, [item.qid]: true }))}
-                  />
-                </div>
-              ) : null}
-
-              <div className={styles.options}>
-                {item.options.map((o) => (
-                  <div
-                    key={o.key}
-                    className={[
-                      styles.option,
-                      o.tone === 'correct'
-                        ? styles.optionCorrect
-                        : o.tone === 'wrong'
-                        ? styles.optionWrong
-                        : styles.optionNeutral,
-                    ].join(' ')}
-                  >
-                    {o.text}
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {(item.explanation ?? '').trim().length > 0 && (
-              <>
-                <div className={styles.exTitle}>Explanation:</div>
-                <div className={styles.exBody}>{item.explanation}</div>
-              </>
-            )}
-          </article>
-        </div>
-      ))}
-    </div>
-  )}
-</section>
-
-
-
-
-        <button
-          type="button"
-          className={styles.continueBtn}
-           onClick={() => {
-    if (attemptId) closeAttemptById(attemptId);
-    router.push('/');
-  }}
-        >
-
-          <span className={styles.continueText}>Home</span>
-          <Image
-    src="/images/other/right-arrow.png"
-    alt="Home"
-    width={18}
-    height={18}
-    className={styles.btnIcon}
-  />
-        </button>
-</div>
-      </main>
-    </div>
-  );
-}
-
-```
-
-### app/real-test/results/results.module.css
-```css
-.viewport {
-  min-height: 100vh;
-  min-height: 100dvh; /* ✅ mobile accurate */
-  padding: 0;
-  background: var(--color-page-bg);
-}
-
-.screen {
-  position: relative;
-  width: 100%;
-  min-height: 100vh;
-  min-height: 100dvh; /* ✅ mobile accurate */
-  background: #f4f4f9;
-  overflow: hidden;
-  --contentW: min(390px, calc(100% - 60px)); /* ✅ content width */
-}
-
-
-
-/* Figma: Rectangle (full screen overlay) */
-.card {
-  position: absolute;
-  left: 0%;
-  right: 0%;
-  top: 0%;
-  bottom: 0%;
-
-  background: linear-gradient(
-    90deg,
-    rgba(43, 124, 175, 0.15) 0%,
-    rgba(255, 197, 66, 0.15) 100%
-  );
-  box-shadow: 0px 2px 1.1px rgba(169, 171, 187, 0.27);
-  border-radius: 8px;
-}
-
-/* Back row placement (Frame 2801 starts at top 44; but we can place it at top visually) */
-.backRow {
-  position: absolute;
-  left: 0px;
-  top: 44px;
-  width: 390px;
-  height: 40px;
-}
-
-.backBtn {
-  position: absolute;
-  left: 0px;
-  top: 0px;
-
-  width: 86px;
-  height: 44px;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-
-  padding: 10px 0px 10px 16px;
-  border: 0;
-  background: transparent;
-  cursor: pointer;
-}
-
-.backChevron {
-  width: 20px;
-  height: 20px;
-  position: relative;
-}
-
-.backChevron::before {
-  content: '';
-  position: absolute;
-  left: 25%;
-  right: 35%;
-  top: 10%;
-  bottom: 10%;
-  border-left: 2px solid #979797;
-  border-bottom: 2px solid #979797;
-  transform: rotate(45deg);
-  transform-origin: center;
-}
-
-.backLabel {
-  font-family: 'Lato', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-  font-style: normal;
-  font-weight: 600;
-  font-size: 20px;
-  line-height: 120%;
-  letter-spacing: 0.04em;
-  color: #000000;
-}
-
-/* Congratulation! */
-.congrats {
-  position: absolute;
-  top: 103px;
-
-  left: 50%;
-  transform: translateX(-50%);
-
-  width: max-content;
-  max-width: calc(100% - 60px); /* prevents overflow on small screens */
-
-  margin: 0;
-  font-family: 'Poppins', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-  font-weight: 500;
-  font-size: 22px;
-  line-height: 20px;
-  text-align: center;
-  letter-spacing: -0.24px;
-  text-transform: capitalize;
-  color: #383a44;
-}
-
-
-/* Ring wrapper */
-.ringWrap {
-  position: absolute;
-  top: 145px;
-
-  left: 50%;
-  transform: translateX(-50%);
-
-  width: 123px;
-  height: 123px;
-
-  display: grid;
-  place-items: center;
-}
-
-
-.ring,
-.ringCenterText {
-  grid-area: 1 / 1;
-}
-
-
-
-/*
-  Ring:
-  - thickness: 8px (track #BDCCD3)
-  - progress: gradient-ish using conic-gradient
-*/
-.ring {
-  width: 123px;
-  height: 123px;
-  border-radius: 999px;
-
-  /* --p is degrees for the "colored" sweep */
-  background: conic-gradient(
-    from 0deg,
-    #2b7caf 0deg,
-    #ffc542 var(--p),
-    #bdccd3 var(--p),
-    #bdccd3 360deg
-  );
-
-  /* punch out center so it becomes a ring */
-  -webkit-mask: radial-gradient(
-    farthest-side,
-    transparent calc(100% - 8px),
-    #000 calc(100% - 8px)
-  );
-  mask: radial-gradient(
-    farthest-side,
-    transparent calc(100% - 8px),
-    #000 calc(100% - 8px)
-  );
-}
-
-.ringCenterText {
-  margin: 0;
-  text-align: center;
-
-  font-family: 'Lato', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-  font-style: normal;
-  font-weight: 700;
-  font-size: 40px;
-  line-height: 20px;
-  letter-spacing: -0.24px;
-  text-transform: capitalize;
-  color: #21205a;
-
-  /* optional: stop it from affecting layout, keeps it centered nicely */
-  pointer-events: none;
-}
-
-
-/* Score/Time group container */
-.scoreBox {
-  position: absolute;
-  top: 302px;
-
-  left: 50%;
-  transform: translateX(-50%);
-
-  width: var(--contentW);
-  height: 83px;
-}
-
-
-.lineTop,
-.lineBottom {
-  position: absolute;
-  left: 0;
-  width: 100%;       /* ✅ instead of 330px */
-  height: 0px;
-  border: 1px solid #2b7caf;
-}
-
-.lineTop { top: 0; }
-.lineBottom { top: 83px; }
-
-
-.lineMid {
-  position: absolute;
-  top: 0;
-  left: 50%;
-  height: 83px;
-  border-left: 1px solid #2b7caf;
-}
-
-
-/* Left score group */
-.scoreLeft,
-.scoreRight {
-  position: absolute;
-  top: 20px;
-  width: 50%;
-  height: 43px;
-  display: grid;
-  place-items: center;
-  gap: 11px;
-}
-
-.scoreLeft { left: 0; }
-.scoreRight { left: 50%; }
-
-
-.scoreRight .scoreValue {
-  white-space: nowrap;
-}
-
-
-.scoreValue {
-  font-family: 'Poppins', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-  font-style: normal;
-  font-weight: 600;
-  font-size: 20px;
-  line-height: 20px;
-  text-align: center;
-  letter-spacing: -0.24px;
-  color: #383a44;
-}
-
-.scoreLabel {
-  font-family: 'Poppins', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-  font-style: normal;
-  font-weight: 400;
-  font-size: 16px;
-  line-height: 20px;
-  text-align: center;
-  letter-spacing: -0.24px;
-  color: #383a44;
-}
-
-/* Test Results title */
-.testResultsTitle {
-  position: absolute;
-  left: 30px;
-  top: 400px;
-
-  /* ✅ make the title span the usable screen width (390 - 30 - 30) */
-  width: calc(100% - 60px);
-
-  /* ✅ keep it on one line */
-  white-space: nowrap;
-
-  margin: 0;
-  font-family: 'Lato', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-  font-weight: 700;
-  font-size: 32px;
-  line-height: 1.1;
-  letter-spacing: -0.24px;
-  color: #000;
-
-  /* Figma looks left-aligned */
-  text-align: left;
-}
-
-
-/* Incorrect row */
-.incorrectRow {
-  position: absolute;
-  left: 43px;
-  right: 30px; /* ✅ gives it room to push a button to the far right */
-  top: 440px;
-
-  height: 24px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-.incorrectSpacer {
-  flex: 1;
-}
-
-.incorrectText {
-  position: relative;
-  width: 62px;
-  height: 20px;
-
-  font-family: 'Lato', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-  font-style: normal;
-  font-weight: 500;
-  font-size: 16px;
-  line-height: 20px;
-  text-align: center;
-  letter-spacing: -0.24px;
-  color: #ff575f;
-}
-
-/* A scrollable area for wrong-question details */
-.reviewArea {
-  position: absolute;
-  left: 30px;
-  width: calc(100% - 60px);
-  top: 470px;
-
-  bottom: -30; /* ✅ fill to bottom */
-  overflow-y: auto;
-
-  padding-right: 6px;
-
-  /* ✅ this creates "extra space" so the last question can scroll past the button */
-  padding-bottom: calc(41px + 16px + env(safe-area-inset-bottom) + 12px);
-
-  -webkit-overflow-scrolling: touch;
-}
-
-
-/* Use normal flow instead of absolute positioning */
-.question {
-  position: static;
-  width: auto;
-  height: auto;
-  margin: 0 0 10px;
-
-  font-family: 'Lato', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-  font-weight: 400;
-  font-size: 16px;
-  line-height: 22px;
-  letter-spacing: -0.24px;
-  color: #000;
-}
-
-.qImage {
-  position: static;
-  width: 120px;
-  height: 120px;
-  border-radius: 10px;
-  background: rgba(0, 0, 0, 0.06);
-  margin: 0 0 12px;
-}
-
-.imageWrap {
-  position: relative;
-  width: 120px;
-  height: 120px;
-  border-radius: 10px;
-  overflow: hidden;
-  margin: 0 0 12px;
-}
-
-.image {
-  object-fit: cover;
-}
-
-.qaRow {
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  margin: 0 0 10px;
-}
-
-/* Options stack properly */
-.options {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  margin-bottom: 0;
-}
-
-
-.option {
-  font-family: 'Lato', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-  font-weight: 400;
-  font-size: 12px;
-  line-height: 16px;
-  letter-spacing: -0.24px;
-
-  /* allow wrapping without breaking layout */
-  white-space: normal;
-}
-
-.optionNeutral {
-  color: #000;
-}
-
-.optionCorrect {
-  color: #2b7caf;
-}
-
-.optionWrong {
-  color: #ff575f;
-}
-
-
-/* Explanation block */
-.exTitle {
-  position: static;
-  width: auto;
-  height: auto;
-  margin: 12px 0 6px;
-
-  font-family: 'Lato', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-  font-weight: 700;
-  font-size: 14px;
-  line-height: 16px;
-  color: #000;
-}
-
-.exBody {
-  position: static;
-  width: auto;
-  height: auto;
-  margin: 0 0 18px;
-
-  font-family: 'Lato', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-  font-weight: 400;
-  font-size: 13px;
-  line-height: 18px;
-  color: #000;
-}
-
-
-/* Continue button */
-.continueBtn {
-  box-sizing: border-box;
-  position: fixed;               /* ✅ pin to screen */
-  left: 50%;
-  transform: translateX(-50%);   /* ✅ center */
-  top: auto;                     /* ✅ stop using top */
-  bottom: calc(-20px + env(safe-area-inset-bottom)); /* ✅ iPhone safe area */
-
-  width: min(316px, calc(100% - 60px)); /* ✅ keeps same margins on small screens */
-  height: 41px;
-
-  background: linear-gradient(
-    135deg,
-    rgba(43, 124, 175, 0.2) 0%,
-    rgba(255, 197, 66, 0.2) 100%
-  );
-  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-  border-radius: 14px;
-
-  border: 0;
-  cursor: pointer;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-
-  z-index: 50; /* ✅ stays above scroll content */
-}
-
-
-.continueText {
-  font-family: 'Lato', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-  font-style: normal;
-  font-weight: 700;
-  font-size: 16px;
-  line-height: 130%;
-  letter-spacing: 0.04em;
-  color: #000000;
-}
-
-.shiftUp {
-  position: relative;   /* ✅ critical */
-  min-height: 100vh;    /* ✅ critical */
-  width: 100%;
-  transform: translateY(-60px);
-}
-
-.questionRow {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 10px;
-}
-
-.questionText {
-  margin: 0;
-  flex: 1;
-}
-
-.bookmarkBtn {
-  border: 0;
-  background: transparent;
-  cursor: pointer;
-  padding: 4px;
-
-  /* keeps it from shrinking in flex row */
-  flex: 0 0 auto;
-
-  /* optional: better tap feel on mobile */
-  -webkit-tap-highlight-color: transparent;
-
-  /* ✅ press animation base */
-  transform: translateZ(0);
-  transition: transform 120ms ease, opacity 120ms ease;
-}
-
-/* ✅ while pressing */
-.bookmarkBtn:active {
-  transform: scale(0.9);
-}
-
-/* ✅ keyboard accessibility (tab focus) */
-.bookmarkBtn:focus-visible {
-  outline: 2px solid rgba(43, 124, 175, 0.55);
-  outline-offset: 3px;
-  border-radius: 10px;
-}
-
-/* Optional: slightly dim when not bookmarked */
-.bookmarkBtn[data-bookmarked='false'] {
-  opacity: 0.85;
-}
-
-/* Optional: full opacity when bookmarked */
-.bookmarkBtn[data-bookmarked='true'] {
-  opacity: 1;
-}
-
-.bookmarkIcon {
-  width: 24px;
-  height: 24px;
-  display: inline-block;
-
-  /* Use the PNG as a stencil */
-  -webkit-mask-image: url("/images/test/bookmark-icon.png");
-  mask-image: url("/images/test/bookmark-icon.png");
-  -webkit-mask-repeat: no-repeat;
-  mask-repeat: no-repeat;
-  -webkit-mask-position: center;
-  mask-position: center;
-  -webkit-mask-size: contain;
-  mask-size: contain;
-}
-
-/* not bookmarked */
-.bookmarkBtn[data-bookmarked='false'] .bookmarkIcon {
-  background: rgba(15, 23, 42, 0.9);
-}
-
-/* bookmarked (gradient) */
-.bookmarkBtn[data-bookmarked='true'] .bookmarkIcon {
-  background: var(--color-premium-gradient);
-  filter: brightness(1) contrast(1.5) saturate(2);
-}
-
-
-.viewToggle {
-  border: 0;
-  background: transparent;
-  border-radius: 10px;
-  padding: 6px 10px;
-  font-family: 'Lato', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-  font-weight: 700;
-  font-size: 12px;
-  cursor: pointer;
-}
-
-.slideCounter {
-  font-family: 'Lato', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-  font-weight: 600;
-  font-size: 12px;
-  opacity: 0.75;
-}
-
-/* When in carousel mode, reviewArea should not be vertically scrollable itself */
-.reviewAreaCarousel {
-  overflow: hidden;
-  padding-right: 0;
-}
-
-/* Horizontal swipe carousel */
-.carousel {
-  height: 100%;
-  display: flex;
-  overflow-x: auto;
-  overflow-y: hidden;
-
-  scroll-snap-type: x mandatory;
-  -webkit-overflow-scrolling: touch;
-
-  scrollbar-width: none; /* Firefox */
-  overscroll-behavior-x: contain;
-}
-
-.carousel::-webkit-scrollbar {
-  display: none; /* Chrome/Safari */
-}
-
-/* Each slide takes the full width of the reviewArea */
-.slide {
-  flex: 0 0 100%;
-  scroll-snap-align: start;
-  scroll-snap-stop: always; /* helps “one swipe = one card” where supported */
-
-  padding-right: 6px; /* keeps your old “scrollbar breathing room” feel */
-  overflow-y: auto;   /* ✅ content can still scroll vertically inside each slide */
-  -webkit-overflow-scrolling: touch;
-}
-
-.carousel {
-  cursor: grab;
-}
-
-.carouselDragging {
-  cursor: grabbing;
-  user-select: none;
-}
-
-.carouselDragging * {
-  user-select: none;
-}
-
-```
-
-### app/stats/page.tsx
-```tsx
-// app/stats/page.tsx
-'use client';
-
-import BottomNav from '../../components/BottomNav';
-import styles from './stats.module.css'; // reuse shared layout + new stats classes
-import BackButton from '../../components/BackButton';
-
-export default function StatsPage() {
-  return (
-    <main className={styles.page}>
-      <BackButton />
-      <div className={styles.content}>
-        {/* ==== Top Accuracy / Gauge Card ==== */}
-        <section className={styles.statsSummaryCard}>
-          <div className={styles.statsSummaryInner}>
-            <div className={styles.statsGaugeWrapper}>
-              <div className={styles.statsGaugeCircleOuter}>
-                <div className={styles.statsGaugeCircleInner}>
-                  <div className={styles.statsGaugeNumber}>70</div>
-                  <div className={styles.statsGaugeLabel}>
-                    Accuracy
-                    <br />
-                    Rate
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <button className={styles.statsTestButton}>Test ▸</button>
-          </div>
-        </section>
-
-        {/* ==== Stack of statistic cards ==== */}
-       {/* ==== Big panel + stack of statistic cards ==== */}
-<section className={styles.statsLongPanel}>
-  <div className={styles.statsBlocks}>
-    {/* Screen Time */}
-    <article className={styles.statsCard}>
-      <header className={styles.statsCardHeader}>
-        <h2 className={styles.statsCardTitle}>Screen Time</h2>
-        <div className={styles.statsLegend}>
-          <span
-            className={`${styles.statsLegendDot} ${styles.statsLegendDotBlue}`}
-          />
-          <span className={styles.statsLegendLabel}>Global</span>
-          <span
-            className={`${styles.statsLegendDot} ${styles.statsLegendDotYellow}`}
-          />
-          <span className={styles.statsLegendLabel}>You</span>
-        </div>
-      </header>
-
-      <div className={styles.statsGraphArea}>
-        <div className={styles.statsGraphPlaceholder}>
-          Screen time chart coming soon
-        </div>
-      </div>
-    </article>
-
-    {/* Score */}
-    <article className={styles.statsCard}>
-      <header className={styles.statsCardHeader}>
-        <h2 className={styles.statsCardTitle}>Score</h2>
-      </header>
-
-      <div className={styles.statsGraphArea}>
-        <div className={styles.statsGraphPlaceholder}>
-          Score chart coming soon
-        </div>
-      </div>
-    </article>
-
-    {/* Weekly Progress */}
-    <article className={styles.statsCard}>
-      <header className={styles.statsCardHeader}>
-        <h2 className={styles.statsCardTitle}>Weekly Progress</h2>
-        <div className={styles.statsLegend}>
-          <span
-            className={`${styles.statsLegendDot} ${styles.statsLegendDotBlue}`}
-          />
-          <span className={styles.statsLegendLabel}>Global</span>
-          <span
-            className={`${styles.statsLegendDot} ${styles.statsLegendDotYellow}`}
-          />
-          <span className={styles.statsLegendLabel}>You</span>
-        </div>
-      </header>
-
-      <div className={styles.statsGraphArea}>
-        <div className={styles.statsGraphPlaceholder}>
-          Weekly progress chart coming soon
-        </div>
-      </div>
-    </article>
-
-    {/* Best Time */}
-    <article className={styles.statsCard}>
-      <header className={styles.statsCardHeader}>
-        <h2 className={styles.statsCardTitle}>Best Time</h2>
-        <div className={styles.statsLegend}>
-          <span
-            className={`${styles.statsLegendDot} ${styles.statsLegendDotBlue}`}
-          />
-          <span className={styles.statsLegendLabel}>Global</span>
-          <span
-            className={`${styles.statsLegendDot} ${styles.statsLegendDotYellow}`}
-          />
-          <span className={styles.statsLegendLabel}>You</span>
-        </div>
-      </header>
-
-      <div className={styles.statsGraphArea}>
-        <div className={styles.statsGraphPlaceholder}>
-          Best time chart coming soon
-        </div>
-      </div>
-    </article>
-  </div>
-</section>
-
-
-        {/* Review button at the bottom */}
-        <div className={styles.statsReviewWrapper}>
-          <button className={styles.statsReviewButton}>
-            Review Your Mistakes
-          </button>
-        </div>
-
-        <BottomNav />
-      </div>
-    </main>
-  );
-}
-
-```
-
-### app/stats/stats.module.css
-```css
-/* app/stats/stats.module.css */
-
-/* Same outer layout as Home page */
-.page {
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  background: var(--color-page-bg);
-}
-
-.content {
-  width: 100%;
-  max-width: 480px;
-  padding: 16px 16px 96px; /* extra bottom space for bottom nav */
-  box-sizing: border-box;
-  margin: 0 auto;
-}
-
-/* Big gradient panel behind Screen Time / Score / Weekly / Best Time */
-.statsLongPanel {
-  width: 100%;
-  max-width: 480px;              /* Figma width */
-  margin: 24px auto 0;           /* space under the gauge */
-  border-radius: 40px;           /* nice big corners */
-  padding: 24px 18px 32px;       /* space for the inner cards */
-
-  /* Figma: Linear, 0% #2B7CAF → 100% #FFC542, 20% opacity */
-  background: linear-gradient(
-    90deg,
-    rgba(43, 124, 175, 0.2) 0%,
-    rgba(255, 197, 66, 0.2) 100%
-  );
-
-  box-shadow: 0 20px 40px rgba(15, 33, 70, 0.16); /* optional but very Figma */
-}
-
-/* Column of cards inside that panel */
-.statsLongPanelInner {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;                     /* space between the four cards */
-}
-
-
-/* ================================= */
-/* STATS PAGE                        */
-/* ================================= */
-
-/* Top accuracy / gauge card */
-.statsSummaryCard {
-  margin-top: 16px;
-  width: 100%;
-  border-radius: 32px;
-  padding: 24px 24px 28px;
-  background:
-    radial-gradient(circle at top, rgba(255, 255, 255, 0.9), transparent 60%),
-    linear-gradient(180deg, #eaf3ff, #f4f7ff);
-  box-shadow: 0 18px 40px rgba(15, 33, 70, 0.16);
-}
-
-.statsSummaryInner {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 18px;
-}
-
-.statsGaugeWrapper {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-}
-
-/* Outer ring (gradient arc) */
-.statsGaugeCircleOuter {
-  width: 220px;
-  height: 220px;
-  border-radius: 999px;
-  background: conic-gradient(
-    from 220deg,
-    #70c1ff 0deg,
-    #70c1ff 220deg,
-    #f7d36b 320deg,
-    #e4e4e4 360deg
-  );
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* Inner circle */
-.statsGaugeCircleInner {
-  width: 160px;
-  height: 160px;
-  border-radius: 999px;
-  background: #f8fbff;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-
-.statsGaugeNumber {
-  font-size: 54px;
-  font-weight: 700;
-  color: #111827;
-  line-height: 1;
-}
-
-.statsGaugeLabel {
-  margin-top: 6px;
-  font-size: 16px;
-  font-weight: 600;
-  color: #4b5563;
-  text-align: center;
-}
-
-/* “Test” pill button */
-.statsTestButton {
-  margin-top: 8px;
-  width: 122px;              /* Figma width */
-  height: 29px;              /* Figma height */
-
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-
-  border-radius: 999px;      /* full pill */
-  border: 1px solid var(--color-logout-border);
-  /* Same gradient as Premium / Logout */
-  background: var(--color-premium-gradient);
-
-  font-size: 14px;
-  font-weight: 600;
-  color: #000000;            /* matches Figma “Selection color: 000000” */
-  cursor: pointer;
-
-  box-shadow: 0 8px 18px rgba(15, 33, 70, 0.2);
-}
-
-
-/* Stack of cards underneath */
-.statsBlocks {
-  margin-top: 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-/* Generic stats card container */
-.statsCard {
-  border-radius: 28px;
-  padding: 18px 18px 20px;
-  background: #f5fbff;
-  box-shadow: 0 14px 30px rgba(15, 33, 70, 0.14);
-}
-
-.statsCardHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 12px;
-}
-
-.statsCardTitle {
-  margin: 0;
-  font-size: 20px;
-  font-weight: 700;
-  color: #222435;
-}
-
-/* Legend “Global / You” */
-.statsLegend {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 11px;
-  color: #6b7280;
-}
-
-.statsLegendDot {
-  width: 8px;
-  height: 8px;
-  border-radius: 999px;
-}
-
-.statsLegendDotBlue {
-  background: #2b7caf;
-}
-
-.statsLegendDotYellow {
-  background: #ffc542;
-}
-
-.statsLegendLabel {
-  white-space: nowrap;
-}
-
-/* Graph area placeholder */
-.statsGraphArea {
-  border-radius: 22px;
-  padding: 12px;
-  background: linear-gradient(
-    180deg,
-    rgba(37, 99, 235, 0.05),
-    rgba(255, 255, 255, 0.9)
-  );
-  min-height: 120px;
-}
-
-.statsGraphPlaceholder {
-  width: 100%;
-  height: 100%;
-  border-radius: 16px;
-  border: 1px dashed rgba(148, 163, 184, 0.6);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 12px;
-  color: #9ca3af;
-}
-
-/* “Review Your Mistakes” button at bottom */
-.statsReviewWrapper {
-  margin: 24px 0 96px; /* extra bottom room for nav bar */
-  display: flex;
-  justify-content: center;
-}
-
-.statsReviewButton {
-  width: 100%;
-  max-width: 360px;
-  padding: 14px 20px;
-  border-radius: 22px;
-  border: 1px solid var(--color-logout-border);
-  background: var(--color-premium-gradient);
-  box-shadow: 0 18px 40px rgba(15, 33, 70, 0.22);
-  font-size: 16px;
-  font-weight: 600;
-  color: #111827;
-  cursor: pointer;
-}
-
-@media (min-width: 768px) {
-  .statsSummaryCard {
-    margin-top: 24px;
-  }
-}
-
-
-
-/* ========================= */
-/* DARK MODE OVERRIDES ONLY  */
-/* ========================= */
-
-:root[data-theme='dark'] .page {
-  background:
-    radial-gradient(circle at top, rgba(15, 23, 42, 0.7), transparent 55%),
-    #050816;
-  color: #f9fafb;
-}
-
-/* Top summary / gauge card */
-:root[data-theme='dark'] .statsSummaryCard {
-  background:
-    linear-gradient(
-      135deg,
-      rgba(43, 124, 175, 0.35) 0%,
-      rgba(255, 197, 66, 0.35) 100%
-    ),
-    #111827;
-  color: #f9fafb;
-}
-
-/* Gauge inner + text */
-:root[data-theme='dark'] .statsGaugeCircleInner {
-  background: #0b1020;
-}
-
-:root[data-theme='dark'] .statsGaugeNumber {
-  color: #f9fafb;
-}
-
-:root[data-theme='dark'] .statsGaugeLabel {
-  color: #9ca3af;
-}
-
-/* Big panel behind the stack of cards */
-:root[data-theme='dark'] .statsLongPanel {
-  background:
-    linear-gradient(
-      90deg,
-      rgba(43, 124, 175, 0.35) 0%,
-      rgba(255, 197, 66, 0.25) 100%
-    ),
-    #0b1020;
-  box-shadow: 0 20px 40px rgba(15, 23, 42, 0.55);
-}
-
-/* Individual stat cards */
-:root[data-theme='dark'] .statsCard {
-  background: #111827;
-  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.55);
-  color: #f9fafb;
-}
-
-:root[data-theme='dark'] .statsCardTitle {
-  color: #f9fafb;
-}
-
-:root[data-theme='dark'] .statsLegend {
-  color: #9ca3af;
-}
-
-/* Graph area placeholder */
-:root[data-theme='dark'] .statsGraphArea {
-  background: linear-gradient(
-    180deg,
-    rgba(43, 124, 175, 0.18),
-    rgba(2, 6, 23, 0.92)
-  );
-}
-
-:root[data-theme='dark'] .statsGraphPlaceholder {
-  border: 1px dashed rgba(148, 163, 184, 0.35);
-  color: #9ca3af;
-}
-
-/* Buttons (avoid relying on light-theme-only CSS vars) */
-:root[data-theme='dark'] .statsTestButton,
-:root[data-theme='dark'] .statsReviewButton {
-  background: linear-gradient(
-    90deg,
-    rgba(43, 124, 175, 0.4) 0%,
-    rgba(255, 197, 66, 0.4) 100%
-  );
-  border-color: #d2c79a;
-  color: #f9fafb;
-}
-
-```
-
 ### components/BackButton.tsx
 ```tsx
 'use client';
@@ -10226,6 +10252,42 @@ export default function DragScrollRow({
 
 ```
 
+### components/EntitlementsDebugBadge.client.tsx
+```tsx
+"use client";
+
+import { useEntitlements } from "@/components/EntitlementsProvider.client";
+
+export default function EntitlementsDebugBadge() {
+  const { userKey, entitlements, isPremium } = useEntitlements();
+
+  if (process.env.NODE_ENV !== "development") return null;
+
+  return (
+    <div style={{
+      position: "fixed",
+      bottom: 80,
+      right: 12,
+      background: "rgba(0,0,0,0.7)",
+      color: "white",
+      padding: "8px 10px",
+      borderRadius: 10,
+      fontSize: 12,
+      zIndex: 9999,
+      maxWidth: 260,
+      lineHeight: 1.3,
+    }}>
+      <div><b>userKey:</b> {userKey}</div>
+      <div><b>premium:</b> {String(isPremium)} ({entitlements.source})</div>
+      {entitlements.expiresAt ? (
+        <div><b>expires:</b> {new Date(entitlements.expiresAt).toLocaleString()}</div>
+      ) : null}
+    </div>
+  );
+}
+
+```
+
 ### components/EntitlementsProvider.client.tsx
 ```tsx
 "use client";
@@ -10234,6 +10296,10 @@ import React, { createContext, useCallback, useContext, useEffect, useMemo, useS
 import { PUBLIC_FLAGS } from "@/lib/flags/public";
 import { FREE_ENTITLEMENTS, type EntitlementSource, type Entitlements } from "@/lib/entitlements/types";
 import { getLocalEntitlements, setLocalEntitlements, clearLocalEntitlements } from "@/lib/entitlements/localStore";
+import { useUserKey } from "@/components/useUserKey.client";
+import EntitlementsDebugBadge from "@/components/EntitlementsDebugBadge.client";
+
+
 
 type EntitlementsContextValue = {
   userKey: string; // for now "guest" (we’ll upgrade to real user scoping later)
@@ -10249,7 +10315,7 @@ const EntitlementsContext = createContext<EntitlementsContextValue | null>(null)
 
 export function EntitlementsProvider({ children }: { children: React.ReactNode }) {
   // ✅ for now everyone is "guest". We'll swap this to real userKey in the Identity step.
-  const userKey = "guest";
+  const userKey = useUserKey();
 
   const [entitlements, setState] = useState<Entitlements>(() => {
     if (!PUBLIC_FLAGS.enablePremiumGates) {
@@ -10265,7 +10331,7 @@ export function EntitlementsProvider({ children }: { children: React.ReactNode }
     }
     const local = getLocalEntitlements(userKey);
     setState(local);
-  }, [userKey]);
+  }, [userKey, PUBLIC_FLAGS.enablePremiumGates]);
 
   const setEntitlements = useCallback((e: Entitlements) => {
     setLocalEntitlements(userKey, e);
@@ -10290,7 +10356,7 @@ export function EntitlementsProvider({ children }: { children: React.ReactNode }
 
   useEffect(() => {
     refresh();
-  }, [refresh]);
+  }, [refresh, userKey]);
 
   const value = useMemo<EntitlementsContextValue>(() => ({
     userKey,
@@ -10305,7 +10371,9 @@ export function EntitlementsProvider({ children }: { children: React.ReactNode }
   return (
     <EntitlementsContext.Provider value={value}>
       {children}
+       <EntitlementsDebugBadge />
     </EntitlementsContext.Provider>
+    
   );
 }
 
@@ -10713,6 +10781,94 @@ export function useAuthStatus() {
 
 ```
 
+### components/useUserKey.client.ts
+```tsx
+"use client";
+
+import { useEffect, useState } from "react";
+import { userKeyFromEmail } from "@/lib/identity/userKey";
+
+type SessionRes =
+  | { ok: true; email?: string | null; provider?: string | null }
+  | { ok: false };
+
+export function useUserKey() {
+  const [userKey, setUserKey] = useState<string>("guest");
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function run() {
+      try {
+        const res = await fetch("/api/session", { cache: "no-store" });
+        const json = (await res.json()) as SessionRes;
+
+        const email = (json && (json as any).email) ? String((json as any).email) : "";
+        const nextKey = userKeyFromEmail(email);
+
+        if (!cancelled) setUserKey(nextKey);
+      } catch {
+        if (!cancelled) setUserKey("guest");
+      }
+    }
+
+    run();
+    return () => { cancelled = true; };
+  }, []);
+
+  return userKey;
+}
+
+```
+
+### lib/attempts/attemptStore.ts
+```tsx
+// lib/attempts/attemptStore.ts
+import type { TestAttemptV1 } from "@/lib/test-engine/attemptStorage";
+
+export type Attempt = TestAttemptV1;
+
+export type AttemptStore = {
+  listAttempts: (userKey: string, datasetId: string) => Promise<Attempt[]>;
+  saveAttempt: (userKey: string, datasetId: string, attempt: Attempt) => Promise<void>;
+  clearAttempts: (userKey: string, datasetId: string) => Promise<void>;
+};
+
+```
+
+### lib/attempts/localAttemptStore.ts
+```tsx
+// lib/attempts/localAttemptStore.ts
+import type { AttemptStore, Attempt } from "./attemptStore";
+import {
+  listAttempts as legacyList,
+  writeAttempt as legacyWrite,
+  clearAttemptsByFilter,
+} from "@/lib/test-engine/attemptStorage";
+
+export class LocalAttemptStore implements AttemptStore {
+  async listAttempts(userKey: string, datasetId: string) {
+    return legacyList({ userKey, datasetId, sort: "newest" });
+  }
+
+  async saveAttempt(userKey: string, datasetId: string, attempt: Attempt) {
+    // DO NOT add fields that don't exist on TestAttemptV1
+    legacyWrite({
+      ...attempt,
+      userKey,
+      datasetId,
+      // if you *really* want a touch timestamp:
+      lastActiveAt: Date.now(),
+    });
+  }
+
+  async clearAttempts(userKey: string, datasetId: string) {
+    clearAttemptsByFilter({ userKey, datasetId });
+  }
+}
+
+```
+
 ### lib/auth.ts
 ```tsx
 // lib/auth.ts
@@ -10748,34 +10904,30 @@ export function cookieOptions() {
 }
 ```
 
-### lib/bookmarks/useBookmarks.ts
+### lib/bookmarks/bookmarkStore.ts
 ```tsx
+// lib/bookmarks/bookmarkStore.ts
 
-"use client";
+export type BookmarkStore = {
+  listIds(userKey: string, datasetId: string): Promise<string[]>;
+  writeIds(userKey: string, datasetId: string, ids: string[]): Promise<void>;
+  toggle(userKey: string, datasetId: string, id: string, prev?: string[]): Promise<string[]>;
+  clear(userKey: string, datasetId: string): Promise<void>;
+};
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+```
+
+### lib/bookmarks/localBookmarkStore.ts
+```tsx
+// lib/bookmarks/localBookmarkStore.ts
+import type { BookmarkStore } from "./bookmarkStore";
 
 const legacyKeyFor = (datasetId: string) => `expatise:bookmarks:${datasetId}`;
 const keyFor = (userKey: string, datasetId: string) =>
   `expatise:bookmarks:v1:user:${userKey}:dataset:${datasetId}`;
 
-function readIds(userKey: string, datasetId: string): string[] {
-  if (typeof window === "undefined") return [];
-
+function safeParseIds(raw: string | null): string[] {
   try {
-    const k = keyFor(userKey, datasetId);
-    let raw = localStorage.getItem(k);
-
-    // ✅ one-time migration for your existing dev bookmarks
-    if (!raw && userKey === "guest") {
-      const legacy = localStorage.getItem(legacyKeyFor(datasetId));
-      if (legacy) {
-        localStorage.setItem(k, legacy);
-        localStorage.removeItem(legacyKeyFor(datasetId));
-        raw = legacy;
-      }
-    }
-
     const parsed = raw ? JSON.parse(raw) : [];
     return Array.isArray(parsed) ? parsed.map(String) : [];
   } catch {
@@ -10783,37 +10935,117 @@ function readIds(userKey: string, datasetId: string): string[] {
   }
 }
 
-function writeIds(userKey: string, datasetId: string, ids: string[]) {
-  try {
-    localStorage.setItem(keyFor(userKey, datasetId), JSON.stringify(ids));
-  } catch {
-    // ignore quota/private-mode errors
+export class LocalBookmarkStore implements BookmarkStore {
+  async listIds(userKey: string, datasetId: string): Promise<string[]> {
+    if (typeof window === "undefined") return [];
+
+    const k = keyFor(userKey, datasetId);
+    let raw = localStorage.getItem(k);
+
+    // ✅ one-time migration for your existing dev bookmarks (guest only)
+    if (!raw && userKey === "guest") {
+      const legacy = localStorage.getItem(legacyKeyFor(datasetId));
+      if (legacy) {
+        try {
+          localStorage.setItem(k, legacy);
+          localStorage.removeItem(legacyKeyFor(datasetId));
+          raw = legacy;
+        } catch {
+          // ignore
+        }
+      }
+    }
+
+    return safeParseIds(raw);
+  }
+
+  async writeIds(userKey: string, datasetId: string, ids: string[]): Promise<void> {
+    if (typeof window === "undefined") return;
+    try {
+      localStorage.setItem(keyFor(userKey, datasetId), JSON.stringify(ids));
+    } catch {
+      // ignore quota/private-mode errors
+    }
+  }
+
+  async toggle(userKey: string, datasetId: string, id: string, prev?: string[]): Promise<string[]> {
+    const base = prev ?? (await this.listIds(userKey, datasetId));
+    const next = new Set(base);
+    if (next.has(id)) next.delete(id);
+    else next.add(id);
+
+    const arr = Array.from(next);
+    await this.writeIds(userKey, datasetId, arr);
+    return arr;
+  }
+
+  async clear(userKey: string, datasetId: string): Promise<void> {
+    if (typeof window === "undefined") return;
+    try {
+      localStorage.removeItem(keyFor(userKey, datasetId));
+    } catch {
+      // ignore
+    }
   }
 }
 
-export function useBookmarks(datasetId: string, userKey: string = "guest") {
+```
+
+### lib/bookmarks/store.ts
+```tsx
+// lib/bookmarks/store.ts
+import { LocalBookmarkStore } from "./localBookmarkStore";
+
+export const bookmarkStore = new LocalBookmarkStore();
+
+```
+
+### lib/bookmarks/useBookmarks.ts
+```tsx
+// lib/bookmarks/useBookmarks.ts
+"use client";
+
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { bookmarkStore } from "./store";
+import { useUserKey } from "@/components/useUserKey.client";
+
+export function useBookmarks(datasetId: string, userKeyOverride?: string) {
+  const inferredUserKey = useUserKey();
+  const userKey = userKeyOverride ?? inferredUserKey;
+
   const [ids, setIds] = useState<string[]>([]);
 
   useEffect(() => {
-    setIds(readIds(userKey, datasetId));
+    let cancelled = false;
+
+    (async () => {
+      const list = await bookmarkStore.listIds(userKey, datasetId);
+      if (!cancelled) setIds(list);
+    })();
+
+    return () => {
+      cancelled = true;
+    };
   }, [datasetId, userKey]);
 
   const idSet = useMemo(() => new Set(ids), [ids]);
   const isBookmarked = useCallback((id: string) => idSet.has(id), [idSet]);
 
   const toggle = useCallback(
-    (id: string) => {
+    async (id: string) => {
+      // optimistic UI update + store persistence
       setIds((prev) => {
         const next = new Set(prev);
         if (next.has(id)) next.delete(id);
         else next.add(id);
-
-        const arr = Array.from(next);
-        writeIds(userKey, datasetId, arr);
-        return arr;
+        return Array.from(next);
       });
+
+      // persist based on the latest known ids
+      // (we pass current ids via closure to avoid re-reading localStorage)
+      await bookmarkStore.toggle(userKey, datasetId, id, ids);
     },
-    [datasetId, userKey]
+    [datasetId, userKey, ids]
   );
 
   return { ids, idSet, isBookmarked, toggle };
@@ -10933,6 +11165,36 @@ export const SERVER_FLAGS = {
   ...PUBLIC_FLAGS,
   enableWeChatAuth: readBool("ENABLE_WECHAT_AUTH", false),
 } as const;
+
+```
+
+### lib/identity/userKey.ts
+```tsx
+// lib/identity/userKey.ts
+export const GUEST_KEY = "guest";
+
+// Make keys stable and safe for storage keys
+export function normalizeUserKey(input: string) {
+  return String(input || "")
+    .trim()
+    .toLowerCase();
+}
+
+export function getGuestKey() {
+  return GUEST_KEY;
+}
+
+/**
+ * Choose a single canonical userKey:
+ * - if logged in => email (normalized)
+ * - else => guest
+ *
+ * We keep it simple now. Later we can switch to userId from backend.
+ */
+export function userKeyFromEmail(email: string | null | undefined) {
+  const e = normalizeUserKey(email || "");
+  return e ? e : GUEST_KEY;
+}
 
 ```
 
@@ -12482,6 +12744,46 @@ export function writeAttempt(attempt: TestAttemptV1) {
   }
 }
 
+// ✅ delete 1 attempt record
+export function deleteAttemptById(attemptId: string) {
+  if (typeof window === "undefined") return;
+  try {
+    window.localStorage.removeItem(attemptKeyById(attemptId));
+  } catch {}
+}
+
+// ✅ clear attempts by filter (bookmarks-style parity)
+export function clearAttemptsByFilter(filter: {
+  userKey: string;
+  datasetId?: string;
+  modeKey?: string;
+  status?: AttemptStatus;
+}) {
+  if (typeof window === "undefined") return;
+
+  const attempts = listAttempts({
+    userKey: filter.userKey,
+    datasetId: filter.datasetId,
+    modeKey: filter.modeKey,
+    status: filter.status,
+    sort: "newest",
+  });
+
+  for (const a of attempts) {
+    // remove stored record
+    deleteAttemptById(a.attemptId);
+
+    // clear active pointer for that mode+dataset
+    clearActiveAttemptPointer({
+      userKey: a.userKey,
+      modeKey: a.modeKey,
+      datasetId: a.datasetId,
+    });
+  }
+}
+
+
+
 // ✅ clears the "active attempt pointer" so /real-test won't resume it
 export function clearActiveAttemptPointer(params: {
   userKey: string;
@@ -12566,6 +12868,22 @@ function isExpired(attempt: TestAttemptV1, now: number) {
   return now - inactiveSince >= EXPIRE_AFTER_MS;
 }
 
+function markExpiredIfNeeded(a: TestAttemptV1, now: number): TestAttemptV1 {
+  if (!isExpired(a, now)) return a;
+  if (a.status === "expired") return a;
+
+  const expired: TestAttemptV1 = {
+    ...a,
+    status: "expired",
+    lastActiveAt: now,
+  };
+
+  writeAttempt(expired);
+  clearActiveAttemptPointer({ userKey: expired.userKey, modeKey: expired.modeKey, datasetId: expired.datasetId });
+  return expired;
+}
+
+
 export function computeNextUnansweredIndex(attempt: TestAttemptV1): number {
   for (let i = 0; i < attempt.questionIds.length; i++) {
     const qid = attempt.questionIds[i];
@@ -12594,36 +12912,67 @@ export function getOrCreateAttempt(params: {
 
   if (activeId) {
     const existing = readAttemptById(activeId);
-    if (existing) {
-      const allSet = new Set(params.allQuestionIds);
-      const valid =
-        existing.schemaVersion === SCHEMA_VERSION &&
-        existing.userKey === params.userKey &&
-        existing.modeKey === params.modeKey &&
-        existing.datasetId === params.datasetId &&
-        existing.datasetVersion === params.datasetVersion &&
-        existing.questionIds.length === params.questionCount &&
-        new Set(existing.questionIds).size === existing.questionIds.length &&
-        existing.questionIds.every((id) => allSet.has(id)) &&
-        !isExpired(existing, now) &&
-        existing.status !== 'submitted' &&
-        existing.status !== 'expired';
 
-      if (valid) {
-        const resumed: TestAttemptV1 = {
-          ...existing,
-          status: 'in_progress',
-          lastActiveAt: now,
-          pausedAt: undefined,
-        };
-        writeAttempt(resumed);
-        // keep pointer the same
-        return { attempt: resumed, reused: true };
+    // ✅ Edge case: pointer exists but record is missing/corrupt
+    if (!existing) {
+      clearActiveAttemptPointer({
+        userKey: params.userKey,
+        modeKey: params.modeKey,
+        datasetId: params.datasetId,
+      });
+    } else {
+      // ✅ NEW: persist expiration + clear pointer if needed
+      const maybeExpired = markExpiredIfNeeded(existing, now);
+
+      // If it expired, treat as invalid and fall through to "create new attempt"
+      if (maybeExpired.status !== "expired") {
+        const a = maybeExpired; // use a for the rest
+
+        const allSet = new Set(params.allQuestionIds);
+
+        const valid =
+          a.schemaVersion === SCHEMA_VERSION &&
+          a.userKey === params.userKey &&
+          a.modeKey === params.modeKey &&
+          a.datasetId === params.datasetId &&
+          a.datasetVersion === params.datasetVersion &&
+          a.questionIds.length === params.questionCount &&
+          new Set(a.questionIds).size === a.questionIds.length &&
+          a.questionIds.every((id) => allSet.has(id)) &&
+          // markExpiredIfNeeded already handled expiration
+          a.status !== "submitted" &&
+          a.status !== "expired";
+
+        if (valid) {
+          const resumed: TestAttemptV1 = {
+            ...a,
+            status: "in_progress",
+            lastActiveAt: now,
+            pausedAt: undefined,
+          };
+          writeAttempt(resumed);
+          // keep pointer the same
+          return { attempt: resumed, reused: true };
+        }
+
+        // ✅ Invalid attempt for other reasons (datasetVersion mismatch, wrong count, etc.)
+        // Clear pointer so the next open doesn’t keep trying to resume it.
+        clearActiveAttemptPointer({
+          userKey: params.userKey,
+          modeKey: params.modeKey,
+          datasetId: params.datasetId,
+        });
       }
+
+      // If maybeExpired.status === "expired", markExpiredIfNeeded already cleared pointer.
+      // We just fall through to creation below.
     }
   }
 
-  // Create new attempt
+  // -----------------------------
+  // Create new attempt (fallback)
+  // -----------------------------
+
   const picked = sampleWithoutReplacement(params.allQuestionIds, params.questionCount);
 
   const fresh: TestAttemptV1 = {
@@ -12643,13 +12992,14 @@ export function getOrCreateAttempt(params: {
     timeLimitSec: params.timeLimitSec,
     remainingSec: params.timeLimitSec,
 
-    status: 'in_progress',
+    status: "in_progress",
 
     createdAt: now,
     lastActiveAt: now,
   };
 
   writeAttempt(fresh);
+
   writeActiveAttemptId({
     userKey: params.userKey,
     modeKey: params.modeKey,
@@ -12659,6 +13009,7 @@ export function getOrCreateAttempt(params: {
 
   return { attempt: fresh, reused: false };
 }
+
 
 export function listAttempts(filter?: {
   status?: AttemptStatus;
@@ -12755,6 +13106,14 @@ export type TestAttemptV1 = {
 
   submittedAt?: number;
 };
+
+```
+
+### lib/test-engine/types.ts
+```tsx
+// lib/test-engine/types.ts
+export type { TestAttemptV1 as Attempt } from "./attemptTypes";
+export type { AttemptStatus, AnswerRecord } from "./attemptTypes";
 
 ```
 
@@ -121582,7 +121941,8 @@ export const config = {
       }
     ],
     "paths": {
-      "@/*": ["./*"]
+      "@/*": ["./*"],
+      "@app/*": ["./app/*"]
     }
   },
   "include": [

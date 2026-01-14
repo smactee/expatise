@@ -3,10 +3,11 @@
 "use client";
 
 import Image from "next/image";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import styles from "./checkout.module.css";
 import { PLAN_MAP, toPlanId, type PlanId } from "../../lib/plans";
+import { safeNextPath } from "@/lib/auth";
 
 type PayMethod = "alipay" | "gpay" | "applepay" | "wechat";
 
@@ -32,6 +33,7 @@ export default function CheckoutPage() {
 
   const plan: PlanId = toPlanId(sp.get("plan"));
   const promoApplied = sp.get("promo") === "1";
+const next = safeNextPath(sp.get("next"), "/");
 
   const planData = PLAN_MAP[plan];
   const title = planData.checkoutTitle;
@@ -188,7 +190,9 @@ export default function CheckoutPage() {
             type="button"
             className={styles.checkoutBtn}
             onClick={() => {
-              router.push("/checkout/success");
+              router.push("/checkout/success");router.push(
+  `/checkout/success?plan=${encodeURIComponent(plan)}${promoApplied ? "&promo=1" : ""}&next=${encodeURIComponent(next)}`
+);
               // TODO: integrate real payment provider later
             }}
           >

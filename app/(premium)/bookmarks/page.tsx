@@ -1,8 +1,8 @@
 // app/bookmarks/page.tsx
 
-import type { DatasetId } from '../../lib/qbank/datasets';
-import AllQuestionsClient from '../all-questions/AllQuestionsClient.client';
-import BackButton from '../../components/BackButton';
+import type { DatasetId } from '@/lib/qbank/datasets';
+import AllQuestionsClient from "@/app/(premium)/all-questions/AllQuestionsClient.client";
+import BackButton from '@/components/BackButton';
 
 export default function BookmarksPage() {
   // IMPORTANT: use the same datasetId you use for /all-questions
