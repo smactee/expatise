@@ -1,3 +1,5 @@
+//  app/login/page.tsx
+
 'use client';
 
 import Image from 'next/image';
@@ -75,7 +77,11 @@ useEffect(() => {
     return;
   }
 
-  router.replace(nextParam);
+// ✅ tell the rest of the app "session changed"
+window.dispatchEvent(new Event("expatise:session-changed"));
+
+router.replace(nextParam);
+
 } catch {
   setError("Network error. Please try again.");
 }

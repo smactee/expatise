@@ -6,7 +6,7 @@ import { FREE_ENTITLEMENTS, type EntitlementSource, type Entitlements } from "@/
 import { getLocalEntitlements, setLocalEntitlements, clearLocalEntitlements } from "@/lib/entitlements/localStore";
 import { useUserKey } from "@/components/useUserKey.client";
 import EntitlementsDebugBadge from "@/components/EntitlementsDebugBadge.client";
-
+import { getEntitlements } from "@/lib/entitlements/getEntitlements";
 
 
 type EntitlementsContextValue = {
@@ -33,13 +33,17 @@ export function EntitlementsProvider({ children }: { children: React.ReactNode }
   });
 
   const refresh = useCallback(() => {
-    if (!PUBLIC_FLAGS.enablePremiumGates) {
-      setState({ isPremium: true, source: "admin", updatedAt: Date.now() });
-      return;
-    }
-    const local = getLocalEntitlements(userKey);
-    setState(local);
-  }, [userKey, PUBLIC_FLAGS.enablePremiumGates]);
+  if (!PUBLIC_FLAGS.enablePremiumGates) {
+    setState({ isPremium: true, source: "admin", updatedAt: Date.now() });
+    return;
+  }
+
+  void (async () => {
+    const e = await getEntitlements(userKey);
+    setState(e);
+  })();
+}, [userKey]);
+
 
   const setEntitlements = useCallback((e: Entitlements) => {
     setLocalEntitlements(userKey, e);
@@ -65,6 +69,14 @@ export function EntitlementsProvider({ children }: { children: React.ReactNode }
   useEffect(() => {
     refresh();
   }, [refresh, userKey]);
+
+useEffect(() => {
+  const onEntChanged = () => refresh();
+  window.addEventListener("expatise:entitlements-changed", onEntChanged);
+  return () => window.removeEventListener("expatise:entitlements-changed", onEntChanged);
+}, [refresh]);
+
+
 
   const value = useMemo<EntitlementsContextValue>(() => ({
     userKey,

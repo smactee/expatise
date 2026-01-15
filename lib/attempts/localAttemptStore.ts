@@ -1,9 +1,13 @@
 // lib/attempts/localAttemptStore.ts
-import type { AttemptStore, Attempt } from "./attemptStore";
+import type { AttemptStore, Attempt, GetOrCreateParams, ClosePatch } from "./attemptStore";
+
 import {
   listAttempts as legacyList,
   writeAttempt as legacyWrite,
   clearAttemptsByFilter,
+  getOrCreateAttempt as legacyGetOrCreate,
+  closeAttemptById as legacyClose,
+  readAttemptById as legacyRead,
 } from "@/lib/test-engine/attemptStorage";
 
 export class LocalAttemptStore implements AttemptStore {
@@ -12,17 +16,31 @@ export class LocalAttemptStore implements AttemptStore {
   }
 
   async saveAttempt(userKey: string, datasetId: string, attempt: Attempt) {
-    // DO NOT add fields that don't exist on TestAttemptV1
     legacyWrite({
       ...attempt,
       userKey,
       datasetId,
-      // if you *really* want a touch timestamp:
       lastActiveAt: Date.now(),
     });
   }
 
   async clearAttempts(userKey: string, datasetId: string) {
-    clearAttemptsByFilter({ userKey, datasetId });
+    await Promise.resolve(clearAttemptsByFilter({ userKey, datasetId }));
+  }
+
+  async getOrCreateAttempt(params: GetOrCreateParams) {
+    return Promise.resolve(legacyGetOrCreate(params));
+  }
+
+  async writeAttempt(attempt: Attempt) {
+    legacyWrite(attempt);
+  }
+
+  async closeAttemptById(attemptId: string, patch?: ClosePatch) {
+    return Promise.resolve(legacyClose(attemptId, patch));
+  }
+
+  async readAttemptById(attemptId: string) {
+    return Promise.resolve(legacyRead(attemptId));
   }
 }

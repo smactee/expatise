@@ -273,10 +273,13 @@ import { TAG_TAXONOMY, labelForTag } from '@/lib/qbank/tagTaxonomy';
 import { deriveTopicSubtags } from '@/lib/qbank/deriveTopicSubtags';
 import { useBookmarks } from "@/lib/bookmarks/useBookmarks"; // adjust path if you use "@/lib/..."
 import BackButton from '@/components/BackButton';
-import { listAttempts } from '@/lib/test-engine/attemptStorage';
-import { normalizeUserKey } from '@/lib/test-engine/attemptStorage';
-import { useAuthStatus } from '@/components/useAuthStatus';
 import { useClearedMistakes } from '@/lib/mistakes/useClearedMistakes';
+import { attemptStore } from "@/lib/attempts/store";
+import type { Attempt } from "@/lib/attempts/attemptStore";
+import { useUserKey } from "@/components/useUserKey.client";
+
+
+
 
 
 
@@ -287,10 +290,7 @@ function isCorrectMcq(item: Question, optId: string, optKey?: string) {
 
 export default function AllQuestionsClient({ datasetId, mode = 'all' }: { datasetId: DatasetId; mode?: 'all' | 'bookmarks' | 'mistakes' }) {
   // ✅ 1) hooks first
-  const { email: sessionEmail } = useAuthStatus();
-
-  // ✅ 2) derive userKey (cheap, memo optional)
-  const userKey = useMemo(() => normalizeUserKey(sessionEmail), [sessionEmail]);
+const userKey = useUserKey();
 
   // ✅ 3) now it's safe to use userKey
   const { idSet: bookmarkedSet, isBookmarked, toggle } = useBookmarks(datasetId, userKey);
@@ -312,6 +312,8 @@ const [selectedIds, setSelectedIds] = useState<Set<string>>(() => new Set());
 const [showToTop, setShowToTop] = useState(false);
 const [navOffsetY, setNavOffsetY] = useState(0);
 const lastYRef = useRef(0);
+
+const [submittedAttempts, setSubmittedAttempts] = useState<Attempt[]>([]);
 
 
 
@@ -415,8 +417,8 @@ const mistakesMetaById = useMemo(() => {
 
   const byId = new Map(q.map((item) => [item.id, item] as const));
 
-  // ✅ use already-computed userKey
-  const attempts = listAttempts({ status: 'submitted', datasetId, userKey });
+  // ✅ now from adapter-loaded state (async loaded in useEffect)
+  const attempts = submittedAttempts;
 
   const meta = new Map<string, MistakeMeta>();
 
@@ -461,7 +463,36 @@ const mistakesMetaById = useMemo(() => {
   }
 
   return meta;
-}, [mode, q, datasetId, userKey]);
+}, [mode, q, submittedAttempts]);
+
+
+
+useEffect(() => {
+  // Only needed for mistakes mode
+  if (mode !== "mistakes") {
+    setSubmittedAttempts([]);
+    return;
+  }
+
+  let alive = true;
+
+  (async () => {
+    try {
+      const all = await attemptStore.listAttempts(userKey, datasetId);
+
+      // We only care about submitted attempts for mistakes analytics
+      const submitted = all.filter((a) => a.status === "submitted");
+
+      if (alive) setSubmittedAttempts(submitted);
+    } catch {
+      if (alive) setSubmittedAttempts([]);
+    }
+  })();
+
+  return () => {
+    alive = false;
+  };
+}, [mode, userKey, datasetId]);
 
 
 const visible = useMemo(() => {
@@ -1323,14 +1354,9 @@ import type { Question } from '@/lib/qbank/types';
 import { useBookmarks } from '@/lib/bookmarks/useBookmarks';
 import BackButton from '@/components/BackButton';
 import { useAuthStatus } from '@/components/useAuthStatus';
-import {
-  computeNextUnansweredIndex,
-  getOrCreateAttempt,
-  normalizeUserKey,
-  writeAttempt,
-  closeAttemptById,
-  type TestAttemptV1,
-} from '@/lib/test-engine/attemptStorage';
+import { attemptStore } from "@/lib/attempts/store";
+import { computeNextUnansweredIndex, normalizeUserKey, type TestAttemptV1 } from "@/lib/attempts/engine";
+
 
 
 function formatTime(secs: number) {
@@ -1386,17 +1412,17 @@ export default function RealTestClient({
 
 const finishedRef = useRef(false);
 
-const finishTest = (reason: 'time' | 'completed') => {
+const finishTest = async (reason: "time" | "completed") => {
   if (finishedRef.current) return;
   finishedRef.current = true;
 
-  // If attempt exists, close it BEFORE leaving this page
+  // Close the attempt before leaving the page
   if (attempt?.attemptId) {
-    closeAttemptById(attempt.attemptId, { remainingSec: timeLeft });
+    await attemptStore.closeAttemptById(attempt.attemptId, { remainingSec: timeLeft });
   }
 
   if (!attempt) {
-    router.push('/real-test/results?reason=' + reason);
+    router.push("/real-test/results?reason=" + reason);
     return;
   }
 
@@ -1412,6 +1438,7 @@ const finishTest = (reason: 'time' | 'completed') => {
 
   router.push(`/real-test/results?${params.toString()}`);
 };
+
 
 
 
@@ -1433,7 +1460,7 @@ if (authLoading) return;
 
 const allIds = ds.map((q) => q.id);
 
-const { attempt: a } = getOrCreateAttempt({
+const { attempt: a } = await attemptStore.getOrCreateAttempt({
   userKey,
   modeKey: 'real-test',
   datasetId,
@@ -1449,6 +1476,11 @@ const picked = a.questionIds.map((id) => byId.get(id)).filter(Boolean) as Questi
 
 setAttempt(a);
 setItems(picked);
+
+// Restore timer from attempt storage (prevents refresh extending time)
+setTimeLeft(a.remainingSec);
+endAtRef.current = Date.now() + a.remainingSec * 1000;
+
 
 // Restore answers into your existing UI answers state
 const restored: Record<string, string> = {};
@@ -1472,10 +1504,12 @@ setLoading(false);
   }, [datasetId, datasetVersion, questionCount, timeLimitMinutes, authLoading, userKey]);
 
 
-  useEffect(() => {
+useEffect(() => {
+  if (attempt) return; // don't clobber restored timer
   endAtRef.current = Date.now() + timeLimitMinutes * 60 * 1000;
   setTimeLeft(timeLimitMinutes * 60);
-}, [datasetId, timeLimitMinutes]);
+}, [datasetId, timeLimitMinutes, attempt]);
+
 
 
   // countdown
@@ -1496,10 +1530,67 @@ useEffect(() => {
   if (items.length === 0) return;
 
   if (timeLeft <= 0) {
-    finishTest('time');
+    void finishTest('time');
   }
 }, [timeLeft, loading, items.length]); // intentionally NOT including finishTest
 
+useEffect(() => {
+  finishedRef.current = false;
+  advancingRef.current = false;
+  lastTapRef.current = null;
+}, [datasetId, datasetVersion]);
+
+const attemptRef = useRef<TestAttemptV1 | null>(null);
+useEffect(() => {
+  attemptRef.current = attempt;
+}, [attempt]);
+
+const lastPersistRef = useRef(0);
+
+useEffect(() => {
+  if (loading) return;
+
+  const a = attemptRef.current;
+  if (!a?.attemptId) return;
+  if (a.status === "submitted" || a.status === "expired") return;
+
+  const now = Date.now();
+  // throttle: persist at most once every 3 seconds
+  if (now - lastPersistRef.current < 3000) return;
+  lastPersistRef.current = now;
+
+  const patched: TestAttemptV1 = {
+    ...a,
+    remainingSec: timeLeft,
+    lastActiveAt: now,
+  };
+
+  attemptRef.current = patched;
+  void attemptStore.writeAttempt(patched);
+}, [timeLeft, loading]);
+
+
+useEffect(() => {
+  return () => {
+    const a = attemptRef.current;
+    if (!a?.attemptId) return;
+    if (a.status === "submitted" || a.status === "expired") return;
+
+    const now = Date.now();
+    const paused: TestAttemptV1 = {
+      ...a,
+      status: "paused",
+      pausedAt: now,
+      lastActiveAt: now,
+      remainingSec: timeLeft,
+    };
+
+    attemptRef.current = paused;
+    // fire-and-forget persist
+    void attemptStore.writeAttempt(paused);
+  };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+}, [timeLeft]);
 
 
 const item = items[index];
@@ -1538,50 +1629,51 @@ const advancingRef = useRef(false);
 // More reliable than e.detail: works even if state hasn’t re-rendered yet
 const lastTapRef = useRef<{ key: string; at: number } | null>(null);
 
-const commitAndAdvance = (choiceKey: string) => {
+const commitAndAdvance = async (choiceKey: string) => {
   if (!items.length || !item) return;
   if (!choiceKey) return;
-
   if (advancingRef.current) return;
+
   advancingRef.current = true;
 
-  const now = Date.now();
+  try {
+    const now = Date.now();
 
-  // 1) commit to UI state
-  setAnswers((prev) => {
-    if (prev[item.id] === choiceKey) return prev;
-    return { ...prev, [item.id]: choiceKey };
-  });
+    setAnswers((prev) => (prev[item.id] === choiceKey ? prev : { ...prev, [item.id]: choiceKey }));
 
-  // 2) commit to attempt storage (so Results/Stats stay correct)
-  if (attempt) {
-    const updated: TestAttemptV1 = {
-      ...attempt,
-      status: 'in_progress',
-      lastActiveAt: now,
-      answersByQid: {
-        ...attempt.answersByQid,
-        [item.id]: { choice: choiceKey, answeredAt: now },
-      },
-    };
-    setAttempt(updated);
-    writeAttempt(updated);
+    const base = attemptRef.current;
+if (base) {
+  const updated: TestAttemptV1 = {
+    ...base,
+    status: "in_progress",
+    lastActiveAt: now,
+    remainingSec: timeLeft, // 👈 keep it consistent
+    answersByQid: {
+      ...base.answersByQid,
+      [item.id]: { choice: choiceKey, answeredAt: now },
+    },
+  };
+
+  attemptRef.current = updated;   // 👈 important
+  setAttempt(updated);            // keep UI in sync
+  await attemptStore.writeAttempt(updated);
+}
+
+
+    const next = index + 1;
+    if (next >= items.length) {
+      await finishTest("completed");
+      return;
+    }
+
+    setIndex(next);
+  } finally {
+    setTimeout(() => {
+      advancingRef.current = false;
+    }, 0);
   }
-
-  // 3) move forward or finish
-  const next = index + 1;
-  if (next >= items.length) {
-    finishTest('completed');
-    return;
-  }
-
-  setIndex(next);
-
-  // release the guard next tick
-  setTimeout(() => {
-    advancingRef.current = false;
-  }, 0);
 };
+
 
 const onOptionTap = (key: string) => {
   const now = Date.now();
@@ -1590,7 +1682,7 @@ const onOptionTap = (key: string) => {
   // If same option tapped twice quickly -> auto next
   if (last && last.key === key && now - last.at < 450) {
     lastTapRef.current = null;
-    commitAndAdvance(key);
+    void commitAndAdvance(key);
     return;
   }
 
@@ -1609,49 +1701,6 @@ useEffect(() => {
     if (!items.length) return 0;
     return ((index + 1) / items.length) * 100;
   }, [index, items.length]);
-
-  const onNext = () => {
-  if (!items.length || !item) return;
-  if (!selectedKey) return;
-
-  // 1) commit the answer for the current question
-  setAnswers((prev) => {
-    // avoid extra renders if unchanged
-    if (prev[item.id] === selectedKey) return prev;
-    return { ...prev, [item.id]: selectedKey };
-  });
-
-if (attempt && item) {
-  const now = Date.now();
-
-  const updated: TestAttemptV1 = {
-    ...attempt,
-    status: 'in_progress',
-    lastActiveAt: now,
-    answersByQid: {
-      ...attempt.answersByQid,
-      [item.id]: { choice: selectedKey, answeredAt: now },
-    },
-  };
-
-  setAttempt(updated);
-  writeAttempt(updated);
-}
-
-
-  // 2) move forward or finish
-  const next = index + 1;
-
-  if (next >= items.length) {
-    // IMPORTANT: finish after committing the last answer
-    finishTest('completed');
-    return;
-  }
-
-  setIndex(next);
-  // do NOT manually setSelectedKey(null) here;
-  // the "restore selection" effect will set it for the next question.
-};
 
 
   if (loading) {
@@ -1783,7 +1832,7 @@ if (attempt && item) {
   // second click on same option advances
   // e.detail is 1,2,3... for click count (works great on desktop)
   if (e.detail >= 2) {
-    commitAndAdvance(key);
+   void commitAndAdvance(key);
   }
 }}
 
@@ -1806,7 +1855,7 @@ if (attempt && item) {
         <button
           type="button"
           className={styles.nextBtn}
-          onClick={() => selectedKey && commitAndAdvance(selectedKey)}
+          onClick={() => selectedKey && void commitAndAdvance(selectedKey)}
           disabled={!selectedKey}
         >
           Next <span className={styles.nextArrow} aria-hidden="true">→</span>
@@ -4375,16 +4424,18 @@ export async function POST(req: Request) {
 
 ### app/api/logout/route.ts
 ```tsx
+// app/api/logout/route.ts
 import { NextResponse } from "next/server";
-import { AUTH_COOKIE } from "../../../lib/auth";
+import { AUTH_COOKIE, cookieOptions } from "../../../lib/auth";
 
 export async function POST() {
   const res = NextResponse.json({ ok: true });
 
+  // delete custom auth cookie (match options used when setting it)
   res.cookies.set({
     name: AUTH_COOKIE,
     value: "",
-    path: "/",
+    ...cookieOptions(),
     maxAge: 0,
   });
 
@@ -4517,19 +4568,21 @@ export async function POST(req: Request) {
 // app/api/session/route.ts
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
-import { AUTH_COOKIE } from "../../../lib/auth";
-import { auth } from "../../auth";
+import { AUTH_COOKIE } from "@/lib/auth";
+import { auth } from "@/app/auth";
 
 export async function GET() {
-  const cookieStore = await cookies();
+  // ✅ handles both sync/async cookies() typing across Next versions
+  const cookieStore = await Promise.resolve(cookies());
 
-  // Local/email login (your custom auth cookie)
+  // Local/email login (custom cookie)
   const localEmail = cookieStore.get(AUTH_COOKIE)?.value ?? null;
   if (localEmail) {
     return NextResponse.json({
+      ok: true,
       authed: true,
       method: "email",
-      email: localEmail,      // optional: only if you store it somewhere
+      email: localEmail,
       provider: "local",
     });
   }
@@ -4538,14 +4591,16 @@ export async function GET() {
   const session = await auth();
   if (session?.user) {
     return NextResponse.json({
+      ok: true,
       authed: true,
       method: "social",
       email: session.user.email ?? null,
-      provider: (session as any).provider ?? null, // "google" | "apple" | "wechat"
+      provider: (session as any).provider ?? null,
     });
   }
 
   return NextResponse.json({
+    ok: false,
     authed: false,
     method: "guest",
     email: null,
@@ -5304,6 +5359,39 @@ export default function ComingSoonPage({ searchParams }: Props) {
       </div>
     </main>
   );
+}
+
+```
+
+### app/entitlements/route.ts
+```tsx
+// app/api/entitlements/route.ts
+import { NextResponse } from "next/server";
+import { cookies } from "next/headers";
+import { AUTH_COOKIE, normalizeEmail } from "@/lib/auth";
+import { auth } from "@/app/auth";
+import { userKeyFromEmail } from "@/lib/identity/userKey";
+
+import { FREE_ENTITLEMENTS } from "@/lib/entitlements/types";
+import { getLocalEntitlements } from "@/lib/entitlements/localStore";
+
+export async function GET() {
+  const cookieStore = await Promise.resolve(cookies());
+
+  // local cookie first
+  const localEmail = cookieStore.get(AUTH_COOKIE)?.value ?? "";
+  let email = normalizeEmail(localEmail);
+
+  // fallback to NextAuth session
+  if (!email) {
+    const session = await auth().catch(() => null);
+    email = normalizeEmail(session?.user?.email ?? "");
+  }
+
+  const userKey = userKeyFromEmail(email);
+  const entitlements = getLocalEntitlements(userKey) ?? FREE_ENTITLEMENTS;
+
+  return NextResponse.json({ ok: true, userKey, entitlements });
 }
 
 ```
@@ -6479,6 +6567,8 @@ export default function CreateAccountModal({ open, onClose, onCreated }: Props) 
 
 ### app/login/page.tsx
 ```tsx
+//  app/login/page.tsx
+
 'use client';
 
 import Image from 'next/image';
@@ -6556,7 +6646,11 @@ useEffect(() => {
     return;
   }
 
-  router.replace(nextParam);
+// ✅ tell the rest of the app "session changed"
+window.dispatchEvent(new Event("expatise:session-changed"));
+
+router.replace(nextParam);
+
 } catch {
   setError("Network error. Please try again.");
 }
@@ -8848,6 +8942,8 @@ export default function PremiumPage() {
 
 ### app/profile/page.tsx
 ```tsx
+//  app/profile/page.tsx
+
 'use client';
 
 import React, { useRef, useState, useEffect, type ChangeEvent } from 'react';
@@ -8862,6 +8958,7 @@ import { useRouter } from 'next/navigation';
 import { useAuthStatus } from '../../components/useAuthStatus';
 import { isValidEmail } from '../../lib/auth';
 import BackButton from '../../components/BackButton';
+import { signOut } from 'next-auth/react';
 
 export default function ProfilePage() {
   const { avatarUrl, setAvatarUrl, name, setName, email, setEmail, saveProfile, clearProfile } = useUserProfile(); // from context
@@ -8981,15 +9078,22 @@ const [loggingOut, setLoggingOut] = useState(false);
 const handleLogout = async () => {
   if (loggingOut) return;
   setLoggingOut(true);
+
   try {
     await fetch("/api/logout", { method: "POST", credentials: "include" });
 
-    // Clear local profile store (dev-only)
+    try {
+      await signOut({ redirect: false });
+    } catch {
+      // ignore — still proceed
+    }
+
     if (typeof window !== "undefined") {
       window.localStorage.removeItem("expatise-user-profile");
     }
 
-    // Reset the UI state
+    window.dispatchEvent(new Event("expatise:session-changed"));
+
     setAvatarUrl(null);
     setName("@Expatise");
     setEmail("user@expatise.com");
@@ -8999,6 +9103,9 @@ const handleLogout = async () => {
     setLoggingOut(false);
   }
 };
+
+
+
 
 const handleSave = async (e: React.SyntheticEvent) => {
    if (!authed) {
@@ -10298,7 +10405,7 @@ import { FREE_ENTITLEMENTS, type EntitlementSource, type Entitlements } from "@/
 import { getLocalEntitlements, setLocalEntitlements, clearLocalEntitlements } from "@/lib/entitlements/localStore";
 import { useUserKey } from "@/components/useUserKey.client";
 import EntitlementsDebugBadge from "@/components/EntitlementsDebugBadge.client";
-
+import { getEntitlements } from "@/lib/entitlements/getEntitlements";
 
 
 type EntitlementsContextValue = {
@@ -10325,13 +10432,17 @@ export function EntitlementsProvider({ children }: { children: React.ReactNode }
   });
 
   const refresh = useCallback(() => {
-    if (!PUBLIC_FLAGS.enablePremiumGates) {
-      setState({ isPremium: true, source: "admin", updatedAt: Date.now() });
-      return;
-    }
-    const local = getLocalEntitlements(userKey);
-    setState(local);
-  }, [userKey, PUBLIC_FLAGS.enablePremiumGates]);
+  if (!PUBLIC_FLAGS.enablePremiumGates) {
+    setState({ isPremium: true, source: "admin", updatedAt: Date.now() });
+    return;
+  }
+
+  void (async () => {
+    const e = await getEntitlements(userKey);
+    setState(e);
+  })();
+}, [userKey]);
+
 
   const setEntitlements = useCallback((e: Entitlements) => {
     setLocalEntitlements(userKey, e);
@@ -10357,6 +10468,14 @@ export function EntitlementsProvider({ children }: { children: React.ReactNode }
   useEffect(() => {
     refresh();
   }, [refresh, userKey]);
+
+useEffect(() => {
+  const onEntChanged = () => refresh();
+  window.addEventListener("expatise:entitlements-changed", onEntChanged);
+  return () => window.removeEventListener("expatise:entitlements-changed", onEntChanged);
+}, [refresh]);
+
+
 
   const value = useMemo<EntitlementsContextValue>(() => ({
     userKey,
@@ -10788,9 +10907,23 @@ export function useAuthStatus() {
 import { useEffect, useState } from "react";
 import { userKeyFromEmail } from "@/lib/identity/userKey";
 
-type SessionRes =
-  | { ok: true; email?: string | null; provider?: string | null }
-  | { ok: false };
+type SessionOk = {
+  ok: true;
+  authed: true;
+  method: "email" | "social";
+  email: string | null;
+  provider: string | null;
+};
+
+type SessionNo = {
+  ok: false;
+  authed: false;
+  method: "guest";
+  email: null;
+  provider: null;
+};
+
+type SessionRes = SessionOk | SessionNo;
 
 export function useUserKey() {
   const [userKey, setUserKey] = useState<string>("guest");
@@ -10803,7 +10936,7 @@ export function useUserKey() {
         const res = await fetch("/api/session", { cache: "no-store" });
         const json = (await res.json()) as SessionRes;
 
-        const email = (json && (json as any).email) ? String((json as any).email) : "";
+        const email = json.ok && json.authed ? (json.email ?? "") : "";
         const nextKey = userKeyFromEmail(email);
 
         if (!cancelled) setUserKey(nextKey);
@@ -10813,7 +10946,14 @@ export function useUserKey() {
     }
 
     run();
-    return () => { cancelled = true; };
+
+    const onRefresh = () => run();
+    window.addEventListener("expatise:session-changed", onRefresh);
+
+    return () => {
+      cancelled = true;
+      window.removeEventListener("expatise:session-changed", onRefresh);
+    };
   }, []);
 
   return userKey;
@@ -10824,26 +10964,52 @@ export function useUserKey() {
 ### lib/attempts/attemptStore.ts
 ```tsx
 // lib/attempts/attemptStore.ts
-import type { TestAttemptV1 } from "@/lib/test-engine/attemptStorage";
+import type {
+  TestAttemptV1,
+  getOrCreateAttempt as legacyGetOrCreateAttempt,
+  closeAttemptById as legacyCloseAttemptById,
+  readAttemptById as legacyReadAttemptById,
+} from "@/lib/test-engine/attemptStorage";
 
 export type Attempt = TestAttemptV1;
 
-export type AttemptStore = {
-  listAttempts: (userKey: string, datasetId: string) => Promise<Attempt[]>;
-  saveAttempt: (userKey: string, datasetId: string, attempt: Attempt) => Promise<void>;
-  clearAttempts: (userKey: string, datasetId: string) => Promise<void>;
-};
+export type GetOrCreateParams = Parameters<typeof legacyGetOrCreateAttempt>[0];
+export type GetOrCreateResult = ReturnType<typeof legacyGetOrCreateAttempt>;
+export type ClosePatch = Parameters<typeof legacyCloseAttemptById>[1];
+
+export interface AttemptStore {
+  listAttempts(userKey: string, datasetId: string): Promise<Attempt[]>;
+  saveAttempt(userKey: string, datasetId: string, attempt: Attempt): Promise<void>;
+  clearAttempts(userKey: string, datasetId: string): Promise<void>;
+
+  getOrCreateAttempt(params: GetOrCreateParams): Promise<GetOrCreateResult>;
+  writeAttempt(attempt: Attempt): Promise<void>;
+  closeAttemptById(attemptId: string, patch?: ClosePatch): Promise<Attempt | null>;
+  readAttemptById(attemptId: string): Promise<Attempt | null>;
+}
+
+```
+
+### lib/attempts/engine.ts
+```tsx
+// lib/attempts/engine.ts
+export { computeNextUnansweredIndex, normalizeUserKey } from "@/lib/test-engine/attemptStorage";
+export type { TestAttemptV1 } from "@/lib/test-engine/attemptStorage";
 
 ```
 
 ### lib/attempts/localAttemptStore.ts
 ```tsx
 // lib/attempts/localAttemptStore.ts
-import type { AttemptStore, Attempt } from "./attemptStore";
+import type { AttemptStore, Attempt, GetOrCreateParams, ClosePatch } from "./attemptStore";
+
 import {
   listAttempts as legacyList,
   writeAttempt as legacyWrite,
   clearAttemptsByFilter,
+  getOrCreateAttempt as legacyGetOrCreate,
+  closeAttemptById as legacyClose,
+  readAttemptById as legacyRead,
 } from "@/lib/test-engine/attemptStorage";
 
 export class LocalAttemptStore implements AttemptStore {
@@ -10852,20 +11018,45 @@ export class LocalAttemptStore implements AttemptStore {
   }
 
   async saveAttempt(userKey: string, datasetId: string, attempt: Attempt) {
-    // DO NOT add fields that don't exist on TestAttemptV1
     legacyWrite({
       ...attempt,
       userKey,
       datasetId,
-      // if you *really* want a touch timestamp:
       lastActiveAt: Date.now(),
     });
   }
 
   async clearAttempts(userKey: string, datasetId: string) {
-    clearAttemptsByFilter({ userKey, datasetId });
+    await Promise.resolve(clearAttemptsByFilter({ userKey, datasetId }));
+  }
+
+  async getOrCreateAttempt(params: GetOrCreateParams) {
+    return Promise.resolve(legacyGetOrCreate(params));
+  }
+
+  async writeAttempt(attempt: Attempt) {
+    legacyWrite(attempt);
+  }
+
+  async closeAttemptById(attemptId: string, patch?: ClosePatch) {
+    return Promise.resolve(legacyClose(attemptId, patch));
+  }
+
+  async readAttemptById(attemptId: string) {
+    return Promise.resolve(legacyRead(attemptId));
   }
 }
+
+```
+
+### lib/attempts/store.ts
+```tsx
+// lib/attempts/store.ts
+import { LocalAttemptStore } from "./localAttemptStore";
+
+// One singleton store instance used across UI.
+// Later you can swap to DbAttemptStore without touching UI code.
+export const attemptStore = new LocalAttemptStore();
 
 ```
 
@@ -11049,6 +11240,35 @@ export function useBookmarks(datasetId: string, userKeyOverride?: string) {
   );
 
   return { ids, idSet, isBookmarked, toggle };
+}
+
+```
+
+### lib/entitlements/getEntitlements.ts
+```tsx
+// lib/entitlements/getEntitlements.ts
+"use client";
+
+import type { Entitlements } from "@/lib/entitlements/types";
+import { FREE_ENTITLEMENTS } from "@/lib/entitlements/types";
+import { getLocalEntitlements } from "@/lib/entitlements/localStore";
+
+type ApiRes =
+  | { ok: true; entitlements: Entitlements }
+  | { ok: false; error?: string };
+
+export async function getEntitlements(userKey: string): Promise<Entitlements> {
+  const local = getLocalEntitlements(userKey) ?? FREE_ENTITLEMENTS;
+
+  try {
+    const res = await fetch("/api/entitlements", { cache: "no-store" });
+    const json = (await res.json()) as ApiRes;
+    if (json.ok) return json.entitlements;
+  } catch {
+    // ignore
+  }
+
+  return local;
 }
 
 ```

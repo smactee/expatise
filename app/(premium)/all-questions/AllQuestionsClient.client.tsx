@@ -13,10 +13,13 @@ import { TAG_TAXONOMY, labelForTag } from '@/lib/qbank/tagTaxonomy';
 import { deriveTopicSubtags } from '@/lib/qbank/deriveTopicSubtags';
 import { useBookmarks } from "@/lib/bookmarks/useBookmarks"; // adjust path if you use "@/lib/..."
 import BackButton from '@/components/BackButton';
-import { listAttempts } from '@/lib/test-engine/attemptStorage';
-import { normalizeUserKey } from '@/lib/test-engine/attemptStorage';
-import { useAuthStatus } from '@/components/useAuthStatus';
 import { useClearedMistakes } from '@/lib/mistakes/useClearedMistakes';
+import { attemptStore } from "@/lib/attempts/store";
+import type { Attempt } from "@/lib/attempts/attemptStore";
+import { useUserKey } from "@/components/useUserKey.client";
+
+
+
 
 
 
@@ -27,10 +30,7 @@ function isCorrectMcq(item: Question, optId: string, optKey?: string) {
 
 export default function AllQuestionsClient({ datasetId, mode = 'all' }: { datasetId: DatasetId; mode?: 'all' | 'bookmarks' | 'mistakes' }) {
   // ✅ 1) hooks first
-  const { email: sessionEmail } = useAuthStatus();
-
-  // ✅ 2) derive userKey (cheap, memo optional)
-  const userKey = useMemo(() => normalizeUserKey(sessionEmail), [sessionEmail]);
+const userKey = useUserKey();
 
   // ✅ 3) now it's safe to use userKey
   const { idSet: bookmarkedSet, isBookmarked, toggle } = useBookmarks(datasetId, userKey);
@@ -52,6 +52,8 @@ const [selectedIds, setSelectedIds] = useState<Set<string>>(() => new Set());
 const [showToTop, setShowToTop] = useState(false);
 const [navOffsetY, setNavOffsetY] = useState(0);
 const lastYRef = useRef(0);
+
+const [submittedAttempts, setSubmittedAttempts] = useState<Attempt[]>([]);
 
 
 
@@ -155,8 +157,8 @@ const mistakesMetaById = useMemo(() => {
 
   const byId = new Map(q.map((item) => [item.id, item] as const));
 
-  // ✅ use already-computed userKey
-  const attempts = listAttempts({ status: 'submitted', datasetId, userKey });
+  // ✅ now from adapter-loaded state (async loaded in useEffect)
+  const attempts = submittedAttempts;
 
   const meta = new Map<string, MistakeMeta>();
 
@@ -201,7 +203,36 @@ const mistakesMetaById = useMemo(() => {
   }
 
   return meta;
-}, [mode, q, datasetId, userKey]);
+}, [mode, q, submittedAttempts]);
+
+
+
+useEffect(() => {
+  // Only needed for mistakes mode
+  if (mode !== "mistakes") {
+    setSubmittedAttempts([]);
+    return;
+  }
+
+  let alive = true;
+
+  (async () => {
+    try {
+      const all = await attemptStore.listAttempts(userKey, datasetId);
+
+      // We only care about submitted attempts for mistakes analytics
+      const submitted = all.filter((a) => a.status === "submitted");
+
+      if (alive) setSubmittedAttempts(submitted);
+    } catch {
+      if (alive) setSubmittedAttempts([]);
+    }
+  })();
+
+  return () => {
+    alive = false;
+  };
+}, [mode, userKey, datasetId]);
 
 
 const visible = useMemo(() => {

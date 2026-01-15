@@ -3,9 +3,23 @@
 import { useEffect, useState } from "react";
 import { userKeyFromEmail } from "@/lib/identity/userKey";
 
-type SessionRes =
-  | { ok: true; email?: string | null; provider?: string | null }
-  | { ok: false };
+type SessionOk = {
+  ok: true;
+  authed: true;
+  method: "email" | "social";
+  email: string | null;
+  provider: string | null;
+};
+
+type SessionNo = {
+  ok: false;
+  authed: false;
+  method: "guest";
+  email: null;
+  provider: null;
+};
+
+type SessionRes = SessionOk | SessionNo;
 
 export function useUserKey() {
   const [userKey, setUserKey] = useState<string>("guest");
@@ -18,7 +32,7 @@ export function useUserKey() {
         const res = await fetch("/api/session", { cache: "no-store" });
         const json = (await res.json()) as SessionRes;
 
-        const email = (json && (json as any).email) ? String((json as any).email) : "";
+        const email = json.ok && json.authed ? (json.email ?? "") : "";
         const nextKey = userKeyFromEmail(email);
 
         if (!cancelled) setUserKey(nextKey);
@@ -28,7 +42,14 @@ export function useUserKey() {
     }
 
     run();
-    return () => { cancelled = true; };
+
+    const onRefresh = () => run();
+    window.addEventListener("expatise:session-changed", onRefresh);
+
+    return () => {
+      cancelled = true;
+      window.removeEventListener("expatise:session-changed", onRefresh);
+    };
   }, []);
 
   return userKey;

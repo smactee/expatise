@@ -1,3 +1,5 @@
+//  app/profile/page.tsx
+
 'use client';
 
 import React, { useRef, useState, useEffect, type ChangeEvent } from 'react';
@@ -12,6 +14,7 @@ import { useRouter } from 'next/navigation';
 import { useAuthStatus } from '../../components/useAuthStatus';
 import { isValidEmail } from '../../lib/auth';
 import BackButton from '../../components/BackButton';
+import { signOut } from 'next-auth/react';
 
 export default function ProfilePage() {
   const { avatarUrl, setAvatarUrl, name, setName, email, setEmail, saveProfile, clearProfile } = useUserProfile(); // from context
@@ -131,15 +134,22 @@ const [loggingOut, setLoggingOut] = useState(false);
 const handleLogout = async () => {
   if (loggingOut) return;
   setLoggingOut(true);
+
   try {
     await fetch("/api/logout", { method: "POST", credentials: "include" });
 
-    // Clear local profile store (dev-only)
+    try {
+      await signOut({ redirect: false });
+    } catch {
+      // ignore — still proceed
+    }
+
     if (typeof window !== "undefined") {
       window.localStorage.removeItem("expatise-user-profile");
     }
 
-    // Reset the UI state
+    window.dispatchEvent(new Event("expatise:session-changed"));
+
     setAvatarUrl(null);
     setName("@Expatise");
     setEmail("user@expatise.com");
@@ -149,6 +159,9 @@ const handleLogout = async () => {
     setLoggingOut(false);
   }
 };
+
+
+
 
 const handleSave = async (e: React.SyntheticEvent) => {
    if (!authed) {
