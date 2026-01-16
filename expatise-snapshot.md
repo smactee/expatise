@@ -1,140 +1,3 @@
-### .venv/lib/python3.9/site-packages/pip-25.3.dist-info/licenses/src/pip/_vendor/idna/LICENSE.md
-```md
-BSD 3-Clause License
-
-Copyright (c) 2013-2024, Kim Davies and contributors.
-All rights reserved.
-
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are
-met:
-
-1. Redistributions of source code must retain the above copyright
-   notice, this list of conditions and the following disclaimer.
-
-2. Redistributions in binary form must reproduce the above copyright
-   notice, this list of conditions and the following disclaimer in the
-   documentation and/or other materials provided with the distribution.
-
-3. Neither the name of the copyright holder nor the names of its
-   contributors may be used to endorse or promote products derived from
-   this software without specific prior written permission.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
-HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
-TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
-PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
-LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
-NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-```
-
-### .venv/lib/python3.9/site-packages/pip/_vendor/idna/LICENSE.md
-```md
-BSD 3-Clause License
-
-Copyright (c) 2013-2024, Kim Davies and contributors.
-All rights reserved.
-
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are
-met:
-
-1. Redistributions of source code must retain the above copyright
-   notice, this list of conditions and the following disclaimer.
-
-2. Redistributions in binary form must reproduce the above copyright
-   notice, this list of conditions and the following disclaimer in the
-   documentation and/or other materials provided with the distribution.
-
-3. Neither the name of the copyright holder nor the names of its
-   contributors may be used to endorse or promote products derived from
-   this software without specific prior written permission.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
-HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
-TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
-PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
-LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
-NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-```
-
-### .venv/lib/python3.9/site-packages/pymupdf-1.26.5.dist-info/README.md
-```md
-# PyMuPDF
-
-**PyMuPDF** is a high performance **Python** library for data extraction, analysis, conversion & manipulation of [PDF (and other) documents](https://pymupdf.readthedocs.io/en/latest/the-basics.html#supported-file-types).
-
-# Community
-Join us on **Discord** here: [#pymupdf](https://discord.gg/TSpYGBW4eq)
-
-
-# Installation
-
-**PyMuPDF** requires **Python 3.9 or later**, install using **pip** with:
-
-`pip install PyMuPDF`
-
-There are **no mandatory** external dependencies. However, some [optional features](#pymupdf-optional-features) become available only if additional packages are installed.
-
-You can also try without installing by visiting [PyMuPDF.io](https://pymupdf.io/#examples).
-
-
-# Usage
-
-Basic usage is as follows:
-
-```python
-import pymupdf # imports the pymupdf library
-doc = pymupdf.open("example.pdf") # open a document
-for page in doc: # iterate the document pages
-  text = page.get_text() # get plain text encoded as UTF-8
-
-```
-
-
-# Documentation
-
-Full documentation can be found on [pymupdf.readthedocs.io](https://pymupdf.readthedocs.io).
-
-
-
-# <a id="pymupdf-optional-features"></a>Optional Features
-
-* [fontTools](https://pypi.org/project/fonttools/) for creating font subsets.
-* [pymupdf-fonts](https://pypi.org/project/pymupdf-fonts/) contains some nice fonts for your text output.
-* [Tesseract-OCR](https://github.com/tesseract-ocr/tesseract) for optical character recognition in images and document pages.
-
-
-
-# About
-
-**PyMuPDF** adds **Python** bindings and abstractions to [MuPDF](https://mupdf.com/), a lightweight **PDF**, **XPS**, and **eBook** viewer, renderer, and toolkit. Both **PyMuPDF** and **MuPDF** are maintained and developed by [Artifex Software, Inc](https://artifex.com).
-
-**PyMuPDF** was originally written by [Jorj X. McKie](mailto:jorj.x.mckie@outlook.de).
-
-
-# License and Copyright
-
-**PyMuPDF** is available under [open-source AGPL](https://www.gnu.org/licenses/agpl-3.0.html) and commercial license agreements. If you determine you cannot meet the requirements of the **AGPL**, please contact [Artifex](https://artifex.com/contact/pymupdf-inquiry.php) for more information regarding a commercial license.
-
-
-
-
-
-```
-
 ### README.md
 ```md
 # Expatise
@@ -283,6 +146,7 @@ import { useUserKey } from "@/components/useUserKey.client";
 
 
 
+
 function isCorrectMcq(item: Question, optId: string, optKey?: string) {
   if (item.type !== 'MCQ' || !item.correctOptionId) return false;
   return item.correctOptionId === optId || (optKey && item.correctOptionId === optKey);
@@ -293,7 +157,7 @@ export default function AllQuestionsClient({ datasetId, mode = 'all' }: { datase
 const userKey = useUserKey();
 
   // ✅ 3) now it's safe to use userKey
-  const { idSet: bookmarkedSet, isBookmarked, toggle } = useBookmarks(datasetId, userKey);
+  const { idSet: bookmarkedSet, isBookmarked, toggle, removeMany } = useBookmarks(datasetId, userKey);
   const {
   ids: clearedMistakeIds,
   idSet: clearedMistakesSet,
@@ -437,17 +301,31 @@ const mistakesMetaById = useMemo(() => {
         const expected = normalizeRowChoice(question.correctRow ?? null);
         isCorrect = !!(chosen && expected && chosen === expected);
       } else {
-        const chosenOpt = question.options?.find((opt, idx) => {
-          const k = opt.originalKey ?? String.fromCharCode(65 + idx);
-          return k === chosenKey;
-        });
+  const expected = question.correctOptionId;
+  if (!expected || !question.options?.length) {
+    isCorrect = false;
+  } else {
+    // Find which option the user chose.
+    // chosenKey might be: "A"/"B"/..., originalKey, or (sometimes) an option id.
+    const idx = question.options.findIndex((opt, i) => {
+      const letter = String.fromCharCode(65 + i); // A,B,C...
+      const key = opt.originalKey ?? letter;
+      return chosenKey === key || chosenKey === letter || chosenKey === opt.id;
+    });
 
-        isCorrect = !!(
-          chosenOpt &&
-          question.correctOptionId &&
-          chosenOpt.id === question.correctOptionId
-        );
-      }
+    if (idx < 0) {
+      isCorrect = false;
+    } else {
+      const opt = question.options[idx];
+      const letter = String.fromCharCode(65 + idx);
+      const key = opt.originalKey ?? letter;
+
+      // expected might be option id OR key/letter depending on your dataset format
+      isCorrect = expected === opt.id || expected === key || expected === letter;
+    }
+  }
+}
+
 
       if (isCorrect) continue;
 
@@ -516,7 +394,7 @@ const visible = useMemo(() => {
 
 
   return filtered;
-}, [filtered, mode, bookmarkedSet, mistakesMetaById, clearedMistakeIds]);
+}, [filtered, mode, bookmarkedSet, mistakesMetaById, clearedMistakesSet]);
 
 
 
@@ -525,17 +403,12 @@ function clearSelection() {
 }
 
 function unbookmarkSelected() {
-  // Only unbookmark the currently selected ones
   const ids = Array.from(selectedIds);
-
-  ids.forEach((id) => {
-    // In bookmarks mode these should already be bookmarked,
-    // but this guard keeps it safe.
-    if (bookmarkedSet.has(id)) toggle(id);
-  });
-
+  if (ids.length === 0) return;
+  removeMany(ids);
   clearSelection();
 }
+
 
 function clearMistakesSelected() {
   const ids = Array.from(selectedIds);
@@ -1284,20 +1157,12 @@ export default function QuestionsPage() {
 ```tsx
 // app/bookmarks/page.tsx
 
-import type { DatasetId } from '@/lib/qbank/datasets';
+import type { DatasetId } from "@/lib/qbank/datasets";
 import AllQuestionsClient from "@/app/(premium)/all-questions/AllQuestionsClient.client";
-import BackButton from '@/components/BackButton';
 
 export default function BookmarksPage() {
-  // IMPORTANT: use the same datasetId you use for /all-questions
-  const datasetId: DatasetId = '2023-test1' as DatasetId;
-
-  return (
-    <>
-      <BackButton />
-      <AllQuestionsClient datasetId={"cn-2023-test1" as DatasetId} mode="bookmarks" />
-    </>
-  );
+  const datasetId = "cn-2023-test1" as DatasetId;
+  return <AllQuestionsClient datasetId={datasetId} mode="bookmarks" />;
 }
 
 ```
@@ -4382,6 +4247,39 @@ export const { GET, POST } = handlers;
 
 ```
 
+### app/api/entitlements/route.ts
+```tsx
+// app/api/entitlements/route.ts
+import { NextResponse } from "next/server";
+import { cookies } from "next/headers";
+import { AUTH_COOKIE, normalizeEmail } from "@/lib/auth";
+import { auth } from "@/app/auth";
+import { userKeyFromEmail } from "@/lib/identity/userKey";
+
+import { FREE_ENTITLEMENTS } from "@/lib/entitlements/types";
+import { getLocalEntitlements } from "@/lib/entitlements/localStore";
+
+export async function GET() {
+  const cookieStore = await Promise.resolve(cookies());
+
+  // local cookie first
+  const localEmail = cookieStore.get(AUTH_COOKIE)?.value ?? "";
+  let email = normalizeEmail(localEmail);
+
+  // fallback to NextAuth session
+  if (!email) {
+    const session = await auth().catch(() => null);
+    email = normalizeEmail(session?.user?.email ?? "");
+  }
+
+  const userKey = userKeyFromEmail(email);
+  const entitlements = getLocalEntitlements(userKey) ?? FREE_ENTITLEMENTS;
+
+  return NextResponse.json({ ok: true, userKey, entitlements });
+}
+
+```
+
 ### app/api/local-login/route.ts
 ```tsx
 // app/api/local-login/route.ts
@@ -5359,39 +5257,6 @@ export default function ComingSoonPage({ searchParams }: Props) {
       </div>
     </main>
   );
-}
-
-```
-
-### app/entitlements/route.ts
-```tsx
-// app/api/entitlements/route.ts
-import { NextResponse } from "next/server";
-import { cookies } from "next/headers";
-import { AUTH_COOKIE, normalizeEmail } from "@/lib/auth";
-import { auth } from "@/app/auth";
-import { userKeyFromEmail } from "@/lib/identity/userKey";
-
-import { FREE_ENTITLEMENTS } from "@/lib/entitlements/types";
-import { getLocalEntitlements } from "@/lib/entitlements/localStore";
-
-export async function GET() {
-  const cookieStore = await Promise.resolve(cookies());
-
-  // local cookie first
-  const localEmail = cookieStore.get(AUTH_COOKIE)?.value ?? "";
-  let email = normalizeEmail(localEmail);
-
-  // fallback to NextAuth session
-  if (!email) {
-    const session = await auth().catch(() => null);
-    email = normalizeEmail(session?.user?.email ?? "");
-  }
-
-  const userKey = userKeyFromEmail(email);
-  const entitlements = getLocalEntitlements(userKey) ?? FREE_ENTITLEMENTS;
-
-  return NextResponse.json({ ok: true, userKey, entitlements });
 }
 
 ```
@@ -10397,6 +10262,7 @@ export default function EntitlementsDebugBadge() {
 
 ### components/EntitlementsProvider.client.tsx
 ```tsx
+//components/EntitlementsProvider.client.tsx
 "use client";
 
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
@@ -10437,16 +10303,23 @@ export function EntitlementsProvider({ children }: { children: React.ReactNode }
     return;
   }
 
+  const keyAtStart = userKey;
+
+  const local = getLocalEntitlements(keyAtStart) ?? FREE_ENTITLEMENTS;
+  setState(local);
+
   void (async () => {
-    const e = await getEntitlements(userKey);
+    const e = await getEntitlements(keyAtStart);
+    // ignore stale result if userKey changed mid-flight
+    if (keyAtStart !== userKey) return;
     setState(e);
   })();
 }, [userKey]);
 
-
   const setEntitlements = useCallback((e: Entitlements) => {
     setLocalEntitlements(userKey, e);
     setState(e);
+    try { window.dispatchEvent(new Event("expatise:entitlements-changed")); } catch {}
   }, [userKey]);
 
   const grantPremium = useCallback((source: EntitlementSource, expiresAt?: number) => {
@@ -10458,16 +10331,18 @@ export function EntitlementsProvider({ children }: { children: React.ReactNode }
     };
     setLocalEntitlements(userKey, next);
     setState(next);
+    try { window.dispatchEvent(new Event("expatise:entitlements-changed")); } catch {}
   }, [userKey]);
 
   const revokePremium = useCallback(() => {
     clearLocalEntitlements(userKey);
     setState(FREE_ENTITLEMENTS);
+    try { window.dispatchEvent(new Event("expatise:entitlements-changed")); } catch {}
   }, [userKey]);
 
   useEffect(() => {
     refresh();
-  }, [refresh, userKey]);
+  }, [refresh]);
 
 useEffect(() => {
   const onEntChanged = () => refresh();
@@ -10629,15 +10504,17 @@ export default function FeatureCard({
 
 ### components/RequirePremium.client.tsx
 ```tsx
+//components/RequirePremium.client.tsx
+
 "use client";
 
 import { useEffect } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { PUBLIC_FLAGS } from "@/lib/flags/public";
 import { useEntitlements } from "@/components/EntitlementsProvider.client";
+import { safeNextPath } from "@/lib/navigation/safeNextPath";
 
-function currentPath(pathname: string, sp: URLSearchParams) {
-  const qs = sp.toString();
+function currentPath(pathname: string, qs: string) {
   return qs ? `${pathname}?${qs}` : pathname;
 }
 
@@ -10645,15 +10522,17 @@ export default function RequirePremium({ children }: { children: React.ReactNode
   const router = useRouter();
   const pathname = usePathname();
   const sp = useSearchParams();
+  const qs = sp.toString(); // <- string is stable for deps
   const { isPremium } = useEntitlements();
 
   useEffect(() => {
     if (!PUBLIC_FLAGS.enablePremiumGates) return;
     if (isPremium) return;
 
-    const next = encodeURIComponent(currentPath(pathname, sp));
+    const nextPath = safeNextPath(currentPath(pathname, qs));
+    const next = encodeURIComponent(nextPath);
     router.replace(`/premium?next=${next}`);
-  }, [isPremium, pathname, sp, router]);
+  }, [isPremium, pathname, qs, router]);
 
   if (!PUBLIC_FLAGS.enablePremiumGates) return <>{children}</>;
   if (isPremium) return <>{children}</>;
@@ -10857,8 +10736,11 @@ export function useUserProfile() {
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { authClient } from "@/lib/authClient";
+import type { SessionRes } from "@/lib/authClient/types";
 
-type AuthStatus = {
+type AuthState = {
+  loading: boolean;
   authed: boolean;
   method: "guest" | "email" | "social";
   email: string | null;
@@ -10866,95 +10748,118 @@ type AuthStatus = {
 };
 
 export function useAuthStatus() {
-  const [loading, setLoading] = useState(true);
-  const [status, setStatus] = useState<AuthStatus>({
+  const [state, setState] = useState<AuthState>({
+    loading: true,
     authed: false,
     method: "guest",
     email: null,
     provider: null,
   });
 
-  const refresh = useCallback(async () => {
-    setLoading(true);
-    try {
-      const res = await fetch("/api/session", { cache: "no-store" });
-      const data = (await res.json()) as Partial<AuthStatus>;
+  const refresh = useCallback(() => {
+    let cancelled = false;
 
-      setStatus({
-        authed: Boolean(data.authed),
-        method: (data.method as any) ?? "guest",
-        email: data.email ?? null,
-        provider: data.provider ?? null,
-      });
-    } finally {
-      setLoading(false);
-    }
+    (async () => {
+      try {
+        const json = (await authClient.getSession()) as SessionRes;
+
+        if (cancelled) return;
+
+        if (json.ok && json.authed) {
+          setState({
+            loading: false,
+            authed: true,
+            method: json.method,
+            email: json.email,
+            provider: json.provider,
+          });
+        } else {
+          setState({
+            loading: false,
+            authed: false,
+            method: "guest",
+            email: null,
+            provider: null,
+          });
+        }
+      } catch {
+        if (cancelled) return;
+        setState({
+          loading: false,
+          authed: false,
+          method: "guest",
+          email: null,
+          provider: null,
+        });
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   useEffect(() => {
-    refresh();
+    const cleanup = refresh();
+
+    const onChanged = () => refresh();
+    window.addEventListener("expatise:session-changed", onChanged);
+
+    return () => {
+      cleanup?.();
+      window.removeEventListener("expatise:session-changed", onChanged);
+    };
   }, [refresh]);
 
-  return { ...status, loading, refresh };
+  return { ...state, refresh };
 }
 
 ```
 
 ### components/useUserKey.client.ts
 ```tsx
+// components/useUserKey.client.ts
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { userKeyFromEmail } from "@/lib/identity/userKey";
-
-type SessionOk = {
-  ok: true;
-  authed: true;
-  method: "email" | "social";
-  email: string | null;
-  provider: string | null;
-};
-
-type SessionNo = {
-  ok: false;
-  authed: false;
-  method: "guest";
-  email: null;
-  provider: null;
-};
-
-type SessionRes = SessionOk | SessionNo;
+import { authClient } from "@/lib/authClient";
 
 export function useUserKey() {
   const [userKey, setUserKey] = useState<string>("guest");
+  const seqRef = useRef(0);
 
-  useEffect(() => {
-    let cancelled = false;
+  const refresh = useCallback(() => {
+    const seq = ++seqRef.current;
 
-    async function run() {
+    (async () => {
       try {
-        const res = await fetch("/api/session", { cache: "no-store" });
-        const json = (await res.json()) as SessionRes;
+        const json = await authClient.getSession();
+        if (seq !== seqRef.current) return;
 
         const email = json.ok && json.authed ? (json.email ?? "") : "";
-        const nextKey = userKeyFromEmail(email);
-
-        if (!cancelled) setUserKey(nextKey);
+        setUserKey(userKeyFromEmail(email));
       } catch {
-        if (!cancelled) setUserKey("guest");
+        if (seq !== seqRef.current) return;
+        setUserKey("guest");
       }
-    }
-
-    run();
-
-    const onRefresh = () => run();
-    window.addEventListener("expatise:session-changed", onRefresh);
-
-    return () => {
-      cancelled = true;
-      window.removeEventListener("expatise:session-changed", onRefresh);
-    };
+    })();
   }, []);
+
+  useEffect(() => {
+  refresh();
+
+  if (typeof window === "undefined") return;
+
+  const onChanged = () => refresh();
+  window.addEventListener("expatise:session-changed", onChanged);
+
+  return () => {
+    window.removeEventListener("expatise:session-changed", onChanged);
+    seqRef.current++; // invalidate in-flight
+  };
+}, [refresh]);
+
 
   return userKey;
 }
@@ -11095,6 +11000,69 @@ export function cookieOptions() {
 }
 ```
 
+### lib/authClient/index.ts
+```tsx
+// lib/authClient/index.ts
+import { webAuthClient } from "./web";
+export const authClient = webAuthClient;
+
+// later:
+// if (typeof window !== "undefined" && (window as any).Capacitor) use nativeAuthClient
+
+```
+
+### lib/authClient/types.ts
+```tsx
+// lib/authClient/types.ts
+export type SessionOk = {
+  ok: true;
+  authed: true;
+  method: "email" | "social";
+  email: string | null;
+  provider: string | null;
+};
+
+export type SessionNo = {
+  ok: false;
+  authed: false;
+  method: "guest";
+  email: null;
+  provider: null;
+};
+
+export type SessionRes = SessionOk | SessionNo;
+
+export type AuthClient = {
+  getSession: () => Promise<SessionRes>;
+  // keep surface area small for now — we’ll add native later
+};
+
+```
+
+### lib/authClient/web.ts
+```tsx
+// lib/authClient/web.ts
+import type { AuthClient, SessionRes } from "./types";
+
+const GUEST: SessionRes = { ok: false, authed: false, method: "guest", email: null, provider: null };
+
+export const webAuthClient: AuthClient = {
+  async getSession() {
+    try {
+      const res = await fetch("/api/session", {
+        cache: "no-store",
+        credentials: "include",
+      });
+      if (!res.ok) return GUEST;
+      return (await res.json()) as SessionRes;
+    } catch {
+      return GUEST;
+    }
+  },
+};
+
+```
+
 ### lib/bookmarks/bookmarkStore.ts
 ```tsx
 // lib/bookmarks/bookmarkStore.ts
@@ -11165,7 +11133,7 @@ export class LocalBookmarkStore implements BookmarkStore {
     if (next.has(id)) next.delete(id);
     else next.add(id);
 
-    const arr = Array.from(next);
+    const arr = Array.from(next).sort();
     await this.writeIds(userKey, datasetId, arr);
     return arr;
   }
@@ -11224,48 +11192,81 @@ export function useBookmarks(datasetId: string, userKeyOverride?: string) {
 
   const toggle = useCallback(
     async (id: string) => {
-      // optimistic UI update + store persistence
       setIds((prev) => {
-        const next = new Set(prev);
-        if (next.has(id)) next.delete(id);
-        else next.add(id);
-        return Array.from(next);
-      });
+        const nextSet = new Set(prev);
+        if (nextSet.has(id)) nextSet.delete(id);
+        else nextSet.add(id);
 
-      // persist based on the latest known ids
-      // (we pass current ids via closure to avoid re-reading localStorage)
-      await bookmarkStore.toggle(userKey, datasetId, id, ids);
+        const next = Array.from(nextSet);
+        // ✅ persist EXACTLY what UI is showing (no stale closure)
+        void bookmarkStore.writeIds(userKey, datasetId, next);
+        return next;
+      });
     },
-    [datasetId, userKey, ids]
+    [datasetId, userKey]
   );
 
-  return { ids, idSet, isBookmarked, toggle };
+  const removeMany = useCallback(
+    async (removeIds: string[]) => {
+      const removeSet = new Set((removeIds ?? []).map(String));
+
+      setIds((prev) => {
+        const next = prev.filter((id) => !removeSet.has(String(id)));
+        void bookmarkStore.writeIds(userKey, datasetId, next);
+        return next;
+      });
+    },
+    [datasetId, userKey]
+  );
+
+  return { ids, idSet, isBookmarked, toggle, removeMany };
 }
 
 ```
 
 ### lib/entitlements/getEntitlements.ts
 ```tsx
-// lib/entitlements/getEntitlements.ts
+//lib/entitlements/getEntitlements.ts
+
 "use client";
 
 import type { Entitlements } from "@/lib/entitlements/types";
 import { FREE_ENTITLEMENTS } from "@/lib/entitlements/types";
-import { getLocalEntitlements } from "@/lib/entitlements/localStore";
+import { getLocalEntitlements, setLocalEntitlements } from "@/lib/entitlements/localStore";
 
 type ApiRes =
-  | { ok: true; entitlements: Entitlements }
+  | { ok: true; entitlements: Entitlements; userKey?: string }
   | { ok: false; error?: string };
+
 
 export async function getEntitlements(userKey: string): Promise<Entitlements> {
   const local = getLocalEntitlements(userKey) ?? FREE_ENTITLEMENTS;
 
   try {
-    const res = await fetch("/api/entitlements", { cache: "no-store" });
+    // Pass userKey for future-proofing (even if server uses cookies today)
+    const url = `/api/entitlements?userKey=${encodeURIComponent(userKey)}`;
+
+    const res = await fetch(url, { cache: "no-store" });
+    if (!res.ok) return local;
+
     const json = (await res.json()) as ApiRes;
-    if (json.ok) return json.entitlements;
+    if (json.ok) {
+  const server = json.entitlements;
+
+  const localUpdatedAt = typeof local.updatedAt === "number" ? local.updatedAt : 0;
+  const serverUpdatedAt = typeof server.updatedAt === "number" ? server.updatedAt : 0;
+
+  // Only let server overwrite local if it's clearly newer OR it grants premium.
+  const shouldTrustServer =
+    server.isPremium === true || serverUpdatedAt >= localUpdatedAt;
+
+  if (shouldTrustServer) {
+    setLocalEntitlements(userKey, server);
+    return server;
+  }
+}
   } catch {
-    // ignore
+    // ignore errors and fall back to local
   }
 
   return local;
@@ -11485,19 +11486,21 @@ export function isBypassPath(pathname: string) {
 }
 ```
 
-### lib/mistakes/useClearedMistakes.ts
+### lib/mistakes/localClearedMistakesStore.ts
 ```tsx
-"use client";
+// lib/mistakes/localClearedMistakesStore.ts
+import type { ClearedMistakesStore } from "./store";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
-
-const keyFor = (datasetId: string, userKey: string) =>
+// legacy (your old key) — we’ll migrate from this if it exists
+const legacyKeyFor = (userKey: string, datasetId: string) =>
   `expatise:mistakesCleared:${userKey}:${datasetId}`;
 
-function readIds(datasetId: string, userKey: string): string[] {
-  if (typeof window === "undefined") return [];
+// v1 key (more future-proof / consistent with bookmarks naming)
+const keyFor = (userKey: string, datasetId: string) =>
+  `expatise:mistakesCleared:v1:user:${userKey}:dataset:${datasetId}`;
+
+function safeParseIds(raw: string | null): string[] {
   try {
-    const raw = localStorage.getItem(keyFor(datasetId, userKey));
     const parsed = raw ? JSON.parse(raw) : [];
     return Array.isArray(parsed) ? parsed.map(String) : [];
   } catch {
@@ -11505,19 +11508,171 @@ function readIds(datasetId: string, userKey: string): string[] {
   }
 }
 
-function writeIds(datasetId: string, userKey: string, ids: string[]) {
+function uniqSorted(ids: string[]) {
+  return Array.from(new Set((ids ?? []).map(String))).sort();
+}
+
+function readKey(k: string): string | null {
   try {
-    localStorage.setItem(keyFor(datasetId, userKey), JSON.stringify(ids));
+    return localStorage.getItem(k);
+  } catch {
+    return null;
+  }
+}
+
+function writeKey(k: string, raw: string) {
+  try {
+    localStorage.setItem(k, raw);
   } catch {
     // ignore
   }
 }
 
-export function useClearedMistakes(datasetId: string, userKey: string) {
+function removeKey(k: string) {
+  try {
+    localStorage.removeItem(k);
+  } catch {
+    // ignore
+  }
+}
+
+export class LocalClearedMistakesStore implements ClearedMistakesStore {
+  async listIds(userKey: string, datasetId: string): Promise<string[]> {
+    if (typeof window === "undefined") return [];
+
+    const k = keyFor(userKey, datasetId);
+
+    // ---- 1) Read v1 first
+    let raw = readKey(k);
+
+    // ---- 2) If missing, migrate legacy(userKey) -> v1(userKey)
+    if (!raw) {
+      const legacyK = legacyKeyFor(userKey, datasetId);
+      const legacyRaw = readKey(legacyK);
+      if (legacyRaw) {
+        writeKey(k, legacyRaw);
+        removeKey(legacyK);
+        raw = legacyRaw;
+      }
+    }
+
+    let ids = uniqSorted(safeParseIds(raw));
+
+    // ---- 3) Guest -> user one-time merge (prevents “data vanished after login”)
+    // Policy:
+    // - If userKey !== "guest" and guest has ids, merge union into user
+    // - Then clear guest keys so it’s truly “migrated once”
+    if (userKey !== "guest") {
+      const guestV1K = keyFor("guest", datasetId);
+      const guestLegacyK = legacyKeyFor("guest", datasetId);
+
+      // Ensure guest legacy is also migrated into guest v1 (so we merge from one place)
+      let guestRaw = readKey(guestV1K);
+      if (!guestRaw) {
+        const gl = readKey(guestLegacyK);
+        if (gl) {
+          writeKey(guestV1K, gl);
+          removeKey(guestLegacyK);
+          guestRaw = gl;
+        }
+      }
+
+      const guestIds = uniqSorted(safeParseIds(guestRaw));
+
+      if (guestIds.length > 0) {
+        const merged = uniqSorted([...ids, ...guestIds]);
+
+        // Persist only if changed
+        const changed =
+          merged.length !== ids.length ||
+          merged.some((v, i) => v !== ids[i]);
+
+        if (changed) {
+          writeKey(k, JSON.stringify(merged));
+          ids = merged;
+        }
+
+        // clear guest storage so this doesn’t re-run forever
+        removeKey(guestV1K);
+        removeKey(guestLegacyK);
+      }
+    }
+
+    return ids;
+  }
+
+  async writeIds(userKey: string, datasetId: string, ids: string[]): Promise<void> {
+    if (typeof window === "undefined") return;
+    writeKey(keyFor(userKey, datasetId), JSON.stringify(uniqSorted(ids)));
+  }
+
+  async addMany(userKey: string, datasetId: string, ids: string[]): Promise<string[]> {
+    const prev = await this.listIds(userKey, datasetId);
+    const next = uniqSorted([...prev, ...(ids ?? [])]);
+    await this.writeIds(userKey, datasetId, next);
+    return next;
+  }
+
+  async removeMany(userKey: string, datasetId: string, ids: string[]): Promise<string[]> {
+    const remove = new Set((ids ?? []).map(String));
+    const prev = await this.listIds(userKey, datasetId);
+    const next = prev.filter((x) => !remove.has(String(x)));
+    await this.writeIds(userKey, datasetId, next);
+    return uniqSorted(next);
+  }
+
+  async clearAll(userKey: string, datasetId: string): Promise<void> {
+    if (typeof window === "undefined") return;
+    removeKey(keyFor(userKey, datasetId));
+    removeKey(legacyKeyFor(userKey, datasetId));
+  }
+}
+
+```
+
+### lib/mistakes/store.ts
+```tsx
+// lib/mistakes/store.ts
+import { LocalClearedMistakesStore } from "./localClearedMistakesStore";
+
+export interface ClearedMistakesStore {
+  listIds(userKey: string, datasetId: string): Promise<string[]>;
+  writeIds(userKey: string, datasetId: string, ids: string[]): Promise<void>;
+  addMany(userKey: string, datasetId: string, ids: string[]): Promise<string[]>;
+  removeMany(userKey: string, datasetId: string, ids: string[]): Promise<string[]>;
+  clearAll(userKey: string, datasetId: string): Promise<void>;
+}
+
+export const clearedMistakesStore: ClearedMistakesStore = new LocalClearedMistakesStore();
+
+```
+
+### lib/mistakes/useClearedMistakes.ts
+```tsx
+// lib/mistakes/useClearedMistakes.ts
+"use client";
+
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { clearedMistakesStore } from "@/lib/mistakes/store";
+import { useUserKey } from "@/components/useUserKey.client";
+
+export function useClearedMistakes(datasetId: string, userKeyOverride?: string) {
+  const inferredUserKey = useUserKey();
+  const userKey = userKeyOverride ?? inferredUserKey;
+
   const [ids, setIds] = useState<string[]>([]);
 
   useEffect(() => {
-    setIds(readIds(datasetId, userKey));
+    let cancelled = false;
+
+    (async () => {
+      const list = await clearedMistakesStore.listIds(userKey, datasetId);
+      if (!cancelled) setIds(list);
+    })();
+
+    return () => {
+      cancelled = true;
+    };
   }, [datasetId, userKey]);
 
   const idSet = useMemo(() => new Set(ids), [ids]);
@@ -11525,11 +11680,9 @@ export function useClearedMistakes(datasetId: string, userKey: string) {
   const clearMany = useCallback(
     (qids: string[]) => {
       setIds((prev) => {
-        const next = new Set(prev);
-        qids.forEach((id) => next.add(id));
-        const arr = Array.from(next);
-        writeIds(datasetId, userKey, arr);
-        return arr;
+        const next = Array.from(new Set([...prev, ...(qids ?? [])].map(String)));
+        void clearedMistakesStore.writeIds(userKey, datasetId, next);
+        return next;
       });
     },
     [datasetId, userKey]
@@ -11537,12 +11690,11 @@ export function useClearedMistakes(datasetId: string, userKey: string) {
 
   const undoMany = useCallback(
     (qids: string[]) => {
+      const remove = new Set((qids ?? []).map(String));
       setIds((prev) => {
-        const next = new Set(prev);
-        qids.forEach((id) => next.delete(id));
-        const arr = Array.from(next);
-        writeIds(datasetId, userKey, arr);
-        return arr;
+        const next = prev.filter((id) => !remove.has(String(id)));
+        void clearedMistakesStore.writeIds(userKey, datasetId, next);
+        return next;
       });
     },
     [datasetId, userKey]
@@ -11550,10 +11702,29 @@ export function useClearedMistakes(datasetId: string, userKey: string) {
 
   const clearAll = useCallback(() => {
     setIds([]);
-    writeIds(datasetId, userKey, []);
+    void clearedMistakesStore.clearAll(userKey, datasetId);
   }, [datasetId, userKey]);
 
   return { ids, idSet, clearMany, undoMany, clearAll };
+}
+
+```
+
+### lib/navigation/safeNextPath.ts
+```tsx
+export function safeNextPath(input: string | null | undefined) {
+  const raw = String(input ?? "").trim();
+  if (!raw) return "/";
+
+  // Only allow internal paths
+  if (!raw.startsWith("/")) return "/";
+  if (raw.startsWith("//")) return "/";
+
+  // Avoid loops / sensitive routes (tweak as you like)
+  if (raw.startsWith("/premium")) return "/";
+  if (raw.startsWith("/login")) return "/";
+
+  return raw;
 }
 
 ```
@@ -12860,6 +13031,110 @@ export const ROUTES = {
   mistakes: "/my-mistakes",
   comingSoon: "/coming-soon",
 } as const;
+
+```
+
+### lib/stores/index.ts
+```tsx
+// lib/stores/index.ts
+export { attemptStore } from "@/lib/attempts/store";
+export { bookmarkStore } from "@/lib/bookmarks/store";
+export { clearedMistakesStore } from "@/lib/mistakes/store";
+
+```
+
+### lib/sync/rules.ts
+```tsx
+// lib/sync/rules.ts
+// Future DB sync contract (local-first now, deterministic sync later).
+// Keep this file small + boring. This becomes your “constitution”.
+
+export type AttemptStatus = "in_progress" | "paused" | "submitted" | "expired";
+
+export type AttemptLike = {
+  attemptId: string;
+  status: AttemptStatus;
+  lastActiveAt: number;
+  updatedAt?: number;   // optional future-proofing
+  createdAt?: number;
+  submittedAt?: number;
+};
+
+function scoreAttempt(a: AttemptLike): number {
+  // Use the most meaningful timestamp for sorting/recency
+  return a.submittedAt ?? a.lastActiveAt ?? a.updatedAt ?? a.createdAt ?? 0;
+}
+
+/**
+ * Attempts merge rules:
+ * - submitted: append-only (never “unsubmit”)
+ * - in_progress/paused: last-write-wins by lastActiveAt (fallback to updatedAt)
+ * - if same attemptId exists on both sides:
+ *    - if either is submitted -> keep submitted (prefer later submittedAt / score)
+ *    - else keep the one with higher lastActiveAt (or updatedAt)
+ */
+export function mergeAttempts<T extends AttemptLike>(local?: T[], remote?: T[]): T[] {
+  const map = new Map<string, T>();
+
+  const upsert = (incoming: T) => {
+    const existing = map.get(incoming.attemptId);
+    if (!existing) {
+      map.set(incoming.attemptId, incoming);
+      return;
+    }
+
+    const existingSubmitted = existing.status === "submitted";
+    const incomingSubmitted = incoming.status === "submitted";
+
+    // If either is submitted, keep submitted record.
+    if (existingSubmitted || incomingSubmitted) {
+      if (existingSubmitted && incomingSubmitted) {
+        // both submitted -> keep the “later” one
+        map.set(
+          incoming.attemptId,
+          scoreAttempt(existing) >= scoreAttempt(incoming) ? existing : incoming
+        );
+        return;
+      }
+
+      map.set(incoming.attemptId, incomingSubmitted ? incoming : existing);
+      return;
+    }
+
+    // Neither submitted -> LWW by lastActiveAt (fallback to updatedAt)
+    const exT = existing.lastActiveAt ?? existing.updatedAt ?? 0;
+    const inT = incoming.lastActiveAt ?? incoming.updatedAt ?? 0;
+    map.set(incoming.attemptId, inT >= exT ? incoming : existing);
+  };
+
+  for (const a of local ?? []) upsert(a);
+  for (const a of remote ?? []) upsert(a);
+
+  const out = Array.from(map.values());
+  out.sort((a, b) => scoreAttempt(b) - scoreAttempt(a));
+  return out;
+}
+
+/**
+ * Set-union rules (bookmarks, cleared mistakes):
+ * - Adds are merged by union
+ * - Deletions are NOT represented yet (if you need deletions across devices later,
+ *   add tombstones: {id, removedAt} and merge by timestamp)
+ */
+export function mergeIdSets(localIds?: string[], remoteIds?: string[]): string[] {
+  const s = new Set<string>();
+  for (const id of localIds ?? []) s.add(String(id));
+  for (const id of remoteIds ?? []) s.add(String(id));
+  return Array.from(s.values()).sort(); // stable output helps debugging
+}
+
+export function mergeBookmarks(local?: string[], remote?: string[]) {
+  return mergeIdSets(local, remote);
+}
+
+export function mergeClearedMistakes(local?: string[], remote?: string[]) {
+  return mergeIdSets(local, remote);
+}
 
 ```
 

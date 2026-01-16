@@ -14,7 +14,8 @@ FILES=$(
   # include only code/text (avoid images/binaries)
   grep -E '\.(ts|tsx|js|jsx|css|json|md)$' |
   # exclude generated/noisy folders + public images
-  grep -vE '^(node_modules/|\.next/|dist/|build/|out/|coverage/|\.git/|\.vercel/|public/images/)' |
+  grep -vE '^(node_modules/|\.next/|dist/|build/|out/|coverage/|\.git/|\.vercel/|\.venv/|public/images/)' |
+
   # CRITICAL: never include the snapshot itself
   grep -vE "^${OUTPUT}$" |
   sort -u

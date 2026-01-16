@@ -53,7 +53,7 @@ export class LocalBookmarkStore implements BookmarkStore {
     if (next.has(id)) next.delete(id);
     else next.add(id);
 
-    const arr = Array.from(next);
+    const arr = Array.from(next).sort();
     await this.writeIds(userKey, datasetId, arr);
     return arr;
   }

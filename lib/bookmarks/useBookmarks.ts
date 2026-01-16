@@ -29,20 +29,32 @@ export function useBookmarks(datasetId: string, userKeyOverride?: string) {
 
   const toggle = useCallback(
     async (id: string) => {
-      // optimistic UI update + store persistence
       setIds((prev) => {
-        const next = new Set(prev);
-        if (next.has(id)) next.delete(id);
-        else next.add(id);
-        return Array.from(next);
-      });
+        const nextSet = new Set(prev);
+        if (nextSet.has(id)) nextSet.delete(id);
+        else nextSet.add(id);
 
-      // persist based on the latest known ids
-      // (we pass current ids via closure to avoid re-reading localStorage)
-      await bookmarkStore.toggle(userKey, datasetId, id, ids);
+        const next = Array.from(nextSet);
+        // ✅ persist EXACTLY what UI is showing (no stale closure)
+        void bookmarkStore.writeIds(userKey, datasetId, next);
+        return next;
+      });
     },
-    [datasetId, userKey, ids]
+    [datasetId, userKey]
   );
 
-  return { ids, idSet, isBookmarked, toggle };
+  const removeMany = useCallback(
+    async (removeIds: string[]) => {
+      const removeSet = new Set((removeIds ?? []).map(String));
+
+      setIds((prev) => {
+        const next = prev.filter((id) => !removeSet.has(String(id)));
+        void bookmarkStore.writeIds(userKey, datasetId, next);
+        return next;
+      });
+    },
+    [datasetId, userKey]
+  );
+
+  return { ids, idSet, isBookmarked, toggle, removeMany };
 }

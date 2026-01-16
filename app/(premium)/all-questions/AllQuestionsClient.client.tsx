@@ -23,6 +23,7 @@ import { useUserKey } from "@/components/useUserKey.client";
 
 
 
+
 function isCorrectMcq(item: Question, optId: string, optKey?: string) {
   if (item.type !== 'MCQ' || !item.correctOptionId) return false;
   return item.correctOptionId === optId || (optKey && item.correctOptionId === optKey);
@@ -33,7 +34,7 @@ export default function AllQuestionsClient({ datasetId, mode = 'all' }: { datase
 const userKey = useUserKey();
 
   // ✅ 3) now it's safe to use userKey
-  const { idSet: bookmarkedSet, isBookmarked, toggle } = useBookmarks(datasetId, userKey);
+  const { idSet: bookmarkedSet, isBookmarked, toggle, removeMany } = useBookmarks(datasetId, userKey);
   const {
   ids: clearedMistakeIds,
   idSet: clearedMistakesSet,
@@ -177,17 +178,31 @@ const mistakesMetaById = useMemo(() => {
         const expected = normalizeRowChoice(question.correctRow ?? null);
         isCorrect = !!(chosen && expected && chosen === expected);
       } else {
-        const chosenOpt = question.options?.find((opt, idx) => {
-          const k = opt.originalKey ?? String.fromCharCode(65 + idx);
-          return k === chosenKey;
-        });
+  const expected = question.correctOptionId;
+  if (!expected || !question.options?.length) {
+    isCorrect = false;
+  } else {
+    // Find which option the user chose.
+    // chosenKey might be: "A"/"B"/..., originalKey, or (sometimes) an option id.
+    const idx = question.options.findIndex((opt, i) => {
+      const letter = String.fromCharCode(65 + i); // A,B,C...
+      const key = opt.originalKey ?? letter;
+      return chosenKey === key || chosenKey === letter || chosenKey === opt.id;
+    });
 
-        isCorrect = !!(
-          chosenOpt &&
-          question.correctOptionId &&
-          chosenOpt.id === question.correctOptionId
-        );
-      }
+    if (idx < 0) {
+      isCorrect = false;
+    } else {
+      const opt = question.options[idx];
+      const letter = String.fromCharCode(65 + idx);
+      const key = opt.originalKey ?? letter;
+
+      // expected might be option id OR key/letter depending on your dataset format
+      isCorrect = expected === opt.id || expected === key || expected === letter;
+    }
+  }
+}
+
 
       if (isCorrect) continue;
 
@@ -256,7 +271,7 @@ const visible = useMemo(() => {
 
 
   return filtered;
-}, [filtered, mode, bookmarkedSet, mistakesMetaById, clearedMistakeIds]);
+}, [filtered, mode, bookmarkedSet, mistakesMetaById, clearedMistakesSet]);
 
 
 
@@ -265,17 +280,12 @@ function clearSelection() {
 }
 
 function unbookmarkSelected() {
-  // Only unbookmark the currently selected ones
   const ids = Array.from(selectedIds);
-
-  ids.forEach((id) => {
-    // In bookmarks mode these should already be bookmarked,
-    // but this guard keeps it safe.
-    if (bookmarkedSet.has(id)) toggle(id);
-  });
-
+  if (ids.length === 0) return;
+  removeMany(ids);
   clearSelection();
 }
+
 
 function clearMistakesSelected() {
   const ids = Array.from(selectedIds);

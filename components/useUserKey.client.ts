@@ -1,56 +1,45 @@
+// components/useUserKey.client.ts
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { userKeyFromEmail } from "@/lib/identity/userKey";
-
-type SessionOk = {
-  ok: true;
-  authed: true;
-  method: "email" | "social";
-  email: string | null;
-  provider: string | null;
-};
-
-type SessionNo = {
-  ok: false;
-  authed: false;
-  method: "guest";
-  email: null;
-  provider: null;
-};
-
-type SessionRes = SessionOk | SessionNo;
+import { authClient } from "@/lib/authClient";
 
 export function useUserKey() {
   const [userKey, setUserKey] = useState<string>("guest");
+  const seqRef = useRef(0);
 
-  useEffect(() => {
-    let cancelled = false;
+  const refresh = useCallback(() => {
+    const seq = ++seqRef.current;
 
-    async function run() {
+    (async () => {
       try {
-        const res = await fetch("/api/session", { cache: "no-store" });
-        const json = (await res.json()) as SessionRes;
+        const json = await authClient.getSession();
+        if (seq !== seqRef.current) return;
 
         const email = json.ok && json.authed ? (json.email ?? "") : "";
-        const nextKey = userKeyFromEmail(email);
-
-        if (!cancelled) setUserKey(nextKey);
+        setUserKey(userKeyFromEmail(email));
       } catch {
-        if (!cancelled) setUserKey("guest");
+        if (seq !== seqRef.current) return;
+        setUserKey("guest");
       }
-    }
-
-    run();
-
-    const onRefresh = () => run();
-    window.addEventListener("expatise:session-changed", onRefresh);
-
-    return () => {
-      cancelled = true;
-      window.removeEventListener("expatise:session-changed", onRefresh);
-    };
+    })();
   }, []);
+
+  useEffect(() => {
+  refresh();
+
+  if (typeof window === "undefined") return;
+
+  const onChanged = () => refresh();
+  window.addEventListener("expatise:session-changed", onChanged);
+
+  return () => {
+    window.removeEventListener("expatise:session-changed", onChanged);
+    seqRef.current++; // invalidate in-flight
+  };
+}, [refresh]);
+
 
   return userKey;
 }

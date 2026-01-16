@@ -2,8 +2,11 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { authClient } from "@/lib/authClient";
+import type { SessionRes } from "@/lib/authClient/types";
 
-type AuthStatus = {
+type AuthState = {
+  loading: boolean;
   authed: boolean;
   method: "guest" | "email" | "social";
   email: string | null;
@@ -11,34 +14,68 @@ type AuthStatus = {
 };
 
 export function useAuthStatus() {
-  const [loading, setLoading] = useState(true);
-  const [status, setStatus] = useState<AuthStatus>({
+  const [state, setState] = useState<AuthState>({
+    loading: true,
     authed: false,
     method: "guest",
     email: null,
     provider: null,
   });
 
-  const refresh = useCallback(async () => {
-    setLoading(true);
-    try {
-      const res = await fetch("/api/session", { cache: "no-store" });
-      const data = (await res.json()) as Partial<AuthStatus>;
+  const refresh = useCallback(() => {
+    let cancelled = false;
 
-      setStatus({
-        authed: Boolean(data.authed),
-        method: (data.method as any) ?? "guest",
-        email: data.email ?? null,
-        provider: data.provider ?? null,
-      });
-    } finally {
-      setLoading(false);
-    }
+    (async () => {
+      try {
+        const json = (await authClient.getSession()) as SessionRes;
+
+        if (cancelled) return;
+
+        if (json.ok && json.authed) {
+          setState({
+            loading: false,
+            authed: true,
+            method: json.method,
+            email: json.email,
+            provider: json.provider,
+          });
+        } else {
+          setState({
+            loading: false,
+            authed: false,
+            method: "guest",
+            email: null,
+            provider: null,
+          });
+        }
+      } catch {
+        if (cancelled) return;
+        setState({
+          loading: false,
+          authed: false,
+          method: "guest",
+          email: null,
+          provider: null,
+        });
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   useEffect(() => {
-    refresh();
+    const cleanup = refresh();
+
+    const onChanged = () => refresh();
+    window.addEventListener("expatise:session-changed", onChanged);
+
+    return () => {
+      cleanup?.();
+      window.removeEventListener("expatise:session-changed", onChanged);
+    };
   }, [refresh]);
 
-  return { ...status, loading, refresh };
+  return { ...state, refresh };
 }

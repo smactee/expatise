@@ -1,3 +1,4 @@
+//components/EntitlementsProvider.client.tsx
 "use client";
 
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
@@ -38,16 +39,23 @@ export function EntitlementsProvider({ children }: { children: React.ReactNode }
     return;
   }
 
+  const keyAtStart = userKey;
+
+  const local = getLocalEntitlements(keyAtStart) ?? FREE_ENTITLEMENTS;
+  setState(local);
+
   void (async () => {
-    const e = await getEntitlements(userKey);
+    const e = await getEntitlements(keyAtStart);
+    // ignore stale result if userKey changed mid-flight
+    if (keyAtStart !== userKey) return;
     setState(e);
   })();
 }, [userKey]);
 
-
   const setEntitlements = useCallback((e: Entitlements) => {
     setLocalEntitlements(userKey, e);
     setState(e);
+    try { window.dispatchEvent(new Event("expatise:entitlements-changed")); } catch {}
   }, [userKey]);
 
   const grantPremium = useCallback((source: EntitlementSource, expiresAt?: number) => {
@@ -59,16 +67,18 @@ export function EntitlementsProvider({ children }: { children: React.ReactNode }
     };
     setLocalEntitlements(userKey, next);
     setState(next);
+    try { window.dispatchEvent(new Event("expatise:entitlements-changed")); } catch {}
   }, [userKey]);
 
   const revokePremium = useCallback(() => {
     clearLocalEntitlements(userKey);
     setState(FREE_ENTITLEMENTS);
+    try { window.dispatchEvent(new Event("expatise:entitlements-changed")); } catch {}
   }, [userKey]);
 
   useEffect(() => {
     refresh();
-  }, [refresh, userKey]);
+  }, [refresh]);
 
 useEffect(() => {
   const onEntChanged = () => refresh();

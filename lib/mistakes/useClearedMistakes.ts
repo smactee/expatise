@@ -1,34 +1,27 @@
+// lib/mistakes/useClearedMistakes.ts
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { clearedMistakesStore } from "@/lib/mistakes/store";
+import { useUserKey } from "@/components/useUserKey.client";
 
-const keyFor = (datasetId: string, userKey: string) =>
-  `expatise:mistakesCleared:${userKey}:${datasetId}`;
+export function useClearedMistakes(datasetId: string, userKeyOverride?: string) {
+  const inferredUserKey = useUserKey();
+  const userKey = userKeyOverride ?? inferredUserKey;
 
-function readIds(datasetId: string, userKey: string): string[] {
-  if (typeof window === "undefined") return [];
-  try {
-    const raw = localStorage.getItem(keyFor(datasetId, userKey));
-    const parsed = raw ? JSON.parse(raw) : [];
-    return Array.isArray(parsed) ? parsed.map(String) : [];
-  } catch {
-    return [];
-  }
-}
-
-function writeIds(datasetId: string, userKey: string, ids: string[]) {
-  try {
-    localStorage.setItem(keyFor(datasetId, userKey), JSON.stringify(ids));
-  } catch {
-    // ignore
-  }
-}
-
-export function useClearedMistakes(datasetId: string, userKey: string) {
   const [ids, setIds] = useState<string[]>([]);
 
   useEffect(() => {
-    setIds(readIds(datasetId, userKey));
+    let cancelled = false;
+
+    (async () => {
+      const list = await clearedMistakesStore.listIds(userKey, datasetId);
+      if (!cancelled) setIds(list);
+    })();
+
+    return () => {
+      cancelled = true;
+    };
   }, [datasetId, userKey]);
 
   const idSet = useMemo(() => new Set(ids), [ids]);
@@ -36,11 +29,9 @@ export function useClearedMistakes(datasetId: string, userKey: string) {
   const clearMany = useCallback(
     (qids: string[]) => {
       setIds((prev) => {
-        const next = new Set(prev);
-        qids.forEach((id) => next.add(id));
-        const arr = Array.from(next);
-        writeIds(datasetId, userKey, arr);
-        return arr;
+        const next = Array.from(new Set([...prev, ...(qids ?? [])].map(String)));
+        void clearedMistakesStore.writeIds(userKey, datasetId, next);
+        return next;
       });
     },
     [datasetId, userKey]
@@ -48,12 +39,11 @@ export function useClearedMistakes(datasetId: string, userKey: string) {
 
   const undoMany = useCallback(
     (qids: string[]) => {
+      const remove = new Set((qids ?? []).map(String));
       setIds((prev) => {
-        const next = new Set(prev);
-        qids.forEach((id) => next.delete(id));
-        const arr = Array.from(next);
-        writeIds(datasetId, userKey, arr);
-        return arr;
+        const next = prev.filter((id) => !remove.has(String(id)));
+        void clearedMistakesStore.writeIds(userKey, datasetId, next);
+        return next;
       });
     },
     [datasetId, userKey]
@@ -61,7 +51,7 @@ export function useClearedMistakes(datasetId: string, userKey: string) {
 
   const clearAll = useCallback(() => {
     setIds([]);
-    writeIds(datasetId, userKey, []);
+    void clearedMistakesStore.clearAll(userKey, datasetId);
   }, [datasetId, userKey]);
 
   return { ids, idSet, clearMany, undoMany, clearAll };
