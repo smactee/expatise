@@ -1169,10 +1169,17 @@ export default function BookmarksPage() {
 
 ### app/(premium)/layout.tsx
 ```tsx
+// app/(premium)/layout.tsx
 import RequirePremium from "@/components/RequirePremium.client";
+import FreeUsageProgressBadge from "@/components/FreeUsageProgressBadge.client";
 
 export default function PremiumLayout({ children }: { children: React.ReactNode }) {
-  return <RequirePremium>{children}</RequirePremium>;
+  return (
+    <>
+      <FreeUsageProgressBadge />
+      <RequirePremium>{children}</RequirePremium>
+    </>
+  );
 }
 
 ```
@@ -1221,6 +1228,13 @@ import BackButton from '@/components/BackButton';
 import { useAuthStatus } from '@/components/useAuthStatus';
 import { attemptStore } from "@/lib/attempts/store";
 import { computeNextUnansweredIndex, normalizeUserKey, type TestAttemptV1 } from "@/lib/attempts/engine";
+import {
+  canStartExam,
+  incrementExamStart,
+  canShowQuestion,
+  markQuestionShown,
+} from "@/lib/freeAccess/localUsageCap";
+
 
 
 
@@ -1271,7 +1285,10 @@ export default function RealTestClient({
   const endAtRef = useRef<number>(Date.now() + timeLimitMinutes * 60 * 1000);
 
 
-  const { toggle, isBookmarked } = useBookmarks(datasetId);
+const { loading: authLoading, email } = useAuthStatus();
+const userKey = normalizeUserKey(email ?? ""); // (or just email if your fn accepts null)
+
+const { toggle, isBookmarked } = useBookmarks(datasetId, userKey);
 
   const [answers, setAnswers] = useState<Record<string, string>>({});
 
@@ -1305,10 +1322,6 @@ const finishTest = async (reason: "time" | "completed") => {
 };
 
 
-
-
-const { loading: authLoading, email } = useAuthStatus();
-const userKey = normalizeUserKey(email);
 const [attempt, setAttempt] = useState<TestAttemptV1 | null>(null);
 
 
@@ -1325,15 +1338,45 @@ if (authLoading) return;
 
 const allIds = ds.map((q) => q.id);
 
-const { attempt: a } = await attemptStore.getOrCreateAttempt({
+// ✅ Preflight gate ONLY if there is no resumable attempt (so resume is always allowed)
+const existing = await attemptStore.listAttempts(userKey, datasetId);
+const hasResumable = existing.some(
+  (t) =>
+    t.modeKey === "real-test" &&
+    t.datasetVersion === datasetVersion &&
+    (t.status === "in_progress" || t.status === "paused")
+);
+
+if (!hasResumable && !canStartExam(userKey, { requiredQuestions: questionCount })) {
+  router.replace(`/premium?next=${encodeURIComponent("/real-test")}`);
+  return;
+}
+
+
+const { attempt: a, reused } = await attemptStore.getOrCreateAttempt({
   userKey,
-  modeKey: 'real-test',
+  modeKey: "real-test",
   datasetId,
   datasetVersion,
   allQuestionIds: allIds,
   questionCount,
   timeLimitSec: timeLimitMinutes * 60,
 });
+
+// Only block *new* starts. Allow resuming even if cap is hit.
+if (!reused) {
+  // 5-start cap blocks the 6th + optional preflight
+  if (!canStartExam(userKey, { requiredQuestions: questionCount })) {
+    // Optional: mark attempt as expired so it doesn’t clutter “resume”
+    // (only do this if your closeAttemptById patch supports status)
+    // await attemptStore.closeAttemptById(a.attemptId, { status: "expired" });
+
+    router.replace(`/premium?next=${encodeURIComponent("/real-test")}`);
+    return;
+  }
+
+}
+
 
 // Build the picked subset in the frozen random order
 const byId = new Map(ds.map((q) => [q.id, q] as const));
@@ -1525,13 +1568,23 @@ if (base) {
 }
 
 
-    const next = index + 1;
-    if (next >= items.length) {
-      await finishTest("completed");
-      return;
-    }
+const next = index + 1;
 
-    setIndex(next);
+if (next >= items.length) {
+  void finishTest("completed");
+  return;
+}
+
+const nextItem = items[next];
+
+if (!canShowQuestion(userKey)) {
+  router.replace(`/premium?next=${encodeURIComponent("/real-test")}`);
+  return;
+}
+
+
+setIndex(next);
+
   } finally {
     setTimeout(() => {
       advancingRef.current = false;
@@ -1554,6 +1607,21 @@ const onOptionTap = (key: string) => {
   lastTapRef.current = { key, at: now };
   setSelectedKey(key);
 };
+
+useEffect(() => {
+  if (!item?.id) return;
+
+  // Block showing the 421st question
+  if (!canShowQuestion(userKey)) {
+    router.replace(`/premium?next=${encodeURIComponent("/real-test")}`);
+    return;
+  }
+
+  // Count on DISPLAY (even if unanswered, even if repeated later)
+  // viewSig only debounces accidental double runs.
+  const viewSig = `real-test:${datasetId}:${datasetVersion}:${attempt?.attemptId ?? "na"}:${index}:${item.id}`;
+  markQuestionShown(userKey, viewSig);
+}, [item?.id, userKey, datasetId, datasetVersion, attempt?.attemptId, index, router]);
 
 
 useEffect(() => {
@@ -10502,19 +10570,89 @@ export default function FeatureCard({
 
 ```
 
-### components/RequirePremium.client.tsx
+### components/FreeUsageProgressBadge.client.tsx
 ```tsx
-//components/RequirePremium.client.tsx
-
+// components/FreeUsageProgressBadge.client.tsx
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useUserKey } from "@/components/useUserKey.client";
+import {
+  FREE_CAPS,
+  getUsageCapState,
+  usageCapEventName,
+} from "@/lib/freeAccess/localUsageCap";
+
+export default function FreeUsageProgressBadge() {
+  const userKey = useUserKey();
+
+  const [shown, setShown] = useState(0);
+  const [starts, setStarts] = useState(0);
+
+  const refresh = () => {
+    const s = getUsageCapState(userKey);
+    setShown(s.shown);
+    setStarts(s.examStarts);
+  };
+
+  useEffect(() => {
+    refresh();
+
+    const evt = usageCapEventName();
+    const onChange = () => refresh();
+
+    window.addEventListener(evt, onChange);
+    window.addEventListener("expatise:session-changed", onChange);
+
+    return () => {
+      window.removeEventListener(evt, onChange);
+      window.removeEventListener("expatise:session-changed", onChange);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userKey]);
+
+  const text = useMemo(() => {
+    return `${shown}/${FREE_CAPS.questionsShown} · ${starts}/${FREE_CAPS.examStarts}`;
+  }, [shown, starts]);
+
+  return (
+    <div
+      style={{
+        position: "fixed",
+        top: 12,
+        right: 12,
+        zIndex: 9999,
+        padding: "8px 10px",
+        borderRadius: 999,
+        fontSize: 12,
+        lineHeight: "12px",
+        background: "rgba(0,0,0,0.65)",
+        color: "white",
+        backdropFilter: "blur(10px)",
+        WebkitBackdropFilter: "blur(10px)",
+      }}
+      aria-label="Free usage progress"
+      title="Free usage progress"
+    >
+      {text}
+    </div>
+  );
+}
+
+```
+
+### components/RequirePremium.client.tsx
+```tsx
+"use client";
+
+import { useEffect, useRef } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { PUBLIC_FLAGS } from "@/lib/flags/public";
 import { useEntitlements } from "@/components/EntitlementsProvider.client";
-import { safeNextPath } from "@/lib/navigation/safeNextPath";
+import { useUsageCap } from "@/lib/freeAccess/useUsageCap";
 
-function currentPath(pathname: string, qs: string) {
+function currentPath(pathname: string, sp: URLSearchParams) {
+  const qs = sp.toString();
   return qs ? `${pathname}?${qs}` : pathname;
 }
 
@@ -10522,22 +10660,34 @@ export default function RequirePremium({ children }: { children: React.ReactNode
   const router = useRouter();
   const pathname = usePathname();
   const sp = useSearchParams();
-  const qs = sp.toString(); // <- string is stable for deps
+
   const { isPremium } = useEntitlements();
+  const { isOverCap } = useUsageCap();
+
+  // Only redirect on route entry, not mid-session state changes
+  const checkedRef = useRef<string>("");
 
   useEffect(() => {
     if (!PUBLIC_FLAGS.enablePremiumGates) return;
+
+    const key = `${pathname}?${sp.toString()}`;
+    if (checkedRef.current === key) return;
+    checkedRef.current = key;
+
+    // premium always allowed
     if (isPremium) return;
 
-    const nextPath = safeNextPath(currentPath(pathname, qs));
-    const next = encodeURIComponent(nextPath);
+    // free user allowed until cap reached
+    if (!isOverCap) return;
+
+    const next = encodeURIComponent(currentPath(pathname, sp));
     router.replace(`/premium?next=${next}`);
-  }, [isPremium, pathname, qs, router]);
+  }, [isPremium, isOverCap, pathname, sp, router]);
 
   if (!PUBLIC_FLAGS.enablePremiumGates) return <>{children}</>;
   if (isPremium) return <>{children}</>;
+  if (!isOverCap) return <>{children}</>;
 
-  // while redirecting
   return null;
 }
 
@@ -11386,6 +11536,215 @@ export const SERVER_FLAGS = {
   ...PUBLIC_FLAGS,
   enableWeChatAuth: readBool("ENABLE_WECHAT_AUTH", false),
 } as const;
+
+```
+
+### lib/freeAccess/localUsageCap.ts
+```tsx
+// lib/freeAccess/localUsageCap.ts
+"use client";
+
+export const FREE_CAPS = {
+  questionsShown: 420,
+  examStarts: 5,
+} as const;
+
+export type UsageCapState = {
+  shown: number;         // counts every question display
+  examStarts: number;    // counts only when starting a NEW exam (reused === false)
+  lastView?: { sig: string; at: number }; // tiny debounce to avoid accidental double-count
+  updatedAt: number;
+};
+
+const EVT = "expatise:usagecap-changed";
+const keyFor = (userKey: string) => `expatise:usagecap:v2:user:${userKey || "guest"}`;
+
+function safeParse(raw: string | null): any {
+  if (!raw) return null;
+  try {
+    return JSON.parse(raw);
+  } catch {
+    return null;
+  }
+}
+
+function baseState(): UsageCapState {
+  return { shown: 0, examStarts: 0, updatedAt: 0 };
+}
+
+/**
+ * Migration:
+ * - If you previously stored shownKeys[], migrate shown = shownKeys.length.
+ * - Keep examStarts if present.
+ */
+function readState(userKey: string): UsageCapState {
+  if (typeof window === "undefined") return baseState();
+
+  const parsed = safeParse(localStorage.getItem(keyFor(userKey)));
+
+  // migrate from v1 (shownKeys)
+  if (parsed && Array.isArray(parsed.shownKeys)) {
+    const migrated: UsageCapState = {
+      shown: parsed.shownKeys.length,
+      examStarts: typeof parsed.examStarts === "number" ? parsed.examStarts : 0,
+      updatedAt: Date.now(),
+    };
+    writeState(userKey, migrated);
+    return migrated;
+  }
+
+  if (!parsed) return baseState();
+
+  return {
+    shown: typeof parsed.shown === "number" ? parsed.shown : 0,
+    examStarts: typeof parsed.examStarts === "number" ? parsed.examStarts : 0,
+    lastView:
+      parsed.lastView && typeof parsed.lastView.sig === "string" && typeof parsed.lastView.at === "number"
+        ? { sig: String(parsed.lastView.sig), at: Number(parsed.lastView.at) }
+        : undefined,
+    updatedAt: typeof parsed.updatedAt === "number" ? parsed.updatedAt : 0,
+  };
+}
+
+function writeState(userKey: string, next: UsageCapState) {
+  if (typeof window === "undefined") return;
+  try {
+    localStorage.setItem(keyFor(userKey), JSON.stringify(next));
+  } catch {
+    // ignore quota/private mode
+  }
+  try {
+    window.dispatchEvent(new Event(EVT));
+  } catch {}
+}
+
+export function usageCapEventName() {
+  return EVT;
+}
+
+export function getUsageCapState(userKey: string): UsageCapState {
+  return readState(userKey);
+}
+
+export function getUsageCapProgress(userKey: string) {
+  const s = readState(userKey);
+  return {
+    shown: s.shown,
+    shownMax: FREE_CAPS.questionsShown,
+    examStarts: s.examStarts,
+    examStartsMax: FREE_CAPS.examStarts,
+  };
+}
+
+export function remainingQuestions(userKey: string) {
+  const s = readState(userKey);
+  return Math.max(0, FREE_CAPS.questionsShown - s.shown);
+}
+
+/**
+ * Can we show the NEXT question?
+ * New rule: we do NOT care if it's been seen before.
+ */
+export function canShowQuestion(userKey: string) {
+  const s = readState(userKey);
+  return s.shown < FREE_CAPS.questionsShown; // allow up to 420th display, block 421st
+}
+
+/**
+ * Increment question shown (on display).
+ * We accept a viewSig only to debounce accidental double-run.
+ * This does NOT prevent counting the same question again later.
+ */
+export function markQuestionShown(userKey: string, viewSig?: string): UsageCapState {
+  const prev = readState(userKey);
+  const now = Date.now();
+
+  if (viewSig && prev.lastView?.sig === viewSig && now - prev.lastView.at < 1500) {
+    return prev; // debounce only
+  }
+
+  const next: UsageCapState = {
+    ...prev,
+    shown: prev.shown + 1,
+    lastView: viewSig ? { sig: viewSig, at: now } : prev.lastView,
+    updatedAt: now,
+  };
+
+  writeState(userKey, next);
+  return next;
+}
+
+/**
+ * Can we start a NEW exam?
+ * - blocks the 6th start
+ * - optional preflight: require remaining free questions >= requiredQuestions (e.g. 50)
+ */
+export function canStartExam(userKey: string, opts?: { requiredQuestions?: number }) {
+  const s = readState(userKey);
+
+  if (s.examStarts >= FREE_CAPS.examStarts) return false; // block 6th start
+
+  const required = opts?.requiredQuestions ?? 0;
+  if (required > 0 && remainingQuestions(userKey) < required) return false;
+
+  return true;
+}
+
+export function incrementExamStart(userKey: string): UsageCapState {
+  const prev = readState(userKey);
+  const next: UsageCapState = {
+    ...prev,
+    examStarts: prev.examStarts + 1,
+    updatedAt: Date.now(),
+  };
+  writeState(userKey, next);
+  return next;
+}
+
+```
+
+### lib/freeAccess/useUsageCap.ts
+```tsx
+// lib/freeAccess/useUsageCap.ts
+"use client";
+
+import { useEffect, useMemo, useState } from "react";
+import { FREE_CAPS, getUsageCapState, usageCapEventName } from "@/lib/freeAccess/localUsageCap";
+import { useUserKey } from "@/components/useUserKey.client";
+
+export function useUsageCap(userKeyOverride?: string) {
+  const inferred = useUserKey();
+  const userKey = userKeyOverride ?? inferred;
+
+  const [state, setState] = useState(() => getUsageCapState(userKey));
+
+  useEffect(() => {
+    setState(getUsageCapState(userKey));
+
+    const onChanged = () => setState(getUsageCapState(userKey));
+    window.addEventListener(usageCapEventName(), onChanged);
+    return () => window.removeEventListener(usageCapEventName(), onChanged);
+  }, [userKey]);
+
+  return useMemo(() => {
+    const questionsShown = state.shown; // ✅ new model
+    const examsStarted = state.examStarts;
+
+    const over =
+      questionsShown >= FREE_CAPS.questionsShown ||
+      examsStarted >= FREE_CAPS.examStarts;
+
+    return {
+      userKey,
+      caps: FREE_CAPS,
+      state,
+      questionsShown,
+      examsStarted,
+      isOverCap: over,
+      progressText: `${questionsShown}/${FREE_CAPS.questionsShown} questions · ${examsStarted}/${FREE_CAPS.examStarts} exams`,
+    };
+  }, [state, userKey]);
+}
 
 ```
 

@@ -1,14 +1,13 @@
-//components/RequirePremium.client.tsx
-
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { PUBLIC_FLAGS } from "@/lib/flags/public";
 import { useEntitlements } from "@/components/EntitlementsProvider.client";
-import { safeNextPath } from "@/lib/navigation/safeNextPath";
+import { useUsageCap } from "@/lib/freeAccess/useUsageCap";
 
-function currentPath(pathname: string, qs: string) {
+function currentPath(pathname: string, sp: URLSearchParams) {
+  const qs = sp.toString();
   return qs ? `${pathname}?${qs}` : pathname;
 }
 
@@ -16,21 +15,33 @@ export default function RequirePremium({ children }: { children: React.ReactNode
   const router = useRouter();
   const pathname = usePathname();
   const sp = useSearchParams();
-  const qs = sp.toString(); // <- string is stable for deps
+
   const { isPremium } = useEntitlements();
+  const { isOverCap } = useUsageCap();
+
+  // Only redirect on route entry, not mid-session state changes
+  const checkedRef = useRef<string>("");
 
   useEffect(() => {
     if (!PUBLIC_FLAGS.enablePremiumGates) return;
+
+    const key = `${pathname}?${sp.toString()}`;
+    if (checkedRef.current === key) return;
+    checkedRef.current = key;
+
+    // premium always allowed
     if (isPremium) return;
 
-    const nextPath = safeNextPath(currentPath(pathname, qs));
-    const next = encodeURIComponent(nextPath);
+    // free user allowed until cap reached
+    if (!isOverCap) return;
+
+    const next = encodeURIComponent(currentPath(pathname, sp));
     router.replace(`/premium?next=${next}`);
-  }, [isPremium, pathname, qs, router]);
+  }, [isPremium, isOverCap, pathname, sp, router]);
 
   if (!PUBLIC_FLAGS.enablePremiumGates) return <>{children}</>;
   if (isPremium) return <>{children}</>;
+  if (!isOverCap) return <>{children}</>;
 
-  // while redirecting
   return null;
 }

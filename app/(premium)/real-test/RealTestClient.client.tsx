@@ -16,6 +16,13 @@ import BackButton from '@/components/BackButton';
 import { useAuthStatus } from '@/components/useAuthStatus';
 import { attemptStore } from "@/lib/attempts/store";
 import { computeNextUnansweredIndex, normalizeUserKey, type TestAttemptV1 } from "@/lib/attempts/engine";
+import {
+  canStartExam,
+  incrementExamStart,
+  canShowQuestion,
+  markQuestionShown,
+} from "@/lib/freeAccess/localUsageCap";
+
 
 
 
@@ -66,7 +73,10 @@ export default function RealTestClient({
   const endAtRef = useRef<number>(Date.now() + timeLimitMinutes * 60 * 1000);
 
 
-  const { toggle, isBookmarked } = useBookmarks(datasetId);
+const { loading: authLoading, email } = useAuthStatus();
+const userKey = normalizeUserKey(email ?? ""); // (or just email if your fn accepts null)
+
+const { toggle, isBookmarked } = useBookmarks(datasetId, userKey);
 
   const [answers, setAnswers] = useState<Record<string, string>>({});
 
@@ -100,10 +110,6 @@ const finishTest = async (reason: "time" | "completed") => {
 };
 
 
-
-
-const { loading: authLoading, email } = useAuthStatus();
-const userKey = normalizeUserKey(email);
 const [attempt, setAttempt] = useState<TestAttemptV1 | null>(null);
 
 
@@ -120,15 +126,45 @@ if (authLoading) return;
 
 const allIds = ds.map((q) => q.id);
 
-const { attempt: a } = await attemptStore.getOrCreateAttempt({
+// ✅ Preflight gate ONLY if there is no resumable attempt (so resume is always allowed)
+const existing = await attemptStore.listAttempts(userKey, datasetId);
+const hasResumable = existing.some(
+  (t) =>
+    t.modeKey === "real-test" &&
+    t.datasetVersion === datasetVersion &&
+    (t.status === "in_progress" || t.status === "paused")
+);
+
+if (!hasResumable && !canStartExam(userKey, { requiredQuestions: questionCount })) {
+  router.replace(`/premium?next=${encodeURIComponent("/real-test")}`);
+  return;
+}
+
+
+const { attempt: a, reused } = await attemptStore.getOrCreateAttempt({
   userKey,
-  modeKey: 'real-test',
+  modeKey: "real-test",
   datasetId,
   datasetVersion,
   allQuestionIds: allIds,
   questionCount,
   timeLimitSec: timeLimitMinutes * 60,
 });
+
+// Only block *new* starts. Allow resuming even if cap is hit.
+if (!reused) {
+  // 5-start cap blocks the 6th + optional preflight
+  if (!canStartExam(userKey, { requiredQuestions: questionCount })) {
+    // Optional: mark attempt as expired so it doesn’t clutter “resume”
+    // (only do this if your closeAttemptById patch supports status)
+    // await attemptStore.closeAttemptById(a.attemptId, { status: "expired" });
+
+    router.replace(`/premium?next=${encodeURIComponent("/real-test")}`);
+    return;
+  }
+
+}
+
 
 // Build the picked subset in the frozen random order
 const byId = new Map(ds.map((q) => [q.id, q] as const));
@@ -320,13 +356,23 @@ if (base) {
 }
 
 
-    const next = index + 1;
-    if (next >= items.length) {
-      await finishTest("completed");
-      return;
-    }
+const next = index + 1;
 
-    setIndex(next);
+if (next >= items.length) {
+  void finishTest("completed");
+  return;
+}
+
+const nextItem = items[next];
+
+if (!canShowQuestion(userKey)) {
+  router.replace(`/premium?next=${encodeURIComponent("/real-test")}`);
+  return;
+}
+
+
+setIndex(next);
+
   } finally {
     setTimeout(() => {
       advancingRef.current = false;
@@ -349,6 +395,21 @@ const onOptionTap = (key: string) => {
   lastTapRef.current = { key, at: now };
   setSelectedKey(key);
 };
+
+useEffect(() => {
+  if (!item?.id) return;
+
+  // Block showing the 421st question
+  if (!canShowQuestion(userKey)) {
+    router.replace(`/premium?next=${encodeURIComponent("/real-test")}`);
+    return;
+  }
+
+  // Count on DISPLAY (even if unanswered, even if repeated later)
+  // viewSig only debounces accidental double runs.
+  const viewSig = `real-test:${datasetId}:${datasetVersion}:${attempt?.attemptId ?? "na"}:${index}:${item.id}`;
+  markQuestionShown(userKey, viewSig);
+}, [item?.id, userKey, datasetId, datasetVersion, attempt?.attemptId, index, router]);
 
 
 useEffect(() => {
