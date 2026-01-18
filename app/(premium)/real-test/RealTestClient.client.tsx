@@ -155,15 +155,14 @@ const { attempt: a, reused } = await attemptStore.getOrCreateAttempt({
 if (!reused) {
   // 5-start cap blocks the 6th + optional preflight
   if (!canStartExam(userKey, { requiredQuestions: questionCount })) {
-    // Optional: mark attempt as expired so it doesn’t clutter “resume”
-    // (only do this if your closeAttemptById patch supports status)
-    // await attemptStore.closeAttemptById(a.attemptId, { status: "expired" });
-
     router.replace(`/premium?next=${encodeURIComponent("/real-test")}`);
     return;
   }
 
+  // ✅ count exam start ONLY for a brand-new attempt
+  incrementExamStart(userKey);
 }
+
 
 
 // Build the picked subset in the frozen random order

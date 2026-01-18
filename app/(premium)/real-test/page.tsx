@@ -9,7 +9,7 @@ export default function RealTestPage() {
   const datasetVersion = 'cn-2023-test1@v1';
 
   // Real Test fixed size
-  const questionCount = 50;
+  const questionCount = 100;
 
   return (
     <RealTestClient
