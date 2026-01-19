@@ -1259,17 +1259,27 @@ function normalizeRowChoice(v: string | null | undefined): 'R' | 'W' | null {
 
 
 export default function RealTestClient({
+  modeKey,
   datasetId,
   datasetVersion,
   questionCount,
   timeLimitMinutes,
+  preflightRequiredQuestions,
+  routeBase,
 }: {
+  modeKey: string;
   datasetId: DatasetId;
   datasetVersion: string;
   questionCount: number;
   timeLimitMinutes: number;
+  preflightRequiredQuestions?: number;
+  routeBase: string;
 }) {
+
   const router = useRouter();
+
+  const required = preflightRequiredQuestions ?? questionCount;
+
 
   const [items, setItems] = useState<Question[]>([]);
   const [loading, setLoading] = useState(true);
@@ -1278,7 +1288,7 @@ export default function RealTestClient({
   const [index, setIndex] = useState(0);
   const [selectedKey, setSelectedKey] = useState<string | null>(null);
 
-  const total = items.length || 100;
+  const total = items.length || questionCount;
   const currentNo = Math.min(index + 1, total);
 
   const [timeLeft, setTimeLeft] = useState(timeLimitMinutes * 60);
@@ -1298,28 +1308,31 @@ const finishTest = async (reason: "time" | "completed") => {
   if (finishedRef.current) return;
   finishedRef.current = true;
 
-  // Close the attempt before leaving the page
-  if (attempt?.attemptId) {
-    await attemptStore.closeAttemptById(attempt.attemptId, { remainingSec: timeLeft });
-  }
+  const a = attemptRef.current;
 
-  if (!attempt) {
-    router.push("/real-test/results?reason=" + reason);
+  // If we somehow don't have an attempt, do NOT go to results (results needs attemptId)
+  if (!a?.attemptId) {
+    router.replace(routeBase); // send them back to the test start
     return;
   }
+
+  // close attempt before leaving (optional but good)
+  await attemptStore.closeAttemptById(a.attemptId, { remainingSec: timeLeft });
 
   const limitSeconds = timeLimitMinutes * 60;
   const usedSeconds = Math.min(limitSeconds, Math.max(0, limitSeconds - timeLeft));
 
   const params = new URLSearchParams({
-    attemptId: attempt.attemptId,
+    attemptId: a.attemptId,
     reason,
     usedSeconds: String(usedSeconds),
     limitSeconds: String(limitSeconds),
   });
 
-  router.push(`/real-test/results?${params.toString()}`);
+  // IMPORTANT: routeBase must start with "/" (ex: "/test/real" or "/real-test")
+  router.push(`${routeBase}/results?${params.toString()}`);
 };
+
 
 
 const [attempt, setAttempt] = useState<TestAttemptV1 | null>(null);
@@ -1334,7 +1347,10 @@ const ds = await loadDataset(datasetId);
 if (!mounted) return;
 
 // If auth is still loading, don't create attempts yet.
-if (authLoading) return;
+if (authLoading) {
+  setLoading(true);
+  return;
+}
 
 const allIds = ds.map((q) => q.id);
 
@@ -1342,20 +1358,20 @@ const allIds = ds.map((q) => q.id);
 const existing = await attemptStore.listAttempts(userKey, datasetId);
 const hasResumable = existing.some(
   (t) =>
-    t.modeKey === "real-test" &&
+    t.modeKey === modeKey &&
     t.datasetVersion === datasetVersion &&
     (t.status === "in_progress" || t.status === "paused")
 );
 
-if (!hasResumable && !canStartExam(userKey, { requiredQuestions: questionCount })) {
-  router.replace(`/premium?next=${encodeURIComponent("/real-test")}`);
+if (!hasResumable && !canStartExam(userKey, { requiredQuestions: required })) {
+  router.replace(`/premium?next=${encodeURIComponent(routeBase)}`);
   return;
 }
 
 
 const { attempt: a, reused } = await attemptStore.getOrCreateAttempt({
   userKey,
-  modeKey: "real-test",
+  modeKey,
   datasetId,
   datasetVersion,
   allQuestionIds: allIds,
@@ -1366,8 +1382,8 @@ const { attempt: a, reused } = await attemptStore.getOrCreateAttempt({
 // Only block *new* starts. Allow resuming even if cap is hit.
 if (!reused) {
   // 5-start cap blocks the 6th + optional preflight
-  if (!canStartExam(userKey, { requiredQuestions: 100 })) {
-    router.replace(`/premium?next=${encodeURIComponent("/real-test")}`);
+  if (!canStartExam(userKey, { requiredQuestions: required })) {
+    router.replace(`/premium?next=${encodeURIComponent(routeBase)}`);
     return;
   }
 
@@ -1408,7 +1424,18 @@ setLoading(false);
     return () => {
       mounted = false;
     };
-  }, [datasetId, datasetVersion, questionCount, timeLimitMinutes, authLoading, userKey]);
+  }, [
+  modeKey,
+  datasetId,
+  datasetVersion,
+  questionCount,
+  timeLimitMinutes,
+  preflightRequiredQuestions,
+  authLoading,
+  userKey,
+  router,
+  routeBase,
+]);
 
 
 useEffect(() => {
@@ -1574,13 +1601,6 @@ if (next >= items.length) {
   return;
 }
 
-const nextItem = items[next];
-
-if (!canShowQuestion(userKey)) {
-  router.replace(`/premium?next=${encodeURIComponent("/real-test")}`);
-  return;
-}
-
 
 setIndex(next);
 
@@ -1612,14 +1632,14 @@ useEffect(() => {
 
   // Block showing the 421st question
   if (!canShowQuestion(userKey)) {
-    router.replace(`/premium?next=${encodeURIComponent("/real-test")}`);
+    router.replace(`/premium?next=${encodeURIComponent(routeBase)}`);
     return;
   }
 
   // Count on DISPLAY (even if unanswered, even if repeated later)
   // viewSig only debounces accidental double runs.
-  const viewSig = `real-test:${datasetId}:${datasetVersion}:${attempt?.attemptId ?? "na"}:${index}:${item.id}`;
-  markQuestionShown(userKey, viewSig);
+  const viewSig = `${modeKey}:${datasetId}:${datasetVersion}:${attempt?.attemptId ?? "na"}:${index}:${item.id}`;
+markQuestionShown(userKey, viewSig);
 }, [item?.id, userKey, datasetId, datasetVersion, attempt?.attemptId, index, router]);
 
 
@@ -1679,7 +1699,7 @@ useEffect(() => {
             />
           </div>
 
-          <div className={styles.progressText}>{currentNo}/{items.length}</div>
+          <div className={styles.progressText}>{currentNo}/{total}</div>
         </div>
 
         {/* Question row (with bookmark icon on the right) */}
@@ -1804,6 +1824,7 @@ useEffect(() => {
 // app/real-test/page.tsx
 import type { DatasetId } from '@/lib/qbank/datasets';
 import RealTestClient from './RealTestClient.client';
+import { redirect } from 'next/navigation';
 
 export default function RealTestPage() {
   const datasetId: DatasetId = 'cn-2023-test1' as DatasetId;
@@ -1812,14 +1833,19 @@ export default function RealTestPage() {
   const datasetVersion = 'cn-2023-test1@v1';
 
   // Real Test fixed size
-  const questionCount = 50;
+  const questionCount = 100;
+
+  redirect("/test/real");
 
   return (
     <RealTestClient
+      modeKey="real-test"
+      routeBase="/real-test"
       datasetId={datasetId}
       datasetVersion={datasetVersion}
-      questionCount={questionCount}
+      questionCount={100}
       timeLimitMinutes={45}
+      preflightRequiredQuestions={100}
     />
   );
 }
@@ -2160,651 +2186,42 @@ height: clamp(240px, 52vw, 340px);
 
 ### app/(premium)/real-test/results/page.tsx
 ```tsx
-/* app/real-test/results/page.tsx */
-'use client';
+/* app/(premium)/real-test/results/page.tsx */
+"use client";
 
-import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
-import styles from './results.module.css';
-import Image from 'next/image';
+import { useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 
-import { loadDataset } from '@/lib/qbank/loadDataset';
-import type { DatasetId } from '@/lib/qbank/datasets';
-import type { Question } from '@/lib/qbank/types';
-import { readAttemptById, type TestAttemptV1 } from '@/lib/test-engine/attemptStorage';
-import { useBookmarks } from '@/lib/bookmarks/useBookmarks';
-import { closeAttemptById } from '@/lib/test-engine/attemptStorage';
-
-function clamp(n: number, min: number, max: number) {
-  return Math.max(min, Math.min(max, n));
-}
-
-function normalizeRowChoice(v: string | null | undefined): 'R' | 'W' | null {
-  if (!v) return null;
-  const t = v.trim().toLowerCase();
-  if (t === 'r' || t === 'right') return 'R';
-  if (t === 'w' || t === 'wrong') return 'W';
-  return null;
-}
-
-function getQuestionNumber(q: any): number {
-  // 1) prefer q.number (can be number OR string)
-  const raw = q?.number;
-
-  const fromNumber = Number(raw);
-  if (Number.isFinite(fromNumber) && fromNumber > 0) return Math.floor(fromNumber);
-
-  // 2) fallback: extract digits from id (q0231 -> 231)
-  const idStr = String(q?.id ?? "");
-  const idMatch = idStr.match(/\d+/);
-  if (idMatch) {
-    const n = parseInt(idMatch[0], 10);
-    if (Number.isFinite(n) && n > 0) return n;
-  }
-
-  // 3) last resort: 0 (means “unknown”)
-  return 0;
-}
-
-
-export default function RealTestResultsPage() {
+/**
+ * Alias/redirect page:
+ * - Keeps old route working: /real-test/results?... -> /test/real/results?...
+ * - Preserves the full query string (attemptId, usedSeconds, limitSeconds, reason, etc.)
+ *
+ * IMPORTANT:
+ * - This file must live under the SAME route group as your real-test route.
+ *   (You said your real-test results CSS is under app/(premium)/real-test/results/, so place this here.)
+ */
+export default function RealTestResultsAliasPage() {
   const router = useRouter();
   const sp = useSearchParams();
 
-  // ✅ Option B: Results is driven by attemptId
-  const attemptId = sp.get('attemptId');
-
-// Your real-test currently pushes usedSeconds/limitSeconds
-const usedSecondsRaw = Number(sp.get('usedSeconds') ?? '0');
-const usedSeconds = Number.isFinite(usedSecondsRaw) && usedSecondsRaw > 0
-  ? Math.floor(usedSecondsRaw)
-  : 0;
-
-const timeMin = Math.floor(usedSeconds / 60);
-const timeSec = usedSeconds % 60;
-
-const timeText = `${timeMin}min ${timeSec}sec`;
-
-
-  const [attempt, setAttempt] = useState<TestAttemptV1 | null>(null);
-  const [computed, setComputed] = useState<{ correct: number; total: number }>({
-    correct: 0,
-    total: 0,
-  });
-  
-  type ReviewItem = {
-  qid: string;
-  testNo: number;
-  prompt: string;
-  imageSrc?: string;
-  options: { key: string; text: string; tone: "neutral" | "correct" | "wrong" }[];
-  explanation?: string;
-};
-
-const [reviewItems, setReviewItems] = useState<ReviewItem[]>([]);
-const [brokenImages, setBrokenImages] = useState<Record<string, boolean>>({});
-
-const datasetId = attempt?.datasetId ?? "";
-const { toggle, isBookmarked } = useBookmarks(datasetId || "pending");
-
-const [viewMode, setViewMode] = useState<'list' | 'carousel'>('list');
-const [activeSlide, setActiveSlide] = useState(0);
-const carouselRef = useRef<HTMLDivElement | null>(null);
-
-const [isDragging, setIsDragging] = useState(false);
-
-const dragRef = useRef({
-  down: false,
-  startX: 0,
-  startLeft: 0,
-  moved: false,
-});
-
-const onCarouselPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
-  // Only enable “drag to scroll” for mouse. Touch keeps native swipe.
-  if (e.pointerType !== 'mouse') return;
-
-  // ✅ If user clicked a button (bookmark / toggle etc), do NOT capture pointer
-  const target = e.target as HTMLElement;
-  if (target.closest('button, a, input, textarea, select, label')) return;
-
-  const el = carouselRef.current;
-  if (!el) return;
-
-  dragRef.current.down = true;
-  dragRef.current.moved = false;
-  dragRef.current.startX = e.clientX;
-  dragRef.current.startLeft = el.scrollLeft;
-
-  setIsDragging(true);
-  el.setPointerCapture(e.pointerId);
-};
-
-
-const onCarouselPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
-  if (e.pointerType !== 'mouse') return;
-  if (!dragRef.current.down) return;
-
-  const el = carouselRef.current;
-  if (!el) return;
-
-  const dx = e.clientX - dragRef.current.startX;
-  if (Math.abs(dx) > 3) dragRef.current.moved = true;
-
-  // Drag left -> show next slide (scrollRight), so we subtract dx
-  el.scrollLeft = dragRef.current.startLeft - dx;
-};
-
-const snapToNearestSlide = () => {
-  const el = carouselRef.current;
-  if (!el) return;
-
-  const w = el.clientWidth || 1;
-  const idx = Math.round(el.scrollLeft / w);
-  el.scrollTo({ left: idx * w, behavior: 'smooth' });
-};
-
-const onCarouselPointerUpOrCancel = (e: React.PointerEvent<HTMLDivElement>) => {
-  if (e.pointerType !== 'mouse') return;
-
-  const el = carouselRef.current;
-  if (!el) return;
-
-  dragRef.current.down = false;
-  setIsDragging(false);
-
-  try {
-    el.releasePointerCapture(e.pointerId);
-  } catch {}
-
-  // Force a clean snap on desktop after drag ends
-  snapToNearestSlide();
-};
-
-
-useEffect(() => {
-  if (viewMode !== 'carousel') return;
-
-  const el = carouselRef.current;
-  if (!el) return;
-
-  const onScroll = () => {
-    const w = el.clientWidth || 1;
-    const idx = Math.round(el.scrollLeft / w);
-    setActiveSlide(Math.max(0, Math.min(idx, reviewItems.length - 1)));
-  };
-
-  onScroll();
-  el.addEventListener('scroll', onScroll, { passive: true });
-  return () => el.removeEventListener('scroll', onScroll as any);
-}, [viewMode, reviewItems.length]);
-
   useEffect(() => {
-    if (!attemptId) return;
+    const qs = sp.toString();
 
-    const a = readAttemptById(attemptId);
-    setAttempt(a);
-
-    if (!a) return;
-
-    (async () => {
-      const ds = await loadDataset(a.datasetId as DatasetId);
-      const byId = new Map(ds.map((q) => [q.id, q] as const));
-
-      // Keep the attempt's frozen random order
-      const picked = a.questionIds.map((id) => byId.get(id)).filter(Boolean) as Question[];
-
-      // Compute score using attempt answers
-      let correct = 0;
-
-      for (let i = 0; i < picked.length; i++) {
-  const q = picked[i];
-  const testNo = i + 1;          // ✅ position in THIS test
-  const bankNo = getQuestionNumber(q); // ✅ global/bank number
-
-        const chosenKey = a.answersByQid[q.id]?.choice ?? null;
-
-        // Your rule: unanswered at timeout = wrong
-        // Score counts only correct; total remains full picked length
-        if (!chosenKey) continue;
-
-        if (q.type === 'ROW') {
-          const chosen = normalizeRowChoice(chosenKey);
-          const expected = normalizeRowChoice((q as any).correctRow ?? null);
-          if (chosen && expected && chosen === expected) correct += 1;
-          continue;
-        }
-
-        // MCQ
-        const chosenOpt = q.options.find((opt, idx) => {
-          const k = opt.originalKey ?? String.fromCharCode(65 + idx);
-          return k === chosenKey;
-        });
-
-        if (chosenOpt && (q as any).correctOptionId && chosenOpt.id === (q as any).correctOptionId) {
-          correct += 1;
-        }
-      }
-
-      setComputed({ correct, total: picked.length });
-// Prepare review items (WRONG ONLY)
-const items: ReviewItem[] = [];
-
-for (let i = 0; i < picked.length; i++) {
-  const q = picked[i];
-  const testNo = i + 1;
-
-  const chosenKey = a.answersByQid[q.id]?.choice ?? null;
-  const qType = String((q as any).type ?? "").toUpperCase();
-
-  // image
-  const assets = (q as any).assets;
-  const imageAsset = Array.isArray(assets)
-    ? assets.find((a: any) => a?.kind === "image" && typeof a?.src === "string")
-    : null;
-  const imageSrc = imageAsset?.src as string | undefined;
-
-  // -------------------------
-  // 1) ROW questions (Right/Wrong)
-  // -------------------------
-  if (qType === "ROW") {
-    const correctRow = normalizeRowChoice((q as any).correctRow ?? null);
-    const chosenRow = normalizeRowChoice(chosenKey);
-
-    const isCorrect = !!(chosenRow && correctRow && chosenRow === correctRow);
-    if (isCorrect) continue; // show only WRONG
-
-    const options: ReviewItem["options"] = [
-      {
-        key: "R",
-        text: "R. Right",
-        tone:
-          correctRow === "R"
-            ? "correct"
-            : chosenRow === "R"
-            ? "wrong"
-            : "neutral",
-      },
-      {
-        key: "W",
-        text: "W. Wrong",
-        tone:
-          correctRow === "W"
-            ? "correct"
-            : chosenRow === "W"
-            ? "wrong"
-            : "neutral",
-      },
-    ];
-
-    items.push({
-      qid: (q as any).id,
-      testNo,
-      prompt: (q as any).prompt,
-      imageSrc,
-      options,
-      explanation: (q as any).explanation,
-    });
-
-    continue;
-  }
-
-  // -------------------------
-  // 2) MCQ questions
-  // -------------------------
-  const correctOptionId = (q as any).correctOptionId as string | undefined;
-  const opts = Array.isArray((q as any).options) ? (q as any).options : [];
-
-  const chosenOpt =
-    chosenKey
-      ? opts.find((opt: any, idx: number) => {
-          const k = opt?.originalKey ?? String.fromCharCode(65 + idx);
-          return k === chosenKey;
-        })
-      : null;
-
-  const isCorrect = !!(chosenOpt && correctOptionId && chosenOpt.id === correctOptionId);
-  if (isCorrect) continue; // show only WRONG
-
-  const correctIndex = opts.findIndex((opt: any) => opt?.id === correctOptionId);
-  const correctKey =
-    correctIndex >= 0
-      ? (opts[correctIndex].originalKey ?? String.fromCharCode(65 + correctIndex))
-      : null;
-
-  const options: ReviewItem["options"] = opts.map((opt: any, idx: number) => {
-    const key = opt?.originalKey ?? String.fromCharCode(65 + idx);
-    const text = `${key}. ${opt?.text ?? ""}`;
-
-    let tone: "neutral" | "correct" | "wrong" = "neutral";
-    if (correctKey && key === correctKey) tone = "correct";
-    if (chosenKey && key === chosenKey && key !== correctKey) tone = "wrong";
-
-    return { key, text, tone };
-  });
-
-  items.push({
-    qid: (q as any).id,
-    testNo,
-    prompt: (q as any).prompt,
-    imageSrc,
-    options,
-    explanation: (q as any).explanation,
-  });
-}
-
-setBrokenImages({});
-items.sort((a, b) => a.testNo - b.testNo);
-setReviewItems(items);
-    })();
-  }, [attemptId]);
-
-useEffect(() => {
-  if (!attemptId) return;
-  closeAttemptById(attemptId);
-}, [attemptId]);
-
-
-  const pct = useMemo(() => {
-    const t = computed.total > 0 ? computed.total : 1;
-    return clamp(computed.correct / t, 0, 1);
-  }, [computed.correct, computed.total]);
-
-  const percent = useMemo(() => Math.round(pct * 100), [pct]);
-
-
-  // Simple guard: if someone opens results without an attemptId
-  if (!attemptId) {
-    return (
-      <div className={styles.viewport}>
-        <main className={styles.screen}>
-          <div className={styles.card} />
-          <div className={styles.backRow}>
-          </div>
-          <div style={{ padding: 16 }}>Missing attemptId. Please re-take the test.</div>
-        </main>
-      </div>
-    );
-  }
-
-  return (
-    <div className={styles.viewport}>
-      <main className={styles.screen}>
-        <div className={styles.card} />
-<div className={styles.shiftUp}>
-        <h1 className={styles.congrats}>Congratulations!</h1>
-
-        <div className={styles.ringWrap} aria-label="Score progress">
-          <div
-            className={styles.ring}
-            style={
-              {
-                '--p': `${pct * 360}deg`,
-              } as React.CSSProperties
-            }
-          />
-          <div className={styles.ringCenterText}>{percent}</div>
-        </div>
-
-        <div className={styles.scoreBox} aria-hidden="true">
-          <div className={styles.lineTop} />
-          <div className={styles.lineBottom} />
-          <div className={styles.lineMid} />
-
-          <div className={styles.scoreLeft}>
-            <div className={styles.scoreValue}>
-              {computed.correct}/{computed.total || 0}
-            </div>
-            <div className={styles.scoreLabel}>Score</div>
-          </div>
-
-          <div className={styles.scoreRight}>
-            <div className={styles.scoreValue}>{timeText}</div>
-            <div className={styles.scoreLabel}>Time</div>
-          </div>
-        </div>
-
-        <div className={styles.testResultsTitle}>Test Results</div>
-
-        <div className={styles.incorrectRow}>
-  <Image
-    src="/images/test/red-x-icon.png"
-    alt="Red X Icon"
-    width={24}
-    height={24}
-    className={styles.btnIcon}
-  />
-
-  <div className={styles.incorrectText}>Incorrect</div>
-
-  <div className={styles.incorrectSpacer} />
-
-  {reviewItems.length > 0 && viewMode === 'carousel' && (
-    <div className={styles.slideCounter}>
-      {activeSlide + 1}/{reviewItems.length}
-    </div>
-  )}
-
-<button
-  type="button"
-  className={styles.viewToggle}
-  onClick={() => setViewMode((v) => (v === 'list' ? 'carousel' : 'list'))}
-  aria-pressed={viewMode === 'carousel'}
-  aria-label={viewMode === 'carousel' ? 'Switch to list view' : 'Switch to swipe view'}
-  title={viewMode === 'carousel' ? 'List view' : 'Swipe view'}
->
-  <Image
-    src={viewMode === 'carousel'
-      ? '/images/test/list-icon.png'     // ✅ your “list” icon
-      : '/images/test/carousel-icon.png'}   // ✅ your “swipe” icon
-    alt=""
-    width={18}
-    height={18}
-  />
-</button>
-
-</div>
-
-
-<section
-  className={[
-    styles.reviewArea,
-    viewMode === 'carousel' ? styles.reviewAreaCarousel : '',
-  ].join(' ')}
->
-  {reviewItems.length === 0 ? (
-    <p className={styles.question}>Expatise! No incorrect questions! 🎉</p>
-  ) : viewMode === 'list' ? (
-    reviewItems.map((item) => (
-      <article key={item.qid} style={{ marginBottom: 18 }}>
-        <div className={styles.questionRow}>
-  <p className={[styles.question, styles.questionText].join(' ')}>
-    {item.testNo}. {item.prompt}
-  </p>
-
-  <button
-  type="button"
-  className={styles.bookmarkBtn}
-    onPointerDown={(e) => {
-    // ✅ prevents carousel from capturing pointer + also clears any leftover “moved”
-    e.stopPropagation();
-    dragRef.current.moved = false;
-  }}
-  onClick={(e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    toggle(item.qid);
-  }}
-  aria-label={isBookmarked(item.qid) ? 'Remove bookmark' : 'Add bookmark'}
-  title={isBookmarked(item.qid) ? 'Bookmarked' : 'Bookmark'}
-  data-bookmarked={isBookmarked(item.qid) ? 'true' : 'false'}
->
-  <span className={styles.bookmarkIcon} aria-hidden="true" />
-</button>
-
-</div>
-
-
-        <div className={styles.qaRow}>
-          {item.imageSrc && !brokenImages[item.qid] ? (
-            <div className={styles.imageWrap}>
-              <Image
-                src={item.imageSrc}
-                alt="Question image"
-                fill
-                sizes="120px"
-                className={styles.image}
-                unoptimized
-                onError={() => setBrokenImages((p) => ({ ...p, [item.qid]: true }))}
-              />
-            </div>
-          ) : null}
-
-          <div className={styles.options}>
-            {item.options.map((o) => (
-              <div
-                key={o.key}
-                className={[
-                  styles.option,
-                  o.tone === 'correct'
-                    ? styles.optionCorrect
-                    : o.tone === 'wrong'
-                    ? styles.optionWrong
-                    : styles.optionNeutral,
-                ].join(' ')}
-              >
-                {o.text}
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {(item.explanation ?? '').trim().length > 0 && (
-          <>
-            <div className={styles.exTitle}>Explanation:</div>
-            <div className={styles.exBody}>{item.explanation}</div>
-          </>
-        )}
-      </article>
-    ))
-  ) : (
-    <div
-  ref={carouselRef}
-  className={[
-    styles.carousel,
-    isDragging ? styles.carouselDragging : '',
-  ].join(' ')}
-  onPointerDown={onCarouselPointerDown}
-  onPointerMove={onCarouselPointerMove}
-  onPointerUp={onCarouselPointerUpOrCancel}
-  onPointerCancel={onCarouselPointerUpOrCancel}
-  onClickCapture={(e) => {
-    if (dragRef.current.moved) {
-      e.preventDefault();
-      e.stopPropagation();
-      dragRef.current.moved = false;
+    // If someone opens /real-test/results with no attemptId, just send them to the test start.
+    // (Results page requires attemptId)
+    const attemptId = sp.get("attemptId");
+    if (!attemptId) {
+      router.replace("/test/real");
+      return;
     }
-  }}
->
-      {reviewItems.map((item) => (
-        <div key={item.qid} className={styles.slide}>
-          <article>
-            <div className={styles.questionRow}>
-  <p className={[styles.question, styles.questionText].join(' ')}>
-    {item.testNo}. {item.prompt}
-  </p>
 
- <button
-  type="button"
-  className={styles.bookmarkBtn}
-  onClick={(e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    toggle(item.qid);
-  }}
-  aria-label={isBookmarked(item.qid) ? 'Remove bookmark' : 'Add bookmark'}
-  title={isBookmarked(item.qid) ? 'Bookmarked' : 'Bookmark'}
-  data-bookmarked={isBookmarked(item.qid) ? 'true' : 'false'}
->
-  <span className={styles.bookmarkIcon} aria-hidden="true" />
-</button>
+    // Preserve all query params
+    router.replace(`/test/real/results${qs ? `?${qs}` : ""}`);
+  }, [router, sp]);
 
-</div>
-
-
-            <div className={styles.qaRow}>
-              {item.imageSrc && !brokenImages[item.qid] ? (
-                <div className={styles.imageWrap}>
-                  <Image
-                    src={item.imageSrc}
-                    alt="Question image"
-                    fill
-                    sizes="120px"
-                    className={styles.image}
-                    unoptimized
-                    draggable={false}
-                    onError={() => setBrokenImages((p) => ({ ...p, [item.qid]: true }))}
-                  />
-                </div>
-              ) : null}
-
-              <div className={styles.options}>
-                {item.options.map((o) => (
-                  <div
-                    key={o.key}
-                    className={[
-                      styles.option,
-                      o.tone === 'correct'
-                        ? styles.optionCorrect
-                        : o.tone === 'wrong'
-                        ? styles.optionWrong
-                        : styles.optionNeutral,
-                    ].join(' ')}
-                  >
-                    {o.text}
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {(item.explanation ?? '').trim().length > 0 && (
-              <>
-                <div className={styles.exTitle}>Explanation:</div>
-                <div className={styles.exBody}>{item.explanation}</div>
-              </>
-            )}
-          </article>
-        </div>
-      ))}
-    </div>
-  )}
-</section>
-
-
-
-
-        <button
-          type="button"
-          className={styles.continueBtn}
-           onClick={() => {
-    if (attemptId) closeAttemptById(attemptId);
-    router.push('/');
-  }}
-        >
-
-          <span className={styles.continueText}>Home</span>
-          <Image
-    src="/images/other/right-arrow.png"
-    alt="Home"
-    width={18}
-    height={18}
-    className={styles.btnIcon}
-  />
-        </button>
-</div>
-      </main>
-    </div>
-  );
+  // No UI; immediate redirect
+  return null;
 }
 
 ```
@@ -9909,6 +9326,614 @@ const handleSave = async (e: React.SyntheticEvent) => {
 
 ```
 
+### app/test/[mode]/page.tsx
+```tsx
+// app/test/[mode]/page.tsx
+import RealTestClient from "@/app/(premium)/real-test/RealTestClient.client";
+import { TEST_MODES, type TestModeId } from "@/lib/testModes";
+
+export default function TestModePage({ params }: { params: { mode: string } }) {
+  const mode = params.mode as TestModeId;
+  const cfg = TEST_MODES[mode] ?? TEST_MODES.real;
+
+  return <RealTestClient {...cfg} routeBase={`/test/${params.mode}`} />;
+}
+
+```
+
+### app/test/[mode]/results/page.tsx
+```tsx
+/* app/test/[mode]/results/page.tsx */
+'use client';
+
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { useRouter, useSearchParams, useParams } from 'next/navigation';
+import styles from '@/app/(premium)/real-test/results/results.module.css';
+
+import Image from 'next/image';
+
+import { loadDataset } from '@/lib/qbank/loadDataset';
+import type { DatasetId } from '@/lib/qbank/datasets';
+import type { Question } from '@/lib/qbank/types';
+
+import { attemptStore } from '@/lib/attempts/store';
+import type { TestAttemptV1 } from '@/lib/attempts/engine';
+
+import { useAuthStatus } from '@/components/useAuthStatus';
+import { normalizeUserKey } from '@/lib/attempts/engine';
+import { useBookmarks } from '@/lib/bookmarks/useBookmarks';
+
+import { TEST_MODES, type TestModeId } from "@/lib/testModes";
+
+
+function clamp(n: number, min: number, max: number) {
+  return Math.max(min, Math.min(max, n));
+}
+
+function normalizeRowChoice(v: string | null | undefined): 'R' | 'W' | null {
+  if (!v) return null;
+  const t = v.trim().toLowerCase();
+  if (t === 'r' || t === 'right') return 'R';
+  if (t === 'w' || t === 'wrong') return 'W';
+  return null;
+}
+
+function getQuestionNumber(q: any): number {
+  const raw = q?.number;
+
+  const fromNumber = Number(raw);
+  if (Number.isFinite(fromNumber) && fromNumber > 0) return Math.floor(fromNumber);
+
+  const idStr = String(q?.id ?? "");
+  const idMatch = idStr.match(/\d+/);
+  if (idMatch) {
+    const n = parseInt(idMatch[0], 10);
+    if (Number.isFinite(n) && n > 0) return n;
+  }
+
+  return 0;
+}
+
+type ReviewItem = {
+  qid: string;
+  testNo: number;
+  prompt: string;
+  imageSrc?: string;
+  options: { key: string; text: string; tone: "neutral" | "correct" | "wrong" }[];
+  explanation?: string;
+};
+
+
+
+
+
+export default function TestModeResultsPage() {
+  const router = useRouter();
+  const sp = useSearchParams();
+  const params = useParams<{ mode: string }>(); // mode is optional for UI, but route requires it
+
+  const attemptId = sp.get('attemptId');
+
+  const usedSecondsRaw = Number(sp.get('usedSeconds') ?? '0');
+  const usedSeconds =
+    Number.isFinite(usedSecondsRaw) && usedSecondsRaw > 0 ? Math.floor(usedSecondsRaw) : 0;
+
+  const timeMin = Math.floor(usedSeconds / 60);
+  const timeSec = usedSeconds % 60;
+  const timeText = `${timeMin}min ${timeSec}sec`;
+
+  const [attempt, setAttempt] = useState<TestAttemptV1 | null>(null);
+  const [computed, setComputed] = useState<{ correct: number; total: number }>({ correct: 0, total: 0 });
+
+  const [reviewItems, setReviewItems] = useState<ReviewItem[]>([]);
+  const [brokenImages, setBrokenImages] = useState<Record<string, boolean>>({});
+
+  const [viewMode, setViewMode] = useState<'list' | 'carousel'>('list');
+  const [activeSlide, setActiveSlide] = useState(0);
+  const carouselRef = useRef<HTMLDivElement | null>(null);
+
+  const [isDragging, setIsDragging] = useState(false);
+
+  const dragRef = useRef({
+    down: false,
+    startX: 0,
+    startLeft: 0,
+    moved: false,
+  });
+
+  // ✅ auth + userKey for bookmarks (matches how you do it on test page)
+  const { email } = useAuthStatus();
+  const userKey = normalizeUserKey(email ?? "");
+
+  // datasetId should be typed correctly; use a stable fallback
+  const datasetId = (attempt?.datasetId ?? "") as DatasetId;
+  const { toggle, isBookmarked } = useBookmarks(datasetId || ("pending" as DatasetId), userKey);
+
+  const onCarouselPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (e.pointerType !== 'mouse') return;
+
+    const target = e.target as HTMLElement;
+    if (target.closest('button, a, input, textarea, select, label')) return;
+
+    const el = carouselRef.current;
+    if (!el) return;
+
+    dragRef.current.down = true;
+    dragRef.current.moved = false;
+    dragRef.current.startX = e.clientX;
+    dragRef.current.startLeft = el.scrollLeft;
+
+    setIsDragging(true);
+    el.setPointerCapture(e.pointerId);
+  };
+
+  const onCarouselPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (e.pointerType !== 'mouse') return;
+    if (!dragRef.current.down) return;
+
+    const el = carouselRef.current;
+    if (!el) return;
+
+    const dx = e.clientX - dragRef.current.startX;
+    if (Math.abs(dx) > 3) dragRef.current.moved = true;
+
+    el.scrollLeft = dragRef.current.startLeft - dx;
+  };
+
+  const snapToNearestSlide = () => {
+    const el = carouselRef.current;
+    if (!el) return;
+
+    const w = el.clientWidth || 1;
+    const idx = Math.round(el.scrollLeft / w);
+    el.scrollTo({ left: idx * w, behavior: 'smooth' });
+  };
+
+  const onCarouselPointerUpOrCancel = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (e.pointerType !== 'mouse') return;
+
+    const el = carouselRef.current;
+    if (!el) return;
+
+    dragRef.current.down = false;
+    setIsDragging(false);
+
+    try {
+      el.releasePointerCapture(e.pointerId);
+    } catch {}
+
+    snapToNearestSlide();
+  };
+
+  useEffect(() => {
+    if (viewMode !== 'carousel') return;
+
+    const el = carouselRef.current;
+    if (!el) return;
+
+    const onScroll = () => {
+      const w = el.clientWidth || 1;
+      const idx = Math.round(el.scrollLeft / w);
+      setActiveSlide(Math.max(0, Math.min(idx, reviewItems.length - 1)));
+    };
+
+    onScroll();
+    el.addEventListener('scroll', onScroll, { passive: true });
+    return () => el.removeEventListener('scroll', onScroll as any);
+  }, [viewMode, reviewItems.length]);
+
+  useEffect(() => {
+    if (!attemptId) return;
+
+    (async () => {
+      // ✅ Use same store as test page
+      const a = await attemptStore.readAttemptById(attemptId);
+      setAttempt(a);
+
+      if (!a) return;
+
+      const ds = await loadDataset(a.datasetId as DatasetId);
+      const byId = new Map(ds.map((q) => [q.id, q] as const));
+
+      const picked = a.questionIds.map((id: string) => byId.get(id)).filter(Boolean) as Question[];
+
+      let correct = 0;
+
+      for (let i = 0; i < picked.length; i++) {
+        const q = picked[i];
+        const chosenKey = a.answersByQid[q.id]?.choice ?? null;
+        if (!chosenKey) continue;
+
+        if (q.type === 'ROW') {
+          const chosen = normalizeRowChoice(chosenKey);
+          const expected = normalizeRowChoice((q as any).correctRow ?? null);
+          if (chosen && expected && chosen === expected) correct += 1;
+          continue;
+        }
+
+        const chosenOpt = q.options.find((opt, idx) => {
+          const k = opt.originalKey ?? String.fromCharCode(65 + idx);
+          return k === chosenKey;
+        });
+
+        if (chosenOpt && (q as any).correctOptionId && chosenOpt.id === (q as any).correctOptionId) {
+          correct += 1;
+        }
+      }
+
+      setComputed({ correct, total: picked.length });
+
+      // WRONG ONLY items
+      const items: ReviewItem[] = [];
+
+      for (let i = 0; i < picked.length; i++) {
+        const q = picked[i];
+        const testNo = i + 1;
+
+        const chosenKey = a.answersByQid[q.id]?.choice ?? null;
+        const qType = String((q as any).type ?? "").toUpperCase();
+
+        const assets = (q as any).assets;
+        const imageAsset = Array.isArray(assets)
+          ? assets.find((x: any) => x?.kind === "image" && typeof x?.src === "string")
+          : null;
+        const imageSrc = imageAsset?.src as string | undefined;
+
+        if (qType === "ROW") {
+          const correctRow = normalizeRowChoice((q as any).correctRow ?? null);
+          const chosenRow = normalizeRowChoice(chosenKey);
+
+          const isCorrect = !!(chosenRow && correctRow && chosenRow === correctRow);
+          if (isCorrect) continue;
+
+          const options: ReviewItem["options"] = [
+            {
+              key: "R",
+              text: "R. Right",
+              tone: correctRow === "R" ? "correct" : chosenRow === "R" ? "wrong" : "neutral",
+            },
+            {
+              key: "W",
+              text: "W. Wrong",
+              tone: correctRow === "W" ? "correct" : chosenRow === "W" ? "wrong" : "neutral",
+            },
+          ];
+
+          items.push({
+            qid: (q as any).id,
+            testNo,
+            prompt: (q as any).prompt,
+            imageSrc,
+            options,
+            explanation: (q as any).explanation,
+          });
+
+          continue;
+        }
+
+        const correctOptionId = (q as any).correctOptionId as string | undefined;
+        const opts = Array.isArray((q as any).options) ? (q as any).options : [];
+
+        const chosenOpt =
+          chosenKey
+            ? opts.find((opt: any, idx: number) => {
+                const k = opt?.originalKey ?? String.fromCharCode(65 + idx);
+                return k === chosenKey;
+              })
+            : null;
+
+        const isCorrect = !!(chosenOpt && correctOptionId && chosenOpt.id === correctOptionId);
+        if (isCorrect) continue;
+
+        const correctIndex = opts.findIndex((opt: any) => opt?.id === correctOptionId);
+        const correctKey =
+          correctIndex >= 0
+            ? (opts[correctIndex].originalKey ?? String.fromCharCode(65 + correctIndex))
+            : null;
+
+        const options: ReviewItem["options"] = opts.map((opt: any, idx: number) => {
+          const key = opt?.originalKey ?? String.fromCharCode(65 + idx);
+          const text = `${key}. ${opt?.text ?? ""}`;
+
+          let tone: "neutral" | "correct" | "wrong" = "neutral";
+          if (correctKey && key === correctKey) tone = "correct";
+          if (chosenKey && key === chosenKey && key !== correctKey) tone = "wrong";
+
+          return { key, text, tone };
+        });
+
+        items.push({
+          qid: (q as any).id,
+          testNo,
+          prompt: (q as any).prompt,
+          imageSrc,
+          options,
+          explanation: (q as any).explanation,
+        });
+      }
+
+      setBrokenImages({});
+      items.sort((x, y) => x.testNo - y.testNo);
+      setReviewItems(items);
+    })();
+  }, [attemptId]);
+
+  // Close attempt once, when results opens
+  useEffect(() => {
+    if (!attemptId) return;
+    void attemptStore.closeAttemptById(attemptId);
+  }, [attemptId]);
+
+  const pct = useMemo(() => {
+    const t = computed.total > 0 ? computed.total : 1;
+    return clamp(computed.correct / t, 0, 1);
+  }, [computed.correct, computed.total]);
+
+  const percent = useMemo(() => Math.round(pct * 100), [pct]);
+
+  if (!attemptId) {
+    return (
+      <div className={styles.viewport}>
+        <main className={styles.screen}>
+          <div className={styles.card} />
+          <div style={{ padding: 16 }}>Missing attemptId. Please re-take the test.</div>
+        </main>
+      </div>
+    );
+  }
+
+  return (
+    <div className={styles.viewport}>
+      <main className={styles.screen}>
+        <div className={styles.card} />
+        <div className={styles.shiftUp}>
+          <h1 className={styles.congrats}>Congratulations!</h1>
+
+          <div className={styles.ringWrap} aria-label="Score progress">
+            <div className={styles.ring} style={{ '--p': `${pct * 360}deg` } as React.CSSProperties} />
+            <div className={styles.ringCenterText}>{percent}</div>
+          </div>
+
+          <div className={styles.scoreBox} aria-hidden="true">
+            <div className={styles.lineTop} />
+            <div className={styles.lineBottom} />
+            <div className={styles.lineMid} />
+
+            <div className={styles.scoreLeft}>
+              <div className={styles.scoreValue}>{computed.correct}/{computed.total || 0}</div>
+              <div className={styles.scoreLabel}>Score</div>
+            </div>
+
+            <div className={styles.scoreRight}>
+              <div className={styles.scoreValue}>{timeText}</div>
+              <div className={styles.scoreLabel}>Time</div>
+            </div>
+          </div>
+
+          <div className={styles.testResultsTitle}>Test Results</div>
+
+          <div className={styles.incorrectRow}>
+            <Image
+              src="/images/test/red-x-icon.png"
+              alt="Red X Icon"
+              width={24}
+              height={24}
+              className={styles.btnIcon}
+            />
+
+            <div className={styles.incorrectText}>Incorrect</div>
+            <div className={styles.incorrectSpacer} />
+
+            {reviewItems.length > 0 && viewMode === 'carousel' && (
+              <div className={styles.slideCounter}>
+                {activeSlide + 1}/{reviewItems.length}
+              </div>
+            )}
+
+            <button
+              type="button"
+              className={styles.viewToggle}
+              onClick={() => setViewMode((v) => (v === 'list' ? 'carousel' : 'list'))}
+              aria-pressed={viewMode === 'carousel'}
+              aria-label={viewMode === 'carousel' ? 'Switch to list view' : 'Switch to swipe view'}
+              title={viewMode === 'carousel' ? 'List view' : 'Swipe view'}
+            >
+              <Image
+                src={viewMode === 'carousel' ? '/images/test/list-icon.png' : '/images/test/carousel-icon.png'}
+                alt=""
+                width={18}
+                height={18}
+              />
+            </button>
+          </div>
+
+          <section
+            className={[
+              styles.reviewArea,
+              viewMode === 'carousel' ? styles.reviewAreaCarousel : '',
+            ].join(' ')}
+          >
+            {reviewItems.length === 0 ? (
+              <p className={styles.question}>Expatise! No incorrect questions! 🎉</p>
+            ) : viewMode === 'list' ? (
+              reviewItems.map((it) => (
+                <article key={it.qid} style={{ marginBottom: 18 }}>
+                  <div className={styles.questionRow}>
+                    <p className={[styles.question, styles.questionText].join(' ')}>
+                      {it.testNo}. {it.prompt}
+                    </p>
+
+                    <button
+                      type="button"
+                      className={styles.bookmarkBtn}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        toggle(it.qid);
+                      }}
+                      aria-label={isBookmarked(it.qid) ? 'Remove bookmark' : 'Add bookmark'}
+                      title={isBookmarked(it.qid) ? 'Bookmarked' : 'Bookmark'}
+                      data-bookmarked={isBookmarked(it.qid) ? 'true' : 'false'}
+                    >
+                      <span className={styles.bookmarkIcon} aria-hidden="true" />
+                    </button>
+                  </div>
+
+                  <div className={styles.qaRow}>
+                    {it.imageSrc && !brokenImages[it.qid] ? (
+                      <div className={styles.imageWrap}>
+                        <Image
+                          src={it.imageSrc}
+                          alt="Question image"
+                          fill
+                          sizes="120px"
+                          className={styles.image}
+                          unoptimized
+                          onError={() => setBrokenImages((p) => ({ ...p, [it.qid]: true }))}
+                        />
+                      </div>
+                    ) : null}
+
+                    <div className={styles.options}>
+                      {it.options.map((o) => (
+                        <div
+                          key={o.key}
+                          className={[
+                            styles.option,
+                            o.tone === 'correct'
+                              ? styles.optionCorrect
+                              : o.tone === 'wrong'
+                              ? styles.optionWrong
+                              : styles.optionNeutral,
+                          ].join(' ')}
+                        >
+                          {o.text}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {(it.explanation ?? '').trim().length > 0 && (
+                    <>
+                      <div className={styles.exTitle}>Explanation:</div>
+                      <div className={styles.exBody}>{it.explanation}</div>
+                    </>
+                  )}
+                </article>
+              ))
+            ) : (
+              <div
+                ref={carouselRef}
+                className={[
+                  styles.carousel,
+                  isDragging ? styles.carouselDragging : '',
+                ].join(' ')}
+                onPointerDown={onCarouselPointerDown}
+                onPointerMove={onCarouselPointerMove}
+                onPointerUp={onCarouselPointerUpOrCancel}
+                onPointerCancel={onCarouselPointerUpOrCancel}
+                onClickCapture={(e) => {
+                  if (dragRef.current.moved) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    dragRef.current.moved = false;
+                  }
+                }}
+              >
+                {reviewItems.map((it) => (
+                  <div key={it.qid} className={styles.slide}>
+                    <article>
+                      <div className={styles.questionRow}>
+                        <p className={[styles.question, styles.questionText].join(' ')}>
+                          {it.testNo}. {it.prompt}
+                        </p>
+
+                        <button
+                          type="button"
+                          className={styles.bookmarkBtn}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            toggle(it.qid);
+                          }}
+                          aria-label={isBookmarked(it.qid) ? 'Remove bookmark' : 'Add bookmark'}
+                          title={isBookmarked(it.qid) ? 'Bookmarked' : 'Bookmark'}
+                          data-bookmarked={isBookmarked(it.qid) ? 'true' : 'false'}
+                        >
+                          <span className={styles.bookmarkIcon} aria-hidden="true" />
+                        </button>
+                      </div>
+
+                      <div className={styles.qaRow}>
+                        {it.imageSrc && !brokenImages[it.qid] ? (
+                          <div className={styles.imageWrap}>
+                            <Image
+                              src={it.imageSrc}
+                              alt="Question image"
+                              fill
+                              sizes="120px"
+                              className={styles.image}
+                              unoptimized
+                              draggable={false}
+                              onError={() => setBrokenImages((p) => ({ ...p, [it.qid]: true }))}
+                            />
+                          </div>
+                        ) : null}
+
+                        <div className={styles.options}>
+                          {it.options.map((o) => (
+                            <div
+                              key={o.key}
+                              className={[
+                                styles.option,
+                                o.tone === 'correct'
+                                  ? styles.optionCorrect
+                                  : o.tone === 'wrong'
+                                  ? styles.optionWrong
+                                  : styles.optionNeutral,
+                              ].join(' ')}
+                            >
+                              {o.text}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      {(it.explanation ?? '').trim().length > 0 && (
+                        <>
+                          <div className={styles.exTitle}>Explanation:</div>
+                          <div className={styles.exBody}>{it.explanation}</div>
+                        </>
+                      )}
+                    </article>
+                  </div>
+                ))}
+              </div>
+            )}
+          </section>
+
+          <button
+            type="button"
+            className={styles.continueBtn}
+            onClick={() => router.push('/')}
+          >
+            <span className={styles.continueText}>Home</span>
+            <Image
+              src="/images/other/right-arrow.png"
+              alt="Home"
+              width={18}
+              height={18}
+              className={styles.btnIcon}
+            />
+          </button>
+        </div>
+      </main>
+    </div>
+  );
+}
+
+```
+
 ### components/BackButton.tsx
 ```tsx
 'use client';
@@ -11544,7 +11569,7 @@ export const SERVER_FLAGS = {
 "use client";
 
 export const FREE_CAPS = {
-  questionsShown: 250,
+  questionsShown: 420,
   examStarts: 5,
 } as const;
 
@@ -13967,6 +13992,89 @@ export type TestAttemptV1 = {
 // lib/test-engine/types.ts
 export type { TestAttemptV1 as Attempt } from "./attemptTypes";
 export type { AttemptStatus, AnswerRecord } from "./attemptTypes";
+
+```
+
+### lib/testModes.ts
+```tsx
+import type { DatasetId } from "@/lib/qbank/datasets";
+
+export type TestModeId =
+  | "real"
+  | "practice"
+  | "half"
+  | "rapid";
+
+export type TestModeConfig = {
+  modeId: TestModeId;
+
+  /**
+   * Used to isolate attempts, resumes, free caps, and analytics.
+   * MUST be unique per mode.
+   */
+  modeKey: string;
+  routeBase: string;
+  datasetId: DatasetId;
+  datasetVersion: string;
+
+  /** Number of questions in this test */
+  questionCount: number;
+
+  /** Time limit in minutes */
+  timeLimitMinutes: number;
+
+  /**
+   * Optional fairness gate.
+   * Example: require 50 available even if test only uses 20.
+   */
+  preflightRequiredQuestions?: number;
+};
+
+export const TEST_MODES: Record<TestModeId, TestModeConfig> = {
+  real: {
+    modeId: "real",
+    modeKey: "real-test",
+    routeBase: "/test/real",
+    datasetId: "cn-2023-test1",
+    datasetVersion: "cn-2023-test1@v1",
+    questionCount: 100,
+    timeLimitMinutes: 45,
+    preflightRequiredQuestions: 100,
+  },
+
+  practice: {
+    modeId: "practice",
+    modeKey: "practice-test",
+    routeBase: "/test/practice",
+    datasetId: "cn-2023-test1",
+    datasetVersion: "cn-2023-test1@v1",
+    questionCount: 100,
+    timeLimitMinutes: 10,
+    preflightRequiredQuestions: 1,
+  },
+
+  half: {
+    modeId: "half",
+    modeKey: "half-test",
+    routeBase: "/test/half",
+    datasetId: "cn-2023-test1",
+    datasetVersion: "cn-2023-test1@v1",
+    questionCount: 50,
+    timeLimitMinutes: 23,
+    preflightRequiredQuestions: 50,
+  },
+
+  rapid: {
+    modeId: "rapid",
+    modeKey: "rapid-test",
+    routeBase: "/test/rapid",
+    datasetId: "cn-2023-test1",
+    datasetVersion: "cn-2023-test1@v1",
+    questionCount: 100,
+    timeLimitMinutes: 15,
+    preflightRequiredQuestions: 20,
+  },
+};
 
 ```
 

@@ -2,7 +2,7 @@
 "use client";
 
 export const FREE_CAPS = {
-  questionsShown: 250,
+  questionsShown: 420,
   examStarts: 5,
 } as const;
 

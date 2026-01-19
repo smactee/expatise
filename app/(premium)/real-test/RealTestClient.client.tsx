@@ -47,17 +47,27 @@ function normalizeRowChoice(v: string | null | undefined): 'R' | 'W' | null {
 
 
 export default function RealTestClient({
+  modeKey,
   datasetId,
   datasetVersion,
   questionCount,
   timeLimitMinutes,
+  preflightRequiredQuestions,
+  routeBase,
 }: {
+  modeKey: string;
   datasetId: DatasetId;
   datasetVersion: string;
   questionCount: number;
   timeLimitMinutes: number;
+  preflightRequiredQuestions?: number;
+  routeBase: string;
 }) {
+
   const router = useRouter();
+
+  const required = preflightRequiredQuestions ?? questionCount;
+
 
   const [items, setItems] = useState<Question[]>([]);
   const [loading, setLoading] = useState(true);
@@ -66,7 +76,7 @@ export default function RealTestClient({
   const [index, setIndex] = useState(0);
   const [selectedKey, setSelectedKey] = useState<string | null>(null);
 
-  const total = items.length || 100;
+  const total = items.length || questionCount;
   const currentNo = Math.min(index + 1, total);
 
   const [timeLeft, setTimeLeft] = useState(timeLimitMinutes * 60);
@@ -86,28 +96,31 @@ const finishTest = async (reason: "time" | "completed") => {
   if (finishedRef.current) return;
   finishedRef.current = true;
 
-  // Close the attempt before leaving the page
-  if (attempt?.attemptId) {
-    await attemptStore.closeAttemptById(attempt.attemptId, { remainingSec: timeLeft });
-  }
+  const a = attemptRef.current;
 
-  if (!attempt) {
-    router.push("/real-test/results?reason=" + reason);
+  // If we somehow don't have an attempt, do NOT go to results (results needs attemptId)
+  if (!a?.attemptId) {
+    router.replace(routeBase); // send them back to the test start
     return;
   }
+
+  // close attempt before leaving (optional but good)
+  await attemptStore.closeAttemptById(a.attemptId, { remainingSec: timeLeft });
 
   const limitSeconds = timeLimitMinutes * 60;
   const usedSeconds = Math.min(limitSeconds, Math.max(0, limitSeconds - timeLeft));
 
   const params = new URLSearchParams({
-    attemptId: attempt.attemptId,
+    attemptId: a.attemptId,
     reason,
     usedSeconds: String(usedSeconds),
     limitSeconds: String(limitSeconds),
   });
 
-  router.push(`/real-test/results?${params.toString()}`);
+  // IMPORTANT: routeBase must start with "/" (ex: "/test/real" or "/real-test")
+  router.push(`${routeBase}/results?${params.toString()}`);
 };
+
 
 
 const [attempt, setAttempt] = useState<TestAttemptV1 | null>(null);
@@ -122,7 +135,10 @@ const ds = await loadDataset(datasetId);
 if (!mounted) return;
 
 // If auth is still loading, don't create attempts yet.
-if (authLoading) return;
+if (authLoading) {
+  setLoading(true);
+  return;
+}
 
 const allIds = ds.map((q) => q.id);
 
@@ -130,20 +146,20 @@ const allIds = ds.map((q) => q.id);
 const existing = await attemptStore.listAttempts(userKey, datasetId);
 const hasResumable = existing.some(
   (t) =>
-    t.modeKey === "real-test" &&
+    t.modeKey === modeKey &&
     t.datasetVersion === datasetVersion &&
     (t.status === "in_progress" || t.status === "paused")
 );
 
-if (!hasResumable && !canStartExam(userKey, { requiredQuestions: questionCount })) {
-  router.replace(`/premium?next=${encodeURIComponent("/real-test")}`);
+if (!hasResumable && !canStartExam(userKey, { requiredQuestions: required })) {
+  router.replace(`/premium?next=${encodeURIComponent(routeBase)}`);
   return;
 }
 
 
 const { attempt: a, reused } = await attemptStore.getOrCreateAttempt({
   userKey,
-  modeKey: "real-test",
+  modeKey,
   datasetId,
   datasetVersion,
   allQuestionIds: allIds,
@@ -154,8 +170,8 @@ const { attempt: a, reused } = await attemptStore.getOrCreateAttempt({
 // Only block *new* starts. Allow resuming even if cap is hit.
 if (!reused) {
   // 5-start cap blocks the 6th + optional preflight
-  if (!canStartExam(userKey, { requiredQuestions: questionCount })) {
-    router.replace(`/premium?next=${encodeURIComponent("/real-test")}`);
+  if (!canStartExam(userKey, { requiredQuestions: required })) {
+    router.replace(`/premium?next=${encodeURIComponent(routeBase)}`);
     return;
   }
 
@@ -196,7 +212,18 @@ setLoading(false);
     return () => {
       mounted = false;
     };
-  }, [datasetId, datasetVersion, questionCount, timeLimitMinutes, authLoading, userKey]);
+  }, [
+  modeKey,
+  datasetId,
+  datasetVersion,
+  questionCount,
+  timeLimitMinutes,
+  preflightRequiredQuestions,
+  authLoading,
+  userKey,
+  router,
+  routeBase,
+]);
 
 
 useEffect(() => {
@@ -362,13 +389,6 @@ if (next >= items.length) {
   return;
 }
 
-const nextItem = items[next];
-
-if (!canShowQuestion(userKey)) {
-  router.replace(`/premium?next=${encodeURIComponent("/real-test")}`);
-  return;
-}
-
 
 setIndex(next);
 
@@ -400,14 +420,14 @@ useEffect(() => {
 
   // Block showing the 421st question
   if (!canShowQuestion(userKey)) {
-    router.replace(`/premium?next=${encodeURIComponent("/real-test")}`);
+    router.replace(`/premium?next=${encodeURIComponent(routeBase)}`);
     return;
   }
 
   // Count on DISPLAY (even if unanswered, even if repeated later)
   // viewSig only debounces accidental double runs.
-  const viewSig = `real-test:${datasetId}:${datasetVersion}:${attempt?.attemptId ?? "na"}:${index}:${item.id}`;
-  markQuestionShown(userKey, viewSig);
+  const viewSig = `${modeKey}:${datasetId}:${datasetVersion}:${attempt?.attemptId ?? "na"}:${index}:${item.id}`;
+markQuestionShown(userKey, viewSig);
 }, [item?.id, userKey, datasetId, datasetVersion, attempt?.attemptId, index, router]);
 
 
@@ -467,7 +487,7 @@ useEffect(() => {
             />
           </div>
 
-          <div className={styles.progressText}>{currentNo}/{items.length}</div>
+          <div className={styles.progressText}>{currentNo}/{total}</div>
         </div>
 
         {/* Question row (with bookmark icon on the right) */}

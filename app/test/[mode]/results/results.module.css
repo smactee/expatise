@@ -1,0 +1,639 @@
+.viewport {
+  min-height: 100vh;
+  min-height: 100dvh; /* ✅ mobile accurate */
+  padding: 0;
+  background: var(--color-page-bg);
+}
+
+.screen {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  min-height: 100dvh; /* ✅ mobile accurate */
+  background: #f4f4f9;
+  overflow: hidden;
+  --contentW: min(390px, calc(100% - 60px)); /* ✅ content width */
+}
+
+
+
+/* Figma: Rectangle (full screen overlay) */
+.card {
+  position: absolute;
+  left: 0%;
+  right: 0%;
+  top: 0%;
+  bottom: 0%;
+
+  background: linear-gradient(
+    90deg,
+    rgba(43, 124, 175, 0.15) 0%,
+    rgba(255, 197, 66, 0.15) 100%
+  );
+  box-shadow: 0px 2px 1.1px rgba(169, 171, 187, 0.27);
+  border-radius: 8px;
+}
+
+/* Back row placement (Frame 2801 starts at top 44; but we can place it at top visually) */
+.backRow {
+  position: absolute;
+  left: 0px;
+  top: 44px;
+  width: 390px;
+  height: 40px;
+}
+
+.backBtn {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+
+  width: 86px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+
+  padding: 10px 0px 10px 16px;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.backChevron {
+  width: 20px;
+  height: 20px;
+  position: relative;
+}
+
+.backChevron::before {
+  content: '';
+  position: absolute;
+  left: 25%;
+  right: 35%;
+  top: 10%;
+  bottom: 10%;
+  border-left: 2px solid #979797;
+  border-bottom: 2px solid #979797;
+  transform: rotate(45deg);
+  transform-origin: center;
+}
+
+.backLabel {
+  font-family: 'Lato', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 120%;
+  letter-spacing: 0.04em;
+  color: #000000;
+}
+
+/* Congratulation! */
+.congrats {
+  position: absolute;
+  top: 103px;
+
+  left: 50%;
+  transform: translateX(-50%);
+
+  width: max-content;
+  max-width: calc(100% - 60px); /* prevents overflow on small screens */
+
+  margin: 0;
+  font-family: 'Poppins', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-weight: 500;
+  font-size: 22px;
+  line-height: 20px;
+  text-align: center;
+  letter-spacing: -0.24px;
+  text-transform: capitalize;
+  color: #383a44;
+}
+
+
+/* Ring wrapper */
+.ringWrap {
+  position: absolute;
+  top: 145px;
+
+  left: 50%;
+  transform: translateX(-50%);
+
+  width: 123px;
+  height: 123px;
+
+  display: grid;
+  place-items: center;
+}
+
+
+.ring,
+.ringCenterText {
+  grid-area: 1 / 1;
+}
+
+
+
+/*
+  Ring:
+  - thickness: 8px (track #BDCCD3)
+  - progress: gradient-ish using conic-gradient
+*/
+.ring {
+  width: 123px;
+  height: 123px;
+  border-radius: 999px;
+
+  /* --p is degrees for the "colored" sweep */
+  background: conic-gradient(
+    from 0deg,
+    #2b7caf 0deg,
+    #ffc542 var(--p),
+    #bdccd3 var(--p),
+    #bdccd3 360deg
+  );
+
+  /* punch out center so it becomes a ring */
+  -webkit-mask: radial-gradient(
+    farthest-side,
+    transparent calc(100% - 8px),
+    #000 calc(100% - 8px)
+  );
+  mask: radial-gradient(
+    farthest-side,
+    transparent calc(100% - 8px),
+    #000 calc(100% - 8px)
+  );
+}
+
+.ringCenterText {
+  margin: 0;
+  text-align: center;
+
+  font-family: 'Lato', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-style: normal;
+  font-weight: 700;
+  font-size: 40px;
+  line-height: 20px;
+  letter-spacing: -0.24px;
+  text-transform: capitalize;
+  color: #21205a;
+
+  /* optional: stop it from affecting layout, keeps it centered nicely */
+  pointer-events: none;
+}
+
+
+/* Score/Time group container */
+.scoreBox {
+  position: absolute;
+  top: 302px;
+
+  left: 50%;
+  transform: translateX(-50%);
+
+  width: var(--contentW);
+  height: 83px;
+}
+
+
+.lineTop,
+.lineBottom {
+  position: absolute;
+  left: 0;
+  width: 100%;       /* ✅ instead of 330px */
+  height: 0px;
+  border: 1px solid #2b7caf;
+}
+
+.lineTop { top: 0; }
+.lineBottom { top: 83px; }
+
+
+.lineMid {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  height: 83px;
+  border-left: 1px solid #2b7caf;
+}
+
+
+/* Left score group */
+.scoreLeft,
+.scoreRight {
+  position: absolute;
+  top: 20px;
+  width: 50%;
+  height: 43px;
+  display: grid;
+  place-items: center;
+  gap: 11px;
+}
+
+.scoreLeft { left: 0; }
+.scoreRight { left: 50%; }
+
+
+.scoreRight .scoreValue {
+  white-space: nowrap;
+}
+
+
+.scoreValue {
+  font-family: 'Poppins', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 20px;
+  text-align: center;
+  letter-spacing: -0.24px;
+  color: #383a44;
+}
+
+.scoreLabel {
+  font-family: 'Poppins', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 20px;
+  text-align: center;
+  letter-spacing: -0.24px;
+  color: #383a44;
+}
+
+/* Test Results title */
+.testResultsTitle {
+  position: absolute;
+  left: 30px;
+  top: 400px;
+
+  /* ✅ make the title span the usable screen width (390 - 30 - 30) */
+  width: calc(100% - 60px);
+
+  /* ✅ keep it on one line */
+  white-space: nowrap;
+
+  margin: 0;
+  font-family: 'Lato', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-weight: 700;
+  font-size: 32px;
+  line-height: 1.1;
+  letter-spacing: -0.24px;
+  color: #000;
+
+  /* Figma looks left-aligned */
+  text-align: left;
+}
+
+
+/* Incorrect row */
+.incorrectRow {
+  position: absolute;
+  left: 43px;
+  right: 30px; /* ✅ gives it room to push a button to the far right */
+  top: 440px;
+
+  height: 24px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.incorrectSpacer {
+  flex: 1;
+}
+
+.incorrectText {
+  position: relative;
+  width: 62px;
+  height: 20px;
+
+  font-family: 'Lato', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 20px;
+  text-align: center;
+  letter-spacing: -0.24px;
+  color: #ff575f;
+}
+
+/* A scrollable area for wrong-question details */
+.reviewArea {
+  position: absolute;
+  left: 30px;
+  width: calc(100% - 60px);
+  top: 470px;
+
+  bottom: -30; /* ✅ fill to bottom */
+  overflow-y: auto;
+
+  padding-right: 6px;
+
+  /* ✅ this creates "extra space" so the last question can scroll past the button */
+  padding-bottom: calc(41px + 16px + env(safe-area-inset-bottom) + 12px);
+
+  -webkit-overflow-scrolling: touch;
+}
+
+
+/* Use normal flow instead of absolute positioning */
+.question {
+  position: static;
+  width: auto;
+  height: auto;
+  margin: 0 0 10px;
+
+  font-family: 'Lato', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 22px;
+  letter-spacing: -0.24px;
+  color: #000;
+}
+
+.qImage {
+  position: static;
+  width: 120px;
+  height: 120px;
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.06);
+  margin: 0 0 12px;
+}
+
+.imageWrap {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  border-radius: 10px;
+  overflow: hidden;
+  margin: 0 0 12px;
+}
+
+.image {
+  object-fit: cover;
+}
+
+.qaRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin: 0 0 10px;
+}
+
+/* Options stack properly */
+.options {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 0;
+}
+
+
+.option {
+  font-family: 'Lato', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 16px;
+  letter-spacing: -0.24px;
+
+  /* allow wrapping without breaking layout */
+  white-space: normal;
+}
+
+.optionNeutral {
+  color: #000;
+}
+
+.optionCorrect {
+  color: #2b7caf;
+}
+
+.optionWrong {
+  color: #ff575f;
+}
+
+
+/* Explanation block */
+.exTitle {
+  position: static;
+  width: auto;
+  height: auto;
+  margin: 12px 0 6px;
+
+  font-family: 'Lato', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 16px;
+  color: #000;
+}
+
+.exBody {
+  position: static;
+  width: auto;
+  height: auto;
+  margin: 0 0 18px;
+
+  font-family: 'Lato', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 18px;
+  color: #000;
+}
+
+
+/* Continue button */
+.continueBtn {
+  box-sizing: border-box;
+  position: fixed;               /* ✅ pin to screen */
+  left: 50%;
+  transform: translateX(-50%);   /* ✅ center */
+  top: auto;                     /* ✅ stop using top */
+  bottom: calc(-20px + env(safe-area-inset-bottom)); /* ✅ iPhone safe area */
+
+  width: min(316px, calc(100% - 60px)); /* ✅ keeps same margins on small screens */
+  height: 41px;
+
+  background: linear-gradient(
+    135deg,
+    rgba(43, 124, 175, 0.2) 0%,
+    rgba(255, 197, 66, 0.2) 100%
+  );
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 14px;
+
+  border: 0;
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
+  z-index: 50; /* ✅ stays above scroll content */
+}
+
+
+.continueText {
+  font-family: 'Lato', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-style: normal;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 130%;
+  letter-spacing: 0.04em;
+  color: #000000;
+}
+
+.shiftUp {
+  position: relative;   /* ✅ critical */
+  min-height: 100vh;    /* ✅ critical */
+  width: 100%;
+  transform: translateY(-60px);
+}
+
+.questionRow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.questionText {
+  margin: 0;
+  flex: 1;
+}
+
+.bookmarkBtn {
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  padding: 4px;
+
+  /* keeps it from shrinking in flex row */
+  flex: 0 0 auto;
+
+  /* optional: better tap feel on mobile */
+  -webkit-tap-highlight-color: transparent;
+
+  /* ✅ press animation base */
+  transform: translateZ(0);
+  transition: transform 120ms ease, opacity 120ms ease;
+}
+
+/* ✅ while pressing */
+.bookmarkBtn:active {
+  transform: scale(0.9);
+}
+
+/* ✅ keyboard accessibility (tab focus) */
+.bookmarkBtn:focus-visible {
+  outline: 2px solid rgba(43, 124, 175, 0.55);
+  outline-offset: 3px;
+  border-radius: 10px;
+}
+
+/* Optional: slightly dim when not bookmarked */
+.bookmarkBtn[data-bookmarked='false'] {
+  opacity: 0.85;
+}
+
+/* Optional: full opacity when bookmarked */
+.bookmarkBtn[data-bookmarked='true'] {
+  opacity: 1;
+}
+
+.bookmarkIcon {
+  width: 24px;
+  height: 24px;
+  display: inline-block;
+
+  /* Use the PNG as a stencil */
+  -webkit-mask-image: url("/images/test/bookmark-icon.png");
+  mask-image: url("/images/test/bookmark-icon.png");
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+}
+
+/* not bookmarked */
+.bookmarkBtn[data-bookmarked='false'] .bookmarkIcon {
+  background: rgba(15, 23, 42, 0.9);
+}
+
+/* bookmarked (gradient) */
+.bookmarkBtn[data-bookmarked='true'] .bookmarkIcon {
+  background: var(--color-premium-gradient);
+  filter: brightness(1) contrast(1.5) saturate(2);
+}
+
+
+.viewToggle {
+  border: 0;
+  background: transparent;
+  border-radius: 10px;
+  padding: 6px 10px;
+  font-family: 'Lato', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-weight: 700;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.slideCounter {
+  font-family: 'Lato', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-weight: 600;
+  font-size: 12px;
+  opacity: 0.75;
+}
+
+/* When in carousel mode, reviewArea should not be vertically scrollable itself */
+.reviewAreaCarousel {
+  overflow: hidden;
+  padding-right: 0;
+}
+
+/* Horizontal swipe carousel */
+.carousel {
+  height: 100%;
+  display: flex;
+  overflow-x: auto;
+  overflow-y: hidden;
+
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+
+  scrollbar-width: none; /* Firefox */
+  overscroll-behavior-x: contain;
+}
+
+.carousel::-webkit-scrollbar {
+  display: none; /* Chrome/Safari */
+}
+
+/* Each slide takes the full width of the reviewArea */
+.slide {
+  flex: 0 0 100%;
+  scroll-snap-align: start;
+  scroll-snap-stop: always; /* helps “one swipe = one card” where supported */
+
+  padding-right: 6px; /* keeps your old “scrollbar breathing room” feel */
+  overflow-y: auto;   /* ✅ content can still scroll vertically inside each slide */
+  -webkit-overflow-scrolling: touch;
+}
+
+.carousel {
+  cursor: grab;
+}
+
+.carouselDragging {
+  cursor: grabbing;
+  user-select: none;
+}
+
+.carouselDragging * {
+  user-select: none;
+}
