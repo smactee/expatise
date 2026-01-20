@@ -294,7 +294,8 @@ export function getOrCreateAttempt(params: {
           a.questionIds.every((id) => allSet.has(id)) &&
           // markExpiredIfNeeded already handled expiration
           a.status !== "submitted" &&
-          a.status !== "expired";
+          a.status !== "expired" &&
+          (typeof a.timeLimitSec === "number" ? a.timeLimitSec : 0) === params.timeLimitSec;; // allow timeLimitSec=0 (practice) to resume any
 
         if (valid) {
           const resumed: TestAttemptV1 = {

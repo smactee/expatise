@@ -40,7 +40,7 @@ const TEST_MODE_CARDS = [
    
     {
     key: "practice-test",
-    href: `${ROUTES.comingSoon}?feature=practice-test`,
+    href: "/test/practice",
     ariaLabel: "Open Practice Test",
     bgSrc: "/images/home/cards/practice-bg.png",
     bgAlt: "Practice Background",

@@ -55,14 +55,23 @@ export default function TestModeResultsPage() {
   const attemptId = sp.get("attemptId");
 
   // time display from query (optional)
-  const usedSecondsRaw = Number(sp.get("usedSeconds") ?? "0");
-  const usedSeconds = Number.isFinite(usedSecondsRaw) && usedSecondsRaw > 0 ? Math.floor(usedSecondsRaw) : 0;
-  const timeMin = Math.floor(usedSeconds / 60);
-  const timeSec = usedSeconds % 60;
-  const timeText = `${timeMin}min ${timeSec}sec`;
+const usedSecondsRaw = Number(sp.get("usedSeconds") ?? "0");
+const usedSeconds =
+  Number.isFinite(usedSecondsRaw) && usedSecondsRaw > 0 ? Math.floor(usedSecondsRaw) : 0;
+
+const limitSecondsRaw = Number(sp.get("limitSeconds") ?? "0");
+const limitSeconds = Number.isFinite(limitSecondsRaw) ? Math.floor(limitSecondsRaw) : 0;
+
+// Untimed if no limit was provided (practice should push limitSeconds=0)
+const showUntimed = limitSeconds <= 0;
+
+const timeMin = Math.floor(usedSeconds / 60);
+const timeSec = usedSeconds % 60;
+const timeText = showUntimed ? "Untimed" : `${timeMin}min ${timeSec}sec`;
+
 
   const { email } = useAuthStatus();
-  const userKey = normalizeUserKey(email ?? "");
+const userKey = normalizeUserKey(email ?? "") || "guest";
 
   const [attempt, setAttempt] = useState<TestAttemptV1 | null>(null);
   const [computed, setComputed] = useState<{ correct: number; total: number }>({ correct: 0, total: 0 });

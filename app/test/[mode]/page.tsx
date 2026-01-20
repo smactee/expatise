@@ -1,10 +1,16 @@
-// app/test/[mode]/page.tsx
-import RealTestClient from "@/app/(premium)/real-test/RealTestClient.client";
+import { notFound } from "next/navigation";
+import AllTestClient from "@/app/(premium)/real-test/RealTestClient.client";
 import { TEST_MODES, type TestModeId } from "@/lib/testModes";
 
-export default function TestModePage({ params }: { params: { mode: string } }) {
-  const mode = params.mode as TestModeId;
-  const cfg = TEST_MODES[mode] ?? TEST_MODES.real;
+export default async function TestModePage({
+  params,
+}: {
+  params: Promise<{ mode: string }>;
+}) {
+  const { mode } = await params;
 
-  return <RealTestClient {...cfg} routeBase={`/test/${params.mode}`} />;
+  const cfg = TEST_MODES[mode as TestModeId];
+  if (!cfg) notFound();
+
+  return <AllTestClient {...cfg} />;
 }

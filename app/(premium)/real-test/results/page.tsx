@@ -1,3 +1,4 @@
+// app/(premium)/real-test/results/page.tsx
 'use client';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect } from 'react';

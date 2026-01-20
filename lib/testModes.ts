@@ -49,8 +49,8 @@ export const TEST_MODES: Record<TestModeId, TestModeConfig> = {
     routeBase: "/test/practice",
     datasetId: "cn-2023-test1",
     datasetVersion: "cn-2023-test1@v1",
-    questionCount: 100,
-    timeLimitMinutes: 10,
+    questionCount: 20,
+    timeLimitMinutes: 0,
     preflightRequiredQuestions: 1,
   },
 

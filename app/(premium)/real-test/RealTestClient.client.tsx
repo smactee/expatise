@@ -22,7 +22,9 @@ import {
   canShowQuestion,
   markQuestionShown,
 } from "@/lib/freeAccess/localUsageCap";
+import { useEntitlements } from '@/components/EntitlementsProvider.client';
 
+console.log("USING RealTestClient from app/(premium)/real-test");
 
 
 
@@ -46,7 +48,7 @@ function normalizeRowChoice(v: string | null | undefined): 'R' | 'W' | null {
 
 
 
-export default function RealTestClient({
+export default function AllTestClient({
   modeKey,
   datasetId,
   datasetVersion,
@@ -64,9 +66,19 @@ export default function RealTestClient({
   routeBase: string;
 }) {
 
+  console.log("[RealTestClient] mounted", {
+    modeKey,
+    routeBase,
+    questionCount,
+    timeLimitMinutes,
+  });
+
+
   const router = useRouter();
 
   const required = preflightRequiredQuestions ?? questionCount;
+
+  const hasTimer = timeLimitMinutes > 0;
 
 
   const [items, setItems] = useState<Question[]>([]);
@@ -79,12 +91,15 @@ export default function RealTestClient({
   const total = items.length || questionCount;
   const currentNo = Math.min(index + 1, total);
 
-  const [timeLeft, setTimeLeft] = useState(timeLimitMinutes * 60);
-  const endAtRef = useRef<number>(Date.now() + timeLimitMinutes * 60 * 1000);
+  const [timeLeft, setTimeLeft] = useState(hasTimer ? timeLimitMinutes * 60 : 0);
+  const endAtRef = useRef<number>(hasTimer ? Date.now() + timeLimitMinutes * 60 * 1000 : 0);
+
+const { isPremium } = useEntitlements();
+const enforceCaps = !isPremium; // premium users should not hit free caps
 
 
 const { loading: authLoading, email } = useAuthStatus();
-const userKey = normalizeUserKey(email ?? ""); // (or just email if your fn accepts null)
+const userKey = normalizeUserKey(email ?? "") || "guest";
 
 const { toggle, isBookmarked } = useBookmarks(datasetId, userKey);
 
@@ -105,10 +120,13 @@ const finishTest = async (reason: "time" | "completed") => {
   }
 
   // close attempt before leaving (optional but good)
-  await attemptStore.closeAttemptById(a.attemptId, { remainingSec: timeLeft });
+await attemptStore.closeAttemptById(a.attemptId, { remainingSec: hasTimer ? timeLeft : 0 });
 
-  const limitSeconds = timeLimitMinutes * 60;
-  const usedSeconds = Math.min(limitSeconds, Math.max(0, limitSeconds - timeLeft));
+  const limitSeconds = hasTimer ? timeLimitMinutes * 60 : 0;
+  const usedSeconds = hasTimer
+  ? Math.min(limitSeconds, Math.max(0, limitSeconds - timeLeft))
+  : 0;
+
 
   const params = new URLSearchParams({
     attemptId: a.attemptId,
@@ -151,10 +169,11 @@ const hasResumable = existing.some(
     (t.status === "in_progress" || t.status === "paused")
 );
 
-if (!hasResumable && !canStartExam(userKey, { requiredQuestions: required })) {
+if (enforceCaps && !hasResumable && !canStartExam(userKey, { requiredQuestions: required })) {
   router.replace(`/premium?next=${encodeURIComponent(routeBase)}`);
   return;
 }
+
 
 
 const { attempt: a, reused } = await attemptStore.getOrCreateAttempt({
@@ -164,20 +183,18 @@ const { attempt: a, reused } = await attemptStore.getOrCreateAttempt({
   datasetVersion,
   allQuestionIds: allIds,
   questionCount,
-  timeLimitSec: timeLimitMinutes * 60,
+  timeLimitSec: hasTimer ? timeLimitMinutes * 60 : 0,
 });
 
 // Only block *new* starts. Allow resuming even if cap is hit.
 if (!reused) {
-  // 5-start cap blocks the 6th + optional preflight
-  if (!canStartExam(userKey, { requiredQuestions: required })) {
+  if (enforceCaps && !canStartExam(userKey, { requiredQuestions: required })) {
     router.replace(`/premium?next=${encodeURIComponent(routeBase)}`);
     return;
   }
-
-  // ✅ count exam start ONLY for a brand-new attempt
-  incrementExamStart(userKey);
+  if (enforceCaps) incrementExamStart(userKey);
 }
+
 
 
 
@@ -189,8 +206,14 @@ setAttempt(a);
 setItems(picked);
 
 // Restore timer from attempt storage (prevents refresh extending time)
-setTimeLeft(a.remainingSec);
-endAtRef.current = Date.now() + a.remainingSec * 1000;
+if (hasTimer) {
+  setTimeLeft(a.remainingSec);
+  endAtRef.current = Date.now() + a.remainingSec * 1000;
+} else {
+  setTimeLeft(0);
+  endAtRef.current = 0;
+}
+
 
 
 // Restore answers into your existing UI answers state
@@ -227,34 +250,46 @@ setLoading(false);
 
 
 useEffect(() => {
-  if (attempt) return; // don't clobber restored timer
+  if (attempt) return;
+
+  if (!hasTimer) {
+    endAtRef.current = 0;
+    setTimeLeft(0);
+    return;
+  }
+
   endAtRef.current = Date.now() + timeLimitMinutes * 60 * 1000;
   setTimeLeft(timeLimitMinutes * 60);
-}, [datasetId, timeLimitMinutes, attempt]);
+}, [datasetId, timeLimitMinutes, attempt, hasTimer]);
+
 
 
 
   // countdown
-  useEffect(() => {
+useEffect(() => {
+  if (!hasTimer) return;
+
   const tick = () => {
     const left = Math.max(0, Math.ceil((endAtRef.current - Date.now()) / 1000));
     setTimeLeft(left);
   };
 
-  tick(); // run once immediately so UI updates instantly
-
+  tick();
   const id = window.setInterval(tick, 250);
   return () => window.clearInterval(id);
-}, [datasetId, timeLimitMinutes]);
+}, [hasTimer, datasetId, timeLimitMinutes]);
+
 
 useEffect(() => {
+  if (!hasTimer) return;
   if (loading) return;
   if (items.length === 0) return;
 
   if (timeLeft <= 0) {
-    void finishTest('time');
+    void finishTest("time");
   }
-}, [timeLeft, loading, items.length]); // intentionally NOT including finishTest
+}, [hasTimer, timeLeft, loading, items.length]);
+ // intentionally NOT including finishTest
 
 useEffect(() => {
   finishedRef.current = false;
@@ -283,13 +318,13 @@ useEffect(() => {
 
   const patched: TestAttemptV1 = {
     ...a,
-    remainingSec: timeLeft,
+    remainingSec: hasTimer ? timeLeft : 0,
     lastActiveAt: now,
   };
 
   attemptRef.current = patched;
   void attemptStore.writeAttempt(patched);
-}, [timeLeft, loading]);
+}, [timeLeft, loading, hasTimer]);
 
 
 useEffect(() => {
@@ -304,7 +339,7 @@ useEffect(() => {
       status: "paused",
       pausedAt: now,
       lastActiveAt: now,
-      remainingSec: timeLeft,
+      remainingSec: hasTimer ? timeLeft : 0,
     };
 
     attemptRef.current = paused;
@@ -369,7 +404,7 @@ if (base) {
     ...base,
     status: "in_progress",
     lastActiveAt: now,
-    remainingSec: timeLeft, // 👈 keep it consistent
+    remainingSec: hasTimer ? timeLeft : 0, // 👈 keep it consistent
     answersByQid: {
       ...base.answersByQid,
       [item.id]: { choice: choiceKey, answeredAt: now },
@@ -418,17 +453,31 @@ const onOptionTap = (key: string) => {
 useEffect(() => {
   if (!item?.id) return;
 
+  // Build sig FIRST (so TS is happy, and so debounce works)
+  const viewSig = `${modeKey}:${datasetId}:${datasetVersion}:${attempt?.attemptId ?? "na"}:${index}:${item.id}`;
+
   // Block showing the 421st question
-  if (!canShowQuestion(userKey)) {
+  if (enforceCaps && !canShowQuestion(userKey)) {
     router.replace(`/premium?next=${encodeURIComponent(routeBase)}`);
     return;
   }
 
   // Count on DISPLAY (even if unanswered, even if repeated later)
-  // viewSig only debounces accidental double runs.
-  const viewSig = `${modeKey}:${datasetId}:${datasetVersion}:${attempt?.attemptId ?? "na"}:${index}:${item.id}`;
-markQuestionShown(userKey, viewSig);
-}, [item?.id, userKey, datasetId, datasetVersion, attempt?.attemptId, index, router]);
+  if (enforceCaps) markQuestionShown(userKey, viewSig);
+
+}, [
+  item?.id,
+  userKey,
+  datasetId,
+  datasetVersion,
+  attempt?.attemptId,
+  index,
+  router,
+  routeBase,
+  enforceCaps,
+  modeKey,
+]);
+
 
 
 useEffect(() => {
@@ -471,10 +520,19 @@ useEffect(() => {
         <div className={styles.topBar}>
 <div className={styles.topLeftSpacer} aria-hidden="true" />
           <div className={styles.topRight}>
-            <div className={styles.timer}>
-              <span className={styles.timerIcon} aria-hidden="true" />
-              <span className={styles.timerText}>{formatTime(timeLeft)}</span>
-            </div>
+            {hasTimer ? (
+  <div className={styles.timer}>
+    <span className={styles.timerIcon} aria-hidden="true" />
+    <span className={styles.timerText}>{formatTime(timeLeft)}</span>
+  </div>
+  ) : (
+    <div className={styles.timer}>
+      <span className={styles.timerIcon} aria-hidden="true" />
+      <span className={styles.timerText}>No time limit</span>
+    </div>
+  )}
+
+
           </div>
         </div>
 

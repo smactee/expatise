@@ -1234,7 +1234,9 @@ import {
   canShowQuestion,
   markQuestionShown,
 } from "@/lib/freeAccess/localUsageCap";
+import { useEntitlements } from '@/components/EntitlementsProvider.client';
 
+console.log("USING RealTestClient from app/(premium)/real-test");
 
 
 
@@ -1258,7 +1260,7 @@ function normalizeRowChoice(v: string | null | undefined): 'R' | 'W' | null {
 
 
 
-export default function RealTestClient({
+export default function AllTestClient({
   modeKey,
   datasetId,
   datasetVersion,
@@ -1276,9 +1278,19 @@ export default function RealTestClient({
   routeBase: string;
 }) {
 
+  console.log("[RealTestClient] mounted", {
+    modeKey,
+    routeBase,
+    questionCount,
+    timeLimitMinutes,
+  });
+
+
   const router = useRouter();
 
   const required = preflightRequiredQuestions ?? questionCount;
+
+  const hasTimer = timeLimitMinutes > 0;
 
 
   const [items, setItems] = useState<Question[]>([]);
@@ -1291,12 +1303,15 @@ export default function RealTestClient({
   const total = items.length || questionCount;
   const currentNo = Math.min(index + 1, total);
 
-  const [timeLeft, setTimeLeft] = useState(timeLimitMinutes * 60);
-  const endAtRef = useRef<number>(Date.now() + timeLimitMinutes * 60 * 1000);
+  const [timeLeft, setTimeLeft] = useState(hasTimer ? timeLimitMinutes * 60 : 0);
+  const endAtRef = useRef<number>(hasTimer ? Date.now() + timeLimitMinutes * 60 * 1000 : 0);
+
+const { isPremium } = useEntitlements();
+const enforceCaps = !isPremium; // premium users should not hit free caps
 
 
 const { loading: authLoading, email } = useAuthStatus();
-const userKey = normalizeUserKey(email ?? ""); // (or just email if your fn accepts null)
+const userKey = normalizeUserKey(email ?? "") || "guest";
 
 const { toggle, isBookmarked } = useBookmarks(datasetId, userKey);
 
@@ -1317,10 +1332,13 @@ const finishTest = async (reason: "time" | "completed") => {
   }
 
   // close attempt before leaving (optional but good)
-  await attemptStore.closeAttemptById(a.attemptId, { remainingSec: timeLeft });
+await attemptStore.closeAttemptById(a.attemptId, { remainingSec: hasTimer ? timeLeft : 0 });
 
-  const limitSeconds = timeLimitMinutes * 60;
-  const usedSeconds = Math.min(limitSeconds, Math.max(0, limitSeconds - timeLeft));
+  const limitSeconds = hasTimer ? timeLimitMinutes * 60 : 0;
+  const usedSeconds = hasTimer
+  ? Math.min(limitSeconds, Math.max(0, limitSeconds - timeLeft))
+  : 0;
+
 
   const params = new URLSearchParams({
     attemptId: a.attemptId,
@@ -1363,10 +1381,11 @@ const hasResumable = existing.some(
     (t.status === "in_progress" || t.status === "paused")
 );
 
-if (!hasResumable && !canStartExam(userKey, { requiredQuestions: required })) {
+if (enforceCaps && !hasResumable && !canStartExam(userKey, { requiredQuestions: required })) {
   router.replace(`/premium?next=${encodeURIComponent(routeBase)}`);
   return;
 }
+
 
 
 const { attempt: a, reused } = await attemptStore.getOrCreateAttempt({
@@ -1376,20 +1395,18 @@ const { attempt: a, reused } = await attemptStore.getOrCreateAttempt({
   datasetVersion,
   allQuestionIds: allIds,
   questionCount,
-  timeLimitSec: timeLimitMinutes * 60,
+  timeLimitSec: hasTimer ? timeLimitMinutes * 60 : 0,
 });
 
 // Only block *new* starts. Allow resuming even if cap is hit.
 if (!reused) {
-  // 5-start cap blocks the 6th + optional preflight
-  if (!canStartExam(userKey, { requiredQuestions: required })) {
+  if (enforceCaps && !canStartExam(userKey, { requiredQuestions: required })) {
     router.replace(`/premium?next=${encodeURIComponent(routeBase)}`);
     return;
   }
-
-  // ✅ count exam start ONLY for a brand-new attempt
-  incrementExamStart(userKey);
+  if (enforceCaps) incrementExamStart(userKey);
 }
+
 
 
 
@@ -1401,8 +1418,14 @@ setAttempt(a);
 setItems(picked);
 
 // Restore timer from attempt storage (prevents refresh extending time)
-setTimeLeft(a.remainingSec);
-endAtRef.current = Date.now() + a.remainingSec * 1000;
+if (hasTimer) {
+  setTimeLeft(a.remainingSec);
+  endAtRef.current = Date.now() + a.remainingSec * 1000;
+} else {
+  setTimeLeft(0);
+  endAtRef.current = 0;
+}
+
 
 
 // Restore answers into your existing UI answers state
@@ -1439,34 +1462,46 @@ setLoading(false);
 
 
 useEffect(() => {
-  if (attempt) return; // don't clobber restored timer
+  if (attempt) return;
+
+  if (!hasTimer) {
+    endAtRef.current = 0;
+    setTimeLeft(0);
+    return;
+  }
+
   endAtRef.current = Date.now() + timeLimitMinutes * 60 * 1000;
   setTimeLeft(timeLimitMinutes * 60);
-}, [datasetId, timeLimitMinutes, attempt]);
+}, [datasetId, timeLimitMinutes, attempt, hasTimer]);
+
 
 
 
   // countdown
-  useEffect(() => {
+useEffect(() => {
+  if (!hasTimer) return;
+
   const tick = () => {
     const left = Math.max(0, Math.ceil((endAtRef.current - Date.now()) / 1000));
     setTimeLeft(left);
   };
 
-  tick(); // run once immediately so UI updates instantly
-
+  tick();
   const id = window.setInterval(tick, 250);
   return () => window.clearInterval(id);
-}, [datasetId, timeLimitMinutes]);
+}, [hasTimer, datasetId, timeLimitMinutes]);
+
 
 useEffect(() => {
+  if (!hasTimer) return;
   if (loading) return;
   if (items.length === 0) return;
 
   if (timeLeft <= 0) {
-    void finishTest('time');
+    void finishTest("time");
   }
-}, [timeLeft, loading, items.length]); // intentionally NOT including finishTest
+}, [hasTimer, timeLeft, loading, items.length]);
+ // intentionally NOT including finishTest
 
 useEffect(() => {
   finishedRef.current = false;
@@ -1495,13 +1530,13 @@ useEffect(() => {
 
   const patched: TestAttemptV1 = {
     ...a,
-    remainingSec: timeLeft,
+    remainingSec: hasTimer ? timeLeft : 0,
     lastActiveAt: now,
   };
 
   attemptRef.current = patched;
   void attemptStore.writeAttempt(patched);
-}, [timeLeft, loading]);
+}, [timeLeft, loading, hasTimer]);
 
 
 useEffect(() => {
@@ -1516,7 +1551,7 @@ useEffect(() => {
       status: "paused",
       pausedAt: now,
       lastActiveAt: now,
-      remainingSec: timeLeft,
+      remainingSec: hasTimer ? timeLeft : 0,
     };
 
     attemptRef.current = paused;
@@ -1581,7 +1616,7 @@ if (base) {
     ...base,
     status: "in_progress",
     lastActiveAt: now,
-    remainingSec: timeLeft, // 👈 keep it consistent
+    remainingSec: hasTimer ? timeLeft : 0, // 👈 keep it consistent
     answersByQid: {
       ...base.answersByQid,
       [item.id]: { choice: choiceKey, answeredAt: now },
@@ -1630,17 +1665,31 @@ const onOptionTap = (key: string) => {
 useEffect(() => {
   if (!item?.id) return;
 
+  // Build sig FIRST (so TS is happy, and so debounce works)
+  const viewSig = `${modeKey}:${datasetId}:${datasetVersion}:${attempt?.attemptId ?? "na"}:${index}:${item.id}`;
+
   // Block showing the 421st question
-  if (!canShowQuestion(userKey)) {
+  if (enforceCaps && !canShowQuestion(userKey)) {
     router.replace(`/premium?next=${encodeURIComponent(routeBase)}`);
     return;
   }
 
   // Count on DISPLAY (even if unanswered, even if repeated later)
-  // viewSig only debounces accidental double runs.
-  const viewSig = `${modeKey}:${datasetId}:${datasetVersion}:${attempt?.attemptId ?? "na"}:${index}:${item.id}`;
-markQuestionShown(userKey, viewSig);
-}, [item?.id, userKey, datasetId, datasetVersion, attempt?.attemptId, index, router]);
+  if (enforceCaps) markQuestionShown(userKey, viewSig);
+
+}, [
+  item?.id,
+  userKey,
+  datasetId,
+  datasetVersion,
+  attempt?.attemptId,
+  index,
+  router,
+  routeBase,
+  enforceCaps,
+  modeKey,
+]);
+
 
 
 useEffect(() => {
@@ -1683,10 +1732,19 @@ useEffect(() => {
         <div className={styles.topBar}>
 <div className={styles.topLeftSpacer} aria-hidden="true" />
           <div className={styles.topRight}>
-            <div className={styles.timer}>
-              <span className={styles.timerIcon} aria-hidden="true" />
-              <span className={styles.timerText}>{formatTime(timeLeft)}</span>
-            </div>
+            {hasTimer ? (
+  <div className={styles.timer}>
+    <span className={styles.timerIcon} aria-hidden="true" />
+    <span className={styles.timerText}>{formatTime(timeLeft)}</span>
+  </div>
+  ) : (
+    <div className={styles.timer}>
+      <span className={styles.timerIcon} aria-hidden="true" />
+      <span className={styles.timerText}>No time limit</span>
+    </div>
+  )}
+
+
           </div>
         </div>
 
@@ -1821,33 +1879,16 @@ useEffect(() => {
 
 ### app/(premium)/real-test/page.tsx
 ```tsx
-// app/real-test/page.tsx
-import type { DatasetId } from '@/lib/qbank/datasets';
-import RealTestClient from './RealTestClient.client';
-import { redirect } from 'next/navigation';
+'use client';
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 
-export default function RealTestPage() {
-  const datasetId: DatasetId = 'cn-2023-test1' as DatasetId;
-
-  // Change this only when your dataset content changes (e.g., yearly update).
-  const datasetVersion = 'cn-2023-test1@v1';
-
-  // Real Test fixed size
-  const questionCount = 100;
-
-  redirect("/test/real");
-
-  return (
-    <RealTestClient
-      modeKey="real-test"
-      routeBase="/real-test"
-      datasetId={datasetId}
-      datasetVersion={datasetVersion}
-      questionCount={100}
-      timeLimitMinutes={45}
-      preflightRequiredQuestions={100}
-    />
-  );
+export default function RealTestAlias() {
+  const router = useRouter();
+  useEffect(() => {
+    router.replace('/test/real');
+  }, [router]);
+  return null;
 }
 
 ```
@@ -2186,41 +2227,20 @@ height: clamp(240px, 52vw, 340px);
 
 ### app/(premium)/real-test/results/page.tsx
 ```tsx
-/* app/(premium)/real-test/results/page.tsx */
-"use client";
+// app/(premium)/real-test/results/page.tsx
+'use client';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useEffect } from 'react';
 
-import { useEffect } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
-
-/**
- * Alias/redirect page:
- * - Keeps old route working: /real-test/results?... -> /test/real/results?...
- * - Preserves the full query string (attemptId, usedSeconds, limitSeconds, reason, etc.)
- *
- * IMPORTANT:
- * - This file must live under the SAME route group as your real-test route.
- *   (You said your real-test results CSS is under app/(premium)/real-test/results/, so place this here.)
- */
-export default function RealTestResultsAliasPage() {
+export default function RealTestResultsAlias() {
   const router = useRouter();
   const sp = useSearchParams();
 
   useEffect(() => {
     const qs = sp.toString();
-
-    // If someone opens /real-test/results with no attemptId, just send them to the test start.
-    // (Results page requires attemptId)
-    const attemptId = sp.get("attemptId");
-    if (!attemptId) {
-      router.replace("/test/real");
-      return;
-    }
-
-    // Preserve all query params
-    router.replace(`/test/real/results${qs ? `?${qs}` : ""}`);
+    router.replace(`/test/real/results${qs ? `?${qs}` : ''}`);
   }, [router, sp]);
 
-  // No UI; immediate redirect
   return null;
 }
 
@@ -7158,7 +7178,7 @@ const TEST_MODE_CARDS = [
    
     {
     key: "practice-test",
-    href: `${ROUTES.comingSoon}?feature=practice-test`,
+    href: "/test/practice",
     ariaLabel: "Open Practice Test",
     bgSrc: "/images/home/cards/practice-bg.png",
     bgAlt: "Practice Background",
@@ -9328,15 +9348,21 @@ const handleSave = async (e: React.SyntheticEvent) => {
 
 ### app/test/[mode]/page.tsx
 ```tsx
-// app/test/[mode]/page.tsx
-import RealTestClient from "@/app/(premium)/real-test/RealTestClient.client";
+import { notFound } from "next/navigation";
+import AllTestClient from "@/app/(premium)/real-test/RealTestClient.client";
 import { TEST_MODES, type TestModeId } from "@/lib/testModes";
 
-export default function TestModePage({ params }: { params: { mode: string } }) {
-  const mode = params.mode as TestModeId;
-  const cfg = TEST_MODES[mode] ?? TEST_MODES.real;
+export default async function TestModePage({
+  params,
+}: {
+  params: Promise<{ mode: string }>;
+}) {
+  const { mode } = await params;
 
-  return <RealTestClient {...cfg} routeBase={`/test/${params.mode}`} />;
+  const cfg = TEST_MODES[mode as TestModeId];
+  if (!cfg) notFound();
+
+  return <AllTestClient {...cfg} />;
 }
 
 ```
@@ -9344,54 +9370,39 @@ export default function TestModePage({ params }: { params: { mode: string } }) {
 ### app/test/[mode]/results/page.tsx
 ```tsx
 /* app/test/[mode]/results/page.tsx */
-'use client';
+"use client";
 
-import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { useRouter, useSearchParams, useParams } from 'next/navigation';
-import styles from '@/app/(premium)/real-test/results/results.module.css';
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import { useRouter, useSearchParams, useParams } from "next/navigation";
+import Image from "next/image";
 
-import Image from 'next/image';
+// ✅ Best practice: keep CSS local to this route.
+// Create app/test/[mode]/results/results.module.css and copy your existing CSS into it.
+import styles from "./results.module.css";
 
-import { loadDataset } from '@/lib/qbank/loadDataset';
-import type { DatasetId } from '@/lib/qbank/datasets';
-import type { Question } from '@/lib/qbank/types';
+import { loadDataset } from "@/lib/qbank/loadDataset";
+import type { DatasetId } from "@/lib/qbank/datasets";
+import type { Question } from "@/lib/qbank/types";
 
-import { attemptStore } from '@/lib/attempts/store';
-import type { TestAttemptV1 } from '@/lib/attempts/engine';
+import { attemptStore } from "@/lib/attempts/store";
+import type { TestAttemptV1 } from "@/lib/attempts/engine";
 
-import { useAuthStatus } from '@/components/useAuthStatus';
-import { normalizeUserKey } from '@/lib/attempts/engine';
-import { useBookmarks } from '@/lib/bookmarks/useBookmarks';
+import { useAuthStatus } from "@/components/useAuthStatus";
+import { normalizeUserKey } from "@/lib/attempts/engine";
+import { useBookmarks } from "@/lib/bookmarks/useBookmarks";
 
 import { TEST_MODES, type TestModeId } from "@/lib/testModes";
-
 
 function clamp(n: number, min: number, max: number) {
   return Math.max(min, Math.min(max, n));
 }
 
-function normalizeRowChoice(v: string | null | undefined): 'R' | 'W' | null {
+function normalizeRowChoice(v: string | null | undefined): "R" | "W" | null {
   if (!v) return null;
   const t = v.trim().toLowerCase();
-  if (t === 'r' || t === 'right') return 'R';
-  if (t === 'w' || t === 'wrong') return 'W';
+  if (t === "r" || t === "right") return "R";
+  if (t === "w" || t === "wrong") return "W";
   return null;
-}
-
-function getQuestionNumber(q: any): number {
-  const raw = q?.number;
-
-  const fromNumber = Number(raw);
-  if (Number.isFinite(fromNumber) && fromNumber > 0) return Math.floor(fromNumber);
-
-  const idStr = String(q?.id ?? "");
-  const idMatch = idStr.match(/\d+/);
-  if (idMatch) {
-    const n = parseInt(idMatch[0], 10);
-    if (Number.isFinite(n) && n > 0) return n;
-  }
-
-  return 0;
 }
 
 type ReviewItem = {
@@ -9403,24 +9414,35 @@ type ReviewItem = {
   explanation?: string;
 };
 
-
-
-
-
 export default function TestModeResultsPage() {
   const router = useRouter();
   const sp = useSearchParams();
-  const params = useParams<{ mode: string }>(); // mode is optional for UI, but route requires it
+  const params = useParams<{ mode: string }>();
 
-  const attemptId = sp.get('attemptId');
+  const modeId = (params.mode ?? "real") as TestModeId;
+  const cfg = TEST_MODES[modeId] ?? TEST_MODES.real;
 
-  const usedSecondsRaw = Number(sp.get('usedSeconds') ?? '0');
-  const usedSeconds =
-    Number.isFinite(usedSecondsRaw) && usedSecondsRaw > 0 ? Math.floor(usedSecondsRaw) : 0;
+  // attemptId from query
+  const attemptId = sp.get("attemptId");
 
-  const timeMin = Math.floor(usedSeconds / 60);
-  const timeSec = usedSeconds % 60;
-  const timeText = `${timeMin}min ${timeSec}sec`;
+  // time display from query (optional)
+const usedSecondsRaw = Number(sp.get("usedSeconds") ?? "0");
+const usedSeconds =
+  Number.isFinite(usedSecondsRaw) && usedSecondsRaw > 0 ? Math.floor(usedSecondsRaw) : 0;
+
+const limitSecondsRaw = Number(sp.get("limitSeconds") ?? "0");
+const limitSeconds = Number.isFinite(limitSecondsRaw) ? Math.floor(limitSecondsRaw) : 0;
+
+// Untimed if no limit was provided (practice should push limitSeconds=0)
+const showUntimed = limitSeconds <= 0;
+
+const timeMin = Math.floor(usedSeconds / 60);
+const timeSec = usedSeconds % 60;
+const timeText = showUntimed ? "Untimed" : `${timeMin}min ${timeSec}sec`;
+
+
+  const { email } = useAuthStatus();
+const userKey = normalizeUserKey(email ?? "") || "guest";
 
   const [attempt, setAttempt] = useState<TestAttemptV1 | null>(null);
   const [computed, setComputed] = useState<{ correct: number; total: number }>({ correct: 0, total: 0 });
@@ -9428,32 +9450,64 @@ export default function TestModeResultsPage() {
   const [reviewItems, setReviewItems] = useState<ReviewItem[]>([]);
   const [brokenImages, setBrokenImages] = useState<Record<string, boolean>>({});
 
-  const [viewMode, setViewMode] = useState<'list' | 'carousel'>('list');
+  const [viewMode, setViewMode] = useState<"list" | "carousel">("list");
   const [activeSlide, setActiveSlide] = useState(0);
   const carouselRef = useRef<HTMLDivElement | null>(null);
 
   const [isDragging, setIsDragging] = useState(false);
+  const dragRef = useRef({ down: false, startX: 0, startLeft: 0, moved: false });
 
-  const dragRef = useRef({
-    down: false,
-    startX: 0,
-    startLeft: 0,
-    moved: false,
-  });
+  // datasetId for bookmarks should come from attempt if possible; fallback to mode config
+  const datasetId = ((attempt?.datasetId ?? cfg.datasetId) as unknown) as DatasetId;
+  const { toggle, isBookmarked } = useBookmarks(datasetId, userKey);
 
-  // ✅ auth + userKey for bookmarks (matches how you do it on test page)
-  const { email } = useAuthStatus();
-  const userKey = normalizeUserKey(email ?? "");
+  /**
+   * ✅ SELF-HEAL:
+   * If user visits /test/[mode]/results with NO attemptId,
+   * find the newest attempt for this mode and redirect with attemptId.
+   */
+  useEffect(() => {
+    if (attemptId) return;
 
-  // datasetId should be typed correctly; use a stable fallback
-  const datasetId = (attempt?.datasetId ?? "") as DatasetId;
-  const { toggle, isBookmarked } = useBookmarks(datasetId || ("pending" as DatasetId), userKey);
+    (async () => {
+      // If userKey isn't ready yet, wait
+      if (!userKey) return;
 
+      // listAttempts requires datasetId in your store API
+      const list = await attemptStore.listAttempts(userKey, cfg.datasetId);
+
+      // Filter to this mode & this dataset version
+      const matching = list.filter(
+        (a) =>
+          a.modeKey === cfg.modeKey &&
+          a.datasetVersion === cfg.datasetVersion
+      );
+
+      // Choose best candidate:
+      // Prefer "submitted" / "expired" / "closed" attempts first,
+      // else pick newest in-progress.
+      const ranked = [...matching].sort((a, b) => (b.lastActiveAt ?? 0) - (a.lastActiveAt ?? 0));
+
+      const best = ranked[0];
+      if (!best?.attemptId) {
+        // Nothing to show; send them back to test start
+        router.replace(`/test/${cfg.modeId}`);
+        return;
+      }
+
+      // Redirect to same page WITH attemptId
+      const next = new URLSearchParams(sp.toString());
+      next.set("attemptId", best.attemptId);
+      router.replace(`/test/${cfg.modeId}/results?${next.toString()}`);
+    })();
+  }, [attemptId, userKey, cfg, router, sp]);
+
+  // Carousel pointer handlers
   const onCarouselPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
-    if (e.pointerType !== 'mouse') return;
+    if (e.pointerType !== "mouse") return;
 
     const target = e.target as HTMLElement;
-    if (target.closest('button, a, input, textarea, select, label')) return;
+    if (target.closest("button, a, input, textarea, select, label")) return;
 
     const el = carouselRef.current;
     if (!el) return;
@@ -9468,7 +9522,7 @@ export default function TestModeResultsPage() {
   };
 
   const onCarouselPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
-    if (e.pointerType !== 'mouse') return;
+    if (e.pointerType !== "mouse") return;
     if (!dragRef.current.down) return;
 
     const el = carouselRef.current;
@@ -9486,11 +9540,11 @@ export default function TestModeResultsPage() {
 
     const w = el.clientWidth || 1;
     const idx = Math.round(el.scrollLeft / w);
-    el.scrollTo({ left: idx * w, behavior: 'smooth' });
+    el.scrollTo({ left: idx * w, behavior: "smooth" });
   };
 
   const onCarouselPointerUpOrCancel = (e: React.PointerEvent<HTMLDivElement>) => {
-    if (e.pointerType !== 'mouse') return;
+    if (e.pointerType !== "mouse") return;
 
     const el = carouselRef.current;
     if (!el) return;
@@ -9506,7 +9560,7 @@ export default function TestModeResultsPage() {
   };
 
   useEffect(() => {
-    if (viewMode !== 'carousel') return;
+    if (viewMode !== "carousel") return;
 
     const el = carouselRef.current;
     if (!el) return;
@@ -9518,15 +9572,15 @@ export default function TestModeResultsPage() {
     };
 
     onScroll();
-    el.addEventListener('scroll', onScroll, { passive: true });
-    return () => el.removeEventListener('scroll', onScroll as any);
+    el.addEventListener("scroll", onScroll, { passive: true });
+    return () => el.removeEventListener("scroll", onScroll as any);
   }, [viewMode, reviewItems.length]);
 
+  // Load attempt + compute
   useEffect(() => {
     if (!attemptId) return;
 
     (async () => {
-      // ✅ Use same store as test page
       const a = await attemptStore.readAttemptById(attemptId);
       setAttempt(a);
 
@@ -9534,17 +9588,15 @@ export default function TestModeResultsPage() {
 
       const ds = await loadDataset(a.datasetId as DatasetId);
       const byId = new Map(ds.map((q) => [q.id, q] as const));
-
       const picked = a.questionIds.map((id: string) => byId.get(id)).filter(Boolean) as Question[];
 
+      // score
       let correct = 0;
-
-      for (let i = 0; i < picked.length; i++) {
-        const q = picked[i];
+      for (const q of picked) {
         const chosenKey = a.answersByQid[q.id]?.choice ?? null;
         if (!chosenKey) continue;
 
-        if (q.type === 'ROW') {
+        if (q.type === "ROW") {
           const chosen = normalizeRowChoice(chosenKey);
           const expected = normalizeRowChoice((q as any).correctRow ?? null);
           if (chosen && expected && chosen === expected) correct += 1;
@@ -9563,9 +9615,8 @@ export default function TestModeResultsPage() {
 
       setComputed({ correct, total: picked.length });
 
-      // WRONG ONLY items
+      // WRONG-only review items
       const items: ReviewItem[] = [];
-
       for (let i = 0; i < picked.length; i++) {
         const q = picked[i];
         const testNo = i + 1;
@@ -9582,32 +9633,20 @@ export default function TestModeResultsPage() {
         if (qType === "ROW") {
           const correctRow = normalizeRowChoice((q as any).correctRow ?? null);
           const chosenRow = normalizeRowChoice(chosenKey);
-
           const isCorrect = !!(chosenRow && correctRow && chosenRow === correctRow);
           if (isCorrect) continue;
-
-          const options: ReviewItem["options"] = [
-            {
-              key: "R",
-              text: "R. Right",
-              tone: correctRow === "R" ? "correct" : chosenRow === "R" ? "wrong" : "neutral",
-            },
-            {
-              key: "W",
-              text: "W. Wrong",
-              tone: correctRow === "W" ? "correct" : chosenRow === "W" ? "wrong" : "neutral",
-            },
-          ];
 
           items.push({
             qid: (q as any).id,
             testNo,
             prompt: (q as any).prompt,
             imageSrc,
-            options,
+            options: [
+              { key: "R", text: "R. Right", tone: correctRow === "R" ? "correct" : chosenRow === "R" ? "wrong" : "neutral" },
+              { key: "W", text: "W. Wrong", tone: correctRow === "W" ? "correct" : chosenRow === "W" ? "wrong" : "neutral" },
+            ],
             explanation: (q as any).explanation,
           });
-
           continue;
         }
 
@@ -9631,23 +9670,19 @@ export default function TestModeResultsPage() {
             ? (opts[correctIndex].originalKey ?? String.fromCharCode(65 + correctIndex))
             : null;
 
-        const options: ReviewItem["options"] = opts.map((opt: any, idx: number) => {
-          const key = opt?.originalKey ?? String.fromCharCode(65 + idx);
-          const text = `${key}. ${opt?.text ?? ""}`;
-
-          let tone: "neutral" | "correct" | "wrong" = "neutral";
-          if (correctKey && key === correctKey) tone = "correct";
-          if (chosenKey && key === chosenKey && key !== correctKey) tone = "wrong";
-
-          return { key, text, tone };
-        });
-
         items.push({
           qid: (q as any).id,
           testNo,
           prompt: (q as any).prompt,
           imageSrc,
-          options,
+          options: opts.map((opt: any, idx: number) => {
+            const key = opt?.originalKey ?? String.fromCharCode(65 + idx);
+            const text = `${key}. ${opt?.text ?? ""}`;
+            let tone: "neutral" | "correct" | "wrong" = "neutral";
+            if (correctKey && key === correctKey) tone = "correct";
+            if (chosenKey && key === chosenKey && key !== correctKey) tone = "wrong";
+            return { key, text, tone };
+          }),
           explanation: (q as any).explanation,
         });
       }
@@ -9658,7 +9693,7 @@ export default function TestModeResultsPage() {
     })();
   }, [attemptId]);
 
-  // Close attempt once, when results opens
+  // Close attempt once
   useEffect(() => {
     if (!attemptId) return;
     void attemptStore.closeAttemptById(attemptId);
@@ -9668,20 +9703,21 @@ export default function TestModeResultsPage() {
     const t = computed.total > 0 ? computed.total : 1;
     return clamp(computed.correct / t, 0, 1);
   }, [computed.correct, computed.total]);
-
   const percent = useMemo(() => Math.round(pct * 100), [pct]);
 
+  // While self-healing redirect runs, show a tiny placeholder (prevents flashing "Missing attemptId")
   if (!attemptId) {
     return (
       <div className={styles.viewport}>
         <main className={styles.screen}>
           <div className={styles.card} />
-          <div style={{ padding: 16 }}>Missing attemptId. Please re-take the test.</div>
+          <div style={{ padding: 16 }}>Loading results…</div>
         </main>
       </div>
     );
   }
 
+  // ---- UI BELOW (your existing layout) ----
   return (
     <div className={styles.viewport}>
       <main className={styles.screen}>
@@ -9690,7 +9726,7 @@ export default function TestModeResultsPage() {
           <h1 className={styles.congrats}>Congratulations!</h1>
 
           <div className={styles.ringWrap} aria-label="Score progress">
-            <div className={styles.ring} style={{ '--p': `${pct * 360}deg` } as React.CSSProperties} />
+            <div className={styles.ring} style={{ "--p": `${pct * 360}deg` } as React.CSSProperties} />
             <div className={styles.ringCenterText}>{percent}</div>
           </div>
 
@@ -9700,7 +9736,9 @@ export default function TestModeResultsPage() {
             <div className={styles.lineMid} />
 
             <div className={styles.scoreLeft}>
-              <div className={styles.scoreValue}>{computed.correct}/{computed.total || 0}</div>
+              <div className={styles.scoreValue}>
+                {computed.correct}/{computed.total || 0}
+              </div>
               <div className={styles.scoreLabel}>Score</div>
             </div>
 
@@ -9713,18 +9751,11 @@ export default function TestModeResultsPage() {
           <div className={styles.testResultsTitle}>Test Results</div>
 
           <div className={styles.incorrectRow}>
-            <Image
-              src="/images/test/red-x-icon.png"
-              alt="Red X Icon"
-              width={24}
-              height={24}
-              className={styles.btnIcon}
-            />
-
+            <Image src="/images/test/red-x-icon.png" alt="Red X Icon" width={24} height={24} className={styles.btnIcon} />
             <div className={styles.incorrectText}>Incorrect</div>
             <div className={styles.incorrectSpacer} />
 
-            {reviewItems.length > 0 && viewMode === 'carousel' && (
+            {reviewItems.length > 0 && viewMode === "carousel" && (
               <div className={styles.slideCounter}>
                 {activeSlide + 1}/{reviewItems.length}
               </div>
@@ -9733,13 +9764,13 @@ export default function TestModeResultsPage() {
             <button
               type="button"
               className={styles.viewToggle}
-              onClick={() => setViewMode((v) => (v === 'list' ? 'carousel' : 'list'))}
-              aria-pressed={viewMode === 'carousel'}
-              aria-label={viewMode === 'carousel' ? 'Switch to list view' : 'Switch to swipe view'}
-              title={viewMode === 'carousel' ? 'List view' : 'Swipe view'}
+              onClick={() => setViewMode((v) => (v === "list" ? "carousel" : "list"))}
+              aria-pressed={viewMode === "carousel"}
+              aria-label={viewMode === "carousel" ? "Switch to list view" : "Switch to swipe view"}
+              title={viewMode === "carousel" ? "List view" : "Swipe view"}
             >
               <Image
-                src={viewMode === 'carousel' ? '/images/test/list-icon.png' : '/images/test/carousel-icon.png'}
+                src={viewMode === "carousel" ? "/images/test/list-icon.png" : "/images/test/carousel-icon.png"}
                 alt=""
                 width={18}
                 height={18}
@@ -9747,19 +9778,14 @@ export default function TestModeResultsPage() {
             </button>
           </div>
 
-          <section
-            className={[
-              styles.reviewArea,
-              viewMode === 'carousel' ? styles.reviewAreaCarousel : '',
-            ].join(' ')}
-          >
+          <section className={[styles.reviewArea, viewMode === "carousel" ? styles.reviewAreaCarousel : ""].join(" ")}>
             {reviewItems.length === 0 ? (
               <p className={styles.question}>Expatise! No incorrect questions! 🎉</p>
-            ) : viewMode === 'list' ? (
+            ) : viewMode === "list" ? (
               reviewItems.map((it) => (
                 <article key={it.qid} style={{ marginBottom: 18 }}>
                   <div className={styles.questionRow}>
-                    <p className={[styles.question, styles.questionText].join(' ')}>
+                    <p className={[styles.question, styles.questionText].join(" ")}>
                       {it.testNo}. {it.prompt}
                     </p>
 
@@ -9771,9 +9797,9 @@ export default function TestModeResultsPage() {
                         e.stopPropagation();
                         toggle(it.qid);
                       }}
-                      aria-label={isBookmarked(it.qid) ? 'Remove bookmark' : 'Add bookmark'}
-                      title={isBookmarked(it.qid) ? 'Bookmarked' : 'Bookmark'}
-                      data-bookmarked={isBookmarked(it.qid) ? 'true' : 'false'}
+                      aria-label={isBookmarked(it.qid) ? "Remove bookmark" : "Add bookmark"}
+                      title={isBookmarked(it.qid) ? "Bookmarked" : "Bookmark"}
+                      data-bookmarked={isBookmarked(it.qid) ? "true" : "false"}
                     >
                       <span className={styles.bookmarkIcon} aria-hidden="true" />
                     </button>
@@ -9800,12 +9826,12 @@ export default function TestModeResultsPage() {
                           key={o.key}
                           className={[
                             styles.option,
-                            o.tone === 'correct'
+                            o.tone === "correct"
                               ? styles.optionCorrect
-                              : o.tone === 'wrong'
+                              : o.tone === "wrong"
                               ? styles.optionWrong
                               : styles.optionNeutral,
-                          ].join(' ')}
+                          ].join(" ")}
                         >
                           {o.text}
                         </div>
@@ -9813,7 +9839,7 @@ export default function TestModeResultsPage() {
                     </div>
                   </div>
 
-                  {(it.explanation ?? '').trim().length > 0 && (
+                  {(it.explanation ?? "").trim().length > 0 && (
                     <>
                       <div className={styles.exTitle}>Explanation:</div>
                       <div className={styles.exBody}>{it.explanation}</div>
@@ -9824,10 +9850,7 @@ export default function TestModeResultsPage() {
             ) : (
               <div
                 ref={carouselRef}
-                className={[
-                  styles.carousel,
-                  isDragging ? styles.carouselDragging : '',
-                ].join(' ')}
+                className={[styles.carousel, isDragging ? styles.carouselDragging : ""].join(" ")}
                 onPointerDown={onCarouselPointerDown}
                 onPointerMove={onCarouselPointerMove}
                 onPointerUp={onCarouselPointerUpOrCancel}
@@ -9844,7 +9867,7 @@ export default function TestModeResultsPage() {
                   <div key={it.qid} className={styles.slide}>
                     <article>
                       <div className={styles.questionRow}>
-                        <p className={[styles.question, styles.questionText].join(' ')}>
+                        <p className={[styles.question, styles.questionText].join(" ")}>
                           {it.testNo}. {it.prompt}
                         </p>
 
@@ -9856,9 +9879,9 @@ export default function TestModeResultsPage() {
                             e.stopPropagation();
                             toggle(it.qid);
                           }}
-                          aria-label={isBookmarked(it.qid) ? 'Remove bookmark' : 'Add bookmark'}
-                          title={isBookmarked(it.qid) ? 'Bookmarked' : 'Bookmark'}
-                          data-bookmarked={isBookmarked(it.qid) ? 'true' : 'false'}
+                          aria-label={isBookmarked(it.qid) ? "Remove bookmark" : "Add bookmark"}
+                          title={isBookmarked(it.qid) ? "Bookmarked" : "Bookmark"}
+                          data-bookmarked={isBookmarked(it.qid) ? "true" : "false"}
                         >
                           <span className={styles.bookmarkIcon} aria-hidden="true" />
                         </button>
@@ -9886,12 +9909,12 @@ export default function TestModeResultsPage() {
                               key={o.key}
                               className={[
                                 styles.option,
-                                o.tone === 'correct'
+                                o.tone === "correct"
                                   ? styles.optionCorrect
-                                  : o.tone === 'wrong'
+                                  : o.tone === "wrong"
                                   ? styles.optionWrong
                                   : styles.optionNeutral,
-                              ].join(' ')}
+                              ].join(" ")}
                             >
                               {o.text}
                             </div>
@@ -9899,7 +9922,7 @@ export default function TestModeResultsPage() {
                         </div>
                       </div>
 
-                      {(it.explanation ?? '').trim().length > 0 && (
+                      {(it.explanation ?? "").trim().length > 0 && (
                         <>
                           <div className={styles.exTitle}>Explanation:</div>
                           <div className={styles.exBody}>{it.explanation}</div>
@@ -9912,24 +9935,658 @@ export default function TestModeResultsPage() {
             )}
           </section>
 
-          <button
-            type="button"
-            className={styles.continueBtn}
-            onClick={() => router.push('/')}
-          >
+          <button type="button" className={styles.continueBtn} onClick={() => router.push("/")}>
             <span className={styles.continueText}>Home</span>
-            <Image
-              src="/images/other/right-arrow.png"
-              alt="Home"
-              width={18}
-              height={18}
-              className={styles.btnIcon}
-            />
+            <Image src="/images/other/right-arrow.png" alt="Home" width={18} height={18} className={styles.btnIcon} />
           </button>
         </div>
       </main>
     </div>
   );
+}
+
+```
+
+### app/test/[mode]/results/results.module.css
+```css
+.viewport {
+  min-height: 100vh;
+  min-height: 100dvh; /* ✅ mobile accurate */
+  padding: 0;
+  background: var(--color-page-bg);
+}
+
+.screen {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  min-height: 100dvh; /* ✅ mobile accurate */
+  background: #f4f4f9;
+  overflow: hidden;
+  --contentW: min(390px, calc(100% - 60px)); /* ✅ content width */
+}
+
+
+
+/* Figma: Rectangle (full screen overlay) */
+.card {
+  position: absolute;
+  left: 0%;
+  right: 0%;
+  top: 0%;
+  bottom: 0%;
+
+  background: linear-gradient(
+    90deg,
+    rgba(43, 124, 175, 0.15) 0%,
+    rgba(255, 197, 66, 0.15) 100%
+  );
+  box-shadow: 0px 2px 1.1px rgba(169, 171, 187, 0.27);
+  border-radius: 8px;
+}
+
+/* Back row placement (Frame 2801 starts at top 44; but we can place it at top visually) */
+.backRow {
+  position: absolute;
+  left: 0px;
+  top: 44px;
+  width: 390px;
+  height: 40px;
+}
+
+.backBtn {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+
+  width: 86px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+
+  padding: 10px 0px 10px 16px;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.backChevron {
+  width: 20px;
+  height: 20px;
+  position: relative;
+}
+
+.backChevron::before {
+  content: '';
+  position: absolute;
+  left: 25%;
+  right: 35%;
+  top: 10%;
+  bottom: 10%;
+  border-left: 2px solid #979797;
+  border-bottom: 2px solid #979797;
+  transform: rotate(45deg);
+  transform-origin: center;
+}
+
+.backLabel {
+  font-family: 'Lato', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 120%;
+  letter-spacing: 0.04em;
+  color: #000000;
+}
+
+/* Congratulation! */
+.congrats {
+  position: absolute;
+  top: 103px;
+
+  left: 50%;
+  transform: translateX(-50%);
+
+  width: max-content;
+  max-width: calc(100% - 60px); /* prevents overflow on small screens */
+
+  margin: 0;
+  font-family: 'Poppins', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-weight: 500;
+  font-size: 22px;
+  line-height: 20px;
+  text-align: center;
+  letter-spacing: -0.24px;
+  text-transform: capitalize;
+  color: #383a44;
+}
+
+
+/* Ring wrapper */
+.ringWrap {
+  position: absolute;
+  top: 145px;
+
+  left: 50%;
+  transform: translateX(-50%);
+
+  width: 123px;
+  height: 123px;
+
+  display: grid;
+  place-items: center;
+}
+
+
+.ring,
+.ringCenterText {
+  grid-area: 1 / 1;
+}
+
+
+
+/*
+  Ring:
+  - thickness: 8px (track #BDCCD3)
+  - progress: gradient-ish using conic-gradient
+*/
+.ring {
+  width: 123px;
+  height: 123px;
+  border-radius: 999px;
+
+  /* --p is degrees for the "colored" sweep */
+  background: conic-gradient(
+    from 0deg,
+    #2b7caf 0deg,
+    #ffc542 var(--p),
+    #bdccd3 var(--p),
+    #bdccd3 360deg
+  );
+
+  /* punch out center so it becomes a ring */
+  -webkit-mask: radial-gradient(
+    farthest-side,
+    transparent calc(100% - 8px),
+    #000 calc(100% - 8px)
+  );
+  mask: radial-gradient(
+    farthest-side,
+    transparent calc(100% - 8px),
+    #000 calc(100% - 8px)
+  );
+}
+
+.ringCenterText {
+  margin: 0;
+  text-align: center;
+
+  font-family: 'Lato', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-style: normal;
+  font-weight: 700;
+  font-size: 40px;
+  line-height: 20px;
+  letter-spacing: -0.24px;
+  text-transform: capitalize;
+  color: #21205a;
+
+  /* optional: stop it from affecting layout, keeps it centered nicely */
+  pointer-events: none;
+}
+
+
+/* Score/Time group container */
+.scoreBox {
+  position: absolute;
+  top: 302px;
+
+  left: 50%;
+  transform: translateX(-50%);
+
+  width: var(--contentW);
+  height: 83px;
+}
+
+
+.lineTop,
+.lineBottom {
+  position: absolute;
+  left: 0;
+  width: 100%;       /* ✅ instead of 330px */
+  height: 0px;
+  border: 1px solid #2b7caf;
+}
+
+.lineTop { top: 0; }
+.lineBottom { top: 83px; }
+
+
+.lineMid {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  height: 83px;
+  border-left: 1px solid #2b7caf;
+}
+
+
+/* Left score group */
+.scoreLeft,
+.scoreRight {
+  position: absolute;
+  top: 20px;
+  width: 50%;
+  height: 43px;
+  display: grid;
+  place-items: center;
+  gap: 11px;
+}
+
+.scoreLeft { left: 0; }
+.scoreRight { left: 50%; }
+
+
+.scoreRight .scoreValue {
+  white-space: nowrap;
+}
+
+
+.scoreValue {
+  font-family: 'Poppins', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 20px;
+  text-align: center;
+  letter-spacing: -0.24px;
+  color: #383a44;
+}
+
+.scoreLabel {
+  font-family: 'Poppins', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 20px;
+  text-align: center;
+  letter-spacing: -0.24px;
+  color: #383a44;
+}
+
+/* Test Results title */
+.testResultsTitle {
+  position: absolute;
+  left: 30px;
+  top: 400px;
+
+  /* ✅ make the title span the usable screen width (390 - 30 - 30) */
+  width: calc(100% - 60px);
+
+  /* ✅ keep it on one line */
+  white-space: nowrap;
+
+  margin: 0;
+  font-family: 'Lato', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-weight: 700;
+  font-size: 32px;
+  line-height: 1.1;
+  letter-spacing: -0.24px;
+  color: #000;
+
+  /* Figma looks left-aligned */
+  text-align: left;
+}
+
+
+/* Incorrect row */
+.incorrectRow {
+  position: absolute;
+  left: 43px;
+  right: 30px; /* ✅ gives it room to push a button to the far right */
+  top: 440px;
+
+  height: 24px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.incorrectSpacer {
+  flex: 1;
+}
+
+.incorrectText {
+  position: relative;
+  width: 62px;
+  height: 20px;
+
+  font-family: 'Lato', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 20px;
+  text-align: center;
+  letter-spacing: -0.24px;
+  color: #ff575f;
+}
+
+/* A scrollable area for wrong-question details */
+.reviewArea {
+  position: absolute;
+  left: 30px;
+  width: calc(100% - 60px);
+  top: 470px;
+
+  bottom: -30; /* ✅ fill to bottom */
+  overflow-y: auto;
+
+  padding-right: 6px;
+
+  /* ✅ this creates "extra space" so the last question can scroll past the button */
+  padding-bottom: calc(41px + 16px + env(safe-area-inset-bottom) + 12px);
+
+  -webkit-overflow-scrolling: touch;
+}
+
+
+/* Use normal flow instead of absolute positioning */
+.question {
+  position: static;
+  width: auto;
+  height: auto;
+  margin: 0 0 10px;
+
+  font-family: 'Lato', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 22px;
+  letter-spacing: -0.24px;
+  color: #000;
+}
+
+.qImage {
+  position: static;
+  width: 120px;
+  height: 120px;
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.06);
+  margin: 0 0 12px;
+}
+
+.imageWrap {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  border-radius: 10px;
+  overflow: hidden;
+  margin: 0 0 12px;
+}
+
+.image {
+  object-fit: cover;
+}
+
+.qaRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin: 0 0 10px;
+}
+
+/* Options stack properly */
+.options {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 0;
+}
+
+
+.option {
+  font-family: 'Lato', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 16px;
+  letter-spacing: -0.24px;
+
+  /* allow wrapping without breaking layout */
+  white-space: normal;
+}
+
+.optionNeutral {
+  color: #000;
+}
+
+.optionCorrect {
+  color: #2b7caf;
+}
+
+.optionWrong {
+  color: #ff575f;
+}
+
+
+/* Explanation block */
+.exTitle {
+  position: static;
+  width: auto;
+  height: auto;
+  margin: 12px 0 6px;
+
+  font-family: 'Lato', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 16px;
+  color: #000;
+}
+
+.exBody {
+  position: static;
+  width: auto;
+  height: auto;
+  margin: 0 0 18px;
+
+  font-family: 'Lato', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 18px;
+  color: #000;
+}
+
+
+/* Continue button */
+.continueBtn {
+  box-sizing: border-box;
+  position: fixed;               /* ✅ pin to screen */
+  left: 50%;
+  transform: translateX(-50%);   /* ✅ center */
+  top: auto;                     /* ✅ stop using top */
+  bottom: calc(-20px + env(safe-area-inset-bottom)); /* ✅ iPhone safe area */
+
+  width: min(316px, calc(100% - 60px)); /* ✅ keeps same margins on small screens */
+  height: 41px;
+
+  background: linear-gradient(
+    135deg,
+    rgba(43, 124, 175, 0.2) 0%,
+    rgba(255, 197, 66, 0.2) 100%
+  );
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 14px;
+
+  border: 0;
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
+  z-index: 50; /* ✅ stays above scroll content */
+}
+
+
+.continueText {
+  font-family: 'Lato', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-style: normal;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 130%;
+  letter-spacing: 0.04em;
+  color: #000000;
+}
+
+.shiftUp {
+  position: relative;   /* ✅ critical */
+  min-height: 100vh;    /* ✅ critical */
+  width: 100%;
+  transform: translateY(-60px);
+}
+
+.questionRow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.questionText {
+  margin: 0;
+  flex: 1;
+}
+
+.bookmarkBtn {
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  padding: 4px;
+
+  /* keeps it from shrinking in flex row */
+  flex: 0 0 auto;
+
+  /* optional: better tap feel on mobile */
+  -webkit-tap-highlight-color: transparent;
+
+  /* ✅ press animation base */
+  transform: translateZ(0);
+  transition: transform 120ms ease, opacity 120ms ease;
+}
+
+/* ✅ while pressing */
+.bookmarkBtn:active {
+  transform: scale(0.9);
+}
+
+/* ✅ keyboard accessibility (tab focus) */
+.bookmarkBtn:focus-visible {
+  outline: 2px solid rgba(43, 124, 175, 0.55);
+  outline-offset: 3px;
+  border-radius: 10px;
+}
+
+/* Optional: slightly dim when not bookmarked */
+.bookmarkBtn[data-bookmarked='false'] {
+  opacity: 0.85;
+}
+
+/* Optional: full opacity when bookmarked */
+.bookmarkBtn[data-bookmarked='true'] {
+  opacity: 1;
+}
+
+.bookmarkIcon {
+  width: 24px;
+  height: 24px;
+  display: inline-block;
+
+  /* Use the PNG as a stencil */
+  -webkit-mask-image: url("/images/test/bookmark-icon.png");
+  mask-image: url("/images/test/bookmark-icon.png");
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+}
+
+/* not bookmarked */
+.bookmarkBtn[data-bookmarked='false'] .bookmarkIcon {
+  background: rgba(15, 23, 42, 0.9);
+}
+
+/* bookmarked (gradient) */
+.bookmarkBtn[data-bookmarked='true'] .bookmarkIcon {
+  background: var(--color-premium-gradient);
+  filter: brightness(1) contrast(1.5) saturate(2);
+}
+
+
+.viewToggle {
+  border: 0;
+  background: transparent;
+  border-radius: 10px;
+  padding: 6px 10px;
+  font-family: 'Lato', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-weight: 700;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.slideCounter {
+  font-family: 'Lato', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-weight: 600;
+  font-size: 12px;
+  opacity: 0.75;
+}
+
+/* When in carousel mode, reviewArea should not be vertically scrollable itself */
+.reviewAreaCarousel {
+  overflow: hidden;
+  padding-right: 0;
+}
+
+/* Horizontal swipe carousel */
+.carousel {
+  height: 100%;
+  display: flex;
+  overflow-x: auto;
+  overflow-y: hidden;
+
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+
+  scrollbar-width: none; /* Firefox */
+  overscroll-behavior-x: contain;
+}
+
+.carousel::-webkit-scrollbar {
+  display: none; /* Chrome/Safari */
+}
+
+/* Each slide takes the full width of the reviewArea */
+.slide {
+  flex: 0 0 100%;
+  scroll-snap-align: start;
+  scroll-snap-stop: always; /* helps “one swipe = one card” where supported */
+
+  padding-right: 6px; /* keeps your old “scrollbar breathing room” feel */
+  overflow-y: auto;   /* ✅ content can still scroll vertically inside each slide */
+  -webkit-overflow-scrolling: touch;
+}
+
+.carousel {
+  cursor: grab;
+}
+
+.carouselDragging {
+  cursor: grabbing;
+  user-select: none;
+}
+
+.carouselDragging * {
+  user-select: none;
 }
 
 ```
@@ -13413,6 +14070,9 @@ export const ROUTES = {
   bookmarks: "/bookmarks",
   mistakes: "/my-mistakes",
   comingSoon: "/coming-soon",
+  practiceTest: "/test/practice",
+  halfTest: "/test/half",
+  rapidTest: "/test/rapid",
 } as const;
 
 ```
@@ -13819,7 +14479,8 @@ export function getOrCreateAttempt(params: {
           a.questionIds.every((id) => allSet.has(id)) &&
           // markExpiredIfNeeded already handled expiration
           a.status !== "submitted" &&
-          a.status !== "expired";
+          a.status !== "expired" &&
+          (typeof a.timeLimitSec === "number" ? a.timeLimitSec : 0) === params.timeLimitSec;; // allow timeLimitSec=0 (practice) to resume any
 
         if (valid) {
           const resumed: TestAttemptV1 = {
@@ -14037,7 +14698,7 @@ export const TEST_MODES: Record<TestModeId, TestModeConfig> = {
     routeBase: "/test/real",
     datasetId: "cn-2023-test1",
     datasetVersion: "cn-2023-test1@v1",
-    questionCount: 100,
+    questionCount: 10,
     timeLimitMinutes: 45,
     preflightRequiredQuestions: 100,
   },
@@ -14048,8 +14709,8 @@ export const TEST_MODES: Record<TestModeId, TestModeConfig> = {
     routeBase: "/test/practice",
     datasetId: "cn-2023-test1",
     datasetVersion: "cn-2023-test1@v1",
-    questionCount: 100,
-    timeLimitMinutes: 10,
+    questionCount: 20,
+    timeLimitMinutes: 0,
     preflightRequiredQuestions: 1,
   },
 

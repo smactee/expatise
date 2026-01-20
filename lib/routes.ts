@@ -4,4 +4,7 @@ export const ROUTES = {
   bookmarks: "/bookmarks",
   mistakes: "/my-mistakes",
   comingSoon: "/coming-soon",
+  practiceTest: "/test/practice",
+  halfTest: "/test/half",
+  rapidTest: "/test/rapid",
 } as const;
