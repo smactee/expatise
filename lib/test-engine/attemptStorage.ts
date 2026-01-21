@@ -45,6 +45,8 @@ export function normalizeUserKey(email: string | null | undefined) {
   return s || 'guest';
 }
 
+
+
 function safeParse(raw: string | null): any {
   if (!raw) return null;
   try {
@@ -74,10 +76,11 @@ function attemptKeyById(attemptId: string) {
   return `${ATTEMPT_KEY_PREFIX}:${attemptId}`;
 }
 
-function activePtrKey(params: { userKey: string; modeKey: string; datasetId: string }) {
-  const { userKey, modeKey, datasetId } = params;
-  return `${ACTIVE_PTR_PREFIX}:${userKey}:${modeKey}:${datasetId}`;
+function activePtrKey(params: { userKey: string; modeKey: string; datasetId: string; datasetVersion: string }) {
+  const { userKey, modeKey, datasetId, datasetVersion } = params;
+  return `${ACTIVE_PTR_PREFIX}:${userKey}:${modeKey}:${datasetId}:${datasetVersion}`;
 }
+
 
 export function readAttemptById(attemptId: string): TestAttemptV1 | null {
   if (typeof window === 'undefined') return null;
@@ -131,6 +134,7 @@ export function clearAttemptsByFilter(filter: {
       userKey: a.userKey,
       modeKey: a.modeKey,
       datasetId: a.datasetId,
+        datasetVersion: a.datasetVersion,
     });
   }
 }
@@ -142,7 +146,9 @@ export function clearActiveAttemptPointer(params: {
   userKey: string;
   modeKey: string;
   datasetId: string;
+  datasetVersion: string;
 }) {
+
   if (typeof window === 'undefined') return;
   try {
     window.localStorage.removeItem(activePtrKey(params));
@@ -161,7 +167,7 @@ export function closeAttemptById(
 
   // already closed -> still ensure pointer is cleared
   if (a.status === "submitted") {
-    clearActiveAttemptPointer({ userKey: a.userKey, modeKey: a.modeKey, datasetId: a.datasetId });
+    clearActiveAttemptPointer({ userKey: a.userKey, modeKey: a.modeKey, datasetId: a.datasetId, datasetVersion: a.datasetVersion });
     return a;
   }
 
@@ -177,13 +183,13 @@ export function closeAttemptById(
   };
 
   writeAttempt(closed);
-  clearActiveAttemptPointer({ userKey: closed.userKey, modeKey: closed.modeKey, datasetId: closed.datasetId });
+  clearActiveAttemptPointer({ userKey: closed.userKey, modeKey: closed.modeKey, datasetId: closed.datasetId, datasetVersion: closed.datasetVersion });
 
   return closed;
 }
 
 
-export function readActiveAttemptId(params: { userKey: string; modeKey: string; datasetId: string }) {
+export function readActiveAttemptId(params: { userKey: string; modeKey: string; datasetId: string; datasetVersion: string }) {
   if (typeof window === 'undefined') return null;
   const key = activePtrKey(params);
   return window.localStorage.getItem(key);
@@ -193,8 +199,10 @@ export function writeActiveAttemptId(params: {
   userKey: string;
   modeKey: string;
   datasetId: string;
+  datasetVersion: string;
   attemptId: string;
 }) {
+
   if (typeof window === 'undefined') return;
   const key = activePtrKey(params);
   try {
@@ -232,7 +240,7 @@ function markExpiredIfNeeded(a: TestAttemptV1, now: number): TestAttemptV1 {
   };
 
   writeAttempt(expired);
-  clearActiveAttemptPointer({ userKey: expired.userKey, modeKey: expired.modeKey, datasetId: expired.datasetId });
+  clearActiveAttemptPointer({ userKey: expired.userKey, modeKey: expired.modeKey, datasetId: expired.datasetId, datasetVersion: expired.datasetVersion });
   return expired;
 }
 
@@ -257,11 +265,13 @@ export function getOrCreateAttempt(params: {
   const now = Date.now();
 
   // Try reuse via active pointer
-  const activeId = readActiveAttemptId({
-    userKey: params.userKey,
-    modeKey: params.modeKey,
-    datasetId: params.datasetId,
-  });
+const activeId = readActiveAttemptId({
+  userKey: params.userKey,
+  modeKey: params.modeKey,
+  datasetId: params.datasetId,
+  datasetVersion: params.datasetVersion,
+});
+
 
   if (activeId) {
     const existing = readAttemptById(activeId);
@@ -272,6 +282,7 @@ export function getOrCreateAttempt(params: {
         userKey: params.userKey,
         modeKey: params.modeKey,
         datasetId: params.datasetId,
+        datasetVersion: params.datasetVersion,
       });
     } else {
       // ✅ NEW: persist expiration + clear pointer if needed
@@ -295,7 +306,8 @@ export function getOrCreateAttempt(params: {
           // markExpiredIfNeeded already handled expiration
           a.status !== "submitted" &&
           a.status !== "expired" &&
-          (typeof a.timeLimitSec === "number" ? a.timeLimitSec : 0) === params.timeLimitSec;; // allow timeLimitSec=0 (practice) to resume any
+          (typeof a.timeLimitSec === "number" ? a.timeLimitSec : 0) === params.timeLimitSec; // require same timer rules (prevents reusing old attempts after config changes)
+
 
         if (valid) {
           const resumed: TestAttemptV1 = {
@@ -315,6 +327,7 @@ export function getOrCreateAttempt(params: {
           userKey: params.userKey,
           modeKey: params.modeKey,
           datasetId: params.datasetId,
+          datasetVersion: params.datasetVersion,
         });
       }
 
@@ -355,11 +368,13 @@ export function getOrCreateAttempt(params: {
   writeAttempt(fresh);
 
   writeActiveAttemptId({
-    userKey: params.userKey,
-    modeKey: params.modeKey,
-    datasetId: params.datasetId,
-    attemptId: fresh.attemptId,
-  });
+  userKey: params.userKey,
+  modeKey: params.modeKey,
+  datasetId: params.datasetId,
+  datasetVersion: params.datasetVersion,
+  attemptId: fresh.attemptId,
+});
+
 
   return { attempt: fresh, reused: false };
 }

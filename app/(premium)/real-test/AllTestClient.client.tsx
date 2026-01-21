@@ -1,4 +1,4 @@
-// app/real-test/RealTestClient.client.tsx
+// app/(premium)/real-test/RealTestClient.client.tsx
 
 'use client';
 
@@ -6,7 +6,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 
-import styles from './real-test.module.css';
+import styles from './all-test.module.css';
 
 import { loadDataset } from '@/lib/qbank/loadDataset';
 import type { DatasetId } from '@/lib/qbank/datasets';
@@ -23,8 +23,6 @@ import {
   markQuestionShown,
 } from "@/lib/freeAccess/localUsageCap";
 import { useEntitlements } from '@/components/EntitlementsProvider.client';
-
-console.log("USING RealTestClient from app/(premium)/real-test");
 
 
 

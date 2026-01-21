@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import AllTestClient from "@/app/(premium)/real-test/RealTestClient.client";
+import AllTestClient from "@/app/(premium)/all-test/AllTestClient.client";
 import { TEST_MODES, type TestModeId } from "@/lib/testModes";
 
 export default async function TestModePage({

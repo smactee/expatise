@@ -361,7 +361,29 @@ useEffect(() => {
   return () => window.removeEventListener('scroll', onScroll);
 }, []);
 
+// Total compiled mistakes (independent of search/topic filters)
+const compiledMistakesCount = useMemo(() => {
+  if (mode !== "mistakes") return 0;
+  if (mistakesMetaById.size === 0) return 0;
 
+  let n = 0;
+  for (const id of mistakesMetaById.keys()) {
+    if (!clearedMistakesSet.has(id)) n++;
+  }
+  return n;
+}, [mode, mistakesMetaById, clearedMistakesSet]);
+
+// Total compiled bookmarks (independent of search/topic filters)
+const compiledBookmarksCount = useMemo(() => {
+  if (mode !== "bookmarks") return 0;
+  if (q.length === 0) return 0;
+
+  let n = 0;
+  for (const item of q) {
+    if (bookmarkedSet.has(item.id)) n++;
+  }
+  return n;
+}, [mode, q, bookmarkedSet]);
 
 
   return (
@@ -372,15 +394,38 @@ useEffect(() => {
 
   <div className={styles.frame}>
 
-        <header className={styles.header}>
-<h1 className={styles.title}>
-  {mode === 'bookmarks'
-    ? 'My Bookmarks'
-    : mode === 'mistakes'
-    ? 'My Mistakes'
-    : 'All Questions'}
-</h1>
-        </header>
+<header className={styles.header}>
+  <h1 className={styles.title}>
+    {mode === "bookmarks"
+      ? "My Bookmarks"
+      : mode === "mistakes"
+      ? "My Mistakes"
+      : "All Questions"}
+
+    {mode === "mistakes" && compiledMistakesCount > 0 && (
+      <span
+        className={styles.countPill}
+        aria-label={`${compiledMistakesCount} questions`}
+        title={`${compiledMistakesCount} questions`}
+      >
+        {compiledMistakesCount}
+      </span>
+    )}
+
+    {mode === "bookmarks" && compiledBookmarksCount > 0 && (
+      <span
+        className={styles.countPill}
+        aria-label={`${compiledBookmarksCount} questions`}
+        title={`${compiledBookmarksCount} questions`}
+      >
+        {compiledBookmarksCount}
+      </span>
+    )}
+  </h1>
+</header>
+
+
+
 
         <div className={styles.searchRow}>
           <input

@@ -1,3 +1,5 @@
+// app/page.tsx
+
 'use client';
 
 import {useState, useRef} from 'react';
@@ -28,7 +30,7 @@ function formatTimeLabel(time: string): string {
 const TEST_MODE_CARDS = [
     {
     key: "real-test",
-    href: ROUTES.realTest,
+    href: "/test/real",
     ariaLabel: "Open Real Test",
     bgSrc: "/images/home/cards/realtest-bg.png",
     bgAlt: "Real Test Background",
@@ -50,20 +52,20 @@ const TEST_MODE_CARDS = [
     title:  "Practice Test",
    },
      {
-    key: "quick-test",
-    href: `${ROUTES.comingSoon}?feature=quick-test`,
-    ariaLabel: "Open Quick Test",
+    key: "half-test",
+    href: "/test/half",
+    ariaLabel: "Open Half Test",
     bgSrc: "/images/home/cards/quicktest-bg.png",
-    bgAlt: "Quick Test Background",
+    bgAlt: "Half Test Background",
     iconSrc: "/images/home/icons/globalmistakes-icon.png",
-    iconAlt: "Quick Test Icon",
+    iconAlt: "Half Test Icon",
     topText: "Half the questions. Half the time.",
-    title: "Quick Test",
+    title: "Half Test",
   },
 
     {
     key: "rapid-fire-test",
-    href: `${ROUTES.comingSoon}?feature=rapid-fire-test`,
+    href: "/test/rapid",
     ariaLabel: "Open Rapid Fire Test",
     bgSrc: "/images/home/cards/rapidfire-bg.png",
     bgAlt: "Rapid Fire Background",

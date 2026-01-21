@@ -1,5 +1,7 @@
+// lib/routes.ts
+
 export const ROUTES = {
-  realTest: "/real-test",
+  realTest: "/test/real",
   allQuestions: "/all-questions",
   bookmarks: "/bookmarks",
   mistakes: "/my-mistakes",
