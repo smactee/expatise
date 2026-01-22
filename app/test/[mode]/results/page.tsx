@@ -22,6 +22,8 @@ import { useBookmarks } from "@/lib/bookmarks/useBookmarks";
 
 import { TEST_MODES, type TestModeId } from "@/lib/testModes";
 
+import { useClearedMistakes } from "@/lib/mistakes/useClearedMistakes";
+
 function clamp(n: number, min: number, max: number) {
   return Math.max(min, Math.min(max, n));
 }
@@ -70,7 +72,7 @@ const timeSec = usedSeconds % 60;
 const timeText = showUntimed ? "Untimed" : `${timeMin}min ${timeSec}sec`;
 
 
-  const { email } = useAuthStatus();
+const { email } = useAuthStatus();
 const userKey = normalizeUserKey(email ?? "") || "guest";
 
   const [attempt, setAttempt] = useState<TestAttemptV1 | null>(null);
@@ -89,6 +91,10 @@ const userKey = normalizeUserKey(email ?? "") || "guest";
   // datasetId for bookmarks should come from attempt if possible; fallback to mode config
   const datasetId = ((attempt?.datasetId ?? cfg.datasetId) as unknown) as DatasetId;
   const { toggle, isBookmarked } = useBookmarks(datasetId, userKey);
+
+
+  const { clearMany: clearMistakesMany } = useClearedMistakes(datasetId, userKey);
+  const didAutoClearRef = useRef(false);
 
   /**
    * ✅ SELF-HEAL:
@@ -221,28 +227,43 @@ const userKey = normalizeUserKey(email ?? "") || "guest";
 
       // score
       let correct = 0;
-      for (const q of picked) {
-        const chosenKey = a.answersByQid[q.id]?.choice ?? null;
-        if (!chosenKey) continue;
+const correctIds: string[] = [];
 
-        if (q.type === "ROW") {
-          const chosen = normalizeRowChoice(chosenKey);
-          const expected = normalizeRowChoice((q as any).correctRow ?? null);
-          if (chosen && expected && chosen === expected) correct += 1;
-          continue;
-        }
+for (const q of picked) {
+  const chosenKey = a.answersByQid[q.id]?.choice ?? null;
+  if (!chosenKey) continue;
 
-        const chosenOpt = q.options.find((opt, idx) => {
-          const k = opt.originalKey ?? String.fromCharCode(65 + idx);
-          return k === chosenKey;
-        });
+  let isCorrect = false;
 
-        if (chosenOpt && (q as any).correctOptionId && chosenOpt.id === (q as any).correctOptionId) {
-          correct += 1;
-        }
-      }
+  if (q.type === "ROW") {
+    const chosen = normalizeRowChoice(chosenKey);
+    const expected = normalizeRowChoice((q as any).correctRow ?? null);
+    isCorrect = !!(chosen && expected && chosen === expected);
+  } else {
+    const chosenOpt = q.options.find((opt, idx) => {
+      const k = opt.originalKey ?? String.fromCharCode(65 + idx);
+      return k === chosenKey;
+    });
 
-      setComputed({ correct, total: picked.length });
+    if (chosenOpt && (q as any).correctOptionId && chosenOpt.id === (q as any).correctOptionId) {
+      isCorrect = true;
+    }
+  }
+
+  if (isCorrect) {
+    correct += 1;
+    correctIds.push(q.id);
+  }
+}
+
+setComputed({ correct, total: picked.length });
+
+// ✅ auto-clear ONLY for mistakes mode, only once
+if (modeId === "mistakes" && !didAutoClearRef.current) {
+  didAutoClearRef.current = true;
+  if (correctIds.length) clearMistakesMany(correctIds);
+}
+
 
       // WRONG-only review items
       const items: ReviewItem[] = [];
@@ -337,8 +358,9 @@ const userKey = normalizeUserKey(email ?? "") || "guest";
   // While self-healing redirect runs, show a tiny placeholder (prevents flashing "Missing attemptId")
   if (!attemptId) {
     return (
-      <div className={styles.viewport}>
-        <main className={styles.screen}>
+  <div className={styles.viewport} data-noswipeback="true">
+    <main className={styles.screen}>
+
           <div className={styles.card} />
           <div style={{ padding: 16 }}>Loading results…</div>
         </main>
@@ -348,8 +370,9 @@ const userKey = normalizeUserKey(email ?? "") || "guest";
 
   // ---- UI BELOW (your existing layout) ----
   return (
-    <div className={styles.viewport}>
-      <main className={styles.screen}>
+  <div className={styles.viewport} data-noswipeback="true">
+    <main className={styles.screen}>
+
         <div className={styles.card} />
         <div className={styles.shiftUp}>
           <h1 className={styles.congrats}>Congratulations!</h1>
@@ -407,7 +430,9 @@ const userKey = normalizeUserKey(email ?? "") || "guest";
             </button>
           </div>
 
-          <section className={[styles.reviewArea, viewMode === "carousel" ? styles.reviewAreaCarousel : ""].join(" ")}>
+          <section 
+          data-noswipeback={viewMode === "carousel" ? "true" : undefined}
+          className={[styles.reviewArea, viewMode === "carousel" ? styles.reviewAreaCarousel : ""].join(" ")}>
             {reviewItems.length === 0 ? (
               <p className={styles.question}>Expatise! No incorrect questions! 🎉</p>
             ) : viewMode === "list" ? (

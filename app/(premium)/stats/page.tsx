@@ -1,15 +1,14 @@
 // app/stats/page.tsx
 'use client';
 
-import BottomNav from '../../components/BottomNav';
+import BottomNav from '@/components/BottomNav';
 import styles from './stats.module.css'; // reuse shared layout + new stats classes
-import BackButton from '../../components/BackButton';
+import BackButton from '@/components/BackButton';
 import RequirePremium from '@/components/RequirePremium.client';
 
 export default function StatsPage() {
   return (
     <main className={styles.page}>
-      <BackButton />
       <div className={styles.content}>
         {/* ==== Top Accuracy / Gauge Card ==== */}
         <section className={styles.statsSummaryCard}>

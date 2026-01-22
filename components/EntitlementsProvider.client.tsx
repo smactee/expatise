@@ -6,7 +6,6 @@ import { PUBLIC_FLAGS } from "@/lib/flags/public";
 import { FREE_ENTITLEMENTS, type EntitlementSource, type Entitlements } from "@/lib/entitlements/types";
 import { getLocalEntitlements, setLocalEntitlements, clearLocalEntitlements } from "@/lib/entitlements/localStore";
 import { useUserKey } from "@/components/useUserKey.client";
-import EntitlementsDebugBadge from "@/components/EntitlementsDebugBadge.client";
 import { getEntitlements } from "@/lib/entitlements/getEntitlements";
 
 
@@ -101,7 +100,6 @@ useEffect(() => {
   return (
     <EntitlementsContext.Provider value={value}>
       {children}
-       <EntitlementsDebugBadge />
     </EntitlementsContext.Provider>
     
   );

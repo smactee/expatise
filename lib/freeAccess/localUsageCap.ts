@@ -3,7 +3,7 @@
 
 export const FREE_CAPS = {
   questionsShown: 420,
-  examStarts: 5,
+  examStarts: 7,
 } as const;
 
 export type UsageCapState = {

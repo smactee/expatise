@@ -6,7 +6,9 @@ export type TestModeId =
   | "real"
   | "practice"
   | "half"
-  | "rapid";
+  | "rapid"
+  | "mistakes"
+  | "bookmarks";
 
 export type TestModeConfig = {
   modeId: TestModeId;
@@ -74,5 +76,27 @@ export const TEST_MODES: Record<TestModeId, TestModeConfig> = {
     timeLimitMinutes: 10,
     preflightRequiredQuestions: 20,
     autoAdvanceSeconds: 6,
+  },
+
+  mistakes: {
+    modeId: "mistakes",
+    modeKey: "mistakes-test",
+    routeBase: "/test/mistakes",
+    datasetId: "cn-2023-test1",
+    datasetVersion: "cn-2023-test1@v1",
+    questionCount: 50, // N/A
+    timeLimitMinutes: 0, // N/A
+    preflightRequiredQuestions: 1,
+  },
+
+  bookmarks: {
+    modeId: "bookmarks",
+    modeKey: "bookmarks-test",
+    routeBase: "/test/bookmarks",
+    datasetId: "cn-2023-test1",
+    datasetVersion: "cn-2023-test1@v1",
+    questionCount: 50, // N/A
+    timeLimitMinutes: 0, // N/A
+    preflightRequiredQuestions: 1,
   },
 };

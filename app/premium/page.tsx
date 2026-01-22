@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import styles from "./premium.module.css";
 import { PLAN_LIST, type PlanId } from "../../lib/plans";
+import BackButton from "@/components/BackButton";
 
 const VALID_PROMO_CODES = ["EXP30"];
 
@@ -38,17 +39,10 @@ export default function PremiumPage() {
 
   return (
     <main className={styles.page}>
+      <BackButton />
       <div className={styles.frame}>
         {/* Top safe area + back */}
-        <header className={styles.topBar}>
-          <button
-            type="button"
-            className={styles.backButton}
-            onClick={() => router.back()}
-          >
-            <span className={styles.backIcon}>‹</span>
-          </button>
-        </header>
+
 
         {/* Crown */}
         <div className={styles.crownWrap}>

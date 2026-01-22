@@ -2,6 +2,7 @@
 
 import type { DatasetId } from '@/lib/qbank/datasets';
 import AllQuestionsClient from "@/app/(premium)/all-questions/AllQuestionsClient.client";
+import Link from 'next/link';
 
 export default function MyMistakesPage() {
   return (

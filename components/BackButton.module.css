@@ -1,0 +1,9 @@
+/* No layout/style changes, only theme behavior */
+.backBtn :global(img) {
+  display: block; /* avoids any baseline quirks */
+}
+
+/* When your ThemeProvider sets :root[data-theme='dark'], invert the PNG */
+:global(:root[data-theme='dark']) .backBtn :global(img) {
+  filter: invert(1);
+}

@@ -2,6 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
+import styles from './BackButton.module.css';
 
 export default function BackButton() {
   const router = useRouter();
@@ -11,6 +12,7 @@ export default function BackButton() {
       type="button"
       onClick={() => router.back()}
       aria-label="Back"
+      className={styles.backBtn}
       style={{
         position: 'fixed',
         top: 'calc(env(safe-area-inset-top, 0px)',
@@ -22,6 +24,7 @@ export default function BackButton() {
         gap: 8,
         cursor: 'pointer',
         WebkitTapHighlightColor: 'transparent',
+        color: 'var(--test-text)'
       }}
     >
       <Image

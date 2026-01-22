@@ -17,6 +17,7 @@ import { useClearedMistakes } from '@/lib/mistakes/useClearedMistakes';
 import { attemptStore } from "@/lib/attempts/store";
 import type { Attempt } from "@/lib/attempts/attemptStore";
 import { useUserKey } from "@/components/useUserKey.client";
+import Link from 'next/link';
 
 
 
@@ -403,26 +404,33 @@ const compiledBookmarksCount = useMemo(() => {
       : "All Questions"}
 
     {mode === "mistakes" && compiledMistakesCount > 0 && (
-      <span
-        className={styles.countPill}
-        aria-label={`${compiledMistakesCount} questions`}
-        title={`${compiledMistakesCount} questions`}
-      >
+      <span className={styles.countPill} aria-label={`${compiledMistakesCount} questions`}>
         {compiledMistakesCount}
       </span>
     )}
 
     {mode === "bookmarks" && compiledBookmarksCount > 0 && (
-      <span
-        className={styles.countPill}
-        aria-label={`${compiledBookmarksCount} questions`}
-        title={`${compiledBookmarksCount} questions`}
-      >
+      <span className={styles.countPill} aria-label={`${compiledBookmarksCount} questions`}>
         {compiledBookmarksCount}
       </span>
     )}
   </h1>
+
+  <div className={styles.headerActions}>
+    {mode === "mistakes" && (
+      <Link href="/test/mistakes" className={styles.quizBtn}>
+        Mistakes Quiz
+      </Link>
+    )}
+
+    {mode === "bookmarks" && (
+      <Link href="/test/bookmarks" className={styles.quizBtn}>
+        Bookmarks Quiz
+      </Link>
+    )}
+  </div>
 </header>
+
 
 
 

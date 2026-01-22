@@ -29,6 +29,9 @@
   --border-subtle: rgba(148, 163, 184, 0.35);
   --accent: #6366f1;
   --accent-soft: rgba(99, 102, 241, 0.18);
+    --test-text: var(--text-main);
+  --test-muted: var(--text-muted);
+  --test-icon: var(--test-text);
 }
 
 /* Light theme overrides (when ThemeProvider sets data-theme="light") */
@@ -79,6 +82,9 @@
   90deg,
   rgba(43, 124, 175, 0.2) 0%,
   rgba(255, 197, 66, 0.2) 100%
+    --test-text: var(--text-main);
+  --test-muted: var(--text-muted);
+  --test-icon: var(--test-text);
 );
 
 

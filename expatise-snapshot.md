@@ -140,6 +140,7 @@ import { useClearedMistakes } from '@/lib/mistakes/useClearedMistakes';
 import { attemptStore } from "@/lib/attempts/store";
 import type { Attempt } from "@/lib/attempts/attemptStore";
 import { useUserKey } from "@/components/useUserKey.client";
+import Link from 'next/link';
 
 
 
@@ -526,26 +527,33 @@ const compiledBookmarksCount = useMemo(() => {
       : "All Questions"}
 
     {mode === "mistakes" && compiledMistakesCount > 0 && (
-      <span
-        className={styles.countPill}
-        aria-label={`${compiledMistakesCount} questions`}
-        title={`${compiledMistakesCount} questions`}
-      >
+      <span className={styles.countPill} aria-label={`${compiledMistakesCount} questions`}>
         {compiledMistakesCount}
       </span>
     )}
 
     {mode === "bookmarks" && compiledBookmarksCount > 0 && (
-      <span
-        className={styles.countPill}
-        aria-label={`${compiledBookmarksCount} questions`}
-        title={`${compiledBookmarksCount} questions`}
-      >
+      <span className={styles.countPill} aria-label={`${compiledBookmarksCount} questions`}>
         {compiledBookmarksCount}
       </span>
     )}
   </h1>
+
+  <div className={styles.headerActions}>
+    {mode === "mistakes" && (
+      <Link href="/test/mistakes" className={styles.quizBtn}>
+        Mistakes Quiz
+      </Link>
+    )}
+
+    {mode === "bookmarks" && (
+      <Link href="/test/bookmarks" className={styles.quizBtn}>
+        Bookmarks Quiz
+      </Link>
+    )}
+  </div>
 </header>
+
 
 
 
@@ -823,6 +831,7 @@ onClick={(e) => {
   display: flex;
   justify-content: center;
   background: var(--color-page-bg);
+  color: var(--test-text);
 }
 
 .frame {
@@ -833,11 +842,12 @@ onClick={(e) => {
 
 .header {
   display: flex;
-  align-items: baseline;
+  align-items: center; /* was baseline */
   justify-content: space-between;
   gap: 12px;
   margin: 6px 0 14px;
 }
+
 
 .title {
   margin: 0;
@@ -1202,6 +1212,59 @@ onClick={(e) => {
   z-index: 200;
 }
 
+.retestBtn {
+  flex: 0 0 auto;
+  padding: 10px 14px;
+  border-radius: 18px;
+
+  border: 1px solid var(--color-logout-border, rgba(255, 255, 255, 0.35));
+  background: var(--color-premium-gradient);
+  box-shadow: 0 18px 40px rgba(15, 33, 70, 0.26);
+
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-heading-card, rgba(255, 255, 255, 0.95));
+  text-decoration: none;
+  line-height: 1;
+
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.retestBtn:active {
+  transform: translateY(1px);
+}
+
+.headerActions {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  flex: 0 0 auto;
+}
+
+.quizBtn {
+  height: 40px;
+  padding: 0 16px;
+  border-radius: 16px;
+
+  border: 1px solid var(--color-logout-border);
+  background: var(--color-premium-gradient);
+  box-shadow: 0 18px 40px rgba(15, 33, 70, 0.26);
+
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--color-heading-card);
+
+  text-decoration: none;
+  cursor: pointer;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  white-space: nowrap;
+}
+
 ```
 
 ### app/(premium)/all-questions/page.tsx
@@ -1246,6 +1309,7 @@ import {
   markQuestionShown,
 } from "@/lib/freeAccess/localUsageCap";
 import { useEntitlements } from '@/components/EntitlementsProvider.client';
+import { useClearedMistakes } from '@/lib/mistakes/useClearedMistakes';
 
 
 
@@ -1266,6 +1330,58 @@ function normalizeRowChoice(v: string | null | undefined): 'R' | 'W' | null {
   return null;
 }
 
+function compileMistakeIds(
+  questions: Question[],
+  submittedAttempts: Array<Pick<TestAttemptV1, "answersByQid" | "submittedAt">>,
+  cleared: Set<string>
+): string[] {
+  const byId = new Map(questions.map((q) => [q.id, q] as const));
+  const mistakes = new Set<string>();
+
+  for (const a of submittedAttempts) {
+    for (const [qid, rec] of Object.entries(a.answersByQid ?? {})) {
+      if (cleared.has(qid)) continue;
+
+      const question = byId.get(qid);
+      if (!question) continue;
+
+      const chosenKey = rec?.choice ?? null;
+      if (!chosenKey) continue;
+
+      let isCorrect = false;
+
+      if (question.type === "ROW") {
+        const chosen = normalizeRowChoice(chosenKey);
+        const expected = normalizeRowChoice((question as any).correctRow ?? null);
+        isCorrect = !!(chosen && expected && chosen === expected);
+      } else {
+        const expected = (question as any).correctOptionId as string | undefined;
+        const opts = (question as any).options as any[] | undefined;
+
+        if (!expected || !opts?.length) {
+          isCorrect = false;
+        } else {
+          const idx = opts.findIndex((opt, i) => {
+            const letter = String.fromCharCode(65 + i);
+            const key = opt.originalKey ?? letter;
+            return chosenKey === key || chosenKey === letter || chosenKey === opt.id;
+          });
+
+          if (idx >= 0) {
+            const opt = opts[idx];
+            const letter = String.fromCharCode(65 + idx);
+            const key = opt.originalKey ?? letter;
+            isCorrect = expected === opt.id || expected === key || expected === letter;
+          }
+        }
+      }
+
+      if (!isCorrect) mistakes.add(qid);
+    }
+  }
+
+  return Array.from(mistakes);
+}
 
 
 
@@ -1330,9 +1446,16 @@ const enforceCaps = !isPremium; // premium users should not hit free caps
 const { loading: authLoading, email } = useAuthStatus();
 const userKey = normalizeUserKey(email ?? "") || "guest";
 
-const { toggle, isBookmarked } = useBookmarks(datasetId, userKey);
 
-  const [answers, setAnswers] = useState<Record<string, string>>({});
+// ✅ put it RIGHT HERE (top-level hook, not inside useEffect)
+const { idSet: bookmarkedSet, toggle, isBookmarked } = useBookmarks(datasetId, userKey);
+
+// (keep your mistakes cleared set too if you're using it)
+const { idSet: clearedMistakesSet } = useClearedMistakes(datasetId, userKey);
+
+
+
+const [answers, setAnswers] = useState<Record<string, string>>({});
 
 const finishedRef = useRef(false);
 
@@ -1387,8 +1510,17 @@ if (authLoading) {
   return;
 }
 
-const allIds = ds.map((q) => q.id);
+let poolIds = ds.map((q) => q.id);
 
+if (modeKey === "bookmarks-test") {
+  poolIds = Array.from(bookmarkedSet);
+}
+
+// (if you already did mistakes-test, you’ll have a similar branch for mistakes-test)
+if (modeKey === "mistakes-test") {
+  const mistakeIds = compileMistakeIds(ds, await attemptStore.listAttempts(userKey, datasetId), clearedMistakesSet);
+  poolIds = mistakeIds;
+}
 // ✅ Preflight gate ONLY if there is no resumable attempt (so resume is always allowed)
 const existing = await attemptStore.listAttempts(userKey, datasetId);
 const hasResumable = existing.some(
@@ -1403,6 +1535,14 @@ if (enforceCaps && !hasResumable && !canStartExam(userKey, { requiredQuestions: 
   return;
 }
 
+if (poolIds.length === 0) {
+  setAttempt(null);
+  setItems([]);
+  setLoading(false);
+  return;
+}
+
+const effectiveCount = Math.min(questionCount, poolIds.length);
 
 
 const { attempt: a, reused } = await attemptStore.getOrCreateAttempt({
@@ -1410,8 +1550,8 @@ const { attempt: a, reused } = await attemptStore.getOrCreateAttempt({
   modeKey,
   datasetId,
   datasetVersion,
-  allQuestionIds: allIds,
-  questionCount,
+  allQuestionIds: poolIds,
+  questionCount: effectiveCount,
   timeLimitSec: hasTimer ? timeLimitMinutes * 60 : 0,
 });
 
@@ -1475,6 +1615,7 @@ setLoading(false);
   userKey,
   router,
   routeBase,
+  clearedMistakesSet,
 ]);
 
 
@@ -1821,14 +1962,23 @@ useEffect(() => {
   }
 
   if (!item) {
-    return (
-      <main className={styles.page}>
-        <div className={styles.frame}>
-          <div className={styles.loading}>No questions found.</div>
+  return (
+    <main className={styles.page}>
+      <div className={styles.frame}>
+        <BackButton />
+        <div className={styles.loading}>
+          {modeKey === "bookmarks-test"
+  ? "No bookmarks yet. Bookmark questions first — then come back to practice them here."
+  : modeKey === "mistakes-test"
+  ? "No mistakes yet. Take a test first — then come back to retest and clear them by answering correctly."
+  : "No questions found."}
+
         </div>
-      </main>
-    );
-  }
+      </div>
+    </main>
+  );
+}
+
 
   return (
     <main className={styles.page}>
@@ -2002,6 +2152,14 @@ useEffect(() => {
   display: flex;
   justify-content: center;
   background: var(--color-page-bg);
+--test-text: #000;
+  --test-text-muted: rgba(0, 0, 0, 0.75);
+  color: var(--test-text);
+}
+
+:root[data-theme='dark'] .page {
+  --test-text: rgba(255, 255, 255, 0.92);
+  --test-text-muted: rgba(255, 255, 255, 0.75);
 }
 
 .frame {
@@ -2032,18 +2190,21 @@ useEffect(() => {
   gap: 8px;
   cursor: pointer;
   padding: 6px 2px;
+  color: var(--test-text);
 }
 
 .backIcon {
   font-size: 22px;
   line-height: 1;
   opacity: 0.6;
+  color: var(--test-text);
 }
 
 .backText {
   font-size: 20px;
   font-weight: 600;
   letter-spacing: 0.04em;
+  color: var(--test-text);
 }
 
 .topRight {
@@ -2110,6 +2271,7 @@ useEffect(() => {
   font-size: 16px;
   color: #21205A;
   font-weight: 400;
+  color: var(--test-text-muted);
 }
 
 /* progress → question: 29 */
@@ -2130,6 +2292,7 @@ useEffect(() => {
   line-height: 28px;
   letter-spacing: -0.24px;
   color: #000;
+  color: var(--test-text);
 }
 
 /* Bookmark */
@@ -2261,6 +2424,7 @@ height: clamp(240px, 52vw, 340px);
   /* important: allow wrapping like the 295x40 text box */
   display: block;
   width: 295px;              /* from your pasted text layer */
+  color: var(--test-text);
 }
 
 .optionActive {
@@ -3046,17 +3210,13 @@ export default function PremiumLayout({ children }: { children: React.ReactNode 
 
 ```
 
-### app/(premium)/my-mistakes/my-mistakes.module.css
-```css
-
-```
-
 ### app/(premium)/my-mistakes/page.tsx
 ```tsx
 // app/my-mistakes/page.tsx
 
 import type { DatasetId } from '@/lib/qbank/datasets';
 import AllQuestionsClient from "@/app/(premium)/all-questions/AllQuestionsClient.client";
+import Link from 'next/link';
 
 export default function MyMistakesPage() {
   return (
@@ -3740,15 +3900,14 @@ useEffect(() => {
 // app/stats/page.tsx
 'use client';
 
-import BottomNav from '../../components/BottomNav';
+import BottomNav from '@/components/BottomNav';
 import styles from './stats.module.css'; // reuse shared layout + new stats classes
-import BackButton from '../../components/BackButton';
+import BackButton from '@/components/BackButton';
 import RequirePremium from '@/components/RequirePremium.client';
 
 export default function StatsPage() {
   return (
     <main className={styles.page}>
-      <BackButton />
       <div className={styles.content}>
         {/* ==== Top Accuracy / Gauge Card ==== */}
         <section className={styles.statsSummaryCard}>
@@ -3884,6 +4043,7 @@ export default function StatsPage() {
   display: flex;
   justify-content: center;
   background: var(--color-page-bg);
+  color: var(--test-text);
 }
 
 .content {
@@ -4937,6 +5097,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   display: flex;
   justify-content: center;
   background: var(--color-page-bg, linear-gradient(180deg, #eaf5ff 0%, #f5f8ff 100%));
+  color: var(--test-text);
 }
 
 .frame {
@@ -6010,6 +6171,9 @@ const canSend = useMemo(() => {
   --border-subtle: rgba(148, 163, 184, 0.35);
   --accent: #6366f1;
   --accent-soft: rgba(99, 102, 241, 0.18);
+    --test-text: var(--text-main);
+  --test-muted: var(--text-muted);
+  --test-icon: var(--test-text);
 }
 
 /* Light theme overrides (when ThemeProvider sets data-theme="light") */
@@ -6060,6 +6224,9 @@ const canSend = useMemo(() => {
   90deg,
   rgba(43, 124, 175, 0.2) 0%,
   rgba(255, 197, 66, 0.2) 100%
+    --test-text: var(--text-main);
+  --test-muted: var(--text-muted);
+  --test-icon: var(--test-text);
 );
 
 
@@ -6086,6 +6253,7 @@ body {
 
 ### app/layout.tsx
 ```tsx
+// app/layout.tsx
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Nunito_Sans } from "next/font/google";
 import "./globals.css";
@@ -6095,6 +6263,9 @@ import "@fortawesome/fontawesome-svg-core/styles.css";
 import { config } from "@fortawesome/fontawesome-svg-core";
 config.autoAddCss = false; // Prevent fontawesome from adding its CSS since we did it manually above  
 import { EntitlementsProvider } from "@/components/EntitlementsProvider.client";
+import FreeUsageProgressBadge from "@/components/FreeUsageProgressBadge.client";
+import SwipeBack from "@/components/SwipeBack.client";
+
 
 
 const geistSans = Geist({
@@ -6128,10 +6299,14 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} ${nunitoSans.variable} antialiased`}
       >
         <EntitlementsProvider>
-        <ThemeProvider>
-          <UserProfileProvider>
-          {children}
-          </UserProfileProvider>
+          {/* ✅ mount once, globally => shows on /test/* too */}
+          <FreeUsageProgressBadge />
+
+          <ThemeProvider>
+            <UserProfileProvider>
+              <SwipeBack />
+              {children}
+              </UserProfileProvider>
           </ThemeProvider>
         </EntitlementsProvider>
       </body>
@@ -8508,6 +8683,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import styles from "./premium.module.css";
 import { PLAN_LIST, type PlanId } from "../../lib/plans";
+import BackButton from "@/components/BackButton";
 
 const VALID_PROMO_CODES = ["EXP30"];
 
@@ -8540,17 +8716,10 @@ export default function PremiumPage() {
 
   return (
     <main className={styles.page}>
+      <BackButton />
       <div className={styles.frame}>
         {/* Top safe area + back */}
-        <header className={styles.topBar}>
-          <button
-            type="button"
-            className={styles.backButton}
-            onClick={() => router.back()}
-          >
-            <span className={styles.backIcon}>‹</span>
-          </button>
-        </header>
+
 
         {/* Crown */}
         <div className={styles.crownWrap}>
@@ -9651,6 +9820,7 @@ const handleSave = async (e: React.SyntheticEvent) => {
   padding: 0px 16px 40px;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, 'SF Pro Text',
     'Segoe UI', sans-serif;
+    color: var(--test-text);
 }
 
 .content {
@@ -10177,6 +10347,7 @@ const handleSave = async (e: React.SyntheticEvent) => {
   background: transparent;
   color: var(--color-heading-strong);
   font-weight: 700;
+  font-size: 13px;
 }
 
 .lockedClickable {
@@ -10240,6 +10411,8 @@ import { useBookmarks } from "@/lib/bookmarks/useBookmarks";
 
 import { TEST_MODES, type TestModeId } from "@/lib/testModes";
 
+import { useClearedMistakes } from "@/lib/mistakes/useClearedMistakes";
+
 function clamp(n: number, min: number, max: number) {
   return Math.max(min, Math.min(max, n));
 }
@@ -10288,7 +10461,7 @@ const timeSec = usedSeconds % 60;
 const timeText = showUntimed ? "Untimed" : `${timeMin}min ${timeSec}sec`;
 
 
-  const { email } = useAuthStatus();
+const { email } = useAuthStatus();
 const userKey = normalizeUserKey(email ?? "") || "guest";
 
   const [attempt, setAttempt] = useState<TestAttemptV1 | null>(null);
@@ -10307,6 +10480,10 @@ const userKey = normalizeUserKey(email ?? "") || "guest";
   // datasetId for bookmarks should come from attempt if possible; fallback to mode config
   const datasetId = ((attempt?.datasetId ?? cfg.datasetId) as unknown) as DatasetId;
   const { toggle, isBookmarked } = useBookmarks(datasetId, userKey);
+
+
+  const { clearMany: clearMistakesMany } = useClearedMistakes(datasetId, userKey);
+  const didAutoClearRef = useRef(false);
 
   /**
    * ✅ SELF-HEAL:
@@ -10439,28 +10616,43 @@ const userKey = normalizeUserKey(email ?? "") || "guest";
 
       // score
       let correct = 0;
-      for (const q of picked) {
-        const chosenKey = a.answersByQid[q.id]?.choice ?? null;
-        if (!chosenKey) continue;
+const correctIds: string[] = [];
 
-        if (q.type === "ROW") {
-          const chosen = normalizeRowChoice(chosenKey);
-          const expected = normalizeRowChoice((q as any).correctRow ?? null);
-          if (chosen && expected && chosen === expected) correct += 1;
-          continue;
-        }
+for (const q of picked) {
+  const chosenKey = a.answersByQid[q.id]?.choice ?? null;
+  if (!chosenKey) continue;
 
-        const chosenOpt = q.options.find((opt, idx) => {
-          const k = opt.originalKey ?? String.fromCharCode(65 + idx);
-          return k === chosenKey;
-        });
+  let isCorrect = false;
 
-        if (chosenOpt && (q as any).correctOptionId && chosenOpt.id === (q as any).correctOptionId) {
-          correct += 1;
-        }
-      }
+  if (q.type === "ROW") {
+    const chosen = normalizeRowChoice(chosenKey);
+    const expected = normalizeRowChoice((q as any).correctRow ?? null);
+    isCorrect = !!(chosen && expected && chosen === expected);
+  } else {
+    const chosenOpt = q.options.find((opt, idx) => {
+      const k = opt.originalKey ?? String.fromCharCode(65 + idx);
+      return k === chosenKey;
+    });
 
-      setComputed({ correct, total: picked.length });
+    if (chosenOpt && (q as any).correctOptionId && chosenOpt.id === (q as any).correctOptionId) {
+      isCorrect = true;
+    }
+  }
+
+  if (isCorrect) {
+    correct += 1;
+    correctIds.push(q.id);
+  }
+}
+
+setComputed({ correct, total: picked.length });
+
+// ✅ auto-clear ONLY for mistakes mode, only once
+if (modeId === "mistakes" && !didAutoClearRef.current) {
+  didAutoClearRef.current = true;
+  if (correctIds.length) clearMistakesMany(correctIds);
+}
+
 
       // WRONG-only review items
       const items: ReviewItem[] = [];
@@ -10625,7 +10817,9 @@ const userKey = normalizeUserKey(email ?? "") || "guest";
             </button>
           </div>
 
-          <section className={[styles.reviewArea, viewMode === "carousel" ? styles.reviewAreaCarousel : ""].join(" ")}>
+          <section 
+          data-noswipeback={viewMode === "carousel" ? "true" : undefined}
+          className={[styles.reviewArea, viewMode === "carousel" ? styles.reviewAreaCarousel : ""].join(" ")}>
             {reviewItems.length === 0 ? (
               <p className={styles.question}>Expatise! No incorrect questions! 🎉</p>
             ) : viewMode === "list" ? (
@@ -11438,12 +11632,27 @@ const userKey = normalizeUserKey(email ?? "") || "guest";
 
 ```
 
+### components/BackButton.module.css
+```css
+/* No layout/style changes, only theme behavior */
+.backBtn :global(img) {
+  display: block; /* avoids any baseline quirks */
+}
+
+/* When your ThemeProvider sets :root[data-theme='dark'], invert the PNG */
+:global(:root[data-theme='dark']) .backBtn :global(img) {
+  filter: invert(1);
+}
+
+```
+
 ### components/BackButton.tsx
 ```tsx
 'use client';
 
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
+import styles from './BackButton.module.css';
 
 export default function BackButton() {
   const router = useRouter();
@@ -11453,6 +11662,7 @@ export default function BackButton() {
       type="button"
       onClick={() => router.back()}
       aria-label="Back"
+      className={styles.backBtn}
       style={{
         position: 'fixed',
         top: 'calc(env(safe-area-inset-top, 0px)',
@@ -11464,6 +11674,7 @@ export default function BackButton() {
         gap: 8,
         cursor: 'pointer',
         WebkitTapHighlightColor: 'transparent',
+        color: 'var(--test-text)'
       }}
     >
       <Image
@@ -11866,7 +12077,6 @@ import { PUBLIC_FLAGS } from "@/lib/flags/public";
 import { FREE_ENTITLEMENTS, type EntitlementSource, type Entitlements } from "@/lib/entitlements/types";
 import { getLocalEntitlements, setLocalEntitlements, clearLocalEntitlements } from "@/lib/entitlements/localStore";
 import { useUserKey } from "@/components/useUserKey.client";
-import EntitlementsDebugBadge from "@/components/EntitlementsDebugBadge.client";
 import { getEntitlements } from "@/lib/entitlements/getEntitlements";
 
 
@@ -11961,7 +12171,6 @@ useEffect(() => {
   return (
     <EntitlementsContext.Provider value={value}>
       {children}
-       <EntitlementsDebugBadge />
     </EntitlementsContext.Provider>
     
   );
@@ -12110,8 +12319,11 @@ import {
   getUsageCapState,
   usageCapEventName,
 } from "@/lib/freeAccess/localUsageCap";
+import { useEntitlements } from "@/components/EntitlementsProvider.client";
 
 export default function FreeUsageProgressBadge() {
+  const { isPremium } = useEntitlements();
+  if (isPremium) return null;
   const userKey = useUserKey();
 
   const [shown, setShown] = useState(0);
@@ -12215,6 +12427,117 @@ export default function RequirePremium({ children }: { children: React.ReactNode
   if (!PUBLIC_FLAGS.enablePremiumGates) return <>{children}</>;
   if (isPremium) return <>{children}</>;
   if (!isOverCap) return <>{children}</>;
+
+  return null;
+}
+
+```
+
+### components/SwipeBack.client.tsx
+```tsx
+// components/SwipeBack.client.tsx
+"use client";
+
+import { useEffect, useRef } from "react";
+import { usePathname, useRouter } from "next/navigation";
+
+const EDGE_PX = 1;        // must start within 24px of left edge
+const MIN_DX = 80;         // how far to swipe to trigger
+const MAX_DY = 50;         // ignore if user is mostly scrolling vertically
+const MAX_TIME_MS = 450;   // ignore slow drags
+
+function isNoSwipeTarget(target: EventTarget | null) {
+  if (!(target instanceof HTMLElement)) return false;
+  // opt-out + common interactive controls
+  return !!target.closest(
+    `[data-noswipeback="true"], button, a, input, textarea, select, label, [role="slider"]`
+  );
+}
+
+export default function SwipeBack() {
+  const router = useRouter();
+  const pathname = usePathname();
+
+  const startRef = useRef({
+    active: false,
+    triggered: false,
+    x: 0,
+    y: 0,
+    t: 0,
+  });
+
+  useEffect(() => {
+    // Exclude home page
+    if (pathname === "/") return;
+
+    const onStart = (e: TouchEvent) => {
+      if (e.touches.length !== 1) return;
+      if (isNoSwipeTarget(e.target)) return;
+
+      const touch = e.touches[0];
+      const x = touch.clientX;
+      const y = touch.clientY;
+
+      startRef.current = {
+        active: x <= EDGE_PX,
+        triggered: false,
+        x,
+        y,
+        t: Date.now(),
+      };
+    };
+
+    const onMove = (e: TouchEvent) => {
+      const s = startRef.current;
+      if (!s.active || s.triggered) return;
+      if (e.touches.length !== 1) return;
+
+      const touch = e.touches[0];
+      const dx = touch.clientX - s.x;
+      const dy = touch.clientY - s.y;
+
+      // must be left -> right
+      if (dx <= 0) return;
+
+      // if user is scrolling vertically, abandon
+      if (Math.abs(dy) > MAX_DY) {
+        s.active = false;
+        return;
+      }
+
+      // too slow => abandon
+      if (Date.now() - s.t > MAX_TIME_MS) {
+        s.active = false;
+        return;
+      }
+
+      if (dx >= MIN_DX) {
+        s.triggered = true;
+
+        // If there is no history entry, router.back() can leave your app;
+        // this keeps UX consistent.
+        if (window.history.length > 1) router.back();
+        else router.push("/");
+      }
+    };
+
+    const onEnd = () => {
+      startRef.current.active = false;
+      startRef.current.triggered = false;
+    };
+
+    window.addEventListener("touchstart", onStart, { passive: true });
+    window.addEventListener("touchmove", onMove, { passive: true });
+    window.addEventListener("touchend", onEnd, { passive: true });
+    window.addEventListener("touchcancel", onEnd, { passive: true });
+
+    return () => {
+      window.removeEventListener("touchstart", onStart);
+      window.removeEventListener("touchmove", onMove);
+      window.removeEventListener("touchend", onEnd);
+      window.removeEventListener("touchcancel", onEnd);
+    };
+  }, [pathname, router]);
 
   return null;
 }
@@ -13074,7 +13397,7 @@ export const SERVER_FLAGS = {
 
 export const FREE_CAPS = {
   questionsShown: 420,
-  examStarts: 5,
+  examStarts: 7,
 } as const;
 
 export type UsageCapState = {
@@ -15530,7 +15853,9 @@ export type TestModeId =
   | "real"
   | "practice"
   | "half"
-  | "rapid";
+  | "rapid"
+  | "mistakes"
+  | "bookmarks";
 
 export type TestModeConfig = {
   modeId: TestModeId;
@@ -15598,6 +15923,28 @@ export const TEST_MODES: Record<TestModeId, TestModeConfig> = {
     timeLimitMinutes: 10,
     preflightRequiredQuestions: 20,
     autoAdvanceSeconds: 6,
+  },
+
+  mistakes: {
+    modeId: "mistakes",
+    modeKey: "mistakes-test",
+    routeBase: "/test/mistakes",
+    datasetId: "cn-2023-test1",
+    datasetVersion: "cn-2023-test1@v1",
+    questionCount: 50, // N/A
+    timeLimitMinutes: 0, // N/A
+    preflightRequiredQuestions: 1,
+  },
+
+  bookmarks: {
+    modeId: "bookmarks",
+    modeKey: "bookmarks-test",
+    routeBase: "/test/bookmarks",
+    datasetId: "cn-2023-test1",
+    datasetVersion: "cn-2023-test1@v1",
+    questionCount: 50, // N/A
+    timeLimitMinutes: 0, // N/A
+    preflightRequiredQuestions: 1,
   },
 };
 

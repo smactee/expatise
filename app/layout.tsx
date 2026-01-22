@@ -1,3 +1,4 @@
+// app/layout.tsx
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Nunito_Sans } from "next/font/google";
 import "./globals.css";
@@ -7,6 +8,9 @@ import "@fortawesome/fontawesome-svg-core/styles.css";
 import { config } from "@fortawesome/fontawesome-svg-core";
 config.autoAddCss = false; // Prevent fontawesome from adding its CSS since we did it manually above  
 import { EntitlementsProvider } from "@/components/EntitlementsProvider.client";
+import FreeUsageProgressBadge from "@/components/FreeUsageProgressBadge.client";
+import SwipeBack from "@/components/SwipeBack.client";
+
 
 
 const geistSans = Geist({
@@ -40,10 +44,14 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} ${nunitoSans.variable} antialiased`}
       >
         <EntitlementsProvider>
-        <ThemeProvider>
-          <UserProfileProvider>
-          {children}
-          </UserProfileProvider>
+          {/* ✅ mount once, globally => shows on /test/* too */}
+          <FreeUsageProgressBadge />
+
+          <ThemeProvider>
+            <UserProfileProvider>
+              <SwipeBack />
+              {children}
+              </UserProfileProvider>
           </ThemeProvider>
         </EntitlementsProvider>
       </body>

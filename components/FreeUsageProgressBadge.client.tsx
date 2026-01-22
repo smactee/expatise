@@ -8,8 +8,11 @@ import {
   getUsageCapState,
   usageCapEventName,
 } from "@/lib/freeAccess/localUsageCap";
+import { useEntitlements } from "@/components/EntitlementsProvider.client";
 
 export default function FreeUsageProgressBadge() {
+  const { isPremium } = useEntitlements();
+  if (isPremium) return null;
   const userKey = useUserKey();
 
   const [shown, setShown] = useState(0);
@@ -38,7 +41,7 @@ export default function FreeUsageProgressBadge() {
   }, [userKey]);
 
   const text = useMemo(() => {
-    return `${shown}/${FREE_CAPS.questionsShown} · ${starts}/${FREE_CAPS.examStarts}`;
+    return `${shown}/${FREE_CAPS.questionsShown} Questions · ${starts}/${FREE_CAPS.examStarts} Exams`;
   }, [shown, starts]);
 
   return (

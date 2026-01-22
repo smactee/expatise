@@ -23,6 +23,7 @@ import {
   markQuestionShown,
 } from "@/lib/freeAccess/localUsageCap";
 import { useEntitlements } from '@/components/EntitlementsProvider.client';
+import { useClearedMistakes } from '@/lib/mistakes/useClearedMistakes';
 
 
 
@@ -43,6 +44,58 @@ function normalizeRowChoice(v: string | null | undefined): 'R' | 'W' | null {
   return null;
 }
 
+function compileMistakeIds(
+  questions: Question[],
+  submittedAttempts: Array<Pick<TestAttemptV1, "answersByQid" | "submittedAt">>,
+  cleared: Set<string>
+): string[] {
+  const byId = new Map(questions.map((q) => [q.id, q] as const));
+  const mistakes = new Set<string>();
+
+  for (const a of submittedAttempts) {
+    for (const [qid, rec] of Object.entries(a.answersByQid ?? {})) {
+      if (cleared.has(qid)) continue;
+
+      const question = byId.get(qid);
+      if (!question) continue;
+
+      const chosenKey = rec?.choice ?? null;
+      if (!chosenKey) continue;
+
+      let isCorrect = false;
+
+      if (question.type === "ROW") {
+        const chosen = normalizeRowChoice(chosenKey);
+        const expected = normalizeRowChoice((question as any).correctRow ?? null);
+        isCorrect = !!(chosen && expected && chosen === expected);
+      } else {
+        const expected = (question as any).correctOptionId as string | undefined;
+        const opts = (question as any).options as any[] | undefined;
+
+        if (!expected || !opts?.length) {
+          isCorrect = false;
+        } else {
+          const idx = opts.findIndex((opt, i) => {
+            const letter = String.fromCharCode(65 + i);
+            const key = opt.originalKey ?? letter;
+            return chosenKey === key || chosenKey === letter || chosenKey === opt.id;
+          });
+
+          if (idx >= 0) {
+            const opt = opts[idx];
+            const letter = String.fromCharCode(65 + idx);
+            const key = opt.originalKey ?? letter;
+            isCorrect = expected === opt.id || expected === key || expected === letter;
+          }
+        }
+      }
+
+      if (!isCorrect) mistakes.add(qid);
+    }
+  }
+
+  return Array.from(mistakes);
+}
 
 
 
@@ -107,9 +160,16 @@ const enforceCaps = !isPremium; // premium users should not hit free caps
 const { loading: authLoading, email } = useAuthStatus();
 const userKey = normalizeUserKey(email ?? "") || "guest";
 
-const { toggle, isBookmarked } = useBookmarks(datasetId, userKey);
 
-  const [answers, setAnswers] = useState<Record<string, string>>({});
+// ✅ put it RIGHT HERE (top-level hook, not inside useEffect)
+const { idSet: bookmarkedSet, toggle, isBookmarked } = useBookmarks(datasetId, userKey);
+
+// (keep your mistakes cleared set too if you're using it)
+const { idSet: clearedMistakesSet } = useClearedMistakes(datasetId, userKey);
+
+
+
+const [answers, setAnswers] = useState<Record<string, string>>({});
 
 const finishedRef = useRef(false);
 
@@ -164,8 +224,17 @@ if (authLoading) {
   return;
 }
 
-const allIds = ds.map((q) => q.id);
+let poolIds = ds.map((q) => q.id);
 
+if (modeKey === "bookmarks-test") {
+  poolIds = Array.from(bookmarkedSet);
+}
+
+// (if you already did mistakes-test, you’ll have a similar branch for mistakes-test)
+if (modeKey === "mistakes-test") {
+  const mistakeIds = compileMistakeIds(ds, await attemptStore.listAttempts(userKey, datasetId), clearedMistakesSet);
+  poolIds = mistakeIds;
+}
 // ✅ Preflight gate ONLY if there is no resumable attempt (so resume is always allowed)
 const existing = await attemptStore.listAttempts(userKey, datasetId);
 const hasResumable = existing.some(
@@ -180,6 +249,14 @@ if (enforceCaps && !hasResumable && !canStartExam(userKey, { requiredQuestions: 
   return;
 }
 
+if (poolIds.length === 0) {
+  setAttempt(null);
+  setItems([]);
+  setLoading(false);
+  return;
+}
+
+const effectiveCount = Math.min(questionCount, poolIds.length);
 
 
 const { attempt: a, reused } = await attemptStore.getOrCreateAttempt({
@@ -187,8 +264,8 @@ const { attempt: a, reused } = await attemptStore.getOrCreateAttempt({
   modeKey,
   datasetId,
   datasetVersion,
-  allQuestionIds: allIds,
-  questionCount,
+  allQuestionIds: poolIds,
+  questionCount: effectiveCount,
   timeLimitSec: hasTimer ? timeLimitMinutes * 60 : 0,
 });
 
@@ -252,6 +329,7 @@ setLoading(false);
   userKey,
   router,
   routeBase,
+  clearedMistakesSet,
 ]);
 
 
@@ -598,14 +676,23 @@ useEffect(() => {
   }
 
   if (!item) {
-    return (
-      <main className={styles.page}>
-        <div className={styles.frame}>
-          <div className={styles.loading}>No questions found.</div>
+  return (
+    <main className={styles.page}>
+      <div className={styles.frame}>
+        <BackButton />
+        <div className={styles.loading}>
+          {modeKey === "bookmarks-test"
+  ? "No bookmarks yet. Bookmark questions first — then come back to practice them here."
+  : modeKey === "mistakes-test"
+  ? "No mistakes yet. Take a test first — then come back to retest and clear them by answering correctly."
+  : "No questions found."}
+
         </div>
-      </main>
-    );
-  }
+      </div>
+    </main>
+  );
+}
+
 
   return (
     <main className={styles.page}>
