@@ -22,3 +22,4 @@ export interface AttemptStore {
   closeAttemptById(attemptId: string, patch?: ClosePatch): Promise<Attempt | null>;
   readAttemptById(attemptId: string): Promise<Attempt | null>;
 }
+ 

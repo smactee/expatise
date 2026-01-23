@@ -10,6 +10,7 @@ import BottomNav from '../components/BottomNav';
 import { useUserProfile } from '../components/UserProfile';
 import { ROUTES } from '../lib/routes';
 import FeatureCard from '../components/FeatureCard';
+import BackButton from '@/components/BackButton';
 
 
 
@@ -388,15 +389,9 @@ const modalTimeLabel = formatTimeLabel(modalSourceTime);
           >
             {/* Header with back */}
             <div className={styles.testModalHeader}>
-              <button
-                type="button"
-                className={styles.testModalBackButton}
-                onClick={closeTestModal}
-              >
-                <span className={styles.testModalBackIcon}>‹</span>
-                <span className={styles.testModalBackText}>Back</span>
-              </button>
-            </div>
+  <BackButton variant="inline" onClick={closeTestModal} />
+</div>
+
 
 {/* Top greeting card */}
 <div className={styles.testModalHeaderCard}>

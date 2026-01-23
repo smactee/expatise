@@ -18,6 +18,22 @@ function isNoSwipeTarget(target: EventTarget | null) {
   );
 }
 
+function isTypingTarget(el: Element | null) {
+  if (!(el instanceof HTMLElement)) return false;
+  const tag = el.tagName.toLowerCase();
+  return (
+    tag === "input" ||
+    tag === "textarea" ||
+    tag === "select" ||
+    el.isContentEditable
+  );
+}
+
+function isInNoSwipeZone(el: Element | null) {
+  if (!(el instanceof HTMLElement)) return false;
+  return !!el.closest(`[data-noswipeback="true"]`);
+}
+
 export default function SwipeBack() {
   const router = useRouter();
   const pathname = usePathname();
@@ -40,6 +56,14 @@ export default function SwipeBack() {
 
   useEffect(() => {
     if (pathname === "/") return;
+
+    const goBack = () => {
+      if (window.history.length > 1) router.back();
+      else router.push("/");
+    };
+
+    // Desktop helpers ONLY while developing (so prod web users don’t get surprises).
+    const enableDesktopHelpers = process.env.NODE_ENV !== "production";
 
     // ----------------------------
     // Touch (keep exactly as you had it)
@@ -71,10 +95,12 @@ export default function SwipeBack() {
       const dy = touch.clientY - s.y;
 
       if (dx <= 0) return;
+
       if (Math.abs(dy) > MAX_DY) {
         s.active = false;
         return;
       }
+
       if (Date.now() - s.t > MAX_TIME_MS) {
         s.active = false;
         return;
@@ -82,8 +108,7 @@ export default function SwipeBack() {
 
       if (dx >= MIN_DX) {
         s.triggered = true;
-        if (window.history.length > 1) router.back();
-        else router.push("/");
+        goBack();
       }
     };
 
@@ -96,8 +121,8 @@ export default function SwipeBack() {
     // Mouse (desktop convenience)
     // ----------------------------
     const onMouseDown = (e: MouseEvent) => {
-      // left button only
-      if (e.button !== 0) return;
+      if (!enableDesktopHelpers) return;
+      if (e.button !== 0) return; // left button only
       if (isNoSwipeTarget(e.target)) return;
 
       const x = e.clientX;
@@ -113,6 +138,8 @@ export default function SwipeBack() {
     };
 
     const onMouseMove = (e: MouseEvent) => {
+      if (!enableDesktopHelpers) return;
+
       const s = mouseStartRef.current;
       if (!s.active || s.triggered) return;
 
@@ -121,13 +148,11 @@ export default function SwipeBack() {
 
       if (dx <= 0) return;
 
-      // abandon if mostly vertical (user scrolling/selection)
       if (Math.abs(dy) > MAX_DY) {
         s.active = false;
         return;
       }
 
-      // abandon if too slow
       if (Date.now() - s.t > MAX_TIME_MS) {
         s.active = false;
         return;
@@ -136,9 +161,7 @@ export default function SwipeBack() {
       if (dx >= MIN_DX) {
         s.triggered = true;
         s.active = false;
-
-        if (window.history.length > 1) router.back();
-        else router.push("/");
+        goBack();
       }
     };
 
@@ -147,15 +170,39 @@ export default function SwipeBack() {
       mouseStartRef.current.triggered = false;
     };
 
+    // ----------------------------
+    // Keyboard (desktop convenience)
+    // ----------------------------
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (!enableDesktopHelpers) return;
+
+      const activeEl = document.activeElement;
+
+      // Don’t hijack typing, or anything inside a no-swipe zone
+      if (isTypingTarget(activeEl) || isInNoSwipeZone(activeEl)) return;
+
+      const isBackspace = e.key === "Backspace";
+      const isAltLeft = e.key === "ArrowLeft" && e.altKey;   // Win/Linux
+      const isMetaLeft = e.key === "ArrowLeft" && e.metaKey; // Mac
+      const isCmdBracket = e.key === "[" && e.metaKey;       // Mac Cmd+[
+
+      if (!isBackspace && !isAltLeft && !isMetaLeft && !isCmdBracket) return;
+
+      e.preventDefault();
+      goBack();
+    };
+
     // listeners
     window.addEventListener("touchstart", onTouchStart, { passive: true });
     window.addEventListener("touchmove", onTouchMove, { passive: true });
     window.addEventListener("touchend", onTouchEnd, { passive: true });
     window.addEventListener("touchcancel", onTouchEnd, { passive: true });
 
-    window.addEventListener("mousedown", onMouseDown, { passive: true });
-    window.addEventListener("mousemove", onMouseMove, { passive: true });
-    window.addEventListener("mouseup", onMouseUp, { passive: true });
+    window.addEventListener("mousedown", onMouseDown);
+    window.addEventListener("mousemove", onMouseMove);
+    window.addEventListener("mouseup", onMouseUp);
+
+    window.addEventListener("keydown", onKeyDown);
 
     return () => {
       window.removeEventListener("touchstart", onTouchStart);
@@ -166,6 +213,8 @@ export default function SwipeBack() {
       window.removeEventListener("mousedown", onMouseDown);
       window.removeEventListener("mousemove", onMouseMove);
       window.removeEventListener("mouseup", onMouseUp);
+
+      window.removeEventListener("keydown", onKeyDown);
     };
   }, [pathname, router]);
 
