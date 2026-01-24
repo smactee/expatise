@@ -8168,6 +8168,7 @@ import BottomNav from '../components/BottomNav';
 import { useUserProfile } from '../components/UserProfile';
 import { ROUTES } from '../lib/routes';
 import FeatureCard from '../components/FeatureCard';
+import BackButton from '@/components/BackButton';
 
 
 
@@ -8546,15 +8547,9 @@ const modalTimeLabel = formatTimeLabel(modalSourceTime);
           >
             {/* Header with back */}
             <div className={styles.testModalHeader}>
-              <button
-                type="button"
-                className={styles.testModalBackButton}
-                onClick={closeTestModal}
-              >
-                <span className={styles.testModalBackIcon}>‹</span>
-                <span className={styles.testModalBackText}>Back</span>
-              </button>
-            </div>
+  <BackButton variant="inline" onClick={closeTestModal} />
+</div>
+
 
 {/* Top greeting card */}
 <div className={styles.testModalHeaderCard}>
@@ -10747,8 +10742,9 @@ if (modeId === "mistakes" && !didAutoClearRef.current) {
   // While self-healing redirect runs, show a tiny placeholder (prevents flashing "Missing attemptId")
   if (!attemptId) {
     return (
-      <div className={styles.viewport}>
-        <main className={styles.screen}>
+  <div className={styles.viewport} data-noswipeback="true">
+    <main className={styles.screen}>
+
           <div className={styles.card} />
           <div style={{ padding: 16 }}>Loading results…</div>
         </main>
@@ -10758,8 +10754,9 @@ if (modeId === "mistakes" && !didAutoClearRef.current) {
 
   // ---- UI BELOW (your existing layout) ----
   return (
-    <div className={styles.viewport}>
-      <main className={styles.screen}>
+  <div className={styles.viewport} data-noswipeback="true">
+    <main className={styles.screen}>
+
         <div className={styles.card} />
         <div className={styles.shiftUp}>
           <h1 className={styles.congrats}>Congratulations!</h1>
@@ -11650,32 +11647,50 @@ if (modeId === "mistakes" && !didAutoClearRef.current) {
 ```tsx
 'use client';
 
-import { useRouter } from 'next/navigation';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+import type { CSSProperties } from 'react';
 import styles from './BackButton.module.css';
 
-export default function BackButton() {
+type BackButtonProps = {
+  onClick?: () => void;                 // optional override (modal close)
+  variant?: 'fixed' | 'inline';         // default keeps your current behavior
+  ariaLabel?: string;
+  style?: CSSProperties;                // optional extra styles if needed
+};
+
+export default function BackButton({
+  onClick,
+  variant = 'fixed',
+  ariaLabel = 'Back',
+  style,
+}: BackButtonProps) {
   const router = useRouter();
+
+  const handleClick = () => {
+    if (onClick) onClick();
+    else router.back();
+  };
+
+  const fixedStyle: CSSProperties =
+    variant === 'fixed'
+      ? {
+          position: 'fixed',
+          top: 'calc(env(safe-area-inset-top, 0px))',
+          left: 'calc(env(safe-area-inset-left, 0px) + 10px)',
+          zIndex: 9999,
+        }
+      : {
+          position: 'static',
+        };
 
   return (
     <button
       type="button"
-      onClick={() => router.back()}
-      aria-label="Back"
+      onClick={handleClick}
+      aria-label={ariaLabel}
       className={styles.backBtn}
-      style={{
-        position: 'fixed',
-        top: 'calc(env(safe-area-inset-top, 0px)',
-        left: 'calc(env(safe-area-inset-left, 0px) + 10px)', // ✅ top-left
-        zIndex: 9999,
-        border: 0,
-        background: 'transparent',
-        padding: 0,
-        gap: 8,
-        cursor: 'pointer',
-        WebkitTapHighlightColor: 'transparent',
-        color: 'var(--test-text)'
-      }}
+      style={{ ...fixedStyle, ...style }}
     >
       <Image
         src="/images/other/turn-back.png"
@@ -12352,7 +12367,7 @@ export default function FreeUsageProgressBadge() {
   }, [userKey]);
 
   const text = useMemo(() => {
-    return `${shown}/${FREE_CAPS.questionsShown} · ${starts}/${FREE_CAPS.examStarts}`;
+    return `${shown}/${FREE_CAPS.questionsShown} Questions · ${starts}/${FREE_CAPS.examStarts} Exams`;
   }, [shown, starts]);
 
   return (
@@ -12441,24 +12456,49 @@ export default function RequirePremium({ children }: { children: React.ReactNode
 import { useEffect, useRef } from "react";
 import { usePathname, useRouter } from "next/navigation";
 
-const EDGE_PX = 1;        // must start within 24px of left edge
-const MIN_DX = 80;         // how far to swipe to trigger
-const MAX_DY = 50;         // ignore if user is mostly scrolling vertically
-const MAX_TIME_MS = 450;   // ignore slow drags
+const EDGE_PX = 1;           // (touch) keep your original
+const MOUSE_EDGE_PX = 24;    // (mouse) easier to start on desktop
+
+const MIN_DX = 80;           // how far to drag to trigger
+const MAX_DY = 50;           // ignore if mostly vertical
+const MAX_TIME_MS = 450;     // ignore slow drags
 
 function isNoSwipeTarget(target: EventTarget | null) {
   if (!(target instanceof HTMLElement)) return false;
-  // opt-out + common interactive controls
   return !!target.closest(
     `[data-noswipeback="true"], button, a, input, textarea, select, label, [role="slider"]`
   );
+}
+
+function isTypingTarget(el: Element | null) {
+  if (!(el instanceof HTMLElement)) return false;
+  const tag = el.tagName.toLowerCase();
+  return (
+    tag === "input" ||
+    tag === "textarea" ||
+    tag === "select" ||
+    el.isContentEditable
+  );
+}
+
+function isInNoSwipeZone(el: Element | null) {
+  if (!(el instanceof HTMLElement)) return false;
+  return !!el.closest(`[data-noswipeback="true"]`);
 }
 
 export default function SwipeBack() {
   const router = useRouter();
   const pathname = usePathname();
 
-  const startRef = useRef({
+  const touchStartRef = useRef({
+    active: false,
+    triggered: false,
+    x: 0,
+    y: 0,
+    t: 0,
+  });
+
+  const mouseStartRef = useRef({
     active: false,
     triggered: false,
     x: 0,
@@ -12467,10 +12507,20 @@ export default function SwipeBack() {
   });
 
   useEffect(() => {
-    // Exclude home page
     if (pathname === "/") return;
 
-    const onStart = (e: TouchEvent) => {
+    const goBack = () => {
+      if (window.history.length > 1) router.back();
+      else router.push("/");
+    };
+
+    // Desktop helpers ONLY while developing (so prod web users don’t get surprises).
+    const enableDesktopHelpers = process.env.NODE_ENV !== "production";
+
+    // ----------------------------
+    // Touch (keep exactly as you had it)
+    // ----------------------------
+    const onTouchStart = (e: TouchEvent) => {
       if (e.touches.length !== 1) return;
       if (isNoSwipeTarget(e.target)) return;
 
@@ -12478,7 +12528,7 @@ export default function SwipeBack() {
       const x = touch.clientX;
       const y = touch.clientY;
 
-      startRef.current = {
+      touchStartRef.current = {
         active: x <= EDGE_PX,
         triggered: false,
         x,
@@ -12487,8 +12537,8 @@ export default function SwipeBack() {
       };
     };
 
-    const onMove = (e: TouchEvent) => {
-      const s = startRef.current;
+    const onTouchMove = (e: TouchEvent) => {
+      const s = touchStartRef.current;
       if (!s.active || s.triggered) return;
       if (e.touches.length !== 1) return;
 
@@ -12496,16 +12546,13 @@ export default function SwipeBack() {
       const dx = touch.clientX - s.x;
       const dy = touch.clientY - s.y;
 
-      // must be left -> right
       if (dx <= 0) return;
 
-      // if user is scrolling vertically, abandon
       if (Math.abs(dy) > MAX_DY) {
         s.active = false;
         return;
       }
 
-      // too slow => abandon
       if (Date.now() - s.t > MAX_TIME_MS) {
         s.active = false;
         return;
@@ -12513,29 +12560,113 @@ export default function SwipeBack() {
 
       if (dx >= MIN_DX) {
         s.triggered = true;
-
-        // If there is no history entry, router.back() can leave your app;
-        // this keeps UX consistent.
-        if (window.history.length > 1) router.back();
-        else router.push("/");
+        goBack();
       }
     };
 
-    const onEnd = () => {
-      startRef.current.active = false;
-      startRef.current.triggered = false;
+    const onTouchEnd = () => {
+      touchStartRef.current.active = false;
+      touchStartRef.current.triggered = false;
     };
 
-    window.addEventListener("touchstart", onStart, { passive: true });
-    window.addEventListener("touchmove", onMove, { passive: true });
-    window.addEventListener("touchend", onEnd, { passive: true });
-    window.addEventListener("touchcancel", onEnd, { passive: true });
+    // ----------------------------
+    // Mouse (desktop convenience)
+    // ----------------------------
+    const onMouseDown = (e: MouseEvent) => {
+      if (!enableDesktopHelpers) return;
+      if (e.button !== 0) return; // left button only
+      if (isNoSwipeTarget(e.target)) return;
+
+      const x = e.clientX;
+      const y = e.clientY;
+
+      mouseStartRef.current = {
+        active: x <= MOUSE_EDGE_PX,
+        triggered: false,
+        x,
+        y,
+        t: Date.now(),
+      };
+    };
+
+    const onMouseMove = (e: MouseEvent) => {
+      if (!enableDesktopHelpers) return;
+
+      const s = mouseStartRef.current;
+      if (!s.active || s.triggered) return;
+
+      const dx = e.clientX - s.x;
+      const dy = e.clientY - s.y;
+
+      if (dx <= 0) return;
+
+      if (Math.abs(dy) > MAX_DY) {
+        s.active = false;
+        return;
+      }
+
+      if (Date.now() - s.t > MAX_TIME_MS) {
+        s.active = false;
+        return;
+      }
+
+      if (dx >= MIN_DX) {
+        s.triggered = true;
+        s.active = false;
+        goBack();
+      }
+    };
+
+    const onMouseUp = () => {
+      mouseStartRef.current.active = false;
+      mouseStartRef.current.triggered = false;
+    };
+
+    // ----------------------------
+    // Keyboard (desktop convenience)
+    // ----------------------------
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (!enableDesktopHelpers) return;
+
+      const activeEl = document.activeElement;
+
+      // Don’t hijack typing, or anything inside a no-swipe zone
+      if (isTypingTarget(activeEl) || isInNoSwipeZone(activeEl)) return;
+
+      const isBackspace = e.key === "Backspace";
+      const isAltLeft = e.key === "ArrowLeft" && e.altKey;   // Win/Linux
+      const isMetaLeft = e.key === "ArrowLeft" && e.metaKey; // Mac
+      const isCmdBracket = e.key === "[" && e.metaKey;       // Mac Cmd+[
+
+      if (!isBackspace && !isAltLeft && !isMetaLeft && !isCmdBracket) return;
+
+      e.preventDefault();
+      goBack();
+    };
+
+    // listeners
+    window.addEventListener("touchstart", onTouchStart, { passive: true });
+    window.addEventListener("touchmove", onTouchMove, { passive: true });
+    window.addEventListener("touchend", onTouchEnd, { passive: true });
+    window.addEventListener("touchcancel", onTouchEnd, { passive: true });
+
+    window.addEventListener("mousedown", onMouseDown);
+    window.addEventListener("mousemove", onMouseMove);
+    window.addEventListener("mouseup", onMouseUp);
+
+    window.addEventListener("keydown", onKeyDown);
 
     return () => {
-      window.removeEventListener("touchstart", onStart);
-      window.removeEventListener("touchmove", onMove);
-      window.removeEventListener("touchend", onEnd);
-      window.removeEventListener("touchcancel", onEnd);
+      window.removeEventListener("touchstart", onTouchStart);
+      window.removeEventListener("touchmove", onTouchMove);
+      window.removeEventListener("touchend", onTouchEnd);
+      window.removeEventListener("touchcancel", onTouchEnd);
+
+      window.removeEventListener("mousedown", onMouseDown);
+      window.removeEventListener("mousemove", onMouseMove);
+      window.removeEventListener("mouseup", onMouseUp);
+
+      window.removeEventListener("keydown", onKeyDown);
     };
   }, [pathname, router]);
 
@@ -12893,7 +13024,7 @@ export interface AttemptStore {
   closeAttemptById(attemptId: string, patch?: ClosePatch): Promise<Attempt | null>;
   readAttemptById(attemptId: string): Promise<Attempt | null>;
 }
-
+ 
 ```
 
 ### lib/attempts/engine.ts

@@ -9,4 +9,5 @@ export const ROUTES = {
   practiceTest: "/test/practice",
   halfTest: "/test/half",
   rapidTest: "/test/rapid",
+  globalCommonMistakes: "/global-common-mistakes",
 } as const;

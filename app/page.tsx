@@ -75,7 +75,6 @@ const TEST_MODE_CARDS = [
     topText: "Sharpen your reflexes and memory in bursts.",
     title:  "Rapid Fire Test",
     },
-    
 
 ] as const;
 
@@ -91,9 +90,9 @@ const OVERALL_CARDS = [
     topText: "Filter through the entire questions bank.",
     title: "All Questions",
   },
-  {
-  key: "global-common-mistakes",
-  href: `${ROUTES.comingSoon}?feature=global-common-mistakes`,
+      {
+  key: "global-mistakes",
+  href: ROUTES.globalCommonMistakes,
   ariaLabel: "Open Global Common Mistakes",
   bgSrc: "/images/home/cards/globalmistakes-bg.png",
   bgAlt: "Global Common Mistakes Background",
