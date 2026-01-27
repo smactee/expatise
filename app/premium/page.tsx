@@ -12,11 +12,12 @@ const VALID_PROMO_CODES = ["EXP30"];
 
 export default function PremiumPage() {
     const router = useRouter();
-    const [selected, setSelected] = useState<PlanId>("lifetime");
+    const [selected, setSelected] = useState<PlanId | null>(null);
     const [promo, setPromo] = useState("");
     const [showPromo, setShowPromo] = useState(false);
     const [promoApplied, setPromoApplied] = useState(false);
     const [promoError, setPromoError] = useState("");
+    const [planError, setPlanError] = useState("");
 
     const handleApplyCode = () => {
       const code = promo.trim().toUpperCase();
@@ -134,7 +135,11 @@ export default function PremiumPage() {
                 key={p.id}
                 type="button"
                 className={`${styles.planPill} ${active ? styles.planPillActive : ""}`}
-                onClick={() => setSelected(p.id)}
+                onClick={() => {
+  setPlanError(""); // optional: clear error when they interact
+  setSelected((prev) => (prev === p.id ? null : p.id));
+}}
+
               >
                 <div className={styles.planLeft}>
                   <div className={styles.planTitle}>{p.pillTitle}</div>
@@ -205,16 +210,24 @@ export default function PremiumPage() {
   </>
 )}
         {/* CTA (327 x 52) */}
-        <button
-          type="button"
-          className={styles.cta}
-          onClick={() =>
-            router.push(`/checkout?plan=${selected}${promoApplied ? "&promo=1" : ""}`)
-          }
-        >
-          <span className={styles.ctaText}>Get Premium Now</span>
-          <span className={styles.ctaChevron}>›</span>
-        </button>
+<button
+  type="button"
+  className={styles.cta}
+  disabled={!selected}
+  onClick={() => {
+    if (!selected) {
+      setPlanError("Please choose a plan.");
+      return;
+    }
+    router.push(`/checkout?plan=${selected}${promoApplied ? "&promo=1" : ""}`);
+  }}
+>
+  <span className={styles.ctaText}>Get Premium Now</span>
+  <span className={styles.ctaChevron}>›</span>
+</button>
+
+{planError && <div className={styles.planError}>{planError}</div>}
+
       </div>
     </main>
   );

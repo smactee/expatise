@@ -17,3 +17,5 @@ export const DATASETS: Record<DatasetId, DatasetConfig> = {
     patchUrl: '/qbank/2023-test1/tags.patch.json', // ✅ new
   },
 } as const;
+
+export const DEFAULT_DATASET_ID: DatasetId = 'cn-2023-test1';

@@ -1,7 +1,7 @@
 //components/EntitlementsProvider.client.tsx
 "use client";
 
-import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import React, { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { PUBLIC_FLAGS } from "@/lib/flags/public";
 import { FREE_ENTITLEMENTS, type EntitlementSource, type Entitlements } from "@/lib/entitlements/types";
 import { getLocalEntitlements, setLocalEntitlements, clearLocalEntitlements } from "@/lib/entitlements/localStore";
@@ -13,6 +13,7 @@ type EntitlementsContextValue = {
   userKey: string; // for now "guest" (we’ll upgrade to real user scoping later)
   entitlements: Entitlements;
   isPremium: boolean;
+  loading: boolean;
   refresh: () => void;
   setEntitlements: (e: Entitlements) => void;
   grantPremium: (source: EntitlementSource, expiresAt?: number) => void;
@@ -32,24 +33,47 @@ export function EntitlementsProvider({ children }: { children: React.ReactNode }
     return FREE_ENTITLEMENTS;
   });
 
-  const refresh = useCallback(() => {
+  const [loading, setLoading] = useState<boolean>(true);
+const fetchSeqRef = useRef(0);
+
+
+const refresh = useCallback(() => {
   if (!PUBLIC_FLAGS.enablePremiumGates) {
     setState({ isPremium: true, source: "admin", updatedAt: Date.now() });
+    setLoading(false);
     return;
   }
 
+  // increment request id so older async results can't overwrite newer userKey
+  const seq = ++fetchSeqRef.current;
+
+  setLoading(true);
+
   const keyAtStart = userKey;
 
+  // 1) apply local immediately (fast)
   const local = getLocalEntitlements(keyAtStart) ?? FREE_ENTITLEMENTS;
   setState(local);
 
+  // 2) then fetch remote (authoritative)
   void (async () => {
-    const e = await getEntitlements(keyAtStart);
-    // ignore stale result if userKey changed mid-flight
-    if (keyAtStart !== userKey) return;
-    setState(e);
+    try {
+      const e = await getEntitlements(keyAtStart);
+
+      // ignore stale result if a newer refresh started
+      if (seq !== fetchSeqRef.current) return;
+
+      // optional but recommended: persist remote result so next refresh is instant
+      setLocalEntitlements(keyAtStart, e);
+      setState(e);
+    } catch {
+      // keep local if remote fails
+    } finally {
+      if (seq === fetchSeqRef.current) setLoading(false);
+    }
   })();
 }, [userKey]);
+
 
   const setEntitlements = useCallback((e: Entitlements) => {
     setLocalEntitlements(userKey, e);
@@ -91,11 +115,12 @@ useEffect(() => {
     userKey,
     entitlements,
     isPremium: entitlements.isPremium,
+    loading,
     refresh,
     setEntitlements,
     grantPremium,
     revokePremium,
-  }), [userKey, entitlements, refresh, setEntitlements, grantPremium, revokePremium]);
+  }), [userKey, entitlements, loading, refresh, setEntitlements, grantPremium, revokePremium]);
 
   return (
     <EntitlementsContext.Provider value={value}>

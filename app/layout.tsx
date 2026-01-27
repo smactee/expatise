@@ -10,6 +10,7 @@ config.autoAddCss = false; // Prevent fontawesome from adding its CSS since we d
 import { EntitlementsProvider } from "@/components/EntitlementsProvider.client";
 import FreeUsageProgressBadge from "@/components/FreeUsageProgressBadge.client";
 import SwipeBack from "@/components/SwipeBack.client";
+import TimeTracker from "@/components/TimeTracker.client";
 
 
 
@@ -44,12 +45,12 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} ${nunitoSans.variable} antialiased`}
       >
         <EntitlementsProvider>
-          {/* ✅ mount once, globally => shows on /test/* too */}
           <FreeUsageProgressBadge />
 
           <ThemeProvider>
             <UserProfileProvider>
               <SwipeBack />
+              <TimeTracker />
               {children}
               </UserProfileProvider>
           </ThemeProvider>

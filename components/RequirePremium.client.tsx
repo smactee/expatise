@@ -5,6 +5,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { PUBLIC_FLAGS } from "@/lib/flags/public";
 import { useEntitlements } from "@/components/EntitlementsProvider.client";
 import { useUsageCap } from "@/lib/freeAccess/useUsageCap";
+import { useAuthStatus } from "@/components/useAuthStatus";
 
 function currentPath(pathname: string, sp: URLSearchParams) {
   const qs = sp.toString();
@@ -16,32 +17,41 @@ export default function RequirePremium({ children }: { children: React.ReactNode
   const pathname = usePathname();
   const sp = useSearchParams();
 
-  const { isPremium } = useEntitlements();
+  const { isPremium, loading: entitlementsLoading } = useEntitlements();
   const { isOverCap } = useUsageCap();
 
   // Only redirect on route entry, not mid-session state changes
-  const checkedRef = useRef<string>("");
+// Only prevent *repeat redirects* for the same route
+const redirectedRef = useRef<string>("");
 
-  useEffect(() => {
-    if (!PUBLIC_FLAGS.enablePremiumGates) return;
+const { loading: authLoading } = useAuthStatus();
 
-    const key = `${pathname}?${sp.toString()}`;
-    if (checkedRef.current === key) return;
-    checkedRef.current = key;
 
-    // premium always allowed
-    if (isPremium) return;
+const qs = sp.toString();
 
-    // free user allowed until cap reached
-    if (!isOverCap) return;
+useEffect(() => {
+  if (!PUBLIC_FLAGS.enablePremiumGates) return;
+  if (entitlementsLoading) return;
 
-    const next = encodeURIComponent(currentPath(pathname, sp));
-    router.replace(`/premium?next=${next}`);
-  }, [isPremium, isOverCap, pathname, sp, router]);
+  const key = `${pathname}?${qs}`;
+
+  if (isPremium) return;
+  if (!isOverCap) return;
+
+  if (redirectedRef.current === key) return;
+  redirectedRef.current = key;
+
+  const next = encodeURIComponent(currentPath(pathname, sp));
+  router.replace(`/premium?next=${next}`);
+}, [entitlementsLoading, isPremium, isOverCap, pathname, qs, router]);
+
+
 
   if (!PUBLIC_FLAGS.enablePremiumGates) return <>{children}</>;
+  if (entitlementsLoading) return null;
   if (isPremium) return <>{children}</>;
   if (!isOverCap) return <>{children}</>;
+
 
   return null;
 }

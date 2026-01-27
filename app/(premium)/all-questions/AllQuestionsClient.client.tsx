@@ -18,11 +18,20 @@ import { attemptStore } from "@/lib/attempts/store";
 import type { Attempt } from "@/lib/attempts/attemptStore";
 import { useUserKey } from "@/components/useUserKey.client";
 import Link from 'next/link';
+import { isAnswerCorrect } from '@/lib/grading/isAnswerCorrect';
+import { DEFAULT_DATASET_ID } from '@/lib/qbank/datasets';
 
 
 
 
 
+function normalizeRowChoice(v: string | null | undefined): "R" | "W" | null {
+  if (!v) return null;
+  const t = v.trim().toLowerCase();
+  if (t === "r" || t === "right") return "R";
+  if (t === "w" || t === "wrong") return "W";
+  return null;
+}
 
 
 function isCorrectMcq(item: Question, optId: string, optKey?: string) {
@@ -142,14 +151,6 @@ useEffect(() => {
   });
 }, [q, query, activeTopic, activeSub, derivedById]);
 
-function normalizeRowChoice(v: string | null | undefined): 'R' | 'W' | null {
-  if (!v) return null;
-  const t = v.trim().toLowerCase();
-  if (t === 'r' || t === 'right') return 'R';
-  if (t === 'w' || t === 'wrong') return 'W';
-  return null;
-}
-
 
 type MistakeMeta = { wrongCount: number; lastWrongAt: number };
 
@@ -158,8 +159,6 @@ const mistakesMetaById = useMemo(() => {
   if (q.length === 0) return new Map<string, MistakeMeta>();
 
   const byId = new Map(q.map((item) => [item.id, item] as const));
-
-  // ✅ now from adapter-loaded state (async loaded in useEffect)
   const attempts = submittedAttempts;
 
   const meta = new Map<string, MistakeMeta>();
@@ -172,39 +171,7 @@ const mistakesMetaById = useMemo(() => {
       const chosenKey = rec?.choice ?? null;
       if (!chosenKey) continue;
 
-      let isCorrect = false;
-
-      if (question.type === 'ROW') {
-        const chosen = normalizeRowChoice(chosenKey);
-        const expected = normalizeRowChoice(question.correctRow ?? null);
-        isCorrect = !!(chosen && expected && chosen === expected);
-      } else {
-  const expected = question.correctOptionId;
-  if (!expected || !question.options?.length) {
-    isCorrect = false;
-  } else {
-    // Find which option the user chose.
-    // chosenKey might be: "A"/"B"/..., originalKey, or (sometimes) an option id.
-    const idx = question.options.findIndex((opt, i) => {
-      const letter = String.fromCharCode(65 + i); // A,B,C...
-      const key = opt.originalKey ?? letter;
-      return chosenKey === key || chosenKey === letter || chosenKey === opt.id;
-    });
-
-    if (idx < 0) {
-      isCorrect = false;
-    } else {
-      const opt = question.options[idx];
-      const letter = String.fromCharCode(65 + idx);
-      const key = opt.originalKey ?? letter;
-
-      // expected might be option id OR key/letter depending on your dataset format
-      isCorrect = expected === opt.id || expected === key || expected === letter;
-    }
-  }
-}
-
-
+      const isCorrect = isAnswerCorrect(question, chosenKey);
       if (isCorrect) continue;
 
       const prev = meta.get(qid);
@@ -220,6 +187,7 @@ const mistakesMetaById = useMemo(() => {
 
   return meta;
 }, [mode, q, submittedAttempts]);
+
 
 
 
