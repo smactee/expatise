@@ -141,11 +141,20 @@ import { attemptStore } from "@/lib/attempts/store";
 import type { Attempt } from "@/lib/attempts/attemptStore";
 import { useUserKey } from "@/components/useUserKey.client";
 import Link from 'next/link';
+import { isAnswerCorrect } from '@/lib/grading/isAnswerCorrect';
+import { DEFAULT_DATASET_ID } from '@/lib/qbank/datasets';
 
 
 
 
 
+function normalizeRowChoice(v: string | null | undefined): "R" | "W" | null {
+  if (!v) return null;
+  const t = v.trim().toLowerCase();
+  if (t === "r" || t === "right") return "R";
+  if (t === "w" || t === "wrong") return "W";
+  return null;
+}
 
 
 function isCorrectMcq(item: Question, optId: string, optKey?: string) {
@@ -265,14 +274,6 @@ useEffect(() => {
   });
 }, [q, query, activeTopic, activeSub, derivedById]);
 
-function normalizeRowChoice(v: string | null | undefined): 'R' | 'W' | null {
-  if (!v) return null;
-  const t = v.trim().toLowerCase();
-  if (t === 'r' || t === 'right') return 'R';
-  if (t === 'w' || t === 'wrong') return 'W';
-  return null;
-}
-
 
 type MistakeMeta = { wrongCount: number; lastWrongAt: number };
 
@@ -281,8 +282,6 @@ const mistakesMetaById = useMemo(() => {
   if (q.length === 0) return new Map<string, MistakeMeta>();
 
   const byId = new Map(q.map((item) => [item.id, item] as const));
-
-  // ✅ now from adapter-loaded state (async loaded in useEffect)
   const attempts = submittedAttempts;
 
   const meta = new Map<string, MistakeMeta>();
@@ -295,39 +294,7 @@ const mistakesMetaById = useMemo(() => {
       const chosenKey = rec?.choice ?? null;
       if (!chosenKey) continue;
 
-      let isCorrect = false;
-
-      if (question.type === 'ROW') {
-        const chosen = normalizeRowChoice(chosenKey);
-        const expected = normalizeRowChoice(question.correctRow ?? null);
-        isCorrect = !!(chosen && expected && chosen === expected);
-      } else {
-  const expected = question.correctOptionId;
-  if (!expected || !question.options?.length) {
-    isCorrect = false;
-  } else {
-    // Find which option the user chose.
-    // chosenKey might be: "A"/"B"/..., originalKey, or (sometimes) an option id.
-    const idx = question.options.findIndex((opt, i) => {
-      const letter = String.fromCharCode(65 + i); // A,B,C...
-      const key = opt.originalKey ?? letter;
-      return chosenKey === key || chosenKey === letter || chosenKey === opt.id;
-    });
-
-    if (idx < 0) {
-      isCorrect = false;
-    } else {
-      const opt = question.options[idx];
-      const letter = String.fromCharCode(65 + idx);
-      const key = opt.originalKey ?? letter;
-
-      // expected might be option id OR key/letter depending on your dataset format
-      isCorrect = expected === opt.id || expected === key || expected === letter;
-    }
-  }
-}
-
-
+      const isCorrect = isAnswerCorrect(question, chosenKey);
       if (isCorrect) continue;
 
       const prev = meta.get(qid);
@@ -343,6 +310,7 @@ const mistakesMetaById = useMemo(() => {
 
   return meta;
 }, [mode, q, submittedAttempts]);
+
 
 
 
@@ -4373,139 +4341,491 @@ useEffect(() => {
 // app/stats/page.tsx
 'use client';
 
+import { useEffect, useMemo, useState } from 'react';
+import { useRouter } from 'next/navigation';
+
 import BottomNav from '@/components/BottomNav';
-import styles from './stats.module.css'; // reuse shared layout + new stats classes
+import styles from './stats.module.css';
 import BackButton from '@/components/BackButton';
 import RequirePremium from '@/components/RequirePremium.client';
 
+import { loadDataset } from '@/lib/qbank/loadDataset';
+import type { DatasetId } from '@/lib/qbank/datasets';
+import type { Question } from '@/lib/qbank/types';
+
+import { listSubmittedAttempts } from '@/lib/test-engine/attemptStorage';
+import type { TestAttemptV1 } from '@/lib/test-engine/attemptStorage';
+
+import { useUserKey } from '@/components/useUserKey.client';
+import { computeStats } from '@/lib/stats/computeStats';
+
+import { ROUTES } from '@/lib/routes';
+
+import { labelForTag } from '@/lib/qbank/tagTaxonomy';
+
+import ScreenTimeChart7 from '@/components/stats/ScreenTimeChart7.client';
+
+const datasetId: DatasetId = 'cn-2023-test1';
+
+// Exclude Practice from Stats (per your decision)
+type Timeframe = 7 | 30 | "all";
+const TIMEFRAMES: Timeframe[] = [7, 30, "all"];
+
+const REAL_ONLY_MODE_KEYS = ["real-test"];
+const LEARNING_MODE_KEYS = ["real-test", "half-test", "rapid-fire-test"]; // all non-practice modes
 
 export default function StatsPage() {
+  const userKey = useUserKey();
+  const router = useRouter();
+
+  const [questions, setQuestions] = useState<Question[]>([]);
+  const [attempts, setAttempts] = useState<TestAttemptV1[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const [tfReadiness, setTfReadiness] = useState<Timeframe>(7);
+  const [tfScore, setTfScore] = useState<Timeframe>(30);
+  const [tfWeekly, setTfWeekly] = useState<Timeframe>(30);
+  const [tfBestTime, setTfBestTime] = useState<Timeframe>(30);
+  const [tfTopics, setTfTopics] = useState<Timeframe>(30);
+
+function tfShort(t: Timeframe) {
+  return t === "all" ? "All" : `${t}D`;
+}
+function tfLabel(t: Timeframe) {
+  return t === "all" ? "all time" : `last ${t} days`;
+}
+
+function TimeframeChips(props: {
+  value: Timeframe;
+  onChange: (v: Timeframe) => void;
+  align?: "left" | "center";
+}) {
+  const { value, onChange, align = "left" } = props;
+  return (
+    <div
+      className={`${styles.statsChips} ${
+        align === "center" ? styles.statsChipsCenter : ""
+      }`}
+    >
+      {TIMEFRAMES.map((t) => {
+        const active = value === t;
+        return (
+          <button
+            key={String(t)}
+            type="button"
+            onClick={() => onChange(t)}
+            className={`${styles.statsChip} ${
+              active ? styles.statsChipActive : ""
+            }`}
+          >
+            {tfShort(t)}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+
+
+  // Load dataset questions (needed to grade answers)
+  useEffect(() => {
+    let alive = true;
+
+    (async () => {
+      try {
+        setLoading(true);
+        const qs = await loadDataset(datasetId);
+        if (alive) setQuestions(qs);
+      } finally {
+        if (alive) setLoading(false);
+      }
+    })();
+
+    return () => {
+      alive = false;
+    };
+  }, [datasetId]);
+
+  // Load submitted attempts from localStorage whenever userKey changes
+  useEffect(() => {
+    const submitted = listSubmittedAttempts({ userKey, datasetId });
+    setAttempts(submitted);
+  }, [userKey, datasetId]);
+
+  // Compute stats (default: last 30 days for now; we’ll add filters later)
+  const statsReadiness = useMemo(() => {
+  return computeStats({
+    attempts,
+    questions,
+    filters: { timeframeDays: tfReadiness, includeModeKeys: REAL_ONLY_MODE_KEYS },
+  });
+}, [attempts, questions, tfReadiness]);
+
+const statsScreen = useMemo(() => {
+  return computeStats({
+    attempts,
+    questions,
+    filters: { timeframeDays: 7, includeModeKeys: LEARNING_MODE_KEYS },
+  });
+}, [attempts, questions]);
+
+
+const statsScore = useMemo(() => {
+  return computeStats({
+    attempts,
+    questions,
+    filters: { timeframeDays: tfScore, includeModeKeys: REAL_ONLY_MODE_KEYS },
+  });
+}, [attempts, questions, tfScore]);
+
+const statsWeekly = useMemo(() => {
+  return computeStats({
+    attempts,
+    questions,
+    filters: { timeframeDays: tfWeekly, includeModeKeys: LEARNING_MODE_KEYS },
+  });
+}, [attempts, questions, tfWeekly]);
+
+const statsBestTime = useMemo(() => {
+  return computeStats({
+    attempts,
+    questions,
+    filters: { timeframeDays: tfBestTime, includeModeKeys: REAL_ONLY_MODE_KEYS },
+  });
+}, [attempts, questions, tfBestTime]);
+
+const statsTopics = useMemo(() => {
+  return computeStats({
+    attempts,
+    questions,
+    filters: { timeframeDays: tfTopics, includeModeKeys: LEARNING_MODE_KEYS },
+  });
+}, [attempts, questions, tfTopics]);
+
+
+
+
+
+
+
   return (
     <main className={styles.page}>
       <div className={styles.content}>
         <BackButton />
+
+
         {/* ==== Top Accuracy / Gauge Card ==== */}
-        <section className={styles.statsSummaryCard}>
-          <div className={styles.statsSummaryInner}>
-            <div className={styles.statsGaugeWrapper}>
-              <div className={styles.statsGaugeCircleOuter}>
-                <div className={styles.statsGaugeCircleInner}>
-                  <div className={styles.statsGaugeNumber}>70</div>
-                  <div className={styles.statsGaugeLabel}>
-                    Accuracy
-                    <br />
-                    Rate
-                  </div>
-                </div>
-              </div>
-            </div>
+<section className={styles.statsSummaryCard}>
+  <div className={styles.statsSummaryInner}>
+    <div className={styles.statsGaugeWrapper}>
+      {(() => {
+  const pct = statsReadiness.readinessPct; // 0..100
+  const fillDeg = Math.round((pct / 100) * 360);
 
-            <button className={styles.statsTestButton}>Test ▸</button>
-          </div>
-        </section>
+  const c1 = "rgba(43, 124, 175, 0.4)";
+  const c2 = "rgba(255, 197, 66, 0.4)";
 
-        {/* ==== Stack of statistic cards ==== */}
-       {/* ==== Big panel + stack of statistic cards ==== */}
-<section className={styles.statsLongPanel}>
-  <div className={styles.statsBlocks}>
-    {/* Screen Time */}
-    <article className={styles.statsCard}>
-      <header className={styles.statsCardHeader}>
-        <h2 className={styles.statsCardTitle}>Screen Time</h2>
-        <div className={styles.statsLegend}>
-          <span
-            className={`${styles.statsLegendDot} ${styles.statsLegendDotBlue}`}
-          />
-          <span className={styles.statsLegendLabel}>Global</span>
-          <span
-            className={`${styles.statsLegendDot} ${styles.statsLegendDotYellow}`}
-          />
-          <span className={styles.statsLegendLabel}>You</span>
-        </div>
-      </header>
-
-      <div className={styles.statsGraphArea}>
-        <div className={styles.statsGraphPlaceholder}>
-          Screen time chart coming soon
+  return (
+    <div
+      className={styles.statsGaugeCircleOuter}
+      style={{
+        // Flip the ring so clockwise drawing appears counter-clockwise
+        transform: "scaleX(-1)",
+        background: `conic-gradient(
+          from 0deg,
+          ${c1} 0deg,
+          ${c2} ${fillDeg}deg,
+          #e4e4e4 ${fillDeg}deg,
+          #e4e4e4 360deg
+        )`,
+      }}
+    >
+      <div
+        className={styles.statsGaugeCircleInner}
+        style={{
+          // Flip inner content back so text is normal
+          transform: "scaleX(-1)",
+        }}
+      >
+        <div className={styles.statsGaugeNumber}>{pct}</div>
+        <div className={styles.statsGaugeLabel}>
+          License Exam
+          <br />
+          Readiness
         </div>
       </div>
-    </article>
+    </div>
+  );
+})()}
 
-    {/* Score */}
-    <article className={styles.statsCard}>
-      <header className={styles.statsCardHeader}>
-        <h2 className={styles.statsCardTitle}>Score</h2>
-      </header>
+    </div>
 
-      <div className={styles.statsGraphArea}>
-        <div className={styles.statsGraphPlaceholder}>
-          Score chart coming soon
-        </div>
-      </div>
-    </article>
+    {/* ✅ goes right here */}
+    <div
+  style={{
+    fontSize: 12,
+    color: "rgba(17,24,39,0.65)",
+    textAlign: "center",
+    marginTop: 6,
+    lineHeight: 1.35,
+  }}
+>
+  <div className={styles.statsSummaryMeta}>
+    {tfShort(tfReadiness)} accuracy: {statsReadiness.accuracyPct}% · Tests: {statsReadiness.attemptsCount}
+  </div>
+  <div>
+    Based on {statsReadiness.attemptedTotal} questions answered
+  </div>
+</div>
 
-    {/* Weekly Progress */}
-    <article className={styles.statsCard}>
-      <header className={styles.statsCardHeader}>
-        <h2 className={styles.statsCardTitle}>Weekly Progress</h2>
-        <div className={styles.statsLegend}>
-          <span
-            className={`${styles.statsLegendDot} ${styles.statsLegendDotBlue}`}
-          />
-          <span className={styles.statsLegendLabel}>Global</span>
-          <span
-            className={`${styles.statsLegendDot} ${styles.statsLegendDotYellow}`}
-          />
-          <span className={styles.statsLegendLabel}>You</span>
-        </div>
-      </header>
 
-      <div className={styles.statsGraphArea}>
-        <div className={styles.statsGraphPlaceholder}>
-          Weekly progress chart coming soon
-        </div>
-      </div>
-    </article>
+    <button
+  type="button"
+  className={styles.statsTestButton}
+  onClick={() => router.push("/test/real")}
+>
+  Take a Test ▸
+</button>
+<TimeframeChips value={tfReadiness} onChange={setTfReadiness} align="center" />
 
-    {/* Best Time */}
-    <article className={styles.statsCard}>
-      <header className={styles.statsCardHeader}>
-        <h2 className={styles.statsCardTitle}>Best Time</h2>
-        <div className={styles.statsLegend}>
-          <span
-            className={`${styles.statsLegendDot} ${styles.statsLegendDotBlue}`}
-          />
-          <span className={styles.statsLegendLabel}>Global</span>
-          <span
-            className={`${styles.statsLegendDot} ${styles.statsLegendDotYellow}`}
-          />
-          <span className={styles.statsLegendLabel}>You</span>
-        </div>
-      </header>
-
-      <div className={styles.statsGraphArea}>
-        <div className={styles.statsGraphPlaceholder}>
-          Best time chart coming soon
-        </div>
-      </div>
-    </article>
   </div>
 </section>
 
 
+{/* ==== Big panel + stack of statistic cards ==== */}
+        <section className={styles.statsLongPanel}>
+          <div className={styles.statsBlocks}>
+
+{/* Screen Time */}
+<article className={styles.statsCard}>
+  <header className={styles.statsCardHeader}>
+    <h2 className={styles.statsCardTitle}>Screen Time</h2>
+    {/* remove the empty legend div entirely */}
+  </header>
+
+  <div className={styles.statsGraphArea}>
+<div
+  className={`${styles.statsGraphPlaceholder} ${styles.statsGraphClean}`}
+  style={{ width: "100%" }}
+>
+      {loading ? (
+        "Loading…"
+      ) : (
+        <ScreenTimeChart7
+          data={statsScreen.timeDailySeries}
+          height={120}
+          timedTestMinutesEstimate={Math.round(statsScreen.timeInTimedTestsSec / 60)}
+          streakDays={statsScreen.timeStreakDays}
+        />
+      )}
+    </div>
+  </div>
+</article>
+
+
+{/* Score Card */}
+            <article className={styles.statsCard}>
+              <header className={styles.statsCardHeader}>
+                <h2 className={styles.statsCardTitle}>Score</h2>
+              </header>
+
+              <div className={styles.statsGraphArea}>
+                <div className={styles.statsGraphPlaceholder}>
+                  {loading ? (
+                    'Loading…'
+                  ) : statsScore.attemptsCount === 0 ? (
+                    `No submitted tests yet (${tfLabel(tfScore)}).`
+                  ) : (
+                    <>
+                      Avg: {statsScore.scoreAvg}% · Best: {statsScore.scoreBest}% · Latest: {statsScore.scoreLatest}%
+                      <br />
+                      Based on {statsScore.attemptedTotal} answered questions across {statsScore.attemptsCount} tests
+                    </>
+                  )}
+                </div>
+              </div>
+              <TimeframeChips value={tfScore} onChange={setTfScore} />
+            </article>
+
+{/* Weekly Progress */}
+            <article className={styles.statsCard}>
+              <header className={styles.statsCardHeader}>
+                <h2 className={styles.statsCardTitle}>Weekly Progress</h2>
+                <div className={styles.statsLegend}>
+                  <span className={`${styles.statsLegendDot} ${styles.statsLegendDotBlue}`} />
+                  <span className={styles.statsLegendLabel}>Global</span>
+                  <span className={`${styles.statsLegendDot} ${styles.statsLegendDotYellow}`} />
+                  <span className={styles.statsLegendLabel}>You</span>
+                </div>
+              </header>
+
+              <div className={styles.statsGraphArea}>
+                <div className={styles.statsGraphPlaceholder}>
+  {loading ? (
+    "Loading…"
+  ) : statsWeekly.weeklySeries.length === 0 ? (
+    "No weekly data yet."
+  ) : (
+    <>
+      <div style={{ marginBottom: 8 }}>
+        Best week: <b>{statsWeekly.bestWeekQuestions}</b> questions
+        <br />
+        Consistency streak: <b>{statsWeekly.consistencyStreakWeeks}</b> weeks
+      </div>
+
+      <div style={{ fontSize: 12, opacity: 0.85 }}>
+        {/* Show last 6 weeks (most recent at bottom) */}
+        {statsWeekly.weeklySeries.slice(-6).map((w) => {
+          const label = new Date(w.weekStart).toLocaleDateString(undefined, {
+            month: "short",
+            day: "numeric",
+          });
+
+          return (
+            <div
+              key={w.weekStart}
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                gap: 12,
+                padding: "4px 0",
+              }}
+            >
+              <span>Week of {label}</span>
+              <span>
+                {w.questionsAnswered} answered · {w.testsCompleted} tests · Avg{" "}
+                {w.avgScore}%
+              </span>
+            </div>
+          );
+        })}
+      </div>
+    </>
+  )}
+</div>
+
+              </div>
+              <TimeframeChips value={tfWeekly} onChange={setTfWeekly} />
+            </article>
+
+{/* Best Time */}
+            <article className={styles.statsCard}>
+              <header className={styles.statsCardHeader}>
+                <h2 className={styles.statsCardTitle}>Best Time</h2>
+              </header>
+
+              <div className={styles.statsGraphArea}>
+                <div className={styles.statsGraphPlaceholder}>
+  {loading ? (
+    "Loading…"
+  ) : statsBestTime.attemptsCount === 0 ? (
+    `No submitted tests yet (${tfLabel(tfBestTime)}).`
+  ) : !statsBestTime.bestTimeLabel ? (
+    "Not enough data yet."
+  ) : (
+    <>
+      <div style={{ marginBottom: 8 }}>
+        You perform best: <b>{statsBestTime.bestTimeLabel}</b> (avg{" "}
+        <b>{statsBestTime.bestTimeAvgScore}%</b>)
+      </div>
+
+      <div style={{ fontSize: 12, opacity: 0.85 }}>
+        {statsBestTime.bestTimeSeries.map((b) => (
+          <div
+            key={b.label}
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              gap: 12,
+              padding: "4px 0",
+            }}
+          >
+            <span>{b.label}</span>
+            <span>
+              Avg {b.avgScore}% · {b.attemptsCount} tests
+            </span>
+          </div>
+        ))}
+      </div>
+    </>
+  )}
+</div>
+
+              </div>
+              <TimeframeChips value={tfBestTime} onChange={setTfBestTime} />
+            </article>
+
+
+{/* Topic Mastery */}
+<article className={styles.statsCard}>
+  <header className={styles.statsCardHeader}>
+    <h2 className={styles.statsCardTitle}>Topic Mastery</h2>
+  </header>
+
+  <div className={styles.statsGraphArea}>
+    <div className={styles.statsGraphPlaceholder}>
+      {loading ? (
+        "Loading…"
+      ) : statsTopics.attemptsCount === 0 ? (
+        `No submitted tests yet (${tfLabel(tfTopics)}).`
+      ) : statsTopics.weakTopics.length === 0 ? (
+        "Not enough data yet (need more answers per topic)."
+      ) : (
+        <>
+          <div style={{ marginBottom: 8 }}>
+            Weakest topics (min 10 answered)
+          </div>
+
+          <div style={{ fontSize: 12, opacity: 0.85 }}>
+            {statsTopics.weakTopics.map((t) => (
+              <div
+                key={t.tag}
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  gap: 12,
+                  padding: "4px 0",
+                }}
+              >
+                <span>{labelForTag(t.tag)}</span>
+                <span>
+                  {t.accuracyPct}% · {t.attempted} answered
+                </span>
+              </div>
+            ))}
+          </div>
+
+          <div style={{ marginTop: 10, fontSize: 12, opacity: 0.75 }}>
+            Practice weak topics test: coming soon
+          </div>
+        </>
+      )}
+    </div>
+  </div>
+  <TimeframeChips value={tfTopics} onChange={setTfTopics} />
+</article>
+
+          </div>
+        </section>
+
         {/* Review button at the bottom */}
         <div className={styles.statsReviewWrapper}>
-          <button className={styles.statsReviewButton}>
+          <button
+          type = "button" 
+          className={styles.statsReviewButton}
+          onClick={() => router.push("/my-mistakes")}
+          >
             Review Your Mistakes
-          </button>
+            </button>
         </div>
 
         <BottomNav />
+
       </div>
     </main>
   );
 }
-
 ```
 
 ### app/(premium)/stats/stats.module.css
@@ -4564,7 +4884,7 @@ export default function StatsPage() {
   margin-top: 16px;
   width: 100%;
   border-radius: 32px;
-  padding: 24px 24px 28px;
+  padding: 24px 24px 18px;
   background:
     radial-gradient(circle at top, rgba(255, 255, 255, 0.9), transparent 60%),
     linear-gradient(180deg, #eaf3ff, #f4f7ff);
@@ -4590,7 +4910,7 @@ export default function StatsPage() {
   height: 220px;
   border-radius: 999px;
   background: conic-gradient(
-    from 220deg,
+    from 0deg,
     #70c1ff 0deg,
     #70c1ff 220deg,
     #f7d36b 320deg,
@@ -4849,6 +5169,64 @@ export default function StatsPage() {
   );
   border-color: #d2c79a;
   color: #f9fafb;
+}
+
+/* Make the overall vertical spacing tighter */
+.statsSummaryInner {
+  gap: 10px; /* was 18px */
+}
+
+/* Remove extra button spacing */
+.statsTestButton {
+  margin-top: 0; /* was 8px */
+}
+
+/* The new meta text block */
+.statsSummaryMeta {
+  margin-top: -6px;     /* pulls text closer to the ring */
+  margin-bottom: -2px;  /* pulls the button closer */
+  font-size: 12px;
+  line-height: 1.25;
+  color: rgba(17, 24, 39, 0.65);
+  text-align: center;
+}
+
+
+/* Timeframe chips (per-card) */
+.statsChips {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+  justify-content: flex-start;
+}
+
+.statsChipsCenter {
+  justify-content: center;
+}
+
+.statsChip {
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(17, 24, 39, 0.12);
+  background: rgba(255, 255, 255, 0.7);
+  font-size: 12px;
+  color: #111827;
+  cursor: pointer;
+}
+
+.statsChipActive {
+  background: rgba(17, 24, 39, 0.08);
+}
+
+:root[data-theme="dark"] .statsChip {
+  border-color: rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.06);
+  color: #f9fafb;
+}
+
+:root[data-theme="dark"] .statsChipActive {
+  background: rgba(255, 255, 255, 0.14);
 }
 
 ```
@@ -6740,6 +7118,7 @@ config.autoAddCss = false; // Prevent fontawesome from adding its CSS since we d
 import { EntitlementsProvider } from "@/components/EntitlementsProvider.client";
 import FreeUsageProgressBadge from "@/components/FreeUsageProgressBadge.client";
 import SwipeBack from "@/components/SwipeBack.client";
+import TimeTracker from "@/components/TimeTracker.client";
 
 
 
@@ -6774,12 +7153,12 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} ${nunitoSans.variable} antialiased`}
       >
         <EntitlementsProvider>
-          {/* ✅ mount once, globally => shows on /test/* too */}
           <FreeUsageProgressBadge />
 
           <ThemeProvider>
             <UserProfileProvider>
               <SwipeBack />
+              <TimeTracker />
               {children}
               </UserProfileProvider>
           </ThemeProvider>
@@ -12586,7 +12965,7 @@ export default function EntitlementsDebugBadge() {
 //components/EntitlementsProvider.client.tsx
 "use client";
 
-import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import React, { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { PUBLIC_FLAGS } from "@/lib/flags/public";
 import { FREE_ENTITLEMENTS, type EntitlementSource, type Entitlements } from "@/lib/entitlements/types";
 import { getLocalEntitlements, setLocalEntitlements, clearLocalEntitlements } from "@/lib/entitlements/localStore";
@@ -12598,6 +12977,7 @@ type EntitlementsContextValue = {
   userKey: string; // for now "guest" (we’ll upgrade to real user scoping later)
   entitlements: Entitlements;
   isPremium: boolean;
+  loading: boolean;
   refresh: () => void;
   setEntitlements: (e: Entitlements) => void;
   grantPremium: (source: EntitlementSource, expiresAt?: number) => void;
@@ -12617,24 +12997,47 @@ export function EntitlementsProvider({ children }: { children: React.ReactNode }
     return FREE_ENTITLEMENTS;
   });
 
-  const refresh = useCallback(() => {
+  const [loading, setLoading] = useState<boolean>(true);
+const fetchSeqRef = useRef(0);
+
+
+const refresh = useCallback(() => {
   if (!PUBLIC_FLAGS.enablePremiumGates) {
     setState({ isPremium: true, source: "admin", updatedAt: Date.now() });
+    setLoading(false);
     return;
   }
 
+  // increment request id so older async results can't overwrite newer userKey
+  const seq = ++fetchSeqRef.current;
+
+  setLoading(true);
+
   const keyAtStart = userKey;
 
+  // 1) apply local immediately (fast)
   const local = getLocalEntitlements(keyAtStart) ?? FREE_ENTITLEMENTS;
   setState(local);
 
+  // 2) then fetch remote (authoritative)
   void (async () => {
-    const e = await getEntitlements(keyAtStart);
-    // ignore stale result if userKey changed mid-flight
-    if (keyAtStart !== userKey) return;
-    setState(e);
+    try {
+      const e = await getEntitlements(keyAtStart);
+
+      // ignore stale result if a newer refresh started
+      if (seq !== fetchSeqRef.current) return;
+
+      // optional but recommended: persist remote result so next refresh is instant
+      setLocalEntitlements(keyAtStart, e);
+      setState(e);
+    } catch {
+      // keep local if remote fails
+    } finally {
+      if (seq === fetchSeqRef.current) setLoading(false);
+    }
   })();
 }, [userKey]);
+
 
   const setEntitlements = useCallback((e: Entitlements) => {
     setLocalEntitlements(userKey, e);
@@ -12676,11 +13079,12 @@ useEffect(() => {
     userKey,
     entitlements,
     isPremium: entitlements.isPremium,
+    loading,
     refresh,
     setEntitlements,
     grantPremium,
     revokePremium,
-  }), [userKey, entitlements, refresh, setEntitlements, grantPremium, revokePremium]);
+  }), [userKey, entitlements, loading, refresh, setEntitlements, grantPremium, revokePremium]);
 
   return (
     <EntitlementsContext.Provider value={value}>
@@ -12904,6 +13308,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { PUBLIC_FLAGS } from "@/lib/flags/public";
 import { useEntitlements } from "@/components/EntitlementsProvider.client";
 import { useUsageCap } from "@/lib/freeAccess/useUsageCap";
+import { useAuthStatus } from "@/components/useAuthStatus";
 
 function currentPath(pathname: string, sp: URLSearchParams) {
   const qs = sp.toString();
@@ -12915,32 +13320,41 @@ export default function RequirePremium({ children }: { children: React.ReactNode
   const pathname = usePathname();
   const sp = useSearchParams();
 
-  const { isPremium } = useEntitlements();
+  const { isPremium, loading: entitlementsLoading } = useEntitlements();
   const { isOverCap } = useUsageCap();
 
   // Only redirect on route entry, not mid-session state changes
-  const checkedRef = useRef<string>("");
+// Only prevent *repeat redirects* for the same route
+const redirectedRef = useRef<string>("");
 
-  useEffect(() => {
-    if (!PUBLIC_FLAGS.enablePremiumGates) return;
+const { loading: authLoading } = useAuthStatus();
 
-    const key = `${pathname}?${sp.toString()}`;
-    if (checkedRef.current === key) return;
-    checkedRef.current = key;
 
-    // premium always allowed
-    if (isPremium) return;
+const qs = sp.toString();
 
-    // free user allowed until cap reached
-    if (!isOverCap) return;
+useEffect(() => {
+  if (!PUBLIC_FLAGS.enablePremiumGates) return;
+  if (entitlementsLoading) return;
 
-    const next = encodeURIComponent(currentPath(pathname, sp));
-    router.replace(`/premium?next=${next}`);
-  }, [isPremium, isOverCap, pathname, sp, router]);
+  const key = `${pathname}?${qs}`;
+
+  if (isPremium) return;
+  if (!isOverCap) return;
+
+  if (redirectedRef.current === key) return;
+  redirectedRef.current = key;
+
+  const next = encodeURIComponent(currentPath(pathname, sp));
+  router.replace(`/premium?next=${next}`);
+}, [entitlementsLoading, isPremium, isOverCap, pathname, qs, router]);
+
+
 
   if (!PUBLIC_FLAGS.enablePremiumGates) return <>{children}</>;
+  if (entitlementsLoading) return null;
   if (isPremium) return <>{children}</>;
   if (!isOverCap) return <>{children}</>;
+
 
   return null;
 }
@@ -13257,6 +13671,121 @@ export function useTheme() {
 
 ```
 
+### components/TimeTracker.client.tsx
+```tsx
+"use client";
+
+import { useEffect, useRef } from "react";
+import { usePathname } from "next/navigation";
+import { timeKey, type TimeKind } from "@/lib/stats/timeKeys";
+
+function routeKind(pathname: string): TimeKind | null {
+  if (!pathname) return null;
+
+  // pages we DO NOT track
+  if (pathname.startsWith("/stats") || pathname.startsWith("/profile")) return null;
+
+  // test routes
+  if (
+    pathname.startsWith("/test") ||
+    pathname.startsWith("/real-test") ||
+    pathname.startsWith("/all-test")
+  ) {
+    return "test";
+  }
+
+  // study routes (add more later if you want)
+  if (
+    pathname.startsWith("/all-questions") ||
+    pathname.startsWith("/my-mistakes") ||
+    pathname.startsWith("/bookmarks")
+  ) {
+    return "study";
+  }
+
+  return null;
+}
+
+export default function TimeTracker() {
+  const pathname = usePathname();
+
+  const kindRef = useRef<TimeKind | null>(null);
+  const startedAtRef = useRef<number | null>(null);
+  const intervalRef = useRef<number | null>(null);
+
+  function flush() {
+    if (typeof window === "undefined") return;
+
+    const kind = kindRef.current;
+    const startedAt = startedAtRef.current;
+    if (!kind || !startedAt) return;
+
+    const now = Date.now();
+    const deltaSec = Math.floor((now - startedAt) / 1000);
+
+    // reset start either way so we don't double count
+    startedAtRef.current = now;
+
+    if (deltaSec <= 0) return;
+
+    const k = timeKey(kind, new Date());
+    const prev = Number(window.localStorage.getItem(k) ?? "0");
+    const next = (Number.isFinite(prev) ? prev : 0) + deltaSec;
+
+    try {
+      window.localStorage.setItem(k, String(next));
+    } catch {
+      // ignore quota/private mode
+    }
+  }
+
+  function stop() {
+    flush();
+    kindRef.current = null;
+    startedAtRef.current = null;
+  }
+
+  function start(nextKind: TimeKind | null) {
+    stop();
+    if (!nextKind) return;
+    kindRef.current = nextKind;
+    startedAtRef.current = Date.now();
+  }
+
+  useEffect(() => {
+    // start for this route
+    start(routeKind(pathname));
+
+    // flush every 10s so refresh/close doesn’t lose much
+    intervalRef.current = window.setInterval(() => flush(), 10_000);
+
+    const onVis = () => {
+      if (document.visibilityState === "hidden") {
+        stop();
+      } else {
+        start(routeKind(pathname));
+      }
+    };
+
+    const onBeforeUnload = () => flush();
+
+    document.addEventListener("visibilitychange", onVis);
+    window.addEventListener("beforeunload", onBeforeUnload);
+
+    return () => {
+      if (intervalRef.current) window.clearInterval(intervalRef.current);
+      document.removeEventListener("visibilitychange", onVis);
+      window.removeEventListener("beforeunload", onBeforeUnload);
+      stop();
+    };
+    // re-run on route changes
+  }, [pathname]);
+
+  return null;
+}
+
+```
+
 ### components/UserProfile.tsx
 ```tsx
 'use client';
@@ -13357,6 +13886,494 @@ export function useUserProfile() {
     throw new Error('useUserProfile must be used inside <UserProfileProvider>');
   }
   return ctx;
+}
+
+```
+
+### components/stats/ScreenTimeChart7.client.tsx
+```tsx
+'use client';
+
+import { useMemo, useState } from 'react';
+import styles from './ScreenTimeChart7.module.css';
+
+type DayPoint = {
+  dayStart: number | string;
+  deliberateMin: number;
+  studyMin: number;
+};
+
+
+function dayKeyFromDate(d: Date) {
+  const yyyy = d.getFullYear();
+  const mm = String(d.getMonth() + 1).padStart(2, '0');
+  const dd = String(d.getDate()).padStart(2, '0');
+  return `${yyyy}-${mm}-${dd}`;
+}
+
+function startOfLocalDay(d: Date) {
+  return new Date(d.getFullYear(), d.getMonth(), d.getDate(), 0, 0, 0, 0);
+}
+
+function buildLastNDays(n: number) {
+  const today = startOfLocalDay(new Date());
+  const days: { key: string; date: Date; dayStartISO: string }[] = [];
+  for (let i = n - 1; i >= 0; i--) {
+    const dt = new Date(today);
+    dt.setDate(today.getDate() - i);
+    days.push({ key: dayKeyFromDate(dt), date: dt, dayStartISO: dt.toISOString() });
+  }
+  return days;
+}
+
+function clamp(n: number, min: number, max: number) {
+  return Math.max(min, Math.min(max, n));
+}
+
+/**
+ * Consistency score: 0..100
+ * High if daily totals are even (low variance).
+ * Uses coefficient of variation (std/mean) -> mapped to score.
+ */
+function consistencyScore(totals: number[]) {
+  const mean = totals.reduce((a, b) => a + b, 0) / Math.max(1, totals.length);
+  if (mean <= 0) return 0;
+  const variance =
+    totals.reduce((acc, v) => acc + Math.pow(v - mean, 2), 0) / Math.max(1, totals.length);
+  const std = Math.sqrt(variance);
+  const cv = std / mean; // 0 = perfectly consistent
+
+  // Map CV to score: CV 0 => 100, CV >= 1.2 => ~0
+  const score = Math.round(100 * (1 - clamp(cv / 1.2, 0, 1)));
+  return clamp(score, 0, 100);
+}
+
+export default function ScreenTimeChart7({
+  data,
+  height = 80,
+  timedTestMinutesEstimate,
+  streakDays,
+}: {
+  data: DayPoint[];
+  height?: number;
+  timedTestMinutesEstimate?: number; // optional
+  streakDays?: number;              // optional (you already compute)
+}) {
+  const [hoverIdx, setHoverIdx] = useState<number | null>(null);
+
+  const model = useMemo(() => {
+    const daySlots = buildLastNDays(7);
+
+    // normalize incoming data by local day key
+    const byKey = new Map<string, DayPoint>();
+    for (const d of data || []) {
+      const k = dayKeyFromDate(new Date(d.dayStart));
+      byKey.set(k, d);
+    }
+
+    const points = daySlots.map((slot) => {
+      const found = byKey.get(slot.key);
+      const deliberateMin = found?.deliberateMin ?? 0;
+      const studyMin = found?.studyMin ?? 0;
+      const total = deliberateMin + studyMin;
+
+      return {
+        key: slot.key,
+        dayStartISO: slot.dayStartISO,
+        date: slot.date,
+        deliberateMin,
+        studyMin,
+        total,
+      };
+    });
+
+    const totals = points.map((p) => p.total);
+    const maxTotal = Math.max(1, ...totals);
+    const weekTotal = totals.reduce((a, b) => a + b, 0);
+    const avgTotal = weekTotal / 7;
+
+    const bestTotal = Math.max(...totals);
+    const bestIdx = bestTotal > 0 ? totals.indexOf(bestTotal) : -1;
+
+    const todayIdx = points.length - 1;
+    const consScore = consistencyScore(totals);
+
+    // Tooltip percent-of-week
+    const weekTotalSafe = Math.max(1, weekTotal);
+
+    // Optional compare overlay: only if we have 14+ days of real data
+    // (We keep it gated; currently your computeStats provides 7.)
+    const hasCompare = (data?.length ?? 0) >= 14;
+
+    return {
+      points,
+      maxTotal,
+      weekTotal,
+      avgTotal,
+      bestIdx,
+      todayIdx,
+      consScore,
+      weekTotalSafe,
+      hasCompare,
+    };
+  }, [data]);
+
+  const avgLineY = Math.round((1 - model.avgTotal / model.maxTotal) * height);
+
+  const weekTestTotal = model.points.reduce((a, p) => a + p.deliberateMin, 0);
+  const weekStudyTotal = model.points.reduce((a, p) => a + p.studyMin, 0);
+
+  const bestPoint = model.bestIdx >= 0 ? model.points[model.bestIdx] : null;
+  const bestLabel = bestPoint
+    ? bestPoint.date.toLocaleDateString(undefined, { weekday: 'short' })
+    : '—';
+
+  // Confidence triggers
+  const lowConfidenceStudy = weekStudyTotal === 0;
+  const lowConfidenceTimed = (timedTestMinutesEstimate ?? 0) > 0 && (timedTestMinutesEstimate ?? 0) < 10;
+  const tooLittleOverall = model.weekTotal < 15;
+
+  const confidenceNote =
+    tooLittleOverall
+      ? `Low confidence: only ${model.weekTotal} minutes logged this week.`
+      : lowConfidenceStudy
+      ? 'Low confidence: study tracking not enabled yet (showing 0m study).'
+      : lowConfidenceTimed
+      ? `Low confidence: only ${timedTestMinutesEstimate} timed-test minutes detected.`
+      : null;
+
+  const hover = hoverIdx != null ? model.points[hoverIdx] : null;
+
+  return (
+    <div className={styles.wrap}>
+      {/* Legend */}
+      <div className={styles.legendRow}>
+        <span className={styles.legendItem}>
+          <span className={`${styles.dot} ${styles.dotTest}`} /> Test
+        </span>
+        <span className={styles.legendItem}>
+          <span className={`${styles.dot} ${styles.dotStudy}`} /> Study
+        </span>
+        <span className={styles.legendItem}>
+          <span className={`${styles.dot} ${styles.dotTotal}`} /> Total
+        </span>
+        <span className={styles.legendItem}>
+          <span className={`${styles.dot} ${styles.dotAvg}`} /> 7D avg
+        </span>
+      </div>
+
+      {/* Summary row (footer summary under chart, but we can also keep it above; this version puts it above the chart) */}
+      <div className={styles.summaryRow}>
+  <div className={styles.summaryTop}>
+    <b>7D total</b>: {weekTestTotal}m test · {weekStudyTotal}m study
+  </div>
+
+  <div className={styles.summaryGrid}>
+    <span><b>Avg/day</b>: {Math.round(model.avgTotal)}m</span>
+    <span><b>Best</b>: {bestLabel} ({bestPoint?.total ?? 0}m)</span>
+    <span><b>Streak</b>: {streakDays ?? 0}d</span>
+  </div>
+</div>
+
+
+      {/* Chart */}
+      <div className={styles.chart} style={{ height }}>
+        {/* Avg line */}
+        <div className={styles.avgLine} style={{ top: avgLineY }} />
+        <div className={styles.avgLabel} style={{ top: clamp(avgLineY - 12, 0, height - 14) }}>
+          7D avg
+        </div>
+
+        <div className={styles.cols}>
+          {model.points.map((p, idx) => {
+            const ghostH = Math.round((p.total / model.maxTotal) * height);
+
+            // Ensure tiny values still visible
+            const testH = p.deliberateMin > 0 ? Math.max(2, Math.round((p.deliberateMin / model.maxTotal) * height)) : 0;
+            const studyH = p.studyMin > 0 ? Math.max(2, Math.round((p.studyMin / model.maxTotal) * height)) : 0;
+
+            const isBest = idx === model.bestIdx && p.total > 0;
+            const isToday = idx === model.todayIdx;
+
+            const dayLabel = p.date.toLocaleDateString(undefined, { weekday: 'short' });
+            const pctOfWeek = Math.round((p.total / model.weekTotalSafe) * 100);
+
+            const colClass = [
+              styles.col,
+              isToday ? styles.today : '',
+              isBest ? styles.best : '',
+              p.total === 0 ? styles.zero : '',
+            ].filter(Boolean).join(' ');
+
+            return (
+              <div
+                key={p.key}
+                className={colClass}
+                onMouseEnter={() => setHoverIdx(idx)}
+                onMouseLeave={() => setHoverIdx(null)}
+              >
+                <div className={styles.barArea}>
+                  {/* Ghost total */}
+                  {p.total > 0 ? (
+                    <div className={styles.ghost} style={{ height: ghostH }} aria-hidden="true" />
+                  ) : (
+                    <div className={styles.zeroOutline} aria-hidden="true" />
+                  )}
+
+                  {/* Grouped bars (NOT stacked) */}
+                  <div className={styles.group}>
+                    <div className={styles.test} style={{ height: testH }} />
+                    <div className={styles.study} style={{ height: studyH }} />
+                  </div>
+
+                  {/* Best badge */}
+                  {isBest ? <div className={styles.badge} title="Best day">★</div> : null}
+
+                  {/* Tooltip */}
+                  {hoverIdx === idx ? (
+                    <div className={styles.tooltip} role="tooltip">
+                      <div className={styles.tipTitle}>
+                        {isToday ? 'Today' : dayLabel}
+                      </div>
+                      <div className={styles.tipBody}>
+                        <div>Test: <b>{p.deliberateMin}m</b></div>
+                        <div>Study: <b>{p.studyMin}m</b></div>
+                        <div>Total: <b>{p.total}m</b> · {pctOfWeek}% of week</div>
+                      </div>
+                    </div>
+                  ) : null}
+                </div>
+
+                <div className={styles.day}>
+                  {isToday ? 'Today' : dayLabel.slice(0, 3)}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Footer micro-metrics */}
+      <div className={styles.footerRow}>
+        <span><b>Consistency</b>: {model.consScore}/100</span>
+        {/* Compare overlay gated: only show when we have 14+ days. */}
+        {model.hasCompare ? (
+  <span className={styles.muted}>Compare overlay: enabled</span>
+) : null}
+
+      </div>
+
+      {/* Confidence note */}
+      {confidenceNote ? (
+        <div className={styles.confidenceNote}>{confidenceNote}</div>
+      ) : null}
+    </div>
+  );
+}
+
+```
+
+### components/stats/ScreenTimeChart7.module.css
+```css
+.wrap { width: 100%; }
+
+.legendRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 10px;
+  font-size: 12px;
+  opacity: 0.85;
+}
+.legendItem { display: inline-flex; align-items: center; gap: 6px; }
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  display: inline-block;
+}
+.dotTest { background: rgba(255, 197, 66, 0.95); }
+.dotStudy { background: rgba(43, 124, 175, 0.90); }
+.dotTotal { background: rgba(17, 24, 39, 0.18); }
+.dotAvg { background: rgba(17, 24, 39, 0.45); }
+
+.summaryRow {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 10px;
+  font-size: 12px;
+  opacity: 0.9;
+}
+
+.summaryTop {
+  white-space: nowrap;
+}
+
+.summaryGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px 12px;
+}
+
+.summaryGrid span {
+  white-space: nowrap;
+}
+
+
+.chart {
+  position: relative;
+  width: 100%;
+}
+
+.cols {
+  height: 100%;
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 12px;
+  align-items: end;
+}
+
+.col { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+
+.barArea {
+  position: relative;
+  width: 100%;
+  max-width: 30px;
+  height: 100%;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.ghost {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  border-radius: 12px;
+  background: rgba(17, 24, 39, 0.08);
+}
+
+.zeroOutline {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 10px;
+  border-radius: 12px;
+  border: 1px dashed rgba(17, 24, 39, 0.18);
+  background: transparent;
+}
+
+.group {
+  position: relative;
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+  align-items: end;
+  z-index: 1;
+}
+
+.test, .study {
+  width: 100%;
+  border-radius: 9px;
+  min-height: 0px;
+}
+
+.test { background: rgba(255, 197, 66, 0.95); }
+.study { background: rgba(43, 124, 175, 0.90); }
+
+.today .barArea {
+  outline: 2px solid rgba(43, 124, 175, 0.25);
+  border-radius: 14px;
+  padding: 2px;
+}
+
+.best .ghost {
+  background: rgba(255, 197, 66, 0.12);
+}
+
+.badge {
+  position: absolute;
+  top: -10px;
+  font-size: 12px;
+  opacity: 0.9;
+  z-index: 2;
+}
+
+.day { font-size: 11px; opacity: 0.75; }
+.today .day { opacity: 1; font-weight: 600; }
+
+.avgLine {
+  position: absolute;
+  left: 0;
+  right: 0;
+  border-top: 1px dashed rgba(17, 24, 39, 0.35);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.avgLabel {
+  position: absolute;
+  right: 0;
+  font-size: 10px;
+  opacity: 0.65;
+  pointer-events: none;
+}
+
+.tooltip {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translate(-50%, -8px);
+  background: rgba(17, 24, 39, 0.92);
+  color: white;
+  border-radius: 10px;
+  padding: 8px 10px;
+  font-size: 11px;
+  line-height: 1.25;
+  width: 160px;
+  z-index: 5;
+  box-shadow: 0 10px 28px rgba(0,0,0,0.18);
+}
+
+.tipTitle { font-weight: 700; margin-bottom: 6px; }
+.tipBody { opacity: 0.95; display: grid; gap: 3px; }
+
+.footerRow {
+  margin-top: 10px;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 12px;
+  opacity: 0.85;
+}
+
+.muted { opacity: 0.6; }
+
+.confidenceNote {
+  margin-top: 8px;
+  font-size: 12px;
+  opacity: 0.7;
+}
+
+.zero .test,
+.zero .study {
+  opacity: 0.25;
+}
+
+/* Use this to remove the debug/placeholder look for finished charts */
+.statsGraphClean {
+  border: none;
+  background: transparent;
+  padding: 0;
+  min-height: auto;
+}
+
+.chart {
+  position: relative;
+  width: 100%;
+  padding-bottom: 6px;
 }
 
 ```
@@ -14229,6 +15246,55 @@ export function useUsageCap(userKeyOverride?: string) {
 
 ```
 
+### lib/grading/isAnswerCorrect.ts
+```tsx
+// lib/grading/isAnswerCorrect.ts
+import type { Question } from '@/lib/qbank/types';
+
+function normalizeRowChoice(v: string | null | undefined): 'R' | 'W' | null {
+  if (!v) return null;
+  const t = v.trim().toLowerCase();
+  if (t === 'r' || t === 'right') return 'R';
+  if (t === 'w' || t === 'wrong') return 'W';
+  return null;
+}
+
+export function isAnswerCorrect(question: Question, chosenKey: string | null | undefined): boolean {
+  if (!chosenKey) return false;
+
+  // ROW
+  if (question.type === 'ROW') {
+    const chosen = normalizeRowChoice(chosenKey);
+    const expected = normalizeRowChoice(question.correctRow ?? null);
+    return !!(chosen && expected && chosen === expected);
+  }
+
+  // MCQ
+  if (question.type === 'MCQ') {
+    const expected = question.correctOptionId;
+    if (!expected || !question.options?.length) return false;
+
+    const idx = question.options.findIndex((opt, i) => {
+      const letter = String.fromCharCode(65 + i); // A,B,C...
+      const key = opt.originalKey ?? letter;
+      return chosenKey === key || chosenKey === letter || chosenKey === opt.id;
+    });
+
+    if (idx < 0) return false;
+
+    const opt = question.options[idx];
+    const letter = String.fromCharCode(65 + idx);
+    const key = opt.originalKey ?? letter;
+
+    // expected might be option id OR key/letter depending on dataset format
+    return expected === opt.id || expected === key || expected === letter;
+  }
+
+  return false;
+}
+
+```
+
 ### lib/identity/userKey.ts
 ```tsx
 // lib/identity/userKey.ts
@@ -14725,6 +15791,8 @@ export const DATASETS: Record<DatasetId, DatasetConfig> = {
     patchUrl: '/qbank/2023-test1/tags.patch.json', // ✅ new
   },
 } as const;
+
+export const DEFAULT_DATASET_ID: DatasetId = 'cn-2023-test1';
 
 ```
 
@@ -15877,6 +16945,485 @@ export const ROUTES = {
   rapidTest: "/test/rapid",
   globalCommonMistakes: "/global-common-mistakes",
 } as const;
+
+```
+
+### lib/stats/computeStats.ts
+```tsx
+// lib/stats/computeStats.ts
+import type { Question } from "@/lib/qbank/types";
+import { deriveTopicSubtags } from "@/lib/qbank/deriveTopicSubtags";
+import { timeKey } from "@/lib/stats/timeKeys";
+
+type AnswerRecordLike = { choice: string; answeredAt?: number };
+
+export type AttemptLike = {
+  status: "submitted" | string;
+  submittedAt?: number;
+  lastActiveAt?: number;
+  createdAt?: number;
+
+  modeKey: string;
+
+  questionIds: string[];
+  answersByQid: Record<string, AnswerRecordLike>;
+
+  timeLimitSec?: number;
+  remainingSec?: number;
+};
+
+export type StatsFilters = {
+  timeframeDays: 7 | 30 | "all";
+  includeModeKeys: string[]; // e.g. ["real-test","half-test","rapid-fire-test"]
+};
+
+export type StatsVM = {
+  attemptsCount: number;
+
+  // Grading totals (timeframe+mode filtered)
+  attemptedTotal: number;
+  correctTotal: number;
+
+  accuracy: number; // 0..1
+  accuracyPct: number; // 0..100
+
+  // Score (exam-style)
+  scoreAvg: number; // 0..100
+  scoreBest: number; // 0..100
+  scoreLatest: number; // 0..100
+
+  // Simple readiness (v1)
+  readinessPct: number; // 0..100
+
+  // Optional (timed-test estimate only)
+  timeInTimedTestsSec: number;
+
+  // Minimal series we can chart later
+  scoreSeries: Array<{ t: number; scorePct: number }>;
+
+    // Weekly Progress (Consistency)
+  weeklySeries: Array<{
+    weekStart: number;          // ms timestamp (Mon 00:00 local)
+    testsCompleted: number;
+    questionsAnswered: number;  // answered count (attempted)
+    avgScore: number;           // 0..100
+  }>;
+
+    // Best Time (Performance by time-of-day)
+  bestTimeSeries: Array<{
+    label: string;        // e.g. "6–9"
+    avgScore: number;     // 0..100
+    attemptsCount: number;
+  }>;
+
+  bestTimeLabel: string | null;   // e.g. "9–12"
+  bestTimeAvgScore: number;       // 0..100
+
+
+  bestWeekQuestions: number;        // max questionsAnswered in a week
+  consistencyStreakWeeks: number;   // current streak (consecutive weeks with >0)
+
+    // Topic Mastery (Weakest topics)
+  weakTopics: Array<{
+    tag: string;         // e.g. "road-safety:accidents"
+    attempted: number;   // answered count
+    correct: number;
+    accuracyPct: number; // 0..100
+  }>;
+
+  timeDailySeries: Array<{
+  dayStart: number;      // local midnight ms
+  deliberateMin: number; // test minutes
+  studyMin: number;      // study minutes
+  totalMin: number;
+}>;
+
+timeThisWeekMin: number;
+timeBestDayMin: number;
+timeStreakDays: number;
+deliberateThisWeekMin: number;
+studyThisWeekMin: number;
+
+
+};
+
+function clamp01(n: number) {
+  return Math.max(0, Math.min(1, n));
+}
+
+function median(nums: number[]) {
+  if (nums.length === 0) return 0;
+  const a = [...nums].sort((x, y) => x - y);
+  const mid = Math.floor(a.length / 2);
+  return a.length % 2 ? a[mid] : (a[mid - 1] + a[mid]) / 2;
+}
+
+function normalizeRowChoice(v: string | null | undefined): "R" | "W" | null {
+  if (!v) return null;
+  const t = v.trim().toLowerCase();
+  if (t === "r" || t === "right") return "R";
+  if (t === "w" || t === "wrong") return "W";
+  return null;
+}
+
+/**
+ * Robust correctness check that matches what you’re effectively doing in Mistakes:
+ * - MCQ: user choice can be "A"/"B", originalKey, or option id
+ * - correctOptionId can be option id OR key/letter depending on dataset normalization
+ * - ROW: "R"/"W" (also accepts "Right"/"Wrong")
+ */
+function isAnswerCorrect(question: Question, chosenRaw: string | null | undefined): boolean {
+  if (!chosenRaw) return false;
+
+  if (question.type === "ROW") {
+    const chosen = normalizeRowChoice(chosenRaw);
+    const expected = normalizeRowChoice((question as any).correctRow ?? null);
+    return !!(chosen && expected && chosen === expected);
+  }
+
+  // MCQ
+  if (question.type !== "MCQ") return false;
+  const expected = (question as any).correctOptionId as string | undefined;
+  const options = (question as any).options as Array<{ id: string; originalKey?: string | null }> | undefined;
+
+  if (!expected || !options?.length) return false;
+
+  // Find the option the user chose
+  const idx = options.findIndex((opt, i) => {
+    const letter = String.fromCharCode(65 + i); // A,B,C...
+    const key = opt.originalKey ?? letter;
+    return chosenRaw === key || chosenRaw === letter || chosenRaw === opt.id;
+  });
+
+  if (idx < 0) return false;
+
+  const opt = options[idx];
+  const letter = String.fromCharCode(65 + idx);
+  const key = opt.originalKey ?? letter;
+
+  return expected === opt.id || expected === key || expected === letter;
+}
+
+function getAttemptTime(a: AttemptLike): number {
+  return a.submittedAt ?? a.lastActiveAt ?? a.createdAt ?? 0;
+}
+
+function inTimeframe(t: number, timeframeDays: StatsFilters["timeframeDays"]) {
+  if (timeframeDays === "all") return true;
+  const now = Date.now();
+  const ms = timeframeDays * 24 * 60 * 60 * 1000;
+  return t >= now - ms;
+}
+
+function startOfWeekMs(t: number) {
+  const d = new Date(t);
+  d.setHours(0, 0, 0, 0);
+  const day = d.getDay(); // 0=Sun, 1=Mon...
+  const diffToMonday = (day + 6) % 7; // Mon->0, Tue->1, Sun->6
+  d.setDate(d.getDate() - diffToMonday);
+  return d.getTime();
+}
+
+
+export function computeStats(params: {
+  attempts: AttemptLike[];
+  questions: Question[];
+  filters: StatsFilters;
+}): StatsVM {
+  const { attempts, questions, filters } = params;
+
+  const questionsById = new Map<string, Question>();
+  for (const q of questions) questionsById.set(q.id, q);
+
+  const allowedModes = new Set(filters.includeModeKeys);
+
+  const filtered = attempts
+    .filter((a) => a.status === "submitted")
+    .filter((a) => allowedModes.has(a.modeKey))
+    .filter((a) => inTimeframe(getAttemptTime(a), filters.timeframeDays))
+    .sort((a, b) => getAttemptTime(b) - getAttemptTime(a)); // newest first
+
+  let attemptedTotal = 0;
+  let correctTotal = 0;
+
+  let timeInTimedTestsSec = 0;
+
+  const scoreSeries: Array<{ t: number; scorePct: number }> = [];
+  const scoreList: number[] = [];
+
+  const weekly = new Map<
+    number,
+    { tests: number; answered: number; scoreSum: number; scoreCount: number }
+  >();
+
+  // Best Time buckets (local hour of submittedAt)
+  const TIME_BUCKETS = [
+    { label: "6–9", start: 6, end: 9 },
+    { label: "9–12", start: 9, end: 12 },
+    { label: "12–15", start: 12, end: 15 },
+    { label: "15–18", start: 15, end: 18 },
+    { label: "18–21", start: 18, end: 21 },
+    { label: "21–24", start: 21, end: 24 },
+    { label: "0–6", start: 0, end: 6 },
+  ] as const;
+
+  const timeBuckets = TIME_BUCKETS.map((b) => ({
+    ...b,
+    scoreSum: 0,
+    count: 0,
+  }));
+
+  // Topic Mastery
+  const mastery = new Map<string, { attempted: number; correct: number }>();
+  const MIN_TOPIC_ATTEMPTED = 10;
+
+  for (const a of filtered) {
+    const t = getAttemptTime(a);
+
+    let attempted = 0;
+    let correct = 0;
+
+    for (const [qid, rec] of Object.entries(a.answersByQid ?? {})) {
+      const question = questionsById.get(qid);
+      if (!question) continue;
+
+      const chosen = rec?.choice ?? null;
+      if (!chosen) continue;
+
+      const answerCorrect = isAnswerCorrect(question, chosen);
+
+      attempted++;
+      if (answerCorrect) correct++;
+
+      // Topic mastery (subtopics only)
+      const tags = deriveTopicSubtags(question) ?? [];
+      const subtopics = tags.filter(
+        (tag) => tag.includes(":") && !tag.endsWith(":all")
+      );
+
+      for (const tag of subtopics) {
+        const m = mastery.get(tag) ?? { attempted: 0, correct: 0 };
+        m.attempted += 1;
+        if (answerCorrect) m.correct += 1;
+        mastery.set(tag, m);
+      }
+    }
+
+    attemptedTotal += attempted;
+    correctTotal += correct;
+
+    const denom = Math.max(1, a.questionIds?.length ?? 0);
+    const scorePct = Math.round((100 * correct) / denom);
+
+    scoreSeries.push({ t, scorePct });
+    scoreList.push(scorePct);
+
+    // Best Time bucket update
+    const hour = new Date(t).getHours();
+    const bi = timeBuckets.findIndex((b) => hour >= b.start && hour < b.end);
+    if (bi >= 0) {
+      timeBuckets[bi].scoreSum += scorePct;
+      timeBuckets[bi].count += 1;
+    }
+
+    // Weekly bucket
+    const ws = startOfWeekMs(t);
+    const w =
+      weekly.get(ws) ?? { tests: 0, answered: 0, scoreSum: 0, scoreCount: 0 };
+    w.tests += 1;
+    w.answered += attempted;
+    w.scoreSum += scorePct;
+    w.scoreCount += 1;
+    weekly.set(ws, w);
+
+    // timed-test estimate (optional)
+    const tls = typeof a.timeLimitSec === "number" ? a.timeLimitSec : 0;
+    const rem = typeof a.remainingSec === "number" ? a.remainingSec : 0;
+    if (tls > 0) timeInTimedTestsSec += Math.max(0, tls - rem);
+  }
+
+  // Best Time outputs
+  const bestTimeSeries = timeBuckets.map((b) => ({
+    label: b.label,
+    avgScore: b.count ? Math.round(b.scoreSum / b.count) : 0,
+    attemptsCount: b.count,
+  }));
+
+  let bestTimeLabel: string | null = null;
+  let bestTimeAvgScore = 0;
+
+  for (const b of bestTimeSeries) {
+    if (b.attemptsCount <= 0) continue;
+    if (b.avgScore > bestTimeAvgScore) {
+      bestTimeAvgScore = b.avgScore;
+      bestTimeLabel = b.label;
+    }
+  }
+
+  // Topic Mastery outputs
+  const weakTopics = Array.from(mastery.entries())
+    .map(([tag, m]) => ({
+      tag,
+      attempted: m.attempted,
+      correct: m.correct,
+      accuracyPct: m.attempted ? Math.round((100 * m.correct) / m.attempted) : 0,
+    }))
+    .filter((x) => x.attempted >= MIN_TOPIC_ATTEMPTED)
+    .sort((a, b) => a.accuracyPct - b.accuracyPct || b.attempted - a.attempted)
+    .slice(0, 5);
+
+  // Score + readiness
+  scoreSeries.sort((x, y) => x.t - y.t);
+
+  const accuracy = attemptedTotal > 0 ? correctTotal / attemptedTotal : 0;
+  const accuracyPct = Math.round(accuracy * 100);
+
+  const scoreAvg = scoreList.length
+    ? Math.round(scoreList.reduce((s, n) => s + n, 0) / scoreList.length)
+    : 0;
+  const scoreBest = scoreList.length ? Math.max(...scoreList) : 0;
+  const scoreLatest = filtered.length ? scoreList[0] : 0;
+
+  const medianScore01 = clamp01(median(scoreList) / 100);
+  const readinessPct = Math.round(
+    100 * (0.7 * clamp01(accuracy) + 0.3 * medianScore01)
+  );
+
+  // Weekly outputs
+  const weeklySeries = Array.from(weekly.entries())
+    .map(([weekStart, w]) => ({
+      weekStart,
+      testsCompleted: w.tests,
+      questionsAnswered: w.answered,
+      avgScore: w.scoreCount ? Math.round(w.scoreSum / w.scoreCount) : 0,
+    }))
+    .sort((a, b) => a.weekStart - b.weekStart);
+
+  const bestWeekQuestions = weeklySeries.length
+    ? Math.max(...weeklySeries.map((x) => x.questionsAnswered))
+    : 0;
+
+  let consistencyStreakWeeks = 0;
+  let cursor = startOfWeekMs(Date.now());
+  const WEEK_MS = 7 * 24 * 60 * 60 * 1000;
+
+  while (true) {
+    const w = weekly.get(cursor);
+    if (!w || w.answered <= 0) break;
+    consistencyStreakWeeks += 1;
+    cursor -= WEEK_MS;
+  }
+
+  function readDailySeconds(kind: "test" | "study", ymd: string) {
+  if (typeof window === "undefined") return 0;
+  try {
+    const raw = window.localStorage.getItem(timeKey(kind, ymd));
+    const n = Number(raw ?? "0");
+    return Number.isFinite(n) ? n : 0;
+  } catch {
+    return 0;
+  }
+}
+
+function startOfDayMsLocal(d: Date) {
+  const x = new Date(d);
+  x.setHours(0, 0, 0, 0);
+  return x.getTime();
+}
+
+const DAYS = 7;
+const today = new Date();
+today.setHours(0, 0, 0, 0);
+
+const timeDailySeries = [];
+for (let i = DAYS - 1; i >= 0; i--) {
+  const d = new Date(today);
+  d.setDate(d.getDate() - i);
+
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  const ymd = `${y}-${m}-${day}`;
+
+  const testSec = readDailySeconds("test", ymd);
+  const studySec = readDailySeconds("study", ymd);
+
+  const deliberateMin = Math.round(testSec / 60);
+  const studyMin = Math.round(studySec / 60);
+
+  timeDailySeries.push({
+    dayStart: startOfDayMsLocal(d),
+    deliberateMin,
+    studyMin,
+    totalMin: deliberateMin + studyMin,
+  });
+}
+
+const deliberateThisWeekMin = timeDailySeries.reduce((s, d) => s + d.deliberateMin, 0);
+const studyThisWeekMin = timeDailySeries.reduce((s, d) => s + d.studyMin, 0);
+const timeThisWeekMin = deliberateThisWeekMin + studyThisWeekMin;
+
+const timeBestDayMin = timeDailySeries.length
+  ? Math.max(...timeDailySeries.map((d) => d.totalMin))
+  : 0;
+
+// streak: consecutive days ending today with totalMin > 0
+let timeStreakDays = 0;
+for (let i = timeDailySeries.length - 1; i >= 0; i--) {
+  if (timeDailySeries[i].totalMin <= 0) break;
+  timeStreakDays += 1;
+}
+
+
+  return {
+    attemptsCount: filtered.length,
+    attemptedTotal,
+    correctTotal,
+    accuracy,
+    accuracyPct,
+    scoreAvg,
+    scoreBest,
+    scoreLatest,
+    readinessPct,
+    timeInTimedTestsSec,
+    scoreSeries,
+    weeklySeries,
+    bestWeekQuestions,
+    consistencyStreakWeeks,
+    bestTimeSeries,
+    bestTimeLabel,
+    bestTimeAvgScore,
+    weakTopics,
+    timeDailySeries,
+    timeThisWeekMin,
+    timeBestDayMin,
+    timeStreakDays,
+    deliberateThisWeekMin,
+    studyThisWeekMin,
+  };
+}
+
+```
+
+### lib/stats/timeKeys.ts
+```tsx
+export type TimeKind = "test" | "study";
+
+const PREFIX = "expatise:time";
+
+function pad2(n: number) {
+  return n < 10 ? `0${n}` : `${n}`;
+}
+
+// Local date, NOT UTC
+export function ymdLocal(d: Date) {
+  return `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())}`;
+}
+
+export function timeKey(kind: TimeKind, day: Date | string) {
+  const ymd = typeof day === "string" ? day : ymdLocal(day);
+  return `${PREFIX}:${kind}:${ymd}`;
+}
 
 ```
 
@@ -30221,7 +31768,7 @@ export const config = {
       "id": "q0153",
       "number": 153,
       "type": "mcq",
-      "prompt": "When driving a vehicle through an flooded road with pedestrians on both sides, the driver should ______.",
+      "prompt": "When driving a vehicle through a flooded road with pedestrians on both sides, the driver should ______.",
       "options": [
         {
           "id": "q0153_o1",

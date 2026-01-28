@@ -23,10 +23,16 @@ import { ROUTES } from '@/lib/routes';
 
 import { labelForTag } from '@/lib/qbank/tagTaxonomy';
 
+import ScreenTimeChart7 from '@/components/stats/ScreenTimeChart7.client';
+
 const datasetId: DatasetId = 'cn-2023-test1';
 
 // Exclude Practice from Stats (per your decision)
-const INCLUDE_MODE_KEYS = ['real-test', 'half-test', 'rapid-fire-test'];
+type Timeframe = 7 | 30 | "all";
+const TIMEFRAMES: Timeframe[] = [7, 30, "all"];
+
+const REAL_ONLY_MODE_KEYS = ["real-test"];
+const LEARNING_MODE_KEYS = ["real-test", "half-test", "rapid-fire-test"]; // all non-practice modes
 
 export default function StatsPage() {
   const userKey = useUserKey();
@@ -36,17 +42,50 @@ export default function StatsPage() {
   const [attempts, setAttempts] = useState<TestAttemptV1[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const [timeframeDays, setTimeframeDays] = useState<7 | 30 | "all">(30);
-const [modeKeys, setModeKeys] = useState<string[]>(INCLUDE_MODE_KEYS);
+  const [tfReadiness, setTfReadiness] = useState<Timeframe>(7);
+  const [tfScore, setTfScore] = useState<Timeframe>(30);
+  const [tfWeekly, setTfWeekly] = useState<Timeframe>(30);
+  const [tfBestTime, setTfBestTime] = useState<Timeframe>(30);
+  const [tfTopics, setTfTopics] = useState<Timeframe>(30);
 
-const timeframeLabel =
-  timeframeDays === "all" ? "all time" : `last ${timeframeDays} days`;
+function tfShort(t: Timeframe) {
+  return t === "all" ? "All" : `${t}D`;
+}
+function tfLabel(t: Timeframe) {
+  return t === "all" ? "all time" : `last ${t} days`;
+}
 
-const MODE_OPTIONS = [
-  { key: "real-test", label: "Real" },
-  { key: "half-test", label: "Half" },
-  { key: "rapid-fire-test", label: "Rapid" },
-] as const;
+function TimeframeChips(props: {
+  value: Timeframe;
+  onChange: (v: Timeframe) => void;
+  align?: "left" | "center";
+}) {
+  const { value, onChange, align = "left" } = props;
+  return (
+    <div
+      className={`${styles.statsChips} ${
+        align === "center" ? styles.statsChipsCenter : ""
+      }`}
+    >
+      {TIMEFRAMES.map((t) => {
+        const active = value === t;
+        return (
+          <button
+            key={String(t)}
+            type="button"
+            onClick={() => onChange(t)}
+            className={`${styles.statsChip} ${
+              active ? styles.statsChipActive : ""
+            }`}
+          >
+            {tfShort(t)}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
 
 
   // Load dataset questions (needed to grade answers)
@@ -75,27 +114,55 @@ const MODE_OPTIONS = [
   }, [userKey, datasetId]);
 
   // Compute stats (default: last 30 days for now; we’ll add filters later)
-  const stats7 = useMemo(() => {
+  const statsReadiness = useMemo(() => {
   return computeStats({
     attempts,
     questions,
-    filters: {
-      timeframeDays: 7,
-      includeModeKeys: INCLUDE_MODE_KEYS,
-    },
+    filters: { timeframeDays: tfReadiness, includeModeKeys: REAL_ONLY_MODE_KEYS },
   });
-}, [attempts, questions, modeKeys]);
+}, [attempts, questions, tfReadiness]);
 
-const stats = useMemo(() => {
+const statsScreen = useMemo(() => {
   return computeStats({
     attempts,
     questions,
-    filters: {
-      timeframeDays,
-      includeModeKeys: modeKeys,
-    },
+    filters: { timeframeDays: 7, includeModeKeys: LEARNING_MODE_KEYS },
   });
-}, [attempts, questions, timeframeDays, modeKeys]);
+}, [attempts, questions]);
+
+
+const statsScore = useMemo(() => {
+  return computeStats({
+    attempts,
+    questions,
+    filters: { timeframeDays: tfScore, includeModeKeys: REAL_ONLY_MODE_KEYS },
+  });
+}, [attempts, questions, tfScore]);
+
+const statsWeekly = useMemo(() => {
+  return computeStats({
+    attempts,
+    questions,
+    filters: { timeframeDays: tfWeekly, includeModeKeys: LEARNING_MODE_KEYS },
+  });
+}, [attempts, questions, tfWeekly]);
+
+const statsBestTime = useMemo(() => {
+  return computeStats({
+    attempts,
+    questions,
+    filters: { timeframeDays: tfBestTime, includeModeKeys: REAL_ONLY_MODE_KEYS },
+  });
+}, [attempts, questions, tfBestTime]);
+
+const statsTopics = useMemo(() => {
+  return computeStats({
+    attempts,
+    questions,
+    filters: { timeframeDays: tfTopics, includeModeKeys: LEARNING_MODE_KEYS },
+  });
+}, [attempts, questions, tfTopics]);
+
 
 
 
@@ -106,74 +173,14 @@ const stats = useMemo(() => {
     <main className={styles.page}>
       <div className={styles.content}>
         <BackButton />
-<div
-  style={{
-    display: "flex",
-    gap: 10,
-    justifyContent: "space-between",
-    alignItems: "center",
-    margin: "10px 0 14px",
-    flexWrap: "wrap",
-  }}
->
-  {/* Timeframe */}
-  <div style={{ display: "flex", gap: 6 }}>
-    {([7, 30, "all"] as const).map((t) => {
-      const active = timeframeDays === t;
-      return (
-        <button
-          key={String(t)}
-          type="button"
-          onClick={() => setTimeframeDays(t)}
-          style={{
-            padding: "6px 10px",
-            borderRadius: 999,
-            border: "1px solid rgba(17,24,39,0.12)",
-            background: active ? "rgba(17,24,39,0.08)" : "rgba(255,255,255,0.7)",
-            fontSize: 12,
-          }}
-        >
-          {t === "all" ? "All" : `${t}D`}
-        </button>
-      );
-    })}
-  </div>
 
-  {/* Modes */}
-  <div style={{ display: "flex", gap: 6 }}>
-    {MODE_OPTIONS.map((m) => {
-      const active = modeKeys.includes(m.key);
-      return (
-        <button
-          key={m.key}
-          type="button"
-          onClick={() => {
-            setModeKeys((prev) => {
-              if (prev.includes(m.key)) return prev.filter((x) => x !== m.key);
-              return [...prev, m.key];
-            });
-          }}
-          style={{
-            padding: "6px 10px",
-            borderRadius: 999,
-            border: "1px solid rgba(17,24,39,0.12)",
-            background: active ? "rgba(43,124,175,0.12)" : "rgba(255,255,255,0.7)",
-            fontSize: 12,
-          }}
-        >
-          {m.label}
-        </button>
-      );
-    })}
-  </div>
-</div>
 
         {/* ==== Top Accuracy / Gauge Card ==== */}
 <section className={styles.statsSummaryCard}>
   <div className={styles.statsSummaryInner}>
     <div className={styles.statsGaugeWrapper}>
       {(() => {
-  const pct = stats7.readinessPct; // 0..100
+  const pct = statsReadiness.readinessPct; // 0..100
   const fillDeg = Math.round((pct / 100) * 360);
 
   const c1 = "rgba(43, 124, 175, 0.4)";
@@ -225,10 +232,10 @@ const stats = useMemo(() => {
   }}
 >
   <div className={styles.statsSummaryMeta}>
-    7D accuracy: {stats7.accuracyPct}% · Tests: {stats7.attemptsCount}
+    {tfShort(tfReadiness)} accuracy: {statsReadiness.accuracyPct}% · Tests: {statsReadiness.attemptsCount}
   </div>
   <div>
-    Based on {stats7.attemptedTotal} questions answered
+    Based on {statsReadiness.attemptedTotal} questions answered
   </div>
 </div>
 
@@ -240,75 +247,44 @@ const stats = useMemo(() => {
 >
   Take a Test ▸
 </button>
+<TimeframeChips value={tfReadiness} onChange={setTfReadiness} align="center" />
 
   </div>
 </section>
 
 
-        {/* ==== Big panel + stack of statistic cards ==== */}
+{/* ==== Big panel + stack of statistic cards ==== */}
         <section className={styles.statsLongPanel}>
           <div className={styles.statsBlocks}>
-            {/* Screen Time */}
-            <article className={styles.statsCard}>
-              <header className={styles.statsCardHeader}>
-                <h2 className={styles.statsCardTitle}>Screen Time</h2>
-                <div className={styles.statsLegend}>
-                  <span className={`${styles.statsLegendDot} ${styles.statsLegendDotBlue}`} />
-                  <span className={styles.statsLegendLabel}>Global</span>
-                  <span className={`${styles.statsLegendDot} ${styles.statsLegendDotYellow}`} />
-                  <span className={styles.statsLegendLabel}>You</span>
-                </div>
-              </header>
 
-              <div className={styles.statsGraphArea}>
-                <div className={styles.statsGraphPlaceholder}>
-  {loading ? (
-    "Loading…"
-  ) : (
-    <>
-      <div style={{ marginBottom: 8 }}>
-        This week: <b>{stats7.deliberateThisWeekMin}</b> min test ·{" "}
-        <b>{stats7.studyThisWeekMin}</b> min study
-        <br />
-        Best day: <b>{stats7.timeBestDayMin}</b> min · Streak:{" "}
-        <b>{stats7.timeStreakDays}</b> days
-      </div>
+{/* Screen Time */}
+<article className={styles.statsCard}>
+  <header className={styles.statsCardHeader}>
+    <h2 className={styles.statsCardTitle}>Screen Time</h2>
+    {/* remove the empty legend div entirely */}
+  </header>
 
-      <div style={{ fontSize: 12, opacity: 0.85 }}>
-        {stats7.timeDailySeries.map((d) => (
-          <div
-            key={d.dayStart}
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              gap: 12,
-              padding: "4px 0",
-            }}
-          >
-            <span>
-              {new Date(d.dayStart).toLocaleDateString(undefined, { weekday: "short" })}
-            </span>
-            <span>
-              {d.deliberateMin}m · {d.studyMin}m
-            </span>
-          </div>
-        ))}
-      </div>
-
-      <div style={{ marginTop: 10, fontSize: 12, opacity: 0.75 }}>
-        (Attempt-based timed-test estimate: {Math.round(stats7.timeInTimedTestsSec / 60)} min)
-      </div>
-    </>
-  )}
-</div>
+  <div className={styles.statsGraphArea}>
+<div
+  className={`${styles.statsGraphPlaceholder} ${styles.statsGraphClean}`}
+  style={{ width: "100%" }}
+>
+      {loading ? (
+        "Loading…"
+      ) : (
+        <ScreenTimeChart7
+          data={statsScreen.timeDailySeries}
+          height={120}
+          timedTestMinutesEstimate={Math.round(statsScreen.timeInTimedTestsSec / 60)}
+          streakDays={statsScreen.timeStreakDays}
+        />
+      )}
+    </div>
+  </div>
+</article>
 
 
-
-
-              </div>
-            </article>
-
-            {/* Score */}
+{/* Score Card */}
             <article className={styles.statsCard}>
               <header className={styles.statsCardHeader}>
                 <h2 className={styles.statsCardTitle}>Score</h2>
@@ -318,20 +294,21 @@ const stats = useMemo(() => {
                 <div className={styles.statsGraphPlaceholder}>
                   {loading ? (
                     'Loading…'
-                  ) : stats.attemptsCount === 0 ? (
-                    `No submitted tests yet (${timeframeLabel}).`
+                  ) : statsScore.attemptsCount === 0 ? (
+                    `No submitted tests yet (${tfLabel(tfScore)}).`
                   ) : (
                     <>
-                      Avg: {stats.scoreAvg}% · Best: {stats.scoreBest}% · Latest: {stats.scoreLatest}%
+                      Avg: {statsScore.scoreAvg}% · Best: {statsScore.scoreBest}% · Latest: {statsScore.scoreLatest}%
                       <br />
-                      Based on {stats.attemptedTotal} answered questions across {stats.attemptsCount} tests
+                      Based on {statsScore.attemptedTotal} answered questions across {statsScore.attemptsCount} tests
                     </>
                   )}
                 </div>
               </div>
+              <TimeframeChips value={tfScore} onChange={setTfScore} />
             </article>
 
-            {/* Weekly Progress */}
+{/* Weekly Progress */}
             <article className={styles.statsCard}>
               <header className={styles.statsCardHeader}>
                 <h2 className={styles.statsCardTitle}>Weekly Progress</h2>
@@ -347,19 +324,19 @@ const stats = useMemo(() => {
                 <div className={styles.statsGraphPlaceholder}>
   {loading ? (
     "Loading…"
-  ) : stats.weeklySeries.length === 0 ? (
+  ) : statsWeekly.weeklySeries.length === 0 ? (
     "No weekly data yet."
   ) : (
     <>
       <div style={{ marginBottom: 8 }}>
-        Best week: <b>{stats.bestWeekQuestions}</b> questions
+        Best week: <b>{statsWeekly.bestWeekQuestions}</b> questions
         <br />
-        Consistency streak: <b>{stats.consistencyStreakWeeks}</b> weeks
+        Consistency streak: <b>{statsWeekly.consistencyStreakWeeks}</b> weeks
       </div>
 
       <div style={{ fontSize: 12, opacity: 0.85 }}>
         {/* Show last 6 weeks (most recent at bottom) */}
-        {stats.weeklySeries.slice(-6).map((w) => {
+        {statsWeekly.weeklySeries.slice(-6).map((w) => {
           const label = new Date(w.weekStart).toLocaleDateString(undefined, {
             month: "short",
             day: "numeric",
@@ -389,9 +366,10 @@ const stats = useMemo(() => {
 </div>
 
               </div>
+              <TimeframeChips value={tfWeekly} onChange={setTfWeekly} />
             </article>
 
-            {/* Best Time */}
+{/* Best Time */}
             <article className={styles.statsCard}>
               <header className={styles.statsCardHeader}>
                 <h2 className={styles.statsCardTitle}>Best Time</h2>
@@ -401,19 +379,19 @@ const stats = useMemo(() => {
                 <div className={styles.statsGraphPlaceholder}>
   {loading ? (
     "Loading…"
-  ) : stats.attemptsCount === 0 ? (
-    `No submitted tests yet (${timeframeLabel}).`
-  ) : !stats.bestTimeLabel ? (
+  ) : statsBestTime.attemptsCount === 0 ? (
+    `No submitted tests yet (${tfLabel(tfBestTime)}).`
+  ) : !statsBestTime.bestTimeLabel ? (
     "Not enough data yet."
   ) : (
     <>
       <div style={{ marginBottom: 8 }}>
-        You perform best: <b>{stats.bestTimeLabel}</b> (avg{" "}
-        <b>{stats.bestTimeAvgScore}%</b>)
+        You perform best: <b>{statsBestTime.bestTimeLabel}</b> (avg{" "}
+        <b>{statsBestTime.bestTimeAvgScore}%</b>)
       </div>
 
       <div style={{ fontSize: 12, opacity: 0.85 }}>
-        {stats.bestTimeSeries.map((b) => (
+        {statsBestTime.bestTimeSeries.map((b) => (
           <div
             key={b.label}
             style={{
@@ -435,8 +413,11 @@ const stats = useMemo(() => {
 </div>
 
               </div>
+              <TimeframeChips value={tfBestTime} onChange={setTfBestTime} />
             </article>
-            {/* Topic Mastery */}
+
+
+{/* Topic Mastery */}
 <article className={styles.statsCard}>
   <header className={styles.statsCardHeader}>
     <h2 className={styles.statsCardTitle}>Topic Mastery</h2>
@@ -446,9 +427,9 @@ const stats = useMemo(() => {
     <div className={styles.statsGraphPlaceholder}>
       {loading ? (
         "Loading…"
-      ) : stats.attemptsCount === 0 ? (
-        `No submitted tests yet (${timeframeLabel}).`
-      ) : stats.weakTopics.length === 0 ? (
+      ) : statsTopics.attemptsCount === 0 ? (
+        `No submitted tests yet (${tfLabel(tfTopics)}).`
+      ) : statsTopics.weakTopics.length === 0 ? (
         "Not enough data yet (need more answers per topic)."
       ) : (
         <>
@@ -457,7 +438,7 @@ const stats = useMemo(() => {
           </div>
 
           <div style={{ fontSize: 12, opacity: 0.85 }}>
-            {stats.weakTopics.map((t) => (
+            {statsTopics.weakTopics.map((t) => (
               <div
                 key={t.tag}
                 style={{
@@ -482,6 +463,7 @@ const stats = useMemo(() => {
       )}
     </div>
   </div>
+  <TimeframeChips value={tfTopics} onChange={setTfTopics} />
 </article>
 
           </div>
