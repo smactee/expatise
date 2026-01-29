@@ -33,20 +33,26 @@
   white-space: nowrap;
 }
 
-.summaryGrid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 6px 12px;
+.summaryRow2 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: nowrap;         /* ✅ keeps it on ONE line */
+  white-space: nowrap;       /* ✅ prevents label wrapping */
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.summaryGrid span {
-  white-space: nowrap;
+.sep {
+  opacity: 0.35;
 }
+
 
 
 .chart {
   position: relative;
   width: 100%;
+  padding-bottom: 18px; /* reserve space for weekday labels */
 }
 
 .cols {
@@ -55,7 +61,9 @@
   grid-template-columns: repeat(7, 1fr);
   gap: 12px;
   align-items: end;
+  padding-bottom: 4px;
 }
+
 
 .col { display: flex; flex-direction: column; align-items: center; gap: 8px; }
 
@@ -78,14 +86,12 @@
 }
 
 .zeroOutline {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  height: 10px;
-  border-radius: 12px;
-  border: 1px dashed rgba(17, 24, 39, 0.18);
-  background: transparent;
+  height: 2px;
+  border: none;
+  background: rgba(17, 24, 39, 0.10);
+  border-radius: 999px;
 }
+
 
 .group {
   position: relative;
@@ -124,7 +130,12 @@
   z-index: 2;
 }
 
-.day { font-size: 11px; opacity: 0.75; }
+.day {
+  margin-top: -5px;
+  font-size: 11px;
+  opacity: 0.75;
+}
+
 .today .day { opacity: 1; font-weight: 600; }
 
 .avgLine {
@@ -164,13 +175,14 @@
 .tipBody { opacity: 0.95; display: grid; gap: 3px; }
 
 .footerRow {
-  margin-top: 10px;
+  margin-top: 14px;
   display: flex;
   justify-content: space-between;
   gap: 12px;
   font-size: 12px;
   opacity: 0.85;
 }
+
 
 .muted { opacity: 0.6; }
 
@@ -187,14 +199,10 @@
 
 /* Use this to remove the debug/placeholder look for finished charts */
 .statsGraphClean {
-  border: none;
-  background: transparent;
-  padding: 0;
-  min-height: auto;
+  border: none !important;
+  outline: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  padding: 0 !important;
 }
 
-.chart {
-  position: relative;
-  width: 100%;
-  padding-bottom: 6px;
-}

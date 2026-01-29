@@ -152,34 +152,23 @@ export default function ScreenTimeChart7({
 
   return (
     <div className={styles.wrap}>
-      {/* Legend */}
-      <div className={styles.legendRow}>
-        <span className={styles.legendItem}>
-          <span className={`${styles.dot} ${styles.dotTest}`} /> Test
-        </span>
-        <span className={styles.legendItem}>
-          <span className={`${styles.dot} ${styles.dotStudy}`} /> Study
-        </span>
-        <span className={styles.legendItem}>
-          <span className={`${styles.dot} ${styles.dotTotal}`} /> Total
-        </span>
-        <span className={styles.legendItem}>
-          <span className={`${styles.dot} ${styles.dotAvg}`} /> 7D avg
-        </span>
-      </div>
+  
 
       {/* Summary row (footer summary under chart, but we can also keep it above; this version puts it above the chart) */}
-      <div className={styles.summaryRow}>
+<div className={styles.summaryRow}>
   <div className={styles.summaryTop}>
     <b>7D total</b>: {weekTestTotal}m test · {weekStudyTotal}m study
   </div>
 
-  <div className={styles.summaryGrid}>
+  <div className={styles.summaryRow2}>
     <span><b>Avg/day</b>: {Math.round(model.avgTotal)}m</span>
+    <span className={styles.sep}></span>
     <span><b>Best</b>: {bestLabel} ({bestPoint?.total ?? 0}m)</span>
+    <span className={styles.sep}></span>
     <span><b>Streak</b>: {streakDays ?? 0}d</span>
   </div>
 </div>
+
 
 
       {/* Chart */}

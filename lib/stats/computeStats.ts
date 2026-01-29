@@ -47,7 +47,7 @@ export type StatsVM = {
   timeInTimedTestsSec: number;
 
   // Minimal series we can chart later
-  scoreSeries: Array<{ t: number; scorePct: number }>;
+scoreSeries: Array<{ t: number; scorePct: number; answered: number; totalQ: number }>;
 
     // Weekly Progress (Consistency)
   weeklySeries: Array<{
@@ -196,7 +196,7 @@ export function computeStats(params: {
 
   let timeInTimedTestsSec = 0;
 
-  const scoreSeries: Array<{ t: number; scorePct: number }> = [];
+const scoreSeries: Array<{ t: number; scorePct: number; answered: number; totalQ: number }> = [];
   const scoreList: number[] = [];
 
   const weekly = new Map<
@@ -263,7 +263,7 @@ export function computeStats(params: {
     const denom = Math.max(1, a.questionIds?.length ?? 0);
     const scorePct = Math.round((100 * correct) / denom);
 
-    scoreSeries.push({ t, scorePct });
+scoreSeries.push({ t, scorePct, answered: attempted, totalQ: denom });
     scoreList.push(scorePct);
 
     // Best Time bucket update

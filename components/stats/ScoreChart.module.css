@@ -1,0 +1,191 @@
+.wrap { width: 100%; }
+
+.summaryRow{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 14px;
+  font-size: 12px;
+  opacity: 0.92;
+  margin-bottom: 10px;
+}
+
+.muted { opacity: 0.65; }
+
+.chartShell{
+  position: relative;
+  width: 100%;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.svg{
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.passBand{
+  fill: rgba(46, 204, 113, 0.07); /* green, same softness */
+}
+
+
+.grid{
+  stroke: rgba(17,24,39,0.08);
+  stroke-width: 1;
+}
+
+.passLine{
+  stroke: rgba(17,24,39,0.22);
+  stroke-width: 1;
+  stroke-dasharray: 4 4;
+}
+
+.avgLine{
+  stroke: rgba(17,24,39,0.28);
+  stroke-width: 1;
+  stroke-dasharray: 3 5;
+}
+
+.avgLabel{
+  font-size: 8px;
+  fill: rgba(17,24,39,0.55);
+}
+
+
+.lineGhost{
+  fill: none;
+  stroke: rgba(17,24,39,0.10);
+  stroke-width: 3;
+}
+
+.line{
+  fill: none;
+  stroke: rgba(43, 124, 175, 0.92);
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.dot{
+  fill: rgba(43, 124, 175, 0.95);
+}
+
+.halo{
+  fill: none;
+  stroke: rgba(43, 124, 175, 0.25);
+  stroke-width: 2;
+}
+
+.best{
+  font-size: 10px;
+  fill: rgba(255, 197, 66, 0.95);
+}
+
+.hit{
+  fill: transparent;
+}
+
+.tooltip{
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: rgba(17,24,39,0.92);
+  color: white;
+  border-radius: 12px;
+  padding: 10px 12px;
+  font-size: 11px;
+  line-height: 1.25;
+  width: 180px;
+  box-shadow: 0 10px 26px rgba(0,0,0,0.18);
+}
+
+.tipTitle{ font-weight: 700; margin-bottom: 6px; }
+.tipBody{ opacity: 0.95; display: grid; gap: 3px; }
+
+.confidence{
+  margin-top: 8px;
+  font-size: 12px;
+  opacity: 0.7;
+}
+
+.axisLine{
+  stroke: rgba(17,24,39,0.18);
+  stroke-width: 1;
+}
+
+.axisTick{
+  stroke: rgba(17,24,39,0.18);
+  stroke-width: 1;
+}
+
+.axisText{
+  font-size: 8.5px;
+  fill: rgba(17,24,39,0.55);
+}
+
+.axisTextStrong{
+  font-size: 8.5px;
+  fill: rgba(17,24,39,0.75);
+  font-weight: 700;
+}
+
+.passLabel{
+  font-size: 8.5px;
+  fill: rgba(17,24,39,0.70);
+  font-weight: 700;
+}
+
+.metric{
+  font-variant-numeric: tabular-nums;
+}
+
+.metricHero{
+  opacity: 1;
+  font-weight: 700;
+}
+
+.metricMuted{
+  opacity: 0.6;
+}
+
+.avgTrend{
+  fill: none;
+  stroke:rgba(255, 197, 66, 0.95);
+  stroke-width: 2;
+  stroke-dasharray: none;
+  stroke-linecap: round;
+}
+
+.legendRow{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 14px;
+  margin-bottom: 8px;
+  font-size: 12px;
+  opacity: 0.85;
+}
+
+.legendItem{
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.dot{
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  display: inline-block;
+}
+
+.dotScore{ background: rgba(43, 124, 175, 0.92); }
+.dotTrend{ background: rgba(255, 197, 66, 0.95); }
+
+.summaryRowBelow{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 14px;
+  font-size: 12px;
+  opacity: 0.92;
+  margin-top: 10px;   /* below chart */
+}

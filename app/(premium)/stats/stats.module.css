@@ -78,12 +78,13 @@
   height: 220px;
   border-radius: 999px;
   background: conic-gradient(
-    from 0deg,
-    #70c1ff 0deg,
-    #70c1ff 220deg,
-    #f7d36b 320deg,
-    #e4e4e4 360deg
-  );
+  from 0deg,
+  #f7d36b 0deg,
+  #f7d36b 220deg,
+  #70c1ff 320deg,
+  #e4e4e4 360deg
+);
+
   display: flex;
   align-items: center;
   justify-content: center;
@@ -172,6 +173,7 @@
 
 /* Legend “Global / You” */
 .statsLegend {
+  margin-left: auto;
   display: flex;
   align-items: center;
   gap: 6px;
@@ -192,6 +194,8 @@
 .statsLegendDotYellow {
   background: #ffc542;
 }
+.statsLegendDotGray { background: rgba(17, 24, 39, 0.18); }
+.statsLegendDotDark { background: rgba(17, 24, 39, 0.45); }
 
 .statsLegendLabel {
   white-space: nowrap;
@@ -395,4 +399,20 @@
 
 :root[data-theme="dark"] .statsChipActive {
   background: rgba(255, 255, 255, 0.14);
+}
+
+/* Used to remove the placeholder/debug box look for a finished chart */
+.statsGraphClean {
+  border: none !important;
+  outline: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+
+/* Stronger: when both classes are present on the same element */
+.statsGraphPlaceholder.statsGraphClean {
+  border: none !important;
+  background: transparent !important;
+  padding: 0 !important;
 }

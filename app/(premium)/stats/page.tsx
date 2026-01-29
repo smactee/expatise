@@ -25,6 +25,9 @@ import { labelForTag } from '@/lib/qbank/tagTaxonomy';
 
 import ScreenTimeChart7 from '@/components/stats/ScreenTimeChart7.client';
 
+import ReadinessRing from '@/app/(premium)/stats/ReadinessRing.client';
+import ScoreChart from '@/components/stats/ScoreChart.client';
+
 const datasetId: DatasetId = 'cn-2023-test1';
 
 // Exclude Practice from Stats (per your decision)
@@ -178,48 +181,11 @@ const statsTopics = useMemo(() => {
         {/* ==== Top Accuracy / Gauge Card ==== */}
 <section className={styles.statsSummaryCard}>
   <div className={styles.statsSummaryInner}>
-    <div className={styles.statsGaugeWrapper}>
-      {(() => {
-  const pct = statsReadiness.readinessPct; // 0..100
-  const fillDeg = Math.round((pct / 100) * 360);
+  <ReadinessRing
+    valuePct={statsReadiness.readinessPct}
+    enabled={!loading && questions.length > 0}
+  />
 
-  const c1 = "rgba(43, 124, 175, 0.4)";
-  const c2 = "rgba(255, 197, 66, 0.4)";
-
-  return (
-    <div
-      className={styles.statsGaugeCircleOuter}
-      style={{
-        // Flip the ring so clockwise drawing appears counter-clockwise
-        transform: "scaleX(-1)",
-        background: `conic-gradient(
-          from 0deg,
-          ${c1} 0deg,
-          ${c2} ${fillDeg}deg,
-          #e4e4e4 ${fillDeg}deg,
-          #e4e4e4 360deg
-        )`,
-      }}
-    >
-      <div
-        className={styles.statsGaugeCircleInner}
-        style={{
-          // Flip inner content back so text is normal
-          transform: "scaleX(-1)",
-        }}
-      >
-        <div className={styles.statsGaugeNumber}>{pct}</div>
-        <div className={styles.statsGaugeLabel}>
-          License Exam
-          <br />
-          Readiness
-        </div>
-      </div>
-    </div>
-  );
-})()}
-
-    </div>
 
     {/* ✅ goes right here */}
     <div
@@ -260,11 +226,25 @@ const statsTopics = useMemo(() => {
 {/* Screen Time */}
 <article className={styles.statsCard}>
   <header className={styles.statsCardHeader}>
-    <h2 className={styles.statsCardTitle}>Screen Time</h2>
-    {/* remove the empty legend div entirely */}
-  </header>
+  <h2 className={styles.statsCardTitle}>Screen Time</h2>
 
-  <div className={styles.statsGraphArea}>
+  <div className={styles.statsLegend}>
+    <span className={`${styles.statsLegendDot} ${styles.statsLegendDotYellow}`} />
+    <span className={styles.statsLegendLabel}>Test</span>
+
+    <span className={`${styles.statsLegendDot} ${styles.statsLegendDotBlue}`} />
+    <span className={styles.statsLegendLabel}>Study</span>
+
+    <span className={`${styles.statsLegendDot} ${styles.statsLegendDotGray}`} />
+    <span className={styles.statsLegendLabel}>Total</span>
+
+    <span className={`${styles.statsLegendDot} ${styles.statsLegendDotDark}`} />
+    <span className={styles.statsLegendLabel}>7D avg</span>
+  </div>
+</header>
+
+
+  <div className={`${styles.statsGraphArea} ${styles.statsGraphClean}`}>
 <div
   className={`${styles.statsGraphPlaceholder} ${styles.statsGraphClean}`}
   style={{ width: "100%" }}
@@ -287,24 +267,39 @@ const statsTopics = useMemo(() => {
 {/* Score Card */}
             <article className={styles.statsCard}>
               <header className={styles.statsCardHeader}>
-                <h2 className={styles.statsCardTitle}>Score</h2>
-              </header>
+  <h2 className={styles.statsCardTitle}>Score</h2>
 
-              <div className={styles.statsGraphArea}>
-                <div className={styles.statsGraphPlaceholder}>
-                  {loading ? (
-                    'Loading…'
-                  ) : statsScore.attemptsCount === 0 ? (
-                    `No submitted tests yet (${tfLabel(tfScore)}).`
-                  ) : (
-                    <>
-                      Avg: {statsScore.scoreAvg}% · Best: {statsScore.scoreBest}% · Latest: {statsScore.scoreLatest}%
-                      <br />
-                      Based on {statsScore.attemptedTotal} answered questions across {statsScore.attemptsCount} tests
-                    </>
-                  )}
-                </div>
-              </div>
+  <div className={styles.statsLegend}>
+    <span className={`${styles.statsLegendDot} ${styles.statsLegendDotBlue}`} />
+    <span className={styles.statsLegendLabel}>Score</span>
+
+    <span className={`${styles.statsLegendDot} ${styles.statsLegendDotYellow}`} />
+    <span className={styles.statsLegendLabel}>Average</span>
+  </div>
+</header>
+
+
+              <div className={`${styles.statsGraphArea} ${styles.statsGraphClean}`}>
+  <div className={`${styles.statsGraphPlaceholder} ${styles.statsGraphClean}`} style={{ width: '100%' }}>
+    {loading ? (
+      'Loading…'
+    ) : statsScore.attemptsCount === 0 ? (
+      `No submitted tests yet (${tfLabel(tfScore)}).`
+    ) : (
+      <ScoreChart
+        series={statsScore.scoreSeries}
+        scoreAvg={statsScore.scoreAvg}
+        scoreBest={statsScore.scoreBest}
+        scoreLatest={statsScore.scoreLatest}
+        attemptsCount={statsScore.attemptsCount}
+        attemptedTotal={statsScore.attemptedTotal}
+        passLine={90}
+        height={150}
+      />
+    )}
+  </div>
+</div>
+
               <TimeframeChips value={tfScore} onChange={setTfScore} />
             </article>
 
