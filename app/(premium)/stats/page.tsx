@@ -27,6 +27,7 @@ import ScreenTimeChart7 from '@/components/stats/ScreenTimeChart7.client';
 
 import ReadinessRing from '@/app/(premium)/stats/ReadinessRing.client';
 import ScoreChart from '@/components/stats/ScoreChart.client';
+import WeeklyProgressChart from '@/components/stats/WeeklyProgressChart';
 
 const datasetId: DatasetId = 'cn-2023-test1';
 
@@ -63,7 +64,7 @@ function TimeframeChips(props: {
   onChange: (v: Timeframe) => void;
   align?: "left" | "center";
 }) {
-  const { value, onChange, align = "left" } = props;
+  const { value, onChange, align = "center" } = props;
   return (
     <div
       className={`${styles.statsChips} ${
@@ -307,57 +308,24 @@ const statsTopics = useMemo(() => {
             <article className={styles.statsCard}>
               <header className={styles.statsCardHeader}>
                 <h2 className={styles.statsCardTitle}>Weekly Progress</h2>
-                <div className={styles.statsLegend}>
-                  <span className={`${styles.statsLegendDot} ${styles.statsLegendDotBlue}`} />
-                  <span className={styles.statsLegendLabel}>Global</span>
-                  <span className={`${styles.statsLegendDot} ${styles.statsLegendDotYellow}`} />
-                  <span className={styles.statsLegendLabel}>You</span>
-                </div>
               </header>
 
-              <div className={styles.statsGraphArea}>
-                <div className={styles.statsGraphPlaceholder}>
+             <div className={`${styles.statsGraphArea} ${styles.statsGraphClean}`}>
+  <div className={`${styles.statsGraphPlaceholder} ${styles.statsGraphClean}`} style={{ width: "100%" }}>
+
   {loading ? (
     "Loading…"
   ) : statsWeekly.weeklySeries.length === 0 ? (
     "No weekly data yet."
   ) : (
-    <>
-      <div style={{ marginBottom: 8 }}>
-        Best week: <b>{statsWeekly.bestWeekQuestions}</b> questions
-        <br />
-        Consistency streak: <b>{statsWeekly.consistencyStreakWeeks}</b> weeks
-      </div>
-
-      <div style={{ fontSize: 12, opacity: 0.85 }}>
-        {/* Show last 6 weeks (most recent at bottom) */}
-        {statsWeekly.weeklySeries.slice(-6).map((w) => {
-          const label = new Date(w.weekStart).toLocaleDateString(undefined, {
-            month: "short",
-            day: "numeric",
-          });
-
-          return (
-            <div
-              key={w.weekStart}
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                gap: 12,
-                padding: "4px 0",
-              }}
-            >
-              <span>Week of {label}</span>
-              <span>
-                {w.questionsAnswered} answered · {w.testsCompleted} tests · Avg{" "}
-                {w.avgScore}%
-              </span>
-            </div>
-          );
-        })}
-      </div>
-    </>
-  )}
+  <WeeklyProgressChart
+    series={statsWeekly.weeklySeries}
+    bestWeekQuestions={statsWeekly.bestWeekQuestions}
+    streakWeeks={statsWeekly.consistencyStreakWeeks}
+    rows={6}
+  />
+)
+}
 </div>
 
               </div>

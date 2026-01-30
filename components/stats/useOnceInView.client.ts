@@ -2,16 +2,28 @@
 
 import { useEffect, useRef, useState } from 'react';
 
-export function useOnceInView<T extends Element>(threshold = 0.35) {
+type OnceInViewOptions = {
+  threshold?: number | number[];
+  rootMargin?: string;
+};
+
+export function useOnceInView<T extends Element>(threshold?: number): { ref: React.RefObject<T | null>; seen: boolean };
+export function useOnceInView<T extends Element>(opts?: OnceInViewOptions): { ref: React.RefObject<T | null>; seen: boolean };
+export function useOnceInView<T extends Element>(arg: number | OnceInViewOptions = 0.35) {
   const ref = useRef<T | null>(null);
   const [seen, setSeen] = useState(false);
+
+  const opts: OnceInViewOptions =
+    typeof arg === 'number' ? { threshold: arg } : arg;
+
+  const threshold = opts.threshold ?? 0.35;
+  const rootMargin = opts.rootMargin ?? '0px';
 
   useEffect(() => {
     if (seen) return;
     const el = ref.current;
     if (!el) return;
 
-    // If IntersectionObserver not available (rare), just mark seen.
     if (typeof IntersectionObserver === 'undefined') {
       setSeen(true);
       return;
@@ -24,12 +36,17 @@ export function useOnceInView<T extends Element>(threshold = 0.35) {
           obs.disconnect();
         }
       },
-      { threshold }
+      { threshold, rootMargin }
     );
 
     obs.observe(el);
     return () => obs.disconnect();
-  }, [seen, threshold]);
+  }, [seen, threshold, rootMargin]);
 
   return { ref, seen };
+}
+
+// Convenience wrapper: triggers when element crosses the middle of the viewport
+export function useOnceInMidView<T extends Element>() {
+  return useOnceInView<T>({ threshold: 0, rootMargin: '-50% 0px -50% 0px' });
 }

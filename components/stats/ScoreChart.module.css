@@ -52,11 +52,7 @@
 }
 
 
-.lineGhost{
-  fill: none;
-  stroke: rgba(17,24,39,0.10);
-  stroke-width: 3;
-}
+
 
 .line{
   fill: none;
@@ -150,9 +146,8 @@
 
 .avgTrend{
   fill: none;
-  stroke:rgba(255, 197, 66, 0.95);
+  stroke: var(--avgYellow);
   stroke-width: 2;
-  stroke-dasharray: none;
   stroke-linecap: round;
 }
 
@@ -171,7 +166,7 @@
   gap: 6px;
 }
 
-.dot{
+.legendItem .dot{
   width: 8px;
   height: 8px;
   border-radius: 999px;
@@ -189,3 +184,75 @@
   opacity: 0.92;
   margin-top: 10px;   /* below chart */
 }
+
+
+/* Blue pulsing halo */
+@keyframes haloPulseBlue {
+  0%   { transform: scale(1);   opacity: 0.28; }
+  60%  { transform: scale(1.35); opacity: 0; }
+  100% { transform: scale(1.35); opacity: 0; }
+}
+
+.haloPulse{
+  fill: none;
+  stroke: rgba(43, 124, 175, 0.35);
+  stroke-width: 2;
+  /* IMPORTANT for SVG transform */
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: haloPulseBlue 1.8s ease-out infinite;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce){
+  .haloPulse{ animation: none; opacity: 0; }
+}
+
+
+
+
+
+/* One place to control the avg (yellow) color */
+.wrap{
+  --avgYellow: rgba(255, 197, 66, 0.95);
+}
+
+/* Yellow dots for avg trend */
+.avgPoint { pointer-events: none; }
+.avgDot{
+  fill: var(--avgYellow);
+  opacity: 0.95;
+}
+
+
+
+
+/* Yellow halo */
+.avgHalo{
+  fill: none;
+  stroke: var(--avgYellow);
+  stroke-width: 2;
+}
+
+/* Yellow pulsing halo */
+@keyframes haloPulseYellow {
+  0%   { transform: scale(1);    opacity: 0.35; }
+  60%  { transform: scale(1.45); opacity: 0; }
+  100% { transform: scale(1.45); opacity: 0; }
+}
+
+.avgHaloPulse{
+  fill: none;
+  stroke: rgba(255, 197, 66, 0.35);
+  stroke-width: 2;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: haloPulseYellow 1.8s ease-out infinite;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce){
+  .avgHaloPulse{ animation: none; opacity: 0; }
+}
+
+

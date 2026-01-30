@@ -1,9 +1,11 @@
+//components/stats/ScoreChart.client.tsx
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import styles from './ScoreChart.module.css';
-import { useOnceInView } from '@/components/stats/useOnceInView.client';
 import { useBootSweepOnce } from '@/components/stats/useBootSweepOnce.client';
+import { useOnceInMidView } from '@/components/stats/useOnceInView.client';
+
 
 type Point = {
   t: number;
@@ -20,6 +22,37 @@ function fmtDayTime(t: number) {
   const d = new Date(t);
   return d.toLocaleString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
 }
+
+function easeOutCubic(t: number) {
+  return 1 - Math.pow(1 - t, 3);
+}
+
+type XY = { x: number; y: number };
+
+function smoothPath(points: XY[], tension = 0.25) {
+  if (points.length === 0) return '';
+  if (points.length === 1) return `M ${points[0].x} ${points[0].y}`;
+
+  let d = `M ${points[0].x.toFixed(2)} ${points[0].y.toFixed(2)}`;
+
+  for (let i = 0; i < points.length - 1; i++) {
+    const p0 = points[i - 1] ?? points[i];
+    const p1 = points[i];
+    const p2 = points[i + 1];
+    const p3 = points[i + 2] ?? p2;
+
+    const c1x = p1.x + (p2.x - p0.x) * tension;
+    const c1y = p1.y + (p2.y - p0.y) * tension;
+    const c2x = p2.x - (p3.x - p1.x) * tension;
+    const c2y = p2.y - (p3.y - p1.y) * tension;
+
+    d += ` C ${c1x.toFixed(2)} ${c1y.toFixed(2)}, ${c2x.toFixed(2)} ${c2y.toFixed(2)}, ${p2.x.toFixed(2)} ${p2.y.toFixed(2)}`;
+  }
+
+  return d;
+}
+
+
 
 export default function ScoreChart(props: {
   series: Point[];
@@ -42,22 +75,37 @@ export default function ScoreChart(props: {
     height = 140,
   } = props;
 
-  const { ref, seen } = useOnceInView<HTMLDivElement>(0.35);
 
   // Reveal animation 0..1, once.
-  const reveal = useBootSweepOnce({
-    target: 1,
-    seen,
-    enabled: true,
-    segments: () => [
-      { from: 0, to: 1, durationMs: 650, ease: (t) => 1 - Math.pow(1 - t, 3) }, // easeOutCubic
-    ],
-  });
+// Start reveal only when there is at least 1 point.
+// (Do NOT use `model` here because model doesn't exist yet.)
+const hasAnyData = (series?.length ?? 0) > 0;
+const { ref, seen } = useOnceInMidView<HTMLDivElement>();
+
+const scorePathRef = useRef<SVGPathElement | null>(null);
+const avgPathRef = useRef<SVGPathElement | null>(null);
+const [scoreLen, setScoreLen] = useState(0);
+const [avgLen, setAvgLen] = useState(0);
+const lensReady = scoreLen > 0 && avgLen > 0;
+
+const reveal = useBootSweepOnce({
+  target: 1,
+  seen,
+  enabled: hasAnyData && lensReady,
+  segments: () => [
+    { from: 0, to: 1, durationMs: 1200, ease: easeOutCubic },
+    { from: 1, to: 1, durationMs: 250, ease: (t) => t },
+  ],
+});
+
+
+
 
   const [hoverIdx, setHoverIdx] = useState<number | null>(null);
 
   const model = useMemo(() => {
     const pts = [...(series ?? [])].sort((a, b) => a.t - b.t);
+
 
     // Keep it readable: last 12 attempts (tweakable)
     const maxN = 12;
@@ -106,33 +154,57 @@ const plotW = plotRight - plotLeft;
   const avgY = yForScore(scoreAvg);
 
   const pathD = useMemo(() => {
-    if (!model.hasData) return '';
-    return model.pts
-      .map((p, i) => `${i === 0 ? 'M' : 'L'} ${xFor(i).toFixed(2)} ${yForScore(p.scorePct).toFixed(2)}`)
-      .join(' ');
-  }, [model, series]);
+  if (!model.hasData) return '';
+  const pts = model.pts.map((p, i) => ({ x: xFor(i), y: yForScore(p.scorePct) }));
+  return smoothPath(pts);
+}, [model.hasData, model.pts]);
+
+
+  const trendVals = useMemo(() => {
+  if (!model.hasData) return [];
+  let sum = 0;
+  return model.pts.map((p, i) => {
+    sum += p.scorePct;
+    return sum / (i + 1);
+  });
+}, [model.hasData, model.pts]);
 
   const avgTrendD = useMemo(() => {
   if (!model.hasData) return '';
-  let sum = 0;
-  return model.pts
-    .map((p, i) => {
-      sum += p.scorePct;
-      const runAvg = sum / (i + 1);
-      return `${i === 0 ? 'M' : 'L'} ${xFor(i).toFixed(2)} ${yForScore(runAvg).toFixed(2)}`;
-    })
-    .join(' ');
-}, [model]);
+  const pts = trendVals.map((v, i) => ({ x: xFor(i), y: yForScore(v) }));
+  return smoothPath(pts);
+}, [model.hasData, trendVals]);
+
+
+
+
+
+useEffect(() => {
+  // measure after paths update
+  if (scorePathRef.current) setScoreLen(scorePathRef.current.getTotalLength());
+  if (avgPathRef.current) setAvgLen(avgPathRef.current.getTotalLength());
+}, [pathD, avgTrendD]);
+
+
 
 
   // Use stroke-dash to reveal line (no pause)
-  const dashTotal = 1000; // arbitrary
-  const dashOffset = (1 - clamp(reveal, 0, 1)) * dashTotal;
+  const tReveal = clamp(reveal, 0, 1);
 
-  const hover = hoverIdx != null ? model.pts[hoverIdx] : null;
+const scoreDashOffset = (1 - tReveal) * scoreLen;
+const avgDashOffset = (1 - tReveal) * avgLen;
+
+
+
+  
+
+  const hover = hoverIdx === null ? null : model.pts[hoverIdx];
+
 
   return (
     <div ref={ref} className={styles.wrap}>
+
+
       {/* Top summary row (one line, premium scan) */}
       
 
@@ -204,62 +276,115 @@ const plotW = plotRight - plotLeft;
 </text>
 
           {/* Avg line (only if enough data) */}
-         {model.hasData ? (
+{model.hasData ? (
   <>
-    <path d={avgTrendD} className={styles.avgTrend} />
-    <path d={pathD} className={styles.lineGhost} />
+    {/* Average (yellow) — ghost optional */}
+
     <path
+      ref={avgPathRef}
+      d={avgTrendD}
+      className={styles.avgTrend}
+      strokeDasharray={lensReady ? avgLen : undefined}
+strokeDashoffset={lensReady ? avgDashOffset : undefined}
+style={{ opacity: lensReady ? 1 : 0 }}
+
+
+    />
+
+    {/* Score (blue) ghost + revealed */}
+
+    <path
+      ref={scorePathRef}
       d={pathD}
       className={styles.line}
-      strokeDasharray={dashTotal}
-      strokeDashoffset={dashOffset}
+      strokeDasharray={lensReady ? scoreLen : undefined}
+strokeDashoffset={lensReady ? scoreDashOffset : undefined}
+style={{ opacity: lensReady ? 1 : 0 }}
+
+
     />
+
+    {/* Yellow trend dots (LATEST ONLY) */}
+{(() => {
+  if (!model.hasData) return null;
+
+  const i = model.latestIdx;
+  const v = trendVals[i];
+
+  // (optional safety) if v is missing for some reason
+  if (typeof v !== 'number') return null;
+
+  const x = xFor(i);
+  const y = yForScore(v);
+
+  const nPts = Math.max(1, model.pts.length);
+  const step = 1 / nPts;
+  const start = i * step;
+  const local = clamp((tReveal - start) / (step * 0.9), 0, 1);
+  const pop = easeOutCubic(local);
+
+  const r = 2.5 * (0.25 + 0.75 * pop);
+
+  return (
+    <g key={`avgpt-${model.pts[i]?.t ?? i}`} aria-hidden="true" style={{ opacity: pop }}>
+      <circle cx={x} cy={y} r={r} className={styles.avgDot} />
+      {/* Yellow halo starts AFTER reveal */}
+      {pop > 0.98 ? <circle cx={x} cy={y} r="7" className={styles.avgHaloPulse} /> : null}
+    </g>
+  );
+})()}
+
   </>
 ) : null}
 
 
 
-
-          {/* Line (revealed) */}
-          {model.hasData ? (
-            <>
-              <path d={pathD} className={styles.lineGhost} />
-              <path
-                d={pathD}
-                className={styles.line}
-                strokeDasharray={dashTotal}
-                strokeDashoffset={dashOffset}
-              />
-            </>
-          ) : null}
-
           {/* Points + hover targets */}
-          {model.pts.map((p, i) => {
-            const x = xFor(i);
-            const y = yForScore(p.scorePct);
-            const isLatest = i === model.latestIdx;
-            const isBest = i === model.bestIdx;
+{/* Points + hover targets (LATEST ONLY) */}
+{(() => {
+  if (!model.hasData) return null;
 
-            return (
-              <g
-                key={`pt-${p.t}`}
-                onMouseEnter={() => setHoverIdx(i)}
-                style={{ cursor: 'default' }}
-              >
-                {/* bigger invisible hit area */}
-                <circle cx={x} cy={y} r="10" className={styles.hit} />
+  const i = model.latestIdx;
+  const p = model.pts[i];
 
-                {/* marker */}
-                <circle cx={x} cy={y} r={isLatest ? 3.5 : 2.5} className={styles.dot} />
+  const x = xFor(i);
+  const y = yForScore(p.scorePct);
 
-                {/* latest halo */}
-                {isLatest ? <circle cx={x} cy={y} r="4" className={styles.halo} /> : null}
+  // same reveal timing you already use (so it appears after line reveal)
+  const nPts = Math.max(1, model.pts.length);
+  const step = 1 / nPts;
+  const start = i * step;
+  const local = clamp((tReveal - start) / (step * 0.9), 0, 1);
+  const pop = easeOutCubic(local);
 
-                {/* best badge */}
-                {isBest ? <text x={x} y={y - 10} textAnchor="middle" className={styles.best}>★</text> : null}
-              </g>
-            );
-          })}
+  return (
+    <g
+      key={`pt-${p.t}`}
+      onMouseEnter={() => setHoverIdx(i)}
+      style={{ cursor: 'default' }}
+    >
+      <circle cx={x} cy={y} r="10" className={styles.hit} />
+
+      <circle
+        cx={x}
+        cy={y}
+        r={3.5 * (0.25 + 0.75 * pop)}
+        className={styles.dot}
+        style={{ opacity: pop }}
+      />
+
+      {/* Blue halo starts AFTER reveal */}
+      {pop > 0.98 ? (
+        <>
+          <circle cx={x} cy={y} r="3.0" className={styles.halo} />
+          <circle cx={x} cy={y} r="7" className={styles.haloPulse} />
+        </>
+      ) : null}
+    </g>
+  );
+})()}
+
+
         </svg>
 
         {/* Tooltip */}

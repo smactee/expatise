@@ -4336,6 +4336,84 @@ useEffect(() => {
 
 ```
 
+### app/(premium)/stats/ReadinessRing.client.tsx
+```tsx
+//app/(premium)/stats/ReadinessRing.client.tsx
+
+'use client';
+
+import styles from './stats.module.css';
+import { useOnceInView } from '@/components/stats/useOnceInView.client';
+import { useBootSweepOnce } from '@/components/stats/useBootSweepOnce.client';
+
+export default function ReadinessRing(props: {
+  valuePct: number;          // final readiness 0..100
+  enabled: boolean;          // gate until data ready (e.g., !loading && questions loaded)
+  c1?: string;
+  c2?: string;
+}) {
+  const {
+  valuePct,
+  enabled,
+  c1 = 'rgba(255, 197, 66, 0.4)', // yellow first
+  c2 = 'rgba(43, 124, 175, 0.4)', // blue second
+} = props;
+
+
+  const { ref, seen } = useOnceInView<HTMLDivElement>(0.35);
+  const pctFloat = useBootSweepOnce({
+  target: valuePct,
+  seen,
+  enabled,
+  segments: (target) => {
+    const gap = Math.abs(100 - target);
+    const settleMs = gap < 10 ? 500 : 900;
+
+    return [
+      { from: 0, to: 100, durationMs: 450, ease: (t) => 1 - Math.pow(1 - t, 3) }, // easeOutCubic
+      { from: 100, to: target, durationMs: settleMs, ease: (t) => 1 - Math.pow(1 - t, 3) },
+    ];
+  },
+});
+
+
+  const pct = Math.round(pctFloat);
+  const fillDeg = (pctFloat / 100) * 360;
+
+  return (
+    <div ref={ref} className={styles.statsGaugeWrapper}>
+      <div
+        className={styles.statsGaugeCircleOuter}
+        style={{
+          transform: 'scaleX(-1)',
+          background: `conic-gradient(
+            from 0deg,
+            ${c1} 0deg,
+            ${c2} ${fillDeg}deg,
+            #e4e4e4 ${fillDeg}deg,
+            #e4e4e4 360deg
+          )`,
+        }}
+        aria-label={`License Exam Readiness ${pct}%`}
+      >
+        <div
+          className={styles.statsGaugeCircleInner}
+          style={{ transform: 'scaleX(-1)' }}
+        >
+          <div className={styles.statsGaugeNumber}>{pct}</div>
+          <div className={styles.statsGaugeLabel}>
+            License Exam
+            <br />
+            Readiness
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+```
+
 ### app/(premium)/stats/page.tsx
 ```tsx
 // app/stats/page.tsx
@@ -4364,6 +4442,10 @@ import { ROUTES } from '@/lib/routes';
 import { labelForTag } from '@/lib/qbank/tagTaxonomy';
 
 import ScreenTimeChart7 from '@/components/stats/ScreenTimeChart7.client';
+
+import ReadinessRing from '@/app/(premium)/stats/ReadinessRing.client';
+import ScoreChart from '@/components/stats/ScoreChart.client';
+import WeeklyProgressChart from '@/components/stats/WeeklyProgressChart';
 
 const datasetId: DatasetId = 'cn-2023-test1';
 
@@ -4400,7 +4482,7 @@ function TimeframeChips(props: {
   onChange: (v: Timeframe) => void;
   align?: "left" | "center";
 }) {
-  const { value, onChange, align = "left" } = props;
+  const { value, onChange, align = "center" } = props;
   return (
     <div
       className={`${styles.statsChips} ${
@@ -4518,48 +4600,11 @@ const statsTopics = useMemo(() => {
         {/* ==== Top Accuracy / Gauge Card ==== */}
 <section className={styles.statsSummaryCard}>
   <div className={styles.statsSummaryInner}>
-    <div className={styles.statsGaugeWrapper}>
-      {(() => {
-  const pct = statsReadiness.readinessPct; // 0..100
-  const fillDeg = Math.round((pct / 100) * 360);
+  <ReadinessRing
+    valuePct={statsReadiness.readinessPct}
+    enabled={!loading && questions.length > 0}
+  />
 
-  const c1 = "rgba(43, 124, 175, 0.4)";
-  const c2 = "rgba(255, 197, 66, 0.4)";
-
-  return (
-    <div
-      className={styles.statsGaugeCircleOuter}
-      style={{
-        // Flip the ring so clockwise drawing appears counter-clockwise
-        transform: "scaleX(-1)",
-        background: `conic-gradient(
-          from 0deg,
-          ${c1} 0deg,
-          ${c2} ${fillDeg}deg,
-          #e4e4e4 ${fillDeg}deg,
-          #e4e4e4 360deg
-        )`,
-      }}
-    >
-      <div
-        className={styles.statsGaugeCircleInner}
-        style={{
-          // Flip inner content back so text is normal
-          transform: "scaleX(-1)",
-        }}
-      >
-        <div className={styles.statsGaugeNumber}>{pct}</div>
-        <div className={styles.statsGaugeLabel}>
-          License Exam
-          <br />
-          Readiness
-        </div>
-      </div>
-    </div>
-  );
-})()}
-
-    </div>
 
     {/* ✅ goes right here */}
     <div
@@ -4600,11 +4645,25 @@ const statsTopics = useMemo(() => {
 {/* Screen Time */}
 <article className={styles.statsCard}>
   <header className={styles.statsCardHeader}>
-    <h2 className={styles.statsCardTitle}>Screen Time</h2>
-    {/* remove the empty legend div entirely */}
-  </header>
+  <h2 className={styles.statsCardTitle}>Screen Time</h2>
 
-  <div className={styles.statsGraphArea}>
+  <div className={styles.statsLegend}>
+    <span className={`${styles.statsLegendDot} ${styles.statsLegendDotYellow}`} />
+    <span className={styles.statsLegendLabel}>Test</span>
+
+    <span className={`${styles.statsLegendDot} ${styles.statsLegendDotBlue}`} />
+    <span className={styles.statsLegendLabel}>Study</span>
+
+    <span className={`${styles.statsLegendDot} ${styles.statsLegendDotGray}`} />
+    <span className={styles.statsLegendLabel}>Total</span>
+
+    <span className={`${styles.statsLegendDot} ${styles.statsLegendDotDark}`} />
+    <span className={styles.statsLegendLabel}>7D avg</span>
+  </div>
+</header>
+
+
+  <div className={`${styles.statsGraphArea} ${styles.statsGraphClean}`}>
 <div
   className={`${styles.statsGraphPlaceholder} ${styles.statsGraphClean}`}
   style={{ width: "100%" }}
@@ -4627,24 +4686,39 @@ const statsTopics = useMemo(() => {
 {/* Score Card */}
             <article className={styles.statsCard}>
               <header className={styles.statsCardHeader}>
-                <h2 className={styles.statsCardTitle}>Score</h2>
-              </header>
+  <h2 className={styles.statsCardTitle}>Score</h2>
 
-              <div className={styles.statsGraphArea}>
-                <div className={styles.statsGraphPlaceholder}>
-                  {loading ? (
-                    'Loading…'
-                  ) : statsScore.attemptsCount === 0 ? (
-                    `No submitted tests yet (${tfLabel(tfScore)}).`
-                  ) : (
-                    <>
-                      Avg: {statsScore.scoreAvg}% · Best: {statsScore.scoreBest}% · Latest: {statsScore.scoreLatest}%
-                      <br />
-                      Based on {statsScore.attemptedTotal} answered questions across {statsScore.attemptsCount} tests
-                    </>
-                  )}
-                </div>
-              </div>
+  <div className={styles.statsLegend}>
+    <span className={`${styles.statsLegendDot} ${styles.statsLegendDotBlue}`} />
+    <span className={styles.statsLegendLabel}>Score</span>
+
+    <span className={`${styles.statsLegendDot} ${styles.statsLegendDotYellow}`} />
+    <span className={styles.statsLegendLabel}>Average</span>
+  </div>
+</header>
+
+
+              <div className={`${styles.statsGraphArea} ${styles.statsGraphClean}`}>
+  <div className={`${styles.statsGraphPlaceholder} ${styles.statsGraphClean}`} style={{ width: '100%' }}>
+    {loading ? (
+      'Loading…'
+    ) : statsScore.attemptsCount === 0 ? (
+      `No submitted tests yet (${tfLabel(tfScore)}).`
+    ) : (
+      <ScoreChart
+        series={statsScore.scoreSeries}
+        scoreAvg={statsScore.scoreAvg}
+        scoreBest={statsScore.scoreBest}
+        scoreLatest={statsScore.scoreLatest}
+        attemptsCount={statsScore.attemptsCount}
+        attemptedTotal={statsScore.attemptedTotal}
+        passLine={90}
+        height={150}
+      />
+    )}
+  </div>
+</div>
+
               <TimeframeChips value={tfScore} onChange={setTfScore} />
             </article>
 
@@ -4652,57 +4726,24 @@ const statsTopics = useMemo(() => {
             <article className={styles.statsCard}>
               <header className={styles.statsCardHeader}>
                 <h2 className={styles.statsCardTitle}>Weekly Progress</h2>
-                <div className={styles.statsLegend}>
-                  <span className={`${styles.statsLegendDot} ${styles.statsLegendDotBlue}`} />
-                  <span className={styles.statsLegendLabel}>Global</span>
-                  <span className={`${styles.statsLegendDot} ${styles.statsLegendDotYellow}`} />
-                  <span className={styles.statsLegendLabel}>You</span>
-                </div>
               </header>
 
-              <div className={styles.statsGraphArea}>
-                <div className={styles.statsGraphPlaceholder}>
+             <div className={`${styles.statsGraphArea} ${styles.statsGraphClean}`}>
+  <div className={`${styles.statsGraphPlaceholder} ${styles.statsGraphClean}`} style={{ width: "100%" }}>
+
   {loading ? (
     "Loading…"
   ) : statsWeekly.weeklySeries.length === 0 ? (
     "No weekly data yet."
   ) : (
-    <>
-      <div style={{ marginBottom: 8 }}>
-        Best week: <b>{statsWeekly.bestWeekQuestions}</b> questions
-        <br />
-        Consistency streak: <b>{statsWeekly.consistencyStreakWeeks}</b> weeks
-      </div>
-
-      <div style={{ fontSize: 12, opacity: 0.85 }}>
-        {/* Show last 6 weeks (most recent at bottom) */}
-        {statsWeekly.weeklySeries.slice(-6).map((w) => {
-          const label = new Date(w.weekStart).toLocaleDateString(undefined, {
-            month: "short",
-            day: "numeric",
-          });
-
-          return (
-            <div
-              key={w.weekStart}
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                gap: 12,
-                padding: "4px 0",
-              }}
-            >
-              <span>Week of {label}</span>
-              <span>
-                {w.questionsAnswered} answered · {w.testsCompleted} tests · Avg{" "}
-                {w.avgScore}%
-              </span>
-            </div>
-          );
-        })}
-      </div>
-    </>
-  )}
+  <WeeklyProgressChart
+    series={statsWeekly.weeklySeries}
+    bestWeekQuestions={statsWeekly.bestWeekQuestions}
+    streakWeeks={statsWeekly.consistencyStreakWeeks}
+    rows={6}
+  />
+)
+}
 </div>
 
               </div>
@@ -4910,12 +4951,13 @@ const statsTopics = useMemo(() => {
   height: 220px;
   border-radius: 999px;
   background: conic-gradient(
-    from 0deg,
-    #70c1ff 0deg,
-    #70c1ff 220deg,
-    #f7d36b 320deg,
-    #e4e4e4 360deg
-  );
+  from 0deg,
+  #f7d36b 0deg,
+  #f7d36b 220deg,
+  #70c1ff 320deg,
+  #e4e4e4 360deg
+);
+
   display: flex;
   align-items: center;
   justify-content: center;
@@ -4985,8 +5027,13 @@ const statsTopics = useMemo(() => {
   border-radius: 28px;
   padding: 18px 18px 20px;
   background: #f5fbff;
-  box-shadow: 0 14px 30px rgba(15, 33, 70, 0.14);
+  box-shadow:  0 18px 45px rgba(30, 80, 120, 0.18),
+    0 6px 18px rgba(30, 80, 120, 0.10),
+    inset 0 2px 10px rgba(255,255,255,0.65),
+    inset 0 -10px 18px rgba(0,0,0,0.05);
 }
+
+
 
 .statsCardHeader {
   display: flex;
@@ -5004,6 +5051,7 @@ const statsTopics = useMemo(() => {
 
 /* Legend “Global / You” */
 .statsLegend {
+  margin-left: auto;
   display: flex;
   align-items: center;
   gap: 6px;
@@ -5024,6 +5072,8 @@ const statsTopics = useMemo(() => {
 .statsLegendDotYellow {
   background: #ffc542;
 }
+.statsLegendDotGray { background: rgba(17, 24, 39, 0.18); }
+.statsLegendDotDark { background: rgba(17, 24, 39, 0.45); }
 
 .statsLegendLabel {
   white-space: nowrap;
@@ -5227,6 +5277,22 @@ const statsTopics = useMemo(() => {
 
 :root[data-theme="dark"] .statsChipActive {
   background: rgba(255, 255, 255, 0.14);
+}
+
+/* Used to remove the placeholder/debug box look for a finished chart */
+.statsGraphClean {
+  border: none !important;
+  outline: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+
+/* Stronger: when both classes are present on the same element */
+.statsGraphPlaceholder.statsGraphClean {
+  border: none !important;
+  background: transparent !important;
+  padding: 0 !important;
 }
 
 ```
@@ -13890,6 +13956,692 @@ export function useUserProfile() {
 
 ```
 
+### components/stats/ScoreChart.client.tsx
+```tsx
+//components/stats/ScoreChart.client.tsx
+'use client';
+
+import { useEffect, useMemo, useRef, useState } from 'react';
+import styles from './ScoreChart.module.css';
+import { useBootSweepOnce } from '@/components/stats/useBootSweepOnce.client';
+import { useOnceInMidView } from '@/components/stats/useOnceInView.client';
+
+
+type Point = {
+  t: number;
+  scorePct: number;
+  answered: number;
+  totalQ: number;
+};
+
+function clamp(n: number, a: number, b: number) {
+  return Math.max(a, Math.min(b, n));
+}
+
+function fmtDayTime(t: number) {
+  const d = new Date(t);
+  return d.toLocaleString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+}
+
+function easeOutCubic(t: number) {
+  return 1 - Math.pow(1 - t, 3);
+}
+
+type XY = { x: number; y: number };
+
+function smoothPath(points: XY[], tension = 0.25) {
+  if (points.length === 0) return '';
+  if (points.length === 1) return `M ${points[0].x} ${points[0].y}`;
+
+  let d = `M ${points[0].x.toFixed(2)} ${points[0].y.toFixed(2)}`;
+
+  for (let i = 0; i < points.length - 1; i++) {
+    const p0 = points[i - 1] ?? points[i];
+    const p1 = points[i];
+    const p2 = points[i + 1];
+    const p3 = points[i + 2] ?? p2;
+
+    const c1x = p1.x + (p2.x - p0.x) * tension;
+    const c1y = p1.y + (p2.y - p0.y) * tension;
+    const c2x = p2.x - (p3.x - p1.x) * tension;
+    const c2y = p2.y - (p3.y - p1.y) * tension;
+
+    d += ` C ${c1x.toFixed(2)} ${c1y.toFixed(2)}, ${c2x.toFixed(2)} ${c2y.toFixed(2)}, ${p2.x.toFixed(2)} ${p2.y.toFixed(2)}`;
+  }
+
+  return d;
+}
+
+
+
+export default function ScoreChart(props: {
+  series: Point[];
+  scoreAvg: number;
+  scoreBest: number;
+  scoreLatest: number;
+  attemptsCount: number;
+  attemptedTotal: number;
+  passLine?: number;   // default 90
+  height?: number;     // px
+}) {
+  const {
+    series,
+    scoreAvg,
+    scoreBest,
+    scoreLatest,
+    attemptsCount,
+    attemptedTotal,
+    passLine = 90,
+    height = 140,
+  } = props;
+
+
+  // Reveal animation 0..1, once.
+// Start reveal only when there is at least 1 point.
+// (Do NOT use `model` here because model doesn't exist yet.)
+const hasAnyData = (series?.length ?? 0) > 0;
+const { ref, seen } = useOnceInMidView<HTMLDivElement>();
+
+const scorePathRef = useRef<SVGPathElement | null>(null);
+const avgPathRef = useRef<SVGPathElement | null>(null);
+const [scoreLen, setScoreLen] = useState(0);
+const [avgLen, setAvgLen] = useState(0);
+const lensReady = scoreLen > 0 && avgLen > 0;
+
+const reveal = useBootSweepOnce({
+  target: 1,
+  seen,
+  enabled: hasAnyData && lensReady,
+  segments: () => [
+    { from: 0, to: 1, durationMs: 1200, ease: easeOutCubic },
+    { from: 1, to: 1, durationMs: 250, ease: (t) => t },
+  ],
+});
+
+
+
+
+  const [hoverIdx, setHoverIdx] = useState<number | null>(null);
+
+  const model = useMemo(() => {
+    const pts = [...(series ?? [])].sort((a, b) => a.t - b.t);
+
+
+    // Keep it readable: last 12 attempts (tweakable)
+    const maxN = 12;
+    const sliced = pts.length > maxN ? pts.slice(pts.length - maxN) : pts;
+
+    const maxQ = Math.max(1, ...sliced.map(p => p.totalQ || 0));
+    const hasData = sliced.length > 0;
+
+    const latestIdx = hasData ? sliced.length - 1 : -1;
+    const bestIdx =
+      hasData
+        ? sliced.reduce((bi, p, i, arr) => (p.scorePct > arr[bi].scorePct ? i : bi), 0)
+        : -1;
+
+    const lowConfidence = attemptsCount < 3 || attemptedTotal < 60;
+
+    return { pts: sliced, maxQ, latestIdx, bestIdx, hasData, lowConfidence };
+  }, [series, attemptsCount, attemptedTotal]);
+
+  // SVG coordinate system
+const W = 340;     // total SVG width
+const H = 100;     // plot height
+const axisW = 27;  // left axis width (labels live here)
+const padX = 5;
+const padY = 5;
+
+const plotLeft = axisW;
+const padRight = 18;     // NEW (space for latest halo)
+const plotRight = W - padRight;
+const plotW = plotRight - plotLeft;
+
+
+
+  const xFor = (i: number) => {
+  const n = Math.max(1, model.pts.length - 1);
+  return plotLeft + ((plotW - padX * 2) * i) / n + padX;
+};
+
+
+  const yForScore = (s: number) => {
+    const y01 = 1 - clamp(s / 100, 0, 1);
+    return padY + y01 * (H - padY * 2);
+  };
+
+  const passY = yForScore(passLine);
+  const avgY = yForScore(scoreAvg);
+
+  const pathD = useMemo(() => {
+  if (!model.hasData) return '';
+  const pts = model.pts.map((p, i) => ({ x: xFor(i), y: yForScore(p.scorePct) }));
+  return smoothPath(pts);
+}, [model.hasData, model.pts]);
+
+
+  const trendVals = useMemo(() => {
+  if (!model.hasData) return [];
+  let sum = 0;
+  return model.pts.map((p, i) => {
+    sum += p.scorePct;
+    return sum / (i + 1);
+  });
+}, [model.hasData, model.pts]);
+
+  const avgTrendD = useMemo(() => {
+  if (!model.hasData) return '';
+  const pts = trendVals.map((v, i) => ({ x: xFor(i), y: yForScore(v) }));
+  return smoothPath(pts);
+}, [model.hasData, trendVals]);
+
+
+
+
+
+useEffect(() => {
+  // measure after paths update
+  if (scorePathRef.current) setScoreLen(scorePathRef.current.getTotalLength());
+  if (avgPathRef.current) setAvgLen(avgPathRef.current.getTotalLength());
+}, [pathD, avgTrendD]);
+
+
+
+
+  // Use stroke-dash to reveal line (no pause)
+  const tReveal = clamp(reveal, 0, 1);
+
+const scoreDashOffset = (1 - tReveal) * scoreLen;
+const avgDashOffset = (1 - tReveal) * avgLen;
+
+
+
+  
+
+  const hover = hoverIdx === null ? null : model.pts[hoverIdx];
+
+
+  return (
+    <div ref={ref} className={styles.wrap}>
+
+
+      {/* Top summary row (one line, premium scan) */}
+      
+
+
+      <div className={styles.chartShell} style={{ height }}>
+        <svg
+          className={styles.svg}
+          viewBox={`0 0 ${W} ${H}`}
+          preserveAspectRatio="none"
+          onMouseLeave={() => setHoverIdx(null)}
+        >
+
+            {/* Y axis */}
+<line x1={plotLeft} y1={padY} x2={plotLeft} y2={H - padY} className={styles.axisLine} />
+
+{[
+  { v: 100, strong: false },
+  { v: 50, strong: false },
+  { v: 0, strong: false },
+].map((tick) => {
+  const y = yForScore(tick.v);
+  return (
+    <g key={tick.v}>
+      <line x1={plotLeft - 4} y1={y} x2={plotLeft} y2={y} className={styles.axisTick} />
+      <text
+        x={plotLeft - 6}
+        y={y + 3}
+        textAnchor="end"
+        className={styles.axisText}
+      >
+        {tick.v}
+      </text>
+    </g>
+  );
+})}
+
+
+          {/* Pass band (Pass..100) — clipped to the plot area */}
+{(() => {
+  const topY = yForScore(100);
+  const bandH = Math.max(0, passY - topY);
+  return (
+    <rect
+      x={plotLeft}
+      y={topY}
+      width={plotW}
+      height={bandH}
+      className={styles.passBand}
+    />
+  );
+})()}
+
+
+          {/* Light grid lines */}
+          <line x1={plotLeft} y1={yForScore(100)} x2={plotRight} y2={yForScore(100)} className={styles.grid} />
+<line x1={plotLeft} y1={yForScore(50)}  x2={plotRight} y2={yForScore(50)}  className={styles.grid} />
+<line x1={plotLeft} y1={yForScore(0)}   x2={plotRight} y2={yForScore(0)}   className={styles.grid} />
+
+
+          {/* Pass line */}
+<line x1={plotLeft} y1={passY} x2={plotRight} y2={passY} className={styles.passLine} />
+<text
+  x={plotRight - 4}
+  y={clamp(passY - 4, 10, H - 6)}
+  textAnchor="end"
+  className={styles.passLabel}
+>
+  Pass {passLine}%
+</text>
+
+          {/* Avg line (only if enough data) */}
+{model.hasData ? (
+  <>
+    {/* Average (yellow) — ghost optional */}
+
+    <path
+      ref={avgPathRef}
+      d={avgTrendD}
+      className={styles.avgTrend}
+      strokeDasharray={lensReady ? avgLen : undefined}
+strokeDashoffset={lensReady ? avgDashOffset : undefined}
+style={{ opacity: lensReady ? 1 : 0 }}
+
+
+    />
+
+    {/* Score (blue) ghost + revealed */}
+
+    <path
+      ref={scorePathRef}
+      d={pathD}
+      className={styles.line}
+      strokeDasharray={lensReady ? scoreLen : undefined}
+strokeDashoffset={lensReady ? scoreDashOffset : undefined}
+style={{ opacity: lensReady ? 1 : 0 }}
+
+
+    />
+
+    {/* Yellow trend dots (LATEST ONLY) */}
+{(() => {
+  if (!model.hasData) return null;
+
+  const i = model.latestIdx;
+  const v = trendVals[i];
+
+  // (optional safety) if v is missing for some reason
+  if (typeof v !== 'number') return null;
+
+  const x = xFor(i);
+  const y = yForScore(v);
+
+  const nPts = Math.max(1, model.pts.length);
+  const step = 1 / nPts;
+  const start = i * step;
+  const local = clamp((tReveal - start) / (step * 0.9), 0, 1);
+  const pop = easeOutCubic(local);
+
+  const r = 2.5 * (0.25 + 0.75 * pop);
+
+  return (
+    <g key={`avgpt-${model.pts[i]?.t ?? i}`} aria-hidden="true" style={{ opacity: pop }}>
+      <circle cx={x} cy={y} r={r} className={styles.avgDot} />
+      {/* Yellow halo starts AFTER reveal */}
+      {pop > 0.98 ? <circle cx={x} cy={y} r="7" className={styles.avgHaloPulse} /> : null}
+    </g>
+  );
+})()}
+
+  </>
+) : null}
+
+
+
+          {/* Points + hover targets */}
+{/* Points + hover targets (LATEST ONLY) */}
+{(() => {
+  if (!model.hasData) return null;
+
+  const i = model.latestIdx;
+  const p = model.pts[i];
+
+  const x = xFor(i);
+  const y = yForScore(p.scorePct);
+
+  // same reveal timing you already use (so it appears after line reveal)
+  const nPts = Math.max(1, model.pts.length);
+  const step = 1 / nPts;
+  const start = i * step;
+  const local = clamp((tReveal - start) / (step * 0.9), 0, 1);
+  const pop = easeOutCubic(local);
+
+  return (
+    <g
+      key={`pt-${p.t}`}
+      onMouseEnter={() => setHoverIdx(i)}
+      style={{ cursor: 'default' }}
+    >
+      <circle cx={x} cy={y} r="10" className={styles.hit} />
+
+      <circle
+        cx={x}
+        cy={y}
+        r={3.5 * (0.25 + 0.75 * pop)}
+        className={styles.dot}
+        style={{ opacity: pop }}
+      />
+
+      {/* Blue halo starts AFTER reveal */}
+      {pop > 0.98 ? (
+        <>
+          <circle cx={x} cy={y} r="3.0" className={styles.halo} />
+          <circle cx={x} cy={y} r="7" className={styles.haloPulse} />
+        </>
+      ) : null}
+    </g>
+  );
+})()}
+
+
+        </svg>
+
+        {/* Tooltip */}
+        {hover ? (
+          <div className={styles.tooltip}>
+            <div className={styles.tipTitle}>{fmtDayTime(hover.t)}</div>
+            <div className={styles.tipBody}>
+              <div>Score: <b>{hover.scorePct}%</b></div>
+              <div>Answered: <b>{hover.answered}</b></div>
+              <div>Total Q: <b>{hover.totalQ}</b></div>
+            </div>
+          </div>
+        ) : null}
+      </div>
+<div className={styles.summaryRow}>
+        
+
+  <span className={styles.metric}><b>Avg</b> {scoreAvg}%</span>
+  <span className={styles.metric}><b>Best</b> {scoreBest}%</span>
+  <span className={`${styles.metric} ${styles.metricHero}`}><b>Latest</b> {scoreLatest}%</span>
+  <span className={`${styles.metric} ${styles.metricMuted}`}><b>Based on</b> {attemptedTotal} answers</span>
+</div>
+      {/* Confidence note (explicit honesty) */}
+      {model.lowConfidence ? (
+        <div className={styles.confidence}>
+          Low confidence: only {attemptsCount} tests / {attemptedTotal} answers in this window.
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
+```
+
+### components/stats/ScoreChart.module.css
+```css
+.wrap { width: 100%; }
+
+.summaryRow{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 14px;
+  font-size: 12px;
+  opacity: 0.92;
+  margin-bottom: 10px;
+}
+
+.muted { opacity: 0.65; }
+
+.chartShell{
+  position: relative;
+  width: 100%;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.svg{
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.passBand{
+  fill: rgba(46, 204, 113, 0.07); /* green, same softness */
+}
+
+
+.grid{
+  stroke: rgba(17,24,39,0.08);
+  stroke-width: 1;
+}
+
+.passLine{
+  stroke: rgba(17,24,39,0.22);
+  stroke-width: 1;
+  stroke-dasharray: 4 4;
+}
+
+.avgLine{
+  stroke: rgba(17,24,39,0.28);
+  stroke-width: 1;
+  stroke-dasharray: 3 5;
+}
+
+.avgLabel{
+  font-size: 8px;
+  fill: rgba(17,24,39,0.55);
+}
+
+
+
+
+.line{
+  fill: none;
+  stroke: rgba(43, 124, 175, 0.92);
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.dot{
+  fill: rgba(43, 124, 175, 0.95);
+}
+
+.halo{
+  fill: none;
+  stroke: rgba(43, 124, 175, 0.25);
+  stroke-width: 2;
+}
+
+.best{
+  font-size: 10px;
+  fill: rgba(255, 197, 66, 0.95);
+}
+
+.hit{
+  fill: transparent;
+}
+
+.tooltip{
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: rgba(17,24,39,0.92);
+  color: white;
+  border-radius: 12px;
+  padding: 10px 12px;
+  font-size: 11px;
+  line-height: 1.25;
+  width: 180px;
+  box-shadow: 0 10px 26px rgba(0,0,0,0.18);
+}
+
+.tipTitle{ font-weight: 700; margin-bottom: 6px; }
+.tipBody{ opacity: 0.95; display: grid; gap: 3px; }
+
+.confidence{
+  margin-top: 8px;
+  font-size: 12px;
+  opacity: 0.7;
+}
+
+.axisLine{
+  stroke: rgba(17,24,39,0.18);
+  stroke-width: 1;
+}
+
+.axisTick{
+  stroke: rgba(17,24,39,0.18);
+  stroke-width: 1;
+}
+
+.axisText{
+  font-size: 8.5px;
+  fill: rgba(17,24,39,0.55);
+}
+
+.axisTextStrong{
+  font-size: 8.5px;
+  fill: rgba(17,24,39,0.75);
+  font-weight: 700;
+}
+
+.passLabel{
+  font-size: 8.5px;
+  fill: rgba(17,24,39,0.70);
+  font-weight: 700;
+}
+
+.metric{
+  font-variant-numeric: tabular-nums;
+}
+
+.metricHero{
+  opacity: 1;
+  font-weight: 700;
+}
+
+.metricMuted{
+  opacity: 0.6;
+}
+
+.avgTrend{
+  fill: none;
+  stroke: var(--avgYellow);
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+.legendRow{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 14px;
+  margin-bottom: 8px;
+  font-size: 12px;
+  opacity: 0.85;
+}
+
+.legendItem{
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.legendItem .dot{
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  display: inline-block;
+}
+
+.dotScore{ background: rgba(43, 124, 175, 0.92); }
+.dotTrend{ background: rgba(255, 197, 66, 0.95); }
+
+.summaryRowBelow{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 14px;
+  font-size: 12px;
+  opacity: 0.92;
+  margin-top: 10px;   /* below chart */
+}
+
+
+/* Blue pulsing halo */
+@keyframes haloPulseBlue {
+  0%   { transform: scale(1);   opacity: 0.28; }
+  60%  { transform: scale(1.35); opacity: 0; }
+  100% { transform: scale(1.35); opacity: 0; }
+}
+
+.haloPulse{
+  fill: none;
+  stroke: rgba(43, 124, 175, 0.35);
+  stroke-width: 2;
+  /* IMPORTANT for SVG transform */
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: haloPulseBlue 1.8s ease-out infinite;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce){
+  .haloPulse{ animation: none; opacity: 0; }
+}
+
+
+
+
+
+/* One place to control the avg (yellow) color */
+.wrap{
+  --avgYellow: rgba(255, 197, 66, 0.95);
+}
+
+/* Yellow dots for avg trend */
+.avgPoint { pointer-events: none; }
+.avgDot{
+  fill: var(--avgYellow);
+  opacity: 0.95;
+}
+
+
+
+
+/* Yellow halo */
+.avgHalo{
+  fill: none;
+  stroke: var(--avgYellow);
+  stroke-width: 2;
+}
+
+/* Yellow pulsing halo */
+@keyframes haloPulseYellow {
+  0%   { transform: scale(1);    opacity: 0.35; }
+  60%  { transform: scale(1.45); opacity: 0; }
+  100% { transform: scale(1.45); opacity: 0; }
+}
+
+.avgHaloPulse{
+  fill: none;
+  stroke: rgba(255, 197, 66, 0.35);
+  stroke-width: 2;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: haloPulseYellow 1.8s ease-out infinite;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce){
+  .avgHaloPulse{ animation: none; opacity: 0; }
+}
+
+
+
+```
+
 ### components/stats/ScreenTimeChart7.client.tsx
 ```tsx
 'use client';
@@ -14046,34 +14798,23 @@ export default function ScreenTimeChart7({
 
   return (
     <div className={styles.wrap}>
-      {/* Legend */}
-      <div className={styles.legendRow}>
-        <span className={styles.legendItem}>
-          <span className={`${styles.dot} ${styles.dotTest}`} /> Test
-        </span>
-        <span className={styles.legendItem}>
-          <span className={`${styles.dot} ${styles.dotStudy}`} /> Study
-        </span>
-        <span className={styles.legendItem}>
-          <span className={`${styles.dot} ${styles.dotTotal}`} /> Total
-        </span>
-        <span className={styles.legendItem}>
-          <span className={`${styles.dot} ${styles.dotAvg}`} /> 7D avg
-        </span>
-      </div>
+  
 
       {/* Summary row (footer summary under chart, but we can also keep it above; this version puts it above the chart) */}
-      <div className={styles.summaryRow}>
+<div className={styles.summaryRow}>
   <div className={styles.summaryTop}>
     <b>7D total</b>: {weekTestTotal}m test · {weekStudyTotal}m study
   </div>
 
-  <div className={styles.summaryGrid}>
+  <div className={styles.summaryRow2}>
     <span><b>Avg/day</b>: {Math.round(model.avgTotal)}m</span>
+    <span className={styles.sep}></span>
     <span><b>Best</b>: {bestLabel} ({bestPoint?.total ?? 0}m)</span>
+    <span className={styles.sep}></span>
     <span><b>Streak</b>: {streakDays ?? 0}d</span>
   </div>
 </div>
+
 
 
       {/* Chart */}
@@ -14210,20 +14951,26 @@ export default function ScreenTimeChart7({
   white-space: nowrap;
 }
 
-.summaryGrid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 6px 12px;
+.summaryRow2 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: nowrap;         /* ✅ keeps it on ONE line */
+  white-space: nowrap;       /* ✅ prevents label wrapping */
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.summaryGrid span {
-  white-space: nowrap;
+.sep {
+  opacity: 0.35;
 }
+
 
 
 .chart {
   position: relative;
   width: 100%;
+  padding-bottom: 18px; /* reserve space for weekday labels */
 }
 
 .cols {
@@ -14232,7 +14979,9 @@ export default function ScreenTimeChart7({
   grid-template-columns: repeat(7, 1fr);
   gap: 12px;
   align-items: end;
+  padding-bottom: 4px;
 }
+
 
 .col { display: flex; flex-direction: column; align-items: center; gap: 8px; }
 
@@ -14255,14 +15004,12 @@ export default function ScreenTimeChart7({
 }
 
 .zeroOutline {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  height: 10px;
-  border-radius: 12px;
-  border: 1px dashed rgba(17, 24, 39, 0.18);
-  background: transparent;
+  height: 2px;
+  border: none;
+  background: rgba(17, 24, 39, 0.10);
+  border-radius: 999px;
 }
+
 
 .group {
   position: relative;
@@ -14301,7 +15048,12 @@ export default function ScreenTimeChart7({
   z-index: 2;
 }
 
-.day { font-size: 11px; opacity: 0.75; }
+.day {
+  margin-top: -5px;
+  font-size: 11px;
+  opacity: 0.75;
+}
+
 .today .day { opacity: 1; font-weight: 600; }
 
 .avgLine {
@@ -14341,13 +15093,14 @@ export default function ScreenTimeChart7({
 .tipBody { opacity: 0.95; display: grid; gap: 3px; }
 
 .footerRow {
-  margin-top: 10px;
+  margin-top: 14px;
   display: flex;
   justify-content: space-between;
   gap: 12px;
   font-size: 12px;
   opacity: 0.85;
 }
+
 
 .muted { opacity: 0.6; }
 
@@ -14364,16 +15117,523 @@ export default function ScreenTimeChart7({
 
 /* Use this to remove the debug/placeholder look for finished charts */
 .statsGraphClean {
-  border: none;
-  background: transparent;
-  padding: 0;
-  min-height: auto;
+  border: none !important;
+  outline: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  padding: 0 !important;
 }
 
-.chart {
-  position: relative;
+
+```
+
+### components/stats/WeeklyProgressChart.module.css
+```css
+.wrap { width: 100%; }
+
+.metaRow{
+  display:flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 12px;
+  color: rgba(17,24,39,0.65);
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+.metaItem{ white-space: nowrap; }
+.metaLabel{ opacity: 0.75; margin-right: 4px; }
+
+.box{
+  border-radius: 18px;
+  border: 1px dashed rgba(148, 163, 184, 0.60);
+  padding: 12px;
+  background: rgba(255,255,255,0.55);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.row{
+  display: grid;
+  grid-template-columns: 92px 1fr auto;
+  align-items: center;
+  gap: 10px;
+  font-size: 11.5px;
+  color: rgba(17,24,39,0.75);
+}
+
+.week{ color: rgba(17,24,39,0.55); }
+
+.barTrack{
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(43,124,175,0.10);
+  overflow: hidden;
+}
+
+.barFill{
+  height: 100%;
+  border-radius: 999px;
+  background: rgba(43,124,175,0.70);
+}
+
+.metrics{ white-space: nowrap; opacity: 0.9; }
+
+/* Dark theme tweaks */
+:global(:root[data-theme='dark']) .box{
+  background: rgba(255,255,255,0.06);
+  border-color: rgba(148,163,184,0.35);
+}
+:global(:root[data-theme='dark']) .metaRow,
+:global(:root[data-theme='dark']) .row{
+  color: rgba(249,250,251,0.78);
+}
+:global(:root[data-theme='dark']) .week{
+  color: rgba(249,250,251,0.55);
+}
+:global(:root[data-theme='dark']) .barTrack{
+  background: rgba(43,124,175,0.22);
+}
+
+.chartShell{
   width: 100%;
-  padding-bottom: 6px;
+}
+
+.svg{
+  width: 100%;
+  height: 120px; /* controls chart height inside the dashed box */
+  display: block;
+}
+
+.grid{
+  stroke: rgba(17,24,39,0.08);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+.gridBase{
+  stroke: rgba(17,24,39,0.14);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+.bar{
+  fill: rgba(43,124,175,0.25);
+}
+
+.barActive{
+  fill: rgba(43,124,175,0.55);
+}
+
+.avgLine{
+  fill: none;
+  stroke: rgba(255, 197, 66, 0.95);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.avgDot{
+  fill: rgba(255, 197, 66, 0.95);
+}
+
+.axisText{
+  font-size: 8.5px;
+  fill: rgba(17,24,39,0.55);
+}
+
+.axisRow{
+  display: grid;
+  grid-template-columns: 92px 1fr auto; /* MUST match .row */
+  align-items: end;
+  margin-bottom: 6px;
+}
+
+.axisScale{
+  display: flex;
+  justify-content: space-between;
+  font-size: 10px;
+  color: rgba(17,24,39,0.45);
+  padding: 0 2px;
+  line-height: 1;
+}
+
+.yAxisLine{
+  stroke: rgba(17,24,39,0.18);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+.yAxisTick{
+  stroke: rgba(17,24,39,0.18);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+.yAxisText{
+  font-size: 8.5px;
+  fill: rgba(17,24,39,0.55);
+}
+
+```
+
+### components/stats/WeeklyProgressChart.tsx
+```tsx
+// components/stats/WeeklyProgressChart.tsx
+'use client';
+
+import styles from './WeeklyProgressChart.module.css';
+
+type WeekRow = {
+  weekStart: number;
+  testsCompleted: number;
+  questionsAnswered: number;
+  avgScore: number;
+};
+
+function fmtWeekStart(ms: number) {
+  return new Date(ms).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+}
+
+function clamp(n: number, a: number, b: number) {
+  return Math.max(a, Math.min(b, n));
+}
+
+
+export default function WeeklyProgressChart(props: {
+  series: WeekRow[];
+  bestWeekQuestions: number;
+  streakWeeks: number;
+  rows?: number; // default 6
+}) {
+  const { series, bestWeekQuestions, streakWeeks, rows = 6 } = props;
+
+  const shown = series.slice(-rows);
+  const maxAnswered = Math.max(1, ...shown.map((w) => w.questionsAnswered));
+    const midAnswered = Math.round(maxAnswered / 2);
+
+// --- chart geometry (same 340-ish scale as your ScoreChart) ---
+const W = 340;
+const H = 110;
+
+const padL = 12;
+const padR = 12;
+const padT = 10;
+const padB = 26; // room for week labels
+
+const plotW = W - padL - padR;
+const plotH = H - padT - padB;
+
+const slot = shown.length ? plotW / shown.length : plotW;
+const barW = Math.max(10, slot * 0.55);
+
+const xFor = (i: number) => padL + i * slot + (slot - barW) / 2;
+const cxFor = (i: number) => xFor(i) + barW / 2;
+
+const barHFor = (answered: number) => (answered / maxAnswered) * plotH;
+const yForAnswered = (answered: number) => {
+  const y01 = 1 - clamp(answered / maxAnswered, 0, 1);
+  return padT + y01 * plotH;
+};
+
+const y0 = yForAnswered(0);
+const yMid = yForAnswered(midAnswered);
+const yMax = yForAnswered(maxAnswered);
+
+const yForAvg = (pct: number) => {
+  const y01 = 1 - clamp(pct / 100, 0, 1);
+  return padT + y01 * plotH;
+};
+
+const avgPathD =
+  shown.length === 0
+    ? ""
+    : shown
+        .map((w, i) => `${i === 0 ? "M" : "L"} ${cxFor(i).toFixed(2)} ${yForAvg(w.avgScore).toFixed(2)}`)
+        .join(" ");
+
+  return (
+    <div className={styles.wrap}>
+      <div className={styles.metaRow}>
+        <div className={styles.metaItem}>
+          <span className={styles.metaLabel}>Best week:</span> <b>{bestWeekQuestions}</b> questions
+        </div>
+        <div className={styles.metaItem}>
+          <span className={styles.metaLabel}>Consistency streak:</span> <b>{streakWeeks}</b> weeks
+        </div>
+      </div>
+
+      <div className={styles.box}>
+  <div className={styles.chartShell}>
+    <svg className={styles.svg} viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none">
+      {/* Y axis for "questions answered" */}
+<line x1={padL} y1={padT} x2={padL} y2={padT + plotH} className={styles.yAxisLine} />
+
+{[
+  { v: maxAnswered, y: yMax },
+  { v: midAnswered, y: yMid },
+  { v: 0, y: y0 },
+].map((t) => (
+  <g key={`yt-${t.v}`}>
+    <line x1={padL - 4} y1={t.y} x2={padL} y2={t.y} className={styles.yAxisTick} />
+    <text x={padL - 6} y={t.y + 3} textAnchor="end" className={styles.yAxisText}>
+      {t.v}
+    </text>
+  </g>
+))}
+
+      {/* subtle grid */}
+      <line x1={padL} y1={yMax} x2={W - padR} y2={yMax} className={styles.grid} />
+<line x1={padL} y1={yMid} x2={W - padR} y2={yMid} className={styles.grid} />
+<line x1={padL} y1={y0}  x2={W - padR} y2={y0}  className={styles.gridBase} />
+
+
+      {/* bars: questionsAnswered */}
+      {shown.map((w, i) => {
+        const h = barHFor(w.questionsAnswered);
+        const x = xFor(i);
+        const y = padT + (plotH - h);
+        const isLast = i === shown.length - 1;
+        const label = fmtWeekStart(w.weekStart);
+
+        return (
+          <g key={w.weekStart}>
+            <rect
+              x={x}
+              y={y}
+              width={barW}
+              height={h}
+              rx={8}
+              className={isLast ? styles.barActive : styles.bar}
+            >
+              <title>{`Week of ${label}\n${w.questionsAnswered} answered · ${w.testsCompleted} tests · Avg ${w.avgScore}%`}</title>
+            </rect>
+
+            <text x={cxFor(i)} y={H - 10} textAnchor="middle" className={styles.axisText}>
+              {label}
+            </text>
+          </g>
+        );
+      })}
+
+      {/* thin line: avgScore */}
+      {avgPathD ? (
+        <>
+          <path d={avgPathD} className={styles.avgLine} />
+          {/* latest dot only */}
+          <circle
+            cx={cxFor(shown.length - 1)}
+            cy={yForAvg(shown[shown.length - 1].avgScore)}
+            r={3.5}
+            className={styles.avgDot}
+          />
+        </>
+      ) : null}
+    </svg>
+  </div>
+</div>
+
+    </div>
+  );
+}
+
+```
+
+### components/stats/useBootSweepOnce.client.ts
+```tsx
+//components/stats/useBootSweepOnce.client.ts
+'use client';
+
+import { useEffect, useRef, useState } from 'react';
+
+function easeOutCubic(t: number) {
+  return 1 - Math.pow(1 - t, 3);
+}
+function easeInCubic(t: number) {
+  return t * t * t;
+}
+
+function animateSegment(seg: Segment, onUpdate: (v: number) => void, onDone: () => void) {
+  let raf = 0;
+  const start = performance.now();
+
+  const frame = (now: number) => {
+    const tRaw = (now - start) / seg.durationMs;
+    const t = Math.max(0, Math.min(1, tRaw));
+    const v = seg.from + (seg.to - seg.from) * seg.ease(t);
+    onUpdate(v);
+
+    if (t >= 1) {
+      onDone();
+      return;
+    }
+    raf = requestAnimationFrame(frame);
+  };
+
+  raf = requestAnimationFrame(frame);
+  return () => cancelAnimationFrame(raf);
+}
+
+type Segment = {
+  from: number;
+  to: number;
+  durationMs: number;
+  ease: (t: number) => number;
+};
+
+function animateTimeline(
+  segs: Segment[],
+  onUpdate: (v: number) => void
+) {
+  let raf = 0;
+  const start = performance.now();
+  const total = segs.reduce((sum, s) => sum + s.durationMs, 0);
+
+  // set first value immediately (no initial wait)
+  if (segs.length > 0) onUpdate(segs[0].from);
+
+  const frame = (now: number) => {
+    const elapsed = now - start;
+
+    // End: snap to final exactly
+    if (elapsed >= total) {
+      onUpdate(segs[segs.length - 1]?.to ?? 0);
+      return;
+    }
+
+    // Find which segment we are in
+    let acc = 0;
+    for (const seg of segs) {
+      const end = acc + seg.durationMs;
+      if (elapsed <= end) {
+        const local =
+          seg.durationMs <= 0 ? 1 : (elapsed - acc) / seg.durationMs;
+        const u = Math.max(0, Math.min(1, local));
+        const eased = seg.ease(u);
+        const v = seg.from + (seg.to - seg.from) * eased;
+        onUpdate(v);
+        break;
+      }
+      acc = end;
+    }
+
+    raf = requestAnimationFrame(frame);
+  };
+
+  raf = requestAnimationFrame(frame);
+  return () => cancelAnimationFrame(raf);
+}
+
+
+export function useBootSweepOnce(opts: {
+  target: number;
+  seen: boolean;
+  enabled: boolean; // gate until data is ready
+  segments?: (target: number) => Segment[];
+}) {
+  const { target, seen, enabled } = opts;
+
+const [display, setDisplay] = useState<number>(0);  
+const playedRef = useRef(false);
+
+  // After played, keep display synced to target without replay.
+  useEffect(() => {
+    if (playedRef.current) setDisplay(target);
+  }, [target]);
+
+  useEffect(() => {
+    if (!seen || !enabled) return;
+    if (playedRef.current) return;
+
+    // reduced motion => no animation
+    if (window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches) {
+      playedRef.current = true;
+      setDisplay(target);
+      return;
+    }
+
+    playedRef.current = true;
+
+    const segs =
+      opts.segments?.(target) ??
+      [
+        { from: 0, to: 100, durationMs: 600, ease: easeOutCubic },
+        { from: 100, to: target, durationMs: 300, ease: easeOutCubic },
+      ];
+
+    let cancel: null | (() => void) = null;
+    let i = 0;
+
+    const runNext = () => {
+      if (i >= segs.length) return;
+      const seg = segs[i++];
+      cancel = animateSegment(seg, setDisplay, runNext);
+    };
+
+    runNext();
+
+    return () => cancel?.();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [seen, enabled]);
+
+  return display;
+}
+```
+
+### components/stats/useOnceInView.client.ts
+```tsx
+'use client';
+
+import { useEffect, useRef, useState } from 'react';
+
+type OnceInViewOptions = {
+  threshold?: number | number[];
+  rootMargin?: string;
+};
+
+export function useOnceInView<T extends Element>(threshold?: number): { ref: React.RefObject<T | null>; seen: boolean };
+export function useOnceInView<T extends Element>(opts?: OnceInViewOptions): { ref: React.RefObject<T | null>; seen: boolean };
+export function useOnceInView<T extends Element>(arg: number | OnceInViewOptions = 0.35) {
+  const ref = useRef<T | null>(null);
+  const [seen, setSeen] = useState(false);
+
+  const opts: OnceInViewOptions =
+    typeof arg === 'number' ? { threshold: arg } : arg;
+
+  const threshold = opts.threshold ?? 0.35;
+  const rootMargin = opts.rootMargin ?? '0px';
+
+  useEffect(() => {
+    if (seen) return;
+    const el = ref.current;
+    if (!el) return;
+
+    if (typeof IntersectionObserver === 'undefined') {
+      setSeen(true);
+      return;
+    }
+
+    const obs = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((e) => e.isIntersecting)) {
+          setSeen(true);
+          obs.disconnect();
+        }
+      },
+      { threshold, rootMargin }
+    );
+
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, [seen, threshold, rootMargin]);
+
+  return { ref, seen };
+}
+
+// Convenience wrapper: triggers when element crosses the middle of the viewport
+export function useOnceInMidView<T extends Element>() {
+  return useOnceInView<T>({ threshold: 0, rootMargin: '-50% 0px -50% 0px' });
 }
 
 ```
@@ -16999,7 +18259,7 @@ export type StatsVM = {
   timeInTimedTestsSec: number;
 
   // Minimal series we can chart later
-  scoreSeries: Array<{ t: number; scorePct: number }>;
+scoreSeries: Array<{ t: number; scorePct: number; answered: number; totalQ: number }>;
 
     // Weekly Progress (Consistency)
   weeklySeries: Array<{
@@ -17148,7 +18408,7 @@ export function computeStats(params: {
 
   let timeInTimedTestsSec = 0;
 
-  const scoreSeries: Array<{ t: number; scorePct: number }> = [];
+const scoreSeries: Array<{ t: number; scorePct: number; answered: number; totalQ: number }> = [];
   const scoreList: number[] = [];
 
   const weekly = new Map<
@@ -17215,7 +18475,7 @@ export function computeStats(params: {
     const denom = Math.max(1, a.questionIds?.length ?? 0);
     const scorePct = Math.round((100 * correct) / denom);
 
-    scoreSeries.push({ t, scorePct });
+scoreSeries.push({ t, scorePct, answered: attempted, totalQ: denom });
     scoreList.push(scorePct);
 
     // Best Time bucket update
@@ -51058,7 +52318,7 @@ export const config = {
           }
         ]
       },
-      "explanation": ""
+      "explanation": "The logic is that the driver on the right does not have a vehicle approaching from their immediate right, while the driver on the left does. This rule helps prevent collisions by establishing a clear priority for safe passage. Drivers going straight also generally have the right of way over turning vehicles, but in the case of simultaneous arrival at an uncontrolled intersection, the 'yield to the right' rule takes precedence."
     },
     {
       "id": "q0504",
@@ -72660,7 +73920,7 @@ export const config = {
         "user": [],
         "suggested": []
       },
-      "explanation": ""
+      "explanation": "BRT (Bus Rapid Transit) vehicles are specialized, high-capacity buses designed for fast, efficient public transport, often using dedicated lanes and advanced features like multi-door boarding, off-board fare payment, and diverse power sources (electric, hybrid, diesel, hydrogen)."
     },
     {
       "id": "q0820",
