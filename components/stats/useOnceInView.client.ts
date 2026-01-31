@@ -1,3 +1,4 @@
+// components/stats/useOnceInView.client.ts
 'use client';
 
 import { useEffect, useRef, useState } from 'react';

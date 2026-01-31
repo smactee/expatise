@@ -4441,17 +4441,18 @@ import { ROUTES } from '@/lib/routes';
 
 import { labelForTag } from '@/lib/qbank/tagTaxonomy';
 
+import TimeframeChips, { type Timeframe, tfShort } from '@/components/stats/TimeframeChips';
 import ScreenTimeChart7 from '@/components/stats/ScreenTimeChart7.client';
 
 import ReadinessRing from '@/app/(premium)/stats/ReadinessRing.client';
 import ScoreChart from '@/components/stats/ScoreChart.client';
-import WeeklyProgressChart from '@/components/stats/WeeklyProgressChart';
+import WeeklyProgressChart from '@/components/stats/DailyProgressChart';
+import DailyProgressChart from '@/components/stats/DailyProgressChart';
+
 
 const datasetId: DatasetId = 'cn-2023-test1';
 
 // Exclude Practice from Stats (per your decision)
-type Timeframe = 7 | 30 | "all";
-const TIMEFRAMES: Timeframe[] = [7, 30, "all"];
 
 const REAL_ONLY_MODE_KEYS = ["real-test"];
 const LEARNING_MODE_KEYS = ["real-test", "half-test", "rapid-fire-test"]; // all non-practice modes
@@ -4470,43 +4471,11 @@ export default function StatsPage() {
   const [tfBestTime, setTfBestTime] = useState<Timeframe>(30);
   const [tfTopics, setTfTopics] = useState<Timeframe>(30);
 
-function tfShort(t: Timeframe) {
-  return t === "all" ? "All" : `${t}D`;
-}
+
 function tfLabel(t: Timeframe) {
   return t === "all" ? "all time" : `last ${t} days`;
 }
 
-function TimeframeChips(props: {
-  value: Timeframe;
-  onChange: (v: Timeframe) => void;
-  align?: "left" | "center";
-}) {
-  const { value, onChange, align = "center" } = props;
-  return (
-    <div
-      className={`${styles.statsChips} ${
-        align === "center" ? styles.statsChipsCenter : ""
-      }`}
-    >
-      {TIMEFRAMES.map((t) => {
-        const active = value === t;
-        return (
-          <button
-            key={String(t)}
-            type="button"
-            onClick={() => onChange(t)}
-            className={`${styles.statsChip} ${
-              active ? styles.statsChipActive : ""
-            }`}
-          >
-            {tfShort(t)}
-          </button>
-        );
-      })}
-    </div>
-  );
-}
 
 
 
@@ -4722,33 +4691,44 @@ const statsTopics = useMemo(() => {
               <TimeframeChips value={tfScore} onChange={setTfScore} />
             </article>
 
-{/* Weekly Progress */}
-            <article className={styles.statsCard}>
-              <header className={styles.statsCardHeader}>
-                <h2 className={styles.statsCardTitle}>Weekly Progress</h2>
-              </header>
+{/* Daily Progress */}
+<article className={styles.statsCard}>
+  <header className={styles.statsCardHeader}>
+  <h2 className={styles.statsCardTitle}>Daily Progress</h2>
 
-             <div className={`${styles.statsGraphArea} ${styles.statsGraphClean}`}>
-  <div className={`${styles.statsGraphPlaceholder} ${styles.statsGraphClean}`} style={{ width: "100%" }}>
+  <div className={styles.statsLegend}>
+    <span className={`${styles.statsLegendDot} ${styles.statsLegendDotBlue}`} />
+    <span className={styles.statsLegendLabel}>Questions</span>
 
-  {loading ? (
-    "Loading…"
-  ) : statsWeekly.weeklySeries.length === 0 ? (
-    "No weekly data yet."
-  ) : (
-  <WeeklyProgressChart
-    series={statsWeekly.weeklySeries}
-    bestWeekQuestions={statsWeekly.bestWeekQuestions}
-    streakWeeks={statsWeekly.consistencyStreakWeeks}
-    rows={6}
-  />
-)
-}
-</div>
+    <span className={`${styles.statsLegendDot} ${styles.statsLegendDotYellow}`} />
+    <span className={styles.statsLegendLabel}>Avg score</span>
+  </div>
+</header>
 
-              </div>
-              <TimeframeChips value={tfWeekly} onChange={setTfWeekly} />
-            </article>
+
+  <div className={`${styles.statsGraphArea} ${styles.statsGraphClean}`}>
+    <div
+      className={`${styles.statsGraphPlaceholder} ${styles.statsGraphClean}`}
+      style={{ width: "100%" }}
+    >
+      {loading ? (
+        "Loading…"
+      ) : statsWeekly.attemptsCount === 0 ? (
+        "No daily data yet."
+      ) : (
+        <DailyProgressChart
+          series={statsWeekly.dailySeries}
+          bestDayQuestions={statsWeekly.bestDayQuestions}
+          streakDays={statsWeekly.consistencyStreakDays}
+          rows={tfWeekly === "all" ? 30 : tfWeekly}
+        />
+      )}
+    </div>
+  </div>
+
+  <TimeframeChips value={tfWeekly} onChange={setTfWeekly} />
+</article>
+
 
 {/* Best Time */}
             <article className={styles.statsCard}>
@@ -5242,42 +5222,6 @@ const statsTopics = useMemo(() => {
 }
 
 
-/* Timeframe chips (per-card) */
-.statsChips {
-  display: flex;
-  gap: 6px;
-  flex-wrap: wrap;
-  margin-top: 10px;
-  justify-content: flex-start;
-}
-
-.statsChipsCenter {
-  justify-content: center;
-}
-
-.statsChip {
-  padding: 6px 10px;
-  border-radius: 999px;
-  border: 1px solid rgba(17, 24, 39, 0.12);
-  background: rgba(255, 255, 255, 0.7);
-  font-size: 12px;
-  color: #111827;
-  cursor: pointer;
-}
-
-.statsChipActive {
-  background: rgba(17, 24, 39, 0.08);
-}
-
-:root[data-theme="dark"] .statsChip {
-  border-color: rgba(255, 255, 255, 0.18);
-  background: rgba(255, 255, 255, 0.06);
-  color: #f9fafb;
-}
-
-:root[data-theme="dark"] .statsChipActive {
-  background: rgba(255, 255, 255, 0.14);
-}
 
 /* Used to remove the placeholder/debug box look for a finished chart */
 .statsGraphClean {
@@ -13956,6 +13900,615 @@ export function useUserProfile() {
 
 ```
 
+### components/stats/DailyProgressChart.module.css
+```css
+.wrap{
+  width: 100%;
+  --avgYellow: rgba(255, 197, 66, 0.95);
+   --barBlue: rgba(43,124,175,0.85);
+}
+
+.metaRow{
+  display:flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 12px;
+  color: rgba(17,24,39,0.65);
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+.metaItem{ white-space: nowrap; }
+.metaLabel{ opacity: 0.75; margin-right: 4px; }
+
+.box{
+  border-radius: 18px;
+  border: 1px solid rgba(148, 163, 184, 0.60);
+  padding: 12px;
+  background: rgba(255,255,255,0.55);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.row{
+  display: grid;
+  grid-template-columns: 92px 1fr auto;
+  align-items: center;
+  gap: 10px;
+  font-size: 11.5px;
+  color: rgba(17,24,39,0.75);
+}
+
+.week{ color: rgba(17,24,39,0.55); }
+
+.barTrack{
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(43,124,175,0.10);
+  overflow: hidden;
+}
+
+.barFill{
+  height: 100%;
+  border-radius: 999px;
+  background: rgba(43,124,175,0.70);
+}
+
+.metrics{ white-space: nowrap; opacity: 0.9; }
+
+/* Dark theme tweaks */
+:global(:root[data-theme='dark']) .box{
+  background: rgba(255,255,255,0.06);
+  border-color: rgba(148,163,184,0.35);
+}
+:global(:root[data-theme='dark']) .metaRow,
+:global(:root[data-theme='dark']) .row{
+  color: rgba(249,250,251,0.78);
+}
+:global(:root[data-theme='dark']) .week{
+  color: rgba(249,250,251,0.55);
+}
+:global(:root[data-theme='dark']) .barTrack{
+  background: rgba(43,124,175,0.22);
+}
+
+.chartShell{
+  width: 100%;
+}
+
+.svg{
+  width: 100%;
+  height: 120px; /* controls chart height inside the dashed box */
+  display: block;
+}
+
+.grid{
+  stroke: rgba(17,24,39,0.08);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+.gridBase{
+  stroke: rgba(17,24,39,0.14);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+.bar{
+  fill: rgba(43,124,175,0.25);
+}
+
+.barActive{
+  fill: rgba(43,124,175,0.55);
+}
+
+.avgLine{
+  fill: none;
+  stroke: rgba(255, 197, 66, 0.95);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.avgDot{
+  fill: var(--avgYellow);
+  opacity: 0.95;
+}
+
+.avgHalo{
+  fill: none;
+  stroke: var(--avgYellow);
+  stroke-width: 2;
+  pointer-events: none;
+}
+
+@keyframes haloPulseYellow {
+  0%   { transform: scale(1);    opacity: 0.35; }
+  35%  { transform: scale(1.20); opacity: 0.22; }
+  60%  { transform: scale(1.45); opacity: 0; }
+  100% { transform: scale(1.45); opacity: 0; }
+}
+
+
+.avgHaloPulse{
+  fill: none;
+  stroke: rgba(255, 197, 66, 0.35);
+  stroke-width: 2;
+  vector-effect: non-scaling-stroke;
+
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: haloPulseYellow 1.8s ease-out infinite;
+
+  pointer-events: none;
+
+  /* IMPORTANT: don't force-hide it here */
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce){
+  .avgHaloPulse{
+    animation: none;
+    opacity: 1;      /* show static ring */
+    transform: none;
+  }
+}
+
+
+
+
+.axisText{
+  font-size: 8.5px;
+  fill: rgba(17,24,39,0.55);
+}
+
+.axisRow{
+  display: grid;
+  grid-template-columns: 92px 1fr auto; /* MUST match .row */
+  align-items: end;
+  margin-bottom: 6px;
+}
+
+.axisScale{
+  display: flex;
+  justify-content: space-between;
+  font-size: 10px;
+  color: rgba(17,24,39,0.45);
+  padding: 0 2px;
+  line-height: 1;
+}
+
+.yAxisLine{
+  stroke: rgba(17,24,39,0.18);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+.yAxisTick{
+  stroke: rgba(17,24,39,0.18);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+.yAxisText{
+  font-size: 8.5px;
+  fill: var(--barBlue);
+}
+.yAxisTextRight{
+  font-size: 8.5px;
+  fill: var(--avgYellow);
+}
+
+.axisCornerLabel{
+  font-size: 8px;
+  fill: rgba(17,24,39,0.45);
+  pointer-events: none;
+}
+
+:global(:root[data-theme='dark']) .axisCornerLabel{
+  fill: rgba(249,250,251,0.55);
+}
+
+/* ===== Chart entrance animations ===== */
+
+@keyframes barRise {
+  0%   { transform: scaleY(0.001); opacity: 0.35; }
+  100% { transform: scaleY(1);     opacity: 1; }
+}
+
+.barRise{
+  transform-box: fill-box;
+  transform-origin: center bottom;
+  transform: scaleY(0.001);
+  opacity: 0.35;
+
+  animation: barRise 2000ms cubic-bezier(0.2, 0.85, 0.2, 1) forwards;
+  animation-fill-mode: both;
+  will-change: transform, opacity;
+}
+
+
+
+
+
+@keyframes popIn {
+  0%   { transform: scale(0.7); opacity: 0; }
+  100% { transform: scale(1);   opacity: 1; }
+}
+
+.popIn{
+  transform-box: fill-box;
+  transform-origin: center;
+  transform: scale(0.7);
+  opacity: 0;
+
+  animation: popIn 320ms ease-out forwards;
+  animation-fill-mode: both;
+}
+
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce){
+  .barRise{ animation: none; transform: none; opacity: 1; }
+  .avgLineDraw{ animation: none; stroke-dashoffset: 0; opacity: 1; }
+  .popIn{ animation: none; transform: none; opacity: 1; }
+}
+
+/* ===== Pre-reveal (hide until animateIn) ===== */
+
+.barHidden{
+  /* keep bars invisible until rise animation is applied */
+  transform-box: fill-box;
+  transform-origin: center bottom;
+  transform: scaleY(0.001);
+  opacity: 0;
+}
+
+.dotHidden{
+  /* keep dots invisible until popIn animation is applied */
+  transform-box: fill-box;
+  transform-origin: center;
+  transform: scale(0.7);
+  opacity: 0;
+}
+
+/* keep pulse hidden until its delayed animation actually begins */
+.pulseHidden{
+  opacity: 0;
+}
+
+@keyframes popIn {
+  0%   { transform: scale(0.7); opacity: 0; }
+  100% { transform: scale(1);   opacity: 1; }
+}
+
+.popIn{
+  transform-box: fill-box;
+  transform-origin: center;
+  transform: scale(0.7);
+  opacity: 0;
+
+  animation: popIn 320ms ease-out forwards;
+  animation-fill-mode: both;
+}
+
+@media (prefers-reduced-motion: reduce){
+  .popIn{ animation: none; transform: none; opacity: 1; }
+}
+
+
+```
+
+### components/stats/DailyProgressChart.tsx
+```tsx
+'use client';
+
+import styles from './DailyProgressChart.module.css';
+import { useOnceInView } from './useOnceInView.client';
+import { useEffect, useRef, useState } from 'react';
+import { useBootSweepOnce } from './useBootSweepOnce.client';
+
+type DayRow = {
+  dayStart: number;
+  testsCompleted: number;
+  questionsAnswered: number;
+  avgScore: number;
+};
+
+function fmtDay(ms: number) {
+  return new Date(ms).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+}
+
+function clamp(n: number, a: number, b: number) {
+  return Math.max(a, Math.min(b, n));
+}
+
+function easeOutCubic(t: number) {
+  return 1 - Math.pow(1 - t, 3);
+}
+
+
+export default function DailyProgressChart(props: {
+  series: DayRow[];
+  bestDayQuestions: number;
+  streakDays: number;
+  rows?: number; // default 7/30 controlled by parent
+}) {
+  const { series, bestDayQuestions, streakDays, rows = 7 } = props;
+
+  const shown = series.slice(-rows);
+
+  const maxAnsweredData = shown.reduce((m, d) => {
+    const v = Number.isFinite(d.questionsAnswered) ? d.questionsAnswered : 0;
+    return v > m ? v : m;
+  }, 0);
+
+  const maxAnswered = Math.max(1, maxAnsweredData);
+  const midAnswered = Math.round(maxAnswered / 2);
+
+  const { ref: inViewRef, seen } = useOnceInView<HTMLDivElement>({
+    threshold: 0.2,
+    rootMargin: '0px 0px -15% 0px',
+  });
+
+  const animateIn = seen && shown.length > 0;
+
+  // animation timing (single source of truth)
+  const barStaggerMs = 90;
+  const lineDelayMs = 140;
+  const lineDurMs = 850; // must match CSS .avgLineDraw duration
+  const dotDelayMs = lineDelayMs + lineDurMs;
+
+  // geometry
+  const W = 340;
+  const H = 110;
+
+  const padT = 10;
+  const padB = 26;
+
+  const padL = 0;
+  const padR = 0;
+
+  const xAxisL = padL + 0.5;
+  const xAxisR = W - padR - 0.5;
+
+  const plotW = xAxisR - xAxisL;
+  const plotH = H - padT - padB;
+
+  const slot = shown.length ? plotW / shown.length : plotW;
+  const barW = Math.max(8, slot * 0.55);
+
+  const xFor = (i: number) => xAxisL + i * slot + (slot - barW) / 2;
+  const cxFor = (i: number) => xFor(i) + barW / 2;
+  
+
+  const barHFor = (answered: number) => (answered / maxAnswered) * plotH;
+
+  const yForAnswered = (answered: number) => {
+    const y01 = 1 - clamp(answered / maxAnswered, 0, 1);
+    return padT + y01 * plotH;
+  };
+
+  const y0 = yForAnswered(0);
+  const yMid = yForAnswered(midAnswered);
+  const yMax = yForAnswered(maxAnswered);
+
+  const yForAvg = (pct: number) => {
+    const y01 = 1 - clamp(pct / 100, 0, 1);
+    return padT + y01 * plotH;
+  };
+
+  const avgPathD =
+    shown.length === 0
+      ? ''
+      : shown
+          .map((d, i) => {
+            const pct = clamp(Number.isFinite(d.avgScore) ? d.avgScore : 0, 0, 100);
+            return `${i === 0 ? 'M' : 'L'} ${cxFor(i).toFixed(2)} ${yForAvg(pct).toFixed(2)}`;
+          })
+          .join(' ');
+
+  const avgPoints = shown.map((d, i) => {
+  const pct = clamp(Number.isFinite(d.avgScore) ? d.avgScore : 0, 0, 100);
+  return {
+    dayStart: d.dayStart,
+    pct,                 // ✅ keep it
+    cx: cxFor(i),
+    cy: yForAvg(pct),
+  };
+});
+
+
+const avgPathRef = useRef<SVGPathElement | null>(null);
+const [avgLen, setAvgLen] = useState(0);
+const lensReady = avgLen > 0;
+
+useEffect(() => {
+  if (avgPathRef.current) setAvgLen(avgPathRef.current.getTotalLength());
+}, [avgPathD]);
+
+const hasAnyLine = avgPathD.length > 0;
+
+const reveal = useBootSweepOnce({
+  target: 1,
+  seen, // from your useOnceInView
+  enabled: hasAnyLine && lensReady,
+  segments: () => [
+    { from: 0, to: 0, durationMs: lineDelayMs, ease: (t) => t }, // wait
+    { from: 0, to: 1, durationMs: lineDurMs, ease: easeOutCubic }, // draw
+  ],
+});
+
+const tReveal = clamp(reveal, 0, 1);
+const dashLen = Math.max(1, Math.ceil(avgLen) + 2); // +2 prevents tiny tail gap
+const avgDashOffset = (1 - tReveal) * dashLen;
+
+
+  // label density (30 days gets crowded)
+  const labelEvery =
+    shown.length <= 8 ? 1 :
+    shown.length <= 14 ? 2 :
+    shown.length <= 30 ? 5 :
+    10;
+
+  const showLabel = (i: number) =>
+    i === 0 || i === shown.length - 1 || i % labelEvery === 0;
+
+  return (
+    <div className={styles.wrap}>
+      <div className={styles.box}>
+        <div className={styles.chartShell} ref={inViewRef}>
+          <svg className={styles.svg} viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none">
+            {/* LEFT axis */}
+            <line x1={xAxisL} y1={padT} x2={xAxisL} y2={padT + plotH} className={styles.yAxisLine} />
+
+            {[
+              { label: String(maxAnswered), y: yMax },
+              { label: String(midAnswered), y: yMid },
+              { label: '0', y: y0 },
+            ].map((t, i) => (
+              <g key={`yl-${i}`}>
+                <line x1={xAxisL} y1={t.y} x2={xAxisL + 4} y2={t.y} className={styles.yAxisTick} />
+                <text x={xAxisL + 6} y={t.y + 3} textAnchor="start" className={styles.yAxisText}>
+                  {t.label}
+                </text>
+              </g>
+            ))}
+
+            {/* RIGHT axis */}
+            <line x1={xAxisR} y1={padT} x2={xAxisR} y2={padT + plotH} className={styles.yAxisLine} />
+
+            {[
+              { label: '100', y: yForAvg(100) },
+              { label: '50', y: yForAvg(50) },
+              { label: '0', y: yForAvg(0) },
+            ].map((t, i) => (
+              <g key={`yr-${i}`}>
+                <line x1={xAxisR - 4} y1={t.y} x2={xAxisR} y2={t.y} className={styles.yAxisTick} />
+                <text x={xAxisR - 6} y={t.y + 3} textAnchor="end" className={styles.yAxisTextRight}>
+                  {t.label}
+                </text>
+              </g>
+            ))}
+
+            {/* grid */}
+            <line x1={xAxisL} y1={yMax} x2={xAxisR} y2={yMax} className={styles.grid} />
+            <line x1={xAxisL} y1={yMid} x2={xAxisR} y2={yMid} className={styles.grid} />
+            <line x1={xAxisL} y1={y0} x2={xAxisR} y2={y0} className={styles.gridBase} />
+
+            {/* corner labels */}
+            <text x={xAxisL + 6} y={y0 + 12} textAnchor="start" className={styles.yAxisText}>
+              Questions
+            </text>
+            <text x={xAxisR - 6} y={y0 + 12} textAnchor="end" className={styles.yAxisTextRight}>
+              Score
+            </text>
+
+            {/* bars */}
+            {shown.map((d, i) => {
+              const h = barHFor(d.questionsAnswered);
+              const x = xFor(i);
+              const y = padT + (plotH - h);
+              const isLast = i === shown.length - 1;
+              const label = fmtDay(d.dayStart);
+
+              return (
+                <g key={d.dayStart}>
+                  <rect
+                    x={x}
+                    y={y}
+                    width={barW}
+                    height={h}
+                    rx={8}
+                    className={`${isLast ? styles.barActive : styles.bar} ${styles.barHidden} ${animateIn ? styles.barRise : ''}`}
+                    style={animateIn ? { animationDelay: `${i * barStaggerMs}ms` } : undefined}
+                  >
+                    <title>{`Day of ${label}\n${d.questionsAnswered} answered · ${d.testsCompleted} tests · Avg ${d.avgScore}%`}</title>
+                  </rect>
+
+                  {showLabel(i) ? (() => {
+  const cx = cxFor(i);
+
+  const isFirst = i === 0;
+  const isLast = i === shown.length - 1;
+
+  // keep labels inside the viewport
+  const padText = 4;
+  const xSafe = isFirst ? xAxisL + padText
+            : isLast ? xAxisR - padText
+            : cx;
+
+  const anchor = isFirst ? "start" : isLast ? "end" : "middle";
+
+  return (
+    <text x={xSafe} y={H - 4} textAnchor={anchor} className={styles.axisText}>
+      {label}
+    </text>
+  );
+})() : null}
+
+                </g>
+              );
+            })}
+
+            {/* avgScore line + dots */}
+{avgPathD ? (
+  <>
+    {/* line reveal (ScoreChart method: real length + dashoffset) */}
+    <path
+      ref={avgPathRef}
+      d={avgPathD}
+      className={styles.avgLine}
+      strokeDasharray={lensReady ? dashLen : undefined}
+      strokeDashoffset={lensReady ? avgDashOffset : undefined}
+      style={{ opacity: lensReady ? 1 : 0 }}
+    />
+
+    {/* dots for EVERY point (appear after the line draw finishes) */}
+    {avgPoints
+  .filter((p) => p.pct > 0)
+  .map((p) => (
+    <circle
+      key={`avgpt-${p.dayStart}`}
+      cx={p.cx}
+      cy={p.cy}
+      r={3.25}
+      className={`${styles.avgDot} ${styles.dotHidden} ${animateIn ? styles.popIn : ''}`}
+      style={animateIn ? { animationDelay: `${dotDelayMs}ms` } : undefined}
+    />
+))}
+
+
+    {/* pulse halo ONLY for latest point */}
+    {avgPoints.length > 0 ? (
+      <circle
+        cx={avgPoints[avgPoints.length - 1].cx}
+        cy={avgPoints[avgPoints.length - 1].cy}
+        r={7}
+        className={`${styles.avgHaloPulse} ${animateIn ? '' : styles.pulseHidden}`}
+        style={animateIn ? { animationDelay: `${dotDelayMs}ms` } : undefined}
+      />
+    ) : null}
+  </>
+) : null}
+
+          </svg>
+        </div>
+      </div>
+      <div className={styles.metaRow}>
+        <div className={styles.metaItem}>
+          <span className={styles.metaLabel}>Best day:</span> <b>{bestDayQuestions}</b> questions
+        </div>
+        <div className={styles.metaItem}>
+          <span className={styles.metaLabel}>Consistency streak:</span> <b>{streakDays}</b> days
+        </div>
+      </div>
+    </div>
+  );
+}
+
+```
+
 ### components/stats/ScoreChart.client.tsx
 ```tsx
 //components/stats/ScoreChart.client.tsx
@@ -15127,313 +15680,93 @@ export default function ScreenTimeChart7({
 
 ```
 
-### components/stats/WeeklyProgressChart.module.css
+### components/stats/TimeframeChips.module.css
 ```css
-.wrap { width: 100%; }
-
-.metaRow{
-  display:flex;
-  justify-content: space-between;
-  gap: 12px;
-  font-size: 12px;
-  color: rgba(17,24,39,0.65);
-  margin-bottom: 10px;
+/* Timeframe chips (per-card) */
+.statsChips {
+  display: flex;
+  gap: 6px;
   flex-wrap: wrap;
-}
-.metaItem{ white-space: nowrap; }
-.metaLabel{ opacity: 0.75; margin-right: 4px; }
-
-.box{
-  border-radius: 18px;
-  border: 1px dashed rgba(148, 163, 184, 0.60);
-  padding: 12px;
-  background: rgba(255,255,255,0.55);
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+  margin-top: 10px;
+  justify-content: flex-start;
 }
 
-.row{
-  display: grid;
-  grid-template-columns: 92px 1fr auto;
-  align-items: center;
-  gap: 10px;
-  font-size: 11.5px;
-  color: rgba(17,24,39,0.75);
+.statsChipsCenter {
+  justify-content: center;
 }
 
-.week{ color: rgba(17,24,39,0.55); }
-
-.barTrack{
-  height: 8px;
+.statsChip {
+  padding: 6px 10px;
   border-radius: 999px;
-  background: rgba(43,124,175,0.10);
-  overflow: hidden;
+  border: 1px solid rgba(17, 24, 39, 0.12);
+  background: rgba(255, 255, 255, 0.7);
+  font-size: 12px;
+  color: #111827;
+  cursor: pointer;
 }
 
-.barFill{
-  height: 100%;
-  border-radius: 999px;
-  background: rgba(43,124,175,0.70);
+.statsChipActive {
+  background: rgba(17, 24, 39, 0.08);
 }
 
-.metrics{ white-space: nowrap; opacity: 0.9; }
-
-/* Dark theme tweaks */
-:global(:root[data-theme='dark']) .box{
-  background: rgba(255,255,255,0.06);
-  border-color: rgba(148,163,184,0.35);
-}
-:global(:root[data-theme='dark']) .metaRow,
-:global(:root[data-theme='dark']) .row{
-  color: rgba(249,250,251,0.78);
-}
-:global(:root[data-theme='dark']) .week{
-  color: rgba(249,250,251,0.55);
-}
-:global(:root[data-theme='dark']) .barTrack{
-  background: rgba(43,124,175,0.22);
+:root[data-theme="dark"] .statsChip {
+  border-color: rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.06);
+  color: #f9fafb;
 }
 
-.chartShell{
-  width: 100%;
-}
-
-.svg{
-  width: 100%;
-  height: 120px; /* controls chart height inside the dashed box */
-  display: block;
-}
-
-.grid{
-  stroke: rgba(17,24,39,0.08);
-  stroke-width: 1;
-  vector-effect: non-scaling-stroke;
-}
-
-.gridBase{
-  stroke: rgba(17,24,39,0.14);
-  stroke-width: 1;
-  vector-effect: non-scaling-stroke;
-}
-
-.bar{
-  fill: rgba(43,124,175,0.25);
-}
-
-.barActive{
-  fill: rgba(43,124,175,0.55);
-}
-
-.avgLine{
-  fill: none;
-  stroke: rgba(255, 197, 66, 0.95);
-  stroke-width: 2;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  vector-effect: non-scaling-stroke;
-}
-
-.avgDot{
-  fill: rgba(255, 197, 66, 0.95);
-}
-
-.axisText{
-  font-size: 8.5px;
-  fill: rgba(17,24,39,0.55);
-}
-
-.axisRow{
-  display: grid;
-  grid-template-columns: 92px 1fr auto; /* MUST match .row */
-  align-items: end;
-  margin-bottom: 6px;
-}
-
-.axisScale{
-  display: flex;
-  justify-content: space-between;
-  font-size: 10px;
-  color: rgba(17,24,39,0.45);
-  padding: 0 2px;
-  line-height: 1;
-}
-
-.yAxisLine{
-  stroke: rgba(17,24,39,0.18);
-  stroke-width: 1;
-  vector-effect: non-scaling-stroke;
-}
-
-.yAxisTick{
-  stroke: rgba(17,24,39,0.18);
-  stroke-width: 1;
-  vector-effect: non-scaling-stroke;
-}
-
-.yAxisText{
-  font-size: 8.5px;
-  fill: rgba(17,24,39,0.55);
+:root[data-theme="dark"] .statsChipActive {
+  background: rgba(255, 255, 255, 0.14);
 }
 
 ```
 
-### components/stats/WeeklyProgressChart.tsx
+### components/stats/TimeframeChips.tsx
 ```tsx
-// components/stats/WeeklyProgressChart.tsx
+// components/stats/TimeframeChips.tsx
 'use client';
 
-import styles from './WeeklyProgressChart.module.css';
+import styles from './TimeframeChips.module.css';
 
-type WeekRow = {
-  weekStart: number;
-  testsCompleted: number;
-  questionsAnswered: number;
-  avgScore: number;
-};
+export type Timeframe = 7 | 30 | 'all';
+export const TIMEFRAMES: Timeframe[] = [7, 30, 'all'];
 
-function fmtWeekStart(ms: number) {
-  return new Date(ms).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+export function tfShort(t: Timeframe) {
+  return t === 'all' ? 'All' : `${t}D`;
 }
 
-function clamp(n: number, a: number, b: number) {
-  return Math.max(a, Math.min(b, n));
-}
-
-
-export default function WeeklyProgressChart(props: {
-  series: WeekRow[];
-  bestWeekQuestions: number;
-  streakWeeks: number;
-  rows?: number; // default 6
-}) {
-  const { series, bestWeekQuestions, streakWeeks, rows = 6 } = props;
-
-  const shown = series.slice(-rows);
-  const maxAnswered = Math.max(1, ...shown.map((w) => w.questionsAnswered));
-    const midAnswered = Math.round(maxAnswered / 2);
-
-// --- chart geometry (same 340-ish scale as your ScoreChart) ---
-const W = 340;
-const H = 110;
-
-const padL = 12;
-const padR = 12;
-const padT = 10;
-const padB = 26; // room for week labels
-
-const plotW = W - padL - padR;
-const plotH = H - padT - padB;
-
-const slot = shown.length ? plotW / shown.length : plotW;
-const barW = Math.max(10, slot * 0.55);
-
-const xFor = (i: number) => padL + i * slot + (slot - barW) / 2;
-const cxFor = (i: number) => xFor(i) + barW / 2;
-
-const barHFor = (answered: number) => (answered / maxAnswered) * plotH;
-const yForAnswered = (answered: number) => {
-  const y01 = 1 - clamp(answered / maxAnswered, 0, 1);
-  return padT + y01 * plotH;
+type Props = {
+  value: Timeframe;
+  onChange: (v: Timeframe) => void;
+  align?: 'left' | 'center';
 };
 
-const y0 = yForAnswered(0);
-const yMid = yForAnswered(midAnswered);
-const yMax = yForAnswered(maxAnswered);
-
-const yForAvg = (pct: number) => {
-  const y01 = 1 - clamp(pct / 100, 0, 1);
-  return padT + y01 * plotH;
-};
-
-const avgPathD =
-  shown.length === 0
-    ? ""
-    : shown
-        .map((w, i) => `${i === 0 ? "M" : "L"} ${cxFor(i).toFixed(2)} ${yForAvg(w.avgScore).toFixed(2)}`)
-        .join(" ");
-
+export default function TimeframeChips({
+  value,
+  onChange,
+  align = 'center',
+}: Props) {
   return (
-    <div className={styles.wrap}>
-      <div className={styles.metaRow}>
-        <div className={styles.metaItem}>
-          <span className={styles.metaLabel}>Best week:</span> <b>{bestWeekQuestions}</b> questions
-        </div>
-        <div className={styles.metaItem}>
-          <span className={styles.metaLabel}>Consistency streak:</span> <b>{streakWeeks}</b> weeks
-        </div>
-      </div>
-
-      <div className={styles.box}>
-  <div className={styles.chartShell}>
-    <svg className={styles.svg} viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none">
-      {/* Y axis for "questions answered" */}
-<line x1={padL} y1={padT} x2={padL} y2={padT + plotH} className={styles.yAxisLine} />
-
-{[
-  { v: maxAnswered, y: yMax },
-  { v: midAnswered, y: yMid },
-  { v: 0, y: y0 },
-].map((t) => (
-  <g key={`yt-${t.v}`}>
-    <line x1={padL - 4} y1={t.y} x2={padL} y2={t.y} className={styles.yAxisTick} />
-    <text x={padL - 6} y={t.y + 3} textAnchor="end" className={styles.yAxisText}>
-      {t.v}
-    </text>
-  </g>
-))}
-
-      {/* subtle grid */}
-      <line x1={padL} y1={yMax} x2={W - padR} y2={yMax} className={styles.grid} />
-<line x1={padL} y1={yMid} x2={W - padR} y2={yMid} className={styles.grid} />
-<line x1={padL} y1={y0}  x2={W - padR} y2={y0}  className={styles.gridBase} />
-
-
-      {/* bars: questionsAnswered */}
-      {shown.map((w, i) => {
-        const h = barHFor(w.questionsAnswered);
-        const x = xFor(i);
-        const y = padT + (plotH - h);
-        const isLast = i === shown.length - 1;
-        const label = fmtWeekStart(w.weekStart);
-
+    <div
+      className={`${styles.statsChips} ${
+        align === 'center' ? styles.statsChipsCenter : ''
+      }`}
+    >
+      {TIMEFRAMES.map((t) => {
+        const active = value === t;
         return (
-          <g key={w.weekStart}>
-            <rect
-              x={x}
-              y={y}
-              width={barW}
-              height={h}
-              rx={8}
-              className={isLast ? styles.barActive : styles.bar}
-            >
-              <title>{`Week of ${label}\n${w.questionsAnswered} answered · ${w.testsCompleted} tests · Avg ${w.avgScore}%`}</title>
-            </rect>
-
-            <text x={cxFor(i)} y={H - 10} textAnchor="middle" className={styles.axisText}>
-              {label}
-            </text>
-          </g>
+          <button
+            key={String(t)}
+            type="button"
+            onClick={() => onChange(t)}
+            className={`${styles.statsChip} ${
+              active ? styles.statsChipActive : ''
+            }`}
+          >
+            {tfShort(t)}
+          </button>
         );
       })}
-
-      {/* thin line: avgScore */}
-      {avgPathD ? (
-        <>
-          <path d={avgPathD} className={styles.avgLine} />
-          {/* latest dot only */}
-          <circle
-            cx={cxFor(shown.length - 1)}
-            cy={yForAvg(shown[shown.length - 1].avgScore)}
-            r={3.5}
-            className={styles.avgDot}
-          />
-        </>
-      ) : null}
-    </svg>
-  </div>
-</div>
-
     </div>
   );
 }
@@ -15583,6 +15916,7 @@ const playedRef = useRef(false);
 
 ### components/stats/useOnceInView.client.ts
 ```tsx
+// components/stats/useOnceInView.client.ts
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
@@ -18269,6 +18603,18 @@ scoreSeries: Array<{ t: number; scorePct: number; answered: number; totalQ: numb
     avgScore: number;           // 0..100
   }>;
 
+    // Daily Progress (Consistency)
+  dailySeries: Array<{
+    dayStart: number;           // ms timestamp (local midnight)
+    testsCompleted: number;
+    questionsAnswered: number;  // answered count (attempted)
+    avgScore: number;           // 0..100
+  }>;
+
+  bestDayQuestions: number;        // max questionsAnswered in a day
+  consistencyStreakDays: number;   // current streak (consecutive days with >0)
+
+
     // Best Time (Performance by time-of-day)
   bestTimeSeries: Array<{
     label: string;        // e.g. "6–9"
@@ -18384,6 +18730,12 @@ function startOfWeekMs(t: number) {
   return d.getTime();
 }
 
+function startOfDayMs(t: number) {
+  const d = new Date(t);
+  d.setHours(0, 0, 0, 0);
+  return d.getTime();
+}
+
 
 export function computeStats(params: {
   attempts: AttemptLike[];
@@ -18415,6 +18767,12 @@ const scoreSeries: Array<{ t: number; scorePct: number; answered: number; totalQ
     number,
     { tests: number; answered: number; scoreSum: number; scoreCount: number }
   >();
+
+    const daily = new Map<
+    number,
+    { tests: number; answered: number; scoreSum: number; scoreCount: number }
+  >();
+
 
   // Best Time buckets (local hour of submittedAt)
   const TIME_BUCKETS = [
@@ -18495,6 +18853,17 @@ scoreSeries.push({ t, scorePct, answered: attempted, totalQ: denom });
     w.scoreSum += scorePct;
     w.scoreCount += 1;
     weekly.set(ws, w);
+
+        // Daily bucket
+    const ds = startOfDayMs(t);
+    const drec =
+      daily.get(ds) ?? { tests: 0, answered: 0, scoreSum: 0, scoreCount: 0 };
+    drec.tests += 1;
+    drec.answered += attempted;
+    drec.scoreSum += scorePct;
+    drec.scoreCount += 1;
+    daily.set(ds, drec);
+
 
     // timed-test estimate (optional)
     const tls = typeof a.timeLimitSec === "number" ? a.timeLimitSec : 0;
@@ -18634,6 +19003,61 @@ for (let i = timeDailySeries.length - 1; i >= 0; i--) {
   timeStreakDays += 1;
 }
 
+  // ===== Daily outputs (filled window) =====
+  const DAY_MS = 24 * 60 * 60 * 1000;
+  const todayStart = startOfDayMs(Date.now());
+
+  // Decide visible range based on timeframe:
+  // - 7 => last 7 days
+  // - 30 => last 30 days
+  // - all => from first data day to today (filled)
+  let rangeStart = todayStart;
+
+  if (filters.timeframeDays === "all") {
+    // If no data, just show today
+    const keys = Array.from(daily.keys());
+    rangeStart = keys.length ? Math.min(...keys) : todayStart;
+  } else {
+    rangeStart = todayStart - (filters.timeframeDays - 1) * DAY_MS;
+  }
+
+  const daysCount = Math.max(1, Math.round((todayStart - rangeStart) / DAY_MS) + 1);
+
+  const dailySeries: Array<{
+    dayStart: number;
+    testsCompleted: number;
+    questionsAnswered: number;
+    avgScore: number;
+  }> = [];
+
+  for (let i = 0; i < daysCount; i++) {
+    const dayStart = rangeStart + i * DAY_MS;
+    const d = daily.get(dayStart);
+
+    dailySeries.push({
+      dayStart,
+      testsCompleted: d?.tests ?? 0,
+      questionsAnswered: d?.answered ?? 0,
+      avgScore: d?.scoreCount ? Math.round(d.scoreSum / d.scoreCount) : 0,
+    });
+  }
+
+  const bestDayQuestions = dailySeries.length
+    ? Math.max(...dailySeries.map((x) => x.questionsAnswered))
+    : 0;
+
+  // streak: consecutive days ending today with questionsAnswered > 0
+  let consistencyStreakDays = 0;
+  let cursorDay = todayStart;
+
+  while (cursorDay >= rangeStart) {
+    const d = daily.get(cursorDay);
+    if (!d || d.answered <= 0) break;
+    consistencyStreakDays += 1;
+    cursorDay -= DAY_MS;
+  }
+
+
 
   return {
     attemptsCount: filtered.length,
@@ -18647,13 +19071,20 @@ for (let i = timeDailySeries.length - 1; i >= 0; i--) {
     readinessPct,
     timeInTimedTestsSec,
     scoreSeries,
+
     weeklySeries,
     bestWeekQuestions,
     consistencyStreakWeeks,
+
+    dailySeries,
+    bestDayQuestions,
+    consistencyStreakDays,
+
     bestTimeSeries,
     bestTimeLabel,
     bestTimeAvgScore,
     weakTopics,
+    
     timeDailySeries,
     timeThisWeekMin,
     timeBestDayMin,

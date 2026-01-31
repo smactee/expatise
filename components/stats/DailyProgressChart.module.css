@@ -1,0 +1,294 @@
+.wrap{
+  width: 100%;
+  --avgYellow: rgba(255, 197, 66, 0.95);
+   --barBlue: rgba(43,124,175,0.85);
+}
+
+.metaRow{
+  display:flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 12px;
+  color: rgba(17,24,39,0.65);
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+.metaItem{ white-space: nowrap; }
+.metaLabel{ opacity: 0.75; margin-right: 4px; }
+
+.box{
+  border-radius: 18px;
+  border: 1px solid rgba(148, 163, 184, 0.60);
+  padding: 12px;
+  background: rgba(255,255,255,0.55);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.row{
+  display: grid;
+  grid-template-columns: 92px 1fr auto;
+  align-items: center;
+  gap: 10px;
+  font-size: 11.5px;
+  color: rgba(17,24,39,0.75);
+}
+
+.week{ color: rgba(17,24,39,0.55); }
+
+.barTrack{
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(43,124,175,0.10);
+  overflow: hidden;
+}
+
+.barFill{
+  height: 100%;
+  border-radius: 999px;
+  background: rgba(43,124,175,0.70);
+}
+
+.metrics{ white-space: nowrap; opacity: 0.9; }
+
+/* Dark theme tweaks */
+:global(:root[data-theme='dark']) .box{
+  background: rgba(255,255,255,0.06);
+  border-color: rgba(148,163,184,0.35);
+}
+:global(:root[data-theme='dark']) .metaRow,
+:global(:root[data-theme='dark']) .row{
+  color: rgba(249,250,251,0.78);
+}
+:global(:root[data-theme='dark']) .week{
+  color: rgba(249,250,251,0.55);
+}
+:global(:root[data-theme='dark']) .barTrack{
+  background: rgba(43,124,175,0.22);
+}
+
+.chartShell{
+  width: 100%;
+}
+
+.svg{
+  width: 100%;
+  height: 120px; /* controls chart height inside the dashed box */
+  display: block;
+}
+
+.grid{
+  stroke: rgba(17,24,39,0.08);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+.gridBase{
+  stroke: rgba(17,24,39,0.14);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+.bar{
+  fill: rgba(43,124,175,0.25);
+}
+
+.barActive{
+  fill: rgba(43,124,175,0.55);
+}
+
+.avgLine{
+  fill: none;
+  stroke: rgba(255, 197, 66, 0.95);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.avgDot{
+  fill: var(--avgYellow);
+  opacity: 0.95;
+}
+
+.avgHalo{
+  fill: none;
+  stroke: var(--avgYellow);
+  stroke-width: 2;
+  pointer-events: none;
+}
+
+@keyframes haloPulseYellow {
+  0%   { transform: scale(1);    opacity: 0.35; }
+  35%  { transform: scale(1.20); opacity: 0.22; }
+  60%  { transform: scale(1.45); opacity: 0; }
+  100% { transform: scale(1.45); opacity: 0; }
+}
+
+
+.avgHaloPulse{
+  fill: none;
+  stroke: rgba(255, 197, 66, 0.35);
+  stroke-width: 2;
+  vector-effect: non-scaling-stroke;
+
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: haloPulseYellow 1.8s ease-out infinite;
+
+  pointer-events: none;
+
+  /* IMPORTANT: don't force-hide it here */
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce){
+  .avgHaloPulse{
+    animation: none;
+    opacity: 1;      /* show static ring */
+    transform: none;
+  }
+}
+
+
+
+
+.axisText{
+  font-size: 8.5px;
+  fill: rgba(17,24,39,0.55);
+}
+
+.axisRow{
+  display: grid;
+  grid-template-columns: 92px 1fr auto; /* MUST match .row */
+  align-items: end;
+  margin-bottom: 6px;
+}
+
+.axisScale{
+  display: flex;
+  justify-content: space-between;
+  font-size: 10px;
+  color: rgba(17,24,39,0.45);
+  padding: 0 2px;
+  line-height: 1;
+}
+
+.yAxisLine{
+  stroke: rgba(17,24,39,0.18);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+.yAxisTick{
+  stroke: rgba(17,24,39,0.18);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+.yAxisText{
+  font-size: 8.5px;
+  fill: var(--barBlue);
+}
+.yAxisTextRight{
+  font-size: 8.5px;
+  fill: var(--avgYellow);
+}
+
+.axisCornerLabel{
+  font-size: 8px;
+  fill: rgba(17,24,39,0.45);
+  pointer-events: none;
+}
+
+:global(:root[data-theme='dark']) .axisCornerLabel{
+  fill: rgba(249,250,251,0.55);
+}
+
+/* ===== Chart entrance animations ===== */
+
+@keyframes barRise {
+  0%   { transform: scaleY(0.001); opacity: 0.35; }
+  100% { transform: scaleY(1);     opacity: 1; }
+}
+
+.barRise{
+  transform-box: fill-box;
+  transform-origin: center bottom;
+  transform: scaleY(0.001);
+  opacity: 0.35;
+
+  animation: barRise 2000ms cubic-bezier(0.2, 0.85, 0.2, 1) forwards;
+  animation-fill-mode: both;
+  will-change: transform, opacity;
+}
+
+
+
+
+
+@keyframes popIn {
+  0%   { transform: scale(0.7); opacity: 0; }
+  100% { transform: scale(1);   opacity: 1; }
+}
+
+.popIn{
+  transform-box: fill-box;
+  transform-origin: center;
+  transform: scale(0.7);
+  opacity: 0;
+
+  animation: popIn 320ms ease-out forwards;
+  animation-fill-mode: both;
+}
+
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce){
+  .barRise{ animation: none; transform: none; opacity: 1; }
+  .avgLineDraw{ animation: none; stroke-dashoffset: 0; opacity: 1; }
+  .popIn{ animation: none; transform: none; opacity: 1; }
+}
+
+/* ===== Pre-reveal (hide until animateIn) ===== */
+
+.barHidden{
+  /* keep bars invisible until rise animation is applied */
+  transform-box: fill-box;
+  transform-origin: center bottom;
+  transform: scaleY(0.001);
+  opacity: 0;
+}
+
+.dotHidden{
+  /* keep dots invisible until popIn animation is applied */
+  transform-box: fill-box;
+  transform-origin: center;
+  transform: scale(0.7);
+  opacity: 0;
+}
+
+/* keep pulse hidden until its delayed animation actually begins */
+.pulseHidden{
+  opacity: 0;
+}
+
+@keyframes popIn {
+  0%   { transform: scale(0.7); opacity: 0; }
+  100% { transform: scale(1);   opacity: 1; }
+}
+
+.popIn{
+  transform-box: fill-box;
+  transform-origin: center;
+  transform: scale(0.7);
+  opacity: 0;
+
+  animation: popIn 320ms ease-out forwards;
+  animation-fill-mode: both;
+}
+
+@media (prefers-reduced-motion: reduce){
+  .popIn{ animation: none; transform: none; opacity: 1; }
+}
+

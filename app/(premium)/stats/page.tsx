@@ -23,17 +23,18 @@ import { ROUTES } from '@/lib/routes';
 
 import { labelForTag } from '@/lib/qbank/tagTaxonomy';
 
+import TimeframeChips, { type Timeframe, tfShort } from '@/components/stats/TimeframeChips';
 import ScreenTimeChart7 from '@/components/stats/ScreenTimeChart7.client';
 
 import ReadinessRing from '@/app/(premium)/stats/ReadinessRing.client';
 import ScoreChart from '@/components/stats/ScoreChart.client';
-import WeeklyProgressChart from '@/components/stats/WeeklyProgressChart';
+import WeeklyProgressChart from '@/components/stats/DailyProgressChart';
+import DailyProgressChart from '@/components/stats/DailyProgressChart';
+
 
 const datasetId: DatasetId = 'cn-2023-test1';
 
 // Exclude Practice from Stats (per your decision)
-type Timeframe = 7 | 30 | "all";
-const TIMEFRAMES: Timeframe[] = [7, 30, "all"];
 
 const REAL_ONLY_MODE_KEYS = ["real-test"];
 const LEARNING_MODE_KEYS = ["real-test", "half-test", "rapid-fire-test"]; // all non-practice modes
@@ -52,43 +53,11 @@ export default function StatsPage() {
   const [tfBestTime, setTfBestTime] = useState<Timeframe>(30);
   const [tfTopics, setTfTopics] = useState<Timeframe>(30);
 
-function tfShort(t: Timeframe) {
-  return t === "all" ? "All" : `${t}D`;
-}
+
 function tfLabel(t: Timeframe) {
   return t === "all" ? "all time" : `last ${t} days`;
 }
 
-function TimeframeChips(props: {
-  value: Timeframe;
-  onChange: (v: Timeframe) => void;
-  align?: "left" | "center";
-}) {
-  const { value, onChange, align = "center" } = props;
-  return (
-    <div
-      className={`${styles.statsChips} ${
-        align === "center" ? styles.statsChipsCenter : ""
-      }`}
-    >
-      {TIMEFRAMES.map((t) => {
-        const active = value === t;
-        return (
-          <button
-            key={String(t)}
-            type="button"
-            onClick={() => onChange(t)}
-            className={`${styles.statsChip} ${
-              active ? styles.statsChipActive : ""
-            }`}
-          >
-            {tfShort(t)}
-          </button>
-        );
-      })}
-    </div>
-  );
-}
 
 
 
@@ -304,33 +273,44 @@ const statsTopics = useMemo(() => {
               <TimeframeChips value={tfScore} onChange={setTfScore} />
             </article>
 
-{/* Weekly Progress */}
-            <article className={styles.statsCard}>
-              <header className={styles.statsCardHeader}>
-                <h2 className={styles.statsCardTitle}>Weekly Progress</h2>
-              </header>
+{/* Daily Progress */}
+<article className={styles.statsCard}>
+  <header className={styles.statsCardHeader}>
+  <h2 className={styles.statsCardTitle}>Daily Progress</h2>
 
-             <div className={`${styles.statsGraphArea} ${styles.statsGraphClean}`}>
-  <div className={`${styles.statsGraphPlaceholder} ${styles.statsGraphClean}`} style={{ width: "100%" }}>
+  <div className={styles.statsLegend}>
+    <span className={`${styles.statsLegendDot} ${styles.statsLegendDotBlue}`} />
+    <span className={styles.statsLegendLabel}>Questions</span>
 
-  {loading ? (
-    "Loading…"
-  ) : statsWeekly.weeklySeries.length === 0 ? (
-    "No weekly data yet."
-  ) : (
-  <WeeklyProgressChart
-    series={statsWeekly.weeklySeries}
-    bestWeekQuestions={statsWeekly.bestWeekQuestions}
-    streakWeeks={statsWeekly.consistencyStreakWeeks}
-    rows={6}
-  />
-)
-}
-</div>
+    <span className={`${styles.statsLegendDot} ${styles.statsLegendDotYellow}`} />
+    <span className={styles.statsLegendLabel}>Avg score</span>
+  </div>
+</header>
 
-              </div>
-              <TimeframeChips value={tfWeekly} onChange={setTfWeekly} />
-            </article>
+
+  <div className={`${styles.statsGraphArea} ${styles.statsGraphClean}`}>
+    <div
+      className={`${styles.statsGraphPlaceholder} ${styles.statsGraphClean}`}
+      style={{ width: "100%" }}
+    >
+      {loading ? (
+        "Loading…"
+      ) : statsWeekly.attemptsCount === 0 ? (
+        "No daily data yet."
+      ) : (
+        <DailyProgressChart
+          series={statsWeekly.dailySeries}
+          bestDayQuestions={statsWeekly.bestDayQuestions}
+          streakDays={statsWeekly.consistencyStreakDays}
+          rows={tfWeekly === "all" ? 30 : tfWeekly}
+        />
+      )}
+    </div>
+  </div>
+
+  <TimeframeChips value={tfWeekly} onChange={setTfWeekly} />
+</article>
+
 
 {/* Best Time */}
             <article className={styles.statsCard}>

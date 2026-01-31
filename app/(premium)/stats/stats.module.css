@@ -369,42 +369,6 @@
 }
 
 
-/* Timeframe chips (per-card) */
-.statsChips {
-  display: flex;
-  gap: 6px;
-  flex-wrap: wrap;
-  margin-top: 10px;
-  justify-content: flex-start;
-}
-
-.statsChipsCenter {
-  justify-content: center;
-}
-
-.statsChip {
-  padding: 6px 10px;
-  border-radius: 999px;
-  border: 1px solid rgba(17, 24, 39, 0.12);
-  background: rgba(255, 255, 255, 0.7);
-  font-size: 12px;
-  color: #111827;
-  cursor: pointer;
-}
-
-.statsChipActive {
-  background: rgba(17, 24, 39, 0.08);
-}
-
-:root[data-theme="dark"] .statsChip {
-  border-color: rgba(255, 255, 255, 0.18);
-  background: rgba(255, 255, 255, 0.06);
-  color: #f9fafb;
-}
-
-:root[data-theme="dark"] .statsChipActive {
-  background: rgba(255, 255, 255, 0.14);
-}
 
 /* Used to remove the placeholder/debug box look for a finished chart */
 .statsGraphClean {

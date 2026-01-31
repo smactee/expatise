@@ -57,6 +57,18 @@ scoreSeries: Array<{ t: number; scorePct: number; answered: number; totalQ: numb
     avgScore: number;           // 0..100
   }>;
 
+    // Daily Progress (Consistency)
+  dailySeries: Array<{
+    dayStart: number;           // ms timestamp (local midnight)
+    testsCompleted: number;
+    questionsAnswered: number;  // answered count (attempted)
+    avgScore: number;           // 0..100
+  }>;
+
+  bestDayQuestions: number;        // max questionsAnswered in a day
+  consistencyStreakDays: number;   // current streak (consecutive days with >0)
+
+
     // Best Time (Performance by time-of-day)
   bestTimeSeries: Array<{
     label: string;        // e.g. "6–9"
@@ -172,6 +184,12 @@ function startOfWeekMs(t: number) {
   return d.getTime();
 }
 
+function startOfDayMs(t: number) {
+  const d = new Date(t);
+  d.setHours(0, 0, 0, 0);
+  return d.getTime();
+}
+
 
 export function computeStats(params: {
   attempts: AttemptLike[];
@@ -203,6 +221,12 @@ const scoreSeries: Array<{ t: number; scorePct: number; answered: number; totalQ
     number,
     { tests: number; answered: number; scoreSum: number; scoreCount: number }
   >();
+
+    const daily = new Map<
+    number,
+    { tests: number; answered: number; scoreSum: number; scoreCount: number }
+  >();
+
 
   // Best Time buckets (local hour of submittedAt)
   const TIME_BUCKETS = [
@@ -283,6 +307,17 @@ scoreSeries.push({ t, scorePct, answered: attempted, totalQ: denom });
     w.scoreSum += scorePct;
     w.scoreCount += 1;
     weekly.set(ws, w);
+
+        // Daily bucket
+    const ds = startOfDayMs(t);
+    const drec =
+      daily.get(ds) ?? { tests: 0, answered: 0, scoreSum: 0, scoreCount: 0 };
+    drec.tests += 1;
+    drec.answered += attempted;
+    drec.scoreSum += scorePct;
+    drec.scoreCount += 1;
+    daily.set(ds, drec);
+
 
     // timed-test estimate (optional)
     const tls = typeof a.timeLimitSec === "number" ? a.timeLimitSec : 0;
@@ -422,6 +457,61 @@ for (let i = timeDailySeries.length - 1; i >= 0; i--) {
   timeStreakDays += 1;
 }
 
+  // ===== Daily outputs (filled window) =====
+  const DAY_MS = 24 * 60 * 60 * 1000;
+  const todayStart = startOfDayMs(Date.now());
+
+  // Decide visible range based on timeframe:
+  // - 7 => last 7 days
+  // - 30 => last 30 days
+  // - all => from first data day to today (filled)
+  let rangeStart = todayStart;
+
+  if (filters.timeframeDays === "all") {
+    // If no data, just show today
+    const keys = Array.from(daily.keys());
+    rangeStart = keys.length ? Math.min(...keys) : todayStart;
+  } else {
+    rangeStart = todayStart - (filters.timeframeDays - 1) * DAY_MS;
+  }
+
+  const daysCount = Math.max(1, Math.round((todayStart - rangeStart) / DAY_MS) + 1);
+
+  const dailySeries: Array<{
+    dayStart: number;
+    testsCompleted: number;
+    questionsAnswered: number;
+    avgScore: number;
+  }> = [];
+
+  for (let i = 0; i < daysCount; i++) {
+    const dayStart = rangeStart + i * DAY_MS;
+    const d = daily.get(dayStart);
+
+    dailySeries.push({
+      dayStart,
+      testsCompleted: d?.tests ?? 0,
+      questionsAnswered: d?.answered ?? 0,
+      avgScore: d?.scoreCount ? Math.round(d.scoreSum / d.scoreCount) : 0,
+    });
+  }
+
+  const bestDayQuestions = dailySeries.length
+    ? Math.max(...dailySeries.map((x) => x.questionsAnswered))
+    : 0;
+
+  // streak: consecutive days ending today with questionsAnswered > 0
+  let consistencyStreakDays = 0;
+  let cursorDay = todayStart;
+
+  while (cursorDay >= rangeStart) {
+    const d = daily.get(cursorDay);
+    if (!d || d.answered <= 0) break;
+    consistencyStreakDays += 1;
+    cursorDay -= DAY_MS;
+  }
+
+
 
   return {
     attemptsCount: filtered.length,
@@ -435,13 +525,20 @@ for (let i = timeDailySeries.length - 1; i >= 0; i--) {
     readinessPct,
     timeInTimedTestsSec,
     scoreSeries,
+
     weeklySeries,
     bestWeekQuestions,
     consistencyStreakWeeks,
+
+    dailySeries,
+    bestDayQuestions,
+    consistencyStreakDays,
+
     bestTimeSeries,
     bestTimeLabel,
     bestTimeAvgScore,
     weakTopics,
+    
     timeDailySeries,
     timeThisWeekMin,
     timeBestDayMin,
