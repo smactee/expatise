@@ -205,11 +205,15 @@ const statsTopics = useMemo(() => {
     <span className={`${styles.statsLegendDot} ${styles.statsLegendDotBlue}`} />
     <span className={styles.statsLegendLabel}>Study</span>
 
-    <span className={`${styles.statsLegendDot} ${styles.statsLegendDotGray}`} />
-    <span className={styles.statsLegendLabel}>Total</span>
+    <span className={styles.statsLegendTotalSwatch} />
+<span className={styles.statsLegendLabel}>Total</span>
 
-    <span className={`${styles.statsLegendDot} ${styles.statsLegendDotDark}`} />
-    <span className={styles.statsLegendLabel}>7D avg</span>
+  <span className={styles.statsLegend__screenTime__totalGradientSwatch} />
+  <span className={styles.statsLegendLabel}>Total</span>
+
+  <span className={styles.statsLegend__screenTime__avgDottedSwatch} />
+  <span className={styles.statsLegendLabel}>7D avg</span>
+
   </div>
 </header>
 
@@ -269,9 +273,8 @@ const statsTopics = useMemo(() => {
     )}
   </div>
 </div>
-
-              <TimeframeChips value={tfScore} onChange={setTfScore} />
-            </article>
+<TimeframeChips value={tfScore} onChange={setTfScore} />
+</article>
 
 {/* Daily Progress */}
 <article className={styles.statsCard}>

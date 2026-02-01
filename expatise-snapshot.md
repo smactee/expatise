@@ -4623,11 +4623,15 @@ const statsTopics = useMemo(() => {
     <span className={`${styles.statsLegendDot} ${styles.statsLegendDotBlue}`} />
     <span className={styles.statsLegendLabel}>Study</span>
 
-    <span className={`${styles.statsLegendDot} ${styles.statsLegendDotGray}`} />
-    <span className={styles.statsLegendLabel}>Total</span>
+    <span className={styles.statsLegendTotalSwatch} />
+<span className={styles.statsLegendLabel}>Total</span>
 
-    <span className={`${styles.statsLegendDot} ${styles.statsLegendDotDark}`} />
-    <span className={styles.statsLegendLabel}>7D avg</span>
+  <span className={styles.statsLegend__screenTime__totalGradientSwatch} />
+  <span className={styles.statsLegendLabel}>Total</span>
+
+  <span className={styles.statsLegend__screenTime__avgDottedSwatch} />
+  <span className={styles.statsLegendLabel}>7D avg</span>
+
   </div>
 </header>
 
@@ -4687,9 +4691,8 @@ const statsTopics = useMemo(() => {
     )}
   </div>
 </div>
-
-              <TimeframeChips value={tfScore} onChange={setTfScore} />
-            </article>
+<TimeframeChips value={tfScore} onChange={setTfScore} />
+</article>
 
 {/* Daily Progress */}
 <article className={styles.statsCard}>
@@ -5238,6 +5241,27 @@ const statsTopics = useMemo(() => {
   background: transparent !important;
   padding: 0 !important;
 }
+
+.statsLegend__screenTime__testDot { background: rgba(255, 197, 66, 0.95); }
+.statsLegend__screenTime__studyDot { background: rgba(43, 124, 175, 0.90); }
+
+.statsLegend__screenTime__totalGradientSwatch{
+  width: 18px;
+  height: 6px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #2B7CAF 0%, rgba(61,140,213,0) 100%);
+  opacity: 0.9;
+  display: inline-block;
+}
+
+.statsLegend__screenTime__avgDottedSwatch{
+  width: 18px;
+  height: 0;
+  border-top: 2px dotted rgba(17,24,39,0.35);
+  display: inline-block;
+  transform: translateY(-1px);
+}
+
 
 ```
 
@@ -14961,7 +14985,7 @@ style={{ opacity: lensReady ? 1 : 0 }}
 }
 
 .passBand{
-  fill: rgba(46, 204, 113, 0.07); /* green, same softness */
+  fill: none; /* green, same softness */
 }
 
 
@@ -15197,9 +15221,10 @@ style={{ opacity: lensReady ? 1 : 0 }}
 
 ### components/stats/ScreenTimeChart7.client.tsx
 ```tsx
+//components/stats/ScreenTimeChart7.client.tsx
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useId } from 'react';
 import styles from './ScreenTimeChart7.module.css';
 
 type DayPoint = {
@@ -15207,6 +15232,28 @@ type DayPoint = {
   deliberateMin: number;
   studyMin: number;
 };
+
+function fmtMin(min: number) {
+  // Switch to hours when values get big, keeps axis labels compact
+  if (min >= 120) {
+    const h = Math.floor(min / 60);
+    const m = min % 60;
+    return m ? `${h}h${m}` : `${h}h`;
+  }
+  return `${min}m`;
+}
+
+function niceStep(rough: number) {
+  // Pick a human-friendly step
+  if (rough <= 2) return 1;
+  if (rough <= 5) return 2;
+  if (rough <= 10) return 5;
+  if (rough <= 20) return 10;
+  if (rough <= 45) return 15;
+  if (rough <= 90) return 30;
+  if (rough <= 180) return 60;
+  return 120; // 2h steps
+}
 
 
 function dayKeyFromDate(d: Date) {
@@ -15253,6 +15300,64 @@ function consistencyScore(totals: number[]) {
   return clamp(score, 0, 100);
 }
 
+type Pt = { x: number; y: number };
+
+function smoothPathCatmullRom(points: Pt[], clampMin = 0, clampMax = 100) {
+  if (points.length < 2) return '';
+  const d: string[] = [`M ${points[0].x} ${points[0].y}`];
+
+  for (let i = 0; i < points.length - 1; i++) {
+    const p0 = points[i - 1] ?? points[i];
+    const p1 = points[i];
+    const p2 = points[i + 1];
+    const p3 = points[i + 2] ?? p2;
+
+    // Catmull-Rom → Bezier
+    let cp1x = p1.x + (p2.x - p0.x) / 6;
+    let cp1y = p1.y + (p2.y - p0.y) / 6;
+    let cp2x = p2.x - (p3.x - p1.x) / 6;
+    let cp2y = p2.y - (p3.y - p1.y) / 6;
+
+    // Clamp control points to avoid overshoot
+    cp1x = clamp(cp1x, clampMin, clampMax);
+    cp2x = clamp(cp2x, clampMin, clampMax);
+    cp1y = clamp(cp1y, clampMin, clampMax);
+    cp2y = clamp(cp2y, clampMin, clampMax);
+
+    d.push(`C ${cp1x} ${cp1y}, ${cp2x} ${cp2y}, ${p2.x} ${p2.y}`);
+  }
+
+  return d.join(' ');
+}
+
+function smoothPathCatmullRomXY(points: Pt[], xMin: number, xMax: number, yMin: number, yMax: number) {
+  if (points.length < 2) return '';
+  const d: string[] = [`M ${points[0].x} ${points[0].y}`];
+
+  for (let i = 0; i < points.length - 1; i++) {
+    const p0 = points[i - 1] ?? points[i];
+    const p1 = points[i];
+    const p2 = points[i + 1];
+    const p3 = points[i + 2] ?? p2;
+
+    let cp1x = p1.x + (p2.x - p0.x) / 6;
+    let cp1y = p1.y + (p2.y - p0.y) / 6;
+    let cp2x = p2.x - (p3.x - p1.x) / 6;
+    let cp2y = p2.y - (p3.y - p1.y) / 6;
+
+    // Clamp control points separately for x and y
+    cp1x = clamp(cp1x, xMin, xMax);
+    cp2x = clamp(cp2x, xMin, xMax);
+    cp1y = clamp(cp1y, yMin, yMax);
+    cp2y = clamp(cp2y, yMin, yMax);
+
+    d.push(`C ${cp1x} ${cp1y}, ${cp2x} ${cp2y}, ${p2.x} ${p2.y}`);
+  }
+
+  return d.join(' ');
+}
+
+
 export default function ScreenTimeChart7({
   data,
   height = 80,
@@ -15265,6 +15370,10 @@ export default function ScreenTimeChart7({
   streakDays?: number;              // optional (you already compute)
 }) {
   const [hoverIdx, setHoverIdx] = useState<number | null>(null);
+
+  const totalStrokeId = useId().replace(/:/g, '');
+const totalFillId = useId().replace(/:/g, '');
+
 
   const model = useMemo(() => {
     const daySlots = buildLastNDays(7);
@@ -15323,7 +15432,78 @@ export default function ScreenTimeChart7({
     };
   }, [data]);
 
-  const avgLineY = Math.round((1 - model.avgTotal / model.maxTotal) * height);
+const xLabelH = 16; // height reserved for Mon/Tue labels
+const plotH = Math.max(10, height - xLabelH);
+
+// ---- Y axis scale (responsive, never "breaks") ----
+const rawMax = Math.max(1, model.maxTotal);
+const tickCount = 4; // 0, 1/3, 2/3, top (nice)
+
+const { scaleMax, ticks } = useMemo(() => {
+  const roughStep = rawMax / (tickCount - 1);
+  const step = niceStep(roughStep);
+  const top = step * (tickCount - 1);
+
+  // If top is still below rawMax (rare), bump one step
+  const finalTop = top < rawMax ? top + step : top;
+
+  const tks = Array.from({ length: tickCount }, (_, i) => i * step);
+  // Make sure last tick matches finalTop
+  tks[tks.length - 1] = finalTop;
+
+  return { scaleMax: finalTop, ticks: tks };
+}, [rawMax]);
+
+const yForMin = (min: number) => {
+  const y01 = 1 - clamp(min / scaleMax, 0, 1);
+  return Math.round(y01 * plotH);
+};
+
+
+const avgLineY = Math.round((1 - clamp(model.avgTotal / scaleMax, 0, 1)) * plotH);
+
+// Routine = number of days (out of 7) with any logged time
+const activeDays = useMemo(() => {
+  return model.points.reduce((acc, p) => acc + (p.total > 0 ? 1 : 0), 0);
+}, [model.points]);
+
+  // --- Total line (polyline) points in 0..100 SVG space ---
+const padX = 4;     // keeps the ends from touching the edges
+const padTop = 4;   // keeps the peak from clipping (top only)
+
+const totalLinePts = useMemo<Pt[]>(() => {
+  const n = model.points.length;
+  if (!n) return [];
+
+  const w = 100 - padX * 2;      // horizontal padding stays
+  const h = 100 - padTop;        // IMPORTANT: no bottom padding
+
+  return model.points.map((p, i) => {
+    const x = padX + (n === 1 ? w / 2 : (i / (n - 1)) * w);
+
+    // total=0 => y = padTop + 1*h = 100 ✅ sits on baseline
+    const y = padTop + (1 - clamp(p.total / scaleMax, 0, 1)) * h;
+
+    return { x, y };
+  });
+}, [model.points, scaleMax]);
+
+const totalLineD = useMemo(() => {
+  return smoothPathCatmullRomXY(totalLinePts, padX, 100 - padX, padTop, 100);
+}, [totalLinePts]);
+
+
+const totalAreaD = useMemo(() => {
+  if (!totalLineD || totalLinePts.length < 2) return '';
+  const first = totalLinePts[0];
+  const last = totalLinePts[totalLinePts.length - 1];
+
+  // close shape to the bottom of the SVG
+  const baseY = 100;
+
+  return `${totalLineD} L ${last.x} ${baseY} L ${first.x} ${baseY} Z`;
+}, [totalLineD, totalLinePts]);
+
 
   const weekTestTotal = model.points.reduce((a, p) => a + p.deliberateMin, 0);
   const weekStudyTotal = model.points.reduce((a, p) => a + p.studyMin, 0);
@@ -15350,126 +15530,223 @@ export default function ScreenTimeChart7({
   const hover = hoverIdx != null ? model.points[hoverIdx] : null;
 
   return (
-    <div className={styles.wrap}>
-  
+  <div className={styles.wrap}>
+    {/* TOP AREA: only the chart */}
+    <div className={styles.topArea}>
+      <div className={styles.chart} style={{ height }}>
+        {/* ROW 1: Y axis + plot */}
+        <div className={styles.plotRow}>
+          {/* Y AXIS */}
+          <div className={styles.yAxis} style={{ height: plotH }}>
+            {ticks
+              .slice()
+              .reverse()
+              .map((t) => {
+                const y = yForMin(t);
+                return (
+                  <div key={t} className={styles.yTick} style={{ top: y }}>
+                    {fmtMin(t)}
+                  </div>
+                );
+              })}
+          </div>
 
-      {/* Summary row (footer summary under chart, but we can also keep it above; this version puts it above the chart) */}
-<div className={styles.summaryRow}>
-  <div className={styles.summaryTop}>
-    <b>7D total</b>: {weekTestTotal}m test · {weekStudyTotal}m study
-  </div>
+          {/* PLOT */}
+          <div className={styles.plot} style={{ height: plotH }}>
+            {/* grid lines */}
+            {ticks.map((t) => {
+              const y = yForMin(t);
+              return <div key={`g-${t}`} className={styles.hGrid} style={{ top: y }} />;
+            })}
 
-  <div className={styles.summaryRow2}>
-    <span><b>Avg/day</b>: {Math.round(model.avgTotal)}m</span>
+            {/* TOTAL area (mountain) */}
+{totalAreaD ? (
+  <svg
+    className={styles.totalAreaSvg}
+    viewBox="0 0 100 100"
+    preserveAspectRatio="none"
+    aria-hidden="true"
+  >
+    <defs>
+      <linearGradient id={totalFillId} x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0%" stopColor="#2B7CAF" stopOpacity="0.28" />
+        <stop offset="100%" stopColor="#3D8CD5" stopOpacity="0" />
+      </linearGradient>
+    </defs>
+
+    <path d={totalAreaD} fill={`url(#${totalFillId})`} />
+  </svg>
+) : null}
+
+{/* TOTAL line */}
+{totalLineD ? (
+  <svg
+    className={styles.totalLineSvg}
+    viewBox="0 0 100 100"
+    preserveAspectRatio="none"
+    aria-hidden="true"
+  >
+    <defs>
+      <linearGradient id={totalStrokeId} x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0%" stopColor="#2B7CAF" stopOpacity="1" />
+        <stop offset="100%" stopColor="#3D8CD5" stopOpacity="0" />
+      </linearGradient>
+    </defs>
+
+    <path
+      d={totalLineD}
+      className={styles.totalLine}
+      stroke={`url(#${totalStrokeId})`}
+      vectorEffect="non-scaling-stroke"
+    />
+  </svg>
+) : null}
+
+
+
+
+            {/* avg line */}
+            <div className={styles.avgLine} style={{ top: avgLineY }} />
+            <div
+              className={styles.avgLabel}
+              style={{ top: clamp(avgLineY - 12, 0, plotH - 14) }}
+            >
+              7D avg
+            </div>
+
+            {/* bars */}
+            <div className={styles.cols}>
+              {model.points.map((p, idx) => {
+
+                const testH =
+                  p.deliberateMin > 0
+                    ? Math.max(2, Math.round((p.deliberateMin / scaleMax) * plotH))
+                    : 0;
+
+                const studyH =
+                  p.studyMin > 0
+                    ? Math.max(2, Math.round((p.studyMin / scaleMax) * plotH))
+                    : 0;
+
+                const isToday = idx === model.todayIdx;
+                const dayLabel = p.date.toLocaleDateString(undefined, { weekday: 'short' });
+                const pctOfWeek = Math.round((p.total / model.weekTotalSafe) * 100);
+
+                const colClass = [
+                  styles.col,
+                  isToday ? styles.today : '',
+                  p.total === 0 ? styles.zero : '',
+                ]
+                  .filter(Boolean)
+                  .join(' ');
+
+                return (
+                  <div
+                    key={p.key}
+                    className={colClass}
+                    onMouseEnter={() => setHoverIdx(idx)}
+                    onMouseLeave={() => setHoverIdx(null)}
+                  >
+                    <div className={styles.barArea}>
+                      
+
+                      <div className={styles.group}>
+                        <div className={styles.test} style={{ height: testH }} />
+                        <div className={styles.study} style={{ height: studyH }} />
+                      </div>
+
+                      {hoverIdx === idx ? (
+                        <div className={styles.tooltip} role="tooltip">
+                          <div className={styles.tipTitle}>{isToday ? 'Today' : dayLabel}</div>
+                          <div className={styles.tipBody}>
+                            <div>Test: <b>{p.deliberateMin}m</b></div>
+                            <div>Study: <b>{p.studyMin}m</b></div>
+                            <div>Total: <b>{p.total}m</b> · {pctOfWeek}% of week</div>
+                          </div>
+                        </div>
+                      ) : null}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+
+        {/* ROW 2: X labels */}
+        <div className={styles.xRow} style={{ height: xLabelH }}>
+          <div className={styles.yAxisSpacer} />
+          <div className={styles.xLabels}>
+            {model.points.map((p, idx) => {
+              const isToday = idx === model.todayIdx;
+              const dayLabel = p.date.toLocaleDateString(undefined, { weekday: 'short' });
+
+              return (
+                <div
+                  key={`x-${p.key}`}
+                  className={`${styles.dayLabel} ${isToday ? styles.dayLabelToday : ''}`}
+                >
+                  {isToday ? 'Today' : dayLabel.slice(0, 3)}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {/* Bottom text */}
+    <div className={styles.bottomStack}>
+      <div className={styles.summaryRow}>
+        <div className={styles.summaryTop}>
+          <b>7D total</b>: {weekTestTotal}m test · {weekStudyTotal}m study
+        </div>
+
+        <div className={styles.summaryRow2}>
+  <span><b>Avg/day</b>: {Math.round(model.avgTotal)}m</span>
+  <span className={styles.sep} aria-hidden="true" />
+  <span><b>Best</b>: {bestLabel} ({bestPoint?.total ?? 0}m)</span>
+</div>
+
+      </div>
+
+      <div className={styles.footerRow}>
+  <span>
+    <b>Routine</b>: {activeDays}/7 days
     <span className={styles.sep}></span>
-    <span><b>Best</b>: {bestLabel} ({bestPoint?.total ?? 0}m)</span>
-    <span className={styles.sep}></span>
-    <span><b>Streak</b>: {streakDays ?? 0}d</span>
-  </div>
+    <b>Streak</b>: {streakDays ?? 0}d
+  </span>
+
+  {model.hasCompare ? <span className={styles.muted}>Compare overlay: enabled</span> : null}
 </div>
 
 
-
-      {/* Chart */}
-      <div className={styles.chart} style={{ height }}>
-        {/* Avg line */}
-        <div className={styles.avgLine} style={{ top: avgLineY }} />
-        <div className={styles.avgLabel} style={{ top: clamp(avgLineY - 12, 0, height - 14) }}>
-          7D avg
-        </div>
-
-        <div className={styles.cols}>
-          {model.points.map((p, idx) => {
-            const ghostH = Math.round((p.total / model.maxTotal) * height);
-
-            // Ensure tiny values still visible
-            const testH = p.deliberateMin > 0 ? Math.max(2, Math.round((p.deliberateMin / model.maxTotal) * height)) : 0;
-            const studyH = p.studyMin > 0 ? Math.max(2, Math.round((p.studyMin / model.maxTotal) * height)) : 0;
-
-            const isBest = idx === model.bestIdx && p.total > 0;
-            const isToday = idx === model.todayIdx;
-
-            const dayLabel = p.date.toLocaleDateString(undefined, { weekday: 'short' });
-            const pctOfWeek = Math.round((p.total / model.weekTotalSafe) * 100);
-
-            const colClass = [
-              styles.col,
-              isToday ? styles.today : '',
-              isBest ? styles.best : '',
-              p.total === 0 ? styles.zero : '',
-            ].filter(Boolean).join(' ');
-
-            return (
-              <div
-                key={p.key}
-                className={colClass}
-                onMouseEnter={() => setHoverIdx(idx)}
-                onMouseLeave={() => setHoverIdx(null)}
-              >
-                <div className={styles.barArea}>
-                  {/* Ghost total */}
-                  {p.total > 0 ? (
-                    <div className={styles.ghost} style={{ height: ghostH }} aria-hidden="true" />
-                  ) : (
-                    <div className={styles.zeroOutline} aria-hidden="true" />
-                  )}
-
-                  {/* Grouped bars (NOT stacked) */}
-                  <div className={styles.group}>
-                    <div className={styles.test} style={{ height: testH }} />
-                    <div className={styles.study} style={{ height: studyH }} />
-                  </div>
-
-                  {/* Best badge */}
-                  {isBest ? <div className={styles.badge} title="Best day">★</div> : null}
-
-                  {/* Tooltip */}
-                  {hoverIdx === idx ? (
-                    <div className={styles.tooltip} role="tooltip">
-                      <div className={styles.tipTitle}>
-                        {isToday ? 'Today' : dayLabel}
-                      </div>
-                      <div className={styles.tipBody}>
-                        <div>Test: <b>{p.deliberateMin}m</b></div>
-                        <div>Study: <b>{p.studyMin}m</b></div>
-                        <div>Total: <b>{p.total}m</b> · {pctOfWeek}% of week</div>
-                      </div>
-                    </div>
-                  ) : null}
-                </div>
-
-                <div className={styles.day}>
-                  {isToday ? 'Today' : dayLabel.slice(0, 3)}
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* Footer micro-metrics */}
-      <div className={styles.footerRow}>
-        <span><b>Consistency</b>: {model.consScore}/100</span>
-        {/* Compare overlay gated: only show when we have 14+ days. */}
-        {model.hasCompare ? (
-  <span className={styles.muted}>Compare overlay: enabled</span>
-) : null}
-
-      </div>
-
-      {/* Confidence note */}
-      {confidenceNote ? (
-        <div className={styles.confidenceNote}>{confidenceNote}</div>
-      ) : null}
+      {confidenceNote ? <div className={styles.confidenceNote}>{confidenceNote}</div> : null}
     </div>
-  );
+  </div>
+);
 }
-
 ```
 
 ### components/stats/ScreenTimeChart7.module.css
 ```css
-.wrap { width: 100%; }
+
+
+.wrap{
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  min-height: 240px
+}
+
+.topArea{
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end; /* ✅ pushes the chart DOWN */
+  min-height: 0;
+}
+
 
 .legendRow {
   display: flex;
@@ -15494,8 +15771,8 @@ export default function ScreenTimeChart7({
 
 .summaryRow {
   display: grid;
-  gap: 8px;
-  margin-bottom: 10px;
+  gap: 4px;
+  margin-bottom: 0px;
   font-size: 12px;
   opacity: 0.9;
 }
@@ -15507,23 +15784,30 @@ export default function ScreenTimeChart7({
 .summaryRow2 {
   display: flex;
   align-items: center;
-  gap: 10px;
-  flex-wrap: nowrap;         /* ✅ keeps it on ONE line */
-  white-space: nowrap;       /* ✅ prevents label wrapping */
+  gap: 0px; /* spacing now controlled by .sep margin, same as footer */
+  flex-wrap: nowrap;
+  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.sep {
-  opacity: 0.35;
+
+.sep{
+  display: inline-block;
+  width: 1px;
+  height: 10px;
+  background: rgba(17,24,39,0.18);
+  margin: 0 10px;
+  vertical-align: middle;
+  flex: none;
 }
 
 
 
-.chart {
-  position: relative;
+.chart{
   width: 100%;
-  padding-bottom: 18px; /* reserve space for weekday labels */
+  display: flex;
+  flex-direction: column;
 }
 
 .cols {
@@ -15532,7 +15816,7 @@ export default function ScreenTimeChart7({
   grid-template-columns: repeat(7, 1fr);
   gap: 12px;
   align-items: end;
-  padding-bottom: 4px;
+  padding-bottom: 0px;
 }
 
 
@@ -15548,20 +15832,6 @@ export default function ScreenTimeChart7({
   justify-content: center;
 }
 
-.ghost {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  border-radius: 12px;
-  background: rgba(17, 24, 39, 0.08);
-}
-
-.zeroOutline {
-  height: 2px;
-  border: none;
-  background: rgba(17, 24, 39, 0.10);
-  border-radius: 999px;
-}
 
 
 .group {
@@ -15571,7 +15841,7 @@ export default function ScreenTimeChart7({
   grid-template-columns: 1fr 1fr;
   gap: 4px;
   align-items: end;
-  z-index: 1;
+  z-index: 2;
 }
 
 .test, .study {
@@ -15583,31 +15853,11 @@ export default function ScreenTimeChart7({
 .test { background: rgba(255, 197, 66, 0.95); }
 .study { background: rgba(43, 124, 175, 0.90); }
 
-.today .barArea {
-  outline: 2px solid rgba(43, 124, 175, 0.25);
-  border-radius: 14px;
-  padding: 2px;
+.today .barArea{
+  outline: none;
+  padding: 0;
 }
 
-.best .ghost {
-  background: rgba(255, 197, 66, 0.12);
-}
-
-.badge {
-  position: absolute;
-  top: -10px;
-  font-size: 12px;
-  opacity: 0.9;
-  z-index: 2;
-}
-
-.day {
-  margin-top: -5px;
-  font-size: 11px;
-  opacity: 0.75;
-}
-
-.today .day { opacity: 1; font-weight: 600; }
 
 .avgLine {
   position: absolute;
@@ -15615,7 +15865,7 @@ export default function ScreenTimeChart7({
   right: 0;
   border-top: 1px dashed rgba(17, 24, 39, 0.35);
   pointer-events: none;
-  z-index: 0;
+  z-index: 3;
 }
 
 .avgLabel {
@@ -15624,6 +15874,7 @@ export default function ScreenTimeChart7({
   font-size: 10px;
   opacity: 0.65;
   pointer-events: none;
+  z-index: 3;
 }
 
 .tooltip {
@@ -15645,20 +15896,11 @@ export default function ScreenTimeChart7({
 .tipTitle { font-weight: 700; margin-bottom: 6px; }
 .tipBody { opacity: 0.95; display: grid; gap: 3px; }
 
-.footerRow {
-  margin-top: 14px;
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
-  font-size: 12px;
-  opacity: 0.85;
-}
-
 
 .muted { opacity: 0.6; }
 
 .confidenceNote {
-  margin-top: 8px;
+  margin-top: 0px;
   font-size: 12px;
   opacity: 0.7;
 }
@@ -15669,14 +15911,110 @@ export default function ScreenTimeChart7({
 }
 
 /* Use this to remove the debug/placeholder look for finished charts */
-.statsGraphClean {
-  border: none !important;
-  outline: none !important;
-  background: transparent !important;
-  box-shadow: none !important;
-  padding: 0 !important;
+
+
+.bottomStack{
+  margin-top: 0px;      /* ✅ pushes the text block to the bottom */
+  display: grid;
+  gap: 6px;              /* ✅ “scrunch” the 3 sections together */
+  padding-top: 0px;     /* small buffer so it doesn’t touch the chart */
 }
 
+
+.plotRow{
+  display: grid;
+  grid-template-columns: 34px 1fr; /* axis + plot */
+  align-items: stretch;
+  column-gap: 10px;
+}
+
+.yAxis{
+  position: relative;
+  font-size: 11px;
+  opacity: 0.7;
+  color: rgba(17,24,39,0.55);
+}
+
+.yTick{
+  position: absolute;
+  right: 0;
+  transform: translateY(-50%);
+  white-space: nowrap;
+  line-height: 1;
+}
+
+.plot{
+  position: relative;
+  width: 100%;
+  isolation: isolate; /* makes z-index layering predictable */
+}
+
+
+.hGrid{
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: rgba(17,24,39,0.08);
+  transform: translateY(-0.5px);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.xRow{
+  display: grid;
+  grid-template-columns: 34px 1fr; /* must match plotRow */
+  column-gap: 10px;
+  align-items: end;
+}
+
+.xLabels{
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 12px; /* must match .cols gap */
+  justify-items: center;
+  align-items: end;
+}
+
+.dayLabel{
+  font-size: 11px;
+  opacity: 0.75;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.dayLabelToday{
+  font-weight: 700;
+  opacity: 0.95;
+}
+
+.totalLineSvg{
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 2;
+  overflow: visible;
+}
+
+.totalLine{
+  fill: none;
+  stroke-width: 3;                 /* matches Score line weight vibe */
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  filter: drop-shadow(0 1px 0 rgba(255,255,255,0.35)); /* subtle polish */
+}
+
+.totalAreaSvg{
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+  overflow: visible; /* extra safety against clipping */
+}
 
 ```
 
