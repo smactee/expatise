@@ -268,10 +268,10 @@
 
 .totalLine{
   fill: none;
-  stroke-width: 3;                 /* matches Score line weight vibe */
+  stroke-width: 1.5;                 /* matches Score line weight vibe */
   stroke-linecap: round;
   stroke-linejoin: round;
-  filter: drop-shadow(0 1px 0 rgba(255,255,255,0.35)); /* subtle polish */
+  filter: drop-shadow(0 1px 0 rgba(255,255,255,0.35)); /* subtle polish */;
 }
 
 .totalAreaSvg{
@@ -283,3 +283,86 @@
   z-index: 0;
   overflow: visible; /* extra safety against clipping */
 }
+
+/* ===== Bars rise (left->right via per-item delay) ===== */
+@keyframes barRise {
+  0%   { transform: scaleY(0.001); opacity: 0; }
+  100% { transform: scaleY(1);     opacity: 1; }
+}
+
+.barHidden{
+  transform-origin: center bottom;
+  transform: scaleY(0.001);
+  opacity: 0;
+  will-change: transform, opacity;
+}
+
+.barRise{
+  transform-origin: center bottom;
+  transform: scaleY(0.001);
+  opacity: 0;
+
+  animation: barRise 650ms cubic-bezier(0.2, 0.85, 0.2, 1) forwards;
+  animation-fill-mode: both; /* IMPORTANT: keeps hidden during delay */
+  will-change: transform, opacity;
+}
+
+/* ===== 7D avg draw (left->right) ===== */
+@keyframes avgLineDraw {
+  0%   { transform: scaleX(0.001); opacity: 0; }
+  100% { transform: scaleX(1);     opacity: 1; }
+}
+
+.avgLineHidden{
+  transform-origin: left center;
+  transform: scaleX(0.001);
+  opacity: 0;
+}
+
+.avgLineDraw{
+  transform-origin: left center;
+  transform: scaleX(0.001);
+  opacity: 0;
+
+  animation: avgLineDraw 650ms ease-out forwards;
+  animation-fill-mode: both;
+}
+
+/* ===== avg label appears after avg line ===== */
+@keyframes avgLabelIn {
+  0%   { opacity: 0;   transform: translateX(-4px); }
+  100% { opacity: 0.65; transform: translateX(0); }
+}
+
+.avgLabelHidden{
+  opacity: 0;
+  transform: translateX(-4px);
+}
+
+.avgLabelIn{
+  opacity: 0;
+  transform: translateX(-4px);
+
+  animation: avgLabelIn 320ms ease-out forwards;
+  animation-fill-mode: both;
+}
+
+/* ===== Reduced motion ===== */
+@media (prefers-reduced-motion: reduce){
+  .barHidden, .barRise{
+    animation: none !important;
+    transform: none !important;
+    opacity: 1 !important;
+  }
+  .avgLineHidden, .avgLineDraw{
+    animation: none !important;
+    transform: none !important;
+    opacity: 1 !important;
+  }
+  .avgLabelHidden, .avgLabelIn{
+    animation: none !important;
+    transform: none !important;
+    opacity: 0.65 !important;
+  }
+}
+

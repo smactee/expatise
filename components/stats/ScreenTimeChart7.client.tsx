@@ -1,7 +1,9 @@
 //components/stats/ScreenTimeChart7.client.tsx
 'use client';
 
-import { useMemo, useState, useId } from 'react';
+import { useEffect, useMemo, useRef, useState, useId } from 'react';
+import { useOnceInView } from './useOnceInView.client';
+import { useBootSweepOnce } from './useBootSweepOnce.client';
 import styles from './ScreenTimeChart7.module.css';
 
 type DayPoint = {
@@ -104,6 +106,8 @@ function smoothPathCatmullRom(points: Pt[], clampMin = 0, clampMax = 100) {
     d.push(`C ${cp1x} ${cp1y}, ${cp2x} ${cp2y}, ${p2.x} ${p2.y}`);
   }
 
+  
+
   return d.join(' ');
 }
 
@@ -134,6 +138,11 @@ function smoothPathCatmullRomXY(points: Pt[], xMin: number, xMax: number, yMin: 
   return d.join(' ');
 }
 
+function easeOutCubic(t: number) {
+  return 1 - Math.pow(1 - t, 3);
+}
+
+
 
 export default function ScreenTimeChart7({
   data,
@@ -151,6 +160,10 @@ export default function ScreenTimeChart7({
   const totalStrokeId = useId().replace(/:/g, '');
 const totalFillId = useId().replace(/:/g, '');
 
+const { ref: inViewRef, seen } = useOnceInView<HTMLDivElement>({
+  threshold: 0.2,
+  rootMargin: '0px 0px -15% 0px',
+});
 
   const model = useMemo(() => {
     const daySlots = buildLastNDays(7);
@@ -208,6 +221,27 @@ const totalFillId = useId().replace(/:/g, '');
       hasCompare,
     };
   }, [data]);
+
+const animateIn = seen && model.points.length > 0;
+
+// timing (single source of truth)
+const lineDelayMs = 120;
+const lineDurMs = 850;
+
+const areaDelayMs = lineDelayMs + lineDurMs + 120;
+const areaDurMs = 550;
+
+const barDelayMs = areaDelayMs + areaDurMs + 120;
+const barStaggerMs = 90;
+const barDurMs = 650;
+
+const nDays = model.points.length || 7;
+const avgDelayMs = barDelayMs + (nDays - 1) * barStaggerMs + barDurMs + 140;
+const avgDurMs = 650;
+const avgLabelDelayMs = avgDelayMs + avgDurMs;
+
+
+
 
 const xLabelH = 16; // height reserved for Mon/Tue labels
 const plotH = Math.max(10, height - xLabelH);
@@ -281,6 +315,49 @@ const totalAreaD = useMemo(() => {
   return `${totalLineD} L ${last.x} ${baseY} L ${first.x} ${baseY} Z`;
 }, [totalLineD, totalLinePts]);
 
+// ----- Total line draw (dash reveal) -----
+const totalPathRef = useRef<SVGPathElement | null>(null);
+const [totalLen, setTotalLen] = useState(0);
+
+useEffect(() => {
+  if (totalPathRef.current) setTotalLen(totalPathRef.current.getTotalLength());
+}, [totalLineD]);
+
+const totalReady = !!totalLineD && totalLen > 0;
+
+const totalReveal = useBootSweepOnce({
+  target: 1,
+  seen,
+  enabled: totalReady,
+  segments: () => [
+    { from: 0, to: 0, durationMs: lineDelayMs, ease: (t) => t },
+    { from: 0, to: 1, durationMs: lineDurMs, ease: easeOutCubic },
+  ],
+});
+
+const tLine = clamp(totalReveal, 0, 1);
+const dashLen = Math.max(1, totalLen + 2);         // no ceil needed
+const dashArray = `${dashLen} ${dashLen}`;         // IMPORTANT: paired dash+gap
+const dashOffset = (1 - tLine) * dashLen;
+const lineDone = tLine > 0.999;
+
+
+// ----- Area fill follows the line tip -----
+const areaClipId = useId().replace(/:/g, '');
+
+// slight lag so fill feels like it trails behind the stroke (tweak 0.06–0.12)
+const areaLag = 0.08;
+const tAreaFollow = clamp((tLine - areaLag) / (1 - areaLag), 0, 1);
+
+const areaClipW = useMemo(() => {
+  if (!totalPathRef.current || totalLen <= 0) return 0;
+
+  const pt = totalPathRef.current.getPointAtLength(totalLen * tAreaFollow);
+
+  // +2 so the fill slightly leads under the stroke cap (feels tighter)
+  return clamp(pt.x + 2, 0, 100);
+}, [tAreaFollow, totalLen]);
+
 
   const weekTestTotal = model.points.reduce((a, p) => a + p.deliberateMin, 0);
   const weekStudyTotal = model.points.reduce((a, p) => a + p.studyMin, 0);
@@ -310,7 +387,8 @@ const totalAreaD = useMemo(() => {
   <div className={styles.wrap}>
     {/* TOP AREA: only the chart */}
     <div className={styles.topArea}>
-      <div className={styles.chart} style={{ height }}>
+      <div className={styles.chart} style={{ height }} ref={inViewRef}>
+
         {/* ROW 1: Y axis + plot */}
         <div className={styles.plotRow}>
           {/* Y AXIS */}
@@ -343,15 +421,29 @@ const totalAreaD = useMemo(() => {
     viewBox="0 0 100 100"
     preserveAspectRatio="none"
     aria-hidden="true"
+    style={{ overflow: 'visible' }}
   >
-    <defs>
-      <linearGradient id={totalFillId} x1="0" y1="0" x2="1" y2="0">
-        <stop offset="0%" stopColor="#2B7CAF" stopOpacity="0.28" />
-        <stop offset="100%" stopColor="#3D8CD5" stopOpacity="0" />
-      </linearGradient>
-    </defs>
+   <defs>
+  <linearGradient id={totalFillId} x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0%" stopColor="#2B7CAF" stopOpacity="0.28" />
+    <stop offset="100%" stopColor="#3D8CD5" stopOpacity="0" />
+  </linearGradient>
 
-    <path d={totalAreaD} fill={`url(#${totalFillId})`} />
+  <clipPath id={areaClipId} clipPathUnits="userSpaceOnUse">
+  <rect x="0" y="0" width={areaClipW} height="100" />
+</clipPath>
+
+</defs>
+
+
+    <path
+  d={totalAreaD}
+  fill={`url(#${totalFillId})`}
+  clipPath={`url(#${areaClipId})`}
+  style={{ opacity: areaClipW > 0 ? 1 : 0 }}
+/>
+
+
   </svg>
 ) : null}
 
@@ -362,20 +454,28 @@ const totalAreaD = useMemo(() => {
     viewBox="0 0 100 100"
     preserveAspectRatio="none"
     aria-hidden="true"
+    style={{ overflow: 'visible' }}
   >
     <defs>
       <linearGradient id={totalStrokeId} x1="0" y1="0" x2="1" y2="0">
-        <stop offset="0%" stopColor="#2B7CAF" stopOpacity="1" />
-        <stop offset="100%" stopColor="#3D8CD5" stopOpacity="0" />
-      </linearGradient>
+  <stop offset="0%" stopColor="#2B7CAF" stopOpacity="1" />
+  <stop offset="70%" stopColor="#2B7CAF" stopOpacity="1" />
+  <stop offset="100%" stopColor="#3D8CD5" stopOpacity="0.22" />
+</linearGradient>
+
     </defs>
 
     <path
-      d={totalLineD}
-      className={styles.totalLine}
-      stroke={`url(#${totalStrokeId})`}
-      vectorEffect="non-scaling-stroke"
-    />
+  ref={totalPathRef}
+  d={totalLineD}
+  className={`${styles.totalLine} ${lineDone ? styles.totalLineFinal : ''}`}
+  stroke={`url(#${totalStrokeId})`}
+  strokeDasharray={totalReady ? dashArray : undefined}
+  strokeDashoffset={totalReady ? dashOffset : undefined}
+  style={{ opacity: totalReady ? 1 : 0 }}
+/>
+
+
   </svg>
 ) : null}
 
@@ -383,17 +483,30 @@ const totalAreaD = useMemo(() => {
 
 
             {/* avg line */}
-            <div className={styles.avgLine} style={{ top: avgLineY }} />
             <div
-              className={styles.avgLabel}
-              style={{ top: clamp(avgLineY - 12, 0, plotH - 14) }}
-            >
-              7D avg
-            </div>
+  className={`${styles.avgLine} ${animateIn ? styles.avgLineDraw : styles.avgLineHidden}`}
+  style={animateIn
+    ? { top: avgLineY, animationDelay: `${avgDelayMs}ms` }
+    : { top: avgLineY }
+  }
+/>
+
+<div
+  className={`${styles.avgLabel} ${animateIn ? styles.avgLabelIn : styles.avgLabelHidden}`}
+  style={animateIn
+    ? { top: clamp(avgLineY - 12, 0, plotH - 14), animationDelay: `${avgLabelDelayMs}ms` }
+    : { top: clamp(avgLineY - 12, 0, plotH - 14) }
+  }
+>
+  7D avg
+</div>
+
+
 
             {/* bars */}
             <div className={styles.cols}>
               {model.points.map((p, idx) => {
+                const barDelay = barDelayMs + idx * barStaggerMs;
 
                 const testH =
                   p.deliberateMin > 0
@@ -425,11 +538,18 @@ const totalAreaD = useMemo(() => {
                     onMouseLeave={() => setHoverIdx(null)}
                   >
                     <div className={styles.barArea}>
-                      
 
                       <div className={styles.group}>
-                        <div className={styles.test} style={{ height: testH }} />
-                        <div className={styles.study} style={{ height: studyH }} />
+                        <div
+  className={`${styles.test} ${animateIn ? styles.barRise : styles.barHidden}`}
+  style={animateIn ? { height: testH, animationDelay: `${barDelay}ms` } : { height: testH }}
+/>
+
+<div
+  className={`${styles.study} ${animateIn ? styles.barRise : styles.barHidden}`}
+  style={animateIn ? { height: studyH, animationDelay: `${barDelay}ms` } : { height: studyH }}
+/>
+
                       </div>
 
                       {hoverIdx === idx ? (
@@ -455,6 +575,7 @@ const totalAreaD = useMemo(() => {
           <div className={styles.yAxisSpacer} />
           <div className={styles.xLabels}>
             {model.points.map((p, idx) => {
+              
               const isToday = idx === model.todayIdx;
               const dayLabel = p.date.toLocaleDateString(undefined, { weekday: 'short' });
 
