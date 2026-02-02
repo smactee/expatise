@@ -30,6 +30,7 @@ import ReadinessRing from '@/app/(premium)/stats/ReadinessRing.client';
 import ScoreChart from '@/components/stats/ScoreChart.client';
 import WeeklyProgressChart from '@/components/stats/DailyProgressChart';
 import DailyProgressChart from '@/components/stats/DailyProgressChart';
+import RhythmHeatmap from '@/components/stats/RhythmHeatmap.client';
 
 
 const datasetId: DatasetId = 'cn-2023-test1';
@@ -315,52 +316,25 @@ const statsTopics = useMemo(() => {
 </article>
 
 
-{/* Best Time */}
-            <article className={styles.statsCard}>
-              <header className={styles.statsCardHeader}>
-                <h2 className={styles.statsCardTitle}>Best Time</h2>
-              </header>
+{/* Heatmap */}
+<article className={styles.statsCard}>
+  <header className={styles.statsCardHeader}>
+    <h2 className={styles.statsCardTitle}>Heatmap</h2>
+  </header>
 
-              <div className={styles.statsGraphArea}>
-                <div className={styles.statsGraphPlaceholder}>
-  {loading ? (
-    "Loading…"
-  ) : statsBestTime.attemptsCount === 0 ? (
-    `No submitted tests yet (${tfLabel(tfBestTime)}).`
-  ) : !statsBestTime.bestTimeLabel ? (
-    "Not enough data yet."
-  ) : (
-    <>
-      <div style={{ marginBottom: 8 }}>
-        You perform best: <b>{statsBestTime.bestTimeLabel}</b> (avg{" "}
-        <b>{statsBestTime.bestTimeAvgScore}%</b>)
-      </div>
+  <div className={styles.statsGraphArea}>
+    {loading ? (
+      "Loading…"
+    ) : !statsBestTime.rhythmHeatmap ? (
+      "Not enough data yet."
+    ) : (
+      <RhythmHeatmap data={statsBestTime.rhythmHeatmap} />
+    )}
+  </div>
 
-      <div style={{ fontSize: 12, opacity: 0.85 }}>
-        {statsBestTime.bestTimeSeries.map((b) => (
-          <div
-            key={b.label}
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              gap: 12,
-              padding: "4px 0",
-            }}
-          >
-            <span>{b.label}</span>
-            <span>
-              Avg {b.avgScore}% · {b.attemptsCount} tests
-            </span>
-          </div>
-        ))}
-      </div>
-    </>
-  )}
-</div>
+  <TimeframeChips value={tfBestTime} onChange={setTfBestTime} />
+</article>
 
-              </div>
-              <TimeframeChips value={tfBestTime} onChange={setTfBestTime} />
-            </article>
 
 
 {/* Topic Mastery */}

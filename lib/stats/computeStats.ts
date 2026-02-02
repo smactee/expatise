@@ -83,6 +83,30 @@ scoreSeries: Array<{ t: number; scorePct: number; answered: number; totalQ: numb
   bestWeekQuestions: number;        // max questionsAnswered in a week
   consistencyStreakWeeks: number;   // current streak (consecutive weeks with >0)
 
+
+
+  rhythmHeatmap: {
+    weekdays: string[]; // ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"]
+    dayParts: Array<{ key: string; label: string }>; // 4 rows
+    // cells[row][col]
+    cells: Array<
+      Array<{
+        avgScore: number;     // 0..100
+        attemptsCount: number;
+      }>
+    >;
+
+    best: {
+      weekdayLabel: string;   // e.g. "Thu"
+      dayPartLabel: string;   // e.g. "Evening"
+      avgScore: number;       // 0..100
+      attemptsCount: number;
+    } | null;
+
+    lowConfidenceNote: string | null;
+  };
+
+
     // Topic Mastery (Weakest topics)
   weakTopics: Array<{
     tag: string;         // e.g. "road-safety:accidents"
@@ -190,6 +214,29 @@ function startOfDayMs(t: number) {
   return d.getTime();
 }
 
+function weekdayMon0(t: number) {
+  // JS: 0=Sun..6=Sat → convert to Mon=0..Sun=6
+  const js = new Date(t).getDay();
+  return (js + 6) % 7;
+}
+
+const DAY_PARTS = [
+  { key: "morning", label: "Morning", start: 6, end: 12 },
+  { key: "midday",  label: "Midday",  start: 12, end: 17 },
+  { key: "evening", label: "Evening", start: 17, end: 22 },
+  // Late = 22..6 (wrap)
+  { key: "late",    label: "Late",    start: 22, end: 30 }, // treat 0..6 as 24..30
+] as const;
+
+function dayPartIndexFromHour(hour: number) {
+  const h = hour < 6 ? hour + 24 : hour; // 0..5 → 24..29
+  if (h >= 6 && h < 12) return 0;  // morning
+  if (h >= 12 && h < 17) return 1; // midday
+  if (h >= 17 && h < 22) return 2; // evening
+  return 3; // late (22..30)
+}
+
+
 
 export function computeStats(params: {
   attempts: AttemptLike[];
@@ -245,6 +292,16 @@ const scoreSeries: Array<{ t: number; scorePct: number; answered: number; totalQ
     count: 0,
   }));
 
+  const WEEKDAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"] as const;
+
+const heat = Array.from({ length: DAY_PARTS.length }, () =>
+  Array.from({ length: WEEKDAYS.length }, () => ({
+    scoreSum: 0,
+    count: 0,
+  }))
+);
+
+
   // Topic Mastery
   const mastery = new Map<string, { attempted: number; correct: number }>();
   const MIN_TOPIC_ATTEMPTED = 10;
@@ -290,6 +347,20 @@ const scoreSeries: Array<{ t: number; scorePct: number; answered: number; totalQ
 scoreSeries.push({ t, scorePct, answered: attempted, totalQ: denom });
     scoreList.push(scorePct);
 
+    // --- Learning Rhythm Heatmap bucket update ---
+{
+  const dt = new Date(t);
+  const wd = weekdayMon0(t);          // 0..6
+  const hour = dt.getHours();         // 0..23
+  const pi = dayPartIndexFromHour(hour); // 0..3
+
+  heat[pi][wd].scoreSum += scorePct;
+  heat[pi][wd].count += 1;
+}
+
+
+
+
     // Best Time bucket update
     const hour = new Date(t).getHours();
     const bi = timeBuckets.findIndex((b) => hour >= b.start && hour < b.end);
@@ -324,6 +395,46 @@ scoreSeries.push({ t, scorePct, answered: attempted, totalQ: denom });
     const rem = typeof a.remainingSec === "number" ? a.remainingSec : 0;
     if (tls > 0) timeInTimedTestsSec += Math.max(0, tls - rem);
   }
+
+  // ===== Rhythm Heatmap outputs (AFTER loop) =====
+const cells = heat.map((row) =>
+  row.map((c) => ({
+    avgScore: c.count ? Math.round(c.scoreSum / c.count) : 0,
+    attemptsCount: c.count,
+  }))
+);
+
+let best: StatsVM["rhythmHeatmap"]["best"] = null;
+let bestScore = -1;
+let bestCount = 0;
+
+for (let r = 0; r < cells.length; r++) {
+  for (let c = 0; c < cells[r].length; c++) {
+    const cell = cells[r][c];
+    if (cell.attemptsCount <= 0) continue;
+
+    if (
+      cell.avgScore > bestScore ||
+      (cell.avgScore === bestScore && cell.attemptsCount > bestCount)
+    ) {
+      bestScore = cell.avgScore;
+      bestCount = cell.attemptsCount;
+      best = {
+        weekdayLabel: WEEKDAYS[c],
+        dayPartLabel: DAY_PARTS[r].label,
+        avgScore: cell.avgScore,
+        attemptsCount: cell.attemptsCount,
+      };
+    }
+  }
+}
+
+const lowConfidenceNote =
+  !best
+    ? "Not enough data yet."
+    : best.attemptsCount < 3
+    ? `Low confidence: only ${best.attemptsCount} test${best.attemptsCount === 1 ? "" : "s"} in this window.`
+    : null;
 
   // Best Time outputs
   const bestTimeSeries = timeBuckets.map((b) => ({
@@ -538,6 +649,14 @@ for (let i = timeDailySeries.length - 1; i >= 0; i--) {
     bestTimeLabel,
     bestTimeAvgScore,
     weakTopics,
+    
+rhythmHeatmap: {
+    weekdays: [...WEEKDAYS],
+    dayParts: DAY_PARTS.map((p) => ({ key: p.key, label: p.label })),
+    cells,
+    best,
+    lowConfidenceNote,
+  },
     
     timeDailySeries,
     timeThisWeekMin,

@@ -1,0 +1,359 @@
+.wrap {
+  width: 100%;
+}
+
+/* ===== Callout pill ===== */
+.calloutPill {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  padding: 14px 16px;
+  border-radius: 18px;
+
+  background: rgba(255, 255, 255, 0.62);
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  backdrop-filter: blur(10px);
+
+  box-shadow:
+    0 18px 40px rgba(15, 33, 70, 0.12);
+
+  margin-bottom: 16px;
+}
+
+.starBadge {
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+
+  display: grid;
+  place-items: center;
+
+  color: rgba(255, 176, 0, 0.95);
+  background: rgba(255, 245, 220, 0.9);
+  border: 1px solid rgba(255, 200, 90, 0.55);
+
+  box-shadow:
+    0 10px 18px rgba(15, 33, 70, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.85);
+}
+
+.calloutText {
+  font-size: 14px;
+  line-height: 1.25;
+  color: rgba(17, 24, 39, 0.86);
+}
+
+.calloutMuted {
+  color: rgba(17, 24, 39, 0.55);
+  font-weight: 500;
+}
+
+/* ===== Frosted panel ===== */
+.panel {
+  position: relative;
+  border-radius: 22px;
+  padding: 18px 18px 14px;
+
+  background: rgba(255, 255, 255, 0.42);
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  backdrop-filter: blur(14px);
+
+  box-shadow:
+    0 26px 60px rgba(15, 33, 70, 0.14);
+  overflow: hidden;
+}
+
+.panel::before {
+  content: "";
+  position: absolute;
+  inset: -40px;
+
+  background:
+    radial-gradient(60% 55% at 50% 20%,
+      rgba(96, 165, 250, 0.22) 0%,
+      rgba(96, 165, 250, 0.08) 48%,
+      rgba(255, 255, 255, 0) 70%),
+    radial-gradient(55% 50% at 75% 55%,
+      rgba(250, 204, 21, 0.10) 0%,
+      rgba(250, 204, 21, 0.00) 65%);
+  filter: blur(2px);
+  pointer-events: none;
+}
+
+/* ===== Matrix: fixed geometry like the mock ===== */
+.matrix {
+  display: grid;
+  width: 100%;
+
+  /* swapped: 4 columns (day parts) and 7 rows (weekdays) */
+  grid-template-columns: max-content repeat(4, minmax(0, 1fr));
+  grid-template-rows: 26px repeat(7, 46px);
+
+  column-gap: 10px;
+  row-gap: 12px;
+
+  align-items: center;
+}
+
+
+/* dashed divider under weekday labels */
+.matrix::after {
+  content: "";
+  position: absolute;
+  left: var(--label-w);
+  right: 0;
+  top: 34px;
+  border-top: 1px dashed rgba(148, 163, 184, 0.35);
+  opacity: 0.9;
+}
+
+.corner {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.colLabel {
+  text-align: center;
+  font-size: 15px;
+  color: rgba(17, 24, 39, 0.48);
+  letter-spacing: 0.2px;
+}
+
+.rowLabel {
+  padding-right: 8px;
+  text-align: right;
+
+  font-size: 15px;
+  color: rgba(17, 24, 39, 0.44);
+  white-space: nowrap;
+}
+
+/* ===== Cells: tile style ===== */
+.cell {
+  position: relative;
+  width: var(--cell-w);
+  height: var(--cell-h);
+
+  border-radius: 14px;
+  border: 1px solid rgba(148, 163, 184, 0.24);
+
+  box-shadow:
+    0 14px 28px rgba(15, 33, 70, 0.08);
+
+  display: grid;
+  place-items: center;
+
+  cursor: pointer;
+  user-select: none;
+
+  transition: transform 160ms ease, box-shadow 160ms ease;
+  outline: none;
+}
+
+/* glossy highlight overlay like the mock */
+.cell::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(
+    70% 60% at 30% 25%,
+    rgba(255, 255, 255, 0.55) 0%,
+    rgba(255, 255, 255, 0.08) 45%,
+    rgba(255, 255, 255, 0) 70%
+  );
+  pointer-events: none;
+}
+
+.emptyCell {
+  background: rgba(255, 255, 255, 0.55) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.72);
+}
+
+.cellValue {
+  font-size: 15px;
+  font-weight: 750;
+  letter-spacing: -0.3px;
+  color: rgba(17, 24, 39, 0.72);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.7);
+}
+
+/* Confidence “• count” bottom-right */
+.conf {
+  position: absolute;
+  right: 10px;
+  bottom: 8px;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+
+  font-size: 12px;
+  font-weight: 650;
+  color: rgba(17, 24, 39, 0.44);
+}
+
+.confDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: rgba(17, 24, 39, 0.55);
+}
+
+.confCount {
+  transform: translateY(0.5px);
+}
+
+/* hover/focus lift */
+.cell:hover,
+.cell:focus-visible {
+  transform: translateY(-1px);
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.90) inset,
+    0 0 0 1px rgba(43, 124, 175, 0.38),
+    0 22px 44px rgba(15, 33, 70, 0.16);
+  z-index: 5;
+}
+
+/* best cell gold ring */
+.bestCell {
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.90) inset,
+    0 0 0 3px rgba(255, 197, 66, 0.62),
+    0 20px 42px rgba(15, 33, 70, 0.14);
+}
+
+/* ===== Tooltip (fixed, like mock) ===== */
+.tooltip {
+  position: fixed;
+  z-index: 9999;
+
+  transform: translate(-50%, -100%);
+  width: 220px;
+
+  background: rgba(255, 255, 255, 0.97);
+  border: 1px solid rgba(148, 163, 184, 0.55);
+  border-radius: 14px;
+
+  box-shadow: 0 24px 52px rgba(15, 33, 70, 0.20);
+
+  padding: 12px 12px;
+  pointer-events: none;
+}
+
+.tipTitle {
+  font-size: 15px;
+  font-weight: 850;
+  color: rgba(17, 24, 39, 0.86);
+  margin-bottom: 4px;
+}
+
+.tipSub {
+  font-size: 13px;
+  color: rgba(17, 24, 39, 0.60);
+}
+
+.tipRule {
+  height: 1px;
+  background: rgba(148, 163, 184, 0.35);
+  margin: 10px 0;
+}
+
+.tipBody {
+  font-size: 13px;
+  color: rgba(17, 24, 39, 0.70);
+}
+
+.tipLine {
+  color: rgba(17, 24, 39, 0.70);
+  margin-bottom: 4px;
+}
+
+.tipDelta {
+  color: rgba(43, 124, 175, 0.90);
+  font-weight: 700;
+}
+
+.tipMuted {
+  font-size: 12px;
+  color: rgba(17, 24, 39, 0.48);
+}
+
+/* arrow points down to the cell */
+.tipArrow {
+  position: absolute;
+  left: 50%;
+  bottom: -6px;
+
+  width: 12px;
+  height: 12px;
+  transform: translateX(-50%) rotate(45deg);
+
+  background: rgba(255, 255, 255, 0.97);
+  border-right: 1px solid rgba(148, 163, 184, 0.55);
+  border-bottom: 1px solid rgba(148, 163, 184, 0.55);
+}
+
+/* Footer note */
+.confidenceNote {
+  margin-top: 14px;
+  font-size: 13px;
+  color: rgba(17, 24, 39, 0.46);
+  position: relative;
+  z-index: 1;
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .cell,
+  .cell:hover,
+  .cell:focus-visible {
+    transition: none !important;
+    transform: none !important;
+  }
+}
+
+.legend {
+  margin-top: 12px;
+  display: grid;
+  gap: 6px;
+}
+
+.legendRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: rgba(17, 24, 39, 0.50);
+  font-size: 12px;
+}
+
+.legendLabel {
+  width: 78px; /* keeps it tidy */
+  text-align: right;
+  color: rgba(17, 24, 39, 0.46);
+}
+
+.legendText {
+  margin-left: 4px;
+  color: rgba(17, 24, 39, 0.45);
+}
+
+.swatch {
+  width: 16px;
+  height: 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 184, 0.22);
+}
+
+.swLow  { background: hsla(210, 55%, 86%, 0.95); }
+.swMid  { background: hsla(140, 55%, 86%, 0.95); }
+.swHigh { background: hsla(55,  60%, 86%, 0.95); }
+
+.legendDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(17, 24, 39, 0.55);
+}

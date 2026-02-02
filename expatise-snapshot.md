@@ -4448,6 +4448,7 @@ import ReadinessRing from '@/app/(premium)/stats/ReadinessRing.client';
 import ScoreChart from '@/components/stats/ScoreChart.client';
 import WeeklyProgressChart from '@/components/stats/DailyProgressChart';
 import DailyProgressChart from '@/components/stats/DailyProgressChart';
+import RhythmHeatmap from '@/components/stats/RhythmHeatmap.client';
 
 
 const datasetId: DatasetId = 'cn-2023-test1';
@@ -4733,52 +4734,25 @@ const statsTopics = useMemo(() => {
 </article>
 
 
-{/* Best Time */}
-            <article className={styles.statsCard}>
-              <header className={styles.statsCardHeader}>
-                <h2 className={styles.statsCardTitle}>Best Time</h2>
-              </header>
+{/* Heatmap */}
+<article className={styles.statsCard}>
+  <header className={styles.statsCardHeader}>
+    <h2 className={styles.statsCardTitle}>Heatmap</h2>
+  </header>
 
-              <div className={styles.statsGraphArea}>
-                <div className={styles.statsGraphPlaceholder}>
-  {loading ? (
-    "Loading…"
-  ) : statsBestTime.attemptsCount === 0 ? (
-    `No submitted tests yet (${tfLabel(tfBestTime)}).`
-  ) : !statsBestTime.bestTimeLabel ? (
-    "Not enough data yet."
-  ) : (
-    <>
-      <div style={{ marginBottom: 8 }}>
-        You perform best: <b>{statsBestTime.bestTimeLabel}</b> (avg{" "}
-        <b>{statsBestTime.bestTimeAvgScore}%</b>)
-      </div>
+  <div className={styles.statsGraphArea}>
+    {loading ? (
+      "Loading…"
+    ) : !statsBestTime.rhythmHeatmap ? (
+      "Not enough data yet."
+    ) : (
+      <RhythmHeatmap data={statsBestTime.rhythmHeatmap} />
+    )}
+  </div>
 
-      <div style={{ fontSize: 12, opacity: 0.85 }}>
-        {statsBestTime.bestTimeSeries.map((b) => (
-          <div
-            key={b.label}
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              gap: 12,
-              padding: "4px 0",
-            }}
-          >
-            <span>{b.label}</span>
-            <span>
-              Avg {b.avgScore}% · {b.attemptsCount} tests
-            </span>
-          </div>
-        ))}
-      </div>
-    </>
-  )}
-</div>
+  <TimeframeChips value={tfBestTime} onChange={setTfBestTime} />
+</article>
 
-              </div>
-              <TimeframeChips value={tfBestTime} onChange={setTfBestTime} />
-            </article>
 
 
 {/* Topic Mastery */}
@@ -14533,6 +14507,676 @@ const avgDashOffset = (1 - tReveal) * dashLen;
 
 ```
 
+### components/stats/RhythmHeatmap.client.tsx
+```tsx
+'use client';
+
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
+import styles from './RhythmHeatmap.module.css';
+
+type HeatmapVM = {
+  weekdays: string[];
+  dayParts: Array<{ key: string; label: string }>;
+  // stays as [dayPart][weekday]
+  cells: Array<Array<{ avgScore: number; attemptsCount: number }>>;
+  best: {
+    weekdayLabel: string;
+    dayPartLabel: string;
+    avgScore: number;
+    attemptsCount: number;
+  } | null;
+  lowConfidenceNote: string | null;
+};
+
+function clamp(n: number, min: number, max: number) {
+  return Math.max(min, Math.min(max, n));
+}
+
+function cellBg(avgScore: number, attemptsCount: number) {
+  const s01 = clamp(avgScore / 100, 0, 1);
+  const hue = 210 - 155 * s01;
+
+  let sat = 62;
+  let light = 86;
+  let alpha = 0.85;
+
+  if (attemptsCount <= 0) {
+    sat = 12;
+    light = 94;
+    alpha = 0.95;
+  } else if (attemptsCount === 1) {
+    sat *= 0.55;
+    alpha *= 0.70;
+  } else if (attemptsCount === 2) {
+    sat *= 0.75;
+    alpha *= 0.82;
+  }
+
+  return `hsla(${hue.toFixed(0)}, ${sat.toFixed(0)}%, ${light.toFixed(0)}%, ${clamp(alpha, 0.55, 0.98)})`;
+}
+
+export default function RhythmHeatmap({ data }: { data: HeatmapVM }) {
+  // r = weekday row index, c = dayPart col index (swapped UI)
+  const [hover, setHover] = useState<{ r: number; c: number } | null>(null);
+  const [pinned, setPinned] = useState<{ r: number; c: number } | null>(null);
+
+  const [pointerType, setPointerType] = useState<'mouse' | 'touch' | 'pen'>('mouse');
+  const wrapRef = useRef<HTMLDivElement | null>(null);
+  const tipRef = useRef<HTMLDivElement | null>(null);
+
+  // refs: rows = weekdays, cols = dayParts
+  const cellRefs = useRef<(HTMLDivElement | null)[][]>([]);
+  const ensureRef = (r: number, c: number) => {
+    if (!cellRefs.current[r]) cellRefs.current[r] = [];
+    if (!cellRefs.current[r][c]) cellRefs.current[r][c] = null;
+  };
+
+  const flat = useMemo(() => data.cells.flat(), [data.cells]);
+  const maxCount = useMemo(() => Math.max(1, ...flat.map((x) => x.attemptsCount)), [flat]);
+
+  const bestRC = useMemo(() => {
+    if (!data.best) return null;
+    const r = data.weekdays.findIndex((w) => w === data.best!.weekdayLabel);
+    const c = data.dayParts.findIndex((p) => p.label === data.best!.dayPartLabel);
+    if (r < 0 || c < 0) return null;
+    return { r, c };
+  }, [data.best, data.weekdays, data.dayParts]);
+
+  const active = pinned ?? hover;
+
+  const tip =
+    active != null
+      ? {
+          r: active.r,
+          c: active.c,
+          weekday: data.weekdays[active.r],
+          part: data.dayParts[active.c]?.label ?? '',
+          // IMPORTANT: data is still [dayPart][weekday]
+          cell: data.cells[active.c]?.[active.r] ?? { avgScore: 0, attemptsCount: 0 },
+        }
+      : null;
+
+  // Close pinned tooltip when tapping outside (mobile)
+  useEffect(() => {
+    function onDocDown(e: PointerEvent) {
+      if (!pinned) return;
+
+      const t = e.target as Node | null;
+      const inWrap = !!wrapRef.current && !!t && wrapRef.current.contains(t);
+      const inTip = !!tipRef.current && !!t && tipRef.current.contains(t);
+
+      if (!inWrap && !inTip) setPinned(null);
+    }
+    window.addEventListener('pointerdown', onDocDown, { passive: true });
+    return () => window.removeEventListener('pointerdown', onDocDown);
+  }, [pinned]);
+
+  // Compute portal tooltip position (clamped to viewport)
+  const [tipPos, setTipPos] = useState<{ left: number; top: number; placement: 'top' | 'bottom' } | null>(null);
+
+  useEffect(() => {
+    if (!active) {
+      setTipPos(null);
+      return;
+    }
+
+    const el = cellRefs.current?.[active.r]?.[active.c];
+    if (!el) return;
+
+    const rect = el.getBoundingClientRect();
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+
+    const TIP_W = 300; // keep in sync with CSS width
+    const M = 10;
+
+    const centerX = rect.left + rect.width / 2;
+    const left = clamp(centerX, M + TIP_W / 2, vw - M - TIP_W / 2);
+
+    // Prefer above; if not enough space, place below
+    const preferTop = rect.top > 140;
+    const placement: 'top' | 'bottom' = preferTop ? 'top' : 'bottom';
+
+    const top =
+      placement === 'top'
+        ? clamp(rect.top - 12, M, vh - M) // actual translation handled in CSS
+        : clamp(rect.bottom + 12, M, vh - M);
+
+    setTipPos({ left, top, placement });
+  }, [active]);
+
+  const isCoarse =
+    typeof window !== 'undefined' &&
+    (window.matchMedia?.('(hover: none)').matches || window.matchMedia?.('(pointer: coarse)').matches);
+
+  return (
+    <div className={styles.wrap} ref={wrapRef}>
+      {/* Callout pill */}
+      <div className={styles.calloutPill}>
+        <div className={styles.starBadge} aria-hidden="true">★</div>
+        <div className={styles.calloutText}>
+          {data.best ? (
+            <>
+              Your best window: <b>{data.best.weekdayLabel} {data.best.dayPartLabel}</b> — avg{' '}
+              <b>{data.best.avgScore}%</b>{' '}
+              <span className={styles.calloutMuted}>
+                ({data.best.attemptsCount} test{data.best.attemptsCount === 1 ? '' : 's'})
+              </span>
+            </>
+          ) : (
+            <>Not enough data yet.</>
+          )}
+        </div>
+      </div>
+
+      {/* Soft panel */}
+      <div className={styles.panel}>
+        <div className={styles.matrix}>
+          <div className={styles.corner} />
+
+          {/* TOP: Day parts */}
+          {data.dayParts.map((p, c) => (
+            <div
+              key={`col-${p.key}`}
+              className={styles.colLabel}
+              style={{ gridColumn: c + 2, gridRow: 1 }}
+            >
+              {p.label}
+            </div>
+          ))}
+
+          {/* LEFT: Weekdays */}
+          {data.weekdays.map((d, r) => (
+            <div
+              key={`row-${d}`}
+              className={styles.rowLabel}
+              style={{ gridColumn: 1, gridRow: r + 2 }}
+            >
+              {d}
+            </div>
+          ))}
+
+          {/* CELLS: rows=weekdays, cols=dayParts */}
+          {data.weekdays.map((weekday, r) =>
+            data.dayParts.map((part, c) => {
+              ensureRef(r, c);
+
+              const cell = data.cells[c]?.[r] ?? { avgScore: 0, attemptsCount: 0 };
+              const bg = cellBg(cell.avgScore, cell.attemptsCount);
+              const dotA = clamp(cell.attemptsCount / maxCount, 0, 1);
+
+              const isBest = !!bestRC && bestRC.r === r && bestRC.c === c;
+              const canPulse = isBest && cell.attemptsCount >= 3;
+
+              return (
+                <div
+                  key={`cell-${r}-${c}`}
+                  ref={(node) => {
+                    cellRefs.current[r][c] = node;
+                  }}
+                  className={[
+                    styles.cell,
+                    isBest ? styles.bestCell : '',
+                    canPulse ? styles.bestPulse : '',
+                    cell.attemptsCount === 0 ? styles.emptyCell : '',
+                    pinned?.r === r && pinned?.c === c ? styles.pinnedCell : '',
+                  ].filter(Boolean).join(' ')}
+                  style={{ gridColumn: c + 2, gridRow: r + 2, background: bg }}
+                  onPointerDown={(e) => setPointerType((e.pointerType as any) ?? 'mouse')}
+                  onMouseEnter={() => setHover({ r, c })}
+                  onMouseLeave={() => setHover(null)}
+                  onClick={() => {
+                    // Tap-to-pin (coarse pointers), optional for mouse too
+                    const allowPin = pointerType !== 'mouse' || isCoarse;
+                    if (!allowPin) return;
+
+                    setPinned((prev) => (prev?.r === r && prev?.c === c ? null : { r, c }));
+                  }}
+                  role="button"
+                  tabIndex={0}
+                >
+                  <div className={styles.cellValue}>
+                    {cell.attemptsCount > 0 ? `${cell.avgScore}%` : '—'}
+                  </div>
+
+                  {cell.attemptsCount > 0 ? (
+                    <>
+                      <span className={styles.dot} style={{ opacity: dotA }} />
+                      <span className={styles.count}>{cell.attemptsCount}</span>
+                    </>
+                  ) : null}
+                </div>
+              );
+            })
+          )}
+        </div>
+
+        {/* Tiny legend (see section 2) */}
+        <div className={styles.legend}>
+          <div className={styles.legendRow}>
+            <span className={styles.legendLabel}>Score</span>
+            <span className={`${styles.swatch} ${styles.swLow}`} />
+            <span className={`${styles.swatch} ${styles.swMid}`} />
+            <span className={`${styles.swatch} ${styles.swHigh}`} />
+            <span className={styles.legendText}>low → high</span>
+          </div>
+
+          <div className={styles.legendRow}>
+            <span className={styles.legendLabel}>Confidence</span>
+            <span className={styles.legendDot} style={{ opacity: 0.35 }} />
+            <span className={styles.legendDot} style={{ opacity: 0.65 }} />
+            <span className={styles.legendDot} style={{ opacity: 1 }} />
+            <span className={styles.legendText}>more tests = stronger</span>
+          </div>
+        </div>
+
+        {data.lowConfidenceNote ? (
+          <div className={styles.confidenceNote}>{data.lowConfidenceNote}</div>
+        ) : null}
+      </div>
+
+      {/* PORTAL TOOLTIP (not clipped) */}
+      {tip && tipPos
+        ? createPortal(
+            <div
+              ref={tipRef}
+              className={styles.tooltip}
+              data-placement={tipPos.placement}
+              style={{ left: tipPos.left, top: tipPos.top }}
+              role="tooltip"
+            >
+              <div className={styles.tipTitle}>
+                {tip.weekday} {tip.part}
+              </div>
+
+              <div className={styles.tipSub}>
+                Avg {tip.cell.avgScore}% · {tip.cell.attemptsCount} test{tip.cell.attemptsCount === 1 ? '' : 's'}
+              </div>
+
+              <div className={styles.tipRule} />
+
+              <div className={styles.tipBody}>
+                <div className={styles.tipMuted}>
+                  {tip.cell.attemptsCount < 3 ? 'Low confidence' : 'Good confidence'}
+                </div>
+              </div>
+
+              <div className={styles.tipArrow} aria-hidden="true" />
+            </div>,
+            document.body
+          )
+        : null}
+    </div>
+  );
+}
+
+```
+
+### components/stats/RhythmHeatmap.module.css
+```css
+.wrap {
+  width: 100%;
+}
+
+/* ===== Callout pill ===== */
+.calloutPill {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  padding: 14px 16px;
+  border-radius: 18px;
+
+  background: rgba(255, 255, 255, 0.62);
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  backdrop-filter: blur(10px);
+
+  box-shadow:
+    0 18px 40px rgba(15, 33, 70, 0.12);
+
+  margin-bottom: 16px;
+}
+
+.starBadge {
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+
+  display: grid;
+  place-items: center;
+
+  color: rgba(255, 176, 0, 0.95);
+  background: rgba(255, 245, 220, 0.9);
+  border: 1px solid rgba(255, 200, 90, 0.55);
+
+  box-shadow:
+    0 10px 18px rgba(15, 33, 70, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.85);
+}
+
+.calloutText {
+  font-size: 14px;
+  line-height: 1.25;
+  color: rgba(17, 24, 39, 0.86);
+}
+
+.calloutMuted {
+  color: rgba(17, 24, 39, 0.55);
+  font-weight: 500;
+}
+
+/* ===== Frosted panel ===== */
+.panel {
+  position: relative;
+  border-radius: 22px;
+  padding: 18px 18px 14px;
+
+  background: rgba(255, 255, 255, 0.42);
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  backdrop-filter: blur(14px);
+
+  box-shadow:
+    0 26px 60px rgba(15, 33, 70, 0.14);
+  overflow: hidden;
+}
+
+.panel::before {
+  content: "";
+  position: absolute;
+  inset: -40px;
+
+  background:
+    radial-gradient(60% 55% at 50% 20%,
+      rgba(96, 165, 250, 0.22) 0%,
+      rgba(96, 165, 250, 0.08) 48%,
+      rgba(255, 255, 255, 0) 70%),
+    radial-gradient(55% 50% at 75% 55%,
+      rgba(250, 204, 21, 0.10) 0%,
+      rgba(250, 204, 21, 0.00) 65%);
+  filter: blur(2px);
+  pointer-events: none;
+}
+
+/* ===== Matrix: fixed geometry like the mock ===== */
+.matrix {
+  display: grid;
+  width: 100%;
+
+  /* swapped: 4 columns (day parts) and 7 rows (weekdays) */
+  grid-template-columns: max-content repeat(4, minmax(0, 1fr));
+  grid-template-rows: 26px repeat(7, 46px);
+
+  column-gap: 10px;
+  row-gap: 12px;
+
+  align-items: center;
+}
+
+
+/* dashed divider under weekday labels */
+.matrix::after {
+  content: "";
+  position: absolute;
+  left: var(--label-w);
+  right: 0;
+  top: 34px;
+  border-top: 1px dashed rgba(148, 163, 184, 0.35);
+  opacity: 0.9;
+}
+
+.corner {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.colLabel {
+  text-align: center;
+  font-size: 15px;
+  color: rgba(17, 24, 39, 0.48);
+  letter-spacing: 0.2px;
+}
+
+.rowLabel {
+  padding-right: 8px;
+  text-align: right;
+
+  font-size: 15px;
+  color: rgba(17, 24, 39, 0.44);
+  white-space: nowrap;
+}
+
+/* ===== Cells: tile style ===== */
+.cell {
+  position: relative;
+  width: var(--cell-w);
+  height: var(--cell-h);
+
+  border-radius: 14px;
+  border: 1px solid rgba(148, 163, 184, 0.24);
+
+  box-shadow:
+    0 14px 28px rgba(15, 33, 70, 0.08);
+
+  display: grid;
+  place-items: center;
+
+  cursor: pointer;
+  user-select: none;
+
+  transition: transform 160ms ease, box-shadow 160ms ease;
+  outline: none;
+}
+
+/* glossy highlight overlay like the mock */
+.cell::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(
+    70% 60% at 30% 25%,
+    rgba(255, 255, 255, 0.55) 0%,
+    rgba(255, 255, 255, 0.08) 45%,
+    rgba(255, 255, 255, 0) 70%
+  );
+  pointer-events: none;
+}
+
+.emptyCell {
+  background: rgba(255, 255, 255, 0.55) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.72);
+}
+
+.cellValue {
+  font-size: 15px;
+  font-weight: 750;
+  letter-spacing: -0.3px;
+  color: rgba(17, 24, 39, 0.72);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.7);
+}
+
+/* Confidence “• count” bottom-right */
+.conf {
+  position: absolute;
+  right: 10px;
+  bottom: 8px;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+
+  font-size: 12px;
+  font-weight: 650;
+  color: rgba(17, 24, 39, 0.44);
+}
+
+.confDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: rgba(17, 24, 39, 0.55);
+}
+
+.confCount {
+  transform: translateY(0.5px);
+}
+
+/* hover/focus lift */
+.cell:hover,
+.cell:focus-visible {
+  transform: translateY(-1px);
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.90) inset,
+    0 0 0 1px rgba(43, 124, 175, 0.38),
+    0 22px 44px rgba(15, 33, 70, 0.16);
+  z-index: 5;
+}
+
+/* best cell gold ring */
+.bestCell {
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.90) inset,
+    0 0 0 3px rgba(255, 197, 66, 0.62),
+    0 20px 42px rgba(15, 33, 70, 0.14);
+}
+
+/* ===== Tooltip (fixed, like mock) ===== */
+.tooltip {
+  position: fixed;
+  z-index: 9999;
+
+  transform: translate(-50%, -100%);
+  width: 220px;
+
+  background: rgba(255, 255, 255, 0.97);
+  border: 1px solid rgba(148, 163, 184, 0.55);
+  border-radius: 14px;
+
+  box-shadow: 0 24px 52px rgba(15, 33, 70, 0.20);
+
+  padding: 12px 12px;
+  pointer-events: none;
+}
+
+.tipTitle {
+  font-size: 15px;
+  font-weight: 850;
+  color: rgba(17, 24, 39, 0.86);
+  margin-bottom: 4px;
+}
+
+.tipSub {
+  font-size: 13px;
+  color: rgba(17, 24, 39, 0.60);
+}
+
+.tipRule {
+  height: 1px;
+  background: rgba(148, 163, 184, 0.35);
+  margin: 10px 0;
+}
+
+.tipBody {
+  font-size: 13px;
+  color: rgba(17, 24, 39, 0.70);
+}
+
+.tipLine {
+  color: rgba(17, 24, 39, 0.70);
+  margin-bottom: 4px;
+}
+
+.tipDelta {
+  color: rgba(43, 124, 175, 0.90);
+  font-weight: 700;
+}
+
+.tipMuted {
+  font-size: 12px;
+  color: rgba(17, 24, 39, 0.48);
+}
+
+/* arrow points down to the cell */
+.tipArrow {
+  position: absolute;
+  left: 50%;
+  bottom: -6px;
+
+  width: 12px;
+  height: 12px;
+  transform: translateX(-50%) rotate(45deg);
+
+  background: rgba(255, 255, 255, 0.97);
+  border-right: 1px solid rgba(148, 163, 184, 0.55);
+  border-bottom: 1px solid rgba(148, 163, 184, 0.55);
+}
+
+/* Footer note */
+.confidenceNote {
+  margin-top: 14px;
+  font-size: 13px;
+  color: rgba(17, 24, 39, 0.46);
+  position: relative;
+  z-index: 1;
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .cell,
+  .cell:hover,
+  .cell:focus-visible {
+    transition: none !important;
+    transform: none !important;
+  }
+}
+
+.legend {
+  margin-top: 12px;
+  display: grid;
+  gap: 6px;
+}
+
+.legendRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: rgba(17, 24, 39, 0.50);
+  font-size: 12px;
+}
+
+.legendLabel {
+  width: 78px; /* keeps it tidy */
+  text-align: right;
+  color: rgba(17, 24, 39, 0.46);
+}
+
+.legendText {
+  margin-left: 4px;
+  color: rgba(17, 24, 39, 0.45);
+}
+
+.swatch {
+  width: 16px;
+  height: 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 184, 0.22);
+}
+
+.swLow  { background: hsla(210, 55%, 86%, 0.95); }
+.swMid  { background: hsla(140, 55%, 86%, 0.95); }
+.swHigh { background: hsla(55,  60%, 86%, 0.95); }
+
+.legendDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(17, 24, 39, 0.55);
+}
+
+```
+
 ### components/stats/ScoreChart.client.tsx
 ```tsx
 //components/stats/ScoreChart.client.tsx
@@ -15224,7 +15868,9 @@ style={{ opacity: lensReady ? 1 : 0 }}
 //components/stats/ScreenTimeChart7.client.tsx
 'use client';
 
-import { useMemo, useState, useId } from 'react';
+import { useEffect, useMemo, useRef, useState, useId } from 'react';
+import { useOnceInView } from './useOnceInView.client';
+import { useBootSweepOnce } from './useBootSweepOnce.client';
 import styles from './ScreenTimeChart7.module.css';
 
 type DayPoint = {
@@ -15327,6 +15973,8 @@ function smoothPathCatmullRom(points: Pt[], clampMin = 0, clampMax = 100) {
     d.push(`C ${cp1x} ${cp1y}, ${cp2x} ${cp2y}, ${p2.x} ${p2.y}`);
   }
 
+  
+
   return d.join(' ');
 }
 
@@ -15357,6 +16005,11 @@ function smoothPathCatmullRomXY(points: Pt[], xMin: number, xMax: number, yMin: 
   return d.join(' ');
 }
 
+function easeOutCubic(t: number) {
+  return 1 - Math.pow(1 - t, 3);
+}
+
+
 
 export default function ScreenTimeChart7({
   data,
@@ -15374,6 +16027,10 @@ export default function ScreenTimeChart7({
   const totalStrokeId = useId().replace(/:/g, '');
 const totalFillId = useId().replace(/:/g, '');
 
+const { ref: inViewRef, seen } = useOnceInView<HTMLDivElement>({
+  threshold: 0.2,
+  rootMargin: '0px 0px -15% 0px',
+});
 
   const model = useMemo(() => {
     const daySlots = buildLastNDays(7);
@@ -15431,6 +16088,27 @@ const totalFillId = useId().replace(/:/g, '');
       hasCompare,
     };
   }, [data]);
+
+const animateIn = seen && model.points.length > 0;
+
+// timing (single source of truth)
+const lineDelayMs = 120;
+const lineDurMs = 850;
+
+const areaDelayMs = lineDelayMs + lineDurMs + 120;
+const areaDurMs = 550;
+
+const barDelayMs = areaDelayMs + areaDurMs + 120;
+const barStaggerMs = 90;
+const barDurMs = 650;
+
+const nDays = model.points.length || 7;
+const avgDelayMs = barDelayMs + (nDays - 1) * barStaggerMs + barDurMs + 140;
+const avgDurMs = 650;
+const avgLabelDelayMs = avgDelayMs + avgDurMs;
+
+
+
 
 const xLabelH = 16; // height reserved for Mon/Tue labels
 const plotH = Math.max(10, height - xLabelH);
@@ -15504,6 +16182,49 @@ const totalAreaD = useMemo(() => {
   return `${totalLineD} L ${last.x} ${baseY} L ${first.x} ${baseY} Z`;
 }, [totalLineD, totalLinePts]);
 
+// ----- Total line draw (dash reveal) -----
+const totalPathRef = useRef<SVGPathElement | null>(null);
+const [totalLen, setTotalLen] = useState(0);
+
+useEffect(() => {
+  if (totalPathRef.current) setTotalLen(totalPathRef.current.getTotalLength());
+}, [totalLineD]);
+
+const totalReady = !!totalLineD && totalLen > 0;
+
+const totalReveal = useBootSweepOnce({
+  target: 1,
+  seen,
+  enabled: totalReady,
+  segments: () => [
+    { from: 0, to: 0, durationMs: lineDelayMs, ease: (t) => t },
+    { from: 0, to: 1, durationMs: lineDurMs, ease: easeOutCubic },
+  ],
+});
+
+const tLine = clamp(totalReveal, 0, 1);
+const dashLen = Math.max(1, totalLen + 2);         // no ceil needed
+const dashArray = `${dashLen} ${dashLen}`;         // IMPORTANT: paired dash+gap
+const dashOffset = (1 - tLine) * dashLen;
+const lineDone = tLine > 0.999;
+
+
+// ----- Area fill follows the line tip -----
+const areaClipId = useId().replace(/:/g, '');
+
+// slight lag so fill feels like it trails behind the stroke (tweak 0.06–0.12)
+const areaLag = 0.08;
+const tAreaFollow = clamp((tLine - areaLag) / (1 - areaLag), 0, 1);
+
+const areaClipW = useMemo(() => {
+  if (!totalPathRef.current || totalLen <= 0) return 0;
+
+  const pt = totalPathRef.current.getPointAtLength(totalLen * tAreaFollow);
+
+  // +2 so the fill slightly leads under the stroke cap (feels tighter)
+  return clamp(pt.x + 2, 0, 100);
+}, [tAreaFollow, totalLen]);
+
 
   const weekTestTotal = model.points.reduce((a, p) => a + p.deliberateMin, 0);
   const weekStudyTotal = model.points.reduce((a, p) => a + p.studyMin, 0);
@@ -15533,7 +16254,8 @@ const totalAreaD = useMemo(() => {
   <div className={styles.wrap}>
     {/* TOP AREA: only the chart */}
     <div className={styles.topArea}>
-      <div className={styles.chart} style={{ height }}>
+      <div className={styles.chart} style={{ height }} ref={inViewRef}>
+
         {/* ROW 1: Y axis + plot */}
         <div className={styles.plotRow}>
           {/* Y AXIS */}
@@ -15566,15 +16288,29 @@ const totalAreaD = useMemo(() => {
     viewBox="0 0 100 100"
     preserveAspectRatio="none"
     aria-hidden="true"
+    style={{ overflow: 'visible' }}
   >
-    <defs>
-      <linearGradient id={totalFillId} x1="0" y1="0" x2="1" y2="0">
-        <stop offset="0%" stopColor="#2B7CAF" stopOpacity="0.28" />
-        <stop offset="100%" stopColor="#3D8CD5" stopOpacity="0" />
-      </linearGradient>
-    </defs>
+   <defs>
+  <linearGradient id={totalFillId} x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0%" stopColor="#2B7CAF" stopOpacity="0.28" />
+    <stop offset="100%" stopColor="#3D8CD5" stopOpacity="0" />
+  </linearGradient>
 
-    <path d={totalAreaD} fill={`url(#${totalFillId})`} />
+  <clipPath id={areaClipId} clipPathUnits="userSpaceOnUse">
+  <rect x="0" y="0" width={areaClipW} height="100" />
+</clipPath>
+
+</defs>
+
+
+    <path
+  d={totalAreaD}
+  fill={`url(#${totalFillId})`}
+  clipPath={`url(#${areaClipId})`}
+  style={{ opacity: areaClipW > 0 ? 1 : 0 }}
+/>
+
+
   </svg>
 ) : null}
 
@@ -15585,20 +16321,28 @@ const totalAreaD = useMemo(() => {
     viewBox="0 0 100 100"
     preserveAspectRatio="none"
     aria-hidden="true"
+    style={{ overflow: 'visible' }}
   >
     <defs>
       <linearGradient id={totalStrokeId} x1="0" y1="0" x2="1" y2="0">
-        <stop offset="0%" stopColor="#2B7CAF" stopOpacity="1" />
-        <stop offset="100%" stopColor="#3D8CD5" stopOpacity="0" />
-      </linearGradient>
+  <stop offset="0%" stopColor="#2B7CAF" stopOpacity="1" />
+  <stop offset="70%" stopColor="#2B7CAF" stopOpacity="1" />
+  <stop offset="100%" stopColor="#3D8CD5" stopOpacity="0.22" />
+</linearGradient>
+
     </defs>
 
     <path
-      d={totalLineD}
-      className={styles.totalLine}
-      stroke={`url(#${totalStrokeId})`}
-      vectorEffect="non-scaling-stroke"
-    />
+  ref={totalPathRef}
+  d={totalLineD}
+  className={`${styles.totalLine} ${lineDone ? styles.totalLineFinal : ''}`}
+  stroke={`url(#${totalStrokeId})`}
+  strokeDasharray={totalReady ? dashArray : undefined}
+  strokeDashoffset={totalReady ? dashOffset : undefined}
+  style={{ opacity: totalReady ? 1 : 0 }}
+/>
+
+
   </svg>
 ) : null}
 
@@ -15606,17 +16350,30 @@ const totalAreaD = useMemo(() => {
 
 
             {/* avg line */}
-            <div className={styles.avgLine} style={{ top: avgLineY }} />
             <div
-              className={styles.avgLabel}
-              style={{ top: clamp(avgLineY - 12, 0, plotH - 14) }}
-            >
-              7D avg
-            </div>
+  className={`${styles.avgLine} ${animateIn ? styles.avgLineDraw : styles.avgLineHidden}`}
+  style={animateIn
+    ? { top: avgLineY, animationDelay: `${avgDelayMs}ms` }
+    : { top: avgLineY }
+  }
+/>
+
+<div
+  className={`${styles.avgLabel} ${animateIn ? styles.avgLabelIn : styles.avgLabelHidden}`}
+  style={animateIn
+    ? { top: clamp(avgLineY - 12, 0, plotH - 14), animationDelay: `${avgLabelDelayMs}ms` }
+    : { top: clamp(avgLineY - 12, 0, plotH - 14) }
+  }
+>
+  7D avg
+</div>
+
+
 
             {/* bars */}
             <div className={styles.cols}>
               {model.points.map((p, idx) => {
+                const barDelay = barDelayMs + idx * barStaggerMs;
 
                 const testH =
                   p.deliberateMin > 0
@@ -15648,11 +16405,18 @@ const totalAreaD = useMemo(() => {
                     onMouseLeave={() => setHoverIdx(null)}
                   >
                     <div className={styles.barArea}>
-                      
 
                       <div className={styles.group}>
-                        <div className={styles.test} style={{ height: testH }} />
-                        <div className={styles.study} style={{ height: studyH }} />
+                        <div
+  className={`${styles.test} ${animateIn ? styles.barRise : styles.barHidden}`}
+  style={animateIn ? { height: testH, animationDelay: `${barDelay}ms` } : { height: testH }}
+/>
+
+<div
+  className={`${styles.study} ${animateIn ? styles.barRise : styles.barHidden}`}
+  style={animateIn ? { height: studyH, animationDelay: `${barDelay}ms` } : { height: studyH }}
+/>
+
                       </div>
 
                       {hoverIdx === idx ? (
@@ -15678,6 +16442,7 @@ const totalAreaD = useMemo(() => {
           <div className={styles.yAxisSpacer} />
           <div className={styles.xLabels}>
             {model.points.map((p, idx) => {
+              
               const isToday = idx === model.todayIdx;
               const dayLabel = p.date.toLocaleDateString(undefined, { weekday: 'short' });
 
@@ -16000,10 +16765,10 @@ const totalAreaD = useMemo(() => {
 
 .totalLine{
   fill: none;
-  stroke-width: 3;                 /* matches Score line weight vibe */
+  stroke-width: 1.5;                 /* matches Score line weight vibe */
   stroke-linecap: round;
   stroke-linejoin: round;
-  filter: drop-shadow(0 1px 0 rgba(255,255,255,0.35)); /* subtle polish */
+  filter: drop-shadow(0 1px 0 rgba(255,255,255,0.35)); /* subtle polish */;
 }
 
 .totalAreaSvg{
@@ -16015,6 +16780,89 @@ const totalAreaD = useMemo(() => {
   z-index: 0;
   overflow: visible; /* extra safety against clipping */
 }
+
+/* ===== Bars rise (left->right via per-item delay) ===== */
+@keyframes barRise {
+  0%   { transform: scaleY(0.001); opacity: 0; }
+  100% { transform: scaleY(1);     opacity: 1; }
+}
+
+.barHidden{
+  transform-origin: center bottom;
+  transform: scaleY(0.001);
+  opacity: 0;
+  will-change: transform, opacity;
+}
+
+.barRise{
+  transform-origin: center bottom;
+  transform: scaleY(0.001);
+  opacity: 0;
+
+  animation: barRise 650ms cubic-bezier(0.2, 0.85, 0.2, 1) forwards;
+  animation-fill-mode: both; /* IMPORTANT: keeps hidden during delay */
+  will-change: transform, opacity;
+}
+
+/* ===== 7D avg draw (left->right) ===== */
+@keyframes avgLineDraw {
+  0%   { transform: scaleX(0.001); opacity: 0; }
+  100% { transform: scaleX(1);     opacity: 1; }
+}
+
+.avgLineHidden{
+  transform-origin: left center;
+  transform: scaleX(0.001);
+  opacity: 0;
+}
+
+.avgLineDraw{
+  transform-origin: left center;
+  transform: scaleX(0.001);
+  opacity: 0;
+
+  animation: avgLineDraw 650ms ease-out forwards;
+  animation-fill-mode: both;
+}
+
+/* ===== avg label appears after avg line ===== */
+@keyframes avgLabelIn {
+  0%   { opacity: 0;   transform: translateX(-4px); }
+  100% { opacity: 0.65; transform: translateX(0); }
+}
+
+.avgLabelHidden{
+  opacity: 0;
+  transform: translateX(-4px);
+}
+
+.avgLabelIn{
+  opacity: 0;
+  transform: translateX(-4px);
+
+  animation: avgLabelIn 320ms ease-out forwards;
+  animation-fill-mode: both;
+}
+
+/* ===== Reduced motion ===== */
+@media (prefers-reduced-motion: reduce){
+  .barHidden, .barRise{
+    animation: none !important;
+    transform: none !important;
+    opacity: 1 !important;
+  }
+  .avgLineHidden, .avgLineDraw{
+    animation: none !important;
+    transform: none !important;
+    opacity: 1 !important;
+  }
+  .avgLabelHidden, .avgLabelIn{
+    animation: none !important;
+    transform: none !important;
+    opacity: 0.65 !important;
+  }
+}
+
 
 ```
 
@@ -18967,6 +19815,30 @@ scoreSeries: Array<{ t: number; scorePct: number; answered: number; totalQ: numb
   bestWeekQuestions: number;        // max questionsAnswered in a week
   consistencyStreakWeeks: number;   // current streak (consecutive weeks with >0)
 
+
+
+  rhythmHeatmap: {
+    weekdays: string[]; // ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"]
+    dayParts: Array<{ key: string; label: string }>; // 4 rows
+    // cells[row][col]
+    cells: Array<
+      Array<{
+        avgScore: number;     // 0..100
+        attemptsCount: number;
+      }>
+    >;
+
+    best: {
+      weekdayLabel: string;   // e.g. "Thu"
+      dayPartLabel: string;   // e.g. "Evening"
+      avgScore: number;       // 0..100
+      attemptsCount: number;
+    } | null;
+
+    lowConfidenceNote: string | null;
+  };
+
+
     // Topic Mastery (Weakest topics)
   weakTopics: Array<{
     tag: string;         // e.g. "road-safety:accidents"
@@ -19074,6 +19946,29 @@ function startOfDayMs(t: number) {
   return d.getTime();
 }
 
+function weekdayMon0(t: number) {
+  // JS: 0=Sun..6=Sat → convert to Mon=0..Sun=6
+  const js = new Date(t).getDay();
+  return (js + 6) % 7;
+}
+
+const DAY_PARTS = [
+  { key: "morning", label: "Morning", start: 6, end: 12 },
+  { key: "midday",  label: "Midday",  start: 12, end: 17 },
+  { key: "evening", label: "Evening", start: 17, end: 22 },
+  // Late = 22..6 (wrap)
+  { key: "late",    label: "Late",    start: 22, end: 30 }, // treat 0..6 as 24..30
+] as const;
+
+function dayPartIndexFromHour(hour: number) {
+  const h = hour < 6 ? hour + 24 : hour; // 0..5 → 24..29
+  if (h >= 6 && h < 12) return 0;  // morning
+  if (h >= 12 && h < 17) return 1; // midday
+  if (h >= 17 && h < 22) return 2; // evening
+  return 3; // late (22..30)
+}
+
+
 
 export function computeStats(params: {
   attempts: AttemptLike[];
@@ -19129,6 +20024,16 @@ const scoreSeries: Array<{ t: number; scorePct: number; answered: number; totalQ
     count: 0,
   }));
 
+  const WEEKDAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"] as const;
+
+const heat = Array.from({ length: DAY_PARTS.length }, () =>
+  Array.from({ length: WEEKDAYS.length }, () => ({
+    scoreSum: 0,
+    count: 0,
+  }))
+);
+
+
   // Topic Mastery
   const mastery = new Map<string, { attempted: number; correct: number }>();
   const MIN_TOPIC_ATTEMPTED = 10;
@@ -19174,6 +20079,20 @@ const scoreSeries: Array<{ t: number; scorePct: number; answered: number; totalQ
 scoreSeries.push({ t, scorePct, answered: attempted, totalQ: denom });
     scoreList.push(scorePct);
 
+    // --- Learning Rhythm Heatmap bucket update ---
+{
+  const dt = new Date(t);
+  const wd = weekdayMon0(t);          // 0..6
+  const hour = dt.getHours();         // 0..23
+  const pi = dayPartIndexFromHour(hour); // 0..3
+
+  heat[pi][wd].scoreSum += scorePct;
+  heat[pi][wd].count += 1;
+}
+
+
+
+
     // Best Time bucket update
     const hour = new Date(t).getHours();
     const bi = timeBuckets.findIndex((b) => hour >= b.start && hour < b.end);
@@ -19208,6 +20127,46 @@ scoreSeries.push({ t, scorePct, answered: attempted, totalQ: denom });
     const rem = typeof a.remainingSec === "number" ? a.remainingSec : 0;
     if (tls > 0) timeInTimedTestsSec += Math.max(0, tls - rem);
   }
+
+  // ===== Rhythm Heatmap outputs (AFTER loop) =====
+const cells = heat.map((row) =>
+  row.map((c) => ({
+    avgScore: c.count ? Math.round(c.scoreSum / c.count) : 0,
+    attemptsCount: c.count,
+  }))
+);
+
+let best: StatsVM["rhythmHeatmap"]["best"] = null;
+let bestScore = -1;
+let bestCount = 0;
+
+for (let r = 0; r < cells.length; r++) {
+  for (let c = 0; c < cells[r].length; c++) {
+    const cell = cells[r][c];
+    if (cell.attemptsCount <= 0) continue;
+
+    if (
+      cell.avgScore > bestScore ||
+      (cell.avgScore === bestScore && cell.attemptsCount > bestCount)
+    ) {
+      bestScore = cell.avgScore;
+      bestCount = cell.attemptsCount;
+      best = {
+        weekdayLabel: WEEKDAYS[c],
+        dayPartLabel: DAY_PARTS[r].label,
+        avgScore: cell.avgScore,
+        attemptsCount: cell.attemptsCount,
+      };
+    }
+  }
+}
+
+const lowConfidenceNote =
+  !best
+    ? "Not enough data yet."
+    : best.attemptsCount < 3
+    ? `Low confidence: only ${best.attemptsCount} test${best.attemptsCount === 1 ? "" : "s"} in this window.`
+    : null;
 
   // Best Time outputs
   const bestTimeSeries = timeBuckets.map((b) => ({
@@ -19422,6 +20381,14 @@ for (let i = timeDailySeries.length - 1; i >= 0; i--) {
     bestTimeLabel,
     bestTimeAvgScore,
     weakTopics,
+    
+rhythmHeatmap: {
+    weekdays: [...WEEKDAYS],
+    dayParts: DAY_PARTS.map((p) => ({ key: p.key, label: p.label })),
+    cells,
+    best,
+    lowConfidenceNote,
+  },
     
     timeDailySeries,
     timeThisWeekMin,
@@ -73064,7 +74031,13 @@ export const config = {
           ]
         }
       ],
-      "assets": [],
+      "assets": [
+        {
+          "kind": "image",
+          "src": "/qbank/2023-test1/images/p82-798.jpg",
+          "page": 82
+        }
+      ],
       "source": {
         "pdf": "2023 Driving test 1.pdf"
       },
