@@ -122,6 +122,9 @@ scoreSeries: Array<{ t: number; scorePct: number; answered: number; totalQ: numb
   totalMin: number;
 }>;
 
+topicMastery?: TopicMasteryVM;
+
+
 timeThisWeekMin: number;
 timeBestDayMin: number;
 timeStreakDays: number;
@@ -130,6 +133,28 @@ studyThisWeekMin: number;
 
 
 };
+
+export type TopicMasterySubtopic = {
+  tag: string;         // e.g. "traffic-signals:road-signs"
+  attempted: number;
+  correct: number;
+  accuracyPct: number;
+};
+
+export type TopicMasteryTopic = {
+  topicKey: string;    // e.g. "traffic-signals"
+  attempted: number;
+  correct: number;
+  accuracyPct: number;
+  subtopics: TopicMasterySubtopic[];
+};
+
+export type TopicMasteryVM = {
+  minAttempted: number;
+  topics: TopicMasteryTopic[];
+  weakestSubtopics: TopicMasterySubtopic[]; // sorted worst->best (only those >= minAttempted)
+};
+
 
 function clamp01(n: number) {
   return Math.max(0, Math.min(1, n));
@@ -466,6 +491,83 @@ const lowConfidenceNote =
     .sort((a, b) => a.accuracyPct - b.accuracyPct || b.attempted - a.attempted)
     .slice(0, 5);
 
+
+    // ===== Topic Mastery (grouped topics + subtopics) =====
+
+// Group subtopics under parent topicKey
+const topicMap = new Map<
+  string,
+  { attempted: number; correct: number; subtopics: TopicMasterySubtopic[] }
+>();
+
+for (const [tag, m] of mastery.entries()) {
+  // tag shape: "topic:subtopic"
+  if (!tag.includes(":") || tag.endsWith(":all")) continue;
+
+  const topicKey = tag.split(":")[0]; // parent topic
+  const attempted = m.attempted;
+  const correct = m.correct;
+
+  const sub: TopicMasterySubtopic = {
+    tag,
+    attempted,
+    correct,
+    accuracyPct: attempted ? Math.round((100 * correct) / attempted) : 0,
+  };
+
+  const cur =
+    topicMap.get(topicKey) ?? { attempted: 0, correct: 0, subtopics: [] };
+
+  cur.attempted += attempted;
+  cur.correct += correct;
+  cur.subtopics.push(sub);
+
+  topicMap.set(topicKey, cur);
+}
+
+// Build TopicMasteryTopic[]
+const topics: TopicMasteryTopic[] = Array.from(topicMap.entries()).map(
+  ([topicKey, v]) => {
+    // sort subtopics: weakest first
+    const subtopics = [...v.subtopics].sort(
+      (a, b) => a.accuracyPct - b.accuracyPct || b.attempted - a.attempted
+    );
+
+    return {
+      topicKey,
+      attempted: v.attempted,
+      correct: v.correct,
+      accuracyPct: v.attempted
+        ? Math.round((100 * v.correct) / v.attempted)
+        : 0,
+      subtopics,
+    };
+  }
+);
+
+// sort topics: weakest overall first
+topics.sort(
+  (a, b) => a.accuracyPct - b.accuracyPct || b.attempted - a.attempted
+);
+
+// weakest subtopics overall (confident only)
+const weakestSubtopics: TopicMasterySubtopic[] = Array.from(mastery.entries())
+  .filter(([tag, m]) => tag.includes(":") && !tag.endsWith(":all") && m.attempted >= MIN_TOPIC_ATTEMPTED)
+  .map(([tag, m]) => ({
+    tag,
+    attempted: m.attempted,
+    correct: m.correct,
+    accuracyPct: m.attempted ? Math.round((100 * m.correct) / m.attempted) : 0,
+  }))
+  .sort((a, b) => a.accuracyPct - b.accuracyPct || b.attempted - a.attempted)
+  .slice(0, 12); // chart can show more than 5
+
+const topicMastery: TopicMasteryVM = {
+  minAttempted: MIN_TOPIC_ATTEMPTED,
+  topics,
+  weakestSubtopics,
+};
+
   // Score + readiness
   scoreSeries.sort((x, y) => x.t - y.t);
 
@@ -649,6 +751,7 @@ for (let i = timeDailySeries.length - 1; i >= 0; i--) {
     bestTimeLabel,
     bestTimeAvgScore,
     weakTopics,
+    topicMastery,
     
 rhythmHeatmap: {
     weekdays: [...WEEKDAYS],

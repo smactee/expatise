@@ -31,6 +31,7 @@ import ScoreChart from '@/components/stats/ScoreChart.client';
 import WeeklyProgressChart from '@/components/stats/DailyProgressChart';
 import DailyProgressChart from '@/components/stats/DailyProgressChart';
 import RhythmHeatmap from '@/components/stats/RhythmHeatmap.client';
+import TopicMasteryChart from '@/components/stats/TopicMasteryChart.client';
 
 
 const datasetId: DatasetId = 'cn-2023-test1';
@@ -344,45 +345,15 @@ const statsTopics = useMemo(() => {
   </header>
 
   <div className={styles.statsGraphArea}>
-    <div className={styles.statsGraphPlaceholder}>
-      {loading ? (
-        "Loading…"
-      ) : statsTopics.attemptsCount === 0 ? (
-        `No submitted tests yet (${tfLabel(tfTopics)}).`
-      ) : statsTopics.weakTopics.length === 0 ? (
-        "Not enough data yet (need more answers per topic)."
-      ) : (
-        <>
-          <div style={{ marginBottom: 8 }}>
-            Weakest topics (min 10 answered)
-          </div>
+  {loading ? (
+    "Loading…"
+  ) : !statsTopics.topicMastery || statsTopics.topicMastery.topics.length === 0 ? (
+    "Not enough data yet (need more answers per topic)."
+  ) : (
+    <TopicMasteryChart data={statsTopics.topicMastery} />
+  )}
+</div>
 
-          <div style={{ fontSize: 12, opacity: 0.85 }}>
-            {statsTopics.weakTopics.map((t) => (
-              <div
-                key={t.tag}
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  gap: 12,
-                  padding: "4px 0",
-                }}
-              >
-                <span>{labelForTag(t.tag)}</span>
-                <span>
-                  {t.accuracyPct}% · {t.attempted} answered
-                </span>
-              </div>
-            ))}
-          </div>
-
-          <div style={{ marginTop: 10, fontSize: 12, opacity: 0.75 }}>
-            Practice weak topics test: coming soon
-          </div>
-        </>
-      )}
-    </div>
-  </div>
   <TimeframeChips value={tfTopics} onChange={setTfTopics} />
 </article>
 

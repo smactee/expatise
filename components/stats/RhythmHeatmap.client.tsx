@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import styles from './RhythmHeatmap.module.css';
+import { useOnceInView } from './useOnceInView.client';
 
 type HeatmapVM = {
   weekdays: string[];
@@ -22,28 +23,52 @@ function clamp(n: number, min: number, max: number) {
   return Math.max(min, Math.min(max, n));
 }
 
+function hexToRgb(hex: string) {
+  const h = hex.replace('#', '').trim();
+  const full = h.length === 3 ? h.split('').map((c) => c + c).join('') : h;
+  const n = parseInt(full, 16);
+  return {
+    r: (n >> 16) & 255,
+    g: (n >> 8) & 255,
+    b: n & 255,
+  };
+}
+
+function lerp(a: number, b: number, t: number) {
+  return a + (b - a) * t;
+}
+
+function mix(a: { r: number; g: number; b: number }, b: { r: number; g: number; b: number }, t: number) {
+  return {
+    r: Math.round(lerp(a.r, b.r, t)),
+    g: Math.round(lerp(a.g, b.g, t)),
+    b: Math.round(lerp(a.b, b.b, t)),
+  };
+}
+
+// Anchors from your picker
+const BLUE = hexToRgb('#E1E8F5');
+const GREEN = hexToRgb('#BED0B3');
+const YELLOW = hexToRgb('#F0C02F');
+
 function cellBg(avgScore: number, attemptsCount: number) {
   const s01 = clamp(avgScore / 100, 0, 1);
-  const hue = 210 - 155 * s01;
 
-  let sat = 62;
-  let light = 86;
-  let alpha = 0.85;
+  // 3-stop ramp: blue -> green -> yellow
+  const base =
+    s01 <= 0.5
+      ? mix(BLUE, GREEN, s01 / 0.5)
+      : mix(GREEN, YELLOW, (s01 - 0.5) / 0.5);
 
-  if (attemptsCount <= 0) {
-    sat = 12;
-    light = 94;
-    alpha = 0.95;
-  } else if (attemptsCount === 1) {
-    sat *= 0.55;
-    alpha *= 0.70;
-  } else if (attemptsCount === 2) {
-    sat *= 0.75;
-    alpha *= 0.82;
-  }
+  // Confidence damping (keep your current behavior)
+  let alpha = 0.92;
+  if (attemptsCount <= 0) alpha = 0.60;
+  else if (attemptsCount === 1) alpha *= 0.70;
+  else if (attemptsCount === 2) alpha *= 0.82;
 
-  return `hsla(${hue.toFixed(0)}, ${sat.toFixed(0)}%, ${light.toFixed(0)}%, ${clamp(alpha, 0.55, 0.98)})`;
+  return `rgba(${base.r}, ${base.g}, ${base.b}, ${clamp(alpha, 0.55, 0.98)})`;
 }
+
 
 export default function RhythmHeatmap({ data }: { data: HeatmapVM }) {
   // r = weekday row index, c = dayPart col index (swapped UI)
@@ -139,6 +164,20 @@ export default function RhythmHeatmap({ data }: { data: HeatmapVM }) {
     typeof window !== 'undefined' &&
     (window.matchMedia?.('(hover: none)').matches || window.matchMedia?.('(pointer: coarse)').matches);
 
+  const { ref: inViewRef, seen } = useOnceInView<HTMLDivElement>({
+    threshold: 0.15,
+    rootMargin: '0px 0px -20% 0px',
+  });
+
+  const [revealOn, setRevealOn] = useState(false);
+
+  useEffect(() => {
+    if (!seen) return;
+    const id = requestAnimationFrame(() => setRevealOn(true));
+    return () => cancelAnimationFrame(id);
+  }, [seen]);
+
+
   return (
     <div className={styles.wrap} ref={wrapRef}>
       {/* Callout pill */}
@@ -160,7 +199,7 @@ export default function RhythmHeatmap({ data }: { data: HeatmapVM }) {
       </div>
 
       {/* Soft panel */}
-      <div className={styles.panel}>
+      <div className={styles.panel} ref={inViewRef}>
         <div className={styles.matrix}>
           <div className={styles.corner} />
 
@@ -196,22 +235,35 @@ export default function RhythmHeatmap({ data }: { data: HeatmapVM }) {
               const dotA = clamp(cell.attemptsCount / maxCount, 0, 1);
 
               const isBest = !!bestRC && bestRC.r === r && bestRC.c === c;
-              const canPulse = isBest && cell.attemptsCount >= 3;
+              const canPulse = isBest && cell.attemptsCount > 0;
+            
+                const cellIndex = r * data.dayParts.length + c; // row-major: weekdays then dayParts
+                const delayMs = cellIndex * 28;                 // tweak 20–40ms to taste
 
-              return (
-                <div
-                  key={`cell-${r}-${c}`}
-                  ref={(node) => {
-                    cellRefs.current[r][c] = node;
-                  }}
-                  className={[
-                    styles.cell,
-                    isBest ? styles.bestCell : '',
-                    canPulse ? styles.bestPulse : '',
-                    cell.attemptsCount === 0 ? styles.emptyCell : '',
-                    pinned?.r === r && pinned?.c === c ? styles.pinnedCell : '',
-                  ].filter(Boolean).join(' ')}
-                  style={{ gridColumn: c + 2, gridRow: r + 2, background: bg }}
+
+
+              
+return (
+  <div
+    key={`cell-${r}-${c}`}
+    ref={(node) => {
+      cellRefs.current[r][c] = node;
+    }}
+    className={[
+      styles.cell,
+      styles.cellHidden,
+      revealOn ? styles.cellReveal : '',
+      isBest ? styles.bestCell : '',
+      canPulse ? styles.bestPulse : '',
+      cell.attemptsCount === 0 ? styles.emptyCell : '',
+      pinned?.r === r && pinned?.c === c ? styles.pinnedCell : '',
+    ].filter(Boolean).join(' ')}
+    style={{
+      gridColumn: c + 2,
+      gridRow: r + 2,
+      background: bg,
+      ['--d' as any]: `${delayMs}ms`,
+    }}
                   onPointerDown={(e) => setPointerType((e.pointerType as any) ?? 'mouse')}
                   onMouseEnter={() => setHover({ r, c })}
                   onMouseLeave={() => setHover(null)}
