@@ -406,3 +406,55 @@
   transform: translateY(-1px);
 }
 
+
+.statsCardHeaderRow{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.statsCardActionBtn{
+  flex: 0 0 auto;
+  border-radius: 999px;
+  padding: 8px 12px;
+
+  border: 1px solid rgba(148,163,184,0.45);
+  background: var(--color-premium-gradient-20);
+  box-shadow: 0 10px 20px rgba(15,33,70,0.10);
+
+  font-size: 12px;
+  font-weight: 800;
+  color: rgba(17,24,39,0.78);
+
+  cursor: pointer;
+  user-select: none;
+}
+
+.statsCardActionBtn:disabled{
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.quizBtn {
+  height: 40px;
+  padding: 0 16px;
+  border-radius: 16px;
+
+  border: 1px solid var(--color-logout-border);
+  background: var(--color-premium-gradient);
+  box-shadow: 0 18px 40px rgba(15, 33, 70, 0.26);
+
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--color-heading-card);
+
+  text-decoration: none;
+  cursor: pointer;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  white-space: nowrap;
+}

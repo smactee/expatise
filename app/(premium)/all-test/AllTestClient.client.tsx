@@ -24,6 +24,7 @@ import {
 } from "@/lib/freeAccess/localUsageCap";
 import { useEntitlements } from '@/components/EntitlementsProvider.client';
 import { useClearedMistakes } from '@/lib/mistakes/useClearedMistakes';
+import { deriveTopicSubtags } from '@/lib/qbank/deriveTopicSubtags';
 
 
 
@@ -95,6 +96,105 @@ function compileMistakeIds(
   }
 
   return Array.from(mistakes);
+}
+
+// =========================
+// Topic Quiz (weak subtopics: v1)
+// =========================
+
+// ✅ Accept BOTH keys (your Stats currently writes the old one)
+const TOPIC_QUIZ_KEYS = ["expatise:topicQuiz:v1", "topicQuiz:v1"] as const;
+
+type TopicQuizV1 = {
+  schemaVersion: 1;
+  createdAt: number;
+  tags: string[]; // weakest -> strongest
+};
+
+function normalizeTag(s: unknown) {
+  return String(s ?? "").trim().replace(/^#/, "").toLowerCase();
+}
+
+/**
+ * Accepts BOTH shapes:
+ * - New: { schemaVersion: 1, createdAt, tags: [...] }
+ * - Old: { v: 1, createdAt, rankedTags: [...] }
+ */
+function readTopicQuizV1(): TopicQuizV1 | null {
+  if (typeof window === "undefined") return null;
+
+  for (const key of TOPIC_QUIZ_KEYS) {
+    try {
+      const raw = window.localStorage.getItem(key);
+      if (!raw) continue;
+
+      const parsed = JSON.parse(raw);
+
+      // New format
+      if (parsed?.schemaVersion === 1 && Array.isArray(parsed.tags)) {
+        const tags = parsed.tags.map(normalizeTag).filter(Boolean);
+        return { schemaVersion: 1, createdAt: Number(parsed.createdAt ?? Date.now()), tags };
+      }
+
+      // Old format (your Stats page)
+      if (parsed?.v === 1 && Array.isArray(parsed.rankedTags)) {
+        const tags = parsed.rankedTags.map(normalizeTag).filter(Boolean);
+        return { schemaVersion: 1, createdAt: Number(parsed.createdAt ?? Date.now()), tags };
+      }
+    } catch {
+      // ignore and keep trying
+    }
+  }
+
+  return null;
+}
+
+/**
+ * Build a pool that stays as "weak" as possible while still having enough questions.
+ * - rankedTags: weakest -> strongest
+ * - each question gets bestRank = smallest index among its topic subtags
+ * - choose the smallest cutoff rank that yields >= desiredCount questions
+ */
+function compileTopicQuizIds(questions: Question[], desiredCount: number): string[] {
+  const payload = readTopicQuizV1();
+  const rankedTags = payload?.tags ?? [];
+  if (rankedTags.length === 0) return [];
+
+  const rankIndex = new Map<string, number>();
+  for (let i = 0; i < rankedTags.length; i++) {
+    const tag = normalizeTag(rankedTags[i]);
+    if (tag && !rankIndex.has(tag)) rankIndex.set(tag, i);
+  }
+
+  const ranked: Array<{ id: string; best: number }> = [];
+
+  for (const q of questions) {
+    // ✅ be generous: consider deriveTopicSubtags + manual tags + autoTags
+    const derived = (deriveTopicSubtags(q) ?? []).map(normalizeTag);
+    const manual = (q.tags ?? []).map(normalizeTag);
+    const auto = (q.autoTags ?? []).map(normalizeTag);
+
+
+    const allTags = Array.from(new Set([...derived, ...manual, ...auto])).filter(Boolean);
+
+    let best = Infinity;
+    for (const t of allTags) {
+      const idx = rankIndex.get(t);
+      if (idx !== undefined && idx < best) best = idx;
+    }
+
+    if (best !== Infinity) ranked.push({ id: q.id, best });
+  }
+
+  if (ranked.length === 0) return [];
+
+  ranked.sort((a, b) => a.best - b.best);
+
+  const k = Math.min(ranked.length - 1, Math.max(0, desiredCount - 1));
+  const cutoff = ranked[k].best;
+
+  const pool = ranked.filter((x) => x.best <= cutoff).map((x) => x.id);
+  return Array.from(new Set(pool));
 }
 
 
@@ -230,11 +330,24 @@ if (modeKey === "bookmarks-test") {
   poolIds = Array.from(bookmarkedSet);
 }
 
-// (if you already did mistakes-test, you’ll have a similar branch for mistakes-test)
 if (modeKey === "mistakes-test") {
-  const mistakeIds = compileMistakeIds(ds, await attemptStore.listAttempts(userKey, datasetId), clearedMistakesSet);
+  const mistakeIds = compileMistakeIds(
+    ds,
+    await attemptStore.listAttempts(userKey, datasetId),
+    clearedMistakesSet
+  );
   poolIds = mistakeIds;
 }
+
+if (modeKey === "topics-test") {
+  // Pull weakest-topic quiz tags from localStorage (set from Stats page)
+  const ids = compileTopicQuizIds(ds, questionCount);
+
+  // ✅ never allow empty pool (keeps your emptyMsg as a “true” safety only)
+  poolIds = ids.length ? ids : ds.map((q) => q.id);
+}
+
+
 // ✅ Preflight gate ONLY if there is no resumable attempt (so resume is always allowed)
 const existing = await attemptStore.listAttempts(userKey, datasetId);
 const hasResumable = existing.some(
@@ -283,10 +396,19 @@ if (!reused) {
 
 // Build the picked subset in the frozen random order
 const byId = new Map(ds.map((q) => [q.id, q] as const));
-const picked = a.questionIds.map((id) => byId.get(id)).filter(Boolean) as Question[];
+
+let picked = a.questionIds
+  .map((id) => byId.get(id))
+  .filter(Boolean) as Question[];
+
+// Safety: never allow empty picked set
+if (picked.length === 0) {
+  picked = ds.slice(0, effectiveCount);
+}
 
 setAttempt(a);
 setItems(picked);
+
 
 // Restore timer from attempt storage (prevents refresh extending time)
 if (hasTimer) {
@@ -330,6 +452,7 @@ setLoading(false);
   router,
   routeBase,
   clearedMistakesSet,
+  bookmarkedSet,
 ]);
 
 
@@ -436,6 +559,13 @@ useEffect(() => {
 
 const item = items[index];
 const imageAsset = item?.assets?.find((a) => a.kind === 'image');
+
+useEffect(() => {
+  if (items.length > 0 && index >= items.length) {
+    setIndex(items.length - 1);
+  }
+}, [items.length, index]);
+
 
 const correctCount = useMemo(() => {
   let correct = 0;
@@ -649,6 +779,8 @@ useEffect(() => {
   routeBase,
   enforceCaps,
   modeKey,
+  
+
 ]);
 
 
@@ -675,23 +807,29 @@ useEffect(() => {
     );
   }
 
-  if (!item) {
+  const emptyMsg =
+  modeKey === "bookmarks-test"
+    ? "No bookmarks yet. Bookmark questions first — then come back to practice them here."
+    : modeKey === "mistakes-test"
+    ? "No mistakes yet. Take a test first — then come back to retest and clear them by answering correctly."
+    : modeKey === "topics-test"
+    ? "No questions found for your weakest topics. Please make sure you've taken some tests and have weak topics to practice."
+    : "No questions found.";
+
+
+if (!item) {
+  const msg = items.length === 0 ? emptyMsg : "Loading…";
+
   return (
     <main className={styles.page}>
       <div className={styles.frame}>
         <BackButton />
-        <div className={styles.loading}>
-          {modeKey === "bookmarks-test"
-  ? "No bookmarks yet. Bookmark questions first — then come back to practice them here."
-  : modeKey === "mistakes-test"
-  ? "No mistakes yet. Take a test first — then come back to retest and clear them by answering correctly."
-  : "No questions found."}
-
-        </div>
+        <div className={styles.loading}>{msg}</div>
       </div>
     </main>
   );
 }
+
 
 
   return (

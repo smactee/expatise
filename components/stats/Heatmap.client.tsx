@@ -1,8 +1,9 @@
+//components/stats/Heatmap.client.tsx
 'use client';
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-import styles from './RhythmHeatmap.module.css';
+import styles from './Heatmap.module.css';
 import { useOnceInView } from './useOnceInView.client';
 
 type HeatmapVM = {
@@ -70,7 +71,7 @@ function cellBg(avgScore: number, attemptsCount: number) {
 }
 
 
-export default function RhythmHeatmap({ data }: { data: HeatmapVM }) {
+export default function Heatmap({ data }: { data: HeatmapVM }) {
   // r = weekday row index, c = dayPart col index (swapped UI)
   const [hover, setHover] = useState<{ r: number; c: number } | null>(null);
   const [pinned, setPinned] = useState<{ r: number; c: number } | null>(null);

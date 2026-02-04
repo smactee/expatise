@@ -30,7 +30,7 @@ import ReadinessRing from '@/app/(premium)/stats/ReadinessRing.client';
 import ScoreChart from '@/components/stats/ScoreChart.client';
 import WeeklyProgressChart from '@/components/stats/DailyProgressChart';
 import DailyProgressChart from '@/components/stats/DailyProgressChart';
-import RhythmHeatmap from '@/components/stats/RhythmHeatmap.client';
+import Heatmap from '@/components/stats/Heatmap.client';
 import TopicMasteryChart from '@/components/stats/TopicMasteryChart.client';
 
 
@@ -40,6 +40,53 @@ const datasetId: DatasetId = 'cn-2023-test1';
 
 const REAL_ONLY_MODE_KEYS = ["real-test"];
 const LEARNING_MODE_KEYS = ["real-test", "half-test", "rapid-fire-test"]; // all non-practice modes
+
+
+
+// Topic Quiz config saver: builds a config that prioritizes weakest subtopics
+function buildWeakSubtopicRankedTags(topicMastery: any) {
+  const topics = topicMastery?.topics ?? [];
+  const all = topics.flatMap((t: any) => t.subtopics ?? []);
+
+  // de-dupe by tag (keep lowest accuracy if duplicates)
+  const byTag = new Map<string, any>();
+  for (const s of all) {
+    const prev = byTag.get(s.tag);
+    const sPct = Number.isFinite(s.accuracyPct) ? s.accuracyPct : 0;
+    const pPct = prev && Number.isFinite(prev.accuracyPct) ? prev.accuracyPct : 0;
+    if (!prev || sPct < pPct) byTag.set(s.tag, s);
+  }
+
+  const arr = Array.from(byTag.values());
+
+  // 0% first, then upward; tie-breaker: fewer attempts first
+  arr.sort((a, b) => {
+    const ap = Number.isFinite(a.accuracyPct) ? a.accuracyPct : 0;
+    const bp = Number.isFinite(b.accuracyPct) ? b.accuracyPct : 0;
+    if (ap !== bp) return ap - bp;
+    return (a.attempted ?? 0) - (b.attempted ?? 0);
+  });
+
+  return arr.map((x) => x.tag);
+}
+
+function saveTopicQuizConfig(topicMastery: any) {
+  const rankedTags = buildWeakSubtopicRankedTags(topicMastery);
+
+  const cfg = {
+    v: 1,
+    createdAt: Date.now(),
+    rankedTags,          // weakest -> strongest
+    questionCount: 20,
+    timeLimitSec: 600,   // 10 min
+  };
+
+  localStorage.setItem('topicQuiz:v1', JSON.stringify(cfg));
+  return cfg;
+}
+
+
+
 
 export default function StatsPage() {
   const userKey = useUserKey();
@@ -326,10 +373,10 @@ const statsTopics = useMemo(() => {
   <div className={styles.statsGraphArea}>
     {loading ? (
       "Loading…"
-    ) : !statsBestTime.rhythmHeatmap ? (
+    ) : !statsBestTime.Heatmap ? (
       "Not enough data yet."
     ) : (
-      <RhythmHeatmap data={statsBestTime.rhythmHeatmap} />
+      <Heatmap data={statsBestTime.Heatmap} />
     )}
   </div>
 
@@ -340,9 +387,47 @@ const statsTopics = useMemo(() => {
 
 {/* Topic Mastery */}
 <article className={styles.statsCard}>
-  <header className={styles.statsCardHeader}>
-    <h2 className={styles.statsCardTitle}>Topic Mastery</h2>
-  </header>
+  <header className={`${styles.statsCardHeader} ${styles.statsCardHeaderRow}`}>
+  <h2 className={styles.statsCardTitle}>Topic Mastery</h2>
+
+  <button
+    type="button"
+    className={styles.quizBtn}
+    disabled={
+      loading ||
+      !statsTopics.topicMastery ||
+      buildWeakSubtopicRankedTags(statsTopics.topicMastery).length === 0
+    }
+    onClick={() => {
+  if (!statsTopics.topicMastery) return;
+
+  // ✅ keep it to the “weakest 5” (as you intended)
+  const rankedTags = buildWeakSubtopicRankedTags(statsTopics.topicMastery)
+    .slice(0, 5)
+    .map((t) => String(t ?? "").trim().replace(/^#/, "").toLowerCase())
+    .filter(Boolean);
+
+  const cfg = {
+    schemaVersion: 1,
+    createdAt: Date.now(),
+    tags: rankedTags,
+  };
+
+  // ✅ canonical key (what AllTestClient expects)
+  localStorage.setItem("expatise:topicQuiz:v1", JSON.stringify(cfg));
+
+  // (optional) keep old key for a bit
+  localStorage.setItem("topicQuiz:v1", JSON.stringify({ v: 1, createdAt: cfg.createdAt, rankedTags }));
+
+  router.push("/test/topics");
+}}
+
+    title="Start a 20-question quiz from your weakest subtopics"
+  >
+    Topic Quiz
+  </button>
+</header>
+
 
   <div className={styles.statsGraphArea}>
   {loading ? (
@@ -359,6 +444,10 @@ const statsTopics = useMemo(() => {
 
           </div>
         </section>
+
+
+
+
 
         {/* Review button at the bottom */}
         <div className={styles.statsReviewWrapper}>

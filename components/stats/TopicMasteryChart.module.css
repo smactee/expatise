@@ -19,6 +19,7 @@
   font-weight: 750;
   color: rgba(17,24,39,0.62);
   margin-bottom: 10px;
+  
 }
 
 .heroScroller{
@@ -47,10 +48,11 @@
   border: 1px solid rgba(148,163,184,0.28);
   box-shadow: 0 14px 28px rgba(15,33,70,0.08);
   overflow: hidden;
-
-  flex: 0 0 190px;     /* makes scroll feel good */
   scroll-snap-align: start;
-  min-width: 190px;
+  min-width: 150px;
+  scroll-snap-align: start;
+  background: var(--color-premium-gradient);
+  
 }
 
 
@@ -59,22 +61,24 @@
   position:absolute;
   inset:0;
   border-radius: inherit;
-  background: radial-gradient(
-    70% 60% at 30% 25%,
-    rgba(255,255,255,0.55) 0%,
-    rgba(255,255,255,0.10) 45%,
-    rgba(255,255,255,0) 70%
-  );
+  background: var(--color-premium-gradient);
   pointer-events:none;
+  
 }
 
 .pillTop{
-  display:flex;
+  display: flex;
   align-items: baseline;
-  justify-content: space-between;
-  gap: 10px;
-  position: relative;
-  z-index: 1;
+  justify-content: flex-start; /* IMPORTANT: no space-between */
+  gap: 0;                     /* spacing controlled by the {" "} */
+}
+
+.pillTitle{
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0;                     /* spacing controlled by the {" "} */
+  min-width: 0;
+  
 }
 
 .pillLabel{
@@ -93,6 +97,7 @@
   line-clamp: 2;
 
   -webkit-line-clamp: 2;
+  
 }
 
 
@@ -102,6 +107,8 @@
   font-weight: 900;
   color: rgba(17,24,39,0.76);
   letter-spacing: -0.4px;
+  margin-left: 0.35em;
+  
 }
 
 .pillMeta{
@@ -197,6 +204,7 @@
     rgba(255,197,66,0.85) 0%,
     rgba(43,124,175,0.85) 100%
   );
+  transition-delay: var(--d, 0ms);
 }
 
 /* Horizontal scroller wrapper */
@@ -256,6 +264,7 @@
   font-size: 12px;
   font-weight: 900;
   color: rgba(17,24,39,0.70);
+  margin-left: 0.25em;
 }
 
 .subEmpty{
@@ -290,8 +299,8 @@
 
 .subMeterTrack{
   margin-left: 10px;
-  flex: 1;
-  max-width: 110px;
+  flex: 0 0 54px;
+  max-width: 50px;
   height: 6px;
   border-radius: 999px;
   background: rgba(255,255,255,0.55);
@@ -310,4 +319,245 @@
     rgba(255,197,66,0.85) 0%,
     rgba(43,124,175,0.85) 100%
   );
+  transition-delay: var(--d, 0ms);
 }
+
+.subText{
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0;                     /* spacing controlled by the {" "} */
+  white-space: nowrap;
+}
+
+.subChip{
+  display:flex;
+  align-items:center;
+  gap: 10px;     /* this now only separates text block and meter */
+  white-space: nowrap;
+}
+
+/* =========================
+   Animations (Topic Mastery)
+   ========================= */
+
+@keyframes popIn {
+  from { transform: translateY(10px) scale(0.98); opacity: 0; }
+  to   { transform: translateY(0) scale(1); opacity: var(--op, 1); }
+}
+
+@keyframes rowIn {
+  from { transform: translateY(10px); opacity: 0; }
+  to   { transform: translateY(0); opacity: 1; }
+}
+
+/* hero pills */
+.pill {
+  opacity: var(--op, 1);
+  will-change: transform, opacity;
+  transform: translateZ(0);
+}
+
+.pillHidden {
+  opacity: 0;
+  transform: translateY(10px) scale(0.98);
+}
+
+.pillIn {
+  animation: popIn 420ms cubic-bezier(0.2, 0.9, 0.2, 1) both;
+  animation-delay: var(--d, 0ms);
+}
+
+/* rows */
+.rowHidden {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.rowIn {
+  animation: rowIn 450ms cubic-bezier(0.2, 0.9, 0.2, 1) both;
+  animation-delay: var(--d, 0ms);
+}
+
+/* topic bar fill: 0 -> --w */
+.barFill {
+  width: 0%;
+  transition: width 850ms cubic-bezier(0.2, 0.9, 0.2, 1);
+}
+
+.barFillHidden {
+  width: 0%;
+}
+
+.barFillGrow {
+  width: var(--w, 0%);
+}
+
+/* subchips (fade/slide in) */
+.subChip {
+  opacity: var(--op, 1);
+  will-change: transform, opacity;
+}
+
+.chipHidden {
+  opacity: 0;
+  transform: translateY(8px) scale(0.98);
+}
+
+.chipIn {
+  animation: popIn 360ms cubic-bezier(0.2, 0.9, 0.2, 1) both;
+  animation-delay: var(--d, 0ms);
+}
+
+/* sub meter fill: 0 -> --w */
+.subMeterFill {
+  width: 0%;
+  transition: width 700ms cubic-bezier(0.2, 0.9, 0.2, 1);
+}
+
+.subMeterHidden {
+  width: 0%;
+}
+
+.subMeterGrow {
+  width: var(--w, 0%);
+}
+
+/* reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .pillIn, .rowIn, .chipIn {
+    animation: none !important;
+  }
+  .pillHidden, .rowHidden, .chipHidden {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  .barFill, .subMeterFill {
+    transition: none !important;
+  }
+}
+
+/* =========================
+   Animations (Topic Mastery)
+   ========================= */
+
+/* shared motion tokens (matches your boot-sweep feel) */
+:root {
+  --ease-boot: cubic-bezier(0.2, 0.9, 0.2, 1);
+  --ease-soft: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes popIn {
+  0%   { transform: translate3d(0, 10px, 0) scale(0.985); opacity: 0; }
+  60%  { transform: translate3d(0, 0, 0) scale(1.01); opacity: var(--op, 1); }
+  100% { transform: translate3d(0, 0, 0) scale(1); opacity: var(--op, 1); }
+}
+
+@keyframes rowInKf {
+  0%   { transform: translate3d(0, 10px, 0); opacity: 0; }
+  70%  { transform: translate3d(0, 0, 0); opacity: 1; }
+  100% { transform: translate3d(0, 0, 0); opacity: 1; }
+}
+
+/* hero pills */
+.pill {
+  opacity: var(--op, 1);
+  will-change: transform, opacity;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+.pillHidden {
+  opacity: 0;
+  transform: translate3d(0, 10px, 0) scale(0.985);
+}
+
+.pillIn {
+  animation: popIn 460ms var(--ease-boot) both;
+  animation-delay: var(--d, 0ms);
+}
+
+/* rows */
+.rowHidden {
+  opacity: 0;
+  transform: translate3d(0, 10px, 0);
+}
+
+.rowIn {
+  will-change: transform, opacity;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  animation: rowInKf 480ms var(--ease-boot) both;
+  animation-delay: var(--d, 0ms);
+}
+
+/* topic bar fill: 0 -> --w
+   (add --d on the bar so it starts slightly AFTER the row enters) */
+.barFill {
+  width: 0%;
+  will-change: width;
+  transition:
+    width 900ms var(--ease-soft),
+    opacity 240ms ease;
+  transition-delay: var(--d, 0ms);
+}
+
+.barFillHidden {
+  width: 0%;
+}
+
+.barFillGrow {
+  width: var(--w, 0%);
+}
+
+/* subchips (fade/slide in) */
+.subChip {
+  opacity: var(--op, 1);
+  will-change: transform, opacity;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+.chipHidden {
+  opacity: 0;
+  transform: translate3d(0, 8px, 0) scale(0.985);
+}
+
+.chipIn {
+  animation: popIn 400ms var(--ease-boot) both;
+  animation-delay: var(--d, 0ms);
+}
+
+/* sub meter fill: 0 -> --w */
+.subMeterFill {
+  width: 0%;
+  will-change: width;
+  transition: width 760ms var(--ease-soft);
+  transition-delay: var(--d, 0ms);
+}
+
+.subMeterHidden {
+  width: 0%;
+}
+
+.subMeterGrow {
+  width: var(--w, 0%);
+}
+
+/* reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .pillIn, .rowIn, .chipIn {
+    animation: none !important;
+  }
+  .pillHidden, .rowHidden, .chipHidden {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  /* IMPORTANT: don’t leave fills stuck at 0 when motion is reduced */
+  .barFill,
+  .subMeterFill {
+    transition: none !important;
+    width: var(--w, 0%) !important;
+  }
+}
+

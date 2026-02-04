@@ -1,3 +1,5 @@
+// app/test/[mode]/page.tsx
+
 import { notFound } from "next/navigation";
 import AllTestClient from "@/app/(premium)/all-test/AllTestClient.client";
 import { TEST_MODES, type TestModeId } from "@/lib/testModes";

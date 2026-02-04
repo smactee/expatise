@@ -4449,6 +4449,7 @@ import ScoreChart from '@/components/stats/ScoreChart.client';
 import WeeklyProgressChart from '@/components/stats/DailyProgressChart';
 import DailyProgressChart from '@/components/stats/DailyProgressChart';
 import RhythmHeatmap from '@/components/stats/RhythmHeatmap.client';
+import TopicMasteryChart from '@/components/stats/TopicMasteryChart.client';
 
 
 const datasetId: DatasetId = 'cn-2023-test1';
@@ -4762,45 +4763,15 @@ const statsTopics = useMemo(() => {
   </header>
 
   <div className={styles.statsGraphArea}>
-    <div className={styles.statsGraphPlaceholder}>
-      {loading ? (
-        "Loading…"
-      ) : statsTopics.attemptsCount === 0 ? (
-        `No submitted tests yet (${tfLabel(tfTopics)}).`
-      ) : statsTopics.weakTopics.length === 0 ? (
-        "Not enough data yet (need more answers per topic)."
-      ) : (
-        <>
-          <div style={{ marginBottom: 8 }}>
-            Weakest topics (min 10 answered)
-          </div>
+  {loading ? (
+    "Loading…"
+  ) : !statsTopics.topicMastery || statsTopics.topicMastery.topics.length === 0 ? (
+    "Not enough data yet (need more answers per topic)."
+  ) : (
+    <TopicMasteryChart data={statsTopics.topicMastery} />
+  )}
+</div>
 
-          <div style={{ fontSize: 12, opacity: 0.85 }}>
-            {statsTopics.weakTopics.map((t) => (
-              <div
-                key={t.tag}
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  gap: 12,
-                  padding: "4px 0",
-                }}
-              >
-                <span>{labelForTag(t.tag)}</span>
-                <span>
-                  {t.accuracyPct}% · {t.attempted} answered
-                </span>
-              </div>
-            ))}
-          </div>
-
-          <div style={{ marginTop: 10, fontSize: 12, opacity: 0.75 }}>
-            Practice weak topics test: coming soon
-          </div>
-        </>
-      )}
-    </div>
-  </div>
   <TimeframeChips value={tfTopics} onChange={setTfTopics} />
 </article>
 
@@ -12758,26 +12729,27 @@ export default function BottomNav({ onOffsetChange }: BottomNavProps) {
 
 ### components/DragScrollRow.tsx
 ```tsx
-// components/DragScrollRow.tsx
-import React, { useRef } from 'react';
+'use client';
+
+import React, { useEffect, useRef, useState } from 'react';
 
 type DragScrollRowProps = {
   children: React.ReactNode;
   className?: string;
 };
 
-export default function DragScrollRow({
-  children,
-  className,
-}: DragScrollRowProps) {
+export default function DragScrollRow({ children, className }: DragScrollRowProps) {
   const rowRef = useRef<HTMLDivElement | null>(null);
+
+  const [dragging, setDragging] = useState(false);
+  const [snapOff, setSnapOff] = useState(false);
 
   const isDraggingRef = useRef(false);
   const startXRef = useRef(0);
   const scrollLeftRef = useRef(0);
 
-  // for momentum
-  const lastXRef = useRef(0);
+  // momentum
+  const lastClientXRef = useRef(0);
   const velocityRef = useRef(0);
   const frameIdRef = useRef<number | null>(null);
 
@@ -12788,141 +12760,132 @@ export default function DragScrollRow({
     }
   };
 
-  const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!rowRef.current) return;
-
-    isDraggingRef.current = true;
-    startXRef.current = e.pageX - rowRef.current.offsetLeft;
-    scrollLeftRef.current = rowRef.current.scrollLeft;
-
-    // reset momentum info
-    lastXRef.current = e.pageX;
-    velocityRef.current = 0;
-    stopAnimation();
+  const getLocalX = (clientX: number) => {
+    const el = rowRef.current;
+    if (!el) return clientX;
+    const rect = el.getBoundingClientRect();
+    return clientX - rect.left;
   };
 
   const startMomentum = () => {
-  const el = rowRef.current;
-  if (!el) return;
-
-  const friction = 0.985;    // glides a bit longer
-  const minVelocity = 0.05;  // when to stop throwing
-  const overshoot = 160;     // ⬅ big overshoot distance in px
-
-  const step = (time?: number) => {
     const node = rowRef.current;
     if (!node) return;
 
-    // apply velocity (the usual momentum)
-    node.scrollLeft -= velocityRef.current;
+    const friction = 0.985;
+    const minVelocity = 0.05;
 
-    const maxScroll = node.scrollWidth - node.clientWidth;
+    const step = () => {
+      const el = rowRef.current;
+      if (!el) return;
 
-    // --- rubber-band damping when outside [0, maxScroll] ---
-    if (node.scrollLeft < 0) {
-      const past = -node.scrollLeft;                    // how far past left edge
-      const ratio = Math.min(1, past / overshoot);      // 0 → 1
-      const edgeFriction = 1 - 0.7 * ratio;             // 1 → 0.3
-      velocityRef.current *= edgeFriction;              // slows more as you stretch
-    } else if (node.scrollLeft > maxScroll) {
-      const past = node.scrollLeft - maxScroll;         // how far past right edge
-      const ratio = Math.min(1, past / overshoot);
-      const edgeFriction = 1 - 0.7 * ratio;
-      velocityRef.current *= edgeFriction;
-    }
+      // momentum scroll
+      el.scrollLeft -= velocityRef.current;
 
-    // global friction
-    velocityRef.current *= friction;
+      velocityRef.current *= friction;
 
-    if (Math.abs(velocityRef.current) > minVelocity) {
-      frameIdRef.current = requestAnimationFrame(step);
-    } else {
-      // stop throwing and do a smooth snap-back if we're overshooting
-      const outOfBounds =
-        node.scrollLeft < 0 || node.scrollLeft > maxScroll;
-
-      if (!outOfBounds) {
+      if (Math.abs(velocityRef.current) > minVelocity) {
+        frameIdRef.current = requestAnimationFrame(step);
+      } else {
         velocityRef.current = 0;
         stopAnimation();
-        return;
+        setSnapOff(false); // ✅ restore snap after momentum ends
       }
+    };
 
-      const start = node.scrollLeft;
-      const end = Math.min(maxScroll, Math.max(0, start)); // clamp to [0, maxScroll]
-      const duration = 400; // ms
-
-      const startTime = performance.now();
-
-      const animateBack = (t: number) => {
-        const node2 = rowRef.current;
-        if (!node2) return;
-
-        const elapsed = t - startTime;
-        const progress = Math.min(1, elapsed / duration);
-
-        // easeOutCubic for smooth snap
-        const eased = 1 - Math.pow(1 - progress, 3);
-
-        node2.scrollLeft = start + (end - start) * eased;
-
-        if (progress < 1) {
-          frameIdRef.current = requestAnimationFrame(animateBack);
-        } else {
-          velocityRef.current = 0;
-          stopAnimation();
-        }
-      };
-
-      frameIdRef.current = requestAnimationFrame(animateBack);
-    }
+    frameIdRef.current = requestAnimationFrame(step);
   };
 
-  frameIdRef.current = requestAnimationFrame(step);
-};
+  const onPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    const el = rowRef.current;
+    if (!el) return;
 
+    // IMPORTANT: prevents text selection + makes drag feel “buttery”
+    e.preventDefault();
 
-  const handleMouseUpOrLeave = () => {
+    isDraggingRef.current = true;
+    setDragging(true);
+    setSnapOff(true); // ✅ disable snap during drag/throw
+
+    startXRef.current = getLocalX(e.clientX);
+    scrollLeftRef.current = el.scrollLeft;
+
+    lastClientXRef.current = e.clientX;
+    velocityRef.current = 0;
+
+    stopAnimation();
+    el.setPointerCapture(e.pointerId);
+  };
+
+  const onPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    const el = rowRef.current;
+    if (!el || !isDraggingRef.current) return;
+
+    e.preventDefault();
+
+    const x = getLocalX(e.clientX);
+    const walk = x - startXRef.current;
+
+    el.scrollLeft = scrollLeftRef.current - walk;
+
+    // velocity (px per event)
+    const dx = e.clientX - lastClientXRef.current;
+    lastClientXRef.current = e.clientX;
+
+    velocityRef.current = dx * 0.9;
+  };
+
+  const endDrag = () => {
     if (!isDraggingRef.current) return;
-    isDraggingRef.current = false;
 
-    // only start momentum if user actually flung the mouse
+    isDraggingRef.current = false;
+    setDragging(false);
+
+    // only start momentum if user actually flung
     if (Math.abs(velocityRef.current) > 0.5) {
       startMomentum();
     } else {
       velocityRef.current = 0;
+      setSnapOff(false); // ✅ restore snap if no momentum
     }
   };
 
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    const node = rowRef.current;
-    if (!isDraggingRef.current || !node) return;
+  // Optional: make mouse wheel scroll horizontally (desktop testing)
+  useEffect(() => {
+    const el = rowRef.current;
+    if (!el) return;
 
-    e.preventDefault();
+    const onWheel = (ev: WheelEvent) => {
+      const canScroll = el.scrollWidth > el.clientWidth + 1;
+      if (!canScroll) return;
 
-    const x = e.pageX - node.offsetLeft;
-    const walk = x - startXRef.current;
+      // if user already has horizontal delta (trackpad), let it happen
+      if (Math.abs(ev.deltaX) > Math.abs(ev.deltaY)) return;
 
-    node.scrollLeft = scrollLeftRef.current - walk;
+      ev.preventDefault();
+      el.scrollLeft += ev.deltaY;
+    };
 
-    // measure velocity based on mouse movement
-    const dx = e.pageX - lastXRef.current;
-    lastXRef.current = e.pageX;
-
-    // tweak factor: bigger = stronger throw
-    velocityRef.current = dx * 0.9;
-  };
+    el.addEventListener('wheel', onWheel, { passive: false });
+    return () => el.removeEventListener('wheel', onWheel);
+  }, []);
 
   return (
     <div
       ref={rowRef}
       className={className}
-      onMouseDown={handleMouseDown}
-      onMouseLeave={handleMouseUpOrLeave}
-      onMouseUp={handleMouseUpOrLeave}
-      onMouseMove={handleMouseMove}
+      onPointerDown={onPointerDown}
+      onPointerMove={onPointerMove}
+      onPointerUp={endDrag}
+      onPointerCancel={endDrag}
+      onPointerLeave={endDrag}
       style={{
         overflowX: 'auto',
-        cursor: isDraggingRef.current ? 'grabbing' : 'grab',
+        overflowY: 'hidden',
+        cursor: dragging ? 'grabbing' : 'grab',
+        userSelect: 'none',
+        touchAction: 'pan-y',
+        // ✅ this is the key for “smooth” when you have scroll-snap in CSS
+        scrollSnapType: snapOff ? 'none' : undefined,
       }}
     >
       {children}
@@ -14514,6 +14477,7 @@ const avgDashOffset = (1 - tReveal) * dashLen;
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import styles from './RhythmHeatmap.module.css';
+import { useOnceInView } from './useOnceInView.client';
 
 type HeatmapVM = {
   weekdays: string[];
@@ -14533,28 +14497,52 @@ function clamp(n: number, min: number, max: number) {
   return Math.max(min, Math.min(max, n));
 }
 
+function hexToRgb(hex: string) {
+  const h = hex.replace('#', '').trim();
+  const full = h.length === 3 ? h.split('').map((c) => c + c).join('') : h;
+  const n = parseInt(full, 16);
+  return {
+    r: (n >> 16) & 255,
+    g: (n >> 8) & 255,
+    b: n & 255,
+  };
+}
+
+function lerp(a: number, b: number, t: number) {
+  return a + (b - a) * t;
+}
+
+function mix(a: { r: number; g: number; b: number }, b: { r: number; g: number; b: number }, t: number) {
+  return {
+    r: Math.round(lerp(a.r, b.r, t)),
+    g: Math.round(lerp(a.g, b.g, t)),
+    b: Math.round(lerp(a.b, b.b, t)),
+  };
+}
+
+// Anchors from your picker
+const BLUE = hexToRgb('#E1E8F5');
+const GREEN = hexToRgb('#BED0B3');
+const YELLOW = hexToRgb('#F0C02F');
+
 function cellBg(avgScore: number, attemptsCount: number) {
   const s01 = clamp(avgScore / 100, 0, 1);
-  const hue = 210 - 155 * s01;
 
-  let sat = 62;
-  let light = 86;
-  let alpha = 0.85;
+  // 3-stop ramp: blue -> green -> yellow
+  const base =
+    s01 <= 0.5
+      ? mix(BLUE, GREEN, s01 / 0.5)
+      : mix(GREEN, YELLOW, (s01 - 0.5) / 0.5);
 
-  if (attemptsCount <= 0) {
-    sat = 12;
-    light = 94;
-    alpha = 0.95;
-  } else if (attemptsCount === 1) {
-    sat *= 0.55;
-    alpha *= 0.70;
-  } else if (attemptsCount === 2) {
-    sat *= 0.75;
-    alpha *= 0.82;
-  }
+  // Confidence damping (keep your current behavior)
+  let alpha = 0.92;
+  if (attemptsCount <= 0) alpha = 0.60;
+  else if (attemptsCount === 1) alpha *= 0.70;
+  else if (attemptsCount === 2) alpha *= 0.82;
 
-  return `hsla(${hue.toFixed(0)}, ${sat.toFixed(0)}%, ${light.toFixed(0)}%, ${clamp(alpha, 0.55, 0.98)})`;
+  return `rgba(${base.r}, ${base.g}, ${base.b}, ${clamp(alpha, 0.55, 0.98)})`;
 }
+
 
 export default function RhythmHeatmap({ data }: { data: HeatmapVM }) {
   // r = weekday row index, c = dayPart col index (swapped UI)
@@ -14650,6 +14638,20 @@ export default function RhythmHeatmap({ data }: { data: HeatmapVM }) {
     typeof window !== 'undefined' &&
     (window.matchMedia?.('(hover: none)').matches || window.matchMedia?.('(pointer: coarse)').matches);
 
+  const { ref: inViewRef, seen } = useOnceInView<HTMLDivElement>({
+    threshold: 0.15,
+    rootMargin: '0px 0px -20% 0px',
+  });
+
+  const [revealOn, setRevealOn] = useState(false);
+
+  useEffect(() => {
+    if (!seen) return;
+    const id = requestAnimationFrame(() => setRevealOn(true));
+    return () => cancelAnimationFrame(id);
+  }, [seen]);
+
+
   return (
     <div className={styles.wrap} ref={wrapRef}>
       {/* Callout pill */}
@@ -14671,7 +14673,7 @@ export default function RhythmHeatmap({ data }: { data: HeatmapVM }) {
       </div>
 
       {/* Soft panel */}
-      <div className={styles.panel}>
+      <div className={styles.panel} ref={inViewRef}>
         <div className={styles.matrix}>
           <div className={styles.corner} />
 
@@ -14707,22 +14709,35 @@ export default function RhythmHeatmap({ data }: { data: HeatmapVM }) {
               const dotA = clamp(cell.attemptsCount / maxCount, 0, 1);
 
               const isBest = !!bestRC && bestRC.r === r && bestRC.c === c;
-              const canPulse = isBest && cell.attemptsCount >= 3;
+              const canPulse = isBest && cell.attemptsCount > 0;
+            
+                const cellIndex = r * data.dayParts.length + c; // row-major: weekdays then dayParts
+                const delayMs = cellIndex * 28;                 // tweak 20–40ms to taste
 
-              return (
-                <div
-                  key={`cell-${r}-${c}`}
-                  ref={(node) => {
-                    cellRefs.current[r][c] = node;
-                  }}
-                  className={[
-                    styles.cell,
-                    isBest ? styles.bestCell : '',
-                    canPulse ? styles.bestPulse : '',
-                    cell.attemptsCount === 0 ? styles.emptyCell : '',
-                    pinned?.r === r && pinned?.c === c ? styles.pinnedCell : '',
-                  ].filter(Boolean).join(' ')}
-                  style={{ gridColumn: c + 2, gridRow: r + 2, background: bg }}
+
+
+              
+return (
+  <div
+    key={`cell-${r}-${c}`}
+    ref={(node) => {
+      cellRefs.current[r][c] = node;
+    }}
+    className={[
+      styles.cell,
+      styles.cellHidden,
+      revealOn ? styles.cellReveal : '',
+      isBest ? styles.bestCell : '',
+      canPulse ? styles.bestPulse : '',
+      cell.attemptsCount === 0 ? styles.emptyCell : '',
+      pinned?.r === r && pinned?.c === c ? styles.pinnedCell : '',
+    ].filter(Boolean).join(' ')}
+    style={{
+      gridColumn: c + 2,
+      gridRow: r + 2,
+      background: bg,
+      ['--d' as any]: `${delayMs}ms`,
+    }}
                   onPointerDown={(e) => setPointerType((e.pointerType as any) ?? 'mouse')}
                   onMouseEnter={() => setHover({ r, c })}
                   onMouseLeave={() => setHover(null)}
@@ -14839,21 +14854,9 @@ export default function RhythmHeatmap({ data }: { data: HeatmapVM }) {
 }
 
 .starBadge {
-  width: 36px;
-  height: 36px;
-  border-radius: 999px;
-
-  display: grid;
-  place-items: center;
-
-  color: rgba(255, 176, 0, 0.95);
-  background: rgba(255, 245, 220, 0.9);
-  border: 1px solid rgba(255, 200, 90, 0.55);
-
-  box-shadow:
-    0 10px 18px rgba(15, 33, 70, 0.08),
-    inset 0 1px 0 rgba(255, 255, 255, 0.85);
+  color: rgba(240, 192, 47, 0.98);
 }
+
 
 .calloutText {
   font-size: 14px;
@@ -15038,7 +15041,7 @@ export default function RhythmHeatmap({ data }: { data: HeatmapVM }) {
 .bestCell {
   box-shadow:
     0 0 0 1px rgba(255, 255, 255, 0.90) inset,
-    0 0 0 3px rgba(255, 197, 66, 0.62),
+    0 0 0 1px rgba(148, 163, 184, 0.22),
     0 20px 42px rgba(15, 33, 70, 0.14);
 }
 
@@ -15164,9 +15167,10 @@ export default function RhythmHeatmap({ data }: { data: HeatmapVM }) {
   border: 1px solid rgba(148, 163, 184, 0.22);
 }
 
-.swLow  { background: hsla(210, 55%, 86%, 0.95); }
-.swMid  { background: hsla(140, 55%, 86%, 0.95); }
-.swHigh { background: hsla(55,  60%, 86%, 0.95); }
+.swLow  { background: rgba(225, 232, 245, 0.95); } /* #E1E8F5 */
+.swMid  { background: rgba(190, 208, 179, 0.95); } /* #BED0B3 */
+.swHigh { background: rgba(240, 192, 47,  0.95); } /* #F0C02F */
+
 
 .legendDot {
   width: 8px;
@@ -15174,6 +15178,68 @@ export default function RhythmHeatmap({ data }: { data: HeatmapVM }) {
   border-radius: 999px;
   background: rgba(17, 24, 39, 0.55);
 }
+
+/* ===== Heatmap entrance: staggered cell reveal ===== */
+
+@keyframes cellIn {
+  0%   { opacity: 0; transform: translateY(8px) scale(0.985); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* base hidden state (only visually; layout stays) */
+.cellHidden{
+  opacity: 0;
+  transform: translateY(8px) scale(0.985);
+}
+
+/* when revealOn turns true, each cell animates with its own delay var(--d) */
+.cellReveal{
+  animation: cellIn 520ms cubic-bezier(0.2, 0.85, 0.2, 1) forwards;
+  animation-delay: var(--d, 0ms);
+  will-change: transform, opacity;
+}
+
+/* Reduced motion: no fade/slide */
+@media (prefers-reduced-motion: reduce){
+  .cellHidden{
+    opacity: 1;
+    transform: none;
+  }
+  .cellReveal{
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ===== Best cell pulse ring (separate from entrance animation) ===== */
+
+@keyframes bestRingPulse {
+  0%   { transform: scale(1);    opacity: 0.55; }
+  60%  { transform: scale(1.22); opacity: 0; }
+  100% { transform: scale(1.22); opacity: 0; }
+}
+
+.bestPulse::after{
+  content: "";
+  position: absolute;
+  inset: -3px;
+  border-radius: inherit;
+  border: 2px solid rgba(255, 197, 66, 0.60);
+  pointer-events: none;
+
+  animation: bestRingPulse 2.0s ease-out infinite;
+  opacity: 0.7;
+}
+
+@media (prefers-reduced-motion: reduce){
+  .bestPulse::after{
+    animation: none;
+    opacity: 0.75;
+    transform: none;
+  }
+}
+
 
 ```
 
@@ -16956,6 +17022,504 @@ export default function TimeframeChips({
     </div>
   );
 }
+
+```
+
+### components/stats/TopicMasteryChart.client.tsx
+```tsx
+'use client';
+
+import styles from './TopicMasteryChart.module.css';
+import { labelForTag } from '@/lib/qbank/tagTaxonomy';
+import type { TopicMasteryVM } from '@/lib/stats/computeStats';
+import DragScrollRow from "@/components/DragScrollRow";
+import { useEffect, useRef, useState } from 'react';
+
+
+
+
+function clamp(n: number, a: number, b: number) {
+  return Math.max(a, Math.min(b, n));
+}
+
+function confOpacity(attempted: number, maxAttempted: number) {
+  const t = clamp(attempted / Math.max(1, maxAttempted), 0, 1);
+  return 0.45 + 0.55 * t;
+}
+
+/**
+ * 0% => more yellow, 100% => more blue
+ * (matches “yellow first, then blue as it gets closer to 100%”)
+ */
+function chipBgFromPct(pct: number) {
+  const t = clamp(pct / 100, 0, 1);
+
+  // yellow -> blue
+  const y = { r: 255, g: 197, b: 66 };
+  const b = { r: 43, g: 124, b: 175 };
+
+  const r = Math.round(y.r + (b.r - y.r) * t);
+  const g = Math.round(y.g + (b.g - y.g) * t);
+  const bb = Math.round(y.b + (b.b - y.b) * t);
+
+  // soft fill
+  return `rgb(${r} ${g} ${bb} / 0.22)`;
+}
+
+export default function TopicMasteryChart({ data }: { data: TopicMasteryVM }) {
+  // show all (scrollable)
+  const topSub = data.weakestSubtopics ?? [];
+  const topics = data.topics ?? [];
+
+  const maxAttempted = Math.max(
+    1,
+    ...topSub.map((x) => x.attempted),
+    ...topics.map((t) => t.attempted),
+    ...topics.flatMap((t) => t.subtopics.map((s) => s.attempted))
+  );
+
+  return (
+    <div className={styles.wrap}>
+      {/* Top “wow” pills */}
+      <div className={styles.hero}>
+        <div className={styles.heroTitle}>Weakest right now</div>
+
+        {topSub.length === 0 ? (
+          <div className={styles.empty}>
+            Not enough topic data yet (need at least {data.minAttempted} answered per subtopic).
+          </div>
+        ) : (
+          <DragScrollRow className={styles.heroScroller}>
+            {topSub.map((s) => {
+              const op = confOpacity(s.attempted, maxAttempted);
+              const bg = chipBgFromPct(s.accuracyPct);
+
+              return (
+                <div
+                  key={s.tag}
+                  className={styles.pill}
+                  style={{ background: bg, opacity: op }}
+                  title={`${labelForTag(s.tag)} · ${s.accuracyPct}% · ${s.attempted} answered`}
+                >
+                  <div className={styles.pillTop}>
+  <span className={styles.pillTitle}>
+    <span className={styles.pillLabel}>{labelForTag(s.tag)}</span>
+    <span className={styles.pillPct}>{s.accuracyPct}%</span>
+  </span>
+</div>
+
+                  <div className={styles.pillMeta}>{s.attempted} answered</div>
+                </div>
+              );
+            })}
+          </DragScrollRow>
+          
+        )}
+      </div>
+      
+
+      {/* Topic list */}
+      <div className={styles.list}>
+        {topics.map((t) => {
+          const topicLabel = labelForTag(t.topicKey);
+          const op = confOpacity(t.attempted, maxAttempted);
+          const subs = t.subtopics ?? [];
+
+          return (
+            <div key={t.topicKey} className={styles.row}>
+              <div className={styles.rowHead}>
+                <div className={styles.topicName}>{topicLabel}</div>
+                <div className={styles.rightMeta}>
+                  <span className={styles.topicPct}>{t.accuracyPct}%</span>
+                  <span className={styles.dot} style={{ opacity: op }} />
+                  <span className={styles.answered}>{t.attempted} answered</span>
+                </div>
+              </div>
+
+              <div className={styles.barTrack}>
+                <div
+                  className={styles.barFill}
+                  style={{ width: `${clamp(t.accuracyPct, 0, 100)}%` }}
+                />
+              </div>
+
+              {subs.length > 0 ? (
+                <DragScrollRow className={styles.subRow}>
+                  {subs.map((s) => (
+                    <div
+                      key={s.tag} // ✅ fixes React key warning
+                      className={styles.subChip}
+                      style={{ opacity: confOpacity(s.attempted, maxAttempted) }}
+                      title={`${labelForTag(s.tag)} · ${s.accuracyPct}% · ${s.attempted} answered`}
+                    >
+                      <span className={styles.subText}>
+  <span className={styles.subLabel}>{labelForTag(s.tag)}</span>
+  <span className={styles.subPct}>{s.accuracyPct}%</span>
+</span>
+
+<span className={styles.subMeterTrack}>
+  <span
+    className={styles.subMeterFill}
+    style={{ width: `${clamp(s.accuracyPct, 0, 100)}%` }}
+  />
+</span>
+
+                    </div>
+                  ))}
+                </DragScrollRow>
+              ) : (
+                <div className={styles.subEmpty}>Need more answers in this topic to rank subtopics.</div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+
+      <div className={styles.note}>
+        Confidence increases as you answer more questions in each subtopic (min {data.minAttempted}).
+      </div>
+    </div>
+  );
+}
+
+```
+
+### components/stats/TopicMasteryChart.module.css
+```css
+.wrap{
+  width: 100%;
+  display: grid;
+  gap: 14px;
+}
+
+/* ===== Top “wow” area ===== */
+.hero{
+    overflow: hidden;
+  border-radius: 18px;
+  padding: 12px 12px 14px;
+  background: var(--color-premium-gradient-20);
+  border: 1px solid rgba(148,163,184,0.35);
+  box-shadow: 0 18px 40px rgba(15,33,70,0.10);
+}
+
+.heroTitle{
+  font-size: 12px;
+  font-weight: 750;
+  color: rgba(17,24,39,0.62);
+  margin-bottom: 10px;
+}
+
+.heroScroller{
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding-bottom: 6px;
+  -webkit-overflow-scrolling: touch;
+  scroll-snap-type: x proximity;
+  max-width: 100%;
+}
+
+.heroScroller::-webkit-scrollbar{
+  display: none;
+}
+
+
+@media (max-width: 380px){
+  .heroGrid{ grid-template-columns: 1fr; }
+}
+
+.pill{
+  position: relative;
+  border-radius: 16px;
+  padding: 10px 10px 9px;
+  border: 1px solid rgba(148,163,184,0.28);
+  box-shadow: 0 14px 28px rgba(15,33,70,0.08);
+  overflow: hidden;
+  scroll-snap-align: start;
+  min-width: 150px;
+  scroll-snap-align: start;
+}
+
+
+.pill::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  border-radius: inherit;
+  background: radial-gradient(
+    70% 60% at 30% 25%,
+    rgba(255,255,255,0.55) 0%,
+    rgba(255,255,255,0.10) 45%,
+    rgba(255,255,255,0) 70%
+  );
+  pointer-events:none;
+}
+
+.pillTop{
+  display: flex;
+  align-items: baseline;
+  justify-content: flex-start; /* IMPORTANT: no space-between */
+  gap: 0;                     /* spacing controlled by the {" "} */
+}
+
+.pillTitle{
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0;                     /* spacing controlled by the {" "} */
+  min-width: 0;
+}
+
+.pillLabel{
+  font-size: 12px;
+  font-weight: 800;
+  color: rgba(17,24,39,0.70);
+  letter-spacing: -0.2px;
+
+  white-space: normal;
+  overflow: hidden;
+
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+
+  /* add this line to satisfy vendorPrefix warning */
+  line-clamp: 2;
+
+  -webkit-line-clamp: 2;
+}
+
+
+
+.pillPct{
+  font-size: 16px;
+  font-weight: 900;
+  color: rgba(17,24,39,0.76);
+  letter-spacing: -0.4px;
+  margin-left: 0.35em;
+}
+
+.pillMeta{
+  margin-top: 6px;
+  font-size: 11px;
+  color: rgba(17,24,39,0.52);
+  position: relative;
+  z-index: 1;
+}
+
+.empty{
+  grid-column: 1 / -1;
+  font-size: 12px;
+  color: rgba(17,24,39,0.55);
+  padding: 8px 2px;
+}
+
+/* ===== List area ===== */
+.list{
+  display: grid;
+  gap: 12px;
+}
+
+.row{
+    overflow: hidden;
+  border-radius: 18px;
+  padding: 12px 12px 12px;
+  background: var(--color-premium-gradient-10);
+  border: 1px solid rgba(148,163,184,0.28);
+  box-shadow: 0 16px 36px rgba(15,33,70,0.08);
+}
+
+.rowHead{
+  display:flex;
+  align-items:center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+  min-width: 0;
+}
+
+.topicName{
+  font-size: 13px;
+  font-weight: 850;
+  color: rgba(17,24,39,0.70);
+  letter-spacing: -0.2px;
+  min-width: 0;
+  overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.rightMeta{
+  display:flex;
+  align-items:center;
+  gap: 8px;
+  color: rgba(17,24,39,0.55);
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.topicPct{
+  font-weight: 900;
+  color: rgba(17,24,39,0.68);
+}
+
+.dot{
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(17,24,39,0.45);
+}
+
+.answered{
+  color: rgba(17,24,39,0.50);
+}
+
+.barTrack{
+  height: 10px;
+  border-radius: 999px;
+  background: rgba(17,24,39,0.08);
+  overflow: hidden;
+  border: 1px solid rgba(148,163,184,0.25);
+}
+
+.barFill{
+  height: 100%;
+  border-radius: 999px;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.55);
+    /* yellow -> blue */
+  background: linear-gradient(
+    90deg,
+    rgba(255,197,66,0.85) 0%,
+    rgba(43,124,175,0.85) 100%
+  );
+}
+
+/* Horizontal scroller wrapper */
+.subScroller{
+  margin-top: 10px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 6px; /* breathing room for scrollbar area */
+  scrollbar-width: none; /* Firefox hide */
+}
+.subScroller::-webkit-scrollbar{ display: none; } /* WebKit hide */
+
+
+.subRow{
+  margin-top: 10px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  padding-bottom: 6px;
+  -webkit-overflow-scrolling: touch;
+  scroll-snap-type: x proximity;
+  max-width: 100%;
+}
+
+.subRow::-webkit-scrollbar{
+  display: none;
+}
+
+
+.subChip{
+  display:flex;
+  align-items:center;
+  gap: 10px;
+  padding: 8px 12px;
+  border-radius: 999px;
+
+  background: var(--color-premium-gradient-10);
+  border: 1px solid rgba(148,163,184,0.26);
+  box-shadow: 0 10px 20px rgba(15,33,70,0.07);
+
+  flex: 0 0 auto;
+  scroll-snap-align: start;
+  white-space: nowrap;
+}
+
+
+
+.subLabel{
+  font-size: 12px;
+  font-weight: 850;
+  color: rgba(17,24,39,0.66);
+}
+
+.subPct{
+  font-size: 12px;
+  font-weight: 900;
+  color: rgba(17,24,39,0.70);
+  margin-left: 0.25em;
+}
+
+.subEmpty{
+  margin-top: 8px;
+  font-size: 12px;
+  color: rgba(17,24,39,0.46);
+}
+
+.note{
+  font-size: 12px;
+  color: rgba(17,24,39,0.46);
+  padding-left: 2px;
+}
+
+.meterTrack{
+  margin-top: 10px;
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.55);
+  border: 1px solid rgba(148,163,184,0.26);
+  overflow: hidden;
+  position: relative;
+  z-index: 1;
+}
+
+.meterFill{
+  height: 100%;
+  border-radius: 999px;
+  background: var(--color-premium-gradient);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.45);
+}
+
+.subMeterTrack{
+  margin-left: 10px;
+  flex: 0 0 54px;
+  max-width: 50px;
+  height: 6px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.55);
+  border: 1px solid rgba(148,163,184,0.24);
+  overflow: hidden;
+  display: inline-block;
+}
+
+.subMeterFill{
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+    /* yellow -> blue */
+  background: linear-gradient(
+    90deg,
+    rgba(255,197,66,0.85) 0%,
+    rgba(43,124,175,0.85) 100%
+  );
+}
+
+.subText{
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0;                     /* spacing controlled by the {" "} */
+  white-space: nowrap;
+}
+
+.subChip{
+  display:flex;
+  align-items:center;
+  gap: 10px;     /* this now only separates text block and meter */
+  white-space: nowrap;
+}
+
 
 ```
 
@@ -19854,6 +20418,9 @@ scoreSeries: Array<{ t: number; scorePct: number; answered: number; totalQ: numb
   totalMin: number;
 }>;
 
+topicMastery?: TopicMasteryVM;
+
+
 timeThisWeekMin: number;
 timeBestDayMin: number;
 timeStreakDays: number;
@@ -19862,6 +20429,28 @@ studyThisWeekMin: number;
 
 
 };
+
+export type TopicMasterySubtopic = {
+  tag: string;         // e.g. "traffic-signals:road-signs"
+  attempted: number;
+  correct: number;
+  accuracyPct: number;
+};
+
+export type TopicMasteryTopic = {
+  topicKey: string;    // e.g. "traffic-signals"
+  attempted: number;
+  correct: number;
+  accuracyPct: number;
+  subtopics: TopicMasterySubtopic[];
+};
+
+export type TopicMasteryVM = {
+  minAttempted: number;
+  topics: TopicMasteryTopic[];
+  weakestSubtopics: TopicMasterySubtopic[]; // sorted worst->best (only those >= minAttempted)
+};
+
 
 function clamp01(n: number) {
   return Math.max(0, Math.min(1, n));
@@ -20198,6 +20787,83 @@ const lowConfidenceNote =
     .sort((a, b) => a.accuracyPct - b.accuracyPct || b.attempted - a.attempted)
     .slice(0, 5);
 
+
+    // ===== Topic Mastery (grouped topics + subtopics) =====
+
+// Group subtopics under parent topicKey
+const topicMap = new Map<
+  string,
+  { attempted: number; correct: number; subtopics: TopicMasterySubtopic[] }
+>();
+
+for (const [tag, m] of mastery.entries()) {
+  // tag shape: "topic:subtopic"
+  if (!tag.includes(":") || tag.endsWith(":all")) continue;
+
+  const topicKey = tag.split(":")[0]; // parent topic
+  const attempted = m.attempted;
+  const correct = m.correct;
+
+  const sub: TopicMasterySubtopic = {
+    tag,
+    attempted,
+    correct,
+    accuracyPct: attempted ? Math.round((100 * correct) / attempted) : 0,
+  };
+
+  const cur =
+    topicMap.get(topicKey) ?? { attempted: 0, correct: 0, subtopics: [] };
+
+  cur.attempted += attempted;
+  cur.correct += correct;
+  cur.subtopics.push(sub);
+
+  topicMap.set(topicKey, cur);
+}
+
+// Build TopicMasteryTopic[]
+const topics: TopicMasteryTopic[] = Array.from(topicMap.entries()).map(
+  ([topicKey, v]) => {
+    // sort subtopics: weakest first
+    const subtopics = [...v.subtopics].sort(
+      (a, b) => a.accuracyPct - b.accuracyPct || b.attempted - a.attempted
+    );
+
+    return {
+      topicKey,
+      attempted: v.attempted,
+      correct: v.correct,
+      accuracyPct: v.attempted
+        ? Math.round((100 * v.correct) / v.attempted)
+        : 0,
+      subtopics,
+    };
+  }
+);
+
+// sort topics: weakest overall first
+topics.sort(
+  (a, b) => a.accuracyPct - b.accuracyPct || b.attempted - a.attempted
+);
+
+// weakest subtopics overall (confident only)
+const weakestSubtopics: TopicMasterySubtopic[] = Array.from(mastery.entries())
+  .filter(([tag, m]) => tag.includes(":") && !tag.endsWith(":all") && m.attempted >= MIN_TOPIC_ATTEMPTED)
+  .map(([tag, m]) => ({
+    tag,
+    attempted: m.attempted,
+    correct: m.correct,
+    accuracyPct: m.attempted ? Math.round((100 * m.correct) / m.attempted) : 0,
+  }))
+  .sort((a, b) => a.accuracyPct - b.accuracyPct || b.attempted - a.attempted)
+  .slice(0, 12); // chart can show more than 5
+
+const topicMastery: TopicMasteryVM = {
+  minAttempted: MIN_TOPIC_ATTEMPTED,
+  topics,
+  weakestSubtopics,
+};
+
   // Score + readiness
   scoreSeries.sort((x, y) => x.t - y.t);
 
@@ -20381,6 +21047,7 @@ for (let i = timeDailySeries.length - 1; i >= 0; i--) {
     bestTimeLabel,
     bestTimeAvgScore,
     weakTopics,
+    topicMastery,
     
 rhythmHeatmap: {
     weekdays: [...WEEKDAYS],

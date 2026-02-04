@@ -8,7 +8,8 @@ export type TestModeId =
   | "half"
   | "rapid"
   | "mistakes"
-  | "bookmarks";
+  | "bookmarks"
+  | "topics";
 
 export type TestModeConfig = {
   modeId: TestModeId;
@@ -84,8 +85,8 @@ export const TEST_MODES: Record<TestModeId, TestModeConfig> = {
     routeBase: "/test/mistakes",
     datasetId: "cn-2023-test1",
     datasetVersion: "cn-2023-test1@v1",
-    questionCount: 50, // N/A
-    timeLimitMinutes: 0, // N/A
+    questionCount: 50, 
+    timeLimitMinutes: 0, 
     preflightRequiredQuestions: 1,
   },
 
@@ -95,8 +96,19 @@ export const TEST_MODES: Record<TestModeId, TestModeConfig> = {
     routeBase: "/test/bookmarks",
     datasetId: "cn-2023-test1",
     datasetVersion: "cn-2023-test1@v1",
-    questionCount: 50, // N/A
-    timeLimitMinutes: 0, // N/A
+    questionCount: 50, 
+    timeLimitMinutes: 0, 
+    preflightRequiredQuestions: 1,
+  },
+
+  topics: {
+    modeId: "topics",
+    modeKey: "topics-test",
+    routeBase: "/test/topics",
+    datasetId: "cn-2023-test1",
+    datasetVersion: "cn-2023-test1@v1",
+    questionCount: 20, 
+    timeLimitMinutes: 10, 
     preflightRequiredQuestions: 1,
   },
 };

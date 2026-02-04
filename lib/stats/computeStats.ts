@@ -85,7 +85,7 @@ scoreSeries: Array<{ t: number; scorePct: number; answered: number; totalQ: numb
 
 
 
-  rhythmHeatmap: {
+  Heatmap: {
     weekdays: string[]; // ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"]
     dayParts: Array<{ key: string; label: string }>; // 4 rows
     // cells[row][col]
@@ -429,7 +429,7 @@ const cells = heat.map((row) =>
   }))
 );
 
-let best: StatsVM["rhythmHeatmap"]["best"] = null;
+let best: StatsVM["Heatmap"]["best"] = null;
 let bestScore = -1;
 let bestCount = 0;
 
@@ -753,7 +753,7 @@ for (let i = timeDailySeries.length - 1; i >= 0; i--) {
     weakTopics,
     topicMastery,
     
-rhythmHeatmap: {
+Heatmap: {
     weekdays: [...WEEKDAYS],
     dayParts: DAY_PARTS.map((p) => ({ key: p.key, label: p.label })),
     cells,
