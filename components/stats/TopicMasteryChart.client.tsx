@@ -6,7 +6,7 @@ import { labelForTag } from '@/lib/qbank/tagTaxonomy';
 import type { TopicMasteryVM } from '@/lib/stats/computeStats';
 import DragScrollRow from "@/components/DragScrollRow";
 import { useEffect, useRef, useState, useMemo } from 'react';
-import { useOnceInView } from '@/components/stats/useOnceInView.client';
+import { useOnceInMidView } from '@/components/stats/useOnceInView.client';
 import type { CSSProperties } from 'react';
 
 
@@ -72,9 +72,9 @@ const topSub = useMemo(() => {
 }, [topics]);
 
 
-
-  const { ref: heroRef, seen: heroInView } = useOnceInView<HTMLDivElement>({ threshold: 0.15 });
-const { ref: listRef, seen: listInView } = useOnceInView<HTMLDivElement>({ threshold: 0.10 });
+//useOnceInMidView hooks for hero and list
+const { ref: heroRef, seen: heroInView } = useOnceInMidView<HTMLDivElement>();
+const { ref: listRef, seen: listInView } = useOnceInMidView<HTMLDivElement>();
 
   const maxAttempted = Math.max(
     1,

@@ -33,6 +33,8 @@ import DailyProgressChart from '@/components/stats/DailyProgressChart';
 import Heatmap from '@/components/stats/Heatmap.client';
 import TopicMasteryChart from '@/components/stats/TopicMasteryChart.client';
 
+import { resetAllLocalData } from '@/lib/stats/resetLocalData';
+
 
 const datasetId: DatasetId = 'cn-2023-test1';
 
@@ -194,7 +196,30 @@ const statsTopics = useMemo(() => {
   return (
     <main className={styles.page}>
       <div className={styles.content}>
-        <BackButton />
+  <div className={styles.pageTopRow}>
+    <BackButton />
+
+<button
+  type="button"
+  className={styles.resetBtnFixed}
+  onClick={async () => {
+    const typed = window.prompt(
+      'This will permanently delete ALL saved data on this device.\n\nType RESET to confirm:'
+    );
+    if ((typed ?? '').trim().toUpperCase() !== 'RESET') return;
+
+    await resetAllLocalData({ includeCaches: true });
+
+    // reload so every hook/store reads fresh empty storage
+    window.location.reload();
+  }}
+  aria-label="Reset all saved data"
+  title="Reset all saved data"
+>
+  Reset All Stats
+</button>
+  </div>
+
 
 
         {/* ==== Top Accuracy / Gauge Card ==== */}
@@ -214,6 +239,7 @@ const statsTopics = useMemo(() => {
     textAlign: "center",
     marginTop: 6,
     lineHeight: 1.35,
+    
   }}
 >
   <div className={styles.statsSummaryMeta}>
@@ -261,7 +287,8 @@ const statsTopics = useMemo(() => {
   <span className={styles.statsLegendLabel}>Total</span>
 
   <span className={styles.statsLegend__screenTime__avgDottedSwatch} />
-  <span className={styles.statsLegendLabel}>7D avg</span>
+  <span className={`${styles.statsLegendLabel} ${styles.statsLegendLabelAvg}`}>7D avg</span>
+
 
   </div>
 </header>
@@ -429,7 +456,7 @@ const statsTopics = useMemo(() => {
 </header>
 
 
-  <div className={styles.statsGraphArea}>
+  <div className={`${styles.statsGraphArea} ${styles.topicMasteryArea}`}>
   {loading ? (
     "Loading…"
   ) : !statsTopics.topicMastery || statsTopics.topicMastery.topics.length === 0 ? (
@@ -438,6 +465,7 @@ const statsTopics = useMemo(() => {
     <TopicMasteryChart data={statsTopics.topicMastery} />
   )}
 </div>
+
 
   <TimeframeChips value={tfTopics} onChange={setTfTopics} />
 </article>

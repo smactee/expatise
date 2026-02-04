@@ -1,7 +1,7 @@
 'use client';
 
 import styles from './DailyProgressChart.module.css';
-import { useOnceInView } from './useOnceInView.client';
+import { useOnceInMidView } from './useOnceInView.client';
 import { useEffect, useRef, useState } from 'react';
 import { useBootSweepOnce } from './useBootSweepOnce.client';
 
@@ -43,10 +43,8 @@ export default function DailyProgressChart(props: {
   const maxAnswered = Math.max(1, maxAnsweredData);
   const midAnswered = Math.round(maxAnswered / 2);
 
-  const { ref: inViewRef, seen } = useOnceInView<HTMLDivElement>({
-    threshold: 0.2,
-    rootMargin: '0px 0px -15% 0px',
-  });
+  const { ref: inViewRef, seen } = useOnceInMidView<HTMLDivElement>();
+
 
   const animateIn = seen && shown.length > 0;
 

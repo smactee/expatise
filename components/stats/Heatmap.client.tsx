@@ -4,7 +4,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import styles from './Heatmap.module.css';
-import { useOnceInView } from './useOnceInView.client';
+import { useOnceInMidView } from './useOnceInView.client';
 
 type HeatmapVM = {
   weekdays: string[];
@@ -165,10 +165,8 @@ export default function Heatmap({ data }: { data: HeatmapVM }) {
     typeof window !== 'undefined' &&
     (window.matchMedia?.('(hover: none)').matches || window.matchMedia?.('(pointer: coarse)').matches);
 
-  const { ref: inViewRef, seen } = useOnceInView<HTMLDivElement>({
-    threshold: 0.15,
-    rootMargin: '0px 0px -20% 0px',
-  });
+  const { ref: inViewRef, seen } = useOnceInMidView<HTMLDivElement>();
+
 
   const [revealOn, setRevealOn] = useState(false);
 

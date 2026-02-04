@@ -46,6 +46,17 @@
 /* ================================= */
 /* STATS PAGE                        */
 /* ================================= */
+:root{
+  --stats-ring-track: #e4e4e4;          /* light mode track */
+  --stats-ring-number: #111827;         /* light mode number */
+  --stats-summary-meta: rgba(17,24,39,0.65);
+}
+
+:root[data-theme="dark"]{
+  --stats-ring-track: rgba(255,255,255,0.22);  /* ✅ light gray track wedge */
+  --stats-ring-number: #e5e7eb;                /* ✅ light gray “78” */
+  --stats-summary-meta: rgba(255,255,255,0.70);/* ✅ fixes dark meta text too */
+}
 
 /* Top accuracy / gauge card */
 .statsSummaryCard {
@@ -102,10 +113,10 @@
   justify-content: center;
 }
 
-.statsGaugeNumber {
+.statsGaugeNumber{
   font-size: 54px;
   font-weight: 700;
-  color: #111827;
+  color: var(--stats-ring-number);
   line-height: 1;
 }
 
@@ -292,8 +303,7 @@
 }
 
 :root[data-theme='dark'] .statsGaugeLabel {
-  color: #9ca3af;
-}
+color: var(--stats-ring-number)}
 
 /* Big panel behind the stack of cards */
 :root[data-theme='dark'] .statsLongPanel {
@@ -338,7 +348,8 @@
 
 /* Buttons (avoid relying on light-theme-only CSS vars) */
 :root[data-theme='dark'] .statsTestButton,
-:root[data-theme='dark'] .statsReviewButton {
+:root[data-theme='dark'] .statsReviewButton,
+:root[data-theme='dark'] .resetBtnFixed {
   background: linear-gradient(
     90deg,
     rgba(43, 124, 175, 0.4) 0%,
@@ -347,6 +358,7 @@
   border-color: #d2c79a;
   color: #f9fafb;
 }
+
 
 /* Make the overall vertical spacing tighter */
 .statsSummaryInner {
@@ -359,12 +371,12 @@
 }
 
 /* The new meta text block */
-.statsSummaryMeta {
-  margin-top: -6px;     /* pulls text closer to the ring */
-  margin-bottom: -2px;  /* pulls the button closer */
+.statsSummaryMeta{
+  margin-top: -6px;
+  margin-bottom: -2px;
   font-size: 12px;
   line-height: 1.25;
-  color: rgba(17, 24, 39, 0.65);
+  color: var(--stats-summary-meta);
   text-align: center;
 }
 
@@ -458,3 +470,85 @@
 
   white-space: nowrap;
 }
+
+.pageTopRow{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 44px;
+  margin-bottom: 12px;
+}
+
+/* subtle “danger-ish” button that still matches your UI */
+.resetBtn{
+  border: 1px solid rgba(17,24,39,0.12);
+  background: rgba(255,255,255,0.65);
+  padding: 8px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(17,24,39,0.75);
+  cursor: pointer;
+}
+
+.resetBtn:active{
+  transform: translateY(1px);
+}
+
+.resetBtnFixed{
+  position: fixed;
+  top: calc(env(safe-area-inset-top, 0px));
+  right: calc(env(safe-area-inset-right, 0px) + 10px);
+  z-index: 9999;
+
+  /* same “family” as .statsReviewButton */
+  border: 1px solid var(--color-logout-border);
+  background: var(--color-premium-gradient);
+  box-shadow: 0 18px 40px rgba(15, 33, 70, 0.22);
+
+  /* compact version (top bar friendly) */
+  height: 36px;
+  padding: 0 14px;
+  border-radius: 18px;
+
+  font-size: 13px;
+  font-weight: 600;
+  color: #111827;
+  cursor: pointer;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+}
+
+.resetBtnFixed:active{
+  transform: translateY(1px);
+}
+
+/* Topic Mastery text in dark mode */
+.topicMasteryArea {
+  color: #111827; /* light default */
+}
+
+:root[data-theme='dark'] .topicMasteryArea {
+  color: #f9fafb; /* make text white */
+}
+
+/* If TopicMasteryChart renders any SVG text labels */
+:root[data-theme='dark'] .topicMasteryArea svg text {
+  fill: #f9fafb;
+}
+
+/* Common inline elements inside the chart */
+:root[data-theme='dark'] .topicMasteryArea :is(p, span, small, strong, em, label) {
+  color: #f9fafb;
+}
+
+:root[data-theme="dark"] .statsLegendLabelAvg{
+  color: rgba(255,255,255,0.82);
+}
+:root[data-theme="dark"] .screenTimeChart svg text{
+  fill: rgba(255,255,255,0.72) !important;
+}
+
