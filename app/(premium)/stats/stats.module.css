@@ -198,17 +198,27 @@
 }
 
 .statsLegendDot {
+  display: inline-block;
   width: 8px;
   height: 8px;
   border-radius: 999px;
+  flex: 0 0 auto;
 }
 
 .statsLegendDotBlue {
-  background: #2b7caf;
+  background: rgba(43,124,175,0.4);
 }
 
-.statsLegendDotYellow {
-  background: #ffc542;
+.statsScoreChartLegendDotScore {
+  background: var(--chart-grad-cool);
+}
+
+.statsScoreChartLegendDotAverage {
+  background: var(--chart-grad-warm);
+}
+
+.statsLegendDotAvg {
+  background: var(--chart-grad);
 }
 .statsLegendDotGray { background: rgba(17, 24, 39, 0.18); }
 .statsLegendDotDark { background: rgba(17, 24, 39, 0.45); }
@@ -405,7 +415,7 @@ color: var(--stats-ring-number)}
   width: 18px;
   height: 6px;
   border-radius: 999px;
-  background: linear-gradient(90deg, #2B7CAF 0%, rgba(61,140,213,0) 100%);
+  background: var(--chart-grad);
   opacity: 0.9;
   display: inline-block;
 }
@@ -552,3 +562,37 @@ color: var(--stats-ring-number)}
   fill: rgba(255,255,255,0.72) !important;
 }
 
+
+/* make sure Test exists */
+.statsLegendDotYellow {
+  background:var(--chart-grad-warm);
+}
+
+/* you already have this, keep it */
+.statsLegendDotBlue {
+  background: var(--chart-grad-cool);
+}
+
+/* Total (line) swatch = your warm→cool gradient */
+.statsLegend__screenTime__totalLineSwatch{
+  width: 18px;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--chart-grad);
+  opacity: 0.9;
+  display: inline-block;
+}
+
+/* Total (area) swatch = match your “mountain fill” look */
+.statsLegend__screenTime__totalAreaSwatch{
+  width: 18px;
+  height: 10px;
+  border-radius: 6px;
+  background: linear-gradient(
+    90deg,
+    rgba(43, 124, 175, 0.28) 0%,
+    rgba(61, 140, 213, 0) 100%
+  );
+  opacity: 0.9;
+  display: inline-block;
+}

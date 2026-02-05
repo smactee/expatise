@@ -4,7 +4,9 @@
   width: 100%;
   display: flex;
   flex-direction: column;
-  min-height: 240px
+  min-height: 240px;
+   --scoreCool: var(--chart-grad-cool);
+  --avgWarm: var(--chart-grad-warm);
 }
 
 .topArea{
@@ -34,7 +36,7 @@
 }
 .dotTest { background: rgba(255, 197, 66, 0.95); }
 .dotStudy { background: rgba(43, 124, 175, 0.90); }
-.dotTotal { background: rgba(17, 24, 39, 0.18); }
+.dotTotal { background: var(--chart-grad); }
 .dotAvg { background: rgba(17, 24, 39, 0.45); }
 
 .summaryRow {
@@ -114,7 +116,7 @@
 
 .test, .study {
   width: 100%;
-  border-radius: 9px;
+  border-radius: 1px;
   min-height: 0px;
 }
 

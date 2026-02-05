@@ -1,7 +1,7 @@
 .wrap{
   width: 100%;
   --avgYellow: rgba(255, 197, 66, 0.95);
-   --barBlue: rgba(43,124,175,0.85);
+   --barBlue:rgba(43,124,175,0.4);
 }
 
 .metaRow{
@@ -47,7 +47,7 @@
 .barFill{
   height: 100%;
   border-radius: 999px;
-  background: rgba(43,124,175,0.70);
+  background: var(--barBlue);
 }
 
 .metrics{ white-space: nowrap; opacity: 0.9; }
@@ -91,29 +91,27 @@
 }
 
 .bar{
-  fill: rgba(43,124,175,0.25);
+  fill: var(--barBlue);
 }
 
 .barActive{
-  fill: rgba(43,124,175,0.55);
+  fill: var(--barBlue);
 }
 
 .avgLine{
   fill: none;
-  stroke: rgba(255, 197, 66, 0.95);
   stroke-width: 2;
   stroke-linecap: round;
   stroke-linejoin: round;
 }
 
+
 .avgDot{
-  fill: var(--avgYellow);
   opacity: 0.95;
 }
 
 .avgHalo{
   fill: none;
-  stroke: var(--avgYellow);
   stroke-width: 2;
   pointer-events: none;
 }
@@ -128,7 +126,6 @@
 
 .avgHaloPulse{
   fill: none;
-  stroke: rgba(255, 197, 66, 0.35);
   stroke-width: 2;
   vector-effect: non-scaling-stroke;
 
@@ -192,7 +189,6 @@
 }
 .yAxisTextRight{
   font-size: 8.5px;
-  fill: var(--avgYellow);
 }
 
 .axisCornerLabel{
@@ -292,3 +288,68 @@
   .popIn{ animation: none; transform: none; opacity: 1; }
 }
 
+.tooltip{
+  position: fixed;
+  z-index: 9999;
+  width: 260px;
+
+  background: rgba(255,255,255,0.97);
+  border: 1px solid rgba(148,163,184,0.55);
+  border-radius: 14px;
+
+  box-shadow: 0 24px 52px rgba(15,33,70,0.20);
+  padding: 12px 12px;
+
+  pointer-events: none; /* same as heatmap tooltip */
+}
+
+.tooltip[data-placement="top"]{
+  transform: translate(-50%, -100%);
+}
+
+.tooltip[data-placement="bottom"]{
+  transform: translate(-50%, 0);
+}
+
+.tipTitle{
+  font-size: 14px;
+  font-weight: 900;
+  color: rgba(17,24,39,0.86);
+  margin-bottom: 4px;
+}
+
+.tipSub{
+  font-size: 12px;
+  color: rgba(17,24,39,0.60);
+}
+
+.tipBody{
+  margin-top: 8px;
+  font-size: 12px;
+  color: rgba(17,24,39,0.72);
+}
+
+.tipStrong{
+  font-weight: 900;
+  color: rgba(17,24,39,0.82);
+}
+
+.tipArrow{
+  position: absolute;
+  left: 50%;
+  bottom: -6px;
+
+  width: 12px;
+  height: 12px;
+  transform: translateX(-50%) rotate(45deg);
+
+  background: rgba(255,255,255,0.97);
+  border-right: 1px solid rgba(148,163,184,0.55);
+  border-bottom: 1px solid rgba(148,163,184,0.55);
+}
+
+.tooltip[data-placement="bottom"] .tipArrow{
+  top: -6px;
+  bottom: auto;
+  transform: translateX(-50%) rotate(225deg);
+}

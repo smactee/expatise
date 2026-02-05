@@ -1,4 +1,8 @@
-.wrap { width: 100%; }
+.wrap{
+  width: 100%;
+  --scoreCool: var(--chart-grad-cool);
+  --avgWarm: var(--chart-grad-warm);
+}
 
 .summaryRow{
   display: flex;
@@ -56,25 +60,25 @@
 
 .line{
   fill: none;
-  stroke: rgba(43, 124, 175, 0.92);
+  stroke: var(--scoreCool);
   stroke-width: 3;
   stroke-linecap: round;
   stroke-linejoin: round;
 }
 
 .dot{
-  fill: rgba(43, 124, 175, 0.95);
+  fill: var(--scoreCool);
 }
 
 .halo{
   fill: none;
-  stroke: rgba(43, 124, 175, 0.25);
+  stroke: color-mix(in srgb, var(--scoreCool) 28%, transparent);
   stroke-width: 2;
 }
 
 .best{
   font-size: 10px;
-  fill: rgba(255, 197, 66, 0.95);
+  fill: var(--avgWarm);
 }
 
 .hit{
@@ -82,18 +86,17 @@
 }
 
 .tooltip{
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  background: rgba(17,24,39,0.92);
-  color: white;
-  border-radius: 12px;
-  padding: 10px 12px;
-  font-size: 11px;
-  line-height: 1.25;
-  width: 180px;
-  box-shadow: 0 10px 26px rgba(0,0,0,0.18);
+  position: fixed;
+  z-index: 9999;
+  width: 260px;
+  transform: translate(-50%, -100%);
+  pointer-events: none;
 }
+
+.tooltip[data-placement="bottom"]{
+  transform: translate(-50%, 0);
+}
+
 
 .tipTitle{ font-weight: 700; margin-bottom: 6px; }
 .tipBody{ opacity: 0.95; display: grid; gap: 3px; }
@@ -146,7 +149,7 @@
 
 .avgTrend{
   fill: none;
-  stroke: var(--avgYellow);
+  stroke: var(--avgWarm);
   stroke-width: 2;
   stroke-linecap: round;
 }
@@ -173,8 +176,8 @@
   display: inline-block;
 }
 
-.dotScore{ background: rgba(43, 124, 175, 0.92); }
-.dotTrend{ background: rgba(255, 197, 66, 0.95); }
+.dotScore{ background: var(--scoreCool); }
+.dotTrend{ background: var(--avgWarm); }
 
 .summaryRowBelow{
   display: flex;
@@ -195,7 +198,7 @@
 
 .haloPulse{
   fill: none;
-  stroke: rgba(43, 124, 175, 0.35);
+  stroke: color-mix(in srgb, var(--scoreCool) 35%, transparent);
   stroke-width: 2;
   /* IMPORTANT for SVG transform */
   transform-box: fill-box;
@@ -212,15 +215,12 @@
 
 
 
-/* One place to control the avg (yellow) color */
-.wrap{
-  --avgYellow: rgba(255, 197, 66, 0.95);
-}
+
 
 /* Yellow dots for avg trend */
 .avgPoint { pointer-events: none; }
 .avgDot{
-  fill: var(--avgYellow);
+  fill: var(--avgWarm);
   opacity: 0.95;
 }
 
@@ -230,7 +230,7 @@
 /* Yellow halo */
 .avgHalo{
   fill: none;
-  stroke: var(--avgYellow);
+  stroke: var(--avgWarm);
   stroke-width: 2;
 }
 
@@ -243,7 +243,7 @@
 
 .avgHaloPulse{
   fill: none;
-  stroke: rgba(255, 197, 66, 0.35);
+  stroke: color-mix(in srgb, var(--avgWarm) 35%, transparent);
   stroke-width: 2;
   transform-box: fill-box;
   transform-origin: center;

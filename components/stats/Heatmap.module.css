@@ -2,6 +2,12 @@
   width: 100%;
 }
 
+:root{
+  --premium-blue-rgb: 43 124 175;
+  --premium-yellow-rgb: 255 197 66;
+}
+
+
 /* ===== Callout pill ===== */
 .calloutPill {
   display: flex;
@@ -43,7 +49,7 @@
   border-radius: 22px;
   padding: 18px 18px 14px;
 
-  background: rgba(255, 255, 255, 0.42);
+   background: rgba(255, 255, 255, 0.42);
   border: 1px solid rgba(148, 163, 184, 0.18);
   backdrop-filter: blur(14px);
 
@@ -65,7 +71,7 @@
     radial-gradient(55% 50% at 75% 55%,
       rgba(250, 204, 21, 0.10) 0%,
       rgba(250, 204, 21, 0.00) 65%);
-  filter: blur(2px);
+  filter: blur(10px);
   pointer-events: none;
 }
 
@@ -106,6 +112,7 @@
   font-size: 15px;
   color: rgba(17, 24, 39, 0.48);
   letter-spacing: 0.2px;
+  font-weight: 600;
 }
 
 .rowLabel {
@@ -115,6 +122,7 @@
   font-size: 15px;
   color: rgba(17, 24, 39, 0.44);
   white-space: nowrap;
+  font-weight: 600;
 }
 
 /* ===== Cells: tile style ===== */
@@ -138,6 +146,31 @@
   transition: transform 160ms ease, box-shadow 160ms ease;
   outline: none;
 }
+
+/* =======================================================
+   Heat colors (cells + legend) using premium gradient reverse
+   ======================================================= */
+
+/* Base gradient fill (used by BOTH cells and legend swatches) */
+.heatFill{
+  --heat-alpha: 0.92;
+  --heat-wash: 0.42;
+  background-image:
+    linear-gradient(
+      rgb(255 255 255 / calc(0.62 * var(--heat-alpha))),
+      rgb(255 255 255 / calc(0.62 * var(--heat-alpha)))
+    ),
+    var(--color-premium-gradient-20-reverse);
+
+  background-size: 100% 100%, 220% 100%;
+  background-repeat: no-repeat;
+  background-position: 0 0, var(--heat-x, 50%) 50%;
+}
+
+.heatLow  { --heat-x: 100%; }
+.heatMid  { --heat-x: 50%; }
+.heatHigh { --heat-x: 0%; }
+
 
 /* glossy highlight overlay like the mock */
 .cell::before {
@@ -335,9 +368,21 @@
   border: 1px solid rgba(148, 163, 184, 0.22);
 }
 
-.swLow  { background: rgba(225, 232, 245, 0.95); } /* #E1E8F5 */
-.swMid  { background: rgba(190, 208, 179, 0.95); } /* #BED0B3 */
-.swHigh { background: rgba(240, 192, 47,  0.95); } /* #F0C02F */
+.swLow  { --heat-x: 0%; }
+.swMid  { --heat-x: 50%; }
+.swHigh { --heat-x: 100%; }
+
+
+/* make swatches use the same fill */
+.swatch {
+  background-image:
+    linear-gradient(rgba(255,255,255,0.35), rgba(255,255,255,0.35)),
+    var(--color-premium-gradient-20-reverse);
+  background-size: 100% 100%, 220% 100%;
+  background-repeat: no-repeat;
+  background-position: 0 0, var(--heat-x, 50%) 50%;
+}
+
 
 
 .legendDot {
@@ -408,3 +453,31 @@
   }
 }
 
+.partLabel{
+  cursor: pointer;
+  user-select: none;
+}
+
+.partLabel:hover{
+  color: rgba(17,24,39,0.60);
+}
+
+.partLabel:focus-visible{
+  outline: none;
+  text-shadow: 0 1px 0 rgba(255,255,255,0.85);
+}
+
+/* Support both tooltip placements (also helps your cell tooltip when it flips) */
+.tooltip[data-placement="top"]{
+  transform: translate(-50%, -100%);
+}
+
+.tooltip[data-placement="bottom"]{
+  transform: translate(-50%, 0);
+}
+
+.tooltip[data-placement="bottom"] .tipArrow{
+  top: -6px;
+  bottom: auto;
+  transform: translateX(-50%) rotate(225deg);
+}

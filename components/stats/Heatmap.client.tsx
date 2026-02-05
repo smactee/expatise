@@ -70,6 +70,14 @@ function cellBg(avgScore: number, attemptsCount: number) {
   return `rgba(${base.r}, ${base.g}, ${base.b}, ${clamp(alpha, 0.55, 0.98)})`;
 }
 
+const DAYPART_TIPS: Record<string, { title: string; sub?: string }> = {
+  morning: { title: 'Morning: 6~12 AM', sub: 'Based on your local time.' },
+  midday: { title: 'Midday: 12~5 PM', sub: 'Based on your local time.' },
+  evening: { title: 'Evening: 5~10 PM', sub: 'Based on your local time.' },
+  late:   { title: 'Late: 10~6 (crosses midnight)', sub: 'Based on your local time.' },
+};
+
+
 
 export default function Heatmap({ data }: { data: HeatmapVM }) {
   // r = weekday row index, c = dayPart col index (swapped UI)
@@ -111,6 +119,53 @@ export default function Heatmap({ data }: { data: HeatmapVM }) {
           cell: data.cells[active.c]?.[active.r] ?? { avgScore: 0, attemptsCount: 0 },
         }
       : null;
+
+        // Day-part header tooltip (Morning/Midday/Evening/Late)
+  const [partHover, setPartHover] = useState<number | null>(null);
+  const [partPinned, setPartPinned] = useState<number | null>(null);
+  const partRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const partTipRef = useRef<HTMLDivElement | null>(null);
+
+  const partActive = partPinned ?? partHover;
+
+  const partTip =
+    partActive != null
+      ? (() => {
+          const p = data.dayParts[partActive];
+          const info = DAYPART_TIPS[p?.key] ?? { title: `${p?.label ?? ''}` };
+          return { ...info };
+        })()
+      : null;
+
+  const [partTipPos, setPartTipPos] = useState<
+    { left: number; top: number; placement: 'top' | 'bottom' } | null
+  >(null);
+
+    useEffect(() => {
+    if (partActive == null) {
+      setPartTipPos(null);
+      return;
+    }
+
+    const el = partRefs.current?.[partActive];
+    if (!el) return;
+
+    const rect = el.getBoundingClientRect();
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+
+    const TIP_W = 300; // keep in sync with CSS
+    const M = 10;
+
+    const centerX = rect.left + rect.width / 2;
+    const left = clamp(centerX, M + TIP_W / 2, vw - M - TIP_W / 2);
+
+    // header is near the top → usually show below
+    const placement: 'top' | 'bottom' = 'bottom';
+    const top = clamp(rect.bottom + 12, M, vh - M);
+
+    setPartTipPos({ left, top, placement });
+  }, [partActive, data.dayParts]);
 
   // Close pinned tooltip when tapping outside (mobile)
   useEffect(() => {
@@ -204,14 +259,39 @@ export default function Heatmap({ data }: { data: HeatmapVM }) {
 
           {/* TOP: Day parts */}
           {data.dayParts.map((p, c) => (
-            <div
-              key={`col-${p.key}`}
-              className={styles.colLabel}
-              style={{ gridColumn: c + 2, gridRow: 1 }}
-            >
-              {p.label}
-            </div>
-          ))}
+  <div
+    key={`col-${p.key}`}
+    ref={(node) => {
+      partRefs.current[c] = node;
+    }}
+    className={`${styles.colLabel} ${styles.partLabel}`}
+    style={{ gridColumn: c + 2, gridRow: 1 }}
+    onPointerDown={(e) => setPointerType((e.pointerType as any) ?? 'mouse')}
+    onMouseEnter={() => {
+      setPartHover(c);
+      setHover(null); // avoid overlapping with cell hover tooltip
+    }}
+    onMouseLeave={() => setPartHover(null)}
+    onClick={() => {
+      const allowPin = pointerType !== 'mouse' || isCoarse;
+      if (!allowPin) return;
+
+      setPinned(null); // avoid overlapping with pinned cell tooltip
+      setPartPinned((prev) => (prev === c ? null : c));
+    }}
+    role="button"
+    tabIndex={0}
+    onKeyDown={(e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        setPartPinned((prev) => (prev === c ? null : c));
+      }
+    }}
+  >
+    {p.label}
+  </div>
+))}
+
 
           {/* LEFT: Weekdays */}
           {data.weekdays.map((d, r) => (
@@ -230,7 +310,20 @@ export default function Heatmap({ data }: { data: HeatmapVM }) {
               ensureRef(r, c);
 
               const cell = data.cells[c]?.[r] ?? { avgScore: 0, attemptsCount: 0 };
-              const bg = cellBg(cell.avgScore, cell.attemptsCount);
+              const score = clamp(cell.avgScore, 0, 100);
+
+// bucket → pick which side of the gradient we "sample"
+const heatClass =
+  score >= 70 ? styles.heatHigh :
+  score >= 40 ? styles.heatMid :
+                styles.heatLow;
+
+// optional: confidence damping (matches your old alpha-ish behavior)
+let heatAlpha = 0.92;
+if (cell.attemptsCount <= 0) heatAlpha = 0.60;
+else if (cell.attemptsCount === 1) heatAlpha = 0.70;
+else if (cell.attemptsCount === 2) heatAlpha = 0.82;
+
               const dotA = clamp(cell.attemptsCount / maxCount, 0, 1);
 
               const isBest = !!bestRC && bestRC.r === r && bestRC.c === c;
@@ -255,13 +348,15 @@ return (
       isBest ? styles.bestCell : '',
       canPulse ? styles.bestPulse : '',
       cell.attemptsCount === 0 ? styles.emptyCell : '',
+      cell.attemptsCount > 0 ? styles.heatFill : '',
+      cell.attemptsCount > 0 ? heatClass : '',
       pinned?.r === r && pinned?.c === c ? styles.pinnedCell : '',
     ].filter(Boolean).join(' ')}
     style={{
       gridColumn: c + 2,
       gridRow: r + 2,
-      background: bg,
       ['--d' as any]: `${delayMs}ms`,
+      ['--heat-alpha' as any]: heatAlpha,
     }}
                   onPointerDown={(e) => setPointerType((e.pointerType as any) ?? 'mouse')}
                   onMouseEnter={() => setHover({ r, c })}
@@ -347,6 +442,23 @@ return (
             document.body
           )
         : null}
+        {partTip && partTipPos
+  ? createPortal(
+      <div
+        ref={partTipRef}
+        className={styles.tooltip}
+        data-placement={partTipPos.placement}
+        style={{ left: partTipPos.left, top: partTipPos.top }}
+        role="tooltip"
+      >
+        <div className={styles.tipTitle}>{partTip.title}</div>
+        {partTip.sub ? <div className={styles.tipSub}>{partTip.sub}</div> : null}
+        <div className={styles.tipArrow} aria-hidden="true" />
+      </div>,
+      document.body
+    )
+  : null}
+
     </div>
   );
 }

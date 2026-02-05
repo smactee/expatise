@@ -75,21 +75,34 @@
     rgba(43, 124, 175, 0.4) 0%,
     rgba(255, 197, 66, 0.4) 100%
   );
-  --color-settings-bg: #f1f5f8;
-  --color-logout-border: #d2c79a;
+ 
 
   --color-premium-gradient-20: linear-gradient(
   90deg,
   rgba(43, 124, 175, 0.2) 0%,
   rgba(255, 197, 66, 0.2) 100%
-    --test-text: var(--text-main);
-  --test-muted: var(--text-muted);
-  --test-icon: var(--test-text);
 );
+   --color-premium-gradient-20-reverse: linear-gradient(
+    90deg,
+    rgba(255, 197, 66, 0.2) 0%,
+    rgba(43, 124, 175, 0.2) 100%
+  );
 
+--color-settings-bg: #f1f5f8;
+--color-logout-border: #d2c79a;
 
-}
+--test-text: var(--text-main);
+--test-muted: var(--text-muted);
+--test-icon: var(--test-text);
 
+  /* Shared chart gradient tokens */
+  --chart-grad-warm: rgba(255,197,66,0.85);
+  --chart-grad-cool: rgba(43,124,175,0.85);
+  --chart-grad: linear-gradient(
+    90deg,
+    var(--chart-grad-warm) 0%,
+    var(--chart-grad-cool) 100%
+  );
 
 
 /* Base page background + text color */
@@ -106,3 +119,4 @@ body {
   font-family: var(--font-sans), system-ui, -apple-system, BlinkMacSystemFont,
     'SF Pro Text', 'Segoe UI', sans-serif;
 }
+}  

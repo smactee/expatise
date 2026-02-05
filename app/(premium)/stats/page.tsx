@@ -268,6 +268,8 @@ const statsTopics = useMemo(() => {
         <section className={styles.statsLongPanel}>
           <div className={styles.statsBlocks}>
 
+
+
 {/* Screen Time */}
 <article className={styles.statsCard}>
   <header className={styles.statsCardHeader}>
@@ -279,9 +281,6 @@ const statsTopics = useMemo(() => {
 
     <span className={`${styles.statsLegendDot} ${styles.statsLegendDotBlue}`} />
     <span className={styles.statsLegendLabel}>Study</span>
-
-    <span className={styles.statsLegendTotalSwatch} />
-<span className={styles.statsLegendLabel}>Total</span>
 
   <span className={styles.statsLegend__screenTime__totalGradientSwatch} />
   <span className={styles.statsLegendLabel}>Total</span>
@@ -320,10 +319,10 @@ const statsTopics = useMemo(() => {
   <h2 className={styles.statsCardTitle}>Score</h2>
 
   <div className={styles.statsLegend}>
-    <span className={`${styles.statsLegendDot} ${styles.statsLegendDotBlue}`} />
+    <span className={`${styles.statsLegendDot} ${styles.statsScoreChartLegendDotScore}`} />
     <span className={styles.statsLegendLabel}>Score</span>
 
-    <span className={`${styles.statsLegendDot} ${styles.statsLegendDotYellow}`} />
+    <span className={`${styles.statsLegendDot} ${styles.statsScoreChartLegendDotAverage}`} />
     <span className={styles.statsLegendLabel}>Average</span>
   </div>
 </header>
@@ -361,7 +360,7 @@ const statsTopics = useMemo(() => {
     <span className={`${styles.statsLegendDot} ${styles.statsLegendDotBlue}`} />
     <span className={styles.statsLegendLabel}>Questions</span>
 
-    <span className={`${styles.statsLegendDot} ${styles.statsLegendDotYellow}`} />
+    <span className={`${styles.statsLegendDot} ${styles.statsLegendDotAvg}`} />
     <span className={styles.statsLegendLabel}>Avg score</span>
   </div>
 </header>

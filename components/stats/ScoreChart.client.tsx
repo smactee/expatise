@@ -5,6 +5,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import styles from './ScoreChart.module.css';
 import { useBootSweepOnce } from '@/components/stats/useBootSweepOnce.client';
 import { useOnceInMidView } from '@/components/stats/useOnceInView.client';
+import { createPortal } from 'react-dom';
 
 
 type Point = {
@@ -80,7 +81,7 @@ export default function ScoreChart(props: {
 // Start reveal only when there is at least 1 point.
 // (Do NOT use `model` here because model doesn't exist yet.)
 const hasAnyData = (series?.length ?? 0) > 0;
-const { ref, seen } = useOnceInMidView<HTMLDivElement>();
+const { ref: midViewRef, seen } = useOnceInMidView<HTMLDivElement>();
 
 const scorePathRef = useRef<SVGPathElement | null>(null);
 const avgPathRef = useRef<SVGPathElement | null>(null);
@@ -102,10 +103,98 @@ const reveal = useBootSweepOnce({
 
 
   const [hoverIdx, setHoverIdx] = useState<number | null>(null);
+const [pinnedIdx, setPinnedIdx] = useState<number | null>(null);
+const activeIdx = pinnedIdx ?? hoverIdx;
+
+const hitRefs = useRef<(SVGCircleElement | null)[]>([]);
+const wrapRef = useRef<HTMLDivElement | null>(null);
+const tipRef = useRef<HTMLDivElement | null>(null);
+
+const [tipPos, setTipPos] = useState<{
+  left: number;
+  top: number;
+  placement: 'top' | 'bottom';
+} | null>(null);
+
+const setWrapNode = (node: HTMLDivElement | null) => {
+  wrapRef.current = node;
+
+  // support either callback refs OR RefObject refs
+  const r: any = midViewRef;
+  if (typeof r === 'function') r(node);
+  else if (r && 'current' in r) r.current = node;
+};
+
+// Close pinned tooltip when clicking/tapping outside the chart + tooltip
+useEffect(() => {
+  function onDocDown(e: PointerEvent) {
+    if (pinnedIdx == null) return;
+
+    const t = e.target as Node | null;
+    const inWrap = !!wrapRef.current && !!t && wrapRef.current.contains(t);
+    const inTip = !!tipRef.current && !!t && tipRef.current.contains(t);
+
+    if (!inWrap && !inTip) setPinnedIdx(null);
+  }
+
+  window.addEventListener('pointerdown', onDocDown, { passive: true });
+  return () => window.removeEventListener('pointerdown', onDocDown);
+}, [pinnedIdx]);
+
+
+
 
   const model = useMemo(() => {
     const pts = [...(series ?? [])].sort((a, b) => a.t - b.t);
 
+// Position tooltip next to the active hit target
+useEffect(() => {
+  if (activeIdx == null) {
+    setTipPos(null);
+    return;
+  }
+
+  // your chosen “hasData” gate
+  if (attemptsCount <= 0) {
+    setTipPos(null);
+    return;
+  }
+
+  if (activeIdx < 0 || activeIdx >= model.pts.length) {
+  setTipPos(null);
+  return;
+}
+
+  const p = model.pts[activeIdx];
+  const hasDataPt = (p?.answered ?? 0) > 0; // per-point gate
+  if (!hasDataPt) {
+    setTipPos(null);
+    return;
+  }
+
+  const el = hitRefs.current[activeIdx];
+  if (!el) return;
+
+  const rect = el.getBoundingClientRect();
+  const vw = window.innerWidth;
+  const vh = window.innerHeight;
+
+  const TIP_W = 260; // match your tooltip width (you can tweak)
+  const M = 10;
+
+  const centerX = rect.left + rect.width / 2;
+  const left = clamp(centerX, M + TIP_W / 2, vw - M - TIP_W / 2);
+
+  const preferTop = rect.top > 140;
+  const placement: 'top' | 'bottom' = preferTop ? 'top' : 'bottom';
+
+  const top =
+    placement === 'top'
+      ? clamp(rect.top - 12, M, vh - M)
+      : clamp(rect.bottom + 12, M, vh - M);
+
+  setTipPos({ left, top, placement });
+}, [activeIdx, attemptsCount, model.pts]);
 
     // Keep it readable: last 12 attempts (tweakable)
     const maxN = 12;
@@ -198,11 +287,17 @@ const avgDashOffset = (1 - tReveal) * avgLen;
 
   
 
-  const hover = hoverIdx === null ? null : model.pts[hoverIdx];
+const hover = activeIdx == null ? null : model.pts[activeIdx];
 
 
-  return (
-    <div ref={ref} className={styles.wrap}>
+
+
+ return (
+  <div ref={setWrapNode} className={styles.wrap}>
+    
+  className={styles.wrap}
+
+
 
 
       {/* Top summary row (one line, premium scan) */}
@@ -214,7 +309,9 @@ const avgDashOffset = (1 - tReveal) * avgLen;
           className={styles.svg}
           viewBox={`0 0 ${W} ${H}`}
           preserveAspectRatio="none"
-          onMouseLeave={() => setHoverIdx(null)}
+          onMouseLeave={() => {
+  if (pinnedIdx == null) setHoverIdx(null);
+}}
         >
 
             {/* Y axis */}
@@ -358,46 +455,89 @@ style={{ opacity: lensReady ? 1 : 0 }}
   const pop = easeOutCubic(local);
 
   return (
-    <g
-      key={`pt-${p.t}`}
-      onMouseEnter={() => setHoverIdx(i)}
-      style={{ cursor: 'default' }}
-    >
-      <circle cx={x} cy={y} r="10" className={styles.hit} />
+   <g key={`pt-${p.t}`} aria-hidden="true">
+  <circle
+    cx={x}
+    cy={y}
+    r={3.5 * (0.25 + 0.75 * pop)}
+    className={styles.dot}
+    style={{ opacity: pop }}
+  />
 
-      <circle
-        cx={x}
-        cy={y}
-        r={3.5 * (0.25 + 0.75 * pop)}
-        className={styles.dot}
-        style={{ opacity: pop }}
-      />
+  {pop > 0.98 ? (
+    <>
+      <circle cx={x} cy={y} r="3.0" className={styles.halo} />
+      <circle cx={x} cy={y} r="7" className={styles.haloPulse} />
+    </>
+  ) : null}
+</g>
 
-      {/* Blue halo starts AFTER reveal */}
-      {pop > 0.98 ? (
-        <>
-          <circle cx={x} cy={y} r="3.0" className={styles.halo} />
-          <circle cx={x} cy={y} r="7" className={styles.haloPulse} />
-        </>
-      ) : null}
-    </g>
   );
 })()}
+
+{/* HIT TARGETS (one per attempt point with data) */}
+{attemptsCount > 0
+  ? model.pts.map((p, i) => {
+      const hasDataPt = (p.answered ?? 0) > 0;
+      if (!hasDataPt) return null;
+
+      const x = xFor(i);
+      const y = yForScore(p.scorePct);
+
+      return (
+        <circle
+          key={`hit-${p.t}`}
+          ref={(node) => {
+            hitRefs.current[i] = node;
+          }}
+          cx={x}
+          cy={y}
+          r={12}
+          className={styles.hit}
+          pointerEvents="all"
+          onPointerEnter={() => setHoverIdx(i)}
+          onPointerLeave={() => {
+            if (pinnedIdx == null) setHoverIdx(null);
+          }}
+          onPointerDown={() => {
+            setHoverIdx(i);
+            setPinnedIdx((prev) => (prev === i ? null : i));
+          }}
+        />
+      );
+    })
+  : null}
 
 
         </svg>
 
         {/* Tooltip */}
-        {hover ? (
-          <div className={styles.tooltip}>
-            <div className={styles.tipTitle}>{fmtDayTime(hover.t)}</div>
-            <div className={styles.tipBody}>
-              <div>Score: <b>{hover.scorePct}%</b></div>
-              <div>Answered: <b>{hover.answered}</b></div>
-              <div>Total Q: <b>{hover.totalQ}</b></div>
-            </div>
+       {hover && tipPos
+  ? createPortal(
+      <div
+        ref={tipRef}
+        className={styles.tooltip}
+        data-placement={tipPos.placement}
+        style={{ left: tipPos.left, top: tipPos.top }}
+        role="tooltip"
+      >
+        <div className={styles.tipTitle}>{fmtDayTime(hover.t)}</div>
+        <div className={styles.tipBody}>
+          <div>Score: <b>{hover.scorePct}%</b></div>
+          <div>
+            Average: <b>{Math.round(trendVals[activeIdx ?? 0] ?? scoreAvg)}%</b>
           </div>
-        ) : null}
+          <div>Answered: <b>{hover.answered}</b> / {hover.totalQ}</div>
+        </div>
+      </div>,
+      typeof document !== 'undefined' ? document.body : null
+      {hover && tipPos && typeof document !== 'undefined'
+  ? createPortal(
+      ...,
+      document.body
+    )
+  : null}
+
       </div>
 <div className={styles.summaryRow}>
         
