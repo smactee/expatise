@@ -147,6 +147,26 @@ useEffect(() => {
   const model = useMemo(() => {
     const pts = [...(series ?? [])].sort((a, b) => a.t - b.t);
 
+
+
+    // Keep it readable: last 12 attempts (tweakable)
+    const maxN = 12;
+    const sliced = pts.length > maxN ? pts.slice(pts.length - maxN) : pts;
+
+    const maxQ = Math.max(1, ...sliced.map(p => p.totalQ || 0));
+    const hasData = sliced.length > 0;
+
+    const latestIdx = hasData ? sliced.length - 1 : -1;
+    const bestIdx =
+      hasData
+        ? sliced.reduce((bi, p, i, arr) => (p.scorePct > arr[bi].scorePct ? i : bi), 0)
+        : -1;
+
+    const lowConfidence = attemptsCount < 3 || attemptedTotal < 60;
+
+    return { pts: sliced, maxQ, latestIdx, bestIdx, hasData, lowConfidence };
+  }, [series, attemptsCount, attemptedTotal]);
+
 // Position tooltip next to the active hit target
 useEffect(() => {
   if (activeIdx == null) {
@@ -195,24 +215,6 @@ useEffect(() => {
 
   setTipPos({ left, top, placement });
 }, [activeIdx, attemptsCount, model.pts]);
-
-    // Keep it readable: last 12 attempts (tweakable)
-    const maxN = 12;
-    const sliced = pts.length > maxN ? pts.slice(pts.length - maxN) : pts;
-
-    const maxQ = Math.max(1, ...sliced.map(p => p.totalQ || 0));
-    const hasData = sliced.length > 0;
-
-    const latestIdx = hasData ? sliced.length - 1 : -1;
-    const bestIdx =
-      hasData
-        ? sliced.reduce((bi, p, i, arr) => (p.scorePct > arr[bi].scorePct ? i : bi), 0)
-        : -1;
-
-    const lowConfidence = attemptsCount < 3 || attemptedTotal < 60;
-
-    return { pts: sliced, maxQ, latestIdx, bestIdx, hasData, lowConfidence };
-  }, [series, attemptsCount, attemptedTotal]);
 
   // SVG coordinate system
 const W = 340;     // total SVG width
@@ -295,7 +297,6 @@ const hover = activeIdx == null ? null : model.pts[activeIdx];
  return (
   <div ref={setWrapNode} className={styles.wrap}>
     
-  className={styles.wrap}
 
 
 
@@ -512,7 +513,7 @@ style={{ opacity: lensReady ? 1 : 0 }}
         </svg>
 
         {/* Tooltip */}
-       {hover && tipPos
+{hover && tipPos && typeof document !== 'undefined'
   ? createPortal(
       <div
         ref={tipRef}
@@ -524,19 +525,13 @@ style={{ opacity: lensReady ? 1 : 0 }}
         <div className={styles.tipTitle}>{fmtDayTime(hover.t)}</div>
         <div className={styles.tipBody}>
           <div>Score: <b>{hover.scorePct}%</b></div>
-          <div>
-            Average: <b>{Math.round(trendVals[activeIdx ?? 0] ?? scoreAvg)}%</b>
-          </div>
           <div>Answered: <b>{hover.answered}</b> / {hover.totalQ}</div>
         </div>
       </div>,
-      typeof document !== 'undefined' ? document.body : null
-      {hover && tipPos && typeof document !== 'undefined'
-  ? createPortal(
-      ...,
       document.body
     )
   : null}
+
 
       </div>
 <div className={styles.summaryRow}>
