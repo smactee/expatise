@@ -4,7 +4,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { bookmarkStore } from "./store";
 import { useUserKey } from "@/components/useUserKey.client";
-
 export function useBookmarks(datasetId: string, userKeyOverride?: string) {
   const inferredUserKey = useUserKey();
   const userKey = userKeyOverride ?? inferredUserKey;

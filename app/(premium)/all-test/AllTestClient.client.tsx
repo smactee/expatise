@@ -267,6 +267,11 @@ const { idSet: bookmarkedSet, toggle, isBookmarked } = useBookmarks(datasetId, u
 // (keep your mistakes cleared set too if you're using it)
 const { idSet: clearedMistakesSet } = useClearedMistakes(datasetId, userKey);
 
+const advancingRef = useRef(false);
+
+// More reliable than e.detail: works even if state hasn’t re-rendered yet
+const lastTapRef = useRef<{ key: string; at: number } | null>(null);
+
 
 
 const [answers, setAnswers] = useState<Record<string, string>>({});
@@ -566,6 +571,12 @@ useEffect(() => {
   }
 }, [items.length, index]);
 
+// ✅ prevent lastTapRef carryover between questions (avoids accidental auto-advance)
+useEffect(() => {
+  lastTapRef.current = null;
+}, [item?.id, index]);
+
+
 
 const correctCount = useMemo(() => {
   let correct = 0;
@@ -595,10 +606,7 @@ const correctCount = useMemo(() => {
   return correct;
 }, [items, answers]);
 
-const advancingRef = useRef(false);
 
-// More reliable than e.detail: works even if state hasn’t re-rendered yet
-const lastTapRef = useRef<{ key: string; at: number } | null>(null);
 
 const commitAndAdvance = async (choiceKey: string) => {
   if (!items.length || !item) return;
@@ -739,20 +747,32 @@ useEffect(() => {
  // ✅ do NOT include selectedKey
 
 
+const DOUBLE_MS = 250;
+
 const onOptionTap = (key: string) => {
   const now = Date.now();
   const last = lastTapRef.current;
 
-  // If same option tapped twice quickly -> auto next
-  if (last && last.key === key && now - last.at < 450) {
+  // 1) If tapping a DIFFERENT option => select it (preview)
+  if (selectedKey !== key) {
+    lastTapRef.current = { key, at: now };
+    setSelectedKey(key);
+    return;
+  }
+
+  // 2) Same option tapped again:
+  //    Fast repeat => confirm + advance
+  if (last && last.key === key && now - last.at < DOUBLE_MS) {
     lastTapRef.current = null;
     void commitAndAdvance(key);
     return;
   }
 
-  lastTapRef.current = { key, at: now };
-  setSelectedKey(key);
+  // 3) Slow repeat => toggle OFF (unselect)
+  lastTapRef.current = null;
+  setSelectedKey(null);
 };
+
 
 useEffect(() => {
   if (!item?.id) return;
@@ -943,35 +963,23 @@ if (!item) {
 
 
   {item.type === 'MCQ' &&
-    item.options.map((opt, idx) => {
-      const key = opt.originalKey ?? String.fromCharCode(65 + idx);
-      const active = selectedKey === key;
+  item.options.map((opt, idx) => {
+    const key = opt.originalKey ?? String.fromCharCode(65 + idx);
+    const active = selectedKey === key;
 
-      return (
-        <button
-          key={opt.id}
-          type="button"
-          className={`${styles.optionBtn} ${active ? styles.optionActive : ''}`}
-          onClick={(e) => {
-  // first click selects
-  if (selectedKey !== key) {
-    setSelectedKey(key);
-    return;
-  }
+    return (
+      <button
+        key={opt.id}
+        type="button"
+        className={`${styles.optionBtn} ${active ? styles.optionActive : ''}`}
+        onClick={() => onOptionTap(key)}
+      >
+        <span className={styles.optionKey}>{key}.</span>
+        <span className={styles.optionText}>{opt.text}</span>
+      </button>
+    );
+  })}
 
-  // second click on same option advances
-  // e.detail is 1,2,3... for click count (works great on desktop)
-  if (e.detail >= 2) {
-   void commitAndAdvance(key);
-  }
-}}
-
-        >
-          <span className={styles.optionKey}>{key}.</span>
-          <span className={styles.optionText}>{opt.text}</span>
-        </button>
-      );
-    })}
 </div>
 
 

@@ -89,17 +89,67 @@
   position: fixed;
   z-index: 9999;
   width: 260px;
-  transform: translate(-50%, -100%);
+
+  background: rgba(255,255,255,0.97);
+  border: 1px solid rgba(148,163,184,0.55);
+  border-radius: 14px;
+
+  box-shadow: 0 24px 52px rgba(15,33,70,0.20);
+  padding: 12px 12px;
+
   pointer-events: none;
+}
+
+.tooltip[data-placement="top"]{
+  transform: translate(-50%, -100%);
 }
 
 .tooltip[data-placement="bottom"]{
   transform: translate(-50%, 0);
 }
 
+.tipTitle{
+  font-size: 14px;
+  font-weight: 900;
+  color: rgba(17,24,39,0.86);
+  margin-bottom: 4px;
+}
 
-.tipTitle{ font-weight: 700; margin-bottom: 6px; }
-.tipBody{ opacity: 0.95; display: grid; gap: 3px; }
+.tipSub{
+  font-size: 12px;
+  color: rgba(17,24,39,0.60);
+}
+
+.tipBody{
+  margin-top: 8px;
+  font-size: 12px;
+  color: rgba(17,24,39,0.72);
+}
+
+.tipStrong{
+  font-weight: 900;
+  color: rgba(17,24,39,0.82);
+}
+
+.tipArrow{
+  position: absolute;
+  left: 50%;
+  bottom: -6px;
+
+  width: 12px;
+  height: 12px;
+  transform: translateX(-50%) rotate(45deg);
+
+  background: rgba(255,255,255,0.97);
+  border-right: 1px solid rgba(148,163,184,0.55);
+  border-bottom: 1px solid rgba(148,163,184,0.55);
+}
+
+.tooltip[data-placement="bottom"] .tipArrow{
+  top: -6px;
+  bottom: auto;
+  transform: translateX(-50%) rotate(225deg);
+}
 
 .confidence{
   margin-top: 8px;

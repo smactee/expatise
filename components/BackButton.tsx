@@ -1,28 +1,63 @@
+// components/BackButton.tsx
+
 'use client';
 
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import type { CSSProperties } from 'react';
 import styles from './BackButton.module.css';
 
 type BackButtonProps = {
   onClick?: () => void;                 // optional override (modal close)
-  variant?: 'fixed' | 'inline';         // default keeps your current behavior
+  variant?: 'fixed' | 'inline';
   ariaLabel?: string;
-  style?: CSSProperties;                // optional extra styles if needed
+  style?: CSSProperties;
+
+  // NEW (optional): if there is no history + no returnTo, where to go
+  fallbackHref?: string;
 };
+
+function safeDecode(v: string) {
+  try {
+    return decodeURIComponent(v);
+  } catch {
+    return v;
+  }
+}
 
 export default function BackButton({
   onClick,
   variant = 'fixed',
   ariaLabel = 'Back',
   style,
+  fallbackHref = '/',
 }: BackButtonProps) {
   const router = useRouter();
+  const sp = useSearchParams();
 
   const handleClick = () => {
-    if (onClick) onClick();
-    else router.back();
+    if (onClick) {
+      onClick();
+      return;
+    }
+
+    // ✅ If the current URL has returnTo, use it.
+    const raw = sp?.get('returnTo') ?? '';
+    const decoded = raw ? safeDecode(raw) : '';
+
+    if (decoded.startsWith('/')) {
+      router.push(decoded);
+      return;
+    }
+
+    // Otherwise behave like normal back
+    // (with a safety fallback if there's no real history)
+    if (typeof window !== 'undefined' && window.history.length <= 1) {
+      router.push(fallbackHref);
+      return;
+    }
+
+    router.back();
   };
 
   const fixedStyle: CSSProperties =
@@ -33,9 +68,7 @@ export default function BackButton({
           left: 'calc(env(safe-area-inset-left, 0px) + 10px)',
           zIndex: 9999,
         }
-      : {
-          position: 'static',
-        };
+      : { position: 'static' };
 
   return (
     <button

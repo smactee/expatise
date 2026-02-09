@@ -13,6 +13,9 @@
   --test-text-muted: rgba(255, 255, 255, 0.75);
 }
 
+
+
+
 .frame {
   width: 100%;
   max-width: 390px; /* Figma phone frame */
@@ -148,18 +151,27 @@
 
 /* Bookmark */
 .bookmarkBtn {
+  position: relative;            /* needed for ::before border */
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
   border: 0;
   background: transparent;
   cursor: pointer;
-  padding: 4px;
+  padding: 0;
 }
 
+/* the icon itself (your mask stays the same) */
 .bookmarkIcon {
   width: 24px;
   height: 24px;
   display: inline-block;
 
-  /* Use the PNG as a stencil */
   -webkit-mask-image: url("/images/test/bookmark-icon.png");
   mask-image: url("/images/test/bookmark-icon.png");
   -webkit-mask-repeat: no-repeat;
@@ -180,6 +192,57 @@
   background: var(--color-premium-gradient);
   filter: brightness(1) contrast(1.5) saturate(2);
 }
+
+/* ===== Dark mode: Bookmark uses SAME styling as .nextBtn ===== */
+:root[data-theme='dark'] .bookmarkBtn {
+  position: relative; /* required for ::before border */
+  border: none;
+
+  /* same as nextBtn background */
+  background: linear-gradient(
+    90deg,
+    rgba(43, 124, 175, 0.20) 0%,
+    rgba(255, 197, 66, 0.20) 100%
+  );
+
+  /* similar “lift” feel on dark */
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.35);
+}
+
+/* same as nextBtn border trick */
+:root[data-theme='dark'] .bookmarkBtn::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 12px; /* match your bookmarkBtn radius */
+  padding: 1px;
+  background: linear-gradient(90deg, #2B7CAF 0%, #FFC542 100%);
+  pointer-events: none;
+
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+}
+
+/* icon visibility in dark mode (swap states) */
+:root[data-theme='dark'] .bookmarkBtn[data-bookmarked='false'] .bookmarkIcon {
+  /* OFF = same vibe as disabled Next text */
+  background: rgba(255, 255, 255, 0.45);
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.55));
+}
+
+:root[data-theme='dark'] .bookmarkBtn[data-bookmarked='true'] .bookmarkIcon {
+  /* ON = current white you had before */
+  background: rgba(255, 255, 255, 0.92);
+  filter: drop-shadow(0 2px 10px rgba(0, 0, 0, 0.65));
+}
+
 
 /* question → image */
 .imageWrap {
@@ -256,6 +319,13 @@ height: clamp(240px, 52vw, 340px);
 
   padding: 10px 12px;
   text-align: center;
+
+  transition:
+    transform 120ms ease,
+    box-shadow 120ms ease,
+    border-color 120ms ease,
+    background-color 120ms ease;
+  will-change: transform;
 }
 
 .optionKey {
@@ -281,6 +351,12 @@ height: clamp(240px, 52vw, 340px);
 .optionActive {
   border-color: rgba(43, 124, 175, 0.7);
   box-shadow: 0 10px 22px rgba(43, 124, 175, 0.18);
+
+    /* ✅ slightly more obvious than shadow alone */
+  background: rgba(43, 124, 175, 0.08);
+
+  /* ✅ subtle “lift” so deselecting is noticeable */
+  transform: translateY(-1px);
 }
 
 /* answers → next button: 30 */

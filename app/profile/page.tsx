@@ -10,7 +10,7 @@ import BottomNav from '../../components/BottomNav';
 import { useTheme } from '../../components/ThemeProvider';
 import { useUserProfile } from '../../components/UserProfile';
 import { UserProfileProvider } from '../../components/UserProfile';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname, useSearchParams  } from 'next/navigation';
 import { useAuthStatus } from '../../components/useAuthStatus';
 import { isValidEmail } from '../../lib/auth';
 import BackButton from '../../components/BackButton';
@@ -130,6 +130,9 @@ const handleNameBlur = (e: React.FocusEvent<HTMLSpanElement>) => {
 
 const router = useRouter();
 const [loggingOut, setLoggingOut] = useState(false);
+const pathname = usePathname();
+const sp = useSearchParams();
+
 
 const handleLogout = async () => {
   if (loggingOut) return;
@@ -178,6 +181,15 @@ const handleSave = async (e: React.SyntheticEvent) => {
   }
 };
 
+
+const goComingSoon = (feature: string) => {
+  const qs = sp?.toString();
+  const returnTo = `${pathname}${qs ? `?${qs}` : ''}`;
+
+  router.push(
+    `/coming-soon?feature=${encodeURIComponent(feature)}&returnTo=${encodeURIComponent(returnTo)}`
+  );
+};
 
 
 
@@ -357,7 +369,11 @@ const handleSave = async (e: React.SyntheticEvent) => {
 )}
 
 
-        <button className={styles.settingsRow}>
+       <button
+  type="button"
+  className={styles.settingsRow}
+  onClick={(e) => goComingSoon("Delete Account")}
+>
           <div className={styles.settingsLeft}>
             <span className={styles.settingsIcon}>
               <Image 
@@ -367,12 +383,16 @@ const handleSave = async (e: React.SyntheticEvent) => {
                 height={24}
               />
             </span>
-            <span className={styles.settingsLabel}>Privacy Policy</span>
+            <span className={styles.settingsLabel}>Delete Account</span>
           </div>
           <span className={styles.chevron}>›</span>
         </button>
 
-        <button className={styles.settingsRow}>
+        <button
+  type="button"
+  className={styles.settingsRow}
+  onClick={(e) => goComingSoon("Languages")}
+>
           <div className={styles.settingsLeft}>
             <span className={styles.settingsIcon}>
               <Image 
@@ -382,14 +402,18 @@ const handleSave = async (e: React.SyntheticEvent) => {
                 height={24}
               />
             </span>
-            <span className={styles.settingsLabel}>About us</span>
+            <span className={styles.settingsLabel}>Languages</span>
           </div>
           <span className={styles.chevron}>›</span>
         </button>
 
 
 
-        <button className={styles.settingsRow}>
+        <button
+  type="button"
+  className={styles.settingsRow}
+  onClick={(e) => goComingSoon("Notifications")}
+>
           <div className={styles.settingsLeft}>
             <span className={styles.settingsIcon}>
               <Image 
@@ -399,7 +423,7 @@ const handleSave = async (e: React.SyntheticEvent) => {
                 height={24}
               />
             </span>
-            <span className={styles.settingsLabel}>Exam Registration</span>
+            <span className={styles.settingsLabel}>Notifications</span>
           </div>
           <span className={styles.chevron}>›</span>
         </button>

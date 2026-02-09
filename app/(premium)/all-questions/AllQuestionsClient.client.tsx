@@ -290,11 +290,11 @@ function toggleSelectAllVisible() {
   });
 }
 
-function unselectCard(id: string) {
+function toggleCardSelection(id: string) {
   setSelectedIds((prev) => {
-    if (!prev.has(id)) return prev;
     const next = new Set(prev);
-    next.delete(id);
+    if (next.has(id)) next.delete(id);
+    else next.add(id);
     return next;
   });
 }
@@ -516,17 +516,19 @@ const compiledBookmarksCount = useMemo(() => {
   key={item.id}
   className={`${styles.card} ${selectedIds.has(item.id) ? styles.cardSelected : ""}`}
   onClick={(e) => {
-    // Only do anything if this card is currently selected
-    if (!selectedIds.has(item.id)) return;
+    // Only allow toggling when you're in bulk-select mode
+    if (mode !== "bookmarks" && mode !== "mistakes") return;
+    if (selectedIds.size === 0) return;
 
-    // Ignore clicks that originate from interactive elements inside the card
+    // Ignore clicks from interactive elements inside the card
     const target = e.target as HTMLElement;
     if (target.closest("button, a, input, textarea, select, label")) return;
 
-    // ✅ unselect on tap/click
-    unselectCard(item.id);
+    // ✅ toggle select/unselect
+    toggleCardSelection(item.id);
   }}
 >
+
 
  <div className={styles.cardTop}>
   <span className={styles.qNo}>{item.number}.</span>
@@ -579,20 +581,25 @@ onClick={(e) => {
                 </div>
               )}
 
-              {/* ✅ ANSWERS */}
-              {item.type === 'ROW' && item.correctRow && (
-                <div className={styles.answerRow}>
-                  <span className={styles.answerLabel}>Answer</span>
-                  <span className={styles.answerPill}>
-  {item.correctRow === "R"
-    ? "Right"
-    : item.correctRow === "W"
-    ? "Wrong"
-    : item.correctRow}
-</span>
+{/* ✅ ANSWERS */}
+{item.type === 'ROW' && item.correctRow && (
+  <ul className={styles.optionList}>
+    {(['R', 'W'] as const).map((k) => {
+      const correct = normalizeRowChoice(item.correctRow) === k;
 
-                </div>
-              )}
+      return (
+        <li
+          key={k}
+          className={`${styles.option} ${correct ? styles.optionCorrect : ''}`}
+        >
+          <span className={styles.optionKey}>{k}.</span>
+          {k === 'R' ? 'Right' : 'Wrong'}
+        </li>
+      );
+    })}
+  </ul>
+)}
+
 
               {item.type === 'MCQ' && item.options?.length > 0 && (
                 <ul className={styles.optionList}>

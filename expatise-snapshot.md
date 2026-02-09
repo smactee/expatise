@@ -1278,6 +1278,7 @@ import {
 } from "@/lib/freeAccess/localUsageCap";
 import { useEntitlements } from '@/components/EntitlementsProvider.client';
 import { useClearedMistakes } from '@/lib/mistakes/useClearedMistakes';
+import { deriveTopicSubtags } from '@/lib/qbank/deriveTopicSubtags';
 
 
 
@@ -1349,6 +1350,105 @@ function compileMistakeIds(
   }
 
   return Array.from(mistakes);
+}
+
+// =========================
+// Topic Quiz (weak subtopics: v1)
+// =========================
+
+// ✅ Accept BOTH keys (your Stats currently writes the old one)
+const TOPIC_QUIZ_KEYS = ["expatise:topicQuiz:v1", "topicQuiz:v1"] as const;
+
+type TopicQuizV1 = {
+  schemaVersion: 1;
+  createdAt: number;
+  tags: string[]; // weakest -> strongest
+};
+
+function normalizeTag(s: unknown) {
+  return String(s ?? "").trim().replace(/^#/, "").toLowerCase();
+}
+
+/**
+ * Accepts BOTH shapes:
+ * - New: { schemaVersion: 1, createdAt, tags: [...] }
+ * - Old: { v: 1, createdAt, rankedTags: [...] }
+ */
+function readTopicQuizV1(): TopicQuizV1 | null {
+  if (typeof window === "undefined") return null;
+
+  for (const key of TOPIC_QUIZ_KEYS) {
+    try {
+      const raw = window.localStorage.getItem(key);
+      if (!raw) continue;
+
+      const parsed = JSON.parse(raw);
+
+      // New format
+      if (parsed?.schemaVersion === 1 && Array.isArray(parsed.tags)) {
+        const tags = parsed.tags.map(normalizeTag).filter(Boolean);
+        return { schemaVersion: 1, createdAt: Number(parsed.createdAt ?? Date.now()), tags };
+      }
+
+      // Old format (your Stats page)
+      if (parsed?.v === 1 && Array.isArray(parsed.rankedTags)) {
+        const tags = parsed.rankedTags.map(normalizeTag).filter(Boolean);
+        return { schemaVersion: 1, createdAt: Number(parsed.createdAt ?? Date.now()), tags };
+      }
+    } catch {
+      // ignore and keep trying
+    }
+  }
+
+  return null;
+}
+
+/**
+ * Build a pool that stays as "weak" as possible while still having enough questions.
+ * - rankedTags: weakest -> strongest
+ * - each question gets bestRank = smallest index among its topic subtags
+ * - choose the smallest cutoff rank that yields >= desiredCount questions
+ */
+function compileTopicQuizIds(questions: Question[], desiredCount: number): string[] {
+  const payload = readTopicQuizV1();
+  const rankedTags = payload?.tags ?? [];
+  if (rankedTags.length === 0) return [];
+
+  const rankIndex = new Map<string, number>();
+  for (let i = 0; i < rankedTags.length; i++) {
+    const tag = normalizeTag(rankedTags[i]);
+    if (tag && !rankIndex.has(tag)) rankIndex.set(tag, i);
+  }
+
+  const ranked: Array<{ id: string; best: number }> = [];
+
+  for (const q of questions) {
+    // ✅ be generous: consider deriveTopicSubtags + manual tags + autoTags
+    const derived = (deriveTopicSubtags(q) ?? []).map(normalizeTag);
+    const manual = (q.tags ?? []).map(normalizeTag);
+    const auto = (q.autoTags ?? []).map(normalizeTag);
+
+
+    const allTags = Array.from(new Set([...derived, ...manual, ...auto])).filter(Boolean);
+
+    let best = Infinity;
+    for (const t of allTags) {
+      const idx = rankIndex.get(t);
+      if (idx !== undefined && idx < best) best = idx;
+    }
+
+    if (best !== Infinity) ranked.push({ id: q.id, best });
+  }
+
+  if (ranked.length === 0) return [];
+
+  ranked.sort((a, b) => a.best - b.best);
+
+  const k = Math.min(ranked.length - 1, Math.max(0, desiredCount - 1));
+  const cutoff = ranked[k].best;
+
+  const pool = ranked.filter((x) => x.best <= cutoff).map((x) => x.id);
+  return Array.from(new Set(pool));
 }
 
 
@@ -1484,11 +1584,24 @@ if (modeKey === "bookmarks-test") {
   poolIds = Array.from(bookmarkedSet);
 }
 
-// (if you already did mistakes-test, you’ll have a similar branch for mistakes-test)
 if (modeKey === "mistakes-test") {
-  const mistakeIds = compileMistakeIds(ds, await attemptStore.listAttempts(userKey, datasetId), clearedMistakesSet);
+  const mistakeIds = compileMistakeIds(
+    ds,
+    await attemptStore.listAttempts(userKey, datasetId),
+    clearedMistakesSet
+  );
   poolIds = mistakeIds;
 }
+
+if (modeKey === "topics-test") {
+  // Pull weakest-topic quiz tags from localStorage (set from Stats page)
+  const ids = compileTopicQuizIds(ds, questionCount);
+
+  // ✅ never allow empty pool (keeps your emptyMsg as a “true” safety only)
+  poolIds = ids.length ? ids : ds.map((q) => q.id);
+}
+
+
 // ✅ Preflight gate ONLY if there is no resumable attempt (so resume is always allowed)
 const existing = await attemptStore.listAttempts(userKey, datasetId);
 const hasResumable = existing.some(
@@ -1537,10 +1650,19 @@ if (!reused) {
 
 // Build the picked subset in the frozen random order
 const byId = new Map(ds.map((q) => [q.id, q] as const));
-const picked = a.questionIds.map((id) => byId.get(id)).filter(Boolean) as Question[];
+
+let picked = a.questionIds
+  .map((id) => byId.get(id))
+  .filter(Boolean) as Question[];
+
+// Safety: never allow empty picked set
+if (picked.length === 0) {
+  picked = ds.slice(0, effectiveCount);
+}
 
 setAttempt(a);
 setItems(picked);
+
 
 // Restore timer from attempt storage (prevents refresh extending time)
 if (hasTimer) {
@@ -1584,6 +1706,7 @@ setLoading(false);
   router,
   routeBase,
   clearedMistakesSet,
+  bookmarkedSet,
 ]);
 
 
@@ -1690,6 +1813,13 @@ useEffect(() => {
 
 const item = items[index];
 const imageAsset = item?.assets?.find((a) => a.kind === 'image');
+
+useEffect(() => {
+  if (items.length > 0 && index >= items.length) {
+    setIndex(items.length - 1);
+  }
+}, [items.length, index]);
+
 
 const correctCount = useMemo(() => {
   let correct = 0;
@@ -1903,6 +2033,8 @@ useEffect(() => {
   routeBase,
   enforceCaps,
   modeKey,
+  
+
 ]);
 
 
@@ -1929,23 +2061,29 @@ useEffect(() => {
     );
   }
 
-  if (!item) {
+  const emptyMsg =
+  modeKey === "bookmarks-test"
+    ? "No bookmarks yet. Bookmark questions first — then come back to practice them here."
+    : modeKey === "mistakes-test"
+    ? "No mistakes yet. Take a test first — then come back to retest and clear them by answering correctly."
+    : modeKey === "topics-test"
+    ? "No questions found for your weakest topics. Please make sure you've taken some tests and have weak topics to practice."
+    : "No questions found.";
+
+
+if (!item) {
+  const msg = items.length === 0 ? emptyMsg : "Loading…";
+
   return (
     <main className={styles.page}>
       <div className={styles.frame}>
         <BackButton />
-        <div className={styles.loading}>
-          {modeKey === "bookmarks-test"
-  ? "No bookmarks yet. Bookmark questions first — then come back to practice them here."
-  : modeKey === "mistakes-test"
-  ? "No mistakes yet. Take a test first — then come back to retest and clear them by answering correctly."
-  : "No questions found."}
-
-        </div>
+        <div className={styles.loading}>{msg}</div>
       </div>
     </main>
   );
 }
+
 
 
   return (
@@ -4448,8 +4586,10 @@ import ReadinessRing from '@/app/(premium)/stats/ReadinessRing.client';
 import ScoreChart from '@/components/stats/ScoreChart.client';
 import WeeklyProgressChart from '@/components/stats/DailyProgressChart';
 import DailyProgressChart from '@/components/stats/DailyProgressChart';
-import RhythmHeatmap from '@/components/stats/RhythmHeatmap.client';
+import Heatmap from '@/components/stats/Heatmap.client';
 import TopicMasteryChart from '@/components/stats/TopicMasteryChart.client';
+
+import { resetAllLocalData } from '@/lib/stats/resetLocalData';
 
 
 const datasetId: DatasetId = 'cn-2023-test1';
@@ -4458,6 +4598,53 @@ const datasetId: DatasetId = 'cn-2023-test1';
 
 const REAL_ONLY_MODE_KEYS = ["real-test"];
 const LEARNING_MODE_KEYS = ["real-test", "half-test", "rapid-fire-test"]; // all non-practice modes
+
+
+
+// Topic Quiz config saver: builds a config that prioritizes weakest subtopics
+function buildWeakSubtopicRankedTags(topicMastery: any) {
+  const topics = topicMastery?.topics ?? [];
+  const all = topics.flatMap((t: any) => t.subtopics ?? []);
+
+  // de-dupe by tag (keep lowest accuracy if duplicates)
+  const byTag = new Map<string, any>();
+  for (const s of all) {
+    const prev = byTag.get(s.tag);
+    const sPct = Number.isFinite(s.accuracyPct) ? s.accuracyPct : 0;
+    const pPct = prev && Number.isFinite(prev.accuracyPct) ? prev.accuracyPct : 0;
+    if (!prev || sPct < pPct) byTag.set(s.tag, s);
+  }
+
+  const arr = Array.from(byTag.values());
+
+  // 0% first, then upward; tie-breaker: fewer attempts first
+  arr.sort((a, b) => {
+    const ap = Number.isFinite(a.accuracyPct) ? a.accuracyPct : 0;
+    const bp = Number.isFinite(b.accuracyPct) ? b.accuracyPct : 0;
+    if (ap !== bp) return ap - bp;
+    return (a.attempted ?? 0) - (b.attempted ?? 0);
+  });
+
+  return arr.map((x) => x.tag);
+}
+
+function saveTopicQuizConfig(topicMastery: any) {
+  const rankedTags = buildWeakSubtopicRankedTags(topicMastery);
+
+  const cfg = {
+    v: 1,
+    createdAt: Date.now(),
+    rankedTags,          // weakest -> strongest
+    questionCount: 20,
+    timeLimitSec: 600,   // 10 min
+  };
+
+  localStorage.setItem('topicQuiz:v1', JSON.stringify(cfg));
+  return cfg;
+}
+
+
+
 
 export default function StatsPage() {
   const userKey = useUserKey();
@@ -4565,7 +4752,30 @@ const statsTopics = useMemo(() => {
   return (
     <main className={styles.page}>
       <div className={styles.content}>
-        <BackButton />
+  <div className={styles.pageTopRow}>
+    <BackButton />
+
+<button
+  type="button"
+  className={styles.resetBtnFixed}
+  onClick={async () => {
+    const typed = window.prompt(
+      'This will permanently delete ALL saved data on this device.\n\nType RESET to confirm:'
+    );
+    if ((typed ?? '').trim().toUpperCase() !== 'RESET') return;
+
+    await resetAllLocalData({ includeCaches: true });
+
+    // reload so every hook/store reads fresh empty storage
+    window.location.reload();
+  }}
+  aria-label="Reset all saved data"
+  title="Reset all saved data"
+>
+  Reset All Stats
+</button>
+  </div>
+
 
 
         {/* ==== Top Accuracy / Gauge Card ==== */}
@@ -4585,6 +4795,7 @@ const statsTopics = useMemo(() => {
     textAlign: "center",
     marginTop: 6,
     lineHeight: 1.35,
+    
   }}
 >
   <div className={styles.statsSummaryMeta}>
@@ -4613,6 +4824,8 @@ const statsTopics = useMemo(() => {
         <section className={styles.statsLongPanel}>
           <div className={styles.statsBlocks}>
 
+
+
 {/* Screen Time */}
 <article className={styles.statsCard}>
   <header className={styles.statsCardHeader}>
@@ -4625,14 +4838,12 @@ const statsTopics = useMemo(() => {
     <span className={`${styles.statsLegendDot} ${styles.statsLegendDotBlue}`} />
     <span className={styles.statsLegendLabel}>Study</span>
 
-    <span className={styles.statsLegendTotalSwatch} />
-<span className={styles.statsLegendLabel}>Total</span>
-
   <span className={styles.statsLegend__screenTime__totalGradientSwatch} />
   <span className={styles.statsLegendLabel}>Total</span>
 
   <span className={styles.statsLegend__screenTime__avgDottedSwatch} />
-  <span className={styles.statsLegendLabel}>7D avg</span>
+  <span className={`${styles.statsLegendLabel} ${styles.statsLegendLabelAvg}`}>7D avg</span>
+
 
   </div>
 </header>
@@ -4664,10 +4875,10 @@ const statsTopics = useMemo(() => {
   <h2 className={styles.statsCardTitle}>Score</h2>
 
   <div className={styles.statsLegend}>
-    <span className={`${styles.statsLegendDot} ${styles.statsLegendDotBlue}`} />
+    <span className={`${styles.statsLegendDot} ${styles.statsScoreChartLegendDotScore}`} />
     <span className={styles.statsLegendLabel}>Score</span>
 
-    <span className={`${styles.statsLegendDot} ${styles.statsLegendDotYellow}`} />
+    <span className={`${styles.statsLegendDot} ${styles.statsScoreChartLegendDotAverage}`} />
     <span className={styles.statsLegendLabel}>Average</span>
   </div>
 </header>
@@ -4705,7 +4916,7 @@ const statsTopics = useMemo(() => {
     <span className={`${styles.statsLegendDot} ${styles.statsLegendDotBlue}`} />
     <span className={styles.statsLegendLabel}>Questions</span>
 
-    <span className={`${styles.statsLegendDot} ${styles.statsLegendDotYellow}`} />
+    <span className={`${styles.statsLegendDot} ${styles.statsLegendDotAvg}`} />
     <span className={styles.statsLegendLabel}>Avg score</span>
   </div>
 </header>
@@ -4744,10 +4955,10 @@ const statsTopics = useMemo(() => {
   <div className={styles.statsGraphArea}>
     {loading ? (
       "Loading…"
-    ) : !statsBestTime.rhythmHeatmap ? (
+    ) : !statsBestTime.Heatmap ? (
       "Not enough data yet."
     ) : (
-      <RhythmHeatmap data={statsBestTime.rhythmHeatmap} />
+      <Heatmap data={statsBestTime.Heatmap} />
     )}
   </div>
 
@@ -4758,11 +4969,49 @@ const statsTopics = useMemo(() => {
 
 {/* Topic Mastery */}
 <article className={styles.statsCard}>
-  <header className={styles.statsCardHeader}>
-    <h2 className={styles.statsCardTitle}>Topic Mastery</h2>
-  </header>
+  <header className={`${styles.statsCardHeader} ${styles.statsCardHeaderRow}`}>
+  <h2 className={styles.statsCardTitle}>Topic Mastery</h2>
 
-  <div className={styles.statsGraphArea}>
+  <button
+    type="button"
+    className={styles.quizBtn}
+    disabled={
+      loading ||
+      !statsTopics.topicMastery ||
+      buildWeakSubtopicRankedTags(statsTopics.topicMastery).length === 0
+    }
+    onClick={() => {
+  if (!statsTopics.topicMastery) return;
+
+  // ✅ keep it to the “weakest 5” (as you intended)
+  const rankedTags = buildWeakSubtopicRankedTags(statsTopics.topicMastery)
+    .slice(0, 5)
+    .map((t) => String(t ?? "").trim().replace(/^#/, "").toLowerCase())
+    .filter(Boolean);
+
+  const cfg = {
+    schemaVersion: 1,
+    createdAt: Date.now(),
+    tags: rankedTags,
+  };
+
+  // ✅ canonical key (what AllTestClient expects)
+  localStorage.setItem("expatise:topicQuiz:v1", JSON.stringify(cfg));
+
+  // (optional) keep old key for a bit
+  localStorage.setItem("topicQuiz:v1", JSON.stringify({ v: 1, createdAt: cfg.createdAt, rankedTags }));
+
+  router.push("/test/topics");
+}}
+
+    title="Start a 20-question quiz from your weakest subtopics"
+  >
+    Topic Quiz
+  </button>
+</header>
+
+
+  <div className={`${styles.statsGraphArea} ${styles.topicMasteryArea}`}>
   {loading ? (
     "Loading…"
   ) : !statsTopics.topicMastery || statsTopics.topicMastery.topics.length === 0 ? (
@@ -4772,11 +5021,16 @@ const statsTopics = useMemo(() => {
   )}
 </div>
 
+
   <TimeframeChips value={tfTopics} onChange={setTfTopics} />
 </article>
 
           </div>
         </section>
+
+
+
+
 
         {/* Review button at the bottom */}
         <div className={styles.statsReviewWrapper}>
@@ -4847,6 +5101,17 @@ const statsTopics = useMemo(() => {
 /* ================================= */
 /* STATS PAGE                        */
 /* ================================= */
+:root{
+  --stats-ring-track: #e4e4e4;          /* light mode track */
+  --stats-ring-number: #111827;         /* light mode number */
+  --stats-summary-meta: rgba(17,24,39,0.65);
+}
+
+:root[data-theme="dark"]{
+  --stats-ring-track: rgba(255,255,255,0.22);  /* ✅ light gray track wedge */
+  --stats-ring-number: #e5e7eb;                /* ✅ light gray “78” */
+  --stats-summary-meta: rgba(255,255,255,0.70);/* ✅ fixes dark meta text too */
+}
 
 /* Top accuracy / gauge card */
 .statsSummaryCard {
@@ -4903,10 +5168,10 @@ const statsTopics = useMemo(() => {
   justify-content: center;
 }
 
-.statsGaugeNumber {
+.statsGaugeNumber{
   font-size: 54px;
   font-weight: 700;
-  color: #111827;
+  color: var(--stats-ring-number);
   line-height: 1;
 }
 
@@ -4988,17 +5253,27 @@ const statsTopics = useMemo(() => {
 }
 
 .statsLegendDot {
+  display: inline-block;
   width: 8px;
   height: 8px;
   border-radius: 999px;
+  flex: 0 0 auto;
 }
 
 .statsLegendDotBlue {
-  background: #2b7caf;
+  background: rgba(43,124,175,0.4);
 }
 
-.statsLegendDotYellow {
-  background: #ffc542;
+.statsScoreChartLegendDotScore {
+  background: var(--chart-grad-cool);
+}
+
+.statsScoreChartLegendDotAverage {
+  background: var(--chart-grad-warm);
+}
+
+.statsLegendDotAvg {
+  background: var(--chart-grad);
 }
 .statsLegendDotGray { background: rgba(17, 24, 39, 0.18); }
 .statsLegendDotDark { background: rgba(17, 24, 39, 0.45); }
@@ -5093,8 +5368,7 @@ const statsTopics = useMemo(() => {
 }
 
 :root[data-theme='dark'] .statsGaugeLabel {
-  color: #9ca3af;
-}
+color: var(--stats-ring-number)}
 
 /* Big panel behind the stack of cards */
 :root[data-theme='dark'] .statsLongPanel {
@@ -5139,7 +5413,8 @@ const statsTopics = useMemo(() => {
 
 /* Buttons (avoid relying on light-theme-only CSS vars) */
 :root[data-theme='dark'] .statsTestButton,
-:root[data-theme='dark'] .statsReviewButton {
+:root[data-theme='dark'] .statsReviewButton,
+:root[data-theme='dark'] .resetBtnFixed {
   background: linear-gradient(
     90deg,
     rgba(43, 124, 175, 0.4) 0%,
@@ -5148,6 +5423,7 @@ const statsTopics = useMemo(() => {
   border-color: #d2c79a;
   color: #f9fafb;
 }
+
 
 /* Make the overall vertical spacing tighter */
 .statsSummaryInner {
@@ -5160,12 +5436,12 @@ const statsTopics = useMemo(() => {
 }
 
 /* The new meta text block */
-.statsSummaryMeta {
-  margin-top: -6px;     /* pulls text closer to the ring */
-  margin-bottom: -2px;  /* pulls the button closer */
+.statsSummaryMeta{
+  margin-top: -6px;
+  margin-bottom: -2px;
   font-size: 12px;
   line-height: 1.25;
-  color: rgba(17, 24, 39, 0.65);
+  color: var(--stats-summary-meta);
   text-align: center;
 }
 
@@ -5194,7 +5470,7 @@ const statsTopics = useMemo(() => {
   width: 18px;
   height: 6px;
   border-radius: 999px;
-  background: linear-gradient(90deg, #2B7CAF 0%, rgba(61,140,213,0) 100%);
+  background: var(--chart-grad);
   opacity: 0.9;
   display: inline-block;
 }
@@ -5207,6 +5483,174 @@ const statsTopics = useMemo(() => {
   transform: translateY(-1px);
 }
 
+
+.statsCardHeaderRow{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.statsCardActionBtn{
+  flex: 0 0 auto;
+  border-radius: 999px;
+  padding: 8px 12px;
+
+  border: 1px solid rgba(148,163,184,0.45);
+  background: var(--color-premium-gradient-20);
+  box-shadow: 0 10px 20px rgba(15,33,70,0.10);
+
+  font-size: 12px;
+  font-weight: 800;
+  color: rgba(17,24,39,0.78);
+
+  cursor: pointer;
+  user-select: none;
+}
+
+.statsCardActionBtn:disabled{
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.quizBtn {
+  height: 40px;
+  padding: 0 16px;
+  border-radius: 16px;
+
+  border: 1px solid var(--color-logout-border);
+  background: var(--color-premium-gradient);
+  box-shadow: 0 18px 40px rgba(15, 33, 70, 0.26);
+
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--color-heading-card);
+
+  text-decoration: none;
+  cursor: pointer;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  white-space: nowrap;
+}
+
+.pageTopRow{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 44px;
+  margin-bottom: 12px;
+}
+
+/* subtle “danger-ish” button that still matches your UI */
+.resetBtn{
+  border: 1px solid rgba(17,24,39,0.12);
+  background: rgba(255,255,255,0.65);
+  padding: 8px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(17,24,39,0.75);
+  cursor: pointer;
+}
+
+.resetBtn:active{
+  transform: translateY(1px);
+}
+
+.resetBtnFixed{
+  position: fixed;
+  top: calc(env(safe-area-inset-top, 0px));
+  right: calc(env(safe-area-inset-right, 0px) + 10px);
+  z-index: 9999;
+
+  /* same “family” as .statsReviewButton */
+  border: 1px solid var(--color-logout-border);
+  background: var(--color-premium-gradient);
+  box-shadow: 0 18px 40px rgba(15, 33, 70, 0.22);
+
+  /* compact version (top bar friendly) */
+  height: 36px;
+  padding: 0 14px;
+  border-radius: 18px;
+
+  font-size: 13px;
+  font-weight: 600;
+  color: #111827;
+  cursor: pointer;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+}
+
+.resetBtnFixed:active{
+  transform: translateY(1px);
+}
+
+/* Topic Mastery text in dark mode */
+.topicMasteryArea {
+  color: #111827; /* light default */
+}
+
+:root[data-theme='dark'] .topicMasteryArea {
+  color: #f9fafb; /* make text white */
+}
+
+/* If TopicMasteryChart renders any SVG text labels */
+:root[data-theme='dark'] .topicMasteryArea svg text {
+  fill: #f9fafb;
+}
+
+/* Common inline elements inside the chart */
+:root[data-theme='dark'] .topicMasteryArea :is(p, span, small, strong, em, label) {
+  color: #f9fafb;
+}
+
+:root[data-theme="dark"] .statsLegendLabelAvg{
+  color: rgba(255,255,255,0.82);
+}
+:root[data-theme="dark"] .screenTimeChart svg text{
+  fill: rgba(255,255,255,0.72) !important;
+}
+
+
+/* make sure Test exists */
+.statsLegendDotYellow {
+  background:var(--chart-grad-warm);
+}
+
+/* you already have this, keep it */
+.statsLegendDotBlue {
+  background: var(--chart-grad-cool);
+}
+
+/* Total (line) swatch = your warm→cool gradient */
+.statsLegend__screenTime__totalLineSwatch{
+  width: 18px;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--chart-grad);
+  opacity: 0.9;
+  display: inline-block;
+}
+
+/* Total (area) swatch = match your “mountain fill” look */
+.statsLegend__screenTime__totalAreaSwatch{
+  width: 18px;
+  height: 10px;
+  border-radius: 6px;
+  background: linear-gradient(
+    90deg,
+    rgba(43, 124, 175, 0.28) 0%,
+    rgba(61, 140, 213, 0) 100%
+  );
+  opacity: 0.9;
+  display: inline-block;
+}
 
 ```
 
@@ -7049,21 +7493,34 @@ const canSend = useMemo(() => {
     rgba(43, 124, 175, 0.4) 0%,
     rgba(255, 197, 66, 0.4) 100%
   );
-  --color-settings-bg: #f1f5f8;
-  --color-logout-border: #d2c79a;
+ 
 
   --color-premium-gradient-20: linear-gradient(
   90deg,
   rgba(43, 124, 175, 0.2) 0%,
   rgba(255, 197, 66, 0.2) 100%
-    --test-text: var(--text-main);
-  --test-muted: var(--text-muted);
-  --test-icon: var(--test-text);
 );
+   --color-premium-gradient-20-reverse: linear-gradient(
+    90deg,
+    rgba(255, 197, 66, 0.2) 0%,
+    rgba(43, 124, 175, 0.2) 100%
+  );
 
+--color-settings-bg: #f1f5f8;
+--color-logout-border: #d2c79a;
 
-}
+--test-text: var(--text-main);
+--test-muted: var(--text-muted);
+--test-icon: var(--test-text);
 
+  /* Shared chart gradient tokens */
+  --chart-grad-warm: rgba(255,197,66,0.85);
+  --chart-grad-cool: rgba(43,124,175,0.85);
+  --chart-grad: linear-gradient(
+    90deg,
+    var(--chart-grad-warm) 0%,
+    var(--chart-grad-cool) 100%
+  );
 
 
 /* Base page background + text color */
@@ -7080,7 +7537,7 @@ body {
   font-family: var(--font-sans), system-ui, -apple-system, BlinkMacSystemFont,
     'SF Pro Text', 'Segoe UI', sans-serif;
 }
-
+}  
 ```
 
 ### app/layout.tsx
@@ -11218,6 +11675,8 @@ const handleSave = async (e: React.SyntheticEvent) => {
 
 ### app/test/[mode]/page.tsx
 ```tsx
+// app/test/[mode]/page.tsx
+
 import { notFound } from "next/navigation";
 import AllTestClient from "@/app/(premium)/all-test/AllTestClient.client";
 import { TEST_MODES, type TestModeId } from "@/lib/testModes";
@@ -12729,6 +13188,7 @@ export default function BottomNav({ onOffsetChange }: BottomNavProps) {
 
 ### components/DragScrollRow.tsx
 ```tsx
+//components/DragScrollRow.tsx
 'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
@@ -12744,9 +13204,17 @@ export default function DragScrollRow({ children, className }: DragScrollRowProp
   const [dragging, setDragging] = useState(false);
   const [snapOff, setSnapOff] = useState(false);
 
-  const isDraggingRef = useRef(false);
-  const startXRef = useRef(0);
-  const scrollLeftRef = useRef(0);
+  // pointer tracking
+  const pointerDownRef = useRef(false);
+  const activePointerIdRef = useRef<number | null>(null);
+
+  const startClientXRef = useRef(0);
+  const startLocalXRef = useRef(0);
+  const startScrollLeftRef = useRef(0);
+
+  // drag threshold + "did drag" (to suppress click after a drag)
+  const DRAG_THRESHOLD = 6; // px
+  const didDragRef = useRef(false);
 
   // momentum
   const lastClientXRef = useRef(0);
@@ -12768,19 +13236,17 @@ export default function DragScrollRow({ children, className }: DragScrollRowProp
   };
 
   const startMomentum = () => {
-    const node = rowRef.current;
-    if (!node) return;
+    const el = rowRef.current;
+    if (!el) return;
 
     const friction = 0.985;
     const minVelocity = 0.05;
 
     const step = () => {
-      const el = rowRef.current;
-      if (!el) return;
+      const node = rowRef.current;
+      if (!node) return;
 
-      // momentum scroll
-      el.scrollLeft -= velocityRef.current;
-
+      node.scrollLeft -= velocityRef.current;
       velocityRef.current *= friction;
 
       if (Math.abs(velocityRef.current) > minVelocity) {
@@ -12788,7 +13254,7 @@ export default function DragScrollRow({ children, className }: DragScrollRowProp
       } else {
         velocityRef.current = 0;
         stopAnimation();
-        setSnapOff(false); // ✅ restore snap after momentum ends
+        setSnapOff(false); // restore snap after momentum ends
       }
     };
 
@@ -12799,54 +13265,106 @@ export default function DragScrollRow({ children, className }: DragScrollRowProp
     const el = rowRef.current;
     if (!el) return;
 
-    // IMPORTANT: prevents text selection + makes drag feel “buttery”
-    e.preventDefault();
+    // Do NOT preventDefault here (it can kill clicks)
+    pointerDownRef.current = true;
+    activePointerIdRef.current = e.pointerId;
 
-    isDraggingRef.current = true;
-    setDragging(true);
-    setSnapOff(true); // ✅ disable snap during drag/throw
-
-    startXRef.current = getLocalX(e.clientX);
-    scrollLeftRef.current = el.scrollLeft;
+    startClientXRef.current = e.clientX;
+    startLocalXRef.current = getLocalX(e.clientX);
+    startScrollLeftRef.current = el.scrollLeft;
 
     lastClientXRef.current = e.clientX;
     velocityRef.current = 0;
 
+    didDragRef.current = false;
     stopAnimation();
-    el.setPointerCapture(e.pointerId);
+  };
+
+  const beginDragMode = (e: React.PointerEvent<HTMLDivElement>) => {
+    const el = rowRef.current;
+    if (!el) return;
+
+    // Now we are officially dragging
+    setDragging(true);
+    setSnapOff(true);
+    didDragRef.current = true;
+
+    // Prevent text selection + stop browser gestures once dragging has started
+    e.preventDefault();
+
+    // Capture pointer ONLY after drag begins (so clicks on children still work)
+    try {
+      el.setPointerCapture(e.pointerId);
+    } catch {
+      // ignore (some environments can throw)
+    }
   };
 
   const onPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
     const el = rowRef.current;
-    if (!el || !isDraggingRef.current) return;
+    if (!el || !pointerDownRef.current) return;
+    if (activePointerIdRef.current !== e.pointerId) return;
 
-    e.preventDefault();
+    const dxFromStart = e.clientX - startClientXRef.current;
+
+    // If we haven't entered drag mode yet, wait until threshold is exceeded
+    if (!dragging && Math.abs(dxFromStart) < DRAG_THRESHOLD) {
+      return;
+    }
+
+    // First move past threshold -> enter drag mode
+    if (!dragging) {
+      beginDragMode(e);
+    } else {
+      // already dragging: keep preventing default for smoothness
+      e.preventDefault();
+    }
 
     const x = getLocalX(e.clientX);
-    const walk = x - startXRef.current;
+    const walk = x - startLocalXRef.current;
 
-    el.scrollLeft = scrollLeftRef.current - walk;
+    el.scrollLeft = startScrollLeftRef.current - walk;
 
     // velocity (px per event)
     const dx = e.clientX - lastClientXRef.current;
     lastClientXRef.current = e.clientX;
-
     velocityRef.current = dx * 0.9;
   };
 
-  const endDrag = () => {
-    if (!isDraggingRef.current) return;
+  const endDrag = (e?: React.PointerEvent<HTMLDivElement>) => {
+    if (!pointerDownRef.current) return;
 
-    isDraggingRef.current = false;
+    pointerDownRef.current = false;
+    activePointerIdRef.current = null;
+
+    // release capture if we had it
+    if (e?.currentTarget && dragging) {
+      try {
+        e.currentTarget.releasePointerCapture(e.pointerId);
+      } catch {
+        // ignore
+      }
+    }
+
+    if (!dragging) {
+      // was a click/tap, not a drag
+      return;
+    }
+
     setDragging(false);
 
-    // only start momentum if user actually flung
+    // fling
     if (Math.abs(velocityRef.current) > 0.5) {
       startMomentum();
     } else {
       velocityRef.current = 0;
-      setSnapOff(false); // ✅ restore snap if no momentum
+      setSnapOff(false);
     }
+
+    // Allow next click after this tick (we only want to block the click caused by this drag)
+    setTimeout(() => {
+      didDragRef.current = false;
+    }, 0);
   };
 
   // Optional: make mouse wheel scroll horizontally (desktop testing)
@@ -12878,13 +13396,21 @@ export default function DragScrollRow({ children, className }: DragScrollRowProp
       onPointerUp={endDrag}
       onPointerCancel={endDrag}
       onPointerLeave={endDrag}
+      onClickCapture={(e) => {
+        // If the user dragged, block the accidental click that happens on release
+        if (didDragRef.current) {
+          e.preventDefault();
+          e.stopPropagation();
+        }
+      }}
       style={{
         overflowX: 'auto',
         overflowY: 'hidden',
         cursor: dragging ? 'grabbing' : 'grab',
-        userSelect: 'none',
+        userSelect: dragging ? 'none' : undefined,
+        // allow vertical page scroll; we handle horizontal drag ourselves
         touchAction: 'pan-y',
-        // ✅ this is the key for “smooth” when you have scroll-snap in CSS
+        // disable snap during drag/throw
         scrollSnapType: snapOff ? 'none' : undefined,
       }}
     >
@@ -13866,7 +14392,7 @@ export function useUserProfile() {
 .wrap{
   width: 100%;
   --avgYellow: rgba(255, 197, 66, 0.95);
-   --barBlue: rgba(43,124,175,0.85);
+   --barBlue:rgba(43,124,175,0.4);
 }
 
 .metaRow{
@@ -13912,7 +14438,7 @@ export function useUserProfile() {
 .barFill{
   height: 100%;
   border-radius: 999px;
-  background: rgba(43,124,175,0.70);
+  background: var(--barBlue);
 }
 
 .metrics{ white-space: nowrap; opacity: 0.9; }
@@ -13956,29 +14482,27 @@ export function useUserProfile() {
 }
 
 .bar{
-  fill: rgba(43,124,175,0.25);
+  fill: var(--barBlue);
 }
 
 .barActive{
-  fill: rgba(43,124,175,0.55);
+  fill: var(--barBlue);
 }
 
 .avgLine{
   fill: none;
-  stroke: rgba(255, 197, 66, 0.95);
   stroke-width: 2;
   stroke-linecap: round;
   stroke-linejoin: round;
 }
 
+
 .avgDot{
-  fill: var(--avgYellow);
   opacity: 0.95;
 }
 
 .avgHalo{
   fill: none;
-  stroke: var(--avgYellow);
   stroke-width: 2;
   pointer-events: none;
 }
@@ -13993,7 +14517,6 @@ export function useUserProfile() {
 
 .avgHaloPulse{
   fill: none;
-  stroke: rgba(255, 197, 66, 0.35);
   stroke-width: 2;
   vector-effect: non-scaling-stroke;
 
@@ -14057,7 +14580,6 @@ export function useUserProfile() {
 }
 .yAxisTextRight{
   font-size: 8.5px;
-  fill: var(--avgYellow);
 }
 
 .axisCornerLabel{
@@ -14157,6 +14679,71 @@ export function useUserProfile() {
   .popIn{ animation: none; transform: none; opacity: 1; }
 }
 
+.tooltip{
+  position: fixed;
+  z-index: 9999;
+  width: 260px;
+
+  background: rgba(255,255,255,0.97);
+  border: 1px solid rgba(148,163,184,0.55);
+  border-radius: 14px;
+
+  box-shadow: 0 24px 52px rgba(15,33,70,0.20);
+  padding: 12px 12px;
+
+  pointer-events: none; /* same as heatmap tooltip */
+}
+
+.tooltip[data-placement="top"]{
+  transform: translate(-50%, -100%);
+}
+
+.tooltip[data-placement="bottom"]{
+  transform: translate(-50%, 0);
+}
+
+.tipTitle{
+  font-size: 14px;
+  font-weight: 900;
+  color: rgba(17,24,39,0.86);
+  margin-bottom: 4px;
+}
+
+.tipSub{
+  font-size: 12px;
+  color: rgba(17,24,39,0.60);
+}
+
+.tipBody{
+  margin-top: 8px;
+  font-size: 12px;
+  color: rgba(17,24,39,0.72);
+}
+
+.tipStrong{
+  font-weight: 900;
+  color: rgba(17,24,39,0.82);
+}
+
+.tipArrow{
+  position: absolute;
+  left: 50%;
+  bottom: -6px;
+
+  width: 12px;
+  height: 12px;
+  transform: translateX(-50%) rotate(45deg);
+
+  background: rgba(255,255,255,0.97);
+  border-right: 1px solid rgba(148,163,184,0.55);
+  border-bottom: 1px solid rgba(148,163,184,0.55);
+}
+
+.tooltip[data-placement="bottom"] .tipArrow{
+  top: -6px;
+  bottom: auto;
+  transform: translateX(-50%) rotate(225deg);
+}
 
 ```
 
@@ -14165,9 +14752,10 @@ export function useUserProfile() {
 'use client';
 
 import styles from './DailyProgressChart.module.css';
-import { useOnceInView } from './useOnceInView.client';
-import { useEffect, useRef, useState } from 'react';
+import { useOnceInMidView } from './useOnceInView.client';
+import { useEffect, useMemo, useRef, useState, useId } from 'react';
 import { useBootSweepOnce } from './useBootSweepOnce.client';
+import { createPortal } from 'react-dom';
 
 type DayRow = {
   dayStart: number;
@@ -14197,7 +14785,8 @@ export default function DailyProgressChart(props: {
 }) {
   const { series, bestDayQuestions, streakDays, rows = 7 } = props;
 
-  const shown = series.slice(-rows);
+  const shown = useMemo(() => series.slice(-rows), [series, rows]);
+
 
   const maxAnsweredData = shown.reduce((m, d) => {
     const v = Number.isFinite(d.questionsAnswered) ? d.questionsAnswered : 0;
@@ -14207,10 +14796,11 @@ export default function DailyProgressChart(props: {
   const maxAnswered = Math.max(1, maxAnsweredData);
   const midAnswered = Math.round(maxAnswered / 2);
 
-  const { ref: inViewRef, seen } = useOnceInView<HTMLDivElement>({
-    threshold: 0.2,
-    rootMargin: '0px 0px -15% 0px',
-  });
+  const { ref: inViewRef, seen } = useOnceInMidView<HTMLDivElement>();
+
+  const avgGradId = useId().replace(/:/g, '');
+
+
 
   const animateIn = seen && shown.length > 0;
 
@@ -14279,6 +14869,86 @@ export default function DailyProgressChart(props: {
   };
 });
 
+  const wrapRef = useRef<HTMLDivElement | null>(null);
+  const tipRef = useRef<HTMLDivElement | null>(null);
+
+  const hitRefs = useRef<(SVGRectElement | null)[]>([]);
+
+  const [hoverIdx, setHoverIdx] = useState<number | null>(null);
+  const [pinnedIdx, setPinnedIdx] = useState<number | null>(null);
+
+  const [pointerType, setPointerType] = useState<'mouse' | 'touch' | 'pen'>('mouse');
+
+  const activeIdx = pinnedIdx ?? hoverIdx;
+
+  const isCoarse =
+    typeof window !== 'undefined' &&
+    (window.matchMedia?.('(hover: none)').matches || window.matchMedia?.('(pointer: coarse)').matches);
+
+useEffect(() => {
+    function onDocDown(e: PointerEvent) {
+      if (pinnedIdx == null) return;
+
+      const t = e.target as Node | null;
+      const inWrap = !!wrapRef.current && !!t && wrapRef.current.contains(t);
+      const inTip = !!tipRef.current && !!t && tipRef.current.contains(t);
+
+      if (!inWrap && !inTip) setPinnedIdx(null);
+    }
+
+    window.addEventListener('pointerdown', onDocDown, { passive: true });
+    return () => window.removeEventListener('pointerdown', onDocDown);
+  }, [pinnedIdx]);
+
+    const [tipPos, setTipPos] = useState<{
+    left: number;
+    top: number;
+    placement: 'top' | 'bottom';
+  } | null>(null);
+
+  useEffect(() => {
+    if (activeIdx == null) {
+      setTipPos(null);
+      return;
+    }
+
+    const d = shown[activeIdx];
+    const hasData = !!d && ((d.testsCompleted ?? 0) > 0 || (d.questionsAnswered ?? 0) > 0);
+    if (!hasData) {
+      setTipPos(null);
+      return;
+    }
+
+    const el = hitRefs.current?.[activeIdx];
+    if (!el) return;
+
+    const rect = el.getBoundingClientRect();
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+
+    const TIP_W = 260;
+    const M = 10;
+
+    const centerX = rect.left + rect.width / 2;
+    const left = clamp(centerX, M + TIP_W / 2, vw - M - TIP_W / 2);
+
+    const preferTop = rect.top > 140;
+    const placement: 'top' | 'bottom' = preferTop ? 'top' : 'bottom';
+
+    const top =
+      placement === 'top'
+        ? clamp(rect.top - 12, M, vh - M)
+        : clamp(rect.bottom + 12, M, vh - M);
+
+    // prevent pointless state updates (nice-to-have)
+    setTipPos((prev) => {
+      if (prev && prev.left === left && prev.top === top && prev.placement === placement) return prev;
+      return { left, top, placement };
+    });
+  }, [activeIdx, shown]);
+
+
+
 
 const avgPathRef = useRef<SVGPathElement | null>(null);
 const [avgLen, setAvgLen] = useState(0);
@@ -14316,13 +14986,25 @@ const avgDashOffset = (1 - tReveal) * dashLen;
     i === 0 || i === shown.length - 1 || i % labelEvery === 0;
 
   return (
-    <div className={styles.wrap}>
+    <div className={styles.wrap} ref={wrapRef}>
       <div className={styles.box}>
         <div className={styles.chartShell} ref={inViewRef}>
-          <svg className={styles.svg} viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none">
+
+<svg className={styles.svg} viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none">
+
+
+  <defs>
+  <linearGradient id={avgGradId} x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0%" style={{ stopColor: 'var(--chart-grad-warm)' }} />
+    <stop offset="100%" style={{ stopColor: 'var(--chart-grad-cool)' }} />
+  </linearGradient>
+</defs>
+
+
+
+
             {/* LEFT axis */}
             <line x1={xAxisL} y1={padT} x2={xAxisL} y2={padT + plotH} className={styles.yAxisLine} />
-
             {[
               { label: String(maxAnswered), y: yMax },
               { label: String(midAnswered), y: yMid },
@@ -14336,9 +15018,9 @@ const avgDashOffset = (1 - tReveal) * dashLen;
               </g>
             ))}
 
+
             {/* RIGHT axis */}
             <line x1={xAxisR} y1={padT} x2={xAxisR} y2={padT + plotH} className={styles.yAxisLine} />
-
             {[
               { label: '100', y: yForAvg(100) },
               { label: '50', y: yForAvg(50) },
@@ -14346,22 +15028,24 @@ const avgDashOffset = (1 - tReveal) * dashLen;
             ].map((t, i) => (
               <g key={`yr-${i}`}>
                 <line x1={xAxisR - 4} y1={t.y} x2={xAxisR} y2={t.y} className={styles.yAxisTick} />
-                <text x={xAxisR - 6} y={t.y + 3} textAnchor="end" className={styles.yAxisTextRight}>
+                <text x={xAxisR - 6} y={t.y + 3} textAnchor="end" className={styles.yAxisTextRight}  style={{ fill: `url(#${avgGradId})` }}>
                   {t.label}
                 </text>
               </g>
             ))}
+
 
             {/* grid */}
             <line x1={xAxisL} y1={yMax} x2={xAxisR} y2={yMax} className={styles.grid} />
             <line x1={xAxisL} y1={yMid} x2={xAxisR} y2={yMid} className={styles.grid} />
             <line x1={xAxisL} y1={y0} x2={xAxisR} y2={y0} className={styles.gridBase} />
 
+
             {/* corner labels */}
             <text x={xAxisL + 6} y={y0 + 12} textAnchor="start" className={styles.yAxisText}>
               Questions
             </text>
-            <text x={xAxisR - 6} y={y0 + 12} textAnchor="end" className={styles.yAxisTextRight}>
+            <text x={xAxisR - 6} y={y0 + 12} textAnchor="end" className={styles.yAxisTextRight}  style={{ fill: `url(#${avgGradId})` }}>
               Score
             </text>
 
@@ -14380,7 +15064,7 @@ const avgDashOffset = (1 - tReveal) * dashLen;
                     y={y}
                     width={barW}
                     height={h}
-                    rx={8}
+                    rx={2}
                     className={`${isLast ? styles.barActive : styles.bar} ${styles.barHidden} ${animateIn ? styles.barRise : ''}`}
                     style={animateIn ? { animationDelay: `${i * barStaggerMs}ms` } : undefined}
                   >
@@ -14413,32 +15097,36 @@ const avgDashOffset = (1 - tReveal) * dashLen;
             })}
 
             {/* avgScore line + dots */}
+{/* avgScore line + dots */}
 {avgPathD ? (
   <>
-    {/* line reveal (ScoreChart method: real length + dashoffset) */}
+    {/* line reveal */}
     <path
       ref={avgPathRef}
       d={avgPathD}
       className={styles.avgLine}
+      stroke={`url(#${avgGradId})`}
       strokeDasharray={lensReady ? dashLen : undefined}
       strokeDashoffset={lensReady ? avgDashOffset : undefined}
       style={{ opacity: lensReady ? 1 : 0 }}
     />
 
-    {/* dots for EVERY point (appear after the line draw finishes) */}
+    {/* dots for EVERY point */}
     {avgPoints
-  .filter((p) => p.pct > 0)
-  .map((p) => (
-    <circle
-      key={`avgpt-${p.dayStart}`}
-      cx={p.cx}
-      cy={p.cy}
-      r={3.25}
-      className={`${styles.avgDot} ${styles.dotHidden} ${animateIn ? styles.popIn : ''}`}
-      style={animateIn ? { animationDelay: `${dotDelayMs}ms` } : undefined}
-    />
-))}
-
+      .filter((p) => p.pct > 0)
+      .map((p) => (
+        <circle
+          key={`avgpt-${p.dayStart}`}
+          cx={p.cx}
+          cy={p.cy}
+          r={2.00}
+          className={`${styles.avgDot} ${styles.dotHidden} ${animateIn ? styles.popIn : ''}`}
+          style={{
+            ...(animateIn ? { animationDelay: `${dotDelayMs}ms` } : null),
+            fill: `url(#${avgGradId})`,
+          }}
+        />
+      ))}
 
     {/* pulse halo ONLY for latest point */}
     {avgPoints.length > 0 ? (
@@ -14447,13 +15135,82 @@ const avgDashOffset = (1 - tReveal) * dashLen;
         cy={avgPoints[avgPoints.length - 1].cy}
         r={7}
         className={`${styles.avgHaloPulse} ${animateIn ? '' : styles.pulseHidden}`}
-        style={animateIn ? { animationDelay: `${dotDelayMs}ms` } : undefined}
+        style={{
+          ...(animateIn ? { animationDelay: `${dotDelayMs}ms` } : null),
+          stroke: `url(#${avgGradId})`,
+          strokeOpacity: 0.45,
+        }}
       />
     ) : null}
   </>
 ) : null}
 
-          </svg>
+
+
+{/* HIT TARGETS (top layer): make tooltip easy to trigger */}
+{shown.map((d, i) => {
+  const hasData = d.testsCompleted > 0 || d.questionsAnswered > 0;
+
+  // one “slot” spans the whole day column
+  const xSlot = xAxisL + i * slot;
+
+  return (
+    <rect
+      key={`hit-${d.dayStart}`}
+      ref={(node) => {
+        hitRefs.current[i] = node;
+      }}
+      x={xSlot}
+      y={padT}
+      width={slot}
+      height={plotH}
+      rx={10}
+      fill="rgba(0,0,0,0)"
+      pointerEvents={hasData ? 'all' : 'none'}
+      style={{ cursor: hasData ? 'pointer' : 'default' }}
+      onPointerDown={(e) => setPointerType((e.pointerType as any) ?? 'mouse')}
+      onMouseEnter={() => setHoverIdx(i)}
+      onMouseLeave={() => setHoverIdx(null)}
+      onClick={() => {
+        const allowPin = pointerType !== 'mouse' || isCoarse;
+        if (!allowPin) return;
+        setPinnedIdx((prev) => (prev === i ? null : i));
+      }}
+    />
+  );
+})}
+</svg>
+
+
+
+{activeIdx != null && tipPos ? (() => {
+  const d = shown[activeIdx];
+  const hasData = (d.testsCompleted > 0 || d.questionsAnswered > 0);
+  if (!hasData) return null;
+
+  const label = fmtDay(d.dayStart);
+  const score = clamp(Number.isFinite(d.avgScore) ? d.avgScore : 0, 0, 100);
+
+  return createPortal(
+    <div
+      ref={tipRef}
+      className={styles.tooltip}
+      data-placement={tipPos.placement}
+      style={{ left: tipPos.left, top: tipPos.top }}
+      role="tooltip"
+    >
+      <div className={styles.tipTitle}>{label}</div>
+      <div className={styles.tipSub}>
+        {d.questionsAnswered} answered · {d.testsCompleted} tests
+      </div>
+      <div className={styles.tipBody}>
+        Avg score: <span className={styles.tipStrong}>{score}%</span>
+      </div>
+      <div className={styles.tipArrow} aria-hidden="true" />
+    </div>,
+    document.body
+  );
+})() : null}
         </div>
       </div>
       <div className={styles.metaRow}>
@@ -14468,16 +15225,18 @@ const avgDashOffset = (1 - tReveal) * dashLen;
   );
 }
 
+
 ```
 
-### components/stats/RhythmHeatmap.client.tsx
+### components/stats/Heatmap.client.tsx
 ```tsx
+//components/stats/Heatmap.client.tsx
 'use client';
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-import styles from './RhythmHeatmap.module.css';
-import { useOnceInView } from './useOnceInView.client';
+import styles from './Heatmap.module.css';
+import { useOnceInMidView } from './useOnceInView.client';
 
 type HeatmapVM = {
   weekdays: string[];
@@ -14543,8 +15302,16 @@ function cellBg(avgScore: number, attemptsCount: number) {
   return `rgba(${base.r}, ${base.g}, ${base.b}, ${clamp(alpha, 0.55, 0.98)})`;
 }
 
+const DAYPART_TIPS: Record<string, { title: string; sub?: string }> = {
+  morning: { title: 'Morning: 6~12 AM', sub: 'Based on your local time.' },
+  midday: { title: 'Midday: 12~5 PM', sub: 'Based on your local time.' },
+  evening: { title: 'Evening: 5~10 PM', sub: 'Based on your local time.' },
+  late:   { title: 'Late: 10~6 (crosses midnight)', sub: 'Based on your local time.' },
+};
 
-export default function RhythmHeatmap({ data }: { data: HeatmapVM }) {
+
+
+export default function Heatmap({ data }: { data: HeatmapVM }) {
   // r = weekday row index, c = dayPart col index (swapped UI)
   const [hover, setHover] = useState<{ r: number; c: number } | null>(null);
   const [pinned, setPinned] = useState<{ r: number; c: number } | null>(null);
@@ -14584,6 +15351,53 @@ export default function RhythmHeatmap({ data }: { data: HeatmapVM }) {
           cell: data.cells[active.c]?.[active.r] ?? { avgScore: 0, attemptsCount: 0 },
         }
       : null;
+
+        // Day-part header tooltip (Morning/Midday/Evening/Late)
+  const [partHover, setPartHover] = useState<number | null>(null);
+  const [partPinned, setPartPinned] = useState<number | null>(null);
+  const partRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const partTipRef = useRef<HTMLDivElement | null>(null);
+
+  const partActive = partPinned ?? partHover;
+
+  const partTip =
+    partActive != null
+      ? (() => {
+          const p = data.dayParts[partActive];
+          const info = DAYPART_TIPS[p?.key] ?? { title: `${p?.label ?? ''}` };
+          return { ...info };
+        })()
+      : null;
+
+  const [partTipPos, setPartTipPos] = useState<
+    { left: number; top: number; placement: 'top' | 'bottom' } | null
+  >(null);
+
+    useEffect(() => {
+    if (partActive == null) {
+      setPartTipPos(null);
+      return;
+    }
+
+    const el = partRefs.current?.[partActive];
+    if (!el) return;
+
+    const rect = el.getBoundingClientRect();
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+
+    const TIP_W = 300; // keep in sync with CSS
+    const M = 10;
+
+    const centerX = rect.left + rect.width / 2;
+    const left = clamp(centerX, M + TIP_W / 2, vw - M - TIP_W / 2);
+
+    // header is near the top → usually show below
+    const placement: 'top' | 'bottom' = 'bottom';
+    const top = clamp(rect.bottom + 12, M, vh - M);
+
+    setPartTipPos({ left, top, placement });
+  }, [partActive, data.dayParts]);
 
   // Close pinned tooltip when tapping outside (mobile)
   useEffect(() => {
@@ -14638,10 +15452,8 @@ export default function RhythmHeatmap({ data }: { data: HeatmapVM }) {
     typeof window !== 'undefined' &&
     (window.matchMedia?.('(hover: none)').matches || window.matchMedia?.('(pointer: coarse)').matches);
 
-  const { ref: inViewRef, seen } = useOnceInView<HTMLDivElement>({
-    threshold: 0.15,
-    rootMargin: '0px 0px -20% 0px',
-  });
+  const { ref: inViewRef, seen } = useOnceInMidView<HTMLDivElement>();
+
 
   const [revealOn, setRevealOn] = useState(false);
 
@@ -14679,14 +15491,39 @@ export default function RhythmHeatmap({ data }: { data: HeatmapVM }) {
 
           {/* TOP: Day parts */}
           {data.dayParts.map((p, c) => (
-            <div
-              key={`col-${p.key}`}
-              className={styles.colLabel}
-              style={{ gridColumn: c + 2, gridRow: 1 }}
-            >
-              {p.label}
-            </div>
-          ))}
+  <div
+    key={`col-${p.key}`}
+    ref={(node) => {
+      partRefs.current[c] = node;
+    }}
+    className={`${styles.colLabel} ${styles.partLabel}`}
+    style={{ gridColumn: c + 2, gridRow: 1 }}
+    onPointerDown={(e) => setPointerType((e.pointerType as any) ?? 'mouse')}
+    onMouseEnter={() => {
+      setPartHover(c);
+      setHover(null); // avoid overlapping with cell hover tooltip
+    }}
+    onMouseLeave={() => setPartHover(null)}
+    onClick={() => {
+      const allowPin = pointerType !== 'mouse' || isCoarse;
+      if (!allowPin) return;
+
+      setPinned(null); // avoid overlapping with pinned cell tooltip
+      setPartPinned((prev) => (prev === c ? null : c));
+    }}
+    role="button"
+    tabIndex={0}
+    onKeyDown={(e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        setPartPinned((prev) => (prev === c ? null : c));
+      }
+    }}
+  >
+    {p.label}
+  </div>
+))}
+
 
           {/* LEFT: Weekdays */}
           {data.weekdays.map((d, r) => (
@@ -14705,7 +15542,20 @@ export default function RhythmHeatmap({ data }: { data: HeatmapVM }) {
               ensureRef(r, c);
 
               const cell = data.cells[c]?.[r] ?? { avgScore: 0, attemptsCount: 0 };
-              const bg = cellBg(cell.avgScore, cell.attemptsCount);
+              const score = clamp(cell.avgScore, 0, 100);
+
+// bucket → pick which side of the gradient we "sample"
+const heatClass =
+  score >= 70 ? styles.heatHigh :
+  score >= 40 ? styles.heatMid :
+                styles.heatLow;
+
+// optional: confidence damping (matches your old alpha-ish behavior)
+let heatAlpha = 0.92;
+if (cell.attemptsCount <= 0) heatAlpha = 0.60;
+else if (cell.attemptsCount === 1) heatAlpha = 0.70;
+else if (cell.attemptsCount === 2) heatAlpha = 0.82;
+
               const dotA = clamp(cell.attemptsCount / maxCount, 0, 1);
 
               const isBest = !!bestRC && bestRC.r === r && bestRC.c === c;
@@ -14730,13 +15580,15 @@ return (
       isBest ? styles.bestCell : '',
       canPulse ? styles.bestPulse : '',
       cell.attemptsCount === 0 ? styles.emptyCell : '',
+      cell.attemptsCount > 0 ? styles.heatFill : '',
+      cell.attemptsCount > 0 ? heatClass : '',
       pinned?.r === r && pinned?.c === c ? styles.pinnedCell : '',
     ].filter(Boolean).join(' ')}
     style={{
       gridColumn: c + 2,
       gridRow: r + 2,
-      background: bg,
       ['--d' as any]: `${delayMs}ms`,
+      ['--heat-alpha' as any]: heatAlpha,
     }}
                   onPointerDown={(e) => setPointerType((e.pointerType as any) ?? 'mouse')}
                   onMouseEnter={() => setHover({ r, c })}
@@ -14822,17 +15674,40 @@ return (
             document.body
           )
         : null}
+        {partTip && partTipPos
+  ? createPortal(
+      <div
+        ref={partTipRef}
+        className={styles.tooltip}
+        data-placement={partTipPos.placement}
+        style={{ left: partTipPos.left, top: partTipPos.top }}
+        role="tooltip"
+      >
+        <div className={styles.tipTitle}>{partTip.title}</div>
+        {partTip.sub ? <div className={styles.tipSub}>{partTip.sub}</div> : null}
+        <div className={styles.tipArrow} aria-hidden="true" />
+      </div>,
+      document.body
+    )
+  : null}
+
     </div>
   );
 }
 
 ```
 
-### components/stats/RhythmHeatmap.module.css
+### components/stats/Heatmap.module.css
 ```css
 .wrap {
   width: 100%;
 }
+
+:root{
+  --premium-blue-rgb: 43 124 175;
+  --premium-yellow-rgb: 255 197 66;
+}
+
 
 /* ===== Callout pill ===== */
 .calloutPill {
@@ -14875,7 +15750,7 @@ return (
   border-radius: 22px;
   padding: 18px 18px 14px;
 
-  background: rgba(255, 255, 255, 0.42);
+   background: rgba(255, 255, 255, 0.42);
   border: 1px solid rgba(148, 163, 184, 0.18);
   backdrop-filter: blur(14px);
 
@@ -14897,7 +15772,7 @@ return (
     radial-gradient(55% 50% at 75% 55%,
       rgba(250, 204, 21, 0.10) 0%,
       rgba(250, 204, 21, 0.00) 65%);
-  filter: blur(2px);
+  filter: blur(10px);
   pointer-events: none;
 }
 
@@ -14938,6 +15813,7 @@ return (
   font-size: 15px;
   color: rgba(17, 24, 39, 0.48);
   letter-spacing: 0.2px;
+  font-weight: 600;
 }
 
 .rowLabel {
@@ -14947,6 +15823,7 @@ return (
   font-size: 15px;
   color: rgba(17, 24, 39, 0.44);
   white-space: nowrap;
+  font-weight: 600;
 }
 
 /* ===== Cells: tile style ===== */
@@ -14970,6 +15847,31 @@ return (
   transition: transform 160ms ease, box-shadow 160ms ease;
   outline: none;
 }
+
+/* =======================================================
+   Heat colors (cells + legend) using premium gradient reverse
+   ======================================================= */
+
+/* Base gradient fill (used by BOTH cells and legend swatches) */
+.heatFill{
+  --heat-alpha: 0.92;
+  --heat-wash: 0.42;
+  background-image:
+    linear-gradient(
+      rgb(255 255 255 / calc(0.62 * var(--heat-alpha))),
+      rgb(255 255 255 / calc(0.62 * var(--heat-alpha)))
+    ),
+    var(--color-premium-gradient-20-reverse);
+
+  background-size: 100% 100%, 220% 100%;
+  background-repeat: no-repeat;
+  background-position: 0 0, var(--heat-x, 50%) 50%;
+}
+
+.heatLow  { --heat-x: 100%; }
+.heatMid  { --heat-x: 50%; }
+.heatHigh { --heat-x: 0%; }
+
 
 /* glossy highlight overlay like the mock */
 .cell::before {
@@ -15167,9 +16069,21 @@ return (
   border: 1px solid rgba(148, 163, 184, 0.22);
 }
 
-.swLow  { background: rgba(225, 232, 245, 0.95); } /* #E1E8F5 */
-.swMid  { background: rgba(190, 208, 179, 0.95); } /* #BED0B3 */
-.swHigh { background: rgba(240, 192, 47,  0.95); } /* #F0C02F */
+.swLow  { --heat-x: 0%; }
+.swMid  { --heat-x: 50%; }
+.swHigh { --heat-x: 100%; }
+
+
+/* make swatches use the same fill */
+.swatch {
+  background-image:
+    linear-gradient(rgba(255,255,255,0.35), rgba(255,255,255,0.35)),
+    var(--color-premium-gradient-20-reverse);
+  background-size: 100% 100%, 220% 100%;
+  background-repeat: no-repeat;
+  background-position: 0 0, var(--heat-x, 50%) 50%;
+}
+
 
 
 .legendDot {
@@ -15240,6 +16154,34 @@ return (
   }
 }
 
+.partLabel{
+  cursor: pointer;
+  user-select: none;
+}
+
+.partLabel:hover{
+  color: rgba(17,24,39,0.60);
+}
+
+.partLabel:focus-visible{
+  outline: none;
+  text-shadow: 0 1px 0 rgba(255,255,255,0.85);
+}
+
+/* Support both tooltip placements (also helps your cell tooltip when it flips) */
+.tooltip[data-placement="top"]{
+  transform: translate(-50%, -100%);
+}
+
+.tooltip[data-placement="bottom"]{
+  transform: translate(-50%, 0);
+}
+
+.tooltip[data-placement="bottom"] .tipArrow{
+  top: -6px;
+  bottom: auto;
+  transform: translateX(-50%) rotate(225deg);
+}
 
 ```
 
@@ -15252,6 +16194,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import styles from './ScoreChart.module.css';
 import { useBootSweepOnce } from '@/components/stats/useBootSweepOnce.client';
 import { useOnceInMidView } from '@/components/stats/useOnceInView.client';
+import { createPortal } from 'react-dom';
 
 
 type Point = {
@@ -15327,7 +16270,7 @@ export default function ScoreChart(props: {
 // Start reveal only when there is at least 1 point.
 // (Do NOT use `model` here because model doesn't exist yet.)
 const hasAnyData = (series?.length ?? 0) > 0;
-const { ref, seen } = useOnceInMidView<HTMLDivElement>();
+const { ref: midViewRef, seen } = useOnceInMidView<HTMLDivElement>();
 
 const scorePathRef = useRef<SVGPathElement | null>(null);
 const avgPathRef = useRef<SVGPathElement | null>(null);
@@ -15349,9 +16292,50 @@ const reveal = useBootSweepOnce({
 
 
   const [hoverIdx, setHoverIdx] = useState<number | null>(null);
+const [pinnedIdx, setPinnedIdx] = useState<number | null>(null);
+const activeIdx = pinnedIdx ?? hoverIdx;
+
+const hitRefs = useRef<(SVGCircleElement | null)[]>([]);
+const wrapRef = useRef<HTMLDivElement | null>(null);
+const tipRef = useRef<HTMLDivElement | null>(null);
+
+const [tipPos, setTipPos] = useState<{
+  left: number;
+  top: number;
+  placement: 'top' | 'bottom';
+} | null>(null);
+
+const setWrapNode = (node: HTMLDivElement | null) => {
+  wrapRef.current = node;
+
+  // support either callback refs OR RefObject refs
+  const r: any = midViewRef;
+  if (typeof r === 'function') r(node);
+  else if (r && 'current' in r) r.current = node;
+};
+
+// Close pinned tooltip when clicking/tapping outside the chart + tooltip
+useEffect(() => {
+  function onDocDown(e: PointerEvent) {
+    if (pinnedIdx == null) return;
+
+    const t = e.target as Node | null;
+    const inWrap = !!wrapRef.current && !!t && wrapRef.current.contains(t);
+    const inTip = !!tipRef.current && !!t && tipRef.current.contains(t);
+
+    if (!inWrap && !inTip) setPinnedIdx(null);
+  }
+
+  window.addEventListener('pointerdown', onDocDown, { passive: true });
+  return () => window.removeEventListener('pointerdown', onDocDown);
+}, [pinnedIdx]);
+
+
+
 
   const model = useMemo(() => {
     const pts = [...(series ?? [])].sort((a, b) => a.t - b.t);
+
 
 
     // Keep it readable: last 12 attempts (tweakable)
@@ -15371,6 +16355,55 @@ const reveal = useBootSweepOnce({
 
     return { pts: sliced, maxQ, latestIdx, bestIdx, hasData, lowConfidence };
   }, [series, attemptsCount, attemptedTotal]);
+
+// Position tooltip next to the active hit target
+useEffect(() => {
+  if (activeIdx == null) {
+    setTipPos(null);
+    return;
+  }
+
+  // your chosen “hasData” gate
+  if (attemptsCount <= 0) {
+    setTipPos(null);
+    return;
+  }
+
+  if (activeIdx < 0 || activeIdx >= model.pts.length) {
+  setTipPos(null);
+  return;
+}
+
+  const p = model.pts[activeIdx];
+  const hasDataPt = (p?.answered ?? 0) > 0; // per-point gate
+  if (!hasDataPt) {
+    setTipPos(null);
+    return;
+  }
+
+  const el = hitRefs.current[activeIdx];
+  if (!el) return;
+
+  const rect = el.getBoundingClientRect();
+  const vw = window.innerWidth;
+  const vh = window.innerHeight;
+
+  const TIP_W = 260; // match your tooltip width (you can tweak)
+  const M = 10;
+
+  const centerX = rect.left + rect.width / 2;
+  const left = clamp(centerX, M + TIP_W / 2, vw - M - TIP_W / 2);
+
+  const preferTop = rect.top > 140;
+  const placement: 'top' | 'bottom' = preferTop ? 'top' : 'bottom';
+
+  const top =
+    placement === 'top'
+      ? clamp(rect.top - 12, M, vh - M)
+      : clamp(rect.bottom + 12, M, vh - M);
+
+  setTipPos({ left, top, placement });
+}, [activeIdx, attemptsCount, model.pts]);
 
   // SVG coordinate system
 const W = 340;     // total SVG width
@@ -15445,11 +16478,16 @@ const avgDashOffset = (1 - tReveal) * avgLen;
 
   
 
-  const hover = hoverIdx === null ? null : model.pts[hoverIdx];
+const hover = activeIdx == null ? null : model.pts[activeIdx];
 
 
-  return (
-    <div ref={ref} className={styles.wrap}>
+
+
+ return (
+  <div ref={setWrapNode} className={styles.wrap}>
+    
+
+
 
 
       {/* Top summary row (one line, premium scan) */}
@@ -15461,7 +16499,9 @@ const avgDashOffset = (1 - tReveal) * avgLen;
           className={styles.svg}
           viewBox={`0 0 ${W} ${H}`}
           preserveAspectRatio="none"
-          onMouseLeave={() => setHoverIdx(null)}
+          onMouseLeave={() => {
+  if (pinnedIdx == null) setHoverIdx(null);
+}}
         >
 
             {/* Y axis */}
@@ -15605,46 +16645,94 @@ style={{ opacity: lensReady ? 1 : 0 }}
   const pop = easeOutCubic(local);
 
   return (
-    <g
-      key={`pt-${p.t}`}
-      onMouseEnter={() => setHoverIdx(i)}
-      style={{ cursor: 'default' }}
-    >
-      <circle cx={x} cy={y} r="10" className={styles.hit} />
+   <g key={`pt-${p.t}`} aria-hidden="true">
+  <circle
+    cx={x}
+    cy={y}
+    r={3.5 * (0.25 + 0.75 * pop)}
+    className={styles.dot}
+    style={{ opacity: pop }}
+  />
 
-      <circle
-        cx={x}
-        cy={y}
-        r={3.5 * (0.25 + 0.75 * pop)}
-        className={styles.dot}
-        style={{ opacity: pop }}
-      />
+  {pop > 0.98 ? (
+    <>
+      <circle cx={x} cy={y} r="3.0" className={styles.halo} />
+      <circle cx={x} cy={y} r="7" className={styles.haloPulse} />
+    </>
+  ) : null}
+</g>
 
-      {/* Blue halo starts AFTER reveal */}
-      {pop > 0.98 ? (
-        <>
-          <circle cx={x} cy={y} r="3.0" className={styles.halo} />
-          <circle cx={x} cy={y} r="7" className={styles.haloPulse} />
-        </>
-      ) : null}
-    </g>
   );
 })()}
+
+{/* HIT TARGETS (one per attempt point with data) */}
+{attemptsCount > 0
+  ? model.pts.map((p, i) => {
+      const hasDataPt = (p.answered ?? 0) > 0;
+      if (!hasDataPt) return null;
+
+      const x = xFor(i);
+      const y = yForScore(p.scorePct);
+
+      return (
+        <circle
+          key={`hit-${p.t}`}
+          ref={(node) => {
+            hitRefs.current[i] = node;
+          }}
+          cx={x}
+          cy={y}
+          r={12}
+          className={styles.hit}
+          pointerEvents="all"
+          onPointerEnter={() => setHoverIdx(i)}
+          onPointerLeave={() => {
+            if (pinnedIdx == null) setHoverIdx(null);
+          }}
+          onPointerDown={() => {
+            setHoverIdx(i);
+            setPinnedIdx((prev) => (prev === i ? null : i));
+          }}
+        />
+      );
+    })
+  : null}
 
 
         </svg>
 
         {/* Tooltip */}
-        {hover ? (
-          <div className={styles.tooltip}>
-            <div className={styles.tipTitle}>{fmtDayTime(hover.t)}</div>
-            <div className={styles.tipBody}>
-              <div>Score: <b>{hover.scorePct}%</b></div>
-              <div>Answered: <b>{hover.answered}</b></div>
-              <div>Total Q: <b>{hover.totalQ}</b></div>
-            </div>
-          </div>
-        ) : null}
+{hover && tipPos && typeof document !== 'undefined'
+  ? createPortal(
+      <div
+        ref={tipRef}
+        className={styles.tooltip}
+        data-placement={tipPos.placement}
+        style={{ left: tipPos.left, top: tipPos.top }}
+        role="tooltip"
+      >
+        <div className={styles.tipTitle}>{fmtDayTime(hover.t)}</div>
+
+        <div className={styles.tipSub}>
+          {hover.answered} answered · {hover.totalQ} total
+        </div>
+
+        <div className={styles.tipBody}>
+          Score: <span className={styles.tipStrong}>{hover.scorePct}%</span>
+        </div>
+
+        <div className={styles.tipBody}>
+  Avg score: <span className={styles.tipStrong}>{Math.round(trendVals[activeIdx ?? 0] ?? scoreAvg)}%</span>
+</div>
+
+        <div className={styles.tipArrow} aria-hidden="true" />
+      </div>,
+      document.body
+    )
+  : null}
+
+
+
       </div>
 <div className={styles.summaryRow}>
         
@@ -15668,7 +16756,11 @@ style={{ opacity: lensReady ? 1 : 0 }}
 
 ### components/stats/ScoreChart.module.css
 ```css
-.wrap { width: 100%; }
+.wrap{
+  width: 100%;
+  --scoreCool: var(--chart-grad-cool);
+  --avgWarm: var(--chart-grad-warm);
+}
 
 .summaryRow{
   display: flex;
@@ -15726,25 +16818,25 @@ style={{ opacity: lensReady ? 1 : 0 }}
 
 .line{
   fill: none;
-  stroke: rgba(43, 124, 175, 0.92);
+  stroke: var(--scoreCool);
   stroke-width: 3;
   stroke-linecap: round;
   stroke-linejoin: round;
 }
 
 .dot{
-  fill: rgba(43, 124, 175, 0.95);
+  fill: var(--scoreCool);
 }
 
 .halo{
   fill: none;
-  stroke: rgba(43, 124, 175, 0.25);
+  stroke: color-mix(in srgb, var(--scoreCool) 28%, transparent);
   stroke-width: 2;
 }
 
 .best{
   font-size: 10px;
-  fill: rgba(255, 197, 66, 0.95);
+  fill: var(--avgWarm);
 }
 
 .hit{
@@ -15752,21 +16844,70 @@ style={{ opacity: lensReady ? 1 : 0 }}
 }
 
 .tooltip{
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  background: rgba(17,24,39,0.92);
-  color: white;
-  border-radius: 12px;
-  padding: 10px 12px;
-  font-size: 11px;
-  line-height: 1.25;
-  width: 180px;
-  box-shadow: 0 10px 26px rgba(0,0,0,0.18);
+  position: fixed;
+  z-index: 9999;
+  width: 260px;
+
+  background: rgba(255,255,255,0.97);
+  border: 1px solid rgba(148,163,184,0.55);
+  border-radius: 14px;
+
+  box-shadow: 0 24px 52px rgba(15,33,70,0.20);
+  padding: 12px 12px;
+
+  pointer-events: none;
 }
 
-.tipTitle{ font-weight: 700; margin-bottom: 6px; }
-.tipBody{ opacity: 0.95; display: grid; gap: 3px; }
+.tooltip[data-placement="top"]{
+  transform: translate(-50%, -100%);
+}
+
+.tooltip[data-placement="bottom"]{
+  transform: translate(-50%, 0);
+}
+
+.tipTitle{
+  font-size: 14px;
+  font-weight: 900;
+  color: rgba(17,24,39,0.86);
+  margin-bottom: 4px;
+}
+
+.tipSub{
+  font-size: 12px;
+  color: rgba(17,24,39,0.60);
+}
+
+.tipBody{
+  margin-top: 8px;
+  font-size: 12px;
+  color: rgba(17,24,39,0.72);
+}
+
+.tipStrong{
+  font-weight: 900;
+  color: rgba(17,24,39,0.82);
+}
+
+.tipArrow{
+  position: absolute;
+  left: 50%;
+  bottom: -6px;
+
+  width: 12px;
+  height: 12px;
+  transform: translateX(-50%) rotate(45deg);
+
+  background: rgba(255,255,255,0.97);
+  border-right: 1px solid rgba(148,163,184,0.55);
+  border-bottom: 1px solid rgba(148,163,184,0.55);
+}
+
+.tooltip[data-placement="bottom"] .tipArrow{
+  top: -6px;
+  bottom: auto;
+  transform: translateX(-50%) rotate(225deg);
+}
 
 .confidence{
   margin-top: 8px;
@@ -15816,7 +16957,7 @@ style={{ opacity: lensReady ? 1 : 0 }}
 
 .avgTrend{
   fill: none;
-  stroke: var(--avgYellow);
+  stroke: var(--avgWarm);
   stroke-width: 2;
   stroke-linecap: round;
 }
@@ -15843,8 +16984,8 @@ style={{ opacity: lensReady ? 1 : 0 }}
   display: inline-block;
 }
 
-.dotScore{ background: rgba(43, 124, 175, 0.92); }
-.dotTrend{ background: rgba(255, 197, 66, 0.95); }
+.dotScore{ background: var(--scoreCool); }
+.dotTrend{ background: var(--avgWarm); }
 
 .summaryRowBelow{
   display: flex;
@@ -15865,7 +17006,7 @@ style={{ opacity: lensReady ? 1 : 0 }}
 
 .haloPulse{
   fill: none;
-  stroke: rgba(43, 124, 175, 0.35);
+  stroke: color-mix(in srgb, var(--scoreCool) 35%, transparent);
   stroke-width: 2;
   /* IMPORTANT for SVG transform */
   transform-box: fill-box;
@@ -15882,15 +17023,12 @@ style={{ opacity: lensReady ? 1 : 0 }}
 
 
 
-/* One place to control the avg (yellow) color */
-.wrap{
-  --avgYellow: rgba(255, 197, 66, 0.95);
-}
+
 
 /* Yellow dots for avg trend */
 .avgPoint { pointer-events: none; }
 .avgDot{
-  fill: var(--avgYellow);
+  fill: var(--avgWarm);
   opacity: 0.95;
 }
 
@@ -15900,7 +17038,7 @@ style={{ opacity: lensReady ? 1 : 0 }}
 /* Yellow halo */
 .avgHalo{
   fill: none;
-  stroke: var(--avgYellow);
+  stroke: var(--avgWarm);
   stroke-width: 2;
 }
 
@@ -15913,7 +17051,7 @@ style={{ opacity: lensReady ? 1 : 0 }}
 
 .avgHaloPulse{
   fill: none;
-  stroke: rgba(255, 197, 66, 0.35);
+  stroke: color-mix(in srgb, var(--avgWarm) 35%, transparent);
   stroke-width: 2;
   transform-box: fill-box;
   transform-origin: center;
@@ -16391,10 +17529,10 @@ const areaClipW = useMemo(() => {
   >
     <defs>
       <linearGradient id={totalStrokeId} x1="0" y1="0" x2="1" y2="0">
-  <stop offset="0%" stopColor="#2B7CAF" stopOpacity="1" />
-  <stop offset="70%" stopColor="#2B7CAF" stopOpacity="1" />
-  <stop offset="100%" stopColor="#3D8CD5" stopOpacity="0.22" />
+  <stop offset="0%" stopColor="var(--chart-grad-warm)" stopOpacity="1" />
+  <stop offset="100%" stopColor="var(--chart-grad-cool)" stopOpacity="1" />
 </linearGradient>
+
 
     </defs>
 
@@ -16567,7 +17705,9 @@ const areaClipW = useMemo(() => {
   width: 100%;
   display: flex;
   flex-direction: column;
-  min-height: 240px
+  min-height: 240px;
+   --scoreCool: var(--chart-grad-cool);
+  --avgWarm: var(--chart-grad-warm);
 }
 
 .topArea{
@@ -16597,7 +17737,7 @@ const areaClipW = useMemo(() => {
 }
 .dotTest { background: rgba(255, 197, 66, 0.95); }
 .dotStudy { background: rgba(43, 124, 175, 0.90); }
-.dotTotal { background: rgba(17, 24, 39, 0.18); }
+.dotTotal { background: var(--chart-grad); }
 .dotAvg { background: rgba(17, 24, 39, 0.45); }
 
 .summaryRow {
@@ -16677,7 +17817,7 @@ const areaClipW = useMemo(() => {
 
 .test, .study {
   width: 100%;
-  border-radius: 9px;
+  border-radius: 1px;
   min-height: 0px;
 }
 
@@ -17027,14 +18167,16 @@ export default function TimeframeChips({
 
 ### components/stats/TopicMasteryChart.client.tsx
 ```tsx
+//components/stats/TopicMasteryChart.client.tsx
 'use client';
 
 import styles from './TopicMasteryChart.module.css';
 import { labelForTag } from '@/lib/qbank/tagTaxonomy';
 import type { TopicMasteryVM } from '@/lib/stats/computeStats';
 import DragScrollRow from "@/components/DragScrollRow";
-import { useEffect, useRef, useState } from 'react';
-
+import { useEffect, useRef, useState, useMemo } from 'react';
+import { useOnceInMidView } from '@/components/stats/useOnceInView.client';
+import type { CSSProperties } from 'react';
 
 
 
@@ -17068,8 +18210,40 @@ function chipBgFromPct(pct: number) {
 
 export default function TopicMasteryChart({ data }: { data: TopicMasteryVM }) {
   // show all (scrollable)
-  const topSub = data.weakestSubtopics ?? [];
-  const topics = data.topics ?? [];
+  // all topics
+const topics = data.topics ?? [];
+
+// ✅ hero pills: 4 lowest-accuracy subtopics (even if attempted < minAttempted)
+const topSub = useMemo(() => {
+  const all = topics.flatMap((t) => t.subtopics ?? []);
+
+  // optional: de-dupe by tag (keeps the lowest accuracy if duplicates exist)
+  const byTag = new Map<string, (typeof all)[number]>();
+  for (const s of all) {
+    const prev = byTag.get(s.tag);
+    const sPct = Number.isFinite(s.accuracyPct) ? s.accuracyPct : 0;
+    const pPct = prev && Number.isFinite(prev.accuracyPct) ? prev.accuracyPct : 0;
+
+    if (!prev || sPct < pPct) byTag.set(s.tag, s);
+  }
+
+  const arr = Array.from(byTag.values());
+
+  // lowest % first (0% will be first), tie-breaker: fewer attempts first
+  arr.sort((a, b) => {
+    const ap = Number.isFinite(a.accuracyPct) ? a.accuracyPct : 0;
+    const bp = Number.isFinite(b.accuracyPct) ? b.accuracyPct : 0;
+    if (ap !== bp) return ap - bp;
+    return (a.attempted ?? 0) - (b.attempted ?? 0);
+  });
+
+  return arr.slice(0, 4);
+}, [topics]);
+
+
+//useOnceInMidView hooks for hero and list
+const { ref: heroRef, seen: heroInView } = useOnceInMidView<HTMLDivElement>();
+const { ref: listRef, seen: listInView } = useOnceInMidView<HTMLDivElement>();
 
   const maxAttempted = Math.max(
     1,
@@ -17081,7 +18255,7 @@ export default function TopicMasteryChart({ data }: { data: TopicMasteryVM }) {
   return (
     <div className={styles.wrap}>
       {/* Top “wow” pills */}
-      <div className={styles.hero}>
+      <div ref={heroRef} className={styles.hero}>
         <div className={styles.heroTitle}>Weakest right now</div>
 
         {topSub.length === 0 ? (
@@ -17090,98 +18264,131 @@ export default function TopicMasteryChart({ data }: { data: TopicMasteryVM }) {
           </div>
         ) : (
           <DragScrollRow className={styles.heroScroller}>
-            {topSub.map((s) => {
-              const op = confOpacity(s.attempted, maxAttempted);
+            {topSub.map((s, i) => {
+              const low = s.attempted < data.minAttempted;
+              const op = confOpacity(s.attempted, maxAttempted) * (low ? 0.75 : 1);
               const bg = chipBgFromPct(s.accuracyPct);
-
+              const heroDelay = i * 70;
               return (
                 <div
                   key={s.tag}
-                  className={styles.pill}
-                  style={{ background: bg, opacity: op }}
+                  className={`${styles.pill} ${heroInView ? styles.pillIn : styles.pillHidden}`}
+                  style={{ 
+                    background: bg,
+              ['--op' as any]: op,
+              ['--d' as any]: `${heroDelay}ms`,
+            } as CSSProperties}
                   title={`${labelForTag(s.tag)} · ${s.accuracyPct}% · ${s.attempted} answered`}
                 >
-                  <div className={styles.pillTop}>
+<div className={styles.pillTop}>
   <span className={styles.pillTitle}>
     <span className={styles.pillLabel}>{labelForTag(s.tag)}</span>
     <span className={styles.pillPct}>{s.accuracyPct}%</span>
   </span>
 </div>
-
-                  <div className={styles.pillMeta}>{s.attempted} answered</div>
-                </div>
+ <div className={styles.pillMeta}>{s.attempted} answered</div>
+</div>
               );
             })}
-          </DragScrollRow>
+ </DragScrollRow>
           
         )}
       </div>
       
 
       {/* Topic list */}
-      <div className={styles.list}>
-        {topics.map((t) => {
+      <div ref={listRef} className={styles.list}>
+        {topics.map((t, ti) => {
           const topicLabel = labelForTag(t.topicKey);
-          const op = confOpacity(t.attempted, maxAttempted);
-          const subs = t.subtopics ?? [];
+
+// topic-level confidence (no `s` here; `s` doesn't exist in this scope)
+const lowTopic = t.attempted < data.minAttempted;
+const op = confOpacity(t.attempted, maxAttempted) * (lowTopic ? 0.75 : 1);
+
+const subs = t.subtopics ?? [];
+
+
+           const rowDelay = 220 + ti * 90;      // rows come in after hero settles
+  const barDelay = rowDelay + 120;     // bar follows row
+  const chipBase = rowDelay + 170;     // chips follow bar
+  const chipStep = 55;                // chip stagger
+  const meterOffset = 120;            // meter follows chip
+
 
           return (
-            <div key={t.topicKey} className={styles.row}>
-              <div className={styles.rowHead}>
-                <div className={styles.topicName}>{topicLabel}</div>
-                <div className={styles.rightMeta}>
-                  <span className={styles.topicPct}>{t.accuracyPct}%</span>
-                  <span className={styles.dot} style={{ opacity: op }} />
-                  <span className={styles.answered}>{t.attempted} answered</span>
-                </div>
-              </div>
-
-              <div className={styles.barTrack}>
-                <div
-                  className={styles.barFill}
-                  style={{ width: `${clamp(t.accuracyPct, 0, 100)}%` }}
-                />
-              </div>
-
-              {subs.length > 0 ? (
-                <DragScrollRow className={styles.subRow}>
-                  {subs.map((s) => (
-                    <div
-                      key={s.tag} // ✅ fixes React key warning
-                      className={styles.subChip}
-                      style={{ opacity: confOpacity(s.attempted, maxAttempted) }}
-                      title={`${labelForTag(s.tag)} · ${s.accuracyPct}% · ${s.attempted} answered`}
-                    >
-                      <span className={styles.subText}>
-  <span className={styles.subLabel}>{labelForTag(s.tag)}</span>
-  <span className={styles.subPct}>{s.accuracyPct}%</span>
-</span>
-
-<span className={styles.subMeterTrack}>
-  <span
-    className={styles.subMeterFill}
-    style={{ width: `${clamp(s.accuracyPct, 0, 100)}%` }}
-  />
-</span>
-
-                    </div>
-                  ))}
-                </DragScrollRow>
-              ) : (
-                <div className={styles.subEmpty}>Need more answers in this topic to rank subtopics.</div>
-              )}
-            </div>
-          );
-        })}
+    <div
+      key={t.topicKey}
+      className={`${styles.row} ${listInView ? styles.rowIn : styles.rowHidden}`}
+      style={{ ['--d' as any]: `${rowDelay}ms` } as CSSProperties}
+    >
+      <div className={styles.rowHead}>
+        <div className={styles.topicName}>{topicLabel}</div>
+        <div className={styles.rightMeta}>
+          <span className={styles.topicPct}>{t.accuracyPct}%</span>
+          <span className={styles.dot} style={{ opacity: op }} />
+          <span className={styles.answered}>{t.attempted} answered</span>
+        </div>
       </div>
 
-      <div className={styles.note}>
-        Confidence increases as you answer more questions in each subtopic (min {data.minAttempted}).
+      <div className={styles.barTrack}>
+        <div
+          className={`${styles.barFill} ${listInView ? styles.barFillGrow : styles.barFillHidden}`}
+          style={{
+            ['--w' as any]: `${clamp(t.accuracyPct, 0, 100)}%`,
+            ['--d' as any]: `${barDelay}ms`, // ✅ bar anim delay
+          } as CSSProperties}
+        />
+      </div>
+
+      {subs.length > 0 ? (
+        <DragScrollRow className={styles.subRow}>
+          {subs.map((s, si) => {
+            const low = s.attempted < data.minAttempted;
+  const sop = confOpacity(s.attempted, maxAttempted) * (low ? 0.75 : 1);
+
+  const chipDelay = chipBase + si * chipStep;
+  const meterDelay = chipDelay + meterOffset;
+
+            return (
+              <div
+                key={s.tag}
+                className={`${styles.subChip} ${listInView ? styles.chipIn : styles.chipHidden}`}
+                style={{
+                  ['--op' as any]: sop,
+                  ['--d' as any]: `${chipDelay}ms`, // ✅ chip delay
+                } as CSSProperties}
+                title={`${labelForTag(s.tag)} · ${s.accuracyPct}% · ${s.attempted} answered`}
+              >
+                <span className={styles.subText}>
+                  <span className={styles.subLabel}>{labelForTag(s.tag)}</span>
+                  <span className={styles.subPct}>{s.accuracyPct}%</span>
+                </span>
+
+                <span className={styles.subMeterTrack}>
+                  <span
+                    className={`${styles.subMeterFill} ${
+                      listInView ? styles.subMeterGrow : styles.subMeterHidden
+                    }`}
+                    style={{
+                      ['--w' as any]: `${clamp(s.accuracyPct, 0, 100)}%`,
+                      ['--d' as any]: `${meterDelay}ms`, // ✅ meter follows chip
+                    } as CSSProperties}
+                  />
+                </span>
+              </div>
+            );
+          })}
+        </DragScrollRow>
+      ) : (
+        <div className={styles.subEmpty}>Need more answers in this topic to rank subtopics.</div>
+      )}
+    </div>
+  );
+})}
       </div>
     </div>
   );
 }
-
 ```
 
 ### components/stats/TopicMasteryChart.module.css
@@ -17197,16 +18404,18 @@ export default function TopicMasteryChart({ data }: { data: TopicMasteryVM }) {
     overflow: hidden;
   border-radius: 18px;
   padding: 12px 12px 14px;
-  background: var(--color-premium-gradient-20);
+  background:var(--color-premium-gradient-10);
+
   border: 1px solid rgba(148,163,184,0.35);
   box-shadow: 0 18px 40px rgba(15,33,70,0.10);
 }
 
 .heroTitle{
   font-size: 12px;
-  font-weight: 750;
+  font-weight: 900;
   color: rgba(17,24,39,0.62);
   margin-bottom: 10px;
+  
 }
 
 .heroScroller{
@@ -17238,6 +18447,8 @@ export default function TopicMasteryChart({ data }: { data: TopicMasteryVM }) {
   scroll-snap-align: start;
   min-width: 150px;
   scroll-snap-align: start;
+  background: var(--color-premium-gradient);
+  opacity: 1;
 }
 
 
@@ -17246,13 +18457,9 @@ export default function TopicMasteryChart({ data }: { data: TopicMasteryVM }) {
   position:absolute;
   inset:0;
   border-radius: inherit;
-  background: radial-gradient(
-    70% 60% at 30% 25%,
-    rgba(255,255,255,0.55) 0%,
-    rgba(255,255,255,0.10) 45%,
-    rgba(255,255,255,0) 70%
-  );
+  background: var(--color-premium-gradient);
   pointer-events:none;
+  opacity: var(--op, 1);
 }
 
 .pillTop{
@@ -17260,6 +18467,8 @@ export default function TopicMasteryChart({ data }: { data: TopicMasteryVM }) {
   align-items: baseline;
   justify-content: flex-start; /* IMPORTANT: no space-between */
   gap: 0;                     /* spacing controlled by the {" "} */
+  position: relative;
+  z-index: 1; 
 }
 
 .pillTitle{
@@ -17267,12 +18476,14 @@ export default function TopicMasteryChart({ data }: { data: TopicMasteryVM }) {
   align-items: baseline;
   gap: 0;                     /* spacing controlled by the {" "} */
   min-width: 0;
+  
 }
 
 .pillLabel{
   font-size: 12px;
   font-weight: 800;
-  color: rgba(17,24,39,0.70);
+  color: rgba(17,24,39,1.00);
+  font-weight: 850;
   letter-spacing: -0.2px;
 
   white-space: normal;
@@ -17285,6 +18496,7 @@ export default function TopicMasteryChart({ data }: { data: TopicMasteryVM }) {
   line-clamp: 2;
 
   -webkit-line-clamp: 2;
+  
 }
 
 
@@ -17292,15 +18504,18 @@ export default function TopicMasteryChart({ data }: { data: TopicMasteryVM }) {
 .pillPct{
   font-size: 16px;
   font-weight: 900;
-  color: rgba(17,24,39,0.76);
+  color: rgba(17,24,39,0.9);
+  font-weight: 950;
   letter-spacing: -0.4px;
   margin-left: 0.35em;
+  
 }
 
 .pillMeta{
   margin-top: 6px;
   font-size: 11px;
-  color: rgba(17,24,39,0.52);
+  color: rgba(17,24,39,0.7);
+  font-weight: 700;
   position: relative;
   z-index: 1;
 }
@@ -17390,6 +18605,7 @@ export default function TopicMasteryChart({ data }: { data: TopicMasteryVM }) {
     rgba(255,197,66,0.85) 0%,
     rgba(43,124,175,0.85) 100%
   );
+  transition-delay: var(--d, 0ms);
 }
 
 /* Horizontal scroller wrapper */
@@ -17504,6 +18720,7 @@ export default function TopicMasteryChart({ data }: { data: TopicMasteryVM }) {
     rgba(255,197,66,0.85) 0%,
     rgba(43,124,175,0.85) 100%
   );
+  transition-delay: var(--d, 0ms);
 }
 
 .subText{
@@ -17518,6 +18735,227 @@ export default function TopicMasteryChart({ data }: { data: TopicMasteryVM }) {
   align-items:center;
   gap: 10px;     /* this now only separates text block and meter */
   white-space: nowrap;
+}
+
+/* =========================
+   Animations (Topic Mastery)
+   ========================= */
+
+@keyframes popIn {
+  from { transform: translateY(10px) scale(0.98); opacity: 0; }
+  to   { transform: translateY(0) scale(1); opacity: var(--op, 1); }
+}
+
+@keyframes rowIn {
+  from { transform: translateY(10px); opacity: 0; }
+  to   { transform: translateY(0); opacity: 1; }
+}
+
+/* hero pills */
+.pill { opacity: 1; }
+
+.pillHidden {
+  opacity: 0;
+  transform: translateY(10px) scale(0.98);
+}
+
+.pillIn {
+  animation: popIn 420ms cubic-bezier(0.2, 0.9, 0.2, 1) both;
+  animation-delay: var(--d, 0ms);
+}
+
+/* rows */
+.rowHidden {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.rowIn {
+  animation: rowIn 450ms cubic-bezier(0.2, 0.9, 0.2, 1) both;
+  animation-delay: var(--d, 0ms);
+}
+
+/* topic bar fill: 0 -> --w */
+.barFill {
+  width: 0%;
+  transition: width 850ms cubic-bezier(0.2, 0.9, 0.2, 1);
+}
+
+.barFillHidden {
+  width: 0%;
+}
+
+.barFillGrow {
+  width: var(--w, 0%);
+}
+
+/* subchips (fade/slide in) */
+.subChip {
+  opacity: var(--op, 1);
+  will-change: transform, opacity;
+}
+
+.chipHidden {
+  opacity: 0;
+  transform: translateY(8px) scale(0.98);
+}
+
+.chipIn {
+  animation: popIn 360ms cubic-bezier(0.2, 0.9, 0.2, 1) both;
+  animation-delay: var(--d, 0ms);
+}
+
+/* sub meter fill: 0 -> --w */
+.subMeterFill {
+  width: 0%;
+  transition: width 700ms cubic-bezier(0.2, 0.9, 0.2, 1);
+}
+
+.subMeterHidden {
+  width: 0%;
+}
+
+.subMeterGrow {
+  width: var(--w, 0%);
+}
+
+/* reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .pillIn, .rowIn, .chipIn {
+    animation: none !important;
+  }
+  .pillHidden, .rowHidden, .chipHidden {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  .barFill, .subMeterFill {
+    transition: none !important;
+  }
+}
+
+/* =========================
+   Animations (Topic Mastery)
+   ========================= */
+
+/* shared motion tokens (matches your boot-sweep feel) */
+:root {
+  --ease-boot: cubic-bezier(0.2, 0.9, 0.2, 1);
+  --ease-soft: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes popIn {
+  0%   { transform: translate3d(0, 10px, 0) scale(0.985); opacity: 0; }
+  60%  { transform: translate3d(0, 0, 0) scale(1.01); opacity: var(--op, 1); }
+  100% { transform: translate3d(0, 0, 0) scale(1); opacity: var(--op, 1); }
+}
+
+@keyframes rowInKf {
+  0%   { transform: translate3d(0, 10px, 0); opacity: 0; }
+  70%  { transform: translate3d(0, 0, 0); opacity: 1; }
+  100% { transform: translate3d(0, 0, 0); opacity: 1; }
+}
+
+/* hero pills */
+.pill {
+  opacity: var(--op, 1);
+  will-change: transform, opacity;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+.pillHidden {
+  opacity: 0;
+  transform: translate3d(0, 10px, 0) scale(0.985);
+}
+
+.pillIn {
+  animation: popIn 460ms var(--ease-boot) both;
+  animation-delay: var(--d, 0ms);
+}
+
+/* rows */
+.rowHidden {
+  opacity: 0;
+  transform: translate3d(0, 10px, 0);
+}
+
+.rowIn {
+  will-change: transform, opacity;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  animation: rowInKf 480ms var(--ease-boot) both;
+  animation-delay: var(--d, 0ms);
+}
+
+/* topic bar fill: 0 -> --w
+   (add --d on the bar so it starts slightly AFTER the row enters) */
+.barFill {
+  width: 0%;
+  will-change: width;
+  transition:
+    width 900ms var(--ease-soft),
+    opacity 240ms ease;
+  transition-delay: var(--d, 0ms);
+}
+
+.barFillHidden {
+  width: 0%;
+}
+
+.barFillGrow {
+  width: var(--w, 0%);
+}
+
+/* subchips (fade/slide in) */
+.subChip {
+  opacity: var(--op, 1);
+  will-change: transform, opacity;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+.chipHidden {
+  opacity: 0;
+  transform: translate3d(0, 8px, 0) scale(0.985);
+}
+
+.chipIn {
+  animation: popIn 400ms var(--ease-boot) both;
+  animation-delay: var(--d, 0ms);
+}
+
+/* sub meter fill: 0 -> --w */
+.subMeterFill {
+  width: 0%;
+  will-change: width;
+  transition: width 760ms var(--ease-soft);
+  transition-delay: var(--d, 0ms);
+}
+
+.subMeterHidden {
+  width: 0%;
+}
+
+.subMeterGrow {
+  width: var(--w, 0%);
+}
+
+/* reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .pillIn, .rowIn, .chipIn {
+    animation: none !important;
+  }
+  .pillHidden, .rowHidden, .chipHidden {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  /* IMPORTANT: don’t leave fills stuck at 0 when motion is reduced */
+  .barFill,
+  .subMeterFill {
+    transition: none !important;
+    width: var(--w, 0%) !important;
+  }
 }
 
 
@@ -20381,7 +21819,7 @@ scoreSeries: Array<{ t: number; scorePct: number; answered: number; totalQ: numb
 
 
 
-  rhythmHeatmap: {
+  Heatmap: {
     weekdays: string[]; // ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"]
     dayParts: Array<{ key: string; label: string }>; // 4 rows
     // cells[row][col]
@@ -20725,7 +22163,7 @@ const cells = heat.map((row) =>
   }))
 );
 
-let best: StatsVM["rhythmHeatmap"]["best"] = null;
+let best: StatsVM["Heatmap"]["best"] = null;
 let bestScore = -1;
 let bestCount = 0;
 
@@ -21049,7 +22487,7 @@ for (let i = timeDailySeries.length - 1; i >= 0; i--) {
     weakTopics,
     topicMastery,
     
-rhythmHeatmap: {
+Heatmap: {
     weekdays: [...WEEKDAYS],
     dayParts: DAY_PARTS.map((p) => ({ key: p.key, label: p.label })),
     cells,
@@ -21064,6 +22502,48 @@ rhythmHeatmap: {
     deliberateThisWeekMin,
     studyThisWeekMin,
   };
+}
+
+```
+
+### lib/stats/resetLocalData.ts
+```tsx
+// lib/resetLocalData.ts
+
+const APP_PREFIXES = ["expatise:"]; // everything your app owns
+const EXTRA_KEYS = ["topicQuiz:v1"]; // legacy key your Stats page used
+
+function collectKeys(storage: Storage) {
+  const keys: string[] = [];
+  for (let i = 0; i < storage.length; i++) {
+    const k = storage.key(i);
+    if (k) keys.push(k);
+  }
+  return keys;
+}
+
+export async function resetAllLocalData(opts?: { includeCaches?: boolean }) {
+  if (typeof window === "undefined") return;
+
+  // localStorage
+  for (const k of collectKeys(window.localStorage)) {
+    if (APP_PREFIXES.some((p) => k.startsWith(p)) || EXTRA_KEYS.includes(k)) {
+      window.localStorage.removeItem(k);
+    }
+  }
+
+  // sessionStorage (if you ever used it)
+  for (const k of collectKeys(window.sessionStorage)) {
+    if (APP_PREFIXES.some((p) => k.startsWith(p))) {
+      window.sessionStorage.removeItem(k);
+    }
+  }
+
+  // Optional: clear Cache Storage (PWA / SW caches)
+  if (opts?.includeCaches && "caches" in window) {
+    const names = await caches.keys();
+    await Promise.all(names.map((n) => caches.delete(n)));
+  }
 }
 
 ```
@@ -21696,7 +23176,8 @@ export type TestModeId =
   | "half"
   | "rapid"
   | "mistakes"
-  | "bookmarks";
+  | "bookmarks"
+  | "topics";
 
 export type TestModeConfig = {
   modeId: TestModeId;
@@ -21772,8 +23253,8 @@ export const TEST_MODES: Record<TestModeId, TestModeConfig> = {
     routeBase: "/test/mistakes",
     datasetId: "cn-2023-test1",
     datasetVersion: "cn-2023-test1@v1",
-    questionCount: 50, // N/A
-    timeLimitMinutes: 0, // N/A
+    questionCount: 50, 
+    timeLimitMinutes: 0, 
     preflightRequiredQuestions: 1,
   },
 
@@ -21783,8 +23264,19 @@ export const TEST_MODES: Record<TestModeId, TestModeConfig> = {
     routeBase: "/test/bookmarks",
     datasetId: "cn-2023-test1",
     datasetVersion: "cn-2023-test1@v1",
-    questionCount: 50, // N/A
-    timeLimitMinutes: 0, // N/A
+    questionCount: 50, 
+    timeLimitMinutes: 0, 
+    preflightRequiredQuestions: 1,
+  },
+
+  topics: {
+    modeId: "topics",
+    modeKey: "topics-test",
+    routeBase: "/test/topics",
+    datasetId: "cn-2023-test1",
+    datasetVersion: "cn-2023-test1@v1",
+    questionCount: 20, 
+    timeLimitMinutes: 10, 
     preflightRequiredQuestions: 1,
   },
 };

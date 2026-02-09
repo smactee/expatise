@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import styles from './account-security.module.css';
 import { useAuthStatus } from '../../components/useAuthStatus';
+import BackButton from '../../components/BackButton';
 
 export default function AccountSecurityPage() {
   const router = useRouter();
@@ -121,9 +122,7 @@ export default function AccountSecurityPage() {
   return (
     <main className={styles.page}>
       <div className={styles.card}>
-        <button className={styles.backBtn} onClick={() => router.back()}>
-          ‹ Back
-        </button>
+        <BackButton />
 
         <h1 className={styles.title}>Change Email / Password</h1>
 

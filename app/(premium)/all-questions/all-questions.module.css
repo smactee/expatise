@@ -3,8 +3,46 @@
   display: flex;
   justify-content: center;
   background: var(--color-page-bg);
-  color: var(--test-text);
+
+  /* ✅ local tokens for this screen */
+  --aq-text: rgba(0, 0, 0, 0.92);
+  --aq-muted: rgba(0, 0, 0, 0.7);
+
+  --aq-card-bg: rgba(255, 255, 255, 0.65);
+  --aq-card-border: rgba(0, 0, 0, 0.08);
+
+  --aq-option-bg: rgba(0, 0, 0, 0.04);
+  --aq-option-border: rgba(0, 0, 0, 0.06);
+
+  /* ✅ “correct answer highlight” (subtle in light mode) */
+  --aq-correct-bg: rgba(43, 124, 175, 0.10);
+  --aq-correct-border: rgba(43, 124, 175, 0.55);
+  --aq-correct-shadow: 0 10px 22px rgba(43, 124, 175, 0.18);
+
+  color: var(--aq-text);
 }
+
+:root[data-theme='dark'] .page {
+  --aq-text: rgba(255, 255, 255, 0.92);
+  --aq-muted: rgba(255, 255, 255, 0.72);
+
+  /* ✅ darker card so options can still separate */
+  --aq-card-bg: rgba(255, 255, 255, 0.08);
+  --aq-card-border: rgba(255, 255, 255, 0.10);
+
+  /* ✅ base option has its own “bar” look */
+  --aq-option-bg: rgba(255, 255, 255, 0.06);
+  --aq-option-border: rgba(255, 255, 255, 0.12);
+
+  /* ✅ stronger correct highlight in dark mode */
+  --aq-correct-bg: rgba(55, 178, 255, 0.18);
+  --aq-correct-border: rgba(55, 178, 255, 0.85);
+  --aq-correct-shadow: 0 12px 26px rgba(55, 178, 255, 0.22);
+}
+
+
+
+
 
 .frame {
   width: 100%;
@@ -166,7 +204,10 @@
 .card {
   border-radius: 20px;
   padding: 14px 14px 12px;
-  background: rgba(255,255,255,0.65);
+
+  background: var(--aq-card-bg);
+  border: 1px solid var(--aq-card-border);
+
   backdrop-filter: blur(12px);
   box-shadow: 0 12px 28px rgba(15, 33, 70, 0.12);
 }
@@ -180,14 +221,10 @@
 
 .qNo,
 .qType {
-  opacity: 0.8;
+  opacity: 1;
+  color: var(--aq-muted);
 }
 
-.prompt {
-  margin: 0 0 10px;
-  font-size: 15px;
-  line-height: 1.35;
-}
 
 .imageWrap {
   position: relative;
@@ -211,12 +248,11 @@
 
 .tagPill {
   font-size: 12px;
-  opacity: 0.8;
-  background: rgba(0,0,0,0.06);
+  color: var(--aq-muted);
+  background: rgba(0, 0, 0, 0.06);
   padding: 6px 8px;
   border-radius: 999px;
   margin-top: 7px;
-
 }
 
 .answerPill {
@@ -260,18 +296,44 @@
   margin-top: 10px;
 }
 
+/* base option row */
 .option {
   display: flex;
   gap: 10px;
   align-items: flex-start;
+
   padding: 10px 12px;
   border-radius: 14px;
-  background: rgba(0, 0, 0, 0.04);
+
+  background: var(--aq-option-bg);
+  border: 1px solid var(--aq-option-border);
+  color: var(--aq-text);
+
+  transition:
+    transform 120ms ease,
+    box-shadow 120ms ease,
+    border-color 120ms ease,
+    background-color 120ms ease;
+  will-change: transform;
 }
 
+.optionList {
+  list-style: none;
+  padding: 0;
+  margin: 10px 0 0;
+
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* ✅ correct = same “lift + tint + border” idea as your test page */
 .optionCorrect {
-  background: var(--color-premium-gradient-20);
-  font-weight: 500;
+  background: var(--aq-correct-bg);
+  border-color: var(--aq-correct-border);
+  box-shadow: var(--aq-correct-shadow);
+  transform: translateY(-1px);
+  font-weight: 600;
 }
 
 .optionKey {

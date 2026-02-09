@@ -523,14 +523,25 @@ style={{ opacity: lensReady ? 1 : 0 }}
         role="tooltip"
       >
         <div className={styles.tipTitle}>{fmtDayTime(hover.t)}</div>
-        <div className={styles.tipBody}>
-          <div>Score: <b>{hover.scorePct}%</b></div>
-          <div>Answered: <b>{hover.answered}</b> / {hover.totalQ}</div>
+
+        <div className={styles.tipSub}>
+          {hover.answered} answered · {hover.totalQ} total
         </div>
+
+        <div className={styles.tipBody}>
+          Score: <span className={styles.tipStrong}>{hover.scorePct}%</span>
+        </div>
+
+        <div className={styles.tipBody}>
+  Avg score: <span className={styles.tipStrong}>{Math.round(trendVals[activeIdx ?? 0] ?? scoreAvg)}%</span>
+</div>
+
+        <div className={styles.tipArrow} aria-hidden="true" />
       </div>,
       document.body
     )
   : null}
+
 
 
       </div>
