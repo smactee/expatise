@@ -142,6 +142,15 @@ function easeOutCubic(t: number) {
   return 1 - Math.pow(1 - t, 3);
 }
 
+function pathLinear(points: Pt[]) {
+  if (points.length < 2) return '';
+  return (
+    `M ${points[0].x} ${points[0].y}` +
+    points.slice(1).map((p) => ` L ${p.x} ${p.y}`).join('')
+  );
+}
+
+
 
 
 export default function ScreenTimeChart7({
@@ -286,23 +295,72 @@ const totalLinePts = useMemo<Pt[]>(() => {
   const n = model.points.length;
   if (!n) return [];
 
-  const w = 100 - padX * 2;      // horizontal padding stays
-  const h = 100 - padTop;        // IMPORTANT: no bottom padding
+  const w = 100 - padX * 2;
+  const h = 100 - padTop;
+
+  const totals = model.points.map((p) => p.total);
+
+  // 3-point weighted smoothing (display only)
+  const totalsSmooth = totals.map((v, i) => {
+    const prev = totals[i - 1] ?? v;
+    const next = totals[i + 1] ?? v;
+    return 0.2 * prev + 0.6 * v + 0.2 * next;
+  });
 
   return model.points.map((p, i) => {
     const x = padX + (n === 1 ? w / 2 : (i / (n - 1)) * w);
 
-    // total=0 => y = padTop + 1*h = 100 ✅ sits on baseline
-    const y = padTop + (1 - clamp(p.total / scaleMax, 0, 1)) * h;
+    const totalForLine = totalsSmooth[i]; // ✅ use smoothed value for the overlay
+    const y = padTop + (1 - clamp(totalForLine / scaleMax, 0, 1)) * h;
 
     return { x, y };
   });
 }, [model.points, scaleMax]);
 
-const totalLineD = useMemo(() => {
-  return smoothPathCatmullRomXY(totalLinePts, padX, 100 - padX, padTop, 100);
-}, [totalLinePts]);
 
+
+
+
+function smoothPathTensionXY(
+  points: Pt[],
+  tension: number,
+  xMin: number,
+  xMax: number,
+  yMin: number,
+  yMax: number
+) {
+  if (points.length < 2) return '';
+
+  let d = `M ${points[0].x.toFixed(2)} ${points[0].y.toFixed(2)}`;
+
+  for (let i = 0; i < points.length - 1; i++) {
+    const p0 = points[i - 1] ?? points[i];
+    const p1 = points[i];
+    const p2 = points[i + 1];
+    const p3 = points[i + 2] ?? p2;
+
+    let c1x = p1.x + (p2.x - p0.x) * tension;
+    let c1y = p1.y + (p2.y - p0.y) * tension;
+    let c2x = p2.x - (p3.x - p1.x) * tension;
+    let c2y = p2.y - (p3.y - p1.y) * tension;
+
+    // clamp control points to keep them inside the plot bounds
+    c1x = clamp(c1x, xMin, xMax);
+    c2x = clamp(c2x, xMin, xMax);
+    c1y = clamp(c1y, yMin, yMax);
+    c2y = clamp(c2y, yMin, yMax);
+
+    d += ` C ${c1x.toFixed(2)} ${c1y.toFixed(2)}, ${c2x.toFixed(2)} ${c2y.toFixed(2)}, ${p2.x.toFixed(2)} ${p2.y.toFixed(2)}`;
+  }
+
+  return d;
+}
+
+const totalLineD = useMemo(() => {
+  // lower tension tends to look better with only 7 points
+  const tension = 0.18; // try 0.16–0.22 if you want more/less curve
+  return smoothPathTensionXY(totalLinePts, tension, padX, 100 - padX, padTop, 100);
+}, [totalLinePts]);
 
 const totalAreaD = useMemo(() => {
   if (!totalLineD || totalLinePts.length < 2) return '';

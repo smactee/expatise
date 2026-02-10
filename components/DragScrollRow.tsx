@@ -179,23 +179,25 @@ export default function DragScrollRow({ children, className }: DragScrollRowProp
 
   // Optional: make mouse wheel scroll horizontally (desktop testing)
   useEffect(() => {
-    const el = rowRef.current;
-    if (!el) return;
+  const el = rowRef.current;
+  if (!el) return;
 
-    const onWheel = (ev: WheelEvent) => {
-      const canScroll = el.scrollWidth > el.clientWidth + 1;
-      if (!canScroll) return;
+  const onWheel = (ev: WheelEvent) => {
+    const canScroll = el.scrollWidth > el.clientWidth + 1;
+    if (!canScroll) return;
 
-      // if user already has horizontal delta (trackpad), let it happen
-      if (Math.abs(ev.deltaX) > Math.abs(ev.deltaY)) return;
+    // ✅ normal wheel should scroll the page
+    if (!ev.shiftKey) return;
 
-      ev.preventDefault();
-      el.scrollLeft += ev.deltaY;
-    };
+    // ✅ Shift+wheel = horizontal scroll (intentional)
+    ev.preventDefault();
+    el.scrollLeft += ev.deltaY;
+  };
 
-    el.addEventListener('wheel', onWheel, { passive: false });
-    return () => el.removeEventListener('wheel', onWheel);
-  }, []);
+  el.addEventListener('wheel', onWheel, { passive: false });
+  return () => el.removeEventListener('wheel', onWheel);
+}, []);
+
 
   return (
     <div

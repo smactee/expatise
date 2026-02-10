@@ -47,12 +47,13 @@ export default function ReadinessRing(props: {
         style={{
           transform: 'scaleX(-1)',
           background: `conic-gradient(
-            from 0deg,
-            ${c1} 0deg,
-            ${c2} ${fillDeg}deg,
-            #e4e4e4 ${fillDeg}deg,
-            #e4e4e4 360deg
-          )`,
+  from 0deg,
+  ${c1} 0deg,
+  ${c2} ${fillDeg}deg,
+  var(--stats-ring-track) ${fillDeg}deg,
+  var(--stats-ring-track) 360deg
+)`,
+
         }}
         aria-label={`License Exam Readiness ${pct}%`}
       >

@@ -51,21 +51,26 @@
   overflow: hidden;
   scroll-snap-align: start;
   min-width: 150px;
-  scroll-snap-align: start;
-  background: var(--color-premium-gradient);
+
+  /* ✅ let ::before own the background so we can brighten it cleanly */
+  background: transparent;
   opacity: 1;
 }
-
 
 .pill::before{
   content:"";
   position:absolute;
   inset:0;
   border-radius: inherit;
+
+  /* ✅ same gradient, but 20% brighter */
   background: var(--color-premium-gradient);
+  filter: brightness(2.0);
+
   pointer-events:none;
   opacity: var(--op, 1);
 }
+
 
 .pillTop{
   display: flex;
@@ -446,6 +451,29 @@
 :root {
   --ease-boot: cubic-bezier(0.2, 0.9, 0.2, 1);
   --ease-soft: cubic-bezier(0.22, 1, 0.36, 1);
+   --color-premium-gradient: linear-gradient(
+    90deg,
+    rgba(43, 124, 175, 0.4) 0%,
+    rgba(255, 197, 66, 0.4) 100%
+  );
+
+  --color-premium-gradient-20: linear-gradient(
+    90deg,
+    rgba(43, 124, 175, 0.2) 0%,
+    rgba(255, 197, 66, 0.2) 100%
+  );
+
+  --color-premium-gradient-10: linear-gradient(
+    90deg,
+    rgba(43, 124, 175, 0.1) 0%,
+    rgba(255, 197, 66, 0.1) 100%
+  );
+
+  --color-premium-gradient-20-reverse: linear-gradient(
+    90deg,
+    rgba(255, 197, 66, 0.2) 0%,
+    rgba(43, 124, 175, 0.2) 100%
+  );
 }
 
 @keyframes popIn {
@@ -563,3 +591,17 @@
   }
 }
 
+/* =========================
+   Dark mode: make headings readable
+   ========================= */
+:global(:root[data-theme='dark']) .heroTitle,
+:global(html[data-theme='dark']) .heroTitle,
+:global(body[data-theme='dark']) .heroTitle{
+  color: #f9fafb; /* “Weakest right now” */
+}
+
+:global(:root[data-theme='dark']) .topicName,
+:global(html[data-theme='dark']) .topicName,
+:global(body[data-theme='dark']) .topicName{
+  color: #f9fafb; /* Traffic Signals / Road Safety / etc */
+}

@@ -235,7 +235,6 @@ const statsTopics = useMemo(() => {
     <div
   style={{
     fontSize: 12,
-    color: "rgba(17,24,39,0.65)",
     textAlign: "center",
     marginTop: 6,
     lineHeight: 1.35,

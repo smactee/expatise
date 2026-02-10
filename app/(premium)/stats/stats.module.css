@@ -1,6 +1,37 @@
 /* app/stats/stats.module.css */
 
-/* Same outer layout as Home page */
+/* ================================= */
+/* THEME VARIABLES (LIGHT DEFAULT)   */
+/* ================================= */
+:global(:root){
+  /* existing */
+  --stats-ring-track: #e4e4e4;
+  --stats-ring-number: #111827;
+  --stats-summary-meta: rgba(17,24,39,0.65);
+
+  /* ✅ Legend tokens (LIGHT) */
+  --stats-legend-text: #6b7280;
+  --stats-legend-avg-label: rgba(17,24,39,0.65);
+  --stats-legend-dotted: rgba(17,24,39,0.35);
+  --stats-legend-dot-gray: rgba(17,24,39,0.18);
+  --stats-legend-dot-dark: rgba(17,24,39,0.45);
+
+    /* ✅ Chart palette tokens (LIGHT) — needed for legends */
+  --chart-grad-cool: rgba(43, 124, 175, 0.90);   /* blue */
+  --chart-grad-warm: rgba(255, 197, 66, 0.95);   /* yellow */
+  --chart-grad: linear-gradient(
+    90deg,
+    rgba(43, 124, 175, 0.90) 0%,
+    rgba(255, 197, 66, 0.95) 100%
+  );
+
+}
+
+
+
+/* ================================= */
+/* LAYOUT                             */
+/* ================================= */
 .page {
   min-height: 100vh;
   display: flex;
@@ -24,41 +55,25 @@
   margin: 24px auto 0;           /* space under the gauge */
   border-radius: 40px;           /* nice big corners */
   padding: 24px 18px 32px;       /* space for the inner cards */
-
-  /* Figma: Linear, 0% #2B7CAF → 100% #FFC542, 20% opacity */
   background: linear-gradient(
     90deg,
     rgba(43, 124, 175, 0.2) 0%,
     rgba(255, 197, 66, 0.2) 100%
   );
-
-  box-shadow: 0 20px 40px rgba(15, 33, 70, 0.16); /* optional but very Figma */
+  box-shadow: 0 20px 40px rgba(15, 33, 70, 0.16);
 }
 
 /* Column of cards inside that panel */
 .statsLongPanelInner {
   display: flex;
   flex-direction: column;
-  gap: 16px;                     /* space between the four cards */
+  gap: 16px;
 }
 
 
 /* ================================= */
-/* STATS PAGE                        */
+/* SUMMARY (READINESS RING)           */
 /* ================================= */
-:root{
-  --stats-ring-track: #e4e4e4;          /* light mode track */
-  --stats-ring-number: #111827;         /* light mode number */
-  --stats-summary-meta: rgba(17,24,39,0.65);
-}
-
-:root[data-theme="dark"]{
-  --stats-ring-track: rgba(255,255,255,0.22);  /* ✅ light gray track wedge */
-  --stats-ring-number: #e5e7eb;                /* ✅ light gray “78” */
-  --stats-summary-meta: rgba(255,255,255,0.70);/* ✅ fixes dark meta text too */
-}
-
-/* Top accuracy / gauge card */
 .statsSummaryCard {
   margin-top: 16px;
   width: 100%;
@@ -74,7 +89,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 18px;
+  gap: 10px; /* was 18px (tighter spacing) */
 }
 
 .statsGaugeWrapper {
@@ -89,12 +104,11 @@
   height: 220px;
   border-radius: 999px;
   background: conic-gradient(
-  from 0deg,
-  #f7d36b 0deg,
-  #f7d36b 220deg,
-  #70c1ff 320deg,
-  #e4e4e4 360deg
-);
+    from 0deg,
+    #f7d36b 0deg 220deg,
+    #70c1ff 220deg 320deg,
+    var(--stats-ring-track) 320deg 360deg
+  );
 
   display: flex;
   align-items: center;
@@ -128,31 +142,38 @@
   text-align: center;
 }
 
+/* Meta text under ring */
+.statsSummaryMeta{
+  margin-top: -6px;
+  margin-bottom: -2px;
+  font-size: 12px;
+  line-height: 1.25;
+  color: var(--stats-summary-meta);
+  text-align: center;
+}
+
 /* “Test” pill button */
 .statsTestButton {
-  margin-top: 8px;
-  width: 122px;              /* Figma width */
-  height: 29px;              /* Figma height */
-
+  margin-top: 0; /* was 8px (tighter) */
+  width: 122px;
+  height: 29px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-
-  border-radius: 999px;      /* full pill */
+  border-radius: 999px;
   border: 1px solid var(--color-logout-border);
-  /* Same gradient as Premium / Logout */
   background: var(--color-premium-gradient);
-
   font-size: 14px;
   font-weight: 600;
-  color: #000000;            /* matches Figma “Selection color: 000000” */
+  color: #000000;
   cursor: pointer;
-
   box-shadow: 0 8px 18px rgba(15, 33, 70, 0.2);
 }
 
 
-/* Stack of cards underneath */
+/* ================================= */
+/* CARDS + GRAPH CONTAINERS           */
+/* ================================= */
 .statsBlocks {
   margin-top: 24px;
   display: flex;
@@ -160,18 +181,16 @@
   gap: 16px;
 }
 
-/* Generic stats card container */
 .statsCard {
   border-radius: 28px;
   padding: 18px 18px 20px;
   background: #f5fbff;
-  box-shadow:  0 18px 45px rgba(30, 80, 120, 0.18),
+  box-shadow:
+    0 18px 45px rgba(30, 80, 120, 0.18),
     0 6px 18px rgba(30, 80, 120, 0.10),
     inset 0 2px 10px rgba(255,255,255,0.65),
     inset 0 -10px 18px rgba(0,0,0,0.05);
 }
-
-
 
 .statsCardHeader {
   display: flex;
@@ -185,46 +204,6 @@
   font-size: 20px;
   font-weight: 700;
   color: #222435;
-}
-
-/* Legend “Global / You” */
-.statsLegend {
-  margin-left: auto;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 11px;
-  color: #6b7280;
-}
-
-.statsLegendDot {
-  display: inline-block;
-  width: 8px;
-  height: 8px;
-  border-radius: 999px;
-  flex: 0 0 auto;
-}
-
-.statsLegendDotBlue {
-  background: rgba(43,124,175,0.4);
-}
-
-.statsScoreChartLegendDotScore {
-  background: var(--chart-grad-cool);
-}
-
-.statsScoreChartLegendDotAverage {
-  background: var(--chart-grad-warm);
-}
-
-.statsLegendDotAvg {
-  background: var(--chart-grad);
-}
-.statsLegendDotGray { background: rgba(17, 24, 39, 0.18); }
-.statsLegendDotDark { background: rgba(17, 24, 39, 0.45); }
-
-.statsLegendLabel {
-  white-space: nowrap;
 }
 
 /* Graph area placeholder */
@@ -251,9 +230,161 @@
   color: #9ca3af;
 }
 
-/* “Review Your Mistakes” button at bottom */
+/* Used to remove placeholder/debug box look for finished chart */
+.statsGraphClean {
+  border: none !important;
+  outline: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+.statsGraphPlaceholder.statsGraphClean {
+  border: none !important;
+  background: transparent !important;
+  padding: 0 !important;
+}
+
+
+/* ================================= */
+/* LEGENDS + DOTS                     */
+/* ================================= */
+.statsLegend {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: var(--stats-legend-text);
+}
+
+.statsLegendDot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  flex: 0 0 auto;
+}
+
+.statsLegendLabel {
+  white-space: nowrap;
+  color: inherit;
+}
+
+
+
+.statsLegendDotBlue { background: var(--chart-grad-cool, rgba(43, 124, 175, 0.90));
+}
+.statsLegendDotYellow { background: var(--chart-grad-warm, rgba(255, 197, 66, 0.95));
+}
+
+.statsScoreChartLegendDotScore { background: var(--chart-grad-cool); }
+.statsScoreChartLegendDotAverage { background: var(--chart-grad-warm); }
+
+.statsLegendDotAvg {
+  background: var(
+    --chart-grad,
+    linear-gradient(
+      90deg,
+      rgba(43, 124, 175, 0.90) 0%,
+      rgba(255, 197, 66, 0.95) 100%
+    )
+  );
+}
+.statsLegendDotGray { background: var(--stats-legend-dot-gray); }
+.statsLegendDotDark { background: var(--stats-legend-dot-dark); }
+/* Screen-time legend swatches */
+.statsLegend__screenTime__testDot { background: rgba(255, 197, 66, 0.95); }
+.statsLegend__screenTime__studyDot { background: rgba(43, 124, 175, 0.90); }
+
+.statsLegend__screenTime__totalGradientSwatch{
+  width: 18px;
+  height: 6px;
+  border-radius: 999px;
+  background: var(
+    --chart-grad,
+    linear-gradient(
+      90deg,
+      rgba(43, 124, 175, 0.90) 0%,
+      rgba(255, 197, 66, 0.95) 100%
+    )
+  );
+  opacity: 0.9;
+  display: inline-block;
+}
+
+.statsLegend__screenTime__avgDottedSwatch{
+  width: 18px;
+  height: 0;
+  border-top: 2px dotted var(--stats-legend-dotted);
+  display: inline-block;
+  transform: translateY(-1px);
+}
+
+.statsLegend__screenTime__totalLineSwatch{
+  width: 18px;
+  height: 6px;
+  border-radius: 999px;
+  background: var(
+    --chart-grad,
+    linear-gradient(
+      90deg,
+      rgba(43, 124, 175, 0.90) 0%,
+      rgba(255, 197, 66, 0.95) 100%
+    )
+  );
+  opacity: 0.9;
+  display: inline-block;
+}
+
+.statsLegend__screenTime__totalAreaSwatch{
+  width: 18px;
+  height: 10px;
+  border-radius: 6px;
+  background: linear-gradient(
+    90deg,
+    rgba(43, 124, 175, 0.28) 0%,
+    rgba(61, 140, 213, 0) 100%
+  );
+  opacity: 0.9;
+  display: inline-block;
+}
+
+
+/* ================================= */
+/* HEADER ROWS + ACTION BUTTONS       */
+/* ================================= */
+.statsCardHeaderRow{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.statsCardActionBtn{
+  flex: 0 0 auto;
+  border-radius: 999px;
+  padding: 8px 12px;
+  border: 1px solid rgba(148,163,184,0.45);
+  background: var(--color-premium-gradient-20);
+  box-shadow: 0 10px 20px rgba(15,33,70,0.10);
+  font-size: 12px;
+  font-weight: 800;
+  color: rgba(17,24,39,0.78);
+  cursor: pointer;
+  user-select: none;
+}
+
+.statsCardActionBtn:disabled{
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+
+/* ================================= */
+/* REVIEW / QUIZ / RESET BUTTONS      */
+/* ================================= */
 .statsReviewWrapper {
-  margin: 24px 0 96px; /* extra bottom room for nav bar */
+  margin: 24px 0 96px;
   display: flex;
   justify-content: center;
 }
@@ -272,212 +403,21 @@
   cursor: pointer;
 }
 
-@media (min-width: 768px) {
-  .statsSummaryCard {
-    margin-top: 24px;
-  }
-}
-
-
-
-/* ========================= */
-/* DARK MODE OVERRIDES ONLY  */
-/* ========================= */
-
-:root[data-theme='dark'] .page {
-  background:
-    radial-gradient(circle at top, rgba(15, 23, 42, 0.7), transparent 55%),
-    #050816;
-  color: #f9fafb;
-}
-
-/* Top summary / gauge card */
-:root[data-theme='dark'] .statsSummaryCard {
-  background:
-    linear-gradient(
-      135deg,
-      rgba(43, 124, 175, 0.35) 0%,
-      rgba(255, 197, 66, 0.35) 100%
-    ),
-    #111827;
-  color: #f9fafb;
-}
-
-/* Gauge inner + text */
-:root[data-theme='dark'] .statsGaugeCircleInner {
-  background: #0b1020;
-}
-
-:root[data-theme='dark'] .statsGaugeNumber {
-  color: #f9fafb;
-}
-
-:root[data-theme='dark'] .statsGaugeLabel {
-color: var(--stats-ring-number)}
-
-/* Big panel behind the stack of cards */
-:root[data-theme='dark'] .statsLongPanel {
-  background:
-    linear-gradient(
-      90deg,
-      rgba(43, 124, 175, 0.35) 0%,
-      rgba(255, 197, 66, 0.25) 100%
-    ),
-    #0b1020;
-  box-shadow: 0 20px 40px rgba(15, 23, 42, 0.55);
-}
-
-/* Individual stat cards */
-:root[data-theme='dark'] .statsCard {
-  background: #111827;
-  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.55);
-  color: #f9fafb;
-}
-
-:root[data-theme='dark'] .statsCardTitle {
-  color: #f9fafb;
-}
-
-:root[data-theme='dark'] .statsLegend {
-  color: #9ca3af;
-}
-
-/* Graph area placeholder */
-:root[data-theme='dark'] .statsGraphArea {
-  background: linear-gradient(
-    180deg,
-    rgba(43, 124, 175, 0.18),
-    rgba(2, 6, 23, 0.92)
-  );
-}
-
-:root[data-theme='dark'] .statsGraphPlaceholder {
-  border: 1px dashed rgba(148, 163, 184, 0.35);
-  color: #9ca3af;
-}
-
-/* Buttons (avoid relying on light-theme-only CSS vars) */
-:root[data-theme='dark'] .statsTestButton,
-:root[data-theme='dark'] .statsReviewButton,
-:root[data-theme='dark'] .resetBtnFixed {
-  background: linear-gradient(
-    90deg,
-    rgba(43, 124, 175, 0.4) 0%,
-    rgba(255, 197, 66, 0.4) 100%
-  );
-  border-color: #d2c79a;
-  color: #f9fafb;
-}
-
-
-/* Make the overall vertical spacing tighter */
-.statsSummaryInner {
-  gap: 10px; /* was 18px */
-}
-
-/* Remove extra button spacing */
-.statsTestButton {
-  margin-top: 0; /* was 8px */
-}
-
-/* The new meta text block */
-.statsSummaryMeta{
-  margin-top: -6px;
-  margin-bottom: -2px;
-  font-size: 12px;
-  line-height: 1.25;
-  color: var(--stats-summary-meta);
-  text-align: center;
-}
-
-
-
-/* Used to remove the placeholder/debug box look for a finished chart */
-.statsGraphClean {
-  border: none !important;
-  outline: none !important;
-  background: transparent !important;
-  box-shadow: none !important;
-  padding: 0 !important;
-}
-
-/* Stronger: when both classes are present on the same element */
-.statsGraphPlaceholder.statsGraphClean {
-  border: none !important;
-  background: transparent !important;
-  padding: 0 !important;
-}
-
-.statsLegend__screenTime__testDot { background: rgba(255, 197, 66, 0.95); }
-.statsLegend__screenTime__studyDot { background: rgba(43, 124, 175, 0.90); }
-
-.statsLegend__screenTime__totalGradientSwatch{
-  width: 18px;
-  height: 6px;
-  border-radius: 999px;
-  background: var(--chart-grad);
-  opacity: 0.9;
-  display: inline-block;
-}
-
-.statsLegend__screenTime__avgDottedSwatch{
-  width: 18px;
-  height: 0;
-  border-top: 2px dotted rgba(17,24,39,0.35);
-  display: inline-block;
-  transform: translateY(-1px);
-}
-
-
-.statsCardHeaderRow{
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-}
-
-.statsCardActionBtn{
-  flex: 0 0 auto;
-  border-radius: 999px;
-  padding: 8px 12px;
-
-  border: 1px solid rgba(148,163,184,0.45);
-  background: var(--color-premium-gradient-20);
-  box-shadow: 0 10px 20px rgba(15,33,70,0.10);
-
-  font-size: 12px;
-  font-weight: 800;
-  color: rgba(17,24,39,0.78);
-
-  cursor: pointer;
-  user-select: none;
-}
-
-.statsCardActionBtn:disabled{
-  opacity: 0.45;
-  cursor: not-allowed;
-}
-
 .quizBtn {
   height: 40px;
   padding: 0 16px;
   border-radius: 16px;
-
   border: 1px solid var(--color-logout-border);
   background: var(--color-premium-gradient);
   box-shadow: 0 18px 40px rgba(15, 33, 70, 0.26);
-
   font-size: 14px;
   font-weight: 700;
   color: var(--color-heading-card);
-
   text-decoration: none;
   cursor: pointer;
-
   display: inline-flex;
   align-items: center;
   justify-content: center;
-
   white-space: nowrap;
 }
 
@@ -489,7 +429,6 @@ color: var(--stats-ring-number)}
   margin-bottom: 12px;
 }
 
-/* subtle “danger-ish” button that still matches your UI */
 .resetBtn{
   border: 1px solid rgba(17,24,39,0.12);
   background: rgba(255,255,255,0.65);
@@ -511,12 +450,10 @@ color: var(--stats-ring-number)}
   right: calc(env(safe-area-inset-right, 0px) + 10px);
   z-index: 9999;
 
-  /* same “family” as .statsReviewButton */
   border: 1px solid var(--color-logout-border);
   background: var(--color-premium-gradient);
   box-shadow: 0 18px 40px rgba(15, 33, 70, 0.22);
 
-  /* compact version (top bar friendly) */
   height: 36px;
   padding: 0 14px;
   border-radius: 18px;
@@ -536,63 +473,139 @@ color: var(--stats-ring-number)}
   transform: translateY(1px);
 }
 
-/* Topic Mastery text in dark mode */
+
+/* ================================= */
+/* TOPIC MASTERY                      */
+/* ================================= */
 .topicMasteryArea {
   color: #111827; /* light default */
 }
 
-:root[data-theme='dark'] .topicMasteryArea {
-  color: #f9fafb; /* make text white */
+
+/* ================================= */
+/* RESPONSIVE                         */
+/* ================================= */
+@media (min-width: 768px) {
+  .statsSummaryCard {
+    margin-top: 24px;
+  }
 }
 
-/* If TopicMasteryChart renders any SVG text labels */
+
+
+/* ====================================================== */
+/* DARK MODE OVERRIDES (KEEP EVERYTHING DARK DOWN HERE)   */
+/* ====================================================== */
+
+/* Dark theme variables */
+:global(html[data-theme="dark"]),
+:global(body[data-theme="dark"]){
+  /* existing */
+  --stats-ring-track: #101827;
+  --stats-ring-number: #e5e7eb;
+  --stats-summary-meta: rgba(255,255,255,0.70);
+
+  /* ✅ Legend tokens (DARK) */
+  --stats-legend-text: #9ca3af;
+  --stats-legend-avg-label: rgba(255,255,255,0.82);
+  --stats-legend-dotted: rgba(255,255,255,0.35);
+  --stats-legend-dot-gray: rgba(255,255,255,0.18);
+  --stats-legend-dot-dark: rgba(255,255,255,0.45);
+
+  
+}
+
+
+:root[data-theme='dark'] .page {
+  background:
+    radial-gradient(circle at top, rgba(15, 23, 42, 0.7), transparent 55%),
+    #050816;
+  color: #f9fafb;
+}
+
+:root[data-theme='dark'] .statsSummaryCard {
+  background:
+    linear-gradient(
+      135deg,
+      rgba(43, 124, 175, 0.35) 0%,
+      rgba(255, 197, 66, 0.35) 100%
+    ),
+    #111827;
+  color: #f9fafb;
+}
+
+:root[data-theme='dark'] .statsGaugeCircleInner {
+  background: #0b1020;
+}
+
+:root[data-theme='dark'] .statsGaugeNumber {
+  color: #f9fafb;
+}
+
+:root[data-theme='dark'] .statsGaugeLabel {
+  color: var(--stats-ring-number);
+}
+
+:root[data-theme='dark'] .statsLongPanel {
+  background:
+    linear-gradient(
+      90deg,
+      rgba(43, 124, 175, 0.35) 0%,
+      rgba(255, 197, 66, 0.25) 100%
+    ),
+    #0b1020;
+  box-shadow: 0 20px 40px rgba(15, 23, 42, 0.55);
+}
+
+:root[data-theme='dark'] .statsCard {
+  background: #111827;
+  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.55);
+  color: #f9fafb;
+}
+
+:root[data-theme='dark'] .statsCardTitle {
+  color: #f9fafb;
+}
+
+:root[data-theme='dark'] .statsGraphArea {
+  background: linear-gradient(
+    180deg,
+    rgba(43, 124, 175, 0.18),
+    rgba(2, 6, 23, 0.92)
+  );
+}
+
+:root[data-theme='dark'] .statsGraphPlaceholder {
+  border: 1px dashed rgba(148, 163, 184, 0.35);
+  color: #9ca3af;
+}
+
+/* Buttons */
+:root[data-theme='dark'] .statsTestButton,
+:root[data-theme='dark'] .statsReviewButton,
+:root[data-theme='dark'] .resetBtnFixed {
+  background: linear-gradient(
+    90deg,
+    rgba(43, 124, 175, 0.4) 0%,
+    rgba(255, 197, 66, 0.4) 100%
+  );
+  border-color: #d2c79a;
+  color: #f9fafb;
+}
+
+/* Topic Mastery text + SVG text */
+:root[data-theme='dark'] .topicMasteryArea {
+  color: #f9fafb;
+}
 :root[data-theme='dark'] .topicMasteryArea svg text {
   fill: #f9fafb;
 }
-
-/* Common inline elements inside the chart */
 :root[data-theme='dark'] .topicMasteryArea :is(p, span, small, strong, em, label) {
   color: #f9fafb;
 }
 
-:root[data-theme="dark"] .statsLegendLabelAvg{
-  color: rgba(255,255,255,0.82);
-}
+/* Extra dark-only tweaks you had */
+
 :root[data-theme="dark"] .screenTimeChart svg text{
   fill: rgba(255,255,255,0.72) !important;
-}
-
-
-/* make sure Test exists */
-.statsLegendDotYellow {
-  background:var(--chart-grad-warm);
-}
-
-/* you already have this, keep it */
-.statsLegendDotBlue {
-  background: var(--chart-grad-cool);
-}
-
-/* Total (line) swatch = your warm→cool gradient */
-.statsLegend__screenTime__totalLineSwatch{
-  width: 18px;
-  height: 6px;
-  border-radius: 999px;
-  background: var(--chart-grad);
-  opacity: 0.9;
-  display: inline-block;
-}
-
-/* Total (area) swatch = match your “mountain fill” look */
-.statsLegend__screenTime__totalAreaSwatch{
-  width: 18px;
-  height: 10px;
-  border-radius: 6px;
-  background: linear-gradient(
-    90deg,
-    rgba(43, 124, 175, 0.28) 0%,
-    rgba(61, 140, 213, 0) 100%
-  );
-  opacity: 0.9;
-  display: inline-block;
 }

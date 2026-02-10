@@ -17,8 +17,8 @@
   padding: 14px 16px;
   border-radius: 18px;
 
-  background: rgba(255, 255, 255, 0.62);
-  border: 1px solid rgba(148, 163, 184, 0.18);
+  background: rgba(255,255,255,0.55);
+  border: 1px solid rgba(148, 163, 184, 0.60);
   backdrop-filter: blur(10px);
 
   box-shadow:
@@ -49,8 +49,8 @@
   border-radius: 22px;
   padding: 18px 18px 14px;
 
-   background: rgba(255, 255, 255, 0.42);
-  border: 1px solid rgba(148, 163, 184, 0.18);
+  background: rgba(255,255,255,0.55);
+  border: 1px solid rgba(148, 163, 184, 0.60);
   backdrop-filter: blur(14px);
 
   box-shadow:
@@ -84,8 +84,8 @@
   grid-template-columns: max-content repeat(4, minmax(0, 1fr));
   grid-template-rows: 26px repeat(7, 46px);
 
-  column-gap: 10px;
-  row-gap: 12px;
+  column-gap: 1px;
+  row-gap: 5px;
 
   align-items: center;
 }
@@ -480,4 +480,173 @@
   top: -6px;
   bottom: auto;
   transform: translateX(-50%) rotate(225deg);
+}
+
+/* AFTER (DARK) — match Daily Progress .box dark tweak */
+:global(:root[data-theme='dark']) .calloutPill{
+  background: rgba(255,255,255,0.06);
+  border-color: rgba(148,163,184,0.35);
+}
+
+:global(:root[data-theme='dark']) .panel{
+  background: rgba(255,255,255,0.06);
+  border-color: rgba(148,163,184,0.35);
+}
+
+/* optional: keep the glow, but tone it down in dark so it doesn't look milky */
+:global(:root[data-theme='dark']) .panel::before{
+  opacity: 0.60;
+}
+
+:global(:root[data-theme='dark']) .calloutText{
+  color: rgba(249,250,251,0.86);
+}
+:global(:root[data-theme='dark']) .calloutMuted{
+  color: rgba(249,250,251,0.55);
+}
+
+/* ====================================================== */
+/* HEATMAP — DARK MODE READABILITY + RADIANT CELLS         */
+/* (Light mode unchanged)                                  */
+/* ====================================================== */
+
+:global(:root[data-theme='dark']) .colLabel,
+:global(:root[data-theme='dark']) .rowLabel{
+  color: rgba(249,250,251,0.68);
+  text-shadow: 0 1px 0 rgba(0,0,0,0.35);
+}
+
+:global(:root[data-theme='dark']) .matrix::after{
+  border-top-color: rgba(249,250,251,0.16);
+}
+
+:global(:root[data-theme='dark']) .legendRow{
+  color: rgba(249,250,251,0.62);
+}
+
+:global(:root[data-theme='dark']) .legendLabel{
+  color: rgba(249,250,251,0.55);
+}
+
+:global(:root[data-theme='dark']) .legendText{
+  color: rgba(249,250,251,0.55);
+}
+
+:global(:root[data-theme='dark']) .confidenceNote{
+  color: rgba(249,250,251,0.52);
+}
+
+/* Make cell text readable on dark surfaces */
+:global(:root[data-theme='dark']) .cellValue{
+  color: rgba(249,250,251,0.88);
+  text-shadow: 0 1px 0 rgba(0,0,0,0.45);
+}
+
+:global(:root[data-theme='dark']) .conf{
+  color: rgba(249,250,251,0.58);
+}
+
+:global(:root[data-theme='dark']) .confDot{
+  background: rgba(249,250,251,0.65);
+}
+
+/* Optional: slightly soften borders so the grid is visible but not harsh */
+:global(:root[data-theme='dark']) .cell{
+  border-color: rgba(148,163,184,0.22);
+  box-shadow: 0 14px 28px rgba(0,0,0,0.30);
+}
+
+/* Optional: empty cells are currently very bright. If you want them less “glary”, enable this. */
+/*
+:global(:root[data-theme='dark']) .emptyCell{
+  background: rgba(255,255,255,0.10) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.10);
+}
+*/
+
+
+/* =============================== */
+/* Radiant cell gradient (DARK)    */
+/* =============================== */
+/*
+  “Radiant” here = more color presence.
+  We reduce the white wash and add a slightly stronger premium gradient layer.
+*/
+:global(:root[data-theme='dark']) .heatFill{
+  --heat-alpha: 1;
+  --heat-wash: 0.18; /* less milky veil = more saturated color */
+
+  /* Stronger gradient than the -20 one, but still tasteful */
+  --heat-grad: linear-gradient(
+    90deg,
+    rgb(var(--premium-yellow-rgb) / 0.55) 0%,
+    rgb(var(--premium-blue-rgb) / 0.55) 100%
+  );
+
+  background-image:
+    /* glossy highlight (kept subtle) */
+    radial-gradient(
+      70% 60% at 30% 25%,
+      rgba(255,255,255,0.22) 0%,
+      rgba(255,255,255,0.06) 45%,
+      rgba(255,255,255,0) 70%
+    ),
+    /* reduced white veil */
+    linear-gradient(
+      rgb(255 255 255 / calc(var(--heat-wash) * var(--heat-alpha))),
+      rgb(255 255 255 / calc(var(--heat-wash) * var(--heat-alpha)))
+    ),
+    /* stronger premium gradient */
+    var(--heat-grad);
+
+  background-size: 100% 100%, 100% 100%, 220% 100%;
+  background-repeat: no-repeat;
+  background-position: 0 0, 0 0, var(--heat-x, 50%) 50%;
+}
+
+/* Make legend swatches match the same “more radiant” treatment */
+:global(:root[data-theme='dark']) .swatch{
+  --sw-wash: 0.16;
+
+  --heat-grad: linear-gradient(
+    90deg,
+    rgb(var(--premium-yellow-rgb) / 0.55) 0%,
+    rgb(var(--premium-blue-rgb) / 0.55) 100%
+  );
+
+  background-image:
+    linear-gradient(
+      rgba(255,255,255,var(--sw-wash)),
+      rgba(255,255,255,var(--sw-wash))
+    ),
+    var(--heat-grad);
+
+  background-size: 100% 100%, 220% 100%;
+  background-repeat: no-repeat;
+  background-position: 0 0, var(--heat-x, 50%) 50%;
+
+  border-color: rgba(148,163,184,0.30);
+}
+
+/* Tooltip readability in dark mode (optional, but usually needed) */
+:global(:root[data-theme='dark']) .tooltip{
+  background: rgba(17,24,39,0.92);
+  border-color: rgba(148,163,184,0.28);
+}
+:global(:root[data-theme='dark']) .tipTitle{
+  color: rgba(249,250,251,0.90);
+}
+:global(:root[data-theme='dark']) .tipSub,
+:global(:root[data-theme='dark']) .tipBody,
+:global(:root[data-theme='dark']) .tipLine,
+:global(:root[data-theme='dark']) .tipMuted{
+  color: rgba(249,250,251,0.62);
+}
+:global(:root[data-theme='dark']) .tipRule{
+  background: rgba(148,163,184,0.22);
+}
+:global(:root[data-theme='dark']) .tipArrow{
+  background: rgba(17,24,39,0.92);
+  border-right-color: rgba(148,163,184,0.28);
+  border-bottom-color: rgba(148,163,184,0.28);
 }
