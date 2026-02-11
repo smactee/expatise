@@ -1,10 +1,40 @@
-//components/stats/ScreenTimeChart7.client.tsx
+//components/stats/ScreenTimeChart.client.tsx
 'use client';
 
-import { useEffect, useMemo, useRef, useState, useId } from 'react';
+import { useEffect, useMemo, useRef, useState, useId, type CSSProperties } from 'react';
 import { useOnceInView } from './useOnceInView.client';
 import { useBootSweepOnce } from './useBootSweepOnce.client';
-import styles from './ScreenTimeChart7.module.css';
+import styles from './ScreenTimeChart.module.css';
+
+// ✅ Legend for Screen Time card header (moved out of StatsPage)
+export function ScreenTimeLegend({
+  animate = true,
+  delayMs = 0,
+}: {
+  animate?: boolean;
+  delayMs?: number;
+}) {
+  return (
+    <div
+      className={`${styles.statsLegend} ${animate ? styles.waterIn : styles.waterHidden}`}
+      style={animate ? ({ animationDelay: `${delayMs}ms` } as CSSProperties) : undefined}
+    >
+      <span className={`${styles.statsLegendDot} ${styles.statsLegendDotYellow}`} />
+      <span className={styles.statsLegendLabel}>Test</span>
+
+      <span className={`${styles.statsLegendDot} ${styles.statsLegendDotBlue}`} />
+      <span className={styles.statsLegendLabel}>Study</span>
+
+      <span className={styles.statsLegend__screenTime__totalGradientSwatch} />
+      <span className={styles.statsLegendLabel}>Total</span>
+
+      <span className={styles.statsLegend__screenTime__avgDottedSwatch} />
+      <span className={`${styles.statsLegendLabel} ${styles.statsLegendLabelAvg}`}>7D avg</span>
+    </div>
+  );
+}
+
+
 
 type DayPoint = {
   dayStart: number | string;
@@ -153,7 +183,7 @@ function pathLinear(points: Pt[]) {
 
 
 
-export default function ScreenTimeChart7({
+export default function ScreenTimeChart({
   data,
   height = 80,
   timedTestMinutesEstimate,
@@ -249,6 +279,9 @@ const avgDelayMs = barDelayMs + (nDays - 1) * barStaggerMs + barDurMs + 140;
 const avgDurMs = 650;
 const avgLabelDelayMs = avgDelayMs + avgDurMs;
 
+// ---- Waterfall: bottom details appear AFTER the chart finishes ----
+const detailsStartMs = avgLabelDelayMs + 180; // wait a beat after "7D avg" label
+const detailsStaggerMs = 130;
 
 
 
@@ -445,9 +478,11 @@ const areaClipW = useMemo(() => {
   <div className={styles.wrap}>
     {/* TOP AREA: only the chart */}
     <div className={styles.topArea}>
+     
+
       <div className={styles.chart} style={{ height }} ref={inViewRef}>
 
-        {/* ROW 1: Y axis + plot */}
+{/* ROW 1: Y axis + plot */}
         <div className={styles.plotRow}>
           {/* Y AXIS */}
           <div className={styles.yAxis} style={{ height: plotH }}>
@@ -472,7 +507,7 @@ const areaClipW = useMemo(() => {
               return <div key={`g-${t}`} className={styles.hGrid} style={{ top: y }} />;
             })}
 
-            {/* TOTAL area (mountain) */}
+{/* TOTAL area (mountain) */}
 {totalAreaD ? (
   <svg
     className={styles.totalAreaSvg}
@@ -538,30 +573,7 @@ const areaClipW = useMemo(() => {
 ) : null}
 
 
-
-
-            {/* avg line */}
-            <div
-  className={`${styles.avgLine} ${animateIn ? styles.avgLineDraw : styles.avgLineHidden}`}
-  style={animateIn
-    ? { top: avgLineY, animationDelay: `${avgDelayMs}ms` }
-    : { top: avgLineY }
-  }
-/>
-
-<div
-  className={`${styles.avgLabel} ${animateIn ? styles.avgLabelIn : styles.avgLabelHidden}`}
-  style={animateIn
-    ? { top: clamp(avgLineY - 12, 0, plotH - 14), animationDelay: `${avgLabelDelayMs}ms` }
-    : { top: clamp(avgLineY - 12, 0, plotH - 14) }
-  }
->
-  7D avg
-</div>
-
-
-
-            {/* bars */}
+{/* bars */}
             <div className={styles.cols}>
               {model.points.map((p, idx) => {
                 const barDelay = barDelayMs + idx * barStaggerMs;
@@ -625,6 +637,25 @@ const areaClipW = useMemo(() => {
                 );
               })}
             </div>
+{/* avg line */}
+            <div
+  className={`${styles.avgLine} ${animateIn ? styles.avgLineDraw : styles.avgLineHidden}`}
+  style={animateIn
+    ? { top: avgLineY, animationDelay: `${avgDelayMs}ms` }
+    : { top: avgLineY }
+  }
+/>
+
+<div
+  className={`${styles.avgLabel} ${animateIn ? styles.avgLabelIn : styles.avgLabelHidden}`}
+  style={animateIn
+    ? { top: clamp(avgLineY - 12, 0, plotH - 14), animationDelay: `${avgLabelDelayMs}ms` }
+    : { top: clamp(avgLineY - 12, 0, plotH - 14) }
+  }
+>
+  7D avg
+</div>
+
           </div>
         </div>
 
@@ -651,34 +682,58 @@ const areaClipW = useMemo(() => {
       </div>
     </div>
 
-    {/* Bottom text */}
+{/* Bottom text */}
     <div className={styles.bottomStack}>
-      <div className={styles.summaryRow}>
-        <div className={styles.summaryTop}>
-          <b>7D total</b>: {weekTestTotal}m test · {weekStudyTotal}m study
-        </div>
-
-        <div className={styles.summaryRow2}>
-  <span><b>Avg/day</b>: {Math.round(model.avgTotal)}m</span>
-  <span className={styles.sep} aria-hidden="true" />
-  <span><b>Best</b>: {bestLabel} ({bestPoint?.total ?? 0}m)</span>
-</div>
-
-      </div>
-
-      <div className={styles.footerRow}>
-  <span>
-    <b>Routine</b>: {activeDays}/7 days
-    <span className={styles.sep}></span>
-    <b>Streak</b>: {streakDays ?? 0}d
-  </span>
-
-  {model.hasCompare ? <span className={styles.muted}>Compare overlay: enabled</span> : null}
-</div>
-
-
-      {confidenceNote ? <div className={styles.confidenceNote}>{confidenceNote}</div> : null}
+  <div
+    className={`${styles.summaryRow} ${animateIn ? styles.waterIn : styles.waterHidden}`}
+    style={
+      animateIn
+        ? ({ animationDelay: `${detailsStartMs}ms` } as CSSProperties)
+        : undefined
+    }
+  >
+    <div className={styles.summaryTop}>
+      <b>7D total</b>: {weekTestTotal}m test · {weekStudyTotal}m study
     </div>
+
+    <div className={styles.summaryRow2}>
+      <span><b>Avg/day</b>: {Math.round(model.avgTotal)}m</span>
+      <span className={styles.sep} aria-hidden="true" />
+      <span><b>Best</b>: {bestLabel} ({bestPoint?.total ?? 0}m)</span>
+    </div>
+  </div>
+
+  <div
+    className={`${styles.footerRow} ${animateIn ? styles.waterIn : styles.waterHidden}`}
+    style={
+      animateIn
+        ? ({ animationDelay: `${detailsStartMs + detailsStaggerMs}ms` } as CSSProperties)
+        : undefined
+    }
+  >
+    <span>
+      <b>Routine</b>: {activeDays}/7 days
+      <span className={styles.sep}></span>
+      <b>Streak</b>: {streakDays ?? 0}d
+    </span>
+
+    {model.hasCompare ? <span className={styles.muted}>Compare overlay: enabled</span> : null}
+  </div>
+
+  {confidenceNote ? (
+    <div
+      className={`${styles.confidenceNote} ${animateIn ? styles.waterIn : styles.waterHidden}`}
+      style={
+        animateIn
+          ? ({ animationDelay: `${detailsStartMs + detailsStaggerMs * 2}ms` } as CSSProperties)
+          : undefined
+      }
+    >
+      {confidenceNote}
+    </div>
+  ) : null}
+</div>
+
   </div>
 );
 }

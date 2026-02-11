@@ -547,3 +547,18 @@
   text-align: center;
   opacity: 0.95;
 }
+
+/* Toast readability in DARK MODE */
+:root[data-theme='dark'] .toastCard {
+  /* same vibe as Save button */
+  background:
+    var(--color-premium-gradient),
+    rgba(17, 24, 39, 0.92); /* dark base so gradient pops */
+
+  border: 1px solid rgba(210, 199, 154, 0.55);
+  color: rgba(255, 255, 255, 0.95);
+}
+
+:root[data-theme='dark'] .toastIcon {
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.55));
+}

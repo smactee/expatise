@@ -24,11 +24,10 @@ import { ROUTES } from '@/lib/routes';
 import { labelForTag } from '@/lib/qbank/tagTaxonomy';
 
 import TimeframeChips, { type Timeframe, tfShort } from '@/components/stats/TimeframeChips';
-import ScreenTimeChart7 from '@/components/stats/ScreenTimeChart7.client';
+import ScreenTimeChart, {ScreenTimeLegend} from '@/components/stats/ScreenTimeChart.client';
 
 import ReadinessRing from '@/app/(premium)/stats/ReadinessRing.client';
 import ScoreChart from '@/components/stats/ScoreChart.client';
-import WeeklyProgressChart from '@/components/stats/DailyProgressChart';
 import DailyProgressChart from '@/components/stats/DailyProgressChart';
 import Heatmap from '@/components/stats/Heatmap.client';
 import TopicMasteryChart from '@/components/stats/TopicMasteryChart.client';
@@ -188,6 +187,16 @@ const statsTopics = useMemo(() => {
 }, [attempts, questions, tfTopics]);
 
 
+const [readinessDone, setReadinessDone] = useState(false);
+
+const handleReadinessRingDone = () => {
+  setReadinessDone(true);
+};
+
+// Reset whenever the ring should re-run (timeframe/data changes)
+useEffect(() => {
+  setReadinessDone(false);
+}, [tfReadiness, statsReadiness.readinessPct, loading, questions.length]);
 
 
 
@@ -225,42 +234,40 @@ const statsTopics = useMemo(() => {
         {/* ==== Top Accuracy / Gauge Card ==== */}
 <section className={styles.statsSummaryCard}>
   <div className={styles.statsSummaryInner}>
-  <ReadinessRing
-    valuePct={statsReadiness.readinessPct}
-    enabled={!loading && questions.length > 0}
-  />
+    <ReadinessRing
+      valuePct={statsReadiness.readinessPct}
+      enabled={!loading && questions.length > 0}
+      onDone={handleReadinessRingDone}
+    />
 
-
-    {/* ✅ goes right here */}
+    {/* 👇 Everything below stays hidden until the ring finishes */}
     <div
-  style={{
-    fontSize: 12,
-    textAlign: "center",
-    marginTop: 6,
-    lineHeight: 1.35,
-    
-  }}
->
-  <div className={styles.statsSummaryMeta}>
-    {tfShort(tfReadiness)} accuracy: {statsReadiness.accuracyPct}% · Tests: {statsReadiness.attemptsCount}
-  </div>
-  <div>
-    Based on {statsReadiness.attemptedTotal} questions answered
-  </div>
-</div>
+      className={styles.readinessReveal}
+      data-show={readinessDone ? '1' : '0'}
+    >
+      <div className={styles.readinessMetaBlock}>
+        <div className={styles.statsSummaryMeta}>
+          {tfShort(tfReadiness)} accuracy: {statsReadiness.accuracyPct}% · Tests:{' '}
+          {statsReadiness.attemptsCount}
+        </div>
+        <div className={styles.readinessMetaLine}>
+          Based on {statsReadiness.attemptedTotal} questions answered
+        </div>
+      </div>
 
+      <button
+        type="button"
+        className={styles.statsTestButton}
+        onClick={() => router.push('/test/real')}
+      >
+        Take a Test ▸
+      </button>
 
-    <button
-  type="button"
-  className={styles.statsTestButton}
-  onClick={() => router.push("/test/real")}
->
-  Take a Test ▸
-</button>
-<TimeframeChips value={tfReadiness} onChange={setTfReadiness} align="center" />
-
+      <TimeframeChips value={tfReadiness} onChange={setTfReadiness} align="center" />
+    </div>
   </div>
 </section>
+
 
 
 {/* ==== Big panel + stack of statistic cards ==== */}
@@ -273,22 +280,7 @@ const statsTopics = useMemo(() => {
 <article className={styles.statsCard}>
   <header className={styles.statsCardHeader}>
   <h2 className={styles.statsCardTitle}>Screen Time</h2>
-
-  <div className={styles.statsLegend}>
-    <span className={`${styles.statsLegendDot} ${styles.statsLegendDotYellow}`} />
-    <span className={styles.statsLegendLabel}>Test</span>
-
-    <span className={`${styles.statsLegendDot} ${styles.statsLegendDotBlue}`} />
-    <span className={styles.statsLegendLabel}>Study</span>
-
-  <span className={styles.statsLegend__screenTime__totalGradientSwatch} />
-  <span className={styles.statsLegendLabel}>Total</span>
-
-  <span className={styles.statsLegend__screenTime__avgDottedSwatch} />
-  <span className={`${styles.statsLegendLabel} ${styles.statsLegendLabelAvg}`}>7D avg</span>
-
-
-  </div>
+  <ScreenTimeLegend />
 </header>
 
 
@@ -300,7 +292,7 @@ const statsTopics = useMemo(() => {
       {loading ? (
         "Loading…"
       ) : (
-        <ScreenTimeChart7
+        <ScreenTimeChart
           data={statsScreen.timeDailySeries}
           height={120}
           timedTestMinutesEstimate={Math.round(statsScreen.timeInTimedTestsSec / 60)}

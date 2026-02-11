@@ -25,6 +25,12 @@
     rgba(255, 197, 66, 0.95) 100%
   );
 
+    /* ✅ ScreenTime axis/grid tokens (LIGHT) */
+  --stats-axis-text: rgba(17,24,39,0.55);
+  --stats-grid-line: rgba(17,24,39,0.08);
+  --stats-sep-line: rgba(17,24,39,0.18);
+
+
 }
 
 
@@ -125,6 +131,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  position: relative;
 }
 
 .statsGaugeNumber{
@@ -140,6 +147,23 @@
   font-weight: 600;
   color: #4b5563;
   text-align: center;
+}
+
+/* Center content is hidden until the ring animation finishes */
+.statsGaugeCenter {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.statsGaugeNumber {
+  width: 100%;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
 }
 
 /* Meta text under ring */
@@ -168,6 +192,50 @@
   color: #000000;
   cursor: pointer;
   box-shadow: 0 8px 18px rgba(15, 33, 70, 0.2);
+}
+
+/* Reveals the meta/button/chips only after ring finishes */
+.readinessReveal {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Default: hidden */
+.readinessReveal > * {
+  opacity: 0;
+  transform: translateY(-6px);
+  pointer-events: none;
+}
+
+/* When data-show="1": reveal children top -> bottom */
+.readinessReveal[data-show='1'] > * {
+  animation: readinessFadeIn 260ms ease forwards;
+  pointer-events: auto;
+}
+
+.readinessReveal[data-show='1'] > :nth-child(1) { animation-delay: 0ms; }
+.readinessReveal[data-show='1'] > :nth-child(2) { animation-delay: 140ms; }
+.readinessReveal[data-show='1'] > :nth-child(3) { animation-delay: 280ms; }
+
+@keyframes readinessFadeIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.readinessMetaBlock {
+  font-size: 12px;
+  text-align: center;
+  line-height: 1.35;
+}
+
+.readinessMetaLine {
+  font-size: 12px;
+  text-align: center;
 }
 
 
@@ -293,61 +361,7 @@
 .statsLegendDotGray { background: var(--stats-legend-dot-gray); }
 .statsLegendDotDark { background: var(--stats-legend-dot-dark); }
 /* Screen-time legend swatches */
-.statsLegend__screenTime__testDot { background: rgba(255, 197, 66, 0.95); }
-.statsLegend__screenTime__studyDot { background: rgba(43, 124, 175, 0.90); }
 
-.statsLegend__screenTime__totalGradientSwatch{
-  width: 18px;
-  height: 6px;
-  border-radius: 999px;
-  background: var(
-    --chart-grad,
-    linear-gradient(
-      90deg,
-      rgba(43, 124, 175, 0.90) 0%,
-      rgba(255, 197, 66, 0.95) 100%
-    )
-  );
-  opacity: 0.9;
-  display: inline-block;
-}
-
-.statsLegend__screenTime__avgDottedSwatch{
-  width: 18px;
-  height: 0;
-  border-top: 2px dotted var(--stats-legend-dotted);
-  display: inline-block;
-  transform: translateY(-1px);
-}
-
-.statsLegend__screenTime__totalLineSwatch{
-  width: 18px;
-  height: 6px;
-  border-radius: 999px;
-  background: var(
-    --chart-grad,
-    linear-gradient(
-      90deg,
-      rgba(43, 124, 175, 0.90) 0%,
-      rgba(255, 197, 66, 0.95) 100%
-    )
-  );
-  opacity: 0.9;
-  display: inline-block;
-}
-
-.statsLegend__screenTime__totalAreaSwatch{
-  width: 18px;
-  height: 10px;
-  border-radius: 6px;
-  background: linear-gradient(
-    90deg,
-    rgba(43, 124, 175, 0.28) 0%,
-    rgba(61, 140, 213, 0) 100%
-  );
-  opacity: 0.9;
-  display: inline-block;
-}
 
 
 /* ================================= */
@@ -512,7 +526,11 @@
   --stats-legend-dot-gray: rgba(255,255,255,0.18);
   --stats-legend-dot-dark: rgba(255,255,255,0.45);
 
-  
+    /* ✅ ScreenTime axis/grid tokens (DARK) */
+  --stats-axis-text: rgba(255,255,255,0.72);
+  --stats-grid-line: rgba(255,255,255,0.10);
+  --stats-sep-line: rgba(255,255,255,0.18);
+
 }
 
 
@@ -604,8 +622,3 @@
   color: #f9fafb;
 }
 
-/* Extra dark-only tweaks you had */
-
-:root[data-theme="dark"] .screenTimeChart svg text{
-  fill: rgba(255,255,255,0.72) !important;
-}
