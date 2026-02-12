@@ -188,12 +188,15 @@ export default function ScreenTimeChart({
   height = 80,
   timedTestMinutesEstimate,
   streakDays,
+  onLegendReveal,
 }: {
   data: DayPoint[];
   height?: number;
-  timedTestMinutesEstimate?: number; // optional
-  streakDays?: number;              // optional (you already compute)
+  timedTestMinutesEstimate?: number;
+  streakDays?: number;
+  onLegendReveal?: () => void;
 }) {
+
   const [hoverIdx, setHoverIdx] = useState<number | null>(null);
 
   const totalStrokeId = useId().replace(/:/g, '');
@@ -263,25 +266,62 @@ const { ref: inViewRef, seen } = useOnceInView<HTMLDivElement>({
 
 const animateIn = seen && model.points.length > 0;
 
+const SPEED = 0.9; // 30% faster
+const ms = (n: number) => Math.round(n * SPEED);
+
 // timing (single source of truth)
-const lineDelayMs = 120;
-const lineDurMs = 850;
+const lineDelayMs = ms(120);
+const lineDurMs   = ms(850);
 
-const areaDelayMs = lineDelayMs + lineDurMs + 120;
-const areaDurMs = 550;
+const areaDelayMs = lineDelayMs + lineDurMs + ms(120);
+const areaDurMs   = ms(550);
 
-const barDelayMs = areaDelayMs + areaDurMs + 120;
-const barStaggerMs = 90;
-const barDurMs = 650;
+const barDelayMs  = areaDelayMs + areaDurMs + ms(120);
+const barStaggerMs = ms(90);
+const barDurMs     = ms(650);
 
 const nDays = model.points.length || 7;
-const avgDelayMs = barDelayMs + (nDays - 1) * barStaggerMs + barDurMs + 140;
-const avgDurMs = 650;
+const avgDelayMs = barDelayMs + (nDays - 1) * barStaggerMs + barDurMs + ms(140);
+const avgDurMs = ms(650);
 const avgLabelDelayMs = avgDelayMs + avgDurMs;
 
-// ---- Waterfall: bottom details appear AFTER the chart finishes ----
-const detailsStartMs = avgLabelDelayMs + 180; // wait a beat after "7D avg" label
-const detailsStaggerMs = 130;
+// Legend should appear AFTER the chart sequence finishes
+const legendRevealMs = avgLabelDelayMs;
+
+// Bottom details should start AFTER the legend begins
+const detailsStartMs = legendRevealMs;
+const detailsStaggerMs = ms(60);
+
+
+
+
+
+const onLegendRevealRef = useRef(onLegendReveal);
+useEffect(() => {
+  onLegendRevealRef.current = onLegendReveal;
+}, [onLegendReveal]);
+
+const legendFiredRef = useRef(false);
+
+useEffect(() => {
+  if (!animateIn) {
+    legendFiredRef.current = false; // allow re-run if user scrolls away and back
+    return;
+  }
+  if (legendFiredRef.current) return;
+
+  legendFiredRef.current = true;
+
+  const id = window.setTimeout(() => {
+    onLegendRevealRef.current?.();
+  }, legendRevealMs);
+
+  return () => window.clearTimeout(id);
+}, [animateIn, legendRevealMs]);
+
+
+
+
 
 
 
@@ -431,6 +471,7 @@ const dashLen = Math.max(1, totalLen + 2);         // no ceil needed
 const dashArray = `${dashLen} ${dashLen}`;         // IMPORTANT: paired dash+gap
 const dashOffset = (1 - tLine) * dashLen;
 const lineDone = tLine > 0.999;
+
 
 
 // ----- Area fill follows the line tip -----

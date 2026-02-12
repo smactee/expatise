@@ -27,8 +27,8 @@ import TimeframeChips, { type Timeframe, tfShort } from '@/components/stats/Time
 import ScreenTimeChart, {ScreenTimeLegend} from '@/components/stats/ScreenTimeChart.client';
 
 import ReadinessRing from '@/app/(premium)/stats/ReadinessRing.client';
-import ScoreChart from '@/components/stats/ScoreChart.client';
-import DailyProgressChart from '@/components/stats/DailyProgressChart';
+import ScoreChart, { ScoreLegend } from '@/components/stats/ScoreChart.client';
+import DailyProgressChart, { DailyProgressLegend } from '@/components/stats/DailyProgressChart';
 import Heatmap from '@/components/stats/Heatmap.client';
 import TopicMasteryChart from '@/components/stats/TopicMasteryChart.client';
 
@@ -199,7 +199,24 @@ useEffect(() => {
 }, [tfReadiness, statsReadiness.readinessPct, loading, questions.length]);
 
 
+const [screenLegendReady, setScreenLegendReady] = useState(false);
 
+useEffect(() => {
+  // reset whenever data/loading changes so it re-reveals correctly
+  setScreenLegendReady(false);
+}, [loading, attempts.length, questions.length, userKey]);
+
+const [scoreLegendReady, setScoreLegendReady] = useState(false);
+
+useEffect(() => {
+  setScoreLegendReady(false);
+}, [loading, tfScore, statsScore.attemptsCount, userKey]);
+
+const [dailyLegendReady, setDailyLegendReady] = useState(false);
+
+useEffect(() => {
+  setDailyLegendReady(false);
+}, [loading, tfWeekly, statsWeekly.attemptsCount, userKey]);
 
 
   return (
@@ -280,7 +297,9 @@ useEffect(() => {
 <article className={styles.statsCard}>
   <header className={styles.statsCardHeader}>
   <h2 className={styles.statsCardTitle}>Screen Time</h2>
-  <ScreenTimeLegend />
+  <ScreenTimeLegend animate={screenLegendReady} />
+
+
 </header>
 
 
@@ -293,11 +312,13 @@ useEffect(() => {
         "Loading…"
       ) : (
         <ScreenTimeChart
-          data={statsScreen.timeDailySeries}
-          height={120}
-          timedTestMinutesEstimate={Math.round(statsScreen.timeInTimedTestsSec / 60)}
-          streakDays={statsScreen.timeStreakDays}
-        />
+  data={statsScreen.timeDailySeries}
+  height={120}
+  timedTestMinutesEstimate={Math.round(statsScreen.timeInTimedTestsSec / 60)}
+  streakDays={statsScreen.timeStreakDays}
+  onLegendReveal={() => setScreenLegendReady(true)}
+/>
+
       )}
     </div>
   </div>
@@ -308,14 +329,7 @@ useEffect(() => {
             <article className={styles.statsCard}>
               <header className={styles.statsCardHeader}>
   <h2 className={styles.statsCardTitle}>Score</h2>
-
-  <div className={styles.statsLegend}>
-    <span className={`${styles.statsLegendDot} ${styles.statsScoreChartLegendDotScore}`} />
-    <span className={styles.statsLegendLabel}>Score</span>
-
-    <span className={`${styles.statsLegendDot} ${styles.statsScoreChartLegendDotAverage}`} />
-    <span className={styles.statsLegendLabel}>Average</span>
-  </div>
+  <ScoreLegend animate={scoreLegendReady} />
 </header>
 
 
@@ -335,6 +349,7 @@ useEffect(() => {
         attemptedTotal={statsScore.attemptedTotal}
         passLine={90}
         height={150}
+        onLegendReveal={() => setScoreLegendReady(true)}
       />
     )}
   </div>
@@ -346,15 +361,9 @@ useEffect(() => {
 <article className={styles.statsCard}>
   <header className={styles.statsCardHeader}>
   <h2 className={styles.statsCardTitle}>Daily Progress</h2>
-
-  <div className={styles.statsLegend}>
-    <span className={`${styles.statsLegendDot} ${styles.statsLegendDotBlue}`} />
-    <span className={styles.statsLegendLabel}>Questions</span>
-
-    <span className={`${styles.statsLegendDot} ${styles.statsLegendDotAvg}`} />
-    <span className={styles.statsLegendLabel}>Avg score</span>
-  </div>
+  <DailyProgressLegend animate={dailyLegendReady} />
 </header>
+
 
 
   <div className={`${styles.statsGraphArea} ${styles.statsGraphClean}`}>
@@ -372,6 +381,7 @@ useEffect(() => {
           bestDayQuestions={statsWeekly.bestDayQuestions}
           streakDays={statsWeekly.consistencyStreakDays}
           rows={tfWeekly === "all" ? 30 : tfWeekly}
+          onLegendReveal={() => setDailyLegendReady(true)}
         />
       )}
     </div>

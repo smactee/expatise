@@ -2,9 +2,30 @@
 
 import styles from './DailyProgressChart.module.css';
 import { useOnceInMidView } from './useOnceInView.client';
-import { useEffect, useMemo, useRef, useState, useId } from 'react';
+import { useEffect, useMemo, useRef, useState, useId, type CSSProperties } from 'react';
 import { useBootSweepOnce } from './useBootSweepOnce.client';
 import { createPortal } from 'react-dom';
+
+export function DailyProgressLegend({
+  animate = true,
+  delayMs = 0,
+}: {
+  animate?: boolean;
+  delayMs?: number;
+}) {
+  return (
+    <div
+      className={`${styles.statsLegend} ${animate ? styles.waterIn : styles.waterHidden}`}
+      style={animate ? ({ animationDelay: `${delayMs}ms` } as CSSProperties) : undefined}
+    >
+      <span className={`${styles.statsLegendDot} ${styles.statsLegendDotQuestions}`} />
+      <span className={styles.statsLegendLabel}>Questions</span>
+
+      <span className={`${styles.statsLegendDot} ${styles.statsLegendDotAvg}`} />
+      <span className={styles.statsLegendLabel}>Avg score</span>
+    </div>
+  );
+}
 
 type DayRow = {
   dayStart: number;
@@ -31,8 +52,18 @@ export default function DailyProgressChart(props: {
   bestDayQuestions: number;
   streakDays: number;
   rows?: number; // default 7/30 controlled by parent
+  onLegendReveal?: () => void;
 }) {
-  const { series, bestDayQuestions, streakDays, rows = 7 } = props;
+  const { series, bestDayQuestions, streakDays, rows = 7, onLegendReveal } = props;
+
+
+  const onLegendRevealRef = useRef<(() => void) | undefined>(onLegendReveal);
+useEffect(() => {
+  onLegendRevealRef.current = onLegendReveal;
+}, [onLegendReveal]);
+
+
+
 
   const shown = useMemo(() => series.slice(-rows), [series, rows]);
 
@@ -58,7 +89,25 @@ export default function DailyProgressChart(props: {
   const lineDelayMs = 140;
   const lineDurMs = 850; // must match CSS .avgLineDraw duration
   const dotDelayMs = lineDelayMs + lineDurMs;
+  
+// must match CSS durations
+const barDurMs = 200; // matches .barRise 2000ms in your CSS
+const dotDurMs = 320;  // matches .popIn 320ms in your CSS
 
+// compute when the whole "main animation" ends
+const nBars = Math.max(1, shown.length);
+const barsEndMs = (nBars - 1) * barStaggerMs + barDurMs;
+const dotsEndMs = dotDelayMs + dotDurMs;
+
+// main end = whichever finishes last
+const mainEndMs = Math.max(barsEndMs, dotsEndMs);
+// legend after main animation
+const legendRevealMs = mainEndMs;
+// details after legend begins (this is what your metaRow uses)
+const detailsStartMs = mainEndMs;
+
+
+  
   // geometry
   const W = 340;
   const H = 110;
@@ -202,6 +251,30 @@ useEffect(() => {
 const avgPathRef = useRef<SVGPathElement | null>(null);
 const [avgLen, setAvgLen] = useState(0);
 const lensReady = avgLen > 0;
+// fire parent callback once (to show legend in header)
+const legendFiredRef = useRef(false);
+
+// reset when data window changes so parent legend can re-reveal
+useEffect(() => {
+  legendFiredRef.current = false;
+}, [series, rows]);
+
+// wait until the line length is measurable, so timing matches what the user sees
+const timelineReady = animateIn && lensReady;
+
+useEffect(() => {
+  if (!timelineReady) return;
+  if (legendFiredRef.current) return;
+
+  legendFiredRef.current = true;
+
+  const id = window.setTimeout(() => {
+    onLegendRevealRef.current?.();
+  }, legendRevealMs);
+
+  return () => window.clearTimeout(id);
+}, [timelineReady, legendRevealMs]);
+
 
 useEffect(() => {
   if (avgPathRef.current) setAvgLen(avgPathRef.current.getTotalLength());
@@ -462,14 +535,18 @@ const avgDashOffset = (1 - tReveal) * dashLen;
 })() : null}
         </div>
       </div>
-      <div className={styles.metaRow}>
-        <div className={styles.metaItem}>
-          <span className={styles.metaLabel}>Best day:</span> <b>{bestDayQuestions}</b> questions
-        </div>
-        <div className={styles.metaItem}>
-          <span className={styles.metaLabel}>Consistency streak:</span> <b>{streakDays}</b> days
-        </div>
-      </div>
+        <div
+    className={`${styles.metaRow} ${animateIn ? styles.waterIn : styles.waterHidden}`}
+    style={animateIn ? ({ animationDelay: `${detailsStartMs}ms` } as CSSProperties) : undefined}
+  >
+    <div className={styles.metaItem}>
+      <span className={styles.metaLabel}>Best day:</span> <b>{bestDayQuestions}</b> questions
+    </div>
+    <div className={styles.metaItem}>
+      <span className={styles.metaLabel}>Consistency streak:</span> <b>{streakDays}</b> days
+    </div>
+  </div>
+
     </div>
   );
 }

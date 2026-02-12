@@ -1,12 +1,33 @@
 //components/stats/ScoreChart.client.tsx
 'use client';
 
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useId, useMemo, useRef, useState, type CSSProperties } from 'react';
 import styles from './ScoreChart.module.css';
 import { useBootSweepOnce } from '@/components/stats/useBootSweepOnce.client';
 import { useOnceInMidView } from '@/components/stats/useOnceInView.client';
 import { createPortal } from 'react-dom';
 
+
+export function ScoreLegend({
+  animate = true,
+  delayMs = 0,
+}: {
+  animate?: boolean;
+  delayMs?: number;
+}) {
+  return (
+    <div
+      className={`${styles.statsLegend} ${animate ? styles.waterIn : styles.waterHidden}`}
+      style={animate ? ({ animationDelay: `${delayMs}ms` } as CSSProperties) : undefined}
+    >
+      <span className={`${styles.statsLegendDot} ${styles.statsLegendDotScore}`} />
+      <span className={styles.statsLegendLabel}>Score</span>
+
+      <span className={`${styles.statsLegendDot} ${styles.statsLegendDotAverage}`} />
+      <span className={styles.statsLegendLabel}>Average</span>
+    </div>
+  );
+}
 
 type Point = {
   t: number;
@@ -64,6 +85,7 @@ export default function ScoreChart(props: {
   attemptedTotal: number;
   passLine?: number;   // default 90
   height?: number;     // px
+  onLegendReveal?: () => void;
 }) {
   const {
     series,
@@ -76,7 +98,31 @@ export default function ScoreChart(props: {
     height = 140,
   } = props;
 
+  const { onLegendReveal } = props;
+// ✅ keep callback stable even if parent re-renders
+const onLegendRevealRef = useRef<(() => void) | undefined>(onLegendReveal);
 
+useEffect(() => {
+  onLegendRevealRef.current = onLegendReveal;
+}, [onLegendReveal]);
+
+// --- timing (single source of truth) ---
+const lineDurMs = 1200;
+const settleMs = 250;
+
+// Pass line should draw AFTER the two main lines finish
+const passDelayMs = lineDurMs + settleMs + 40;
+const passDurMs = 420;
+
+// Legend should appear AFTER pass line finishes
+const legendRevealMs = passDelayMs + passDurMs + 80;
+
+// Details after legend begins
+const detailsStartMs = legendRevealMs + 220;
+const detailsStaggerMs = 130;
+
+
+  
   // Reveal animation 0..1, once.
 // Start reveal only when there is at least 1 point.
 // (Do NOT use `model` here because model doesn't exist yet.)
@@ -94,10 +140,45 @@ const reveal = useBootSweepOnce({
   seen,
   enabled: hasAnyData && lensReady,
   segments: () => [
-    { from: 0, to: 1, durationMs: 1200, ease: easeOutCubic },
-    { from: 1, to: 1, durationMs: 250, ease: (t) => t },
+    { from: 0, to: 1, durationMs: lineDurMs, ease: easeOutCubic },
+    { from: 1, to: 1, durationMs: settleMs, ease: (t) => t },
   ],
 });
+
+const passClipId = useId().replace(/:/g, '');
+
+const passReveal = useBootSweepOnce({
+  target: 1,
+  seen,
+  enabled: hasAnyData && lensReady,
+  segments: () => [
+    { from: 0, to: 0, durationMs: passDelayMs, ease: (t) => t },
+    { from: 0, to: 1, durationMs: passDurMs, ease: easeOutCubic },
+  ],
+});
+
+const tPass = clamp(passReveal, 0, 1);
+
+
+const animateIn = seen && hasAnyData && lensReady;
+const legendFiredRef = useRef(false);
+
+useEffect(() => {
+  if (!animateIn) {
+    legendFiredRef.current = false;
+    return;
+  }
+  if (legendFiredRef.current) return;
+
+  legendFiredRef.current = true;
+
+  const id = window.setTimeout(() => {
+    onLegendRevealRef.current?.();
+  }, legendRevealMs);
+
+  return () => window.clearTimeout(id);
+}, [animateIn, legendRevealMs]); // ✅ removed onLegendReveal
+
 
 
 
@@ -307,16 +388,22 @@ const hover = activeIdx == null ? null : model.pts[activeIdx];
 
       <div className={styles.chartShell} style={{ height }}>
         <svg
+        
           className={styles.svg}
           viewBox={`0 0 ${W} ${H}`}
           preserveAspectRatio="none"
           onMouseLeave={() => {
   if (pinnedIdx == null) setHoverIdx(null);
 }}
-        >
-
+ >
+<defs>
+  <clipPath id={passClipId} clipPathUnits="userSpaceOnUse">
+    <rect x={plotLeft} y={0} width={plotW * tPass} height={H} />
+  </clipPath>
+</defs>
             {/* Y axis */}
 <line x1={plotLeft} y1={padY} x2={plotLeft} y2={H - padY} className={styles.axisLine} />
+
 
 {[
   { v: 100, strong: false },
@@ -363,15 +450,26 @@ const hover = activeIdx == null ? null : model.pts[activeIdx];
 
 
           {/* Pass line */}
-<line x1={plotLeft} y1={passY} x2={plotRight} y2={passY} className={styles.passLine} />
+<line
+  x1={plotLeft}
+  y1={passY}
+  x2={plotRight}
+  y2={passY}
+  className={styles.passLine}
+  clipPath={`url(#${passClipId})`}
+  style={{ opacity: tPass > 0 ? 1 : 0 }}
+/>
+
 <text
   x={plotRight - 4}
   y={clamp(passY - 4, 10, H - 6)}
   textAnchor="end"
   className={styles.passLabel}
+  style={{ opacity: clamp((tPass - 0.65) / 0.35, 0, 1) }} // label fades in near the end
 >
   Pass {passLine}%
 </text>
+
 
           {/* Avg line (only if enough data) */}
 {model.hasData ? (
@@ -545,20 +643,26 @@ style={{ opacity: lensReady ? 1 : 0 }}
 
 
       </div>
-<div className={styles.summaryRow}>
-        
-
+<div
+  className={`${styles.summaryRow} ${animateIn ? styles.waterIn : styles.waterHidden}`}
+  style={animateIn ? ({ animationDelay: `${detailsStartMs}ms` } as CSSProperties) : undefined}
+>
   <span className={styles.metric}><b>Avg</b> {scoreAvg}%</span>
   <span className={styles.metric}><b>Best</b> {scoreBest}%</span>
   <span className={`${styles.metric} ${styles.metricHero}`}><b>Latest</b> {scoreLatest}%</span>
   <span className={`${styles.metric} ${styles.metricMuted}`}><b>Based on</b> {attemptedTotal} answers</span>
 </div>
+
       {/* Confidence note (explicit honesty) */}
       {model.lowConfidence ? (
-        <div className={styles.confidence}>
-          Low confidence: only {attemptsCount} tests / {attemptedTotal} answers in this window.
-        </div>
-      ) : null}
+  <div
+    className={`${styles.confidence} ${animateIn ? styles.waterIn : styles.waterHidden}`}
+    style={animateIn ? ({ animationDelay: `${detailsStartMs + detailsStaggerMs}ms` } as CSSProperties) : undefined}
+  >
+    Low confidence: only {attemptsCount} tests / {attemptedTotal} answers in this window.
+  </div>
+) : null}
+
     </div>
   );
 }
