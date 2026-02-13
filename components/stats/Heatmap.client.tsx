@@ -220,22 +220,83 @@ export default function Heatmap({ data }: { data: HeatmapVM }) {
     typeof window !== 'undefined' &&
     (window.matchMedia?.('(hover: none)').matches || window.matchMedia?.('(pointer: coarse)').matches);
 
-  const { ref: inViewRef, seen } = useOnceInMidView<HTMLDivElement>();
+  // Trigger Heatmap only when the panel reaches the "middle band" of the viewport
+const panelRef = useRef<HTMLDivElement | null>(null);
+const [seen, setSeen] = useState(false);
+
+useEffect(() => {
+  if (seen) return;
+  const el = panelRef.current;
+  if (!el) return;
+
+  const io = new IntersectionObserver(
+    ([entry]) => {
+      if (entry.isIntersecting) {
+        setSeen(true);
+        io.disconnect();
+      }
+    },
+    {
+      // only fire when the element touches the center band (prevents early peeking triggers)
+      root: null,
+      rootMargin: '-45% 0px -45% 0px',
+      threshold: 0,
+    }
+  );
+
+  io.observe(el);
+  return () => io.disconnect();
+}, [seen]);
 
 
-  const [revealOn, setRevealOn] = useState(false);
 
-  useEffect(() => {
-    if (!seen) return;
-    const id = requestAnimationFrame(() => setRevealOn(true));
-    return () => cancelAnimationFrame(id);
-  }, [seen]);
+const [shellOn, setShellOn] = useState(false);
+const [revealOn, setRevealOn] = useState(false);
+
+useEffect(() => {
+  if (!seen) return;
+
+  const reduce =
+    typeof window !== 'undefined' &&
+    window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+
+  if (reduce) {
+    setShellOn(true);
+    setRevealOn(true);
+    return;
+  }
+
+  let raf1 = 0;
+  let raf2 = 0;
+
+  // Phase 1: show callout + panel first
+  raf1 = requestAnimationFrame(() => {
+    setShellOn(true);
+
+    // Phase 2: start cell waterfall AFTER shell paints
+    raf2 = requestAnimationFrame(() => setRevealOn(true));
+  });
+
+  return () => {
+    cancelAnimationFrame(raf1);
+    cancelAnimationFrame(raf2);
+  };
+}, [seen]);
+
+
 
 
   return (
     <div className={styles.wrap} ref={wrapRef}>
       {/* Callout pill */}
-      <div className={styles.calloutPill}>
+     <div
+  className={[
+    styles.calloutPill,
+    shellOn ? styles.calloutReveal : styles.calloutHidden,
+  ].join(' ')}
+>
+
+
         <div className={styles.starBadge} aria-hidden="true">★</div>
         <div className={styles.calloutText}>
           {data.best ? (
@@ -253,7 +314,14 @@ export default function Heatmap({ data }: { data: HeatmapVM }) {
       </div>
 
       {/* Soft panel */}
-      <div className={styles.panel} ref={inViewRef}>
+      <div
+  className={[
+    styles.panel,
+    shellOn ? styles.panelReveal : styles.panelHidden,
+  ].join(' ')}
+  ref={panelRef}
+>
+
         <div className={styles.matrix}>
           <div className={styles.corner} />
 
@@ -334,6 +402,7 @@ else if (cell.attemptsCount === 2) heatAlpha = 0.82;
 
 
 
+
               
 return (
   <div
@@ -358,6 +427,8 @@ return (
       ['--d' as any]: `${delayMs}ms`,
       ['--heat-alpha' as any]: heatAlpha,
     }}
+ 
+
                   onPointerDown={(e) => setPointerType((e.pointerType as any) ?? 'mouse')}
                   onMouseEnter={() => setHover({ r, c })}
                   onMouseLeave={() => setHover(null)}

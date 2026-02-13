@@ -43,6 +43,34 @@
   font-weight: 500;
 }
 
+@keyframes calloutIn {
+  0%   { opacity: 0; transform: translateY(10px) scale(0.992); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.calloutHidden {
+  opacity: 0;
+  transform: translateY(10px) scale(0.992);
+  pointer-events: none;
+}
+
+.calloutReveal {
+  animation: calloutIn 420ms cubic-bezier(0.2, 0.85, 0.2, 1) both;
+}
+
+/* Reduced motion: just show it */
+@media (prefers-reduced-motion: reduce) {
+  .calloutHidden {
+    opacity: 1;
+    transform: none;
+    pointer-events: auto;
+  }
+  .calloutReveal {
+    animation: none;
+  }
+}
+
+
 /* ===== Frosted panel ===== */
 .panel {
   position: relative;
@@ -423,6 +451,25 @@
     opacity: 1;
     transform: none;
   }
+}
+
+@keyframes shellIn {
+  0%   { opacity: 0; transform: translateY(10px) scale(0.995); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.panelHidden{
+  opacity: 0;
+  transform: translateY(10px) scale(0.995);
+}
+
+.panelReveal{
+  animation: shellIn 420ms cubic-bezier(0.2, 0.85, 0.2, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .panelHidden { opacity: 1; transform: none; }
+  .panelReveal { animation: none; }
 }
 
 /* ===== Best cell pulse ring (separate from entrance animation) ===== */

@@ -413,11 +413,11 @@ function toggleSelectAllVisible() {
   });
 }
 
-function unselectCard(id: string) {
+function toggleCardSelection(id: string) {
   setSelectedIds((prev) => {
-    if (!prev.has(id)) return prev;
     const next = new Set(prev);
-    next.delete(id);
+    if (next.has(id)) next.delete(id);
+    else next.add(id);
     return next;
   });
 }
@@ -639,17 +639,19 @@ const compiledBookmarksCount = useMemo(() => {
   key={item.id}
   className={`${styles.card} ${selectedIds.has(item.id) ? styles.cardSelected : ""}`}
   onClick={(e) => {
-    // Only do anything if this card is currently selected
-    if (!selectedIds.has(item.id)) return;
+    // Only allow toggling when you're in bulk-select mode
+    if (mode !== "bookmarks" && mode !== "mistakes") return;
+    if (selectedIds.size === 0) return;
 
-    // Ignore clicks that originate from interactive elements inside the card
+    // Ignore clicks from interactive elements inside the card
     const target = e.target as HTMLElement;
     if (target.closest("button, a, input, textarea, select, label")) return;
 
-    // ✅ unselect on tap/click
-    unselectCard(item.id);
+    // ✅ toggle select/unselect
+    toggleCardSelection(item.id);
   }}
 >
+
 
  <div className={styles.cardTop}>
   <span className={styles.qNo}>{item.number}.</span>
@@ -702,20 +704,25 @@ onClick={(e) => {
                 </div>
               )}
 
-              {/* ✅ ANSWERS */}
-              {item.type === 'ROW' && item.correctRow && (
-                <div className={styles.answerRow}>
-                  <span className={styles.answerLabel}>Answer</span>
-                  <span className={styles.answerPill}>
-  {item.correctRow === "R"
-    ? "Right"
-    : item.correctRow === "W"
-    ? "Wrong"
-    : item.correctRow}
-</span>
+{/* ✅ ANSWERS */}
+{item.type === 'ROW' && item.correctRow && (
+  <ul className={styles.optionList}>
+    {(['R', 'W'] as const).map((k) => {
+      const correct = normalizeRowChoice(item.correctRow) === k;
 
-                </div>
-              )}
+      return (
+        <li
+          key={k}
+          className={`${styles.option} ${correct ? styles.optionCorrect : ''}`}
+        >
+          <span className={styles.optionKey}>{k}.</span>
+          {k === 'R' ? 'Right' : 'Wrong'}
+        </li>
+      );
+    })}
+  </ul>
+)}
+
 
               {item.type === 'MCQ' && item.options?.length > 0 && (
                 <ul className={styles.optionList}>
@@ -799,8 +806,46 @@ onClick={(e) => {
   display: flex;
   justify-content: center;
   background: var(--color-page-bg);
-  color: var(--test-text);
+
+  /* ✅ local tokens for this screen */
+  --aq-text: rgba(0, 0, 0, 0.92);
+  --aq-muted: rgba(0, 0, 0, 0.7);
+
+  --aq-card-bg: rgba(255, 255, 255, 0.65);
+  --aq-card-border: rgba(0, 0, 0, 0.08);
+
+  --aq-option-bg: rgba(0, 0, 0, 0.04);
+  --aq-option-border: rgba(0, 0, 0, 0.06);
+
+  /* ✅ “correct answer highlight” (subtle in light mode) */
+  --aq-correct-bg: rgba(43, 124, 175, 0.10);
+  --aq-correct-border: rgba(43, 124, 175, 0.55);
+  --aq-correct-shadow: 0 10px 22px rgba(43, 124, 175, 0.18);
+
+  color: var(--aq-text);
 }
+
+:root[data-theme='dark'] .page {
+  --aq-text: rgba(255, 255, 255, 0.92);
+  --aq-muted: rgba(255, 255, 255, 0.72);
+
+  /* ✅ darker card so options can still separate */
+  --aq-card-bg: rgba(255, 255, 255, 0.08);
+  --aq-card-border: rgba(255, 255, 255, 0.10);
+
+  /* ✅ base option has its own “bar” look */
+  --aq-option-bg: rgba(255, 255, 255, 0.06);
+  --aq-option-border: rgba(255, 255, 255, 0.12);
+
+  /* ✅ stronger correct highlight in dark mode */
+  --aq-correct-bg: rgba(55, 178, 255, 0.18);
+  --aq-correct-border: rgba(55, 178, 255, 0.85);
+  --aq-correct-shadow: 0 12px 26px rgba(55, 178, 255, 0.22);
+}
+
+
+
+
 
 .frame {
   width: 100%;
@@ -962,7 +1007,10 @@ onClick={(e) => {
 .card {
   border-radius: 20px;
   padding: 14px 14px 12px;
-  background: rgba(255,255,255,0.65);
+
+  background: var(--aq-card-bg);
+  border: 1px solid var(--aq-card-border);
+
   backdrop-filter: blur(12px);
   box-shadow: 0 12px 28px rgba(15, 33, 70, 0.12);
 }
@@ -976,14 +1024,10 @@ onClick={(e) => {
 
 .qNo,
 .qType {
-  opacity: 0.8;
+  opacity: 1;
+  color: var(--aq-muted);
 }
 
-.prompt {
-  margin: 0 0 10px;
-  font-size: 15px;
-  line-height: 1.35;
-}
 
 .imageWrap {
   position: relative;
@@ -1007,12 +1051,11 @@ onClick={(e) => {
 
 .tagPill {
   font-size: 12px;
-  opacity: 0.8;
-  background: rgba(0,0,0,0.06);
+  color: var(--aq-muted);
+  background: rgba(0, 0, 0, 0.06);
   padding: 6px 8px;
   border-radius: 999px;
   margin-top: 7px;
-
 }
 
 .answerPill {
@@ -1056,18 +1099,44 @@ onClick={(e) => {
   margin-top: 10px;
 }
 
+/* base option row */
 .option {
   display: flex;
   gap: 10px;
   align-items: flex-start;
+
   padding: 10px 12px;
   border-radius: 14px;
-  background: rgba(0, 0, 0, 0.04);
+
+  background: var(--aq-option-bg);
+  border: 1px solid var(--aq-option-border);
+  color: var(--aq-text);
+
+  transition:
+    transform 120ms ease,
+    box-shadow 120ms ease,
+    border-color 120ms ease,
+    background-color 120ms ease;
+  will-change: transform;
 }
 
+.optionList {
+  list-style: none;
+  padding: 0;
+  margin: 10px 0 0;
+
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* ✅ correct = same “lift + tint + border” idea as your test page */
 .optionCorrect {
-  background: var(--color-premium-gradient-20);
-  font-weight: 500;
+  background: var(--aq-correct-bg);
+  border-color: var(--aq-correct-border);
+  box-shadow: var(--aq-correct-shadow);
+  transform: translateY(-1px);
+  font-weight: 600;
 }
 
 .optionKey {
@@ -1521,6 +1590,11 @@ const { idSet: bookmarkedSet, toggle, isBookmarked } = useBookmarks(datasetId, u
 // (keep your mistakes cleared set too if you're using it)
 const { idSet: clearedMistakesSet } = useClearedMistakes(datasetId, userKey);
 
+const advancingRef = useRef(false);
+
+// More reliable than e.detail: works even if state hasn’t re-rendered yet
+const lastTapRef = useRef<{ key: string; at: number } | null>(null);
+
 
 
 const [answers, setAnswers] = useState<Record<string, string>>({});
@@ -1820,6 +1894,12 @@ useEffect(() => {
   }
 }, [items.length, index]);
 
+// ✅ prevent lastTapRef carryover between questions (avoids accidental auto-advance)
+useEffect(() => {
+  lastTapRef.current = null;
+}, [item?.id, index]);
+
+
 
 const correctCount = useMemo(() => {
   let correct = 0;
@@ -1849,10 +1929,7 @@ const correctCount = useMemo(() => {
   return correct;
 }, [items, answers]);
 
-const advancingRef = useRef(false);
 
-// More reliable than e.detail: works even if state hasn’t re-rendered yet
-const lastTapRef = useRef<{ key: string; at: number } | null>(null);
 
 const commitAndAdvance = async (choiceKey: string) => {
   if (!items.length || !item) return;
@@ -1993,20 +2070,32 @@ useEffect(() => {
  // ✅ do NOT include selectedKey
 
 
+const DOUBLE_MS = 250;
+
 const onOptionTap = (key: string) => {
   const now = Date.now();
   const last = lastTapRef.current;
 
-  // If same option tapped twice quickly -> auto next
-  if (last && last.key === key && now - last.at < 450) {
+  // 1) If tapping a DIFFERENT option => select it (preview)
+  if (selectedKey !== key) {
+    lastTapRef.current = { key, at: now };
+    setSelectedKey(key);
+    return;
+  }
+
+  // 2) Same option tapped again:
+  //    Fast repeat => confirm + advance
+  if (last && last.key === key && now - last.at < DOUBLE_MS) {
     lastTapRef.current = null;
     void commitAndAdvance(key);
     return;
   }
 
-  lastTapRef.current = { key, at: now };
-  setSelectedKey(key);
+  // 3) Slow repeat => toggle OFF (unselect)
+  lastTapRef.current = null;
+  setSelectedKey(null);
 };
+
 
 useEffect(() => {
   if (!item?.id) return;
@@ -2197,35 +2286,23 @@ if (!item) {
 
 
   {item.type === 'MCQ' &&
-    item.options.map((opt, idx) => {
-      const key = opt.originalKey ?? String.fromCharCode(65 + idx);
-      const active = selectedKey === key;
+  item.options.map((opt, idx) => {
+    const key = opt.originalKey ?? String.fromCharCode(65 + idx);
+    const active = selectedKey === key;
 
-      return (
-        <button
-          key={opt.id}
-          type="button"
-          className={`${styles.optionBtn} ${active ? styles.optionActive : ''}`}
-          onClick={(e) => {
-  // first click selects
-  if (selectedKey !== key) {
-    setSelectedKey(key);
-    return;
-  }
+    return (
+      <button
+        key={opt.id}
+        type="button"
+        className={`${styles.optionBtn} ${active ? styles.optionActive : ''}`}
+        onClick={() => onOptionTap(key)}
+      >
+        <span className={styles.optionKey}>{key}.</span>
+        <span className={styles.optionText}>{opt.text}</span>
+      </button>
+    );
+  })}
 
-  // second click on same option advances
-  // e.detail is 1,2,3... for click count (works great on desktop)
-  if (e.detail >= 2) {
-   void commitAndAdvance(key);
-  }
-}}
-
-        >
-          <span className={styles.optionKey}>{key}.</span>
-          <span className={styles.optionText}>{opt.text}</span>
-        </button>
-      );
-    })}
 </div>
 
 
@@ -2267,6 +2344,9 @@ if (!item) {
   --test-text: rgba(255, 255, 255, 0.92);
   --test-text-muted: rgba(255, 255, 255, 0.75);
 }
+
+
+
 
 .frame {
   width: 100%;
@@ -2403,18 +2483,27 @@ if (!item) {
 
 /* Bookmark */
 .bookmarkBtn {
+  position: relative;            /* needed for ::before border */
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
   border: 0;
   background: transparent;
   cursor: pointer;
-  padding: 4px;
+  padding: 0;
 }
 
+/* the icon itself (your mask stays the same) */
 .bookmarkIcon {
   width: 24px;
   height: 24px;
   display: inline-block;
 
-  /* Use the PNG as a stencil */
   -webkit-mask-image: url("/images/test/bookmark-icon.png");
   mask-image: url("/images/test/bookmark-icon.png");
   -webkit-mask-repeat: no-repeat;
@@ -2435,6 +2524,53 @@ if (!item) {
   background: var(--color-premium-gradient);
   filter: brightness(1) contrast(1.5) saturate(2);
 }
+
+/* ===== Dark mode: Bookmark uses SAME styling as .nextBtn ===== */
+/* ===== Bookmark (MATCH My Bookmarks) ===== */
+.bookmarkBtn{
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  line-height: 1;
+  padding: 4px 6px;           /* same feel as bookmarks page */
+  border-radius: 12px;        /* harmless, helps focus ring */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bookmarkIcon{
+  width: 22px;
+  height: 22px;
+  display: inline-block;
+
+  -webkit-mask-image: url("/images/test/bookmark-icon.png");
+  mask-image: url("/images/test/bookmark-icon.png");
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+}
+
+/* Light mode OFF (same as your bookmarks page) */
+.bookmarkBtn[data-bookmarked='false'] .bookmarkIcon{
+  background: rgba(15, 23, 42, 0.95);
+}
+
+/* Dark mode OFF (so it’s visible on dark bg) */
+:root[data-theme='dark'] .bookmarkBtn[data-bookmarked='false'] .bookmarkIcon{
+  background: rgba(255,255,255,0.70);
+}
+
+/* ON (same as your bookmarks page) */
+.bookmarkBtn[data-bookmarked='true'] .bookmarkIcon{
+  background: var(--color-premium-gradient);
+  filter: brightness(1) contrast(1.5) saturate(2);
+}
+
+
 
 /* question → image */
 .imageWrap {
@@ -2511,6 +2647,13 @@ height: clamp(240px, 52vw, 340px);
 
   padding: 10px 12px;
   text-align: center;
+
+  transition:
+    transform 120ms ease,
+    box-shadow 120ms ease,
+    border-color 120ms ease,
+    background-color 120ms ease;
+  will-change: transform;
 }
 
 .optionKey {
@@ -2536,6 +2679,12 @@ height: clamp(240px, 52vw, 340px);
 .optionActive {
   border-color: rgba(43, 124, 175, 0.7);
   box-shadow: 0 10px 22px rgba(43, 124, 175, 0.18);
+
+    /* ✅ slightly more obvious than shadow alone */
+  background: rgba(43, 124, 175, 0.08);
+
+  /* ✅ subtle “lift” so deselecting is noticeable */
+  transform: translateY(-1px);
 }
 
 /* answers → next button: 30 */
@@ -4476,47 +4625,67 @@ useEffect(() => {
 
 ### app/(premium)/stats/ReadinessRing.client.tsx
 ```tsx
-//app/(premium)/stats/ReadinessRing.client.tsx
-
+// app/(premium)/stats/ReadinessRing.client.tsx
 'use client';
 
+import { useEffect, useRef } from 'react';
 import styles from './stats.module.css';
 import { useOnceInView } from '@/components/stats/useOnceInView.client';
 import { useBootSweepOnce } from '@/components/stats/useBootSweepOnce.client';
 
 export default function ReadinessRing(props: {
-  valuePct: number;          // final readiness 0..100
-  enabled: boolean;          // gate until data ready (e.g., !loading && questions loaded)
+  valuePct: number;
+  enabled: boolean;
   c1?: string;
   c2?: string;
+
+  onDone?: () => void;
 }) {
   const {
-  valuePct,
-  enabled,
-  c1 = 'rgba(255, 197, 66, 0.4)', // yellow first
-  c2 = 'rgba(43, 124, 175, 0.4)', // blue second
-} = props;
-
+    valuePct,
+    enabled,
+    c1 = 'rgba(255, 197, 66, 0.4)',
+    c2 = 'rgba(43, 124, 175, 0.4)',
+    onDone,
+  } = props;
 
   const { ref, seen } = useOnceInView<HTMLDivElement>(0.35);
+
   const pctFloat = useBootSweepOnce({
-  target: valuePct,
-  seen,
-  enabled,
-  segments: (target) => {
-    const gap = Math.abs(100 - target);
-    const settleMs = gap < 10 ? 500 : 900;
+    target: valuePct,
+    seen,
+    enabled,
+    segments: (target) => {
+      const gap = Math.abs(100 - target);
+      const settleMs = gap < 10 ? 500 : 900;
 
-    return [
-      { from: 0, to: 100, durationMs: 450, ease: (t) => 1 - Math.pow(1 - t, 3) }, // easeOutCubic
-      { from: 100, to: target, durationMs: settleMs, ease: (t) => 1 - Math.pow(1 - t, 3) },
-    ];
-  },
-});
-
+      return [
+        { from: 0, to: 100, durationMs: 450, ease: (t) => 1 - Math.pow(1 - t, 3) },
+        { from: 100, to: target, durationMs: settleMs, ease: (t) => 1 - Math.pow(1 - t, 3) },
+      ];
+    },
+  });
 
   const pct = Math.round(pctFloat);
   const fillDeg = (pctFloat / 100) * 360;
+
+  // fire onDone once when ring finishes
+  const firedRef = useRef(false);
+  useEffect(() => {
+    firedRef.current = false;
+  }, [valuePct, enabled, seen]);
+
+  useEffect(() => {
+    if (!enabled || !seen || !onDone) return;
+    if (firedRef.current) return;
+
+    const EPS = 0.01;
+    if (Math.abs(pctFloat - valuePct) <= EPS) {
+      firedRef.current = true;
+      // tiny delay lets the final frame paint before revealing below content
+      window.setTimeout(() => onDone(), 50);
+    }
+  }, [pctFloat, valuePct, enabled, seen, onDone]);
 
   return (
     <div ref={ref} className={styles.statsGaugeWrapper}>
@@ -4528,21 +4697,21 @@ export default function ReadinessRing(props: {
             from 0deg,
             ${c1} 0deg,
             ${c2} ${fillDeg}deg,
-            #e4e4e4 ${fillDeg}deg,
-            #e4e4e4 360deg
+            var(--stats-ring-track) ${fillDeg}deg,
+            var(--stats-ring-track) 360deg
           )`,
         }}
         aria-label={`License Exam Readiness ${pct}%`}
       >
-        <div
-          className={styles.statsGaugeCircleInner}
-          style={{ transform: 'scaleX(-1)' }}
-        >
-          <div className={styles.statsGaugeNumber}>{pct}</div>
-          <div className={styles.statsGaugeLabel}>
-            License Exam
-            <br />
-            Readiness
+        <div className={styles.statsGaugeCircleInner} style={{ transform: 'scaleX(-1)' }}>
+          {/* ✅ always visible (counts up during sweep) */}
+          <div className={styles.statsGaugeCenter}>
+            <div className={styles.statsGaugeNumber}>{pct}</div>
+            <div className={styles.statsGaugeLabel}>
+              License Exam
+              <br />
+              Readiness
+            </div>
           </div>
         </div>
       </div>
@@ -4580,12 +4749,11 @@ import { ROUTES } from '@/lib/routes';
 import { labelForTag } from '@/lib/qbank/tagTaxonomy';
 
 import TimeframeChips, { type Timeframe, tfShort } from '@/components/stats/TimeframeChips';
-import ScreenTimeChart7 from '@/components/stats/ScreenTimeChart7.client';
+import ScreenTimeChart, {ScreenTimeLegend} from '@/components/stats/ScreenTimeChart.client';
 
 import ReadinessRing from '@/app/(premium)/stats/ReadinessRing.client';
-import ScoreChart from '@/components/stats/ScoreChart.client';
-import WeeklyProgressChart from '@/components/stats/DailyProgressChart';
-import DailyProgressChart from '@/components/stats/DailyProgressChart';
+import ScoreChart, { ScoreLegend } from '@/components/stats/ScoreChart.client';
+import DailyProgressChart, { DailyProgressLegend } from '@/components/stats/DailyProgressChart';
 import Heatmap from '@/components/stats/Heatmap.client';
 import TopicMasteryChart from '@/components/stats/TopicMasteryChart.client';
 
@@ -4744,9 +4912,36 @@ const statsTopics = useMemo(() => {
 }, [attempts, questions, tfTopics]);
 
 
+const [readinessDone, setReadinessDone] = useState(false);
+
+const handleReadinessRingDone = () => {
+  setReadinessDone(true);
+};
+
+// Reset whenever the ring should re-run (timeframe/data changes)
+useEffect(() => {
+  setReadinessDone(false);
+}, [tfReadiness, statsReadiness.readinessPct, loading, questions.length]);
 
 
+const [screenLegendReady, setScreenLegendReady] = useState(false);
 
+useEffect(() => {
+  // reset whenever data/loading changes so it re-reveals correctly
+  setScreenLegendReady(false);
+}, [loading, attempts.length, questions.length, userKey]);
+
+const [scoreLegendReady, setScoreLegendReady] = useState(false);
+
+useEffect(() => {
+  setScoreLegendReady(false);
+}, [loading, tfScore, statsScore.attemptsCount, userKey]);
+
+const [dailyLegendReady, setDailyLegendReady] = useState(false);
+
+useEffect(() => {
+  setDailyLegendReady(false);
+}, [loading, tfWeekly, statsWeekly.attemptsCount, userKey]);
 
 
   return (
@@ -4781,43 +4976,40 @@ const statsTopics = useMemo(() => {
         {/* ==== Top Accuracy / Gauge Card ==== */}
 <section className={styles.statsSummaryCard}>
   <div className={styles.statsSummaryInner}>
-  <ReadinessRing
-    valuePct={statsReadiness.readinessPct}
-    enabled={!loading && questions.length > 0}
-  />
+    <ReadinessRing
+      valuePct={statsReadiness.readinessPct}
+      enabled={!loading && questions.length > 0}
+      onDone={handleReadinessRingDone}
+    />
 
-
-    {/* ✅ goes right here */}
+    {/* 👇 Everything below stays hidden until the ring finishes */}
     <div
-  style={{
-    fontSize: 12,
-    color: "rgba(17,24,39,0.65)",
-    textAlign: "center",
-    marginTop: 6,
-    lineHeight: 1.35,
-    
-  }}
->
-  <div className={styles.statsSummaryMeta}>
-    {tfShort(tfReadiness)} accuracy: {statsReadiness.accuracyPct}% · Tests: {statsReadiness.attemptsCount}
-  </div>
-  <div>
-    Based on {statsReadiness.attemptedTotal} questions answered
-  </div>
-</div>
+      className={styles.readinessReveal}
+      data-show={readinessDone ? '1' : '0'}
+    >
+      <div className={styles.readinessMetaBlock}>
+        <div className={styles.statsSummaryMeta}>
+          {tfShort(tfReadiness)} accuracy: {statsReadiness.accuracyPct}% · Tests:{' '}
+          {statsReadiness.attemptsCount}
+        </div>
+        <div className={styles.readinessMetaLine}>
+          Based on {statsReadiness.attemptedTotal} questions answered
+        </div>
+      </div>
 
+      <button
+        type="button"
+        className={styles.statsTestButton}
+        onClick={() => router.push('/test/real')}
+      >
+        Take a Test ▸
+      </button>
 
-    <button
-  type="button"
-  className={styles.statsTestButton}
-  onClick={() => router.push("/test/real")}
->
-  Take a Test ▸
-</button>
-<TimeframeChips value={tfReadiness} onChange={setTfReadiness} align="center" />
-
+      <TimeframeChips value={tfReadiness} onChange={setTfReadiness} align="center" />
+    </div>
   </div>
 </section>
+
 
 
 {/* ==== Big panel + stack of statistic cards ==== */}
@@ -4830,22 +5022,9 @@ const statsTopics = useMemo(() => {
 <article className={styles.statsCard}>
   <header className={styles.statsCardHeader}>
   <h2 className={styles.statsCardTitle}>Screen Time</h2>
-
-  <div className={styles.statsLegend}>
-    <span className={`${styles.statsLegendDot} ${styles.statsLegendDotYellow}`} />
-    <span className={styles.statsLegendLabel}>Test</span>
-
-    <span className={`${styles.statsLegendDot} ${styles.statsLegendDotBlue}`} />
-    <span className={styles.statsLegendLabel}>Study</span>
-
-  <span className={styles.statsLegend__screenTime__totalGradientSwatch} />
-  <span className={styles.statsLegendLabel}>Total</span>
-
-  <span className={styles.statsLegend__screenTime__avgDottedSwatch} />
-  <span className={`${styles.statsLegendLabel} ${styles.statsLegendLabelAvg}`}>7D avg</span>
+  <ScreenTimeLegend animate={screenLegendReady} />
 
 
-  </div>
 </header>
 
 
@@ -4857,12 +5036,14 @@ const statsTopics = useMemo(() => {
       {loading ? (
         "Loading…"
       ) : (
-        <ScreenTimeChart7
-          data={statsScreen.timeDailySeries}
-          height={120}
-          timedTestMinutesEstimate={Math.round(statsScreen.timeInTimedTestsSec / 60)}
-          streakDays={statsScreen.timeStreakDays}
-        />
+        <ScreenTimeChart
+  data={statsScreen.timeDailySeries}
+  height={120}
+  timedTestMinutesEstimate={Math.round(statsScreen.timeInTimedTestsSec / 60)}
+  streakDays={statsScreen.timeStreakDays}
+  onLegendReveal={() => setScreenLegendReady(true)}
+/>
+
       )}
     </div>
   </div>
@@ -4873,14 +5054,7 @@ const statsTopics = useMemo(() => {
             <article className={styles.statsCard}>
               <header className={styles.statsCardHeader}>
   <h2 className={styles.statsCardTitle}>Score</h2>
-
-  <div className={styles.statsLegend}>
-    <span className={`${styles.statsLegendDot} ${styles.statsScoreChartLegendDotScore}`} />
-    <span className={styles.statsLegendLabel}>Score</span>
-
-    <span className={`${styles.statsLegendDot} ${styles.statsScoreChartLegendDotAverage}`} />
-    <span className={styles.statsLegendLabel}>Average</span>
-  </div>
+  <ScoreLegend animate={scoreLegendReady} />
 </header>
 
 
@@ -4900,6 +5074,7 @@ const statsTopics = useMemo(() => {
         attemptedTotal={statsScore.attemptedTotal}
         passLine={90}
         height={150}
+        onLegendReveal={() => setScoreLegendReady(true)}
       />
     )}
   </div>
@@ -4911,15 +5086,9 @@ const statsTopics = useMemo(() => {
 <article className={styles.statsCard}>
   <header className={styles.statsCardHeader}>
   <h2 className={styles.statsCardTitle}>Daily Progress</h2>
-
-  <div className={styles.statsLegend}>
-    <span className={`${styles.statsLegendDot} ${styles.statsLegendDotBlue}`} />
-    <span className={styles.statsLegendLabel}>Questions</span>
-
-    <span className={`${styles.statsLegendDot} ${styles.statsLegendDotAvg}`} />
-    <span className={styles.statsLegendLabel}>Avg score</span>
-  </div>
+  <DailyProgressLegend animate={dailyLegendReady} />
 </header>
+
 
 
   <div className={`${styles.statsGraphArea} ${styles.statsGraphClean}`}>
@@ -4937,6 +5106,7 @@ const statsTopics = useMemo(() => {
           bestDayQuestions={statsWeekly.bestDayQuestions}
           streakDays={statsWeekly.consistencyStreakDays}
           rows={tfWeekly === "all" ? 30 : tfWeekly}
+          onLegendReveal={() => setDailyLegendReady(true)}
         />
       )}
     </div>
@@ -5055,7 +5225,44 @@ const statsTopics = useMemo(() => {
 ```css
 /* app/stats/stats.module.css */
 
-/* Same outer layout as Home page */
+/* ================================= */
+/* THEME VARIABLES (LIGHT DEFAULT)   */
+/* ================================= */
+:global(:root){
+  /* existing */
+  --stats-ring-track: #e4e4e4;
+  --stats-ring-number: #111827;
+  --stats-summary-meta: rgba(17,24,39,0.65);
+
+  /* ✅ Legend tokens (LIGHT) */
+  --stats-legend-text: #6b7280;
+  --stats-legend-avg-label: rgba(17,24,39,0.65);
+  --stats-legend-dotted: rgba(17,24,39,0.35);
+  --stats-legend-dot-gray: rgba(17,24,39,0.18);
+  --stats-legend-dot-dark: rgba(17,24,39,0.45);
+
+    /* ✅ Chart palette tokens (LIGHT) — needed for legends */
+  --chart-grad-cool: rgba(43, 124, 175, 0.90);   /* blue */
+  --chart-grad-warm: rgba(255, 197, 66, 0.95);   /* yellow */
+  --chart-grad: linear-gradient(
+    90deg,
+    rgba(43, 124, 175, 0.90) 0%,
+    rgba(255, 197, 66, 0.95) 100%
+  );
+
+    /* ✅ ScreenTime axis/grid tokens (LIGHT) */
+  --stats-axis-text: rgba(17,24,39,0.55);
+  --stats-grid-line: rgba(17,24,39,0.08);
+  --stats-sep-line: rgba(17,24,39,0.18);
+
+
+}
+
+
+
+/* ================================= */
+/* LAYOUT                             */
+/* ================================= */
 .page {
   min-height: 100vh;
   display: flex;
@@ -5079,41 +5286,25 @@ const statsTopics = useMemo(() => {
   margin: 24px auto 0;           /* space under the gauge */
   border-radius: 40px;           /* nice big corners */
   padding: 24px 18px 32px;       /* space for the inner cards */
-
-  /* Figma: Linear, 0% #2B7CAF → 100% #FFC542, 20% opacity */
   background: linear-gradient(
     90deg,
     rgba(43, 124, 175, 0.2) 0%,
     rgba(255, 197, 66, 0.2) 100%
   );
-
-  box-shadow: 0 20px 40px rgba(15, 33, 70, 0.16); /* optional but very Figma */
+  box-shadow: 0 20px 40px rgba(15, 33, 70, 0.16);
 }
 
 /* Column of cards inside that panel */
 .statsLongPanelInner {
   display: flex;
   flex-direction: column;
-  gap: 16px;                     /* space between the four cards */
+  gap: 16px;
 }
 
 
 /* ================================= */
-/* STATS PAGE                        */
+/* SUMMARY (READINESS RING)           */
 /* ================================= */
-:root{
-  --stats-ring-track: #e4e4e4;          /* light mode track */
-  --stats-ring-number: #111827;         /* light mode number */
-  --stats-summary-meta: rgba(17,24,39,0.65);
-}
-
-:root[data-theme="dark"]{
-  --stats-ring-track: rgba(255,255,255,0.22);  /* ✅ light gray track wedge */
-  --stats-ring-number: #e5e7eb;                /* ✅ light gray “78” */
-  --stats-summary-meta: rgba(255,255,255,0.70);/* ✅ fixes dark meta text too */
-}
-
-/* Top accuracy / gauge card */
 .statsSummaryCard {
   margin-top: 16px;
   width: 100%;
@@ -5129,7 +5320,7 @@ const statsTopics = useMemo(() => {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 18px;
+  gap: 10px; /* was 18px (tighter spacing) */
 }
 
 .statsGaugeWrapper {
@@ -5144,12 +5335,11 @@ const statsTopics = useMemo(() => {
   height: 220px;
   border-radius: 999px;
   background: conic-gradient(
-  from 0deg,
-  #f7d36b 0deg,
-  #f7d36b 220deg,
-  #70c1ff 320deg,
-  #e4e4e4 360deg
-);
+    from 0deg,
+    #f7d36b 0deg 220deg,
+    #70c1ff 220deg 320deg,
+    var(--stats-ring-track) 320deg 360deg
+  );
 
   display: flex;
   align-items: center;
@@ -5166,6 +5356,7 @@ const statsTopics = useMemo(() => {
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  position: relative;
 }
 
 .statsGaugeNumber{
@@ -5183,31 +5374,99 @@ const statsTopics = useMemo(() => {
   text-align: center;
 }
 
+/* Center content is hidden until the ring animation finishes */
+.statsGaugeCenter {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.statsGaugeNumber {
+  width: 100%;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Meta text under ring */
+.statsSummaryMeta{
+  margin-top: -6px;
+  margin-bottom: -2px;
+  font-size: 12px;
+  line-height: 1.25;
+  color: var(--stats-summary-meta);
+  text-align: center;
+}
+
 /* “Test” pill button */
 .statsTestButton {
-  margin-top: 8px;
-  width: 122px;              /* Figma width */
-  height: 29px;              /* Figma height */
-
+  margin-top: 0; /* was 8px (tighter) */
+  width: 122px;
+  height: 29px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-
-  border-radius: 999px;      /* full pill */
+  border-radius: 999px;
   border: 1px solid var(--color-logout-border);
-  /* Same gradient as Premium / Logout */
   background: var(--color-premium-gradient);
-
   font-size: 14px;
   font-weight: 600;
-  color: #000000;            /* matches Figma “Selection color: 000000” */
+  color: #000000;
   cursor: pointer;
-
   box-shadow: 0 8px 18px rgba(15, 33, 70, 0.2);
 }
 
+/* Reveals the meta/button/chips only after ring finishes */
+.readinessReveal {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
 
-/* Stack of cards underneath */
+/* Default: hidden */
+.readinessReveal > * {
+  opacity: 0;
+  transform: translateY(-6px);
+  pointer-events: none;
+}
+
+/* When data-show="1": reveal children top -> bottom */
+.readinessReveal[data-show='1'] > * {
+  animation: readinessFadeIn 260ms ease forwards;
+  pointer-events: auto;
+}
+
+.readinessReveal[data-show='1'] > :nth-child(1) { animation-delay: 0ms; }
+.readinessReveal[data-show='1'] > :nth-child(2) { animation-delay: 140ms; }
+.readinessReveal[data-show='1'] > :nth-child(3) { animation-delay: 280ms; }
+
+@keyframes readinessFadeIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.readinessMetaBlock {
+  font-size: 12px;
+  text-align: center;
+  line-height: 1.35;
+}
+
+.readinessMetaLine {
+  font-size: 12px;
+  text-align: center;
+}
+
+
+/* ================================= */
+/* CARDS + GRAPH CONTAINERS           */
+/* ================================= */
 .statsBlocks {
   margin-top: 24px;
   display: flex;
@@ -5215,18 +5474,16 @@ const statsTopics = useMemo(() => {
   gap: 16px;
 }
 
-/* Generic stats card container */
 .statsCard {
   border-radius: 28px;
   padding: 18px 18px 20px;
   background: #f5fbff;
-  box-shadow:  0 18px 45px rgba(30, 80, 120, 0.18),
+  box-shadow:
+    0 18px 45px rgba(30, 80, 120, 0.18),
     0 6px 18px rgba(30, 80, 120, 0.10),
     inset 0 2px 10px rgba(255,255,255,0.65),
     inset 0 -10px 18px rgba(0,0,0,0.05);
 }
-
-
 
 .statsCardHeader {
   display: flex;
@@ -5240,46 +5497,6 @@ const statsTopics = useMemo(() => {
   font-size: 20px;
   font-weight: 700;
   color: #222435;
-}
-
-/* Legend “Global / You” */
-.statsLegend {
-  margin-left: auto;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 11px;
-  color: #6b7280;
-}
-
-.statsLegendDot {
-  display: inline-block;
-  width: 8px;
-  height: 8px;
-  border-radius: 999px;
-  flex: 0 0 auto;
-}
-
-.statsLegendDotBlue {
-  background: rgba(43,124,175,0.4);
-}
-
-.statsScoreChartLegendDotScore {
-  background: var(--chart-grad-cool);
-}
-
-.statsScoreChartLegendDotAverage {
-  background: var(--chart-grad-warm);
-}
-
-.statsLegendDotAvg {
-  background: var(--chart-grad);
-}
-.statsLegendDotGray { background: rgba(17, 24, 39, 0.18); }
-.statsLegendDotDark { background: rgba(17, 24, 39, 0.45); }
-
-.statsLegendLabel {
-  white-space: nowrap;
 }
 
 /* Graph area placeholder */
@@ -5306,9 +5523,107 @@ const statsTopics = useMemo(() => {
   color: #9ca3af;
 }
 
-/* “Review Your Mistakes” button at bottom */
+/* Used to remove placeholder/debug box look for finished chart */
+.statsGraphClean {
+  border: none !important;
+  outline: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+.statsGraphPlaceholder.statsGraphClean {
+  border: none !important;
+  background: transparent !important;
+  padding: 0 !important;
+}
+
+
+/* ================================= */
+/* LEGENDS + DOTS                     */
+/* ================================= */
+.statsLegend {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: var(--stats-legend-text);
+}
+
+.statsLegendDot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  flex: 0 0 auto;
+}
+
+.statsLegendLabel {
+  white-space: nowrap;
+  color: inherit;
+}
+
+
+
+.statsLegendDotBlue { background: var(--chart-grad-cool, rgba(43, 124, 175, 0.90));
+}
+.statsLegendDotYellow { background: var(--chart-grad-warm, rgba(255, 197, 66, 0.95));
+}
+
+.statsScoreChartLegendDotScore { background: var(--chart-grad-cool); }
+.statsScoreChartLegendDotAverage { background: var(--chart-grad-warm); }
+
+.statsLegendDotAvg {
+  background: var(
+    --chart-grad,
+    linear-gradient(
+      90deg,
+      rgba(43, 124, 175, 0.90) 0%,
+      rgba(255, 197, 66, 0.95) 100%
+    )
+  );
+}
+.statsLegendDotGray { background: var(--stats-legend-dot-gray); }
+.statsLegendDotDark { background: var(--stats-legend-dot-dark); }
+/* Screen-time legend swatches */
+
+
+
+/* ================================= */
+/* HEADER ROWS + ACTION BUTTONS       */
+/* ================================= */
+.statsCardHeaderRow{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.statsCardActionBtn{
+  flex: 0 0 auto;
+  border-radius: 999px;
+  padding: 8px 12px;
+  border: 1px solid rgba(148,163,184,0.45);
+  background: var(--color-premium-gradient-20);
+  box-shadow: 0 10px 20px rgba(15,33,70,0.10);
+  font-size: 12px;
+  font-weight: 800;
+  color: rgba(17,24,39,0.78);
+  cursor: pointer;
+  user-select: none;
+}
+
+.statsCardActionBtn:disabled{
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+
+/* ================================= */
+/* REVIEW / QUIZ / RESET BUTTONS      */
+/* ================================= */
 .statsReviewWrapper {
-  margin: 24px 0 96px; /* extra bottom room for nav bar */
+  margin: 24px 0 96px;
   display: flex;
   justify-content: center;
 }
@@ -5327,212 +5642,21 @@ const statsTopics = useMemo(() => {
   cursor: pointer;
 }
 
-@media (min-width: 768px) {
-  .statsSummaryCard {
-    margin-top: 24px;
-  }
-}
-
-
-
-/* ========================= */
-/* DARK MODE OVERRIDES ONLY  */
-/* ========================= */
-
-:root[data-theme='dark'] .page {
-  background:
-    radial-gradient(circle at top, rgba(15, 23, 42, 0.7), transparent 55%),
-    #050816;
-  color: #f9fafb;
-}
-
-/* Top summary / gauge card */
-:root[data-theme='dark'] .statsSummaryCard {
-  background:
-    linear-gradient(
-      135deg,
-      rgba(43, 124, 175, 0.35) 0%,
-      rgba(255, 197, 66, 0.35) 100%
-    ),
-    #111827;
-  color: #f9fafb;
-}
-
-/* Gauge inner + text */
-:root[data-theme='dark'] .statsGaugeCircleInner {
-  background: #0b1020;
-}
-
-:root[data-theme='dark'] .statsGaugeNumber {
-  color: #f9fafb;
-}
-
-:root[data-theme='dark'] .statsGaugeLabel {
-color: var(--stats-ring-number)}
-
-/* Big panel behind the stack of cards */
-:root[data-theme='dark'] .statsLongPanel {
-  background:
-    linear-gradient(
-      90deg,
-      rgba(43, 124, 175, 0.35) 0%,
-      rgba(255, 197, 66, 0.25) 100%
-    ),
-    #0b1020;
-  box-shadow: 0 20px 40px rgba(15, 23, 42, 0.55);
-}
-
-/* Individual stat cards */
-:root[data-theme='dark'] .statsCard {
-  background: #111827;
-  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.55);
-  color: #f9fafb;
-}
-
-:root[data-theme='dark'] .statsCardTitle {
-  color: #f9fafb;
-}
-
-:root[data-theme='dark'] .statsLegend {
-  color: #9ca3af;
-}
-
-/* Graph area placeholder */
-:root[data-theme='dark'] .statsGraphArea {
-  background: linear-gradient(
-    180deg,
-    rgba(43, 124, 175, 0.18),
-    rgba(2, 6, 23, 0.92)
-  );
-}
-
-:root[data-theme='dark'] .statsGraphPlaceholder {
-  border: 1px dashed rgba(148, 163, 184, 0.35);
-  color: #9ca3af;
-}
-
-/* Buttons (avoid relying on light-theme-only CSS vars) */
-:root[data-theme='dark'] .statsTestButton,
-:root[data-theme='dark'] .statsReviewButton,
-:root[data-theme='dark'] .resetBtnFixed {
-  background: linear-gradient(
-    90deg,
-    rgba(43, 124, 175, 0.4) 0%,
-    rgba(255, 197, 66, 0.4) 100%
-  );
-  border-color: #d2c79a;
-  color: #f9fafb;
-}
-
-
-/* Make the overall vertical spacing tighter */
-.statsSummaryInner {
-  gap: 10px; /* was 18px */
-}
-
-/* Remove extra button spacing */
-.statsTestButton {
-  margin-top: 0; /* was 8px */
-}
-
-/* The new meta text block */
-.statsSummaryMeta{
-  margin-top: -6px;
-  margin-bottom: -2px;
-  font-size: 12px;
-  line-height: 1.25;
-  color: var(--stats-summary-meta);
-  text-align: center;
-}
-
-
-
-/* Used to remove the placeholder/debug box look for a finished chart */
-.statsGraphClean {
-  border: none !important;
-  outline: none !important;
-  background: transparent !important;
-  box-shadow: none !important;
-  padding: 0 !important;
-}
-
-/* Stronger: when both classes are present on the same element */
-.statsGraphPlaceholder.statsGraphClean {
-  border: none !important;
-  background: transparent !important;
-  padding: 0 !important;
-}
-
-.statsLegend__screenTime__testDot { background: rgba(255, 197, 66, 0.95); }
-.statsLegend__screenTime__studyDot { background: rgba(43, 124, 175, 0.90); }
-
-.statsLegend__screenTime__totalGradientSwatch{
-  width: 18px;
-  height: 6px;
-  border-radius: 999px;
-  background: var(--chart-grad);
-  opacity: 0.9;
-  display: inline-block;
-}
-
-.statsLegend__screenTime__avgDottedSwatch{
-  width: 18px;
-  height: 0;
-  border-top: 2px dotted rgba(17,24,39,0.35);
-  display: inline-block;
-  transform: translateY(-1px);
-}
-
-
-.statsCardHeaderRow{
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-}
-
-.statsCardActionBtn{
-  flex: 0 0 auto;
-  border-radius: 999px;
-  padding: 8px 12px;
-
-  border: 1px solid rgba(148,163,184,0.45);
-  background: var(--color-premium-gradient-20);
-  box-shadow: 0 10px 20px rgba(15,33,70,0.10);
-
-  font-size: 12px;
-  font-weight: 800;
-  color: rgba(17,24,39,0.78);
-
-  cursor: pointer;
-  user-select: none;
-}
-
-.statsCardActionBtn:disabled{
-  opacity: 0.45;
-  cursor: not-allowed;
-}
-
 .quizBtn {
   height: 40px;
   padding: 0 16px;
   border-radius: 16px;
-
   border: 1px solid var(--color-logout-border);
   background: var(--color-premium-gradient);
   box-shadow: 0 18px 40px rgba(15, 33, 70, 0.26);
-
   font-size: 14px;
   font-weight: 700;
   color: var(--color-heading-card);
-
   text-decoration: none;
   cursor: pointer;
-
   display: inline-flex;
   align-items: center;
   justify-content: center;
-
   white-space: nowrap;
 }
 
@@ -5544,7 +5668,6 @@ color: var(--stats-ring-number)}
   margin-bottom: 12px;
 }
 
-/* subtle “danger-ish” button that still matches your UI */
 .resetBtn{
   border: 1px solid rgba(17,24,39,0.12);
   background: rgba(255,255,255,0.65);
@@ -5566,12 +5689,10 @@ color: var(--stats-ring-number)}
   right: calc(env(safe-area-inset-right, 0px) + 10px);
   z-index: 9999;
 
-  /* same “family” as .statsReviewButton */
   border: 1px solid var(--color-logout-border);
   background: var(--color-premium-gradient);
   box-shadow: 0 18px 40px rgba(15, 33, 70, 0.22);
 
-  /* compact version (top bar friendly) */
   height: 36px;
   padding: 0 14px;
   border-radius: 18px;
@@ -5591,66 +5712,141 @@ color: var(--stats-ring-number)}
   transform: translateY(1px);
 }
 
-/* Topic Mastery text in dark mode */
+
+/* ================================= */
+/* TOPIC MASTERY                      */
+/* ================================= */
 .topicMasteryArea {
   color: #111827; /* light default */
 }
 
-:root[data-theme='dark'] .topicMasteryArea {
-  color: #f9fafb; /* make text white */
+
+/* ================================= */
+/* RESPONSIVE                         */
+/* ================================= */
+@media (min-width: 768px) {
+  .statsSummaryCard {
+    margin-top: 24px;
+  }
 }
 
-/* If TopicMasteryChart renders any SVG text labels */
+
+
+/* ====================================================== */
+/* DARK MODE OVERRIDES (KEEP EVERYTHING DARK DOWN HERE)   */
+/* ====================================================== */
+
+/* Dark theme variables */
+:global(html[data-theme="dark"]),
+:global(body[data-theme="dark"]){
+  /* existing */
+  --stats-ring-track: #101827;
+  --stats-ring-number: #e5e7eb;
+  --stats-summary-meta: rgba(255,255,255,0.70);
+
+  /* ✅ Legend tokens (DARK) */
+  --stats-legend-text: #9ca3af;
+  --stats-legend-avg-label: rgba(255,255,255,0.82);
+  --stats-legend-dotted: rgba(255,255,255,0.35);
+  --stats-legend-dot-gray: rgba(255,255,255,0.18);
+  --stats-legend-dot-dark: rgba(255,255,255,0.45);
+
+    /* ✅ ScreenTime axis/grid tokens (DARK) */
+  --stats-axis-text: rgba(255,255,255,0.72);
+  --stats-grid-line: rgba(255,255,255,0.10);
+  --stats-sep-line: rgba(255,255,255,0.18);
+
+}
+
+
+:root[data-theme='dark'] .page {
+  background:
+    radial-gradient(circle at top, rgba(15, 23, 42, 0.7), transparent 55%),
+    #050816;
+  color: #f9fafb;
+}
+
+:root[data-theme='dark'] .statsSummaryCard {
+  background:
+    linear-gradient(
+      135deg,
+      rgba(43, 124, 175, 0.35) 0%,
+      rgba(255, 197, 66, 0.35) 100%
+    ),
+    #111827;
+  color: #f9fafb;
+}
+
+:root[data-theme='dark'] .statsGaugeCircleInner {
+  background: #0b1020;
+}
+
+:root[data-theme='dark'] .statsGaugeNumber {
+  color: #f9fafb;
+}
+
+:root[data-theme='dark'] .statsGaugeLabel {
+  color: var(--stats-ring-number);
+}
+
+:root[data-theme='dark'] .statsLongPanel {
+  background:
+    linear-gradient(
+      90deg,
+      rgba(43, 124, 175, 0.35) 0%,
+      rgba(255, 197, 66, 0.25) 100%
+    ),
+    #0b1020;
+  box-shadow: 0 20px 40px rgba(15, 23, 42, 0.55);
+}
+
+:root[data-theme='dark'] .statsCard {
+  background: #111827;
+  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.55);
+  color: #f9fafb;
+}
+
+:root[data-theme='dark'] .statsCardTitle {
+  color: #f9fafb;
+}
+
+:root[data-theme='dark'] .statsGraphArea {
+  background: linear-gradient(
+    180deg,
+    rgba(43, 124, 175, 0.18),
+    rgba(2, 6, 23, 0.92)
+  );
+}
+
+:root[data-theme='dark'] .statsGraphPlaceholder {
+  border: 1px dashed rgba(148, 163, 184, 0.35);
+  color: #9ca3af;
+}
+
+/* Buttons */
+:root[data-theme='dark'] .statsTestButton,
+:root[data-theme='dark'] .statsReviewButton,
+:root[data-theme='dark'] .resetBtnFixed {
+  background: linear-gradient(
+    90deg,
+    rgba(43, 124, 175, 0.4) 0%,
+    rgba(255, 197, 66, 0.4) 100%
+  );
+  border-color: #d2c79a;
+  color: #f9fafb;
+}
+
+/* Topic Mastery text + SVG text */
+:root[data-theme='dark'] .topicMasteryArea {
+  color: #f9fafb;
+}
 :root[data-theme='dark'] .topicMasteryArea svg text {
   fill: #f9fafb;
 }
-
-/* Common inline elements inside the chart */
 :root[data-theme='dark'] .topicMasteryArea :is(p, span, small, strong, em, label) {
   color: #f9fafb;
 }
 
-:root[data-theme="dark"] .statsLegendLabelAvg{
-  color: rgba(255,255,255,0.82);
-}
-:root[data-theme="dark"] .screenTimeChart svg text{
-  fill: rgba(255,255,255,0.72) !important;
-}
-
-
-/* make sure Test exists */
-.statsLegendDotYellow {
-  background:var(--chart-grad-warm);
-}
-
-/* you already have this, keep it */
-.statsLegendDotBlue {
-  background: var(--chart-grad-cool);
-}
-
-/* Total (line) swatch = your warm→cool gradient */
-.statsLegend__screenTime__totalLineSwatch{
-  width: 18px;
-  height: 6px;
-  border-radius: 999px;
-  background: var(--chart-grad);
-  opacity: 0.9;
-  display: inline-block;
-}
-
-/* Total (area) swatch = match your “mountain fill” look */
-.statsLegend__screenTime__totalAreaSwatch{
-  width: 18px;
-  height: 10px;
-  border-radius: 6px;
-  background: linear-gradient(
-    90deg,
-    rgba(43, 124, 175, 0.28) 0%,
-    rgba(61, 140, 213, 0) 100%
-  );
-  opacity: 0.9;
-  display: inline-block;
-}
 
 ```
 
@@ -5753,6 +5949,41 @@ color: var(--stats-ring-number)}
   cursor: pointer;
 }
 
+:root[data-theme='dark'] .page {
+  background:
+    radial-gradient(circle at top, rgba(15, 23, 42, 0.7), transparent 55%),
+    #050816;
+}
+
+:root[data-theme='dark'] .card {
+  background: rgba(2, 6, 23, 0.72);
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+}
+
+:root[data-theme='dark'] .section {
+  border-top-color: rgba(148, 163, 184, 0.18);
+}
+
+.input {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1px solid rgba(0,0,0,0.15);
+  outline: none;
+  margin-bottom: 10px;
+  background: rgba(255,255,255,0.9);
+
+  color: #111827;                 /* ✅ typed text */
+  caret-color: #111827;
+  -webkit-text-fill-color: #111827; /* ✅ safari/iOS */
+}
+
+.input::placeholder {
+  color: rgba(17, 24, 39, 0.45);          /* ✅ placeholder */
+  -webkit-text-fill-color: rgba(17, 24, 39, 0.45);
+}
+
 ```
 
 ### app/account-security/page.tsx
@@ -5764,6 +5995,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import styles from './account-security.module.css';
 import { useAuthStatus } from '../../components/useAuthStatus';
+import BackButton from '../../components/BackButton';
 
 export default function AccountSecurityPage() {
   const router = useRouter();
@@ -5880,9 +6112,7 @@ export default function AccountSecurityPage() {
   return (
     <main className={styles.page}>
       <div className={styles.card}>
-        <button className={styles.backBtn} onClick={() => router.back()}>
-          ‹ Back
-        </button>
+        <BackButton />
 
         <h1 className={styles.title}>Change Email / Password</h1>
 
@@ -7022,24 +7252,99 @@ export default function CheckoutSuccessPage() {
 
 ```
 
+### app/coming-soon/Backlink.client.tsx
+```tsx
+'use client';
+
+import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
+
+function safeDecode(v: string) {
+  try {
+    return decodeURIComponent(v);
+  } catch {
+    return v;
+  }
+}
+
+function isSafeInternalPath(p: string) {
+  return typeof p === 'string' && p.startsWith('/');
+}
+
+export default function BackLink({ fallbackHref = '/' }: { fallbackHref?: string }) {
+  const sp = useSearchParams();
+
+  // 1) Prefer explicit returnTo in URL
+  const param = sp.get('returnTo') ?? '';
+  let candidate = param ? safeDecode(param) : '';
+
+  // 2) If missing, use recent sessionStorage fallback (valid for 10 minutes)
+  if (!candidate) {
+    try {
+      const ts = Number(sessionStorage.getItem('expatise:returnTo:ts') ?? 0);
+      const saved = sessionStorage.getItem('expatise:returnTo') ?? '';
+      const fresh = ts > 0 && Date.now() - ts < 10 * 60 * 1000;
+      if (fresh) candidate = saved;
+    } catch {
+      // ignore
+    }
+  }
+
+  const href = isSafeInternalPath(candidate) ? candidate : fallbackHref;
+
+  return <Link href={href}>← Back</Link>;
+}
+
+```
+
 ### app/coming-soon/page.tsx
 ```tsx
-import Link from "next/link";
+// app/coming-soon/page.tsx
+import BackButton from "@/components/BackButton";
 
 type Props = {
-  searchParams?: { feature?: string };
+  searchParams?: { feature?: string; returnTo?: string };
 };
 
+function safeReturnTo(raw: string | undefined) {
+  if (!raw) return "/profile";
+
+  let decoded = raw;
+  try {
+    decoded = decodeURIComponent(raw);
+  } catch {
+    // ignore
+  }
+
+  // ✅ If it's already a path, accept it
+  if (decoded.startsWith("/")) return decoded;
+
+  // ✅ If it's a full URL (http://localhost:3000/profile), strip to pathname safely
+  try {
+    const u = new URL(decoded);
+    const path = `${u.pathname}${u.search}${u.hash}`;
+    return path.startsWith("/") ? path : "/profile";
+  } catch {
+    return "/profile";
+  }
+}
+
 export default function ComingSoonPage({ searchParams }: Props) {
-  const feature = searchParams?.feature ? decodeURIComponent(searchParams.feature) : "This feature";
+  const feature = searchParams?.feature
+    ? decodeURIComponent(searchParams.feature)
+    : "This feature";
+
+  const backHref = safeReturnTo(searchParams?.returnTo);
 
   return (
     <main style={{ padding: 24 }}>
+      {/* ✅ top-left arrow uses fallbackHref so it NEVER dumps to Home */}
+      <BackButton fallbackHref={backHref} />
+
       <h1 style={{ fontSize: 24, fontWeight: 700 }}>Coming Soon</h1>
       <p style={{ marginTop: 12 }}>{feature} is not ready yet.</p>
 
       <div style={{ marginTop: 16 }}>
-        <Link href="/">← Back to Home</Link>
       </div>
     </main>
   );
@@ -9442,6 +9747,111 @@ export default function OnboardingPage() {
   box-shadow: 0 16px 40px rgba(15, 23, 42, 0.75);
 }
 
+/* ========================= */
+/* TEST MODAL — DARK MODE     */
+/* ========================= */
+
+:root[data-theme='dark'] .testModalBackdrop {
+  /* darker + closer to your app vibe */
+  background: rgba(2, 6, 23, 0.72);
+  backdrop-filter: blur(10px);
+}
+
+:root[data-theme='dark'] .testModalSheet {
+  /* match your common dark background */
+  background:
+    radial-gradient(circle at top, rgba(15, 23, 42, 0.75), transparent 55%),
+    #050816;
+
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  box-shadow: 0 28px 80px rgba(0, 0, 0, 0.55);
+  color: rgba(255, 255, 255, 0.92);
+}
+
+/* Header card inside modal */
+:root[data-theme='dark'] .testModalHeaderCard {
+  background:
+    linear-gradient(
+      135deg,
+      rgba(43, 124, 175, 0.22) 0%,
+      rgba(255, 197, 66, 0.16) 100%
+    ),
+    rgba(17, 24, 39, 0.72);
+
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
+}
+
+:root[data-theme='dark'] .testModalGreetingText {
+  color: rgba(255, 255, 255, 0.72);
+}
+
+:root[data-theme='dark'] .testModalName {
+  color: rgba(255, 255, 255, 0.94);
+}
+
+:root[data-theme='dark'] .testModalSubtext {
+  color: rgba(255, 255, 255, 0.65);
+}
+
+/* Main card */
+:root[data-theme='dark'] .testModalMainCard {
+  background:
+    linear-gradient(
+      135deg,
+      rgba(43, 124, 175, 0.22) 0%,
+      rgba(255, 197, 66, 0.16) 100%
+    ),
+    #111827;
+
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  box-shadow: 0 18px 55px rgba(0, 0, 0, 0.45);
+}
+
+:root[data-theme='dark'] .testModalTitle {
+  color: rgba(255, 255, 255, 0.94);
+}
+
+:root[data-theme='dark'] .testModalTitle span {
+  /* keep the “Test?” highlight feeling but readable on dark */
+  color: #37B2FF;
+}
+
+:root[data-theme='dark'] .testModalDescription {
+  color: rgba(255, 255, 255, 0.72);
+}
+
+/* Date / time boxes */
+:root[data-theme='dark'] .testModalDateBox,
+:root[data-theme='dark'] .testModalTimeBox {
+  background: rgba(2, 6, 23, 0.78);
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.45);
+}
+
+:root[data-theme='dark'] .testModalDateLabel {
+  color: rgba(255, 255, 255, 0.55);
+}
+
+:root[data-theme='dark'] .testModalDateValue {
+  color: rgba(255, 255, 255, 0.92);
+}
+
+/* Buttons */
+:root[data-theme='dark'] .testModalPrimaryButton {
+  background: linear-gradient(
+    90deg,
+    rgba(43, 124, 175, 0.35) 0%,
+    rgba(255, 197, 66, 0.35) 100%
+  );
+  border-color: rgba(210, 199, 154, 0.55);
+  color: rgba(255, 255, 255, 0.92);
+}
+
+:root[data-theme='dark'] .testModalSecondaryButton {
+  color: rgba(255, 255, 255, 0.70);
+}
+
 ```
 
 ### app/page.tsx
@@ -10648,7 +11058,7 @@ import BottomNav from '../../components/BottomNav';
 import { useTheme } from '../../components/ThemeProvider';
 import { useUserProfile } from '../../components/UserProfile';
 import { UserProfileProvider } from '../../components/UserProfile';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname, useSearchParams  } from 'next/navigation';
 import { useAuthStatus } from '../../components/useAuthStatus';
 import { isValidEmail } from '../../lib/auth';
 import BackButton from '../../components/BackButton';
@@ -10768,6 +11178,9 @@ const handleNameBlur = (e: React.FocusEvent<HTMLSpanElement>) => {
 
 const router = useRouter();
 const [loggingOut, setLoggingOut] = useState(false);
+const pathname = usePathname();
+const sp = useSearchParams();
+
 
 const handleLogout = async () => {
   if (loggingOut) return;
@@ -10816,6 +11229,15 @@ const handleSave = async (e: React.SyntheticEvent) => {
   }
 };
 
+
+const goComingSoon = (feature: string) => {
+  const qs = sp?.toString();
+  const returnTo = `${pathname}${qs ? `?${qs}` : ''}`;
+
+  router.push(
+    `/coming-soon?feature=${encodeURIComponent(feature)}&returnTo=${encodeURIComponent(returnTo)}`
+  );
+};
 
 
 
@@ -10995,7 +11417,11 @@ const handleSave = async (e: React.SyntheticEvent) => {
 )}
 
 
-        <button className={styles.settingsRow}>
+       <button
+  type="button"
+  className={styles.settingsRow}
+  onClick={(e) => goComingSoon("Delete Account")}
+>
           <div className={styles.settingsLeft}>
             <span className={styles.settingsIcon}>
               <Image 
@@ -11005,12 +11431,16 @@ const handleSave = async (e: React.SyntheticEvent) => {
                 height={24}
               />
             </span>
-            <span className={styles.settingsLabel}>Privacy Policy</span>
+            <span className={styles.settingsLabel}>Delete Account</span>
           </div>
           <span className={styles.chevron}>›</span>
         </button>
 
-        <button className={styles.settingsRow}>
+        <button
+  type="button"
+  className={styles.settingsRow}
+  onClick={(e) => goComingSoon("Languages")}
+>
           <div className={styles.settingsLeft}>
             <span className={styles.settingsIcon}>
               <Image 
@@ -11020,14 +11450,18 @@ const handleSave = async (e: React.SyntheticEvent) => {
                 height={24}
               />
             </span>
-            <span className={styles.settingsLabel}>About us</span>
+            <span className={styles.settingsLabel}>Languages</span>
           </div>
           <span className={styles.chevron}>›</span>
         </button>
 
 
 
-        <button className={styles.settingsRow}>
+        <button
+  type="button"
+  className={styles.settingsRow}
+  onClick={(e) => goComingSoon("Notifications")}
+>
           <div className={styles.settingsLeft}>
             <span className={styles.settingsIcon}>
               <Image 
@@ -11037,7 +11471,7 @@ const handleSave = async (e: React.SyntheticEvent) => {
                 height={24}
               />
             </span>
-            <span className={styles.settingsLabel}>Exam Registration</span>
+            <span className={styles.settingsLabel}>Notifications</span>
           </div>
           <span className={styles.chevron}>›</span>
         </button>
@@ -11669,6 +12103,21 @@ const handleSave = async (e: React.SyntheticEvent) => {
   display: block;
   text-align: center;
   opacity: 0.95;
+}
+
+/* Toast readability in DARK MODE */
+:root[data-theme='dark'] .toastCard {
+  /* same vibe as Save button */
+  background:
+    var(--color-premium-gradient),
+    rgba(17, 24, 39, 0.92); /* dark base so gradient pops */
+
+  border: 1px solid rgba(210, 199, 154, 0.55);
+  color: rgba(255, 255, 255, 0.95);
+}
+
+:root[data-theme='dark'] .toastIcon {
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.55));
 }
 
 ```
@@ -12961,31 +13410,66 @@ if (modeId === "mistakes" && !didAutoClearRef.current) {
 
 ### components/BackButton.tsx
 ```tsx
+// components/BackButton.tsx
+
 'use client';
 
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import type { CSSProperties } from 'react';
 import styles from './BackButton.module.css';
 
 type BackButtonProps = {
   onClick?: () => void;                 // optional override (modal close)
-  variant?: 'fixed' | 'inline';         // default keeps your current behavior
+  variant?: 'fixed' | 'inline';
   ariaLabel?: string;
-  style?: CSSProperties;                // optional extra styles if needed
+  style?: CSSProperties;
+
+  // NEW (optional): if there is no history + no returnTo, where to go
+  fallbackHref?: string;
 };
+
+function safeDecode(v: string) {
+  try {
+    return decodeURIComponent(v);
+  } catch {
+    return v;
+  }
+}
 
 export default function BackButton({
   onClick,
   variant = 'fixed',
   ariaLabel = 'Back',
   style,
+  fallbackHref = '/',
 }: BackButtonProps) {
   const router = useRouter();
+  const sp = useSearchParams();
 
   const handleClick = () => {
-    if (onClick) onClick();
-    else router.back();
+    if (onClick) {
+      onClick();
+      return;
+    }
+
+    // ✅ If the current URL has returnTo, use it.
+    const raw = sp?.get('returnTo') ?? '';
+    const decoded = raw ? safeDecode(raw) : '';
+
+    if (decoded.startsWith('/')) {
+      router.push(decoded);
+      return;
+    }
+
+    // Otherwise behave like normal back
+    // (with a safety fallback if there's no real history)
+    if (typeof window !== 'undefined' && window.history.length <= 1) {
+      router.push(fallbackHref);
+      return;
+    }
+
+    router.back();
   };
 
   const fixedStyle: CSSProperties =
@@ -12996,9 +13480,7 @@ export default function BackButton({
           left: 'calc(env(safe-area-inset-left, 0px) + 10px)',
           zIndex: 9999,
         }
-      : {
-          position: 'static',
-        };
+      : { position: 'static' };
 
   return (
     <button
@@ -13181,6 +13663,96 @@ export default function BottomNav({ onOffsetChange }: BottomNavProps) {
         </Link>
       </nav>
     </div>
+  );
+}
+
+```
+
+### components/ComingSoonRow.tsx
+```tsx
+// components/ComingSoonRow.tsx
+'use client';
+
+import React from 'react';
+import Link from 'next/link';
+import Image from 'next/image';
+import { usePathname, useSearchParams } from 'next/navigation';
+
+type SettingsRowStyles = {
+  settingsRow: string;
+  settingsLeft: string;
+  settingsIcon: string;
+  settingsLabel: string;
+  chevron: string;
+};
+
+type Props = {
+  label: string;
+  feature?: string;
+  iconSrc: string;
+  iconAlt: string;
+  styles: SettingsRowStyles;
+  comingSoonBaseHref?: string;
+  onBeforeNavigate?: (e: React.MouseEvent<HTMLAnchorElement>) => boolean | void;
+  className?: string;
+};
+
+export default function ComingSoonRow({
+  label,
+  feature,
+  iconSrc,
+  iconAlt,
+  styles,
+  comingSoonBaseHref = '/coming-soon',
+  onBeforeNavigate,
+  className,
+}: Props) {
+  const pathname = usePathname();
+  const sp = useSearchParams();
+
+  const featureText = feature ?? label;
+
+  // ✅ capture current route so "Back" returns here (works from ANY page)
+  const qs = sp?.toString();
+  const returnTo = `${pathname}${qs ? `?${qs}` : ''}`;
+
+  const href =
+    `${comingSoonBaseHref}` +
+    `?feature=${encodeURIComponent(featureText)}` +
+    `&returnTo=${encodeURIComponent(returnTo)}`;
+
+  return (
+    <Link
+      href={href}
+      className={`${styles.settingsRow} ${className ?? ''}`}
+      onClick={(e) => {
+        // 1) If you have a guard (login), honor it first
+        if (onBeforeNavigate) {
+          const ok = onBeforeNavigate(e);
+          if (ok === false) {
+            e.preventDefault();
+            e.stopPropagation();
+            return;
+          }
+        }
+
+        // 2) ✅ Store a fallback returnTo (in case URL params get lost)
+        try {
+          sessionStorage.setItem('expatise:returnTo', returnTo);
+          sessionStorage.setItem('expatise:returnTo:ts', String(Date.now()));
+        } catch {
+          // ignore
+        }
+      }}
+    >
+      <div className={styles.settingsLeft}>
+        <span className={styles.settingsIcon}>
+          <Image src={iconSrc} alt={iconAlt} width={24} height={24} />
+        </span>
+        <span className={styles.settingsLabel}>{label}</span>
+      </div>
+      <span className={styles.chevron}>›</span>
+    </Link>
   );
 }
 
@@ -13369,23 +13941,25 @@ export default function DragScrollRow({ children, className }: DragScrollRowProp
 
   // Optional: make mouse wheel scroll horizontally (desktop testing)
   useEffect(() => {
-    const el = rowRef.current;
-    if (!el) return;
+  const el = rowRef.current;
+  if (!el) return;
 
-    const onWheel = (ev: WheelEvent) => {
-      const canScroll = el.scrollWidth > el.clientWidth + 1;
-      if (!canScroll) return;
+  const onWheel = (ev: WheelEvent) => {
+    const canScroll = el.scrollWidth > el.clientWidth + 1;
+    if (!canScroll) return;
 
-      // if user already has horizontal delta (trackpad), let it happen
-      if (Math.abs(ev.deltaX) > Math.abs(ev.deltaY)) return;
+    // ✅ normal wheel should scroll the page
+    if (!ev.shiftKey) return;
 
-      ev.preventDefault();
-      el.scrollLeft += ev.deltaY;
-    };
+    // ✅ Shift+wheel = horizontal scroll (intentional)
+    ev.preventDefault();
+    el.scrollLeft += ev.deltaY;
+  };
 
-    el.addEventListener('wheel', onWheel, { passive: false });
-    return () => el.removeEventListener('wheel', onWheel);
-  }, []);
+  el.addEventListener('wheel', onWheel, { passive: false });
+  return () => el.removeEventListener('wheel', onWheel);
+}, []);
+
 
   return (
     <div
@@ -14605,7 +15179,7 @@ export function useUserProfile() {
   transform: scaleY(0.001);
   opacity: 0.35;
 
-  animation: barRise 2000ms cubic-bezier(0.2, 0.85, 0.2, 1) forwards;
+  animation: barRise 200ms cubic-bezier(0.2, 0.85, 0.2, 1) forwards;
   animation-fill-mode: both;
   will-change: transform, opacity;
 }
@@ -14745,6 +15319,70 @@ export function useUserProfile() {
   transform: translateX(-50%) rotate(225deg);
 }
 
+/* ===== Legend (header) ===== */
+.statsLegend{
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: var(--stats-legend-text, #6b7280);
+}
+
+.statsLegendDot{
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  display: inline-block;
+  flex: 0 0 auto;
+}
+
+.statsLegendLabel{
+  white-space: nowrap;
+  color: inherit;
+}
+
+.statsLegendDotQuestions{
+  background: var(--chart-grad-cool, rgba(43, 124, 175, 0.90));
+}
+
+.statsLegendDotAvg{
+  background: var(
+    --chart-grad,
+    linear-gradient(
+      90deg,
+      rgba(43, 124, 175, 0.90) 0%,
+      rgba(255, 197, 66, 0.95) 100%
+    )
+  );
+}
+
+/* ===== Waterfall reveal (legend + details) ===== */
+@keyframes waterfallIn {
+  0%   { opacity: 0; transform: translateY(-6px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+.waterHidden{
+  opacity: 0;
+  transform: translateY(-6px);
+}
+
+.waterIn{
+  opacity: 0;
+  transform: translateY(-6px);
+  animation: waterfallIn 130ms ease forwards;
+  animation-fill-mode: both;
+}
+
+@media (prefers-reduced-motion: reduce){
+  .waterHidden, .waterIn{
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
 ```
 
 ### components/stats/DailyProgressChart.tsx
@@ -14753,9 +15391,30 @@ export function useUserProfile() {
 
 import styles from './DailyProgressChart.module.css';
 import { useOnceInMidView } from './useOnceInView.client';
-import { useEffect, useMemo, useRef, useState, useId } from 'react';
+import { useEffect, useMemo, useRef, useState, useId, type CSSProperties } from 'react';
 import { useBootSweepOnce } from './useBootSweepOnce.client';
 import { createPortal } from 'react-dom';
+
+export function DailyProgressLegend({
+  animate = true,
+  delayMs = 0,
+}: {
+  animate?: boolean;
+  delayMs?: number;
+}) {
+  return (
+    <div
+      className={`${styles.statsLegend} ${animate ? styles.waterIn : styles.waterHidden}`}
+      style={animate ? ({ animationDelay: `${delayMs}ms` } as CSSProperties) : undefined}
+    >
+      <span className={`${styles.statsLegendDot} ${styles.statsLegendDotQuestions}`} />
+      <span className={styles.statsLegendLabel}>Questions</span>
+
+      <span className={`${styles.statsLegendDot} ${styles.statsLegendDotAvg}`} />
+      <span className={styles.statsLegendLabel}>Avg score</span>
+    </div>
+  );
+}
 
 type DayRow = {
   dayStart: number;
@@ -14782,8 +15441,18 @@ export default function DailyProgressChart(props: {
   bestDayQuestions: number;
   streakDays: number;
   rows?: number; // default 7/30 controlled by parent
+  onLegendReveal?: () => void;
 }) {
-  const { series, bestDayQuestions, streakDays, rows = 7 } = props;
+  const { series, bestDayQuestions, streakDays, rows = 7, onLegendReveal } = props;
+
+
+  const onLegendRevealRef = useRef<(() => void) | undefined>(onLegendReveal);
+useEffect(() => {
+  onLegendRevealRef.current = onLegendReveal;
+}, [onLegendReveal]);
+
+
+
 
   const shown = useMemo(() => series.slice(-rows), [series, rows]);
 
@@ -14809,7 +15478,25 @@ export default function DailyProgressChart(props: {
   const lineDelayMs = 140;
   const lineDurMs = 850; // must match CSS .avgLineDraw duration
   const dotDelayMs = lineDelayMs + lineDurMs;
+  
+// must match CSS durations
+const barDurMs = 200; // matches .barRise 2000ms in your CSS
+const dotDurMs = 320;  // matches .popIn 320ms in your CSS
 
+// compute when the whole "main animation" ends
+const nBars = Math.max(1, shown.length);
+const barsEndMs = (nBars - 1) * barStaggerMs + barDurMs;
+const dotsEndMs = dotDelayMs + dotDurMs;
+
+// main end = whichever finishes last
+const mainEndMs = Math.max(barsEndMs, dotsEndMs);
+// legend after main animation
+const legendRevealMs = mainEndMs;
+// details after legend begins (this is what your metaRow uses)
+const detailsStartMs = mainEndMs;
+
+
+  
   // geometry
   const W = 340;
   const H = 110;
@@ -14953,6 +15640,30 @@ useEffect(() => {
 const avgPathRef = useRef<SVGPathElement | null>(null);
 const [avgLen, setAvgLen] = useState(0);
 const lensReady = avgLen > 0;
+// fire parent callback once (to show legend in header)
+const legendFiredRef = useRef(false);
+
+// reset when data window changes so parent legend can re-reveal
+useEffect(() => {
+  legendFiredRef.current = false;
+}, [series, rows]);
+
+// wait until the line length is measurable, so timing matches what the user sees
+const timelineReady = animateIn && lensReady;
+
+useEffect(() => {
+  if (!timelineReady) return;
+  if (legendFiredRef.current) return;
+
+  legendFiredRef.current = true;
+
+  const id = window.setTimeout(() => {
+    onLegendRevealRef.current?.();
+  }, legendRevealMs);
+
+  return () => window.clearTimeout(id);
+}, [timelineReady, legendRevealMs]);
+
 
 useEffect(() => {
   if (avgPathRef.current) setAvgLen(avgPathRef.current.getTotalLength());
@@ -15213,14 +15924,18 @@ const avgDashOffset = (1 - tReveal) * dashLen;
 })() : null}
         </div>
       </div>
-      <div className={styles.metaRow}>
-        <div className={styles.metaItem}>
-          <span className={styles.metaLabel}>Best day:</span> <b>{bestDayQuestions}</b> questions
-        </div>
-        <div className={styles.metaItem}>
-          <span className={styles.metaLabel}>Consistency streak:</span> <b>{streakDays}</b> days
-        </div>
-      </div>
+        <div
+    className={`${styles.metaRow} ${animateIn ? styles.waterIn : styles.waterHidden}`}
+    style={animateIn ? ({ animationDelay: `${detailsStartMs}ms` } as CSSProperties) : undefined}
+  >
+    <div className={styles.metaItem}>
+      <span className={styles.metaLabel}>Best day:</span> <b>{bestDayQuestions}</b> questions
+    </div>
+    <div className={styles.metaItem}>
+      <span className={styles.metaLabel}>Consistency streak:</span> <b>{streakDays}</b> days
+    </div>
+  </div>
+
     </div>
   );
 }
@@ -15718,8 +16433,8 @@ return (
   padding: 14px 16px;
   border-radius: 18px;
 
-  background: rgba(255, 255, 255, 0.62);
-  border: 1px solid rgba(148, 163, 184, 0.18);
+  background: rgba(255,255,255,0.55);
+  border: 1px solid rgba(148, 163, 184, 0.60);
   backdrop-filter: blur(10px);
 
   box-shadow:
@@ -15750,8 +16465,8 @@ return (
   border-radius: 22px;
   padding: 18px 18px 14px;
 
-   background: rgba(255, 255, 255, 0.42);
-  border: 1px solid rgba(148, 163, 184, 0.18);
+  background: rgba(255,255,255,0.55);
+  border: 1px solid rgba(148, 163, 184, 0.60);
   backdrop-filter: blur(14px);
 
   box-shadow:
@@ -15785,8 +16500,8 @@ return (
   grid-template-columns: max-content repeat(4, minmax(0, 1fr));
   grid-template-rows: 26px repeat(7, 46px);
 
-  column-gap: 10px;
-  row-gap: 12px;
+  column-gap: 1px;
+  row-gap: 5px;
 
   align-items: center;
 }
@@ -16183,6 +16898,175 @@ return (
   transform: translateX(-50%) rotate(225deg);
 }
 
+/* AFTER (DARK) — match Daily Progress .box dark tweak */
+:global(:root[data-theme='dark']) .calloutPill{
+  background: rgba(255,255,255,0.06);
+  border-color: rgba(148,163,184,0.35);
+}
+
+:global(:root[data-theme='dark']) .panel{
+  background: rgba(255,255,255,0.06);
+  border-color: rgba(148,163,184,0.35);
+}
+
+/* optional: keep the glow, but tone it down in dark so it doesn't look milky */
+:global(:root[data-theme='dark']) .panel::before{
+  opacity: 0.60;
+}
+
+:global(:root[data-theme='dark']) .calloutText{
+  color: rgba(249,250,251,0.86);
+}
+:global(:root[data-theme='dark']) .calloutMuted{
+  color: rgba(249,250,251,0.55);
+}
+
+/* ====================================================== */
+/* HEATMAP — DARK MODE READABILITY + RADIANT CELLS         */
+/* (Light mode unchanged)                                  */
+/* ====================================================== */
+
+:global(:root[data-theme='dark']) .colLabel,
+:global(:root[data-theme='dark']) .rowLabel{
+  color: rgba(249,250,251,0.68);
+  text-shadow: 0 1px 0 rgba(0,0,0,0.35);
+}
+
+:global(:root[data-theme='dark']) .matrix::after{
+  border-top-color: rgba(249,250,251,0.16);
+}
+
+:global(:root[data-theme='dark']) .legendRow{
+  color: rgba(249,250,251,0.62);
+}
+
+:global(:root[data-theme='dark']) .legendLabel{
+  color: rgba(249,250,251,0.55);
+}
+
+:global(:root[data-theme='dark']) .legendText{
+  color: rgba(249,250,251,0.55);
+}
+
+:global(:root[data-theme='dark']) .confidenceNote{
+  color: rgba(249,250,251,0.52);
+}
+
+/* Make cell text readable on dark surfaces */
+:global(:root[data-theme='dark']) .cellValue{
+  color: rgba(249,250,251,0.88);
+  text-shadow: 0 1px 0 rgba(0,0,0,0.45);
+}
+
+:global(:root[data-theme='dark']) .conf{
+  color: rgba(249,250,251,0.58);
+}
+
+:global(:root[data-theme='dark']) .confDot{
+  background: rgba(249,250,251,0.65);
+}
+
+/* Optional: slightly soften borders so the grid is visible but not harsh */
+:global(:root[data-theme='dark']) .cell{
+  border-color: rgba(148,163,184,0.22);
+  box-shadow: 0 14px 28px rgba(0,0,0,0.30);
+}
+
+/* Optional: empty cells are currently very bright. If you want them less “glary”, enable this. */
+/*
+:global(:root[data-theme='dark']) .emptyCell{
+  background: rgba(255,255,255,0.10) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.10);
+}
+*/
+
+
+/* =============================== */
+/* Radiant cell gradient (DARK)    */
+/* =============================== */
+/*
+  “Radiant” here = more color presence.
+  We reduce the white wash and add a slightly stronger premium gradient layer.
+*/
+:global(:root[data-theme='dark']) .heatFill{
+  --heat-alpha: 1;
+  --heat-wash: 0.18; /* less milky veil = more saturated color */
+
+  /* Stronger gradient than the -20 one, but still tasteful */
+  --heat-grad: linear-gradient(
+    90deg,
+    rgb(var(--premium-yellow-rgb) / 0.55) 0%,
+    rgb(var(--premium-blue-rgb) / 0.55) 100%
+  );
+
+  background-image:
+    /* glossy highlight (kept subtle) */
+    radial-gradient(
+      70% 60% at 30% 25%,
+      rgba(255,255,255,0.22) 0%,
+      rgba(255,255,255,0.06) 45%,
+      rgba(255,255,255,0) 70%
+    ),
+    /* reduced white veil */
+    linear-gradient(
+      rgb(255 255 255 / calc(var(--heat-wash) * var(--heat-alpha))),
+      rgb(255 255 255 / calc(var(--heat-wash) * var(--heat-alpha)))
+    ),
+    /* stronger premium gradient */
+    var(--heat-grad);
+
+  background-size: 100% 100%, 100% 100%, 220% 100%;
+  background-repeat: no-repeat;
+  background-position: 0 0, 0 0, var(--heat-x, 50%) 50%;
+}
+
+/* Make legend swatches match the same “more radiant” treatment */
+:global(:root[data-theme='dark']) .swatch{
+  --sw-wash: 0.16;
+
+  --heat-grad: linear-gradient(
+    90deg,
+    rgb(var(--premium-yellow-rgb) / 0.55) 0%,
+    rgb(var(--premium-blue-rgb) / 0.55) 100%
+  );
+
+  background-image:
+    linear-gradient(
+      rgba(255,255,255,var(--sw-wash)),
+      rgba(255,255,255,var(--sw-wash))
+    ),
+    var(--heat-grad);
+
+  background-size: 100% 100%, 220% 100%;
+  background-repeat: no-repeat;
+  background-position: 0 0, var(--heat-x, 50%) 50%;
+
+  border-color: rgba(148,163,184,0.30);
+}
+
+/* Tooltip readability in dark mode (optional, but usually needed) */
+:global(:root[data-theme='dark']) .tooltip{
+  background: rgba(17,24,39,0.92);
+  border-color: rgba(148,163,184,0.28);
+}
+:global(:root[data-theme='dark']) .tipTitle{
+  color: rgba(249,250,251,0.90);
+}
+:global(:root[data-theme='dark']) .tipSub,
+:global(:root[data-theme='dark']) .tipBody,
+:global(:root[data-theme='dark']) .tipLine,
+:global(:root[data-theme='dark']) .tipMuted{
+  color: rgba(249,250,251,0.62);
+}
+:global(:root[data-theme='dark']) .tipRule{
+  background: rgba(148,163,184,0.22);
+}
+:global(:root[data-theme='dark']) .tipArrow{
+  background: rgba(17,24,39,0.92);
+  border-right-color: rgba(148,163,184,0.28);
+  border-bottom-color: rgba(148,163,184,0.28);
+}
+
 ```
 
 ### components/stats/ScoreChart.client.tsx
@@ -16190,12 +17074,33 @@ return (
 //components/stats/ScoreChart.client.tsx
 'use client';
 
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useId, useMemo, useRef, useState, type CSSProperties } from 'react';
 import styles from './ScoreChart.module.css';
 import { useBootSweepOnce } from '@/components/stats/useBootSweepOnce.client';
 import { useOnceInMidView } from '@/components/stats/useOnceInView.client';
 import { createPortal } from 'react-dom';
 
+
+export function ScoreLegend({
+  animate = true,
+  delayMs = 0,
+}: {
+  animate?: boolean;
+  delayMs?: number;
+}) {
+  return (
+    <div
+      className={`${styles.statsLegend} ${animate ? styles.waterIn : styles.waterHidden}`}
+      style={animate ? ({ animationDelay: `${delayMs}ms` } as CSSProperties) : undefined}
+    >
+      <span className={`${styles.statsLegendDot} ${styles.statsLegendDotScore}`} />
+      <span className={styles.statsLegendLabel}>Score</span>
+
+      <span className={`${styles.statsLegendDot} ${styles.statsLegendDotAverage}`} />
+      <span className={styles.statsLegendLabel}>Average</span>
+    </div>
+  );
+}
 
 type Point = {
   t: number;
@@ -16253,6 +17158,7 @@ export default function ScoreChart(props: {
   attemptedTotal: number;
   passLine?: number;   // default 90
   height?: number;     // px
+  onLegendReveal?: () => void;
 }) {
   const {
     series,
@@ -16265,7 +17171,31 @@ export default function ScoreChart(props: {
     height = 140,
   } = props;
 
+  const { onLegendReveal } = props;
+// ✅ keep callback stable even if parent re-renders
+const onLegendRevealRef = useRef<(() => void) | undefined>(onLegendReveal);
 
+useEffect(() => {
+  onLegendRevealRef.current = onLegendReveal;
+}, [onLegendReveal]);
+
+// --- timing (single source of truth) ---
+const lineDurMs = 1200;
+const settleMs = 250;
+
+// Pass line should draw AFTER the two main lines finish
+const passDelayMs = lineDurMs + settleMs + 40;
+const passDurMs = 420;
+
+// Legend should appear AFTER pass line finishes
+const legendRevealMs = passDelayMs + passDurMs + 80;
+
+// Details after legend begins
+const detailsStartMs = legendRevealMs + 220;
+const detailsStaggerMs = 130;
+
+
+  
   // Reveal animation 0..1, once.
 // Start reveal only when there is at least 1 point.
 // (Do NOT use `model` here because model doesn't exist yet.)
@@ -16283,10 +17213,45 @@ const reveal = useBootSweepOnce({
   seen,
   enabled: hasAnyData && lensReady,
   segments: () => [
-    { from: 0, to: 1, durationMs: 1200, ease: easeOutCubic },
-    { from: 1, to: 1, durationMs: 250, ease: (t) => t },
+    { from: 0, to: 1, durationMs: lineDurMs, ease: easeOutCubic },
+    { from: 1, to: 1, durationMs: settleMs, ease: (t) => t },
   ],
 });
+
+const passClipId = useId().replace(/:/g, '');
+
+const passReveal = useBootSweepOnce({
+  target: 1,
+  seen,
+  enabled: hasAnyData && lensReady,
+  segments: () => [
+    { from: 0, to: 0, durationMs: passDelayMs, ease: (t) => t },
+    { from: 0, to: 1, durationMs: passDurMs, ease: easeOutCubic },
+  ],
+});
+
+const tPass = clamp(passReveal, 0, 1);
+
+
+const animateIn = seen && hasAnyData && lensReady;
+const legendFiredRef = useRef(false);
+
+useEffect(() => {
+  if (!animateIn) {
+    legendFiredRef.current = false;
+    return;
+  }
+  if (legendFiredRef.current) return;
+
+  legendFiredRef.current = true;
+
+  const id = window.setTimeout(() => {
+    onLegendRevealRef.current?.();
+  }, legendRevealMs);
+
+  return () => window.clearTimeout(id);
+}, [animateIn, legendRevealMs]); // ✅ removed onLegendReveal
+
 
 
 
@@ -16496,16 +17461,22 @@ const hover = activeIdx == null ? null : model.pts[activeIdx];
 
       <div className={styles.chartShell} style={{ height }}>
         <svg
+        
           className={styles.svg}
           viewBox={`0 0 ${W} ${H}`}
           preserveAspectRatio="none"
           onMouseLeave={() => {
   if (pinnedIdx == null) setHoverIdx(null);
 }}
-        >
-
+ >
+<defs>
+  <clipPath id={passClipId} clipPathUnits="userSpaceOnUse">
+    <rect x={plotLeft} y={0} width={plotW * tPass} height={H} />
+  </clipPath>
+</defs>
             {/* Y axis */}
 <line x1={plotLeft} y1={padY} x2={plotLeft} y2={H - padY} className={styles.axisLine} />
+
 
 {[
   { v: 100, strong: false },
@@ -16552,15 +17523,26 @@ const hover = activeIdx == null ? null : model.pts[activeIdx];
 
 
           {/* Pass line */}
-<line x1={plotLeft} y1={passY} x2={plotRight} y2={passY} className={styles.passLine} />
+<line
+  x1={plotLeft}
+  y1={passY}
+  x2={plotRight}
+  y2={passY}
+  className={styles.passLine}
+  clipPath={`url(#${passClipId})`}
+  style={{ opacity: tPass > 0 ? 1 : 0 }}
+/>
+
 <text
   x={plotRight - 4}
   y={clamp(passY - 4, 10, H - 6)}
   textAnchor="end"
   className={styles.passLabel}
+  style={{ opacity: clamp((tPass - 0.65) / 0.35, 0, 1) }} // label fades in near the end
 >
   Pass {passLine}%
 </text>
+
 
           {/* Avg line (only if enough data) */}
 {model.hasData ? (
@@ -16734,20 +17716,26 @@ style={{ opacity: lensReady ? 1 : 0 }}
 
 
       </div>
-<div className={styles.summaryRow}>
-        
-
+<div
+  className={`${styles.summaryRow} ${animateIn ? styles.waterIn : styles.waterHidden}`}
+  style={animateIn ? ({ animationDelay: `${detailsStartMs}ms` } as CSSProperties) : undefined}
+>
   <span className={styles.metric}><b>Avg</b> {scoreAvg}%</span>
   <span className={styles.metric}><b>Best</b> {scoreBest}%</span>
   <span className={`${styles.metric} ${styles.metricHero}`}><b>Latest</b> {scoreLatest}%</span>
   <span className={`${styles.metric} ${styles.metricMuted}`}><b>Based on</b> {attemptedTotal} answers</span>
 </div>
+
       {/* Confidence note (explicit honesty) */}
       {model.lowConfidence ? (
-        <div className={styles.confidence}>
-          Low confidence: only {attemptsCount} tests / {attemptedTotal} answers in this window.
-        </div>
-      ) : null}
+  <div
+    className={`${styles.confidence} ${animateIn ? styles.waterIn : styles.waterHidden}`}
+    style={animateIn ? ({ animationDelay: `${detailsStartMs + detailsStaggerMs}ms` } as CSSProperties) : undefined}
+  >
+    Low confidence: only {attemptsCount} tests / {attemptedTotal} answers in this window.
+  </div>
+) : null}
+
     </div>
   );
 }
@@ -16937,9 +17925,9 @@ style={{ opacity: lensReady ? 1 : 0 }}
 }
 
 .passLabel{
-  font-size: 8.5px;
-  fill: rgba(17,24,39,0.70);
-  font-weight: 700;
+  font-size: 7px;
+  fill: var(--stats-legend-avg-label, rgba(17,24,39,0.65)); /* match token */
+
 }
 
 .metric{
@@ -17064,18 +18052,99 @@ style={{ opacity: lensReady ? 1 : 0 }}
 }
 
 
+/* ===== Legend (header) ===== */
+.statsLegend{
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: var(--stats-legend-text, #6b7280);
+}
+
+.statsLegendDot{
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  display: inline-block;
+  flex: 0 0 auto;
+}
+
+.statsLegendLabel{
+  white-space: nowrap;
+  color: inherit;
+}
+
+.statsLegendDotScore{ background: var(--chart-grad-cool); }
+.statsLegendDotAverage{ background: var(--chart-grad-warm); }
+
+/* ===== Waterfall reveal ===== */
+@keyframes waterfallIn {
+  0%   { opacity: 0; transform: translateY(-6px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+.waterHidden{
+  opacity: 0;
+  transform: translateY(-6px);
+}
+
+.waterIn{
+  opacity: 0;
+  transform: translateY(-6px);
+  animation: waterfallIn 260ms ease forwards;
+  animation-fill-mode: both;
+}
+
+@media (prefers-reduced-motion: reduce){
+  .waterHidden, .waterIn{
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
 
 ```
 
-### components/stats/ScreenTimeChart7.client.tsx
+### components/stats/ScreenTimeChart.client.tsx
 ```tsx
-//components/stats/ScreenTimeChart7.client.tsx
+//components/stats/ScreenTimeChart.client.tsx
 'use client';
 
-import { useEffect, useMemo, useRef, useState, useId } from 'react';
+import { useEffect, useMemo, useRef, useState, useId, type CSSProperties } from 'react';
 import { useOnceInView } from './useOnceInView.client';
 import { useBootSweepOnce } from './useBootSweepOnce.client';
-import styles from './ScreenTimeChart7.module.css';
+import styles from './ScreenTimeChart.module.css';
+
+// ✅ Legend for Screen Time card header (moved out of StatsPage)
+export function ScreenTimeLegend({
+  animate = true,
+  delayMs = 0,
+}: {
+  animate?: boolean;
+  delayMs?: number;
+}) {
+  return (
+    <div
+      className={`${styles.statsLegend} ${animate ? styles.waterIn : styles.waterHidden}`}
+      style={animate ? ({ animationDelay: `${delayMs}ms` } as CSSProperties) : undefined}
+    >
+      <span className={`${styles.statsLegendDot} ${styles.statsLegendDotYellow}`} />
+      <span className={styles.statsLegendLabel}>Test</span>
+
+      <span className={`${styles.statsLegendDot} ${styles.statsLegendDotBlue}`} />
+      <span className={styles.statsLegendLabel}>Study</span>
+
+      <span className={styles.statsLegend__screenTime__totalGradientSwatch} />
+      <span className={styles.statsLegendLabel}>Total</span>
+
+      <span className={styles.statsLegend__screenTime__avgDottedSwatch} />
+      <span className={`${styles.statsLegendLabel} ${styles.statsLegendLabelAvg}`}>7D avg</span>
+    </div>
+  );
+}
+
+
 
 type DayPoint = {
   dayStart: number | string;
@@ -17213,19 +18282,31 @@ function easeOutCubic(t: number) {
   return 1 - Math.pow(1 - t, 3);
 }
 
+function pathLinear(points: Pt[]) {
+  if (points.length < 2) return '';
+  return (
+    `M ${points[0].x} ${points[0].y}` +
+    points.slice(1).map((p) => ` L ${p.x} ${p.y}`).join('')
+  );
+}
 
 
-export default function ScreenTimeChart7({
+
+
+export default function ScreenTimeChart({
   data,
   height = 80,
   timedTestMinutesEstimate,
   streakDays,
+  onLegendReveal,
 }: {
   data: DayPoint[];
   height?: number;
-  timedTestMinutesEstimate?: number; // optional
-  streakDays?: number;              // optional (you already compute)
+  timedTestMinutesEstimate?: number;
+  streakDays?: number;
+  onLegendReveal?: () => void;
 }) {
+
   const [hoverIdx, setHoverIdx] = useState<number | null>(null);
 
   const totalStrokeId = useId().replace(/:/g, '');
@@ -17295,21 +18376,61 @@ const { ref: inViewRef, seen } = useOnceInView<HTMLDivElement>({
 
 const animateIn = seen && model.points.length > 0;
 
+const SPEED = 0.9; // 30% faster
+const ms = (n: number) => Math.round(n * SPEED);
+
 // timing (single source of truth)
-const lineDelayMs = 120;
-const lineDurMs = 850;
+const lineDelayMs = ms(120);
+const lineDurMs   = ms(850);
 
-const areaDelayMs = lineDelayMs + lineDurMs + 120;
-const areaDurMs = 550;
+const areaDelayMs = lineDelayMs + lineDurMs + ms(120);
+const areaDurMs   = ms(550);
 
-const barDelayMs = areaDelayMs + areaDurMs + 120;
-const barStaggerMs = 90;
-const barDurMs = 650;
+const barDelayMs  = areaDelayMs + areaDurMs + ms(120);
+const barStaggerMs = ms(90);
+const barDurMs     = ms(650);
 
 const nDays = model.points.length || 7;
-const avgDelayMs = barDelayMs + (nDays - 1) * barStaggerMs + barDurMs + 140;
-const avgDurMs = 650;
+const avgDelayMs = barDelayMs + (nDays - 1) * barStaggerMs + barDurMs + ms(140);
+const avgDurMs = ms(650);
 const avgLabelDelayMs = avgDelayMs + avgDurMs;
+
+// Legend should appear AFTER the chart sequence finishes
+const legendRevealMs = avgLabelDelayMs;
+
+// Bottom details should start AFTER the legend begins
+const detailsStartMs = legendRevealMs;
+const detailsStaggerMs = ms(60);
+
+
+
+
+
+const onLegendRevealRef = useRef(onLegendReveal);
+useEffect(() => {
+  onLegendRevealRef.current = onLegendReveal;
+}, [onLegendReveal]);
+
+const legendFiredRef = useRef(false);
+
+useEffect(() => {
+  if (!animateIn) {
+    legendFiredRef.current = false; // allow re-run if user scrolls away and back
+    return;
+  }
+  if (legendFiredRef.current) return;
+
+  legendFiredRef.current = true;
+
+  const id = window.setTimeout(() => {
+    onLegendRevealRef.current?.();
+  }, legendRevealMs);
+
+  return () => window.clearTimeout(id);
+}, [animateIn, legendRevealMs]);
+
+
+
 
 
 
@@ -17357,23 +18478,72 @@ const totalLinePts = useMemo<Pt[]>(() => {
   const n = model.points.length;
   if (!n) return [];
 
-  const w = 100 - padX * 2;      // horizontal padding stays
-  const h = 100 - padTop;        // IMPORTANT: no bottom padding
+  const w = 100 - padX * 2;
+  const h = 100 - padTop;
+
+  const totals = model.points.map((p) => p.total);
+
+  // 3-point weighted smoothing (display only)
+  const totalsSmooth = totals.map((v, i) => {
+    const prev = totals[i - 1] ?? v;
+    const next = totals[i + 1] ?? v;
+    return 0.2 * prev + 0.6 * v + 0.2 * next;
+  });
 
   return model.points.map((p, i) => {
     const x = padX + (n === 1 ? w / 2 : (i / (n - 1)) * w);
 
-    // total=0 => y = padTop + 1*h = 100 ✅ sits on baseline
-    const y = padTop + (1 - clamp(p.total / scaleMax, 0, 1)) * h;
+    const totalForLine = totalsSmooth[i]; // ✅ use smoothed value for the overlay
+    const y = padTop + (1 - clamp(totalForLine / scaleMax, 0, 1)) * h;
 
     return { x, y };
   });
 }, [model.points, scaleMax]);
 
-const totalLineD = useMemo(() => {
-  return smoothPathCatmullRomXY(totalLinePts, padX, 100 - padX, padTop, 100);
-}, [totalLinePts]);
 
+
+
+
+function smoothPathTensionXY(
+  points: Pt[],
+  tension: number,
+  xMin: number,
+  xMax: number,
+  yMin: number,
+  yMax: number
+) {
+  if (points.length < 2) return '';
+
+  let d = `M ${points[0].x.toFixed(2)} ${points[0].y.toFixed(2)}`;
+
+  for (let i = 0; i < points.length - 1; i++) {
+    const p0 = points[i - 1] ?? points[i];
+    const p1 = points[i];
+    const p2 = points[i + 1];
+    const p3 = points[i + 2] ?? p2;
+
+    let c1x = p1.x + (p2.x - p0.x) * tension;
+    let c1y = p1.y + (p2.y - p0.y) * tension;
+    let c2x = p2.x - (p3.x - p1.x) * tension;
+    let c2y = p2.y - (p3.y - p1.y) * tension;
+
+    // clamp control points to keep them inside the plot bounds
+    c1x = clamp(c1x, xMin, xMax);
+    c2x = clamp(c2x, xMin, xMax);
+    c1y = clamp(c1y, yMin, yMax);
+    c2y = clamp(c2y, yMin, yMax);
+
+    d += ` C ${c1x.toFixed(2)} ${c1y.toFixed(2)}, ${c2x.toFixed(2)} ${c2y.toFixed(2)}, ${p2.x.toFixed(2)} ${p2.y.toFixed(2)}`;
+  }
+
+  return d;
+}
+
+const totalLineD = useMemo(() => {
+  // lower tension tends to look better with only 7 points
+  const tension = 0.18; // try 0.16–0.22 if you want more/less curve
+  return smoothPathTensionXY(totalLinePts, tension, padX, 100 - padX, padTop, 100);
+}, [totalLinePts]);
 
 const totalAreaD = useMemo(() => {
   if (!totalLineD || totalLinePts.length < 2) return '';
@@ -17411,6 +18581,7 @@ const dashLen = Math.max(1, totalLen + 2);         // no ceil needed
 const dashArray = `${dashLen} ${dashLen}`;         // IMPORTANT: paired dash+gap
 const dashOffset = (1 - tLine) * dashLen;
 const lineDone = tLine > 0.999;
+
 
 
 // ----- Area fill follows the line tip -----
@@ -17458,9 +18629,11 @@ const areaClipW = useMemo(() => {
   <div className={styles.wrap}>
     {/* TOP AREA: only the chart */}
     <div className={styles.topArea}>
+     
+
       <div className={styles.chart} style={{ height }} ref={inViewRef}>
 
-        {/* ROW 1: Y axis + plot */}
+{/* ROW 1: Y axis + plot */}
         <div className={styles.plotRow}>
           {/* Y AXIS */}
           <div className={styles.yAxis} style={{ height: plotH }}>
@@ -17485,7 +18658,7 @@ const areaClipW = useMemo(() => {
               return <div key={`g-${t}`} className={styles.hGrid} style={{ top: y }} />;
             })}
 
-            {/* TOTAL area (mountain) */}
+{/* TOTAL area (mountain) */}
 {totalAreaD ? (
   <svg
     className={styles.totalAreaSvg}
@@ -17551,30 +18724,7 @@ const areaClipW = useMemo(() => {
 ) : null}
 
 
-
-
-            {/* avg line */}
-            <div
-  className={`${styles.avgLine} ${animateIn ? styles.avgLineDraw : styles.avgLineHidden}`}
-  style={animateIn
-    ? { top: avgLineY, animationDelay: `${avgDelayMs}ms` }
-    : { top: avgLineY }
-  }
-/>
-
-<div
-  className={`${styles.avgLabel} ${animateIn ? styles.avgLabelIn : styles.avgLabelHidden}`}
-  style={animateIn
-    ? { top: clamp(avgLineY - 12, 0, plotH - 14), animationDelay: `${avgLabelDelayMs}ms` }
-    : { top: clamp(avgLineY - 12, 0, plotH - 14) }
-  }
->
-  7D avg
-</div>
-
-
-
-            {/* bars */}
+{/* bars */}
             <div className={styles.cols}>
               {model.points.map((p, idx) => {
                 const barDelay = barDelayMs + idx * barStaggerMs;
@@ -17638,6 +18788,25 @@ const areaClipW = useMemo(() => {
                 );
               })}
             </div>
+{/* avg line */}
+            <div
+  className={`${styles.avgLine} ${animateIn ? styles.avgLineDraw : styles.avgLineHidden}`}
+  style={animateIn
+    ? { top: avgLineY, animationDelay: `${avgDelayMs}ms` }
+    : { top: avgLineY }
+  }
+/>
+
+<div
+  className={`${styles.avgLabel} ${animateIn ? styles.avgLabelIn : styles.avgLabelHidden}`}
+  style={animateIn
+    ? { top: clamp(avgLineY - 12, 0, plotH - 14), animationDelay: `${avgLabelDelayMs}ms` }
+    : { top: clamp(avgLineY - 12, 0, plotH - 14) }
+  }
+>
+  7D avg
+</div>
+
           </div>
         </div>
 
@@ -17664,41 +18833,126 @@ const areaClipW = useMemo(() => {
       </div>
     </div>
 
-    {/* Bottom text */}
+{/* Bottom text */}
     <div className={styles.bottomStack}>
-      <div className={styles.summaryRow}>
-        <div className={styles.summaryTop}>
-          <b>7D total</b>: {weekTestTotal}m test · {weekStudyTotal}m study
-        </div>
-
-        <div className={styles.summaryRow2}>
-  <span><b>Avg/day</b>: {Math.round(model.avgTotal)}m</span>
-  <span className={styles.sep} aria-hidden="true" />
-  <span><b>Best</b>: {bestLabel} ({bestPoint?.total ?? 0}m)</span>
-</div>
-
-      </div>
-
-      <div className={styles.footerRow}>
-  <span>
-    <b>Routine</b>: {activeDays}/7 days
-    <span className={styles.sep}></span>
-    <b>Streak</b>: {streakDays ?? 0}d
-  </span>
-
-  {model.hasCompare ? <span className={styles.muted}>Compare overlay: enabled</span> : null}
-</div>
-
-
-      {confidenceNote ? <div className={styles.confidenceNote}>{confidenceNote}</div> : null}
+  <div
+    className={`${styles.summaryRow} ${animateIn ? styles.waterIn : styles.waterHidden}`}
+    style={
+      animateIn
+        ? ({ animationDelay: `${detailsStartMs}ms` } as CSSProperties)
+        : undefined
+    }
+  >
+    <div className={styles.summaryTop}>
+      <b>7D total</b>: {weekTestTotal}m test · {weekStudyTotal}m study
     </div>
+
+    <div className={styles.summaryRow2}>
+      <span><b>Avg/day</b>: {Math.round(model.avgTotal)}m</span>
+      <span className={styles.sep} aria-hidden="true" />
+      <span><b>Best</b>: {bestLabel} ({bestPoint?.total ?? 0}m)</span>
+    </div>
+  </div>
+
+  <div
+    className={`${styles.footerRow} ${animateIn ? styles.waterIn : styles.waterHidden}`}
+    style={
+      animateIn
+        ? ({ animationDelay: `${detailsStartMs + detailsStaggerMs}ms` } as CSSProperties)
+        : undefined
+    }
+  >
+    <span>
+      <b>Routine</b>: {activeDays}/7 days
+      <span className={styles.sep}></span>
+      <b>Streak</b>: {streakDays ?? 0}d
+    </span>
+
+    {model.hasCompare ? <span className={styles.muted}>Compare overlay: enabled</span> : null}
+  </div>
+
+  {confidenceNote ? (
+    <div
+      className={`${styles.confidenceNote} ${animateIn ? styles.waterIn : styles.waterHidden}`}
+      style={
+        animateIn
+          ? ({ animationDelay: `${detailsStartMs + detailsStaggerMs * 2}ms` } as CSSProperties)
+          : undefined
+      }
+    >
+      {confidenceNote}
+    </div>
+  ) : null}
+</div>
+
   </div>
 );
 }
 ```
 
-### components/stats/ScreenTimeChart7.module.css
+### components/stats/ScreenTimeChart.module.css
 ```css
+/* ================================= */
+/* LEGEND (Screen Time header)        */
+/* ================================= */
+
+.statsLegend {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: var(--stats-legend-text, #6b7280);
+}
+
+.statsLegendDot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  flex: 0 0 auto;
+}
+
+.statsLegendLabel {
+  white-space: nowrap;
+  color: inherit;
+}
+
+.statsLegendLabelAvg {
+  color: var(--stats-legend-avg-label, rgba(17,24,39,0.65));
+}
+
+.statsLegendDotBlue {
+  background: var(--chart-grad-cool, rgba(43, 124, 175, 0.90));
+}
+
+.statsLegendDotYellow {
+  background: var(--chart-grad-warm, rgba(255, 197, 66, 0.95));
+}
+
+.statsLegend__screenTime__totalGradientSwatch{
+  width: 18px;
+  height: 6px;
+  border-radius: 999px;
+  background: var(
+    --chart-grad,
+    linear-gradient(
+      90deg,
+      rgba(43, 124, 175, 0.90) 0%,
+      rgba(255, 197, 66, 0.95) 100%
+    )
+  );
+  opacity: 0.9;
+  display: inline-block;
+}
+
+.statsLegend__screenTime__avgDottedSwatch{
+  width: 18px;
+  height: 0;
+  border-top: 2px dotted var(--stats-legend-dotted, rgba(17,24,39,0.35));
+  display: inline-block;
+  transform: translateY(-1px);
+}
 
 
 .wrap{
@@ -17718,27 +18972,6 @@ const areaClipW = useMemo(() => {
   min-height: 0;
 }
 
-
-.legendRow {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-bottom: 10px;
-  font-size: 12px;
-  opacity: 0.85;
-}
-.legendItem { display: inline-flex; align-items: center; gap: 6px; }
-
-.dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 999px;
-  display: inline-block;
-}
-.dotTest { background: rgba(255, 197, 66, 0.95); }
-.dotStudy { background: rgba(43, 124, 175, 0.90); }
-.dotTotal { background: var(--chart-grad); }
-.dotAvg { background: rgba(17, 24, 39, 0.45); }
 
 .summaryRow {
   display: grid;
@@ -17767,7 +19000,7 @@ const areaClipW = useMemo(() => {
   display: inline-block;
   width: 1px;
   height: 10px;
-  background: rgba(17,24,39,0.18);
+  background: var(--stats-sep-line, rgba(17,24,39,0.18));
   margin: 0 10px;
   vertical-align: middle;
   flex: none;
@@ -17834,9 +19067,9 @@ const areaClipW = useMemo(() => {
   position: absolute;
   left: 0;
   right: 0;
-  border-top: 1px dashed rgba(17, 24, 39, 0.35);
+  border-top: 1px dashed var(--stats-legend-dotted, rgba(17, 24, 39, 0.35));
   pointer-events: none;
-  z-index: 3;
+  z-index: 4;
 }
 
 .avgLabel {
@@ -17845,8 +19078,10 @@ const areaClipW = useMemo(() => {
   font-size: 10px;
   opacity: 0.65;
   pointer-events: none;
-  z-index: 3;
+  z-index: 4;
+  color: var(--stats-legend-avg-label, rgba(17,24,39,0.65));
 }
+
 
 .tooltip {
   position: absolute;
@@ -17903,7 +19138,7 @@ const areaClipW = useMemo(() => {
   position: relative;
   font-size: 11px;
   opacity: 0.7;
-  color: rgba(17,24,39,0.55);
+  color:var(--stats-axis-text, rgba(17,24,39,0.55));
 }
 
 .yTick{
@@ -17926,7 +19161,7 @@ const areaClipW = useMemo(() => {
   left: 0;
   right: 0;
   height: 1px;
-  background: rgba(17,24,39,0.08);
+  background: var(--stats-grid-line, rgba(17,24,39,0.08));
   transform: translateY(-0.5px);
   pointer-events: none;
   z-index: 1;
@@ -17971,7 +19206,7 @@ const areaClipW = useMemo(() => {
 
 .totalLine{
   fill: none;
-  stroke-width: 1.5;                 /* matches Score line weight vibe */
+  stroke-width: 1;                 /* matches Score line weight vibe */
   stroke-linecap: round;
   stroke-linejoin: round;
   filter: drop-shadow(0 1px 0 rgba(255,255,255,0.35)); /* subtle polish */;
@@ -18047,6 +19282,24 @@ const areaClipW = useMemo(() => {
   transform: translateX(-4px);
 
   animation: avgLabelIn 320ms ease-out forwards;
+  animation-fill-mode: both;
+}
+
+/* ===== Waterfall reveal (legend + bottom details) ===== */
+@keyframes waterfallIn {
+  0%   { opacity: 0; transform: translateY(-6px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+.waterHidden{
+  opacity: 0;
+  transform: translateY(-6px);
+}
+
+.waterIn{
+  opacity: 0;
+  transform: translateY(-6px);
+  animation: waterfallIn 260ms ease forwards;
   animation-fill-mode: both;
 }
 
@@ -18446,21 +19699,26 @@ const subs = t.subtopics ?? [];
   overflow: hidden;
   scroll-snap-align: start;
   min-width: 150px;
-  scroll-snap-align: start;
-  background: var(--color-premium-gradient);
+
+  /* ✅ let ::before own the background so we can brighten it cleanly */
+  background: transparent;
   opacity: 1;
 }
-
 
 .pill::before{
   content:"";
   position:absolute;
   inset:0;
   border-radius: inherit;
+
+  /* ✅ same gradient, but 20% brighter */
   background: var(--color-premium-gradient);
+  filter: brightness(2.0);
+
   pointer-events:none;
   opacity: var(--op, 1);
 }
+
 
 .pillTop{
   display: flex;
@@ -18841,6 +20099,29 @@ const subs = t.subtopics ?? [];
 :root {
   --ease-boot: cubic-bezier(0.2, 0.9, 0.2, 1);
   --ease-soft: cubic-bezier(0.22, 1, 0.36, 1);
+   --color-premium-gradient: linear-gradient(
+    90deg,
+    rgba(43, 124, 175, 0.4) 0%,
+    rgba(255, 197, 66, 0.4) 100%
+  );
+
+  --color-premium-gradient-20: linear-gradient(
+    90deg,
+    rgba(43, 124, 175, 0.2) 0%,
+    rgba(255, 197, 66, 0.2) 100%
+  );
+
+  --color-premium-gradient-10: linear-gradient(
+    90deg,
+    rgba(43, 124, 175, 0.1) 0%,
+    rgba(255, 197, 66, 0.1) 100%
+  );
+
+  --color-premium-gradient-20-reverse: linear-gradient(
+    90deg,
+    rgba(255, 197, 66, 0.2) 0%,
+    rgba(43, 124, 175, 0.2) 100%
+  );
 }
 
 @keyframes popIn {
@@ -18958,6 +20239,20 @@ const subs = t.subtopics ?? [];
   }
 }
 
+/* =========================
+   Dark mode: make headings readable
+   ========================= */
+:global(:root[data-theme='dark']) .heroTitle,
+:global(html[data-theme='dark']) .heroTitle,
+:global(body[data-theme='dark']) .heroTitle{
+  color: #f9fafb; /* “Weakest right now” */
+}
+
+:global(:root[data-theme='dark']) .topicName,
+:global(html[data-theme='dark']) .topicName,
+:global(body[data-theme='dark']) .topicName{
+  color: #f9fafb; /* Traffic Signals / Road Safety / etc */
+}
 
 ```
 
@@ -19597,7 +20892,6 @@ export const bookmarkStore = new LocalBookmarkStore();
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { bookmarkStore } from "./store";
 import { useUserKey } from "@/components/useUserKey.client";
-
 export function useBookmarks(datasetId: string, userKeyOverride?: string) {
   const inferredUserKey = useUserKey();
   const userKey = userKeyOverride ?? inferredUserKey;
@@ -36349,7 +37643,7 @@ export const config = {
         {
           "id": "q0143_o4",
           "originalKey": "D",
-          "text": "TThird left lane"
+          "text": "Third left lane"
         }
       ],
       "correctRow": null,
