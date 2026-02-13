@@ -6,8 +6,9 @@ import Image from "next/image";
 import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import styles from "./checkout.module.css";
-import { PLAN_MAP, toPlanId, type PlanId } from "../../lib/plans";
+import { PLAN_MAP, toPlanId, type PlanId } from "@/lib/plans";
 import { safeNextPath } from "@/lib/auth";
+import CSRBoundary from "@/components/CSRBoundary";
 
 type PayMethod = "alipay" | "gpay" | "applepay" | "wechat";
 
@@ -27,13 +28,13 @@ function formatExpiry(raw: string) {
   return `${digits.slice(0, 2)}/${digits.slice(2)}`;
 }
 
-export default function CheckoutPage() {
+function Inner() {
   const router = useRouter();
   const sp = useSearchParams();
 
   const plan: PlanId = toPlanId(sp.get("plan"));
   const promoApplied = sp.get("promo") === "1";
-const next = safeNextPath(sp.get("next"), "/");
+  const next = safeNextPath(sp.get("next"), "/");
 
   const planData = PLAN_MAP[plan];
   const title = planData.checkoutTitle;
@@ -190,7 +191,7 @@ const next = safeNextPath(sp.get("next"), "/");
             type="button"
             className={styles.checkoutBtn}
             onClick={() => {
-              router.push("/checkout/success");router.push(
+              router.push(
   `/checkout/success?plan=${encodeURIComponent(plan)}${promoApplied ? "&promo=1" : ""}&next=${encodeURIComponent(next)}`
 );
               // TODO: integrate real payment provider later
@@ -201,5 +202,13 @@ const next = safeNextPath(sp.get("next"), "/");
         </footer>
       </div>
     </main>
+  );
+}
+
+export default function CheckoutPage() {
+  return (
+    <CSRBoundary>
+      <Inner />
+    </CSRBoundary>
   );
 }

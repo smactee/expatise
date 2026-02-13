@@ -3,15 +3,16 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import confetti from "canvas-confetti";
 import styles from "./success.module.css";
 
-import { useEntitlements } from "../../../components/EntitlementsProvider.client";
-import { safeNextPath } from "../../../lib/auth";
+import { useEntitlements } from "@/components/EntitlementsProvider.client";
+import { safeNextPath } from "@/lib/auth";
+import CSRBoundary from "@/components/CSRBoundary";
 
-export default function CheckoutSuccessPage() {
+function Inner() {
   const router = useRouter();
   const sp = useSearchParams();
   const { grantPremium } = useEntitlements();
@@ -46,7 +47,11 @@ export default function CheckoutSuccessPage() {
     })();
   }, []);
 
+const grantedRef = useRef(false);
+
   useEffect(() => {
+    if (grantedRef.current) return;
+  grantedRef.current = true;
     // Temporary: grant premium locally after “successful purchase”.
     // Later: replace with real IAP verification + entitlements refresh.
     const source = plan === "lifetime" ? "lifetime" : "subscription";
@@ -94,5 +99,13 @@ export default function CheckoutSuccessPage() {
         </footer>
       </div>
     </main>
+  );
+}
+
+export default function CheckoutSuccessPage() {
+  return (
+    <CSRBoundary>
+      <Inner />
+    </CSRBoundary>
   );
 }

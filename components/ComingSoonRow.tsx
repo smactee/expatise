@@ -5,6 +5,7 @@ import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname, useSearchParams } from 'next/navigation';
+import CSRBoundary from '@/components/CSRBoundary';
 
 type SettingsRowStyles = {
   settingsRow: string;
@@ -25,7 +26,7 @@ type Props = {
   className?: string;
 };
 
-export default function ComingSoonRow({
+function Inner({
   label,
   feature,
   iconSrc,
@@ -41,7 +42,7 @@ export default function ComingSoonRow({
   const featureText = feature ?? label;
 
   // ✅ capture current route so "Back" returns here (works from ANY page)
-  const qs = sp?.toString();
+  const qs = sp.toString();
   const returnTo = `${pathname}${qs ? `?${qs}` : ''}`;
 
   const href =
@@ -81,5 +82,13 @@ export default function ComingSoonRow({
       </div>
       <span className={styles.chevron}>›</span>
     </Link>
+  );
+}
+
+export default function ComingSoonRow(props: Props) {
+  return (
+    <CSRBoundary>
+      <Inner {...props} />
+    </CSRBoundary>
   );
 }

@@ -6,6 +6,8 @@ import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
 import type { CSSProperties } from 'react';
 import styles from './BackButton.module.css';
+import CSRBoundary from '@/components/CSRBoundary';
+
 
 type BackButtonProps = {
   onClick?: () => void;                 // optional override (modal close)
@@ -25,7 +27,7 @@ function safeDecode(v: string) {
   }
 }
 
-export default function BackButton({
+function Inner({
   onClick,
   variant = 'fixed',
   ariaLabel = 'Back',
@@ -45,10 +47,11 @@ export default function BackButton({
     const raw = sp?.get('returnTo') ?? '';
     const decoded = raw ? safeDecode(raw) : '';
 
-    if (decoded.startsWith('/')) {
-      router.push(decoded);
-      return;
-    }
+    if (decoded.startsWith('/') && !decoded.startsWith('//')) {
+  router.push(decoded);
+  return;
+}
+
 
     // Otherwise behave like normal back
     // (with a safety fallback if there's no real history)
@@ -86,5 +89,13 @@ export default function BackButton({
         priority
       />
     </button>
+  );
+}
+
+export default function BackButton(props: BackButtonProps) {
+  return (
+    <CSRBoundary>
+      <Inner {...props} />
+    </CSRBoundary>
   );
 }

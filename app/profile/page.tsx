@@ -5,18 +5,17 @@
 import React, { useRef, useState, useEffect, type ChangeEvent } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import styles from './profile.module.css';
-import BottomNav from '../../components/BottomNav';
-import { useTheme } from '../../components/ThemeProvider';
-import { useUserProfile } from '../../components/UserProfile';
-import { UserProfileProvider } from '../../components/UserProfile';
+import styles from '@/profile.module.css';
+import BottomNav from '@/components/BottomNav';
+import { useTheme } from '@/components/ThemeProvider';
+import { useUserProfile } from '@/components/UserProfile';
 import { useRouter, usePathname, useSearchParams  } from 'next/navigation';
-import { useAuthStatus } from '../../components/useAuthStatus';
-import { isValidEmail } from '../../lib/auth';
-import BackButton from '../../components/BackButton';
+import { useAuthStatus } from '@/components/useAuthStatus';
+import BackButton from '@/components/BackButton';
 import { signOut } from 'next-auth/react';
+import CSRBoundary from '@/components/CSRBoundary';
 
-export default function ProfilePage() {
+function Inner() {
   const { avatarUrl, setAvatarUrl, name, setName, email, setEmail, saveProfile, clearProfile } = useUserProfile(); // from context
 
   // ---- avatar upload state + handlers ----
@@ -183,7 +182,7 @@ const handleSave = async (e: React.SyntheticEvent) => {
 
 
 const goComingSoon = (feature: string) => {
-  const qs = sp?.toString();
+  const qs = sp.toString();
   const returnTo = `${pathname}${qs ? `?${qs}` : ''}`;
 
   router.push(
@@ -502,3 +501,10 @@ const goComingSoon = (feature: string) => {
   );
 }
 
+export default function ProfilePage() {
+  return (
+    <CSRBoundary>
+      <Inner />
+    </CSRBoundary>
+  );
+}

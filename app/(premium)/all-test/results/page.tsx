@@ -4,7 +4,7 @@
 import { Suspense, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 
-function RedirectInner() {
+function Inner() {
   const router = useRouter();
   const sp = useSearchParams();
   const qs = sp.toString();
@@ -19,7 +19,7 @@ function RedirectInner() {
 export default function RealTestResultsAlias() {
   return (
     <Suspense fallback={null}>
-      <RedirectInner />
+      <Inner />
     </Suspense>
   );
 }

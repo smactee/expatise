@@ -5,17 +5,18 @@
 import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useState, useMemo, useEffect } from 'react';
-import styles from './login.module.css';
+import styles from '@/login.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import CreateAccountModal from './CreateAccountModal';
 import { faGoogle, faApple, faWeixin } from '@fortawesome/free-brands-svg-icons';
 import {signIn, getProviders} from "next-auth/react";
-import { isValidEmail, normalizeEmail, safeNextPath } from '../../lib/auth';
+import { isValidEmail, normalizeEmail, safeNextPath } from '@/lib/auth';
+import CSRBoundary from '@/components/CSRBoundary';
 
 
 
-export default function LoginPage() {
+function Inner() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const nextParam = safeNextPath(searchParams.get("next"), "/");
@@ -44,8 +45,13 @@ export default function LoginPage() {
 
 
 useEffect(() => {
-  getProviders().then(setProviders);
+  let mounted = true;
+  getProviders()
+    .then((p) => { if (mounted) setProviders(p); })
+    .catch(() => { if (mounted) setProviders(null); });
+  return () => { mounted = false; };
 }, []);
+
 
   useEffect (() => {
   document.documentElement.dataset.theme = 'light';
@@ -232,7 +238,7 @@ router.replace(nextParam);
     type="button" 
     className={styles.snsBtnSmall} 
     aria-label="Continue with Apple"
-    onClick={() => signIn("apple", { callbackUrl: "/" })}>
+    onClick={() => signIn("apple", { callbackUrl: nextParam })}>
     <FontAwesomeIcon icon={faApple} />
     </button>
     )}
@@ -242,7 +248,7 @@ router.replace(nextParam);
     type="button" 
     className={styles.snsBtnSmall} 
     aria-label="Continue with WeChat"
-    onClick={() => signIn("wechat", { callbackUrl: "/" })}>
+    onClick={() => signIn("wechat", { callbackUrl: nextParam })}>
     <FontAwesomeIcon icon={faWeixin} />
     </button>
     )}
@@ -252,5 +258,13 @@ router.replace(nextParam);
         </section>
       </div>
     </main>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <CSRBoundary>
+      <Inner />
+    </CSRBoundary>
   );
 }

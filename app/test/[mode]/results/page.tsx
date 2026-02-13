@@ -4,25 +4,18 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter, useSearchParams, useParams } from "next/navigation";
 import Image from "next/image";
-
-// ✅ Best practice: keep CSS local to this route.
-// Create app/test/[mode]/results/results.module.css and copy your existing CSS into it.
 import styles from "./results.module.css";
-
 import { loadDataset } from "@/lib/qbank/loadDataset";
 import type { DatasetId } from "@/lib/qbank/datasets";
 import type { Question } from "@/lib/qbank/types";
-
 import { attemptStore } from "@/lib/attempts/store";
 import type { TestAttemptV1 } from "@/lib/attempts/engine";
-
 import { useAuthStatus } from "@/components/useAuthStatus";
 import { normalizeUserKey } from "@/lib/attempts/engine";
 import { useBookmarks } from "@/lib/bookmarks/useBookmarks";
-
 import { TEST_MODES, type TestModeId } from "@/lib/testModes";
-
 import { useClearedMistakes } from "@/lib/mistakes/useClearedMistakes";
+import CSRBoundary from "@/components/CSRBoundary";
 
 function clamp(n: number, min: number, max: number) {
   return Math.max(min, Math.min(max, n));
@@ -45,7 +38,7 @@ type ReviewItem = {
   explanation?: string;
 };
 
-export default function TestModeResultsPage() {
+function Inner() {
   const router = useRouter();
   const sp = useSearchParams();
   const params = useParams<{ mode: string }>();
@@ -101,41 +94,32 @@ const userKey = normalizeUserKey(email ?? "") || "guest";
    * If user visits /test/[mode]/results with NO attemptId,
    * find the newest attempt for this mode and redirect with attemptId.
    */
-  useEffect(() => {
-    if (attemptId) return;
+ const qs = sp.toString();
 
-    (async () => {
-      // If userKey isn't ready yet, wait
-      if (!userKey) return;
+useEffect(() => {
+  if (attemptId) return;
 
-      // listAttempts requires datasetId in your store API
-      const list = await attemptStore.listAttempts(userKey, cfg.datasetId);
+  (async () => {
+    const list = await attemptStore.listAttempts(userKey, cfg.datasetId);
+    const matching = list.filter(
+      (a) => a.modeKey === cfg.modeKey && a.datasetVersion === cfg.datasetVersion
+    );
+    const ranked = [...matching].sort(
+      (a, b) => (b.lastActiveAt ?? 0) - (a.lastActiveAt ?? 0)
+    );
+    const best = ranked[0];
 
-      // Filter to this mode & this dataset version
-      const matching = list.filter(
-        (a) =>
-          a.modeKey === cfg.modeKey &&
-          a.datasetVersion === cfg.datasetVersion
-      );
+    if (!best?.attemptId) {
+      router.replace(`/test/${cfg.modeId}`);
+      return;
+    }
 
-      // Choose best candidate:
-      // Prefer "submitted" / "expired" / "closed" attempts first,
-      // else pick newest in-progress.
-      const ranked = [...matching].sort((a, b) => (b.lastActiveAt ?? 0) - (a.lastActiveAt ?? 0));
+    const next = new URLSearchParams(qs);
+    next.set("attemptId", best.attemptId);
+    router.replace(`/test/${cfg.modeId}/results?${next.toString()}`);
+  })();
+}, [attemptId, userKey, cfg, router, qs]);
 
-      const best = ranked[0];
-      if (!best?.attemptId) {
-        // Nothing to show; send them back to test start
-        router.replace(`/test/${cfg.modeId}`);
-        return;
-      }
-
-      // Redirect to same page WITH attemptId
-      const next = new URLSearchParams(sp.toString());
-      next.set("attemptId", best.attemptId);
-      router.replace(`/test/${cfg.modeId}/results?${next.toString()}`);
-    })();
-  }, [attemptId, userKey, cfg, router, sp]);
 
   // Carousel pointer handlers
   const onCarouselPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
@@ -341,7 +325,10 @@ if (modeId === "mistakes" && !didAutoClearRef.current) {
       items.sort((x, y) => x.testNo - y.testNo);
       setReviewItems(items);
     })();
-  }, [attemptId]);
+  }, [attemptId, modeId, clearMistakesMany]);
+
+
+
 
   // Close attempt once
   useEffect(() => {
@@ -596,5 +583,13 @@ if (modeId === "mistakes" && !didAutoClearRef.current) {
         </div>
       </main>
     </div>
+  );
+}
+
+export default function TestModeResultsPage() {
+  return (
+    <CSRBoundary>
+      <Inner />
+    </CSRBoundary>
   );
 }
