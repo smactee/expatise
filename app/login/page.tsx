@@ -5,7 +5,7 @@
 import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useState, useMemo, useEffect } from 'react';
-import styles from '@/login.module.css';
+import styles from './login.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import CreateAccountModal from './CreateAccountModal';

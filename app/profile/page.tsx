@@ -5,7 +5,7 @@
 import React, { useRef, useState, useEffect, type ChangeEvent } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import styles from '@/profile.module.css';
+import styles from './profile.module.css';
 import BottomNav from '@/components/BottomNav';
 import { useTheme } from '@/components/ThemeProvider';
 import { useUserProfile } from '@/components/UserProfile';
