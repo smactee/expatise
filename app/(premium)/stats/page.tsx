@@ -87,6 +87,33 @@ function saveTopicQuizConfig(topicMastery: any) {
 }
 
 
+function startOfDayKey(t: number) {
+  const d = new Date(t);
+  d.setHours(0, 0, 0, 0);
+  return d.getTime();
+}
+
+function formatStamp(ms: number) {
+  try {
+    const d = new Date(ms);
+    return d.toLocaleString(undefined, {
+      month: "short",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  } catch {
+    return "";
+  }
+}
+
+function formatRemaining(ms: number) {
+  const s = Math.max(0, Math.floor(ms / 1000));
+  const h = Math.floor(s / 3600);
+  const m = Math.floor((s % 3600) / 60);
+  if (h <= 0) return `${m}m`;
+  return `${h}h ${m}m`;
+}
 
 
 export default function StatsPage() {
@@ -186,6 +213,24 @@ const statsTopics = useMemo(() => {
   });
 }, [attempts, questions, tfTopics]);
 
+// ✅ Coach fixed windows (SPEC): Skill 30d (real-test) + Habits 7d (learning modes)
+const coachSkill = useMemo(() => {
+  return computeStats({
+    attempts,
+    questions,
+    filters: { timeframeDays: 30, includeModeKeys: REAL_ONLY_MODE_KEYS },
+  });
+}, [attempts, questions]);
+
+const coachHabits = useMemo(() => {
+  return computeStats({
+    attempts,
+    questions,
+    filters: { timeframeDays: 7, includeModeKeys: LEARNING_MODE_KEYS },
+  });
+}, [attempts, questions]);
+
+
 
 const [readinessDone, setReadinessDone] = useState(false);
 
@@ -218,6 +263,190 @@ useEffect(() => {
   setDailyLegendReady(false);
 }, [loading, tfWeekly, statsWeekly.attemptsCount, userKey]);
 
+
+// ======================================================
+// GPT COACH: gating + cooldown + saved report (no tokens)
+// ======================================================
+const COOLDOWN_MS = 24 * 60 * 60 * 1000;
+
+const coachPrefix = userKey ? `expatise:${userKey}` : `expatise:anon`;
+const LS_REPORT = `${coachPrefix}:coach:lastReport:v1`;
+const LS_COOLDOWN_UNTIL = `${coachPrefix}:coach:cooldownUntil:v1`;
+
+const [coachReport, setCoachReport] = useState<string>("");
+const [coachCreatedAt, setCoachCreatedAt] = useState<number | null>(null);
+const [coachLoading, setCoachLoading] = useState(false);
+const [coachError, setCoachError] = useState<string | null>(null);
+const [cooldownUntil, setCooldownUntil] = useState<number | null>(null);
+
+const [nowMs, setNowMs] = useState<number>(Date.now());
+useEffect(() => {
+  const id = window.setInterval(() => setNowMs(Date.now()), 1000);
+  return () => window.clearInterval(id);
+}, []);
+
+// Load saved report + cooldown when userKey changes
+useEffect(() => {
+  try {
+    const raw = localStorage.getItem(LS_REPORT);
+    if (raw) {
+      const obj = JSON.parse(raw);
+      if (obj?.report) {
+        setCoachReport(String(obj.report));
+        const t = Number(obj.createdAt);
+        setCoachCreatedAt(Number.isFinite(t) ? t : null);
+      }
+    }
+    const cRaw = localStorage.getItem(LS_COOLDOWN_UNTIL);
+    const c = Number(cRaw);
+    setCooldownUntil(Number.isFinite(c) && c > 0 ? c : null);
+  } catch {
+    // ignore
+  }
+}, [LS_REPORT, LS_COOLDOWN_UNTIL]);
+
+const scorePointsSorted = useMemo(() => {
+  const arr = [...(coachSkill.scoreSeries ?? [])];
+  arr.sort((a, b) => a.t - b.t);
+  return arr;
+}, [coachSkill.scoreSeries]);
+
+const maxAnsweredInAnyRealTest = useMemo(() => {
+  return scorePointsSorted.reduce((m, p) => Math.max(m, p.answered ?? 0), 0);
+}, [scorePointsSorted]);
+
+const minimumMet = useMemo(() => {
+  return (
+    (coachSkill.attemptsCount >= 1 && maxAnsweredInAnyRealTest >= 80) ||
+    coachSkill.attemptedTotal >= 120
+  );
+}, [coachSkill.attemptsCount, coachSkill.attemptedTotal, maxAnsweredInAnyRealTest]);
+
+const distinctRealTestDays30d = useMemo(() => {
+  const s = new Set<number>();
+  for (const p of scorePointsSorted) s.add(startOfDayKey(p.t));
+  return s.size;
+}, [scorePointsSorted]);
+
+const bestResultsMet = useMemo(() => {
+  return coachSkill.attemptsCount >= 3 && distinctRealTestDays30d >= 3;
+}, [coachSkill.attemptsCount, distinctRealTestDays30d]);
+
+const cooldownActive = !!(cooldownUntil && nowMs < cooldownUntil);
+const remainingMs = cooldownUntil ? Math.max(0, cooldownUntil - nowMs) : 0;
+
+const habitsActiveDays = useMemo(() => {
+  return (coachHabits.timeDailySeries ?? []).filter((d) => (d.totalMin ?? 0) > 0).length;
+}, [coachHabits.timeDailySeries]);
+
+async function handleGenerateCoach() {
+  if (coachLoading) return;
+
+  setCoachError(null);
+
+  // Client-side gate (server also enforces)
+  if (!minimumMet) return;
+
+  // UI cooldown gate (server also enforces via cookie)
+  if (cooldownActive) return;
+
+  setCoachLoading(true);
+  try {
+    const weakest = (coachSkill.topicMastery?.weakestSubtopics ?? [])
+      .slice(0, 5)
+      .map((s: any) => ({
+        tagLabel: labelForTag(s.tag) ?? String(s.tag),
+        attempted: Number(s.attempted ?? 0),
+        accuracyPct: Number(s.accuracyPct ?? 0),
+      }));
+
+    const payload = {
+      coachContractVersion: "v1.0",
+      skillWindowLabel: "30d",
+      habitWindowLabel: "7d",
+      skill: {
+        attemptsCount: coachSkill.attemptsCount,
+        attemptedTotal: coachSkill.attemptedTotal,
+        accuracyPct: coachSkill.accuracyPct,
+        readinessPct: coachSkill.readinessPct,
+        scoreAvg: coachSkill.scoreAvg,
+        scoreBest: coachSkill.scoreBest,
+        scoreLatest: coachSkill.scoreLatest,
+        // keep input smaller/cheaper
+        scorePoints: scorePointsSorted.slice(-12).map((p) => ({
+          t: p.t,
+          scorePct: p.scorePct,
+          answered: p.answered,
+          totalQ: p.totalQ,
+        })),
+        minTopicAttempted: coachSkill.topicMastery?.minAttempted ?? 10,
+        weakestSubtopics: weakest,
+      },
+      habits: {
+        timeThisWeekMin: coachHabits.timeThisWeekMin,
+        timeBestDayMin: coachHabits.timeBestDayMin,
+        timeStreakDays: coachHabits.timeStreakDays,
+        activeDays: habitsActiveDays,
+        requiredDays: 4,
+      },
+    };
+
+    const r = await fetch("/api/coach", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+
+    const j = await r.json().catch(() => null);
+
+    if (!r.ok) {
+      if (r.status === 429 && j?.nextAllowedAt) {
+        const until = Number(j.nextAllowedAt);
+        if (Number.isFinite(until) && until > 0) {
+          setCooldownUntil(until);
+          try {
+            localStorage.setItem(LS_COOLDOWN_UNTIL, String(until));
+          } catch {}
+        }
+        setCoachError(`Next Coach report available in ${formatRemaining(Math.max(0, until - Date.now()))}.`);
+        return;
+      }
+
+      if (r.status === 400 && j?.error === "insufficient_data") {
+        setCoachError("Not enough data yet for personalized coaching. Complete 1 Real Test (80+ answers) or reach 120 answered total.");
+        return;
+      }
+
+      setCoachError(j?.detail ? String(j.detail) : "Coach request failed. Please try again.");
+      return;
+    }
+
+    const report = String(j?.report ?? "").trim();
+    const createdAt = Number(j?.createdAt ?? Date.now());
+
+    if (!report) {
+      setCoachError("Coach returned an empty report. Please try again.");
+      return;
+    }
+
+    setCoachReport(report);
+    setCoachCreatedAt(Number.isFinite(createdAt) ? createdAt : Date.now());
+
+    // Save report locally
+    try {
+      localStorage.setItem(LS_REPORT, JSON.stringify({ report, createdAt }));
+    } catch {}
+
+    // Local UI cooldown (server also enforces via cookie)
+    const until = (Number.isFinite(createdAt) ? createdAt : Date.now()) + COOLDOWN_MS;
+    setCooldownUntil(until);
+    try {
+      localStorage.setItem(LS_COOLDOWN_UNTIL, String(until));
+    } catch {}
+  } finally {
+    setCoachLoading(false);
+  }
+}
 
   return (
     <main className={styles.page}>
@@ -487,6 +716,111 @@ useEffect(() => {
             Review Your Mistakes
             </button>
         </div>
+
+{/* GPT Coach */}
+<article className={styles.statsCard}>
+  <header className={styles.statsCardHeader}>
+    <h2 className={styles.statsCardTitle}>GPT Coach</h2>
+  </header>
+
+  {loading ? (
+    <p className={styles.coachSubtle}>Loading…</p>
+  ) : !minimumMet ? (
+    <>
+      <p className={styles.coachSubtle}><strong>AI Coach needs a bit more data.</strong></p>
+      <p className={styles.coachHint}>
+        To generate a personalized report, complete either:<br />
+        • <strong>1 Real Test</strong> with <strong>80+ answers</strong>, or<br />
+        • <strong>120 total questions answered</strong> (practice + tests)
+      </p>
+      <p className={styles.coachHint}>More answers = less randomness → better advice.</p>
+
+      <div className={styles.coachRow}>
+        <button
+          type="button"
+          className={styles.coachBtnPrimary}
+          onClick={() => router.push("/test/real")}
+        >
+          Take a Real Test
+        </button>
+        <button
+          type="button"
+          className={styles.coachBtnSecondary}
+          onClick={() => router.push("/test/real")}
+        >
+          Start Now
+        </button>
+      </div>
+    </>
+  ) : (
+    <>
+      {!bestResultsMet ? (
+        <>
+          <p className={styles.coachSubtle}>
+            <strong>You’re ready for a first Coach report</strong> — here’s how to make it “laser-accurate”.
+          </p>
+          <p className={styles.coachHint}>
+            For the most tailored advice (topics + habits + patterns), aim for:<br />
+            ✅ <strong>3 Real Tests (300 questions)</strong> across <strong>3+ days</strong>
+          </p>
+          <p className={styles.coachHint}>
+            Next steps:<br />
+            • Do <strong>2 more Real Tests</strong> on separate days<br />
+            • Try the <strong>2-pass rule</strong> (answer easy first, then return)<br />
+            • Keep a <strong>10-minute minimum</strong> on non-test days
+          </p>
+        </>
+      ) : (
+        <p className={styles.coachSubtle}>
+          <strong>Coach runs on demand</strong> (Skill: 30d · Habits: 7d). Tap to generate your latest plan.
+        </p>
+      )}
+
+      <div className={styles.coachRow}>
+        <button
+          type="button"
+          className={styles.coachBtnPrimary}
+          onClick={handleGenerateCoach}
+          disabled={coachLoading || cooldownActive}
+          title={cooldownActive ? `Next available in ${formatRemaining(remainingMs)}` : "Generate Coach Report"}
+        >
+          {coachLoading ? "Generating…" : cooldownActive ? "Coach Locked" : "Generate Coach Report"}
+        </button>
+
+        <button
+          type="button"
+          className={styles.coachBtnSecondary}
+          onClick={() => router.push("/test/real")}
+        >
+          Take a Test
+        </button>
+      </div>
+
+      <div className={styles.coachMeta}>
+        {cooldownActive ? (
+          <>Next Coach report available in <strong>{formatRemaining(remainingMs)}</strong>. You can still read your last report anytime.</>
+        ) : (
+          <>Coach reports are limited to <strong>1 per 24 hours</strong>. Your latest report stays saved here.</>
+        )}
+      </div>
+
+      {coachError ? <div className={styles.coachError}>{coachError}</div> : null}
+
+      {coachReport ? (
+        <div className={styles.coachReportBox}>
+          <div className={styles.coachReportHeader}>
+            <p className={styles.coachReportTitle}>Coach Report</p>
+            <p className={styles.coachReportStamp}>
+              {coachCreatedAt ? `Last report: ${formatStamp(coachCreatedAt)}` : ""}
+            </p>
+          </div>
+          <p className={styles.coachReportText}>{coachReport}</p>
+        </div>
+      ) : null}
+    </>
+  )}
+</article>
+
 
         <BottomNav />
 

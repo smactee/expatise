@@ -158,10 +158,13 @@
   align-items: center;      /* center under avatar */
 }
 
-.emailInputRow {
+.emailInputRow{
   display: inline-flex;
-  justify-content: center;
+  align-items: center;      /* ✅ vertical alignment */
+  justify-content: center;  /* ✅ keep centered under avatar */
+  gap: 8px;                 /* ✅ space between icon and text */
 }
+
 
 .email {
   margin: 0;
@@ -175,6 +178,14 @@
   border-bottom: 2px solid transparent; /* only visible on focus/error */
   padding: 0 0 2px;
 }
+
+
+.emailDisplayText{
+  display: inline;   /* ✅ lets it sit next to the icon */
+  width: auto;       /* ✅ don't force full width */
+  text-align: left;  /* optional; row is already centered */
+}
+
 
 /* underline when editing (optional, can be your blue instead) */
 .email:focus {
@@ -199,6 +210,16 @@
   color: #3b82f6;
   margin-right: 5px;
 }
+
+.providerIcon {
+  flex-shrink: 0;
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+  display: inline-block;
+  transform: translateY(1px);
+}
+
 
 
 /* Premium bar */
@@ -541,12 +562,6 @@
 }
 
 
-.emailDisplayText {
-  width: 100%;
-  display: block;
-  text-align: center;
-  opacity: 0.95;
-}
 
 /* Toast readability in DARK MODE */
 :root[data-theme='dark'] .toastCard {

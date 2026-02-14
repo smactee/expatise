@@ -14,6 +14,9 @@ import { useAuthStatus } from '@/components/useAuthStatus';
 import BackButton from '@/components/BackButton';
 import { signOut } from 'next-auth/react';
 import CSRBoundary from '@/components/CSRBoundary';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faGoogle, faApple, faWeixin} from '@fortawesome/free-brands-svg-icons';
+import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
 
 function Inner() {
   const { avatarUrl, setAvatarUrl, name, setName, email, setEmail, saveProfile, clearProfile } = useUserProfile(); // from context
@@ -33,28 +36,28 @@ function Inner() {
 const signInDisplay = (() => {
   // 1) guest
   if (!authed) {
-    return { label: "Signed in as guest.", iconSrc: null as string | null };
+    return { label: "Signed in as guest.", icon: null as any };
   }
 
   // 2) email/password local account
   if (method === "email") {
-    return { label: sessionEmail ?? "Email sign-in", iconSrc: null };
+    return { label: sessionEmail ?? "Email sign-in", icon: faEnvelope };
   }
 
   // 3) social providers
   if (provider === "google") {
-    return { label: "Google sign-in", iconSrc: "/images/profile/google-icon.png" };
+    return { label: "Google sign-in", icon: faGoogle };
   }
   if (provider === "apple") {
-    return { label: "Apple ID", iconSrc: "/images/profile/apple-icon.png" };
+    return { label: "Apple ID", icon: faApple };
   }
   if (provider === "wechat") {
-    return { label: "WeChat", iconSrc: "/images/profile/wechat-icon.png" };
+    return { label: "WeChat", icon: faWeixin };
   }
 
-  // fallback (still show method, not email)
-  return { label: "Social sign-in", iconSrc: null };
+  return { label: "Social sign-in", icon: null as any };
 })();
+
 
 
 
@@ -277,14 +280,14 @@ const goComingSoon = (feature: string) => {
   }}
 >
   <div className={styles.emailInputRow}>
-    {signInDisplay.iconSrc ? (
-  <Image
-    src={signInDisplay.iconSrc}
-    alt=""
-    width={18}
-    height={18}
+    {signInDisplay.icon ? (
+  <FontAwesomeIcon
+    icon={signInDisplay.icon}
+    className={styles.providerIcon}
+    aria-hidden="true"
   />
 ) : null}
+
 
 <span className={styles.emailDisplayText}>{signInDisplay.label}</span>
 
