@@ -1,3 +1,5 @@
+//lib/entitlements/types.ts
+
 export type EntitlementSource =
   | "none"
   | "trial"
