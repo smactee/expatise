@@ -6,7 +6,7 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 const COOLDOWN_MS = 24 * 60 * 60 * 1000;
-const COOKIE_KEY = "expatise_coach_last_v1";
+const COOKIE_KEY = "expatise_coach_last_v2";
 
 /**
  * Master prompt (static). Keep this stable for best caching behavior.
