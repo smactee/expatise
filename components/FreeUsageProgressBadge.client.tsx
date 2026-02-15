@@ -9,8 +9,22 @@ import {
   usageCapEventName,
 } from "@/lib/freeAccess/localUsageCap";
 import { useEntitlements } from "@/components/EntitlementsProvider.client";
+import { usePathname } from "next/navigation";
+
+const HIDE_BADGE_EXACT = new Set(["/"]); // onboarding/landing
+const HIDE_BADGE_PREFIXES = ["/login", "/onboarding", "/forgot-password"];
+
 
 export default function FreeUsageProgressBadge() {
+  const pathname = usePathname() || "/";
+
+const hide =
+  HIDE_BADGE_EXACT.has(pathname) ||
+  HIDE_BADGE_PREFIXES.some((p) => pathname.startsWith(p));
+
+if (hide) return null;
+
+  
   const { isPremium } = useEntitlements();
   if (isPremium) return null;
   const userKey = useUserKey();

@@ -11,7 +11,7 @@ import { getLocalEntitlements } from "@/lib/entitlements/localStore";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-const ADMIN_PREMIUM_EMAILS = (process.env.ADMIN_PREMIUM_EMAILS ?? "user@expatise.com")
+const ADMIN_PREMIUM_EMAILS = ((process.env.ADMIN_PREMIUM_EMAILS || "user@expatise.com").trim())
   .split(",")
   .map((s) => normalizeEmail(s))
   .filter(Boolean);
@@ -19,7 +19,6 @@ const ADMIN_PREMIUM_EMAILS = (process.env.ADMIN_PREMIUM_EMAILS ?? "user@expatise
 function isAdminEmail(email: string) {
   return ADMIN_PREMIUM_EMAILS.includes(normalizeEmail(email));
 }
-
 
 export async function GET() {
   const cookieStore = await Promise.resolve(cookies());
@@ -38,17 +37,22 @@ export async function GET() {
 
   // ✅ Hackathon admin: allowlist by email OR by derived userKey
   if (isAdminEmail(email) || isAdminEmail(userKey)) {
-    return NextResponse.json({
-      ok: true,
-      userKey,
-      entitlements: {
-        isPremium: true,
-        source: "admin",
-        updatedAt: Date.now(),
-      },
-    });
+    const entitlements = {
+      isPremium: true,
+      source: "admin" as const,
+      updatedAt: Date.now(),
+    };
+
+    // ✅ ADD THIS (admin response)
+    const res = NextResponse.json({ ok: true, userKey, entitlements });
+    res.headers.set("Cache-Control", "no-store");
+    return res;
   }
 
   const entitlements = getLocalEntitlements(userKey) ?? FREE_ENTITLEMENTS;
-  return NextResponse.json({ ok: true, userKey, entitlements });
+
+  // ✅ ADD THIS (normal response)
+  const res = NextResponse.json({ ok: true, userKey, entitlements });
+  res.headers.set("Cache-Control", "no-store");
+  return res;
 }
