@@ -2773,20 +2773,30 @@ export default function RealTestAlias() {
 ```tsx
 // app/(premium)/real-test/results/page.tsx
 'use client';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { useEffect } from 'react';
 
-export default function RealTestResultsAlias() {
+import { Suspense, useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+
+function Inner() {
   const router = useRouter();
   const sp = useSearchParams();
+  const qs = sp.toString();
 
   useEffect(() => {
-    const qs = sp.toString();
     router.replace(`/test/real/results${qs ? `?${qs}` : ''}`);
-  }, [router, sp]);
+  }, [router, qs]);
 
   return null;
 }
+
+export default function RealTestResultsAlias() {
+  return (
+    <Suspense fallback={null}>
+      <Inner />
+    </Suspense>
+  );
+}
+
 
 ```
 
@@ -3926,15 +3936,19 @@ export default function GlobalCommonMistakesPage() {
 // app/(premium)/layout.tsx
 import RequirePremium from "@/components/RequirePremium.client";
 import FreeUsageProgressBadge from "@/components/FreeUsageProgressBadge.client";
+import { Suspense } from "react";
 
 export default function PremiumLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
       <FreeUsageProgressBadge />
-      <RequirePremium>{children}</RequirePremium>
+      <Suspense fallback={null}>
+        <RequirePremium>{children}</RequirePremium>
+      </Suspense>
     </>
   );
 }
+
 
 ```
 
@@ -4812,6 +4826,33 @@ function saveTopicQuizConfig(topicMastery: any) {
 }
 
 
+function startOfDayKey(t: number) {
+  const d = new Date(t);
+  d.setHours(0, 0, 0, 0);
+  return d.getTime();
+}
+
+function formatStamp(ms: number) {
+  try {
+    const d = new Date(ms);
+    return d.toLocaleString(undefined, {
+      month: "short",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  } catch {
+    return "";
+  }
+}
+
+function formatRemaining(ms: number) {
+  const s = Math.max(0, Math.floor(ms / 1000));
+  const h = Math.floor(s / 3600);
+  const m = Math.floor((s % 3600) / 60);
+  if (h <= 0) return `${m}m`;
+  return `${h}h ${m}m`;
+}
 
 
 export default function StatsPage() {
@@ -4911,6 +4952,24 @@ const statsTopics = useMemo(() => {
   });
 }, [attempts, questions, tfTopics]);
 
+// ✅ Coach fixed windows (SPEC): Skill 30d (real-test) + Habits 7d (learning modes)
+const coachSkill = useMemo(() => {
+  return computeStats({
+    attempts,
+    questions,
+    filters: { timeframeDays: 30, includeModeKeys: REAL_ONLY_MODE_KEYS },
+  });
+}, [attempts, questions]);
+
+const coachHabits = useMemo(() => {
+  return computeStats({
+    attempts,
+    questions,
+    filters: { timeframeDays: 7, includeModeKeys: LEARNING_MODE_KEYS },
+  });
+}, [attempts, questions]);
+
+
 
 const [readinessDone, setReadinessDone] = useState(false);
 
@@ -4943,6 +5002,190 @@ useEffect(() => {
   setDailyLegendReady(false);
 }, [loading, tfWeekly, statsWeekly.attemptsCount, userKey]);
 
+
+// ======================================================
+// GPT COACH: gating + cooldown + saved report (no tokens)
+// ======================================================
+const COOLDOWN_MS = 24 * 60 * 60 * 1000;
+
+const coachPrefix = userKey ? `expatise:${userKey}` : `expatise:anon`;
+const LS_REPORT = `${coachPrefix}:coach:lastReport:v1`;
+const LS_COOLDOWN_UNTIL = `${coachPrefix}:coach:cooldownUntil:v1`;
+
+const [coachReport, setCoachReport] = useState<string>("");
+const [coachCreatedAt, setCoachCreatedAt] = useState<number | null>(null);
+const [coachLoading, setCoachLoading] = useState(false);
+const [coachError, setCoachError] = useState<string | null>(null);
+const [cooldownUntil, setCooldownUntil] = useState<number | null>(null);
+
+const [nowMs, setNowMs] = useState<number>(Date.now());
+useEffect(() => {
+  const id = window.setInterval(() => setNowMs(Date.now()), 1000);
+  return () => window.clearInterval(id);
+}, []);
+
+// Load saved report + cooldown when userKey changes
+useEffect(() => {
+  try {
+    const raw = localStorage.getItem(LS_REPORT);
+    if (raw) {
+      const obj = JSON.parse(raw);
+      if (obj?.report) {
+        setCoachReport(String(obj.report));
+        const t = Number(obj.createdAt);
+        setCoachCreatedAt(Number.isFinite(t) ? t : null);
+      }
+    }
+    const cRaw = localStorage.getItem(LS_COOLDOWN_UNTIL);
+    const c = Number(cRaw);
+    setCooldownUntil(Number.isFinite(c) && c > 0 ? c : null);
+  } catch {
+    // ignore
+  }
+}, [LS_REPORT, LS_COOLDOWN_UNTIL]);
+
+const scorePointsSorted = useMemo(() => {
+  const arr = [...(coachSkill.scoreSeries ?? [])];
+  arr.sort((a, b) => a.t - b.t);
+  return arr;
+}, [coachSkill.scoreSeries]);
+
+const maxAnsweredInAnyRealTest = useMemo(() => {
+  return scorePointsSorted.reduce((m, p) => Math.max(m, p.answered ?? 0), 0);
+}, [scorePointsSorted]);
+
+const minimumMet = useMemo(() => {
+  return (
+    (coachSkill.attemptsCount >= 1 && maxAnsweredInAnyRealTest >= 80) ||
+    coachSkill.attemptedTotal >= 120
+  );
+}, [coachSkill.attemptsCount, coachSkill.attemptedTotal, maxAnsweredInAnyRealTest]);
+
+const distinctRealTestDays30d = useMemo(() => {
+  const s = new Set<number>();
+  for (const p of scorePointsSorted) s.add(startOfDayKey(p.t));
+  return s.size;
+}, [scorePointsSorted]);
+
+const bestResultsMet = useMemo(() => {
+  return coachSkill.attemptsCount >= 3 && distinctRealTestDays30d >= 3;
+}, [coachSkill.attemptsCount, distinctRealTestDays30d]);
+
+const cooldownActive = !!(cooldownUntil && nowMs < cooldownUntil);
+const remainingMs = cooldownUntil ? Math.max(0, cooldownUntil - nowMs) : 0;
+
+const habitsActiveDays = useMemo(() => {
+  return (coachHabits.timeDailySeries ?? []).filter((d) => (d.totalMin ?? 0) > 0).length;
+}, [coachHabits.timeDailySeries]);
+
+async function handleGenerateCoach() {
+  if (coachLoading) return;
+
+  setCoachError(null);
+
+  // Client-side gate (server also enforces)
+  if (!minimumMet) return;
+
+  // UI cooldown gate (server also enforces via cookie)
+  if (cooldownActive) return;
+
+  setCoachLoading(true);
+  try {
+    const weakest = (coachSkill.topicMastery?.weakestSubtopics ?? [])
+      .slice(0, 5)
+      .map((s: any) => ({
+        tagLabel: labelForTag(s.tag) ?? String(s.tag),
+        attempted: Number(s.attempted ?? 0),
+        accuracyPct: Number(s.accuracyPct ?? 0),
+      }));
+
+    const payload = {
+      coachContractVersion: "v1.0",
+      skillWindowLabel: "30d",
+      habitWindowLabel: "7d",
+      skill: {
+        attemptsCount: coachSkill.attemptsCount,
+        attemptedTotal: coachSkill.attemptedTotal,
+        accuracyPct: coachSkill.accuracyPct,
+        readinessPct: coachSkill.readinessPct,
+        scoreAvg: coachSkill.scoreAvg,
+        scoreBest: coachSkill.scoreBest,
+        scoreLatest: coachSkill.scoreLatest,
+        // keep input smaller/cheaper
+        scorePoints: scorePointsSorted.slice(-12).map((p) => ({
+          t: p.t,
+          scorePct: p.scorePct,
+          answered: p.answered,
+          totalQ: p.totalQ,
+        })),
+        minTopicAttempted: coachSkill.topicMastery?.minAttempted ?? 10,
+        weakestSubtopics: weakest,
+      },
+      habits: {
+        timeThisWeekMin: coachHabits.timeThisWeekMin,
+        timeBestDayMin: coachHabits.timeBestDayMin,
+        timeStreakDays: coachHabits.timeStreakDays,
+        activeDays: habitsActiveDays,
+        requiredDays: 4,
+      },
+    };
+
+    const r = await fetch("/api/coach", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+
+    const j = await r.json().catch(() => null);
+
+    if (!r.ok) {
+      if (r.status === 429 && j?.nextAllowedAt) {
+        const until = Number(j.nextAllowedAt);
+        if (Number.isFinite(until) && until > 0) {
+          setCooldownUntil(until);
+          try {
+            localStorage.setItem(LS_COOLDOWN_UNTIL, String(until));
+          } catch {}
+        }
+        setCoachError(`Next Coach report available in ${formatRemaining(Math.max(0, until - Date.now()))}.`);
+        return;
+      }
+
+      if (r.status === 400 && j?.error === "insufficient_data") {
+        setCoachError("Not enough data yet for personalized coaching. Complete 1 Real Test (80+ answers) or reach 120 answered total.");
+        return;
+      }
+
+      setCoachError(j?.detail ? String(j.detail) : "Coach request failed. Please try again.");
+      return;
+    }
+
+    const report = String(j?.report ?? "").trim();
+    const createdAt = Number(j?.createdAt ?? Date.now());
+
+    if (!report) {
+      setCoachError("Coach returned an empty report. Please try again.");
+      return;
+    }
+
+    setCoachReport(report);
+    setCoachCreatedAt(Number.isFinite(createdAt) ? createdAt : Date.now());
+
+    // Save report locally
+    try {
+      localStorage.setItem(LS_REPORT, JSON.stringify({ report, createdAt }));
+    } catch {}
+
+    // Local UI cooldown (server also enforces via cookie)
+    const until = (Number.isFinite(createdAt) ? createdAt : Date.now()) + COOLDOWN_MS;
+    setCooldownUntil(until);
+    try {
+      localStorage.setItem(LS_COOLDOWN_UNTIL, String(until));
+    } catch {}
+  } finally {
+    setCoachLoading(false);
+  }
+}
 
   return (
     <main className={styles.page}>
@@ -5212,6 +5455,111 @@ useEffect(() => {
             Review Your Mistakes
             </button>
         </div>
+
+{/* GPT Coach */}
+<article className={styles.statsCard}>
+  <header className={styles.statsCardHeader}>
+    <h2 className={styles.statsCardTitle}>GPT Coach</h2>
+  </header>
+
+  {loading ? (
+    <p className={styles.coachSubtle}>Loading…</p>
+  ) : !minimumMet ? (
+    <>
+      <p className={styles.coachSubtle}><strong>AI Coach needs a bit more data.</strong></p>
+      <p className={styles.coachHint}>
+        To generate a personalized report, complete either:<br />
+        • <strong>1 Real Test</strong> with <strong>80+ answers</strong>, or<br />
+        • <strong>120 total questions answered</strong> (practice + tests)
+      </p>
+      <p className={styles.coachHint}>More answers = less randomness → better advice.</p>
+
+      <div className={styles.coachRow}>
+        <button
+          type="button"
+          className={styles.coachBtnPrimary}
+          onClick={() => router.push("/test/real")}
+        >
+          Take a Real Test
+        </button>
+        <button
+          type="button"
+          className={styles.coachBtnSecondary}
+          onClick={() => router.push("/test/real")}
+        >
+          Start Now
+        </button>
+      </div>
+    </>
+  ) : (
+    <>
+      {!bestResultsMet ? (
+        <>
+          <p className={styles.coachSubtle}>
+            <strong>You’re ready for a first Coach report</strong> — here’s how to make it “laser-accurate”.
+          </p>
+          <p className={styles.coachHint}>
+            For the most tailored advice (topics + habits + patterns), aim for:<br />
+            ✅ <strong>3 Real Tests (300 questions)</strong> across <strong>3+ days</strong>
+          </p>
+          <p className={styles.coachHint}>
+            Next steps:<br />
+            • Do <strong>2 more Real Tests</strong> on separate days<br />
+            • Try the <strong>2-pass rule</strong> (answer easy first, then return)<br />
+            • Keep a <strong>10-minute minimum</strong> on non-test days
+          </p>
+        </>
+      ) : (
+        <p className={styles.coachSubtle}>
+          <strong>Coach runs on demand</strong> (Skill: 30d · Habits: 7d). Tap to generate your latest plan.
+        </p>
+      )}
+
+      <div className={styles.coachRow}>
+        <button
+          type="button"
+          className={styles.coachBtnPrimary}
+          onClick={handleGenerateCoach}
+          disabled={coachLoading || cooldownActive}
+          title={cooldownActive ? `Next available in ${formatRemaining(remainingMs)}` : "Generate Coach Report"}
+        >
+          {coachLoading ? "Generating…" : cooldownActive ? "Coach Locked" : "Generate Coach Report"}
+        </button>
+
+        <button
+          type="button"
+          className={styles.coachBtnSecondary}
+          onClick={() => router.push("/test/real")}
+        >
+          Take a Test
+        </button>
+      </div>
+
+      <div className={styles.coachMeta}>
+        {cooldownActive ? (
+          <>Next Coach report available in <strong>{formatRemaining(remainingMs)}</strong>. You can still read your last report anytime.</>
+        ) : (
+          <>Coach reports are limited to <strong>1 per 24 hours</strong>. Your latest report stays saved here.</>
+        )}
+      </div>
+
+      {coachError ? <div className={styles.coachError}>{coachError}</div> : null}
+
+      {coachReport ? (
+        <div className={styles.coachReportBox}>
+          <div className={styles.coachReportHeader}>
+            <p className={styles.coachReportTitle}>Coach Report</p>
+            <p className={styles.coachReportStamp}>
+              {coachCreatedAt ? `Last report: ${formatStamp(coachCreatedAt)}` : ""}
+            </p>
+          </div>
+          <p className={styles.coachReportText}>{coachReport}</p>
+        </div>
+      ) : null}
+    </>
+  )}
+</article>
+
 
         <BottomNav />
 
@@ -5623,7 +5971,7 @@ useEffect(() => {
 /* REVIEW / QUIZ / RESET BUTTONS      */
 /* ================================= */
 .statsReviewWrapper {
-  margin: 24px 0 96px;
+  margin: 24px 0 48px;
   display: flex;
   justify-content: center;
 }
@@ -5730,6 +6078,130 @@ useEffect(() => {
   }
 }
 
+/* ================================= */
+/* GPT COACH                          */
+/* ================================= */
+
+.coachSubtle {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.45;
+  color: rgba(17,24,39,0.74);
+}
+
+.coachHint {
+  margin-top: 8px;
+  font-size: 12px;
+  line-height: 1.35;
+  color: rgba(17,24,39,0.60);
+}
+
+.coachRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.coachBtnPrimary {
+  height: 40px;
+  padding: 0 16px;
+  border-radius: 16px;
+  border: 1px solid var(--color-logout-border);
+  background: var(--color-premium-gradient);
+  box-shadow: 0 18px 40px rgba(15, 33, 70, 0.22);
+  font-size: 14px;
+  font-weight: 700;
+  color: #111827;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+}
+
+.coachBtnPrimary:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.coachBtnSecondary {
+  height: 40px;
+  padding: 0 14px;
+  border-radius: 16px;
+  border: 1px solid rgba(148,163,184,0.45);
+  background: rgba(255,255,255,0.55);
+  box-shadow: 0 10px 20px rgba(15,33,70,0.10);
+  font-size: 13px;
+  font-weight: 700;
+  color: rgba(17,24,39,0.78);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+}
+
+.coachBtnSecondary:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.coachMeta {
+  margin-top: 10px;
+  font-size: 11px;
+  line-height: 1.3;
+  color: rgba(17,24,39,0.55);
+}
+
+.coachReportBox {
+  margin-top: 12px;
+  border-radius: 22px;
+  padding: 14px 14px;
+  background: linear-gradient(
+    180deg,
+    rgba(255,255,255,0.92),
+    rgba(37, 99, 235, 0.03)
+  );
+  border: 1px solid rgba(148, 163, 184, 0.35);
+}
+
+.coachReportHeader {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.coachReportTitle {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 800;
+  color: rgba(17,24,39,0.85);
+}
+
+.coachReportStamp {
+  font-size: 11px;
+  color: rgba(17,24,39,0.55);
+  font-variant-numeric: tabular-nums;
+}
+
+.coachReportText {
+  margin: 0;
+  white-space: pre-line; /* preserve line breaks from the model */
+  font-size: 13px;
+  line-height: 1.5;
+  color: rgba(17,24,39,0.90);
+}
+
+.coachError {
+  margin-top: 10px;
+  font-size: 12px;
+  line-height: 1.35;
+  color: rgba(185, 28, 28, 0.90);
+}
 
 
 /* ====================================================== */
@@ -5845,6 +6317,58 @@ useEffect(() => {
 }
 :root[data-theme='dark'] .topicMasteryArea :is(p, span, small, strong, em, label) {
   color: #f9fafb;
+}
+
+
+/* GPT Coach (dark) */
+:root[data-theme='dark'] .coachSubtle {
+  color: rgba(255,255,255,0.82);
+}
+
+:root[data-theme='dark'] .coachHint,
+:root[data-theme='dark'] .coachMeta {
+  color: rgba(255,255,255,0.68);
+}
+
+:root[data-theme='dark'] .coachBtnPrimary {
+  background: linear-gradient(
+    90deg,
+    rgba(43, 124, 175, 0.4) 0%,
+    rgba(255, 197, 66, 0.4) 100%
+  );
+  border-color: #d2c79a;
+  color: #f9fafb;
+}
+
+:root[data-theme='dark'] .coachBtnSecondary {
+  background: rgba(2, 6, 23, 0.35);
+  border-color: rgba(255,255,255,0.20);
+  color: rgba(255,255,255,0.86);
+}
+
+:root[data-theme='dark'] .coachReportBox {
+  background: linear-gradient(
+    180deg,
+    rgba(43, 124, 175, 0.12),
+    rgba(2, 6, 23, 0.85)
+  );
+  border-color: rgba(255,255,255,0.16);
+}
+
+:root[data-theme='dark'] .coachReportTitle {
+  color: rgba(255,255,255,0.90);
+}
+
+:root[data-theme='dark'] .coachReportStamp {
+  color: rgba(255,255,255,0.65);
+}
+
+:root[data-theme='dark'] .coachReportText {
+  color: rgba(255,255,255,0.90);
+}
+
+:root[data-theme='dark'] .coachError {
+  color: rgba(252, 165, 165, 0.92);
 }
 
 
@@ -6259,6 +6783,377 @@ export async function POST(req: Request) {
 import { handlers } from "../../../auth";
 
 export const { GET, POST } = handlers;
+
+```
+
+### app/api/coach/route.ts
+```tsx
+// app/api/coach/route.ts
+import { openai } from "@/lib/openai";
+import { NextResponse } from "next/server";
+
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
+
+const COOLDOWN_MS = 24 * 60 * 60 * 1000;
+const COOKIE_KEY = "expatise_coach_last_v1";
+
+/**
+ * Master prompt (static). Keep this stable for best caching behavior.
+ * (We’ll paste your full master prompt next step once UI/CSS is ready.)
+ */
+const MASTER_PROMPT = 
+`SYSTEM PROMPT — Expatise GPT Coach (Master)
+
+You are “Expatise GPT Coach”: a practical, friendly, data-driven coach for a driving-test study app. You produce short, premium-feeling coaching messages that are grounded in the provided metrics, honest about uncertainty, and highly actionable.
+
+INPUTS YOU WILL RECEIVE
+- Skill Snapshot (window = either 30d or all-time): submitted-test performance (e.g., number of tests, questions answered, accuracy, average/best/latest score, score history points, topic/subtopic mastery, best-time/heatmap if provided).
+- Habits Snapshot (window = 7d): recent activity (e.g., total study minutes, practice days, streak, best day, daily activity series if provided).
+All statements must be based only on fields present in the input JSON. If a field is missing, treat it as unknown.
+You may see internal field names inside the JSON — NEVER print them.
+
+HARD RULES (never break)
+1) Two-layer lens + labeling:
+  - Skill claims use the provided Skill window label: (30d) or (all-time).
+  - Habit claims use (7d).
+  Every insight sentence must include the correct window label.
+2) Evidence rule:
+  Every insight must cite ≥1 metric from the input by value, written in user language. Never print raw field names or raw JSON (no internal keys, no JSON paths).
+
+3) No causality:
+  You may describe patterns/correlations, but must not say X causes Y.
+4) No guarantees:
+  Never guarantee passing. Use conditional language only.
+5) No moralizing:
+  No shame, no character judgments, no “should have.”
+6) Length + structure:
+  Entire output ~250 words max. Use ONLY the required sections A–F. No extra sections.
+7) One story only:
+  Choose EXACTLY ONE narrative (see “Narrative selection”). Everything must align to it.
+8) One measurable target only:
+  Exactly ONE measurable target in section F. No secondary targets anywhere else.
+
+  HUMANIZATION RULES (must follow)
+- Never show internal keys / classnames / JSON paths (examples: attemptsCount, attemptedTotal, accuracyPct, readinessPct, scoreAvg, scoreBest, scoreLatest, scorePoints, scoreSeries, timeThisWeekMin, timeDailySeries, questionsAnswered, testsCompleted, activeDays, timeStreakDays, timeBestDayMin, minTopicAttempted, t=… are forbidden).
+- Translate metrics to friendly labels:
+  - attemptsCount → “tests”
+  - attemptedTotal → “questions answered”
+  - accuracyPct → “accuracy”
+  - readinessPct → “readiness”
+  - scoreAvg/Best/Latest → “avg/best/latest score”
+  - timeThisWeekMin → “total study time”
+  - activeDays → “practice days”
+  - timeStreakDays → “streak”
+  - timeBestDayMin → “best day”
+- Never show raw timestamps. If needed, say “one recent session” and cite only completion numbers (e.g., “2 of 10 answered”).
+- Topic labels: never include “#”. Use the provided tagLabel as plain text (e.g., “Road Signs”).
+- Numbers formatting: keep it readable (e.g., “21 tests”, “52%”, “48/100”, “2 of 10 answered”). Avoid more than ~2 numbers per sentence.
+
+CONFIDENCE TIERS (overall; from Skill Snapshot)
+Compute overall confidence from Skill Snapshot:
+- High: 6+ tests in the Skill window OR 120+ questions answered in the Skill window
+- Medium: 3+ tests in the Skill window OR 40+ questions answered in the Skill window
+- Low: otherwise
+
+Language by confidence:
+- High: “Priority…”, “Best lever…”
+- Medium: “Likely…”, “Good bet…”
+- Low: “Early signal…”, “Too soon to call…”, “Let’s collect signal…”
+
+
+DATA QUALITY / VALIDITY RULES
+A) Topic validity (“weak topic” gate):
+- Only call a topic/subtopic “weak” if attempted >= minAttempted (typically 10 if provided; otherwise use 10). If below, say “early signal / not enough data yet.”
+- Topic confidence tiers by Ntopic (attempted):
+ * 10–14: attempts-only targets (reach 20 attempts). NO accuracy deltas.
+ * 15–24: attempts target + soft directional (“toward ~70%+”), NO accuracy deltas.
+ * >=25: allow small numeric goals (+10 pts) or thresholds across next 20 attempts.
+- Never say “raise accuracy by +X” unless Ntopic >= 25.
+
+
+B) Completion (skip/blank) validity (confounder gate):
+- Completion per test = answered ÷ total questions for each test (from the Skill score history list).
+- Completion is “unstable/low” if ANY of:
+ * median completion < 0.85
+ * shift between halves >= 0.08
+ * range >= 0.12
+- If completion is unstable/low, treat it as the main confounder; do NOT attribute score changes to knowledge.
+
+
+C) Trend validity (no fake trends):
+- Forbidden to claim “improving/declining/stable” unless >=3 relevant points.
+- Use split-median: compare median of early half vs late half (not first vs last).
+- Score trend thresholds:
+ * |delta| >= 6 → up/down
+ * |delta| <= 3 → stable
+ * else → “mixed / flat-ish”
+- Trend statements must include receipts: (window label, n, medians), e.g., “(30d, n=7 tests, median 76→83)”.
+- Confounder gate: if completion changed by >= 8 pts between halves, attribute trend to completion and avoid “knowledge improved” language.
+- Daily avgScore trend uses ACTIVE DAYS only (days with testsCompleted>0). Zero days are for habit/consistency only.
+- If <3 points: say “not enough signal yet.”
+
+
+D) Inconsistency wording gates:
+- Use “volatile/swingy/inconsistent” only if score range >= 20 AND n>=3 (in that window).
+- Use “variable/up-and-down” only if range >= 12 AND n>=3.
+- Every inconsistency claim must include receipts (window, n, range) AND end with a stabilization experiment:
+ “3 sessions: same mode + same time window + 1–2 topics + completion strategy.”
+
+
+E) Time-of-day / bestTime / heatmap:
+- Strong recommendations only if enough samples (>=3 relevant sessions/tests in that window). Otherwise frame as a short experiment, not a conclusion.
+
+HABIT THRESHOLDS (7d)
+Define “active day” as:
+- Preferred (time-based): 10+ minutes on that day (from the 7d daily minutes list)
+- Fallback (if time tracking looks incomplete): 10+ questions answered OR 1+ test on that day (from the 7d daily activity list)
+
+Time data reliability:
+- Reliable if weekly study minutes > 0 OR at least one day shows > 0 minutes.
+- If not reliable but answer activity exists, do not judge time; base habit judgments on answered activity and note tracking seems incomplete.
+
+requiredDays:
+- 3 if overall confidence is Low
+- 4 if overall confidence is Medium/High
+LowWeeklyTime:
+- activeDays < requiredDays
+SpikyPattern (time-based):
+- bestDayShare = timeBestDayMin / max(timeThisWeekMin, 1)
+- SpikyPattern if bestDayShare >= 0.60 OR (timeBestDayMin >= 2.2*medianActiveDayMin AND activeDays<=4) OR (timeStreakDays<=1 AND activeDays>=2)
+- HighlySpiky if bestDayShare >= 0.75 OR activeDays == 1
+Wording rule: only say “spiky/bursty/start-stop” if SpikyPattern, and include receipts: “(7d: best day X min, total Y min, activeDays Z)”.
+
+NARRATIVE SELECTION (choose EXACTLY ONE; in this priority order)
+1) DATA-COLLECTION: if overall confidence is Low OR not enough meaningful data.
+2) COMPLETION-FIRST: if completion is unstable/low (per rules above).
+3) HABIT-FIRST: if practice days are below requiredDays OR practice is bursty OR streak is 0–1 days OR consistency streak is 0.
+4) TOPIC-FOCUS: if eligible weak topics/subtopics exist (attempted >= minAttempted) and completion/habits aren’t the bigger blocker.
+5) STABILITY EXPERIMENT: if score range >=20 with n>=3 AND completion is stable.
+6) RHYTHM EXPERIMENT (rare): only if others are fine AND heatmap/bestTime has >=3 samples AND effect size is meaningful.
+
+
+TARGET SELECTION (ONE target only; NO score goals)
+Pick ONE measurable target aligned to the chosen narrative. Every target must include:
+- baseline + n + window label (e.g., “7d baseline: 2 practice days” or “30d baseline: median completion ~82% across 4 tests”)
+- the planned change and time window (“over the next 7 days” / “next 2 tests”)
+
+
+A) DATA-COLLECTION (Low confidence):
+- Habit-first measurable target based on available habit metrics, e.g.:
+ * activeDays → requiredDays, OR
+ * timeStreakDays → 3, OR
+ * timeThisWeekMin → 60 (if timeDataReliable), OR
+ * 60 answered questions over 3 days (if time unreliable but answer activity exists)
+
+
+B) COMPLETION-FIRST:
+- Completion target only, framed by test count:
+ * If Ntests=1: “Next test (experiment): aim for ~90% answered.”
+ * If Ntests=2–3: “Next 2 tests: aim for ≥90% answered.”
+ * If Ntests>=4: “Priority this week: keep ≥90% answered per test.”
+- Always include completion baseline with (window) + n.
+
+
+C) HABIT-FIRST:
+- Habit target only:
+ * activeDays → requiredDays OR timeStreakDays → 3 OR timeThisWeekMin → 60 (if reliable)
+- Include (7d) receipts.
+
+
+D) TOPIC-FOCUS:
+- Choose max 1–2 subtopics.
+- Ntopic 10–14: reach 20 attempts (no accuracy claims).
+- Ntopic 15–24: reach 25 attempts + soft direction “toward ~70%+” (no deltas).
+- Ntopic >=25: allow “+10 pts” OR “≥75% across next 20 attempts.”
+- Tie-break: lowest accuracy first; if tied, highest attempted.
+
+
+E) STABILITY EXPERIMENT / RHYTHM EXPERIMENT:
+- Target is completing a 3-session standardization experiment:
+ “3 sessions: same mode + same time window + same 1–2 topics + completion strategy.”
+
+ Before finalizing, do a quick self-check: output must contain no camelCase tokens, no underscores, no “#”, and no raw timestamps.
+
+
+PRAISE / ENCOURAGEMENT POLICY
+- Max 1–2 encouragement lines total.
+- Must be evidence-based: include (window) + metric + why it matters.
+- Prefer praising behaviors (active days, streaks, reps, completion stability) over traits.
+- Do not praise outcomes unless sample size supports it (Medium/High confidence; topic n>=25 for accuracy praise).
+- If no activity: normalize and propose a 10-minute starter baseline (no fake praise).
+- If spiky: praise capacity (best day) then redirect to distribution (minimum dose).
+- Close with agency and a minimum-dose option.
+
+
+OUTPUT FORMAT (always; NO extra headings)
+A) Headline (1 line)
+B) What’s happening (2 sentences; each cites metrics + window label)
+C) Top 3 levers (3 items; each: Why + Next action; cite metrics + window label; aligned to narrative)
+D) Today plan: 10 / 20 / 40 minutes (bullets; specific; metric-aware)
+E) 7-day plan (5–7 bullets; specific; metric-aware)
+F) ONE measurable target + short encouraging closing (include baseline + n + window label; no guarantees)
+
+
+STYLE
+Clear, motivating, practical. No mention you are an AI. Avoid generic advice. Be specific to the provided metrics only.
+`.trim();
+
+const FALLBACK_PROMPT = `
+You are GPT Coach inside Expatise (a driver's license study app).
+Use ONLY the provided JSON as truth. Do not invent data.
+Output <= 250 words.
+Structure:
+1) Skill snapshot (30d)
+2) Habits snapshot (7d)
+3) Top 3 levers
+4) Today plan (10/20/40 min)
+5) 7-day plan
+If data is low-confidence, say so and suggest what to do next.
+`.trim();
+
+type CoachPayload = {
+  coachContractVersion: string;
+  skillWindowLabel: "30d" | "all";
+  habitWindowLabel: "7d";
+  skill: {
+    attemptsCount: number; // real tests in window
+    attemptedTotal: number; // total answered in window
+    accuracyPct: number;
+    readinessPct: number;
+    scoreAvg: number;
+    scoreBest: number;
+    scoreLatest: number;
+    scorePoints: Array<{ t: number; scorePct: number; answered: number; totalQ: number }>;
+    minTopicAttempted: number;
+    weakestSubtopics?: Array<{ tagLabel: string; attempted: number; accuracyPct: number }>;
+  };
+  habits: {
+    timeThisWeekMin: number;
+    timeBestDayMin: number;
+    timeStreakDays: number;
+    activeDays: number;
+    requiredDays: number;
+  };
+};
+
+function num(n: any, d = 0) {
+  const x = Number(n);
+  return Number.isFinite(x) ? x : d;
+}
+
+function extractText(res: any): string {
+  const t = typeof res?.output_text === "string" ? res.output_text.trim() : "";
+  if (t) return t;
+
+  const out = Array.isArray(res?.output) ? res.output : [];
+  const chunks: string[] = [];
+
+  for (const item of out) {
+    const content = Array.isArray(item?.content) ? item.content : [];
+    for (const c of content) {
+      if (typeof c?.text === "string") chunks.push(c.text);
+      if (typeof c?.refusal === "string") chunks.push(c.refusal);
+    }
+  }
+  return chunks.join("").trim();
+}
+
+
+export async function POST(req: Request) {
+  try {
+    // ---- 1) Cooldown check (server-enforced via cookie)
+    const cookieHeader = req.headers.get("cookie") ?? "";
+    const match = cookieHeader.match(new RegExp(`${COOKIE_KEY}=([^;]+)`));
+    const last = match ? Number(decodeURIComponent(match[1])) : 0;
+
+    const now = Date.now();
+    if (Number.isFinite(last) && last > 0 && now - last < COOLDOWN_MS) {
+      const nextAllowedAt = last + COOLDOWN_MS;
+      return NextResponse.json(
+        {
+          ok: false,
+          error: "cooldown",
+          nextAllowedAt,
+          retryAfterSec: Math.ceil((nextAllowedAt - now) / 1000),
+        },
+        { status: 429 }
+      );
+    }
+
+    // ---- 2) Parse payload
+    const body = (await req.json().catch(() => null)) as CoachPayload | null;
+    if (!body || typeof body !== "object") {
+      return NextResponse.json({ ok: false, error: "Invalid JSON" }, { status: 400 });
+    }
+
+    // ---- 3) Minimum data gate (hard guardrail)
+    const attemptsCount = num(body?.skill?.attemptsCount);
+    const attemptedTotal = num(body?.skill?.attemptedTotal);
+
+    const maxAnswered = Math.max(
+      0,
+      ...(body?.skill?.scorePoints ?? []).map((p) => num(p.answered))
+    );
+
+    const meetsMinimum =
+      (attemptsCount >= 1 && maxAnswered >= 80) || attemptedTotal >= 120;
+
+    if (!meetsMinimum) {
+      return NextResponse.json(
+        {
+          ok: false,
+          error: "insufficient_data",
+          required:
+            "Submit 1 Real Test with ≥80 answered OR reach 120 questions answered total.",
+        },
+        { status: 400 }
+      );
+    }
+
+    // ---- 4) Call OpenAI (Responses API: instructions + input)
+    const inputJson = JSON.stringify(body);
+    const result = await openai.responses.create({
+  model: "gpt-5-mini",
+  reasoning: { effort: "minimal" },   // ✅ key fix
+  text: { verbosity: "low" },         // optional, helps keep it short
+  instructions: MASTER_PROMPT || FALLBACK_PROMPT,
+  input: `Task: Generate a Stats Coach report for the user.\nRules: <=250 words. Use ONLY the JSON.\n\nJSON:\n${inputJson}`,
+  max_output_tokens: 900,             // ✅ enough for minimal reasoning + ~250 words
+});
+
+
+    const report = extractText(result);
+
+if (!report) {
+  // Helps you debug once, without leaking in prod
+  if (process.env.NODE_ENV !== "production") {
+    console.log("EMPTY COACH RESPONSE:", JSON.stringify(result, null, 2));
+  }
+  return NextResponse.json({ ok: false, error: "empty_output" }, { status: 502 });
+}
+
+    // ---- 5) Set cooldown cookie only after success
+    const res = NextResponse.json({ ok: true, report, createdAt: now });
+
+    res.cookies.set({
+      name: COOKIE_KEY,
+      value: String(now),
+      httpOnly: true,
+      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production",
+      path: "/",
+      maxAge: Math.floor(COOLDOWN_MS / 1000),
+    });
+
+    return res;
+  } catch (err: any) {
+    return NextResponse.json(
+      { ok: false, error: "Stats Coach API failed", detail: String(err?.message ?? err) },
+      { status: 500 }
+    );
+  }
+}
 
 ```
 
@@ -6839,8 +7734,9 @@ import Image from "next/image";
 import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import styles from "./checkout.module.css";
-import { PLAN_MAP, toPlanId, type PlanId } from "../../lib/plans";
+import { PLAN_MAP, toPlanId, type PlanId } from "@/lib/plans";
 import { safeNextPath } from "@/lib/auth";
+import CSRBoundary from "@/components/CSRBoundary";
 
 type PayMethod = "alipay" | "gpay" | "applepay" | "wechat";
 
@@ -6860,13 +7756,13 @@ function formatExpiry(raw: string) {
   return `${digits.slice(0, 2)}/${digits.slice(2)}`;
 }
 
-export default function CheckoutPage() {
+function Inner() {
   const router = useRouter();
   const sp = useSearchParams();
 
   const plan: PlanId = toPlanId(sp.get("plan"));
   const promoApplied = sp.get("promo") === "1";
-const next = safeNextPath(sp.get("next"), "/");
+  const next = safeNextPath(sp.get("next"), "/");
 
   const planData = PLAN_MAP[plan];
   const title = planData.checkoutTitle;
@@ -7023,7 +7919,7 @@ const next = safeNextPath(sp.get("next"), "/");
             type="button"
             className={styles.checkoutBtn}
             onClick={() => {
-              router.push("/checkout/success");router.push(
+              router.push(
   `/checkout/success?plan=${encodeURIComponent(plan)}${promoApplied ? "&promo=1" : ""}&next=${encodeURIComponent(next)}`
 );
               // TODO: integrate real payment provider later
@@ -7037,6 +7933,13 @@ const next = safeNextPath(sp.get("next"), "/");
   );
 }
 
+export default function CheckoutPage() {
+  return (
+    <CSRBoundary>
+      <Inner />
+    </CSRBoundary>
+  );
+}
 ```
 
 ### app/checkout/success/page.tsx
@@ -7046,15 +7949,16 @@ const next = safeNextPath(sp.get("next"), "/");
 "use client";
 
 import Image from "next/image";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import confetti from "canvas-confetti";
 import styles from "./success.module.css";
 
-import { useEntitlements } from "../../../components/EntitlementsProvider.client";
-import { safeNextPath } from "../../../lib/auth";
+import { useEntitlements } from "@/components/EntitlementsProvider.client";
+import { safeNextPath } from "@/lib/auth";
+import CSRBoundary from "@/components/CSRBoundary";
 
-export default function CheckoutSuccessPage() {
+function Inner() {
   const router = useRouter();
   const sp = useSearchParams();
   const { grantPremium } = useEntitlements();
@@ -7089,7 +7993,11 @@ export default function CheckoutSuccessPage() {
     })();
   }, []);
 
+const grantedRef = useRef(false);
+
   useEffect(() => {
+    if (grantedRef.current) return;
+  grantedRef.current = true;
     // Temporary: grant premium locally after “successful purchase”.
     // Later: replace with real IAP verification + entitlements refresh.
     const source = plan === "lifetime" ? "lifetime" : "subscription";
@@ -7137,6 +8045,14 @@ export default function CheckoutSuccessPage() {
         </footer>
       </div>
     </main>
+  );
+}
+
+export default function CheckoutSuccessPage() {
+  return (
+    <CSRBoundary>
+      <Inner />
+    </CSRBoundary>
   );
 }
 
@@ -7258,6 +8174,7 @@ export default function CheckoutSuccessPage() {
 
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
+import CSRBoundary from '@/components/CSRBoundary';
 
 function safeDecode(v: string) {
   try {
@@ -7268,10 +8185,10 @@ function safeDecode(v: string) {
 }
 
 function isSafeInternalPath(p: string) {
-  return typeof p === 'string' && p.startsWith('/');
+  return typeof p === 'string' && p.startsWith('/') && !p.startsWith('//');
 }
 
-export default function BackLink({ fallbackHref = '/' }: { fallbackHref?: string }) {
+function Inner({ fallbackHref = '/' }: { fallbackHref?: string }) {
   const sp = useSearchParams();
 
   // 1) Prefer explicit returnTo in URL
@@ -7295,6 +8212,13 @@ export default function BackLink({ fallbackHref = '/' }: { fallbackHref?: string
   return <Link href={href}>← Back</Link>;
 }
 
+export default function BackLink() {
+  return (
+    <CSRBoundary>
+      <Inner />
+    </CSRBoundary>
+  );
+}
 ```
 
 ### app/coming-soon/page.tsx
@@ -8564,11 +9488,12 @@ import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import CreateAccountModal from './CreateAccountModal';
 import { faGoogle, faApple, faWeixin } from '@fortawesome/free-brands-svg-icons';
 import {signIn, getProviders} from "next-auth/react";
-import { isValidEmail, normalizeEmail, safeNextPath } from '../../lib/auth';
+import { isValidEmail, normalizeEmail, safeNextPath } from '@/lib/auth';
+import CSRBoundary from '@/components/CSRBoundary';
 
 
 
-export default function LoginPage() {
+function Inner() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const nextParam = safeNextPath(searchParams.get("next"), "/");
@@ -8597,8 +9522,13 @@ export default function LoginPage() {
 
 
 useEffect(() => {
-  getProviders().then(setProviders);
+  let mounted = true;
+  getProviders()
+    .then((p) => { if (mounted) setProviders(p); })
+    .catch(() => { if (mounted) setProviders(null); });
+  return () => { mounted = false; };
 }, []);
+
 
   useEffect (() => {
   document.documentElement.dataset.theme = 'light';
@@ -8785,7 +9715,7 @@ router.replace(nextParam);
     type="button" 
     className={styles.snsBtnSmall} 
     aria-label="Continue with Apple"
-    onClick={() => signIn("apple", { callbackUrl: "/" })}>
+    onClick={() => signIn("apple", { callbackUrl: nextParam })}>
     <FontAwesomeIcon icon={faApple} />
     </button>
     )}
@@ -8795,7 +9725,7 @@ router.replace(nextParam);
     type="button" 
     className={styles.snsBtnSmall} 
     aria-label="Continue with WeChat"
-    onClick={() => signIn("wechat", { callbackUrl: "/" })}>
+    onClick={() => signIn("wechat", { callbackUrl: nextParam })}>
     <FontAwesomeIcon icon={faWeixin} />
     </button>
     )}
@@ -8808,6 +9738,13 @@ router.replace(nextParam);
   );
 }
 
+export default function LoginPage() {
+  return (
+    <CSRBoundary>
+      <Inner />
+    </CSRBoundary>
+  );
+}
 ```
 
 ### app/onboarding/onboarding.module.css
@@ -11054,17 +11991,19 @@ import React, { useRef, useState, useEffect, type ChangeEvent } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import styles from './profile.module.css';
-import BottomNav from '../../components/BottomNav';
-import { useTheme } from '../../components/ThemeProvider';
-import { useUserProfile } from '../../components/UserProfile';
-import { UserProfileProvider } from '../../components/UserProfile';
+import BottomNav from '@/components/BottomNav';
+import { useTheme } from '@/components/ThemeProvider';
+import { useUserProfile } from '@/components/UserProfile';
 import { useRouter, usePathname, useSearchParams  } from 'next/navigation';
-import { useAuthStatus } from '../../components/useAuthStatus';
-import { isValidEmail } from '../../lib/auth';
-import BackButton from '../../components/BackButton';
+import { useAuthStatus } from '@/components/useAuthStatus';
+import BackButton from '@/components/BackButton';
 import { signOut } from 'next-auth/react';
+import CSRBoundary from '@/components/CSRBoundary';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faGoogle, faApple, faWeixin} from '@fortawesome/free-brands-svg-icons';
+import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
 
-export default function ProfilePage() {
+function Inner() {
   const { avatarUrl, setAvatarUrl, name, setName, email, setEmail, saveProfile, clearProfile } = useUserProfile(); // from context
 
   // ---- avatar upload state + handlers ----
@@ -11082,28 +12021,28 @@ export default function ProfilePage() {
 const signInDisplay = (() => {
   // 1) guest
   if (!authed) {
-    return { label: "Signed in as guest.", iconSrc: null as string | null };
+    return { label: "Signed in as guest.", icon: null as any };
   }
 
   // 2) email/password local account
   if (method === "email") {
-    return { label: sessionEmail ?? "Email sign-in", iconSrc: null };
+    return { label: sessionEmail ?? "Email sign-in", icon: faEnvelope };
   }
 
   // 3) social providers
   if (provider === "google") {
-    return { label: "Google sign-in", iconSrc: "/images/profile/google-icon.png" };
+    return { label: "Google sign-in", icon: faGoogle };
   }
   if (provider === "apple") {
-    return { label: "Apple ID", iconSrc: "/images/profile/apple-icon.png" };
+    return { label: "Apple ID", icon: faApple };
   }
   if (provider === "wechat") {
-    return { label: "WeChat", iconSrc: "/images/profile/wechat-icon.png" };
+    return { label: "WeChat", icon: faWeixin };
   }
 
-  // fallback (still show method, not email)
-  return { label: "Social sign-in", iconSrc: null };
+  return { label: "Social sign-in", icon: null as any };
 })();
+
 
 
 
@@ -11231,7 +12170,7 @@ const handleSave = async (e: React.SyntheticEvent) => {
 
 
 const goComingSoon = (feature: string) => {
-  const qs = sp?.toString();
+  const qs = sp.toString();
   const returnTo = `${pathname}${qs ? `?${qs}` : ''}`;
 
   router.push(
@@ -11326,14 +12265,14 @@ const goComingSoon = (feature: string) => {
   }}
 >
   <div className={styles.emailInputRow}>
-    {signInDisplay.iconSrc ? (
-  <Image
-    src={signInDisplay.iconSrc}
-    alt=""
-    width={18}
-    height={18}
+    {signInDisplay.icon ? (
+  <FontAwesomeIcon
+    icon={signInDisplay.icon}
+    className={styles.providerIcon}
+    aria-hidden="true"
   />
 ) : null}
+
 
 <span className={styles.emailDisplayText}>{signInDisplay.label}</span>
 
@@ -11550,7 +12489,13 @@ const goComingSoon = (feature: string) => {
   );
 }
 
-
+export default function ProfilePage() {
+  return (
+    <CSRBoundary>
+      <Inner />
+    </CSRBoundary>
+  );
+}
 ```
 
 ### app/profile/profile.module.css
@@ -11715,10 +12660,13 @@ const goComingSoon = (feature: string) => {
   align-items: center;      /* center under avatar */
 }
 
-.emailInputRow {
+.emailInputRow{
   display: inline-flex;
-  justify-content: center;
+  align-items: center;      /* ✅ vertical alignment */
+  justify-content: center;  /* ✅ keep centered under avatar */
+  gap: 8px;                 /* ✅ space between icon and text */
 }
+
 
 .email {
   margin: 0;
@@ -11732,6 +12680,14 @@ const goComingSoon = (feature: string) => {
   border-bottom: 2px solid transparent; /* only visible on focus/error */
   padding: 0 0 2px;
 }
+
+
+.emailDisplayText{
+  display: inline;   /* ✅ lets it sit next to the icon */
+  width: auto;       /* ✅ don't force full width */
+  text-align: left;  /* optional; row is already centered */
+}
+
 
 /* underline when editing (optional, can be your blue instead) */
 .email:focus {
@@ -11756,6 +12712,16 @@ const goComingSoon = (feature: string) => {
   color: #3b82f6;
   margin-right: 5px;
 }
+
+.providerIcon {
+  flex-shrink: 0;
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+  display: inline-block;
+  transform: translateY(1px);
+}
+
 
 
 /* Premium bar */
@@ -12098,12 +13064,6 @@ const goComingSoon = (feature: string) => {
 }
 
 
-.emailDisplayText {
-  width: 100%;
-  display: block;
-  text-align: center;
-  opacity: 0.95;
-}
 
 /* Toast readability in DARK MODE */
 :root[data-theme='dark'] .toastCard {
@@ -12153,25 +13113,18 @@ export default async function TestModePage({
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter, useSearchParams, useParams } from "next/navigation";
 import Image from "next/image";
-
-// ✅ Best practice: keep CSS local to this route.
-// Create app/test/[mode]/results/results.module.css and copy your existing CSS into it.
 import styles from "./results.module.css";
-
 import { loadDataset } from "@/lib/qbank/loadDataset";
 import type { DatasetId } from "@/lib/qbank/datasets";
 import type { Question } from "@/lib/qbank/types";
-
 import { attemptStore } from "@/lib/attempts/store";
 import type { TestAttemptV1 } from "@/lib/attempts/engine";
-
 import { useAuthStatus } from "@/components/useAuthStatus";
 import { normalizeUserKey } from "@/lib/attempts/engine";
 import { useBookmarks } from "@/lib/bookmarks/useBookmarks";
-
 import { TEST_MODES, type TestModeId } from "@/lib/testModes";
-
 import { useClearedMistakes } from "@/lib/mistakes/useClearedMistakes";
+import CSRBoundary from "@/components/CSRBoundary";
 
 function clamp(n: number, min: number, max: number) {
   return Math.max(min, Math.min(max, n));
@@ -12194,7 +13147,7 @@ type ReviewItem = {
   explanation?: string;
 };
 
-export default function TestModeResultsPage() {
+function Inner() {
   const router = useRouter();
   const sp = useSearchParams();
   const params = useParams<{ mode: string }>();
@@ -12250,41 +13203,32 @@ const userKey = normalizeUserKey(email ?? "") || "guest";
    * If user visits /test/[mode]/results with NO attemptId,
    * find the newest attempt for this mode and redirect with attemptId.
    */
-  useEffect(() => {
-    if (attemptId) return;
+ const qs = sp.toString();
 
-    (async () => {
-      // If userKey isn't ready yet, wait
-      if (!userKey) return;
+useEffect(() => {
+  if (attemptId) return;
 
-      // listAttempts requires datasetId in your store API
-      const list = await attemptStore.listAttempts(userKey, cfg.datasetId);
+  (async () => {
+    const list = await attemptStore.listAttempts(userKey, cfg.datasetId);
+    const matching = list.filter(
+      (a) => a.modeKey === cfg.modeKey && a.datasetVersion === cfg.datasetVersion
+    );
+    const ranked = [...matching].sort(
+      (a, b) => (b.lastActiveAt ?? 0) - (a.lastActiveAt ?? 0)
+    );
+    const best = ranked[0];
 
-      // Filter to this mode & this dataset version
-      const matching = list.filter(
-        (a) =>
-          a.modeKey === cfg.modeKey &&
-          a.datasetVersion === cfg.datasetVersion
-      );
+    if (!best?.attemptId) {
+      router.replace(`/test/${cfg.modeId}`);
+      return;
+    }
 
-      // Choose best candidate:
-      // Prefer "submitted" / "expired" / "closed" attempts first,
-      // else pick newest in-progress.
-      const ranked = [...matching].sort((a, b) => (b.lastActiveAt ?? 0) - (a.lastActiveAt ?? 0));
+    const next = new URLSearchParams(qs);
+    next.set("attemptId", best.attemptId);
+    router.replace(`/test/${cfg.modeId}/results?${next.toString()}`);
+  })();
+}, [attemptId, userKey, cfg, router, qs]);
 
-      const best = ranked[0];
-      if (!best?.attemptId) {
-        // Nothing to show; send them back to test start
-        router.replace(`/test/${cfg.modeId}`);
-        return;
-      }
-
-      // Redirect to same page WITH attemptId
-      const next = new URLSearchParams(sp.toString());
-      next.set("attemptId", best.attemptId);
-      router.replace(`/test/${cfg.modeId}/results?${next.toString()}`);
-    })();
-  }, [attemptId, userKey, cfg, router, sp]);
 
   // Carousel pointer handlers
   const onCarouselPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
@@ -12490,7 +13434,10 @@ if (modeId === "mistakes" && !didAutoClearRef.current) {
       items.sort((x, y) => x.testNo - y.testNo);
       setReviewItems(items);
     })();
-  }, [attemptId]);
+  }, [attemptId, modeId, clearMistakesMany]);
+
+
+
 
   // Close attempt once
   useEffect(() => {
@@ -12748,6 +13695,13 @@ if (modeId === "mistakes" && !didAutoClearRef.current) {
   );
 }
 
+export default function TestModeResultsPage() {
+  return (
+    <CSRBoundary>
+      <Inner />
+    </CSRBoundary>
+  );
+}
 ```
 
 ### app/test/[mode]/results/results.module.css
@@ -13418,6 +14372,8 @@ import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
 import type { CSSProperties } from 'react';
 import styles from './BackButton.module.css';
+import CSRBoundary from '@/components/CSRBoundary';
+
 
 type BackButtonProps = {
   onClick?: () => void;                 // optional override (modal close)
@@ -13437,7 +14393,7 @@ function safeDecode(v: string) {
   }
 }
 
-export default function BackButton({
+function Inner({
   onClick,
   variant = 'fixed',
   ariaLabel = 'Back',
@@ -13457,10 +14413,11 @@ export default function BackButton({
     const raw = sp?.get('returnTo') ?? '';
     const decoded = raw ? safeDecode(raw) : '';
 
-    if (decoded.startsWith('/')) {
-      router.push(decoded);
-      return;
-    }
+    if (decoded.startsWith('/') && !decoded.startsWith('//')) {
+  router.push(decoded);
+  return;
+}
+
 
     // Otherwise behave like normal back
     // (with a safety fallback if there's no real history)
@@ -13501,6 +14458,13 @@ export default function BackButton({
   );
 }
 
+export default function BackButton(props: BackButtonProps) {
+  return (
+    <CSRBoundary>
+      <Inner {...props} />
+    </CSRBoundary>
+  );
+}
 ```
 
 ### components/BottomNav.tsx
@@ -13668,6 +14632,24 @@ export default function BottomNav({ onOffsetChange }: BottomNavProps) {
 
 ```
 
+### components/CSRBoundary.tsx
+```tsx
+'use client';
+
+import { Suspense } from 'react';
+
+export default function CSRBoundary({
+  children,
+  fallback = null,
+}: {
+  children: React.ReactNode;
+  fallback?: React.ReactNode;
+}) {
+  return <Suspense fallback={fallback}>{children}</Suspense>;
+}
+
+```
+
 ### components/ComingSoonRow.tsx
 ```tsx
 // components/ComingSoonRow.tsx
@@ -13677,6 +14659,7 @@ import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname, useSearchParams } from 'next/navigation';
+import CSRBoundary from '@/components/CSRBoundary';
 
 type SettingsRowStyles = {
   settingsRow: string;
@@ -13697,7 +14680,7 @@ type Props = {
   className?: string;
 };
 
-export default function ComingSoonRow({
+function Inner({
   label,
   feature,
   iconSrc,
@@ -13713,7 +14696,7 @@ export default function ComingSoonRow({
   const featureText = feature ?? label;
 
   // ✅ capture current route so "Back" returns here (works from ANY page)
-  const qs = sp?.toString();
+  const qs = sp.toString();
   const returnTo = `${pathname}${qs ? `?${qs}` : ''}`;
 
   const href =
@@ -13756,6 +14739,13 @@ export default function ComingSoonRow({
   );
 }
 
+export default function ComingSoonRow(props: Props) {
+  return (
+    <CSRBoundary>
+      <Inner {...props} />
+    </CSRBoundary>
+  );
+}
 ```
 
 ### components/DragScrollRow.tsx
@@ -14379,14 +15369,13 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { PUBLIC_FLAGS } from "@/lib/flags/public";
 import { useEntitlements } from "@/components/EntitlementsProvider.client";
 import { useUsageCap } from "@/lib/freeAccess/useUsageCap";
-import { useAuthStatus } from "@/components/useAuthStatus";
+import CSRBoundary from "@/components/CSRBoundary";
 
-function currentPath(pathname: string, sp: URLSearchParams) {
-  const qs = sp.toString();
+function currentPath(pathname: string, qs: string) {
   return qs ? `${pathname}?${qs}` : pathname;
 }
 
-export default function RequirePremium({ children }: { children: React.ReactNode }) {
+function Inner({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
   const sp = useSearchParams();
@@ -14394,40 +15383,39 @@ export default function RequirePremium({ children }: { children: React.ReactNode
   const { isPremium, loading: entitlementsLoading } = useEntitlements();
   const { isOverCap } = useUsageCap();
 
-  // Only redirect on route entry, not mid-session state changes
-// Only prevent *repeat redirects* for the same route
-const redirectedRef = useRef<string>("");
+  const redirectedRef = useRef<string>("");
+  const qs = sp.toString();
 
-const { loading: authLoading } = useAuthStatus();
+  useEffect(() => {
+    if (!PUBLIC_FLAGS.enablePremiumGates) return;
+    if (entitlementsLoading) return;
 
+    const key = `${pathname}?${qs}`;
 
-const qs = sp.toString();
+    if (isPremium) return;
+    if (!isOverCap) return;
 
-useEffect(() => {
-  if (!PUBLIC_FLAGS.enablePremiumGates) return;
-  if (entitlementsLoading) return;
+    if (redirectedRef.current === key) return;
+    redirectedRef.current = key;
 
-  const key = `${pathname}?${qs}`;
-
-  if (isPremium) return;
-  if (!isOverCap) return;
-
-  if (redirectedRef.current === key) return;
-  redirectedRef.current = key;
-
-  const next = encodeURIComponent(currentPath(pathname, sp));
-  router.replace(`/premium?next=${next}`);
-}, [entitlementsLoading, isPremium, isOverCap, pathname, qs, router]);
-
-
+    const next = encodeURIComponent(currentPath(pathname, qs));
+    router.replace(`/premium?next=${next}`);
+  }, [entitlementsLoading, isPremium, isOverCap, pathname, qs, router]);
 
   if (!PUBLIC_FLAGS.enablePremiumGates) return <>{children}</>;
   if (entitlementsLoading) return null;
   if (isPremium) return <>{children}</>;
   if (!isOverCap) return <>{children}</>;
 
-
   return null;
+}
+
+export default function RequirePremium({ children }: { children: React.ReactNode }) {
+  return (
+    <CSRBoundary>
+      <Inner>{children}</Inner>
+    </CSRBoundary>
+  );
 }
 
 ```
@@ -16167,22 +17155,83 @@ export default function Heatmap({ data }: { data: HeatmapVM }) {
     typeof window !== 'undefined' &&
     (window.matchMedia?.('(hover: none)').matches || window.matchMedia?.('(pointer: coarse)').matches);
 
-  const { ref: inViewRef, seen } = useOnceInMidView<HTMLDivElement>();
+  // Trigger Heatmap only when the panel reaches the "middle band" of the viewport
+const panelRef = useRef<HTMLDivElement | null>(null);
+const [seen, setSeen] = useState(false);
+
+useEffect(() => {
+  if (seen) return;
+  const el = panelRef.current;
+  if (!el) return;
+
+  const io = new IntersectionObserver(
+    ([entry]) => {
+      if (entry.isIntersecting) {
+        setSeen(true);
+        io.disconnect();
+      }
+    },
+    {
+      // only fire when the element touches the center band (prevents early peeking triggers)
+      root: null,
+      rootMargin: '-45% 0px -45% 0px',
+      threshold: 0,
+    }
+  );
+
+  io.observe(el);
+  return () => io.disconnect();
+}, [seen]);
 
 
-  const [revealOn, setRevealOn] = useState(false);
 
-  useEffect(() => {
-    if (!seen) return;
-    const id = requestAnimationFrame(() => setRevealOn(true));
-    return () => cancelAnimationFrame(id);
-  }, [seen]);
+const [shellOn, setShellOn] = useState(false);
+const [revealOn, setRevealOn] = useState(false);
+
+useEffect(() => {
+  if (!seen) return;
+
+  const reduce =
+    typeof window !== 'undefined' &&
+    window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+
+  if (reduce) {
+    setShellOn(true);
+    setRevealOn(true);
+    return;
+  }
+
+  let raf1 = 0;
+  let raf2 = 0;
+
+  // Phase 1: show callout + panel first
+  raf1 = requestAnimationFrame(() => {
+    setShellOn(true);
+
+    // Phase 2: start cell waterfall AFTER shell paints
+    raf2 = requestAnimationFrame(() => setRevealOn(true));
+  });
+
+  return () => {
+    cancelAnimationFrame(raf1);
+    cancelAnimationFrame(raf2);
+  };
+}, [seen]);
+
+
 
 
   return (
     <div className={styles.wrap} ref={wrapRef}>
       {/* Callout pill */}
-      <div className={styles.calloutPill}>
+     <div
+  className={[
+    styles.calloutPill,
+    shellOn ? styles.calloutReveal : styles.calloutHidden,
+  ].join(' ')}
+>
+
+
         <div className={styles.starBadge} aria-hidden="true">★</div>
         <div className={styles.calloutText}>
           {data.best ? (
@@ -16200,7 +17249,14 @@ export default function Heatmap({ data }: { data: HeatmapVM }) {
       </div>
 
       {/* Soft panel */}
-      <div className={styles.panel} ref={inViewRef}>
+      <div
+  className={[
+    styles.panel,
+    shellOn ? styles.panelReveal : styles.panelHidden,
+  ].join(' ')}
+  ref={panelRef}
+>
+
         <div className={styles.matrix}>
           <div className={styles.corner} />
 
@@ -16281,6 +17337,7 @@ else if (cell.attemptsCount === 2) heatAlpha = 0.82;
 
 
 
+
               
 return (
   <div
@@ -16305,6 +17362,8 @@ return (
       ['--d' as any]: `${delayMs}ms`,
       ['--heat-alpha' as any]: heatAlpha,
     }}
+ 
+
                   onPointerDown={(e) => setPointerType((e.pointerType as any) ?? 'mouse')}
                   onMouseEnter={() => setHover({ r, c })}
                   onMouseLeave={() => setHover(null)}
@@ -16458,6 +17517,34 @@ return (
   color: rgba(17, 24, 39, 0.55);
   font-weight: 500;
 }
+
+@keyframes calloutIn {
+  0%   { opacity: 0; transform: translateY(10px) scale(0.992); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.calloutHidden {
+  opacity: 0;
+  transform: translateY(10px) scale(0.992);
+  pointer-events: none;
+}
+
+.calloutReveal {
+  animation: calloutIn 420ms cubic-bezier(0.2, 0.85, 0.2, 1) both;
+}
+
+/* Reduced motion: just show it */
+@media (prefers-reduced-motion: reduce) {
+  .calloutHidden {
+    opacity: 1;
+    transform: none;
+    pointer-events: auto;
+  }
+  .calloutReveal {
+    animation: none;
+  }
+}
+
 
 /* ===== Frosted panel ===== */
 .panel {
@@ -16839,6 +17926,25 @@ return (
     opacity: 1;
     transform: none;
   }
+}
+
+@keyframes shellIn {
+  0%   { opacity: 0; transform: translateY(10px) scale(0.995); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.panelHidden{
+  opacity: 0;
+  transform: translateY(10px) scale(0.995);
+}
+
+.panelReveal{
+  animation: shellIn 420ms cubic-bezier(0.2, 0.85, 0.2, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .panelHidden { opacity: 1; transform: none; }
+  .panelReveal { animation: none; }
 }
 
 /* ===== Best cell pulse ring (separate from entrance animation) ===== */
@@ -21711,6 +22817,22 @@ export function safeNextPath(input: string | null | undefined) {
 
 ```
 
+### lib/openai.ts
+```tsx
+// lib/openai.ts
+import "server-only";
+import OpenAI from "openai";
+
+if (!process.env.OPENAI_API_KEY) {
+  throw new Error("Missing OPENAI_API_KEY in environment variables.");
+}
+
+export const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
+
+```
+
 ### lib/password-reset-store.ts
 ```tsx
 // lib/password-reset-store.ts
@@ -24729,11 +25851,13 @@ export default nextConfig;
       "dependencies": {
         "@fortawesome/fontawesome-svg-core": "^7.1.0",
         "@fortawesome/free-brands-svg-icons": "^7.1.0",
+        "@fortawesome/free-regular-svg-icons": "^7.2.0",
         "@fortawesome/free-solid-svg-icons": "^7.1.0",
         "@fortawesome/react-fontawesome": "^3.1.1",
         "canvas-confetti": "^1.9.4",
         "next": "^16.0.8",
         "next-auth": "^5.0.0-beta.30",
+        "openai": "^6.22.0",
         "react": "19.2.0",
         "react-dom": "19.2.0"
       },
@@ -25238,6 +26362,27 @@ export default nextConfig;
       "dependencies": {
         "@fortawesome/fontawesome-common-types": "7.1.0"
       },
+      "engines": {
+        "node": ">=6"
+      }
+    },
+    "node_modules/@fortawesome/free-regular-svg-icons": {
+      "version": "7.2.0",
+      "resolved": "https://registry.npmjs.org/@fortawesome/free-regular-svg-icons/-/free-regular-svg-icons-7.2.0.tgz",
+      "integrity": "sha512-iycmlN51EULlQ4D/UU9WZnHiN0CvjJ2TuuCrAh+1MVdzD+4ViKYH2deNAll4XAAYlZa8WAefHR5taSK8hYmSMw==",
+      "license": "(CC-BY-4.0 AND MIT)",
+      "dependencies": {
+        "@fortawesome/fontawesome-common-types": "7.2.0"
+      },
+      "engines": {
+        "node": ">=6"
+      }
+    },
+    "node_modules/@fortawesome/free-regular-svg-icons/node_modules/@fortawesome/fontawesome-common-types": {
+      "version": "7.2.0",
+      "resolved": "https://registry.npmjs.org/@fortawesome/fontawesome-common-types/-/fontawesome-common-types-7.2.0.tgz",
+      "integrity": "sha512-IpR0bER9FY25p+e7BmFH25MZKEwFHTfRAfhOyJubgiDnoJNsSvJ7nigLraHtp4VOG/cy8D7uiV0dLkHOne5Fhw==",
+      "license": "MIT",
       "engines": {
         "node": ">=6"
       }
@@ -25849,9 +26994,9 @@ export default nextConfig;
       }
     },
     "node_modules/@next/env": {
-      "version": "16.0.10",
-      "resolved": "https://registry.npmjs.org/@next/env/-/env-16.0.10.tgz",
-      "integrity": "sha512-8tuaQkyDVgeONQ1MeT9Mkk8pQmZapMKFh5B+OrFUlG3rVmYTXcXlBetBgTurKXGaIZvkoqRT9JL5K3phXcgang==",
+      "version": "16.1.6",
+      "resolved": "https://registry.npmjs.org/@next/env/-/env-16.1.6.tgz",
+      "integrity": "sha512-N1ySLuZjnAtN3kFnwhAwPvZah8RJxKasD7x1f8shFqhncnWZn4JMfg37diLNuoHsLAlrDfM3g4mawVdtAG8XLQ==",
       "license": "MIT"
     },
     "node_modules/@next/eslint-plugin-next": {
@@ -25865,9 +27010,9 @@ export default nextConfig;
       }
     },
     "node_modules/@next/swc-darwin-arm64": {
-      "version": "16.0.10",
-      "resolved": "https://registry.npmjs.org/@next/swc-darwin-arm64/-/swc-darwin-arm64-16.0.10.tgz",
-      "integrity": "sha512-4XgdKtdVsaflErz+B5XeG0T5PeXKDdruDf3CRpnhN+8UebNa5N2H58+3GDgpn/9GBurrQ1uWW768FfscwYkJRg==",
+      "version": "16.1.6",
+      "resolved": "https://registry.npmjs.org/@next/swc-darwin-arm64/-/swc-darwin-arm64-16.1.6.tgz",
+      "integrity": "sha512-wTzYulosJr/6nFnqGW7FrG3jfUUlEf8UjGA0/pyypJl42ExdVgC6xJgcXQ+V8QFn6niSG2Pb8+MIG1mZr2vczw==",
       "cpu": [
         "arm64"
       ],
@@ -25881,9 +27026,9 @@ export default nextConfig;
       }
     },
     "node_modules/@next/swc-darwin-x64": {
-      "version": "16.0.10",
-      "resolved": "https://registry.npmjs.org/@next/swc-darwin-x64/-/swc-darwin-x64-16.0.10.tgz",
-      "integrity": "sha512-spbEObMvRKkQ3CkYVOME+ocPDFo5UqHb8EMTS78/0mQ+O1nqE8toHJVioZo4TvebATxgA8XMTHHrScPrn68OGw==",
+      "version": "16.1.6",
+      "resolved": "https://registry.npmjs.org/@next/swc-darwin-x64/-/swc-darwin-x64-16.1.6.tgz",
+      "integrity": "sha512-BLFPYPDO+MNJsiDWbeVzqvYd4NyuRrEYVB5k2N3JfWncuHAy2IVwMAOlVQDFjj+krkWzhY2apvmekMkfQR0CUQ==",
       "cpu": [
         "x64"
       ],
@@ -25897,9 +27042,9 @@ export default nextConfig;
       }
     },
     "node_modules/@next/swc-linux-arm64-gnu": {
-      "version": "16.0.10",
-      "resolved": "https://registry.npmjs.org/@next/swc-linux-arm64-gnu/-/swc-linux-arm64-gnu-16.0.10.tgz",
-      "integrity": "sha512-uQtWE3X0iGB8apTIskOMi2w/MKONrPOUCi5yLO+v3O8Mb5c7K4Q5KD1jvTpTF5gJKa3VH/ijKjKUq9O9UhwOYw==",
+      "version": "16.1.6",
+      "resolved": "https://registry.npmjs.org/@next/swc-linux-arm64-gnu/-/swc-linux-arm64-gnu-16.1.6.tgz",
+      "integrity": "sha512-OJYkCd5pj/QloBvoEcJ2XiMnlJkRv9idWA/j0ugSuA34gMT6f5b7vOiCQHVRpvStoZUknhl6/UxOXL4OwtdaBw==",
       "cpu": [
         "arm64"
       ],
@@ -25913,9 +27058,9 @@ export default nextConfig;
       }
     },
     "node_modules/@next/swc-linux-arm64-musl": {
-      "version": "16.0.10",
-      "resolved": "https://registry.npmjs.org/@next/swc-linux-arm64-musl/-/swc-linux-arm64-musl-16.0.10.tgz",
-      "integrity": "sha512-llA+hiDTrYvyWI21Z0L1GiXwjQaanPVQQwru5peOgtooeJ8qx3tlqRV2P7uH2pKQaUfHxI/WVarvI5oYgGxaTw==",
+      "version": "16.1.6",
+      "resolved": "https://registry.npmjs.org/@next/swc-linux-arm64-musl/-/swc-linux-arm64-musl-16.1.6.tgz",
+      "integrity": "sha512-S4J2v+8tT3NIO9u2q+S0G5KdvNDjXfAv06OhfOzNDaBn5rw84DGXWndOEB7d5/x852A20sW1M56vhC/tRVbccQ==",
       "cpu": [
         "arm64"
       ],
@@ -25929,9 +27074,9 @@ export default nextConfig;
       }
     },
     "node_modules/@next/swc-linux-x64-gnu": {
-      "version": "16.0.10",
-      "resolved": "https://registry.npmjs.org/@next/swc-linux-x64-gnu/-/swc-linux-x64-gnu-16.0.10.tgz",
-      "integrity": "sha512-AK2q5H0+a9nsXbeZ3FZdMtbtu9jxW4R/NgzZ6+lrTm3d6Zb7jYrWcgjcpM1k8uuqlSy4xIyPR2YiuUr+wXsavA==",
+      "version": "16.1.6",
+      "resolved": "https://registry.npmjs.org/@next/swc-linux-x64-gnu/-/swc-linux-x64-gnu-16.1.6.tgz",
+      "integrity": "sha512-2eEBDkFlMMNQnkTyPBhQOAyn2qMxyG2eE7GPH2WIDGEpEILcBPI/jdSv4t6xupSP+ot/jkfrCShLAa7+ZUPcJQ==",
       "cpu": [
         "x64"
       ],
@@ -25945,9 +27090,9 @@ export default nextConfig;
       }
     },
     "node_modules/@next/swc-linux-x64-musl": {
-      "version": "16.0.10",
-      "resolved": "https://registry.npmjs.org/@next/swc-linux-x64-musl/-/swc-linux-x64-musl-16.0.10.tgz",
-      "integrity": "sha512-1TDG9PDKivNw5550S111gsO4RGennLVl9cipPhtkXIFVwo31YZ73nEbLjNC8qG3SgTz/QZyYyaFYMeY4BKZR/g==",
+      "version": "16.1.6",
+      "resolved": "https://registry.npmjs.org/@next/swc-linux-x64-musl/-/swc-linux-x64-musl-16.1.6.tgz",
+      "integrity": "sha512-oicJwRlyOoZXVlxmIMaTq7f8pN9QNbdes0q2FXfRsPhfCi8n8JmOZJm5oo1pwDaFbnnD421rVU409M3evFbIqg==",
       "cpu": [
         "x64"
       ],
@@ -25961,9 +27106,9 @@ export default nextConfig;
       }
     },
     "node_modules/@next/swc-win32-arm64-msvc": {
-      "version": "16.0.10",
-      "resolved": "https://registry.npmjs.org/@next/swc-win32-arm64-msvc/-/swc-win32-arm64-msvc-16.0.10.tgz",
-      "integrity": "sha512-aEZIS4Hh32xdJQbHz121pyuVZniSNoqDVx1yIr2hy+ZwJGipeqnMZBJHyMxv2tiuAXGx6/xpTcQJ6btIiBjgmg==",
+      "version": "16.1.6",
+      "resolved": "https://registry.npmjs.org/@next/swc-win32-arm64-msvc/-/swc-win32-arm64-msvc-16.1.6.tgz",
+      "integrity": "sha512-gQmm8izDTPgs+DCWH22kcDmuUp7NyiJgEl18bcr8irXA5N2m2O+JQIr6f3ct42GOs9c0h8QF3L5SzIxcYAAXXw==",
       "cpu": [
         "arm64"
       ],
@@ -25977,9 +27122,9 @@ export default nextConfig;
       }
     },
     "node_modules/@next/swc-win32-x64-msvc": {
-      "version": "16.0.10",
-      "resolved": "https://registry.npmjs.org/@next/swc-win32-x64-msvc/-/swc-win32-x64-msvc-16.0.10.tgz",
-      "integrity": "sha512-E+njfCoFLb01RAFEnGZn6ERoOqhK1Gl3Lfz1Kjnj0Ulfu7oJbuMyvBKNj/bw8XZnenHDASlygTjZICQW+rYW1Q==",
+      "version": "16.1.6",
+      "resolved": "https://registry.npmjs.org/@next/swc-win32-x64-msvc/-/swc-win32-x64-msvc-16.1.6.tgz",
+      "integrity": "sha512-NRfO39AIrzBnixKbjuo2YiYhB6o9d8v/ymU9m/Xk8cyVk+k7XylniXkHwjs4s70wedVffc6bQNbufk5v0xEm0A==",
       "cpu": [
         "x64"
       ],
@@ -27272,7 +28417,6 @@ export default nextConfig;
       "version": "2.9.5",
       "resolved": "https://registry.npmjs.org/baseline-browser-mapping/-/baseline-browser-mapping-2.9.5.tgz",
       "integrity": "sha512-D5vIoztZOq1XM54LUdttJVc96ggEsIfju2JBvht06pSzpckp3C7HReun67Bghzrtdsq9XdMGbSSB3v3GhMNmAA==",
-      "dev": true,
       "license": "Apache-2.0",
       "bin": {
         "baseline-browser-mapping": "dist/cli.js"
@@ -29838,13 +30982,14 @@ export default nextConfig;
       "license": "MIT"
     },
     "node_modules/next": {
-      "version": "16.0.10",
-      "resolved": "https://registry.npmjs.org/next/-/next-16.0.10.tgz",
-      "integrity": "sha512-RtWh5PUgI+vxlV3HdR+IfWA1UUHu0+Ram/JBO4vWB54cVPentCD0e+lxyAYEsDTqGGMg7qpjhKh6dc6aW7W/sA==",
+      "version": "16.1.6",
+      "resolved": "https://registry.npmjs.org/next/-/next-16.1.6.tgz",
+      "integrity": "sha512-hkyRkcu5x/41KoqnROkfTm2pZVbKxvbZRuNvKXLRXxs3VfyO0WhY50TQS40EuKO9SW3rBj/sF3WbVwDACeMZyw==",
       "license": "MIT",
       "dependencies": {
-        "@next/env": "16.0.10",
+        "@next/env": "16.1.6",
         "@swc/helpers": "0.5.15",
+        "baseline-browser-mapping": "^2.8.3",
         "caniuse-lite": "^1.0.30001579",
         "postcss": "8.4.31",
         "styled-jsx": "5.1.6"
@@ -29856,14 +31001,14 @@ export default nextConfig;
         "node": ">=20.9.0"
       },
       "optionalDependencies": {
-        "@next/swc-darwin-arm64": "16.0.10",
-        "@next/swc-darwin-x64": "16.0.10",
-        "@next/swc-linux-arm64-gnu": "16.0.10",
-        "@next/swc-linux-arm64-musl": "16.0.10",
-        "@next/swc-linux-x64-gnu": "16.0.10",
-        "@next/swc-linux-x64-musl": "16.0.10",
-        "@next/swc-win32-arm64-msvc": "16.0.10",
-        "@next/swc-win32-x64-msvc": "16.0.10",
+        "@next/swc-darwin-arm64": "16.1.6",
+        "@next/swc-darwin-x64": "16.1.6",
+        "@next/swc-linux-arm64-gnu": "16.1.6",
+        "@next/swc-linux-arm64-musl": "16.1.6",
+        "@next/swc-linux-x64-gnu": "16.1.6",
+        "@next/swc-linux-x64-musl": "16.1.6",
+        "@next/swc-win32-arm64-msvc": "16.1.6",
+        "@next/swc-win32-x64-msvc": "16.1.6",
         "sharp": "^0.34.4"
       },
       "peerDependencies": {
@@ -30081,6 +31226,27 @@ export default nextConfig;
       },
       "funding": {
         "url": "https://github.com/sponsors/ljharb"
+      }
+    },
+    "node_modules/openai": {
+      "version": "6.22.0",
+      "resolved": "https://registry.npmjs.org/openai/-/openai-6.22.0.tgz",
+      "integrity": "sha512-7Yvy17F33Bi9RutWbsaYt5hJEEJ/krRPOrwan+f9aCPuMat1WVsb2VNSII5W1EksKT6fF69TG/xj4XzodK3JZw==",
+      "license": "Apache-2.0",
+      "bin": {
+        "openai": "bin/cli"
+      },
+      "peerDependencies": {
+        "ws": "^8.18.0",
+        "zod": "^3.25 || ^4.0"
+      },
+      "peerDependenciesMeta": {
+        "ws": {
+          "optional": true
+        },
+        "zod": {
+          "optional": true
+        }
       }
     },
     "node_modules/optionator": {
@@ -31458,7 +32624,7 @@ export default nextConfig;
       "version": "4.1.13",
       "resolved": "https://registry.npmjs.org/zod/-/zod-4.1.13.tgz",
       "integrity": "sha512-AvvthqfqrAhNH9dnfmrfKzX5upOdjUVJYFqNSlkmGf64gRaTzlPwz99IHYnVs28qYAybvAlBV+H7pn0saFY4Ig==",
-      "dev": true,
+      "devOptional": true,
       "license": "MIT",
       "funding": {
         "url": "https://github.com/sponsors/colinhacks"
@@ -31497,11 +32663,13 @@ export default nextConfig;
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^7.1.0",
     "@fortawesome/free-brands-svg-icons": "^7.1.0",
+    "@fortawesome/free-regular-svg-icons": "^7.2.0",
     "@fortawesome/free-solid-svg-icons": "^7.1.0",
     "@fortawesome/react-fontawesome": "^3.1.1",
     "canvas-confetti": "^1.9.4",
     "next": "^16.0.8",
     "next-auth": "^5.0.0-beta.30",
+    "openai": "^6.22.0",
     "react": "19.2.0",
     "react-dom": "19.2.0"
   },
@@ -133383,6 +134551,198 @@ export const config = {
 
 
 }
+```
+
+### repo-snapshot.md
+```md
+# Repo snapshot
+
+## Root
+total 6912
+drwxr-xr-x   27 huni  staff      864 Feb 13 00:31 .
+drwxr-xr-x    4 huni  staff      128 Dec  8 21:34 ..
+-rw-r--r--@   1 huni  staff    10244 Feb  3 00:03 .DS_Store
+-rw-r--r--@   1 huni  staff      394 Dec 16 22:27 .env.local
+drwxr-xr-x   14 huni  staff      448 Feb 12 23:49 .git
+-rw-r--r--    1 huni  staff      480 Nov 24 22:08 .gitignore
+drwxr-xr-x    3 huni  staff       96 Dec 29 09:26 .next
+drwxr-xr-x    6 huni  staff      192 Dec 23 18:22 .venv
+-rw-r--r--    1 huni  staff     4136 Nov 25 22:45 README.md
+drwxr-xr-x   23 huni  staff      736 Jan 19 17:24 app
+drwxr-xr-x@  19 huni  staff      608 Feb  9 18:45 components
+-rw-r--r--    1 huni  staff      465 Nov 24 22:08 eslint.config.mjs
+-rw-r--r--@   1 huni  staff  3234035 Feb 13 00:08 expatise-snapshot.md
+drwxr-xr-x@  26 huni  staff      832 Jan 26 23:44 lib
+-rwxr-xr-x@   1 huni  staff      993 Jan 16 10:57 make-snapshot.sh
+-rw-r--r--    1 huni  staff      251 Nov 24 22:13 next-env.d.ts
+-rw-r--r--    1 huni  staff      133 Nov 24 22:08 next.config.ts
+drwxr-xr-x  302 huni  staff     9664 Dec 22 21:32 node_modules
+-rw-r--r--    1 huni  staff   235471 Dec 22 21:36 package-lock.json
+-rw-r--r--    1 huni  staff      883 Dec 22 21:36 package.json
+-rw-r--r--    1 huni  staff       94 Nov 24 22:08 postcss.config.mjs
+-rw-r--r--@   1 huni  staff      799 Dec 18 12:01 proxy.ts
+drwxr-xr-x   10 huni  staff      320 Dec 23 21:42 public
+drwxr-xr-x    3 huni  staff       96 Dec 23 23:08 raw
+-rw-r--r--    1 huni  staff       25 Feb 13 00:31 repo-snapshot.md
+drwxr-xr-x    7 huni  staff      224 Jan  6 20:41 scripts
+-rw-r--r--@   1 huni  staff      695 Jan 14 15:49 tsconfig.json
+
+## app/ routes (depth 4)
+app/(premium)/.DS_Store
+app/(premium)/all-questions/AllQuestionsClient.client.tsx
+app/(premium)/all-questions/all-questions.module.css
+app/(premium)/all-questions/page.tsx
+app/(premium)/all-test/AllTestClient.client.tsx
+app/(premium)/all-test/all-test.module.css
+app/(premium)/all-test/page.tsx
+app/(premium)/all-test/results/page.tsx
+app/(premium)/all-test/results/results.module.css
+app/(premium)/bookmarks/page.tsx
+app/(premium)/global-common-mistakes/GlobalCommonMistakesClient.client.tsx
+app/(premium)/global-common-mistakes/page.tsx
+app/(premium)/layout.tsx
+app/(premium)/my-mistakes/page.tsx
+app/(premium)/real-test/AllTestClient.client.tsx
+app/(premium)/stats/ReadinessRing.client.tsx
+app/(premium)/stats/page.tsx
+app/(premium)/stats/stats.module.css
+app/.DS_Store
+app/.venv
+app/account-security/account-security.module.css
+app/account-security/page.tsx
+app/api/.DS_Store
+app/api/account/change-email/route.ts
+app/api/account/change-password/route.ts
+app/api/auth/[...nextauth]/route.ts
+app/api/entitlements/route.ts
+app/api/local-login/route.ts
+app/api/logout/route.ts
+app/api/onboarding/route.ts
+app/api/password-reset/confirm/route.ts
+app/api/password-reset/start/route.ts
+app/api/register/route.ts
+app/api/session/route.ts
+app/auth.ts
+app/checkout/checkout.module.css
+app/checkout/page.tsx
+app/checkout/success/page.tsx
+app/checkout/success/success.module.css
+app/coming-soon/Backlink.client.tsx
+app/coming-soon/page.tsx
+app/entitlements/.DS_Store
+app/favicon.ico
+app/forgot-password/forgot-password.module.css
+app/forgot-password/page.tsx
+app/globals.css
+app/layout.tsx
+app/login/CreateAccountModal.tsx
+app/login/create-account-modal.module.css
+app/login/login.module.css
+app/login/page.tsx
+app/onboarding/onboarding.module.css
+app/onboarding/page.tsx
+app/page.module.css
+app/page.tsx
+app/premium/page.tsx
+app/premium/premium.module.css
+app/profile/page.tsx
+app/profile/profile.module.css
+app/raw/.DS_Store
+app/raw/2023 Driving test 1.pdf
+app/test/[mode]/page.tsx
+app/test/[mode]/results/page.tsx
+app/test/[mode]/results/results.module.css
+
+## Key configs
+
+### package.json
+```
+{
+  "name": "expatise",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint"
+  },
+  "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^7.1.0",
+    "@fortawesome/free-brands-svg-icons": "^7.1.0",
+    "@fortawesome/free-solid-svg-icons": "^7.1.0",
+    "@fortawesome/react-fontawesome": "^3.1.1",
+    "canvas-confetti": "^1.9.4",
+    "next": "^16.0.8",
+    "next-auth": "^5.0.0-beta.30",
+    "react": "19.2.0",
+    "react-dom": "19.2.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/canvas-confetti": "^1.9.0",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "baseline-browser-mapping": "^2.9.5",
+    "eslint": "^9",
+    "eslint-config-next": "16.0.3",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  }
+}
+```
+
+### next.config.ts
+```
+import type { NextConfig } from "next";
+
+const nextConfig: NextConfig = {
+  /* config options here */
+};
+
+export default nextConfig;
+```
+
+### tsconfig.json
+```
+{
+  "compilerOptions": {
+    "target": "ES2017",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "react-jsx",
+    "incremental": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "paths": {
+      "@/*": ["./*"],
+      "@app/*": ["./app/*"]
+    }
+  },
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    ".next/dev/types/**/*.ts",
+    "**/*.mts"
+  ],
+  "exclude": ["node_modules"]
+}
+```
+
 ```
 
 ### tsconfig.json
