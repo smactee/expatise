@@ -6796,7 +6796,7 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 const COOLDOWN_MS = 24 * 60 * 60 * 1000;
-const COOKIE_KEY = "expatise_coach_last_v1";
+const COOKIE_KEY = "expatise_coach_last_v2";
 
 /**
  * Master prompt (static). Keep this stable for best caching behavior.
@@ -7169,23 +7169,53 @@ import { userKeyFromEmail } from "@/lib/identity/userKey";
 import { FREE_ENTITLEMENTS } from "@/lib/entitlements/types";
 import { getLocalEntitlements } from "@/lib/entitlements/localStore";
 
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
+
+const ADMIN_PREMIUM_EMAILS = ((process.env.ADMIN_PREMIUM_EMAILS || "user@expatise.com").trim())
+  .split(",")
+  .map((s) => normalizeEmail(s))
+  .filter(Boolean);
+
+function isAdminEmail(email: string) {
+  return ADMIN_PREMIUM_EMAILS.includes(normalizeEmail(email));
+}
+
 export async function GET() {
   const cookieStore = await Promise.resolve(cookies());
 
-  // local cookie first
-  const localEmail = cookieStore.get(AUTH_COOKIE)?.value ?? "";
-  let email = normalizeEmail(localEmail);
+  // local cookie first (may be token, not an email)
+  const localCookie = cookieStore.get(AUTH_COOKIE)?.value ?? "";
+  let email = normalizeEmail(localCookie);
 
-  // fallback to NextAuth session
-  if (!email) {
-    const session = await auth().catch(() => null);
-    email = normalizeEmail(session?.user?.email ?? "");
+  // ✅ Always try NextAuth session too (more reliable than your custom cookie)
+  const session = await auth().catch(() => null);
+  const sessionEmail = normalizeEmail(session?.user?.email ?? "");
+  if (sessionEmail) email = sessionEmail;
+
+  // derive userKey (in your current app this is effectively the email)
+  const userKey = userKeyFromEmail(email);
+
+  // ✅ Hackathon admin: allowlist by email OR by derived userKey
+  if (isAdminEmail(email) || isAdminEmail(userKey)) {
+    const entitlements = {
+      isPremium: true,
+      source: "admin" as const,
+      updatedAt: Date.now(),
+    };
+
+    // ✅ ADD THIS (admin response)
+    const res = NextResponse.json({ ok: true, userKey, entitlements });
+    res.headers.set("Cache-Control", "no-store");
+    return res;
   }
 
-  const userKey = userKeyFromEmail(email);
   const entitlements = getLocalEntitlements(userKey) ?? FREE_ENTITLEMENTS;
 
-  return NextResponse.json({ ok: true, userKey, entitlements });
+  // ✅ ADD THIS (normal response)
+  const res = NextResponse.json({ ok: true, userKey, entitlements });
+  res.headers.set("Cache-Control", "no-store");
+  return res;
 }
 
 ```
@@ -7418,6 +7448,76 @@ export async function GET() {
 
 ```
 
+### app/api/supa-test/route.ts
+```tsx
+import { NextResponse } from "next/server";
+import { createServerClient } from "@supabase/ssr";
+import type { NextRequest } from "next/server";
+
+export async function GET(req: NextRequest) {
+  const sbCookies = req.cookies
+    .getAll()
+    .filter((c) => c.name.startsWith("sb-"))
+    .map((c) => c.name);
+
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() {
+          return req.cookies.getAll();
+        },
+        setAll() {
+          // no-op for this test endpoint
+        },
+      },
+    }
+  );
+
+  const { data: userData, error: userErr } = await supabase.auth.getUser();
+  const user = userData.user;
+
+  if (!user) {
+    return NextResponse.json(
+      { ok: false, error: "No user session", sbCookies, userErr: userErr?.message ?? null },
+      { status: 401 }
+    );
+  }
+
+  const { error: insErr } = await supabase.from("content").insert({
+    user_id: user.id,
+    kind: "ping",
+    payload: { at: Date.now() },
+  });
+
+  if (insErr) {
+    return NextResponse.json(
+      { ok: false, step: "insert", error: insErr.message, sbCookies },
+      { status: 400 }
+    );
+  }
+
+  const { data: rows, error: selErr } = await supabase
+    .from("content")
+    .select("id, created_at, payload")
+    .eq("user_id", user.id)
+    .eq("kind", "ping")
+    .order("created_at", { ascending: false })
+    .limit(3);
+
+  if (selErr) {
+    return NextResponse.json(
+      { ok: false, step: "select", error: selErr.message, sbCookies },
+      { status: 400 }
+    );
+  }
+
+  return NextResponse.json({ ok: true, user_id: user.id, sbCookies, rows });
+}
+
+```
+
 ### app/auth.ts
 ```tsx
 // app/auth.ts
@@ -7488,6 +7588,57 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     },
   },
 });
+
+```
+
+### app/auth/callback/route.ts
+```tsx
+// app/auth/callback/route.ts
+import type { NextRequest } from "next/server";
+import { NextResponse } from "next/server";
+import { createServerClient } from "@supabase/ssr";
+
+function safeNextPath(next: string | null) {
+  if (!next) return "/";
+  return next.startsWith("/") ? next : "/";
+}
+
+export async function GET(req: NextRequest) {
+  const requestUrl = new URL(req.url);
+  const code = requestUrl.searchParams.get("code");
+  const next = safeNextPath(requestUrl.searchParams.get("next"));
+
+  const redirectTo = new URL(next, requestUrl.origin);
+  const res = NextResponse.redirect(redirectTo);
+
+  if (!code) return res;
+
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+  const supabaseKey =
+    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ||
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+
+  const supabase = createServerClient(supabaseUrl, supabaseKey, {
+    cookies: {
+      getAll() {
+        return req.cookies.getAll();
+      },
+      setAll(cookiesToSet) {
+        cookiesToSet.forEach(({ name, value, options }) => {
+          res.cookies.set(name, value, options);
+        });
+      },
+    },
+  });
+
+  try {
+    await supabase.auth.exchangeCodeForSession(code);
+  } catch {
+    return NextResponse.redirect(new URL("/login?error=oauth", requestUrl.origin));
+  }
+
+  return res;
+}
 
 ```
 
@@ -9470,6 +9621,45 @@ export default function CreateAccountModal({ open, onClose, onCreated }: Props) 
 }
 
 /* No Dark mode*/
+.snsBtnSoon {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 18px;
+  transform: translateX(-50%) translateY(10px);
+  z-index: 9999;
+
+  max-width: min(92vw, 420px);
+  padding: 12px 14px;
+  border-radius: 12px;
+
+  background: rgba(17, 24, 39, 0.92);
+  color: white;
+  font-size: 14px;
+  line-height: 1.35;
+
+  opacity: 0;
+  pointer-events: none;
+
+  transition: opacity 220ms ease, transform 220ms ease;
+}
+
+.toastShow {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* Optional: respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .toast,
+  .toastShow {
+    transition: none;
+  }
+}
 
 ```
 
@@ -9481,16 +9671,15 @@ export default function CreateAccountModal({ open, onClose, onCreated }: Props) 
 
 import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useRef } from 'react';
 import styles from './login.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import CreateAccountModal from './CreateAccountModal';
 import { faGoogle, faApple, faWeixin } from '@fortawesome/free-brands-svg-icons';
-import {signIn, getProviders} from "next-auth/react";
 import { isValidEmail, normalizeEmail, safeNextPath } from '@/lib/auth';
 import CSRBoundary from '@/components/CSRBoundary';
-
+import { createClient } from '@/lib/supabase/client';
 
 
 function Inner() {
@@ -9509,8 +9698,7 @@ function Inner() {
   const [isSubmitting, setIsSubmitting] = useState(false);// Loading state
   const [emailTouched, setEmailTouched] = useState(false);
 
-
-  const [providers, setProviders] = useState<Record<string, any> | null>(null);
+const supabase = useMemo(() => createClient(), []);
 
   const emailNorm = normalizeEmail(email);
   const emailOK = isValidEmail(emailNorm);
@@ -9519,15 +9707,15 @@ function Inner() {
   return emailOK && password.trim().length > 0 && !isSubmitting;
 }, [emailOK, password, isSubmitting]);
 
+const toastTimerRef = useRef<number | null>(null);
 
+const showToast = (msg: string) => {
+  setError(msg);
+  if (toastTimerRef.current) window.clearTimeout(toastTimerRef.current);
+  toastTimerRef.current = window.setTimeout(() => setError(null), 500);
+};
+const comingSoon = (provider: string) => showToast(`${provider} sign-in is coming soon.`);
 
-useEffect(() => {
-  let mounted = true;
-  getProviders()
-    .then((p) => { if (mounted) setProviders(p); })
-    .catch(() => { if (mounted) setProviders(null); });
-  return () => { mounted = false; };
-}, []);
 
 
   useEffect (() => {
@@ -9654,7 +9842,14 @@ router.replace(nextParam);
             )}
 
             {/* ✅ (4) Friendly error state */}
-            {error && <div className={styles.errorBox}>{error}</div>}
+            <div
+  className={`${styles.toast} ${error ? styles.toastShow : ""}`}
+  role="alert"
+  aria-live="polite"
+>
+  {error}
+</div>
+
 
             {/* ✅ (3) Forgot password link */}
             <div className={styles.forgotRow}>
@@ -9684,9 +9879,23 @@ router.replace(nextParam);
               Create a new account
               </button>
 
-            <button type="button" className={styles.linkBtn} onClick={() => router.push('/')}>
-              Continue as guest
-            </button>
+            <button
+  type="button"
+  className={styles.linkBtn}
+  onClick={async () => {
+    setError(null);
+    const { error } = await supabase.auth.signInAnonymously();
+    if (error) {
+      setError(error.message);
+      return;
+    }
+    window.dispatchEvent(new Event("expatise:session-changed"));
+    router.replace(nextParam);
+  }}
+>
+  Continue as guest
+</button>
+
           </div>
           <CreateAccountModal
             open={isCreateOpen}
@@ -9701,34 +9910,52 @@ router.replace(nextParam);
   </div>
 
   <div className={styles.snsRowSmall}>
-    {providers?.google && (
-    <button type="button" 
-    className={styles.snsBtnSmall} 
-    aria-label="Continue with Google"
-    onClick={() => signIn("google", { callbackUrl: nextParam })}>
-    <FontAwesomeIcon icon={faGoogle} />
-    </button>
-    )}
 
-    {providers?.apple && (
-    <button 
-    type="button" 
-    className={styles.snsBtnSmall} 
-    aria-label="Continue with Apple"
-    onClick={() => signIn("apple", { callbackUrl: nextParam })}>
-    <FontAwesomeIcon icon={faApple} />
-    </button>
-    )}
 
-    {providers?.wechat && (
-    <button 
-    type="button" 
-    className={styles.snsBtnSmall} 
-    aria-label="Continue with WeChat"
-    onClick={() => signIn("wechat", { callbackUrl: nextParam })}>
-    <FontAwesomeIcon icon={faWeixin} />
-    </button>
-    )}
+
+    <button
+  type="button"
+  className={styles.snsBtnSmall}
+  aria-label="Continue with Google"
+  onClick={async () => {
+    setError(null);
+    const redirectTo = `${window.location.origin}/auth/callback?next=${encodeURIComponent(nextParam)}`;
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: { redirectTo },
+    });
+    if (error) setError(error.message);
+  }}
+>
+  <FontAwesomeIcon icon={faGoogle} />
+</button>
+
+
+
+<button
+  type="button"
+  className={`${styles.snsBtnSmall} ${styles.snsBtnSoon}`}
+  aria-label="Continue with Apple"
+  aria-disabled="true"
+  onClick={() => comingSoon("Apple")}
+  title="Coming soon"
+>
+  <FontAwesomeIcon icon={faApple} />
+</button>
+
+
+
+<button
+  type="button"
+  className={`${styles.snsBtnSmall} ${styles.snsBtnSoon}`}
+  aria-label="Continue with WeChat"
+  aria-disabled="true"
+  onClick={() => comingSoon("WeChat")}
+  title="Coming soon"
+>
+  <FontAwesomeIcon icon={faWeixin} />
+</button>
+
   </div>
 </div>
 
@@ -11997,11 +12224,13 @@ import { useUserProfile } from '@/components/UserProfile';
 import { useRouter, usePathname, useSearchParams  } from 'next/navigation';
 import { useAuthStatus } from '@/components/useAuthStatus';
 import BackButton from '@/components/BackButton';
-import { signOut } from 'next-auth/react';
 import CSRBoundary from '@/components/CSRBoundary';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGoogle, faApple, faWeixin} from '@fortawesome/free-brands-svg-icons';
 import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
+import { useMemo } from "react"; // you already import useMemo in other files, here add if missing
+import { createClient } from "@/lib/supabase/client";
+
 
 function Inner() {
   const { avatarUrl, setAvatarUrl, name, setName, email, setEmail, saveProfile, clearProfile } = useUserProfile(); // from context
@@ -12017,6 +12246,8 @@ function Inner() {
   const [saveMsg, setSaveMsg] = useState<string | null>(null);
 
   const canManageCredentials = authed && (method === "email");
+
+  const supabase = useMemo(() => createClient(), []);
 
 const signInDisplay = (() => {
   // 1) guest
@@ -12126,13 +12357,7 @@ const handleLogout = async () => {
   setLoggingOut(true);
 
   try {
-    await fetch("/api/logout", { method: "POST", credentials: "include" });
-
-    try {
-      await signOut({ redirect: false });
-    } catch {
-      // ignore — still proceed
-    }
+    await supabase.auth.signOut();
 
     if (typeof window !== "undefined") {
       window.localStorage.removeItem("expatise-user-profile");
@@ -12149,6 +12374,7 @@ const handleLogout = async () => {
     setLoggingOut(false);
   }
 };
+
 
 
 
@@ -15299,8 +15525,22 @@ import {
   usageCapEventName,
 } from "@/lib/freeAccess/localUsageCap";
 import { useEntitlements } from "@/components/EntitlementsProvider.client";
+import { usePathname } from "next/navigation";
+
+const HIDE_BADGE_EXACT = new Set(["/"]); // onboarding/landing
+const HIDE_BADGE_PREFIXES = ["/login", "/onboarding", "/forgot-password"];
+
 
 export default function FreeUsageProgressBadge() {
+  const pathname = usePathname() || "/";
+
+const hide =
+  HIDE_BADGE_EXACT.has(pathname) ||
+  HIDE_BADGE_PREFIXES.some((p) => pathname.startsWith(p));
+
+if (hide) return null;
+
+  
   const { isPremium } = useEntitlements();
   if (isPremium) return null;
   const userKey = useUserKey();
@@ -21566,19 +21806,54 @@ export function useOnceInMidView<T extends Element>() {
 // components/useAuthStatus.ts
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
-import { authClient } from "@/lib/authClient";
-import type { SessionRes } from "@/lib/authClient/types";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import type { User } from "@supabase/supabase-js";
+import { createClient } from "@/lib/supabase/client";
 
 type AuthState = {
   loading: boolean;
-  authed: boolean;
+  authed: boolean; // ✅ keep your existing meaning: true only for email/social (not guest)
   method: "guest" | "email" | "social";
   email: string | null;
-  provider: string | null;
+  provider: string | null; // "google" | "apple" | "wechat" | "email" | "anonymous" | null
 };
 
+function detectProvider(user: User | null): string | null {
+  if (!user) return null;
+
+  // best signal
+  const p = (user.app_metadata as any)?.provider as string | undefined;
+  if (p) return p;
+
+  // fallback
+  const ident = user.identities?.[0]?.provider;
+  return ident ?? null;
+}
+
+function toState(user: User | null, loading: boolean): AuthState {
+  if (!user) {
+    return { loading, authed: false, method: "guest", email: null, provider: null };
+  }
+
+  const provider = detectProvider(user);
+
+  // ✅ preserve your current gating semantics:
+  // - anonymous/guest is NOT "authed" for profile saving
+  if (!provider || provider === "anonymous") {
+    return { loading, authed: false, method: "guest", email: null, provider: provider ?? "anonymous" };
+  }
+
+  if (provider === "email") {
+    return { loading, authed: true, method: "email", email: user.email ?? null, provider };
+  }
+
+  // everything else is a social provider
+  return { loading, authed: true, method: "social", email: user.email ?? null, provider };
+}
+
 export function useAuthStatus() {
+  const supabase = useMemo(() => createClient(), []);
+
   const [state, setState] = useState<AuthState>({
     loading: true,
     authed: false,
@@ -21592,55 +21867,46 @@ export function useAuthStatus() {
 
     (async () => {
       try {
-        const json = (await authClient.getSession()) as SessionRes;
+        setState((s) => ({ ...s, loading: true }));
 
+        const { data, error } = await supabase.auth.getUser();
         if (cancelled) return;
 
-        if (json.ok && json.authed) {
-          setState({
-            loading: false,
-            authed: true,
-            method: json.method,
-            email: json.email,
-            provider: json.provider,
-          });
-        } else {
-          setState({
-            loading: false,
-            authed: false,
-            method: "guest",
-            email: null,
-            provider: null,
-          });
+        if (error) {
+          setState(toState(null, false));
+          return;
         }
+
+        setState(toState(data.user ?? null, false));
       } catch {
         if (cancelled) return;
-        setState({
-          loading: false,
-          authed: false,
-          method: "guest",
-          email: null,
-          provider: null,
-        });
+        setState(toState(null, false));
       }
     })();
 
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [supabase]);
 
   useEffect(() => {
     const cleanup = refresh();
 
+    // Keep your existing “session changed” event
     const onChanged = () => refresh();
     window.addEventListener("expatise:session-changed", onChanged);
+
+    // Also listen to Supabase auth events (more reliable)
+    const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
+      setState(toState(session?.user ?? null, false));
+    });
 
     return () => {
       cleanup?.();
       window.removeEventListener("expatise:session-changed", onChanged);
+      sub.subscription.unsubscribe();
     };
-  }, [refresh]);
+  }, [refresh, supabase]);
 
   return { ...state, refresh };
 }
@@ -21652,11 +21918,12 @@ export function useAuthStatus() {
 // components/useUserKey.client.ts
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { userKeyFromEmail } from "@/lib/identity/userKey";
-import { authClient } from "@/lib/authClient";
+import { createClient } from "@/lib/supabase/client";
 
 export function useUserKey() {
+  const supabase = useMemo(() => createClient(), []);
   const [userKey, setUserKey] = useState<string>("guest");
   const seqRef = useRef(0);
 
@@ -21665,32 +21932,44 @@ export function useUserKey() {
 
     (async () => {
       try {
-        const json = await authClient.getSession();
+        const { data, error } = await supabase.auth.getUser();
         if (seq !== seqRef.current) return;
 
-        const email = json.ok && json.authed ? (json.email ?? "") : "";
-        setUserKey(userKeyFromEmail(email));
+        if (error || !data.user) {
+          setUserKey("guest");
+          return;
+        }
+
+        // Anonymous users often have no email -> keep "guest"
+        const email = data.user.email ?? "";
+        setUserKey(email ? userKeyFromEmail(email) : "guest");
       } catch {
         if (seq !== seqRef.current) return;
         setUserKey("guest");
       }
     })();
-  }, []);
+  }, [supabase]);
 
   useEffect(() => {
-  refresh();
+    refresh();
 
-  if (typeof window === "undefined") return;
+    if (typeof window === "undefined") return;
 
-  const onChanged = () => refresh();
-  window.addEventListener("expatise:session-changed", onChanged);
+    const onChanged = () => refresh();
+    window.addEventListener("expatise:session-changed", onChanged);
 
-  return () => {
-    window.removeEventListener("expatise:session-changed", onChanged);
-    seqRef.current++; // invalidate in-flight
-  };
-}, [refresh]);
+    // Also listen to Supabase auth state changes (more reliable)
+    const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
+      const email = session?.user?.email ?? "";
+      setUserKey(email ? userKeyFromEmail(email) : "guest");
+    });
 
+    return () => {
+      window.removeEventListener("expatise:session-changed", onChanged);
+      sub.subscription.unsubscribe();
+      seqRef.current++; // invalidate in-flight
+    };
+  }, [refresh, supabase]);
 
   return userKey;
 }
@@ -22145,6 +22424,8 @@ export function clearLocalEntitlements(userKey = "guest") {
 
 ### lib/entitlements/types.ts
 ```tsx
+//lib/entitlements/types.ts
+
 export type EntitlementSource =
   | "none"
   | "trial"
@@ -24995,6 +25276,69 @@ export { clearedMistakesStore } from "@/lib/mistakes/store";
 
 ```
 
+### lib/supabase/client.ts
+```tsx
+// lib/supabase/client.ts
+import { createBrowserClient } from "@supabase/ssr";
+
+function supabaseKey() {
+  return (
+    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ||
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
+    ""
+  );
+}
+
+export function createClient() {
+  return createBrowserClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    supabaseKey()
+  );
+}
+
+```
+
+### lib/supabase/server.ts
+```tsx
+// lib/supabase/server.ts
+import { createServerClient } from "@supabase/ssr";
+import { cookies } from "next/headers";
+
+function supabaseKey() {
+  return (
+    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ||
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
+    ""
+  );
+}
+
+export async function createClient() {
+  const cookieStore = await cookies();
+
+  return createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    supabaseKey(),
+    {
+      cookies: {
+        getAll() {
+          return cookieStore.getAll();
+        },
+        setAll(cookiesToSet) {
+          try {
+            cookiesToSet.forEach(({ name, value, options }) =>
+              cookieStore.set(name, value, options)
+            );
+          } catch {
+            // ignore if called from a Server Component; proxy.ts handles refresh
+          }
+        },
+      },
+    }
+  );
+}
+
+```
+
 ### lib/sync/rules.ts
 ```tsx
 // lib/sync/rules.ts
@@ -25854,6 +26198,8 @@ export default nextConfig;
         "@fortawesome/free-regular-svg-icons": "^7.2.0",
         "@fortawesome/free-solid-svg-icons": "^7.1.0",
         "@fortawesome/react-fontawesome": "^3.1.1",
+        "@supabase/ssr": "^0.8.0",
+        "@supabase/supabase-js": "^2.95.3",
         "canvas-confetti": "^1.9.4",
         "next": "^16.0.8",
         "next-auth": "^5.0.0-beta.30",
@@ -27201,6 +27547,98 @@ export default nextConfig;
       "dev": true,
       "license": "MIT"
     },
+    "node_modules/@supabase/auth-js": {
+      "version": "2.95.3",
+      "resolved": "https://registry.npmjs.org/@supabase/auth-js/-/auth-js-2.95.3.tgz",
+      "integrity": "sha512-vD2YoS8E2iKIX0F7EwXTmqhUpaNsmbU6X2R0/NdFcs02oEfnHyNP/3M716f3wVJ2E5XHGiTFXki6lRckhJ0Thg==",
+      "license": "MIT",
+      "dependencies": {
+        "tslib": "2.8.1"
+      },
+      "engines": {
+        "node": ">=20.0.0"
+      }
+    },
+    "node_modules/@supabase/functions-js": {
+      "version": "2.95.3",
+      "resolved": "https://registry.npmjs.org/@supabase/functions-js/-/functions-js-2.95.3.tgz",
+      "integrity": "sha512-uTuOAKzs9R/IovW1krO0ZbUHSJnsnyJElTXIRhjJTqymIVGcHzkAYnBCJqd7468Fs/Foz1BQ7Dv6DCl05lr7ig==",
+      "license": "MIT",
+      "dependencies": {
+        "tslib": "2.8.1"
+      },
+      "engines": {
+        "node": ">=20.0.0"
+      }
+    },
+    "node_modules/@supabase/postgrest-js": {
+      "version": "2.95.3",
+      "resolved": "https://registry.npmjs.org/@supabase/postgrest-js/-/postgrest-js-2.95.3.tgz",
+      "integrity": "sha512-LTrRBqU1gOovxRm1vRXPItSMPBmEFqrfTqdPTRtzOILV4jPSueFz6pES5hpb4LRlkFwCPRmv3nQJ5N625V2Xrg==",
+      "license": "MIT",
+      "dependencies": {
+        "tslib": "2.8.1"
+      },
+      "engines": {
+        "node": ">=20.0.0"
+      }
+    },
+    "node_modules/@supabase/realtime-js": {
+      "version": "2.95.3",
+      "resolved": "https://registry.npmjs.org/@supabase/realtime-js/-/realtime-js-2.95.3.tgz",
+      "integrity": "sha512-D7EAtfU3w6BEUxDACjowWNJo/ZRo7sDIuhuOGKHIm9FHieGeoJV5R6GKTLtga/5l/6fDr2u+WcW/m8I9SYmaIw==",
+      "license": "MIT",
+      "dependencies": {
+        "@types/phoenix": "^1.6.6",
+        "@types/ws": "^8.18.1",
+        "tslib": "2.8.1",
+        "ws": "^8.18.2"
+      },
+      "engines": {
+        "node": ">=20.0.0"
+      }
+    },
+    "node_modules/@supabase/ssr": {
+      "version": "0.8.0",
+      "resolved": "https://registry.npmjs.org/@supabase/ssr/-/ssr-0.8.0.tgz",
+      "integrity": "sha512-/PKk8kNFSs8QvvJ2vOww1mF5/c5W8y42duYtXvkOSe+yZKRgTTZywYG2l41pjhNomqESZCpZtXuWmYjFRMV+dw==",
+      "license": "MIT",
+      "dependencies": {
+        "cookie": "^1.0.2"
+      },
+      "peerDependencies": {
+        "@supabase/supabase-js": "^2.76.1"
+      }
+    },
+    "node_modules/@supabase/storage-js": {
+      "version": "2.95.3",
+      "resolved": "https://registry.npmjs.org/@supabase/storage-js/-/storage-js-2.95.3.tgz",
+      "integrity": "sha512-4GxkJiXI3HHWjxpC3sDx1BVrV87O0hfX+wvJdqGv67KeCu+g44SPnII8y0LL/Wr677jB7tpjAxKdtVWf+xhc9A==",
+      "license": "MIT",
+      "dependencies": {
+        "iceberg-js": "^0.8.1",
+        "tslib": "2.8.1"
+      },
+      "engines": {
+        "node": ">=20.0.0"
+      }
+    },
+    "node_modules/@supabase/supabase-js": {
+      "version": "2.95.3",
+      "resolved": "https://registry.npmjs.org/@supabase/supabase-js/-/supabase-js-2.95.3.tgz",
+      "integrity": "sha512-Fukw1cUTQ6xdLiHDJhKKPu6svEPaCEDvThqCne3OaQyZvuq2qjhJAd91kJu3PXLG18aooCgYBaB6qQz35hhABg==",
+      "license": "MIT",
+      "dependencies": {
+        "@supabase/auth-js": "2.95.3",
+        "@supabase/functions-js": "2.95.3",
+        "@supabase/postgrest-js": "2.95.3",
+        "@supabase/realtime-js": "2.95.3",
+        "@supabase/storage-js": "2.95.3"
+      },
+      "engines": {
+        "node": ">=20.0.0"
+      }
+    },
     "node_modules/@swc/helpers": {
       "version": "0.5.15",
       "resolved": "https://registry.npmjs.org/@swc/helpers/-/helpers-0.5.15.tgz",
@@ -27524,11 +27962,16 @@ export default nextConfig;
       "version": "20.19.25",
       "resolved": "https://registry.npmjs.org/@types/node/-/node-20.19.25.tgz",
       "integrity": "sha512-ZsJzA5thDQMSQO788d7IocwwQbI8B5OPzmqNvpf3NY/+MHDAS759Wo0gd2WQeXYt5AAAQjzcrTVC6SKCuYgoCQ==",
-      "dev": true,
       "license": "MIT",
       "dependencies": {
         "undici-types": "~6.21.0"
       }
+    },
+    "node_modules/@types/phoenix": {
+      "version": "1.6.7",
+      "resolved": "https://registry.npmjs.org/@types/phoenix/-/phoenix-1.6.7.tgz",
+      "integrity": "sha512-oN9ive//QSBkf19rfDv45M7eZPi0eEXylht2OLEXicu5b4KoQ1OzXIw+xDSGWxSxe1JmepRR/ZH283vsu518/Q==",
+      "license": "MIT"
     },
     "node_modules/@types/react": {
       "version": "19.2.7",
@@ -27548,6 +27991,15 @@ export default nextConfig;
       "license": "MIT",
       "peerDependencies": {
         "@types/react": "^19.2.0"
+      }
+    },
+    "node_modules/@types/ws": {
+      "version": "8.18.1",
+      "resolved": "https://registry.npmjs.org/@types/ws/-/ws-8.18.1.tgz",
+      "integrity": "sha512-ThVF6DCVhA8kUGy+aazFQ4kXQ7E1Ty7A3ypFOe0IcJV8O/M511G99AW24irKrW56Wt44yG9+ij8FaqoBGkuBXg==",
+      "license": "MIT",
+      "dependencies": {
+        "@types/node": "*"
       }
     },
     "node_modules/@typescript-eslint/eslint-plugin": {
@@ -28626,6 +29078,19 @@ export default nextConfig;
       "integrity": "sha512-Kvp459HrV2FEJ1CAsi1Ku+MY3kasH19TFykTz2xWmMeq6bk2NU3XXvfJ+Q61m0xktWwt+1HSYf3JZsTms3aRJg==",
       "dev": true,
       "license": "MIT"
+    },
+    "node_modules/cookie": {
+      "version": "1.1.1",
+      "resolved": "https://registry.npmjs.org/cookie/-/cookie-1.1.1.tgz",
+      "integrity": "sha512-ei8Aos7ja0weRpFzJnEA9UHJ/7XQmqglbRwnf2ATjcB9Wq874VKH9kfjjirM6UhU2/E5fFYadylyhFldcqSidQ==",
+      "license": "MIT",
+      "engines": {
+        "node": ">=18"
+      },
+      "funding": {
+        "type": "opencollective",
+        "url": "https://opencollective.com/express"
+      }
     },
     "node_modules/cross-spawn": {
       "version": "7.0.6",
@@ -29912,6 +30377,15 @@ export default nextConfig;
       "license": "MIT",
       "dependencies": {
         "hermes-estree": "0.25.1"
+      }
+    },
+    "node_modules/iceberg-js": {
+      "version": "0.8.1",
+      "resolved": "https://registry.npmjs.org/iceberg-js/-/iceberg-js-0.8.1.tgz",
+      "integrity": "sha512-1dhVQZXhcHje7798IVM+xoo/1ZdVfzOMIc8/rgVSijRK38EDqOJoGula9N/8ZI5RD8QTxNQtK/Gozpr+qUqRRA==",
+      "license": "MIT",
+      "engines": {
+        "node": ">=20.0.0"
       }
     },
     "node_modules/ignore": {
@@ -32406,7 +32880,6 @@ export default nextConfig;
       "version": "6.21.0",
       "resolved": "https://registry.npmjs.org/undici-types/-/undici-types-6.21.0.tgz",
       "integrity": "sha512-iwDZqg0QAGrg9Rav5H4n0M64c3mkR59cJ6wQp+7C4nI0gsmExaedaYLNO44eT4AtBBwjbTiGPMlt2Md0T9H9JQ==",
-      "dev": true,
       "license": "MIT"
     },
     "node_modules/unrs-resolver": {
@@ -32600,6 +33073,27 @@ export default nextConfig;
         "node": ">=0.10.0"
       }
     },
+    "node_modules/ws": {
+      "version": "8.19.0",
+      "resolved": "https://registry.npmjs.org/ws/-/ws-8.19.0.tgz",
+      "integrity": "sha512-blAT2mjOEIi0ZzruJfIhb3nps74PRWTCz1IjglWEEpQl5XS/UNama6u2/rjFkDDouqr4L67ry+1aGIALViWjDg==",
+      "license": "MIT",
+      "engines": {
+        "node": ">=10.0.0"
+      },
+      "peerDependencies": {
+        "bufferutil": "^4.0.1",
+        "utf-8-validate": ">=5.0.2"
+      },
+      "peerDependenciesMeta": {
+        "bufferutil": {
+          "optional": true
+        },
+        "utf-8-validate": {
+          "optional": true
+        }
+      }
+    },
     "node_modules/yallist": {
       "version": "3.1.1",
       "resolved": "https://registry.npmjs.org/yallist/-/yallist-3.1.1.tgz",
@@ -32666,6 +33160,8 @@ export default nextConfig;
     "@fortawesome/free-regular-svg-icons": "^7.2.0",
     "@fortawesome/free-solid-svg-icons": "^7.1.0",
     "@fortawesome/react-fontawesome": "^3.1.1",
+    "@supabase/ssr": "^0.8.0",
+    "@supabase/supabase-js": "^2.95.3",
     "canvas-confetti": "^1.9.4",
     "next": "^16.0.8",
     "next-auth": "^5.0.0-beta.30",
@@ -32691,15 +33187,18 @@ export default nextConfig;
 
 ### proxy.ts
 ```tsx
-// middleware.ts
-import type { NextRequest } from 'next/server';
-import { NextResponse } from 'next/server';
+// proxy.ts (project root) or middleware.ts
+import type { NextRequest } from "next/server";
+import { NextResponse } from "next/server";
+import { createServerClient } from "@supabase/ssr";
 
-import { isBypassPath } from './lib/middleware/paths';
-import { applyOnboardingGate } from './lib/middleware/onboarding';
-import { applyAuthGate } from './lib/middleware/auth';
+import { isBypassPath } from "./lib/middleware/paths";
+import { applyOnboardingGate } from "./lib/middleware/onboarding";
 
-export function proxy(req: NextRequest) {
+// TEMP: disable your old NextAuth/local auth gate until we migrate it to Supabase.
+// import { applyAuthGate } from "./lib/middleware/auth";
+
+export async function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
   if (isBypassPath(pathname)) return NextResponse.next();
@@ -32707,16 +33206,42 @@ export function proxy(req: NextRequest) {
   const onboardingRes = applyOnboardingGate(req);
   if (onboardingRes) return onboardingRes;
 
-  const authRes = applyAuthGate(req);
-  if (authRes) return authRes;
+  // Let the request continue
+  const res = NextResponse.next({ request: req });
 
-  return NextResponse.next();
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+  // If env is missing, don't crash the whole app
+  if (!url || !anonKey) return res;
+
+  const supabase = createServerClient(url, anonKey, {
+    cookies: {
+      getAll() {
+        return req.cookies.getAll();
+      },
+      setAll(cookiesToSet) {
+  cookiesToSet.forEach(({ name, value, options }) => {
+    // keep request cookies in sync for the rest of this request lifecycle
+    req.cookies.set(name, value);
+    // write cookies to the outgoing response
+    res.cookies.set(name, value, options);
+  });
+},
+
+    },
+  });
+
+  // Refresh session if needed (sets/updates cookies via setAll)
+  await supabase.auth.getUser();
+
+  return res;
 }
 
 export const config = {
-  // Run for all pages except Next internals, static assets, and API routes
-  matcher: ['/((?!_next/static|_next/image|favicon.ico|images|api).*)'],
+  matcher: ["/((?!_next/static|_next/image|favicon.ico|images).*)"],
 };
+
 
 ```
 

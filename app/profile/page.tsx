@@ -12,11 +12,13 @@ import { useUserProfile } from '@/components/UserProfile';
 import { useRouter, usePathname, useSearchParams  } from 'next/navigation';
 import { useAuthStatus } from '@/components/useAuthStatus';
 import BackButton from '@/components/BackButton';
-import { signOut } from 'next-auth/react';
 import CSRBoundary from '@/components/CSRBoundary';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGoogle, faApple, faWeixin} from '@fortawesome/free-brands-svg-icons';
 import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
+import { useMemo } from "react"; // you already import useMemo in other files, here add if missing
+import { createClient } from "@/lib/supabase/client";
+
 
 function Inner() {
   const { avatarUrl, setAvatarUrl, name, setName, email, setEmail, saveProfile, clearProfile } = useUserProfile(); // from context
@@ -32,6 +34,8 @@ function Inner() {
   const [saveMsg, setSaveMsg] = useState<string | null>(null);
 
   const canManageCredentials = authed && (method === "email");
+
+  const supabase = useMemo(() => createClient(), []);
 
 const signInDisplay = (() => {
   // 1) guest
@@ -141,13 +145,7 @@ const handleLogout = async () => {
   setLoggingOut(true);
 
   try {
-    await fetch("/api/logout", { method: "POST", credentials: "include" });
-
-    try {
-      await signOut({ redirect: false });
-    } catch {
-      // ignore — still proceed
-    }
+    await supabase.auth.signOut();
 
     if (typeof window !== "undefined") {
       window.localStorage.removeItem("expatise-user-profile");
@@ -164,6 +162,7 @@ const handleLogout = async () => {
     setLoggingOut(false);
   }
 };
+
 
 
 

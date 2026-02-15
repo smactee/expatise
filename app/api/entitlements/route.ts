@@ -1,17 +1,17 @@
 // app/api/entitlements/route.ts
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
-import { AUTH_COOKIE, normalizeEmail } from "@/lib/auth";
-import { auth } from "@/app/auth";
-import { userKeyFromEmail } from "@/lib/identity/userKey";
+import { createServerClient } from "@supabase/ssr";
 
+import { normalizeEmail } from "@/lib/auth";
+import { userKeyFromEmail } from "@/lib/identity/userKey";
 import { FREE_ENTITLEMENTS } from "@/lib/entitlements/types";
-import { getLocalEntitlements } from "@/lib/entitlements/localStore";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-const ADMIN_PREMIUM_EMAILS = ((process.env.ADMIN_PREMIUM_EMAILS || "user@expatise.com").trim())
+const ADMIN_PREMIUM_EMAILS = (process.env.ADMIN_PREMIUM_EMAILS || "user@expatise.com")
+  .trim()
   .split(",")
   .map((s) => normalizeEmail(s))
   .filter(Boolean);
@@ -20,39 +20,59 @@ function isAdminEmail(email: string) {
   return ADMIN_PREMIUM_EMAILS.includes(normalizeEmail(email));
 }
 
+function makeUserKey(user: any | null) {
+  if (!user) return "guest";
+  if (user.is_anonymous) return `anon:${user.id}`;
+
+  const email = user.email ?? "";
+  if (email) return userKeyFromEmail(email);
+
+  // provider without email
+  return `sb:${user.id}`;
+}
+
 export async function GET() {
   const cookieStore = await Promise.resolve(cookies());
 
-  // local cookie first (may be token, not an email)
-  const localCookie = cookieStore.get(AUTH_COOKIE)?.value ?? "";
-  let email = normalizeEmail(localCookie);
 
-  // ✅ Always try NextAuth session too (more reliable than your custom cookie)
-  const session = await auth().catch(() => null);
-  const sessionEmail = normalizeEmail(session?.user?.email ?? "");
-  if (sessionEmail) email = sessionEmail;
+  // collect any cookies Supabase wants to set, then apply them to the final JSON response
+  const pending: Array<{ name: string; value: string; options: any }> = [];
 
-  // derive userKey (in your current app this is effectively the email)
-  const userKey = userKeyFromEmail(email);
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+  const supabaseKey =
+    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ||
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 
-  // ✅ Hackathon admin: allowlist by email OR by derived userKey
-  if (isAdminEmail(email) || isAdminEmail(userKey)) {
-    const entitlements = {
-      isPremium: true,
-      source: "admin" as const,
-      updatedAt: Date.now(),
-    };
+  const supabase = createServerClient(supabaseUrl, supabaseKey, {
+    cookies: {
+      getAll() {
+        return cookieStore.getAll();
+      },
+      setAll(cookiesToSet) {
+        pending.push(...cookiesToSet);
+      },
+    },
+  });
 
-    // ✅ ADD THIS (admin response)
-    const res = NextResponse.json({ ok: true, userKey, entitlements });
-    res.headers.set("Cache-Control", "no-store");
-    return res;
+  const { data, error } = await supabase.auth.getUser();
+  const user = error ? null : data.user;
+
+  const userKey = makeUserKey(user);
+
+  // default: free
+  let entitlements = FREE_ENTITLEMENTS;
+
+  // admin override (email only)
+  const email = normalizeEmail(user?.email ?? "");
+  if (email && isAdminEmail(email)) {
+    entitlements = { isPremium: true, source: "admin" as const, updatedAt: Date.now() };
   }
 
-  const entitlements = getLocalEntitlements(userKey) ?? FREE_ENTITLEMENTS;
-
-  // ✅ ADD THIS (normal response)
   const res = NextResponse.json({ ok: true, userKey, entitlements });
   res.headers.set("Cache-Control", "no-store");
+
+  // apply any refreshed auth cookies (safe)
+  for (const c of pending) res.cookies.set(c.name, c.value, c.options);
+
   return res;
 }

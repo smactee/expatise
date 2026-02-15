@@ -1,7 +1,7 @@
 // components/FreeUsageProgressBadge.client.tsx
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useCallback } from "react";
 import { useUserKey } from "@/components/useUserKey.client";
 import {
   FREE_CAPS,
@@ -11,34 +11,39 @@ import {
 import { useEntitlements } from "@/components/EntitlementsProvider.client";
 import { usePathname } from "next/navigation";
 
-const HIDE_BADGE_EXACT = new Set(["/"]); // onboarding/landing
+const HIDE_BADGE_EXACT = new Set(["/"]);
 const HIDE_BADGE_PREFIXES = ["/login", "/onboarding", "/forgot-password"];
-
 
 export default function FreeUsageProgressBadge() {
   const pathname = usePathname() || "/";
 
-const hide =
-  HIDE_BADGE_EXACT.has(pathname) ||
-  HIDE_BADGE_PREFIXES.some((p) => pathname.startsWith(p));
+  const hide =
+    HIDE_BADGE_EXACT.has(pathname) ||
+    HIDE_BADGE_PREFIXES.some((p) => pathname.startsWith(p));
 
-if (hide) return null;
+  if (hide) return null;
 
-  
+  // ✅ render a child component instead of conditionally calling hooks
+  return <FreeUsageProgressBadgeInner />;
+}
+
+function FreeUsageProgressBadgeInner() {
   const { isPremium } = useEntitlements();
-  if (isPremium) return null;
   const userKey = useUserKey();
 
   const [shown, setShown] = useState(0);
   const [starts, setStarts] = useState(0);
 
-  const refresh = () => {
+  const refresh = useCallback(() => {
     const s = getUsageCapState(userKey);
     setShown(s.shown);
     setStarts(s.examStarts);
-  };
+  }, [userKey]);
 
   useEffect(() => {
+    // optional: if premium, don’t even attach listeners
+    if (isPremium) return;
+
     refresh();
 
     const evt = usageCapEventName();
@@ -51,8 +56,9 @@ if (hide) return null;
       window.removeEventListener(evt, onChange);
       window.removeEventListener("expatise:session-changed", onChange);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userKey]);
+  }, [refresh, isPremium]);
+
+  if (isPremium) return null;
 
   const text = useMemo(() => {
     return `${shown}/${FREE_CAPS.questionsShown} Questions · ${starts}/${FREE_CAPS.examStarts} Exams`;

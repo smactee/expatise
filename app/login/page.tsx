@@ -4,16 +4,15 @@
 
 import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useRef } from 'react';
 import styles from './login.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import CreateAccountModal from './CreateAccountModal';
 import { faGoogle, faApple, faWeixin } from '@fortawesome/free-brands-svg-icons';
-import {signIn, getProviders} from "next-auth/react";
 import { isValidEmail, normalizeEmail, safeNextPath } from '@/lib/auth';
 import CSRBoundary from '@/components/CSRBoundary';
-
+import { createClient } from '@/lib/supabase/client';
 
 
 function Inner() {
@@ -32,8 +31,7 @@ function Inner() {
   const [isSubmitting, setIsSubmitting] = useState(false);// Loading state
   const [emailTouched, setEmailTouched] = useState(false);
 
-
-  const [providers, setProviders] = useState<Record<string, any> | null>(null);
+const supabase = useMemo(() => createClient(), []);
 
   const emailNorm = normalizeEmail(email);
   const emailOK = isValidEmail(emailNorm);
@@ -42,15 +40,15 @@ function Inner() {
   return emailOK && password.trim().length > 0 && !isSubmitting;
 }, [emailOK, password, isSubmitting]);
 
+const toastTimerRef = useRef<number | null>(null);
 
+const showToast = (msg: string) => {
+  setError(msg);
+  if (toastTimerRef.current) window.clearTimeout(toastTimerRef.current);
+  toastTimerRef.current = window.setTimeout(() => setError(null), 500);
+};
+const comingSoon = (provider: string) => showToast(`${provider} sign-in is coming soon.`);
 
-useEffect(() => {
-  let mounted = true;
-  getProviders()
-    .then((p) => { if (mounted) setProviders(p); })
-    .catch(() => { if (mounted) setProviders(null); });
-  return () => { mounted = false; };
-}, []);
 
 
   useEffect (() => {
@@ -177,7 +175,14 @@ router.replace(nextParam);
             )}
 
             {/* ✅ (4) Friendly error state */}
-            {error && <div className={styles.errorBox}>{error}</div>}
+            <div
+  className={`${styles.toast} ${error ? styles.toastShow : ""}`}
+  role="alert"
+  aria-live="polite"
+>
+  {error}
+</div>
+
 
             {/* ✅ (3) Forgot password link */}
             <div className={styles.forgotRow}>
@@ -207,9 +212,23 @@ router.replace(nextParam);
               Create a new account
               </button>
 
-            <button type="button" className={styles.linkBtn} onClick={() => router.push('/')}>
-              Continue as guest
-            </button>
+            <button
+  type="button"
+  className={styles.linkBtn}
+  onClick={async () => {
+    setError(null);
+    const { error } = await supabase.auth.signInAnonymously();
+    if (error) {
+      setError(error.message);
+      return;
+    }
+    window.dispatchEvent(new Event("expatise:session-changed"));
+    router.replace(nextParam);
+  }}
+>
+  Continue as guest
+</button>
+
           </div>
           <CreateAccountModal
             open={isCreateOpen}
@@ -224,34 +243,52 @@ router.replace(nextParam);
   </div>
 
   <div className={styles.snsRowSmall}>
-    {providers?.google && (
-    <button type="button" 
-    className={styles.snsBtnSmall} 
-    aria-label="Continue with Google"
-    onClick={() => signIn("google", { callbackUrl: nextParam })}>
-    <FontAwesomeIcon icon={faGoogle} />
-    </button>
-    )}
 
-    {providers?.apple && (
-    <button 
-    type="button" 
-    className={styles.snsBtnSmall} 
-    aria-label="Continue with Apple"
-    onClick={() => signIn("apple", { callbackUrl: nextParam })}>
-    <FontAwesomeIcon icon={faApple} />
-    </button>
-    )}
 
-    {providers?.wechat && (
-    <button 
-    type="button" 
-    className={styles.snsBtnSmall} 
-    aria-label="Continue with WeChat"
-    onClick={() => signIn("wechat", { callbackUrl: nextParam })}>
-    <FontAwesomeIcon icon={faWeixin} />
-    </button>
-    )}
+
+    <button
+  type="button"
+  className={styles.snsBtnSmall}
+  aria-label="Continue with Google"
+  onClick={async () => {
+    setError(null);
+    const redirectTo = `${window.location.origin}/auth/callback?next=${encodeURIComponent(nextParam)}`;
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: { redirectTo },
+    });
+    if (error) setError(error.message);
+  }}
+>
+  <FontAwesomeIcon icon={faGoogle} />
+</button>
+
+
+
+<button
+  type="button"
+  className={`${styles.snsBtnSmall} ${styles.snsBtnSoon}`}
+  aria-label="Continue with Apple"
+  aria-disabled="true"
+  onClick={() => comingSoon("Apple")}
+  title="Coming soon"
+>
+  <FontAwesomeIcon icon={faApple} />
+</button>
+
+
+
+<button
+  type="button"
+  className={`${styles.snsBtnSmall} ${styles.snsBtnSoon}`}
+  aria-label="Continue with WeChat"
+  aria-disabled="true"
+  onClick={() => comingSoon("WeChat")}
+  title="Coming soon"
+>
+  <FontAwesomeIcon icon={faWeixin} />
+</button>
+
   </div>
 </div>
 

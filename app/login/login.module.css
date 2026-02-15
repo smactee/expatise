@@ -282,3 +282,42 @@
 }
 
 /* No Dark mode*/
+.snsBtnSoon {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 18px;
+  transform: translateX(-50%) translateY(10px);
+  z-index: 9999;
+
+  max-width: min(92vw, 420px);
+  padding: 12px 14px;
+  border-radius: 12px;
+
+  background: rgba(17, 24, 39, 0.92);
+  color: white;
+  font-size: 14px;
+  line-height: 1.35;
+
+  opacity: 0;
+  pointer-events: none;
+
+  transition: opacity 220ms ease, transform 220ms ease;
+}
+
+.toastShow {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* Optional: respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .toast,
+  .toastShow {
+    transition: none;
+  }
+}

@@ -1,12 +1,15 @@
-// middleware.ts
-import type { NextRequest } from 'next/server';
-import { NextResponse } from 'next/server';
+// proxy.ts (project root) or middleware.ts
+import type { NextRequest } from "next/server";
+import { NextResponse } from "next/server";
+import { createServerClient } from "@supabase/ssr";
 
-import { isBypassPath } from './lib/middleware/paths';
-import { applyOnboardingGate } from './lib/middleware/onboarding';
-import { applyAuthGate } from './lib/middleware/auth';
+import { isBypassPath } from "./lib/middleware/paths";
+import { applyOnboardingGate } from "./lib/middleware/onboarding";
 
-export function proxy(req: NextRequest) {
+// TEMP: disable your old NextAuth/local auth gate until we migrate it to Supabase.
+// import { applyAuthGate } from "./lib/middleware/auth";
+
+export async function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
   if (isBypassPath(pathname)) return NextResponse.next();
@@ -14,13 +17,39 @@ export function proxy(req: NextRequest) {
   const onboardingRes = applyOnboardingGate(req);
   if (onboardingRes) return onboardingRes;
 
-  const authRes = applyAuthGate(req);
-  if (authRes) return authRes;
+  // Let the request continue
+  const res = NextResponse.next({ request: req });
 
-  return NextResponse.next();
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+  // If env is missing, don't crash the whole app
+  if (!url || !anonKey) return res;
+
+  const supabase = createServerClient(url, anonKey, {
+    cookies: {
+      getAll() {
+        return req.cookies.getAll();
+      },
+      setAll(cookiesToSet) {
+  cookiesToSet.forEach(({ name, value, options }) => {
+    // keep request cookies in sync for the rest of this request lifecycle
+    req.cookies.set(name, value);
+    // write cookies to the outgoing response
+    res.cookies.set(name, value, options);
+  });
+},
+
+    },
+  });
+
+  // Refresh session if needed (sets/updates cookies via setAll)
+  await supabase.auth.getUser();
+
+  return res;
 }
 
 export const config = {
-  // Run for all pages except Next internals, static assets, and API routes
-  matcher: ['/((?!_next/static|_next/image|favicon.ico|images|api).*)'],
+  matcher: ["/((?!_next/static|_next/image|favicon.ico|images).*)"],
 };
+

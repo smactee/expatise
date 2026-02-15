@@ -1,3 +1,5 @@
+//components/EntitlementsDebugBadge.client.tsx
+
 "use client";
 
 import { useEntitlements } from "@/components/EntitlementsProvider.client";

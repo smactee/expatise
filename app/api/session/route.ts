@@ -1,14 +1,26 @@
 // app/api/session/route.ts
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
+import { createServerClient } from "@supabase/ssr";
 import { AUTH_COOKIE } from "@/lib/auth";
-import { auth } from "@/app/auth";
+
+function detectProvider(user: any): string | null {
+  if (!user) return null;
+  if (user.is_anonymous) return "anonymous";
+
+  const am = user.app_metadata ?? {};
+  if (typeof am.provider === "string" && am.provider) return am.provider;
+  if (Array.isArray(am.providers) && am.providers.length) return am.providers[0];
+
+  const ident = user.identities?.[0]?.provider;
+  return ident ?? null;
+}
 
 export async function GET() {
-  // ✅ handles both sync/async cookies() typing across Next versions
+  // ✅ async-safe across Next versions
   const cookieStore = await Promise.resolve(cookies());
 
-  // Local/email login (custom cookie)
+  // 1) Your legacy local/email login cookie (optional to keep for now)
   const localEmail = cookieStore.get(AUTH_COOKIE)?.value ?? null;
   if (localEmail) {
     return NextResponse.json({
@@ -20,23 +32,52 @@ export async function GET() {
     });
   }
 
-  // NextAuth social login
-  const session = await auth();
-  if (session?.user) {
-    return NextResponse.json({
-      ok: true,
-      authed: true,
-      method: "social",
-      email: session.user.email ?? null,
-      provider: (session as any).provider ?? null,
+  // 2) Supabase session
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+  const key =
+    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ||
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+
+  const pending: Array<{ name: string; value: string; options: any }> = [];
+
+  const supabase = createServerClient(url, key, {
+    cookies: {
+      getAll() {
+        return cookieStore.getAll();
+      },
+      setAll(cookiesToSet) {
+        pending.push(...cookiesToSet);
+      },
+    },
+  });
+
+  const { data, error } = await supabase.auth.getUser();
+  const user = error ? null : data.user;
+
+  // anonymous/no-user => guest (matches your gating semantics)
+  if (!user || detectProvider(user) === "anonymous") {
+    const res = NextResponse.json({
+      ok: false,
+      authed: false,
+      method: "guest",
+      email: null,
+      provider: user ? "anonymous" : null,
     });
+    pending.forEach(({ name, value, options }) => res.cookies.set(name, value, options));
+    return res;
   }
 
-  return NextResponse.json({
-    ok: false,
-    authed: false,
-    method: "guest",
-    email: null,
-    provider: null,
+  const provider = detectProvider(user);
+  const isEmail = provider === "email" || (!!user.email && !provider);
+
+  const res = NextResponse.json({
+    ok: true,
+    authed: true,
+    method: isEmail ? "email" : "social",
+    email: user.email ?? null,
+    provider: isEmail ? "email" : provider,
   });
+
+  pending.forEach(({ name, value, options }) => res.cookies.set(name, value, options));
+  return res;
 }
