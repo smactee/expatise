@@ -182,11 +182,25 @@ export function closeAttemptById(
     remainingSec: typeof patch?.remainingSec === "number" ? patch.remainingSec : a.remainingSec,
   };
 
-  writeAttempt(closed);
-  clearActiveAttemptPointer({ userKey: closed.userKey, modeKey: closed.modeKey, datasetId: closed.datasetId, datasetVersion: closed.datasetVersion });
+    writeAttempt(closed);
+
+  // ✅ fire-and-forget remote sync (won't crash if route/table isn't ready yet)
+  void import("@/lib/sync/saveAttemptToSupabase")
+    .then((m) => m.saveAttemptToSupabase(closed))
+    .catch(() => {});
+
+  clearActiveAttemptPointer({
+    userKey: closed.userKey,
+    modeKey: closed.modeKey,
+    datasetId: closed.datasetId,
+    datasetVersion: closed.datasetVersion,
+  });
 
   return closed;
+
 }
+
+
 
 
 export function readActiveAttemptId(params: { userKey: string; modeKey: string; datasetId: string; datasetVersion: string }) {

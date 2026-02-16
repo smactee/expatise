@@ -34,6 +34,7 @@ import TopicMasteryChart from '@/components/stats/TopicMasteryChart.client';
 
 import { resetAllLocalData } from '@/lib/stats/resetLocalData';
 
+import { timeKey } from "@/lib/stats/timeKeys"
 
 const datasetId: DatasetId = 'cn-2023-test1';
 
@@ -157,11 +158,52 @@ function tfLabel(t: Timeframe) {
     };
   }, [datasetId]);
 
-  // Load submitted attempts from localStorage whenever userKey changes
+   // Load attempts: local first (instant) + remote (cross-device) then merge
   useEffect(() => {
-    const submitted = listSubmittedAttempts({ userKey, datasetId });
-    setAttempts(submitted);
+    let alive = true;
+
+    (async () => {
+      // 1) Local (fast, works offline)
+      const local = listSubmittedAttempts({ userKey, datasetId });
+      if (!alive) return;
+      setAttempts(local);
+
+      // 2) Remote (cross-device). If user isn't logged in, this will just fail quietly.
+      try {
+        const r = await fetch(
+          `/api/attempts?datasetId=${encodeURIComponent(datasetId)}`,
+          { cache: "no-store", credentials: "include" }
+        );
+        if (!r.ok) return;
+
+        const j = await r.json().catch(() => null);
+
+        // Expecting GET route to return { ok: true, attempts: TestAttemptV1[] }
+        const remote: TestAttemptV1[] = Array.isArray(j?.attempts) ? j.attempts : [];
+
+        // Merge by attemptId (remote wins if duplicate)
+        const byId = new Map<string, TestAttemptV1>();
+        for (const a of local) byId.set(a.attemptId, a);
+        for (const a of remote) byId.set(a.attemptId, a);
+
+        const merged = Array.from(byId.values()).sort(
+          (a, b) =>
+            (b.submittedAt ?? b.lastActiveAt ?? b.createdAt ?? 0) -
+            (a.submittedAt ?? a.lastActiveAt ?? a.createdAt ?? 0)
+        );
+
+        if (!alive) return;
+        setAttempts(merged);
+      } catch {
+        // ignore
+      }
+    })();
+
+    return () => {
+      alive = false;
+    };
   }, [userKey, datasetId]);
+
 
   // Compute stats (default: last 30 days for now; we’ll add filters later)
   const statsReadiness = useMemo(() => {
@@ -304,6 +346,42 @@ useEffect(() => {
     // ignore
   }
 }, [LS_REPORT, LS_COOLDOWN_UNTIL]);
+
+useEffect(() => {
+  let alive = true;
+
+  (async () => {
+    try {
+      const r = await fetch("/api/time-logs?limit=200", { cache: "no-store" as any });
+      const j = await r.json().catch(() => null);
+      if (!alive || !r.ok || !j?.ok) return;
+
+      for (const it of (j.logs ?? [])) {
+        const kind = it?.kind;
+        const date = String(it?.date ?? "");
+        const seconds = Number(it?.seconds ?? 0);
+
+        if ((kind !== "test" && kind !== "study") || !/^\d{4}-\d{2}-\d{2}$/.test(date)) continue;
+        if (!Number.isFinite(seconds) || seconds < 0) continue;
+
+        const k = timeKey(kind, date);
+        const prev = Number(localStorage.getItem(k) ?? "0");
+        const next = Math.max(Number.isFinite(prev) ? prev : 0, Math.floor(seconds));
+        localStorage.setItem(k, String(next));
+      }
+
+      // force re-render so your useMemo computeStats re-runs
+      setAttempts((prev) => prev.slice());
+    } catch {
+      // ignore
+    }
+  })();
+
+  return () => {
+    alive = false;
+  };
+}, [userKey]);
+
 
 const scorePointsSorted = useMemo(() => {
   const arr = [...(coachSkill.scoreSeries ?? [])];

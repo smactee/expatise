@@ -4773,6 +4773,7 @@ import TopicMasteryChart from '@/components/stats/TopicMasteryChart.client';
 
 import { resetAllLocalData } from '@/lib/stats/resetLocalData';
 
+import { timeKey } from "@/lib/stats/timeKeys"
 
 const datasetId: DatasetId = 'cn-2023-test1';
 
@@ -4896,11 +4897,52 @@ function tfLabel(t: Timeframe) {
     };
   }, [datasetId]);
 
-  // Load submitted attempts from localStorage whenever userKey changes
+   // Load attempts: local first (instant) + remote (cross-device) then merge
   useEffect(() => {
-    const submitted = listSubmittedAttempts({ userKey, datasetId });
-    setAttempts(submitted);
+    let alive = true;
+
+    (async () => {
+      // 1) Local (fast, works offline)
+      const local = listSubmittedAttempts({ userKey, datasetId });
+      if (!alive) return;
+      setAttempts(local);
+
+      // 2) Remote (cross-device). If user isn't logged in, this will just fail quietly.
+      try {
+        const r = await fetch(
+          `/api/attempts?datasetId=${encodeURIComponent(datasetId)}`,
+          { cache: "no-store", credentials: "include" }
+        );
+        if (!r.ok) return;
+
+        const j = await r.json().catch(() => null);
+
+        // Expecting GET route to return { ok: true, attempts: TestAttemptV1[] }
+        const remote: TestAttemptV1[] = Array.isArray(j?.attempts) ? j.attempts : [];
+
+        // Merge by attemptId (remote wins if duplicate)
+        const byId = new Map<string, TestAttemptV1>();
+        for (const a of local) byId.set(a.attemptId, a);
+        for (const a of remote) byId.set(a.attemptId, a);
+
+        const merged = Array.from(byId.values()).sort(
+          (a, b) =>
+            (b.submittedAt ?? b.lastActiveAt ?? b.createdAt ?? 0) -
+            (a.submittedAt ?? a.lastActiveAt ?? a.createdAt ?? 0)
+        );
+
+        if (!alive) return;
+        setAttempts(merged);
+      } catch {
+        // ignore
+      }
+    })();
+
+    return () => {
+      alive = false;
+    };
   }, [userKey, datasetId]);
+
 
   // Compute stats (default: last 30 days for now; we’ll add filters later)
   const statsReadiness = useMemo(() => {
@@ -5043,6 +5085,42 @@ useEffect(() => {
     // ignore
   }
 }, [LS_REPORT, LS_COOLDOWN_UNTIL]);
+
+useEffect(() => {
+  let alive = true;
+
+  (async () => {
+    try {
+      const r = await fetch("/api/time-logs?limit=200", { cache: "no-store" as any });
+      const j = await r.json().catch(() => null);
+      if (!alive || !r.ok || !j?.ok) return;
+
+      for (const it of (j.logs ?? [])) {
+        const kind = it?.kind;
+        const date = String(it?.date ?? "");
+        const seconds = Number(it?.seconds ?? 0);
+
+        if ((kind !== "test" && kind !== "study") || !/^\d{4}-\d{2}-\d{2}$/.test(date)) continue;
+        if (!Number.isFinite(seconds) || seconds < 0) continue;
+
+        const k = timeKey(kind, date);
+        const prev = Number(localStorage.getItem(k) ?? "0");
+        const next = Math.max(Number.isFinite(prev) ? prev : 0, Math.floor(seconds));
+        localStorage.setItem(k, String(next));
+      }
+
+      // force re-render so your useMemo computeStats re-runs
+      setAttempts((prev) => prev.slice());
+    } catch {
+      // ignore
+    }
+  })();
+
+  return () => {
+    alive = false;
+  };
+}, [userKey]);
+
 
 const scorePointsSorted = useMemo(() => {
   const arr = [...(coachSkill.scoreSeries ?? [])];
@@ -6778,6 +6856,145 @@ export async function POST(req: Request) {
 
 ```
 
+### app/api/attempts/route.ts
+```tsx
+// app/api/attempts/route.ts
+import type { NextRequest } from "next/server";
+import { NextResponse } from "next/server";
+import { createServerClient } from "@supabase/ssr";
+
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
+
+function makeSupabase(req: NextRequest, pending: Array<{ name: string; value: string; options: any }>) {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+  const supabaseKey =
+    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ||
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+
+  return createServerClient(supabaseUrl, supabaseKey, {
+    cookies: {
+      getAll() {
+        return req.cookies.getAll();
+      },
+      setAll(cookiesToSet) {
+        pending.push(...cookiesToSet);
+      },
+    },
+  });
+}
+
+export async function GET(req: NextRequest) {
+  const pending: Array<{ name: string; value: string; options: any }> = [];
+  const supabase = makeSupabase(req, pending);
+
+  const { data: userData, error: userErr } = await supabase.auth.getUser();
+  const user = userErr ? null : userData.user;
+
+  if (!user) {
+    const res = NextResponse.json({ ok: false, error: "No user session" }, { status: 401 });
+    for (const c of pending) res.cookies.set(c.name, c.value, c.options);
+    res.headers.set("Cache-Control", "no-store");
+    return res;
+  }
+
+  const { searchParams } = new URL(req.url);
+  const datasetId = (searchParams.get("datasetId") ?? "").trim();
+  const status = (searchParams.get("status") ?? "submitted").trim(); // default submitted
+  const limit = Math.min(500, Math.max(1, Number(searchParams.get("limit") ?? "200")));
+
+  let q = supabase
+    .from("attempts")
+    .select("payload, submitted_at_ms, last_active_at_ms, created_at_ms, attempt_id")
+    .eq("user_id", user.id)
+    .eq("status", status)
+    .order("submitted_at_ms", { ascending: false })
+    .limit(limit);
+
+  if (datasetId) q = q.eq("dataset_id", datasetId);
+
+  const { data, error } = await q;
+
+  if (error) {
+    const res = NextResponse.json({ ok: false, step: "select", error: error.message }, { status: 400 });
+    for (const c of pending) res.cookies.set(c.name, c.value, c.options);
+    res.headers.set("Cache-Control", "no-store");
+    return res;
+  }
+
+  const attempts = (data ?? [])
+    .map((r: any) => r.payload)
+    .filter(Boolean);
+
+  const res = NextResponse.json({ ok: true, attempts });
+  for (const c of pending) res.cookies.set(c.name, c.value, c.options);
+  res.headers.set("Cache-Control", "no-store");
+  return res;
+}
+
+export async function POST(req: NextRequest) {
+  const pending: Array<{ name: string; value: string; options: any }> = [];
+  const supabase = makeSupabase(req, pending);
+
+  const { data: userData, error: userErr } = await supabase.auth.getUser();
+  const user = userErr ? null : userData.user;
+
+  if (!user) {
+    const res = NextResponse.json({ ok: false, error: "No user session" }, { status: 401 });
+    for (const c of pending) res.cookies.set(c.name, c.value, c.options);
+    res.headers.set("Cache-Control", "no-store");
+    return res;
+  }
+
+  const body = (await req.json().catch(() => null)) as any;
+  const attempt = body?.attempt;
+
+  if (!attempt?.attemptId || !attempt?.modeKey || !attempt?.status) {
+    const res = NextResponse.json({ ok: false, error: "Missing required attempt fields" }, { status: 400 });
+    for (const c of pending) res.cookies.set(c.name, c.value, c.options);
+    res.headers.set("Cache-Control", "no-store");
+    return res;
+  }
+
+  const row = {
+    user_id: user.id,
+
+    attempt_id: attempt.attemptId,
+    user_key: attempt.userKey ?? "guest",
+    schema_version: attempt.schemaVersion ?? 1,
+
+    mode_key: attempt.modeKey,
+    dataset_id: attempt.datasetId ?? null,
+    dataset_version: attempt.datasetVersion ?? null,
+
+    status: attempt.status,
+
+    created_at_ms: attempt.createdAt ?? null,
+    last_active_at_ms: attempt.lastActiveAt ?? null,
+    submitted_at_ms: attempt.submittedAt ?? null,
+
+    payload: attempt,
+  };
+
+  const { error: upsertErr } = await supabase
+    .from("attempts")
+    .upsert(row, { onConflict: "user_id,attempt_id" });
+
+  if (upsertErr) {
+    const res = NextResponse.json({ ok: false, step: "upsert", error: upsertErr.message }, { status: 400 });
+    for (const c of pending) res.cookies.set(c.name, c.value, c.options);
+    res.headers.set("Cache-Control", "no-store");
+    return res;
+  }
+
+  const res = NextResponse.json({ ok: true });
+  for (const c of pending) res.cookies.set(c.name, c.value, c.options);
+  res.headers.set("Cache-Control", "no-store");
+  return res;
+}
+
+```
+
 ### app/api/auth/[...nextauth]/route.ts
 ```tsx
 import { handlers } from "../../../auth";
@@ -7162,17 +7379,17 @@ if (!report) {
 // app/api/entitlements/route.ts
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
-import { AUTH_COOKIE, normalizeEmail } from "@/lib/auth";
-import { auth } from "@/app/auth";
-import { userKeyFromEmail } from "@/lib/identity/userKey";
+import { createServerClient } from "@supabase/ssr";
 
+import { normalizeEmail } from "@/lib/auth";
+import { userKeyFromEmail } from "@/lib/identity/userKey";
 import { FREE_ENTITLEMENTS } from "@/lib/entitlements/types";
-import { getLocalEntitlements } from "@/lib/entitlements/localStore";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-const ADMIN_PREMIUM_EMAILS = ((process.env.ADMIN_PREMIUM_EMAILS || "user@expatise.com").trim())
+const ADMIN_PREMIUM_EMAILS = (process.env.ADMIN_PREMIUM_EMAILS || "user@expatise.com")
+  .trim()
   .split(",")
   .map((s) => normalizeEmail(s))
   .filter(Boolean);
@@ -7181,40 +7398,60 @@ function isAdminEmail(email: string) {
   return ADMIN_PREMIUM_EMAILS.includes(normalizeEmail(email));
 }
 
+function makeUserKey(user: any | null) {
+  if (!user) return "guest";
+  if (user.is_anonymous) return `anon:${user.id}`;
+
+  const email = user.email ?? "";
+  if (email) return userKeyFromEmail(email);
+
+  // provider without email
+  return `sb:${user.id}`;
+}
+
 export async function GET() {
   const cookieStore = await Promise.resolve(cookies());
 
-  // local cookie first (may be token, not an email)
-  const localCookie = cookieStore.get(AUTH_COOKIE)?.value ?? "";
-  let email = normalizeEmail(localCookie);
 
-  // ✅ Always try NextAuth session too (more reliable than your custom cookie)
-  const session = await auth().catch(() => null);
-  const sessionEmail = normalizeEmail(session?.user?.email ?? "");
-  if (sessionEmail) email = sessionEmail;
+  // collect any cookies Supabase wants to set, then apply them to the final JSON response
+  const pending: Array<{ name: string; value: string; options: any }> = [];
 
-  // derive userKey (in your current app this is effectively the email)
-  const userKey = userKeyFromEmail(email);
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+  const supabaseKey =
+    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ||
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 
-  // ✅ Hackathon admin: allowlist by email OR by derived userKey
-  if (isAdminEmail(email) || isAdminEmail(userKey)) {
-    const entitlements = {
-      isPremium: true,
-      source: "admin" as const,
-      updatedAt: Date.now(),
-    };
+  const supabase = createServerClient(supabaseUrl, supabaseKey, {
+    cookies: {
+      getAll() {
+        return cookieStore.getAll();
+      },
+      setAll(cookiesToSet) {
+        pending.push(...cookiesToSet);
+      },
+    },
+  });
 
-    // ✅ ADD THIS (admin response)
-    const res = NextResponse.json({ ok: true, userKey, entitlements });
-    res.headers.set("Cache-Control", "no-store");
-    return res;
+  const { data, error } = await supabase.auth.getUser();
+  const user = error ? null : data.user;
+
+  const userKey = makeUserKey(user);
+
+  // default: free
+  let entitlements = FREE_ENTITLEMENTS;
+
+  // admin override (email only)
+  const email = normalizeEmail(user?.email ?? "");
+  if (email && isAdminEmail(email)) {
+    entitlements = { isPremium: true, source: "admin" as const, updatedAt: Date.now() };
   }
 
-  const entitlements = getLocalEntitlements(userKey) ?? FREE_ENTITLEMENTS;
-
-  // ✅ ADD THIS (normal response)
   const res = NextResponse.json({ ok: true, userKey, entitlements });
   res.headers.set("Cache-Control", "no-store");
+
+  // apply any refreshed auth cookies (safe)
+  for (const c of pending) res.cookies.set(c.name, c.value, c.options);
+
   return res;
 }
 
@@ -7406,44 +7643,88 @@ export async function POST(req: Request) {
 // app/api/session/route.ts
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
+import { createServerClient } from "@supabase/ssr";
 import { AUTH_COOKIE } from "@/lib/auth";
-import { auth } from "@/app/auth";
+
+function detectProvider(user: any): string | null {
+  if (!user) return null;
+  if (user.is_anonymous) return "anonymous";
+
+  const am = user.app_metadata ?? {};
+  if (typeof am.provider === "string" && am.provider) return am.provider;
+  if (Array.isArray(am.providers) && am.providers.length) return am.providers[0];
+
+  const ident = user.identities?.[0]?.provider;
+  return ident ?? null;
+}
+
 
 export async function GET() {
-  // ✅ handles both sync/async cookies() typing across Next versions
   const cookieStore = await Promise.resolve(cookies());
 
-  // Local/email login (custom cookie)
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+  const key =
+    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ||
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+
+  const pending: Array<{ name: string; value: string; options: any }> = [];
+
+  const supabase = createServerClient(url, key, {
+    cookies: {
+      getAll() {
+        return cookieStore.getAll();
+      },
+      setAll(cookiesToSet) {
+        pending.push(...cookiesToSet);
+      },
+    },
+  });
+
   const localEmail = cookieStore.get(AUTH_COOKIE)?.value ?? null;
   if (localEmail) {
-    return NextResponse.json({
+    const res = NextResponse.json({
       ok: true,
       authed: true,
       method: "email",
       email: localEmail,
       provider: "local",
     });
+    res.headers.set("Cache-Control", "no-store");
+    pending.forEach(({ name, value, options }) => res.cookies.set(name, value, options));
+    return res;
   }
 
-  // NextAuth social login
-  const session = await auth();
-  if (session?.user) {
-    return NextResponse.json({
-      ok: true,
-      authed: true,
-      method: "social",
-      email: session.user.email ?? null,
-      provider: (session as any).provider ?? null,
+  const { data, error } = await supabase.auth.getUser();
+  const user = error ? null : data.user;
+
+  // ✅ anonymous/no-user => SessionNo exactly (provider MUST be null)
+  if (!user || detectProvider(user) === "anonymous") {
+    const res = NextResponse.json({
+      ok: false,
+      authed: false,
+      method: "guest",
+      email: null,
+      provider: null, // ✅ changed
     });
+    res.headers.set("Cache-Control", "no-store");
+    pending.forEach(({ name, value, options }) => res.cookies.set(name, value, options));
+    return res;
   }
 
-  return NextResponse.json({
-    ok: false,
-    authed: false,
-    method: "guest",
-    email: null,
-    provider: null,
+  const provider = detectProvider(user);
+  const isEmail = provider === "email" || (!!user.email && !provider);
+
+  const res = NextResponse.json({
+    ok: true,
+    authed: true,
+    method: isEmail ? "email" : "social",
+    email: user.email ?? null,
+    provider: isEmail ? "email" : provider,
   });
+
+  res.headers.set("Cache-Control", "no-store");
+  pending.forEach(({ name, value, options }) => res.cookies.set(name, value, options));
+  return res;
 }
 
 ```
@@ -7518,76 +7799,128 @@ export async function GET(req: NextRequest) {
 
 ```
 
-### app/auth.ts
+### app/api/time-logs/route.ts
 ```tsx
-// app/auth.ts
-import NextAuth from "next-auth";
-import type { Account, Session } from "next-auth";
-import type { JWT } from "next-auth/jwt";
+// app/api/time-logs/route.ts
+import type { NextRequest } from "next/server";
+import { NextResponse } from "next/server";
+import { createServerClient } from "@supabase/ssr";
 
-import Google from "next-auth/providers/google";
-import Apple from "next-auth/providers/apple";
-import WeChat from "next-auth/providers/wechat";
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
 
-import { SERVER_FLAGS } from "../lib/flags/server";
-
-const providers: any[] = [];
-
-// ✅ add providers only if env vars exist (prevents dev crashes)
-if (process.env.AUTH_GOOGLE_ID && process.env.AUTH_GOOGLE_SECRET) {
-  providers.push(
-    Google({
-      clientId: process.env.AUTH_GOOGLE_ID,
-      clientSecret: process.env.AUTH_GOOGLE_SECRET,
-    })
-  );
-}
-
-if (process.env.AUTH_APPLE_ID && process.env.AUTH_APPLE_SECRET) {
-  providers.push(
-    Apple({
-      clientId: process.env.AUTH_APPLE_ID,
-      clientSecret: process.env.AUTH_APPLE_SECRET,
-    })
-  );
-}
-
-if (
-  SERVER_FLAGS.enableWeChatAuth &&
-  process.env.AUTH_WECHAT_APP_ID &&
-  process.env.AUTH_WECHAT_APP_SECRET
+function makeSupabase(
+  req: NextRequest,
+  pending: Array<{ name: string; value: string; options: any }>
 ) {
-  providers.push(
-    WeChat({
-      clientId: process.env.AUTH_WECHAT_APP_ID,
-      clientSecret: process.env.AUTH_WECHAT_APP_SECRET,
-      platformType: "WebsiteApp",
-    })
-  );
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+  const supabaseKey =
+    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ||
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+
+  return createServerClient(supabaseUrl, supabaseKey, {
+    cookies: {
+      getAll() {
+        return req.cookies.getAll();
+      },
+      setAll(cookiesToSet) {
+        pending.push(...cookiesToSet);
+      },
+    },
+  });
 }
 
-export const { handlers, auth, signIn, signOut } = NextAuth({
-  secret: process.env.NEXTAUTH_SECRET,
-  providers,
-  trustHost: true,
+function isYmd(s: string) {
+  return /^\d{4}-\d{2}-\d{2}$/.test(s);
+}
 
-  session: {
-    strategy: "jwt",
-    maxAge: 60 * 60 * 24 * 300, // 300 days
-  },
+export async function GET(req: NextRequest) {
+  const pending: Array<{ name: string; value: string; options: any }> = [];
+  const supabase = makeSupabase(req, pending);
 
-  callbacks: {
-    async jwt({ token, account }: { token: JWT; account?: Account | null }) {
-      if (account?.provider) (token as any).provider = account.provider;
-      return token;
-    },
+  const { data: userData, error: userErr } = await supabase.auth.getUser();
+  const user = userErr ? null : userData.user;
 
-    async session({ session, token }: { session: Session; token: JWT }) {
-      (session as any).provider = (token as any).provider ?? null;
-      return session;
-    },
-  },
-});
+  if (!user) {
+    const res = NextResponse.json({ ok: false, error: "No user session" }, { status: 401 });
+    for (const c of pending) res.cookies.set(c.name, c.value, c.options);
+    res.headers.set("Cache-Control", "no-store");
+    return res;
+  }
+
+  const { searchParams } = new URL(req.url);
+  const limit = Math.min(400, Math.max(1, Number(searchParams.get("limit") ?? "200")));
+
+  const { data, error } = await supabase
+    .from("time_logs")
+    .select("date, kind, seconds")
+    .eq("user_id", user.id)
+    .order("date", { ascending: false })
+    .limit(limit);
+
+  if (error) {
+    const res = NextResponse.json({ ok: false, step: "select", error: error.message }, { status: 400 });
+    for (const c of pending) res.cookies.set(c.name, c.value, c.options);
+    res.headers.set("Cache-Control", "no-store");
+    return res;
+  }
+
+  const res = NextResponse.json({ ok: true, logs: data ?? [] });
+  for (const c of pending) res.cookies.set(c.name, c.value, c.options);
+  res.headers.set("Cache-Control", "no-store");
+  return res;
+}
+
+export async function POST(req: NextRequest) {
+  const pending: Array<{ name: string; value: string; options: any }> = [];
+  const supabase = makeSupabase(req, pending);
+
+  const { data: userData, error: userErr } = await supabase.auth.getUser();
+  const user = userErr ? null : userData.user;
+
+  if (!user) {
+    const res = NextResponse.json({ ok: false, error: "No user session" }, { status: 401 });
+    for (const c of pending) res.cookies.set(c.name, c.value, c.options);
+    res.headers.set("Cache-Control", "no-store");
+    return res;
+  }
+
+  const body = (await req.json().catch(() => null)) as any;
+  const kind = String(body?.kind ?? "").trim();
+  const date = String(body?.date ?? "").trim();
+  const seconds = Number(body?.seconds ?? NaN);
+
+  if ((kind !== "test" && kind !== "study") || !isYmd(date) || !Number.isFinite(seconds) || seconds < 0) {
+    const res = NextResponse.json({ ok: false, error: "Invalid payload" }, { status: 400 });
+    for (const c of pending) res.cookies.set(c.name, c.value, c.options);
+    res.headers.set("Cache-Control", "no-store");
+    return res;
+  }
+
+  const row = {
+    user_id: user.id,
+    date,          // date column
+    kind,          // "test" | "study"
+    seconds: Math.floor(seconds),
+    updated_at: new Date().toISOString(),
+  };
+
+  const { error: upsertErr } = await supabase
+    .from("time_logs")
+    .upsert(row, { onConflict: "user_id,date,kind" });
+
+  if (upsertErr) {
+    const res = NextResponse.json({ ok: false, step: "upsert", error: upsertErr.message }, { status: 400 });
+    for (const c of pending) res.cookies.set(c.name, c.value, c.options);
+    res.headers.set("Cache-Control", "no-store");
+    return res;
+  }
+
+  const res = NextResponse.json({ ok: true });
+  for (const c of pending) res.cookies.set(c.name, c.value, c.options);
+  res.headers.set("Cache-Control", "no-store");
+  return res;
+}
 
 ```
 
@@ -15213,6 +15546,8 @@ export default function DragScrollRow({ children, className }: DragScrollRowProp
 
 ### components/EntitlementsDebugBadge.client.tsx
 ```tsx
+//components/EntitlementsDebugBadge.client.tsx
+
 "use client";
 
 import { useEntitlements } from "@/components/EntitlementsProvider.client";
@@ -15517,7 +15852,7 @@ export default function FeatureCard({
 // components/FreeUsageProgressBadge.client.tsx
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useCallback } from "react";
 import { useUserKey } from "@/components/useUserKey.client";
 import {
   FREE_CAPS,
@@ -15527,34 +15862,39 @@ import {
 import { useEntitlements } from "@/components/EntitlementsProvider.client";
 import { usePathname } from "next/navigation";
 
-const HIDE_BADGE_EXACT = new Set(["/"]); // onboarding/landing
+const HIDE_BADGE_EXACT = new Set(["/"]);
 const HIDE_BADGE_PREFIXES = ["/login", "/onboarding", "/forgot-password"];
-
 
 export default function FreeUsageProgressBadge() {
   const pathname = usePathname() || "/";
 
-const hide =
-  HIDE_BADGE_EXACT.has(pathname) ||
-  HIDE_BADGE_PREFIXES.some((p) => pathname.startsWith(p));
+  const hide =
+    HIDE_BADGE_EXACT.has(pathname) ||
+    HIDE_BADGE_PREFIXES.some((p) => pathname.startsWith(p));
 
-if (hide) return null;
+  if (hide) return null;
 
-  
+  // ✅ render a child component instead of conditionally calling hooks
+  return <FreeUsageProgressBadgeInner />;
+}
+
+function FreeUsageProgressBadgeInner() {
   const { isPremium } = useEntitlements();
-  if (isPremium) return null;
   const userKey = useUserKey();
 
   const [shown, setShown] = useState(0);
   const [starts, setStarts] = useState(0);
 
-  const refresh = () => {
+  const refresh = useCallback(() => {
     const s = getUsageCapState(userKey);
     setShown(s.shown);
     setStarts(s.examStarts);
-  };
+  }, [userKey]);
 
   useEffect(() => {
+    // optional: if premium, don’t even attach listeners
+    if (isPremium) return;
+
     refresh();
 
     const evt = usageCapEventName();
@@ -15567,8 +15907,9 @@ if (hide) return null;
       window.removeEventListener(evt, onChange);
       window.removeEventListener("expatise:session-changed", onChange);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userKey]);
+  }, [refresh, isPremium]);
+
+  if (isPremium) return null;
 
   const text = useMemo(() => {
     return `${shown}/${FREE_CAPS.questionsShown} Questions · ${starts}/${FREE_CAPS.examStarts} Exams`;
@@ -15972,11 +16313,13 @@ export function useTheme() {
 
 ### components/TimeTracker.client.tsx
 ```tsx
+//components/TimeTracker.client.tsx
+
 "use client";
 
 import { useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
-import { timeKey, type TimeKind } from "@/lib/stats/timeKeys";
+import { timeKey, ymdLocal, type TimeKind } from "@/lib/stats/timeKeys";
 
 function routeKind(pathname: string): TimeKind | null {
   if (!pathname) return null;
@@ -16011,6 +16354,8 @@ export default function TimeTracker() {
   const kindRef = useRef<TimeKind | null>(null);
   const startedAtRef = useRef<number | null>(null);
   const intervalRef = useRef<number | null>(null);
+  const lastRemoteSyncAtRef = useRef<number>(0);
+
 
   function flush() {
     if (typeof window === "undefined") return;
@@ -16036,6 +16381,18 @@ export default function TimeTracker() {
     } catch {
       // ignore quota/private mode
     }
+    // fire-and-forget remote sync (throttled)
+const now2 = Date.now();
+if (now2 - lastRemoteSyncAtRef.current >= 30_000) {
+  lastRemoteSyncAtRef.current = now2;
+
+  const date = ymdLocal(new Date()); // same local date scheme as timeKey()
+
+  void import("@/lib/sync/saveTimeLogToSupabase")
+    .then((m) => m.saveTimeLogToSupabase({ kind, date, seconds: next }))
+    .catch(() => {});
+}
+
   }
 
   function stop() {
@@ -21812,7 +22169,7 @@ import { createClient } from "@/lib/supabase/client";
 
 type AuthState = {
   loading: boolean;
-  authed: boolean; // ✅ keep your existing meaning: true only for email/social (not guest)
+  authed: boolean; // true only for email/social (NOT anon/guest)
   method: "guest" | "email" | "social";
   email: string | null;
   provider: string | null; // "google" | "apple" | "wechat" | "email" | "anonymous" | null
@@ -21821,9 +22178,18 @@ type AuthState = {
 function detectProvider(user: User | null): string | null {
   if (!user) return null;
 
-  // best signal
-  const p = (user.app_metadata as any)?.provider as string | undefined;
-  if (p) return p;
+  // strongest signal for guest
+  if ((user as any).is_anonymous) return "anonymous";
+
+  const am = (user.app_metadata as any) ?? {};
+
+  // common: "google" | "email" | "apple" | ...
+  if (typeof am.provider === "string" && am.provider) return am.provider;
+
+  // sometimes: ["google"] or ["email"]
+  if (Array.isArray(am.providers) && am.providers.length > 0) {
+    return am.providers[0];
+  }
 
   // fallback
   const ident = user.identities?.[0]?.provider;
@@ -21837,17 +22203,17 @@ function toState(user: User | null, loading: boolean): AuthState {
 
   const provider = detectProvider(user);
 
-  // ✅ preserve your current gating semantics:
-  // - anonymous/guest is NOT "authed" for profile saving
-  if (!provider || provider === "anonymous") {
-    return { loading, authed: false, method: "guest", email: null, provider: provider ?? "anonymous" };
+  // anon = guest for your gating semantics
+  if (provider === "anonymous") {
+    return { loading, authed: false, method: "guest", email: null, provider: "anonymous" };
   }
 
-  if (provider === "email") {
-    return { loading, authed: true, method: "email", email: user.email ?? null, provider };
+  // email/password
+  if (provider === "email" || (!!user.email && !provider)) {
+    return { loading, authed: true, method: "email", email: user.email ?? null, provider: "email" };
   }
 
-  // everything else is a social provider
+  // social
   return { loading, authed: true, method: "social", email: user.email ?? null, provider };
 }
 
@@ -21869,15 +22235,11 @@ export function useAuthStatus() {
       try {
         setState((s) => ({ ...s, loading: true }));
 
-        const { data, error } = await supabase.auth.getUser();
+        // session is enough for UI + avoids extra network calls
+        const { data } = await supabase.auth.getSession();
         if (cancelled) return;
 
-        if (error) {
-          setState(toState(null, false));
-          return;
-        }
-
-        setState(toState(data.user ?? null, false));
+        setState(toState(data.session?.user ?? null, false));
       } catch {
         if (cancelled) return;
         setState(toState(null, false));
@@ -21892,11 +22254,9 @@ export function useAuthStatus() {
   useEffect(() => {
     const cleanup = refresh();
 
-    // Keep your existing “session changed” event
     const onChanged = () => refresh();
     window.addEventListener("expatise:session-changed", onChanged);
 
-    // Also listen to Supabase auth events (more reliable)
     const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
       setState(toState(session?.user ?? null, false));
     });
@@ -21921,6 +22281,29 @@ export function useAuthStatus() {
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { userKeyFromEmail } from "@/lib/identity/userKey";
 import { createClient } from "@/lib/supabase/client";
+import type { User } from "@supabase/supabase-js";
+
+function detectProvider(user: User | null): string | null {
+  if (!user) return null;
+  const p = (user.app_metadata as any)?.provider as string | undefined;
+  if (p) return p;
+  return user.identities?.[0]?.provider ?? null;
+}
+
+function makeUserKey(user: User | null): string {
+  if (!user) return "guest";
+
+  // ✅ Anonymous users should still be tracked uniquely (per device/user)
+  if ((user as any).is_anonymous) return `anon:${user.id}`;
+
+  // ✅ Prefer your old email-based key when available (backward-compatible)
+  const email = user.email ?? "";
+  if (email) return userKeyFromEmail(email);
+
+  // ✅ Fallback: stable Supabase user id (covers providers with no email)
+  return `sb:${user.id}`;
+}
+
 
 export function useUserKey() {
   const supabase = useMemo(() => createClient(), []);
@@ -21932,17 +22315,10 @@ export function useUserKey() {
 
     (async () => {
       try {
-        const { data, error } = await supabase.auth.getUser();
+        const { data } = await supabase.auth.getSession();
         if (seq !== seqRef.current) return;
 
-        if (error || !data.user) {
-          setUserKey("guest");
-          return;
-        }
-
-        // Anonymous users often have no email -> keep "guest"
-        const email = data.user.email ?? "";
-        setUserKey(email ? userKeyFromEmail(email) : "guest");
+        setUserKey(makeUserKey(data.session?.user ?? null));
       } catch {
         if (seq !== seqRef.current) return;
         setUserKey("guest");
@@ -21953,21 +22329,17 @@ export function useUserKey() {
   useEffect(() => {
     refresh();
 
-    if (typeof window === "undefined") return;
-
     const onChanged = () => refresh();
     window.addEventListener("expatise:session-changed", onChanged);
 
-    // Also listen to Supabase auth state changes (more reliable)
     const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
-      const email = session?.user?.email ?? "";
-      setUserKey(email ? userKeyFromEmail(email) : "guest");
+      setUserKey(makeUserKey(session?.user ?? null));
     });
 
     return () => {
       window.removeEventListener("expatise:session-changed", onChanged);
       sub.subscription.unsubscribe();
-      seqRef.current++; // invalidate in-flight
+      seqRef.current++;
     };
   }, [refresh, supabase]);
 
@@ -25434,6 +25806,55 @@ export function mergeClearedMistakes(local?: string[], remote?: string[]) {
 
 ```
 
+### lib/sync/saveAttemptToSupabase.ts
+```tsx
+// lib/sync/saveAttemptToSupabase.ts
+"use client";
+
+import type { TestAttemptV1 } from "@/lib/test-engine/attemptStorage";
+
+export async function saveAttemptToSupabase(attempt: TestAttemptV1) {
+  try {
+    await fetch("/api/attempts", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      // keepalive helps if user navigates immediately after submit
+      keepalive: true,
+      body: JSON.stringify({ attempt }),
+    });
+  } catch {
+    // ignore (offline, blocked, etc.)
+  }
+}
+
+```
+
+### lib/sync/saveTimeLogToSupabase.ts
+```tsx
+// lib/sync/saveTimeLogToSupabase.ts
+"use client";
+
+import type { TimeKind } from "@/lib/stats/timeKeys";
+
+export async function saveTimeLogToSupabase(input: {
+  kind: TimeKind;
+  date: string;    // "YYYY-MM-DD"
+  seconds: number; // total seconds for that day+kind
+}) {
+  try {
+    await fetch("/api/time-logs", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      keepalive: true,
+      body: JSON.stringify(input),
+    });
+  } catch {
+    // ignore (offline, blocked, etc.)
+  }
+}
+
+```
+
 ### lib/test-engine/attemptStorage.ts
 ```tsx
 // lib/test-engine/attemptStorage.ts
@@ -25620,11 +26041,25 @@ export function closeAttemptById(
     remainingSec: typeof patch?.remainingSec === "number" ? patch.remainingSec : a.remainingSec,
   };
 
-  writeAttempt(closed);
-  clearActiveAttemptPointer({ userKey: closed.userKey, modeKey: closed.modeKey, datasetId: closed.datasetId, datasetVersion: closed.datasetVersion });
+    writeAttempt(closed);
+
+  // ✅ fire-and-forget remote sync (won't crash if route/table isn't ready yet)
+  void import("@/lib/sync/saveAttemptToSupabase")
+    .then((m) => m.saveAttemptToSupabase(closed))
+    .catch(() => {});
+
+  clearActiveAttemptPointer({
+    userKey: closed.userKey,
+    modeKey: closed.modeKey,
+    datasetId: closed.datasetId,
+    datasetVersion: closed.datasetVersion,
+  });
 
   return closed;
+
 }
+
+
 
 
 export function readActiveAttemptId(params: { userKey: string; modeKey: string; datasetId: string; datasetVersion: string }) {

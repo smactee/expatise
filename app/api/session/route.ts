@@ -16,23 +16,10 @@ function detectProvider(user: any): string | null {
   return ident ?? null;
 }
 
+
 export async function GET() {
-  // ✅ async-safe across Next versions
   const cookieStore = await Promise.resolve(cookies());
 
-  // 1) Your legacy local/email login cookie (optional to keep for now)
-  const localEmail = cookieStore.get(AUTH_COOKIE)?.value ?? null;
-  if (localEmail) {
-    return NextResponse.json({
-      ok: true,
-      authed: true,
-      method: "email",
-      email: localEmail,
-      provider: "local",
-    });
-  }
-
-  // 2) Supabase session
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL!;
   const key =
     process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ||
@@ -51,18 +38,33 @@ export async function GET() {
     },
   });
 
+  const localEmail = cookieStore.get(AUTH_COOKIE)?.value ?? null;
+  if (localEmail) {
+    const res = NextResponse.json({
+      ok: true,
+      authed: true,
+      method: "email",
+      email: localEmail,
+      provider: "local",
+    });
+    res.headers.set("Cache-Control", "no-store");
+    pending.forEach(({ name, value, options }) => res.cookies.set(name, value, options));
+    return res;
+  }
+
   const { data, error } = await supabase.auth.getUser();
   const user = error ? null : data.user;
 
-  // anonymous/no-user => guest (matches your gating semantics)
+  // ✅ anonymous/no-user => SessionNo exactly (provider MUST be null)
   if (!user || detectProvider(user) === "anonymous") {
     const res = NextResponse.json({
       ok: false,
       authed: false,
       method: "guest",
       email: null,
-      provider: user ? "anonymous" : null,
+      provider: null, // ✅ changed
     });
+    res.headers.set("Cache-Control", "no-store");
     pending.forEach(({ name, value, options }) => res.cookies.set(name, value, options));
     return res;
   }
@@ -78,6 +80,7 @@ export async function GET() {
     provider: isEmail ? "email" : provider,
   });
 
+  res.headers.set("Cache-Control", "no-store");
   pending.forEach(({ name, value, options }) => res.cookies.set(name, value, options));
   return res;
 }

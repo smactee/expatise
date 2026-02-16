@@ -1,8 +1,10 @@
+//components/TimeTracker.client.tsx
+
 "use client";
 
 import { useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
-import { timeKey, type TimeKind } from "@/lib/stats/timeKeys";
+import { timeKey, ymdLocal, type TimeKind } from "@/lib/stats/timeKeys";
 
 function routeKind(pathname: string): TimeKind | null {
   if (!pathname) return null;
@@ -37,6 +39,8 @@ export default function TimeTracker() {
   const kindRef = useRef<TimeKind | null>(null);
   const startedAtRef = useRef<number | null>(null);
   const intervalRef = useRef<number | null>(null);
+  const lastRemoteSyncAtRef = useRef<number>(0);
+
 
   function flush() {
     if (typeof window === "undefined") return;
@@ -62,6 +66,18 @@ export default function TimeTracker() {
     } catch {
       // ignore quota/private mode
     }
+    // fire-and-forget remote sync (throttled)
+const now2 = Date.now();
+if (now2 - lastRemoteSyncAtRef.current >= 30_000) {
+  lastRemoteSyncAtRef.current = now2;
+
+  const date = ymdLocal(new Date()); // same local date scheme as timeKey()
+
+  void import("@/lib/sync/saveTimeLogToSupabase")
+    .then((m) => m.saveTimeLogToSupabase({ kind, date, seconds: next }))
+    .catch(() => {});
+}
+
   }
 
   function stop() {

@@ -16,18 +16,17 @@ function detectProvider(user: User | null): string | null {
 function makeUserKey(user: User | null): string {
   if (!user) return "guest";
 
-  // If you want anonymous to behave like “guest” everywhere, keep this:
-  const provider = detectProvider(user);
-  if (!provider || provider === "anonymous") return `anon:${user.id}`;
+  // ✅ Anonymous users should still be tracked uniquely (per device/user)
+  if ((user as any).is_anonymous) return `anon:${user.id}`;
 
-
-  // Prefer your old email-based key when available (backward-compatible)
+  // ✅ Prefer your old email-based key when available (backward-compatible)
   const email = user.email ?? "";
   if (email) return userKeyFromEmail(email);
 
-  // Fallback: stable Supabase user id (covers providers with no email)
+  // ✅ Fallback: stable Supabase user id (covers providers with no email)
   return `sb:${user.id}`;
 }
+
 
 export function useUserKey() {
   const supabase = useMemo(() => createClient(), []);
