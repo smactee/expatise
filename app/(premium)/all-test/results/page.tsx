@@ -4,6 +4,10 @@
 import { Suspense, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 
+
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 function Inner() {
   const router = useRouter();
   const sp = useSearchParams();

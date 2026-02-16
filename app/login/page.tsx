@@ -66,29 +66,35 @@ const comingSoon = (provider: string) => showToast(`${provider} sign-in is comin
     }
     if (!canSubmit) return;
     setIsSubmitting(true);
-    try {   // call server to check password against the same store reset uses
-      const res = await fetch("/api/local-login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({ email: emailNorm, password }),
-      });
-      const data = await res.json().catch(() => ({ ok: false }));
-      await new Promise((r) => setTimeout(r, 300)); // simulate network delay (optional)
-  
-      if (!data.ok) {
-    setError("Email or password doesn’t match. Try again or reset your password.");
+    try {
+  // ✅ Supabase email/password login (creates a real Supabase session)
+  const { error } = await supabase.auth.signInWithPassword({
+    email: emailNorm,
+    password,
+  });
+
+  // optional delay (purely UI)
+  await new Promise((r) => setTimeout(r, 150));
+
+  if (error) {
+    // Friendly message for bad credentials
+    const msg =
+      /invalid login credentials/i.test(error.message)
+        ? "Email or password doesn’t match. Try again or reset your password."
+        : error.message;
+
+    setError(msg);
     return;
   }
 
-// ✅ tell the rest of the app "session changed"
-window.dispatchEvent(new Event("expatise:session-changed"));
+  // ✅ tell the rest of the app "session changed"
+  window.dispatchEvent(new Event("expatise:session-changed"));
 
-router.replace(nextParam);
-
+  router.replace(nextParam);
 } catch {
   setError("Network error. Please try again.");
 }
+
   finally {
   setIsSubmitting(false);
 }
