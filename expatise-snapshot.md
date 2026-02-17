@@ -11384,6 +11384,18 @@ const TEST_MODE_CARDS = [
     title:  "Real Test",
    },
    
+   {
+    key: "ten-percent-test",
+    href: "/test/ten-percent",
+    ariaLabel: "Open 10% Test",
+    // ✅ reuse existing assets for now (swap later if you add new PNGs)
+    bgSrc: "/images/home/cards/quicktest-bg.png",
+    bgAlt: "10% Test Background",
+    iconSrc: "/images/home/icons/rapidfire-icon.png",
+    iconAlt: "10% Test Icon",
+    topText: "10 questions. 5 minutes.",
+    title: "10% Test",
+  },
     {
     key: "practice-test",
     href: "/test/practice",
@@ -26356,7 +26368,7 @@ export type TestModeId =
   | "mistakes"
   | "bookmarks"
   | "topics"
-  | "tenpercent";
+  | "ten-percent";
 
 export type TestModeConfig = {
   modeId: TestModeId;
@@ -26392,8 +26404,8 @@ export const TEST_MODES: Record<TestModeId, TestModeConfig> = {
     preflightRequiredQuestions: 100,
   },
 
-  tenpercent: {
-    modeId: "tenpercent",
+  "ten-percent": {
+    modeId: "ten-percent",
     modeKey: "ten-percent-test",
     routeBase: "/test/ten-percent",
     datasetId: "cn-2023-test1",

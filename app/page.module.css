@@ -8,90 +8,130 @@
   background: var(--color-page-bg);
 }
 
+:root{
+  --bottom-nav-height: 66px;
+  --bottom-nav-gap: 6px; /* was effectively 24px */
+  --bottom-safe: env(safe-area-inset-bottom);
+  --bottom-nav-clearance: calc(var(--bottom-nav-height) + var(--bottom-nav-gap) + var(--bottom-safe));
+}
+
 .content {
   width: 100%;
-  max-width: 560px;                /* roughly modern phone width */
-  margin: 60px auto 40px;             /* center column on desktop */
-  padding: 0 16px;            /* small side padding */
+  max-width: 560px;
+  margin: 0 auto;
+  box-sizing: border-box;
+
+  /* ✅ Minimal top gap (but still safe on notched devices in PWA/Capacitor) */
+  padding-top: max(12px, env(safe-area-inset-top));
+  padding-left: 16px;
+  padding-right: 16px;
+
+  /* ✅ Leave space for BottomNav */
+  padding-bottom: calc(var(--bottom-nav-clearance) + 6px);
+}
+
+/* Keep desktop feeling intentional (not glued to top) */
+@media (min-width: 768px) {
+  .content {
+    padding-top: 5px;
+    padding-bottom: calc(var(--bottom-nav-clearance) + 2px);
+  }
 }
 
 
 /* Exam card */
 .examCard {
   width: 100%;
-  aspect-ratio: 656 / 343;     /* match Figma card shape */
-  display: flex;
-  align-items: center;         /* text + car vertically centered */
-  padding: 24px 24px 26px;     /* adjust spacing to taste */
-  border-radius: 32px;         /* looks closer to your Figma rounding */
-  /* Base color + Figma-style linear gradient overlay */
+  aspect-ratio: 656 / 343;
+  min-height: 260px;
+
+  /* ✅ switch from grid to a simple positioned container */
+  position: relative;
+  display: block;
+
+  padding: clamp(16px, 4vw, 24px);
+  border-radius: 32px;
+
   background:
     linear-gradient(
       135deg,
-      rgba(43, 124, 175, 0.2) 0%,   /* #2B7CAF @ 20% */
-      rgba(255, 197, 66, 0.2) 100%  /* #FFC542 @ 20% */
+      rgba(43, 124, 175, 0.2) 0%,
+      rgba(255, 197, 66, 0.2) 100%
     ),
-    #eaf3ff;                         /* light base like your frame */
-  
-    box-shadow: 0 18px 40px rgba(15, 33, 70, 0.26);
-  overflow: hidden;
+    #eaf3ff;
+
+  box-shadow: 0 18px 40px rgba(15, 33, 70, 0.26);
+  overflow: hidden; /* keep the nice clipping */
 }
+
+
 
 
 /* Right side: blue car area */
 .carHero {
-  flex: 1;
-  display: flex;
-  justify-content: flex-end;
-  align-items: flex-end;
-  margin-left: 16px;
-  /* no background here – card background shows through */
-  background: transparent;
+  position: absolute;
+  right: -24px;      /* push slightly out so it feels bigger */
+  bottom: -10px;
+
+  /* ✅ THIS is the size control (big!) */
+  width: clamp(224px, 58vw, 416px);
+
+  z-index: 1;
+  pointer-events: none;
+  transform: translateX(-8px);
 }
 
-/* Car image */
 .carImage {
   display: block;
-  max-width: 400%;
-  height: 400%;
-  /* Optional: nudge it a bit like in Figma */
-  transform: translateY(6px);
+  width: 100%;
+  height: auto;
+  max-width: none;
+
+  transform: translateY(10px);
+  user-select: none;
 }
 
 
-/* Left side text */
-.examText {
-  flex: 1.1;
-  display: flex;
-  flex-direction: column;
-}
-
-.examLabel {
-  margin: 0;
-  font-size: 34px;
-  font-weight: 600;
-  color: var(--color-heading-strong);
-}
-
+.examLabel,
 .examTitle {
   margin: 0;
-  font-size: 34px;
-  font-weight: 700;
+  font-size: clamp(26px, 6.5vw, 34px);
+  line-height: 1.05;
   color: var(--color-heading-strong);
 }
 
-/* "My Test Day" link-style button */
+.examLabel { font-weight: 600; }
+.examTitle { font-weight: 700; }
+
 .myTestDayButton {
   align-self: flex-start;
   padding: 0;
   margin: 0;
   border: none;
   background: none;
-  font-size: 23px;
+  font-size: clamp(18px, 4.8vw, 23px);
   font-weight: 600;
   color: var(--color-heading-strong);
   cursor: pointer;
 }
+
+.bigDate {
+  font-size: clamp(26px, 6.5vw, 34px);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--color-heading-strong);
+}
+
+/* Left side text */
+.examText {
+  min-width: 0;
+  position: relative;
+  z-index: 2;
+
+  /* ✅ reserve room on the right so car never covers text */
+  padding-right: clamp(160px, 45vw, 300px);
+}
+
 
 /* Date input */
 .dateInput {
@@ -119,12 +159,6 @@
   flex-direction: column;
 }
 
-.bigDate {
-  font-size: 34px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  color: var(--color-heading-strong);
-}
 
 /* test time text */
 .timeText {
@@ -168,12 +202,17 @@
 }
 
 .sections {
-  margin-top: 32px;          /* space under Exam card */
+  margin-top: 10px;
   display: flex;
   flex-direction: column;
-  row-gap: 32px;             /* gap between Test Mode / Overall / My */
-  padding-bottom: 80px;      /* some breathing room at bottom */
+
+  /* ✅ bring "Overall" up */
+  row-gap: 20px;
+
+  /* optional: only affects bottom of page, not between rows */
+  padding-bottom: 0px;
 }
+
 
 /* Whole group: title + card row */
 .sectionGroup {
@@ -182,11 +221,12 @@
 
 /* "Test Mode", "Overall", "My" */
 .sectionTitle {
-  margin: 0 0 12px;
+  margin: 0 0 8px;
   font-size: 23px;
   font-weight: 700;
   color: var(--color-heading-strong);
 }
+
 
 /* HORIZONTAL scroll row of cards */
 .cardRow {
@@ -334,9 +374,13 @@
   display: flex;
   gap: 16px;
   overflow-x: auto;
-  padding: 8px 0 24px;
-  scrollbar-width: none;          /* Firefox */
+
+  /* ✅ less blank space under the row */
+  padding: 6px 0 10px;
+
+  scrollbar-width: none;
 }
+
 
 .dragRow::-webkit-scrollbar {
   display: none;                  /* Chrome / Safari */
@@ -356,7 +400,7 @@
 .bottomNavWrapper {
   position: fixed;          /* float on top of content */
   left: 50%;
-  bottom: 24px;             /* distance from bottom of screen */
+  bottom: calc(var(--bottom-nav-gap) + var(--bottom-safe));  /* distance from bottom of screen */
   width: 100%;
   max-width: 560px;         /* same as .content max-width */
   display: flex;
@@ -872,4 +916,25 @@
 
 :root[data-theme='dark'] .testModalSecondaryButton {
   color: rgba(255, 255, 255, 0.70);
+}
+
+:root{
+  --bottom-nav-hide-y: calc(var(--bottom-nav-height) + var(--bottom-nav-gap) + env(safe-area-inset-bottom) + 16px);
+}
+
+.bottomNavWrapper{
+  /* you already have position/left/bottom etc */
+  transform: translate(-50%, 0);
+  transition: transform 220ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  will-change: transform;
+}
+
+.bottomNavWrapperHidden{
+  transform: translate(-50%, var(--bottom-nav-hide-y));
+}
+
+@media (prefers-reduced-motion: reduce){
+  .bottomNavWrapper{
+    transition: none;
+  }
 }
