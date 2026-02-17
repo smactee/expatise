@@ -41,6 +41,18 @@ const TEST_MODE_CARDS = [
     title:  "Real Test",
    },
    
+   {
+    key: "ten-percent-test",
+    href: "/test/ten-percent",
+    ariaLabel: "Open 10% Test",
+    // ✅ reuse existing assets for now (swap later if you add new PNGs)
+    bgSrc: "/images/home/cards/quicktest-bg.png",
+    bgAlt: "10% Test Background",
+    iconSrc: "/images/home/icons/rapidfire-icon.png",
+    iconAlt: "10% Test Icon",
+    topText: "10 questions. 5 minutes.",
+    title: "10% Test",
+  },
     {
     key: "practice-test",
     href: "/test/practice",

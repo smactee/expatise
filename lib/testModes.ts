@@ -9,7 +9,8 @@ export type TestModeId =
   | "rapid"
   | "mistakes"
   | "bookmarks"
-  | "topics";
+  | "topics"
+  | "ten-percent";
 
 export type TestModeConfig = {
   modeId: TestModeId;
@@ -40,9 +41,20 @@ export const TEST_MODES: Record<TestModeId, TestModeConfig> = {
     routeBase: "/test/real",
     datasetId: "cn-2023-test1",
     datasetVersion: "cn-2023-test1@v1",
-    questionCount: 10,
+    questionCount: 100,
     timeLimitMinutes: 45,
     preflightRequiredQuestions: 100,
+  },
+
+  "ten-percent": {
+    modeId: "ten-percent",
+    modeKey: "ten-percent-test",
+    routeBase: "/test/ten-percent",
+    datasetId: "cn-2023-test1",
+    datasetVersion: "cn-2023-test1@v1",
+    questionCount: 10,
+    timeLimitMinutes: 5,
+    preflightRequiredQuestions: 10,
   },
 
   practice: {

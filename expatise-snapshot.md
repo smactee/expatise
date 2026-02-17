@@ -2771,32 +2771,22 @@ export default function RealTestAlias() {
 
 ### app/(premium)/all-test/results/page.tsx
 ```tsx
-// app/(premium)/real-test/results/page.tsx
-'use client';
+// app/(premium)/all-test/results/page.tsx
+import { redirect } from "next/navigation";
 
-import { Suspense, useEffect } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
-
-function Inner() {
-  const router = useRouter();
-  const sp = useSearchParams();
-  const qs = sp.toString();
-
-  useEffect(() => {
-    router.replace(`/test/real/results${qs ? `?${qs}` : ''}`);
-  }, [router, qs]);
-
-  return null;
+export default function AllTestResultsAlias({
+  searchParams,
+}: {
+  searchParams: Record<string, string | string[] | undefined>;
+}) {
+  const qs = new URLSearchParams();
+  for (const [k, v] of Object.entries(searchParams ?? {})) {
+    if (Array.isArray(v)) v.forEach((vv) => qs.append(k, vv));
+    else if (typeof v === "string") qs.set(k, v);
+  }
+  const q = qs.toString();
+  redirect(`/test/real/results${q ? `?${q}` : ""}`);
 }
-
-export default function RealTestResultsAlias() {
-  return (
-    <Suspense fallback={null}>
-      <Inner />
-    </Suspense>
-  );
-}
-
 
 ```
 
@@ -6995,14 +6985,6 @@ export async function POST(req: NextRequest) {
 
 ```
 
-### app/api/auth/[...nextauth]/route.ts
-```tsx
-import { handlers } from "../../../auth";
-
-export const { GET, POST } = handlers;
-
-```
-
 ### app/api/coach/route.ts
 ```tsx
 // app/api/coach/route.ts
@@ -10066,29 +10048,35 @@ const comingSoon = (provider: string) => showToast(`${provider} sign-in is comin
     }
     if (!canSubmit) return;
     setIsSubmitting(true);
-    try {   // call server to check password against the same store reset uses
-      const res = await fetch("/api/local-login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({ email: emailNorm, password }),
-      });
-      const data = await res.json().catch(() => ({ ok: false }));
-      await new Promise((r) => setTimeout(r, 300)); // simulate network delay (optional)
-  
-      if (!data.ok) {
-    setError("Email or password doesn’t match. Try again or reset your password.");
+    try {
+  // ✅ Supabase email/password login (creates a real Supabase session)
+  const { error } = await supabase.auth.signInWithPassword({
+    email: emailNorm,
+    password,
+  });
+
+  // optional delay (purely UI)
+  await new Promise((r) => setTimeout(r, 150));
+
+  if (error) {
+    // Friendly message for bad credentials
+    const msg =
+      /invalid login credentials/i.test(error.message)
+        ? "Email or password doesn’t match. Try again or reset your password."
+        : error.message;
+
+    setError(msg);
     return;
   }
 
-// ✅ tell the rest of the app "session changed"
-window.dispatchEvent(new Event("expatise:session-changed"));
+  // ✅ tell the rest of the app "session changed"
+  window.dispatchEvent(new Event("expatise:session-changed"));
 
-router.replace(nextParam);
-
+  router.replace(nextParam);
 } catch {
   setError("Network error. Please try again.");
 }
+
   finally {
   setIsSubmitting(false);
 }
@@ -15867,19 +15855,19 @@ const HIDE_BADGE_PREFIXES = ["/login", "/onboarding", "/forgot-password"];
 
 export default function FreeUsageProgressBadge() {
   const pathname = usePathname() || "/";
+  const { isPremium } = useEntitlements();
 
   const hide =
     HIDE_BADGE_EXACT.has(pathname) ||
     HIDE_BADGE_PREFIXES.some((p) => pathname.startsWith(p));
 
-  if (hide) return null;
+  // ✅ Gate here (safe): this component always calls the same hooks
+  if (hide || isPremium) return null;
 
-  // ✅ render a child component instead of conditionally calling hooks
   return <FreeUsageProgressBadgeInner />;
 }
 
 function FreeUsageProgressBadgeInner() {
-  const { isPremium } = useEntitlements();
   const userKey = useUserKey();
 
   const [shown, setShown] = useState(0);
@@ -15892,9 +15880,6 @@ function FreeUsageProgressBadgeInner() {
   }, [userKey]);
 
   useEffect(() => {
-    // optional: if premium, don’t even attach listeners
-    if (isPremium) return;
-
     refresh();
 
     const evt = usageCapEventName();
@@ -15907,9 +15892,7 @@ function FreeUsageProgressBadgeInner() {
       window.removeEventListener(evt, onChange);
       window.removeEventListener("expatise:session-changed", onChange);
     };
-  }, [refresh, isPremium]);
-
-  if (isPremium) return null;
+  }, [refresh]);
 
   const text = useMemo(() => {
     return `${shown}/${FREE_CAPS.questionsShown} Questions · ${starts}/${FREE_CAPS.examStarts} Exams`;
@@ -26372,7 +26355,8 @@ export type TestModeId =
   | "rapid"
   | "mistakes"
   | "bookmarks"
-  | "topics";
+  | "topics"
+  | "tenpercent";
 
 export type TestModeConfig = {
   modeId: TestModeId;
@@ -26403,9 +26387,20 @@ export const TEST_MODES: Record<TestModeId, TestModeConfig> = {
     routeBase: "/test/real",
     datasetId: "cn-2023-test1",
     datasetVersion: "cn-2023-test1@v1",
-    questionCount: 10,
+    questionCount: 100,
     timeLimitMinutes: 45,
     preflightRequiredQuestions: 100,
+  },
+
+  tenpercent: {
+    modeId: "tenpercent",
+    modeKey: "ten-percent-test",
+    routeBase: "/test/ten-percent",
+    datasetId: "cn-2023-test1",
+    datasetVersion: "cn-2023-test1@v1",
+    questionCount: 10,
+    timeLimitMinutes: 5,
+    preflightRequiredQuestions: 10,
   },
 
   practice: {
@@ -26609,7 +26604,8 @@ export function seededShuffle<T>(arr: T[], seedString: string): T[] {
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  productionBrowserSourceMaps: true,
+  // other config options here...
 };
 
 export default nextConfig;
@@ -46503,7 +46499,7 @@ export const config = {
       "id": "q0281",
       "number": 281,
       "type": "row",
-      "prompt": "Driving this motorized vehicle on road is not an illegal act.",
+      "prompt": "Driving this motorized vehicle on the road is not an illegal act.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -72019,7 +72015,7 @@ export const config = {
         {
           "id": "q0697_o2",
           "originalKey": "B",
-          "text": "stop-for-inspection"
+          "text": "stop for inspection"
         },
         {
           "id": "q0697_o3",
@@ -74836,7 +74832,7 @@ export const config = {
       "id": "q0735",
       "number": 735,
       "type": "mcq",
-      "prompt": "What’s the role of the prohibitive sign?",
+      "prompt": "What’s the role of a prohibitive sign?",
       "options": [
         {
           "id": "q0735_o1",
