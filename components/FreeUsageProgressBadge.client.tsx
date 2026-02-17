@@ -16,19 +16,19 @@ const HIDE_BADGE_PREFIXES = ["/login", "/onboarding", "/forgot-password"];
 
 export default function FreeUsageProgressBadge() {
   const pathname = usePathname() || "/";
+  const { isPremium } = useEntitlements();
 
   const hide =
     HIDE_BADGE_EXACT.has(pathname) ||
     HIDE_BADGE_PREFIXES.some((p) => pathname.startsWith(p));
 
-  if (hide) return null;
+  // ✅ Gate here (safe): this component always calls the same hooks
+  if (hide || isPremium) return null;
 
-  // ✅ render a child component instead of conditionally calling hooks
   return <FreeUsageProgressBadgeInner />;
 }
 
 function FreeUsageProgressBadgeInner() {
-  const { isPremium } = useEntitlements();
   const userKey = useUserKey();
 
   const [shown, setShown] = useState(0);
@@ -41,9 +41,6 @@ function FreeUsageProgressBadgeInner() {
   }, [userKey]);
 
   useEffect(() => {
-    // optional: if premium, don’t even attach listeners
-    if (isPremium) return;
-
     refresh();
 
     const evt = usageCapEventName();
@@ -56,9 +53,7 @@ function FreeUsageProgressBadgeInner() {
       window.removeEventListener(evt, onChange);
       window.removeEventListener("expatise:session-changed", onChange);
     };
-  }, [refresh, isPremium]);
-
-  if (isPremium) return null;
+  }, [refresh]);
 
   const text = useMemo(() => {
     return `${shown}/${FREE_CAPS.questionsShown} Questions · ${starts}/${FREE_CAPS.examStarts} Exams`;
