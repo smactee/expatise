@@ -105,29 +105,34 @@
 
 /* ===== Matrix: fixed geometry like the mock ===== */
 .matrix {
-  display: grid;
+  position: relative;
   width: 100%;
 
-  /* swapped: 4 columns (day parts) and 7 rows (weekdays) */
-  grid-template-columns: max-content repeat(4, minmax(0, 1fr));
-  grid-template-rows: 26px repeat(7, 46px);
+  /* responsive sizing knobs */
+  --label-w: clamp(44px, 12vw, 64px);
+  --header-h: clamp(20px, 5vw, 26px);
+  --cell-h: clamp(36px, 8.5vw, 46px);
 
-  column-gap: 1px;
+  display: grid;
+
+  /* ✅ stable grid tracks */
+  grid-template-columns: var(--label-w) repeat(4, minmax(0, 1fr));
+  grid-template-rows: var(--header-h) repeat(7, var(--cell-h));
+
+  column-gap: clamp(6px, 1.8vw, 12px);
   row-gap: 5px;
 
   align-items: center;
+
+  /* ✅ critical for preventing text overlap */
+  min-width: 0;
 }
+
 
 
 /* dashed divider under weekday labels */
 .matrix::after {
-  content: "";
-  position: absolute;
-  left: var(--label-w);
-  right: 0;
-  top: 34px;
-  border-top: 1px dashed rgba(148, 163, 184, 0.35);
-  opacity: 0.9;
+  content: none;
 }
 
 .corner {
@@ -136,11 +141,17 @@
 }
 
 .colLabel {
+  min-width: 0;                 /* ✅ critical */
   text-align: center;
-  font-size: 15px;
+  font-size: clamp(10px, 2.8vw, 15px);
+  line-height: 1.05;
   color: rgba(17, 24, 39, 0.48);
   letter-spacing: 0.2px;
   font-weight: 600;
+
+  white-space: nowrap;          /* prevent wrap chaos */
+  overflow: hidden;             /* prevent overlap into neighbors */
+  text-overflow: ellipsis;      /* safe fallback */
 }
 
 .rowLabel {
@@ -153,10 +164,18 @@
   font-weight: 600;
 }
 
+.colLabelLong { display: inline; }
+.colLabelShort { display: none; }
+
+@media (max-width: 420px) {
+  .colLabelLong { display: none; }
+  .colLabelShort { display: inline; }
+}
+
 /* ===== Cells: tile style ===== */
 .cell {
   position: relative;
-  width: var(--cell-w);
+  width: 100%;
   height: var(--cell-h);
 
   border-radius: 14px;
@@ -165,14 +184,59 @@
   box-shadow:
     0 14px 28px rgba(15, 33, 70, 0.08);
 
-  display: grid;
-  place-items: center;
-
+  display: flex;
+align-items: center;
+justify-content: center;
+padding: clamp(4px, 1vw, 8px);
   cursor: pointer;
   user-select: none;
 
   transition: transform 160ms ease, box-shadow 160ms ease;
   outline: none;
+}
+.cellStack{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  /* ✅ makes the number sit closer to the percent */
+  gap: clamp(0px, 0.4vw, 2px);
+
+  line-height: 1;
+  min-height: 0;
+}
+
+.cellPercent{
+  font-size: clamp(12px, 3.2vw, 15px);
+  font-weight: 750;
+  line-height: 1.05;
+  color: rgba(17, 24, 39, 0.72);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.7);
+}
+
+.cellCountRow{
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  line-height: 1;
+
+  /* ✅ tiny nudge upward so it never scrapes bottom */
+  transform: translateY(clamp(-2px, -0.3vw, 0px));
+}
+
+.count{
+  font-size: clamp(13px, 3.6vw, 16px);
+  font-weight: 750;
+  line-height: 1;
+  color: rgba(17, 24, 39, 0.86);
+}
+
+.dot{
+  width: clamp(5px, 1.2vw, 7px);
+  height: clamp(5px, 1.2vw, 7px);
+  border-radius: 999px;
+  background: rgba(17, 24, 39, 0.55);
 }
 
 /* =======================================================
@@ -221,13 +285,7 @@
     inset 0 1px 0 rgba(255, 255, 255, 0.72);
 }
 
-.cellValue {
-  font-size: 15px;
-  font-weight: 750;
-  letter-spacing: -0.3px;
-  color: rgba(17, 24, 39, 0.72);
-  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.7);
-}
+
 
 /* Confidence “• count” bottom-right */
 .conf {
@@ -584,9 +642,14 @@
 }
 
 /* Make cell text readable on dark surfaces */
-:global(:root[data-theme='dark']) .cellValue{
+:global(:root[data-theme='dark']) .cellPercent,
+:global(:root[data-theme='dark']) .count{
   color: rgba(249,250,251,0.88);
   text-shadow: 0 1px 0 rgba(0,0,0,0.45);
+}
+
+:global(:root[data-theme='dark']) .dot{
+  background: rgba(249,250,251,0.65);
 }
 
 :global(:root[data-theme='dark']) .conf{

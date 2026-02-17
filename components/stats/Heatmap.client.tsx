@@ -70,12 +70,20 @@ function cellBg(avgScore: number, attemptsCount: number) {
   return `rgba(${base.r}, ${base.g}, ${base.b}, ${clamp(alpha, 0.55, 0.98)})`;
 }
 
+const DAYPART_SHORT: Record<string, string> = {
+  morning: 'AM',
+  midday: 'Noon',
+  evening: 'PM',
+  late: 'Late',
+};
+
 const DAYPART_TIPS: Record<string, { title: string; sub?: string }> = {
   morning: { title: 'Morning: 6~12 AM', sub: 'Based on your local time.' },
   midday: { title: 'Midday: 12~5 PM', sub: 'Based on your local time.' },
   evening: { title: 'Evening: 5~10 PM', sub: 'Based on your local time.' },
   late:   { title: 'Late: 10~6 (crosses midnight)', sub: 'Based on your local time.' },
 };
+
 
 
 
@@ -329,11 +337,11 @@ useEffect(() => {
           {data.dayParts.map((p, c) => (
   <div
     key={`col-${p.key}`}
-    ref={(node) => {
-      partRefs.current[c] = node;
-    }}
+    ref={(node) => {partRefs.current[c] = node;}}
     className={`${styles.colLabel} ${styles.partLabel}`}
     style={{ gridColumn: c + 2, gridRow: 1 }}
+    title={p.label}
+  aria-label={p.label}
     onPointerDown={(e) => setPointerType((e.pointerType as any) ?? 'mouse')}
     onMouseEnter={() => {
       setPartHover(c);
@@ -356,7 +364,7 @@ useEffect(() => {
       }
     }}
   >
-    {p.label}
+ {DAYPART_SHORT[p.key] ?? p.label}
   </div>
 ))}
 
@@ -442,18 +450,20 @@ return (
                   role="button"
                   tabIndex={0}
                 >
-                  <div className={styles.cellValue}>
-                    {cell.attemptsCount > 0 ? `${cell.avgScore}%` : '—'}
-                  </div>
+                  <div className={styles.cellStack}>
+  <div className={styles.cellPercent}>
+    {cell.attemptsCount > 0 ? `${cell.avgScore}%` : '—'}
+  </div>
 
-                  {cell.attemptsCount > 0 ? (
-                    <>
-                      <span className={styles.dot} style={{ opacity: dotA }} />
-                      <span className={styles.count}>{cell.attemptsCount}</span>
-                    </>
-                  ) : null}
-                </div>
-              );
+  {cell.attemptsCount > 0 ? (
+    <div className={styles.cellCountRow}>
+      <span className={styles.dot} style={{ opacity: dotA }} />
+      <span className={styles.count}>{cell.attemptsCount}</span>
+    </div>
+  ) : null}
+</div>
+  </div>
+);
             })
           )}
         </div>
