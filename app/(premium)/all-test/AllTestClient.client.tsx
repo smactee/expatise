@@ -853,43 +853,17 @@ if (!item) {
 
 
   return (
-    <main className={styles.page}>
-      <div className={styles.frame}>
-        <BackButton />
-        {/* Top bar */}
-        <div className={styles.topBar}>
-<div className={styles.topLeftSpacer} aria-hidden="true" />
-
-          <div className={styles.topRight}>
-  <div className={styles.topRightStack}>
-    {hasTimer ? (
-      <div className={styles.timer}>
-        <span className={styles.timerIcon} aria-hidden="true" />
-        <span className={styles.timerText}>{formatTime(timeLeft)}</span>
-      </div>
-    ) : (
-      <div className={styles.timer}>
-        <span className={styles.timerIcon} aria-hidden="true" />
-        <span className={styles.timerText}>No time limit</span>
-      </div>
-    )}
-
-    {/* ✅ Rapid-only auto-advance countdown */}
-    {showAutoAdvance && (
-      <div className={styles.timer}>
-        <span className={styles.timerIcon} aria-hidden="true" />
-        <span className={styles.timerText}>
-          Next in {autoLeft ?? autoAdvanceSeconds}s
-        </span>
-      </div>
-    )}
-  </div>
-</div>
-
+  <main className={styles.page}>
+    <div className={styles.frame}>
+      {/* Top bar */}
+      <div className={styles.topBar}>
+        {/* LEFT: Back */}
+        <div className={styles.topLeft}>
+          <BackButton />
         </div>
 
-        {/* Progress row */}
-        <div className={styles.progressRow}>
+        {/* CENTER: Progress (moved here, same markup you already had) */}
+        <div className={styles.progressInline}>
           <div className={styles.progressTrack} aria-hidden="true">
             <div
               className={styles.progressFill}
@@ -897,8 +871,40 @@ if (!item) {
             />
           </div>
 
-          <div className={styles.progressText}>{currentNo}/{total}</div>
+          <div className={styles.progressText}>
+            {currentNo}/{total}
+          </div>
         </div>
+
+        {/* RIGHT: Timer (your existing code unchanged) */}
+        <div className={styles.topRight}>
+          <div className={styles.topRightStack}>
+            {hasTimer ? (
+              <div className={styles.timer}>
+                <span className={styles.timerIcon} aria-hidden="true" />
+                <span className={styles.timerText}>{formatTime(timeLeft)}</span>
+              </div>
+            ) : (
+              <div className={styles.timer}>
+                <span className={styles.timerIcon} aria-hidden="true" />
+                <span className={styles.timerText}>No time limit</span>
+              </div>
+            )}
+
+            {/* ✅ Rapid-only auto-advance countdown */}
+            {showAutoAdvance && (
+              <div className={styles.timer}>
+                <span className={styles.timerIcon} aria-hidden="true" />
+                <span className={styles.timerText}>
+                  Next in {autoLeft ?? autoAdvanceSeconds}s
+                </span>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
+
 
         {/* Question row (with bookmark icon on the right) */}
         <div className={styles.questionRow}>
@@ -915,7 +921,6 @@ if (!item) {
             title={isBookmarked(item.id) ? 'Bookmarked' : 'Bookmark'}
             data-bookmarked={isBookmarked(item.id) ? 'true' : 'false'}
           >
-            {/* NOTE: this is where your class rename matters */}
             <span className={styles.bookmarkIcon} aria-hidden="true" />
           </button>
         </div>
@@ -960,8 +965,6 @@ if (!item) {
     </button>
   </>
 )}
-
-
   {item.type === 'MCQ' &&
   item.options.map((opt, idx) => {
     const key = opt.originalKey ?? String.fromCharCode(65 + idx);
@@ -979,17 +982,9 @@ if (!item) {
       </button>
     );
   })}
-
 </div>
 
-
-
-
-
-
         {/* Next */}
-
-
         <button
           type="button"
           className={styles.nextBtn}
