@@ -326,7 +326,7 @@
   width: calc(100% - 60px);
   top: 470px;
 
-  bottom: -30; /* ✅ fill to bottom */
+  bottom: -60px; /* ✅ fill to bottom */
   overflow-y: auto;
 
   padding-right: 6px;
@@ -451,7 +451,8 @@
   left: 50%;
   transform: translateX(-50%);   /* ✅ center */
   top: auto;                     /* ✅ stop using top */
-  bottom: calc(-20px + env(safe-area-inset-bottom)); /* ✅ iPhone safe area */
+  bottom: calc(12px + env(safe-area-inset-bottom));
+ /* ✅ iPhone safe area */
 
   width: min(316px, calc(100% - 60px)); /* ✅ keeps same margins on small screens */
   height: 41px;

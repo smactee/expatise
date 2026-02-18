@@ -2176,43 +2176,17 @@ if (!item) {
 
 
   return (
-    <main className={styles.page}>
-      <div className={styles.frame}>
-        <BackButton />
-        {/* Top bar */}
-        <div className={styles.topBar}>
-<div className={styles.topLeftSpacer} aria-hidden="true" />
-
-          <div className={styles.topRight}>
-  <div className={styles.topRightStack}>
-    {hasTimer ? (
-      <div className={styles.timer}>
-        <span className={styles.timerIcon} aria-hidden="true" />
-        <span className={styles.timerText}>{formatTime(timeLeft)}</span>
-      </div>
-    ) : (
-      <div className={styles.timer}>
-        <span className={styles.timerIcon} aria-hidden="true" />
-        <span className={styles.timerText}>No time limit</span>
-      </div>
-    )}
-
-    {/* ✅ Rapid-only auto-advance countdown */}
-    {showAutoAdvance && (
-      <div className={styles.timer}>
-        <span className={styles.timerIcon} aria-hidden="true" />
-        <span className={styles.timerText}>
-          Next in {autoLeft ?? autoAdvanceSeconds}s
-        </span>
-      </div>
-    )}
-  </div>
-</div>
-
+  <main className={styles.page}>
+    <div className={styles.frame}>
+      {/* Top bar */}
+      <div className={styles.topBar}>
+        {/* LEFT: Back */}
+        <div className={styles.topLeft}>
+          <BackButton />
         </div>
 
-        {/* Progress row */}
-        <div className={styles.progressRow}>
+        {/* CENTER: Progress (moved here, same markup you already had) */}
+        <div className={styles.progressInline}>
           <div className={styles.progressTrack} aria-hidden="true">
             <div
               className={styles.progressFill}
@@ -2220,107 +2194,137 @@ if (!item) {
             />
           </div>
 
-          <div className={styles.progressText}>{currentNo}/{total}</div>
+          <div className={styles.progressText}>
+            {currentNo}/{total}
+          </div>
         </div>
 
-        {/* Question row (with bookmark icon on the right) */}
-        <div className={styles.questionRow}>
-          <p className={styles.questionText}>{item.prompt}</p>
+        {/* RIGHT: Timer (your existing code unchanged) */}
+        <div className={styles.topRight}>
+          <div className={styles.topRightStack}>
+            {hasTimer ? (
+              <div className={styles.timer}>
+                <span className={styles.timerIcon} aria-hidden="true" />
+                <span className={styles.timerText}>{formatTime(timeLeft)}</span>
+              </div>
+            ) : (
+              <div className={styles.timer}>
+                <span className={styles.timerIcon} aria-hidden="true" />
+                <span className={styles.timerText}>No time limit</span>
+              </div>
+            )}
+
+            {/* ✅ Rapid-only auto-advance countdown */}
+            {showAutoAdvance && (
+              <div className={styles.timer}>
+                <span className={styles.timerIcon} aria-hidden="true" />
+                <span className={styles.timerText}>
+                  Next in {autoLeft ?? autoAdvanceSeconds}s
+                </span>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
+
+
+ {/* Question row (with bookmark icon on the right) */}
+{/* CONTENT AREA (one block) */}
+<div className={styles.contentArea}>
+  <div className={styles.centerStack}>
+    {/* Question row (with bookmark icon on the right) */}
+    <div className={styles.questionRow}>
+      <p className={styles.questionText}>{item.prompt}</p>
+
+      <button
+        type="button"
+        className={styles.bookmarkBtn}
+        onClick={(e) => {
+          e.stopPropagation();
+          toggle(item.id);
+        }}
+        aria-label={isBookmarked(item.id) ? 'Remove bookmark' : 'Add bookmark'}
+        title={isBookmarked(item.id) ? 'Bookmarked' : 'Bookmark'}
+        data-bookmarked={isBookmarked(item.id) ? 'true' : 'false'}
+      >
+        <span className={styles.bookmarkIcon} aria-hidden="true" />
+      </button>
+    </div>
+
+    {/* Image (if exists) */}
+    {imageAsset && (
+      <div className={styles.imageWrap}>
+        <Image
+          src={imageAsset.src}
+          alt="Question image"
+          fill
+          className={styles.image}
+          priority
+          unoptimized
+        />
+      </div>
+    )}
+
+    {/* Answers */}
+    <div className={styles.answers}>
+      {item.type === 'ROW' && (
+        <>
+          <button
+            type="button"
+            className={`${styles.optionBtn} ${styles.rowBtn} ${
+              selectedKey === 'R' ? styles.optionActive : ''
+            }`}
+            onClick={() => onOptionTap('R')}
+          >
+            <span className={styles.optionText}>Right</span>
+          </button>
 
           <button
             type="button"
-            className={styles.bookmarkBtn}
-            onClick={(e) => {
-              e.stopPropagation();
-              toggle(item.id);
-            }}
-            aria-label={isBookmarked(item.id) ? 'Remove bookmark' : 'Add bookmark'}
-            title={isBookmarked(item.id) ? 'Bookmarked' : 'Bookmark'}
-            data-bookmarked={isBookmarked(item.id) ? 'true' : 'false'}
+            className={`${styles.optionBtn} ${styles.rowBtn} ${
+              selectedKey === 'W' ? styles.optionActive : ''
+            }`}
+            onClick={() => onOptionTap('W')}
           >
-            {/* NOTE: this is where your class rename matters */}
-            <span className={styles.bookmarkIcon} aria-hidden="true" />
+            <span className={styles.optionText}>Wrong</span>
           </button>
-        </div>
+        </>
+      )}
 
-        {/* Image (if exists) */}
-        {imageAsset && (
-  <div className={styles.imageWrap}>
-    <Image
-      src={imageAsset.src}
-      alt="Question image"
-      fill
-      className={styles.image}
-      priority
-      unoptimized
-    />
+      {item.type === 'MCQ' &&
+        item.options.map((opt, idx) => {
+          const key = opt.originalKey ?? String.fromCharCode(65 + idx);
+          const active = selectedKey === key;
+
+          return (
+            <button
+              key={opt.id}
+              type="button"
+              className={`${styles.optionBtn} ${active ? styles.optionActive : ''}`}
+              onClick={() => onOptionTap(key)}
+            >
+              <span className={styles.optionKey}>{key}.</span>
+              <span className={styles.optionText}>{opt.text}</span>
+            </button>
+          );
+        })}
+    </div>
+
+    {/* Next */}
+    <button
+      type="button"
+      className={styles.nextBtn}
+      onClick={() => selectedKey && void commitAndAdvance(selectedKey)}
+      disabled={!selectedKey}
+    >
+      <span className={styles.nextLabel}>Next</span>
+      <span className={styles.nextArrow} aria-hidden="true">→</span>
+    </button>
   </div>
-)}
-
-
-{/* Answers */}
-<div className={styles.answers}>
-  {item.type === 'ROW' && (
-  <>
-    <button
-      type="button"
-      className={`${styles.optionBtn} ${styles.rowBtn} ${
-        selectedKey === 'R' ? styles.optionActive : ''
-      }`}
-      onClick={() => onOptionTap('R')}
-    >
-      <span className={styles.optionText}>Right</span>
-    </button>
-
-    <button
-      type="button"
-      className={`${styles.optionBtn} ${styles.rowBtn} ${
-        selectedKey === 'W' ? styles.optionActive : ''
-      }`}
-     onClick={() => onOptionTap('W')}
-    >
-      <span className={styles.optionText}>Wrong</span>
-    </button>
-  </>
-)}
-
-
-  {item.type === 'MCQ' &&
-  item.options.map((opt, idx) => {
-    const key = opt.originalKey ?? String.fromCharCode(65 + idx);
-    const active = selectedKey === key;
-
-    return (
-      <button
-        key={opt.id}
-        type="button"
-        className={`${styles.optionBtn} ${active ? styles.optionActive : ''}`}
-        onClick={() => onOptionTap(key)}
-      >
-        <span className={styles.optionKey}>{key}.</span>
-        <span className={styles.optionText}>{opt.text}</span>
-      </button>
-    );
-  })}
-
 </div>
 
 
-
-
-
-
-        {/* Next */}
-
-
-        <button
-          type="button"
-          className={styles.nextBtn}
-          onClick={() => selectedKey && void commitAndAdvance(selectedKey)}
-          disabled={!selectedKey}
-        >
-          Next <span className={styles.nextArrow} aria-hidden="true">→</span>
-        </button>
       </div>
     </main>
   );
@@ -2351,7 +2355,18 @@ if (!item) {
 .frame {
   width: 100%;
   max-width: 390px; /* Figma phone frame */
-  padding: 18px 16px 24px;
+  padding: 18px 16px var(--s-bottom);
+  --s-top-to-question: clamp(12px, 2.8vw, 14px); /* was 29px */
+  --s-question-to-image: clamp(4px, 1.4vw, 6px); /* was 10px */
+  --s-image-to-answers: clamp(12px, 2.8vw, 15px); /* was 30px */
+  --s-answer-gap: clamp(8px, 2.2vw, 10px); /* was 20px */
+  --s-answers-to-next: clamp(12px, 2.8vw, 15px); /* was 30px */
+  --s-bottom: clamp(8px, 2.2vw, 12px); /* bottom breathing room */
+  --card-w: 330px;
+  height: 100dvh;
+display: flex;
+flex-direction: column;
+overflow: hidden;
 }
 
 .loading {
@@ -2362,10 +2377,38 @@ if (!item) {
 
 /* --- Top bar --- */
 .topBar {
+  display: grid;
+  grid-template-columns: auto 1fr auto; /* back | progress | timer */
+  align-items: center;
+  column-gap: 10px;
+  padding: 0;
+}
+
+.topLeft {
+  display: inline-flex;
+  align-items: center;
+}
+
+/* NEW: progress now lives in the top bar */
+.progressInline {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 0; /* your figma shows tight top */
+  gap: 10px;
+
+  /* keeps it from stretching too wide or crushing the timer */
+  width: clamp(180px, 45vw, 260px);
+  justify-self: center;
+
+  min-width: 0;
+}
+
+.progressTrack {
+  flex: 1;
+  min-width: 0;
+}
+
+.progressText {
+  white-space: nowrap;
 }
 
 .backBtn {
@@ -2431,13 +2474,7 @@ if (!item) {
 
 /* --- Progress row --- */
 /* top bar → progress: 28 */
-.progressRow {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  margin-top: 28px;
-}
+
 
 .progressTrack {
   flex: 1;
@@ -2462,23 +2499,28 @@ if (!item) {
 
 /* progress → question: 29 */
 .questionRow {
-  margin-top: 29px;
+  margin-top: 0;
+  width: 100%;
+  max-width: var(--card-w);
+  margin-left: auto;
+  margin-right: auto;
   display: flex;
   align-items: flex-start;
-  justify-content: space-between;
   gap: 12px;
 }
 
 .questionText {
   margin: 0;
-    font-family: 'Lato', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  font-family: 'Lato', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
   font-style: normal;
-  font-size: 20px;
-  font-weight: 300;
-  line-height: 28px;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: clamp(22px, 5.4vw, 26px);
   letter-spacing: -0.24px;
   color: #000;
   color: var(--test-text);
+  flex: 1;
+  min-width: 0;
 }
 
 /* Bookmark */
@@ -2574,7 +2616,7 @@ if (!item) {
 
 /* question → image */
 .imageWrap {
-  margin-top: 10px;
+  margin-top: 0;
 
   /* ✅ center the image box */
   margin-left: auto;
@@ -2582,10 +2624,10 @@ if (!item) {
 
   /* ✅ make it bigger without touching options styles */
   width: 100%;
-  max-width: 330px;
+  max-width: var(--card-w);
 
   /* pick a bigger height (safe + predictable) */
-height: clamp(240px, 52vw, 340px);
+height: min(clamp(180px, 45vw, 280px), 30vh);
 
   position: relative;
   border-radius: 12px;
@@ -2601,16 +2643,17 @@ height: clamp(240px, 52vw, 340px);
 
 /* image → answers: 30 */
 .answers {
-  margin-top: 30px;
+  align-items: center;
+  margin-top: 0;
   display: flex;
   flex-direction: column;
-  gap: 20px; /* gap between answers */
+  gap: var(--s-answer-gap); /* gap between answers */
 }
 
 /* ROW (Right/Wrong) button base from Figma rectangle */
 .rowBtn {
   width: 100%;
-  max-width: 330px; /* from your % margins ≈ 390 - 32 - 29 = ~329 */
+  max-width: var(--card-w); /* from your % margins ≈ 390 - 32 - 29 = ~329 */
   height: 46px;     /* if your design uses a different height, replace this */
   border-radius: 8px;
 
@@ -2632,6 +2675,7 @@ height: clamp(240px, 52vw, 340px);
 /* option card (315 x 41) */
 .optionBtn {
   width: 315px;
+  max-width: var(--card-w);
   min-height: 41px;
   border-radius: 14px;
   border: 1px solid rgba(43, 124, 175, 0.18);
@@ -2689,8 +2733,11 @@ height: clamp(240px, 52vw, 340px);
 
 /* answers → next button: 30 */
 .nextBtn {
-  margin-top: 30px;
-  width: 315px;
+  margin-top: 0;
+  width: 100%;
+  max-width: var(--card-w); /* keep it in line with the image and options */
+  margin-left: auto;
+  margin-right: auto;
   height: 41px;
   border-radius: 14px;
   cursor: pointer;
@@ -2707,10 +2754,25 @@ height: clamp(240px, 52vw, 340px);
 
   position: relative;
   border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   box-shadow: 0 10px 22px rgba(15, 33, 70, 0.18);
+  gap: 10px;
 }
 
+.nextLabel{
+  /* center stays true center */
+  line-height: 1;
+}
+
+.nextArrow{
+  position: static;
+  right: 18px;          /* tweak 16–20px to taste */
+  line-height: 1;
+  transform: translateY(1px); /* optional: nicer optical alignment */
+}
 .nextBtn::before {
   content: "";
   position: absolute;
@@ -2749,6 +2811,39 @@ height: clamp(240px, 52vw, 340px);
   flex-direction: column;
   align-items: flex-end;
   gap: 6px;
+}
+
+/* Area under topBar that can scroll IF content is too tall */
+.contentArea{
+  flex: 1;
+  min-height: 0;                 /* IMPORTANT for flex + overflow */
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+
+  display: flex;                 /* ✅ this is the missing piece */
+  flex-direction: column;        /* ✅ */
+  padding-top: 10px;             /* optional: adds breathing room */
+  padding-bottom: 10px;          /* optional: adds breathing room */
+}
+
+
+/* The “one block” that centers when there is extra space */
+.centerStack{
+  width: 100%;
+  max-width: var(--card-w);
+  margin-left: auto;
+  margin-right: auto;
+
+  /* THIS is the key: centers vertically when there is free space,
+     but becomes top-aligned automatically when content is tall */
+  margin-top: auto;
+  margin-bottom: auto;
+
+  display: flex;
+  flex-direction: column;
+  gap: 10px; /* tweak */
+  padding: 8px 0; /* tweak */
+   transform: translateY(10px);
 }
 
 ```
@@ -10471,90 +10566,130 @@ export default function OnboardingPage() {
   background: var(--color-page-bg);
 }
 
+:root{
+  --bottom-nav-height: 66px;
+  --bottom-nav-gap: 6px; /* was effectively 24px */
+  --bottom-safe: env(safe-area-inset-bottom);
+  --bottom-nav-clearance: calc(var(--bottom-nav-height) + var(--bottom-nav-gap) + var(--bottom-safe));
+}
+
 .content {
   width: 100%;
-  max-width: 560px;                /* roughly modern phone width */
-  margin: 60px auto 40px;             /* center column on desktop */
-  padding: 0 16px;            /* small side padding */
+  max-width: 560px;
+  margin: 0 auto;
+  box-sizing: border-box;
+
+  /* ✅ Minimal top gap (but still safe on notched devices in PWA/Capacitor) */
+  padding-top: max(12px, env(safe-area-inset-top));
+  padding-left: 16px;
+  padding-right: 16px;
+
+  /* ✅ Leave space for BottomNav */
+  padding-bottom: calc(var(--bottom-nav-clearance) + 6px);
+}
+
+/* Keep desktop feeling intentional (not glued to top) */
+@media (min-width: 768px) {
+  .content {
+    padding-top: 5px;
+    padding-bottom: calc(var(--bottom-nav-clearance) + 2px);
+  }
 }
 
 
 /* Exam card */
 .examCard {
   width: 100%;
-  aspect-ratio: 656 / 343;     /* match Figma card shape */
-  display: flex;
-  align-items: center;         /* text + car vertically centered */
-  padding: 24px 24px 26px;     /* adjust spacing to taste */
-  border-radius: 32px;         /* looks closer to your Figma rounding */
-  /* Base color + Figma-style linear gradient overlay */
+  aspect-ratio: 656 / 343;
+  min-height: 260px;
+
+  /* ✅ switch from grid to a simple positioned container */
+  position: relative;
+  display: block;
+
+  padding: clamp(16px, 4vw, 24px);
+  border-radius: 32px;
+
   background:
     linear-gradient(
       135deg,
-      rgba(43, 124, 175, 0.2) 0%,   /* #2B7CAF @ 20% */
-      rgba(255, 197, 66, 0.2) 100%  /* #FFC542 @ 20% */
+      rgba(43, 124, 175, 0.2) 0%,
+      rgba(255, 197, 66, 0.2) 100%
     ),
-    #eaf3ff;                         /* light base like your frame */
-  
-    box-shadow: 0 18px 40px rgba(15, 33, 70, 0.26);
-  overflow: hidden;
+    #eaf3ff;
+
+  box-shadow: 0 18px 40px rgba(15, 33, 70, 0.26);
+  overflow: hidden; /* keep the nice clipping */
 }
+
+
 
 
 /* Right side: blue car area */
 .carHero {
-  flex: 1;
-  display: flex;
-  justify-content: flex-end;
-  align-items: flex-end;
-  margin-left: 16px;
-  /* no background here – card background shows through */
-  background: transparent;
+  position: absolute;
+  right: -24px;      /* push slightly out so it feels bigger */
+  bottom: -10px;
+
+  /* ✅ THIS is the size control (big!) */
+  width: clamp(224px, 58vw, 416px);
+
+  z-index: 1;
+  pointer-events: none;
+  transform: translateX(-8px);
 }
 
-/* Car image */
 .carImage {
   display: block;
-  max-width: 400%;
-  height: 400%;
-  /* Optional: nudge it a bit like in Figma */
-  transform: translateY(6px);
+  width: 100%;
+  height: auto;
+  max-width: none;
+
+  transform: translateY(10px);
+  user-select: none;
 }
 
 
-/* Left side text */
-.examText {
-  flex: 1.1;
-  display: flex;
-  flex-direction: column;
-}
-
-.examLabel {
-  margin: 0;
-  font-size: 34px;
-  font-weight: 600;
-  color: var(--color-heading-strong);
-}
-
+.examLabel,
 .examTitle {
   margin: 0;
-  font-size: 34px;
-  font-weight: 700;
+  font-size: clamp(26px, 6.5vw, 34px);
+  line-height: 1.05;
   color: var(--color-heading-strong);
 }
 
-/* "My Test Day" link-style button */
+.examLabel { font-weight: 600; }
+.examTitle { font-weight: 700; }
+
 .myTestDayButton {
   align-self: flex-start;
   padding: 0;
   margin: 0;
   border: none;
   background: none;
-  font-size: 23px;
+  font-size: clamp(18px, 4.8vw, 23px);
   font-weight: 600;
   color: var(--color-heading-strong);
   cursor: pointer;
 }
+
+.bigDate {
+  font-size: clamp(26px, 6.5vw, 34px);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--color-heading-strong);
+}
+
+/* Left side text */
+.examText {
+  min-width: 0;
+  position: relative;
+  z-index: 2;
+
+  /* ✅ reserve room on the right so car never covers text */
+  padding-right: clamp(160px, 45vw, 300px);
+}
+
 
 /* Date input */
 .dateInput {
@@ -10582,12 +10717,6 @@ export default function OnboardingPage() {
   flex-direction: column;
 }
 
-.bigDate {
-  font-size: 34px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  color: var(--color-heading-strong);
-}
 
 /* test time text */
 .timeText {
@@ -10631,12 +10760,17 @@ export default function OnboardingPage() {
 }
 
 .sections {
-  margin-top: 32px;          /* space under Exam card */
+  margin-top: 10px;
   display: flex;
   flex-direction: column;
-  row-gap: 32px;             /* gap between Test Mode / Overall / My */
-  padding-bottom: 80px;      /* some breathing room at bottom */
+
+  /* ✅ bring "Overall" up */
+  row-gap: 20px;
+
+  /* optional: only affects bottom of page, not between rows */
+  padding-bottom: 0px;
 }
+
 
 /* Whole group: title + card row */
 .sectionGroup {
@@ -10645,11 +10779,12 @@ export default function OnboardingPage() {
 
 /* "Test Mode", "Overall", "My" */
 .sectionTitle {
-  margin: 0 0 12px;
+  margin: 0 0 8px;
   font-size: 23px;
   font-weight: 700;
   color: var(--color-heading-strong);
 }
+
 
 /* HORIZONTAL scroll row of cards */
 .cardRow {
@@ -10797,9 +10932,13 @@ export default function OnboardingPage() {
   display: flex;
   gap: 16px;
   overflow-x: auto;
-  padding: 8px 0 24px;
-  scrollbar-width: none;          /* Firefox */
+
+  /* ✅ less blank space under the row */
+  padding: 6px 0 10px;
+
+  scrollbar-width: none;
 }
+
 
 .dragRow::-webkit-scrollbar {
   display: none;                  /* Chrome / Safari */
@@ -10819,7 +10958,7 @@ export default function OnboardingPage() {
 .bottomNavWrapper {
   position: fixed;          /* float on top of content */
   left: 50%;
-  bottom: 24px;             /* distance from bottom of screen */
+  bottom: calc(var(--bottom-nav-gap) + var(--bottom-safe));  /* distance from bottom of screen */
   width: 100%;
   max-width: 560px;         /* same as .content max-width */
   display: flex;
@@ -11335,6 +11474,27 @@ export default function OnboardingPage() {
 
 :root[data-theme='dark'] .testModalSecondaryButton {
   color: rgba(255, 255, 255, 0.70);
+}
+
+:root{
+  --bottom-nav-hide-y: calc(var(--bottom-nav-height) + var(--bottom-nav-gap) + env(safe-area-inset-bottom) + 16px);
+}
+
+.bottomNavWrapper{
+  /* you already have position/left/bottom etc */
+  transform: translate(-50%, 0);
+  transition: transform 220ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  will-change: transform;
+}
+
+.bottomNavWrapperHidden{
+  transform: translate(-50%, var(--bottom-nav-hide-y));
+}
+
+@media (prefers-reduced-motion: reduce){
+  .bottomNavWrapper{
+    transition: none;
+  }
 }
 
 ```
@@ -14593,7 +14753,7 @@ export default function TestModeResultsPage() {
   width: calc(100% - 60px);
   top: 470px;
 
-  bottom: -30; /* ✅ fill to bottom */
+  bottom: -60px; /* ✅ fill to bottom */
   overflow-y: auto;
 
   padding-right: 6px;
@@ -14718,7 +14878,8 @@ export default function TestModeResultsPage() {
   left: 50%;
   transform: translateX(-50%);   /* ✅ center */
   top: auto;                     /* ✅ stop using top */
-  bottom: calc(-20px + env(safe-area-inset-bottom)); /* ✅ iPhone safe area */
+  bottom: calc(12px + env(safe-area-inset-bottom));
+ /* ✅ iPhone safe area */
 
   width: min(316px, calc(100% - 60px)); /* ✅ keeps same margins on small screens */
   height: 41px;
@@ -15037,7 +15198,7 @@ import styles from '../app/page.module.css';
 import { useEffect, useRef, useState } from 'react';
 
 type BottomNavProps = {
-  onOffsetChange?: (offsetY: number) => void;
+  onOffsetChange?: (offsetY: number) => void; // keep for compatibility
 };
 
 export default function BottomNav({ onOffsetChange }: BottomNavProps) {
@@ -15047,140 +15208,132 @@ export default function BottomNav({ onOffsetChange }: BottomNavProps) {
   const isStats = pathname === '/stats';
   const isProfile = pathname === '/profile';
 
-  const [offsetY, setOffsetY] = useState(0);
+  const [hidden, setHidden] = useState(false);
+  const hiddenRef = useRef(false);
 
-  const lastScrollYRef = useRef(0);
-  const offsetYRef = useRef(0);
+  const lastYRef = useRef(0);
+  const downAccumRef = useRef(0);
+  const upAccumRef = useRef(0);
+  const tickingRef = useRef(false);
 
-  // keep latest callback without re-binding scroll listener
   const onOffsetChangeRef = useRef<BottomNavProps['onOffsetChange']>(onOffsetChange);
   useEffect(() => {
     onOffsetChangeRef.current = onOffsetChange;
   }, [onOffsetChange]);
 
+  const setHiddenSafe = (nextHidden: boolean) => {
+    if (nextHidden === hiddenRef.current) return;
+    hiddenRef.current = nextHidden;
+    setHidden(nextHidden);
+
+    // Optional compatibility: 0 when shown, ~hide distance when hidden
+    onOffsetChangeRef.current?.(nextHidden ? 90 : 0);
+  };
+
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
-    lastScrollYRef.current = window.scrollY;
-    offsetYRef.current = 0;
+    lastYRef.current = window.scrollY;
 
-    const handleScroll = () => {
-      const currentY = window.scrollY;
-      const delta = currentY - lastScrollYRef.current;
-      lastScrollYRef.current = currentY;
+    const HIDE_THRESHOLD = 28; // scroll down px before hiding
+    const SHOW_THRESHOLD = 14; // scroll up px before showing
+    const TOP_LOCK = 8;        // always show near top
+    const MIN_SCROLL_TO_HIDE = 40; // avoid hiding immediately at the top
 
-      const maxOffset = 90;
-      let next = offsetYRef.current + delta;
+    const onScroll = () => {
+      if (tickingRef.current) return;
+      tickingRef.current = true;
 
-      if (next < 0) next = 0;
-      if (next > maxOffset) next = maxOffset;
+      requestAnimationFrame(() => {
+        tickingRef.current = false;
 
-      if (next !== offsetYRef.current) {
-        offsetYRef.current = next;
-        setOffsetY(next); // ✅ BottomNav state update
-        onOffsetChangeRef.current?.(next); // ✅ Parent update (safe: not inside updater)
-      }
+        const y = window.scrollY;
+        const delta = y - lastYRef.current;
+        lastYRef.current = y;
+
+        // Always show when near the top
+        if (y <= TOP_LOCK) {
+          downAccumRef.current = 0;
+          upAccumRef.current = 0;
+          setHiddenSafe(false);
+          return;
+        }
+
+        if (delta > 0) {
+          // Scrolling DOWN
+          downAccumRef.current += delta;
+          upAccumRef.current = 0;
+
+          if (y > MIN_SCROLL_TO_HIDE && downAccumRef.current >= HIDE_THRESHOLD) {
+            downAccumRef.current = 0;
+            setHiddenSafe(true);
+          }
+        } else if (delta < 0) {
+          // Scrolling UP
+          upAccumRef.current += -delta;
+          downAccumRef.current = 0;
+
+          if (upAccumRef.current >= SHOW_THRESHOLD) {
+            upAccumRef.current = 0;
+            setHiddenSafe(false);
+          }
+        }
+      });
     };
 
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
   return (
     <div
-      className={styles.bottomNavWrapper}
-      style={{ transform: `translate(-50%, ${offsetY}px)` }}
+      className={`${styles.bottomNavWrapper} ${hidden ? styles.bottomNavWrapperHidden : ''}`}
     >
       <nav className={styles.bottomNav}>
         {/* Home */}
-        <Link
-          href="/"
-          className={`${styles.navItem} ${isHome ? styles.navItemActive : ''}`}
-        >
+        <Link href="/" className={`${styles.navItem} ${isHome ? styles.navItemActive : ''}`}>
           {isHome ? (
             <div className={styles.navPill}>
               <span className={styles.navIcon}>
-                <Image
-                  src="/images/home/icons/navbar-home-icon.png"
-                  alt="Navigation bar Home Icon"
-                  width={30}
-                  height={30}
-                  draggable={false}
-                />
+                <Image src="/images/home/icons/navbar-home-icon.png" alt="Navigation bar Home Icon" width={30} height={30} draggable={false} />
               </span>
               <span className={styles.navLabel}>Home</span>
             </div>
           ) : (
             <span className={styles.navIcon}>
-              <Image
-                src="/images/home/icons/navbar-home-icon.png"
-                alt="Navigation bar Home Icon"
-                width={30}
-                height={30}
-                draggable={false}
-              />
+              <Image src="/images/home/icons/navbar-home-icon.png" alt="Navigation bar Home Icon" width={30} height={30} draggable={false} />
             </span>
           )}
         </Link>
 
         {/* Stats */}
-        <Link
-          href="/stats"
-          className={`${styles.navItem} ${isStats ? styles.navItemActive : ''}`}
-        >
+        <Link href="/stats" className={`${styles.navItem} ${isStats ? styles.navItemActive : ''}`}>
           {isStats ? (
             <div className={styles.navPill}>
               <span className={styles.navIcon}>
-                <Image
-                  src="/images/home/icons/navbar-stats-icon.png"
-                  alt="Navigation bar Stats Icon"
-                  width={30}
-                  height={30}
-                  draggable={false}
-                />
+                <Image src="/images/home/icons/navbar-stats-icon.png" alt="Navigation bar Stats Icon" width={30} height={30} draggable={false} />
               </span>
               <span className={styles.navLabel}>Stats</span>
             </div>
           ) : (
             <span className={styles.navIcon}>
-              <Image
-                src="/images/home/icons/navbar-stats-icon.png"
-                alt="Navigation bar Stats Icon"
-                width={30}
-                height={30}
-                draggable={false}
-              />
+              <Image src="/images/home/icons/navbar-stats-icon.png" alt="Navigation bar Stats Icon" width={30} height={30} draggable={false} />
             </span>
           )}
         </Link>
 
         {/* Profile */}
-        <Link
-          href="/profile"
-          className={`${styles.navItem} ${isProfile ? styles.navItemActive : ''}`}
-        >
+        <Link href="/profile" className={`${styles.navItem} ${isProfile ? styles.navItemActive : ''}`}>
           {isProfile ? (
             <div className={styles.navPill}>
               <span className={styles.navIcon}>
-                <Image
-                  src="/images/home/icons/navbar-profile-icon.png"
-                  alt="Navigation bar Profile Icon"
-                  width={30}
-                  height={30}
-                  draggable={false}
-                />
+                <Image src="/images/home/icons/navbar-profile-icon.png" alt="Navigation bar Profile Icon" width={30} height={30} draggable={false} />
               </span>
               <span className={styles.navLabel}>Profile</span>
             </div>
           ) : (
             <span className={styles.navIcon}>
-              <Image
-                src="/images/home/icons/navbar-profile-icon.png"
-                alt="Navigation bar Profile Icon"
-                width={30}
-                height={30}
-                draggable={false}
-              />
+              <Image src="/images/home/icons/navbar-profile-icon.png" alt="Navigation bar Profile Icon" width={30} height={30} draggable={false} />
             </span>
           )}
         </Link>
@@ -17597,12 +17750,20 @@ function cellBg(avgScore: number, attemptsCount: number) {
   return `rgba(${base.r}, ${base.g}, ${base.b}, ${clamp(alpha, 0.55, 0.98)})`;
 }
 
+const DAYPART_SHORT: Record<string, string> = {
+  morning: 'AM',
+  midday: 'Noon',
+  evening: 'PM',
+  late: 'Late',
+};
+
 const DAYPART_TIPS: Record<string, { title: string; sub?: string }> = {
   morning: { title: 'Morning: 6~12 AM', sub: 'Based on your local time.' },
   midday: { title: 'Midday: 12~5 PM', sub: 'Based on your local time.' },
   evening: { title: 'Evening: 5~10 PM', sub: 'Based on your local time.' },
   late:   { title: 'Late: 10~6 (crosses midnight)', sub: 'Based on your local time.' },
 };
+
 
 
 
@@ -17856,11 +18017,11 @@ useEffect(() => {
           {data.dayParts.map((p, c) => (
   <div
     key={`col-${p.key}`}
-    ref={(node) => {
-      partRefs.current[c] = node;
-    }}
+    ref={(node) => {partRefs.current[c] = node;}}
     className={`${styles.colLabel} ${styles.partLabel}`}
     style={{ gridColumn: c + 2, gridRow: 1 }}
+    title={p.label}
+  aria-label={p.label}
     onPointerDown={(e) => setPointerType((e.pointerType as any) ?? 'mouse')}
     onMouseEnter={() => {
       setPartHover(c);
@@ -17883,7 +18044,7 @@ useEffect(() => {
       }
     }}
   >
-    {p.label}
+ {DAYPART_SHORT[p.key] ?? p.label}
   </div>
 ))}
 
@@ -17969,18 +18130,20 @@ return (
                   role="button"
                   tabIndex={0}
                 >
-                  <div className={styles.cellValue}>
-                    {cell.attemptsCount > 0 ? `${cell.avgScore}%` : '—'}
-                  </div>
+                  <div className={styles.cellStack}>
+  <div className={styles.cellPercent}>
+    {cell.attemptsCount > 0 ? `${cell.avgScore}%` : '—'}
+  </div>
 
-                  {cell.attemptsCount > 0 ? (
-                    <>
-                      <span className={styles.dot} style={{ opacity: dotA }} />
-                      <span className={styles.count}>{cell.attemptsCount}</span>
-                    </>
-                  ) : null}
-                </div>
-              );
+  {cell.attemptsCount > 0 ? (
+    <div className={styles.cellCountRow}>
+      <span className={styles.dot} style={{ opacity: dotA }} />
+      <span className={styles.count}>{cell.attemptsCount}</span>
+    </div>
+  ) : null}
+</div>
+  </div>
+);
             })
           )}
         </div>
@@ -18172,29 +18335,34 @@ return (
 
 /* ===== Matrix: fixed geometry like the mock ===== */
 .matrix {
-  display: grid;
+  position: relative;
   width: 100%;
 
-  /* swapped: 4 columns (day parts) and 7 rows (weekdays) */
-  grid-template-columns: max-content repeat(4, minmax(0, 1fr));
-  grid-template-rows: 26px repeat(7, 46px);
+  /* responsive sizing knobs */
+  --label-w: clamp(44px, 12vw, 64px);
+  --header-h: clamp(20px, 5vw, 26px);
+  --cell-h: clamp(36px, 8.5vw, 46px);
 
-  column-gap: 1px;
+  display: grid;
+
+  /* ✅ stable grid tracks */
+  grid-template-columns: var(--label-w) repeat(4, minmax(0, 1fr));
+  grid-template-rows: var(--header-h) repeat(7, var(--cell-h));
+
+  column-gap: clamp(6px, 1.8vw, 12px);
   row-gap: 5px;
 
   align-items: center;
+
+  /* ✅ critical for preventing text overlap */
+  min-width: 0;
 }
+
 
 
 /* dashed divider under weekday labels */
 .matrix::after {
-  content: "";
-  position: absolute;
-  left: var(--label-w);
-  right: 0;
-  top: 34px;
-  border-top: 1px dashed rgba(148, 163, 184, 0.35);
-  opacity: 0.9;
+  content: none;
 }
 
 .corner {
@@ -18203,11 +18371,17 @@ return (
 }
 
 .colLabel {
+  min-width: 0;                 /* ✅ critical */
   text-align: center;
-  font-size: 15px;
+  font-size: clamp(10px, 2.8vw, 15px);
+  line-height: 1.05;
   color: rgba(17, 24, 39, 0.48);
   letter-spacing: 0.2px;
   font-weight: 600;
+
+  white-space: nowrap;          /* prevent wrap chaos */
+  overflow: hidden;             /* prevent overlap into neighbors */
+  text-overflow: ellipsis;      /* safe fallback */
 }
 
 .rowLabel {
@@ -18220,10 +18394,18 @@ return (
   font-weight: 600;
 }
 
+.colLabelLong { display: inline; }
+.colLabelShort { display: none; }
+
+@media (max-width: 420px) {
+  .colLabelLong { display: none; }
+  .colLabelShort { display: inline; }
+}
+
 /* ===== Cells: tile style ===== */
 .cell {
   position: relative;
-  width: var(--cell-w);
+  width: 100%;
   height: var(--cell-h);
 
   border-radius: 14px;
@@ -18232,14 +18414,59 @@ return (
   box-shadow:
     0 14px 28px rgba(15, 33, 70, 0.08);
 
-  display: grid;
-  place-items: center;
-
+  display: flex;
+align-items: center;
+justify-content: center;
+padding: clamp(4px, 1vw, 8px);
   cursor: pointer;
   user-select: none;
 
   transition: transform 160ms ease, box-shadow 160ms ease;
   outline: none;
+}
+.cellStack{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  /* ✅ makes the number sit closer to the percent */
+  gap: clamp(0px, 0.4vw, 2px);
+
+  line-height: 1;
+  min-height: 0;
+}
+
+.cellPercent{
+  font-size: clamp(12px, 3.2vw, 15px);
+  font-weight: 750;
+  line-height: 1.05;
+  color: rgba(17, 24, 39, 0.72);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.7);
+}
+
+.cellCountRow{
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  line-height: 1;
+
+  /* ✅ tiny nudge upward so it never scrapes bottom */
+  transform: translateY(clamp(-2px, -0.3vw, 0px));
+}
+
+.count{
+  font-size: clamp(13px, 3.6vw, 16px);
+  font-weight: 750;
+  line-height: 1;
+  color: rgba(17, 24, 39, 0.86);
+}
+
+.dot{
+  width: clamp(5px, 1.2vw, 7px);
+  height: clamp(5px, 1.2vw, 7px);
+  border-radius: 999px;
+  background: rgba(17, 24, 39, 0.55);
 }
 
 /* =======================================================
@@ -18288,13 +18515,7 @@ return (
     inset 0 1px 0 rgba(255, 255, 255, 0.72);
 }
 
-.cellValue {
-  font-size: 15px;
-  font-weight: 750;
-  letter-spacing: -0.3px;
-  color: rgba(17, 24, 39, 0.72);
-  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.7);
-}
+
 
 /* Confidence “• count” bottom-right */
 .conf {
@@ -18651,9 +18872,14 @@ return (
 }
 
 /* Make cell text readable on dark surfaces */
-:global(:root[data-theme='dark']) .cellValue{
+:global(:root[data-theme='dark']) .cellPercent,
+:global(:root[data-theme='dark']) .count{
   color: rgba(249,250,251,0.88);
   text-shadow: 0 1px 0 rgba(0,0,0,0.45);
+}
+
+:global(:root[data-theme='dark']) .dot{
+  background: rgba(249,250,251,0.65);
 }
 
 :global(:root[data-theme='dark']) .conf{
@@ -74849,7 +75075,7 @@ export const config = {
         {
           "id": "q0735_o1",
           "originalKey": "A",
-          "text": "indicate the vehicles to go ah ead"
+          "text": "indicate the vehicles to go ahead"
         },
         {
           "id": "q0735_o2",

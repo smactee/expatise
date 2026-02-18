@@ -938,3 +938,9 @@
     transition: none;
   }
 }
+
+@media (pointer: coarse) {
+  .cardRow {
+    scroll-snap-type: x proximity; /* less “sticky” than mandatory */
+  }
+}

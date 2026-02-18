@@ -1,4 +1,3 @@
-//components/DragScrollRow.tsx
 'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
@@ -11,6 +10,23 @@ type DragScrollRowProps = {
 export default function DragScrollRow({ children, className }: DragScrollRowProps) {
   const rowRef = useRef<HTMLDivElement | null>(null);
 
+  // Treat "coarse pointer" devices as touch (iOS/Android).
+  const [isTouch, setIsTouch] = useState(false);
+
+  useEffect(() => {
+    const mql = window.matchMedia?.('(pointer: coarse)');
+    const update = () => {
+      const coarse = mql?.matches ?? false;
+      const touchPoints = typeof navigator !== 'undefined' ? navigator.maxTouchPoints : 0;
+      setIsTouch(coarse || touchPoints > 0);
+    };
+    update();
+    mql?.addEventListener?.('change', update);
+    return () => mql?.removeEventListener?.('change', update);
+  }, []);
+
+  const enableMouseDrag = !isTouch;
+
   const [dragging, setDragging] = useState(false);
   const [snapOff, setSnapOff] = useState(false);
 
@@ -22,7 +38,6 @@ export default function DragScrollRow({ children, className }: DragScrollRowProp
   const startLocalXRef = useRef(0);
   const startScrollLeftRef = useRef(0);
 
-  // drag threshold + "did drag" (to suppress click after a drag)
   const DRAG_THRESHOLD = 6; // px
   const didDragRef = useRef(false);
 
@@ -64,7 +79,7 @@ export default function DragScrollRow({ children, className }: DragScrollRowProp
       } else {
         velocityRef.current = 0;
         stopAnimation();
-        setSnapOff(false); // restore snap after momentum ends
+        setSnapOff(false);
       }
     };
 
@@ -72,10 +87,12 @@ export default function DragScrollRow({ children, className }: DragScrollRowProp
   };
 
   const onPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (!enableMouseDrag) return;
+    if (e.pointerType !== 'mouse') return;
+
     const el = rowRef.current;
     if (!el) return;
 
-    // Do NOT preventDefault here (it can kill clicks)
     pointerDownRef.current = true;
     activePointerIdRef.current = e.pointerId;
 
@@ -94,60 +111,46 @@ export default function DragScrollRow({ children, className }: DragScrollRowProp
     const el = rowRef.current;
     if (!el) return;
 
-    // Now we are officially dragging
     setDragging(true);
     setSnapOff(true);
     didDragRef.current = true;
 
-    // Prevent text selection + stop browser gestures once dragging has started
-    e.preventDefault();
-
-    // Capture pointer ONLY after drag begins (so clicks on children still work)
     try {
       el.setPointerCapture(e.pointerId);
     } catch {
-      // ignore (some environments can throw)
+      // ignore
     }
   };
 
   const onPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (!enableMouseDrag) return;
+
     const el = rowRef.current;
     if (!el || !pointerDownRef.current) return;
     if (activePointerIdRef.current !== e.pointerId) return;
 
     const dxFromStart = e.clientX - startClientXRef.current;
 
-    // If we haven't entered drag mode yet, wait until threshold is exceeded
-    if (!dragging && Math.abs(dxFromStart) < DRAG_THRESHOLD) {
-      return;
-    }
-
-    // First move past threshold -> enter drag mode
-    if (!dragging) {
-      beginDragMode(e);
-    } else {
-      // already dragging: keep preventing default for smoothness
-      e.preventDefault();
-    }
+    if (!dragging && Math.abs(dxFromStart) < DRAG_THRESHOLD) return;
+    if (!dragging) beginDragMode(e);
 
     const x = getLocalX(e.clientX);
     const walk = x - startLocalXRef.current;
 
     el.scrollLeft = startScrollLeftRef.current - walk;
 
-    // velocity (px per event)
     const dx = e.clientX - lastClientXRef.current;
     lastClientXRef.current = e.clientX;
     velocityRef.current = dx * 0.9;
   };
 
   const endDrag = (e?: React.PointerEvent<HTMLDivElement>) => {
+    if (!enableMouseDrag) return;
     if (!pointerDownRef.current) return;
 
     pointerDownRef.current = false;
     activePointerIdRef.current = null;
 
-    // release capture if we had it
     if (e?.currentTarget && dragging) {
       try {
         e.currentTarget.releasePointerCapture(e.pointerId);
@@ -156,74 +159,53 @@ export default function DragScrollRow({ children, className }: DragScrollRowProp
       }
     }
 
-    if (!dragging) {
-      // was a click/tap, not a drag
-      return;
-    }
+    if (!dragging) return;
 
     setDragging(false);
 
-    // fling
-    if (Math.abs(velocityRef.current) > 0.5) {
-      startMomentum();
-    } else {
+    if (Math.abs(velocityRef.current) > 0.5) startMomentum();
+    else {
       velocityRef.current = 0;
       setSnapOff(false);
     }
 
-    // Allow next click after this tick (we only want to block the click caused by this drag)
     setTimeout(() => {
       didDragRef.current = false;
     }, 0);
   };
 
-  // Optional: make mouse wheel scroll horizontally (desktop testing)
-  useEffect(() => {
-  const el = rowRef.current;
-  if (!el) return;
-
-  const onWheel = (ev: WheelEvent) => {
-    const canScroll = el.scrollWidth > el.clientWidth + 1;
-    if (!canScroll) return;
-
-    // ✅ normal wheel should scroll the page
-    if (!ev.shiftKey) return;
-
-    // ✅ Shift+wheel = horizontal scroll (intentional)
-    ev.preventDefault();
-    el.scrollLeft += ev.deltaY;
-  };
-
-  el.addEventListener('wheel', onWheel, { passive: false });
-  return () => el.removeEventListener('wheel', onWheel);
-}, []);
-
-
   return (
     <div
       ref={rowRef}
       className={className}
-      onPointerDown={onPointerDown}
-      onPointerMove={onPointerMove}
-      onPointerUp={endDrag}
-      onPointerCancel={endDrag}
-      onPointerLeave={endDrag}
-      onClickCapture={(e) => {
-        // If the user dragged, block the accidental click that happens on release
-        if (didDragRef.current) {
-          e.preventDefault();
-          e.stopPropagation();
-        }
-      }}
+      onPointerDown={enableMouseDrag ? onPointerDown : undefined}
+      onPointerMove={enableMouseDrag ? onPointerMove : undefined}
+      onPointerUp={enableMouseDrag ? endDrag : undefined}
+      onPointerCancel={enableMouseDrag ? endDrag : undefined}
+      onPointerLeave={enableMouseDrag ? endDrag : undefined}
+      onClickCapture={
+        enableMouseDrag
+          ? (e) => {
+              if (didDragRef.current) {
+                e.preventDefault();
+                e.stopPropagation();
+              }
+            }
+          : undefined
+      }
       style={{
         overflowX: 'auto',
         overflowY: 'hidden',
-        cursor: dragging ? 'grabbing' : 'grab',
-        userSelect: dragging ? 'none' : undefined,
-        // allow vertical page scroll; we handle horizontal drag ourselves
-        touchAction: 'pan-y',
-        // disable snap during drag/throw
-        scrollSnapType: snapOff ? 'none' : undefined,
+        WebkitOverflowScrolling: 'touch',
+
+        cursor: enableMouseDrag ? (dragging ? 'grabbing' : 'grab') : undefined,
+        userSelect: enableMouseDrag && dragging ? 'none' : undefined,
+
+        // ✅ On touch devices, let the browser do native scrolling & direction lock.
+        touchAction: enableMouseDrag ? 'pan-y' : 'auto',
+
+        // ✅ Only disable snap during mouse-drag/momentum.
+        scrollSnapType: enableMouseDrag && snapOff ? 'none' : undefined,
       }}
     >
       {children}
