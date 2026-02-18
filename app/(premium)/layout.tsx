@@ -2,6 +2,7 @@
 import RequirePremium from "@/components/RequirePremium.client";
 import FreeUsageProgressBadge from "@/components/FreeUsageProgressBadge.client";
 import { Suspense } from "react";
+import DemoSeedGate from "@/components/DemoSeedGate.client";
 
 export default function PremiumLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -9,6 +10,7 @@ export default function PremiumLayout({ children }: { children: React.ReactNode 
       <FreeUsageProgressBadge />
       <Suspense fallback={null}>
         <RequirePremium>{children}</RequirePremium>
+        <DemoSeedGate />
       </Suspense>
     </>
   );

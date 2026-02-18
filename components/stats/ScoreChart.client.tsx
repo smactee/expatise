@@ -585,7 +585,7 @@ style={{ opacity: lensReady ? 1 : 0 }}
 
       return (
         <circle
-          key={`hit-${p.t}`}
+          key={`hit-${p.t}-${i}`}
           ref={(node) => {
             hitRefs.current[i] = node;
           }}

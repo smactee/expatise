@@ -1,7 +1,7 @@
 // app/stats/page.tsx
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 
 import BottomNav from '@/components/BottomNav';
@@ -35,6 +35,11 @@ import TopicMasteryChart from '@/components/stats/TopicMasteryChart.client';
 import { resetAllLocalData } from '@/lib/stats/resetLocalData';
 
 import { timeKey } from "@/lib/stats/timeKeys"
+
+import { seedAdminDemoDataIfNeeded } from '@/lib/demo/seedAdminDemoData';
+
+
+
 
 const datasetId: DatasetId = 'cn-2023-test1';
 
@@ -121,6 +126,8 @@ export default function StatsPage() {
   const userKey = useUserKey();
   const router = useRouter();
 
+  const seededRef = useRef<string | null>(null);
+
   const [questions, setQuestions] = useState<Question[]>([]);
   const [attempts, setAttempts] = useState<TestAttemptV1[]>([]);
   const [loading, setLoading] = useState(true);
@@ -158,51 +165,61 @@ function tfLabel(t: Timeframe) {
     };
   }, [datasetId]);
 
-   // Load attempts: local first (instant) + remote (cross-device) then merge
-  useEffect(() => {
-    let alive = true;
+ // Load attempts: local first (instant) + remote (cross-device) then merge
+useEffect(() => {
+  // 0) Wait until userKey is ready (prevents double-seed / double-load)
+  if (!userKey) return;
 
-    (async () => {
-      // 1) Local (fast, works offline)
-      const local = listSubmittedAttempts({ userKey, datasetId });
+  // 0.5) Ensure this entire effect only runs once per (userKey, datasetId) per mount
+  const runKey = `${userKey}:${datasetId}`;
+  if (seededRef.current === runKey) return;
+  seededRef.current = runKey;
+
+  let alive = true;
+
+  (async () => {
+    // ✅ seed demo data (admin only) BEFORE reading attempts
+    await seedAdminDemoDataIfNeeded(userKey);
+
+    // 1) Local (fast, works offline)
+    const local = listSubmittedAttempts({ userKey, datasetId });
+    if (!alive) return;
+    setAttempts(local);
+
+    // 2) Remote (cross-device). If user isn't logged in, this will just fail quietly.
+    try {
+      const r = await fetch(
+        `/api/attempts?datasetId=${encodeURIComponent(datasetId)}`,
+        { cache: "no-store", credentials: "include" }
+      );
+      if (!r.ok) return;
+
+      const j = await r.json().catch(() => null);
+      const remote: TestAttemptV1[] = Array.isArray(j?.attempts) ? j.attempts : [];
+
+      // Merge by attemptId (remote wins if duplicate)
+      const byId = new Map<string, TestAttemptV1>();
+      for (const a of local) byId.set(a.attemptId, a);
+      for (const a of remote) byId.set(a.attemptId, a);
+
+      const merged = Array.from(byId.values()).sort(
+        (a, b) =>
+          (b.submittedAt ?? b.lastActiveAt ?? b.createdAt ?? 0) -
+          (a.submittedAt ?? a.lastActiveAt ?? a.createdAt ?? 0)
+      );
+
       if (!alive) return;
-      setAttempts(local);
+      setAttempts(merged);
+    } catch {
+      // ignore
+    }
+  })();
 
-      // 2) Remote (cross-device). If user isn't logged in, this will just fail quietly.
-      try {
-        const r = await fetch(
-          `/api/attempts?datasetId=${encodeURIComponent(datasetId)}`,
-          { cache: "no-store", credentials: "include" }
-        );
-        if (!r.ok) return;
+  return () => {
+    alive = false;
+  };
+}, [userKey, datasetId]);
 
-        const j = await r.json().catch(() => null);
-
-        // Expecting GET route to return { ok: true, attempts: TestAttemptV1[] }
-        const remote: TestAttemptV1[] = Array.isArray(j?.attempts) ? j.attempts : [];
-
-        // Merge by attemptId (remote wins if duplicate)
-        const byId = new Map<string, TestAttemptV1>();
-        for (const a of local) byId.set(a.attemptId, a);
-        for (const a of remote) byId.set(a.attemptId, a);
-
-        const merged = Array.from(byId.values()).sort(
-          (a, b) =>
-            (b.submittedAt ?? b.lastActiveAt ?? b.createdAt ?? 0) -
-            (a.submittedAt ?? a.lastActiveAt ?? a.createdAt ?? 0)
-        );
-
-        if (!alive) return;
-        setAttempts(merged);
-      } catch {
-        // ignore
-      }
-    })();
-
-    return () => {
-      alive = false;
-    };
-  }, [userKey, datasetId]);
 
 
   // Compute stats (default: last 30 days for now; we’ll add filters later)
@@ -352,7 +369,11 @@ useEffect(() => {
 
   (async () => {
     try {
-      const r = await fetch("/api/time-logs?limit=200", { cache: "no-store" as any });
+      const r = await fetch("/api/time-logs?limit=200", {
+  cache: "no-store" as any,
+  credentials: "include",
+});
+
       const j = await r.json().catch(() => null);
       if (!alive || !r.ok || !j?.ok) return;
 
