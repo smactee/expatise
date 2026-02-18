@@ -906,93 +906,102 @@ if (!item) {
 
 
 
-        {/* Question row (with bookmark icon on the right) */}
-        <div className={styles.questionRow}>
-          <p className={styles.questionText}>{item.prompt}</p>
+ {/* Question row (with bookmark icon on the right) */}
+{/* CONTENT AREA (one block) */}
+<div className={styles.contentArea}>
+  <div className={styles.centerStack}>
+    {/* Question row (with bookmark icon on the right) */}
+    <div className={styles.questionRow}>
+      <p className={styles.questionText}>{item.prompt}</p>
+
+      <button
+        type="button"
+        className={styles.bookmarkBtn}
+        onClick={(e) => {
+          e.stopPropagation();
+          toggle(item.id);
+        }}
+        aria-label={isBookmarked(item.id) ? 'Remove bookmark' : 'Add bookmark'}
+        title={isBookmarked(item.id) ? 'Bookmarked' : 'Bookmark'}
+        data-bookmarked={isBookmarked(item.id) ? 'true' : 'false'}
+      >
+        <span className={styles.bookmarkIcon} aria-hidden="true" />
+      </button>
+    </div>
+
+    {/* Image (if exists) */}
+    {imageAsset && (
+      <div className={styles.imageWrap}>
+        <Image
+          src={imageAsset.src}
+          alt="Question image"
+          fill
+          className={styles.image}
+          priority
+          unoptimized
+        />
+      </div>
+    )}
+
+    {/* Answers */}
+    <div className={styles.answers}>
+      {item.type === 'ROW' && (
+        <>
+          <button
+            type="button"
+            className={`${styles.optionBtn} ${styles.rowBtn} ${
+              selectedKey === 'R' ? styles.optionActive : ''
+            }`}
+            onClick={() => onOptionTap('R')}
+          >
+            <span className={styles.optionText}>Right</span>
+          </button>
 
           <button
             type="button"
-            className={styles.bookmarkBtn}
-            onClick={(e) => {
-              e.stopPropagation();
-              toggle(item.id);
-            }}
-            aria-label={isBookmarked(item.id) ? 'Remove bookmark' : 'Add bookmark'}
-            title={isBookmarked(item.id) ? 'Bookmarked' : 'Bookmark'}
-            data-bookmarked={isBookmarked(item.id) ? 'true' : 'false'}
+            className={`${styles.optionBtn} ${styles.rowBtn} ${
+              selectedKey === 'W' ? styles.optionActive : ''
+            }`}
+            onClick={() => onOptionTap('W')}
           >
-            <span className={styles.bookmarkIcon} aria-hidden="true" />
+            <span className={styles.optionText}>Wrong</span>
           </button>
-        </div>
+        </>
+      )}
 
-        {/* Image (if exists) */}
-        {imageAsset && (
-  <div className={styles.imageWrap}>
-    <Image
-      src={imageAsset.src}
-      alt="Question image"
-      fill
-      className={styles.image}
-      priority
-      unoptimized
-    />
+      {item.type === 'MCQ' &&
+        item.options.map((opt, idx) => {
+          const key = opt.originalKey ?? String.fromCharCode(65 + idx);
+          const active = selectedKey === key;
+
+          return (
+            <button
+              key={opt.id}
+              type="button"
+              className={`${styles.optionBtn} ${active ? styles.optionActive : ''}`}
+              onClick={() => onOptionTap(key)}
+            >
+              <span className={styles.optionKey}>{key}.</span>
+              <span className={styles.optionText}>{opt.text}</span>
+            </button>
+          );
+        })}
+    </div>
+
+    {/* Next */}
+    <button
+      type="button"
+      className={styles.nextBtn}
+      onClick={() => selectedKey && void commitAndAdvance(selectedKey)}
+      disabled={!selectedKey}
+    >
+      <span className={styles.nextLabel}>Next</span>
+      <span className={styles.nextArrow} aria-hidden="true">→</span>
+    </button>
   </div>
-)}
-
-
-{/* Answers */}
-<div className={styles.answers}>
-  {item.type === 'ROW' && (
-  <>
-    <button
-      type="button"
-      className={`${styles.optionBtn} ${styles.rowBtn} ${
-        selectedKey === 'R' ? styles.optionActive : ''
-      }`}
-      onClick={() => onOptionTap('R')}
-    >
-      <span className={styles.optionText}>Right</span>
-    </button>
-
-    <button
-      type="button"
-      className={`${styles.optionBtn} ${styles.rowBtn} ${
-        selectedKey === 'W' ? styles.optionActive : ''
-      }`}
-     onClick={() => onOptionTap('W')}
-    >
-      <span className={styles.optionText}>Wrong</span>
-    </button>
-  </>
-)}
-  {item.type === 'MCQ' &&
-  item.options.map((opt, idx) => {
-    const key = opt.originalKey ?? String.fromCharCode(65 + idx);
-    const active = selectedKey === key;
-
-    return (
-      <button
-        key={opt.id}
-        type="button"
-        className={`${styles.optionBtn} ${active ? styles.optionActive : ''}`}
-        onClick={() => onOptionTap(key)}
-      >
-        <span className={styles.optionKey}>{key}.</span>
-        <span className={styles.optionText}>{opt.text}</span>
-      </button>
-    );
-  })}
 </div>
 
-        {/* Next */}
-        <button
-          type="button"
-          className={styles.nextBtn}
-          onClick={() => selectedKey && void commitAndAdvance(selectedKey)}
-          disabled={!selectedKey}
-        >
-          Next <span className={styles.nextArrow} aria-hidden="true">→</span>
-        </button>
+
       </div>
     </main>
   );
