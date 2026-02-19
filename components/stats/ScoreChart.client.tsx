@@ -301,8 +301,8 @@ useEffect(() => {
 const W = 340;     // total SVG width
 const H = 100;     // plot height
 const axisW = 27;  // left axis width (labels live here)
-const padX = 5;
-const padY = 5;
+const padX = .5;
+const padY = 7;
 
 const plotLeft = axisW;
 const padRight = 18;     // NEW (space for latest halo)

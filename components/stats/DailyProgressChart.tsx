@@ -130,6 +130,12 @@ const detailsStartMs = mainEndMs;
   const xFor = (i: number) => xAxisL + i * slot + (slot - barW) / 2;
   const cxFor = (i: number) => xFor(i) + barW / 2;
   
+  // ✅ Avg line should span the full plot width (touch y-axis)
+const cxForAvg = (i: number) => {
+  if (shown.length <= 1) return xAxisL;
+  return xAxisL + (i / (shown.length - 1)) * plotW;
+};
+
 
   const barHFor = (answered: number) => (answered / maxAnswered) * plotH;
 
@@ -148,24 +154,26 @@ const detailsStartMs = mainEndMs;
   };
 
   const avgPathD =
-    shown.length === 0
-      ? ''
-      : shown
-          .map((d, i) => {
-            const pct = clamp(Number.isFinite(d.avgScore) ? d.avgScore : 0, 0, 100);
-            return `${i === 0 ? 'M' : 'L'} ${cxFor(i).toFixed(2)} ${yForAvg(pct).toFixed(2)}`;
-          })
-          .join(' ');
+  shown.length === 0
+    ? ''
+    : shown
+        .map((d, i) => {
+          const pct = clamp(Number.isFinite(d.avgScore) ? d.avgScore : 0, 0, 100);
+          return `${i === 0 ? 'M' : 'L'} ${cxForAvg(i).toFixed(2)} ${yForAvg(pct).toFixed(2)}`;
+        })
+        .join(' ');
 
-  const avgPoints = shown.map((d, i) => {
+
+ const avgPoints = shown.map((d, i) => {
   const pct = clamp(Number.isFinite(d.avgScore) ? d.avgScore : 0, 0, 100);
   return {
     dayStart: d.dayStart,
-    pct,                 // ✅ keep it
-    cx: cxFor(i),
+    pct,
+    cx: cxForAvg(i),     // ✅ was cxFor(i)
     cy: yForAvg(pct),
   };
 });
+
 
   const wrapRef = useRef<HTMLDivElement | null>(null);
   const tipRef = useRef<HTMLDivElement | null>(null);
@@ -312,7 +320,13 @@ const avgDashOffset = (1 - tReveal) * dashLen;
       <div className={styles.box}>
         <div className={styles.chartShell} ref={inViewRef}>
 
-<svg className={styles.svg} viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none">
+<svg
+  className={styles.svg}
+  viewBox={`0 0 ${W} ${H}`}
+  preserveAspectRatio="none"
+  style={{ overflow: 'visible' }}
+>
+
 
 
   <defs>

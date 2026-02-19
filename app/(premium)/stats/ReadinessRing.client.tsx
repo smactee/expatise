@@ -5,6 +5,7 @@ import { useEffect, useRef } from 'react';
 import styles from './stats.module.css';
 import { useOnceInView } from '@/components/stats/useOnceInView.client';
 import { useBootSweepOnce } from '@/components/stats/useBootSweepOnce.client';
+import InfoTip from '@/components/InfoTip.client';
 
 export default function ReadinessRing(props: {
   valuePct: number;
@@ -81,10 +82,13 @@ export default function ReadinessRing(props: {
           <div className={styles.statsGaugeCenter}>
             <div className={styles.statsGaugeNumber}>{pct}</div>
             <div className={styles.statsGaugeLabel}>
-              License Exam
-              <br />
-              Readiness
-            </div>
+  License Exam
+  <br />
+  <span className={styles.readinessLabelWithInfo}>
+    Readiness<InfoTip text="Includes: Real Test only." />
+  </span>
+</div>
+
           </div>
         </div>
       </div>

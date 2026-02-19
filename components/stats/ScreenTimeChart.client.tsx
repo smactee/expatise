@@ -325,8 +325,10 @@ useEffect(() => {
 
 
 
-const xLabelH = 16; // height reserved for Mon/Tue labels
+const xLabelH = 16;
 const plotH = Math.max(10, height - xLabelH);
+const plotPx = Math.max(1, plotH - 1); // ✅ shared pixel height used by axis + bars
+
 
 // ---- Y axis scale (responsive, never "breaks") ----
 const rawMax = Math.max(1, model.maxTotal);
@@ -349,11 +351,11 @@ const { scaleMax, ticks } = useMemo(() => {
 
 const yForMin = (min: number) => {
   const y01 = 1 - clamp(min / scaleMax, 0, 1);
-  return Math.round(y01 * plotH);
+  return Math.round(y01 * plotPx);
 };
 
+const avgLineY = Math.round((1 - clamp(model.avgTotal / scaleMax, 0, 1)) * plotPx);
 
-const avgLineY = Math.round((1 - clamp(model.avgTotal / scaleMax, 0, 1)) * plotH);
 
 // Routine = number of days (out of 7) with any logged time
 const activeDays = useMemo(() => {
@@ -361,8 +363,8 @@ const activeDays = useMemo(() => {
 }, [model.points]);
 
   // --- Total line (polyline) points in 0..100 SVG space ---
-const padX = 4;     // keeps the ends from touching the edges
-const padTop = 4;   // keeps the peak from clipping (top only)
+const padX = .5;     // keeps the ends from touching the edges
+const padTop = 3;   // keeps the peak from clipping (top only)
 
 const totalLinePts = useMemo<Pt[]>(() => {
   const n = model.points.length;
@@ -515,266 +517,275 @@ const areaClipW = useMemo(() => {
 
   const hover = hoverIdx != null ? model.points[hoverIdx] : null;
 
-  return (
-  <div className={styles.wrap}>
-    {/* TOP AREA: only the chart */}
-    <div className={styles.topArea}>
-     
+    return (
+    <div className={styles.wrap}>
+      {/* TOP AREA: only the chart */}
+      <div className={styles.topArea}>
+        <div className={styles.chart} style={{ height }} ref={inViewRef}>
+          {/* ROW 1: Y axis + plot */}
+          <div className={styles.plotRow}>
+            {/* Y AXIS */}
+            <div className={styles.yAxis} style={{ height: plotH }}>
+              {ticks
+                .slice()
+                .reverse()
+                .map((t) => {
+                  const y = yForMin(t);
+                  return (
+                    <div key={t} className={styles.yTick} style={{ top: y }}>
+                      {fmtMin(t)}
+                    </div>
+                  );
+                })}
+            </div>
 
-      <div className={styles.chart} style={{ height }} ref={inViewRef}>
+            {/* PLOT */}
+            <div className={styles.plot} style={{ height: plotH }}>
+              {/* ✅ everything inside this wrapper shares the exact same plot box */}
+              <div className={styles.plotStack}>
+                {/* grid lines */}
+                {ticks.map((t) => {
+                  const y = yForMin(t);
+                  return <div key={`g-${t}`} className={styles.hGrid} style={{ top: y }} />;
+                })}
 
-{/* ROW 1: Y axis + plot */}
-        <div className={styles.plotRow}>
-          {/* Y AXIS */}
-          <div className={styles.yAxis} style={{ height: plotH }}>
-            {ticks
-              .slice()
-              .reverse()
-              .map((t) => {
-                const y = yForMin(t);
-                return (
-                  <div key={t} className={styles.yTick} style={{ top: y }}>
-                    {fmtMin(t)}
-                  </div>
-                );
-              })}
+                {/* TOTAL area (mountain) */}
+                {totalAreaD ? (
+                  <svg
+                    className={styles.totalAreaSvg}
+                    viewBox="0 0 100 100"
+                    preserveAspectRatio="none"
+                    aria-hidden="true"
+                    style={{ overflow: 'visible' }}
+                  >
+                    <defs>
+                      <linearGradient id={totalFillId} x1="0" y1="0" x2="1" y2="0">
+                        <stop offset="0%" stopColor="#2B7CAF" stopOpacity="0.28" />
+                        <stop offset="100%" stopColor="#3D8CD5" stopOpacity="0" />
+                      </linearGradient>
+
+                      <clipPath id={areaClipId} clipPathUnits="userSpaceOnUse">
+                        <rect x="0" y="0" width={areaClipW} height="100" />
+                      </clipPath>
+                    </defs>
+
+                    <path
+                      d={totalAreaD}
+                      fill={`url(#${totalFillId})`}
+                      clipPath={`url(#${areaClipId})`}
+                      style={{ opacity: areaClipW > 0 ? 1 : 0 }}
+                    />
+                  </svg>
+                ) : null}
+
+                {/* TOTAL line */}
+                {totalLineD ? (
+                  <svg
+                    className={styles.totalLineSvg}
+                    viewBox="0 0 100 100"
+                    preserveAspectRatio="none"
+                    aria-hidden="true"
+                    style={{ overflow: 'visible' }}
+                  >
+                    <defs>
+                      <linearGradient id={totalStrokeId} x1="0" y1="0" x2="1" y2="0">
+                        <stop offset="0%" stopColor="var(--chart-grad-warm)" stopOpacity="1" />
+                        <stop offset="100%" stopColor="var(--chart-grad-cool)" stopOpacity="1" />
+                      </linearGradient>
+                    </defs>
+
+                    <path
+                      ref={totalPathRef}
+                      d={totalLineD}
+                      className={`${styles.totalLine} ${lineDone ? styles.totalLineFinal : ''}`}
+                      stroke={`url(#${totalStrokeId})`}
+                      strokeDasharray={totalReady ? dashArray : undefined}
+                      strokeDashoffset={totalReady ? dashOffset : undefined}
+                      style={{ opacity: totalReady ? 1 : 0 }}
+                    />
+                  </svg>
+                ) : null}
+
+                {/* bars */}
+                <div className={styles.cols}>
+                  {model.points.map((p, idx) => {
+                    const barDelay = barDelayMs + idx * barStaggerMs;
+
+                    const testH =
+                      p.deliberateMin > 0
+                        ? Math.max(2, Math.round((p.deliberateMin / scaleMax) * plotPx))
+                        : 0;
+
+                    const studyH =
+                      p.studyMin > 0
+                        ? Math.max(2, Math.round((p.studyMin / scaleMax) * plotPx))
+                        : 0;
+
+                    const isToday = idx === model.todayIdx;
+                    const dayLabel = p.date.toLocaleDateString(undefined, { weekday: 'short' });
+                    const pctOfWeek = Math.round((p.total / model.weekTotalSafe) * 100);
+
+                    const colClass = [
+                      styles.col,
+                      isToday ? styles.today : '',
+                      p.total === 0 ? styles.zero : '',
+                    ]
+                      .filter(Boolean)
+                      .join(' ');
+
+                    return (
+                      <div
+                        key={p.key}
+                        className={colClass}
+                        onMouseEnter={() => setHoverIdx(idx)}
+                        onMouseLeave={() => setHoverIdx(null)}
+                      >
+                        <div className={styles.barArea}>
+                          <div className={styles.group}>
+                            <div
+                              className={`${styles.test} ${animateIn ? styles.barRise : styles.barHidden}`}
+                              style={
+                                animateIn
+                                  ? { height: testH, animationDelay: `${barDelay}ms` }
+                                  : { height: testH }
+                              }
+                            />
+                            <div
+                              className={`${styles.study} ${animateIn ? styles.barRise : styles.barHidden}`}
+                              style={
+                                animateIn
+                                  ? { height: studyH, animationDelay: `${barDelay}ms` }
+                                  : { height: studyH }
+                              }
+                            />
+                          </div>
+
+                          {hoverIdx === idx ? (
+                            <div className={styles.tooltip} role="tooltip">
+                              <div className={styles.tipTitle}>{isToday ? 'Today' : dayLabel}</div>
+                              <div className={styles.tipBody}>
+                                <div>
+                                  Test: <b>{p.deliberateMin}m</b>
+                                </div>
+                                <div>
+                                  Study: <b>{p.studyMin}m</b>
+                                </div>
+                                <div>
+                                  Total: <b>{p.total}m</b> · {pctOfWeek}% of week
+                                </div>
+                              </div>
+                            </div>
+                          ) : null}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                {/* avg line */}
+                <div
+                  className={`${styles.avgLine} ${animateIn ? styles.avgLineDraw : styles.avgLineHidden}`}
+                  style={
+                    animateIn
+                      ? { top: avgLineY, animationDelay: `${avgDelayMs}ms` }
+                      : { top: avgLineY }
+                  }
+                />
+
+                <div
+                  className={`${styles.avgLabel} ${animateIn ? styles.avgLabelIn : styles.avgLabelHidden}`}
+                  style={
+                    animateIn
+                      ? {
+                          top: clamp(avgLineY - 12, 0, plotPx - 14),
+                          animationDelay: `${avgLabelDelayMs}ms`,
+                        }
+                      : { top: clamp(avgLineY - 12, 0, plotPx - 14) }
+                  }
+                >
+                  7D avg
+                </div>
+              </div>
+            </div>
           </div>
 
-          {/* PLOT */}
-          <div className={styles.plot} style={{ height: plotH }}>
-            {/* grid lines */}
-            {ticks.map((t) => {
-              const y = yForMin(t);
-              return <div key={`g-${t}`} className={styles.hGrid} style={{ top: y }} />;
-            })}
-
-{/* TOTAL area (mountain) */}
-{totalAreaD ? (
-  <svg
-    className={styles.totalAreaSvg}
-    viewBox="0 0 100 100"
-    preserveAspectRatio="none"
-    aria-hidden="true"
-    style={{ overflow: 'visible' }}
-  >
-   <defs>
-  <linearGradient id={totalFillId} x1="0" y1="0" x2="1" y2="0">
-    <stop offset="0%" stopColor="#2B7CAF" stopOpacity="0.28" />
-    <stop offset="100%" stopColor="#3D8CD5" stopOpacity="0" />
-  </linearGradient>
-
-  <clipPath id={areaClipId} clipPathUnits="userSpaceOnUse">
-  <rect x="0" y="0" width={areaClipW} height="100" />
-</clipPath>
-
-</defs>
-
-
-    <path
-  d={totalAreaD}
-  fill={`url(#${totalFillId})`}
-  clipPath={`url(#${areaClipId})`}
-  style={{ opacity: areaClipW > 0 ? 1 : 0 }}
-/>
-
-
-  </svg>
-) : null}
-
-{/* TOTAL line */}
-{totalLineD ? (
-  <svg
-    className={styles.totalLineSvg}
-    viewBox="0 0 100 100"
-    preserveAspectRatio="none"
-    aria-hidden="true"
-    style={{ overflow: 'visible' }}
-  >
-    <defs>
-      <linearGradient id={totalStrokeId} x1="0" y1="0" x2="1" y2="0">
-  <stop offset="0%" stopColor="var(--chart-grad-warm)" stopOpacity="1" />
-  <stop offset="100%" stopColor="var(--chart-grad-cool)" stopOpacity="1" />
-</linearGradient>
-
-
-    </defs>
-
-    <path
-  ref={totalPathRef}
-  d={totalLineD}
-  className={`${styles.totalLine} ${lineDone ? styles.totalLineFinal : ''}`}
-  stroke={`url(#${totalStrokeId})`}
-  strokeDasharray={totalReady ? dashArray : undefined}
-  strokeDashoffset={totalReady ? dashOffset : undefined}
-  style={{ opacity: totalReady ? 1 : 0 }}
-/>
-
-
-  </svg>
-) : null}
-
-
-{/* bars */}
-            <div className={styles.cols}>
+          {/* ROW 2: X labels */}
+          <div className={styles.xRow} style={{ height: xLabelH }}>
+            <div className={styles.yAxisSpacer} />
+            <div className={styles.xLabels}>
               {model.points.map((p, idx) => {
-                const barDelay = barDelayMs + idx * barStaggerMs;
-
-                const testH =
-                  p.deliberateMin > 0
-                    ? Math.max(2, Math.round((p.deliberateMin / scaleMax) * plotH))
-                    : 0;
-
-                const studyH =
-                  p.studyMin > 0
-                    ? Math.max(2, Math.round((p.studyMin / scaleMax) * plotH))
-                    : 0;
-
                 const isToday = idx === model.todayIdx;
                 const dayLabel = p.date.toLocaleDateString(undefined, { weekday: 'short' });
-                const pctOfWeek = Math.round((p.total / model.weekTotalSafe) * 100);
-
-                const colClass = [
-                  styles.col,
-                  isToday ? styles.today : '',
-                  p.total === 0 ? styles.zero : '',
-                ]
-                  .filter(Boolean)
-                  .join(' ');
 
                 return (
                   <div
-                    key={p.key}
-                    className={colClass}
-                    onMouseEnter={() => setHoverIdx(idx)}
-                    onMouseLeave={() => setHoverIdx(null)}
+                    key={`x-${p.key}`}
+                    className={`${styles.dayLabel} ${isToday ? styles.dayLabelToday : ''}`}
                   >
-                    <div className={styles.barArea}>
-
-                      <div className={styles.group}>
-                        <div
-  className={`${styles.test} ${animateIn ? styles.barRise : styles.barHidden}`}
-  style={animateIn ? { height: testH, animationDelay: `${barDelay}ms` } : { height: testH }}
-/>
-
-<div
-  className={`${styles.study} ${animateIn ? styles.barRise : styles.barHidden}`}
-  style={animateIn ? { height: studyH, animationDelay: `${barDelay}ms` } : { height: studyH }}
-/>
-
-                      </div>
-
-                      {hoverIdx === idx ? (
-                        <div className={styles.tooltip} role="tooltip">
-                          <div className={styles.tipTitle}>{isToday ? 'Today' : dayLabel}</div>
-                          <div className={styles.tipBody}>
-                            <div>Test: <b>{p.deliberateMin}m</b></div>
-                            <div>Study: <b>{p.studyMin}m</b></div>
-                            <div>Total: <b>{p.total}m</b> · {pctOfWeek}% of week</div>
-                          </div>
-                        </div>
-                      ) : null}
-                    </div>
+                    {isToday ? 'Today' : dayLabel.slice(0, 3)}
                   </div>
                 );
               })}
             </div>
-{/* avg line */}
-            <div
-  className={`${styles.avgLine} ${animateIn ? styles.avgLineDraw : styles.avgLineHidden}`}
-  style={animateIn
-    ? { top: avgLineY, animationDelay: `${avgDelayMs}ms` }
-    : { top: avgLineY }
-  }
-/>
-
-<div
-  className={`${styles.avgLabel} ${animateIn ? styles.avgLabelIn : styles.avgLabelHidden}`}
-  style={animateIn
-    ? { top: clamp(avgLineY - 12, 0, plotH - 14), animationDelay: `${avgLabelDelayMs}ms` }
-    : { top: clamp(avgLineY - 12, 0, plotH - 14) }
-  }
->
-  7D avg
-</div>
-
-          </div>
-        </div>
-
-        {/* ROW 2: X labels */}
-        <div className={styles.xRow} style={{ height: xLabelH }}>
-          <div className={styles.yAxisSpacer} />
-          <div className={styles.xLabels}>
-            {model.points.map((p, idx) => {
-              
-              const isToday = idx === model.todayIdx;
-              const dayLabel = p.date.toLocaleDateString(undefined, { weekday: 'short' });
-
-              return (
-                <div
-                  key={`x-${p.key}`}
-                  className={`${styles.dayLabel} ${isToday ? styles.dayLabelToday : ''}`}
-                >
-                  {isToday ? 'Today' : dayLabel.slice(0, 3)}
-                </div>
-              );
-            })}
           </div>
         </div>
       </div>
+
+      {/* Bottom text */}
+      <div className={styles.bottomStack}>
+        <div
+          className={`${styles.summaryRow} ${animateIn ? styles.waterIn : styles.waterHidden}`}
+          style={
+            animateIn
+              ? ({ animationDelay: `${detailsStartMs}ms` } as CSSProperties)
+              : undefined
+          }
+        >
+          <div className={styles.summaryTop}>
+            <b>7D total</b>: {weekTestTotal}m test · {weekStudyTotal}m study
+          </div>
+
+          <div className={styles.summaryRow2}>
+            <span>
+              <b>Avg/day</b>: {Math.round(model.avgTotal)}m
+            </span>
+            <span className={styles.sep} aria-hidden="true" />
+            <span>
+              <b>Best</b>: {bestLabel} ({bestPoint?.total ?? 0}m)
+            </span>
+          </div>
+        </div>
+
+        <div
+          className={`${styles.footerRow} ${animateIn ? styles.waterIn : styles.waterHidden}`}
+          style={
+            animateIn
+              ? ({ animationDelay: `${detailsStartMs + detailsStaggerMs}ms` } as CSSProperties)
+              : undefined
+          }
+        >
+          <span>
+            <b>Routine</b>: {activeDays}/7 days
+            <span className={styles.sep}></span>
+            <b>Streak</b>: {streakDays ?? 0}d
+          </span>
+
+          {model.hasCompare ? <span className={styles.muted}>Compare overlay: enabled</span> : null}
+        </div>
+
+        {confidenceNote ? (
+          <div
+            className={`${styles.confidenceNote} ${animateIn ? styles.waterIn : styles.waterHidden}`}
+            style={
+              animateIn
+                ? ({ animationDelay: `${detailsStartMs + detailsStaggerMs * 2}ms` } as CSSProperties)
+                : undefined
+            }
+          >
+            {confidenceNote}
+          </div>
+        ) : null}
+      </div>
     </div>
-
-{/* Bottom text */}
-    <div className={styles.bottomStack}>
-  <div
-    className={`${styles.summaryRow} ${animateIn ? styles.waterIn : styles.waterHidden}`}
-    style={
-      animateIn
-        ? ({ animationDelay: `${detailsStartMs}ms` } as CSSProperties)
-        : undefined
-    }
-  >
-    <div className={styles.summaryTop}>
-      <b>7D total</b>: {weekTestTotal}m test · {weekStudyTotal}m study
-    </div>
-
-    <div className={styles.summaryRow2}>
-      <span><b>Avg/day</b>: {Math.round(model.avgTotal)}m</span>
-      <span className={styles.sep} aria-hidden="true" />
-      <span><b>Best</b>: {bestLabel} ({bestPoint?.total ?? 0}m)</span>
-    </div>
-  </div>
-
-  <div
-    className={`${styles.footerRow} ${animateIn ? styles.waterIn : styles.waterHidden}`}
-    style={
-      animateIn
-        ? ({ animationDelay: `${detailsStartMs + detailsStaggerMs}ms` } as CSSProperties)
-        : undefined
-    }
-  >
-    <span>
-      <b>Routine</b>: {activeDays}/7 days
-      <span className={styles.sep}></span>
-      <b>Streak</b>: {streakDays ?? 0}d
-    </span>
-
-    {model.hasCompare ? <span className={styles.muted}>Compare overlay: enabled</span> : null}
-  </div>
-
-  {confidenceNote ? (
-    <div
-      className={`${styles.confidenceNote} ${animateIn ? styles.waterIn : styles.waterHidden}`}
-      style={
-        animateIn
-          ? ({ animationDelay: `${detailsStartMs + detailsStaggerMs * 2}ms` } as CSSProperties)
-          : undefined
-      }
-    >
-      {confidenceNote}
-    </div>
-  ) : null}
-</div>
-
-  </div>
-);
+  );
 }

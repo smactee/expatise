@@ -121,26 +121,33 @@
 }
 
 .cols {
-  height: 100%;
+  /* ❌ remove: position: absolute; inset: 0; */
+  height: 100%;              /* ✅ fill plot area */
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   gap: 12px;
-  align-items: end;
-  padding-bottom: 0px;
+  align-items: stretch;      /* ✅ columns become full-height */
+  z-index: 2;
 }
 
 
-.col { display: flex; flex-direction: column; align-items: center; gap: 8px; }
-
-.barArea {
-  position: relative;
-  width: 100%;
-  max-width: 30px;
+.col {
   height: 100%;
   display: flex;
-  align-items: flex-end;
+  flex-direction: column;
+  align-items: center;
+}
+
+.barArea {
+  position: absolute;
+  width: 100%;
+  max-width: 30px;
+  height: 100%;           /* ✅ now 100% is real (col is 100%) */
+  display: flex;
+  align-items: flex-end;  /* ✅ bars sit on plot bottom (0m) */
   justify-content: center;
 }
+
 
 
 
@@ -306,7 +313,7 @@
   width: 100%;
   height: 100%;
   pointer-events: none;
-  z-index: 2;
+  z-index: 3;
   overflow: visible;
 }
 
@@ -428,3 +435,8 @@
   }
 }
 
+
+.plotStack{
+  position: absolute;
+  inset: 0;
+}

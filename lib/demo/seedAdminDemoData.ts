@@ -11,7 +11,7 @@ import type { TestAttemptV1 } from "@/lib/test-engine/attemptTypes";
 import { timeKey, ymdLocal } from "@/lib/stats/timeKeys";
 
 // ✅ bump this number whenever you want to regenerate a fresh demo dataset
-const SEED_VERSION = 1;
+const SEED_VERSION = 2;
 
 // ✅ keep these aligned with your current app config
 const DATASET_ID = "cn-2023-test1";
@@ -113,12 +113,12 @@ function tsAt(daysAgo: number, hour: number, minute: number) {
 
 type SeedPlan = {
   attemptId: string;
-  modeKey: "real-test" | "half-test" | "rapid-fire-test";
+  modeKey: "real-test" | "half-test" | "rapid-fire-test" | "ten-percent-test";
   submittedAt: number;
   questionCount: number;
   correctCount: number;
   timeSpentSec: number;
-  timeLimitSec: number; // 0 means untimed
+  timeLimitSec: number; 
 };
 
 function buildAttempt(
@@ -170,7 +170,6 @@ function buildAttempt(
 }
 
 function makePlans(userKey: string): SeedPlan[] {
-  // times distributed across dayParts (morning / midday / evening / late)
   const timeSlots = [
     { h: 8, m: 10 },
     { h: 12, m: 45 },
@@ -179,14 +178,9 @@ function makePlans(userKey: string): SeedPlan[] {
   ];
 
   const plans: SeedPlan[] = [];
+  let i = 0;
 
-  for (let i = 0; i < TOTAL_ATTEMPTS; i++) {
-    const daysAgo = i % DAYS;
-
-    // exact distribution = 20 real, 40 half, 40 rapid
-    const modeKey: SeedPlan["modeKey"] =
-      i % 5 === 0 ? "real-test" : i % 2 === 0 ? "half-test" : "rapid-fire-test";
-
+  function mk(modeKey: SeedPlan["modeKey"], daysAgo: number): SeedPlan {
     const slot = timeSlots[i % timeSlots.length];
     const submittedAt = tsAt(daysAgo, slot.h, slot.m);
 
@@ -197,31 +191,53 @@ function makePlans(userKey: string): SeedPlan[] {
     const modeAdj = modeKey === "real-test" ? 0.02 : modeKey === "rapid-fire-test" ? -0.02 : 0.0;
     const acc = clamp(baseAcc + modeAdj, 0.55, 0.95);
 
-    const questionCount =
-      modeKey === "real-test" ? 100 : modeKey === "half-test" ? 50 : 10;
+    const isShort = modeKey === "rapid-fire-test" || modeKey === "ten-percent-test";
 
-    const timeLimitSec =
-      modeKey === "real-test" ? 45 * 60 : modeKey === "half-test" ? 25 * 60 : 5 * 60;
+    const questionCount = modeKey === "real-test" ? 100 : modeKey === "half-test" ? 50 : 10;
+    const timeLimitSec = modeKey === "real-test" ? 45 * 60 : modeKey === "half-test" ? 25 * 60 : 5 * 60;
 
-    // spend 45%..95% of time limit (deterministic)
     const spendRatio = 0.45 + rand01(`time:${userKey}:${i}`) * 0.5;
     const timeSpentSec = Math.max(60, Math.min(timeLimitSec, Math.round(timeLimitSec * spendRatio)));
 
     const correctCount = clamp(Math.round(questionCount * acc), 0, questionCount);
 
-    plans.push({
-      attemptId: `demo-${modeKey}-${String(i).padStart(3, "0")}`,
+    const attemptId = `demo-${modeKey}-${String(i).padStart(3, "0")}`;
+    i++;
+
+    return {
+      attemptId,
       modeKey,
       submittedAt,
       questionCount,
       correctCount,
       timeSpentSec,
       timeLimitSec,
-    });
+    };
+  }
+
+  // ✅ Guaranteed coverage:
+  // - 1 real-test every day (so real-only charts always have data)
+  // - 1 learning attempt every day (for variety / streaks)
+  for (let daysAgo = 0; daysAgo < DAYS; daysAgo++) {
+    plans.push(mk("real-test", daysAgo));
+
+    const learningMode: SeedPlan["modeKey"] =
+      daysAgo % 2 === 0 ? "half-test" : "ten-percent-test"; // swap to rapid-fire-test if you prefer
+
+    plans.push(mk(learningMode, daysAgo));
+  }
+
+  // Add extra learning attempts until TOTAL_ATTEMPTS
+  while (plans.length < TOTAL_ATTEMPTS) {
+    const daysAgo = stableHash(`extra-day:${userKey}:${i}`) % DAYS;
+    const r = rand01(`extra-mode:${userKey}:${i}`);
+    const mode: SeedPlan["modeKey"] = r < 0.5 ? "rapid-fire-test" : "ten-percent-test";
+    plans.push(mk(mode, daysAgo));
   }
 
   return plans;
 }
+
 
 export async function seedAdminDemoDataIfNeeded(userKey: string) {
   // Only run in browser

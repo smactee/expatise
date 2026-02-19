@@ -38,7 +38,7 @@ import { timeKey } from "@/lib/stats/timeKeys"
 
 import { seedAdminDemoDataIfNeeded } from '@/lib/demo/seedAdminDemoData';
 
-
+import InfoTip from '@/components/InfoTip.client';
 
 
 const datasetId: DatasetId = 'cn-2023-test1';
@@ -46,8 +46,27 @@ const datasetId: DatasetId = 'cn-2023-test1';
 // Exclude Practice from Stats (per your decision)
 
 const REAL_ONLY_MODE_KEYS = ["real-test"];
-const LEARNING_MODE_KEYS = ["real-test", "half-test", "rapid-fire-test"]; // all non-practice modes
+const LEARNING_MODE_KEYS = ["real-test", "ten-percent-test", "half-test", "rapid-fire-test"]; // all non-practice modes
 
+
+const MODE_LABEL: Record<string, string> = {
+  "real-test": "Real Test",
+  "half-test": "Half Test",
+  "rapid-fire-test": "Rapid Fire",
+  "ten-percent-test": "10% Test",
+};
+
+function modesLabel(keys: string[]) {
+  return keys.map((k) => MODE_LABEL[k] ?? k).join(", ");
+}
+
+function tfLabelShort(t: Timeframe) {
+  return t === "all" ? "all time" : `last ${t} days`;
+}
+
+function statsTooltip(keys: string[], t: Timeframe) {
+  return `Includes: ${modesLabel(keys)} · ${tfLabelShort(t)}`;
+}
 
 
 // Topic Quiz config saver: builds a config that prioritizes weakest subtopics
@@ -579,6 +598,11 @@ async function handleGenerateCoach() {
         {/* ==== Top Accuracy / Gauge Card ==== */}
 <section className={styles.statsSummaryCard}>
   <div className={styles.statsSummaryInner}>
+    <div className={styles.readinessTitleRow}>
+      <span className={styles.statsTitleRow}>
+      </span>
+    </div>
+
     <ReadinessRing
       valuePct={statsReadiness.readinessPct}
       enabled={!loading && questions.length > 0}
@@ -624,7 +648,10 @@ async function handleGenerateCoach() {
 {/* Screen Time */}
 <article className={styles.statsCard}>
   <header className={styles.statsCardHeader}>
-  <h2 className={styles.statsCardTitle}>Screen Time</h2>
+  <div className={styles.statsTitleRow}>
+    <h2 className={styles.statsCardTitle}>Screen Time</h2>
+    <InfoTip text={`Includes: ${modesLabel(LEARNING_MODE_KEYS)} · last 7 days`} />
+  </div>
   <ScreenTimeLegend animate={screenLegendReady} />
 
 
@@ -655,10 +682,15 @@ async function handleGenerateCoach() {
 
 {/* Score Card */}
             <article className={styles.statsCard}>
-              <header className={styles.statsCardHeader}>
-  <h2 className={styles.statsCardTitle}>Score</h2>
+             <header className={styles.statsCardHeader}>
+  <div className={styles.statsTitleRow}>
+    <h2 className={styles.statsCardTitle}>Score</h2>
+    <InfoTip text={statsTooltip(REAL_ONLY_MODE_KEYS, tfScore)} />
+  </div>
+
   <ScoreLegend animate={scoreLegendReady} />
 </header>
+
 
 
               <div className={`${styles.statsGraphArea} ${styles.statsGraphClean}`}>
@@ -688,7 +720,10 @@ async function handleGenerateCoach() {
 {/* Daily Progress */}
 <article className={styles.statsCard}>
   <header className={styles.statsCardHeader}>
-  <h2 className={styles.statsCardTitle}>Daily Progress</h2>
+  <div className={styles.statsTitleRow}>
+    <h2 className={styles.statsCardTitle}>Daily Progress</h2>
+    <InfoTip text={statsTooltip(LEARNING_MODE_KEYS, tfWeekly)} />
+  </div>
   <DailyProgressLegend animate={dailyLegendReady} />
 </header>
 
@@ -722,7 +757,10 @@ async function handleGenerateCoach() {
 {/* Heatmap */}
 <article className={styles.statsCard}>
   <header className={styles.statsCardHeader}>
+  <div className={styles.statsTitleRow}>
     <h2 className={styles.statsCardTitle}>Heatmap</h2>
+    <InfoTip text={statsTooltip(REAL_ONLY_MODE_KEYS, tfBestTime)} />
+  </div>
   </header>
 
   <div className={styles.statsGraphArea}>
@@ -743,7 +781,10 @@ async function handleGenerateCoach() {
 {/* Topic Mastery */}
 <article className={styles.statsCard}>
   <header className={`${styles.statsCardHeader} ${styles.statsCardHeaderRow}`}>
-  <h2 className={styles.statsCardTitle}>Topic Mastery</h2>
+  <div className={styles.statsTitleRow}>
+    <h2 className={styles.statsCardTitle}>Topic Mastery</h2>
+    <InfoTip text={statsTooltip(LEARNING_MODE_KEYS, tfTopics)} />
+  </div>
 
   <button
     type="button"
