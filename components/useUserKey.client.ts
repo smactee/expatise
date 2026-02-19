@@ -15,8 +15,13 @@ export function useUserKey() {
       const session = await webAuthClient.getSession();
       if (seq !== seqRef.current) return;
 
-      const email = session.authed ? session.email : null;
-      setUserKey(userKeyFromEmail(email));
+      if (!session.authed) {
+        setUserKey("guest");
+        return;
+      }
+
+      // userKeyFromEmail already normalizes + returns "guest" if null/empty
+      setUserKey(userKeyFromEmail(session.email));
     })().catch(() => {
       if (seq !== seqRef.current) return;
       setUserKey("guest");
@@ -26,11 +31,26 @@ export function useUserKey() {
   useEffect(() => {
     refresh();
 
-    const onChanged = () => refresh();
-    window.addEventListener("expatise:session-changed", onChanged);
+    const onSessionChanged = () => refresh();
+    const onFocus = () => refresh();
+    const onVisibility = () => {
+      if (document.visibilityState === "visible") refresh();
+    };
+
+    window.addEventListener("expatise:session-changed", onSessionChanged);
+    window.addEventListener("focus", onFocus);
+    document.addEventListener("visibilitychange", onVisibility);
+
+    // Safari/iOS safety net: refresh periodically while visible
+    const pollId = window.setInterval(() => {
+      if (document.visibilityState === "visible") refresh();
+    }, 60_000);
 
     return () => {
-      window.removeEventListener("expatise:session-changed", onChanged);
+      window.removeEventListener("expatise:session-changed", onSessionChanged);
+      window.removeEventListener("focus", onFocus);
+      document.removeEventListener("visibilitychange", onVisibility);
+      window.clearInterval(pollId);
       seqRef.current++;
     };
   }, [refresh]);
