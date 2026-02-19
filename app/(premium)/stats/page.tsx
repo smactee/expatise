@@ -40,6 +40,9 @@ import { seedAdminDemoDataIfNeeded } from '@/lib/demo/seedAdminDemoData';
 
 import InfoTip from '@/components/InfoTip.client';
 
+import CoachReport from '@/app/(premium)/stats/CoachReport.client';
+import CoachReportRich from '@/app/(premium)/stats/CoachReportRich.client';
+
 
 const datasetId: DatasetId = 'cn-2023-test1';
 
@@ -348,8 +351,9 @@ useEffect(() => {
 const COOLDOWN_MS = 24 * 60 * 60 * 1000;
 
 const coachPrefix = userKey ? `expatise:${userKey}` : `expatise:anon`;
-const LS_REPORT = `${coachPrefix}:coach:lastReport:v1`;
-const LS_COOLDOWN_UNTIL = `${coachPrefix}:coach:cooldownUntil:v1`;
+const LS_REPORT = `${coachPrefix}:coach:lastReport:v2`;
+const LS_COOLDOWN_UNTIL = `${coachPrefix}:coach:cooldownUntil:v2`;
+
 
 const [coachReport, setCoachReport] = useState<string>("");
 const [coachCreatedAt, setCoachCreatedAt] = useState<number | null>(null);
@@ -954,7 +958,10 @@ async function handleGenerateCoach() {
               {coachCreatedAt ? `Last report: ${formatStamp(coachCreatedAt)}` : ""}
             </p>
           </div>
-          <p className={styles.coachReportText}>{coachReport}</p>
+          <div className={styles.coachReportText}>
+  <CoachReportRich report={coachReport} />
+</div>
+
         </div>
       ) : null}
     </>

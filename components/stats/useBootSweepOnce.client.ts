@@ -90,12 +90,15 @@ export function useBootSweepOnce(opts: {
 }) {
   const { target, seen, enabled } = opts;
 
+  const safeTarget = Number.isFinite(target) ? target : 0;
+const setDisplaySafe = (v: number) => setDisplay(Number.isFinite(v) ? v : 0);
+
 const [display, setDisplay] = useState<number>(0);  
 const playedRef = useRef(false);
 
   // After played, keep display synced to target without replay.
   useEffect(() => {
-    if (playedRef.current) setDisplay(target);
+    if (playedRef.current) setDisplay(safeTarget);
   }, [target]);
 
   useEffect(() => {
@@ -105,18 +108,17 @@ const playedRef = useRef(false);
     // reduced motion => no animation
     if (window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches) {
       playedRef.current = true;
-      setDisplay(target);
+      setDisplay(safeTarget);
       return;
     }
 
     playedRef.current = true;
 
-    const segs =
-      opts.segments?.(target) ??
-      [
-        { from: 0, to: 100, durationMs: 600, ease: easeOutCubic },
-        { from: 100, to: target, durationMs: 300, ease: easeOutCubic },
-      ];
+    const segs = opts.segments?.(safeTarget) ?? [
+  { from: 0, to: 100, durationMs: 600, ease: easeOutCubic },
+  { from: 100, to: safeTarget, durationMs: 300, ease: easeOutCubic },
+];
+
 
     let cancel: null | (() => void) = null;
     let i = 0;
@@ -124,7 +126,7 @@ const playedRef = useRef(false);
     const runNext = () => {
       if (i >= segs.length) return;
       const seg = segs[i++];
-      cancel = animateSegment(seg, setDisplay, runNext);
+      cancel = animateSegment(seg, setDisplaySafe, runNext);
     };
 
     runNext();

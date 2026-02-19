@@ -363,7 +363,7 @@ const activeDays = useMemo(() => {
 }, [model.points]);
 
   // --- Total line (polyline) points in 0..100 SVG space ---
-const padX = .5;     // keeps the ends from touching the edges
+const padX = 1;     // keeps the ends from touching the edges
 const padTop = 3;   // keeps the peak from clipping (top only)
 
 const totalLinePts = useMemo<Pt[]>(() => {

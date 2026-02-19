@@ -620,19 +620,124 @@
   font-variant-numeric: tabular-nums;
 }
 
-.coachReportText {
+.coachReportText{
   margin: 0;
-  white-space: pre-line; /* preserve line breaks from the model */
+}
+
+/* Rich coach typography */
+.coachRich{
   font-size: 13px;
-  line-height: 1.5;
+  line-height: 1.55;
   color: rgba(17,24,39,0.90);
 }
+
+.coachH{
+  margin: 12px 0 6px;
+  font-size: 14px;         /* “h5-ish” */
+  font-weight: 850;
+  letter-spacing: -0.01em;
+}
+
+
+.coachUl, .coachOl{
+  margin: 0 0 10px;
+  padding-left: 18px;
+}
+
+.coachUl li, .coachOl li{
+  margin: 6px 0;
+}
+
+
+.coachChip{
+  display: inline-flex;
+  align-items: center;
+  padding: 1px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 800;
+  margin-right: 6px;
+  border: 1px solid rgba(148, 163, 184, 0.45);
+  background: rgba(255,255,255,0.55);
+}
+
 
 .coachError {
   margin-top: 10px;
   font-size: 12px;
   line-height: 1.35;
   color: rgba(185, 28, 28, 0.90);
+}
+
+.coachReportRich{
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.coachSection{
+  padding: 10px 10px;
+  border-radius: 16px;
+  background: rgba(255,255,255,0.55);
+  border: 1px solid rgba(148, 163, 184, 0.25);
+}
+
+.coachTargetCallout{
+  background: linear-gradient(
+    180deg,
+    rgba(255,255,255,0.85),
+    rgba(255, 197, 66, 0.10)
+  );
+  border-color: rgba(255, 197, 66, 0.35);
+}
+
+.coachSectionTitle{
+  margin: 0 0 6px 0;
+  font-size: 14px;      /* “h5-ish” */
+  font-weight: 850;
+  letter-spacing: 0.01em;
+  color: rgba(17,24,39,0.86);
+}
+
+.coachSectionBody{
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.coachP{
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.55;
+  color: rgba(17,24,39,0.90);
+}
+
+.coachList{
+  margin: 0;
+  padding-left: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.coachLi{
+  font-size: 13px;
+  line-height: 1.55;
+  color: rgba(17,24,39,0.90);
+}
+
+.coachMetric{
+  font-weight: 850;
+    font-variant-numeric: tabular-nums;
+
+}
+
+.coachKey{
+  font-weight: 850;
+}
+
+.coachSpacer{
+  height: 6px;
 }
 
 
@@ -803,3 +908,22 @@
   color: rgba(252, 165, 165, 0.92);
 }
 
+:root[data-theme='dark'] .coachSection{
+  background: rgba(2, 6, 23, 0.35);
+  border-color: rgba(255,255,255,0.14);
+}
+
+:root[data-theme='dark'] .coachTargetCallout{
+  background: linear-gradient(
+    180deg,
+    rgba(43, 124, 175, 0.10),
+    rgba(2, 6, 23, 0.85)
+  );
+  border-color: rgba(255, 197, 66, 0.22);
+}
+
+:root[data-theme='dark'] .coachSectionTitle,
+:root[data-theme='dark'] .coachP,
+:root[data-theme='dark'] .coachLi{
+  color: rgba(255,255,255,0.90);
+}

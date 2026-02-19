@@ -6,7 +6,7 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 const COOLDOWN_MS = 24 * 60 * 60 * 1000;
-const COOKIE_KEY = "expatise_coach_last_v2";
+const COOKIE_KEY = "expatise_coach_last_v3";
 
 /**
  * Master prompt (static). Keep this stable for best caching behavior.
@@ -38,7 +38,14 @@ HARD RULES (never break)
 5) No moralizing:
   No shame, no character judgments, no “should have.”
 6) Length + structure:
-  Entire output ~250 words max. Use ONLY the required sections A–F. No extra sections.
+  Entire output ~250 words max. Output MUST be Markdown using ONLY these headings:
+  ### Summary
+  ### Snapshot
+  ### Top levers
+  ### Today (10 / 20 / 40)
+  ### Next 7 days
+  ### One target
+  Do NOT use lettered sections (no “A) …”, “B) …”).
 7) One story only:
   Choose EXACTLY ONE narrative (see “Narrative selection”). Everything must align to it.
 8) One measurable target only:
@@ -196,17 +203,34 @@ PRAISE / ENCOURAGEMENT POLICY
 - Close with agency and a minimum-dose option.
 
 
-OUTPUT FORMAT (always; NO extra headings)
-A) Headline (1 line)
-B) What’s happening (2 sentences; each cites metrics + window label)
-C) Top 3 levers (3 items; each: Why + Next action; cite metrics + window label; aligned to narrative)
-D) Today plan: 10 / 20 / 40 minutes (bullets; specific; metric-aware)
-E) 7-day plan (5–7 bullets; specific; metric-aware)
-F) ONE measurable target + short encouraging closing (include baseline + n + window label; no guarantees)
+OUTPUT FORMAT (Markdown only; no lettered sections)
+### Summary
+One sentence. No labels.
+
+### Snapshot
+- (30d) Two short bullets, each citing metrics.
+- (7d) One short bullet, citing habit metrics.
+
+### Top levers
+1) Lever title — Why: … Next: …
+2) Lever title — Why: … Next: …
+3) Lever title — Why: … Next: …
+
+### Today (10 / 20 / 40)
+- 10 min: …
+- 20 min: …
+- 40 min: …
+
+### Next 7 days
+- 5–7 bullets, specific, metric-aware.
+
+### The One thing
+Target: ONE measurable target (baseline + window label + timeframe).
+Close with one short encouragement line.
 
 
 STYLE
-Clear, motivating, practical. No mention you are an AI. Avoid generic advice. Be specific to the provided metrics only.
+Clear, motivating, practical. No mention you are an AI. Avoid generic advice. Be specific to the provided metrics only. Avoid stiff labels like “Strong, consistent practice”. Write like a premium coach: concise, specific, no filler adjectives unless backed by a metric.
 `.trim();
 
 const FALLBACK_PROMPT = `
@@ -217,8 +241,8 @@ Structure:
 1) Skill snapshot (30d)
 2) Habits snapshot (7d)
 3) Top 3 levers
-4) Today plan (10/20/40 min)
-5) 7-day plan
+4) Today's plan (10/20/30 min)
+5) The coming week
 If data is low-confidence, say so and suggest what to do next.
 `.trim();
 

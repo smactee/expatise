@@ -367,10 +367,12 @@ const heat = Array.from({ length: DAY_PARTS.length }, () =>
     correctTotal += correct;
 
     const denom = Math.max(1, a.questionIds?.length ?? 0);
-    const scorePct = Math.round((100 * correct) / denom);
+const rawScore = (100 * correct) / denom;
+const scorePct = Number.isFinite(rawScore) ? Math.round(rawScore) : 0;
 
 scoreSeries.push({ t, scorePct, answered: attempted, totalQ: denom });
-    scoreList.push(scorePct);
+if (Number.isFinite(scorePct)) scoreList.push(scorePct);
+
 
     // --- Learning Rhythm Heatmap bucket update ---
 {
@@ -580,10 +582,17 @@ const topicMastery: TopicMasteryVM = {
   const scoreBest = scoreList.length ? Math.max(...scoreList) : 0;
   const scoreLatest = filtered.length ? scoreList[0] : 0;
 
-  const medianScore01 = clamp01(median(scoreList) / 100);
-  const readinessPct = Math.round(
-    100 * (0.7 * clamp01(accuracy) + 0.3 * medianScore01)
-  );
+  const safeAcc01 = clamp01(Number.isFinite(accuracy) ? accuracy : 0);
+
+// Sanitize scores for median
+const safeScores = scoreList.filter((n) => Number.isFinite(n));
+const medianScore = safeScores.length ? median(safeScores) : scoreAvg;
+const medianScore01 = clamp01((Number.isFinite(medianScore) ? medianScore : 0) / 100);
+
+// Combine + clamp
+const readiness01 = clamp01(0.7 * safeAcc01 + 0.3 * medianScore01);
+const readinessPct = Math.max(0, Math.min(100, Math.round(100 * readiness01)));
+
 
   // Weekly outputs
   const weeklySeries = Array.from(weekly.entries())
