@@ -2,7 +2,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import type { User } from "@supabase/supabase-js";
+import type { AuthChangeEvent, Session, User } from "@supabase/supabase-js";
 import { createClient } from "@/lib/supabase/client";
 
 type AuthState = {
@@ -92,17 +92,21 @@ export function useAuthStatus() {
   useEffect(() => {
     const cleanup = refresh();
 
-    const onChanged = () => refresh();
+    const onChanged = () => {
+      refresh();
+    };
     window.addEventListener("expatise:session-changed", onChanged);
 
-    const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
-      setState(toState(session?.user ?? null, false));
-    });
+    const { data } = supabase.auth.onAuthStateChange(
+      (_event: AuthChangeEvent, session: Session | null) => {
+        setState(toState(session?.user ?? null, false));
+      }
+    );
 
     return () => {
       cleanup?.();
       window.removeEventListener("expatise:session-changed", onChanged);
-      sub.subscription.unsubscribe();
+      data?.subscription?.unsubscribe();
     };
   }, [refresh, supabase]);
 
