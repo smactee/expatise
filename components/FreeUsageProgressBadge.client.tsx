@@ -16,7 +16,7 @@ const HIDE_BADGE_PREFIXES = ["/login", "/onboarding", "/forgot-password"];
 
 export default function FreeUsageProgressBadge() {
   const pathname = usePathname() || "/";
-  const { isPremium } = useEntitlements();
+  const { isPremium, loading } = useEntitlements();
 
 const demoPremium =
   typeof window !== "undefined" &&
@@ -28,7 +28,7 @@ const demoPremium =
     HIDE_BADGE_PREFIXES.some((p) => pathname.startsWith(p));
 
   // ✅ Gate here (safe): this component always calls the same hooks
-if (hide || isPremium || demoPremium) return null;
+if (hide || isPremium || demoPremium || loading) return null;
 
   return <FreeUsageProgressBadgeInner />;
 }

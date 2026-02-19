@@ -22,7 +22,7 @@ const ADMIN_EMAIL = (process.env.NEXT_PUBLIC_DEMO_ADMIN_EMAIL ?? "")
   .trim()
   .toLowerCase();
 
-  const DEMO_SEED_ALL = (process.env.NEXT_PUBLIC_DEMO_SEED_ALL ?? "") === "1";
+const DEMO_SEED_ALL = (process.env.NEXT_PUBLIC_DEMO_SEED_ALL ?? "") === "1";
 
 function isDemoHost() {
   if (typeof window === "undefined") return false;
@@ -346,13 +346,16 @@ export async function seedAdminDemoDataIfNeeded(userKey: string) {
   // Only run in browser
   if (typeof window === "undefined") return false;
 
- const adminUserKey = ADMIN_EMAIL ? userKeyFromEmail(ADMIN_EMAIL) : "";
-const isAdmin = !!ADMIN_EMAIL && userKey === adminUserKey;
+  const allowAll = DEMO_SEED_ALL && isDemoHost();
 
-const allowDemo = DEMO_SEED_ALL && isDemoHost();
+  // If not allowAll, keep your existing admin-only behavior
+  if (!allowAll) {
+    if (!ADMIN_EMAIL) return false;
 
-// only seed for admin OR when demo mode is enabled on vercel/localhost
-if (!isAdmin && !allowDemo) return false;
+    const adminUserKey = userKeyFromEmail(ADMIN_EMAIL);
+    if (userKey !== adminUserKey) return false;
+  }
+
 
 
   const seedFlag = `expatise:demo-seed:v${SEED_VERSION}:${DATASET_ID}:${userKey}`;

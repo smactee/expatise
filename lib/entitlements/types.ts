@@ -6,7 +6,8 @@ export type EntitlementSource =
   | "subscription"
   | "lifetime"
   | "admin"
-  | "dev";
+  | "dev"
+  | "demo";
 
 export type Entitlements = {
   isPremium: boolean;

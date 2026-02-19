@@ -20,6 +20,14 @@ type EntitlementsContextValue = {
   revokePremium: () => void;
 };
 
+const DEMO_PREMIUM_ALL = (process.env.NEXT_PUBLIC_DEMO_SEED_ALL ?? "") === "1";
+
+function isDemoHost() {
+  if (typeof window === "undefined") return false;
+  const h = window.location.hostname;
+  return h === "localhost" || h.endsWith(".vercel.app");
+}
+
 const EntitlementsContext = createContext<EntitlementsContextValue | null>(null);
 
 export function EntitlementsProvider({ children }: { children: React.ReactNode }) {
@@ -36,6 +44,7 @@ export function EntitlementsProvider({ children }: { children: React.ReactNode }
   const [loading, setLoading] = useState<boolean>(true);
 const fetchSeqRef = useRef(0);
 
+const demoPremium = DEMO_PREMIUM_ALL && isDemoHost();
 
 const refresh = useCallback(() => {
   if (!PUBLIC_FLAGS.enablePremiumGates) {
@@ -43,6 +52,11 @@ const refresh = useCallback(() => {
     setLoading(false);
     return;
   }
+if (demoPremium) {
+  setState({ isPremium: true, source: "demo", updatedAt: Date.now() });
+  setLoading(false);
+  return;
+}
 
   // increment request id so older async results can't overwrite newer userKey
   const seq = ++fetchSeqRef.current;
@@ -72,7 +86,7 @@ const refresh = useCallback(() => {
       if (seq === fetchSeqRef.current) setLoading(false);
     }
   })();
-}, [userKey]);
+}, [userKey, demoPremium]);
 
 
   const setEntitlements = useCallback((e: Entitlements) => {
