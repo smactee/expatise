@@ -11,7 +11,7 @@ import type { TestAttemptV1 } from "@/lib/test-engine/attemptTypes";
 import { timeKey, ymdLocal } from "@/lib/stats/timeKeys";
 
 // ✅ bump this number whenever you want to regenerate a fresh demo dataset
-const SEED_VERSION = 2;
+const SEED_VERSION = 3;
 
 // ✅ keep these aligned with your current app config
 const DATASET_ID = "cn-2023-test1";
@@ -169,20 +169,106 @@ function buildAttempt(
   };
 }
 
+type DayPartKey = "morning" | "midday" | "evening" | "late";
+
+function pickWeighted<T extends string>(items: Array<{ key: T; w: number }>, seed: string): T {
+  const total = items.reduce((s, it) => s + it.w, 0);
+  const r = rand01(seed) * total;
+  let acc = 0;
+  for (const it of items) {
+    acc += it.w;
+    if (r <= acc) return it.key;
+  }
+  return items[items.length - 1]!.key;
+}
+
+function pickDayPart(modeKey: SeedPlan["modeKey"], userKey: string, daysAgo: number, i: number): DayPartKey {
+  // Tune these weights however you want.
+  // Key goal: real-test should NOT always fall into the same dayparts.
+  const seed = `daypart:${userKey}:${modeKey}:${daysAgo}:${i}`;
+
+  if (modeKey === "real-test") {
+    // Spread real-tests across all 4 buckets
+    return pickWeighted(
+      [
+        { key: "morning", w: 0.30 },
+        { key: "midday",  w: 0.20 },
+        { key: "evening", w: 0.30 },
+        { key: "late",    w: 0.20 },
+      ],
+      seed
+    );
+  }
+
+  // Learning attempts: slightly more midday/evening
+  return pickWeighted(
+    [
+      { key: "morning", w: 0.20 },
+      { key: "midday",  w: 0.30 },
+      { key: "evening", w: 0.35 },
+      { key: "late",    w: 0.15 },
+    ],
+    seed
+  );
+}
+
+function pickHourMinuteInDayPart(part: DayPartKey, seed: string) {
+  const rH = rand01(`${seed}:h`);
+  const rM = rand01(`${seed}:m`);
+
+  let hour = 8;
+  if (part === "morning") {
+    // 6..11
+    hour = 6 + Math.floor(rH * 6);
+  } else if (part === "midday") {
+    // 12..16
+    hour = 12 + Math.floor(rH * 5);
+  } else if (part === "evening") {
+    // 17..21
+    hour = 17 + Math.floor(rH * 5);
+  } else {
+    // late: 22..23 OR 0..5 (wrap)
+    const wrap = rand01(`${seed}:wrap`) < 0.45; // tune wrap rate
+    hour = wrap ? Math.floor(rH * 6) : 22 + Math.floor(rH * 2); // 0..5 or 22..23
+  }
+
+  // Minutes: 0..59 (full randomness)
+  const minute = Math.floor(rM * 60);
+
+  return { hour, minute };
+}
+
+function tsAtDayPart(daysAgo: number, part: DayPartKey, seed: string) {
+  const { hour, minute } = pickHourMinuteInDayPart(part, seed);
+  const now = Date.now();
+
+  const d = new Date();
+  d.setDate(d.getDate() - daysAgo);
+  d.setHours(hour, minute, 0, 0);
+
+  let t = d.getTime();
+
+  // Prevent “today in the future” from collapsing into the wrong bucket.
+  // For daysAgo=0 only: clamp into the past by backing off a deterministic number of minutes.
+  if (daysAgo === 0 && t > now - 60_000) {
+    const backMin = 10 + (stableHash(seed) % 240); // 10..249 minutes
+    t = now - backMin * 60_000;
+  }
+
+  return t;
+}
+
+
 function makePlans(userKey: string): SeedPlan[] {
-  const timeSlots = [
-    { h: 8, m: 10 },
-    { h: 12, m: 45 },
-    { h: 18, m: 20 },
-    { h: 22, m: 5 },
-  ];
+
 
   const plans: SeedPlan[] = [];
   let i = 0;
 
   function mk(modeKey: SeedPlan["modeKey"], daysAgo: number): SeedPlan {
-    const slot = timeSlots[i % timeSlots.length];
-    const submittedAt = tsAt(daysAgo, slot.h, slot.m);
+    const part = pickDayPart(modeKey, userKey, daysAgo, i);
+const submittedAt = tsAtDayPart(daysAgo, part, `ts:${userKey}:${modeKey}:${daysAgo}:${i}`);
+
 
     const dayProgress = (DAYS - 1 - daysAgo) / (DAYS - 1); // older=0 → newest=1
     const noise = (rand01(`acc:${userKey}:${i}`) - 0.5) * 0.10; // +/-5%
@@ -219,13 +305,21 @@ function makePlans(userKey: string): SeedPlan[] {
   // - 1 real-test every day (so real-only charts always have data)
   // - 1 learning attempt every day (for variety / streaks)
   for (let daysAgo = 0; daysAgo < DAYS; daysAgo++) {
+  // always at least 1 real-test/day
+  plans.push(mk("real-test", daysAgo));
+
+  // ~22% chance add a 2nd real-test that same day
+  if (rand01(`extra-real:${userKey}:${daysAgo}`) < 0.22) {
     plans.push(mk("real-test", daysAgo));
-
-    const learningMode: SeedPlan["modeKey"] =
-      daysAgo % 2 === 0 ? "half-test" : "ten-percent-test"; // swap to rapid-fire-test if you prefer
-
-    plans.push(mk(learningMode, daysAgo));
   }
+
+  // always 1 learning attempt/day
+  const learningMode: SeedPlan["modeKey"] =
+    daysAgo % 2 === 0 ? "half-test" : "ten-percent-test";
+
+  plans.push(mk(learningMode, daysAgo));
+}
+
 
   // Add extra learning attempts until TOTAL_ATTEMPTS
   while (plans.length < TOTAL_ATTEMPTS) {

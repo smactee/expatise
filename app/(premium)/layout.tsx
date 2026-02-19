@@ -9,10 +9,10 @@ export default function PremiumLayout({ children }: { children: React.ReactNode 
     <>
       <FreeUsageProgressBadge />
       <Suspense fallback={null}>
-        <RequirePremium>{children}</RequirePremium>
-        <DemoSeedGate />
+        <DemoSeedGate>
+          <RequirePremium>{children}</RequirePremium>
+        </DemoSeedGate>
       </Suspense>
     </>
   );
 }
-
