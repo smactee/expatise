@@ -4,14 +4,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { userKeyFromEmail } from "@/lib/identity/userKey";
 import { createClient } from "@/lib/supabase/client";
-import type { User } from "@supabase/supabase-js";
-
-function detectProvider(user: User | null): string | null {
-  if (!user) return null;
-  const p = (user.app_metadata as any)?.provider as string | undefined;
-  if (p) return p;
-  return user.identities?.[0]?.provider ?? null;
-}
+import type { AuthChangeEvent, Session, User } from "@supabase/supabase-js";
 
 function makeUserKey(user: User | null): string {
   if (!user) return "guest";
@@ -26,7 +19,6 @@ function makeUserKey(user: User | null): string {
   // ✅ Fallback: stable Supabase user id (covers providers with no email)
   return `sb:${user.id}`;
 }
-
 
 export function useUserKey() {
   const supabase = useMemo(() => createClient(), []);
@@ -55,13 +47,15 @@ export function useUserKey() {
     const onChanged = () => refresh();
     window.addEventListener("expatise:session-changed", onChanged);
 
-    const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUserKey(makeUserKey(session?.user ?? null));
-    });
+    const { data } = supabase.auth.onAuthStateChange(
+      (_event: AuthChangeEvent, session: Session | null) => {
+        setUserKey(makeUserKey(session?.user ?? null));
+      }
+    );
 
     return () => {
       window.removeEventListener("expatise:session-changed", onChanged);
-      sub.subscription.unsubscribe();
+      data?.subscription?.unsubscribe();
       seqRef.current++;
     };
   }, [refresh, supabase]);
