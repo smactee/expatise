@@ -22,6 +22,14 @@ const ADMIN_EMAIL = (process.env.NEXT_PUBLIC_DEMO_ADMIN_EMAIL ?? "")
   .trim()
   .toLowerCase();
 
+  const DEMO_SEED_ALL = (process.env.NEXT_PUBLIC_DEMO_SEED_ALL ?? "") === "1";
+
+function isDemoHost() {
+  if (typeof window === "undefined") return false;
+  const h = window.location.hostname;
+  return h === "localhost" || h.endsWith(".vercel.app");
+}
+
 const TOTAL_ATTEMPTS = 100;
 const DAYS = 30;
 
@@ -333,14 +341,19 @@ const submittedAt = tsAtDayPart(daysAgo, part, `ts:${userKey}:${modeKey}:${daysA
 }
 
 
+
 export async function seedAdminDemoDataIfNeeded(userKey: string) {
   // Only run in browser
   if (typeof window === "undefined") return false;
 
-  if (!ADMIN_EMAIL) return false;
+ const adminUserKey = ADMIN_EMAIL ? userKeyFromEmail(ADMIN_EMAIL) : "";
+const isAdmin = !!ADMIN_EMAIL && userKey === adminUserKey;
 
-  const adminUserKey = userKeyFromEmail(ADMIN_EMAIL);
-  if (userKey !== adminUserKey) return false;
+const allowDemo = DEMO_SEED_ALL && isDemoHost();
+
+// only seed for admin OR when demo mode is enabled on vercel/localhost
+if (!isAdmin && !allowDemo) return false;
+
 
   const seedFlag = `expatise:demo-seed:v${SEED_VERSION}:${DATASET_ID}:${userKey}`;
   if (localStorage.getItem(seedFlag) === "1") return false;

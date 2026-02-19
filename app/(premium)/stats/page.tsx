@@ -159,6 +159,7 @@ export default function StatsPage() {
   const [tfWeekly, setTfWeekly] = useState<Timeframe>(30);
   const [tfBestTime, setTfBestTime] = useState<Timeframe>(30);
   const [tfTopics, setTfTopics] = useState<Timeframe>(30);
+  const [attemptsLoaded, setAttemptsLoaded] = useState(false);
 
 
 function tfLabel(t: Timeframe) {
@@ -207,7 +208,7 @@ useEffect(() => {
     const local = listSubmittedAttempts({ userKey, datasetId });
     if (!alive) return;
     setAttempts(local);
-
+    setAttemptsLoaded(true);
     // 2) Remote (cross-device). If user isn't logged in, this will just fail quietly.
     try {
       const r = await fetch(
@@ -322,7 +323,7 @@ const handleReadinessRingDone = () => {
 // Reset whenever the ring should re-run (timeframe/data changes)
 useEffect(() => {
   setReadinessDone(false);
-}, [tfReadiness, statsReadiness.readinessPct, loading, questions.length]);
+}, [tfReadiness, statsReadiness.readinessPct, loading, questions.length, attemptsLoaded]);
 
 
 const [screenLegendReady, setScreenLegendReady] = useState(false);
@@ -609,7 +610,7 @@ async function handleGenerateCoach() {
 
     <ReadinessRing
       valuePct={statsReadiness.readinessPct}
-      enabled={!loading && questions.length > 0}
+      enabled={!loading && questions.length > 0 && attemptsLoaded}
       onDone={handleReadinessRingDone}
     />
 

@@ -4022,18 +4022,20 @@ export default function GlobalCommonMistakesPage() {
 import RequirePremium from "@/components/RequirePremium.client";
 import FreeUsageProgressBadge from "@/components/FreeUsageProgressBadge.client";
 import { Suspense } from "react";
+import DemoSeedGate from "@/components/DemoSeedGate.client";
 
 export default function PremiumLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
       <FreeUsageProgressBadge />
       <Suspense fallback={null}>
-        <RequirePremium>{children}</RequirePremium>
+        <DemoSeedGate>
+          <RequirePremium>{children}</RequirePremium>
+        </DemoSeedGate>
       </Suspense>
     </>
   );
 }
-
 
 ```
 
@@ -4722,15 +4724,492 @@ useEffect(() => {
 
 ```
 
+### app/(premium)/stats/CoachReport.client.tsx
+```tsx
+'use client';
+
+import React, { useMemo } from 'react';
+import styles from './stats.module.css';
+
+type Section = { title: string; lines: string[] };
+
+function escapeHtml(s: string) {
+  return s
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#039;');
+}
+
+function formatInline(line: string) {
+  // Safe HTML baseline
+  let s = escapeHtml(line);
+
+  // Consistent emphasis (deterministic, not model-dependent)
+  // Bold: percentages, mins, tests, questions, streak-ish numbers
+  s = s.replace(
+    /\b(\d{1,3}%|\d+\s?(?:min|mins|tests?|questions?|days?|sessions?))\b/gi,
+    `<strong class="${styles.coachMetric}">$1</strong>`
+  );
+
+  // Bold the "Why/Next/Target/Close" keys
+  s = s.replace(
+    /\b(Why|Next|Target|Close)\s*:/g,
+    `<span class="${styles.coachKey}">$1:</span>`
+  );
+
+  return s;
+}
+
+function parseCoachReport(report: string): Section[] {
+  const lines = report.replace(/\r/g, '').split('\n');
+
+  const sections: Section[] = [];
+  let cur: Section | null = null;
+
+  for (const raw of lines) {
+    const line = raw.trimEnd();
+
+    const m = line.match(/^###\s+(.+)\s*$/);
+    if (m) {
+      if (cur) sections.push(cur);
+      cur = { title: m[1].trim(), lines: [] };
+      continue;
+    }
+
+    if (!cur) cur = { title: 'Coach', lines: [] };
+    cur.lines.push(line);
+  }
+
+  if (cur) sections.push(cur);
+
+  // Drop empty trailing lines per section
+  for (const s of sections) {
+    while (s.lines.length && s.lines[s.lines.length - 1].trim() === '') s.lines.pop();
+  }
+
+  return sections.filter((s) => s.title || s.lines.some((l) => l.trim()));
+}
+
+export default function CoachReport({ report }: { report: string }) {
+  const sections = useMemo(() => parseCoachReport(report), [report]);
+
+  return (
+    <div className={styles.coachReportRich}>
+      {sections.map((sec) => {
+        const isTarget = sec.title.toLowerCase().includes('one target');
+
+        return (
+          <section
+            key={sec.title}
+            className={`${styles.coachSection} ${isTarget ? styles.coachTargetCallout : ''}`}
+          >
+            <h3 className={styles.coachSectionTitle}>{sec.title}</h3>
+
+            <div className={styles.coachSectionBody}>
+              {renderLines(sec.lines)}
+            </div>
+          </section>
+        );
+      })}
+    </div>
+  );
+}
+
+function renderLines(lines: string[]) {
+  // Group consecutive bullets into a single <ul>
+  const out: React.ReactNode[] = [];
+  let bulletBuf: string[] = [];
+
+  const flushBullets = (key: string) => {
+    if (!bulletBuf.length) return;
+    out.push(
+      <ul key={key} className={styles.coachList}>
+        {bulletBuf.map((b, i) => (
+          <li
+            key={i}
+            className={styles.coachLi}
+            dangerouslySetInnerHTML={{ __html: formatInline(b) }}
+          />
+        ))}
+      </ul>
+    );
+    bulletBuf = [];
+  };
+
+  lines.forEach((raw, idx) => {
+    const line = raw.trim();
+    const isBullet =
+      line.startsWith('- ') ||
+      line.startsWith('• ') ||
+      /^\d+\)\s+/.test(line);
+
+    if (isBullet) {
+      bulletBuf.push(line.replace(/^[-•]\s+/, '').replace(/^\d+\)\s+/, ''));
+      return;
+    }
+
+    flushBullets(`b-${idx}`);
+
+    if (!line) {
+      out.push(<div key={`sp-${idx}`} className={styles.coachSpacer} />);
+      return;
+    }
+
+    out.push(
+      <p
+        key={`p-${idx}`}
+        className={styles.coachP}
+        dangerouslySetInnerHTML={{ __html: formatInline(line) }}
+      />
+    );
+  });
+
+  flushBullets(`b-end`);
+  return out;
+}
+
+```
+
+### app/(premium)/stats/CoachReportRich.client.tsx
+```tsx
+'use client';
+
+import React from 'react';
+import styles from '@/app/(premium)/stats/stats.module.css';
+
+
+
+export default function CoachReportRich({ report }: { report: string }) {
+  const sections = parseSections(report);
+
+  if (!sections.length) return null;
+
+  return (
+    <div className={styles.coachReportRich}>
+      {sections.map((s, idx) => {
+        const blocks = toBlocks(s.lines);
+        const isTarget = s.key === 'F' || /target|one thing/i.test(s.title);
+
+
+        return (
+          <section
+            key={`${s.key}-${idx}`}
+            className={`${styles.coachSection} ${isTarget ? styles.coachTargetCallout : ''}`}
+          >
+            <h3 className={styles.coachSectionTitle}>{s.title}</h3>
+
+            <div className={styles.coachSectionBody}>
+              {blocks.map((b, i) => {
+                if (b.kind === 'p') {
+                  return (
+                    <p key={i} className={styles.coachP}>
+                      {renderInline(b.text)}
+                    </p>
+                  );
+                }
+
+                if (b.kind === 'ul') {
+                  return (
+                    <ul key={i} className={styles.coachList}>
+                      {b.items.map((it, j) => (
+                        <li key={j} className={styles.coachLi}>
+                          {renderItem(it)}
+                        </li>
+                      ))}
+                    </ul>
+                  );
+                }
+
+                return (
+                  <ol key={i} className={styles.coachList}>
+                    {b.items.map((it, j) => (
+                      <li key={j} className={styles.coachLi}>
+                        {renderItem(it)}
+                      </li>
+                    ))}
+                  </ol>
+                );
+              })}
+            </div>
+          </section>
+        );
+      })}
+    </div>
+  );
+}
+
+/** -----------------------------
+ *  Parsing: A) ... → sections
+ *  ----------------------------- */
+type Section = { key: string; title: string; lines: string[] };
+
+const AF_RE = /^([A-F])\)\s*(.+)\s*$/;
+const H_RE = /^#{2,3}\s+(.*)$/; // "## " or "### "
+
+function parseSections(report: string): Section[] {
+  const text = (report ?? "").replace(/\r\n/g, "\n").trim();
+  if (!text) return [];
+
+  const lines = text.split("\n");
+
+  // Decide which format we're in:
+  const afHits = lines.reduce((n, l) => n + (AF_RE.test(l.trim()) ? 1 : 0), 0);
+  const hHits = lines.reduce((n, l) => n + (H_RE.test(l.trim()) ? 1 : 0), 0);
+
+  if (afHits >= 2) return parseAF(lines);
+  if (hHits >= 2) return parseHeadings(lines);
+
+  // Fallback: single section
+  return [{ key: "", title: "Coach Report", lines }];
+}
+
+function parseAF(lines: string[]): Section[] {
+  const out: Section[] = [];
+  let cur: Section | null = null;
+
+  for (const raw of lines) {
+    const line = raw.trimEnd();
+    const m = line.trim().match(AF_RE);
+
+    if (m) {
+      if (cur) out.push(cur);
+      cur = { key: m[1], title: m[2].trim(), lines: [] };
+      continue;
+    }
+
+    if (!cur) cur = { key: "", title: "Coach Report", lines: [] };
+    cur.lines.push(line.trim().length ? line : "");
+  }
+
+  if (cur) out.push(cur);
+  return out;
+}
+
+function parseHeadings(lines: string[]): Section[] {
+  const out: Section[] = [];
+  let cur: Section | null = null;
+
+  for (const raw of lines) {
+    const line = raw.trimEnd();
+    const hm = line.trim().match(H_RE);
+
+    if (hm) {
+      // Start new section
+      if (cur) out.push(cur);
+
+      // Handle "### Summary You have ..." (heading + body same line)
+      const after = hm[1].trim();
+      const known = [
+        "Summary",
+        "Snapshot",
+        "Top levers",
+        "Today",
+        "Next 7 days",
+        "The One thing",
+      ];
+
+      const found = known.find((k) => after.toLowerCase().startsWith(k.toLowerCase()));
+      const title = found ?? after.split(/\s{2,}/)[0] ?? after;
+
+      const rest = found ? after.slice(found.length).trim() : "";
+      cur = { key: title, title, lines: [] };
+
+      if (rest) cur.lines.push(rest);
+      continue;
+    }
+
+    if (!cur) cur = { key: "", title: "Coach Report", lines: [] };
+    cur.lines.push(line.trim().length ? line : "");
+  }
+
+  if (cur) out.push(cur);
+  return out;
+}
+
+
+/** --------------------------------
+ *  Turn section lines into blocks
+ *  -------------------------------- */
+type Block =
+  | { kind: 'p'; text: string }
+  | { kind: 'ul'; items: string[] }
+  | { kind: 'ol'; items: string[] };
+
+function toBlocks(lines: string[]): Block[] {
+  const blocks: Block[] = [];
+  let pBuf: string[] = [];
+  let listKind: 'ul' | 'ol' | null = null;
+  let listItems: string[] = [];
+
+  const flushP = () => {
+    const t = pBuf.join(' ').trim();
+    if (t) blocks.push({ kind: 'p', text: t });
+    pBuf = [];
+  };
+
+  const flushList = () => {
+    if (listKind && listItems.length) blocks.push({ kind: listKind, items: listItems });
+    listKind = null;
+    listItems = [];
+  };
+
+  for (const raw of lines) {
+    const t = raw.trim();
+    if (!t) {
+      flushP();
+      flushList();
+      continue;
+    }
+
+    const bullet = t.match(/^[-•]\s+(.*)$/);
+    const ordered = t.match(/^\d+[\).\]]\s+(.*)$/);
+
+    if (bullet) {
+      flushP();
+      if (listKind && listKind !== 'ul') flushList();
+      listKind = 'ul';
+      listItems.push(bullet[1]);
+      continue;
+    }
+
+    if (ordered) {
+      flushP();
+      if (listKind && listKind !== 'ol') flushList();
+      listKind = 'ol';
+      listItems.push(ordered[1]);
+      continue;
+    }
+
+    flushList();
+    pBuf.push(t);
+  }
+
+  flushP();
+  flushList();
+  return blocks;
+}
+
+/** --------------------------------
+ *  Premium-ish deterministic chips
+ *  -------------------------------- */
+const TIME_PREFIX_RE = /^(\d+\s*min)\s*:\s*(.*)$/i;
+const DAY_PREFIX_RE = /^(Day\s+\d+(?:\s*[–-]\s*\d+)?)\s*:\s*(.*)$/i;
+
+function renderItem(text: string) {
+  const t = text.trim();
+
+  const tm = t.match(TIME_PREFIX_RE);
+  if (tm) {
+    return (
+      <>
+        <span className={styles.coachChip}>{tm[1]}</span> {renderInline(tm[2])}
+      </>
+    );
+  }
+
+  const dm = t.match(DAY_PREFIX_RE);
+  if (dm) {
+    return (
+      <>
+        <span className={styles.coachChip}>{dm[1]}</span> {renderInline(dm[2])}
+      </>
+    );
+  }
+
+  return <>{renderInline(t)}</>;
+}
+
+/**
+ * Deterministic emphasis:
+ * - (30d)/(7d)/(all-time) → chip
+ * - Why:/Next action:/Target: → key
+ * - numbers (supports "3,200", "3, 200", "3, 200", "3，200") → metric
+ */
+function renderInline(text: string): React.ReactNode {
+  const WINDOW_RE = /\(\s*(30d|7d|all-time)\s*\)/gi;
+
+  // ✅ Match numbers robustly:
+  // - comma groups with optional whitespace + full-width comma
+  // - plain integers/decimals
+  // - percents
+  // - ranges like 40–60
+  const METRIC_RE =
+    /\b\d{1,3}(?:[,\uFF0C]\s*\d{3})+(?:\.\d+)?%?\b|\b\d+(?:\.\d+)?%?\b|\b\d+\s*[–-]\s*\d+\b|\b\d+-day\b/gi;
+
+  // ✅ include "Next action:"
+  const KEY_RE = /\b(Why|Next(?:\s+action)?|Target)\b:/gi;
+
+  const TOKEN_RE = new RegExp(
+    `${WINDOW_RE.source}|${KEY_RE.source}|${METRIC_RE.source}`,
+    'gi'
+  );
+
+  const out: React.ReactNode[] = [];
+  let last = 0;
+
+  for (const m of text.matchAll(TOKEN_RE)) {
+    const start = m.index ?? 0;
+    const match = m[0];
+
+    if (start > last) out.push(text.slice(last, start));
+
+    // window chip
+    const w = match.match(WINDOW_RE);
+    if (w) {
+      const inner = match.replace(/[()]/g, '').replace(/\s+/g, '');
+      out.push(
+        <span key={`${start}-w`} className={styles.coachChip}>
+          {inner}
+        </span>
+      );
+      last = start + match.length;
+      continue;
+    }
+
+    // key label
+    if (match.endsWith(':') && match.match(KEY_RE)) {
+      out.push(
+        <span key={`${start}-k`} className={styles.coachKey}>
+          {match}
+        </span>
+      );
+      last = start + match.length;
+      continue;
+    }
+
+    // metric
+    if (match.match(METRIC_RE)) {
+      out.push(
+        <strong key={`${start}-m`} className={styles.coachMetric}>
+          {match}
+        </strong>
+      );
+      last = start + match.length;
+      continue;
+    }
+
+    out.push(match);
+    last = start + match.length;
+  }
+
+  if (last < text.length) out.push(text.slice(last));
+  return <>{out}</>;
+}
+
+```
+
 ### app/(premium)/stats/ReadinessRing.client.tsx
 ```tsx
 // app/(premium)/stats/ReadinessRing.client.tsx
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import styles from './stats.module.css';
 import { useOnceInView } from '@/components/stats/useOnceInView.client';
 import { useBootSweepOnce } from '@/components/stats/useBootSweepOnce.client';
+import InfoTip from '@/components/InfoTip.client';
 
 export default function ReadinessRing(props: {
   valuePct: number;
@@ -4748,13 +5227,33 @@ export default function ReadinessRing(props: {
     onDone,
   } = props;
 
-  const { ref, seen } = useOnceInView<HTMLDivElement>(0.35);
+const { ref, seen } = useOnceInView<HTMLDivElement>({
+  threshold: 0,
+  rootMargin: "0px",
+});
+
+// If iOS Safari fails to fire IntersectionObserver, still run after a short delay.
+const [forceSeen, setForceSeen] = useState(false);
+useEffect(() => {
+  if (seen) return;
+  const t = window.setTimeout(() => setForceSeen(true), 800);
+  return () => window.clearTimeout(t);
+}, [seen]);
+
+const seenReady = seen || forceSeen;
+
+// Clamp + sanitize so CSS gradients never get NaN
+const safeTarget =
+  Number.isFinite(valuePct) ? Math.max(0, Math.min(100, valuePct)) : 0;
+
+const safeValuePct = Number.isFinite(valuePct) ? valuePct : 0;
 
   const pctFloat = useBootSweepOnce({
-    target: valuePct,
-    seen,
-    enabled,
-    segments: (target) => {
+  target: safeTarget,
+  seen: seenReady,
+  enabled,
+  segments: (target) => {
+
       const gap = Math.abs(100 - target);
       const settleMs = gap < 10 ? 500 : 900;
 
@@ -4765,26 +5264,30 @@ export default function ReadinessRing(props: {
     },
   });
 
-  const pct = Math.round(pctFloat);
-  const fillDeg = (pctFloat / 100) * 360;
+const pctSafe = Number.isFinite(pctFloat) ? pctFloat : 0;
+const pct = Math.round(pctSafe);
+const fillDeg = (pctSafe / 100) * 360;
+
 
   // fire onDone once when ring finishes
   const firedRef = useRef(false);
-  useEffect(() => {
-    firedRef.current = false;
-  }, [valuePct, enabled, seen]);
+ useEffect(() => {
+  firedRef.current = false;
+}, [safeTarget, enabled, seenReady]);
+
 
   useEffect(() => {
     if (!enabled || !seen || !onDone) return;
     if (firedRef.current) return;
 
     const EPS = 0.01;
-    if (Math.abs(pctFloat - valuePct) <= EPS) {
+    if (Math.abs(pctSafe - safeTarget) <= EPS) {
+
       firedRef.current = true;
       // tiny delay lets the final frame paint before revealing below content
       window.setTimeout(() => onDone(), 50);
     }
-  }, [pctFloat, valuePct, enabled, seen, onDone]);
+  }, [pctSafe, safeTarget, enabled, seenReady, onDone]);
 
   return (
     <div ref={ref} className={styles.statsGaugeWrapper}>
@@ -4807,10 +5310,13 @@ export default function ReadinessRing(props: {
           <div className={styles.statsGaugeCenter}>
             <div className={styles.statsGaugeNumber}>{pct}</div>
             <div className={styles.statsGaugeLabel}>
-              License Exam
-              <br />
-              Readiness
-            </div>
+  License Exam
+  <br />
+  <span className={styles.readinessLabelWithInfo}>
+    Readiness<InfoTip text="Includes: Real Test only." />
+  </span>
+</div>
+
           </div>
         </div>
       </div>
@@ -4825,7 +5331,7 @@ export default function ReadinessRing(props: {
 // app/stats/page.tsx
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 
 import BottomNav from '@/components/BottomNav';
@@ -4860,13 +5366,40 @@ import { resetAllLocalData } from '@/lib/stats/resetLocalData';
 
 import { timeKey } from "@/lib/stats/timeKeys"
 
+import { seedAdminDemoDataIfNeeded } from '@/lib/demo/seedAdminDemoData';
+
+import InfoTip from '@/components/InfoTip.client';
+
+import CoachReport from '@/app/(premium)/stats/CoachReport.client';
+import CoachReportRich from '@/app/(premium)/stats/CoachReportRich.client';
+
+
 const datasetId: DatasetId = 'cn-2023-test1';
 
 // Exclude Practice from Stats (per your decision)
 
 const REAL_ONLY_MODE_KEYS = ["real-test"];
-const LEARNING_MODE_KEYS = ["real-test", "half-test", "rapid-fire-test"]; // all non-practice modes
+const LEARNING_MODE_KEYS = ["real-test", "ten-percent-test", "half-test", "rapid-fire-test"]; // all non-practice modes
 
+
+const MODE_LABEL: Record<string, string> = {
+  "real-test": "Real Test",
+  "half-test": "Half Test",
+  "rapid-fire-test": "Rapid Fire",
+  "ten-percent-test": "10% Test",
+};
+
+function modesLabel(keys: string[]) {
+  return keys.map((k) => MODE_LABEL[k] ?? k).join(", ");
+}
+
+function tfLabelShort(t: Timeframe) {
+  return t === "all" ? "all time" : `last ${t} days`;
+}
+
+function statsTooltip(keys: string[], t: Timeframe) {
+  return `Includes: ${modesLabel(keys)} · ${tfLabelShort(t)}`;
+}
 
 
 // Topic Quiz config saver: builds a config that prioritizes weakest subtopics
@@ -4945,6 +5478,8 @@ export default function StatsPage() {
   const userKey = useUserKey();
   const router = useRouter();
 
+  const seededRef = useRef<string | null>(null);
+
   const [questions, setQuestions] = useState<Question[]>([]);
   const [attempts, setAttempts] = useState<TestAttemptV1[]>([]);
   const [loading, setLoading] = useState(true);
@@ -4982,51 +5517,61 @@ function tfLabel(t: Timeframe) {
     };
   }, [datasetId]);
 
-   // Load attempts: local first (instant) + remote (cross-device) then merge
-  useEffect(() => {
-    let alive = true;
+ // Load attempts: local first (instant) + remote (cross-device) then merge
+useEffect(() => {
+  // 0) Wait until userKey is ready (prevents double-seed / double-load)
+  if (!userKey) return;
 
-    (async () => {
-      // 1) Local (fast, works offline)
-      const local = listSubmittedAttempts({ userKey, datasetId });
+  // 0.5) Ensure this entire effect only runs once per (userKey, datasetId) per mount
+  const runKey = `${userKey}:${datasetId}`;
+  if (seededRef.current === runKey) return;
+  seededRef.current = runKey;
+
+  let alive = true;
+
+  (async () => {
+    // ✅ seed demo data (admin only) BEFORE reading attempts
+    await seedAdminDemoDataIfNeeded(userKey);
+
+    // 1) Local (fast, works offline)
+    const local = listSubmittedAttempts({ userKey, datasetId });
+    if (!alive) return;
+    setAttempts(local);
+
+    // 2) Remote (cross-device). If user isn't logged in, this will just fail quietly.
+    try {
+      const r = await fetch(
+        `/api/attempts?datasetId=${encodeURIComponent(datasetId)}`,
+        { cache: "no-store", credentials: "include" }
+      );
+      if (!r.ok) return;
+
+      const j = await r.json().catch(() => null);
+      const remote: TestAttemptV1[] = Array.isArray(j?.attempts) ? j.attempts : [];
+
+      // Merge by attemptId (remote wins if duplicate)
+      const byId = new Map<string, TestAttemptV1>();
+      for (const a of local) byId.set(a.attemptId, a);
+      for (const a of remote) byId.set(a.attemptId, a);
+
+      const merged = Array.from(byId.values()).sort(
+        (a, b) =>
+          (b.submittedAt ?? b.lastActiveAt ?? b.createdAt ?? 0) -
+          (a.submittedAt ?? a.lastActiveAt ?? a.createdAt ?? 0)
+      );
+
       if (!alive) return;
-      setAttempts(local);
+      setAttempts(merged);
+    } catch {
+      // ignore
+    }
+  })();
 
-      // 2) Remote (cross-device). If user isn't logged in, this will just fail quietly.
-      try {
-        const r = await fetch(
-          `/api/attempts?datasetId=${encodeURIComponent(datasetId)}`,
-          { cache: "no-store", credentials: "include" }
-        );
-        if (!r.ok) return;
+  return () => {
+    alive = false;
+  };
+}, [userKey, datasetId]);
 
-        const j = await r.json().catch(() => null);
-
-        // Expecting GET route to return { ok: true, attempts: TestAttemptV1[] }
-        const remote: TestAttemptV1[] = Array.isArray(j?.attempts) ? j.attempts : [];
-
-        // Merge by attemptId (remote wins if duplicate)
-        const byId = new Map<string, TestAttemptV1>();
-        for (const a of local) byId.set(a.attemptId, a);
-        for (const a of remote) byId.set(a.attemptId, a);
-
-        const merged = Array.from(byId.values()).sort(
-          (a, b) =>
-            (b.submittedAt ?? b.lastActiveAt ?? b.createdAt ?? 0) -
-            (a.submittedAt ?? a.lastActiveAt ?? a.createdAt ?? 0)
-        );
-
-        if (!alive) return;
-        setAttempts(merged);
-      } catch {
-        // ignore
-      }
-    })();
-
-    return () => {
-      alive = false;
-    };
-  }, [userKey, datasetId]);
 
 
   // Compute stats (default: last 30 days for now; we’ll add filters later)
@@ -5136,8 +5681,9 @@ useEffect(() => {
 const COOLDOWN_MS = 24 * 60 * 60 * 1000;
 
 const coachPrefix = userKey ? `expatise:${userKey}` : `expatise:anon`;
-const LS_REPORT = `${coachPrefix}:coach:lastReport:v1`;
-const LS_COOLDOWN_UNTIL = `${coachPrefix}:coach:cooldownUntil:v1`;
+const LS_REPORT = `${coachPrefix}:coach:lastReport:v2`;
+const LS_COOLDOWN_UNTIL = `${coachPrefix}:coach:cooldownUntil:v2`;
+
 
 const [coachReport, setCoachReport] = useState<string>("");
 const [coachCreatedAt, setCoachCreatedAt] = useState<number | null>(null);
@@ -5176,7 +5722,11 @@ useEffect(() => {
 
   (async () => {
     try {
-      const r = await fetch("/api/time-logs?limit=200", { cache: "no-store" as any });
+      const r = await fetch("/api/time-logs?limit=200", {
+  cache: "no-store" as any,
+  credentials: "include",
+});
+
       const j = await r.json().catch(() => null);
       if (!alive || !r.ok || !j?.ok) return;
 
@@ -5382,6 +5932,11 @@ async function handleGenerateCoach() {
         {/* ==== Top Accuracy / Gauge Card ==== */}
 <section className={styles.statsSummaryCard}>
   <div className={styles.statsSummaryInner}>
+    <div className={styles.readinessTitleRow}>
+      <span className={styles.statsTitleRow}>
+      </span>
+    </div>
+
     <ReadinessRing
       valuePct={statsReadiness.readinessPct}
       enabled={!loading && questions.length > 0}
@@ -5427,7 +5982,10 @@ async function handleGenerateCoach() {
 {/* Screen Time */}
 <article className={styles.statsCard}>
   <header className={styles.statsCardHeader}>
-  <h2 className={styles.statsCardTitle}>Screen Time</h2>
+  <div className={styles.statsTitleRow}>
+    <h2 className={styles.statsCardTitle}>Screen Time</h2>
+    <InfoTip text={`Includes: ${modesLabel(LEARNING_MODE_KEYS)} · last 7 days`} />
+  </div>
   <ScreenTimeLegend animate={screenLegendReady} />
 
 
@@ -5458,10 +6016,15 @@ async function handleGenerateCoach() {
 
 {/* Score Card */}
             <article className={styles.statsCard}>
-              <header className={styles.statsCardHeader}>
-  <h2 className={styles.statsCardTitle}>Score</h2>
+             <header className={styles.statsCardHeader}>
+  <div className={styles.statsTitleRow}>
+    <h2 className={styles.statsCardTitle}>Score</h2>
+    <InfoTip text={statsTooltip(REAL_ONLY_MODE_KEYS, tfScore)} />
+  </div>
+
   <ScoreLegend animate={scoreLegendReady} />
 </header>
+
 
 
               <div className={`${styles.statsGraphArea} ${styles.statsGraphClean}`}>
@@ -5491,7 +6054,10 @@ async function handleGenerateCoach() {
 {/* Daily Progress */}
 <article className={styles.statsCard}>
   <header className={styles.statsCardHeader}>
-  <h2 className={styles.statsCardTitle}>Daily Progress</h2>
+  <div className={styles.statsTitleRow}>
+    <h2 className={styles.statsCardTitle}>Daily Progress</h2>
+    <InfoTip text={statsTooltip(LEARNING_MODE_KEYS, tfWeekly)} />
+  </div>
   <DailyProgressLegend animate={dailyLegendReady} />
 </header>
 
@@ -5525,7 +6091,10 @@ async function handleGenerateCoach() {
 {/* Heatmap */}
 <article className={styles.statsCard}>
   <header className={styles.statsCardHeader}>
+  <div className={styles.statsTitleRow}>
     <h2 className={styles.statsCardTitle}>Heatmap</h2>
+    <InfoTip text={statsTooltip(REAL_ONLY_MODE_KEYS, tfBestTime)} />
+  </div>
   </header>
 
   <div className={styles.statsGraphArea}>
@@ -5546,7 +6115,10 @@ async function handleGenerateCoach() {
 {/* Topic Mastery */}
 <article className={styles.statsCard}>
   <header className={`${styles.statsCardHeader} ${styles.statsCardHeaderRow}`}>
-  <h2 className={styles.statsCardTitle}>Topic Mastery</h2>
+  <div className={styles.statsTitleRow}>
+    <h2 className={styles.statsCardTitle}>Topic Mastery</h2>
+    <InfoTip text={statsTooltip(LEARNING_MODE_KEYS, tfTopics)} />
+  </div>
 
   <button
     type="button"
@@ -5716,7 +6288,10 @@ async function handleGenerateCoach() {
               {coachCreatedAt ? `Last report: ${formatStamp(coachCreatedAt)}` : ""}
             </p>
           </div>
-          <p className={styles.coachReportText}>{coachReport}</p>
+          <div className={styles.coachReportText}>
+  <CoachReportRich report={coachReport} />
+</div>
+
         </div>
       ) : null}
     </>
@@ -5769,6 +6344,11 @@ async function handleGenerateCoach() {
 
 }
 
+.statsTitleRow {
+  display: inline-flex;
+  align-items: center;
+  gap: 1px;
+}
 
 
 /* ================================= */
@@ -6351,19 +6931,124 @@ async function handleGenerateCoach() {
   font-variant-numeric: tabular-nums;
 }
 
-.coachReportText {
+.coachReportText{
   margin: 0;
-  white-space: pre-line; /* preserve line breaks from the model */
+}
+
+/* Rich coach typography */
+.coachRich{
   font-size: 13px;
-  line-height: 1.5;
+  line-height: 1.55;
   color: rgba(17,24,39,0.90);
 }
+
+.coachH{
+  margin: 12px 0 6px;
+  font-size: 14px;         /* “h5-ish” */
+  font-weight: 850;
+  letter-spacing: -0.01em;
+}
+
+
+.coachUl, .coachOl{
+  margin: 0 0 10px;
+  padding-left: 18px;
+}
+
+.coachUl li, .coachOl li{
+  margin: 6px 0;
+}
+
+
+.coachChip{
+  display: inline-flex;
+  align-items: center;
+  padding: 1px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 800;
+  margin-right: 6px;
+  border: 1px solid rgba(148, 163, 184, 0.45);
+  background: rgba(255,255,255,0.55);
+}
+
 
 .coachError {
   margin-top: 10px;
   font-size: 12px;
   line-height: 1.35;
   color: rgba(185, 28, 28, 0.90);
+}
+
+.coachReportRich{
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.coachSection{
+  padding: 10px 10px;
+  border-radius: 16px;
+  background: rgba(255,255,255,0.55);
+  border: 1px solid rgba(148, 163, 184, 0.25);
+}
+
+.coachTargetCallout{
+  background: linear-gradient(
+    180deg,
+    rgba(255,255,255,0.85),
+    rgba(255, 197, 66, 0.10)
+  );
+  border-color: rgba(255, 197, 66, 0.35);
+}
+
+.coachSectionTitle{
+  margin: 0 0 6px 0;
+  font-size: 14px;      /* “h5-ish” */
+  font-weight: 850;
+  letter-spacing: 0.01em;
+  color: rgba(17,24,39,0.86);
+}
+
+.coachSectionBody{
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.coachP{
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.55;
+  color: rgba(17,24,39,0.90);
+}
+
+.coachList{
+  margin: 0;
+  padding-left: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.coachLi{
+  font-size: 13px;
+  line-height: 1.55;
+  color: rgba(17,24,39,0.90);
+}
+
+.coachMetric{
+  font-weight: 850;
+    font-variant-numeric: tabular-nums;
+
+}
+
+.coachKey{
+  font-weight: 850;
+}
+
+.coachSpacer{
+  height: 6px;
 }
 
 
@@ -6534,6 +7219,25 @@ async function handleGenerateCoach() {
   color: rgba(252, 165, 165, 0.92);
 }
 
+:root[data-theme='dark'] .coachSection{
+  background: rgba(2, 6, 23, 0.35);
+  border-color: rgba(255,255,255,0.14);
+}
+
+:root[data-theme='dark'] .coachTargetCallout{
+  background: linear-gradient(
+    180deg,
+    rgba(43, 124, 175, 0.10),
+    rgba(2, 6, 23, 0.85)
+  );
+  border-color: rgba(255, 197, 66, 0.22);
+}
+
+:root[data-theme='dark'] .coachSectionTitle,
+:root[data-theme='dark'] .coachP,
+:root[data-theme='dark'] .coachLi{
+  color: rgba(255,255,255,0.90);
+}
 
 ```
 
@@ -7090,7 +7794,7 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 const COOLDOWN_MS = 24 * 60 * 60 * 1000;
-const COOKIE_KEY = "expatise_coach_last_v2";
+const COOKIE_KEY = "expatise_coach_last_v3";
 
 /**
  * Master prompt (static). Keep this stable for best caching behavior.
@@ -7122,7 +7826,14 @@ HARD RULES (never break)
 5) No moralizing:
   No shame, no character judgments, no “should have.”
 6) Length + structure:
-  Entire output ~250 words max. Use ONLY the required sections A–F. No extra sections.
+  Entire output ~250 words max. Output MUST be Markdown using ONLY these headings:
+  ### Summary
+  ### Snapshot
+  ### Top levers
+  ### Today (10 / 20 / 40)
+  ### Next 7 days
+  ### One target
+  Do NOT use lettered sections (no “A) …”, “B) …”).
 7) One story only:
   Choose EXACTLY ONE narrative (see “Narrative selection”). Everything must align to it.
 8) One measurable target only:
@@ -7280,17 +7991,34 @@ PRAISE / ENCOURAGEMENT POLICY
 - Close with agency and a minimum-dose option.
 
 
-OUTPUT FORMAT (always; NO extra headings)
-A) Headline (1 line)
-B) What’s happening (2 sentences; each cites metrics + window label)
-C) Top 3 levers (3 items; each: Why + Next action; cite metrics + window label; aligned to narrative)
-D) Today plan: 10 / 20 / 40 minutes (bullets; specific; metric-aware)
-E) 7-day plan (5–7 bullets; specific; metric-aware)
-F) ONE measurable target + short encouraging closing (include baseline + n + window label; no guarantees)
+OUTPUT FORMAT (Markdown only; no lettered sections)
+### Summary
+One sentence. No labels.
+
+### Snapshot
+- (30d) Two short bullets, each citing metrics.
+- (7d) One short bullet, citing habit metrics.
+
+### Top levers
+1) Lever title — Why: … Next: …
+2) Lever title — Why: … Next: …
+3) Lever title — Why: … Next: …
+
+### Today (10 / 20 / 40)
+- 10 min: …
+- 20 min: …
+- 40 min: …
+
+### Next 7 days
+- 5–7 bullets, specific, metric-aware.
+
+### The One thing
+Target: ONE measurable target (baseline + window label + timeframe).
+Close with one short encouragement line.
 
 
 STYLE
-Clear, motivating, practical. No mention you are an AI. Avoid generic advice. Be specific to the provided metrics only.
+Clear, motivating, practical. No mention you are an AI. Avoid generic advice. Be specific to the provided metrics only. Avoid stiff labels like “Strong, consistent practice”. Write like a premium coach: concise, specific, no filler adjectives unless backed by a metric.
 `.trim();
 
 const FALLBACK_PROMPT = `
@@ -7301,8 +8029,8 @@ Structure:
 1) Skill snapshot (30d)
 2) Habits snapshot (7d)
 3) Top 3 levers
-4) Today plan (10/20/40 min)
-5) 7-day plan
+4) Today's plan (10/20/30 min)
+5) The coming week
 If data is low-confidence, say so and suggest what to do next.
 `.trim();
 
@@ -9345,7 +10073,7 @@ import { EntitlementsProvider } from "@/components/EntitlementsProvider.client";
 import FreeUsageProgressBadge from "@/components/FreeUsageProgressBadge.client";
 import SwipeBack from "@/components/SwipeBack.client";
 import TimeTracker from "@/components/TimeTracker.client";
-
+import AuthSelfHeal from "@/components/AuthSelfHeal";
 
 
 const geistSans = Geist({
@@ -9382,6 +10110,7 @@ export default function RootLayout({
           <FreeUsageProgressBadge />
 
           <ThemeProvider>
+            <AuthSelfHeal />
             <UserProfileProvider>
               <SwipeBack />
               <TimeTracker />
@@ -11494,6 +12223,12 @@ export default function OnboardingPage() {
 @media (prefers-reduced-motion: reduce){
   .bottomNavWrapper{
     transition: none;
+  }
+}
+
+@media (pointer: coarse) {
+  .cardRow {
+    scroll-snap-type: x proximity; /* less “sticky” than mandatory */
   }
 }
 
@@ -15068,6 +15803,46 @@ export default function TestModeResultsPage() {
 
 ```
 
+### components/AuthSelfHeal.tsx
+```tsx
+"use client";
+
+import { useEffect } from "react";
+import { createClient } from "@/lib/supabase/client";
+
+function looksLikeRefreshTokenIssue(err: unknown) {
+  const msg = String((err as any)?.message ?? err ?? "");
+  return /refresh token/i.test(msg) || /invalid.*token/i.test(msg);
+}
+
+export default function AuthSelfHeal() {
+  useEffect(() => {
+    const supabase = createClient();
+
+    (async () => {
+      try {
+        // This is enough to trigger a refresh attempt if Supabase thinks it needs one
+        const { error } = await supabase.auth.getSession();
+        if (error && looksLikeRefreshTokenIssue(error)) {
+          // Clear local auth state so Supabase stops retrying with a bad/missing refresh token
+          await supabase.auth.signOut({ scope: "local" });
+          // Optional: hard reload so any UI/auth state resets cleanly
+          window.location.reload();
+        }
+      } catch (e) {
+        if (looksLikeRefreshTokenIssue(e)) {
+          await supabase.auth.signOut({ scope: "local" });
+          window.location.reload();
+        }
+      }
+    })();
+  }, []);
+
+  return null;
+}
+
+```
+
 ### components/BackButton.module.css
 ```css
 /* No layout/style changes, only theme behavior */
@@ -15460,9 +16235,51 @@ export default function ComingSoonRow(props: Props) {
 }
 ```
 
+### components/DemoSeedGate.client.tsx
+```tsx
+"use client";
+
+import { useEffect, useState } from "react";
+import { useUserKey } from "@/components/useUserKey.client";
+import { seedAdminDemoDataIfNeeded } from "@/lib/demo/seedAdminDemoData";
+
+export default function DemoSeedGate({ children }: { children: React.ReactNode }) {
+  const userKey = useUserKey();
+  const [ready, setReady] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function run() {
+      // Wait until userKey resolves to something stable
+      if (!userKey) return;
+
+      try {
+        await seedAdminDemoDataIfNeeded(userKey);
+      } catch (e) {
+        // Don’t swallow — you NEED this during debugging
+        if (process.env.NODE_ENV !== "production") {
+          console.error("[DemoSeedGate] seed failed:", e);
+        }
+      } finally {
+        if (!cancelled) setReady(true);
+      }
+    }
+
+    run();
+    return () => {
+      cancelled = true;
+    };
+  }, [userKey]);
+
+  if (!ready) return null;
+  return <>{children}</>;
+}
+
+```
+
 ### components/DragScrollRow.tsx
 ```tsx
-//components/DragScrollRow.tsx
 'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
@@ -15475,6 +16292,23 @@ type DragScrollRowProps = {
 export default function DragScrollRow({ children, className }: DragScrollRowProps) {
   const rowRef = useRef<HTMLDivElement | null>(null);
 
+  // Treat "coarse pointer" devices as touch (iOS/Android).
+  const [isTouch, setIsTouch] = useState(false);
+
+  useEffect(() => {
+    const mql = window.matchMedia?.('(pointer: coarse)');
+    const update = () => {
+      const coarse = mql?.matches ?? false;
+      const touchPoints = typeof navigator !== 'undefined' ? navigator.maxTouchPoints : 0;
+      setIsTouch(coarse || touchPoints > 0);
+    };
+    update();
+    mql?.addEventListener?.('change', update);
+    return () => mql?.removeEventListener?.('change', update);
+  }, []);
+
+  const enableMouseDrag = !isTouch;
+
   const [dragging, setDragging] = useState(false);
   const [snapOff, setSnapOff] = useState(false);
 
@@ -15486,7 +16320,6 @@ export default function DragScrollRow({ children, className }: DragScrollRowProp
   const startLocalXRef = useRef(0);
   const startScrollLeftRef = useRef(0);
 
-  // drag threshold + "did drag" (to suppress click after a drag)
   const DRAG_THRESHOLD = 6; // px
   const didDragRef = useRef(false);
 
@@ -15528,7 +16361,7 @@ export default function DragScrollRow({ children, className }: DragScrollRowProp
       } else {
         velocityRef.current = 0;
         stopAnimation();
-        setSnapOff(false); // restore snap after momentum ends
+        setSnapOff(false);
       }
     };
 
@@ -15536,10 +16369,12 @@ export default function DragScrollRow({ children, className }: DragScrollRowProp
   };
 
   const onPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (!enableMouseDrag) return;
+    if (e.pointerType !== 'mouse') return;
+
     const el = rowRef.current;
     if (!el) return;
 
-    // Do NOT preventDefault here (it can kill clicks)
     pointerDownRef.current = true;
     activePointerIdRef.current = e.pointerId;
 
@@ -15558,60 +16393,46 @@ export default function DragScrollRow({ children, className }: DragScrollRowProp
     const el = rowRef.current;
     if (!el) return;
 
-    // Now we are officially dragging
     setDragging(true);
     setSnapOff(true);
     didDragRef.current = true;
 
-    // Prevent text selection + stop browser gestures once dragging has started
-    e.preventDefault();
-
-    // Capture pointer ONLY after drag begins (so clicks on children still work)
     try {
       el.setPointerCapture(e.pointerId);
     } catch {
-      // ignore (some environments can throw)
+      // ignore
     }
   };
 
   const onPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (!enableMouseDrag) return;
+
     const el = rowRef.current;
     if (!el || !pointerDownRef.current) return;
     if (activePointerIdRef.current !== e.pointerId) return;
 
     const dxFromStart = e.clientX - startClientXRef.current;
 
-    // If we haven't entered drag mode yet, wait until threshold is exceeded
-    if (!dragging && Math.abs(dxFromStart) < DRAG_THRESHOLD) {
-      return;
-    }
-
-    // First move past threshold -> enter drag mode
-    if (!dragging) {
-      beginDragMode(e);
-    } else {
-      // already dragging: keep preventing default for smoothness
-      e.preventDefault();
-    }
+    if (!dragging && Math.abs(dxFromStart) < DRAG_THRESHOLD) return;
+    if (!dragging) beginDragMode(e);
 
     const x = getLocalX(e.clientX);
     const walk = x - startLocalXRef.current;
 
     el.scrollLeft = startScrollLeftRef.current - walk;
 
-    // velocity (px per event)
     const dx = e.clientX - lastClientXRef.current;
     lastClientXRef.current = e.clientX;
     velocityRef.current = dx * 0.9;
   };
 
   const endDrag = (e?: React.PointerEvent<HTMLDivElement>) => {
+    if (!enableMouseDrag) return;
     if (!pointerDownRef.current) return;
 
     pointerDownRef.current = false;
     activePointerIdRef.current = null;
 
-    // release capture if we had it
     if (e?.currentTarget && dragging) {
       try {
         e.currentTarget.releasePointerCapture(e.pointerId);
@@ -15620,74 +16441,53 @@ export default function DragScrollRow({ children, className }: DragScrollRowProp
       }
     }
 
-    if (!dragging) {
-      // was a click/tap, not a drag
-      return;
-    }
+    if (!dragging) return;
 
     setDragging(false);
 
-    // fling
-    if (Math.abs(velocityRef.current) > 0.5) {
-      startMomentum();
-    } else {
+    if (Math.abs(velocityRef.current) > 0.5) startMomentum();
+    else {
       velocityRef.current = 0;
       setSnapOff(false);
     }
 
-    // Allow next click after this tick (we only want to block the click caused by this drag)
     setTimeout(() => {
       didDragRef.current = false;
     }, 0);
   };
 
-  // Optional: make mouse wheel scroll horizontally (desktop testing)
-  useEffect(() => {
-  const el = rowRef.current;
-  if (!el) return;
-
-  const onWheel = (ev: WheelEvent) => {
-    const canScroll = el.scrollWidth > el.clientWidth + 1;
-    if (!canScroll) return;
-
-    // ✅ normal wheel should scroll the page
-    if (!ev.shiftKey) return;
-
-    // ✅ Shift+wheel = horizontal scroll (intentional)
-    ev.preventDefault();
-    el.scrollLeft += ev.deltaY;
-  };
-
-  el.addEventListener('wheel', onWheel, { passive: false });
-  return () => el.removeEventListener('wheel', onWheel);
-}, []);
-
-
   return (
     <div
       ref={rowRef}
       className={className}
-      onPointerDown={onPointerDown}
-      onPointerMove={onPointerMove}
-      onPointerUp={endDrag}
-      onPointerCancel={endDrag}
-      onPointerLeave={endDrag}
-      onClickCapture={(e) => {
-        // If the user dragged, block the accidental click that happens on release
-        if (didDragRef.current) {
-          e.preventDefault();
-          e.stopPropagation();
-        }
-      }}
+      onPointerDown={enableMouseDrag ? onPointerDown : undefined}
+      onPointerMove={enableMouseDrag ? onPointerMove : undefined}
+      onPointerUp={enableMouseDrag ? endDrag : undefined}
+      onPointerCancel={enableMouseDrag ? endDrag : undefined}
+      onPointerLeave={enableMouseDrag ? endDrag : undefined}
+      onClickCapture={
+        enableMouseDrag
+          ? (e) => {
+              if (didDragRef.current) {
+                e.preventDefault();
+                e.stopPropagation();
+              }
+            }
+          : undefined
+      }
       style={{
         overflowX: 'auto',
         overflowY: 'hidden',
-        cursor: dragging ? 'grabbing' : 'grab',
-        userSelect: dragging ? 'none' : undefined,
-        // allow vertical page scroll; we handle horizontal drag ourselves
-        touchAction: 'pan-y',
-        // disable snap during drag/throw
-        scrollSnapType: snapOff ? 'none' : undefined,
+        WebkitOverflowScrolling: 'touch',
+
+        cursor: enableMouseDrag ? (dragging ? 'grabbing' : 'grab') : undefined,
+        userSelect: enableMouseDrag && dragging ? 'none' : undefined,
+
+        // ✅ On touch devices, let the browser do native scrolling & direction lock.
+        touchAction: enableMouseDrag ? 'pan-y' : 'auto',
+
+        // ✅ Only disable snap during mouse-drag/momentum.
+        scrollSnapType: enableMouseDrag && snapOff ? 'none' : undefined,
       }}
     >
       {children}
@@ -16085,6 +16885,126 @@ function FreeUsageProgressBadgeInner() {
       {text}
     </div>
   );
+}
+
+```
+
+### components/InfoTip.client.tsx
+```tsx
+"use client";
+
+import { useEffect, useRef, useState } from "react";
+import styles from "./InfoTip.module.css";
+
+export default function InfoTip({ text }: { text: string }) {
+  const [open, setOpen] = useState(false);
+  const rootRef = useRef<HTMLSpanElement | null>(null);
+
+  // Close when user taps/clicks outside
+  useEffect(() => {
+    if (!open) return;
+
+    const onDown = (e: PointerEvent) => {
+      const el = rootRef.current;
+      if (!el) return;
+      if (el.contains(e.target as Node)) return;
+      setOpen(false);
+    };
+
+    window.addEventListener("pointerdown", onDown);
+    return () => window.removeEventListener("pointerdown", onDown);
+  }, [open]);
+
+  return (
+    <span
+      ref={rootRef}
+      className={styles.root}
+      onMouseEnter={() => setOpen(true)}
+      onMouseLeave={() => setOpen(false)}
+    >
+      <button
+        type="button"
+        className={styles.btn}
+        aria-label="Info"
+        aria-expanded={open}
+        onClick={(e) => {
+          e.stopPropagation();
+          setOpen((v) => !v);
+        }}
+      >
+        ⓘ
+      </button>
+
+      {open ? (
+        <span role="tooltip" className={styles.tip}>
+          {text}
+        </span>
+      ) : null}
+    </span>
+  );
+}
+
+```
+
+### components/InfoTip.module.css
+```css
+.root {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.btn {
+  border: 0;
+  background: transparent;
+  padding: 0 1px;
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 1;
+  opacity: 0.75;
+}
+
+.btn:hover {
+  opacity: 1;
+}
+
+.btn:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+  border-radius: 9999px;
+}
+
+.tip {
+  position: absolute;
+  z-index: 50;
+  top: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: 80vw;
+  min-width: 180px;
+
+  padding: 8px 10px;
+  border-radius: 10px;
+  font-size: 12px;
+  line-height: 1.3;
+
+  background: rgba(0, 0, 0, 0.88);
+  color: #fff;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+
+  white-space: normal;
+  
+}
+
+.tip::before {
+  content: "";
+  position: absolute;
+  top: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 0 6px 6px 6px;
+  border-style: solid;
+  border-color: transparent transparent rgba(0, 0, 0, 0.88) transparent;
 }
 
 ```
@@ -17252,6 +18172,12 @@ const detailsStartMs = mainEndMs;
   const xFor = (i: number) => xAxisL + i * slot + (slot - barW) / 2;
   const cxFor = (i: number) => xFor(i) + barW / 2;
   
+  // ✅ Avg line should span the full plot width (touch y-axis)
+const cxForAvg = (i: number) => {
+  if (shown.length <= 1) return xAxisL;
+  return xAxisL + (i / (shown.length - 1)) * plotW;
+};
+
 
   const barHFor = (answered: number) => (answered / maxAnswered) * plotH;
 
@@ -17270,24 +18196,26 @@ const detailsStartMs = mainEndMs;
   };
 
   const avgPathD =
-    shown.length === 0
-      ? ''
-      : shown
-          .map((d, i) => {
-            const pct = clamp(Number.isFinite(d.avgScore) ? d.avgScore : 0, 0, 100);
-            return `${i === 0 ? 'M' : 'L'} ${cxFor(i).toFixed(2)} ${yForAvg(pct).toFixed(2)}`;
-          })
-          .join(' ');
+  shown.length === 0
+    ? ''
+    : shown
+        .map((d, i) => {
+          const pct = clamp(Number.isFinite(d.avgScore) ? d.avgScore : 0, 0, 100);
+          return `${i === 0 ? 'M' : 'L'} ${cxForAvg(i).toFixed(2)} ${yForAvg(pct).toFixed(2)}`;
+        })
+        .join(' ');
 
-  const avgPoints = shown.map((d, i) => {
+
+ const avgPoints = shown.map((d, i) => {
   const pct = clamp(Number.isFinite(d.avgScore) ? d.avgScore : 0, 0, 100);
   return {
     dayStart: d.dayStart,
-    pct,                 // ✅ keep it
-    cx: cxFor(i),
+    pct,
+    cx: cxForAvg(i),     // ✅ was cxFor(i)
     cy: yForAvg(pct),
   };
 });
+
 
   const wrapRef = useRef<HTMLDivElement | null>(null);
   const tipRef = useRef<HTMLDivElement | null>(null);
@@ -17434,7 +18362,13 @@ const avgDashOffset = (1 - tReveal) * dashLen;
       <div className={styles.box}>
         <div className={styles.chartShell} ref={inViewRef}>
 
-<svg className={styles.svg} viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none">
+<svg
+  className={styles.svg}
+  viewBox={`0 0 ${W} ${H}`}
+  preserveAspectRatio="none"
+  style={{ overflow: 'visible' }}
+>
+
 
 
   <defs>
@@ -19298,8 +20232,8 @@ useEffect(() => {
 const W = 340;     // total SVG width
 const H = 100;     // plot height
 const axisW = 27;  // left axis width (labels live here)
-const padX = 5;
-const padY = 5;
+const padX = .5;
+const padY = 7;
 
 const plotLeft = axisW;
 const padRight = 18;     // NEW (space for latest halo)
@@ -19582,7 +20516,7 @@ style={{ opacity: lensReady ? 1 : 0 }}
 
       return (
         <circle
-          key={`hit-${p.t}`}
+          key={`hit-${p.t}-${i}`}
           ref={(node) => {
             hitRefs.current[i] = node;
           }}
@@ -20359,8 +21293,10 @@ useEffect(() => {
 
 
 
-const xLabelH = 16; // height reserved for Mon/Tue labels
+const xLabelH = 16;
 const plotH = Math.max(10, height - xLabelH);
+const plotPx = Math.max(1, plotH - 1); // ✅ shared pixel height used by axis + bars
+
 
 // ---- Y axis scale (responsive, never "breaks") ----
 const rawMax = Math.max(1, model.maxTotal);
@@ -20383,11 +21319,11 @@ const { scaleMax, ticks } = useMemo(() => {
 
 const yForMin = (min: number) => {
   const y01 = 1 - clamp(min / scaleMax, 0, 1);
-  return Math.round(y01 * plotH);
+  return Math.round(y01 * plotPx);
 };
 
+const avgLineY = Math.round((1 - clamp(model.avgTotal / scaleMax, 0, 1)) * plotPx);
 
-const avgLineY = Math.round((1 - clamp(model.avgTotal / scaleMax, 0, 1)) * plotH);
 
 // Routine = number of days (out of 7) with any logged time
 const activeDays = useMemo(() => {
@@ -20395,8 +21331,8 @@ const activeDays = useMemo(() => {
 }, [model.points]);
 
   // --- Total line (polyline) points in 0..100 SVG space ---
-const padX = 4;     // keeps the ends from touching the edges
-const padTop = 4;   // keeps the peak from clipping (top only)
+const padX = 1;     // keeps the ends from touching the edges
+const padTop = 3;   // keeps the peak from clipping (top only)
 
 const totalLinePts = useMemo<Pt[]>(() => {
   const n = model.points.length;
@@ -20549,268 +21485,277 @@ const areaClipW = useMemo(() => {
 
   const hover = hoverIdx != null ? model.points[hoverIdx] : null;
 
-  return (
-  <div className={styles.wrap}>
-    {/* TOP AREA: only the chart */}
-    <div className={styles.topArea}>
-     
+    return (
+    <div className={styles.wrap}>
+      {/* TOP AREA: only the chart */}
+      <div className={styles.topArea}>
+        <div className={styles.chart} style={{ height }} ref={inViewRef}>
+          {/* ROW 1: Y axis + plot */}
+          <div className={styles.plotRow}>
+            {/* Y AXIS */}
+            <div className={styles.yAxis} style={{ height: plotH }}>
+              {ticks
+                .slice()
+                .reverse()
+                .map((t) => {
+                  const y = yForMin(t);
+                  return (
+                    <div key={t} className={styles.yTick} style={{ top: y }}>
+                      {fmtMin(t)}
+                    </div>
+                  );
+                })}
+            </div>
 
-      <div className={styles.chart} style={{ height }} ref={inViewRef}>
+            {/* PLOT */}
+            <div className={styles.plot} style={{ height: plotH }}>
+              {/* ✅ everything inside this wrapper shares the exact same plot box */}
+              <div className={styles.plotStack}>
+                {/* grid lines */}
+                {ticks.map((t) => {
+                  const y = yForMin(t);
+                  return <div key={`g-${t}`} className={styles.hGrid} style={{ top: y }} />;
+                })}
 
-{/* ROW 1: Y axis + plot */}
-        <div className={styles.plotRow}>
-          {/* Y AXIS */}
-          <div className={styles.yAxis} style={{ height: plotH }}>
-            {ticks
-              .slice()
-              .reverse()
-              .map((t) => {
-                const y = yForMin(t);
-                return (
-                  <div key={t} className={styles.yTick} style={{ top: y }}>
-                    {fmtMin(t)}
-                  </div>
-                );
-              })}
+                {/* TOTAL area (mountain) */}
+                {totalAreaD ? (
+                  <svg
+                    className={styles.totalAreaSvg}
+                    viewBox="0 0 100 100"
+                    preserveAspectRatio="none"
+                    aria-hidden="true"
+                    style={{ overflow: 'visible' }}
+                  >
+                    <defs>
+                      <linearGradient id={totalFillId} x1="0" y1="0" x2="1" y2="0">
+                        <stop offset="0%" stopColor="#2B7CAF" stopOpacity="0.28" />
+                        <stop offset="100%" stopColor="#3D8CD5" stopOpacity="0" />
+                      </linearGradient>
+
+                      <clipPath id={areaClipId} clipPathUnits="userSpaceOnUse">
+                        <rect x="0" y="0" width={areaClipW} height="100" />
+                      </clipPath>
+                    </defs>
+
+                    <path
+                      d={totalAreaD}
+                      fill={`url(#${totalFillId})`}
+                      clipPath={`url(#${areaClipId})`}
+                      style={{ opacity: areaClipW > 0 ? 1 : 0 }}
+                    />
+                  </svg>
+                ) : null}
+
+                {/* TOTAL line */}
+                {totalLineD ? (
+                  <svg
+                    className={styles.totalLineSvg}
+                    viewBox="0 0 100 100"
+                    preserveAspectRatio="none"
+                    aria-hidden="true"
+                    style={{ overflow: 'visible' }}
+                  >
+                    <defs>
+                      <linearGradient id={totalStrokeId} x1="0" y1="0" x2="1" y2="0">
+                        <stop offset="0%" stopColor="var(--chart-grad-warm)" stopOpacity="1" />
+                        <stop offset="100%" stopColor="var(--chart-grad-cool)" stopOpacity="1" />
+                      </linearGradient>
+                    </defs>
+
+                    <path
+                      ref={totalPathRef}
+                      d={totalLineD}
+                      className={`${styles.totalLine} ${lineDone ? styles.totalLineFinal : ''}`}
+                      stroke={`url(#${totalStrokeId})`}
+                      strokeDasharray={totalReady ? dashArray : undefined}
+                      strokeDashoffset={totalReady ? dashOffset : undefined}
+                      style={{ opacity: totalReady ? 1 : 0 }}
+                    />
+                  </svg>
+                ) : null}
+
+                {/* bars */}
+                <div className={styles.cols}>
+                  {model.points.map((p, idx) => {
+                    const barDelay = barDelayMs + idx * barStaggerMs;
+
+                    const testH =
+                      p.deliberateMin > 0
+                        ? Math.max(2, Math.round((p.deliberateMin / scaleMax) * plotPx))
+                        : 0;
+
+                    const studyH =
+                      p.studyMin > 0
+                        ? Math.max(2, Math.round((p.studyMin / scaleMax) * plotPx))
+                        : 0;
+
+                    const isToday = idx === model.todayIdx;
+                    const dayLabel = p.date.toLocaleDateString(undefined, { weekday: 'short' });
+                    const pctOfWeek = Math.round((p.total / model.weekTotalSafe) * 100);
+
+                    const colClass = [
+                      styles.col,
+                      isToday ? styles.today : '',
+                      p.total === 0 ? styles.zero : '',
+                    ]
+                      .filter(Boolean)
+                      .join(' ');
+
+                    return (
+                      <div
+                        key={p.key}
+                        className={colClass}
+                        onMouseEnter={() => setHoverIdx(idx)}
+                        onMouseLeave={() => setHoverIdx(null)}
+                      >
+                        <div className={styles.barArea}>
+                          <div className={styles.group}>
+                            <div
+                              className={`${styles.test} ${animateIn ? styles.barRise : styles.barHidden}`}
+                              style={
+                                animateIn
+                                  ? { height: testH, animationDelay: `${barDelay}ms` }
+                                  : { height: testH }
+                              }
+                            />
+                            <div
+                              className={`${styles.study} ${animateIn ? styles.barRise : styles.barHidden}`}
+                              style={
+                                animateIn
+                                  ? { height: studyH, animationDelay: `${barDelay}ms` }
+                                  : { height: studyH }
+                              }
+                            />
+                          </div>
+
+                          {hoverIdx === idx ? (
+                            <div className={styles.tooltip} role="tooltip">
+                              <div className={styles.tipTitle}>{isToday ? 'Today' : dayLabel}</div>
+                              <div className={styles.tipBody}>
+                                <div>
+                                  Test: <b>{p.deliberateMin}m</b>
+                                </div>
+                                <div>
+                                  Study: <b>{p.studyMin}m</b>
+                                </div>
+                                <div>
+                                  Total: <b>{p.total}m</b> · {pctOfWeek}% of week
+                                </div>
+                              </div>
+                            </div>
+                          ) : null}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                {/* avg line */}
+                <div
+                  className={`${styles.avgLine} ${animateIn ? styles.avgLineDraw : styles.avgLineHidden}`}
+                  style={
+                    animateIn
+                      ? { top: avgLineY, animationDelay: `${avgDelayMs}ms` }
+                      : { top: avgLineY }
+                  }
+                />
+
+                <div
+                  className={`${styles.avgLabel} ${animateIn ? styles.avgLabelIn : styles.avgLabelHidden}`}
+                  style={
+                    animateIn
+                      ? {
+                          top: clamp(avgLineY - 12, 0, plotPx - 14),
+                          animationDelay: `${avgLabelDelayMs}ms`,
+                        }
+                      : { top: clamp(avgLineY - 12, 0, plotPx - 14) }
+                  }
+                >
+                  7D avg
+                </div>
+              </div>
+            </div>
           </div>
 
-          {/* PLOT */}
-          <div className={styles.plot} style={{ height: plotH }}>
-            {/* grid lines */}
-            {ticks.map((t) => {
-              const y = yForMin(t);
-              return <div key={`g-${t}`} className={styles.hGrid} style={{ top: y }} />;
-            })}
-
-{/* TOTAL area (mountain) */}
-{totalAreaD ? (
-  <svg
-    className={styles.totalAreaSvg}
-    viewBox="0 0 100 100"
-    preserveAspectRatio="none"
-    aria-hidden="true"
-    style={{ overflow: 'visible' }}
-  >
-   <defs>
-  <linearGradient id={totalFillId} x1="0" y1="0" x2="1" y2="0">
-    <stop offset="0%" stopColor="#2B7CAF" stopOpacity="0.28" />
-    <stop offset="100%" stopColor="#3D8CD5" stopOpacity="0" />
-  </linearGradient>
-
-  <clipPath id={areaClipId} clipPathUnits="userSpaceOnUse">
-  <rect x="0" y="0" width={areaClipW} height="100" />
-</clipPath>
-
-</defs>
-
-
-    <path
-  d={totalAreaD}
-  fill={`url(#${totalFillId})`}
-  clipPath={`url(#${areaClipId})`}
-  style={{ opacity: areaClipW > 0 ? 1 : 0 }}
-/>
-
-
-  </svg>
-) : null}
-
-{/* TOTAL line */}
-{totalLineD ? (
-  <svg
-    className={styles.totalLineSvg}
-    viewBox="0 0 100 100"
-    preserveAspectRatio="none"
-    aria-hidden="true"
-    style={{ overflow: 'visible' }}
-  >
-    <defs>
-      <linearGradient id={totalStrokeId} x1="0" y1="0" x2="1" y2="0">
-  <stop offset="0%" stopColor="var(--chart-grad-warm)" stopOpacity="1" />
-  <stop offset="100%" stopColor="var(--chart-grad-cool)" stopOpacity="1" />
-</linearGradient>
-
-
-    </defs>
-
-    <path
-  ref={totalPathRef}
-  d={totalLineD}
-  className={`${styles.totalLine} ${lineDone ? styles.totalLineFinal : ''}`}
-  stroke={`url(#${totalStrokeId})`}
-  strokeDasharray={totalReady ? dashArray : undefined}
-  strokeDashoffset={totalReady ? dashOffset : undefined}
-  style={{ opacity: totalReady ? 1 : 0 }}
-/>
-
-
-  </svg>
-) : null}
-
-
-{/* bars */}
-            <div className={styles.cols}>
+          {/* ROW 2: X labels */}
+          <div className={styles.xRow} style={{ height: xLabelH }}>
+            <div className={styles.yAxisSpacer} />
+            <div className={styles.xLabels}>
               {model.points.map((p, idx) => {
-                const barDelay = barDelayMs + idx * barStaggerMs;
-
-                const testH =
-                  p.deliberateMin > 0
-                    ? Math.max(2, Math.round((p.deliberateMin / scaleMax) * plotH))
-                    : 0;
-
-                const studyH =
-                  p.studyMin > 0
-                    ? Math.max(2, Math.round((p.studyMin / scaleMax) * plotH))
-                    : 0;
-
                 const isToday = idx === model.todayIdx;
                 const dayLabel = p.date.toLocaleDateString(undefined, { weekday: 'short' });
-                const pctOfWeek = Math.round((p.total / model.weekTotalSafe) * 100);
-
-                const colClass = [
-                  styles.col,
-                  isToday ? styles.today : '',
-                  p.total === 0 ? styles.zero : '',
-                ]
-                  .filter(Boolean)
-                  .join(' ');
 
                 return (
                   <div
-                    key={p.key}
-                    className={colClass}
-                    onMouseEnter={() => setHoverIdx(idx)}
-                    onMouseLeave={() => setHoverIdx(null)}
+                    key={`x-${p.key}`}
+                    className={`${styles.dayLabel} ${isToday ? styles.dayLabelToday : ''}`}
                   >
-                    <div className={styles.barArea}>
-
-                      <div className={styles.group}>
-                        <div
-  className={`${styles.test} ${animateIn ? styles.barRise : styles.barHidden}`}
-  style={animateIn ? { height: testH, animationDelay: `${barDelay}ms` } : { height: testH }}
-/>
-
-<div
-  className={`${styles.study} ${animateIn ? styles.barRise : styles.barHidden}`}
-  style={animateIn ? { height: studyH, animationDelay: `${barDelay}ms` } : { height: studyH }}
-/>
-
-                      </div>
-
-                      {hoverIdx === idx ? (
-                        <div className={styles.tooltip} role="tooltip">
-                          <div className={styles.tipTitle}>{isToday ? 'Today' : dayLabel}</div>
-                          <div className={styles.tipBody}>
-                            <div>Test: <b>{p.deliberateMin}m</b></div>
-                            <div>Study: <b>{p.studyMin}m</b></div>
-                            <div>Total: <b>{p.total}m</b> · {pctOfWeek}% of week</div>
-                          </div>
-                        </div>
-                      ) : null}
-                    </div>
+                    {isToday ? 'Today' : dayLabel.slice(0, 3)}
                   </div>
                 );
               })}
             </div>
-{/* avg line */}
-            <div
-  className={`${styles.avgLine} ${animateIn ? styles.avgLineDraw : styles.avgLineHidden}`}
-  style={animateIn
-    ? { top: avgLineY, animationDelay: `${avgDelayMs}ms` }
-    : { top: avgLineY }
-  }
-/>
-
-<div
-  className={`${styles.avgLabel} ${animateIn ? styles.avgLabelIn : styles.avgLabelHidden}`}
-  style={animateIn
-    ? { top: clamp(avgLineY - 12, 0, plotH - 14), animationDelay: `${avgLabelDelayMs}ms` }
-    : { top: clamp(avgLineY - 12, 0, plotH - 14) }
-  }
->
-  7D avg
-</div>
-
-          </div>
-        </div>
-
-        {/* ROW 2: X labels */}
-        <div className={styles.xRow} style={{ height: xLabelH }}>
-          <div className={styles.yAxisSpacer} />
-          <div className={styles.xLabels}>
-            {model.points.map((p, idx) => {
-              
-              const isToday = idx === model.todayIdx;
-              const dayLabel = p.date.toLocaleDateString(undefined, { weekday: 'short' });
-
-              return (
-                <div
-                  key={`x-${p.key}`}
-                  className={`${styles.dayLabel} ${isToday ? styles.dayLabelToday : ''}`}
-                >
-                  {isToday ? 'Today' : dayLabel.slice(0, 3)}
-                </div>
-              );
-            })}
           </div>
         </div>
       </div>
+
+      {/* Bottom text */}
+      <div className={styles.bottomStack}>
+        <div
+          className={`${styles.summaryRow} ${animateIn ? styles.waterIn : styles.waterHidden}`}
+          style={
+            animateIn
+              ? ({ animationDelay: `${detailsStartMs}ms` } as CSSProperties)
+              : undefined
+          }
+        >
+          <div className={styles.summaryTop}>
+            <b>7D total</b>: {weekTestTotal}m test · {weekStudyTotal}m study
+          </div>
+
+          <div className={styles.summaryRow2}>
+            <span>
+              <b>Avg/day</b>: {Math.round(model.avgTotal)}m
+            </span>
+            <span className={styles.sep} aria-hidden="true" />
+            <span>
+              <b>Best</b>: {bestLabel} ({bestPoint?.total ?? 0}m)
+            </span>
+          </div>
+        </div>
+
+        <div
+          className={`${styles.footerRow} ${animateIn ? styles.waterIn : styles.waterHidden}`}
+          style={
+            animateIn
+              ? ({ animationDelay: `${detailsStartMs + detailsStaggerMs}ms` } as CSSProperties)
+              : undefined
+          }
+        >
+          <span>
+            <b>Routine</b>: {activeDays}/7 days
+            <span className={styles.sep}></span>
+            <b>Streak</b>: {streakDays ?? 0}d
+          </span>
+
+          {model.hasCompare ? <span className={styles.muted}>Compare overlay: enabled</span> : null}
+        </div>
+
+        {confidenceNote ? (
+          <div
+            className={`${styles.confidenceNote} ${animateIn ? styles.waterIn : styles.waterHidden}`}
+            style={
+              animateIn
+                ? ({ animationDelay: `${detailsStartMs + detailsStaggerMs * 2}ms` } as CSSProperties)
+                : undefined
+            }
+          >
+            {confidenceNote}
+          </div>
+        ) : null}
+      </div>
     </div>
-
-{/* Bottom text */}
-    <div className={styles.bottomStack}>
-  <div
-    className={`${styles.summaryRow} ${animateIn ? styles.waterIn : styles.waterHidden}`}
-    style={
-      animateIn
-        ? ({ animationDelay: `${detailsStartMs}ms` } as CSSProperties)
-        : undefined
-    }
-  >
-    <div className={styles.summaryTop}>
-      <b>7D total</b>: {weekTestTotal}m test · {weekStudyTotal}m study
-    </div>
-
-    <div className={styles.summaryRow2}>
-      <span><b>Avg/day</b>: {Math.round(model.avgTotal)}m</span>
-      <span className={styles.sep} aria-hidden="true" />
-      <span><b>Best</b>: {bestLabel} ({bestPoint?.total ?? 0}m)</span>
-    </div>
-  </div>
-
-  <div
-    className={`${styles.footerRow} ${animateIn ? styles.waterIn : styles.waterHidden}`}
-    style={
-      animateIn
-        ? ({ animationDelay: `${detailsStartMs + detailsStaggerMs}ms` } as CSSProperties)
-        : undefined
-    }
-  >
-    <span>
-      <b>Routine</b>: {activeDays}/7 days
-      <span className={styles.sep}></span>
-      <b>Streak</b>: {streakDays ?? 0}d
-    </span>
-
-    {model.hasCompare ? <span className={styles.muted}>Compare overlay: enabled</span> : null}
-  </div>
-
-  {confidenceNote ? (
-    <div
-      className={`${styles.confidenceNote} ${animateIn ? styles.waterIn : styles.waterHidden}`}
-      style={
-        animateIn
-          ? ({ animationDelay: `${detailsStartMs + detailsStaggerMs * 2}ms` } as CSSProperties)
-          : undefined
-      }
-    >
-      {confidenceNote}
-    </div>
-  ) : null}
-</div>
-
-  </div>
-);
+  );
 }
 ```
 
@@ -20939,26 +21884,33 @@ const areaClipW = useMemo(() => {
 }
 
 .cols {
-  height: 100%;
+  /* ❌ remove: position: absolute; inset: 0; */
+  height: 100%;              /* ✅ fill plot area */
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   gap: 12px;
-  align-items: end;
-  padding-bottom: 0px;
+  align-items: stretch;      /* ✅ columns become full-height */
+  z-index: 2;
 }
 
 
-.col { display: flex; flex-direction: column; align-items: center; gap: 8px; }
-
-.barArea {
-  position: relative;
-  width: 100%;
-  max-width: 30px;
+.col {
   height: 100%;
   display: flex;
-  align-items: flex-end;
+  flex-direction: column;
+  align-items: center;
+}
+
+.barArea {
+  position: absolute;
+  width: 100%;
+  max-width: 30px;
+  height: 100%;           /* ✅ now 100% is real (col is 100%) */
+  display: flex;
+  align-items: flex-end;  /* ✅ bars sit on plot bottom (0m) */
   justify-content: center;
 }
+
 
 
 
@@ -21124,7 +22076,7 @@ const areaClipW = useMemo(() => {
   width: 100%;
   height: 100%;
   pointer-events: none;
-  z-index: 2;
+  z-index: 3;
   overflow: visible;
 }
 
@@ -21246,6 +22198,11 @@ const areaClipW = useMemo(() => {
   }
 }
 
+
+.plotStack{
+  position: absolute;
+  inset: 0;
+}
 
 ```
 
@@ -22274,12 +23231,15 @@ export function useBootSweepOnce(opts: {
 }) {
   const { target, seen, enabled } = opts;
 
+  const safeTarget = Number.isFinite(target) ? target : 0;
+const setDisplaySafe = (v: number) => setDisplay(Number.isFinite(v) ? v : 0);
+
 const [display, setDisplay] = useState<number>(0);  
 const playedRef = useRef(false);
 
   // After played, keep display synced to target without replay.
   useEffect(() => {
-    if (playedRef.current) setDisplay(target);
+    if (playedRef.current) setDisplay(safeTarget);
   }, [target]);
 
   useEffect(() => {
@@ -22289,18 +23249,17 @@ const playedRef = useRef(false);
     // reduced motion => no animation
     if (window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches) {
       playedRef.current = true;
-      setDisplay(target);
+      setDisplay(safeTarget);
       return;
     }
 
     playedRef.current = true;
 
-    const segs =
-      opts.segments?.(target) ??
-      [
-        { from: 0, to: 100, durationMs: 600, ease: easeOutCubic },
-        { from: 100, to: target, durationMs: 300, ease: easeOutCubic },
-      ];
+    const segs = opts.segments?.(safeTarget) ?? [
+  { from: 0, to: 100, durationMs: 600, ease: easeOutCubic },
+  { from: 100, to: safeTarget, durationMs: 300, ease: easeOutCubic },
+];
+
 
     let cancel: null | (() => void) = null;
     let i = 0;
@@ -22308,7 +23267,7 @@ const playedRef = useRef(false);
     const runNext = () => {
       if (i >= segs.length) return;
       const seg = segs[i++];
-      cancel = animateSegment(seg, setDisplay, runNext);
+      cancel = animateSegment(seg, setDisplaySafe, runNext);
     };
 
     runNext();
@@ -22385,7 +23344,7 @@ export function useOnceInMidView<T extends Element>() {
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import type { User } from "@supabase/supabase-js";
+import type { AuthChangeEvent, Session, User } from "@supabase/supabase-js";
 import { createClient } from "@/lib/supabase/client";
 
 type AuthState = {
@@ -22475,17 +23434,21 @@ export function useAuthStatus() {
   useEffect(() => {
     const cleanup = refresh();
 
-    const onChanged = () => refresh();
+    const onChanged = () => {
+      refresh();
+    };
     window.addEventListener("expatise:session-changed", onChanged);
 
-    const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
-      setState(toState(session?.user ?? null, false));
-    });
+    const { data } = supabase.auth.onAuthStateChange(
+      (_event: AuthChangeEvent, session: Session | null) => {
+        setState(toState(session?.user ?? null, false));
+      }
+    );
 
     return () => {
       cleanup?.();
       window.removeEventListener("expatise:session-changed", onChanged);
-      sub.subscription.unsubscribe();
+      data?.subscription?.unsubscribe();
     };
   }, [refresh, supabase]);
 
@@ -22496,38 +23459,13 @@ export function useAuthStatus() {
 
 ### components/useUserKey.client.ts
 ```tsx
-// components/useUserKey.client.ts
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { userKeyFromEmail } from "@/lib/identity/userKey";
-import { createClient } from "@/lib/supabase/client";
-import type { User } from "@supabase/supabase-js";
-
-function detectProvider(user: User | null): string | null {
-  if (!user) return null;
-  const p = (user.app_metadata as any)?.provider as string | undefined;
-  if (p) return p;
-  return user.identities?.[0]?.provider ?? null;
-}
-
-function makeUserKey(user: User | null): string {
-  if (!user) return "guest";
-
-  // ✅ Anonymous users should still be tracked uniquely (per device/user)
-  if ((user as any).is_anonymous) return `anon:${user.id}`;
-
-  // ✅ Prefer your old email-based key when available (backward-compatible)
-  const email = user.email ?? "";
-  if (email) return userKeyFromEmail(email);
-
-  // ✅ Fallback: stable Supabase user id (covers providers with no email)
-  return `sb:${user.id}`;
-}
-
+import { webAuthClient } from "@/lib/authClient/web";
 
 export function useUserKey() {
-  const supabase = useMemo(() => createClient(), []);
   const [userKey, setUserKey] = useState<string>("guest");
   const seqRef = useRef(0);
 
@@ -22535,34 +23473,48 @@ export function useUserKey() {
     const seq = ++seqRef.current;
 
     (async () => {
-      try {
-        const { data } = await supabase.auth.getSession();
-        if (seq !== seqRef.current) return;
+      const session = await webAuthClient.getSession();
+      if (seq !== seqRef.current) return;
 
-        setUserKey(makeUserKey(data.session?.user ?? null));
-      } catch {
-        if (seq !== seqRef.current) return;
+      if (!session.authed) {
         setUserKey("guest");
+        return;
       }
-    })();
-  }, [supabase]);
+
+      // userKeyFromEmail already normalizes + returns "guest" if null/empty
+      setUserKey(userKeyFromEmail(session.email));
+    })().catch(() => {
+      if (seq !== seqRef.current) return;
+      setUserKey("guest");
+    });
+  }, []);
 
   useEffect(() => {
     refresh();
 
-    const onChanged = () => refresh();
-    window.addEventListener("expatise:session-changed", onChanged);
+    const onSessionChanged = () => refresh();
+    const onFocus = () => refresh();
+    const onVisibility = () => {
+      if (document.visibilityState === "visible") refresh();
+    };
 
-    const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUserKey(makeUserKey(session?.user ?? null));
-    });
+    window.addEventListener("expatise:session-changed", onSessionChanged);
+    window.addEventListener("focus", onFocus);
+    document.addEventListener("visibilitychange", onVisibility);
+
+    // Safari/iOS safety net: refresh periodically while visible
+    const pollId = window.setInterval(() => {
+      if (document.visibilityState === "visible") refresh();
+    }, 60_000);
 
     return () => {
-      window.removeEventListener("expatise:session-changed", onChanged);
-      sub.subscription.unsubscribe();
+      window.removeEventListener("expatise:session-changed", onSessionChanged);
+      window.removeEventListener("focus", onFocus);
+      document.removeEventListener("visibilitychange", onVisibility);
+      window.clearInterval(pollId);
       seqRef.current++;
     };
-  }, [refresh, supabase]);
+  }, [refresh]);
 
   return userKey;
 }
@@ -22922,6 +23874,406 @@ export function useBookmarks(datasetId: string, userKeyOverride?: string) {
   );
 
   return { ids, idSet, isBookmarked, toggle, removeMany };
+}
+
+```
+
+### lib/demo/seedAdminDemoData.ts
+```tsx
+// lib/demo/seedAdminDemoData.ts
+import { loadDataset } from "@/lib/qbank/loadDataset";
+import type { Question } from "@/lib/qbank/types";
+import { userKeyFromEmail } from "@/lib/identity/userKey";
+import {
+  listSubmittedAttempts,
+  writeAttempt,
+  deleteAttemptById,
+} from "@/lib/test-engine/attemptStorage";
+import type { TestAttemptV1 } from "@/lib/test-engine/attemptTypes";
+import { timeKey, ymdLocal } from "@/lib/stats/timeKeys";
+
+// ✅ bump this number whenever you want to regenerate a fresh demo dataset
+const SEED_VERSION = 3;
+
+// ✅ keep these aligned with your current app config
+const DATASET_ID = "cn-2023-test1";
+const DATASET_VERSION = "cn-2023-test1@v1";
+
+// ✅ set via .env.local (and in Vercel env vars for production)
+const ADMIN_EMAIL = (process.env.NEXT_PUBLIC_DEMO_ADMIN_EMAIL ?? "")
+  .trim()
+  .toLowerCase();
+
+const TOTAL_ATTEMPTS = 100;
+const DAYS = 30;
+
+function stableHash(input: string) {
+  let h = 2166136261;
+  for (let i = 0; i < input.length; i++) {
+    h ^= input.charCodeAt(i);
+    h = Math.imul(h, 16777619);
+  }
+  return h >>> 0;
+}
+
+function rand01(seed: string) {
+  // deterministic 0..1
+  return stableHash(seed) / 4294967295;
+}
+
+function clamp(n: number, min: number, max: number) {
+  return Math.max(min, Math.min(max, n));
+}
+
+function optionKeyForIndex(q: Question, idx: number) {
+  const opt = q.options[idx];
+  return opt?.originalKey ?? String.fromCharCode(65 + idx); // A/B/C/D...
+}
+
+function normalizeRowAnswer(v: unknown): "R" | "W" | null {
+  const s = String(v ?? "").trim().toLowerCase();
+  if (s.startsWith("r")) return "R";
+  if (s.startsWith("w")) return "W";
+  return null;
+}
+
+function pickCorrectChoice(q: Question): string {
+  if (q.type === "ROW") {
+    return normalizeRowAnswer(q.correctRow) ?? "R";
+  }
+
+  const correctId = q.correctOptionId;
+  if (!correctId || q.options.length === 0) return "A";
+
+  const idx = q.options.findIndex((o) => o.id === correctId);
+  const safeIdx = idx >= 0 ? idx : 0;
+  return optionKeyForIndex(q, safeIdx);
+}
+
+function pickWrongChoice(q: Question): string {
+  if (q.type === "ROW") {
+    const correct = normalizeRowAnswer(q.correctRow) ?? "R";
+    return correct === "R" ? "W" : "R";
+  }
+
+  if (q.options.length === 0) return "B";
+
+  const correctId = q.correctOptionId;
+  const correctIdx = correctId ? q.options.findIndex((o) => o.id === correctId) : -1;
+
+  let wrongIdx = 0;
+  if (wrongIdx === correctIdx) wrongIdx = 1;
+  if (wrongIdx >= q.options.length) wrongIdx = 0;
+
+  return optionKeyForIndex(q, wrongIdx);
+}
+
+function sliceQuestionIds(all: string[], count: number, seed: string) {
+  if (all.length <= count) return all.slice(0, count);
+  const h = stableHash(seed);
+  const start = h % (all.length - count + 1);
+  return all.slice(start, start + count);
+}
+
+function tsAt(daysAgo: number, hour: number, minute: number) {
+  const now = Date.now();
+
+  const d = new Date();
+  d.setDate(d.getDate() - daysAgo);
+  d.setHours(hour, minute, 0, 0);
+
+  let t = d.getTime();
+
+  // ✅ never allow “future” timestamps (can happen when daysAgo=0)
+  if (t > now - 60_000) {
+    const backMin = 10 + (stableHash(`${daysAgo}:${hour}:${minute}`) % 120); // 10..129 minutes
+    t = now - backMin * 60_000;
+  }
+
+  return t;
+}
+
+type SeedPlan = {
+  attemptId: string;
+  modeKey: "real-test" | "half-test" | "rapid-fire-test" | "ten-percent-test";
+  submittedAt: number;
+  questionCount: number;
+  correctCount: number;
+  timeSpentSec: number;
+  timeLimitSec: number; 
+};
+
+function buildAttempt(
+  params: SeedPlan,
+  userKey: string,
+  qById: Map<string, Question>,
+  allQids: string[]
+): TestAttemptV1 {
+  const submittedAt = params.submittedAt;
+  const createdAt = submittedAt - params.timeSpentSec * 1000;
+
+  const questionIds = sliceQuestionIds(allQids, params.questionCount, params.attemptId);
+
+  const answersByQid: Record<string, { choice: string; answeredAt: number }> = {};
+  const correctSet = new Set(questionIds.slice(0, params.correctCount));
+
+  questionIds.forEach((qid, idx) => {
+    const q = qById.get(qid);
+    if (!q) return;
+
+    const choice = correctSet.has(qid) ? pickCorrectChoice(q) : pickWrongChoice(q);
+    answersByQid[qid] = { choice, answeredAt: createdAt + idx * 1200 };
+  });
+
+  const remainingSec =
+    params.timeLimitSec > 0 ? Math.max(0, params.timeLimitSec - params.timeSpentSec) : 0;
+
+  return {
+    schemaVersion: 1,
+    attemptId: params.attemptId,
+    userKey,
+    modeKey: params.modeKey,
+    datasetId: DATASET_ID,
+    datasetVersion: DATASET_VERSION,
+
+    questionIds,
+    answersByQid,
+    flaggedByQid: {},
+
+    timeLimitSec: params.timeLimitSec,
+    remainingSec,
+
+    status: "submitted",
+    createdAt,
+    lastActiveAt: submittedAt,
+    submittedAt,
+    // ✅ do NOT include pausedAt at all (it’s optional and must be number if present)
+  };
+}
+
+type DayPartKey = "morning" | "midday" | "evening" | "late";
+
+function pickWeighted<T extends string>(items: Array<{ key: T; w: number }>, seed: string): T {
+  const total = items.reduce((s, it) => s + it.w, 0);
+  const r = rand01(seed) * total;
+  let acc = 0;
+  for (const it of items) {
+    acc += it.w;
+    if (r <= acc) return it.key;
+  }
+  return items[items.length - 1]!.key;
+}
+
+function pickDayPart(modeKey: SeedPlan["modeKey"], userKey: string, daysAgo: number, i: number): DayPartKey {
+  // Tune these weights however you want.
+  // Key goal: real-test should NOT always fall into the same dayparts.
+  const seed = `daypart:${userKey}:${modeKey}:${daysAgo}:${i}`;
+
+  if (modeKey === "real-test") {
+    // Spread real-tests across all 4 buckets
+    return pickWeighted(
+      [
+        { key: "morning", w: 0.30 },
+        { key: "midday",  w: 0.20 },
+        { key: "evening", w: 0.30 },
+        { key: "late",    w: 0.20 },
+      ],
+      seed
+    );
+  }
+
+  // Learning attempts: slightly more midday/evening
+  return pickWeighted(
+    [
+      { key: "morning", w: 0.20 },
+      { key: "midday",  w: 0.30 },
+      { key: "evening", w: 0.35 },
+      { key: "late",    w: 0.15 },
+    ],
+    seed
+  );
+}
+
+function pickHourMinuteInDayPart(part: DayPartKey, seed: string) {
+  const rH = rand01(`${seed}:h`);
+  const rM = rand01(`${seed}:m`);
+
+  let hour = 8;
+  if (part === "morning") {
+    // 6..11
+    hour = 6 + Math.floor(rH * 6);
+  } else if (part === "midday") {
+    // 12..16
+    hour = 12 + Math.floor(rH * 5);
+  } else if (part === "evening") {
+    // 17..21
+    hour = 17 + Math.floor(rH * 5);
+  } else {
+    // late: 22..23 OR 0..5 (wrap)
+    const wrap = rand01(`${seed}:wrap`) < 0.45; // tune wrap rate
+    hour = wrap ? Math.floor(rH * 6) : 22 + Math.floor(rH * 2); // 0..5 or 22..23
+  }
+
+  // Minutes: 0..59 (full randomness)
+  const minute = Math.floor(rM * 60);
+
+  return { hour, minute };
+}
+
+function tsAtDayPart(daysAgo: number, part: DayPartKey, seed: string) {
+  const { hour, minute } = pickHourMinuteInDayPart(part, seed);
+  const now = Date.now();
+
+  const d = new Date();
+  d.setDate(d.getDate() - daysAgo);
+  d.setHours(hour, minute, 0, 0);
+
+  let t = d.getTime();
+
+  // Prevent “today in the future” from collapsing into the wrong bucket.
+  // For daysAgo=0 only: clamp into the past by backing off a deterministic number of minutes.
+  if (daysAgo === 0 && t > now - 60_000) {
+    const backMin = 10 + (stableHash(seed) % 240); // 10..249 minutes
+    t = now - backMin * 60_000;
+  }
+
+  return t;
+}
+
+
+function makePlans(userKey: string): SeedPlan[] {
+
+
+  const plans: SeedPlan[] = [];
+  let i = 0;
+
+  function mk(modeKey: SeedPlan["modeKey"], daysAgo: number): SeedPlan {
+    const part = pickDayPart(modeKey, userKey, daysAgo, i);
+const submittedAt = tsAtDayPart(daysAgo, part, `ts:${userKey}:${modeKey}:${daysAgo}:${i}`);
+
+
+    const dayProgress = (DAYS - 1 - daysAgo) / (DAYS - 1); // older=0 → newest=1
+    const noise = (rand01(`acc:${userKey}:${i}`) - 0.5) * 0.10; // +/-5%
+
+    const baseAcc = 0.65 + dayProgress * 0.25 + noise; // ~0.60 → ~0.92
+    const modeAdj = modeKey === "real-test" ? 0.02 : modeKey === "rapid-fire-test" ? -0.02 : 0.0;
+    const acc = clamp(baseAcc + modeAdj, 0.55, 0.95);
+
+    const isShort = modeKey === "rapid-fire-test" || modeKey === "ten-percent-test";
+
+    const questionCount = modeKey === "real-test" ? 100 : modeKey === "half-test" ? 50 : 10;
+    const timeLimitSec = modeKey === "real-test" ? 45 * 60 : modeKey === "half-test" ? 25 * 60 : 5 * 60;
+
+    const spendRatio = 0.45 + rand01(`time:${userKey}:${i}`) * 0.5;
+    const timeSpentSec = Math.max(60, Math.min(timeLimitSec, Math.round(timeLimitSec * spendRatio)));
+
+    const correctCount = clamp(Math.round(questionCount * acc), 0, questionCount);
+
+    const attemptId = `demo-${modeKey}-${String(i).padStart(3, "0")}`;
+    i++;
+
+    return {
+      attemptId,
+      modeKey,
+      submittedAt,
+      questionCount,
+      correctCount,
+      timeSpentSec,
+      timeLimitSec,
+    };
+  }
+
+  // ✅ Guaranteed coverage:
+  // - 1 real-test every day (so real-only charts always have data)
+  // - 1 learning attempt every day (for variety / streaks)
+  for (let daysAgo = 0; daysAgo < DAYS; daysAgo++) {
+  // always at least 1 real-test/day
+  plans.push(mk("real-test", daysAgo));
+
+  // ~22% chance add a 2nd real-test that same day
+  if (rand01(`extra-real:${userKey}:${daysAgo}`) < 0.22) {
+    plans.push(mk("real-test", daysAgo));
+  }
+
+  // always 1 learning attempt/day
+  const learningMode: SeedPlan["modeKey"] =
+    daysAgo % 2 === 0 ? "half-test" : "ten-percent-test";
+
+  plans.push(mk(learningMode, daysAgo));
+}
+
+
+  // Add extra learning attempts until TOTAL_ATTEMPTS
+  while (plans.length < TOTAL_ATTEMPTS) {
+    const daysAgo = stableHash(`extra-day:${userKey}:${i}`) % DAYS;
+    const r = rand01(`extra-mode:${userKey}:${i}`);
+    const mode: SeedPlan["modeKey"] = r < 0.5 ? "rapid-fire-test" : "ten-percent-test";
+    plans.push(mk(mode, daysAgo));
+  }
+
+  return plans;
+}
+
+
+export async function seedAdminDemoDataIfNeeded(userKey: string) {
+  // Only run in browser
+  if (typeof window === "undefined") return false;
+
+  if (!ADMIN_EMAIL) return false;
+
+  const adminUserKey = userKeyFromEmail(ADMIN_EMAIL);
+  if (userKey !== adminUserKey) return false;
+
+  const seedFlag = `expatise:demo-seed:v${SEED_VERSION}:${DATASET_ID}:${userKey}`;
+  if (localStorage.getItem(seedFlag) === "1") return false;
+
+  // ✅ delete old demo attempts (demo-*) so reseeding is clean
+  const existing = listSubmittedAttempts({ userKey, datasetId: DATASET_ID });
+  for (const a of existing) {
+    if (a.attemptId.startsWith("demo-")) {
+      await deleteAttemptById(a.attemptId);
+    }
+  }
+
+  const questions = await loadDataset(DATASET_ID);
+  const allQids = questions.map((q) => q.id);
+  const qById = new Map(questions.map((q) => [q.id, q] as const));
+
+  const plans = makePlans(userKey);
+
+  // for time logs
+  const perDay = new Map<string, { testSec: number; studySec: number }>();
+
+  for (const p of plans) {
+    const attempt = buildAttempt(p, userKey, qById, allQids);
+    await writeAttempt(attempt);
+
+    const day = ymdLocal(new Date(p.submittedAt));
+    const prev = perDay.get(day) ?? { testSec: 0, studySec: 0 };
+    prev.testSec += p.timeSpentSec;
+
+    // study = a bit less than test, plus some baseline
+    prev.studySec += Math.round(p.timeSpentSec * 0.35) + 6 * 60;
+    perDay.set(day, prev);
+  }
+
+  // Seed time logs (last 30 days) so Screen Time charts aren’t empty
+  for (let d = 0; d < DAYS; d++) {
+    const dayDate = new Date();
+    dayDate.setDate(dayDate.getDate() - d);
+    const day = ymdLocal(dayDate);
+
+    const totals = perDay.get(day) ?? { testSec: 8 * 60, studySec: 6 * 60 };
+
+    const kTest = timeKey("test", day);
+    const kStudy = timeKey("study", day);
+
+    localStorage.setItem(kTest, String(totals.testSec));
+    localStorage.setItem(kStudy, String(totals.studySec));
+  }
+
+  localStorage.setItem(seedFlag, "1");
+  return true;
 }
 
 ```
@@ -25391,10 +26743,12 @@ const heat = Array.from({ length: DAY_PARTS.length }, () =>
     correctTotal += correct;
 
     const denom = Math.max(1, a.questionIds?.length ?? 0);
-    const scorePct = Math.round((100 * correct) / denom);
+const rawScore = (100 * correct) / denom;
+const scorePct = Number.isFinite(rawScore) ? Math.round(rawScore) : 0;
 
 scoreSeries.push({ t, scorePct, answered: attempted, totalQ: denom });
-    scoreList.push(scorePct);
+if (Number.isFinite(scorePct)) scoreList.push(scorePct);
+
 
     // --- Learning Rhythm Heatmap bucket update ---
 {
@@ -25604,10 +26958,17 @@ const topicMastery: TopicMasteryVM = {
   const scoreBest = scoreList.length ? Math.max(...scoreList) : 0;
   const scoreLatest = filtered.length ? scoreList[0] : 0;
 
-  const medianScore01 = clamp01(median(scoreList) / 100);
-  const readinessPct = Math.round(
-    100 * (0.7 * clamp01(accuracy) + 0.3 * medianScore01)
-  );
+  const safeAcc01 = clamp01(Number.isFinite(accuracy) ? accuracy : 0);
+
+// Sanitize scores for median
+const safeScores = scoreList.filter((n) => Number.isFinite(n));
+const medianScore = safeScores.length ? median(safeScores) : scoreAvg;
+const medianScore01 = clamp01((Number.isFinite(medianScore) ? medianScore : 0) / 100);
+
+// Combine + clamp
+const readiness01 = clamp01(0.7 * safeAcc01 + 0.3 * medianScore01);
+const readinessPct = Math.max(0, Math.min(100, Math.round(100 * readiness01)));
+
 
   // Weekly outputs
   const weeklySeries = Array.from(weekly.entries())
@@ -25874,19 +27235,30 @@ export { clearedMistakesStore } from "@/lib/mistakes/store";
 // lib/supabase/client.ts
 import { createBrowserClient } from "@supabase/ssr";
 
-function supabaseKey() {
-  return (
-    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ||
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
-    ""
-  );
-}
+let browserClient: ReturnType<typeof createBrowserClient> | null = null;
 
 export function createClient() {
-  return createBrowserClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    supabaseKey()
-  );
+  if (browserClient) return browserClient;
+
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const anon = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY; // ✅ use ONE key
+
+  if (!url || !anon) {
+    throw new Error("Missing NEXT_PUBLIC_SUPABASE_URL or NEXT_PUBLIC_SUPABASE_ANON_KEY");
+  }
+
+  browserClient = createBrowserClient(url, anon, {
+    auth: {
+      persistSession: true,
+      autoRefreshToken: true,
+      detectSessionInUrl: true,
+      flowType: "pkce",
+      // optional but helps prevent weird collisions if you ever change project URLs
+      storageKey: "sb-expatise-auth",
+    },
+  });
+
+  return browserClient;
 }
 
 ```
@@ -25897,37 +27269,38 @@ export function createClient() {
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 
-function supabaseKey() {
-  return (
-    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ||
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
-    ""
-  );
-}
-
 export async function createClient() {
   const cookieStore = await cookies();
 
-  return createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    supabaseKey(),
-    {
-      cookies: {
-        getAll() {
-          return cookieStore.getAll();
-        },
-        setAll(cookiesToSet) {
-          try {
-            cookiesToSet.forEach(({ name, value, options }) =>
-              cookieStore.set(name, value, options)
-            );
-          } catch {
-            // ignore if called from a Server Component; proxy.ts handles refresh
-          }
-        },
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const anon = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+  if (!url || !anon) {
+    throw new Error("Missing NEXT_PUBLIC_SUPABASE_URL or NEXT_PUBLIC_SUPABASE_ANON_KEY");
+  }
+
+  return createServerClient(url, anon, {
+    auth: {
+      flowType: "pkce",
+      storageKey: "sb-expatise-auth",
+    },
+    cookies: {
+      getAll() {
+        return cookieStore.getAll();
       },
-    }
-  );
+      setAll(cookiesToSet) {
+        // ✅ Works in Route Handlers / Server Actions
+        // ⚠️ Throws in Server Components (we ignore because middleware handles refresh)
+        try {
+          cookiesToSet.forEach(({ name, value, options }) => {
+            cookieStore.set(name, value, options);
+          });
+        } catch {
+          // ignore
+        }
+      },
+    },
+  });
 }
 
 ```
@@ -26837,6 +28210,20 @@ export function seededShuffle<T>(arr: T[], seedString: string): T[] {
 
 ```
 
+### middelware.ts
+```tsx
+// middleware.ts (project root)
+import type { NextRequest } from "next/server";
+import { proxy } from "./proxy";
+
+export async function middleware(req: NextRequest) {
+  return proxy(req);
+}
+
+export { config } from "./proxy";
+
+```
+
 ### next.config.ts
 ```tsx
 import type { NextConfig } from "next";
@@ -26869,6 +28256,7 @@ export default nextConfig;
         "@fortawesome/react-fontawesome": "^3.1.1",
         "@supabase/ssr": "^0.8.0",
         "@supabase/supabase-js": "^2.95.3",
+        "@vercel/speed-insights": "^1.3.1",
         "canvas-confetti": "^1.9.4",
         "next": "^16.0.8",
         "next-auth": "^5.0.0-beta.30",
@@ -29240,6 +30628,40 @@ export default nextConfig;
       "os": [
         "win32"
       ]
+    },
+    "node_modules/@vercel/speed-insights": {
+      "version": "1.3.1",
+      "resolved": "https://registry.npmjs.org/@vercel/speed-insights/-/speed-insights-1.3.1.tgz",
+      "integrity": "sha512-PbEr7FrMkUrGYvlcLHGkXdCkxnylCWePx7lPxxq36DNdfo9mcUjLOmqOyPDHAOgnfqgGGdmE3XI9L/4+5fr+vQ==",
+      "license": "Apache-2.0",
+      "peerDependencies": {
+        "@sveltejs/kit": "^1 || ^2",
+        "next": ">= 13",
+        "react": "^18 || ^19 || ^19.0.0-rc",
+        "svelte": ">= 4",
+        "vue": "^3",
+        "vue-router": "^4"
+      },
+      "peerDependenciesMeta": {
+        "@sveltejs/kit": {
+          "optional": true
+        },
+        "next": {
+          "optional": true
+        },
+        "react": {
+          "optional": true
+        },
+        "svelte": {
+          "optional": true
+        },
+        "vue": {
+          "optional": true
+        },
+        "vue-router": {
+          "optional": true
+        }
+      }
     },
     "node_modules/acorn": {
       "version": "8.15.0",
@@ -33831,6 +35253,7 @@ export default nextConfig;
     "@fortawesome/react-fontawesome": "^3.1.1",
     "@supabase/ssr": "^0.8.0",
     "@supabase/supabase-js": "^2.95.3",
+    "@vercel/speed-insights": "^1.3.1",
     "canvas-confetti": "^1.9.4",
     "next": "^16.0.8",
     "next-auth": "^5.0.0-beta.30",

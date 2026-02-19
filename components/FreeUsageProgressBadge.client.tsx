@@ -18,12 +18,17 @@ export default function FreeUsageProgressBadge() {
   const pathname = usePathname() || "/";
   const { isPremium } = useEntitlements();
 
+const demoPremium =
+  typeof window !== "undefined" &&
+  (process.env.NEXT_PUBLIC_DEMO_SEED_ALL ?? "") === "1" &&
+  (window.location.hostname === "localhost" || window.location.hostname.endsWith(".vercel.app"));
+
   const hide =
     HIDE_BADGE_EXACT.has(pathname) ||
     HIDE_BADGE_PREFIXES.some((p) => pathname.startsWith(p));
 
   // ✅ Gate here (safe): this component always calls the same hooks
-  if (hide || isPremium) return null;
+if (hide || isPremium || demoPremium) return null;
 
   return <FreeUsageProgressBadgeInner />;
 }

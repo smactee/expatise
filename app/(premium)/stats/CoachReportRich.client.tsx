@@ -1,7 +1,9 @@
 'use client';
 
 import React from 'react';
-import styles from './stats.module.css';
+import styles from '@/app/(premium)/stats/stats.module.css';
+
+
 
 export default function CoachReportRich({ report }: { report: string }) {
   const sections = parseSections(report);
@@ -12,7 +14,8 @@ export default function CoachReportRich({ report }: { report: string }) {
     <div className={styles.coachReportRich}>
       {sections.map((s, idx) => {
         const blocks = toBlocks(s.lines);
-        const isTarget = s.key === 'F';
+        const isTarget = s.key === 'F' || /target|one thing/i.test(s.title);
+
 
         return (
           <section
@@ -65,20 +68,34 @@ export default function CoachReportRich({ report }: { report: string }) {
  *  Parsing: A) ... → sections
  *  ----------------------------- */
 type Section = { key: string; title: string; lines: string[] };
-const SECTION_RE = /^([A-F])\)\s*(.+)\s*$/;
+
+const AF_RE = /^([A-F])\)\s*(.+)\s*$/;
+const H_RE = /^#{2,3}\s+(.*)$/; // "## " or "### "
 
 function parseSections(report: string): Section[] {
-  const text = (report ?? '').replace(/\r\n/g, '\n').trim();
+  const text = (report ?? "").replace(/\r\n/g, "\n").trim();
   if (!text) return [];
 
-  const lines = text.split('\n');
-  const out: Section[] = [];
+  const lines = text.split("\n");
 
+  // Decide which format we're in:
+  const afHits = lines.reduce((n, l) => n + (AF_RE.test(l.trim()) ? 1 : 0), 0);
+  const hHits = lines.reduce((n, l) => n + (H_RE.test(l.trim()) ? 1 : 0), 0);
+
+  if (afHits >= 2) return parseAF(lines);
+  if (hHits >= 2) return parseHeadings(lines);
+
+  // Fallback: single section
+  return [{ key: "", title: "Coach Report", lines }];
+}
+
+function parseAF(lines: string[]): Section[] {
+  const out: Section[] = [];
   let cur: Section | null = null;
 
   for (const raw of lines) {
     const line = raw.trimEnd();
-    const m = line.trim().match(SECTION_RE);
+    const m = line.trim().match(AF_RE);
 
     if (m) {
       if (cur) out.push(cur);
@@ -86,14 +103,55 @@ function parseSections(report: string): Section[] {
       continue;
     }
 
-    if (!cur) cur = { key: '', title: 'Coach', lines: [] };
-    if (line.trim().length) cur.lines.push(line);
-    else cur.lines.push(''); // preserve blank line for block separation
+    if (!cur) cur = { key: "", title: "Coach Report", lines: [] };
+    cur.lines.push(line.trim().length ? line : "");
   }
 
   if (cur) out.push(cur);
   return out;
 }
+
+function parseHeadings(lines: string[]): Section[] {
+  const out: Section[] = [];
+  let cur: Section | null = null;
+
+  for (const raw of lines) {
+    const line = raw.trimEnd();
+    const hm = line.trim().match(H_RE);
+
+    if (hm) {
+      // Start new section
+      if (cur) out.push(cur);
+
+      // Handle "### Summary You have ..." (heading + body same line)
+      const after = hm[1].trim();
+      const known = [
+        "Summary",
+        "Snapshot",
+        "Top levers",
+        "Today",
+        "Next 7 days",
+        "The One thing",
+      ];
+
+      const found = known.find((k) => after.toLowerCase().startsWith(k.toLowerCase()));
+      const title = found ?? after.split(/\s{2,}/)[0] ?? after;
+
+      const rest = found ? after.slice(found.length).trim() : "";
+      cur = { key: title, title, lines: [] };
+
+      if (rest) cur.lines.push(rest);
+      continue;
+    }
+
+    if (!cur) cur = { key: "", title: "Coach Report", lines: [] };
+    cur.lines.push(line.trim().length ? line : "");
+  }
+
+  if (cur) out.push(cur);
+  return out;
+}
+
 
 /** --------------------------------
  *  Turn section lines into blocks
