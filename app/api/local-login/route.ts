@@ -1,8 +1,7 @@
 // app/api/local-login/route.ts
-
 import { NextResponse } from "next/server";
-import { checkUserPassword } from "../../../lib/user-store"; // if you don't use @, switch to relative
-import { AUTH_COOKIE, normalizeEmail } from "../../../lib/auth";
+import { checkUserPassword } from "../../../lib/user-store";
+import { AUTH_COOKIE, cookieOptions } from "../../../lib/auth";
 
 export async function POST(req: Request) {
   const body = await req.json().catch(() => ({}));
@@ -10,26 +9,21 @@ export async function POST(req: Request) {
   const email = String(body?.email || "").trim().toLowerCase();
   const password = String(body?.password || "");
 
-  // Always keep response generic (no account enumeration)
   if (!email || !password) {
     return NextResponse.json({ ok: false }, { status: 200 });
   }
 
   const ok = checkUserPassword(email, password);
   const res = NextResponse.json({ ok }, { status: 200 });
+
   if (ok) {
-    // DEV session cookie (replace with real session management later)
-    res.cookies.set(AUTH_COOKIE, email, {
+    res.cookies.set({
       name: AUTH_COOKIE,
       value: email,
-      httpOnly: true,
-      sameSite: "lax",
-      secure: process.env.NODE_ENV === "production",
-      path: "/",
+      ...cookieOptions(),
       maxAge: 60 * 60 * 24 * 300, // 300 days
     });
   }
-
 
   return res;
 }

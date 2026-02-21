@@ -88,9 +88,13 @@ const comingSoon = (provider: string) => showToast(`${provider} sign-in is comin
   }
 
   // ✅ tell the rest of the app "session changed"
-  window.dispatchEvent(new Event("expatise:session-changed"));
+try { window.dispatchEvent(new Event("expatise:session-changed")); } catch {}
+try { window.dispatchEvent(new Event("expatise:entitlements-changed")); } catch {}
 
-  router.replace(nextParam);
+// ✅ force App Router to re-evaluate any cookie/session-based server state
+router.refresh();
+
+router.replace(nextParam);
 } catch {
   setError("Network error. Please try again.");
 }
@@ -228,8 +232,10 @@ const comingSoon = (provider: string) => showToast(`${provider} sign-in is comin
       setError(error.message);
       return;
     }
-    window.dispatchEvent(new Event("expatise:session-changed"));
-    router.replace(nextParam);
+    try { window.dispatchEvent(new Event("expatise:session-changed")); } catch {}
+try { window.dispatchEvent(new Event("expatise:entitlements-changed")); } catch {}
+router.refresh();
+router.replace(nextParam);
   }}
 >
   Continue as guest

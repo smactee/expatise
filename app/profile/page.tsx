@@ -18,6 +18,7 @@ import { faGoogle, faApple, faWeixin} from '@fortawesome/free-brands-svg-icons';
 import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
 import { useMemo } from "react"; // you already import useMemo in other files, here add if missing
 import { createClient } from "@/lib/supabase/client";
+import LogoutButton from '@/components/LogoutButton.client';
 
 
 function Inner() {

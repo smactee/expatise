@@ -154,6 +154,9 @@
     #bdccd3 360deg
   );
 
+  /* Optional: flip direction (ONLY if you want it) */
+  transform: scaleX(-1);
+
   /* punch out center so it becomes a ring */
   -webkit-mask: radial-gradient(
     farthest-side,
@@ -166,6 +169,7 @@
     #000 calc(100% - 8px)
   );
 }
+
 
 .ringCenterText {
   margin: 0;

@@ -16,6 +16,7 @@ import { useBookmarks } from "@/lib/bookmarks/useBookmarks";
 import { TEST_MODES, type TestModeId } from "@/lib/testModes";
 import { useClearedMistakes } from "@/lib/mistakes/useClearedMistakes";
 import CSRBoundary from "@/components/CSRBoundary";
+import { useBootSweepOnce } from "@/components/stats/useBootSweepOnce.client";
 
 function clamp(n: number, min: number, max: number) {
   return Math.max(min, Math.min(max, n));
@@ -342,6 +343,30 @@ if (modeId === "mistakes" && !didAutoClearRef.current) {
   }, [computed.correct, computed.total]);
   const percent = useMemo(() => Math.round(pct * 100), [pct]);
 
+  // ✅ Animate the ring like ReadinessRing (boot sweep -> settle)
+const ringEnabled = computed.total > 0;
+
+// percent is 0..100
+const animatedPctFloat = useBootSweepOnce({
+  target: percent,
+  seen: true,          // results ring is always visible
+  enabled: ringEnabled,
+  segments: (target) => {
+    const gap = Math.abs(100 - target);
+    const settleMs = gap < 10 ? 450 : 800;
+
+    const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3);
+
+    return [
+      { from: 0, to: 100, durationMs: 450, ease: easeOutCubic },
+      { from: 100, to: target, durationMs: settleMs, ease: easeOutCubic },
+    ];
+  },
+});
+
+const animatedPct = Math.round(animatedPctFloat);
+const animatedDeg = (animatedPctFloat / 100) * 360;
+
   // While self-healing redirect runs, show a tiny placeholder (prevents flashing "Missing attemptId")
   if (!attemptId) {
     return (
@@ -365,9 +390,12 @@ if (modeId === "mistakes" && !didAutoClearRef.current) {
           <h1 className={styles.congrats}>Congratulations!</h1>
 
           <div className={styles.ringWrap} aria-label="Score progress">
-            <div className={styles.ring} style={{ "--p": `${pct * 360}deg` } as React.CSSProperties} />
-            <div className={styles.ringCenterText}>{percent}</div>
-          </div>
+  <div
+    className={styles.ring}
+    style={{ "--p": `${animatedDeg}deg` } as React.CSSProperties}
+  />
+  <div className={styles.ringCenterText}>{animatedPct}</div>
+</div>
 
           <div className={styles.scoreBox} aria-hidden="true">
             <div className={styles.lineTop} />

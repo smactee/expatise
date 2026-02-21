@@ -1,4 +1,4 @@
-//components/stats/useBootSweepOnce.client.ts
+// components/stats/useBootSweepOnce.client.ts
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
@@ -6,9 +6,13 @@ import { useEffect, useRef, useState } from 'react';
 function easeOutCubic(t: number) {
   return 1 - Math.pow(1 - t, 3);
 }
-function easeInCubic(t: number) {
-  return t * t * t;
-}
+
+type Segment = {
+  from: number;
+  to: number;
+  durationMs: number;
+  ease: (t: number) => number;
+};
 
 function animateSegment(seg: Segment, onUpdate: (v: number) => void, onDone: () => void) {
   let raf = 0;
@@ -31,109 +35,91 @@ function animateSegment(seg: Segment, onUpdate: (v: number) => void, onDone: () 
   return () => cancelAnimationFrame(raf);
 }
 
-type Segment = {
-  from: number;
-  to: number;
-  durationMs: number;
-  ease: (t: number) => number;
-};
-
-function animateTimeline(
-  segs: Segment[],
-  onUpdate: (v: number) => void
-) {
-  let raf = 0;
-  const start = performance.now();
-  const total = segs.reduce((sum, s) => sum + s.durationMs, 0);
-
-  // set first value immediately (no initial wait)
-  if (segs.length > 0) onUpdate(segs[0].from);
-
-  const frame = (now: number) => {
-    const elapsed = now - start;
-
-    // End: snap to final exactly
-    if (elapsed >= total) {
-      onUpdate(segs[segs.length - 1]?.to ?? 0);
-      return;
-    }
-
-    // Find which segment we are in
-    let acc = 0;
-    for (const seg of segs) {
-      const end = acc + seg.durationMs;
-      if (elapsed <= end) {
-        const local =
-          seg.durationMs <= 0 ? 1 : (elapsed - acc) / seg.durationMs;
-        const u = Math.max(0, Math.min(1, local));
-        const eased = seg.ease(u);
-        const v = seg.from + (seg.to - seg.from) * eased;
-        onUpdate(v);
-        break;
-      }
-      acc = end;
-    }
-
-    raf = requestAnimationFrame(frame);
-  };
-
-  raf = requestAnimationFrame(frame);
-  return () => cancelAnimationFrame(raf);
-}
-
-
 export function useBootSweepOnce(opts: {
   target: number;
   seen: boolean;
-  enabled: boolean; // gate until data is ready
+  enabled: boolean;
   segments?: (target: number) => Segment[];
 }) {
-  const { target, seen, enabled } = opts;
+  const { seen, enabled } = opts;
 
-  const safeTarget = Number.isFinite(target) ? target : 0;
-const setDisplaySafe = (v: number) => setDisplay(Number.isFinite(v) ? v : 0);
+  const safeTarget = Number.isFinite(opts.target) ? opts.target : 0;
 
-const [display, setDisplay] = useState<number>(0);  
-const playedRef = useRef(false);
+  const [display, setDisplay] = useState<number>(0);
 
-  // After played, keep display synced to target without replay.
+const finishedTargetRef = useRef<number | null>(null);
+  const cancelRef = useRef<null | (() => void)>(null);
+
+  const setDisplaySafe = (v: number) => setDisplay(Number.isFinite(v) ? v : 0);
+
+  // If you disable (eg after reset/loading), allow replay later.
   useEffect(() => {
-    if (playedRef.current) setDisplay(safeTarget);
-  }, [target]);
+    if (!enabled) {
+      finishedTargetRef.current = null;
+      cancelRef.current?.();
+      cancelRef.current = null;
+      setDisplay(0);
+    }
+  }, [enabled]);
 
-  useEffect(() => {
-    if (!seen || !enabled) return;
-    if (playedRef.current) return;
+useEffect(() => {
+  if (!seen || !enabled) return;
 
-    // reduced motion => no animation
-    if (window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches) {
-      playedRef.current = true;
-      setDisplay(safeTarget);
+  // ✅ Only skip if we FINISHED this target already
+  if (finishedTargetRef.current === safeTarget) return;
+
+  // reduced motion => snap and mark finished
+  if (window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches) {
+    setDisplaySafe(safeTarget);
+    finishedTargetRef.current = safeTarget;
+    return;
+  }
+
+  // cancel any in-flight animation
+  cancelRef.current?.();
+  cancelRef.current = null;
+
+  const segs =
+    opts.segments?.(safeTarget) ?? [
+      { from: 0, to: 100, durationMs: 600, ease: easeOutCubic },
+      { from: 100, to: safeTarget, durationMs: 300, ease: easeOutCubic },
+    ];
+
+  const totalMs = segs.reduce((s, seg) => s + (seg.durationMs || 0), 0);
+
+  // ✅ Failsafe: if RAF never progresses, snap to target
+  const timeoutId = window.setTimeout(() => {
+    if (finishedTargetRef.current !== safeTarget) {
+      setDisplaySafe(safeTarget);
+      finishedTargetRef.current = safeTarget;
+    }
+  }, totalMs + 250);
+
+  let i = 0;
+
+  const runNext = () => {
+    if (i >= segs.length) {
+      // ✅ Mark finished ONLY when done
+      window.clearTimeout(timeoutId);
+      setDisplaySafe(safeTarget);
+      finishedTargetRef.current = safeTarget;
+      cancelRef.current = null;
       return;
     }
 
-    playedRef.current = true;
+    const seg = segs[i++];
+    cancelRef.current = animateSegment(seg, setDisplaySafe, runNext);
+  };
 
-    const segs = opts.segments?.(safeTarget) ?? [
-  { from: 0, to: 100, durationMs: 600, ease: easeOutCubic },
-  { from: 100, to: safeTarget, durationMs: 300, ease: easeOutCubic },
-];
+  runNext();
 
-
-    let cancel: null | (() => void) = null;
-    let i = 0;
-
-    const runNext = () => {
-      if (i >= segs.length) return;
-      const seg = segs[i++];
-      cancel = animateSegment(seg, setDisplaySafe, runNext);
-    };
-
-    runNext();
-
-    return () => cancel?.();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [seen, enabled]);
+  return () => {
+    window.clearTimeout(timeoutId);
+    cancelRef.current?.();
+    cancelRef.current = null;
+  };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+}, [seen, enabled, safeTarget]);
 
   return display;
 }

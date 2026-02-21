@@ -32,29 +32,55 @@
   fill: none; /* green, same softness */
 }
 
+/* ===== ScoreChart (tokenized so dark mode works) ===== */
 
 .grid{
-  stroke: rgba(17,24,39,0.08);
+  stroke: var(--stats-grid-line, rgba(17,24,39,0.08));
   stroke-width: 1;
 }
 
 .passLine{
-  stroke: rgba(17,24,39,0.22);
+  stroke: var(--stats-legend-dotted, rgba(17,24,39,0.35));
   stroke-width: 1;
   stroke-dasharray: 4 4;
 }
 
 .avgLine{
-  stroke: rgba(17,24,39,0.28);
+  stroke: var(--stats-legend-dotted, rgba(17,24,39,0.35));
   stroke-width: 1;
   stroke-dasharray: 3 5;
 }
 
 .avgLabel{
   font-size: 8px;
-  fill: rgba(17,24,39,0.55);
+  fill: var(--stats-axis-text, rgba(17,24,39,0.55));
 }
 
+.axisLine{
+  stroke: var(--stats-sep-line, rgba(17,24,39,0.18));
+  stroke-width: 1;
+}
+
+.axisTick{
+  stroke: var(--stats-sep-line, rgba(17,24,39,0.18));
+  stroke-width: 1;
+}
+
+.axisText{
+  font-size: 8.5px;
+  fill: var(--stats-axis-text, rgba(17,24,39,0.55));
+}
+
+.axisTextStrong{
+  font-size: 8.5px;
+  fill: var(--stats-axis-text-strong, rgba(17,24,39,0.75));
+  font-weight: 700;
+}
+
+.passLabel{
+  font-size: 7px;
+  fill: var(--stats-legend-avg-label, rgba(17,24,39,0.65));
+}
 
 
 
@@ -157,32 +183,6 @@
   opacity: 0.7;
 }
 
-.axisLine{
-  stroke: rgba(17,24,39,0.18);
-  stroke-width: 1;
-}
-
-.axisTick{
-  stroke: rgba(17,24,39,0.18);
-  stroke-width: 1;
-}
-
-.axisText{
-  font-size: 8.5px;
-  fill: rgba(17,24,39,0.55);
-}
-
-.axisTextStrong{
-  font-size: 8.5px;
-  fill: rgba(17,24,39,0.75);
-  font-weight: 700;
-}
-
-.passLabel{
-  font-size: 7px;
-  fill: var(--stats-legend-avg-label, rgba(17,24,39,0.65)); /* match token */
-
-}
 
 .metric{
   font-variant-numeric: tabular-nums;

@@ -123,6 +123,11 @@ useEffect(() => {
   return () => window.removeEventListener("expatise:entitlements-changed", onEntChanged);
 }, [refresh]);
 
+useEffect(() => {
+  const onSessionChanged = () => refresh();
+  window.addEventListener("expatise:session-changed", onSessionChanged);
+  return () => window.removeEventListener("expatise:session-changed", onSessionChanged);
+}, [refresh]);
 
 
   const value = useMemo<EntitlementsContextValue>(() => ({

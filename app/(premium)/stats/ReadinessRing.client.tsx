@@ -73,7 +73,7 @@ const fillDeg = (pctSafe / 100) * 360;
 
 
   useEffect(() => {
-    if (!enabled || !seen || !onDone) return;
+    if (!enabled || !seenReady || !onDone) return;
     if (firedRef.current) return;
 
     const EPS = 0.01;

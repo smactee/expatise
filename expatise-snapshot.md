@@ -5277,7 +5277,7 @@ const fillDeg = (pctSafe / 100) * 360;
 
 
   useEffect(() => {
-    if (!enabled || !seen || !onDone) return;
+    if (!enabled || !seenReady || !onDone) return;
     if (firedRef.current) return;
 
     const EPS = 0.01;
@@ -5489,6 +5489,7 @@ export default function StatsPage() {
   const [tfWeekly, setTfWeekly] = useState<Timeframe>(30);
   const [tfBestTime, setTfBestTime] = useState<Timeframe>(30);
   const [tfTopics, setTfTopics] = useState<Timeframe>(30);
+  const [attemptsLoaded, setAttemptsLoaded] = useState(false);
 
 
 function tfLabel(t: Timeframe) {
@@ -5537,7 +5538,7 @@ useEffect(() => {
     const local = listSubmittedAttempts({ userKey, datasetId });
     if (!alive) return;
     setAttempts(local);
-
+    setAttemptsLoaded(true);
     // 2) Remote (cross-device). If user isn't logged in, this will just fail quietly.
     try {
       const r = await fetch(
@@ -5652,7 +5653,7 @@ const handleReadinessRingDone = () => {
 // Reset whenever the ring should re-run (timeframe/data changes)
 useEffect(() => {
   setReadinessDone(false);
-}, [tfReadiness, statsReadiness.readinessPct, loading, questions.length]);
+}, [tfReadiness, statsReadiness.readinessPct, loading, questions.length, attemptsLoaded]);
 
 
 const [screenLegendReady, setScreenLegendReady] = useState(false);
@@ -5939,7 +5940,7 @@ async function handleGenerateCoach() {
 
     <ReadinessRing
       valuePct={statsReadiness.readinessPct}
-      enabled={!loading && questions.length > 0}
+      enabled={!loading && questions.length > 0 && attemptsLoaded}
       onDone={handleReadinessRingDone}
     />
 
@@ -16559,6 +16560,14 @@ type EntitlementsContextValue = {
   revokePremium: () => void;
 };
 
+const DEMO_PREMIUM_ALL = (process.env.NEXT_PUBLIC_DEMO_SEED_ALL ?? "") === "1";
+
+function isDemoHost() {
+  if (typeof window === "undefined") return false;
+  const h = window.location.hostname;
+  return h === "localhost" || h.endsWith(".vercel.app");
+}
+
 const EntitlementsContext = createContext<EntitlementsContextValue | null>(null);
 
 export function EntitlementsProvider({ children }: { children: React.ReactNode }) {
@@ -16575,6 +16584,7 @@ export function EntitlementsProvider({ children }: { children: React.ReactNode }
   const [loading, setLoading] = useState<boolean>(true);
 const fetchSeqRef = useRef(0);
 
+const demoPremium = DEMO_PREMIUM_ALL && isDemoHost();
 
 const refresh = useCallback(() => {
   if (!PUBLIC_FLAGS.enablePremiumGates) {
@@ -16582,6 +16592,11 @@ const refresh = useCallback(() => {
     setLoading(false);
     return;
   }
+if (demoPremium) {
+  setState({ isPremium: true, source: "demo", updatedAt: Date.now() });
+  setLoading(false);
+  return;
+}
 
   // increment request id so older async results can't overwrite newer userKey
   const seq = ++fetchSeqRef.current;
@@ -16611,7 +16626,7 @@ const refresh = useCallback(() => {
       if (seq === fetchSeqRef.current) setLoading(false);
     }
   })();
-}, [userKey]);
+}, [userKey, demoPremium]);
 
 
   const setEntitlements = useCallback((e: Entitlements) => {
@@ -16820,14 +16835,19 @@ const HIDE_BADGE_PREFIXES = ["/login", "/onboarding", "/forgot-password"];
 
 export default function FreeUsageProgressBadge() {
   const pathname = usePathname() || "/";
-  const { isPremium } = useEntitlements();
+  const { isPremium, loading } = useEntitlements();
+
+const demoPremium =
+  typeof window !== "undefined" &&
+  (process.env.NEXT_PUBLIC_DEMO_SEED_ALL ?? "") === "1" &&
+  (window.location.hostname === "localhost" || window.location.hostname.endsWith(".vercel.app"));
 
   const hide =
     HIDE_BADGE_EXACT.has(pathname) ||
     HIDE_BADGE_PREFIXES.some((p) => pathname.startsWith(p));
 
   // ✅ Gate here (safe): this component always calls the same hooks
-  if (hide || isPremium) return null;
+if (hide || isPremium || demoPremium || loading) return null;
 
   return <FreeUsageProgressBadgeInner />;
 }
@@ -23139,7 +23159,7 @@ const subs = t.subtopics ?? [];
 
 ### components/stats/useBootSweepOnce.client.ts
 ```tsx
-//components/stats/useBootSweepOnce.client.ts
+// components/stats/useBootSweepOnce.client.ts
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
@@ -23147,9 +23167,13 @@ import { useEffect, useRef, useState } from 'react';
 function easeOutCubic(t: number) {
   return 1 - Math.pow(1 - t, 3);
 }
-function easeInCubic(t: number) {
-  return t * t * t;
-}
+
+type Segment = {
+  from: number;
+  to: number;
+  durationMs: number;
+  ease: (t: number) => number;
+};
 
 function animateSegment(seg: Segment, onUpdate: (v: number) => void, onDone: () => void) {
   let raf = 0;
@@ -23172,109 +23196,67 @@ function animateSegment(seg: Segment, onUpdate: (v: number) => void, onDone: () 
   return () => cancelAnimationFrame(raf);
 }
 
-type Segment = {
-  from: number;
-  to: number;
-  durationMs: number;
-  ease: (t: number) => number;
-};
-
-function animateTimeline(
-  segs: Segment[],
-  onUpdate: (v: number) => void
-) {
-  let raf = 0;
-  const start = performance.now();
-  const total = segs.reduce((sum, s) => sum + s.durationMs, 0);
-
-  // set first value immediately (no initial wait)
-  if (segs.length > 0) onUpdate(segs[0].from);
-
-  const frame = (now: number) => {
-    const elapsed = now - start;
-
-    // End: snap to final exactly
-    if (elapsed >= total) {
-      onUpdate(segs[segs.length - 1]?.to ?? 0);
-      return;
-    }
-
-    // Find which segment we are in
-    let acc = 0;
-    for (const seg of segs) {
-      const end = acc + seg.durationMs;
-      if (elapsed <= end) {
-        const local =
-          seg.durationMs <= 0 ? 1 : (elapsed - acc) / seg.durationMs;
-        const u = Math.max(0, Math.min(1, local));
-        const eased = seg.ease(u);
-        const v = seg.from + (seg.to - seg.from) * eased;
-        onUpdate(v);
-        break;
-      }
-      acc = end;
-    }
-
-    raf = requestAnimationFrame(frame);
-  };
-
-  raf = requestAnimationFrame(frame);
-  return () => cancelAnimationFrame(raf);
-}
-
-
 export function useBootSweepOnce(opts: {
   target: number;
   seen: boolean;
-  enabled: boolean; // gate until data is ready
+  enabled: boolean;
   segments?: (target: number) => Segment[];
 }) {
-  const { target, seen, enabled } = opts;
+  const { seen, enabled } = opts;
 
-  const safeTarget = Number.isFinite(target) ? target : 0;
-const setDisplaySafe = (v: number) => setDisplay(Number.isFinite(v) ? v : 0);
+  const safeTarget = Number.isFinite(opts.target) ? opts.target : 0;
 
-const [display, setDisplay] = useState<number>(0);  
-const playedRef = useRef(false);
+  const [display, setDisplay] = useState<number>(0);
 
-  // After played, keep display synced to target without replay.
+  const lastPlayedTargetRef = useRef<number | null>(null);
+  const cancelRef = useRef<null | (() => void)>(null);
+
+  const setDisplaySafe = (v: number) => setDisplay(Number.isFinite(v) ? v : 0);
+
+  // If you disable (eg after reset/loading), allow replay later.
   useEffect(() => {
-    if (playedRef.current) setDisplay(safeTarget);
-  }, [target]);
+    if (!enabled) {
+      lastPlayedTargetRef.current = null;
+      cancelRef.current?.();
+      cancelRef.current = null;
+      setDisplay(0);
+    }
+  }, [enabled]);
 
   useEffect(() => {
     if (!seen || !enabled) return;
-    if (playedRef.current) return;
+
+    // ✅ Re-play when the target changes (fixes “reset then no animation”)
+    if (lastPlayedTargetRef.current === safeTarget) return;
+    lastPlayedTargetRef.current = safeTarget;
 
     // reduced motion => no animation
     if (window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches) {
-      playedRef.current = true;
-      setDisplay(safeTarget);
+      setDisplaySafe(safeTarget);
       return;
     }
 
-    playedRef.current = true;
+    cancelRef.current?.();
 
-    const segs = opts.segments?.(safeTarget) ?? [
-  { from: 0, to: 100, durationMs: 600, ease: easeOutCubic },
-  { from: 100, to: safeTarget, durationMs: 300, ease: easeOutCubic },
-];
+    const segs =
+      opts.segments?.(safeTarget) ?? [
+        { from: 0, to: 100, durationMs: 600, ease: easeOutCubic },
+        { from: 100, to: safeTarget, durationMs: 300, ease: easeOutCubic },
+      ];
 
-
-    let cancel: null | (() => void) = null;
     let i = 0;
 
     const runNext = () => {
       if (i >= segs.length) return;
       const seg = segs[i++];
-      cancel = animateSegment(seg, setDisplaySafe, runNext);
+      cancelRef.current = animateSegment(seg, setDisplaySafe, runNext);
     };
 
     runNext();
 
-    return () => cancel?.();
+    return () => cancelRef.current?.();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [seen, enabled]);
+  }, [seen, enabled, safeTarget]);
 
   return display;
 }
@@ -23904,6 +23886,14 @@ const ADMIN_EMAIL = (process.env.NEXT_PUBLIC_DEMO_ADMIN_EMAIL ?? "")
   .trim()
   .toLowerCase();
 
+const DEMO_SEED_ALL = (process.env.NEXT_PUBLIC_DEMO_SEED_ALL ?? "") === "1";
+
+function isDemoHost() {
+  if (typeof window === "undefined") return false;
+  const h = window.location.hostname;
+  return h === "localhost" || h.endsWith(".vercel.app");
+}
+
 const TOTAL_ATTEMPTS = 100;
 const DAYS = 30;
 
@@ -24215,14 +24205,22 @@ const submittedAt = tsAtDayPart(daysAgo, part, `ts:${userKey}:${modeKey}:${daysA
 }
 
 
+
 export async function seedAdminDemoDataIfNeeded(userKey: string) {
   // Only run in browser
   if (typeof window === "undefined") return false;
 
-  if (!ADMIN_EMAIL) return false;
+  const allowAll = DEMO_SEED_ALL && isDemoHost();
 
-  const adminUserKey = userKeyFromEmail(ADMIN_EMAIL);
-  if (userKey !== adminUserKey) return false;
+  // If not allowAll, keep your existing admin-only behavior
+  if (!allowAll) {
+    if (!ADMIN_EMAIL) return false;
+
+    const adminUserKey = userKeyFromEmail(ADMIN_EMAIL);
+    if (userKey !== adminUserKey) return false;
+  }
+
+
 
   const seedFlag = `expatise:demo-seed:v${SEED_VERSION}:${DATASET_ID}:${userKey}`;
   if (localStorage.getItem(seedFlag) === "1") return false;
@@ -24300,7 +24298,8 @@ export async function getEntitlements(userKey: string): Promise<Entitlements> {
     // Pass userKey for future-proofing (even if server uses cookies today)
     const url = `/api/entitlements?userKey=${encodeURIComponent(userKey)}`;
 
-    const res = await fetch(url, { cache: "no-store" });
+    const res = await fetch(url, { cache: "no-store", credentials: "include" });
+
     if (!res.ok) return local;
 
     const json = (await res.json()) as ApiRes;
@@ -24311,8 +24310,17 @@ export async function getEntitlements(userKey: string): Promise<Entitlements> {
   const serverUpdatedAt = typeof server.updatedAt === "number" ? server.updatedAt : 0;
 
   // Only let server overwrite local if it's clearly newer OR it grants premium.
-  const shouldTrustServer =
-    server.isPremium === true || serverUpdatedAt >= localUpdatedAt;
+  const localIsPremium = local.isPremium === true;
+const localExpired =
+  typeof local.expiresAt === "number" &&
+  local.expiresAt > 0 &&
+  local.expiresAt < Date.now();
+
+// Trust server if it GRANTS premium, or if local is not premium (or expired) and server is newer.
+const shouldTrustServer =
+  server.isPremium === true ||
+  ((localExpired || !localIsPremium) && serverUpdatedAt >= localUpdatedAt);
+
 
   if (shouldTrustServer) {
     setLocalEntitlements(userKey, server);
@@ -24377,7 +24385,8 @@ export type EntitlementSource =
   | "subscription"
   | "lifetime"
   | "admin"
-  | "dev";
+  | "dev"
+  | "demo";
 
 export type Entitlements = {
   isPremium: boolean;

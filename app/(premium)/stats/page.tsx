@@ -609,10 +609,11 @@ async function handleGenerateCoach() {
     </div>
 
     <ReadinessRing
-      valuePct={statsReadiness.readinessPct}
-      enabled={!loading && questions.length > 0 && attemptsLoaded}
-      onDone={handleReadinessRingDone}
-    />
+  key={`${userKey}:${tfReadiness}:${statsReadiness.readinessPct}:${statsReadiness.attemptedTotal}`}
+  valuePct={statsReadiness.readinessPct}
+  enabled={!loading && questions.length > 0 && attemptsLoaded}
+  onDone={handleReadinessRingDone}
+/>
 
     {/* 👇 Everything below stays hidden until the ring finishes */}
     <div
