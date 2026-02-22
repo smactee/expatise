@@ -212,7 +212,7 @@ export default function CreateAccountModal({ open, onClose, onCreated }: Props) 
             aria-label="Sign up with Google"
             onClick={async () => {
               setError(null);
-              const redirectTo = `${window.location.origin}/auth/callback`;
+              const redirectTo = `${window.location.origin}/auth/callback?next=${encodeURIComponent("/")}`;
               const { error } = await supabase.auth.signInWithOAuth({
                 provider: 'google',
                 options: { redirectTo },

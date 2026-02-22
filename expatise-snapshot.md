@@ -1,3 +1,9 @@
+### .vscode/settings.json
+```json
+{
+}
+```
+
 ### README.md
 ```md
 # Expatise
@@ -5333,46 +5339,33 @@ const fillDeg = (pctSafe / 100) * 360;
 
 import { useEffect, useMemo, useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
-
 import BottomNav from '@/components/BottomNav';
 import styles from './stats.module.css';
 import BackButton from '@/components/BackButton';
 import RequirePremium from '@/components/RequirePremium.client';
-
 import { loadDataset } from '@/lib/qbank/loadDataset';
 import type { DatasetId } from '@/lib/qbank/datasets';
 import type { Question } from '@/lib/qbank/types';
-
 import { listSubmittedAttempts } from '@/lib/test-engine/attemptStorage';
 import type { TestAttemptV1 } from '@/lib/test-engine/attemptStorage';
-
 import { useUserKey } from '@/components/useUserKey.client';
 import { computeStats } from '@/lib/stats/computeStats';
-
 import { ROUTES } from '@/lib/routes';
-
 import { labelForTag } from '@/lib/qbank/tagTaxonomy';
-
 import TimeframeChips, { type Timeframe, tfShort } from '@/components/stats/TimeframeChips';
 import ScreenTimeChart, {ScreenTimeLegend} from '@/components/stats/ScreenTimeChart.client';
-
 import ReadinessRing from '@/app/(premium)/stats/ReadinessRing.client';
 import ScoreChart, { ScoreLegend } from '@/components/stats/ScoreChart.client';
 import DailyProgressChart, { DailyProgressLegend } from '@/components/stats/DailyProgressChart';
 import Heatmap from '@/components/stats/Heatmap.client';
 import TopicMasteryChart from '@/components/stats/TopicMasteryChart.client';
-
 import { resetAllLocalData } from '@/lib/stats/resetLocalData';
-
 import { timeKey } from "@/lib/stats/timeKeys"
-
 import { seedAdminDemoDataIfNeeded } from '@/lib/demo/seedAdminDemoData';
-
 import InfoTip from '@/components/InfoTip.client';
-
 import CoachReport from '@/app/(premium)/stats/CoachReport.client';
 import CoachReportRich from '@/app/(premium)/stats/CoachReportRich.client';
-
+import { useAuthStatus } from '@/components/useAuthStatus';
 
 const datasetId: DatasetId = 'cn-2023-test1';
 
@@ -5491,6 +5484,10 @@ export default function StatsPage() {
   const [tfTopics, setTfTopics] = useState<Timeframe>(30);
   const [attemptsLoaded, setAttemptsLoaded] = useState(false);
 
+  const { authed: supabaseAuthed } = useAuthStatus();
+
+  const [attemptsHydrated, setAttemptsHydrated] = useState(false);
+
 
 function tfLabel(t: Timeframe) {
   return t === "all" ? "all time" : `last ${t} days`;
@@ -5524,10 +5521,10 @@ useEffect(() => {
   if (!userKey) return;
 
   // 0.5) Ensure this entire effect only runs once per (userKey, datasetId) per mount
-  const runKey = `${userKey}:${datasetId}`;
+  const runKey = `${userKey}:${datasetId}:${supabaseAuthed ? "authed" : "guest"}`;
   if (seededRef.current === runKey) return;
   seededRef.current = runKey;
-
+  setAttemptsHydrated(false);
   let alive = true;
 
   (async () => {
@@ -5540,39 +5537,44 @@ useEffect(() => {
     setAttempts(local);
     setAttemptsLoaded(true);
     // 2) Remote (cross-device). If user isn't logged in, this will just fail quietly.
+    if (!supabaseAuthed) {
+  if (alive) setAttemptsHydrated(true);
+  return;
+}
     try {
-      const r = await fetch(
-        `/api/attempts?datasetId=${encodeURIComponent(datasetId)}`,
-        { cache: "no-store", credentials: "include" }
-      );
-      if (!r.ok) return;
+  const r = await fetch(
+    `/api/attempts?datasetId=${encodeURIComponent(datasetId)}`,
+    { cache: "no-store", credentials: "include" }
+  );
+  if (!r.ok) return;
 
-      const j = await r.json().catch(() => null);
-      const remote: TestAttemptV1[] = Array.isArray(j?.attempts) ? j.attempts : [];
+  const j = await r.json().catch(() => null);
+  const remote: TestAttemptV1[] = Array.isArray(j?.attempts) ? j.attempts : [];
 
-      // Merge by attemptId (remote wins if duplicate)
-      const byId = new Map<string, TestAttemptV1>();
-      for (const a of local) byId.set(a.attemptId, a);
-      for (const a of remote) byId.set(a.attemptId, a);
+  // Merge...
+  const byId = new Map<string, TestAttemptV1>();
+  for (const a of local) byId.set(a.attemptId, a);
+  for (const a of remote) byId.set(a.attemptId, a);
 
-      const merged = Array.from(byId.values()).sort(
-        (a, b) =>
-          (b.submittedAt ?? b.lastActiveAt ?? b.createdAt ?? 0) -
-          (a.submittedAt ?? a.lastActiveAt ?? a.createdAt ?? 0)
-      );
+  const merged = Array.from(byId.values()).sort(
+    (a, b) =>
+      (b.submittedAt ?? b.lastActiveAt ?? b.createdAt ?? 0) -
+      (a.submittedAt ?? a.lastActiveAt ?? a.createdAt ?? 0)
+  );
 
-      if (!alive) return;
-      setAttempts(merged);
-    } catch {
-      // ignore
-    }
+  if (!alive) return;
+  setAttempts(merged);
+} catch {
+  // ignore
+} finally {
+  if (alive) setAttemptsHydrated(true);
+}
   })();
 
   return () => {
     alive = false;
   };
-}, [userKey, datasetId]);
-
+}, [userKey, datasetId, supabaseAuthed]);
 
 
   // Compute stats (default: last 30 days for now; we’ll add filters later)
@@ -5653,7 +5655,7 @@ const handleReadinessRingDone = () => {
 // Reset whenever the ring should re-run (timeframe/data changes)
 useEffect(() => {
   setReadinessDone(false);
-}, [tfReadiness, statsReadiness.readinessPct, loading, questions.length, attemptsLoaded]);
+}, [tfReadiness, userKey]);
 
 
 const [screenLegendReady, setScreenLegendReady] = useState(false);
@@ -5694,7 +5696,7 @@ const [cooldownUntil, setCooldownUntil] = useState<number | null>(null);
 
 const [nowMs, setNowMs] = useState<number>(Date.now());
 useEffect(() => {
-  const id = window.setInterval(() => setNowMs(Date.now()), 1000);
+  const id = window.setInterval(() => setNowMs(Date.now()), 10000);
   return () => window.clearInterval(id);
 }, []);
 
@@ -5720,7 +5722,7 @@ useEffect(() => {
 
 useEffect(() => {
   let alive = true;
-
+if (!supabaseAuthed) return () => { alive = false; };
   (async () => {
     try {
       const r = await fetch("/api/time-logs?limit=200", {
@@ -5755,7 +5757,7 @@ useEffect(() => {
   return () => {
     alive = false;
   };
-}, [userKey]);
+}, [userKey, supabaseAuthed]);
 
 
 const scorePointsSorted = useMemo(() => {
@@ -5938,10 +5940,10 @@ async function handleGenerateCoach() {
       </span>
     </div>
 
-    <ReadinessRing
-  key={`${userKey}:${tfReadiness}:${statsReadiness.readinessPct}:${statsReadiness.attemptedTotal}`}
+   <ReadinessRing
+  key={`${userKey}:${tfReadiness}`}   // stable key (or you can remove key entirely)
   valuePct={statsReadiness.readinessPct}
-  enabled={!loading && questions.length > 0 && attemptsLoaded}
+  enabled={!loading && questions.length > 0 && attemptsHydrated}
   onDone={handleReadinessRingDone}
 />
 
@@ -7383,6 +7385,7 @@ async function handleGenerateCoach() {
 
 ### app/account-security/page.tsx
 ```tsx
+// app/account-security/page.tsx
 'use client';
 
 import React, { useMemo, useState } from 'react';
@@ -7391,11 +7394,15 @@ import { useRouter } from 'next/navigation';
 import styles from './account-security.module.css';
 import { useAuthStatus } from '../../components/useAuthStatus';
 import BackButton from '../../components/BackButton';
+import { createClient } from '@/lib/supabase/client';
+import { isValidEmail, normalizeEmail } from '@/lib/auth';
 
 export default function AccountSecurityPage() {
   const router = useRouter();
-  const { authed, method, loading } = useAuthStatus();
+  const supabase = useMemo(() => createClient(), []);
+  const { authed, method, loading, email: currentEmail } = useAuthStatus();
 
+  // Only allow email/password accounts here
   const allowed = useMemo(() => authed && method === 'email', [authed, method]);
 
   const [pwCurrent, setPwCurrent] = useState('');
@@ -7408,11 +7415,25 @@ export default function AccountSecurityPage() {
   const [msg, setMsg] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
+  async function reauthWithCurrentPassword(password: string) {
+    const emailNorm = normalizeEmail(currentEmail ?? '');
+    if (!emailNorm) throw new Error('Missing current email.');
+    const { error } = await supabase.auth.signInWithPassword({
+      email: emailNorm,
+      password,
+    });
+    if (error) throw new Error('Current password is incorrect.');
+  }
+
   async function changePassword() {
     setMsg(null);
 
     if (!pwCurrent || !pwNext || !pwNext2) {
       setMsg('Please fill all password fields.');
+      return;
+    }
+    if (pwNext.length < 8) {
+      setMsg('New password must be at least 8 characters.');
       return;
     }
     if (pwNext !== pwNext2) {
@@ -7422,18 +7443,13 @@ export default function AccountSecurityPage() {
 
     setBusy(true);
     try {
-      const res = await fetch('/api/account/change-password', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          currentPassword: pwCurrent,
-          newPassword: pwNext,
-        }),
-      });
+      // 1) Re-auth to prove the user knows their current password
+      await reauthWithCurrentPassword(pwCurrent);
 
-      const data = await res.json();
-      if (!res.ok) {
-        setMsg(data?.error ?? 'Failed to change password.');
+      // 2) Update password
+      const { error } = await supabase.auth.updateUser({ password: pwNext });
+      if (error) {
+        setMsg(error.message || 'Failed to change password.');
         return;
       }
 
@@ -7441,6 +7457,12 @@ export default function AccountSecurityPage() {
       setPwNext('');
       setPwNext2('');
       setMsg('Password updated.');
+
+      try { window.dispatchEvent(new Event('expatise:session-changed')); } catch {}
+      try { window.dispatchEvent(new Event('expatise:entitlements-changed')); } catch {}
+      router.refresh();
+    } catch (e: any) {
+      setMsg(e?.message ?? 'Failed to change password.');
     } finally {
       setBusy(false);
     }
@@ -7449,33 +7471,44 @@ export default function AccountSecurityPage() {
   async function changeEmail() {
     setMsg(null);
 
-    if (!emailNext || !emailPw) {
-      setMsg('Please enter your new email and password.');
+    const nextNorm = normalizeEmail(emailNext);
+    if (!nextNorm || !isValidEmail(nextNorm)) {
+      setMsg('Please enter a valid new email.');
+      return;
+    }
+    if (!emailPw) {
+      setMsg('Please enter your current password.');
       return;
     }
 
     setBusy(true);
     try {
-      const res = await fetch('/api/account/change-email', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          newEmail: emailNext,
-          password: emailPw,
-        }),
-      });
+      // 1) Re-auth
+      await reauthWithCurrentPassword(emailPw);
 
-      const data = await res.json();
-      if (!res.ok) {
-        setMsg(data?.error ?? 'Failed to change email.');
+      // 2) Update email (may require confirmation email depending on Supabase settings)
+      const redirectTo = `${window.location.origin}/auth/callback?next=${encodeURIComponent('/profile')}`;
+      const { error } = await supabase.auth.updateUser({
+        email: nextNorm,
+        options: { emailRedirectTo: redirectTo },
+      } as any);
+
+      if (error) {
+        setMsg(error.message || 'Failed to change email.');
         return;
       }
 
       setEmailNext('');
       setEmailPw('');
-      setMsg('Email updated.');
-      // optional: send user back to profile
-      // router.push('/profile');
+
+      // Supabase often sends a confirmation email for email change.
+      setMsg('Email update requested. Please check your email to confirm the change.');
+
+      try { window.dispatchEvent(new Event('expatise:session-changed')); } catch {}
+      try { window.dispatchEvent(new Event('expatise:entitlements-changed')); } catch {}
+      router.refresh();
+    } catch (e: any) {
+      setMsg(e?.message ?? 'Failed to change email.');
     } finally {
       setBusy(false);
     }
@@ -7564,89 +7597,6 @@ export default function AccountSecurityPage() {
     </main>
   );
 }
-
-```
-
-### app/api/account/change-email/route.ts
-```tsx
-import { NextResponse } from 'next/server';
-import { cookies } from 'next/headers';
-import { AUTH_COOKIE, cookieOptions, isValidEmail } from '../../../../lib/auth';
-import { checkUserPassword, updateUserEmail } from '../../../../lib/user-store';
-
-export async function POST(req: Request) {
-  const cookieStore = await cookies();
-  const oldEmail = cookieStore.get(AUTH_COOKIE)?.value;
-
-  if (!oldEmail) {
-    return NextResponse.json({ error: 'Not logged in.' }, { status: 401 });
-  }
-
-  const body = await req.json().catch(() => null);
-  const newEmail = (body?.newEmail as string | undefined)?.trim();
-  const password = body?.password as string | undefined;
-
-  if (!newEmail || !password) {
-    return NextResponse.json({ error: 'Missing fields.' }, { status: 400 });
-  }
-
-  if (!isValidEmail(newEmail)) {
-    return NextResponse.json({ error: 'Invalid email format.' }, { status: 400 });
-  }
-
-  const ok = await checkUserPassword(oldEmail, password);
-  if (!ok) {
-    return NextResponse.json({ error: 'Password is incorrect.' }, { status: 400 });
-  }
-
-  const moved = await updateUserEmail(oldEmail, newEmail);
-  if (!moved.ok) {
-    if (moved.reason === 'exists') {
-      return NextResponse.json({ error: 'That email is already in use.' }, { status: 400 });
-    }
-    return NextResponse.json({ error: 'Account not found.' }, { status: 404 });
-  }
-
-  // update auth cookie to new email
-  cookieStore.set(AUTH_COOKIE, newEmail.toLowerCase(), cookieOptions());
-
-  return NextResponse.json({ ok: true });
-}
-
-```
-
-### app/api/account/change-password/route.ts
-```tsx
-import { NextResponse } from 'next/server';
-import { cookies } from 'next/headers';
-import { AUTH_COOKIE } from '../../../../lib/auth';
-import { checkUserPassword, setUserPassword } from '../../../../lib/user-store';
-
-export async function POST(req: Request) {
-  const cookieStore = await cookies();
-  const email = cookieStore.get(AUTH_COOKIE)?.value;
-
-  if (!email) {
-    return NextResponse.json({ error: 'Not logged in.' }, { status: 401 });
-  }
-
-  const body = await req.json().catch(() => null);
-  const currentPassword = body?.currentPassword as string | undefined;
-  const newPassword = body?.newPassword as string | undefined;
-
-  if (!currentPassword || !newPassword) {
-    return NextResponse.json({ error: 'Missing fields.' }, { status: 400 });
-  }
-
-  const ok = await checkUserPassword(email, currentPassword);
-  if (!ok) {
-    return NextResponse.json({ error: 'Current password is incorrect.' }, { status: 400 });
-  }
-
-  await setUserPassword(email, newPassword);
-  return NextResponse.json({ ok: true });
-}
-
 ```
 
 ### app/api/attempts/route.ts
@@ -7666,16 +7616,19 @@ function makeSupabase(req: NextRequest, pending: Array<{ name: string; value: st
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 
   return createServerClient(supabaseUrl, supabaseKey, {
-    cookies: {
-      getAll() {
-        return req.cookies.getAll();
-      },
-      setAll(cookiesToSet) {
-        pending.push(...cookiesToSet);
-      },
+  auth: {
+    flowType: "pkce",
+    storageKey: "sb-expatise-auth",
+  },
+  cookies: {
+    getAll() {
+      return req.cookies.getAll();
     },
-  });
-}
+    setAll(cookiesToSet) {
+      pending.push(...cookiesToSet);
+    },
+  },
+});}
 
 export async function GET(req: NextRequest) {
   const pending: Array<{ name: string; value: string; options: any }> = [];
@@ -8231,15 +8184,19 @@ export async function GET() {
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 
   const supabase = createServerClient(supabaseUrl, supabaseKey, {
-    cookies: {
-      getAll() {
-        return cookieStore.getAll();
-      },
-      setAll(cookiesToSet) {
-        pending.push(...cookiesToSet);
-      },
+  auth: {
+    flowType: "pkce",
+    storageKey: "sb-expatise-auth",
+  },
+  cookies: {
+    getAll() {
+      return cookieStore.getAll();
     },
-  });
+    setAll(cookiesToSet) {
+      pending.push(...cookiesToSet);
+    },
+  },
+});
 
   const { data, error } = await supabase.auth.getUser();
   const user = error ? null : data.user;
@@ -8266,49 +8223,50 @@ export async function GET() {
 
 ```
 
-### app/api/local-login/route.ts
-```tsx
-// app/api/local-login/route.ts
-import { NextResponse } from "next/server";
-import { checkUserPassword } from "../../../lib/user-store";
-import { AUTH_COOKIE, cookieOptions } from "../../../lib/auth";
-
-export async function POST(req: Request) {
-  const body = await req.json().catch(() => ({}));
-
-  const email = String(body?.email || "").trim().toLowerCase();
-  const password = String(body?.password || "");
-
-  if (!email || !password) {
-    return NextResponse.json({ ok: false }, { status: 200 });
-  }
-
-  const ok = checkUserPassword(email, password);
-  const res = NextResponse.json({ ok }, { status: 200 });
-
-  if (ok) {
-    res.cookies.set({
-      name: AUTH_COOKIE,
-      value: email,
-      ...cookieOptions(),
-      maxAge: 60 * 60 * 24 * 300, // 300 days
-    });
-  }
-
-  return res;
-}
-```
-
 ### app/api/logout/route.ts
 ```tsx
 // app/api/logout/route.ts
 import { NextResponse } from "next/server";
-import { AUTH_COOKIE, cookieOptions } from "../../../lib/auth";
+import { cookies } from "next/headers";
+import { createServerClient } from "@supabase/ssr";
+import { AUTH_COOKIE, cookieOptions } from "@/lib/auth";
+
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
 
 export async function POST() {
-  const res = NextResponse.json({ ok: true });
+  const cookieStore = await Promise.resolve(cookies());
+  const pending: Array<{ name: string; value: string; options: any }> = [];
 
-  // delete custom auth cookie (match options used when setting it)
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+  const anon = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+
+  const supabase = createServerClient(url, anon, {
+    auth: { flowType: "pkce", storageKey: "sb-expatise-auth" },
+    cookies: {
+      getAll() {
+        return cookieStore.getAll();
+      },
+      setAll(cookiesToSet) {
+        pending.push(...cookiesToSet);
+      },
+    },
+  });
+
+  // ✅ server-side Supabase sign out (clears auth cookies)
+  try {
+    await supabase.auth.signOut();
+  } catch {
+    // ignore
+  }
+
+  const res = NextResponse.json({ ok: true });
+  res.headers.set("Cache-Control", "no-store");
+
+  // apply any cookie changes Supabase produced
+  for (const c of pending) res.cookies.set(c.name, c.value, c.options);
+
+  // ✅ also clear your legacy cookie (safe even if unused now)
   res.cookies.set({
     name: AUTH_COOKIE,
     value: "",
@@ -8318,7 +8276,6 @@ export async function POST() {
 
   return res;
 }
-
 ```
 
 ### app/api/onboarding/route.ts
@@ -8341,112 +8298,12 @@ export async function POST() {
 
 ```
 
-### app/api/password-reset/confirm/route.ts
-```tsx
-import { NextResponse } from "next/server";
-import { verifyOtp, consumeOtp } from "@/lib/password-reset-store"; // adjust if no @
-import { setUserPassword } from "@/lib/user-store";
-
-export async function POST(req: Request) {
-  const body = await req.json().catch(() => ({}));
-
-  const email = String(body?.email || "").trim().toLowerCase();
-  const code = String(body?.code || "").trim();
-  const newPassword = String(body?.newPassword || "");
-
-  if (!email || !code || newPassword.length < 8) {
-    return NextResponse.json({ ok: false, message: "Invalid request." }, { status: 400 });
-  }
-
-  const v = verifyOtp(email, code);
-  if (!v.ok) {
-    return NextResponse.json({ ok: false, message: "Code is invalid or expired." }, { status: 400 });
-  }
-
-  const updated = setUserPassword(email, newPassword);
-  consumeOtp(email);
-
-  if (!updated) {
-    // still generic — but realistically this means user doesn’t exist in our DEV store
-    return NextResponse.json({ ok: false, message: "Code is invalid or expired." }, { status: 400 });
-  }
-
-  return NextResponse.json({ ok: true });
-}
-
-```
-
-### app/api/password-reset/start/route.ts
-```tsx
-import { NextResponse } from "next/server";
-import { getUserByEmail } from "../../../../lib/user-store";
-import { createResetOtp } from "../../../../lib/password-reset-store";
-
-export async function POST(req: Request) {
-  const body = await req.json().catch(() => ({}));
-  const email = String(body.email ?? "").trim().toLowerCase();
-
-  // MVP: 항상 200 OK로 응답(계정 존재 유무 노출 방지)
-  const user = getUserByEmail(email);
-
-  // local 계정(비번 있는 계정)만 OTP 발급
-  if (!user || !user.passwordHash) {
-    return NextResponse.json({
-      ok: true,
-      mode: "social",
-      message:
-        "This email is linked to a social sign-in. Please sign in with Google/Apple/WeChat.",
-    });
-  }
-
-  const otp = createResetOtp(email);
-  console.log(`[DEV OTP] ${email}: ${otp}`);
-
-  return NextResponse.json({ ok: true, mode: "local" });
-}
-
-```
-
-### app/api/register/route.ts
-```tsx
-import { NextResponse } from "next/server";
-import { createUser } from "../../../lib/user-store";
-import { isValidEmail, normalizeEmail } from "../../../lib/auth";
-
-export async function POST(req: Request) {
-  const body = await req.json().catch(() => ({}));
-
-  const email = normalizeEmail(body?.email);
-  const password = String(body?.password || "");
-  const confirmPassword = String(body?.confirmPassword || "");
-
-  if (!email || !isValidEmail(email)) {
-    return NextResponse.json({ ok: false, message: "Please enter a valid email address." }, { status: 400 });
-  }
-  if (password.length < 8) {
-    return NextResponse.json({ ok: false, message: "Password must be at least 8 characters." }, { status: 400 });
-  }
-  if (password !== confirmPassword) {
-    return NextResponse.json({ ok: false, message: "Passwords do not match." }, { status: 400 });
-  }
-
-  const result = createUser(email, password);
-  if (!result.ok) {
-    return NextResponse.json(result, { status: 400 });
-  }
-
-  return NextResponse.json({ ok: true }, { status: 200 });
-}
-
-```
-
 ### app/api/session/route.ts
 ```tsx
 // app/api/session/route.ts
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { createServerClient } from "@supabase/ssr";
-import { AUTH_COOKIE } from "@/lib/auth";
 
 function detectProvider(user: any): string | null {
   if (!user) return null;
@@ -8472,29 +8329,21 @@ export async function GET() {
   const pending: Array<{ name: string; value: string; options: any }> = [];
 
   const supabase = createServerClient(url, key, {
-    cookies: {
-      getAll() {
-        return cookieStore.getAll();
-      },
-      setAll(cookiesToSet) {
-        pending.push(...cookiesToSet);
-      },
+  auth: {
+    flowType: "pkce",
+    storageKey: "sb-expatise-auth",
+  },
+  cookies: {
+    getAll() {
+      return cookieStore.getAll();
     },
-  });
+    setAll(cookiesToSet) {
+      pending.push(...cookiesToSet);
+    },
+  },
+});
 
-  const localEmail = cookieStore.get(AUTH_COOKIE)?.value ?? null;
-  if (localEmail) {
-    const res = NextResponse.json({
-      ok: true,
-      authed: true,
-      method: "email",
-      email: localEmail,
-      provider: "local",
-    });
-    res.headers.set("Cache-Control", "no-store");
-    pending.forEach(({ name, value, options }) => res.cookies.set(name, value, options));
-    return res;
-  }
+ 
 
   const { data, error } = await supabase.auth.getUser();
   const user = error ? null : data.user;
@@ -9720,94 +9569,48 @@ import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import styles from "./forgot-password.module.css";
 import { isValidEmail, normalizeEmail } from "../../lib/auth";
-
-type Step = "email" | "verify" | "done";
+import { createClient } from "@/lib/supabase/client";
 
 export default function ForgotPasswordPage() {
   const router = useRouter();
-  const [step, setStep] = useState<Step>("email");
+  const supabase = useMemo(() => createClient(), []);
 
   const [email, setEmail] = useState("");
-  const [code, setCode] = useState("");
-  const [newPw, setNewPw] = useState("");
-  const [confirmPw, setConfirmPw] = useState("");
-
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [sent, setSent] = useState(false);
 
-const [emailError, setEmailError] = useState<string | null>(null);
-
-
-  
-  // Pre-login: force light mode
+  // Pre-login: force light mode (keep your behavior)
   useEffect(() => {
     document.documentElement.dataset.theme = "light";
   }, []);
 
-const canSend = useMemo(() => {
-  const trimmed = email.trim();
-  return trimmed.length > 0 && isValidEmail(trimmed) && !loading;
-}, [email, loading]);
+  const canSend = useMemo(() => {
+    const trimmed = email.trim();
+    return trimmed.length > 0 && isValidEmail(trimmed) && !loading;
+  }, [email, loading]);
 
-  const canReset = useMemo(() => {
-    if (loading) return false;
-    if (code.trim().length < 4) return false;
-    if (newPw.length < 8) return false;
-    if (newPw !== confirmPw) return false;
-    return true;
-  }, [code, newPw, confirmPw, loading]);
+  const sendLink = async () => {
+    setError(null);
+    setSent(false);
 
-  const sendCode = async () => {
-  setError("");
-
-  const emailNorm = normalizeEmail(email);
-  if (!isValidEmail(emailNorm)) {
-    setError("Please enter a valid email.");
-    return;
-  }
-
-  setLoading(true);
-  try {
-    const res = await fetch("/api/password-reset/start", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email: emailNorm }),
-    });
-
-    const data = await res.json().catch(() => null);
-
-    if (!res.ok || !data?.ok) {
-      setError(data?.message ?? "Unable to start reset. Please try again.");
+    const emailNorm = normalizeEmail(email);
+    if (!isValidEmail(emailNorm)) {
+      setError("Please enter a valid email.");
       return;
     }
 
-    setStep("verify");
-  } finally {
-    setLoading(false);
-  }
-};
-
-
-  const resetPassword = async () => {
-    if (!canReset) return;
-    setError(null);
     setLoading(true);
     try {
-      const res = await fetch("/api/password-reset/confirm", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, code, newPassword: newPw }),
-      });
+      const redirectTo = `${window.location.origin}/auth/callback?next=${encodeURIComponent("/reset-password")}`;
 
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok || !data.ok) {
-        setError(data?.message || "Code is invalid or expired.");
+      const { error } = await supabase.auth.resetPasswordForEmail(emailNorm, { redirectTo });
+      if (error) {
+        setError(error.message);
         return;
       }
 
-      setStep("done");
-    } catch {
-      setError("Reset failed. Try again.");
+      setSent(true);
     } finally {
       setLoading(false);
     }
@@ -9823,99 +9626,32 @@ const canSend = useMemo(() => {
 
           <h1 className={styles.title}>Reset password</h1>
 
-          {step === "email" && (
+          {!sent ? (
             <>
-              <p className={styles.subtitle}>Enter your email to get a one-time code.</p>
+              <p className={styles.subtitle}>Enter your email and we’ll send you a reset link.</p>
 
               <label className={styles.label}>Email</label>
               <input
-  className={styles.input}
-  value={email}
-  onChange={(e) => {
-    setEmail(e.target.value);
-    if (emailError) setEmailError(null);
-  }}
-  onBlur={() => {
-    const trimmed = email.trim();
-    if (!trimmed) return setEmailError("Email is required.");
-    if (!isValidEmail(trimmed)) return setEmailError("Please enter a valid email address.");
-    setEmail(trimmed);
-    setEmailError(null);
-  }}
-  type="email"
-  autoComplete="email"
-  onFocus={() => {
-    setError(null);
-    if (emailError) setEmailError(null);
-  }}
-  placeholder="user@expatise.com"
-/>
-              {emailError && <div className={styles.errorBox}>{emailError}</div>}
+                className={styles.input}
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                type="email"
+                autoComplete="email"
+                onFocus={() => setError(null)}
+                placeholder="user@expatise.com"
+              />
 
               {error && <div className={styles.errorBox}>{error}</div>}
 
-              <button className={styles.cta} disabled={!canSend} onClick={sendCode}>
-                {loading ? "Sending..." : "Send code"}
-              </button>
-
-              <p className={styles.hint}>
-                Dev mode: the code is printed in your terminal (later we’ll email it).
-              </p>
-            </>
-          )}
-
-          {step === "verify" && (
-            <>
-              <p className={styles.subtitle}>Enter the code and set a new password.</p>
-
-              <label className={styles.label}>One-time code</label>
-              <input
-                className={styles.input}
-                value={code}
-                onChange={(e) => setCode(e.target.value)}
-                inputMode="numeric"
-                placeholder="6-digit code"
-                onFocus={() => setError(null)}
-              />
-
-              <label className={styles.label}>New password</label>
-              <input
-                className={styles.input}
-                value={newPw}
-                onChange={(e) => setNewPw(e.target.value)}
-                type="password"
-                placeholder="At least 8 characters"
-                onFocus={() => setError(null)}
-              />
-
-              <label className={styles.label}>Confirm password</label>
-              <input
-                className={styles.input}
-                value={confirmPw}
-                onChange={(e) => setConfirmPw(e.target.value)}
-                type="password"
-                onFocus={() => setError(null)}
-              />
-
-              {newPw && confirmPw && newPw !== confirmPw && (
-                <div className={styles.warn}>Passwords don’t match.</div>
-              )}
-
-              {error && <div className={styles.errorBox}>{error}</div>}
-
-              <button className={styles.cta} disabled={!canReset} onClick={resetPassword}>
-                {loading ? "Resetting..." : "Reset password"}
-              </button>
-
-              <button type="button" className={styles.linkBtn} onClick={sendCode} disabled={!canSend}>
-                Resend code
+              <button className={styles.cta} disabled={!canSend} onClick={sendLink}>
+                {loading ? "Sending..." : "Send reset link"}
               </button>
             </>
-          )}
-
-          {step === "done" && (
+          ) : (
             <>
-              <div className={styles.successBox}>Password updated. You can sign in now.</div>
+              <div className={styles.successBox}>
+                If that email exists, we sent a reset link. Open it to set a new password.
+              </div>
               <button className={styles.cta} onClick={() => router.push("/login")}>
                 Back to sign in
               </button>
@@ -9926,7 +9662,6 @@ const canSend = useMemo(() => {
     </main>
   );
 }
-
 ```
 
 ### app/globals.css
@@ -10127,12 +9862,15 @@ export default function RootLayout({
 ```tsx
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useMemo, useState, type FormEvent } from 'react';
+import { useRouter } from 'next/navigation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGoogle, faApple, faWeixin } from '@fortawesome/free-brands-svg-icons';
 import { faChevronLeft, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+
 import styles from './create-account-modal.module.css';
-import { isValidEmail, normalizeEmail } from '../../lib/auth';
+import { isValidEmail, normalizeEmail } from '@/lib/auth';
+import { createClient } from '@/lib/supabase/client';
 
 type Props = {
   open: boolean;
@@ -10141,29 +9879,33 @@ type Props = {
 };
 
 export default function CreateAccountModal({ open, onClose, onCreated }: Props) {
+  const router = useRouter();
+  const supabase = useMemo(() => createClient(), []);
+
   const [email, setEmail] = useState('');
   const [pw, setPw] = useState('');
   const [pw2, setPw2] = useState('');
   const [showPw, setShowPw] = useState(false);
   const [showPw2, setShowPw2] = useState(false);
 
-
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [needsEmailConfirm, setNeedsEmailConfirm] = useState(false);
 
   const canSubmit = useMemo(() => {
     if (isSubmitting) return false;
     if (!isValidEmail(email)) return false;
-    if (pw.trim().length < 8) return false; // keep simple for now
+    if (pw.trim().length < 8) return false;
     if (pw !== pw2) return false;
     return true;
   }, [email, pw, pw2, isSubmitting]);
 
   if (!open) return null;
 
-  const submit = async (e: React.FormEvent) => {
+  const submit = async (e: FormEvent) => {
     e.preventDefault();
     setError(null);
+    setNeedsEmailConfirm(false);
 
     const trimmedEmail = normalizeEmail(email);
 
@@ -10173,31 +9915,44 @@ export default function CreateAccountModal({ open, onClose, onCreated }: Props) 
 
     setIsSubmitting(true);
     try {
-    const res = await fetch('/api/register', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
+      const { data, error } = await supabase.auth.signUp({
         email: trimmedEmail,
         password: pw,
-        confirmPassword: pw2,
-      }),
-    });
+        options: {
+          emailRedirectTo: `${window.location.origin}/auth/callback`,
+        },
+      });
 
-    const data = await res.json().catch(() => ({}));
+      if (error) {
+        if (/already registered/i.test(error.message) || /already exists/i.test(error.message)) {
+          setError("This email is already registered. Try logging in instead.");
+        } else {
+          setError(error.message);
+        }
+        return;
+      }
 
-    if (!res.ok || !data.ok) {
-      setError(data?.message || 'Could not create account.');
-      return;
+      const signedInNow = !!data?.session;
+
+      if (!signedInNow) {
+        setNeedsEmailConfirm(true);
+        onCreated?.(trimmedEmail);
+        return;
+      }
+
+      try { window.dispatchEvent(new Event('expatise:session-changed')); } catch {}
+      try { window.dispatchEvent(new Event('expatise:entitlements-changed')); } catch {}
+
+      router.refresh();
+
+      onCreated?.(trimmedEmail);
+      onClose();
+    } catch {
+      setError('Network error. Please try again.');
+    } finally {
+      setIsSubmitting(false);
     }
-
-    onCreated?.(trimmedEmail);
-    onClose();
-  } catch {
-    setError('Network error. Please try again.');
-  } finally {
-    setIsSubmitting(false);
-  }
-};
+  };
 
   return (
     <div className={styles.overlay} role="dialog" aria-modal="true">
@@ -10208,6 +9963,36 @@ export default function CreateAccountModal({ open, onClose, onCreated }: Props) 
 
         <h2 className={styles.title}>Create Account</h2>
         <p className={styles.subtitle}>Sign up to get started</p>
+
+        {/* ✅ Email confirmation message */}
+        {needsEmailConfirm && (
+          <div
+            className={styles.errorBox}
+            style={{
+              background: 'rgba(43,124,175,0.10)',
+              borderColor: 'rgba(43,124,175,0.25)',
+            }}
+          >
+            <strong>Check your email</strong>
+            <div style={{ marginTop: 6 }}>
+              We sent a confirmation link to <strong>{normalizeEmail(email)}</strong>.
+              <br />
+              Open it to activate your account, then come back and sign in.
+            </div>
+
+            <button
+              type="button"
+              className={styles.cta}
+              style={{ marginTop: 10 }}
+              onClick={() => {
+                setNeedsEmailConfirm(false);
+                onClose();
+              }}
+            >
+              Got it
+            </button>
+          </div>
+        )}
 
         <form onSubmit={submit} className={styles.form}>
           <label className={styles.row}>
@@ -10283,12 +10068,27 @@ export default function CreateAccountModal({ open, onClose, onCreated }: Props) 
         </div>
 
         <div className={styles.snsRow}>
-          <button type="button" className={styles.snsBtn} aria-label="Sign up with Google">
+          <button
+            type="button"
+            className={styles.snsBtn}
+            aria-label="Sign up with Google"
+            onClick={async () => {
+              setError(null);
+              const redirectTo = `${window.location.origin}/auth/callback`;
+              const { error } = await supabase.auth.signInWithOAuth({
+                provider: 'google',
+                options: { redirectTo },
+              });
+              if (error) setError(error.message);
+            }}
+          >
             <FontAwesomeIcon icon={faGoogle} />
           </button>
+
           <button type="button" className={styles.snsBtn} aria-label="Sign up with Apple">
             <FontAwesomeIcon icon={faApple} />
           </button>
+
           <button type="button" className={styles.snsBtn} aria-label="Sign up with WeChat">
             <FontAwesomeIcon icon={faWeixin} />
           </button>
@@ -10300,7 +10100,6 @@ export default function CreateAccountModal({ open, onClose, onCreated }: Props) 
     </div>
   );
 }
-
 ```
 
 ### app/login/create-account-modal.module.css
@@ -13459,8 +13258,6 @@ import CSRBoundary from '@/components/CSRBoundary';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGoogle, faApple, faWeixin} from '@fortawesome/free-brands-svg-icons';
 import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
-import { useMemo } from "react"; // you already import useMemo in other files, here add if missing
-import { createClient } from "@/lib/supabase/client";
 import LogoutButton from '@/components/LogoutButton.client';
 
 
@@ -13479,7 +13276,6 @@ function Inner() {
 
   const canManageCredentials = authed && (method === "email");
 
-  const supabase = useMemo(() => createClient(), []);
 
 const signInDisplay = (() => {
   // 1) guest
@@ -13579,36 +13375,8 @@ const handleNameBlur = (e: React.FocusEvent<HTMLSpanElement>) => {
 
 
 const router = useRouter();
-const [loggingOut, setLoggingOut] = useState(false);
 const pathname = usePathname();
 const sp = useSearchParams();
-
-
-const handleLogout = async () => {
-  if (loggingOut) return;
-  setLoggingOut(true);
-
-  try {
-    await supabase.auth.signOut();
-
-    if (typeof window !== "undefined") {
-      window.localStorage.removeItem("expatise-user-profile");
-    }
-
-    window.dispatchEvent(new Event("expatise:session-changed"));
-
-    setAvatarUrl(null);
-    setName("@Expatise");
-    setEmail("user@expatise.com");
-
-    router.replace("/login");
-  } finally {
-    setLoggingOut(false);
-  }
-};
-
-
-
 
 
 const handleSave = async (e: React.SyntheticEvent) => {
@@ -13887,18 +13655,12 @@ const goComingSoon = (feature: string) => {
 
 
   {authed ? (
-    <button
-      className={styles.logoutButton}
-      onClick={handleLogout}
-      disabled={loggingOut}
-    >
-      {loggingOut ? "Logging Out..." : "Log Out"}
-    </button>
-  ) : (
-    <Link className={styles.loginButton} href="/login?next=/profile">
-      Log in
-    </Link>
-  )}
+  <LogoutButton className={styles.logoutButton} />
+) : (
+  <Link className={styles.loginButton} href="/login?next=/profile">
+    Log in
+  </Link>
+)}
 </div>
 
 {saveMsg ? (
@@ -14536,6 +14298,253 @@ export default function ProfilePage() {
 
 :root[data-theme='dark'] .toastIcon {
   filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.55));
+}
+
+```
+
+### app/reset-password/page.tsx
+```tsx
+"use client";
+
+import { useMemo, useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import styles from "./reset-password.module.css";
+import { createClient } from "@/lib/supabase/client";
+
+export default function ResetPasswordPage() {
+  const router = useRouter();
+  const supabase = useMemo(() => createClient(), []);
+
+  const [pw, setPw] = useState("");
+  const [pw2, setPw2] = useState("");
+
+  const [loading, setLoading] = useState(false);
+  const [msg, setMsg] = useState<string | null>(null);
+  const [ready, setReady] = useState(false);
+
+  useEffect(() => {
+    document.documentElement.dataset.theme = "light";
+
+    (async () => {
+      // When opened from the email link, the callback should establish a session.
+      const { data } = await supabase.auth.getSession();
+      setReady(!!data.session);
+    })();
+  }, [supabase]);
+
+  const submit = async () => {
+    setMsg(null);
+
+    if (pw.length < 8) return setMsg("Password must be at least 8 characters.");
+    if (pw !== pw2) return setMsg("Passwords do not match.");
+
+    setLoading(true);
+    try {
+      // Update password for the currently-authenticated recovery session
+      const { error } = await supabase.auth.updateUser({ password: pw }); // :contentReference[oaicite:1]{index=1}
+      if (error) {
+        setMsg(error.message);
+        return;
+      }
+
+      setMsg("Password updated. Please sign in again.");
+      await supabase.auth.signOut();
+      router.replace("/login");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <main className={styles.page}>
+      <div className={styles.frame}>
+        <section className={styles.sheet}>
+          <h1 className={styles.title}>Set a new password</h1>
+
+          {!ready ? (
+            <div className={styles.errorBox}>
+              This reset link is invalid or expired. Please request a new reset email.
+            </div>
+          ) : (
+            <>
+              {msg && <div className={msg.includes("updated") ? styles.successBox : styles.errorBox}>{msg}</div>}
+
+              <label className={styles.label}>New password</label>
+              <input
+                className={styles.input}
+                value={pw}
+                onChange={(e) => setPw(e.target.value)}
+                type="password"
+                autoComplete="new-password"
+              />
+
+              <label className={styles.label}>Confirm password</label>
+              <input
+                className={styles.input}
+                value={pw2}
+                onChange={(e) => setPw2(e.target.value)}
+                type="password"
+                autoComplete="new-password"
+              />
+
+              <button className={styles.cta} disabled={loading} onClick={submit}>
+                {loading ? "Updating..." : "Update password"}
+              </button>
+            </>
+          )}
+        </section>
+      </div>
+    </main>
+  );
+}
+```
+
+### app/reset-password/reset-password.module.css
+```css
+.page {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  padding: 18px 14px;
+  background: #1f1f1f;
+}
+
+.frame {
+  min-height: 100svh;
+  width: 100%;
+  max-width: 420px;
+  border-radius: 18px;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.sheet {
+  padding: 22px 22px 30px;
+}
+
+.backBtn {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 14px;
+  color: rgba(107, 114, 128, 1);
+  margin-bottom: 10px;
+}
+
+.title {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 800;
+  color: #000;
+}
+
+.subtitle {
+  margin: 6px 0 18px;
+  font-size: 16px;
+  color: #6b7280;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.label {
+  font-size: 14px;
+  color: #111827;
+  font-weight: 600;
+}
+
+.input {
+  width: 100%;
+  border-radius: 16px;
+  border: 1px solid rgba(0, 0, 0, 0.16);
+  padding: 14px 14px;
+  font-size: 16px;
+  outline: none;
+}
+
+.input::placeholder {
+   color: rgba(107, 114, 128, 0.8);
+}
+
+.input:focus {
+  border-color: rgba(43, 124, 175, 0.55);
+  box-shadow: 0 0 0 4px rgba(43, 124, 175, 0.14);
+}
+
+.cta {
+  margin-top: 6px;
+  width: 100%;
+  padding: 14px 18px;
+  border-radius: 18px;
+  border: 1px solid var(--color-logout-border, #d2c79a);
+  background: var(--color-premium-gradient, linear-gradient(90deg, rgba(43, 124, 175, 0.4), rgba(255, 197, 66, 0.4)));
+  box-shadow: 0 18px 40px rgba(15, 33, 70, 0.18);
+  font-size: 16px;
+  font-weight: 700;
+  color: #111827;
+  cursor: pointer;
+}
+
+.cta:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.linkBtn {
+  border: none;
+  background: transparent;
+  color: #6b7280;
+  font-size: 14px;
+  cursor: pointer;
+  text-decoration: underline;
+  margin-top: 4px;
+}
+
+.errorBox {
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.28);
+  color: #b91c1c;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.successBox {
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: rgba(34, 197, 94, 0.12);
+  border: 1px solid rgba(34, 197, 94, 0.28);
+  color: #166534;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.errorText {
+  margin-top: 8px;
+  font-size: 13px;
+  color: #b91c1c;
+  text-align: left;
+}
+
+.hint {
+  margin-top: 10px;
+  font-size: 13px;
+  color: #6b7280;
+  line-height: 1.4;
+}
+
+.warn {
+  margin-top: 8px;
+  font-size: 13px;
+  color: #b45309;
 }
 
 ```
@@ -15199,12 +15208,34 @@ export default function TestModeResultsPage() {
   background: var(--color-page-bg);
 }
 
+/* ===== Results theme tokens (match AllTest’s dark text behavior) ===== */
+.viewport {
+  /* keep your existing stuff... */
+
+  /* light defaults (Figma) */
+  --results-text: #000;
+  --results-muted: rgba(0, 0, 0, 0.75);
+
+  /* this is the surface your .screen was hard-coding */
+  --results-screen-bg: #f4f4f9;
+}
+
+/* dark overrides (copy the spirit of AllTest) */
+:root[data-theme='dark'] .viewport {
+  --results-text: rgba(255, 255, 255, 0.92);
+  --results-muted: rgba(255, 255, 255, 0.75);
+
+  /* let your global dark page background show through */
+  --results-screen-bg: transparent;
+}
+
 .screen {
   position: relative;
   width: 100%;
   min-height: 100vh;
   min-height: 100dvh; /* ✅ mobile accurate */
-  background: #f4f4f9;
+  background: var(--results-screen-bg);
+color: var(--results-text);
   overflow: hidden;
   --contentW: min(390px, calc(100% - 60px)); /* ✅ content width */
 }
@@ -15280,7 +15311,7 @@ export default function TestModeResultsPage() {
   font-size: 20px;
   line-height: 120%;
   letter-spacing: 0.04em;
-  color: #000000;
+  color: var(--results-text);
 }
 
 /* Congratulation! */
@@ -15302,7 +15333,7 @@ export default function TestModeResultsPage() {
   text-align: center;
   letter-spacing: -0.24px;
   text-transform: capitalize;
-  color: #383a44;
+  color: var(--results-muted);
 }
 
 
@@ -15376,7 +15407,7 @@ export default function TestModeResultsPage() {
   line-height: 20px;
   letter-spacing: -0.24px;
   text-transform: capitalize;
-  color: #21205a;
+  color: var(--results-text);
 
   /* optional: stop it from affecting layout, keeps it centered nicely */
   pointer-events: none;
@@ -15447,7 +15478,7 @@ export default function TestModeResultsPage() {
   line-height: 20px;
   text-align: center;
   letter-spacing: -0.24px;
-  color: #383a44;
+  color: var(--results-muted);
 }
 
 .scoreLabel {
@@ -15458,7 +15489,7 @@ export default function TestModeResultsPage() {
   line-height: 20px;
   text-align: center;
   letter-spacing: -0.24px;
-  color: #383a44;
+  color: var(--results-muted);
 }
 
 /* Test Results title */
@@ -15479,7 +15510,7 @@ export default function TestModeResultsPage() {
   font-size: 32px;
   line-height: 1.1;
   letter-spacing: -0.24px;
-  color: #000;
+  color: var(--results-text);
 
   /* Figma looks left-aligned */
   text-align: left;
@@ -15548,7 +15579,7 @@ export default function TestModeResultsPage() {
   font-size: 16px;
   line-height: 22px;
   letter-spacing: -0.24px;
-  color: #000;
+  color: var(--results-text);
 }
 
 .qImage {
@@ -15602,7 +15633,7 @@ export default function TestModeResultsPage() {
 }
 
 .optionNeutral {
-  color: #000;
+  color: var(--results-text);
 }
 
 .optionCorrect {
@@ -15625,7 +15656,7 @@ export default function TestModeResultsPage() {
   font-weight: 700;
   font-size: 14px;
   line-height: 16px;
-  color: #000;
+  color: var(--results-text);
 }
 
 .exBody {
@@ -15638,7 +15669,7 @@ export default function TestModeResultsPage() {
   font-weight: 400;
   font-size: 13px;
   line-height: 18px;
-  color: #000;
+  color: var(--results-muted);
 }
 
 
@@ -15682,7 +15713,7 @@ export default function TestModeResultsPage() {
   font-size: 16px;
   line-height: 130%;
   letter-spacing: 0.04em;
-  color: #000000;
+  color: var(--results-text);
 }
 
 .shiftUp {
@@ -15787,6 +15818,7 @@ export default function TestModeResultsPage() {
   font-weight: 600;
   font-size: 12px;
   opacity: 0.75;
+  color: var(--results-muted);
 }
 
 /* When in carousel mode, reviewArea should not be vertically scrollable itself */
@@ -15837,10 +15869,14 @@ export default function TestModeResultsPage() {
   user-select: none;
 }
 
+:root[data-theme='dark'] .bookmarkBtn[data-bookmarked='false'] .bookmarkIcon {
+  background: rgba(255, 255, 255, 0.70);
+}
 ```
 
 ### components/AuthSelfHeal.tsx
 ```tsx
+//components/AuthSelfHeal.tsx
 "use client";
 
 import { useEffect } from "react";
@@ -16605,6 +16641,8 @@ function isDemoHost() {
   return h === "localhost" || h.endsWith(".vercel.app");
 }
 
+
+
 const EntitlementsContext = createContext<EntitlementsContextValue | null>(null);
 
 export function EntitlementsProvider({ children }: { children: React.ReactNode }) {
@@ -16655,7 +16693,6 @@ if (demoPremium) {
       if (seq !== fetchSeqRef.current) return;
 
       // optional but recommended: persist remote result so next refresh is instant
-      setLocalEntitlements(keyAtStart, e);
       setState(e);
     } catch {
       // keep local if remote fails
@@ -16664,6 +16701,7 @@ if (demoPremium) {
     }
   })();
 }, [userKey, demoPremium]);
+
 
 
   const setEntitlements = useCallback((e: Entitlements) => {
@@ -17073,34 +17111,38 @@ export default function InfoTip({ text }: { text: string }) {
 
 ### components/LogoutButton.client.tsx
 ```tsx
+// components/LogoutButton.client.tsx
 "use client";
 
+import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import { createClient } from "@/lib/supabase/client";
 
 export default function LogoutButton({ className }: { className?: string }) {
   const router = useRouter();
+  const supabase = useMemo(() => createClient(), []);
+  const [busy, setBusy] = useState(false);
 
   const onLogout = async () => {
-    await fetch("/api/logout", {
-      method: "POST",
-      credentials: "include",
-      cache: "no-store",
-    });
+    if (busy) return;
+    setBusy(true);
+    try {
+      await supabase.auth.signOut();
+      await fetch("/api/logout", { method: "POST", credentials: "include", cache: "no-store" });
 
-    // ✅ tell the rest of the app "session changed"
-    try { window.dispatchEvent(new Event("expatise:session-changed")); } catch {}
+      try { window.dispatchEvent(new Event("expatise:session-changed")); } catch {}
+      try { window.dispatchEvent(new Event("expatise:entitlements-changed")); } catch {}
 
-    // Optional: if anything listens to this specifically
-    try { window.dispatchEvent(new Event("expatise:entitlements-changed")); } catch {}
-
-    // ✅ force App Router to re-evaluate cookie-based server state
-    router.refresh();
-    router.replace("/login");
+      router.refresh();
+      router.replace("/login");
+    } finally {
+      setBusy(false);
+    }
   };
 
   return (
-    <button className={className} onClick={onLogout} type="button">
-      Log out
+    <button className={className} onClick={onLogout} type="button" disabled={busy}>
+      {busy ? "Logging out..." : "Log out"}
     </button>
   );
 }
@@ -23608,66 +23650,17 @@ export function useAuthStatus() {
 
 ### components/useUserKey.client.ts
 ```tsx
+// components/useUserKey.client.ts
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useMemo } from "react";
+import { useAuthStatus } from "@/components/useAuthStatus";
 import { userKeyFromEmail } from "@/lib/identity/userKey";
-import { webAuthClient } from "@/lib/authClient/web";
 
 export function useUserKey() {
-  const [userKey, setUserKey] = useState<string>("guest");
-  const seqRef = useRef(0);
-
-  const refresh = useCallback(() => {
-    const seq = ++seqRef.current;
-
-    (async () => {
-      const session = await webAuthClient.getSession();
-      if (seq !== seqRef.current) return;
-
-      if (!session.authed) {
-        setUserKey("guest");
-        return;
-      }
-
-      // userKeyFromEmail already normalizes + returns "guest" if null/empty
-      setUserKey(userKeyFromEmail(session.email));
-    })().catch(() => {
-      if (seq !== seqRef.current) return;
-      setUserKey("guest");
-    });
-  }, []);
-
-  useEffect(() => {
-    refresh();
-
-    const onSessionChanged = () => refresh();
-    const onFocus = () => refresh();
-    const onVisibility = () => {
-      if (document.visibilityState === "visible") refresh();
-    };
-
-    window.addEventListener("expatise:session-changed", onSessionChanged);
-    window.addEventListener("focus", onFocus);
-    document.addEventListener("visibilitychange", onVisibility);
-
-    // Safari/iOS safety net: refresh periodically while visible
-    const pollId = window.setInterval(() => {
-      if (document.visibilityState === "visible") refresh();
-    }, 60_000);
-
-    return () => {
-      window.removeEventListener("expatise:session-changed", onSessionChanged);
-      window.removeEventListener("focus", onFocus);
-      document.removeEventListener("visibilitychange", onVisibility);
-      window.clearInterval(pollId);
-      seqRef.current++;
-    };
-  }, [refresh]);
-
-  return userKey;
+  const { authed, email } = useAuthStatus();
+  return useMemo(() => (authed ? userKeyFromEmail(email) : "guest"), [authed, email]);
 }
-
 ```
 
 ### lib/attempts/attemptStore.ts
@@ -24445,8 +24438,6 @@ export async function seedAdminDemoDataIfNeeded(userKey: string) {
 
 ### lib/entitlements/getEntitlements.ts
 ```tsx
-//lib/entitlements/getEntitlements.ts
-
 "use client";
 
 import type { Entitlements } from "@/lib/entitlements/types";
@@ -24457,50 +24448,55 @@ type ApiRes =
   | { ok: true; entitlements: Entitlements; userKey?: string }
   | { ok: false; error?: string };
 
-
 export async function getEntitlements(userKey: string): Promise<Entitlements> {
+  // local fallback for whatever key the caller thinks they are (usually correct)
   const local = getLocalEntitlements(userKey) ?? FREE_ENTITLEMENTS;
 
   try {
-    // Pass userKey for future-proofing (even if server uses cookies today)
-    const url = `/api/entitlements?userKey=${encodeURIComponent(userKey)}`;
-
-    const res = await fetch(url, { cache: "no-store", credentials: "include" });
+    // ✅ session-based; server derives user + admin from Supabase cookies
+    const res = await fetch("/api/entitlements", {
+      cache: "no-store",
+      credentials: "include",
+    });
 
     if (!res.ok) return local;
 
     const json = (await res.json()) as ApiRes;
-    if (json.ok) {
-  const server = json.entitlements;
+    if (!json.ok) return local;
 
-  const localUpdatedAt = typeof local.updatedAt === "number" ? local.updatedAt : 0;
-  const serverUpdatedAt = typeof server.updatedAt === "number" ? server.updatedAt : 0;
+    const server = json.entitlements;
 
-  // Only let server overwrite local if it's clearly newer OR it grants premium.
-  const localIsPremium = local.isPremium === true;
-const localExpired =
-  typeof local.expiresAt === "number" &&
-  local.expiresAt > 0 &&
-  local.expiresAt < Date.now();
+    // ✅ IMPORTANT:
+    // If the server tells us the real userKey, store entitlements under THAT key.
+    // This prevents “premium stuck on guest” / “badge shows for admin” situations.
+    const serverUserKey =
+      typeof json.userKey === "string" && json.userKey.trim()
+        ? json.userKey.trim()
+        : userKey;
 
-// Trust server if it GRANTS premium, or if local is not premium (or expired) and server is newer.
-const shouldTrustServer =
-  server.isPremium === true ||
-  ((localExpired || !localIsPremium) && serverUpdatedAt >= localUpdatedAt);
+    const localUpdatedAt = typeof local.updatedAt === "number" ? local.updatedAt : 0;
+    const serverUpdatedAt = typeof server.updatedAt === "number" ? server.updatedAt : 0;
 
+    const localIsPremium = local.isPremium === true;
+    const localExpired =
+      typeof local.expiresAt === "number" &&
+      local.expiresAt > 0 &&
+      local.expiresAt < Date.now();
 
-  if (shouldTrustServer) {
-    setLocalEntitlements(userKey, server);
-    return server;
-  }
-}
+    const shouldTrustServer =
+      server.isPremium === true ||
+      ((localExpired || !localIsPremium) && serverUpdatedAt >= localUpdatedAt);
+
+    if (shouldTrustServer) {
+      setLocalEntitlements(serverUserKey, server);
+      return server;
+    }
   } catch {
     // ignore errors and fall back to local
   }
 
   return local;
 }
-
 ```
 
 ### lib/entitlements/localStore.ts
@@ -25232,92 +25228,6 @@ if (!process.env.OPENAI_API_KEY) {
 export const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
-
-```
-
-### lib/password-reset-store.ts
-```tsx
-// lib/password-reset-store.ts
-import crypto from "crypto";
-
-type ResetRecord = {
-  email: string;
-  codeHash: string;
-  expiresAt: number;
-  attemptsLeft: number;
-};
-
-const resets = new Map<string, ResetRecord>();
-
-const OTP_TTL_MS = 10 * 60 * 1000; // 10 minutes
-const MAX_ATTEMPTS = 5;
-
-function secret() {
-  // use your existing AUTH_SECRET if set; in production you should set it
-  return process.env.AUTH_SECRET || "dev-reset-secret";
-}
-
-function hashCode(email: string, code: string) {
-  return crypto
-    .createHash("sha256")
-    .update(`${email.toLowerCase()}:${code}:${secret()}`)
-    .digest("hex");
-}
-
-export function createOtp(email: string) {
-  const code = crypto.randomInt(0, 1_000_000).toString().padStart(6, "0");
-  const rec: ResetRecord = {
-    email: email.toLowerCase(),
-    codeHash: hashCode(email, code),
-    expiresAt: Date.now() + OTP_TTL_MS,
-    attemptsLeft: MAX_ATTEMPTS,
-  };
-  resets.set(email.toLowerCase(), rec);
-  return { code, expiresAt: rec.expiresAt };
-}
-
-export function verifyOtp(email: string, code: string) {
-  const key = email.toLowerCase();
-  const rec = resets.get(key);
-  if (!rec) return { ok: false as const, reason: "missing" as const };
-  if (Date.now() > rec.expiresAt) {
-    resets.delete(key);
-    return { ok: false as const, reason: "expired" as const };
-  }
-
-  if (rec.attemptsLeft <= 0) {
-    resets.delete(key);
-    return { ok: false as const, reason: "locked" as const };
-  }
-
-  const incoming = hashCode(email, code);
-  if (incoming !== rec.codeHash) {
-    rec.attemptsLeft -= 1;
-    resets.set(key, rec);
-    return { ok: false as const, reason: "invalid" as const, attemptsLeft: rec.attemptsLeft };
-  }
-
-  return { ok: true as const };
-}
-
-export function consumeOtp(email: string) {
-  resets.delete(email.toLowerCase());
-}
-
-// lib/password-reset-store.ts
-// (기존 createOtp/verifyOtp/consumeOtp는 그대로 두고)
-
-export function createResetOtp(email: string) {
-  return createOtp(email).code;
-}
-
-export function verifyResetOtp(email: string, code: string) {
-  return verifyOtp(email, code);
-}
-
-export function consumeResetOtp(email: string, code: string) {
-  return consumeOtp(email);
-}
 
 ```
 
@@ -28257,100 +28167,6 @@ export const TEST_MODES: Record<TestModeId, TestModeConfig> = {
     preflightRequiredQuestions: 1,
   },
 };
-
-```
-
-### lib/user-store.ts
-```tsx
-import crypto from "crypto";
-import { normalizeEmail } from "./auth";
-
-/**
- * DEV ONLY:
- * - This is an in-memory store (resets when server restarts)
- * - Replace with a real DB later (Postgres/Prisma/etc.)
- */
-
-type UserRecord = {
-  email: string;
-  passwordHash: string; // "salt:hash"
-};
-
-const users = new Map<string, UserRecord>();
-
-function hashPassword(password: string) {
-  const salt = crypto.randomBytes(16).toString("hex");
-  const hash = crypto.scryptSync(password, salt, 64).toString("hex");
-  return `${salt}:${hash}`;
-}
-
-export function userExists(email: string) {
-  return users.has(email.toLowerCase());
-}
-
-export function setUserPassword(email: string, newPassword: string) {
-  const key = email.toLowerCase();
-  const u = users.get(key);
-  if (!u) return false;
-  users.set(key, { ...u, passwordHash: hashPassword(newPassword) });
-  return true;
-}
-
-export function createUser(email: string, password: string) {
-  const key = email.trim().toLowerCase();
-  if (!key) return { ok: false, message: "Email is required." };
-  if (users.has(key)) return { ok: false, message: "This email is already registered." };
-
-  users.set(key, { email: key, passwordHash: hashPassword(password) });
-  return { ok: true };
-}
-
-
-export function checkUserPassword(email: string, password: string) {
-  const key = email.trim().toLowerCase();
-  const u = users.get(key);
-  if (!u) return false;
-
-  const [salt, storedHash] = u.passwordHash.split(":");
-  if (!salt || !storedHash) return false;
-
-  const incomingHash = crypto.scryptSync(password, salt, 64).toString("hex");
-
-  // constant-time compare
-  const a = Buffer.from(storedHash, "hex");
-  const b = Buffer.from(incomingHash, "hex");
-  if (a.length !== b.length) return false;
-  return crypto.timingSafeEqual(a, b);
-}
-
-// Seed a demo user so you can test reset immediately
-(function seed() {
-  const email = "user@expatise.com";
-  if (!users.has(email)) {
-    users.set(email, { email, passwordHash: hashPassword("password123") });
-  }
-})();
-
-// lib/user-store.ts
-export function getUserByEmail(email: string) {
-  const key = email.trim().toLowerCase();
-  return users.get(key) ?? null; // users가 Map이라면
-}
-
-export async function updateUserEmail(oldEmail: string, newEmail: string) {
-  const oldKey = normalizeEmail(oldEmail);
-  const newKey = normalizeEmail(newEmail);
-
-  const user = users.get(oldKey);
-  if (!user) return { ok: false as const, reason: 'missing' as const };
-
-  if (users.has(newKey)) return { ok: false as const, reason: 'exists' as const };
-
-  users.delete(oldKey);
-  users.set(newKey, { ...user, email: newKey });
-
-  return { ok: true as const };
-}
 
 ```
 
@@ -35484,22 +35300,23 @@ export async function proxy(req: NextRequest) {
   if (!url || !anonKey) return res;
 
   const supabase = createServerClient(url, anonKey, {
-    cookies: {
-      getAll() {
-        return req.cookies.getAll();
-      },
-      setAll(cookiesToSet) {
-  cookiesToSet.forEach(({ name, value, options }) => {
-    // keep request cookies in sync for the rest of this request lifecycle
-    req.cookies.set(name, value);
-    // write cookies to the outgoing response
-    res.cookies.set(name, value, options);
-  });
-},
-
+  auth: {
+    flowType: "pkce",
+    storageKey: "sb-expatise-auth",
+  },
+  cookies: {
+    getAll() {
+      return req.cookies.getAll();
     },
-  });
-
+    setAll(cookiesToSet) {
+      cookiesToSet.forEach(({ name, value, options }) => {
+        req.cookies.set(name, value);
+        res.cookies.set(name, value, options);
+      });
+    },
+  },
+});
+if (pathname.startsWith("/api/")) return res;
   // Refresh session if needed (sets/updates cookies via setAll)
   await supabase.auth.getUser();
 
