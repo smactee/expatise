@@ -75,7 +75,7 @@
 .panel {
   position: relative;
   border-radius: 22px;
-  padding: 18px 18px 14px;
+  padding: 14px 18px 14px;
 
   background: rgba(255,255,255,0.55);
   border: 1px solid rgba(148, 163, 184, 0.60);
@@ -109,7 +109,7 @@
   width: 100%;
 
   /* responsive sizing knobs */
-  --label-w: clamp(44px, 12vw, 64px);
+  --label-w: minmax(0, max-content);
   --header-h: clamp(20px, 5vw, 26px);
   --cell-h: clamp(36px, 8.5vw, 46px);
 
@@ -126,6 +126,9 @@
 
   /* ✅ critical for preventing text overlap */
   min-width: 0;
+  justify-content: start;
+  margin-left: 0;
+  margin-right: auto;
 }
 
 
@@ -155,13 +158,14 @@
 }
 
 .rowLabel {
-  padding-right: 8px;
+  padding-right: 0px;
   text-align: right;
 
   font-size: 15px;
   color: rgba(17, 24, 39, 0.44);
   white-space: nowrap;
   font-weight: 600;
+  justify-self: end; 
 }
 
 .colLabelLong { display: inline; }
@@ -406,7 +410,7 @@ padding: clamp(4px, 1vw, 8px);
 /* Footer note */
 .confidenceNote {
   margin-top: 14px;
-  font-size: 13px;
+  font-size: 10px;
   color: rgba(17, 24, 39, 0.46);
   position: relative;
   z-index: 1;

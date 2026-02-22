@@ -5939,10 +5939,11 @@ async function handleGenerateCoach() {
     </div>
 
     <ReadinessRing
-      valuePct={statsReadiness.readinessPct}
-      enabled={!loading && questions.length > 0 && attemptsLoaded}
-      onDone={handleReadinessRingDone}
-    />
+  key={`${userKey}:${tfReadiness}:${statsReadiness.readinessPct}:${statsReadiness.attemptedTotal}`}
+  valuePct={statsReadiness.readinessPct}
+  enabled={!loading && questions.length > 0 && attemptsLoaded}
+  onDone={handleReadinessRingDone}
+/>
 
     {/* 👇 Everything below stays hidden until the ring finishes */}
     <div
@@ -6342,6 +6343,7 @@ async function handleGenerateCoach() {
   --stats-grid-line: rgba(17,24,39,0.08);
   --stats-sep-line: rgba(17,24,39,0.18);
 
+    --stats-axis-text-strong: rgba(17,24,39,0.75);
 
 }
 
@@ -7077,6 +7079,7 @@ async function handleGenerateCoach() {
   --stats-grid-line: rgba(255,255,255,0.10);
   --stats-sep-line: rgba(255,255,255,0.18);
 
+    --stats-axis-text-strong: rgba(255,255,255,0.88);
 }
 
 
@@ -8266,10 +8269,9 @@ export async function GET() {
 ### app/api/local-login/route.ts
 ```tsx
 // app/api/local-login/route.ts
-
 import { NextResponse } from "next/server";
-import { checkUserPassword } from "../../../lib/user-store"; // if you don't use @, switch to relative
-import { AUTH_COOKIE, normalizeEmail } from "../../../lib/auth";
+import { checkUserPassword } from "../../../lib/user-store";
+import { AUTH_COOKIE, cookieOptions } from "../../../lib/auth";
 
 export async function POST(req: Request) {
   const body = await req.json().catch(() => ({}));
@@ -8277,30 +8279,24 @@ export async function POST(req: Request) {
   const email = String(body?.email || "").trim().toLowerCase();
   const password = String(body?.password || "");
 
-  // Always keep response generic (no account enumeration)
   if (!email || !password) {
     return NextResponse.json({ ok: false }, { status: 200 });
   }
 
   const ok = checkUserPassword(email, password);
   const res = NextResponse.json({ ok }, { status: 200 });
+
   if (ok) {
-    // DEV session cookie (replace with real session management later)
-    res.cookies.set(AUTH_COOKIE, email, {
+    res.cookies.set({
       name: AUTH_COOKIE,
       value: email,
-      httpOnly: true,
-      sameSite: "lax",
-      secure: process.env.NODE_ENV === "production",
-      path: "/",
+      ...cookieOptions(),
       maxAge: 60 * 60 * 24 * 300, // 300 days
     });
   }
 
-
   return res;
 }
-
 ```
 
 ### app/api/logout/route.ts
@@ -10895,9 +10891,13 @@ const comingSoon = (provider: string) => showToast(`${provider} sign-in is comin
   }
 
   // ✅ tell the rest of the app "session changed"
-  window.dispatchEvent(new Event("expatise:session-changed"));
+try { window.dispatchEvent(new Event("expatise:session-changed")); } catch {}
+try { window.dispatchEvent(new Event("expatise:entitlements-changed")); } catch {}
 
-  router.replace(nextParam);
+// ✅ force App Router to re-evaluate any cookie/session-based server state
+router.refresh();
+
+router.replace(nextParam);
 } catch {
   setError("Network error. Please try again.");
 }
@@ -11035,8 +11035,10 @@ const comingSoon = (provider: string) => showToast(`${provider} sign-in is comin
       setError(error.message);
       return;
     }
-    window.dispatchEvent(new Event("expatise:session-changed"));
-    router.replace(nextParam);
+    try { window.dispatchEvent(new Event("expatise:session-changed")); } catch {}
+try { window.dispatchEvent(new Event("expatise:entitlements-changed")); } catch {}
+router.refresh();
+router.replace(nextParam);
   }}
 >
   Continue as guest
@@ -13459,6 +13461,7 @@ import { faGoogle, faApple, faWeixin} from '@fortawesome/free-brands-svg-icons';
 import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
 import { useMemo } from "react"; // you already import useMemo in other files, here add if missing
 import { createClient } from "@/lib/supabase/client";
+import LogoutButton from '@/components/LogoutButton.client';
 
 
 function Inner() {
@@ -14580,6 +14583,7 @@ import { useBookmarks } from "@/lib/bookmarks/useBookmarks";
 import { TEST_MODES, type TestModeId } from "@/lib/testModes";
 import { useClearedMistakes } from "@/lib/mistakes/useClearedMistakes";
 import CSRBoundary from "@/components/CSRBoundary";
+import { useBootSweepOnce } from "@/components/stats/useBootSweepOnce.client";
 
 function clamp(n: number, min: number, max: number) {
   return Math.max(min, Math.min(max, n));
@@ -14906,6 +14910,30 @@ if (modeId === "mistakes" && !didAutoClearRef.current) {
   }, [computed.correct, computed.total]);
   const percent = useMemo(() => Math.round(pct * 100), [pct]);
 
+  // ✅ Animate the ring like ReadinessRing (boot sweep -> settle)
+const ringEnabled = computed.total > 0;
+
+// percent is 0..100
+const animatedPctFloat = useBootSweepOnce({
+  target: percent,
+  seen: true,          // results ring is always visible
+  enabled: ringEnabled,
+  segments: (target) => {
+    const gap = Math.abs(100 - target);
+    const settleMs = gap < 10 ? 450 : 800;
+
+    const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3);
+
+    return [
+      { from: 0, to: 100, durationMs: 450, ease: easeOutCubic },
+      { from: 100, to: target, durationMs: settleMs, ease: easeOutCubic },
+    ];
+  },
+});
+
+const animatedPct = Math.round(animatedPctFloat);
+const animatedDeg = (animatedPctFloat / 100) * 360;
+
   // While self-healing redirect runs, show a tiny placeholder (prevents flashing "Missing attemptId")
   if (!attemptId) {
     return (
@@ -14929,9 +14957,12 @@ if (modeId === "mistakes" && !didAutoClearRef.current) {
           <h1 className={styles.congrats}>Congratulations!</h1>
 
           <div className={styles.ringWrap} aria-label="Score progress">
-            <div className={styles.ring} style={{ "--p": `${pct * 360}deg` } as React.CSSProperties} />
-            <div className={styles.ringCenterText}>{percent}</div>
-          </div>
+  <div
+    className={styles.ring}
+    style={{ "--p": `${animatedDeg}deg` } as React.CSSProperties}
+  />
+  <div className={styles.ringCenterText}>{animatedPct}</div>
+</div>
 
           <div className={styles.scoreBox} aria-hidden="true">
             <div className={styles.lineTop} />
@@ -15317,6 +15348,9 @@ export default function TestModeResultsPage() {
     #bdccd3 360deg
   );
 
+  /* Optional: flip direction (ONLY if you want it) */
+  transform: scaleX(-1);
+
   /* punch out center so it becomes a ring */
   -webkit-mask: radial-gradient(
     farthest-side,
@@ -15329,6 +15363,7 @@ export default function TestModeResultsPage() {
     #000 calc(100% - 8px)
   );
 }
+
 
 .ringCenterText {
   margin: 0;
@@ -16238,6 +16273,8 @@ export default function ComingSoonRow(props: Props) {
 
 ### components/DemoSeedGate.client.tsx
 ```tsx
+//components/DemoSeedGate.client.tsx
+
 "use client";
 
 import { useEffect, useState } from "react";
@@ -16663,6 +16700,11 @@ useEffect(() => {
   return () => window.removeEventListener("expatise:entitlements-changed", onEntChanged);
 }, [refresh]);
 
+useEffect(() => {
+  const onSessionChanged = () => refresh();
+  window.addEventListener("expatise:session-changed", onSessionChanged);
+  return () => window.removeEventListener("expatise:session-changed", onSessionChanged);
+}, [refresh]);
 
 
   const value = useMemo<EntitlementsContextValue>(() => ({
@@ -17027,6 +17069,41 @@ export default function InfoTip({ text }: { text: string }) {
   border-color: transparent transparent rgba(0, 0, 0, 0.88) transparent;
 }
 
+```
+
+### components/LogoutButton.client.tsx
+```tsx
+"use client";
+
+import { useRouter } from "next/navigation";
+
+export default function LogoutButton({ className }: { className?: string }) {
+  const router = useRouter();
+
+  const onLogout = async () => {
+    await fetch("/api/logout", {
+      method: "POST",
+      credentials: "include",
+      cache: "no-store",
+    });
+
+    // ✅ tell the rest of the app "session changed"
+    try { window.dispatchEvent(new Event("expatise:session-changed")); } catch {}
+
+    // Optional: if anything listens to this specifically
+    try { window.dispatchEvent(new Event("expatise:entitlements-changed")); } catch {}
+
+    // ✅ force App Router to re-evaluate cookie-based server state
+    router.refresh();
+    router.replace("/login");
+  };
+
+  return (
+    <button className={className} onClick={onLogout} type="button">
+      Log out
+    </button>
+  );
+}
 ```
 
 ### components/RequirePremium.client.tsx
@@ -17532,6 +17609,7 @@ if (now2 - lastRemoteSyncAtRef.current >= 30_000) {
 
 ### components/UserProfile.tsx
 ```tsx
+//components/UserProfile.tsx
 'use client';
 
 import React, {
@@ -17539,8 +17617,11 @@ import React, {
   useContext,
   useEffect,
   useState,
+  useCallback,
+  useMemo,
   type ReactNode,
 } from 'react';
+import { useUserKey } from '@/components/useUserKey.client';
 
 type UserProfileContextValue = {
   name: string;
@@ -17563,27 +17644,44 @@ export function UserProfileProvider({ children }: { children: ReactNode }) {
   const [name, setName] = useState('@Expatise');
   const [email, setEmail] = useState('user@expatise.com');
   const [avatarUrl, setAvatarUrlState] = useState<string | null>(null);
+const userKey = useUserKey();
+const storageKey = useMemo(() => `${STORAGE_KEY}:${userKey || 'guest'}`, [userKey]);
 
+const hydrate = useCallback(() => {
+  if (typeof window === 'undefined') return;
+
+  // reset defaults first so switching accounts doesn't "leak" prior user
+  setName('@Expatise');
+  setEmail('user@expatise.com');
+  setAvatarUrlState(null);
+
+  const raw = window.localStorage.getItem(storageKey);
+  if (!raw) return;
+
+  try {
+    const parsed = JSON.parse(raw) as {
+      name?: string;
+      email?: string;
+      avatarUrl?: string | null;
+    };
+
+    if (parsed.name) setName(parsed.name);
+    if (parsed.email) setEmail(parsed.email);
+    if ('avatarUrl' in parsed) setAvatarUrlState(parsed.avatarUrl ?? null);
+  } catch {
+    // ignore bad JSON
+  }
+}, [storageKey]);
   // load from localStorage on first client render
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-    const raw = window.localStorage.getItem(STORAGE_KEY);
-    if (!raw) return;
+useEffect(() => {
+  hydrate();
+}, [hydrate]);
 
-    try {
-      const parsed = JSON.parse(raw) as {
-        name?: string;
-        email?: string;
-        avatarUrl?: string | null;
-      };
-
-      if (parsed.name) setName(parsed.name);
-      if (parsed.email) setEmail(parsed.email);
-      if ('avatarUrl' in parsed) setAvatarUrlState(parsed.avatarUrl ?? null);
-    } catch {
-      // ignore bad JSON
-    }
-  }, []);
+useEffect(() => {
+  const onSessionChanged = () => hydrate();
+  window.addEventListener('expatise:session-changed', onSessionChanged);
+  return () => window.removeEventListener('expatise:session-changed', onSessionChanged);
+}, [hydrate]);
 
 
 
@@ -17594,12 +17692,12 @@ export function UserProfileProvider({ children }: { children: ReactNode }) {
   const saveProfile = () => {
     if (typeof window === 'undefined') return;
     const payload = JSON.stringify({ name, email, avatarUrl });
-    window.localStorage.setItem(STORAGE_KEY, payload);
+    window.localStorage.setItem(storageKey, payload);
   };
 
   const clearProfile = () => {
     if (typeof window === 'undefined') return;
-    window.localStorage.removeItem(STORAGE_KEY);
+    window.localStorage.removeItem(storageKey);
     setName('@Expatise');
     setEmail('user@expatise.com');
     setAvatarUrlState(null);
@@ -17704,6 +17802,10 @@ export function useUserProfile() {
 }
 :global(:root[data-theme='dark']) .barTrack{
   background: rgba(43,124,175,0.22);
+}
+/* Dark mode: x-axis date labels (Jan 24, Feb 3...) */
+:global(:root[data-theme='dark']) .axisText{
+  fill: rgba(249,250,251,0.78);
 }
 
 .chartShell{
@@ -19259,7 +19361,7 @@ return (
 .panel {
   position: relative;
   border-radius: 22px;
-  padding: 18px 18px 14px;
+  padding: 14px 18px 14px;
 
   background: rgba(255,255,255,0.55);
   border: 1px solid rgba(148, 163, 184, 0.60);
@@ -19293,7 +19395,7 @@ return (
   width: 100%;
 
   /* responsive sizing knobs */
-  --label-w: clamp(44px, 12vw, 64px);
+  --label-w: minmax(0, max-content);
   --header-h: clamp(20px, 5vw, 26px);
   --cell-h: clamp(36px, 8.5vw, 46px);
 
@@ -19310,6 +19412,9 @@ return (
 
   /* ✅ critical for preventing text overlap */
   min-width: 0;
+  justify-content: start;
+  margin-left: 0;
+  margin-right: auto;
 }
 
 
@@ -19339,13 +19444,14 @@ return (
 }
 
 .rowLabel {
-  padding-right: 8px;
+  padding-right: 0px;
   text-align: right;
 
   font-size: 15px;
   color: rgba(17, 24, 39, 0.44);
   white-space: nowrap;
   font-weight: 600;
+  justify-self: end; 
 }
 
 .colLabelLong { display: inline; }
@@ -19590,7 +19696,7 @@ padding: clamp(4px, 1vw, 8px);
 /* Footer note */
 .confidenceNote {
   margin-top: 14px;
-  font-size: 13px;
+  font-size: 10px;
   color: rgba(17, 24, 39, 0.46);
   position: relative;
   z-index: 1;
@@ -20656,29 +20762,55 @@ style={{ opacity: lensReady ? 1 : 0 }}
   fill: none; /* green, same softness */
 }
 
+/* ===== ScoreChart (tokenized so dark mode works) ===== */
 
 .grid{
-  stroke: rgba(17,24,39,0.08);
+  stroke: var(--stats-grid-line, rgba(17,24,39,0.08));
   stroke-width: 1;
 }
 
 .passLine{
-  stroke: rgba(17,24,39,0.22);
+  stroke: var(--stats-legend-dotted, rgba(17,24,39,0.35));
   stroke-width: 1;
   stroke-dasharray: 4 4;
 }
 
 .avgLine{
-  stroke: rgba(17,24,39,0.28);
+  stroke: var(--stats-legend-dotted, rgba(17,24,39,0.35));
   stroke-width: 1;
   stroke-dasharray: 3 5;
 }
 
 .avgLabel{
   font-size: 8px;
-  fill: rgba(17,24,39,0.55);
+  fill: var(--stats-axis-text, rgba(17,24,39,0.55));
 }
 
+.axisLine{
+  stroke: var(--stats-sep-line, rgba(17,24,39,0.18));
+  stroke-width: 1;
+}
+
+.axisTick{
+  stroke: var(--stats-sep-line, rgba(17,24,39,0.18));
+  stroke-width: 1;
+}
+
+.axisText{
+  font-size: 8.5px;
+  fill: var(--stats-axis-text, rgba(17,24,39,0.55));
+}
+
+.axisTextStrong{
+  font-size: 8.5px;
+  fill: var(--stats-axis-text-strong, rgba(17,24,39,0.75));
+  font-weight: 700;
+}
+
+.passLabel{
+  font-size: 7px;
+  fill: var(--stats-legend-avg-label, rgba(17,24,39,0.65));
+}
 
 
 
@@ -20781,32 +20913,6 @@ style={{ opacity: lensReady ? 1 : 0 }}
   opacity: 0.7;
 }
 
-.axisLine{
-  stroke: rgba(17,24,39,0.18);
-  stroke-width: 1;
-}
-
-.axisTick{
-  stroke: rgba(17,24,39,0.18);
-  stroke-width: 1;
-}
-
-.axisText{
-  font-size: 8.5px;
-  fill: rgba(17,24,39,0.55);
-}
-
-.axisTextStrong{
-  font-size: 8.5px;
-  fill: rgba(17,24,39,0.75);
-  font-weight: 700;
-}
-
-.passLabel{
-  font-size: 7px;
-  fill: var(--stats-legend-avg-label, rgba(17,24,39,0.65)); /* match token */
-
-}
 
 .metric{
   font-variant-numeric: tabular-nums;
@@ -22606,15 +22712,27 @@ const subs = t.subtopics ?? [];
   opacity: 1;
 }
 
+.pill{
+  /* iOS Safari: forces correct clipping for pseudo-elements */
+  -webkit-mask-image: -webkit-radial-gradient(white, black);
+mask-image: radial-gradient(white, black);
+  /* keeps the overlay inside the pill in Safari when scrolling */
+  isolation: isolate;
+  contain: paint;
+}
+
 .pill::before{
   content:"";
   position:absolute;
   inset:0;
   border-radius: inherit;
 
-  /* ✅ same gradient, but 20% brighter */
-  background: var(--color-premium-gradient);
-  filter: brightness(2.0);
+  /* Replace “brightness(2)” with a slightly stronger alpha gradient */
+  background: linear-gradient(
+    90deg,
+    rgb(43 124 175 / 0.55) 0%,
+    rgb(255 197 66 / 0.55) 100%
+  );
 
   pointer-events:none;
   opacity: var(--op, 1);
@@ -22750,8 +22868,17 @@ const subs = t.subtopics ?? [];
   height: 10px;
   border-radius: 999px;
   background: rgba(17,24,39,0.08);
-  overflow: hidden;
+  overflow: visible;            /* yes, visible */
+clip-path: inset(0 round 999px);
+contain: paint;
   border: 1px solid rgba(148,163,184,0.25);
+
+  /* ✅ iOS Safari clip stabilization */
+  box-sizing: border-box;
+  isolation: isolate;
+  transform: translateZ(0);
+  -webkit-mask-image: -webkit-radial-gradient(white, black);
+  mask-image: radial-gradient(white, black);
 }
 
 .barFill{
@@ -22765,6 +22892,8 @@ const subs = t.subtopics ?? [];
     rgba(43,124,175,0.85) 100%
   );
   transition-delay: var(--d, 0ms);
+    max-width: 100%;
+  box-sizing: border-box;
 }
 
 /* Horizontal scroller wrapper */
@@ -22859,14 +22988,26 @@ const subs = t.subtopics ?? [];
 
 .subMeterTrack{
   margin-left: 10px;
-  flex: 0 0 54px;
-  max-width: 50px;
+
+  /* ✅ don’t fight Safari flex sizing with “54 but max 50” */
+  flex: 0 0 50px;
+  width: 50px;
+
   height: 6px;
   border-radius: 999px;
   background: rgba(255,255,255,0.55);
   border: 1px solid rgba(148,163,184,0.24);
-  overflow: hidden;
+  overflow: visible;            /* yes, visible */
+clip-path: inset(0 round 999px);
+contain: paint;
   display: inline-block;
+
+  /* ✅ iOS Safari clip stabilization */
+  box-sizing: border-box;
+  isolation: isolate;
+  transform: translateZ(0);
+  -webkit-mask-image: -webkit-radial-gradient(white, black);
+  mask-image: radial-gradient(white, black);
 }
 
 .subMeterFill{
@@ -22880,6 +23021,8 @@ const subs = t.subtopics ?? [];
     rgba(43,124,175,0.85) 100%
   );
   transition-delay: var(--d, 0ms);
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .subText{
@@ -23208,7 +23351,7 @@ export function useBootSweepOnce(opts: {
 
   const [display, setDisplay] = useState<number>(0);
 
-  const lastPlayedTargetRef = useRef<number | null>(null);
+const finishedTargetRef = useRef<number | null>(null);
   const cancelRef = useRef<null | (() => void)>(null);
 
   const setDisplaySafe = (v: number) => setDisplay(Number.isFinite(v) ? v : 0);
@@ -23216,47 +23359,71 @@ export function useBootSweepOnce(opts: {
   // If you disable (eg after reset/loading), allow replay later.
   useEffect(() => {
     if (!enabled) {
-      lastPlayedTargetRef.current = null;
+      finishedTargetRef.current = null;
       cancelRef.current?.();
       cancelRef.current = null;
       setDisplay(0);
     }
   }, [enabled]);
 
-  useEffect(() => {
-    if (!seen || !enabled) return;
+useEffect(() => {
+  if (!seen || !enabled) return;
 
-    // ✅ Re-play when the target changes (fixes “reset then no animation”)
-    if (lastPlayedTargetRef.current === safeTarget) return;
-    lastPlayedTargetRef.current = safeTarget;
+  // ✅ Only skip if we FINISHED this target already
+  if (finishedTargetRef.current === safeTarget) return;
 
-    // reduced motion => no animation
-    if (window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches) {
+  // reduced motion => snap and mark finished
+  if (window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches) {
+    setDisplaySafe(safeTarget);
+    finishedTargetRef.current = safeTarget;
+    return;
+  }
+
+  // cancel any in-flight animation
+  cancelRef.current?.();
+  cancelRef.current = null;
+
+  const segs =
+    opts.segments?.(safeTarget) ?? [
+      { from: 0, to: 100, durationMs: 600, ease: easeOutCubic },
+      { from: 100, to: safeTarget, durationMs: 300, ease: easeOutCubic },
+    ];
+
+  const totalMs = segs.reduce((s, seg) => s + (seg.durationMs || 0), 0);
+
+  // ✅ Failsafe: if RAF never progresses, snap to target
+  const timeoutId = window.setTimeout(() => {
+    if (finishedTargetRef.current !== safeTarget) {
       setDisplaySafe(safeTarget);
+      finishedTargetRef.current = safeTarget;
+    }
+  }, totalMs + 250);
+
+  let i = 0;
+
+  const runNext = () => {
+    if (i >= segs.length) {
+      // ✅ Mark finished ONLY when done
+      window.clearTimeout(timeoutId);
+      setDisplaySafe(safeTarget);
+      finishedTargetRef.current = safeTarget;
+      cancelRef.current = null;
       return;
     }
 
+    const seg = segs[i++];
+    cancelRef.current = animateSegment(seg, setDisplaySafe, runNext);
+  };
+
+  runNext();
+
+  return () => {
+    window.clearTimeout(timeoutId);
     cancelRef.current?.();
-
-    const segs =
-      opts.segments?.(safeTarget) ?? [
-        { from: 0, to: 100, durationMs: 600, ease: easeOutCubic },
-        { from: 100, to: safeTarget, durationMs: 300, ease: easeOutCubic },
-      ];
-
-    let i = 0;
-
-    const runNext = () => {
-      if (i >= segs.length) return;
-      const seg = segs[i++];
-      cancelRef.current = animateSegment(seg, setDisplaySafe, runNext);
-    };
-
-    runNext();
-
-    return () => cancelRef.current?.();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [seen, enabled, safeTarget]);
+    cancelRef.current = null;
+  };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+}, [seen, enabled, safeTarget]);
 
   return display;
 }

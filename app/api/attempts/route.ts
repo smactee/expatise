@@ -13,16 +13,19 @@ function makeSupabase(req: NextRequest, pending: Array<{ name: string; value: st
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 
   return createServerClient(supabaseUrl, supabaseKey, {
-    cookies: {
-      getAll() {
-        return req.cookies.getAll();
-      },
-      setAll(cookiesToSet) {
-        pending.push(...cookiesToSet);
-      },
+  auth: {
+    flowType: "pkce",
+    storageKey: "sb-expatise-auth",
+  },
+  cookies: {
+    getAll() {
+      return req.cookies.getAll();
     },
-  });
-}
+    setAll(cookiesToSet) {
+      pending.push(...cookiesToSet);
+    },
+  },
+});}
 
 export async function GET(req: NextRequest) {
   const pending: Array<{ name: string; value: string; options: any }> = [];

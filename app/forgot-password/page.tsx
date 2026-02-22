@@ -4,94 +4,48 @@ import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import styles from "./forgot-password.module.css";
 import { isValidEmail, normalizeEmail } from "../../lib/auth";
-
-type Step = "email" | "verify" | "done";
+import { createClient } from "@/lib/supabase/client";
 
 export default function ForgotPasswordPage() {
   const router = useRouter();
-  const [step, setStep] = useState<Step>("email");
+  const supabase = useMemo(() => createClient(), []);
 
   const [email, setEmail] = useState("");
-  const [code, setCode] = useState("");
-  const [newPw, setNewPw] = useState("");
-  const [confirmPw, setConfirmPw] = useState("");
-
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [sent, setSent] = useState(false);
 
-const [emailError, setEmailError] = useState<string | null>(null);
-
-
-  
-  // Pre-login: force light mode
+  // Pre-login: force light mode (keep your behavior)
   useEffect(() => {
     document.documentElement.dataset.theme = "light";
   }, []);
 
-const canSend = useMemo(() => {
-  const trimmed = email.trim();
-  return trimmed.length > 0 && isValidEmail(trimmed) && !loading;
-}, [email, loading]);
+  const canSend = useMemo(() => {
+    const trimmed = email.trim();
+    return trimmed.length > 0 && isValidEmail(trimmed) && !loading;
+  }, [email, loading]);
 
-  const canReset = useMemo(() => {
-    if (loading) return false;
-    if (code.trim().length < 4) return false;
-    if (newPw.length < 8) return false;
-    if (newPw !== confirmPw) return false;
-    return true;
-  }, [code, newPw, confirmPw, loading]);
+  const sendLink = async () => {
+    setError(null);
+    setSent(false);
 
-  const sendCode = async () => {
-  setError("");
-
-  const emailNorm = normalizeEmail(email);
-  if (!isValidEmail(emailNorm)) {
-    setError("Please enter a valid email.");
-    return;
-  }
-
-  setLoading(true);
-  try {
-    const res = await fetch("/api/password-reset/start", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email: emailNorm }),
-    });
-
-    const data = await res.json().catch(() => null);
-
-    if (!res.ok || !data?.ok) {
-      setError(data?.message ?? "Unable to start reset. Please try again.");
+    const emailNorm = normalizeEmail(email);
+    if (!isValidEmail(emailNorm)) {
+      setError("Please enter a valid email.");
       return;
     }
 
-    setStep("verify");
-  } finally {
-    setLoading(false);
-  }
-};
-
-
-  const resetPassword = async () => {
-    if (!canReset) return;
-    setError(null);
     setLoading(true);
     try {
-      const res = await fetch("/api/password-reset/confirm", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, code, newPassword: newPw }),
-      });
+      const redirectTo = `${window.location.origin}/auth/callback?next=${encodeURIComponent("/reset-password")}`;
 
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok || !data.ok) {
-        setError(data?.message || "Code is invalid or expired.");
+      const { error } = await supabase.auth.resetPasswordForEmail(emailNorm, { redirectTo });
+      if (error) {
+        setError(error.message);
         return;
       }
 
-      setStep("done");
-    } catch {
-      setError("Reset failed. Try again.");
+      setSent(true);
     } finally {
       setLoading(false);
     }
@@ -107,99 +61,32 @@ const canSend = useMemo(() => {
 
           <h1 className={styles.title}>Reset password</h1>
 
-          {step === "email" && (
+          {!sent ? (
             <>
-              <p className={styles.subtitle}>Enter your email to get a one-time code.</p>
+              <p className={styles.subtitle}>Enter your email and we’ll send you a reset link.</p>
 
               <label className={styles.label}>Email</label>
               <input
-  className={styles.input}
-  value={email}
-  onChange={(e) => {
-    setEmail(e.target.value);
-    if (emailError) setEmailError(null);
-  }}
-  onBlur={() => {
-    const trimmed = email.trim();
-    if (!trimmed) return setEmailError("Email is required.");
-    if (!isValidEmail(trimmed)) return setEmailError("Please enter a valid email address.");
-    setEmail(trimmed);
-    setEmailError(null);
-  }}
-  type="email"
-  autoComplete="email"
-  onFocus={() => {
-    setError(null);
-    if (emailError) setEmailError(null);
-  }}
-  placeholder="user@expatise.com"
-/>
-              {emailError && <div className={styles.errorBox}>{emailError}</div>}
+                className={styles.input}
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                type="email"
+                autoComplete="email"
+                onFocus={() => setError(null)}
+                placeholder="user@expatise.com"
+              />
 
               {error && <div className={styles.errorBox}>{error}</div>}
 
-              <button className={styles.cta} disabled={!canSend} onClick={sendCode}>
-                {loading ? "Sending..." : "Send code"}
-              </button>
-
-              <p className={styles.hint}>
-                Dev mode: the code is printed in your terminal (later we’ll email it).
-              </p>
-            </>
-          )}
-
-          {step === "verify" && (
-            <>
-              <p className={styles.subtitle}>Enter the code and set a new password.</p>
-
-              <label className={styles.label}>One-time code</label>
-              <input
-                className={styles.input}
-                value={code}
-                onChange={(e) => setCode(e.target.value)}
-                inputMode="numeric"
-                placeholder="6-digit code"
-                onFocus={() => setError(null)}
-              />
-
-              <label className={styles.label}>New password</label>
-              <input
-                className={styles.input}
-                value={newPw}
-                onChange={(e) => setNewPw(e.target.value)}
-                type="password"
-                placeholder="At least 8 characters"
-                onFocus={() => setError(null)}
-              />
-
-              <label className={styles.label}>Confirm password</label>
-              <input
-                className={styles.input}
-                value={confirmPw}
-                onChange={(e) => setConfirmPw(e.target.value)}
-                type="password"
-                onFocus={() => setError(null)}
-              />
-
-              {newPw && confirmPw && newPw !== confirmPw && (
-                <div className={styles.warn}>Passwords don’t match.</div>
-              )}
-
-              {error && <div className={styles.errorBox}>{error}</div>}
-
-              <button className={styles.cta} disabled={!canReset} onClick={resetPassword}>
-                {loading ? "Resetting..." : "Reset password"}
-              </button>
-
-              <button type="button" className={styles.linkBtn} onClick={sendCode} disabled={!canSend}>
-                Resend code
+              <button className={styles.cta} disabled={!canSend} onClick={sendLink}>
+                {loading ? "Sending..." : "Send reset link"}
               </button>
             </>
-          )}
-
-          {step === "done" && (
+          ) : (
             <>
-              <div className={styles.successBox}>Password updated. You can sign in now.</div>
+              <div className={styles.successBox}>
+                If that email exists, we sent a reset link. Open it to set a new password.
+              </div>
               <button className={styles.cta} onClick={() => router.push("/login")}>
                 Back to sign in
               </button>

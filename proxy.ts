@@ -27,22 +27,23 @@ export async function proxy(req: NextRequest) {
   if (!url || !anonKey) return res;
 
   const supabase = createServerClient(url, anonKey, {
-    cookies: {
-      getAll() {
-        return req.cookies.getAll();
-      },
-      setAll(cookiesToSet) {
-  cookiesToSet.forEach(({ name, value, options }) => {
-    // keep request cookies in sync for the rest of this request lifecycle
-    req.cookies.set(name, value);
-    // write cookies to the outgoing response
-    res.cookies.set(name, value, options);
-  });
-},
-
+  auth: {
+    flowType: "pkce",
+    storageKey: "sb-expatise-auth",
+  },
+  cookies: {
+    getAll() {
+      return req.cookies.getAll();
     },
-  });
-
+    setAll(cookiesToSet) {
+      cookiesToSet.forEach(({ name, value, options }) => {
+        req.cookies.set(name, value);
+        res.cookies.set(name, value, options);
+      });
+    },
+  },
+});
+if (pathname.startsWith("/api/")) return res;
   // Refresh session if needed (sets/updates cookies via setAll)
   await supabase.auth.getUser();
 

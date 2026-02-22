@@ -44,15 +44,19 @@ export async function GET() {
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 
   const supabase = createServerClient(supabaseUrl, supabaseKey, {
-    cookies: {
-      getAll() {
-        return cookieStore.getAll();
-      },
-      setAll(cookiesToSet) {
-        pending.push(...cookiesToSet);
-      },
+  auth: {
+    flowType: "pkce",
+    storageKey: "sb-expatise-auth",
+  },
+  cookies: {
+    getAll() {
+      return cookieStore.getAll();
     },
-  });
+    setAll(cookiesToSet) {
+      pending.push(...cookiesToSet);
+    },
+  },
+});
 
   const { data, error } = await supabase.auth.getUser();
   const user = error ? null : data.user;

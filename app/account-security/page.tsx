@@ -1,3 +1,4 @@
+// app/account-security/page.tsx
 'use client';
 
 import React, { useMemo, useState } from 'react';
@@ -6,11 +7,15 @@ import { useRouter } from 'next/navigation';
 import styles from './account-security.module.css';
 import { useAuthStatus } from '../../components/useAuthStatus';
 import BackButton from '../../components/BackButton';
+import { createClient } from '@/lib/supabase/client';
+import { isValidEmail, normalizeEmail } from '@/lib/auth';
 
 export default function AccountSecurityPage() {
   const router = useRouter();
-  const { authed, method, loading } = useAuthStatus();
+  const supabase = useMemo(() => createClient(), []);
+  const { authed, method, loading, email: currentEmail } = useAuthStatus();
 
+  // Only allow email/password accounts here
   const allowed = useMemo(() => authed && method === 'email', [authed, method]);
 
   const [pwCurrent, setPwCurrent] = useState('');
@@ -23,11 +28,25 @@ export default function AccountSecurityPage() {
   const [msg, setMsg] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
+  async function reauthWithCurrentPassword(password: string) {
+    const emailNorm = normalizeEmail(currentEmail ?? '');
+    if (!emailNorm) throw new Error('Missing current email.');
+    const { error } = await supabase.auth.signInWithPassword({
+      email: emailNorm,
+      password,
+    });
+    if (error) throw new Error('Current password is incorrect.');
+  }
+
   async function changePassword() {
     setMsg(null);
 
     if (!pwCurrent || !pwNext || !pwNext2) {
       setMsg('Please fill all password fields.');
+      return;
+    }
+    if (pwNext.length < 8) {
+      setMsg('New password must be at least 8 characters.');
       return;
     }
     if (pwNext !== pwNext2) {
@@ -37,18 +56,13 @@ export default function AccountSecurityPage() {
 
     setBusy(true);
     try {
-      const res = await fetch('/api/account/change-password', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          currentPassword: pwCurrent,
-          newPassword: pwNext,
-        }),
-      });
+      // 1) Re-auth to prove the user knows their current password
+      await reauthWithCurrentPassword(pwCurrent);
 
-      const data = await res.json();
-      if (!res.ok) {
-        setMsg(data?.error ?? 'Failed to change password.');
+      // 2) Update password
+      const { error } = await supabase.auth.updateUser({ password: pwNext });
+      if (error) {
+        setMsg(error.message || 'Failed to change password.');
         return;
       }
 
@@ -56,6 +70,12 @@ export default function AccountSecurityPage() {
       setPwNext('');
       setPwNext2('');
       setMsg('Password updated.');
+
+      try { window.dispatchEvent(new Event('expatise:session-changed')); } catch {}
+      try { window.dispatchEvent(new Event('expatise:entitlements-changed')); } catch {}
+      router.refresh();
+    } catch (e: any) {
+      setMsg(e?.message ?? 'Failed to change password.');
     } finally {
       setBusy(false);
     }
@@ -64,33 +84,44 @@ export default function AccountSecurityPage() {
   async function changeEmail() {
     setMsg(null);
 
-    if (!emailNext || !emailPw) {
-      setMsg('Please enter your new email and password.');
+    const nextNorm = normalizeEmail(emailNext);
+    if (!nextNorm || !isValidEmail(nextNorm)) {
+      setMsg('Please enter a valid new email.');
+      return;
+    }
+    if (!emailPw) {
+      setMsg('Please enter your current password.');
       return;
     }
 
     setBusy(true);
     try {
-      const res = await fetch('/api/account/change-email', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          newEmail: emailNext,
-          password: emailPw,
-        }),
-      });
+      // 1) Re-auth
+      await reauthWithCurrentPassword(emailPw);
 
-      const data = await res.json();
-      if (!res.ok) {
-        setMsg(data?.error ?? 'Failed to change email.');
+      // 2) Update email (may require confirmation email depending on Supabase settings)
+      const redirectTo = `${window.location.origin}/auth/callback?next=${encodeURIComponent('/profile')}`;
+      const { error } = await supabase.auth.updateUser({
+        email: nextNorm,
+        options: { emailRedirectTo: redirectTo },
+      } as any);
+
+      if (error) {
+        setMsg(error.message || 'Failed to change email.');
         return;
       }
 
       setEmailNext('');
       setEmailPw('');
-      setMsg('Email updated.');
-      // optional: send user back to profile
-      // router.push('/profile');
+
+      // Supabase often sends a confirmation email for email change.
+      setMsg('Email update requested. Please check your email to confirm the change.');
+
+      try { window.dispatchEvent(new Event('expatise:session-changed')); } catch {}
+      try { window.dispatchEvent(new Event('expatise:entitlements-changed')); } catch {}
+      router.refresh();
+    } catch (e: any) {
+      setMsg(e?.message ?? 'Failed to change email.');
     } finally {
       setBusy(false);
     }

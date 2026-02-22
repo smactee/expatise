@@ -1,31 +1,35 @@
+// components/LogoutButton.client.tsx
 "use client";
 
+import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import { createClient } from "@/lib/supabase/client";
 
 export default function LogoutButton({ className }: { className?: string }) {
   const router = useRouter();
+  const supabase = useMemo(() => createClient(), []);
+  const [busy, setBusy] = useState(false);
 
   const onLogout = async () => {
-    await fetch("/api/logout", {
-      method: "POST",
-      credentials: "include",
-      cache: "no-store",
-    });
+    if (busy) return;
+    setBusy(true);
+    try {
+      await supabase.auth.signOut();
+      await fetch("/api/logout", { method: "POST", credentials: "include", cache: "no-store" });
 
-    // ✅ tell the rest of the app "session changed"
-    try { window.dispatchEvent(new Event("expatise:session-changed")); } catch {}
+      try { window.dispatchEvent(new Event("expatise:session-changed")); } catch {}
+      try { window.dispatchEvent(new Event("expatise:entitlements-changed")); } catch {}
 
-    // Optional: if anything listens to this specifically
-    try { window.dispatchEvent(new Event("expatise:entitlements-changed")); } catch {}
-
-    // ✅ force App Router to re-evaluate cookie-based server state
-    router.refresh();
-    router.replace("/login");
+      router.refresh();
+      router.replace("/login");
+    } finally {
+      setBusy(false);
+    }
   };
 
   return (
-    <button className={className} onClick={onLogout} type="button">
-      Log out
+    <button className={className} onClick={onLogout} type="button" disabled={busy}>
+      {busy ? "Logging out..." : "Log out"}
     </button>
   );
 }

@@ -3,46 +3,33 @@
 
 import { useEffect, useMemo, useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
-
 import BottomNav from '@/components/BottomNav';
 import styles from './stats.module.css';
 import BackButton from '@/components/BackButton';
 import RequirePremium from '@/components/RequirePremium.client';
-
 import { loadDataset } from '@/lib/qbank/loadDataset';
 import type { DatasetId } from '@/lib/qbank/datasets';
 import type { Question } from '@/lib/qbank/types';
-
 import { listSubmittedAttempts } from '@/lib/test-engine/attemptStorage';
 import type { TestAttemptV1 } from '@/lib/test-engine/attemptStorage';
-
 import { useUserKey } from '@/components/useUserKey.client';
 import { computeStats } from '@/lib/stats/computeStats';
-
 import { ROUTES } from '@/lib/routes';
-
 import { labelForTag } from '@/lib/qbank/tagTaxonomy';
-
 import TimeframeChips, { type Timeframe, tfShort } from '@/components/stats/TimeframeChips';
 import ScreenTimeChart, {ScreenTimeLegend} from '@/components/stats/ScreenTimeChart.client';
-
 import ReadinessRing from '@/app/(premium)/stats/ReadinessRing.client';
 import ScoreChart, { ScoreLegend } from '@/components/stats/ScoreChart.client';
 import DailyProgressChart, { DailyProgressLegend } from '@/components/stats/DailyProgressChart';
 import Heatmap from '@/components/stats/Heatmap.client';
 import TopicMasteryChart from '@/components/stats/TopicMasteryChart.client';
-
 import { resetAllLocalData } from '@/lib/stats/resetLocalData';
-
 import { timeKey } from "@/lib/stats/timeKeys"
-
 import { seedAdminDemoDataIfNeeded } from '@/lib/demo/seedAdminDemoData';
-
 import InfoTip from '@/components/InfoTip.client';
-
 import CoachReport from '@/app/(premium)/stats/CoachReport.client';
 import CoachReportRich from '@/app/(premium)/stats/CoachReportRich.client';
-
+import { useAuthStatus } from '@/components/useAuthStatus';
 
 const datasetId: DatasetId = 'cn-2023-test1';
 
@@ -161,6 +148,7 @@ export default function StatsPage() {
   const [tfTopics, setTfTopics] = useState<Timeframe>(30);
   const [attemptsLoaded, setAttemptsLoaded] = useState(false);
 
+  const { authed: supabaseAuthed } = useAuthStatus();
 
 function tfLabel(t: Timeframe) {
   return t === "all" ? "all time" : `last ${t} days`;
@@ -194,7 +182,7 @@ useEffect(() => {
   if (!userKey) return;
 
   // 0.5) Ensure this entire effect only runs once per (userKey, datasetId) per mount
-  const runKey = `${userKey}:${datasetId}`;
+  const runKey = `${userKey}:${datasetId}:${supabaseAuthed ? "authed" : "guest"}`;
   if (seededRef.current === runKey) return;
   seededRef.current = runKey;
 
@@ -210,6 +198,7 @@ useEffect(() => {
     setAttempts(local);
     setAttemptsLoaded(true);
     // 2) Remote (cross-device). If user isn't logged in, this will just fail quietly.
+    if (!supabaseAuthed) return;
     try {
       const r = await fetch(
         `/api/attempts?datasetId=${encodeURIComponent(datasetId)}`,
@@ -241,8 +230,7 @@ useEffect(() => {
   return () => {
     alive = false;
   };
-}, [userKey, datasetId]);
-
+}, [userKey, datasetId, supabaseAuthed]);
 
 
   // Compute stats (default: last 30 days for now; we’ll add filters later)
@@ -364,7 +352,7 @@ const [cooldownUntil, setCooldownUntil] = useState<number | null>(null);
 
 const [nowMs, setNowMs] = useState<number>(Date.now());
 useEffect(() => {
-  const id = window.setInterval(() => setNowMs(Date.now()), 1000);
+  const id = window.setInterval(() => setNowMs(Date.now()), 10000);
   return () => window.clearInterval(id);
 }, []);
 
@@ -390,7 +378,7 @@ useEffect(() => {
 
 useEffect(() => {
   let alive = true;
-
+if (!supabaseAuthed) return () => { alive = false; };
   (async () => {
     try {
       const r = await fetch("/api/time-logs?limit=200", {
@@ -425,7 +413,7 @@ useEffect(() => {
   return () => {
     alive = false;
   };
-}, [userKey]);
+}, [userKey, supabaseAuthed]);
 
 
 const scorePointsSorted = useMemo(() => {

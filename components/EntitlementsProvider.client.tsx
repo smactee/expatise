@@ -28,6 +28,8 @@ function isDemoHost() {
   return h === "localhost" || h.endsWith(".vercel.app");
 }
 
+
+
 const EntitlementsContext = createContext<EntitlementsContextValue | null>(null);
 
 export function EntitlementsProvider({ children }: { children: React.ReactNode }) {
@@ -78,7 +80,6 @@ if (demoPremium) {
       if (seq !== fetchSeqRef.current) return;
 
       // optional but recommended: persist remote result so next refresh is instant
-      setLocalEntitlements(keyAtStart, e);
       setState(e);
     } catch {
       // keep local if remote fails
@@ -87,6 +88,7 @@ if (demoPremium) {
     }
   })();
 }, [userKey, demoPremium]);
+
 
 
   const setEntitlements = useCallback((e: Entitlements) => {

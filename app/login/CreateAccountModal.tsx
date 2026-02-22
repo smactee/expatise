@@ -1,11 +1,14 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useMemo, useState, type FormEvent } from 'react';
+import { useRouter } from 'next/navigation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGoogle, faApple, faWeixin } from '@fortawesome/free-brands-svg-icons';
 import { faChevronLeft, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+
 import styles from './create-account-modal.module.css';
-import { isValidEmail, normalizeEmail } from '../../lib/auth';
+import { isValidEmail, normalizeEmail } from '@/lib/auth';
+import { createClient } from '@/lib/supabase/client';
 
 type Props = {
   open: boolean;
@@ -14,29 +17,33 @@ type Props = {
 };
 
 export default function CreateAccountModal({ open, onClose, onCreated }: Props) {
+  const router = useRouter();
+  const supabase = useMemo(() => createClient(), []);
+
   const [email, setEmail] = useState('');
   const [pw, setPw] = useState('');
   const [pw2, setPw2] = useState('');
   const [showPw, setShowPw] = useState(false);
   const [showPw2, setShowPw2] = useState(false);
 
-
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [needsEmailConfirm, setNeedsEmailConfirm] = useState(false);
 
   const canSubmit = useMemo(() => {
     if (isSubmitting) return false;
     if (!isValidEmail(email)) return false;
-    if (pw.trim().length < 8) return false; // keep simple for now
+    if (pw.trim().length < 8) return false;
     if (pw !== pw2) return false;
     return true;
   }, [email, pw, pw2, isSubmitting]);
 
   if (!open) return null;
 
-  const submit = async (e: React.FormEvent) => {
+  const submit = async (e: FormEvent) => {
     e.preventDefault();
     setError(null);
+    setNeedsEmailConfirm(false);
 
     const trimmedEmail = normalizeEmail(email);
 
@@ -46,31 +53,44 @@ export default function CreateAccountModal({ open, onClose, onCreated }: Props) 
 
     setIsSubmitting(true);
     try {
-    const res = await fetch('/api/register', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
+      const { data, error } = await supabase.auth.signUp({
         email: trimmedEmail,
         password: pw,
-        confirmPassword: pw2,
-      }),
-    });
+        options: {
+          emailRedirectTo: `${window.location.origin}/auth/callback`,
+        },
+      });
 
-    const data = await res.json().catch(() => ({}));
+      if (error) {
+        if (/already registered/i.test(error.message) || /already exists/i.test(error.message)) {
+          setError("This email is already registered. Try logging in instead.");
+        } else {
+          setError(error.message);
+        }
+        return;
+      }
 
-    if (!res.ok || !data.ok) {
-      setError(data?.message || 'Could not create account.');
-      return;
+      const signedInNow = !!data?.session;
+
+      if (!signedInNow) {
+        setNeedsEmailConfirm(true);
+        onCreated?.(trimmedEmail);
+        return;
+      }
+
+      try { window.dispatchEvent(new Event('expatise:session-changed')); } catch {}
+      try { window.dispatchEvent(new Event('expatise:entitlements-changed')); } catch {}
+
+      router.refresh();
+
+      onCreated?.(trimmedEmail);
+      onClose();
+    } catch {
+      setError('Network error. Please try again.');
+    } finally {
+      setIsSubmitting(false);
     }
-
-    onCreated?.(trimmedEmail);
-    onClose();
-  } catch {
-    setError('Network error. Please try again.');
-  } finally {
-    setIsSubmitting(false);
-  }
-};
+  };
 
   return (
     <div className={styles.overlay} role="dialog" aria-modal="true">
@@ -81,6 +101,36 @@ export default function CreateAccountModal({ open, onClose, onCreated }: Props) 
 
         <h2 className={styles.title}>Create Account</h2>
         <p className={styles.subtitle}>Sign up to get started</p>
+
+        {/* ✅ Email confirmation message */}
+        {needsEmailConfirm && (
+          <div
+            className={styles.errorBox}
+            style={{
+              background: 'rgba(43,124,175,0.10)',
+              borderColor: 'rgba(43,124,175,0.25)',
+            }}
+          >
+            <strong>Check your email</strong>
+            <div style={{ marginTop: 6 }}>
+              We sent a confirmation link to <strong>{normalizeEmail(email)}</strong>.
+              <br />
+              Open it to activate your account, then come back and sign in.
+            </div>
+
+            <button
+              type="button"
+              className={styles.cta}
+              style={{ marginTop: 10 }}
+              onClick={() => {
+                setNeedsEmailConfirm(false);
+                onClose();
+              }}
+            >
+              Got it
+            </button>
+          </div>
+        )}
 
         <form onSubmit={submit} className={styles.form}>
           <label className={styles.row}>
@@ -156,12 +206,27 @@ export default function CreateAccountModal({ open, onClose, onCreated }: Props) 
         </div>
 
         <div className={styles.snsRow}>
-          <button type="button" className={styles.snsBtn} aria-label="Sign up with Google">
+          <button
+            type="button"
+            className={styles.snsBtn}
+            aria-label="Sign up with Google"
+            onClick={async () => {
+              setError(null);
+              const redirectTo = `${window.location.origin}/auth/callback`;
+              const { error } = await supabase.auth.signInWithOAuth({
+                provider: 'google',
+                options: { redirectTo },
+              });
+              if (error) setError(error.message);
+            }}
+          >
             <FontAwesomeIcon icon={faGoogle} />
           </button>
+
           <button type="button" className={styles.snsBtn} aria-label="Sign up with Apple">
             <FontAwesomeIcon icon={faApple} />
           </button>
+
           <button type="button" className={styles.snsBtn} aria-label="Sign up with WeChat">
             <FontAwesomeIcon icon={faWeixin} />
           </button>

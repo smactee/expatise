@@ -67,6 +67,10 @@
 :global(:root[data-theme='dark']) .barTrack{
   background: rgba(43,124,175,0.22);
 }
+/* Dark mode: x-axis date labels (Jan 24, Feb 3...) */
+:global(:root[data-theme='dark']) .axisText{
+  fill: rgba(249,250,251,0.78);
+}
 
 .chartShell{
   width: 100%;

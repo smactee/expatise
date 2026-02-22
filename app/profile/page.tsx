@@ -16,8 +16,6 @@ import CSRBoundary from '@/components/CSRBoundary';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGoogle, faApple, faWeixin} from '@fortawesome/free-brands-svg-icons';
 import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
-import { useMemo } from "react"; // you already import useMemo in other files, here add if missing
-import { createClient } from "@/lib/supabase/client";
 import LogoutButton from '@/components/LogoutButton.client';
 
 
@@ -36,7 +34,6 @@ function Inner() {
 
   const canManageCredentials = authed && (method === "email");
 
-  const supabase = useMemo(() => createClient(), []);
 
 const signInDisplay = (() => {
   // 1) guest
@@ -136,36 +133,8 @@ const handleNameBlur = (e: React.FocusEvent<HTMLSpanElement>) => {
 
 
 const router = useRouter();
-const [loggingOut, setLoggingOut] = useState(false);
 const pathname = usePathname();
 const sp = useSearchParams();
-
-
-const handleLogout = async () => {
-  if (loggingOut) return;
-  setLoggingOut(true);
-
-  try {
-    await supabase.auth.signOut();
-
-    if (typeof window !== "undefined") {
-      window.localStorage.removeItem("expatise-user-profile");
-    }
-
-    window.dispatchEvent(new Event("expatise:session-changed"));
-
-    setAvatarUrl(null);
-    setName("@Expatise");
-    setEmail("user@expatise.com");
-
-    router.replace("/login");
-  } finally {
-    setLoggingOut(false);
-  }
-};
-
-
-
 
 
 const handleSave = async (e: React.SyntheticEvent) => {
@@ -444,18 +413,12 @@ const goComingSoon = (feature: string) => {
 
 
   {authed ? (
-    <button
-      className={styles.logoutButton}
-      onClick={handleLogout}
-      disabled={loggingOut}
-    >
-      {loggingOut ? "Logging Out..." : "Log Out"}
-    </button>
-  ) : (
-    <Link className={styles.loginButton} href="/login?next=/profile">
-      Log in
-    </Link>
-  )}
+  <LogoutButton className={styles.logoutButton} />
+) : (
+  <Link className={styles.loginButton} href="/login?next=/profile">
+    Log in
+  </Link>
+)}
 </div>
 
 {saveMsg ? (

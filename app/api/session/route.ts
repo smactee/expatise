@@ -2,7 +2,6 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { createServerClient } from "@supabase/ssr";
-import { AUTH_COOKIE } from "@/lib/auth";
 
 function detectProvider(user: any): string | null {
   if (!user) return null;
@@ -28,29 +27,21 @@ export async function GET() {
   const pending: Array<{ name: string; value: string; options: any }> = [];
 
   const supabase = createServerClient(url, key, {
-    cookies: {
-      getAll() {
-        return cookieStore.getAll();
-      },
-      setAll(cookiesToSet) {
-        pending.push(...cookiesToSet);
-      },
+  auth: {
+    flowType: "pkce",
+    storageKey: "sb-expatise-auth",
+  },
+  cookies: {
+    getAll() {
+      return cookieStore.getAll();
     },
-  });
+    setAll(cookiesToSet) {
+      pending.push(...cookiesToSet);
+    },
+  },
+});
 
-  const localEmail = cookieStore.get(AUTH_COOKIE)?.value ?? null;
-  if (localEmail) {
-    const res = NextResponse.json({
-      ok: true,
-      authed: true,
-      method: "email",
-      email: localEmail,
-      provider: "local",
-    });
-    res.headers.set("Cache-Control", "no-store");
-    pending.forEach(({ name, value, options }) => res.cookies.set(name, value, options));
-    return res;
-  }
+ 
 
   const { data, error } = await supabase.auth.getUser();
   const user = error ? null : data.user;
