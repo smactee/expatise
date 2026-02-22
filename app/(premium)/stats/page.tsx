@@ -150,6 +150,9 @@ export default function StatsPage() {
 
   const { authed: supabaseAuthed } = useAuthStatus();
 
+  const [attemptsHydrated, setAttemptsHydrated] = useState(false);
+
+
 function tfLabel(t: Timeframe) {
   return t === "all" ? "all time" : `last ${t} days`;
 }
@@ -185,7 +188,7 @@ useEffect(() => {
   const runKey = `${userKey}:${datasetId}:${supabaseAuthed ? "authed" : "guest"}`;
   if (seededRef.current === runKey) return;
   seededRef.current = runKey;
-
+  setAttemptsHydrated(false);
   let alive = true;
 
   (async () => {
@@ -198,33 +201,38 @@ useEffect(() => {
     setAttempts(local);
     setAttemptsLoaded(true);
     // 2) Remote (cross-device). If user isn't logged in, this will just fail quietly.
-    if (!supabaseAuthed) return;
+    if (!supabaseAuthed) {
+  if (alive) setAttemptsHydrated(true);
+  return;
+}
     try {
-      const r = await fetch(
-        `/api/attempts?datasetId=${encodeURIComponent(datasetId)}`,
-        { cache: "no-store", credentials: "include" }
-      );
-      if (!r.ok) return;
+  const r = await fetch(
+    `/api/attempts?datasetId=${encodeURIComponent(datasetId)}`,
+    { cache: "no-store", credentials: "include" }
+  );
+  if (!r.ok) return;
 
-      const j = await r.json().catch(() => null);
-      const remote: TestAttemptV1[] = Array.isArray(j?.attempts) ? j.attempts : [];
+  const j = await r.json().catch(() => null);
+  const remote: TestAttemptV1[] = Array.isArray(j?.attempts) ? j.attempts : [];
 
-      // Merge by attemptId (remote wins if duplicate)
-      const byId = new Map<string, TestAttemptV1>();
-      for (const a of local) byId.set(a.attemptId, a);
-      for (const a of remote) byId.set(a.attemptId, a);
+  // Merge...
+  const byId = new Map<string, TestAttemptV1>();
+  for (const a of local) byId.set(a.attemptId, a);
+  for (const a of remote) byId.set(a.attemptId, a);
 
-      const merged = Array.from(byId.values()).sort(
-        (a, b) =>
-          (b.submittedAt ?? b.lastActiveAt ?? b.createdAt ?? 0) -
-          (a.submittedAt ?? a.lastActiveAt ?? a.createdAt ?? 0)
-      );
+  const merged = Array.from(byId.values()).sort(
+    (a, b) =>
+      (b.submittedAt ?? b.lastActiveAt ?? b.createdAt ?? 0) -
+      (a.submittedAt ?? a.lastActiveAt ?? a.createdAt ?? 0)
+  );
 
-      if (!alive) return;
-      setAttempts(merged);
-    } catch {
-      // ignore
-    }
+  if (!alive) return;
+  setAttempts(merged);
+} catch {
+  // ignore
+} finally {
+  if (alive) setAttemptsHydrated(true);
+}
   })();
 
   return () => {
@@ -311,7 +319,7 @@ const handleReadinessRingDone = () => {
 // Reset whenever the ring should re-run (timeframe/data changes)
 useEffect(() => {
   setReadinessDone(false);
-}, [tfReadiness, statsReadiness.readinessPct, loading, questions.length, attemptsLoaded]);
+}, [tfReadiness, userKey]);
 
 
 const [screenLegendReady, setScreenLegendReady] = useState(false);
@@ -596,10 +604,10 @@ async function handleGenerateCoach() {
       </span>
     </div>
 
-    <ReadinessRing
-  key={`${userKey}:${tfReadiness}:${statsReadiness.readinessPct}:${statsReadiness.attemptedTotal}`}
+   <ReadinessRing
+  key={`${userKey}:${tfReadiness}`}   // stable key (or you can remove key entirely)
   valuePct={statsReadiness.readinessPct}
-  enabled={!loading && questions.length > 0 && attemptsLoaded}
+  enabled={!loading && questions.length > 0 && attemptsHydrated}
   onDone={handleReadinessRingDone}
 />
 

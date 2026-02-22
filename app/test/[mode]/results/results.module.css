@@ -5,12 +5,34 @@
   background: var(--color-page-bg);
 }
 
+/* ===== Results theme tokens (match AllTest’s dark text behavior) ===== */
+.viewport {
+  /* keep your existing stuff... */
+
+  /* light defaults (Figma) */
+  --results-text: #000;
+  --results-muted: rgba(0, 0, 0, 0.75);
+
+  /* this is the surface your .screen was hard-coding */
+  --results-screen-bg: #f4f4f9;
+}
+
+/* dark overrides (copy the spirit of AllTest) */
+:root[data-theme='dark'] .viewport {
+  --results-text: rgba(255, 255, 255, 0.92);
+  --results-muted: rgba(255, 255, 255, 0.75);
+
+  /* let your global dark page background show through */
+  --results-screen-bg: transparent;
+}
+
 .screen {
   position: relative;
   width: 100%;
   min-height: 100vh;
   min-height: 100dvh; /* ✅ mobile accurate */
-  background: #f4f4f9;
+  background: var(--results-screen-bg);
+color: var(--results-text);
   overflow: hidden;
   --contentW: min(390px, calc(100% - 60px)); /* ✅ content width */
 }
@@ -86,7 +108,7 @@
   font-size: 20px;
   line-height: 120%;
   letter-spacing: 0.04em;
-  color: #000000;
+  color: var(--results-text);
 }
 
 /* Congratulation! */
@@ -108,7 +130,7 @@
   text-align: center;
   letter-spacing: -0.24px;
   text-transform: capitalize;
-  color: #383a44;
+  color: var(--results-muted);
 }
 
 
@@ -182,7 +204,7 @@
   line-height: 20px;
   letter-spacing: -0.24px;
   text-transform: capitalize;
-  color: #21205a;
+  color: var(--results-text);
 
   /* optional: stop it from affecting layout, keeps it centered nicely */
   pointer-events: none;
@@ -253,7 +275,7 @@
   line-height: 20px;
   text-align: center;
   letter-spacing: -0.24px;
-  color: #383a44;
+  color: var(--results-muted);
 }
 
 .scoreLabel {
@@ -264,7 +286,7 @@
   line-height: 20px;
   text-align: center;
   letter-spacing: -0.24px;
-  color: #383a44;
+  color: var(--results-muted);
 }
 
 /* Test Results title */
@@ -285,7 +307,7 @@
   font-size: 32px;
   line-height: 1.1;
   letter-spacing: -0.24px;
-  color: #000;
+  color: var(--results-text);
 
   /* Figma looks left-aligned */
   text-align: left;
@@ -354,7 +376,7 @@
   font-size: 16px;
   line-height: 22px;
   letter-spacing: -0.24px;
-  color: #000;
+  color: var(--results-text);
 }
 
 .qImage {
@@ -408,7 +430,7 @@
 }
 
 .optionNeutral {
-  color: #000;
+  color: var(--results-text);
 }
 
 .optionCorrect {
@@ -431,7 +453,7 @@
   font-weight: 700;
   font-size: 14px;
   line-height: 16px;
-  color: #000;
+  color: var(--results-text);
 }
 
 .exBody {
@@ -444,7 +466,7 @@
   font-weight: 400;
   font-size: 13px;
   line-height: 18px;
-  color: #000;
+  color: var(--results-muted);
 }
 
 
@@ -488,7 +510,7 @@
   font-size: 16px;
   line-height: 130%;
   letter-spacing: 0.04em;
-  color: #000000;
+  color: var(--results-text);
 }
 
 .shiftUp {
@@ -593,6 +615,7 @@
   font-weight: 600;
   font-size: 12px;
   opacity: 0.75;
+  color: var(--results-muted);
 }
 
 /* When in carousel mode, reviewArea should not be vertically scrollable itself */
@@ -641,4 +664,8 @@
 
 .carouselDragging * {
   user-select: none;
+}
+
+:root[data-theme='dark'] .bookmarkBtn[data-bookmarked='false'] .bookmarkIcon {
+  background: rgba(255, 255, 255, 0.70);
 }
