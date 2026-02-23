@@ -1,5 +1,7 @@
 // app/coming-soon/page.tsx
 import BackButton from "@/components/BackButton";
+import styles from "./coming-soon.module.css";
+import Link from "next/link";
 
 type Props = {
   searchParams?: { feature?: string; returnTo?: string };
@@ -35,16 +37,16 @@ export default function ComingSoonPage({ searchParams }: Props) {
 
   const backHref = safeReturnTo(searchParams?.returnTo);
 
-  return (
-    <main style={{ padding: 24 }}>
-      {/* ✅ top-left arrow uses fallbackHref so it NEVER dumps to Home */}
-      <BackButton fallbackHref={backHref} />
 
-      <h1 style={{ fontSize: 24, fontWeight: 700 }}>Coming Soon</h1>
-      <p style={{ marginTop: 12 }}>{feature} is not ready yet.</p>
+return (
+  <main className={styles.page}>
+    <BackButton variant="fixed" fallbackHref={backHref} />
 
-      <div style={{ marginTop: 16 }}>
-      </div>
-    </main>
-  );
+    <div className={styles.content}>
+      <h1 className={styles.title}>Coming Soon</h1>
+      <p className={styles.text}>{feature} is not ready yet.</p>
+    </div>
+  </main>
+);
+
 }

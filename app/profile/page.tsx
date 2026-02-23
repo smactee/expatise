@@ -343,7 +343,7 @@ const goComingSoon = (feature: string) => {
        <button
   type="button"
   className={styles.settingsRow}
-  onClick={(e) => goComingSoon("Delete Account")}
+  onClick={() => router.push("/delete-account")}
 >
           <div className={styles.settingsLeft}>
             <span className={styles.settingsIcon}>
