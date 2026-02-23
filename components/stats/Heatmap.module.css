@@ -426,28 +426,30 @@ padding: clamp(4px, 1vw, 8px);
   }
 }
 
-.legend {
+.legend{
   margin-top: 12px;
   display: grid;
   gap: 6px;
+  justify-items: center;          
 }
 
-.legendRow {
-  display: flex;
+.legendRow{
+  display: inline-flex;           
   align-items: center;
+  justify-content: center;
   gap: 8px;
-  color: rgba(17, 24, 39, 0.50);
   font-size: 12px;
+  color: rgba(17, 24, 39, 0.50);
 }
 
-.legendLabel {
-  width: 78px; /* keeps it tidy */
+.legendLabel{
+  width: auto;                   
   text-align: right;
   color: rgba(17, 24, 39, 0.46);
 }
 
-.legendText {
-  margin-left: 4px;
+.legendText{
+  margin-left: 0;                 /* gap already handles spacing */
   color: rgba(17, 24, 39, 0.45);
 }
 
