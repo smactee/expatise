@@ -967,9 +967,10 @@ async function handleGenerateCoach() {
 </article>
 
 
-        <BottomNav />
+        
 
       </div>
+      <BottomNav />
     </main>
   );
 }

@@ -1,9 +1,10 @@
+//components/BottonNav.tsx
 'use client';
 
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
-import styles from '../app/page.module.css';
+import styles from './BottomNav.module.css';
 import { useEffect, useRef, useState } from 'react';
 
 type BottomNavProps = {
@@ -14,8 +15,8 @@ export default function BottomNav({ onOffsetChange }: BottomNavProps) {
   const pathname = usePathname();
 
   const isHome = pathname === '/';
-  const isStats = pathname === '/stats';
-  const isProfile = pathname === '/profile';
+  const isStats = pathname === '/stats' || pathname?.startsWith('/stats/');
+  const isProfile = pathname === '/profile' || pathname?.startsWith('/profile/');
 
   const [hidden, setHidden] = useState(false);
   const hiddenRef = useRef(false);

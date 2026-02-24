@@ -2,6 +2,38 @@
   width: 100%;
   display: grid;
   gap: 14px;
+
+  /* =========================
+     Motion + premium tokens
+     (scoped to this component)
+     ========================= */
+
+  --ease-boot: cubic-bezier(0.2, 0.9, 0.2, 1);
+  --ease-soft: cubic-bezier(0.22, 1, 0.36, 1);
+
+  --color-premium-gradient: linear-gradient(
+    90deg,
+    rgba(43, 124, 175, 0.4) 0%,
+    rgba(255, 197, 66, 0.4) 100%
+  );
+
+  --color-premium-gradient-20: linear-gradient(
+    90deg,
+    rgba(43, 124, 175, 0.2) 0%,
+    rgba(255, 197, 66, 0.2) 100%
+  );
+
+  --color-premium-gradient-10: linear-gradient(
+    90deg,
+    rgba(43, 124, 175, 0.1) 0%,
+    rgba(255, 197, 66, 0.1) 100%
+  );
+
+  --color-premium-gradient-20-reverse: linear-gradient(
+    90deg,
+    rgba(255, 197, 66, 0.2) 0%,
+    rgba(43, 124, 175, 0.2) 100%
+  );
 }
 
 /* ===== Top “wow” area ===== */
@@ -9,7 +41,14 @@
     overflow: hidden;
   border-radius: 18px;
   padding: 12px 12px 14px;
-  background:var(--color-premium-gradient-10);
+  background: var(
+  --color-premium-gradient-10,
+  linear-gradient(
+    90deg,
+    rgba(43, 124, 175, 0.1) 0%,
+    rgba(255, 197, 66, 0.1) 100%
+  )
+);
 
   border: 1px solid rgba(148,163,184,0.35);
   box-shadow: 0 18px 40px rgba(15,33,70,0.10);
@@ -159,7 +198,14 @@ mask-image: radial-gradient(white, black);
     overflow: hidden;
   border-radius: 18px;
   padding: 12px 12px 12px;
-  background: var(--color-premium-gradient-10);
+  background: var(
+  --color-premium-gradient-10,
+  linear-gradient(
+    90deg,
+    rgba(43, 124, 175, 0.1) 0%,
+    rgba(255, 197, 66, 0.1) 100%
+  )
+);
   border: 1px solid rgba(148,163,184,0.28);
   box-shadow: 0 16px 36px rgba(15,33,70,0.08);
 }
@@ -277,7 +323,14 @@ contain: paint;
   padding: 8px 12px;
   border-radius: 999px;
 
-  background: var(--color-premium-gradient-10);
+  background: var(
+  --color-premium-gradient-10,
+  linear-gradient(
+    90deg,
+    rgba(43, 124, 175, 0.1) 0%,
+    rgba(255, 197, 66, 0.1) 100%
+  )
+);
   border: 1px solid rgba(148,163,184,0.26);
   box-shadow: 0 10px 20px rgba(15,33,70,0.07);
 
@@ -384,134 +437,11 @@ contain: paint;
   white-space: nowrap;
 }
 
-/* =========================
-   Animations (Topic Mastery)
-   ========================= */
 
-@keyframes popIn {
-  from { transform: translateY(10px) scale(0.98); opacity: 0; }
-  to   { transform: translateY(0) scale(1); opacity: var(--op, 1); }
-}
-
-@keyframes rowIn {
-  from { transform: translateY(10px); opacity: 0; }
-  to   { transform: translateY(0); opacity: 1; }
-}
-
-/* hero pills */
-.pill { opacity: 1; }
-
-.pillHidden {
-  opacity: 0;
-  transform: translateY(10px) scale(0.98);
-}
-
-.pillIn {
-  animation: popIn 420ms cubic-bezier(0.2, 0.9, 0.2, 1) both;
-  animation-delay: var(--d, 0ms);
-}
-
-/* rows */
-.rowHidden {
-  opacity: 0;
-  transform: translateY(10px);
-}
-
-.rowIn {
-  animation: rowIn 450ms cubic-bezier(0.2, 0.9, 0.2, 1) both;
-  animation-delay: var(--d, 0ms);
-}
-
-/* topic bar fill: 0 -> --w */
-.barFill {
-  width: 0%;
-  transition: width 850ms cubic-bezier(0.2, 0.9, 0.2, 1);
-}
-
-.barFillHidden {
-  width: 0%;
-}
-
-.barFillGrow {
-  width: var(--w, 0%);
-}
-
-/* subchips (fade/slide in) */
-.subChip {
-  opacity: var(--op, 1);
-  will-change: transform, opacity;
-}
-
-.chipHidden {
-  opacity: 0;
-  transform: translateY(8px) scale(0.98);
-}
-
-.chipIn {
-  animation: popIn 360ms cubic-bezier(0.2, 0.9, 0.2, 1) both;
-  animation-delay: var(--d, 0ms);
-}
-
-/* sub meter fill: 0 -> --w */
-.subMeterFill {
-  width: 0%;
-  transition: width 700ms cubic-bezier(0.2, 0.9, 0.2, 1);
-}
-
-.subMeterHidden {
-  width: 0%;
-}
-
-.subMeterGrow {
-  width: var(--w, 0%);
-}
-
-/* reduced motion */
-@media (prefers-reduced-motion: reduce) {
-  .pillIn, .rowIn, .chipIn {
-    animation: none !important;
-  }
-  .pillHidden, .rowHidden, .chipHidden {
-    opacity: 1 !important;
-    transform: none !important;
-  }
-  .barFill, .subMeterFill {
-    transition: none !important;
-  }
-}
 
 /* =========================
    Animations (Topic Mastery)
    ========================= */
-
-/* shared motion tokens (matches your boot-sweep feel) */
-:root {
-  --ease-boot: cubic-bezier(0.2, 0.9, 0.2, 1);
-  --ease-soft: cubic-bezier(0.22, 1, 0.36, 1);
-   --color-premium-gradient: linear-gradient(
-    90deg,
-    rgba(43, 124, 175, 0.4) 0%,
-    rgba(255, 197, 66, 0.4) 100%
-  );
-
-  --color-premium-gradient-20: linear-gradient(
-    90deg,
-    rgba(43, 124, 175, 0.2) 0%,
-    rgba(255, 197, 66, 0.2) 100%
-  );
-
-  --color-premium-gradient-10: linear-gradient(
-    90deg,
-    rgba(43, 124, 175, 0.1) 0%,
-    rgba(255, 197, 66, 0.1) 100%
-  );
-
-  --color-premium-gradient-20-reverse: linear-gradient(
-    90deg,
-    rgba(255, 197, 66, 0.2) 0%,
-    rgba(43, 124, 175, 0.2) 100%
-  );
-}
 
 @keyframes popIn {
   0%   { transform: translate3d(0, 10px, 0) scale(0.985); opacity: 0; }
@@ -527,7 +457,6 @@ contain: paint;
 
 /* hero pills */
 .pill {
-  opacity: var(--op, 1);
   will-change: transform, opacity;
   transform: translateZ(0);
   backface-visibility: hidden;
@@ -631,14 +560,10 @@ contain: paint;
 /* =========================
    Dark mode: make headings readable
    ========================= */
-:global(:root[data-theme='dark']) .heroTitle,
-:global(html[data-theme='dark']) .heroTitle,
-:global(body[data-theme='dark']) .heroTitle{
+:global(:root[data-theme='dark']) .heroTitle{
   color: #f9fafb; /* “Weakest right now” */
 }
 
-:global(:root[data-theme='dark']) .topicName,
-:global(html[data-theme='dark']) .topicName,
-:global(body[data-theme='dark']) .topicName{
+:global(:root[data-theme='dark']) .topicName{
   color: #f9fafb; /* Traffic Signals / Road Safety / etc */
 }

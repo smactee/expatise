@@ -1,0 +1,110 @@
+/* components/BottomNav.module.css */
+
+.bottomNavWrapper {
+  /* tokens: self-contained + safe defaults */
+  --bn-height: var(--bottom-nav-height, 66px);
+  --bn-gap: var(--bottom-nav-gap, 6px);
+  --bn-safe: env(safe-area-inset-bottom, 0px);
+  --bn-hide-y: calc(var(--bn-height) + var(--bn-gap) + var(--bn-safe) + 16px);
+
+  position: fixed;
+  inset-inline: 0;
+  margin-inline: auto;
+  bottom: calc(var(--bn-gap) + var(--bn-safe));
+
+  width: 100%;
+  max-width: 560px;
+
+  display: flex;
+  justify-content: center;
+
+  pointer-events: none;
+  z-index: 50;
+
+  /* Y-only transform prevents “skew” */
+  transform: translateY(0);
+  transition: transform 220ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  will-change: transform;
+}
+
+.bottomNavWrapperHidden {
+  transform: translateY(var(--bn-hide-y));
+}
+
+.bottomNav {
+  width: 390px;
+  height: var(--bn-height);
+  padding: 9px;
+  border-radius: 25px;
+
+  background: var(--color-nav-bg);
+  border: 1px solid var(--color-nav-border);
+  box-shadow: 0 14px 28px rgba(15, 23, 42, 0.55);
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+
+  pointer-events: auto;
+}
+
+.navItem {
+  position: relative;
+  flex: 0 0 auto;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 28px;
+  padding: 8px 14px;
+
+  border-radius: 999px;
+  border: none;
+  background: transparent;
+
+  color: var(--color-nav-muted);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+
+  text-decoration: none;
+}
+
+.navIcon {
+  width: 30px;
+  height: 30px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.navLabel {
+  white-space: nowrap;
+  color: var(--color-nav-muted);
+}
+
+.navItemActive .navLabel {
+  color: #37B2FF;
+}
+
+.navPill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  width: 130px;
+  height: 48px;
+  border-radius: 25px;
+
+  background: linear-gradient(90deg, #37B2FF 0%, rgba(55, 178, 255, 0) 100%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bottomNavWrapper {
+    transition: none;
+  }
+}

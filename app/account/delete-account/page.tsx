@@ -1,9 +1,11 @@
+//app/account/delete-account/page.tsx
 "use client";
 
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { resetAllLocalData } from "@/lib/stats/resetLocalData";
+import BackButton from "@/components/BackButton";
 
 export default function DeleteAccountPage() {
   const router = useRouter();
@@ -61,6 +63,7 @@ export default function DeleteAccountPage() {
 
   return (
     <main style={{ maxWidth: 520, margin: "0 auto", padding: "24px 16px" }}>
+      <BackButton />
       <h1 style={{ fontSize: 22, marginBottom: 10 }}>Delete Account</h1>
 
       {done ? (

@@ -12,6 +12,7 @@ import FreeUsageProgressBadge from "@/components/FreeUsageProgressBadge.client";
 import SwipeBack from "@/components/SwipeBack.client";
 import TimeTracker from "@/components/TimeTracker.client";
 import AuthSelfHeal from "@/components/AuthSelfHeal";
+import BottomNav from "@/components/BottomNav";
 
 
 const geistSans = Geist({

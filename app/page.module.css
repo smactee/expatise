@@ -6,14 +6,22 @@
   display: flex;
   justify-content: center;
   background: var(--color-page-bg);
-}
 
-:root{
+  /* Bottom-nav layout tokens (scoped to this page) */
   --bottom-nav-height: 66px;
   --bottom-nav-gap: 6px; /* was effectively 24px */
-  --bottom-safe: env(safe-area-inset-bottom);
-  --bottom-nav-clearance: calc(var(--bottom-nav-height) + var(--bottom-nav-gap) + var(--bottom-safe));
+  --bottom-safe: env(safe-area-inset-bottom, 0px);
+
+  --bottom-nav-clearance: calc(
+    var(--bottom-nav-height) + var(--bottom-nav-gap) + var(--bottom-safe)
+  );
+
+  --bottom-nav-hide-y: calc(
+    var(--bottom-nav-height) + var(--bottom-nav-gap) + var(--bottom-safe) + 16px
+  );
 }
+
+
 
 .content {
   width: 100%;
@@ -395,100 +403,6 @@
   cursor: grabbing;
 }
 
-/* === Bottom Nav Bar === */
-
-.bottomNavWrapper {
-  position: fixed;          /* float on top of content */
-  left: 50%;
-  bottom: calc(var(--bottom-nav-gap) + var(--bottom-safe));  /* distance from bottom of screen */
-  width: 100%;
-  max-width: 560px;         /* same as .content max-width */
-  display: flex;
-  justify-content: center;
-  pointer-events: none;     /* only nav itself should catch clicks */
-  z-index: 50;
-}
-
-
-.bottomNav {
-  width: 390px;             /* Figma: 352 x 66 */
-  height: 66px;
-  padding: 9px;             /* Figma padding */
-  border-radius: 25px;      /* Figma corner radius */
-  background: var(--color-nav-bg);
-  border: 1px solid var(--color-nav-border);
-  box-shadow: 0 14px 28px rgba(15, 23, 42, 0.55);
-
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-
-  pointer-events: auto;     /* re-enable clicks here */
-}
-
-/* Each nav item (icon + optional text) */
-.navItem {
-  position: relative;
-  flex: 0 0 auto;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: row;
-  gap: 28px;
-  padding: 8px 14px;
-  border-radius: 999px;
-  border: none;
-  background: transparent;
-  color: var(--color-nav-muted);
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-/* Active item gets the blue pill background */
-
-
-/* Icon size (for now we use emoji; later swap for <Image>) */
-.navIcon {
-  font-size: 20px;
-  width: 30px;
-  height: 30px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* Label text */
-.navLabel {
-  white-space: nowrap;
-  /* (optional) default color for inactive items */
-  color: var(--color-nav-muted);
-}
-
-/* Make text & icon blue when active */
-.navItemActive .navLabel {
-  color: #37B2FF;
-}
-
-/* Active pill background behind Home icon + text */
-.navPill {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;              /* 28px gap between icon and text */
-  width: 130px;
-  height: 48px;
-  border-radius: 25px;    /* Figma corner radius */
-
-  /* Figma: Linear 37B2FF → transparent */
-  background: linear-gradient(
-    90deg,
-    #37B2FF 0%,
-    rgba(55, 178, 255, 0) 100%
-  );
-}
-
 /* ========================= */
 /* Test Day Modal (fake page)*/
 /* ========================= */
@@ -769,7 +683,7 @@
 /* DARK MODE OVERRIDES ONLY  */
 /* ========================= */
 
-:root[data-theme='dark'] .page {
+:global(:root[data-theme='dark']) .page {
   background:
     radial-gradient(circle at top, rgba(15, 23, 42, 0.7), transparent 55%),
     #050816;
@@ -918,26 +832,7 @@
   color: rgba(255, 255, 255, 0.70);
 }
 
-:root{
-  --bottom-nav-hide-y: calc(var(--bottom-nav-height) + var(--bottom-nav-gap) + env(safe-area-inset-bottom) + 16px);
-}
 
-.bottomNavWrapper{
-  /* you already have position/left/bottom etc */
-  transform: translate(-50%, 0);
-  transition: transform 220ms cubic-bezier(0.2, 0.8, 0.2, 1);
-  will-change: transform;
-}
-
-.bottomNavWrapperHidden{
-  transform: translate(-50%, var(--bottom-nav-hide-y));
-}
-
-@media (prefers-reduced-motion: reduce){
-  .bottomNavWrapper{
-    transition: none;
-  }
-}
 
 @media (pointer: coarse) {
   .cardRow {

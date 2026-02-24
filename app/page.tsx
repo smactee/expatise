@@ -385,7 +385,7 @@ const modalTimeLabel = formatTimeLabel(modalSourceTime);
 </div>
 </section>
 
-<BottomNav />
+
 </div>
 
       {/* Test Day Modal */}
@@ -516,6 +516,7 @@ const modalTimeLabel = formatTimeLabel(modalSourceTime);
           </div>
         </div>
       )}
+      <BottomNav />
     </main>
   );
 }

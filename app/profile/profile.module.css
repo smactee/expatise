@@ -1,18 +1,23 @@
+/* app/profile/profile.module.css */
+
 .page {
   min-height: 100vh;
   display: flex;
-  justify-content: center;
+  flex-direction: column;   /* ✅ add */
+  align-items: center;      /* ✅ add */
   background: var(--color-page-bg);
-  padding: 0px 16px 40px;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'SF Pro Text',
-    'Segoe UI', sans-serif;
-    color: var(--test-text);
+  padding: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', sans-serif;
+  color: var(--test-text);
 }
 
 .content {
   width: 100%;
   max-width: 560px;
-  margin: 0px auto 96px; /* extra bottom room for nav bar */
+  box-sizing: border-box; /* ✅ add */
+  padding-left: 16px;
+  padding-right: 16px;
+  padding-bottom: calc(var(--bottom-nav-clearance) + 24px); /* ✅ add */
 }
 
 /* ===== Header ===== */

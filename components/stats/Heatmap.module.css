@@ -1,11 +1,9 @@
 .wrap {
   width: 100%;
-}
-
-:root{
-  --premium-blue-rgb: 43 124 175;
+   --premium-blue-rgb: 43 124 175;
   --premium-yellow-rgb: 255 197 66;
 }
+
 
 
 /* ===== Callout pill ===== */
@@ -695,8 +693,8 @@ padding: clamp(4px, 1vw, 8px);
   /* Stronger gradient than the -20 one, but still tasteful */
   --heat-grad: linear-gradient(
     90deg,
-    rgb(var(--premium-yellow-rgb) / 0.55) 0%,
-    rgb(var(--premium-blue-rgb) / 0.55) 100%
+    rgb(var(--premium-yellow-rgb, 255 197 66) / 0.55) 0%,
+    rgb(var(--premium-blue-rgb, 43 124 175) / 0.55) 100%
   );
 
   background-image:
@@ -726,8 +724,8 @@ padding: clamp(4px, 1vw, 8px);
 
   --heat-grad: linear-gradient(
     90deg,
-    rgb(var(--premium-yellow-rgb) / 0.55) 0%,
-    rgb(var(--premium-blue-rgb) / 0.55) 100%
+    rgb(var(--premium-yellow-rgb, 255 197 66) / 0.55) 0%,
+    rgb(var(--premium-blue-rgb, 43 124 175) / 0.55) 100%
   );
 
   background-image:

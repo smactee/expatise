@@ -32,8 +32,10 @@ const { ref, seen } = useOnceInView<HTMLDivElement>({
 const [forceSeen, setForceSeen] = useState(false);
 useEffect(() => {
   if (seen) return;
-  const t = window.setTimeout(() => setForceSeen(true), 800);
-  return () => window.clearTimeout(t);
+
+  // Start next frame instead of waiting 800ms
+  const raf = window.requestAnimationFrame(() => setForceSeen(true));
+  return () => window.cancelAnimationFrame(raf);
 }, [seen]);
 
 const seenReady = seen || forceSeen;

@@ -4,6 +4,11 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+   --bottom-nav-height: 66px;
+  --bottom-nav-gap: 6px;
+  --bottom-safe: env(safe-area-inset-bottom, 0px);
+  --bottom-nav-clearance: calc(var(--bottom-nav-height) + var(--bottom-nav-gap) + var(--bottom-safe));
+  --bottom-nav-hide-y: calc(var(--bottom-nav-clearance) + 16px);
 }
 
 
@@ -32,6 +37,7 @@
     --test-text: var(--text-main);
   --test-muted: var(--text-muted);
   --test-icon: var(--test-text);
+
 }
 
 /* Light theme overrides (when ThemeProvider sets data-theme="light") */
@@ -103,7 +109,7 @@
     var(--chart-grad-warm) 0%,
     var(--chart-grad-cool) 100%
   );
-
+}
 
 /* Base page background + text color */
 html,
@@ -119,4 +125,3 @@ body {
   font-family: var(--font-sans), system-ui, -apple-system, BlinkMacSystemFont,
     'SF Pro Text', 'Segoe UI', sans-serif;
 }
-}  
