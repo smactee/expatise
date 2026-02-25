@@ -6,6 +6,8 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { resetAllLocalData } from "@/lib/stats/resetLocalData";
 import BackButton from "@/components/BackButton";
+import { FunctionsHttpError } from "@supabase/supabase-js";
+
 
 export default function DeleteAccountPage() {
   const router = useRouter();
@@ -18,48 +20,41 @@ export default function DeleteAccountPage() {
 
   const canDelete = typed.trim().toUpperCase() === "DELETE";
 
-  async function onDelete() {
-    if (!canDelete || loading) return;
+async function onDelete() {
+  if (!canDelete || loading) return;
 
-    setErr(null);
-    setLoading(true);
+  setErr(null);
+  setLoading(true);
 
-    try {
-      const r = await fetch("/api/account/delete", {
-        method: "POST",
-        cache: "no-store",
-        credentials: "include",
-      });
+  try {
+    const { data, error } = await supabase.functions.invoke("account-delete", { body: {} });
+    let j: any = data ?? null;
 
-      const j = await r.json().catch(() => null);
-      if (!r.ok || !j?.ok) {
-        setErr(j?.error ? String(j.error) : "Delete failed. Please try again.");
-        return;
+    // When the function returns 4xx/5xx, supabase-js can return a FunctionsHttpError,
+    // and the response JSON is available via error.context.json(). :contentReference[oaicite:1]{index=1}
+    if (error) {
+      if (error instanceof FunctionsHttpError) {
+        j = await error.context.json().catch(() => null);
       }
-
-      // Clean up client state (best-effort)
-      try {
-        await supabase.auth.signOut();
-      } catch {}
-
-      try {
-        await resetAllLocalData({ includeCaches: true });
-      } catch {}
-
-      try {
-        window.dispatchEvent(new Event("expatise:session-changed"));
-      } catch {}
-
-      setDone(true);
-
-      // Send them to login (or home) after a short moment
-      window.setTimeout(() => {
-        router.replace("/login");
-      }, 600);
-    } finally {
-      setLoading(false);
+      throw new Error(j?.detail ?? j?.error ?? error.message);
     }
+
+    if (!j?.ok) {
+      throw new Error(j?.detail ?? j?.error ?? "Delete failed");
+    }
+
+    // Local cleanup
+    await supabase.auth.signOut();
+    await resetAllLocalData({ includeCaches: true });
+
+    setDone(true);
+    router.replace("/account-deletion");
+  } catch (e: any) {
+    setErr(e?.message ?? "Account deletion failed.");
+  } finally {
+    setLoading(false);
   }
+}
 
   return (
     <main style={{ maxWidth: 520, margin: "0 auto", padding: "24px 16px" }}>

@@ -4,6 +4,7 @@
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { logout } from "@/lib/auth/logout.client";
 
 export default function LogoutButton({ className }: { className?: string }) {
   const router = useRouter();
@@ -15,7 +16,7 @@ export default function LogoutButton({ className }: { className?: string }) {
     setBusy(true);
     try {
       await supabase.auth.signOut();
-      await fetch("/api/logout", { method: "POST", credentials: "include", cache: "no-store" });
+      await logout();
 
       try { window.dispatchEvent(new Event("expatise:session-changed")); } catch {}
       try { window.dispatchEvent(new Event("expatise:entitlements-changed")); } catch {}

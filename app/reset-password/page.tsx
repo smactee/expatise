@@ -35,7 +35,7 @@ export default function ResetPasswordPage() {
     setLoading(true);
     try {
       // Update password for the currently-authenticated recovery session
-      const { error } = await supabase.auth.updateUser({ password: pw }); // :contentReference[oaicite:1]{index=1}
+      const { error } = await supabase.auth.updateUser({ password: pw });
       if (error) {
         setMsg(error.message);
         return;

@@ -6,7 +6,6 @@ import { useRouter } from 'next/navigation';
 import BottomNav from '@/components/BottomNav';
 import styles from './stats.module.css';
 import BackButton from '@/components/BackButton';
-import RequirePremium from '@/components/RequirePremium.client';
 import { loadDataset } from '@/lib/qbank/loadDataset';
 import type { DatasetId } from '@/lib/qbank/datasets';
 import type { Question } from '@/lib/qbank/types';
@@ -14,7 +13,6 @@ import { listSubmittedAttempts } from '@/lib/test-engine/attemptStorage';
 import type { TestAttemptV1 } from '@/lib/test-engine/attemptStorage';
 import { useUserKey } from '@/components/useUserKey.client';
 import { computeStats } from '@/lib/stats/computeStats';
-import { ROUTES } from '@/lib/routes';
 import { labelForTag } from '@/lib/qbank/tagTaxonomy';
 import TimeframeChips, { type Timeframe, tfShort } from '@/components/stats/TimeframeChips';
 import ScreenTimeChart, {ScreenTimeLegend} from '@/components/stats/ScreenTimeChart.client';
@@ -27,9 +25,13 @@ import { resetAllLocalData } from '@/lib/stats/resetLocalData';
 import { timeKey } from "@/lib/stats/timeKeys"
 import { seedAdminDemoDataIfNeeded } from '@/lib/demo/seedAdminDemoData';
 import InfoTip from '@/components/InfoTip.client';
-import CoachReport from '@/app/(premium)/stats/CoachReport.client';
 import CoachReportRich from '@/app/(premium)/stats/CoachReportRich.client';
 import { useAuthStatus } from '@/components/useAuthStatus';
+import { fetchAttemptsFromSupabase } from '@/lib/sync/fetchAttemptsFromSupabase';
+import { createClient } from "@/lib/supabase/client";
+import { FunctionsHttpError, FunctionsRelayError, FunctionsFetchError } from "@supabase/supabase-js";
+import { fetchTimeLogsFromSupabase } from '@/lib/sync/timeLogs.client';
+
 
 const datasetId: DatasetId = 'cn-2023-test1';
 
@@ -206,14 +208,9 @@ useEffect(() => {
   return;
 }
     try {
-  const r = await fetch(
-    `/api/attempts?datasetId=${encodeURIComponent(datasetId)}`,
-    { cache: "no-store", credentials: "include" }
-  );
-  if (!r.ok) return;
-
-  const j = await r.json().catch(() => null);
-  const remote: TestAttemptV1[] = Array.isArray(j?.attempts) ? j.attempts : [];
+  const remote = await fetchAttemptsFromSupabase({ datasetId });
+// keep your old behavior: if it fails, just bail and let local remain
+if (!remote) return;
 
   // Merge...
   const byId = new Map<string, TestAttemptV1>();
@@ -386,18 +383,19 @@ useEffect(() => {
 
 useEffect(() => {
   let alive = true;
-if (!supabaseAuthed) return () => { alive = false; };
+
+  if (!supabaseAuthed) {
+    return () => {
+      alive = false;
+    };
+  }
+
   (async () => {
     try {
-      const r = await fetch("/api/time-logs?limit=200", {
-  cache: "no-store" as any,
-  credentials: "include",
-});
+      const logs = await fetchTimeLogsFromSupabase({ limit: 200 });
+      if (!alive || !logs) return;
 
-      const j = await r.json().catch(() => null);
-      if (!alive || !r.ok || !j?.ok) return;
-
-      for (const it of (j.logs ?? [])) {
+      for (const it of logs) {
         const kind = it?.kind;
         const date = String(it?.date ?? "");
         const seconds = Number(it?.seconds ?? 0);
@@ -411,7 +409,7 @@ if (!supabaseAuthed) return () => { alive = false; };
         localStorage.setItem(k, String(next));
       }
 
-      // force re-render so your useMemo computeStats re-runs
+      // keep your old behavior: force re-render so stats recompute
       setAttempts((prev) => prev.slice());
     } catch {
       // ignore
@@ -510,58 +508,72 @@ async function handleGenerateCoach() {
       },
     };
 
-    const r = await fetch("/api/coach", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
+const supabase = createClient();
 
-    const j = await r.json().catch(() => null);
+const { data, error } = await supabase.functions.invoke("coach", { body: payload });
 
-    if (!r.ok) {
-      if (r.status === 429 && j?.nextAllowedAt) {
-        const until = Number(j.nextAllowedAt);
-        if (Number.isFinite(until) && until > 0) {
-          setCooldownUntil(until);
-          try {
-            localStorage.setItem(LS_COOLDOWN_UNTIL, String(until));
-          } catch {}
-        }
-        setCoachError(`Next Coach report available in ${formatRemaining(Math.max(0, until - Date.now()))}.`);
-        return;
-      }
+let j: any = data ?? null;
 
-      if (r.status === 400 && j?.error === "insufficient_data") {
-        setCoachError("Not enough data yet for personalized coaching. Complete 1 Real Test (80+ answers) or reach 120 answered total.");
-        return;
-      }
+if (error) {
+  // Function ran but returned 4xx/5xx (we can read the JSON body)
+  if (error instanceof FunctionsHttpError) {
+    j = await error.context.json().catch(() => null);
+  } else if (error instanceof FunctionsRelayError) {
+    setCoachError(`Network/relay error: ${error.message}`);
+    return;
+  } else if (error instanceof FunctionsFetchError) {
+    setCoachError(`Could not reach Coach service: ${error.message}`);
+    return;
+  } else {
+    setCoachError(error.message ?? "Coach request failed. Please try again.");
+    return;
+  }
+}
 
-      setCoachError(j?.detail ? String(j.detail) : "Coach request failed. Please try again.");
-      return;
+if (!j?.ok) {
+  // keep your same error handling behavior
+  if (j?.error === "cooldown" && j?.nextAllowedAt) {
+    const until = Number(j.nextAllowedAt);
+    if (Number.isFinite(until) && until > 0) {
+      setCooldownUntil(until);
+      try { localStorage.setItem(LS_COOLDOWN_UNTIL, String(until)); } catch {}
     }
+    setCoachError(`Next Coach report available in ${formatRemaining(Math.max(0, until - Date.now()))}.`);
+    return;
+  }
 
-    const report = String(j?.report ?? "").trim();
-    const createdAt = Number(j?.createdAt ?? Date.now());
+  if (j?.error === "insufficient_data") {
+    setCoachError("Not enough data yet for personalized coaching. Complete 1 Real Test (80+ answers) or reach 120 answered total.");
+    return;
+  }
 
-    if (!report) {
-      setCoachError("Coach returned an empty report. Please try again.");
-      return;
-    }
+  setCoachError(j?.detail ? String(j.detail) : "Coach request failed. Please try again.");
+  return;
+}
 
-    setCoachReport(report);
-    setCoachCreatedAt(Number.isFinite(createdAt) ? createdAt : Date.now());
+// success
+const report = String(j?.report ?? "").trim();
+const createdAt = Number(j?.createdAt ?? Date.now());
 
-    // Save report locally
-    try {
-      localStorage.setItem(LS_REPORT, JSON.stringify({ report, createdAt }));
-    } catch {}
+if (!report) {
+  setCoachError("Coach returned an empty report. Please try again.");
+  return;
+}
 
-    // Local UI cooldown (server also enforces via cookie)
-    const until = (Number.isFinite(createdAt) ? createdAt : Date.now()) + COOLDOWN_MS;
-    setCooldownUntil(until);
-    try {
-      localStorage.setItem(LS_COOLDOWN_UNTIL, String(until));
-    } catch {}
+setCoachReport(report);
+setCoachCreatedAt(Number.isFinite(createdAt) ? createdAt : Date.now());
+
+// Save report locally
+try {
+  localStorage.setItem(LS_REPORT, JSON.stringify({ report, createdAt }));
+} catch {}
+
+// Local UI cooldown (your existing UI logic)
+const until = (Number.isFinite(createdAt) ? createdAt : Date.now()) + COOLDOWN_MS;
+setCooldownUntil(until);
+try {
+  localStorage.setItem(LS_COOLDOWN_UNTIL, String(until));
+} catch {}
   } finally {
     setCoachLoading(false);
   }

@@ -1,5 +1,4 @@
-//app/account-deletion/page.tsx
-export const dynamic = "force-dynamic";
+/*app/account-deletion/page.tsx*/
 
 export default function AccountDeletionPage() {
   // ✅ This page is your "web link resource" for Google Play.

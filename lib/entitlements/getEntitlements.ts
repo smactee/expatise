@@ -3,32 +3,47 @@
 import type { Entitlements } from "@/lib/entitlements/types";
 import { FREE_ENTITLEMENTS } from "@/lib/entitlements/types";
 import { getLocalEntitlements, setLocalEntitlements } from "@/lib/entitlements/localStore";
+import { createClient } from "@/lib/supabase/client";
+import {
+  FunctionsHttpError,
+  FunctionsRelayError,
+  FunctionsFetchError,
+} from "@supabase/supabase-js";
 
-type ApiRes =
+type FnRes =
   | { ok: true; entitlements: Entitlements; userKey?: string }
-  | { ok: false; error?: string };
+  | { ok: false; error?: string; detail?: string };
 
 export async function getEntitlements(userKey: string): Promise<Entitlements> {
-  // local fallback for whatever key the caller thinks they are (usually correct)
   const local = getLocalEntitlements(userKey) ?? FREE_ENTITLEMENTS;
 
   try {
-    // ✅ session-based; server derives user + admin from Supabase cookies
-    const res = await fetch("/api/entitlements", {
-      cache: "no-store",
-      credentials: "include",
+    const supabase = createClient();
+
+    const { data, error } = await supabase.functions.invoke("entitlements", {
+      body: { userKey },
     });
 
-    if (!res.ok) return local;
+    let json: FnRes | null = (data ?? null) as any;
 
-    const json = (await res.json()) as ApiRes;
-    if (!json.ok) return local;
+    // IMPORTANT: when the function returns 4xx/5xx, supabase-js may give you a FunctionsHttpError
+    // and the real JSON is inside error.context.json()
+    if (error) {
+      if (error instanceof FunctionsHttpError) {
+        json = (await error.context.json().catch(() => null)) as any;
+      } else if (error instanceof FunctionsRelayError || error instanceof FunctionsFetchError) {
+        return local;
+      } else {
+        return local;
+      }
+    }
+
+    if (!json || !("ok" in json) || !json.ok) return local;
 
     const server = json.entitlements;
+    if (!server) return local;
 
-    // ✅ IMPORTANT:
-    // If the server tells us the real userKey, store entitlements under THAT key.
-    // This prevents “premium stuck on guest” / “badge shows for admin” situations.
+    // If server returns a better userKey, store under that key
     const serverUserKey =
       typeof json.userKey === "string" && json.userKey.trim()
         ? json.userKey.trim()
@@ -39,9 +54,7 @@ export async function getEntitlements(userKey: string): Promise<Entitlements> {
 
     const localIsPremium = local.isPremium === true;
     const localExpired =
-      typeof local.expiresAt === "number" &&
-      local.expiresAt > 0 &&
-      local.expiresAt < Date.now();
+      typeof local.expiresAt === "number" && local.expiresAt > 0 && local.expiresAt < Date.now();
 
     const shouldTrustServer =
       server.isPremium === true ||
@@ -52,7 +65,7 @@ export async function getEntitlements(userKey: string): Promise<Entitlements> {
       return server;
     }
   } catch {
-    // ignore errors and fall back to local
+    // ignore and fall back to local
   }
 
   return local;

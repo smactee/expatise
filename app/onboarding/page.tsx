@@ -1,17 +1,22 @@
+//app/onboarding/page.tsx
 'use client';
 
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import styles from './onboarding.module.css';
+import { markOnboarded } from '@/lib/onboarding/markOnboarded.client';
 
 export default function OnboardingPage() {
   const router = useRouter();
 
-  const handleGetStarted = async () => {
-    const res = await fetch('/api/onboarding', { method: 'POST' });
-    if (!res.ok) return;
-    router.replace('/login'); // replace = “don’t show onboarding on back”
-  };
+const handleGetStarted = () => {
+  try {
+    markOnboarded();
+  } catch {
+    // optional: show UI error, but usually you can ignore
+  }
+  router.replace("/login"); // don't show onboarding on back
+};
 
   return (
     <main className={styles.page}>

@@ -13,6 +13,7 @@ import SwipeBack from "@/components/SwipeBack.client";
 import TimeTracker from "@/components/TimeTracker.client";
 import AuthSelfHeal from "@/components/AuthSelfHeal";
 import BottomNav from "@/components/BottomNav";
+import OnboardingGate from "@/components/OnboardingGate.client";
 
 
 const geistSans = Geist({
@@ -47,7 +48,7 @@ export default function RootLayout({
       >
         <EntitlementsProvider>
           <FreeUsageProgressBadge />
-
+          <OnboardingGate />
           <ThemeProvider>
             <AuthSelfHeal />
             <UserProfileProvider>
