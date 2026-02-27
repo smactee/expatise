@@ -1,3 +1,5 @@
+//lib/entitlements/localStore.ts
+
 import { FREE_ENTITLEMENTS, type Entitlements, isExpired } from "./types";
 
 const NS = "expatise:entitlements";

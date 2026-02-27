@@ -1,6 +1,34 @@
+### .vscode/extensions.json
+```json
+{
+  "recommendations": ["denoland.vscode-deno"]
+}
+
+```
+
 ### .vscode/settings.json
 ```json
 {
+  "deno.enable": false,
+  "deno.enablePaths": ["./supabase/functions"],
+  "deno.importMap": "./supabase/functions/import_map.json",
+
+  "deno.lint": false,
+  "deno.unstable": [
+    "bare-node-builtins",
+    "byonm",
+    "sloppy-imports",
+    "unsafe-proto",
+    "webgpu",
+    "broadcast-channel",
+    "worker-options",
+    "cron",
+    "kv",
+    "ffi",
+    "fs",
+    "http",
+    "net"
+  ]
 }
 ```
 
@@ -5242,8 +5270,10 @@ const { ref, seen } = useOnceInView<HTMLDivElement>({
 const [forceSeen, setForceSeen] = useState(false);
 useEffect(() => {
   if (seen) return;
-  const t = window.setTimeout(() => setForceSeen(true), 800);
-  return () => window.clearTimeout(t);
+
+  // Start next frame instead of waiting 800ms
+  const raf = window.requestAnimationFrame(() => setForceSeen(true));
+  return () => window.cancelAnimationFrame(raf);
 }, [seen]);
 
 const seenReady = seen || forceSeen;
@@ -5342,7 +5372,6 @@ import { useRouter } from 'next/navigation';
 import BottomNav from '@/components/BottomNav';
 import styles from './stats.module.css';
 import BackButton from '@/components/BackButton';
-import RequirePremium from '@/components/RequirePremium.client';
 import { loadDataset } from '@/lib/qbank/loadDataset';
 import type { DatasetId } from '@/lib/qbank/datasets';
 import type { Question } from '@/lib/qbank/types';
@@ -5350,7 +5379,6 @@ import { listSubmittedAttempts } from '@/lib/test-engine/attemptStorage';
 import type { TestAttemptV1 } from '@/lib/test-engine/attemptStorage';
 import { useUserKey } from '@/components/useUserKey.client';
 import { computeStats } from '@/lib/stats/computeStats';
-import { ROUTES } from '@/lib/routes';
 import { labelForTag } from '@/lib/qbank/tagTaxonomy';
 import TimeframeChips, { type Timeframe, tfShort } from '@/components/stats/TimeframeChips';
 import ScreenTimeChart, {ScreenTimeLegend} from '@/components/stats/ScreenTimeChart.client';
@@ -5363,9 +5391,13 @@ import { resetAllLocalData } from '@/lib/stats/resetLocalData';
 import { timeKey } from "@/lib/stats/timeKeys"
 import { seedAdminDemoDataIfNeeded } from '@/lib/demo/seedAdminDemoData';
 import InfoTip from '@/components/InfoTip.client';
-import CoachReport from '@/app/(premium)/stats/CoachReport.client';
 import CoachReportRich from '@/app/(premium)/stats/CoachReportRich.client';
 import { useAuthStatus } from '@/components/useAuthStatus';
+import { fetchAttemptsFromSupabase } from '@/lib/sync/fetchAttemptsFromSupabase';
+import { createClient } from "@/lib/supabase/client";
+import { FunctionsHttpError, FunctionsRelayError, FunctionsFetchError } from "@supabase/supabase-js";
+import { fetchTimeLogsFromSupabase } from '@/lib/sync/timeLogs.client';
+
 
 const datasetId: DatasetId = 'cn-2023-test1';
 
@@ -5542,14 +5574,9 @@ useEffect(() => {
   return;
 }
     try {
-  const r = await fetch(
-    `/api/attempts?datasetId=${encodeURIComponent(datasetId)}`,
-    { cache: "no-store", credentials: "include" }
-  );
-  if (!r.ok) return;
-
-  const j = await r.json().catch(() => null);
-  const remote: TestAttemptV1[] = Array.isArray(j?.attempts) ? j.attempts : [];
+  const remote = await fetchAttemptsFromSupabase({ datasetId });
+// keep your old behavior: if it fails, just bail and let local remain
+if (!remote) return;
 
   // Merge...
   const byId = new Map<string, TestAttemptV1>();
@@ -5722,18 +5749,19 @@ useEffect(() => {
 
 useEffect(() => {
   let alive = true;
-if (!supabaseAuthed) return () => { alive = false; };
+
+  if (!supabaseAuthed) {
+    return () => {
+      alive = false;
+    };
+  }
+
   (async () => {
     try {
-      const r = await fetch("/api/time-logs?limit=200", {
-  cache: "no-store" as any,
-  credentials: "include",
-});
+      const logs = await fetchTimeLogsFromSupabase({ limit: 200 });
+      if (!alive || !logs) return;
 
-      const j = await r.json().catch(() => null);
-      if (!alive || !r.ok || !j?.ok) return;
-
-      for (const it of (j.logs ?? [])) {
+      for (const it of logs) {
         const kind = it?.kind;
         const date = String(it?.date ?? "");
         const seconds = Number(it?.seconds ?? 0);
@@ -5747,7 +5775,7 @@ if (!supabaseAuthed) return () => { alive = false; };
         localStorage.setItem(k, String(next));
       }
 
-      // force re-render so your useMemo computeStats re-runs
+      // keep your old behavior: force re-render so stats recompute
       setAttempts((prev) => prev.slice());
     } catch {
       // ignore
@@ -5846,58 +5874,91 @@ async function handleGenerateCoach() {
       },
     };
 
-    const r = await fetch("/api/coach", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
+const supabase = createClient();
 
-    const j = await r.json().catch(() => null);
+// ✅ Get current session token
+const { data: sess, error: sessErr } = await supabase.auth.getSession();
+if (sessErr) {
+  setCoachError(`Auth error: ${sessErr.message}`);
+  return;
+}
 
-    if (!r.ok) {
-      if (r.status === 429 && j?.nextAllowedAt) {
-        const until = Number(j.nextAllowedAt);
-        if (Number.isFinite(until) && until > 0) {
-          setCooldownUntil(until);
-          try {
-            localStorage.setItem(LS_COOLDOWN_UNTIL, String(until));
-          } catch {}
-        }
-        setCoachError(`Next Coach report available in ${formatRemaining(Math.max(0, until - Date.now()))}.`);
-        return;
-      }
+const token = sess.session?.access_token;
+if (!token) {
+  setCoachError("You're not signed in. Please sign in again and retry.");
+  return;
+}
 
-      if (r.status === 400 && j?.error === "insufficient_data") {
-        setCoachError("Not enough data yet for personalized coaching. Complete 1 Real Test (80+ answers) or reach 120 answered total.");
-        return;
-      }
+// ✅ Attach token for Edge Function call (required)
+const { data, error } = await supabase.functions.invoke("coach", {
+  body: payload,
+  headers: {
+    Authorization: `Bearer ${token}`,
+  },
+});
 
-      setCoachError(j?.detail ? String(j.detail) : "Coach request failed. Please try again.");
-      return;
+let j: any = data ?? null;
+
+if (error) {
+  // Function ran but returned 4xx/5xx (we can read the JSON body)
+  if (error instanceof FunctionsHttpError) {
+    j = await error.context.json().catch(() => null);
+  } else if (error instanceof FunctionsRelayError) {
+    setCoachError(`Network/relay error: ${error.message}`);
+    return;
+  } else if (error instanceof FunctionsFetchError) {
+    setCoachError(`Could not reach Coach service: ${error.message}`);
+    return;
+  } else {
+    setCoachError(error.message ?? "Coach request failed. Please try again.");
+    return;
+  }
+}
+
+if (!j?.ok) {
+  // keep your same error handling behavior
+  if (j?.error === "cooldown" && j?.nextAllowedAt) {
+    const until = Number(j.nextAllowedAt);
+    if (Number.isFinite(until) && until > 0) {
+      setCooldownUntil(until);
+      try { localStorage.setItem(LS_COOLDOWN_UNTIL, String(until)); } catch {}
     }
+    setCoachError(`Next Coach report available in ${formatRemaining(Math.max(0, until - Date.now()))}.`);
+    return;
+  }
 
-    const report = String(j?.report ?? "").trim();
-    const createdAt = Number(j?.createdAt ?? Date.now());
+  if (j?.error === "insufficient_data") {
+    setCoachError("Not enough data yet for personalized coaching. Complete 1 Real Test (80+ answers) or reach 120 answered total.");
+    return;
+  }
 
-    if (!report) {
-      setCoachError("Coach returned an empty report. Please try again.");
-      return;
-    }
+  setCoachError(j?.detail ? String(j.detail) : "Coach request failed. Please try again.");
+  return;
+}
 
-    setCoachReport(report);
-    setCoachCreatedAt(Number.isFinite(createdAt) ? createdAt : Date.now());
+// success
+const report = String(j?.report ?? "").trim();
+const createdAt = Number(j?.createdAt ?? Date.now());
 
-    // Save report locally
-    try {
-      localStorage.setItem(LS_REPORT, JSON.stringify({ report, createdAt }));
-    } catch {}
+if (!report) {
+  setCoachError("Coach returned an empty report. Please try again.");
+  return;
+}
 
-    // Local UI cooldown (server also enforces via cookie)
-    const until = (Number.isFinite(createdAt) ? createdAt : Date.now()) + COOLDOWN_MS;
-    setCooldownUntil(until);
-    try {
-      localStorage.setItem(LS_COOLDOWN_UNTIL, String(until));
-    } catch {}
+setCoachReport(report);
+setCoachCreatedAt(Number.isFinite(createdAt) ? createdAt : Date.now());
+
+// Save report locally
+try {
+  localStorage.setItem(LS_REPORT, JSON.stringify({ report, createdAt }));
+} catch {}
+
+// Local UI cooldown (your existing UI logic)
+const until = (Number.isFinite(createdAt) ? createdAt : Date.now()) + COOLDOWN_MS;
+setCooldownUntil(until);
+try {
+  localStorage.setItem(LS_COOLDOWN_UNTIL, String(until));
+} catch {}
   } finally {
     setCoachLoading(false);
   }
@@ -6303,9 +6364,10 @@ async function handleGenerateCoach() {
 </article>
 
 
-        <BottomNav />
+        
 
       </div>
+      <BottomNav />
     </main>
   );
 }
@@ -6315,39 +6377,7 @@ async function handleGenerateCoach() {
 ```css
 /* app/stats/stats.module.css */
 
-/* ================================= */
-/* THEME VARIABLES (LIGHT DEFAULT)   */
-/* ================================= */
-:global(:root){
-  /* existing */
-  --stats-ring-track: #e4e4e4;
-  --stats-ring-number: #111827;
-  --stats-summary-meta: rgba(17,24,39,0.65);
 
-  /* ✅ Legend tokens (LIGHT) */
-  --stats-legend-text: #6b7280;
-  --stats-legend-avg-label: rgba(17,24,39,0.65);
-  --stats-legend-dotted: rgba(17,24,39,0.35);
-  --stats-legend-dot-gray: rgba(17,24,39,0.18);
-  --stats-legend-dot-dark: rgba(17,24,39,0.45);
-
-    /* ✅ Chart palette tokens (LIGHT) — needed for legends */
-  --chart-grad-cool: rgba(43, 124, 175, 0.90);   /* blue */
-  --chart-grad-warm: rgba(255, 197, 66, 0.95);   /* yellow */
-  --chart-grad: linear-gradient(
-    90deg,
-    rgba(43, 124, 175, 0.90) 0%,
-    rgba(255, 197, 66, 0.95) 100%
-  );
-
-    /* ✅ ScreenTime axis/grid tokens (LIGHT) */
-  --stats-axis-text: rgba(17,24,39,0.55);
-  --stats-grid-line: rgba(17,24,39,0.08);
-  --stats-sep-line: rgba(17,24,39,0.18);
-
-    --stats-axis-text-strong: rgba(17,24,39,0.75);
-
-}
 
 .statsTitleRow {
   display: inline-flex;
@@ -6360,21 +6390,61 @@ async function handleGenerateCoach() {
 /* LAYOUT                             */
 /* ================================= */
 .page {
+  /* ================================= */
+  /* THEME VARIABLES (LIGHT DEFAULT)   */
+  /* ================================= */
+
+  /* existing */
+  --stats-ring-track: #e4e4e4;
+  --stats-ring-number: #111827;
+  --stats-summary-meta: rgba(17,24,39,0.65);
+
+  /* ✅ Legend tokens (LIGHT) */
+  --stats-legend-text: #6b7280;
+  --stats-legend-avg-label: rgba(17,24,39,0.65);
+  --stats-legend-dotted: rgba(17,24,39,0.35);
+  --stats-legend-dot-gray: rgba(17,24,39,0.18);
+  --stats-legend-dot-dark: rgba(17,24,39,0.45);
+
+  /* ✅ Chart palette tokens (LIGHT) — needed for legends */
+  --chart-grad-cool: rgba(43, 124, 175, 0.90);   /* blue */
+  --chart-grad-warm: rgba(255, 197, 66, 0.95);   /* yellow */
+  --chart-grad: linear-gradient(
+    90deg,
+    rgba(43, 124, 175, 0.90) 0%,
+    rgba(255, 197, 66, 0.95) 100%
+  );
+
+  /* ✅ ScreenTime axis/grid tokens (LIGHT) */
+  --stats-axis-text: rgba(17,24,39,0.55);
+  --stats-axis-text-strong: rgba(17,24,39,0.75);
+  --stats-grid-line: rgba(17,24,39,0.08);
+  --stats-sep-line: rgba(17,24,39,0.18);
+
+    --bottom-nav-height: 66px;
+  --bottom-nav-gap: 6px; /* was effectively 24px */
+  --bottom-safe: env(safe-area-inset-bottom, 0px);
+
+  --bottom-nav-clearance: calc(
+    var(--bottom-nav-height) + var(--bottom-nav-gap) + var(--bottom-safe));
+  
+  /* page layout */
   min-height: 100vh;
   display: flex;
   justify-content: center;
   background: var(--color-page-bg);
   color: var(--test-text);
+  
 }
 
 .content {
   width: 100%;
   max-width: 480px;
-  padding: 16px 16px 96px; /* extra bottom space for bottom nav */
+  padding: 16px 16px calc(var(--bottom-nav-clearance) + 6px);
   box-sizing: border-box;
   margin: 0 auto;
+   padding-bottom: calc(var(--bottom-nav-clearance) + 6px);
 }
-
 /* Big gradient panel behind Screen Time / Score / Weekly / Best Time */
 .statsLongPanel {
   width: 100%;
@@ -7062,8 +7132,7 @@ async function handleGenerateCoach() {
 /* ====================================================== */
 
 /* Dark theme variables */
-:global(html[data-theme="dark"]),
-:global(body[data-theme="dark"]){
+:global(:root[data-theme="dark"]) .page {
   /* existing */
   --stats-ring-track: #101827;
   --stats-ring-number: #e5e7eb;
@@ -7076,12 +7145,10 @@ async function handleGenerateCoach() {
   --stats-legend-dot-gray: rgba(255,255,255,0.18);
   --stats-legend-dot-dark: rgba(255,255,255,0.45);
 
-    /* ✅ ScreenTime axis/grid tokens (DARK) */
+  /* ✅ ScreenTime axis/grid tokens (DARK) */
   --stats-axis-text: rgba(255,255,255,0.72);
   --stats-grid-line: rgba(255,255,255,0.10);
   --stats-sep-line: rgba(255,255,255,0.18);
-
-    --stats-axis-text-strong: rgba(255,255,255,0.88);
 }
 
 
@@ -7245,6 +7312,55 @@ async function handleGenerateCoach() {
   color: rgba(255,255,255,0.90);
 }
 
+```
+
+### app/account-deletion/page.tsx
+```tsx
+/*app/account-deletion/page.tsx*/
+
+export default function AccountDeletionPage() {
+  // ✅ This page is your "web link resource" for Google Play.
+  // Replace the email below with your real support email.
+  const SUPPORT_EMAIL = "support@expatise.com";
+
+  return (
+    <main style={{ maxWidth: 760, margin: "0 auto", padding: "28px 18px", lineHeight: 1.55 }}>
+      <h1 style={{ fontSize: 26, marginBottom: 10 }}>Account & Data Deletion</h1>
+
+      <p style={{ opacity: 0.85 }}>
+        If you created an Expatise account and want it deleted, use one of the options below.
+      </p>
+
+      <h2 style={{ fontSize: 18, marginTop: 18 }}>Option A — In-app deletion</h2>
+      <p>
+        If you can still access the app: go to <b>Profile → Delete Account</b> and follow the steps.
+      </p>
+
+      <h2 style={{ fontSize: 18, marginTop: 18 }}>Option B — Web request</h2>
+      <p>
+        If you can’t access the app, email us at{" "}
+        <a href={`mailto:${SUPPORT_EMAIL}?subject=${encodeURIComponent("Account deletion request")}`}>
+          {SUPPORT_EMAIL}
+        </a>{" "}
+        with:
+      </p>
+      <ul>
+        <li>The email you used to sign in (or the provider, e.g. Google)</li>
+        <li>“Please delete my Expatise account and associated data.”</li>
+      </ul>
+
+      <h2 style={{ fontSize: 18, marginTop: 18 }}>What we delete</h2>
+      <ul>
+        <li>Your Supabase Auth account</li>
+        <li>Your saved attempts and time logs stored on our servers</li>
+      </ul>
+
+      <p style={{ marginTop: 14, opacity: 0.75 }}>
+        Note: We may retain limited data if legally required (fraud prevention, compliance), if applicable.
+      </p>
+    </main>
+  );
+}
 ```
 
 ### app/account-security/account-security.module.css
@@ -7599,1031 +7715,210 @@ export default function AccountSecurityPage() {
 }
 ```
 
-### app/api/attempts/route.ts
+### app/account/delete-account/page.tsx
 ```tsx
-// app/api/attempts/route.ts
-import type { NextRequest } from "next/server";
-import { NextResponse } from "next/server";
-import { createServerClient } from "@supabase/ssr";
+//app/account/delete-account/page.tsx
+"use client";
 
-export const runtime = "nodejs";
-export const dynamic = "force-dynamic";
+import { useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
+import { createClient } from "@/lib/supabase/client";
+import { resetAllLocalData } from "@/lib/stats/resetLocalData";
+import BackButton from "@/components/BackButton";
+import { FunctionsHttpError } from "@supabase/supabase-js";
 
-function makeSupabase(req: NextRequest, pending: Array<{ name: string; value: string; options: any }>) {
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-  const supabaseKey =
-    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ||
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 
-  return createServerClient(supabaseUrl, supabaseKey, {
-  auth: {
-    flowType: "pkce",
-    storageKey: "sb-expatise-auth",
-  },
-  cookies: {
-    getAll() {
-      return req.cookies.getAll();
-    },
-    setAll(cookiesToSet) {
-      pending.push(...cookiesToSet);
-    },
-  },
-});}
+export default function DeleteAccountPage() {
+  const router = useRouter();
+  const supabase = useMemo(() => createClient(), []);
 
-export async function GET(req: NextRequest) {
-  const pending: Array<{ name: string; value: string; options: any }> = [];
-  const supabase = makeSupabase(req, pending);
+  const [typed, setTyped] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [err, setErr] = useState<string | null>(null);
+  const [done, setDone] = useState(false);
 
-  const { data: userData, error: userErr } = await supabase.auth.getUser();
-  const user = userErr ? null : userData.user;
+  const canDelete = typed.trim().toUpperCase() === "DELETE";
 
-  if (!user) {
-    const res = NextResponse.json({ ok: false, error: "No user session" }, { status: 401 });
-    for (const c of pending) res.cookies.set(c.name, c.value, c.options);
-    res.headers.set("Cache-Control", "no-store");
-    return res;
-  }
+async function onDelete() {
+  if (!canDelete || loading) return;
 
-  const { searchParams } = new URL(req.url);
-  const datasetId = (searchParams.get("datasetId") ?? "").trim();
-  const status = (searchParams.get("status") ?? "submitted").trim(); // default submitted
-  const limit = Math.min(500, Math.max(1, Number(searchParams.get("limit") ?? "200")));
+  setErr(null);
+  setLoading(true);
 
-  let q = supabase
-    .from("attempts")
-    .select("payload, submitted_at_ms, last_active_at_ms, created_at_ms, attempt_id")
-    .eq("user_id", user.id)
-    .eq("status", status)
-    .order("submitted_at_ms", { ascending: false })
-    .limit(limit);
-
-  if (datasetId) q = q.eq("dataset_id", datasetId);
-
-  const { data, error } = await q;
-
-  if (error) {
-    const res = NextResponse.json({ ok: false, step: "select", error: error.message }, { status: 400 });
-    for (const c of pending) res.cookies.set(c.name, c.value, c.options);
-    res.headers.set("Cache-Control", "no-store");
-    return res;
-  }
-
-  const attempts = (data ?? [])
-    .map((r: any) => r.payload)
-    .filter(Boolean);
-
-  const res = NextResponse.json({ ok: true, attempts });
-  for (const c of pending) res.cookies.set(c.name, c.value, c.options);
-  res.headers.set("Cache-Control", "no-store");
-  return res;
-}
-
-export async function POST(req: NextRequest) {
-  const pending: Array<{ name: string; value: string; options: any }> = [];
-  const supabase = makeSupabase(req, pending);
-
-  const { data: userData, error: userErr } = await supabase.auth.getUser();
-  const user = userErr ? null : userData.user;
-
-  if (!user) {
-    const res = NextResponse.json({ ok: false, error: "No user session" }, { status: 401 });
-    for (const c of pending) res.cookies.set(c.name, c.value, c.options);
-    res.headers.set("Cache-Control", "no-store");
-    return res;
-  }
-
-  const body = (await req.json().catch(() => null)) as any;
-  const attempt = body?.attempt;
-
-  if (!attempt?.attemptId || !attempt?.modeKey || !attempt?.status) {
-    const res = NextResponse.json({ ok: false, error: "Missing required attempt fields" }, { status: 400 });
-    for (const c of pending) res.cookies.set(c.name, c.value, c.options);
-    res.headers.set("Cache-Control", "no-store");
-    return res;
-  }
-
-  const row = {
-    user_id: user.id,
-
-    attempt_id: attempt.attemptId,
-    user_key: attempt.userKey ?? "guest",
-    schema_version: attempt.schemaVersion ?? 1,
-
-    mode_key: attempt.modeKey,
-    dataset_id: attempt.datasetId ?? null,
-    dataset_version: attempt.datasetVersion ?? null,
-
-    status: attempt.status,
-
-    created_at_ms: attempt.createdAt ?? null,
-    last_active_at_ms: attempt.lastActiveAt ?? null,
-    submitted_at_ms: attempt.submittedAt ?? null,
-
-    payload: attempt,
-  };
-
-  const { error: upsertErr } = await supabase
-    .from("attempts")
-    .upsert(row, { onConflict: "user_id,attempt_id" });
-
-  if (upsertErr) {
-    const res = NextResponse.json({ ok: false, step: "upsert", error: upsertErr.message }, { status: 400 });
-    for (const c of pending) res.cookies.set(c.name, c.value, c.options);
-    res.headers.set("Cache-Control", "no-store");
-    return res;
-  }
-
-  const res = NextResponse.json({ ok: true });
-  for (const c of pending) res.cookies.set(c.name, c.value, c.options);
-  res.headers.set("Cache-Control", "no-store");
-  return res;
-}
-
-```
-
-### app/api/coach/route.ts
-```tsx
-// app/api/coach/route.ts
-import { openai } from "@/lib/openai";
-import { NextResponse } from "next/server";
-
-export const runtime = "nodejs";
-export const dynamic = "force-dynamic";
-
-const COOLDOWN_MS = 24 * 60 * 60 * 1000;
-const COOKIE_KEY = "expatise_coach_last_v3";
-
-/**
- * Master prompt (static). Keep this stable for best caching behavior.
- * (We’ll paste your full master prompt next step once UI/CSS is ready.)
- */
-const MASTER_PROMPT = 
-`SYSTEM PROMPT — Expatise GPT Coach (Master)
-
-You are “Expatise GPT Coach”: a practical, friendly, data-driven coach for a driving-test study app. You produce short, premium-feeling coaching messages that are grounded in the provided metrics, honest about uncertainty, and highly actionable.
-
-INPUTS YOU WILL RECEIVE
-- Skill Snapshot (window = either 30d or all-time): submitted-test performance (e.g., number of tests, questions answered, accuracy, average/best/latest score, score history points, topic/subtopic mastery, best-time/heatmap if provided).
-- Habits Snapshot (window = 7d): recent activity (e.g., total study minutes, practice days, streak, best day, daily activity series if provided).
-All statements must be based only on fields present in the input JSON. If a field is missing, treat it as unknown.
-You may see internal field names inside the JSON — NEVER print them.
-
-HARD RULES (never break)
-1) Two-layer lens + labeling:
-  - Skill claims use the provided Skill window label: (30d) or (all-time).
-  - Habit claims use (7d).
-  Every insight sentence must include the correct window label.
-2) Evidence rule:
-  Every insight must cite ≥1 metric from the input by value, written in user language. Never print raw field names or raw JSON (no internal keys, no JSON paths).
-
-3) No causality:
-  You may describe patterns/correlations, but must not say X causes Y.
-4) No guarantees:
-  Never guarantee passing. Use conditional language only.
-5) No moralizing:
-  No shame, no character judgments, no “should have.”
-6) Length + structure:
-  Entire output ~250 words max. Output MUST be Markdown using ONLY these headings:
-  ### Summary
-  ### Snapshot
-  ### Top levers
-  ### Today (10 / 20 / 40)
-  ### Next 7 days
-  ### One target
-  Do NOT use lettered sections (no “A) …”, “B) …”).
-7) One story only:
-  Choose EXACTLY ONE narrative (see “Narrative selection”). Everything must align to it.
-8) One measurable target only:
-  Exactly ONE measurable target in section F. No secondary targets anywhere else.
-
-  HUMANIZATION RULES (must follow)
-- Never show internal keys / classnames / JSON paths (examples: attemptsCount, attemptedTotal, accuracyPct, readinessPct, scoreAvg, scoreBest, scoreLatest, scorePoints, scoreSeries, timeThisWeekMin, timeDailySeries, questionsAnswered, testsCompleted, activeDays, timeStreakDays, timeBestDayMin, minTopicAttempted, t=… are forbidden).
-- Translate metrics to friendly labels:
-  - attemptsCount → “tests”
-  - attemptedTotal → “questions answered”
-  - accuracyPct → “accuracy”
-  - readinessPct → “readiness”
-  - scoreAvg/Best/Latest → “avg/best/latest score”
-  - timeThisWeekMin → “total study time”
-  - activeDays → “practice days”
-  - timeStreakDays → “streak”
-  - timeBestDayMin → “best day”
-- Never show raw timestamps. If needed, say “one recent session” and cite only completion numbers (e.g., “2 of 10 answered”).
-- Topic labels: never include “#”. Use the provided tagLabel as plain text (e.g., “Road Signs”).
-- Numbers formatting: keep it readable (e.g., “21 tests”, “52%”, “48/100”, “2 of 10 answered”). Avoid more than ~2 numbers per sentence.
-
-CONFIDENCE TIERS (overall; from Skill Snapshot)
-Compute overall confidence from Skill Snapshot:
-- High: 6+ tests in the Skill window OR 120+ questions answered in the Skill window
-- Medium: 3+ tests in the Skill window OR 40+ questions answered in the Skill window
-- Low: otherwise
-
-Language by confidence:
-- High: “Priority…”, “Best lever…”
-- Medium: “Likely…”, “Good bet…”
-- Low: “Early signal…”, “Too soon to call…”, “Let’s collect signal…”
-
-
-DATA QUALITY / VALIDITY RULES
-A) Topic validity (“weak topic” gate):
-- Only call a topic/subtopic “weak” if attempted >= minAttempted (typically 10 if provided; otherwise use 10). If below, say “early signal / not enough data yet.”
-- Topic confidence tiers by Ntopic (attempted):
- * 10–14: attempts-only targets (reach 20 attempts). NO accuracy deltas.
- * 15–24: attempts target + soft directional (“toward ~70%+”), NO accuracy deltas.
- * >=25: allow small numeric goals (+10 pts) or thresholds across next 20 attempts.
-- Never say “raise accuracy by +X” unless Ntopic >= 25.
-
-
-B) Completion (skip/blank) validity (confounder gate):
-- Completion per test = answered ÷ total questions for each test (from the Skill score history list).
-- Completion is “unstable/low” if ANY of:
- * median completion < 0.85
- * shift between halves >= 0.08
- * range >= 0.12
-- If completion is unstable/low, treat it as the main confounder; do NOT attribute score changes to knowledge.
-
-
-C) Trend validity (no fake trends):
-- Forbidden to claim “improving/declining/stable” unless >=3 relevant points.
-- Use split-median: compare median of early half vs late half (not first vs last).
-- Score trend thresholds:
- * |delta| >= 6 → up/down
- * |delta| <= 3 → stable
- * else → “mixed / flat-ish”
-- Trend statements must include receipts: (window label, n, medians), e.g., “(30d, n=7 tests, median 76→83)”.
-- Confounder gate: if completion changed by >= 8 pts between halves, attribute trend to completion and avoid “knowledge improved” language.
-- Daily avgScore trend uses ACTIVE DAYS only (days with testsCompleted>0). Zero days are for habit/consistency only.
-- If <3 points: say “not enough signal yet.”
-
-
-D) Inconsistency wording gates:
-- Use “volatile/swingy/inconsistent” only if score range >= 20 AND n>=3 (in that window).
-- Use “variable/up-and-down” only if range >= 12 AND n>=3.
-- Every inconsistency claim must include receipts (window, n, range) AND end with a stabilization experiment:
- “3 sessions: same mode + same time window + 1–2 topics + completion strategy.”
-
-
-E) Time-of-day / bestTime / heatmap:
-- Strong recommendations only if enough samples (>=3 relevant sessions/tests in that window). Otherwise frame as a short experiment, not a conclusion.
-
-HABIT THRESHOLDS (7d)
-Define “active day” as:
-- Preferred (time-based): 10+ minutes on that day (from the 7d daily minutes list)
-- Fallback (if time tracking looks incomplete): 10+ questions answered OR 1+ test on that day (from the 7d daily activity list)
-
-Time data reliability:
-- Reliable if weekly study minutes > 0 OR at least one day shows > 0 minutes.
-- If not reliable but answer activity exists, do not judge time; base habit judgments on answered activity and note tracking seems incomplete.
-
-requiredDays:
-- 3 if overall confidence is Low
-- 4 if overall confidence is Medium/High
-LowWeeklyTime:
-- activeDays < requiredDays
-SpikyPattern (time-based):
-- bestDayShare = timeBestDayMin / max(timeThisWeekMin, 1)
-- SpikyPattern if bestDayShare >= 0.60 OR (timeBestDayMin >= 2.2*medianActiveDayMin AND activeDays<=4) OR (timeStreakDays<=1 AND activeDays>=2)
-- HighlySpiky if bestDayShare >= 0.75 OR activeDays == 1
-Wording rule: only say “spiky/bursty/start-stop” if SpikyPattern, and include receipts: “(7d: best day X min, total Y min, activeDays Z)”.
-
-NARRATIVE SELECTION (choose EXACTLY ONE; in this priority order)
-1) DATA-COLLECTION: if overall confidence is Low OR not enough meaningful data.
-2) COMPLETION-FIRST: if completion is unstable/low (per rules above).
-3) HABIT-FIRST: if practice days are below requiredDays OR practice is bursty OR streak is 0–1 days OR consistency streak is 0.
-4) TOPIC-FOCUS: if eligible weak topics/subtopics exist (attempted >= minAttempted) and completion/habits aren’t the bigger blocker.
-5) STABILITY EXPERIMENT: if score range >=20 with n>=3 AND completion is stable.
-6) RHYTHM EXPERIMENT (rare): only if others are fine AND heatmap/bestTime has >=3 samples AND effect size is meaningful.
-
-
-TARGET SELECTION (ONE target only; NO score goals)
-Pick ONE measurable target aligned to the chosen narrative. Every target must include:
-- baseline + n + window label (e.g., “7d baseline: 2 practice days” or “30d baseline: median completion ~82% across 4 tests”)
-- the planned change and time window (“over the next 7 days” / “next 2 tests”)
-
-
-A) DATA-COLLECTION (Low confidence):
-- Habit-first measurable target based on available habit metrics, e.g.:
- * activeDays → requiredDays, OR
- * timeStreakDays → 3, OR
- * timeThisWeekMin → 60 (if timeDataReliable), OR
- * 60 answered questions over 3 days (if time unreliable but answer activity exists)
-
-
-B) COMPLETION-FIRST:
-- Completion target only, framed by test count:
- * If Ntests=1: “Next test (experiment): aim for ~90% answered.”
- * If Ntests=2–3: “Next 2 tests: aim for ≥90% answered.”
- * If Ntests>=4: “Priority this week: keep ≥90% answered per test.”
-- Always include completion baseline with (window) + n.
-
-
-C) HABIT-FIRST:
-- Habit target only:
- * activeDays → requiredDays OR timeStreakDays → 3 OR timeThisWeekMin → 60 (if reliable)
-- Include (7d) receipts.
-
-
-D) TOPIC-FOCUS:
-- Choose max 1–2 subtopics.
-- Ntopic 10–14: reach 20 attempts (no accuracy claims).
-- Ntopic 15–24: reach 25 attempts + soft direction “toward ~70%+” (no deltas).
-- Ntopic >=25: allow “+10 pts” OR “≥75% across next 20 attempts.”
-- Tie-break: lowest accuracy first; if tied, highest attempted.
-
-
-E) STABILITY EXPERIMENT / RHYTHM EXPERIMENT:
-- Target is completing a 3-session standardization experiment:
- “3 sessions: same mode + same time window + same 1–2 topics + completion strategy.”
-
- Before finalizing, do a quick self-check: output must contain no camelCase tokens, no underscores, no “#”, and no raw timestamps.
-
-
-PRAISE / ENCOURAGEMENT POLICY
-- Max 1–2 encouragement lines total.
-- Must be evidence-based: include (window) + metric + why it matters.
-- Prefer praising behaviors (active days, streaks, reps, completion stability) over traits.
-- Do not praise outcomes unless sample size supports it (Medium/High confidence; topic n>=25 for accuracy praise).
-- If no activity: normalize and propose a 10-minute starter baseline (no fake praise).
-- If spiky: praise capacity (best day) then redirect to distribution (minimum dose).
-- Close with agency and a minimum-dose option.
-
-
-OUTPUT FORMAT (Markdown only; no lettered sections)
-### Summary
-One sentence. No labels.
-
-### Snapshot
-- (30d) Two short bullets, each citing metrics.
-- (7d) One short bullet, citing habit metrics.
-
-### Top levers
-1) Lever title — Why: … Next: …
-2) Lever title — Why: … Next: …
-3) Lever title — Why: … Next: …
-
-### Today (10 / 20 / 40)
-- 10 min: …
-- 20 min: …
-- 40 min: …
-
-### Next 7 days
-- 5–7 bullets, specific, metric-aware.
-
-### The One thing
-Target: ONE measurable target (baseline + window label + timeframe).
-Close with one short encouragement line.
-
-
-STYLE
-Clear, motivating, practical. No mention you are an AI. Avoid generic advice. Be specific to the provided metrics only. Avoid stiff labels like “Strong, consistent practice”. Write like a premium coach: concise, specific, no filler adjectives unless backed by a metric.
-`.trim();
-
-const FALLBACK_PROMPT = `
-You are GPT Coach inside Expatise (a driver's license study app).
-Use ONLY the provided JSON as truth. Do not invent data.
-Output <= 250 words.
-Structure:
-1) Skill snapshot (30d)
-2) Habits snapshot (7d)
-3) Top 3 levers
-4) Today's plan (10/20/30 min)
-5) The coming week
-If data is low-confidence, say so and suggest what to do next.
-`.trim();
-
-type CoachPayload = {
-  coachContractVersion: string;
-  skillWindowLabel: "30d" | "all";
-  habitWindowLabel: "7d";
-  skill: {
-    attemptsCount: number; // real tests in window
-    attemptedTotal: number; // total answered in window
-    accuracyPct: number;
-    readinessPct: number;
-    scoreAvg: number;
-    scoreBest: number;
-    scoreLatest: number;
-    scorePoints: Array<{ t: number; scorePct: number; answered: number; totalQ: number }>;
-    minTopicAttempted: number;
-    weakestSubtopics?: Array<{ tagLabel: string; attempted: number; accuracyPct: number }>;
-  };
-  habits: {
-    timeThisWeekMin: number;
-    timeBestDayMin: number;
-    timeStreakDays: number;
-    activeDays: number;
-    requiredDays: number;
-  };
-};
-
-function num(n: any, d = 0) {
-  const x = Number(n);
-  return Number.isFinite(x) ? x : d;
-}
-
-function extractText(res: any): string {
-  const t = typeof res?.output_text === "string" ? res.output_text.trim() : "";
-  if (t) return t;
-
-  const out = Array.isArray(res?.output) ? res.output : [];
-  const chunks: string[] = [];
-
-  for (const item of out) {
-    const content = Array.isArray(item?.content) ? item.content : [];
-    for (const c of content) {
-      if (typeof c?.text === "string") chunks.push(c.text);
-      if (typeof c?.refusal === "string") chunks.push(c.refusal);
-    }
-  }
-  return chunks.join("").trim();
-}
-
-
-export async function POST(req: Request) {
   try {
-    // ---- 1) Cooldown check (server-enforced via cookie)
-    const cookieHeader = req.headers.get("cookie") ?? "";
-    const match = cookieHeader.match(new RegExp(`${COOKIE_KEY}=([^;]+)`));
-    const last = match ? Number(decodeURIComponent(match[1])) : 0;
+    const { data, error } = await supabase.functions.invoke("account-delete", { body: {} });
+    let j: any = data ?? null;
 
-    const now = Date.now();
-    if (Number.isFinite(last) && last > 0 && now - last < COOLDOWN_MS) {
-      const nextAllowedAt = last + COOLDOWN_MS;
-      return NextResponse.json(
-        {
-          ok: false,
-          error: "cooldown",
-          nextAllowedAt,
-          retryAfterSec: Math.ceil((nextAllowedAt - now) / 1000),
-        },
-        { status: 429 }
-      );
+    // When the function returns 4xx/5xx, supabase-js can return a FunctionsHttpError,
+    // and the response JSON is available via error.context.json(). :contentReference[oaicite:1]{index=1}
+    if (error) {
+      if (error instanceof FunctionsHttpError) {
+        j = await error.context.json().catch(() => null);
+      }
+      throw new Error(j?.detail ?? j?.error ?? error.message);
     }
 
-    // ---- 2) Parse payload
-    const body = (await req.json().catch(() => null)) as CoachPayload | null;
-    if (!body || typeof body !== "object") {
-      return NextResponse.json({ ok: false, error: "Invalid JSON" }, { status: 400 });
+    if (!j?.ok) {
+      throw new Error(j?.detail ?? j?.error ?? "Delete failed");
     }
 
-    // ---- 3) Minimum data gate (hard guardrail)
-    const attemptsCount = num(body?.skill?.attemptsCount);
-    const attemptedTotal = num(body?.skill?.attemptedTotal);
-
-    const maxAnswered = Math.max(
-      0,
-      ...(body?.skill?.scorePoints ?? []).map((p) => num(p.answered))
-    );
-
-    const meetsMinimum =
-      (attemptsCount >= 1 && maxAnswered >= 80) || attemptedTotal >= 120;
-
-    if (!meetsMinimum) {
-      return NextResponse.json(
-        {
-          ok: false,
-          error: "insufficient_data",
-          required:
-            "Submit 1 Real Test with ≥80 answered OR reach 120 questions answered total.",
-        },
-        { status: 400 }
-      );
-    }
-
-    // ---- 4) Call OpenAI (Responses API: instructions + input)
-    const inputJson = JSON.stringify(body);
-    const result = await openai.responses.create({
-  model: "gpt-5-mini",
-  reasoning: { effort: "minimal" },   // ✅ key fix
-  text: { verbosity: "low" },         // optional, helps keep it short
-  instructions: MASTER_PROMPT || FALLBACK_PROMPT,
-  input: `Task: Generate a Stats Coach report for the user.\nRules: <=250 words. Use ONLY the JSON.\n\nJSON:\n${inputJson}`,
-  max_output_tokens: 900,             // ✅ enough for minimal reasoning + ~250 words
-});
-
-
-    const report = extractText(result);
-
-if (!report) {
-  // Helps you debug once, without leaking in prod
-  if (process.env.NODE_ENV !== "production") {
-    console.log("EMPTY COACH RESPONSE:", JSON.stringify(result, null, 2));
-  }
-  return NextResponse.json({ ok: false, error: "empty_output" }, { status: 502 });
-}
-
-    // ---- 5) Set cooldown cookie only after success
-    const res = NextResponse.json({ ok: true, report, createdAt: now });
-
-    res.cookies.set({
-      name: COOKIE_KEY,
-      value: String(now),
-      httpOnly: true,
-      sameSite: "lax",
-      secure: process.env.NODE_ENV === "production",
-      path: "/",
-      maxAge: Math.floor(COOLDOWN_MS / 1000),
-    });
-
-    return res;
-  } catch (err: any) {
-    return NextResponse.json(
-      { ok: false, error: "Stats Coach API failed", detail: String(err?.message ?? err) },
-      { status: 500 }
-    );
-  }
-}
-
-```
-
-### app/api/entitlements/route.ts
-```tsx
-// app/api/entitlements/route.ts
-import { NextResponse } from "next/server";
-import { cookies } from "next/headers";
-import { createServerClient } from "@supabase/ssr";
-
-import { normalizeEmail } from "@/lib/auth";
-import { userKeyFromEmail } from "@/lib/identity/userKey";
-import { FREE_ENTITLEMENTS } from "@/lib/entitlements/types";
-
-export const runtime = "nodejs";
-export const dynamic = "force-dynamic";
-
-const ADMIN_PREMIUM_EMAILS = (process.env.ADMIN_PREMIUM_EMAILS || "user@expatise.com")
-  .trim()
-  .split(",")
-  .map((s) => normalizeEmail(s))
-  .filter(Boolean);
-
-function isAdminEmail(email: string) {
-  return ADMIN_PREMIUM_EMAILS.includes(normalizeEmail(email));
-}
-
-function makeUserKey(user: any | null) {
-  if (!user) return "guest";
-  if (user.is_anonymous) return `anon:${user.id}`;
-
-  const email = user.email ?? "";
-  if (email) return userKeyFromEmail(email);
-
-  // provider without email
-  return `sb:${user.id}`;
-}
-
-export async function GET() {
-  const cookieStore = await Promise.resolve(cookies());
-
-
-  // collect any cookies Supabase wants to set, then apply them to the final JSON response
-  const pending: Array<{ name: string; value: string; options: any }> = [];
-
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-  const supabaseKey =
-    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ||
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
-
-  const supabase = createServerClient(supabaseUrl, supabaseKey, {
-  auth: {
-    flowType: "pkce",
-    storageKey: "sb-expatise-auth",
-  },
-  cookies: {
-    getAll() {
-      return cookieStore.getAll();
-    },
-    setAll(cookiesToSet) {
-      pending.push(...cookiesToSet);
-    },
-  },
-});
-
-  const { data, error } = await supabase.auth.getUser();
-  const user = error ? null : data.user;
-
-  const userKey = makeUserKey(user);
-
-  // default: free
-  let entitlements = FREE_ENTITLEMENTS;
-
-  // admin override (email only)
-  const email = normalizeEmail(user?.email ?? "");
-  if (email && isAdminEmail(email)) {
-    entitlements = { isPremium: true, source: "admin" as const, updatedAt: Date.now() };
-  }
-
-  const res = NextResponse.json({ ok: true, userKey, entitlements });
-  res.headers.set("Cache-Control", "no-store");
-
-  // apply any refreshed auth cookies (safe)
-  for (const c of pending) res.cookies.set(c.name, c.value, c.options);
-
-  return res;
-}
-
-```
-
-### app/api/logout/route.ts
-```tsx
-// app/api/logout/route.ts
-import { NextResponse } from "next/server";
-import { cookies } from "next/headers";
-import { createServerClient } from "@supabase/ssr";
-import { AUTH_COOKIE, cookieOptions } from "@/lib/auth";
-
-export const runtime = "nodejs";
-export const dynamic = "force-dynamic";
-
-export async function POST() {
-  const cookieStore = await Promise.resolve(cookies());
-  const pending: Array<{ name: string; value: string; options: any }> = [];
-
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-  const anon = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
-
-  const supabase = createServerClient(url, anon, {
-    auth: { flowType: "pkce", storageKey: "sb-expatise-auth" },
-    cookies: {
-      getAll() {
-        return cookieStore.getAll();
-      },
-      setAll(cookiesToSet) {
-        pending.push(...cookiesToSet);
-      },
-    },
-  });
-
-  // ✅ server-side Supabase sign out (clears auth cookies)
-  try {
+    // Local cleanup
     await supabase.auth.signOut();
-  } catch {
-    // ignore
+    await resetAllLocalData({ includeCaches: true });
+
+    setDone(true);
+    router.replace("/account-deletion");
+  } catch (e: any) {
+    setErr(e?.message ?? "Account deletion failed.");
+  } finally {
+    setLoading(false);
   }
-
-  const res = NextResponse.json({ ok: true });
-  res.headers.set("Cache-Control", "no-store");
-
-  // apply any cookie changes Supabase produced
-  for (const c of pending) res.cookies.set(c.name, c.value, c.options);
-
-  // ✅ also clear your legacy cookie (safe even if unused now)
-  res.cookies.set({
-    name: AUTH_COOKIE,
-    value: "",
-    ...cookieOptions(),
-    maxAge: 0,
-  });
-
-  return res;
-}
-```
-
-### app/api/onboarding/route.ts
-```tsx
-import { NextResponse } from 'next/server';
-import { ONBOARDING_COOKIE } from '@/lib/middleware/paths';
-
-export async function POST() {
-  const res = NextResponse.json({ ok: true });
-
-  res.cookies.set({
-    name: ONBOARDING_COOKIE,
-    value: '1',
-    path: '/',
-    maxAge: 60 * 60 * 24 * 1000, // 1 year
-  });
-
-  return res;
 }
 
-```
+  return (
+    <main style={{ maxWidth: 520, margin: "0 auto", padding: "24px 16px" }}>
+      <BackButton />
+      <h1 style={{ fontSize: 22, marginBottom: 10 }}>Delete Account</h1>
 
-### app/api/session/route.ts
-```tsx
-// app/api/session/route.ts
-import { NextResponse } from "next/server";
-import { cookies } from "next/headers";
-import { createServerClient } from "@supabase/ssr";
+      {done ? (
+        <p style={{ opacity: 0.85 }}>Your account has been deleted. Redirecting…</p>
+      ) : (
+        <>
+          <p style={{ opacity: 0.85 }}>
+            This will permanently delete your account and server-stored data for this account.
+          </p>
 
-function detectProvider(user: any): string | null {
-  if (!user) return null;
-  if (user.is_anonymous) return "anonymous";
+          <div style={{ marginTop: 16 }}>
+            <label style={{ display: "block", fontSize: 13, opacity: 0.85, marginBottom: 6 }}>
+              Type <b>DELETE</b> to confirm
+            </label>
+            <input
+              value={typed}
+              onChange={(e) => setTyped(e.target.value)}
+              placeholder="DELETE"
+              style={{
+                width: "100%",
+                padding: "12px 12px",
+                borderRadius: 12,
+                border: "1px solid rgba(148,163,184,0.5)",
+                outline: "none",
+              }}
+            />
+          </div>
 
-  const am = user.app_metadata ?? {};
-  if (typeof am.provider === "string" && am.provider) return am.provider;
-  if (Array.isArray(am.providers) && am.providers.length) return am.providers[0];
+          {err ? (
+            <div style={{ marginTop: 10, color: "rgba(185,28,28,0.95)", fontSize: 13 }}>
+              {err}
+            </div>
+          ) : null}
 
-  const ident = user.identities?.[0]?.provider;
-  return ident ?? null;
-}
+          <button
+            onClick={onDelete}
+            disabled={!canDelete || loading}
+            style={{
+              marginTop: 16,
+              width: "100%",
+              height: 44,
+              borderRadius: 14,
+              border: "1px solid rgba(148,163,184,0.5)",
+              background: canDelete ? "rgba(239,68,68,0.95)" : "rgba(148,163,184,0.25)",
+              color: "white",
+              fontWeight: 800,
+              cursor: canDelete && !loading ? "pointer" : "not-allowed",
+            }}
+          >
+            {loading ? "Deleting…" : "Delete My Account"}
+          </button>
 
-
-export async function GET() {
-  const cookieStore = await Promise.resolve(cookies());
-
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-  const key =
-    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ||
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
-
-  const pending: Array<{ name: string; value: string; options: any }> = [];
-
-  const supabase = createServerClient(url, key, {
-  auth: {
-    flowType: "pkce",
-    storageKey: "sb-expatise-auth",
-  },
-  cookies: {
-    getAll() {
-      return cookieStore.getAll();
-    },
-    setAll(cookiesToSet) {
-      pending.push(...cookiesToSet);
-    },
-  },
-});
-
- 
-
-  const { data, error } = await supabase.auth.getUser();
-  const user = error ? null : data.user;
-
-  // ✅ anonymous/no-user => SessionNo exactly (provider MUST be null)
-  if (!user || detectProvider(user) === "anonymous") {
-    const res = NextResponse.json({
-      ok: false,
-      authed: false,
-      method: "guest",
-      email: null,
-      provider: null, // ✅ changed
-    });
-    res.headers.set("Cache-Control", "no-store");
-    pending.forEach(({ name, value, options }) => res.cookies.set(name, value, options));
-    return res;
-  }
-
-  const provider = detectProvider(user);
-  const isEmail = provider === "email" || (!!user.email && !provider);
-
-  const res = NextResponse.json({
-    ok: true,
-    authed: true,
-    method: isEmail ? "email" : "social",
-    email: user.email ?? null,
-    provider: isEmail ? "email" : provider,
-  });
-
-  res.headers.set("Cache-Control", "no-store");
-  pending.forEach(({ name, value, options }) => res.cookies.set(name, value, options));
-  return res;
-}
-
-```
-
-### app/api/supa-test/route.ts
-```tsx
-import { NextResponse } from "next/server";
-import { createServerClient } from "@supabase/ssr";
-import type { NextRequest } from "next/server";
-
-export async function GET(req: NextRequest) {
-  const sbCookies = req.cookies
-    .getAll()
-    .filter((c) => c.name.startsWith("sb-"))
-    .map((c) => c.name);
-
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        getAll() {
-          return req.cookies.getAll();
-        },
-        setAll() {
-          // no-op for this test endpoint
-        },
-      },
-    }
+          <button
+            onClick={() => router.back()}
+            disabled={loading}
+            style={{
+              marginTop: 10,
+              width: "100%",
+              height: 44,
+              borderRadius: 14,
+              border: "1px solid rgba(148,163,184,0.5)",
+              background: "transparent",
+              fontWeight: 700,
+              cursor: loading ? "not-allowed" : "pointer",
+            }}
+          >
+            Cancel
+          </button>
+        </>
+      )}
+    </main>
   );
-
-  const { data: userData, error: userErr } = await supabase.auth.getUser();
-  const user = userData.user;
-
-  if (!user) {
-    return NextResponse.json(
-      { ok: false, error: "No user session", sbCookies, userErr: userErr?.message ?? null },
-      { status: 401 }
-    );
-  }
-
-  const { error: insErr } = await supabase.from("content").insert({
-    user_id: user.id,
-    kind: "ping",
-    payload: { at: Date.now() },
-  });
-
-  if (insErr) {
-    return NextResponse.json(
-      { ok: false, step: "insert", error: insErr.message, sbCookies },
-      { status: 400 }
-    );
-  }
-
-  const { data: rows, error: selErr } = await supabase
-    .from("content")
-    .select("id, created_at, payload")
-    .eq("user_id", user.id)
-    .eq("kind", "ping")
-    .order("created_at", { ascending: false })
-    .limit(3);
-
-  if (selErr) {
-    return NextResponse.json(
-      { ok: false, step: "select", error: selErr.message, sbCookies },
-      { status: 400 }
-    );
-  }
-
-  return NextResponse.json({ ok: true, user_id: user.id, sbCookies, rows });
 }
-
 ```
 
-### app/api/time-logs/route.ts
+### app/auth/callback/page.tsx
 ```tsx
-// app/api/time-logs/route.ts
-import type { NextRequest } from "next/server";
-import { NextResponse } from "next/server";
-import { createServerClient } from "@supabase/ssr";
+'use client';
 
-export const runtime = "nodejs";
-export const dynamic = "force-dynamic";
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { createClient } from '@/lib/supabase/client';
 
-function makeSupabase(
-  req: NextRequest,
-  pending: Array<{ name: string; value: string; options: any }>
-) {
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-  const supabaseKey =
-    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ||
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
-
-  return createServerClient(supabaseUrl, supabaseKey, {
-    cookies: {
-      getAll() {
-        return req.cookies.getAll();
-      },
-      setAll(cookiesToSet) {
-        pending.push(...cookiesToSet);
-      },
-    },
-  });
+// Client-safe version of your safeNextPath()
+// Only allow same-site relative paths like "/stats".
+// Anything else falls back to "/".
+function safeNextPathClient(nextRaw: string | null | undefined, fallback = '/') {
+  const v = String(nextRaw ?? '').trim();
+  if (!v) return fallback;
+  if (!v.startsWith('/')) return fallback;
+  if (v.startsWith('//')) return fallback; // protocol-relative
+  if (v.includes('://')) return fallback; // absolute URL
+  return v;
 }
 
-function isYmd(s: string) {
-  return /^\d{4}-\d{2}-\d{2}$/.test(s);
+export default function AuthCallbackPage() {
+  const router = useRouter();
+  const [msg, setMsg] = useState('Completing sign-in…');
+
+  useEffect(() => {
+    let alive = true;
+
+    (async () => {
+      try {
+        const supabase = createClient();
+
+        const url = new URL(window.location.href);
+        const code = url.searchParams.get('code');
+        const nextRaw = url.searchParams.get('next');
+        const next = safeNextPathClient(nextRaw, '/');
+
+        // In PKCE, Supabase redirects back with ?code=...
+        // Exchange it for a session on the client.
+        if (code) {
+          const { error } = await supabase.auth.exchangeCodeForSession(code);
+          if (error) {
+            if (!alive) return;
+            setMsg(`Sign-in failed: ${error.message}`);
+            return;
+          }
+        }
+
+        // Optional: clean URL params (purely cosmetic)
+        try {
+          window.history.replaceState({}, '', next);
+        } catch {}
+
+        router.replace(next);
+      } catch (e: any) {
+        if (!alive) return;
+        setMsg(`Sign-in failed: ${e?.message ?? 'Unknown error'}`);
+      }
+    })();
+
+    return () => {
+      alive = false;
+    };
+  }, [router]);
+
+  return <div style={{ padding: 16 }}>{msg}</div>;
 }
-
-export async function GET(req: NextRequest) {
-  const pending: Array<{ name: string; value: string; options: any }> = [];
-  const supabase = makeSupabase(req, pending);
-
-  const { data: userData, error: userErr } = await supabase.auth.getUser();
-  const user = userErr ? null : userData.user;
-
-  if (!user) {
-    const res = NextResponse.json({ ok: false, error: "No user session" }, { status: 401 });
-    for (const c of pending) res.cookies.set(c.name, c.value, c.options);
-    res.headers.set("Cache-Control", "no-store");
-    return res;
-  }
-
-  const { searchParams } = new URL(req.url);
-  const limit = Math.min(400, Math.max(1, Number(searchParams.get("limit") ?? "200")));
-
-  const { data, error } = await supabase
-    .from("time_logs")
-    .select("date, kind, seconds")
-    .eq("user_id", user.id)
-    .order("date", { ascending: false })
-    .limit(limit);
-
-  if (error) {
-    const res = NextResponse.json({ ok: false, step: "select", error: error.message }, { status: 400 });
-    for (const c of pending) res.cookies.set(c.name, c.value, c.options);
-    res.headers.set("Cache-Control", "no-store");
-    return res;
-  }
-
-  const res = NextResponse.json({ ok: true, logs: data ?? [] });
-  for (const c of pending) res.cookies.set(c.name, c.value, c.options);
-  res.headers.set("Cache-Control", "no-store");
-  return res;
-}
-
-export async function POST(req: NextRequest) {
-  const pending: Array<{ name: string; value: string; options: any }> = [];
-  const supabase = makeSupabase(req, pending);
-
-  const { data: userData, error: userErr } = await supabase.auth.getUser();
-  const user = userErr ? null : userData.user;
-
-  if (!user) {
-    const res = NextResponse.json({ ok: false, error: "No user session" }, { status: 401 });
-    for (const c of pending) res.cookies.set(c.name, c.value, c.options);
-    res.headers.set("Cache-Control", "no-store");
-    return res;
-  }
-
-  const body = (await req.json().catch(() => null)) as any;
-  const kind = String(body?.kind ?? "").trim();
-  const date = String(body?.date ?? "").trim();
-  const seconds = Number(body?.seconds ?? NaN);
-
-  if ((kind !== "test" && kind !== "study") || !isYmd(date) || !Number.isFinite(seconds) || seconds < 0) {
-    const res = NextResponse.json({ ok: false, error: "Invalid payload" }, { status: 400 });
-    for (const c of pending) res.cookies.set(c.name, c.value, c.options);
-    res.headers.set("Cache-Control", "no-store");
-    return res;
-  }
-
-  const row = {
-    user_id: user.id,
-    date,          // date column
-    kind,          // "test" | "study"
-    seconds: Math.floor(seconds),
-    updated_at: new Date().toISOString(),
-  };
-
-  const { error: upsertErr } = await supabase
-    .from("time_logs")
-    .upsert(row, { onConflict: "user_id,date,kind" });
-
-  if (upsertErr) {
-    const res = NextResponse.json({ ok: false, step: "upsert", error: upsertErr.message }, { status: 400 });
-    for (const c of pending) res.cookies.set(c.name, c.value, c.options);
-    res.headers.set("Cache-Control", "no-store");
-    return res;
-  }
-
-  const res = NextResponse.json({ ok: true });
-  for (const c of pending) res.cookies.set(c.name, c.value, c.options);
-  res.headers.set("Cache-Control", "no-store");
-  return res;
-}
-
-```
-
-### app/auth/callback/route.ts
-```tsx
-// app/auth/callback/route.ts
-import type { NextRequest } from "next/server";
-import { NextResponse } from "next/server";
-import { createServerClient } from "@supabase/ssr";
-
-function safeNextPath(next: string | null) {
-  if (!next) return "/";
-  return next.startsWith("/") ? next : "/";
-}
-
-export async function GET(req: NextRequest) {
-  const requestUrl = new URL(req.url);
-  const code = requestUrl.searchParams.get("code");
-  const next = safeNextPath(requestUrl.searchParams.get("next"));
-
-  const redirectTo = new URL(next, requestUrl.origin);
-  const res = NextResponse.redirect(redirectTo);
-
-  if (!code) return res;
-
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-  const supabaseKey =
-    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ||
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
-
-  const supabase = createServerClient(supabaseUrl, supabaseKey, {
-    cookies: {
-      getAll() {
-        return req.cookies.getAll();
-      },
-      setAll(cookiesToSet) {
-        cookiesToSet.forEach(({ name, value, options }) => {
-          res.cookies.set(name, value, options);
-        });
-      },
-    },
-  });
-
-  try {
-    await supabase.auth.exchangeCodeForSession(code);
-  } catch {
-    return NextResponse.redirect(new URL("/login?error=oauth", requestUrl.origin));
-  }
-
-  return res;
-}
-
 ```
 
 ### app/checkout/checkout.module.css
@@ -9356,10 +8651,53 @@ export default function BackLink() {
 }
 ```
 
+### app/coming-soon/coming-soon.module.css
+```css
+.page {
+  /* ✅ best cross-device viewport height */
+  min-height: 100vh;
+  min-height: 100svh;
+  min-height: 100dvh;
+
+  /* ✅ dead-center both axes */
+  display: grid;
+  place-items: center;
+
+  padding: 24px;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  max-width: 28rem;
+}
+
+.title {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.text {
+  margin: 0;
+  opacity: 0.85;
+}
+
+.back {
+  margin-top: 8px;
+}
+```
+
 ### app/coming-soon/page.tsx
 ```tsx
 // app/coming-soon/page.tsx
 import BackButton from "@/components/BackButton";
+import styles from "./coming-soon.module.css";
+import Link from "next/link";
 
 type Props = {
   searchParams?: { feature?: string; returnTo?: string };
@@ -9395,18 +8733,18 @@ export default function ComingSoonPage({ searchParams }: Props) {
 
   const backHref = safeReturnTo(searchParams?.returnTo);
 
-  return (
-    <main style={{ padding: 24 }}>
-      {/* ✅ top-left arrow uses fallbackHref so it NEVER dumps to Home */}
-      <BackButton fallbackHref={backHref} />
 
-      <h1 style={{ fontSize: 24, fontWeight: 700 }}>Coming Soon</h1>
-      <p style={{ marginTop: 12 }}>{feature} is not ready yet.</p>
+return (
+  <main className={styles.page}>
+    <BackButton variant="fixed" fallbackHref={backHref} />
 
-      <div style={{ marginTop: 16 }}>
-      </div>
-    </main>
-  );
+    <div className={styles.content}>
+      <h1 className={styles.title}>Coming Soon</h1>
+      <p className={styles.text}>{feature} is not ready yet.</p>
+    </div>
+  </main>
+);
+
 }
 
 ```
@@ -9672,6 +9010,11 @@ export default function ForgotPasswordPage() {
 :root {
   --background: #ffffff;
   --foreground: #171717;
+   --bottom-nav-height: 66px;
+  --bottom-nav-gap: 6px;
+  --bottom-safe: env(safe-area-inset-bottom, 0px);
+  --bottom-nav-clearance: calc(var(--bottom-nav-height) + var(--bottom-nav-gap) + var(--bottom-safe));
+  --bottom-nav-hide-y: calc(var(--bottom-nav-clearance) + 16px);
 }
 
 
@@ -9700,6 +9043,7 @@ export default function ForgotPasswordPage() {
     --test-text: var(--text-main);
   --test-muted: var(--text-muted);
   --test-icon: var(--test-text);
+
 }
 
 /* Light theme overrides (when ThemeProvider sets data-theme="light") */
@@ -9771,7 +9115,7 @@ export default function ForgotPasswordPage() {
     var(--chart-grad-warm) 0%,
     var(--chart-grad-cool) 100%
   );
-
+}
 
 /* Base page background + text color */
 html,
@@ -9787,7 +9131,7 @@ body {
   font-family: var(--font-sans), system-ui, -apple-system, BlinkMacSystemFont,
     'SF Pro Text', 'Segoe UI', sans-serif;
 }
-}  
+
 ```
 
 ### app/layout.tsx
@@ -9806,6 +9150,11 @@ import FreeUsageProgressBadge from "@/components/FreeUsageProgressBadge.client";
 import SwipeBack from "@/components/SwipeBack.client";
 import TimeTracker from "@/components/TimeTracker.client";
 import AuthSelfHeal from "@/components/AuthSelfHeal";
+import BottomNav from "@/components/BottomNav";
+import OnboardingGate from "@/components/OnboardingGate.client";
+import NativeInsets from "@/components/NativeInsets.client";
+import BrandIntroSplash from "@/components/BrandIntroSplash.client";
+import BrandSplash from "@/components/BrandSplash.client";
 
 
 const geistSans = Geist({
@@ -9838,14 +9187,16 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${nunitoSans.variable} antialiased`}
       >
+        <BrandSplash />
         <EntitlementsProvider>
           <FreeUsageProgressBadge />
-
+          <OnboardingGate />
           <ThemeProvider>
             <AuthSelfHeal />
             <UserProfileProvider>
               <SwipeBack />
               <TimeTracker />
+              <NativeInsets />
               {children}
               </UserProfileProvider>
           </ThemeProvider>
@@ -10074,7 +9425,7 @@ export default function CreateAccountModal({ open, onClose, onCreated }: Props) 
             aria-label="Sign up with Google"
             onClick={async () => {
               setError(null);
-              const redirectTo = `${window.location.origin}/auth/callback`;
+              const redirectTo = `${window.location.origin}/auth/callback?next=${encodeURIComponent("/")}`;
               const { error } = await supabase.auth.signInWithOAuth({
                 provider: 'google',
                 options: { redirectTo },
@@ -11036,20 +10387,25 @@ export default function LoginPage() {
 
 ### app/onboarding/page.tsx
 ```tsx
+//app/onboarding/page.tsx
 'use client';
 
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import styles from './onboarding.module.css';
+import { markOnboarded } from '@/lib/onboarding/markOnboarded.client';
 
 export default function OnboardingPage() {
   const router = useRouter();
 
-  const handleGetStarted = async () => {
-    const res = await fetch('/api/onboarding', { method: 'POST' });
-    if (!res.ok) return;
-    router.replace('/login'); // replace = “don’t show onboarding on back”
-  };
+const handleGetStarted = () => {
+  try {
+    markOnboarded();
+  } catch {
+    // optional: show UI error, but usually you can ignore
+  }
+  router.replace("/login"); // don't show onboarding on back
+};
 
   return (
     <main className={styles.page}>
@@ -11095,14 +10451,22 @@ export default function OnboardingPage() {
   display: flex;
   justify-content: center;
   background: var(--color-page-bg);
-}
 
-:root{
+  /* Bottom-nav layout tokens (scoped to this page) */
   --bottom-nav-height: 66px;
   --bottom-nav-gap: 6px; /* was effectively 24px */
-  --bottom-safe: env(safe-area-inset-bottom);
-  --bottom-nav-clearance: calc(var(--bottom-nav-height) + var(--bottom-nav-gap) + var(--bottom-safe));
+  --bottom-safe: env(safe-area-inset-bottom, 0px);
+
+  --bottom-nav-clearance: calc(
+    var(--bottom-nav-height) + var(--bottom-nav-gap) + var(--bottom-safe)
+  );
+
+  --bottom-nav-hide-y: calc(
+    var(--bottom-nav-height) + var(--bottom-nav-gap) + var(--bottom-safe) + 16px
+  );
 }
+
+
 
 .content {
   width: 100%;
@@ -11484,100 +10848,6 @@ export default function OnboardingPage() {
   cursor: grabbing;
 }
 
-/* === Bottom Nav Bar === */
-
-.bottomNavWrapper {
-  position: fixed;          /* float on top of content */
-  left: 50%;
-  bottom: calc(var(--bottom-nav-gap) + var(--bottom-safe));  /* distance from bottom of screen */
-  width: 100%;
-  max-width: 560px;         /* same as .content max-width */
-  display: flex;
-  justify-content: center;
-  pointer-events: none;     /* only nav itself should catch clicks */
-  z-index: 50;
-}
-
-
-.bottomNav {
-  width: 390px;             /* Figma: 352 x 66 */
-  height: 66px;
-  padding: 9px;             /* Figma padding */
-  border-radius: 25px;      /* Figma corner radius */
-  background: var(--color-nav-bg);
-  border: 1px solid var(--color-nav-border);
-  box-shadow: 0 14px 28px rgba(15, 23, 42, 0.55);
-
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-
-  pointer-events: auto;     /* re-enable clicks here */
-}
-
-/* Each nav item (icon + optional text) */
-.navItem {
-  position: relative;
-  flex: 0 0 auto;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: row;
-  gap: 28px;
-  padding: 8px 14px;
-  border-radius: 999px;
-  border: none;
-  background: transparent;
-  color: var(--color-nav-muted);
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-/* Active item gets the blue pill background */
-
-
-/* Icon size (for now we use emoji; later swap for <Image>) */
-.navIcon {
-  font-size: 20px;
-  width: 30px;
-  height: 30px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* Label text */
-.navLabel {
-  white-space: nowrap;
-  /* (optional) default color for inactive items */
-  color: var(--color-nav-muted);
-}
-
-/* Make text & icon blue when active */
-.navItemActive .navLabel {
-  color: #37B2FF;
-}
-
-/* Active pill background behind Home icon + text */
-.navPill {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;              /* 28px gap between icon and text */
-  width: 130px;
-  height: 48px;
-  border-radius: 25px;    /* Figma corner radius */
-
-  /* Figma: Linear 37B2FF → transparent */
-  background: linear-gradient(
-    90deg,
-    #37B2FF 0%,
-    rgba(55, 178, 255, 0) 100%
-  );
-}
-
 /* ========================= */
 /* Test Day Modal (fake page)*/
 /* ========================= */
@@ -11858,7 +11128,7 @@ export default function OnboardingPage() {
 /* DARK MODE OVERRIDES ONLY  */
 /* ========================= */
 
-:root[data-theme='dark'] .page {
+:global(:root[data-theme='dark']) .page {
   background:
     radial-gradient(circle at top, rgba(15, 23, 42, 0.7), transparent 55%),
     #050816;
@@ -12007,26 +11277,7 @@ export default function OnboardingPage() {
   color: rgba(255, 255, 255, 0.70);
 }
 
-:root{
-  --bottom-nav-hide-y: calc(var(--bottom-nav-height) + var(--bottom-nav-gap) + env(safe-area-inset-bottom) + 16px);
-}
 
-.bottomNavWrapper{
-  /* you already have position/left/bottom etc */
-  transform: translate(-50%, 0);
-  transition: transform 220ms cubic-bezier(0.2, 0.8, 0.2, 1);
-  will-change: transform;
-}
-
-.bottomNavWrapperHidden{
-  transform: translate(-50%, var(--bottom-nav-hide-y));
-}
-
-@media (prefers-reduced-motion: reduce){
-  .bottomNavWrapper{
-    transition: none;
-  }
-}
 
 @media (pointer: coarse) {
   .cardRow {
@@ -12425,7 +11676,7 @@ const modalTimeLabel = formatTimeLabel(modalSourceTime);
 </div>
 </section>
 
-<BottomNav />
+
 </div>
 
       {/* Test Day Modal */}
@@ -12556,6 +11807,7 @@ const modalTimeLabel = formatTimeLabel(modalSourceTime);
           </div>
         </div>
       )}
+      <BottomNav />
     </main>
   );
 }
@@ -13585,7 +12837,7 @@ const goComingSoon = (feature: string) => {
        <button
   type="button"
   className={styles.settingsRow}
-  onClick={(e) => goComingSoon("Delete Account")}
+  onClick={() => router.push("/account/delete-account")}
 >
           <div className={styles.settingsLeft}>
             <span className={styles.settingsIcon}>
@@ -13720,21 +12972,26 @@ export default function ProfilePage() {
 
 ### app/profile/profile.module.css
 ```css
+/* app/profile/profile.module.css */
+
 .page {
   min-height: 100vh;
   display: flex;
-  justify-content: center;
+  flex-direction: column;   /* ✅ add */
+  align-items: center;      /* ✅ add */
   background: var(--color-page-bg);
-  padding: 0px 16px 40px;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'SF Pro Text',
-    'Segoe UI', sans-serif;
-    color: var(--test-text);
+  padding: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', sans-serif;
+  color: var(--test-text);
 }
 
 .content {
   width: 100%;
   max-width: 560px;
-  margin: 0px auto 96px; /* extra bottom room for nav bar */
+  box-sizing: border-box; /* ✅ add */
+  padding-left: 16px;
+  padding-right: 16px;
+  padding-bottom: calc(var(--bottom-nav-clearance) + 24px); /* ✅ add */
 }
 
 /* ===== Header ===== */
@@ -14341,7 +13598,7 @@ export default function ResetPasswordPage() {
     setLoading(true);
     try {
       // Update password for the currently-authenticated recovery session
-      const { error } = await supabase.auth.updateUser({ password: pw }); // :contentReference[oaicite:1]{index=1}
+      const { error } = await supabase.auth.updateUser({ password: pw });
       if (error) {
         setMsg(error.message);
         return;
@@ -14557,6 +13814,13 @@ import { notFound } from "next/navigation";
 import AllTestClient from "@/app/(premium)/all-test/AllTestClient.client";
 import { TEST_MODES, type TestModeId } from "@/lib/testModes";
 
+export const dynamicParams = false;
+
+export function generateStaticParams() {
+  // Build-time list of all allowed /test/[mode] pages
+  return (Object.keys(TEST_MODES) as TestModeId[]).map((mode) => ({ mode }));
+}
+
 export default async function TestModePage({
   params,
 }: {
@@ -14572,9 +13836,9 @@ export default async function TestModePage({
 
 ```
 
-### app/test/[mode]/results/page.tsx
+### app/test/[mode]/results/ResultsClient.client.tsx
 ```tsx
-/* app/test/[mode]/results/page.tsx */
+/* app/test/[mode]/results/ResultsClient.client.tsx */
 "use client";
 
 import React, { useEffect, useMemo, useRef, useState } from "react";
@@ -15196,6 +14460,23 @@ export default function TestModeResultsPage() {
       <Inner />
     </CSRBoundary>
   );
+}
+```
+
+### app/test/[mode]/results/page.tsx
+```tsx
+// app/test/[mode]/results/page.tsx
+import ResultsClient from "./ResultsClient.client";
+import { TEST_MODES, type TestModeId } from "@/lib/testModes";
+
+export const dynamicParams = false;
+
+export function generateStaticParams() {
+  return (Object.keys(TEST_MODES) as TestModeId[]).map((mode) => ({ mode }));
+}
+
+export default function Page() {
+  return <ResultsClient />;
 }
 ```
 
@@ -15874,6 +15155,21 @@ color: var(--results-text);
 }
 ```
 
+### capacitor.config.ts
+```tsx
+// capacitor.config.ts
+import type { CapacitorConfig } from '@capacitor/cli';
+
+const config: CapacitorConfig = {
+  appId: 'com.expatise.app',     // ✅ final package identity for Play Store
+  appName: 'Expatise',
+  webDir: 'out',                // ✅ correct for Next export
+  
+};
+
+export default config;
+```
+
 ### components/AuthSelfHeal.tsx
 ```tsx
 //components/AuthSelfHeal.tsx
@@ -16000,7 +15296,7 @@ function Inner({
     variant === 'fixed'
       ? {
           position: 'fixed',
-          top: 'calc(env(safe-area-inset-top, 0px))',
+          top: 'calc(var(--statusbar-h, 0px) + env(safe-area-inset-top, 0px) + 8px)',
           left: 'calc(env(safe-area-inset-left, 0px) + 10px)',
           zIndex: 9999,
         }
@@ -16034,14 +15330,129 @@ export default function BackButton(props: BackButtonProps) {
 }
 ```
 
+### components/BottomNav.module.css
+```css
+/* components/BottomNav.module.css */
+
+.bottomNavWrapper {
+  /* tokens: self-contained + safe defaults */
+  --bn-height: var(--bottom-nav-height, 66px);
+  --bn-gap: var(--bottom-nav-gap, 6px);
+  --bn-safe: env(safe-area-inset-bottom, 0px);
+  --bn-hide-y: calc(var(--bn-height) + var(--bn-gap) + var(--bn-safe) + 16px);
+
+  position: fixed;
+  inset-inline: 0;
+  margin-inline: auto;
+  bottom: calc(var(--bn-gap) + var(--bn-safe));
+
+  width: 100%;
+  max-width: 560px;
+
+  display: flex;
+  justify-content: center;
+
+  pointer-events: none;
+  z-index: 50;
+
+  /* Y-only transform prevents “skew” */
+  transform: translateY(0);
+  transition: transform 220ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  will-change: transform;
+}
+
+.bottomNavWrapperHidden {
+  transform: translateY(var(--bn-hide-y));
+}
+
+.bottomNav {
+  width: 390px;
+  height: var(--bn-height);
+  padding: 9px;
+  border-radius: 25px;
+
+  background: var(--color-nav-bg);
+  border: 1px solid var(--color-nav-border);
+  box-shadow: 0 14px 28px rgba(15, 23, 42, 0.55);
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+
+  pointer-events: auto;
+}
+
+.navItem {
+  position: relative;
+  flex: 0 0 auto;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 28px;
+  padding: 8px 14px;
+
+  border-radius: 999px;
+  border: none;
+  background: transparent;
+
+  color: var(--color-nav-muted);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+
+  text-decoration: none;
+}
+
+.navIcon {
+  width: 30px;
+  height: 30px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.navLabel {
+  white-space: nowrap;
+  color: var(--color-nav-muted);
+}
+
+.navItemActive .navLabel {
+  color: #37B2FF;
+}
+
+.navPill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  width: 130px;
+  height: 48px;
+  border-radius: 25px;
+
+  background: linear-gradient(90deg, #37B2FF 0%, rgba(55, 178, 255, 0) 100%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bottomNavWrapper {
+    transition: none;
+  }
+}
+```
+
 ### components/BottomNav.tsx
 ```tsx
+//components/BottonNav.tsx
 'use client';
 
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
-import styles from '../app/page.module.css';
+import styles from './BottomNav.module.css';
 import { useEffect, useRef, useState } from 'react';
 
 type BottomNavProps = {
@@ -16052,8 +15463,8 @@ export default function BottomNav({ onOffsetChange }: BottomNavProps) {
   const pathname = usePathname();
 
   const isHome = pathname === '/';
-  const isStats = pathname === '/stats';
-  const isProfile = pathname === '/profile';
+  const isStats = pathname === '/stats' || pathname?.startsWith('/stats/');
+  const isProfile = pathname === '/profile' || pathname?.startsWith('/profile/');
 
   const [hidden, setHidden] = useState(false);
   const hiddenRef = useRef(false);
@@ -16189,6 +15600,385 @@ export default function BottomNav({ onOffsetChange }: BottomNavProps) {
   );
 }
 
+```
+
+### components/BrandIntroSplash.client.tsx
+```tsx
+'use client';
+
+import { useEffect, useState } from 'react';
+import styles from './BrandIntroSplash.module.css';
+
+export default function BrandIntroSplash() {
+  const [show, setShow] = useState(true);
+
+  useEffect(() => {
+    // optional: don't replay during same session
+    if (sessionStorage.getItem('expatise_intro_done') === '1') {
+      setShow(false);
+      return;
+    }
+
+    const t = window.setTimeout(() => {
+      sessionStorage.setItem('expatise_intro_done', '1');
+      setShow(false);
+    }, 1800); // <= 2s total
+
+    return () => window.clearTimeout(t);
+  }, []);
+
+  if (!show) return null;
+
+  return (
+    <div className={styles.overlay}>
+      <div className={styles.wordmarkSweep}>
+        <img
+          className={styles.wordmark}
+          src="/splash/wordmark.webp"
+          alt="Expatise"
+        />
+      </div>
+    </div>
+  );
+}
+```
+
+### components/BrandIntroSplash.module.css
+```css
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483647;
+  background: #012FA7; /* your brand blue */
+  display: grid;
+  place-items: center;
+}
+
+/* reveal container */
+.wordmarkSweep {
+  width: min(86vw, 860px);
+  overflow: hidden;
+
+  /* sweep from left -> right */
+  clip-path: inset(0 100% 0 0);
+
+  /* fade in */
+  opacity: 0;
+
+  animation: sweepFade 1200ms cubic-bezier(0.2, 0.9, 0.2, 1) forwards;
+}
+
+/* make image responsive */
+.wordmark {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+@keyframes sweepFade {
+  to {
+    clip-path: inset(0 0 0 0);
+    opacity: 1;
+  }
+}
+
+/* accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .wordmarkSweep {
+    animation: none;
+    clip-path: inset(0);
+    opacity: 1;
+  }
+}
+```
+
+### components/BrandSplash.client.tsx
+```tsx
+'use client';
+
+import { useEffect, useId, useState } from 'react';
+import styles from './BrandSplash.module.css';
+
+type BrandSplashProps = {
+  /** Called when the splash finishes (after durationMs). */
+  onDone?: () => void;
+
+  /** Total animation time. Default 2000ms. */
+  durationMs?: number;
+
+  /** Background color. Default matches your Figma blue. */
+  bg?: string;
+
+  /** Wordmark image path (put it in /public). */
+  wordmarkSrc?: string;
+
+  /** Don't replay splash on same session. Default true. */
+  oncePerSession?: boolean;
+
+  /** Session storage key. */
+  storageKey?: string;
+};
+
+export default function BrandSplash({
+  onDone,
+  durationMs = 2000,
+  bg = '#012FA7',
+  wordmarkSrc = '/assets/wordmark.webp',
+  oncePerSession = true,
+  storageKey = 'expatise_brand_splash_done',
+}: BrandSplashProps) {
+  const [show, setShow] = useState(true);
+  const uid = useId();
+  const maskId = `pillarHoleMask-${uid}`;
+
+  useEffect(() => {
+  const img = new Image();
+  img.src = wordmarkSrc;
+}, [wordmarkSrc]);
+
+  useEffect(() => {
+    if (oncePerSession && sessionStorage.getItem(storageKey) === '1') {
+      setShow(false);
+      return;
+    }
+
+    const t = window.setTimeout(() => {
+      if (oncePerSession) sessionStorage.setItem(storageKey, '1');
+      setShow(false);
+      onDone?.();
+    }, durationMs);
+
+    return () => window.clearTimeout(t);
+  }, [durationMs, onDone, oncePerSession, storageKey]);
+
+  if (!show) return null;
+
+  return (
+    <div className={styles.splash} style={{ ['--bg' as any]: bg }}>
+      <div className={styles.logo} aria-hidden>
+        {/* Thin pillar */}
+        <div className={`${styles.piece} ${styles.thin}`}>
+          <div className={styles.thinRect} />
+        </div>
+
+        {/* Thick pillar with REAL hole (SVG mask) */}
+        <div className={`${styles.piece} ${styles.thick}`}>
+          <svg className={styles.pillarSvg} viewBox="0 0 100 360" role="presentation">
+            <defs>
+              <mask id={maskId}>
+                {/* white = keep */}
+                <rect x="0" y="0" width="100" height="360" rx="18" fill="white" />
+                {/* black = cut out (the hole) */}
+                <rect x="62" y="34" width="26" height="26" rx="6" fill="black" />
+              </mask>
+            </defs>
+
+            <rect
+              x="0"
+              y="0"
+              width="100"
+              height="360"
+              rx="18"
+              fill="white"
+              mask={`url(#${maskId})`}
+            />
+          </svg>
+        </div>
+
+        {/* Extra strokes (your Splash_03 “accents”) */}
+        <div className={`${styles.accent} ${styles.accentA}`} />
+        <div className={`${styles.accent} ${styles.accentB}`} />
+      </div>
+
+      {/* Wordmark reveal (your Splash_05) */}
+      <div className={styles.wordmarkWrap} aria-hidden>
+        <img className={styles.wordmark} src={wordmarkSrc} alt="Expatise" />
+      </div>
+    </div>
+  );
+}
+```
+
+### components/BrandSplash.module.css
+```css
+/*components/BrandSplash.module.css */
+
+.splash {
+  position: fixed;
+  inset: 0;
+  background: var(--bg, #012FA7);
+  display: grid;
+  place-items: center;
+  z-index: 99999;
+}
+
+/* ===== Logo container (centered) ===== */
+.logo {
+  --s: min(58vmin, 340px); /* responsive size */
+  position: relative;
+  width: var(--s);
+  height: var(--s);
+  animation: logoScale 2s ease-in-out forwards, logoFade 2s ease-in-out forwards;
+}
+
+/* One animation timeline: 2s total */
+.piece {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform-origin: center;
+}
+
+/* ===== Thin pillar ===== */
+.thinRect {
+  width: calc(var(--s) * 0.10);
+  height: calc(var(--s) * 0.80);
+  background: #fff;
+  border-radius: calc(var(--s) * 0.06);
+}
+
+/* Keep your sizes as-is */
+
+.thin {
+  animation:
+    thinMove 2s ease-in-out forwards,
+    thinOpacity 2s steps(1, end) forwards;
+}
+
+.thick {
+  animation:
+    thickMove 2s ease-in-out forwards,
+    thickOpacity 2s steps(1, end) forwards;
+}
+
+/* IMPORTANT: thinMove & thickMove should ONLY animate transform (no opacity inside) */
+@keyframes thinMove {
+  0%   { transform: translate(-190%, -50%) rotate(0deg); }
+  35%  { transform: translate(-190%, -50%) rotate(0deg); }
+  55%  { transform: translate(-50%, -50%) rotate(45deg); }
+  100% { transform: translate(-50%, -50%) rotate(45deg); }
+}
+
+@keyframes thickMove {
+  0%   { transform: translate(40%, -50%) rotate(0deg); }
+  35%  { transform: translate(40%, -50%) rotate(0deg); }
+  55%  { transform: translate(-50%, -50%) rotate(-45deg); }
+  100% { transform: translate(-50%, -50%) rotate(-45deg); }
+}
+
+/* Show thin bar for X, then turn it OFF when accents appear */
+@keyframes thinOpacity {
+  0%, 9%   { opacity: 0; }
+  10%, 64% { opacity: 1; }
+  65%,100% { opacity: 0; }  /* <-- this removes the “double” look */
+}
+
+/* Thick bar stays on after appearing */
+@keyframes thickOpacity {
+  0%, 9%   { opacity: 0; }
+  10%,100% { opacity: 1; }
+}
+
+/* ===== Thick pillar (SVG) ===== */
+.pillarSvg {
+  width: calc(var(--s) * 0.18);
+  height: calc(var(--s) * 0.80);
+  display: block;
+}
+
+
+
+/* ===== Accents appear around “Splash_03” ===== */
+.accent {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: calc(var(--s) * 0.10);
+  height: calc(var(--s) * 0.32);
+  background: #fff;
+  border-radius: calc(var(--s) * 0.06);
+  opacity: 0;
+  transform: translate(-50%, -50%) rotate(45deg) translateY(var(--oy));
+  animation: accentsIn 2s steps(1, end) forwards; /* <- no fading */
+}
+@keyframes accentsIn {
+  0%, 64% { opacity: 0; }
+  65%, 100% { opacity: 1; }
+}
+
+.accentA { --oy: calc(var(--s) * -0.22); }
+.accentB { --oy: calc(var(--s) *  0.22); }
+
+/* ===== Wordmark sweep reveal (Splash_05) ===== */
+.wordmarkWrap {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%); /* center it */
+  width: min(82vw, 560px);
+  opacity: 0;
+  clip-path: inset(0 100% 0 0);
+  animation: wordmarkReveal 2s ease-in-out forwards;
+}
+
+.wordmark {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* ===== Timeline Keyframes (0%..100% = 2s) ===== */
+
+/* Frame 1: pillars appear upright and apart
+   Frame 2: rotate into X (centered)
+*/
+.thick { z-index: 2; }
+.thin { z-index: 1; }
+.accent { z-index: 1; }
+
+
+/* Frame 4: shrink logo */
+@keyframes logoScale {
+  0%   { transform: scale(1); }
+  70%  { transform: scale(1); }
+  84%  { transform: scale(0.18); }
+  100% { transform: scale(0.18); }
+}
+
+/* Frame 5: wordmark comes in, logo fades out */
+@keyframes logoFade {
+  0%, 82% { opacity: 1; }
+  100%    { opacity: 0; }
+}
+
+@keyframes wordmarkReveal {
+  0%, 82% {
+    opacity: 0;
+    clip-path: inset(0 100% 0 0);
+  }
+  100% {
+    opacity: 1;
+    clip-path: inset(0 0 0 0);
+  }
+}
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .logo,
+  .thin,
+  .thick,
+  .accent,
+  .wordmarkWrap {
+    animation: none !important;
+  }
+
+  
+  .logo { opacity: 0; }
+  .wordmarkWrap { opacity: 1; clip-path: none; }
+}
+
+.logo { will-change: transform, opacity; }
+.piece, .accent { will-change: transform, opacity; }
+.wordmarkWrap { will-change: opacity, clip-path; }
 ```
 
 ### components/CSRBoundary.tsx
@@ -17117,6 +16907,7 @@ export default function InfoTip({ text }: { text: string }) {
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { logout } from "@/lib/auth/logout.client";
 
 export default function LogoutButton({ className }: { className?: string }) {
   const router = useRouter();
@@ -17128,7 +16919,7 @@ export default function LogoutButton({ className }: { className?: string }) {
     setBusy(true);
     try {
       await supabase.auth.signOut();
-      await fetch("/api/logout", { method: "POST", credentials: "include", cache: "no-store" });
+      await logout();
 
       try { window.dispatchEvent(new Event("expatise:session-changed")); } catch {}
       try { window.dispatchEvent(new Event("expatise:entitlements-changed")); } catch {}
@@ -17145,6 +16936,76 @@ export default function LogoutButton({ className }: { className?: string }) {
       {busy ? "Logging out..." : "Log out"}
     </button>
   );
+}
+```
+
+### components/NativeInsets.client.tsx
+```tsx
+'use client';
+
+import { useEffect } from 'react';
+import { Capacitor } from '@capacitor/core';
+import { StatusBar } from '@capacitor/status-bar';
+
+export default function NativeInsets() {
+  useEffect(() => {
+    // Only run inside Capacitor native apps
+    if (!Capacitor.isNativePlatform()) return;
+
+    (async () => {
+      try {
+        const info = await StatusBar.getInfo();
+        // 'height' exists in practice, but may not be typed
+        const height = (info as any)?.height;
+
+        // Fallback: if height is missing, use 0 (you can use 24 if you prefer)
+        const px = Number.isFinite(height) ? `${height}px` : '0px';
+
+        document.documentElement.style.setProperty('--statusbar-h', px);
+      } catch {
+        // Don't break the app if plugin isn't available
+        document.documentElement.style.setProperty('--statusbar-h', '0px');
+      }
+    })();
+  }, []);
+
+  return null;
+}
+```
+
+### components/OnboardingGate.client.tsx
+```tsx
+"use client";
+
+import { useEffect } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { isOnboarded } from "@/lib/onboarding/markOnboarded.client";
+
+// routes you DON'T want to gate
+const BYPASS = new Set([
+  "/onboarding",
+  "/login",
+  "/forgot-password",
+  "/reset-password",
+  "/account-deletion",        // your store compliance page
+  "/account-security",
+]);
+
+export default function OnboardingGate() {
+  const router = useRouter();
+  const pathname = usePathname();
+
+  useEffect(() => {
+    if (!pathname) return;
+    if (BYPASS.has(pathname)) return;
+
+    // If you have other public pages, add them to BYPASS
+    if (!isOnboarded()) {
+      router.replace("/onboarding");
+    }
+  }, [pathname, router]);
+
+  return null;
 }
 ```
 
@@ -19328,12 +19189,10 @@ return (
 ```css
 .wrap {
   width: 100%;
-}
-
-:root{
-  --premium-blue-rgb: 43 124 175;
+   --premium-blue-rgb: 43 124 175;
   --premium-yellow-rgb: 255 197 66;
 }
+
 
 
 /* ===== Callout pill ===== */
@@ -19754,28 +19613,30 @@ padding: clamp(4px, 1vw, 8px);
   }
 }
 
-.legend {
+.legend{
   margin-top: 12px;
   display: grid;
   gap: 6px;
+  justify-items: center;          
 }
 
-.legendRow {
-  display: flex;
+.legendRow{
+  display: inline-flex;           
   align-items: center;
+  justify-content: center;
   gap: 8px;
-  color: rgba(17, 24, 39, 0.50);
   font-size: 12px;
+  color: rgba(17, 24, 39, 0.50);
 }
 
-.legendLabel {
-  width: 78px; /* keeps it tidy */
+.legendLabel{
+  width: auto;                   
   text-align: right;
   color: rgba(17, 24, 39, 0.46);
 }
 
-.legendText {
-  margin-left: 4px;
+.legendText{
+  margin-left: 0;                 /* gap already handles spacing */
   color: rgba(17, 24, 39, 0.45);
 }
 
@@ -20021,8 +19882,8 @@ padding: clamp(4px, 1vw, 8px);
   /* Stronger gradient than the -20 one, but still tasteful */
   --heat-grad: linear-gradient(
     90deg,
-    rgb(var(--premium-yellow-rgb) / 0.55) 0%,
-    rgb(var(--premium-blue-rgb) / 0.55) 100%
+    rgb(var(--premium-yellow-rgb, 255 197 66) / 0.55) 0%,
+    rgb(var(--premium-blue-rgb, 43 124 175) / 0.55) 100%
   );
 
   background-image:
@@ -20052,8 +19913,8 @@ padding: clamp(4px, 1vw, 8px);
 
   --heat-grad: linear-gradient(
     90deg,
-    rgb(var(--premium-yellow-rgb) / 0.55) 0%,
-    rgb(var(--premium-blue-rgb) / 0.55) 100%
+    rgb(var(--premium-yellow-rgb, 255 197 66) / 0.55) 0%,
+    rgb(var(--premium-blue-rgb, 43 124 175) / 0.55) 100%
   );
 
   background-image:
@@ -22699,6 +22560,38 @@ const subs = t.subtopics ?? [];
   width: 100%;
   display: grid;
   gap: 14px;
+
+  /* =========================
+     Motion + premium tokens
+     (scoped to this component)
+     ========================= */
+
+  --ease-boot: cubic-bezier(0.2, 0.9, 0.2, 1);
+  --ease-soft: cubic-bezier(0.22, 1, 0.36, 1);
+
+  --color-premium-gradient: linear-gradient(
+    90deg,
+    rgba(43, 124, 175, 0.4) 0%,
+    rgba(255, 197, 66, 0.4) 100%
+  );
+
+  --color-premium-gradient-20: linear-gradient(
+    90deg,
+    rgba(43, 124, 175, 0.2) 0%,
+    rgba(255, 197, 66, 0.2) 100%
+  );
+
+  --color-premium-gradient-10: linear-gradient(
+    90deg,
+    rgba(43, 124, 175, 0.1) 0%,
+    rgba(255, 197, 66, 0.1) 100%
+  );
+
+  --color-premium-gradient-20-reverse: linear-gradient(
+    90deg,
+    rgba(255, 197, 66, 0.2) 0%,
+    rgba(43, 124, 175, 0.2) 100%
+  );
 }
 
 /* ===== Top “wow” area ===== */
@@ -22706,7 +22599,14 @@ const subs = t.subtopics ?? [];
     overflow: hidden;
   border-radius: 18px;
   padding: 12px 12px 14px;
-  background:var(--color-premium-gradient-10);
+  background: var(
+  --color-premium-gradient-10,
+  linear-gradient(
+    90deg,
+    rgba(43, 124, 175, 0.1) 0%,
+    rgba(255, 197, 66, 0.1) 100%
+  )
+);
 
   border: 1px solid rgba(148,163,184,0.35);
   box-shadow: 0 18px 40px rgba(15,33,70,0.10);
@@ -22856,7 +22756,14 @@ mask-image: radial-gradient(white, black);
     overflow: hidden;
   border-radius: 18px;
   padding: 12px 12px 12px;
-  background: var(--color-premium-gradient-10);
+  background: var(
+  --color-premium-gradient-10,
+  linear-gradient(
+    90deg,
+    rgba(43, 124, 175, 0.1) 0%,
+    rgba(255, 197, 66, 0.1) 100%
+  )
+);
   border: 1px solid rgba(148,163,184,0.28);
   box-shadow: 0 16px 36px rgba(15,33,70,0.08);
 }
@@ -22974,7 +22881,14 @@ contain: paint;
   padding: 8px 12px;
   border-radius: 999px;
 
-  background: var(--color-premium-gradient-10);
+  background: var(
+  --color-premium-gradient-10,
+  linear-gradient(
+    90deg,
+    rgba(43, 124, 175, 0.1) 0%,
+    rgba(255, 197, 66, 0.1) 100%
+  )
+);
   border: 1px solid rgba(148,163,184,0.26);
   box-shadow: 0 10px 20px rgba(15,33,70,0.07);
 
@@ -23081,134 +22995,11 @@ contain: paint;
   white-space: nowrap;
 }
 
-/* =========================
-   Animations (Topic Mastery)
-   ========================= */
 
-@keyframes popIn {
-  from { transform: translateY(10px) scale(0.98); opacity: 0; }
-  to   { transform: translateY(0) scale(1); opacity: var(--op, 1); }
-}
-
-@keyframes rowIn {
-  from { transform: translateY(10px); opacity: 0; }
-  to   { transform: translateY(0); opacity: 1; }
-}
-
-/* hero pills */
-.pill { opacity: 1; }
-
-.pillHidden {
-  opacity: 0;
-  transform: translateY(10px) scale(0.98);
-}
-
-.pillIn {
-  animation: popIn 420ms cubic-bezier(0.2, 0.9, 0.2, 1) both;
-  animation-delay: var(--d, 0ms);
-}
-
-/* rows */
-.rowHidden {
-  opacity: 0;
-  transform: translateY(10px);
-}
-
-.rowIn {
-  animation: rowIn 450ms cubic-bezier(0.2, 0.9, 0.2, 1) both;
-  animation-delay: var(--d, 0ms);
-}
-
-/* topic bar fill: 0 -> --w */
-.barFill {
-  width: 0%;
-  transition: width 850ms cubic-bezier(0.2, 0.9, 0.2, 1);
-}
-
-.barFillHidden {
-  width: 0%;
-}
-
-.barFillGrow {
-  width: var(--w, 0%);
-}
-
-/* subchips (fade/slide in) */
-.subChip {
-  opacity: var(--op, 1);
-  will-change: transform, opacity;
-}
-
-.chipHidden {
-  opacity: 0;
-  transform: translateY(8px) scale(0.98);
-}
-
-.chipIn {
-  animation: popIn 360ms cubic-bezier(0.2, 0.9, 0.2, 1) both;
-  animation-delay: var(--d, 0ms);
-}
-
-/* sub meter fill: 0 -> --w */
-.subMeterFill {
-  width: 0%;
-  transition: width 700ms cubic-bezier(0.2, 0.9, 0.2, 1);
-}
-
-.subMeterHidden {
-  width: 0%;
-}
-
-.subMeterGrow {
-  width: var(--w, 0%);
-}
-
-/* reduced motion */
-@media (prefers-reduced-motion: reduce) {
-  .pillIn, .rowIn, .chipIn {
-    animation: none !important;
-  }
-  .pillHidden, .rowHidden, .chipHidden {
-    opacity: 1 !important;
-    transform: none !important;
-  }
-  .barFill, .subMeterFill {
-    transition: none !important;
-  }
-}
 
 /* =========================
    Animations (Topic Mastery)
    ========================= */
-
-/* shared motion tokens (matches your boot-sweep feel) */
-:root {
-  --ease-boot: cubic-bezier(0.2, 0.9, 0.2, 1);
-  --ease-soft: cubic-bezier(0.22, 1, 0.36, 1);
-   --color-premium-gradient: linear-gradient(
-    90deg,
-    rgba(43, 124, 175, 0.4) 0%,
-    rgba(255, 197, 66, 0.4) 100%
-  );
-
-  --color-premium-gradient-20: linear-gradient(
-    90deg,
-    rgba(43, 124, 175, 0.2) 0%,
-    rgba(255, 197, 66, 0.2) 100%
-  );
-
-  --color-premium-gradient-10: linear-gradient(
-    90deg,
-    rgba(43, 124, 175, 0.1) 0%,
-    rgba(255, 197, 66, 0.1) 100%
-  );
-
-  --color-premium-gradient-20-reverse: linear-gradient(
-    90deg,
-    rgba(255, 197, 66, 0.2) 0%,
-    rgba(43, 124, 175, 0.2) 100%
-  );
-}
 
 @keyframes popIn {
   0%   { transform: translate3d(0, 10px, 0) scale(0.985); opacity: 0; }
@@ -23224,7 +23015,6 @@ contain: paint;
 
 /* hero pills */
 .pill {
-  opacity: var(--op, 1);
   will-change: transform, opacity;
   transform: translateZ(0);
   backface-visibility: hidden;
@@ -23328,15 +23118,11 @@ contain: paint;
 /* =========================
    Dark mode: make headings readable
    ========================= */
-:global(:root[data-theme='dark']) .heroTitle,
-:global(html[data-theme='dark']) .heroTitle,
-:global(body[data-theme='dark']) .heroTitle{
+:global(:root[data-theme='dark']) .heroTitle{
   color: #f9fafb; /* “Weakest right now” */
 }
 
-:global(:root[data-theme='dark']) .topicName,
-:global(html[data-theme='dark']) .topicName,
-:global(body[data-theme='dark']) .topicName{
+:global(:root[data-theme='dark']) .topicName{
   color: #f9fafb; /* Traffic Signals / Road Safety / etc */
 }
 
@@ -23692,6 +23478,90 @@ export interface AttemptStore {
  
 ```
 
+### lib/attempts/attemptsApi.client.ts
+```tsx
+'use client';
+
+import { createClient } from '@/lib/supabase/client';
+
+type GetAttemptsArgs = {
+  datasetId?: string;
+  status?: string; // default submitted
+  limit?: number;  // default 200, clamp 1..500
+};
+
+export async function getAttempts(args: GetAttemptsArgs = {}) {
+  const supabase = createClient();
+
+  const { data: userData, error: userErr } = await supabase.auth.getUser();
+  const user = userErr ? null : userData.user;
+  if (!user) return { ok: false as const, error: 'No user session', status: 401 as const };
+
+  const datasetId = (args.datasetId ?? '').trim();
+  const status = (args.status ?? 'submitted').trim();
+  const limit = Math.min(500, Math.max(1, Number(args.limit ?? 200)));
+
+  let q = supabase
+    .from('attempts')
+    .select('payload, submitted_at_ms, last_active_at_ms, created_at_ms, attempt_id')
+    .eq('user_id', user.id)
+    .eq('status', status)
+    .order('submitted_at_ms', { ascending: false })
+    .limit(limit);
+
+  if (datasetId) q = q.eq('dataset_id', datasetId);
+
+  const { data, error } = await q;
+  if (error) return { ok: false as const, step: 'select', error: error.message, status: 400 as const };
+
+  const attempts = (data ?? [])
+    .map((r: any) => r.payload)
+    .filter(Boolean);
+
+  return { ok: true as const, attempts };
+}
+
+export async function upsertAttempt(attempt: any) {
+  const supabase = createClient();
+
+  const { data: userData, error: userErr } = await supabase.auth.getUser();
+  const user = userErr ? null : userData.user;
+  if (!user) return { ok: false as const, error: 'No user session', status: 401 as const };
+
+  if (!attempt?.attemptId || !attempt?.modeKey || !attempt?.status) {
+    return { ok: false as const, error: 'Missing required attempt fields', status: 400 as const };
+  }
+
+  const row = {
+    user_id: user.id,
+
+    attempt_id: attempt.attemptId,
+    user_key: attempt.userKey ?? 'guest',
+    schema_version: attempt.schemaVersion ?? 1,
+
+    mode_key: attempt.modeKey,
+    dataset_id: attempt.datasetId ?? null,
+    dataset_version: attempt.datasetVersion ?? null,
+
+    status: attempt.status,
+
+    created_at_ms: attempt.createdAt ?? null,
+    last_active_at_ms: attempt.lastActiveAt ?? null,
+    submitted_at_ms: attempt.submittedAt ?? null,
+
+    payload: attempt,
+  };
+
+  const { error: upsertErr } = await supabase
+    .from('attempts')
+    .upsert(row, { onConflict: 'user_id,attempt_id' });
+
+  if (upsertErr) return { ok: false as const, step: 'upsert', error: upsertErr.message, status: 400 as const };
+
+  return { ok: true as const };
+}
+```
+
 ### lib/attempts/engine.ts
 ```tsx
 // lib/attempts/engine.ts
@@ -23797,6 +23667,69 @@ export function cookieOptions() {
 }
 ```
 
+### lib/auth/logout.client.ts
+```tsx
+'use client';
+
+import { createClient } from '@/lib/supabase/client';
+
+export async function logout() {
+  const supabase = createClient();
+
+  // Browser logout: clears stored auth data + triggers SIGNED_OUT
+  const { error } = await supabase.auth.signOut();
+  if (error) throw error;
+
+  return { ok: true as const };
+}
+```
+
+### lib/auth/sessionStatus.client.ts
+```tsx
+'use client';
+
+import { createClient } from '@/lib/supabase/client';
+
+export type SessionStatus =
+  | { ok: false; authed: false; method: 'guest'; email: null; provider: null }
+  | { ok: true; authed: true; method: 'email' | 'social'; email: string | null; provider: string | null };
+
+function detectProvider(user: any): string | null {
+  if (!user) return null;
+  if (user.is_anonymous) return 'anonymous';
+
+  const am = user.app_metadata ?? {};
+  if (typeof am.provider === 'string' && am.provider) return am.provider;
+  if (Array.isArray(am.providers) && am.providers.length) return am.providers[0];
+
+  const ident = user.identities?.[0]?.provider;
+  return ident ?? null;
+}
+
+export async function getSessionStatus(): Promise<SessionStatus> {
+  const supabase = createClient();
+
+  // getUser() performs a network request and returns an authentic user if a session exists
+  const { data, error } = await supabase.auth.getUser();
+  const user = error ? null : data.user;
+
+  if (!user || detectProvider(user) === 'anonymous') {
+    return { ok: false, authed: false, method: 'guest', email: null, provider: null };
+  }
+
+  const provider = detectProvider(user);
+  const isEmail = provider === 'email' || (!!user.email && !provider);
+
+  return {
+    ok: true,
+    authed: true,
+    method: isEmail ? 'email' : 'social',
+    email: user.email ?? null,
+    provider: isEmail ? 'email' : provider,
+  };
+}
+```
+
 ### lib/authClient/index.ts
 ```tsx
 // lib/authClient/index.ts
@@ -23839,25 +23772,57 @@ export type AuthClient = {
 ### lib/authClient/web.ts
 ```tsx
 // lib/authClient/web.ts
-import type { AuthClient, SessionRes } from "./types";
+"use client";
 
-const GUEST: SessionRes = { ok: false, authed: false, method: "guest", email: null, provider: null };
+import type { AuthClient, SessionRes } from "./types";
+import { createClient } from "@/lib/supabase/client";
+
+const GUEST: SessionRes = {
+  ok: false,
+  authed: false,
+  method: "guest",
+  email: null,
+  provider: null,
+};
+
+function detectProvider(user: any): string | null {
+  if (!user) return null;
+  if (user.is_anonymous) return "anonymous";
+
+  const am = user.app_metadata ?? {};
+  if (typeof am.provider === "string" && am.provider) return am.provider;
+  if (Array.isArray(am.providers) && am.providers.length) return am.providers[0];
+
+  const ident = user.identities?.[0]?.provider;
+  return ident ?? null;
+}
 
 export const webAuthClient: AuthClient = {
   async getSession() {
     try {
-      const res = await fetch("/api/session", {
-        cache: "no-store",
-        credentials: "include",
-      });
-      if (!res.ok) return GUEST;
-      return (await res.json()) as SessionRes;
+      const supabase = createClient();
+
+      // On the client, getSession() is fine (fast); on the server it’s insecure. :contentReference[oaicite:1]{index=1}
+      const { data, error } = await supabase.auth.getSession();
+      const user = error ? null : data.session?.user ?? null;
+
+      if (!user || detectProvider(user) === "anonymous") return GUEST;
+
+      const provider = detectProvider(user);
+      const isEmail = provider === "email" || (!!user.email && !provider);
+
+      return {
+        ok: true,
+        authed: true,
+        method: isEmail ? "email" : "social",
+        email: user.email ?? null,
+        provider: isEmail ? "email" : provider,
+      };
     } catch {
       return GUEST;
     }
   },
 };
-
 ```
 
 ### lib/bookmarks/bookmarkStore.ts
@@ -24438,37 +24403,74 @@ export async function seedAdminDemoDataIfNeeded(userKey: string) {
 
 ### lib/entitlements/getEntitlements.ts
 ```tsx
+//lib/entitlements/getEntitlements.ts
+
 "use client";
 
 import type { Entitlements } from "@/lib/entitlements/types";
 import { FREE_ENTITLEMENTS } from "@/lib/entitlements/types";
 import { getLocalEntitlements, setLocalEntitlements } from "@/lib/entitlements/localStore";
+import { createClient } from "@/lib/supabase/client";
+import {
+  FunctionsHttpError,
+  FunctionsRelayError,
+  FunctionsFetchError,
+} from "@supabase/supabase-js";
 
-type ApiRes =
+type FnRes =
   | { ok: true; entitlements: Entitlements; userKey?: string }
-  | { ok: false; error?: string };
+  | { ok: false; error?: string; detail?: string };
 
 export async function getEntitlements(userKey: string): Promise<Entitlements> {
-  // local fallback for whatever key the caller thinks they are (usually correct)
   const local = getLocalEntitlements(userKey) ?? FREE_ENTITLEMENTS;
 
   try {
-    // ✅ session-based; server derives user + admin from Supabase cookies
-    const res = await fetch("/api/entitlements", {
-      cache: "no-store",
-      credentials: "include",
-    });
+    const supabase = createClient();
 
-    if (!res.ok) return local;
+// 0) pull session token explicitly (important in Capacitor/WebView)
+const { data: sessionData } = await supabase.auth.getSession();
+const token = sessionData.session?.access_token ?? null;
 
-    const json = (await res.json()) as ApiRes;
-    if (!json.ok) return local;
+// 0.5) always have a fallback key for Functions gateway
+const anonKey =
+  process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ??
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+if (!anonKey) {
+  throw new Error("Missing NEXT_PUBLIC_SUPABASE_ANON_KEY (or NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY)");
+}
+
+// 1) ALWAYS send Authorization (JWT if available, otherwise anon key)
+const bearer = token ?? anonKey;
+
+const { data, error } = await supabase.functions.invoke("entitlements", {
+  body: { userKey },
+  headers: {
+    Authorization: `Bearer ${bearer}`,
+    apikey: anonKey, // extra-safe for some gateway setups
+  },
+});
+    let json: FnRes | null = (data ?? null) as any;
+
+    // IMPORTANT: when the function returns 4xx/5xx, supabase-js may give you a FunctionsHttpError
+    // and the real JSON is inside error.context.json()
+    if (error) {
+    
+      if (error instanceof FunctionsHttpError) {
+        json = (await error.context.json().catch(() => null)) as any;
+      } else if (error instanceof FunctionsRelayError || error instanceof FunctionsFetchError) {
+        return local;
+      } else {
+        return local;
+      }
+    }
+
+    if (!json || !("ok" in json) || !json.ok) return local;
 
     const server = json.entitlements;
+    if (!server) return local;
 
-    // ✅ IMPORTANT:
-    // If the server tells us the real userKey, store entitlements under THAT key.
-    // This prevents “premium stuck on guest” / “badge shows for admin” situations.
+    // If server returns a better userKey, store under that key
     const serverUserKey =
       typeof json.userKey === "string" && json.userKey.trim()
         ? json.userKey.trim()
@@ -24479,9 +24481,7 @@ export async function getEntitlements(userKey: string): Promise<Entitlements> {
 
     const localIsPremium = local.isPremium === true;
     const localExpired =
-      typeof local.expiresAt === "number" &&
-      local.expiresAt > 0 &&
-      local.expiresAt < Date.now();
+      typeof local.expiresAt === "number" && local.expiresAt > 0 && local.expiresAt < Date.now();
 
     const shouldTrustServer =
       server.isPremium === true ||
@@ -24492,7 +24492,7 @@ export async function getEntitlements(userKey: string): Promise<Entitlements> {
       return server;
     }
   } catch {
-    // ignore errors and fall back to local
+    // ignore and fall back to local
   }
 
   return local;
@@ -24501,6 +24501,8 @@ export async function getEntitlements(userKey: string): Promise<Entitlements> {
 
 ### lib/entitlements/localStore.ts
 ```tsx
+//lib/entitlements/localStore.ts
+
 import { FREE_ENTITLEMENTS, type Entitlements, isExpired } from "./types";
 
 const NS = "expatise:entitlements";
@@ -24963,7 +24965,7 @@ export function isBypassPath(pathname: string) {
     pathname.startsWith('/_next/static') ||
     pathname.startsWith('/_next/image') ||
     pathname.startsWith('/api') ||
-    pathname === '/favicon.ico' ||
+    pathname === '/Expatise-logo.jpg' ||
     pathname.startsWith('/images')
   ) {
     return true;
@@ -25213,6 +25215,36 @@ export function safeNextPath(input: string | null | undefined) {
   return raw;
 }
 
+```
+
+### lib/onboarding/markOnboarded.client.ts
+```tsx
+"use client";
+
+import { ONBOARDING_COOKIE } from "@/lib/middleware/paths";
+
+const LS_KEY = "expatise:onboarded";
+
+export function markOnboarded() {
+  // 1) LocalStorage (works great in Capacitor)
+  try {
+    localStorage.setItem(LS_KEY, "1");
+  } catch {}
+
+  // 2) Cookie (optional, keeps old behavior)
+  // max-age is in SECONDS
+  const oneYearSec = 60 * 60 * 24 * 365;
+  document.cookie = `${ONBOARDING_COOKIE}=1; Max-Age=${oneYearSec}; Path=/; SameSite=Lax`;
+}
+
+export function isOnboarded(): boolean {
+  try {
+    if (localStorage.getItem(LS_KEY) === "1") return true;
+  } catch {}
+
+  // cookie fallback
+  return typeof document !== "undefined" && document.cookie.includes(`${ONBOARDING_COOKIE}=1`);
+}
 ```
 
 ### lib/openai.ts
@@ -27327,22 +27359,25 @@ export function createClient() {
   if (browserClient) return browserClient;
 
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const anon = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY; // ✅ use ONE key
+  const key =
+  process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ??
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-  if (!url || !anon) {
-    throw new Error("Missing NEXT_PUBLIC_SUPABASE_URL or NEXT_PUBLIC_SUPABASE_ANON_KEY");
-  }
+  if (!url || !key) {
+  throw new Error(
+    "Missing NEXT_PUBLIC_SUPABASE_URL or NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY (or NEXT_PUBLIC_SUPABASE_ANON_KEY)"
+  );
+}
 
-  browserClient = createBrowserClient(url, anon, {
-    auth: {
-      persistSession: true,
-      autoRefreshToken: true,
-      detectSessionInUrl: true,
-      flowType: "pkce",
-      // optional but helps prevent weird collisions if you ever change project URLs
-      storageKey: "sb-expatise-auth",
-    },
-  });
+  browserClient = createBrowserClient(url, key, {
+  auth: {
+    persistSession: true,
+    autoRefreshToken: true,
+    detectSessionInUrl: true,
+    flowType: "pkce",
+    storageKey: "sb-expatise-auth",
+  },
+});
 
   return browserClient;
 }
@@ -27389,6 +27424,49 @@ export async function createClient() {
   });
 }
 
+```
+
+### lib/sync/fetchAttemptsFromSupabase.ts
+```tsx
+'use client';
+
+import type { TestAttemptV1 } from '@/lib/test-engine/attemptStorage';
+import { createClient } from '@/lib/supabase/client';
+
+export async function fetchAttemptsFromSupabase(input: {
+  datasetId?: string;
+  status?: string; // default "submitted"
+  limit?: number;  // default 200, clamped to 1..500
+}): Promise<TestAttemptV1[] | null> {
+  try {
+    const supabase = createClient();
+
+    const { data: userData, error: userErr } = await supabase.auth.getUser();
+    const user = userErr ? null : userData.user;
+    if (!user) return null;
+
+    const datasetId = (input.datasetId ?? '').trim();
+    const status = (input.status ?? 'submitted').trim() || 'submitted';
+    const limit = Math.min(500, Math.max(1, Number(input.limit ?? 200)));
+
+    let q = supabase
+      .from('attempts')
+      .select('payload, submitted_at_ms, last_active_at_ms, created_at_ms, attempt_id')
+      .eq('user_id', user.id)
+      .eq('status', status)
+      .order('submitted_at_ms', { ascending: false })
+      .limit(limit);
+
+    if (datasetId) q = q.eq('dataset_id', datasetId);
+
+    const { data, error } = await q;
+    if (error) return null;
+
+    return (data ?? []).map((r: any) => r.payload).filter(Boolean) as TestAttemptV1[];
+  } catch {
+    return null;
+  }
+}
 ```
 
 ### lib/sync/rules.ts
@@ -27492,21 +27570,51 @@ export function mergeClearedMistakes(local?: string[], remote?: string[]) {
 "use client";
 
 import type { TestAttemptV1 } from "@/lib/test-engine/attemptStorage";
+import { createClient } from "@/lib/supabase/client";
 
 export async function saveAttemptToSupabase(attempt: TestAttemptV1) {
   try {
-    await fetch("/api/attempts", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      // keepalive helps if user navigates immediately after submit
-      keepalive: true,
-      body: JSON.stringify({ attempt }),
+    const supabase = createClient();
+
+    // Must have a logged-in user session
+    const { data: userData, error: userErr } = await supabase.auth.getUser();
+    const user = userErr ? null : userData.user;
+    if (!user) return;
+
+    // Keep the same required fields as your old API route
+    if (!attempt?.attemptId || !attempt?.modeKey || !attempt?.status) return;
+
+    const row = {
+      user_id: user.id,
+
+      attempt_id: attempt.attemptId,
+      user_key: attempt.userKey ?? "guest",
+      schema_version: attempt.schemaVersion ?? 1,
+
+      mode_key: attempt.modeKey,
+      dataset_id: attempt.datasetId ?? null,
+      dataset_version: attempt.datasetVersion ?? null,
+
+      status: attempt.status,
+
+      // These may not be in TestAttemptV1's typing; keep them safely
+      created_at_ms: (attempt as any).createdAt ?? null,
+      last_active_at_ms: (attempt as any).lastActiveAt ?? null,
+      submitted_at_ms: (attempt as any).submittedAt ?? null,
+
+      payload: attempt,
+    };
+
+    // Mirrors your server route:
+    // upsert(row, { onConflict: "user_id,attempt_id" })
+    await supabase.from("attempts").upsert(row, {
+      onConflict: "user_id,attempt_id",
     });
+    // Supabase upsert + onConflict is the documented way to do this.
   } catch {
     // ignore (offline, blocked, etc.)
   }
 }
-
 ```
 
 ### lib/sync/saveTimeLogToSupabase.ts
@@ -27515,6 +27623,11 @@ export async function saveAttemptToSupabase(attempt: TestAttemptV1) {
 "use client";
 
 import type { TimeKind } from "@/lib/stats/timeKeys";
+import { createClient } from "@/lib/supabase/client";
+
+function isYmd(s: string) {
+  return /^\d{4}-\d{2}-\d{2}$/.test(s);
+}
 
 export async function saveTimeLogToSupabase(input: {
   kind: TimeKind;
@@ -27522,17 +27635,113 @@ export async function saveTimeLogToSupabase(input: {
   seconds: number; // total seconds for that day+kind
 }) {
   try {
-    await fetch("/api/time-logs", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      keepalive: true,
-      body: JSON.stringify(input),
+    const supabase = createClient();
+
+    // Must have a logged-in user session
+    const { data: userData, error: userErr } = await supabase.auth.getUser();
+    const user = userErr ? null : userData.user;
+    if (!user) return;
+
+    const kind = String(input.kind ?? "").trim();
+    const date = String(input.date ?? "").trim();
+    const seconds = Number(input.seconds);
+
+    if ((kind !== "test" && kind !== "study") || !isYmd(date) || !Number.isFinite(seconds) || seconds < 0) {
+      return;
+    }
+
+    const row = {
+      user_id: user.id,
+      date,
+      kind,
+      seconds: Math.floor(seconds),
+      updated_at: new Date().toISOString(),
+    };
+
+    await supabase.from("time_logs").upsert(row, {
+      onConflict: "user_id,date,kind",
     });
   } catch {
     // ignore (offline, blocked, etc.)
   }
 }
+```
 
+### lib/sync/timeLogs.client.ts
+```tsx
+'use client';
+
+import { createClient } from '@/lib/supabase/client';
+
+export type TimeLogKind = 'test' | 'study';
+export type TimeLogRow = { date: string; kind: TimeLogKind; seconds: number };
+
+function isYmd(s: string) {
+  return /^\d{4}-\d{2}-\d{2}$/.test(s);
+}
+
+export async function fetchTimeLogsFromSupabase(input?: { limit?: number }) {
+  try {
+    const supabase = createClient();
+
+    const { data: userData, error: userErr } = await supabase.auth.getUser();
+    const user = userErr ? null : userData.user;
+    if (!user) return null;
+
+    const limit = Math.min(400, Math.max(1, Number(input?.limit ?? 200)));
+
+    const { data, error } = await supabase
+      .from('time_logs')
+      .select('date, kind, seconds')
+      .eq('user_id', user.id)
+      .order('date', { ascending: false })
+      .limit(limit);
+
+    if (error) return null;
+    return (data ?? []) as TimeLogRow[];
+  } catch {
+    return null;
+  }
+}
+
+export async function upsertTimeLogToSupabase(input: {
+  kind: TimeLogKind;
+  date: string; // YYYY-MM-DD
+  seconds: number;
+}) {
+  try {
+    const supabase = createClient();
+
+    const { data: userData, error: userErr } = await supabase.auth.getUser();
+    const user = userErr ? null : userData.user;
+    if (!user) return { ok: false as const, error: 'No user session' };
+
+    const kind = String(input.kind ?? '').trim() as TimeLogKind;
+    const date = String(input.date ?? '').trim();
+    const seconds = Number(input.seconds);
+
+    if ((kind !== 'test' && kind !== 'study') || !isYmd(date) || !Number.isFinite(seconds) || seconds < 0) {
+      return { ok: false as const, error: 'Invalid payload' };
+    }
+
+    const row = {
+      user_id: user.id,
+      date,
+      kind,
+      seconds: Math.floor(seconds),
+      updated_at: new Date().toISOString(),
+    };
+
+    const { error } = await supabase.from('time_logs').upsert(row, {
+      onConflict: 'user_id,date,kind',
+    });
+
+    if (error) return { ok: false as const, error: error.message };
+    return { ok: true as const };
+  } catch (e: any) {
+    return { ok: false as const, error: String(e?.message ?? e) };
+  }
+}
 ```
 
 ### lib/test-engine/attemptStorage.ts
@@ -28202,28 +28411,26 @@ export function seededShuffle<T>(arr: T[], seedString: string): T[] {
 
 ```
 
-### middelware.ts
-```tsx
-// middleware.ts (project root)
-import type { NextRequest } from "next/server";
-import { proxy } from "./proxy";
-
-export async function middleware(req: NextRequest) {
-  return proxy(req);
-}
-
-export { config } from "./proxy";
-
-```
-
 ### next.config.ts
 ```tsx
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   productionBrowserSourceMaps: true,
+  output: 'export',
   // other config options here...
+  images: {
+    unoptimized: true,
+    remotePatterns: [
+    {
+      protocol: 'https',
+      hostname: 'YOURPROJECT.supabase.co',
+      pathname: '/storage/v1/object/**',
+    },
+  ],
+  },
 };
+module.exports = nextConfig;
 
 export default nextConfig;
 
@@ -28241,15 +28448,19 @@ export default nextConfig;
       "name": "expatise",
       "version": "0.1.0",
       "dependencies": {
+        "@capacitor/android": "^8.1.0",
+        "@capacitor/core": "^8.1.0",
+        "@capacitor/status-bar": "^8.0.1",
         "@fortawesome/fontawesome-svg-core": "^7.1.0",
         "@fortawesome/free-brands-svg-icons": "^7.1.0",
         "@fortawesome/free-regular-svg-icons": "^7.2.0",
         "@fortawesome/free-solid-svg-icons": "^7.1.0",
         "@fortawesome/react-fontawesome": "^3.1.1",
         "@supabase/ssr": "^0.8.0",
-        "@supabase/supabase-js": "^2.95.3",
+        "@supabase/supabase-js": "^2.97.0",
         "@vercel/speed-insights": "^1.3.1",
         "canvas-confetti": "^1.9.4",
+        "motion": "^12.34.3",
         "next": "^16.0.8",
         "next-auth": "^5.0.0-beta.30",
         "openai": "^6.22.0",
@@ -28257,6 +28468,8 @@ export default nextConfig;
         "react-dom": "19.2.0"
       },
       "devDependencies": {
+        "@capacitor/assets": "^3.0.5",
+        "@capacitor/cli": "^8.1.0",
         "@tailwindcss/postcss": "^4",
         "@types/canvas-confetti": "^1.9.0",
         "@types/node": "^20",
@@ -28265,6 +28478,7 @@ export default nextConfig;
         "baseline-browser-mapping": "^2.9.5",
         "eslint": "^9",
         "eslint-config-next": "16.0.3",
+        "supabase": "^2.76.14",
         "tailwindcss": "^4",
         "typescript": "^5"
       }
@@ -28551,6 +28765,567 @@ export default nextConfig;
         "node": ">=6.9.0"
       }
     },
+    "node_modules/@capacitor/android": {
+      "version": "8.1.0",
+      "resolved": "https://registry.npmjs.org/@capacitor/android/-/android-8.1.0.tgz",
+      "integrity": "sha512-z0acTPxj5DCy/U2FU7w+GA93oC+wdyKnsOcRg5rutDmSYa8Do1tzYqApKgf+hnuTNPbtrCTHp0Zy1cLiK/4MEw==",
+      "license": "MIT",
+      "peerDependencies": {
+        "@capacitor/core": "^8.1.0"
+      }
+    },
+    "node_modules/@capacitor/assets": {
+      "version": "3.0.5",
+      "resolved": "https://registry.npmjs.org/@capacitor/assets/-/assets-3.0.5.tgz",
+      "integrity": "sha512-ohz/OUq61Y1Fc6aVSt0uDrUdeOA7oTH4pkWDbv/8I3UrPjH7oPkzYhShuDRUjekNp9RBi198VSFdt0CetpEOzw==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "@capacitor/cli": "^5.3.0",
+        "@ionic/utils-array": "2.1.6",
+        "@ionic/utils-fs": "3.1.7",
+        "@trapezedev/project": "^7.0.10",
+        "commander": "8.3.0",
+        "debug": "4.3.4",
+        "fs-extra": "10.1.0",
+        "node-fetch": "2.7.0",
+        "node-html-parser": "5.4.2",
+        "sharp": "0.32.6",
+        "tslib": "2.6.2",
+        "yargs": "17.7.2"
+      },
+      "bin": {
+        "capacitor-assets": "bin/capacitor-assets"
+      },
+      "engines": {
+        "node": ">=10.3.0"
+      }
+    },
+    "node_modules/@capacitor/assets/node_modules/@capacitor/cli": {
+      "version": "5.7.8",
+      "resolved": "https://registry.npmjs.org/@capacitor/cli/-/cli-5.7.8.tgz",
+      "integrity": "sha512-qN8LDlREMhrYhOvVXahoJVNkP8LP55/YPRJrzTAFrMqlNJC18L3CzgWYIblFPnuwfbH/RxbfoZT/ydkwgVpMrw==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "@ionic/cli-framework-output": "^2.2.5",
+        "@ionic/utils-fs": "^3.1.6",
+        "@ionic/utils-subprocess": "^2.1.11",
+        "@ionic/utils-terminal": "^2.3.3",
+        "commander": "^9.3.0",
+        "debug": "^4.3.4",
+        "env-paths": "^2.2.0",
+        "kleur": "^4.1.4",
+        "native-run": "^2.0.0",
+        "open": "^8.4.0",
+        "plist": "^3.0.5",
+        "prompts": "^2.4.2",
+        "rimraf": "^4.4.1",
+        "semver": "^7.3.7",
+        "tar": "^6.1.11",
+        "tslib": "^2.4.0",
+        "xml2js": "^0.5.0"
+      },
+      "bin": {
+        "cap": "bin/capacitor",
+        "capacitor": "bin/capacitor"
+      },
+      "engines": {
+        "node": ">=16.0.0"
+      }
+    },
+    "node_modules/@capacitor/assets/node_modules/@capacitor/cli/node_modules/commander": {
+      "version": "9.5.0",
+      "resolved": "https://registry.npmjs.org/commander/-/commander-9.5.0.tgz",
+      "integrity": "sha512-KRs7WVDKg86PWiuAqhDrAQnTXZKraVcCc6vFdL14qrZ/DcWwuRo7VoiYXalXO7S5GKpqYiVEwCbgFDfxNHKJBQ==",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": "^12.20.0 || >=14"
+      }
+    },
+    "node_modules/@capacitor/assets/node_modules/@ionic/utils-process": {
+      "version": "2.1.11",
+      "resolved": "https://registry.npmjs.org/@ionic/utils-process/-/utils-process-2.1.11.tgz",
+      "integrity": "sha512-Uavxn+x8j3rDlZEk1X7YnaN6wCgbCwYQOeIjv/m94i1dzslqWhqIHEqxEyeE8HsT5Negboagg7GtQiABy+BLbA==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "@ionic/utils-object": "2.1.6",
+        "@ionic/utils-terminal": "2.3.4",
+        "debug": "^4.0.0",
+        "signal-exit": "^3.0.3",
+        "tree-kill": "^1.2.2",
+        "tslib": "^2.0.1"
+      },
+      "engines": {
+        "node": ">=16.0.0"
+      }
+    },
+    "node_modules/@capacitor/assets/node_modules/@ionic/utils-stream": {
+      "version": "3.1.6",
+      "resolved": "https://registry.npmjs.org/@ionic/utils-stream/-/utils-stream-3.1.6.tgz",
+      "integrity": "sha512-4+Kitey1lTA1yGtnigeYNhV/0tggI3lWBMjC7tBs1K9GXa/q7q4CtOISppdh8QgtOhrhAXS2Igp8rbko/Cj+lA==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "debug": "^4.0.0",
+        "tslib": "^2.0.1"
+      },
+      "engines": {
+        "node": ">=16.0.0"
+      }
+    },
+    "node_modules/@capacitor/assets/node_modules/@ionic/utils-subprocess": {
+      "version": "2.1.14",
+      "resolved": "https://registry.npmjs.org/@ionic/utils-subprocess/-/utils-subprocess-2.1.14.tgz",
+      "integrity": "sha512-nGYvyGVjU0kjPUcSRFr4ROTraT3w/7r502f5QJEsMRKTqa4eEzCshtwRk+/mpASm0kgBN5rrjYA5A/OZg8ahqg==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "@ionic/utils-array": "2.1.6",
+        "@ionic/utils-fs": "3.1.7",
+        "@ionic/utils-process": "2.1.11",
+        "@ionic/utils-stream": "3.1.6",
+        "@ionic/utils-terminal": "2.3.4",
+        "cross-spawn": "^7.0.3",
+        "debug": "^4.0.0",
+        "tslib": "^2.0.1"
+      },
+      "engines": {
+        "node": ">=16.0.0"
+      }
+    },
+    "node_modules/@capacitor/assets/node_modules/@ionic/utils-terminal": {
+      "version": "2.3.4",
+      "resolved": "https://registry.npmjs.org/@ionic/utils-terminal/-/utils-terminal-2.3.4.tgz",
+      "integrity": "sha512-cEiMFl3jklE0sW60r8JHH3ijFTwh/jkdEKWbylSyExQwZ8pPuwoXz7gpkWoJRLuoRHHSvg+wzNYyPJazIHfoJA==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "@types/slice-ansi": "^4.0.0",
+        "debug": "^4.0.0",
+        "signal-exit": "^3.0.3",
+        "slice-ansi": "^4.0.0",
+        "string-width": "^4.1.0",
+        "strip-ansi": "^6.0.0",
+        "tslib": "^2.0.1",
+        "untildify": "^4.0.0",
+        "wrap-ansi": "^7.0.0"
+      },
+      "engines": {
+        "node": ">=16.0.0"
+      }
+    },
+    "node_modules/@capacitor/assets/node_modules/brace-expansion": {
+      "version": "2.0.2",
+      "resolved": "https://registry.npmjs.org/brace-expansion/-/brace-expansion-2.0.2.tgz",
+      "integrity": "sha512-Jt0vHyM+jmUBqojB7E1NIYadt0vI0Qxjxd2TErW94wDz+E2LAm5vKMXXwg6ZZBTHPuUlDgQHKXvjGBdfcF1ZDQ==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "balanced-match": "^1.0.0"
+      }
+    },
+    "node_modules/@capacitor/assets/node_modules/chownr": {
+      "version": "2.0.0",
+      "resolved": "https://registry.npmjs.org/chownr/-/chownr-2.0.0.tgz",
+      "integrity": "sha512-bIomtDF5KGpdogkLd9VspvFzk9KfpyyGlS8YFVZl7TGPBHL5snIOnxeshwVgPteQ9b4Eydl+pVbIyE1DcvCWgQ==",
+      "dev": true,
+      "license": "ISC",
+      "engines": {
+        "node": ">=10"
+      }
+    },
+    "node_modules/@capacitor/assets/node_modules/commander": {
+      "version": "8.3.0",
+      "resolved": "https://registry.npmjs.org/commander/-/commander-8.3.0.tgz",
+      "integrity": "sha512-OkTL9umf+He2DZkUq8f8J9of7yL6RJKI24dVITBmNfZBmri9zYZQrKkuXiKhyfPSu8tUhnVBB1iKXevvnlR4Ww==",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">= 12"
+      }
+    },
+    "node_modules/@capacitor/assets/node_modules/debug": {
+      "version": "4.3.4",
+      "resolved": "https://registry.npmjs.org/debug/-/debug-4.3.4.tgz",
+      "integrity": "sha512-PRWFHuSU3eDtQJPvnNY7Jcket1j0t5OuOsFzPPzsekD52Zl8qUfFIPEiswXqIvHWGVHOgX+7G/vCNNhehwxfkQ==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "ms": "2.1.2"
+      },
+      "engines": {
+        "node": ">=6.0"
+      },
+      "peerDependenciesMeta": {
+        "supports-color": {
+          "optional": true
+        }
+      }
+    },
+    "node_modules/@capacitor/assets/node_modules/fs-extra": {
+      "version": "10.1.0",
+      "resolved": "https://registry.npmjs.org/fs-extra/-/fs-extra-10.1.0.tgz",
+      "integrity": "sha512-oRXApq54ETRj4eMiFzGnHWGy+zo5raudjuxN0b8H7s/RU2oW0Wvsx9O0ACRN/kRq9E8Vu/ReskGB5o3ji+FzHQ==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "graceful-fs": "^4.2.0",
+        "jsonfile": "^6.0.1",
+        "universalify": "^2.0.0"
+      },
+      "engines": {
+        "node": ">=12"
+      }
+    },
+    "node_modules/@capacitor/assets/node_modules/glob": {
+      "version": "9.3.5",
+      "resolved": "https://registry.npmjs.org/glob/-/glob-9.3.5.tgz",
+      "integrity": "sha512-e1LleDykUz2Iu+MTYdkSsuWX8lvAjAcs0Xef0lNIu0S2wOAzuTxCJtcd9S3cijlwYF18EsU3rzb8jPVobxDh9Q==",
+      "deprecated": "Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me",
+      "dev": true,
+      "license": "ISC",
+      "dependencies": {
+        "fs.realpath": "^1.0.0",
+        "minimatch": "^8.0.2",
+        "minipass": "^4.2.4",
+        "path-scurry": "^1.6.1"
+      },
+      "engines": {
+        "node": ">=16 || 14 >=14.17"
+      },
+      "funding": {
+        "url": "https://github.com/sponsors/isaacs"
+      }
+    },
+    "node_modules/@capacitor/assets/node_modules/lru-cache": {
+      "version": "10.4.3",
+      "resolved": "https://registry.npmjs.org/lru-cache/-/lru-cache-10.4.3.tgz",
+      "integrity": "sha512-JNAzZcXrCt42VGLuYz0zfAzDfAvJWW6AfYlDBQyDV5DClI2m5sAmK+OIO7s59XfsRsWHp02jAJrRadPRGTt6SQ==",
+      "dev": true,
+      "license": "ISC"
+    },
+    "node_modules/@capacitor/assets/node_modules/minimatch": {
+      "version": "8.0.7",
+      "resolved": "https://registry.npmjs.org/minimatch/-/minimatch-8.0.7.tgz",
+      "integrity": "sha512-V+1uQNdzybxa14e/p00HZnQNNcTjnRJjDxg2V8wtkjFctq4M7hXFws4oekyTP0Jebeq7QYtpFyOeBAjc88zvYg==",
+      "dev": true,
+      "license": "ISC",
+      "dependencies": {
+        "brace-expansion": "^2.0.1"
+      },
+      "engines": {
+        "node": ">=16 || 14 >=14.17"
+      },
+      "funding": {
+        "url": "https://github.com/sponsors/isaacs"
+      }
+    },
+    "node_modules/@capacitor/assets/node_modules/minipass": {
+      "version": "4.2.8",
+      "resolved": "https://registry.npmjs.org/minipass/-/minipass-4.2.8.tgz",
+      "integrity": "sha512-fNzuVyifolSLFL4NzpF+wEF4qrgqaaKX0haXPQEdQ7NKAN+WecoKMHV09YcuL/DHxrUsYQOK3MiuDf7Ip2OXfQ==",
+      "dev": true,
+      "license": "ISC",
+      "engines": {
+        "node": ">=8"
+      }
+    },
+    "node_modules/@capacitor/assets/node_modules/minizlib": {
+      "version": "2.1.2",
+      "resolved": "https://registry.npmjs.org/minizlib/-/minizlib-2.1.2.tgz",
+      "integrity": "sha512-bAxsR8BVfj60DWXHE3u30oHzfl4G7khkSuPW+qvpd7jFRHm7dLxOjUk1EHACJ/hxLY8phGJ0YhYHZo7jil7Qdg==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "minipass": "^3.0.0",
+        "yallist": "^4.0.0"
+      },
+      "engines": {
+        "node": ">= 8"
+      }
+    },
+    "node_modules/@capacitor/assets/node_modules/minizlib/node_modules/minipass": {
+      "version": "3.3.6",
+      "resolved": "https://registry.npmjs.org/minipass/-/minipass-3.3.6.tgz",
+      "integrity": "sha512-DxiNidxSEK+tHG6zOIklvNOwm3hvCrbUrdtzY74U6HKTJxvIDfOUL5W5P2Ghd3DTkhhKPYGqeNUIh5qcM4YBfw==",
+      "dev": true,
+      "license": "ISC",
+      "dependencies": {
+        "yallist": "^4.0.0"
+      },
+      "engines": {
+        "node": ">=8"
+      }
+    },
+    "node_modules/@capacitor/assets/node_modules/ms": {
+      "version": "2.1.2",
+      "resolved": "https://registry.npmjs.org/ms/-/ms-2.1.2.tgz",
+      "integrity": "sha512-sGkPx+VjMtmA6MX27oA4FBFELFCZZ4S4XqeGOXCv68tT+jb3vk/RyaKWP0PTKyWtmLSM0b+adUTEvbs1PEaH2w==",
+      "dev": true,
+      "license": "MIT"
+    },
+    "node_modules/@capacitor/assets/node_modules/node-fetch": {
+      "version": "2.7.0",
+      "resolved": "https://registry.npmjs.org/node-fetch/-/node-fetch-2.7.0.tgz",
+      "integrity": "sha512-c4FRfUm/dbcWZ7U+1Wq0AwCyFL+3nt2bEw05wfxSz+DWpWsitgmSgYmy2dQdWyKC1694ELPqMs/YzUSNozLt8A==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "whatwg-url": "^5.0.0"
+      },
+      "engines": {
+        "node": "4.x || >=6.0.0"
+      },
+      "peerDependencies": {
+        "encoding": "^0.1.0"
+      },
+      "peerDependenciesMeta": {
+        "encoding": {
+          "optional": true
+        }
+      }
+    },
+    "node_modules/@capacitor/assets/node_modules/path-scurry": {
+      "version": "1.11.1",
+      "resolved": "https://registry.npmjs.org/path-scurry/-/path-scurry-1.11.1.tgz",
+      "integrity": "sha512-Xa4Nw17FS9ApQFJ9umLiJS4orGjm7ZzwUrwamcGQuHSzDyth9boKDaycYdDcZDuqYATXw4HFXgaqWTctW/v1HA==",
+      "dev": true,
+      "license": "BlueOak-1.0.0",
+      "dependencies": {
+        "lru-cache": "^10.2.0",
+        "minipass": "^5.0.0 || ^6.0.2 || ^7.0.0"
+      },
+      "engines": {
+        "node": ">=16 || 14 >=14.18"
+      },
+      "funding": {
+        "url": "https://github.com/sponsors/isaacs"
+      }
+    },
+    "node_modules/@capacitor/assets/node_modules/path-scurry/node_modules/minipass": {
+      "version": "7.1.3",
+      "resolved": "https://registry.npmjs.org/minipass/-/minipass-7.1.3.tgz",
+      "integrity": "sha512-tEBHqDnIoM/1rXME1zgka9g6Q2lcoCkxHLuc7ODJ5BxbP5d4c2Z5cGgtXAku59200Cx7diuHTOYfSBD8n6mm8A==",
+      "dev": true,
+      "license": "BlueOak-1.0.0",
+      "engines": {
+        "node": ">=16 || 14 >=14.17"
+      }
+    },
+    "node_modules/@capacitor/assets/node_modules/rimraf": {
+      "version": "4.4.1",
+      "resolved": "https://registry.npmjs.org/rimraf/-/rimraf-4.4.1.tgz",
+      "integrity": "sha512-Gk8NlF062+T9CqNGn6h4tls3k6T1+/nXdOcSZVikNVtlRdYpA7wRJJMoXmuvOnLW844rPjdQ7JgXCYM6PPC/og==",
+      "dev": true,
+      "license": "ISC",
+      "dependencies": {
+        "glob": "^9.2.0"
+      },
+      "bin": {
+        "rimraf": "dist/cjs/src/bin.js"
+      },
+      "engines": {
+        "node": ">=14"
+      },
+      "funding": {
+        "url": "https://github.com/sponsors/isaacs"
+      }
+    },
+    "node_modules/@capacitor/assets/node_modules/semver": {
+      "version": "7.7.4",
+      "resolved": "https://registry.npmjs.org/semver/-/semver-7.7.4.tgz",
+      "integrity": "sha512-vFKC2IEtQnVhpT78h1Yp8wzwrf8CM+MzKMHGJZfBtzhZNycRFnXsHk6E5TxIkkMsgNS7mdX3AGB7x2QM2di4lA==",
+      "dev": true,
+      "license": "ISC",
+      "bin": {
+        "semver": "bin/semver.js"
+      },
+      "engines": {
+        "node": ">=10"
+      }
+    },
+    "node_modules/@capacitor/assets/node_modules/sharp": {
+      "version": "0.32.6",
+      "resolved": "https://registry.npmjs.org/sharp/-/sharp-0.32.6.tgz",
+      "integrity": "sha512-KyLTWwgcR9Oe4d9HwCwNM2l7+J0dUQwn/yf7S0EnTtb0eVS4RxO0eUSvxPtzT4F3SY+C4K6fqdv/DO27sJ/v/w==",
+      "dev": true,
+      "hasInstallScript": true,
+      "license": "Apache-2.0",
+      "dependencies": {
+        "color": "^4.2.3",
+        "detect-libc": "^2.0.2",
+        "node-addon-api": "^6.1.0",
+        "prebuild-install": "^7.1.1",
+        "semver": "^7.5.4",
+        "simple-get": "^4.0.1",
+        "tar-fs": "^3.0.4",
+        "tunnel-agent": "^0.6.0"
+      },
+      "engines": {
+        "node": ">=14.15.0"
+      },
+      "funding": {
+        "url": "https://opencollective.com/libvips"
+      }
+    },
+    "node_modules/@capacitor/assets/node_modules/tar": {
+      "version": "6.2.1",
+      "resolved": "https://registry.npmjs.org/tar/-/tar-6.2.1.tgz",
+      "integrity": "sha512-DZ4yORTwrbTj/7MZYq2w+/ZFdI6OZ/f9SFHR+71gIVUZhOQPHzVCLpvRnPgyaMpfWxxk/4ONva3GQSyNIKRv6A==",
+      "deprecated": "Old versions of tar are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me",
+      "dev": true,
+      "license": "ISC",
+      "dependencies": {
+        "chownr": "^2.0.0",
+        "fs-minipass": "^2.0.0",
+        "minipass": "^5.0.0",
+        "minizlib": "^2.1.1",
+        "mkdirp": "^1.0.3",
+        "yallist": "^4.0.0"
+      },
+      "engines": {
+        "node": ">=10"
+      }
+    },
+    "node_modules/@capacitor/assets/node_modules/tar/node_modules/minipass": {
+      "version": "5.0.0",
+      "resolved": "https://registry.npmjs.org/minipass/-/minipass-5.0.0.tgz",
+      "integrity": "sha512-3FnjYuehv9k6ovOEbyOswadCDPX1piCfhV8ncmYtHOjuPwylVWsghTLo7rabjC3Rx5xD4HDx8Wm1xnMF7S5qFQ==",
+      "dev": true,
+      "license": "ISC",
+      "engines": {
+        "node": ">=8"
+      }
+    },
+    "node_modules/@capacitor/assets/node_modules/tslib": {
+      "version": "2.6.2",
+      "resolved": "https://registry.npmjs.org/tslib/-/tslib-2.6.2.tgz",
+      "integrity": "sha512-AEYxH93jGFPn/a2iVAwW87VuUIkR1FVUKB77NwMF7nBTDkDrrT/Hpt/IrCJ0QXhW27jTBDcf5ZY7w6RiqTMw2Q==",
+      "dev": true,
+      "license": "0BSD"
+    },
+    "node_modules/@capacitor/assets/node_modules/xml2js": {
+      "version": "0.5.0",
+      "resolved": "https://registry.npmjs.org/xml2js/-/xml2js-0.5.0.tgz",
+      "integrity": "sha512-drPFnkQJik/O+uPKpqSgr22mpuFHqKdbS835iAQrUC73L2F5WkboIRd63ai/2Yg6I1jzifPFKH2NTK+cfglkIA==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "sax": ">=0.6.0",
+        "xmlbuilder": "~11.0.0"
+      },
+      "engines": {
+        "node": ">=4.0.0"
+      }
+    },
+    "node_modules/@capacitor/assets/node_modules/xmlbuilder": {
+      "version": "11.0.1",
+      "resolved": "https://registry.npmjs.org/xmlbuilder/-/xmlbuilder-11.0.1.tgz",
+      "integrity": "sha512-fDlsI/kFEx7gLvbecc0/ohLG50fugQp8ryHzMTuW9vSa1GJ0XYWKnhsUx7oie3G98+r56aTQIUB4kht42R3JvA==",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">=4.0"
+      }
+    },
+    "node_modules/@capacitor/assets/node_modules/yallist": {
+      "version": "4.0.0",
+      "resolved": "https://registry.npmjs.org/yallist/-/yallist-4.0.0.tgz",
+      "integrity": "sha512-3wdGidZyq5PB084XLES5TpOSRA3wjXAlIWMhum2kRcv/41Sn2emQ0dycQW4uZXLejwKvg6EsvbdlVL+FYEct7A==",
+      "dev": true,
+      "license": "ISC"
+    },
+    "node_modules/@capacitor/cli": {
+      "version": "8.1.0",
+      "resolved": "https://registry.npmjs.org/@capacitor/cli/-/cli-8.1.0.tgz",
+      "integrity": "sha512-JAzA/ckPgTCjZz6YumBLV2dNCFEVXAuR1oOKLD7AJ4LAI5pF5RtRZrf5FoaxvJVb0S4CouZT5cD+7NwsNJX/nw==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "@ionic/cli-framework-output": "^2.2.8",
+        "@ionic/utils-subprocess": "^3.0.1",
+        "@ionic/utils-terminal": "^2.3.5",
+        "commander": "^12.1.0",
+        "debug": "^4.4.0",
+        "env-paths": "^2.2.0",
+        "fs-extra": "^11.2.0",
+        "kleur": "^4.1.5",
+        "native-run": "^2.0.3",
+        "open": "^8.4.0",
+        "plist": "^3.1.0",
+        "prompts": "^2.4.2",
+        "rimraf": "^6.0.1",
+        "semver": "^7.6.3",
+        "tar": "^7.5.3",
+        "tslib": "^2.8.1",
+        "xml2js": "^0.6.2"
+      },
+      "bin": {
+        "cap": "bin/capacitor",
+        "capacitor": "bin/capacitor"
+      },
+      "engines": {
+        "node": ">=22.0.0"
+      }
+    },
+    "node_modules/@capacitor/cli/node_modules/semver": {
+      "version": "7.7.4",
+      "resolved": "https://registry.npmjs.org/semver/-/semver-7.7.4.tgz",
+      "integrity": "sha512-vFKC2IEtQnVhpT78h1Yp8wzwrf8CM+MzKMHGJZfBtzhZNycRFnXsHk6E5TxIkkMsgNS7mdX3AGB7x2QM2di4lA==",
+      "dev": true,
+      "license": "ISC",
+      "bin": {
+        "semver": "bin/semver.js"
+      },
+      "engines": {
+        "node": ">=10"
+      }
+    },
+    "node_modules/@capacitor/core": {
+      "version": "8.1.0",
+      "resolved": "https://registry.npmjs.org/@capacitor/core/-/core-8.1.0.tgz",
+      "integrity": "sha512-UfMBMWc1v7J+14AhH03QmeNwV3HZx3qnOWhpwnHfzALEwAwlV/itQOQqcasMQYhOHWL0tiymc5ByaLTn7KKQxw==",
+      "license": "MIT",
+      "dependencies": {
+        "tslib": "^2.1.0"
+      }
+    },
+    "node_modules/@capacitor/status-bar": {
+      "version": "8.0.1",
+      "resolved": "https://registry.npmjs.org/@capacitor/status-bar/-/status-bar-8.0.1.tgz",
+      "integrity": "sha512-OR59dlbwvmrV5dKsC9lvwv48QaGbqcbSTBpk+9/WXWxXYSdXXdzJZU9p8oyNPAkuJhCdnSa3XmU43fZRPBJJ5w==",
+      "license": "MIT",
+      "peerDependencies": {
+        "@capacitor/core": ">=8.0.0"
+      }
+    },
+    "node_modules/@cspotcode/source-map-support": {
+      "version": "0.8.1",
+      "resolved": "https://registry.npmjs.org/@cspotcode/source-map-support/-/source-map-support-0.8.1.tgz",
+      "integrity": "sha512-IchNf6dN4tHoMFIn/7OE8LWZ19Y6q/67Bmf6vnGREv8RSbBVb9LPJxEcnwrcwX6ixSvaiGoomAUvu4YSxXrVgw==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "@jridgewell/trace-mapping": "0.3.9"
+      },
+      "engines": {
+        "node": ">=12"
+      }
+    },
+    "node_modules/@cspotcode/source-map-support/node_modules/@jridgewell/trace-mapping": {
+      "version": "0.3.9",
+      "resolved": "https://registry.npmjs.org/@jridgewell/trace-mapping/-/trace-mapping-0.3.9.tgz",
+      "integrity": "sha512-3Belt6tdc8bPgAtbcmdtNJlirVoTmEb5e2gC94PnkwEW9jI6CAHUeoG85tjWP5WquqfavoMtMwiG4P926ZKKuQ==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "@jridgewell/resolve-uri": "^3.0.3",
+        "@jridgewell/sourcemap-codec": "^1.4.10"
+      }
+    },
     "node_modules/@emnapi/core": {
       "version": "1.7.1",
       "resolved": "https://registry.npmjs.org/@emnapi/core/-/core-1.7.1.tgz",
@@ -28585,9 +29360,9 @@ export default nextConfig;
       }
     },
     "node_modules/@eslint-community/eslint-utils": {
-      "version": "4.9.0",
-      "resolved": "https://registry.npmjs.org/@eslint-community/eslint-utils/-/eslint-utils-4.9.0.tgz",
-      "integrity": "sha512-ayVFHdtZ+hsq1t2Dy24wCmGXGe4q9Gu3smhLYALJrr473ZH27MsnSL+LKUlimp4BWJqMDMLmPpx/Q9R3OAlL4g==",
+      "version": "4.9.1",
+      "resolved": "https://registry.npmjs.org/@eslint-community/eslint-utils/-/eslint-utils-4.9.1.tgz",
+      "integrity": "sha512-phrYmNiYppR7znFEdqgfWHXR6NCkZEK7hwWDHZUjit/2/U0r6XvkDl0SYnoM51Hq7FhCGdLDT6zxCCOY1hexsQ==",
       "dev": true,
       "license": "MIT",
       "dependencies": {
@@ -28668,9 +29443,9 @@ export default nextConfig;
       }
     },
     "node_modules/@eslint/eslintrc": {
-      "version": "3.3.1",
-      "resolved": "https://registry.npmjs.org/@eslint/eslintrc/-/eslintrc-3.3.1.tgz",
-      "integrity": "sha512-gtF186CXhIl1p4pJNGZw8Yc6RlshoePRvE0X91oPGb3vZ8pM3qOS9W9NGPat9LziaBV7XrJWGylNQXkGcnM3IQ==",
+      "version": "3.3.3",
+      "resolved": "https://registry.npmjs.org/@eslint/eslintrc/-/eslintrc-3.3.3.tgz",
+      "integrity": "sha512-Kr+LPIUVKz2qkx1HAMH8q1q6azbqBAsXJUxBl/ODDuVPX45Z9DfwB8tPjTi6nNZ8BuM3nbJxC5zCAg5elnBUTQ==",
       "dev": true,
       "license": "MIT",
       "dependencies": {
@@ -28680,7 +29455,7 @@ export default nextConfig;
         "globals": "^14.0.0",
         "ignore": "^5.2.0",
         "import-fresh": "^3.2.1",
-        "js-yaml": "^4.1.0",
+        "js-yaml": "^4.1.1",
         "minimatch": "^3.1.2",
         "strip-json-comments": "^3.1.1"
       },
@@ -28692,9 +29467,9 @@ export default nextConfig;
       }
     },
     "node_modules/@eslint/js": {
-      "version": "9.39.1",
-      "resolved": "https://registry.npmjs.org/@eslint/js/-/js-9.39.1.tgz",
-      "integrity": "sha512-S26Stp4zCy88tH94QbBv3XCuzRQiZ9yXofEILmglYTh/Ug/a9/umqvgFtYBAo3Lp0nsI/5/qH1CCrbdK3AP1Tw==",
+      "version": "9.39.3",
+      "resolved": "https://registry.npmjs.org/@eslint/js/-/js-9.39.3.tgz",
+      "integrity": "sha512-1B1VkCq6FuUNlQvlBYb+1jDu/gV297TIs/OeiaSR9l1H27SVW55ONE1e1Vp16NqP683+xEGzxYtv4XCiDPaQiw==",
       "dev": true,
       "license": "MIT",
       "engines": {
@@ -28857,6 +29632,16 @@ export default nextConfig;
       "funding": {
         "type": "github",
         "url": "https://github.com/sponsors/nzakas"
+      }
+    },
+    "node_modules/@hutson/parse-repository-url": {
+      "version": "3.0.2",
+      "resolved": "https://registry.npmjs.org/@hutson/parse-repository-url/-/parse-repository-url-3.0.2.tgz",
+      "integrity": "sha512-H9XAx3hc0BQHY6l+IFSWHDySypcXsvsuLhgYLUGywmJ5pswRVQJUHpOsobnLYp2ZUaUlKiKDrgWWhosOwAEM8Q==",
+      "dev": true,
+      "license": "Apache-2.0",
+      "engines": {
+        "node": ">=6.9.0"
       }
     },
     "node_modules/@img/colour": {
@@ -29325,6 +30110,167 @@ export default nextConfig;
         "url": "https://opencollective.com/libvips"
       }
     },
+    "node_modules/@ionic/cli-framework-output": {
+      "version": "2.2.8",
+      "resolved": "https://registry.npmjs.org/@ionic/cli-framework-output/-/cli-framework-output-2.2.8.tgz",
+      "integrity": "sha512-TshtaFQsovB4NWRBydbNFawql6yul7d5bMiW1WYYf17hd99V6xdDdk3vtF51bw6sLkxON3bDQpWsnUc9/hVo3g==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "@ionic/utils-terminal": "2.3.5",
+        "debug": "^4.0.0",
+        "tslib": "^2.0.1"
+      },
+      "engines": {
+        "node": ">=16.0.0"
+      }
+    },
+    "node_modules/@ionic/utils-array": {
+      "version": "2.1.6",
+      "resolved": "https://registry.npmjs.org/@ionic/utils-array/-/utils-array-2.1.6.tgz",
+      "integrity": "sha512-0JZ1Zkp3wURnv8oq6Qt7fMPo5MpjbLoUoa9Bu2Q4PJuSDWM8H8gwF3dQO7VTeUj3/0o1IB1wGkFWZZYgUXZMUg==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "debug": "^4.0.0",
+        "tslib": "^2.0.1"
+      },
+      "engines": {
+        "node": ">=16.0.0"
+      }
+    },
+    "node_modules/@ionic/utils-fs": {
+      "version": "3.1.7",
+      "resolved": "https://registry.npmjs.org/@ionic/utils-fs/-/utils-fs-3.1.7.tgz",
+      "integrity": "sha512-2EknRvMVfhnyhL1VhFkSLa5gOcycK91VnjfrTB0kbqkTFCOXyXgVLI5whzq7SLrgD9t1aqos3lMMQyVzaQ5gVA==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "@types/fs-extra": "^8.0.0",
+        "debug": "^4.0.0",
+        "fs-extra": "^9.0.0",
+        "tslib": "^2.0.1"
+      },
+      "engines": {
+        "node": ">=16.0.0"
+      }
+    },
+    "node_modules/@ionic/utils-fs/node_modules/fs-extra": {
+      "version": "9.1.0",
+      "resolved": "https://registry.npmjs.org/fs-extra/-/fs-extra-9.1.0.tgz",
+      "integrity": "sha512-hcg3ZmepS30/7BSFqRvoo3DOMQu7IjqxO5nCDt+zM9XWjb33Wg7ziNT+Qvqbuc3+gWpzO02JubVyk2G4Zvo1OQ==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "at-least-node": "^1.0.0",
+        "graceful-fs": "^4.2.0",
+        "jsonfile": "^6.0.1",
+        "universalify": "^2.0.0"
+      },
+      "engines": {
+        "node": ">=10"
+      }
+    },
+    "node_modules/@ionic/utils-object": {
+      "version": "2.1.6",
+      "resolved": "https://registry.npmjs.org/@ionic/utils-object/-/utils-object-2.1.6.tgz",
+      "integrity": "sha512-vCl7sl6JjBHFw99CuAqHljYJpcE88YaH2ZW4ELiC/Zwxl5tiwn4kbdP/gxi2OT3MQb1vOtgAmSNRtusvgxI8ww==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "debug": "^4.0.0",
+        "tslib": "^2.0.1"
+      },
+      "engines": {
+        "node": ">=16.0.0"
+      }
+    },
+    "node_modules/@ionic/utils-process": {
+      "version": "2.1.12",
+      "resolved": "https://registry.npmjs.org/@ionic/utils-process/-/utils-process-2.1.12.tgz",
+      "integrity": "sha512-Jqkgyq7zBs/v/J3YvKtQQiIcxfJyplPgECMWgdO0E1fKrrH8EF0QGHNJ9mJCn6PYe2UtHNS8JJf5G21e09DfYg==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "@ionic/utils-object": "2.1.6",
+        "@ionic/utils-terminal": "2.3.5",
+        "debug": "^4.0.0",
+        "signal-exit": "^3.0.3",
+        "tree-kill": "^1.2.2",
+        "tslib": "^2.0.1"
+      },
+      "engines": {
+        "node": ">=16.0.0"
+      }
+    },
+    "node_modules/@ionic/utils-stream": {
+      "version": "3.1.7",
+      "resolved": "https://registry.npmjs.org/@ionic/utils-stream/-/utils-stream-3.1.7.tgz",
+      "integrity": "sha512-eSELBE7NWNFIHTbTC2jiMvh1ABKGIpGdUIvARsNPMNQhxJB3wpwdiVnoBoTYp+5a6UUIww4Kpg7v6S7iTctH1w==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "debug": "^4.0.0",
+        "tslib": "^2.0.1"
+      },
+      "engines": {
+        "node": ">=16.0.0"
+      }
+    },
+    "node_modules/@ionic/utils-subprocess": {
+      "version": "3.0.1",
+      "resolved": "https://registry.npmjs.org/@ionic/utils-subprocess/-/utils-subprocess-3.0.1.tgz",
+      "integrity": "sha512-cT4te3AQQPeIM9WCwIg8ohroJ8TjsYaMb2G4ZEgv9YzeDqHZ4JpeIKqG2SoaA3GmVQ3sOfhPM6Ox9sxphV/d1A==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "@ionic/utils-array": "2.1.6",
+        "@ionic/utils-fs": "3.1.7",
+        "@ionic/utils-process": "2.1.12",
+        "@ionic/utils-stream": "3.1.7",
+        "@ionic/utils-terminal": "2.3.5",
+        "cross-spawn": "^7.0.3",
+        "debug": "^4.0.0",
+        "tslib": "^2.0.1"
+      },
+      "engines": {
+        "node": ">=16.0.0"
+      }
+    },
+    "node_modules/@ionic/utils-terminal": {
+      "version": "2.3.5",
+      "resolved": "https://registry.npmjs.org/@ionic/utils-terminal/-/utils-terminal-2.3.5.tgz",
+      "integrity": "sha512-3cKScz9Jx2/Pr9ijj1OzGlBDfcmx7OMVBt4+P1uRR0SSW4cm1/y3Mo4OY3lfkuaYifMNBW8Wz6lQHbs1bihr7A==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "@types/slice-ansi": "^4.0.0",
+        "debug": "^4.0.0",
+        "signal-exit": "^3.0.3",
+        "slice-ansi": "^4.0.0",
+        "string-width": "^4.1.0",
+        "strip-ansi": "^6.0.0",
+        "tslib": "^2.0.1",
+        "untildify": "^4.0.0",
+        "wrap-ansi": "^7.0.0"
+      },
+      "engines": {
+        "node": ">=16.0.0"
+      }
+    },
+    "node_modules/@isaacs/fs-minipass": {
+      "version": "4.0.1",
+      "resolved": "https://registry.npmjs.org/@isaacs/fs-minipass/-/fs-minipass-4.0.1.tgz",
+      "integrity": "sha512-wgm9Ehl2jpeqP3zw/7mo3kRHFp5MEDhqAdwy1fTGkHAwnkGOVsgpvQhL8B5n1qlb01jV3n/bI0ZfZp5lWA1k4w==",
+      "dev": true,
+      "license": "ISC",
+      "dependencies": {
+        "minipass": "^7.0.4"
+      },
+      "engines": {
+        "node": ">=18.0.0"
+      }
+    },
     "node_modules/@jridgewell/gen-mapping": {
       "version": "0.3.13",
       "resolved": "https://registry.npmjs.org/@jridgewell/gen-mapping/-/gen-mapping-0.3.13.tgz",
@@ -29532,6 +30478,19 @@ export default nextConfig;
         "node": ">= 10"
       }
     },
+    "node_modules/@noble/hashes": {
+      "version": "1.8.0",
+      "resolved": "https://registry.npmjs.org/@noble/hashes/-/hashes-1.8.0.tgz",
+      "integrity": "sha512-jCs9ldd7NwzpgXDIf6P3+NrHh9/sD6CQdxHyjQI+h/6rDNo88ypBxxz45UDuZHz9r3tNz7N/VInSVoVdtXEI4A==",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": "^14.21.3 || >=16"
+      },
+      "funding": {
+        "url": "https://paulmillr.com/funding/"
+      }
+    },
     "node_modules/@nodelib/fs.scandir": {
       "version": "2.1.5",
       "resolved": "https://registry.npmjs.org/@nodelib/fs.scandir/-/fs.scandir-2.1.5.tgz",
@@ -29589,6 +30548,27 @@ export default nextConfig;
         "url": "https://github.com/sponsors/panva"
       }
     },
+    "node_modules/@paralleldrive/cuid2": {
+      "version": "2.3.1",
+      "resolved": "https://registry.npmjs.org/@paralleldrive/cuid2/-/cuid2-2.3.1.tgz",
+      "integrity": "sha512-XO7cAxhnTZl0Yggq6jOgjiOHhbgcO4NqFqwSmQpjK3b6TEE6Uj/jfSk6wzYyemh3+I0sHirKSetjQwn5cZktFw==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "@noble/hashes": "^1.1.5"
+      }
+    },
+    "node_modules/@prettier/plugin-xml": {
+      "version": "2.2.0",
+      "resolved": "https://registry.npmjs.org/@prettier/plugin-xml/-/plugin-xml-2.2.0.tgz",
+      "integrity": "sha512-UWRmygBsyj4bVXvDiqSccwT1kmsorcwQwaIy30yVh8T+Gspx4OlC0shX1y+ZuwXZvgnafmpRYKks0bAu9urJew==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "@xml-tools/parser": "^1.0.11",
+        "prettier": ">=2.4.0"
+      }
+    },
     "node_modules/@rtsao/scc": {
       "version": "1.1.0",
       "resolved": "https://registry.npmjs.org/@rtsao/scc/-/scc-1.1.0.tgz",
@@ -29597,9 +30577,9 @@ export default nextConfig;
       "license": "MIT"
     },
     "node_modules/@supabase/auth-js": {
-      "version": "2.95.3",
-      "resolved": "https://registry.npmjs.org/@supabase/auth-js/-/auth-js-2.95.3.tgz",
-      "integrity": "sha512-vD2YoS8E2iKIX0F7EwXTmqhUpaNsmbU6X2R0/NdFcs02oEfnHyNP/3M716f3wVJ2E5XHGiTFXki6lRckhJ0Thg==",
+      "version": "2.97.0",
+      "resolved": "https://registry.npmjs.org/@supabase/auth-js/-/auth-js-2.97.0.tgz",
+      "integrity": "sha512-2Og/1lqp+AIavr8qS2X04aSl8RBY06y4LrtIAGxat06XoXYiDxKNQMQzWDAKm1EyZFZVRNH48DO5YvIZ7la5fQ==",
       "license": "MIT",
       "dependencies": {
         "tslib": "2.8.1"
@@ -29609,9 +30589,9 @@ export default nextConfig;
       }
     },
     "node_modules/@supabase/functions-js": {
-      "version": "2.95.3",
-      "resolved": "https://registry.npmjs.org/@supabase/functions-js/-/functions-js-2.95.3.tgz",
-      "integrity": "sha512-uTuOAKzs9R/IovW1krO0ZbUHSJnsnyJElTXIRhjJTqymIVGcHzkAYnBCJqd7468Fs/Foz1BQ7Dv6DCl05lr7ig==",
+      "version": "2.97.0",
+      "resolved": "https://registry.npmjs.org/@supabase/functions-js/-/functions-js-2.97.0.tgz",
+      "integrity": "sha512-fSaA0ZeBUS9hMgpGZt5shIZvfs3Mvx2ZdajQT4kv/whubqDBAp3GU5W8iIXy21MRvKmO2NpAj8/Q6y+ZkZyF/w==",
       "license": "MIT",
       "dependencies": {
         "tslib": "2.8.1"
@@ -29621,9 +30601,9 @@ export default nextConfig;
       }
     },
     "node_modules/@supabase/postgrest-js": {
-      "version": "2.95.3",
-      "resolved": "https://registry.npmjs.org/@supabase/postgrest-js/-/postgrest-js-2.95.3.tgz",
-      "integrity": "sha512-LTrRBqU1gOovxRm1vRXPItSMPBmEFqrfTqdPTRtzOILV4jPSueFz6pES5hpb4LRlkFwCPRmv3nQJ5N625V2Xrg==",
+      "version": "2.97.0",
+      "resolved": "https://registry.npmjs.org/@supabase/postgrest-js/-/postgrest-js-2.97.0.tgz",
+      "integrity": "sha512-g4Ps0eaxZZurvfv/KGoo2XPZNpyNtjth9aW8eho9LZWM0bUuBtxPZw3ZQ6ERSpEGogshR+XNgwlSPIwcuHCNww==",
       "license": "MIT",
       "dependencies": {
         "tslib": "2.8.1"
@@ -29633,9 +30613,9 @@ export default nextConfig;
       }
     },
     "node_modules/@supabase/realtime-js": {
-      "version": "2.95.3",
-      "resolved": "https://registry.npmjs.org/@supabase/realtime-js/-/realtime-js-2.95.3.tgz",
-      "integrity": "sha512-D7EAtfU3w6BEUxDACjowWNJo/ZRo7sDIuhuOGKHIm9FHieGeoJV5R6GKTLtga/5l/6fDr2u+WcW/m8I9SYmaIw==",
+      "version": "2.97.0",
+      "resolved": "https://registry.npmjs.org/@supabase/realtime-js/-/realtime-js-2.97.0.tgz",
+      "integrity": "sha512-37Jw0NLaFP0CZd7qCan97D1zWutPrTSpgWxAw6Yok59JZoxp4IIKMrPeftJ3LZHmf+ILQOPy3i0pRDHM9FY36Q==",
       "license": "MIT",
       "dependencies": {
         "@types/phoenix": "^1.6.6",
@@ -29660,9 +30640,9 @@ export default nextConfig;
       }
     },
     "node_modules/@supabase/storage-js": {
-      "version": "2.95.3",
-      "resolved": "https://registry.npmjs.org/@supabase/storage-js/-/storage-js-2.95.3.tgz",
-      "integrity": "sha512-4GxkJiXI3HHWjxpC3sDx1BVrV87O0hfX+wvJdqGv67KeCu+g44SPnII8y0LL/Wr677jB7tpjAxKdtVWf+xhc9A==",
+      "version": "2.97.0",
+      "resolved": "https://registry.npmjs.org/@supabase/storage-js/-/storage-js-2.97.0.tgz",
+      "integrity": "sha512-9f6NniSBfuMxOWKwEFb+RjJzkfMdJUwv9oHuFJKfe/5VJR8cd90qw68m6Hn0ImGtwG37TUO+QHtoOechxRJ1Yg==",
       "license": "MIT",
       "dependencies": {
         "iceberg-js": "^0.8.1",
@@ -29673,16 +30653,16 @@ export default nextConfig;
       }
     },
     "node_modules/@supabase/supabase-js": {
-      "version": "2.95.3",
-      "resolved": "https://registry.npmjs.org/@supabase/supabase-js/-/supabase-js-2.95.3.tgz",
-      "integrity": "sha512-Fukw1cUTQ6xdLiHDJhKKPu6svEPaCEDvThqCne3OaQyZvuq2qjhJAd91kJu3PXLG18aooCgYBaB6qQz35hhABg==",
+      "version": "2.97.0",
+      "resolved": "https://registry.npmjs.org/@supabase/supabase-js/-/supabase-js-2.97.0.tgz",
+      "integrity": "sha512-kTD91rZNO4LvRUHv4x3/4hNmsEd2ofkYhuba2VMUPRVef1RCmnHtm7rIws38Fg0yQnOSZOplQzafn0GSiy6GVg==",
       "license": "MIT",
       "dependencies": {
-        "@supabase/auth-js": "2.95.3",
-        "@supabase/functions-js": "2.95.3",
-        "@supabase/postgrest-js": "2.95.3",
-        "@supabase/realtime-js": "2.95.3",
-        "@supabase/storage-js": "2.95.3"
+        "@supabase/auth-js": "2.97.0",
+        "@supabase/functions-js": "2.97.0",
+        "@supabase/postgrest-js": "2.97.0",
+        "@supabase/realtime-js": "2.97.0",
+        "@supabase/storage-js": "2.97.0"
       },
       "engines": {
         "node": ">=20.0.0"
@@ -29968,6 +30948,236 @@ export default nextConfig;
         "tailwindcss": "4.1.17"
       }
     },
+    "node_modules/@trapezedev/gradle-parse": {
+      "version": "7.1.3",
+      "resolved": "https://registry.npmjs.org/@trapezedev/gradle-parse/-/gradle-parse-7.1.3.tgz",
+      "integrity": "sha512-WQVF5pEJ5o/mUyvfGTG9nBKx9Te/ilKM3r2IT69GlbaooItT5ao7RyF1MUTBNjHLPk/xpGUY3c6PyVnjDlz0Vw==",
+      "dev": true,
+      "license": "SEE LICENSE"
+    },
+    "node_modules/@trapezedev/project": {
+      "version": "7.1.3",
+      "resolved": "https://registry.npmjs.org/@trapezedev/project/-/project-7.1.3.tgz",
+      "integrity": "sha512-GANh8Ey73MechZrryfJoILY9hBnWqzS6AdB53zuWBCBbaiImyblXT41fWdN6pB2f5+cNI2FAUxGfVhl+LeEVbQ==",
+      "dev": true,
+      "license": "SEE LICENSE",
+      "dependencies": {
+        "@ionic/utils-fs": "^3.1.5",
+        "@ionic/utils-subprocess": "^2.1.8",
+        "@prettier/plugin-xml": "^2.2.0",
+        "@trapezedev/gradle-parse": "7.1.3",
+        "@xmldom/xmldom": "^0.7.5",
+        "conventional-changelog": "^3.1.4",
+        "cross-spawn": "^7.0.3",
+        "diff": "^5.1.0",
+        "env-paths": "^3.0.0",
+        "gradle-to-js": "^2.0.0",
+        "ini": "^2.0.0",
+        "kleur": "^4.1.5",
+        "lodash": "^4.17.21",
+        "mergexml": "^1.2.3",
+        "plist": "^3.0.4",
+        "prettier": "^2.7.1",
+        "prompts": "^2.4.2",
+        "replace": "^1.1.0",
+        "tempy": "^1.0.1",
+        "tmp": "^0.2.1",
+        "ts-node": "^10.2.1",
+        "xcode": "^3.0.1",
+        "xml-js": "^1.6.11",
+        "xpath": "^0.0.32",
+        "yargs": "^17.2.1"
+      }
+    },
+    "node_modules/@trapezedev/project/node_modules/@ionic/utils-process": {
+      "version": "2.1.11",
+      "resolved": "https://registry.npmjs.org/@ionic/utils-process/-/utils-process-2.1.11.tgz",
+      "integrity": "sha512-Uavxn+x8j3rDlZEk1X7YnaN6wCgbCwYQOeIjv/m94i1dzslqWhqIHEqxEyeE8HsT5Negboagg7GtQiABy+BLbA==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "@ionic/utils-object": "2.1.6",
+        "@ionic/utils-terminal": "2.3.4",
+        "debug": "^4.0.0",
+        "signal-exit": "^3.0.3",
+        "tree-kill": "^1.2.2",
+        "tslib": "^2.0.1"
+      },
+      "engines": {
+        "node": ">=16.0.0"
+      }
+    },
+    "node_modules/@trapezedev/project/node_modules/@ionic/utils-stream": {
+      "version": "3.1.6",
+      "resolved": "https://registry.npmjs.org/@ionic/utils-stream/-/utils-stream-3.1.6.tgz",
+      "integrity": "sha512-4+Kitey1lTA1yGtnigeYNhV/0tggI3lWBMjC7tBs1K9GXa/q7q4CtOISppdh8QgtOhrhAXS2Igp8rbko/Cj+lA==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "debug": "^4.0.0",
+        "tslib": "^2.0.1"
+      },
+      "engines": {
+        "node": ">=16.0.0"
+      }
+    },
+    "node_modules/@trapezedev/project/node_modules/@ionic/utils-subprocess": {
+      "version": "2.1.14",
+      "resolved": "https://registry.npmjs.org/@ionic/utils-subprocess/-/utils-subprocess-2.1.14.tgz",
+      "integrity": "sha512-nGYvyGVjU0kjPUcSRFr4ROTraT3w/7r502f5QJEsMRKTqa4eEzCshtwRk+/mpASm0kgBN5rrjYA5A/OZg8ahqg==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "@ionic/utils-array": "2.1.6",
+        "@ionic/utils-fs": "3.1.7",
+        "@ionic/utils-process": "2.1.11",
+        "@ionic/utils-stream": "3.1.6",
+        "@ionic/utils-terminal": "2.3.4",
+        "cross-spawn": "^7.0.3",
+        "debug": "^4.0.0",
+        "tslib": "^2.0.1"
+      },
+      "engines": {
+        "node": ">=16.0.0"
+      }
+    },
+    "node_modules/@trapezedev/project/node_modules/@ionic/utils-terminal": {
+      "version": "2.3.4",
+      "resolved": "https://registry.npmjs.org/@ionic/utils-terminal/-/utils-terminal-2.3.4.tgz",
+      "integrity": "sha512-cEiMFl3jklE0sW60r8JHH3ijFTwh/jkdEKWbylSyExQwZ8pPuwoXz7gpkWoJRLuoRHHSvg+wzNYyPJazIHfoJA==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "@types/slice-ansi": "^4.0.0",
+        "debug": "^4.0.0",
+        "signal-exit": "^3.0.3",
+        "slice-ansi": "^4.0.0",
+        "string-width": "^4.1.0",
+        "strip-ansi": "^6.0.0",
+        "tslib": "^2.0.1",
+        "untildify": "^4.0.0",
+        "wrap-ansi": "^7.0.0"
+      },
+      "engines": {
+        "node": ">=16.0.0"
+      }
+    },
+    "node_modules/@trapezedev/project/node_modules/@xmldom/xmldom": {
+      "version": "0.7.13",
+      "resolved": "https://registry.npmjs.org/@xmldom/xmldom/-/xmldom-0.7.13.tgz",
+      "integrity": "sha512-lm2GW5PkosIzccsaZIz7tp8cPADSIlIHWDFTR1N0SzfinhhYgeIQjFMz4rYzanCScr3DqQLeomUDArp6MWKm+g==",
+      "deprecated": "this version is no longer supported, please update to at least 0.8.*",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">=10.0.0"
+      }
+    },
+    "node_modules/@trapezedev/project/node_modules/env-paths": {
+      "version": "3.0.0",
+      "resolved": "https://registry.npmjs.org/env-paths/-/env-paths-3.0.0.tgz",
+      "integrity": "sha512-dtJUTepzMW3Lm/NPxRf3wP4642UWhjL2sQxc+ym2YMj1m/H2zDNQOlezafzkHwn6sMstjHTwG6iQQsctDW/b1A==",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": "^12.20.0 || ^14.13.1 || >=16.0.0"
+      },
+      "funding": {
+        "url": "https://github.com/sponsors/sindresorhus"
+      }
+    },
+    "node_modules/@trapezedev/project/node_modules/ini": {
+      "version": "2.0.0",
+      "resolved": "https://registry.npmjs.org/ini/-/ini-2.0.0.tgz",
+      "integrity": "sha512-7PnF4oN3CvZF23ADhA5wRaYEQpJ8qygSkbtTXWBeXWXmEVRXK+1ITciHWwHhsjv1TmW0MgacIv6hEi5pX5NQdA==",
+      "dev": true,
+      "license": "ISC",
+      "engines": {
+        "node": ">=10"
+      }
+    },
+    "node_modules/@trapezedev/project/node_modules/ts-node": {
+      "version": "10.9.2",
+      "resolved": "https://registry.npmjs.org/ts-node/-/ts-node-10.9.2.tgz",
+      "integrity": "sha512-f0FFpIdcHgn8zcPSbf1dRevwt047YMnaiJM3u2w2RewrB+fob/zePZcrOyQoLMMO7aBIddLcQIEK5dYjkLnGrQ==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "@cspotcode/source-map-support": "^0.8.0",
+        "@tsconfig/node10": "^1.0.7",
+        "@tsconfig/node12": "^1.0.7",
+        "@tsconfig/node14": "^1.0.0",
+        "@tsconfig/node16": "^1.0.2",
+        "acorn": "^8.4.1",
+        "acorn-walk": "^8.1.1",
+        "arg": "^4.1.0",
+        "create-require": "^1.1.0",
+        "diff": "^4.0.1",
+        "make-error": "^1.1.1",
+        "v8-compile-cache-lib": "^3.0.1",
+        "yn": "3.1.1"
+      },
+      "bin": {
+        "ts-node": "dist/bin.js",
+        "ts-node-cwd": "dist/bin-cwd.js",
+        "ts-node-esm": "dist/bin-esm.js",
+        "ts-node-script": "dist/bin-script.js",
+        "ts-node-transpile-only": "dist/bin-transpile.js",
+        "ts-script": "dist/bin-script-deprecated.js"
+      },
+      "peerDependencies": {
+        "@swc/core": ">=1.2.50",
+        "@swc/wasm": ">=1.2.50",
+        "@types/node": "*",
+        "typescript": ">=2.7"
+      },
+      "peerDependenciesMeta": {
+        "@swc/core": {
+          "optional": true
+        },
+        "@swc/wasm": {
+          "optional": true
+        }
+      }
+    },
+    "node_modules/@trapezedev/project/node_modules/ts-node/node_modules/diff": {
+      "version": "4.0.4",
+      "resolved": "https://registry.npmjs.org/diff/-/diff-4.0.4.tgz",
+      "integrity": "sha512-X07nttJQkwkfKfvTPG/KSnE2OMdcUCao6+eXF3wmnIQRn2aPAHH3VxDbDOdegkd6JbPsXqShpvEOHfAT+nCNwQ==",
+      "dev": true,
+      "license": "BSD-3-Clause",
+      "engines": {
+        "node": ">=0.3.1"
+      }
+    },
+    "node_modules/@tsconfig/node10": {
+      "version": "1.0.12",
+      "resolved": "https://registry.npmjs.org/@tsconfig/node10/-/node10-1.0.12.tgz",
+      "integrity": "sha512-UCYBaeFvM11aU2y3YPZ//O5Rhj+xKyzy7mvcIoAjASbigy8mHMryP5cK7dgjlz2hWxh1g5pLw084E0a/wlUSFQ==",
+      "dev": true,
+      "license": "MIT"
+    },
+    "node_modules/@tsconfig/node12": {
+      "version": "1.0.11",
+      "resolved": "https://registry.npmjs.org/@tsconfig/node12/-/node12-1.0.11.tgz",
+      "integrity": "sha512-cqefuRsh12pWyGsIoBKJA9luFu3mRxCA+ORZvA4ktLSzIuCUtWVxGIuXigEwO5/ywWFMZ2QEGKWvkZG1zDMTag==",
+      "dev": true,
+      "license": "MIT"
+    },
+    "node_modules/@tsconfig/node14": {
+      "version": "1.0.3",
+      "resolved": "https://registry.npmjs.org/@tsconfig/node14/-/node14-1.0.3.tgz",
+      "integrity": "sha512-ysT8mhdixWK6Hw3i1V2AeRqZ5WfXg1G43mqoYlM2nc6388Fq5jcXyr5mRsqViLx/GJYdoL0bfXD8nmF+Zn/Iow==",
+      "dev": true,
+      "license": "MIT"
+    },
+    "node_modules/@tsconfig/node16": {
+      "version": "1.0.4",
+      "resolved": "https://registry.npmjs.org/@tsconfig/node16/-/node16-1.0.4.tgz",
+      "integrity": "sha512-vxhUy4J8lyeyinH7Azl1pdd43GJhZH/tP2weN8TntQblOY+A0XbT8DJk1/oCPuOOyg/Ja757rG0CgHcWC8OfMA==",
+      "dev": true,
+      "license": "MIT"
+    },
     "node_modules/@tybys/wasm-util": {
       "version": "0.10.1",
       "resolved": "https://registry.npmjs.org/@tybys/wasm-util/-/wasm-util-0.10.1.tgz",
@@ -29993,6 +31203,16 @@ export default nextConfig;
       "dev": true,
       "license": "MIT"
     },
+    "node_modules/@types/fs-extra": {
+      "version": "8.1.5",
+      "resolved": "https://registry.npmjs.org/@types/fs-extra/-/fs-extra-8.1.5.tgz",
+      "integrity": "sha512-0dzKcwO+S8s2kuF5Z9oUWatQJj5Uq/iqphEtE3GQJVRRYm/tD1LglU2UnXi2A8jLq5umkGouOXOR9y0n613ZwQ==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "@types/node": "*"
+      }
+    },
     "node_modules/@types/json-schema": {
       "version": "7.0.15",
       "resolved": "https://registry.npmjs.org/@types/json-schema/-/json-schema-7.0.15.tgz",
@@ -30007,6 +31227,13 @@ export default nextConfig;
       "dev": true,
       "license": "MIT"
     },
+    "node_modules/@types/minimist": {
+      "version": "1.2.5",
+      "resolved": "https://registry.npmjs.org/@types/minimist/-/minimist-1.2.5.tgz",
+      "integrity": "sha512-hov8bUuiLiyFPGyFPE1lwWhmzYbirOXQNNo40+y3zow8aFVTeyn3VWL0VFFfdNddA8S4Vf0Tc062rzyNr7Paag==",
+      "dev": true,
+      "license": "MIT"
+    },
     "node_modules/@types/node": {
       "version": "20.19.25",
       "resolved": "https://registry.npmjs.org/@types/node/-/node-20.19.25.tgz",
@@ -30015,6 +31242,13 @@ export default nextConfig;
       "dependencies": {
         "undici-types": "~6.21.0"
       }
+    },
+    "node_modules/@types/normalize-package-data": {
+      "version": "2.4.4",
+      "resolved": "https://registry.npmjs.org/@types/normalize-package-data/-/normalize-package-data-2.4.4.tgz",
+      "integrity": "sha512-37i+OaWTh9qeK4LSHPsyRC7NahnGotNuZvjLSgcPzblpHB3rrCJxAOgI5gCdKm7coonsaX1Of0ILiTcnZjbfxA==",
+      "dev": true,
+      "license": "MIT"
     },
     "node_modules/@types/phoenix": {
       "version": "1.6.7",
@@ -30042,6 +31276,13 @@ export default nextConfig;
         "@types/react": "^19.2.0"
       }
     },
+    "node_modules/@types/slice-ansi": {
+      "version": "4.0.0",
+      "resolved": "https://registry.npmjs.org/@types/slice-ansi/-/slice-ansi-4.0.0.tgz",
+      "integrity": "sha512-+OpjSaq85gvlZAYINyzKpLeiFkSC4EsC6IIiT6v6TLSU5k5U83fHGj9Lel8oKEXM0HqgrMVCjXPDPVICtxF7EQ==",
+      "dev": true,
+      "license": "MIT"
+    },
     "node_modules/@types/ws": {
       "version": "8.18.1",
       "resolved": "https://registry.npmjs.org/@types/ws/-/ws-8.18.1.tgz",
@@ -30052,21 +31293,20 @@ export default nextConfig;
       }
     },
     "node_modules/@typescript-eslint/eslint-plugin": {
-      "version": "8.47.0",
-      "resolved": "https://registry.npmjs.org/@typescript-eslint/eslint-plugin/-/eslint-plugin-8.47.0.tgz",
-      "integrity": "sha512-fe0rz9WJQ5t2iaLfdbDc9T80GJy0AeO453q8C3YCilnGozvOyCG5t+EZtg7j7D88+c3FipfP/x+wzGnh1xp8ZA==",
+      "version": "8.56.0",
+      "resolved": "https://registry.npmjs.org/@typescript-eslint/eslint-plugin/-/eslint-plugin-8.56.0.tgz",
+      "integrity": "sha512-lRyPDLzNCuae71A3t9NEINBiTn7swyOhvUj3MyUOxb8x6g6vPEFoOU+ZRmGMusNC3X3YMhqMIX7i8ShqhT74Pw==",
       "dev": true,
       "license": "MIT",
       "dependencies": {
-        "@eslint-community/regexpp": "^4.10.0",
-        "@typescript-eslint/scope-manager": "8.47.0",
-        "@typescript-eslint/type-utils": "8.47.0",
-        "@typescript-eslint/utils": "8.47.0",
-        "@typescript-eslint/visitor-keys": "8.47.0",
-        "graphemer": "^1.4.0",
-        "ignore": "^7.0.0",
+        "@eslint-community/regexpp": "^4.12.2",
+        "@typescript-eslint/scope-manager": "8.56.0",
+        "@typescript-eslint/type-utils": "8.56.0",
+        "@typescript-eslint/utils": "8.56.0",
+        "@typescript-eslint/visitor-keys": "8.56.0",
+        "ignore": "^7.0.5",
         "natural-compare": "^1.4.0",
-        "ts-api-utils": "^2.1.0"
+        "ts-api-utils": "^2.4.0"
       },
       "engines": {
         "node": "^18.18.0 || ^20.9.0 || >=21.1.0"
@@ -30076,8 +31316,8 @@ export default nextConfig;
         "url": "https://opencollective.com/typescript-eslint"
       },
       "peerDependencies": {
-        "@typescript-eslint/parser": "^8.47.0",
-        "eslint": "^8.57.0 || ^9.0.0",
+        "@typescript-eslint/parser": "^8.56.0",
+        "eslint": "^8.57.0 || ^9.0.0 || ^10.0.0",
         "typescript": ">=4.8.4 <6.0.0"
       }
     },
@@ -30092,17 +31332,17 @@ export default nextConfig;
       }
     },
     "node_modules/@typescript-eslint/parser": {
-      "version": "8.47.0",
-      "resolved": "https://registry.npmjs.org/@typescript-eslint/parser/-/parser-8.47.0.tgz",
-      "integrity": "sha512-lJi3PfxVmo0AkEY93ecfN+r8SofEqZNGByvHAI3GBLrvt1Cw6H5k1IM02nSzu0RfUafr2EvFSw0wAsZgubNplQ==",
+      "version": "8.56.0",
+      "resolved": "https://registry.npmjs.org/@typescript-eslint/parser/-/parser-8.56.0.tgz",
+      "integrity": "sha512-IgSWvLobTDOjnaxAfDTIHaECbkNlAlKv2j5SjpB2v7QHKv1FIfjwMy8FsDbVfDX/KjmCmYICcw7uGaXLhtsLNg==",
       "dev": true,
       "license": "MIT",
       "dependencies": {
-        "@typescript-eslint/scope-manager": "8.47.0",
-        "@typescript-eslint/types": "8.47.0",
-        "@typescript-eslint/typescript-estree": "8.47.0",
-        "@typescript-eslint/visitor-keys": "8.47.0",
-        "debug": "^4.3.4"
+        "@typescript-eslint/scope-manager": "8.56.0",
+        "@typescript-eslint/types": "8.56.0",
+        "@typescript-eslint/typescript-estree": "8.56.0",
+        "@typescript-eslint/visitor-keys": "8.56.0",
+        "debug": "^4.4.3"
       },
       "engines": {
         "node": "^18.18.0 || ^20.9.0 || >=21.1.0"
@@ -30112,20 +31352,20 @@ export default nextConfig;
         "url": "https://opencollective.com/typescript-eslint"
       },
       "peerDependencies": {
-        "eslint": "^8.57.0 || ^9.0.0",
+        "eslint": "^8.57.0 || ^9.0.0 || ^10.0.0",
         "typescript": ">=4.8.4 <6.0.0"
       }
     },
     "node_modules/@typescript-eslint/project-service": {
-      "version": "8.47.0",
-      "resolved": "https://registry.npmjs.org/@typescript-eslint/project-service/-/project-service-8.47.0.tgz",
-      "integrity": "sha512-2X4BX8hUeB5JcA1TQJ7GjcgulXQ+5UkNb0DL8gHsHUHdFoiCTJoYLTpib3LtSDPZsRET5ygN4qqIWrHyYIKERA==",
+      "version": "8.56.0",
+      "resolved": "https://registry.npmjs.org/@typescript-eslint/project-service/-/project-service-8.56.0.tgz",
+      "integrity": "sha512-M3rnyL1vIQOMeWxTWIW096/TtVP+8W3p/XnaFflhmcFp+U4zlxUxWj4XwNs6HbDeTtN4yun0GNTTDBw/SvufKg==",
       "dev": true,
       "license": "MIT",
       "dependencies": {
-        "@typescript-eslint/tsconfig-utils": "^8.47.0",
-        "@typescript-eslint/types": "^8.47.0",
-        "debug": "^4.3.4"
+        "@typescript-eslint/tsconfig-utils": "^8.56.0",
+        "@typescript-eslint/types": "^8.56.0",
+        "debug": "^4.4.3"
       },
       "engines": {
         "node": "^18.18.0 || ^20.9.0 || >=21.1.0"
@@ -30139,14 +31379,14 @@ export default nextConfig;
       }
     },
     "node_modules/@typescript-eslint/scope-manager": {
-      "version": "8.47.0",
-      "resolved": "https://registry.npmjs.org/@typescript-eslint/scope-manager/-/scope-manager-8.47.0.tgz",
-      "integrity": "sha512-a0TTJk4HXMkfpFkL9/WaGTNuv7JWfFTQFJd6zS9dVAjKsojmv9HT55xzbEpnZoY+VUb+YXLMp+ihMLz/UlZfDg==",
+      "version": "8.56.0",
+      "resolved": "https://registry.npmjs.org/@typescript-eslint/scope-manager/-/scope-manager-8.56.0.tgz",
+      "integrity": "sha512-7UiO/XwMHquH+ZzfVCfUNkIXlp/yQjjnlYUyYz7pfvlK3/EyyN6BK+emDmGNyQLBtLGaYrTAI6KOw8tFucWL2w==",
       "dev": true,
       "license": "MIT",
       "dependencies": {
-        "@typescript-eslint/types": "8.47.0",
-        "@typescript-eslint/visitor-keys": "8.47.0"
+        "@typescript-eslint/types": "8.56.0",
+        "@typescript-eslint/visitor-keys": "8.56.0"
       },
       "engines": {
         "node": "^18.18.0 || ^20.9.0 || >=21.1.0"
@@ -30157,9 +31397,9 @@ export default nextConfig;
       }
     },
     "node_modules/@typescript-eslint/tsconfig-utils": {
-      "version": "8.47.0",
-      "resolved": "https://registry.npmjs.org/@typescript-eslint/tsconfig-utils/-/tsconfig-utils-8.47.0.tgz",
-      "integrity": "sha512-ybUAvjy4ZCL11uryalkKxuT3w3sXJAuWhOoGS3T/Wu+iUu1tGJmk5ytSY8gbdACNARmcYEB0COksD2j6hfGK2g==",
+      "version": "8.56.0",
+      "resolved": "https://registry.npmjs.org/@typescript-eslint/tsconfig-utils/-/tsconfig-utils-8.56.0.tgz",
+      "integrity": "sha512-bSJoIIt4o3lKXD3xmDh9chZcjCz5Lk8xS7Rxn+6l5/pKrDpkCwtQNQQwZ2qRPk7TkUYhrq3WPIHXOXlbXP0itg==",
       "dev": true,
       "license": "MIT",
       "engines": {
@@ -30174,17 +31414,17 @@ export default nextConfig;
       }
     },
     "node_modules/@typescript-eslint/type-utils": {
-      "version": "8.47.0",
-      "resolved": "https://registry.npmjs.org/@typescript-eslint/type-utils/-/type-utils-8.47.0.tgz",
-      "integrity": "sha512-QC9RiCmZ2HmIdCEvhd1aJELBlD93ErziOXXlHEZyuBo3tBiAZieya0HLIxp+DoDWlsQqDawyKuNEhORyku+P8A==",
+      "version": "8.56.0",
+      "resolved": "https://registry.npmjs.org/@typescript-eslint/type-utils/-/type-utils-8.56.0.tgz",
+      "integrity": "sha512-qX2L3HWOU2nuDs6GzglBeuFXviDODreS58tLY/BALPC7iu3Fa+J7EOTwnX9PdNBxUI7Uh0ntP0YWGnxCkXzmfA==",
       "dev": true,
       "license": "MIT",
       "dependencies": {
-        "@typescript-eslint/types": "8.47.0",
-        "@typescript-eslint/typescript-estree": "8.47.0",
-        "@typescript-eslint/utils": "8.47.0",
-        "debug": "^4.3.4",
-        "ts-api-utils": "^2.1.0"
+        "@typescript-eslint/types": "8.56.0",
+        "@typescript-eslint/typescript-estree": "8.56.0",
+        "@typescript-eslint/utils": "8.56.0",
+        "debug": "^4.4.3",
+        "ts-api-utils": "^2.4.0"
       },
       "engines": {
         "node": "^18.18.0 || ^20.9.0 || >=21.1.0"
@@ -30194,14 +31434,14 @@ export default nextConfig;
         "url": "https://opencollective.com/typescript-eslint"
       },
       "peerDependencies": {
-        "eslint": "^8.57.0 || ^9.0.0",
+        "eslint": "^8.57.0 || ^9.0.0 || ^10.0.0",
         "typescript": ">=4.8.4 <6.0.0"
       }
     },
     "node_modules/@typescript-eslint/types": {
-      "version": "8.47.0",
-      "resolved": "https://registry.npmjs.org/@typescript-eslint/types/-/types-8.47.0.tgz",
-      "integrity": "sha512-nHAE6bMKsizhA2uuYZbEbmp5z2UpffNrPEqiKIeN7VsV6UY/roxanWfoRrf6x/k9+Obf+GQdkm0nPU+vnMXo9A==",
+      "version": "8.56.0",
+      "resolved": "https://registry.npmjs.org/@typescript-eslint/types/-/types-8.56.0.tgz",
+      "integrity": "sha512-DBsLPs3GsWhX5HylbP9HNG15U0bnwut55Lx12bHB9MpXxQ+R5GC8MwQe+N1UFXxAeQDvEsEDY6ZYwX03K7Z6HQ==",
       "dev": true,
       "license": "MIT",
       "engines": {
@@ -30213,22 +31453,21 @@ export default nextConfig;
       }
     },
     "node_modules/@typescript-eslint/typescript-estree": {
-      "version": "8.47.0",
-      "resolved": "https://registry.npmjs.org/@typescript-eslint/typescript-estree/-/typescript-estree-8.47.0.tgz",
-      "integrity": "sha512-k6ti9UepJf5NpzCjH31hQNLHQWupTRPhZ+KFF8WtTuTpy7uHPfeg2NM7cP27aCGajoEplxJDFVCEm9TGPYyiVg==",
+      "version": "8.56.0",
+      "resolved": "https://registry.npmjs.org/@typescript-eslint/typescript-estree/-/typescript-estree-8.56.0.tgz",
+      "integrity": "sha512-ex1nTUMWrseMltXUHmR2GAQ4d+WjkZCT4f+4bVsps8QEdh0vlBsaCokKTPlnqBFqqGaxilDNJG7b8dolW2m43Q==",
       "dev": true,
       "license": "MIT",
       "dependencies": {
-        "@typescript-eslint/project-service": "8.47.0",
-        "@typescript-eslint/tsconfig-utils": "8.47.0",
-        "@typescript-eslint/types": "8.47.0",
-        "@typescript-eslint/visitor-keys": "8.47.0",
-        "debug": "^4.3.4",
-        "fast-glob": "^3.3.2",
-        "is-glob": "^4.0.3",
-        "minimatch": "^9.0.4",
-        "semver": "^7.6.0",
-        "ts-api-utils": "^2.1.0"
+        "@typescript-eslint/project-service": "8.56.0",
+        "@typescript-eslint/tsconfig-utils": "8.56.0",
+        "@typescript-eslint/types": "8.56.0",
+        "@typescript-eslint/visitor-keys": "8.56.0",
+        "debug": "^4.4.3",
+        "minimatch": "^9.0.5",
+        "semver": "^7.7.3",
+        "tinyglobby": "^0.2.15",
+        "ts-api-utils": "^2.4.0"
       },
       "engines": {
         "node": "^18.18.0 || ^20.9.0 || >=21.1.0"
@@ -30241,54 +31480,37 @@ export default nextConfig;
         "typescript": ">=4.8.4 <6.0.0"
       }
     },
+    "node_modules/@typescript-eslint/typescript-estree/node_modules/balanced-match": {
+      "version": "4.0.4",
+      "resolved": "https://registry.npmjs.org/balanced-match/-/balanced-match-4.0.4.tgz",
+      "integrity": "sha512-BLrgEcRTwX2o6gGxGOCNyMvGSp35YofuYzw9h1IMTRmKqttAZZVU67bdb9Pr2vUHA8+j3i2tJfjO6C6+4myGTA==",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": "18 || 20 || >=22"
+      }
+    },
     "node_modules/@typescript-eslint/typescript-estree/node_modules/brace-expansion": {
-      "version": "2.0.2",
-      "resolved": "https://registry.npmjs.org/brace-expansion/-/brace-expansion-2.0.2.tgz",
-      "integrity": "sha512-Jt0vHyM+jmUBqojB7E1NIYadt0vI0Qxjxd2TErW94wDz+E2LAm5vKMXXwg6ZZBTHPuUlDgQHKXvjGBdfcF1ZDQ==",
+      "version": "5.0.3",
+      "resolved": "https://registry.npmjs.org/brace-expansion/-/brace-expansion-5.0.3.tgz",
+      "integrity": "sha512-fy6KJm2RawA5RcHkLa1z/ScpBeA762UF9KmZQxwIbDtRJrgLzM10depAiEQ+CXYcoiqW1/m96OAAoke2nE9EeA==",
       "dev": true,
       "license": "MIT",
       "dependencies": {
-        "balanced-match": "^1.0.0"
-      }
-    },
-    "node_modules/@typescript-eslint/typescript-estree/node_modules/fast-glob": {
-      "version": "3.3.3",
-      "resolved": "https://registry.npmjs.org/fast-glob/-/fast-glob-3.3.3.tgz",
-      "integrity": "sha512-7MptL8U0cqcFdzIzwOTHoilX9x5BrNqye7Z/LuC7kCMRio1EMSyqRK3BEAUD7sXRq4iT4AzTVuZdhgQ2TCvYLg==",
-      "dev": true,
-      "license": "MIT",
-      "dependencies": {
-        "@nodelib/fs.stat": "^2.0.2",
-        "@nodelib/fs.walk": "^1.2.3",
-        "glob-parent": "^5.1.2",
-        "merge2": "^1.3.0",
-        "micromatch": "^4.0.8"
+        "balanced-match": "^4.0.2"
       },
       "engines": {
-        "node": ">=8.6.0"
-      }
-    },
-    "node_modules/@typescript-eslint/typescript-estree/node_modules/glob-parent": {
-      "version": "5.1.2",
-      "resolved": "https://registry.npmjs.org/glob-parent/-/glob-parent-5.1.2.tgz",
-      "integrity": "sha512-AOIgSQCepiJYwP3ARnGx+5VnTu2HBYdzbGP45eLw1vr3zB3vZLeyed1sC9hnbcOc9/SrMyM5RPQrkGz4aS9Zow==",
-      "dev": true,
-      "license": "ISC",
-      "dependencies": {
-        "is-glob": "^4.0.1"
-      },
-      "engines": {
-        "node": ">= 6"
+        "node": "18 || 20 || >=22"
       }
     },
     "node_modules/@typescript-eslint/typescript-estree/node_modules/minimatch": {
-      "version": "9.0.5",
-      "resolved": "https://registry.npmjs.org/minimatch/-/minimatch-9.0.5.tgz",
-      "integrity": "sha512-G6T0ZX48xgozx7587koeX9Ys2NYy6Gmv//P89sEte9V9whIapMNF4idKxnW2QtCcLiTWlb/wfCabAtAFWhhBow==",
+      "version": "9.0.6",
+      "resolved": "https://registry.npmjs.org/minimatch/-/minimatch-9.0.6.tgz",
+      "integrity": "sha512-kQAVowdR33euIqeA0+VZTDqU+qo1IeVY+hrKYtZMio3Pg0P0vuh/kwRylLUddJhB6pf3q/botcOvRtx4IN1wqQ==",
       "dev": true,
       "license": "ISC",
       "dependencies": {
-        "brace-expansion": "^2.0.1"
+        "brace-expansion": "^5.0.2"
       },
       "engines": {
         "node": ">=16 || 14 >=14.17"
@@ -30298,9 +31520,9 @@ export default nextConfig;
       }
     },
     "node_modules/@typescript-eslint/typescript-estree/node_modules/semver": {
-      "version": "7.7.3",
-      "resolved": "https://registry.npmjs.org/semver/-/semver-7.7.3.tgz",
-      "integrity": "sha512-SdsKMrI9TdgjdweUSR9MweHA4EJ8YxHn8DFaDisvhVlUOe4BF1tLD7GAj0lIqWVl+dPb/rExr0Btby5loQm20Q==",
+      "version": "7.7.4",
+      "resolved": "https://registry.npmjs.org/semver/-/semver-7.7.4.tgz",
+      "integrity": "sha512-vFKC2IEtQnVhpT78h1Yp8wzwrf8CM+MzKMHGJZfBtzhZNycRFnXsHk6E5TxIkkMsgNS7mdX3AGB7x2QM2di4lA==",
       "dev": true,
       "license": "ISC",
       "bin": {
@@ -30311,16 +31533,16 @@ export default nextConfig;
       }
     },
     "node_modules/@typescript-eslint/utils": {
-      "version": "8.47.0",
-      "resolved": "https://registry.npmjs.org/@typescript-eslint/utils/-/utils-8.47.0.tgz",
-      "integrity": "sha512-g7XrNf25iL4TJOiPqatNuaChyqt49a/onq5YsJ9+hXeugK+41LVg7AxikMfM02PC6jbNtZLCJj6AUcQXJS/jGQ==",
+      "version": "8.56.0",
+      "resolved": "https://registry.npmjs.org/@typescript-eslint/utils/-/utils-8.56.0.tgz",
+      "integrity": "sha512-RZ3Qsmi2nFGsS+n+kjLAYDPVlrzf7UhTffrDIKr+h2yzAlYP/y5ZulU0yeDEPItos2Ph46JAL5P/On3pe7kDIQ==",
       "dev": true,
       "license": "MIT",
       "dependencies": {
-        "@eslint-community/eslint-utils": "^4.7.0",
-        "@typescript-eslint/scope-manager": "8.47.0",
-        "@typescript-eslint/types": "8.47.0",
-        "@typescript-eslint/typescript-estree": "8.47.0"
+        "@eslint-community/eslint-utils": "^4.9.1",
+        "@typescript-eslint/scope-manager": "8.56.0",
+        "@typescript-eslint/types": "8.56.0",
+        "@typescript-eslint/typescript-estree": "8.56.0"
       },
       "engines": {
         "node": "^18.18.0 || ^20.9.0 || >=21.1.0"
@@ -30330,19 +31552,19 @@ export default nextConfig;
         "url": "https://opencollective.com/typescript-eslint"
       },
       "peerDependencies": {
-        "eslint": "^8.57.0 || ^9.0.0",
+        "eslint": "^8.57.0 || ^9.0.0 || ^10.0.0",
         "typescript": ">=4.8.4 <6.0.0"
       }
     },
     "node_modules/@typescript-eslint/visitor-keys": {
-      "version": "8.47.0",
-      "resolved": "https://registry.npmjs.org/@typescript-eslint/visitor-keys/-/visitor-keys-8.47.0.tgz",
-      "integrity": "sha512-SIV3/6eftCy1bNzCQoPmbWsRLujS8t5iDIZ4spZOBHqrM+yfX2ogg8Tt3PDTAVKw3sSCiUgg30uOAvK2r9zGjQ==",
+      "version": "8.56.0",
+      "resolved": "https://registry.npmjs.org/@typescript-eslint/visitor-keys/-/visitor-keys-8.56.0.tgz",
+      "integrity": "sha512-q+SL+b+05Ud6LbEE35qe4A99P+htKTKVbyiNEe45eCbJFyh/HVK9QXwlrbz+Q4L8SOW4roxSVwXYj4DMBT7Ieg==",
       "dev": true,
       "license": "MIT",
       "dependencies": {
-        "@typescript-eslint/types": "8.47.0",
-        "eslint-visitor-keys": "^4.2.1"
+        "@typescript-eslint/types": "8.56.0",
+        "eslint-visitor-keys": "^5.0.0"
       },
       "engines": {
         "node": "^18.18.0 || ^20.9.0 || >=21.1.0"
@@ -30350,6 +31572,19 @@ export default nextConfig;
       "funding": {
         "type": "opencollective",
         "url": "https://opencollective.com/typescript-eslint"
+      }
+    },
+    "node_modules/@typescript-eslint/visitor-keys/node_modules/eslint-visitor-keys": {
+      "version": "5.0.1",
+      "resolved": "https://registry.npmjs.org/eslint-visitor-keys/-/eslint-visitor-keys-5.0.1.tgz",
+      "integrity": "sha512-tD40eHxA35h0PEIZNeIjkHoDR4YjjJp34biM0mDvplBe//mB+IHCqHDGV7pxF+7MklTvighcCPPZC7ynWyjdTA==",
+      "dev": true,
+      "license": "Apache-2.0",
+      "engines": {
+        "node": "^20.19.0 || ^22.13.0 || >=24"
+      },
+      "funding": {
+        "url": "https://opencollective.com/eslint"
       }
     },
     "node_modules/@unrs/resolver-binding-android-arm-eabi": {
@@ -30655,6 +31890,26 @@ export default nextConfig;
         }
       }
     },
+    "node_modules/@xml-tools/parser": {
+      "version": "1.0.11",
+      "resolved": "https://registry.npmjs.org/@xml-tools/parser/-/parser-1.0.11.tgz",
+      "integrity": "sha512-aKqQ077XnR+oQtHJlrAflaZaL7qZsulWc/i/ZEooar5JiWj1eLt0+Wg28cpa+XLney107wXqneC+oG1IZvxkTA==",
+      "dev": true,
+      "license": "Apache-2.0",
+      "dependencies": {
+        "chevrotain": "7.1.1"
+      }
+    },
+    "node_modules/@xmldom/xmldom": {
+      "version": "0.8.11",
+      "resolved": "https://registry.npmjs.org/@xmldom/xmldom/-/xmldom-0.8.11.tgz",
+      "integrity": "sha512-cQzWCtO6C8TQiYl1ruKNn2U6Ao4o4WBBcbL61yJl84x+j5sOWWFU9X7DpND8XZG3daDppSsigMdfAIl2upQBRw==",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">=10.0.0"
+      }
+    },
     "node_modules/acorn": {
       "version": "8.15.0",
       "resolved": "https://registry.npmjs.org/acorn/-/acorn-8.15.0.tgz",
@@ -30678,10 +31933,54 @@ export default nextConfig;
         "acorn": "^6.0.0 || ^7.0.0 || ^8.0.0"
       }
     },
+    "node_modules/acorn-walk": {
+      "version": "8.3.5",
+      "resolved": "https://registry.npmjs.org/acorn-walk/-/acorn-walk-8.3.5.tgz",
+      "integrity": "sha512-HEHNfbars9v4pgpW6SO1KSPkfoS0xVOM/9UzkJltjlsHZmJasxg8aXkuZa7SMf8vKGIBhpUsPluQSqhJFCqebw==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "acorn": "^8.11.0"
+      },
+      "engines": {
+        "node": ">=0.4.0"
+      }
+    },
+    "node_modules/add-stream": {
+      "version": "1.0.0",
+      "resolved": "https://registry.npmjs.org/add-stream/-/add-stream-1.0.0.tgz",
+      "integrity": "sha512-qQLMr+8o0WC4FZGQTcJiKBVC59JylcPSrTtk6usvmIDFUOCKegapy1VHQwRbFMOFyb/inzUVqHs+eMYKDM1YeQ==",
+      "dev": true,
+      "license": "MIT"
+    },
+    "node_modules/agent-base": {
+      "version": "7.1.4",
+      "resolved": "https://registry.npmjs.org/agent-base/-/agent-base-7.1.4.tgz",
+      "integrity": "sha512-MnA+YT8fwfJPgBx3m60MNqakm30XOkyIoH1y6huTQvC0PwZG7ki8NacLBcrPbNoo8vEZy7Jpuk7+jMO+CUovTQ==",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">= 14"
+      }
+    },
+    "node_modules/aggregate-error": {
+      "version": "3.1.0",
+      "resolved": "https://registry.npmjs.org/aggregate-error/-/aggregate-error-3.1.0.tgz",
+      "integrity": "sha512-4I7Td01quW/RpocfNayFdFVk1qSuoh0E7JrbRJ16nH01HhKFQ88INq9Sd+nd72zqRySlr9BmDA8xlEJ6vJMrYA==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "clean-stack": "^2.0.0",
+        "indent-string": "^4.0.0"
+      },
+      "engines": {
+        "node": ">=8"
+      }
+    },
     "node_modules/ajv": {
-      "version": "6.12.6",
-      "resolved": "https://registry.npmjs.org/ajv/-/ajv-6.12.6.tgz",
-      "integrity": "sha512-j3fVLgvTo527anyYyJOGTYJbG+vnnQYvE0m5mmkc1TK+nxAppkCLMIL0aZ4dblVCNoGShhm+kzE4ZUykBoMg4g==",
+      "version": "6.14.0",
+      "resolved": "https://registry.npmjs.org/ajv/-/ajv-6.14.0.tgz",
+      "integrity": "sha512-IWrosm/yrn43eiKqkfkHis7QioDleaXQHdDVPKg0FSwwd/DuvyX79TZnFOnYpB7dcsFAMmtFztZuXPDvSePkFw==",
       "dev": true,
       "license": "MIT",
       "dependencies": {
@@ -30693,6 +31992,16 @@ export default nextConfig;
       "funding": {
         "type": "github",
         "url": "https://github.com/sponsors/epoberezkin"
+      }
+    },
+    "node_modules/ansi-regex": {
+      "version": "5.0.1",
+      "resolved": "https://registry.npmjs.org/ansi-regex/-/ansi-regex-5.0.1.tgz",
+      "integrity": "sha512-quJQXlTSUGL2LH9SUXo8VwsY4soanhgo6LNSm84E1LBcE8s3O0wpdiRzyR9z/ZZJMlMWv37qOOb9pdJlMUEKFQ==",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">=8"
       }
     },
     "node_modules/ansi-styles": {
@@ -30710,6 +32019,13 @@ export default nextConfig;
       "funding": {
         "url": "https://github.com/chalk/ansi-styles?sponsor=1"
       }
+    },
+    "node_modules/arg": {
+      "version": "4.1.3",
+      "resolved": "https://registry.npmjs.org/arg/-/arg-4.1.3.tgz",
+      "integrity": "sha512-58S9QDqG0Xx27YwPSt9fJxivjYl432YCwfDMfZ+71RAqUrZef7LrKQZ3LHLOwCS4FLNBplP533Zx895SeOCHvA==",
+      "dev": true,
+      "license": "MIT"
     },
     "node_modules/argparse": {
       "version": "2.0.1",
@@ -30745,6 +32061,13 @@ export default nextConfig;
         "url": "https://github.com/sponsors/ljharb"
       }
     },
+    "node_modules/array-ify": {
+      "version": "1.0.0",
+      "resolved": "https://registry.npmjs.org/array-ify/-/array-ify-1.0.0.tgz",
+      "integrity": "sha512-c5AMf34bKdvPhQ7tBGhqkgKNUzMr4WUs+WDtC2ZUGOUncbxKMTvqxYctiseW3+L4bA8ec+GcZ6/A/FW4m8ukng==",
+      "dev": true,
+      "license": "MIT"
+    },
     "node_modules/array-includes": {
       "version": "3.1.9",
       "resolved": "https://registry.npmjs.org/array-includes/-/array-includes-3.1.9.tgz",
@@ -30766,6 +32089,16 @@ export default nextConfig;
       },
       "funding": {
         "url": "https://github.com/sponsors/ljharb"
+      }
+    },
+    "node_modules/array-union": {
+      "version": "2.1.0",
+      "resolved": "https://registry.npmjs.org/array-union/-/array-union-2.1.0.tgz",
+      "integrity": "sha512-HGyxoOTYUyCM6stUe6EJgnd4EoewAI7zMdfqO+kGjnlZmBDz/cR5pf8r/cR4Wq60sL/p0IkcjUEEPwS3GFrIyw==",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">=8"
       }
     },
     "node_modules/array.prototype.findlast": {
@@ -30888,12 +32221,39 @@ export default nextConfig;
         "url": "https://github.com/sponsors/ljharb"
       }
     },
+    "node_modules/arrify": {
+      "version": "1.0.1",
+      "resolved": "https://registry.npmjs.org/arrify/-/arrify-1.0.1.tgz",
+      "integrity": "sha512-3CYzex9M9FGQjCGMGyi6/31c8GJbgb0qGyrx5HWxPd0aCwh4cB2YjMb2Xf9UuoogrMrlO9cTqnB5rI5GHZTcUA==",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">=0.10.0"
+      }
+    },
+    "node_modules/asap": {
+      "version": "2.0.6",
+      "resolved": "https://registry.npmjs.org/asap/-/asap-2.0.6.tgz",
+      "integrity": "sha512-BSHWgDSAiKs50o2Re8ppvp3seVHXSRM44cdSsT9FfNEUUZLOGWVCsiWaRPWM1Znn+mqZ1OfVZ3z3DWEzSp7hRA==",
+      "dev": true,
+      "license": "MIT"
+    },
     "node_modules/ast-types-flow": {
       "version": "0.0.8",
       "resolved": "https://registry.npmjs.org/ast-types-flow/-/ast-types-flow-0.0.8.tgz",
       "integrity": "sha512-OH/2E5Fg20h2aPrbe+QL8JZQFko0YZaF+j4mnQ7BGhfavO7OpSLa8a0y9sBwomHdSbkhTS8TQNayBfnW5DwbvQ==",
       "dev": true,
       "license": "MIT"
+    },
+    "node_modules/astral-regex": {
+      "version": "2.0.0",
+      "resolved": "https://registry.npmjs.org/astral-regex/-/astral-regex-2.0.0.tgz",
+      "integrity": "sha512-Z7tMw1ytTXt5jqMcOP+OQteU1VuNK9Y02uuJtKQ1Sv69jXQKKg5cibLwGJow8yzZP+eAc18EmLGPal0bp36rvQ==",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">=8"
+      }
     },
     "node_modules/async-function": {
       "version": "1.0.0",
@@ -30903,6 +32263,16 @@ export default nextConfig;
       "license": "MIT",
       "engines": {
         "node": ">= 0.4"
+      }
+    },
+    "node_modules/at-least-node": {
+      "version": "1.0.0",
+      "resolved": "https://registry.npmjs.org/at-least-node/-/at-least-node-1.0.0.tgz",
+      "integrity": "sha512-+q/t7Ekv1EDY2l6Gda6LLiX14rU9TV20Wa3ofeQmwPFZbOMo9DXrLbOjFaaclkXKWidIaopwAObQDqwWtGUjqg==",
+      "dev": true,
+      "license": "ISC",
+      "engines": {
+        "node": ">= 4.0.0"
       }
     },
     "node_modules/available-typed-arrays": {
@@ -30948,6 +32318,125 @@ export default nextConfig;
       "dev": true,
       "license": "MIT"
     },
+    "node_modules/bare-events": {
+      "version": "2.8.2",
+      "resolved": "https://registry.npmjs.org/bare-events/-/bare-events-2.8.2.tgz",
+      "integrity": "sha512-riJjyv1/mHLIPX4RwiK+oW9/4c3TEUeORHKefKAKnZ5kyslbN+HXowtbaVEqt4IMUB7OXlfixcs6gsFeo/jhiQ==",
+      "dev": true,
+      "license": "Apache-2.0",
+      "peerDependencies": {
+        "bare-abort-controller": "*"
+      },
+      "peerDependenciesMeta": {
+        "bare-abort-controller": {
+          "optional": true
+        }
+      }
+    },
+    "node_modules/bare-fs": {
+      "version": "4.5.5",
+      "resolved": "https://registry.npmjs.org/bare-fs/-/bare-fs-4.5.5.tgz",
+      "integrity": "sha512-XvwYM6VZqKoqDll8BmSww5luA5eflDzY0uEFfBJtFKe4PAAtxBjU3YIxzIBzhyaEQBy1VXEQBto4cpN5RZJw+w==",
+      "dev": true,
+      "license": "Apache-2.0",
+      "optional": true,
+      "dependencies": {
+        "bare-events": "^2.5.4",
+        "bare-path": "^3.0.0",
+        "bare-stream": "^2.6.4",
+        "bare-url": "^2.2.2",
+        "fast-fifo": "^1.3.2"
+      },
+      "engines": {
+        "bare": ">=1.16.0"
+      },
+      "peerDependencies": {
+        "bare-buffer": "*"
+      },
+      "peerDependenciesMeta": {
+        "bare-buffer": {
+          "optional": true
+        }
+      }
+    },
+    "node_modules/bare-os": {
+      "version": "3.7.0",
+      "resolved": "https://registry.npmjs.org/bare-os/-/bare-os-3.7.0.tgz",
+      "integrity": "sha512-64Rcwj8qlnTZU8Ps6JJEdSmxBEUGgI7g8l+lMtsJLl4IsfTcHMTfJ188u2iGV6P6YPRZrtv72B2kjn+hp+Yv3g==",
+      "dev": true,
+      "license": "Apache-2.0",
+      "optional": true,
+      "engines": {
+        "bare": ">=1.14.0"
+      }
+    },
+    "node_modules/bare-path": {
+      "version": "3.0.0",
+      "resolved": "https://registry.npmjs.org/bare-path/-/bare-path-3.0.0.tgz",
+      "integrity": "sha512-tyfW2cQcB5NN8Saijrhqn0Zh7AnFNsnczRcuWODH0eYAXBsJ5gVxAUuNr7tsHSC6IZ77cA0SitzT+s47kot8Mw==",
+      "dev": true,
+      "license": "Apache-2.0",
+      "optional": true,
+      "dependencies": {
+        "bare-os": "^3.0.1"
+      }
+    },
+    "node_modules/bare-stream": {
+      "version": "2.8.0",
+      "resolved": "https://registry.npmjs.org/bare-stream/-/bare-stream-2.8.0.tgz",
+      "integrity": "sha512-reUN0M2sHRqCdG4lUK3Fw8w98eeUIZHL5c3H7Mbhk2yVBL+oofgaIp0ieLfD5QXwPCypBpmEEKU2WZKzbAk8GA==",
+      "dev": true,
+      "license": "Apache-2.0",
+      "optional": true,
+      "dependencies": {
+        "streamx": "^2.21.0",
+        "teex": "^1.0.1"
+      },
+      "peerDependencies": {
+        "bare-buffer": "*",
+        "bare-events": "*"
+      },
+      "peerDependenciesMeta": {
+        "bare-buffer": {
+          "optional": true
+        },
+        "bare-events": {
+          "optional": true
+        }
+      }
+    },
+    "node_modules/bare-url": {
+      "version": "2.3.2",
+      "resolved": "https://registry.npmjs.org/bare-url/-/bare-url-2.3.2.tgz",
+      "integrity": "sha512-ZMq4gd9ngV5aTMa5p9+UfY0b3skwhHELaDkhEHetMdX0LRkW9kzaym4oo/Eh+Ghm0CCDuMTsRIGM/ytUc1ZYmw==",
+      "dev": true,
+      "license": "Apache-2.0",
+      "optional": true,
+      "dependencies": {
+        "bare-path": "^3.0.0"
+      }
+    },
+    "node_modules/base64-js": {
+      "version": "1.5.1",
+      "resolved": "https://registry.npmjs.org/base64-js/-/base64-js-1.5.1.tgz",
+      "integrity": "sha512-AKpaYlHn8t4SVbOHCy+b5+KKgvR4vrsD8vbvrbiQJps7fKDTkjkDry6ji0rUJjC0kzbNePLwzxq8iypo41qeWA==",
+      "dev": true,
+      "funding": [
+        {
+          "type": "github",
+          "url": "https://github.com/sponsors/feross"
+        },
+        {
+          "type": "patreon",
+          "url": "https://www.patreon.com/feross"
+        },
+        {
+          "type": "consulting",
+          "url": "https://feross.org/support"
+        }
+      ],
+      "license": "MIT"
+    },
     "node_modules/baseline-browser-mapping": {
       "version": "2.9.5",
       "resolved": "https://registry.npmjs.org/baseline-browser-mapping/-/baseline-browser-mapping-2.9.5.tgz",
@@ -30955,6 +32444,75 @@ export default nextConfig;
       "license": "Apache-2.0",
       "bin": {
         "baseline-browser-mapping": "dist/cli.js"
+      }
+    },
+    "node_modules/big-integer": {
+      "version": "1.6.52",
+      "resolved": "https://registry.npmjs.org/big-integer/-/big-integer-1.6.52.tgz",
+      "integrity": "sha512-QxD8cf2eVqJOOz63z6JIN9BzvVs/dlySa5HGSBH5xtR8dPteIRQnBxxKqkNTiT6jbDTF6jAfrd4oMcND9RGbQg==",
+      "dev": true,
+      "license": "Unlicense",
+      "engines": {
+        "node": ">=0.6"
+      }
+    },
+    "node_modules/bin-links": {
+      "version": "6.0.0",
+      "resolved": "https://registry.npmjs.org/bin-links/-/bin-links-6.0.0.tgz",
+      "integrity": "sha512-X4CiKlcV2GjnCMwnKAfbVWpHa++65th9TuzAEYtZoATiOE2DQKhSp4CJlyLoTqdhBKlXjpXjCTYPNNFS33Fi6w==",
+      "dev": true,
+      "license": "ISC",
+      "dependencies": {
+        "cmd-shim": "^8.0.0",
+        "npm-normalize-package-bin": "^5.0.0",
+        "proc-log": "^6.0.0",
+        "read-cmd-shim": "^6.0.0",
+        "write-file-atomic": "^7.0.0"
+      },
+      "engines": {
+        "node": "^20.17.0 || >=22.9.0"
+      }
+    },
+    "node_modules/bl": {
+      "version": "4.1.0",
+      "resolved": "https://registry.npmjs.org/bl/-/bl-4.1.0.tgz",
+      "integrity": "sha512-1W07cM9gS6DcLperZfFSj+bWLtaPGSOHWhPiGzXmvVJbRLdG82sH/Kn8EtW1VqWVA54AKf2h5k5BbnIbwF3h6w==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "buffer": "^5.5.0",
+        "inherits": "^2.0.4",
+        "readable-stream": "^3.4.0"
+      }
+    },
+    "node_modules/boolbase": {
+      "version": "1.0.0",
+      "resolved": "https://registry.npmjs.org/boolbase/-/boolbase-1.0.0.tgz",
+      "integrity": "sha512-JZOSA7Mo9sNGB8+UjSgzdLtokWAky1zbztM3WRLCbZ70/3cTANmQmOdR7y2g+J0e2WXywy1yS468tY+IruqEww==",
+      "dev": true,
+      "license": "ISC"
+    },
+    "node_modules/bplist-creator": {
+      "version": "0.1.0",
+      "resolved": "https://registry.npmjs.org/bplist-creator/-/bplist-creator-0.1.0.tgz",
+      "integrity": "sha512-sXaHZicyEEmY86WyueLTQesbeoH/mquvarJaQNbjuOQO+7gbFcDEWqKmcWA4cOTLzFlfgvkiVxolk1k5bBIpmg==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "stream-buffers": "2.2.x"
+      }
+    },
+    "node_modules/bplist-parser": {
+      "version": "0.3.2",
+      "resolved": "https://registry.npmjs.org/bplist-parser/-/bplist-parser-0.3.2.tgz",
+      "integrity": "sha512-apC2+fspHGI3mMKj+dGevkGo/tCqVB8jMb6i+OX+E29p0Iposz07fABkRIfVUPNd5A5VbuOz1bZbnmkKLYF+wQ==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "big-integer": "1.6.x"
+      },
+      "engines": {
+        "node": ">= 5.10.0"
       }
     },
     "node_modules/brace-expansion": {
@@ -31013,6 +32571,41 @@ export default nextConfig;
       },
       "engines": {
         "node": "^6 || ^7 || ^8 || ^9 || ^10 || ^11 || ^12 || >=13.7"
+      }
+    },
+    "node_modules/buffer": {
+      "version": "5.7.1",
+      "resolved": "https://registry.npmjs.org/buffer/-/buffer-5.7.1.tgz",
+      "integrity": "sha512-EHcyIPBQ4BSGlvjB16k5KgAJ27CIsHY/2JBmCRReo48y9rQ3MaUzWX3KVlBa4U7MyX02HdVj0K7C3WaB3ju7FQ==",
+      "dev": true,
+      "funding": [
+        {
+          "type": "github",
+          "url": "https://github.com/sponsors/feross"
+        },
+        {
+          "type": "patreon",
+          "url": "https://www.patreon.com/feross"
+        },
+        {
+          "type": "consulting",
+          "url": "https://feross.org/support"
+        }
+      ],
+      "license": "MIT",
+      "dependencies": {
+        "base64-js": "^1.3.1",
+        "ieee754": "^1.1.13"
+      }
+    },
+    "node_modules/buffer-crc32": {
+      "version": "0.2.13",
+      "resolved": "https://registry.npmjs.org/buffer-crc32/-/buffer-crc32-0.2.13.tgz",
+      "integrity": "sha512-VO9Ht/+p3SN7SKWqcrgEzjGbRSJYTx+Q1pTQC0wrWqHx0vpJraQ6GtHx8tvcg1rlK1byhU5gccxgOgj7B0TDkQ==",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": "*"
       }
     },
     "node_modules/call-bind": {
@@ -31075,6 +32668,34 @@ export default nextConfig;
         "node": ">=6"
       }
     },
+    "node_modules/camelcase": {
+      "version": "5.3.1",
+      "resolved": "https://registry.npmjs.org/camelcase/-/camelcase-5.3.1.tgz",
+      "integrity": "sha512-L28STB170nwWS63UjtlEOE3dldQApaJXZkOI1uMFfzf3rRuPegHaHesyee+YxQ+W6SvRDQV6UrdOdRiR153wJg==",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">=6"
+      }
+    },
+    "node_modules/camelcase-keys": {
+      "version": "6.2.2",
+      "resolved": "https://registry.npmjs.org/camelcase-keys/-/camelcase-keys-6.2.2.tgz",
+      "integrity": "sha512-YrwaA0vEKazPBkn0ipTiMpSajYDSe+KjQfrjhcBMxJt/znbvlHd8Pw/Vamaz5EB4Wfhs3SUR3Z9mwRu/P3s3Yg==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "camelcase": "^5.3.1",
+        "map-obj": "^4.0.0",
+        "quick-lru": "^4.0.1"
+      },
+      "engines": {
+        "node": ">=8"
+      },
+      "funding": {
+        "url": "https://github.com/sponsors/sindresorhus"
+      }
+    },
     "node_modules/caniuse-lite": {
       "version": "1.0.30001757",
       "resolved": "https://registry.npmjs.org/caniuse-lite/-/caniuse-lite-1.0.30001757.tgz",
@@ -31122,11 +32743,80 @@ export default nextConfig;
         "url": "https://github.com/chalk/chalk?sponsor=1"
       }
     },
+    "node_modules/chevrotain": {
+      "version": "7.1.1",
+      "resolved": "https://registry.npmjs.org/chevrotain/-/chevrotain-7.1.1.tgz",
+      "integrity": "sha512-wy3mC1x4ye+O+QkEinVJkPf5u2vsrDIYW9G7ZuwFl6v/Yu0LwUuT2POsb+NUWApebyxfkQq6+yDfRExbnI5rcw==",
+      "dev": true,
+      "license": "Apache-2.0",
+      "dependencies": {
+        "regexp-to-ast": "0.5.0"
+      }
+    },
+    "node_modules/chownr": {
+      "version": "3.0.0",
+      "resolved": "https://registry.npmjs.org/chownr/-/chownr-3.0.0.tgz",
+      "integrity": "sha512-+IxzY9BZOQd/XuYPRmrvEVjF/nqj5kgT4kEq7VofrDoM1MxoRjEWkrCC3EtLi59TVawxTAn+orJwFQcrqEN1+g==",
+      "dev": true,
+      "license": "BlueOak-1.0.0",
+      "engines": {
+        "node": ">=18"
+      }
+    },
+    "node_modules/clean-stack": {
+      "version": "2.2.0",
+      "resolved": "https://registry.npmjs.org/clean-stack/-/clean-stack-2.2.0.tgz",
+      "integrity": "sha512-4diC9HaTE+KRAMWhDhrGOECgWZxoevMc5TlkObMqNSsVU62PYzXZ/SMTjzyGAFF1YusgxGcSWTEXBhp0CPwQ1A==",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">=6"
+      }
+    },
     "node_modules/client-only": {
       "version": "0.0.1",
       "resolved": "https://registry.npmjs.org/client-only/-/client-only-0.0.1.tgz",
       "integrity": "sha512-IV3Ou0jSMzZrd3pZ48nLkT9DA7Ag1pnPzaiQhpW7c3RbcqqzvzzVu+L8gfqMp/8IM2MQtSiqaCxrrcfu8I8rMA==",
       "license": "MIT"
+    },
+    "node_modules/cliui": {
+      "version": "8.0.1",
+      "resolved": "https://registry.npmjs.org/cliui/-/cliui-8.0.1.tgz",
+      "integrity": "sha512-BSeNnyus75C4//NQ9gQt1/csTXyo/8Sb+afLAkzAptFuMsod9HFokGNudZpi/oQV73hnVK+sR+5PVRMd+Dr7YQ==",
+      "dev": true,
+      "license": "ISC",
+      "dependencies": {
+        "string-width": "^4.2.0",
+        "strip-ansi": "^6.0.1",
+        "wrap-ansi": "^7.0.0"
+      },
+      "engines": {
+        "node": ">=12"
+      }
+    },
+    "node_modules/cmd-shim": {
+      "version": "8.0.0",
+      "resolved": "https://registry.npmjs.org/cmd-shim/-/cmd-shim-8.0.0.tgz",
+      "integrity": "sha512-Jk/BK6NCapZ58BKUxlSI+ouKRbjH1NLZCgJkYoab+vEHUY3f6OzpNBN9u7HFSv9J6TRDGs4PLOHezoKGaFRSCA==",
+      "dev": true,
+      "license": "ISC",
+      "engines": {
+        "node": "^20.17.0 || >=22.9.0"
+      }
+    },
+    "node_modules/color": {
+      "version": "4.2.3",
+      "resolved": "https://registry.npmjs.org/color/-/color-4.2.3.tgz",
+      "integrity": "sha512-1rXeuUUiGGrykh+CeBdu5Ie7OJwinCgQY0bc7GCRxy5xVHy+moaqkpL/jqQq0MtQOeYcrqEz4abc5f0KtU7W4A==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "color-convert": "^2.0.1",
+        "color-string": "^1.9.0"
+      },
+      "engines": {
+        "node": ">=12.5.0"
+      }
     },
     "node_modules/color-convert": {
       "version": "2.0.1",
@@ -31148,12 +32838,293 @@ export default nextConfig;
       "dev": true,
       "license": "MIT"
     },
+    "node_modules/color-string": {
+      "version": "1.9.1",
+      "resolved": "https://registry.npmjs.org/color-string/-/color-string-1.9.1.tgz",
+      "integrity": "sha512-shrVawQFojnZv6xM40anx4CkoDP+fZsw/ZerEMsW/pyzsRbElpsL/DBVW7q3ExxwusdNXI3lXpuhEZkzs8p5Eg==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "color-name": "^1.0.0",
+        "simple-swizzle": "^0.2.2"
+      }
+    },
+    "node_modules/commander": {
+      "version": "12.1.0",
+      "resolved": "https://registry.npmjs.org/commander/-/commander-12.1.0.tgz",
+      "integrity": "sha512-Vw8qHK3bZM9y/P10u3Vib8o/DdkvA2OtPtZvD871QKjy74Wj1WSKFILMPRPSdUSx5RFK1arlJzEtA4PkFgnbuA==",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">=18"
+      }
+    },
+    "node_modules/compare-func": {
+      "version": "2.0.0",
+      "resolved": "https://registry.npmjs.org/compare-func/-/compare-func-2.0.0.tgz",
+      "integrity": "sha512-zHig5N+tPWARooBnb0Zx1MFcdfpyJrfTJ3Y5L+IFvUm8rM74hHz66z0gw0x4tijh5CorKkKUCnW82R2vmpeCRA==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "array-ify": "^1.0.0",
+        "dot-prop": "^5.1.0"
+      }
+    },
     "node_modules/concat-map": {
       "version": "0.0.1",
       "resolved": "https://registry.npmjs.org/concat-map/-/concat-map-0.0.1.tgz",
       "integrity": "sha512-/Srv4dswyQNBfohGpz9o6Yb3Gz3SrUDqBH5rTuhGR7ahtlbYKnVxw2bCFMRljaA7EXHaXZ8wsHdodFvbkhKmqg==",
       "dev": true,
       "license": "MIT"
+    },
+    "node_modules/conventional-changelog": {
+      "version": "3.1.25",
+      "resolved": "https://registry.npmjs.org/conventional-changelog/-/conventional-changelog-3.1.25.tgz",
+      "integrity": "sha512-ryhi3fd1mKf3fSjbLXOfK2D06YwKNic1nC9mWqybBHdObPd8KJ2vjaXZfYj1U23t+V8T8n0d7gwnc9XbIdFbyQ==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "conventional-changelog-angular": "^5.0.12",
+        "conventional-changelog-atom": "^2.0.8",
+        "conventional-changelog-codemirror": "^2.0.8",
+        "conventional-changelog-conventionalcommits": "^4.5.0",
+        "conventional-changelog-core": "^4.2.1",
+        "conventional-changelog-ember": "^2.0.9",
+        "conventional-changelog-eslint": "^3.0.9",
+        "conventional-changelog-express": "^2.0.6",
+        "conventional-changelog-jquery": "^3.0.11",
+        "conventional-changelog-jshint": "^2.0.9",
+        "conventional-changelog-preset-loader": "^2.3.4"
+      },
+      "engines": {
+        "node": ">=10"
+      }
+    },
+    "node_modules/conventional-changelog-angular": {
+      "version": "5.0.13",
+      "resolved": "https://registry.npmjs.org/conventional-changelog-angular/-/conventional-changelog-angular-5.0.13.tgz",
+      "integrity": "sha512-i/gipMxs7s8L/QeuavPF2hLnJgH6pEZAttySB6aiQLWcX3puWDL3ACVmvBhJGxnAy52Qc15ua26BufY6KpmrVA==",
+      "dev": true,
+      "license": "ISC",
+      "dependencies": {
+        "compare-func": "^2.0.0",
+        "q": "^1.5.1"
+      },
+      "engines": {
+        "node": ">=10"
+      }
+    },
+    "node_modules/conventional-changelog-atom": {
+      "version": "2.0.8",
+      "resolved": "https://registry.npmjs.org/conventional-changelog-atom/-/conventional-changelog-atom-2.0.8.tgz",
+      "integrity": "sha512-xo6v46icsFTK3bb7dY/8m2qvc8sZemRgdqLb/bjpBsH2UyOS8rKNTgcb5025Hri6IpANPApbXMg15QLb1LJpBw==",
+      "dev": true,
+      "license": "ISC",
+      "dependencies": {
+        "q": "^1.5.1"
+      },
+      "engines": {
+        "node": ">=10"
+      }
+    },
+    "node_modules/conventional-changelog-codemirror": {
+      "version": "2.0.8",
+      "resolved": "https://registry.npmjs.org/conventional-changelog-codemirror/-/conventional-changelog-codemirror-2.0.8.tgz",
+      "integrity": "sha512-z5DAsn3uj1Vfp7po3gpt2Boc+Bdwmw2++ZHa5Ak9k0UKsYAO5mH1UBTN0qSCuJZREIhX6WU4E1p3IW2oRCNzQw==",
+      "dev": true,
+      "license": "ISC",
+      "dependencies": {
+        "q": "^1.5.1"
+      },
+      "engines": {
+        "node": ">=10"
+      }
+    },
+    "node_modules/conventional-changelog-conventionalcommits": {
+      "version": "4.6.3",
+      "resolved": "https://registry.npmjs.org/conventional-changelog-conventionalcommits/-/conventional-changelog-conventionalcommits-4.6.3.tgz",
+      "integrity": "sha512-LTTQV4fwOM4oLPad317V/QNQ1FY4Hju5qeBIM1uTHbrnCE+Eg4CdRZ3gO2pUeR+tzWdp80M2j3qFFEDWVqOV4g==",
+      "dev": true,
+      "license": "ISC",
+      "dependencies": {
+        "compare-func": "^2.0.0",
+        "lodash": "^4.17.15",
+        "q": "^1.5.1"
+      },
+      "engines": {
+        "node": ">=10"
+      }
+    },
+    "node_modules/conventional-changelog-core": {
+      "version": "4.2.4",
+      "resolved": "https://registry.npmjs.org/conventional-changelog-core/-/conventional-changelog-core-4.2.4.tgz",
+      "integrity": "sha512-gDVS+zVJHE2v4SLc6B0sLsPiloR0ygU7HaDW14aNJE1v4SlqJPILPl/aJC7YdtRE4CybBf8gDwObBvKha8Xlyg==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "add-stream": "^1.0.0",
+        "conventional-changelog-writer": "^5.0.0",
+        "conventional-commits-parser": "^3.2.0",
+        "dateformat": "^3.0.0",
+        "get-pkg-repo": "^4.0.0",
+        "git-raw-commits": "^2.0.8",
+        "git-remote-origin-url": "^2.0.0",
+        "git-semver-tags": "^4.1.1",
+        "lodash": "^4.17.15",
+        "normalize-package-data": "^3.0.0",
+        "q": "^1.5.1",
+        "read-pkg": "^3.0.0",
+        "read-pkg-up": "^3.0.0",
+        "through2": "^4.0.0"
+      },
+      "engines": {
+        "node": ">=10"
+      }
+    },
+    "node_modules/conventional-changelog-ember": {
+      "version": "2.0.9",
+      "resolved": "https://registry.npmjs.org/conventional-changelog-ember/-/conventional-changelog-ember-2.0.9.tgz",
+      "integrity": "sha512-ulzIReoZEvZCBDhcNYfDIsLTHzYHc7awh+eI44ZtV5cx6LVxLlVtEmcO+2/kGIHGtw+qVabJYjdI5cJOQgXh1A==",
+      "dev": true,
+      "license": "ISC",
+      "dependencies": {
+        "q": "^1.5.1"
+      },
+      "engines": {
+        "node": ">=10"
+      }
+    },
+    "node_modules/conventional-changelog-eslint": {
+      "version": "3.0.9",
+      "resolved": "https://registry.npmjs.org/conventional-changelog-eslint/-/conventional-changelog-eslint-3.0.9.tgz",
+      "integrity": "sha512-6NpUCMgU8qmWmyAMSZO5NrRd7rTgErjrm4VASam2u5jrZS0n38V7Y9CzTtLT2qwz5xEChDR4BduoWIr8TfwvXA==",
+      "dev": true,
+      "license": "ISC",
+      "dependencies": {
+        "q": "^1.5.1"
+      },
+      "engines": {
+        "node": ">=10"
+      }
+    },
+    "node_modules/conventional-changelog-express": {
+      "version": "2.0.6",
+      "resolved": "https://registry.npmjs.org/conventional-changelog-express/-/conventional-changelog-express-2.0.6.tgz",
+      "integrity": "sha512-SDez2f3iVJw6V563O3pRtNwXtQaSmEfTCaTBPCqn0oG0mfkq0rX4hHBq5P7De2MncoRixrALj3u3oQsNK+Q0pQ==",
+      "dev": true,
+      "license": "ISC",
+      "dependencies": {
+        "q": "^1.5.1"
+      },
+      "engines": {
+        "node": ">=10"
+      }
+    },
+    "node_modules/conventional-changelog-jquery": {
+      "version": "3.0.11",
+      "resolved": "https://registry.npmjs.org/conventional-changelog-jquery/-/conventional-changelog-jquery-3.0.11.tgz",
+      "integrity": "sha512-x8AWz5/Td55F7+o/9LQ6cQIPwrCjfJQ5Zmfqi8thwUEKHstEn4kTIofXub7plf1xvFA2TqhZlq7fy5OmV6BOMw==",
+      "dev": true,
+      "license": "ISC",
+      "dependencies": {
+        "q": "^1.5.1"
+      },
+      "engines": {
+        "node": ">=10"
+      }
+    },
+    "node_modules/conventional-changelog-jshint": {
+      "version": "2.0.9",
+      "resolved": "https://registry.npmjs.org/conventional-changelog-jshint/-/conventional-changelog-jshint-2.0.9.tgz",
+      "integrity": "sha512-wMLdaIzq6TNnMHMy31hql02OEQ8nCQfExw1SE0hYL5KvU+JCTuPaDO+7JiogGT2gJAxiUGATdtYYfh+nT+6riA==",
+      "dev": true,
+      "license": "ISC",
+      "dependencies": {
+        "compare-func": "^2.0.0",
+        "q": "^1.5.1"
+      },
+      "engines": {
+        "node": ">=10"
+      }
+    },
+    "node_modules/conventional-changelog-preset-loader": {
+      "version": "2.3.4",
+      "resolved": "https://registry.npmjs.org/conventional-changelog-preset-loader/-/conventional-changelog-preset-loader-2.3.4.tgz",
+      "integrity": "sha512-GEKRWkrSAZeTq5+YjUZOYxdHq+ci4dNwHvpaBC3+ENalzFWuCWa9EZXSuZBpkr72sMdKB+1fyDV4takK1Lf58g==",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">=10"
+      }
+    },
+    "node_modules/conventional-changelog-writer": {
+      "version": "5.0.1",
+      "resolved": "https://registry.npmjs.org/conventional-changelog-writer/-/conventional-changelog-writer-5.0.1.tgz",
+      "integrity": "sha512-5WsuKUfxW7suLblAbFnxAcrvf6r+0b7GvNaWUwUIk0bXMnENP/PEieGKVUQrjPqwPT4o3EPAASBXiY6iHooLOQ==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "conventional-commits-filter": "^2.0.7",
+        "dateformat": "^3.0.0",
+        "handlebars": "^4.7.7",
+        "json-stringify-safe": "^5.0.1",
+        "lodash": "^4.17.15",
+        "meow": "^8.0.0",
+        "semver": "^6.0.0",
+        "split": "^1.0.0",
+        "through2": "^4.0.0"
+      },
+      "bin": {
+        "conventional-changelog-writer": "cli.js"
+      },
+      "engines": {
+        "node": ">=10"
+      }
+    },
+    "node_modules/conventional-commits-filter": {
+      "version": "2.0.7",
+      "resolved": "https://registry.npmjs.org/conventional-commits-filter/-/conventional-commits-filter-2.0.7.tgz",
+      "integrity": "sha512-ASS9SamOP4TbCClsRHxIHXRfcGCnIoQqkvAzCSbZzTFLfcTqJVugB0agRgsEELsqaeWgsXv513eS116wnlSSPA==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "lodash.ismatch": "^4.4.0",
+        "modify-values": "^1.0.0"
+      },
+      "engines": {
+        "node": ">=10"
+      }
+    },
+    "node_modules/conventional-commits-parser": {
+      "version": "3.2.4",
+      "resolved": "https://registry.npmjs.org/conventional-commits-parser/-/conventional-commits-parser-3.2.4.tgz",
+      "integrity": "sha512-nK7sAtfi+QXbxHCYfhpZsfRtaitZLIA6889kFIouLvz6repszQDgxBu7wf2WbU+Dco7sAnNCJYERCwt54WPC2Q==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "is-text-path": "^1.0.1",
+        "JSONStream": "^1.0.4",
+        "lodash": "^4.17.15",
+        "meow": "^8.0.0",
+        "split2": "^3.0.0",
+        "through2": "^4.0.0"
+      },
+      "bin": {
+        "conventional-commits-parser": "cli.js"
+      },
+      "engines": {
+        "node": ">=10"
+      }
+    },
+    "node_modules/conventional-commits-parser/node_modules/split2": {
+      "version": "3.2.2",
+      "resolved": "https://registry.npmjs.org/split2/-/split2-3.2.2.tgz",
+      "integrity": "sha512-9NThjpgZnifTkJpzTZ7Eue85S49QwpNhZTq6GRJwObb6jnLFNGB7Qm73V5HewTROPyxD0C29xqmaI68bQtV+hg==",
+      "dev": true,
+      "license": "ISC",
+      "dependencies": {
+        "readable-stream": "^3.0.0"
+      }
     },
     "node_modules/convert-source-map": {
       "version": "2.0.0",
@@ -31175,6 +33146,20 @@ export default nextConfig;
         "url": "https://opencollective.com/express"
       }
     },
+    "node_modules/core-util-is": {
+      "version": "1.0.3",
+      "resolved": "https://registry.npmjs.org/core-util-is/-/core-util-is-1.0.3.tgz",
+      "integrity": "sha512-ZQBvi1DcpJ4GDqanjucZ2Hj3wEO5pZDS89BWbkcrvdxksJorwUDDZamX9ldFkp9aw2lmBDLgkObEA4DWNJ9FYQ==",
+      "dev": true,
+      "license": "MIT"
+    },
+    "node_modules/create-require": {
+      "version": "1.1.1",
+      "resolved": "https://registry.npmjs.org/create-require/-/create-require-1.1.1.tgz",
+      "integrity": "sha512-dcKFX3jn0MpIaXjisoRvexIJVEKzaq7z2rZKxf+MSr9TkdmHmsU4m2lcLojrj/FHl8mk5VxMmYA+ftRkP/3oKQ==",
+      "dev": true,
+      "license": "MIT"
+    },
     "node_modules/cross-spawn": {
       "version": "7.0.6",
       "resolved": "https://registry.npmjs.org/cross-spawn/-/cross-spawn-7.0.6.tgz",
@@ -31190,6 +33175,46 @@ export default nextConfig;
         "node": ">= 8"
       }
     },
+    "node_modules/crypto-random-string": {
+      "version": "2.0.0",
+      "resolved": "https://registry.npmjs.org/crypto-random-string/-/crypto-random-string-2.0.0.tgz",
+      "integrity": "sha512-v1plID3y9r/lPhviJ1wrXpLeyUIGAZ2SHNYTEapm7/8A9nLPoyvVp3RK/EPFqn5kEznyWgYZNsRtYYIWbuG8KA==",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">=8"
+      }
+    },
+    "node_modules/css-select": {
+      "version": "4.3.0",
+      "resolved": "https://registry.npmjs.org/css-select/-/css-select-4.3.0.tgz",
+      "integrity": "sha512-wPpOYtnsVontu2mODhA19JrqWxNsfdatRKd64kmpRbQgh1KtItko5sTnEpPdpSaJszTOhEMlF/RPz28qj4HqhQ==",
+      "dev": true,
+      "license": "BSD-2-Clause",
+      "dependencies": {
+        "boolbase": "^1.0.0",
+        "css-what": "^6.0.1",
+        "domhandler": "^4.3.1",
+        "domutils": "^2.8.0",
+        "nth-check": "^2.0.1"
+      },
+      "funding": {
+        "url": "https://github.com/sponsors/fb55"
+      }
+    },
+    "node_modules/css-what": {
+      "version": "6.2.2",
+      "resolved": "https://registry.npmjs.org/css-what/-/css-what-6.2.2.tgz",
+      "integrity": "sha512-u/O3vwbptzhMs3L1fQE82ZSLHQQfto5gyZzwteVIEyeaY5Fc7R4dapF/BvRoSYFeqfBk4m0V1Vafq5Pjv25wvA==",
+      "dev": true,
+      "license": "BSD-2-Clause",
+      "engines": {
+        "node": ">= 6"
+      },
+      "funding": {
+        "url": "https://github.com/sponsors/fb55"
+      }
+    },
     "node_modules/csstype": {
       "version": "3.2.3",
       "resolved": "https://registry.npmjs.org/csstype/-/csstype-3.2.3.tgz",
@@ -31203,6 +33228,26 @@ export default nextConfig;
       "integrity": "sha512-sdQSFB7+llfUcQHUQO3+B8ERRj0Oa4w9POWMI/puGtuf7gFywGmkaLCElnudfTiKZV+NvHqL0ifzdrI8Ro7ESA==",
       "dev": true,
       "license": "BSD-2-Clause"
+    },
+    "node_modules/dargs": {
+      "version": "7.0.0",
+      "resolved": "https://registry.npmjs.org/dargs/-/dargs-7.0.0.tgz",
+      "integrity": "sha512-2iy1EkLdlBzQGvbweYRFxmFath8+K7+AKB0TlhHWkNuH+TmovaMH/Wp7V7R4u7f4SnX3OgLsU9t1NI9ioDnUpg==",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">=8"
+      }
+    },
+    "node_modules/data-uri-to-buffer": {
+      "version": "4.0.1",
+      "resolved": "https://registry.npmjs.org/data-uri-to-buffer/-/data-uri-to-buffer-4.0.1.tgz",
+      "integrity": "sha512-0R9ikRb668HB7QDxT1vkpuUBtqc53YyAwMwGeUFKRojY/NWKvdZ+9UYtRfGmhqNbRkTSVpMbmyhXipFFv2cb/A==",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">= 12"
+      }
     },
     "node_modules/data-view-buffer": {
       "version": "1.0.2",
@@ -31258,6 +33303,16 @@ export default nextConfig;
         "url": "https://github.com/sponsors/ljharb"
       }
     },
+    "node_modules/dateformat": {
+      "version": "3.0.3",
+      "resolved": "https://registry.npmjs.org/dateformat/-/dateformat-3.0.3.tgz",
+      "integrity": "sha512-jyCETtSl3VMZMWeRo7iY1FL19ges1t55hMo5yaam4Jrsm5EPL89UQkoQRyiI+Yf4k8r2ZpdngkV8hr1lIdjb3Q==",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": "*"
+      }
+    },
     "node_modules/debug": {
       "version": "4.4.3",
       "resolved": "https://registry.npmjs.org/debug/-/debug-4.4.3.tgz",
@@ -31274,6 +33329,69 @@ export default nextConfig;
         "supports-color": {
           "optional": true
         }
+      }
+    },
+    "node_modules/decamelize": {
+      "version": "1.2.0",
+      "resolved": "https://registry.npmjs.org/decamelize/-/decamelize-1.2.0.tgz",
+      "integrity": "sha512-z2S+W9X73hAUUki+N+9Za2lBlun89zigOyGrsax+KUQ6wKW4ZoWpEYBkGhQjwAjjDCkWxhY0VKEhk8wzY7F5cA==",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">=0.10.0"
+      }
+    },
+    "node_modules/decamelize-keys": {
+      "version": "1.1.1",
+      "resolved": "https://registry.npmjs.org/decamelize-keys/-/decamelize-keys-1.1.1.tgz",
+      "integrity": "sha512-WiPxgEirIV0/eIOMcnFBA3/IJZAZqKnwAwWyvvdi4lsr1WCN22nhdf/3db3DoZcUjTV2SqfzIwNyp6y2xs3nmg==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "decamelize": "^1.1.0",
+        "map-obj": "^1.0.0"
+      },
+      "engines": {
+        "node": ">=0.10.0"
+      },
+      "funding": {
+        "url": "https://github.com/sponsors/sindresorhus"
+      }
+    },
+    "node_modules/decamelize-keys/node_modules/map-obj": {
+      "version": "1.0.1",
+      "resolved": "https://registry.npmjs.org/map-obj/-/map-obj-1.0.1.tgz",
+      "integrity": "sha512-7N/q3lyZ+LVCp7PzuxrJr4KMbBE2hW7BT7YNia330OFxIf4d3r5zVpicP2650l7CPN6RM9zOJRl3NGpqSiw3Eg==",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">=0.10.0"
+      }
+    },
+    "node_modules/decompress-response": {
+      "version": "6.0.0",
+      "resolved": "https://registry.npmjs.org/decompress-response/-/decompress-response-6.0.0.tgz",
+      "integrity": "sha512-aW35yZM6Bb/4oJlZncMH2LCoZtJXTRxES17vE3hoRiowU2kWHaJKFkSBDnDR+cm9J+9QhXmREyIfv0pji9ejCQ==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "mimic-response": "^3.1.0"
+      },
+      "engines": {
+        "node": ">=10"
+      },
+      "funding": {
+        "url": "https://github.com/sponsors/sindresorhus"
+      }
+    },
+    "node_modules/deep-extend": {
+      "version": "0.6.0",
+      "resolved": "https://registry.npmjs.org/deep-extend/-/deep-extend-0.6.0.tgz",
+      "integrity": "sha512-LOHxIOaPYdHlJRtCQfDIVZtfw/ufM8+rVj649RIHzcm/vGwQRXFt6OPqIFWsm2XEMrNIEtWR64sY1LEKD2vAOA==",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">=4.0.0"
       }
     },
     "node_modules/deep-is": {
@@ -31301,6 +33419,16 @@ export default nextConfig;
         "url": "https://github.com/sponsors/ljharb"
       }
     },
+    "node_modules/define-lazy-prop": {
+      "version": "2.0.0",
+      "resolved": "https://registry.npmjs.org/define-lazy-prop/-/define-lazy-prop-2.0.0.tgz",
+      "integrity": "sha512-Ds09qNh8yw3khSjiJjiUInaGX9xlqZDY7JVryGxdxV7NPeuqQfplOpQ66yJFZut3jLa5zOwkXw1g9EI2uKh4Og==",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">=8"
+      }
+    },
     "node_modules/define-properties": {
       "version": "1.2.1",
       "resolved": "https://registry.npmjs.org/define-properties/-/define-properties-1.2.1.tgz",
@@ -31319,12 +33447,118 @@ export default nextConfig;
         "url": "https://github.com/sponsors/ljharb"
       }
     },
+    "node_modules/del": {
+      "version": "6.1.1",
+      "resolved": "https://registry.npmjs.org/del/-/del-6.1.1.tgz",
+      "integrity": "sha512-ua8BhapfP0JUJKC/zV9yHHDW/rDoDxP4Zhn3AkA6/xT6gY7jYXJiaeyBZznYVujhZZET+UgcbZiQ7sN3WqcImg==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "globby": "^11.0.1",
+        "graceful-fs": "^4.2.4",
+        "is-glob": "^4.0.1",
+        "is-path-cwd": "^2.2.0",
+        "is-path-inside": "^3.0.2",
+        "p-map": "^4.0.0",
+        "rimraf": "^3.0.2",
+        "slash": "^3.0.0"
+      },
+      "engines": {
+        "node": ">=10"
+      },
+      "funding": {
+        "url": "https://github.com/sponsors/sindresorhus"
+      }
+    },
+    "node_modules/del/node_modules/glob": {
+      "version": "7.2.3",
+      "resolved": "https://registry.npmjs.org/glob/-/glob-7.2.3.tgz",
+      "integrity": "sha512-nFR0zLpU2YCaRxwoCJvL6UvCH2JFyFVIvwTLsIf21AuHlMskA1hhTdk+LlYJtOlYt9v6dvszD2BGRqBL+iQK9Q==",
+      "deprecated": "Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me",
+      "dev": true,
+      "license": "ISC",
+      "dependencies": {
+        "fs.realpath": "^1.0.0",
+        "inflight": "^1.0.4",
+        "inherits": "2",
+        "minimatch": "^3.1.1",
+        "once": "^1.3.0",
+        "path-is-absolute": "^1.0.0"
+      },
+      "engines": {
+        "node": "*"
+      },
+      "funding": {
+        "url": "https://github.com/sponsors/isaacs"
+      }
+    },
+    "node_modules/del/node_modules/rimraf": {
+      "version": "3.0.2",
+      "resolved": "https://registry.npmjs.org/rimraf/-/rimraf-3.0.2.tgz",
+      "integrity": "sha512-JZkJMZkAGFFPP2YqXZXPbMlMBgsxzE8ILs4lMIX/2o0L9UBw9O/Y3o6wFw/i9YLapcUJWwqbi3kdxIPdC62TIA==",
+      "deprecated": "Rimraf versions prior to v4 are no longer supported",
+      "dev": true,
+      "license": "ISC",
+      "dependencies": {
+        "glob": "^7.1.3"
+      },
+      "bin": {
+        "rimraf": "bin.js"
+      },
+      "funding": {
+        "url": "https://github.com/sponsors/isaacs"
+      }
+    },
     "node_modules/detect-libc": {
       "version": "2.1.2",
       "resolved": "https://registry.npmjs.org/detect-libc/-/detect-libc-2.1.2.tgz",
       "integrity": "sha512-Btj2BOOO83o3WyH59e8MgXsxEQVcarkUOpEYrubB0urwnN10yQ364rsiByU11nZlqWYZm05i/of7io4mzihBtQ==",
       "devOptional": true,
       "license": "Apache-2.0",
+      "engines": {
+        "node": ">=8"
+      }
+    },
+    "node_modules/dezalgo": {
+      "version": "1.0.4",
+      "resolved": "https://registry.npmjs.org/dezalgo/-/dezalgo-1.0.4.tgz",
+      "integrity": "sha512-rXSP0bf+5n0Qonsb+SVVfNfIsimO4HEtmnIpPHY8Q1UCzKlQrDMfdobr8nJOOsRgWCyMRqeSBQzmWUMq7zvVig==",
+      "dev": true,
+      "license": "ISC",
+      "dependencies": {
+        "asap": "^2.0.0",
+        "wrappy": "1"
+      }
+    },
+    "node_modules/diff": {
+      "version": "5.2.2",
+      "resolved": "https://registry.npmjs.org/diff/-/diff-5.2.2.tgz",
+      "integrity": "sha512-vtcDfH3TOjP8UekytvnHH1o1P4FcUdt4eQ1Y+Abap1tk/OB2MWQvcwS2ClCd1zuIhc3JKOx6p3kod8Vfys3E+A==",
+      "dev": true,
+      "license": "BSD-3-Clause",
+      "engines": {
+        "node": ">=0.3.1"
+      }
+    },
+    "node_modules/dir-glob": {
+      "version": "3.0.1",
+      "resolved": "https://registry.npmjs.org/dir-glob/-/dir-glob-3.0.1.tgz",
+      "integrity": "sha512-WkrWp9GR4KXfKGYzOLmTuGVi1UWFfws377n9cc55/tb6DuqyF6pcQ5AbiHEshaDpY9v6oaSr2XCDidGmMwdzIA==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "path-type": "^4.0.0"
+      },
+      "engines": {
+        "node": ">=8"
+      }
+    },
+    "node_modules/dir-glob/node_modules/path-type": {
+      "version": "4.0.0",
+      "resolved": "https://registry.npmjs.org/path-type/-/path-type-4.0.0.tgz",
+      "integrity": "sha512-gDKb8aZMDeD/tZWs9P6+q0J9Mwkdl6xMV8TjnGP3qJVJ06bdMgkbBlLU8IdfOsIsFz2BW1rNVT3XuNEl8zPAvw==",
+      "dev": true,
+      "license": "MIT",
       "engines": {
         "node": ">=8"
       }
@@ -31340,6 +33574,78 @@ export default nextConfig;
       },
       "engines": {
         "node": ">=0.10.0"
+      }
+    },
+    "node_modules/dom-serializer": {
+      "version": "1.4.1",
+      "resolved": "https://registry.npmjs.org/dom-serializer/-/dom-serializer-1.4.1.tgz",
+      "integrity": "sha512-VHwB3KfrcOOkelEG2ZOfxqLZdfkil8PtJi4P8N2MMXucZq2yLp75ClViUlOVwyoHEDjYU433Aq+5zWP61+RGag==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "domelementtype": "^2.0.1",
+        "domhandler": "^4.2.0",
+        "entities": "^2.0.0"
+      },
+      "funding": {
+        "url": "https://github.com/cheeriojs/dom-serializer?sponsor=1"
+      }
+    },
+    "node_modules/domelementtype": {
+      "version": "2.3.0",
+      "resolved": "https://registry.npmjs.org/domelementtype/-/domelementtype-2.3.0.tgz",
+      "integrity": "sha512-OLETBj6w0OsagBwdXnPdN0cnMfF9opN69co+7ZrbfPGrdpPVNBUj02spi6B1N7wChLQiPn4CSH/zJvXw56gmHw==",
+      "dev": true,
+      "funding": [
+        {
+          "type": "github",
+          "url": "https://github.com/sponsors/fb55"
+        }
+      ],
+      "license": "BSD-2-Clause"
+    },
+    "node_modules/domhandler": {
+      "version": "4.3.1",
+      "resolved": "https://registry.npmjs.org/domhandler/-/domhandler-4.3.1.tgz",
+      "integrity": "sha512-GrwoxYN+uWlzO8uhUXRl0P+kHE4GtVPfYzVLcUxPL7KNdHKj66vvlhiweIHqYYXWlw+T8iLMp42Lm67ghw4WMQ==",
+      "dev": true,
+      "license": "BSD-2-Clause",
+      "dependencies": {
+        "domelementtype": "^2.2.0"
+      },
+      "engines": {
+        "node": ">= 4"
+      },
+      "funding": {
+        "url": "https://github.com/fb55/domhandler?sponsor=1"
+      }
+    },
+    "node_modules/domutils": {
+      "version": "2.8.0",
+      "resolved": "https://registry.npmjs.org/domutils/-/domutils-2.8.0.tgz",
+      "integrity": "sha512-w96Cjofp72M5IIhpjgobBimYEfoPjx1Vx0BSX9P30WBdZW2WIKU0T1Bd0kz2eNZ9ikjKgHbEyKx8BB6H1L3h3A==",
+      "dev": true,
+      "license": "BSD-2-Clause",
+      "dependencies": {
+        "dom-serializer": "^1.0.1",
+        "domelementtype": "^2.2.0",
+        "domhandler": "^4.2.0"
+      },
+      "funding": {
+        "url": "https://github.com/fb55/domutils?sponsor=1"
+      }
+    },
+    "node_modules/dot-prop": {
+      "version": "5.3.0",
+      "resolved": "https://registry.npmjs.org/dot-prop/-/dot-prop-5.3.0.tgz",
+      "integrity": "sha512-QM8q3zDe58hqUqjraQOmzZ1LIH9SWQJTlEKCH4kJ2oQvLZk7RbQXvtDM2XEq3fwkV9CCvvH4LA0AV+ogFsBM2Q==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "is-obj": "^2.0.0"
+      },
+      "engines": {
+        "node": ">=8"
       }
     },
     "node_modules/dunder-proto": {
@@ -31364,12 +33670,35 @@ export default nextConfig;
       "dev": true,
       "license": "ISC"
     },
+    "node_modules/elementtree": {
+      "version": "0.1.7",
+      "resolved": "https://registry.npmjs.org/elementtree/-/elementtree-0.1.7.tgz",
+      "integrity": "sha512-wkgGT6kugeQk/P6VZ/f4T+4HB41BVgNBq5CDIZVbQ02nvTVqAiVTbskxxu3eA/X96lMlfYOwnLQpN2v5E1zDEg==",
+      "dev": true,
+      "license": "Apache-2.0",
+      "dependencies": {
+        "sax": "1.1.4"
+      },
+      "engines": {
+        "node": ">= 0.4.0"
+      }
+    },
     "node_modules/emoji-regex": {
       "version": "9.2.2",
       "resolved": "https://registry.npmjs.org/emoji-regex/-/emoji-regex-9.2.2.tgz",
       "integrity": "sha512-L18DaJsXSUk2+42pv8mLs5jJT2hqFkFE4j21wOmgbUqsZ2hL72NsUU785g9RXgo3s0ZNgVl42TiHp3ZtOv/Vyg==",
       "dev": true,
       "license": "MIT"
+    },
+    "node_modules/end-of-stream": {
+      "version": "1.4.5",
+      "resolved": "https://registry.npmjs.org/end-of-stream/-/end-of-stream-1.4.5.tgz",
+      "integrity": "sha512-ooEGc6HP26xXq/N+GCGOT0JKCLDGrq2bQUZrQ7gyrJiZANJ/8YDTxTpQBXGMn+WbIQXNVpyWymm7KYVICQnyOg==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "once": "^1.4.0"
+      }
     },
     "node_modules/enhanced-resolve": {
       "version": "5.18.3",
@@ -31383,6 +33712,36 @@ export default nextConfig;
       },
       "engines": {
         "node": ">=10.13.0"
+      }
+    },
+    "node_modules/entities": {
+      "version": "2.2.0",
+      "resolved": "https://registry.npmjs.org/entities/-/entities-2.2.0.tgz",
+      "integrity": "sha512-p92if5Nz619I0w+akJrLZH0MX0Pb5DX39XOwQTtXSdQQOaYH03S1uIQp4mhOZtAXrxq4ViO67YTiLBo2638o9A==",
+      "dev": true,
+      "license": "BSD-2-Clause",
+      "funding": {
+        "url": "https://github.com/fb55/entities?sponsor=1"
+      }
+    },
+    "node_modules/env-paths": {
+      "version": "2.2.1",
+      "resolved": "https://registry.npmjs.org/env-paths/-/env-paths-2.2.1.tgz",
+      "integrity": "sha512-+h1lkLKhZMTYjog1VEpJNG7NZJWcuc2DDk/qsqSTRRCOXiLjeQ1d1/udrUGhqMxUgAlwKNZ0cf2uqan5GLuS2A==",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">=6"
+      }
+    },
+    "node_modules/error-ex": {
+      "version": "1.3.4",
+      "resolved": "https://registry.npmjs.org/error-ex/-/error-ex-1.3.4.tgz",
+      "integrity": "sha512-sqQamAnR14VgCr1A618A3sGrygcpK+HEbenA/HiEAkkUwcZIIB/tgWqHFxWgOyDh4nB4JCRimh79dR5Ywc9MDQ==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "is-arrayish": "^0.2.1"
       }
     },
     "node_modules/es-abstract": {
@@ -31586,9 +33945,9 @@ export default nextConfig;
       }
     },
     "node_modules/eslint": {
-      "version": "9.39.1",
-      "resolved": "https://registry.npmjs.org/eslint/-/eslint-9.39.1.tgz",
-      "integrity": "sha512-BhHmn2yNOFA9H9JmmIVKJmd288g9hrVRDkdoIgRCRuSySRUHH7r/DI6aAXW9T1WwUuY3DFgrcaqB+deURBLR5g==",
+      "version": "9.39.3",
+      "resolved": "https://registry.npmjs.org/eslint/-/eslint-9.39.3.tgz",
+      "integrity": "sha512-VmQ+sifHUbI/IcSopBCF/HO3YiHQx/AVd3UVyYL6weuwW+HvON9VYn5l6Zl1WZzPWXPNZrSQpxwkkZ/VuvJZzg==",
       "dev": true,
       "license": "MIT",
       "dependencies": {
@@ -31598,7 +33957,7 @@ export default nextConfig;
         "@eslint/config-helpers": "^0.4.2",
         "@eslint/core": "^0.17.0",
         "@eslint/eslintrc": "^3.3.1",
-        "@eslint/js": "9.39.1",
+        "@eslint/js": "9.39.3",
         "@eslint/plugin-kit": "^0.4.1",
         "@humanfs/node": "^0.16.6",
         "@humanwhocodes/module-importer": "^1.0.1",
@@ -32009,10 +34368,37 @@ export default nextConfig;
         "node": ">=0.10.0"
       }
     },
+    "node_modules/events-universal": {
+      "version": "1.0.1",
+      "resolved": "https://registry.npmjs.org/events-universal/-/events-universal-1.0.1.tgz",
+      "integrity": "sha512-LUd5euvbMLpwOF8m6ivPCbhQeSiYVNb8Vs0fQ8QjXo0JTkEHpz8pxdQf0gStltaPpw0Cca8b39KxvK9cfKRiAw==",
+      "dev": true,
+      "license": "Apache-2.0",
+      "dependencies": {
+        "bare-events": "^2.7.0"
+      }
+    },
+    "node_modules/expand-template": {
+      "version": "2.0.3",
+      "resolved": "https://registry.npmjs.org/expand-template/-/expand-template-2.0.3.tgz",
+      "integrity": "sha512-XYfuKMvj4O35f/pOXLObndIRvyQ+/+6AhODh+OKWj9S9498pHHn/IMszH+gt0fBCRWMNfk1ZSp5x3AifmnI2vg==",
+      "dev": true,
+      "license": "(MIT OR WTFPL)",
+      "engines": {
+        "node": ">=6"
+      }
+    },
     "node_modules/fast-deep-equal": {
       "version": "3.1.3",
       "resolved": "https://registry.npmjs.org/fast-deep-equal/-/fast-deep-equal-3.1.3.tgz",
       "integrity": "sha512-f3qQ9oQy9j2AhBe/H9VC91wLmKBCCU/gDOnKNAYG5hswO7BLKj09Hc5HYNz9cGI++xlpDCIgDaitVs03ATR84Q==",
+      "dev": true,
+      "license": "MIT"
+    },
+    "node_modules/fast-fifo": {
+      "version": "1.3.2",
+      "resolved": "https://registry.npmjs.org/fast-fifo/-/fast-fifo-1.3.2.tgz",
+      "integrity": "sha512-/d9sfos4yxzpwkDkuN7k2SqFKtYNmCTzgfEpz82x34IM9/zc8KGxQoXg1liNC/izpRM/MBdt44Nmx41ZWqk+FQ==",
       "dev": true,
       "license": "MIT"
     },
@@ -32068,6 +34454,40 @@ export default nextConfig;
       "license": "ISC",
       "dependencies": {
         "reusify": "^1.0.4"
+      }
+    },
+    "node_modules/fd-slicer": {
+      "version": "1.1.0",
+      "resolved": "https://registry.npmjs.org/fd-slicer/-/fd-slicer-1.1.0.tgz",
+      "integrity": "sha512-cE1qsB/VwyQozZ+q1dGxR8LBYNZeofhEdUNGSMbQD3Gw2lAzX9Zb3uIU6Ebc/Fmyjo9AWWfnn0AUCHqtevs/8g==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "pend": "~1.2.0"
+      }
+    },
+    "node_modules/fetch-blob": {
+      "version": "3.2.0",
+      "resolved": "https://registry.npmjs.org/fetch-blob/-/fetch-blob-3.2.0.tgz",
+      "integrity": "sha512-7yAQpD2UMJzLi1Dqv7qFYnPbaPx7ZfFK6PiIxQ4PfkGPyNyl2Ugx+a/umUonmKqjhM4DnfbMvdX6otXq83soQQ==",
+      "dev": true,
+      "funding": [
+        {
+          "type": "github",
+          "url": "https://github.com/sponsors/jimmywarting"
+        },
+        {
+          "type": "paypal",
+          "url": "https://paypal.me/jimmywarting"
+        }
+      ],
+      "license": "MIT",
+      "dependencies": {
+        "node-domexception": "^1.0.0",
+        "web-streams-polyfill": "^3.0.3"
+      },
+      "engines": {
+        "node": "^12.20 || >= 14.13"
       }
     },
     "node_modules/file-entry-cache": {
@@ -32150,6 +34570,126 @@ export default nextConfig;
         "url": "https://github.com/sponsors/ljharb"
       }
     },
+    "node_modules/formdata-polyfill": {
+      "version": "4.0.10",
+      "resolved": "https://registry.npmjs.org/formdata-polyfill/-/formdata-polyfill-4.0.10.tgz",
+      "integrity": "sha512-buewHzMvYL29jdeQTVILecSaZKnt/RJWjoZCF5OW60Z67/GmSLBkOFM7qh1PI3zFNtJbaZL5eQu1vLfazOwj4g==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "fetch-blob": "^3.1.2"
+      },
+      "engines": {
+        "node": ">=12.20.0"
+      }
+    },
+    "node_modules/formidable": {
+      "version": "3.5.4",
+      "resolved": "https://registry.npmjs.org/formidable/-/formidable-3.5.4.tgz",
+      "integrity": "sha512-YikH+7CUTOtP44ZTnUhR7Ic2UASBPOqmaRkRKxRbywPTe5VxF7RRCck4af9wutiZ/QKM5nME9Bie2fFaPz5Gug==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "@paralleldrive/cuid2": "^2.2.2",
+        "dezalgo": "^1.0.4",
+        "once": "^1.4.0"
+      },
+      "engines": {
+        "node": ">=14.0.0"
+      },
+      "funding": {
+        "url": "https://ko-fi.com/tunnckoCore/commissions"
+      }
+    },
+    "node_modules/framer-motion": {
+      "version": "12.34.3",
+      "resolved": "https://registry.npmjs.org/framer-motion/-/framer-motion-12.34.3.tgz",
+      "integrity": "sha512-v81ecyZKYO/DfpTwHivqkxSUBzvceOpoI+wLfgCgoUIKxlFKEXdg0oR9imxwXumT4SFy8vRk9xzJ5l3/Du/55Q==",
+      "license": "MIT",
+      "dependencies": {
+        "motion-dom": "^12.34.3",
+        "motion-utils": "^12.29.2",
+        "tslib": "^2.4.0"
+      },
+      "peerDependencies": {
+        "@emotion/is-prop-valid": "*",
+        "react": "^18.0.0 || ^19.0.0",
+        "react-dom": "^18.0.0 || ^19.0.0"
+      },
+      "peerDependenciesMeta": {
+        "@emotion/is-prop-valid": {
+          "optional": true
+        },
+        "react": {
+          "optional": true
+        },
+        "react-dom": {
+          "optional": true
+        }
+      }
+    },
+    "node_modules/fs-constants": {
+      "version": "1.0.0",
+      "resolved": "https://registry.npmjs.org/fs-constants/-/fs-constants-1.0.0.tgz",
+      "integrity": "sha512-y6OAwoSIf7FyjMIv94u+b5rdheZEjzR63GTyZJm5qh4Bi+2YgwLCcI/fPFZkL5PSixOt6ZNKm+w+Hfp/Bciwow==",
+      "dev": true,
+      "license": "MIT"
+    },
+    "node_modules/fs-extra": {
+      "version": "11.3.3",
+      "resolved": "https://registry.npmjs.org/fs-extra/-/fs-extra-11.3.3.tgz",
+      "integrity": "sha512-VWSRii4t0AFm6ixFFmLLx1t7wS1gh+ckoa84aOeapGum0h+EZd1EhEumSB+ZdDLnEPuucsVB9oB7cxJHap6Afg==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "graceful-fs": "^4.2.0",
+        "jsonfile": "^6.0.1",
+        "universalify": "^2.0.0"
+      },
+      "engines": {
+        "node": ">=14.14"
+      }
+    },
+    "node_modules/fs-minipass": {
+      "version": "2.1.0",
+      "resolved": "https://registry.npmjs.org/fs-minipass/-/fs-minipass-2.1.0.tgz",
+      "integrity": "sha512-V/JgOLFCS+R6Vcq0slCuaeWEdNC3ouDlJMNIsacH2VtALiu9mV4LPrHc5cDl8k5aw6J8jwgWWpiTo5RYhmIzvg==",
+      "dev": true,
+      "license": "ISC",
+      "dependencies": {
+        "minipass": "^3.0.0"
+      },
+      "engines": {
+        "node": ">= 8"
+      }
+    },
+    "node_modules/fs-minipass/node_modules/minipass": {
+      "version": "3.3.6",
+      "resolved": "https://registry.npmjs.org/minipass/-/minipass-3.3.6.tgz",
+      "integrity": "sha512-DxiNidxSEK+tHG6zOIklvNOwm3hvCrbUrdtzY74U6HKTJxvIDfOUL5W5P2Ghd3DTkhhKPYGqeNUIh5qcM4YBfw==",
+      "dev": true,
+      "license": "ISC",
+      "dependencies": {
+        "yallist": "^4.0.0"
+      },
+      "engines": {
+        "node": ">=8"
+      }
+    },
+    "node_modules/fs-minipass/node_modules/yallist": {
+      "version": "4.0.0",
+      "resolved": "https://registry.npmjs.org/yallist/-/yallist-4.0.0.tgz",
+      "integrity": "sha512-3wdGidZyq5PB084XLES5TpOSRA3wjXAlIWMhum2kRcv/41Sn2emQ0dycQW4uZXLejwKvg6EsvbdlVL+FYEct7A==",
+      "dev": true,
+      "license": "ISC"
+    },
+    "node_modules/fs.realpath": {
+      "version": "1.0.0",
+      "resolved": "https://registry.npmjs.org/fs.realpath/-/fs.realpath-1.0.0.tgz",
+      "integrity": "sha512-OO0pH2lK6a0hZnAdau5ItzHPI6pUlvI7jMVnxUQRtw4owF2wk8lOSabtGDCTP4Ggrg2MbGnWO9X8K1t4+fGMDw==",
+      "dev": true,
+      "license": "ISC"
+    },
     "node_modules/function-bind": {
       "version": "1.1.2",
       "resolved": "https://registry.npmjs.org/function-bind/-/function-bind-1.1.2.tgz",
@@ -32211,6 +34751,16 @@ export default nextConfig;
         "node": ">=6.9.0"
       }
     },
+    "node_modules/get-caller-file": {
+      "version": "2.0.5",
+      "resolved": "https://registry.npmjs.org/get-caller-file/-/get-caller-file-2.0.5.tgz",
+      "integrity": "sha512-DyFP3BM/3YHTQOCUL/w0OZHR0lpKeGrxotcHWcqNEdnltqFwXVfhEBQ94eIo34AfQpo0rGki4cyIiftY06h2Fg==",
+      "dev": true,
+      "license": "ISC",
+      "engines": {
+        "node": "6.* || 8.* || >= 10.*"
+      }
+    },
     "node_modules/get-intrinsic": {
       "version": "1.3.0",
       "resolved": "https://registry.npmjs.org/get-intrinsic/-/get-intrinsic-1.3.0.tgz",
@@ -32234,6 +34784,107 @@ export default nextConfig;
       },
       "funding": {
         "url": "https://github.com/sponsors/ljharb"
+      }
+    },
+    "node_modules/get-pkg-repo": {
+      "version": "4.2.1",
+      "resolved": "https://registry.npmjs.org/get-pkg-repo/-/get-pkg-repo-4.2.1.tgz",
+      "integrity": "sha512-2+QbHjFRfGB74v/pYWjd5OhU3TDIC2Gv/YKUTk/tCvAz0pkn/Mz6P3uByuBimLOcPvN2jYdScl3xGFSrx0jEcA==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "@hutson/parse-repository-url": "^3.0.0",
+        "hosted-git-info": "^4.0.0",
+        "through2": "^2.0.0",
+        "yargs": "^16.2.0"
+      },
+      "bin": {
+        "get-pkg-repo": "src/cli.js"
+      },
+      "engines": {
+        "node": ">=6.9.0"
+      }
+    },
+    "node_modules/get-pkg-repo/node_modules/cliui": {
+      "version": "7.0.4",
+      "resolved": "https://registry.npmjs.org/cliui/-/cliui-7.0.4.tgz",
+      "integrity": "sha512-OcRE68cOsVMXp1Yvonl/fzkQOyjLSu/8bhPDfQt0e0/Eb283TKP20Fs2MqoPsr9SwA595rRCA+QMzYc9nBP+JQ==",
+      "dev": true,
+      "license": "ISC",
+      "dependencies": {
+        "string-width": "^4.2.0",
+        "strip-ansi": "^6.0.0",
+        "wrap-ansi": "^7.0.0"
+      }
+    },
+    "node_modules/get-pkg-repo/node_modules/isarray": {
+      "version": "1.0.0",
+      "resolved": "https://registry.npmjs.org/isarray/-/isarray-1.0.0.tgz",
+      "integrity": "sha512-VLghIWNM6ELQzo7zwmcg0NmTVyWKYjvIeM83yjp0wRDTmUnrM678fQbcKBo6n2CJEF0szoG//ytg+TKla89ALQ==",
+      "dev": true,
+      "license": "MIT"
+    },
+    "node_modules/get-pkg-repo/node_modules/readable-stream": {
+      "version": "2.3.8",
+      "resolved": "https://registry.npmjs.org/readable-stream/-/readable-stream-2.3.8.tgz",
+      "integrity": "sha512-8p0AUk4XODgIewSi0l8Epjs+EVnWiK7NoDIEGU0HhE7+ZyY8D1IMY7odu5lRrFXGg71L15KG8QrPmum45RTtdA==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "core-util-is": "~1.0.0",
+        "inherits": "~2.0.3",
+        "isarray": "~1.0.0",
+        "process-nextick-args": "~2.0.0",
+        "safe-buffer": "~5.1.1",
+        "string_decoder": "~1.1.1",
+        "util-deprecate": "~1.0.1"
+      }
+    },
+    "node_modules/get-pkg-repo/node_modules/safe-buffer": {
+      "version": "5.1.2",
+      "resolved": "https://registry.npmjs.org/safe-buffer/-/safe-buffer-5.1.2.tgz",
+      "integrity": "sha512-Gd2UZBJDkXlY7GbJxfsE8/nvKkUEU1G38c1siN6QP6a9PT9MmHB8GnpscSmMJSoF8LOIrt8ud/wPtojys4G6+g==",
+      "dev": true,
+      "license": "MIT"
+    },
+    "node_modules/get-pkg-repo/node_modules/string_decoder": {
+      "version": "1.1.1",
+      "resolved": "https://registry.npmjs.org/string_decoder/-/string_decoder-1.1.1.tgz",
+      "integrity": "sha512-n/ShnvDi6FHbbVfviro+WojiFzv+s8MPMHBczVePfUpDJLwoLT0ht1l4YwBCbi8pJAveEEdnkHyPyTP/mzRfwg==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "safe-buffer": "~5.1.0"
+      }
+    },
+    "node_modules/get-pkg-repo/node_modules/through2": {
+      "version": "2.0.5",
+      "resolved": "https://registry.npmjs.org/through2/-/through2-2.0.5.tgz",
+      "integrity": "sha512-/mrRod8xqpA+IHSLyGCQ2s8SPHiCDEeQJSep1jqLYeEUClOFG2Qsh+4FU6G9VeqpZnGW/Su8LQGc4YKni5rYSQ==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "readable-stream": "~2.3.6",
+        "xtend": "~4.0.1"
+      }
+    },
+    "node_modules/get-pkg-repo/node_modules/yargs": {
+      "version": "16.2.0",
+      "resolved": "https://registry.npmjs.org/yargs/-/yargs-16.2.0.tgz",
+      "integrity": "sha512-D1mvvtDG0L5ft/jGWkLpG1+m0eQxOfaBvTNELraWj22wSVUMWxZUvYgJYcKh6jGGIkJFhH4IZPQhR4TKpc8mBw==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "cliui": "^7.0.2",
+        "escalade": "^3.1.1",
+        "get-caller-file": "^2.0.5",
+        "require-directory": "^2.1.1",
+        "string-width": "^4.2.0",
+        "y18n": "^5.0.5",
+        "yargs-parser": "^20.2.2"
+      },
+      "engines": {
+        "node": ">=10"
       }
     },
     "node_modules/get-proto": {
@@ -32281,6 +34932,109 @@ export default nextConfig;
         "url": "https://github.com/privatenumber/get-tsconfig?sponsor=1"
       }
     },
+    "node_modules/git-raw-commits": {
+      "version": "2.0.11",
+      "resolved": "https://registry.npmjs.org/git-raw-commits/-/git-raw-commits-2.0.11.tgz",
+      "integrity": "sha512-VnctFhw+xfj8Va1xtfEqCUD2XDrbAPSJx+hSrE5K7fGdjZruW7XV+QOrN7LF/RJyvspRiD2I0asWsxFp0ya26A==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "dargs": "^7.0.0",
+        "lodash": "^4.17.15",
+        "meow": "^8.0.0",
+        "split2": "^3.0.0",
+        "through2": "^4.0.0"
+      },
+      "bin": {
+        "git-raw-commits": "cli.js"
+      },
+      "engines": {
+        "node": ">=10"
+      }
+    },
+    "node_modules/git-raw-commits/node_modules/split2": {
+      "version": "3.2.2",
+      "resolved": "https://registry.npmjs.org/split2/-/split2-3.2.2.tgz",
+      "integrity": "sha512-9NThjpgZnifTkJpzTZ7Eue85S49QwpNhZTq6GRJwObb6jnLFNGB7Qm73V5HewTROPyxD0C29xqmaI68bQtV+hg==",
+      "dev": true,
+      "license": "ISC",
+      "dependencies": {
+        "readable-stream": "^3.0.0"
+      }
+    },
+    "node_modules/git-remote-origin-url": {
+      "version": "2.0.0",
+      "resolved": "https://registry.npmjs.org/git-remote-origin-url/-/git-remote-origin-url-2.0.0.tgz",
+      "integrity": "sha512-eU+GGrZgccNJcsDH5LkXR3PB9M958hxc7sbA8DFJjrv9j4L2P/eZfKhM+QD6wyzpiv+b1BpK0XrYCxkovtjSLw==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "gitconfiglocal": "^1.0.0",
+        "pify": "^2.3.0"
+      },
+      "engines": {
+        "node": ">=4"
+      }
+    },
+    "node_modules/git-semver-tags": {
+      "version": "4.1.1",
+      "resolved": "https://registry.npmjs.org/git-semver-tags/-/git-semver-tags-4.1.1.tgz",
+      "integrity": "sha512-OWyMt5zBe7xFs8vglMmhM9lRQzCWL3WjHtxNNfJTMngGym7pC1kh8sP6jevfydJ6LP3ZvGxfb6ABYgPUM0mtsA==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "meow": "^8.0.0",
+        "semver": "^6.0.0"
+      },
+      "bin": {
+        "git-semver-tags": "cli.js"
+      },
+      "engines": {
+        "node": ">=10"
+      }
+    },
+    "node_modules/gitconfiglocal": {
+      "version": "1.0.0",
+      "resolved": "https://registry.npmjs.org/gitconfiglocal/-/gitconfiglocal-1.0.0.tgz",
+      "integrity": "sha512-spLUXeTAVHxDtKsJc8FkFVgFtMdEN9qPGpL23VfSHx4fP4+Ds097IXLvymbnDH8FnmxX5Nr9bPw3A+AQ6mWEaQ==",
+      "dev": true,
+      "license": "BSD",
+      "dependencies": {
+        "ini": "^1.3.2"
+      }
+    },
+    "node_modules/gitconfiglocal/node_modules/ini": {
+      "version": "1.3.8",
+      "resolved": "https://registry.npmjs.org/ini/-/ini-1.3.8.tgz",
+      "integrity": "sha512-JV/yugV2uzW5iMRSiZAyDtQd+nxtUnjeLt0acNdw98kKLrvuRVyB80tsREOE7yvGVgalhZ6RNXCmEHkUKBKxew==",
+      "dev": true,
+      "license": "ISC"
+    },
+    "node_modules/github-from-package": {
+      "version": "0.0.0",
+      "resolved": "https://registry.npmjs.org/github-from-package/-/github-from-package-0.0.0.tgz",
+      "integrity": "sha512-SyHy3T1v2NUXn29OsWdxmK6RwHD+vkj3v8en8AOBZ1wBQ/hCAQ5bAQTD02kW4W9tUp/3Qh6J8r9EvntiyCmOOw==",
+      "dev": true,
+      "license": "MIT"
+    },
+    "node_modules/glob": {
+      "version": "13.0.6",
+      "resolved": "https://registry.npmjs.org/glob/-/glob-13.0.6.tgz",
+      "integrity": "sha512-Wjlyrolmm8uDpm/ogGyXZXb1Z+Ca2B8NbJwqBVg0axK9GbBeoS7yGV6vjXnYdGm6X53iehEuxxbyiKp8QmN4Vw==",
+      "dev": true,
+      "license": "BlueOak-1.0.0",
+      "dependencies": {
+        "minimatch": "^10.2.2",
+        "minipass": "^7.1.3",
+        "path-scurry": "^2.0.2"
+      },
+      "engines": {
+        "node": "18 || 20 || >=22"
+      },
+      "funding": {
+        "url": "https://github.com/sponsors/isaacs"
+      }
+    },
     "node_modules/glob-parent": {
       "version": "6.0.2",
       "resolved": "https://registry.npmjs.org/glob-parent/-/glob-parent-6.0.2.tgz",
@@ -32292,6 +35046,45 @@ export default nextConfig;
       },
       "engines": {
         "node": ">=10.13.0"
+      }
+    },
+    "node_modules/glob/node_modules/balanced-match": {
+      "version": "4.0.4",
+      "resolved": "https://registry.npmjs.org/balanced-match/-/balanced-match-4.0.4.tgz",
+      "integrity": "sha512-BLrgEcRTwX2o6gGxGOCNyMvGSp35YofuYzw9h1IMTRmKqttAZZVU67bdb9Pr2vUHA8+j3i2tJfjO6C6+4myGTA==",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": "18 || 20 || >=22"
+      }
+    },
+    "node_modules/glob/node_modules/brace-expansion": {
+      "version": "5.0.3",
+      "resolved": "https://registry.npmjs.org/brace-expansion/-/brace-expansion-5.0.3.tgz",
+      "integrity": "sha512-fy6KJm2RawA5RcHkLa1z/ScpBeA762UF9KmZQxwIbDtRJrgLzM10depAiEQ+CXYcoiqW1/m96OAAoke2nE9EeA==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "balanced-match": "^4.0.2"
+      },
+      "engines": {
+        "node": "18 || 20 || >=22"
+      }
+    },
+    "node_modules/glob/node_modules/minimatch": {
+      "version": "10.2.2",
+      "resolved": "https://registry.npmjs.org/minimatch/-/minimatch-10.2.2.tgz",
+      "integrity": "sha512-+G4CpNBxa5MprY+04MbgOw1v7So6n5JY166pFi9KfYwT78fxScCeSNQSNzp6dpPSW2rONOps6Ocam1wFhCgoVw==",
+      "dev": true,
+      "license": "BlueOak-1.0.0",
+      "dependencies": {
+        "brace-expansion": "^5.0.2"
+      },
+      "engines": {
+        "node": "18 || 20 || >=22"
+      },
+      "funding": {
+        "url": "https://github.com/sponsors/isaacs"
       }
     },
     "node_modules/globals": {
@@ -32324,6 +35117,27 @@ export default nextConfig;
         "url": "https://github.com/sponsors/ljharb"
       }
     },
+    "node_modules/globby": {
+      "version": "11.1.0",
+      "resolved": "https://registry.npmjs.org/globby/-/globby-11.1.0.tgz",
+      "integrity": "sha512-jhIXaOzy1sb8IyocaruWSn1TjmnBVs8Ayhcy83rmxNJ8q2uWKCAj3CnJY+KpGSXCueAPc0i05kVvVKtP1t9S3g==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "array-union": "^2.1.0",
+        "dir-glob": "^3.0.1",
+        "fast-glob": "^3.2.9",
+        "ignore": "^5.2.0",
+        "merge2": "^1.4.1",
+        "slash": "^3.0.0"
+      },
+      "engines": {
+        "node": ">=10"
+      },
+      "funding": {
+        "url": "https://github.com/sponsors/sindresorhus"
+      }
+    },
     "node_modules/gopd": {
       "version": "1.2.0",
       "resolved": "https://registry.npmjs.org/gopd/-/gopd-1.2.0.tgz",
@@ -32344,12 +35158,50 @@ export default nextConfig;
       "dev": true,
       "license": "ISC"
     },
-    "node_modules/graphemer": {
-      "version": "1.4.0",
-      "resolved": "https://registry.npmjs.org/graphemer/-/graphemer-1.4.0.tgz",
-      "integrity": "sha512-EtKwoO6kxCL9WO5xipiHTZlSzBm7WLT627TqC/uVRd0HKmq8NXyebnNYxDoBi7wt8eTWrUrKXCOVaFq9x1kgag==",
+    "node_modules/gradle-to-js": {
+      "version": "2.0.1",
+      "resolved": "https://registry.npmjs.org/gradle-to-js/-/gradle-to-js-2.0.1.tgz",
+      "integrity": "sha512-is3hDn9zb8XXnjbEeAEIqxTpLHUiGBqjegLmXPuyMBfKAggpadWFku4/AP8iYAGBX6qR9/5UIUIp47V0XI3aMw==",
       "dev": true,
-      "license": "MIT"
+      "license": "Apache-2.0",
+      "dependencies": {
+        "lodash.merge": "^4.6.2"
+      },
+      "bin": {
+        "gradle-to-js": "cli.js"
+      }
+    },
+    "node_modules/handlebars": {
+      "version": "4.7.8",
+      "resolved": "https://registry.npmjs.org/handlebars/-/handlebars-4.7.8.tgz",
+      "integrity": "sha512-vafaFqs8MZkRrSX7sFVUdo3ap/eNiLnb4IakshzvP56X5Nr1iGKAIqdX6tMlm6HcNRIkr6AxO5jFEoJzzpT8aQ==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "minimist": "^1.2.5",
+        "neo-async": "^2.6.2",
+        "source-map": "^0.6.1",
+        "wordwrap": "^1.0.0"
+      },
+      "bin": {
+        "handlebars": "bin/handlebars"
+      },
+      "engines": {
+        "node": ">=0.4.7"
+      },
+      "optionalDependencies": {
+        "uglify-js": "^3.1.4"
+      }
+    },
+    "node_modules/hard-rejection": {
+      "version": "2.1.0",
+      "resolved": "https://registry.npmjs.org/hard-rejection/-/hard-rejection-2.1.0.tgz",
+      "integrity": "sha512-VIZB+ibDhx7ObhAe7OVtoEbuP4h/MuOTHJ+J8h/eBXotJYl0fBgR72xDFCKgIh22OJZIOVNxBMWuhAr10r8HdA==",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">=6"
+      }
     },
     "node_modules/has-bigints": {
       "version": "1.1.0",
@@ -32445,6 +35297,16 @@ export default nextConfig;
         "node": ">= 0.4"
       }
     },
+    "node_modules/he": {
+      "version": "1.2.0",
+      "resolved": "https://registry.npmjs.org/he/-/he-1.2.0.tgz",
+      "integrity": "sha512-F/1DnUGPopORZi0ni+CvrCgHQ5FyEAHRLSApuYWMmrbSwoN2Mn/7k+Gl38gJnR7yyDZk6WLXwiGod1JOWNDKGw==",
+      "dev": true,
+      "license": "MIT",
+      "bin": {
+        "he": "bin/he"
+      }
+    },
     "node_modules/hermes-estree": {
       "version": "0.25.1",
       "resolved": "https://registry.npmjs.org/hermes-estree/-/hermes-estree-0.25.1.tgz",
@@ -32462,6 +35324,53 @@ export default nextConfig;
         "hermes-estree": "0.25.1"
       }
     },
+    "node_modules/hosted-git-info": {
+      "version": "4.1.0",
+      "resolved": "https://registry.npmjs.org/hosted-git-info/-/hosted-git-info-4.1.0.tgz",
+      "integrity": "sha512-kyCuEOWjJqZuDbRHzL8V93NzQhwIB71oFWSyzVo+KPZI+pnQPPxucdkrOZvkLRnrf5URsQM+IJ09Dw29cRALIA==",
+      "dev": true,
+      "license": "ISC",
+      "dependencies": {
+        "lru-cache": "^6.0.0"
+      },
+      "engines": {
+        "node": ">=10"
+      }
+    },
+    "node_modules/hosted-git-info/node_modules/lru-cache": {
+      "version": "6.0.0",
+      "resolved": "https://registry.npmjs.org/lru-cache/-/lru-cache-6.0.0.tgz",
+      "integrity": "sha512-Jo6dJ04CmSjuznwJSS3pUeWmd/H0ffTlkXXgwZi+eq1UCmqQwCh+eLsYOYCwY991i2Fah4h1BEMCx4qThGbsiA==",
+      "dev": true,
+      "license": "ISC",
+      "dependencies": {
+        "yallist": "^4.0.0"
+      },
+      "engines": {
+        "node": ">=10"
+      }
+    },
+    "node_modules/hosted-git-info/node_modules/yallist": {
+      "version": "4.0.0",
+      "resolved": "https://registry.npmjs.org/yallist/-/yallist-4.0.0.tgz",
+      "integrity": "sha512-3wdGidZyq5PB084XLES5TpOSRA3wjXAlIWMhum2kRcv/41Sn2emQ0dycQW4uZXLejwKvg6EsvbdlVL+FYEct7A==",
+      "dev": true,
+      "license": "ISC"
+    },
+    "node_modules/https-proxy-agent": {
+      "version": "7.0.6",
+      "resolved": "https://registry.npmjs.org/https-proxy-agent/-/https-proxy-agent-7.0.6.tgz",
+      "integrity": "sha512-vK9P5/iUfdl95AI+JVyUuIcVtd4ofvtrOr3HNtM2yxC9bnMbEdp3x01OhQNnjb8IJYi38VlTE3mBXwcfvywuSw==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "agent-base": "^7.1.2",
+        "debug": "4"
+      },
+      "engines": {
+        "node": ">= 14"
+      }
+    },
     "node_modules/iceberg-js": {
       "version": "0.8.1",
       "resolved": "https://registry.npmjs.org/iceberg-js/-/iceberg-js-0.8.1.tgz",
@@ -32470,6 +35379,27 @@ export default nextConfig;
       "engines": {
         "node": ">=20.0.0"
       }
+    },
+    "node_modules/ieee754": {
+      "version": "1.2.1",
+      "resolved": "https://registry.npmjs.org/ieee754/-/ieee754-1.2.1.tgz",
+      "integrity": "sha512-dcyqhDvX1C46lXZcVqCpK+FtMRQVdIMN6/Df5js2zouUsqG7I6sFxitIC+7KYK29KdXOLHdu9zL4sFnoVQnqaA==",
+      "dev": true,
+      "funding": [
+        {
+          "type": "github",
+          "url": "https://github.com/sponsors/feross"
+        },
+        {
+          "type": "patreon",
+          "url": "https://www.patreon.com/feross"
+        },
+        {
+          "type": "consulting",
+          "url": "https://feross.org/support"
+        }
+      ],
+      "license": "BSD-3-Clause"
     },
     "node_modules/ignore": {
       "version": "5.3.2",
@@ -32508,6 +35438,45 @@ export default nextConfig;
         "node": ">=0.8.19"
       }
     },
+    "node_modules/indent-string": {
+      "version": "4.0.0",
+      "resolved": "https://registry.npmjs.org/indent-string/-/indent-string-4.0.0.tgz",
+      "integrity": "sha512-EdDDZu4A2OyIK7Lr/2zG+w5jmbuk1DVBnEwREQvBzspBJkCEbRa8GxU1lghYcaGJCnRWibjDXlq779X1/y5xwg==",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">=8"
+      }
+    },
+    "node_modules/inflight": {
+      "version": "1.0.6",
+      "resolved": "https://registry.npmjs.org/inflight/-/inflight-1.0.6.tgz",
+      "integrity": "sha512-k92I/b08q4wvFscXCLvqfsHCrjrF7yiXsQuIVvVE7N82W3+aqpzuUdBbfhWcy/FZR3/4IgflMgKLOsvPDrGCJA==",
+      "deprecated": "This module is not supported, and leaks memory. Do not use it. Check out lru-cache if you want a good and tested way to coalesce async requests by a key value, which is much more comprehensive and powerful.",
+      "dev": true,
+      "license": "ISC",
+      "dependencies": {
+        "once": "^1.3.0",
+        "wrappy": "1"
+      }
+    },
+    "node_modules/inherits": {
+      "version": "2.0.4",
+      "resolved": "https://registry.npmjs.org/inherits/-/inherits-2.0.4.tgz",
+      "integrity": "sha512-k/vGaX4/Yla3WzyMCvTQOXYeIHvqOKtnqBduzTHpzpQZzAskKMhZ2K+EnBiSM9zGSoIFeMpXKxa4dYeZIQqewQ==",
+      "dev": true,
+      "license": "ISC"
+    },
+    "node_modules/ini": {
+      "version": "4.1.3",
+      "resolved": "https://registry.npmjs.org/ini/-/ini-4.1.3.tgz",
+      "integrity": "sha512-X7rqawQBvfdjS10YU1y1YVreA3SsLrW9dX2CewP2EbBJM4ypVNLDkO5y04gejPwKIY9lR+7r9gn3rFPt/kmWFg==",
+      "dev": true,
+      "license": "ISC",
+      "engines": {
+        "node": "^14.17.0 || ^16.13.0 || >=18.0.0"
+      }
+    },
     "node_modules/internal-slot": {
       "version": "1.1.0",
       "resolved": "https://registry.npmjs.org/internal-slot/-/internal-slot-1.1.0.tgz",
@@ -32540,6 +35509,13 @@ export default nextConfig;
       "funding": {
         "url": "https://github.com/sponsors/ljharb"
       }
+    },
+    "node_modules/is-arrayish": {
+      "version": "0.2.1",
+      "resolved": "https://registry.npmjs.org/is-arrayish/-/is-arrayish-0.2.1.tgz",
+      "integrity": "sha512-zz06S8t0ozoDXMG+ube26zeCTNXcKIPJZJi8hBrF4idCLms4CG9QtK7qBl1boi5ODzFpjswb5JPmHCbMpjaYzg==",
+      "dev": true,
+      "license": "MIT"
     },
     "node_modules/is-async-function": {
       "version": "2.1.1",
@@ -32681,6 +35657,22 @@ export default nextConfig;
         "url": "https://github.com/sponsors/ljharb"
       }
     },
+    "node_modules/is-docker": {
+      "version": "2.2.1",
+      "resolved": "https://registry.npmjs.org/is-docker/-/is-docker-2.2.1.tgz",
+      "integrity": "sha512-F+i2BKsFrH66iaUFc0woD8sLy8getkwTwtOBjvs56Cx4CgJDeKQeqfz8wAYiSb8JOprWhHH5p77PbmYCvvUuXQ==",
+      "dev": true,
+      "license": "MIT",
+      "bin": {
+        "is-docker": "cli.js"
+      },
+      "engines": {
+        "node": ">=8"
+      },
+      "funding": {
+        "url": "https://github.com/sponsors/sindresorhus"
+      }
+    },
     "node_modules/is-extglob": {
       "version": "2.1.1",
       "resolved": "https://registry.npmjs.org/is-extglob/-/is-extglob-2.1.1.tgz",
@@ -32705,6 +35697,16 @@ export default nextConfig;
       },
       "funding": {
         "url": "https://github.com/sponsors/ljharb"
+      }
+    },
+    "node_modules/is-fullwidth-code-point": {
+      "version": "3.0.0",
+      "resolved": "https://registry.npmjs.org/is-fullwidth-code-point/-/is-fullwidth-code-point-3.0.0.tgz",
+      "integrity": "sha512-zymm5+u+sCsSWyD9qNaejV3DFvhCKclKdizYaJUuHA83RLjb7nSuGnddCHGv0hk+KY7BMAlsWeK4Ueg6EV6XQg==",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">=8"
       }
     },
     "node_modules/is-generator-function": {
@@ -32793,6 +35795,46 @@ export default nextConfig;
         "url": "https://github.com/sponsors/ljharb"
       }
     },
+    "node_modules/is-obj": {
+      "version": "2.0.0",
+      "resolved": "https://registry.npmjs.org/is-obj/-/is-obj-2.0.0.tgz",
+      "integrity": "sha512-drqDG3cbczxxEJRoOXcOjtdp1J/lyp1mNn0xaznRs8+muBhgQcrnbspox5X5fOw0HnMnbfDzvnEMEtqDEJEo8w==",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">=8"
+      }
+    },
+    "node_modules/is-path-cwd": {
+      "version": "2.2.0",
+      "resolved": "https://registry.npmjs.org/is-path-cwd/-/is-path-cwd-2.2.0.tgz",
+      "integrity": "sha512-w942bTcih8fdJPJmQHFzkS76NEP8Kzzvmw92cXsazb8intwLqPibPPdXf4ANdKV3rYMuuQYGIWtvz9JilB3NFQ==",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">=6"
+      }
+    },
+    "node_modules/is-path-inside": {
+      "version": "3.0.3",
+      "resolved": "https://registry.npmjs.org/is-path-inside/-/is-path-inside-3.0.3.tgz",
+      "integrity": "sha512-Fd4gABb+ycGAmKou8eMftCupSir5lRxqf4aD/vd0cD2qc4HL07OjCeuHMr8Ro4CoMaeCKDB0/ECBOVWjTwUvPQ==",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">=8"
+      }
+    },
+    "node_modules/is-plain-obj": {
+      "version": "1.1.0",
+      "resolved": "https://registry.npmjs.org/is-plain-obj/-/is-plain-obj-1.1.0.tgz",
+      "integrity": "sha512-yvkRyxmFKEOQ4pNXCmJG5AEQNlXJS5LaONXo5/cLdTZdWvsZ1ioJEonLGAosKlMWE8lwUy/bJzMjcw8az73+Fg==",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">=0.10.0"
+      }
+    },
     "node_modules/is-regex": {
       "version": "1.2.1",
       "resolved": "https://registry.npmjs.org/is-regex/-/is-regex-1.2.1.tgz",
@@ -32841,6 +35883,19 @@ export default nextConfig;
         "url": "https://github.com/sponsors/ljharb"
       }
     },
+    "node_modules/is-stream": {
+      "version": "2.0.1",
+      "resolved": "https://registry.npmjs.org/is-stream/-/is-stream-2.0.1.tgz",
+      "integrity": "sha512-hFoiJiTl63nn+kstHGBtewWSKnQLpyb155KHheA1l39uvtO9nWIop1p3udqPcUd/xbF1VLMO4n7OI6p7RbngDg==",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">=8"
+      },
+      "funding": {
+        "url": "https://github.com/sponsors/sindresorhus"
+      }
+    },
     "node_modules/is-string": {
       "version": "1.1.1",
       "resolved": "https://registry.npmjs.org/is-string/-/is-string-1.1.1.tgz",
@@ -32874,6 +35929,19 @@ export default nextConfig;
       },
       "funding": {
         "url": "https://github.com/sponsors/ljharb"
+      }
+    },
+    "node_modules/is-text-path": {
+      "version": "1.0.1",
+      "resolved": "https://registry.npmjs.org/is-text-path/-/is-text-path-1.0.1.tgz",
+      "integrity": "sha512-xFuJpne9oFz5qDaodwmmG08e3CawH/2ZV8Qqza1Ko7Sk8POWbkRdwIoAWVhqvq0XeUzANEhKo2n0IXUGBm7A/w==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "text-extensions": "^1.0.0"
+      },
+      "engines": {
+        "node": ">=0.10.0"
       }
     },
     "node_modules/is-typed-array": {
@@ -32936,6 +36004,19 @@ export default nextConfig;
       },
       "funding": {
         "url": "https://github.com/sponsors/ljharb"
+      }
+    },
+    "node_modules/is-wsl": {
+      "version": "2.2.0",
+      "resolved": "https://registry.npmjs.org/is-wsl/-/is-wsl-2.2.0.tgz",
+      "integrity": "sha512-fKzAra0rGJUUBwGBgNkHZuToZcn+TtXHpeCgmkMJMMYx1sQDYaCSyjJBSCa2nH1DGm7s3n1oBnohoVTBaN7Lww==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "is-docker": "^2.0.0"
+      },
+      "engines": {
+        "node": ">=8"
       }
     },
     "node_modules/isarray": {
@@ -33029,6 +36110,20 @@ export default nextConfig;
       "dev": true,
       "license": "MIT"
     },
+    "node_modules/json-parse-better-errors": {
+      "version": "1.0.2",
+      "resolved": "https://registry.npmjs.org/json-parse-better-errors/-/json-parse-better-errors-1.0.2.tgz",
+      "integrity": "sha512-mrqyZKfX5EhL7hvqcV6WG1yYjnjeuYDzDhhcAAUrq8Po85NBQBJP+ZDUT75qZQ98IkUoBqdkExkukOU7Ts2wrw==",
+      "dev": true,
+      "license": "MIT"
+    },
+    "node_modules/json-parse-even-better-errors": {
+      "version": "2.3.1",
+      "resolved": "https://registry.npmjs.org/json-parse-even-better-errors/-/json-parse-even-better-errors-2.3.1.tgz",
+      "integrity": "sha512-xyFwyhro/JEof6Ghe2iz2NcXoj2sloNsWr/XsERDK/oiPCfaNhl5ONfp+jQdAZRQQ0IJWNzH9zIZF7li91kh2w==",
+      "dev": true,
+      "license": "MIT"
+    },
     "node_modules/json-schema-traverse": {
       "version": "0.4.1",
       "resolved": "https://registry.npmjs.org/json-schema-traverse/-/json-schema-traverse-0.4.1.tgz",
@@ -33043,6 +36138,13 @@ export default nextConfig;
       "dev": true,
       "license": "MIT"
     },
+    "node_modules/json-stringify-safe": {
+      "version": "5.0.1",
+      "resolved": "https://registry.npmjs.org/json-stringify-safe/-/json-stringify-safe-5.0.1.tgz",
+      "integrity": "sha512-ZClg6AaYvamvYEE82d3Iyd3vSSIjQ+odgjaTzRuO3s7toCdFKczob2i0zCh7JE8kWn17yvAWhUVxvqGwUalsRA==",
+      "dev": true,
+      "license": "ISC"
+    },
     "node_modules/json5": {
       "version": "2.2.3",
       "resolved": "https://registry.npmjs.org/json5/-/json5-2.2.3.tgz",
@@ -33054,6 +36156,46 @@ export default nextConfig;
       },
       "engines": {
         "node": ">=6"
+      }
+    },
+    "node_modules/jsonfile": {
+      "version": "6.2.0",
+      "resolved": "https://registry.npmjs.org/jsonfile/-/jsonfile-6.2.0.tgz",
+      "integrity": "sha512-FGuPw30AdOIUTRMC2OMRtQV+jkVj2cfPqSeWXv1NEAJ1qZ5zb1X6z1mFhbfOB/iy3ssJCD+3KuZ8r8C3uVFlAg==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "universalify": "^2.0.0"
+      },
+      "optionalDependencies": {
+        "graceful-fs": "^4.1.6"
+      }
+    },
+    "node_modules/jsonparse": {
+      "version": "1.3.1",
+      "resolved": "https://registry.npmjs.org/jsonparse/-/jsonparse-1.3.1.tgz",
+      "integrity": "sha512-POQXvpdL69+CluYsillJ7SUhKvytYjW9vG/GKpnf+xP8UWgYEM/RaMzHHofbALDiKbbP1W8UEYmgGl39WkPZsg==",
+      "dev": true,
+      "engines": [
+        "node >= 0.2.0"
+      ],
+      "license": "MIT"
+    },
+    "node_modules/JSONStream": {
+      "version": "1.3.5",
+      "resolved": "https://registry.npmjs.org/JSONStream/-/JSONStream-1.3.5.tgz",
+      "integrity": "sha512-E+iruNOY8VV9s4JEbe1aNEm6MiszPRr/UfcHMz0TQh1BXSxHK+ASV1R6W4HpjBhSeS+54PIsAMCBmwD06LLsqQ==",
+      "dev": true,
+      "license": "(MIT OR Apache-2.0)",
+      "dependencies": {
+        "jsonparse": "^1.2.0",
+        "through": ">=2.2.7 <3"
+      },
+      "bin": {
+        "JSONStream": "bin.js"
+      },
+      "engines": {
+        "node": "*"
       }
     },
     "node_modules/jsx-ast-utils": {
@@ -33080,6 +36222,26 @@ export default nextConfig;
       "license": "MIT",
       "dependencies": {
         "json-buffer": "3.0.1"
+      }
+    },
+    "node_modules/kind-of": {
+      "version": "6.0.3",
+      "resolved": "https://registry.npmjs.org/kind-of/-/kind-of-6.0.3.tgz",
+      "integrity": "sha512-dcS1ul+9tmeD95T+x28/ehLgd9mENa3LsvDTtzm3vyBEO7RPptvAD+t44WVXaUjTBRcrpFeFlC8WCruUR456hw==",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">=0.10.0"
+      }
+    },
+    "node_modules/kleur": {
+      "version": "4.1.5",
+      "resolved": "https://registry.npmjs.org/kleur/-/kleur-4.1.5.tgz",
+      "integrity": "sha512-o+NO+8WrRiQEE4/7nwRJhN1HWpVmJm511pBHUxPLtp0BUISzlBplORYSmTclCnJvQq2tKu/sgl3xVpkc7ZWuQQ==",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">=6"
       }
     },
     "node_modules/language-subtag-registry": {
@@ -33377,6 +36539,39 @@ export default nextConfig;
         "url": "https://opencollective.com/parcel"
       }
     },
+    "node_modules/lines-and-columns": {
+      "version": "1.2.4",
+      "resolved": "https://registry.npmjs.org/lines-and-columns/-/lines-and-columns-1.2.4.tgz",
+      "integrity": "sha512-7ylylesZQ/PV29jhEDl3Ufjo6ZX7gCqJr5F7PKrqc93v7fzSymt1BpwEU8nAUXs8qzzvqhbjhK5QZg6Mt/HkBg==",
+      "dev": true,
+      "license": "MIT"
+    },
+    "node_modules/load-json-file": {
+      "version": "4.0.0",
+      "resolved": "https://registry.npmjs.org/load-json-file/-/load-json-file-4.0.0.tgz",
+      "integrity": "sha512-Kx8hMakjX03tiGTLAIdJ+lL0htKnXjEZN6hk/tozf/WOuYGdZBJrZ+rCJRbVCugsjB3jMLn9746NsQIf5VjBMw==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "graceful-fs": "^4.1.2",
+        "parse-json": "^4.0.0",
+        "pify": "^3.0.0",
+        "strip-bom": "^3.0.0"
+      },
+      "engines": {
+        "node": ">=4"
+      }
+    },
+    "node_modules/load-json-file/node_modules/pify": {
+      "version": "3.0.0",
+      "resolved": "https://registry.npmjs.org/pify/-/pify-3.0.0.tgz",
+      "integrity": "sha512-C3FsVNH1udSEX48gGX1xfvwTWfsYWj5U+8/uK15BGzIGrKoUpghX8hWZwa/OFnakBiiVNmBvemTJR5mcy7iPcg==",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">=4"
+      }
+    },
     "node_modules/locate-path": {
       "version": "6.0.0",
       "resolved": "https://registry.npmjs.org/locate-path/-/locate-path-6.0.0.tgz",
@@ -33392,6 +36587,20 @@ export default nextConfig;
       "funding": {
         "url": "https://github.com/sponsors/sindresorhus"
       }
+    },
+    "node_modules/lodash": {
+      "version": "4.17.23",
+      "resolved": "https://registry.npmjs.org/lodash/-/lodash-4.17.23.tgz",
+      "integrity": "sha512-LgVTMpQtIopCi79SJeDiP0TfWi5CNEc/L/aRdTh3yIvmZXTnheWpKjSZhnvMl8iXbC1tFg9gdHHDMLoV7CnG+w==",
+      "dev": true,
+      "license": "MIT"
+    },
+    "node_modules/lodash.ismatch": {
+      "version": "4.4.0",
+      "resolved": "https://registry.npmjs.org/lodash.ismatch/-/lodash.ismatch-4.4.0.tgz",
+      "integrity": "sha512-fPMfXjGQEV9Xsq/8MTSgUf255gawYRbjwMyDbcvDhXgV7enSZA0hynz6vMPnpAb5iONEzBHBPsT+0zes5Z301g==",
+      "dev": true,
+      "license": "MIT"
     },
     "node_modules/lodash.merge": {
       "version": "4.6.2",
@@ -33433,6 +36642,26 @@ export default nextConfig;
         "@jridgewell/sourcemap-codec": "^1.5.5"
       }
     },
+    "node_modules/make-error": {
+      "version": "1.3.6",
+      "resolved": "https://registry.npmjs.org/make-error/-/make-error-1.3.6.tgz",
+      "integrity": "sha512-s8UhlNe7vPKomQhC1qFelMokr/Sc3AgNbso3n74mVPA5LTZwkB9NlXf4XPamLxJE8h0gh73rM94xvwRT2CVInw==",
+      "dev": true,
+      "license": "ISC"
+    },
+    "node_modules/map-obj": {
+      "version": "4.3.0",
+      "resolved": "https://registry.npmjs.org/map-obj/-/map-obj-4.3.0.tgz",
+      "integrity": "sha512-hdN1wVrZbb29eBGiGjJbeP8JbKjq1urkHJ/LIP/NY48MZ1QVXUsQBV1G1zvYFHn1XE06cwjBsOI2K3Ulnj1YXQ==",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">=8"
+      },
+      "funding": {
+        "url": "https://github.com/sponsors/sindresorhus"
+      }
+    },
     "node_modules/math-intrinsics": {
       "version": "1.1.0",
       "resolved": "https://registry.npmjs.org/math-intrinsics/-/math-intrinsics-1.1.0.tgz",
@@ -33443,6 +36672,191 @@ export default nextConfig;
         "node": ">= 0.4"
       }
     },
+    "node_modules/meow": {
+      "version": "8.1.2",
+      "resolved": "https://registry.npmjs.org/meow/-/meow-8.1.2.tgz",
+      "integrity": "sha512-r85E3NdZ+mpYk1C6RjPFEMSE+s1iZMuHtsHAqY0DT3jZczl0diWUZ8g6oU7h0M9cD2EL+PzaYghhCLzR0ZNn5Q==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "@types/minimist": "^1.2.0",
+        "camelcase-keys": "^6.2.2",
+        "decamelize-keys": "^1.1.0",
+        "hard-rejection": "^2.1.0",
+        "minimist-options": "4.1.0",
+        "normalize-package-data": "^3.0.0",
+        "read-pkg-up": "^7.0.1",
+        "redent": "^3.0.0",
+        "trim-newlines": "^3.0.0",
+        "type-fest": "^0.18.0",
+        "yargs-parser": "^20.2.3"
+      },
+      "engines": {
+        "node": ">=10"
+      },
+      "funding": {
+        "url": "https://github.com/sponsors/sindresorhus"
+      }
+    },
+    "node_modules/meow/node_modules/find-up": {
+      "version": "4.1.0",
+      "resolved": "https://registry.npmjs.org/find-up/-/find-up-4.1.0.tgz",
+      "integrity": "sha512-PpOwAdQ/YlXQ2vj8a3h8IipDuYRi3wceVQQGYWxNINccq40Anw7BlsEXCMbt1Zt+OLA6Fq9suIpIWD0OsnISlw==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "locate-path": "^5.0.0",
+        "path-exists": "^4.0.0"
+      },
+      "engines": {
+        "node": ">=8"
+      }
+    },
+    "node_modules/meow/node_modules/hosted-git-info": {
+      "version": "2.8.9",
+      "resolved": "https://registry.npmjs.org/hosted-git-info/-/hosted-git-info-2.8.9.tgz",
+      "integrity": "sha512-mxIDAb9Lsm6DoOJ7xH+5+X4y1LU/4Hi50L9C5sIswK3JzULS4bwk1FvjdBgvYR4bzT4tuUQiC15FE2f5HbLvYw==",
+      "dev": true,
+      "license": "ISC"
+    },
+    "node_modules/meow/node_modules/locate-path": {
+      "version": "5.0.0",
+      "resolved": "https://registry.npmjs.org/locate-path/-/locate-path-5.0.0.tgz",
+      "integrity": "sha512-t7hw9pI+WvuwNJXwk5zVHpyhIqzg2qTlklJOf0mVxGSbe3Fp2VieZcduNYjaLDoy6p9uGpQEGWG87WpMKlNq8g==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "p-locate": "^4.1.0"
+      },
+      "engines": {
+        "node": ">=8"
+      }
+    },
+    "node_modules/meow/node_modules/p-limit": {
+      "version": "2.3.0",
+      "resolved": "https://registry.npmjs.org/p-limit/-/p-limit-2.3.0.tgz",
+      "integrity": "sha512-//88mFWSJx8lxCzwdAABTJL2MyWB12+eIY7MDL2SqLmAkeKU9qxRvWuSyTjm3FUmpBEMuFfckAIqEaVGUDxb6w==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "p-try": "^2.0.0"
+      },
+      "engines": {
+        "node": ">=6"
+      },
+      "funding": {
+        "url": "https://github.com/sponsors/sindresorhus"
+      }
+    },
+    "node_modules/meow/node_modules/p-locate": {
+      "version": "4.1.0",
+      "resolved": "https://registry.npmjs.org/p-locate/-/p-locate-4.1.0.tgz",
+      "integrity": "sha512-R79ZZ/0wAxKGu3oYMlz8jy/kbhsNrS7SKZ7PxEHBgJ5+F2mtFW2fK2cOtBh1cHYkQsbzFV7I+EoRKe6Yt0oK7A==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "p-limit": "^2.2.0"
+      },
+      "engines": {
+        "node": ">=8"
+      }
+    },
+    "node_modules/meow/node_modules/parse-json": {
+      "version": "5.2.0",
+      "resolved": "https://registry.npmjs.org/parse-json/-/parse-json-5.2.0.tgz",
+      "integrity": "sha512-ayCKvm/phCGxOkYRSCM82iDwct8/EonSEgCSxWxD7ve6jHggsFl4fZVQBPRNgQoKiuV/odhFrGzQXZwbifC8Rg==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "@babel/code-frame": "^7.0.0",
+        "error-ex": "^1.3.1",
+        "json-parse-even-better-errors": "^2.3.0",
+        "lines-and-columns": "^1.1.6"
+      },
+      "engines": {
+        "node": ">=8"
+      },
+      "funding": {
+        "url": "https://github.com/sponsors/sindresorhus"
+      }
+    },
+    "node_modules/meow/node_modules/read-pkg": {
+      "version": "5.2.0",
+      "resolved": "https://registry.npmjs.org/read-pkg/-/read-pkg-5.2.0.tgz",
+      "integrity": "sha512-Ug69mNOpfvKDAc2Q8DRpMjjzdtrnv9HcSMX+4VsZxD1aZ6ZzrIE7rlzXBtWTyhULSMKg076AW6WR5iZpD0JiOg==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "@types/normalize-package-data": "^2.4.0",
+        "normalize-package-data": "^2.5.0",
+        "parse-json": "^5.0.0",
+        "type-fest": "^0.6.0"
+      },
+      "engines": {
+        "node": ">=8"
+      }
+    },
+    "node_modules/meow/node_modules/read-pkg-up": {
+      "version": "7.0.1",
+      "resolved": "https://registry.npmjs.org/read-pkg-up/-/read-pkg-up-7.0.1.tgz",
+      "integrity": "sha512-zK0TB7Xd6JpCLmlLmufqykGE+/TlOePD6qKClNW7hHDKFh/J7/7gCWGR7joEQEW1bKq3a3yUZSObOoWLFQ4ohg==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "find-up": "^4.1.0",
+        "read-pkg": "^5.2.0",
+        "type-fest": "^0.8.1"
+      },
+      "engines": {
+        "node": ">=8"
+      },
+      "funding": {
+        "url": "https://github.com/sponsors/sindresorhus"
+      }
+    },
+    "node_modules/meow/node_modules/read-pkg-up/node_modules/type-fest": {
+      "version": "0.8.1",
+      "resolved": "https://registry.npmjs.org/type-fest/-/type-fest-0.8.1.tgz",
+      "integrity": "sha512-4dbzIzqvjtgiM5rw1k5rEHtBANKmdudhGyBEajN01fEyhaAIhsoKNy6y7+IN93IfpFtwY9iqi7kD+xwKhQsNJA==",
+      "dev": true,
+      "license": "(MIT OR CC0-1.0)",
+      "engines": {
+        "node": ">=8"
+      }
+    },
+    "node_modules/meow/node_modules/read-pkg/node_modules/normalize-package-data": {
+      "version": "2.5.0",
+      "resolved": "https://registry.npmjs.org/normalize-package-data/-/normalize-package-data-2.5.0.tgz",
+      "integrity": "sha512-/5CMN3T0R4XTj4DcGaexo+roZSdSFW/0AOOTROrjxzCG1wrWXEsGbRKevjlIL+ZDE4sZlJr5ED4YW0yqmkK+eA==",
+      "dev": true,
+      "license": "BSD-2-Clause",
+      "dependencies": {
+        "hosted-git-info": "^2.1.4",
+        "resolve": "^1.10.0",
+        "semver": "2 || 3 || 4 || 5",
+        "validate-npm-package-license": "^3.0.1"
+      }
+    },
+    "node_modules/meow/node_modules/read-pkg/node_modules/type-fest": {
+      "version": "0.6.0",
+      "resolved": "https://registry.npmjs.org/type-fest/-/type-fest-0.6.0.tgz",
+      "integrity": "sha512-q+MB8nYR1KDLrgr4G5yemftpMC7/QLqVndBmEEdqzmNj5dcFOO4Oo8qlwZE3ULT3+Zim1F8Kq4cBnikNhlCMlg==",
+      "dev": true,
+      "license": "(MIT OR CC0-1.0)",
+      "engines": {
+        "node": ">=8"
+      }
+    },
+    "node_modules/meow/node_modules/semver": {
+      "version": "5.7.2",
+      "resolved": "https://registry.npmjs.org/semver/-/semver-5.7.2.tgz",
+      "integrity": "sha512-cBznnQ9KjJqU67B52RMC65CMarK2600WFnbkcaiwWq3xy/5haFJlshgnpjovMVJ+Hff49d8GEn0b87C5pDQ10g==",
+      "dev": true,
+      "license": "ISC",
+      "bin": {
+        "semver": "bin/semver"
+      }
+    },
     "node_modules/merge2": {
       "version": "1.4.1",
       "resolved": "https://registry.npmjs.org/merge2/-/merge2-1.4.1.tgz",
@@ -33451,6 +36865,39 @@ export default nextConfig;
       "license": "MIT",
       "engines": {
         "node": ">= 8"
+      }
+    },
+    "node_modules/mergexml": {
+      "version": "1.2.4",
+      "resolved": "https://registry.npmjs.org/mergexml/-/mergexml-1.2.4.tgz",
+      "integrity": "sha512-yiOlDqcVCz7AG1eSboonc18FTlfqDEKYfGoAV3Lul98u6YRV/s0kjtf4bjk47t0hLTFJR0BSYMd6BpmX3xDjNQ==",
+      "dev": true,
+      "license": "ISC",
+      "dependencies": {
+        "@xmldom/xmldom": "^0.7.0",
+        "formidable": "^3.5.1",
+        "xpath": "0.0.27"
+      }
+    },
+    "node_modules/mergexml/node_modules/@xmldom/xmldom": {
+      "version": "0.7.13",
+      "resolved": "https://registry.npmjs.org/@xmldom/xmldom/-/xmldom-0.7.13.tgz",
+      "integrity": "sha512-lm2GW5PkosIzccsaZIz7tp8cPADSIlIHWDFTR1N0SzfinhhYgeIQjFMz4rYzanCScr3DqQLeomUDArp6MWKm+g==",
+      "deprecated": "this version is no longer supported, please update to at least 0.8.*",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">=10.0.0"
+      }
+    },
+    "node_modules/mergexml/node_modules/xpath": {
+      "version": "0.0.27",
+      "resolved": "https://registry.npmjs.org/xpath/-/xpath-0.0.27.tgz",
+      "integrity": "sha512-fg03WRxtkCV6ohClePNAECYsmpKKTv5L8y/X3Dn1hQrec3POx2jHZ/0P2qQ6HvsrU1BmeqXcof3NGGueG6LxwQ==",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">=0.6.0"
       }
     },
     "node_modules/micromatch": {
@@ -33467,10 +36914,33 @@ export default nextConfig;
         "node": ">=8.6"
       }
     },
+    "node_modules/mimic-response": {
+      "version": "3.1.0",
+      "resolved": "https://registry.npmjs.org/mimic-response/-/mimic-response-3.1.0.tgz",
+      "integrity": "sha512-z0yWI+4FDrrweS8Zmt4Ej5HdJmky15+L2e6Wgn3+iK5fWzb6T3fhNFq2+MeTRb064c6Wr4N/wv0DzQTjNzHNGQ==",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">=10"
+      },
+      "funding": {
+        "url": "https://github.com/sponsors/sindresorhus"
+      }
+    },
+    "node_modules/min-indent": {
+      "version": "1.0.1",
+      "resolved": "https://registry.npmjs.org/min-indent/-/min-indent-1.0.1.tgz",
+      "integrity": "sha512-I9jwMn07Sy/IwOj3zVkVik2JTvgpaykDZEigL6Rx6N9LbMywwUSMtxET+7lVoDLLd3O3IXwJwvuuns8UB/HeAg==",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">=4"
+      }
+    },
     "node_modules/minimatch": {
-      "version": "3.1.2",
-      "resolved": "https://registry.npmjs.org/minimatch/-/minimatch-3.1.2.tgz",
-      "integrity": "sha512-J7p63hRiAjw1NDEww1W7i37+ByIrOWO5XQQAzZ3VOcL0PNybwpfmV/N05zFAzwQ9USyEcX6t3UO+K5aqBQOIHw==",
+      "version": "3.1.3",
+      "resolved": "https://registry.npmjs.org/minimatch/-/minimatch-3.1.3.tgz",
+      "integrity": "sha512-M2GCs7Vk83NxkUyQV1bkABc4yxgz9kILhHImZiBPAZ9ybuvCb0/H7lEl5XvIg3g+9d4eNotkZA5IWwYl0tibaA==",
       "dev": true,
       "license": "ISC",
       "dependencies": {
@@ -33489,6 +36959,115 @@ export default nextConfig;
       "funding": {
         "url": "https://github.com/sponsors/ljharb"
       }
+    },
+    "node_modules/minimist-options": {
+      "version": "4.1.0",
+      "resolved": "https://registry.npmjs.org/minimist-options/-/minimist-options-4.1.0.tgz",
+      "integrity": "sha512-Q4r8ghd80yhO/0j1O3B2BjweX3fiHg9cdOwjJd2J76Q135c+NDxGCqdYKQ1SKBuFfgWbAUzBfvYjPUEeNgqN1A==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "arrify": "^1.0.1",
+        "is-plain-obj": "^1.1.0",
+        "kind-of": "^6.0.3"
+      },
+      "engines": {
+        "node": ">= 6"
+      }
+    },
+    "node_modules/minipass": {
+      "version": "7.1.3",
+      "resolved": "https://registry.npmjs.org/minipass/-/minipass-7.1.3.tgz",
+      "integrity": "sha512-tEBHqDnIoM/1rXME1zgka9g6Q2lcoCkxHLuc7ODJ5BxbP5d4c2Z5cGgtXAku59200Cx7diuHTOYfSBD8n6mm8A==",
+      "dev": true,
+      "license": "BlueOak-1.0.0",
+      "engines": {
+        "node": ">=16 || 14 >=14.17"
+      }
+    },
+    "node_modules/minizlib": {
+      "version": "3.1.0",
+      "resolved": "https://registry.npmjs.org/minizlib/-/minizlib-3.1.0.tgz",
+      "integrity": "sha512-KZxYo1BUkWD2TVFLr0MQoM8vUUigWD3LlD83a/75BqC+4qE0Hb1Vo5v1FgcfaNXvfXzr+5EhQ6ing/CaBijTlw==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "minipass": "^7.1.2"
+      },
+      "engines": {
+        "node": ">= 18"
+      }
+    },
+    "node_modules/mkdirp": {
+      "version": "1.0.4",
+      "resolved": "https://registry.npmjs.org/mkdirp/-/mkdirp-1.0.4.tgz",
+      "integrity": "sha512-vVqVZQyf3WLx2Shd0qJ9xuvqgAyKPLAiqITEtqW0oIUjzo3PePDd6fW9iFz30ef7Ysp/oiWqbhszeGWW2T6Gzw==",
+      "dev": true,
+      "license": "MIT",
+      "bin": {
+        "mkdirp": "bin/cmd.js"
+      },
+      "engines": {
+        "node": ">=10"
+      }
+    },
+    "node_modules/mkdirp-classic": {
+      "version": "0.5.3",
+      "resolved": "https://registry.npmjs.org/mkdirp-classic/-/mkdirp-classic-0.5.3.tgz",
+      "integrity": "sha512-gKLcREMhtuZRwRAfqP3RFW+TK4JqApVBtOIftVgjuABpAtpxhPGaDcfvbhNvD0B8iD1oUr/txX35NjcaY6Ns/A==",
+      "dev": true,
+      "license": "MIT"
+    },
+    "node_modules/modify-values": {
+      "version": "1.0.1",
+      "resolved": "https://registry.npmjs.org/modify-values/-/modify-values-1.0.1.tgz",
+      "integrity": "sha512-xV2bxeN6F7oYjZWTe/YPAy6MN2M+sL4u/Rlm2AHCIVGfo2p1yGmBHQ6vHehl4bRTZBdHu3TSkWdYgkwpYzAGSw==",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">=0.10.0"
+      }
+    },
+    "node_modules/motion": {
+      "version": "12.34.3",
+      "resolved": "https://registry.npmjs.org/motion/-/motion-12.34.3.tgz",
+      "integrity": "sha512-xZIkBGO7v/Uvm+EyaqYd+9IpXu0sZqLywVlGdCFrrMiaO9JI4Kx51mO9KlHSWwll+gZUVY5OJsWgYI5FywJ/tw==",
+      "license": "MIT",
+      "dependencies": {
+        "framer-motion": "^12.34.3",
+        "tslib": "^2.4.0"
+      },
+      "peerDependencies": {
+        "@emotion/is-prop-valid": "*",
+        "react": "^18.0.0 || ^19.0.0",
+        "react-dom": "^18.0.0 || ^19.0.0"
+      },
+      "peerDependenciesMeta": {
+        "@emotion/is-prop-valid": {
+          "optional": true
+        },
+        "react": {
+          "optional": true
+        },
+        "react-dom": {
+          "optional": true
+        }
+      }
+    },
+    "node_modules/motion-dom": {
+      "version": "12.34.3",
+      "resolved": "https://registry.npmjs.org/motion-dom/-/motion-dom-12.34.3.tgz",
+      "integrity": "sha512-sYgFe+pR9aIM7o4fhs2aXtOI+oqlUd33N9Yoxcgo1Fv7M20sRkHtCmzE/VRNIcq7uNJ+qio+Xubt1FXH3pQ+eQ==",
+      "license": "MIT",
+      "dependencies": {
+        "motion-utils": "^12.29.2"
+      }
+    },
+    "node_modules/motion-utils": {
+      "version": "12.29.2",
+      "resolved": "https://registry.npmjs.org/motion-utils/-/motion-utils-12.29.2.tgz",
+      "integrity": "sha512-G3kc34H2cX2gI63RqU+cZq+zWRRPSsNIOjpdl9TN4AQwC4sgwYPl/Q/Obf/d53nOm569T0fYK+tcoSV50BWx8A==",
+      "license": "MIT"
     },
     "node_modules/ms": {
       "version": "2.1.3",
@@ -33515,6 +37094,13 @@ export default nextConfig;
         "node": "^10 || ^12 || ^13.7 || ^14 || >=15.0.1"
       }
     },
+    "node_modules/napi-build-utils": {
+      "version": "2.0.0",
+      "resolved": "https://registry.npmjs.org/napi-build-utils/-/napi-build-utils-2.0.0.tgz",
+      "integrity": "sha512-GEbrYkbfF7MoNaoh2iGG84Mnf/WZfB0GdGEsM8wz7Expx/LlWf5U8t9nvJKXSp3qr5IsEbK04cBGhol/KwOsWA==",
+      "dev": true,
+      "license": "MIT"
+    },
     "node_modules/napi-postinstall": {
       "version": "0.3.4",
       "resolved": "https://registry.npmjs.org/napi-postinstall/-/napi-postinstall-0.3.4.tgz",
@@ -33531,10 +37117,43 @@ export default nextConfig;
         "url": "https://opencollective.com/napi-postinstall"
       }
     },
+    "node_modules/native-run": {
+      "version": "2.0.3",
+      "resolved": "https://registry.npmjs.org/native-run/-/native-run-2.0.3.tgz",
+      "integrity": "sha512-U1PllBuzW5d1gfan+88L+Hky2eZx+9gv3Pf6rNBxKbORxi7boHzqiA6QFGSnqMem4j0A9tZ08NMIs5+0m/VS1Q==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "@ionic/utils-fs": "^3.1.7",
+        "@ionic/utils-terminal": "^2.3.4",
+        "bplist-parser": "^0.3.2",
+        "debug": "^4.3.4",
+        "elementtree": "^0.1.7",
+        "ini": "^4.1.1",
+        "plist": "^3.1.0",
+        "split2": "^4.2.0",
+        "through2": "^4.0.2",
+        "tslib": "^2.6.2",
+        "yauzl": "^2.10.0"
+      },
+      "bin": {
+        "native-run": "bin/native-run"
+      },
+      "engines": {
+        "node": ">=16.0.0"
+      }
+    },
     "node_modules/natural-compare": {
       "version": "1.4.0",
       "resolved": "https://registry.npmjs.org/natural-compare/-/natural-compare-1.4.0.tgz",
       "integrity": "sha512-OWND8ei3VtNC9h7V60qff3SVobHr996CTwgxubgyQYEpg290h9J0buyECNNJexkFm5sOajh5G116RYA1c8ZMSw==",
+      "dev": true,
+      "license": "MIT"
+    },
+    "node_modules/neo-async": {
+      "version": "2.6.2",
+      "resolved": "https://registry.npmjs.org/neo-async/-/neo-async-2.6.2.tgz",
+      "integrity": "sha512-Yd3UES5mWCSqR+qNT93S3UoYUkqAZ9lLg8a7g9rimsWmYGK8cVToA4/sF3RrshdyV3sAGMXVUmpMYOw+dLpOuw==",
       "dev": true,
       "license": "MIT"
     },
@@ -33646,12 +37265,148 @@ export default nextConfig;
         "node": "^10 || ^12 || >=14"
       }
     },
+    "node_modules/node-abi": {
+      "version": "3.87.0",
+      "resolved": "https://registry.npmjs.org/node-abi/-/node-abi-3.87.0.tgz",
+      "integrity": "sha512-+CGM1L1CgmtheLcBuleyYOn7NWPVu0s0EJH2C4puxgEZb9h8QpR9G2dBfZJOAUhi7VQxuBPMd0hiISWcTyiYyQ==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "semver": "^7.3.5"
+      },
+      "engines": {
+        "node": ">=10"
+      }
+    },
+    "node_modules/node-abi/node_modules/semver": {
+      "version": "7.7.4",
+      "resolved": "https://registry.npmjs.org/semver/-/semver-7.7.4.tgz",
+      "integrity": "sha512-vFKC2IEtQnVhpT78h1Yp8wzwrf8CM+MzKMHGJZfBtzhZNycRFnXsHk6E5TxIkkMsgNS7mdX3AGB7x2QM2di4lA==",
+      "dev": true,
+      "license": "ISC",
+      "bin": {
+        "semver": "bin/semver.js"
+      },
+      "engines": {
+        "node": ">=10"
+      }
+    },
+    "node_modules/node-addon-api": {
+      "version": "6.1.0",
+      "resolved": "https://registry.npmjs.org/node-addon-api/-/node-addon-api-6.1.0.tgz",
+      "integrity": "sha512-+eawOlIgy680F0kBzPUNFhMZGtJ1YmqM6l4+Crf4IkImjYrO/mqPwRMh352g23uIaQKFItcQ64I7KMaJxHgAVA==",
+      "dev": true,
+      "license": "MIT"
+    },
+    "node_modules/node-domexception": {
+      "version": "1.0.0",
+      "resolved": "https://registry.npmjs.org/node-domexception/-/node-domexception-1.0.0.tgz",
+      "integrity": "sha512-/jKZoMpw0F8GRwl4/eLROPA3cfcXtLApP0QzLmUT/HuPCZWyB7IY9ZrMeKw2O/nFIqPQB3PVM9aYm0F312AXDQ==",
+      "deprecated": "Use your platform's native DOMException instead",
+      "dev": true,
+      "funding": [
+        {
+          "type": "github",
+          "url": "https://github.com/sponsors/jimmywarting"
+        },
+        {
+          "type": "github",
+          "url": "https://paypal.me/jimmywarting"
+        }
+      ],
+      "license": "MIT",
+      "engines": {
+        "node": ">=10.5.0"
+      }
+    },
+    "node_modules/node-fetch": {
+      "version": "3.3.2",
+      "resolved": "https://registry.npmjs.org/node-fetch/-/node-fetch-3.3.2.tgz",
+      "integrity": "sha512-dRB78srN/l6gqWulah9SrxeYnxeddIG30+GOqK/9OlLVyLg3HPnr6SqOWTWOXKRwC2eGYCkZ59NNuSgvSrpgOA==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "data-uri-to-buffer": "^4.0.0",
+        "fetch-blob": "^3.1.4",
+        "formdata-polyfill": "^4.0.10"
+      },
+      "engines": {
+        "node": "^12.20.0 || ^14.13.1 || >=16.0.0"
+      },
+      "funding": {
+        "type": "opencollective",
+        "url": "https://opencollective.com/node-fetch"
+      }
+    },
+    "node_modules/node-html-parser": {
+      "version": "5.4.2",
+      "resolved": "https://registry.npmjs.org/node-html-parser/-/node-html-parser-5.4.2.tgz",
+      "integrity": "sha512-RaBPP3+51hPne/OolXxcz89iYvQvKOydaqoePpOgXcrOKZhjVIzmpKZz+Hd/RBO2/zN2q6CNJhQzucVz+u3Jyw==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "css-select": "^4.2.1",
+        "he": "1.2.0"
+      }
+    },
     "node_modules/node-releases": {
       "version": "2.0.27",
       "resolved": "https://registry.npmjs.org/node-releases/-/node-releases-2.0.27.tgz",
       "integrity": "sha512-nmh3lCkYZ3grZvqcCH+fjmQ7X+H0OeZgP40OierEaAptX4XofMh5kwNbWh7lBduUzCcV/8kZ+NDLCwm2iorIlA==",
       "dev": true,
       "license": "MIT"
+    },
+    "node_modules/normalize-package-data": {
+      "version": "3.0.3",
+      "resolved": "https://registry.npmjs.org/normalize-package-data/-/normalize-package-data-3.0.3.tgz",
+      "integrity": "sha512-p2W1sgqij3zMMyRC067Dg16bfzVH+w7hyegmpIvZ4JNjqtGOVAIvLmjBx3yP7YTe9vKJgkoNOPjwQGogDoMXFA==",
+      "dev": true,
+      "license": "BSD-2-Clause",
+      "dependencies": {
+        "hosted-git-info": "^4.0.1",
+        "is-core-module": "^2.5.0",
+        "semver": "^7.3.4",
+        "validate-npm-package-license": "^3.0.1"
+      },
+      "engines": {
+        "node": ">=10"
+      }
+    },
+    "node_modules/normalize-package-data/node_modules/semver": {
+      "version": "7.7.4",
+      "resolved": "https://registry.npmjs.org/semver/-/semver-7.7.4.tgz",
+      "integrity": "sha512-vFKC2IEtQnVhpT78h1Yp8wzwrf8CM+MzKMHGJZfBtzhZNycRFnXsHk6E5TxIkkMsgNS7mdX3AGB7x2QM2di4lA==",
+      "dev": true,
+      "license": "ISC",
+      "bin": {
+        "semver": "bin/semver.js"
+      },
+      "engines": {
+        "node": ">=10"
+      }
+    },
+    "node_modules/npm-normalize-package-bin": {
+      "version": "5.0.0",
+      "resolved": "https://registry.npmjs.org/npm-normalize-package-bin/-/npm-normalize-package-bin-5.0.0.tgz",
+      "integrity": "sha512-CJi3OS4JLsNMmr2u07OJlhcrPxCeOeP/4xq67aWNai6TNWWbTrlNDgl8NcFKVlcBKp18GPj+EzbNIgrBfZhsag==",
+      "dev": true,
+      "license": "ISC",
+      "engines": {
+        "node": "^20.17.0 || >=22.9.0"
+      }
+    },
+    "node_modules/nth-check": {
+      "version": "2.1.1",
+      "resolved": "https://registry.npmjs.org/nth-check/-/nth-check-2.1.1.tgz",
+      "integrity": "sha512-lqjrjmaOoAnWfMmBPL+XNnynZh2+swxiX3WUE0s4yEHI6m+AwrK2UZOimIRl3X/4QctVqS8AiZjFqyOGrMXb/w==",
+      "dev": true,
+      "license": "BSD-2-Clause",
+      "dependencies": {
+        "boolbase": "^1.0.0"
+      },
+      "funding": {
+        "url": "https://github.com/fb55/nth-check?sponsor=1"
+      }
     },
     "node_modules/oauth4webapi": {
       "version": "3.8.3",
@@ -33785,6 +37540,34 @@ export default nextConfig;
         "url": "https://github.com/sponsors/ljharb"
       }
     },
+    "node_modules/once": {
+      "version": "1.4.0",
+      "resolved": "https://registry.npmjs.org/once/-/once-1.4.0.tgz",
+      "integrity": "sha512-lNaJgI+2Q5URQBkccEKHTQOPaXdUxnZZElQTZY0MFUAuaEqe1E+Nyvgdz/aIyNi6Z9MzO5dv1H8n58/GELp3+w==",
+      "dev": true,
+      "license": "ISC",
+      "dependencies": {
+        "wrappy": "1"
+      }
+    },
+    "node_modules/open": {
+      "version": "8.4.2",
+      "resolved": "https://registry.npmjs.org/open/-/open-8.4.2.tgz",
+      "integrity": "sha512-7x81NCL719oNbsq/3mh+hVrAWmFuEYUqrq/Iw3kUzH8ReypT9QQ0BLoJS7/G9k6N81XjW4qHWtjWwe/9eLy1EQ==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "define-lazy-prop": "^2.0.0",
+        "is-docker": "^2.1.1",
+        "is-wsl": "^2.2.0"
+      },
+      "engines": {
+        "node": ">=12"
+      },
+      "funding": {
+        "url": "https://github.com/sponsors/sindresorhus"
+      }
+    },
     "node_modules/openai": {
       "version": "6.22.0",
       "resolved": "https://registry.npmjs.org/openai/-/openai-6.22.0.tgz",
@@ -33874,6 +37657,39 @@ export default nextConfig;
         "url": "https://github.com/sponsors/sindresorhus"
       }
     },
+    "node_modules/p-map": {
+      "version": "4.0.0",
+      "resolved": "https://registry.npmjs.org/p-map/-/p-map-4.0.0.tgz",
+      "integrity": "sha512-/bjOqmgETBYB5BoEeGVea8dmvHb2m9GLy1E9W43yeyfP6QQCZGFNa+XRceJEuDB6zqr+gKpIAmlLebMpykw/MQ==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "aggregate-error": "^3.0.0"
+      },
+      "engines": {
+        "node": ">=10"
+      },
+      "funding": {
+        "url": "https://github.com/sponsors/sindresorhus"
+      }
+    },
+    "node_modules/p-try": {
+      "version": "2.2.0",
+      "resolved": "https://registry.npmjs.org/p-try/-/p-try-2.2.0.tgz",
+      "integrity": "sha512-R4nPAVTAU0B9D35/Gk3uJf/7XYbQcyohSKdvAxIRSNghFl4e71hVoGnBNQz9cWaXxO2I10KTC+3jMdvvoKw6dQ==",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">=6"
+      }
+    },
+    "node_modules/package-json-from-dist": {
+      "version": "1.0.1",
+      "resolved": "https://registry.npmjs.org/package-json-from-dist/-/package-json-from-dist-1.0.1.tgz",
+      "integrity": "sha512-UEZIS3/by4OC8vL3P2dTXRETpebLI2NiI5vIrjaD/5UtrkFX/tNbwjTSRAGC/+7CAo2pIcBaRgWmcBBHcsaCIw==",
+      "dev": true,
+      "license": "BlueOak-1.0.0"
+    },
     "node_modules/parent-module": {
       "version": "1.0.1",
       "resolved": "https://registry.npmjs.org/parent-module/-/parent-module-1.0.1.tgz",
@@ -33887,6 +37703,20 @@ export default nextConfig;
         "node": ">=6"
       }
     },
+    "node_modules/parse-json": {
+      "version": "4.0.0",
+      "resolved": "https://registry.npmjs.org/parse-json/-/parse-json-4.0.0.tgz",
+      "integrity": "sha512-aOIos8bujGN93/8Ox/jPLh7RwVnPEysynVFE+fQZyg6jKELEHwzgKdLRFHUgXJL6kylijVSBC4BvN9OmsB48Rw==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "error-ex": "^1.3.1",
+        "json-parse-better-errors": "^1.0.1"
+      },
+      "engines": {
+        "node": ">=4"
+      }
+    },
     "node_modules/path-exists": {
       "version": "4.0.0",
       "resolved": "https://registry.npmjs.org/path-exists/-/path-exists-4.0.0.tgz",
@@ -33895,6 +37725,16 @@ export default nextConfig;
       "license": "MIT",
       "engines": {
         "node": ">=8"
+      }
+    },
+    "node_modules/path-is-absolute": {
+      "version": "1.0.1",
+      "resolved": "https://registry.npmjs.org/path-is-absolute/-/path-is-absolute-1.0.1.tgz",
+      "integrity": "sha512-AVbw3UJ2e9bq64vSaS9Am0fje1Pa8pbGqTTsmXfaIiMpnr5DlDhfJOuLj9Sf95ZPVDAUerDfEk88MPmPe7UCQg==",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">=0.10.0"
       }
     },
     "node_modules/path-key": {
@@ -33911,6 +37751,63 @@ export default nextConfig;
       "version": "1.0.7",
       "resolved": "https://registry.npmjs.org/path-parse/-/path-parse-1.0.7.tgz",
       "integrity": "sha512-LDJzPVEEEPR+y48z93A0Ed0yXb8pAByGWo/k5YYdYgpY2/2EsOsksJrq7lOHxryrVOn1ejG6oAp8ahvOIQD8sw==",
+      "dev": true,
+      "license": "MIT"
+    },
+    "node_modules/path-scurry": {
+      "version": "2.0.2",
+      "resolved": "https://registry.npmjs.org/path-scurry/-/path-scurry-2.0.2.tgz",
+      "integrity": "sha512-3O/iVVsJAPsOnpwWIeD+d6z/7PmqApyQePUtCndjatj/9I5LylHvt5qluFaBT3I5h3r1ejfR056c+FCv+NnNXg==",
+      "dev": true,
+      "license": "BlueOak-1.0.0",
+      "dependencies": {
+        "lru-cache": "^11.0.0",
+        "minipass": "^7.1.2"
+      },
+      "engines": {
+        "node": "18 || 20 || >=22"
+      },
+      "funding": {
+        "url": "https://github.com/sponsors/isaacs"
+      }
+    },
+    "node_modules/path-scurry/node_modules/lru-cache": {
+      "version": "11.2.6",
+      "resolved": "https://registry.npmjs.org/lru-cache/-/lru-cache-11.2.6.tgz",
+      "integrity": "sha512-ESL2CrkS/2wTPfuend7Zhkzo2u0daGJ/A2VucJOgQ/C48S/zB8MMeMHSGKYpXhIjbPxfuezITkaBH1wqv00DDQ==",
+      "dev": true,
+      "license": "BlueOak-1.0.0",
+      "engines": {
+        "node": "20 || >=22"
+      }
+    },
+    "node_modules/path-type": {
+      "version": "3.0.0",
+      "resolved": "https://registry.npmjs.org/path-type/-/path-type-3.0.0.tgz",
+      "integrity": "sha512-T2ZUsdZFHgA3u4e5PfPbjd7HDDpxPnQb5jN0SrDsjNSuVXHJqtwTnWqG0B1jZrgmJ/7lj1EmVIByWt1gxGkWvg==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "pify": "^3.0.0"
+      },
+      "engines": {
+        "node": ">=4"
+      }
+    },
+    "node_modules/path-type/node_modules/pify": {
+      "version": "3.0.0",
+      "resolved": "https://registry.npmjs.org/pify/-/pify-3.0.0.tgz",
+      "integrity": "sha512-C3FsVNH1udSEX48gGX1xfvwTWfsYWj5U+8/uK15BGzIGrKoUpghX8hWZwa/OFnakBiiVNmBvemTJR5mcy7iPcg==",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">=4"
+      }
+    },
+    "node_modules/pend": {
+      "version": "1.2.0",
+      "resolved": "https://registry.npmjs.org/pend/-/pend-1.2.0.tgz",
+      "integrity": "sha512-F3asv42UuXchdzt+xXqfW1OGlVBe+mxa2mqI0pg5yAHZPvFmY3Y6drSf/GQ1A86WgWEN9Kzh/WrgKa6iGcHXLg==",
       "dev": true,
       "license": "MIT"
     },
@@ -33931,6 +37828,31 @@ export default nextConfig;
       },
       "funding": {
         "url": "https://github.com/sponsors/jonschlinkert"
+      }
+    },
+    "node_modules/pify": {
+      "version": "2.3.0",
+      "resolved": "https://registry.npmjs.org/pify/-/pify-2.3.0.tgz",
+      "integrity": "sha512-udgsAY+fTnvv7kI7aaxbqwWNb0AHiB0qBO89PZKPkoTmGOgdbrHDKD+0B2X4uTfJ/FT1R09r9gTsjUjNJotuog==",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">=0.10.0"
+      }
+    },
+    "node_modules/plist": {
+      "version": "3.1.0",
+      "resolved": "https://registry.npmjs.org/plist/-/plist-3.1.0.tgz",
+      "integrity": "sha512-uysumyrvkUX0rX/dEVqt8gC3sTBzd4zoWfLeS29nb53imdaXVvLINYXTI2GNqzaMuvacNx4uJQ8+b3zXR0pkgQ==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "@xmldom/xmldom": "^0.8.8",
+        "base64-js": "^1.5.1",
+        "xmlbuilder": "^15.1.1"
+      },
+      "engines": {
+        "node": ">=10.4.0"
       }
     },
     "node_modules/possible-typed-array-names": {
@@ -33991,6 +37913,71 @@ export default nextConfig;
         "preact": ">=10"
       }
     },
+    "node_modules/prebuild-install": {
+      "version": "7.1.3",
+      "resolved": "https://registry.npmjs.org/prebuild-install/-/prebuild-install-7.1.3.tgz",
+      "integrity": "sha512-8Mf2cbV7x1cXPUILADGI3wuhfqWvtiLA1iclTDbFRZkgRQS0NqsPZphna9V+HyTEadheuPmjaJMsbzKQFOzLug==",
+      "deprecated": "No longer maintained. Please contact the author of the relevant native addon; alternatives are available.",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "detect-libc": "^2.0.0",
+        "expand-template": "^2.0.3",
+        "github-from-package": "0.0.0",
+        "minimist": "^1.2.3",
+        "mkdirp-classic": "^0.5.3",
+        "napi-build-utils": "^2.0.0",
+        "node-abi": "^3.3.0",
+        "pump": "^3.0.0",
+        "rc": "^1.2.7",
+        "simple-get": "^4.0.0",
+        "tar-fs": "^2.0.0",
+        "tunnel-agent": "^0.6.0"
+      },
+      "bin": {
+        "prebuild-install": "bin.js"
+      },
+      "engines": {
+        "node": ">=10"
+      }
+    },
+    "node_modules/prebuild-install/node_modules/chownr": {
+      "version": "1.1.4",
+      "resolved": "https://registry.npmjs.org/chownr/-/chownr-1.1.4.tgz",
+      "integrity": "sha512-jJ0bqzaylmJtVnNgzTeSOs8DPavpbYgEr/b0YL8/2GO3xJEhInFmhKMUnEJQjZumK7KXGFhUy89PrsJWlakBVg==",
+      "dev": true,
+      "license": "ISC"
+    },
+    "node_modules/prebuild-install/node_modules/tar-fs": {
+      "version": "2.1.4",
+      "resolved": "https://registry.npmjs.org/tar-fs/-/tar-fs-2.1.4.tgz",
+      "integrity": "sha512-mDAjwmZdh7LTT6pNleZ05Yt65HC3E+NiQzl672vQG38jIrehtJk/J3mNwIg+vShQPcLF/LV7CMnDW6vjj6sfYQ==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "chownr": "^1.1.1",
+        "mkdirp-classic": "^0.5.2",
+        "pump": "^3.0.0",
+        "tar-stream": "^2.1.4"
+      }
+    },
+    "node_modules/prebuild-install/node_modules/tar-stream": {
+      "version": "2.2.0",
+      "resolved": "https://registry.npmjs.org/tar-stream/-/tar-stream-2.2.0.tgz",
+      "integrity": "sha512-ujeqbceABgwMZxEJnk2HDY2DlnUZ+9oEcb1KzTVfYHio0UE6dG71n60d8D2I4qNvleWrrXpmjpt7vZeF1LnMZQ==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "bl": "^4.0.3",
+        "end-of-stream": "^1.4.1",
+        "fs-constants": "^1.0.0",
+        "inherits": "^2.0.3",
+        "readable-stream": "^3.1.1"
+      },
+      "engines": {
+        "node": ">=6"
+      }
+    },
     "node_modules/prelude-ls": {
       "version": "1.2.1",
       "resolved": "https://registry.npmjs.org/prelude-ls/-/prelude-ls-1.2.1.tgz",
@@ -33999,6 +37986,63 @@ export default nextConfig;
       "license": "MIT",
       "engines": {
         "node": ">= 0.8.0"
+      }
+    },
+    "node_modules/prettier": {
+      "version": "2.8.8",
+      "resolved": "https://registry.npmjs.org/prettier/-/prettier-2.8.8.tgz",
+      "integrity": "sha512-tdN8qQGvNjw4CHbY+XXk0JgCXn9QiF21a55rBe5LJAU+kDyC4WQn4+awm2Xfk2lQMk5fKup9XgzTZtGkjBdP9Q==",
+      "dev": true,
+      "license": "MIT",
+      "bin": {
+        "prettier": "bin-prettier.js"
+      },
+      "engines": {
+        "node": ">=10.13.0"
+      },
+      "funding": {
+        "url": "https://github.com/prettier/prettier?sponsor=1"
+      }
+    },
+    "node_modules/proc-log": {
+      "version": "6.1.0",
+      "resolved": "https://registry.npmjs.org/proc-log/-/proc-log-6.1.0.tgz",
+      "integrity": "sha512-iG+GYldRf2BQ0UDUAd6JQ/RwzaQy6mXmsk/IzlYyal4A4SNFw54MeH4/tLkF4I5WoWG9SQwuqWzS99jaFQHBuQ==",
+      "dev": true,
+      "license": "ISC",
+      "engines": {
+        "node": "^20.17.0 || >=22.9.0"
+      }
+    },
+    "node_modules/process-nextick-args": {
+      "version": "2.0.1",
+      "resolved": "https://registry.npmjs.org/process-nextick-args/-/process-nextick-args-2.0.1.tgz",
+      "integrity": "sha512-3ouUOpQhtgrbOa17J7+uxOTpITYWaGP7/AhoR3+A+/1e9skrzelGi/dXzEYyvbxubEF6Wn2ypscTKiKJFFn1ag==",
+      "dev": true,
+      "license": "MIT"
+    },
+    "node_modules/prompts": {
+      "version": "2.4.2",
+      "resolved": "https://registry.npmjs.org/prompts/-/prompts-2.4.2.tgz",
+      "integrity": "sha512-NxNv/kLguCA7p3jE8oL2aEBsrJWgAakBpgmgK6lpPWV+WuOmY6r2/zbAVnP+T8bQlA0nzHXSJSJW0Hq7ylaD2Q==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "kleur": "^3.0.3",
+        "sisteransi": "^1.0.5"
+      },
+      "engines": {
+        "node": ">= 6"
+      }
+    },
+    "node_modules/prompts/node_modules/kleur": {
+      "version": "3.0.3",
+      "resolved": "https://registry.npmjs.org/kleur/-/kleur-3.0.3.tgz",
+      "integrity": "sha512-eTIzlVOSUR+JxdDFepEYcBMtZ9Qqdef+rnzWdRZuMbOywu5tO2w2N7rqjoANZ5k9vywhL6Br1VRjUIgTQx4E8w==",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">=6"
       }
     },
     "node_modules/prop-types": {
@@ -34013,6 +38057,17 @@ export default nextConfig;
         "react-is": "^16.13.1"
       }
     },
+    "node_modules/pump": {
+      "version": "3.0.3",
+      "resolved": "https://registry.npmjs.org/pump/-/pump-3.0.3.tgz",
+      "integrity": "sha512-todwxLMY7/heScKmntwQG8CXVkWUOdYxIvY2s0VWAAMh/nd8SoYiRaKjlr7+iCs984f2P8zvrfWcDDYVb73NfA==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "end-of-stream": "^1.1.0",
+        "once": "^1.3.1"
+      }
+    },
     "node_modules/punycode": {
       "version": "2.3.1",
       "resolved": "https://registry.npmjs.org/punycode/-/punycode-2.3.1.tgz",
@@ -34021,6 +38076,18 @@ export default nextConfig;
       "license": "MIT",
       "engines": {
         "node": ">=6"
+      }
+    },
+    "node_modules/q": {
+      "version": "1.5.1",
+      "resolved": "https://registry.npmjs.org/q/-/q-1.5.1.tgz",
+      "integrity": "sha512-kV/CThkXo6xyFEZUugw/+pIOywXcDbFYgSct5cT3gqlbkBE1SJdwy6UQoZvodiWF/ckQLZyDE/Bu1M6gVu5lVw==",
+      "deprecated": "You or someone you depend on is using Q, the JavaScript Promise library that gave JavaScript developers strong feelings about promises. They can almost certainly migrate to the native JavaScript promise now. Thank you literally everyone for joining me in this bet against the odds. Be excellent to each other.\n\n(For a CapTP with native promises, see @endo/eventual-send and @endo/captp)",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">=0.6.0",
+        "teleport": ">=0.2.0"
       }
     },
     "node_modules/queue-microtask": {
@@ -34043,6 +38110,49 @@ export default nextConfig;
         }
       ],
       "license": "MIT"
+    },
+    "node_modules/quick-lru": {
+      "version": "4.0.1",
+      "resolved": "https://registry.npmjs.org/quick-lru/-/quick-lru-4.0.1.tgz",
+      "integrity": "sha512-ARhCpm70fzdcvNQfPoy49IaanKkTlRWF2JMzqhcJbhSFRZv7nPTvZJdcY7301IPmvW+/p0RgIWnQDLJxifsQ7g==",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">=8"
+      }
+    },
+    "node_modules/rc": {
+      "version": "1.2.8",
+      "resolved": "https://registry.npmjs.org/rc/-/rc-1.2.8.tgz",
+      "integrity": "sha512-y3bGgqKj3QBdxLbLkomlohkvsA8gdAiUQlSBJnBhfn+BPxg4bc62d8TcBW15wavDfgexCgccckhcZvywyQYPOw==",
+      "dev": true,
+      "license": "(BSD-2-Clause OR MIT OR Apache-2.0)",
+      "dependencies": {
+        "deep-extend": "^0.6.0",
+        "ini": "~1.3.0",
+        "minimist": "^1.2.0",
+        "strip-json-comments": "~2.0.1"
+      },
+      "bin": {
+        "rc": "cli.js"
+      }
+    },
+    "node_modules/rc/node_modules/ini": {
+      "version": "1.3.8",
+      "resolved": "https://registry.npmjs.org/ini/-/ini-1.3.8.tgz",
+      "integrity": "sha512-JV/yugV2uzW5iMRSiZAyDtQd+nxtUnjeLt0acNdw98kKLrvuRVyB80tsREOE7yvGVgalhZ6RNXCmEHkUKBKxew==",
+      "dev": true,
+      "license": "ISC"
+    },
+    "node_modules/rc/node_modules/strip-json-comments": {
+      "version": "2.0.1",
+      "resolved": "https://registry.npmjs.org/strip-json-comments/-/strip-json-comments-2.0.1.tgz",
+      "integrity": "sha512-4gB8na07fecVVkOI6Rs4e7T6NOTki5EmL7TUduTs6bu3EdnSycntVJ4re8kgZA+wx9IueI2Y11bfbgwtzuE0KQ==",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">=0.10.0"
+      }
     },
     "node_modules/react": {
       "version": "19.2.0",
@@ -34072,6 +38182,177 @@ export default nextConfig;
       "dev": true,
       "license": "MIT"
     },
+    "node_modules/read-cmd-shim": {
+      "version": "6.0.0",
+      "resolved": "https://registry.npmjs.org/read-cmd-shim/-/read-cmd-shim-6.0.0.tgz",
+      "integrity": "sha512-1zM5HuOfagXCBWMN83fuFI/x+T/UhZ7k+KIzhrHXcQoeX5+7gmaDYjELQHmmzIodumBHeByBJT4QYS7ufAgs7A==",
+      "dev": true,
+      "license": "ISC",
+      "engines": {
+        "node": "^20.17.0 || >=22.9.0"
+      }
+    },
+    "node_modules/read-pkg": {
+      "version": "3.0.0",
+      "resolved": "https://registry.npmjs.org/read-pkg/-/read-pkg-3.0.0.tgz",
+      "integrity": "sha512-BLq/cCO9two+lBgiTYNqD6GdtK8s4NpaWrl6/rCO9w0TUS8oJl7cmToOZfRYllKTISY6nt1U7jQ53brmKqY6BA==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "load-json-file": "^4.0.0",
+        "normalize-package-data": "^2.3.2",
+        "path-type": "^3.0.0"
+      },
+      "engines": {
+        "node": ">=4"
+      }
+    },
+    "node_modules/read-pkg-up": {
+      "version": "3.0.0",
+      "resolved": "https://registry.npmjs.org/read-pkg-up/-/read-pkg-up-3.0.0.tgz",
+      "integrity": "sha512-YFzFrVvpC6frF1sz8psoHDBGF7fLPc+llq/8NB43oagqWkx8ar5zYtsTORtOjw9W2RHLpWP+zTWwBvf1bCmcSw==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "find-up": "^2.0.0",
+        "read-pkg": "^3.0.0"
+      },
+      "engines": {
+        "node": ">=4"
+      }
+    },
+    "node_modules/read-pkg-up/node_modules/find-up": {
+      "version": "2.1.0",
+      "resolved": "https://registry.npmjs.org/find-up/-/find-up-2.1.0.tgz",
+      "integrity": "sha512-NWzkk0jSJtTt08+FBFMvXoeZnOJD+jTtsRmBYbAIzJdX6l7dLgR7CTubCM5/eDdPUBvLCeVasP1brfVR/9/EZQ==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "locate-path": "^2.0.0"
+      },
+      "engines": {
+        "node": ">=4"
+      }
+    },
+    "node_modules/read-pkg-up/node_modules/locate-path": {
+      "version": "2.0.0",
+      "resolved": "https://registry.npmjs.org/locate-path/-/locate-path-2.0.0.tgz",
+      "integrity": "sha512-NCI2kiDkyR7VeEKm27Kda/iQHyKJe1Bu0FlTbYp3CqJu+9IFe9bLyAjMxf5ZDDbEg+iMPzB5zYyUTSm8wVTKmA==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "p-locate": "^2.0.0",
+        "path-exists": "^3.0.0"
+      },
+      "engines": {
+        "node": ">=4"
+      }
+    },
+    "node_modules/read-pkg-up/node_modules/p-limit": {
+      "version": "1.3.0",
+      "resolved": "https://registry.npmjs.org/p-limit/-/p-limit-1.3.0.tgz",
+      "integrity": "sha512-vvcXsLAJ9Dr5rQOPk7toZQZJApBl2K4J6dANSsEuh6QI41JYcsS/qhTGa9ErIUUgK3WNQoJYvylxvjqmiqEA9Q==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "p-try": "^1.0.0"
+      },
+      "engines": {
+        "node": ">=4"
+      }
+    },
+    "node_modules/read-pkg-up/node_modules/p-locate": {
+      "version": "2.0.0",
+      "resolved": "https://registry.npmjs.org/p-locate/-/p-locate-2.0.0.tgz",
+      "integrity": "sha512-nQja7m7gSKuewoVRen45CtVfODR3crN3goVQ0DDZ9N3yHxgpkuBhZqsaiotSQRrADUrne346peY7kT3TSACykg==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "p-limit": "^1.1.0"
+      },
+      "engines": {
+        "node": ">=4"
+      }
+    },
+    "node_modules/read-pkg-up/node_modules/p-try": {
+      "version": "1.0.0",
+      "resolved": "https://registry.npmjs.org/p-try/-/p-try-1.0.0.tgz",
+      "integrity": "sha512-U1etNYuMJoIz3ZXSrrySFjsXQTWOx2/jdi86L+2pRvph/qMKL6sbcCYdH23fqsbm8TH2Gn0OybpT4eSFlCVHww==",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">=4"
+      }
+    },
+    "node_modules/read-pkg-up/node_modules/path-exists": {
+      "version": "3.0.0",
+      "resolved": "https://registry.npmjs.org/path-exists/-/path-exists-3.0.0.tgz",
+      "integrity": "sha512-bpC7GYwiDYQ4wYLe+FA8lhRjhQCMcQGuSgGGqDkg/QerRWw9CmGRT0iSOVRSZJ29NMLZgIzqaljJ63oaL4NIJQ==",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">=4"
+      }
+    },
+    "node_modules/read-pkg/node_modules/hosted-git-info": {
+      "version": "2.8.9",
+      "resolved": "https://registry.npmjs.org/hosted-git-info/-/hosted-git-info-2.8.9.tgz",
+      "integrity": "sha512-mxIDAb9Lsm6DoOJ7xH+5+X4y1LU/4Hi50L9C5sIswK3JzULS4bwk1FvjdBgvYR4bzT4tuUQiC15FE2f5HbLvYw==",
+      "dev": true,
+      "license": "ISC"
+    },
+    "node_modules/read-pkg/node_modules/normalize-package-data": {
+      "version": "2.5.0",
+      "resolved": "https://registry.npmjs.org/normalize-package-data/-/normalize-package-data-2.5.0.tgz",
+      "integrity": "sha512-/5CMN3T0R4XTj4DcGaexo+roZSdSFW/0AOOTROrjxzCG1wrWXEsGbRKevjlIL+ZDE4sZlJr5ED4YW0yqmkK+eA==",
+      "dev": true,
+      "license": "BSD-2-Clause",
+      "dependencies": {
+        "hosted-git-info": "^2.1.4",
+        "resolve": "^1.10.0",
+        "semver": "2 || 3 || 4 || 5",
+        "validate-npm-package-license": "^3.0.1"
+      }
+    },
+    "node_modules/read-pkg/node_modules/semver": {
+      "version": "5.7.2",
+      "resolved": "https://registry.npmjs.org/semver/-/semver-5.7.2.tgz",
+      "integrity": "sha512-cBznnQ9KjJqU67B52RMC65CMarK2600WFnbkcaiwWq3xy/5haFJlshgnpjovMVJ+Hff49d8GEn0b87C5pDQ10g==",
+      "dev": true,
+      "license": "ISC",
+      "bin": {
+        "semver": "bin/semver"
+      }
+    },
+    "node_modules/readable-stream": {
+      "version": "3.6.2",
+      "resolved": "https://registry.npmjs.org/readable-stream/-/readable-stream-3.6.2.tgz",
+      "integrity": "sha512-9u/sniCrY3D5WdsERHzHE4G2YCXqoG5FTHUiCC4SIbr6XcLZBY05ya9EKjYek9O5xOAwjGq+1JdGBAS7Q9ScoA==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "inherits": "^2.0.3",
+        "string_decoder": "^1.1.1",
+        "util-deprecate": "^1.0.1"
+      },
+      "engines": {
+        "node": ">= 6"
+      }
+    },
+    "node_modules/redent": {
+      "version": "3.0.0",
+      "resolved": "https://registry.npmjs.org/redent/-/redent-3.0.0.tgz",
+      "integrity": "sha512-6tDA8g98We0zd0GvVeMT9arEOnTw9qM03L9cJXaCjrip1OO764RDBLBfrB4cwzNGDj5OA5ioymC9GkizgWJDUg==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "indent-string": "^4.0.0",
+        "strip-indent": "^3.0.0"
+      },
+      "engines": {
+        "node": ">=8"
+      }
+    },
     "node_modules/reflect.getprototypeof": {
       "version": "1.0.10",
       "resolved": "https://registry.npmjs.org/reflect.getprototypeof/-/reflect.getprototypeof-1.0.10.tgz",
@@ -34095,6 +38376,13 @@ export default nextConfig;
         "url": "https://github.com/sponsors/ljharb"
       }
     },
+    "node_modules/regexp-to-ast": {
+      "version": "0.5.0",
+      "resolved": "https://registry.npmjs.org/regexp-to-ast/-/regexp-to-ast-0.5.0.tgz",
+      "integrity": "sha512-tlbJqcMHnPKI9zSrystikWKwHkBqu2a/Sgw01h3zFjvYrMxEDYHzzoMZnUrbIfpTFEsoRnnviOXNCzFiSc54Qw==",
+      "dev": true,
+      "license": "MIT"
+    },
     "node_modules/regexp.prototype.flags": {
       "version": "1.5.4",
       "resolved": "https://registry.npmjs.org/regexp.prototype.flags/-/regexp.prototype.flags-1.5.4.tgz",
@@ -34115,6 +38403,296 @@ export default nextConfig;
       "funding": {
         "url": "https://github.com/sponsors/ljharb"
       }
+    },
+    "node_modules/replace": {
+      "version": "1.2.2",
+      "resolved": "https://registry.npmjs.org/replace/-/replace-1.2.2.tgz",
+      "integrity": "sha512-C4EDifm22XZM2b2JOYe6Mhn+lBsLBAvLbK8drfUQLTfD1KYl/n3VaW/CDju0Ny4w3xTtegBpg8YNSpFJPUDSjA==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "chalk": "2.4.2",
+        "minimatch": "3.0.5",
+        "yargs": "^15.3.1"
+      },
+      "bin": {
+        "replace": "bin/replace.js",
+        "search": "bin/search.js"
+      },
+      "engines": {
+        "node": ">= 6"
+      }
+    },
+    "node_modules/replace/node_modules/ansi-styles": {
+      "version": "3.2.1",
+      "resolved": "https://registry.npmjs.org/ansi-styles/-/ansi-styles-3.2.1.tgz",
+      "integrity": "sha512-VT0ZI6kZRdTh8YyJw3SMbYm/u+NqfsAxEpWO0Pf9sq8/e94WxxOpPKx9FR1FlyCtOVDNOQ+8ntlqFxiRc+r5qA==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "color-convert": "^1.9.0"
+      },
+      "engines": {
+        "node": ">=4"
+      }
+    },
+    "node_modules/replace/node_modules/chalk": {
+      "version": "2.4.2",
+      "resolved": "https://registry.npmjs.org/chalk/-/chalk-2.4.2.tgz",
+      "integrity": "sha512-Mti+f9lpJNcwF4tWV8/OrTTtF1gZi+f8FqlyAdouralcFWFQWF2+NgCHShjkCb+IFBLq9buZwE1xckQU4peSuQ==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "ansi-styles": "^3.2.1",
+        "escape-string-regexp": "^1.0.5",
+        "supports-color": "^5.3.0"
+      },
+      "engines": {
+        "node": ">=4"
+      }
+    },
+    "node_modules/replace/node_modules/cliui": {
+      "version": "6.0.0",
+      "resolved": "https://registry.npmjs.org/cliui/-/cliui-6.0.0.tgz",
+      "integrity": "sha512-t6wbgtoCXvAzst7QgXxJYqPt0usEfbgQdftEPbLL/cvv6HPE5VgvqCuAIDR0NgU52ds6rFwqrgakNLrHEjCbrQ==",
+      "dev": true,
+      "license": "ISC",
+      "dependencies": {
+        "string-width": "^4.2.0",
+        "strip-ansi": "^6.0.0",
+        "wrap-ansi": "^6.2.0"
+      }
+    },
+    "node_modules/replace/node_modules/color-convert": {
+      "version": "1.9.3",
+      "resolved": "https://registry.npmjs.org/color-convert/-/color-convert-1.9.3.tgz",
+      "integrity": "sha512-QfAUtd+vFdAtFQcC8CCyYt1fYWxSqAiK2cSD6zDB8N3cpsEBAvRxp9zOGg6G/SHHJYAT88/az/IuDGALsNVbGg==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "color-name": "1.1.3"
+      }
+    },
+    "node_modules/replace/node_modules/color-name": {
+      "version": "1.1.3",
+      "resolved": "https://registry.npmjs.org/color-name/-/color-name-1.1.3.tgz",
+      "integrity": "sha512-72fSenhMw2HZMTVHeCA9KCmpEIbzWiQsjN+BHcBbS9vr1mtt+vJjPdksIBNUmKAW8TFUDPJK5SUU3QhE9NEXDw==",
+      "dev": true,
+      "license": "MIT"
+    },
+    "node_modules/replace/node_modules/escape-string-regexp": {
+      "version": "1.0.5",
+      "resolved": "https://registry.npmjs.org/escape-string-regexp/-/escape-string-regexp-1.0.5.tgz",
+      "integrity": "sha512-vbRorB5FUQWvla16U8R/qgaFIya2qGzwDrNmCZuYKrbdSUMG6I1ZCGQRefkRVhuOkIGVne7BQ35DSfo1qvJqFg==",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">=0.8.0"
+      }
+    },
+    "node_modules/replace/node_modules/find-up": {
+      "version": "4.1.0",
+      "resolved": "https://registry.npmjs.org/find-up/-/find-up-4.1.0.tgz",
+      "integrity": "sha512-PpOwAdQ/YlXQ2vj8a3h8IipDuYRi3wceVQQGYWxNINccq40Anw7BlsEXCMbt1Zt+OLA6Fq9suIpIWD0OsnISlw==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "locate-path": "^5.0.0",
+        "path-exists": "^4.0.0"
+      },
+      "engines": {
+        "node": ">=8"
+      }
+    },
+    "node_modules/replace/node_modules/has-flag": {
+      "version": "3.0.0",
+      "resolved": "https://registry.npmjs.org/has-flag/-/has-flag-3.0.0.tgz",
+      "integrity": "sha512-sKJf1+ceQBr4SMkvQnBDNDtf4TXpVhVGateu0t918bl30FnbE2m4vNLX+VWe/dpjlb+HugGYzW7uQXH98HPEYw==",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">=4"
+      }
+    },
+    "node_modules/replace/node_modules/locate-path": {
+      "version": "5.0.0",
+      "resolved": "https://registry.npmjs.org/locate-path/-/locate-path-5.0.0.tgz",
+      "integrity": "sha512-t7hw9pI+WvuwNJXwk5zVHpyhIqzg2qTlklJOf0mVxGSbe3Fp2VieZcduNYjaLDoy6p9uGpQEGWG87WpMKlNq8g==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "p-locate": "^4.1.0"
+      },
+      "engines": {
+        "node": ">=8"
+      }
+    },
+    "node_modules/replace/node_modules/minimatch": {
+      "version": "3.0.5",
+      "resolved": "https://registry.npmjs.org/minimatch/-/minimatch-3.0.5.tgz",
+      "integrity": "sha512-tUpxzX0VAzJHjLu0xUfFv1gwVp9ba3IOuRAVH2EGuRW8a5emA2FlACLqiT/lDVtS1W+TGNwqz3sWaNyLgDJWuw==",
+      "dev": true,
+      "license": "ISC",
+      "dependencies": {
+        "brace-expansion": "^1.1.7"
+      },
+      "engines": {
+        "node": "*"
+      }
+    },
+    "node_modules/replace/node_modules/p-limit": {
+      "version": "2.3.0",
+      "resolved": "https://registry.npmjs.org/p-limit/-/p-limit-2.3.0.tgz",
+      "integrity": "sha512-//88mFWSJx8lxCzwdAABTJL2MyWB12+eIY7MDL2SqLmAkeKU9qxRvWuSyTjm3FUmpBEMuFfckAIqEaVGUDxb6w==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "p-try": "^2.0.0"
+      },
+      "engines": {
+        "node": ">=6"
+      },
+      "funding": {
+        "url": "https://github.com/sponsors/sindresorhus"
+      }
+    },
+    "node_modules/replace/node_modules/p-locate": {
+      "version": "4.1.0",
+      "resolved": "https://registry.npmjs.org/p-locate/-/p-locate-4.1.0.tgz",
+      "integrity": "sha512-R79ZZ/0wAxKGu3oYMlz8jy/kbhsNrS7SKZ7PxEHBgJ5+F2mtFW2fK2cOtBh1cHYkQsbzFV7I+EoRKe6Yt0oK7A==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "p-limit": "^2.2.0"
+      },
+      "engines": {
+        "node": ">=8"
+      }
+    },
+    "node_modules/replace/node_modules/supports-color": {
+      "version": "5.5.0",
+      "resolved": "https://registry.npmjs.org/supports-color/-/supports-color-5.5.0.tgz",
+      "integrity": "sha512-QjVjwdXIt408MIiAqCX4oUKsgU2EqAGzs2Ppkm4aQYbjm+ZEWEcW4SfFNTr4uMNZma0ey4f5lgLrkB0aX0QMow==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "has-flag": "^3.0.0"
+      },
+      "engines": {
+        "node": ">=4"
+      }
+    },
+    "node_modules/replace/node_modules/wrap-ansi": {
+      "version": "6.2.0",
+      "resolved": "https://registry.npmjs.org/wrap-ansi/-/wrap-ansi-6.2.0.tgz",
+      "integrity": "sha512-r6lPcBGxZXlIcymEu7InxDMhdW0KDxpLgoFLcguasxCaJ/SOIZwINatK9KY/tf+ZrlywOKU0UDj3ATXUBfxJXA==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "ansi-styles": "^4.0.0",
+        "string-width": "^4.1.0",
+        "strip-ansi": "^6.0.0"
+      },
+      "engines": {
+        "node": ">=8"
+      }
+    },
+    "node_modules/replace/node_modules/wrap-ansi/node_modules/ansi-styles": {
+      "version": "4.3.0",
+      "resolved": "https://registry.npmjs.org/ansi-styles/-/ansi-styles-4.3.0.tgz",
+      "integrity": "sha512-zbB9rCJAT1rbjiVDb2hqKFHNYLxgtk8NURxZ3IZwD3F6NtxbXZQCnnSi1Lkx+IDohdPlFp222wVALIheZJQSEg==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "color-convert": "^2.0.1"
+      },
+      "engines": {
+        "node": ">=8"
+      },
+      "funding": {
+        "url": "https://github.com/chalk/ansi-styles?sponsor=1"
+      }
+    },
+    "node_modules/replace/node_modules/wrap-ansi/node_modules/color-convert": {
+      "version": "2.0.1",
+      "resolved": "https://registry.npmjs.org/color-convert/-/color-convert-2.0.1.tgz",
+      "integrity": "sha512-RRECPsj7iu/xb5oKYcsFHSppFNnsj/52OVTRKb4zP5onXwVF3zVmmToNcOfGC+CRDpfK/U584fMg38ZHCaElKQ==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "color-name": "~1.1.4"
+      },
+      "engines": {
+        "node": ">=7.0.0"
+      }
+    },
+    "node_modules/replace/node_modules/wrap-ansi/node_modules/color-name": {
+      "version": "1.1.4",
+      "resolved": "https://registry.npmjs.org/color-name/-/color-name-1.1.4.tgz",
+      "integrity": "sha512-dOy+3AuW3a2wNbZHIuMZpTcgjGuLU/uBL/ubcZF9OXbDo8ff4O8yVp5Bf0efS8uEoYo5q4Fx7dY9OgQGXgAsQA==",
+      "dev": true,
+      "license": "MIT"
+    },
+    "node_modules/replace/node_modules/y18n": {
+      "version": "4.0.3",
+      "resolved": "https://registry.npmjs.org/y18n/-/y18n-4.0.3.tgz",
+      "integrity": "sha512-JKhqTOwSrqNA1NY5lSztJ1GrBiUodLMmIZuLiDaMRJ+itFd+ABVE8XBjOvIWL+rSqNDC74LCSFmlb/U4UZ4hJQ==",
+      "dev": true,
+      "license": "ISC"
+    },
+    "node_modules/replace/node_modules/yargs": {
+      "version": "15.4.1",
+      "resolved": "https://registry.npmjs.org/yargs/-/yargs-15.4.1.tgz",
+      "integrity": "sha512-aePbxDmcYW++PaqBsJ+HYUFwCdv4LVvdnhBy78E57PIor8/OVvhMrADFFEDh8DHDFRv/O9i3lPhsENjO7QX0+A==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "cliui": "^6.0.0",
+        "decamelize": "^1.2.0",
+        "find-up": "^4.1.0",
+        "get-caller-file": "^2.0.1",
+        "require-directory": "^2.1.1",
+        "require-main-filename": "^2.0.0",
+        "set-blocking": "^2.0.0",
+        "string-width": "^4.2.0",
+        "which-module": "^2.0.0",
+        "y18n": "^4.0.0",
+        "yargs-parser": "^18.1.2"
+      },
+      "engines": {
+        "node": ">=8"
+      }
+    },
+    "node_modules/replace/node_modules/yargs-parser": {
+      "version": "18.1.3",
+      "resolved": "https://registry.npmjs.org/yargs-parser/-/yargs-parser-18.1.3.tgz",
+      "integrity": "sha512-o50j0JeToy/4K6OZcaQmW6lyXXKhq7csREXcDwk2omFPJEwUNOVtJKvmDr9EI1fAJZUyZcRF7kxGBWmRXudrCQ==",
+      "dev": true,
+      "license": "ISC",
+      "dependencies": {
+        "camelcase": "^5.0.0",
+        "decamelize": "^1.2.0"
+      },
+      "engines": {
+        "node": ">=6"
+      }
+    },
+    "node_modules/require-directory": {
+      "version": "2.1.1",
+      "resolved": "https://registry.npmjs.org/require-directory/-/require-directory-2.1.1.tgz",
+      "integrity": "sha512-fGxEI7+wsG9xrvdjsrlmL22OMTTiHRwAMroiEeMgq8gzoLC/PQr7RsRDSTLUg/bZAZtF+TVIkHc6/4RIKrui+Q==",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">=0.10.0"
+      }
+    },
+    "node_modules/require-main-filename": {
+      "version": "2.0.0",
+      "resolved": "https://registry.npmjs.org/require-main-filename/-/require-main-filename-2.0.0.tgz",
+      "integrity": "sha512-NKN5kMDylKuldxYLSUfrbo5Tuzh4hd+2E8NPPX02mZtn1VuREQToYe/ZdlJy+J3uCpfaiGF05e7B8W0iXbQHmg==",
+      "dev": true,
+      "license": "ISC"
     },
     "node_modules/resolve": {
       "version": "1.22.11",
@@ -34168,6 +38746,26 @@ export default nextConfig;
         "node": ">=0.10.0"
       }
     },
+    "node_modules/rimraf": {
+      "version": "6.1.3",
+      "resolved": "https://registry.npmjs.org/rimraf/-/rimraf-6.1.3.tgz",
+      "integrity": "sha512-LKg+Cr2ZF61fkcaK1UdkH2yEBBKnYjTyWzTJT6KNPcSPaiT7HSdhtMXQuN5wkTX0Xu72KQ1l8S42rlmexS2hSA==",
+      "dev": true,
+      "license": "BlueOak-1.0.0",
+      "dependencies": {
+        "glob": "^13.0.3",
+        "package-json-from-dist": "^1.0.1"
+      },
+      "bin": {
+        "rimraf": "dist/esm/bin.mjs"
+      },
+      "engines": {
+        "node": "20 || >=22"
+      },
+      "funding": {
+        "url": "https://github.com/sponsors/isaacs"
+      }
+    },
     "node_modules/run-parallel": {
       "version": "1.2.0",
       "resolved": "https://registry.npmjs.org/run-parallel/-/run-parallel-1.2.0.tgz",
@@ -34212,6 +38810,27 @@ export default nextConfig;
         "url": "https://github.com/sponsors/ljharb"
       }
     },
+    "node_modules/safe-buffer": {
+      "version": "5.2.1",
+      "resolved": "https://registry.npmjs.org/safe-buffer/-/safe-buffer-5.2.1.tgz",
+      "integrity": "sha512-rp3So07KcdmmKbGvgaNxQSJr7bGVSVk5S9Eq1F+ppbRo70+YeaDxkw5Dd8NPN+GD6bjnYm2VuPuCXmpuYvmCXQ==",
+      "dev": true,
+      "funding": [
+        {
+          "type": "github",
+          "url": "https://github.com/sponsors/feross"
+        },
+        {
+          "type": "patreon",
+          "url": "https://www.patreon.com/feross"
+        },
+        {
+          "type": "consulting",
+          "url": "https://feross.org/support"
+        }
+      ],
+      "license": "MIT"
+    },
     "node_modules/safe-push-apply": {
       "version": "1.0.0",
       "resolved": "https://registry.npmjs.org/safe-push-apply/-/safe-push-apply-1.0.0.tgz",
@@ -34247,6 +38866,13 @@ export default nextConfig;
         "url": "https://github.com/sponsors/ljharb"
       }
     },
+    "node_modules/sax": {
+      "version": "1.1.4",
+      "resolved": "https://registry.npmjs.org/sax/-/sax-1.1.4.tgz",
+      "integrity": "sha512-5f3k2PbGGp+YtKJjOItpg3P99IMD84E4HOvcfleTb5joCHNXYLsR9yWFPOYGgaeMPDubQILTCMdsFb2OMeOjtg==",
+      "dev": true,
+      "license": "ISC"
+    },
     "node_modules/scheduler": {
       "version": "0.27.0",
       "resolved": "https://registry.npmjs.org/scheduler/-/scheduler-0.27.0.tgz",
@@ -34262,6 +38888,13 @@ export default nextConfig;
       "bin": {
         "semver": "bin/semver.js"
       }
+    },
+    "node_modules/set-blocking": {
+      "version": "2.0.0",
+      "resolved": "https://registry.npmjs.org/set-blocking/-/set-blocking-2.0.0.tgz",
+      "integrity": "sha512-KiKBS8AnWGEyLzofFfmvKwpdPzqiy16LvQfK3yv/fVH7Bj13/wl3JSR1J+rfgRE9q7xUJK4qvgS8raSOeLUehw==",
+      "dev": true,
+      "license": "ISC"
     },
     "node_modules/set-function-length": {
       "version": "1.2.2",
@@ -34469,6 +39102,147 @@ export default nextConfig;
         "url": "https://github.com/sponsors/ljharb"
       }
     },
+    "node_modules/signal-exit": {
+      "version": "3.0.7",
+      "resolved": "https://registry.npmjs.org/signal-exit/-/signal-exit-3.0.7.tgz",
+      "integrity": "sha512-wnD2ZE+l+SPC/uoS0vXeE9L1+0wuaMqKlfz9AMUo38JsyLSBWSFcHR1Rri62LZc12vLr1gb3jl7iwQhgwpAbGQ==",
+      "dev": true,
+      "license": "ISC"
+    },
+    "node_modules/simple-concat": {
+      "version": "1.0.1",
+      "resolved": "https://registry.npmjs.org/simple-concat/-/simple-concat-1.0.1.tgz",
+      "integrity": "sha512-cSFtAPtRhljv69IK0hTVZQ+OfE9nePi/rtJmw5UjHeVyVroEqJXP1sFztKUy1qU+xvz3u/sfYJLa947b7nAN2Q==",
+      "dev": true,
+      "funding": [
+        {
+          "type": "github",
+          "url": "https://github.com/sponsors/feross"
+        },
+        {
+          "type": "patreon",
+          "url": "https://www.patreon.com/feross"
+        },
+        {
+          "type": "consulting",
+          "url": "https://feross.org/support"
+        }
+      ],
+      "license": "MIT"
+    },
+    "node_modules/simple-get": {
+      "version": "4.0.1",
+      "resolved": "https://registry.npmjs.org/simple-get/-/simple-get-4.0.1.tgz",
+      "integrity": "sha512-brv7p5WgH0jmQJr1ZDDfKDOSeWWg+OVypG99A/5vYGPqJ6pxiaHLy8nxtFjBA7oMa01ebA9gfh1uMCFqOuXxvA==",
+      "dev": true,
+      "funding": [
+        {
+          "type": "github",
+          "url": "https://github.com/sponsors/feross"
+        },
+        {
+          "type": "patreon",
+          "url": "https://www.patreon.com/feross"
+        },
+        {
+          "type": "consulting",
+          "url": "https://feross.org/support"
+        }
+      ],
+      "license": "MIT",
+      "dependencies": {
+        "decompress-response": "^6.0.0",
+        "once": "^1.3.1",
+        "simple-concat": "^1.0.0"
+      }
+    },
+    "node_modules/simple-plist": {
+      "version": "1.3.1",
+      "resolved": "https://registry.npmjs.org/simple-plist/-/simple-plist-1.3.1.tgz",
+      "integrity": "sha512-iMSw5i0XseMnrhtIzRb7XpQEXepa9xhWxGUojHBL43SIpQuDQkh3Wpy67ZbDzZVr6EKxvwVChnVpdl8hEVLDiw==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "bplist-creator": "0.1.0",
+        "bplist-parser": "0.3.1",
+        "plist": "^3.0.5"
+      }
+    },
+    "node_modules/simple-plist/node_modules/bplist-parser": {
+      "version": "0.3.1",
+      "resolved": "https://registry.npmjs.org/bplist-parser/-/bplist-parser-0.3.1.tgz",
+      "integrity": "sha512-PyJxiNtA5T2PlLIeBot4lbp7rj4OadzjnMZD/G5zuBNt8ei/yCU7+wW0h2bag9vr8c+/WuRWmSxbqAl9hL1rBA==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "big-integer": "1.6.x"
+      },
+      "engines": {
+        "node": ">= 5.10.0"
+      }
+    },
+    "node_modules/simple-swizzle": {
+      "version": "0.2.4",
+      "resolved": "https://registry.npmjs.org/simple-swizzle/-/simple-swizzle-0.2.4.tgz",
+      "integrity": "sha512-nAu1WFPQSMNr2Zn9PGSZK9AGn4t/y97lEm+MXTtUDwfP0ksAIX4nO+6ruD9Jwut4C49SB1Ws+fbXsm/yScWOHw==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "is-arrayish": "^0.3.1"
+      }
+    },
+    "node_modules/simple-swizzle/node_modules/is-arrayish": {
+      "version": "0.3.4",
+      "resolved": "https://registry.npmjs.org/is-arrayish/-/is-arrayish-0.3.4.tgz",
+      "integrity": "sha512-m6UrgzFVUYawGBh1dUsWR5M2Clqic9RVXC/9f8ceNlv2IcO9j9J/z8UoCLPqtsPBFNzEpfR3xftohbfqDx8EQA==",
+      "dev": true,
+      "license": "MIT"
+    },
+    "node_modules/sisteransi": {
+      "version": "1.0.5",
+      "resolved": "https://registry.npmjs.org/sisteransi/-/sisteransi-1.0.5.tgz",
+      "integrity": "sha512-bLGGlR1QxBcynn2d5YmDX4MGjlZvy2MRBDRNHLJ8VI6l6+9FUiyTFNJ0IveOSP0bcXgVDPRcfGqA0pjaqUpfVg==",
+      "dev": true,
+      "license": "MIT"
+    },
+    "node_modules/slash": {
+      "version": "3.0.0",
+      "resolved": "https://registry.npmjs.org/slash/-/slash-3.0.0.tgz",
+      "integrity": "sha512-g9Q1haeby36OSStwb4ntCGGGaKsaVSjQ68fBxoQcutl5fS1vuY18H3wSt3jFyFtrkx+Kz0V1G85A4MyAdDMi2Q==",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">=8"
+      }
+    },
+    "node_modules/slice-ansi": {
+      "version": "4.0.0",
+      "resolved": "https://registry.npmjs.org/slice-ansi/-/slice-ansi-4.0.0.tgz",
+      "integrity": "sha512-qMCMfhY040cVHT43K9BFygqYbUPFZKHOg7K73mtTWJRb8pyP3fzf4Ixd5SzdEJQ6MRUg/WBnOLxghZtKKurENQ==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "ansi-styles": "^4.0.0",
+        "astral-regex": "^2.0.0",
+        "is-fullwidth-code-point": "^3.0.0"
+      },
+      "engines": {
+        "node": ">=10"
+      },
+      "funding": {
+        "url": "https://github.com/chalk/slice-ansi?sponsor=1"
+      }
+    },
+    "node_modules/source-map": {
+      "version": "0.6.1",
+      "resolved": "https://registry.npmjs.org/source-map/-/source-map-0.6.1.tgz",
+      "integrity": "sha512-UjgapumWlbMhkBgzT7Ykc5YXUT46F0iKu8SGXq0bcwP5dz/h0Plj6enJqjz1Zbq2l5WaqYnrVbwWOWMyF3F47g==",
+      "dev": true,
+      "license": "BSD-3-Clause",
+      "engines": {
+        "node": ">=0.10.0"
+      }
+    },
     "node_modules/source-map-js": {
       "version": "1.2.1",
       "resolved": "https://registry.npmjs.org/source-map-js/-/source-map-js-1.2.1.tgz",
@@ -34476,6 +39250,65 @@ export default nextConfig;
       "license": "BSD-3-Clause",
       "engines": {
         "node": ">=0.10.0"
+      }
+    },
+    "node_modules/spdx-correct": {
+      "version": "3.2.0",
+      "resolved": "https://registry.npmjs.org/spdx-correct/-/spdx-correct-3.2.0.tgz",
+      "integrity": "sha512-kN9dJbvnySHULIluDHy32WHRUu3Og7B9sbY7tsFLctQkIqnMh3hErYgdMjTYuqmcXX+lK5T1lnUt3G7zNswmZA==",
+      "dev": true,
+      "license": "Apache-2.0",
+      "dependencies": {
+        "spdx-expression-parse": "^3.0.0",
+        "spdx-license-ids": "^3.0.0"
+      }
+    },
+    "node_modules/spdx-exceptions": {
+      "version": "2.5.0",
+      "resolved": "https://registry.npmjs.org/spdx-exceptions/-/spdx-exceptions-2.5.0.tgz",
+      "integrity": "sha512-PiU42r+xO4UbUS1buo3LPJkjlO7430Xn5SVAhdpzzsPHsjbYVflnnFdATgabnLude+Cqu25p6N+g2lw/PFsa4w==",
+      "dev": true,
+      "license": "CC-BY-3.0"
+    },
+    "node_modules/spdx-expression-parse": {
+      "version": "3.0.1",
+      "resolved": "https://registry.npmjs.org/spdx-expression-parse/-/spdx-expression-parse-3.0.1.tgz",
+      "integrity": "sha512-cbqHunsQWnJNE6KhVSMsMeH5H/L9EpymbzqTQ3uLwNCLZ1Q481oWaofqH7nO6V07xlXwY6PhQdQ2IedWx/ZK4Q==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "spdx-exceptions": "^2.1.0",
+        "spdx-license-ids": "^3.0.0"
+      }
+    },
+    "node_modules/spdx-license-ids": {
+      "version": "3.0.23",
+      "resolved": "https://registry.npmjs.org/spdx-license-ids/-/spdx-license-ids-3.0.23.tgz",
+      "integrity": "sha512-CWLcCCH7VLu13TgOH+r8p1O/Znwhqv/dbb6lqWy67G+pT1kHmeD/+V36AVb/vq8QMIQwVShJ6Ssl5FPh0fuSdw==",
+      "dev": true,
+      "license": "CC0-1.0"
+    },
+    "node_modules/split": {
+      "version": "1.0.1",
+      "resolved": "https://registry.npmjs.org/split/-/split-1.0.1.tgz",
+      "integrity": "sha512-mTyOoPbrivtXnwnIxZRFYRrPNtEFKlpB2fvjSnCQUiAA6qAZzqwna5envK4uk6OIeP17CsdF3rSBGYVBsU0Tkg==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "through": "2"
+      },
+      "engines": {
+        "node": "*"
+      }
+    },
+    "node_modules/split2": {
+      "version": "4.2.0",
+      "resolved": "https://registry.npmjs.org/split2/-/split2-4.2.0.tgz",
+      "integrity": "sha512-UcjcJOWknrNkF6PLX83qcHM6KHgVKNkV62Y8a5uYDVv9ydGQVwAHMKqHdJje1VTWpljG0WYpCDhrCdAOYH4TWg==",
+      "dev": true,
+      "license": "ISC",
+      "engines": {
+        "node": ">= 10.x"
       }
     },
     "node_modules/stable-hash": {
@@ -34498,6 +39331,60 @@ export default nextConfig;
       "engines": {
         "node": ">= 0.4"
       }
+    },
+    "node_modules/stream-buffers": {
+      "version": "2.2.0",
+      "resolved": "https://registry.npmjs.org/stream-buffers/-/stream-buffers-2.2.0.tgz",
+      "integrity": "sha512-uyQK/mx5QjHun80FLJTfaWE7JtwfRMKBLkMne6udYOmvH0CawotVa7TfgYHzAnpphn4+TweIx1QKMnRIbipmUg==",
+      "dev": true,
+      "license": "Unlicense",
+      "engines": {
+        "node": ">= 0.10.0"
+      }
+    },
+    "node_modules/streamx": {
+      "version": "2.23.0",
+      "resolved": "https://registry.npmjs.org/streamx/-/streamx-2.23.0.tgz",
+      "integrity": "sha512-kn+e44esVfn2Fa/O0CPFcex27fjIL6MkVae0Mm6q+E6f0hWv578YCERbv+4m02cjxvDsPKLnmxral/rR6lBMAg==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "events-universal": "^1.0.0",
+        "fast-fifo": "^1.3.2",
+        "text-decoder": "^1.1.0"
+      }
+    },
+    "node_modules/string_decoder": {
+      "version": "1.3.0",
+      "resolved": "https://registry.npmjs.org/string_decoder/-/string_decoder-1.3.0.tgz",
+      "integrity": "sha512-hkRX8U1WjJFd8LsDJ2yQ/wWWxaopEsABU1XfkM8A+j0+85JAGppt16cr1Whg6KIbb4okU6Mql6BOj+uup/wKeA==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "safe-buffer": "~5.2.0"
+      }
+    },
+    "node_modules/string-width": {
+      "version": "4.2.3",
+      "resolved": "https://registry.npmjs.org/string-width/-/string-width-4.2.3.tgz",
+      "integrity": "sha512-wKyQRQpjJ0sIp62ErSZdGsjMJWsap5oRNihHhu6G7JVO/9jIB6UyevL+tXuOqrng8j/cxKTWyWUwvSTriiZz/g==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "emoji-regex": "^8.0.0",
+        "is-fullwidth-code-point": "^3.0.0",
+        "strip-ansi": "^6.0.1"
+      },
+      "engines": {
+        "node": ">=8"
+      }
+    },
+    "node_modules/string-width/node_modules/emoji-regex": {
+      "version": "8.0.0",
+      "resolved": "https://registry.npmjs.org/emoji-regex/-/emoji-regex-8.0.0.tgz",
+      "integrity": "sha512-MSjYzcWNOA0ewAHpz0MxpYFvwg6yjy1NG3xteoqz644VCo/RPgnr1/GGt+ic3iJTzQ8Eu3TdM14SawnVUmGE6A==",
+      "dev": true,
+      "license": "MIT"
     },
     "node_modules/string.prototype.includes": {
       "version": "2.0.1",
@@ -34612,6 +39499,19 @@ export default nextConfig;
         "url": "https://github.com/sponsors/ljharb"
       }
     },
+    "node_modules/strip-ansi": {
+      "version": "6.0.1",
+      "resolved": "https://registry.npmjs.org/strip-ansi/-/strip-ansi-6.0.1.tgz",
+      "integrity": "sha512-Y38VPSHcqkFrCpFnQ9vuSXmquuv5oXOKpGeT6aGrr3o3Gc9AlVa6JBfUSOCnbxGGZF+/0ooI7KrPuUSztUdU5A==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "ansi-regex": "^5.0.1"
+      },
+      "engines": {
+        "node": ">=8"
+      }
+    },
     "node_modules/strip-bom": {
       "version": "3.0.0",
       "resolved": "https://registry.npmjs.org/strip-bom/-/strip-bom-3.0.0.tgz",
@@ -34620,6 +39520,19 @@ export default nextConfig;
       "license": "MIT",
       "engines": {
         "node": ">=4"
+      }
+    },
+    "node_modules/strip-indent": {
+      "version": "3.0.0",
+      "resolved": "https://registry.npmjs.org/strip-indent/-/strip-indent-3.0.0.tgz",
+      "integrity": "sha512-laJTa3Jb+VQpaC6DseHhF7dXVqHTfJPCRDaEbid/drOhgitgYku/letMUqOXFoWV0zIIUbjpdH2t+tYj4bQMRQ==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "min-indent": "^1.0.0"
+      },
+      "engines": {
+        "node": ">=8"
       }
     },
     "node_modules/strip-json-comments": {
@@ -34656,6 +39569,26 @@ export default nextConfig;
         "babel-plugin-macros": {
           "optional": true
         }
+      }
+    },
+    "node_modules/supabase": {
+      "version": "2.76.14",
+      "resolved": "https://registry.npmjs.org/supabase/-/supabase-2.76.14.tgz",
+      "integrity": "sha512-2XmYs8+A4WXd+w/OND9u9qbSTnGdLCuddnii01H1LkmgwcZ9krXwxElE+YYmzhsEKCUHv5wVjAf5HTUwQ4PnVA==",
+      "dev": true,
+      "hasInstallScript": true,
+      "license": "MIT",
+      "dependencies": {
+        "bin-links": "^6.0.0",
+        "https-proxy-agent": "^7.0.2",
+        "node-fetch": "^3.3.2",
+        "tar": "7.5.9"
+      },
+      "bin": {
+        "supabase": "bin/supabase"
+      },
+      "engines": {
+        "npm": ">=8"
       }
     },
     "node_modules/supports-color": {
@@ -34703,6 +39636,181 @@ export default nextConfig;
       "funding": {
         "type": "opencollective",
         "url": "https://opencollective.com/webpack"
+      }
+    },
+    "node_modules/tar": {
+      "version": "7.5.9",
+      "resolved": "https://registry.npmjs.org/tar/-/tar-7.5.9.tgz",
+      "integrity": "sha512-BTLcK0xsDh2+PUe9F6c2TlRp4zOOBMTkoQHQIWSIzI0R7KG46uEwq4OPk2W7bZcprBMsuaeFsqwYr7pjh6CuHg==",
+      "dev": true,
+      "license": "BlueOak-1.0.0",
+      "dependencies": {
+        "@isaacs/fs-minipass": "^4.0.0",
+        "chownr": "^3.0.0",
+        "minipass": "^7.1.2",
+        "minizlib": "^3.1.0",
+        "yallist": "^5.0.0"
+      },
+      "engines": {
+        "node": ">=18"
+      }
+    },
+    "node_modules/tar-fs": {
+      "version": "3.1.1",
+      "resolved": "https://registry.npmjs.org/tar-fs/-/tar-fs-3.1.1.tgz",
+      "integrity": "sha512-LZA0oaPOc2fVo82Txf3gw+AkEd38szODlptMYejQUhndHMLQ9M059uXR+AfS7DNo0NpINvSqDsvyaCrBVkptWg==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "pump": "^3.0.0",
+        "tar-stream": "^3.1.5"
+      },
+      "optionalDependencies": {
+        "bare-fs": "^4.0.1",
+        "bare-path": "^3.0.0"
+      }
+    },
+    "node_modules/tar-stream": {
+      "version": "3.1.7",
+      "resolved": "https://registry.npmjs.org/tar-stream/-/tar-stream-3.1.7.tgz",
+      "integrity": "sha512-qJj60CXt7IU1Ffyc3NJMjh6EkuCFej46zUqJ4J7pqYlThyd9bO0XBTmcOIhSzZJVWfsLks0+nle/j538YAW9RQ==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "b4a": "^1.6.4",
+        "fast-fifo": "^1.2.0",
+        "streamx": "^2.15.0"
+      }
+    },
+    "node_modules/tar-stream/node_modules/b4a": {
+      "version": "1.8.0",
+      "resolved": "https://registry.npmjs.org/b4a/-/b4a-1.8.0.tgz",
+      "integrity": "sha512-qRuSmNSkGQaHwNbM7J78Wwy+ghLEYF1zNrSeMxj4Kgw6y33O3mXcQ6Ie9fRvfU/YnxWkOchPXbaLb73TkIsfdg==",
+      "dev": true,
+      "license": "Apache-2.0",
+      "peerDependencies": {
+        "react-native-b4a": "*"
+      },
+      "peerDependenciesMeta": {
+        "react-native-b4a": {
+          "optional": true
+        }
+      }
+    },
+    "node_modules/tar/node_modules/yallist": {
+      "version": "5.0.0",
+      "resolved": "https://registry.npmjs.org/yallist/-/yallist-5.0.0.tgz",
+      "integrity": "sha512-YgvUTfwqyc7UXVMrB+SImsVYSmTS8X/tSrtdNZMImM+n7+QTriRXyXim0mBrTXNeqzVF0KWGgHPeiyViFFrNDw==",
+      "dev": true,
+      "license": "BlueOak-1.0.0",
+      "engines": {
+        "node": ">=18"
+      }
+    },
+    "node_modules/teex": {
+      "version": "1.0.1",
+      "resolved": "https://registry.npmjs.org/teex/-/teex-1.0.1.tgz",
+      "integrity": "sha512-eYE6iEI62Ni1H8oIa7KlDU6uQBtqr4Eajni3wX7rpfXD8ysFx8z0+dri+KWEPWpBsxXfxu58x/0jvTVT1ekOSg==",
+      "dev": true,
+      "license": "MIT",
+      "optional": true,
+      "dependencies": {
+        "streamx": "^2.12.5"
+      }
+    },
+    "node_modules/temp-dir": {
+      "version": "2.0.0",
+      "resolved": "https://registry.npmjs.org/temp-dir/-/temp-dir-2.0.0.tgz",
+      "integrity": "sha512-aoBAniQmmwtcKp/7BzsH8Cxzv8OL736p7v1ihGb5e9DJ9kTwGWHrQrVB5+lfVDzfGrdRzXch+ig7LHaY1JTOrg==",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">=8"
+      }
+    },
+    "node_modules/tempy": {
+      "version": "1.0.1",
+      "resolved": "https://registry.npmjs.org/tempy/-/tempy-1.0.1.tgz",
+      "integrity": "sha512-biM9brNqxSc04Ee71hzFbryD11nX7VPhQQY32AdDmjFvodsRFz/3ufeoTZ6uYkRFfGo188tENcASNs3vTdsM0w==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "del": "^6.0.0",
+        "is-stream": "^2.0.0",
+        "temp-dir": "^2.0.0",
+        "type-fest": "^0.16.0",
+        "unique-string": "^2.0.0"
+      },
+      "engines": {
+        "node": ">=10"
+      },
+      "funding": {
+        "url": "https://github.com/sponsors/sindresorhus"
+      }
+    },
+    "node_modules/tempy/node_modules/type-fest": {
+      "version": "0.16.0",
+      "resolved": "https://registry.npmjs.org/type-fest/-/type-fest-0.16.0.tgz",
+      "integrity": "sha512-eaBzG6MxNzEn9kiwvtre90cXaNLkmadMWa1zQMs3XORCXNbsH/OewwbxC5ia9dCxIxnTAsSxXJaa/p5y8DlvJg==",
+      "dev": true,
+      "license": "(MIT OR CC0-1.0)",
+      "engines": {
+        "node": ">=10"
+      },
+      "funding": {
+        "url": "https://github.com/sponsors/sindresorhus"
+      }
+    },
+    "node_modules/text-decoder": {
+      "version": "1.2.7",
+      "resolved": "https://registry.npmjs.org/text-decoder/-/text-decoder-1.2.7.tgz",
+      "integrity": "sha512-vlLytXkeP4xvEq2otHeJfSQIRyWxo/oZGEbXrtEEF9Hnmrdly59sUbzZ/QgyWuLYHctCHxFF4tRQZNQ9k60ExQ==",
+      "dev": true,
+      "license": "Apache-2.0",
+      "dependencies": {
+        "b4a": "^1.6.4"
+      }
+    },
+    "node_modules/text-decoder/node_modules/b4a": {
+      "version": "1.8.0",
+      "resolved": "https://registry.npmjs.org/b4a/-/b4a-1.8.0.tgz",
+      "integrity": "sha512-qRuSmNSkGQaHwNbM7J78Wwy+ghLEYF1zNrSeMxj4Kgw6y33O3mXcQ6Ie9fRvfU/YnxWkOchPXbaLb73TkIsfdg==",
+      "dev": true,
+      "license": "Apache-2.0",
+      "peerDependencies": {
+        "react-native-b4a": "*"
+      },
+      "peerDependenciesMeta": {
+        "react-native-b4a": {
+          "optional": true
+        }
+      }
+    },
+    "node_modules/text-extensions": {
+      "version": "1.9.0",
+      "resolved": "https://registry.npmjs.org/text-extensions/-/text-extensions-1.9.0.tgz",
+      "integrity": "sha512-wiBrwC1EhBelW12Zy26JeOUkQ5mRu+5o8rpsJk5+2t+Y5vE7e842qtZDQ2g1NpX/29HdyFeJ4nSIhI47ENSxlQ==",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">=0.10"
+      }
+    },
+    "node_modules/through": {
+      "version": "2.3.8",
+      "resolved": "https://registry.npmjs.org/through/-/through-2.3.8.tgz",
+      "integrity": "sha512-w89qg7PI8wAdvX60bMDP+bFoD5Dvhm9oLheFp5O4a2QF0cSBGsBX4qZmadPMvVqlLJBBci+WqGGOAPvcDeNSVg==",
+      "dev": true,
+      "license": "MIT"
+    },
+    "node_modules/through2": {
+      "version": "4.0.2",
+      "resolved": "https://registry.npmjs.org/through2/-/through2-4.0.2.tgz",
+      "integrity": "sha512-iOqSav00cVxEEICeD7TjLB1sueEL+81Wpzp2bY17uZjZN0pWZPuo4suZ/61VujxmqSGFfgOcNuTZ85QJwNZQpw==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "readable-stream": "3"
       }
     },
     "node_modules/tinyglobby": {
@@ -34753,6 +39861,16 @@ export default nextConfig;
         "url": "https://github.com/sponsors/jonschlinkert"
       }
     },
+    "node_modules/tmp": {
+      "version": "0.2.5",
+      "resolved": "https://registry.npmjs.org/tmp/-/tmp-0.2.5.tgz",
+      "integrity": "sha512-voyz6MApa1rQGUxT3E+BK7/ROe8itEx7vD8/HEvt4xwXucvQ5G5oeEiHkmHZJuBO21RpOf+YYm9MOivj709jow==",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">=14.14"
+      }
+    },
     "node_modules/to-regex-range": {
       "version": "5.0.1",
       "resolved": "https://registry.npmjs.org/to-regex-range/-/to-regex-range-5.0.1.tgz",
@@ -34766,10 +39884,37 @@ export default nextConfig;
         "node": ">=8.0"
       }
     },
+    "node_modules/tr46": {
+      "version": "0.0.3",
+      "resolved": "https://registry.npmjs.org/tr46/-/tr46-0.0.3.tgz",
+      "integrity": "sha512-N3WMsuqV66lT30CrXNbEjx4GEwlow3v6rr4mCcv6prnfwhS01rkgyFdjPNBYd9br7LpXV1+Emh01fHnq2Gdgrw==",
+      "dev": true,
+      "license": "MIT"
+    },
+    "node_modules/tree-kill": {
+      "version": "1.2.2",
+      "resolved": "https://registry.npmjs.org/tree-kill/-/tree-kill-1.2.2.tgz",
+      "integrity": "sha512-L0Orpi8qGpRG//Nd+H90vFB+3iHnue1zSSGmNOOCh1GLJ7rUKVwV2HvijphGQS2UmhUZewS9VgvxYIdgr+fG1A==",
+      "dev": true,
+      "license": "MIT",
+      "bin": {
+        "tree-kill": "cli.js"
+      }
+    },
+    "node_modules/trim-newlines": {
+      "version": "3.0.1",
+      "resolved": "https://registry.npmjs.org/trim-newlines/-/trim-newlines-3.0.1.tgz",
+      "integrity": "sha512-c1PTsA3tYrIsLGkJkzHF+w9F2EyxfXGo4UyJc4pFL++FMjnq0HJS69T3M7d//gKrFKwy429bouPescbjecU+Zw==",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">=8"
+      }
+    },
     "node_modules/ts-api-utils": {
-      "version": "2.1.0",
-      "resolved": "https://registry.npmjs.org/ts-api-utils/-/ts-api-utils-2.1.0.tgz",
-      "integrity": "sha512-CUgTZL1irw8u29bzrOD/nH85jqyc74D6SshFgujOIA7osm2Rz7dYH77agkx7H4FBNxDq7Cjf+IjaX/8zwFW+ZQ==",
+      "version": "2.4.0",
+      "resolved": "https://registry.npmjs.org/ts-api-utils/-/ts-api-utils-2.4.0.tgz",
+      "integrity": "sha512-3TaVTaAv2gTiMB35i3FiGJaRfwb3Pyn/j3m/bfAvGe8FB7CF6u+LMYqYlDh7reQf7UNvoTvdfAqHGmPGOSsPmA==",
       "dev": true,
       "license": "MIT",
       "engines": {
@@ -34811,6 +39956,19 @@ export default nextConfig;
       "integrity": "sha512-oJFu94HQb+KVduSUQL7wnpmqnfmLsOA/nAh6b6EH0wCEoK0/mPeXU6c3wKDV83MkOuHPRHtSXKKU99IBazS/2w==",
       "license": "0BSD"
     },
+    "node_modules/tunnel-agent": {
+      "version": "0.6.0",
+      "resolved": "https://registry.npmjs.org/tunnel-agent/-/tunnel-agent-0.6.0.tgz",
+      "integrity": "sha512-McnNiV1l8RYeY8tBgEpuodCC1mLUdbSN+CYBL7kJsJNInOP8UjDDEwdk6Mw60vdLLrr5NHKZhMAOSrR2NZuQ+w==",
+      "dev": true,
+      "license": "Apache-2.0",
+      "dependencies": {
+        "safe-buffer": "^5.0.1"
+      },
+      "engines": {
+        "node": "*"
+      }
+    },
     "node_modules/type-check": {
       "version": "0.4.0",
       "resolved": "https://registry.npmjs.org/type-check/-/type-check-0.4.0.tgz",
@@ -34822,6 +39980,19 @@ export default nextConfig;
       },
       "engines": {
         "node": ">= 0.8.0"
+      }
+    },
+    "node_modules/type-fest": {
+      "version": "0.18.1",
+      "resolved": "https://registry.npmjs.org/type-fest/-/type-fest-0.18.1.tgz",
+      "integrity": "sha512-OIAYXk8+ISY+qTOwkHtKqzAuxchoMiD9Udx+FSGQDuiRR+PJKJHc2NJAXlbhkGwTt/4/nKZxELY1w3ReWOL8mw==",
+      "dev": true,
+      "license": "(MIT OR CC0-1.0)",
+      "engines": {
+        "node": ">=10"
+      },
+      "funding": {
+        "url": "https://github.com/sponsors/sindresorhus"
       }
     },
     "node_modules/typed-array-buffer": {
@@ -34917,16 +40088,16 @@ export default nextConfig;
       }
     },
     "node_modules/typescript-eslint": {
-      "version": "8.47.0",
-      "resolved": "https://registry.npmjs.org/typescript-eslint/-/typescript-eslint-8.47.0.tgz",
-      "integrity": "sha512-Lwe8i2XQ3WoMjua/r1PHrCTpkubPYJCAfOurtn+mtTzqB6jNd+14n9UN1bJ4s3F49x9ixAm0FLflB/JzQ57M8Q==",
+      "version": "8.56.0",
+      "resolved": "https://registry.npmjs.org/typescript-eslint/-/typescript-eslint-8.56.0.tgz",
+      "integrity": "sha512-c7toRLrotJ9oixgdW7liukZpsnq5CZ7PuKztubGYlNppuTqhIoWfhgHo/7EU0v06gS2l/x0i2NEFK1qMIf0rIg==",
       "dev": true,
       "license": "MIT",
       "dependencies": {
-        "@typescript-eslint/eslint-plugin": "8.47.0",
-        "@typescript-eslint/parser": "8.47.0",
-        "@typescript-eslint/typescript-estree": "8.47.0",
-        "@typescript-eslint/utils": "8.47.0"
+        "@typescript-eslint/eslint-plugin": "8.56.0",
+        "@typescript-eslint/parser": "8.56.0",
+        "@typescript-eslint/typescript-estree": "8.56.0",
+        "@typescript-eslint/utils": "8.56.0"
       },
       "engines": {
         "node": "^18.18.0 || ^20.9.0 || >=21.1.0"
@@ -34936,8 +40107,22 @@ export default nextConfig;
         "url": "https://opencollective.com/typescript-eslint"
       },
       "peerDependencies": {
-        "eslint": "^8.57.0 || ^9.0.0",
+        "eslint": "^8.57.0 || ^9.0.0 || ^10.0.0",
         "typescript": ">=4.8.4 <6.0.0"
+      }
+    },
+    "node_modules/uglify-js": {
+      "version": "3.19.3",
+      "resolved": "https://registry.npmjs.org/uglify-js/-/uglify-js-3.19.3.tgz",
+      "integrity": "sha512-v3Xu+yuwBXisp6QYTcH4UbH+xYJXqnq2m/LtQVWKWzYc1iehYnLixoQDN9FH6/j9/oybfd6W9Ghwkl8+UMKTKQ==",
+      "dev": true,
+      "license": "BSD-2-Clause",
+      "optional": true,
+      "bin": {
+        "uglifyjs": "bin/uglifyjs"
+      },
+      "engines": {
+        "node": ">=0.8.0"
       }
     },
     "node_modules/unbox-primitive": {
@@ -34964,6 +40149,29 @@ export default nextConfig;
       "resolved": "https://registry.npmjs.org/undici-types/-/undici-types-6.21.0.tgz",
       "integrity": "sha512-iwDZqg0QAGrg9Rav5H4n0M64c3mkR59cJ6wQp+7C4nI0gsmExaedaYLNO44eT4AtBBwjbTiGPMlt2Md0T9H9JQ==",
       "license": "MIT"
+    },
+    "node_modules/unique-string": {
+      "version": "2.0.0",
+      "resolved": "https://registry.npmjs.org/unique-string/-/unique-string-2.0.0.tgz",
+      "integrity": "sha512-uNaeirEPvpZWSgzwsPGtU2zVSTrn/8L5q/IexZmH0eH6SA73CmAA5U4GwORTxQAZs95TAXLNqeLoPPNO5gZfWg==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "crypto-random-string": "^2.0.0"
+      },
+      "engines": {
+        "node": ">=8"
+      }
+    },
+    "node_modules/universalify": {
+      "version": "2.0.1",
+      "resolved": "https://registry.npmjs.org/universalify/-/universalify-2.0.1.tgz",
+      "integrity": "sha512-gptHNQghINnc/vTGIk0SOFGFNXw7JVrlRUtConJRlvaw6DuX0wO5Jeko9sWrMBhh+PsYAZ7oXAiOnf/UKogyiw==",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">= 10.0.0"
+      }
     },
     "node_modules/unrs-resolver": {
       "version": "1.11.1",
@@ -34998,6 +40206,16 @@ export default nextConfig;
         "@unrs/resolver-binding-win32-arm64-msvc": "1.11.1",
         "@unrs/resolver-binding-win32-ia32-msvc": "1.11.1",
         "@unrs/resolver-binding-win32-x64-msvc": "1.11.1"
+      }
+    },
+    "node_modules/untildify": {
+      "version": "4.0.0",
+      "resolved": "https://registry.npmjs.org/untildify/-/untildify-4.0.0.tgz",
+      "integrity": "sha512-KK8xQ1mkzZeg9inewmFVDNkg3l5LUhoq9kN6iWYB/CC9YMG8HA+c1Q8HwDe6dEX7kErrEVNVBO3fWsVq5iDgtw==",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">=8"
       }
     },
     "node_modules/update-browserslist-db": {
@@ -35039,6 +40257,69 @@ export default nextConfig;
       "license": "BSD-2-Clause",
       "dependencies": {
         "punycode": "^2.1.0"
+      }
+    },
+    "node_modules/util-deprecate": {
+      "version": "1.0.2",
+      "resolved": "https://registry.npmjs.org/util-deprecate/-/util-deprecate-1.0.2.tgz",
+      "integrity": "sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==",
+      "dev": true,
+      "license": "MIT"
+    },
+    "node_modules/uuid": {
+      "version": "7.0.3",
+      "resolved": "https://registry.npmjs.org/uuid/-/uuid-7.0.3.tgz",
+      "integrity": "sha512-DPSke0pXhTZgoF/d+WSt2QaKMCFSfx7QegxEWT+JOuHF5aWrKEn0G+ztjuJg/gG8/ItK+rbPCD/yNv8yyih6Cg==",
+      "dev": true,
+      "license": "MIT",
+      "bin": {
+        "uuid": "dist/bin/uuid"
+      }
+    },
+    "node_modules/v8-compile-cache-lib": {
+      "version": "3.0.1",
+      "resolved": "https://registry.npmjs.org/v8-compile-cache-lib/-/v8-compile-cache-lib-3.0.1.tgz",
+      "integrity": "sha512-wa7YjyUGfNZngI/vtK0UHAN+lgDCxBPCylVXGp0zu59Fz5aiGtNXaq3DhIov063MorB+VfufLh3JlF2KdTK3xg==",
+      "dev": true,
+      "license": "MIT"
+    },
+    "node_modules/validate-npm-package-license": {
+      "version": "3.0.4",
+      "resolved": "https://registry.npmjs.org/validate-npm-package-license/-/validate-npm-package-license-3.0.4.tgz",
+      "integrity": "sha512-DpKm2Ui/xN7/HQKCtpZxoRWBhZ9Z0kqtygG8XCgNQ8ZlDnxuQmWhj566j8fN4Cu3/JmbhsDo7fcAJq4s9h27Ew==",
+      "dev": true,
+      "license": "Apache-2.0",
+      "dependencies": {
+        "spdx-correct": "^3.0.0",
+        "spdx-expression-parse": "^3.0.0"
+      }
+    },
+    "node_modules/web-streams-polyfill": {
+      "version": "3.3.3",
+      "resolved": "https://registry.npmjs.org/web-streams-polyfill/-/web-streams-polyfill-3.3.3.tgz",
+      "integrity": "sha512-d2JWLCivmZYTSIoge9MsgFCZrt571BikcWGYkjC1khllbTeDlGqZ2D8vD8E/lJa8WGWbb7Plm8/XJYV7IJHZZw==",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">= 8"
+      }
+    },
+    "node_modules/webidl-conversions": {
+      "version": "3.0.1",
+      "resolved": "https://registry.npmjs.org/webidl-conversions/-/webidl-conversions-3.0.1.tgz",
+      "integrity": "sha512-2JAn3z8AR6rjK8Sm8orRC0h/bcl/DqL7tRPdGZ4I1CjdF+EaMLmYxBHyXuKL849eucPFhvBoxMsflfOb8kxaeQ==",
+      "dev": true,
+      "license": "BSD-2-Clause"
+    },
+    "node_modules/whatwg-url": {
+      "version": "5.0.0",
+      "resolved": "https://registry.npmjs.org/whatwg-url/-/whatwg-url-5.0.0.tgz",
+      "integrity": "sha512-saE57nupxk6v3HY35+jzBwYa0rKSy0XR8JSxZPwgLr7ys0IBzhGviA1/TUGJLmSVqs8pb9AnvICXEuOHLprYTw==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "tr46": "~0.0.3",
+        "webidl-conversions": "^3.0.0"
       }
     },
     "node_modules/which": {
@@ -35124,6 +40405,13 @@ export default nextConfig;
         "url": "https://github.com/sponsors/ljharb"
       }
     },
+    "node_modules/which-module": {
+      "version": "2.0.1",
+      "resolved": "https://registry.npmjs.org/which-module/-/which-module-2.0.1.tgz",
+      "integrity": "sha512-iBdZ57RDvnOR9AGBhML2vFZf7h8vmBjhoaZqODJBFWHVtKkDmKuHai3cx5PgVMrX5YDNp27AofYbAwctSS+vhQ==",
+      "dev": true,
+      "license": "ISC"
+    },
     "node_modules/which-typed-array": {
       "version": "1.1.19",
       "resolved": "https://registry.npmjs.org/which-typed-array/-/which-typed-array-1.1.19.tgz",
@@ -35156,6 +40444,65 @@ export default nextConfig;
         "node": ">=0.10.0"
       }
     },
+    "node_modules/wordwrap": {
+      "version": "1.0.0",
+      "resolved": "https://registry.npmjs.org/wordwrap/-/wordwrap-1.0.0.tgz",
+      "integrity": "sha512-gvVzJFlPycKc5dZN4yPkP8w7Dc37BtP1yczEneOb4uq34pXZcvrtRTmWV8W+Ume+XCxKgbjM+nevkyFPMybd4Q==",
+      "dev": true,
+      "license": "MIT"
+    },
+    "node_modules/wrap-ansi": {
+      "version": "7.0.0",
+      "resolved": "https://registry.npmjs.org/wrap-ansi/-/wrap-ansi-7.0.0.tgz",
+      "integrity": "sha512-YVGIj2kamLSTxw6NsZjoBxfSwsn0ycdesmc4p+Q21c5zPuZ1pl+NfxVdxPtdHvmNVOQ6XSYG4AUtyt/Fi7D16Q==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "ansi-styles": "^4.0.0",
+        "string-width": "^4.1.0",
+        "strip-ansi": "^6.0.0"
+      },
+      "engines": {
+        "node": ">=10"
+      },
+      "funding": {
+        "url": "https://github.com/chalk/wrap-ansi?sponsor=1"
+      }
+    },
+    "node_modules/wrappy": {
+      "version": "1.0.2",
+      "resolved": "https://registry.npmjs.org/wrappy/-/wrappy-1.0.2.tgz",
+      "integrity": "sha512-l4Sp/DRseor9wL6EvV2+TuQn63dMkPjZ/sp9XkghTEbV9KlPS1xUsZ3u7/IQO4wxtcFB4bgpQPRcR3QCvezPcQ==",
+      "dev": true,
+      "license": "ISC"
+    },
+    "node_modules/write-file-atomic": {
+      "version": "7.0.0",
+      "resolved": "https://registry.npmjs.org/write-file-atomic/-/write-file-atomic-7.0.0.tgz",
+      "integrity": "sha512-YnlPC6JqnZl6aO4uRc+dx5PHguiR9S6WeoLtpxNT9wIG+BDya7ZNE1q7KOjVgaA73hKhKLpVPgJ5QA9THQ5BRg==",
+      "dev": true,
+      "license": "ISC",
+      "dependencies": {
+        "imurmurhash": "^0.1.4",
+        "signal-exit": "^4.0.1"
+      },
+      "engines": {
+        "node": "^20.17.0 || >=22.9.0"
+      }
+    },
+    "node_modules/write-file-atomic/node_modules/signal-exit": {
+      "version": "4.1.0",
+      "resolved": "https://registry.npmjs.org/signal-exit/-/signal-exit-4.1.0.tgz",
+      "integrity": "sha512-bzyZ1e88w9O1iNJbKnOlvYTrWPDl46O1bG0D3XInv+9tkPrxrN8jUUTiFlDkkmKWgn1M6CfIA13SuGqOa9Korw==",
+      "dev": true,
+      "license": "ISC",
+      "engines": {
+        "node": ">=14"
+      },
+      "funding": {
+        "url": "https://github.com/sponsors/isaacs"
+      }
+    },
     "node_modules/ws": {
       "version": "8.19.0",
       "resolved": "https://registry.npmjs.org/ws/-/ws-8.19.0.tgz",
@@ -35177,12 +40524,173 @@ export default nextConfig;
         }
       }
     },
+    "node_modules/xcode": {
+      "version": "3.0.1",
+      "resolved": "https://registry.npmjs.org/xcode/-/xcode-3.0.1.tgz",
+      "integrity": "sha512-kCz5k7J7XbJtjABOvkc5lJmkiDh8VhjVCGNiqdKCscmVpdVUpEAyXv1xmCLkQJ5dsHqx3IPO4XW+NTDhU/fatA==",
+      "dev": true,
+      "license": "Apache-2.0",
+      "dependencies": {
+        "simple-plist": "^1.1.0",
+        "uuid": "^7.0.3"
+      },
+      "engines": {
+        "node": ">=10.0.0"
+      }
+    },
+    "node_modules/xml-js": {
+      "version": "1.6.11",
+      "resolved": "https://registry.npmjs.org/xml-js/-/xml-js-1.6.11.tgz",
+      "integrity": "sha512-7rVi2KMfwfWFl+GpPg6m80IVMWXLRjO+PxTq7V2CDhoGak0wzYzFgUY2m4XJ47OGdXd8eLE8EmwfAmdjw7lC1g==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "sax": "^1.2.4"
+      },
+      "bin": {
+        "xml-js": "bin/cli.js"
+      }
+    },
+    "node_modules/xml-js/node_modules/sax": {
+      "version": "1.4.4",
+      "resolved": "https://registry.npmjs.org/sax/-/sax-1.4.4.tgz",
+      "integrity": "sha512-1n3r/tGXO6b6VXMdFT54SHzT9ytu9yr7TaELowdYpMqY/Ao7EnlQGmAQ1+RatX7Tkkdm6hONI2owqNx2aZj5Sw==",
+      "dev": true,
+      "license": "BlueOak-1.0.0",
+      "engines": {
+        "node": ">=11.0.0"
+      }
+    },
+    "node_modules/xml2js": {
+      "version": "0.6.2",
+      "resolved": "https://registry.npmjs.org/xml2js/-/xml2js-0.6.2.tgz",
+      "integrity": "sha512-T4rieHaC1EXcES0Kxxj4JWgaUQHDk+qwHcYOCFHfiwKz7tOVPLq7Hjq9dM1WCMhylqMEfP7hMcOIChvotiZegA==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "sax": ">=0.6.0",
+        "xmlbuilder": "~11.0.0"
+      },
+      "engines": {
+        "node": ">=4.0.0"
+      }
+    },
+    "node_modules/xml2js/node_modules/xmlbuilder": {
+      "version": "11.0.1",
+      "resolved": "https://registry.npmjs.org/xmlbuilder/-/xmlbuilder-11.0.1.tgz",
+      "integrity": "sha512-fDlsI/kFEx7gLvbecc0/ohLG50fugQp8ryHzMTuW9vSa1GJ0XYWKnhsUx7oie3G98+r56aTQIUB4kht42R3JvA==",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">=4.0"
+      }
+    },
+    "node_modules/xmlbuilder": {
+      "version": "15.1.1",
+      "resolved": "https://registry.npmjs.org/xmlbuilder/-/xmlbuilder-15.1.1.tgz",
+      "integrity": "sha512-yMqGBqtXyeN1e3TGYvgNgDVZ3j84W4cwkOXQswghol6APgZWaff9lnbvN7MHYJOiXsvGPXtjTYJEiC9J2wv9Eg==",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">=8.0"
+      }
+    },
+    "node_modules/xpath": {
+      "version": "0.0.32",
+      "resolved": "https://registry.npmjs.org/xpath/-/xpath-0.0.32.tgz",
+      "integrity": "sha512-rxMJhSIoiO8vXcWvSifKqhvV96GjiD5wYb8/QHdoRyQvraTpp4IEv944nhGausZZ3u7dhQXteZuZbaqfpB7uYw==",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">=0.6.0"
+      }
+    },
+    "node_modules/xtend": {
+      "version": "4.0.2",
+      "resolved": "https://registry.npmjs.org/xtend/-/xtend-4.0.2.tgz",
+      "integrity": "sha512-LKYU1iAXJXUgAXn9URjiu+MWhyUXHsvfp7mcuYm9dSUKK0/CjtrUwFAxD82/mCWbtLsGjFIad0wIsod4zrTAEQ==",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">=0.4"
+      }
+    },
+    "node_modules/y18n": {
+      "version": "5.0.8",
+      "resolved": "https://registry.npmjs.org/y18n/-/y18n-5.0.8.tgz",
+      "integrity": "sha512-0pfFzegeDWJHJIAmTLRP2DwHjdF5s7jo9tuztdQxAhINCdvS+3nGINqPd00AphqJR/0LhANUS6/+7SCb98YOfA==",
+      "dev": true,
+      "license": "ISC",
+      "engines": {
+        "node": ">=10"
+      }
+    },
     "node_modules/yallist": {
       "version": "3.1.1",
       "resolved": "https://registry.npmjs.org/yallist/-/yallist-3.1.1.tgz",
       "integrity": "sha512-a4UGQaWPH59mOXUYnAG2ewncQS4i4F43Tv3JoAM+s2VDAmS9NsK8GpDMLrCHPksFT7h3K6TOoUNn2pb7RoXx4g==",
       "dev": true,
       "license": "ISC"
+    },
+    "node_modules/yargs": {
+      "version": "17.7.2",
+      "resolved": "https://registry.npmjs.org/yargs/-/yargs-17.7.2.tgz",
+      "integrity": "sha512-7dSzzRQ++CKnNI/krKnYRV7JKKPUXMEh61soaHKg9mrWEhzFWhFnxPxGl+69cD1Ou63C13NUPCnmIcrvqCuM6w==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "cliui": "^8.0.1",
+        "escalade": "^3.1.1",
+        "get-caller-file": "^2.0.5",
+        "require-directory": "^2.1.1",
+        "string-width": "^4.2.3",
+        "y18n": "^5.0.5",
+        "yargs-parser": "^21.1.1"
+      },
+      "engines": {
+        "node": ">=12"
+      }
+    },
+    "node_modules/yargs-parser": {
+      "version": "20.2.9",
+      "resolved": "https://registry.npmjs.org/yargs-parser/-/yargs-parser-20.2.9.tgz",
+      "integrity": "sha512-y11nGElTIV+CT3Zv9t7VKl+Q3hTQoT9a1Qzezhhl6Rp21gJ/IVTW7Z3y9EWXhuUBC2Shnf+DX0antecpAwSP8w==",
+      "dev": true,
+      "license": "ISC",
+      "engines": {
+        "node": ">=10"
+      }
+    },
+    "node_modules/yargs/node_modules/yargs-parser": {
+      "version": "21.1.1",
+      "resolved": "https://registry.npmjs.org/yargs-parser/-/yargs-parser-21.1.1.tgz",
+      "integrity": "sha512-tVpsJW7DdjecAiFpbIB1e3qxIQsE6NoPc5/eTdrbbIC4h0LVsWhnoa3g+m2HclBIujHzsxZ4VJVA+GUuc2/LBw==",
+      "dev": true,
+      "license": "ISC",
+      "engines": {
+        "node": ">=12"
+      }
+    },
+    "node_modules/yauzl": {
+      "version": "2.10.0",
+      "resolved": "https://registry.npmjs.org/yauzl/-/yauzl-2.10.0.tgz",
+      "integrity": "sha512-p4a9I6X6nu6IhoGmBqAcbJy1mlC4j27vEPZX9F4L4/vZT3Lyq1VkFHw/V/PUcB9Buo+DG3iHkT0x3Qya58zc3g==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "buffer-crc32": "~0.2.3",
+        "fd-slicer": "~1.1.0"
+      }
+    },
+    "node_modules/yn": {
+      "version": "3.1.1",
+      "resolved": "https://registry.npmjs.org/yn/-/yn-3.1.1.tgz",
+      "integrity": "sha512-Ux4ygGWsu2c7isFWe8Yu1YluJmqVhxqK2cLXNQA5AcC3QfbGNpM7fu0Y8b/z16pXLnFxZYvWhd3fhBY9DLmC6Q==",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">=6"
+      }
     },
     "node_modules/yocto-queue": {
       "version": "0.1.0",
@@ -35232,21 +40740,25 @@ export default nextConfig;
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev --webpack",
     "build": "next build",
     "start": "next start",
     "lint": "eslint"
   },
   "dependencies": {
+    "@capacitor/android": "^8.1.0",
+    "@capacitor/core": "^8.1.0",
+    "@capacitor/status-bar": "^8.0.1",
     "@fortawesome/fontawesome-svg-core": "^7.1.0",
     "@fortawesome/free-brands-svg-icons": "^7.1.0",
     "@fortawesome/free-regular-svg-icons": "^7.2.0",
     "@fortawesome/free-solid-svg-icons": "^7.1.0",
     "@fortawesome/react-fontawesome": "^3.1.1",
     "@supabase/ssr": "^0.8.0",
-    "@supabase/supabase-js": "^2.95.3",
+    "@supabase/supabase-js": "^2.97.0",
     "@vercel/speed-insights": "^1.3.1",
     "canvas-confetti": "^1.9.4",
+    "motion": "^12.34.3",
     "next": "^16.0.8",
     "next-auth": "^5.0.0-beta.30",
     "openai": "^6.22.0",
@@ -35254,6 +40766,8 @@ export default nextConfig;
     "react-dom": "19.2.0"
   },
   "devDependencies": {
+    "@capacitor/assets": "^3.0.5",
+    "@capacitor/cli": "^8.1.0",
     "@tailwindcss/postcss": "^4",
     "@types/canvas-confetti": "^1.9.0",
     "@types/node": "^20",
@@ -35262,71 +40776,11 @@ export default nextConfig;
     "baseline-browser-mapping": "^2.9.5",
     "eslint": "^9",
     "eslint-config-next": "16.0.3",
+    "supabase": "^2.76.14",
     "tailwindcss": "^4",
     "typescript": "^5"
   }
 }
-
-```
-
-### proxy.ts
-```tsx
-// proxy.ts (project root) or middleware.ts
-import type { NextRequest } from "next/server";
-import { NextResponse } from "next/server";
-import { createServerClient } from "@supabase/ssr";
-
-import { isBypassPath } from "./lib/middleware/paths";
-import { applyOnboardingGate } from "./lib/middleware/onboarding";
-
-// TEMP: disable your old NextAuth/local auth gate until we migrate it to Supabase.
-// import { applyAuthGate } from "./lib/middleware/auth";
-
-export async function proxy(req: NextRequest) {
-  const { pathname } = req.nextUrl;
-
-  if (isBypassPath(pathname)) return NextResponse.next();
-
-  const onboardingRes = applyOnboardingGate(req);
-  if (onboardingRes) return onboardingRes;
-
-  // Let the request continue
-  const res = NextResponse.next({ request: req });
-
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-
-  // If env is missing, don't crash the whole app
-  if (!url || !anonKey) return res;
-
-  const supabase = createServerClient(url, anonKey, {
-  auth: {
-    flowType: "pkce",
-    storageKey: "sb-expatise-auth",
-  },
-  cookies: {
-    getAll() {
-      return req.cookies.getAll();
-    },
-    setAll(cookiesToSet) {
-      cookiesToSet.forEach(({ name, value, options }) => {
-        req.cookies.set(name, value);
-        res.cookies.set(name, value, options);
-      });
-    },
-  },
-});
-if (pathname.startsWith("/api/")) return res;
-  // Refresh session if needed (sets/updates cookies via setAll)
-  await supabase.auth.getUser();
-
-  return res;
-}
-
-export const config = {
-  matcher: ["/((?!_next/static|_next/image|favicon.ico|images).*)"],
-};
-
 
 ```
 
@@ -39133,22 +44587,22 @@ export const config = {
         {
           "id": "q0105_o1",
           "originalKey": "A",
-          "text": "Honk to warn"
+          "text": "honk to warn"
         },
         {
           "id": "q0105_o2",
           "originalKey": "B",
-          "text": "Speed up and pass"
+          "text": "speed up and pass"
         },
         {
           "id": "q0105_o3",
           "originalKey": "C",
-          "text": "Reduce speed and yield"
+          "text": "reduce speed and yield"
         },
         {
           "id": "q0105_o4",
           "originalKey": "D",
-          "text": "Suddenly speed up when approaching"
+          "text": "suddenly speed up while approaching"
         }
       ],
       "correctRow": null,
@@ -39257,22 +44711,22 @@ export const config = {
         {
           "id": "q0107_o1",
           "originalKey": "A",
-          "text": "Reduce speed and go slowly"
+          "text": "reduce speed and go slowly"
         },
         {
           "id": "q0107_o2",
           "originalKey": "B",
-          "text": "Go forward normally"
+          "text": "go forward normally"
         },
         {
           "id": "q0107_o3",
           "originalKey": "C",
-          "text": "Speed up and pass"
+          "text": "speed up and pass"
         },
         {
           "id": "q0107_o4",
           "originalKey": "D",
-          "text": "Continuously honk"
+          "text": "continuously honk"
         }
       ],
       "correctRow": null,
@@ -39312,22 +44766,22 @@ export const config = {
         {
           "id": "q0108_o1",
           "originalKey": "A",
-          "text": "Directly start up and pass"
+          "text": "directly start up and pass"
         },
         {
           "id": "q0108_o2",
           "originalKey": "B",
-          "text": "Start up and bypass the pedestrians from behind"
+          "text": "start up and bypass the pedestrians from behind"
         },
         {
           "id": "q0108_o3",
           "originalKey": "C",
-          "text": "Start up and bypass before the pedestrians"
+          "text": "start up and bypass before the pedestrians"
         },
         {
           "id": "q0108_o4",
           "originalKey": "D",
-          "text": "Start up after the pedestrians have passed"
+          "text": "start up after the pedestrians have passed"
         }
       ],
       "correctRow": null,
@@ -39382,22 +44836,22 @@ export const config = {
         {
           "id": "q0109_o1",
           "originalKey": "A",
-          "text": "Cannot change gear"
+          "text": "cannot change gear"
         },
         {
           "id": "q0109_o2",
           "originalKey": "B",
-          "text": "Can change gear"
+          "text": "can change gear"
         },
         {
           "id": "q0109_o3",
           "originalKey": "C",
-          "text": "Can change to a higher gear"
+          "text": "can change to a higher gear"
         },
         {
           "id": "q0109_o4",
           "originalKey": "D",
-          "text": "Stop and look"
+          "text": "stop and look"
         }
       ],
       "correctRow": null,
@@ -39442,22 +44896,22 @@ export const config = {
         {
           "id": "q0110_o1",
           "originalKey": "A",
-          "text": "Cause sideways slide and traffic accident"
+          "text": "cause sideways slide and traffic accident"
         },
         {
           "id": "q0110_o2",
           "originalKey": "B",
-          "text": "Cause collision due to poor visibility"
+          "text": "cause collision due to poor visibility"
         },
         {
           "id": "q0110_o3",
           "originalKey": "C",
-          "text": "Be ignored by the drivers of other vehicles"
+          "text": "be ignored by the drivers of other vehicles"
         },
         {
           "id": "q0110_o4",
           "originalKey": "D",
-          "text": "Cause engine kill"
+          "text": "cause engine kill"
         }
       ],
       "correctRow": null,
@@ -39506,22 +44960,22 @@ export const config = {
         {
           "id": "q0111_o1",
           "originalKey": "A",
-          "text": "In the area marked by solid lines before the intersection"
+          "text": "in the area marked by solid lines before the intersection"
         },
         {
           "id": "q0111_o2",
           "originalKey": "B",
-          "text": "In the area marked by solid lines in the intersection"
+          "text": "in the area marked by solid lines in the intersection"
         },
         {
           "id": "q0111_o3",
           "originalKey": "C",
-          "text": "In the area marked by broken lines as indicated by the guide arrow"
+          "text": "in the area marked by broken lines as indicated by the guide arrow"
         },
         {
           "id": "q0111_o4",
           "originalKey": "D",
-          "text": "Before the stop line at the intersection"
+          "text": "before the stop line at the intersection"
         }
       ],
       "correctRow": null,
@@ -39566,22 +45020,22 @@ export const config = {
         {
           "id": "q0112_o1",
           "originalKey": "A",
-          "text": "Speed up and pass"
+          "text": "speed up and pass"
         },
         {
           "id": "q0112_o2",
           "originalKey": "B",
-          "text": "Reduce speed and pass"
+          "text": "reduce speed and pass"
         },
         {
           "id": "q0112_o3",
           "originalKey": "C",
-          "text": "Maintain the speed and pass"
+          "text": "maintain the speed and pass"
         },
         {
           "id": "q0112_o4",
           "originalKey": "D",
-          "text": "Stop, look, and pass"
+          "text": "stop, look, and pass"
         }
       ],
       "correctRow": null,
@@ -39626,22 +45080,22 @@ export const config = {
         {
           "id": "q0113_o1",
           "originalKey": "A",
-          "text": "The engine can easily stop"
+          "text": "the engine can easily stop"
         },
         {
           "id": "q0113_o2",
           "originalKey": "B",
-          "text": "The vehicle can easily slide sideways"
+          "text": "the vehicle can easily slide sideways"
         },
         {
           "id": "q0113_o3",
           "originalKey": "C",
-          "text": "The resistance the vehicle increases"
+          "text": "the resistance the vehicle increases"
         },
         {
           "id": "q0113_o4",
           "originalKey": "D",
-          "text": "The visibility is low and the vision is poor"
+          "text": "the visibility is low and the vision is poor"
         }
       ],
       "correctRow": null,
@@ -39681,22 +45135,22 @@ export const config = {
         {
           "id": "q0114_o1",
           "originalKey": "A",
-          "text": "The head and tail fog light"
+          "text": "the head and tail fog light"
         },
         {
           "id": "q0114_o2",
           "originalKey": "B",
-          "text": "The reserve light"
+          "text": "the reserve light"
         },
         {
           "id": "q0114_o3",
           "originalKey": "C",
-          "text": "The high beam light"
+          "text": "the high beam light"
         },
         {
           "id": "q0114_o4",
           "originalKey": "D",
-          "text": "The hazard lights"
+          "text": "the hazard lights"
         }
       ],
       "correctRow": null,
@@ -39741,22 +45195,22 @@ export const config = {
         {
           "id": "q0115_o1",
           "originalKey": "A",
-          "text": "Signs and markings"
+          "text": "signs and markings"
         },
         {
           "id": "q0115_o2",
           "originalKey": "B",
-          "text": "Rules on road traffic safety"
+          "text": "rules on road traffic safety"
         },
         {
           "id": "q0115_o3",
           "originalKey": "C",
-          "text": "Vehicle manual"
+          "text": "vehicle manual"
         },
         {
           "id": "q0115_o4",
           "originalKey": "D",
-          "text": "Local regulations"
+          "text": "local regulations"
         }
       ],
       "correctRow": null,
@@ -39805,17 +45259,17 @@ export const config = {
         {
           "id": "q0116_o1",
           "originalKey": "A",
-          "text": "They move slowly"
+          "text": "they move slowly"
         },
         {
           "id": "q0116_o2",
           "originalKey": "B",
-          "text": "They like to get together and look on"
+          "text": "they like to get together and look on"
         },
         {
           "id": "q0116_o3",
           "originalKey": "C",
-          "text": "They walk around at will and can easily change directions"
+          "text": "they walk around at will and can easily change directions"
         },
         {
           "id": "q0116_o4",
@@ -39860,22 +45314,22 @@ export const config = {
         {
           "id": "q0117_o1",
           "originalKey": "A",
-          "text": "Reduce speed and go slowly"
+          "text": "reduce speed and go slowly"
         },
         {
           "id": "q0117_o2",
           "originalKey": "B",
-          "text": "Maintain the normal speed and pass"
+          "text": "maintain the normal speed and pass"
         },
         {
           "id": "q0117_o3",
           "originalKey": "C",
-          "text": "Slide over in the neutral gear"
+          "text": "slide over in the neutral gear"
         },
         {
           "id": "q0117_o4",
           "originalKey": "D",
-          "text": "Speed up and pass"
+          "text": "speed up and pass"
         }
       ],
       "correctRow": null,
@@ -39915,22 +45369,22 @@ export const config = {
         {
           "id": "q0118_o1",
           "originalKey": "A",
-          "text": "Continue to weave through"
+          "text": "continue to weave through"
         },
         {
           "id": "q0118_o2",
           "originalKey": "B",
-          "text": "Find space and overtake one vehicle after another"
+          "text": "find space and overtake one vehicle after another"
         },
         {
           "id": "q0118_o3",
           "originalKey": "C",
-          "text": "Honk to indicate the vehicle in front to speed up"
+          "text": "honk to indicate the vehicle in front to speed up"
         },
-        {
+        { 
           "id": "q0118_o4",
           "originalKey": "D",
-          "text": "Stop and wait in line"
+          "text": "stop and wait in line"
         }
       ],
       "correctRow": null,
@@ -39970,22 +45424,22 @@ export const config = {
         {
           "id": "q0119_o1",
           "originalKey": "A",
-          "text": "Reduce speed or stop and yield to the vehicle coming in the opposite direction"
+          "text": "reduce speed or stop and yield to the vehicle coming in the opposite direction"
         },
         {
           "id": "q0119_o2",
           "originalKey": "B",
-          "text": "Speed up and bypass the obstacle in advance"
+          "text": "speed up and bypass the obstacle in advance"
         },
         {
           "id": "q0119_o3",
           "originalKey": "C",
-          "text": "Honk to indicate the vehicle in the opposite direction to yield"
+          "text": "honk to indicate the vehicle in the opposite direction to yield"
         },
         {
           "id": "q0119_o4",
           "originalKey": "D",
-          "text": "Rapidly occupy the lane and force the vehicle coming in the opposite direction to stop and yield"
+          "text": "rapidly occupy the lane and force the vehicle coming in the opposite direction to stop and yield"
         }
       ],
       "correctRow": null,
@@ -40040,22 +45494,22 @@ export const config = {
         {
           "id": "q0120_o1",
           "originalKey": "A",
-          "text": "Honk to indicate them to yield"
+          "text": "honk to indicate them to yield"
         },
         {
           "id": "q0120_o2",
           "originalKey": "B",
-          "text": "Yield to them"
+          "text": "yield to them"
         },
         {
           "id": "q0120_o3",
           "originalKey": "C",
-          "text": "Speed up and bypass"
+          "text": "speed up and bypass"
         },
         {
           "id": "q0120_o4",
           "originalKey": "D",
-          "text": "Follow them closely and honk"
+          "text": "follow them closely and honk"
         }
       ],
       "correctRow": null,
@@ -40104,22 +45558,22 @@ export const config = {
         {
           "id": "q0121_o1",
           "originalKey": "A",
-          "text": "Reverse to the original place"
+          "text": "reverse to the original place"
         },
         {
           "id": "q0121_o2",
           "originalKey": "B",
-          "text": "Continue to go ahead and find the next exit"
+          "text": "continue to go ahead and find the next exit"
         },
         {
           "id": "q0121_o3",
           "originalKey": "C",
-          "text": "Immediately stop"
+          "text": "immediately stop"
         },
         {
           "id": "q0121_o4",
           "originalKey": "D",
-          "text": "Make a U-turn from where he is"
+          "text": "make a U-turn from where he is"
         }
       ],
       "correctRow": null,
@@ -40164,22 +45618,22 @@ export const config = {
         {
           "id": "q0122_o1",
           "originalKey": "A",
-          "text": "May stop on the road shoulder to let passengers on and off"
+          "text": "may stop on the road shoulder to let passengers on and off"
         },
         {
           "id": "q0122_o2",
           "originalKey": "B",
-          "text": "May stop in the emergency lane to load and unload cargos"
+          "text": "may stop in the emergency lane to load and unload cargos"
         },
         {
           "id": "q0122_o3",
           "originalKey": "C",
-          "text": "May overtake or stop in the acceleration or deceleration lane"
+          "text": "may overtake or stop in the acceleration or deceleration lane"
         },
         {
           "id": "q0122_o4",
           "originalKey": "D",
-          "text": "Is not allowed to drive or stop in the emergency lane in a non-emergency case"
+          "text": "is not allowed to drive or stop in the emergency lane in a non-emergency case"
         }
       ],
       "correctRow": null,
@@ -40224,22 +45678,22 @@ export const config = {
         {
           "id": "q0123_o1",
           "originalKey": "A",
-          "text": "Not reduce speed"
+          "text": "not reduce speed"
         },
         {
           "id": "q0123_o2",
           "originalKey": "B",
-          "text": "Stick to the center of the road"
+          "text": "stick to the center of the road"
         },
         {
           "id": "q0123_o3",
           "originalKey": "C",
-          "text": "Speed up"
+          "text": "speed up"
         },
         {
           "id": "q0123_o4",
           "originalKey": "D",
-          "text": "Reduce speed or stop to yield"
+          "text": "reduce speed or stop to yield"
         }
       ],
       "correctRow": null,
@@ -40284,22 +45738,22 @@ export const config = {
         {
           "id": "q0124_o1",
           "originalKey": "A",
-          "text": "Shift to the neutral gear and slide"
+          "text": "shift to the neutral gear and slide"
         },
         {
           "id": "q0124_o2",
           "originalKey": "B",
-          "text": "Use the engine to brake"
+          "text": "use the engine to brake"
         },
         {
           "id": "q0124_o3",
           "originalKey": "C",
-          "text": "Turn off the engine and slide"
+          "text": "turn off the engine and slide"
         },
         {
           "id": "q0124_o4",
           "originalKey": "D",
-          "text": "Depress the clutch and slide"
+          "text": "depress the clutch and slide"
         }
       ],
       "correctRow": null,
@@ -40344,22 +45798,22 @@ export const config = {
         {
           "id": "q0125_o1",
           "originalKey": "A",
-          "text": "Reduce tire pressure"
+          "text": "reduce tire pressure"
         },
         {
           "id": "q0125_o2",
           "originalKey": "B",
-          "text": "Check the tires regularly"
+          "text": "check the tires regularly"
         },
         {
           "id": "q0125_o3",
           "originalKey": "C",
-          "text": "Remove objects from tire tread grooves in a timely manner"
+          "text": "remove objects from tire tread grooves in a timely manner"
         },
         {
           "id": "q0125_o4",
           "originalKey": "D",
-          "text": "Replace the tire that has cracks or deep cuts"
+          "text": "replace the tire that has cracks or deep cuts"
         }
       ],
       "correctRow": null,
@@ -40399,22 +45853,22 @@ export const config = {
         {
           "id": "q0126_o1",
           "originalKey": "A",
-          "text": "The visibility is low and unfavorable for observing road traffic conditions"
+          "text": "the visibility is low and unfavorable for observing road traffic conditions"
         },
         {
           "id": "q0126_o2",
           "originalKey": "B",
-          "text": "The road surface is complex and changing"
+          "text": "the road surface is complex and changing"
         },
         {
           "id": "q0126_o3",
           "originalKey": "C",
-          "text": "The physical strength of the driver decreases"
+          "text": "the physical strength of the driver decreases"
         },
         {
           "id": "q0126_o4",
           "originalKey": "D",
-          "text": "The driver can easily have impulse and illusion"
+          "text": "the driver can easily have impulse and illusion"
         }
       ],
       "correctRow": null,
@@ -40454,22 +45908,22 @@ export const config = {
         {
           "id": "q0127_o1",
           "originalKey": "A",
-          "text": "Obstruct the way of that vehicle"
+          "text": "obstruct the way of that vehicle"
         },
         {
           "id": "q0127_o2",
           "originalKey": "B",
-          "text": "Maintain the original speed"
+          "text": "maintain the original speed"
         },
         {
           "id": "q0127_o3",
           "originalKey": "C",
-          "text": "Reduce speed and avoid the incoming vehicle as much as possible and halt if required"
+          "text": "reduce speed and avoid the incoming vehicle as much as possible and halt if required"
         },
         {
           "id": "q0127_o4",
           "originalKey": "D",
-          "text": "Speed up and go forward"
+          "text": "speed up and go forward"
         }
       ],
       "correctRow": null,
@@ -40509,22 +45963,22 @@ export const config = {
         {
           "id": "q0128_o1",
           "originalKey": "A",
-          "text": "Speed up and pass"
+          "text": "speed up and pass"
         },
         {
           "id": "q0128_o2",
           "originalKey": "B",
-          "text": "Stop immediately"
+          "text": "stop immediately"
         },
         {
           "id": "q0128_o3",
           "originalKey": "C",
-          "text": "Honk to indicate the pedestrians to yield"
+          "text": "honk to indicate the pedestrians to yield"
         },
         {
           "id": "q0128_o4",
           "originalKey": "D",
-          "text": "Observe the movement of pedestrians and non-motorized vehicles, make sure it is safe before passing"
+          "text": "observe the movement of pedestrians and non-motorized vehicles, make sure it is safe before passing"
         }
       ],
       "correctRow": null,
@@ -40573,22 +46027,22 @@ export const config = {
         {
           "id": "q0129_o1",
           "originalKey": "A",
-          "text": "Speed up and overtake"
+          "text": "speed up and overtake"
         },
         {
           "id": "q0129_o2",
           "originalKey": "B",
-          "text": "Overtake after driving some distance in parallel"
+          "text": "overtake after driving some distance in parallel"
         },
         {
           "id": "q0129_o3",
           "originalKey": "C",
-          "text": "Give up overtaking"
+          "text": "give up overtaking"
         },
         {
           "id": "q0129_o4",
           "originalKey": "D",
-          "text": "Overtake with care"
+          "text": "overtake with care"
         }
       ],
       "correctRow": null,
@@ -40628,22 +46082,22 @@ export const config = {
         {
           "id": "q0130_o1",
           "originalKey": "A",
-          "text": "Should reduce speed, honk, and drive on the right side"
+          "text": "should reduce speed, honk, and drive on the right side"
         },
         {
           "id": "q0130_o2",
           "originalKey": "B",
-          "text": "Should drive along the outer side of the curve"
+          "text": "should drive along the outer side of the curve"
         },
         {
           "id": "q0130_o3",
           "originalKey": "C",
-          "text": "May briefly borrow the opposite lane"
+          "text": "may briefly borrow the opposite lane"
         },
         {
           "id": "q0130_o4",
           "originalKey": "D",
-          "text": "May speed up and pass along the tangent line of the curve"
+          "text": "may speed up and pass along the tangent line of the curve"
         }
       ],
       "correctRow": null,
@@ -40683,22 +46137,22 @@ export const config = {
         {
           "id": "q0131_o1",
           "originalKey": "A",
-          "text": "Stop to evade"
+          "text": "stop to evade"
         },
         {
           "id": "q0131_o2",
           "originalKey": "B",
-          "text": "Maintain the normal speed"
+          "text": "maintain the normal speed"
         },
         {
           "id": "q0131_o3",
           "originalKey": "C",
-          "text": "Speed up and pass ahead of it"
+          "text": "speed up and pass ahead of it"
         },
         {
           "id": "q0131_o4",
           "originalKey": "D",
-          "text": "Honk and pass ahead of it"
+          "text": "honk and pass ahead of it"
         }
       ],
       "correctRow": null,
@@ -40738,22 +46192,22 @@ export const config = {
         {
           "id": "q0132_o1",
           "originalKey": "A",
-          "text": "Can shorten the engines service life"
+          "text": "can shorten the engines service life"
         },
         {
           "id": "q0132_o2",
           "originalKey": "B",
-          "text": "Increases the drivers labor intensity"
+          "text": "increases the drivers labor intensity"
         },
         {
           "id": "q0132_o3",
           "originalKey": "C",
-          "text": "Can drastically reduce the braking efficiency due to the rising temperature of the brake"
+          "text": "can drastically reduce the braking efficiency due to the rising temperature of the brake"
         },
         {
           "id": "q0132_o4",
           "originalKey": "D",
-          "text": "Can easily cause vehicle overturn"
+          "text": "can easily cause vehicle overturn"
         }
       ],
       "correctRow": null,
@@ -40793,22 +46247,22 @@ export const config = {
         {
           "id": "q0133_o1",
           "originalKey": "A",
-          "text": "The hazard lights"
+          "text": "the hazard lights"
         },
         {
           "id": "q0133_o2",
           "originalKey": "B",
-          "text": "The high beam light"
+          "text": "the high beam light"
         },
         {
           "id": "q0133_o3",
           "originalKey": "C",
-          "text": "The fog light"
+          "text": "the fog light"
         },
         {
           "id": "q0133_o4",
           "originalKey": "D",
-          "text": "The width light or the low beam light"
+          "text": "the width light or the low beam light"
         }
       ],
       "correctRow": null,
@@ -40853,22 +46307,22 @@ export const config = {
         {
           "id": "q0134_o1",
           "originalKey": "A",
-          "text": "The fog light"
+          "text": "the fog light"
         },
         {
           "id": "q0134_o2",
           "originalKey": "B",
-          "text": "The low beam light"
+          "text": "the low beam light"
         },
         {
           "id": "q0134_o3",
           "originalKey": "C",
-          "text": "The high beam light"
+          "text": "the high beam light"
         },
         {
           "id": "q0134_o4",
           "originalKey": "D",
-          "text": "The hazard lights"
+          "text": "the hazard lights"
         }
       ],
       "correctRow": null,
@@ -40913,22 +46367,22 @@ export const config = {
         {
           "id": "q0135_o1",
           "originalKey": "A",
-          "text": "Not occupy the road of the other side and should go forward normally"
+          "text": "not occupy the road of the other side and should go forward normally"
         },
         {
           "id": "q0135_o2",
           "originalKey": "B",
-          "text": "Indicate the other side to stop and yield"
+          "text": "indicate the other side to stop and yield"
         },
         {
           "id": "q0135_o3",
           "originalKey": "C",
-          "text": "Speed up and go forward by the right side"
+          "text": "speed up and go forward by the right side"
         },
         {
           "id": "q0135_o4",
           "originalKey": "D",
-          "text": "Yield to the other side as much as possible"
+          "text": "yield to the other side as much as possible"
         }
       ],
       "correctRow": null,
@@ -40973,22 +46427,22 @@ export const config = {
         {
           "id": "q0136_o1",
           "originalKey": "A",
-          "text": "Move to the right side and speed up"
+          "text": "move to the right side and speed up"
         },
         {
           "id": "q0136_o2",
           "originalKey": "B",
-          "text": "Voluntarily reduce speed and drive along the right side"
+          "text": "voluntarily reduce speed and drive along the right side"
         },
         {
           "id": "q0136_o3",
           "originalKey": "C",
-          "text": "Yield a proper space and speed up"
+          "text": "yield a proper space and speed up"
         },
         {
           "id": "q0136_o4",
           "originalKey": "D",
-          "text": "Reduce speed rapidly or apply an emergency braking"
+          "text": "reduce speed rapidly or apply an emergency braking"
         }
       ],
       "correctRow": null,
@@ -41037,22 +46491,22 @@ export const config = {
         {
           "id": "q0137_o1",
           "originalKey": "A",
-          "text": "Reduce speed or stop to yield"
+          "text": "reduce speed or stop to yield"
         },
         {
           "id": "q0137_o2",
           "originalKey": "B",
-          "text": "Honk to indicate them to yield"
+          "text": "honk to indicate them to yield"
         },
         {
           "id": "q0137_o3",
           "originalKey": "C",
-          "text": "Immediately change lane and bypass the pedestrians"
+          "text": "immediately change lane and bypass the pedestrians"
         },
         {
           "id": "q0137_o4",
           "originalKey": "D",
-          "text": "Pass before the pedestrians"
+          "text": "pass before the pedestrians"
         }
       ],
       "correctRow": null,
@@ -41101,22 +46555,22 @@ export const config = {
         {
           "id": "q0138_o1",
           "originalKey": "A",
-          "text": "Move to the road side, reduce speed, or stop to yield"
+          "text": "move to the road side, reduce speed, or stop to yield"
         },
         {
           "id": "q0138_o2",
           "originalKey": "B",
-          "text": "Drive on by using another lane"
+          "text": "drive on by using another lane"
         },
         {
           "id": "q0138_o3",
           "originalKey": "C",
-          "text": "Speed up and change lane to avoid"
+          "text": "speed up and change lane to avoid"
         },
         {
           "id": "q0138_o4",
           "originalKey": "D",
-          "text": "Continue to go in the original lane"
+          "text": "continue to go in the original lane"
         }
       ],
       "correctRow": null,
@@ -41161,22 +46615,22 @@ export const config = {
         {
           "id": "q0139_o1",
           "originalKey": "A",
-          "text": "Continuously change the high and low bean lights"
+          "text": "continuously change the high and low beam lights"
         },
         {
           "id": "q0139_o2",
           "originalKey": "B",
-          "text": "Continuously honk"
+          "text": "continuously honk"
         },
         {
           "id": "q0139_o3",
           "originalKey": "C",
-          "text": "Use the low beam light, reduce speed, or stop to evade"
+          "text": "use the low beam light, reduce speed, or stop to evade"
         },
         {
           "id": "q0139_o4",
           "originalKey": "D",
-          "text": "Use the high beam light"
+          "text": "use the high beam light"
         }
       ],
       "correctRow": null,
@@ -41226,22 +46680,22 @@ export const config = {
         {
           "id": "q0140_o1",
           "originalKey": "A",
-          "text": "Maintain the normal speed"
+          "text": "maintain the normal speed"
         },
         {
           "id": "q0140_o2",
           "originalKey": "B",
-          "text": "Reduce speed in advance, observe, and drive with care"
+          "text": "reduce speed in advance, observe, and drive with care"
         },
         {
           "id": "q0140_o3",
           "originalKey": "C",
-          "text": "Honk and swiftly pass"
+          "text": "honk and swiftly pass"
         },
         {
           "id": "q0140_o4",
           "originalKey": "D",
-          "text": "Speed up in advance and pass"
+          "text": "speed up in advance and pass"
         }
       ],
       "correctRow": null,
@@ -41286,22 +46740,22 @@ export const config = {
         {
           "id": "q0141_o1",
           "originalKey": "A",
-          "text": "Reduce speed, keep a sufficient distance and be ready to stop anytime"
+          "text": "reduce speed, keep a sufficient distance, and be ready to stop anytime"
         },
         {
           "id": "q0141_o2",
           "originalKey": "B",
-          "text": "Maintain the normal speed"
+          "text": "maintain the normal speed"
         },
         {
           "id": "q0141_o3",
           "originalKey": "C",
-          "text": "Honk to remind, speed up and pass"
+          "text": "honk to remind, speed up, and pass"
         },
         {
           "id": "q0141_o4",
           "originalKey": "D",
-          "text": "Be ready to apply emergency braking"
+          "text": "be ready to apply emergency braking"
         }
       ],
       "correctRow": null,
@@ -41406,22 +46860,22 @@ export const config = {
         {
           "id": "q0143_o1",
           "originalKey": "A",
-          "text": "Far left lane"
+          "text": "far left lane"
         },
         {
           "id": "q0143_o2",
           "originalKey": "B",
-          "text": "Second left lane"
+          "text": "second left lane"
         },
         {
           "id": "q0143_o3",
           "originalKey": "C",
-          "text": "Far right lane"
+          "text": "far right lane"
         },
         {
           "id": "q0143_o4",
           "originalKey": "D",
-          "text": "Third left lane"
+          "text": "third left lane"
         }
       ],
       "correctRow": null,
@@ -41466,22 +46920,22 @@ export const config = {
         {
           "id": "q0144_o1",
           "originalKey": "A",
-          "text": "Honk to urge the other party to yield"
+          "text": "honk to urge the other party to yield"
         },
         {
           "id": "q0144_o2",
           "originalKey": "B",
-          "text": "Maintain the normal speed"
+          "text": "maintain the normal speed"
         },
         {
           "id": "q0144_o3",
           "originalKey": "C",
-          "text": "Reduce speed or stop to yield"
+          "text": "reduce speed or stop to yield"
         },
         {
           "id": "q0144_o4",
           "originalKey": "D",
-          "text": "Use the left lane and pass with care"
+          "text": "use the left lane and pass with care"
         }
       ],
       "correctRow": null,
@@ -41526,22 +46980,22 @@ export const config = {
         {
           "id": "q0145_o1",
           "originalKey": "A",
-          "text": "Concentrate his attention and drive with care"
+          "text": "concentrate his attention and drive with care"
         },
         {
           "id": "q0145_o2",
           "originalKey": "B",
-          "text": "Immediately reduce speed and stop at the road side"
+          "text": "immediately reduce speed and stop at the road side"
         },
         {
           "id": "q0145_o3",
           "originalKey": "C",
-          "text": "Maintain the normal speed"
+          "text": "maintain the normal speed"
         },
         {
           "id": "q0145_o4",
           "originalKey": "D",
-          "text": "Drive at a reduced speed"
+          "text": "drive at a reduced speed"
         }
       ],
       "correctRow": null,
@@ -41586,22 +47040,22 @@ export const config = {
         {
           "id": "q0146_o1",
           "originalKey": "A",
-          "text": "The road grip becomes stronger"
+          "text": "the road grip becomes stronger"
         },
         {
           "id": "q0146_o2",
           "originalKey": "B",
-          "text": "It is impossible to see the hidden holes and bumps in road surface"
+          "text": "it is impossible to see the hidden holes and bumps in road surface"
         },
         {
           "id": "q0146_o3",
           "originalKey": "C",
-          "text": "The visibility become lower and blurs the field of vision"
+          "text": "the visibility become lower and blurs the field of vision"
         },
         {
           "id": "q0146_o4",
           "originalKey": "D",
-          "text": "The sunshine reflection blurs the view"
+          "text": "the sunshine reflection blurs the view"
         }
       ],
       "correctRow": null,
@@ -41646,22 +47100,22 @@ export const config = {
         {
           "id": "q0147_o1",
           "originalKey": "A",
-          "text": "Bypass to dodge it as much as possible"
+          "text": "bypass to dodge it as much as possible"
         },
         {
           "id": "q0147_o2",
           "originalKey": "B",
-          "text": "Immediately report to the police, stop and look on."
+          "text": "immediately report to the police, stop and look on."
         },
         {
           "id": "q0147_o3",
           "originalKey": "C",
-          "text": "Help to preserve the scene and immediately report to the police"
+          "text": "help to preserve the scene and immediately report to the police"
         },
         {
           "id": "q0147_o4",
           "originalKey": "D",
-          "text": "Speed up and pass to ignore it"
+          "text": "speed up and pass to ignore it"
         }
       ],
       "correctRow": null,
@@ -41706,22 +47160,22 @@ export const config = {
         {
           "id": "q0148_o1",
           "originalKey": "A",
-          "text": "Speed up and pass"
+          "text": "speed up and pass"
         },
         {
           "id": "q0148_o2",
           "originalKey": "B",
-          "text": "Keep honking"
+          "text": "keep honking"
         },
         {
           "id": "q0148_o3",
           "originalKey": "C",
-          "text": "Maintain the normal speed"
+          "text": "maintain the normal speed"
         },
         {
           "id": "q0148_o4",
           "originalKey": "D",
-          "text": "Keep a safe horizontal distance from that vehicle, reduce speed, and pass"
+          "text": "keep a safe horizontal distance from that vehicle, reduce speed, and pass"
         }
       ],
       "correctRow": null,
@@ -41766,22 +47220,22 @@ export const config = {
         {
           "id": "q0149_o1",
           "originalKey": "A",
-          "text": "There are more vehicles"
+          "text": "there are more vehicles"
         },
         {
           "id": "q0149_o2",
           "originalKey": "B",
-          "text": "The red light is on"
+          "text": "the red light is on"
         },
         {
           "id": "q0149_o3",
           "originalKey": "C",
-          "text": "The green light is on"
+          "text": "the green light is on"
         },
         {
           "id": "q0149_o4",
           "originalKey": "D",
-          "text": "Service is temporarily suspended"
+          "text": "service is temporarily suspended"
         }
       ],
       "correctRow": null,
@@ -41830,22 +47284,22 @@ export const config = {
         {
           "id": "q0150_o1",
           "originalKey": "A",
-          "text": "The reverse light"
+          "text": "the reverse light"
         },
         {
           "id": "q0150_o2",
           "originalKey": "B",
-          "text": "The low beam light"
+          "text": "the low beam light"
         },
         {
           "id": "q0150_o3",
           "originalKey": "C",
-          "text": "The fog light"
+          "text": "the fog light"
         },
         {
           "id": "q0150_o4",
           "originalKey": "D",
-          "text": "The high beam light"
+          "text": "the high beam light"
         }
       ],
       "correctRow": null,
@@ -41885,22 +47339,22 @@ export const config = {
         {
           "id": "q0151_o1",
           "originalKey": "A",
-          "text": "Continuously and strongly depress"
+          "text": "continuously and strongly depress"
         },
         {
           "id": "q0151_o2",
           "originalKey": "B",
-          "text": "Intermittently and strongly depress"
+          "text": "intermittently and strongly depress"
         },
         {
           "id": "q0151_o3",
           "originalKey": "C",
-          "text": "Continuously and gently depress"
+          "text": "continuously and gently depress"
         },
         {
           "id": "q0151_o4",
           "originalKey": "D",
-          "text": "Intermittently and gently depress"
+          "text": "intermittently and gently depress"
         }
       ],
       "correctRow": null,
@@ -41940,27 +47394,27 @@ export const config = {
       "id": "q0152",
       "number": 152,
       "type": "mcq",
-      "prompt": "When driving in icy and snowy weather, ______.",
+      "prompt": "When driving in icy and snowy weather, the ______.",
       "options": [
         {
           "id": "q0152_o1",
           "originalKey": "A",
-          "text": "The braking distance becomes longer"
+          "text": "braking distance becomes longer"
         },
         {
           "id": "q0152_o2",
           "originalKey": "B",
-          "text": "The resistance to slide becomes larger"
+          "text": "resistance to slide becomes larger"
         },
         {
           "id": "q0152_o3",
           "originalKey": "C",
-          "text": "The braking performance does not change"
+          "text": "braking performance does not change"
         },
         {
           "id": "q0152_o4",
           "originalKey": "D",
-          "text": "The road grip becomes stronger"
+          "text": "road grip becomes stronger"
         }
       ],
       "correctRow": null,
@@ -42000,22 +47454,22 @@ export const config = {
         {
           "id": "q0153_o1",
           "originalKey": "A",
-          "text": "Speed up and pass"
+          "text": "speed up and pass"
         },
         {
           "id": "q0153_o2",
           "originalKey": "B",
-          "text": "Go forward normally"
+          "text": "go forward normally"
         },
         {
           "id": "q0153_o3",
           "originalKey": "C",
-          "text": "Continuously honk"
+          "text": "continuously honk"
         },
         {
           "id": "q0153_o4",
           "originalKey": "D",
-          "text": "Reduce speed and go slowly"
+          "text": "reduce speed and go slowly"
         }
       ],
       "correctRow": null,
@@ -42055,22 +47509,22 @@ export const config = {
         {
           "id": "q0154_o1",
           "originalKey": "A",
-          "text": "Depress the accelerator pedal and start"
+          "text": "depress the accelerator pedal and start"
         },
         {
           "id": "q0154_o2",
           "originalKey": "B",
-          "text": "Honk"
+          "text": "honk"
         },
         {
           "id": "q0154_o3",
           "originalKey": "C",
-          "text": "Increase engine rotation speed"
+          "text": "increase engine rotation speed"
         },
         {
           "id": "q0154_o4",
           "originalKey": "D",
-          "text": "Observe the conditions around the vehicles"
+          "text": "observe the conditions around the vehicles"
         }
       ],
       "correctRow": null,
@@ -42129,22 +47583,22 @@ export const config = {
         {
           "id": "q0155_o1",
           "originalKey": "A",
-          "text": "May directly enter the intersection"
+          "text": "may directly enter the intersection"
         },
         {
           "id": "q0155_o2",
           "originalKey": "B",
-          "text": "Cannot enter the intersection"
+          "text": "cannot enter the intersection"
         },
         {
           "id": "q0155_o3",
           "originalKey": "C",
-          "text": "May pass the intersection by borrowing the opposite lane"
+          "text": "may pass the intersection by borrowing the opposite lane"
         },
         {
           "id": "q0155_o4",
           "originalKey": "D",
-          "text": "Enter the intersection if it is safe to do so"
+          "text": "enter the intersection if it is safe to do so"
         }
       ],
       "correctRow": null,
@@ -42189,22 +47643,22 @@ export const config = {
         {
           "id": "q0156_o1",
           "originalKey": "A",
-          "text": "Speed up and dash over under inertia"
+          "text": "speed up and dash over under inertia"
         },
         {
           "id": "q0156_o2",
           "originalKey": "B",
-          "text": "Change to the neutral gear and slide over"
+          "text": "change to the neutral gear and slide over"
         },
         {
           "id": "q0156_o3",
           "originalKey": "C",
-          "text": "Maintain the original speed and pass"
+          "text": "maintain the original speed and pass"
         },
         {
           "id": "q0156_o4",
           "originalKey": "D",
-          "text": "Pass slowly and steadily"
+          "text": "pass slowly and steadily"
         }
       ],
       "correctRow": null,
@@ -42244,22 +47698,22 @@ export const config = {
         {
           "id": "q0157_o1",
           "originalKey": "A",
-          "text": "Continuously honk to remind them to yield"
+          "text": "continuously honk to remind them to yield"
         },
         {
           "id": "q0157_o2",
           "originalKey": "B",
-          "text": "Continuously honk and speed up to overtake"
+          "text": "continuously honk and speed up to overtake"
         },
         {
           "id": "q0157_o3",
           "originalKey": "C",
-          "text": "Yield to the bike riders"
+          "text": "yield to the bike riders"
         },
         {
           "id": "q0157_o4",
           "originalKey": "D",
-          "text": "Observe them, reduce speed and go slowly, while keeping a sufficient safe distance."
+          "text": "observe them, reduce speed and go slowly, while keeping a sufficient safe distance."
         }
       ],
       "correctRow": null,
@@ -42304,22 +47758,22 @@ export const config = {
         {
           "id": "q0158_o1",
           "originalKey": "A",
-          "text": "Is not allowed to stop in the opposite direction or in parallel"
+          "text": "is not allowed to stop in the opposite direction or in parallel"
         },
         {
           "id": "q0158_o2",
           "originalKey": "B",
-          "text": "May stop anyway he likes as long as it is convenient for him to get out"
+          "text": "may stop anyway he likes as long as it is convenient for him to get out"
         },
         {
           "id": "q0158_o3",
           "originalKey": "C",
-          "text": "May stop the vehicle in the opposite direction"
+          "text": "may stop the vehicle in the opposite direction"
         },
         {
           "id": "q0158_o4",
           "originalKey": "D",
-          "text": "May stop the vehicle in parallel"
+          "text": "may stop the vehicle in parallel"
         }
       ],
       "correctRow": null,
@@ -42359,22 +47813,22 @@ export const config = {
         {
           "id": "q0159_o1",
           "originalKey": "A",
-          "text": "Properly increase the safe distance"
+          "text": "properly increase the safe distance"
         },
         {
           "id": "q0159_o2",
           "originalKey": "B",
-          "text": "Closely follow the vehicle in front"
+          "text": "closely follow the vehicle in front"
         },
         {
           "id": "q0159_o3",
           "originalKey": "C",
-          "text": "Properly reduce the safe distance"
+          "text": "properly reduce the safe distance"
         },
         {
           "id": "q0159_o4",
           "originalKey": "D",
-          "text": "Try to find a chance to overtake"
+          "text": "try to find a chance to overtake"
         }
       ],
       "correctRow": null,
@@ -42414,22 +47868,22 @@ export const config = {
         {
           "id": "q0160_o1",
           "originalKey": "A",
-          "text": "Apply emergency braking"
+          "text": "apply emergency braking"
         },
         {
           "id": "q0160_o2",
           "originalKey": "B",
-          "text": "Use the handbrake"
+          "text": "use the handbrake"
         },
         {
           "id": "q0160_o3",
           "originalKey": "C",
-          "text": "Gently depress the brake pedal"
+          "text": "gently depress the brake pedal"
         },
         {
           "id": "q0160_o4",
           "originalKey": "D",
-          "text": "Swiftly depress the brake pedal"
+          "text": "swiftly depress the brake pedal"
         }
       ],
       "correctRow": null,
@@ -42474,22 +47928,22 @@ export const config = {
         {
           "id": "q0161_o1",
           "originalKey": "A",
-          "text": "Unchanged"
+          "text": "unchanged"
         },
         {
           "id": "q0161_o2",
           "originalKey": "B",
-          "text": "Irregular"
+          "text": "irregular"
         },
         {
           "id": "q0161_o3",
           "originalKey": "C",
-          "text": "Longer"
+          "text": "longer"
         },
         {
           "id": "q0161_o4",
           "originalKey": "D",
-          "text": "Shorter"
+          "text": "shorter"
         }
       ],
       "correctRow": null,
@@ -42529,22 +47983,22 @@ export const config = {
         {
           "id": "q0162_o1",
           "originalKey": "A",
-          "text": "Maintain the original speed"
+          "text": "maintain the original speed"
         },
         {
           "id": "q0162_o2",
           "originalKey": "B",
-          "text": "Reduce speed, observe and drive by the right side to yield"
+          "text": "reduce speed, observe and drive by the right side to yield"
         },
         {
           "id": "q0162_o3",
           "originalKey": "C",
-          "text": "Speed up and go ahead by the right side"
+          "text": "speed up and go ahead by the right side"
         },
         {
           "id": "q0162_o4",
           "originalKey": "D",
-          "text": "Not yield"
+          "text": "not yield"
         }
       ],
       "correctRow": null,
@@ -42589,22 +48043,22 @@ export const config = {
         {
           "id": "q0163_o1",
           "originalKey": "A",
-          "text": "Honk to warn it against cutting in"
+          "text": "honk to warn it against cutting in"
         },
         {
           "id": "q0163_o2",
           "originalKey": "B",
-          "text": "Speed up to closely follow the vehicle in front and refuse to allow it to cut in"
+          "text": "speed up to closely follow the vehicle in front and refuse to allow it to cut in"
         },
         {
           "id": "q0163_o3",
           "originalKey": "C",
-          "text": "Squeeze the cutting-in vehicle to force it to leave"
+          "text": "squeeze the cutting-in vehicle to force it to leave"
         },
         {
           "id": "q0163_o4",
           "originalKey": "D",
-          "text": "Voluntarily yield to ensure safe driving"
+          "text": "voluntarily yield to ensure safe driving"
         }
       ],
       "correctRow": null,
@@ -42649,22 +48103,22 @@ export const config = {
         {
           "id": "q0164_o1",
           "originalKey": "A",
-          "text": "Honk to indicate the intention"
+          "text": "honk to indicate the intention"
         },
         {
           "id": "q0164_o2",
           "originalKey": "B",
-          "text": "Voluntarily stop and yield"
+          "text": "voluntarily stop and yield"
         },
         {
           "id": "q0164_o3",
           "originalKey": "C",
-          "text": "Speed up and reverse"
+          "text": "speed up and reverse"
         },
         {
           "id": "q0164_o4",
           "originalKey": "D",
-          "text": "Continue to reverse"
+          "text": "continue to reverse"
         }
       ],
       "correctRow": null,
@@ -42709,22 +48163,22 @@ export const config = {
         {
           "id": "q0165_o1",
           "originalKey": "A",
-          "text": "Brake suddenly and go slowly"
+          "text": "brake suddenly and go slowly"
         },
         {
           "id": "q0165_o2",
           "originalKey": "B",
-          "text": "Drive along the outer side of the curve"
+          "text": "drive along the outer side of the curve"
         },
         {
           "id": "q0165_o3",
           "originalKey": "C",
-          "text": "Fully reduce speed and drive on the right side"
+          "text": "fully reduce speed and drive on the right side"
         },
         {
           "id": "q0165_o4",
           "originalKey": "D",
-          "text": "Go forward by borrowing the opposite lane"
+          "text": "go forward by borrowing the opposite lane"
         }
       ],
       "correctRow": null,
@@ -42764,22 +48218,22 @@ export const config = {
         {
           "id": "q0166_o1",
           "originalKey": "A",
-          "text": "The head and tail fog lights"
+          "text": "the head and tail fog lights"
         },
         {
           "id": "q0166_o2",
           "originalKey": "B",
-          "text": "The hazard lights"
+          "text": "the hazard lights"
         },
         {
           "id": "q0166_o3",
           "originalKey": "C",
-          "text": "The high beam light"
+          "text": "the high beam light"
         },
         {
           "id": "q0166_o4",
           "originalKey": "D",
-          "text": "The reverse light"
+          "text": "the reverse light"
         }
       ],
       "correctRow": null,
@@ -42824,22 +48278,22 @@ export const config = {
         {
           "id": "q0167_o1",
           "originalKey": "A",
-          "text": "Continuously honk to indicate him to yield"
+          "text": "continuously honk to indicate him to yield"
         },
         {
           "id": "q0167_o2",
           "originalKey": "B",
-          "text": "Speed up and bypass"
+          "text": "speed up and bypass"
         },
         {
           "id": "q0167_o3",
           "originalKey": "C",
-          "text": "Honk in advance and properly reduce speed"
+          "text": "honk in advance and properly reduce speed"
         },
         {
           "id": "q0167_o4",
           "originalKey": "D",
-          "text": "Drive at the normal speed"
+          "text": "drive at the normal speed"
         }
       ],
       "correctRow": null,
@@ -42888,22 +48342,22 @@ export const config = {
         {
           "id": "q0168_o1",
           "originalKey": "A",
-          "text": "The electric equipment can easily get wet and cause short circuit"
+          "text": "the electric equipment can easily get wet and cause short circuit"
         },
         {
           "id": "q0168_o2",
           "originalKey": "B",
-          "text": "The visibility is lower and the field of vision is blurred"
+          "text": "the visibility is lower and the field of vision is blurred"
         },
         {
           "id": "q0168_o3",
           "originalKey": "C",
-          "text": "The resistance to the vehicle increases"
+          "text": "the resistance to the vehicle increases"
         },
         {
           "id": "q0168_o4",
           "originalKey": "D",
-          "text": "Poor braking performance and side pulling"
+          "text": "poor braking performance and side pulling"
         }
       ],
       "correctRow": null,
@@ -42943,22 +48397,22 @@ export const config = {
         {
           "id": "q0169_o1",
           "originalKey": "A",
-          "text": "Resistance to the vehicle becomes weaker"
+          "text": "resistance to the vehicle becomes weaker"
         },
         {
           "id": "q0169_o2",
           "originalKey": "B",
-          "text": "Tires can easily spin and skid"
+          "text": "tires can easily spin and skid"
         },
         {
           "id": "q0169_o3",
           "originalKey": "C",
-          "text": "Visibility becomes lower and blurs the field of vision"
+          "text": "visibility becomes lower and blurs the field of vision"
         },
         {
           "id": "q0169_o4",
           "originalKey": "D",
-          "text": "Road grip becomes stronger"
+          "text": "road grip becomes stronger"
         }
       ],
       "correctRow": null,
@@ -42998,22 +48452,22 @@ export const config = {
         {
           "id": "q0170_o1",
           "originalKey": "A",
-          "text": "Reduce speed and cross each other slowly, or stop to yield"
+          "text": "reduce speed and cross each other slowly, or stop to yield"
         },
         {
           "id": "q0170_o2",
           "originalKey": "B",
-          "text": "Occupy the left lane to force the opposite party to reduce speed and yield"
+          "text": "occupy the left lane to force the opposite party to reduce speed and yield"
         },
         {
           "id": "q0170_o3",
           "originalKey": "C",
-          "text": "Turn the head light to indicate the opposite party to stop and yield"
+          "text": "turn the head light to indicate the opposite party to stop and yield"
         },
         {
           "id": "q0170_o4",
           "originalKey": "D",
-          "text": "Speed up and select a better place"
+          "text": "speed up and select a better place"
         }
       ],
       "correctRow": null,
@@ -43068,22 +48522,22 @@ export const config = {
         {
           "id": "q0171_o1",
           "originalKey": "A",
-          "text": "Speed up in advance and pass forcefully"
+          "text": "speed up in advance and pass forcefully"
         },
         {
           "id": "q0171_o2",
           "originalKey": "B",
-          "text": "Stop to yield"
+          "text": "stop to yield"
         },
         {
           "id": "q0171_o3",
           "originalKey": "C",
-          "text": "Reduce speed and go slowly"
+          "text": "reduce speed and go slowly"
         },
         {
           "id": "q0171_o4",
           "originalKey": "D",
-          "text": "Continuously honk to urge them"
+          "text": "continuously honk to urge them"
         }
       ],
       "correctRow": null,
@@ -43128,22 +48582,22 @@ export const config = {
         {
           "id": "q0172_o1",
           "originalKey": "A",
-          "text": "By taking every possible chance"
+          "text": "by taking every possible chance"
         },
         {
           "id": "q0172_o2",
           "originalKey": "B",
-          "text": "By selecting a wide gentle uphill section"
+          "text": "by selecting a wide gentle uphill section"
         },
         {
           "id": "q0172_o3",
           "originalKey": "C",
-          "text": "By selecting a fairly long downhill section"
+          "text": "by selecting a fairly long downhill section"
         },
         {
           "id": "q0172_o4",
           "originalKey": "D",
-          "text": "By selecting a relatively gentle downhill section"
+          "text": "by selecting a relatively gentle downhill section"
         }
       ],
       "correctRow": null,
@@ -43183,22 +48637,22 @@ export const config = {
         {
           "id": "q0173_o1",
           "originalKey": "A",
-          "text": "Leave the road surface"
+          "text": "leaves the road surface"
         },
         {
           "id": "q0173_o2",
           "originalKey": "B",
-          "text": "Moves from the center of the road to the roadside"
+          "text": "moves from the center of the road to the roadside"
         },
         {
           "id": "q0173_o3",
           "originalKey": "C",
-          "text": "Does not change its distance"
+          "text": "does not change its distance"
         },
         {
           "id": "q0173_o4",
           "originalKey": "D",
-          "text": "Become lower"
+          "text": "becomes lower"
         }
       ],
       "correctRow": null,
@@ -43238,22 +48692,22 @@ export const config = {
         {
           "id": "q0174_o1",
           "originalKey": "A",
-          "text": "Climb slowly"
+          "text": "climb slowly"
         },
         {
           "id": "q0174_o2",
           "originalKey": "B",
-          "text": "Closely follow and climb"
+          "text": "closely follow and climb"
         },
         {
           "id": "q0174_o3",
           "originalKey": "C",
-          "text": "Select a proper place to stop and climb after the vehicle in front has passed"
+          "text": "select a proper place to stop and climb after the vehicle in front has passed"
         },
         {
           "id": "q0174_o4",
           "originalKey": "D",
-          "text": "Rapidly overtake the vehicle in front"
+          "text": "rapidly overtake the vehicle in front"
         }
       ],
       "correctRow": null,
@@ -43293,22 +48747,22 @@ export const config = {
         {
           "id": "q0175_o1",
           "originalKey": "A",
-          "text": "Road is wet and slippery and the visibility is poor"
+          "text": "road is wet and slippery and the visibility is poor"
         },
         {
           "id": "q0175_o2",
           "originalKey": "B",
-          "text": "Engine is prone to stop"
+          "text": "engine is prone to stop"
         },
         {
           "id": "q0175_o3",
           "originalKey": "C",
-          "text": "Resistance to the vehicle increases"
+          "text": "resistance to the vehicle increases"
         },
         {
           "id": "q0175_o4",
           "originalKey": "D",
-          "text": "Electric equipment is prone to getting wet and causing short circuit"
+          "text": "electric equipment is prone to getting wet and causing short circuit"
         }
       ],
       "correctRow": null,
@@ -43358,22 +48812,22 @@ export const config = {
         {
           "id": "q0176_o1",
           "originalKey": "A",
-          "text": "Force the other side to drive by the right side"
+          "text": "force the other side to drive by the right side"
         },
         {
           "id": "q0176_o2",
           "originalKey": "B",
-          "text": "Use the high beam light to warn the other side"
+          "text": "use the high beam light to warn the other side"
         },
         {
           "id": "q0176_o3",
           "originalKey": "C",
-          "text": "Voluntarily yield to the other side"
+          "text": "voluntarily yield to the other side"
         },
         {
           "id": "q0176_o4",
           "originalKey": "D",
-          "text": "Go ahead by the center of the road"
+          "text": "go ahead by the center of the road"
         }
       ],
       "correctRow": null,
@@ -43418,22 +48872,22 @@ export const config = {
         {
           "id": "q0177_o1",
           "originalKey": "A",
-          "text": "Drive by the central line of the road"
+          "text": "drive by the central line of the road"
         },
         {
           "id": "q0177_o2",
           "originalKey": "B",
-          "text": "Speed up and yield"
+          "text": "speed up and yield"
         },
         {
           "id": "q0177_o3",
           "originalKey": "C",
-          "text": "Continue to speed up and drive"
+          "text": "continue to speed up and drive"
         },
         {
           "id": "q0177_o4",
           "originalKey": "D",
-          "text": "Reduce speed and drive on the right side"
+          "text": "reduce speed and drive on the right side"
         }
       ],
       "correctRow": null,
@@ -43478,22 +48932,22 @@ export const config = {
         {
           "id": "q0178_o1",
           "originalKey": "A",
-          "text": "Reduce speed and go slowly, or stop to yield when necessary"
+          "text": "reduce speed and go slowly, or stop to yield when necessary"
         },
         {
           "id": "q0178_o2",
           "originalKey": "B",
-          "text": "Continuously honk to urge"
+          "text": "continuously honk to urge"
         },
         {
           "id": "q0178_o3",
           "originalKey": "C",
-          "text": "Swiftly bypass from one side"
+          "text": "swiftly bypass from one side"
         },
         {
           "id": "q0178_o4",
           "originalKey": "D",
-          "text": "Speed up and bypass"
+          "text": "speed up and bypass"
         }
       ],
       "correctRow": null,
@@ -43538,22 +48992,22 @@ export const config = {
         {
           "id": "q0179_o1",
           "originalKey": "A",
-          "text": "Even lower tire pressure"
+          "text": "even lower tire pressure"
         },
         {
           "id": "q0179_o2",
           "originalKey": "B",
-          "text": "Increases resistance to the vehicle"
+          "text": "increases resistance to the vehicle"
         },
         {
           "id": "q0179_o3",
           "originalKey": "C",
-          "text": "Tire blowout"
+          "text": "tire blowout"
         },
         {
           "id": "q0179_o4",
           "originalKey": "D",
-          "text": "Unstable tire pressure"
+          "text": "unstable tire pressure"
         }
       ],
       "correctRow": null,
@@ -43593,22 +49047,22 @@ export const config = {
         {
           "id": "q0180_o1",
           "originalKey": "A",
-          "text": "Traffic conditions are boring"
+          "text": "traffic conditions are boring"
         },
         {
           "id": "q0180_o2",
           "originalKey": "B",
-          "text": "Slopes are long and the curves are sharp and visibility range is shorter."
+          "text": "slopes are long and the curves are sharp and visibility range is shorter."
         },
         {
           "id": "q0180_o3",
           "originalKey": "C",
-          "text": "Traffic flow is heavy"
+          "text": "traffic flow is heavy"
         },
         {
           "id": "q0180_o4",
           "originalKey": "D",
-          "text": "Road signs are fewer"
+          "text": "road signs are fewer"
         }
       ],
       "correctRow": null,
@@ -43658,22 +49112,22 @@ export const config = {
         {
           "id": "q0181_o1",
           "originalKey": "A",
-          "text": "Send the injured people to hospital in a timely manner or make emergency calls"
+          "text": "send the injured people to hospital in a timely manner or make emergency calls"
         },
         {
           "id": "q0181_o2",
           "originalKey": "B",
-          "text": "Dodge as much as possible"
+          "text": "dodge as much as possible"
         },
         {
           "id": "q0181_o3",
           "originalKey": "C",
-          "text": "Go ahead by bypassing the scene"
+          "text": "go ahead by bypassing the scene"
         },
         {
           "id": "q0181_o4",
           "originalKey": "D",
-          "text": "Find an excuse to dodge the scene"
+          "text": "find an excuse to dodge the scene"
         }
       ],
       "correctRow": null,
@@ -43718,22 +49172,22 @@ export const config = {
         {
           "id": "q0182_o1",
           "originalKey": "A",
-          "text": "Find a chance to overtake the vehicle in front"
+          "text": "find a chance to overtake the vehicle in front"
         },
         {
           "id": "q0182_o2",
           "originalKey": "B",
-          "text": "Weave through other vehicles"
+          "text": "weave through other vehicles"
         },
         {
           "id": "q0182_o3",
           "originalKey": "C",
-          "text": "Reduce speed, stop, and wait in line"
+          "text": "reduce speed, stop, and wait in line"
         },
         {
           "id": "q0182_o4",
           "originalKey": "D",
-          "text": "Honk to urge other vehicles"
+          "text": "honk to urge other vehicles"
         }
       ],
       "correctRow": null,
@@ -43773,22 +49227,22 @@ export const config = {
         {
           "id": "q0183_o1",
           "originalKey": "A",
-          "text": "Speed up and pass"
+          "text": "speed up and pass"
         },
         {
           "id": "q0183_o2",
           "originalKey": "B",
-          "text": "Bypass"
+          "text": "bypass"
         },
         {
           "id": "q0183_o3",
           "originalKey": "C",
-          "text": "Maintain the normal speed"
+          "text": "maintain a normal speed"
         },
         {
           "id": "q0183_o4",
           "originalKey": "D",
-          "text": "Carefully select a speed"
+          "text": "carefully select a speed"
         }
       ],
       "correctRow": null,
@@ -43828,22 +49282,22 @@ export const config = {
         {
           "id": "q0184_o1",
           "originalKey": "A",
-          "text": "Turn on the head light and keep driving"
+          "text": "turn on the head light and keep driving"
         },
         {
           "id": "q0184_o2",
           "originalKey": "B",
-          "text": "Turn on the contour light, fog light, and drive along the right side"
+          "text": "turn on the contour light, fog light, and drive along the right side"
         },
         {
           "id": "q0184_o3",
           "originalKey": "C",
-          "text": "Turn on the hazard lights and keep driving"
+          "text": "turn on the hazard lights and keep driving"
         },
         {
           "id": "q0184_o4",
           "originalKey": "D",
-          "text": "Turn on the hazard lights, fog light, and stop at a safe place"
+          "text": "turn on the hazard lights, fog light, and stop at a safe place"
         }
       ],
       "correctRow": null,
@@ -43888,22 +49342,22 @@ export const config = {
         {
           "id": "q0185_o1",
           "originalKey": "A",
-          "text": "Follow closely and find chance to overtake again"
+          "text": "follow closely and find chance to overtake again"
         },
         {
           "id": "q0185_o2",
           "originalKey": "B",
-          "text": "Stop overtaking"
+          "text": "stop overtaking"
         },
         {
           "id": "q0185_o3",
           "originalKey": "C",
-          "text": "Speed up and continue to overtake"
+          "text": "speed up and continue to overtake"
         },
         {
           "id": "q0185_o4",
           "originalKey": "D",
-          "text": "Continuously honk and speed up to overtake"
+          "text": "continuously honk and speed up to overtake"
         }
       ],
       "correctRow": null,
@@ -43958,22 +49412,22 @@ export const config = {
         {
           "id": "q0186_o1",
           "originalKey": "A",
-          "text": "Rush to pass"
+          "text": "rush to pass"
         },
         {
           "id": "q0186_o2",
           "originalKey": "B",
-          "text": "Speed up in advance and pass"
+          "text": "speed up in advance and pass"
         },
         {
           "id": "q0186_o3",
           "originalKey": "C",
-          "text": "Reduce speed and evade, or stop to yield when necessary"
+          "text": "reduce speed and evade, or stop to yield when necessary"
         },
         {
           "id": "q0186_o4",
           "originalKey": "D",
-          "text": "Go forward at the normal speed according to the right of way and refuses to evade"
+          "text": "go forward at the normal speed according to the right of way and refuses to evade"
         }
       ],
       "correctRow": null,
@@ -51800,22 +57254,22 @@ export const config = {
         {
           "id": "q0364_o1",
           "originalKey": "A",
-          "text": "keep the speed and go through"
+          "text": "Keep the speed and go through"
         },
         {
           "id": "q0364_o2",
           "originalKey": "B",
-          "text": "honk to urge"
+          "text": "Honk to urge"
         },
         {
           "id": "q0364_o3",
           "originalKey": "C",
-          "text": "reduce speed and go through slowly"
+          "text": "Reduce speed and go through slowly"
         },
         {
           "id": "q0364_o4",
           "originalKey": "D",
-          "text": "speed up and go through"
+          "text": "Speed up and go through"
         }
       ],
       "correctRow": null,
@@ -51880,22 +57334,22 @@ export const config = {
         {
           "id": "q0365_o1",
           "originalKey": "A",
-          "text": "make a U-turn along the left lane"
+          "text": "Make a U-turn along the left lane."
         },
         {
           "id": "q0365_o2",
           "originalKey": "B",
-          "text": "cannot make a U-turn"
+          "text": "Cannot make a U-turn."
         },
         {
           "id": "q0365_o3",
           "originalKey": "C",
-          "text": "make a U-turn through the middle lane"
+          "text": "Make a U-turn through the middle lane."
         },
         {
           "id": "q0365_o4",
           "originalKey": "D",
-          "text": "make a U-turn inside the intersection"
+          "text": "Make a U-turn inside the intersection."
         }
       ],
       "correctRow": null,
@@ -51950,22 +57404,22 @@ export const config = {
         {
           "id": "q0366_o1",
           "originalKey": "A",
-          "text": "not hold the steering wheel according to regulation"
+          "text": "Not hold the steering wheel according to regulation."
         },
         {
           "id": "q0366_o2",
           "originalKey": "B",
-          "text": "angle of the seat is not correct"
+          "text": "Angle of the seat is not correct."
         },
         {
           "id": "q0366_o3",
           "originalKey": "C",
-          "text": "not buckled up"
+          "text": "Not buckled up."
         },
         {
           "id": "q0366_o4",
           "originalKey": "D",
-          "text": "the driving posture is incorrect"
+          "text": "The driving posture is incorrect."
         }
       ],
       "correctRow": null,
@@ -52162,7 +57616,7 @@ export const config = {
       "id": "q0369",
       "number": 369,
       "type": "mcq",
-      "prompt": "The police can detain the vehicle if one drives a vehicle without a ______",
+      "prompt": "The police can detain the vehicle if one drives a vehicle without a ______.",
       "options": [
         {
           "id": "q0369_o1",
@@ -52233,22 +57687,22 @@ export const config = {
         {
           "id": "q0370_o1",
           "originalKey": "A",
-          "text": "violate traffic lights"
+          "text": "violating traffic lights"
         },
         {
           "id": "q0370_o2",
           "originalKey": "B",
-          "text": "use falsified license plate"
+          "text": "using falsified license plate"
         },
         {
           "id": "q0370_o3",
           "originalKey": "C",
-          "text": "call or answer the mobile phone"
+          "text": "calling or answering the mobile phone"
         },
         {
           "id": "q0370_o4",
           "originalKey": "D",
-          "text": "violate prohibitive signs"
+          "text": "violating prohibitive signs"
         }
       ],
       "correctRow": null,
@@ -52384,7 +57838,7 @@ export const config = {
         {
           "id": "q0372_o4",
           "originalKey": "D",
-          "text": "allow to pass"
+          "text": "allowed to pass"
         }
       ],
       "correctRow": null,
@@ -52439,22 +57893,22 @@ export const config = {
         {
           "id": "q0373_o1",
           "originalKey": "A",
-          "text": "occupy the road of the other side to pass the curve"
+          "text": "Occupy the road of the other side to pass the curve."
         },
         {
           "id": "q0373_o2",
           "originalKey": "B",
-          "text": "drive along the middle of the curve"
+          "text": "Drive along the middle of the curve."
         },
         {
           "id": "q0373_o3",
           "originalKey": "C",
-          "text": "speed up and honk to pass"
+          "text": "Speed up and honk to pass."
         },
         {
           "id": "q0373_o4",
           "originalKey": "D",
-          "text": "reduce speed and honk"
+          "text": "Reduce speed and honk."
         }
       ],
       "correctRow": null,
@@ -52628,22 +58082,22 @@ export const config = {
         {
           "id": "q0376_o1",
           "originalKey": "A",
-          "text": "violate the traffic lights"
+          "text": "violating traffic lights"
         },
         {
           "id": "q0376_o2",
           "originalKey": "B",
-          "text": "drive school bus without qualification"
+          "text": "driving a school bus without qualifications"
         },
         {
           "id": "q0376_o3",
           "originalKey": "C",
-          "text": "drive the vehicle which permission is different"
+          "text": "driving a vehicle which the permission is different"
         },
         {
           "id": "q0376_o4",
           "originalKey": "D",
-          "text": "drive after drink"
+          "text": "driving after drinking"
         }
       ],
       "correctRow": null,
@@ -52771,7 +58225,7 @@ export const config = {
         {
           "id": "q0378_o4",
           "originalKey": "D",
-          "text": "should not change lane"
+          "text": "should not change lanes"
         }
       ],
       "correctRow": null,
@@ -52981,22 +58435,22 @@ export const config = {
         {
           "id": "q0381_o1",
           "originalKey": "A",
-          "text": "turn on the hazard lights"
+          "text": "Turn on the hazard lights."
         },
         {
           "id": "q0381_o2",
           "originalKey": "B",
-          "text": "turn on all the lights of the vehicle"
+          "text": "Turn on all the lights of the vehicle."
         },
         {
           "id": "q0381_o3",
           "originalKey": "C",
-          "text": "forbid the passengers to get off"
+          "text": "Forbid the passengers to get off."
         },
         {
           "id": "q0381_o4",
           "originalKey": "D",
-          "text": "place a warning sign in front of the vehicle"
+          "text": "Place a warning sign in front of the vehicle."
         }
       ],
       "correctRow": null,
@@ -53124,7 +58578,7 @@ export const config = {
         {
           "id": "q0383_o4",
           "originalKey": "D",
-          "text": "every 1 year"
+          "text": "every year"
         }
       ],
       "correctRow": null,
@@ -53166,22 +58620,22 @@ export const config = {
         {
           "id": "q0384_o1",
           "originalKey": "A",
-          "text": "the end of a scoring cycle"
+          "text": "The end of a scoring cycle."
         },
         {
           "id": "q0384_o2",
           "originalKey": "B",
-          "text": "change driving license due to expiration"
+          "text": "Changing their driver's license due to expiration."
         },
         {
           "id": "q0384_o3",
           "originalKey": "C",
-          "text": "fail to reach 12 points in one scoring cycle"
+          "text": "Failure to reach 12 points in one scoring cycle."
         },
         {
           "id": "q0384_o4",
           "originalKey": "D",
-          "text": "reach 12 points in one scoring cycle"
+          "text": "Reaching 12 points in one scoring cycle."
         }
       ],
       "correctRow": null,
@@ -53285,12 +58739,12 @@ export const config = {
         {
           "id": "q0386_o1",
           "originalKey": "A",
-          "text": "police car on duty"
+          "text": "police cars on duty"
         },
         {
           "id": "q0386_o2",
           "originalKey": "B",
-          "text": "large bus or large truck"
+          "text": "large buses or large trucks"
         },
         {
           "id": "q0386_o3",
@@ -53300,7 +58754,7 @@ export const config = {
         {
           "id": "q0386_o4",
           "originalKey": "D",
-          "text": "public bus"
+          "text": "public buses"
         }
       ],
       "correctRow": null,
@@ -53357,22 +58811,22 @@ export const config = {
         {
           "id": "q0387_o1",
           "originalKey": "A",
-          "text": "turn on the directional signal and turn left quickly"
+          "text": "Turn on the directional signal and turn left quickly."
         },
         {
           "id": "q0387_o2",
           "originalKey": "B",
-          "text": "reduce speed properly when entering the left lane"
+          "text": "Reduce speed properly when entering the left lane."
         },
         {
           "id": "q0387_o3",
           "originalKey": "C",
-          "text": "cannot interfere other vehicles"
+          "text": "Cannot interfere other vehicles."
         },
         {
           "id": "q0387_o4",
           "originalKey": "D",
-          "text": "speed up to enter the left lane"
+          "text": "Speed up to enter the left lane."
         }
       ],
       "correctRow": null,
@@ -53476,22 +58930,22 @@ export const config = {
         {
           "id": "q0389_o1",
           "originalKey": "A",
-          "text": "place warning sign as required"
+          "text": "Place warning sign as required."
         },
         {
           "id": "q0389_o2",
           "originalKey": "B",
-          "text": "passengers cannot get off"
+          "text": "Passengers cannot get off."
         },
         {
           "id": "q0389_o3",
           "originalKey": "C",
-          "text": "call the police at once"
+          "text": "Call the police at once."
         },
         {
           "id": "q0389_o4",
           "originalKey": "D",
-          "text": "turn on the hazard lights"
+          "text": "Turn on the hazard lights."
         }
       ],
       "correctRow": null,
@@ -53546,12 +59000,12 @@ export const config = {
         {
           "id": "q0390_o1",
           "originalKey": "A",
-          "text": "driver during the period of probation"
+          "text": "a driver during the period of probation"
         },
         {
           "id": "q0390_o2",
           "originalKey": "B",
-          "text": "driver who has obtained a driving license"
+          "text": "a driver who has obtained a driving license"
         },
         {
           "id": "q0390_o3",
@@ -53561,7 +59015,7 @@ export const config = {
         {
           "id": "q0390_o4",
           "originalKey": "D",
-          "text": "one whose penalty points reach 6 points"
+          "text": "one whose penalty points reached 6 points"
         }
       ],
       "correctRow": null,
@@ -53701,22 +59155,22 @@ export const config = {
         {
           "id": "q0392_o1",
           "originalKey": "A",
-          "text": "do not move the vehicle"
+          "text": "Do not move the vehicle."
         },
         {
           "id": "q0392_o2",
           "originalKey": "B",
-          "text": "counsel other vehicles bypass"
+          "text": "Counsel other vehicles to bypass."
         },
         {
           "id": "q0392_o3",
           "originalKey": "C",
-          "text": "leave the scene and discuss on their own"
+          "text": "Leave the scene and discuss on their own."
         },
         {
           "id": "q0392_o4",
           "originalKey": "D",
-          "text": "protect the scene and discuss"
+          "text": "Protect the scene and discuss."
         }
       ],
       "correctRow": null,
@@ -53832,7 +59286,7 @@ export const config = {
       "id": "q0394",
       "number": 394,
       "type": "mcq",
-      "prompt": "The penalty points will be ______ if violating the traffic lights.",
+      "prompt": "The penalty points will be a ______ if violating the traffic lights.",
       "options": [
         {
           "id": "q0394_o1",
@@ -53903,22 +59357,22 @@ export const config = {
         {
           "id": "q0395_o1",
           "originalKey": "A",
-          "text": "drive the corresponding coach car with the coach sitting by to guide"
+          "text": "Drive the corresponding coach car with the coach sitting by to guide."
         },
         {
           "id": "q0395_o2",
           "originalKey": "B",
-          "text": "drive the corresponding coach car alone"
+          "text": "Drive the corresponding coach car alone."
         },
         {
           "id": "q0395_o3",
           "originalKey": "C",
-          "text": "drive the corresponding coach car with another person who is not a coach sitting by to guide"
+          "text": "Drive the corresponding coach car with another person who is not a coach sitting by to guide."
         },
         {
           "id": "q0395_o4",
           "originalKey": "D",
-          "text": "drive the private car with the coach sitting by to guide"
+          "text": "Drive the private car with the coach sitting by to guide."
         }
       ],
       "correctRow": null,
@@ -54017,22 +59471,22 @@ export const config = {
         {
           "id": "q0397_o1",
           "originalKey": "A",
-          "text": "shift the high and low beam lights alternately to remind the cars already in the intersection to yield"
+          "text": "Shift the high and low beam lights alternately to remind the cars already in the intersection to yield."
         },
         {
           "id": "q0397_o2",
           "originalKey": "B",
-          "text": "quickly cut in the cars already in the intersection"
+          "text": "Quickly cut in the cars already in the intersection."
         },
         {
           "id": "q0397_o3",
           "originalKey": "C",
-          "text": "let the cars already in the intersection go first"
+          "text": "Let the cars already in the intersection go first."
         },
         {
           "id": "q0397_o4",
           "originalKey": "D",
-          "text": "honk and enter directly"
+          "text": "Honk and enter directly."
         }
       ],
       "correctRow": null,
@@ -54092,22 +59546,22 @@ export const config = {
         {
           "id": "q0398_o1",
           "originalKey": "A",
-          "text": "honk to let it yield"
+          "text": "Honk to let it yield."
         },
         {
           "id": "q0398_o2",
           "originalKey": "B",
-          "text": "directly speed up to make a turn"
+          "text": "Directly speed up to make a turn."
         },
         {
           "id": "q0398_o3",
           "originalKey": "C",
-          "text": "reduce speed and turn slowly"
+          "text": "Reduce speed and turn slowly."
         },
         {
           "id": "q0398_o4",
           "originalKey": "D",
-          "text": "yield the car coming from left"
+          "text": "Yield the car coming from left."
         }
       ],
       "correctRow": null,
@@ -54587,12 +60041,12 @@ export const config = {
         {
           "id": "q0405_o3",
           "originalKey": "C",
-          "text": "escaped after causing traffic accident"
+          "text": "escaping after causing traffic accident"
         },
         {
           "id": "q0405_o4",
           "originalKey": "D",
-          "text": "driving without driver license"
+          "text": "driving without a driver license"
         }
       ],
       "correctRow": null,
@@ -54647,22 +60101,22 @@ export const config = {
         {
           "id": "q0406_o1",
           "originalKey": "A",
-          "text": "the vehicle is making a stop"
+          "text": "The vehicle is making a stop."
         },
         {
           "id": "q0406_o2",
           "originalKey": "B",
-          "text": "the vehicle is reducing speed to yield"
+          "text": "The vehicle is reducing speed to yield."
         },
         {
           "id": "q0406_o3",
           "originalKey": "C",
-          "text": "the vehicle is making a U-turn"
+          "text": "The vehicle is making a U-turn."
         },
         {
           "id": "q0406_o4",
           "originalKey": "D",
-          "text": "the vehicle is driving normally"
+          "text": "The vehicle is driving normally."
         }
       ],
       "correctRow": null,
@@ -55043,22 +60497,22 @@ export const config = {
         {
           "id": "q0412_o1",
           "originalKey": "A",
-          "text": "drive in the emergency lane"
+          "text": "Drive in the emergency lane."
         },
         {
           "id": "q0412_o2",
           "originalKey": "B",
-          "text": "leave the expressway as soon as possible"
+          "text": "Leave the expressway as soon as possible."
         },
         {
           "id": "q0412_o3",
           "originalKey": "C",
-          "text": "stop by the roadside as soon as possible"
+          "text": "Stop by the roadside as soon as possible."
         },
         {
           "id": "q0412_o4",
           "originalKey": "D",
-          "text": "drive slowly in the road shoulder"
+          "text": "Drive slowly in the road shoulder."
         }
       ],
       "correctRow": null,
@@ -55241,22 +60695,22 @@ export const config = {
         {
           "id": "q0415_o1",
           "originalKey": "A",
-          "text": "drive in the middle of the road"
+          "text": "Drive in the middle of the road."
         },
         {
           "id": "q0415_o2",
           "originalKey": "B",
-          "text": "drive on both side of the road"
+          "text": "Drive on both side of the road."
         },
         {
           "id": "q0415_o3",
           "originalKey": "C",
-          "text": "drive according to lanes"
+          "text": "Drive according to lanes."
         },
         {
           "id": "q0415_o4",
           "originalKey": "D",
-          "text": "go forward at will"
+          "text": "Go forward at will."
         }
       ],
       "correctRow": null,
@@ -55386,22 +60840,22 @@ export const config = {
         {
           "id": "q0417_o1",
           "originalKey": "A",
-          "text": "the vehicle is reducing speed to yield"
+          "text": "The vehicle is reducing speed to yield."
         },
         {
           "id": "q0417_o2",
           "originalKey": "B",
-          "text": "the vehicle is driving normally"
+          "text": "The vehicle is driving normally."
         },
         {
           "id": "q0417_o3",
           "originalKey": "C",
-          "text": "the vehicle is overtaking"
+          "text": "The vehicle is overtaking."
         },
         {
           "id": "q0417_o4",
           "originalKey": "D",
-          "text": "the vehicle is making a stop"
+          "text": "The vehicle is making a stop."
         }
       ],
       "correctRow": null,
@@ -55448,22 +60902,22 @@ export const config = {
         {
           "id": "q0418_o1",
           "originalKey": "A",
-          "text": "wait in the cross-hatched marking area"
+          "text": "Wait in the cross-hatched marking area."
         },
         {
           "id": "q0418_o2",
           "originalKey": "B",
-          "text": "stop and wait outside the intersection"
+          "text": "Stop and wait outside the intersection."
         },
         {
           "id": "q0418_o3",
           "originalKey": "C",
-          "text": "follow the vehicle in front and pass"
+          "text": "Follow the vehicle in front and pass."
         },
         {
           "id": "q0418_o4",
           "originalKey": "D",
-          "text": "wait inside the intersection"
+          "text": "Wait inside the intersection."
         }
       ],
       "correctRow": null,
@@ -55523,7 +60977,7 @@ export const config = {
         {
           "id": "q0419_o2",
           "originalKey": "B",
-          "text": "stop in the section with no stopping marking"
+          "text": "stopping in the section with no stopping marking"
         },
         {
           "id": "q0419_o3",
@@ -55853,22 +61307,22 @@ export const config = {
         {
           "id": "q0424_o1",
           "originalKey": "A",
-          "text": "not observing through the rear-view mirror while the vehicle in front brakes"
+          "text": "Not observing through the rear-view mirror while the vehicle in front brakes."
         },
         {
           "id": "q0424_o2",
           "originalKey": "B",
-          "text": "the vehicle in front braking suddenly"
+          "text": "The vehicle in front braking suddenly."
         },
         {
           "id": "q0424_o3",
           "originalKey": "C",
-          "text": "distance from the vehicle in front is too close when the rear vehicle was overtaking"
+          "text": "Distance from the vehicle in front is too close when the rear vehicle was overtaking."
         },
         {
           "id": "q0424_o4",
           "originalKey": "D",
-          "text": "not maintaining a safe distance from the vehicle in front"
+          "text": "Not maintaining a safe distance from the vehicle in front."
         }
       ],
       "correctRow": null,
@@ -56130,22 +61584,22 @@ export const config = {
         {
           "id": "q0428_o1",
           "originalKey": "A",
-          "text": "not turn on the hazard lights"
+          "text": "not turning on the hazard lights"
         },
         {
           "id": "q0428_o2",
           "originalKey": "B",
-          "text": "not stop the car by the roadside"
+          "text": "not stopping the car by the roadside"
         },
         {
           "id": "q0428_o3",
           "originalKey": "C",
-          "text": "not solve the problem at once"
+          "text": "not solving the problem at once"
         },
         {
           "id": "q0428_o4",
           "originalKey": "D",
-          "text": "not place the warning sign"
+          "text": "not placing the warning sign"
         }
       ],
       "correctRow": null,
@@ -56482,22 +61936,22 @@ export const config = {
         {
           "id": "q0433_o1",
           "originalKey": "A",
-          "text": "driving a motorized vehicle when driving license is temporarily detained"
+          "text": "Driving a motorized vehicle when driving license is temporarily detained."
         },
         {
           "id": "q0433_o2",
           "originalKey": "B",
-          "text": "applying for reissuing the driving license by concealment or deception"
+          "text": "Applying for reissuing the driving license by concealment or deception."
         },
         {
           "id": "q0433_o3",
           "originalKey": "C",
-          "text": "not yielding to the school bus according to regulations"
+          "text": "Not yielding to the school bus according to regulations."
         },
         {
           "id": "q0433_o4",
           "originalKey": "D",
-          "text": "driving with the license plate deliberately stained"
+          "text": "Driving with the license plate deliberately stained."
         }
       ],
       "correctRow": null,
@@ -57025,22 +62479,22 @@ export const config = {
         {
           "id": "q0441_o1",
           "originalKey": "A",
-          "text": "Stop and wait for their turn"
+          "text": "Stop and wait for their turn."
         },
         {
           "id": "q0441_o2",
           "originalKey": "B",
-          "text": "Honk to indicate the vehicle in front to yield"
+          "text": "Honk to indicate the vehicle in front to yield."
         },
         {
           "id": "q0441_o3",
           "originalKey": "C",
-          "text": "Bypass the vehicle in front from the right side and go through the intersection"
+          "text": "Bypass the vehicle in front from the right side and go through the intersection."
         },
         {
           "id": "q0441_o4",
           "originalKey": "D",
-          "text": "Bypass the vehicle in front from the left side and go through the intersection"
+          "text": "Bypass the vehicle in front from the left side and go through the intersection."
         }
       ],
       "correctRow": null,
@@ -57231,22 +62685,22 @@ export const config = {
         {
           "id": "q0444_o1",
           "originalKey": "A",
-          "text": "stop occupying the lane for motorized vehicles"
+          "text": "occupying the lane for motorized vehicles"
         },
         {
           "id": "q0444_o2",
           "originalKey": "B",
-          "text": "stop more than 30cm from the roadside"
+          "text": "stopping more than 30cm from the roadside"
         },
         {
           "id": "q0444_o3",
           "originalKey": "C",
-          "text": "stop in the section with no stopping marking"
+          "text": "stopping in the section with no stopping marking"
         },
         {
           "id": "q0444_o4",
           "originalKey": "D",
-          "text": "stop occupying the lane for non-motorized vehicles"
+          "text": "occupying the lane for non-motorized vehicles"
         }
       ],
       "correctRow": null,
@@ -57832,12 +63286,12 @@ export const config = {
         {
           "id": "q0453_o1",
           "originalKey": "A",
-          "text": "use the high beam lights"
+          "text": "the high beam lights"
         },
         {
           "id": "q0453_o2",
           "originalKey": "B",
-          "text": "use the fog lights"
+          "text": "the fog lights"
         },
         {
           "id": "q0453_o3",
@@ -58029,22 +63483,22 @@ export const config = {
         {
           "id": "q0456_o1",
           "originalKey": "A",
-          "text": "stop and yield to the opposite car"
+          "text": "Stop and yield to the opposite car."
         },
         {
           "id": "q0456_o2",
           "originalKey": "B",
-          "text": "turn on the left-turn signal and drive on the left side"
+          "text": "Turn on the left-turn signal and drive on the left side."
         },
         {
           "id": "q0456_o3",
           "originalKey": "C",
-          "text": "turn on the head lights to let the other side yield"
+          "text": "Turn on the head lights to let the other side yield."
         },
         {
           "id": "q0456_o4",
           "originalKey": "D",
-          "text": "speed up to bypass the obstacle and then cross the other vehicle"
+          "text": "Speed up to bypass the obstacle and then cross the other vehicle."
         }
       ],
       "correctRow": null,
@@ -58171,22 +63625,22 @@ export const config = {
         {
           "id": "q0458_o1",
           "originalKey": "A",
-          "text": "borrow the opposite lane to pass"
+          "text": "Borrow the opposite lane to pass."
         },
         {
           "id": "q0458_o2",
           "originalKey": "B",
-          "text": "stop and wait outside the intersection"
+          "text": "Stop and wait outside the intersection."
         },
         {
           "id": "q0458_o3",
           "originalKey": "C",
-          "text": "cut in the front vehicles to pass"
+          "text": "Cut in the front vehicles to pass."
         },
         {
           "id": "q0458_o4",
           "originalKey": "D",
-          "text": "enter the intersection and wait"
+          "text": "Enter the intersection and wait."
         }
       ],
       "correctRow": null,
@@ -58228,22 +63682,22 @@ export const config = {
         {
           "id": "q0459_o1",
           "originalKey": "A",
-          "text": "stop in the middle of the road"
+          "text": "Stop in the middle of the road."
         },
         {
           "id": "q0459_o2",
           "originalKey": "B",
-          "text": "stop the vehicle where it will not interfere the traffic"
+          "text": "Stop the vehicle where it will not interfere the traffic."
         },
         {
           "id": "q0459_o3",
           "originalKey": "C",
-          "text": "turn on the low beam lights or fog lights"
+          "text": "Turn on the low beam lights or fog lights."
         },
         {
           "id": "q0459_o4",
           "originalKey": "D",
-          "text": "stop on the spot to solve the problem"
+          "text": "Stop on the spot to solve the problem."
         }
       ],
       "correctRow": null,
@@ -58650,12 +64104,12 @@ export const config = {
         {
           "id": "q0465_o1",
           "originalKey": "A",
-          "text": "turn off high beam lights"
+          "text": "turn off the high beam lights"
         },
         {
           "id": "q0465_o2",
           "originalKey": "B",
-          "text": "use hazard lights"
+          "text": "use the hazard lights"
         },
         {
           "id": "q0465_o3",
@@ -58665,7 +64119,7 @@ export const config = {
         {
           "id": "q0465_o4",
           "originalKey": "D",
-          "text": "use high beam lights"
+          "text": "use the high beam lights"
         }
       ],
       "correctRow": null,
@@ -58750,7 +64204,7 @@ export const config = {
         {
           "id": "q0466_o4",
           "originalKey": "D",
-          "text": "turn on high beam lights"
+          "text": "turn on the high beam lights"
         }
       ],
       "correctRow": null,
@@ -58792,22 +64246,22 @@ export const config = {
         {
           "id": "q0467_o1",
           "originalKey": "A",
-          "text": "stop in the opposite direction by the left roadside"
+          "text": "Stop in the opposite direction by the left roadside."
         },
         {
           "id": "q0467_o2",
           "originalKey": "B",
-          "text": "stop in the parking area"
+          "text": "Stop in the parking area."
         },
         {
           "id": "q0467_o3",
           "originalKey": "C",
-          "text": "stop anywhere as will by the roadside"
+          "text": "Stop anywhere as will by the roadside."
         },
         {
           "id": "q0467_o4",
           "originalKey": "D",
-          "text": "stop on the sidewalk"
+          "text": "Stop on the sidewalk."
         }
       ],
       "correctRow": null,
@@ -59202,22 +64656,22 @@ export const config = {
         {
           "id": "q0473_o1",
           "originalKey": "A",
-          "text": "At the former place of his household register"
+          "text": "At the former place of his household register."
         },
         {
           "id": "q0473_o2",
           "originalKey": "B",
-          "text": "At the residential place"
+          "text": "At the residential place."
         },
         {
           "id": "q0473_o3",
           "originalKey": "C",
-          "text": "At the new place of his household register"
+          "text": "At the new place of his household register."
         },
         {
           "id": "q0473_o4",
           "originalKey": "D",
-          "text": "At the location of his ho usehold register"
+          "text": "At the location of his household register."
         }
       ],
       "correctRow": null,
@@ -59410,22 +64864,22 @@ export const config = {
         {
           "id": "q0476_o1",
           "originalKey": "A",
-          "text": "not hanging the license plate as required"
+          "text": "Not hanging the license plate as required."
         },
         {
           "id": "q0476_o2",
           "originalKey": "B",
-          "text": "deliberately covering the license plate"
+          "text": "Deliberately covering the license plate."
         },
         {
           "id": "q0476_o3",
           "originalKey": "C",
-          "text": "occupying the lane for non-motorized vehicles"
+          "text": "Occupying the lane for non-motorized vehicles."
         },
         {
           "id": "q0476_o4",
           "originalKey": "D",
-          "text": "driving in the opposite direction"
+          "text": "Driving in the opposite direction."
         }
       ],
       "correctRow": null,
@@ -59555,22 +65009,22 @@ export const config = {
         {
           "id": "q0478_o1",
           "originalKey": "A",
-          "text": "make sure it is safe to pass"
+          "text": "Make sure it is safe to pass."
         },
         {
           "id": "q0478_o2",
           "originalKey": "B",
-          "text": "turn right and speed up to pass"
+          "text": "Turn right and speed up to pass."
         },
         {
           "id": "q0478_o3",
           "originalKey": "C",
-          "text": "speed up and pass straight"
+          "text": "Speed up and pass straight."
         },
         {
           "id": "q0478_o4",
           "originalKey": "D",
-          "text": "turn left and speed up to pass"
+          "text": "Turn left and speed up to pass."
         }
       ],
       "correctRow": null,
@@ -59625,22 +65079,22 @@ export const config = {
         {
           "id": "q0479_o1",
           "originalKey": "A",
-          "text": "turn on the right-turn signal in advance"
+          "text": "Turn on the right-turn signal in advance."
         },
         {
           "id": "q0479_o2",
           "originalKey": "B",
-          "text": "no need to turn on any turn signal"
+          "text": "No need to turn on any turn signal."
         },
         {
           "id": "q0479_o3",
           "originalKey": "C",
-          "text": "turn on the left-turn signal in advance"
+          "text": "Turn on the left-turn signal in advance."
         },
         {
           "id": "q0479_o4",
           "originalKey": "D",
-          "text": "turn on the low beam lights in advance"
+          "text": "Turn on the low beam lights in advance."
         }
       ],
       "correctRow": null,
@@ -59958,22 +65412,22 @@ export const config = {
         {
           "id": "q0484_o1",
           "originalKey": "A",
-          "text": "enter the intersection from road shoulder by the right side of the vehicle in front"
+          "text": "Enter the intersection from road shoulder by the right side of the vehicle in front."
         },
         {
           "id": "q0484_o2",
           "originalKey": "B",
-          "text": "enter the intersection from the side of interspace"
+          "text": "Enter the intersection from the side of interspace."
         },
         {
           "id": "q0484_o3",
           "originalKey": "C",
-          "text": "pass alternately with one vehicle each lane to enter the intersection"
+          "text": "Pass alternately with one vehicle each lane to enter the intersection."
         },
         {
           "id": "q0484_o4",
           "originalKey": "D",
-          "text": "change to left lane and cut in to enter the intersection"
+          "text": "Change to left lane and cut in to enter the intersection."
         }
       ],
       "correctRow": null,
@@ -60276,27 +65730,27 @@ export const config = {
       "id": "q0489",
       "number": 489,
       "type": "mcq",
-      "prompt": "If one drives an illegally assembled motorized vehicle, he should not only pay the fine, but also ______.",
+      "prompt": "If one drives an illegally assembled motorized vehicle, he should not only pay the fine, but also be ______.",
       "options": [
         {
           "id": "q0489_o1",
           "originalKey": "A",
-          "text": "be confiscated the driving license"
+          "text": "confiscated the driving license"
         },
         {
           "id": "q0489_o2",
           "originalKey": "B",
-          "text": "be revoked the driving permission"
+          "text": "revoked the driving permission"
         },
         {
           "id": "q0489_o3",
           "originalKey": "C",
-          "text": "be forced to recover the vehicle condition"
+          "text": "forced to recover the vehicle condition"
         },
         {
           "id": "q0489_o4",
           "originalKey": "D",
-          "text": "be revoked the driving license"
+          "text": "revoked the driving license"
         }
       ],
       "correctRow": null,
@@ -60564,22 +66018,22 @@ export const config = {
         {
           "id": "q0493_o1",
           "originalKey": "A",
-          "text": "stopping and occupying the lane for non-motorized vehicles"
+          "text": "Stopping and occupying the lane for non-motorized vehicles."
         },
         {
           "id": "q0493_o2",
           "originalKey": "B",
-          "text": "stopping in a section with no stopping marking"
+          "text": "Stopping in a section with no stopping marking."
         },
         {
           "id": "q0493_o3",
           "originalKey": "C",
-          "text": "stopping at a bus stop"
+          "text": "Stopping at a bus stop."
         },
         {
           "id": "q0493_o4",
           "originalKey": "D",
-          "text": "stopping and occupying the sidewalk"
+          "text": "Stopping and occupying the sidewalk."
         }
       ],
       "correctRow": null,
@@ -60847,7 +66301,7 @@ export const config = {
         {
           "id": "q0497_o1",
           "originalKey": "A",
-          "text": "use high beam lights"
+          "text": "use the high beam lights"
         },
         {
           "id": "q0497_o2",
@@ -60974,22 +66428,22 @@ export const config = {
         {
           "id": "q0499_o1",
           "originalKey": "A",
-          "text": "vehicle in front is reducing speed to yield"
+          "text": "When the vehicle in front is reducing speed to yield."
         },
         {
           "id": "q0499_o2",
           "originalKey": "B",
-          "text": "vehicle in front is turning left"
+          "text": "When the vehicle in front is turning left."
         },
         {
           "id": "q0499_o3",
           "originalKey": "C",
-          "text": "vehicle in front is pulling over by the roadside"
+          "text": "When the vehicle in front is pulling over by the roadside."
         },
         {
           "id": "q0499_o4",
           "originalKey": "D",
-          "text": "vehicle in front is turning right"
+          "text": "When the vehicle in front is turning right."
         }
       ],
       "correctRow": null,
@@ -61160,22 +66614,22 @@ export const config = {
         {
           "id": "q0502_o1",
           "originalKey": "A",
-          "text": "driving closely by the roadside"
+          "text": "Drive closely by the roadside."
         },
         {
           "id": "q0502_o2",
           "originalKey": "B",
-          "text": "driving by the central of the road"
+          "text": "Drive in the center of the road."
         },
         {
           "id": "q0502_o3",
           "originalKey": "C",
-          "text": "reducing speed and driving by right side"
+          "text": "Reduce speed and drive by the right side."
         },
         {
           "id": "q0502_o4",
           "originalKey": "D",
-          "text": "drive by using the lane for non-motorized vehicles"
+          "text": "Drive by using the lane for non-motorized vehicles."
         }
       ],
       "correctRow": null,
@@ -61217,22 +66671,22 @@ export const config = {
         {
           "id": "q0503_o1",
           "originalKey": "A",
-          "text": "turn on the hazard lights and pass"
+          "text": "Turn on the hazard lights and pass."
         },
         {
           "id": "q0503_o2",
           "originalKey": "B",
-          "text": "directly speed up and pass straight"
+          "text": "Directly speed up and pass straight."
         },
         {
           "id": "q0503_o3",
           "originalKey": "C",
-          "text": "yield to the vehicle from the right road"
+          "text": "Yield to the vehicle from the right road."
         },
         {
           "id": "q0503_o4",
           "originalKey": "D",
-          "text": "yield to the vehicle from the left road"
+          "text": "Yield to the vehicle from the left road."
         }
       ],
       "correctRow": null,
@@ -61296,22 +66750,22 @@ export const config = {
         {
           "id": "q0504_o1",
           "originalKey": "A",
-          "text": "properly reduce speed to pass"
+          "text": "Properly reduce speed to pass."
         },
         {
           "id": "q0504_o2",
           "originalKey": "B",
-          "text": "slide over in the neutral gear"
+          "text": "Slide over in the neutral gear."
         },
         {
           "id": "q0504_o3",
           "originalKey": "C",
-          "text": "stop to make sure it is safe, then pass"
+          "text": "Stop to make sure it is safe, then pass."
         },
         {
           "id": "q0504_o4",
           "originalKey": "D",
-          "text": "speed up and pass as fast as possible"
+          "text": "Speed up and pass as fast as possible."
         }
       ],
       "correctRow": null,
@@ -61433,27 +66887,27 @@ export const config = {
       "id": "q0506",
       "number": 506,
       "type": "mcq",
-      "prompt": "The driver who chases and races while driving on the road, and commits serious acts is subject to ______.",
+      "prompt": "The driver who chases and races while driving on the road, and commits serious acts is subject to a ______.",
       "options": [
         {
           "id": "q0506_o1",
           "originalKey": "A",
-          "text": "a prison term of 6 months"
+          "text": "prison term of 6 months"
         },
         {
           "id": "q0506_o2",
           "originalKey": "B",
-          "text": "a prison term of more than 1 year"
+          "text": "prison term of more than 1 year"
         },
         {
           "id": "q0506_o3",
           "originalKey": "C",
-          "text": "a criminal restriction and a fine"
+          "text": "criminal restriction and a fine"
         },
         {
           "id": "q0506_o4",
           "originalKey": "D",
-          "text": "a criminal detention and a fine"
+          "text": "criminal detention and a fine"
         }
       ],
       "correctRow": null,
@@ -61495,27 +66949,27 @@ export const config = {
       "id": "q0507",
       "number": 507,
       "type": "mcq",
-      "prompt": "The driver who drives after drunk is subject to ______.",
+      "prompt": "The driver who drives after drunk is subject to a ______.",
       "options": [
         {
           "id": "q0507_o1",
           "originalKey": "A",
-          "text": "a criminal restriction and a fine"
+          "text": "criminal restriction and a fine"
         },
         {
           "id": "q0507_o2",
           "originalKey": "B",
-          "text": "a prison term of more than 2 years"
+          "text": "prison term of more than 2 years"
         },
         {
           "id": "q0507_o3",
           "originalKey": "C",
-          "text": "a criminal detention and a fine"
+          "text": "criminal detention and a fine"
         },
         {
           "id": "q0507_o4",
           "originalKey": "D",
-          "text": "a prison term of less than 2 years"
+          "text": "prison term of less than 2 years"
         }
       ],
       "correctRow": null,
@@ -61624,22 +67078,22 @@ export const config = {
         {
           "id": "q0509_o1",
           "originalKey": "A",
-          "text": "turn on the hazard lights"
+          "text": "Turn on the hazard lights."
         },
         {
           "id": "q0509_o2",
           "originalKey": "B",
-          "text": "turn on the right-turn signal in advance"
+          "text": "Turn on the right-turn signal in advance."
         },
         {
           "id": "q0509_o3",
           "originalKey": "C",
-          "text": "use the high and low beam lights alternately"
+          "text": "Use the high and low beam lights alternately."
         },
         {
           "id": "q0509_o4",
           "originalKey": "D",
-          "text": "not need to use any light to indicate"
+          "text": "No need to use any lights to indicate."
         }
       ],
       "correctRow": null,
@@ -61766,22 +67220,22 @@ export const config = {
         {
           "id": "q0511_o1",
           "originalKey": "A",
-          "text": "turn off the high beam light"
+          "text": "Turn off the high beam light."
         },
         {
           "id": "q0511_o2",
           "originalKey": "B",
-          "text": "turn on high beam lights"
+          "text": "Turn on high beam lights."
         },
         {
           "id": "q0511_o3",
           "originalKey": "C",
-          "text": "use fog lights"
+          "text": "Use fog lights."
         },
         {
           "id": "q0511_o4",
           "originalKey": "D",
-          "text": "use the high and low beam lights alternately"
+          "text": "Use the high and low beam lights alternately."
         }
       ],
       "correctRow": null,
@@ -61823,22 +67277,22 @@ export const config = {
         {
           "id": "q0512_o1",
           "originalKey": "A",
-          "text": "The vehicle not close to the mountain goes first"
+          "text": "The vehicle not close to the mountain goes first."
         },
         {
           "id": "q0512_o2",
           "originalKey": "B",
-          "text": "The vehicle close to the mountain goes first"
+          "text": "The vehicle close to the mountain goes first."
         },
         {
           "id": "q0512_o3",
           "originalKey": "C",
-          "text": "The empty vehicle goes first"
+          "text": "The empty vehicle goes first."
         },
         {
           "id": "q0512_o4",
           "originalKey": "D",
-          "text": "The slow-moving vehicle goes first"
+          "text": "The slow-moving vehicle goes first."
         }
       ],
       "correctRow": null,
@@ -62339,22 +67793,22 @@ export const config = {
         {
           "id": "q0520_o1",
           "originalKey": "A",
-          "text": "follow the vehicles in front"
+          "text": "Follow the vehicles in front."
         },
         {
           "id": "q0520_o2",
           "originalKey": "B",
-          "text": "occupy the opposite lane to overtake"
+          "text": "Occupy the opposite lane to overtake."
         },
         {
           "id": "q0520_o3",
           "originalKey": "C",
-          "text": "borrow the lane from right side to overtake"
+          "text": "Borrow the lane from right side to overtake."
         },
         {
           "id": "q0520_o4",
           "originalKey": "D",
-          "text": "overtake from both sides as will"
+          "text": "Overtake from both sides at will."
         }
       ],
       "correctRow": null,
@@ -65125,27 +70579,27 @@ export const config = {
       "id": "q0576",
       "number": 576,
       "type": "mcq",
-      "prompt": "This lights up to indicate that ______.",
+      "prompt": "This lights up to indicate that the ______.",
       "options": [
         {
           "id": "q0576_o1",
           "originalKey": "A",
-          "text": "the tail fog light is turned on"
+          "text": "tail fog light is turned on"
         },
         {
           "id": "q0576_o2",
           "originalKey": "B",
-          "text": "the low beam light is turned on"
+          "text": "low beam light is turned on"
         },
         {
           "id": "q0576_o3",
           "originalKey": "C",
-          "text": "the high beam light is turned on"
+          "text": "high beam light is turned on"
         },
         {
           "id": "q0576_o4",
           "originalKey": "D",
-          "text": "the head fog light is turned on"
+          "text": "head fog light is turned on"
         }
       ],
       "correctRow": null,
@@ -65417,27 +70871,27 @@ export const config = {
       "id": "q0580",
       "number": 580,
       "type": "mcq",
-      "prompt": "This lights up to indicate that ______.",
+      "prompt": "This lights up to indicate that the ______.",
       "options": [
         {
           "id": "q0580_o1",
           "originalKey": "A",
-          "text": "the tail fog light is turned on"
+          "text": "tail fog light is turned on"
         },
         {
           "id": "q0580_o2",
           "originalKey": "B",
-          "text": "the low beam light is turned on"
+          "text": "low beam light is turned on"
         },
         {
           "id": "q0580_o3",
           "originalKey": "C",
-          "text": "the high beam light is turned on"
+          "text": "high beam light is turned on"
         },
         {
           "id": "q0580_o4",
           "originalKey": "D",
-          "text": "the head fog light is turned on"
+          "text": "head fog light is turned on"
         }
       ],
       "correctRow": null,
@@ -65647,27 +71101,27 @@ export const config = {
       "id": "q0583",
       "number": 583,
       "type": "mcq",
-      "prompt": "This lights up to indicate that ______.",
+      "prompt": "This lights up to indicate that the ______.",
       "options": [
         {
           "id": "q0583_o1",
           "originalKey": "A",
-          "text": "the tail fog light is turned on"
+          "text": "tail fog light is turned on"
         },
         {
           "id": "q0583_o2",
           "originalKey": "B",
-          "text": "the low beam light is turned on"
+          "text": "low beam light is turned on"
         },
         {
           "id": "q0583_o3",
           "originalKey": "C",
-          "text": "the high beam light is turned on"
+          "text": "high beam light is turned on"
         },
         {
           "id": "q0583_o4",
           "originalKey": "D",
-          "text": "the head fog light is turned on"
+          "text": "head fog light is turned on"
         }
       ],
       "correctRow": null,
@@ -65877,7 +71331,7 @@ export const config = {
       "id": "q0586",
       "number": 586,
       "type": "mcq",
-      "prompt": "This lights up to indicate that ______.",
+      "prompt": "This lights up to indicate of a(n) ______.",
       "options": [
         {
           "id": "q0586_o1",
@@ -66262,12 +71716,12 @@ export const config = {
       "id": "q0591",
       "number": 591,
       "type": "mcq",
-      "prompt": "This lights up continuously to indicate ______.",
+      "prompt": "This lights up continuously to indicate of ______.",
       "options": [
         {
           "id": "q0591_o1",
           "originalKey": "A",
-          "text": "safety bags work"
+          "text": "airbags working properly"
         },
         {
           "id": "q0591_o2",
@@ -66277,12 +71731,12 @@ export const config = {
         {
           "id": "q0591_o3",
           "originalKey": "C",
-          "text": "ABS system malfunction"
+          "text": "an ABS system malfunction"
         },
         {
           "id": "q0591_o4",
           "originalKey": "D",
-          "text": "safety bags malfunction"
+          "text": "an airbag malfunction"
         }
       ],
       "correctRow": null,
@@ -66342,7 +71796,7 @@ export const config = {
         {
           "id": "q0592_o1",
           "originalKey": "A",
-          "text": "switch of windscreen wiper"
+          "text": "switch of the windscreen wiper"
         },
         {
           "id": "q0592_o2",
@@ -66357,7 +71811,7 @@ export const config = {
         {
           "id": "q0592_o4",
           "originalKey": "D",
-          "text": "switch of defogger"
+          "text": "switch of the defogger"
         }
       ],
       "correctRow": null,
@@ -66412,7 +71866,7 @@ export const config = {
       "id": "q0593",
       "number": 593,
       "type": "mcq",
-      "prompt": "What kind of device are the safety bags for?",
+      "prompt": "What kind of device are airbags for?",
       "options": [
         {
           "id": "q0593_o1",
@@ -66489,22 +71943,22 @@ export const config = {
         {
           "id": "q0594_o1",
           "originalKey": "A",
-          "text": "left-turn signal flashes"
+          "text": "left-turn signal is flashing"
         },
         {
           "id": "q0594_o2",
           "originalKey": "B",
-          "text": "front and rear width lights light on"
+          "text": "front and rear width lights are on"
         },
         {
           "id": "q0594_o3",
           "originalKey": "C",
-          "text": "front and rear width lights light on"
+          "text": "front and rear width lights are on"
         },
         {
           "id": "q0594_o4",
           "originalKey": "D",
-          "text": "right-turn signal flashes"
+          "text": "right-turn signal is flashing"
         }
       ],
       "correctRow": null,
@@ -66554,7 +72008,7 @@ export const config = {
       "id": "q0595",
       "number": 595,
       "type": "mcq",
-      "prompt": "The front safety bags play a fully protective role when used in conjunction with a ______.",
+      "prompt": "The front airbags play a fully protective role when used in conjunction with a ______.",
       "options": [
         {
           "id": "q0595_o1",
@@ -66769,12 +72223,12 @@ export const config = {
         {
           "id": "q0598_o1",
           "originalKey": "A",
-          "text": "switch of high beam lights"
+          "text": "high beam lights"
         },
         {
           "id": "q0598_o2",
           "originalKey": "B",
-          "text": "switch of the low beam lights"
+          "text": "low beam lights"
         },
         {
           "id": "q0598_o3",
@@ -66784,7 +72238,7 @@ export const config = {
         {
           "id": "q0598_o4",
           "originalKey": "D",
-          "text": "the switch of tail fog light"
+          "text": "tail fog light"
         }
       ],
       "correctRow": null,
@@ -66984,7 +72438,7 @@ export const config = {
       "id": "q0601",
       "number": 601,
       "type": "mcq",
-      "prompt": "This lights up to indicate that ______.",
+      "prompt": "This lights up to indicate of a(n) ______.",
       "options": [
         {
           "id": "q0601_o1",
@@ -66994,7 +72448,7 @@ export const config = {
         {
           "id": "q0601_o2",
           "originalKey": "B",
-          "text": "handbrake is released"
+          "text": "handbrake release"
         },
         {
           "id": "q0601_o3",
@@ -67059,27 +72513,27 @@ export const config = {
       "id": "q0602",
       "number": 602,
       "type": "mcq",
-      "prompt": "This lights up to indicate that ______.",
+      "prompt": "This lights up to indicate that the ______.",
       "options": [
         {
           "id": "q0602_o1",
           "originalKey": "A",
-          "text": "engine compartment is opened"
+          "text": "engine compartment is open"
         },
         {
           "id": "q0602_o2",
           "originalKey": "B",
-          "text": "cover of fuel tank is opened"
+          "text": "cover of fuel tank is open"
         },
         {
           "id": "q0602_o3",
           "originalKey": "C",
-          "text": "doors of both sides are opened"
+          "text": "doors of both sides are open"
         },
         {
           "id": "q0602_o4",
           "originalKey": "D",
-          "text": "luggage compartment is opened"
+          "text": "luggage compartment is open"
         }
       ],
       "correctRow": null,
@@ -67134,22 +72588,22 @@ export const config = {
         {
           "id": "q0603_o1",
           "originalKey": "A",
-          "text": "the windscreen defrosting"
+          "text": "windscreen defrosting"
         },
         {
           "id": "q0603_o2",
           "originalKey": "B",
-          "text": "the rear window wiper"
+          "text": "rear window wiper"
         },
         {
           "id": "q0603_o3",
           "originalKey": "C",
-          "text": "the rear window defrosting"
+          "text": "rear window defrosting"
         },
         {
           "id": "q0603_o4",
           "originalKey": "D",
-          "text": "the windscreen wiper"
+          "text": "windscreen wiper"
         }
       ],
       "correctRow": null,
@@ -67204,17 +72658,17 @@ export const config = {
       "id": "q0604",
       "number": 604,
       "type": "mcq",
-      "prompt": "This lights up to indicate that ______.",
+      "prompt": "This lights up to indicate that the ______.",
       "options": [
         {
           "id": "q0604_o1",
           "originalKey": "A",
-          "text": "handbrake released"
+          "text": "handbrake is released"
         },
         {
           "id": "q0604_o2",
           "originalKey": "B",
-          "text": "foot brake failure"
+          "text": "foot brake has failure"
         },
         {
           "id": "q0604_o3",
@@ -67224,7 +72678,7 @@ export const config = {
         {
           "id": "q0604_o4",
           "originalKey": "D",
-          "text": "the brake pedal does not return back"
+          "text": "brake pedal does not return back"
         }
       ],
       "correctRow": null,
@@ -67279,7 +72733,7 @@ export const config = {
       "id": "q0605",
       "number": 605,
       "type": "mcq",
-      "prompt": "This lights up to indicate that safety belts are ______.",
+      "prompt": "This lights up to indicate that the safety belts are ______.",
       "options": [
         {
           "id": "q0605_o1",
@@ -67354,22 +72808,22 @@ export const config = {
         {
           "id": "q0606_o1",
           "originalKey": "A",
-          "text": "luggage compartment is opened"
+          "text": "luggage compartment is open"
         },
         {
           "id": "q0606_o2",
           "originalKey": "B",
-          "text": "engine compartment is opened"
+          "text": "engine compartment is open"
         },
         {
           "id": "q0606_o3",
           "originalKey": "C",
-          "text": "cover of fuel tank is opened"
+          "text": "cover of fuel tank is open"
         },
         {
           "id": "q0606_o4",
           "originalKey": "D",
-          "text": "door of one side is opened"
+          "text": "door of one side is open"
         }
       ],
       "correctRow": null,
@@ -67419,7 +72873,7 @@ export const config = {
       "id": "q0607",
       "number": 607,
       "type": "mcq",
-      "prompt": "This lights up to indicate that ______.",
+      "prompt": "This lights up to indicate of ______.",
       "options": [
         {
           "id": "q0607_o1",
@@ -67434,7 +72888,7 @@ export const config = {
         {
           "id": "q0607_o3",
           "originalKey": "C",
-          "text": "the front fan works"
+          "text": "the front fan working"
         },
         {
           "id": "q0607_o4",
@@ -67724,12 +73178,12 @@ export const config = {
       "id": "q0611",
       "number": 611,
       "type": "mcq",
-      "prompt": "After starting the engine, this lights up to indicate that ______.",
+      "prompt": "After starting the engine, this lights up to indicate that the ______.",
       "options": [
         {
           "id": "q0611_o1",
           "originalKey": "A",
-          "text": "engine main oil way blockage"
+          "text": "engine main oil way has blockage"
         },
         {
           "id": "q0611_o2",
@@ -67739,7 +73193,7 @@ export const config = {
         {
           "id": "q0611_o3",
           "originalKey": "C",
-          "text": "engine crankshaft box leaks"
+          "text": "engine crankshaft box is leaking"
         },
         {
           "id": "q0611_o4",
@@ -67799,27 +73253,27 @@ export const config = {
       "id": "q0612",
       "number": 612,
       "type": "mcq",
-      "prompt": "This lights up to indicate that ______.",
+      "prompt": "This lights up to indicate that the ______ is turned on.",
       "options": [
         {
           "id": "q0612_o1",
           "originalKey": "A",
-          "text": "the head fog light is turned on"
+          "text": "head fog light"
         },
         {
           "id": "q0612_o2",
           "originalKey": "B",
-          "text": "the low beam light is turned on"
+          "text": "low beam light"
         },
         {
           "id": "q0612_o3",
           "originalKey": "C",
-          "text": "the high beam light is turned on"
+          "text": "high beam light"
         },
         {
           "id": "q0612_o4",
           "originalKey": "D",
-          "text": "the tail fog light is turned on"
+          "text": "tail fog light"
         }
       ],
       "correctRow": null,
@@ -67879,12 +73333,12 @@ export const config = {
         {
           "id": "q0613_o2",
           "originalKey": "B",
-          "text": "air internal circulation"
+          "text": "there is air internal circulation"
         },
         {
           "id": "q0613_o3",
           "originalKey": "C",
-          "text": "air external circulation"
+          "text": "there is air external circulation"
         },
         {
           "id": "q0613_o4",
@@ -68024,7 +73478,7 @@ export const config = {
         {
           "id": "q0615_o3",
           "originalKey": "C",
-          "text": "the hazard lights"
+          "text": "hazard lights"
         },
         {
           "id": "q0615_o4",
@@ -68098,12 +73552,12 @@ export const config = {
       "id": "q0616",
       "number": 616,
       "type": "mcq",
-      "prompt": "This lights up to indicate that ______.",
+      "prompt": "This lights up to indicate that the ______.",
       "options": [
         {
           "id": "q0616_o1",
           "originalKey": "A",
-          "text": "the hazard lights are flashing"
+          "text": "hazard lights are flashing"
         },
         {
           "id": "q0616_o2",
@@ -68393,27 +73847,27 @@ export const config = {
       "id": "q0620",
       "number": 620,
       "type": "mcq",
-      "prompt": "This lights up to indicate that the ______.",
+      "prompt": "This lights up to indicate that the ______ are turned on.",
       "options": [
         {
           "id": "q0620_o1",
           "originalKey": "A",
-          "text": "head and tail fog lights are turned on"
+          "text": "head and tail fog lights"
         },
         {
           "id": "q0620_o2",
           "originalKey": "B",
-          "text": "front and rear width lights are turned on"
+          "text": "front and rear width lights"
         },
         {
           "id": "q0620_o3",
           "originalKey": "C",
-          "text": "head lights are turned on"
+          "text": "head lights"
         },
         {
           "id": "q0620_o4",
           "originalKey": "D",
-          "text": "hazard lights are turned on"
+          "text": "hazard lights"
         }
       ],
       "correctRow": null,
@@ -68468,17 +73922,17 @@ export const config = {
       "id": "q0621",
       "number": 621,
       "type": "mcq",
-      "prompt": "After starting the engine, this lights up to indicate that ______.",
+      "prompt": "After starting the engine, this lights up to indicate that the ______.",
       "options": [
         {
           "id": "q0621_o1",
           "originalKey": "A",
-          "text": "fuel pump abnormal or malfunction"
+          "text": "fuel pump is abnormal or malfunctioning"
         },
         {
           "id": "q0621_o2",
           "originalKey": "B",
-          "text": "ignition system malfunction"
+          "text": "ignition system has a malfunction"
         },
         {
           "id": "q0621_o3",
@@ -68488,7 +73942,7 @@ export const config = {
         {
           "id": "q0621_o4",
           "originalKey": "D",
-          "text": "fuel in tank reaches the minimum level"
+          "text": "fuel in the tank has reached the minimum level"
         }
       ],
       "correctRow": null,
@@ -68538,27 +73992,27 @@ export const config = {
       "id": "q0622",
       "number": 622,
       "type": "mcq",
-      "prompt": "This lights up to indicate that ______.",
+      "prompt": "This lights up to indicate that the ______ is/are turned on.",
       "options": [
         {
           "id": "q0622_o1",
           "originalKey": "A",
-          "text": "front and rear width lights light on"
+          "text": "front and rear width lights"
         },
         {
           "id": "q0622_o2",
           "originalKey": "B",
-          "text": "front and rear width lights light on"
+          "text": "front and rear width lights"
         },
         {
           "id": "q0622_o3",
           "originalKey": "C",
-          "text": "left-turn signal flashes"
+          "text": "left-turn signal"
         },
         {
           "id": "q0622_o4",
           "originalKey": "D",
-          "text": "right-turn signal flashes"
+          "text": "right-turn signal"
         }
       ],
       "correctRow": null,
@@ -68618,12 +74072,12 @@ export const config = {
       "id": "q0623",
       "number": 623,
       "type": "mcq",
-      "prompt": "This lights up to indicate that ______.",
+      "prompt": "This lights up to indicates the ______.",
       "options": [
         {
           "id": "q0623_o1",
           "originalKey": "A",
-          "text": "the front fan works"
+          "text": "front fan works"
         },
         {
           "id": "q0623_o2",
@@ -68830,12 +74284,12 @@ export const config = {
         {
           "id": "q0626_o1",
           "originalKey": "A",
-          "text": "to protect the driver and passengers necks"
+          "text": "to protect the driver and passengers' necks"
         },
         {
           "id": "q0626_o2",
           "originalKey": "B",
-          "text": "to protect the driver and passengers chests"
+          "text": "to protect the driver and passengers' chests"
         },
         {
           "id": "q0626_o3",
@@ -68845,7 +74299,7 @@ export const config = {
         {
           "id": "q0626_o4",
           "originalKey": "D",
-          "text": "to protect the driver and passengers waists"
+          "text": "to protect the driver and passengers' waists"
         }
       ],
       "correctRow": null,
@@ -68887,7 +74341,7 @@ export const config = {
       "id": "q0627",
       "number": 627,
       "type": "mcq",
-      "prompt": "This lights up while driving to indicate that ______.",
+      "prompt": "This lights up while driving to indicate that the ______.",
       "options": [
         {
           "id": "q0627_o1",
@@ -68897,12 +74351,12 @@ export const config = {
         {
           "id": "q0627_o2",
           "originalKey": "B",
-          "text": "engine cooling system malfunction"
+          "text": "engine cooling system has a malfunction"
         },
         {
           "id": "q0627_o3",
           "originalKey": "C",
-          "text": "engine lubrication system malfunction"
+          "text": "engine lubrication system has a malfunction"
         },
         {
           "id": "q0627_o4",
@@ -68957,12 +74411,12 @@ export const config = {
       "id": "q0628",
       "number": 628,
       "type": "mcq",
-      "prompt": "This lights up to indicate that ______.",
+      "prompt": "This lights up to indicate that (of) the ______.",
       "options": [
         {
           "id": "q0628_o1",
           "originalKey": "A",
-          "text": "the side fans work"
+          "text": "side fans working"
         },
         {
           "id": "q0628_o2",
@@ -68972,7 +74426,7 @@ export const config = {
         {
           "id": "q0628_o3",
           "originalKey": "C",
-          "text": "the front fan works"
+          "text": "front fan working"
         },
         {
           "id": "q0628_o4",
@@ -69027,27 +74481,27 @@ export const config = {
       "id": "q0629",
       "number": 629,
       "type": "mcq",
-      "prompt": "This lights up to indicate that ______.",
+      "prompt": "This lights up to indicate that the ______.",
       "options": [
         {
           "id": "q0629_o1",
           "originalKey": "A",
-          "text": "windscreen wash lacks"
+          "text": "windscreen wash is lacking"
         },
         {
           "id": "q0629_o2",
           "originalKey": "B",
-          "text": "braking oil lacks"
+          "text": "braking oil is lacking"
         },
         {
           "id": "q0629_o3",
           "originalKey": "C",
-          "text": "cooling system malfunction"
+          "text": "cooling system has a malfunction"
         },
         {
           "id": "q0629_o4",
           "originalKey": "D",
-          "text": "coolant lacks"
+          "text": "coolant is lacking"
         }
       ],
       "correctRow": null,
@@ -69112,12 +74566,12 @@ export const config = {
         {
           "id": "q0630_o3",
           "originalKey": "C",
-          "text": "high beam lights"
+          "text": "the high beam lights"
         },
         {
           "id": "q0630_o4",
           "originalKey": "D",
-          "text": "turn signals"
+          "text": "the turn signals"
         }
       ],
       "correctRow": null,
@@ -71245,17 +76699,17 @@ export const config = {
         {
           "id": "q0665_o1",
           "originalKey": "A",
-          "text": "Passing on both sides"
+          "text": "Pass on both sides"
         },
         {
           "id": "q0665_o2",
           "originalKey": "B",
-          "text": "Passing by the right side"
+          "text": "Pass by the right side"
         },
         {
           "id": "q0665_o3",
           "originalKey": "C",
-          "text": "Passing by the left side"
+          "text": "Pass by the left side"
         },
         {
           "id": "q0665_o4",
@@ -71331,7 +76785,7 @@ export const config = {
         {
           "id": "q0666_o4",
           "originalKey": "D",
-          "text": "prohibit to cross the opposite lane"
+          "text": "prohibit crossing to the opposite lane"
         }
       ],
       "correctRow": null,
@@ -71463,22 +76917,22 @@ export const config = {
         {
           "id": "q0668_o1",
           "originalKey": "A",
-          "text": "section narrows on both sides"
+          "text": "the section narrows on both sides"
         },
         {
           "id": "q0668_o2",
           "originalKey": "B",
-          "text": "section for speed test"
+          "text": "the section is for speed testing"
         },
         {
           "id": "q0668_o3",
           "originalKey": "C",
-          "text": "section for ascertaining the distance between the vehicles"
+          "text": "the section is for ascertaining the distance between the vehicles"
         },
         {
           "id": "q0668_o4",
           "originalKey": "D",
-          "text": "pay attentions to keeping distance"
+          "text": "pay attention to keeping distance"
         }
       ],
       "correctRow": null,
@@ -71691,22 +77145,22 @@ export const config = {
         {
           "id": "q0671_o1",
           "originalKey": "A",
-          "text": "Road traffic flow monitoring"
+          "text": "road traffic flow monitoring"
         },
         {
           "id": "q0671_o2",
           "originalKey": "B",
-          "text": "Deceleration photographed area"
+          "text": "deceleration photographed area"
         },
         {
           "id": "q0671_o3",
           "originalKey": "C",
-          "text": "Full section snapshot"
+          "text": "full section snapshot"
         },
         {
           "id": "q0671_o4",
           "originalKey": "D",
-          "text": "Traffic monitoring equipment"
+          "text": "traffic monitoring equipment"
         }
       ],
       "correctRow": null,
@@ -71762,17 +77216,17 @@ export const config = {
         {
           "id": "q0672_o1",
           "originalKey": "A",
-          "text": "the distance from the tunnel exit"
+          "text": "distance from the tunnel exit"
         },
         {
           "id": "q0672_o2",
           "originalKey": "B",
-          "text": "the distance from the tunnel entry"
+          "text": "distance from the tunnel entry"
         },
         {
           "id": "q0672_o3",
           "originalKey": "C",
-          "text": "the distance of following the vehicle in front in the tunnel"
+          "text": "distance of following the vehicle in front inside the tunnel"
         },
         {
           "id": "q0672_o4",
@@ -71909,22 +77363,22 @@ export const config = {
         {
           "id": "q0674_o1",
           "originalKey": "A",
-          "text": "Vehicles may cross temporarily"
+          "text": "vehicles may cross temporarily"
         },
         {
           "id": "q0674_o2",
           "originalKey": "B",
-          "text": "Vehicles are not allowed to cross"
+          "text": "vehicles are not allowed to cross"
         },
         {
           "id": "q0674_o3",
           "originalKey": "C",
-          "text": "Motorized vehicles may cross temporarily"
+          "text": "motorized vehicles may cross temporarily"
         },
         {
           "id": "q0674_o4",
           "originalKey": "D",
-          "text": "Non-motorized vehicles may cross temporarily"
+          "text": "non-motorized vehicles may cross temporarily"
         }
       ],
       "correctRow": null,
@@ -71995,22 +77449,22 @@ export const config = {
         {
           "id": "q0675_o1",
           "originalKey": "A",
-          "text": "driving at reduced speed"
+          "text": "drive at reduced speed"
         },
         {
           "id": "q0675_o2",
           "originalKey": "B",
-          "text": "ascertaining the vehicles speed"
+          "text": "ascertain the vehicle's speed"
         },
         {
           "id": "q0675_o3",
           "originalKey": "C",
-          "text": "reducing the speed at the intersection"
+          "text": "reduce speed at the intersection"
         },
         {
           "id": "q0675_o4",
           "originalKey": "D",
-          "text": "ascertaining the distance between the vehicles"
+          "text": "ascertain the distance between vehicles"
         }
       ],
       "correctRow": null,
@@ -72076,7 +77530,7 @@ export const config = {
         {
           "id": "q0676_o3",
           "originalKey": "C",
-          "text": "special lane for taxis with no passenger"
+          "text": "special lane for taxis with no passengers"
         },
         {
           "id": "q0676_o4",
@@ -72300,7 +77754,7 @@ export const config = {
         {
           "id": "q0679_o1",
           "originalKey": "A",
-          "text": "continuous down slopes"
+          "text": "continuous downslopes"
         },
         {
           "id": "q0679_o2",
@@ -72315,7 +77769,7 @@ export const config = {
         {
           "id": "q0679_o4",
           "originalKey": "D",
-          "text": "continuous up slopes"
+          "text": "continuous upslopes"
         }
       ],
       "correctRow": null,
@@ -72371,22 +77825,22 @@ export const config = {
         {
           "id": "q0680_o1",
           "originalKey": "A",
-          "text": "Road narrows on both sides"
+          "text": "road narrows on both sides"
         },
         {
           "id": "q0680_o2",
           "originalKey": "B",
-          "text": "Road narrows on the right side"
+          "text": "road narrows on the right side"
         },
         {
           "id": "q0680_o3",
           "originalKey": "C",
-          "text": "Road narrows on the left side"
+          "text": "road narrows on the left side"
         },
         {
           "id": "q0680_o4",
           "originalKey": "D",
-          "text": "Bridge narrows"
+          "text": "bridge narrows"
         }
       ],
       "correctRow": null,
@@ -72604,12 +78058,12 @@ export const config = {
         {
           "id": "q0683_o1",
           "originalKey": "A",
-          "text": "no going traight and no changing to left lanes"
+          "text": "no straight-through or changing to left lanes"
         },
         {
           "id": "q0683_o2",
           "originalKey": "B",
-          "text": "no going straight and no left turn"
+          "text": "no straight-through or turning left"
         },
         {
           "id": "q0683_o3",
@@ -72619,7 +78073,7 @@ export const config = {
         {
           "id": "q0683_o4",
           "originalKey": "D",
-          "text": "no going straight and no right turn"
+          "text": "no straight-through or right turn"
         }
       ],
       "correctRow": null,
@@ -73134,7 +78588,7 @@ export const config = {
         {
           "id": "q0690_o1",
           "originalKey": "A",
-          "text": "stop lines at crossroad"
+          "text": "stopping lines at a crossroad"
         },
         {
           "id": "q0690_o2",
@@ -73744,22 +79198,22 @@ export const config = {
         {
           "id": "q0698_o1",
           "originalKey": "A",
-          "text": "tell the direction information"
+          "text": "telling the direction information"
         },
         {
           "id": "q0698_o2",
           "originalKey": "B",
-          "text": "warn danger ahead"
+          "text": "warning danger ahead"
         },
         {
           "id": "q0698_o3",
           "originalKey": "C",
-          "text": "restrict the vehicles and pedestrians from passing"
+          "text": "restricting vehicles and pedestrians from passing"
         },
         {
           "id": "q0698_o4",
           "originalKey": "D",
-          "text": "indicate the vehicles and pedestrians to go ahead"
+          "text": "indicating vehicles and pedestrians to go ahead"
         }
       ],
       "correctRow": null,
@@ -73807,22 +79261,22 @@ export const config = {
         {
           "id": "q0699_o1",
           "originalKey": "A",
-          "text": "restrict the vehicles from passing"
+          "text": "restricting the vehicles from passing"
         },
         {
           "id": "q0699_o2",
           "originalKey": "B",
-          "text": "indicate speed limited information"
+          "text": "indicating speed limited information"
         },
         {
           "id": "q0699_o3",
           "originalKey": "C",
-          "text": "provide direction information"
+          "text": "providing direction information"
         },
         {
           "id": "q0699_o4",
           "originalKey": "D",
-          "text": "warn danger ahead"
+          "text": "warning danger ahead"
         }
       ],
       "correctRow": null,
@@ -74240,22 +79694,22 @@ export const config = {
         {
           "id": "q0705_o1",
           "originalKey": "A",
-          "text": "indicate going straight or turning right"
+          "text": "indicates going straight or turning right"
         },
         {
           "id": "q0705_o2",
           "originalKey": "B",
-          "text": "indicate turning right or making a U-turn"
+          "text": "indicates turning right or making a U-turn"
         },
         {
           "id": "q0705_o3",
           "originalKey": "C",
-          "text": "indicate going straight or changing to right lane"
+          "text": "indicates going straight or changing to right lane"
         },
         {
           "id": "q0705_o4",
           "originalKey": "D",
-          "text": "indicate going straight or making a U-turn"
+          "text": "indicates going straight or making a U-turn"
         }
       ],
       "correctRow": null,
@@ -74311,22 +79765,22 @@ export const config = {
         {
           "id": "q0706_o1",
           "originalKey": "A",
-          "text": "indicate changing to left lane"
+          "text": "indicates changing to left lane"
         },
         {
           "id": "q0706_o2",
           "originalKey": "B",
-          "text": "indicate changing to left lane"
+          "text": "indicates changing to left lane"
         },
         {
           "id": "q0706_o3",
           "originalKey": "C",
-          "text": "indicate making a U-turn ahead"
+          "text": "indicates making a U-turn ahead"
         },
         {
           "id": "q0706_o4",
           "originalKey": "D",
-          "text": "indicate turning right ahead"
+          "text": "indicates turning right ahead"
         }
       ],
       "correctRow": null,
@@ -74382,22 +79836,22 @@ export const config = {
         {
           "id": "q0707_o1",
           "originalKey": "A",
-          "text": "indicate turning left or making a U-turn ahead"
+          "text": "indicates turning left or making a U-turn ahead"
         },
         {
           "id": "q0707_o2",
           "originalKey": "B",
-          "text": "indicate going straight or turning left ahead"
+          "text": "indicates going straight or turning left ahead"
         },
         {
           "id": "q0707_o3",
           "originalKey": "C",
-          "text": "indicate going straight or changing to left lane ahead"
+          "text": "indicates going straight or changing to left lane ahead"
         },
         {
           "id": "q0707_o4",
           "originalKey": "D",
-          "text": "indicate going straight or making a U-turn ahead"
+          "text": "indicates going straight or making a U-turn ahead"
         }
       ],
       "correctRow": null,
@@ -75138,12 +80592,12 @@ export const config = {
         {
           "id": "q0717_o1",
           "originalKey": "A",
-          "text": "going straight and right turn"
+          "text": "go straight or right turn"
         },
         {
           "id": "q0717_o2",
           "originalKey": "B",
-          "text": "going straight and left turn"
+          "text": "go straight or left turn"
         },
         {
           "id": "q0717_o3",
@@ -75214,22 +80668,22 @@ export const config = {
         {
           "id": "q0718_o1",
           "originalKey": "A",
-          "text": "passing by the right side"
+          "text": "pass by the right side"
         },
         {
           "id": "q0718_o2",
           "originalKey": "B",
-          "text": "passing by the left side"
+          "text": "pass by the left side"
         },
         {
           "id": "q0718_o3",
           "originalKey": "C",
-          "text": "driving to the right side"
+          "text": "drive to the right side"
         },
         {
           "id": "q0718_o4",
           "originalKey": "D",
-          "text": "driving the roundabout"
+          "text": "drive the roundabout"
         }
       ],
       "correctRow": null,
@@ -76197,22 +81651,22 @@ export const config = {
         {
           "id": "q0731_o1",
           "originalKey": "A",
-          "text": "Road narrows on both sides"
+          "text": "road narrows on both sides"
         },
         {
           "id": "q0731_o2",
           "originalKey": "B",
-          "text": "Road narrows on the right side"
+          "text": "road narrows on the right side"
         },
         {
           "id": "q0731_o3",
           "originalKey": "C",
-          "text": "Road narrows on the left side"
+          "text": "road narrows on the left side"
         },
         {
           "id": "q0731_o4",
           "originalKey": "D",
-          "text": "Bridge narrows"
+          "text": "bridge narrows"
         }
       ],
       "correctRow": null,
@@ -76491,22 +81945,22 @@ export const config = {
         {
           "id": "q0735_o1",
           "originalKey": "A",
-          "text": "indicate the vehicles to go ahead"
+          "text": "indicates the vehicles to go ahead"
         },
         {
           "id": "q0735_o2",
           "originalKey": "B",
-          "text": "warn danger ahead"
+          "text": "warns danger ahead"
         },
         {
           "id": "q0735_o3",
           "originalKey": "C",
-          "text": "prohibit or restrict from doing"
+          "text": "prohibits or restricts from doing"
         },
         {
           "id": "q0735_o4",
           "originalKey": "D",
-          "text": "tell the direction information"
+          "text": "tells the direction information"
         }
       ],
       "correctRow": null,
@@ -77914,12 +83368,12 @@ export const config = {
         {
           "id": "q0754_o1",
           "originalKey": "A",
-          "text": "going straight and turning left at an interchange"
+          "text": "going straight and turning left at the interchange"
         },
         {
           "id": "q0754_o2",
           "originalKey": "B",
-          "text": "going straight and turning right at an interchange"
+          "text": "going straight and turning right at the interchange"
         },
         {
           "id": "q0754_o3",
@@ -82151,22 +87605,22 @@ export const config = {
         {
           "id": "q0810_o1",
           "originalKey": "A",
-          "text": "Road narrows on both sides"
+          "text": "road narrows on both sides"
         },
         {
           "id": "q0810_o2",
           "originalKey": "B",
-          "text": "Road narrows on the right side"
+          "text": "road narrows on the right side"
         },
         {
           "id": "q0810_o3",
           "originalKey": "C",
-          "text": "Road narrows on the left side"
+          "text": "road narrows on the left side"
         },
         {
           "id": "q0810_o4",
           "originalKey": "D",
-          "text": "Bridge narrows"
+          "text": "bridge narrows"
         }
       ],
       "correctRow": null,
@@ -86883,22 +92337,22 @@ export const config = {
         {
           "id": "q0872_o1",
           "originalKey": "A",
-          "text": "Passing on both sides"
+          "text": "pass on both sides"
         },
         {
           "id": "q0872_o2",
           "originalKey": "B",
-          "text": "Passing is prohibited"
+          "text": "passing is prohibited"
         },
         {
           "id": "q0872_o3",
           "originalKey": "C",
-          "text": "Passing by the left side"
+          "text": "pass by the left side"
         },
         {
           "id": "q0872_o4",
           "originalKey": "D",
-          "text": "Passing by the right side"
+          "text": "pass by the right side"
         }
       ],
       "correctRow": null,
@@ -89956,17 +95410,17 @@ export const config = {
         {
           "id": "q0920_o1",
           "originalKey": "A",
-          "text": "traffic police detachment vehicle management station at the residential place"
+          "text": "traffic police detachment vehicle management station at the place of residence"
         },
         {
           "id": "q0920_o2",
           "originalKey": "B",
-          "text": "vehicle management station at the issuing place of the driving license"
+          "text": "vehicle management station at the issuing place of the driver's license"
         },
         {
           "id": "q0920_o3",
           "originalKey": "C",
-          "text": "vehicle management station at the registration place"
+          "text": "vehicle management station at the place of registration"
         },
         {
           "id": "q0920_o4",
@@ -90343,22 +95797,22 @@ export const config = {
         {
           "id": "q0927_o1",
           "originalKey": "A",
-          "text": "Reminding the side of a reservoir, lake, or river ahead"
+          "text": "reminder of a reservoir, lake, or river ahead"
         },
         {
           "id": "q0927_o2",
           "originalKey": "B",
-          "text": "Reminding the steep uphill road ahead"
+          "text": "reminder of a steep uphill road ahead"
         },
         {
           "id": "q0927_o3",
           "originalKey": "C",
-          "text": "Reminding continuous two or more up slopes ahead"
+          "text": "reminder of continuous two or more up slopes ahead"
         },
         {
           "id": "q0927_o4",
           "originalKey": "D",
-          "text": "Reminding the steep downhill road ahead"
+          "text": "reminder of a steep downhill road ahead"
         }
       ],
       "correctRow": null,
@@ -90413,22 +95867,22 @@ export const config = {
         {
           "id": "q0928_o1",
           "originalKey": "A",
-          "text": "Reminding the side of a reservoir, lake or river ahead"
+          "text": "reminder of a reservoir, lake or river ahead"
         },
         {
           "id": "q0928_o2",
           "originalKey": "B",
-          "text": "Reminding the steep uphill road ahead"
+          "text": "reminder of a steep uphill road ahead"
         },
         {
           "id": "q0928_o3",
           "originalKey": "C",
-          "text": "Reminding the steep downhill road ahead"
+          "text": "reminder of a steep downhill road ahead"
         },
         {
           "id": "q0928_o4",
           "originalKey": "D",
-          "text": "Reminding continuous two or more up slopes ahead"
+          "text": "reminder of continuous two or more upslopes ahead"
         }
       ],
       "correctRow": null,
@@ -90483,22 +95937,22 @@ export const config = {
         {
           "id": "q0929_o1",
           "originalKey": "A",
-          "text": "Reminding continuous two or more up slopes ahead"
+          "text": "reminder of continuous two or more up slopes ahead"
         },
         {
           "id": "q0929_o2",
           "originalKey": "B",
-          "text": "Reminding the steep uphill road ahead"
+          "text": "reminder of a steep uphill road ahead"
         },
         {
           "id": "q0929_o3",
           "originalKey": "C",
-          "text": "Reminding the steep downhill road ahead"
+          "text": "reminder of a steep downhill road ahead"
         },
         {
           "id": "q0929_o4",
           "originalKey": "D",
-          "text": "Reminding continuous two or more down slopes ahead"
+          "text": "reminder of continuous two or more down slopes ahead"
         }
       ],
       "correctRow": null,
@@ -92682,22 +98136,22 @@ export const config = {
         {
           "id": "q0972_o1",
           "originalKey": "A",
-          "text": "Temporary detainment of the motor vehicle"
+          "text": "Temporary detainment of the motor vehicle."
         },
         {
           "id": "q0972_o2",
           "originalKey": "B",
-          "text": "Temporary detainment of the driving license"
+          "text": "Temporary detainment of the driver's license."
         },
         {
           "id": "q0972_o3",
           "originalKey": "C",
-          "text": "Revocation of the motor vehicle driving license"
+          "text": "Revocation of the motor vehicle driver's license."
         },
         {
           "id": "q0972_o4",
           "originalKey": "D",
-          "text": "He/she will be banned from driving for life"
+          "text": "He/she will be banned from driving for life."
         }
       ],
       "correctRow": null,
@@ -137355,6 +142809,703 @@ export default nextConfig;
 
 ```
 
+### supabase/functions/.vscode/settings.json
+```json
+{
+  "deno.enable": true,
+  "deno.importMap": "./import_map.json",
+  "deno.lint": true
+}
+```
+
+### supabase/functions/_shared/coachPrompt.ts
+```tsx
+// supabase/functions/_shared/coachPrompt.ts
+
+export const MASTER_PROMPT = 
+`SYSTEM PROMPT — Expatise GPT Coach (Master)
+
+You are “Expatise GPT Coach”: a practical, friendly, data-driven coach for a driving-test study app. You produce short, premium-feeling coaching messages that are grounded in the provided metrics, honest about uncertainty, and highly actionable.
+
+INPUTS YOU WILL RECEIVE
+- Skill Snapshot (window = either 30d or all-time): submitted-test performance (e.g., number of tests, questions answered, accuracy, average/best/latest score, score history points, topic/subtopic mastery, best-time/heatmap if provided).
+- Habits Snapshot (window = 7d): recent activity (e.g., total study minutes, practice days, streak, best day, daily activity series if provided).
+All statements must be based only on fields present in the input JSON. If a field is missing, treat it as unknown.
+You may see internal field names inside the JSON — NEVER print them.
+
+HARD RULES (never break)
+1) Two-layer lens + labeling:
+  - Skill claims use the provided Skill window label: (30d) or (all-time).
+  - Habit claims use (7d).
+  Every insight sentence must include the correct window label.
+2) Evidence rule:
+  Every insight must cite ≥1 metric from the input by value, written in user language. Never print raw field names or raw JSON (no internal keys, no JSON paths).
+
+3) No causality:
+  You may describe patterns/correlations, but must not say X causes Y.
+4) No guarantees:
+  Never guarantee passing. Use conditional language only.
+5) No moralizing:
+  No shame, no character judgments, no “should have.”
+6) Length + structure:
+  Entire output ~250 words max. Output MUST be Markdown using ONLY these headings:
+  ### Summary
+  ### Snapshot
+  ### Top levers
+  ### Today (10 / 20 / 40)
+  ### Next 7 days
+  ### One target
+  Do NOT use lettered sections (no “A) …”, “B) …”).
+7) One story only:
+  Choose EXACTLY ONE narrative (see “Narrative selection”). Everything must align to it.
+8) One measurable target only:
+  Exactly ONE measurable target in section F. No secondary targets anywhere else.
+
+  HUMANIZATION RULES (must follow)
+- Never show internal keys / classnames / JSON paths (examples: attemptsCount, attemptedTotal, accuracyPct, readinessPct, scoreAvg, scoreBest, scoreLatest, scorePoints, scoreSeries, timeThisWeekMin, timeDailySeries, questionsAnswered, testsCompleted, activeDays, timeStreakDays, timeBestDayMin, minTopicAttempted, t=… are forbidden).
+- Translate metrics to friendly labels:
+  - attemptsCount → “tests”
+  - attemptedTotal → “questions answered”
+  - accuracyPct → “accuracy”
+  - readinessPct → “readiness”
+  - scoreAvg/Best/Latest → “avg/best/latest score”
+  - timeThisWeekMin → “total study time”
+  - activeDays → “practice days”
+  - timeStreakDays → “streak”
+  - timeBestDayMin → “best day”
+- Never show raw timestamps. If needed, say “one recent session” and cite only completion numbers (e.g., “2 of 10 answered”).
+- Topic labels: never include “#”. Use the provided tagLabel as plain text (e.g., “Road Signs”).
+- Numbers formatting: keep it readable (e.g., “21 tests”, “52%”, “48/100”, “2 of 10 answered”). Avoid more than ~2 numbers per sentence.
+
+CONFIDENCE TIERS (overall; from Skill Snapshot)
+Compute overall confidence from Skill Snapshot:
+- High: 6+ tests in the Skill window OR 120+ questions answered in the Skill window
+- Medium: 3+ tests in the Skill window OR 40+ questions answered in the Skill window
+- Low: otherwise
+
+Language by confidence:
+- High: “Priority…”, “Best lever…”
+- Medium: “Likely…”, “Good bet…”
+- Low: “Early signal…”, “Too soon to call…”, “Let’s collect signal…”
+
+
+DATA QUALITY / VALIDITY RULES
+A) Topic validity (“weak topic” gate):
+- Only call a topic/subtopic “weak” if attempted >= minAttempted (typically 10 if provided; otherwise use 10). If below, say “early signal / not enough data yet.”
+- Topic confidence tiers by Ntopic (attempted):
+ * 10–14: attempts-only targets (reach 20 attempts). NO accuracy deltas.
+ * 15–24: attempts target + soft directional (“toward ~70%+”), NO accuracy deltas.
+ * >=25: allow small numeric goals (+10 pts) or thresholds across next 20 attempts.
+- Never say “raise accuracy by +X” unless Ntopic >= 25.
+
+
+B) Completion (skip/blank) validity (confounder gate):
+- Completion per test = answered ÷ total questions for each test (from the Skill score history list).
+- Completion is “unstable/low” if ANY of:
+ * median completion < 0.85
+ * shift between halves >= 0.08
+ * range >= 0.12
+- If completion is unstable/low, treat it as the main confounder; do NOT attribute score changes to knowledge.
+
+
+C) Trend validity (no fake trends):
+- Forbidden to claim “improving/declining/stable” unless >=3 relevant points.
+- Use split-median: compare median of early half vs late half (not first vs last).
+- Score trend thresholds:
+ * |delta| >= 6 → up/down
+ * |delta| <= 3 → stable
+ * else → “mixed / flat-ish”
+- Trend statements must include receipts: (window label, n, medians), e.g., “(30d, n=7 tests, median 76→83)”.
+- Confounder gate: if completion changed by >= 8 pts between halves, attribute trend to completion and avoid “knowledge improved” language.
+- Daily avgScore trend uses ACTIVE DAYS only (days with testsCompleted>0). Zero days are for habit/consistency only.
+- If <3 points: say “not enough signal yet.”
+
+
+D) Inconsistency wording gates:
+- Use “volatile/swingy/inconsistent” only if score range >= 20 AND n>=3 (in that window).
+- Use “variable/up-and-down” only if range >= 12 AND n>=3.
+- Every inconsistency claim must include receipts (window, n, range) AND end with a stabilization experiment:
+ “3 sessions: same mode + same time window + 1–2 topics + completion strategy.”
+
+
+E) Time-of-day / bestTime / heatmap:
+- Strong recommendations only if enough samples (>=3 relevant sessions/tests in that window). Otherwise frame as a short experiment, not a conclusion.
+
+HABIT THRESHOLDS (7d)
+Define “active day” as:
+- Preferred (time-based): 10+ minutes on that day (from the 7d daily minutes list)
+- Fallback (if time tracking looks incomplete): 10+ questions answered OR 1+ test on that day (from the 7d daily activity list)
+
+Time data reliability:
+- Reliable if weekly study minutes > 0 OR at least one day shows > 0 minutes.
+- If not reliable but answer activity exists, do not judge time; base habit judgments on answered activity and note tracking seems incomplete.
+
+requiredDays:
+- 3 if overall confidence is Low
+- 4 if overall confidence is Medium/High
+LowWeeklyTime:
+- activeDays < requiredDays
+SpikyPattern (time-based):
+- bestDayShare = timeBestDayMin / max(timeThisWeekMin, 1)
+- SpikyPattern if bestDayShare >= 0.60 OR (timeBestDayMin >= 2.2*medianActiveDayMin AND activeDays<=4) OR (timeStreakDays<=1 AND activeDays>=2)
+- HighlySpiky if bestDayShare >= 0.75 OR activeDays == 1
+Wording rule: only say “spiky/bursty/start-stop” if SpikyPattern, and include receipts: “(7d: best day X min, total Y min, activeDays Z)”.
+
+NARRATIVE SELECTION (choose EXACTLY ONE; in this priority order)
+1) DATA-COLLECTION: if overall confidence is Low OR not enough meaningful data.
+2) COMPLETION-FIRST: if completion is unstable/low (per rules above).
+3) HABIT-FIRST: if practice days are below requiredDays OR practice is bursty OR streak is 0–1 days OR consistency streak is 0.
+4) TOPIC-FOCUS: if eligible weak topics/subtopics exist (attempted >= minAttempted) and completion/habits aren’t the bigger blocker.
+5) STABILITY EXPERIMENT: if score range >=20 with n>=3 AND completion is stable.
+6) RHYTHM EXPERIMENT (rare): only if others are fine AND heatmap/bestTime has >=3 samples AND effect size is meaningful.
+
+
+TARGET SELECTION (ONE target only; NO score goals)
+Pick ONE measurable target aligned to the chosen narrative. Every target must include:
+- baseline + n + window label (e.g., “7d baseline: 2 practice days” or “30d baseline: median completion ~82% across 4 tests”)
+- the planned change and time window (“over the next 7 days” / “next 2 tests”)
+
+
+A) DATA-COLLECTION (Low confidence):
+- Habit-first measurable target based on available habit metrics, e.g.:
+ * activeDays → requiredDays, OR
+ * timeStreakDays → 3, OR
+ * timeThisWeekMin → 60 (if timeDataReliable), OR
+ * 60 answered questions over 3 days (if time unreliable but answer activity exists)
+
+
+B) COMPLETION-FIRST:
+- Completion target only, framed by test count:
+ * If Ntests=1: “Next test (experiment): aim for ~90% answered.”
+ * If Ntests=2–3: “Next 2 tests: aim for ≥90% answered.”
+ * If Ntests>=4: “Priority this week: keep ≥90% answered per test.”
+- Always include completion baseline with (window) + n.
+
+
+C) HABIT-FIRST:
+- Habit target only:
+ * activeDays → requiredDays OR timeStreakDays → 3 OR timeThisWeekMin → 60 (if reliable)
+- Include (7d) receipts.
+
+
+D) TOPIC-FOCUS:
+- Choose max 1–2 subtopics.
+- Ntopic 10–14: reach 20 attempts (no accuracy claims).
+- Ntopic 15–24: reach 25 attempts + soft direction “toward ~70%+” (no deltas).
+- Ntopic >=25: allow “+10 pts” OR “≥75% across next 20 attempts.”
+- Tie-break: lowest accuracy first; if tied, highest attempted.
+
+
+E) STABILITY EXPERIMENT / RHYTHM EXPERIMENT:
+- Target is completing a 3-session standardization experiment:
+ “3 sessions: same mode + same time window + same 1–2 topics + completion strategy.”
+
+ Before finalizing, do a quick self-check: output must contain no camelCase tokens, no underscores, no “#”, and no raw timestamps.
+
+
+PRAISE / ENCOURAGEMENT POLICY
+- Max 1–2 encouragement lines total.
+- Must be evidence-based: include (window) + metric + why it matters.
+- Prefer praising behaviors (active days, streaks, reps, completion stability) over traits.
+- Do not praise outcomes unless sample size supports it (Medium/High confidence; topic n>=25 for accuracy praise).
+- If no activity: normalize and propose a 10-minute starter baseline (no fake praise).
+- If spiky: praise capacity (best day) then redirect to distribution (minimum dose).
+- Close with agency and a minimum-dose option.
+
+
+OUTPUT FORMAT (Markdown only; no lettered sections)
+### Summary
+One sentence. No labels.
+
+### Snapshot
+- (30d) Two short bullets, each citing metrics.
+- (7d) One short bullet, citing habit metrics.
+
+### Top levers
+1) Lever title — Why: … Next: …
+2) Lever title — Why: … Next: …
+3) Lever title — Why: … Next: …
+
+### Today (10 / 20 / 40)
+- 10 min: …
+- 20 min: …
+- 40 min: …
+
+### Next 7 days
+- 5–7 bullets, specific, metric-aware.
+
+### The One thing
+Target: ONE measurable target (baseline + window label + timeframe).
+Close with one short encouragement line.
+
+
+STYLE
+Clear, motivating, practical. No mention you are an AI. Avoid generic advice. Be specific to the provided metrics only. Avoid stiff labels like “Strong, consistent practice”. Write like a premium coach: concise, specific, no filler adjectives unless backed by a metric.
+`.trim();
+
+export const FALLBACK_PROMPT = `
+You are GPT Coach inside Expatise (a driver's license study app).
+Use ONLY the provided JSON as truth. Do not invent data.
+Output <= 250 words.
+Structure:
+1) Skill snapshot (30d)
+2) Habits snapshot (7d)
+3) Top 3 levers
+4) Today's plan (10/20/30 min)
+5) The coming week
+If data is low-confidence, say so and suggest what to do next.
+`.trim();
+```
+
+### supabase/functions/account-delete/deno.json
+```json
+{
+  "imports": {
+    "@supabase/functions-js": "jsr:@supabase/functions-js@^2"
+  }
+}
+
+```
+
+### supabase/functions/account-delete/index.ts
+```tsx
+// supabase/functions/account-delete/index.ts
+import "jsr:@supabase/functions-js/edge-runtime.d.ts";
+import { createClient } from "npm:@supabase/supabase-js@2";
+import { corsHeaders } from "jsr:@supabase/supabase-js@2/cors";
+
+export const runtime = "edge";
+
+Deno.serve(async (req: Request) => {
+  // CORS
+  if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
+  if (req.method !== "POST") {
+    return new Response(JSON.stringify({ ok: false, error: "method_not_allowed" }), {
+      status: 405,
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
+  }
+
+  try {
+    // 1) User-context client (RLS/user identity)
+    const supabase = createClient(
+      Deno.env.get("SUPABASE_URL") ?? "",
+      Deno.env.get("SUPABASE_ANON_KEY") ?? "",
+      {
+        global: {
+          headers: { Authorization: req.headers.get("Authorization") ?? "" },
+        },
+      }
+    );
+
+    const { data: userData, error: userErr } = await supabase.auth.getUser();
+    const user = userErr ? null : userData.user;
+
+    if (!user) {
+      return new Response(JSON.stringify({ ok: false, error: "No user session" }), {
+        status: 401,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    // 2) Service role client (server-only) to delete rows + auth user
+    const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
+    if (!serviceKey) {
+      return new Response(JSON.stringify({ ok: false, error: "Missing SUPABASE_SERVICE_ROLE_KEY" }), {
+        status: 500,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    const admin = createClient(Deno.env.get("SUPABASE_URL") ?? "", serviceKey, {
+      auth: { persistSession: false, autoRefreshToken: false },
+    });
+
+    // 3) Delete app data (add more tables here if needed)
+    const [a, t, c] = await Promise.all([
+      admin.from("attempts").delete().eq("user_id", user.id),
+      admin.from("time_logs").delete().eq("user_id", user.id),
+      admin.from("coach_cooldown").delete().eq("user_id", user.id), // if you created this table
+    ]);
+
+    const delDataErr = a.error ?? t.error ?? c.error;
+    if (delDataErr) {
+      return new Response(
+        JSON.stringify({ ok: false, error: "Failed to delete user data", detail: delDataErr.message }),
+        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    // 4) Delete Auth user (requires service_role)
+    const { error: delUserErr } = await admin.auth.admin.deleteUser(user.id);
+    if (delUserErr) {
+      return new Response(
+        JSON.stringify({ ok: false, error: "Failed to delete auth user", detail: delUserErr.message }),
+        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    return new Response(JSON.stringify({ ok: true }), {
+      status: 200,
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
+  } catch (e: any) {
+    return new Response(JSON.stringify({ ok: false, error: "delete_failed", detail: String(e?.message ?? e) }), {
+      status: 500,
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
+  }
+});
+```
+
+### supabase/functions/coach/deno.json
+```json
+{
+  "imports": {
+    "@supabase/supabase-js": "npm:@supabase/supabase-js@2",
+    "@supabase/supabase-js/cors": "npm:@supabase/supabase-js@2/cors"
+  },
+  "compilerOptions": {
+    "lib": ["deno.ns", "dom", "dom.iterable", "esnext"]
+  }
+}
+```
+
+### supabase/functions/coach/index.ts
+```tsx
+// supabase/functions/coach/index.ts
+
+import "jsr:@supabase/functions-js/edge-runtime.d.ts";
+import { createClient } from "npm:@supabase/supabase-js@2";
+import { corsHeaders } from "jsr:@supabase/supabase-js@2/cors";
+import { MASTER_PROMPT, FALLBACK_PROMPT } from "../_shared/coachPrompt.ts";
+
+function json(status: number, body: unknown, extraHeaders: Record<string, string> = {}) {
+  return new Response(JSON.stringify(body), {
+    status,
+    headers: { ...corsHeaders, "Content-Type": "application/json", ...extraHeaders },
+  });
+}
+
+function normalizeProjectUrl(raw: string) {
+  const withScheme = raw.startsWith("http") ? raw : `https://${raw}`;
+  const u = new URL(withScheme);
+  // strip any path like /functions/v1/...
+  return `${u.protocol}//${u.host}`;
+}
+
+const RAW_SUPABASE_URL = Deno.env.get("SUPABASE_URL") ?? "";
+if (!RAW_SUPABASE_URL) throw new Error("Missing SUPABASE_URL");
+
+const SUPABASE_URL = normalizeProjectUrl(RAW_SUPABASE_URL);
+
+const SUPABASE_KEY =
+  Deno.env.get("SUPABASE_ANON_KEY") ??
+  Deno.env.get("SB_PUBLISHABLE_KEY") ??
+  "";
+
+if (!SUPABASE_KEY) {
+  throw new Error("Missing SUPABASE_ANON_KEY / SB_PUBLISHABLE_KEY in function env");
+}
+
+function getJwtFromReq(req: Request) {
+  const auth = req.headers.get("authorization") ?? "";
+  const m = auth.match(/^Bearer\s+(.+)$/i);
+  return (m?.[1] ?? "").trim();
+}
+
+async function requireUser(req: Request) {
+  const jwt = getJwtFromReq(req);
+
+  const supabase = createClient(SUPABASE_URL, SUPABASE_KEY, {
+    auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false },
+    global: {
+      headers: jwt ? { Authorization: `Bearer ${jwt}` } : {},
+    },
+  });
+
+  if (!jwt) return { user: null, supabase, reason: "Missing Authorization Bearer token" };
+
+  const { data, error } = await supabase.auth.getUser(jwt);
+  const user = data?.user ?? null;
+
+  if (error || !user) return { user: null, supabase, reason: error?.message ?? "No user" };
+  return { user, supabase, reason: null };
+}
+// Keep same contract you had
+const COOLDOWN_MS = 24 * 60 * 60 * 1000;
+
+// DB table used for cooldown (we'll create it below)
+const COOLDOWN_TABLE = "coach_cooldown";
+
+type CoachPayload = {
+  coachContractVersion: string;
+  skillWindowLabel: "30d" | "all";
+  habitWindowLabel: "7d";
+  skill: {
+    attemptsCount: number;
+    attemptedTotal: number;
+    scorePoints: Array<{ t: number; scorePct: number; answered: number; totalQ: number }>;
+  };
+};
+
+function num(n: any, d = 0) {
+  const x = Number(n);
+  return Number.isFinite(x) ? x : d;
+}
+
+function extractText(openaiJson: any): string {
+  const t = typeof openaiJson?.output_text === "string" ? openaiJson.output_text.trim() : "";
+  if (t) return t;
+
+  const out = Array.isArray(openaiJson?.output) ? openaiJson.output : [];
+  const chunks: string[] = [];
+
+  for (const item of out) {
+    const content = Array.isArray(item?.content) ? item.content : [];
+    for (const c of content) {
+      if (typeof c?.text === "string") chunks.push(c.text);
+      if (typeof c?.refusal === "string") chunks.push(c.refusal);
+    }
+  }
+  return chunks.join("").trim();
+}
+
+Deno.serve(async (req: Request) => {
+  try {
+   // CORS preflight (required for browser invoke)
+if (req.method === "OPTIONS") {
+  return new Response("ok", { headers: corsHeaders });
+}
+
+// Only POST
+if (req.method !== "POST") {
+  return json(405, { ok: false, error: "method_not_allowed" });
+}
+
+const { user, supabase, reason } = await requireUser(req);
+if (!user) {
+  return json(401, { ok: false, error: "unauthorized", detail: reason });
+}
+    const now = Date.now();
+
+    // ---- 1) Cooldown check (DB-based)
+    const { data: cdRow, error: cdErr } = await supabase
+      .from(COOLDOWN_TABLE)
+      .select("last_ms")
+      .eq("user_id", user.id)
+      .maybeSingle();
+
+    if (cdErr) {
+      return new Response(JSON.stringify({ ok: false, error: "cooldown_read_failed", detail: cdErr.message }), {
+        status: 500,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    const last = Number(cdRow?.last_ms ?? 0);
+    if (Number.isFinite(last) && last > 0 && now - last < COOLDOWN_MS) {
+      const nextAllowedAt = last + COOLDOWN_MS;
+      return new Response(
+        JSON.stringify({
+          ok: false,
+          error: "cooldown",
+          nextAllowedAt,
+          retryAfterSec: Math.ceil((nextAllowedAt - now) / 1000),
+        }),
+        { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    // ---- 2) Parse payload
+    const body = (await req.json().catch(() => null)) as CoachPayload | null;
+    if (!body || typeof body !== "object") {
+      return new Response(JSON.stringify({ ok: false, error: "Invalid JSON" }), {
+        status: 400,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    // ---- 3) Minimum data gate
+    const attemptsCount = num(body?.skill?.attemptsCount);
+    const attemptedTotal = num(body?.skill?.attemptedTotal);
+    const maxAnswered = Math.max(0, ...(body?.skill?.scorePoints ?? []).map((p) => num(p.answered)));
+    const meetsMinimum = (attemptsCount >= 1 && maxAnswered >= 80) || attemptedTotal >= 120;
+
+    if (!meetsMinimum) {
+      return new Response(
+        JSON.stringify({
+          ok: false,
+          error: "insufficient_data",
+          required: "Submit 1 Real Test with ≥80 answered OR reach 120 questions answered total.",
+        }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    // ---- 4) Call OpenAI
+    const openaiKey = Deno.env.get("OPENAI_API_KEY") ?? "";
+    if (!openaiKey) {
+      return new Response(JSON.stringify({ ok: false, error: "missing_openai_key" }), {
+        status: 500,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    const inputJson = JSON.stringify(body);
+
+    const openaiRes = await fetch("https://api.openai.com/v1/responses", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${openaiKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model: "gpt-5-mini",
+        reasoning: { effort: "minimal" },
+        text: { verbosity: "low" },
+        instructions: MASTER_PROMPT || FALLBACK_PROMPT,
+        input:
+          `Task: Generate a Stats Coach report for the user.\n` +
+          `Rules: <=250 words. Use ONLY the JSON.\n\nJSON:\n${inputJson}`,
+        max_output_tokens: 900,
+      }),
+    });
+
+    const openaiJson = await openaiRes.json().catch(() => null);
+
+    if (!openaiRes.ok || !openaiJson) {
+      return new Response(JSON.stringify({ ok: false, error: "openai_failed", detail: openaiJson ?? null }), {
+        status: 502,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    const report = extractText(openaiJson);
+    if (!report) {
+      return new Response(JSON.stringify({ ok: false, error: "empty_output" }), {
+        status: 502,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    // ---- 5) Write cooldown only after success
+    const { error: cdWriteErr } = await supabase
+      .from(COOLDOWN_TABLE)
+      .upsert({ user_id: user.id, last_ms: now }, { onConflict: "user_id" });
+
+    if (cdWriteErr) {
+      return new Response(JSON.stringify({ ok: false, error: "cooldown_write_failed", detail: cdWriteErr.message }), {
+        status: 500,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    return new Response(JSON.stringify({ ok: true, report, createdAt: now }), {
+      status: 200,
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
+  } catch (err: any) {
+    return json(500, {
+      ok: false,
+      error: "Stats Coach API failed",
+      detail: String(err?.message ?? err),
+    });
+  }
+});
+```
+
+### supabase/functions/entitlements/deno.json
+```json
+{
+  "imports": {
+    "@supabase/functions-js": "jsr:@supabase/functions-js@^2"
+  }
+}
+
+```
+
+### supabase/functions/entitlements/index.ts
+```tsx
+// supabase/functions/entitlements/index.ts
+import "jsr:@supabase/functions-js/edge-runtime.d.ts";
+import { createClient } from "npm:@supabase/supabase-js@2";
+import { corsHeaders } from "jsr:@supabase/supabase-js@2/cors";
+
+function normalizeEmail(s: unknown) {
+  return String(s ?? "").trim().toLowerCase();
+}
+const CORS = {
+  ...corsHeaders,
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
+};
+
+export type Entitlements = {
+  isPremium: boolean;
+  source: "none" | "admin";
+  updatedAt: number;
+  expiresAt?: number;
+};
+
+Deno.serve(async (req: Request) => {
+  // CORS preflight
+  if (req.method === "OPTIONS") {
+    return new Response("ok", { headers: CORS });
+  }
+
+  try {
+    const supabaseUrl = Deno.env.get("SUPABASE_URL") ?? "";
+    const supabaseAnonKey = Deno.env.get("SUPABASE_ANON_KEY") ?? "";
+
+    if (!supabaseUrl || !supabaseAnonKey) {
+      return new Response(
+        JSON.stringify({ ok: false, error: "missing_supabase_env" }),
+        { status: 500, headers: { ...CORS, "Content-Type": "application/json" } }
+      );
+    }
+
+    // Auth context from caller (so RLS + getUser works)
+    const authHeader = req.headers.get("Authorization") ?? "";
+
+    const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+      global: { headers: { Authorization: authHeader } },
+    });
+
+    const { data: userData, error: userErr } = await supabase.auth.getUser();
+    const user = userErr ? null : userData.user;
+
+    const userKey = !user
+      ? "guest"
+      : user.is_anonymous
+        ? `anon:${user.id}`
+        : user.email
+          ? normalizeEmail(user.email)
+          : `sb:${user.id}`;
+
+    const adminEmails = (Deno.env.get("ADMIN_PREMIUM_EMAILS") ?? "user@expatise.com")
+      .split(",")
+      .map(normalizeEmail)
+      .filter(Boolean);
+
+    const email = normalizeEmail(user?.email ?? "");
+    const isAdmin = !!(email && adminEmails.includes(email));
+
+    const entitlements: Entitlements = isAdmin
+      ? { isPremium: true, source: "admin", updatedAt: Date.now() }
+      : { isPremium: false, source: "none", updatedAt: Date.now() };
+
+    return new Response(JSON.stringify({ ok: true, userKey, entitlements }), {
+      headers: { ...CORS, "Content-Type": "application/json" },
+    });
+  } catch (e) {
+    return new Response(
+      JSON.stringify({ ok: false, error: "entitlements_failed", detail: String(e) }),
+      { status: 500, headers: { ...CORS, "Content-Type": "application/json" }}
+    );
+  }
+});
+```
+
 ### tsconfig.json
 ```json
 {
@@ -137390,7 +143541,7 @@ export default nextConfig;
     ".next/dev/types/**/*.ts",
     "**/*.mts"
   ],
-  "exclude": ["node_modules"]
+ "exclude": ["node_modules", "supabase/functions/**"]
 }
 
 ```

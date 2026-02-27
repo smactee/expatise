@@ -1,10 +1,62 @@
 // supabase/functions/coach/index.ts
 
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
-import { createClient } from "@supabase/supabase-js";
-import { corsHeaders } from "@supabase/supabase-js/cors";
+import { createClient } from "npm:@supabase/supabase-js@2";
+import { corsHeaders } from "jsr:@supabase/supabase-js@2/cors";
 import { MASTER_PROMPT, FALLBACK_PROMPT } from "../_shared/coachPrompt.ts";
 
+function json(status: number, body: unknown, extraHeaders: Record<string, string> = {}) {
+  return new Response(JSON.stringify(body), {
+    status,
+    headers: { ...corsHeaders, "Content-Type": "application/json", ...extraHeaders },
+  });
+}
+
+function normalizeProjectUrl(raw: string) {
+  const withScheme = raw.startsWith("http") ? raw : `https://${raw}`;
+  const u = new URL(withScheme);
+  // strip any path like /functions/v1/...
+  return `${u.protocol}//${u.host}`;
+}
+
+const RAW_SUPABASE_URL = Deno.env.get("SUPABASE_URL") ?? "";
+if (!RAW_SUPABASE_URL) throw new Error("Missing SUPABASE_URL");
+
+const SUPABASE_URL = normalizeProjectUrl(RAW_SUPABASE_URL);
+
+const SUPABASE_KEY =
+  Deno.env.get("SUPABASE_ANON_KEY") ??
+  Deno.env.get("SB_PUBLISHABLE_KEY") ??
+  "";
+
+if (!SUPABASE_KEY) {
+  throw new Error("Missing SUPABASE_ANON_KEY / SB_PUBLISHABLE_KEY in function env");
+}
+
+function getJwtFromReq(req: Request) {
+  const auth = req.headers.get("authorization") ?? "";
+  const m = auth.match(/^Bearer\s+(.+)$/i);
+  return (m?.[1] ?? "").trim();
+}
+
+async function requireUser(req: Request) {
+  const jwt = getJwtFromReq(req);
+
+  const supabase = createClient(SUPABASE_URL, SUPABASE_KEY, {
+    auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false },
+    global: {
+      headers: jwt ? { Authorization: `Bearer ${jwt}` } : {},
+    },
+  });
+
+  if (!jwt) return { user: null, supabase, reason: "Missing Authorization Bearer token" };
+
+  const { data, error } = await supabase.auth.getUser(jwt);
+  const user = data?.user ?? null;
+
+  if (error || !user) return { user: null, supabase, reason: error?.message ?? "No user" };
+  return { user, supabase, reason: null };
+}
 // Keep same contract you had
 const COOLDOWN_MS = 24 * 60 * 60 * 1000;
 
@@ -45,43 +97,21 @@ function extractText(openaiJson: any): string {
 }
 
 Deno.serve(async (req: Request) => {
-  // CORS preflight (required for browser invoke)
-  if (req.method === "OPTIONS") {
-    return new Response("ok", { headers: corsHeaders });
-  }
-
-  if (req.method !== "POST") {
-    return new Response(JSON.stringify({ ok: false, error: "method_not_allowed" }), {
-      status: 405,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
-  }
-
   try {
-    // Create Supabase client with the Auth context of whoever called the function
-    // (Authorization header comes from supabase.functions.invoke automatically)
-    const supabase = createClient(
-      Deno.env.get("SUPABASE_URL") ?? "",
-      Deno.env.get("SUPABASE_ANON_KEY") ?? "",
-      {
-        global: {
-          headers: {
-            Authorization: req.headers.get("Authorization") ?? "",
-          },
-        },
-      }
-    );
+   // CORS preflight (required for browser invoke)
+if (req.method === "OPTIONS") {
+  return new Response("ok", { headers: corsHeaders });
+}
 
-    // Authenticate caller
-    const { data: userData, error: userErr } = await supabase.auth.getUser();
-    const user = userErr ? null : userData.user;
-    if (!user) {
-      return new Response(JSON.stringify({ ok: false, error: "unauthorized" }), {
-        status: 401,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
+// Only POST
+if (req.method !== "POST") {
+  return json(405, { ok: false, error: "method_not_allowed" });
+}
 
+const { user, supabase, reason } = await requireUser(req);
+if (!user) {
+  return json(401, { ok: false, error: "unauthorized", detail: reason });
+}
     const now = Date.now();
 
     // ---- 1) Cooldown check (DB-based)
@@ -121,12 +151,10 @@ Deno.serve(async (req: Request) => {
       });
     }
 
-    // ---- 3) Minimum data gate (same logic as your Next route)
+    // ---- 3) Minimum data gate
     const attemptsCount = num(body?.skill?.attemptsCount);
     const attemptedTotal = num(body?.skill?.attemptedTotal);
-
     const maxAnswered = Math.max(0, ...(body?.skill?.scorePoints ?? []).map((p) => num(p.answered)));
-
     const meetsMinimum = (attemptsCount >= 1 && maxAnswered >= 80) || attemptedTotal >= 120;
 
     if (!meetsMinimum) {
@@ -140,7 +168,7 @@ Deno.serve(async (req: Request) => {
       );
     }
 
-    // ---- 4) Call OpenAI (Responses API)
+    // ---- 4) Call OpenAI
     const openaiKey = Deno.env.get("OPENAI_API_KEY") ?? "";
     if (!openaiKey) {
       return new Response(JSON.stringify({ ok: false, error: "missing_openai_key" }), {
@@ -203,9 +231,10 @@ Deno.serve(async (req: Request) => {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (err: any) {
-    return new Response(
-      JSON.stringify({ ok: false, error: "Stats Coach API failed", detail: String(err?.message ?? err) }),
-      { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-    );
+    return json(500, {
+      ok: false,
+      error: "Stats Coach API failed",
+      detail: String(err?.message ?? err),
+    });
   }
 });

@@ -14,6 +14,9 @@ import TimeTracker from "@/components/TimeTracker.client";
 import AuthSelfHeal from "@/components/AuthSelfHeal";
 import BottomNav from "@/components/BottomNav";
 import OnboardingGate from "@/components/OnboardingGate.client";
+import NativeInsets from "@/components/NativeInsets.client";
+import BrandIntroSplash from "@/components/BrandIntroSplash.client";
+import BrandSplash from "@/components/BrandSplash.client";
 
 
 const geistSans = Geist({
@@ -46,6 +49,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${nunitoSans.variable} antialiased`}
       >
+        <BrandSplash />
         <EntitlementsProvider>
           <FreeUsageProgressBadge />
           <OnboardingGate />
@@ -54,6 +58,7 @@ export default function RootLayout({
             <UserProfileProvider>
               <SwipeBack />
               <TimeTracker />
+              <NativeInsets />
               {children}
               </UserProfileProvider>
           </ThemeProvider>

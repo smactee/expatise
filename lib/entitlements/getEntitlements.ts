@@ -1,3 +1,5 @@
+//lib/entitlements/getEntitlements.ts
+
 "use client";
 
 import type { Entitlements } from "@/lib/entitlements/types";
@@ -20,15 +22,35 @@ export async function getEntitlements(userKey: string): Promise<Entitlements> {
   try {
     const supabase = createClient();
 
-    const { data, error } = await supabase.functions.invoke("entitlements", {
-      body: { userKey },
-    });
+// 0) pull session token explicitly (important in Capacitor/WebView)
+const { data: sessionData } = await supabase.auth.getSession();
+const token = sessionData.session?.access_token ?? null;
 
+// 0.5) always have a fallback key for Functions gateway
+const anonKey =
+  process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ??
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+if (!anonKey) {
+  throw new Error("Missing NEXT_PUBLIC_SUPABASE_ANON_KEY (or NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY)");
+}
+
+// 1) ALWAYS send Authorization (JWT if available, otherwise anon key)
+const bearer = token ?? anonKey;
+
+const { data, error } = await supabase.functions.invoke("entitlements", {
+  body: { userKey },
+  headers: {
+    Authorization: `Bearer ${bearer}`,
+    apikey: anonKey, // extra-safe for some gateway setups
+  },
+});
     let json: FnRes | null = (data ?? null) as any;
 
     // IMPORTANT: when the function returns 4xx/5xx, supabase-js may give you a FunctionsHttpError
     // and the real JSON is inside error.context.json()
     if (error) {
+    
       if (error instanceof FunctionsHttpError) {
         json = (await error.context.json().catch(() => null)) as any;
       } else if (error instanceof FunctionsRelayError || error instanceof FunctionsFetchError) {

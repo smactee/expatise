@@ -67,7 +67,7 @@ function Inner({
     variant === 'fixed'
       ? {
           position: 'fixed',
-          top: 'calc(env(safe-area-inset-top, 0px))',
+          top: 'calc(var(--statusbar-h, 0px) + env(safe-area-inset-top, 0px) + 8px)',
           left: 'calc(env(safe-area-inset-left, 0px) + 10px)',
           zIndex: 9999,
         }

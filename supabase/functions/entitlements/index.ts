@@ -6,10 +6,14 @@ import { corsHeaders } from "jsr:@supabase/supabase-js@2/cors";
 function normalizeEmail(s: unknown) {
   return String(s ?? "").trim().toLowerCase();
 }
+const CORS = {
+  ...corsHeaders,
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
+};
 
 export type Entitlements = {
   isPremium: boolean;
-  source: "free" | "admin";
+  source: "none" | "admin";
   updatedAt: number;
   expiresAt?: number;
 };
@@ -17,7 +21,7 @@ export type Entitlements = {
 Deno.serve(async (req: Request) => {
   // CORS preflight
   if (req.method === "OPTIONS") {
-    return new Response("ok", { headers: corsHeaders });
+    return new Response("ok", { headers: CORS });
   }
 
   try {
@@ -27,7 +31,7 @@ Deno.serve(async (req: Request) => {
     if (!supabaseUrl || !supabaseAnonKey) {
       return new Response(
         JSON.stringify({ ok: false, error: "missing_supabase_env" }),
-        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        { status: 500, headers: { ...CORS, "Content-Type": "application/json" } }
       );
     }
 
@@ -59,15 +63,15 @@ Deno.serve(async (req: Request) => {
 
     const entitlements: Entitlements = isAdmin
       ? { isPremium: true, source: "admin", updatedAt: Date.now() }
-      : { isPremium: false, source: "free", updatedAt: Date.now() };
+      : { isPremium: false, source: "none", updatedAt: Date.now() };
 
     return new Response(JSON.stringify({ ok: true, userKey, entitlements }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      headers: { ...CORS, "Content-Type": "application/json" },
     });
   } catch (e) {
     return new Response(
       JSON.stringify({ ok: false, error: "entitlements_failed", detail: String(e) }),
-      { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" }}
+      { status: 500, headers: { ...CORS, "Content-Type": "application/json" }}
     );
   }
 });

@@ -1,0 +1,178 @@
+/*components/BrandSplash.module.css */
+
+.splash {
+  position: fixed;
+  inset: 0;
+  background: var(--bg, #012FA7);
+  display: grid;
+  place-items: center;
+  z-index: 99999;
+}
+
+/* ===== Logo container (centered) ===== */
+.logo {
+  --s: min(58vmin, 340px); /* responsive size */
+  position: relative;
+  width: var(--s);
+  height: var(--s);
+  animation: logoScale 2s ease-in-out forwards, logoFade 2s ease-in-out forwards;
+}
+
+/* One animation timeline: 2s total */
+.piece {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform-origin: center;
+}
+
+/* ===== Thin pillar ===== */
+.thinRect {
+  width: calc(var(--s) * 0.10);
+  height: calc(var(--s) * 0.80);
+  background: #fff;
+  border-radius: calc(var(--s) * 0.06);
+}
+
+/* Keep your sizes as-is */
+
+.thin {
+  animation:
+    thinMove 2s ease-in-out forwards,
+    thinOpacity 2s steps(1, end) forwards;
+}
+
+.thick {
+  animation:
+    thickMove 2s ease-in-out forwards,
+    thickOpacity 2s steps(1, end) forwards;
+}
+
+/* IMPORTANT: thinMove & thickMove should ONLY animate transform (no opacity inside) */
+@keyframes thinMove {
+  0%   { transform: translate(-190%, -50%) rotate(0deg); }
+  35%  { transform: translate(-190%, -50%) rotate(0deg); }
+  55%  { transform: translate(-50%, -50%) rotate(45deg); }
+  100% { transform: translate(-50%, -50%) rotate(45deg); }
+}
+
+@keyframes thickMove {
+  0%   { transform: translate(40%, -50%) rotate(0deg); }
+  35%  { transform: translate(40%, -50%) rotate(0deg); }
+  55%  { transform: translate(-50%, -50%) rotate(-45deg); }
+  100% { transform: translate(-50%, -50%) rotate(-45deg); }
+}
+
+/* Show thin bar for X, then turn it OFF when accents appear */
+@keyframes thinOpacity {
+  0%, 9%   { opacity: 0; }
+  10%, 64% { opacity: 1; }
+  65%,100% { opacity: 0; }  /* <-- this removes the “double” look */
+}
+
+/* Thick bar stays on after appearing */
+@keyframes thickOpacity {
+  0%, 9%   { opacity: 0; }
+  10%,100% { opacity: 1; }
+}
+
+/* ===== Thick pillar (SVG) ===== */
+.pillarSvg {
+  width: calc(var(--s) * 0.18);
+  height: calc(var(--s) * 0.80);
+  display: block;
+}
+
+
+
+/* ===== Accents appear around “Splash_03” ===== */
+.accent {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: calc(var(--s) * 0.10);
+  height: calc(var(--s) * 0.32);
+  background: #fff;
+  border-radius: calc(var(--s) * 0.06);
+  opacity: 0;
+  transform: translate(-50%, -50%) rotate(45deg) translateY(var(--oy));
+  animation: accentsIn 2s steps(1, end) forwards; /* <- no fading */
+}
+@keyframes accentsIn {
+  0%, 64% { opacity: 0; }
+  65%, 100% { opacity: 1; }
+}
+
+.accentA { --oy: calc(var(--s) * -0.22); }
+.accentB { --oy: calc(var(--s) *  0.22); }
+
+/* ===== Wordmark sweep reveal (Splash_05) ===== */
+.wordmarkWrap {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%); /* center it */
+  width: min(82vw, 560px);
+  opacity: 0;
+  clip-path: inset(0 100% 0 0);
+  animation: wordmarkReveal 2s ease-in-out forwards;
+}
+
+.wordmark {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* ===== Timeline Keyframes (0%..100% = 2s) ===== */
+
+/* Frame 1: pillars appear upright and apart
+   Frame 2: rotate into X (centered)
+*/
+.thick { z-index: 2; }
+.thin { z-index: 1; }
+.accent { z-index: 1; }
+
+
+/* Frame 4: shrink logo */
+@keyframes logoScale {
+  0%   { transform: scale(1); }
+  70%  { transform: scale(1); }
+  84%  { transform: scale(0.18); }
+  100% { transform: scale(0.18); }
+}
+
+/* Frame 5: wordmark comes in, logo fades out */
+@keyframes logoFade {
+  0%, 82% { opacity: 1; }
+  100%    { opacity: 0; }
+}
+
+@keyframes wordmarkReveal {
+  0%, 82% {
+    opacity: 0;
+    clip-path: inset(0 100% 0 0);
+  }
+  100% {
+    opacity: 1;
+    clip-path: inset(0 0 0 0);
+  }
+}
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .logo,
+  .thin,
+  .thick,
+  .accent,
+  .wordmarkWrap {
+    animation: none !important;
+  }
+
+  
+  .logo { opacity: 0; }
+  .wordmarkWrap { opacity: 1; clip-path: none; }
+}
+
+.logo { will-change: transform, opacity; }
+.piece, .accent { will-change: transform, opacity; }
+.wordmarkWrap { will-change: opacity, clip-path; }

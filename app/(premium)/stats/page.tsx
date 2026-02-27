@@ -510,7 +510,26 @@ async function handleGenerateCoach() {
 
 const supabase = createClient();
 
-const { data, error } = await supabase.functions.invoke("coach", { body: payload });
+// ✅ Get current session token
+const { data: sess, error: sessErr } = await supabase.auth.getSession();
+if (sessErr) {
+  setCoachError(`Auth error: ${sessErr.message}`);
+  return;
+}
+
+const token = sess.session?.access_token;
+if (!token) {
+  setCoachError("You're not signed in. Please sign in again and retry.");
+  return;
+}
+
+// ✅ Attach token for Edge Function call (required)
+const { data, error } = await supabase.functions.invoke("coach", {
+  body: payload,
+  headers: {
+    Authorization: `Bearer ${token}`,
+  },
+});
 
 let j: any = data ?? null;
 

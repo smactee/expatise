@@ -12,7 +12,7 @@ export function isBypassPath(pathname: string) {
     pathname.startsWith('/_next/static') ||
     pathname.startsWith('/_next/image') ||
     pathname.startsWith('/api') ||
-    pathname === '/favicon.ico' ||
+    pathname === '/Expatise-logo.jpg' ||
     pathname.startsWith('/images')
   ) {
     return true;
