@@ -23,26 +23,30 @@ export async function getEntitlements(userKey: string): Promise<Entitlements> {
     const supabase = createClient();
 
 // 0) pull session token explicitly (important in Capacitor/WebView)
-const { data: sessionData } = await supabase.auth.getSession();
+const { data: sessionData, error: sessionErr } = await supabase.auth.getSession();
+if (sessionErr) return local;
+
 const token = sessionData.session?.access_token ?? null;
 
-// 0.5) always have a fallback key for Functions gateway
+// ✅ If there's no real user JWT yet, DON'T call the function (verify_jwt=true will 401).
+// Just return local, and we'll refresh when auth finishes.
+if (!token) return local;
+
 const anonKey =
   process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ??
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
 if (!anonKey) {
-  throw new Error("Missing NEXT_PUBLIC_SUPABASE_ANON_KEY (or NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY)");
+  throw new Error(
+    "Missing NEXT_PUBLIC_SUPABASE_ANON_KEY (or NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY)"
+  );
 }
-
-// 1) ALWAYS send Authorization (JWT if available, otherwise anon key)
-const bearer = token ?? anonKey;
 
 const { data, error } = await supabase.functions.invoke("entitlements", {
   body: { userKey },
   headers: {
-    Authorization: `Bearer ${bearer}`,
-    apikey: anonKey, // extra-safe for some gateway setups
+    Authorization: `Bearer ${token}`, // ✅ only JWT here
+    apikey: anonKey,                  // keep this header
   },
 });
     let json: FnRes | null = (data ?? null) as any;

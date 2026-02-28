@@ -8,7 +8,6 @@ import "@fortawesome/fontawesome-svg-core/styles.css";
 import { config } from "@fortawesome/fontawesome-svg-core";
 config.autoAddCss = false; // Prevent fontawesome from adding its CSS since we did it manually above  
 import { EntitlementsProvider } from "@/components/EntitlementsProvider.client";
-import FreeUsageProgressBadge from "@/components/FreeUsageProgressBadge.client";
 import SwipeBack from "@/components/SwipeBack.client";
 import TimeTracker from "@/components/TimeTracker.client";
 import AuthSelfHeal from "@/components/AuthSelfHeal";
@@ -17,6 +16,7 @@ import OnboardingGate from "@/components/OnboardingGate.client";
 import NativeInsets from "@/components/NativeInsets.client";
 import BrandIntroSplash from "@/components/BrandIntroSplash.client";
 import BrandSplash from "@/components/BrandSplash.client";
+import FreeUsageProgressBadge from "@/components/FreeUsageProgressBadge.client";
 
 
 const geistSans = Geist({

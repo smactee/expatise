@@ -7,6 +7,7 @@ import { FREE_ENTITLEMENTS, type EntitlementSource, type Entitlements } from "@/
 import { getLocalEntitlements, setLocalEntitlements, clearLocalEntitlements } from "@/lib/entitlements/localStore";
 import { useUserKey } from "@/components/useUserKey.client";
 import { getEntitlements } from "@/lib/entitlements/getEntitlements";
+import { createClient } from "@/lib/supabase/client";
 
 
 type EntitlementsContextValue = {
@@ -54,42 +55,61 @@ const refresh = useCallback(() => {
     setLoading(false);
     return;
   }
-if (demoPremium) {
-  setState({ isPremium: true, source: "demo", updatedAt: Date.now() });
-  setLoading(false);
-  return;
-}
+
+  if (demoPremium) {
+    setState({ isPremium: true, source: "demo", updatedAt: Date.now() });
+    setLoading(false);
+    return;
+  }
 
   // increment request id so older async results can't overwrite newer userKey
   const seq = ++fetchSeqRef.current;
-
-  setLoading(true);
-
   const keyAtStart = userKey;
 
   // 1) apply local immediately (fast)
-  const local = getLocalEntitlements(keyAtStart) ?? FREE_ENTITLEMENTS;
+  let local = getLocalEntitlements(keyAtStart) ?? FREE_ENTITLEMENTS;
+
+  // ✅ hard rule: guest is never premium (prevents “stuck premium guest” + ensures badge shows)
+  if (keyAtStart === "guest" && local.isPremium) {
+    clearLocalEntitlements("guest");
+    local = FREE_ENTITLEMENTS;
+  }
+
   setState(local);
 
-  // 2) then fetch remote (authoritative)
+  // ✅ IMPORTANT: “loading” should not block UI while remote fetch happens
+  setLoading(false);
+
+  // 2) fetch remote (authoritative) in the background
   void (async () => {
     try {
       const e = await getEntitlements(keyAtStart);
 
-      // ignore stale result if a newer refresh started
       if (seq !== fetchSeqRef.current) return;
 
-      // optional but recommended: persist remote result so next refresh is instant
+      // Persist remote so next boot is instant
+      setLocalEntitlements(keyAtStart, e);
       setState(e);
     } catch {
       // keep local if remote fails
-    } finally {
-      if (seq === fetchSeqRef.current) setLoading(false);
     }
   })();
 }, [userKey, demoPremium]);
 
+useEffect(() => {
+  const supabase = createClient();
 
+  const { data } = supabase.auth.onAuthStateChange(() => {
+    // broadcast for anything else listening
+    try { window.dispatchEvent(new Event("expatise:session-changed")); } catch {}
+    // refresh entitlements now that session/JWT may exist
+    refresh();
+  });
+
+  return () => {
+    data.subscription.unsubscribe();
+  };
+}, [refresh]);
 
   const setEntitlements = useCallback((e: Entitlements) => {
     setLocalEntitlements(userKey, e);
@@ -125,11 +145,6 @@ useEffect(() => {
   return () => window.removeEventListener("expatise:entitlements-changed", onEntChanged);
 }, [refresh]);
 
-useEffect(() => {
-  const onSessionChanged = () => refresh();
-  window.addEventListener("expatise:session-changed", onSessionChanged);
-  return () => window.removeEventListener("expatise:session-changed", onSessionChanged);
-}, [refresh]);
 
 
   const value = useMemo<EntitlementsContextValue>(() => ({

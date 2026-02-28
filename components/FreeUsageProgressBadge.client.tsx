@@ -11,31 +11,38 @@ import {
 import { useEntitlements } from "@/components/EntitlementsProvider.client";
 import { usePathname } from "next/navigation";
 
-const HIDE_BADGE_EXACT = new Set(["/"]);
+const HIDE_BADGE_EXACT = new Set<string>(["/"]);
 const HIDE_BADGE_PREFIXES = ["/login", "/onboarding", "/forgot-password"];
 
 export default function FreeUsageProgressBadge() {
   const pathname = usePathname() || "/";
+  const userKey = useUserKey();
   const { isPremium, loading } = useEntitlements();
 
-const demoPremium =
-  typeof window !== "undefined" &&
-  (process.env.NEXT_PUBLIC_DEMO_SEED_ALL ?? "") === "1" &&
-  (window.location.hostname === "localhost" || window.location.hostname.endsWith(".vercel.app"));
+  const demoPremium =
+    typeof window !== "undefined" &&
+    (process.env.NEXT_PUBLIC_DEMO_SEED_ALL ?? "") === "1" &&
+    (window.location.hostname === "localhost" ||
+      window.location.hostname.endsWith(".vercel.app"));
 
   const hide =
     HIDE_BADGE_EXACT.has(pathname) ||
     HIDE_BADGE_PREFIXES.some((p) => pathname.startsWith(p));
 
-  // ✅ Gate here (safe): this component always calls the same hooks
-if (hide || isPremium || demoPremium || loading) return null;
+  // Always hide on these routes / demo mode
+  if (hide || demoPremium) return null;
 
-  return <FreeUsageProgressBadgeInner />;
+  // ✅ Key rule:
+  // - Guest: show immediately (don’t wait for entitlements)
+  // - Signed-in: wait until entitlements resolved (prevents showing badge to premium/admin)
+  if (userKey !== "guest" && loading) return null;
+
+  if (isPremium) return null;
+
+  return <FreeUsageProgressBadgeInner userKey={userKey} />;
 }
 
-function FreeUsageProgressBadgeInner() {
-  const userKey = useUserKey();
-
+function FreeUsageProgressBadgeInner({ userKey }: { userKey: string }) {
   const [shown, setShown] = useState(0);
   const [starts, setStarts] = useState(0);
 
@@ -81,7 +88,7 @@ function FreeUsageProgressBadgeInner() {
         WebkitBackdropFilter: "blur(10px)",
       }}
       aria-label="Free usage progress"
-      title="Free usage progress"
+      title={`Free usage progress (${userKey})`}
     >
       {text}
     </div>

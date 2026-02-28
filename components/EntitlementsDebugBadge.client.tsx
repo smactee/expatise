@@ -7,7 +7,11 @@ import { useEntitlements } from "@/components/EntitlementsProvider.client";
 export default function EntitlementsDebugBadge() {
   const { userKey, entitlements, isPremium } = useEntitlements();
 
-  if (process.env.NODE_ENV !== "development") return null;
+  const force =
+  typeof window !== "undefined" &&
+  new URLSearchParams(window.location.search).get("debugEntitlements") === "1";
+
+if (process.env.NODE_ENV !== "development" && !force) return null;
 
   return (
     <div style={{
