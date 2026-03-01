@@ -343,21 +343,43 @@ const goComingSoon = (feature: string) => {
        <button
   type="button"
   className={styles.settingsRow}
-  onClick={() => router.push("/account/delete-account")}
+  onClick={() => router.push("/privacy")}
 >
-          <div className={styles.settingsLeft}>
-            <span className={styles.settingsIcon}>
-              <Image 
-                src="/images/profile/privacypolicy-icon.png"
-                alt="Privacy Policy Icon"
-                width={24}
-                height={24}
-              />
-            </span>
-            <span className={styles.settingsLabel}>Delete Account</span>
-          </div>
-          <span className={styles.chevron}>›</span>
-        </button>
+  <div className={styles.settingsLeft}>
+    <span className={styles.settingsIcon}>
+      <Image
+        src="/images/profile/privacypolicy-icon.png"
+        alt="Privacy Policy"
+        width={24}
+        height={24}
+      />
+    </span>
+    <span className={styles.settingsLabel}>Privacy Policy</span>
+  </div>
+  <span className={styles.chevron}>›</span>
+</button>
+
+<button
+  type="button"
+  className={styles.settingsRow}
+  onClick={(e) => {
+    if (!requireLogin(e)) return;
+    router.push("/account/delete-account");
+  }}
+>
+  <div className={styles.settingsLeft}>
+    <span className={styles.settingsIcon}>
+      <Image
+        src="/images/profile/privacypolicy-icon.png"
+        alt="Delete Account"
+        width={24}
+        height={24}
+      />
+    </span>
+    <span className={styles.settingsLabel}>Delete Account</span>
+  </div>
+  <span className={styles.chevron}>›</span>
+</button>
 
         <button
   type="button"

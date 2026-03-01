@@ -26,6 +26,13 @@ async function onDelete() {
   setErr(null);
   setLoading(true);
 
+  const { data: session } = await supabase.auth.getSession();
+if (!session.session) {
+  setErr("Please log in to delete your account.");
+  setLoading(false);
+  return;
+}
+
   try {
     const { data, error } = await supabase.functions.invoke("account-delete", { body: {} });
     let j: any = data ?? null;

@@ -12488,6 +12488,42 @@ export default function PremiumPage() {
 
 ```
 
+### app/privacy/page.tsx
+```tsx
+// app/privacy/page.tsx
+
+export default function PrivacyPage() {
+  return (
+    <main style={{ padding: 24, maxWidth: 900, margin: "0 auto" }}>
+      <h1 style={{ fontSize: 28, fontWeight: 700, marginBottom: 12 }}>
+        Privacy Policy
+      </h1>
+
+      <p style={{ marginBottom: 12 }}>
+        This Privacy Policy explains how Expatise collects, uses, and protects
+        your information.
+      </p>
+
+      <h2 style={{ fontSize: 18, fontWeight: 600, marginTop: 24 }}>
+        Information we collect
+      </h2>
+      <ul style={{ paddingLeft: 18, marginTop: 8 }}>
+        <li>Account information you provide (e.g., email if you sign up).</li>
+        <li>Basic app usage data to operate and improve the service.</li>
+      </ul>
+
+      <h2 style={{ fontSize: 18, fontWeight: 600, marginTop: 24 }}>
+        Contact
+      </h2>
+      <p style={{ marginTop: 8 }}>
+        If you have questions, contact us at:{" "}
+        <a href="mailto:support@expatise.app">support@expatise.app</a>
+      </p>
+    </main>
+  );
+}
+```
+
 ### app/profile/page.tsx
 ```tsx
 //  app/profile/page.tsx
@@ -16370,7 +16406,11 @@ import { useEntitlements } from "@/components/EntitlementsProvider.client";
 export default function EntitlementsDebugBadge() {
   const { userKey, entitlements, isPremium } = useEntitlements();
 
-  if (process.env.NODE_ENV !== "development") return null;
+  const force =
+  typeof window !== "undefined" &&
+  new URLSearchParams(window.location.search).get("debugEntitlements") === "1";
+
+if (process.env.NODE_ENV !== "development" && !force) return null;
 
   return (
     <div style={{
@@ -16713,39 +16753,38 @@ import {
 import { useEntitlements } from "@/components/EntitlementsProvider.client";
 import { usePathname } from "next/navigation";
 
-const HIDE_BADGE_EXACT = new Set<string>([]);
+const HIDE_BADGE_EXACT = new Set<string>(["/"]);
 const HIDE_BADGE_PREFIXES = ["/login", "/onboarding", "/forgot-password"];
 
 export default function FreeUsageProgressBadge() {
   const pathname = usePathname() || "/";
-const userKey = useUserKey();
-const { isPremium, loading } = useEntitlements();
+  const userKey = useUserKey();
+  const { isPremium, loading } = useEntitlements();
 
-const demoPremium =
-  typeof window !== "undefined" &&
-  (process.env.NEXT_PUBLIC_DEMO_SEED_ALL ?? "") === "1" &&
-  (window.location.hostname === "localhost" || window.location.hostname.endsWith(".vercel.app"));
+  const demoPremium =
+    typeof window !== "undefined" &&
+    (process.env.NEXT_PUBLIC_DEMO_SEED_ALL ?? "") === "1" &&
+    (window.location.hostname === "localhost" ||
+      window.location.hostname.endsWith(".vercel.app"));
 
-const hide =
-  HIDE_BADGE_EXACT.has(pathname) ||
-  HIDE_BADGE_PREFIXES.some((p) => pathname.startsWith(p));
+  const hide =
+    HIDE_BADGE_EXACT.has(pathname) ||
+    HIDE_BADGE_PREFIXES.some((p) => pathname.startsWith(p));
 
-// Always hide on these routes / demo mode
-if (hide || demoPremium) return null;
+  // Always hide on these routes / demo mode
+  if (hide || demoPremium) return null;
 
-// ✅ Key rule:
-// - Guest: show immediately (don’t wait for entitlements)
-// - Signed-in: wait until entitlements resolved (prevents showing badge to premium/admin)
-if (userKey !== "guest" && loading) return null;
+  // ✅ Key rule:
+  // - Guest: show immediately (don’t wait for entitlements)
+  // - Signed-in: wait until entitlements resolved (prevents showing badge to premium/admin)
+  if (userKey !== "guest" && loading) return null;
 
-if (isPremium) return null;
+  if (isPremium) return null;
 
-return <FreeUsageProgressBadgeInner userKey={userKey} />;
+  return <FreeUsageProgressBadgeInner userKey={userKey} />;
 }
 
 function FreeUsageProgressBadgeInner({ userKey }: { userKey: string }) {
-
-
   const [shown, setShown] = useState(0);
   const [starts, setStarts] = useState(0);
 
@@ -16791,13 +16830,12 @@ function FreeUsageProgressBadgeInner({ userKey }: { userKey: string }) {
         WebkitBackdropFilter: "blur(10px)",
       }}
       aria-label="Free usage progress"
-      title="Free usage progress"
+      title={`Free usage progress (${userKey})`}
     >
       {text}
     </div>
   );
 }
-
 ```
 
 ### components/InfoTip.client.tsx
@@ -23466,7 +23504,11 @@ import { userKeyFromEmail } from "@/lib/identity/userKey";
 
 export function useUserKey() {
   const { authed, email } = useAuthStatus();
-  return useMemo(() => (authed ? userKeyFromEmail(email) : "guest"), [authed, email]);
+
+  return useMemo(() => {
+    if (authed && email) return userKeyFromEmail(email);
+    return "guest";
+  }, [authed, email]);
 }
 ```
 
@@ -143525,15 +143567,24 @@ Deno.serve(async (req: Request) => {
   try {
     // Accept guest calls (verify_jwt=false), but only return premium if we can verify a user.
     const authHeader =
-      req.headers.get("authorization") ?? req.headers.get("Authorization") ?? "";
+  req.headers.get("authorization") ?? req.headers.get("Authorization") ?? "";
 
-    const supabase = createClient(SUPABASE_URL, SUPABASE_KEY, {
-      global: authHeader ? { headers: { authorization: authHeader } } : undefined,
-      auth: { persistSession: false, autoRefreshToken: false },
-    });
+// Extract raw JWT from "Bearer <token>"
+const m = authHeader.match(/^Bearer\s+(.+)$/i);
+const jwt = (m?.[1] ?? "").trim();
 
-    const { data: userData, error: userErr } = await supabase.auth.getUser();
-    const user = userErr ? null : userData.user;
+const supabase = createClient(SUPABASE_URL, SUPABASE_KEY, {
+  // Set auth context for PostgREST + RLS reads
+  global: jwt ? { headers: { Authorization: `Bearer ${jwt}` } } : undefined,
+  auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false },
+});
+
+let user: any = null;
+
+if (jwt) {
+  const { data, error } = await supabase.auth.getUser(jwt);
+  user = error ? null : data.user;
+}
 
     // Stable userKey for your existing local storage keys
     const userEmail = normalizeEmail(user?.email ?? "");
