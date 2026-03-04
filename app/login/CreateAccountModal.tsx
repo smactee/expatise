@@ -1,13 +1,13 @@
 'use client';
 
-import { useMemo, useState, type FormEvent } from 'react';
-import { useRouter } from 'next/navigation';
+import { useMemo, useRef, useState, type FormEvent } from 'react';import { useRouter } from 'next/navigation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGoogle, faApple, faWeixin } from '@fortawesome/free-brands-svg-icons';
 import { faChevronLeft, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 
 import styles from './create-account-modal.module.css';
 import { isValidEmail, normalizeEmail } from '@/lib/auth';
+import { NATIVE_OAUTH_REDIRECT_URI } from '@/lib/auth/oauth';
 import { createClient } from '@/lib/supabase/client';
 
 type Props = {
@@ -29,14 +29,16 @@ export default function CreateAccountModal({ open, onClose, onCreated }: Props) 
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [needsEmailConfirm, setNeedsEmailConfirm] = useState(false);
+  const [oauthSubmitting, setOauthSubmitting] = useState(false);
+  const oauthBusyRef = useRef(false);
 
   const canSubmit = useMemo(() => {
-    if (isSubmitting) return false;
+    if (isSubmitting || oauthSubmitting) return false;
     if (!isValidEmail(email)) return false;
     if (pw.trim().length < 8) return false;
     if (pw !== pw2) return false;
     return true;
-  }, [email, pw, pw2, isSubmitting]);
+}, [email, pw, pw2, isSubmitting, oauthSubmitting]);
 
   if (!open) return null;
 
@@ -207,21 +209,77 @@ export default function CreateAccountModal({ open, onClose, onCreated }: Props) 
 
         <div className={styles.snsRow}>
           <button
-            type="button"
-            className={styles.snsBtn}
-            aria-label="Sign up with Google"
-            onClick={async () => {
-              setError(null);
-              const redirectTo = `${window.location.origin}/auth/callback?next=${encodeURIComponent("/")}`;
-              const { error } = await supabase.auth.signInWithOAuth({
-                provider: 'google',
-                options: { redirectTo },
-              });
-              if (error) setError(error.message);
-            }}
-          >
-            <FontAwesomeIcon icon={faGoogle} />
-          </button>
+  type="button"
+  className={styles.snsBtn}
+  aria-label="Sign up with Google"
+  disabled={isSubmitting || oauthSubmitting}
+  aria-busy={oauthSubmitting ? "true" : "false"}
+  onClick={async () => {
+    // ✅ hard guard (prevents super-fast double taps)
+    if (oauthBusyRef.current) return;
+    oauthBusyRef.current = true;
+
+    setError(null);
+    setOauthSubmitting(true);
+
+    try {
+      // Keep behavior consistent with your login page (deep-link handler uses this)
+      try {
+        localStorage.setItem("expatise:oauth:next", "/");
+      } catch {}
+
+      const { Capacitor } = await import("@capacitor/core");
+
+      // ✅ Force account chooser every time
+      const queryParams = { prompt: "select_account" as const };
+
+      if (Capacitor.isNativePlatform()) {
+        const { Browser } = await import("@capacitor/browser");
+
+        const redirectTo = NATIVE_OAUTH_REDIRECT_URI;
+
+        const { data, error } = await supabase.auth.signInWithOAuth({
+          provider: "google",
+          options: { redirectTo, queryParams },
+          skipBrowserRedirect: true,
+        });
+
+        if (error) {
+          setError(error.message);
+          return;
+        }
+
+       const url = data?.url;
+if (!url) {
+  setError("No OAuth URL returned.");
+  return;
+}
+
+console.log("[OAuth] open url:", url); // ✅ add this line
+
+await Browser.open({ url });
+return;
+      }
+
+      // ✅ Web (SSR callback)
+      const redirectTo = `${window.location.origin}/auth/callback?next=${encodeURIComponent("/")}`;
+
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: { redirectTo, queryParams },
+      });
+
+      if (error) setError(error.message);
+    } catch (err: any) {
+      setError(err?.message ?? "Google sign-up failed. Please try again.");
+    } finally {
+      setOauthSubmitting(false);
+      oauthBusyRef.current = false;
+    }
+  }}
+>
+  <FontAwesomeIcon icon={faGoogle} />
+</button>
 
           <button type="button" className={styles.snsBtn} aria-label="Sign up with Apple">
             <FontAwesomeIcon icon={faApple} />

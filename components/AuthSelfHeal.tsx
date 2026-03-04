@@ -1,4 +1,3 @@
-//components/AuthSelfHeal.tsx
 "use client";
 
 import { useEffect } from "react";
@@ -11,16 +10,27 @@ function looksLikeRefreshTokenIssue(err: unknown) {
 
 export default function AuthSelfHeal() {
   useEffect(() => {
+    // ✅ Don't touch auth during OAuth / login routes (prevents lock collisions)
+    if (typeof window !== "undefined") {
+      const p = window.location.pathname;
+      const qs = window.location.search;
+      if (
+        p.startsWith("/login") ||
+        p.startsWith("/auth") || // includes /auth/callback
+        qs.includes("code=") ||
+        qs.includes("state=")
+      ) {
+        return;
+      }
+    }
+
     const supabase = createClient();
 
     (async () => {
       try {
-        // This is enough to trigger a refresh attempt if Supabase thinks it needs one
         const { error } = await supabase.auth.getSession();
         if (error && looksLikeRefreshTokenIssue(error)) {
-          // Clear local auth state so Supabase stops retrying with a bad/missing refresh token
           await supabase.auth.signOut({ scope: "local" });
-          // Optional: hard reload so any UI/auth state resets cleanly
           window.location.reload();
         }
       } catch (e) {

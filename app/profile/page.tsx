@@ -17,6 +17,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGoogle, faApple, faWeixin} from '@fortawesome/free-brands-svg-icons';
 import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
 import LogoutButton from '@/components/LogoutButton.client';
+import GuestLoginModal from '@/components/GuestLoginModal';
+import { Capacitor } from "@capacitor/core";
+import { Purchases } from "@revenuecat/purchases-capacitor";
+import { ensureRevenueCat } from "@/lib/billing/revenuecat";
+import { useEntitlements } from "@/components/EntitlementsProvider.client";
+
 
 
 function Inner() {
@@ -28,11 +34,14 @@ function Inner() {
   const { theme, toggleTheme } = useTheme();
 
   const { authed, method, loading: authLoading, refresh, email: sessionEmail, provider } = useAuthStatus();
+  const authEmail = sessionEmail ?? email ?? null;
+  const showProviderEmail = authed && method !== "email" && !!authEmail; 
   const [showGuestModal, setShowGuestModal] = useState(false);
   const [saving, setSaving] = useState(false);
   const [saveMsg, setSaveMsg] = useState<string | null>(null);
 
   const canManageCredentials = authed && (method === "email");
+  const RC_ENTITLEMENT_ID = process.env.NEXT_PUBLIC_REVENUECAT_ENTITLEMENT_ID ?? "Premium";
 
 
 const signInDisplay = (() => {
@@ -153,6 +162,7 @@ const handleSave = async (e: React.SyntheticEvent) => {
 };
 
 
+
 const goComingSoon = (feature: string) => {
   const qs = sp.toString();
   const returnTo = `${pathname}${qs ? `?${qs}` : ''}`;
@@ -162,7 +172,61 @@ const goComingSoon = (feature: string) => {
   );
 };
 
+const { userKey: entUserKey, refresh: refreshEnt, grantPremium } = useEntitlements();
 
+const [restoring, setRestoring] = useState(false);
+const [restoreMsg, setRestoreMsg] = useState<string | null>(null);
+
+const handleRestorePurchases = async (e: React.SyntheticEvent) => {
+  // Require login (same UX as Save)
+  if (!authed) {
+    requireLogin(e);
+    return;
+  }
+
+  // Restore only makes sense in native store builds
+  if (!Capacitor.isNativePlatform()) {
+    setRestoreMsg("Restore purchases is available in the mobile app.");
+    setTimeout(() => setRestoreMsg(null), 900);
+    return;
+  }
+
+  setRestoring(true);
+  setRestoreMsg(null);
+
+  try {
+    // Ensure RC is configured + tied to the logged-in user
+    await ensureRevenueCat(entUserKey);
+
+    const { customerInfo } = await Purchases.restorePurchases();
+    const active = customerInfo?.entitlements?.active?.[RC_ENTITLEMENT_ID];
+
+    if (!active) {
+      setRestoreMsg("No purchases found to restore.");
+      return;
+    }
+
+    // Pick a reasonable local source for instant UI
+    const expMs =
+      typeof active.expirationDateMillis === "number"
+        ? active.expirationDateMillis
+        : undefined;
+
+    const periodType = String(active.periodType ?? "").toUpperCase();
+    const source =
+      expMs == null ? "lifetime" : periodType === "TRIAL" ? "trial" : "subscription";
+
+    grantPremium(source as any, expMs);
+    refreshEnt();
+
+    setRestoreMsg("Purchases restored.");
+  } catch (err: any) {
+    setRestoreMsg(err?.message ?? "Restore failed. Please try again.");
+  } finally {
+    setRestoring(false);
+    setTimeout(() => setRestoreMsg(null), 1200);
+  }
+};
 
   return (
     <main className={styles.page}>
@@ -258,7 +322,17 @@ const goComingSoon = (feature: string) => {
 ) : null}
 
 
-<span className={styles.emailDisplayText}>{signInDisplay.label}</span>
+<span className={styles.emailDisplayText}>
+  {showProviderEmail ? (
+    <>
+      {signInDisplay.label} @
+      <br />
+      <span className={styles.emailSubText}>{authEmail}</span>
+    </>
+  ) : (
+    signInDisplay.label
+  )}
+</span>
 
   </div>
 </div>
@@ -339,6 +413,20 @@ const goComingSoon = (feature: string) => {
   </button>
 )}
 
+<button
+  type="button"
+  className={styles.settingsRow}
+  onClick={(e) => handleRestorePurchases(e)}
+  disabled={restoring}
+>
+  <div className={styles.settingsLeft}>
+    <span className={styles.settingsIcon} aria-hidden="true">↻</span>
+    <span className={styles.settingsLabel}>
+      {restoring ? "Restoring..." : "Restore Purchases"}
+    </span>
+  </div>
+  <span className={styles.chevron}>›</span>
+</button>
 
        <button
   type="button"
@@ -459,27 +547,27 @@ const goComingSoon = (feature: string) => {
   </div>
 ) : null}
 
-{showGuestModal ? (
-  <div className={styles.guestOverlay} onClick={() => setShowGuestModal(false)}>
-    <div className={styles.guestModal} onClick={(e) => e.stopPropagation()}>
-      <div className={styles.guestTitle}>Log in to save your changes.</div>
-      <div className={styles.guestText}>
-        Some features may be disabled. You can continue as a guest, but changes won’t be saved.
-      </div>
-      <div className={styles.guestButtons}>
-        <Link className={styles.guestPrimary} href="/login?next=/profile">
-          Log in
-        </Link>
-        <button
-          className={styles.guestSecondary}
-          onClick={() => setShowGuestModal(false)}
-        >
-          Continue as guest
-        </button>
-      </div>
+{restoreMsg ? (
+  <div className={styles.toastOverlay} aria-live="polite">
+    <div className={styles.toastCard}>
+      <Image
+        src="/images/profile/greencheck-icon.png"
+        alt="Info"
+        width={16}
+        height={16}
+        className={styles.toastIcon}
+        priority
+      />
+      <span className={styles.toastText}>{restoreMsg}</span>
     </div>
   </div>
 ) : null}
+
+<GuestLoginModal
+  open={showGuestModal}
+  onClose={() => setShowGuestModal(false)}
+  nextPath="/profile"
+/>
 
       </div>
 

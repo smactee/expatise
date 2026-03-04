@@ -497,76 +497,6 @@
   font: inherit;
 }
 
-/* Modal overlay */
-.guestOverlay {
-  position: fixed;
-  inset: 0;
-  backdrop-filter: blur(8px);
-  background: rgba(0, 0, 0, 0.35);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-  z-index: 9999;
-}
-
-.guestModal {
-  width: 100%;
-  max-width: 420px;
-  border-radius: 18px;
-  padding: 18px 16px;
-  background: var(--color-profile-card-bg);
-  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
-}
-
-.guestTitle {
-  font-size: 18px;
-  font-weight: 800;
-  margin-bottom: 8px;
-}
-
-.guestText {
-  font-size: 14px;
-  opacity: 0.9;
-  line-height: 1.4;
-}
-
-.guestButtons {
-  display: flex;
-  gap: 10px;
-  margin-top: 14px;
-}
-
-.guestPrimary {
-  flex: 1;
-  height: 44px;
-  border-radius: 12px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  text-decoration: none;
-  background: rgba(59, 130, 246, 0.18);
-  border: 1px solid rgba(59, 130, 246, 0.35);
-  background: var(--color-premium-gradient);
-  font-weight: 700;
-}
-
-.guestSecondary {
-  flex: 1;
-  height: 44px;
-  border-radius: 12px;
-  border: 1px solid rgba(148, 163, 184, 0.35);
-  background: transparent;
-  color: var(--color-heading-strong);
-  font-weight: 700;
-  font-size: 13px;
-}
-
-.lockedClickable {
-  cursor: pointer !important;
-}
-
-
 
 /* Toast readability in DARK MODE */
 :root[data-theme='dark'] .toastCard {
@@ -581,4 +511,26 @@
 
 :root[data-theme='dark'] .toastIcon {
   filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.55));
+}
+
+.emailSubText {
+  display: block;
+  font-size: 12px;
+  opacity: 0.75;
+  margin-top: 2px;
+   overflow-wrap: anywhere;
+  word-break: break-word;
+}
+@media (max-width: 360px) {
+  .emailSubText {
+    font-size: 11px;
+  }
+}
+.emailDisplayText {
+  line-height: 1.15;
+}
+
+.snsBtnSmall:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
 }

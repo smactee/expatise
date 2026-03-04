@@ -17,7 +17,7 @@ import NativeInsets from "@/components/NativeInsets.client";
 import BrandIntroSplash from "@/components/BrandIntroSplash.client";
 import BrandSplash from "@/components/BrandSplash.client";
 import FreeUsageProgressBadge from "@/components/FreeUsageProgressBadge.client";
-
+import CapacitorOAuthBridge from "@/components/CapacitorOAuthBridge.client";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -55,6 +55,7 @@ export default function RootLayout({
           <OnboardingGate />
           <ThemeProvider>
             <AuthSelfHeal />
+             <CapacitorOAuthBridge />
             <UserProfileProvider>
               <SwipeBack />
               <TimeTracker />

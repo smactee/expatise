@@ -11,6 +11,7 @@ import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import CreateAccountModal from './CreateAccountModal';
 import { faGoogle, faApple, faWeixin } from '@fortawesome/free-brands-svg-icons';
 import { isValidEmail, normalizeEmail, safeNextPath } from '@/lib/auth';
+import { NATIVE_OAUTH_REDIRECT_URI } from '@/lib/auth/oauth';
 import CSRBoundary from '@/components/CSRBoundary';
 import { createClient } from '@/lib/supabase/client';
 
@@ -30,15 +31,18 @@ function Inner() {
   const [error, setError] = useState<string | null>(null); // Friendly error state
   const [isSubmitting, setIsSubmitting] = useState(false);// Loading state
   const [emailTouched, setEmailTouched] = useState(false);
+  const [oauthSubmitting, setOauthSubmitting] = useState(false);
+  const authBusyRef = useRef(false); // instant mutex (prevents micro double-tap window)
+
 
 const supabase = useMemo(() => createClient(), []);
 
   const emailNorm = normalizeEmail(email);
   const emailOK = isValidEmail(emailNorm);
 
-  const canSubmit = useMemo(() => {
-  return emailOK && password.trim().length > 0 && !isSubmitting;
-}, [emailOK, password, isSubmitting]);
+const canSubmit = useMemo(() => {
+  return emailOK && password.trim().length > 0 && !isSubmitting && !oauthSubmitting;
+}, [emailOK, password, isSubmitting, oauthSubmitting]);
 
 const toastTimerRef = useRef<number | null>(null);
 
@@ -222,9 +226,10 @@ router.replace(nextParam);
               Create a new account
               </button>
 
-            <button
+<button
   type="button"
   className={styles.linkBtn}
+  disabled={oauthSubmitting || isSubmitting}
   onClick={async () => {
     setError(null);
     const { error } = await supabase.auth.signInAnonymously();
@@ -233,9 +238,9 @@ router.replace(nextParam);
       return;
     }
     try { window.dispatchEvent(new Event("expatise:session-changed")); } catch {}
-try { window.dispatchEvent(new Event("expatise:entitlements-changed")); } catch {}
-router.refresh();
-router.replace(nextParam);
+    try { window.dispatchEvent(new Event("expatise:entitlements-changed")); } catch {}
+    router.refresh();
+    router.replace(nextParam);
   }}
 >
   Continue as guest
@@ -258,18 +263,80 @@ router.replace(nextParam);
 
 
 
-    <button
+<button
   type="button"
   className={styles.snsBtnSmall}
   aria-label="Continue with Google"
+  disabled={oauthSubmitting || isSubmitting}
+  aria-busy={oauthSubmitting ? "true" : "false"}
   onClick={async () => {
+    // ✅ hard guard: prevents micro double-tap before state updates
+    if (authBusyRef.current) return;
+    authBusyRef.current = true;
+
+    // ✅ soft guard: prevents repeated taps once state applies
+    if (oauthSubmitting || isSubmitting) {
+      authBusyRef.current = false;
+      return;
+    }
+
+    setOauthSubmitting(true);
     setError(null);
-    const redirectTo = `${window.location.origin}/auth/callback?next=${encodeURIComponent(nextParam)}`;
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: { redirectTo },
-    });
-    if (error) setError(error.message);
+
+    try {
+      // Store "next" so the deep-link handler can send the user back correctly
+      try {
+        localStorage.setItem("expatise:oauth:next", nextParam);
+      } catch {}
+
+      // Detect native (Capacitor) at runtime
+      const { Capacitor } = await import("@capacitor/core");
+
+      if (Capacitor.isNativePlatform()) {
+        const { Browser } = await import("@capacitor/browser");
+
+        const redirectTo = NATIVE_OAUTH_REDIRECT_URI;
+
+        const { data, error } = await supabase.auth.signInWithOAuth({
+          provider: "google",
+          options: { redirectTo, queryParams: { prompt: "select_account" } },
+          skipBrowserRedirect: true,
+        });
+
+        if (error) {
+          setError(error.message);
+          return;
+        }
+
+        const url = data?.url;
+if (!url) {
+  setError("No OAuth URL returned.");
+  return;
+}
+
+console.log("[OAuth] open url:", url); // ✅ add this line
+
+await Browser.open({ url });
+return;
+      }
+
+      // ✅ Web: SSR callback flow
+      const redirectTo = `${window.location.origin}/auth/callback?next=${encodeURIComponent(
+        nextParam
+      )}`;
+
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: { redirectTo, queryParams: { prompt: "select_account" } },
+      });
+
+      if (error) setError(error.message);
+    } catch (err: any) {
+      setError(err?.message ?? "Google sign-in failed. Please try again.");
+    } finally {
+      setOauthSubmitting(false);
+      authBusyRef.current = false;
+    }
   }}
 >
   <FontAwesomeIcon icon={faGoogle} />

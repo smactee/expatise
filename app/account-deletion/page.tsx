@@ -135,8 +135,7 @@ export default function AccountDeletionPage() {
       </ul>
 
       <p style={styles.small}>
-        If your app has specific data types (posts, chat messages, listings,
-        saved items, logs), list them here for extra clarity.
+       Examples may include profile details and content or activity tied to your account (if applicable).
       </p>
 
       <h2 style={styles.h2}>What we may retain</h2>

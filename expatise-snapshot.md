@@ -7314,48 +7314,167 @@ try {
 
 ### app/account-deletion/page.tsx
 ```tsx
-/*app/account-deletion/page.tsx*/
+/* app/account-deletion/page.tsx */
+
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Account & Data Deletion · Expatise",
+  description:
+    "How to request deletion of your Expatise account and associated data (in-app or by email).",
+};
+
+const APP_NAME = "Expatise";
+
+// ✅ Replace this with your real support email (must be actively monitored).
+const SUPPORT_EMAIL = "maverixnmatrix@gmail.com";
+
+// ✅ Pick a timeframe you can truly honor.
+// If you’re not sure, “30 days” is common. Adjust as needed.
+const PROCESSING_TIME_DAYS = 30;
 
 export default function AccountDeletionPage() {
-  // ✅ This page is your "web link resource" for Google Play.
-  // Replace the email below with your real support email.
-  const SUPPORT_EMAIL = "support@expatise.com";
+  const subject = "Account deletion request";
+  const bodyLines = [
+    `Hello ${APP_NAME} Support,`,
+    "",
+    "Please delete my account and associated data.",
+    "",
+    "Account details (so you can locate me):",
+    "- Sign-in email (or provider, e.g., Google/Apple):",
+    "- Username / display name (if applicable):",
+    "",
+    "Thank you.",
+  ];
+  const mailtoHref = `mailto:${SUPPORT_EMAIL}?subject=${encodeURIComponent(
+    subject
+  )}&body=${encodeURIComponent(bodyLines.join("\n"))}`;
+
+  const styles: Record<string, React.CSSProperties> = {
+    main: {
+      maxWidth: 820,
+      margin: "0 auto",
+      padding: "28px 18px",
+      lineHeight: 1.65,
+    },
+    card: {
+      border: "1px solid rgba(255,255,255,0.12)",
+      borderRadius: 14,
+      padding: 16,
+      marginTop: 14,
+      background: "rgba(0,0,0,0.12)",
+    },
+    h1: { fontSize: 28, fontWeight: 800, marginBottom: 10 },
+    h2: { fontSize: 18, fontWeight: 750, marginTop: 18, marginBottom: 8 },
+    p: { opacity: 0.9, marginTop: 8 },
+    small: { opacity: 0.75, marginTop: 10 },
+    ul: { marginTop: 8, paddingLeft: 18, opacity: 0.9 },
+    code: {
+      fontFamily:
+        'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
+      fontSize: 13,
+      padding: "2px 6px",
+      borderRadius: 6,
+      background: "rgba(255,255,255,0.08)",
+    },
+    a: { textDecoration: "underline" },
+  };
 
   return (
-    <main style={{ maxWidth: 760, margin: "0 auto", padding: "28px 18px", lineHeight: 1.55 }}>
-      <h1 style={{ fontSize: 26, marginBottom: 10 }}>Account & Data Deletion</h1>
+    <main style={styles.main}>
+      <h1 style={styles.h1}>Account &amp; Data Deletion</h1>
 
-      <p style={{ opacity: 0.85 }}>
-        If you created an Expatise account and want it deleted, use one of the options below.
+      <p style={styles.p}>
+        This page explains how to request deletion of your <b>{APP_NAME}</b>{" "}
+        account and associated data.
       </p>
 
-      <h2 style={{ fontSize: 18, marginTop: 18 }}>Option A — In-app deletion</h2>
-      <p>
-        If you can still access the app: go to <b>Profile → Delete Account</b> and follow the steps.
+      <div style={styles.card}>
+        <p style={{ ...styles.p, marginTop: 0 }}>
+          <b>Quick options:</b>
+        </p>
+        <ul style={{ ...styles.ul, marginBottom: 0 }}>
+          <li>
+            <a style={styles.a} href="#in-app">
+              Option A — Delete inside the app
+            </a>
+          </li>
+          <li>
+            <a style={styles.a} href="#email">
+              Option B — Request deletion by email
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <h2 id="in-app" style={styles.h2}>
+        Option A — In-app deletion
+      </h2>
+      <p style={styles.p}>
+        If you can access the app, go to <b>Profile → Delete Account</b> and
+        follow the steps shown on screen.
       </p>
 
-      <h2 style={{ fontSize: 18, marginTop: 18 }}>Option B — Web request</h2>
-      <p>
-        If you can’t access the app, email us at{" "}
-        <a href={`mailto:${SUPPORT_EMAIL}?subject=${encodeURIComponent("Account deletion request")}`}>
+      <h2 id="email" style={styles.h2}>
+        Option B — Request deletion by email (if you can’t access the app)
+      </h2>
+      <p style={styles.p}>
+        Email us at{" "}
+        <a style={styles.a} href={mailtoHref}>
           {SUPPORT_EMAIL}
         </a>{" "}
-        with:
+        with the subject <span style={styles.code}>{subject}</span>.
       </p>
-      <ul>
-        <li>The email you used to sign in (or the provider, e.g. Google)</li>
-        <li>“Please delete my Expatise account and associated data.”</li>
+
+      <p style={styles.p}>Please include:</p>
+      <ul style={styles.ul}>
+        <li>The email you used to sign in (or the provider, e.g., Google/Apple)</li>
+        <li>Any helpful identifier (username/display name) if applicable</li>
+        <li>A clear statement: “Please delete my account and associated data.”</li>
       </ul>
 
-      <h2 style={{ fontSize: 18, marginTop: 18 }}>What we delete</h2>
-      <ul>
-        <li>Your Supabase Auth account</li>
-        <li>Your saved attempts and time logs stored on our servers</li>
+      <p style={styles.small}>
+        To protect your account, we may ask you to verify ownership before
+        processing the deletion request.
+      </p>
+
+      <h2 style={styles.h2}>Processing time</h2>
+      <p style={styles.p}>
+        After verification (if needed), we typically complete deletion requests
+        within <b>{PROCESSING_TIME_DAYS} days</b>.
+      </p>
+
+      <h2 style={styles.h2}>What we delete</h2>
+      <ul style={styles.ul}>
+        <li>Your account record (authentication/profile)</li>
+        <li>Data associated with your account stored on our servers</li>
       </ul>
 
-      <p style={{ marginTop: 14, opacity: 0.75 }}>
-        Note: We may retain limited data if legally required (fraud prevention, compliance), if applicable.
+      <p style={styles.small}>
+       Examples may include profile details and content or activity tied to your account (if applicable).
       </p>
+
+      <h2 style={styles.h2}>What we may retain</h2>
+      <ul style={styles.ul}>
+        <li>Limited information if required by law, compliance, or dispute handling</li>
+        <li>Security/fraud-prevention records where applicable</li>
+      </ul>
+
+      <p style={styles.small}>
+        Backups may retain data for a limited period before being overwritten.
+        When possible, retained data is restricted and minimized.
+      </p>
+
+      <h2 style={styles.h2}>Need help?</h2>
+      <p style={styles.p}>
+        If you can’t access the email you signed up with, contact{" "}
+        <a style={styles.a} href={`mailto:${SUPPORT_EMAIL}`}>
+          {SUPPORT_EMAIL}
+        </a>{" "}
+        and explain your situation. We’ll tell you what we can do safely.
+      </p>
+
+      <p style={styles.small}>Last updated: 2026-03-01</p>
     </main>
   );
 }
@@ -7743,6 +7862,13 @@ async function onDelete() {
   setErr(null);
   setLoading(true);
 
+  const { data: session } = await supabase.auth.getSession();
+if (!session.session) {
+  setErr("Please log in to delete your account.");
+  setLoading(false);
+  return;
+}
+
   try {
     const { data, error } = await supabase.functions.invoke("account-delete", { body: {} });
     let j: any = data ?? null;
@@ -7853,21 +7979,20 @@ async function onDelete() {
 
 ### app/auth/callback/page.tsx
 ```tsx
+//app/auth/callback/page.tsx
 'use client';
 
 import { useEffect, useState } from 'react';
+import type { AuthChangeEvent, Session } from '@supabase/supabase-js';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 
-// Client-safe version of your safeNextPath()
-// Only allow same-site relative paths like "/stats".
-// Anything else falls back to "/".
 function safeNextPathClient(nextRaw: string | null | undefined, fallback = '/') {
   const v = String(nextRaw ?? '').trim();
   if (!v) return fallback;
   if (!v.startsWith('/')) return fallback;
-  if (v.startsWith('//')) return fallback; // protocol-relative
-  if (v.includes('://')) return fallback; // absolute URL
+  if (v.startsWith('//')) return fallback;
+  if (v.includes('://')) return fallback;
   return v;
 }
 
@@ -7876,42 +8001,59 @@ export default function AuthCallbackPage() {
   const [msg, setMsg] = useState('Completing sign-in…');
 
   useEffect(() => {
-    let alive = true;
+    const supabase = createClient();
+    const url = new URL(window.location.href);
 
+    const next = safeNextPathClient(url.searchParams.get('next'), '/');
+
+    // If provider sent an error back
+    const err = url.searchParams.get('error_description') ?? url.searchParams.get('error');
+    if (err) {
+      setMsg(`Sign-in failed: ${decodeURIComponent(err)}`);
+      return;
+    }
+
+    let done = false;
+
+    const finish = async () => {
+      if (done) return;
+      done = true;
+
+      try { window.dispatchEvent(new Event('expatise:session-changed')); } catch {}
+      try { window.dispatchEvent(new Event('expatise:entitlements-changed')); } catch {}
+
+      // Clean URL (optional)
+      try { window.history.replaceState({}, '', next); } catch {}
+
+      router.refresh();
+      router.replace(next);
+    };
+
+    // ✅ Wait for Supabase to finish auto-exchange (detectSessionInUrl=true does it)
+    const { data } = supabase.auth.onAuthStateChange(
+  (_evt: AuthChangeEvent, session: Session | null) => {
+    if (session) finish();
+  }
+);
+
+    // Also handle the case where the session is already ready
     (async () => {
-      try {
-        const supabase = createClient();
-
-        const url = new URL(window.location.href);
-        const code = url.searchParams.get('code');
-        const nextRaw = url.searchParams.get('next');
-        const next = safeNextPathClient(nextRaw, '/');
-
-        // In PKCE, Supabase redirects back with ?code=...
-        // Exchange it for a session on the client.
-        if (code) {
-          const { error } = await supabase.auth.exchangeCodeForSession(code);
-          if (error) {
-            if (!alive) return;
-            setMsg(`Sign-in failed: ${error.message}`);
-            return;
-          }
-        }
-
-        // Optional: clean URL params (purely cosmetic)
-        try {
-          window.history.replaceState({}, '', next);
-        } catch {}
-
-        router.replace(next);
-      } catch (e: any) {
-        if (!alive) return;
-        setMsg(`Sign-in failed: ${e?.message ?? 'Unknown error'}`);
-      }
+      const { data: s } = await supabase.auth.getSession();
+      if (s.session) finish();
     })();
 
+    // Safety timeout so you see a useful message instead of silently landing as guest
+    const t = window.setTimeout(async () => {
+      if (done) return;
+      const { data: s } = await supabase.auth.getSession();
+      if (!s.session) {
+        setMsg('Sign-in failed: no session created. (Likely PKCE storage mismatch or blocked callback.)');
+      }
+    }, 5000);
+
     return () => {
-      alive = false;
+      window.clearTimeout(t);
+      data.subscription.unsubscribe();
     };
   }, [router]);
 
@@ -9153,7 +9295,7 @@ import NativeInsets from "@/components/NativeInsets.client";
 import BrandIntroSplash from "@/components/BrandIntroSplash.client";
 import BrandSplash from "@/components/BrandSplash.client";
 import FreeUsageProgressBadge from "@/components/FreeUsageProgressBadge.client";
-
+import CapacitorOAuthBridge from "@/components/CapacitorOAuthBridge.client";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -9191,6 +9333,7 @@ export default function RootLayout({
           <OnboardingGate />
           <ThemeProvider>
             <AuthSelfHeal />
+             <CapacitorOAuthBridge />
             <UserProfileProvider>
               <SwipeBack />
               <TimeTracker />
@@ -9211,8 +9354,7 @@ export default function RootLayout({
 ```tsx
 'use client';
 
-import { useMemo, useState, type FormEvent } from 'react';
-import { useRouter } from 'next/navigation';
+import { useMemo, useRef, useState, type FormEvent } from 'react';import { useRouter } from 'next/navigation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGoogle, faApple, faWeixin } from '@fortawesome/free-brands-svg-icons';
 import { faChevronLeft, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
@@ -9240,14 +9382,16 @@ export default function CreateAccountModal({ open, onClose, onCreated }: Props) 
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [needsEmailConfirm, setNeedsEmailConfirm] = useState(false);
+  const [oauthSubmitting, setOauthSubmitting] = useState(false);
+  const oauthBusyRef = useRef(false);
 
   const canSubmit = useMemo(() => {
-    if (isSubmitting) return false;
+    if (isSubmitting || oauthSubmitting) return false;
     if (!isValidEmail(email)) return false;
     if (pw.trim().length < 8) return false;
     if (pw !== pw2) return false;
     return true;
-  }, [email, pw, pw2, isSubmitting]);
+}, [email, pw, pw2, isSubmitting, oauthSubmitting]);
 
   if (!open) return null;
 
@@ -9418,21 +9562,77 @@ export default function CreateAccountModal({ open, onClose, onCreated }: Props) 
 
         <div className={styles.snsRow}>
           <button
-            type="button"
-            className={styles.snsBtn}
-            aria-label="Sign up with Google"
-            onClick={async () => {
-              setError(null);
-              const redirectTo = `${window.location.origin}/auth/callback?next=${encodeURIComponent("/")}`;
-              const { error } = await supabase.auth.signInWithOAuth({
-                provider: 'google',
-                options: { redirectTo },
-              });
-              if (error) setError(error.message);
-            }}
-          >
-            <FontAwesomeIcon icon={faGoogle} />
-          </button>
+  type="button"
+  className={styles.snsBtn}
+  aria-label="Sign up with Google"
+  disabled={isSubmitting || oauthSubmitting}
+  aria-busy={oauthSubmitting ? "true" : "false"}
+  onClick={async () => {
+    // ✅ hard guard (prevents super-fast double taps)
+    if (oauthBusyRef.current) return;
+    oauthBusyRef.current = true;
+
+    setError(null);
+    setOauthSubmitting(true);
+
+    try {
+      // Keep behavior consistent with your login page (deep-link handler uses this)
+      try {
+        localStorage.setItem("expatise:oauth:next", "/");
+      } catch {}
+
+      const { Capacitor } = await import("@capacitor/core");
+
+      // ✅ Force account chooser every time
+      const queryParams = { prompt: "select_account" as const };
+
+      if (Capacitor.isNativePlatform()) {
+        const { Browser } = await import("@capacitor/browser");
+
+        const redirectTo = "expatise://auth/callback";
+
+        const { data, error } = await supabase.auth.signInWithOAuth({
+          provider: "google",
+          options: { redirectTo, queryParams },
+          skipBrowserRedirect: true,
+        });
+
+        if (error) {
+          setError(error.message);
+          return;
+        }
+
+       const url = data?.url;
+if (!url) {
+  setError("No OAuth URL returned.");
+  return;
+}
+
+console.log("[OAuth] open url:", url); // ✅ add this line
+
+await Browser.open({ url });
+return;
+      }
+
+      // ✅ Web (SSR callback)
+      const redirectTo = `${window.location.origin}/auth/callback?next=${encodeURIComponent("/")}`;
+
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: { redirectTo, queryParams },
+      });
+
+      if (error) setError(error.message);
+    } catch (err: any) {
+      setError(err?.message ?? "Google sign-up failed. Please try again.");
+    } finally {
+      setOauthSubmitting(false);
+      oauthBusyRef.current = false;
+    }
+  }}
+>
+  <FontAwesomeIcon icon={faGoogle} />
+</button>
 
           <button type="button" className={styles.snsBtn} aria-label="Sign up with Apple">
             <FontAwesomeIcon icon={faApple} />
@@ -9981,15 +10181,18 @@ function Inner() {
   const [error, setError] = useState<string | null>(null); // Friendly error state
   const [isSubmitting, setIsSubmitting] = useState(false);// Loading state
   const [emailTouched, setEmailTouched] = useState(false);
+  const [oauthSubmitting, setOauthSubmitting] = useState(false);
+  const authBusyRef = useRef(false); // instant mutex (prevents micro double-tap window)
+
 
 const supabase = useMemo(() => createClient(), []);
 
   const emailNorm = normalizeEmail(email);
   const emailOK = isValidEmail(emailNorm);
 
-  const canSubmit = useMemo(() => {
-  return emailOK && password.trim().length > 0 && !isSubmitting;
-}, [emailOK, password, isSubmitting]);
+const canSubmit = useMemo(() => {
+  return emailOK && password.trim().length > 0 && !isSubmitting && !oauthSubmitting;
+}, [emailOK, password, isSubmitting, oauthSubmitting]);
 
 const toastTimerRef = useRef<number | null>(null);
 
@@ -10173,9 +10376,10 @@ router.replace(nextParam);
               Create a new account
               </button>
 
-            <button
+<button
   type="button"
   className={styles.linkBtn}
+  disabled={oauthSubmitting || isSubmitting}
   onClick={async () => {
     setError(null);
     const { error } = await supabase.auth.signInAnonymously();
@@ -10184,9 +10388,9 @@ router.replace(nextParam);
       return;
     }
     try { window.dispatchEvent(new Event("expatise:session-changed")); } catch {}
-try { window.dispatchEvent(new Event("expatise:entitlements-changed")); } catch {}
-router.refresh();
-router.replace(nextParam);
+    try { window.dispatchEvent(new Event("expatise:entitlements-changed")); } catch {}
+    router.refresh();
+    router.replace(nextParam);
   }}
 >
   Continue as guest
@@ -10209,18 +10413,80 @@ router.replace(nextParam);
 
 
 
-    <button
+<button
   type="button"
   className={styles.snsBtnSmall}
   aria-label="Continue with Google"
+  disabled={oauthSubmitting || isSubmitting}
+  aria-busy={oauthSubmitting ? "true" : "false"}
   onClick={async () => {
+    // ✅ hard guard: prevents micro double-tap before state updates
+    if (authBusyRef.current) return;
+    authBusyRef.current = true;
+
+    // ✅ soft guard: prevents repeated taps once state applies
+    if (oauthSubmitting || isSubmitting) {
+      authBusyRef.current = false;
+      return;
+    }
+
+    setOauthSubmitting(true);
     setError(null);
-    const redirectTo = `${window.location.origin}/auth/callback?next=${encodeURIComponent(nextParam)}`;
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: { redirectTo },
-    });
-    if (error) setError(error.message);
+
+    try {
+      // Store "next" so the deep-link handler can send the user back correctly
+      try {
+        localStorage.setItem("expatise:oauth:next", nextParam);
+      } catch {}
+
+      // Detect native (Capacitor) at runtime
+      const { Capacitor } = await import("@capacitor/core");
+
+      if (Capacitor.isNativePlatform()) {
+        const { Browser } = await import("@capacitor/browser");
+
+        const redirectTo = "expatise://auth/callback";
+
+        const { data, error } = await supabase.auth.signInWithOAuth({
+          provider: "google",
+          options: { redirectTo, queryParams: { prompt: "select_account" } },
+          skipBrowserRedirect: true,
+        });
+
+        if (error) {
+          setError(error.message);
+          return;
+        }
+
+        const url = data?.url;
+if (!url) {
+  setError("No OAuth URL returned.");
+  return;
+}
+
+console.log("[OAuth] open url:", url); // ✅ add this line
+
+await Browser.open({ url });
+return;
+      }
+
+      // ✅ Web: SSR callback flow
+      const redirectTo = `${window.location.origin}/auth/callback?next=${encodeURIComponent(
+        nextParam
+      )}`;
+
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: { redirectTo, queryParams: { prompt: "select_account" } },
+      });
+
+      if (error) setError(error.message);
+    } catch (err: any) {
+      setError(err?.message ?? "Google sign-in failed. Please try again.");
+    } finally {
+      setOauthSubmitting(false);
+      authBusyRef.current = false;
+    }
   }}
 >
   <FontAwesomeIcon icon={faGoogle} />
@@ -11818,48 +12084,162 @@ const modalTimeLabel = formatTimeLabel(modalSourceTime);
 
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import styles from "./premium.module.css";
 import { PLAN_LIST, type PlanId } from "../../lib/plans";
 import BackButton from "@/components/BackButton";
+import { Capacitor } from "@capacitor/core";
+import {
+  RevenueCatUI,
+  PAYWALL_RESULT,
+} from "@revenuecat/purchases-capacitor-ui";
+import {
+  Purchases,
+  type PurchasesPackage,
+} from "@revenuecat/purchases-capacitor";
+import { ensureRevenueCat } from "@/lib/billing/revenuecat";
+import { useEntitlements } from "@/components/EntitlementsProvider.client";
+import { useSearchParams } from "next/navigation";
+import Link from "next/link";
+import GuestLoginModal from "@/components/GuestLoginModal";
+
+
 
 const VALID_PROMO_CODES = ["EXP30"];
 
+const RC_ENTITLEMENT_ID =
+  process.env.NEXT_PUBLIC_REVENUECAT_ENTITLEMENT_ID ?? "Premium";
+
+// Optional fallback (not used in CTA below, but safe to keep)
+async function buyWithRevenueCat(): Promise<boolean> {
+  const { result } = await RevenueCatUI.presentPaywallIfNeeded({
+    requiredEntitlementIdentifier: RC_ENTITLEMENT_ID,
+  });
+
+  switch (result) {
+    case PAYWALL_RESULT.PURCHASED:
+    case PAYWALL_RESULT.RESTORED:
+      return true;
+    default:
+      return false;
+  }
+}
+
+async function purchaseSelectedPlan(plan: PlanId, userKey?: string): Promise<boolean> {
+  await ensureRevenueCat(userKey);
+  const offerings = await Purchases.getOfferings();
+  const o = offerings.current;
+  if (!o) throw new Error("No current offering configured in RevenueCat.");
+
+  let pkg: PurchasesPackage | null = null;
+
+  // Map PlanId -> Offering package shortcuts
+  if (plan === "monthly") pkg = o.monthly;
+  else if (plan === "three_month") pkg = o.threeMonth;
+  else if (plan === "six_month") pkg = o.sixMonth;
+  else if (plan === "lifetime") pkg = o.lifetime;
+
+  // Fallback: RevenueCat package identifiers are often like "$rc_three_month"
+  if (!pkg) {
+    pkg =
+      o.availablePackages.find((p) => p.identifier === `$rc_${plan}`) ??
+      o.availablePackages.find((p) => p.identifier === plan) ??
+      null;
+  }
+
+  if (!pkg) throw new Error(`No package found for plan: ${plan}`);
+
+  const { customerInfo } = await Purchases.purchasePackage({ aPackage: pkg });
+  return customerInfo.entitlements.active?.[RC_ENTITLEMENT_ID]?.isActive === true;
+}
+
 export default function PremiumPage() {
-    const router = useRouter();
-    const [selected, setSelected] = useState<PlanId | null>(null);
-    const [promo, setPromo] = useState("");
-    const [showPromo, setShowPromo] = useState(false);
-    const [promoApplied, setPromoApplied] = useState(false);
-    const [promoError, setPromoError] = useState("");
-    const [planError, setPlanError] = useState("");
+  return (
+    <Suspense fallback={null}>
+      <PremiumInner />
+    </Suspense>
+  );
+}
 
-    const handleApplyCode = () => {
-      const code = promo.trim().toUpperCase();
-      const ok = VALID_PROMO_CODES.includes(code);
-      if (!code) {
-        setPromoApplied(false);
-        setPromoError("Please enter a promo code.");
-        return;
-      }
-      if (!ok) {
-        setPromoApplied(false);
-        setPromoError("Invalid promo code.");
-        return;
-      }
-      setPromoApplied(true);
-      setPromoError("");
-      setShowPromo(false);
-    };
+function PremiumInner() {
+  const router = useRouter();
 
+  const [selected, setSelected] = useState<PlanId | null>(null);
+
+  // Promo UI (you can hide later if you decide)
+  const [promo, setPromo] = useState("");
+  const [showPromo, setShowPromo] = useState(false);
+  const [promoApplied, setPromoApplied] = useState(false);
+  const [promoError, setPromoError] = useState("");
+  const [planError, setPlanError] = useState("");
+
+  const { refresh, grantPremium, userKey } = useEntitlements();
+
+  // ✅ Hooks MUST be inside the component
+  const [priceByPlanId, setPriceByPlanId] = useState<
+    Partial<Record<PlanId, string>>
+  >({});
+
+  const [showGuestModal, setShowGuestModal] = useState(false);
+  const [pendingPlan, setPendingPlan] = useState<PlanId | null>(null);
+
+  const searchParams = useSearchParams();
+
+useEffect(() => {
+  const p = searchParams.get("plan") as PlanId | null;
+  if (p && (p === "monthly" || p === "three_month" || p === "six_month" || p === "lifetime")) {
+    setSelected(p);
+  }
+}, [searchParams]);
+
+  useEffect(() => {
+  if (!Capacitor.isNativePlatform()) return;
+
+  (async () => {
+    try {
+      await ensureRevenueCat(); // ✅ add this line
+
+      const offerings = await Purchases.getOfferings();
+      const o = offerings.current;
+      if (!o) return;
+
+      setPriceByPlanId({
+        monthly: o.monthly?.product.priceString,
+        three_month: o.threeMonth?.product.priceString,
+        six_month: o.sixMonth?.product.priceString,
+        lifetime: o.lifetime?.product.priceString,
+      });
+    } catch {
+      // fallback prices will display
+    }
+  })();
+}, []);
+
+  const handleApplyCode = () => {
+    const code = promo.trim().toUpperCase();
+    const ok = VALID_PROMO_CODES.includes(code);
+
+    if (!code) {
+      setPromoApplied(false);
+      setPromoError("Please enter a promo code.");
+      return;
+    }
+    if (!ok) {
+      setPromoApplied(false);
+      setPromoError("Invalid promo code.");
+      return;
+    }
+
+    setPromoApplied(true);
+    setPromoError("");
+    setShowPromo(false);
+  };
 
   return (
     <main className={styles.page}>
       <BackButton />
+
       <div className={styles.frame}>
-        {/* Top safe area + back */}
-
-
         {/* Crown */}
         <div className={styles.crownWrap}>
           <Image
@@ -11872,13 +12252,13 @@ export default function PremiumPage() {
           />
         </div>
 
-        {/* Title block (290x62) */}
+        {/* Title block */}
         <div className={styles.titleBlock}>
           <h1 className={styles.title}>Get premium today</h1>
           <p className={styles.subtitle}>Remove ads and unlock all features:</p>
         </div>
 
-        {/* Features grid (335.04 x 172) */}
+        {/* Features grid */}
         <section className={styles.featuresBox} aria-label="Premium features">
           <div className={styles.featureGrid}>
             <div className={`${styles.featureCell} ${styles.cellTL}`}>
@@ -11919,10 +12299,9 @@ export default function PremiumPage() {
                 />
                 <span className={styles.featureTitle}>Mistakes Hub</span>
               </div>
-              <p className={styles.featureDesc}>
-                Global + My Mistakes review
-              </p>
+              <p className={styles.featureDesc}>Global + My Mistakes review</p>
             </div>
+
             <div className={`${styles.featureCell} ${styles.cellBR}`}>
               <div className={styles.featureHead}>
                 <Image
@@ -11933,40 +12312,37 @@ export default function PremiumPage() {
                 />
                 <span className={styles.featureTitle}>Question Bank</span>
               </div>
-              <p className={styles.featureDesc}>
-                All questions & Bookmarks
-              </p>
+              <p className={styles.featureDesc}>All questions & Bookmarks</p>
             </div>
           </div>
         </section>
 
-        {/* Plan pills (328 x 61, radius 20) */}
+        {/* Plan pills */}
         <section className={styles.planList} aria-label="Choose a plan">
           {PLAN_LIST.map((p) => {
             const active = selected === p.id;
-            
+            const displayPrice = priceByPlanId[p.id] || p.price;
+
             return (
               <button
                 key={p.id}
                 type="button"
-                className={`${styles.planPill} ${active ? styles.planPillActive : ""}`}
+                className={`${styles.planPill} ${
+                  active ? styles.planPillActive : ""
+                }`}
                 onClick={() => {
-  setPlanError(""); // optional: clear error when they interact
-  setSelected((prev) => (prev === p.id ? null : p.id));
-}}
-
+                  setPlanError("");
+                  setSelected((prev) => (prev === p.id ? null : p.id));
+                }}
               >
                 <div className={styles.planLeft}>
                   <div className={styles.planTitle}>{p.pillTitle}</div>
-                
-               {/* 3) Subtext disappears after promo applied */}
-                  {!promoApplied && <div className={styles.planSub}>{p.sub}</div>}
+                  
                 </div>
 
-               <div className={styles.planRight}>
-                  {/* 4) Old price left w/ diagonal slash + promo price in original spot */}
+                <div className={styles.planRight}>
                   {!promoApplied ? (
-                    <div className={styles.planPrice}>{p.price}</div>
+                    <div className={styles.planPrice}>{displayPrice}</div>
                   ) : (
                     <div className={styles.priceCombo}>
                       <span className={styles.oldPrice}>{p.price}</span>
@@ -11974,80 +12350,117 @@ export default function PremiumPage() {
                     </div>
                   )}
 
-                  <span className={`${styles.radio} ${active ? styles.radioOn : ""}`} />
+                  <span
+                    className={`${styles.radio} ${active ? styles.radioOn : ""}`}
+                  />
                 </div>
               </button>
             );
           })}
         </section>
 
-{/* Got a Promocode row (always visible) */}
-<div className={styles.gotPromoRow}>
-  <span className={styles.gotPromoText}>Got a Promocode?</span>
+        {/* Got a Promocode row */}
+        <div className={styles.gotPromoRow}>
+          <span className={styles.gotPromoText}>Got a Promocode?</span>
 
-  <button
-    type="button"
-    className={styles.applyHereBtn}
-    onClick={() => setShowPromo((v) => !v)}
-    aria-expanded={showPromo}
-  >
-    Apply Here
-  </button>
-</div>
+          <button
+            type="button"
+            className={styles.applyHereBtn}
+            onClick={() => setShowPromo((v) => !v)}
+            aria-expanded={showPromo}
+          >
+            Apply Here
+          </button>
+        </div>
 
-{/* Promo area */}
-{showPromo && (
-  <>
-    <p className={styles.note}>
-      Leave a 5 star review on the app store, and send us the screenshot via our WeChat. We
-      will give you a <strong>30%</strong> discount code for ALL plans!
-    </p>
+        {/* Promo area */}
+        {showPromo && (
+          <>
+            <p className={styles.note}>
+              Enjoying the app? A quick review helps a lot and goes a long way for
+              me. That&apos;s right <strong>me</strong>. I used to be on the same
+              side of that screen as <strong>you</strong>. I got fed up with the
+              options I had and learned how to make this app just for you. Enjoy!
+            </p>
 
-    <div className={styles.promoRow}>
-      <input
-        className={styles.promoInput}
-        value={promo}
-        onChange={(e) => {
-  setPromo(e.target.value);
-  if (promoError) setPromoError("");
-}}
+            <div className={styles.promoRow}>
+              <input
+                className={styles.promoInput}
+                value={promo}
+                onChange={(e) => {
+                  setPromo(e.target.value);
+                  if (promoError) setPromoError("");
+                }}
+                placeholder="Enter Promo Code"
+              />
 
-        placeholder="Enter Promo Code"
-      />
-       {/* 1) Apply Code button is an event listener */}
-      <button type="button" className={styles.promoApply} onClick={handleApplyCode}>
-        Apply Code
-      </button>
-    </div>
-    {/* 2) Error message if invalid code */}
-    {promoError && <div className={styles.promoError}>{promoError}</div>}
+              <button
+                type="button"
+                className={styles.promoApply}
+                onClick={handleApplyCode}
+              >
+                Apply Code
+              </button>
+            </div>
 
-  </>
-)}
-        {/* CTA (327 x 52) */}
-<button
-  type="button"
-  className={styles.cta}
-  disabled={!selected}
-  onClick={() => {
-    if (!selected) {
-      setPlanError("Please choose a plan.");
-      return;
+            {promoError && <div className={styles.promoError}>{promoError}</div>}
+          </>
+        )}
+
+        {/* CTA */}
+        <button
+          type="button"
+          className={styles.cta}
+          disabled={!selected}
+          onClick={async () => {
+  setPlanError("");
+
+  if (!selected) {
+    setPlanError("Please select a plan.");
+    return;
+  }
+
+  const plan = selected;
+
+  // ✅ Guest: show modal (NO redirect)
+  if (userKey === "guest") {
+    setPendingPlan(plan);
+    setShowGuestModal(true);
+    return;
+  }
+
+  if (Capacitor.isNativePlatform()) {
+    const ok = await purchaseSelectedPlan(plan, userKey);
+    if (ok) {
+      grantPremium(plan === "lifetime" ? "lifetime" : "subscription");
+      refresh();
+
+      const next = new URLSearchParams(window.location.search).get("next");
+      router.replace(next ? decodeURIComponent(next) : "/");
     }
-    router.push(`/checkout?plan=${selected}${promoApplied ? "&promo=1" : ""}`);
-  }}
->
-  <span className={styles.ctaText}>Get Premium Now</span>
-  <span className={styles.ctaChevron}>›</span>
-</button>
+    return;
+  }
 
-{planError && <div className={styles.planError}>{planError}</div>}
+  // Web fallback
+  router.push(
+    `/checkout?plan=${encodeURIComponent(plan)}${promoApplied ? "&promo=1" : ""}`
+  );
+}}
+        >
+          <span className={styles.ctaText}>Get Premium Now</span>
+          <span className={styles.ctaChevron}>›</span>
+        </button>
 
+        {planError && <div className={styles.planError}>{planError}</div>}
       </div>
+      <GuestLoginModal
+  open={showGuestModal}
+  onClose={() => setShowGuestModal(false)}
+  nextPath={`/premium?plan=${pendingPlan ?? "lifetime"}`}
+/>
     </main>
   );
 }
-
 ```
 
 ### app/premium/premium.module.css
@@ -12251,21 +12664,24 @@ export default function PremiumPage() {
 
 .planLeft {
   display: flex;
-  flex-direction: column;
-  gap: 2px;
+  align-items: center;   /* vertically align title with price */
   text-align: left;
+  height: 100%;
 }
 
 .planTitle {
-  font-size: 22px;
+  font-size: 28px;       /* swapped (was 22) */
   font-weight: 700;
   color: #4b4b4b;
-  line-height: 1.05;
+  line-height: 1;        /* keeps it nicely aligned with price */
+  letter-spacing: -0.5px;
 }
 
-.planSub {
-  font-size: 14px;
-  color: #9aa0a6;
+.planPrice {
+  font-size: 22px;       /* swapped (was 34) */
+  font-weight: 700;
+  color: #4b4b4b;
+  letter-spacing: 0;
 }
 
 .planRight {
@@ -12274,12 +12690,7 @@ export default function PremiumPage() {
   gap: 14px;
 }
 
-.planPrice {
-  font-size: 34px;
-  font-weight: 700;
-  color: #4b4b4b;
-  letter-spacing: -0.5px;
-}
+
 
 .radio {
   width: 22px;
@@ -12491,34 +12902,261 @@ export default function PremiumPage() {
 ### app/privacy/page.tsx
 ```tsx
 // app/privacy/page.tsx
+import Link from "next/link";
 
-export default function PrivacyPage() {
+export const metadata = {
+  title: "Privacy Policy · Expatise",
+};
+
+// ✅ Edit these before publishing:
+const APP_NAME = "Expatise";
+const DEVELOPER_ENTITY = "[Maverix n Matrix]"; // must match Play listing name
+const CONTACT_EMAIL = "maverixnmatrix@gmail.com";
+
+// Outside-the-app deletion page (Play wants this for apps with accounts)
+const ACCOUNT_DELETION_URL = "/account-deletion";
+
+const EFFECTIVE_DATE = "2026-03-01";
+const LAST_UPDATED = "2026-03-01";
+
+export default function PrivacyPolicyPage() {
   return (
-    <main style={{ padding: 24, maxWidth: 900, margin: "0 auto" }}>
-      <h1 style={{ fontSize: 28, fontWeight: 700, marginBottom: 12 }}>
+    <main
+      style={{
+        minHeight: "100vh",
+        padding: "24px 16px 60px",
+        maxWidth: 920,
+        margin: "0 auto",
+        fontFamily:
+          "system-ui, -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', sans-serif",
+        lineHeight: 1.6,
+      }}
+    >
+      <header style={{ marginBottom: 18 }}>
+        <Link href="/profile" style={{ textDecoration: "none" }}>
+          ← Back to Profile
+        </Link>
+      </header>
+
+      <h1 style={{ fontSize: 30, fontWeight: 900, marginBottom: 6 }}>
         Privacy Policy
       </h1>
 
-      <p style={{ marginBottom: 12 }}>
-        This Privacy Policy explains how Expatise collects, uses, and protects
-        your information.
+      <div style={{ opacity: 0.8, fontSize: 14 }}>
+        <div>Effective date: {EFFECTIVE_DATE}</div>
+        <div>Last updated: {LAST_UPDATED}</div>
+      </div>
+
+      <p style={{ marginTop: 16 }}>
+        This Privacy Policy explains how <b>{APP_NAME}</b> (the “App”), operated
+        by <b>{DEVELOPER_ENTITY}</b> (“we”, “us”), collects, uses, and shares
+        information when you use the App.
       </p>
 
-      <h2 style={{ fontSize: 18, fontWeight: 600, marginTop: 24 }}>
-        Information we collect
+      <h2 style={{ marginTop: 28, fontSize: 18, fontWeight: 800 }}>
+        1) Information we collect
       </h2>
-      <ul style={{ paddingLeft: 18, marginTop: 8 }}>
-        <li>Account information you provide (e.g., email if you sign up).</li>
-        <li>Basic app usage data to operate and improve the service.</li>
+
+      <ul style={{ paddingLeft: 18 }}>
+        <li>
+          <b>Account information</b>: email address and authentication details
+          (for example, if you sign in using email or a third-party sign-in
+          provider).
+        </li>
+        <li>
+          <b>Profile information you provide</b>: optional display name and
+          avatar image (if you choose to set them).
+        </li>
+        <li>
+          <b>Study &amp; progress data</b>: your practice attempts, test results,
+          timestamps, and study time/activity (used for progress tracking and
+          analytics inside the app).
+        </li>
+        <li>
+          <b>AI coaching inputs/outputs (if you use the Coach feature)</b>: we
+          process study metrics you submit to generate a coaching report. The
+          coaching output is returned to you and may be cached on your device for
+          convenience.
+        </li>
+        <li>
+          <b>Subscriptions &amp; purchases (if you purchase Premium)</b>: purchase
+          history / entitlement status needed to unlock premium features.
+        </li>
+        <li>
+          <b>Device / usage data</b>: basic technical logs and request metadata
+          (e.g., IP address, browser type, timestamps) used for security,
+          reliability, and debugging.
+        </li>
+        <li>
+          <b>Cookies, local storage, and offline caches</b>: we use cookies and
+          local storage to keep you signed in, remember settings (like theme),
+          store study state, and support offline-friendly functionality.
+        </li>
       </ul>
 
-      <h2 style={{ fontSize: 18, fontWeight: 600, marginTop: 24 }}>
-        Contact
+      <h2 style={{ marginTop: 28, fontSize: 18, fontWeight: 800 }}>
+        2) How we use information
       </h2>
-      <p style={{ marginTop: 8 }}>
-        If you have questions, contact us at:{" "}
-        <a href="mailto:support@expatise.app">support@expatise.app</a>
+
+      <ul style={{ paddingLeft: 18 }}>
+        <li>To create and manage accounts and authenticate users.</li>
+        <li>To save and sync study progress (where account sync is enabled).</li>
+        <li>To provide practice tests, bookmarks, mistake review, and analytics.</li>
+        <li>To provide AI coaching reports when you request them (Coach feature).</li>
+        <li>To operate subscriptions/premium access if you purchase Premium.</li>
+        <li>To maintain security, prevent abuse, and debug issues.</li>
+        <li>To improve performance and user experience.</li>
+      </ul>
+
+      <h2 style={{ marginTop: 28, fontSize: 18, fontWeight: 800 }}>
+        3) How we share information
+      </h2>
+
+      <p>
+        We do not sell your personal information. We share information only as
+        needed to operate the App, including with these service providers:
       </p>
+
+      <ul style={{ paddingLeft: 18 }}>
+        <li>
+          <b>Supabase</b> — authentication and database storage (account and
+          progress data).
+        </li>
+        <li>
+          <b>OpenAI</b> — used only when you use AI coaching features to generate
+          coaching output from the metrics you submit.
+        </li>
+        <li>
+          <b>Hosting / infrastructure providers (e.g., Vercel)</b> — to host,
+          deliver, and secure the App.
+        </li>
+        <li>
+          <b>Google Play</b> — if you purchase subscriptions/products, Google Play
+          processes the payment.
+        </li>
+        <li>
+          <b>RevenueCat</b> — if enabled, used to manage subscriptions and verify
+          entitlements. (If you use RevenueCat, Google expects you to disclose
+          “Purchase history” in the Data Safety form.)
+        </li>
+      </ul>
+
+      <p>
+        We may also share information if required by law, to protect rights and
+        safety, or in connection with a business transaction (e.g., merger or
+        acquisition).
+      </p>
+
+      <h2 style={{ marginTop: 28, fontSize: 18, fontWeight: 800 }}>
+        4) Data retention
+      </h2>
+
+      <p>
+        We retain account and study/progress data for as long as your account is
+        active or as needed to provide the App. We may retain certain data longer
+        where required for legal, security, or operational purposes.
+      </p>
+
+      <h2 style={{ marginTop: 28, fontSize: 18, fontWeight: 800 }}>
+        5) Security
+      </h2>
+
+      <p>
+        We use reasonable safeguards designed to protect information. Data sent
+        between your device and our services is typically encrypted in transit
+        using HTTPS/TLS. (No system is 100% secure.)
+      </p>
+
+      <h2 style={{ marginTop: 28, fontSize: 18, fontWeight: 800 }}>
+        6) Account deletion &amp; your choices
+      </h2>
+
+      <ul style={{ paddingLeft: 18 }}>
+        <li>
+          <b>In-app deletion</b>: You can initiate account deletion inside the
+          App (Profile → Delete Account).
+        </li>
+        <li>
+          <b>Outside-the-app deletion</b>: You can request account deletion using
+          this page:{" "}
+          <Link href={ACCOUNT_DELETION_URL}>{ACCOUNT_DELETION_URL}</Link>
+        </li>
+        <li>
+          You can contact us at <b>{CONTACT_EMAIL}</b> to request access or
+          deletion assistance.
+        </li>
+      </ul>
+
+      <p style={{ marginTop: 10 }}>
+        Google Play requires apps that support account creation to provide both
+        an in-app deletion path and an outside-the-app deletion link.
+      </p>
+
+      <h2 style={{ marginTop: 28, fontSize: 18, fontWeight: 800 }}>
+        7) Children’s privacy
+      </h2>
+
+      <p>
+        The App is not intended for children under 13, and we do not knowingly
+        collect personal information from children under 13.
+      </p>
+
+      <h2 style={{ marginTop: 28, fontSize: 18, fontWeight: 800 }}>
+        8) International transfers
+      </h2>
+
+      <p>
+        Depending on where our service providers operate, your information may be
+        processed in countries other than where you live.
+      </p>
+
+      <h2 style={{ marginTop: 28, fontSize: 18, fontWeight: 800 }}>
+        9) Changes to this policy
+      </h2>
+
+      <p>
+        We may update this policy from time to time. We will post updates on this
+        page and revise the “Last updated” date above.
+      </p>
+
+      <h2 style={{ marginTop: 28, fontSize: 18, fontWeight: 800 }}>
+        10) Contact
+      </h2>
+
+      <p>
+        If you have questions, contact us at: <b>{CONTACT_EMAIL}</b>
+      </p>
+
+      <hr style={{ margin: "28px 0" }} />
+
+      <section style={{ fontSize: 13, opacity: 0.75, lineHeight: 1.55 }}>
+  <p style={{ marginTop: 0 }}>
+    <b>Legal notes.</b> This Privacy Policy is provided for general
+    informational purposes and does not constitute legal advice. Your use of
+    the App is also subject to any applicable laws and our Terms (if any).
+  </p>
+
+  <p style={{ marginTop: 10 }}>
+    This policy applies only to <b>{APP_NAME}</b>. Third-party services we use
+    (such as authentication, hosting, payments, or AI providers) may process
+    data under their own privacy policies. We encourage you to review those
+    policies where relevant.
+  </p>
+
+  <p style={{ marginTop: 10 }}>
+    <b>Severability.</b> If any provision of this policy is found unenforceable,
+    the remaining provisions will remain in effect.
+  </p>
+
+  <p style={{ marginTop: 10 }}>
+    <b>Language.</b> If we provide translations, the English version controls in
+    case of any conflict or inconsistency.
+  </p>
+
+  <p style={{ marginTop: 10 }}>
+    Questions? Contact us at <b>{CONTACT_EMAIL}</b>.
+  </p>
+</section>
     </main>
   );
 }
@@ -12545,6 +13183,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGoogle, faApple, faWeixin} from '@fortawesome/free-brands-svg-icons';
 import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
 import LogoutButton from '@/components/LogoutButton.client';
+import GuestLoginModal from '@/components/GuestLoginModal';
+import { Capacitor } from "@capacitor/core";
+import { Purchases } from "@revenuecat/purchases-capacitor";
+import { ensureRevenueCat } from "@/lib/billing/revenuecat";
+import { useEntitlements } from "@/components/EntitlementsProvider.client";
+
 
 
 function Inner() {
@@ -12556,11 +13200,14 @@ function Inner() {
   const { theme, toggleTheme } = useTheme();
 
   const { authed, method, loading: authLoading, refresh, email: sessionEmail, provider } = useAuthStatus();
+  const authEmail = sessionEmail ?? email ?? null;
+  const showProviderEmail = authed && method !== "email" && !!authEmail; 
   const [showGuestModal, setShowGuestModal] = useState(false);
   const [saving, setSaving] = useState(false);
   const [saveMsg, setSaveMsg] = useState<string | null>(null);
 
   const canManageCredentials = authed && (method === "email");
+  const RC_ENTITLEMENT_ID = process.env.NEXT_PUBLIC_REVENUECAT_ENTITLEMENT_ID ?? "Premium";
 
 
 const signInDisplay = (() => {
@@ -12681,6 +13328,7 @@ const handleSave = async (e: React.SyntheticEvent) => {
 };
 
 
+
 const goComingSoon = (feature: string) => {
   const qs = sp.toString();
   const returnTo = `${pathname}${qs ? `?${qs}` : ''}`;
@@ -12690,7 +13338,61 @@ const goComingSoon = (feature: string) => {
   );
 };
 
+const { userKey: entUserKey, refresh: refreshEnt, grantPremium } = useEntitlements();
 
+const [restoring, setRestoring] = useState(false);
+const [restoreMsg, setRestoreMsg] = useState<string | null>(null);
+
+const handleRestorePurchases = async (e: React.SyntheticEvent) => {
+  // Require login (same UX as Save)
+  if (!authed) {
+    requireLogin(e);
+    return;
+  }
+
+  // Restore only makes sense in native store builds
+  if (!Capacitor.isNativePlatform()) {
+    setRestoreMsg("Restore purchases is available in the mobile app.");
+    setTimeout(() => setRestoreMsg(null), 900);
+    return;
+  }
+
+  setRestoring(true);
+  setRestoreMsg(null);
+
+  try {
+    // Ensure RC is configured + tied to the logged-in user
+    await ensureRevenueCat(entUserKey);
+
+    const { customerInfo } = await Purchases.restorePurchases();
+    const active = customerInfo?.entitlements?.active?.[RC_ENTITLEMENT_ID];
+
+    if (!active) {
+      setRestoreMsg("No purchases found to restore.");
+      return;
+    }
+
+    // Pick a reasonable local source for instant UI
+    const expMs =
+      typeof active.expirationDateMillis === "number"
+        ? active.expirationDateMillis
+        : undefined;
+
+    const periodType = String(active.periodType ?? "").toUpperCase();
+    const source =
+      expMs == null ? "lifetime" : periodType === "TRIAL" ? "trial" : "subscription";
+
+    grantPremium(source as any, expMs);
+    refreshEnt();
+
+    setRestoreMsg("Purchases restored.");
+  } catch (err: any) {
+    setRestoreMsg(err?.message ?? "Restore failed. Please try again.");
+  } finally {
+    setRestoring(false);
+    setTimeout(() => setRestoreMsg(null), 1200);
+  }
+};
 
   return (
     <main className={styles.page}>
@@ -12786,7 +13488,17 @@ const goComingSoon = (feature: string) => {
 ) : null}
 
 
-<span className={styles.emailDisplayText}>{signInDisplay.label}</span>
+<span className={styles.emailDisplayText}>
+  {showProviderEmail ? (
+    <>
+      {signInDisplay.label} @
+      <br />
+      <span className={styles.emailSubText}>{authEmail}</span>
+    </>
+  ) : (
+    signInDisplay.label
+  )}
+</span>
 
   </div>
 </div>
@@ -12867,25 +13579,61 @@ const goComingSoon = (feature: string) => {
   </button>
 )}
 
+<button
+  type="button"
+  className={styles.settingsRow}
+  onClick={(e) => handleRestorePurchases(e)}
+  disabled={restoring}
+>
+  <div className={styles.settingsLeft}>
+    <span className={styles.settingsIcon} aria-hidden="true">↻</span>
+    <span className={styles.settingsLabel}>
+      {restoring ? "Restoring..." : "Restore Purchases"}
+    </span>
+  </div>
+  <span className={styles.chevron}>›</span>
+</button>
 
        <button
   type="button"
   className={styles.settingsRow}
-  onClick={() => router.push("/account/delete-account")}
+  onClick={() => router.push("/privacy")}
 >
-          <div className={styles.settingsLeft}>
-            <span className={styles.settingsIcon}>
-              <Image 
-                src="/images/profile/privacypolicy-icon.png"
-                alt="Privacy Policy Icon"
-                width={24}
-                height={24}
-              />
-            </span>
-            <span className={styles.settingsLabel}>Delete Account</span>
-          </div>
-          <span className={styles.chevron}>›</span>
-        </button>
+  <div className={styles.settingsLeft}>
+    <span className={styles.settingsIcon}>
+      <Image
+        src="/images/profile/privacypolicy-icon.png"
+        alt="Privacy Policy"
+        width={24}
+        height={24}
+      />
+    </span>
+    <span className={styles.settingsLabel}>Privacy Policy</span>
+  </div>
+  <span className={styles.chevron}>›</span>
+</button>
+
+<button
+  type="button"
+  className={styles.settingsRow}
+  onClick={(e) => {
+    if (!requireLogin(e)) return;
+    router.push("/account/delete-account");
+  }}
+>
+  <div className={styles.settingsLeft}>
+    <span className={styles.settingsIcon}>
+      <Image
+        src="/images/profile/privacypolicy-icon.png"
+        alt="Delete Account"
+        width={24}
+        height={24}
+      />
+    </span>
+    <span className={styles.settingsLabel}>Delete Account</span>
+  </div>
+  <span className={styles.chevron}>›</span>
+</button>
 
         <button
   type="button"
@@ -12965,27 +13713,27 @@ const goComingSoon = (feature: string) => {
   </div>
 ) : null}
 
-{showGuestModal ? (
-  <div className={styles.guestOverlay} onClick={() => setShowGuestModal(false)}>
-    <div className={styles.guestModal} onClick={(e) => e.stopPropagation()}>
-      <div className={styles.guestTitle}>Log in to save your changes.</div>
-      <div className={styles.guestText}>
-        Some features may be disabled. You can continue as a guest, but changes won’t be saved.
-      </div>
-      <div className={styles.guestButtons}>
-        <Link className={styles.guestPrimary} href="/login?next=/profile">
-          Log in
-        </Link>
-        <button
-          className={styles.guestSecondary}
-          onClick={() => setShowGuestModal(false)}
-        >
-          Continue as guest
-        </button>
-      </div>
+{restoreMsg ? (
+  <div className={styles.toastOverlay} aria-live="polite">
+    <div className={styles.toastCard}>
+      <Image
+        src="/images/profile/greencheck-icon.png"
+        alt="Info"
+        width={16}
+        height={16}
+        className={styles.toastIcon}
+        priority
+      />
+      <span className={styles.toastText}>{restoreMsg}</span>
     </div>
   </div>
 ) : null}
+
+<GuestLoginModal
+  open={showGuestModal}
+  onClose={() => setShowGuestModal(false)}
+  nextPath="/profile"
+/>
 
       </div>
 
@@ -13505,76 +14253,6 @@ export default function ProfilePage() {
   font: inherit;
 }
 
-/* Modal overlay */
-.guestOverlay {
-  position: fixed;
-  inset: 0;
-  backdrop-filter: blur(8px);
-  background: rgba(0, 0, 0, 0.35);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-  z-index: 9999;
-}
-
-.guestModal {
-  width: 100%;
-  max-width: 420px;
-  border-radius: 18px;
-  padding: 18px 16px;
-  background: var(--color-profile-card-bg);
-  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
-}
-
-.guestTitle {
-  font-size: 18px;
-  font-weight: 800;
-  margin-bottom: 8px;
-}
-
-.guestText {
-  font-size: 14px;
-  opacity: 0.9;
-  line-height: 1.4;
-}
-
-.guestButtons {
-  display: flex;
-  gap: 10px;
-  margin-top: 14px;
-}
-
-.guestPrimary {
-  flex: 1;
-  height: 44px;
-  border-radius: 12px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  text-decoration: none;
-  background: rgba(59, 130, 246, 0.18);
-  border: 1px solid rgba(59, 130, 246, 0.35);
-  background: var(--color-premium-gradient);
-  font-weight: 700;
-}
-
-.guestSecondary {
-  flex: 1;
-  height: 44px;
-  border-radius: 12px;
-  border: 1px solid rgba(148, 163, 184, 0.35);
-  background: transparent;
-  color: var(--color-heading-strong);
-  font-weight: 700;
-  font-size: 13px;
-}
-
-.lockedClickable {
-  cursor: pointer !important;
-}
-
-
 
 /* Toast readability in DARK MODE */
 :root[data-theme='dark'] .toastCard {
@@ -13591,6 +14269,27 @@ export default function ProfilePage() {
   filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.55));
 }
 
+.emailSubText {
+  display: block;
+  font-size: 12px;
+  opacity: 0.75;
+  margin-top: 2px;
+   overflow-wrap: anywhere;
+  word-break: break-word;
+}
+@media (max-width: 360px) {
+  .emailSubText {
+    font-size: 11px;
+  }
+}
+.emailDisplayText {
+  line-height: 1.15;
+}
+
+.snsBtnSmall:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
 ```
 
 ### app/reset-password/page.tsx
@@ -15206,7 +15905,6 @@ export default config;
 
 ### components/AuthSelfHeal.tsx
 ```tsx
-//components/AuthSelfHeal.tsx
 "use client";
 
 import { useEffect } from "react";
@@ -15219,16 +15917,27 @@ function looksLikeRefreshTokenIssue(err: unknown) {
 
 export default function AuthSelfHeal() {
   useEffect(() => {
+    // ✅ Don't touch auth during OAuth / login routes (prevents lock collisions)
+    if (typeof window !== "undefined") {
+      const p = window.location.pathname;
+      const qs = window.location.search;
+      if (
+        p.startsWith("/login") ||
+        p.startsWith("/auth") || // includes /auth/callback
+        qs.includes("code=") ||
+        qs.includes("state=")
+      ) {
+        return;
+      }
+    }
+
     const supabase = createClient();
 
     (async () => {
       try {
-        // This is enough to trigger a refresh attempt if Supabase thinks it needs one
         const { error } = await supabase.auth.getSession();
         if (error && looksLikeRefreshTokenIssue(error)) {
-          // Clear local auth state so Supabase stops retrying with a bad/missing refresh token
           await supabase.auth.signOut({ scope: "local" });
-          // Optional: hard reload so any UI/auth state resets cleanly
           window.location.reload();
         }
       } catch (e) {
@@ -15242,7 +15951,6 @@ export default function AuthSelfHeal() {
 
   return null;
 }
-
 ```
 
 ### components/BackButton.module.css
@@ -16033,6 +16741,101 @@ export default function CSRBoundary({
 
 ```
 
+### components/CapacitorOAuthBridge.client.tsx
+```tsx
+"use client";
+
+import { useEffect } from "react";
+import { createClient } from "@/lib/supabase/client";
+
+const OAUTH_NEXT_KEY = "expatise:oauth:next";
+
+export default function CapacitorOAuthBridge() {
+  useEffect(() => {
+    let removeListener: null | (() => void) = null;
+
+    (async () => {
+      const { Capacitor } = await import("@capacitor/core");
+      if (!Capacitor.isNativePlatform()) return;
+
+      const { App } = await import("@capacitor/app");
+      const { Browser } = await import("@capacitor/browser");
+
+      const supabase = createClient();
+
+      const handleUrl = async (url?: string) => {
+        if (!url) return;
+
+        // DEBUG (shows in logcat as chromium console)
+        console.log("[OAuthBridge] got url:", url);
+
+       // Only handle OAuth returns with PKCE code
+let parsed: URL;
+try {
+  parsed = new URL(url);
+} catch {
+  return;
+}
+
+const err =
+  parsed.searchParams.get("error_description") ??
+  parsed.searchParams.get("error");
+
+if (err) {
+  console.log("[OAuthBridge] OAuth error:", err);
+  await Browser.close().catch(() => {});
+  window.location.replace("/login?error=oauth");
+  return;
+}
+
+const code = parsed.searchParams.get("code");
+if (!code) return;
+
+try {
+  console.log("[OAuthBridge] exchanging code...");
+  const { error } = await supabase.auth.exchangeCodeForSession(code);
+  if (error) throw error;
+
+  // (optional but very helpful)
+  const { data: s } = await supabase.auth.getSession();
+  console.log("[OAuthBridge] session user:", s.session?.user?.id);
+
+  await Browser.close().catch(() => {});
+
+  try { window.dispatchEvent(new Event("expatise:session-changed")); } catch {}
+  try { window.dispatchEvent(new Event("expatise:entitlements-changed")); } catch {}
+
+  const next = localStorage.getItem(OAUTH_NEXT_KEY) || "/";
+  localStorage.removeItem(OAUTH_NEXT_KEY);
+  window.location.replace(next);
+} catch (e: any) {
+  console.log("[OAuthBridge] exchange failed:", e?.message ?? e);
+  await Browser.close().catch(() => {});
+  window.location.replace("/login?error=oauth");
+}};
+
+      // ✅ Case A: app already running and receives deep link
+      const sub = await App.addListener("appUrlOpen", async ({ url }) => {
+        await handleUrl(url);
+      });
+      removeListener = () => sub.remove();
+
+      // ✅ Case B: cold start (app launched by the deep link)
+      const launch = await App.getLaunchUrl();
+      if (launch?.url) {
+        await handleUrl(launch.url);
+      }
+    })();
+
+    return () => {
+      removeListener?.();
+    };
+  }, []);
+
+  return null;
+}
+```
+
 ### components/ComingSoonRow.tsx
 ```tsx
 // components/ComingSoonRow.tsx
@@ -16439,17 +17242,38 @@ if (process.env.NODE_ENV !== "development" && !force) return null;
 
 ### components/EntitlementsProvider.client.tsx
 ```tsx
-//components/EntitlementsProvider.client.tsx
+// components/EntitlementsProvider.client.tsx
 "use client";
 
-import React, { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+
 import { PUBLIC_FLAGS } from "@/lib/flags/public";
-import { FREE_ENTITLEMENTS, type EntitlementSource, type Entitlements } from "@/lib/entitlements/types";
-import { getLocalEntitlements, setLocalEntitlements, clearLocalEntitlements } from "@/lib/entitlements/localStore";
+import {
+  FREE_ENTITLEMENTS,
+  type EntitlementSource,
+  type Entitlements,
+} from "@/lib/entitlements/types";
+import {
+  clearLocalEntitlements,
+  getLocalEntitlements,
+  setLocalEntitlements,
+} from "@/lib/entitlements/localStore";
 import { useUserKey } from "@/components/useUserKey.client";
 import { getEntitlements } from "@/lib/entitlements/getEntitlements";
+
 import { createClient } from "@/lib/supabase/client";
 
+import { Capacitor } from "@capacitor/core";
+import { Purchases } from "@revenuecat/purchases-capacitor";
+import { ensureRevenueCat } from "@/lib/billing/revenuecat";
 
 type EntitlementsContextValue = {
   userKey: string; // for now "guest" (we’ll upgrade to real user scoping later)
@@ -16470,12 +17294,18 @@ function isDemoHost() {
   return h === "localhost" || h.endsWith(".vercel.app");
 }
 
+const RC_ENTITLEMENT_ID =
+  process.env.NEXT_PUBLIC_REVENUECAT_ENTITLEMENT_ID ?? "Premium";
+
 
 
 const EntitlementsContext = createContext<EntitlementsContextValue | null>(null);
 
-export function EntitlementsProvider({ children }: { children: React.ReactNode }) {
-  // ✅ for now everyone is "guest". We'll swap this to real userKey in the Identity step.
+export function EntitlementsProvider({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const userKey = useUserKey();
 
   const [entitlements, setState] = useState<Entitlements>(() => {
@@ -16486,133 +17316,301 @@ export function EntitlementsProvider({ children }: { children: React.ReactNode }
   });
 
   const [loading, setLoading] = useState<boolean>(true);
-const fetchSeqRef = useRef(0);
 
-const demoPremium = DEMO_PREMIUM_ALL && isDemoHost();
+  // Prevent older async refresh() calls from overwriting newer ones
+  const fetchSeqRef = useRef(0);
 
-const refresh = useCallback(() => {
-  if (!PUBLIC_FLAGS.enablePremiumGates) {
-    setState({ isPremium: true, source: "admin", updatedAt: Date.now() });
-    setLoading(false);
-    return;
+  const demoPremium = DEMO_PREMIUM_ALL && isDemoHost();
+
+  // RevenueCat: configure ONCE + keep a listener id so we can remove it cleanly
+
+  const rcListenerIdRef = useRef<string | null>(null);
+
+const ensureRevenueCatConfigured = useCallback(async () => {
+  if (!Capacitor.isNativePlatform()) return false;
+
+  // You decided: guests cannot purchase, so don’t even bind RC identity to "guest"
+  if (userKey === "guest") return false;
+
+  try {
+    // Central, safe implementation:
+    // - uses Purchases.isConfigured()
+    // - configures once
+    // - logs in when userKey changes
+    return await ensureRevenueCat(userKey);
+  } catch {
+    return false;
   }
-
-  if (demoPremium) {
-    setState({ isPremium: true, source: "demo", updatedAt: Date.now() });
-    setLoading(false);
-    return;
-  }
-
-  // increment request id so older async results can't overwrite newer userKey
-  const seq = ++fetchSeqRef.current;
-  const keyAtStart = userKey;
-
-  // 1) apply local immediately (fast)
-  let local = getLocalEntitlements(keyAtStart) ?? FREE_ENTITLEMENTS;
-
-  // ✅ hard rule: guest is never premium (prevents “stuck premium guest” + ensures badge shows)
-  if (keyAtStart === "guest" && local.isPremium) {
-    clearLocalEntitlements("guest");
-    local = FREE_ENTITLEMENTS;
-  }
-
-  setState(local);
-
-  // ✅ IMPORTANT: “loading” should not block UI while remote fetch happens
-  setLoading(false);
-
-  // 2) fetch remote (authoritative) in the background
-  void (async () => {
-    try {
-      const e = await getEntitlements(keyAtStart);
-
-      if (seq !== fetchSeqRef.current) return;
-
-      // Persist remote so next boot is instant
-      setLocalEntitlements(keyAtStart, e);
-      setState(e);
-    } catch {
-      // keep local if remote fails
-    }
-  })();
-}, [userKey, demoPremium]);
+}, [userKey]);
 
 useEffect(() => {
-  const supabase = createClient();
+  if (!Capacitor.isNativePlatform()) return;
 
-  const { data } = supabase.auth.onAuthStateChange(() => {
-    // broadcast for anything else listening
-    try { window.dispatchEvent(new Event("expatise:session-changed")); } catch {}
-    // refresh entitlements now that session/JWT may exist
-    refresh();
-  });
+  // When user logs out -> reset RevenueCat identity to anonymous
+  if (userKey !== "guest") return;
 
-  return () => {
-    data.subscription.unsubscribe();
-  };
-}, [refresh]);
+  void (async () => {
+    try {
+      const { isConfigured } = await Purchases.isConfigured();
+      if (!isConfigured) return;
+      await Purchases.logOut();
+    } catch {
+      // ignore
+    }
+  })();
+}, [userKey]);
 
-  const setEntitlements = useCallback((e: Entitlements) => {
-    setLocalEntitlements(userKey, e);
-    setState(e);
-    try { window.dispatchEvent(new Event("expatise:entitlements-changed")); } catch {}
-  }, [userKey]);
+  function entitlementsFromCustomerInfo(customerInfo: any): Entitlements | null {
+    const active = customerInfo?.entitlements?.active?.[RC_ENTITLEMENT_ID];
+    if (!active) return null;
 
-  const grantPremium = useCallback((source: EntitlementSource, expiresAt?: number) => {
-    const next: Entitlements = {
+    // From RevenueCat docs: expirationDateMillis can be null for lifetime access.
+    const expMs: number | null =
+      typeof active.expirationDateMillis === "number"
+        ? active.expirationDateMillis
+        : null;
+
+    const periodType = String(active.periodType ?? "").toUpperCase();
+    const source: EntitlementSource =
+      expMs === null
+        ? "lifetime"
+        : periodType === "TRIAL"
+        ? "trial"
+        : "subscription";
+
+    return {
       isPremium: true,
       source,
-      expiresAt,
       updatedAt: Date.now(),
+      ...(typeof expMs === "number" ? { expiresAt: expMs } : {}),
     };
-    setLocalEntitlements(userKey, next);
-    setState(next);
-    try { window.dispatchEvent(new Event("expatise:entitlements-changed")); } catch {}
-  }, [userKey]);
+  }
+
+  const refresh = useCallback(() => {
+    if (!PUBLIC_FLAGS.enablePremiumGates) {
+      setState({ isPremium: true, source: "admin", updatedAt: Date.now() });
+      setLoading(false);
+      return;
+    }
+
+    if (demoPremium) {
+      setState({ isPremium: true, source: "demo", updatedAt: Date.now() });
+      setLoading(false);
+      return;
+    }
+
+    // increment request id so older async results can't overwrite newer userKey
+    const seq = ++fetchSeqRef.current;
+
+    setLoading(true);
+
+    const keyAtStart = userKey;
+
+    // 1) apply local immediately (fast)
+    let local = getLocalEntitlements(keyAtStart) ?? FREE_ENTITLEMENTS;
+
+    // ✅ hard rule: guest is never premium
+    // If you ever want to allow purchasing while logged-out, remove this block.
+    if (keyAtStart === "guest" && local.isPremium) {
+      clearLocalEntitlements("guest");
+      local = FREE_ENTITLEMENTS;
+    }
+
+    setState(local);
+
+    // 2) then fetch the best available truth source
+    void (async () => {
+      try {
+        // A) Native: RevenueCat-first
+        if (Capacitor.isNativePlatform()) {
+          const ok = await ensureRevenueCatConfigured();
+          if (seq !== fetchSeqRef.current) return;
+
+          if (ok) {
+            const { customerInfo } = await Purchases.getCustomerInfo();
+            if (seq !== fetchSeqRef.current) return;
+
+            const rcEnt = entitlementsFromCustomerInfo(customerInfo);
+
+            if (rcEnt) {
+              setLocalEntitlements(keyAtStart, rcEnt);
+              setState(rcEnt);
+              return; // ✅ do NOT fall through to server overwrite
+            } else {
+              // If local shows premium from purchase sources but RC says no, clear it.
+              const current = getLocalEntitlements(keyAtStart) ?? FREE_ENTITLEMENTS;
+              if (
+                current.isPremium &&
+                (current.source === "subscription" ||
+                  current.source === "lifetime" ||
+                  current.source === "trial")
+              ) {
+                setLocalEntitlements(keyAtStart, FREE_ENTITLEMENTS);
+                setState(FREE_ENTITLEMENTS);
+              }
+            }
+          }
+        }
+
+        // B) Fallback: your existing server entitlements
+        const e = await getEntitlements(keyAtStart);
+
+        if (seq !== fetchSeqRef.current) return;
+        setLocalEntitlements(keyAtStart, e);
+        setState(e);
+      } catch {
+        // keep local if remote fails
+      } finally {
+        if (seq === fetchSeqRef.current) setLoading(false);
+      }
+    })();
+  }, [demoPremium, ensureRevenueCatConfigured, userKey]);
+
+  // Refresh entitlements when Supabase auth session changes (login/logout/refresh)
+  useEffect(() => {
+    const supabase = createClient();
+
+    const { data } = supabase.auth.onAuthStateChange(() => {
+      try {
+        window.dispatchEvent(new Event("expatise:session-changed"));
+      } catch {}
+      refresh();
+    });
+
+    return () => {
+      data.subscription.unsubscribe();
+    };
+  }, [refresh]);
+
+  const setEntitlements = useCallback(
+    (e: Entitlements) => {
+      setLocalEntitlements(userKey, e);
+      setState(e);
+      try {
+        window.dispatchEvent(new Event("expatise:entitlements-changed"));
+      } catch {}
+    },
+    [userKey]
+  );
+
+  const grantPremium = useCallback(
+    (source: EntitlementSource, expiresAt?: number) => {
+      const next: Entitlements = {
+        isPremium: true,
+        source,
+        expiresAt,
+        updatedAt: Date.now(),
+      };
+      setLocalEntitlements(userKey, next);
+      setState(next);
+      try {
+        window.dispatchEvent(new Event("expatise:entitlements-changed"));
+      } catch {}
+    },
+    [userKey]
+  );
 
   const revokePremium = useCallback(() => {
     clearLocalEntitlements(userKey);
     setState(FREE_ENTITLEMENTS);
-    try { window.dispatchEvent(new Event("expatise:entitlements-changed")); } catch {}
+    try {
+      window.dispatchEvent(new Event("expatise:entitlements-changed"));
+    } catch {}
   }, [userKey]);
 
   useEffect(() => {
     refresh();
   }, [refresh]);
 
-useEffect(() => {
-  const onEntChanged = () => refresh();
-  window.addEventListener("expatise:entitlements-changed", onEntChanged);
-  return () => window.removeEventListener("expatise:entitlements-changed", onEntChanged);
-}, [refresh]);
+  useEffect(() => {
+    const onEntChanged = () => refresh();
+    window.addEventListener("expatise:entitlements-changed", onEntChanged);
+    return () =>
+      window.removeEventListener("expatise:entitlements-changed", onEntChanged);
+  }, [refresh]);
 
+  // RevenueCat: listen for customerInfo updates and update entitlements cache.
+  // Per purchases-capacitor API: addCustomerInfoUpdateListener returns an id, and remove uses that id.
+  useEffect(() => {
+    if (!Capacitor.isNativePlatform()) return;
 
+    let cancelled = false;
 
-  const value = useMemo<EntitlementsContextValue>(() => ({
-    userKey,
-    entitlements,
-    isPremium: entitlements.isPremium,
-    loading,
-    refresh,
-    setEntitlements,
-    grantPremium,
-    revokePremium,
-  }), [userKey, entitlements, loading, refresh, setEntitlements, grantPremium, revokePremium]);
+    void (async () => {
+      const ok = await ensureRevenueCatConfigured();
+      if (!ok || cancelled) return;
+
+      // Remove previous listener (if any) before adding a new one
+      if (rcListenerIdRef.current) {
+        try {
+          await Purchases.removeCustomerInfoUpdateListener({
+            listenerToRemove: rcListenerIdRef.current,
+          });
+        } catch {}
+        rcListenerIdRef.current = null;
+      }
+
+      const id = await Purchases.addCustomerInfoUpdateListener((customerInfo) => {
+        const rcEnt = entitlementsFromCustomerInfo(customerInfo);
+        if (!rcEnt) return;
+
+        setLocalEntitlements(userKey, rcEnt);
+        setState(rcEnt);
+        try {
+          window.dispatchEvent(new Event("expatise:entitlements-changed"));
+        } catch {}
+      });
+
+      rcListenerIdRef.current = id;
+    })();
+
+    return () => {
+      cancelled = true;
+      const id = rcListenerIdRef.current;
+      if (!id) return;
+
+      rcListenerIdRef.current = null;
+      void (async () => {
+        try {
+          await Purchases.removeCustomerInfoUpdateListener({ listenerToRemove: id });
+        } catch {}
+      })();
+    };
+  }, [ensureRevenueCatConfigured, userKey]);
+
+  const value = useMemo<EntitlementsContextValue>(
+    () => ({
+      userKey,
+      entitlements,
+      isPremium: entitlements.isPremium,
+      loading,
+      refresh,
+      setEntitlements,
+      grantPremium,
+      revokePremium,
+    }),
+    [
+      userKey,
+      entitlements,
+      loading,
+      refresh,
+      setEntitlements,
+      grantPremium,
+      revokePremium,
+    ]
+  );
 
   return (
-    <EntitlementsContext.Provider value={value}>
-      {children}
-    </EntitlementsContext.Provider>
-    
+    <EntitlementsContext.Provider value={value}>{children}</EntitlementsContext.Provider>
   );
 }
 
 export function useEntitlements() {
   const ctx = useContext(EntitlementsContext);
-  if (!ctx) throw new Error("useEntitlements must be used inside <EntitlementsProvider>");
+  if (!ctx)
+    throw new Error("useEntitlements must be used inside <EntitlementsProvider>");
   return ctx;
 }
-
 ```
 
 ### components/FeatureCard.tsx
@@ -16833,6 +17831,123 @@ function FreeUsageProgressBadgeInner({ userKey }: { userKey: string }) {
       title={`Free usage progress (${userKey})`}
     >
       {text}
+    </div>
+  );
+}
+```
+
+### components/GuestLoginModal.module.css
+```css
+.guestOverlay {
+  position: fixed;
+  inset: 0;
+  backdrop-filter: blur(8px);
+  background: rgba(0, 0, 0, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 9999;
+}
+
+.guestModal {
+  width: 100%;
+  max-width: 420px;
+  border-radius: 18px;
+  padding: 18px 16px;
+  background: var(--color-profile-card-bg);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+}
+
+.guestTitle {
+  font-size: 18px;
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+
+.guestText {
+  font-size: 14px;
+  opacity: 0.9;
+  line-height: 1.4;
+}
+
+.guestButtons {
+  display: flex;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.guestPrimary {
+  flex: 1;
+  height: 44px;
+  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  background: var(--color-premium-gradient);
+  border: 1px solid rgba(59, 130, 246, 0.35);
+  font-weight: 700;
+}
+
+.guestSecondary {
+  flex: 1;
+  height: 44px;
+  border-radius: 12px;
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  background: transparent;
+  color: var(--color-heading-strong);
+  font-weight: 700;
+  font-size: 13px;
+}
+```
+
+### components/GuestLoginModal.tsx
+```tsx
+"use client";
+
+import Link from "next/link";
+import styles from "./GuestLoginModal.module.css";
+
+type GuestLoginModalProps = {
+  open: boolean;
+  onClose: () => void;
+  nextPath: string; // e.g. "/premium?plan=lifetime"
+};
+
+export default function GuestLoginModal({
+  open,
+  onClose,
+  nextPath,
+}: GuestLoginModalProps) {
+  if (!open) return null;
+
+  const href = `/login?next=${encodeURIComponent(nextPath)}`;
+
+  return (
+    <div className={styles.guestOverlay} onClick={onClose}>
+      <div className={styles.guestModal} onClick={(e) => e.stopPropagation()}>
+        <div className={styles.guestTitle}>Log in to save your data.</div>
+        <div className={styles.guestText}>
+          You are currently logged in as a <strong>guest</strong>. You can
+          continue as such, but data will not be saved and some features may be
+          reserved for premium users only.
+        </div>
+
+        <div className={styles.guestButtons}>
+          <Link className={styles.guestPrimary} href={href}>
+            Log in
+          </Link>
+
+          <button
+            type="button"
+            className={styles.guestSecondary}
+            onClick={onClose}
+          >
+            Continue as guest
+          </button>
+        </div>
+      </div>
     </div>
   );
 }
@@ -23888,6 +25003,66 @@ export const webAuthClient: AuthClient = {
 };
 ```
 
+### lib/billing/revenuecat.ts
+```tsx
+"use client";
+
+import { Capacitor } from "@capacitor/core";
+import { Purchases, LOG_LEVEL } from "@revenuecat/purchases-capacitor";
+
+function getApiKeyForPlatform() {
+  const platform = Capacitor.getPlatform(); // "ios" | "android" | "web"
+  if (platform === "ios") return process.env.NEXT_PUBLIC_REVENUECAT_IOS_KEY ?? "";
+  if (platform === "android") return process.env.NEXT_PUBLIC_REVENUECAT_ANDROID_KEY ?? "";
+  return "";
+}
+
+/**
+ * Ensures Purchases is configured before any SDK call.
+ * If a real userKey is provided, it will attach purchases to that user (via logIn).
+ */
+export async function ensureRevenueCat(userKey?: string): Promise<boolean> {
+  if (!Capacitor.isNativePlatform()) return false;
+
+  const apiKey = getApiKeyForPlatform();
+  if (!apiKey) {
+    console.warn("[RevenueCat] Missing platform API key.");
+    return false;
+  }
+
+  // 1) Configure if not configured yet
+  const { isConfigured } = await Purchases.isConfigured();
+  if (!isConfigured) {
+    const level =
+      process.env.NODE_ENV === "development" ? LOG_LEVEL.DEBUG : LOG_LEVEL.INFO;
+    await Purchases.setLogLevel({ level });
+
+    // IMPORTANT: don't attach "guest" as an appUserID
+    const appUserID = userKey && userKey !== "guest" ? userKey : undefined;
+
+    await Purchases.configure({
+      apiKey,
+      ...(appUserID ? { appUserID } : {}),
+    });
+
+    return true;
+  }
+
+  // 2) If configured and we now have a real userKey, link/transfer to it
+  if (userKey && userKey !== "guest") {
+    const current = await Purchases.getAppUserID();
+    const currentId =
+      typeof current === "string" ? current : (current as any)?.appUserID;
+
+    if (currentId && currentId !== userKey) {
+      await Purchases.logIn({ appUserID: userKey });
+    }
+  }
+
+  return true;
+}
+```
+
 ### lib/bookmarks/bookmarkStore.ts
 ```tsx
 // lib/bookmarks/bookmarkStore.ts
@@ -25026,14 +26201,19 @@ export const PATHS = {
 } as const;
 
 export const ONBOARDING_COOKIE = 'expatise_onboarded';
+
+
 export function isBypassPath(pathname: string) {
+  // ✅ Bypass auth callback so PKCE exchange isn't disturbed by middleware/session refresh
+  if (pathname.startsWith("/auth/callback")) return true;
+
   // Bypass static files, images, api routes, and favicon
   if (
-    pathname.startsWith('/_next/static') ||
-    pathname.startsWith('/_next/image') ||
-    pathname.startsWith('/api') ||
-    pathname === '/Expatise-logo.jpg' ||
-    pathname.startsWith('/images')
+    pathname.startsWith("/_next/static") ||
+    pathname.startsWith("/_next/image") ||
+    pathname.startsWith("/api") ||
+    pathname === "/favicon.ico" ||
+    pathname.startsWith("/images")
   ) {
     return true;
   }
@@ -25332,51 +26512,66 @@ export const openai = new OpenAI({
 
 ### lib/plans.ts
 ```tsx
-export type PlanId = "lifetime" | "month1" | "month3";
+// lib/plans.ts
+export type PlanId = "lifetime" | "monthly" | "three_month" | "six_month";
 
 export type Plan = {
-  id: PlanId;           // IMPORTANT: real id
-  pillTitle: string;        // shown on Premium pills
-  checkoutTitle: string; // shown on Checkout page header
+  id: PlanId;              // IMPORTANT: real id (matches RevenueCat product IDs)
+  pillTitle: string;       // shown on Premium pills
+  checkoutTitle: string;   // shown on Checkout page header
   sub: string;
   price: string;
   promoPrice: string;
 };
 
 export const PLAN_MAP: Record<PlanId, Plan> = {
-  lifetime: {
-    id: "lifetime",
-    pillTitle: "Life Time",
-    checkoutTitle: "Life Time Plan",
-    sub: "With Promo Code: ¥149",
-    price: "¥199",
-    promoPrice: "¥149",
-  },
-  month1: {
-    id: "month1",
+  monthly: {
+    id: "monthly",
     pillTitle: "1 Month",
     checkoutTitle: "1 Month Plan",
-    sub: "With Promo Code: ¥48",
-    price: "¥69",
-    promoPrice: "¥48",
+    sub: "",
+    price: "$7.99",
+    promoPrice: "",
   },
-  month3: {
-    id: "month3",
-    pillTitle: "3 Month",
+  three_month: {
+    id: "three_month",
+    pillTitle: "3 Months",
     checkoutTitle: "3 Month Plan",
-    sub: "With Promo Code: ¥97",
-    price: "¥139",
-    promoPrice: "¥97",
+    sub: "",
+    price: "$14.99",
+    promoPrice: "",
+  },
+  six_month: {
+    id: "six_month",
+    pillTitle: "6 Months",
+    checkoutTitle: "6 Month Plan",
+    sub: "", 
+    price: "$24.99", 
+    promoPrice: "",  
+  },
+     lifetime: {
+    id: "lifetime",
+    pillTitle: "Lifetime",
+    checkoutTitle: "Lifetime Plan",
+    sub: "",
+    price: "$19.99",
+    promoPrice: "",
   },
 };
 
 // For fast lookup by id (used in Checkout)
-export const PLAN_LIST: Plan[] = [PLAN_MAP.lifetime, PLAN_MAP.month1, PLAN_MAP.month3];
+export const PLAN_LIST: Plan[] = [
+  PLAN_MAP.monthly,
+  PLAN_MAP.three_month,
+  PLAN_MAP.six_month,
+  PLAN_MAP.lifetime,
+];
 
 export function toPlanId(v: string | null): PlanId {
-  return v === "lifetime" || v === "month1" || v === "month3" ? v : "lifetime";
+  return v === "lifetime" || v === "monthly" || v === "three_month" || v === "six_month"
+    ? v
+    : "lifetime";
 }
-
 ```
 
 ### lib/qbank/datasets.ts
@@ -27419,36 +28614,68 @@ export { clearedMistakesStore } from "@/lib/mistakes/store";
 ```tsx
 // lib/supabase/client.ts
 import { createBrowserClient } from "@supabase/ssr";
+import { createClient as createSupabaseClient, processLock } from "@supabase/supabase-js";
+import { Capacitor } from "@capacitor/core";
 
-let browserClient: ReturnType<typeof createBrowserClient> | null = null;
+let webClient: ReturnType<typeof createBrowserClient> | null = null;
+let nativeClient: ReturnType<typeof createSupabaseClient> | null = null;
 
 export function createClient() {
-  if (browserClient) return browserClient;
-
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key =
-  process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ??
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ??
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
   if (!url || !key) {
-  throw new Error(
-    "Missing NEXT_PUBLIC_SUPABASE_URL or NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY (or NEXT_PUBLIC_SUPABASE_ANON_KEY)"
-  );
+    throw new Error(
+      "Missing NEXT_PUBLIC_SUPABASE_URL or NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY (or NEXT_PUBLIC_SUPABASE_ANON_KEY)"
+    );
+  }
+
+  const isNative =
+    typeof window !== "undefined" && Capacitor.isNativePlatform();
+
+  // ✅ Native (Capacitor): use supabase-js directly + processLock
+  if (isNative) {
+    if (nativeClient) return nativeClient;
+
+    nativeClient = createSupabaseClient(url, key, {
+      auth: {
+        persistSession: true,
+        autoRefreshToken: true,
+
+        // ✅ You’re handling OAuth return via deep link + exchangeCodeForSession
+        detectSessionInUrl: false,
+
+        flowType: "pkce",
+        storageKey: "sb-expatise-auth",
+
+        // ✅ Avoid "Navigator LockManager lock timed out" on Android/Chrome/WebView
+        lock: processLock,
+      },
+    });
+
+    return nativeClient;
+  }
+
+  // ✅ Web: keep @supabase/ssr browser client, but ALSO use processLock
+  if (webClient) return webClient;
+
+  webClient = createBrowserClient(url, key, {
+    auth: {
+      persistSession: true,
+      autoRefreshToken: true,
+      detectSessionInUrl: true,
+      flowType: "pkce",
+      storageKey: "sb-expatise-auth",
+
+      // ✅ same lock fix for Android emulator Chrome browser too
+      lock: processLock,
+    },
+  });
+
+  return webClient;
 }
-
-  browserClient = createBrowserClient(url, key, {
-  auth: {
-    persistSession: true,
-    autoRefreshToken: true,
-    detectSessionInUrl: true,
-    flowType: "pkce",
-    storageKey: "sb-expatise-auth",
-  },
-});
-
-  return browserClient;
-}
-
 ```
 
 ### lib/supabase/server.ts
@@ -28516,6 +29743,8 @@ export default nextConfig;
       "version": "0.1.0",
       "dependencies": {
         "@capacitor/android": "^8.1.0",
+        "@capacitor/app": "^8.0.1",
+        "@capacitor/browser": "^8.0.1",
         "@capacitor/core": "^8.1.0",
         "@capacitor/status-bar": "^8.0.1",
         "@fortawesome/fontawesome-svg-core": "^7.1.0",
@@ -28523,6 +29752,8 @@ export default nextConfig;
         "@fortawesome/free-regular-svg-icons": "^7.2.0",
         "@fortawesome/free-solid-svg-icons": "^7.1.0",
         "@fortawesome/react-fontawesome": "^3.1.1",
+        "@revenuecat/purchases-capacitor": "^12.2.1",
+        "@revenuecat/purchases-capacitor-ui": "^12.2.1",
         "@supabase/ssr": "^0.8.0",
         "@supabase/supabase-js": "^2.97.0",
         "@vercel/speed-insights": "^1.3.1",
@@ -28839,6 +30070,15 @@ export default nextConfig;
       "license": "MIT",
       "peerDependencies": {
         "@capacitor/core": "^8.1.0"
+      }
+    },
+    "node_modules/@capacitor/app": {
+      "version": "8.0.1",
+      "resolved": "https://registry.npmjs.org/@capacitor/app/-/app-8.0.1.tgz",
+      "integrity": "sha512-yeG3yyA0ETKqvgqexwHMBlmVOF13A1hRXzv/km0Ptv5TrNIZvZJK4MTI3uiqvnbHrzoJGP5DwWAjEXEfi90v3Q==",
+      "license": "MIT",
+      "peerDependencies": {
+        "@capacitor/core": ">=8.0.0"
       }
     },
     "node_modules/@capacitor/assets": {
@@ -29304,6 +30544,15 @@ export default nextConfig;
       "integrity": "sha512-3wdGidZyq5PB084XLES5TpOSRA3wjXAlIWMhum2kRcv/41Sn2emQ0dycQW4uZXLejwKvg6EsvbdlVL+FYEct7A==",
       "dev": true,
       "license": "ISC"
+    },
+    "node_modules/@capacitor/browser": {
+      "version": "8.0.1",
+      "resolved": "https://registry.npmjs.org/@capacitor/browser/-/browser-8.0.1.tgz",
+      "integrity": "sha512-cCEYK9DGJvamfCKOh95QP+VafApblySDR/eodOcl1Qt+d/Y+NNPzc8NYm/dztQlRf3aMLJ7ne1HrRCfu2UOMnw==",
+      "license": "MIT",
+      "peerDependencies": {
+        "@capacitor/core": ">=8.0.0"
+      }
     },
     "node_modules/@capacitor/cli": {
       "version": "8.1.0",
@@ -30635,6 +31884,56 @@ export default nextConfig;
         "@xml-tools/parser": "^1.0.11",
         "prettier": ">=2.4.0"
       }
+    },
+    "node_modules/@revenuecat/purchases-capacitor": {
+      "version": "12.2.1",
+      "resolved": "https://registry.npmjs.org/@revenuecat/purchases-capacitor/-/purchases-capacitor-12.2.1.tgz",
+      "integrity": "sha512-J1Euf0zkmJsY90x48bvkMyChf34DJ2ChMGTJ24y49aI1MSigWSnNnOxT1egAcuYXIbo23WRPlRIBzGo3sRg7YA==",
+      "license": "MIT",
+      "dependencies": {
+        "@revenuecat/purchases-typescript-internal-esm": "17.41.1"
+      },
+      "peerDependencies": {
+        "@capacitor/core": ">=8.0.0"
+      }
+    },
+    "node_modules/@revenuecat/purchases-capacitor-ui": {
+      "version": "12.2.1",
+      "resolved": "https://registry.npmjs.org/@revenuecat/purchases-capacitor-ui/-/purchases-capacitor-ui-12.2.1.tgz",
+      "integrity": "sha512-5d5VyAU5kIwZQhBKUpt6YnroHZv4+yAz7aV2xaV1GhBHnZHjgTAIZF4g2CJi1DLlIAAVyMCmO+aS4K5+h4HXyg==",
+      "license": "MIT",
+      "dependencies": {
+        "@capacitor/core": "^8.0.0",
+        "@revenuecat/purchases-capacitor": "^10.2.4",
+        "@revenuecat/purchases-typescript-internal-esm": "17.41.1"
+      },
+      "peerDependencies": {
+        "@capacitor/core": ">=8.0.0"
+      }
+    },
+    "node_modules/@revenuecat/purchases-capacitor-ui/node_modules/@revenuecat/purchases-capacitor": {
+      "version": "10.4.0",
+      "resolved": "https://registry.npmjs.org/@revenuecat/purchases-capacitor/-/purchases-capacitor-10.4.0.tgz",
+      "integrity": "sha512-205im5Bs1BY8wLt+qaS0O2GTWtSHUMFc3Z8U2QaVx4EN0hHOk9gqx2bNaUEH+cOWTUPlNz9yikdiMUSTjJzwyA==",
+      "license": "MIT",
+      "dependencies": {
+        "@revenuecat/purchases-typescript-internal-esm": "14.3.0"
+      },
+      "peerDependencies": {
+        "@capacitor/core": ">=7.0.0"
+      }
+    },
+    "node_modules/@revenuecat/purchases-capacitor-ui/node_modules/@revenuecat/purchases-capacitor/node_modules/@revenuecat/purchases-typescript-internal-esm": {
+      "version": "14.3.0",
+      "resolved": "https://registry.npmjs.org/@revenuecat/purchases-typescript-internal-esm/-/purchases-typescript-internal-esm-14.3.0.tgz",
+      "integrity": "sha512-7mkuBupATfPvBw+skTE/chY6UEux9ZidTbKBOcZ/MgALKJdcww7LgSbChdyoGdQlSJXBFf1zRPzHH+RB7y+LQA==",
+      "license": "MIT"
+    },
+    "node_modules/@revenuecat/purchases-typescript-internal-esm": {
+      "version": "17.41.1",
+      "resolved": "https://registry.npmjs.org/@revenuecat/purchases-typescript-internal-esm/-/purchases-typescript-internal-esm-17.41.1.tgz",
+      "integrity": "sha512-GduNxWNKRL6cpQcR1Xv7KJp0JJMusjCcp+lSsAiowSkTvLTZvYRTepyIt8gqKBHWh71KDykzOkFT0Hejgx+XXQ==",
+      "license": "MIT"
     },
     "node_modules/@rtsao/scc": {
       "version": "1.1.0",
@@ -40814,6 +42113,8 @@ export default nextConfig;
   },
   "dependencies": {
     "@capacitor/android": "^8.1.0",
+    "@capacitor/app": "^8.0.1",
+    "@capacitor/browser": "^8.0.1",
     "@capacitor/core": "^8.1.0",
     "@capacitor/status-bar": "^8.0.1",
     "@fortawesome/fontawesome-svg-core": "^7.1.0",
@@ -40821,6 +42122,8 @@ export default nextConfig;
     "@fortawesome/free-regular-svg-icons": "^7.2.0",
     "@fortawesome/free-solid-svg-icons": "^7.1.0",
     "@fortawesome/react-fontawesome": "^3.1.1",
+    "@revenuecat/purchases-capacitor": "^12.2.1",
+    "@revenuecat/purchases-capacitor-ui": "^12.2.1",
     "@supabase/ssr": "^0.8.0",
     "@supabase/supabase-js": "^2.97.0",
     "@vercel/speed-insights": "^1.3.1",

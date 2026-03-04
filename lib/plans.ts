@@ -1,44 +1,60 @@
-export type PlanId = "lifetime" | "month1" | "month3";
+// lib/plans.ts
+export type PlanId = "lifetime" | "monthly" | "three_month" | "six_month";
 
 export type Plan = {
-  id: PlanId;           // IMPORTANT: real id
-  pillTitle: string;        // shown on Premium pills
-  checkoutTitle: string; // shown on Checkout page header
+  id: PlanId;              // IMPORTANT: real id (matches RevenueCat product IDs)
+  pillTitle: string;       // shown on Premium pills
+  checkoutTitle: string;   // shown on Checkout page header
   sub: string;
   price: string;
   promoPrice: string;
 };
 
 export const PLAN_MAP: Record<PlanId, Plan> = {
-  lifetime: {
-    id: "lifetime",
-    pillTitle: "Life Time",
-    checkoutTitle: "Life Time Plan",
-    sub: "With Promo Code: ¥149",
-    price: "¥199",
-    promoPrice: "¥149",
-  },
-  month1: {
-    id: "month1",
+  monthly: {
+    id: "monthly",
     pillTitle: "1 Month",
     checkoutTitle: "1 Month Plan",
-    sub: "With Promo Code: ¥48",
-    price: "¥69",
-    promoPrice: "¥48",
+    sub: "",
+    price: "$7.99",
+    promoPrice: "",
   },
-  month3: {
-    id: "month3",
-    pillTitle: "3 Month",
+  three_month: {
+    id: "three_month",
+    pillTitle: "3 Months",
     checkoutTitle: "3 Month Plan",
-    sub: "With Promo Code: ¥97",
-    price: "¥139",
-    promoPrice: "¥97",
+    sub: "",
+    price: "$14.99",
+    promoPrice: "",
+  },
+  six_month: {
+    id: "six_month",
+    pillTitle: "6 Months",
+    checkoutTitle: "6 Month Plan",
+    sub: "", 
+    price: "$24.99", 
+    promoPrice: "",  
+  },
+     lifetime: {
+    id: "lifetime",
+    pillTitle: "Lifetime",
+    checkoutTitle: "Lifetime Plan",
+    sub: "",
+    price: "$19.99",
+    promoPrice: "",
   },
 };
 
 // For fast lookup by id (used in Checkout)
-export const PLAN_LIST: Plan[] = [PLAN_MAP.lifetime, PLAN_MAP.month1, PLAN_MAP.month3];
+export const PLAN_LIST: Plan[] = [
+  PLAN_MAP.monthly,
+  PLAN_MAP.three_month,
+  PLAN_MAP.six_month,
+  PLAN_MAP.lifetime,
+];
 
 export function toPlanId(v: string | null): PlanId {
-  return v === "lifetime" || v === "month1" || v === "month3" ? v : "lifetime";
+  return v === "lifetime" || v === "monthly" || v === "three_month" || v === "six_month"
+    ? v
+    : "lifetime";
 }

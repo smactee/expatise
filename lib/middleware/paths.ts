@@ -6,14 +6,19 @@ export const PATHS = {
 } as const;
 
 export const ONBOARDING_COOKIE = 'expatise_onboarded';
+
+
 export function isBypassPath(pathname: string) {
+  // ✅ Bypass auth callback so PKCE exchange isn't disturbed by middleware/session refresh
+  if (pathname.startsWith("/auth/callback")) return true;
+
   // Bypass static files, images, api routes, and favicon
   if (
-    pathname.startsWith('/_next/static') ||
-    pathname.startsWith('/_next/image') ||
-    pathname.startsWith('/api') ||
-    pathname === '/Expatise-logo.jpg' ||
-    pathname.startsWith('/images')
+    pathname.startsWith("/_next/static") ||
+    pathname.startsWith("/_next/image") ||
+    pathname.startsWith("/api") ||
+    pathname === "/favicon.ico" ||
+    pathname.startsWith("/images")
   ) {
     return true;
   }
