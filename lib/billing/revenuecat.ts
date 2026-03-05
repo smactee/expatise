@@ -3,11 +3,26 @@
 import { Capacitor } from "@capacitor/core";
 import { Purchases, LOG_LEVEL } from "@revenuecat/purchases-capacitor";
 
-function getApiKeyForPlatform() {
+// Dev toggle for RevenueCat Test Store.
+// IMPORTANT: Never ship production builds with this enabled.
+const USE_TEST_STORE = process.env.NEXT_PUBLIC_RC_USE_TEST_STORE === "1";
+
+function getProductionApiKeyForPlatform() {
   const platform = Capacitor.getPlatform(); // "ios" | "android" | "web"
-  if (platform === "ios") return process.env.NEXT_PUBLIC_REVENUECAT_IOS_KEY ?? "";
-  if (platform === "android") return process.env.NEXT_PUBLIC_REVENUECAT_ANDROID_KEY ?? "";
+  if (platform === "ios") {
+    return process.env.NEXT_PUBLIC_REVENUECAT_API_KEY_IOS ?? "";
+  }
+  if (platform === "android") {
+    return process.env.NEXT_PUBLIC_REVENUECAT_API_KEY_ANDROID ?? "";
+  }
   return "";
+}
+
+function getRevenueCatApiKey() {
+  if (USE_TEST_STORE) {
+    return process.env.NEXT_PUBLIC_REVENUECAT_API_KEY_TEST ?? "";
+  }
+  return getProductionApiKeyForPlatform();
 }
 
 /**
@@ -17,15 +32,21 @@ function getApiKeyForPlatform() {
 export async function ensureRevenueCat(userKey?: string): Promise<boolean> {
   if (!Capacitor.isNativePlatform()) return false;
 
-  const apiKey = getApiKeyForPlatform();
+  const apiKey = getRevenueCatApiKey();
   if (!apiKey) {
-    console.warn("[RevenueCat] Missing platform API key.");
+    const expected = USE_TEST_STORE
+      ? "NEXT_PUBLIC_REVENUECAT_API_KEY_TEST"
+      : "NEXT_PUBLIC_REVENUECAT_API_KEY_ANDROID (or NEXT_PUBLIC_REVENUECAT_API_KEY_IOS)";
+    console.warn(`[RevenueCat] Missing API key. Expected: ${expected}.`);
     return false;
   }
 
   // 1) Configure if not configured yet
   const { isConfigured } = await Purchases.isConfigured();
   if (!isConfigured) {
+    if (process.env.NODE_ENV !== "production") {
+  await Purchases.setLogLevel({ level: LOG_LEVEL.DEBUG });
+}
     const level =
       process.env.NODE_ENV === "development" ? LOG_LEVEL.DEBUG : LOG_LEVEL.INFO;
     await Purchases.setLogLevel({ level });
@@ -44,8 +65,14 @@ export async function ensureRevenueCat(userKey?: string): Promise<boolean> {
   // 2) If configured and we now have a real userKey, link/transfer to it
   if (userKey && userKey !== "guest") {
     const current = await Purchases.getAppUserID();
-    const currentId =
-      typeof current === "string" ? current : (current as any)?.appUserID;
+    const currentId = (() => {
+      if (typeof current === "string") return current;
+      if (typeof current === "object" && current !== null && "appUserID" in current) {
+        const appUserID = (current as { appUserID?: unknown }).appUserID;
+        return typeof appUserID === "string" ? appUserID : "";
+      }
+      return "";
+    })();
 
     if (currentId && currentId !== userKey) {
       await Purchases.logIn({ appUserID: userKey });

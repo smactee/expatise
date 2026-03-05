@@ -6,7 +6,9 @@
     "dev": "next dev --webpack",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "revenuecat:webhook:replay": "node scripts/replay-revenuecat-webhook.mjs",
+    "revenuecat:webhook:replay:sample": "node scripts/replay-revenuecat-webhook.mjs scripts/fixtures/revenuecat-webhook.sample.json"
   },
   "dependencies": {
     "@capacitor/android": "^8.1.0",

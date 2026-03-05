@@ -9,6 +9,7 @@ type AuthState = {
   loading: boolean;
   authed: boolean; // true only for email/social (NOT anon/guest)
   method: "guest" | "email" | "social";
+  userId: string | null; // ✅ Supabase user.id (UUID)
   email: string | null;
   provider: string | null; // "google" | "apple" | "wechat" | "email" | "anonymous" | null
 };
@@ -36,32 +37,61 @@ function detectProvider(user: User | null): string | null {
 
 function toState(user: User | null, loading: boolean): AuthState {
   if (!user) {
-    return { loading, authed: false, method: "guest", email: null, provider: null };
+    return {
+      loading,
+      authed: false,
+      method: "guest",
+      userId: null,
+      email: null,
+      provider: null,
+    };
   }
 
   const provider = detectProvider(user);
 
   // anon = guest for your gating semantics
   if (provider === "anonymous") {
-    return { loading, authed: false, method: "guest", email: null, provider: "anonymous" };
+    return {
+      loading,
+      authed: false,
+      method: "guest",
+      userId: null,
+      email: null,
+      provider: "anonymous",
+    };
   }
 
   // email/password
   if (provider === "email" || (!!user.email && !provider)) {
-    return { loading, authed: true, method: "email", email: user.email ?? null, provider: "email" };
+    return {
+      loading,
+      authed: true,
+      method: "email",
+      userId: user.id,
+      email: user.email ?? null,
+      provider: "email",
+    };
   }
 
   // social
-  return { loading, authed: true, method: "social", email: user.email ?? null, provider };
+  return {
+    loading,
+    authed: true,
+    method: "social",
+    userId: user.id,
+    email: user.email ?? null,
+    provider,
+  };
 }
 
 export function useAuthStatus() {
   const supabase = useMemo(() => createClient(), []);
 
-  const [state, setState] = useState<AuthState>({
+   const [state, setState] = useState<AuthState>({
     loading: true,
     authed: false,
     method: "guest",
+    userId: null,
     email: null,
     provider: null,
   });

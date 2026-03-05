@@ -28,7 +28,7 @@ import { getEntitlements } from "@/lib/entitlements/getEntitlements";
 import { createClient } from "@/lib/supabase/client";
 
 import { Capacitor } from "@capacitor/core";
-import { Purchases } from "@revenuecat/purchases-capacitor";
+import { Purchases, type CustomerInfo } from "@revenuecat/purchases-capacitor";
 import { ensureRevenueCat } from "@/lib/billing/revenuecat";
 
 type EntitlementsContextValue = {
@@ -116,7 +116,7 @@ useEffect(() => {
   })();
 }, [userKey]);
 
-  function entitlementsFromCustomerInfo(customerInfo: any): Entitlements | null {
+  function entitlementsFromCustomerInfo(customerInfo: CustomerInfo): Entitlements | null {
     const active = customerInfo?.entitlements?.active?.[RC_ENTITLEMENT_ID];
     if (!active) return null;
 
@@ -133,7 +133,11 @@ useEffect(() => {
         : periodType === "TRIAL"
         ? "trial"
         : "subscription";
-
+console.log("[RC] entitlement active -> premium ON", {
+    entitlement: RC_ENTITLEMENT_ID,
+    source,
+    expMs,
+  });
     return {
       isPremium: true,
       source,
@@ -308,13 +312,29 @@ useEffect(() => {
 
       const id = await Purchases.addCustomerInfoUpdateListener((customerInfo) => {
         const rcEnt = entitlementsFromCustomerInfo(customerInfo);
-        if (!rcEnt) return;
+        if (rcEnt) {
+          setLocalEntitlements(userKey, rcEnt);
+          setState(rcEnt);
+          try {
+            window.dispatchEvent(new Event("expatise:entitlements-changed"));
+          } catch {}
+          return;
+        }
 
-        setLocalEntitlements(userKey, rcEnt);
-        setState(rcEnt);
-        try {
-          window.dispatchEvent(new Event("expatise:entitlements-changed"));
-        } catch {}
+        // If RevenueCat reports no active entitlement, clear purchase-based premium locally.
+        const current = getLocalEntitlements(userKey) ?? FREE_ENTITLEMENTS;
+        if (
+          current.isPremium &&
+          (current.source === "subscription" ||
+            current.source === "lifetime" ||
+            current.source === "trial")
+        ) {
+          setLocalEntitlements(userKey, FREE_ENTITLEMENTS);
+          setState(FREE_ENTITLEMENTS);
+          try {
+            window.dispatchEvent(new Event("expatise:entitlements-changed"));
+          } catch {}
+        }
       });
 
       rcListenerIdRef.current = id;

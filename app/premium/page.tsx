@@ -9,18 +9,15 @@ import { PLAN_LIST, type PlanId } from "../../lib/plans";
 import BackButton from "@/components/BackButton";
 import { Capacitor } from "@capacitor/core";
 import {
-  RevenueCatUI,
-  PAYWALL_RESULT,
-} from "@revenuecat/purchases-capacitor-ui";
-import {
   Purchases,
+  type CustomerInfo,
   type PurchasesPackage,
 } from "@revenuecat/purchases-capacitor";
 import { ensureRevenueCat } from "@/lib/billing/revenuecat";
 import { useEntitlements } from "@/components/EntitlementsProvider.client";
 import { useSearchParams } from "next/navigation";
-import Link from "next/link";
 import GuestLoginModal from "@/components/GuestLoginModal";
+import type { EntitlementSource } from "@/lib/entitlements/types";
 
 
 
@@ -29,47 +26,21 @@ const VALID_PROMO_CODES = ["EXP30"];
 const RC_ENTITLEMENT_ID =
   process.env.NEXT_PUBLIC_REVENUECAT_ENTITLEMENT_ID ?? "Premium";
 
-// Optional fallback (not used in CTA below, but safe to keep)
-async function buyWithRevenueCat(): Promise<boolean> {
-  const { result } = await RevenueCatUI.presentPaywallIfNeeded({
-    requiredEntitlementIdentifier: RC_ENTITLEMENT_ID,
-  });
+function premiumSourceFromCustomerInfo(
+  customerInfo: CustomerInfo
+): { source: EntitlementSource; expiresAt?: number } | null {
+  const active = customerInfo.entitlements.active?.[RC_ENTITLEMENT_ID];
+  if (!active) return null;
 
-  switch (result) {
-    case PAYWALL_RESULT.PURCHASED:
-    case PAYWALL_RESULT.RESTORED:
-      return true;
-    default:
-      return false;
-  }
-}
+  const expMs =
+    typeof active.expirationDateMillis === "number"
+      ? active.expirationDateMillis
+      : undefined;
+  const periodType = String(active.periodType ?? "").toUpperCase();
+  const source: EntitlementSource =
+    expMs == null ? "lifetime" : periodType === "TRIAL" ? "trial" : "subscription";
 
-async function purchaseSelectedPlan(plan: PlanId, userKey?: string): Promise<boolean> {
-  await ensureRevenueCat(userKey);
-  const offerings = await Purchases.getOfferings();
-  const o = offerings.current;
-  if (!o) throw new Error("No current offering configured in RevenueCat.");
-
-  let pkg: PurchasesPackage | null = null;
-
-  // Map PlanId -> Offering package shortcuts
-  if (plan === "monthly") pkg = o.monthly;
-  else if (plan === "three_month") pkg = o.threeMonth;
-  else if (plan === "six_month") pkg = o.sixMonth;
-  else if (plan === "lifetime") pkg = o.lifetime;
-
-  // Fallback: RevenueCat package identifiers are often like "$rc_three_month"
-  if (!pkg) {
-    pkg =
-      o.availablePackages.find((p) => p.identifier === `$rc_${plan}`) ??
-      o.availablePackages.find((p) => p.identifier === plan) ??
-      null;
-  }
-
-  if (!pkg) throw new Error(`No package found for plan: ${plan}`);
-
-  const { customerInfo } = await Purchases.purchasePackage({ aPackage: pkg });
-  return customerInfo.entitlements.active?.[RC_ENTITLEMENT_ID]?.isActive === true;
+  return { source, expiresAt: expMs };
 }
 
 export default function PremiumPage() {
@@ -119,6 +90,9 @@ useEffect(() => {
       await ensureRevenueCat(); // ✅ add this line
 
       const offerings = await Purchases.getOfferings();
+console.log("[RC] current offering:", offerings.current?.identifier);
+console.log("[RC] packages:", offerings.current?.availablePackages?.map(p => p.identifier));
+      
       const o = offerings.current;
       if (!o) return;
 
@@ -332,39 +306,71 @@ useEffect(() => {
           className={styles.cta}
           disabled={!selected}
           onClick={async () => {
-  setPlanError("");
+            setPlanError("");
 
-  if (!selected) {
-    setPlanError("Please select a plan.");
-    return;
-  }
+            if (!selected) {
+              setPlanError("Please select a plan.");
+              return;
+            }
 
-  const plan = selected;
+            const plan = selected;
 
-  // ✅ Guest: show modal (NO redirect)
-  if (userKey === "guest") {
-    setPendingPlan(plan);
-    setShowGuestModal(true);
-    return;
-  }
+            // ✅ Guest: show modal (NO redirect)
+            if (userKey === "guest") {
+              setPendingPlan(plan);
+              setShowGuestModal(true);
+              return;
+            }
 
-  if (Capacitor.isNativePlatform()) {
-    const ok = await purchaseSelectedPlan(plan, userKey);
-    if (ok) {
-      grantPremium(plan === "lifetime" ? "lifetime" : "subscription");
-      refresh();
+            if (Capacitor.isNativePlatform()) {
+              try {
+                await ensureRevenueCat(userKey);
+                const offerings = await Purchases.getOfferings();
+                const o = offerings.current;
+                if (!o) throw new Error("No current offering configured in RevenueCat.");
 
-      const next = new URLSearchParams(window.location.search).get("next");
-      router.replace(next ? decodeURIComponent(next) : "/");
-    }
-    return;
-  }
+                let pkg: PurchasesPackage | null = null;
+                if (plan === "monthly") pkg = o.monthly;
+                else if (plan === "three_month") pkg = o.threeMonth;
+                else if (plan === "six_month") pkg = o.sixMonth;
+                else if (plan === "lifetime") pkg = o.lifetime;
 
-  // Web fallback
-  router.push(
-    `/checkout?plan=${encodeURIComponent(plan)}${promoApplied ? "&promo=1" : ""}`
-  );
-}}
+                if (!pkg) {
+                  pkg =
+                    o.availablePackages.find((p) => p.identifier === `$rc_${plan}`) ??
+                    o.availablePackages.find((p) => p.identifier === plan) ??
+                    null;
+                }
+                if (!pkg) throw new Error(`No package found for plan: ${plan}`);
+
+                const { customerInfo } = await Purchases.purchasePackage({ aPackage: pkg });
+console.log("[RC] purchase ok, appUserId:", customerInfo.originalAppUserId);
+console.log("[RC] active entitlements:", Object.keys(customerInfo.entitlements.active ?? {}));
+console.log("[RC] premium active:", !!customerInfo.entitlements.active?.[RC_ENTITLEMENT_ID]);
+console.log("[RC] post-purchase customerInfo premium:", !!customerInfo.entitlements.active?.[RC_ENTITLEMENT_ID]);
+                const premiumData = premiumSourceFromCustomerInfo(customerInfo);
+                if (!premiumData) return;
+
+                grantPremium(premiumData.source, premiumData.expiresAt);
+                refresh();
+
+                const next = new URLSearchParams(window.location.search).get("next");
+                router.replace(next ? decodeURIComponent(next) : "/");
+              } catch (err: unknown) {
+                const msg = err instanceof Error ? err.message : String(err);
+                const cancelled =
+                  msg.toLowerCase().includes("cancel") ||
+                  msg.toLowerCase().includes("usercancelled");
+                if (!cancelled) setPlanError(msg || "Purchase failed. Please try again.");
+              }
+              return;
+            }
+
+            // Web fallback
+            router.push(
+              `/checkout?plan=${encodeURIComponent(plan)}${promoApplied ? "&promo=1" : ""}`
+            );
+          }}
         >
           <span className={styles.ctaText}>Get Premium Now</span>
           <span className={styles.ctaChevron}>›</span>

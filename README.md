@@ -114,3 +114,17 @@ If usage and adoption grows, Expatise may expand into:
 
 ---
 
+## RevenueCat Webhook Replay
+
+Use this to test `revenuecat-webhook` before going live.
+
+1. Set env vars:
+   - `REVENUECAT_WEBHOOK_URL=https://<project-ref>.functions.supabase.co/revenuecat-webhook`
+   - `REVENUECAT_WEBHOOK_AUTH=<your-webhook-secret>`
+2. Replay sample payload:
+   - `npm run revenuecat:webhook:replay:sample`
+3. Replay custom payload:
+   - `npm run revenuecat:webhook:replay -- path/to/payload.json`
+
+Default sample payload lives at:
+- `scripts/fixtures/revenuecat-webhook.sample.json`

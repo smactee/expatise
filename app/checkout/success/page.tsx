@@ -15,7 +15,7 @@ import CSRBoundary from "@/components/CSRBoundary";
 function Inner() {
   const router = useRouter();
   const sp = useSearchParams();
-  const { grantPremium } = useEntitlements();
+  const { refresh } = useEntitlements();
 
   const next = safeNextPath(sp.get("next"), "/");
   const plan = sp.get("plan");
@@ -55,8 +55,8 @@ const grantedRef = useRef(false);
     // Temporary: grant premium locally after “successful purchase”.
     // Later: replace with real IAP verification + entitlements refresh.
     const source = plan === "lifetime" ? "lifetime" : "subscription";
-    grantPremium(source);
-  }, [plan, grantPremium]);
+    refresh();
+  }, [plan, refresh]);
 
   return (
     <main className={styles.page}>
