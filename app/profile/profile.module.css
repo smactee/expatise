@@ -151,9 +151,100 @@
   font-size: 18px;
 }
 
+/* Crown container (stays exactly 23x23 so it won’t shift alignment) */
 .crownIcon {
+  width: 23px;
+  height: 23px;
   display: inline-block;
   flex-shrink: 0;
+  position: relative;
+  vertical-align: middle;
+  overflow: visible;
+
+  /* default fill (free/guest) */
+  --crown-fill: rgba(156, 163, 175, 0.95);
+}
+
+/* The crown silhouette itself (MASK APPLIED HERE, not on the container) */
+.crownIcon::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+
+  background: var(--crown-fill);
+
+  -webkit-mask-image: url("/images/profile/yellowcrown-icon.png");
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  -webkit-mask-size: contain;
+
+  mask-image: url("/images/profile/yellowcrown-icon.png");
+  mask-repeat: no-repeat;
+  mask-position: center;
+  mask-size: contain;
+
+  /* If you want that “active icon punchiness”, apply it to the crown only */
+  filter: brightness(1) contrast(1.5) saturate(2);
+}
+
+/* Free/guest: dull gray, no halo */
+.crownFree {
+  --crown-fill: rgba(156, 163, 175, 0.95);
+}
+
+/* Premium: gradient fill + halo */
+.crownPremium {
+  --crown-fill: var(--color-premium-gradient);
+}
+
+/* Halo ring (ONLY premium) — NOT masked because mask is on ::after */
+.crownPremium::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  transform: translate(-50%, -50%) scale(1);
+  z-index: 0;
+  pointer-events: none;
+
+  background: var(--color-premium-gradient);
+
+  /* make it a ring */
+  -webkit-mask-image: radial-gradient(
+    farthest-side,
+    transparent calc(100% - 2px),
+    #000 calc(100% - 2px),
+    #000 100%
+  );
+  mask-image: radial-gradient(
+    farthest-side,
+    transparent calc(100% - 2px),
+    #000 calc(100% - 2px),
+    #000 100%
+  );
+
+  opacity: 0.35;
+  animation: crownHaloPulse 1.8s ease-out infinite;
+}
+
+@keyframes crownHaloPulse {
+  0%   { transform: translate(-50%, -50%) scale(1);    opacity: 0.35; }
+  35%  { transform: translate(-50%, -50%) scale(1.20); opacity: 0.22; }
+  60%  { transform: translate(-50%, -50%) scale(1.45); opacity: 0; }
+  100% { transform: translate(-50%, -50%) scale(1.45); opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .crownPremium::before {
+    animation: none;
+    opacity: 0.28;
+    transform: translate(-50%, -50%) scale(1);
+  }
 }
 
 .emailWrapper {
@@ -293,6 +384,26 @@
 .settingsIcon img {
   width: 24px;
   height: 24px;
+}
+
+.restoreIcon {
+  /* match the PNG icon box */
+  width: 24px;
+  height: 24px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  /* match your app’s blue (same family as #2b7caf) */
+  color: rgba(43, 124, 175, 0.95);
+
+  /* make the glyph visually similar size to 24px icons */
+  font-size: 22px;
+  line-height: 1;
+
+  /* slight optical alignment tweak (optional) */
+  transform: translateY(-0.5px);
 }
 
 .settingsLabel {

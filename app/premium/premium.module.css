@@ -277,7 +277,10 @@
 
 
 .promoInput {
-  flex: 1;
+  flex: 1 1 0;            /* <-- important: allow shrink */
+  min-width: 0;           /* <-- THE magic line */
+  box-sizing: border-box; /* <-- keep border/padding inside flex width */
+
   border-radius: 12px;
   border: 2px dashed rgba(43, 124, 175, 0.6);
   background: rgba(255, 255, 255, 0.55);
@@ -289,7 +292,8 @@
 }
 
 .promoApply {
-  width: 90px;
+    flex: 0 0 auto;     /* don't shrink */
+  width: auto;        /* let the button size to content */
   height: 43px;              /* match .promoRow height */
   box-sizing: border-box;
 

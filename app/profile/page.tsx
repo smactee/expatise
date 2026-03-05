@@ -172,8 +172,7 @@ const goComingSoon = (feature: string) => {
   );
 };
 
-const { userKey: entUserKey, refresh: refreshEnt, grantPremium } = useEntitlements();
-
+const { userKey: entUserKey, refresh: refreshEnt, grantPremium, isPremium } = useEntitlements();
 const [restoring, setRestoring] = useState(false);
 const [restoreMsg, setRestoreMsg] = useState<string | null>(null);
 
@@ -290,13 +289,12 @@ const handleRestorePurchases = async (e: React.SyntheticEvent) => {
   >
   </span>
 
-  <Image
-    src="/images/profile/yellowcrown-icon.png"
-    alt="Crown Icon"
-    width={23}
-    height={23}
-    className={styles.crownIcon}
-  />
+  <span
+  aria-hidden="true"
+  className={`${styles.crownIcon} ${
+    isPremium ? styles.crownPremium : styles.crownFree
+  }`}
+/>
 </div>
 
 
@@ -420,7 +418,12 @@ const handleRestorePurchases = async (e: React.SyntheticEvent) => {
   disabled={restoring}
 >
   <div className={styles.settingsLeft}>
-    <span className={styles.settingsIcon} aria-hidden="true">↻</span>
+    <span
+  className={`${styles.settingsIcon} ${styles.restoreIcon}`}
+  aria-hidden="true"
+>
+  ↻
+</span>
     <span className={styles.settingsLabel}>
       {restoring ? "Restoring..." : "Restore Purchases"}
     </span>

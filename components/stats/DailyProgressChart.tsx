@@ -1,3 +1,5 @@
+//components/stats/DailyProgressChart.tsx
+
 'use client';
 
 import styles from './DailyProgressChart.module.css';
