@@ -9,6 +9,7 @@ import styles from "./checkout.module.css";
 import { PLAN_MAP, toPlanId, type PlanId } from "@/lib/plans";
 import { safeNextPath } from "@/lib/auth";
 import CSRBoundary from "@/components/CSRBoundary";
+import BackButton from "@/components/BackButton";
 
 type PayMethod = "alipay" | "gpay" | "applepay" | "wechat";
 
@@ -55,12 +56,11 @@ function Inner() {
   return (
     <main className={styles.page}>
       <div className={styles.frame}>
-        {/* Top bar */}
+               {/* Top bar */}
         <header className={styles.topBar}>
-          <button type="button" className={styles.backButton} onClick={() => router.back()}>
-            <span className={styles.backIcon}>‹</span>
-            <span className={styles.backText}></span>
-          </button>
+          <div className={styles.topBackButton}>
+            <BackButton variant="inline" />
+          </div>
         </header>
 
         {/* Content */}

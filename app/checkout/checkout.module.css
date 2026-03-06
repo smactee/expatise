@@ -23,30 +23,13 @@
   box-sizing: border-box;
 }
 
-.backButton {
-  appearance: none;
-  border: none;
-  background: transparent;
-  padding: 0;
-  display: inline-flex;
-  flex-direction: row;
-  align-items: center;
-  white-space: nowrap;
-  gap: 10px;
-  cursor: pointer;
-  color: #111827;
+.topBackButton {
+  position: absolute;
+  top: 64px;
+  left: 32px;
+  z-index: 5;
 }
 
-.backIcon {
-  font-size: 30px;
-  line-height: 1;
-  color: rgba(0, 0, 0, 0.45);
-}
-
-.backText {
-  font-size: 18px;
-  font-weight: 600;
-}
 
 /* Content area */
 .content {

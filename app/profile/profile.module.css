@@ -44,9 +44,16 @@
   font-weight: 600;
 }
 
+.cardBackButton {
+  position: absolute;
+  top: 3px;
+  left: 4px;
+  z-index: 5;
+}
 /* ===== Profile card ===== */
 
 .profileCard {
+  position: relative;
   background: var(--color-profile-card-bg);
   padding: 24px 20px 28px;
   box-shadow: 0 20px 50px rgba(15, 33, 70, 0.16);
@@ -387,25 +394,28 @@
 }
 
 .restoreIcon {
-  /* match the PNG icon box */
   width: 24px;
   height: 24px;
+  display: inline-block;
+  flex-shrink: 0;
 
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+  /* paint color */
+  background: #2B7CAF;
 
-  /* match your app’s blue (same family as #2b7caf) */
-  color: rgba(43, 124, 175, 0.95);
+  /* use PNG as an alpha mask */
+  -webkit-mask-image: url("/images/profile/restore-icon.png");
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  -webkit-mask-size: contain;
 
-  /* make the glyph visually similar size to 24px icons */
-  font-size: 22px;
-  line-height: 1;
+  mask-image: url("/images/profile/restore-icon.png");
+  mask-repeat: no-repeat;
+  mask-position: center;
+  mask-size: contain;
 
-  /* slight optical alignment tweak (optional) */
-  transform: translateY(-0.5px);
+  /* optional: tiny optical alignment tweak */
+  transform: translateY(0.5px);
 }
-
 .settingsLabel {
   font-size: 16px;
   font-weight: 500;

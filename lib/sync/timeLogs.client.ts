@@ -1,3 +1,4 @@
+//lib/sync/timeLogs.client.ts
 'use client';
 
 import { createClient } from '@/lib/supabase/client';

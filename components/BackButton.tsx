@@ -63,7 +63,7 @@ function Inner({
     router.back();
   };
 
-  const fixedStyle: CSSProperties =
+    const fixedStyle: CSSProperties =
     variant === 'fixed'
       ? {
           position: 'fixed',
@@ -71,7 +71,12 @@ function Inner({
           left: 'calc(env(safe-area-inset-left, 0px) + 10px)',
           zIndex: 9999,
         }
-      : { position: 'static' };
+      : {
+          position: 'relative',
+          top: 'auto',
+          left: 'auto',
+          zIndex: 'auto',
+        };
 
   return (
     <button

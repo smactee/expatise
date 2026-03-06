@@ -49,7 +49,7 @@
 .crownWrap {
   display: flex;
   justify-content: center;
-  margin-top: 36px;
+  margin-top: 0;
 }
 
 .crownIcon {
@@ -432,4 +432,17 @@
   text-align: center;
   font-size: 13px;
   color: rgba(220, 38, 38, 0.85);
+}
+
+.topRow {
+  position: relative;
+  width: 100%;
+  height: 66px;
+}
+
+.topBackButton {
+  position: absolute;
+  top: 64px;
+  left: 0;
+  z-index: 5;
 }

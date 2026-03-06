@@ -229,7 +229,6 @@ const handleRestorePurchases = async (e: React.SyntheticEvent) => {
 
   return (
     <main className={styles.page}>
-       <BackButton />
       <div className={styles.content}>
         {/* Top "Back" row */}
         <header className={styles.headerRow}>
@@ -238,6 +237,9 @@ const handleRestorePurchases = async (e: React.SyntheticEvent) => {
 
         {/* Main profile card */}
        <section className={styles.profileCard}>
+         <div className={styles.cardBackButton}>
+    <BackButton variant="inline" />
+  </div>
   <div className={styles.avatarBlock}>
     {/* Clickable avatar */}
     <div 
@@ -418,12 +420,10 @@ const handleRestorePurchases = async (e: React.SyntheticEvent) => {
   disabled={restoring}
 >
   <div className={styles.settingsLeft}>
-    <span
+   <span
   className={`${styles.settingsIcon} ${styles.restoreIcon}`}
   aria-hidden="true"
->
-  ↻
-</span>
+/>
     <span className={styles.settingsLabel}>
       {restoring ? "Restoring..." : "Restore Purchases"}
     </span>

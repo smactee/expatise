@@ -601,12 +601,17 @@ try {
   return (
     <main className={styles.page}>
       <div className={styles.content}>
-  <div className={styles.pageTopRow}>
-    <BackButton />
 
+  <div className={styles.pageTopRow}>
+</div>
+
+<div className={styles.statsSummaryWrap}>
+  <div className={styles.statsBackButton}>
+        <BackButton variant='inline'/>
+  </div>
 <button
   type="button"
-  className={styles.resetBtnFixed}
+  className={styles.resetBtn}
   onClick={async () => {
     const typed = window.prompt(
       'This will permanently delete ALL saved data on this device.\n\nType RESET to confirm:'
@@ -614,8 +619,6 @@ try {
     if ((typed ?? '').trim().toUpperCase() !== 'RESET') return;
 
     await resetAllLocalData({ includeCaches: true });
-
-    // reload so every hook/store reads fresh empty storage
     window.location.reload();
   }}
   aria-label="Reset all saved data"
@@ -623,7 +626,7 @@ try {
 >
   Reset All Stats
 </button>
-  </div>
+
 
 
 
@@ -669,7 +672,7 @@ try {
     </div>
   </div>
 </section>
-
+</div>
 
 
 {/* ==== Big panel + stack of statistic cards ==== */}

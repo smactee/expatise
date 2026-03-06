@@ -128,11 +128,15 @@ console.log("[RC] packages:", offerings.current?.availablePackages?.map(p => p.i
     setShowPromo(false);
   };
 
-  return (
+    return (
     <main className={styles.page}>
-      <BackButton />
-
       <div className={styles.frame}>
+        <div className={styles.topRow}>
+          <div className={styles.topBackButton}>
+            <BackButton variant="inline" />
+          </div>
+        </div>
+
         {/* Crown */}
         <div className={styles.crownWrap}>
           <Image

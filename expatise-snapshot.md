@@ -150,6 +150,20 @@ If usage and adoption grows, Expatise may expand into:
 
 ---
 
+## RevenueCat Webhook Replay
+
+Use this to test `revenuecat-webhook` before going live.
+
+1. Set env vars:
+   - `REVENUECAT_WEBHOOK_URL=https://<project-ref>.functions.supabase.co/revenuecat-webhook`
+   - `REVENUECAT_WEBHOOK_AUTH=<your-webhook-secret>`
+2. Replay sample payload:
+   - `npm run revenuecat:webhook:replay:sample`
+3. Replay custom payload:
+   - `npm run revenuecat:webhook:replay -- path/to/payload.json`
+
+Default sample payload lives at:
+- `scripts/fixtures/revenuecat-webhook.sample.json`
 
 ```
 
@@ -5965,12 +5979,17 @@ try {
   return (
     <main className={styles.page}>
       <div className={styles.content}>
-  <div className={styles.pageTopRow}>
-    <BackButton />
 
+  <div className={styles.pageTopRow}>
+</div>
+
+<div className={styles.statsSummaryWrap}>
+  <div className={styles.statsBackButton}>
+        <BackButton variant='inline'/>
+  </div>
 <button
   type="button"
-  className={styles.resetBtnFixed}
+  className={styles.resetBtn}
   onClick={async () => {
     const typed = window.prompt(
       'This will permanently delete ALL saved data on this device.\n\nType RESET to confirm:'
@@ -5978,8 +5997,6 @@ try {
     if ((typed ?? '').trim().toUpperCase() !== 'RESET') return;
 
     await resetAllLocalData({ includeCaches: true });
-
-    // reload so every hook/store reads fresh empty storage
     window.location.reload();
   }}
   aria-label="Reset all saved data"
@@ -5987,7 +6004,7 @@ try {
 >
   Reset All Stats
 </button>
-  </div>
+
 
 
 
@@ -6033,7 +6050,7 @@ try {
     </div>
   </div>
 </section>
-
+</div>
 
 
 {/* ==== Big panel + stack of statistic cards ==== */}
@@ -6833,26 +6850,6 @@ try {
 }
 
 .resetBtn{
-  border: 1px solid rgba(17,24,39,0.12);
-  background: rgba(255,255,255,0.65);
-  padding: 8px 12px;
-  border-radius: 999px;
-  font-size: 12px;
-  font-weight: 600;
-  color: rgba(17,24,39,0.75);
-  cursor: pointer;
-}
-
-.resetBtn:active{
-  transform: translateY(1px);
-}
-
-.resetBtnFixed{
-  position: fixed;
-  top: calc(env(safe-area-inset-top, 0px));
-  right: calc(env(safe-area-inset-right, 0px) + 10px);
-  z-index: 9999;
-
   border: 1px solid var(--color-logout-border);
   background: var(--color-premium-gradient);
   box-shadow: 0 18px 40px rgba(15, 33, 70, 0.22);
@@ -6872,9 +6869,8 @@ try {
   white-space: nowrap;
 }
 
-.resetBtnFixed:active{
-  transform: translateY(1px);
-}
+
+
 
 
 /* ================================= */
@@ -7217,7 +7213,7 @@ try {
 /* Buttons */
 :root[data-theme='dark'] .statsTestButton,
 :root[data-theme='dark'] .statsReviewButton,
-:root[data-theme='dark'] .resetBtnFixed {
+:root[data-theme='dark'] .resetBtn {
   background: linear-gradient(
     90deg,
     rgba(43, 124, 175, 0.4) 0%,
@@ -7310,6 +7306,52 @@ try {
   color: rgba(255,255,255,0.90);
 }
 
+.statsSummaryWrap {
+  position: relative;
+  margin-top: 8px;
+}
+
+.pageTopRow{
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  min-height: 44px;
+  margin-bottom: 8px;
+}
+
+.statsSummaryCard {
+  margin-top: 0;
+  width: 100%;
+  border-radius: 32px;
+  padding: 24px 24px 18px;
+  background:
+    radial-gradient(circle at top, rgba(255, 255, 255, 0.9), transparent 60%),
+    linear-gradient(180deg, #eaf3ff, #f4f7ff);
+  box-shadow: 0 18px 40px rgba(15, 33, 70, 0.16);
+}
+
+.resetBtn{
+  position: absolute;
+  top: -10px;
+  right: 2px;
+  z-index: 6;
+
+  border-radius: 22px;
+
+  border: 1px solid var(--color-logout-border);
+  background: var(--color-premium-gradient);
+  box-shadow: 0 18px 40px rgba(15, 33, 70, 0.22);
+
+  
+  font-weight: 700;
+  color: #111827;
+  cursor: pointer;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+}
 ```
 
 ### app/account-deletion/page.tsx
@@ -8088,30 +8130,13 @@ export default function AuthCallbackPage() {
   box-sizing: border-box;
 }
 
-.backButton {
-  appearance: none;
-  border: none;
-  background: transparent;
-  padding: 0;
-  display: inline-flex;
-  flex-direction: row;
-  align-items: center;
-  white-space: nowrap;
-  gap: 10px;
-  cursor: pointer;
-  color: #111827;
+.topBackButton {
+  position: absolute;
+  top: 64px;
+  left: 32px;
+  z-index: 5;
 }
 
-.backIcon {
-  font-size: 30px;
-  line-height: 1;
-  color: rgba(0, 0, 0, 0.45);
-}
-
-.backText {
-  font-size: 18px;
-  font-weight: 600;
-}
 
 /* Content area */
 .content {
@@ -8307,6 +8332,7 @@ import styles from "./checkout.module.css";
 import { PLAN_MAP, toPlanId, type PlanId } from "@/lib/plans";
 import { safeNextPath } from "@/lib/auth";
 import CSRBoundary from "@/components/CSRBoundary";
+import BackButton from "@/components/BackButton";
 
 type PayMethod = "alipay" | "gpay" | "applepay" | "wechat";
 
@@ -8353,12 +8379,11 @@ function Inner() {
   return (
     <main className={styles.page}>
       <div className={styles.frame}>
-        {/* Top bar */}
+               {/* Top bar */}
         <header className={styles.topBar}>
-          <button type="button" className={styles.backButton} onClick={() => router.back()}>
-            <span className={styles.backIcon}>‹</span>
-            <span className={styles.backText}></span>
-          </button>
+          <div className={styles.topBackButton}>
+            <BackButton variant="inline" />
+          </div>
         </header>
 
         {/* Content */}
@@ -8531,7 +8556,7 @@ import CSRBoundary from "@/components/CSRBoundary";
 function Inner() {
   const router = useRouter();
   const sp = useSearchParams();
-  const { grantPremium } = useEntitlements();
+  const { refresh } = useEntitlements();
 
   const next = safeNextPath(sp.get("next"), "/");
   const plan = sp.get("plan");
@@ -8571,8 +8596,8 @@ const grantedRef = useRef(false);
     // Temporary: grant premium locally after “successful purchase”.
     // Later: replace with real IAP verification + entitlements refresh.
     const source = plan === "lifetime" ? "lifetime" : "subscription";
-    grantPremium(source);
-  }, [plan, grantPremium]);
+    refresh();
+  }, [plan, refresh]);
 
   return (
     <main className={styles.page}>
@@ -9361,6 +9386,7 @@ import { faChevronLeft, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-ic
 
 import styles from './create-account-modal.module.css';
 import { isValidEmail, normalizeEmail } from '@/lib/auth';
+import { NATIVE_OAUTH_REDIRECT_URI } from '@/lib/auth/oauth';
 import { createClient } from '@/lib/supabase/client';
 
 type Props = {
@@ -9589,7 +9615,7 @@ export default function CreateAccountModal({ open, onClose, onCreated }: Props) 
       if (Capacitor.isNativePlatform()) {
         const { Browser } = await import("@capacitor/browser");
 
-        const redirectTo = "expatise://auth/callback";
+        const redirectTo = NATIVE_OAUTH_REDIRECT_URI;
 
         const { data, error } = await supabase.auth.signInWithOAuth({
           provider: "google",
@@ -9649,6 +9675,7 @@ return;
     </div>
   );
 }
+
 ```
 
 ### app/login/create-account-modal.module.css
@@ -10162,6 +10189,7 @@ import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import CreateAccountModal from './CreateAccountModal';
 import { faGoogle, faApple, faWeixin } from '@fortawesome/free-brands-svg-icons';
 import { isValidEmail, normalizeEmail, safeNextPath } from '@/lib/auth';
+import { NATIVE_OAUTH_REDIRECT_URI } from '@/lib/auth/oauth';
 import CSRBoundary from '@/components/CSRBoundary';
 import { createClient } from '@/lib/supabase/client';
 
@@ -10445,7 +10473,7 @@ router.replace(nextParam);
       if (Capacitor.isNativePlatform()) {
         const { Browser } = await import("@capacitor/browser");
 
-        const redirectTo = "expatise://auth/callback";
+        const redirectTo = NATIVE_OAUTH_REDIRECT_URI;
 
         const { data, error } = await supabase.auth.signInWithOAuth({
           provider: "google",
@@ -10534,6 +10562,7 @@ export default function LoginPage() {
     </CSRBoundary>
   );
 }
+
 ```
 
 ### app/onboarding/onboarding.module.css
@@ -12090,18 +12119,15 @@ import { PLAN_LIST, type PlanId } from "../../lib/plans";
 import BackButton from "@/components/BackButton";
 import { Capacitor } from "@capacitor/core";
 import {
-  RevenueCatUI,
-  PAYWALL_RESULT,
-} from "@revenuecat/purchases-capacitor-ui";
-import {
   Purchases,
+  type CustomerInfo,
   type PurchasesPackage,
 } from "@revenuecat/purchases-capacitor";
 import { ensureRevenueCat } from "@/lib/billing/revenuecat";
 import { useEntitlements } from "@/components/EntitlementsProvider.client";
 import { useSearchParams } from "next/navigation";
-import Link from "next/link";
 import GuestLoginModal from "@/components/GuestLoginModal";
+import type { EntitlementSource } from "@/lib/entitlements/types";
 
 
 
@@ -12110,47 +12136,21 @@ const VALID_PROMO_CODES = ["EXP30"];
 const RC_ENTITLEMENT_ID =
   process.env.NEXT_PUBLIC_REVENUECAT_ENTITLEMENT_ID ?? "Premium";
 
-// Optional fallback (not used in CTA below, but safe to keep)
-async function buyWithRevenueCat(): Promise<boolean> {
-  const { result } = await RevenueCatUI.presentPaywallIfNeeded({
-    requiredEntitlementIdentifier: RC_ENTITLEMENT_ID,
-  });
+function premiumSourceFromCustomerInfo(
+  customerInfo: CustomerInfo
+): { source: EntitlementSource; expiresAt?: number } | null {
+  const active = customerInfo.entitlements.active?.[RC_ENTITLEMENT_ID];
+  if (!active) return null;
 
-  switch (result) {
-    case PAYWALL_RESULT.PURCHASED:
-    case PAYWALL_RESULT.RESTORED:
-      return true;
-    default:
-      return false;
-  }
-}
+  const expMs =
+    typeof active.expirationDateMillis === "number"
+      ? active.expirationDateMillis
+      : undefined;
+  const periodType = String(active.periodType ?? "").toUpperCase();
+  const source: EntitlementSource =
+    expMs == null ? "lifetime" : periodType === "TRIAL" ? "trial" : "subscription";
 
-async function purchaseSelectedPlan(plan: PlanId, userKey?: string): Promise<boolean> {
-  await ensureRevenueCat(userKey);
-  const offerings = await Purchases.getOfferings();
-  const o = offerings.current;
-  if (!o) throw new Error("No current offering configured in RevenueCat.");
-
-  let pkg: PurchasesPackage | null = null;
-
-  // Map PlanId -> Offering package shortcuts
-  if (plan === "monthly") pkg = o.monthly;
-  else if (plan === "three_month") pkg = o.threeMonth;
-  else if (plan === "six_month") pkg = o.sixMonth;
-  else if (plan === "lifetime") pkg = o.lifetime;
-
-  // Fallback: RevenueCat package identifiers are often like "$rc_three_month"
-  if (!pkg) {
-    pkg =
-      o.availablePackages.find((p) => p.identifier === `$rc_${plan}`) ??
-      o.availablePackages.find((p) => p.identifier === plan) ??
-      null;
-  }
-
-  if (!pkg) throw new Error(`No package found for plan: ${plan}`);
-
-  const { customerInfo } = await Purchases.purchasePackage({ aPackage: pkg });
-  return customerInfo.entitlements.active?.[RC_ENTITLEMENT_ID]?.isActive === true;
+  return { source, expiresAt: expMs };
 }
 
 export default function PremiumPage() {
@@ -12200,6 +12200,9 @@ useEffect(() => {
       await ensureRevenueCat(); // ✅ add this line
 
       const offerings = await Purchases.getOfferings();
+console.log("[RC] current offering:", offerings.current?.identifier);
+console.log("[RC] packages:", offerings.current?.availablePackages?.map(p => p.identifier));
+      
       const o = offerings.current;
       if (!o) return;
 
@@ -12235,11 +12238,15 @@ useEffect(() => {
     setShowPromo(false);
   };
 
-  return (
+    return (
     <main className={styles.page}>
-      <BackButton />
-
       <div className={styles.frame}>
+        <div className={styles.topRow}>
+          <div className={styles.topBackButton}>
+            <BackButton variant="inline" />
+          </div>
+        </div>
+
         {/* Crown */}
         <div className={styles.crownWrap}>
           <Image
@@ -12413,39 +12420,71 @@ useEffect(() => {
           className={styles.cta}
           disabled={!selected}
           onClick={async () => {
-  setPlanError("");
+            setPlanError("");
 
-  if (!selected) {
-    setPlanError("Please select a plan.");
-    return;
-  }
+            if (!selected) {
+              setPlanError("Please select a plan.");
+              return;
+            }
 
-  const plan = selected;
+            const plan = selected;
 
-  // ✅ Guest: show modal (NO redirect)
-  if (userKey === "guest") {
-    setPendingPlan(plan);
-    setShowGuestModal(true);
-    return;
-  }
+            // ✅ Guest: show modal (NO redirect)
+            if (userKey === "guest") {
+              setPendingPlan(plan);
+              setShowGuestModal(true);
+              return;
+            }
 
-  if (Capacitor.isNativePlatform()) {
-    const ok = await purchaseSelectedPlan(plan, userKey);
-    if (ok) {
-      grantPremium(plan === "lifetime" ? "lifetime" : "subscription");
-      refresh();
+            if (Capacitor.isNativePlatform()) {
+              try {
+                await ensureRevenueCat(userKey);
+                const offerings = await Purchases.getOfferings();
+                const o = offerings.current;
+                if (!o) throw new Error("No current offering configured in RevenueCat.");
 
-      const next = new URLSearchParams(window.location.search).get("next");
-      router.replace(next ? decodeURIComponent(next) : "/");
-    }
-    return;
-  }
+                let pkg: PurchasesPackage | null = null;
+                if (plan === "monthly") pkg = o.monthly;
+                else if (plan === "three_month") pkg = o.threeMonth;
+                else if (plan === "six_month") pkg = o.sixMonth;
+                else if (plan === "lifetime") pkg = o.lifetime;
 
-  // Web fallback
-  router.push(
-    `/checkout?plan=${encodeURIComponent(plan)}${promoApplied ? "&promo=1" : ""}`
-  );
-}}
+                if (!pkg) {
+                  pkg =
+                    o.availablePackages.find((p) => p.identifier === `$rc_${plan}`) ??
+                    o.availablePackages.find((p) => p.identifier === plan) ??
+                    null;
+                }
+                if (!pkg) throw new Error(`No package found for plan: ${plan}`);
+
+                const { customerInfo } = await Purchases.purchasePackage({ aPackage: pkg });
+console.log("[RC] purchase ok, appUserId:", customerInfo.originalAppUserId);
+console.log("[RC] active entitlements:", Object.keys(customerInfo.entitlements.active ?? {}));
+console.log("[RC] premium active:", !!customerInfo.entitlements.active?.[RC_ENTITLEMENT_ID]);
+console.log("[RC] post-purchase customerInfo premium:", !!customerInfo.entitlements.active?.[RC_ENTITLEMENT_ID]);
+                const premiumData = premiumSourceFromCustomerInfo(customerInfo);
+                if (!premiumData) return;
+
+                grantPremium(premiumData.source, premiumData.expiresAt);
+                refresh();
+
+                const next = new URLSearchParams(window.location.search).get("next");
+                router.replace(next ? decodeURIComponent(next) : "/");
+              } catch (err: unknown) {
+                const msg = err instanceof Error ? err.message : String(err);
+                const cancelled =
+                  msg.toLowerCase().includes("cancel") ||
+                  msg.toLowerCase().includes("usercancelled");
+                if (!cancelled) setPlanError(msg || "Purchase failed. Please try again.");
+              }
+              return;
+            }
+
+            // Web fallback
+            router.push(
+              `/checkout?plan=${encodeURIComponent(plan)}${promoApplied ? "&promo=1" : ""}`
+            );
+          }}
         >
           <span className={styles.ctaText}>Get Premium Now</span>
           <span className={styles.ctaChevron}>›</span>
@@ -12461,6 +12500,7 @@ useEffect(() => {
     </main>
   );
 }
+
 ```
 
 ### app/premium/premium.module.css
@@ -12516,7 +12556,7 @@ useEffect(() => {
 .crownWrap {
   display: flex;
   justify-content: center;
-  margin-top: 36px;
+  margin-top: 0;
 }
 
 .crownIcon {
@@ -12744,7 +12784,10 @@ useEffect(() => {
 
 
 .promoInput {
-  flex: 1;
+  flex: 1 1 0;            /* <-- important: allow shrink */
+  min-width: 0;           /* <-- THE magic line */
+  box-sizing: border-box; /* <-- keep border/padding inside flex width */
+
   border-radius: 12px;
   border: 2px dashed rgba(43, 124, 175, 0.6);
   background: rgba(255, 255, 255, 0.55);
@@ -12756,7 +12799,8 @@ useEffect(() => {
 }
 
 .promoApply {
-  width: 90px;
+    flex: 0 0 auto;     /* don't shrink */
+  width: auto;        /* let the button size to content */
   height: 43px;              /* match .promoRow height */
   box-sizing: border-box;
 
@@ -12897,6 +12941,18 @@ useEffect(() => {
   color: rgba(220, 38, 38, 0.85);
 }
 
+.topRow {
+  position: relative;
+  width: 100%;
+  height: 66px;
+}
+
+.topBackButton {
+  position: absolute;
+  top: 64px;
+  left: 0;
+  z-index: 5;
+}
 ```
 
 ### app/privacy/page.tsx
@@ -13338,8 +13394,7 @@ const goComingSoon = (feature: string) => {
   );
 };
 
-const { userKey: entUserKey, refresh: refreshEnt, grantPremium } = useEntitlements();
-
+const { userKey: entUserKey, refresh: refreshEnt, grantPremium, isPremium } = useEntitlements();
 const [restoring, setRestoring] = useState(false);
 const [restoreMsg, setRestoreMsg] = useState<string | null>(null);
 
@@ -13396,7 +13451,6 @@ const handleRestorePurchases = async (e: React.SyntheticEvent) => {
 
   return (
     <main className={styles.page}>
-       <BackButton />
       <div className={styles.content}>
         {/* Top "Back" row */}
         <header className={styles.headerRow}>
@@ -13405,6 +13459,9 @@ const handleRestorePurchases = async (e: React.SyntheticEvent) => {
 
         {/* Main profile card */}
        <section className={styles.profileCard}>
+         <div className={styles.cardBackButton}>
+    <BackButton variant="inline" />
+  </div>
   <div className={styles.avatarBlock}>
     {/* Clickable avatar */}
     <div 
@@ -13456,13 +13513,12 @@ const handleRestorePurchases = async (e: React.SyntheticEvent) => {
   >
   </span>
 
-  <Image
-    src="/images/profile/yellowcrown-icon.png"
-    alt="Crown Icon"
-    width={23}
-    height={23}
-    className={styles.crownIcon}
-  />
+  <span
+  aria-hidden="true"
+  className={`${styles.crownIcon} ${
+    isPremium ? styles.crownPremium : styles.crownFree
+  }`}
+/>
 </div>
 
 
@@ -13586,7 +13642,10 @@ const handleRestorePurchases = async (e: React.SyntheticEvent) => {
   disabled={restoring}
 >
   <div className={styles.settingsLeft}>
-    <span className={styles.settingsIcon} aria-hidden="true">↻</span>
+   <span
+  className={`${styles.settingsIcon} ${styles.restoreIcon}`}
+  aria-hidden="true"
+/>
     <span className={styles.settingsLabel}>
       {restoring ? "Restoring..." : "Restore Purchases"}
     </span>
@@ -13800,9 +13859,16 @@ export default function ProfilePage() {
   font-weight: 600;
 }
 
+.cardBackButton {
+  position: absolute;
+  top: 3px;
+  left: 4px;
+  z-index: 5;
+}
 /* ===== Profile card ===== */
 
 .profileCard {
+  position: relative;
   background: var(--color-profile-card-bg);
   padding: 24px 20px 28px;
   box-shadow: 0 20px 50px rgba(15, 33, 70, 0.16);
@@ -13907,9 +13973,100 @@ export default function ProfilePage() {
   font-size: 18px;
 }
 
+/* Crown container (stays exactly 23x23 so it won’t shift alignment) */
 .crownIcon {
+  width: 23px;
+  height: 23px;
   display: inline-block;
   flex-shrink: 0;
+  position: relative;
+  vertical-align: middle;
+  overflow: visible;
+
+  /* default fill (free/guest) */
+  --crown-fill: rgba(156, 163, 175, 0.95);
+}
+
+/* The crown silhouette itself (MASK APPLIED HERE, not on the container) */
+.crownIcon::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+
+  background: var(--crown-fill);
+
+  -webkit-mask-image: url("/images/profile/yellowcrown-icon.png");
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  -webkit-mask-size: contain;
+
+  mask-image: url("/images/profile/yellowcrown-icon.png");
+  mask-repeat: no-repeat;
+  mask-position: center;
+  mask-size: contain;
+
+  /* If you want that “active icon punchiness”, apply it to the crown only */
+  filter: brightness(1) contrast(1.5) saturate(2);
+}
+
+/* Free/guest: dull gray, no halo */
+.crownFree {
+  --crown-fill: rgba(156, 163, 175, 0.95);
+}
+
+/* Premium: gradient fill + halo */
+.crownPremium {
+  --crown-fill: var(--color-premium-gradient);
+}
+
+/* Halo ring (ONLY premium) — NOT masked because mask is on ::after */
+.crownPremium::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  transform: translate(-50%, -50%) scale(1);
+  z-index: 0;
+  pointer-events: none;
+
+  background: var(--color-premium-gradient);
+
+  /* make it a ring */
+  -webkit-mask-image: radial-gradient(
+    farthest-side,
+    transparent calc(100% - 2px),
+    #000 calc(100% - 2px),
+    #000 100%
+  );
+  mask-image: radial-gradient(
+    farthest-side,
+    transparent calc(100% - 2px),
+    #000 calc(100% - 2px),
+    #000 100%
+  );
+
+  opacity: 0.35;
+  animation: crownHaloPulse 1.8s ease-out infinite;
+}
+
+@keyframes crownHaloPulse {
+  0%   { transform: translate(-50%, -50%) scale(1);    opacity: 0.35; }
+  35%  { transform: translate(-50%, -50%) scale(1.20); opacity: 0.22; }
+  60%  { transform: translate(-50%, -50%) scale(1.45); opacity: 0; }
+  100% { transform: translate(-50%, -50%) scale(1.45); opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .crownPremium::before {
+    animation: none;
+    opacity: 0.28;
+    transform: translate(-50%, -50%) scale(1);
+  }
 }
 
 .emailWrapper {
@@ -14051,6 +14208,29 @@ export default function ProfilePage() {
   height: 24px;
 }
 
+.restoreIcon {
+  width: 24px;
+  height: 24px;
+  display: inline-block;
+  flex-shrink: 0;
+
+  /* paint color */
+  background: #2B7CAF;
+
+  /* use PNG as an alpha mask */
+  -webkit-mask-image: url("/images/profile/restore-icon.png");
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  -webkit-mask-size: contain;
+
+  mask-image: url("/images/profile/restore-icon.png");
+  mask-repeat: no-repeat;
+  mask-position: center;
+  mask-size: contain;
+
+  /* optional: tiny optical alignment tweak */
+  transform: translateY(0.5px);
+}
 .settingsLabel {
   font-size: 16px;
   font-weight: 500;
@@ -16034,7 +16214,7 @@ function Inner({
     router.back();
   };
 
-  const fixedStyle: CSSProperties =
+    const fixedStyle: CSSProperties =
     variant === 'fixed'
       ? {
           position: 'fixed',
@@ -16042,7 +16222,12 @@ function Inner({
           left: 'calc(env(safe-area-inset-left, 0px) + 10px)',
           zIndex: 9999,
         }
-      : { position: 'static' };
+      : {
+          position: 'relative',
+          top: 'auto',
+          left: 'auto',
+          zIndex: 'auto',
+        };
 
   return (
     <button
@@ -16777,9 +16962,13 @@ try {
   return;
 }
 
+const hashParams = new URLSearchParams(parsed.hash.replace(/^#/, ""));
+const pickParam = (name: string) =>
+  parsed.searchParams.get(name) ?? hashParams.get(name);
+
 const err =
-  parsed.searchParams.get("error_description") ??
-  parsed.searchParams.get("error");
+  pickParam("error_description") ??
+  pickParam("error");
 
 if (err) {
   console.log("[OAuthBridge] OAuth error:", err);
@@ -16788,13 +16977,24 @@ if (err) {
   return;
 }
 
-const code = parsed.searchParams.get("code");
-if (!code) return;
+const code = pickParam("code");
+const accessToken = pickParam("access_token");
+const refreshToken = pickParam("refresh_token");
+if (!code && !(accessToken && refreshToken)) return;
 
 try {
-  console.log("[OAuthBridge] exchanging code...");
-  const { error } = await supabase.auth.exchangeCodeForSession(code);
-  if (error) throw error;
+  if (code) {
+    console.log("[OAuthBridge] exchanging code...");
+    const { error } = await supabase.auth.exchangeCodeForSession(code);
+    if (error) throw error;
+  } else {
+    console.log("[OAuthBridge] applying token session...");
+    const { error } = await supabase.auth.setSession({
+      access_token: accessToken!,
+      refresh_token: refreshToken!,
+    });
+    if (error) throw error;
+  }
 
   // (optional but very helpful)
   const { data: s } = await supabase.auth.getSession();
@@ -16808,8 +17008,9 @@ try {
   const next = localStorage.getItem(OAUTH_NEXT_KEY) || "/";
   localStorage.removeItem(OAUTH_NEXT_KEY);
   window.location.replace(next);
-} catch (e: any) {
-  console.log("[OAuthBridge] exchange failed:", e?.message ?? e);
+} catch (e: unknown) {
+  const msg = e instanceof Error ? e.message : String(e);
+  console.log("[OAuthBridge] exchange failed:", msg);
   await Browser.close().catch(() => {});
   window.location.replace("/login?error=oauth");
 }};
@@ -16834,6 +17035,7 @@ try {
 
   return null;
 }
+
 ```
 
 ### components/ComingSoonRow.tsx
@@ -17272,7 +17474,7 @@ import { getEntitlements } from "@/lib/entitlements/getEntitlements";
 import { createClient } from "@/lib/supabase/client";
 
 import { Capacitor } from "@capacitor/core";
-import { Purchases } from "@revenuecat/purchases-capacitor";
+import { Purchases, type CustomerInfo } from "@revenuecat/purchases-capacitor";
 import { ensureRevenueCat } from "@/lib/billing/revenuecat";
 
 type EntitlementsContextValue = {
@@ -17360,7 +17562,7 @@ useEffect(() => {
   })();
 }, [userKey]);
 
-  function entitlementsFromCustomerInfo(customerInfo: any): Entitlements | null {
+  function entitlementsFromCustomerInfo(customerInfo: CustomerInfo): Entitlements | null {
     const active = customerInfo?.entitlements?.active?.[RC_ENTITLEMENT_ID];
     if (!active) return null;
 
@@ -17377,7 +17579,11 @@ useEffect(() => {
         : periodType === "TRIAL"
         ? "trial"
         : "subscription";
-
+console.log("[RC] entitlement active -> premium ON", {
+    entitlement: RC_ENTITLEMENT_ID,
+    source,
+    expMs,
+  });
     return {
       isPremium: true,
       source,
@@ -17552,13 +17758,29 @@ useEffect(() => {
 
       const id = await Purchases.addCustomerInfoUpdateListener((customerInfo) => {
         const rcEnt = entitlementsFromCustomerInfo(customerInfo);
-        if (!rcEnt) return;
+        if (rcEnt) {
+          setLocalEntitlements(userKey, rcEnt);
+          setState(rcEnt);
+          try {
+            window.dispatchEvent(new Event("expatise:entitlements-changed"));
+          } catch {}
+          return;
+        }
 
-        setLocalEntitlements(userKey, rcEnt);
-        setState(rcEnt);
-        try {
-          window.dispatchEvent(new Event("expatise:entitlements-changed"));
-        } catch {}
+        // If RevenueCat reports no active entitlement, clear purchase-based premium locally.
+        const current = getLocalEntitlements(userKey) ?? FREE_ENTITLEMENTS;
+        if (
+          current.isPremium &&
+          (current.source === "subscription" ||
+            current.source === "lifetime" ||
+            current.source === "trial")
+        ) {
+          setLocalEntitlements(userKey, FREE_ENTITLEMENTS);
+          setState(FREE_ENTITLEMENTS);
+          try {
+            window.dispatchEvent(new Event("expatise:entitlements-changed"));
+          } catch {}
+        }
       });
 
       rcListenerIdRef.current = id;
@@ -17611,6 +17833,7 @@ export function useEntitlements() {
     throw new Error("useEntitlements must be used inside <EntitlementsProvider>");
   return ctx;
 }
+
 ```
 
 ### components/FeatureCard.tsx
@@ -17752,7 +17975,7 @@ import { useEntitlements } from "@/components/EntitlementsProvider.client";
 import { usePathname } from "next/navigation";
 
 const HIDE_BADGE_EXACT = new Set<string>(["/"]);
-const HIDE_BADGE_PREFIXES = ["/login", "/onboarding", "/forgot-password"];
+const HIDE_BADGE_PREFIXES = ["/login", "/onboarding", "/forgot-password", "/premium", "/checkout", "/success"];
 
 export default function FreeUsageProgressBadge() {
   const pathname = usePathname() || "/";
@@ -19239,6 +19462,8 @@ export function useUserProfile() {
 
 ### components/stats/DailyProgressChart.tsx
 ```tsx
+//components/stats/DailyProgressChart.tsx
+
 'use client';
 
 import styles from './DailyProgressChart.module.css';
@@ -24502,6 +24727,7 @@ type AuthState = {
   loading: boolean;
   authed: boolean; // true only for email/social (NOT anon/guest)
   method: "guest" | "email" | "social";
+  userId: string | null; // ✅ Supabase user.id (UUID)
   email: string | null;
   provider: string | null; // "google" | "apple" | "wechat" | "email" | "anonymous" | null
 };
@@ -24529,32 +24755,61 @@ function detectProvider(user: User | null): string | null {
 
 function toState(user: User | null, loading: boolean): AuthState {
   if (!user) {
-    return { loading, authed: false, method: "guest", email: null, provider: null };
+    return {
+      loading,
+      authed: false,
+      method: "guest",
+      userId: null,
+      email: null,
+      provider: null,
+    };
   }
 
   const provider = detectProvider(user);
 
   // anon = guest for your gating semantics
   if (provider === "anonymous") {
-    return { loading, authed: false, method: "guest", email: null, provider: "anonymous" };
+    return {
+      loading,
+      authed: false,
+      method: "guest",
+      userId: null,
+      email: null,
+      provider: "anonymous",
+    };
   }
 
   // email/password
   if (provider === "email" || (!!user.email && !provider)) {
-    return { loading, authed: true, method: "email", email: user.email ?? null, provider: "email" };
+    return {
+      loading,
+      authed: true,
+      method: "email",
+      userId: user.id,
+      email: user.email ?? null,
+      provider: "email",
+    };
   }
 
   // social
-  return { loading, authed: true, method: "social", email: user.email ?? null, provider };
+  return {
+    loading,
+    authed: true,
+    method: "social",
+    userId: user.id,
+    email: user.email ?? null,
+    provider,
+  };
 }
 
 export function useAuthStatus() {
   const supabase = useMemo(() => createClient(), []);
 
-  const [state, setState] = useState<AuthState>({
+   const [state, setState] = useState<AuthState>({
     loading: true,
     authed: false,
     method: "guest",
+    userId: null,
     email: null,
     provider: null,
   });
@@ -24618,12 +24873,17 @@ import { useAuthStatus } from "@/components/useAuthStatus";
 import { userKeyFromEmail } from "@/lib/identity/userKey";
 
 export function useUserKey() {
-  const { authed, email } = useAuthStatus();
+  const { authed, email, userId } = useAuthStatus() as any; // remove "as any" after you add userId to the type
 
   return useMemo(() => {
+    // ✅ Best: stable, non-PII, webhook-friendly
+    if (authed && userId) return `sb:${userId}`;
+
+    // fallback (should rarely be needed)
     if (authed && email) return userKeyFromEmail(email);
+
     return "guest";
-  }, [authed, email]);
+  }, [authed, email, userId]);
 }
 ```
 
@@ -24862,6 +25122,12 @@ export async function logout() {
 }
 ```
 
+### lib/auth/oauth.ts
+```tsx
+export const NATIVE_OAUTH_REDIRECT_URI = "expatise://auth/callback";
+
+```
+
 ### lib/auth/sessionStatus.client.ts
 ```tsx
 'use client';
@@ -25010,11 +25276,26 @@ export const webAuthClient: AuthClient = {
 import { Capacitor } from "@capacitor/core";
 import { Purchases, LOG_LEVEL } from "@revenuecat/purchases-capacitor";
 
-function getApiKeyForPlatform() {
+// Dev toggle for RevenueCat Test Store.
+// IMPORTANT: Never ship production builds with this enabled.
+const USE_TEST_STORE = process.env.NEXT_PUBLIC_RC_USE_TEST_STORE === "1";
+
+function getProductionApiKeyForPlatform() {
   const platform = Capacitor.getPlatform(); // "ios" | "android" | "web"
-  if (platform === "ios") return process.env.NEXT_PUBLIC_REVENUECAT_IOS_KEY ?? "";
-  if (platform === "android") return process.env.NEXT_PUBLIC_REVENUECAT_ANDROID_KEY ?? "";
+  if (platform === "ios") {
+    return process.env.NEXT_PUBLIC_REVENUECAT_API_KEY_IOS ?? "";
+  }
+  if (platform === "android") {
+    return process.env.NEXT_PUBLIC_REVENUECAT_API_KEY_ANDROID ?? "";
+  }
   return "";
+}
+
+function getRevenueCatApiKey() {
+  if (USE_TEST_STORE) {
+    return process.env.NEXT_PUBLIC_REVENUECAT_API_KEY_TEST ?? "";
+  }
+  return getProductionApiKeyForPlatform();
 }
 
 /**
@@ -25024,15 +25305,21 @@ function getApiKeyForPlatform() {
 export async function ensureRevenueCat(userKey?: string): Promise<boolean> {
   if (!Capacitor.isNativePlatform()) return false;
 
-  const apiKey = getApiKeyForPlatform();
+  const apiKey = getRevenueCatApiKey();
   if (!apiKey) {
-    console.warn("[RevenueCat] Missing platform API key.");
+    const expected = USE_TEST_STORE
+      ? "NEXT_PUBLIC_REVENUECAT_API_KEY_TEST"
+      : "NEXT_PUBLIC_REVENUECAT_API_KEY_ANDROID (or NEXT_PUBLIC_REVENUECAT_API_KEY_IOS)";
+    console.warn(`[RevenueCat] Missing API key. Expected: ${expected}.`);
     return false;
   }
 
   // 1) Configure if not configured yet
   const { isConfigured } = await Purchases.isConfigured();
   if (!isConfigured) {
+    if (process.env.NODE_ENV !== "production") {
+  await Purchases.setLogLevel({ level: LOG_LEVEL.DEBUG });
+}
     const level =
       process.env.NODE_ENV === "development" ? LOG_LEVEL.DEBUG : LOG_LEVEL.INFO;
     await Purchases.setLogLevel({ level });
@@ -25051,8 +25338,14 @@ export async function ensureRevenueCat(userKey?: string): Promise<boolean> {
   // 2) If configured and we now have a real userKey, link/transfer to it
   if (userKey && userKey !== "guest") {
     const current = await Purchases.getAppUserID();
-    const currentId =
-      typeof current === "string" ? current : (current as any)?.appUserID;
+    const currentId = (() => {
+      if (typeof current === "string") return current;
+      if (typeof current === "object" && current !== null && "appUserID" in current) {
+        const appUserID = (current as { appUserID?: unknown }).appUserID;
+        return typeof appUserID === "string" ? appUserID : "";
+      }
+      return "";
+    })();
 
     if (currentId && currentId !== userKey) {
       await Purchases.logIn({ appUserID: userKey });
@@ -25061,6 +25354,7 @@ export async function ensureRevenueCat(userKey?: string): Promise<boolean> {
 
   return true;
 }
+
 ```
 
 ### lib/bookmarks/bookmarkStore.ts
@@ -28722,6 +29016,7 @@ export async function createClient() {
 
 ### lib/sync/fetchAttemptsFromSupabase.ts
 ```tsx
+//lib/sync/fetchAttemptsFromSupabase.ts
 'use client';
 
 import type { TestAttemptV1 } from '@/lib/test-engine/attemptStorage';
@@ -28963,6 +29258,7 @@ export async function saveTimeLogToSupabase(input: {
 
 ### lib/sync/timeLogs.client.ts
 ```tsx
+//lib/sync/timeLogs.client.ts
 'use client';
 
 import { createClient } from '@/lib/supabase/client';
@@ -42109,7 +42405,9 @@ export default nextConfig;
     "dev": "next dev --webpack",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "revenuecat:webhook:replay": "node scripts/replay-revenuecat-webhook.mjs",
+    "revenuecat:webhook:replay:sample": "node scripts/replay-revenuecat-webhook.mjs scripts/fixtures/revenuecat-webhook.sample.json"
   },
   "dependencies": {
     "@capacitor/android": "^8.1.0",
@@ -144179,6 +144477,27 @@ export default nextConfig;
 
 ```
 
+### scripts/fixtures/revenuecat-webhook.sample.json
+```json
+{
+  "api_version": "1.0",
+  "event": {
+    "id": "evt_debug_001",
+    "event_timestamp_ms": 1770000000000,
+    "type": "INITIAL_PURCHASE",
+    "app_user_id": "user@expatise.com",
+    "original_app_user_id": "user@expatise.com",
+    "aliases": [],
+    "entitlement_id": "Premium",
+    "entitlement_ids": ["Premium"],
+    "period_type": "NORMAL",
+    "product_id": "expatise_monthly",
+    "expiration_at_ms": 1772592000000
+  }
+}
+
+```
+
 ### supabase/functions/.vscode/settings.json
 ```json
 {
@@ -144936,6 +145255,305 @@ if (jwt) {
     return json(500, { ok: false, error: "entitlements_failed", detail: String(e) });
   }
 });
+```
+
+### supabase/functions/revenuecat-webhook/deno.json
+```json
+{
+  "imports": {
+    "@supabase/functions-js": "jsr:@supabase/functions-js@^2"
+  }
+}
+
+```
+
+### supabase/functions/revenuecat-webhook/index.ts
+```tsx
+import "jsr:@supabase/functions-js/edge-runtime.d.ts";
+import { createClient } from "npm:@supabase/supabase-js@2";
+import { corsHeaders } from "jsr:@supabase/supabase-js@2/cors";
+import type { SupabaseClient } from "npm:@supabase/supabase-js@2";
+
+type EntitlementSource =
+  | "none"
+  | "trial"
+  | "subscription"
+  | "lifetime"
+  | "admin"
+  | "dev"
+  | "demo";
+
+type RevenueCatEvent = {
+  id?: string;
+  event_id?: string;
+  type?: string;
+  app_user_id?: string;
+  original_app_user_id?: string;
+  aliases?: string[];
+  entitlement_id?: string;
+  entitlement_ids?: string[];
+  expiration_at_ms?: number | string | null;
+  expires_date_ms?: number | string | null;
+  expiration_at?: string | null;
+  period_type?: string | null;
+  event_timestamp_ms?: number | string | null;
+  purchased_at_ms?: number | string | null;
+  [k: string]: unknown;
+};
+
+const CORS = {
+  ...corsHeaders,
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
+  "Content-Type": "application/json",
+  "Cache-Control": "no-store",
+};
+
+const SUPABASE_URL = Deno.env.get("SUPABASE_URL") ?? "";
+const SERVICE_ROLE_KEY = Deno.env.get("SERVICE_ROLE_KEY") ?? "";
+const RC_WEBHOOK_AUTH = Deno.env.get("REVENUECAT_WEBHOOK_AUTH") ?? "";
+const RC_ENTITLEMENT_ID = (Deno.env.get("REVENUECAT_ENTITLEMENT_ID") ?? "Premium").trim();
+
+if (!SUPABASE_URL || !SERVICE_ROLE_KEY) {
+  throw new Error("Missing SUPABASE_URL or SERVICE_ROLE_KEY");
+}
+
+function json(status: number, body: unknown) {
+  return new Response(JSON.stringify(body), { status, headers: CORS });
+}
+
+function normalizeStr(v: unknown): string {
+  return String(v ?? "").trim();
+}
+
+function normalizeLower(v: unknown): string {
+  return normalizeStr(v).toLowerCase();
+}
+
+function isUuid(v: string) {
+  return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(v);
+}
+
+function isEmail(v: string) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+}
+
+function parseMs(v: unknown): number | null {
+  if (v == null || v === "") return null;
+  const n = Number(v);
+  if (!Number.isFinite(n) || n <= 0) return null;
+  return n < 1_000_000_000_000 ? Math.trunc(n * 1000) : Math.trunc(n);
+}
+
+function pickEvent(body: unknown): RevenueCatEvent | null {
+  if (!body || typeof body !== "object") return null;
+  const obj = body as Record<string, unknown>;
+  const event = obj.event;
+  if (event && typeof event === "object") return event as RevenueCatEvent;
+  return obj as RevenueCatEvent;
+}
+
+function getEventId(e: RevenueCatEvent): string {
+  const explicit = normalizeStr(e.id || e.event_id);
+  if (explicit) return explicit;
+  const t = normalizeStr(e.type).toUpperCase() || "UNKNOWN";
+  const u = normalizeStr(e.app_user_id) || normalizeStr(e.original_app_user_id) || "unknown";
+  const ts = parseMs(e.event_timestamp_ms) ?? parseMs(e.purchased_at_ms) ?? Date.now();
+  return `${t}:${u}:${ts}`;
+}
+
+function entitlementMatches(e: RevenueCatEvent, targetEntitlementId: string): boolean {
+  if (!targetEntitlementId) return true;
+
+  const target = normalizeLower(targetEntitlementId);
+  const single = normalizeLower(e.entitlement_id);
+  if (single && single === target) return true;
+
+  const list = Array.isArray(e.entitlement_ids) ? e.entitlement_ids : [];
+  return list.some((x) => normalizeLower(x) === target);
+}
+
+function extractExpiresAtMs(e: RevenueCatEvent): number | null {
+  const msFromMs = parseMs(e.expiration_at_ms ?? e.expires_date_ms);
+  if (msFromMs) return msFromMs;
+
+  const iso = normalizeStr(e.expiration_at);
+  if (!iso) return null;
+  const t = new Date(iso).getTime();
+  return Number.isFinite(t) ? t : null;
+}
+
+function computePremium(e: RevenueCatEvent, nowMs: number): {
+  isPremium: boolean;
+  source: EntitlementSource;
+  expiresAtMs: number | null;
+} {
+  const eventType = normalizeStr(e.type).toUpperCase();
+  const expiresAtMs = extractExpiresAtMs(e);
+  const periodType = normalizeStr(e.period_type).toUpperCase();
+
+  const forceInactive = new Set(["EXPIRATION", "REFUND", "SUBSCRIPTION_PAUSED"]);
+  if (forceInactive.has(eventType)) {
+    return { isPremium: false, source: "none", expiresAtMs };
+  }
+
+  const notExpired = !expiresAtMs || expiresAtMs > nowMs;
+  if (!notExpired) {
+    return { isPremium: false, source: "none", expiresAtMs };
+  }
+
+  const source: EntitlementSource =
+    expiresAtMs == null ? "lifetime" : periodType === "TRIAL" ? "trial" : "subscription";
+  return { isPremium: true, source, expiresAtMs };
+}
+
+async function resolveUserId(
+  admin: SupabaseClient<any>,
+  appUserCandidates: string[]
+): Promise<string | null> {
+  for (const raw of appUserCandidates) {
+    const appUser = normalizeStr(raw);
+    if (!appUser) continue;
+
+    const prefixed = appUser.startsWith("sb:") ? appUser.slice(3) : appUser;
+    if (isUuid(prefixed)) return prefixed;
+
+    if (isEmail(appUser)) {
+      const { data, error } = await (admin as any).rpc("find_auth_user_id_by_email", {
+  p_email: appUser.toLowerCase(),
+});
+      if (!error && typeof data === "string" && isUuid(data)) {
+        return data;
+      }
+    }
+  }
+
+  return null;
+}
+
+function matchesWebhookAuthHeader(headers: Headers, expected: string): boolean {
+  const expectedTrim = normalizeStr(expected);
+  if (!expectedTrim) return true;
+
+  const auth = normalizeStr(headers.get("authorization") ?? headers.get("Authorization"));
+  if (!auth) return false;
+
+  if (auth === expectedTrim) return true;
+  if (auth === `Bearer ${expectedTrim}`) return true;
+  return false;
+}
+
+Deno.serve(async (req: Request) => {
+  if (req.method === "OPTIONS") return new Response("ok", { headers: CORS });
+  if (req.method !== "POST") return json(405, { ok: false, error: "method_not_allowed" });
+
+  try {
+    if (!matchesWebhookAuthHeader(req.headers, RC_WEBHOOK_AUTH)) {
+      return json(401, { ok: false, error: "unauthorized" });
+    }
+
+    const body = await req.json().catch(() => null);
+const event = pickEvent(body);
+if (!event) return json(400, { ok: false, error: "invalid_payload" });
+
+const eventType = normalizeStr(event.type).toUpperCase();
+
+// ✅ RevenueCat “TEST” events don’t include entitlements.
+// Treat as a delivery check only (no DB writes).
+if (eventType === "TEST") {
+  return json(200, { ok: true, test: true, received: true });
+}
+
+if (!entitlementMatches(event, RC_ENTITLEMENT_ID)) {
+  return json(200, { ok: true, ignored: true, reason: "different_entitlement" });
+}
+
+    const appUserId = normalizeStr(event.app_user_id || event.original_app_user_id);
+    const aliases = Array.isArray(event.aliases) ? event.aliases : [];
+    const userCandidates = [appUserId, normalizeStr(event.original_app_user_id), ...aliases];
+
+    const admin = createClient(SUPABASE_URL, SERVICE_ROLE_KEY, {
+      auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false },
+    });
+
+    const userId = await resolveUserId(admin, userCandidates);
+    if (!userId) {
+      return json(422, {
+        ok: false,
+        error: "unresolved_user",
+        appUserId,
+      });
+    }
+
+    const eventId = getEventId(event);
+    const eventTypeSafe = eventType || "UNKNOWN";
+    const insertedAtIso = new Date().toISOString();
+
+    const { error: insertEventErr } = await admin.from("revenuecat_webhook_events").insert({
+      event_id: eventId,
+      app_user_id: appUserId || normalizeStr(event.original_app_user_id),
+      user_id: userId,
+      event_type: eventTypeSafe,
+      processed_at: insertedAtIso,
+      payload: body,
+    });
+
+    if (insertEventErr) {
+      // Postgres unique violation: already processed
+      if ((insertEventErr as { code?: string }).code === "23505") {
+        return json(200, { ok: true, duplicate: true, eventId });
+      }
+      return json(500, {
+        ok: false,
+        error: "event_insert_failed",
+        detail: insertEventErr.message,
+      });
+    }
+
+    const nowMs = Date.now();
+    const premium = computePremium(event, nowMs);
+    const expiresAtIso = premium.expiresAtMs ? new Date(premium.expiresAtMs).toISOString() : null;
+
+    const { error: upsertErr } = await admin.from("premium_entitlements").upsert(
+      {
+        user_id: userId,
+        is_premium: premium.isPremium,
+        source: premium.source,
+        expires_at: premium.isPremium ? expiresAtIso : null,
+        updated_at: insertedAtIso,
+        rc_app_user_id: appUserId || null,
+        rc_original_app_user_id: normalizeStr(event.original_app_user_id) || null,
+        rc_last_event_type: eventTypeSafe,
+        rc_last_event_id: eventId,
+      },
+      { onConflict: "user_id" }
+    );
+
+    if (upsertErr) {
+      return json(500, {
+        ok: false,
+        error: "entitlement_upsert_failed",
+        detail: upsertErr.message,
+      });
+    }
+
+    return json(200, {
+      ok: true,
+      eventId,
+      userId,
+      entitlementId: RC_ENTITLEMENT_ID,
+      isPremium: premium.isPremium,
+      source: premium.source,
+      expiresAtMs: premium.expiresAtMs,
+    });
+  } catch (e) {
+    return json(500, {
+      ok: false,
+      error: "revenuecat_webhook_failed",
+      detail: String(e),
+    });
+  }
+});
+
 ```
 
 ### tsconfig.json

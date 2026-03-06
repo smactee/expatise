@@ -12,7 +12,7 @@ import { useEntitlements } from "@/components/EntitlementsProvider.client";
 import { usePathname } from "next/navigation";
 
 const HIDE_BADGE_EXACT = new Set<string>(["/"]);
-const HIDE_BADGE_PREFIXES = ["/login", "/onboarding", "/forgot-password"];
+const HIDE_BADGE_PREFIXES = ["/login", "/onboarding", "/forgot-password", "/premium", "/checkout", "/success"];
 
 export default function FreeUsageProgressBadge() {
   const pathname = usePathname() || "/";
