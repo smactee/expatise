@@ -16,7 +16,7 @@ import {
 import { ensureRevenueCat } from "@/lib/billing/revenuecat";
 import { useEntitlements } from "@/components/EntitlementsProvider.client";
 import { useSearchParams } from "next/navigation";
-import GuestLoginModal from "@/components/GuestLoginModal";
+import PremiumFeatureModal from "@/components/PremiumFeatureModal";
 import type { EntitlementSource } from "@/lib/entitlements/types";
 
 
@@ -70,8 +70,8 @@ function PremiumInner() {
     Partial<Record<PlanId, string>>
   >({});
 
-  const [showGuestModal, setShowGuestModal] = useState(false);
-  const [pendingPlan, setPendingPlan] = useState<PlanId | null>(null);
+  const [showPremiumModal, setShowPremiumModal] = useState(false);
+const [pendingPremiumPlan, setPendingPremiumPlan] = useState<PlanId | null>(null);
 
   const searchParams = useSearchParams();
 
@@ -321,10 +321,10 @@ console.log("[RC] packages:", offerings.current?.availablePackages?.map(p => p.i
 
             // ✅ Guest: show modal (NO redirect)
             if (userKey === "guest") {
-              setPendingPlan(plan);
-              setShowGuestModal(true);
-              return;
-            }
+  setPendingPremiumPlan(plan);
+  setShowPremiumModal(true);
+  return;
+}
 
             if (Capacitor.isNativePlatform()) {
               try {
@@ -382,10 +382,11 @@ console.log("[RC] post-purchase customerInfo premium:", !!customerInfo.entitleme
 
         {planError && <div className={styles.planError}>{planError}</div>}
       </div>
-      <GuestLoginModal
-  open={showGuestModal}
-  onClose={() => setShowGuestModal(false)}
-  nextPath={`/premium?plan=${pendingPlan ?? "lifetime"}`}
+     <PremiumFeatureModal
+  open={showPremiumModal}
+  onClose={() => setShowPremiumModal(false)}
+  nextPath={`/premium?plan=${pendingPremiumPlan ?? "lifetime"}`}
+  isAuthed={false}
 />
     </main>
   );

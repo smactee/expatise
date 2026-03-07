@@ -23,14 +23,17 @@ import Heatmap from '@/components/stats/Heatmap.client';
 import TopicMasteryChart from '@/components/stats/TopicMasteryChart.client';
 import { resetAllLocalData } from '@/lib/stats/resetLocalData';
 import { timeKey } from "@/lib/stats/timeKeys"
-import { seedAdminDemoDataIfNeeded } from '@/lib/demo/seedAdminDemoData';
+import { seedAdminDemoDataIfNeeded, reenableDemoSeed } from '@/lib/demo/seedAdminDemoData';
 import InfoTip from '@/components/InfoTip.client';
 import CoachReportRich from '@/app/(premium)/stats/CoachReportRich.client';
 import { useAuthStatus } from '@/components/useAuthStatus';
 import { fetchAttemptsFromSupabase } from '@/lib/sync/fetchAttemptsFromSupabase';
 import { createClient } from "@/lib/supabase/client";
-import { FunctionsHttpError, FunctionsRelayError, FunctionsFetchError } from "@supabase/supabase-js";
 import { fetchTimeLogsFromSupabase } from '@/lib/sync/timeLogs.client';
+import PremiumFeatureModal from "@/components/PremiumFeatureModal";
+import { useEntitlements } from "@/components/EntitlementsProvider.client";
+import { userKeyFromEmail } from "@/lib/identity/userKey";
+
 
 
 const datasetId: DatasetId = 'cn-2023-test1';
@@ -132,10 +135,37 @@ function formatRemaining(ms: number) {
   return `${h}h ${m}m`;
 }
 
+const SKIP_SYNC_KEY = "__expatise_skip_sync_once";
+
+const DEMO_ADMIN_EMAILS = Array.from(
+  new Set(
+    String(process.env.NEXT_PUBLIC_DEMO_ADMIN_EMAIL ?? "")
+      .split(",")
+      .map((s) => s.trim().toLowerCase())
+      .filter(Boolean)
+  )
+);
+
+function consumeSkipSyncToken(): boolean {
+  if (typeof window === "undefined") return false;
+
+  const raw = window.localStorage.getItem(SKIP_SYNC_KEY);
+  const n = Number(raw);
+
+  if (!Number.isFinite(n) || n <= 0) return false;
+
+  const next = n - 1;
+  if (next <= 0) window.localStorage.removeItem(SKIP_SYNC_KEY);
+  else window.localStorage.setItem(SKIP_SYNC_KEY, String(next));
+
+  return true;
+}
 
 export default function StatsPage() {
   const userKey = useUserKey();
   const router = useRouter();
+
+
 
   const seededRef = useRef<string | null>(null);
 
@@ -150,10 +180,24 @@ export default function StatsPage() {
   const [tfTopics, setTfTopics] = useState<Timeframe>(30);
   const [attemptsLoaded, setAttemptsLoaded] = useState(false);
 
-  const { authed: supabaseAuthed } = useAuthStatus();
+  const {
+  authed: supabaseAuthed,
+  email: sessionEmail,
+  loading: authLoading,
+} = useAuthStatus();
 
-  const [attemptsHydrated, setAttemptsHydrated] = useState(false);
+const { isPremium } = useEntitlements();
 
+const [attemptsHydrated, setAttemptsHydrated] = useState(false);
+const [showPremiumModal, setShowPremiumModal] = useState(false);
+
+const normalizedSessionEmail = (sessionEmail ?? "").trim().toLowerCase();
+
+const showDemoReseedButton =
+  !authLoading &&
+  supabaseAuthed &&
+  DEMO_ADMIN_EMAILS.length > 0 &&
+  DEMO_ADMIN_EMAILS.includes(normalizedSessionEmail);
 
 function tfLabel(t: Timeframe) {
   return t === "all" ? "all time" : `last ${t} days`;
@@ -185,7 +229,8 @@ function tfLabel(t: Timeframe) {
 useEffect(() => {
   // 0) Wait until userKey is ready (prevents double-seed / double-load)
   if (!userKey) return;
-
+// ✅ After a Reset, skip demo seeding + remote sync once
+const skipSyncOnce = consumeSkipSyncToken();
   // 0.5) Ensure this entire effect only runs once per (userKey, datasetId) per mount
   const runKey = `${userKey}:${datasetId}:${supabaseAuthed ? "authed" : "guest"}`;
   if (seededRef.current === runKey) return;
@@ -195,7 +240,9 @@ useEffect(() => {
 
   (async () => {
     // ✅ seed demo data (admin only) BEFORE reading attempts
-    await seedAdminDemoDataIfNeeded(userKey);
+    if (!skipSyncOnce) {
+  await seedAdminDemoDataIfNeeded(userKey, { sessionEmail });
+}
 
     // 1) Local (fast, works offline)
     const local = listSubmittedAttempts({ userKey, datasetId });
@@ -203,6 +250,11 @@ useEffect(() => {
     setAttempts(local);
     setAttemptsLoaded(true);
     // 2) Remote (cross-device). If user isn't logged in, this will just fail quietly.
+    if (skipSyncOnce) {
+  // local only (which should now be empty after reset)
+  if (alive) setAttemptsHydrated(true);
+  return;
+}
     if (!supabaseAuthed) {
   if (alive) setAttemptsHydrated(true);
   return;
@@ -235,7 +287,7 @@ if (!remote) return;
   return () => {
     alive = false;
   };
-}, [userKey, datasetId, supabaseAuthed]);
+}, [userKey, datasetId, supabaseAuthed, sessionEmail]);
 
 
   // Compute stats (default: last 30 days for now; we’ll add filters later)
@@ -347,6 +399,14 @@ const COOLDOWN_MS = 24 * 60 * 60 * 1000;
 const coachPrefix = userKey ? `expatise:${userKey}` : `expatise:anon`;
 const LS_REPORT = `${coachPrefix}:coach:lastReport:v2`;
 const LS_COOLDOWN_UNTIL = `${coachPrefix}:coach:cooldownUntil:v2`;
+const legacyEmailUserKey = sessionEmail ? userKeyFromEmail(sessionEmail) : "";
+const legacyCoachPrefix = legacyEmailUserKey ? `expatise:${legacyEmailUserKey}` : "";
+const legacyReportKey = legacyCoachPrefix
+  ? `${legacyCoachPrefix}:coach:lastReport:v2`
+  : "";
+const legacyCooldownKey = legacyCoachPrefix
+  ? `${legacyCoachPrefix}:coach:cooldownUntil:v2`
+  : "";
 
 
 const [coachReport, setCoachReport] = useState<string>("");
@@ -364,26 +424,55 @@ useEffect(() => {
 // Load saved report + cooldown when userKey changes
 useEffect(() => {
   try {
-    const raw = localStorage.getItem(LS_REPORT);
-    if (raw) {
-      const obj = JSON.parse(raw);
+    const reportKeys = Array.from(new Set([LS_REPORT, legacyReportKey].filter(Boolean)));
+    let reportRaw: string | null = null;
+    let reportKeyUsed: string | null = null;
+    for (const k of reportKeys) {
+      const v = localStorage.getItem(k);
+      if (v) {
+        reportRaw = v;
+        reportKeyUsed = k;
+        break;
+      }
+    }
+    if (reportRaw) {
+      const obj = JSON.parse(reportRaw);
       if (obj?.report) {
         setCoachReport(String(obj.report));
         const t = Number(obj.createdAt);
         setCoachCreatedAt(Number.isFinite(t) ? t : null);
+        if (reportKeyUsed && reportKeyUsed !== LS_REPORT) {
+          localStorage.setItem(LS_REPORT, reportRaw);
+        }
       }
     }
-    const cRaw = localStorage.getItem(LS_COOLDOWN_UNTIL);
-    const c = Number(cRaw);
+    const cooldownKeys = Array.from(new Set([LS_COOLDOWN_UNTIL, legacyCooldownKey].filter(Boolean)));
+    let cooldownRaw: string | null = null;
+    let cooldownKeyUsed: string | null = null;
+    for (const k of cooldownKeys) {
+      const v = localStorage.getItem(k);
+      if (v) {
+        cooldownRaw = v;
+        cooldownKeyUsed = k;
+        break;
+      }
+    }
+    const c = Number(cooldownRaw);
     setCooldownUntil(Number.isFinite(c) && c > 0 ? c : null);
+    if (cooldownRaw && cooldownKeyUsed && cooldownKeyUsed !== LS_COOLDOWN_UNTIL) {
+      localStorage.setItem(LS_COOLDOWN_UNTIL, cooldownRaw);
+    }
   } catch {
     // ignore
   }
-}, [LS_REPORT, LS_COOLDOWN_UNTIL]);
+}, [LS_REPORT, LS_COOLDOWN_UNTIL, legacyReportKey, legacyCooldownKey]);
 
 useEffect(() => {
   let alive = true;
 
+  if (consumeSkipSyncToken()) {
+    return () => { alive = false; };
+  }
   if (!supabaseAuthed) {
     return () => {
       alive = false;
@@ -510,43 +599,53 @@ async function handleGenerateCoach() {
 
 const supabase = createClient();
 
-// ✅ Get current session token
-const { data: sess, error: sessErr } = await supabase.auth.getSession();
-if (sessErr) {
-  setCoachError(`Auth error: ${sessErr.message}`);
+const { data: sessionData, error: sessionErr } = await supabase.auth.getSession();
+if (sessionErr) {
+  setCoachError(`Could not read session: ${sessionErr.message}`);
   return;
 }
 
-const token = sess.session?.access_token;
+let token = sessionData.session?.access_token ?? null;
 if (!token) {
-  setCoachError("You're not signed in. Please sign in again and retry.");
-  return;
-}
-
-// ✅ Attach token for Edge Function call (required)
-const { data, error } = await supabase.functions.invoke("coach", {
-  body: payload,
-  headers: {
-    Authorization: `Bearer ${token}`,
-  },
-});
-
-let j: any = data ?? null;
-
-if (error) {
-  // Function ran but returned 4xx/5xx (we can read the JSON body)
-  if (error instanceof FunctionsHttpError) {
-    j = await error.context.json().catch(() => null);
-  } else if (error instanceof FunctionsRelayError) {
-    setCoachError(`Network/relay error: ${error.message}`);
-    return;
-  } else if (error instanceof FunctionsFetchError) {
-    setCoachError(`Could not reach Coach service: ${error.message}`);
-    return;
-  } else {
-    setCoachError(error.message ?? "Coach request failed. Please try again.");
+  const { data: refreshed, error: refreshErr } = await supabase.auth.refreshSession();
+  if (refreshErr) {
+    setCoachError(`Could not refresh session: ${refreshErr.message}`);
     return;
   }
+  token = refreshed.session?.access_token ?? null;
+}
+
+if (!token) {
+  setCoachError("You must be logged in to generate a Coach report.");
+  return;
+}
+
+const supabaseUrl = String(process.env.NEXT_PUBLIC_SUPABASE_URL ?? "").trim();
+const anonKey = String(
+  process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ??
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ??
+  ""
+).trim();
+
+if (!supabaseUrl || !anonKey) {
+  setCoachError("Missing Supabase URL or anon key in environment.");
+  return;
+}
+
+const res = await fetch(`${supabaseUrl}/functions/v1/coach`, {
+  method: "POST",
+  headers: {
+    Authorization: `Bearer ${token}`,
+    apikey: anonKey,
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify(payload),
+});
+const j = await res.json().catch(() => null);
+
+if (!res.ok) {
+  setCoachError(j?.error ?? j?.detail ?? `Coach request failed (${res.status}).`);
+  return;
 }
 
 if (!j?.ok) {
@@ -613,21 +712,112 @@ try {
   type="button"
   className={styles.resetBtn}
   onClick={async () => {
-    const typed = window.prompt(
-      'This will permanently delete ALL saved data on this device.\n\nType RESET to confirm:'
-    );
-    if ((typed ?? '').trim().toUpperCase() !== 'RESET') return;
+  if (!isPremium) {
+    setShowPremiumModal(true);
+    return;
+  }
 
-    await resetAllLocalData({ includeCaches: true });
-    window.location.reload();
-  }}
-  aria-label="Reset all saved data"
-  title="Reset all saved data"
+  if (!supabaseAuthed) {
+    const goLogin = window.confirm(
+      "You need to log in to reset synced stats. Press OK to log in."
+    );
+    if (goLogin) {
+      router.push("/login?next=/stats");
+    }
+    return;
+  }
+
+  const typed = window.prompt(
+    "This will permanently delete all stats data from your account and this device.\n\nType RESET to confirm:"
+  );
+  if ((typed ?? "").trim().toUpperCase() !== "RESET") return;
+
+ try {
+  const supabase = createClient();
+
+  const { data: sessionData, error: sessionErr } = await supabase.auth.getSession();
+  if (sessionErr) {
+    window.alert(`Could not read session: ${sessionErr.message}`);
+    return;
+  }
+
+  let token = sessionData.session?.access_token ?? null;
+  if (!token) {
+    const { data: refreshed, error: refreshErr } = await supabase.auth.refreshSession();
+    if (refreshErr) {
+      window.alert(`Could not refresh session: ${refreshErr.message}`);
+      return;
+    }
+    token = refreshed.session?.access_token ?? null;
+  }
+
+  if (!token) {
+    window.alert("You must be logged in to reset cloud stats.");
+    return;
+  }
+
+  const supabaseUrl = String(process.env.NEXT_PUBLIC_SUPABASE_URL ?? "").trim();
+  const anonKey = String(
+    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ??
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ??
+    ""
+  ).trim();
+
+  if (!supabaseUrl || !anonKey) {
+    window.alert("Missing Supabase URL or anon key in environment.");
+    return;
+  }
+
+  const res = await fetch(`${supabaseUrl}/functions/v1/reset-stats`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      apikey: anonKey,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({}),
+  });
+  const data = await res.json().catch(() => null);
+
+  if (!res.ok) {
+    window.alert(data?.error ?? data?.message ?? `Cloud reset failed (${res.status}).`);
+    return;
+  }
+
+  if (!data?.ok) {
+    window.alert(data?.error ?? "Cloud reset failed.");
+    return;
+  }
+
+  localStorage.setItem("__expatise_skip_sync_once", "2");
+  localStorage.setItem("__expatise_disable_demo_seed", "1");
+
+  await resetAllLocalData({ includeCaches: true });
+  window.location.reload();
+} catch (err: any) {
+  window.alert(err?.message ?? "Reset failed. Please try again.");
+}
+}}
+  aria-label="Reset all stats data"
+  title="Reset all stats data"
 >
   Reset All Stats
 </button>
 
-
+{showDemoReseedButton ? (
+  <button
+    type="button"
+    className={styles.reseedBtn}
+    onClick={() => {
+      reenableDemoSeed();
+      window.location.reload();
+    }}
+    aria-label="Re-seed demo stats"
+    title="Re-seed demo stats"
+  >
+    Re-seed Demo Data
+  </button>
+) : null}
 
 
         {/* ==== Top Accuracy / Gauge Card ==== */}
@@ -999,12 +1189,16 @@ try {
     </>
   )}
 </article>
-
-
-        
-
       </div>
       <BottomNav />
+
+      <PremiumFeatureModal
+        open={showPremiumModal}
+        onClose={() => setShowPremiumModal(false)}
+        nextPath="/stats"
+        isAuthed={supabaseAuthed}
+        premiumPath="/premium?next=%2Fstats"
+      />
     </main>
   );
 }

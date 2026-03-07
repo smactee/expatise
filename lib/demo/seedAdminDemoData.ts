@@ -18,11 +18,21 @@ const DATASET_ID = "cn-2023-test1";
 const DATASET_VERSION = "cn-2023-test1@v1";
 
 // ✅ set via .env.local (and in Vercel env vars for production)
-const ADMIN_EMAIL = (process.env.NEXT_PUBLIC_DEMO_ADMIN_EMAIL ?? "")
-  .trim()
-  .toLowerCase();
+const ADMIN_EMAILS = Array.from(
+  new Set(
+    String(process.env.NEXT_PUBLIC_DEMO_ADMIN_EMAIL ?? "")
+      .split(",")
+      .map((s) => s.trim().toLowerCase())
+      .filter(Boolean)
+  )
+);
 
 const DEMO_SEED_ALL = (process.env.NEXT_PUBLIC_DEMO_SEED_ALL ?? "") === "1";
+const DISABLE_DEMO_SEED_KEY = "__expatise_disable_demo_seed";
+
+function normalizeEmail(s: unknown) {
+  return String(s ?? "").trim().toLowerCase();
+}
 
 function isDemoHost() {
   if (typeof window === "undefined") return false;
@@ -342,18 +352,29 @@ const submittedAt = tsAtDayPart(daysAgo, part, `ts:${userKey}:${modeKey}:${daysA
 
 
 
-export async function seedAdminDemoDataIfNeeded(userKey: string) {
+export async function seedAdminDemoDataIfNeeded(
+  userKey: string,
+  opts?: { sessionEmail?: string | null }
+) {
   // Only run in browser
   if (typeof window === "undefined") return false;
 
+  if (window.localStorage.getItem(DISABLE_DEMO_SEED_KEY) === "1") {
+    return false;
+  }
+
   const allowAll = DEMO_SEED_ALL && isDemoHost();
+  const normalizedSessionEmail = normalizeEmail(opts?.sessionEmail);
+  const isAdminByEmail =
+    !!normalizedSessionEmail && ADMIN_EMAILS.includes(normalizedSessionEmail);
 
   // If not allowAll, keep your existing admin-only behavior
   if (!allowAll) {
-    if (!ADMIN_EMAIL) return false;
+    if (ADMIN_EMAILS.length === 0) return false;
 
-    const adminUserKey = userKeyFromEmail(ADMIN_EMAIL);
-    if (userKey !== adminUserKey) return false;
+    const adminUserKeys = new Set(ADMIN_EMAILS.map((email) => userKeyFromEmail(email)));
+    const isAdminByUserKey = adminUserKeys.has(userKey);
+    if (!isAdminByEmail && !isAdminByUserKey) return false;
   }
 
 
@@ -408,4 +429,20 @@ export async function seedAdminDemoDataIfNeeded(userKey: string) {
 
   localStorage.setItem(seedFlag, "1");
   return true;
+}
+
+export function reenableDemoSeed() {
+  if (typeof window === "undefined") return;
+
+  // allow seeding again
+  window.localStorage.removeItem(DISABLE_DEMO_SEED_KEY);
+
+  // remove any old demo-seed completion flags
+  for (let i = window.localStorage.length - 1; i >= 0; i--) {
+    const k = window.localStorage.key(i);
+    if (!k) continue;
+    if (k.startsWith("expatise:demo-seed:")) {
+      window.localStorage.removeItem(k);
+    }
+  }
 }

@@ -1,3 +1,4 @@
+//lib/stats/timeKeys.ts
 export type TimeKind = "test" | "study";
 
 const PREFIX = "expatise:time";

@@ -17,7 +17,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGoogle, faApple, faWeixin} from '@fortawesome/free-brands-svg-icons';
 import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
 import LogoutButton from '@/components/LogoutButton.client';
-import GuestLoginModal from '@/components/GuestLoginModal';
+import PremiumFeatureModal from '@/components/PremiumFeatureModal';
 import { Capacitor } from "@capacitor/core";
 import { Purchases } from "@revenuecat/purchases-capacitor";
 import { ensureRevenueCat } from "@/lib/billing/revenuecat";
@@ -36,7 +36,7 @@ function Inner() {
   const { authed, method, loading: authLoading, refresh, email: sessionEmail, provider } = useAuthStatus();
   const authEmail = sessionEmail ?? email ?? null;
   const showProviderEmail = authed && method !== "email" && !!authEmail; 
-  const [showGuestModal, setShowGuestModal] = useState(false);
+  const [showPremiumModal, setShowPremiumModal] = useState(false);
   const [saving, setSaving] = useState(false);
   const [saveMsg, setSaveMsg] = useState<string | null>(null);
 
@@ -76,7 +76,7 @@ function requireLogin(e?: React.SyntheticEvent) {
   if (authed) return true;
   e?.preventDefault();
   e?.stopPropagation();
-  setShowGuestModal(true);   // ✅ this matches your modal renderer
+  setShowPremiumModal(true);
   return false;
 }
 
@@ -566,12 +566,13 @@ const handleRestorePurchases = async (e: React.SyntheticEvent) => {
   </div>
 ) : null}
 
-<GuestLoginModal
-  open={showGuestModal}
-  onClose={() => setShowGuestModal(false)}
+<PremiumFeatureModal
+  open={showPremiumModal}
+  onClose={() => setShowPremiumModal(false)}
   nextPath="/profile"
+  isAuthed={authed}
+  premiumPath="/premium?next=%2Fprofile"
 />
-
       </div>
 
       {/* Re-use the existing bottom navigation */}

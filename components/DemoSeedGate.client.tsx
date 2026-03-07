@@ -4,10 +4,12 @@
 
 import { useEffect, useState } from "react";
 import { useUserKey } from "@/components/useUserKey.client";
+import { useAuthStatus } from "@/components/useAuthStatus";
 import { seedAdminDemoDataIfNeeded } from "@/lib/demo/seedAdminDemoData";
 
 export default function DemoSeedGate({ children }: { children: React.ReactNode }) {
   const userKey = useUserKey();
+  const { email: sessionEmail } = useAuthStatus();
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
@@ -18,7 +20,7 @@ export default function DemoSeedGate({ children }: { children: React.ReactNode }
       if (!userKey) return;
 
       try {
-        await seedAdminDemoDataIfNeeded(userKey);
+        await seedAdminDemoDataIfNeeded(userKey, { sessionEmail });
       } catch (e) {
         // Don’t swallow — you NEED this during debugging
         if (process.env.NODE_ENV !== "production") {
@@ -33,7 +35,7 @@ export default function DemoSeedGate({ children }: { children: React.ReactNode }
     return () => {
       cancelled = true;
     };
-  }, [userKey]);
+  }, [userKey, sessionEmail]);
 
   if (!ready) return null;
   return <>{children}</>;

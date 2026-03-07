@@ -420,6 +420,14 @@ entrypoint = "./functions/account-delete/index.ts"
 # For example, if you want to serve static HTML pages in your function:
 # static_files = [ "./functions/account-delete/*.html" ]
 
+[functions.reset-stats]
+enabled = true
+verify_jwt = false
+entrypoint = "./functions/reset-stats/index.ts"
+# Specifies static files to be bundled with the function. Supports glob patterns.
+# For example, if you want to serve static HTML pages in your function:
+# static_files = [ "./functions/reset-stats/*.html" ]
+
 [functions.revenuecat-webhook]
 enabled = true
 verify_jwt = false
