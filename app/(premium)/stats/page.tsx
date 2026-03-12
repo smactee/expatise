@@ -1021,6 +1021,11 @@ try {
       buildWeakSubtopicRankedTags(statsTopics.topicMastery).length === 0
     }
     onClick={() => {
+  if (!isPremium) {
+    setShowPremiumModal(true);
+    return;
+  }
+
   if (!statsTopics.topicMastery) return;
 
   // ✅ keep it to the “weakest 5” (as you intended)
@@ -1086,7 +1091,7 @@ try {
 {/* GPT Coach */}
 <article className={styles.statsCard}>
   <header className={styles.statsCardHeader}>
-    <h2 className={styles.statsCardTitle}>GPT Coach</h2>
+    <h2 className={styles.statsCardTitle}>Ai Coach</h2>
   </header>
 
   {loading ? (

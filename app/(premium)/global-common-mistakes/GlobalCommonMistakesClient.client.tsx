@@ -2,7 +2,6 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
-import Link from "next/link";
 
 import BottomNav from "@/components/BottomNav";
 import BackButton from "@/components/BackButton";
@@ -20,6 +19,8 @@ import { useUserKey } from "@/components/useUserKey.client";
 import styles from "../all-questions/all-questions.module.css";
 
 import { ROUTES } from "@/lib/routes";
+import PremiumFeatureModal from "@/components/PremiumFeatureModal";
+import { useAuthStatus } from "@/components/useAuthStatus";
 
 type GlobalRow = {
   qid: string;
@@ -70,6 +71,9 @@ export default function GlobalCommonMistakesClient({ datasetId }: { datasetId: D
   const [showToTop, setShowToTop] = useState(false);
   const [navOffsetY, setNavOffsetY] = useState(0);
   const lastYRef = useRef(0);
+  const [showPremiumModal, setShowPremiumModal] = useState(false);
+
+  const { authed: supabaseAuthed } = useAuthStatus();
 
   // 1) load dataset
   useEffect(() => {
@@ -247,13 +251,10 @@ export default function GlobalCommonMistakesClient({ datasetId }: { datasetId: D
           </h1>
 
           <div className={styles.headerActions}>
-            {/* UI now, wiring later */}
             <button
               type="button"
               className={styles.quizBtn}
-              disabled
-              title="Quiz will unlock when global data is available"
-              style={{ opacity: 0.6 }}
+              onClick={() => setShowPremiumModal(true)}
             >
               Global Mistakes Quiz
             </button>
@@ -448,6 +449,14 @@ export default function GlobalCommonMistakesClient({ datasetId }: { datasetId: D
         </div>
 
         <BottomNav onOffsetChange={setNavOffsetY} />
+
+        <PremiumFeatureModal
+          open={showPremiumModal}
+          onClose={() => setShowPremiumModal(false)}
+          nextPath="/global-common-mistakes"
+          isAuthed={supabaseAuthed}
+          premiumPath="/premium?next=%2Fglobal-common-mistakes"
+        />
       </div>
     </main>
   );

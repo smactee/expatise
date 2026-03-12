@@ -402,6 +402,8 @@ export const SYLLABUS_RULES = {
       "hazard lights",
       "How to use lights",
       "beam light",
+      "This lights up",
+      "this lights up",
 
       // controls
       "steering wheel",
@@ -437,6 +439,8 @@ export const SYLLABUS_RULES = {
     subtopics: {
       "driving-operations:indicators": {
         anchors: [
+          "This lights up",
+          "this lights up",
           "indicator",
           "alarm light",
           "engine oil pressure",

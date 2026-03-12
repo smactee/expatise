@@ -431,7 +431,7 @@ const handleRestorePurchases = async (e: React.SyntheticEvent) => {
   <span className={styles.chevron}>›</span>
 </button>
 
-       <button
+<button
   type="button"
   className={styles.settingsRow}
   onClick={() => router.push("/privacy")}
@@ -446,6 +446,25 @@ const handleRestorePurchases = async (e: React.SyntheticEvent) => {
       />
     </span>
     <span className={styles.settingsLabel}>Privacy Policy</span>
+  </div>
+  <span className={styles.chevron}>›</span>
+</button>
+
+<button
+  type="button"
+  className={styles.settingsRow}
+  onClick={() => router.push("/terms")}
+>
+  <div className={styles.settingsLeft}>
+    <span className={styles.settingsIcon}>
+      <Image
+        src="/images/profile/privacypolicy-icon.png"
+        alt="Terms of Service"
+        width={24}
+        height={24}
+      />
+    </span>
+    <span className={styles.settingsLabel}>Terms of Service</span>
   </div>
   <span className={styles.chevron}>›</span>
 </button>

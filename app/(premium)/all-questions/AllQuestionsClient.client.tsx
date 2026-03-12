@@ -17,9 +17,10 @@ import { useClearedMistakes } from '@/lib/mistakes/useClearedMistakes';
 import { attemptStore } from "@/lib/attempts/store";
 import type { Attempt } from "@/lib/attempts/attemptStore";
 import { useUserKey } from "@/components/useUserKey.client";
-import Link from 'next/link';
 import { isAnswerCorrect } from '@/lib/grading/isAnswerCorrect';
 import { DEFAULT_DATASET_ID } from '@/lib/qbank/datasets';
+import PremiumFeatureModal from '@/components/PremiumFeatureModal';
+import { useAuthStatus } from '@/components/useAuthStatus';
 
 
 
@@ -65,6 +66,9 @@ const [navOffsetY, setNavOffsetY] = useState(0);
 const lastYRef = useRef(0);
 
 const [submittedAttempts, setSubmittedAttempts] = useState<Attempt[]>([]);
+const [showPremiumModal, setShowPremiumModal] = useState(false);
+
+const { authed: supabaseAuthed } = useAuthStatus();
 
 
 
@@ -354,6 +358,11 @@ const compiledBookmarksCount = useMemo(() => {
   return n;
 }, [mode, q, bookmarkedSet]);
 
+const premiumNextPath =
+  mode === "bookmarks" ? "/bookmarks" : mode === "mistakes" ? "/my-mistakes" : "/all-questions";
+
+const premiumPath = `/premium?next=${encodeURIComponent(premiumNextPath)}`;
+
 
   return (
 <main className={styles.page}>
@@ -386,15 +395,23 @@ const compiledBookmarksCount = useMemo(() => {
 
   <div className={styles.headerActions}>
     {mode === "mistakes" && (
-      <Link href="/test/mistakes" className={styles.quizBtn}>
+      <button
+        type="button"
+        className={styles.quizBtn}
+        onClick={() => setShowPremiumModal(true)}
+      >
         Mistakes Quiz
-      </Link>
+      </button>
     )}
 
     {mode === "bookmarks" && (
-      <Link href="/test/bookmarks" className={styles.quizBtn}>
+      <button
+        type="button"
+        className={styles.quizBtn}
+        onClick={() => setShowPremiumModal(true)}
+      >
         Bookmarks Quiz
-      </Link>
+      </button>
     )}
   </div>
 </header>
@@ -669,6 +686,14 @@ onClick={(e) => {
 </div>
 
         <BottomNav onOffsetChange={setNavOffsetY} />
+
+        <PremiumFeatureModal
+          open={showPremiumModal}
+          onClose={() => setShowPremiumModal(false)}
+          nextPath={premiumNextPath}
+          isAuthed={supabaseAuthed}
+          premiumPath={premiumPath}
+        />
       </div>
     </main>
   );

@@ -5,7 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import styles from './BottomNav.module.css';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 type BottomNavProps = {
   onOffsetChange?: (offsetY: number) => void; // keep for compatibility
@@ -20,6 +20,7 @@ export default function BottomNav({ onOffsetChange }: BottomNavProps) {
 
   const [hidden, setHidden] = useState(false);
   const hiddenRef = useRef(false);
+  const autoHideTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const lastYRef = useRef(0);
   const downAccumRef = useRef(0);
@@ -31,14 +32,41 @@ export default function BottomNav({ onOffsetChange }: BottomNavProps) {
     onOffsetChangeRef.current = onOffsetChange;
   }, [onOffsetChange]);
 
-  const setHiddenSafe = (nextHidden: boolean) => {
+  const clearAutoHideTimer = useCallback(() => {
+    if (!autoHideTimerRef.current) return;
+    clearTimeout(autoHideTimerRef.current);
+    autoHideTimerRef.current = null;
+  }, []);
+
+  const scheduleAutoHide = useCallback(() => {
+    clearAutoHideTimer();
+    autoHideTimerRef.current = setTimeout(() => {
+      if (hiddenRef.current) return;
+      hiddenRef.current = true;
+      setHidden(true);
+      onOffsetChangeRef.current?.(90);
+    }, 10000);
+  }, [clearAutoHideTimer]);
+
+  const setHiddenSafe = useCallback((nextHidden: boolean) => {
     if (nextHidden === hiddenRef.current) return;
     hiddenRef.current = nextHidden;
     setHidden(nextHidden);
 
+    if (nextHidden) {
+      clearAutoHideTimer();
+    } else {
+      scheduleAutoHide();
+    }
+
     // Optional compatibility: 0 when shown, ~hide distance when hidden
     onOffsetChangeRef.current?.(nextHidden ? 90 : 0);
-  };
+  }, [clearAutoHideTimer, scheduleAutoHide]);
+
+  useEffect(() => {
+    scheduleAutoHide();
+    return () => clearAutoHideTimer();
+  }, [clearAutoHideTimer, scheduleAutoHide]);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -93,7 +121,7 @@ export default function BottomNav({ onOffsetChange }: BottomNavProps) {
 
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
-  }, []);
+  }, [setHiddenSafe]);
 
   return (
     <div

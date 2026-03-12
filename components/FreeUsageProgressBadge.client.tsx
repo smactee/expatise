@@ -71,26 +71,29 @@ function FreeUsageProgressBadgeInner({ userKey }: { userKey: string }) {
     return `${shown}/${FREE_CAPS.questionsShown} Questions · ${starts}/${FREE_CAPS.examStarts} Exams`;
   }, [shown, starts]);
 
-  return (
-    <div
-      style={{
-        position: "fixed",
-        top: 12,
-        right: 12,
-        zIndex: 9999,
-        padding: "8px 10px",
-        borderRadius: 999,
-        fontSize: 12,
-        lineHeight: "12px",
-        background: "rgba(0,0,0,0.65)",
-        color: "white",
-        backdropFilter: "blur(10px)",
-        WebkitBackdropFilter: "blur(10px)",
-      }}
-      aria-label="Free usage progress"
-      title={`Free usage progress (${userKey})`}
-    >
-      {text}
-    </div>
-  );
+return (
+  <div
+  style={{
+    position: "fixed",
+    top: 30,
+    right: 12,
+    zIndex: 9999,
+    padding: "6px 10px",
+    borderRadius: 999,
+    fontSize: 12,
+    lineHeight: "14px",
+    background: "transparent",
+color: "#1f2937",
+border: "none",
+backdropFilter: "none",
+WebkitBackdropFilter: "none",
+boxShadow: "none",
+    pointerEvents: "none",
+  }}
+  aria-label="Free usage progress"
+  title={`Free usage progress (${userKey})`}
+>
+    {text}
+  </div>
+);
 }
