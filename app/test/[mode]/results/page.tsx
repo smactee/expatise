@@ -1,4 +1,5 @@
 // app/test/[mode]/results/page.tsx
+import { Suspense } from "react";
 import ResultsClient from "./ResultsClient.client";
 import { TEST_MODES, type TestModeId } from "@/lib/testModes";
 
@@ -9,5 +10,9 @@ export function generateStaticParams() {
 }
 
 export default function Page() {
-  return <ResultsClient />;
+  return (
+    <Suspense fallback={null}>
+      <ResultsClient />
+    </Suspense>
+  );
 }
