@@ -4,7 +4,7 @@
 import { useEffect, useRef } from "react";
 import { usePathname, useRouter } from "next/navigation";
 
-const EDGE_PX = 1;           // (touch) keep your original
+const EDGE_PX = 24;          // (touch) realistic left-edge target on phones
 const MOUSE_EDGE_PX = 24;    // (mouse) easier to start on desktop
 
 const MIN_DX = 80;           // how far to drag to trigger

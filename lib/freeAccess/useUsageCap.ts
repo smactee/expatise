@@ -2,22 +2,39 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { FREE_CAPS, getUsageCapState, usageCapEventName } from "@/lib/freeAccess/localUsageCap";
+import {
+  FREE_CAPS,
+  getUsageCapState,
+  migrateUsageCapToCanonical,
+  usageCapEventName,
+} from "@/lib/freeAccess/localUsageCap";
 import { useUserKey } from "@/components/useUserKey.client";
+import { useAuthStatus } from "@/components/useAuthStatus";
+import { userKeyFromEmail } from "@/lib/identity/userKey";
 
 export function useUsageCap(userKeyOverride?: string) {
   const inferred = useUserKey();
   const userKey = userKeyOverride ?? inferred;
+  const { email } = useAuthStatus();
+  const legacyEmailUserKey = userKeyFromEmail(email);
 
   const [state, setState] = useState(() => getUsageCapState(userKey));
 
   useEffect(() => {
-    setState(getUsageCapState(userKey));
+    const legacySources =
+      userKey === "guest" ? [] : [legacyEmailUserKey, "guest"];
 
-    const onChanged = () => setState(getUsageCapState(userKey));
+    const refresh = () => {
+      const next = migrateUsageCapToCanonical(userKey, legacySources);
+      setState(next);
+    };
+
+    refresh();
+
+    const onChanged = () => refresh();
     window.addEventListener(usageCapEventName(), onChanged);
     return () => window.removeEventListener(usageCapEventName(), onChanged);
-  }, [userKey]);
+  }, [legacyEmailUserKey, userKey]);
 
   return useMemo(() => {
     const questionsShown = state.shown; // ✅ new model

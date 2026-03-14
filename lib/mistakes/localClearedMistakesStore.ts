@@ -1,5 +1,6 @@
 // lib/mistakes/localClearedMistakesStore.ts
 import type { ClearedMistakesStore } from "./store";
+import { Preferences } from "@capacitor/preferences";
 
 // legacy (your old key) — we’ll migrate from this if it exists
 const legacyKeyFor = (userKey: string, datasetId: string) =>
@@ -22,25 +23,26 @@ function uniqSorted(ids: string[]) {
   return Array.from(new Set((ids ?? []).map(String))).sort();
 }
 
-function readKey(k: string): string | null {
+async function readKey(k: string): Promise<string | null> {
   try {
-    return localStorage.getItem(k);
+    const { value } = await Preferences.get({ key: k });
+    return value || null;
   } catch {
     return null;
   }
 }
 
-function writeKey(k: string, raw: string) {
+async function writeKey(k: string, raw: string) {
   try {
-    localStorage.setItem(k, raw);
+    await Preferences.set({ key: k, value: raw });
   } catch {
     // ignore
   }
 }
 
-function removeKey(k: string) {
+async function removeKey(k: string) {
   try {
-    localStorage.removeItem(k);
+    await Preferences.remove({ key: k });
   } catch {
     // ignore
   }
@@ -53,15 +55,15 @@ export class LocalClearedMistakesStore implements ClearedMistakesStore {
     const k = keyFor(userKey, datasetId);
 
     // ---- 1) Read v1 first
-    let raw = readKey(k);
+    let raw = await readKey(k);
 
     // ---- 2) If missing, migrate legacy(userKey) -> v1(userKey)
     if (!raw) {
       const legacyK = legacyKeyFor(userKey, datasetId);
-      const legacyRaw = readKey(legacyK);
+      const legacyRaw = await readKey(legacyK);
       if (legacyRaw) {
-        writeKey(k, legacyRaw);
-        removeKey(legacyK);
+        await writeKey(k, legacyRaw);
+        await removeKey(legacyK);
         raw = legacyRaw;
       }
     }
@@ -77,12 +79,12 @@ export class LocalClearedMistakesStore implements ClearedMistakesStore {
       const guestLegacyK = legacyKeyFor("guest", datasetId);
 
       // Ensure guest legacy is also migrated into guest v1 (so we merge from one place)
-      let guestRaw = readKey(guestV1K);
+      let guestRaw = await readKey(guestV1K);
       if (!guestRaw) {
-        const gl = readKey(guestLegacyK);
+        const gl = await readKey(guestLegacyK);
         if (gl) {
-          writeKey(guestV1K, gl);
-          removeKey(guestLegacyK);
+          await writeKey(guestV1K, gl);
+          await removeKey(guestLegacyK);
           guestRaw = gl;
         }
       }
@@ -98,13 +100,13 @@ export class LocalClearedMistakesStore implements ClearedMistakesStore {
           merged.some((v, i) => v !== ids[i]);
 
         if (changed) {
-          writeKey(k, JSON.stringify(merged));
+          await writeKey(k, JSON.stringify(merged));
           ids = merged;
         }
 
         // clear guest storage so this doesn’t re-run forever
-        removeKey(guestV1K);
-        removeKey(guestLegacyK);
+        await removeKey(guestV1K);
+        await removeKey(guestLegacyK);
       }
     }
 
@@ -113,7 +115,7 @@ export class LocalClearedMistakesStore implements ClearedMistakesStore {
 
   async writeIds(userKey: string, datasetId: string, ids: string[]): Promise<void> {
     if (typeof window === "undefined") return;
-    writeKey(keyFor(userKey, datasetId), JSON.stringify(uniqSorted(ids)));
+    await writeKey(keyFor(userKey, datasetId), JSON.stringify(uniqSorted(ids)));
   }
 
   async addMany(userKey: string, datasetId: string, ids: string[]): Promise<string[]> {
@@ -133,7 +135,7 @@ export class LocalClearedMistakesStore implements ClearedMistakesStore {
 
   async clearAll(userKey: string, datasetId: string): Promise<void> {
     if (typeof window === "undefined") return;
-    removeKey(keyFor(userKey, datasetId));
-    removeKey(legacyKeyFor(userKey, datasetId));
+    await removeKey(keyFor(userKey, datasetId));
+    await removeKey(legacyKeyFor(userKey, datasetId));
   }
 }

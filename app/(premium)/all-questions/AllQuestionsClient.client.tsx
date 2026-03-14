@@ -4,6 +4,7 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import Image from 'next/image';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import BottomNav from '@/components/BottomNav';
 import styles from './all-questions.module.css';
 import { loadDataset } from '@/lib/qbank/loadDataset';
@@ -21,6 +22,10 @@ import { isAnswerCorrect } from '@/lib/grading/isAnswerCorrect';
 import { DEFAULT_DATASET_ID } from '@/lib/qbank/datasets';
 import PremiumFeatureModal from '@/components/PremiumFeatureModal';
 import { useAuthStatus } from '@/components/useAuthStatus';
+import { useEntitlements } from '@/components/EntitlementsProvider.client';
+import { useUsageCap } from '@/lib/freeAccess/useUsageCap';
+import { userKeyFromEmail } from '@/lib/identity/userKey';
+import { migrateLocalAttemptsToCanonical } from '@/lib/test-engine/attemptStorage';
 
 
 
@@ -43,6 +48,12 @@ function isCorrectMcq(item: Question, optId: string, optKey?: string) {
 export default function AllQuestionsClient({ datasetId, mode = 'all' }: { datasetId: DatasetId; mode?: 'all' | 'bookmarks' | 'mistakes' }) {
   // ✅ 1) hooks first
 const userKey = useUserKey();
+  const router = useRouter();
+  const pathname = usePathname();
+  const sp = useSearchParams();
+  const { isPremium } = useEntitlements();
+  const { isOverCap } = useUsageCap();
+  const premiumModalRequested = sp.get('premiumModal') === '1';
 
   // ✅ 3) now it's safe to use userKey
   const { idSet: bookmarkedSet, isBookmarked, toggle, removeMany } = useBookmarks(datasetId, userKey);
@@ -68,7 +79,21 @@ const lastYRef = useRef(0);
 const [submittedAttempts, setSubmittedAttempts] = useState<Attempt[]>([]);
 const [showPremiumModal, setShowPremiumModal] = useState(false);
 
-const { authed: supabaseAuthed } = useAuthStatus();
+const { authed: supabaseAuthed, email } = useAuthStatus();
+const legacyAttemptUserKey = userKeyFromEmail(email);
+
+useEffect(() => {
+  if (!premiumModalRequested) return;
+
+  if (!isPremium && isOverCap) {
+    setShowPremiumModal(true);
+  }
+
+  const next = new URLSearchParams(sp.toString());
+  next.delete('premiumModal');
+  const nextUrl = next.toString() ? `${pathname}?${next.toString()}` : pathname;
+  router.replace(nextUrl, { scroll: false });
+}, [isOverCap, isPremium, pathname, premiumModalRequested, router, sp]);
 
 
 
@@ -206,6 +231,11 @@ useEffect(() => {
 
   (async () => {
     try {
+      migrateLocalAttemptsToCanonical({
+        userKey,
+        legacyUserKeys: [legacyAttemptUserKey, "guest"],
+      });
+
       const all = await attemptStore.listAttempts(userKey, datasetId);
 
       // We only care about submitted attempts for mistakes analytics
@@ -220,7 +250,7 @@ useEffect(() => {
   return () => {
     alive = false;
   };
-}, [mode, userKey, datasetId]);
+}, [mode, userKey, legacyAttemptUserKey, datasetId]);
 
 
 const visible = useMemo(() => {
@@ -373,25 +403,27 @@ const premiumPath = `/premium?next=${encodeURIComponent(premiumNextPath)}`;
   <div className={styles.frame}>
 
 <header className={styles.header}>
+  <div className={styles.titleWrap}>
   <h1 className={styles.title}>
     {mode === "bookmarks"
       ? "My Bookmarks"
       : mode === "mistakes"
       ? "My Mistakes"
       : "All Questions"}
-
-    {mode === "mistakes" && compiledMistakesCount > 0 && (
-      <span className={styles.countPill} aria-label={`${compiledMistakesCount} questions`}>
-        {compiledMistakesCount}
-      </span>
-    )}
-
-    {mode === "bookmarks" && compiledBookmarksCount > 0 && (
-      <span className={styles.countPill} aria-label={`${compiledBookmarksCount} questions`}>
-        {compiledBookmarksCount}
-      </span>
-    )}
   </h1>
+
+  {mode === "mistakes" && compiledMistakesCount > 0 && (
+    <span className={styles.countPill} aria-label={`${compiledMistakesCount} questions`}>
+      {compiledMistakesCount}
+    </span>
+  )}
+
+  {mode === "bookmarks" && compiledBookmarksCount > 0 && (
+    <span className={styles.countPill} aria-label={`${compiledBookmarksCount} questions`}>
+      {compiledBookmarksCount}
+    </span>
+  )}
+</div>
 
   <div className={styles.headerActions}>
     {mode === "mistakes" && (

@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 import BottomNav from "@/components/BottomNav";
 import BackButton from "@/components/BackButton";
@@ -21,6 +22,8 @@ import styles from "../all-questions/all-questions.module.css";
 import { ROUTES } from "@/lib/routes";
 import PremiumFeatureModal from "@/components/PremiumFeatureModal";
 import { useAuthStatus } from "@/components/useAuthStatus";
+import { useEntitlements } from "@/components/EntitlementsProvider.client";
+import { useUsageCap } from "@/lib/freeAccess/useUsageCap";
 
 type GlobalRow = {
   qid: string;
@@ -54,6 +57,12 @@ function hash01(s: string) {
 
 export default function GlobalCommonMistakesClient({ datasetId }: { datasetId: DatasetId }) {
   const userKey = useUserKey();
+  const router = useRouter();
+  const pathname = usePathname();
+  const sp = useSearchParams();
+  const { isPremium } = useEntitlements();
+  const { isOverCap } = useUsageCap();
+  const premiumModalRequested = sp.get("premiumModal") === "1";
   const { isBookmarked, toggle } = useBookmarks(datasetId, userKey);
 
   const [q, setQ] = useState<Question[]>([]);
@@ -74,6 +83,19 @@ export default function GlobalCommonMistakesClient({ datasetId }: { datasetId: D
   const [showPremiumModal, setShowPremiumModal] = useState(false);
 
   const { authed: supabaseAuthed } = useAuthStatus();
+
+  useEffect(() => {
+    if (!premiumModalRequested) return;
+
+    if (!isPremium && isOverCap) {
+      setShowPremiumModal(true);
+    }
+
+    const next = new URLSearchParams(sp.toString());
+    next.delete("premiumModal");
+    const nextUrl = next.toString() ? `${pathname}?${next.toString()}` : pathname;
+    router.replace(nextUrl, { scroll: false });
+  }, [isOverCap, isPremium, pathname, premiumModalRequested, router, sp]);
 
   // 1) load dataset
   useEffect(() => {

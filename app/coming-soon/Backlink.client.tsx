@@ -37,7 +37,7 @@ function Inner({ fallbackHref = '/' }: { fallbackHref?: string }) {
 
   const href = isSafeInternalPath(candidate) ? candidate : fallbackHref;
 
-  return <Link href={href}>← Back</Link>;
+  return <Link href={href}>Return</Link>;
 }
 
 export default function BackLink() {

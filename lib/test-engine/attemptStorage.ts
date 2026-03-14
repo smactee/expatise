@@ -12,7 +12,7 @@ export type TestAttemptV1 = {
   schemaVersion: 1;
 
   attemptId: string;
-  userKey: string;        // normalized email
+  userKey: string;        // canonical local identity key ("guest", email fallback, or sb:<userId>)
   modeKey: string;        // "real-test"
   datasetId: string;
   datasetVersion: string;
@@ -79,6 +79,167 @@ function attemptKeyById(attemptId: string) {
 function activePtrKey(params: { userKey: string; modeKey: string; datasetId: string; datasetVersion: string }) {
   const { userKey, modeKey, datasetId, datasetVersion } = params;
   return `${ACTIVE_PTR_PREFIX}:${userKey}:${modeKey}:${datasetId}:${datasetVersion}`;
+}
+
+function parseActivePtrKey(key: string): {
+  userKey: string;
+  modeKey: string;
+  datasetId: string;
+  datasetVersion: string;
+} | null {
+  const prefix = `${ACTIVE_PTR_PREFIX}:`;
+  if (!key.startsWith(prefix)) return null;
+
+  const rest = key.slice(prefix.length);
+  const parts = rest.split(':');
+  if (parts.length < 4) return null;
+
+  const datasetVersion = parts.pop() ?? "";
+  const datasetId = parts.pop() ?? "";
+  const modeKey = parts.pop() ?? "";
+  const userKey = parts.join(':');
+
+  if (!userKey || !modeKey || !datasetId || !datasetVersion) return null;
+
+  return { userKey, modeKey, datasetId, datasetVersion };
+}
+
+function ptrSlotKey(params: { modeKey: string; datasetId: string; datasetVersion: string }) {
+  return `${params.modeKey}\u0000${params.datasetId}\u0000${params.datasetVersion}`;
+}
+
+function migrateAttemptRecordToUserKey(attempt: TestAttemptV1, userKey: string) {
+  if (attempt.userKey === userKey) return attempt;
+
+  const migrated: TestAttemptV1 = {
+    ...attempt,
+    userKey,
+  };
+
+  writeAttempt(migrated);
+  return migrated;
+}
+
+export function migrateLocalAttemptsToCanonical(params: {
+  userKey: string;
+  legacyUserKeys?: string[];
+}) {
+  if (typeof window === 'undefined') return;
+
+  const canonicalUserKey = String(params.userKey ?? '').trim();
+  if (!canonicalUserKey) return;
+
+  const sourceKeys = Array.from(
+    new Set(
+      (params.legacyUserKeys ?? [])
+        .map((key) => String(key ?? '').trim())
+        .filter((key) => key && key !== canonicalUserKey)
+    )
+  );
+
+  if (sourceKeys.length === 0) return;
+
+  const sourceSet = new Set(sourceKeys);
+  const attemptKeys: string[] = [];
+  const pointerKeys: string[] = [];
+
+  for (let i = 0; i < window.localStorage.length; i++) {
+    const key = window.localStorage.key(i);
+    if (!key) continue;
+    if (key.startsWith(`${ATTEMPT_KEY_PREFIX}:`)) attemptKeys.push(key);
+    else if (key.startsWith(`${ACTIVE_PTR_PREFIX}:`)) pointerKeys.push(key);
+  }
+
+  for (const key of attemptKeys) {
+    const parsed = safeParse(window.localStorage.getItem(key));
+    if (!parsed || parsed.schemaVersion !== SCHEMA_VERSION) continue;
+
+    const attempt = parsed as TestAttemptV1;
+    if (!sourceSet.has(attempt.userKey)) continue;
+
+    migrateAttemptRecordToUserKey(attempt, canonicalUserKey);
+  }
+
+  const pointerGroups = new Map<
+    string,
+    Array<{
+      storageKey: string;
+      attemptId: string;
+      ptr: { userKey: string; modeKey: string; datasetId: string; datasetVersion: string };
+    }>
+  >();
+
+  for (const key of pointerKeys) {
+    const ptr = parseActivePtrKey(key);
+    if (!ptr) continue;
+    if (ptr.userKey !== canonicalUserKey && !sourceSet.has(ptr.userKey)) continue;
+
+    const attemptId = window.localStorage.getItem(key);
+    if (!attemptId) continue;
+
+    const slot = ptrSlotKey(ptr);
+    const group = pointerGroups.get(slot) ?? [];
+    group.push({ storageKey: key, attemptId, ptr });
+    pointerGroups.set(slot, group);
+  }
+
+  for (const group of pointerGroups.values()) {
+    const slot = group[0]?.ptr;
+    if (!slot) continue;
+
+    const canonicalPtrKey = activePtrKey({
+      userKey: canonicalUserKey,
+      modeKey: slot.modeKey,
+      datasetId: slot.datasetId,
+      datasetVersion: slot.datasetVersion,
+    });
+
+    const validCandidates = group
+      .map((candidate) => ({
+        ...candidate,
+        attempt: readAttemptById(candidate.attemptId),
+      }))
+      .filter(({ attempt, ptr }) => {
+        if (!attempt) return false;
+        if (attempt.userKey !== canonicalUserKey) return false;
+        if (attempt.modeKey !== ptr.modeKey) return false;
+        if (attempt.datasetId !== ptr.datasetId) return false;
+        if (attempt.datasetVersion !== ptr.datasetVersion) return false;
+        return attempt.status === 'in_progress' || attempt.status === 'paused';
+      })
+      .sort((a, b) => {
+        const bt = b.attempt?.lastActiveAt ?? b.attempt?.createdAt ?? 0;
+        const at = a.attempt?.lastActiveAt ?? a.attempt?.createdAt ?? 0;
+        return bt - at;
+      });
+
+    const best = validCandidates[0];
+
+    if (best) {
+      if (window.localStorage.getItem(canonicalPtrKey) !== best.attemptId) {
+        try {
+          window.localStorage.setItem(canonicalPtrKey, best.attemptId);
+        } catch {
+          // ignore quota/private-mode errors
+        }
+      }
+    } else {
+      try {
+        window.localStorage.removeItem(canonicalPtrKey);
+      } catch {
+        // ignore
+      }
+    }
+
+    for (const candidate of group) {
+      if (candidate.ptr.userKey === canonicalUserKey) continue;
+      try {
+        window.localStorage.removeItem(candidate.storageKey);
+      } catch {
+        // ignore
+      }
+    }
+  }
 }
 
 

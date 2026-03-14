@@ -20,7 +20,16 @@ function Inner({ children }: { children: React.ReactNode }) {
   const { isOverCap } = useUsageCap();
 
   const redirectedRef = useRef<string>("");
+  const modalAllowedPathRef = useRef<string>("");
   const qs = sp.toString();
+  const premiumModalRequested = sp.get("premiumModal") === "1";
+  // eslint-disable-next-line react-hooks/refs
+  const allowTriggeredRender = premiumModalRequested || modalAllowedPathRef.current === pathname;
+
+  useEffect(() => {
+    if (!premiumModalRequested) return;
+    modalAllowedPathRef.current = pathname;
+  }, [pathname, premiumModalRequested]);
 
   useEffect(() => {
     if (!PUBLIC_FLAGS.enablePremiumGates) return;
@@ -30,18 +39,20 @@ function Inner({ children }: { children: React.ReactNode }) {
 
     if (isPremium) return;
     if (!isOverCap) return;
+    if (allowTriggeredRender) return;
 
     if (redirectedRef.current === key) return;
     redirectedRef.current = key;
 
     const next = encodeURIComponent(currentPath(pathname, qs));
     router.replace(`/premium?next=${next}`);
-  }, [entitlementsLoading, isPremium, isOverCap, pathname, qs, router]);
+  }, [allowTriggeredRender, entitlementsLoading, isPremium, isOverCap, pathname, qs, router]);
 
   if (!PUBLIC_FLAGS.enablePremiumGates) return <>{children}</>;
   if (entitlementsLoading) return null;
   if (isPremium) return <>{children}</>;
   if (!isOverCap) return <>{children}</>;
+  if (allowTriggeredRender) return <>{children}</>;
 
   return null;
 }

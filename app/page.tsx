@@ -11,6 +11,8 @@ import { useUserProfile } from '../components/UserProfile';
 import { ROUTES } from '../lib/routes';
 import FeatureCard from '../components/FeatureCard';
 import BackButton from '@/components/BackButton';
+import { useEntitlements } from '@/components/EntitlementsProvider.client';
+import { useUsageCap } from '@/lib/freeAccess/useUsageCap';
 
 
 
@@ -147,6 +149,8 @@ const MY_CARDS = [
 export default function Home() {
   const [testDate, setTestDate] = useState<string>(DEFAULT_TEST_DATE);
   const [testTime, setTestTime] = useState<string>(DEFAULT_TEST_TIME);
+  const { isPremium, loading: entitlementsLoading } = useEntitlements();
+  const { isOverCap } = useUsageCap();
 
 // Modal state for "When's your test?" sheet
 const [isTestModalOpen, setIsTestModalOpen] = useState(false);
@@ -253,6 +257,12 @@ const modalDay = modalDate.getDate();
 
 // Pretty label for the time in the modal ("9:00 AM")
 const modalTimeLabel = formatTimeLabel(modalSourceTime);
+const shouldTriggerPremiumModal = !entitlementsLoading && !isPremium && isOverCap;
+
+const homeCardHref = (href: string) =>
+  shouldTriggerPremiumModal
+    ? `${href}${href.includes('?') ? '&' : '?'}premiumModal=1`
+    : href;
 
 
   return (
@@ -323,7 +333,7 @@ const modalTimeLabel = formatTimeLabel(modalSourceTime);
 {TEST_MODE_CARDS.map((card) => (
     <FeatureCard
       key={card.key}
-      href={card.href}
+      href={homeCardHref(card.href)}
       ariaLabel={card.ariaLabel}
       bgSrc={card.bgSrc}
       bgAlt={card.bgAlt}
@@ -348,7 +358,7 @@ const modalTimeLabel = formatTimeLabel(modalSourceTime);
 {OVERALL_CARDS.map((card) => (
   <FeatureCard
     key={card.key}
-    href={card.href}
+    href={homeCardHref(card.href)}
     ariaLabel={card.ariaLabel}
     bgSrc={card.bgSrc}
     bgAlt={card.bgAlt}
@@ -371,7 +381,7 @@ const modalTimeLabel = formatTimeLabel(modalSourceTime);
 {MY_CARDS.map((card) => (
     <FeatureCard
       key={card.key}
-      href={card.href}
+      href={homeCardHref(card.href)}
       ariaLabel={card.ariaLabel}
       bgSrc={card.bgSrc}
       bgAlt={card.bgAlt}

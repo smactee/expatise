@@ -28,7 +28,7 @@ export default function TermsPage() {
     >
       <header style={{ marginBottom: 18 }}>
         <Link href="/profile" style={{ textDecoration: "none" }}>
-          ← Back to Profile
+          Profile
         </Link>
       </header>
 

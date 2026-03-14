@@ -55,10 +55,6 @@ export default function ForgotPasswordPage() {
     <main className={styles.page}>
       <div className={styles.frame}>
         <section className={styles.sheet}>
-          <button type="button" className={styles.backBtn} onClick={() => router.back()}>
-            ← Back
-          </button>
-
           <h1 className={styles.title}>Reset password</h1>
 
           {!sent ? (

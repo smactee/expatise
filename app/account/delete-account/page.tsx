@@ -5,7 +5,6 @@ import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { resetAllLocalData } from "@/lib/stats/resetLocalData";
-import BackButton from "@/components/BackButton";
 import { FunctionsHttpError } from "@supabase/supabase-js";
 
 
@@ -65,7 +64,6 @@ if (!session.session) {
 
   return (
     <main style={{ maxWidth: 520, margin: "0 auto", padding: "24px 16px" }}>
-      <BackButton />
       <h1 style={{ fontSize: 22, marginBottom: 10 }}>Delete Account</h1>
 
       {done ? (
@@ -119,7 +117,7 @@ if (!session.session) {
           </button>
 
           <button
-            onClick={() => router.back()}
+            onClick={() => router.push("/profile")}
             disabled={loading}
             style={{
               marginTop: 10,

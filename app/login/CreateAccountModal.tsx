@@ -3,7 +3,7 @@
 import { useMemo, useRef, useState, type FormEvent } from 'react';import { useRouter } from 'next/navigation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGoogle, faApple, faWeixin } from '@fortawesome/free-brands-svg-icons';
-import { faChevronLeft, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 
 import styles from './create-account-modal.module.css';
 import { isValidEmail, normalizeEmail } from '@/lib/auth';
@@ -97,10 +97,6 @@ export default function CreateAccountModal({ open, onClose, onCreated }: Props) 
   return (
     <div className={styles.overlay} role="dialog" aria-modal="true">
       <div className={styles.modal}>
-        <button type="button" className={styles.backBtn} onClick={onClose} aria-label="Back">
-          <FontAwesomeIcon icon={faChevronLeft} />
-        </button>
-
         <h2 className={styles.title}>Create Account</h2>
         <p className={styles.subtitle}>Sign up to get started</p>
 

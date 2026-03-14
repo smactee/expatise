@@ -7,7 +7,7 @@
 }
 
 .frame {
-  min-height: 100svh;
+  height: 100svh;
   width: 100%;
   max-width: 420px;
   border-radius: 18px;
@@ -38,36 +38,44 @@
 }
 
 .sheet {
-  padding: 22px 22px 30px;
-  margin-top: -100px;
   position: relative;
+  z-index: 2;
+  margin-top: clamp(-128px, -15svh, -88px);
+  padding: 0 clamp(18px, 5vw, 22px) clamp(12px, 2.6svh, 20px);
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  transform: translateY(-50px);
 }
 
 .title {
   margin: 0;
-  font-size: 34px;
+  font-size: clamp(30px, 6vw, 34px);
+  line-height: 1.05;
   font-weight: 800;
   color: #000;
 }
 
 .subtitle {
-  margin: 6px 0 18px;
-  font-size: 18px;
-  color: #6b7280;
+  margin: 4px 0 clamp(10px, 2.2svh, 18px);
+  font-size: clamp(16px, 3.8vw, 18px);
+  color: #fbfbf9;
 }
 
 .form {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: clamp(8px, 1.6svh, 14px);
 }
 
 .row {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 10px 12px;
+  padding: clamp(7px, 1.5svh, 10px) 12px;
   border-bottom: 1px solid rgba(0, 0, 0, 0.18);
+  min-height: 48px;
 }
 
 .icon {
@@ -99,18 +107,18 @@
 }
 
 .cta {
-  margin-top: 6px;
+  margin-top: clamp(2px, 0.8svh, 6px);
   width: 100%;
-  padding: 14px 18px;
+  padding: clamp(12px, 1.8svh, 14px) 18px;
+  min-height: 50px;
   border-radius: 18px;
   border: 1px solid var(--color-logout-border);
   background: var(--color-premium-gradient);
   box-shadow: 0 18px 40px rgba(15, 33, 70, 0.18);
-  font-size: 18px;
+  font-size: clamp(16px, 4vw, 18px);
   font-weight: 700;
   color: #111827;
   cursor: pointer;
-
   display: flex;
   align-items: center;
   justify-content: center;
@@ -122,10 +130,10 @@
 }
 
 .links {
-  margin-top: 12px;
+  margin-top: clamp(8px, 1.5svh, 12px);
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: clamp(4px, 1svh, 8px);
   align-items: center;
 }
 
@@ -178,7 +186,7 @@
 .forgotRow {
   display: flex;
   justify-content: flex-end;
-  margin-top: 10px;
+  margin-top: clamp(6px, 1.2svh, 10px);
 }
 
 .linkInline {
@@ -219,17 +227,21 @@
   gap: 14px;
 }
 
-.snsBtnSmall{
-  width: 34px;
-  height: 34px;
+
+.snsBtnSmall {
+  width: clamp(38px, 10vw, 42px);
+  height: clamp(38px, 10vw, 42px);
   border-radius: 999px;
-  border: 1px solid rgba(0,0,0,0.14);
-  background: #fff;
-  display:flex;
-  align-items:center;
-  justify-content:center;
+  border: 1px solid rgba(17, 24, 39, 0.12);
+  background: rgba(255, 255, 255, 0.7);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
+  font-size: 14px;
+  flex: 0 0 auto;
 }
+
 .snsBtnSmall svg{
   width: 14px;   /* <- this makes it “half-ish” */
   height: 14px;
@@ -237,7 +249,7 @@
 }
 
 .dividerRow {
-  margin: 14px 0 10px;
+  margin: clamp(8px, 1.4svh, 14px) 0 clamp(6px, 1svh, 10px);
   display: flex;
   align-items: center;
   gap: 10px;
@@ -255,27 +267,7 @@
   white-space: nowrap;
 }
 
-.snsRowSmall {
-  display: flex;
-  justify-content: center;
-  gap: 12px;
-  margin-top: 10px;
-}
 
-.snsBtnSmall {
-  width: 42px;
-  height: 42px;
-  border-radius: 999px;
-  border: 1px solid rgba(17, 24, 39, 0.12);
-  background: rgba(255, 255, 255, 0.7);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-
-  /* ✅ “half-ish” size vs modal feel */
-  font-size: 14px;
-}
 
 .snsBtnSmall:active {
   transform: translateY(1px);
@@ -314,6 +306,64 @@
   transform: translateX(-50%) translateY(0);
 }
 
+@media (max-height: 760px) {
+  .page {
+    padding: 8px;
+  }
+
+  .frame {
+    border-radius: 14px;
+  }
+
+  .sheet {
+    margin-top: -136px;
+    padding-left: 18px;
+    padding-right: 18px;
+    padding-bottom: 12px;
+  }
+
+  .title {
+    font-size: 30px;
+  }
+
+  .subtitle {
+    margin-bottom: 10px;
+  }
+
+  .form {
+    gap: 8px;
+  }
+
+  .row {
+    padding-top: 7px;
+    padding-bottom: 7px;
+    min-height: 46px;
+  }
+
+  .forgotRow {
+    margin-top: 6px;
+  }
+
+  .cta {
+    min-height: 48px;
+    padding-top: 12px;
+    padding-bottom: 12px;
+  }
+
+  .links {
+    margin-top: 8px;
+    gap: 4px;
+  }
+
+  .dividerRow {
+    margin-top: 8px;
+    margin-bottom: 6px;
+  }
+
+  .snsRowSmall {
+    margin-top: 6px;
+  }
+}
 /* Optional: respect reduced motion */
 @media (prefers-reduced-motion: reduce) {
   .toast,

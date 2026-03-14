@@ -6,7 +6,6 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import styles from './account-security.module.css';
 import { useAuthStatus } from '../../components/useAuthStatus';
-import BackButton from '../../components/BackButton';
 import { createClient } from '@/lib/supabase/client';
 import { isValidEmail, normalizeEmail } from '@/lib/auth';
 
@@ -141,9 +140,9 @@ export default function AccountSecurityPage() {
             <Link className={styles.linkBtn} href="/login">
               Go to login
             </Link>
-            <button className={styles.ghostBtn} onClick={() => router.back()}>
-              Back
-            </button>
+            <Link className={styles.ghostBtn} href="/profile">
+              Profile
+            </Link>
           </div>
         </div>
       </main>
@@ -153,8 +152,6 @@ export default function AccountSecurityPage() {
   return (
     <main className={styles.page}>
       <div className={styles.card}>
-        <BackButton />
-
         <h1 className={styles.title}>Change Email / Password</h1>
 
         {msg && <div className={styles.msg}>{msg}</div>}

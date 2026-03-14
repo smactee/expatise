@@ -188,9 +188,10 @@ import { useClearedMistakes } from '@/lib/mistakes/useClearedMistakes';
 import { attemptStore } from "@/lib/attempts/store";
 import type { Attempt } from "@/lib/attempts/attemptStore";
 import { useUserKey } from "@/components/useUserKey.client";
-import Link from 'next/link';
 import { isAnswerCorrect } from '@/lib/grading/isAnswerCorrect';
 import { DEFAULT_DATASET_ID } from '@/lib/qbank/datasets';
+import PremiumFeatureModal from '@/components/PremiumFeatureModal';
+import { useAuthStatus } from '@/components/useAuthStatus';
 
 
 
@@ -236,6 +237,9 @@ const [navOffsetY, setNavOffsetY] = useState(0);
 const lastYRef = useRef(0);
 
 const [submittedAttempts, setSubmittedAttempts] = useState<Attempt[]>([]);
+const [showPremiumModal, setShowPremiumModal] = useState(false);
+
+const { authed: supabaseAuthed } = useAuthStatus();
 
 
 
@@ -525,6 +529,11 @@ const compiledBookmarksCount = useMemo(() => {
   return n;
 }, [mode, q, bookmarkedSet]);
 
+const premiumNextPath =
+  mode === "bookmarks" ? "/bookmarks" : mode === "mistakes" ? "/my-mistakes" : "/all-questions";
+
+const premiumPath = `/premium?next=${encodeURIComponent(premiumNextPath)}`;
+
 
   return (
 <main className={styles.page}>
@@ -557,15 +566,23 @@ const compiledBookmarksCount = useMemo(() => {
 
   <div className={styles.headerActions}>
     {mode === "mistakes" && (
-      <Link href="/test/mistakes" className={styles.quizBtn}>
+      <button
+        type="button"
+        className={styles.quizBtn}
+        onClick={() => setShowPremiumModal(true)}
+      >
         Mistakes Quiz
-      </Link>
+      </button>
     )}
 
     {mode === "bookmarks" && (
-      <Link href="/test/bookmarks" className={styles.quizBtn}>
+      <button
+        type="button"
+        className={styles.quizBtn}
+        onClick={() => setShowPremiumModal(true)}
+      >
         Bookmarks Quiz
-      </Link>
+      </button>
     )}
   </div>
 </header>
@@ -840,6 +857,14 @@ onClick={(e) => {
 </div>
 
         <BottomNav onOffsetChange={setNavOffsetY} />
+
+        <PremiumFeatureModal
+          open={showPremiumModal}
+          onClose={() => setShowPremiumModal(false)}
+          nextPath={premiumNextPath}
+          isAuthed={supabaseAuthed}
+          premiumPath={premiumPath}
+        />
       </div>
     </main>
   );
@@ -2410,11 +2435,13 @@ if (!item) {
   --s-answer-gap: clamp(8px, 2.2vw, 10px); /* was 20px */
   --s-answers-to-next: clamp(12px, 2.8vw, 15px); /* was 30px */
   --s-bottom: clamp(8px, 2.2vw, 12px); /* bottom breathing room */
-  --card-w: 330px;
+  --card-w: min(330px, 100%);
   height: 100dvh;
-display: flex;
-flex-direction: column;
-overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-sizing: border-box;
+  min-width: 0;
 }
 
 .loading {
@@ -2426,7 +2453,7 @@ overflow: hidden;
 /* --- Top bar --- */
 .topBar {
   display: grid;
-  grid-template-columns: auto 1fr auto; /* back | progress | timer */
+  grid-template-columns: auto minmax(0, 1fr) auto; /* back | progress | timer */
   align-items: center;
   column-gap: 10px;
   padding: 0;
@@ -2435,6 +2462,7 @@ overflow: hidden;
 .topLeft {
   display: inline-flex;
   align-items: center;
+  min-width: 0;
 }
 
 /* NEW: progress now lives in the top bar */
@@ -2444,7 +2472,8 @@ overflow: hidden;
   gap: 10px;
 
   /* keeps it from stretching too wide or crushing the timer */
-  width: clamp(180px, 45vw, 260px);
+  width: 100%;
+  max-width: clamp(180px, 45vw, 260px);
   justify-self: center;
 
   min-width: 0;
@@ -2488,6 +2517,7 @@ overflow: hidden;
   display: inline-flex;
   align-items: center;
   gap: 10px;
+  min-width: 0;
 }
 
 /* timer */
@@ -2722,8 +2752,7 @@ height: min(clamp(180px, 45vw, 280px), 30vh);
 
 /* option card (315 x 41) */
 .optionBtn {
-  width: 315px;
-  max-width: var(--card-w);
+  width: min(315px, 100%);
   min-height: 41px;
   border-radius: 14px;
   border: 1px solid rgba(43, 124, 175, 0.18);
@@ -2739,6 +2768,7 @@ height: min(clamp(180px, 45vw, 280px), 30vh);
 
   padding: 10px 12px;
   text-align: center;
+  box-sizing: border-box;
 
   transition:
     transform 120ms ease,
@@ -2764,7 +2794,9 @@ height: min(clamp(180px, 45vw, 280px), 30vh);
 
   /* important: allow wrapping like the 295x40 text box */
   display: block;
-  width: 295px;              /* from your pasted text layer */
+  width: min(295px, 100%);              /* from your pasted text layer */
+  max-width: 100%;
+  min-width: 0;
   color: var(--test-text);
 }
 
@@ -2859,6 +2891,7 @@ height: min(clamp(180px, 45vw, 280px), 30vh);
   flex-direction: column;
   align-items: flex-end;
   gap: 6px;
+  min-width: 0;
 }
 
 /* Area under topBar that can scroll IF content is too tall */
@@ -3597,7 +3630,6 @@ export default function BookmarksPage() {
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
-import Link from "next/link";
 
 import BottomNav from "@/components/BottomNav";
 import BackButton from "@/components/BackButton";
@@ -3615,6 +3647,8 @@ import { useUserKey } from "@/components/useUserKey.client";
 import styles from "../all-questions/all-questions.module.css";
 
 import { ROUTES } from "@/lib/routes";
+import PremiumFeatureModal from "@/components/PremiumFeatureModal";
+import { useAuthStatus } from "@/components/useAuthStatus";
 
 type GlobalRow = {
   qid: string;
@@ -3665,6 +3699,9 @@ export default function GlobalCommonMistakesClient({ datasetId }: { datasetId: D
   const [showToTop, setShowToTop] = useState(false);
   const [navOffsetY, setNavOffsetY] = useState(0);
   const lastYRef = useRef(0);
+  const [showPremiumModal, setShowPremiumModal] = useState(false);
+
+  const { authed: supabaseAuthed } = useAuthStatus();
 
   // 1) load dataset
   useEffect(() => {
@@ -3842,13 +3879,10 @@ export default function GlobalCommonMistakesClient({ datasetId }: { datasetId: D
           </h1>
 
           <div className={styles.headerActions}>
-            {/* UI now, wiring later */}
             <button
               type="button"
               className={styles.quizBtn}
-              disabled
-              title="Quiz will unlock when global data is available"
-              style={{ opacity: 0.6 }}
+              onClick={() => setShowPremiumModal(true)}
             >
               Global Mistakes Quiz
             </button>
@@ -4043,6 +4077,14 @@ export default function GlobalCommonMistakesClient({ datasetId }: { datasetId: D
         </div>
 
         <BottomNav onOffsetChange={setNavOffsetY} />
+
+        <PremiumFeatureModal
+          open={showPremiumModal}
+          onClose={() => setShowPremiumModal(false)}
+          nextPath="/global-common-mistakes"
+          isAuthed={supabaseAuthed}
+          premiumPath="/premium?next=%2Fglobal-common-mistakes"
+        />
       </div>
     </main>
   );
@@ -5401,14 +5443,17 @@ import Heatmap from '@/components/stats/Heatmap.client';
 import TopicMasteryChart from '@/components/stats/TopicMasteryChart.client';
 import { resetAllLocalData } from '@/lib/stats/resetLocalData';
 import { timeKey } from "@/lib/stats/timeKeys"
-import { seedAdminDemoDataIfNeeded } from '@/lib/demo/seedAdminDemoData';
+import { seedAdminDemoDataIfNeeded, reenableDemoSeed } from '@/lib/demo/seedAdminDemoData';
 import InfoTip from '@/components/InfoTip.client';
 import CoachReportRich from '@/app/(premium)/stats/CoachReportRich.client';
 import { useAuthStatus } from '@/components/useAuthStatus';
 import { fetchAttemptsFromSupabase } from '@/lib/sync/fetchAttemptsFromSupabase';
 import { createClient } from "@/lib/supabase/client";
-import { FunctionsHttpError, FunctionsRelayError, FunctionsFetchError } from "@supabase/supabase-js";
 import { fetchTimeLogsFromSupabase } from '@/lib/sync/timeLogs.client';
+import PremiumFeatureModal from "@/components/PremiumFeatureModal";
+import { useEntitlements } from "@/components/EntitlementsProvider.client";
+import { userKeyFromEmail } from "@/lib/identity/userKey";
+
 
 
 const datasetId: DatasetId = 'cn-2023-test1';
@@ -5510,10 +5555,37 @@ function formatRemaining(ms: number) {
   return `${h}h ${m}m`;
 }
 
+const SKIP_SYNC_KEY = "__expatise_skip_sync_once";
+
+const DEMO_ADMIN_EMAILS = Array.from(
+  new Set(
+    String(process.env.NEXT_PUBLIC_DEMO_ADMIN_EMAIL ?? "")
+      .split(",")
+      .map((s) => s.trim().toLowerCase())
+      .filter(Boolean)
+  )
+);
+
+function consumeSkipSyncToken(): boolean {
+  if (typeof window === "undefined") return false;
+
+  const raw = window.localStorage.getItem(SKIP_SYNC_KEY);
+  const n = Number(raw);
+
+  if (!Number.isFinite(n) || n <= 0) return false;
+
+  const next = n - 1;
+  if (next <= 0) window.localStorage.removeItem(SKIP_SYNC_KEY);
+  else window.localStorage.setItem(SKIP_SYNC_KEY, String(next));
+
+  return true;
+}
 
 export default function StatsPage() {
   const userKey = useUserKey();
   const router = useRouter();
+
+
 
   const seededRef = useRef<string | null>(null);
 
@@ -5528,10 +5600,24 @@ export default function StatsPage() {
   const [tfTopics, setTfTopics] = useState<Timeframe>(30);
   const [attemptsLoaded, setAttemptsLoaded] = useState(false);
 
-  const { authed: supabaseAuthed } = useAuthStatus();
+  const {
+  authed: supabaseAuthed,
+  email: sessionEmail,
+  loading: authLoading,
+} = useAuthStatus();
 
-  const [attemptsHydrated, setAttemptsHydrated] = useState(false);
+const { isPremium } = useEntitlements();
 
+const [attemptsHydrated, setAttemptsHydrated] = useState(false);
+const [showPremiumModal, setShowPremiumModal] = useState(false);
+
+const normalizedSessionEmail = (sessionEmail ?? "").trim().toLowerCase();
+
+const showDemoReseedButton =
+  !authLoading &&
+  supabaseAuthed &&
+  DEMO_ADMIN_EMAILS.length > 0 &&
+  DEMO_ADMIN_EMAILS.includes(normalizedSessionEmail);
 
 function tfLabel(t: Timeframe) {
   return t === "all" ? "all time" : `last ${t} days`;
@@ -5563,7 +5649,8 @@ function tfLabel(t: Timeframe) {
 useEffect(() => {
   // 0) Wait until userKey is ready (prevents double-seed / double-load)
   if (!userKey) return;
-
+// ✅ After a Reset, skip demo seeding + remote sync once
+const skipSyncOnce = consumeSkipSyncToken();
   // 0.5) Ensure this entire effect only runs once per (userKey, datasetId) per mount
   const runKey = `${userKey}:${datasetId}:${supabaseAuthed ? "authed" : "guest"}`;
   if (seededRef.current === runKey) return;
@@ -5573,7 +5660,9 @@ useEffect(() => {
 
   (async () => {
     // ✅ seed demo data (admin only) BEFORE reading attempts
-    await seedAdminDemoDataIfNeeded(userKey);
+    if (!skipSyncOnce) {
+  await seedAdminDemoDataIfNeeded(userKey, { sessionEmail });
+}
 
     // 1) Local (fast, works offline)
     const local = listSubmittedAttempts({ userKey, datasetId });
@@ -5581,6 +5670,11 @@ useEffect(() => {
     setAttempts(local);
     setAttemptsLoaded(true);
     // 2) Remote (cross-device). If user isn't logged in, this will just fail quietly.
+    if (skipSyncOnce) {
+  // local only (which should now be empty after reset)
+  if (alive) setAttemptsHydrated(true);
+  return;
+}
     if (!supabaseAuthed) {
   if (alive) setAttemptsHydrated(true);
   return;
@@ -5613,7 +5707,7 @@ if (!remote) return;
   return () => {
     alive = false;
   };
-}, [userKey, datasetId, supabaseAuthed]);
+}, [userKey, datasetId, supabaseAuthed, sessionEmail]);
 
 
   // Compute stats (default: last 30 days for now; we’ll add filters later)
@@ -5725,6 +5819,14 @@ const COOLDOWN_MS = 24 * 60 * 60 * 1000;
 const coachPrefix = userKey ? `expatise:${userKey}` : `expatise:anon`;
 const LS_REPORT = `${coachPrefix}:coach:lastReport:v2`;
 const LS_COOLDOWN_UNTIL = `${coachPrefix}:coach:cooldownUntil:v2`;
+const legacyEmailUserKey = sessionEmail ? userKeyFromEmail(sessionEmail) : "";
+const legacyCoachPrefix = legacyEmailUserKey ? `expatise:${legacyEmailUserKey}` : "";
+const legacyReportKey = legacyCoachPrefix
+  ? `${legacyCoachPrefix}:coach:lastReport:v2`
+  : "";
+const legacyCooldownKey = legacyCoachPrefix
+  ? `${legacyCoachPrefix}:coach:cooldownUntil:v2`
+  : "";
 
 
 const [coachReport, setCoachReport] = useState<string>("");
@@ -5742,26 +5844,55 @@ useEffect(() => {
 // Load saved report + cooldown when userKey changes
 useEffect(() => {
   try {
-    const raw = localStorage.getItem(LS_REPORT);
-    if (raw) {
-      const obj = JSON.parse(raw);
+    const reportKeys = Array.from(new Set([LS_REPORT, legacyReportKey].filter(Boolean)));
+    let reportRaw: string | null = null;
+    let reportKeyUsed: string | null = null;
+    for (const k of reportKeys) {
+      const v = localStorage.getItem(k);
+      if (v) {
+        reportRaw = v;
+        reportKeyUsed = k;
+        break;
+      }
+    }
+    if (reportRaw) {
+      const obj = JSON.parse(reportRaw);
       if (obj?.report) {
         setCoachReport(String(obj.report));
         const t = Number(obj.createdAt);
         setCoachCreatedAt(Number.isFinite(t) ? t : null);
+        if (reportKeyUsed && reportKeyUsed !== LS_REPORT) {
+          localStorage.setItem(LS_REPORT, reportRaw);
+        }
       }
     }
-    const cRaw = localStorage.getItem(LS_COOLDOWN_UNTIL);
-    const c = Number(cRaw);
+    const cooldownKeys = Array.from(new Set([LS_COOLDOWN_UNTIL, legacyCooldownKey].filter(Boolean)));
+    let cooldownRaw: string | null = null;
+    let cooldownKeyUsed: string | null = null;
+    for (const k of cooldownKeys) {
+      const v = localStorage.getItem(k);
+      if (v) {
+        cooldownRaw = v;
+        cooldownKeyUsed = k;
+        break;
+      }
+    }
+    const c = Number(cooldownRaw);
     setCooldownUntil(Number.isFinite(c) && c > 0 ? c : null);
+    if (cooldownRaw && cooldownKeyUsed && cooldownKeyUsed !== LS_COOLDOWN_UNTIL) {
+      localStorage.setItem(LS_COOLDOWN_UNTIL, cooldownRaw);
+    }
   } catch {
     // ignore
   }
-}, [LS_REPORT, LS_COOLDOWN_UNTIL]);
+}, [LS_REPORT, LS_COOLDOWN_UNTIL, legacyReportKey, legacyCooldownKey]);
 
 useEffect(() => {
   let alive = true;
 
+  if (consumeSkipSyncToken()) {
+    return () => { alive = false; };
+  }
   if (!supabaseAuthed) {
     return () => {
       alive = false;
@@ -5888,43 +6019,53 @@ async function handleGenerateCoach() {
 
 const supabase = createClient();
 
-// ✅ Get current session token
-const { data: sess, error: sessErr } = await supabase.auth.getSession();
-if (sessErr) {
-  setCoachError(`Auth error: ${sessErr.message}`);
+const { data: sessionData, error: sessionErr } = await supabase.auth.getSession();
+if (sessionErr) {
+  setCoachError(`Could not read session: ${sessionErr.message}`);
   return;
 }
 
-const token = sess.session?.access_token;
+let token = sessionData.session?.access_token ?? null;
 if (!token) {
-  setCoachError("You're not signed in. Please sign in again and retry.");
-  return;
-}
-
-// ✅ Attach token for Edge Function call (required)
-const { data, error } = await supabase.functions.invoke("coach", {
-  body: payload,
-  headers: {
-    Authorization: `Bearer ${token}`,
-  },
-});
-
-let j: any = data ?? null;
-
-if (error) {
-  // Function ran but returned 4xx/5xx (we can read the JSON body)
-  if (error instanceof FunctionsHttpError) {
-    j = await error.context.json().catch(() => null);
-  } else if (error instanceof FunctionsRelayError) {
-    setCoachError(`Network/relay error: ${error.message}`);
-    return;
-  } else if (error instanceof FunctionsFetchError) {
-    setCoachError(`Could not reach Coach service: ${error.message}`);
-    return;
-  } else {
-    setCoachError(error.message ?? "Coach request failed. Please try again.");
+  const { data: refreshed, error: refreshErr } = await supabase.auth.refreshSession();
+  if (refreshErr) {
+    setCoachError(`Could not refresh session: ${refreshErr.message}`);
     return;
   }
+  token = refreshed.session?.access_token ?? null;
+}
+
+if (!token) {
+  setCoachError("You must be logged in to generate a Coach report.");
+  return;
+}
+
+const supabaseUrl = String(process.env.NEXT_PUBLIC_SUPABASE_URL ?? "").trim();
+const anonKey = String(
+  process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ??
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ??
+  ""
+).trim();
+
+if (!supabaseUrl || !anonKey) {
+  setCoachError("Missing Supabase URL or anon key in environment.");
+  return;
+}
+
+const res = await fetch(`${supabaseUrl}/functions/v1/coach`, {
+  method: "POST",
+  headers: {
+    Authorization: `Bearer ${token}`,
+    apikey: anonKey,
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify(payload),
+});
+const j = await res.json().catch(() => null);
+
+if (!res.ok) {
+  setCoachError(j?.error ?? j?.detail ?? `Coach request failed (${res.status}).`);
+  return;
 }
 
 if (!j?.ok) {
@@ -5991,21 +6132,112 @@ try {
   type="button"
   className={styles.resetBtn}
   onClick={async () => {
-    const typed = window.prompt(
-      'This will permanently delete ALL saved data on this device.\n\nType RESET to confirm:'
-    );
-    if ((typed ?? '').trim().toUpperCase() !== 'RESET') return;
+  if (!isPremium) {
+    setShowPremiumModal(true);
+    return;
+  }
 
-    await resetAllLocalData({ includeCaches: true });
-    window.location.reload();
-  }}
-  aria-label="Reset all saved data"
-  title="Reset all saved data"
+  if (!supabaseAuthed) {
+    const goLogin = window.confirm(
+      "You need to log in to reset synced stats. Press OK to log in."
+    );
+    if (goLogin) {
+      router.push("/login?next=/stats");
+    }
+    return;
+  }
+
+  const typed = window.prompt(
+    "This will permanently delete all stats data from your account and this device.\n\nType RESET to confirm:"
+  );
+  if ((typed ?? "").trim().toUpperCase() !== "RESET") return;
+
+ try {
+  const supabase = createClient();
+
+  const { data: sessionData, error: sessionErr } = await supabase.auth.getSession();
+  if (sessionErr) {
+    window.alert(`Could not read session: ${sessionErr.message}`);
+    return;
+  }
+
+  let token = sessionData.session?.access_token ?? null;
+  if (!token) {
+    const { data: refreshed, error: refreshErr } = await supabase.auth.refreshSession();
+    if (refreshErr) {
+      window.alert(`Could not refresh session: ${refreshErr.message}`);
+      return;
+    }
+    token = refreshed.session?.access_token ?? null;
+  }
+
+  if (!token) {
+    window.alert("You must be logged in to reset cloud stats.");
+    return;
+  }
+
+  const supabaseUrl = String(process.env.NEXT_PUBLIC_SUPABASE_URL ?? "").trim();
+  const anonKey = String(
+    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ??
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ??
+    ""
+  ).trim();
+
+  if (!supabaseUrl || !anonKey) {
+    window.alert("Missing Supabase URL or anon key in environment.");
+    return;
+  }
+
+  const res = await fetch(`${supabaseUrl}/functions/v1/reset-stats`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      apikey: anonKey,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({}),
+  });
+  const data = await res.json().catch(() => null);
+
+  if (!res.ok) {
+    window.alert(data?.error ?? data?.message ?? `Cloud reset failed (${res.status}).`);
+    return;
+  }
+
+  if (!data?.ok) {
+    window.alert(data?.error ?? "Cloud reset failed.");
+    return;
+  }
+
+  localStorage.setItem("__expatise_skip_sync_once", "2");
+  localStorage.setItem("__expatise_disable_demo_seed", "1");
+
+  await resetAllLocalData({ includeCaches: true });
+  window.location.reload();
+} catch (err: any) {
+  window.alert(err?.message ?? "Reset failed. Please try again.");
+}
+}}
+  aria-label="Reset all stats data"
+  title="Reset all stats data"
 >
   Reset All Stats
 </button>
 
-
+{showDemoReseedButton ? (
+  <button
+    type="button"
+    className={styles.reseedBtn}
+    onClick={() => {
+      reenableDemoSeed();
+      window.location.reload();
+    }}
+    aria-label="Re-seed demo stats"
+    title="Re-seed demo stats"
+  >
+    Re-seed Demo Data
+  </button>
+) : null}
 
 
         {/* ==== Top Accuracy / Gauge Card ==== */}
@@ -6209,6 +6441,11 @@ try {
       buildWeakSubtopicRankedTags(statsTopics.topicMastery).length === 0
     }
     onClick={() => {
+  if (!isPremium) {
+    setShowPremiumModal(true);
+    return;
+  }
+
   if (!statsTopics.topicMastery) return;
 
   // ✅ keep it to the “weakest 5” (as you intended)
@@ -6274,7 +6511,7 @@ try {
 {/* GPT Coach */}
 <article className={styles.statsCard}>
   <header className={styles.statsCardHeader}>
-    <h2 className={styles.statsCardTitle}>GPT Coach</h2>
+    <h2 className={styles.statsCardTitle}>Ai Coach</h2>
   </header>
 
   {loading ? (
@@ -6377,15 +6614,20 @@ try {
     </>
   )}
 </article>
-
-
-        
-
       </div>
       <BottomNav />
+
+      <PremiumFeatureModal
+        open={showPremiumModal}
+        onClose={() => setShowPremiumModal(false)}
+        nextPath="/stats"
+        isAuthed={supabaseAuthed}
+        premiumPath="/premium?next=%2Fstats"
+      />
     </main>
   );
 }
+
 ```
 
 ### app/(premium)/stats/stats.module.css
@@ -7352,6 +7594,34 @@ try {
   justify-content: center;
   white-space: nowrap;
 }
+
+.reseedBtn {
+  position: absolute;
+  top: -10px;
+  right: 150px; /* sits to the left of Reset All Stats */
+  z-index: 6;
+
+  border-radius: 22px;
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  background: #ffffff;
+  box-shadow: 0 18px 40px rgba(15, 33, 70, 0.16);
+
+  font-weight: 700;
+  color: #111827;
+  cursor: pointer;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+
+  padding: 0 12px;
+  height: 36px;
+}
+
+.reseedBtn:active {
+  transform: translateY(1px);
+}
 ```
 
 ### app/account-deletion/page.tsx
@@ -7668,7 +7938,6 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import styles from './account-security.module.css';
 import { useAuthStatus } from '../../components/useAuthStatus';
-import BackButton from '../../components/BackButton';
 import { createClient } from '@/lib/supabase/client';
 import { isValidEmail, normalizeEmail } from '@/lib/auth';
 
@@ -7803,9 +8072,9 @@ export default function AccountSecurityPage() {
             <Link className={styles.linkBtn} href="/login">
               Go to login
             </Link>
-            <button className={styles.ghostBtn} onClick={() => router.back()}>
-              Back
-            </button>
+            <Link className={styles.ghostBtn} href="/profile">
+              Profile
+            </Link>
           </div>
         </div>
       </main>
@@ -7815,8 +8084,6 @@ export default function AccountSecurityPage() {
   return (
     <main className={styles.page}>
       <div className={styles.card}>
-        <BackButton />
-
         <h1 className={styles.title}>Change Email / Password</h1>
 
         {msg && <div className={styles.msg}>{msg}</div>}
@@ -7872,6 +8139,7 @@ export default function AccountSecurityPage() {
     </main>
   );
 }
+
 ```
 
 ### app/account/delete-account/page.tsx
@@ -7883,7 +8151,6 @@ import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { resetAllLocalData } from "@/lib/stats/resetLocalData";
-import BackButton from "@/components/BackButton";
 import { FunctionsHttpError } from "@supabase/supabase-js";
 
 
@@ -7943,7 +8210,6 @@ if (!session.session) {
 
   return (
     <main style={{ maxWidth: 520, margin: "0 auto", padding: "24px 16px" }}>
-      <BackButton />
       <h1 style={{ fontSize: 22, marginBottom: 10 }}>Delete Account</h1>
 
       {done ? (
@@ -7997,7 +8263,7 @@ if (!session.session) {
           </button>
 
           <button
-            onClick={() => router.back()}
+            onClick={() => router.push("/profile")}
             disabled={loading}
             style={{
               marginTop: 10,
@@ -8017,6 +8283,7 @@ if (!session.session) {
     </main>
   );
 }
+
 ```
 
 ### app/auth/callback/page.tsx
@@ -8192,16 +8459,25 @@ export default function AuthCallbackPage() {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 14px;
+  gap: clamp(8px, 3.6vw, 14px);
   padding: 10px 0 6px;
 }
 
 /* Makes different-sized logos align nicely */
 .payLogoBox {
   height: 34px;              /* consistent visual height */
+  width: clamp(34px, 18vw, 70px);
+  max-width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.payLogoBox :global(img) {
+  display: block;
+  width: auto;
+  max-width: 100%;
+  height: auto;
 }
 
 /* Nunito Sans ONLY for the label text */
@@ -8211,6 +8487,7 @@ export default function AuthCallbackPage() {
   font-weight: 600;
   color: rgba(17, 24, 39, 0.75);
   line-height: 1.1;
+  text-align: center;
 }
 
 .payItem {
@@ -8218,13 +8495,16 @@ export default function AuthCallbackPage() {
   border: none;
   background: transparent;
   cursor: pointer;
+  flex: 1 1 0;
+  min-width: 0;
+  box-sizing: border-box;
 
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 6px;
+  gap: clamp(4px, 1.5vw, 6px);
 
-  padding: 6px 4px;
+  padding: 6px clamp(2px, 1vw, 4px);
   border-radius: 12px;
 
   opacity: 0.9;
@@ -8315,7 +8595,6 @@ export default function AuthCallbackPage() {
 
   cursor: pointer;
 }
-
 
 ```
 
@@ -8804,7 +9083,7 @@ function Inner({ fallbackHref = '/' }: { fallbackHref?: string }) {
 
   const href = isSafeInternalPath(candidate) ? candidate : fallbackHref;
 
-  return <Link href={href}>← Back</Link>;
+  return <Link href={href}>Return</Link>;
 }
 
 export default function BackLink() {
@@ -8814,6 +9093,7 @@ export default function BackLink() {
     </CSRBoundary>
   );
 }
+
 ```
 
 ### app/coming-soon/coming-soon.module.css
@@ -9123,10 +9403,6 @@ export default function ForgotPasswordPage() {
     <main className={styles.page}>
       <div className={styles.frame}>
         <section className={styles.sheet}>
-          <button type="button" className={styles.backBtn} onClick={() => router.back()}>
-            ← Back
-          </button>
-
           <h1 className={styles.title}>Reset password</h1>
 
           {!sent ? (
@@ -9165,6 +9441,7 @@ export default function ForgotPasswordPage() {
     </main>
   );
 }
+
 ```
 
 ### app/globals.css
@@ -9382,7 +9659,7 @@ export default function RootLayout({
 import { useMemo, useRef, useState, type FormEvent } from 'react';import { useRouter } from 'next/navigation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGoogle, faApple, faWeixin } from '@fortawesome/free-brands-svg-icons';
-import { faChevronLeft, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 
 import styles from './create-account-modal.module.css';
 import { isValidEmail, normalizeEmail } from '@/lib/auth';
@@ -9476,10 +9753,6 @@ export default function CreateAccountModal({ open, onClose, onCreated }: Props) 
   return (
     <div className={styles.overlay} role="dialog" aria-modal="true">
       <div className={styles.modal}>
-        <button type="button" className={styles.backBtn} onClick={onClose} aria-label="Back">
-          <FontAwesomeIcon icon={faChevronLeft} />
-        </button>
-
         <h2 className={styles.title}>Create Account</h2>
         <p className={styles.subtitle}>Sign up to get started</p>
 
@@ -9857,7 +10130,7 @@ return;
 }
 
 .frame {
-  min-height: 100svh;
+  height: 100svh;
   width: 100%;
   max-width: 420px;
   border-radius: 18px;
@@ -9888,36 +10161,44 @@ return;
 }
 
 .sheet {
-  padding: 22px 22px 30px;
-  margin-top: -100px;
   position: relative;
+  z-index: 2;
+  margin-top: clamp(-128px, -15svh, -88px);
+  padding: 0 clamp(18px, 5vw, 22px) clamp(12px, 2.6svh, 20px);
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  transform: translateY(-50px);
 }
 
 .title {
   margin: 0;
-  font-size: 34px;
+  font-size: clamp(30px, 6vw, 34px);
+  line-height: 1.05;
   font-weight: 800;
   color: #000;
 }
 
 .subtitle {
-  margin: 6px 0 18px;
-  font-size: 18px;
-  color: #6b7280;
+  margin: 4px 0 clamp(10px, 2.2svh, 18px);
+  font-size: clamp(16px, 3.8vw, 18px);
+  color: #fbfbf9;
 }
 
 .form {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: clamp(8px, 1.6svh, 14px);
 }
 
 .row {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 10px 12px;
+  padding: clamp(7px, 1.5svh, 10px) 12px;
   border-bottom: 1px solid rgba(0, 0, 0, 0.18);
+  min-height: 48px;
 }
 
 .icon {
@@ -9949,18 +10230,18 @@ return;
 }
 
 .cta {
-  margin-top: 6px;
+  margin-top: clamp(2px, 0.8svh, 6px);
   width: 100%;
-  padding: 14px 18px;
+  padding: clamp(12px, 1.8svh, 14px) 18px;
+  min-height: 50px;
   border-radius: 18px;
   border: 1px solid var(--color-logout-border);
   background: var(--color-premium-gradient);
   box-shadow: 0 18px 40px rgba(15, 33, 70, 0.18);
-  font-size: 18px;
+  font-size: clamp(16px, 4vw, 18px);
   font-weight: 700;
   color: #111827;
   cursor: pointer;
-
   display: flex;
   align-items: center;
   justify-content: center;
@@ -9972,10 +10253,10 @@ return;
 }
 
 .links {
-  margin-top: 12px;
+  margin-top: clamp(8px, 1.5svh, 12px);
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: clamp(4px, 1svh, 8px);
   align-items: center;
 }
 
@@ -10028,7 +10309,7 @@ return;
 .forgotRow {
   display: flex;
   justify-content: flex-end;
-  margin-top: 10px;
+  margin-top: clamp(6px, 1.2svh, 10px);
 }
 
 .linkInline {
@@ -10069,17 +10350,21 @@ return;
   gap: 14px;
 }
 
-.snsBtnSmall{
-  width: 34px;
-  height: 34px;
+
+.snsBtnSmall {
+  width: clamp(38px, 10vw, 42px);
+  height: clamp(38px, 10vw, 42px);
   border-radius: 999px;
-  border: 1px solid rgba(0,0,0,0.14);
-  background: #fff;
-  display:flex;
-  align-items:center;
-  justify-content:center;
+  border: 1px solid rgba(17, 24, 39, 0.12);
+  background: rgba(255, 255, 255, 0.7);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
+  font-size: 14px;
+  flex: 0 0 auto;
 }
+
 .snsBtnSmall svg{
   width: 14px;   /* <- this makes it “half-ish” */
   height: 14px;
@@ -10087,7 +10372,7 @@ return;
 }
 
 .dividerRow {
-  margin: 14px 0 10px;
+  margin: clamp(8px, 1.4svh, 14px) 0 clamp(6px, 1svh, 10px);
   display: flex;
   align-items: center;
   gap: 10px;
@@ -10105,27 +10390,7 @@ return;
   white-space: nowrap;
 }
 
-.snsRowSmall {
-  display: flex;
-  justify-content: center;
-  gap: 12px;
-  margin-top: 10px;
-}
 
-.snsBtnSmall {
-  width: 42px;
-  height: 42px;
-  border-radius: 999px;
-  border: 1px solid rgba(17, 24, 39, 0.12);
-  background: rgba(255, 255, 255, 0.7);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-
-  /* ✅ “half-ish” size vs modal feel */
-  font-size: 14px;
-}
 
 .snsBtnSmall:active {
   transform: translateY(1px);
@@ -10164,6 +10429,64 @@ return;
   transform: translateX(-50%) translateY(0);
 }
 
+@media (max-height: 760px) {
+  .page {
+    padding: 8px;
+  }
+
+  .frame {
+    border-radius: 14px;
+  }
+
+  .sheet {
+    margin-top: -136px;
+    padding-left: 18px;
+    padding-right: 18px;
+    padding-bottom: 12px;
+  }
+
+  .title {
+    font-size: 30px;
+  }
+
+  .subtitle {
+    margin-bottom: 10px;
+  }
+
+  .form {
+    gap: 8px;
+  }
+
+  .row {
+    padding-top: 7px;
+    padding-bottom: 7px;
+    min-height: 46px;
+  }
+
+  .forgotRow {
+    margin-top: 6px;
+  }
+
+  .cta {
+    min-height: 48px;
+    padding-top: 12px;
+    padding-bottom: 12px;
+  }
+
+  .links {
+    margin-top: 8px;
+    gap: 4px;
+  }
+
+  .dividerRow {
+    margin-top: 8px;
+    margin-bottom: 6px;
+  }
+
+  .snsRowSmall {
+    margin-top: 6px;
+  }
+}
 /* Optional: respect reduced motion */
 @media (prefers-reduced-motion: reduce) {
   .toast,
@@ -10590,7 +10913,6 @@ export default function LoginPage() {
   flex: 1 1 auto;
   display: grid;
   grid-template-rows: 1fr auto;
-  flex-direction: column;
   min-height: 0;
 }
 
@@ -10609,10 +10931,11 @@ export default function LoginPage() {
 .hero {
   position: relative;
   width: 100%;
-  height: 420px;
+  height: clamp(320px, 52svh, 420px);
   background: #111;
   overflow: hidden;
   flex: 1 1 auto;
+  min-height: 260px;
 }
 
 .heroImg {
@@ -10624,58 +10947,99 @@ export default function LoginPage() {
   pointer-events: none;
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, rgba(0, 0, 0, 0) 55%, rgba(255, 255, 255, 1) 96%);
+  background: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0) 55%,
+    rgba(255, 255, 255, 1) 96%
+  );
 }
 
 .content {
   flex: 0 0 auto;
-  padding: 18px 20px min(60px, calc(24px + env(safe-area-inset-bottom, 0px)));
+  padding:
+    clamp(14px, 2.5svh, 18px)
+    clamp(18px, 5vw, 22px)
+    min(60px, calc(24px + env(safe-area-inset-bottom, 0px)));
   text-align: center;
 }
 
 .sheet {
-  padding: 26px 22px 30px;
+  padding: clamp(20px, 3.5svh, 26px) clamp(18px, 5vw, 22px) clamp(22px, 4svh, 30px);
   text-align: center;
 }
 
 .title {
   margin: 0;
-  font-size: 28px;
+  font-size: clamp(24px, 5.8vw, 28px);
   line-height: 1.15;
   font-weight: 800;
   color: #111827;
 }
 
 .highlight {
-  background: var(--onboarding-highlight, #b9dcff); /* default light blue fallback */
+  background: var(--onboarding-highlight, #b9dcff);
   padding: 0 4px;
   border-radius: 2px;
   box-decoration-break: clone;
   -webkit-box-decoration-break: clone;
-  white-space: nowrap; /* keeps Driver's License together */
+  white-space: nowrap;
 }
 
 .subtitle {
-  margin: 14px 0 22px;
-  font-size: 16px;
+  margin: clamp(10px, 2svh, 14px) 0 clamp(16px, 3svh, 22px);
+  font-size: clamp(15px, 3.8vw, 16px);
+  line-height: 1.45;
   color: #6b7280;
 }
 
 .cta {
   width: 100%;
   max-width: 320px;
-  padding: 14px 18px;
+  min-height: 50px;
+  padding: clamp(12px, 1.8svh, 14px) 18px;
   border-radius: 18px;
   border: 1px solid var(--color-logout-border);
   background: var(--color-premium-gradient);
   box-shadow: 0 18px 40px rgba(15, 33, 70, 0.18);
-  font-size: 20px;
+  font-size: clamp(18px, 4.5vw, 20px);
   font-weight: 700;
   color: #111827;
   cursor: pointer;
 }
 
+@media (max-height: 760px) {
+  .page {
+    padding: 8px;
+  }
 
+  .frame {
+    border-radius: 14px;
+  }
+
+  .hero {
+    height: clamp(260px, 46svh, 360px);
+    min-height: 220px;
+  }
+
+  .sheet {
+    padding-top: 18px;
+    padding-bottom: 20px;
+  }
+
+  .title {
+    font-size: 24px;
+  }
+
+  .subtitle {
+    margin-top: 10px;
+    margin-bottom: 16px;
+  }
+
+  .cta {
+    min-height: 48px;
+    font-size: 18px;
+  }
+}
 ```
 
 ### app/onboarding/page.tsx
@@ -12126,7 +12490,7 @@ import {
 import { ensureRevenueCat } from "@/lib/billing/revenuecat";
 import { useEntitlements } from "@/components/EntitlementsProvider.client";
 import { useSearchParams } from "next/navigation";
-import GuestLoginModal from "@/components/GuestLoginModal";
+import PremiumFeatureModal from "@/components/PremiumFeatureModal";
 import type { EntitlementSource } from "@/lib/entitlements/types";
 
 
@@ -12180,8 +12544,8 @@ function PremiumInner() {
     Partial<Record<PlanId, string>>
   >({});
 
-  const [showGuestModal, setShowGuestModal] = useState(false);
-  const [pendingPlan, setPendingPlan] = useState<PlanId | null>(null);
+  const [showPremiumModal, setShowPremiumModal] = useState(false);
+const [pendingPremiumPlan, setPendingPremiumPlan] = useState<PlanId | null>(null);
 
   const searchParams = useSearchParams();
 
@@ -12431,10 +12795,10 @@ console.log("[RC] packages:", offerings.current?.availablePackages?.map(p => p.i
 
             // ✅ Guest: show modal (NO redirect)
             if (userKey === "guest") {
-              setPendingPlan(plan);
-              setShowGuestModal(true);
-              return;
-            }
+  setPendingPremiumPlan(plan);
+  setShowPremiumModal(true);
+  return;
+}
 
             if (Capacitor.isNativePlatform()) {
               try {
@@ -12492,10 +12856,11 @@ console.log("[RC] post-purchase customerInfo premium:", !!customerInfo.entitleme
 
         {planError && <div className={styles.planError}>{planError}</div>}
       </div>
-      <GuestLoginModal
-  open={showGuestModal}
-  onClose={() => setShowGuestModal(false)}
-  nextPath={`/premium?plan=${pendingPlan ?? "lifetime"}`}
+     <PremiumFeatureModal
+  open={showPremiumModal}
+  onClose={() => setShowPremiumModal(false)}
+  nextPath={`/premium?plan=${pendingPremiumPlan ?? "lifetime"}`}
+  isAuthed={false}
 />
     </main>
   );
@@ -12565,7 +12930,8 @@ console.log("[RC] post-purchase customerInfo premium:", !!customerInfo.entitleme
 }
 
 .titleBlock {
-  width: 290px; /* your measurement */
+  width: 100%;
+  max-width: 290px; /* your measurement */
   height: 62px;
   margin: 18px auto 0;
   text-align: center;
@@ -12595,11 +12961,12 @@ console.log("[RC] post-purchase customerInfo premium:", !!customerInfo.entitleme
 
 /* 335.04 x 172 (we’ll use 335px for layout sanity) */
 .featureGrid {
-  width: 335px;
+  width: 100%;
+  max-width: 335px;
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-template-rows: repeat(2, minmax(86px, auto));
-  display: grid;
+  box-sizing: border-box;
   /* no background in Figma (it sits on the page) */
 }
 
@@ -12647,7 +13014,8 @@ console.log("[RC] post-purchase customerInfo premium:", !!customerInfo.entitleme
 }
 
 .planPill {
-  width: 328px;  /* your measurement */
+  width: 100%;
+  max-width: 328px;  /* your measurement */
   height: 61px;
   border-radius: 20px;
   border: 1px solid rgba(210, 199, 154, 0.9);
@@ -12745,9 +13113,11 @@ console.log("[RC] post-purchase customerInfo premium:", !!customerInfo.entitleme
 }
 
 .promoRow {
-  width: 327px;   /* your measurement */
+  width: 100%;
+  max-width: 327px;   /* your measurement */
   height: 43px;
   margin: 18px auto 0;
+  box-sizing: border-box;
 
   display: flex;
   align-items: stretch;
@@ -12755,7 +13125,8 @@ console.log("[RC] post-purchase customerInfo premium:", !!customerInfo.entitleme
 }
 
 .gotPromoRow {
-  width: 327px;
+  width: 100%;
+  max-width: 327px;
   margin: 14px auto 0;
   display: flex;
   align-items: center;
@@ -12825,7 +13196,8 @@ console.log("[RC] post-purchase customerInfo premium:", !!customerInfo.entitleme
 
 
 .cta {
-  width: 327px;
+  width: 100%;
+  max-width: 327px;
   height: 52px;
   margin: 18px auto 0;
   border-radius: 12px;
@@ -12861,7 +13233,8 @@ console.log("[RC] post-purchase customerInfo premium:", !!customerInfo.entitleme
 }
 
 .promoFooter {
-  width: 327px;
+  width: 100%;
+  max-width: 327px;
   margin: 20px auto 0;
   display: flex;
   align-items: center;
@@ -12884,7 +13257,8 @@ console.log("[RC] post-purchase customerInfo premium:", !!customerInfo.entitleme
 }
 
 .note {
-  width: 327px;
+  width: 100%;
+  max-width: 327px;
   margin: 6px auto 0;
   font-size: 13px;
   color: #8a92aa;
@@ -12923,7 +13297,8 @@ console.log("[RC] post-purchase customerInfo premium:", !!customerInfo.entitleme
 }
 
 .promoError {
-  width: 327px;
+  width: 100%;
+  max-width: 327px;
   margin: 8px auto 0;
   font-size: 13px;
   color: #b42318;
@@ -12953,6 +13328,7 @@ console.log("[RC] post-purchase customerInfo premium:", !!customerInfo.entitleme
   left: 0;
   z-index: 5;
 }
+
 ```
 
 ### app/privacy/page.tsx
@@ -12990,7 +13366,7 @@ export default function PrivacyPolicyPage() {
     >
       <header style={{ marginBottom: 18 }}>
         <Link href="/profile" style={{ textDecoration: "none" }}>
-          ← Back to Profile
+          Profile
         </Link>
       </header>
 
@@ -13216,6 +13592,7 @@ export default function PrivacyPolicyPage() {
     </main>
   );
 }
+
 ```
 
 ### app/profile/page.tsx
@@ -13239,7 +13616,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGoogle, faApple, faWeixin} from '@fortawesome/free-brands-svg-icons';
 import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
 import LogoutButton from '@/components/LogoutButton.client';
-import GuestLoginModal from '@/components/GuestLoginModal';
+import PremiumFeatureModal from '@/components/PremiumFeatureModal';
 import { Capacitor } from "@capacitor/core";
 import { Purchases } from "@revenuecat/purchases-capacitor";
 import { ensureRevenueCat } from "@/lib/billing/revenuecat";
@@ -13258,7 +13635,7 @@ function Inner() {
   const { authed, method, loading: authLoading, refresh, email: sessionEmail, provider } = useAuthStatus();
   const authEmail = sessionEmail ?? email ?? null;
   const showProviderEmail = authed && method !== "email" && !!authEmail; 
-  const [showGuestModal, setShowGuestModal] = useState(false);
+  const [showPremiumModal, setShowPremiumModal] = useState(false);
   const [saving, setSaving] = useState(false);
   const [saveMsg, setSaveMsg] = useState<string | null>(null);
 
@@ -13298,7 +13675,7 @@ function requireLogin(e?: React.SyntheticEvent) {
   if (authed) return true;
   e?.preventDefault();
   e?.stopPropagation();
-  setShowGuestModal(true);   // ✅ this matches your modal renderer
+  setShowPremiumModal(true);
   return false;
 }
 
@@ -13653,7 +14030,7 @@ const handleRestorePurchases = async (e: React.SyntheticEvent) => {
   <span className={styles.chevron}>›</span>
 </button>
 
-       <button
+<button
   type="button"
   className={styles.settingsRow}
   onClick={() => router.push("/privacy")}
@@ -13668,6 +14045,25 @@ const handleRestorePurchases = async (e: React.SyntheticEvent) => {
       />
     </span>
     <span className={styles.settingsLabel}>Privacy Policy</span>
+  </div>
+  <span className={styles.chevron}>›</span>
+</button>
+
+<button
+  type="button"
+  className={styles.settingsRow}
+  onClick={() => router.push("/terms")}
+>
+  <div className={styles.settingsLeft}>
+    <span className={styles.settingsIcon}>
+      <Image
+        src="/images/profile/privacypolicy-icon.png"
+        alt="Terms of Service"
+        width={24}
+        height={24}
+      />
+    </span>
+    <span className={styles.settingsLabel}>Terms of Service</span>
   </div>
   <span className={styles.chevron}>›</span>
 </button>
@@ -13788,12 +14184,13 @@ const handleRestorePurchases = async (e: React.SyntheticEvent) => {
   </div>
 ) : null}
 
-<GuestLoginModal
-  open={showGuestModal}
-  onClose={() => setShowGuestModal(false)}
+<PremiumFeatureModal
+  open={showPremiumModal}
+  onClose={() => setShowPremiumModal(false)}
   nextPath="/profile"
+  isAuthed={authed}
+  premiumPath="/premium?next=%2Fprofile"
 />
-
       </div>
 
       {/* Re-use the existing bottom navigation */}
@@ -13809,6 +14206,7 @@ export default function ProfilePage() {
     </CSRBoundary>
   );
 }
+
 ```
 
 ### app/profile/profile.module.css
@@ -14719,6 +15117,216 @@ export default function ResetPasswordPage() {
 
 ```
 
+### app/terms/page.tsx
+```tsx
+// app/terms/page.tsx
+import Link from "next/link";
+
+export const metadata = {
+  title: "Terms of Service · Expatise",
+};
+
+// Keep these aligned with your Privacy page
+const APP_NAME = "Expatise";
+const DEVELOPER_ENTITY = "[Maverix n Matrix]";
+const CONTACT_EMAIL = "maverixnmatrix@gmail.com";
+
+const EFFECTIVE_DATE = "2026-03-08";
+const LAST_UPDATED = "2026-03-08";
+
+export default function TermsPage() {
+  return (
+    <main
+      style={{
+        minHeight: "100vh",
+        padding: "24px 16px 60px",
+        maxWidth: 920,
+        margin: "0 auto",
+        fontFamily:
+          "system-ui, -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', sans-serif",
+        lineHeight: 1.6,
+      }}
+    >
+      <header style={{ marginBottom: 18 }}>
+        <Link href="/profile" style={{ textDecoration: "none" }}>
+          Profile
+        </Link>
+      </header>
+
+      <h1 style={{ fontSize: 30, fontWeight: 900, marginBottom: 6 }}>
+        Terms of Service
+      </h1>
+
+      <div style={{ opacity: 0.8, fontSize: 14 }}>
+        <div>Effective date: {EFFECTIVE_DATE}</div>
+        <div>Last updated: {LAST_UPDATED}</div>
+      </div>
+
+      <p style={{ marginTop: 16 }}>
+        These Terms of Service (“Terms”) govern your use of <b>{APP_NAME}</b>
+        (the “App”), operated by <b>{DEVELOPER_ENTITY}</b> (“we”, “us”, “our”).
+        By using the App, you agree to these Terms.
+      </p>
+
+      <h2 style={{ marginTop: 28, fontSize: 18, fontWeight: 800 }}>
+        1) Eligibility and account
+      </h2>
+      <ul style={{ paddingLeft: 18 }}>
+        <li>
+          You may use the App as a guest or with an account (email/social sign-in).
+        </li>
+        <li>
+          You are responsible for account activity and keeping login credentials secure.
+        </li>
+        <li>
+          You must provide accurate information and keep your account details up to date.
+        </li>
+      </ul>
+
+      <h2 style={{ marginTop: 28, fontSize: 18, fontWeight: 800 }}>
+        2) What the App provides
+      </h2>
+      <p>
+        {APP_NAME} provides study tools for driving-license exam preparation,
+        including question practice, bookmarks, mistake review, progress tracking,
+        statistics, and premium-only features.
+      </p>
+
+      <h2 style={{ marginTop: 28, fontSize: 18, fontWeight: 800 }}>
+        3) Premium, billing, and subscriptions
+      </h2>
+      <ul style={{ paddingLeft: 18 }}>
+        <li>
+          Some features require an active Premium entitlement.
+        </li>
+        <li>
+          Purchases are processed by third parties (such as Google Play / Apple and RevenueCat where enabled).
+        </li>
+        <li>
+          Subscription renewals, cancellations, and refunds are governed by the store/payment platform terms.
+        </li>
+        <li>
+          We may change premium features or pricing where legally permitted.
+        </li>
+      </ul>
+
+      <h2 style={{ marginTop: 28, fontSize: 18, fontWeight: 800 }}>
+        4) Acceptable use
+      </h2>
+      <p>You agree not to:</p>
+      <ul style={{ paddingLeft: 18 }}>
+        <li>Use the App for unlawful, abusive, or fraudulent activity.</li>
+        <li>Attempt to reverse engineer, scrape, or disrupt the App or services.</li>
+        <li>Bypass feature gates, payment logic, or security controls.</li>
+        <li>Upload or transmit malicious code or harmful content.</li>
+      </ul>
+
+      <h2 style={{ marginTop: 28, fontSize: 18, fontWeight: 800 }}>
+        5) AI coach and informational use
+      </h2>
+      <ul style={{ paddingLeft: 18 }}>
+        <li>
+          AI coaching output is generated automatically from your study data and may be inaccurate or incomplete.
+        </li>
+        <li>
+          The App provides educational support only and is not legal, professional, or safety-critical advice.
+        </li>
+        <li>
+          You are responsible for your own driving decisions and compliance with local laws.
+        </li>
+      </ul>
+
+      <h2 style={{ marginTop: 28, fontSize: 18, fontWeight: 800 }}>
+        6) Content and intellectual property
+      </h2>
+      <ul style={{ paddingLeft: 18 }}>
+        <li>
+          The App, branding, design, and software are owned by or licensed to us and protected by law.
+        </li>
+        <li>
+          You receive a limited, revocable, non-exclusive right to use the App for personal, non-commercial use.
+        </li>
+        <li>
+          You may not copy, resell, distribute, or create derivative works from the App except as allowed by law.
+        </li>
+      </ul>
+
+      <h2 style={{ marginTop: 28, fontSize: 18, fontWeight: 800 }}>
+        7) Availability and changes
+      </h2>
+      <ul style={{ paddingLeft: 18 }}>
+        <li>
+          We may modify, suspend, or discontinue parts of the App at any time.
+        </li>
+        <li>
+          We do not guarantee uninterrupted availability, sync, or error-free operation.
+        </li>
+      </ul>
+
+      <h2 style={{ marginTop: 28, fontSize: 18, fontWeight: 800 }}>
+        8) Termination
+      </h2>
+      <p>
+        We may suspend or terminate access if you violate these Terms or abuse the service.
+        You may stop using the App at any time and may request account deletion via the
+        in-app and outside-the-app deletion paths described in our Privacy Policy.
+      </p>
+
+      <h2 style={{ marginTop: 28, fontSize: 18, fontWeight: 800 }}>
+        9) Disclaimers and limitation of liability
+      </h2>
+      <p>
+        The App is provided “as is” and “as available” to the maximum extent allowed by law.
+        We disclaim implied warranties (including merchantability, fitness for a particular
+        purpose, and non-infringement). To the maximum extent allowed by law, we are not liable
+        for indirect, incidental, special, consequential, or punitive damages, or for loss of
+        data, revenue, or profits.
+      </p>
+
+      <h2 style={{ marginTop: 28, fontSize: 18, fontWeight: 800 }}>
+        10) Governing law
+      </h2>
+      <p>
+        These Terms are governed by applicable laws of the jurisdiction where
+        <b> {DEVELOPER_ENTITY} </b>
+        is established, unless mandatory local consumer law requires otherwise.
+      </p>
+
+      <h2 style={{ marginTop: 28, fontSize: 18, fontWeight: 800 }}>
+        11) Changes to these Terms
+      </h2>
+      <p>
+        We may update these Terms from time to time. Continued use of the App after
+        updates means you accept the revised Terms.
+      </p>
+
+      <h2 style={{ marginTop: 28, fontSize: 18, fontWeight: 800 }}>
+        12) Contact
+      </h2>
+      <p>
+        Questions about these Terms: <b>{CONTACT_EMAIL}</b>
+      </p>
+
+      <hr style={{ margin: "28px 0" }} />
+
+      <section style={{ fontSize: 13, opacity: 0.75, lineHeight: 1.55 }}>
+        <p style={{ marginTop: 0 }}>
+          <b>Legal note.</b> This document is provided for general information and does not
+          constitute legal advice.
+        </p>
+        <p style={{ marginTop: 10 }}>
+          If any provision is unenforceable, the remaining provisions remain in effect.
+        </p>
+        <p style={{ marginTop: 10 }}>
+          If translated versions exist, the English version controls in case of conflict.
+        </p>
+      </section>
+    </main>
+  );
+}
+
+```
+
 ### app/test/[mode]/page.tsx
 ```tsx
 // app/test/[mode]/page.tsx
@@ -15429,9 +16037,11 @@ export default function Page() {
   min-height: 100vh;
   min-height: 100dvh; /* ✅ mobile accurate */
   background: var(--results-screen-bg);
-color: var(--results-text);
+  color: var(--results-text);
   overflow: hidden;
-  --contentW: min(390px, calc(100% - 60px)); /* ✅ content width */
+  --sideInset: clamp(20px, 7.7vw, 30px);
+  --innerInset: clamp(32px, 11vw, 43px);
+  --contentW: min(390px, calc(100% - (var(--sideInset) * 2))); /* ✅ content width */
 }
 
 
@@ -15517,7 +16127,7 @@ color: var(--results-text);
   transform: translateX(-50%);
 
   width: max-content;
-  max-width: calc(100% - 60px); /* prevents overflow on small screens */
+  max-width: calc(100% - (var(--sideInset) * 2)); /* prevents overflow on small screens */
 
   margin: 0;
   font-family: 'Poppins', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
@@ -15653,6 +16263,7 @@ color: var(--results-text);
   display: grid;
   place-items: center;
   gap: 11px;
+  min-width: 0;
 }
 
 .scoreLeft { left: 0; }
@@ -15689,11 +16300,10 @@ color: var(--results-text);
 /* Test Results title */
 .testResultsTitle {
   position: absolute;
-  left: 30px;
+  left: var(--sideInset);
+  right: var(--sideInset);
   top: 400px;
-
-  /* ✅ make the title span the usable screen width (390 - 30 - 30) */
-  width: calc(100% - 60px);
+  width: auto;
 
   /* ✅ keep it on one line */
   white-space: nowrap;
@@ -15714,17 +16324,19 @@ color: var(--results-text);
 /* Incorrect row */
 .incorrectRow {
   position: absolute;
-  left: 43px;
-  right: 30px; /* ✅ gives it room to push a button to the far right */
+  left: var(--innerInset);
+  right: var(--sideInset); /* ✅ gives it room to push a button to the far right */
   top: 440px;
 
   height: 24px;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: clamp(6px, 2vw, 8px);
+  min-width: 0;
 }
 .incorrectSpacer {
   flex: 1;
+  min-width: 0;
 }
 
 .incorrectText {
@@ -15745,14 +16357,17 @@ color: var(--results-text);
 /* A scrollable area for wrong-question details */
 .reviewArea {
   position: absolute;
-  left: 30px;
-  width: calc(100% - 60px);
+  left: var(--sideInset);
+  right: var(--sideInset);
+  width: auto;
   top: 470px;
 
   bottom: -60px; /* ✅ fill to bottom */
   overflow-y: auto;
 
   padding-right: 6px;
+  box-sizing: border-box;
+  min-width: 0;
 
   /* ✅ this creates "extra space" so the last question can scroll past the button */
   padding-bottom: calc(41px + 16px + env(safe-area-inset-bottom) + 12px);
@@ -15803,11 +16418,13 @@ color: var(--results-text);
   align-items: flex-start;
   gap: 12px;
   margin: 0 0 10px;
+  min-width: 0;
 }
 
 /* Options stack properly */
 .options {
   flex: 1;
+  min-width: 0;
   display: flex;
   flex-direction: column;
   gap: 4px;
@@ -15927,6 +16544,7 @@ color: var(--results-text);
 .questionText {
   margin: 0;
   flex: 1;
+  min-width: 0;
 }
 
 .bookmarkBtn {
@@ -16042,6 +16660,7 @@ color: var(--results-text);
 /* Each slide takes the full width of the reviewArea */
 .slide {
   flex: 0 0 100%;
+  min-width: 0;
   scroll-snap-align: start;
   scroll-snap-stop: always; /* helps “one swipe = one card” where supported */
 
@@ -16066,6 +16685,7 @@ color: var(--results-text);
 :root[data-theme='dark'] .bookmarkBtn[data-bookmarked='false'] .bookmarkIcon {
   background: rgba(255, 255, 255, 0.70);
 }
+
 ```
 
 ### capacitor.config.ts
@@ -16149,112 +16769,23 @@ export default function AuthSelfHeal() {
 
 ### components/BackButton.tsx
 ```tsx
-// components/BackButton.tsx
-
 'use client';
 
-import Image from 'next/image';
-import { useRouter, useSearchParams } from 'next/navigation';
 import type { CSSProperties } from 'react';
-import styles from './BackButton.module.css';
-import CSRBoundary from '@/components/CSRBoundary';
-
 
 type BackButtonProps = {
-  onClick?: () => void;                 // optional override (modal close)
+  onClick?: () => void;
   variant?: 'fixed' | 'inline';
   ariaLabel?: string;
   style?: CSSProperties;
-
-  // NEW (optional): if there is no history + no returnTo, where to go
   fallbackHref?: string;
 };
 
-function safeDecode(v: string) {
-  try {
-    return decodeURIComponent(v);
-  } catch {
-    return v;
-  }
-}
-
-function Inner({
-  onClick,
-  variant = 'fixed',
-  ariaLabel = 'Back',
-  style,
-  fallbackHref = '/',
-}: BackButtonProps) {
-  const router = useRouter();
-  const sp = useSearchParams();
-
-  const handleClick = () => {
-    if (onClick) {
-      onClick();
-      return;
-    }
-
-    // ✅ If the current URL has returnTo, use it.
-    const raw = sp?.get('returnTo') ?? '';
-    const decoded = raw ? safeDecode(raw) : '';
-
-    if (decoded.startsWith('/') && !decoded.startsWith('//')) {
-  router.push(decoded);
-  return;
-}
-
-
-    // Otherwise behave like normal back
-    // (with a safety fallback if there's no real history)
-    if (typeof window !== 'undefined' && window.history.length <= 1) {
-      router.push(fallbackHref);
-      return;
-    }
-
-    router.back();
-  };
-
-    const fixedStyle: CSSProperties =
-    variant === 'fixed'
-      ? {
-          position: 'fixed',
-          top: 'calc(var(--statusbar-h, 0px) + env(safe-area-inset-top, 0px) + 8px)',
-          left: 'calc(env(safe-area-inset-left, 0px) + 10px)',
-          zIndex: 9999,
-        }
-      : {
-          position: 'relative',
-          top: 'auto',
-          left: 'auto',
-          zIndex: 'auto',
-        };
-
-  return (
-    <button
-      type="button"
-      onClick={handleClick}
-      aria-label={ariaLabel}
-      className={styles.backBtn}
-      style={{ ...fixedStyle, ...style }}
-    >
-      <Image
-        src="/images/other/turn-back.png"
-        alt="Back"
-        width={24}
-        height={24}
-        priority
-      />
-    </button>
-  );
-}
-
 export default function BackButton(props: BackButtonProps) {
-  return (
-    <CSRBoundary>
-      <Inner {...props} />
-    </CSRBoundary>
-  );
+  void props;
+  return null;
 }
+
 ```
 
 ### components/BottomNav.module.css
@@ -16380,7 +16911,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import styles from './BottomNav.module.css';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 type BottomNavProps = {
   onOffsetChange?: (offsetY: number) => void; // keep for compatibility
@@ -16395,6 +16926,7 @@ export default function BottomNav({ onOffsetChange }: BottomNavProps) {
 
   const [hidden, setHidden] = useState(false);
   const hiddenRef = useRef(false);
+  const autoHideTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const lastYRef = useRef(0);
   const downAccumRef = useRef(0);
@@ -16406,14 +16938,41 @@ export default function BottomNav({ onOffsetChange }: BottomNavProps) {
     onOffsetChangeRef.current = onOffsetChange;
   }, [onOffsetChange]);
 
-  const setHiddenSafe = (nextHidden: boolean) => {
+  const clearAutoHideTimer = useCallback(() => {
+    if (!autoHideTimerRef.current) return;
+    clearTimeout(autoHideTimerRef.current);
+    autoHideTimerRef.current = null;
+  }, []);
+
+  const scheduleAutoHide = useCallback(() => {
+    clearAutoHideTimer();
+    autoHideTimerRef.current = setTimeout(() => {
+      if (hiddenRef.current) return;
+      hiddenRef.current = true;
+      setHidden(true);
+      onOffsetChangeRef.current?.(90);
+    }, 10000);
+  }, [clearAutoHideTimer]);
+
+  const setHiddenSafe = useCallback((nextHidden: boolean) => {
     if (nextHidden === hiddenRef.current) return;
     hiddenRef.current = nextHidden;
     setHidden(nextHidden);
 
+    if (nextHidden) {
+      clearAutoHideTimer();
+    } else {
+      scheduleAutoHide();
+    }
+
     // Optional compatibility: 0 when shown, ~hide distance when hidden
     onOffsetChangeRef.current?.(nextHidden ? 90 : 0);
-  };
+  }, [clearAutoHideTimer, scheduleAutoHide]);
+
+  useEffect(() => {
+    scheduleAutoHide();
+    return () => clearAutoHideTimer();
+  }, [clearAutoHideTimer, scheduleAutoHide]);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -16468,7 +17027,7 @@ export default function BottomNav({ onOffsetChange }: BottomNavProps) {
 
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
-  }, []);
+  }, [setHiddenSafe]);
 
   return (
     <div
@@ -17144,10 +17703,12 @@ export default function ComingSoonRow(props: Props) {
 
 import { useEffect, useState } from "react";
 import { useUserKey } from "@/components/useUserKey.client";
+import { useAuthStatus } from "@/components/useAuthStatus";
 import { seedAdminDemoDataIfNeeded } from "@/lib/demo/seedAdminDemoData";
 
 export default function DemoSeedGate({ children }: { children: React.ReactNode }) {
   const userKey = useUserKey();
+  const { email: sessionEmail } = useAuthStatus();
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
@@ -17158,7 +17719,7 @@ export default function DemoSeedGate({ children }: { children: React.ReactNode }
       if (!userKey) return;
 
       try {
-        await seedAdminDemoDataIfNeeded(userKey);
+        await seedAdminDemoDataIfNeeded(userKey, { sessionEmail });
       } catch (e) {
         // Don’t swallow — you NEED this during debugging
         if (process.env.NODE_ENV !== "production") {
@@ -17173,7 +17734,7 @@ export default function DemoSeedGate({ children }: { children: React.ReactNode }
     return () => {
       cancelled = true;
     };
-  }, [userKey]);
+  }, [userKey, sessionEmail]);
 
   if (!ready) return null;
   return <>{children}</>;
@@ -18034,145 +18595,31 @@ function FreeUsageProgressBadgeInner({ userKey }: { userKey: string }) {
     return `${shown}/${FREE_CAPS.questionsShown} Questions · ${starts}/${FREE_CAPS.examStarts} Exams`;
   }, [shown, starts]);
 
-  return (
-    <div
-      style={{
-        position: "fixed",
-        top: 12,
-        right: 12,
-        zIndex: 9999,
-        padding: "8px 10px",
-        borderRadius: 999,
-        fontSize: 12,
-        lineHeight: "12px",
-        background: "rgba(0,0,0,0.65)",
-        color: "white",
-        backdropFilter: "blur(10px)",
-        WebkitBackdropFilter: "blur(10px)",
-      }}
-      aria-label="Free usage progress"
-      title={`Free usage progress (${userKey})`}
-    >
-      {text}
-    </div>
-  );
-}
-```
-
-### components/GuestLoginModal.module.css
-```css
-.guestOverlay {
-  position: fixed;
-  inset: 0;
-  backdrop-filter: blur(8px);
-  background: rgba(0, 0, 0, 0.35);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-  z-index: 9999;
-}
-
-.guestModal {
-  width: 100%;
-  max-width: 420px;
-  border-radius: 18px;
-  padding: 18px 16px;
-  background: var(--color-profile-card-bg);
-  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
-}
-
-.guestTitle {
-  font-size: 18px;
-  font-weight: 800;
-  margin-bottom: 8px;
-}
-
-.guestText {
-  font-size: 14px;
-  opacity: 0.9;
-  line-height: 1.4;
-}
-
-.guestButtons {
-  display: flex;
-  gap: 10px;
-  margin-top: 14px;
-}
-
-.guestPrimary {
-  flex: 1;
-  height: 44px;
-  border-radius: 12px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  text-decoration: none;
-  background: var(--color-premium-gradient);
-  border: 1px solid rgba(59, 130, 246, 0.35);
-  font-weight: 700;
-}
-
-.guestSecondary {
-  flex: 1;
-  height: 44px;
-  border-radius: 12px;
-  border: 1px solid rgba(148, 163, 184, 0.35);
-  background: transparent;
-  color: var(--color-heading-strong);
-  font-weight: 700;
-  font-size: 13px;
-}
-```
-
-### components/GuestLoginModal.tsx
-```tsx
-"use client";
-
-import Link from "next/link";
-import styles from "./GuestLoginModal.module.css";
-
-type GuestLoginModalProps = {
-  open: boolean;
-  onClose: () => void;
-  nextPath: string; // e.g. "/premium?plan=lifetime"
-};
-
-export default function GuestLoginModal({
-  open,
-  onClose,
-  nextPath,
-}: GuestLoginModalProps) {
-  if (!open) return null;
-
-  const href = `/login?next=${encodeURIComponent(nextPath)}`;
-
-  return (
-    <div className={styles.guestOverlay} onClick={onClose}>
-      <div className={styles.guestModal} onClick={(e) => e.stopPropagation()}>
-        <div className={styles.guestTitle}>Log in to save your data.</div>
-        <div className={styles.guestText}>
-          You are currently logged in as a <strong>guest</strong>. You can
-          continue as such, but data will not be saved and some features may be
-          reserved for premium users only.
-        </div>
-
-        <div className={styles.guestButtons}>
-          <Link className={styles.guestPrimary} href={href}>
-            Log in
-          </Link>
-
-          <button
-            type="button"
-            className={styles.guestSecondary}
-            onClick={onClose}
-          >
-            Continue as guest
-          </button>
-        </div>
-      </div>
-    </div>
-  );
+return (
+  <div
+  style={{
+    position: "fixed",
+    top: 30,
+    right: 12,
+    zIndex: 9999,
+    padding: "6px 10px",
+    borderRadius: 999,
+    fontSize: 12,
+    lineHeight: "14px",
+    background: "transparent",
+color: "#1f2937",
+border: "none",
+backdropFilter: "none",
+WebkitBackdropFilter: "none",
+boxShadow: "none",
+    pointerEvents: "none",
+  }}
+  aria-label="Free usage progress"
+  title={`Free usage progress (${userKey})`}
+>
+    {text}
+  </div>
+);
 }
 ```
 
@@ -18406,6 +18853,170 @@ export default function OnboardingGate() {
 }
 ```
 
+### components/PremiumFeatureModal.module.css
+```css
+.guestOverlay {
+  position: fixed;
+  inset: 0;
+  backdrop-filter: blur(8px);
+  background: rgba(0, 0, 0, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 9999;
+}
+
+.guestModal {
+  width: 100%;
+  max-width: 420px;
+  border-radius: 18px;
+  padding: 18px 16px;
+  background: var(--color-profile-card-bg);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+}
+
+.guestTitle {
+  font-size: 18px;
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+
+.guestText {
+  font-size: 14px;
+  opacity: 0.9;
+  line-height: 1.4;
+}
+
+.guestButtons {
+  display: flex;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.guestPrimary,
+.guestSecondary {
+  flex: 1;
+  height: 44px;
+  border-radius: 12px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  text-decoration: none;
+  text-align: center;
+  white-space: nowrap;
+  box-sizing: border-box;
+
+  font-weight: 700;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.guestPrimary {
+  background: #ffffff;
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  color: var(--color-heading-strong);
+  padding: 0 10px;
+}
+
+.guestSecondary {
+  background: var(--color-premium-gradient);
+  border: 1px solid rgba(59, 130, 246, 0.35);
+  color: var(--color-heading-strong);
+  font-size: 15px;
+  padding: 0 10px;
+}
+
+.guestPrimary:hover,
+.guestSecondary:hover {
+  opacity: 0.96;
+}
+
+.guestPrimary:active,
+.guestSecondary:active {
+  transform: translateY(1px);
+}
+```
+
+### components/PremiumFeatureModal.tsx
+```tsx
+"use client";
+
+import Link from "next/link";
+import styles from "./PremiumFeatureModal.module.css";
+
+type PremiumFeatureModalProps = {
+  open: boolean;
+  onClose: () => void;
+  nextPath: string;      // where user should return after login
+  isAuthed: boolean;     // true = logged-in free user, false = guest
+  premiumPath?: string;  // optional override, default = "/premium"
+};
+
+export default function PremiumFeatureModal({
+  open,
+  onClose,
+  nextPath,
+  isAuthed,
+  premiumPath = "/premium",
+}: PremiumFeatureModalProps) {
+  if (!open) return null;
+
+  const loginHref = `/login?next=${encodeURIComponent(nextPath)}`;
+
+  const title = "This feature is available with Premium.";
+
+  const text = isAuthed
+    ? "You are currently on the free plan. Upgrade to Premium to access this feature and other premium tools."
+    : "You are currently using a free guest account. Log in to save your progress and upgrade to Premium to access this feature.";
+
+  return (
+    <div className={styles.guestOverlay} onClick={onClose}>
+      <div className={styles.guestModal} onClick={(e) => e.stopPropagation()}>
+        <div className={styles.guestTitle}>{title}</div>
+
+        <div className={styles.guestText}>{text}</div>
+
+        <div className={styles.guestButtons}>
+          {isAuthed ? (
+            <>
+              <button
+                type="button"
+                className={styles.guestPrimary}
+                onClick={onClose}
+              >
+                Not now
+              </button>
+
+              <Link className={styles.guestSecondary} href={premiumPath}>
+                Upgrade to Premium
+              </Link>
+            </>
+          ) : (
+            <>
+              <button
+                type="button"
+                className={styles.guestPrimary}
+                onClick={onClose}
+              >
+                Continue as guest
+              </button>
+
+              <Link className={styles.guestSecondary} href={loginHref}>
+                Log in
+              </Link>
+            </>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+```
+
 ### components/RequirePremium.client.tsx
 ```tsx
 "use client";
@@ -18474,7 +19085,7 @@ export default function RequirePremium({ children }: { children: React.ReactNode
 import { useEffect, useRef } from "react";
 import { usePathname, useRouter } from "next/navigation";
 
-const EDGE_PX = 1;           // (touch) keep your original
+const EDGE_PX = 24;          // (touch) realistic left-edge target on phones
 const MOUSE_EDGE_PX = 24;    // (mouse) easier to start on desktop
 
 const MIN_DX = 80;           // how far to drag to trigger
@@ -25277,17 +25888,22 @@ import { Capacitor } from "@capacitor/core";
 import { Purchases, LOG_LEVEL } from "@revenuecat/purchases-capacitor";
 
 // Dev toggle for RevenueCat Test Store.
-// IMPORTANT: Never ship production builds with this enabled.
-const USE_TEST_STORE = process.env.NEXT_PUBLIC_RC_USE_TEST_STORE === "1";
+// IMPORTANT: Test Store is automatically disabled in production builds.
+const USE_TEST_STORE =
+  process.env.NODE_ENV !== "production" &&
+  process.env.NEXT_PUBLIC_RC_USE_TEST_STORE === "1";
 
 function getProductionApiKeyForPlatform() {
   const platform = Capacitor.getPlatform(); // "ios" | "android" | "web"
+
   if (platform === "ios") {
     return process.env.NEXT_PUBLIC_REVENUECAT_API_KEY_IOS ?? "";
   }
+
   if (platform === "android") {
     return process.env.NEXT_PUBLIC_REVENUECAT_API_KEY_ANDROID ?? "";
   }
+
   return "";
 }
 
@@ -25295,6 +25911,7 @@ function getRevenueCatApiKey() {
   if (USE_TEST_STORE) {
     return process.env.NEXT_PUBLIC_REVENUECAT_API_KEY_TEST ?? "";
   }
+
   return getProductionApiKeyForPlatform();
 }
 
@@ -25306,20 +25923,19 @@ export async function ensureRevenueCat(userKey?: string): Promise<boolean> {
   if (!Capacitor.isNativePlatform()) return false;
 
   const apiKey = getRevenueCatApiKey();
+
   if (!apiKey) {
     const expected = USE_TEST_STORE
       ? "NEXT_PUBLIC_REVENUECAT_API_KEY_TEST"
       : "NEXT_PUBLIC_REVENUECAT_API_KEY_ANDROID (or NEXT_PUBLIC_REVENUECAT_API_KEY_IOS)";
+
     console.warn(`[RevenueCat] Missing API key. Expected: ${expected}.`);
     return false;
   }
 
-  // 1) Configure if not configured yet
   const { isConfigured } = await Purchases.isConfigured();
+
   if (!isConfigured) {
-    if (process.env.NODE_ENV !== "production") {
-  await Purchases.setLogLevel({ level: LOG_LEVEL.DEBUG });
-}
     const level =
       process.env.NODE_ENV === "development" ? LOG_LEVEL.DEBUG : LOG_LEVEL.INFO;
     await Purchases.setLogLevel({ level });
@@ -25335,15 +25951,21 @@ export async function ensureRevenueCat(userKey?: string): Promise<boolean> {
     return true;
   }
 
-  // 2) If configured and we now have a real userKey, link/transfer to it
   if (userKey && userKey !== "guest") {
     const current = await Purchases.getAppUserID();
+
     const currentId = (() => {
       if (typeof current === "string") return current;
-      if (typeof current === "object" && current !== null && "appUserID" in current) {
+
+      if (
+        typeof current === "object" &&
+        current !== null &&
+        "appUserID" in current
+      ) {
         const appUserID = (current as { appUserID?: unknown }).appUserID;
         return typeof appUserID === "string" ? appUserID : "";
       }
+
       return "";
     })();
 
@@ -25354,7 +25976,6 @@ export async function ensureRevenueCat(userKey?: string): Promise<boolean> {
 
   return true;
 }
-
 ```
 
 ### lib/bookmarks/bookmarkStore.ts
@@ -25374,6 +25995,7 @@ export type BookmarkStore = {
 ```tsx
 // lib/bookmarks/localBookmarkStore.ts
 import type { BookmarkStore } from "./bookmarkStore";
+import { Preferences } from "@capacitor/preferences";
 
 const legacyKeyFor = (datasetId: string) => `expatise:bookmarks:${datasetId}`;
 const keyFor = (userKey: string, datasetId: string) =>
@@ -25390,32 +26012,33 @@ function safeParseIds(raw: string | null): string[] {
 
 export class LocalBookmarkStore implements BookmarkStore {
   async listIds(userKey: string, datasetId: string): Promise<string[]> {
-    if (typeof window === "undefined") return [];
+    try {
+      const k = keyFor(userKey, datasetId);
+      let { value: raw } = await Preferences.get({ key: k });
 
-    const k = keyFor(userKey, datasetId);
-    let raw = localStorage.getItem(k);
-
-    // ✅ one-time migration for your existing dev bookmarks (guest only)
-    if (!raw && userKey === "guest") {
-      const legacy = localStorage.getItem(legacyKeyFor(datasetId));
-      if (legacy) {
-        try {
-          localStorage.setItem(k, legacy);
-          localStorage.removeItem(legacyKeyFor(datasetId));
-          raw = legacy;
-        } catch {
-          // ignore
+      // ✅ one-time migration for your existing dev bookmarks (guest only)
+      if (!raw && userKey === "guest") {
+        const legacy = localStorage.getItem(legacyKeyFor(datasetId));
+        if (legacy) {
+          try {
+            await Preferences.set({ key: k, value: legacy });
+            localStorage.removeItem(legacyKeyFor(datasetId));
+            raw = legacy;
+          } catch {
+            // ignore
+          }
         }
       }
-    }
 
-    return safeParseIds(raw);
+      return safeParseIds(raw);
+    } catch {
+      return [];
+    }
   }
 
   async writeIds(userKey: string, datasetId: string, ids: string[]): Promise<void> {
-    if (typeof window === "undefined") return;
     try {
-      localStorage.setItem(keyFor(userKey, datasetId), JSON.stringify(ids));
+      await Preferences.set({ key: keyFor(userKey, datasetId), value: JSON.stringify(ids) });
     } catch {
       // ignore quota/private-mode errors
     }
@@ -25433,9 +26056,8 @@ export class LocalBookmarkStore implements BookmarkStore {
   }
 
   async clear(userKey: string, datasetId: string): Promise<void> {
-    if (typeof window === "undefined") return;
     try {
-      localStorage.removeItem(keyFor(userKey, datasetId));
+      await Preferences.remove({ key: keyFor(userKey, datasetId) });
     } catch {
       // ignore
     }
@@ -25539,11 +26161,21 @@ const DATASET_ID = "cn-2023-test1";
 const DATASET_VERSION = "cn-2023-test1@v1";
 
 // ✅ set via .env.local (and in Vercel env vars for production)
-const ADMIN_EMAIL = (process.env.NEXT_PUBLIC_DEMO_ADMIN_EMAIL ?? "")
-  .trim()
-  .toLowerCase();
+const ADMIN_EMAILS = Array.from(
+  new Set(
+    String(process.env.NEXT_PUBLIC_DEMO_ADMIN_EMAIL ?? "")
+      .split(",")
+      .map((s) => s.trim().toLowerCase())
+      .filter(Boolean)
+  )
+);
 
 const DEMO_SEED_ALL = (process.env.NEXT_PUBLIC_DEMO_SEED_ALL ?? "") === "1";
+const DISABLE_DEMO_SEED_KEY = "__expatise_disable_demo_seed";
+
+function normalizeEmail(s: unknown) {
+  return String(s ?? "").trim().toLowerCase();
+}
 
 function isDemoHost() {
   if (typeof window === "undefined") return false;
@@ -25863,18 +26495,29 @@ const submittedAt = tsAtDayPart(daysAgo, part, `ts:${userKey}:${modeKey}:${daysA
 
 
 
-export async function seedAdminDemoDataIfNeeded(userKey: string) {
+export async function seedAdminDemoDataIfNeeded(
+  userKey: string,
+  opts?: { sessionEmail?: string | null }
+) {
   // Only run in browser
   if (typeof window === "undefined") return false;
 
+  if (window.localStorage.getItem(DISABLE_DEMO_SEED_KEY) === "1") {
+    return false;
+  }
+
   const allowAll = DEMO_SEED_ALL && isDemoHost();
+  const normalizedSessionEmail = normalizeEmail(opts?.sessionEmail);
+  const isAdminByEmail =
+    !!normalizedSessionEmail && ADMIN_EMAILS.includes(normalizedSessionEmail);
 
   // If not allowAll, keep your existing admin-only behavior
   if (!allowAll) {
-    if (!ADMIN_EMAIL) return false;
+    if (ADMIN_EMAILS.length === 0) return false;
 
-    const adminUserKey = userKeyFromEmail(ADMIN_EMAIL);
-    if (userKey !== adminUserKey) return false;
+    const adminUserKeys = new Set(ADMIN_EMAILS.map((email) => userKeyFromEmail(email)));
+    const isAdminByUserKey = adminUserKeys.has(userKey);
+    if (!isAdminByEmail && !isAdminByUserKey) return false;
   }
 
 
@@ -25931,6 +26574,22 @@ export async function seedAdminDemoDataIfNeeded(userKey: string) {
   return true;
 }
 
+export function reenableDemoSeed() {
+  if (typeof window === "undefined") return;
+
+  // allow seeding again
+  window.localStorage.removeItem(DISABLE_DEMO_SEED_KEY);
+
+  // remove any old demo-seed completion flags
+  for (let i = window.localStorage.length - 1; i >= 0; i--) {
+    const k = window.localStorage.key(i);
+    if (!k) continue;
+    if (k.startsWith("expatise:demo-seed:")) {
+      window.localStorage.removeItem(k);
+    }
+  }
+}
+
 ```
 
 ### lib/entitlements/getEntitlements.ts
@@ -25953,6 +26612,19 @@ type FnRes =
   | { ok: true; entitlements: Entitlements; userKey?: string }
   | { ok: false; error?: string; detail?: string };
 
+const ADMIN_PREMIUM_EMAILS = Array.from(
+  new Set(
+    String(
+      process.env.NEXT_PUBLIC_ADMIN_PREMIUM_EMAILS ??
+        process.env.NEXT_PUBLIC_DEMO_ADMIN_EMAIL ??
+        ""
+    )
+      .split(",")
+      .map((s) => s.trim().toLowerCase())
+      .filter(Boolean)
+  )
+);
+
 export async function getEntitlements(userKey: string): Promise<Entitlements> {
   const local = getLocalEntitlements(userKey) ?? FREE_ENTITLEMENTS;
 
@@ -25968,6 +26640,18 @@ const token = sessionData.session?.access_token ?? null;
 // ✅ If there's no real user JWT yet, DON'T call the function (verify_jwt=true will 401).
 // Just return local, and we'll refresh when auth finishes.
 if (!token) return local;
+
+const { data: userData, error: userErr } = await supabase.auth.getUser(token);
+const normalizedEmail = (userData.user?.email ?? "").trim().toLowerCase();
+if (!userErr && normalizedEmail && ADMIN_PREMIUM_EMAILS.includes(normalizedEmail)) {
+  const adminEntitlements: Entitlements = {
+    isPremium: true,
+    source: "admin",
+    updatedAt: Date.now(),
+  };
+  setLocalEntitlements(userKey, adminEntitlements);
+  return adminEntitlements;
+}
 
 const anonKey =
   process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ??
@@ -26033,6 +26717,7 @@ const { data, error } = await supabase.functions.invoke("entitlements", {
 
   return local;
 }
+
 ```
 
 ### lib/entitlements/localStore.ts
@@ -26519,6 +27204,7 @@ export function isBypassPath(pathname: string) {
 ```tsx
 // lib/mistakes/localClearedMistakesStore.ts
 import type { ClearedMistakesStore } from "./store";
+import { Preferences } from "@capacitor/preferences";
 
 // legacy (your old key) — we’ll migrate from this if it exists
 const legacyKeyFor = (userKey: string, datasetId: string) =>
@@ -26541,25 +27227,26 @@ function uniqSorted(ids: string[]) {
   return Array.from(new Set((ids ?? []).map(String))).sort();
 }
 
-function readKey(k: string): string | null {
+async function readKey(k: string): Promise<string | null> {
   try {
-    return localStorage.getItem(k);
+    const { value } = await Preferences.get({ key: k });
+    return value || null;
   } catch {
     return null;
   }
 }
 
-function writeKey(k: string, raw: string) {
+async function writeKey(k: string, raw: string) {
   try {
-    localStorage.setItem(k, raw);
+    await Preferences.set({ key: k, value: raw });
   } catch {
     // ignore
   }
 }
 
-function removeKey(k: string) {
+async function removeKey(k: string) {
   try {
-    localStorage.removeItem(k);
+    await Preferences.remove({ key: k });
   } catch {
     // ignore
   }
@@ -26572,15 +27259,15 @@ export class LocalClearedMistakesStore implements ClearedMistakesStore {
     const k = keyFor(userKey, datasetId);
 
     // ---- 1) Read v1 first
-    let raw = readKey(k);
+    let raw = await readKey(k);
 
     // ---- 2) If missing, migrate legacy(userKey) -> v1(userKey)
     if (!raw) {
       const legacyK = legacyKeyFor(userKey, datasetId);
-      const legacyRaw = readKey(legacyK);
+      const legacyRaw = await readKey(legacyK);
       if (legacyRaw) {
-        writeKey(k, legacyRaw);
-        removeKey(legacyK);
+        await writeKey(k, legacyRaw);
+        await removeKey(legacyK);
         raw = legacyRaw;
       }
     }
@@ -26596,12 +27283,12 @@ export class LocalClearedMistakesStore implements ClearedMistakesStore {
       const guestLegacyK = legacyKeyFor("guest", datasetId);
 
       // Ensure guest legacy is also migrated into guest v1 (so we merge from one place)
-      let guestRaw = readKey(guestV1K);
+      let guestRaw = await readKey(guestV1K);
       if (!guestRaw) {
-        const gl = readKey(guestLegacyK);
+        const gl = await readKey(guestLegacyK);
         if (gl) {
-          writeKey(guestV1K, gl);
-          removeKey(guestLegacyK);
+          await writeKey(guestV1K, gl);
+          await removeKey(guestLegacyK);
           guestRaw = gl;
         }
       }
@@ -26617,13 +27304,13 @@ export class LocalClearedMistakesStore implements ClearedMistakesStore {
           merged.some((v, i) => v !== ids[i]);
 
         if (changed) {
-          writeKey(k, JSON.stringify(merged));
+          await writeKey(k, JSON.stringify(merged));
           ids = merged;
         }
 
         // clear guest storage so this doesn’t re-run forever
-        removeKey(guestV1K);
-        removeKey(guestLegacyK);
+        await removeKey(guestV1K);
+        await removeKey(guestLegacyK);
       }
     }
 
@@ -26632,7 +27319,7 @@ export class LocalClearedMistakesStore implements ClearedMistakesStore {
 
   async writeIds(userKey: string, datasetId: string, ids: string[]): Promise<void> {
     if (typeof window === "undefined") return;
-    writeKey(keyFor(userKey, datasetId), JSON.stringify(uniqSorted(ids)));
+    await writeKey(keyFor(userKey, datasetId), JSON.stringify(uniqSorted(ids)));
   }
 
   async addMany(userKey: string, datasetId: string, ids: string[]): Promise<string[]> {
@@ -26652,8 +27339,8 @@ export class LocalClearedMistakesStore implements ClearedMistakesStore {
 
   async clearAll(userKey: string, datasetId: string): Promise<void> {
     if (typeof window === "undefined") return;
-    removeKey(keyFor(userKey, datasetId));
-    removeKey(legacyKeyFor(userKey, datasetId));
+    await removeKey(keyFor(userKey, datasetId));
+    await removeKey(legacyKeyFor(userKey, datasetId));
   }
 }
 
@@ -27784,6 +28471,8 @@ export const SYLLABUS_RULES = {
       "hazard lights",
       "How to use lights",
       "beam light",
+      "This lights up",
+      "this lights up",
 
       // controls
       "steering wheel",
@@ -27819,6 +28508,8 @@ export const SYLLABUS_RULES = {
     subtopics: {
       "driving-operations:indicators": {
         anchors: [
+          "This lights up",
+          "this lights up",
           "indicator",
           "alarm light",
           "engine oil pressure",
@@ -28875,6 +29566,7 @@ export async function resetAllLocalData(opts?: { includeCaches?: boolean }) {
 
 ### lib/stats/timeKeys.ts
 ```tsx
+//lib/stats/timeKeys.ts
 export type TimeKind = "test" | "study";
 
 const PREFIX = "expatise:time";
@@ -30042,6 +30734,7 @@ export default nextConfig;
         "@capacitor/app": "^8.0.1",
         "@capacitor/browser": "^8.0.1",
         "@capacitor/core": "^8.1.0",
+        "@capacitor/preferences": "^8.0.1",
         "@capacitor/status-bar": "^8.0.1",
         "@fortawesome/fontawesome-svg-core": "^7.1.0",
         "@fortawesome/free-brands-svg-icons": "^7.1.0",
@@ -30903,6 +31596,15 @@ export default nextConfig;
       "license": "MIT",
       "dependencies": {
         "tslib": "^2.1.0"
+      }
+    },
+    "node_modules/@capacitor/preferences": {
+      "version": "8.0.1",
+      "resolved": "https://registry.npmjs.org/@capacitor/preferences/-/preferences-8.0.1.tgz",
+      "integrity": "sha512-T6no3ebi79XJCk91U3Jp/liJUwgBdvHR+s6vhvPkPxSuch7z3zx5Rv1bdWM6sWruNx+pViuEGqZvbfCdyBvcHQ==",
+      "license": "MIT",
+      "peerDependencies": {
+        "@capacitor/core": ">=8.0.0"
       }
     },
     "node_modules/@capacitor/status-bar": {
@@ -42414,6 +43116,7 @@ export default nextConfig;
     "@capacitor/app": "^8.0.1",
     "@capacitor/browser": "^8.0.1",
     "@capacitor/core": "^8.1.0",
+    "@capacitor/preferences": "^8.0.1",
     "@capacitor/status-bar": "^8.0.1",
     "@fortawesome/fontawesome-svg-core": "^7.1.0",
     "@fortawesome/free-brands-svg-icons": "^7.1.0",
@@ -61134,7 +61837,7 @@ export default nextConfig;
       "id": "q0397",
       "number": 397,
       "type": "mcq",
-      "prompt": "What to do while entering this intersection?",
+      "prompt": "How to enter this intersection?",
       "options": [
         {
           "id": "q0397_o1",
@@ -61214,7 +61917,7 @@ export default nextConfig;
         {
           "id": "q0398_o1",
           "originalKey": "A",
-          "text": "Honk to let it yield."
+          "text": "Honk to let to the coming car yield."
         },
         {
           "id": "q0398_o2",
@@ -61229,7 +61932,7 @@ export default nextConfig;
         {
           "id": "q0398_o4",
           "originalKey": "D",
-          "text": "Yield the car coming from left."
+          "text": "Yield to the car coming from left."
         }
       ],
       "correctRow": null,
@@ -61486,7 +62189,7 @@ export default nextConfig;
       "id": "q0402",
       "number": 402,
       "type": "mcq",
-      "prompt": "How to make a U-turn in this intersection?",
+      "prompt": "How to make a U-turn at this intersection?",
       "options": [
         {
           "id": "q0402_o1",
@@ -62565,7 +63268,7 @@ export default nextConfig;
       "id": "q0418",
       "number": 418,
       "type": "mcq",
-      "prompt": "What to do in this intersection?",
+      "prompt": "What should you do at this intersection?",
       "options": [
         {
           "id": "q0418_o1",
@@ -62635,7 +63338,7 @@ export default nextConfig;
       "id": "q0419",
       "number": 419,
       "type": "mcq",
-      "prompt": "What kind of violation does the red car have while temporarily stopping here?",
+      "prompt": "What kind of violation does the red car break while temporarily stopping here?",
       "options": [
         {
           "id": "q0419_o1",
@@ -65288,7 +65991,7 @@ export default nextConfig;
       "id": "q0458",
       "number": 458,
       "type": "mcq",
-      "prompt": "What to do if there is a traffic jam in an intersection?",
+      "prompt": "What do you do if there is a traffic jam at an intersection?",
       "options": [
         {
           "id": "q0458_o1",
@@ -75740,7 +76443,7 @@ export default nextConfig;
       "id": "q0623",
       "number": 623,
       "type": "mcq",
-      "prompt": "This lights up to indicates the ______.",
+      "prompt": "This lights up to indicate (that) the ______.",
       "options": [
         {
           "id": "q0623_o1",
@@ -98698,7 +99401,7 @@ export default nextConfig;
         "user": [],
         "suggested": []
       },
-      "explanation": ""
+      "explanation": "culvert - a structure that channels water or open drain under a road or railroad."
     },
     {
       "id": "q0951",
@@ -99799,7 +100502,7 @@ export default nextConfig;
       "id": "q0972",
       "number": 972,
       "type": "mcq",
-      "prompt": "For a driver who drives a commercial motor vehicle after drinking, besides being detained by the traffic management department of the public security authority till he/she sobers up, what will he/she be subject to?",
+      "prompt": "For a driver who drives a commercial motor vehicle after drinking, besides being detained by the traffic management department of the public security authority till they sobers up, what will they be subject to?",
       "options": [
         {
           "id": "q0972_o1",
@@ -99819,7 +100522,7 @@ export default nextConfig;
         {
           "id": "q0972_o4",
           "originalKey": "D",
-          "text": "He/she will be banned from driving for life."
+          "text": "They will be banned from driving for life."
         }
       ],
       "correctRow": null,
@@ -144148,6 +144851,10 @@ export default nextConfig;
 "q0059": ["traffic-signals", "traffic-signals:road-markings", "proper-driving:safe-driving"],
 
 "q0051": ["driving-operations", "driving-operations:indicators", "proper-driving:safe-driving"],
+
+"q0076": ["proper-driving", "proper-driving:safe-driving"],
+
+
 "q0117": ["road-safety", "road-safety:road-conditions", "proper-driving:safe-driving"],
 "q0052": ["road-safety", "road-safety:road-conditions", "proper-driving:safe-driving"],
 "q0061": ["road-safety", "road-safety:road-conditions", "proper-driving:safe-driving"],
@@ -144162,6 +144869,8 @@ export default nextConfig;
 "q0114": ["road-safety", "road-safety:road-conditions", "proper-driving:safe-driving"],
 
 "q0119": ["road-safety", "road-safety:road-conditions", "proper-driving:safe-driving"],
+
+"q0131": ["proper-driving", "proper-driving:safe-driving"],
 "q0135": ["road-safety", "road-safety:road-conditions", "proper-driving:safe-driving"],
 "q0146": ["road-safety", "road-safety:road-conditions", "proper-driving:safe-driving"],
 
@@ -144181,12 +144890,17 @@ export default nextConfig;
 "q0194": ["proper-driving", "proper-driving:safe-driving", "traffic-signals:signal-lights"],
 
 "q0205": ["road-safety", "road-safety:license", "road-safety:accidents"],
+"q0202": ["traffic-signals", "traffic-signals:road-signs"],
+
 "q0218": ["traffic-signals", "traffic-signals:signal-lights", "traffic-signals:road-markings", "proper-driving:traffic-laws"],
 "q0219": ["traffic-signals", "traffic-signals:road-markings","road-safety:road-conditions"],
 "q0221": ["driving-operations", "driving-operations:gears", "proper-driving:traffic-laws"],
 "q0225": ["traffic-signals", "traffic-signals:police-signals", "traffic-signals:signal-lights"],
 "q0226": ["traffic-signals", "traffic-signals:road-signs"],
+
+
 "q0235": ["traffic-signals", "traffic-signals:road-markings","road-safety:road-conditions"],
+"q0230": ["proper-driving", "proper-driving:safe-driving"],
 "q0231": ["proper-driving", "proper-driving:safe-driving", "traffic-signals:signal-lights"],
 
 "q0236": ["proper-driving", "proper-driving:safe-driving"],
@@ -144217,25 +144931,33 @@ export default nextConfig;
 
 
 "q0361": ["traffic-signals", "traffic-signals:road-markings"],
+"q0364": ["proper-driving", "proper-driving:safe-driving"],
 "q0366": ["proper-driving", "proper-driving:traffic-laws", "driving-operations:gears"],
 
 
-"q0373": ["traffic-signals", "traffic-signals:road-signs", "traffic-signals:road-signs"],
+"q0373": ["traffic-signals", "traffic-signals:road-signs"],
 "q0379": ["road-safety", "road-safety:license"],
 
 "q0381": ["driving-operations", "driving-operations:indicators", "proper-driving:safe-driving"],
 "q0391": ["driving-operations", "driving-operations:indicators"],
+"q0397": ["proper-driving", "proper-driving:safe-driving"],
+"q0398": ["proper-driving", "proper-driving:safe-driving"],
 
-
+"q0402": ["traffic-signals", "traffic-signals:road-markings"],
+"q0408": ["traffic-signals", "traffic-signals:road-markings"],
 "q0415": ["road-safety", "road-safety:road-conditions"],
 "q0416": ["traffic-signals", "traffic-signals:road-markings"],
+"q0418": ["road-safety", "road-safety:road-conditions"],
+
+"q0442": ["proper-driving", "proper-driving:safe-driving"],
+"q0458": ["road-safety", "road-safety:road-conditions"],
 "q0459": ["proper-driving", "proper-driving:safe-driving"],
 "q0463": ["road-safety", "road-safety:registration"],
 "q0464": ["traffic-signals", "traffic-signals:police-signals"],
 "q0475": ["proper-driving", "proper-driving:traffic-laws"],
 "q0479": ["driving-operations", "driving-operations:indicators"],
 "q0485": ["driving-operations", "driving-operations:indicators"],
-
+"q0490": ["traffic-signals", "traffic-signals:road-signs"],
 "q0496": ["road-safety", "road-safety:license", "proper-driving:traffic-laws", "road-safety:accidents"],
 "q0497": ["driving-operations", "driving-operations:indicators", "proper-driving:safe-driving"],
 "q0509": ["driving-operations", "driving-operations:indicators"],
@@ -144243,6 +144965,7 @@ export default nextConfig;
 
 "q0514": ["proper-driving", "proper-driving:traffic-laws", "proper-driving:safe-driving"],
 "q0517": ["proper-driving", "proper-driving:traffic-laws"],
+"q0519": ["traffic-signals", "traffic-signals:road-markings"],
 "q0531": ["driving-operations", "driving-operations:gears"],
 "q0534": ["driving-operations", "driving-operations:indicators"],
 "q0544": ["driving-operations", "driving-operations:gears"],
@@ -144252,8 +144975,15 @@ export default nextConfig;
 "q0568": ["driving-operations", "driving-operations:indicators"],
 "q0569": ["driving-operations", "driving-operations:indicators"],
 "q0580": ["driving-operations", "driving-operations:indicators"],
+"q0595": ["driving-operations", "driving-operations:gears"],
 "q0605": ["driving-operations", "driving-operations:indicators"],
+
+
+"q0623": ["driving-operations", "driving-operations:indicators"],
 "q0625": ["driving-operations", "driving-operations:gears"],
+"q0628": ["driving-operations", "driving-operations:indicators"],
+"q0629": ["driving-operations", "driving-operations:indicators"],
+
 
 "q0631": ["traffic-signals", "traffic-signals:signal-lights", "traffic-signals:road-markings"],
 "q0633": ["traffic-signals", "traffic-signals:signal-lights", "traffic-signals:road-signs"],
@@ -144265,7 +144995,7 @@ export default nextConfig;
 "q0639": ["traffic-signals", "traffic-signals:signal-lights"],
 "q0640": ["traffic-signals", "traffic-signals:signal-lights"],
 "q0641": ["traffic-signals", "traffic-signals:signal-lights"],
-"q0642": ["traffic-signals", "proper-driving:traffic-lights"],
+"q0642": ["traffic-signals", "traffic-signals:signal-lights"],
 "q0644": ["traffic-signals", "traffic-signals:signal-lights"],
 "q0678": ["traffic-signals", "traffic-signals:signal-lights"],
 "q0746": ["traffic-signals", "traffic-signals:signal-lights"],
@@ -145180,7 +145910,12 @@ if (!SUPABASE_URL || !SUPABASE_KEY) {
   throw new Error("Missing SUPABASE_URL or SUPABASE_ANON_KEY/SB_PUBLISHABLE_KEY");
 }
 
-const ADMIN_EMAILS = parseCsvEnv("ADMIN_PREMIUM_EMAILS", "user@expatise.com");
+const ADMIN_EMAILS = parseCsvEnv(
+  "ADMIN_PREMIUM_EMAILS",
+  Deno.env.get("NEXT_PUBLIC_ADMIN_PREMIUM_EMAILS") ??
+    Deno.env.get("NEXT_PUBLIC_DEMO_ADMIN_EMAIL") ??
+    "user@expatise.com,hunisemail@gmail.com"
+);
 
 Deno.serve(async (req: Request) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: CORS });
@@ -145253,6 +145988,104 @@ if (jwt) {
     return json(200, { ok: true, userKey, entitlements, userId: user.id });
   } catch (e) {
     return json(500, { ok: false, error: "entitlements_failed", detail: String(e) });
+  }
+});
+
+```
+
+### supabase/functions/reset-stats/index.ts
+```tsx
+import "jsr:@supabase/functions-js/edge-runtime.d.ts";
+import { createClient } from "jsr:@supabase/supabase-js@2";
+
+const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
+const SUPABASE_ANON_KEY = Deno.env.get("SUPABASE_ANON_KEY")!;
+const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
+};
+
+function json(status: number, body: unknown) {
+  return new Response(JSON.stringify(body), {
+    status,
+    headers: {
+      ...corsHeaders,
+      "Content-Type": "application/json",
+    },
+  });
+}
+
+Deno.serve(async (req) => {
+  if (req.method === "OPTIONS") {
+    return json(200, { ok: true });
+  }
+
+  try {
+    const authHeader =
+      req.headers.get("authorization") ??
+      req.headers.get("Authorization");
+
+    if (!authHeader) {
+      return json(401, { ok: false, error: "Missing authorization header." });
+    }
+
+    // 1) User-scoped client: verifies whoever called the function
+    const userClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+      global: {
+        headers: {
+          Authorization: authHeader,
+        },
+      },
+    });
+
+    const {
+      data: { user },
+      error: userError,
+    } = await userClient.auth.getUser();
+
+    if (userError || !user) {
+      return json(401, {
+        ok: false,
+        error: userError?.message ?? "Invalid session.",
+      });
+    }
+
+    // 2) Admin client: performs destructive deletes
+    const admin = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
+
+    const { error: attemptsError } = await admin
+      .from("attempts")
+      .delete()
+      .eq("user_id", user.id);
+
+    if (attemptsError) {
+      return json(500, {
+        ok: false,
+        error: `Failed to delete attempts: ${attemptsError.message}`,
+      });
+    }
+
+    const { error: timeLogsError } = await admin
+      .from("time_logs")
+      .delete()
+      .eq("user_id", user.id);
+
+    if (timeLogsError) {
+      return json(500, {
+        ok: false,
+        error: `Failed to delete time logs: ${timeLogsError.message}`,
+      });
+    }
+
+    return json(200, { ok: true });
+  } catch (err: any) {
+    return json(500, {
+      ok: false,
+      error: err?.message ?? "Unexpected reset error.",
+    });
   }
 });
 ```

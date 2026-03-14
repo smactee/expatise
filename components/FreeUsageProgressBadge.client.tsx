@@ -1,17 +1,14 @@
 // components/FreeUsageProgressBadge.client.tsx
 "use client";
 
-import { useEffect, useMemo, useState, useCallback } from "react";
+import { useMemo } from "react";
 import { useUserKey } from "@/components/useUserKey.client";
-import {
-  FREE_CAPS,
-  getUsageCapState,
-  usageCapEventName,
-} from "@/lib/freeAccess/localUsageCap";
+import { FREE_CAPS } from "@/lib/freeAccess/localUsageCap";
 import { useEntitlements } from "@/components/EntitlementsProvider.client";
+import { useUsageCap } from "@/lib/freeAccess/useUsageCap";
 import { usePathname } from "next/navigation";
 
-const HIDE_BADGE_EXACT = new Set<string>(["/"]);
+const HIDE_BADGE_EXACT = new Set<string>();
 const HIDE_BADGE_PREFIXES = ["/login", "/onboarding", "/forgot-password", "/premium", "/checkout", "/success"];
 
 export default function FreeUsageProgressBadge() {
@@ -43,29 +40,7 @@ export default function FreeUsageProgressBadge() {
 }
 
 function FreeUsageProgressBadgeInner({ userKey }: { userKey: string }) {
-  const [shown, setShown] = useState(0);
-  const [starts, setStarts] = useState(0);
-
-  const refresh = useCallback(() => {
-    const s = getUsageCapState(userKey);
-    setShown(s.shown);
-    setStarts(s.examStarts);
-  }, [userKey]);
-
-  useEffect(() => {
-    refresh();
-
-    const evt = usageCapEventName();
-    const onChange = () => refresh();
-
-    window.addEventListener(evt, onChange);
-    window.addEventListener("expatise:session-changed", onChange);
-
-    return () => {
-      window.removeEventListener(evt, onChange);
-      window.removeEventListener("expatise:session-changed", onChange);
-    };
-  }, [refresh]);
+  const { questionsShown: shown, examsStarted: starts } = useUsageCap(userKey);
 
   const text = useMemo(() => {
     return `${shown}/${FREE_CAPS.questionsShown} Questions · ${starts}/${FREE_CAPS.examStarts} Exams`;
@@ -83,7 +58,7 @@ return (
     fontSize: 12,
     lineHeight: "14px",
     background: "transparent",
-color: "#1f2937",
+color: "#ffffff",
 border: "none",
 backdropFilter: "none",
 WebkitBackdropFilter: "none",

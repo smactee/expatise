@@ -32,9 +32,11 @@
   min-height: 100vh;
   min-height: 100dvh; /* ✅ mobile accurate */
   background: var(--results-screen-bg);
-color: var(--results-text);
+  color: var(--results-text);
   overflow: hidden;
-  --contentW: min(390px, calc(100% - 60px)); /* ✅ content width */
+  --sideInset: clamp(20px, 7.7vw, 30px);
+  --innerInset: clamp(32px, 11vw, 43px);
+  --contentW: min(390px, calc(100% - (var(--sideInset) * 2))); /* ✅ content width */
 }
 
 
@@ -120,7 +122,7 @@ color: var(--results-text);
   transform: translateX(-50%);
 
   width: max-content;
-  max-width: calc(100% - 60px); /* prevents overflow on small screens */
+  max-width: calc(100% - (var(--sideInset) * 2)); /* prevents overflow on small screens */
 
   margin: 0;
   font-family: 'Poppins', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
@@ -256,6 +258,7 @@ color: var(--results-text);
   display: grid;
   place-items: center;
   gap: 11px;
+  min-width: 0;
 }
 
 .scoreLeft { left: 0; }
@@ -292,11 +295,10 @@ color: var(--results-text);
 /* Test Results title */
 .testResultsTitle {
   position: absolute;
-  left: 30px;
+  left: var(--sideInset);
+  right: var(--sideInset);
   top: 400px;
-
-  /* ✅ make the title span the usable screen width (390 - 30 - 30) */
-  width: calc(100% - 60px);
+  width: auto;
 
   /* ✅ keep it on one line */
   white-space: nowrap;
@@ -317,17 +319,19 @@ color: var(--results-text);
 /* Incorrect row */
 .incorrectRow {
   position: absolute;
-  left: 43px;
-  right: 30px; /* ✅ gives it room to push a button to the far right */
+  left: var(--innerInset);
+  right: var(--sideInset); /* ✅ gives it room to push a button to the far right */
   top: 440px;
 
   height: 24px;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: clamp(6px, 2vw, 8px);
+  min-width: 0;
 }
 .incorrectSpacer {
   flex: 1;
+  min-width: 0;
 }
 
 .incorrectText {
@@ -348,14 +352,17 @@ color: var(--results-text);
 /* A scrollable area for wrong-question details */
 .reviewArea {
   position: absolute;
-  left: 30px;
-  width: calc(100% - 60px);
+  left: var(--sideInset);
+  right: var(--sideInset);
+  width: auto;
   top: 470px;
 
   bottom: -60px; /* ✅ fill to bottom */
   overflow-y: auto;
 
   padding-right: 6px;
+  box-sizing: border-box;
+  min-width: 0;
 
   /* ✅ this creates "extra space" so the last question can scroll past the button */
   padding-bottom: calc(41px + 16px + env(safe-area-inset-bottom) + 12px);
@@ -406,11 +413,13 @@ color: var(--results-text);
   align-items: flex-start;
   gap: 12px;
   margin: 0 0 10px;
+  min-width: 0;
 }
 
 /* Options stack properly */
 .options {
   flex: 1;
+  min-width: 0;
   display: flex;
   flex-direction: column;
   gap: 4px;
@@ -530,6 +539,7 @@ color: var(--results-text);
 .questionText {
   margin: 0;
   flex: 1;
+  min-width: 0;
 }
 
 .bookmarkBtn {
@@ -645,6 +655,7 @@ color: var(--results-text);
 /* Each slide takes the full width of the reviewArea */
 .slide {
   flex: 0 0 100%;
+  min-width: 0;
   scroll-snap-align: start;
   scroll-snap-stop: always; /* helps “one swipe = one card” where supported */
 

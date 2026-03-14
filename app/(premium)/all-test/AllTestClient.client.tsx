@@ -3,7 +3,7 @@
 'use client';
 
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 
 import styles from './all-test.module.css';
@@ -14,17 +14,23 @@ import type { Question } from '@/lib/qbank/types';
 import { useBookmarks } from '@/lib/bookmarks/useBookmarks';
 import BackButton from '@/components/BackButton';
 import { useAuthStatus } from '@/components/useAuthStatus';
+import { useUserKey } from '@/components/useUserKey.client';
 import { attemptStore } from "@/lib/attempts/store";
 import { computeNextUnansweredIndex, normalizeUserKey, type TestAttemptV1 } from "@/lib/attempts/engine";
 import {
   canStartExam,
   incrementExamStart,
   canShowQuestion,
+  migrateUsageCapToCanonical,
   markQuestionShown,
 } from "@/lib/freeAccess/localUsageCap";
 import { useEntitlements } from '@/components/EntitlementsProvider.client';
+import { userKeyFromEmail } from '@/lib/identity/userKey';
 import { useClearedMistakes } from '@/lib/mistakes/useClearedMistakes';
 import { deriveTopicSubtags } from '@/lib/qbank/deriveTopicSubtags';
+import PremiumFeatureModal from '@/components/PremiumFeatureModal';
+import { useUsageCap } from '@/lib/freeAccess/useUsageCap';
+import { migrateLocalAttemptsToCanonical } from '@/lib/test-engine/attemptStorage';
 
 
 
@@ -221,6 +227,8 @@ export default function AllTestClient({
 
 
   const router = useRouter();
+  const pathname = usePathname();
+  const sp = useSearchParams();
 
   const required = preflightRequiredQuestions ?? questionCount;
 
@@ -253,19 +261,30 @@ useEffect(() => {
   const [timeLeft, setTimeLeft] = useState(hasTimer ? timeLimitMinutes * 60 : 0);
   const endAtRef = useRef<number>(hasTimer ? Date.now() + timeLimitMinutes * 60 * 1000 : 0);
 
-const { isPremium } = useEntitlements();
+const { isPremium, loading: entitlementsLoading } = useEntitlements();
 const enforceCaps = !isPremium; // premium users should not hit free caps
 
 
-const { loading: authLoading, email } = useAuthStatus();
-const userKey = normalizeUserKey(email ?? "") || "guest";
+const { loading: authLoading, email, authed: supabaseAuthed } = useAuthStatus();
+const usageCapUserKey = useUserKey();
+const attemptUserKey = usageCapUserKey;
+const bookmarkUserKey = usageCapUserKey;
+const legacyAttemptUserKey = normalizeUserKey(email ?? "") || "guest";
+const legacyUsageCapUserKey = userKeyFromEmail(email);
+const { isOverCap } = useUsageCap(usageCapUserKey);
+const premiumModalRequested = sp.get('premiumModal') === '1';
+const [premiumModalPath, setPremiumModalPath] = useState('');
+const allowTriggeredModalFlow =
+  premiumModalRequested || premiumModalPath === pathname;
+const [showPremiumModal, setShowPremiumModal] = useState(false);
+const [blockedByPremiumModal, setBlockedByPremiumModal] = useState(false);
 
 
 // ✅ put it RIGHT HERE (top-level hook, not inside useEffect)
-const { idSet: bookmarkedSet, toggle, isBookmarked } = useBookmarks(datasetId, userKey);
+const { idSet: bookmarkedSet, toggle, isBookmarked } = useBookmarks(datasetId, bookmarkUserKey);
 
 // (keep your mistakes cleared set too if you're using it)
-const { idSet: clearedMistakesSet } = useClearedMistakes(datasetId, userKey);
+const { idSet: clearedMistakesSet } = useClearedMistakes(datasetId, attemptUserKey);
 
 const advancingRef = useRef(false);
 
@@ -314,12 +333,41 @@ await attemptStore.closeAttemptById(a.attemptId, { remainingSec: hasTimer ? time
 
 const [attempt, setAttempt] = useState<TestAttemptV1 | null>(null);
 
+useEffect(() => {
+  if (!premiumModalRequested) return;
+  setPremiumModalPath(pathname);
+}, [pathname, premiumModalRequested]);
+
+useEffect(() => {
+  if (!premiumModalRequested) return;
+  if (authLoading || entitlementsLoading) return;
+
+  if (enforceCaps && isOverCap) {
+    setShowPremiumModal(true);
+  }
+
+  const next = new URLSearchParams(sp.toString());
+  next.delete('premiumModal');
+  const nextUrl = next.toString() ? `${pathname}?${next.toString()}` : pathname;
+  router.replace(nextUrl, { scroll: false });
+}, [
+  authLoading,
+  entitlementsLoading,
+  enforceCaps,
+  isOverCap,
+  pathname,
+  premiumModalRequested,
+  router,
+  sp,
+]);
+
 
   useEffect(() => {
     let mounted = true;
 
     (async () => {
       setLoading(true);
+      setBlockedByPremiumModal(false);
 const ds = await loadDataset(datasetId);
 if (!mounted) return;
 
@@ -327,6 +375,15 @@ if (!mounted) return;
 if (authLoading) {
   setLoading(true);
   return;
+}
+
+      migrateLocalAttemptsToCanonical({
+        userKey: attemptUserKey,
+        legacyUserKeys: [legacyAttemptUserKey, "guest"],
+      });
+
+if (enforceCaps) {
+  migrateUsageCapToCanonical(usageCapUserKey, [legacyUsageCapUserKey, "guest"]);
 }
 
 let poolIds = ds.map((q) => q.id);
@@ -338,7 +395,7 @@ if (modeKey === "bookmarks-test") {
 if (modeKey === "mistakes-test") {
   const mistakeIds = compileMistakeIds(
     ds,
-    await attemptStore.listAttempts(userKey, datasetId),
+    await attemptStore.listAttempts(attemptUserKey, datasetId),
     clearedMistakesSet
   );
   poolIds = mistakeIds;
@@ -354,7 +411,7 @@ if (modeKey === "topics-test") {
 
 
 // ✅ Preflight gate ONLY if there is no resumable attempt (so resume is always allowed)
-const existing = await attemptStore.listAttempts(userKey, datasetId);
+const existing = await attemptStore.listAttempts(attemptUserKey, datasetId);
 const hasResumable = existing.some(
   (t) =>
     t.modeKey === modeKey &&
@@ -362,7 +419,15 @@ const hasResumable = existing.some(
     (t.status === "in_progress" || t.status === "paused")
 );
 
-if (enforceCaps && !hasResumable && !canStartExam(userKey, { requiredQuestions: required })) {
+if (enforceCaps && !hasResumable && !canStartExam(usageCapUserKey, { requiredQuestions: required })) {
+  if (allowTriggeredModalFlow) {
+    setAttempt(null);
+    setItems([]);
+    setShowPremiumModal(true);
+    setBlockedByPremiumModal(true);
+    setLoading(false);
+    return;
+  }
   router.replace(`/premium?next=${encodeURIComponent(routeBase)}`);
   return;
 }
@@ -378,7 +443,7 @@ const effectiveCount = Math.min(questionCount, poolIds.length);
 
 
 const { attempt: a, reused } = await attemptStore.getOrCreateAttempt({
-  userKey,
+  userKey: attemptUserKey,
   modeKey,
   datasetId,
   datasetVersion,
@@ -389,11 +454,19 @@ const { attempt: a, reused } = await attemptStore.getOrCreateAttempt({
 
 // Only block *new* starts. Allow resuming even if cap is hit.
 if (!reused) {
-  if (enforceCaps && !canStartExam(userKey, { requiredQuestions: required })) {
+  if (enforceCaps && !canStartExam(usageCapUserKey, { requiredQuestions: required })) {
+    if (allowTriggeredModalFlow) {
+      setAttempt(null);
+      setItems([]);
+      setShowPremiumModal(true);
+      setBlockedByPremiumModal(true);
+      setLoading(false);
+      return;
+    }
     router.replace(`/premium?next=${encodeURIComponent(routeBase)}`);
     return;
   }
-  if (enforceCaps) incrementExamStart(userKey);
+  if (enforceCaps) incrementExamStart(usageCapUserKey);
 }
 
 
@@ -453,11 +526,15 @@ setLoading(false);
   timeLimitMinutes,
   preflightRequiredQuestions,
   authLoading,
-  userKey,
+  attemptUserKey,
+  legacyAttemptUserKey,
+  usageCapUserKey,
+  legacyUsageCapUserKey,
   router,
   routeBase,
   clearedMistakesSet,
   bookmarkedSet,
+  allowTriggeredModalFlow,
 ]);
 
 
@@ -781,16 +858,20 @@ useEffect(() => {
   const viewSig = `${modeKey}:${datasetId}:${datasetVersion}:${attempt?.attemptId ?? "na"}:${index}:${item.id}`;
 
   // Block showing the 421st question
-  if (enforceCaps && !canShowQuestion(userKey)) {
+  if (enforceCaps && !canShowQuestion(usageCapUserKey)) {
+  if (allowTriggeredModalFlow) {
+    setShowPremiumModal(true);
+    return;
+  }
   router.replace(`/premium?next=${encodeURIComponent(routeBase)}`);
   return;
 }
   // Count on DISPLAY (even if unanswered, even if repeated later)
-  if (enforceCaps) markQuestionShown(userKey, viewSig);
+  if (enforceCaps) markQuestionShown(usageCapUserKey, viewSig);
 
 }, [
   item?.id,
-  userKey,
+  usageCapUserKey,
   datasetId,
   datasetVersion,
   attempt?.attemptId,
@@ -799,6 +880,7 @@ useEffect(() => {
   routeBase,
   enforceCaps,
   modeKey,
+  allowTriggeredModalFlow,
   
 
 ]);
@@ -822,6 +904,13 @@ useEffect(() => {
       <main className={styles.page}>
         <div className={styles.frame}>
           <div className={styles.loading}>Loading…</div>
+          <PremiumFeatureModal
+            open={showPremiumModal}
+            onClose={() => setShowPremiumModal(false)}
+            nextPath={routeBase}
+            isAuthed={supabaseAuthed}
+            premiumPath={`/premium?next=${encodeURIComponent(routeBase)}`}
+          />
         </div>
       </main>
     );
@@ -838,13 +927,24 @@ useEffect(() => {
 
 
 if (!item) {
-  const msg = items.length === 0 ? emptyMsg : "Loading…";
+  const msg = blockedByPremiumModal
+    ? "Upgrade to Premium to start this test."
+    : items.length === 0
+    ? emptyMsg
+    : "Loading…";
 
   return (
     <main className={styles.page}>
       <div className={styles.frame}>
         <BackButton />
         <div className={styles.loading}>{msg}</div>
+        <PremiumFeatureModal
+          open={showPremiumModal}
+          onClose={() => setShowPremiumModal(false)}
+          nextPath={routeBase}
+          isAuthed={supabaseAuthed}
+          premiumPath={`/premium?next=${encodeURIComponent(routeBase)}`}
+        />
       </div>
     </main>
   );
@@ -1003,6 +1103,13 @@ if (!item) {
 
 
       </div>
+      <PremiumFeatureModal
+        open={showPremiumModal}
+        onClose={() => setShowPremiumModal(false)}
+        nextPath={routeBase}
+        isAuthed={supabaseAuthed}
+        premiumPath={`/premium?next=${encodeURIComponent(routeBase)}`}
+      />
     </main>
   );
 }

@@ -9,7 +9,7 @@ import BackButton from '@/components/BackButton';
 import { loadDataset } from '@/lib/qbank/loadDataset';
 import type { DatasetId } from '@/lib/qbank/datasets';
 import type { Question } from '@/lib/qbank/types';
-import { listSubmittedAttempts } from '@/lib/test-engine/attemptStorage';
+import { listSubmittedAttempts, migrateLocalAttemptsToCanonical } from '@/lib/test-engine/attemptStorage';
 import type { TestAttemptV1 } from '@/lib/test-engine/attemptStorage';
 import { useUserKey } from '@/components/useUserKey.client';
 import { computeStats } from '@/lib/stats/computeStats';
@@ -190,6 +190,7 @@ const { isPremium } = useEntitlements();
 
 const [attemptsHydrated, setAttemptsHydrated] = useState(false);
 const [showPremiumModal, setShowPremiumModal] = useState(false);
+const legacyEmailUserKey = sessionEmail ? userKeyFromEmail(sessionEmail) : "";
 
 const normalizedSessionEmail = (sessionEmail ?? "").trim().toLowerCase();
 
@@ -239,6 +240,11 @@ const skipSyncOnce = consumeSkipSyncToken();
   let alive = true;
 
   (async () => {
+    migrateLocalAttemptsToCanonical({
+      userKey,
+      legacyUserKeys: [legacyEmailUserKey, "guest"],
+    });
+
     // ✅ seed demo data (admin only) BEFORE reading attempts
     if (!skipSyncOnce) {
   await seedAdminDemoDataIfNeeded(userKey, { sessionEmail });
@@ -287,7 +293,7 @@ if (!remote) return;
   return () => {
     alive = false;
   };
-}, [userKey, datasetId, supabaseAuthed, sessionEmail]);
+}, [userKey, datasetId, supabaseAuthed, sessionEmail, legacyEmailUserKey]);
 
 
   // Compute stats (default: last 30 days for now; we’ll add filters later)
@@ -399,7 +405,6 @@ const COOLDOWN_MS = 24 * 60 * 60 * 1000;
 const coachPrefix = userKey ? `expatise:${userKey}` : `expatise:anon`;
 const LS_REPORT = `${coachPrefix}:coach:lastReport:v2`;
 const LS_COOLDOWN_UNTIL = `${coachPrefix}:coach:cooldownUntil:v2`;
-const legacyEmailUserKey = sessionEmail ? userKeyFromEmail(sessionEmail) : "";
 const legacyCoachPrefix = legacyEmailUserKey ? `expatise:${legacyEmailUserKey}` : "";
 const legacyReportKey = legacyCoachPrefix
   ? `${legacyCoachPrefix}:coach:lastReport:v2`

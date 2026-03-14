@@ -1,10 +1,10 @@
 .page {
-  min-height: 100vh;
+  min-height: 100svh;
   display: flex;
   justify-content: center;
   background: var(--color-page-bg);
 
-  /* ✅ local tokens for this screen */
+  /* local tokens for this screen */
   --aq-text: rgba(0, 0, 0, 0.92);
   --aq-muted: rgba(0, 0, 0, 0.7);
 
@@ -14,8 +14,7 @@
   --aq-option-bg: rgba(0, 0, 0, 0.04);
   --aq-option-border: rgba(0, 0, 0, 0.06);
 
-  /* ✅ “correct answer highlight” (subtle in light mode) */
-  --aq-correct-bg: rgba(43, 124, 175, 0.10);
+  --aq-correct-bg: rgba(43, 124, 175, 0.1);
   --aq-correct-border: rgba(43, 124, 175, 0.55);
   --aq-correct-shadow: 0 10px 22px rgba(43, 124, 175, 0.18);
 
@@ -26,61 +25,74 @@
   --aq-text: rgba(255, 255, 255, 0.92);
   --aq-muted: rgba(255, 255, 255, 0.72);
 
-  /* ✅ darker card so options can still separate */
   --aq-card-bg: rgba(255, 255, 255, 0.08);
-  --aq-card-border: rgba(255, 255, 255, 0.10);
+  --aq-card-border: rgba(255, 255, 255, 0.1);
 
-  /* ✅ base option has its own “bar” look */
   --aq-option-bg: rgba(255, 255, 255, 0.06);
   --aq-option-border: rgba(255, 255, 255, 0.12);
 
-  /* ✅ stronger correct highlight in dark mode */
   --aq-correct-bg: rgba(55, 178, 255, 0.18);
   --aq-correct-border: rgba(55, 178, 255, 0.85);
   --aq-correct-shadow: 0 12px 26px rgba(55, 178, 255, 0.22);
 }
 
-
-
-
-
 .frame {
   width: 100%;
   max-width: 560px;
-  padding: 18px 16px 120px;
+  padding:
+    calc(env(safe-area-inset-top, 0px) + 18px)
+    clamp(12px, 3.5vw, 16px)
+    calc(env(safe-area-inset-bottom, 0px) + 120px);
+  box-sizing: border-box;
 }
 
 .header {
   display: flex;
-  align-items: center; /* was baseline */
+  align-items: flex-start;
   justify-content: space-between;
-  gap: 12px;
+  gap: clamp(6px, 2vw, 8px);
   margin: 6px 0 14px;
+  min-width: 0;
 }
-
 
 .title {
   margin: 0;
-  font-size: 28px;
+  font-size: clamp(24px, 6vw, 28px);
   font-weight: 800;
+  line-height: 1.05;
+  min-width: 0;
+  flex: 1 1 auto;
+  letter-spacing: -0.02em;
 }
 
 .subtitle {
   margin: 0;
   opacity: 0.7;
-  font-size: 14px;
+  font-size: clamp(13px, 3.4vw, 14px);
+}
+
+.titleWrap {
+  position: relative;
+  display: inline-block;
+  flex: 0 1 auto;
+  min-width: 0;
 }
 
 .countPill {
+  position: absolute;
+  top: -8px;
+  right: -14px;
+
   display: inline-flex;
   align-items: center;
   justify-content: center;
 
-  margin-left: 10px;
-  padding: 3px 10px;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
   border-radius: 999px;
 
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 700;
   line-height: 1;
 
@@ -89,8 +101,8 @@
   color: rgba(255, 255, 255, 0.92);
 
   white-space: nowrap;
+  pointer-events: none;
 }
-
 
 .searchRow {
   margin: 10px 0 12px;
@@ -99,11 +111,13 @@
 .search {
   width: 100%;
   border-radius: 16px;
-  border: 1px solid rgba(0,0,0,0.12);
-  padding: 12px 14px;
-  background: rgba(255,255,255,0.75);
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  padding: clamp(11px, 2.8vw, 12px) clamp(12px, 3vw, 14px);
+  background: rgba(255, 255, 255, 0.75);
   backdrop-filter: blur(10px);
   outline: none;
+  box-sizing: border-box;
+  font-size: clamp(14px, 3.6vw, 15px);
 }
 
 .chips {
@@ -117,20 +131,20 @@
   display: flex;
   align-items: flex-start;
   gap: 10px;
-  margin-bottom: 14px; /* keeps spacing consistent */
+  margin-bottom: 14px;
+  min-width: 0;
 }
 
-/* Make the chips area take the remaining width */
 .chipsRow .chips {
   flex: 1;
   min-width: 0;
-  margin-bottom: 0; /* prevent double margin since chipsRow has margin-bottom */
+  margin-bottom: 0;
 }
 
 .selectAllBtn {
   flex: 0 0 auto;
-  width: 40px;
-  height: 40px;
+  width: clamp(36px, 9vw, 40px);
+  height: clamp(36px, 9vw, 40px);
   border-radius: 14px;
   border: 1px solid rgba(0, 0, 0, 0.12);
   background: rgba(255, 255, 255, 0.6);
@@ -166,13 +180,13 @@
 }
 
 .deleteBtn {
-  height: 40px;
-  padding: 0 12px;
+  height: clamp(36px, 9vw, 40px);
+  padding: 0 clamp(10px, 3vw, 12px);
   border-radius: 14px;
   border: 1px solid red;
   background: rgba(255, 255, 255, 0.6);
   cursor: pointer;
-  font-size: 13px;
+  font-size: clamp(12px, 3.2vw, 13px);
   font-weight: 600;
   color: red;
 }
@@ -181,19 +195,18 @@
   background: rgba(255, 255, 255, 0.75);
 }
 
-
 .chip {
-  border: 1px solid rgba(0,0,0,0.12);
-  background: rgba(255,255,255,0.6);
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  background: rgba(255, 255, 255, 0.6);
   border-radius: 999px;
   padding: 8px 10px;
-  font-size: 13px;
+  font-size: clamp(12px, 3.3vw, 13px);
   cursor: pointer;
 }
 
 .chipActive {
-  border-color: rgba(55,178,255,0.9);
-  box-shadow: 0 6px 18px rgba(55,178,255,0.25);
+  border-color: rgba(55, 178, 255, 0.9);
+  box-shadow: 0 6px 18px rgba(55, 178, 255, 0.25);
 }
 
 .list {
@@ -203,7 +216,7 @@
 
 .card {
   border-radius: 20px;
-  padding: 14px 14px 12px;
+  padding: clamp(12px, 3vw, 14px) clamp(12px, 3vw, 14px) clamp(10px, 2.6vw, 12px);
 
   background: var(--aq-card-bg);
   border: 1px solid var(--aq-card-border);
@@ -216,7 +229,8 @@
   display: flex;
   justify-content: space-between;
   margin-bottom: 8px;
-  font-size: 13px;
+  font-size: clamp(12px, 3.2vw, 13px);
+  gap: 8px;
 }
 
 .qNo,
@@ -225,11 +239,10 @@
   color: var(--aq-muted);
 }
 
-
 .imageWrap {
   position: relative;
   width: 100%;
-  height: 180px;
+  height: clamp(160px, 38vw, 180px);
   border-radius: 16px;
   overflow: hidden;
   margin-bottom: 10px;
@@ -247,7 +260,7 @@
 }
 
 .tagPill {
-  font-size: 12px;
+  font-size: clamp(11px, 3vw, 12px);
   color: var(--aq-muted);
   background: rgba(0, 0, 0, 0.06);
   padding: 6px 8px;
@@ -256,13 +269,12 @@
 }
 
 .answerPill {
-  font-size: 14px;
+  font-size: clamp(13px, 3.5vw, 14px);
   padding: 6px 10px;
   border-radius: 999px;
   background: var(--color-premium-gradient-20);
   font-weight: 500;
 }
-
 
 .answerRow {
   display: flex;
@@ -279,7 +291,7 @@
 }
 
 .answerChip {
-  font-size: 12px;
+  font-size: clamp(11px, 3vw, 12px);
   padding: 6px 10px;
   border-radius: 999px;
   background: rgba(0, 0, 0, 0.06);
@@ -296,13 +308,12 @@
   margin-top: 10px;
 }
 
-/* base option row */
 .option {
   display: flex;
   gap: 10px;
   align-items: flex-start;
 
-  padding: 10px 12px;
+  padding: clamp(9px, 2.5vw, 10px) clamp(10px, 3vw, 12px);
   border-radius: 14px;
 
   background: var(--aq-option-bg);
@@ -327,7 +338,6 @@
   gap: 8px;
 }
 
-/* ✅ correct = same “lift + tint + border” idea as your test page */
 .optionCorrect {
   background: var(--aq-correct-bg);
   border-color: var(--aq-correct-border);
@@ -339,10 +349,13 @@
 .optionKey {
   font-weight: 800;
   min-width: 22px;
+  flex: 0 0 22px;
 }
 
 .optionText {
   line-height: 1.35;
+  min-width: 0;
+  flex: 1 1 auto;
 }
 
 .cardTopRight {
@@ -359,6 +372,7 @@
   line-height: 1;
   opacity: 1;
   padding: 4px 6px;
+  flex: 0 0 auto;
 }
 
 .bookmarkBtn:hover {
@@ -369,8 +383,6 @@
   width: 22px;
   height: 22px;
   display: inline-block;
-
-  /* Use the SVG as a stencil */
   -webkit-mask-image: url("/images/test/bookmark-icon.png");
   mask-image: url("/images/test/bookmark-icon.png");
   -webkit-mask-repeat: no-repeat;
@@ -381,7 +393,6 @@
   mask-size: contain;
 }
 
-/* Default (not bookmarked): looks like an outline-ish dark icon */
 .bookmarkBtn[data-bookmarked='false'] .bookmarkIcon {
   background: rgba(15, 23, 42, 0.95);
 }
@@ -391,15 +402,10 @@
   filter: brightness(1) contrast(1.5) saturate(2);
 }
 
-/* Scroll-to-top button */
 .toTopWrap {
   position: fixed;
   right: 16px;
-
-  /* "above the nav bar by 50px"
-     If your nav height is slightly different, adjust 86px */
   bottom: calc(env(safe-area-inset-bottom, 0px) + 86px + 50px);
-
   z-index: 80;
   will-change: transform;
 }
@@ -472,20 +478,21 @@
 .headerActions {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   flex: 0 0 auto;
+  min-width: 0;
 }
 
 .quizBtn {
-  height: 40px;
-  padding: 0 16px;
+  height: 36px;
+  padding: 0 12px;
   border-radius: 16px;
 
   border: 1px solid var(--color-logout-border);
   background: var(--color-premium-gradient);
   box-shadow: 0 18px 40px rgba(15, 33, 70, 0.26);
 
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 700;
   color: var(--color-heading-card);
 
@@ -497,4 +504,27 @@
   justify-content: center;
 
   white-space: nowrap;
+}
+
+@media (max-width: 420px) {
+  .frame {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  .header {
+    margin-bottom: 12px;
+  }
+
+  .chipsRow {
+    gap: 8px;
+  }
+
+  .card {
+    border-radius: 18px;
+  }
+
+  .imageWrap {
+    height: 160px;
+  }
 }

@@ -58,7 +58,8 @@
 }
 
 .titleBlock {
-  width: 290px; /* your measurement */
+  width: 100%;
+  max-width: 290px; /* your measurement */
   height: 62px;
   margin: 18px auto 0;
   text-align: center;
@@ -88,11 +89,12 @@
 
 /* 335.04 x 172 (we’ll use 335px for layout sanity) */
 .featureGrid {
-  width: 335px;
+  width: 100%;
+  max-width: 335px;
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-template-rows: repeat(2, minmax(86px, auto));
-  display: grid;
+  box-sizing: border-box;
   /* no background in Figma (it sits on the page) */
 }
 
@@ -140,7 +142,8 @@
 }
 
 .planPill {
-  width: 328px;  /* your measurement */
+  width: 100%;
+  max-width: 328px;  /* your measurement */
   height: 61px;
   border-radius: 20px;
   border: 1px solid rgba(210, 199, 154, 0.9);
@@ -238,9 +241,11 @@
 }
 
 .promoRow {
-  width: 327px;   /* your measurement */
+  width: 100%;
+  max-width: 327px;   /* your measurement */
   height: 43px;
   margin: 18px auto 0;
+  box-sizing: border-box;
 
   display: flex;
   align-items: stretch;
@@ -248,7 +253,8 @@
 }
 
 .gotPromoRow {
-  width: 327px;
+  width: 100%;
+  max-width: 327px;
   margin: 14px auto 0;
   display: flex;
   align-items: center;
@@ -318,7 +324,8 @@
 
 
 .cta {
-  width: 327px;
+  width: 100%;
+  max-width: 327px;
   height: 52px;
   margin: 18px auto 0;
   border-radius: 12px;
@@ -354,7 +361,8 @@
 }
 
 .promoFooter {
-  width: 327px;
+  width: 100%;
+  max-width: 327px;
   margin: 20px auto 0;
   display: flex;
   align-items: center;
@@ -377,7 +385,8 @@
 }
 
 .note {
-  width: 327px;
+  width: 100%;
+  max-width: 327px;
   margin: 6px auto 0;
   font-size: 13px;
   color: #8a92aa;
@@ -416,7 +425,8 @@
 }
 
 .promoError {
-  width: 327px;
+  width: 100%;
+  max-width: 327px;
   margin: 8px auto 0;
   font-size: 13px;
   color: #b42318;

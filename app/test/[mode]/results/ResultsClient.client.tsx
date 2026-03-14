@@ -13,10 +13,13 @@ import type { TestAttemptV1 } from "@/lib/attempts/engine";
 import { useAuthStatus } from "@/components/useAuthStatus";
 import { normalizeUserKey } from "@/lib/attempts/engine";
 import { useBookmarks } from "@/lib/bookmarks/useBookmarks";
+import { useUserKey } from "@/components/useUserKey.client";
+import { userKeyFromEmail } from "@/lib/identity/userKey";
 import { TEST_MODES, type TestModeId } from "@/lib/testModes";
 import { useClearedMistakes } from "@/lib/mistakes/useClearedMistakes";
 import CSRBoundary from "@/components/CSRBoundary";
 import { useBootSweepOnce } from "@/components/stats/useBootSweepOnce.client";
+import { migrateLocalAttemptsToCanonical } from "@/lib/test-engine/attemptStorage";
 
 function clamp(n: number, min: number, max: number) {
   return Math.max(min, Math.min(max, n));
@@ -66,8 +69,10 @@ const timeSec = usedSeconds % 60;
 const timeText = showUntimed ? "Untimed" : `${timeMin}min ${timeSec}sec`;
 
 
-const { email } = useAuthStatus();
-const userKey = normalizeUserKey(email ?? "") || "guest";
+const { email, loading: authLoading } = useAuthStatus();
+const attemptUserKey = useUserKey();
+const bookmarkUserKey = attemptUserKey;
+const legacyAttemptUserKey = userKeyFromEmail(email) || normalizeUserKey(email ?? "") || "guest";
 
   const [attempt, setAttempt] = useState<TestAttemptV1 | null>(null);
   const [computed, setComputed] = useState<{ correct: number; total: number }>({ correct: 0, total: 0 });
@@ -84,10 +89,10 @@ const userKey = normalizeUserKey(email ?? "") || "guest";
 
   // datasetId for bookmarks should come from attempt if possible; fallback to mode config
   const datasetId = ((attempt?.datasetId ?? cfg.datasetId) as unknown) as DatasetId;
-  const { toggle, isBookmarked } = useBookmarks(datasetId, userKey);
+  const { toggle, isBookmarked } = useBookmarks(datasetId, bookmarkUserKey);
 
 
-  const { clearMany: clearMistakesMany } = useClearedMistakes(datasetId, userKey);
+  const { clearMany: clearMistakesMany } = useClearedMistakes(datasetId, attemptUserKey);
   const didAutoClearRef = useRef(false);
 
   /**
@@ -98,10 +103,15 @@ const userKey = normalizeUserKey(email ?? "") || "guest";
  const qs = sp.toString();
 
 useEffect(() => {
-  if (attemptId) return;
+  if (attemptId || authLoading) return;
 
   (async () => {
-    const list = await attemptStore.listAttempts(userKey, cfg.datasetId);
+    migrateLocalAttemptsToCanonical({
+      userKey: attemptUserKey,
+      legacyUserKeys: [legacyAttemptUserKey, "guest"],
+    });
+
+    const list = await attemptStore.listAttempts(attemptUserKey, cfg.datasetId);
     const matching = list.filter(
       (a) => a.modeKey === cfg.modeKey && a.datasetVersion === cfg.datasetVersion
     );
@@ -119,7 +129,7 @@ useEffect(() => {
     next.set("attemptId", best.attemptId);
     router.replace(`/test/${cfg.modeId}/results?${next.toString()}`);
   })();
-}, [attemptId, userKey, cfg, router, qs]);
+}, [attemptId, authLoading, attemptUserKey, legacyAttemptUserKey, cfg, router, qs]);
 
 
   // Carousel pointer handlers
@@ -201,6 +211,11 @@ useEffect(() => {
     if (!attemptId) return;
 
     (async () => {
+      migrateLocalAttemptsToCanonical({
+        userKey: attemptUserKey,
+        legacyUserKeys: [legacyAttemptUserKey, "guest"],
+      });
+
       const a = await attemptStore.readAttemptById(attemptId);
       setAttempt(a);
 
@@ -326,7 +341,7 @@ if (modeId === "mistakes" && !didAutoClearRef.current) {
       items.sort((x, y) => x.testNo - y.testNo);
       setReviewItems(items);
     })();
-  }, [attemptId, modeId, clearMistakesMany]);
+  }, [attemptId, attemptUserKey, legacyAttemptUserKey, modeId, clearMistakesMany]);
 
 
 

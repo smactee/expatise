@@ -14,15 +14,19 @@ import type { Question } from '@/lib/qbank/types';
 import { useBookmarks } from '@/lib/bookmarks/useBookmarks';
 import BackButton from '@/components/BackButton';
 import { useAuthStatus } from '@/components/useAuthStatus';
+import { useUserKey } from '@/components/useUserKey.client';
 import { attemptStore } from "@/lib/attempts/store";
 import { computeNextUnansweredIndex, normalizeUserKey, type TestAttemptV1 } from "@/lib/attempts/engine";
 import {
   canStartExam,
   incrementExamStart,
   canShowQuestion,
+  migrateUsageCapToCanonical,
   markQuestionShown,
 } from "@/lib/freeAccess/localUsageCap";
 import { useEntitlements } from '@/components/EntitlementsProvider.client';
+import { userKeyFromEmail } from '@/lib/identity/userKey';
+import { migrateLocalAttemptsToCanonical } from '@/lib/test-engine/attemptStorage';
 
 
 
@@ -97,9 +101,13 @@ const enforceCaps = !isPremium; // premium users should not hit free caps
 
 
 const { loading: authLoading, email } = useAuthStatus();
-const userKey = normalizeUserKey(email ?? "") || "guest";
+const usageCapUserKey = useUserKey();
+const attemptUserKey = usageCapUserKey;
+const bookmarkUserKey = usageCapUserKey;
+const legacyAttemptUserKey = normalizeUserKey(email ?? "") || "guest";
+const legacyUsageCapUserKey = userKeyFromEmail(email);
 
-const { toggle, isBookmarked } = useBookmarks(datasetId, userKey);
+const { toggle, isBookmarked } = useBookmarks(datasetId, bookmarkUserKey);
 
   const [answers, setAnswers] = useState<Record<string, string>>({});
 
@@ -156,10 +164,19 @@ if (authLoading) {
   return;
 }
 
+      migrateLocalAttemptsToCanonical({
+        userKey: attemptUserKey,
+        legacyUserKeys: [legacyAttemptUserKey, "guest"],
+      });
+
+if (enforceCaps) {
+  migrateUsageCapToCanonical(usageCapUserKey, [legacyUsageCapUserKey, "guest"]);
+}
+
 const allIds = ds.map((q) => q.id);
 
 // ✅ Preflight gate ONLY if there is no resumable attempt (so resume is always allowed)
-const existing = await attemptStore.listAttempts(userKey, datasetId);
+const existing = await attemptStore.listAttempts(attemptUserKey, datasetId);
 const hasResumable = existing.some(
   (t) =>
     t.modeKey === modeKey &&
@@ -167,7 +184,7 @@ const hasResumable = existing.some(
     (t.status === "in_progress" || t.status === "paused")
 );
 
-if (enforceCaps && !hasResumable && !canStartExam(userKey, { requiredQuestions: required })) {
+if (enforceCaps && !hasResumable && !canStartExam(usageCapUserKey, { requiredQuestions: required })) {
   router.replace(`/premium?next=${encodeURIComponent(routeBase)}`);
   return;
 }
@@ -175,7 +192,7 @@ if (enforceCaps && !hasResumable && !canStartExam(userKey, { requiredQuestions: 
 
 
 const { attempt: a, reused } = await attemptStore.getOrCreateAttempt({
-  userKey,
+  userKey: attemptUserKey,
   modeKey,
   datasetId,
   datasetVersion,
@@ -186,11 +203,11 @@ const { attempt: a, reused } = await attemptStore.getOrCreateAttempt({
 
 // Only block *new* starts. Allow resuming even if cap is hit.
 if (!reused) {
-  if (enforceCaps && !canStartExam(userKey, { requiredQuestions: required })) {
+  if (enforceCaps && !canStartExam(usageCapUserKey, { requiredQuestions: required })) {
     router.replace(`/premium?next=${encodeURIComponent(routeBase)}`);
     return;
   }
-  if (enforceCaps) incrementExamStart(userKey);
+  if (enforceCaps) incrementExamStart(usageCapUserKey);
 }
 
 
@@ -241,7 +258,10 @@ setLoading(false);
   timeLimitMinutes,
   preflightRequiredQuestions,
   authLoading,
-  userKey,
+  attemptUserKey,
+  legacyAttemptUserKey,
+  usageCapUserKey,
+  legacyUsageCapUserKey,
   router,
   routeBase,
 ]);
@@ -455,17 +475,17 @@ useEffect(() => {
   const viewSig = `${modeKey}:${datasetId}:${datasetVersion}:${attempt?.attemptId ?? "na"}:${index}:${item.id}`;
 
   // Block showing the 421st question
-  if (enforceCaps && !canShowQuestion(userKey)) {
+  if (enforceCaps && !canShowQuestion(usageCapUserKey)) {
     router.replace(`/premium?next=${encodeURIComponent(routeBase)}`);
     return;
   }
 
   // Count on DISPLAY (even if unanswered, even if repeated later)
-  if (enforceCaps) markQuestionShown(userKey, viewSig);
+  if (enforceCaps) markQuestionShown(usageCapUserKey, viewSig);
 
 }, [
   item?.id,
-  userKey,
+  usageCapUserKey,
   datasetId,
   datasetVersion,
   attempt?.attemptId,
