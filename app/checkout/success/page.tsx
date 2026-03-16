@@ -1,62 +1,12 @@
-// app/checkout/success/page.tsx
-
 "use client";
 
 import Image from "next/image";
-import { useEffect, useRef } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
-import confetti from "canvas-confetti";
+import { useRouter } from "next/navigation";
 import styles from "./success.module.css";
-
-import { useEntitlements } from "@/components/EntitlementsProvider.client";
-import { safeNextPath } from "@/lib/auth";
 import CSRBoundary from "@/components/CSRBoundary";
 
 function Inner() {
   const router = useRouter();
-  const sp = useSearchParams();
-  const { refresh } = useEntitlements();
-
-  const next = safeNextPath(sp.get("next"), "/");
-  const plan = sp.get("plan");
-
-  useEffect(() => {
-    // Respect reduced motion
-    if (window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) return;
-
-    const duration = 1000;
-    const end = Date.now() + duration;
-
-    (function frame() {
-      confetti({
-        particleCount: 4,
-        spread: 70,
-        startVelocity: 35,
-        ticks: 200,
-        origin: { x: 0.2, y: 0.35 },
-      });
-      confetti({
-        particleCount: 4,
-        spread: 70,
-        startVelocity: 35,
-        ticks: 200,
-        origin: { x: 0.8, y: 0.35 },
-      });
-
-      if (Date.now() < end) requestAnimationFrame(frame);
-    })();
-  }, []);
-
-const grantedRef = useRef(false);
-
-  useEffect(() => {
-    if (grantedRef.current) return;
-  grantedRef.current = true;
-    // Temporary: grant premium locally after “successful purchase”.
-    // Later: replace with real IAP verification + entitlements refresh.
-    const source = plan === "lifetime" ? "lifetime" : "subscription";
-    refresh();
-  }, [plan, refresh]);
 
   return (
     <main className={styles.page}>
@@ -64,7 +14,7 @@ const grantedRef = useRef(false);
         <div className={styles.confettieWrap}>
           <Image
             src="/images/checkout/confetti-bg.png"
-            alt="confetti background"
+            alt="checkout background"
             fill
             priority
             className={styles.confettiBg}
@@ -75,16 +25,16 @@ const grantedRef = useRef(false);
         <div className={styles.centerBlock}>
           <Image
             src="/images/checkout/bluecheck-icon.png"
-            alt="Payment successful"
+            alt="Checkout unavailable"
             width={100}
             height={100}
             priority
             className={styles.checkIcon}
           />
 
-          <h1 className={styles.title}>Payment Successful</h1>
+          <h1 className={styles.title}>Web Checkout Unavailable</h1>
           <p className={styles.subtitle}>
-            Congratulations! Your purchase has been successful.
+            Premium purchases are currently available only in the mobile app.
           </p>
         </div>
 
@@ -92,9 +42,9 @@ const grantedRef = useRef(false);
           <button
             type="button"
             className={styles.homeBtn}
-            onClick={() => router.push(next)}
+            onClick={() => router.push("/premium")}
           >
-            Back
+            Back to Premium
           </button>
         </footer>
       </div>

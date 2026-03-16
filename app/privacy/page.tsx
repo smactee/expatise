@@ -5,12 +5,10 @@ export const metadata = {
   title: "Privacy Policy · Expatise",
 };
 
-// ✅ Edit these before publishing:
 const APP_NAME = "Expatise";
-const DEVELOPER_ENTITY = "[Maverix n Matrix]"; // must match Play listing name
+const DEVELOPER_ENTITY = "Maverix n Matrix";
 const CONTACT_EMAIL = "maverixnmatrix@gmail.com";
 
-// Outside-the-app deletion page (Play wants this for apps with accounts)
 const ACCOUNT_DELETION_URL = "/account-deletion";
 
 const EFFECTIVE_DATE = "2026-03-01";
@@ -230,7 +228,7 @@ export default function PrivacyPolicyPage() {
   <p style={{ marginTop: 0 }}>
     <b>Legal notes.</b> This Privacy Policy is provided for general
     informational purposes and does not constitute legal advice. Your use of
-    the App is also subject to any applicable laws and our Terms (if any).
+    the App is also subject to any applicable laws and our Terms of Service.
   </p>
 
   <p style={{ marginTop: 10 }}>

@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import styles from "./forgot-password.module.css";
 import { isValidEmail, normalizeEmail } from "../../lib/auth";
+import { buildAuthCallbackUrl } from "@/lib/auth/oauth";
 import { createClient } from "@/lib/supabase/client";
 
 export default function ForgotPasswordPage() {
@@ -37,7 +38,7 @@ export default function ForgotPasswordPage() {
 
     setLoading(true);
     try {
-      const redirectTo = `${window.location.origin}/auth/callback?next=${encodeURIComponent("/reset-password")}`;
+      const redirectTo = await buildAuthCallbackUrl("/reset-password");
 
       const { error } = await supabase.auth.resetPasswordForEmail(emailNorm, { redirectTo });
       if (error) {

@@ -90,8 +90,6 @@ useEffect(() => {
       await ensureRevenueCat(); // ✅ add this line
 
       const offerings = await Purchases.getOfferings();
-console.log("[RC] current offering:", offerings.current?.identifier);
-console.log("[RC] packages:", offerings.current?.availablePackages?.map(p => p.identifier));
       
       const o = offerings.current;
       if (!o) return;
@@ -348,10 +346,6 @@ console.log("[RC] packages:", offerings.current?.availablePackages?.map(p => p.i
                 if (!pkg) throw new Error(`No package found for plan: ${plan}`);
 
                 const { customerInfo } = await Purchases.purchasePackage({ aPackage: pkg });
-console.log("[RC] purchase ok, appUserId:", customerInfo.originalAppUserId);
-console.log("[RC] active entitlements:", Object.keys(customerInfo.entitlements.active ?? {}));
-console.log("[RC] premium active:", !!customerInfo.entitlements.active?.[RC_ENTITLEMENT_ID]);
-console.log("[RC] post-purchase customerInfo premium:", !!customerInfo.entitlements.active?.[RC_ENTITLEMENT_ID]);
                 const premiumData = premiumSourceFromCustomerInfo(customerInfo);
                 if (!premiumData) return;
 
@@ -370,9 +364,8 @@ console.log("[RC] post-purchase customerInfo premium:", !!customerInfo.entitleme
               return;
             }
 
-            // Web fallback
-            router.push(
-              `/checkout?plan=${encodeURIComponent(plan)}${promoApplied ? "&promo=1" : ""}`
+            setPlanError(
+              "Premium purchases are currently available only in the mobile app. Use the app to purchase or restore access."
             );
           }}
         >

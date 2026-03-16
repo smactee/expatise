@@ -8,6 +8,7 @@ import styles from './account-security.module.css';
 import { useAuthStatus } from '../../components/useAuthStatus';
 import { createClient } from '@/lib/supabase/client';
 import { isValidEmail, normalizeEmail } from '@/lib/auth';
+import { buildAuthCallbackUrl } from '@/lib/auth/oauth';
 
 export default function AccountSecurityPage() {
   const router = useRouter();
@@ -99,7 +100,7 @@ export default function AccountSecurityPage() {
       await reauthWithCurrentPassword(emailPw);
 
       // 2) Update email (may require confirmation email depending on Supabase settings)
-      const redirectTo = `${window.location.origin}/auth/callback?next=${encodeURIComponent('/profile')}`;
+      const redirectTo = await buildAuthCallbackUrl('/profile');
       const { error } = await supabase.auth.updateUser({
         email: nextNorm,
         options: { emailRedirectTo: redirectTo },

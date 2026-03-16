@@ -4,15 +4,26 @@ import { useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { isOnboarded } from "@/lib/onboarding/markOnboarded.client";
 
-// routes you DON'T want to gate
 const BYPASS = new Set([
   "/onboarding",
   "/login",
   "/forgot-password",
   "/reset-password",
-  "/account-deletion",        // your store compliance page
+  "/privacy",
+  "/terms",
+  "/account-deletion",
   "/account-security",
 ]);
+
+const BYPASS_PREFIXES = ["/auth", "/help", "/support", "/legal"];
+
+function isBypassed(pathname: string) {
+  if (BYPASS.has(pathname)) return true;
+
+  return BYPASS_PREFIXES.some(
+    (prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`)
+  );
+}
 
 export default function OnboardingGate() {
   const router = useRouter();
@@ -20,9 +31,7 @@ export default function OnboardingGate() {
 
   useEffect(() => {
     if (!pathname) return;
-    if (BYPASS.has(pathname)) return;
-
-    // If you have other public pages, add them to BYPASS
+    if (isBypassed(pathname)) return;
     if (!isOnboarded()) {
       router.replace("/onboarding");
     }

@@ -13,7 +13,9 @@ export async function getAttempts(args: GetAttemptsArgs = {}) {
 
   const { data: userData, error: userErr } = await supabase.auth.getUser();
   const user = userErr ? null : userData.user;
-  if (!user) return { ok: false as const, error: 'No user session', status: 401 as const };
+  if (!user || (user as any).is_anonymous) {
+    return { ok: false as const, error: 'No user session', status: 401 as const };
+  }
 
   const datasetId = (args.datasetId ?? '').trim();
   const status = (args.status ?? 'submitted').trim();
@@ -44,7 +46,9 @@ export async function upsertAttempt(attempt: any) {
 
   const { data: userData, error: userErr } = await supabase.auth.getUser();
   const user = userErr ? null : userData.user;
-  if (!user) return { ok: false as const, error: 'No user session', status: 401 as const };
+  if (!user || (user as any).is_anonymous) {
+    return { ok: false as const, error: 'No user session', status: 401 as const };
+  }
 
   if (!attempt?.attemptId || !attempt?.modeKey || !attempt?.status) {
     return { ok: false as const, error: 'Missing required attempt fields', status: 400 as const };

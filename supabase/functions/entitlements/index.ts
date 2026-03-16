@@ -62,12 +62,11 @@ if (!SUPABASE_URL || !SUPABASE_KEY) {
   throw new Error("Missing SUPABASE_URL or SUPABASE_ANON_KEY/SB_PUBLISHABLE_KEY");
 }
 
-const ADMIN_EMAILS = parseCsvEnv(
-  "ADMIN_PREMIUM_EMAILS",
-  Deno.env.get("NEXT_PUBLIC_ADMIN_PREMIUM_EMAILS") ??
-    Deno.env.get("NEXT_PUBLIC_DEMO_ADMIN_EMAIL") ??
-    "user@expatise.com,hunisemail@gmail.com"
-);
+const ENABLE_ADMIN_PREMIUM_OVERRIDE =
+  (Deno.env.get("ENABLE_ADMIN_PREMIUM_OVERRIDE") ?? "") === "1";
+const ADMIN_EMAILS = ENABLE_ADMIN_PREMIUM_OVERRIDE
+  ? parseCsvEnv("ADMIN_PREMIUM_EMAILS", Deno.env.get("ADMIN_PREMIUM_EMAILS") ?? "")
+  : [];
 
 Deno.serve(async (req: Request) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: CORS });

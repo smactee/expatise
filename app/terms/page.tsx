@@ -5,9 +5,8 @@ export const metadata = {
   title: "Terms of Service · Expatise",
 };
 
-// Keep these aligned with your Privacy page
 const APP_NAME = "Expatise";
-const DEVELOPER_ENTITY = "[Maverix n Matrix]";
+const DEVELOPER_ENTITY = "Maverix n Matrix";
 const CONTACT_EMAIL = "maverixnmatrix@gmail.com";
 
 const EFFECTIVE_DATE = "2026-03-08";

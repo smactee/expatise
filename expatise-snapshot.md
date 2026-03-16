@@ -175,6 +175,7 @@ Default sample payload lives at:
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import Image from 'next/image';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import BottomNav from '@/components/BottomNav';
 import styles from './all-questions.module.css';
 import { loadDataset } from '@/lib/qbank/loadDataset';
@@ -192,6 +193,10 @@ import { isAnswerCorrect } from '@/lib/grading/isAnswerCorrect';
 import { DEFAULT_DATASET_ID } from '@/lib/qbank/datasets';
 import PremiumFeatureModal from '@/components/PremiumFeatureModal';
 import { useAuthStatus } from '@/components/useAuthStatus';
+import { useEntitlements } from '@/components/EntitlementsProvider.client';
+import { useUsageCap } from '@/lib/freeAccess/useUsageCap';
+import { userKeyFromEmail } from '@/lib/identity/userKey';
+import { migrateLocalAttemptsToCanonical } from '@/lib/test-engine/attemptStorage';
 
 
 
@@ -214,6 +219,12 @@ function isCorrectMcq(item: Question, optId: string, optKey?: string) {
 export default function AllQuestionsClient({ datasetId, mode = 'all' }: { datasetId: DatasetId; mode?: 'all' | 'bookmarks' | 'mistakes' }) {
   // ✅ 1) hooks first
 const userKey = useUserKey();
+  const router = useRouter();
+  const pathname = usePathname();
+  const sp = useSearchParams();
+  const { isPremium } = useEntitlements();
+  const { isOverCap } = useUsageCap();
+  const premiumModalRequested = sp.get('premiumModal') === '1';
 
   // ✅ 3) now it's safe to use userKey
   const { idSet: bookmarkedSet, isBookmarked, toggle, removeMany } = useBookmarks(datasetId, userKey);
@@ -239,7 +250,21 @@ const lastYRef = useRef(0);
 const [submittedAttempts, setSubmittedAttempts] = useState<Attempt[]>([]);
 const [showPremiumModal, setShowPremiumModal] = useState(false);
 
-const { authed: supabaseAuthed } = useAuthStatus();
+const { authed: supabaseAuthed, email } = useAuthStatus();
+const legacyAttemptUserKey = userKeyFromEmail(email);
+
+useEffect(() => {
+  if (!premiumModalRequested) return;
+
+  if (!isPremium && isOverCap) {
+    setShowPremiumModal(true);
+  }
+
+  const next = new URLSearchParams(sp.toString());
+  next.delete('premiumModal');
+  const nextUrl = next.toString() ? `${pathname}?${next.toString()}` : pathname;
+  router.replace(nextUrl, { scroll: false });
+}, [isOverCap, isPremium, pathname, premiumModalRequested, router, sp]);
 
 
 
@@ -377,6 +402,11 @@ useEffect(() => {
 
   (async () => {
     try {
+      migrateLocalAttemptsToCanonical({
+        userKey,
+        legacyUserKeys: [legacyAttemptUserKey, "guest"],
+      });
+
       const all = await attemptStore.listAttempts(userKey, datasetId);
 
       // We only care about submitted attempts for mistakes analytics
@@ -391,7 +421,7 @@ useEffect(() => {
   return () => {
     alive = false;
   };
-}, [mode, userKey, datasetId]);
+}, [mode, userKey, legacyAttemptUserKey, datasetId]);
 
 
 const visible = useMemo(() => {
@@ -544,25 +574,27 @@ const premiumPath = `/premium?next=${encodeURIComponent(premiumNextPath)}`;
   <div className={styles.frame}>
 
 <header className={styles.header}>
+  <div className={styles.titleWrap}>
   <h1 className={styles.title}>
     {mode === "bookmarks"
       ? "My Bookmarks"
       : mode === "mistakes"
       ? "My Mistakes"
       : "All Questions"}
-
-    {mode === "mistakes" && compiledMistakesCount > 0 && (
-      <span className={styles.countPill} aria-label={`${compiledMistakesCount} questions`}>
-        {compiledMistakesCount}
-      </span>
-    )}
-
-    {mode === "bookmarks" && compiledBookmarksCount > 0 && (
-      <span className={styles.countPill} aria-label={`${compiledBookmarksCount} questions`}>
-        {compiledBookmarksCount}
-      </span>
-    )}
   </h1>
+
+  {mode === "mistakes" && compiledMistakesCount > 0 && (
+    <span className={styles.countPill} aria-label={`${compiledMistakesCount} questions`}>
+      {compiledMistakesCount}
+    </span>
+  )}
+
+  {mode === "bookmarks" && compiledBookmarksCount > 0 && (
+    <span className={styles.countPill} aria-label={`${compiledBookmarksCount} questions`}>
+      {compiledBookmarksCount}
+    </span>
+  )}
+</div>
 
   <div className={styles.headerActions}>
     {mode === "mistakes" && (
@@ -875,12 +907,12 @@ onClick={(e) => {
 ### app/(premium)/all-questions/all-questions.module.css
 ```css
 .page {
-  min-height: 100vh;
+  min-height: 100svh;
   display: flex;
   justify-content: center;
   background: var(--color-page-bg);
 
-  /* ✅ local tokens for this screen */
+  /* local tokens for this screen */
   --aq-text: rgba(0, 0, 0, 0.92);
   --aq-muted: rgba(0, 0, 0, 0.7);
 
@@ -890,8 +922,7 @@ onClick={(e) => {
   --aq-option-bg: rgba(0, 0, 0, 0.04);
   --aq-option-border: rgba(0, 0, 0, 0.06);
 
-  /* ✅ “correct answer highlight” (subtle in light mode) */
-  --aq-correct-bg: rgba(43, 124, 175, 0.10);
+  --aq-correct-bg: rgba(43, 124, 175, 0.1);
   --aq-correct-border: rgba(43, 124, 175, 0.55);
   --aq-correct-shadow: 0 10px 22px rgba(43, 124, 175, 0.18);
 
@@ -902,61 +933,74 @@ onClick={(e) => {
   --aq-text: rgba(255, 255, 255, 0.92);
   --aq-muted: rgba(255, 255, 255, 0.72);
 
-  /* ✅ darker card so options can still separate */
   --aq-card-bg: rgba(255, 255, 255, 0.08);
-  --aq-card-border: rgba(255, 255, 255, 0.10);
+  --aq-card-border: rgba(255, 255, 255, 0.1);
 
-  /* ✅ base option has its own “bar” look */
   --aq-option-bg: rgba(255, 255, 255, 0.06);
   --aq-option-border: rgba(255, 255, 255, 0.12);
 
-  /* ✅ stronger correct highlight in dark mode */
   --aq-correct-bg: rgba(55, 178, 255, 0.18);
   --aq-correct-border: rgba(55, 178, 255, 0.85);
   --aq-correct-shadow: 0 12px 26px rgba(55, 178, 255, 0.22);
 }
 
-
-
-
-
 .frame {
   width: 100%;
   max-width: 560px;
-  padding: 18px 16px 120px;
+  padding:
+    calc(env(safe-area-inset-top, 0px) + 18px)
+    clamp(12px, 3.5vw, 16px)
+    calc(env(safe-area-inset-bottom, 0px) + 120px);
+  box-sizing: border-box;
 }
 
 .header {
   display: flex;
-  align-items: center; /* was baseline */
+  align-items: flex-start;
   justify-content: space-between;
-  gap: 12px;
+  gap: clamp(6px, 2vw, 8px);
   margin: 6px 0 14px;
+  min-width: 0;
 }
-
 
 .title {
   margin: 0;
-  font-size: 28px;
+  font-size: clamp(24px, 6vw, 28px);
   font-weight: 800;
+  line-height: 1.05;
+  min-width: 0;
+  flex: 1 1 auto;
+  letter-spacing: -0.02em;
 }
 
 .subtitle {
   margin: 0;
   opacity: 0.7;
-  font-size: 14px;
+  font-size: clamp(13px, 3.4vw, 14px);
+}
+
+.titleWrap {
+  position: relative;
+  display: inline-block;
+  flex: 0 1 auto;
+  min-width: 0;
 }
 
 .countPill {
+  position: absolute;
+  top: -8px;
+  right: -14px;
+
   display: inline-flex;
   align-items: center;
   justify-content: center;
 
-  margin-left: 10px;
-  padding: 3px 10px;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
   border-radius: 999px;
 
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 700;
   line-height: 1;
 
@@ -965,8 +1009,8 @@ onClick={(e) => {
   color: rgba(255, 255, 255, 0.92);
 
   white-space: nowrap;
+  pointer-events: none;
 }
-
 
 .searchRow {
   margin: 10px 0 12px;
@@ -975,11 +1019,13 @@ onClick={(e) => {
 .search {
   width: 100%;
   border-radius: 16px;
-  border: 1px solid rgba(0,0,0,0.12);
-  padding: 12px 14px;
-  background: rgba(255,255,255,0.75);
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  padding: clamp(11px, 2.8vw, 12px) clamp(12px, 3vw, 14px);
+  background: rgba(255, 255, 255, 0.75);
   backdrop-filter: blur(10px);
   outline: none;
+  box-sizing: border-box;
+  font-size: clamp(14px, 3.6vw, 15px);
 }
 
 .chips {
@@ -993,20 +1039,20 @@ onClick={(e) => {
   display: flex;
   align-items: flex-start;
   gap: 10px;
-  margin-bottom: 14px; /* keeps spacing consistent */
+  margin-bottom: 14px;
+  min-width: 0;
 }
 
-/* Make the chips area take the remaining width */
 .chipsRow .chips {
   flex: 1;
   min-width: 0;
-  margin-bottom: 0; /* prevent double margin since chipsRow has margin-bottom */
+  margin-bottom: 0;
 }
 
 .selectAllBtn {
   flex: 0 0 auto;
-  width: 40px;
-  height: 40px;
+  width: clamp(36px, 9vw, 40px);
+  height: clamp(36px, 9vw, 40px);
   border-radius: 14px;
   border: 1px solid rgba(0, 0, 0, 0.12);
   background: rgba(255, 255, 255, 0.6);
@@ -1042,13 +1088,13 @@ onClick={(e) => {
 }
 
 .deleteBtn {
-  height: 40px;
-  padding: 0 12px;
+  height: clamp(36px, 9vw, 40px);
+  padding: 0 clamp(10px, 3vw, 12px);
   border-radius: 14px;
   border: 1px solid red;
   background: rgba(255, 255, 255, 0.6);
   cursor: pointer;
-  font-size: 13px;
+  font-size: clamp(12px, 3.2vw, 13px);
   font-weight: 600;
   color: red;
 }
@@ -1057,19 +1103,18 @@ onClick={(e) => {
   background: rgba(255, 255, 255, 0.75);
 }
 
-
 .chip {
-  border: 1px solid rgba(0,0,0,0.12);
-  background: rgba(255,255,255,0.6);
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  background: rgba(255, 255, 255, 0.6);
   border-radius: 999px;
   padding: 8px 10px;
-  font-size: 13px;
+  font-size: clamp(12px, 3.3vw, 13px);
   cursor: pointer;
 }
 
 .chipActive {
-  border-color: rgba(55,178,255,0.9);
-  box-shadow: 0 6px 18px rgba(55,178,255,0.25);
+  border-color: rgba(55, 178, 255, 0.9);
+  box-shadow: 0 6px 18px rgba(55, 178, 255, 0.25);
 }
 
 .list {
@@ -1079,7 +1124,7 @@ onClick={(e) => {
 
 .card {
   border-radius: 20px;
-  padding: 14px 14px 12px;
+  padding: clamp(12px, 3vw, 14px) clamp(12px, 3vw, 14px) clamp(10px, 2.6vw, 12px);
 
   background: var(--aq-card-bg);
   border: 1px solid var(--aq-card-border);
@@ -1092,7 +1137,8 @@ onClick={(e) => {
   display: flex;
   justify-content: space-between;
   margin-bottom: 8px;
-  font-size: 13px;
+  font-size: clamp(12px, 3.2vw, 13px);
+  gap: 8px;
 }
 
 .qNo,
@@ -1101,11 +1147,10 @@ onClick={(e) => {
   color: var(--aq-muted);
 }
 
-
 .imageWrap {
   position: relative;
   width: 100%;
-  height: 180px;
+  height: clamp(160px, 38vw, 180px);
   border-radius: 16px;
   overflow: hidden;
   margin-bottom: 10px;
@@ -1123,7 +1168,7 @@ onClick={(e) => {
 }
 
 .tagPill {
-  font-size: 12px;
+  font-size: clamp(11px, 3vw, 12px);
   color: var(--aq-muted);
   background: rgba(0, 0, 0, 0.06);
   padding: 6px 8px;
@@ -1132,13 +1177,12 @@ onClick={(e) => {
 }
 
 .answerPill {
-  font-size: 14px;
+  font-size: clamp(13px, 3.5vw, 14px);
   padding: 6px 10px;
   border-radius: 999px;
   background: var(--color-premium-gradient-20);
   font-weight: 500;
 }
-
 
 .answerRow {
   display: flex;
@@ -1155,7 +1199,7 @@ onClick={(e) => {
 }
 
 .answerChip {
-  font-size: 12px;
+  font-size: clamp(11px, 3vw, 12px);
   padding: 6px 10px;
   border-radius: 999px;
   background: rgba(0, 0, 0, 0.06);
@@ -1172,13 +1216,12 @@ onClick={(e) => {
   margin-top: 10px;
 }
 
-/* base option row */
 .option {
   display: flex;
   gap: 10px;
   align-items: flex-start;
 
-  padding: 10px 12px;
+  padding: clamp(9px, 2.5vw, 10px) clamp(10px, 3vw, 12px);
   border-radius: 14px;
 
   background: var(--aq-option-bg);
@@ -1203,7 +1246,6 @@ onClick={(e) => {
   gap: 8px;
 }
 
-/* ✅ correct = same “lift + tint + border” idea as your test page */
 .optionCorrect {
   background: var(--aq-correct-bg);
   border-color: var(--aq-correct-border);
@@ -1215,10 +1257,13 @@ onClick={(e) => {
 .optionKey {
   font-weight: 800;
   min-width: 22px;
+  flex: 0 0 22px;
 }
 
 .optionText {
   line-height: 1.35;
+  min-width: 0;
+  flex: 1 1 auto;
 }
 
 .cardTopRight {
@@ -1235,6 +1280,7 @@ onClick={(e) => {
   line-height: 1;
   opacity: 1;
   padding: 4px 6px;
+  flex: 0 0 auto;
 }
 
 .bookmarkBtn:hover {
@@ -1245,8 +1291,6 @@ onClick={(e) => {
   width: 22px;
   height: 22px;
   display: inline-block;
-
-  /* Use the SVG as a stencil */
   -webkit-mask-image: url("/images/test/bookmark-icon.png");
   mask-image: url("/images/test/bookmark-icon.png");
   -webkit-mask-repeat: no-repeat;
@@ -1257,7 +1301,6 @@ onClick={(e) => {
   mask-size: contain;
 }
 
-/* Default (not bookmarked): looks like an outline-ish dark icon */
 .bookmarkBtn[data-bookmarked='false'] .bookmarkIcon {
   background: rgba(15, 23, 42, 0.95);
 }
@@ -1267,15 +1310,10 @@ onClick={(e) => {
   filter: brightness(1) contrast(1.5) saturate(2);
 }
 
-/* Scroll-to-top button */
 .toTopWrap {
   position: fixed;
   right: 16px;
-
-  /* "above the nav bar by 50px"
-     If your nav height is slightly different, adjust 86px */
   bottom: calc(env(safe-area-inset-bottom, 0px) + 86px + 50px);
-
   z-index: 80;
   will-change: transform;
 }
@@ -1348,20 +1386,21 @@ onClick={(e) => {
 .headerActions {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   flex: 0 0 auto;
+  min-width: 0;
 }
 
 .quizBtn {
-  height: 40px;
-  padding: 0 16px;
+  height: 36px;
+  padding: 0 12px;
   border-radius: 16px;
 
   border: 1px solid var(--color-logout-border);
   background: var(--color-premium-gradient);
   box-shadow: 0 18px 40px rgba(15, 33, 70, 0.26);
 
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 700;
   color: var(--color-heading-card);
 
@@ -1375,6 +1414,28 @@ onClick={(e) => {
   white-space: nowrap;
 }
 
+@media (max-width: 420px) {
+  .frame {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  .header {
+    margin-bottom: 12px;
+  }
+
+  .chipsRow {
+    gap: 8px;
+  }
+
+  .card {
+    border-radius: 18px;
+  }
+
+  .imageWrap {
+    height: 160px;
+  }
+}
 ```
 
 ### app/(premium)/all-questions/page.tsx
@@ -1399,7 +1460,7 @@ export default function QuestionsPage() {
 'use client';
 
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 
 import styles from './all-test.module.css';
@@ -1410,17 +1471,23 @@ import type { Question } from '@/lib/qbank/types';
 import { useBookmarks } from '@/lib/bookmarks/useBookmarks';
 import BackButton from '@/components/BackButton';
 import { useAuthStatus } from '@/components/useAuthStatus';
+import { useUserKey } from '@/components/useUserKey.client';
 import { attemptStore } from "@/lib/attempts/store";
 import { computeNextUnansweredIndex, normalizeUserKey, type TestAttemptV1 } from "@/lib/attempts/engine";
 import {
   canStartExam,
   incrementExamStart,
   canShowQuestion,
+  migrateUsageCapToCanonical,
   markQuestionShown,
 } from "@/lib/freeAccess/localUsageCap";
 import { useEntitlements } from '@/components/EntitlementsProvider.client';
+import { userKeyFromEmail } from '@/lib/identity/userKey';
 import { useClearedMistakes } from '@/lib/mistakes/useClearedMistakes';
 import { deriveTopicSubtags } from '@/lib/qbank/deriveTopicSubtags';
+import PremiumFeatureModal from '@/components/PremiumFeatureModal';
+import { useUsageCap } from '@/lib/freeAccess/useUsageCap';
+import { migrateLocalAttemptsToCanonical } from '@/lib/test-engine/attemptStorage';
 
 
 
@@ -1617,6 +1684,8 @@ export default function AllTestClient({
 
 
   const router = useRouter();
+  const pathname = usePathname();
+  const sp = useSearchParams();
 
   const required = preflightRequiredQuestions ?? questionCount;
 
@@ -1649,19 +1718,30 @@ useEffect(() => {
   const [timeLeft, setTimeLeft] = useState(hasTimer ? timeLimitMinutes * 60 : 0);
   const endAtRef = useRef<number>(hasTimer ? Date.now() + timeLimitMinutes * 60 * 1000 : 0);
 
-const { isPremium } = useEntitlements();
+const { isPremium, loading: entitlementsLoading } = useEntitlements();
 const enforceCaps = !isPremium; // premium users should not hit free caps
 
 
-const { loading: authLoading, email } = useAuthStatus();
-const userKey = normalizeUserKey(email ?? "") || "guest";
+const { loading: authLoading, email, authed: supabaseAuthed } = useAuthStatus();
+const usageCapUserKey = useUserKey();
+const attemptUserKey = usageCapUserKey;
+const bookmarkUserKey = usageCapUserKey;
+const legacyAttemptUserKey = normalizeUserKey(email ?? "") || "guest";
+const legacyUsageCapUserKey = userKeyFromEmail(email);
+const { isOverCap } = useUsageCap(usageCapUserKey);
+const premiumModalRequested = sp.get('premiumModal') === '1';
+const [premiumModalPath, setPremiumModalPath] = useState('');
+const allowTriggeredModalFlow =
+  premiumModalRequested || premiumModalPath === pathname;
+const [showPremiumModal, setShowPremiumModal] = useState(false);
+const [blockedByPremiumModal, setBlockedByPremiumModal] = useState(false);
 
 
 // ✅ put it RIGHT HERE (top-level hook, not inside useEffect)
-const { idSet: bookmarkedSet, toggle, isBookmarked } = useBookmarks(datasetId, userKey);
+const { idSet: bookmarkedSet, toggle, isBookmarked } = useBookmarks(datasetId, bookmarkUserKey);
 
 // (keep your mistakes cleared set too if you're using it)
-const { idSet: clearedMistakesSet } = useClearedMistakes(datasetId, userKey);
+const { idSet: clearedMistakesSet } = useClearedMistakes(datasetId, attemptUserKey);
 
 const advancingRef = useRef(false);
 
@@ -1710,12 +1790,41 @@ await attemptStore.closeAttemptById(a.attemptId, { remainingSec: hasTimer ? time
 
 const [attempt, setAttempt] = useState<TestAttemptV1 | null>(null);
 
+useEffect(() => {
+  if (!premiumModalRequested) return;
+  setPremiumModalPath(pathname);
+}, [pathname, premiumModalRequested]);
+
+useEffect(() => {
+  if (!premiumModalRequested) return;
+  if (authLoading || entitlementsLoading) return;
+
+  if (enforceCaps && isOverCap) {
+    setShowPremiumModal(true);
+  }
+
+  const next = new URLSearchParams(sp.toString());
+  next.delete('premiumModal');
+  const nextUrl = next.toString() ? `${pathname}?${next.toString()}` : pathname;
+  router.replace(nextUrl, { scroll: false });
+}, [
+  authLoading,
+  entitlementsLoading,
+  enforceCaps,
+  isOverCap,
+  pathname,
+  premiumModalRequested,
+  router,
+  sp,
+]);
+
 
   useEffect(() => {
     let mounted = true;
 
     (async () => {
       setLoading(true);
+      setBlockedByPremiumModal(false);
 const ds = await loadDataset(datasetId);
 if (!mounted) return;
 
@@ -1723,6 +1832,15 @@ if (!mounted) return;
 if (authLoading) {
   setLoading(true);
   return;
+}
+
+      migrateLocalAttemptsToCanonical({
+        userKey: attemptUserKey,
+        legacyUserKeys: [legacyAttemptUserKey, "guest"],
+      });
+
+if (enforceCaps) {
+  migrateUsageCapToCanonical(usageCapUserKey, [legacyUsageCapUserKey, "guest"]);
 }
 
 let poolIds = ds.map((q) => q.id);
@@ -1734,7 +1852,7 @@ if (modeKey === "bookmarks-test") {
 if (modeKey === "mistakes-test") {
   const mistakeIds = compileMistakeIds(
     ds,
-    await attemptStore.listAttempts(userKey, datasetId),
+    await attemptStore.listAttempts(attemptUserKey, datasetId),
     clearedMistakesSet
   );
   poolIds = mistakeIds;
@@ -1750,7 +1868,7 @@ if (modeKey === "topics-test") {
 
 
 // ✅ Preflight gate ONLY if there is no resumable attempt (so resume is always allowed)
-const existing = await attemptStore.listAttempts(userKey, datasetId);
+const existing = await attemptStore.listAttempts(attemptUserKey, datasetId);
 const hasResumable = existing.some(
   (t) =>
     t.modeKey === modeKey &&
@@ -1758,7 +1876,15 @@ const hasResumable = existing.some(
     (t.status === "in_progress" || t.status === "paused")
 );
 
-if (enforceCaps && !hasResumable && !canStartExam(userKey, { requiredQuestions: required })) {
+if (enforceCaps && !hasResumable && !canStartExam(usageCapUserKey, { requiredQuestions: required })) {
+  if (allowTriggeredModalFlow) {
+    setAttempt(null);
+    setItems([]);
+    setShowPremiumModal(true);
+    setBlockedByPremiumModal(true);
+    setLoading(false);
+    return;
+  }
   router.replace(`/premium?next=${encodeURIComponent(routeBase)}`);
   return;
 }
@@ -1774,7 +1900,7 @@ const effectiveCount = Math.min(questionCount, poolIds.length);
 
 
 const { attempt: a, reused } = await attemptStore.getOrCreateAttempt({
-  userKey,
+  userKey: attemptUserKey,
   modeKey,
   datasetId,
   datasetVersion,
@@ -1785,11 +1911,19 @@ const { attempt: a, reused } = await attemptStore.getOrCreateAttempt({
 
 // Only block *new* starts. Allow resuming even if cap is hit.
 if (!reused) {
-  if (enforceCaps && !canStartExam(userKey, { requiredQuestions: required })) {
+  if (enforceCaps && !canStartExam(usageCapUserKey, { requiredQuestions: required })) {
+    if (allowTriggeredModalFlow) {
+      setAttempt(null);
+      setItems([]);
+      setShowPremiumModal(true);
+      setBlockedByPremiumModal(true);
+      setLoading(false);
+      return;
+    }
     router.replace(`/premium?next=${encodeURIComponent(routeBase)}`);
     return;
   }
-  if (enforceCaps) incrementExamStart(userKey);
+  if (enforceCaps) incrementExamStart(usageCapUserKey);
 }
 
 
@@ -1849,11 +1983,15 @@ setLoading(false);
   timeLimitMinutes,
   preflightRequiredQuestions,
   authLoading,
-  userKey,
+  attemptUserKey,
+  legacyAttemptUserKey,
+  usageCapUserKey,
+  legacyUsageCapUserKey,
   router,
   routeBase,
   clearedMistakesSet,
   bookmarkedSet,
+  allowTriggeredModalFlow,
 ]);
 
 
@@ -2177,16 +2315,20 @@ useEffect(() => {
   const viewSig = `${modeKey}:${datasetId}:${datasetVersion}:${attempt?.attemptId ?? "na"}:${index}:${item.id}`;
 
   // Block showing the 421st question
-  if (enforceCaps && !canShowQuestion(userKey)) {
+  if (enforceCaps && !canShowQuestion(usageCapUserKey)) {
+  if (allowTriggeredModalFlow) {
+    setShowPremiumModal(true);
+    return;
+  }
   router.replace(`/premium?next=${encodeURIComponent(routeBase)}`);
   return;
 }
   // Count on DISPLAY (even if unanswered, even if repeated later)
-  if (enforceCaps) markQuestionShown(userKey, viewSig);
+  if (enforceCaps) markQuestionShown(usageCapUserKey, viewSig);
 
 }, [
   item?.id,
-  userKey,
+  usageCapUserKey,
   datasetId,
   datasetVersion,
   attempt?.attemptId,
@@ -2195,6 +2337,7 @@ useEffect(() => {
   routeBase,
   enforceCaps,
   modeKey,
+  allowTriggeredModalFlow,
   
 
 ]);
@@ -2218,6 +2361,13 @@ useEffect(() => {
       <main className={styles.page}>
         <div className={styles.frame}>
           <div className={styles.loading}>Loading…</div>
+          <PremiumFeatureModal
+            open={showPremiumModal}
+            onClose={() => setShowPremiumModal(false)}
+            nextPath={routeBase}
+            isAuthed={supabaseAuthed}
+            premiumPath={`/premium?next=${encodeURIComponent(routeBase)}`}
+          />
         </div>
       </main>
     );
@@ -2234,13 +2384,24 @@ useEffect(() => {
 
 
 if (!item) {
-  const msg = items.length === 0 ? emptyMsg : "Loading…";
+  const msg = blockedByPremiumModal
+    ? "Upgrade to Premium to start this test."
+    : items.length === 0
+    ? emptyMsg
+    : "Loading…";
 
   return (
     <main className={styles.page}>
       <div className={styles.frame}>
         <BackButton />
         <div className={styles.loading}>{msg}</div>
+        <PremiumFeatureModal
+          open={showPremiumModal}
+          onClose={() => setShowPremiumModal(false)}
+          nextPath={routeBase}
+          isAuthed={supabaseAuthed}
+          premiumPath={`/premium?next=${encodeURIComponent(routeBase)}`}
+        />
       </div>
     </main>
   );
@@ -2399,6 +2560,13 @@ if (!item) {
 
 
       </div>
+      <PremiumFeatureModal
+        open={showPremiumModal}
+        onClose={() => setShowPremiumModal(false)}
+        nextPath={routeBase}
+        isAuthed={supabaseAuthed}
+        premiumPath={`/premium?next=${encodeURIComponent(routeBase)}`}
+      />
     </main>
   );
 }
@@ -2427,21 +2595,32 @@ if (!item) {
 
 .frame {
   width: 100%;
-  max-width: 390px; /* Figma phone frame */
-  padding: 18px 16px var(--s-bottom);
-  --s-top-to-question: clamp(12px, 2.8vw, 14px); /* was 29px */
-  --s-question-to-image: clamp(4px, 1.4vw, 6px); /* was 10px */
-  --s-image-to-answers: clamp(12px, 2.8vw, 15px); /* was 30px */
-  --s-answer-gap: clamp(8px, 2.2vw, 10px); /* was 20px */
-  --s-answers-to-next: clamp(12px, 2.8vw, 15px); /* was 30px */
-  --s-bottom: clamp(8px, 2.2vw, 12px); /* bottom breathing room */
+  max-width: 390px;
+
+  /* reserve space for:
+     1) native status bar
+     2) floating FreeUsageBadge
+     3) progress/timer row */
+  padding:
+    calc(env(safe-area-inset-top, 0px) + 52px)
+    16px
+    var(--s-bottom);
+
+  --s-top-to-question: clamp(12px, 2.8vw, 14px);
+  --s-question-to-image: clamp(4px, 1.4vw, 6px);
+  --s-image-to-answers: clamp(12px, 2.8vw, 15px);
+  --s-answer-gap: clamp(8px, 2.2vw, 10px);
+  --s-answers-to-next: clamp(12px, 2.8vw, 15px);
+  --s-bottom: calc(env(safe-area-inset-bottom, 0px) + clamp(8px, 2.2vw, 12px));
   --card-w: min(330px, 100%);
+
   height: 100dvh;
   display: flex;
   flex-direction: column;
   overflow: hidden;
   box-sizing: border-box;
   min-width: 0;
+  position: relative;
 }
 
 .loading {
@@ -2453,10 +2632,11 @@ if (!item) {
 /* --- Top bar --- */
 .topBar {
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto; /* back | progress | timer */
-  align-items: center;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: start;
   column-gap: 10px;
   padding: 0;
+  min-height: 40px;
 }
 
 .topLeft {
@@ -2469,13 +2649,10 @@ if (!item) {
 .progressInline {
   display: flex;
   align-items: center;
-  gap: 10px;
-
-  /* keeps it from stretching too wide or crushing the timer */
+  gap: 8px;
   width: 100%;
-  max-width: clamp(180px, 45vw, 260px);
+  max-width: clamp(160px, 42vw, 240px);
   justify-self: center;
-
   min-width: 0;
 }
 
@@ -2545,9 +2722,10 @@ if (!item) {
 }
 
 .timerText {
-  font-size: 14px;
-  font-weight: 600; /* semibold */
+  font-size: clamp(12px, 3.4vw, 14px);
+  font-weight: 600;
   color: #2B7CAF;
+  white-space: nowrap;
 }
 
 /* --- Progress row --- */
@@ -2569,10 +2747,10 @@ if (!item) {
 }
 
 .progressText {
-  font-size: 16px;
-  color: #21205A;
-  font-weight: 400;
+  font-size: clamp(13px, 3.6vw, 16px);
+  font-weight: 500;
   color: var(--test-text-muted);
+  white-space: nowrap;
 }
 
 /* progress → question: 29 */
@@ -2890,7 +3068,7 @@ height: min(clamp(180px, 45vw, 280px), 30vh);
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  gap: 6px;
+  gap: 4px;
   min-width: 0;
 }
 
@@ -2927,6 +3105,39 @@ height: min(clamp(180px, 45vw, 280px), 30vh);
    transform: translateY(10px);
 }
 
+@media (max-height: 760px) {
+  .frame {
+    padding-top: calc(env(safe-area-inset-top, 0px) + 58px);
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+
+  .topBar {
+    column-gap: 8px;
+    min-height: 36px;
+  }
+
+  .progressInline {
+    gap: 6px;
+    max-width: clamp(150px, 40vw, 220px);
+  }
+
+  .progressText {
+    font-size: 13px;
+  }
+
+  .timerText {
+    font-size: 12px;
+  }
+
+  .topRightStack {
+    gap: 3px;
+  }
+
+  .contentArea {
+    padding-top: 8px;
+  }
+}
 ```
 
 ### app/(premium)/all-test/page.tsx
@@ -2947,21 +3158,29 @@ export default function RealTestAlias() {
 
 ### app/(premium)/all-test/results/page.tsx
 ```tsx
-// app/(premium)/all-test/results/page.tsx
-import { redirect } from "next/navigation";
+"use client";
 
-export default function AllTestResultsAlias({
-  searchParams,
-}: {
-  searchParams: Record<string, string | string[] | undefined>;
-}) {
-  const qs = new URLSearchParams();
-  for (const [k, v] of Object.entries(searchParams ?? {})) {
-    if (Array.isArray(v)) v.forEach((vv) => qs.append(k, vv));
-    else if (typeof v === "string") qs.set(k, v);
-  }
-  const q = qs.toString();
-  redirect(`/test/real/results${q ? `?${q}` : ""}`);
+import { Suspense, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+
+function AllTestResultsAliasInner() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    const q = searchParams.toString();
+    router.replace(`/test/real/results${q ? `?${q}` : ""}`);
+  }, [router, searchParams]);
+
+  return null;
+}
+
+export default function AllTestResultsAlias() {
+  return (
+    <Suspense fallback={null}>
+      <AllTestResultsAliasInner />
+    </Suspense>
+  );
 }
 
 ```
@@ -3630,6 +3849,7 @@ export default function BookmarksPage() {
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 import BottomNav from "@/components/BottomNav";
 import BackButton from "@/components/BackButton";
@@ -3649,6 +3869,8 @@ import styles from "../all-questions/all-questions.module.css";
 import { ROUTES } from "@/lib/routes";
 import PremiumFeatureModal from "@/components/PremiumFeatureModal";
 import { useAuthStatus } from "@/components/useAuthStatus";
+import { useEntitlements } from "@/components/EntitlementsProvider.client";
+import { useUsageCap } from "@/lib/freeAccess/useUsageCap";
 
 type GlobalRow = {
   qid: string;
@@ -3682,6 +3904,12 @@ function hash01(s: string) {
 
 export default function GlobalCommonMistakesClient({ datasetId }: { datasetId: DatasetId }) {
   const userKey = useUserKey();
+  const router = useRouter();
+  const pathname = usePathname();
+  const sp = useSearchParams();
+  const { isPremium } = useEntitlements();
+  const { isOverCap } = useUsageCap();
+  const premiumModalRequested = sp.get("premiumModal") === "1";
   const { isBookmarked, toggle } = useBookmarks(datasetId, userKey);
 
   const [q, setQ] = useState<Question[]>([]);
@@ -3702,6 +3930,19 @@ export default function GlobalCommonMistakesClient({ datasetId }: { datasetId: D
   const [showPremiumModal, setShowPremiumModal] = useState(false);
 
   const { authed: supabaseAuthed } = useAuthStatus();
+
+  useEffect(() => {
+    if (!premiumModalRequested) return;
+
+    if (!isPremium && isOverCap) {
+      setShowPremiumModal(true);
+    }
+
+    const next = new URLSearchParams(sp.toString());
+    next.delete("premiumModal");
+    const nextUrl = next.toString() ? `${pathname}?${next.toString()}` : pathname;
+    router.replace(nextUrl, { scroll: false });
+  }, [isOverCap, isPremium, pathname, premiumModalRequested, router, sp]);
 
   // 1) load dataset
   useEffect(() => {
@@ -4163,15 +4404,19 @@ import type { Question } from '@/lib/qbank/types';
 import { useBookmarks } from '@/lib/bookmarks/useBookmarks';
 import BackButton from '@/components/BackButton';
 import { useAuthStatus } from '@/components/useAuthStatus';
+import { useUserKey } from '@/components/useUserKey.client';
 import { attemptStore } from "@/lib/attempts/store";
 import { computeNextUnansweredIndex, normalizeUserKey, type TestAttemptV1 } from "@/lib/attempts/engine";
 import {
   canStartExam,
   incrementExamStart,
   canShowQuestion,
+  migrateUsageCapToCanonical,
   markQuestionShown,
 } from "@/lib/freeAccess/localUsageCap";
 import { useEntitlements } from '@/components/EntitlementsProvider.client';
+import { userKeyFromEmail } from '@/lib/identity/userKey';
+import { migrateLocalAttemptsToCanonical } from '@/lib/test-engine/attemptStorage';
 
 
 
@@ -4246,9 +4491,13 @@ const enforceCaps = !isPremium; // premium users should not hit free caps
 
 
 const { loading: authLoading, email } = useAuthStatus();
-const userKey = normalizeUserKey(email ?? "") || "guest";
+const usageCapUserKey = useUserKey();
+const attemptUserKey = usageCapUserKey;
+const bookmarkUserKey = usageCapUserKey;
+const legacyAttemptUserKey = normalizeUserKey(email ?? "") || "guest";
+const legacyUsageCapUserKey = userKeyFromEmail(email);
 
-const { toggle, isBookmarked } = useBookmarks(datasetId, userKey);
+const { toggle, isBookmarked } = useBookmarks(datasetId, bookmarkUserKey);
 
   const [answers, setAnswers] = useState<Record<string, string>>({});
 
@@ -4305,10 +4554,19 @@ if (authLoading) {
   return;
 }
 
+      migrateLocalAttemptsToCanonical({
+        userKey: attemptUserKey,
+        legacyUserKeys: [legacyAttemptUserKey, "guest"],
+      });
+
+if (enforceCaps) {
+  migrateUsageCapToCanonical(usageCapUserKey, [legacyUsageCapUserKey, "guest"]);
+}
+
 const allIds = ds.map((q) => q.id);
 
 // ✅ Preflight gate ONLY if there is no resumable attempt (so resume is always allowed)
-const existing = await attemptStore.listAttempts(userKey, datasetId);
+const existing = await attemptStore.listAttempts(attemptUserKey, datasetId);
 const hasResumable = existing.some(
   (t) =>
     t.modeKey === modeKey &&
@@ -4316,7 +4574,7 @@ const hasResumable = existing.some(
     (t.status === "in_progress" || t.status === "paused")
 );
 
-if (enforceCaps && !hasResumable && !canStartExam(userKey, { requiredQuestions: required })) {
+if (enforceCaps && !hasResumable && !canStartExam(usageCapUserKey, { requiredQuestions: required })) {
   router.replace(`/premium?next=${encodeURIComponent(routeBase)}`);
   return;
 }
@@ -4324,7 +4582,7 @@ if (enforceCaps && !hasResumable && !canStartExam(userKey, { requiredQuestions: 
 
 
 const { attempt: a, reused } = await attemptStore.getOrCreateAttempt({
-  userKey,
+  userKey: attemptUserKey,
   modeKey,
   datasetId,
   datasetVersion,
@@ -4335,11 +4593,11 @@ const { attempt: a, reused } = await attemptStore.getOrCreateAttempt({
 
 // Only block *new* starts. Allow resuming even if cap is hit.
 if (!reused) {
-  if (enforceCaps && !canStartExam(userKey, { requiredQuestions: required })) {
+  if (enforceCaps && !canStartExam(usageCapUserKey, { requiredQuestions: required })) {
     router.replace(`/premium?next=${encodeURIComponent(routeBase)}`);
     return;
   }
-  if (enforceCaps) incrementExamStart(userKey);
+  if (enforceCaps) incrementExamStart(usageCapUserKey);
 }
 
 
@@ -4390,7 +4648,10 @@ setLoading(false);
   timeLimitMinutes,
   preflightRequiredQuestions,
   authLoading,
-  userKey,
+  attemptUserKey,
+  legacyAttemptUserKey,
+  usageCapUserKey,
+  legacyUsageCapUserKey,
   router,
   routeBase,
 ]);
@@ -4604,17 +4865,17 @@ useEffect(() => {
   const viewSig = `${modeKey}:${datasetId}:${datasetVersion}:${attempt?.attemptId ?? "na"}:${index}:${item.id}`;
 
   // Block showing the 421st question
-  if (enforceCaps && !canShowQuestion(userKey)) {
+  if (enforceCaps && !canShowQuestion(usageCapUserKey)) {
     router.replace(`/premium?next=${encodeURIComponent(routeBase)}`);
     return;
   }
 
   // Count on DISPLAY (even if unanswered, even if repeated later)
-  if (enforceCaps) markQuestionShown(userKey, viewSig);
+  if (enforceCaps) markQuestionShown(usageCapUserKey, viewSig);
 
 }, [
   item?.id,
-  userKey,
+  usageCapUserKey,
   datasetId,
   datasetVersion,
   attempt?.attemptId,
@@ -5429,7 +5690,7 @@ import BackButton from '@/components/BackButton';
 import { loadDataset } from '@/lib/qbank/loadDataset';
 import type { DatasetId } from '@/lib/qbank/datasets';
 import type { Question } from '@/lib/qbank/types';
-import { listSubmittedAttempts } from '@/lib/test-engine/attemptStorage';
+import { listSubmittedAttempts, migrateLocalAttemptsToCanonical } from '@/lib/test-engine/attemptStorage';
 import type { TestAttemptV1 } from '@/lib/test-engine/attemptStorage';
 import { useUserKey } from '@/components/useUserKey.client';
 import { computeStats } from '@/lib/stats/computeStats';
@@ -5557,14 +5818,17 @@ function formatRemaining(ms: number) {
 
 const SKIP_SYNC_KEY = "__expatise_skip_sync_once";
 
-const DEMO_ADMIN_EMAILS = Array.from(
-  new Set(
-    String(process.env.NEXT_PUBLIC_DEMO_ADMIN_EMAIL ?? "")
-      .split(",")
-      .map((s) => s.trim().toLowerCase())
-      .filter(Boolean)
-  )
-);
+const DEMO_ADMIN_EMAILS =
+  process.env.NODE_ENV === "production"
+    ? []
+    : Array.from(
+        new Set(
+          String(process.env.NEXT_PUBLIC_DEMO_ADMIN_EMAIL ?? "")
+            .split(",")
+            .map((s) => s.trim().toLowerCase())
+            .filter(Boolean)
+        )
+      );
 
 function consumeSkipSyncToken(): boolean {
   if (typeof window === "undefined") return false;
@@ -5610,10 +5874,12 @@ const { isPremium } = useEntitlements();
 
 const [attemptsHydrated, setAttemptsHydrated] = useState(false);
 const [showPremiumModal, setShowPremiumModal] = useState(false);
+const legacyEmailUserKey = sessionEmail ? userKeyFromEmail(sessionEmail) : "";
 
 const normalizedSessionEmail = (sessionEmail ?? "").trim().toLowerCase();
 
 const showDemoReseedButton =
+  process.env.NODE_ENV !== "production" &&
   !authLoading &&
   supabaseAuthed &&
   DEMO_ADMIN_EMAILS.length > 0 &&
@@ -5659,6 +5925,11 @@ const skipSyncOnce = consumeSkipSyncToken();
   let alive = true;
 
   (async () => {
+    migrateLocalAttemptsToCanonical({
+      userKey,
+      legacyUserKeys: [legacyEmailUserKey, "guest"],
+    });
+
     // ✅ seed demo data (admin only) BEFORE reading attempts
     if (!skipSyncOnce) {
   await seedAdminDemoDataIfNeeded(userKey, { sessionEmail });
@@ -5707,7 +5978,7 @@ if (!remote) return;
   return () => {
     alive = false;
   };
-}, [userKey, datasetId, supabaseAuthed, sessionEmail]);
+}, [userKey, datasetId, supabaseAuthed, sessionEmail, legacyEmailUserKey]);
 
 
   // Compute stats (default: last 30 days for now; we’ll add filters later)
@@ -5819,7 +6090,6 @@ const COOLDOWN_MS = 24 * 60 * 60 * 1000;
 const coachPrefix = userKey ? `expatise:${userKey}` : `expatise:anon`;
 const LS_REPORT = `${coachPrefix}:coach:lastReport:v2`;
 const LS_COOLDOWN_UNTIL = `${coachPrefix}:coach:cooldownUntil:v2`;
-const legacyEmailUserKey = sessionEmail ? userKeyFromEmail(sessionEmail) : "";
 const legacyCoachPrefix = legacyEmailUserKey ? `expatise:${legacyEmailUserKey}` : "";
 const legacyReportKey = legacyCoachPrefix
   ? `${legacyCoachPrefix}:coach:lastReport:v2`
@@ -7574,7 +7844,7 @@ try {
 
 .resetBtn{
   position: absolute;
-  top: -10px;
+  top: 0px;
   right: 2px;
   z-index: 6;
 
@@ -7637,18 +7907,14 @@ export const metadata: Metadata = {
 };
 
 const APP_NAME = "Expatise";
-
-// ✅ Replace this with your real support email (must be actively monitored).
+const SUPPORT_TEAM = "Expatise Support";
 const SUPPORT_EMAIL = "maverixnmatrix@gmail.com";
-
-// ✅ Pick a timeframe you can truly honor.
-// If you’re not sure, “30 days” is common. Adjust as needed.
 const PROCESSING_TIME_DAYS = 30;
 
 export default function AccountDeletionPage() {
   const subject = "Account deletion request";
   const bodyLines = [
-    `Hello ${APP_NAME} Support,`,
+    `Hello ${SUPPORT_TEAM},`,
     "",
     "Please delete my account and associated data.",
     "",
@@ -7731,7 +7997,7 @@ export default function AccountDeletionPage() {
         Option B — Request deletion by email (if you can’t access the app)
       </h2>
       <p style={styles.p}>
-        Email us at{" "}
+        Email {SUPPORT_TEAM} at{" "}
         <a style={styles.a} href={mailtoHref}>
           {SUPPORT_EMAIL}
         </a>{" "}
@@ -7781,7 +8047,7 @@ export default function AccountDeletionPage() {
       <p style={styles.p}>
         If you can’t access the email you signed up with, contact{" "}
         <a style={styles.a} href={`mailto:${SUPPORT_EMAIL}`}>
-          {SUPPORT_EMAIL}
+          {SUPPORT_TEAM} ({SUPPORT_EMAIL})
         </a>{" "}
         and explain your situation. We’ll tell you what we can do safely.
       </p>
@@ -7790,6 +8056,7 @@ export default function AccountDeletionPage() {
     </main>
   );
 }
+
 ```
 
 ### app/account-security/account-security.module.css
@@ -7940,6 +8207,7 @@ import styles from './account-security.module.css';
 import { useAuthStatus } from '../../components/useAuthStatus';
 import { createClient } from '@/lib/supabase/client';
 import { isValidEmail, normalizeEmail } from '@/lib/auth';
+import { buildAuthCallbackUrl } from '@/lib/auth/oauth';
 
 export default function AccountSecurityPage() {
   const router = useRouter();
@@ -8031,7 +8299,7 @@ export default function AccountSecurityPage() {
       await reauthWithCurrentPassword(emailPw);
 
       // 2) Update email (may require confirmation email depending on Supabase settings)
-      const redirectTo = `${window.location.origin}/auth/callback?next=${encodeURIComponent('/profile')}`;
+      const redirectTo = await buildAuthCallbackUrl('/profile');
       const { error } = await supabase.auth.updateUser({
         email: nextNorm,
         options: { emailRedirectTo: redirectTo },
@@ -8600,36 +8868,13 @@ export default function AuthCallbackPage() {
 
 ### app/checkout/page.tsx
 ```tsx
-// app/checkout/page.tsx
-
 "use client";
 
-import Image from "next/image";
-import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import styles from "./checkout.module.css";
 import { PLAN_MAP, toPlanId, type PlanId } from "@/lib/plans";
-import { safeNextPath } from "@/lib/auth";
 import CSRBoundary from "@/components/CSRBoundary";
 import BackButton from "@/components/BackButton";
-
-type PayMethod = "alipay" | "gpay" | "applepay" | "wechat";
-
-
-function onlyDigits(s: string) {
-  return s.replace(/\D/g, "");
-}
-
-function formatCardNumber(raw: string) {
-  const digits = onlyDigits(raw).slice(0, 19); // allow up to 19
-  return digits.replace(/(.{4})/g, "$1 ").trim();
-}
-
-function formatExpiry(raw: string) {
-  const digits = onlyDigits(raw).slice(0, 4); // MMYY
-  if (digits.length <= 2) return digits;
-  return `${digits.slice(0, 2)}/${digits.slice(2)}`;
-}
 
 function Inner() {
   const router = useRouter();
@@ -8637,169 +8882,48 @@ function Inner() {
 
   const plan: PlanId = toPlanId(sp.get("plan"));
   const promoApplied = sp.get("promo") === "1";
-  const next = safeNextPath(sp.get("next"), "/");
-
   const planData = PLAN_MAP[plan];
   const title = planData.checkoutTitle;
   const price = promoApplied ? planData.promoPrice : planData.price;
 
-  // simple “order no” for UI (you’ll replace with real order id later)
-  /* const orderNo = useMemo(() => {
-    const n = Date.now().toString().slice(-7);
-    return `№${n}`;
-  }, []); */
-
-  const [method, setMethod] = useState<PayMethod>("wechat");
-  const [cardNumber, setCardNumber] = useState("");
-  const [expiry, setExpiry] = useState("");
-  const [cvv, setCvv] = useState("");
-
-
   return (
     <main className={styles.page}>
       <div className={styles.frame}>
-               {/* Top bar */}
         <header className={styles.topBar}>
           <div className={styles.topBackButton}>
             <BackButton variant="inline" />
           </div>
         </header>
 
-        {/* Content */}
         <div className={styles.content}>
           <div className={styles.summaryRow}>
             <div className={styles.planLabel}>{title}</div>
-            <div className={styles.orderNo}>Order Summary</div>
+            <div className={styles.orderNo}>Web checkout unavailable</div>
           </div>
 
           <div className={styles.price}>{price}</div>
 
           <div className={styles.divider} />
 
-          {/* Payment methods */}
-          <div className={styles.payRow} role="tablist" aria-label="Payment methods">
-  <button
-    type="button"
-    className={`${styles.payItem} ${method === "alipay" ? styles.payItemActive : ""}`}
-    onClick={() => setMethod("alipay")}
-  >
-    <span className={styles.payLogoBox}>
-      <Image src="/images/checkout/alipay-logo.png" alt="AliPay" width={34} height={34} />
-    </span>
-    <span className={styles.pgLabel}>AliPay</span>
-  </button>
-
-  <button
-    type="button"
-    className={`${styles.payItem} ${method === "gpay" ? styles.payItemActive : ""}`}
-    onClick={() => setMethod("gpay")}
-  >
-    <span className={styles.payLogoBox}>
-      <Image src="/images/checkout/googlepay-logo.png" alt="Google Pay" width={70} height={22} />
-    </span>
-    <span className={styles.pgLabel}>Google Pay</span>
-  </button>
-
-  <button
-    type="button"
-    className={`${styles.payItem} ${method === "applepay" ? styles.payItemActive : ""}`}
-    onClick={() => setMethod("applepay")}
-  >
-    <span className={styles.payLogoBox}>
-      <Image src="/images/checkout/applepay-logo.png" alt="Apple Pay" width={70} height={22} />
-    </span>
-    <span className={styles.pgLabel}>Apple Pay</span>
-  </button>
-
-  <button
-    type="button"
-    className={`${styles.payItem} ${method === "wechat" ? styles.payItemActive : ""}`}
-    onClick={() => setMethod("wechat")}
-  >
-    <span className={styles.payLogoBox}>
-      <Image src="/images/checkout/wechat-logo.png" alt="WeChat Pay" width={34} height={34} />
-    </span>
-    <span className={styles.pgLabel}>WeChat Pay</span>
-  </button>
-</div>
-
-          {/* Form */}
           <div className={styles.form}>
-            <label className={styles.label}>Card Number</label>
-            <div className={styles.inputWrap}>
-              <span className={styles.leftIcon} aria-hidden="true">
-      <Image
-        src="/images/checkout/creditcard-icon.png"
-        alt="credit card"
-        width={18}
-        height={18}
-        priority={false}
-        />
-      </span>
-              <input
-                className={styles.input}
-                value={cardNumber}
-                onChange={(e) => setCardNumber(formatCardNumber(e.target.value))}
-                placeholder="Card number"
-                inputMode="numeric"
-                autoComplete="cc-number"
-              />
-            </div>
-
-            <div className={styles.twoCol}>
-              <div>
-                <label className={styles.label}>Expiry Date</label>
-                <div className={styles.inputWrap}>
-                  <input
-                    className={styles.input}
-                    value={expiry}
-                    onChange={(e) => setExpiry(formatExpiry(e.target.value))}
-                    placeholder="8/24"
-                    inputMode="numeric"
-                    autoComplete="cc-exp"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className={styles.label}>CVV/CVC</label>
-                <div className={styles.inputWrap}>
-                 <span className={styles.leftIcon} aria-hidden="true">
-      <Image
-        src="/images/checkout/lock-icon.png"
-        alt="lock icon"
-        width={18}
-        height={18}
-        priority={false}
-      />
-    </span>
-                   <input
-      className={styles.input}
-      value={cvv}
-      onChange={(e) => setCvv(onlyDigits(e.target.value).slice(0, 4))}
-      placeholder="•••"
-      inputMode="numeric"
-      autoComplete="cc-csc"
-    />
-                </div>
-              </div>
-            </div>
+            <p className={styles.label} style={{ marginBottom: 12 }}>
+              Web checkout is not available in this release.
+            </p>
+            <p style={{ margin: 0, lineHeight: 1.6, opacity: 0.85 }}>
+              Premium purchases are currently available only in the mobile app.
+              If you already purchased Premium there, open the app and use the
+              restore option from your profile if needed.
+            </p>
           </div>
         </div>
 
-        {/* Bottom CTA */}
         <footer className={styles.footer}>
           <button
             type="button"
             className={styles.checkoutBtn}
-            onClick={() => {
-              router.push(
-  `/checkout/success?plan=${encodeURIComponent(plan)}${promoApplied ? "&promo=1" : ""}&next=${encodeURIComponent(next)}`
-);
-              // TODO: integrate real payment provider later
-            }}
+            onClick={() => router.push("/premium")}
           >
-            Checkout
+            Back to Premium
           </button>
         </footer>
       </div>
@@ -8814,69 +8938,20 @@ export default function CheckoutPage() {
     </CSRBoundary>
   );
 }
+
 ```
 
 ### app/checkout/success/page.tsx
 ```tsx
-// app/checkout/success/page.tsx
-
 "use client";
 
 import Image from "next/image";
-import { useEffect, useRef } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
-import confetti from "canvas-confetti";
+import { useRouter } from "next/navigation";
 import styles from "./success.module.css";
-
-import { useEntitlements } from "@/components/EntitlementsProvider.client";
-import { safeNextPath } from "@/lib/auth";
 import CSRBoundary from "@/components/CSRBoundary";
 
 function Inner() {
   const router = useRouter();
-  const sp = useSearchParams();
-  const { refresh } = useEntitlements();
-
-  const next = safeNextPath(sp.get("next"), "/");
-  const plan = sp.get("plan");
-
-  useEffect(() => {
-    // Respect reduced motion
-    if (window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) return;
-
-    const duration = 1000;
-    const end = Date.now() + duration;
-
-    (function frame() {
-      confetti({
-        particleCount: 4,
-        spread: 70,
-        startVelocity: 35,
-        ticks: 200,
-        origin: { x: 0.2, y: 0.35 },
-      });
-      confetti({
-        particleCount: 4,
-        spread: 70,
-        startVelocity: 35,
-        ticks: 200,
-        origin: { x: 0.8, y: 0.35 },
-      });
-
-      if (Date.now() < end) requestAnimationFrame(frame);
-    })();
-  }, []);
-
-const grantedRef = useRef(false);
-
-  useEffect(() => {
-    if (grantedRef.current) return;
-  grantedRef.current = true;
-    // Temporary: grant premium locally after “successful purchase”.
-    // Later: replace with real IAP verification + entitlements refresh.
-    const source = plan === "lifetime" ? "lifetime" : "subscription";
-    refresh();
-  }, [plan, refresh]);
 
   return (
     <main className={styles.page}>
@@ -8884,7 +8959,7 @@ const grantedRef = useRef(false);
         <div className={styles.confettieWrap}>
           <Image
             src="/images/checkout/confetti-bg.png"
-            alt="confetti background"
+            alt="checkout background"
             fill
             priority
             className={styles.confettiBg}
@@ -8895,16 +8970,16 @@ const grantedRef = useRef(false);
         <div className={styles.centerBlock}>
           <Image
             src="/images/checkout/bluecheck-icon.png"
-            alt="Payment successful"
+            alt="Checkout unavailable"
             width={100}
             height={100}
             priority
             className={styles.checkIcon}
           />
 
-          <h1 className={styles.title}>Payment Successful</h1>
+          <h1 className={styles.title}>Web Checkout Unavailable</h1>
           <p className={styles.subtitle}>
-            Congratulations! Your purchase has been successful.
+            Premium purchases are currently available only in the mobile app.
           </p>
         </div>
 
@@ -8912,9 +8987,9 @@ const grantedRef = useRef(false);
           <button
             type="button"
             className={styles.homeBtn}
-            onClick={() => router.push(next)}
+            onClick={() => router.push("/premium")}
           >
-            Back
+            Back to Premium
           </button>
         </footer>
       </div>
@@ -9139,16 +9214,14 @@ export default function BackLink() {
 
 ### app/coming-soon/page.tsx
 ```tsx
-// app/coming-soon/page.tsx
+"use client";
+
+import { Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import BackButton from "@/components/BackButton";
 import styles from "./coming-soon.module.css";
-import Link from "next/link";
 
-type Props = {
-  searchParams?: { feature?: string; returnTo?: string };
-};
-
-function safeReturnTo(raw: string | undefined) {
+function safeReturnTo(raw: string | null) {
   if (!raw) return "/profile";
 
   let decoded = raw;
@@ -9158,10 +9231,8 @@ function safeReturnTo(raw: string | undefined) {
     // ignore
   }
 
-  // ✅ If it's already a path, accept it
   if (decoded.startsWith("/")) return decoded;
 
-  // ✅ If it's a full URL (http://localhost:3000/profile), strip to pathname safely
   try {
     const u = new URL(decoded);
     const path = `${u.pathname}${u.search}${u.hash}`;
@@ -9171,25 +9242,30 @@ function safeReturnTo(raw: string | undefined) {
   }
 }
 
-export default function ComingSoonPage({ searchParams }: Props) {
-  const feature = searchParams?.feature
-    ? decodeURIComponent(searchParams.feature)
-    : "This feature";
+function ComingSoonInner() {
+  const searchParams = useSearchParams();
+  const rawFeature = searchParams.get("feature");
+  const feature = rawFeature ? decodeURIComponent(rawFeature) : "This feature";
+  const backHref = safeReturnTo(searchParams.get("returnTo"));
 
-  const backHref = safeReturnTo(searchParams?.returnTo);
+  return (
+    <main className={styles.page}>
+      <BackButton variant="fixed" fallbackHref={backHref} />
 
+      <div className={styles.content}>
+        <h1 className={styles.title}>Coming Soon</h1>
+        <p className={styles.text}>{feature} is not ready yet.</p>
+      </div>
+    </main>
+  );
+}
 
-return (
-  <main className={styles.page}>
-    <BackButton variant="fixed" fallbackHref={backHref} />
-
-    <div className={styles.content}>
-      <h1 className={styles.title}>Coming Soon</h1>
-      <p className={styles.text}>{feature} is not ready yet.</p>
-    </div>
-  </main>
-);
-
+export default function ComingSoonPage() {
+  return (
+    <Suspense fallback={null}>
+      <ComingSoonInner />
+    </Suspense>
+  );
 }
 
 ```
@@ -9352,6 +9428,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import styles from "./forgot-password.module.css";
 import { isValidEmail, normalizeEmail } from "../../lib/auth";
+import { buildAuthCallbackUrl } from "@/lib/auth/oauth";
 import { createClient } from "@/lib/supabase/client";
 
 export default function ForgotPasswordPage() {
@@ -9385,7 +9462,7 @@ export default function ForgotPasswordPage() {
 
     setLoading(true);
     try {
-      const redirectTo = `${window.location.origin}/auth/callback?next=${encodeURIComponent("/reset-password")}`;
+      const redirectTo = await buildAuthCallbackUrl("/reset-password");
 
       const { error } = await supabase.auth.resetPasswordForEmail(emailNorm, { redirectTo });
       if (error) {
@@ -9656,14 +9733,15 @@ export default function RootLayout({
 ```tsx
 'use client';
 
-import { useMemo, useRef, useState, type FormEvent } from 'react';import { useRouter } from 'next/navigation';
+import { useMemo, useRef, useState, type FormEvent } from 'react';
+import { useRouter } from 'next/navigation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGoogle, faApple, faWeixin } from '@fortawesome/free-brands-svg-icons';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 
 import styles from './create-account-modal.module.css';
 import { isValidEmail, normalizeEmail } from '@/lib/auth';
-import { NATIVE_OAUTH_REDIRECT_URI } from '@/lib/auth/oauth';
+import { buildAuthCallbackUrl, NATIVE_OAUTH_REDIRECT_URI } from '@/lib/auth/oauth';
 import { createClient } from '@/lib/supabase/client';
 
 type Props = {
@@ -9711,11 +9789,12 @@ export default function CreateAccountModal({ open, onClose, onCreated }: Props) 
 
     setIsSubmitting(true);
     try {
+      const emailRedirectTo = await buildAuthCallbackUrl("/");
       const { data, error } = await supabase.auth.signUp({
         email: trimmedEmail,
         password: pw,
         options: {
-          emailRedirectTo: `${window.location.origin}/auth/callback`,
+          emailRedirectTo,
         },
       });
 
@@ -9906,9 +9985,6 @@ if (!url) {
   setError("No OAuth URL returned.");
   return;
 }
-
-console.log("[OAuth] open url:", url); // ✅ add this line
-
 await Browser.open({ url });
 return;
       }
@@ -10733,10 +10809,13 @@ router.replace(nextParam);
   disabled={oauthSubmitting || isSubmitting}
   onClick={async () => {
     setError(null);
-    const { error } = await supabase.auth.signInAnonymously();
-    if (error) {
-      setError(error.message);
-      return;
+    try {
+      const { data } = await supabase.auth.getSession();
+      if ((data.session?.user as any)?.is_anonymous) {
+        await supabase.auth.signOut();
+      }
+    } catch {
+      // keep guest mode local-only even if cleanup fails
     }
     try { window.dispatchEvent(new Event("expatise:session-changed")); } catch {}
     try { window.dispatchEvent(new Event("expatise:entitlements-changed")); } catch {}
@@ -10814,9 +10893,6 @@ if (!url) {
   setError("No OAuth URL returned.");
   return;
 }
-
-console.log("[OAuth] open url:", url); // ✅ add this line
-
 await Browser.open({ url });
 return;
       }
@@ -10949,8 +11025,8 @@ export default function LoginPage() {
   inset: 0;
   background: linear-gradient(
     180deg,
-    rgba(0, 0, 0, 0) 55%,
-    rgba(255, 255, 255, 1) 96%
+    rgba(0, 0, 0, 0) 60%,
+    rgba(255, 255, 255, 1) 90%
   );
 }
 
@@ -10964,9 +11040,11 @@ export default function LoginPage() {
 }
 
 .sheet {
+  margin-top: -18px;
   padding: clamp(20px, 3.5svh, 26px) clamp(18px, 5vw, 22px) clamp(22px, 4svh, 30px);
   text-align: center;
 }
+
 
 .title {
   margin: 0;
@@ -11040,6 +11118,7 @@ export default function LoginPage() {
     font-size: 18px;
   }
 }
+
 ```
 
 ### app/onboarding/page.tsx
@@ -11959,6 +12038,8 @@ import { useUserProfile } from '../components/UserProfile';
 import { ROUTES } from '../lib/routes';
 import FeatureCard from '../components/FeatureCard';
 import BackButton from '@/components/BackButton';
+import { useEntitlements } from '@/components/EntitlementsProvider.client';
+import { useUsageCap } from '@/lib/freeAccess/useUsageCap';
 
 
 
@@ -12095,6 +12176,8 @@ const MY_CARDS = [
 export default function Home() {
   const [testDate, setTestDate] = useState<string>(DEFAULT_TEST_DATE);
   const [testTime, setTestTime] = useState<string>(DEFAULT_TEST_TIME);
+  const { isPremium, loading: entitlementsLoading } = useEntitlements();
+  const { isOverCap } = useUsageCap();
 
 // Modal state for "When's your test?" sheet
 const [isTestModalOpen, setIsTestModalOpen] = useState(false);
@@ -12201,6 +12284,12 @@ const modalDay = modalDate.getDate();
 
 // Pretty label for the time in the modal ("9:00 AM")
 const modalTimeLabel = formatTimeLabel(modalSourceTime);
+const shouldTriggerPremiumModal = !entitlementsLoading && !isPremium && isOverCap;
+
+const homeCardHref = (href: string) =>
+  shouldTriggerPremiumModal
+    ? `${href}${href.includes('?') ? '&' : '?'}premiumModal=1`
+    : href;
 
 
   return (
@@ -12271,7 +12360,7 @@ const modalTimeLabel = formatTimeLabel(modalSourceTime);
 {TEST_MODE_CARDS.map((card) => (
     <FeatureCard
       key={card.key}
-      href={card.href}
+      href={homeCardHref(card.href)}
       ariaLabel={card.ariaLabel}
       bgSrc={card.bgSrc}
       bgAlt={card.bgAlt}
@@ -12296,7 +12385,7 @@ const modalTimeLabel = formatTimeLabel(modalSourceTime);
 {OVERALL_CARDS.map((card) => (
   <FeatureCard
     key={card.key}
-    href={card.href}
+    href={homeCardHref(card.href)}
     ariaLabel={card.ariaLabel}
     bgSrc={card.bgSrc}
     bgAlt={card.bgAlt}
@@ -12319,7 +12408,7 @@ const modalTimeLabel = formatTimeLabel(modalSourceTime);
 {MY_CARDS.map((card) => (
     <FeatureCard
       key={card.key}
-      href={card.href}
+      href={homeCardHref(card.href)}
       ariaLabel={card.ariaLabel}
       bgSrc={card.bgSrc}
       bgAlt={card.bgAlt}
@@ -12468,6 +12557,7 @@ const modalTimeLabel = formatTimeLabel(modalSourceTime);
     </main>
   );
 }
+
 ```
 
 ### app/premium/page.tsx
@@ -12564,8 +12654,6 @@ useEffect(() => {
       await ensureRevenueCat(); // ✅ add this line
 
       const offerings = await Purchases.getOfferings();
-console.log("[RC] current offering:", offerings.current?.identifier);
-console.log("[RC] packages:", offerings.current?.availablePackages?.map(p => p.identifier));
       
       const o = offerings.current;
       if (!o) return;
@@ -12822,10 +12910,6 @@ console.log("[RC] packages:", offerings.current?.availablePackages?.map(p => p.i
                 if (!pkg) throw new Error(`No package found for plan: ${plan}`);
 
                 const { customerInfo } = await Purchases.purchasePackage({ aPackage: pkg });
-console.log("[RC] purchase ok, appUserId:", customerInfo.originalAppUserId);
-console.log("[RC] active entitlements:", Object.keys(customerInfo.entitlements.active ?? {}));
-console.log("[RC] premium active:", !!customerInfo.entitlements.active?.[RC_ENTITLEMENT_ID]);
-console.log("[RC] post-purchase customerInfo premium:", !!customerInfo.entitlements.active?.[RC_ENTITLEMENT_ID]);
                 const premiumData = premiumSourceFromCustomerInfo(customerInfo);
                 if (!premiumData) return;
 
@@ -12844,9 +12928,8 @@ console.log("[RC] post-purchase customerInfo premium:", !!customerInfo.entitleme
               return;
             }
 
-            // Web fallback
-            router.push(
-              `/checkout?plan=${encodeURIComponent(plan)}${promoApplied ? "&promo=1" : ""}`
+            setPlanError(
+              "Premium purchases are currently available only in the mobile app. Use the app to purchase or restore access."
             );
           }}
         >
@@ -13340,12 +13423,10 @@ export const metadata = {
   title: "Privacy Policy · Expatise",
 };
 
-// ✅ Edit these before publishing:
 const APP_NAME = "Expatise";
-const DEVELOPER_ENTITY = "[Maverix n Matrix]"; // must match Play listing name
+const DEVELOPER_ENTITY = "Maverix n Matrix";
 const CONTACT_EMAIL = "maverixnmatrix@gmail.com";
 
-// Outside-the-app deletion page (Play wants this for apps with accounts)
 const ACCOUNT_DELETION_URL = "/account-deletion";
 
 const EFFECTIVE_DATE = "2026-03-01";
@@ -13565,7 +13646,7 @@ export default function PrivacyPolicyPage() {
   <p style={{ marginTop: 0 }}>
     <b>Legal notes.</b> This Privacy Policy is provided for general
     informational purposes and does not constitute legal advice. Your use of
-    the App is also subject to any applicable laws and our Terms (if any).
+    the App is also subject to any applicable laws and our Terms of Service.
   </p>
 
   <p style={{ marginTop: 10 }}>
@@ -15126,9 +15207,8 @@ export const metadata = {
   title: "Terms of Service · Expatise",
 };
 
-// Keep these aligned with your Privacy page
 const APP_NAME = "Expatise";
-const DEVELOPER_ENTITY = "[Maverix n Matrix]";
+const DEVELOPER_ENTITY = "Maverix n Matrix";
 const CONTACT_EMAIL = "maverixnmatrix@gmail.com";
 
 const EFFECTIVE_DATE = "2026-03-08";
@@ -15331,6 +15411,7 @@ export default function TermsPage() {
 ```tsx
 // app/test/[mode]/page.tsx
 
+import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import AllTestClient from "@/app/(premium)/all-test/AllTestClient.client";
 import { TEST_MODES, type TestModeId } from "@/lib/testModes";
@@ -15352,7 +15433,11 @@ export default async function TestModePage({
   const cfg = TEST_MODES[mode as TestModeId];
   if (!cfg) notFound();
 
-  return <AllTestClient {...cfg} />;
+  return (
+    <Suspense fallback={null}>
+      <AllTestClient {...cfg} />
+    </Suspense>
+  );
 }
 
 ```
@@ -15374,10 +15459,13 @@ import type { TestAttemptV1 } from "@/lib/attempts/engine";
 import { useAuthStatus } from "@/components/useAuthStatus";
 import { normalizeUserKey } from "@/lib/attempts/engine";
 import { useBookmarks } from "@/lib/bookmarks/useBookmarks";
+import { useUserKey } from "@/components/useUserKey.client";
+import { userKeyFromEmail } from "@/lib/identity/userKey";
 import { TEST_MODES, type TestModeId } from "@/lib/testModes";
 import { useClearedMistakes } from "@/lib/mistakes/useClearedMistakes";
 import CSRBoundary from "@/components/CSRBoundary";
 import { useBootSweepOnce } from "@/components/stats/useBootSweepOnce.client";
+import { migrateLocalAttemptsToCanonical } from "@/lib/test-engine/attemptStorage";
 
 function clamp(n: number, min: number, max: number) {
   return Math.max(min, Math.min(max, n));
@@ -15427,8 +15515,10 @@ const timeSec = usedSeconds % 60;
 const timeText = showUntimed ? "Untimed" : `${timeMin}min ${timeSec}sec`;
 
 
-const { email } = useAuthStatus();
-const userKey = normalizeUserKey(email ?? "") || "guest";
+const { email, loading: authLoading } = useAuthStatus();
+const attemptUserKey = useUserKey();
+const bookmarkUserKey = attemptUserKey;
+const legacyAttemptUserKey = userKeyFromEmail(email) || normalizeUserKey(email ?? "") || "guest";
 
   const [attempt, setAttempt] = useState<TestAttemptV1 | null>(null);
   const [computed, setComputed] = useState<{ correct: number; total: number }>({ correct: 0, total: 0 });
@@ -15445,10 +15535,10 @@ const userKey = normalizeUserKey(email ?? "") || "guest";
 
   // datasetId for bookmarks should come from attempt if possible; fallback to mode config
   const datasetId = ((attempt?.datasetId ?? cfg.datasetId) as unknown) as DatasetId;
-  const { toggle, isBookmarked } = useBookmarks(datasetId, userKey);
+  const { toggle, isBookmarked } = useBookmarks(datasetId, bookmarkUserKey);
 
 
-  const { clearMany: clearMistakesMany } = useClearedMistakes(datasetId, userKey);
+  const { clearMany: clearMistakesMany } = useClearedMistakes(datasetId, attemptUserKey);
   const didAutoClearRef = useRef(false);
 
   /**
@@ -15459,10 +15549,15 @@ const userKey = normalizeUserKey(email ?? "") || "guest";
  const qs = sp.toString();
 
 useEffect(() => {
-  if (attemptId) return;
+  if (attemptId || authLoading) return;
 
   (async () => {
-    const list = await attemptStore.listAttempts(userKey, cfg.datasetId);
+    migrateLocalAttemptsToCanonical({
+      userKey: attemptUserKey,
+      legacyUserKeys: [legacyAttemptUserKey, "guest"],
+    });
+
+    const list = await attemptStore.listAttempts(attemptUserKey, cfg.datasetId);
     const matching = list.filter(
       (a) => a.modeKey === cfg.modeKey && a.datasetVersion === cfg.datasetVersion
     );
@@ -15480,7 +15575,7 @@ useEffect(() => {
     next.set("attemptId", best.attemptId);
     router.replace(`/test/${cfg.modeId}/results?${next.toString()}`);
   })();
-}, [attemptId, userKey, cfg, router, qs]);
+}, [attemptId, authLoading, attemptUserKey, legacyAttemptUserKey, cfg, router, qs]);
 
 
   // Carousel pointer handlers
@@ -15562,6 +15657,11 @@ useEffect(() => {
     if (!attemptId) return;
 
     (async () => {
+      migrateLocalAttemptsToCanonical({
+        userKey: attemptUserKey,
+        legacyUserKeys: [legacyAttemptUserKey, "guest"],
+      });
+
       const a = await attemptStore.readAttemptById(attemptId);
       setAttempt(a);
 
@@ -15687,7 +15787,7 @@ if (modeId === "mistakes" && !didAutoClearRef.current) {
       items.sort((x, y) => x.testNo - y.testNo);
       setReviewItems(items);
     })();
-  }, [attemptId, modeId, clearMistakesMany]);
+  }, [attemptId, attemptUserKey, legacyAttemptUserKey, modeId, clearMistakesMany]);
 
 
 
@@ -15982,11 +16082,13 @@ export default function TestModeResultsPage() {
     </CSRBoundary>
   );
 }
+
 ```
 
 ### app/test/[mode]/results/page.tsx
 ```tsx
 // app/test/[mode]/results/page.tsx
+import { Suspense } from "react";
 import ResultsClient from "./ResultsClient.client";
 import { TEST_MODES, type TestModeId } from "@/lib/testModes";
 
@@ -15997,8 +16099,13 @@ export function generateStaticParams() {
 }
 
 export default function Page() {
-  return <ResultsClient />;
+  return (
+    <Suspense fallback={null}>
+      <ResultsClient />
+    </Suspense>
+  );
 }
+
 ```
 
 ### app/test/[mode]/results/results.module.css
@@ -17490,6 +17597,7 @@ export default function CSRBoundary({
 "use client";
 
 import { useEffect } from "react";
+import { safeNextPath } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/client";
 
 const OAUTH_NEXT_KEY = "expatise:oauth:next";
@@ -17510,9 +17618,6 @@ export default function CapacitorOAuthBridge() {
       const handleUrl = async (url?: string) => {
         if (!url) return;
 
-        // DEBUG (shows in logcat as chromium console)
-        console.log("[OAuthBridge] got url:", url);
-
        // Only handle OAuth returns with PKCE code
 let parsed: URL;
 try {
@@ -17530,7 +17635,6 @@ const err =
   pickParam("error");
 
 if (err) {
-  console.log("[OAuthBridge] OAuth error:", err);
   await Browser.close().catch(() => {});
   window.location.replace("/login?error=oauth");
   return;
@@ -17543,33 +17647,26 @@ if (!code && !(accessToken && refreshToken)) return;
 
 try {
   if (code) {
-    console.log("[OAuthBridge] exchanging code...");
     const { error } = await supabase.auth.exchangeCodeForSession(code);
     if (error) throw error;
   } else {
-    console.log("[OAuthBridge] applying token session...");
     const { error } = await supabase.auth.setSession({
       access_token: accessToken!,
       refresh_token: refreshToken!,
     });
     if (error) throw error;
   }
-
-  // (optional but very helpful)
-  const { data: s } = await supabase.auth.getSession();
-  console.log("[OAuthBridge] session user:", s.session?.user?.id);
-
   await Browser.close().catch(() => {});
 
   try { window.dispatchEvent(new Event("expatise:session-changed")); } catch {}
   try { window.dispatchEvent(new Event("expatise:entitlements-changed")); } catch {}
 
-  const next = localStorage.getItem(OAUTH_NEXT_KEY) || "/";
+  const nextFromUrl = safeNextPath(pickParam("next"), "");
+  const nextFromStorage = safeNextPath(localStorage.getItem(OAUTH_NEXT_KEY), "/");
+  const next = nextFromUrl || nextFromStorage || "/";
   localStorage.removeItem(OAUTH_NEXT_KEY);
   window.location.replace(next);
 } catch (e: unknown) {
-  const msg = e instanceof Error ? e.message : String(e);
-  console.log("[OAuthBridge] exchange failed:", msg);
   await Browser.close().catch(() => {});
   window.location.replace("/login?error=oauth");
 }};
@@ -17712,6 +17809,11 @@ export default function DemoSeedGate({ children }: { children: React.ReactNode }
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
+    if (process.env.NODE_ENV === "production") {
+      setReady(true);
+      return;
+    }
+
     let cancelled = false;
 
     async function run() {
@@ -18134,17 +18236,12 @@ useEffect(() => {
         : null;
 
     const periodType = String(active.periodType ?? "").toUpperCase();
-    const source: EntitlementSource =
+const source: EntitlementSource =
       expMs === null
         ? "lifetime"
         : periodType === "TRIAL"
         ? "trial"
         : "subscription";
-console.log("[RC] entitlement active -> premium ON", {
-    entitlement: RC_ENTITLEMENT_ID,
-    source,
-    expMs,
-  });
     return {
       isPremium: true,
       source,
@@ -18525,17 +18622,14 @@ export default function FeatureCard({
 // components/FreeUsageProgressBadge.client.tsx
 "use client";
 
-import { useEffect, useMemo, useState, useCallback } from "react";
+import { useMemo } from "react";
 import { useUserKey } from "@/components/useUserKey.client";
-import {
-  FREE_CAPS,
-  getUsageCapState,
-  usageCapEventName,
-} from "@/lib/freeAccess/localUsageCap";
+import { FREE_CAPS } from "@/lib/freeAccess/localUsageCap";
 import { useEntitlements } from "@/components/EntitlementsProvider.client";
+import { useUsageCap } from "@/lib/freeAccess/useUsageCap";
 import { usePathname } from "next/navigation";
 
-const HIDE_BADGE_EXACT = new Set<string>(["/"]);
+const HIDE_BADGE_EXACT = new Set<string>();
 const HIDE_BADGE_PREFIXES = ["/login", "/onboarding", "/forgot-password", "/premium", "/checkout", "/success"];
 
 export default function FreeUsageProgressBadge() {
@@ -18567,29 +18661,7 @@ export default function FreeUsageProgressBadge() {
 }
 
 function FreeUsageProgressBadgeInner({ userKey }: { userKey: string }) {
-  const [shown, setShown] = useState(0);
-  const [starts, setStarts] = useState(0);
-
-  const refresh = useCallback(() => {
-    const s = getUsageCapState(userKey);
-    setShown(s.shown);
-    setStarts(s.examStarts);
-  }, [userKey]);
-
-  useEffect(() => {
-    refresh();
-
-    const evt = usageCapEventName();
-    const onChange = () => refresh();
-
-    window.addEventListener(evt, onChange);
-    window.addEventListener("expatise:session-changed", onChange);
-
-    return () => {
-      window.removeEventListener(evt, onChange);
-      window.removeEventListener("expatise:session-changed", onChange);
-    };
-  }, [refresh]);
+  const { questionsShown: shown, examsStarted: starts } = useUsageCap(userKey);
 
   const text = useMemo(() => {
     return `${shown}/${FREE_CAPS.questionsShown} Questions · ${starts}/${FREE_CAPS.examStarts} Exams`;
@@ -18607,7 +18679,7 @@ return (
     fontSize: 12,
     lineHeight: "14px",
     background: "transparent",
-color: "#1f2937",
+color: "#ffffff",
 border: "none",
 backdropFilter: "none",
 WebkitBackdropFilter: "none",
@@ -18621,6 +18693,7 @@ boxShadow: "none",
   </div>
 );
 }
+
 ```
 
 ### components/InfoTip.client.tsx
@@ -18825,15 +18898,26 @@ import { useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { isOnboarded } from "@/lib/onboarding/markOnboarded.client";
 
-// routes you DON'T want to gate
 const BYPASS = new Set([
   "/onboarding",
   "/login",
   "/forgot-password",
   "/reset-password",
-  "/account-deletion",        // your store compliance page
+  "/privacy",
+  "/terms",
+  "/account-deletion",
   "/account-security",
 ]);
+
+const BYPASS_PREFIXES = ["/auth", "/help", "/support", "/legal"];
+
+function isBypassed(pathname: string) {
+  if (BYPASS.has(pathname)) return true;
+
+  return BYPASS_PREFIXES.some(
+    (prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`)
+  );
+}
 
 export default function OnboardingGate() {
   const router = useRouter();
@@ -18841,9 +18925,7 @@ export default function OnboardingGate() {
 
   useEffect(() => {
     if (!pathname) return;
-    if (BYPASS.has(pathname)) return;
-
-    // If you have other public pages, add them to BYPASS
+    if (isBypassed(pathname)) return;
     if (!isOnboarded()) {
       router.replace("/onboarding");
     }
@@ -18851,6 +18933,7 @@ export default function OnboardingGate() {
 
   return null;
 }
+
 ```
 
 ### components/PremiumFeatureModal.module.css
@@ -19041,7 +19124,16 @@ function Inner({ children }: { children: React.ReactNode }) {
   const { isOverCap } = useUsageCap();
 
   const redirectedRef = useRef<string>("");
+  const modalAllowedPathRef = useRef<string>("");
   const qs = sp.toString();
+  const premiumModalRequested = sp.get("premiumModal") === "1";
+  // eslint-disable-next-line react-hooks/refs
+  const allowTriggeredRender = premiumModalRequested || modalAllowedPathRef.current === pathname;
+
+  useEffect(() => {
+    if (!premiumModalRequested) return;
+    modalAllowedPathRef.current = pathname;
+  }, [pathname, premiumModalRequested]);
 
   useEffect(() => {
     if (!PUBLIC_FLAGS.enablePremiumGates) return;
@@ -19051,18 +19143,20 @@ function Inner({ children }: { children: React.ReactNode }) {
 
     if (isPremium) return;
     if (!isOverCap) return;
+    if (allowTriggeredRender) return;
 
     if (redirectedRef.current === key) return;
     redirectedRef.current = key;
 
     const next = encodeURIComponent(currentPath(pathname, qs));
     router.replace(`/premium?next=${next}`);
-  }, [entitlementsLoading, isPremium, isOverCap, pathname, qs, router]);
+  }, [allowTriggeredRender, entitlementsLoading, isPremium, isOverCap, pathname, qs, router]);
 
   if (!PUBLIC_FLAGS.enablePremiumGates) return <>{children}</>;
   if (entitlementsLoading) return null;
   if (isPremium) return <>{children}</>;
   if (!isOverCap) return <>{children}</>;
+  if (allowTriggeredRender) return <>{children}</>;
 
   return null;
 }
@@ -25544,7 +25638,9 @@ export async function getAttempts(args: GetAttemptsArgs = {}) {
 
   const { data: userData, error: userErr } = await supabase.auth.getUser();
   const user = userErr ? null : userData.user;
-  if (!user) return { ok: false as const, error: 'No user session', status: 401 as const };
+  if (!user || (user as any).is_anonymous) {
+    return { ok: false as const, error: 'No user session', status: 401 as const };
+  }
 
   const datasetId = (args.datasetId ?? '').trim();
   const status = (args.status ?? 'submitted').trim();
@@ -25575,7 +25671,9 @@ export async function upsertAttempt(attempt: any) {
 
   const { data: userData, error: userErr } = await supabase.auth.getUser();
   const user = userErr ? null : userData.user;
-  if (!user) return { ok: false as const, error: 'No user session', status: 401 as const };
+  if (!user || (user as any).is_anonymous) {
+    return { ok: false as const, error: 'No user session', status: 401 as const };
+  }
 
   if (!attempt?.attemptId || !attempt?.modeKey || !attempt?.status) {
     return { ok: false as const, error: 'Missing required attempt fields', status: 400 as const };
@@ -25609,6 +25707,7 @@ export async function upsertAttempt(attempt: any) {
 
   return { ok: true as const };
 }
+
 ```
 
 ### lib/attempts/engine.ts
@@ -25735,7 +25834,24 @@ export async function logout() {
 
 ### lib/auth/oauth.ts
 ```tsx
+import { safeNextPath } from "@/lib/auth";
+
 export const NATIVE_OAUTH_REDIRECT_URI = "expatise://auth/callback";
+
+export async function buildAuthCallbackUrl(next = "/") {
+  const safeNext = safeNextPath(next, "/");
+  const { Capacitor } = await import("@capacitor/core");
+
+  if (Capacitor.isNativePlatform()) {
+    return `${NATIVE_OAUTH_REDIRECT_URI}?next=${encodeURIComponent(safeNext)}`;
+  }
+
+  if (typeof window === "undefined") {
+    return `/auth/callback?next=${encodeURIComponent(safeNext)}`;
+  }
+
+  return `${window.location.origin}/auth/callback?next=${encodeURIComponent(safeNext)}`;
+}
 
 ```
 
@@ -26083,9 +26199,75 @@ export const bookmarkStore = new LocalBookmarkStore();
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { bookmarkStore } from "./store";
 import { useUserKey } from "@/components/useUserKey.client";
+import { useAuthStatus } from "@/components/useAuthStatus";
+import { userKeyFromEmail } from "@/lib/identity/userKey";
+
+type BookmarkMigrationRecord = {
+  version: 1;
+  absorbed: Record<string, string[]>;
+};
+
+function migrationKeyFor(userKey: string, datasetId: string) {
+  return `expatise:bookmarks:v2:migrated:user:${userKey}:dataset:${datasetId}`;
+}
+
+function uniqSorted(ids: string[]) {
+  return Array.from(new Set((ids ?? []).map(String))).sort();
+}
+
+function sameIds(a: string[], b: string[]) {
+  if (a.length !== b.length) return false;
+  for (let i = 0; i < a.length; i += 1) {
+    if (a[i] !== b[i]) return false;
+  }
+  return true;
+}
+
+function isCanonicalUserKey(userKey: string) {
+  return userKey.startsWith("sb:");
+}
+
+function readMigrationRecord(userKey: string, datasetId: string): BookmarkMigrationRecord {
+  if (typeof window === "undefined") {
+    return { version: 1, absorbed: {} };
+  }
+
+  try {
+    const raw = window.localStorage.getItem(migrationKeyFor(userKey, datasetId));
+    if (!raw) return { version: 1, absorbed: {} };
+
+    const parsed = JSON.parse(raw);
+    const absorbed =
+      parsed && typeof parsed === "object" && parsed.absorbed && typeof parsed.absorbed === "object"
+        ? Object.fromEntries(
+            Object.entries(parsed.absorbed).map(([source, ids]) => [
+              source,
+              uniqSorted(Array.isArray(ids) ? ids.map(String) : []),
+            ])
+          )
+        : {};
+
+    return { version: 1, absorbed };
+  } catch {
+    return { version: 1, absorbed: {} };
+  }
+}
+
+function writeMigrationRecord(userKey: string, datasetId: string, record: BookmarkMigrationRecord) {
+  if (typeof window === "undefined") return;
+
+  try {
+    window.localStorage.setItem(migrationKeyFor(userKey, datasetId), JSON.stringify(record));
+  } catch {
+    // ignore storage failures
+  }
+}
+
 export function useBookmarks(datasetId: string, userKeyOverride?: string) {
   const inferredUserKey = useUserKey();
+  const { email } = useAuthStatus();
   const userKey = userKeyOverride ?? inferredUserKey;
+  const legacyEmailUserKey = userKeyFromEmail(email);
 
   const [ids, setIds] = useState<string[]>([]);
 
@@ -26093,14 +26275,62 @@ export function useBookmarks(datasetId: string, userKeyOverride?: string) {
     let cancelled = false;
 
     (async () => {
-      const list = await bookmarkStore.listIds(userKey, datasetId);
-      if (!cancelled) setIds(list);
+      if (!isCanonicalUserKey(userKey)) {
+        const list = await bookmarkStore.listIds(userKey, datasetId);
+        if (!cancelled) setIds(list);
+        return;
+      }
+
+      const canonicalIds = uniqSorted(await bookmarkStore.listIds(userKey, datasetId));
+      const sourceKeys = Array.from(
+        new Set(
+          [legacyEmailUserKey, "guest"].filter(
+            (source): source is string => Boolean(source) && source !== userKey
+          )
+        )
+      );
+
+      if (sourceKeys.length === 0) {
+        if (!cancelled) setIds(canonicalIds);
+        return;
+      }
+
+      const record = readMigrationRecord(userKey, datasetId);
+      let nextCanonicalIds = canonicalIds;
+      let markerChanged = false;
+
+      for (const sourceKey of sourceKeys) {
+        const sourceIds = uniqSorted(await bookmarkStore.listIds(sourceKey, datasetId));
+        const absorbedIds = uniqSorted(record.absorbed[sourceKey] ?? []);
+        const absorbedSet = new Set(absorbedIds);
+        const newIds = sourceIds.filter((id) => !absorbedSet.has(id));
+
+        if (newIds.length > 0) {
+          nextCanonicalIds = uniqSorted([...nextCanonicalIds, ...newIds]);
+        }
+
+        const nextAbsorbedIds = uniqSorted([...absorbedIds, ...sourceIds]);
+        if (!sameIds(nextAbsorbedIds, absorbedIds)) {
+          record.absorbed[sourceKey] = nextAbsorbedIds;
+          markerChanged = true;
+        }
+      }
+
+      if (!sameIds(nextCanonicalIds, canonicalIds)) {
+        await bookmarkStore.writeIds(userKey, datasetId, nextCanonicalIds);
+      }
+
+      if (markerChanged) {
+        writeMigrationRecord(userKey, datasetId, record);
+      }
+
+      if (!cancelled) setIds(nextCanonicalIds);
     })();
 
     return () => {
       cancelled = true;
     };
-  }, [datasetId, userKey]);
+  }, [datasetId, legacyEmailUserKey, userKey]);
 
   const idSet = useMemo(() => new Set(ids), [ids]);
   const isBookmarked = useCallback((id: string) => idSet.has(id), [idSet]);
@@ -26161,14 +26391,17 @@ const DATASET_ID = "cn-2023-test1";
 const DATASET_VERSION = "cn-2023-test1@v1";
 
 // ✅ set via .env.local (and in Vercel env vars for production)
-const ADMIN_EMAILS = Array.from(
-  new Set(
-    String(process.env.NEXT_PUBLIC_DEMO_ADMIN_EMAIL ?? "")
-      .split(",")
-      .map((s) => s.trim().toLowerCase())
-      .filter(Boolean)
-  )
-);
+const ADMIN_EMAILS =
+  process.env.NODE_ENV === "production"
+    ? []
+    : Array.from(
+        new Set(
+          String(process.env.NEXT_PUBLIC_DEMO_ADMIN_EMAIL ?? "")
+            .split(",")
+            .map((s) => s.trim().toLowerCase())
+            .filter(Boolean)
+        )
+      );
 
 const DEMO_SEED_ALL = (process.env.NEXT_PUBLIC_DEMO_SEED_ALL ?? "") === "1";
 const DISABLE_DEMO_SEED_KEY = "__expatise_disable_demo_seed";
@@ -26501,6 +26734,7 @@ export async function seedAdminDemoDataIfNeeded(
 ) {
   // Only run in browser
   if (typeof window === "undefined") return false;
+  if (process.env.NODE_ENV === "production") return false;
 
   if (window.localStorage.getItem(DISABLE_DEMO_SEED_KEY) === "1") {
     return false;
@@ -26612,19 +26846,6 @@ type FnRes =
   | { ok: true; entitlements: Entitlements; userKey?: string }
   | { ok: false; error?: string; detail?: string };
 
-const ADMIN_PREMIUM_EMAILS = Array.from(
-  new Set(
-    String(
-      process.env.NEXT_PUBLIC_ADMIN_PREMIUM_EMAILS ??
-        process.env.NEXT_PUBLIC_DEMO_ADMIN_EMAIL ??
-        ""
-    )
-      .split(",")
-      .map((s) => s.trim().toLowerCase())
-      .filter(Boolean)
-  )
-);
-
 export async function getEntitlements(userKey: string): Promise<Entitlements> {
   const local = getLocalEntitlements(userKey) ?? FREE_ENTITLEMENTS;
 
@@ -26642,16 +26863,7 @@ const token = sessionData.session?.access_token ?? null;
 if (!token) return local;
 
 const { data: userData, error: userErr } = await supabase.auth.getUser(token);
-const normalizedEmail = (userData.user?.email ?? "").trim().toLowerCase();
-if (!userErr && normalizedEmail && ADMIN_PREMIUM_EMAILS.includes(normalizedEmail)) {
-  const adminEntitlements: Entitlements = {
-    isPremium: true,
-    source: "admin",
-    updatedAt: Date.now(),
-  };
-  setLocalEntitlements(userKey, adminEntitlements);
-  return adminEntitlements;
-}
+if (userErr || !userData.user || (userData.user as any).is_anonymous) return local;
 
 const anonKey =
   process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ??
@@ -26859,8 +27071,29 @@ export type UsageCapState = {
 
 const EVT = "expatise:usagecap-changed";
 const keyFor = (userKey: string) => `expatise:usagecap:v2:user:${userKey || "guest"}`;
+const migrationKeyFor = (userKey: string) =>
+  `expatise:usagecap:v2:migrated:user:${userKey || "guest"}`;
 
-function safeParse(raw: string | null): any {
+type UsageCapMigrationSnapshot = {
+  shown: number;
+  examStarts: number;
+  updatedAt: number;
+};
+
+type UsageCapMigrationRecord = {
+  version: 1;
+  absorbed: Record<string, UsageCapMigrationSnapshot>;
+};
+
+function baseMigrationRecord(): UsageCapMigrationRecord {
+  return { version: 1, absorbed: {} };
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return !!value && typeof value === "object";
+}
+
+function safeParse(raw: string | null): unknown {
   if (!raw) return null;
   try {
     return JSON.parse(raw);
@@ -26871,6 +27104,88 @@ function safeParse(raw: string | null): any {
 
 function baseState(): UsageCapState {
   return { shown: 0, examStarts: 0, updatedAt: 0 };
+}
+
+function toSnapshot(state: UsageCapState): UsageCapMigrationSnapshot {
+  return {
+    shown: Math.max(0, Number(state.shown ?? 0)),
+    examStarts: Math.max(0, Number(state.examStarts ?? 0)),
+    updatedAt: Math.max(0, Number(state.updatedAt ?? 0)),
+  };
+}
+
+function sameSnapshot(a?: UsageCapMigrationSnapshot, b?: UsageCapMigrationSnapshot) {
+  return (
+    (a?.shown ?? 0) === (b?.shown ?? 0) &&
+    (a?.examStarts ?? 0) === (b?.examStarts ?? 0) &&
+    (a?.updatedAt ?? 0) === (b?.updatedAt ?? 0)
+  );
+}
+
+function sameLastView(
+  a?: UsageCapState["lastView"],
+  b?: UsageCapState["lastView"]
+) {
+  return (a?.sig ?? "") === (b?.sig ?? "") && (a?.at ?? 0) === (b?.at ?? 0);
+}
+
+function sameState(a: UsageCapState, b: UsageCapState) {
+  return (
+    a.shown === b.shown &&
+    a.examStarts === b.examStarts &&
+    a.updatedAt === b.updatedAt &&
+    sameLastView(a.lastView, b.lastView)
+  );
+}
+
+function newestLastView(
+  a?: UsageCapState["lastView"],
+  b?: UsageCapState["lastView"]
+) {
+  if (!a) return b;
+  if (!b) return a;
+  return b.at > a.at ? b : a;
+}
+
+function hasStateData(state: UsageCapState) {
+  return (
+    state.shown > 0 ||
+    state.examStarts > 0 ||
+    state.updatedAt > 0 ||
+    !!state.lastView
+  );
+}
+
+function readMigrationRecord(userKey: string): UsageCapMigrationRecord {
+  if (typeof window === "undefined") return baseMigrationRecord();
+
+  const parsed = safeParse(localStorage.getItem(migrationKeyFor(userKey)));
+  if (!isRecord(parsed) || parsed.version !== 1 || !isRecord(parsed.absorbed)) {
+    return baseMigrationRecord();
+  }
+
+  const absorbed: Record<string, UsageCapMigrationSnapshot> = {};
+
+  for (const [sourceKey, snapshot] of Object.entries(parsed.absorbed)) {
+    if (!sourceKey || !isRecord(snapshot)) continue;
+
+    absorbed[sourceKey] = {
+      shown: Math.max(0, Number(snapshot.shown ?? 0)),
+      examStarts: Math.max(0, Number(snapshot.examStarts ?? 0)),
+      updatedAt: Math.max(0, Number(snapshot.updatedAt ?? 0)),
+    };
+  }
+
+  return { version: 1, absorbed };
+}
+
+function writeMigrationRecord(userKey: string, record: UsageCapMigrationRecord) {
+  if (typeof window === "undefined") return;
+  try {
+    localStorage.setItem(migrationKeyFor(userKey), JSON.stringify(record));
+  } catch {
+    // ignore quota/private mode
+  }
 }
 
 /**
@@ -26884,7 +27199,7 @@ function readState(userKey: string): UsageCapState {
   const parsed = safeParse(localStorage.getItem(keyFor(userKey)));
 
   // migrate from v1 (shownKeys)
-  if (parsed && Array.isArray(parsed.shownKeys)) {
+  if (isRecord(parsed) && Array.isArray(parsed.shownKeys)) {
     const migrated: UsageCapState = {
       shown: parsed.shownKeys.length,
       examStarts: typeof parsed.examStarts === "number" ? parsed.examStarts : 0,
@@ -26894,13 +27209,15 @@ function readState(userKey: string): UsageCapState {
     return migrated;
   }
 
-  if (!parsed) return baseState();
+  if (!isRecord(parsed)) return baseState();
 
   return {
     shown: typeof parsed.shown === "number" ? parsed.shown : 0,
     examStarts: typeof parsed.examStarts === "number" ? parsed.examStarts : 0,
     lastView:
-      parsed.lastView && typeof parsed.lastView.sig === "string" && typeof parsed.lastView.at === "number"
+      isRecord(parsed.lastView) &&
+      typeof parsed.lastView.sig === "string" &&
+      typeof parsed.lastView.at === "number"
         ? { sig: String(parsed.lastView.sig), at: Number(parsed.lastView.at) }
         : undefined,
     updatedAt: typeof parsed.updatedAt === "number" ? parsed.updatedAt : 0,
@@ -26921,6 +27238,70 @@ function writeState(userKey: string, next: UsageCapState) {
 
 export function usageCapEventName() {
   return EVT;
+}
+
+export function migrateUsageCapToCanonical(
+  canonicalUserKey: string,
+  legacyUserKeys?: Array<string | null | undefined>
+): UsageCapState {
+  const canonicalKey = canonicalUserKey || "guest";
+  if (typeof window === "undefined") return baseState();
+
+  const sourceKeys = Array.from(
+    new Set(
+      (legacyUserKeys ?? [])
+        .map((k) => String(k ?? "").trim())
+        .filter(Boolean)
+        .filter((k) => k !== canonicalKey)
+    )
+  );
+
+  if (sourceKeys.length === 0) {
+    return readState(canonicalKey);
+  }
+
+  const initial = readState(canonicalKey);
+  let next = initial;
+  const migration = readMigrationRecord(canonicalKey);
+  let migrationChanged = false;
+
+  for (const sourceKey of sourceKeys) {
+    const source = readState(sourceKey);
+    if (!hasStateData(source)) continue;
+
+    const absorbed = migration.absorbed[sourceKey] ?? {
+      shown: 0,
+      examStarts: 0,
+      updatedAt: 0,
+    };
+
+    const deltaShown = Math.max(0, source.shown - absorbed.shown);
+    const deltaExamStarts = Math.max(0, source.examStarts - absorbed.examStarts);
+
+    next = {
+      ...next,
+      shown: next.shown + deltaShown,
+      examStarts: next.examStarts + deltaExamStarts,
+      lastView: newestLastView(next.lastView, source.lastView),
+      updatedAt: Math.max(next.updatedAt, source.updatedAt),
+    };
+
+    const snapshot = toSnapshot(source);
+    if (!sameSnapshot(migration.absorbed[sourceKey], snapshot)) {
+      migration.absorbed[sourceKey] = snapshot;
+      migrationChanged = true;
+    }
+  }
+
+  if (!sameState(initial, next)) {
+    writeState(canonicalKey, next);
+  }
+
+  if (migrationChanged) {
+    writeMigrationRecord(canonicalKey, migration);
+  }
+
+  return !sameState(initial, next) ? next : initial;
 }
 
 export function getUsageCapState(userKey: string): UsageCapState {
@@ -27010,22 +27391,39 @@ export function incrementExamStart(userKey: string): UsageCapState {
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { FREE_CAPS, getUsageCapState, usageCapEventName } from "@/lib/freeAccess/localUsageCap";
+import {
+  FREE_CAPS,
+  getUsageCapState,
+  migrateUsageCapToCanonical,
+  usageCapEventName,
+} from "@/lib/freeAccess/localUsageCap";
 import { useUserKey } from "@/components/useUserKey.client";
+import { useAuthStatus } from "@/components/useAuthStatus";
+import { userKeyFromEmail } from "@/lib/identity/userKey";
 
 export function useUsageCap(userKeyOverride?: string) {
   const inferred = useUserKey();
   const userKey = userKeyOverride ?? inferred;
+  const { email } = useAuthStatus();
+  const legacyEmailUserKey = userKeyFromEmail(email);
 
   const [state, setState] = useState(() => getUsageCapState(userKey));
 
   useEffect(() => {
-    setState(getUsageCapState(userKey));
+    const legacySources =
+      userKey === "guest" ? [] : [legacyEmailUserKey, "guest"];
 
-    const onChanged = () => setState(getUsageCapState(userKey));
+    const refresh = () => {
+      const next = migrateUsageCapToCanonical(userKey, legacySources);
+      setState(next);
+    };
+
+    refresh();
+
+    const onChanged = () => refresh();
     window.addEventListener(usageCapEventName(), onChanged);
     return () => window.removeEventListener(usageCapEventName(), onChanged);
-  }, [userKey]);
+  }, [legacyEmailUserKey, userKey]);
 
   return useMemo(() => {
     const questionsShown = state.shown; // ✅ new model
@@ -29526,8 +29924,8 @@ Heatmap: {
 ```tsx
 // lib/resetLocalData.ts
 
-const APP_PREFIXES = ["expatise:"]; // everything your app owns
-const EXTRA_KEYS = ["topicQuiz:v1"]; // legacy key your Stats page used
+const APP_PREFIXES = ["expatise", "__expatise_"];
+const EXTRA_KEYS = ["topicQuiz:v1", "THEME_STORAGE_KEY"];
 
 function collectKeys(storage: Storage) {
   const keys: string[] = [];
@@ -29538,21 +29936,38 @@ function collectKeys(storage: Storage) {
   return keys;
 }
 
+function isOwnedKey(key: string) {
+  return APP_PREFIXES.some((prefix) => key.startsWith(prefix)) || EXTRA_KEYS.includes(key);
+}
+
 export async function resetAllLocalData(opts?: { includeCaches?: boolean }) {
   if (typeof window === "undefined") return;
 
   // localStorage
   for (const k of collectKeys(window.localStorage)) {
-    if (APP_PREFIXES.some((p) => k.startsWith(p)) || EXTRA_KEYS.includes(k)) {
+    if (isOwnedKey(k)) {
       window.localStorage.removeItem(k);
     }
   }
 
-  // sessionStorage (if you ever used it)
+  // sessionStorage
   for (const k of collectKeys(window.sessionStorage)) {
-    if (APP_PREFIXES.some((p) => k.startsWith(p))) {
+    if (isOwnedKey(k)) {
       window.sessionStorage.removeItem(k);
     }
+  }
+
+  try {
+    const { Preferences } = await import("@capacitor/preferences");
+    const { keys } = await Preferences.keys();
+
+    await Promise.all(
+      (keys ?? [])
+        .filter((key) => isOwnedKey(key))
+        .map((key) => Preferences.remove({ key }))
+    );
+  } catch {
+    // ignore when Preferences is unavailable
   }
 
   // Optional: clear Cache Storage (PWA / SW caches)
@@ -29724,7 +30139,7 @@ export async function fetchAttemptsFromSupabase(input: {
 
     const { data: userData, error: userErr } = await supabase.auth.getUser();
     const user = userErr ? null : userData.user;
-    if (!user) return null;
+    if (!user || (user as any).is_anonymous) return null;
 
     const datasetId = (input.datasetId ?? '').trim();
     const status = (input.status ?? 'submitted').trim() || 'submitted';
@@ -29748,6 +30163,7 @@ export async function fetchAttemptsFromSupabase(input: {
     return null;
   }
 }
+
 ```
 
 ### lib/sync/rules.ts
@@ -29860,7 +30276,7 @@ export async function saveAttemptToSupabase(attempt: TestAttemptV1) {
     // Must have a logged-in user session
     const { data: userData, error: userErr } = await supabase.auth.getUser();
     const user = userErr ? null : userData.user;
-    if (!user) return;
+    if (!user || (user as any).is_anonymous) return;
 
     // Keep the same required fields as your old API route
     if (!attempt?.attemptId || !attempt?.modeKey || !attempt?.status) return;
@@ -29896,6 +30312,7 @@ export async function saveAttemptToSupabase(attempt: TestAttemptV1) {
     // ignore (offline, blocked, etc.)
   }
 }
+
 ```
 
 ### lib/sync/saveTimeLogToSupabase.ts
@@ -29921,7 +30338,7 @@ export async function saveTimeLogToSupabase(input: {
     // Must have a logged-in user session
     const { data: userData, error: userErr } = await supabase.auth.getUser();
     const user = userErr ? null : userData.user;
-    if (!user) return;
+    if (!user || (user as any).is_anonymous) return;
 
     const kind = String(input.kind ?? "").trim();
     const date = String(input.date ?? "").trim();
@@ -29946,6 +30363,7 @@ export async function saveTimeLogToSupabase(input: {
     // ignore (offline, blocked, etc.)
   }
 }
+
 ```
 
 ### lib/sync/timeLogs.client.ts
@@ -29968,7 +30386,7 @@ export async function fetchTimeLogsFromSupabase(input?: { limit?: number }) {
 
     const { data: userData, error: userErr } = await supabase.auth.getUser();
     const user = userErr ? null : userData.user;
-    if (!user) return null;
+    if (!user || (user as any).is_anonymous) return null;
 
     const limit = Math.min(400, Math.max(1, Number(input?.limit ?? 200)));
 
@@ -29996,7 +30414,9 @@ export async function upsertTimeLogToSupabase(input: {
 
     const { data: userData, error: userErr } = await supabase.auth.getUser();
     const user = userErr ? null : userData.user;
-    if (!user) return { ok: false as const, error: 'No user session' };
+    if (!user || (user as any).is_anonymous) {
+      return { ok: false as const, error: 'No user session' };
+    }
 
     const kind = String(input.kind ?? '').trim() as TimeLogKind;
     const date = String(input.date ?? '').trim();
@@ -30024,6 +30444,7 @@ export async function upsertTimeLogToSupabase(input: {
     return { ok: false as const, error: String(e?.message ?? e) };
   }
 }
+
 ```
 
 ### lib/test-engine/attemptStorage.ts
@@ -30042,7 +30463,7 @@ export type TestAttemptV1 = {
   schemaVersion: 1;
 
   attemptId: string;
-  userKey: string;        // normalized email
+  userKey: string;        // canonical local identity key ("guest", email fallback, or sb:<userId>)
   modeKey: string;        // "real-test"
   datasetId: string;
   datasetVersion: string;
@@ -30109,6 +30530,167 @@ function attemptKeyById(attemptId: string) {
 function activePtrKey(params: { userKey: string; modeKey: string; datasetId: string; datasetVersion: string }) {
   const { userKey, modeKey, datasetId, datasetVersion } = params;
   return `${ACTIVE_PTR_PREFIX}:${userKey}:${modeKey}:${datasetId}:${datasetVersion}`;
+}
+
+function parseActivePtrKey(key: string): {
+  userKey: string;
+  modeKey: string;
+  datasetId: string;
+  datasetVersion: string;
+} | null {
+  const prefix = `${ACTIVE_PTR_PREFIX}:`;
+  if (!key.startsWith(prefix)) return null;
+
+  const rest = key.slice(prefix.length);
+  const parts = rest.split(':');
+  if (parts.length < 4) return null;
+
+  const datasetVersion = parts.pop() ?? "";
+  const datasetId = parts.pop() ?? "";
+  const modeKey = parts.pop() ?? "";
+  const userKey = parts.join(':');
+
+  if (!userKey || !modeKey || !datasetId || !datasetVersion) return null;
+
+  return { userKey, modeKey, datasetId, datasetVersion };
+}
+
+function ptrSlotKey(params: { modeKey: string; datasetId: string; datasetVersion: string }) {
+  return `${params.modeKey}\u0000${params.datasetId}\u0000${params.datasetVersion}`;
+}
+
+function migrateAttemptRecordToUserKey(attempt: TestAttemptV1, userKey: string) {
+  if (attempt.userKey === userKey) return attempt;
+
+  const migrated: TestAttemptV1 = {
+    ...attempt,
+    userKey,
+  };
+
+  writeAttempt(migrated);
+  return migrated;
+}
+
+export function migrateLocalAttemptsToCanonical(params: {
+  userKey: string;
+  legacyUserKeys?: string[];
+}) {
+  if (typeof window === 'undefined') return;
+
+  const canonicalUserKey = String(params.userKey ?? '').trim();
+  if (!canonicalUserKey) return;
+
+  const sourceKeys = Array.from(
+    new Set(
+      (params.legacyUserKeys ?? [])
+        .map((key) => String(key ?? '').trim())
+        .filter((key) => key && key !== canonicalUserKey)
+    )
+  );
+
+  if (sourceKeys.length === 0) return;
+
+  const sourceSet = new Set(sourceKeys);
+  const attemptKeys: string[] = [];
+  const pointerKeys: string[] = [];
+
+  for (let i = 0; i < window.localStorage.length; i++) {
+    const key = window.localStorage.key(i);
+    if (!key) continue;
+    if (key.startsWith(`${ATTEMPT_KEY_PREFIX}:`)) attemptKeys.push(key);
+    else if (key.startsWith(`${ACTIVE_PTR_PREFIX}:`)) pointerKeys.push(key);
+  }
+
+  for (const key of attemptKeys) {
+    const parsed = safeParse(window.localStorage.getItem(key));
+    if (!parsed || parsed.schemaVersion !== SCHEMA_VERSION) continue;
+
+    const attempt = parsed as TestAttemptV1;
+    if (!sourceSet.has(attempt.userKey)) continue;
+
+    migrateAttemptRecordToUserKey(attempt, canonicalUserKey);
+  }
+
+  const pointerGroups = new Map<
+    string,
+    Array<{
+      storageKey: string;
+      attemptId: string;
+      ptr: { userKey: string; modeKey: string; datasetId: string; datasetVersion: string };
+    }>
+  >();
+
+  for (const key of pointerKeys) {
+    const ptr = parseActivePtrKey(key);
+    if (!ptr) continue;
+    if (ptr.userKey !== canonicalUserKey && !sourceSet.has(ptr.userKey)) continue;
+
+    const attemptId = window.localStorage.getItem(key);
+    if (!attemptId) continue;
+
+    const slot = ptrSlotKey(ptr);
+    const group = pointerGroups.get(slot) ?? [];
+    group.push({ storageKey: key, attemptId, ptr });
+    pointerGroups.set(slot, group);
+  }
+
+  for (const group of pointerGroups.values()) {
+    const slot = group[0]?.ptr;
+    if (!slot) continue;
+
+    const canonicalPtrKey = activePtrKey({
+      userKey: canonicalUserKey,
+      modeKey: slot.modeKey,
+      datasetId: slot.datasetId,
+      datasetVersion: slot.datasetVersion,
+    });
+
+    const validCandidates = group
+      .map((candidate) => ({
+        ...candidate,
+        attempt: readAttemptById(candidate.attemptId),
+      }))
+      .filter(({ attempt, ptr }) => {
+        if (!attempt) return false;
+        if (attempt.userKey !== canonicalUserKey) return false;
+        if (attempt.modeKey !== ptr.modeKey) return false;
+        if (attempt.datasetId !== ptr.datasetId) return false;
+        if (attempt.datasetVersion !== ptr.datasetVersion) return false;
+        return attempt.status === 'in_progress' || attempt.status === 'paused';
+      })
+      .sort((a, b) => {
+        const bt = b.attempt?.lastActiveAt ?? b.attempt?.createdAt ?? 0;
+        const at = a.attempt?.lastActiveAt ?? a.attempt?.createdAt ?? 0;
+        return bt - at;
+      });
+
+    const best = validCandidates[0];
+
+    if (best) {
+      if (window.localStorage.getItem(canonicalPtrKey) !== best.attemptId) {
+        try {
+          window.localStorage.setItem(canonicalPtrKey, best.attemptId);
+        } catch {
+          // ignore quota/private-mode errors
+        }
+      }
+    } else {
+      try {
+        window.localStorage.removeItem(canonicalPtrKey);
+      } catch {
+        // ignore
+      }
+    }
+
+    for (const candidate of group) {
+      if (candidate.ptr.userKey === canonicalUserKey) continue;
+      try {
+        window.localStorage.removeItem(candidate.storageKey);
+      } catch {
+        // ignore
+      }
+    }
+  }
 }
 
 
@@ -66555,7 +67137,7 @@ export default nextConfig;
       "id": "q0466",
       "number": 466,
       "type": "mcq",
-      "prompt": "How to use lights at night while crossing each other on narrow road or bridge?",
+      "prompt": "How to use lights at night while crossing each other on a narrow road or bridge?",
       "options": [
         {
           "id": "q0466_o1",
@@ -77727,7 +78309,7 @@ export default nextConfig;
       "id": "q0645",
       "number": 645,
       "type": "row",
-      "prompt": "The vehicle is allowed to pass the intersection ahead when the green light on.",
+      "prompt": "A vehicle is allowed to pass an intersection up ahead when the green signal light is on.",
       "options": [],
       "correctRow": "R",
       "correctOptionId": null,
@@ -145910,12 +146492,11 @@ if (!SUPABASE_URL || !SUPABASE_KEY) {
   throw new Error("Missing SUPABASE_URL or SUPABASE_ANON_KEY/SB_PUBLISHABLE_KEY");
 }
 
-const ADMIN_EMAILS = parseCsvEnv(
-  "ADMIN_PREMIUM_EMAILS",
-  Deno.env.get("NEXT_PUBLIC_ADMIN_PREMIUM_EMAILS") ??
-    Deno.env.get("NEXT_PUBLIC_DEMO_ADMIN_EMAIL") ??
-    "user@expatise.com,hunisemail@gmail.com"
-);
+const ENABLE_ADMIN_PREMIUM_OVERRIDE =
+  (Deno.env.get("ENABLE_ADMIN_PREMIUM_OVERRIDE") ?? "") === "1";
+const ADMIN_EMAILS = ENABLE_ADMIN_PREMIUM_OVERRIDE
+  ? parseCsvEnv("ADMIN_PREMIUM_EMAILS", Deno.env.get("ADMIN_PREMIUM_EMAILS") ?? "")
+  : [];
 
 Deno.serve(async (req: Request) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: CORS });
@@ -146142,12 +146723,13 @@ const CORS = {
 };
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL") ?? "";
-const SERVICE_ROLE_KEY = Deno.env.get("SERVICE_ROLE_KEY") ?? "";
+const SUPABASE_SERVICE_ROLE_KEY =
+  Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
 const RC_WEBHOOK_AUTH = Deno.env.get("REVENUECAT_WEBHOOK_AUTH") ?? "";
 const RC_ENTITLEMENT_ID = (Deno.env.get("REVENUECAT_ENTITLEMENT_ID") ?? "Premium").trim();
 
-if (!SUPABASE_URL || !SERVICE_ROLE_KEY) {
-  throw new Error("Missing SUPABASE_URL or SERVICE_ROLE_KEY");
+if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) {
+  throw new Error("Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY");
 }
 
 function json(status: number, body: unknown) {
@@ -146304,7 +146886,7 @@ if (!entitlementMatches(event, RC_ENTITLEMENT_ID)) {
     const aliases = Array.isArray(event.aliases) ? event.aliases : [];
     const userCandidates = [appUserId, normalizeStr(event.original_app_user_id), ...aliases];
 
-    const admin = createClient(SUPABASE_URL, SERVICE_ROLE_KEY, {
+    const admin = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
       auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false },
     });
 

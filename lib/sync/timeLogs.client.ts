@@ -16,7 +16,7 @@ export async function fetchTimeLogsFromSupabase(input?: { limit?: number }) {
 
     const { data: userData, error: userErr } = await supabase.auth.getUser();
     const user = userErr ? null : userData.user;
-    if (!user) return null;
+    if (!user || (user as any).is_anonymous) return null;
 
     const limit = Math.min(400, Math.max(1, Number(input?.limit ?? 200)));
 
@@ -44,7 +44,9 @@ export async function upsertTimeLogToSupabase(input: {
 
     const { data: userData, error: userErr } = await supabase.auth.getUser();
     const user = userErr ? null : userData.user;
-    if (!user) return { ok: false as const, error: 'No user session' };
+    if (!user || (user as any).is_anonymous) {
+      return { ok: false as const, error: 'No user session' };
+    }
 
     const kind = String(input.kind ?? '').trim() as TimeLogKind;
     const date = String(input.date ?? '').trim();

@@ -9,18 +9,14 @@ export const metadata: Metadata = {
 };
 
 const APP_NAME = "Expatise";
-
-// ✅ Replace this with your real support email (must be actively monitored).
+const SUPPORT_TEAM = "Expatise Support";
 const SUPPORT_EMAIL = "maverixnmatrix@gmail.com";
-
-// ✅ Pick a timeframe you can truly honor.
-// If you’re not sure, “30 days” is common. Adjust as needed.
 const PROCESSING_TIME_DAYS = 30;
 
 export default function AccountDeletionPage() {
   const subject = "Account deletion request";
   const bodyLines = [
-    `Hello ${APP_NAME} Support,`,
+    `Hello ${SUPPORT_TEAM},`,
     "",
     "Please delete my account and associated data.",
     "",
@@ -103,7 +99,7 @@ export default function AccountDeletionPage() {
         Option B — Request deletion by email (if you can’t access the app)
       </h2>
       <p style={styles.p}>
-        Email us at{" "}
+        Email {SUPPORT_TEAM} at{" "}
         <a style={styles.a} href={mailtoHref}>
           {SUPPORT_EMAIL}
         </a>{" "}
@@ -153,7 +149,7 @@ export default function AccountDeletionPage() {
       <p style={styles.p}>
         If you can’t access the email you signed up with, contact{" "}
         <a style={styles.a} href={`mailto:${SUPPORT_EMAIL}`}>
-          {SUPPORT_EMAIL}
+          {SUPPORT_TEAM} ({SUPPORT_EMAIL})
         </a>{" "}
         and explain your situation. We’ll tell you what we can do safely.
       </p>

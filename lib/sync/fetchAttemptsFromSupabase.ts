@@ -14,7 +14,7 @@ export async function fetchAttemptsFromSupabase(input: {
 
     const { data: userData, error: userErr } = await supabase.auth.getUser();
     const user = userErr ? null : userData.user;
-    if (!user) return null;
+    if (!user || (user as any).is_anonymous) return null;
 
     const datasetId = (input.datasetId ?? '').trim();
     const status = (input.status ?? 'submitted').trim() || 'submitted';

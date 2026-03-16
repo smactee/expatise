@@ -232,10 +232,13 @@ router.replace(nextParam);
   disabled={oauthSubmitting || isSubmitting}
   onClick={async () => {
     setError(null);
-    const { error } = await supabase.auth.signInAnonymously();
-    if (error) {
-      setError(error.message);
-      return;
+    try {
+      const { data } = await supabase.auth.getSession();
+      if ((data.session?.user as any)?.is_anonymous) {
+        await supabase.auth.signOut();
+      }
+    } catch {
+      // keep guest mode local-only even if cleanup fails
     }
     try { window.dispatchEvent(new Event("expatise:session-changed")); } catch {}
     try { window.dispatchEvent(new Event("expatise:entitlements-changed")); } catch {}
@@ -313,9 +316,6 @@ if (!url) {
   setError("No OAuth URL returned.");
   return;
 }
-
-console.log("[OAuth] open url:", url); // ✅ add this line
-
 await Browser.open({ url });
 return;
       }

@@ -18,14 +18,17 @@ const DATASET_ID = "cn-2023-test1";
 const DATASET_VERSION = "cn-2023-test1@v1";
 
 // ✅ set via .env.local (and in Vercel env vars for production)
-const ADMIN_EMAILS = Array.from(
-  new Set(
-    String(process.env.NEXT_PUBLIC_DEMO_ADMIN_EMAIL ?? "")
-      .split(",")
-      .map((s) => s.trim().toLowerCase())
-      .filter(Boolean)
-  )
-);
+const ADMIN_EMAILS =
+  process.env.NODE_ENV === "production"
+    ? []
+    : Array.from(
+        new Set(
+          String(process.env.NEXT_PUBLIC_DEMO_ADMIN_EMAIL ?? "")
+            .split(",")
+            .map((s) => s.trim().toLowerCase())
+            .filter(Boolean)
+        )
+      );
 
 const DEMO_SEED_ALL = (process.env.NEXT_PUBLIC_DEMO_SEED_ALL ?? "") === "1";
 const DISABLE_DEMO_SEED_KEY = "__expatise_disable_demo_seed";
@@ -358,6 +361,7 @@ export async function seedAdminDemoDataIfNeeded(
 ) {
   // Only run in browser
   if (typeof window === "undefined") return false;
+  if (process.env.NODE_ENV === "production") return false;
 
   if (window.localStorage.getItem(DISABLE_DEMO_SEED_KEY) === "1") {
     return false;

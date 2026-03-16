@@ -19,7 +19,7 @@ export async function saveTimeLogToSupabase(input: {
     // Must have a logged-in user session
     const { data: userData, error: userErr } = await supabase.auth.getUser();
     const user = userErr ? null : userData.user;
-    if (!user) return;
+    if (!user || (user as any).is_anonymous) return;
 
     const kind = String(input.kind ?? "").trim();
     const date = String(input.date ?? "").trim();

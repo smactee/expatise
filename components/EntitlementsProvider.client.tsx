@@ -127,17 +127,12 @@ useEffect(() => {
         : null;
 
     const periodType = String(active.periodType ?? "").toUpperCase();
-    const source: EntitlementSource =
+const source: EntitlementSource =
       expMs === null
         ? "lifetime"
         : periodType === "TRIAL"
         ? "trial"
         : "subscription";
-console.log("[RC] entitlement active -> premium ON", {
-    entitlement: RC_ENTITLEMENT_ID,
-    source,
-    expMs,
-  });
     return {
       isPremium: true,
       source,

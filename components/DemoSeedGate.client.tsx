@@ -13,6 +13,11 @@ export default function DemoSeedGate({ children }: { children: React.ReactNode }
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
+    if (process.env.NODE_ENV === "production") {
+      setReady(true);
+      return;
+    }
+
     let cancelled = false;
 
     async function run() {

@@ -137,14 +137,17 @@ function formatRemaining(ms: number) {
 
 const SKIP_SYNC_KEY = "__expatise_skip_sync_once";
 
-const DEMO_ADMIN_EMAILS = Array.from(
-  new Set(
-    String(process.env.NEXT_PUBLIC_DEMO_ADMIN_EMAIL ?? "")
-      .split(",")
-      .map((s) => s.trim().toLowerCase())
-      .filter(Boolean)
-  )
-);
+const DEMO_ADMIN_EMAILS =
+  process.env.NODE_ENV === "production"
+    ? []
+    : Array.from(
+        new Set(
+          String(process.env.NEXT_PUBLIC_DEMO_ADMIN_EMAIL ?? "")
+            .split(",")
+            .map((s) => s.trim().toLowerCase())
+            .filter(Boolean)
+        )
+      );
 
 function consumeSkipSyncToken(): boolean {
   if (typeof window === "undefined") return false;
@@ -195,6 +198,7 @@ const legacyEmailUserKey = sessionEmail ? userKeyFromEmail(sessionEmail) : "";
 const normalizedSessionEmail = (sessionEmail ?? "").trim().toLowerCase();
 
 const showDemoReseedButton =
+  process.env.NODE_ENV !== "production" &&
   !authLoading &&
   supabaseAuthed &&
   DEMO_ADMIN_EMAILS.length > 0 &&

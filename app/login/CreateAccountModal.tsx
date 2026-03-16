@@ -1,13 +1,14 @@
 'use client';
 
-import { useMemo, useRef, useState, type FormEvent } from 'react';import { useRouter } from 'next/navigation';
+import { useMemo, useRef, useState, type FormEvent } from 'react';
+import { useRouter } from 'next/navigation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGoogle, faApple, faWeixin } from '@fortawesome/free-brands-svg-icons';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 
 import styles from './create-account-modal.module.css';
 import { isValidEmail, normalizeEmail } from '@/lib/auth';
-import { NATIVE_OAUTH_REDIRECT_URI } from '@/lib/auth/oauth';
+import { buildAuthCallbackUrl, NATIVE_OAUTH_REDIRECT_URI } from '@/lib/auth/oauth';
 import { createClient } from '@/lib/supabase/client';
 
 type Props = {
@@ -55,11 +56,12 @@ export default function CreateAccountModal({ open, onClose, onCreated }: Props) 
 
     setIsSubmitting(true);
     try {
+      const emailRedirectTo = await buildAuthCallbackUrl("/");
       const { data, error } = await supabase.auth.signUp({
         email: trimmedEmail,
         password: pw,
         options: {
-          emailRedirectTo: `${window.location.origin}/auth/callback`,
+          emailRedirectTo,
         },
       });
 
@@ -250,9 +252,6 @@ if (!url) {
   setError("No OAuth URL returned.");
   return;
 }
-
-console.log("[OAuth] open url:", url); // ✅ add this line
-
 await Browser.open({ url });
 return;
       }

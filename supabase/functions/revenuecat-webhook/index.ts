@@ -38,12 +38,13 @@ const CORS = {
 };
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL") ?? "";
-const SERVICE_ROLE_KEY = Deno.env.get("SERVICE_ROLE_KEY") ?? "";
+const SUPABASE_SERVICE_ROLE_KEY =
+  Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
 const RC_WEBHOOK_AUTH = Deno.env.get("REVENUECAT_WEBHOOK_AUTH") ?? "";
 const RC_ENTITLEMENT_ID = (Deno.env.get("REVENUECAT_ENTITLEMENT_ID") ?? "Premium").trim();
 
-if (!SUPABASE_URL || !SERVICE_ROLE_KEY) {
-  throw new Error("Missing SUPABASE_URL or SERVICE_ROLE_KEY");
+if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) {
+  throw new Error("Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY");
 }
 
 function json(status: number, body: unknown) {
@@ -200,7 +201,7 @@ if (!entitlementMatches(event, RC_ENTITLEMENT_ID)) {
     const aliases = Array.isArray(event.aliases) ? event.aliases : [];
     const userCandidates = [appUserId, normalizeStr(event.original_app_user_id), ...aliases];
 
-    const admin = createClient(SUPABASE_URL, SERVICE_ROLE_KEY, {
+    const admin = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
       auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false },
     });
 

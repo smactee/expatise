@@ -11,7 +11,7 @@ export async function saveAttemptToSupabase(attempt: TestAttemptV1) {
     // Must have a logged-in user session
     const { data: userData, error: userErr } = await supabase.auth.getUser();
     const user = userErr ? null : userData.user;
-    if (!user) return;
+    if (!user || (user as any).is_anonymous) return;
 
     // Keep the same required fields as your old API route
     if (!attempt?.attemptId || !attempt?.modeKey || !attempt?.status) return;

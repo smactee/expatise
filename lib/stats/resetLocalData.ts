@@ -1,7 +1,7 @@
 // lib/resetLocalData.ts
 
-const APP_PREFIXES = ["expatise:"]; // everything your app owns
-const EXTRA_KEYS = ["topicQuiz:v1"]; // legacy key your Stats page used
+const APP_PREFIXES = ["expatise", "__expatise_"];
+const EXTRA_KEYS = ["topicQuiz:v1", "THEME_STORAGE_KEY"];
 
 function collectKeys(storage: Storage) {
   const keys: string[] = [];
@@ -12,21 +12,38 @@ function collectKeys(storage: Storage) {
   return keys;
 }
 
+function isOwnedKey(key: string) {
+  return APP_PREFIXES.some((prefix) => key.startsWith(prefix)) || EXTRA_KEYS.includes(key);
+}
+
 export async function resetAllLocalData(opts?: { includeCaches?: boolean }) {
   if (typeof window === "undefined") return;
 
   // localStorage
   for (const k of collectKeys(window.localStorage)) {
-    if (APP_PREFIXES.some((p) => k.startsWith(p)) || EXTRA_KEYS.includes(k)) {
+    if (isOwnedKey(k)) {
       window.localStorage.removeItem(k);
     }
   }
 
-  // sessionStorage (if you ever used it)
+  // sessionStorage
   for (const k of collectKeys(window.sessionStorage)) {
-    if (APP_PREFIXES.some((p) => k.startsWith(p))) {
+    if (isOwnedKey(k)) {
       window.sessionStorage.removeItem(k);
     }
+  }
+
+  try {
+    const { Preferences } = await import("@capacitor/preferences");
+    const { keys } = await Preferences.keys();
+
+    await Promise.all(
+      (keys ?? [])
+        .filter((key) => isOwnedKey(key))
+        .map((key) => Preferences.remove({ key }))
+    );
+  } catch {
+    // ignore when Preferences is unavailable
   }
 
   // Optional: clear Cache Storage (PWA / SW caches)

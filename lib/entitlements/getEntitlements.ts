@@ -16,19 +16,6 @@ type FnRes =
   | { ok: true; entitlements: Entitlements; userKey?: string }
   | { ok: false; error?: string; detail?: string };
 
-const ADMIN_PREMIUM_EMAILS = Array.from(
-  new Set(
-    String(
-      process.env.NEXT_PUBLIC_ADMIN_PREMIUM_EMAILS ??
-        process.env.NEXT_PUBLIC_DEMO_ADMIN_EMAIL ??
-        ""
-    )
-      .split(",")
-      .map((s) => s.trim().toLowerCase())
-      .filter(Boolean)
-  )
-);
-
 export async function getEntitlements(userKey: string): Promise<Entitlements> {
   const local = getLocalEntitlements(userKey) ?? FREE_ENTITLEMENTS;
 
@@ -46,16 +33,7 @@ const token = sessionData.session?.access_token ?? null;
 if (!token) return local;
 
 const { data: userData, error: userErr } = await supabase.auth.getUser(token);
-const normalizedEmail = (userData.user?.email ?? "").trim().toLowerCase();
-if (!userErr && normalizedEmail && ADMIN_PREMIUM_EMAILS.includes(normalizedEmail)) {
-  const adminEntitlements: Entitlements = {
-    isPremium: true,
-    source: "admin",
-    updatedAt: Date.now(),
-  };
-  setLocalEntitlements(userKey, adminEntitlements);
-  return adminEntitlements;
-}
+if (userErr || !userData.user || (userData.user as any).is_anonymous) return local;
 
 const anonKey =
   process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ??
