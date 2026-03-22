@@ -94,9 +94,9 @@ if (jwt) {
   user = error ? null : data.user;
 }
 
-    // Stable userKey for your existing local storage keys
+    // Align the returned userKey with the client + RevenueCat identity model.
     const userEmail = normalizeEmail(user?.email ?? "");
-    const userKey = user ? (userEmail ? userEmail : `sb:${user.id}`) : "guest";
+    const userKey = user ? `sb:${user.id}` : "guest";
 
     // Guest => always free
     if (!user) {

@@ -20,6 +20,7 @@ import { useClearedMistakes } from "@/lib/mistakes/useClearedMistakes";
 import CSRBoundary from "@/components/CSRBoundary";
 import { useBootSweepOnce } from "@/components/stats/useBootSweepOnce.client";
 import { migrateLocalAttemptsToCanonical } from "@/lib/test-engine/attemptStorage";
+import { useT } from "@/lib/i18n/useT";
 
 function clamp(n: number, min: number, max: number) {
   return Math.max(min, Math.min(max, n));
@@ -46,6 +47,7 @@ function Inner() {
   const router = useRouter();
   const sp = useSearchParams();
   const params = useParams<{ mode: string }>();
+  const { t } = useT();
 
   const modeId = (params.mode ?? "real") as TestModeId;
   const cfg = TEST_MODES[modeId] ?? TEST_MODES.real;
@@ -66,7 +68,7 @@ const showUntimed = limitSeconds <= 0;
 
 const timeMin = Math.floor(usedSeconds / 60);
 const timeSec = usedSeconds % 60;
-const timeText = showUntimed ? "Untimed" : `${timeMin}min ${timeSec}sec`;
+const timeText = showUntimed ? t("results.untimed") : t("results.timeText", { minutes: timeMin, seconds: timeSec });
 
 
 const { email, loading: authLoading } = useAuthStatus();
@@ -292,8 +294,16 @@ if (modeId === "mistakes" && !didAutoClearRef.current) {
             prompt: (q as any).prompt,
             imageSrc,
             options: [
-              { key: "R", text: "R. Right", tone: correctRow === "R" ? "correct" : chosenRow === "R" ? "wrong" : "neutral" },
-              { key: "W", text: "W. Wrong", tone: correctRow === "W" ? "correct" : chosenRow === "W" ? "wrong" : "neutral" },
+              {
+                key: "R",
+                text: `R. ${t("results.rowOptions.right")}`,
+                tone: correctRow === "R" ? "correct" : chosenRow === "R" ? "wrong" : "neutral",
+              },
+              {
+                key: "W",
+                text: `W. ${t("results.rowOptions.wrong")}`,
+                tone: correctRow === "W" ? "correct" : chosenRow === "W" ? "wrong" : "neutral",
+              },
             ],
             explanation: (q as any).explanation,
           });
@@ -341,7 +351,7 @@ if (modeId === "mistakes" && !didAutoClearRef.current) {
       items.sort((x, y) => x.testNo - y.testNo);
       setReviewItems(items);
     })();
-  }, [attemptId, attemptUserKey, legacyAttemptUserKey, modeId, clearMistakesMany]);
+  }, [attemptId, attemptUserKey, legacyAttemptUserKey, modeId, clearMistakesMany, t]);
 
 
 
@@ -389,7 +399,7 @@ const animatedDeg = (animatedPctFloat / 100) * 360;
     <main className={styles.screen}>
 
           <div className={styles.card} />
-          <div style={{ padding: 16 }}>Loading results…</div>
+          <div style={{ padding: 16 }}>{t("results.loading")}</div>
         </main>
       </div>
     );
@@ -402,9 +412,9 @@ const animatedDeg = (animatedPctFloat / 100) * 360;
 
         <div className={styles.card} />
         <div className={styles.shiftUp}>
-          <h1 className={styles.congrats}>Congratulations!</h1>
+          <h1 className={styles.congrats}>{t("results.congratulations")}</h1>
 
-          <div className={styles.ringWrap} aria-label="Score progress">
+          <div className={styles.ringWrap} aria-label={t("results.scoreProgressAria")}>
   <div
     className={styles.ring}
     style={{ "--p": `${animatedDeg}deg` } as React.CSSProperties}
@@ -421,20 +431,20 @@ const animatedDeg = (animatedPctFloat / 100) * 360;
               <div className={styles.scoreValue}>
                 {computed.correct}/{computed.total || 0}
               </div>
-              <div className={styles.scoreLabel}>Score</div>
+              <div className={styles.scoreLabel}>{t("results.score")}</div>
             </div>
 
             <div className={styles.scoreRight}>
               <div className={styles.scoreValue}>{timeText}</div>
-              <div className={styles.scoreLabel}>Time</div>
+              <div className={styles.scoreLabel}>{t("results.time")}</div>
             </div>
           </div>
 
-          <div className={styles.testResultsTitle}>Test Results</div>
+          <div className={styles.testResultsTitle}>{t("results.title")}</div>
 
           <div className={styles.incorrectRow}>
-            <Image src="/images/test/red-x-icon.png" alt="Red X Icon" width={24} height={24} className={styles.btnIcon} />
-            <div className={styles.incorrectText}>Incorrect</div>
+            <Image src="/images/test/red-x-icon.png" alt={t("results.incorrect")} width={24} height={24} className={styles.btnIcon} />
+            <div className={styles.incorrectText}>{t("results.incorrect")}</div>
             <div className={styles.incorrectSpacer} />
 
             {reviewItems.length > 0 && viewMode === "carousel" && (
@@ -448,8 +458,8 @@ const animatedDeg = (animatedPctFloat / 100) * 360;
               className={styles.viewToggle}
               onClick={() => setViewMode((v) => (v === "list" ? "carousel" : "list"))}
               aria-pressed={viewMode === "carousel"}
-              aria-label={viewMode === "carousel" ? "Switch to list view" : "Switch to swipe view"}
-              title={viewMode === "carousel" ? "List view" : "Swipe view"}
+              aria-label={viewMode === "carousel" ? t("results.switchToListAria") : t("results.switchToSwipeAria")}
+              title={viewMode === "carousel" ? t("results.listViewTitle") : t("results.swipeViewTitle")}
             >
               <Image
                 src={viewMode === "carousel" ? "/images/test/list-icon.png" : "/images/test/carousel-icon.png"}
@@ -464,7 +474,7 @@ const animatedDeg = (animatedPctFloat / 100) * 360;
           data-noswipeback={viewMode === "carousel" ? "true" : undefined}
           className={[styles.reviewArea, viewMode === "carousel" ? styles.reviewAreaCarousel : ""].join(" ")}>
             {reviewItems.length === 0 ? (
-              <p className={styles.question}>Expatise! No incorrect questions! 🎉</p>
+              <p className={styles.question}>{t("results.noIncorrect")}</p>
             ) : viewMode === "list" ? (
               reviewItems.map((it) => (
                 <article key={it.qid} style={{ marginBottom: 18 }}>
@@ -481,8 +491,8 @@ const animatedDeg = (animatedPctFloat / 100) * 360;
                         e.stopPropagation();
                         toggle(it.qid);
                       }}
-                      aria-label={isBookmarked(it.qid) ? "Remove bookmark" : "Add bookmark"}
-                      title={isBookmarked(it.qid) ? "Bookmarked" : "Bookmark"}
+                      aria-label={isBookmarked(it.qid) ? t("shared.bookmarks.removeAria") : t("shared.bookmarks.addAria")}
+                      title={isBookmarked(it.qid) ? t("shared.bookmarks.activeTitle") : t("shared.bookmarks.idleTitle")}
                       data-bookmarked={isBookmarked(it.qid) ? "true" : "false"}
                     >
                       <span className={styles.bookmarkIcon} aria-hidden="true" />
@@ -494,7 +504,7 @@ const animatedDeg = (animatedPctFloat / 100) * 360;
                       <div className={styles.imageWrap}>
                         <Image
                           src={it.imageSrc}
-                          alt="Question image"
+                          alt={t("shared.questionImageAlt")}
                           fill
                           sizes="120px"
                           className={styles.image}
@@ -525,7 +535,7 @@ const animatedDeg = (animatedPctFloat / 100) * 360;
 
                   {(it.explanation ?? "").trim().length > 0 && (
                     <>
-                      <div className={styles.exTitle}>Explanation:</div>
+                      <div className={styles.exTitle}>{t("results.explanation")}</div>
                       <div className={styles.exBody}>{it.explanation}</div>
                     </>
                   )}
@@ -563,8 +573,8 @@ const animatedDeg = (animatedPctFloat / 100) * 360;
                             e.stopPropagation();
                             toggle(it.qid);
                           }}
-                          aria-label={isBookmarked(it.qid) ? "Remove bookmark" : "Add bookmark"}
-                          title={isBookmarked(it.qid) ? "Bookmarked" : "Bookmark"}
+                          aria-label={isBookmarked(it.qid) ? t("shared.bookmarks.removeAria") : t("shared.bookmarks.addAria")}
+                          title={isBookmarked(it.qid) ? t("shared.bookmarks.activeTitle") : t("shared.bookmarks.idleTitle")}
                           data-bookmarked={isBookmarked(it.qid) ? "true" : "false"}
                         >
                           <span className={styles.bookmarkIcon} aria-hidden="true" />
@@ -576,7 +586,7 @@ const animatedDeg = (animatedPctFloat / 100) * 360;
                           <div className={styles.imageWrap}>
                             <Image
                               src={it.imageSrc}
-                              alt="Question image"
+                              alt={t("shared.questionImageAlt")}
                               fill
                               sizes="120px"
                               className={styles.image}
@@ -608,7 +618,7 @@ const animatedDeg = (animatedPctFloat / 100) * 360;
 
                       {(it.explanation ?? "").trim().length > 0 && (
                         <>
-                          <div className={styles.exTitle}>Explanation:</div>
+                          <div className={styles.exTitle}>{t("results.explanation")}</div>
                           <div className={styles.exBody}>{it.explanation}</div>
                         </>
                       )}
@@ -620,8 +630,8 @@ const animatedDeg = (animatedPctFloat / 100) * 360;
           </section>
 
           <button type="button" className={styles.continueBtn} onClick={() => router.push("/")}>
-            <span className={styles.continueText}>Home</span>
-            <Image src="/images/other/right-arrow.png" alt="Home" width={18} height={18} className={styles.btnIcon} />
+            <span className={styles.continueText}>{t("shared.common.home")}</span>
+            <Image src="/images/other/right-arrow.png" alt={t("results.homeIconAlt")} width={18} height={18} className={styles.btnIcon} />
           </button>
         </div>
       </main>

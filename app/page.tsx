@@ -13,6 +13,7 @@ import FeatureCard from '../components/FeatureCard';
 import BackButton from '@/components/BackButton';
 import { useEntitlements } from '@/components/EntitlementsProvider.client';
 import { useUsageCap } from '@/lib/freeAccess/useUsageCap';
+import { useT } from '@/lib/i18n/useT';
 
 
 
@@ -21,132 +22,17 @@ const CURRENT_YEAR = new Date().getFullYear();
 const DEFAULT_TEST_DATE = `${CURRENT_YEAR}-04-20`; // default 04/20 THIS year
 const DEFAULT_TEST_TIME = "09:00"; // 9 AM in 24h format
 
-function formatTimeLabel(time: string): string {
+function formatTimeLabel(time: string, labels: { am: string; pm: string }): string {
   if (!time) return "--:--";
   const [hStr, mStr] = time.split(":");
   const h = parseInt(hStr, 10);
-  const ampm = h >= 12 ? "PM" : "AM";
+  const ampm = h >= 12 ? labels.pm : labels.am;
   const displayH = h % 12 || 12; // 0/12 -> 12
   return `${displayH}:${mStr} ${ampm}`;
 }
 
-const TEST_MODE_CARDS = [
-    {
-    key: "real-test",
-    href: "/test/real",
-    ariaLabel: "Open Real Test",
-    bgSrc: "/images/home/cards/realtest-bg.png",
-    bgAlt: "Real Test Background",
-    iconSrc: "/images/home/icons/realtest-icon.png",
-    iconAlt: "Real Test Icon",
-    topText: "Practice under real exam conditions with a timer.",
-    title:  "Real Test",
-   },
-   
-   {
-    key: "ten-percent-test",
-    href: "/test/ten-percent",
-    ariaLabel: "Open 10% Test",
-    // ✅ reuse existing assets for now (swap later if you add new PNGs)
-    bgSrc: "/images/home/cards/quicktest-bg.png",
-    bgAlt: "10% Test Background",
-    iconSrc: "/images/home/icons/rapidfire-icon.png",
-    iconAlt: "10% Test Icon",
-    topText: "10 questions. 5 minutes.",
-    title: "10% Test",
-  },
-    {
-    key: "practice-test",
-    href: "/test/practice",
-    ariaLabel: "Open Practice Test",
-    bgSrc: "/images/home/cards/practice-bg.png",
-    bgAlt: "Practice Background",
-    iconSrc: "/images/home/icons/practice-icon.png",
-    iconAlt: "Practice Icon",
-    topText: "Study at your own pace. No time limit!",
-    title:  "Practice Test",
-   },
-     {
-    key: "half-test",
-    href: "/test/half",
-    ariaLabel: "Open Half Test",
-    bgSrc: "/images/home/cards/quicktest-bg.png",
-    bgAlt: "Half Test Background",
-    iconSrc: "/images/home/icons/globalmistakes-icon.png",
-    iconAlt: "Half Test Icon",
-    topText: "Half the questions. Half the time.",
-    title: "Half Test",
-  },
-
-    {
-    key: "rapid-fire-test",
-    href: "/test/rapid",
-    ariaLabel: "Open Rapid Fire Test",
-    bgSrc: "/images/home/cards/rapidfire-bg.png",
-    bgAlt: "Rapid Fire Background",
-    iconSrc: "/images/home/icons/rapidfire-icon.png",
-    iconAlt: "Rapid Fire Icon",
-    topText: "Sharpen your reflexes and memory in bursts.",
-    title:  "Rapid Fire Test",
-    },
-
-] as const;
-
-const OVERALL_CARDS = [
-  {
-    key: "all-questions",
-    href: ROUTES.allQuestions,
-    ariaLabel: "Open All Questions",
-    bgSrc: "/images/home/cards/allquestions-bg.png",
-    bgAlt: "All Questions Background",
-    iconSrc: "/images/home/icons/allquestions-icon.png",
-    iconAlt: "All Questions Icon",
-    topText: "Filter through the entire questions bank.",
-    title: "All Questions",
-  },
-      {
-  key: "global-mistakes",
-  href: ROUTES.globalCommonMistakes,
-  ariaLabel: "Open Global Common Mistakes",
-  bgSrc: "/images/home/cards/globalmistakes-bg.png",
-  bgAlt: "Global Common Mistakes Background",
-  iconSrc: "/images/home/icons/globalmistake-icon.png",
-  iconAlt: "Global Common Mistakes Icon",
-  topText: "See which questions others miss most.",
-  title: "Global Common Mistakes",
-},
-
-] as const;
-
-const MY_CARDS = [
-  {
-  key: "my-bookmarks",
-  href: ROUTES.bookmarks,
-  ariaLabel: "Open My Bookmarks",
-  bgSrc: "/images/home/cards/bookmark-bg.png",
-  bgAlt: "My Bookmarks Background",
-  iconSrc: "/images/home/icons/bookmarks-icon.png",
-  iconAlt: "Bookmark Icon",
-  topText: "Save questions and build your own study list.",
-  title: "My Bookmarks",
-  },
-  {
-  key: "my-mistakes",
-  href: ROUTES.mistakes,
-  ariaLabel: "Open My Mistakes",
-  bgSrc: "/images/home/cards/mymistakes-bg.png",
-  bgAlt: "My Mistakes Background",
-  iconSrc: "/images/home/icons/mymistakes-icon.png",
-  iconAlt: "My Mistakes Icon",
-  topText: "Revisit questions you got wrong.",
-  title: "My Mistakes",
-  },
-
-] as const
-
-
-
 export default function Home() {
+  const { t } = useT();
   const [testDate, setTestDate] = useState<string>(DEFAULT_TEST_DATE);
   const [testTime, setTestTime] = useState<string>(DEFAULT_TEST_TIME);
   const { isPremium, loading: entitlementsLoading } = useEntitlements();
@@ -160,7 +46,10 @@ const [pendingTime, setPendingTime] = useState<string | null>(null);
   const modalDateInputRef = useRef<HTMLInputElement | null>(null);
   const modalTimeInputRef = useRef<HTMLInputElement | null>(null);
 
-const displayTime = formatTimeLabel(testTime);
+const displayTime = formatTimeLabel(testTime, {
+  am: t('home.time.am'),
+  pm: t('home.time.pm'),
+});
 
 // Pull user profile info
 const { 
@@ -256,8 +145,119 @@ const modalMonth = modalDate.getMonth() + 1;
 const modalDay = modalDate.getDate();
 
 // Pretty label for the time in the modal ("9:00 AM")
-const modalTimeLabel = formatTimeLabel(modalSourceTime);
+const modalTimeLabel = formatTimeLabel(modalSourceTime, {
+  am: t('home.time.am'),
+  pm: t('home.time.pm'),
+});
 const shouldTriggerPremiumModal = !entitlementsLoading && !isPremium && isOverCap;
+
+const testModeCards = [
+  {
+    key: "real-test",
+    href: "/test/real",
+    ariaLabel: t('home.cards.testModes.real.ariaLabel'),
+    bgSrc: "/images/home/cards/realtest-bg.png",
+    bgAlt: t('home.cards.testModes.real.bgAlt'),
+    iconSrc: "/images/home/icons/realtest-icon.png",
+    iconAlt: t('home.cards.testModes.real.iconAlt'),
+    topText: t('home.cards.testModes.real.topText'),
+    title: t('home.cards.testModes.real.title'),
+  },
+  {
+    key: "ten-percent-test",
+    href: "/test/ten-percent",
+    ariaLabel: t('home.cards.testModes.tenPercent.ariaLabel'),
+    bgSrc: "/images/home/cards/quicktest-bg.png",
+    bgAlt: t('home.cards.testModes.tenPercent.bgAlt'),
+    iconSrc: "/images/home/icons/rapidfire-icon.png",
+    iconAlt: t('home.cards.testModes.tenPercent.iconAlt'),
+    topText: t('home.cards.testModes.tenPercent.topText'),
+    title: t('home.cards.testModes.tenPercent.title'),
+  },
+  {
+    key: "practice-test",
+    href: "/test/practice",
+    ariaLabel: t('home.cards.testModes.practice.ariaLabel'),
+    bgSrc: "/images/home/cards/practice-bg.png",
+    bgAlt: t('home.cards.testModes.practice.bgAlt'),
+    iconSrc: "/images/home/icons/practice-icon.png",
+    iconAlt: t('home.cards.testModes.practice.iconAlt'),
+    topText: t('home.cards.testModes.practice.topText'),
+    title: t('home.cards.testModes.practice.title'),
+  },
+  {
+    key: "half-test",
+    href: "/test/half",
+    ariaLabel: t('home.cards.testModes.half.ariaLabel'),
+    bgSrc: "/images/home/cards/quicktest-bg.png",
+    bgAlt: t('home.cards.testModes.half.bgAlt'),
+    iconSrc: "/images/home/icons/globalmistakes-icon.png",
+    iconAlt: t('home.cards.testModes.half.iconAlt'),
+    topText: t('home.cards.testModes.half.topText'),
+    title: t('home.cards.testModes.half.title'),
+  },
+  {
+    key: "rapid-fire-test",
+    href: "/test/rapid",
+    ariaLabel: t('home.cards.testModes.rapid.ariaLabel'),
+    bgSrc: "/images/home/cards/rapidfire-bg.png",
+    bgAlt: t('home.cards.testModes.rapid.bgAlt'),
+    iconSrc: "/images/home/icons/rapidfire-icon.png",
+    iconAlt: t('home.cards.testModes.rapid.iconAlt'),
+    topText: t('home.cards.testModes.rapid.topText'),
+    title: t('home.cards.testModes.rapid.title'),
+  },
+] as const;
+
+const overallCards = [
+  {
+    key: "all-questions",
+    href: ROUTES.allQuestions,
+    ariaLabel: t('home.cards.overall.allQuestions.ariaLabel'),
+    bgSrc: "/images/home/cards/allquestions-bg.png",
+    bgAlt: t('home.cards.overall.allQuestions.bgAlt'),
+    iconSrc: "/images/home/icons/allquestions-icon.png",
+    iconAlt: t('home.cards.overall.allQuestions.iconAlt'),
+    topText: t('home.cards.overall.allQuestions.topText'),
+    title: t('home.cards.overall.allQuestions.title'),
+  },
+  {
+    key: "global-mistakes",
+    href: ROUTES.globalCommonMistakes,
+    ariaLabel: t('home.cards.overall.globalMistakes.ariaLabel'),
+    bgSrc: "/images/home/cards/globalmistakes-bg.png",
+    bgAlt: t('home.cards.overall.globalMistakes.bgAlt'),
+    iconSrc: "/images/home/icons/globalmistake-icon.png",
+    iconAlt: t('home.cards.overall.globalMistakes.iconAlt'),
+    topText: t('home.cards.overall.globalMistakes.topText'),
+    title: t('home.cards.overall.globalMistakes.title'),
+  },
+] as const;
+
+const myCards = [
+  {
+    key: "my-bookmarks",
+    href: ROUTES.bookmarks,
+    ariaLabel: t('home.cards.my.bookmarks.ariaLabel'),
+    bgSrc: "/images/home/cards/bookmark-bg.png",
+    bgAlt: t('home.cards.my.bookmarks.bgAlt'),
+    iconSrc: "/images/home/icons/bookmarks-icon.png",
+    iconAlt: t('home.cards.my.bookmarks.iconAlt'),
+    topText: t('home.cards.my.bookmarks.topText'),
+    title: t('home.cards.my.bookmarks.title'),
+  },
+  {
+    key: "my-mistakes",
+    href: ROUTES.mistakes,
+    ariaLabel: t('home.cards.my.mistakes.ariaLabel'),
+    bgSrc: "/images/home/cards/mymistakes-bg.png",
+    bgAlt: t('home.cards.my.mistakes.bgAlt'),
+    iconSrc: "/images/home/icons/mymistakes-icon.png",
+    iconAlt: t('home.cards.my.mistakes.iconAlt'),
+    topText: t('home.cards.my.mistakes.topText'),
+    title: t('home.cards.my.mistakes.title'),
+  },
+] as const;
 
 const homeCardHref = (href: string) =>
   shouldTriggerPremiumModal
@@ -272,15 +272,15 @@ const homeCardHref = (href: string) =>
         <section className={styles.examCard}>
           {/* Left side: text */}
           <div className={styles.examText}>
-            <p className={styles.examLabel}>Exam</p>
-            <h1 className={styles.examTitle}>Registration</h1>
+            <p className={styles.examLabel}>{t('home.examCard.label')}</p>
+            <h1 className={styles.examTitle}>{t('home.examCard.title')}</h1>
 
             <button
   type="button"
   className={styles.myTestDayButton}
   onClick={openTestModal}
 >
-  My Test Day:
+  {t('home.examCard.myTestDay')}
 </button>
 
 
@@ -294,7 +294,7 @@ const homeCardHref = (href: string) =>
 
   <div className={styles.timeBlock}>
     <span className={styles.timeText}>{displayTime}</span>
-    <div className={styles.caption}>Test Time</div>
+    <div className={styles.caption}>{t('home.examCard.testTime')}</div>
   </div>
 </div>
 
@@ -304,7 +304,7 @@ const homeCardHref = (href: string) =>
               <div className={styles.daysLeftNumber}>
                 {daysLeft !== null ? daysLeft : "-"}
               </div>
-              <div className={styles.caption}>Days Left</div>
+              <div className={styles.caption}>{t('home.examCard.daysLeft')}</div>
             </div>
           </div>
 
@@ -312,7 +312,7 @@ const homeCardHref = (href: string) =>
           <div className={styles.carHero}>
             <Image
               src="/images/home/blue-car.png"
-              alt="Blue car"
+              alt={t('home.examCard.carAlt')}
               width={493}
               height={437}
               priority
@@ -326,11 +326,11 @@ const homeCardHref = (href: string) =>
 <section className={styles.sections}>
 {/* Test Mode */}
 <div className={styles.sectionGroup}>
-<h2 className={styles.sectionTitle}>Test Mode</h2>
+<h2 className={styles.sectionTitle}>{t('home.sections.testMode')}</h2>
             
 {/* Real Test */}
 <DragScrollRow className={styles.dragRow}>
-{TEST_MODE_CARDS.map((card) => (
+ {testModeCards.map((card) => (
     <FeatureCard
       key={card.key}
       href={homeCardHref(card.href)}
@@ -352,10 +352,10 @@ const homeCardHref = (href: string) =>
 
 {/* Overall */}
  <div className={styles.sectionGroup}>
-<h2 className={styles.sectionTitle}>Overall</h2>
+<h2 className={styles.sectionTitle}>{t('home.sections.overall')}</h2>
 <DragScrollRow className={styles.dragRow}>
 {/* All Questions */}
-{OVERALL_CARDS.map((card) => (
+{overallCards.map((card) => (
   <FeatureCard
     key={card.key}
     href={homeCardHref(card.href)}
@@ -375,10 +375,10 @@ const homeCardHref = (href: string) =>
 
 {/* My */}
           <div className={styles.sectionGroup}>
-            <h2 className={styles.sectionTitle}>My</h2>
+            <h2 className={styles.sectionTitle}>{t('home.sections.my')}</h2>
 <DragScrollRow className={styles.dragRow}>
 {/* Bookmark */}
-{MY_CARDS.map((card) => (
+{myCards.map((card) => (
     <FeatureCard
       key={card.key}
       href={homeCardHref(card.href)}
@@ -418,11 +418,11 @@ const homeCardHref = (href: string) =>
 <div className={styles.testModalHeaderCard}>
   <div className={styles.testModalHeaderLeft}>
     <div className={styles.testModalGreetingRow}>
-      <span className={styles.testModalGreetingText}>Have a great day!</span>
+      <span className={styles.testModalGreetingText}>{t('home.modal.greeting')}</span>
       <span className={styles.testModalSunIcon}></span>
       <Image 
         src="/images/home/icons/sun.png"
-        alt="Sun icon"
+        alt={t('home.modal.sunAlt')}
         width={16}
         height={16}
         className={styles.testModalSunImage}
@@ -430,17 +430,17 @@ const homeCardHref = (href: string) =>
     </div>
 
     <div className={styles.testModalName}>
-      {userName || 'Expat Expertise'}
+      {userName || t('home.modal.fallbackName')}
       </div>
     <div className={styles.testModalSubtext}>
-      Don&apos;t miss your exam date!
+      {t('home.modal.subtitle')}
     </div>
   </div>
 
   <div className={styles.testModalAvatarWrapper}>
     <Image
       src={avatarSrc}
-      alt={`${userName} avatar`}
+      alt={t('home.modal.avatarAlt', { name: userName || t('home.modal.fallbackName') })}
       fill
       sizes="44px"
       className={styles.testModalAvatar}
@@ -451,11 +451,10 @@ const homeCardHref = (href: string) =>
             {/* Main card */}
             <div className={styles.testModalMainCard}>
               <h2 className={styles.testModalTitle}>
-                When&apos;s your <span>Test?</span>
+                {t('home.modal.titleBefore')} <span>{t('home.modal.titleHighlight')}</span>
               </h2>
               <p className={styles.testModalDescription}>
-                Your test date will be updated on the home page,
-                making it easy for you to see and remember.
+                {t('home.modal.description')}
               </p>
 
 {/* MM / DD / YYYY row */}
@@ -471,15 +470,15 @@ const homeCardHref = (href: string) =>
   />
 
   <div className={styles.testModalDateBox}>
-    <span className={styles.testModalDateLabel}>MM</span>
+    <span className={styles.testModalDateLabel}>{t('home.modal.monthLabel')}</span>
     <span className={styles.testModalDateValue}>{modalMonth}</span>
   </div>
   <div className={styles.testModalDateBox}>
-    <span className={styles.testModalDateLabel}>DD</span>
+    <span className={styles.testModalDateLabel}>{t('home.modal.dayLabel')}</span>
     <span className={styles.testModalDateValue}>{modalDay}</span>
   </div>
   <div className={styles.testModalDateBox}>
-    <span className={styles.testModalDateLabel}>YYYY</span>
+    <span className={styles.testModalDateLabel}>{t('home.modal.yearLabel')}</span>
     <span className={styles.testModalDateValue}>{modalYear}</span>
   </div>
 </div>
@@ -498,7 +497,7 @@ const homeCardHref = (href: string) =>
   />
 
   <div className={styles.testModalTimeBox}>
-    <span className={styles.testModalDateLabel}>TIME</span>
+    <span className={styles.testModalDateLabel}>{t('home.modal.timeLabel')}</span>
     <span className={styles.testModalDateValue}>{modalTimeLabel}</span>
   </div>
 </div>
@@ -512,14 +511,14 @@ const homeCardHref = (href: string) =>
                   className={styles.testModalPrimaryButton}
                   onClick={handleConfirmTestDay}
                 >
-                  Set The Day
+                  {t('home.modal.setDay')}
                 </button>
                 <button
                   type="button"
                   className={styles.testModalSecondaryButton}
                   onClick={closeTestModal}
                 >
-                  Cancel
+                  {t('shared.common.cancel')}
                 </button>
               </div>
             </div>

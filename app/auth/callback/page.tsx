@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import type { AuthChangeEvent, Session } from '@supabase/supabase-js';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
+import { useT } from '@/lib/i18n/useT';
 
 function safeNextPathClient(nextRaw: string | null | undefined, fallback = '/') {
   const v = String(nextRaw ?? '').trim();
@@ -17,7 +18,8 @@ function safeNextPathClient(nextRaw: string | null | undefined, fallback = '/') 
 
 export default function AuthCallbackPage() {
   const router = useRouter();
-  const [msg, setMsg] = useState('Completing sign-in…');
+  const { t } = useT();
+  const [msg, setMsg] = useState(t('authCallback.completing'));
 
   useEffect(() => {
     const supabase = createClient();
@@ -28,7 +30,7 @@ export default function AuthCallbackPage() {
     // If provider sent an error back
     const err = url.searchParams.get('error_description') ?? url.searchParams.get('error');
     if (err) {
-      setMsg(`Sign-in failed: ${decodeURIComponent(err)}`);
+      setMsg(t('authCallback.failed', { reason: decodeURIComponent(err) }));
       return;
     }
 
@@ -62,19 +64,19 @@ export default function AuthCallbackPage() {
     })();
 
     // Safety timeout so you see a useful message instead of silently landing as guest
-    const t = window.setTimeout(async () => {
+    const timeoutId = window.setTimeout(async () => {
       if (done) return;
       const { data: s } = await supabase.auth.getSession();
       if (!s.session) {
-        setMsg('Sign-in failed: no session created. (Likely PKCE storage mismatch or blocked callback.)');
+        setMsg(t('authCallback.noSession'));
       }
     }, 5000);
 
     return () => {
-      window.clearTimeout(t);
+      window.clearTimeout(timeoutId);
       data.subscription.unsubscribe();
     };
-  }, [router]);
+  }, [router, t]);
 
   return <div style={{ padding: 16 }}>{msg}</div>;
 }

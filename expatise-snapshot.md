@@ -7911,7 +7911,18 @@ const SUPPORT_TEAM = "Expatise Support";
 const SUPPORT_EMAIL = "maverixnmatrix@gmail.com";
 const PROCESSING_TIME_DAYS = 30;
 
-export default function AccountDeletionPage() {
+type AccountDeletionPageProps = {
+  searchParams?: Promise<{ deleted?: string | string[] | undefined }>;
+};
+
+export default async function AccountDeletionPage({
+  searchParams,
+}: AccountDeletionPageProps) {
+  const params = (await searchParams) ?? {};
+  const deletedRaw = params.deleted;
+  const deleted =
+    Array.isArray(deletedRaw) ? deletedRaw[0] === "1" : deletedRaw === "1";
+
   const subject = "Account deletion request";
   const bodyLines = [
     `Hello ${SUPPORT_TEAM},`,
@@ -7967,6 +7978,16 @@ export default function AccountDeletionPage() {
         account and associated data.
       </p>
 
+      {deleted ? (
+        <div style={styles.card}>
+          <p style={{ ...styles.p, marginTop: 0 }}>
+            <b>Your in-app deletion is complete.</b> If you arrived here right
+            after using <b>Profile → Delete Account</b>, your account has
+            already been deleted and you have been signed out of the app.
+          </p>
+        </div>
+      ) : null}
+
       <div style={styles.card}>
         <p style={{ ...styles.p, marginTop: 0 }}>
           <b>Quick options:</b>
@@ -7990,7 +8011,8 @@ export default function AccountDeletionPage() {
       </h2>
       <p style={styles.p}>
         If you can access the app, go to <b>Profile → Delete Account</b> and
-        follow the steps shown on screen.
+        follow the steps shown on screen. When the in-app automated flow
+        succeeds, deletion happens immediately and signs you out.
       </p>
 
       <h2 id="email" style={styles.h2}>
@@ -8018,8 +8040,10 @@ export default function AccountDeletionPage() {
 
       <h2 style={styles.h2}>Processing time</h2>
       <p style={styles.p}>
-        After verification (if needed), we typically complete deletion requests
-        within <b>{PROCESSING_TIME_DAYS} days</b>.
+        <b>In-app deletion:</b> immediate when the automated flow succeeds.
+        <br />
+        <b>Email deletion requests:</b> after verification (if needed), we
+        typically complete them within <b>{PROCESSING_TIME_DAYS} days</b>.
       </p>
 
       <h2 style={styles.h2}>What we delete</h2>
@@ -8415,16 +8439,18 @@ export default function AccountSecurityPage() {
 //app/account/delete-account/page.tsx
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { resetAllLocalData } from "@/lib/stats/resetLocalData";
 import { FunctionsHttpError } from "@supabase/supabase-js";
 
+const DELETE_SUCCESS_PATH = "/account-deletion?deleted=1";
 
 export default function DeleteAccountPage() {
   const router = useRouter();
   const supabase = useMemo(() => createClient(), []);
+  const deleteBusyRef = useRef(false);
 
   const [typed, setTyped] = useState("");
   const [loading, setLoading] = useState(false);
@@ -8434,20 +8460,37 @@ export default function DeleteAccountPage() {
   const canDelete = typed.trim().toUpperCase() === "DELETE";
 
 async function onDelete() {
-  if (!canDelete || loading) return;
+  if (!canDelete || loading || deleteBusyRef.current) return;
 
+  deleteBusyRef.current = true;
   setErr(null);
   setLoading(true);
 
-  const { data: session } = await supabase.auth.getSession();
-if (!session.session) {
-  setErr("Please log in to delete your account.");
-  setLoading(false);
-  return;
-}
-
   try {
-    const { data, error } = await supabase.functions.invoke("account-delete", { body: {} });
+    const { data: sessionData } = await supabase.auth.getSession();
+    const token = sessionData.session?.access_token ?? null;
+    if (!token) {
+      setErr("Please log in to delete your account.");
+      return;
+    }
+
+    const anonKey =
+      process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ??
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+    if (!anonKey) {
+      throw new Error(
+        "Missing NEXT_PUBLIC_SUPABASE_ANON_KEY (or NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY)"
+      );
+    }
+
+    const { data, error } = await supabase.functions.invoke("account-delete", {
+      body: {},
+      headers: {
+        Authorization: `Bearer ${token}`,
+        apikey: anonKey,
+      },
+    });
     let j: any = data ?? null;
 
     // When the function returns 4xx/5xx, supabase-js can return a FunctionsHttpError,
@@ -8463,16 +8506,25 @@ if (!session.session) {
       throw new Error(j?.detail ?? j?.error ?? "Delete failed");
     }
 
-    // Local cleanup
-    await supabase.auth.signOut();
-    await resetAllLocalData({ includeCaches: true });
+    // Backend deletion succeeded. From here on, local cleanup must be best-effort.
+    try {
+      await supabase.auth.signOut({ scope: "local" });
+    } catch {}
+
+    try {
+      await resetAllLocalData({ includeCaches: true });
+    } catch {}
+
+    try { window.dispatchEvent(new Event("expatise:session-changed")); } catch {}
+    try { window.dispatchEvent(new Event("expatise:entitlements-changed")); } catch {}
 
     setDone(true);
-    router.replace("/account-deletion");
+    window.location.replace(DELETE_SUCCESS_PATH);
   } catch (e: any) {
     setErr(e?.message ?? "Account deletion failed.");
   } finally {
     setLoading(false);
+    deleteBusyRef.current = false;
   }
 }
 
@@ -9247,6 +9299,10 @@ function ComingSoonInner() {
   const rawFeature = searchParams.get("feature");
   const feature = rawFeature ? decodeURIComponent(rawFeature) : "This feature";
   const backHref = safeReturnTo(searchParams.get("returnTo"));
+  const detailText =
+    feature.toLowerCase() === "notifications"
+      ? "Push notifications are not available in Expatise yet."
+      : `${feature} is not ready yet.`;
 
   return (
     <main className={styles.page}>
@@ -9254,7 +9310,7 @@ function ComingSoonInner() {
 
       <div className={styles.content}>
         <h1 className={styles.title}>Coming Soon</h1>
-        <p className={styles.text}>{feature} is not ready yet.</p>
+        <p className={styles.text}>{detailText}</p>
       </div>
     </main>
   );
@@ -13445,11 +13501,7 @@ export default function PrivacyPolicyPage() {
         lineHeight: 1.6,
       }}
     >
-      <header style={{ marginBottom: 18 }}>
-        <Link href="/profile" style={{ textDecoration: "none" }}>
-          Profile
-        </Link>
-      </header>
+
 
       <h1 style={{ fontSize: 30, fontWeight: 900, marginBottom: 6 }}>
         Privacy Policy
@@ -13702,6 +13754,7 @@ import { Capacitor } from "@capacitor/core";
 import { Purchases } from "@revenuecat/purchases-capacitor";
 import { ensureRevenueCat } from "@/lib/billing/revenuecat";
 import { useEntitlements } from "@/components/EntitlementsProvider.client";
+import type { EntitlementSource } from "@/lib/entitlements/types";
 
 
 
@@ -13855,33 +13908,64 @@ const goComingSoon = (feature: string) => {
 const { userKey: entUserKey, refresh: refreshEnt, grantPremium, isPremium } = useEntitlements();
 const [restoring, setRestoring] = useState(false);
 const [restoreMsg, setRestoreMsg] = useState<string | null>(null);
+const restoreBusyRef = useRef(false);
+const restoreMsgTimerRef = useRef<number | null>(null);
+
+const showRestoreMsg = (msg: string, durationMs = 1200) => {
+  setRestoreMsg(msg);
+
+  if (restoreMsgTimerRef.current) {
+    window.clearTimeout(restoreMsgTimerRef.current);
+  }
+
+  restoreMsgTimerRef.current = window.setTimeout(() => {
+    setRestoreMsg(null);
+    restoreMsgTimerRef.current = null;
+  }, durationMs);
+};
+
+useEffect(() => {
+  return () => {
+    if (restoreMsgTimerRef.current) {
+      window.clearTimeout(restoreMsgTimerRef.current);
+    }
+  };
+}, []);
 
 const handleRestorePurchases = async (e: React.SyntheticEvent) => {
-  // Require login (same UX as Save)
+  if (authLoading || restoreBusyRef.current || restoring) return;
+
+  // Restore requires a real signed-in account, not the generic premium modal flow.
   if (!authed) {
-    requireLogin(e);
+    e.preventDefault();
+    e.stopPropagation();
+    showRestoreMsg("Log in to restore past purchases.");
     return;
   }
 
   // Restore only makes sense in native store builds
   if (!Capacitor.isNativePlatform()) {
-    setRestoreMsg("Restore purchases is available in the mobile app.");
-    setTimeout(() => setRestoreMsg(null), 900);
+    showRestoreMsg("Restore purchases is available in the mobile app.");
     return;
   }
 
+  restoreBusyRef.current = true;
   setRestoring(true);
   setRestoreMsg(null);
 
   try {
     // Ensure RC is configured + tied to the logged-in user
-    await ensureRevenueCat(entUserKey);
+    const ready = await ensureRevenueCat(entUserKey);
+    if (!ready) {
+      showRestoreMsg("Restore is temporarily unavailable. Please try again.");
+      return;
+    }
 
     const { customerInfo } = await Purchases.restorePurchases();
     const active = customerInfo?.entitlements?.active?.[RC_ENTITLEMENT_ID];
 
     if (!active) {
-      setRestoreMsg("No purchases found to restore.");
+      showRestoreMsg("No purchases found to restore.");
       return;
     }
 
@@ -13892,18 +13976,18 @@ const handleRestorePurchases = async (e: React.SyntheticEvent) => {
         : undefined;
 
     const periodType = String(active.periodType ?? "").toUpperCase();
-    const source =
+    const source: EntitlementSource =
       expMs == null ? "lifetime" : periodType === "TRIAL" ? "trial" : "subscription";
 
-    grantPremium(source as any, expMs);
+    grantPremium(source, expMs);
     refreshEnt();
 
-    setRestoreMsg("Purchases restored.");
+    showRestoreMsg("Purchases restored.");
   } catch (err: any) {
-    setRestoreMsg(err?.message ?? "Restore failed. Please try again.");
+    showRestoreMsg(err?.message ?? "Restore failed. Please try again.");
   } finally {
     setRestoring(false);
-    setTimeout(() => setRestoreMsg(null), 1200);
+    restoreBusyRef.current = false;
   }
 };
 
@@ -14097,7 +14181,7 @@ const handleRestorePurchases = async (e: React.SyntheticEvent) => {
   type="button"
   className={styles.settingsRow}
   onClick={(e) => handleRestorePurchases(e)}
-  disabled={restoring}
+  disabled={restoring || authLoading}
 >
   <div className={styles.settingsLeft}>
    <span
@@ -14195,18 +14279,18 @@ const handleRestorePurchases = async (e: React.SyntheticEvent) => {
         <button
   type="button"
   className={styles.settingsRow}
-  onClick={(e) => goComingSoon("Notifications")}
+  onClick={() => goComingSoon("Notifications")}
 >
           <div className={styles.settingsLeft}>
             <span className={styles.settingsIcon}>
               <Image 
                 src="/images/profile/bell-icon.png"
-                alt="Exam Registration Icon"
+                alt="Notifications"
                 width={24}
                 height={24}
               />
             </span>
-            <span className={styles.settingsLabel}>Notifications</span>
+            <span className={styles.settingsLabel}>Notifications (Coming Soon)</span>
           </div>
           <span className={styles.chevron}>›</span>
         </button>
@@ -15227,11 +15311,7 @@ export default function TermsPage() {
         lineHeight: 1.6,
       }}
     >
-      <header style={{ marginBottom: 18 }}>
-        <Link href="/profile" style={{ textDecoration: "none" }}>
-          Profile
-        </Link>
-      </header>
+
 
       <h1 style={{ fontSize: 30, fontWeight: 900, marginBottom: 6 }}>
         Terms of Service
@@ -27059,7 +27139,7 @@ export const SERVER_FLAGS = {
 
 export const FREE_CAPS = {
   questionsShown: 420,
-  examStarts: 7,
+  examStarts: 10,
 } as const;
 
 export type UsageCapState = {
@@ -27358,13 +27438,14 @@ export function markQuestionShown(userKey: string, viewSig?: string): UsageCapSt
 
 /**
  * Can we start a NEW exam?
- * - blocks the 6th start
+ * - allows starts 1 through 10
+ * - blocks the 11th start
  * - optional preflight: require remaining free questions >= requiredQuestions (e.g. 50)
  */
 export function canStartExam(userKey: string, opts?: { requiredQuestions?: number }) {
   const s = readState(userKey);
 
-  if (s.examStarts >= FREE_CAPS.examStarts) return false; // block 6th start
+  if (s.examStarts >= FREE_CAPS.examStarts) return false; // block 11th start
 
   const required = opts?.requiredQuestions ?? 0;
   if (required > 0 && remainingQuestions(userKey) < required) return false;
@@ -29923,9 +30004,16 @@ Heatmap: {
 ### lib/stats/resetLocalData.ts
 ```tsx
 // lib/resetLocalData.ts
+import { AUTH_COOKIE } from "@/lib/auth";
+import { ONBOARDING_COOKIE } from "@/lib/middleware/paths";
 
-const APP_PREFIXES = ["expatise", "__expatise_"];
+const APP_PREFIXES = ["expatise", "__expatise_", "sb-expatise-auth"];
 const EXTRA_KEYS = ["topicQuiz:v1", "THEME_STORAGE_KEY"];
+
+function clearCookie(name: string) {
+  if (typeof document === "undefined" || !name) return;
+  document.cookie = `${name}=; Max-Age=0; Path=/; SameSite=Lax`;
+}
 
 function collectKeys(storage: Storage) {
   const keys: string[] = [];
@@ -29969,6 +30057,9 @@ export async function resetAllLocalData(opts?: { includeCaches?: boolean }) {
   } catch {
     // ignore when Preferences is unavailable
   }
+
+  clearCookie(ONBOARDING_COOKIE);
+  clearCookie(AUTH_COOKIE);
 
   // Optional: clear Cache Storage (PWA / SW caches)
   if (opts?.includeCaches && "caches" in window) {
@@ -145916,7 +146007,7 @@ C) Trend validity (no fake trends):
  * |delta| >= 6 → up/down
  * |delta| <= 3 → stable
  * else → “mixed / flat-ish”
-- Trend statements must include receipts: (window label, n, medians), e.g., “(30d, n=7 tests, median 76→83)”.
+- Trend statements must include receipts: (window label, n, medians), e.g., “(30d, n=12 tests, median 76→83)”.
 - Confounder gate: if completion changed by >= 8 pts between halves, attribute trend to completion and avoid “knowledge improved” language.
 - Daily avgScore trend uses ACTIVE DAYS only (days with testsCompleted>0). Zero days are for habit/consistency only.
 - If <3 points: say “not enough signal yet.”
@@ -146056,6 +146147,7 @@ Structure:
 5) The coming week
 If data is low-confidence, say so and suggest what to do next.
 `.trim();
+
 ```
 
 ### supabase/functions/account-delete/deno.json
@@ -146077,14 +146169,24 @@ import { corsHeaders } from "jsr:@supabase/supabase-js@2/cors";
 
 export const runtime = "edge";
 
+function json(status: number, body: unknown) {
+  return new Response(JSON.stringify(body), {
+    status,
+    headers: { ...corsHeaders, "Content-Type": "application/json" },
+  });
+}
+
+function isMissingRelationError(error: { code?: string; message?: string } | null | undefined) {
+  if (!error) return false;
+  if (error.code === "42P01") return true;
+  return /relation .* does not exist/i.test(String(error.message ?? ""));
+}
+
 Deno.serve(async (req: Request) => {
   // CORS
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
   if (req.method !== "POST") {
-    return new Response(JSON.stringify({ ok: false, error: "method_not_allowed" }), {
-      status: 405,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+    return json(405, { ok: false, error: "method_not_allowed" });
   }
 
   try {
@@ -146103,19 +146205,13 @@ Deno.serve(async (req: Request) => {
     const user = userErr ? null : userData.user;
 
     if (!user) {
-      return new Response(JSON.stringify({ ok: false, error: "No user session" }), {
-        status: 401,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+      return json(401, { ok: false, error: "No user session" });
     }
 
     // 2) Service role client (server-only) to delete rows + auth user
     const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
     if (!serviceKey) {
-      return new Response(JSON.stringify({ ok: false, error: "Missing SUPABASE_SERVICE_ROLE_KEY" }), {
-        status: 500,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+      return json(500, { ok: false, error: "Missing SUPABASE_SERVICE_ROLE_KEY" });
     }
 
     const admin = createClient(Deno.env.get("SUPABASE_URL") ?? "", serviceKey, {
@@ -146129,34 +146225,36 @@ Deno.serve(async (req: Request) => {
       admin.from("coach_cooldown").delete().eq("user_id", user.id), // if you created this table
     ]);
 
-    const delDataErr = a.error ?? t.error ?? c.error;
+    const cooldownErr = isMissingRelationError(c.error) ? null : c.error;
+    const delDataErr = a.error ?? t.error ?? cooldownErr;
     if (delDataErr) {
-      return new Response(
-        JSON.stringify({ ok: false, error: "Failed to delete user data", detail: delDataErr.message }),
-        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
+      return json(500, {
+        ok: false,
+        error: "Failed to delete user data",
+        detail: delDataErr.message,
+      });
     }
 
     // 4) Delete Auth user (requires service_role)
     const { error: delUserErr } = await admin.auth.admin.deleteUser(user.id);
     if (delUserErr) {
-      return new Response(
-        JSON.stringify({ ok: false, error: "Failed to delete auth user", detail: delUserErr.message }),
-        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
+      return json(500, {
+        ok: false,
+        error: "Failed to delete auth user",
+        detail: delUserErr.message,
+      });
     }
 
-    return new Response(JSON.stringify({ ok: true }), {
-      status: 200,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+    return json(200, { ok: true });
   } catch (e: any) {
-    return new Response(JSON.stringify({ ok: false, error: "delete_failed", detail: String(e?.message ?? e) }), {
-      status: 500,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    return json(500, {
+      ok: false,
+      error: "delete_failed",
+      detail: String(e?.message ?? e),
     });
   }
 });
+
 ```
 
 ### supabase/functions/coach/deno.json
@@ -146524,9 +146622,9 @@ if (jwt) {
   user = error ? null : data.user;
 }
 
-    // Stable userKey for your existing local storage keys
+    // Align the returned userKey with the client + RevenueCat identity model.
     const userEmail = normalizeEmail(user?.email ?? "");
-    const userKey = user ? (userEmail ? userEmail : `sb:${user.id}`) : "guest";
+    const userKey = user ? `sb:${user.id}` : "guest";
 
     // Guest => always free
     if (!user) {

@@ -42,7 +42,7 @@
   height: clamp(320px, 52svh, 420px);
   background: #111;
   overflow: hidden;
-  flex: 1 1 auto;
+  flex: 1 1 auto;   /* restore original behavior */
   min-height: 260px;
 }
 
@@ -72,13 +72,23 @@
 }
 
 .sheet {
+  --content-lift: 100px;
   margin-top: -18px;
   padding: clamp(20px, 3.5svh, 26px) clamp(18px, 5vw, 22px) clamp(22px, 4svh, 30px);
   text-align: center;
 }
 
 
+.sheet {
+  --content-lift: 100px;
+  margin-top: -18px;
+  padding: clamp(20px, 3.5svh, 26px) clamp(18px, 5vw, 22px) clamp(22px, 4svh, 30px);
+  text-align: center;
+}
+
 .title {
+  position: relative;
+  top: calc(-1 * var(--content-lift));
   margin: 0;
   font-size: clamp(24px, 5.8vw, 28px);
   line-height: 1.15;
@@ -86,16 +96,9 @@
   color: #111827;
 }
 
-.highlight {
-  background: var(--onboarding-highlight, #b9dcff);
-  padding: 0 4px;
-  border-radius: 2px;
-  box-decoration-break: clone;
-  -webkit-box-decoration-break: clone;
-  white-space: nowrap;
-}
-
 .subtitle {
+  position: relative;
+  top: calc(-1 * var(--content-lift));
   margin: clamp(10px, 2svh, 14px) 0 clamp(16px, 3svh, 22px);
   font-size: clamp(15px, 3.8vw, 16px);
   line-height: 1.45;
@@ -103,6 +106,8 @@
 }
 
 .cta {
+  position: relative;
+  top: calc(-1 * var(--content-lift));
   width: 100%;
   max-width: 320px;
   min-height: 50px;
@@ -115,6 +120,15 @@
   font-weight: 700;
   color: #111827;
   cursor: pointer;
+}
+
+.highlight {
+  background: var(--onboarding-highlight, #b9dcff);
+  padding: 0 4px;
+  border-radius: 2px;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+  white-space: nowrap;
 }
 
 @media (max-height: 760px) {

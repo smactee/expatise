@@ -26,6 +26,7 @@ import { useEntitlements } from '@/components/EntitlementsProvider.client';
 import { useUsageCap } from '@/lib/freeAccess/useUsageCap';
 import { userKeyFromEmail } from '@/lib/identity/userKey';
 import { migrateLocalAttemptsToCanonical } from '@/lib/test-engine/attemptStorage';
+import { useT } from '@/lib/i18n/useT';
 
 
 
@@ -48,6 +49,7 @@ function isCorrectMcq(item: Question, optId: string, optKey?: string) {
 export default function AllQuestionsClient({ datasetId, mode = 'all' }: { datasetId: DatasetId; mode?: 'all' | 'bookmarks' | 'mistakes' }) {
   // ✅ 1) hooks first
 const userKey = useUserKey();
+  const { t } = useT();
   const router = useRouter();
   const pathname = usePathname();
   const sp = useSearchParams();
@@ -406,20 +408,20 @@ const premiumPath = `/premium?next=${encodeURIComponent(premiumNextPath)}`;
   <div className={styles.titleWrap}>
   <h1 className={styles.title}>
     {mode === "bookmarks"
-      ? "My Bookmarks"
+      ? t("questionReview.myBookmarksTitle")
       : mode === "mistakes"
-      ? "My Mistakes"
-      : "All Questions"}
+      ? t("questionReview.myMistakesTitle")
+      : t("questionReview.allQuestionsTitle")}
   </h1>
 
   {mode === "mistakes" && compiledMistakesCount > 0 && (
-    <span className={styles.countPill} aria-label={`${compiledMistakesCount} questions`}>
+    <span className={styles.countPill} aria-label={t("questionReview.countAria", { count: compiledMistakesCount })}>
       {compiledMistakesCount}
     </span>
   )}
 
   {mode === "bookmarks" && compiledBookmarksCount > 0 && (
-    <span className={styles.countPill} aria-label={`${compiledBookmarksCount} questions`}>
+    <span className={styles.countPill} aria-label={t("questionReview.countAria", { count: compiledBookmarksCount })}>
       {compiledBookmarksCount}
     </span>
   )}
@@ -432,7 +434,7 @@ const premiumPath = `/premium?next=${encodeURIComponent(premiumNextPath)}`;
         className={styles.quizBtn}
         onClick={() => setShowPremiumModal(true)}
       >
-        Mistakes Quiz
+        {t("questionReview.mistakesQuiz")}
       </button>
     )}
 
@@ -442,7 +444,7 @@ const premiumPath = `/premium?next=${encodeURIComponent(premiumNextPath)}`;
         className={styles.quizBtn}
         onClick={() => setShowPremiumModal(true)}
       >
-        Bookmarks Quiz
+        {t("questionReview.bookmarksQuiz")}
       </button>
     )}
   </div>
@@ -455,7 +457,7 @@ const premiumPath = `/premium?next=${encodeURIComponent(premiumNextPath)}`;
         <div className={styles.searchRow}>
           <input
             className={styles.search}
-            placeholder="Search question text…"
+            placeholder={t("questionReview.searchPlaceholder")}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
           />
@@ -480,7 +482,7 @@ const premiumPath = `/premium?next=${encodeURIComponent(premiumNextPath)}`;
             }
           }}
         >
-          {topic.label}
+          {labelForTag(topic.key, t)}
         </button>
       );
     })}
@@ -493,10 +495,10 @@ const premiumPath = `/premium?next=${encodeURIComponent(premiumNextPath)}`;
         type="button"
         className={styles.deleteBtn}
         onClick={unbookmarkSelected}
-        aria-label={`Delete ${selectedIds.size} bookmarks`}
-        title={`Delete ${selectedIds.size} bookmarks`}
+        aria-label={t("questionReview.deleteBookmarksAria", { count: selectedIds.size })}
+        title={t("questionReview.deleteBookmarksAria", { count: selectedIds.size })}
       >
-        Delete
+        {t("shared.common.delete")}
       </button>
     )}
 
@@ -505,10 +507,10 @@ const premiumPath = `/premium?next=${encodeURIComponent(premiumNextPath)}`;
         type="button"
         className={styles.deleteBtn}
         onClick={clearMistakesSelected}
-        aria-label={`Remove ${selectedIds.size} mistakes from view`}
-        title={`Remove ${selectedIds.size} mistakes from view`}
+        aria-label={t("questionReview.removeMistakesAria", { count: selectedIds.size })}
+        title={t("questionReview.removeMistakesAria", { count: selectedIds.size })}
       >
-        Delete
+        {t("shared.common.delete")}
       </button>
     )}
 
@@ -516,8 +518,8 @@ const premiumPath = `/premium?next=${encodeURIComponent(premiumNextPath)}`;
       type="button"
       className={styles.selectAllBtn}
       onClick={toggleSelectAllVisible}
-      aria-label={allVisibleSelected ? "Clear selection" : "Select all visible"}
-      title={allVisibleSelected ? "Clear selection" : "Select all"}
+      aria-label={allVisibleSelected ? t("questionReview.clearSelectionAria") : t("questionReview.selectAllVisibleAria")}
+      title={allVisibleSelected ? t("questionReview.clearSelectionTitle") : t("questionReview.selectAllTitle")}
       data-active={allVisibleSelected ? "true" : "false"}
     >
       <Image
@@ -551,7 +553,7 @@ const premiumPath = `/premium?next=${encodeURIComponent(premiumNextPath)}`;
             setActiveSub(isActive ? null : sub.key);
           }}
         >
-          {sub.label.replace(/^#/, "")}
+          {labelForTag(sub.key, t)}
         </button>
       );
     })}
@@ -588,7 +590,7 @@ const premiumPath = `/premium?next=${encodeURIComponent(premiumNextPath)}`;
       const topicKey = tags.find((t) => !t.includes(':'));
       return (
         <span className={styles.qType}>
-          {topicKey ? labelForTag(topicKey) : 'Unclassified'}
+          {topicKey ? labelForTag(topicKey, t) : t('questionReview.unclassified')}
         </span>
       );
     })()}
@@ -600,8 +602,8 @@ onClick={(e) => {
   e.stopPropagation();
   toggle(item.id);
 }}
-  aria-label={isBookmarked(item.id) ? 'Remove bookmark' : 'Add bookmark'}
-  title={isBookmarked(item.id) ? 'Bookmarked' : 'Bookmark'}
+  aria-label={isBookmarked(item.id) ? t('shared.bookmarks.removeAria') : t('shared.bookmarks.addAria')}
+  title={isBookmarked(item.id) ? t('shared.bookmarks.activeTitle') : t('shared.bookmarks.idleTitle')}
   data-bookmarked={isBookmarked(item.id) ? 'true' : 'false'}
 >
   <span className={styles.bookmarkIcon} aria-hidden="true" />
@@ -620,7 +622,7 @@ onClick={(e) => {
                 <div className={styles.imageWrap}>
                   <Image
                     src={item.assets[0].src}
-                    alt={`Question ${item.number}`}
+                    alt={t('shared.questionImageAlt')}
                     fill
                     className={styles.image}
                     draggable={false}
@@ -642,7 +644,7 @@ onClick={(e) => {
           className={`${styles.option} ${correct ? styles.optionCorrect : ''}`}
         >
           <span className={styles.optionKey}>{k}.</span>
-          {k === 'R' ? 'Right' : 'Wrong'}
+          {k === 'R' ? t('test.rowOptions.right') : t('test.rowOptions.wrong')}
         </li>
       );
     })}
@@ -671,10 +673,10 @@ onClick={(e) => {
 <div className={styles.tagRow}>
   {(() => {
     const tags = derivedById.get(item.id) ?? [];
-    const subs = tags.filter((t) => t.includes(":") && !t.endsWith(":all"));
-    return subs.map((t) => (
-      <span key={t} className={styles.tagPill}>
-        {labelForTag(t)}
+    const subs = tags.filter((tag) => tag.includes(":") && !tag.endsWith(":all"));
+    return subs.map((tag) => (
+      <span key={tag} className={styles.tagPill}>
+        {labelForTag(tag, t)}
       </span>
     ));
   })()}
@@ -700,8 +702,8 @@ onClick={(e) => {
 
     window.scrollTo({ top: 0, behavior: prefersReduced ? 'auto' : 'smooth' });
   }}
-  aria-label="Scroll to top"
-  title="Back to top"
+  aria-label={t('shared.scrollToTop.ariaLabel')}
+  title={t('shared.scrollToTop.title')}
 >
   <span className={styles.toTopIcon} aria-hidden="true">
     <Image

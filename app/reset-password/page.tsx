@@ -4,16 +4,21 @@ import { useMemo, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import styles from "./reset-password.module.css";
 import { createClient } from "@/lib/supabase/client";
+import { useT } from "@/lib/i18n/useT";
+
+type MessageTone = "success" | "error";
 
 export default function ResetPasswordPage() {
   const router = useRouter();
   const supabase = useMemo(() => createClient(), []);
+  const { t } = useT();
 
   const [pw, setPw] = useState("");
   const [pw2, setPw2] = useState("");
 
   const [loading, setLoading] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
+  const [msgTone, setMsgTone] = useState<MessageTone>("error");
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
@@ -28,9 +33,10 @@ export default function ResetPasswordPage() {
 
   const submit = async () => {
     setMsg(null);
+    setMsgTone("error");
 
-    if (pw.length < 8) return setMsg("Password must be at least 8 characters.");
-    if (pw !== pw2) return setMsg("Passwords do not match.");
+    if (pw.length < 8) return setMsg(t("resetPassword.errors.passwordMin"));
+    if (pw !== pw2) return setMsg(t("resetPassword.errors.passwordMismatch"));
 
     setLoading(true);
     try {
@@ -41,7 +47,8 @@ export default function ResetPasswordPage() {
         return;
       }
 
-      setMsg("Password updated. Please sign in again.");
+      setMsgTone("success");
+      setMsg(t("resetPassword.success"));
       await supabase.auth.signOut();
       router.replace("/login");
     } finally {
@@ -53,17 +60,17 @@ export default function ResetPasswordPage() {
     <main className={styles.page}>
       <div className={styles.frame}>
         <section className={styles.sheet}>
-          <h1 className={styles.title}>Set a new password</h1>
+          <h1 className={styles.title}>{t("resetPassword.title")}</h1>
 
           {!ready ? (
             <div className={styles.errorBox}>
-              This reset link is invalid or expired. Please request a new reset email.
+              {t("resetPassword.invalidLink")}
             </div>
           ) : (
             <>
-              {msg && <div className={msg.includes("updated") ? styles.successBox : styles.errorBox}>{msg}</div>}
+              {msg && <div className={msgTone === "success" ? styles.successBox : styles.errorBox}>{msg}</div>}
 
-              <label className={styles.label}>New password</label>
+              <label className={styles.label}>{t("resetPassword.newPasswordLabel")}</label>
               <input
                 className={styles.input}
                 value={pw}
@@ -72,7 +79,7 @@ export default function ResetPasswordPage() {
                 autoComplete="new-password"
               />
 
-              <label className={styles.label}>Confirm password</label>
+              <label className={styles.label}>{t("resetPassword.confirmPasswordLabel")}</label>
               <input
                 className={styles.input}
                 value={pw2}
@@ -82,7 +89,7 @@ export default function ResetPasswordPage() {
               />
 
               <button className={styles.cta} disabled={loading} onClick={submit}>
-                {loading ? "Updating..." : "Update password"}
+                {loading ? t("resetPassword.updateLoading") : t("resetPassword.updateIdle")}
               </button>
             </>
           )}

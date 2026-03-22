@@ -4,9 +4,11 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import styles from "./success.module.css";
 import CSRBoundary from "@/components/CSRBoundary";
+import { useT } from "@/lib/i18n/useT";
 
 function Inner() {
   const router = useRouter();
+  const { t } = useT();
 
   return (
     <main className={styles.page}>
@@ -14,7 +16,7 @@ function Inner() {
         <div className={styles.confettieWrap}>
           <Image
             src="/images/checkout/confetti-bg.png"
-            alt="checkout background"
+            alt={t("checkout.backgroundAlt")}
             fill
             priority
             className={styles.confettiBg}
@@ -25,16 +27,16 @@ function Inner() {
         <div className={styles.centerBlock}>
           <Image
             src="/images/checkout/bluecheck-icon.png"
-            alt="Checkout unavailable"
+            alt={t("checkout.iconAlt")}
             width={100}
             height={100}
             priority
             className={styles.checkIcon}
           />
 
-          <h1 className={styles.title}>Web Checkout Unavailable</h1>
+          <h1 className={styles.title}>{t("checkout.successTitle")}</h1>
           <p className={styles.subtitle}>
-            Premium purchases are currently available only in the mobile app.
+            {t("checkout.successSubtitle")}
           </p>
         </div>
 
@@ -44,7 +46,7 @@ function Inner() {
             className={styles.homeBtn}
             onClick={() => router.push("/premium")}
           >
-            Back to Premium
+            {t("shared.common.backToPremium")}
           </button>
         </footer>
       </div>

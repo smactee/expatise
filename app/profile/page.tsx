@@ -2,7 +2,7 @@
 
 'use client';
 
-import React, { useRef, useState, useEffect, type ChangeEvent } from 'react';
+import React, { useId, useRef, useState, useEffect, type ChangeEvent } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import styles from './profile.module.css';
@@ -22,11 +22,15 @@ import { Capacitor } from "@capacitor/core";
 import { Purchases } from "@revenuecat/purchases-capacitor";
 import { ensureRevenueCat } from "@/lib/billing/revenuecat";
 import { useEntitlements } from "@/components/EntitlementsProvider.client";
+import type { EntitlementSource } from "@/lib/entitlements/types";
+import { useT } from '@/lib/i18n/useT';
+import { LANGUAGE_OPTIONS, getCurrentLanguageOption, isEnabledLanguageOption } from '@/lib/i18n/languageOptions';
 
 
 
 function Inner() {
   const { avatarUrl, setAvatarUrl, name, setName, email, setEmail, saveProfile, clearProfile } = useUserProfile(); // from context
+  const { locale, setLocale, t } = useT();
 
   // ---- avatar upload state + handlers ----
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
@@ -39,34 +43,38 @@ function Inner() {
   const [showPremiumModal, setShowPremiumModal] = useState(false);
   const [saving, setSaving] = useState(false);
   const [saveMsg, setSaveMsg] = useState<string | null>(null);
+  const [languageMenuOpen, setLanguageMenuOpen] = useState(false);
+  const languageMenuRef = useRef<HTMLDivElement | null>(null);
+  const languageMenuId = useId();
 
   const canManageCredentials = authed && (method === "email");
   const RC_ENTITLEMENT_ID = process.env.NEXT_PUBLIC_REVENUECAT_ENTITLEMENT_ID ?? "Premium";
+  const currentLanguage = getCurrentLanguageOption(locale);
 
 
 const signInDisplay = (() => {
   // 1) guest
   if (!authed) {
-    return { label: "Signed in as guest.", icon: null as any };
+    return { label: t('profile.signIn.guest'), icon: null as any };
   }
 
   // 2) email/password local account
   if (method === "email") {
-    return { label: sessionEmail ?? "Email sign-in", icon: faEnvelope };
+    return { label: sessionEmail ?? t('profile.signIn.email'), icon: faEnvelope };
   }
 
   // 3) social providers
   if (provider === "google") {
-    return { label: "Google sign-in", icon: faGoogle };
+    return { label: t('profile.signIn.google'), icon: faGoogle };
   }
   if (provider === "apple") {
-    return { label: "Apple ID", icon: faApple };
+    return { label: t('profile.signIn.apple'), icon: faApple };
   }
   if (provider === "wechat") {
-    return { label: "WeChat", icon: faWeixin };
+    return { label: t('profile.signIn.wechat'), icon: faWeixin };
   }
 
-  return { label: "Social sign-in", icon: null as any };
+  return { label: t('profile.signIn.social'), icon: null as any };
 })();
 
 
@@ -154,7 +162,7 @@ const handleSave = async (e: React.SyntheticEvent) => {
   setSaving(true);
   try {
     saveProfile();
-    setSaveMsg("Saved!");
+    setSaveMsg(t('profile.messages.saved'));
     setTimeout(() => setSaveMsg(null), 450);
   } finally {
     setSaving(false);
@@ -175,33 +183,90 @@ const goComingSoon = (feature: string) => {
 const { userKey: entUserKey, refresh: refreshEnt, grantPremium, isPremium } = useEntitlements();
 const [restoring, setRestoring] = useState(false);
 const [restoreMsg, setRestoreMsg] = useState<string | null>(null);
+const restoreBusyRef = useRef(false);
+const restoreMsgTimerRef = useRef<number | null>(null);
+
+const showRestoreMsg = (msg: string, durationMs = 1200) => {
+  setRestoreMsg(msg);
+
+  if (restoreMsgTimerRef.current) {
+    window.clearTimeout(restoreMsgTimerRef.current);
+  }
+
+  restoreMsgTimerRef.current = window.setTimeout(() => {
+    setRestoreMsg(null);
+    restoreMsgTimerRef.current = null;
+  }, durationMs);
+};
+
+useEffect(() => {
+  return () => {
+    if (restoreMsgTimerRef.current) {
+      window.clearTimeout(restoreMsgTimerRef.current);
+    }
+  };
+}, []);
+
+useEffect(() => {
+  if (!languageMenuOpen) return;
+
+  const handlePointerDown = (event: MouseEvent | TouchEvent) => {
+    const target = event.target;
+    if (!languageMenuRef.current || !(target instanceof Node)) return;
+    if (languageMenuRef.current.contains(target)) return;
+    setLanguageMenuOpen(false);
+  };
+
+  const handleEscape = (event: KeyboardEvent) => {
+    if (event.key !== 'Escape') return;
+    setLanguageMenuOpen(false);
+  };
+
+  document.addEventListener('mousedown', handlePointerDown);
+  document.addEventListener('touchstart', handlePointerDown);
+  document.addEventListener('keydown', handleEscape);
+
+  return () => {
+    document.removeEventListener('mousedown', handlePointerDown);
+    document.removeEventListener('touchstart', handlePointerDown);
+    document.removeEventListener('keydown', handleEscape);
+  };
+}, [languageMenuOpen]);
 
 const handleRestorePurchases = async (e: React.SyntheticEvent) => {
-  // Require login (same UX as Save)
+  if (authLoading || restoreBusyRef.current || restoring) return;
+
+  // Restore requires a real signed-in account, not the generic premium modal flow.
   if (!authed) {
-    requireLogin(e);
+    e.preventDefault();
+    e.stopPropagation();
+    showRestoreMsg(t('profile.messages.restoreLoginRequired'));
     return;
   }
 
   // Restore only makes sense in native store builds
   if (!Capacitor.isNativePlatform()) {
-    setRestoreMsg("Restore purchases is available in the mobile app.");
-    setTimeout(() => setRestoreMsg(null), 900);
+    showRestoreMsg(t('profile.messages.restoreMobileOnly'));
     return;
   }
 
+  restoreBusyRef.current = true;
   setRestoring(true);
   setRestoreMsg(null);
 
   try {
     // Ensure RC is configured + tied to the logged-in user
-    await ensureRevenueCat(entUserKey);
+    const ready = await ensureRevenueCat(entUserKey);
+    if (!ready) {
+      showRestoreMsg(t('profile.messages.restoreUnavailable'));
+      return;
+    }
 
     const { customerInfo } = await Purchases.restorePurchases();
     const active = customerInfo?.entitlements?.active?.[RC_ENTITLEMENT_ID];
 
     if (!active) {
-      setRestoreMsg("No purchases found to restore.");
+      showRestoreMsg(t('profile.messages.restoreNone'));
       return;
     }
 
@@ -212,18 +277,18 @@ const handleRestorePurchases = async (e: React.SyntheticEvent) => {
         : undefined;
 
     const periodType = String(active.periodType ?? "").toUpperCase();
-    const source =
+    const source: EntitlementSource =
       expMs == null ? "lifetime" : periodType === "TRIAL" ? "trial" : "subscription";
 
-    grantPremium(source as any, expMs);
+    grantPremium(source, expMs);
     refreshEnt();
 
-    setRestoreMsg("Purchases restored.");
+    showRestoreMsg(t('profile.messages.restoreSuccess'));
   } catch (err: any) {
-    setRestoreMsg(err?.message ?? "Restore failed. Please try again.");
+    showRestoreMsg(err?.message ?? t('profile.messages.restoreFailed'));
   } finally {
     setRestoring(false);
-    setTimeout(() => setRestoreMsg(null), 1200);
+    restoreBusyRef.current = false;
   }
 };
 
@@ -251,7 +316,7 @@ const handleRestorePurchases = async (e: React.SyntheticEvent) => {
       {avatarPreview ? (
         <Image
           src={avatarPreview}
-          alt="User avatar"
+          alt={t('profile.avatarAlt')}
           width={120}
           height={120}
           className={styles.avatarImage}
@@ -260,7 +325,7 @@ const handleRestorePurchases = async (e: React.SyntheticEvent) => {
    // default before user uploads anything
         <Image
   src="/images/profile/imageupload-icon.png"
-  alt="image upload icon"
+  alt={t('profile.avatarPlaceholderAlt')}
   width={56}
   height={56}  
   className={styles.avatarPlaceholder}
@@ -349,12 +414,12 @@ const handleRestorePurchases = async (e: React.SyntheticEvent) => {
     <span className={styles.premiumIcon}>
       <Image 
         src="/images/profile/crown-icon.png"
-        alt="Premium Icon"
+        alt={t('profile.premiumIconAlt')}
         width={35}
         height={35}
       />
     </span>
-    <span className={styles.premiumText}>Premium Plan</span>
+    <span className={styles.premiumText}>{t('profile.premiumPlan')}</span>
 </button>
         {/* Settings list */}
       <div className={styles.settingsList}>
@@ -368,13 +433,13 @@ const handleRestorePurchases = async (e: React.SyntheticEvent) => {
                 <span className={styles.settingsIcon}>
                   <Image
                     src="/images/profile/lightdarkmode-icon.png"
-                    alt="Light / Dark Mode Icon"
+                    alt={t('profile.lightDarkModeIconAlt')}
                     width={24}
                     height={24}
                   />
                 </span>
                 <span className={styles.settingsLabel}>
-                  Light / Dark Mode
+                  {t('profile.lightDarkMode')}
                 </span>
               </div>
               <div
@@ -400,13 +465,13 @@ const handleRestorePurchases = async (e: React.SyntheticEvent) => {
       <span className={styles.settingsIcon}>
         <Image
           src="/images/profile/lock-icon.png"
-          alt="Account security"
+          alt={t('profile.accountSecurityIconAlt')}
           width={24}
           height={24}
         />
       </span>
 
-      <span className={styles.settingsLabel}>Change Email/Password</span>
+      <span className={styles.settingsLabel}>{t('profile.changeCredentials')}</span>
     </div>
 
     <span className={styles.chevron}>›</span>
@@ -417,7 +482,7 @@ const handleRestorePurchases = async (e: React.SyntheticEvent) => {
   type="button"
   className={styles.settingsRow}
   onClick={(e) => handleRestorePurchases(e)}
-  disabled={restoring}
+  disabled={restoring || authLoading}
 >
   <div className={styles.settingsLeft}>
    <span
@@ -425,7 +490,7 @@ const handleRestorePurchases = async (e: React.SyntheticEvent) => {
   aria-hidden="true"
 />
     <span className={styles.settingsLabel}>
-      {restoring ? "Restoring..." : "Restore Purchases"}
+      {restoring ? t('profile.restoring') : t('profile.restorePurchases')}
     </span>
   </div>
   <span className={styles.chevron}>›</span>
@@ -440,12 +505,12 @@ const handleRestorePurchases = async (e: React.SyntheticEvent) => {
     <span className={styles.settingsIcon}>
       <Image
         src="/images/profile/privacypolicy-icon.png"
-        alt="Privacy Policy"
+        alt={t('profile.privacyPolicyIconAlt')}
         width={24}
         height={24}
       />
     </span>
-    <span className={styles.settingsLabel}>Privacy Policy</span>
+    <span className={styles.settingsLabel}>{t('profile.privacyPolicy')}</span>
   </div>
   <span className={styles.chevron}>›</span>
 </button>
@@ -459,12 +524,12 @@ const handleRestorePurchases = async (e: React.SyntheticEvent) => {
     <span className={styles.settingsIcon}>
       <Image
         src="/images/profile/privacypolicy-icon.png"
-        alt="Terms of Service"
+        alt={t('profile.termsIconAlt')}
         width={24}
         height={24}
       />
     </span>
-    <span className={styles.settingsLabel}>Terms of Service</span>
+    <span className={styles.settingsLabel}>{t('profile.terms')}</span>
   </div>
   <span className={styles.chevron}>›</span>
 </button>
@@ -481,52 +546,108 @@ const handleRestorePurchases = async (e: React.SyntheticEvent) => {
     <span className={styles.settingsIcon}>
       <Image
         src="/images/profile/privacypolicy-icon.png"
-        alt="Delete Account"
+        alt={t('profile.deleteAccountIconAlt')}
         width={24}
         height={24}
       />
     </span>
-    <span className={styles.settingsLabel}>Delete Account</span>
+    <span className={styles.settingsLabel}>{t('profile.deleteAccount')}</span>
   </div>
   <span className={styles.chevron}>›</span>
 </button>
+        <div
+          className={`${styles.settingsMenuBlock} ${languageMenuOpen ? styles.settingsMenuBlockOpen : ''}`}
+          ref={languageMenuRef}
+        >
+          <button
+            type="button"
+            className={styles.settingsRow}
+            onClick={() => setLanguageMenuOpen((open) => !open)}
+            aria-haspopup="menu"
+            aria-expanded={languageMenuOpen}
+            aria-controls={languageMenuId}
+            aria-label={t('profile.language.switchAria', { language: currentLanguage.label })}
+          >
+            <div className={styles.settingsLeft}>
+              <span className={styles.settingsIcon}>
+                <Image 
+                  src="/images/profile/aboutus-icon.png"
+                  alt={t('profile.languageIconAlt')}
+                  width={24}
+                  height={24}
+                />
+              </span>
+              <span className={styles.settingsLabel}>{t('profile.language.label')}</span>
+            </div>
 
-        <button
-  type="button"
-  className={styles.settingsRow}
-  onClick={(e) => goComingSoon("Languages")}
->
-          <div className={styles.settingsLeft}>
-            <span className={styles.settingsIcon}>
-              <Image 
-                src="/images/profile/aboutus-icon.png"
-                alt="About Us Icon"
-                width={24}
-                height={24}
-              />
+            <span className={styles.languageValue}>
+              <span className={styles.languageCurrent}>{currentLanguage.label}</span>
+              <span
+                className={`${styles.chevron} ${languageMenuOpen ? styles.chevronOpen : ''}`}
+                aria-hidden="true"
+              >
+                ›
+              </span>
             </span>
-            <span className={styles.settingsLabel}>Languages</span>
-          </div>
-          <span className={styles.chevron}>›</span>
-        </button>
+          </button>
+
+          {languageMenuOpen ? (
+            <div
+              id={languageMenuId}
+              className={styles.languageDropdown}
+              role="menu"
+              aria-label={t('profile.language.label')}
+            >
+              {LANGUAGE_OPTIONS.map((option) => {
+                const isSelected = option.code === locale;
+
+                return (
+                  <button
+                    key={option.code}
+                    type="button"
+                    className={`${styles.languageOption} ${
+                      isSelected ? styles.languageOptionSelected : ''
+                    } ${!option.enabled ? styles.languageOptionDisabled : ''}`}
+                    role={option.enabled ? 'menuitemradio' : 'menuitem'}
+                    aria-checked={option.enabled ? isSelected : undefined}
+                    aria-disabled={!option.enabled}
+                    disabled={!option.enabled}
+                    onClick={() => {
+                      if (!isEnabledLanguageOption(option)) return;
+                      setLocale(option.code);
+                      setLanguageMenuOpen(false);
+                    }}
+                  >
+                    <span className={styles.languageOptionLabel}>{option.label}</span>
+                    {!option.enabled ? (
+                      <span className={`${styles.languageOptionMeta} ${styles.languageOptionStatus}`}>
+                        {t('profile.language.notReady')}
+                      </span>
+                    ) : null}
+                  </button>
+                );
+              })}
+            </div>
+          ) : null}
+        </div>
 
 
 
         <button
   type="button"
   className={styles.settingsRow}
-  onClick={(e) => goComingSoon("Notifications")}
+  onClick={() => goComingSoon(t('comingSoon.notificationsKey'))}
 >
           <div className={styles.settingsLeft}>
             <span className={styles.settingsIcon}>
               <Image 
                 src="/images/profile/bell-icon.png"
-                alt="Exam Registration Icon"
+                alt={t('profile.notificationsIconAlt')}
                 width={24}
                 height={24}
               />
             </span>
-            <span className={styles.settingsLabel}>Notifications</span>
+            <span className={styles.settingsLabel}>{t('profile.notifications')}</span>
           </div>
           <span className={styles.chevron}>›</span>
         </button>
@@ -536,11 +657,11 @@ const handleRestorePurchases = async (e: React.SyntheticEvent) => {
 
 {/* Save & Log out button */}
 <div className={styles.actionRow}>
- <button
+<button
   className={styles.saveButton}
   onClick={handleSave}
 >
-  {saving ? "Saving..." : "Save"}
+  {saving ? t('shared.common.saving') : t('shared.common.save')}
 </button>
 
 
@@ -548,7 +669,7 @@ const handleRestorePurchases = async (e: React.SyntheticEvent) => {
   <LogoutButton className={styles.logoutButton} />
 ) : (
   <Link className={styles.loginButton} href="/login?next=/profile">
-    Log in
+    {t('shared.premiumFeatureModal.login')}
   </Link>
 )}
 </div>
@@ -558,7 +679,7 @@ const handleRestorePurchases = async (e: React.SyntheticEvent) => {
     <div className={styles.toastCard}>
       <Image
         src="/images/profile/greencheck-icon.png"
-        alt="Checkmark Icon"
+        alt={t('profile.toastCheckAlt')}
         width={16}
         height={16}
         className={styles.toastIcon}
@@ -574,7 +695,7 @@ const handleRestorePurchases = async (e: React.SyntheticEvent) => {
     <div className={styles.toastCard}>
       <Image
         src="/images/profile/greencheck-icon.png"
-        alt="Info"
+        alt={t('profile.toastInfoAlt')}
         width={16}
         height={16}
         className={styles.toastIcon}

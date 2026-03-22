@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import CSRBoundary from '@/components/CSRBoundary';
+import { useT } from '@/lib/i18n/useT';
 
 function safeDecode(v: string) {
   try {
@@ -18,6 +19,7 @@ function isSafeInternalPath(p: string) {
 
 function Inner({ fallbackHref = '/' }: { fallbackHref?: string }) {
   const sp = useSearchParams();
+  const { t } = useT();
 
   // 1) Prefer explicit returnTo in URL
   const param = sp.get('returnTo') ?? '';
@@ -37,7 +39,7 @@ function Inner({ fallbackHref = '/' }: { fallbackHref?: string }) {
 
   const href = isSafeInternalPath(candidate) ? candidate : fallbackHref;
 
-  return <Link href={href}>Return</Link>;
+  return <Link href={href}>{t('shared.common.return')}</Link>;
 }
 
 export default function BackLink() {

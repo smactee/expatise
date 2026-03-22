@@ -2,9 +2,11 @@
 
 import { useEffect, useState } from 'react';
 import styles from './BrandIntroSplash.module.css';
+import { useT } from '@/lib/i18n/useT';
 
 export default function BrandIntroSplash() {
   const [show, setShow] = useState(true);
+  const { t } = useT();
 
   useEffect(() => {
     // optional: don't replay during same session
@@ -29,7 +31,7 @@ export default function BrandIntroSplash() {
         <img
           className={styles.wordmark}
           src="/splash/wordmark.webp"
-          alt="Expatise"
+          alt={t('shared.brandAlt')}
         />
       </div>
     </div>

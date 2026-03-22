@@ -14,12 +14,14 @@ import { isValidEmail, normalizeEmail, safeNextPath } from '@/lib/auth';
 import { NATIVE_OAUTH_REDIRECT_URI } from '@/lib/auth/oauth';
 import CSRBoundary from '@/components/CSRBoundary';
 import { createClient } from '@/lib/supabase/client';
+import { useT } from '@/lib/i18n/useT';
 
 
 function Inner() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const nextParam = safeNextPath(searchParams.get("next"), "/");
+  const { t } = useT();
 
 
   const [email, setEmail] = useState('user@expatise.com');
@@ -51,7 +53,7 @@ const showToast = (msg: string) => {
   if (toastTimerRef.current) window.clearTimeout(toastTimerRef.current);
   toastTimerRef.current = window.setTimeout(() => setError(null), 500);
 };
-const comingSoon = (provider: string) => showToast(`${provider} sign-in is coming soon.`);
+const comingSoon = (provider: string) => showToast(t('login.social.comingSoon', { provider }));
 
 
 
@@ -65,7 +67,7 @@ const comingSoon = (provider: string) => showToast(`${provider} sign-in is comin
     setError(null);
 
     if (!emailOK) {
-      setError("Please enter a valid email address.");
+      setError(t('login.errors.invalidEmail'));
       return;
     }
     if (!canSubmit) return;
@@ -84,7 +86,7 @@ const comingSoon = (provider: string) => showToast(`${provider} sign-in is comin
     // Friendly message for bad credentials
     const msg =
       /invalid login credentials/i.test(error.message)
-        ? "Email or password doesn’t match. Try again or reset your password."
+        ? t('login.errors.invalidCredentials')
         : error.message;
 
     setError(msg);
@@ -100,7 +102,7 @@ router.refresh();
 
 router.replace(nextParam);
 } catch {
-  setError("Network error. Please try again.");
+  setError(t('login.errors.network'));
 }
 
   finally {
@@ -121,7 +123,7 @@ router.replace(nextParam);
         <div className={styles.hero}>
           <Image
             src="/images/auth/login-screen.png"
-            alt="Welcome background"
+            alt={t('login.heroAlt')}
             fill
             priority
             className={styles.heroImg}
@@ -130,15 +132,15 @@ router.replace(nextParam);
         </div>
 
         <section className={styles.sheet}>
-          <h1 className={styles.title}>Welcome!</h1>
-          <p className={styles.subtitle}>Sign in to continue.</p>
+          <h1 className={styles.title}>{t('login.title')}</h1>
+          <p className={styles.subtitle}>{t('login.subtitle')}</p>
 
           <form onSubmit={onSubmit} className={styles.form}>
             <label className={styles.row}>
               <span className={styles.icon}>
                 <Image 
                 src="/images/auth/username-icon.png"
-                alt="Username"
+                alt={t('login.emailIconAlt')}
                 width={22}
                 height={22}
                 />
@@ -147,7 +149,7 @@ router.replace(nextParam);
                 className={styles.input}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="Email"
+                placeholder={t('login.emailPlaceholder')}
                 autoComplete="email"
                 type="email"
               />
@@ -157,7 +159,7 @@ router.replace(nextParam);
               <span className={styles.icon}>
                 <Image 
                 src="/images/auth/password-icon.png"
-                alt="Password"
+                alt={t('login.passwordIconAlt')}
                 width={22}
                 height={22}
                 />
@@ -177,7 +179,7 @@ router.replace(nextParam);
                 type="button"
                 className={styles.eyeBtn}
                 onClick={() => setShowPassword((v) => !v)}
-                aria-label={showPassword ? "Hide password" : "Show password"}
+                aria-label={showPassword ? t('login.passwordToggleHide') : t('login.passwordToggleShow')}
               >
                 <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
               </button>
@@ -185,7 +187,7 @@ router.replace(nextParam);
 
             {/* ✅ (2) Caps Lock warning */}
             {capsLockOn && (
-              <div className={styles.capsWarning}>Caps Lock is on</div>
+              <div className={styles.capsWarning}>{t('login.capsLockWarning')}</div>
             )}
 
             {/* ✅ (4) Friendly error state */}
@@ -205,13 +207,13 @@ router.replace(nextParam);
                 className={styles.linkInline}
                 onClick={() => router.push("/forgot-password")}
               >
-                Forgot password?
+                {t('login.forgotPassword')}
               </button>
             </div>
 
             <button type="submit" className={styles.cta} disabled={!canSubmit}>
               {/* ✅ (6) Loading state */}
-              <span>{isSubmitting ? "Signing in..." : "Sign In"}</span>
+              <span>{isSubmitting ? t('login.submitLoading') : t('login.submitIdle')}</span>
               <span className={styles.arrow}>→</span>
             </button>
           </form>
@@ -223,7 +225,7 @@ router.replace(nextParam);
             className={styles.linkBtn}
             onClick={() => setIsCreateOpen(true)}
             >
-              Create a new account
+              {t('login.createAccount')}
               </button>
 
 <button
@@ -246,7 +248,7 @@ router.replace(nextParam);
     router.replace(nextParam);
   }}
 >
-  Continue as guest
+  {t('login.continueAsGuest')}
 </button>
 
           </div>
@@ -259,7 +261,7 @@ router.replace(nextParam);
             />  
             <div className={styles.snsBlock}>
   <div className={styles.snsDivider}>
-    <span>or continue with</span>
+    <span>{t('login.socialDivider')}</span>
   </div>
 
   <div className={styles.snsRowSmall}>
@@ -269,7 +271,7 @@ router.replace(nextParam);
 <button
   type="button"
   className={styles.snsBtnSmall}
-  aria-label="Continue with Google"
+  aria-label={t('login.social.googleAria')}
   disabled={oauthSubmitting || isSubmitting}
   aria-busy={oauthSubmitting ? "true" : "false"}
   onClick={async () => {
@@ -313,7 +315,7 @@ router.replace(nextParam);
 
         const url = data?.url;
 if (!url) {
-  setError("No OAuth URL returned.");
+  setError(t('login.errors.noOauthUrl'));
   return;
 }
 await Browser.open({ url });
@@ -332,7 +334,7 @@ return;
 
       if (error) setError(error.message);
     } catch (err: any) {
-      setError(err?.message ?? "Google sign-in failed. Please try again.");
+      setError(err?.message ?? t('login.errors.googleFailed'));
     } finally {
       setOauthSubmitting(false);
       authBusyRef.current = false;
@@ -347,10 +349,10 @@ return;
 <button
   type="button"
   className={`${styles.snsBtnSmall} ${styles.snsBtnSoon}`}
-  aria-label="Continue with Apple"
+  aria-label={t('login.social.appleAria')}
   aria-disabled="true"
-  onClick={() => comingSoon("Apple")}
-  title="Coming soon"
+  onClick={() => comingSoon(t('login.providers.apple'))}
+  title={t('login.social.comingSoonTitle')}
 >
   <FontAwesomeIcon icon={faApple} />
 </button>
@@ -360,10 +362,10 @@ return;
 <button
   type="button"
   className={`${styles.snsBtnSmall} ${styles.snsBtnSoon}`}
-  aria-label="Continue with WeChat"
+  aria-label={t('login.social.wechatAria')}
   aria-disabled="true"
-  onClick={() => comingSoon("WeChat")}
-  title="Coming soon"
+  onClick={() => comingSoon(t('login.providers.wechat'))}
+  title={t('login.social.comingSoonTitle')}
 >
   <FontAwesomeIcon icon={faWeixin} />
 </button>

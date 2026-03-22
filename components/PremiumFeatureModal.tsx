@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import styles from "./PremiumFeatureModal.module.css";
+import { useT } from "@/lib/i18n/useT";
 
 type PremiumFeatureModalProps = {
   open: boolean;
@@ -18,15 +19,15 @@ export default function PremiumFeatureModal({
   isAuthed,
   premiumPath = "/premium",
 }: PremiumFeatureModalProps) {
+  const { t } = useT();
+
   if (!open) return null;
 
   const loginHref = `/login?next=${encodeURIComponent(nextPath)}`;
-
-  const title = "This feature is available with Premium.";
-
+  const title = t("shared.premiumFeatureModal.title");
   const text = isAuthed
-    ? "You are currently on the free plan. Upgrade to Premium to access this feature and other premium tools."
-    : "You are currently using a free guest account. Log in to save your progress and upgrade to Premium to access this feature.";
+    ? t("shared.premiumFeatureModal.authedText")
+    : t("shared.premiumFeatureModal.guestText");
 
   return (
     <div className={styles.guestOverlay} onClick={onClose}>
@@ -43,11 +44,11 @@ export default function PremiumFeatureModal({
                 className={styles.guestPrimary}
                 onClick={onClose}
               >
-                Not now
+                {t("shared.premiumFeatureModal.notNow")}
               </button>
 
               <Link className={styles.guestSecondary} href={premiumPath}>
-                Upgrade to Premium
+                {t("shared.premiumFeatureModal.upgrade")}
               </Link>
             </>
           ) : (
@@ -57,11 +58,11 @@ export default function PremiumFeatureModal({
                 className={styles.guestPrimary}
                 onClick={onClose}
               >
-                Continue as guest
+                {t("shared.premiumFeatureModal.continueAsGuest")}
               </button>
 
               <Link className={styles.guestSecondary} href={loginHref}>
-                Log in
+                {t("shared.premiumFeatureModal.login")}
               </Link>
             </>
           )}

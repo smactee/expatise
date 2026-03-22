@@ -2,6 +2,7 @@
 
 import { useEffect, useId, useState } from 'react';
 import styles from './BrandSplash.module.css';
+import { useT } from '@/lib/i18n/useT';
 
 type BrandSplashProps = {
   /** Called when the splash finishes (after durationMs). */
@@ -34,6 +35,7 @@ export default function BrandSplash({
   const [show, setShow] = useState(true);
   const uid = useId();
   const maskId = `pillarHoleMask-${uid}`;
+  const { t } = useT();
 
   useEffect(() => {
   const img = new Image();
@@ -96,7 +98,7 @@ export default function BrandSplash({
 
       {/* Wordmark reveal (your Splash_05) */}
       <div className={styles.wordmarkWrap} aria-hidden>
-        <img className={styles.wordmark} src={wordmarkSrc} alt="Expatise" />
+        <img className={styles.wordmark} src={wordmarkSrc} alt={t('shared.brandAlt')} />
       </div>
     </div>
   );

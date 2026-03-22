@@ -6,10 +6,12 @@ import styles from "./forgot-password.module.css";
 import { isValidEmail, normalizeEmail } from "../../lib/auth";
 import { buildAuthCallbackUrl } from "@/lib/auth/oauth";
 import { createClient } from "@/lib/supabase/client";
+import { useT } from "@/lib/i18n/useT";
 
 export default function ForgotPasswordPage() {
   const router = useRouter();
   const supabase = useMemo(() => createClient(), []);
+  const { t } = useT();
 
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
@@ -32,7 +34,7 @@ export default function ForgotPasswordPage() {
 
     const emailNorm = normalizeEmail(email);
     if (!isValidEmail(emailNorm)) {
-      setError("Please enter a valid email.");
+      setError(t("forgotPassword.invalidEmail"));
       return;
     }
 
@@ -56,13 +58,13 @@ export default function ForgotPasswordPage() {
     <main className={styles.page}>
       <div className={styles.frame}>
         <section className={styles.sheet}>
-          <h1 className={styles.title}>Reset password</h1>
+          <h1 className={styles.title}>{t("forgotPassword.title")}</h1>
 
           {!sent ? (
             <>
-              <p className={styles.subtitle}>Enter your email and we’ll send you a reset link.</p>
+              <p className={styles.subtitle}>{t("forgotPassword.subtitle")}</p>
 
-              <label className={styles.label}>Email</label>
+              <label className={styles.label}>{t("forgotPassword.emailLabel")}</label>
               <input
                 className={styles.input}
                 value={email}
@@ -70,22 +72,22 @@ export default function ForgotPasswordPage() {
                 type="email"
                 autoComplete="email"
                 onFocus={() => setError(null)}
-                placeholder="user@expatise.com"
+                placeholder={t("forgotPassword.emailPlaceholder")}
               />
 
               {error && <div className={styles.errorBox}>{error}</div>}
 
               <button className={styles.cta} disabled={!canSend} onClick={sendLink}>
-                {loading ? "Sending..." : "Send reset link"}
+                {loading ? t("forgotPassword.sendLoading") : t("forgotPassword.sendIdle")}
               </button>
             </>
           ) : (
             <>
               <div className={styles.successBox}>
-                If that email exists, we sent a reset link. Open it to set a new password.
+                {t("forgotPassword.success")}
               </div>
               <button className={styles.cta} onClick={() => router.push("/login")}>
-                Back to sign in
+                {t("shared.common.backToSignIn")}
               </button>
             </>
           )}

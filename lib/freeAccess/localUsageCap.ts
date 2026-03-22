@@ -3,7 +3,7 @@
 
 export const FREE_CAPS = {
   questionsShown: 420,
-  examStarts: 7,
+  examStarts: 10,
 } as const;
 
 export type UsageCapState = {
@@ -302,13 +302,14 @@ export function markQuestionShown(userKey: string, viewSig?: string): UsageCapSt
 
 /**
  * Can we start a NEW exam?
- * - blocks the 6th start
+ * - allows starts 1 through 10
+ * - blocks the 11th start
  * - optional preflight: require remaining free questions >= requiredQuestions (e.g. 50)
  */
 export function canStartExam(userKey: string, opts?: { requiredQuestions?: number }) {
   const s = readState(userKey);
 
-  if (s.examStarts >= FREE_CAPS.examStarts) return false; // block 6th start
+  if (s.examStarts >= FREE_CAPS.examStarts) return false; // block 11th start
 
   const required = opts?.requiredQuestions ?? 0;
   if (required > 0 && remainingQuestions(userKey) < required) return false;

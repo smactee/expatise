@@ -5,6 +5,7 @@ import { useEffect, useMemo, useRef, useState, useId, type CSSProperties } from 
 import { useOnceInView } from './useOnceInView.client';
 import { useBootSweepOnce } from './useBootSweepOnce.client';
 import styles from './ScreenTimeChart.module.css';
+import { useT } from '@/lib/i18n/useT';
 
 // ✅ Legend for Screen Time card header (moved out of StatsPage)
 export function ScreenTimeLegend({
@@ -14,22 +15,24 @@ export function ScreenTimeLegend({
   animate?: boolean;
   delayMs?: number;
 }) {
+  const { t } = useT();
+
   return (
     <div
       className={`${styles.statsLegend} ${animate ? styles.waterIn : styles.waterHidden}`}
       style={animate ? ({ animationDelay: `${delayMs}ms` } as CSSProperties) : undefined}
     >
       <span className={`${styles.statsLegendDot} ${styles.statsLegendDotYellow}`} />
-      <span className={styles.statsLegendLabel}>Test</span>
+      <span className={styles.statsLegendLabel}>{t('charts.screenTime.legendTest')}</span>
 
       <span className={`${styles.statsLegendDot} ${styles.statsLegendDotBlue}`} />
-      <span className={styles.statsLegendLabel}>Study</span>
+      <span className={styles.statsLegendLabel}>{t('charts.screenTime.legendStudy')}</span>
 
       <span className={styles.statsLegend__screenTime__totalGradientSwatch} />
-      <span className={styles.statsLegendLabel}>Total</span>
+      <span className={styles.statsLegendLabel}>{t('charts.screenTime.legendTotal')}</span>
 
       <span className={styles.statsLegend__screenTime__avgDottedSwatch} />
-      <span className={`${styles.statsLegendLabel} ${styles.statsLegendLabelAvg}`}>7D avg</span>
+      <span className={`${styles.statsLegendLabel} ${styles.statsLegendLabelAvg}`}>{t('charts.screenTime.legendSevenDayAvg')}</span>
     </div>
   );
 }
@@ -196,6 +199,7 @@ export default function ScreenTimeChart({
   streakDays?: number;
   onLegendReveal?: () => void;
 }) {
+  const { t } = useT();
 
   const [hoverIdx, setHoverIdx] = useState<number | null>(null);
 
@@ -508,11 +512,11 @@ const areaClipW = useMemo(() => {
 
   const confidenceNote =
     tooLittleOverall
-      ? `Low confidence: only ${model.weekTotal} minutes logged this week.`
+      ? t('charts.screenTime.lowConfidenceWeek', { minutes: model.weekTotal })
       : lowConfidenceStudy
-      ? 'Low confidence: study tracking not enabled yet (showing 0m study).'
+      ? t('charts.screenTime.lowConfidenceStudy')
       : lowConfidenceTimed
-      ? `Low confidence: only ${timedTestMinutesEstimate} timed-test minutes detected.`
+      ? t('charts.screenTime.lowConfidenceTimed', { minutes: timedTestMinutesEstimate ?? 0 })
       : null;
 
   const hover = hoverIdx != null ? model.points[hoverIdx] : null;
@@ -662,16 +666,16 @@ const areaClipW = useMemo(() => {
 
                           {hoverIdx === idx ? (
                             <div className={styles.tooltip} role="tooltip">
-                              <div className={styles.tipTitle}>{isToday ? 'Today' : dayLabel}</div>
+                              <div className={styles.tipTitle}>{isToday ? t('charts.screenTime.today') : dayLabel}</div>
                               <div className={styles.tipBody}>
                                 <div>
-                                  Test: <b>{p.deliberateMin}m</b>
+                                  {t('charts.screenTime.tooltipTest')}: <b>{p.deliberateMin}m</b>
                                 </div>
                                 <div>
-                                  Study: <b>{p.studyMin}m</b>
+                                  {t('charts.screenTime.tooltipStudy')}: <b>{p.studyMin}m</b>
                                 </div>
                                 <div>
-                                  Total: <b>{p.total}m</b> · {pctOfWeek}% of week
+                                  {t('charts.screenTime.tooltipTotal')}: <b>{p.total}m</b> · {t('charts.screenTime.tooltipPercentOfWeek', { percent: pctOfWeek })}
                                 </div>
                               </div>
                             </div>
@@ -703,7 +707,7 @@ const areaClipW = useMemo(() => {
                       : { top: clamp(avgLineY - 12, 0, plotPx - 14) }
                   }
                 >
-                  7D avg
+                  {t('charts.screenTime.avgLabel')}
                 </div>
               </div>
             </div>
@@ -722,7 +726,7 @@ const areaClipW = useMemo(() => {
                     key={`x-${p.key}`}
                     className={`${styles.dayLabel} ${isToday ? styles.dayLabelToday : ''}`}
                   >
-                    {isToday ? 'Today' : dayLabel.slice(0, 3)}
+                    {isToday ? t('charts.screenTime.today') : dayLabel.slice(0, 3)}
                   </div>
                 );
               })}
@@ -742,16 +746,16 @@ const areaClipW = useMemo(() => {
           }
         >
           <div className={styles.summaryTop}>
-            <b>7D total</b>: {weekTestTotal}m test · {weekStudyTotal}m study
+            <b>{t('charts.screenTime.summaryTotal')}</b>: {weekTestTotal}m {t('charts.screenTime.legendTest').toLowerCase()} · {weekStudyTotal}m {t('charts.screenTime.legendStudy').toLowerCase()}
           </div>
 
           <div className={styles.summaryRow2}>
             <span>
-              <b>Avg/day</b>: {Math.round(model.avgTotal)}m
+              <b>{t('charts.screenTime.summaryAvgPerDay')}</b>: {Math.round(model.avgTotal)}m
             </span>
             <span className={styles.sep} aria-hidden="true" />
             <span>
-              <b>Best</b>: {bestLabel} ({bestPoint?.total ?? 0}m)
+              <b>{t('charts.screenTime.summaryBest')}</b>: {bestLabel} ({bestPoint?.total ?? 0}m)
             </span>
           </div>
         </div>
@@ -765,12 +769,12 @@ const areaClipW = useMemo(() => {
           }
         >
           <span>
-            <b>Routine</b>: {activeDays}/7 days
+            <b>{t('charts.screenTime.summaryRoutine')}</b>: {t('charts.screenTime.routineDays', { count: activeDays })}
             <span className={styles.sep}></span>
-            <b>Streak</b>: {streakDays ?? 0}d
+            <b>{t('charts.screenTime.summaryStreak')}</b>: {t('charts.screenTime.streakDays', { count: streakDays ?? 0 })}
           </span>
 
-          {model.hasCompare ? <span className={styles.muted}>Compare overlay: enabled</span> : null}
+          {model.hasCompare ? <span className={styles.muted}>{t('charts.screenTime.compareOverlay')}</span> : null}
         </div>
 
         {confidenceNote ? (

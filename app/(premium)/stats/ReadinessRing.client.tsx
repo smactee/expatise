@@ -6,6 +6,7 @@ import styles from './stats.module.css';
 import { useOnceInView } from '@/components/stats/useOnceInView.client';
 import { useBootSweepOnce } from '@/components/stats/useBootSweepOnce.client';
 import InfoTip from '@/components/InfoTip.client';
+import { useT } from '@/lib/i18n/useT';
 
 export default function ReadinessRing(props: {
   valuePct: number;
@@ -15,6 +16,8 @@ export default function ReadinessRing(props: {
 
   onDone?: () => void;
 }) {
+  const { t } = useT();
+
   const {
     valuePct,
     enabled,
@@ -101,17 +104,17 @@ const fillDeg = (pctSafe / 100) * 360;
             var(--stats-ring-track) 360deg
           )`,
         }}
-        aria-label={`License Exam Readiness ${pct}%`}
+        aria-label={t('stats.readiness.ringAria', { pct })}
       >
         <div className={styles.statsGaugeCircleInner} style={{ transform: 'scaleX(-1)' }}>
           {/* ✅ always visible (counts up during sweep) */}
           <div className={styles.statsGaugeCenter}>
             <div className={styles.statsGaugeNumber}>{pct}</div>
             <div className={styles.statsGaugeLabel}>
-  License Exam
+  {t('stats.readiness.ringTitle')}
   <br />
   <span className={styles.readinessLabelWithInfo}>
-    Readiness<InfoTip text="Includes: Real Test only." />
+    {t('stats.readiness.ringLabel')}<InfoTip text={t('stats.readiness.ringInfo')} />
   </span>
 </div>
 

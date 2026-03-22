@@ -18,6 +18,7 @@ import { useEntitlements } from "@/components/EntitlementsProvider.client";
 import { useSearchParams } from "next/navigation";
 import PremiumFeatureModal from "@/components/PremiumFeatureModal";
 import type { EntitlementSource } from "@/lib/entitlements/types";
+import { useT } from "@/lib/i18n/useT";
 
 
 
@@ -53,6 +54,7 @@ export default function PremiumPage() {
 
 function PremiumInner() {
   const router = useRouter();
+  const { t } = useT();
 
   const [selected, setSelected] = useState<PlanId | null>(null);
 
@@ -112,12 +114,12 @@ useEffect(() => {
 
     if (!code) {
       setPromoApplied(false);
-      setPromoError("Please enter a promo code.");
+      setPromoError(t("premium.promo.emptyError"));
       return;
     }
     if (!ok) {
       setPromoApplied(false);
-      setPromoError("Invalid promo code.");
+      setPromoError(t("premium.promo.invalidError"));
       return;
     }
 
@@ -139,7 +141,7 @@ useEffect(() => {
         <div className={styles.crownWrap}>
           <Image
             src="/images/premium/crown-icon.png"
-            alt="Premium"
+            alt={t("premium.imageAlt")}
             width={66}
             height={66}
             className={styles.crownIcon}
@@ -149,12 +151,12 @@ useEffect(() => {
 
         {/* Title block */}
         <div className={styles.titleBlock}>
-          <h1 className={styles.title}>Get premium today</h1>
-          <p className={styles.subtitle}>Remove ads and unlock all features:</p>
+          <h1 className={styles.title}>{t("premium.title")}</h1>
+          <p className={styles.subtitle}>{t("premium.subtitle")}</p>
         </div>
 
         {/* Features grid */}
-        <section className={styles.featuresBox} aria-label="Premium features">
+        <section className={styles.featuresBox} aria-label={t("premium.featuresAria")}>
           <div className={styles.featureGrid}>
             <div className={`${styles.featureCell} ${styles.cellTL}`}>
               <div className={styles.featureHead}>
@@ -164,9 +166,9 @@ useEffect(() => {
                   width={28}
                   height={28}
                 />
-                <span className={styles.featureTitle}>Personal Stats</span>
+                <span className={styles.featureTitle}>{t("premium.features.personalStats.title")}</span>
               </div>
-              <p className={styles.featureDesc}>Track scores, time & progress</p>
+              <p className={styles.featureDesc}>{t("premium.features.personalStats.description")}</p>
             </div>
 
             <div className={`${styles.featureCell} ${styles.cellTR}`}>
@@ -177,10 +179,10 @@ useEffect(() => {
                   width={28}
                   height={28}
                 />
-                <span className={styles.featureTitle}>Test Modes</span>
+                <span className={styles.featureTitle}>{t("premium.features.testModes.title")}</span>
               </div>
               <p className={styles.featureDesc}>
-                Real, Practice, Rapid Fire & more
+                {t("premium.features.testModes.description")}
               </p>
             </div>
 
@@ -192,9 +194,9 @@ useEffect(() => {
                   width={28}
                   height={28}
                 />
-                <span className={styles.featureTitle}>Mistakes Hub</span>
+                <span className={styles.featureTitle}>{t("premium.features.mistakesHub.title")}</span>
               </div>
-              <p className={styles.featureDesc}>Global + My Mistakes review</p>
+              <p className={styles.featureDesc}>{t("premium.features.mistakesHub.description")}</p>
             </div>
 
             <div className={`${styles.featureCell} ${styles.cellBR}`}>
@@ -205,18 +207,26 @@ useEffect(() => {
                   width={28}
                   height={28}
                 />
-                <span className={styles.featureTitle}>Question Bank</span>
+                <span className={styles.featureTitle}>{t("premium.features.questionBank.title")}</span>
               </div>
-              <p className={styles.featureDesc}>All questions & Bookmarks</p>
+              <p className={styles.featureDesc}>{t("premium.features.questionBank.description")}</p>
             </div>
           </div>
         </section>
 
         {/* Plan pills */}
-        <section className={styles.planList} aria-label="Choose a plan">
+        <section className={styles.planList} aria-label={t("premium.planListAria")}>
           {PLAN_LIST.map((p) => {
             const active = selected === p.id;
             const displayPrice = priceByPlanId[p.id] || p.price;
+            const planLabel =
+              p.id === "monthly"
+                ? t("premium.plans.monthly")
+                : p.id === "three_month"
+                ? t("premium.plans.threeMonth")
+                : p.id === "six_month"
+                ? t("premium.plans.sixMonth")
+                : t("premium.plans.lifetime");
 
             return (
               <button
@@ -231,7 +241,7 @@ useEffect(() => {
                 }}
               >
                 <div className={styles.planLeft}>
-                  <div className={styles.planTitle}>{p.pillTitle}</div>
+                  <div className={styles.planTitle}>{planLabel}</div>
                   
                 </div>
 
@@ -256,7 +266,7 @@ useEffect(() => {
 
         {/* Got a Promocode row */}
         <div className={styles.gotPromoRow}>
-          <span className={styles.gotPromoText}>Got a Promocode?</span>
+          <span className={styles.gotPromoText}>{t("premium.promo.label")}</span>
 
           <button
             type="button"
@@ -264,7 +274,7 @@ useEffect(() => {
             onClick={() => setShowPromo((v) => !v)}
             aria-expanded={showPromo}
           >
-            Apply Here
+            {t("premium.promo.toggle")}
           </button>
         </div>
 
@@ -272,10 +282,7 @@ useEffect(() => {
         {showPromo && (
           <>
             <p className={styles.note}>
-              Enjoying the app? A quick review helps a lot and goes a long way for
-              me. That&apos;s right <strong>me</strong>. I used to be on the same
-              side of that screen as <strong>you</strong>. I got fed up with the
-              options I had and learned how to make this app just for you. Enjoy!
+              {t("premium.promo.note")}
             </p>
 
             <div className={styles.promoRow}>
@@ -286,7 +293,7 @@ useEffect(() => {
                   setPromo(e.target.value);
                   if (promoError) setPromoError("");
                 }}
-                placeholder="Enter Promo Code"
+                placeholder={t("premium.promo.inputPlaceholder")}
               />
 
               <button
@@ -294,7 +301,7 @@ useEffect(() => {
                 className={styles.promoApply}
                 onClick={handleApplyCode}
               >
-                Apply Code
+                {t("premium.promo.apply")}
               </button>
             </div>
 
@@ -311,7 +318,7 @@ useEffect(() => {
             setPlanError("");
 
             if (!selected) {
-              setPlanError("Please select a plan.");
+              setPlanError(t("premium.errors.selectPlan"));
               return;
             }
 
@@ -329,7 +336,7 @@ useEffect(() => {
                 await ensureRevenueCat(userKey);
                 const offerings = await Purchases.getOfferings();
                 const o = offerings.current;
-                if (!o) throw new Error("No current offering configured in RevenueCat.");
+                if (!o) throw new Error(t("premium.errors.noCurrentOffering"));
 
                 let pkg: PurchasesPackage | null = null;
                 if (plan === "monthly") pkg = o.monthly;
@@ -343,7 +350,7 @@ useEffect(() => {
                     o.availablePackages.find((p) => p.identifier === plan) ??
                     null;
                 }
-                if (!pkg) throw new Error(`No package found for plan: ${plan}`);
+                if (!pkg) throw new Error(t("premium.errors.packageUnavailable"));
 
                 const { customerInfo } = await Purchases.purchasePackage({ aPackage: pkg });
                 const premiumData = premiumSourceFromCustomerInfo(customerInfo);
@@ -359,17 +366,15 @@ useEffect(() => {
                 const cancelled =
                   msg.toLowerCase().includes("cancel") ||
                   msg.toLowerCase().includes("usercancelled");
-                if (!cancelled) setPlanError(msg || "Purchase failed. Please try again.");
+                if (!cancelled) setPlanError(msg || t("premium.errors.purchaseFailed"));
               }
               return;
             }
 
-            setPlanError(
-              "Premium purchases are currently available only in the mobile app. Use the app to purchase or restore access."
-            );
+            setPlanError(t("premium.errors.mobileOnly"));
           }}
         >
-          <span className={styles.ctaText}>Get Premium Now</span>
+          <span className={styles.ctaText}>{t("premium.cta")}</span>
           <span className={styles.ctaChevron}>›</span>
         </button>
 

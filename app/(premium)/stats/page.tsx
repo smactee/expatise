@@ -14,7 +14,7 @@ import type { TestAttemptV1 } from '@/lib/test-engine/attemptStorage';
 import { useUserKey } from '@/components/useUserKey.client';
 import { computeStats } from '@/lib/stats/computeStats';
 import { labelForTag } from '@/lib/qbank/tagTaxonomy';
-import TimeframeChips, { type Timeframe, tfShort } from '@/components/stats/TimeframeChips';
+import TimeframeChips, { type Timeframe } from '@/components/stats/TimeframeChips';
 import ScreenTimeChart, {ScreenTimeLegend} from '@/components/stats/ScreenTimeChart.client';
 import ReadinessRing from '@/app/(premium)/stats/ReadinessRing.client';
 import ScoreChart, { ScoreLegend } from '@/components/stats/ScoreChart.client';
@@ -33,6 +33,7 @@ import { fetchTimeLogsFromSupabase } from '@/lib/sync/timeLogs.client';
 import PremiumFeatureModal from "@/components/PremiumFeatureModal";
 import { useEntitlements } from "@/components/EntitlementsProvider.client";
 import { userKeyFromEmail } from "@/lib/identity/userKey";
+import { useT } from '@/lib/i18n/useT';
 
 
 
@@ -42,26 +43,6 @@ const datasetId: DatasetId = 'cn-2023-test1';
 
 const REAL_ONLY_MODE_KEYS = ["real-test"];
 const LEARNING_MODE_KEYS = ["real-test", "ten-percent-test", "half-test", "rapid-fire-test"]; // all non-practice modes
-
-
-const MODE_LABEL: Record<string, string> = {
-  "real-test": "Real Test",
-  "half-test": "Half Test",
-  "rapid-fire-test": "Rapid Fire",
-  "ten-percent-test": "10% Test",
-};
-
-function modesLabel(keys: string[]) {
-  return keys.map((k) => MODE_LABEL[k] ?? k).join(", ");
-}
-
-function tfLabelShort(t: Timeframe) {
-  return t === "all" ? "all time" : `last ${t} days`;
-}
-
-function statsTooltip(keys: string[], t: Timeframe) {
-  return `Includes: ${modesLabel(keys)} · ${tfLabelShort(t)}`;
-}
 
 
 // Topic Quiz config saver: builds a config that prioritizes weakest subtopics
@@ -167,6 +148,30 @@ function consumeSkipSyncToken(): boolean {
 export default function StatsPage() {
   const userKey = useUserKey();
   const router = useRouter();
+  const { t } = useT();
+
+  const modeLabel = (key: string) =>
+    key === "real-test"
+      ? t("stats.modes.realTest")
+      : key === "half-test"
+      ? t("stats.modes.halfTest")
+      : key === "rapid-fire-test"
+      ? t("stats.modes.rapidFire")
+      : key === "ten-percent-test"
+      ? t("stats.modes.tenPercent")
+      : key;
+
+  const modesLabel = (keys: string[]) => keys.map((key) => modeLabel(key)).join(", ");
+  const tfShortLabel = (timeframe: Timeframe) =>
+    timeframe === "all"
+      ? t("stats.timeframes.allShort")
+      : t("stats.timeframes.daysShort", { days: timeframe });
+  const tfLabel = (timeframe: Timeframe) =>
+    timeframe === "all"
+      ? t("stats.timeframes.allTime")
+      : t("stats.timeframes.lastDays", { days: timeframe });
+  const statsTooltip = (keys: string[], timeframe: Timeframe) =>
+    t("stats.tooltips.includes", { modes: modesLabel(keys), timeframe: tfLabel(timeframe) });
 
 
 
@@ -203,10 +208,6 @@ const showDemoReseedButton =
   supabaseAuthed &&
   DEMO_ADMIN_EMAILS.length > 0 &&
   DEMO_ADMIN_EMAILS.includes(normalizedSessionEmail);
-
-function tfLabel(t: Timeframe) {
-  return t === "all" ? "all time" : `last ${t} days`;
-}
 
 
 
@@ -570,7 +571,7 @@ async function handleGenerateCoach() {
     const weakest = (coachSkill.topicMastery?.weakestSubtopics ?? [])
       .slice(0, 5)
       .map((s: any) => ({
-        tagLabel: labelForTag(s.tag) ?? String(s.tag),
+        tagLabel: labelForTag(s.tag, t) ?? String(s.tag),
         attempted: Number(s.attempted ?? 0),
         accuracyPct: Number(s.accuracyPct ?? 0),
       }));
@@ -610,7 +611,7 @@ const supabase = createClient();
 
 const { data: sessionData, error: sessionErr } = await supabase.auth.getSession();
 if (sessionErr) {
-  setCoachError(`Could not read session: ${sessionErr.message}`);
+  setCoachError(t('stats.coach.errors.sessionRead', { message: sessionErr.message }));
   return;
 }
 
@@ -618,14 +619,14 @@ let token = sessionData.session?.access_token ?? null;
 if (!token) {
   const { data: refreshed, error: refreshErr } = await supabase.auth.refreshSession();
   if (refreshErr) {
-    setCoachError(`Could not refresh session: ${refreshErr.message}`);
+    setCoachError(t('stats.coach.errors.sessionRefresh', { message: refreshErr.message }));
     return;
   }
   token = refreshed.session?.access_token ?? null;
 }
 
 if (!token) {
-  setCoachError("You must be logged in to generate a Coach report.");
+  setCoachError(t('stats.coach.errors.loginRequired'));
   return;
 }
 
@@ -637,7 +638,7 @@ const anonKey = String(
 ).trim();
 
 if (!supabaseUrl || !anonKey) {
-  setCoachError("Missing Supabase URL or anon key in environment.");
+  setCoachError(t('stats.coach.errors.missingEnv'));
   return;
 }
 
@@ -653,7 +654,7 @@ const res = await fetch(`${supabaseUrl}/functions/v1/coach`, {
 const j = await res.json().catch(() => null);
 
 if (!res.ok) {
-  setCoachError(j?.error ?? j?.detail ?? `Coach request failed (${res.status}).`);
+  setCoachError(j?.error ?? j?.detail ?? t('stats.coach.errors.requestFailedStatus', { status: res.status }));
   return;
 }
 
@@ -665,16 +666,16 @@ if (!j?.ok) {
       setCooldownUntil(until);
       try { localStorage.setItem(LS_COOLDOWN_UNTIL, String(until)); } catch {}
     }
-    setCoachError(`Next Coach report available in ${formatRemaining(Math.max(0, until - Date.now()))}.`);
+    setCoachError(t('stats.coach.errors.cooldown', { time: formatRemaining(Math.max(0, until - Date.now())) }));
     return;
   }
 
   if (j?.error === "insufficient_data") {
-    setCoachError("Not enough data yet for personalized coaching. Complete 1 Real Test (80+ answers) or reach 120 answered total.");
+    setCoachError(t('stats.coach.errors.insufficientData'));
     return;
   }
 
-  setCoachError(j?.detail ? String(j.detail) : "Coach request failed. Please try again.");
+  setCoachError(j?.detail ? String(j.detail) : t('stats.coach.errors.requestFailed'));
   return;
 }
 
@@ -683,7 +684,7 @@ const report = String(j?.report ?? "").trim();
 const createdAt = Number(j?.createdAt ?? Date.now());
 
 if (!report) {
-  setCoachError("Coach returned an empty report. Please try again.");
+  setCoachError(t('stats.coach.errors.emptyReport'));
   return;
 }
 
@@ -728,7 +729,7 @@ try {
 
   if (!supabaseAuthed) {
     const goLogin = window.confirm(
-      "You need to log in to reset synced stats. Press OK to log in."
+      t("stats.reset.needLoginConfirm")
     );
     if (goLogin) {
       router.push("/login?next=/stats");
@@ -737,7 +738,7 @@ try {
   }
 
   const typed = window.prompt(
-    "This will permanently delete all stats data from your account and this device.\n\nType RESET to confirm:"
+    t("stats.reset.prompt")
   );
   if ((typed ?? "").trim().toUpperCase() !== "RESET") return;
 
@@ -746,7 +747,7 @@ try {
 
   const { data: sessionData, error: sessionErr } = await supabase.auth.getSession();
   if (sessionErr) {
-    window.alert(`Could not read session: ${sessionErr.message}`);
+    window.alert(t('stats.coach.errors.sessionRead', { message: sessionErr.message }));
     return;
   }
 
@@ -754,14 +755,14 @@ try {
   if (!token) {
     const { data: refreshed, error: refreshErr } = await supabase.auth.refreshSession();
     if (refreshErr) {
-      window.alert(`Could not refresh session: ${refreshErr.message}`);
+      window.alert(t('stats.coach.errors.sessionRefresh', { message: refreshErr.message }));
       return;
     }
     token = refreshed.session?.access_token ?? null;
   }
 
   if (!token) {
-    window.alert("You must be logged in to reset cloud stats.");
+    window.alert(t("stats.reset.mustBeLoggedIn"));
     return;
   }
 
@@ -773,7 +774,7 @@ try {
   ).trim();
 
   if (!supabaseUrl || !anonKey) {
-    window.alert("Missing Supabase URL or anon key in environment.");
+    window.alert(t("stats.reset.missingEnv"));
     return;
   }
 
@@ -789,12 +790,12 @@ try {
   const data = await res.json().catch(() => null);
 
   if (!res.ok) {
-    window.alert(data?.error ?? data?.message ?? `Cloud reset failed (${res.status}).`);
+    window.alert(data?.error ?? data?.message ?? `${t("stats.reset.cloudResetFailed")} (${res.status}).`);
     return;
   }
 
   if (!data?.ok) {
-    window.alert(data?.error ?? "Cloud reset failed.");
+    window.alert(data?.error ?? t("stats.reset.cloudResetFailed"));
     return;
   }
 
@@ -804,13 +805,13 @@ try {
   await resetAllLocalData({ includeCaches: true });
   window.location.reload();
 } catch (err: any) {
-  window.alert(err?.message ?? "Reset failed. Please try again.");
+  window.alert(err?.message ?? t("stats.reset.resetFailed"));
 }
 }}
-  aria-label="Reset all stats data"
-  title="Reset all stats data"
+  aria-label={t("stats.reset.aria")}
+  title={t("stats.reset.title")}
 >
-  Reset All Stats
+  {t("stats.reset.button")}
 </button>
 
 {showDemoReseedButton ? (
@@ -821,10 +822,10 @@ try {
       reenableDemoSeed();
       window.location.reload();
     }}
-    aria-label="Re-seed demo stats"
-    title="Re-seed demo stats"
+    aria-label={t("stats.reset.reseedAria")}
+    title={t("stats.reset.reseedTitle")}
   >
-    Re-seed Demo Data
+    {t("stats.reset.reseedButton")}
   </button>
 ) : null}
 
@@ -851,11 +852,14 @@ try {
     >
       <div className={styles.readinessMetaBlock}>
         <div className={styles.statsSummaryMeta}>
-          {tfShort(tfReadiness)} accuracy: {statsReadiness.accuracyPct}% · Tests:{' '}
-          {statsReadiness.attemptsCount}
+          {t('stats.readiness.summary', {
+            timeframe: tfShortLabel(tfReadiness),
+            accuracy: statsReadiness.accuracyPct,
+            count: statsReadiness.attemptsCount,
+          })}
         </div>
         <div className={styles.readinessMetaLine}>
-          Based on {statsReadiness.attemptedTotal} questions answered
+          {t('stats.readiness.basedOn', { count: statsReadiness.attemptedTotal })}
         </div>
       </div>
 
@@ -864,7 +868,7 @@ try {
         className={styles.statsTestButton}
         onClick={() => router.push('/test/real')}
       >
-        Take a Test ▸
+        {t('stats.readiness.takeTest')} ▸
       </button>
 
       <TimeframeChips value={tfReadiness} onChange={setTfReadiness} align="center" />
@@ -884,8 +888,8 @@ try {
 <article className={styles.statsCard}>
   <header className={styles.statsCardHeader}>
   <div className={styles.statsTitleRow}>
-    <h2 className={styles.statsCardTitle}>Screen Time</h2>
-    <InfoTip text={`Includes: ${modesLabel(LEARNING_MODE_KEYS)} · last 7 days`} />
+    <h2 className={styles.statsCardTitle}>{t('stats.cards.screenTime')}</h2>
+    <InfoTip text={statsTooltip(LEARNING_MODE_KEYS, 7)} />
   </div>
   <ScreenTimeLegend animate={screenLegendReady} />
 
@@ -899,7 +903,7 @@ try {
   style={{ width: "100%" }}
 >
       {loading ? (
-        "Loading…"
+        t('shared.common.loading')
       ) : (
         <ScreenTimeChart
   data={statsScreen.timeDailySeries}
@@ -919,7 +923,7 @@ try {
             <article className={styles.statsCard}>
              <header className={styles.statsCardHeader}>
   <div className={styles.statsTitleRow}>
-    <h2 className={styles.statsCardTitle}>Score</h2>
+    <h2 className={styles.statsCardTitle}>{t('stats.cards.score')}</h2>
     <InfoTip text={statsTooltip(REAL_ONLY_MODE_KEYS, tfScore)} />
   </div>
 
@@ -931,9 +935,9 @@ try {
               <div className={`${styles.statsGraphArea} ${styles.statsGraphClean}`}>
   <div className={`${styles.statsGraphPlaceholder} ${styles.statsGraphClean}`} style={{ width: '100%' }}>
     {loading ? (
-      'Loading…'
+      t('shared.common.loading')
     ) : statsScore.attemptsCount === 0 ? (
-      `No submitted tests yet (${tfLabel(tfScore)}).`
+      t('stats.scoreCard.noTests', { timeframe: tfLabel(tfScore) })
     ) : (
       <ScoreChart
         series={statsScore.scoreSeries}
@@ -956,7 +960,7 @@ try {
 <article className={styles.statsCard}>
   <header className={styles.statsCardHeader}>
   <div className={styles.statsTitleRow}>
-    <h2 className={styles.statsCardTitle}>Daily Progress</h2>
+    <h2 className={styles.statsCardTitle}>{t('stats.cards.dailyProgress')}</h2>
     <InfoTip text={statsTooltip(LEARNING_MODE_KEYS, tfWeekly)} />
   </div>
   <DailyProgressLegend animate={dailyLegendReady} />
@@ -970,9 +974,9 @@ try {
       style={{ width: "100%" }}
     >
       {loading ? (
-        "Loading…"
+        t('shared.common.loading')
       ) : statsWeekly.attemptsCount === 0 ? (
-        "No daily data yet."
+        t('stats.dailyProgressCard.noData')
       ) : (
         <DailyProgressChart
           series={statsWeekly.dailySeries}
@@ -993,16 +997,16 @@ try {
 <article className={styles.statsCard}>
   <header className={styles.statsCardHeader}>
   <div className={styles.statsTitleRow}>
-    <h2 className={styles.statsCardTitle}>Heatmap</h2>
+    <h2 className={styles.statsCardTitle}>{t('stats.cards.heatmap')}</h2>
     <InfoTip text={statsTooltip(REAL_ONLY_MODE_KEYS, tfBestTime)} />
   </div>
   </header>
 
   <div className={styles.statsGraphArea}>
     {loading ? (
-      "Loading…"
+      t('shared.common.loading')
     ) : !statsBestTime.Heatmap ? (
-      "Not enough data yet."
+      t('charts.heatmap.notEnoughData')
     ) : (
       <Heatmap data={statsBestTime.Heatmap} />
     )}
@@ -1017,7 +1021,7 @@ try {
 <article className={styles.statsCard}>
   <header className={`${styles.statsCardHeader} ${styles.statsCardHeaderRow}`}>
   <div className={styles.statsTitleRow}>
-    <h2 className={styles.statsCardTitle}>Topic Mastery</h2>
+    <h2 className={styles.statsCardTitle}>{t('stats.cards.topicMastery')}</h2>
     <InfoTip text={statsTooltip(LEARNING_MODE_KEYS, tfTopics)} />
   </div>
 
@@ -1058,18 +1062,18 @@ try {
   router.push("/test/topics");
 }}
 
-    title="Start a 20-question quiz from your weakest subtopics"
+    title={t('stats.topicMasteryCard.quizTitle')}
   >
-    Topic Quiz
+    {t('stats.topicMasteryCard.quizButton')}
   </button>
 </header>
 
 
   <div className={`${styles.statsGraphArea} ${styles.topicMasteryArea}`}>
   {loading ? (
-    "Loading…"
+    t('shared.common.loading')
   ) : !statsTopics.topicMastery || statsTopics.topicMastery.topics.length === 0 ? (
-    "Not enough data yet (need more answers per topic)."
+    t('stats.topicMasteryCard.noData')
   ) : (
     <TopicMasteryChart data={statsTopics.topicMastery} />
   )}
@@ -1093,27 +1097,23 @@ try {
           className={styles.statsReviewButton}
           onClick={() => router.push("/my-mistakes")}
           >
-            Review Your Mistakes
+            {t('stats.reviewMistakes')}
             </button>
         </div>
 
 {/* GPT Coach */}
 <article className={styles.statsCard}>
   <header className={styles.statsCardHeader}>
-    <h2 className={styles.statsCardTitle}>Ai Coach</h2>
+    <h2 className={styles.statsCardTitle}>{t('stats.cards.aiCoach')}</h2>
   </header>
 
   {loading ? (
-    <p className={styles.coachSubtle}>Loading…</p>
+    <p className={styles.coachSubtle}>{t('stats.coach.loading')}</p>
   ) : !minimumMet ? (
     <>
-      <p className={styles.coachSubtle}><strong>AI Coach needs a bit more data.</strong></p>
-      <p className={styles.coachHint}>
-        To generate a personalized report, complete either:<br />
-        • <strong>1 Real Test</strong> with <strong>80+ answers</strong>, or<br />
-        • <strong>120 total questions answered</strong> (practice + tests)
-      </p>
-      <p className={styles.coachHint}>More answers = less randomness → better advice.</p>
+      <p className={styles.coachSubtle}><strong>{t('stats.coach.needsDataTitle')}</strong></p>
+      <p className={styles.coachHint} style={{ whiteSpace: 'pre-line' }}>{t('stats.coach.needsDataBody')}</p>
+      <p className={styles.coachHint}>{t('stats.coach.needsDataHint')}</p>
 
       <div className={styles.coachRow}>
         <button
@@ -1121,14 +1121,14 @@ try {
           className={styles.coachBtnPrimary}
           onClick={() => router.push("/test/real")}
         >
-          Take a Real Test
+          {t('stats.readiness.takeTest')}
         </button>
         <button
           type="button"
           className={styles.coachBtnSecondary}
           onClick={() => router.push("/test/real")}
         >
-          Start Now
+          {t('stats.coach.startNow')}
         </button>
       </div>
     </>
@@ -1137,22 +1137,14 @@ try {
       {!bestResultsMet ? (
         <>
           <p className={styles.coachSubtle}>
-            <strong>You’re ready for a first Coach report</strong> — here’s how to make it “laser-accurate”.
+            <strong>{t('stats.coach.firstReportTitle')}</strong>
           </p>
-          <p className={styles.coachHint}>
-            For the most tailored advice (topics + habits + patterns), aim for:<br />
-            ✅ <strong>3 Real Tests (300 questions)</strong> across <strong>3+ days</strong>
-          </p>
-          <p className={styles.coachHint}>
-            Next steps:<br />
-            • Do <strong>2 more Real Tests</strong> on separate days<br />
-            • Try the <strong>2-pass rule</strong> (answer easy first, then return)<br />
-            • Keep a <strong>10-minute minimum</strong> on non-test days
-          </p>
+          <p className={styles.coachHint} style={{ whiteSpace: 'pre-line' }}>{t('stats.coach.firstReportBody')}</p>
+          <p className={styles.coachHint} style={{ whiteSpace: 'pre-line' }}>{t('stats.coach.firstReportNextSteps')}</p>
         </>
       ) : (
         <p className={styles.coachSubtle}>
-          <strong>Coach runs on demand</strong> (Skill: 30d · Habits: 7d). Tap to generate your latest plan.
+          <strong>{t('stats.coach.readyText')}</strong>
         </p>
       )}
 
@@ -1162,9 +1154,17 @@ try {
           className={styles.coachBtnPrimary}
           onClick={handleGenerateCoach}
           disabled={coachLoading || cooldownActive}
-          title={cooldownActive ? `Next available in ${formatRemaining(remainingMs)}` : "Generate Coach Report"}
+          title={
+            cooldownActive
+              ? t('stats.coach.nextAvailable', { time: formatRemaining(remainingMs) })
+              : t('stats.coach.generateTitle')
+          }
         >
-          {coachLoading ? "Generating…" : cooldownActive ? "Coach Locked" : "Generate Coach Report"}
+          {coachLoading
+            ? t('stats.coach.generating')
+            : cooldownActive
+            ? t('stats.coach.locked')
+            : t('stats.coach.generateTitle')}
         </button>
 
         <button
@@ -1172,15 +1172,15 @@ try {
           className={styles.coachBtnSecondary}
           onClick={() => router.push("/test/real")}
         >
-          Take a Test
+          {t('stats.readiness.takeTest')}
         </button>
       </div>
 
       <div className={styles.coachMeta}>
         {cooldownActive ? (
-          <>Next Coach report available in <strong>{formatRemaining(remainingMs)}</strong>. You can still read your last report anytime.</>
+          <>{t('stats.coach.cooldownActive', { time: formatRemaining(remainingMs) })}</>
         ) : (
-          <>Coach reports are limited to <strong>1 per 24 hours</strong>. Your latest report stays saved here.</>
+          <>{t('stats.coach.cooldownIdle')}</>
         )}
       </div>
 
@@ -1189,9 +1189,9 @@ try {
       {coachReport ? (
         <div className={styles.coachReportBox}>
           <div className={styles.coachReportHeader}>
-            <p className={styles.coachReportTitle}>Coach Report</p>
+            <p className={styles.coachReportTitle}>{t('stats.coach.reportTitle')}</p>
             <p className={styles.coachReportStamp}>
-              {coachCreatedAt ? `Last report: ${formatStamp(coachCreatedAt)}` : ""}
+              {coachCreatedAt ? t('stats.coach.reportStamp', { stamp: formatStamp(coachCreatedAt) }) : ""}
             </p>
           </div>
           <div className={styles.coachReportText}>

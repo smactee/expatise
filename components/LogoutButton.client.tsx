@@ -5,11 +5,13 @@ import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { logout } from "@/lib/auth/logout.client";
+import { useT } from "@/lib/i18n/useT";
 
 export default function LogoutButton({ className }: { className?: string }) {
   const router = useRouter();
   const supabase = useMemo(() => createClient(), []);
   const [busy, setBusy] = useState(false);
+  const { t } = useT();
 
   const onLogout = async () => {
     if (busy) return;
@@ -30,7 +32,7 @@ export default function LogoutButton({ className }: { className?: string }) {
 
   return (
     <button className={className} onClick={onLogout} type="button" disabled={busy}>
-      {busy ? "Logging out..." : "Log out"}
+      {busy ? t("shared.logout.loading") : t("shared.logout.idle")}
     </button>
   );
 }

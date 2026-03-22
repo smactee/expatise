@@ -5,15 +5,32 @@ import styles from "./checkout.module.css";
 import { PLAN_MAP, toPlanId, type PlanId } from "@/lib/plans";
 import CSRBoundary from "@/components/CSRBoundary";
 import BackButton from "@/components/BackButton";
+import { useT } from "@/lib/i18n/useT";
+
+const CHECKOUT_PLAN_TITLE_KEYS: Record<PlanId, keyof typeof PLAN_MAP> = {
+  monthly: "monthly",
+  three_month: "three_month",
+  six_month: "six_month",
+  lifetime: "lifetime",
+};
 
 function Inner() {
   const router = useRouter();
   const sp = useSearchParams();
+  const { t } = useT();
 
   const plan: PlanId = toPlanId(sp.get("plan"));
   const promoApplied = sp.get("promo") === "1";
   const planData = PLAN_MAP[plan];
-  const title = planData.checkoutTitle;
+  const titleKey = CHECKOUT_PLAN_TITLE_KEYS[plan];
+  const title =
+    titleKey === "monthly"
+      ? t("checkout.planTitles.monthly")
+      : titleKey === "three_month"
+      ? t("checkout.planTitles.threeMonth")
+      : titleKey === "six_month"
+      ? t("checkout.planTitles.sixMonth")
+      : t("checkout.planTitles.lifetime");
   const price = promoApplied ? planData.promoPrice : planData.price;
 
   return (
@@ -25,10 +42,10 @@ function Inner() {
           </div>
         </header>
 
-        <div className={styles.content}>
+          <div className={styles.content}>
           <div className={styles.summaryRow}>
             <div className={styles.planLabel}>{title}</div>
-            <div className={styles.orderNo}>Web checkout unavailable</div>
+            <div className={styles.orderNo}>{t("checkout.webCheckoutUnavailable")}</div>
           </div>
 
           <div className={styles.price}>{price}</div>
@@ -37,12 +54,10 @@ function Inner() {
 
           <div className={styles.form}>
             <p className={styles.label} style={{ marginBottom: 12 }}>
-              Web checkout is not available in this release.
+              {t("checkout.summary")}
             </p>
             <p style={{ margin: 0, lineHeight: 1.6, opacity: 0.85 }}>
-              Premium purchases are currently available only in the mobile app.
-              If you already purchased Premium there, open the app and use the
-              restore option from your profile if needed.
+              {t("checkout.detail")}
             </p>
           </div>
         </div>
@@ -53,7 +68,7 @@ function Inner() {
             className={styles.checkoutBtn}
             onClick={() => router.push("/premium")}
           >
-            Back to Premium
+            {t("shared.common.backToPremium")}
           </button>
         </footer>
       </div>

@@ -1,7 +1,14 @@
 // lib/resetLocalData.ts
+import { AUTH_COOKIE } from "@/lib/auth";
+import { ONBOARDING_COOKIE } from "@/lib/middleware/paths";
 
-const APP_PREFIXES = ["expatise", "__expatise_"];
+const APP_PREFIXES = ["expatise", "__expatise_", "sb-expatise-auth"];
 const EXTRA_KEYS = ["topicQuiz:v1", "THEME_STORAGE_KEY"];
+
+function clearCookie(name: string) {
+  if (typeof document === "undefined" || !name) return;
+  document.cookie = `${name}=; Max-Age=0; Path=/; SameSite=Lax`;
+}
 
 function collectKeys(storage: Storage) {
   const keys: string[] = [];
@@ -45,6 +52,9 @@ export async function resetAllLocalData(opts?: { includeCaches?: boolean }) {
   } catch {
     // ignore when Preferences is unavailable
   }
+
+  clearCookie(ONBOARDING_COOKIE);
+  clearCookie(AUTH_COOKIE);
 
   // Optional: clear Cache Storage (PWA / SW caches)
   if (opts?.includeCaches && "caches" in window) {

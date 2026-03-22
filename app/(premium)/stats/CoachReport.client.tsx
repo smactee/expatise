@@ -2,6 +2,7 @@
 
 import React, { useMemo } from 'react';
 import styles from './stats.module.css';
+import { useT } from '@/lib/i18n/useT';
 
 type Section = { title: string; lines: string[] };
 
@@ -34,7 +35,7 @@ function formatInline(line: string) {
   return s;
 }
 
-function parseCoachReport(report: string): Section[] {
+function parseCoachReport(report: string, fallbackTitle: string): Section[] {
   const lines = report.replace(/\r/g, '').split('\n');
 
   const sections: Section[] = [];
@@ -50,7 +51,7 @@ function parseCoachReport(report: string): Section[] {
       continue;
     }
 
-    if (!cur) cur = { title: 'Coach', lines: [] };
+    if (!cur) cur = { title: fallbackTitle, lines: [] };
     cur.lines.push(line);
   }
 
@@ -65,7 +66,9 @@ function parseCoachReport(report: string): Section[] {
 }
 
 export default function CoachReport({ report }: { report: string }) {
-  const sections = useMemo(() => parseCoachReport(report), [report]);
+  const { t } = useT();
+  const fallbackTitle = t('stats.coach.reportTitle');
+  const sections = useMemo(() => parseCoachReport(report, fallbackTitle), [fallbackTitle, report]);
 
   return (
     <div className={styles.coachReportRich}>

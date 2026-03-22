@@ -24,6 +24,7 @@ import PremiumFeatureModal from "@/components/PremiumFeatureModal";
 import { useAuthStatus } from "@/components/useAuthStatus";
 import { useEntitlements } from "@/components/EntitlementsProvider.client";
 import { useUsageCap } from "@/lib/freeAccess/useUsageCap";
+import { useT } from "@/lib/i18n/useT";
 
 type GlobalRow = {
   qid: string;
@@ -57,6 +58,7 @@ function hash01(s: string) {
 
 export default function GlobalCommonMistakesClient({ datasetId }: { datasetId: DatasetId }) {
   const userKey = useUserKey();
+  const { t } = useT();
   const router = useRouter();
   const pathname = usePathname();
   const sp = useSearchParams();
@@ -264,9 +266,9 @@ export default function GlobalCommonMistakesClient({ datasetId }: { datasetId: D
       <div className={styles.frame}>
         <header className={styles.header}>
           <h1 className={styles.title}>
-            Global Common Mistakes
+            {t("questionReview.globalMistakesTitle")}
             {count > 0 && (
-              <span className={styles.countPill} aria-label={`${count} questions`}>
+              <span className={styles.countPill} aria-label={t("questionReview.countAria", { count })}>
                 {count}
               </span>
             )}
@@ -278,15 +280,15 @@ export default function GlobalCommonMistakesClient({ datasetId }: { datasetId: D
               className={styles.quizBtn}
               onClick={() => setShowPremiumModal(true)}
             >
-              Global Mistakes Quiz
+              {t("questionReview.globalMistakesQuiz")}
             </button>
           </div>
 
           {(usingMock || (!loadingRows && rows.length === 0)) && (
             <p style={{ marginTop: 8, fontSize: 12, opacity: 0.75 }}>
               {usingMock
-                ? "Preview rankings (mock data)."
-                : "Not enough global data yet — this will fill in after backend is connected."}
+                ? t("questionReview.previewMock")
+                : t("questionReview.previewEmpty")}
             </p>
           )}
         </header>
@@ -294,7 +296,7 @@ export default function GlobalCommonMistakesClient({ datasetId }: { datasetId: D
         <div className={styles.searchRow}>
           <input
             className={styles.search}
-            placeholder="Search question text…"
+            placeholder={t("questionReview.searchPlaceholder")}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
           />
@@ -320,7 +322,7 @@ export default function GlobalCommonMistakesClient({ datasetId }: { datasetId: D
                     }
                   }}
                 >
-                  {topic.label}
+                  {labelForTag(topic.key, t)}
                 </button>
               );
             })}
@@ -339,7 +341,7 @@ export default function GlobalCommonMistakesClient({ datasetId }: { datasetId: D
                   className={`${styles.chip} ${isActive ? styles.chipActive : ""}`}
                   onClick={() => setActiveSub(isActive ? null : sub.key)}
                 >
-                  {sub.label.replace(/^#/, "")}
+                  {labelForTag(sub.key, t)}
                 </button>
               );
             })}
@@ -348,12 +350,12 @@ export default function GlobalCommonMistakesClient({ datasetId }: { datasetId: D
 
         <section className={styles.list}>
           {(loadingQ || loadingRows) && (
-            <p style={{ opacity: 0.8, padding: "8px 2px" }}>Loading…</p>
+            <p style={{ opacity: 0.8, padding: "8px 2px" }}>{t("questionReview.loading")}</p>
           )}
 
           {!loadingQ && !loadingRows && filtered.length === 0 && (
             <p style={{ opacity: 0.8, padding: "8px 2px" }}>
-              No questions to show yet.
+              {t("questionReview.noQuestions")}
             </p>
           )}
 
@@ -371,12 +373,12 @@ export default function GlobalCommonMistakesClient({ datasetId }: { datasetId: D
 
                   <div className={styles.cardTopRight}>
                     <span className={styles.qType}>
-                      {topicKey ? labelForTag(topicKey) : "Unclassified"}
+                      {topicKey ? labelForTag(topicKey, t) : t("questionReview.unclassified")}
                     </span>
 
                     {pctWrong !== null && (
-                      <span className={styles.qType} title={`${meta!.wrong}/${meta!.total} wrong`}>
-                        {pctWrong}% wrong
+                      <span className={styles.qType} title={t("questionReview.wrongRateTitle", { wrong: meta!.wrong, total: meta!.total })}>
+                        {t("questionReview.wrongRateLabel", { percent: pctWrong })}
                       </span>
                     )}
 
@@ -387,8 +389,8 @@ export default function GlobalCommonMistakesClient({ datasetId }: { datasetId: D
                         e.stopPropagation();
                         toggle(item.id);
                       }}
-                      aria-label={isBookmarked(item.id) ? "Remove bookmark" : "Add bookmark"}
-                      title={isBookmarked(item.id) ? "Bookmarked" : "Bookmark"}
+                      aria-label={isBookmarked(item.id) ? t("shared.bookmarks.removeAria") : t("shared.bookmarks.addAria")}
+                      title={isBookmarked(item.id) ? t("shared.bookmarks.activeTitle") : t("shared.bookmarks.idleTitle")}
                       data-bookmarked={isBookmarked(item.id) ? "true" : "false"}
                     >
                       <span className={styles.bookmarkIcon} aria-hidden="true" />
@@ -402,7 +404,7 @@ export default function GlobalCommonMistakesClient({ datasetId }: { datasetId: D
                   <div className={styles.imageWrap}>
                     <Image
                       src={item.assets[0].src}
-                      alt={`Question ${item.number}`}
+                      alt={t("shared.questionImageAlt")}
                       fill
                       className={styles.image}
                       draggable={false}
@@ -415,9 +417,9 @@ export default function GlobalCommonMistakesClient({ datasetId }: { datasetId: D
                 {/* Answers */}
                 {item.type === "ROW" && item.correctRow && (
                   <div className={styles.answerRow}>
-                    <span className={styles.answerLabel}>Answer</span>
+                    <span className={styles.answerLabel}>{t("questionReview.answerLabel")}</span>
                     <span className={styles.answerPill}>
-                      {item.correctRow === "R" ? "Right" : item.correctRow === "W" ? "Wrong" : item.correctRow}
+                      {item.correctRow === "R" ? t("test.rowOptions.right") : item.correctRow === "W" ? t("test.rowOptions.wrong") : item.correctRow}
                     </span>
                   </div>
                 )}
@@ -439,10 +441,10 @@ export default function GlobalCommonMistakesClient({ datasetId }: { datasetId: D
 
                 <div className={styles.tagRow}>
                   {tags
-                    .filter((t) => t.includes(":") && !t.endsWith(":all"))
-                    .map((t) => (
-                      <span key={t} className={styles.tagPill}>
-                        {labelForTag(t)}
+                    .filter((tag) => tag.includes(":") && !tag.endsWith(":all"))
+                    .map((tag) => (
+                      <span key={tag} className={styles.tagPill}>
+                        {labelForTag(tag, t)}
                       </span>
                     ))}
                 </div>
@@ -461,8 +463,8 @@ export default function GlobalCommonMistakesClient({ datasetId }: { datasetId: D
                 typeof window !== "undefined" && window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
               window.scrollTo({ top: 0, behavior: prefersReduced ? "auto" : "smooth" });
             }}
-            aria-label="Scroll to top"
-            title="Back to top"
+            aria-label={t("shared.scrollToTop.ariaLabel")}
+            title={t("shared.scrollToTop.title")}
           >
             <span className={styles.toTopIcon} aria-hidden="true">
               <Image src="/images/other/up-arrow.png" alt="" width={22} height={22} draggable={false} />

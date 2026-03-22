@@ -10,6 +10,7 @@ import styles from './create-account-modal.module.css';
 import { isValidEmail, normalizeEmail } from '@/lib/auth';
 import { buildAuthCallbackUrl, NATIVE_OAUTH_REDIRECT_URI } from '@/lib/auth/oauth';
 import { createClient } from '@/lib/supabase/client';
+import { useT } from '@/lib/i18n/useT';
 
 type Props = {
   open: boolean;
@@ -20,6 +21,7 @@ type Props = {
 export default function CreateAccountModal({ open, onClose, onCreated }: Props) {
   const router = useRouter();
   const supabase = useMemo(() => createClient(), []);
+  const { t } = useT();
 
   const [email, setEmail] = useState('');
   const [pw, setPw] = useState('');
@@ -50,9 +52,9 @@ export default function CreateAccountModal({ open, onClose, onCreated }: Props) 
 
     const trimmedEmail = normalizeEmail(email);
 
-    if (!isValidEmail(trimmedEmail)) return setError('Please enter a valid email.');
-    if (pw.trim().length < 8) return setError('Password must be at least 8 characters.');
-    if (pw !== pw2) return setError('Passwords do not match.');
+    if (!isValidEmail(trimmedEmail)) return setError(t('createAccount.errors.invalidEmail'));
+    if (pw.trim().length < 8) return setError(t('createAccount.errors.passwordMin'));
+    if (pw !== pw2) return setError(t('createAccount.errors.passwordMismatch'));
 
     setIsSubmitting(true);
     try {
@@ -67,7 +69,7 @@ export default function CreateAccountModal({ open, onClose, onCreated }: Props) 
 
       if (error) {
         if (/already registered/i.test(error.message) || /already exists/i.test(error.message)) {
-          setError("This email is already registered. Try logging in instead.");
+          setError(t('createAccount.errors.alreadyRegistered'));
         } else {
           setError(error.message);
         }
@@ -90,7 +92,7 @@ export default function CreateAccountModal({ open, onClose, onCreated }: Props) 
       onCreated?.(trimmedEmail);
       onClose();
     } catch {
-      setError('Network error. Please try again.');
+      setError(t('createAccount.errors.network'));
     } finally {
       setIsSubmitting(false);
     }
@@ -99,8 +101,8 @@ export default function CreateAccountModal({ open, onClose, onCreated }: Props) 
   return (
     <div className={styles.overlay} role="dialog" aria-modal="true">
       <div className={styles.modal}>
-        <h2 className={styles.title}>Create Account</h2>
-        <p className={styles.subtitle}>Sign up to get started</p>
+        <h2 className={styles.title}>{t('createAccount.title')}</h2>
+        <p className={styles.subtitle}>{t('createAccount.subtitle')}</p>
 
         {/* ✅ Email confirmation message */}
         {needsEmailConfirm && (
@@ -111,11 +113,11 @@ export default function CreateAccountModal({ open, onClose, onCreated }: Props) 
               borderColor: 'rgba(43,124,175,0.25)',
             }}
           >
-            <strong>Check your email</strong>
+            <strong>{t('createAccount.checkEmailTitle')}</strong>
             <div style={{ marginTop: 6 }}>
-              We sent a confirmation link to <strong>{normalizeEmail(email)}</strong>.
+              {t('createAccount.checkEmailBody', { email: normalizeEmail(email) })}
               <br />
-              Open it to activate your account, then come back and sign in.
+              {t('createAccount.checkEmailHelp')}
             </div>
 
             <button
@@ -127,19 +129,19 @@ export default function CreateAccountModal({ open, onClose, onCreated }: Props) 
                 onClose();
               }}
             >
-              Got it
+              {t('createAccount.gotIt')}
             </button>
           </div>
         )}
 
         <form onSubmit={submit} className={styles.form}>
           <label className={styles.row}>
-            <span className={styles.label}>Email</span>
+            <span className={styles.label}>{t('createAccount.emailLabel')}</span>
             <input
               className={styles.input}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="user@expatise.com"
+              placeholder={t('createAccount.emailPlaceholder')}
               type="email"
               autoComplete="email"
               onFocus={() => setError(null)}
@@ -147,13 +149,13 @@ export default function CreateAccountModal({ open, onClose, onCreated }: Props) 
           </label>
 
           <label className={styles.row}>
-            <span className={styles.label}>Password</span>
+            <span className={styles.label}>{t('createAccount.passwordLabel')}</span>
             <div className={styles.pwWrap}>
               <input
                 className={styles.input}
                 value={pw}
                 onChange={(e) => setPw(e.target.value)}
-                placeholder="Password"
+                placeholder={t('createAccount.passwordPlaceholder')}
                 type={showPw ? 'text' : 'password'}
                 autoComplete="new-password"
                 onFocus={() => setError(null)}
@@ -162,7 +164,7 @@ export default function CreateAccountModal({ open, onClose, onCreated }: Props) 
                 type="button"
                 className={styles.eyeBtn}
                 onClick={() => setShowPw((v) => !v)}
-                aria-label={showPw ? 'Hide password' : 'Show password'}
+                aria-label={showPw ? t('createAccount.passwordToggleHide') : t('createAccount.passwordToggleShow')}
               >
                 <FontAwesomeIcon icon={showPw ? faEyeSlash : faEye} />
               </button>
@@ -170,13 +172,13 @@ export default function CreateAccountModal({ open, onClose, onCreated }: Props) 
           </label>
 
           <label className={styles.row}>
-            <span className={styles.label}>Confirm</span>
+            <span className={styles.label}>{t('createAccount.confirmLabel')}</span>
             <div className={styles.pwWrap}>
               <input
                 className={styles.input}
                 value={pw2}
                 onChange={(e) => setPw2(e.target.value)}
-                placeholder="Confirm password"
+                placeholder={t('createAccount.confirmPlaceholder')}
                 type={showPw2 ? 'text' : 'password'}
                 autoComplete="new-password"
                 onFocus={() => setError(null)}
@@ -185,7 +187,7 @@ export default function CreateAccountModal({ open, onClose, onCreated }: Props) 
                 type="button"
                 className={styles.eyeBtn}
                 onClick={() => setShowPw2((v) => !v)}
-                aria-label={showPw2 ? 'Hide password' : 'Show password'}
+                aria-label={showPw2 ? t('createAccount.passwordToggleHide') : t('createAccount.passwordToggleShow')}
               >
                 <FontAwesomeIcon icon={showPw2 ? faEyeSlash : faEye} />
               </button>
@@ -195,13 +197,13 @@ export default function CreateAccountModal({ open, onClose, onCreated }: Props) 
           {error && <div className={styles.errorBox}>{error}</div>}
 
           <button type="submit" className={styles.cta} disabled={!canSubmit}>
-            {isSubmitting ? 'Creating...' : 'Create new account'}
+            {isSubmitting ? t('createAccount.submitLoading') : t('createAccount.submitIdle')}
           </button>
         </form>
 
         <div className={styles.dividerRow}>
           <span className={styles.dividerLine} />
-          <span className={styles.dividerText}>or continue with</span>
+          <span className={styles.dividerText}>{t('createAccount.divider')}</span>
           <span className={styles.dividerLine} />
         </div>
 
@@ -209,7 +211,7 @@ export default function CreateAccountModal({ open, onClose, onCreated }: Props) 
           <button
   type="button"
   className={styles.snsBtn}
-  aria-label="Sign up with Google"
+  aria-label={t('createAccount.social.googleAria')}
   disabled={isSubmitting || oauthSubmitting}
   aria-busy={oauthSubmitting ? "true" : "false"}
   onClick={async () => {
@@ -249,7 +251,7 @@ export default function CreateAccountModal({ open, onClose, onCreated }: Props) 
 
        const url = data?.url;
 if (!url) {
-  setError("No OAuth URL returned.");
+  setError(t('createAccount.errors.noOauthUrl'));
   return;
 }
 await Browser.open({ url });
@@ -266,7 +268,7 @@ return;
 
       if (error) setError(error.message);
     } catch (err: any) {
-      setError(err?.message ?? "Google sign-up failed. Please try again.");
+      setError(err?.message ?? t('createAccount.errors.googleFailed'));
     } finally {
       setOauthSubmitting(false);
       oauthBusyRef.current = false;
@@ -276,18 +278,18 @@ return;
   <FontAwesomeIcon icon={faGoogle} />
 </button>
 
-          <button type="button" className={styles.snsBtn} aria-label="Sign up with Apple">
+          <button type="button" className={styles.snsBtn} aria-label={t('createAccount.social.appleAria')}>
             <FontAwesomeIcon icon={faApple} />
           </button>
 
-          <button type="button" className={styles.snsBtn} aria-label="Sign up with WeChat">
+          <button type="button" className={styles.snsBtn} aria-label={t('createAccount.social.wechatAria')}>
             <FontAwesomeIcon icon={faWeixin} />
           </button>
         </div>
       </div>
 
       {/* click outside to close */}
-      <button type="button" className={styles.backdropClose} onClick={onClose} aria-label="Close" />
+      <button type="button" className={styles.backdropClose} onClick={onClose} aria-label={t('createAccount.closeAria')} />
     </div>
   );
 }

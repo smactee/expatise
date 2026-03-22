@@ -93,7 +93,7 @@ C) Trend validity (no fake trends):
  * |delta| >= 6 → up/down
  * |delta| <= 3 → stable
  * else → “mixed / flat-ish”
-- Trend statements must include receipts: (window label, n, medians), e.g., “(30d, n=7 tests, median 76→83)”.
+- Trend statements must include receipts: (window label, n, medians), e.g., “(30d, n=12 tests, median 76→83)”.
 - Confounder gate: if completion changed by >= 8 pts between halves, attribute trend to completion and avoid “knowledge improved” language.
 - Daily avgScore trend uses ACTIVE DAYS only (days with testsCompleted>0). Zero days are for habit/consistency only.
 - If <3 points: say “not enough signal yet.”

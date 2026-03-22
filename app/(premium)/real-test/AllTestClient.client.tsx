@@ -27,6 +27,7 @@ import {
 import { useEntitlements } from '@/components/EntitlementsProvider.client';
 import { userKeyFromEmail } from '@/lib/identity/userKey';
 import { migrateLocalAttemptsToCanonical } from '@/lib/test-engine/attemptStorage';
+import { useT } from '@/lib/i18n/useT';
 
 
 
@@ -67,6 +68,7 @@ export default function AllTestClient({
   preflightRequiredQuestions?: number;
   routeBase: string;
 }) {
+  const { t } = useT();
 
   console.log("[RealTestClient] mounted", {
     modeKey,
@@ -514,7 +516,7 @@ useEffect(() => {
     return (
       <main className={styles.page}>
         <div className={styles.frame}>
-          <div className={styles.loading}>Loading…</div>
+          <div className={styles.loading}>{t('test.loading')}</div>
         </div>
       </main>
     );
@@ -524,7 +526,7 @@ useEffect(() => {
     return (
       <main className={styles.page}>
         <div className={styles.frame}>
-          <div className={styles.loading}>No questions found.</div>
+          <div className={styles.loading}>{t('test.noQuestionsFound')}</div>
         </div>
       </main>
     );
@@ -546,7 +548,7 @@ useEffect(() => {
   ) : (
     <div className={styles.timer}>
       <span className={styles.timerIcon} aria-hidden="true" />
-      <span className={styles.timerText}>No time limit</span>
+      <span className={styles.timerText}>{t('shared.common.noTimeLimit')}</span>
     </div>
   )}
 
@@ -577,8 +579,8 @@ useEffect(() => {
               e.stopPropagation();
               toggle(item.id);
             }}
-            aria-label={isBookmarked(item.id) ? 'Remove bookmark' : 'Add bookmark'}
-            title={isBookmarked(item.id) ? 'Bookmarked' : 'Bookmark'}
+            aria-label={isBookmarked(item.id) ? t('shared.bookmarks.removeAria') : t('shared.bookmarks.addAria')}
+            title={isBookmarked(item.id) ? t('shared.bookmarks.activeTitle') : t('shared.bookmarks.idleTitle')}
             data-bookmarked={isBookmarked(item.id) ? 'true' : 'false'}
           >
             {/* NOTE: this is where your class rename matters */}
@@ -591,7 +593,7 @@ useEffect(() => {
   <div className={styles.imageWrap}>
     <Image
       src={imageAsset.src}
-      alt="Question image"
+      alt={t('shared.questionImageAlt')}
       fill
       className={styles.image}
       priority
@@ -612,7 +614,7 @@ useEffect(() => {
       }`}
       onClick={() => onOptionTap('R')}
     >
-      <span className={styles.optionText}>Right</span>
+      <span className={styles.optionText}>{t('test.rowOptions.right')}</span>
     </button>
 
     <button
@@ -622,7 +624,7 @@ useEffect(() => {
       }`}
      onClick={() => onOptionTap('W')}
     >
-      <span className={styles.optionText}>Wrong</span>
+      <span className={styles.optionText}>{t('test.rowOptions.wrong')}</span>
     </button>
   </>
 )}
@@ -674,7 +676,7 @@ useEffect(() => {
           onClick={() => selectedKey && void commitAndAdvance(selectedKey)}
           disabled={!selectedKey}
         >
-          Next <span className={styles.nextArrow} aria-hidden="true">→</span>
+          {t('shared.common.next')} <span className={styles.nextArrow} aria-hidden="true">→</span>
         </button>
       </div>
     </main>

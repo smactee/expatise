@@ -8,6 +8,7 @@ import DragScrollRow from "@/components/DragScrollRow";
 import { useEffect, useRef, useState, useMemo } from 'react';
 import { useOnceInMidView } from '@/components/stats/useOnceInView.client';
 import type { CSSProperties } from 'react';
+import { useT } from '@/lib/i18n/useT';
 
 
 
@@ -40,6 +41,7 @@ function chipBgFromPct(pct: number) {
 }
 
 export default function TopicMasteryChart({ data }: { data: TopicMasteryVM }) {
+  const { t } = useT();
   // show all (scrollable)
   // all topics
 const topics = data.topics ?? [];
@@ -87,11 +89,11 @@ const { ref: listRef, seen: listInView } = useOnceInMidView<HTMLDivElement>();
     <div className={styles.wrap}>
       {/* Top “wow” pills */}
       <div ref={heroRef} className={styles.hero}>
-        <div className={styles.heroTitle}>Weakest right now</div>
+        <div className={styles.heroTitle}>{t('charts.topicMastery.weakestRightNow')}</div>
 
         {topSub.length === 0 ? (
           <div className={styles.empty}>
-            Not enough topic data yet (need at least {data.minAttempted} answered per subtopic).
+            {t('charts.topicMastery.empty', { count: data.minAttempted })}
           </div>
         ) : (
           <DragScrollRow className={styles.heroScroller}>
@@ -109,15 +111,19 @@ const { ref: listRef, seen: listInView } = useOnceInMidView<HTMLDivElement>();
               ['--op' as any]: op,
               ['--d' as any]: `${heroDelay}ms`,
             } as CSSProperties}
-                  title={`${labelForTag(s.tag)} · ${s.accuracyPct}% · ${s.attempted} answered`}
+                  title={t('charts.topicMastery.chipTitle', {
+                    label: labelForTag(s.tag, t),
+                    accuracy: s.accuracyPct,
+                    answered: s.attempted,
+                  })}
                 >
 <div className={styles.pillTop}>
   <span className={styles.pillTitle}>
-    <span className={styles.pillLabel}>{labelForTag(s.tag)}</span>
+    <span className={styles.pillLabel}>{labelForTag(s.tag, t)}</span>
     <span className={styles.pillPct}>{s.accuracyPct}%</span>
   </span>
 </div>
- <div className={styles.pillMeta}>{s.attempted} answered</div>
+ <div className={styles.pillMeta}>{t('charts.topicMastery.answered', { count: s.attempted })}</div>
 </div>
               );
             })}
@@ -129,14 +135,14 @@ const { ref: listRef, seen: listInView } = useOnceInMidView<HTMLDivElement>();
 
       {/* Topic list */}
       <div ref={listRef} className={styles.list}>
-        {topics.map((t, ti) => {
-          const topicLabel = labelForTag(t.topicKey);
+        {topics.map((topic, ti) => {
+          const topicLabel = labelForTag(topic.topicKey, t);
 
 // topic-level confidence (no `s` here; `s` doesn't exist in this scope)
-const lowTopic = t.attempted < data.minAttempted;
-const op = confOpacity(t.attempted, maxAttempted) * (lowTopic ? 0.75 : 1);
+const lowTopic = topic.attempted < data.minAttempted;
+const op = confOpacity(topic.attempted, maxAttempted) * (lowTopic ? 0.75 : 1);
 
-const subs = t.subtopics ?? [];
+const subs = topic.subtopics ?? [];
 
 
            const rowDelay = 220 + ti * 90;      // rows come in after hero settles
@@ -148,16 +154,16 @@ const subs = t.subtopics ?? [];
 
           return (
     <div
-      key={t.topicKey}
+      key={topic.topicKey}
       className={`${styles.row} ${listInView ? styles.rowIn : styles.rowHidden}`}
       style={{ ['--d' as any]: `${rowDelay}ms` } as CSSProperties}
     >
       <div className={styles.rowHead}>
         <div className={styles.topicName}>{topicLabel}</div>
         <div className={styles.rightMeta}>
-          <span className={styles.topicPct}>{t.accuracyPct}%</span>
+          <span className={styles.topicPct}>{topic.accuracyPct}%</span>
           <span className={styles.dot} style={{ opacity: op }} />
-          <span className={styles.answered}>{t.attempted} answered</span>
+          <span className={styles.answered}>{t('charts.topicMastery.answered', { count: topic.attempted })}</span>
         </div>
       </div>
 
@@ -165,7 +171,7 @@ const subs = t.subtopics ?? [];
         <div
           className={`${styles.barFill} ${listInView ? styles.barFillGrow : styles.barFillHidden}`}
           style={{
-            ['--w' as any]: `${clamp(t.accuracyPct, 0, 100)}%`,
+            ['--w' as any]: `${clamp(topic.accuracyPct, 0, 100)}%`,
             ['--d' as any]: `${barDelay}ms`, // ✅ bar anim delay
           } as CSSProperties}
         />
@@ -188,10 +194,14 @@ const subs = t.subtopics ?? [];
                   ['--op' as any]: sop,
                   ['--d' as any]: `${chipDelay}ms`, // ✅ chip delay
                 } as CSSProperties}
-                title={`${labelForTag(s.tag)} · ${s.accuracyPct}% · ${s.attempted} answered`}
+                title={t('charts.topicMastery.chipTitle', {
+                  label: labelForTag(s.tag, t),
+                  accuracy: s.accuracyPct,
+                  answered: s.attempted,
+                })}
               >
                 <span className={styles.subText}>
-                  <span className={styles.subLabel}>{labelForTag(s.tag)}</span>
+                  <span className={styles.subLabel}>{labelForTag(s.tag, t)}</span>
                   <span className={styles.subPct}>{s.accuracyPct}%</span>
                 </span>
 
@@ -211,7 +221,7 @@ const subs = t.subtopics ?? [];
           })}
         </DragScrollRow>
       ) : (
-        <div className={styles.subEmpty}>Need more answers in this topic to rank subtopics.</div>
+        <div className={styles.subEmpty}>{t('charts.topicMastery.subEmpty')}</div>
       )}
     </div>
   );

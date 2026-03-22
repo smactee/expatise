@@ -5,6 +5,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import styles from './Heatmap.module.css';
 import { useOnceInMidView } from './useOnceInView.client';
+import { useT } from '@/lib/i18n/useT';
 
 type HeatmapVM = {
   weekdays: string[];
@@ -70,24 +71,8 @@ function cellBg(avgScore: number, attemptsCount: number) {
   return `rgba(${base.r}, ${base.g}, ${base.b}, ${clamp(alpha, 0.55, 0.98)})`;
 }
 
-const DAYPART_SHORT: Record<string, string> = {
-  morning: 'AM',
-  midday: 'Noon',
-  evening: 'PM',
-  late: 'Late',
-};
-
-const DAYPART_TIPS: Record<string, { title: string; sub?: string }> = {
-  morning: { title: 'Morning: 6~12 AM', sub: 'Based on your local time.' },
-  midday: { title: 'Midday: 12~5 PM', sub: 'Based on your local time.' },
-  evening: { title: 'Evening: 5~10 PM', sub: 'Based on your local time.' },
-  late:   { title: 'Late: 10~6 (crosses midnight)', sub: 'Based on your local time.' },
-};
-
-
-
-
 export default function Heatmap({ data }: { data: HeatmapVM }) {
+  const { t } = useT();
   // r = weekday row index, c = dayPart col index (swapped UI)
   const [hover, setHover] = useState<{ r: number; c: number } | null>(null);
   const [pinned, setPinned] = useState<{ r: number; c: number } | null>(null);
@@ -135,12 +120,26 @@ export default function Heatmap({ data }: { data: HeatmapVM }) {
   const partTipRef = useRef<HTMLDivElement | null>(null);
 
   const partActive = partPinned ?? partHover;
+  const confidenceNote = !data.best
+    ? t('charts.heatmap.notEnoughData')
+    : data.best.attemptsCount < 3
+    ? t('charts.heatmap.confidenceNote', { count: data.best.attemptsCount })
+    : null;
 
   const partTip =
     partActive != null
       ? (() => {
           const p = data.dayParts[partActive];
-          const info = DAYPART_TIPS[p?.key] ?? { title: `${p?.label ?? ''}` };
+          const info =
+            p?.key === 'morning'
+              ? { title: t('charts.heatmap.dayParts.morningTitle'), sub: t('charts.heatmap.dayParts.basedOnLocalTime') }
+              : p?.key === 'midday'
+              ? { title: t('charts.heatmap.dayParts.middayTitle'), sub: t('charts.heatmap.dayParts.basedOnLocalTime') }
+              : p?.key === 'evening'
+              ? { title: t('charts.heatmap.dayParts.eveningTitle'), sub: t('charts.heatmap.dayParts.basedOnLocalTime') }
+              : p?.key === 'late'
+              ? { title: t('charts.heatmap.dayParts.lateTitle'), sub: t('charts.heatmap.dayParts.basedOnLocalTime') }
+              : { title: `${p?.label ?? ''}` };
           return { ...info };
         })()
       : null;
@@ -309,14 +308,12 @@ useEffect(() => {
         <div className={styles.calloutText}>
           {data.best ? (
             <>
-              Your best window: <b>{data.best.weekdayLabel} {data.best.dayPartLabel}</b> — avg{' '}
+              {t('charts.heatmap.bestWindow')} <b>{data.best.weekdayLabel} {data.best.dayPartLabel}</b> —{' '}
               <b>{data.best.avgScore}%</b>{' '}
-              <span className={styles.calloutMuted}>
-                ({data.best.attemptsCount} test{data.best.attemptsCount === 1 ? '' : 's'})
-              </span>
+              <span className={styles.calloutMuted}>{t('charts.heatmap.bestWindowMeta', { count: data.best.attemptsCount })}</span>
             </>
           ) : (
-            <>Not enough data yet.</>
+            <>{t('charts.heatmap.notEnoughData')}</>
           )}
         </div>
       </div>
@@ -364,7 +361,15 @@ useEffect(() => {
       }
     }}
   >
- {DAYPART_SHORT[p.key] ?? p.label}
+ {p.key === 'morning'
+    ? t('charts.heatmap.dayParts.morningShort')
+    : p.key === 'midday'
+    ? t('charts.heatmap.dayParts.middayShort')
+    : p.key === 'evening'
+    ? t('charts.heatmap.dayParts.eveningShort')
+    : p.key === 'late'
+    ? t('charts.heatmap.dayParts.lateShort')
+    : p.label}
   </div>
 ))}
 
@@ -471,24 +476,24 @@ return (
         {/* Tiny legend (see section 2) */}
         <div className={styles.legend}>
           <div className={styles.legendRow}>
-            <span className={styles.legendLabel}>Score</span>
+            <span className={styles.legendLabel}>{t('charts.heatmap.legendScore')}</span>
             <span className={`${styles.swatch} ${styles.swLow}`} />
             <span className={`${styles.swatch} ${styles.swMid}`} />
             <span className={`${styles.swatch} ${styles.swHigh}`} />
-            <span className={styles.legendText}>low → high</span>
+            <span className={styles.legendText}>{t('charts.heatmap.legendLowToHigh')}</span>
           </div>
 
           <div className={styles.legendRow}>
-            <span className={styles.legendLabel}>Confidence</span>
+            <span className={styles.legendLabel}>{t('charts.heatmap.legendConfidence')}</span>
             <span className={styles.legendDot} style={{ opacity: 0.35 }} />
             <span className={styles.legendDot} style={{ opacity: 0.65 }} />
             <span className={styles.legendDot} style={{ opacity: 1 }} />
-            <span className={styles.legendText}>more tests = stronger</span>
+            <span className={styles.legendText}>{t('charts.heatmap.legendMoreTests')}</span>
           </div>
         </div>
 
-        {data.lowConfidenceNote ? (
-          <div className={styles.confidenceNote}>{data.lowConfidenceNote}</div>
+        {confidenceNote ? (
+          <div className={styles.confidenceNote}>{confidenceNote}</div>
         ) : null}
       </div>
 
@@ -507,14 +512,14 @@ return (
               </div>
 
               <div className={styles.tipSub}>
-                Avg {tip.cell.avgScore}% · {tip.cell.attemptsCount} test{tip.cell.attemptsCount === 1 ? '' : 's'}
+                {t('charts.heatmap.tooltipAvg', { score: tip.cell.avgScore, count: tip.cell.attemptsCount })}
               </div>
 
               <div className={styles.tipRule} />
 
               <div className={styles.tipBody}>
                 <div className={styles.tipMuted}>
-                  {tip.cell.attemptsCount < 3 ? 'Low confidence' : 'Good confidence'}
+                  {tip.cell.attemptsCount < 3 ? t('charts.heatmap.tooltipLowConfidence') : t('charts.heatmap.tooltipGoodConfidence')}
                 </div>
               </div>
 

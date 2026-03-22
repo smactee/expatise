@@ -38,6 +38,8 @@
 }
 
 .sheet {
+  --content-lift: 100px;
+
   position: relative;
   z-index: 2;
   margin-top: clamp(-128px, -15svh, -88px);
@@ -46,7 +48,7 @@
   display: flex;
   flex-direction: column;
   min-height: 0;
-  transform: translateY(-50px);
+  transform: translateY(calc(-1 * var(--content-lift)));
 }
 
 .title {

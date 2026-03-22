@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import styles from './BottomNav.module.css';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { useT } from '@/lib/i18n/useT';
 
 type BottomNavProps = {
   onOffsetChange?: (offsetY: number) => void; // keep for compatibility
@@ -13,6 +14,7 @@ type BottomNavProps = {
 
 export default function BottomNav({ onOffsetChange }: BottomNavProps) {
   const pathname = usePathname();
+  const { t } = useT();
 
   const isHome = pathname === '/';
   const isStats = pathname === '/stats' || pathname?.startsWith('/stats/');
@@ -133,13 +135,13 @@ export default function BottomNav({ onOffsetChange }: BottomNavProps) {
           {isHome ? (
             <div className={styles.navPill}>
               <span className={styles.navIcon}>
-                <Image src="/images/home/icons/navbar-home-icon.png" alt="Navigation bar Home Icon" width={30} height={30} draggable={false} />
+                <Image src="/images/home/icons/navbar-home-icon.png" alt={t('shared.nav.homeIconAlt')} width={30} height={30} draggable={false} />
               </span>
-              <span className={styles.navLabel}>Home</span>
+              <span className={styles.navLabel}>{t('shared.nav.home')}</span>
             </div>
           ) : (
             <span className={styles.navIcon}>
-              <Image src="/images/home/icons/navbar-home-icon.png" alt="Navigation bar Home Icon" width={30} height={30} draggable={false} />
+              <Image src="/images/home/icons/navbar-home-icon.png" alt={t('shared.nav.homeIconAlt')} width={30} height={30} draggable={false} />
             </span>
           )}
         </Link>
@@ -149,13 +151,13 @@ export default function BottomNav({ onOffsetChange }: BottomNavProps) {
           {isStats ? (
             <div className={styles.navPill}>
               <span className={styles.navIcon}>
-                <Image src="/images/home/icons/navbar-stats-icon.png" alt="Navigation bar Stats Icon" width={30} height={30} draggable={false} />
+                <Image src="/images/home/icons/navbar-stats-icon.png" alt={t('shared.nav.statsIconAlt')} width={30} height={30} draggable={false} />
               </span>
-              <span className={styles.navLabel}>Stats</span>
+              <span className={styles.navLabel}>{t('shared.nav.stats')}</span>
             </div>
           ) : (
             <span className={styles.navIcon}>
-              <Image src="/images/home/icons/navbar-stats-icon.png" alt="Navigation bar Stats Icon" width={30} height={30} draggable={false} />
+              <Image src="/images/home/icons/navbar-stats-icon.png" alt={t('shared.nav.statsIconAlt')} width={30} height={30} draggable={false} />
             </span>
           )}
         </Link>
@@ -165,13 +167,13 @@ export default function BottomNav({ onOffsetChange }: BottomNavProps) {
           {isProfile ? (
             <div className={styles.navPill}>
               <span className={styles.navIcon}>
-                <Image src="/images/home/icons/navbar-profile-icon.png" alt="Navigation bar Profile Icon" width={30} height={30} draggable={false} />
+                <Image src="/images/home/icons/navbar-profile-icon.png" alt={t('shared.nav.profileIconAlt')} width={30} height={30} draggable={false} />
               </span>
-              <span className={styles.navLabel}>Profile</span>
+              <span className={styles.navLabel}>{t('shared.nav.profile')}</span>
             </div>
           ) : (
             <span className={styles.navIcon}>
-              <Image src="/images/home/icons/navbar-profile-icon.png" alt="Navigation bar Profile Icon" width={30} height={30} draggable={false} />
+              <Image src="/images/home/icons/navbar-profile-icon.png" alt={t('shared.nav.profileIconAlt')} width={30} height={30} draggable={false} />
             </span>
           )}
         </Link>

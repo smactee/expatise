@@ -9,11 +9,13 @@ import { useAuthStatus } from '../../components/useAuthStatus';
 import { createClient } from '@/lib/supabase/client';
 import { isValidEmail, normalizeEmail } from '@/lib/auth';
 import { buildAuthCallbackUrl } from '@/lib/auth/oauth';
+import { useT } from '@/lib/i18n/useT';
 
 export default function AccountSecurityPage() {
   const router = useRouter();
   const supabase = useMemo(() => createClient(), []);
   const { authed, method, loading, email: currentEmail } = useAuthStatus();
+  const { t } = useT();
 
   // Only allow email/password accounts here
   const allowed = useMemo(() => authed && method === 'email', [authed, method]);
@@ -30,27 +32,27 @@ export default function AccountSecurityPage() {
 
   async function reauthWithCurrentPassword(password: string) {
     const emailNorm = normalizeEmail(currentEmail ?? '');
-    if (!emailNorm) throw new Error('Missing current email.');
+    if (!emailNorm) throw new Error(t('accountSecurity.messages.missingCurrentEmail'));
     const { error } = await supabase.auth.signInWithPassword({
       email: emailNorm,
       password,
     });
-    if (error) throw new Error('Current password is incorrect.');
+    if (error) throw new Error(t('accountSecurity.messages.currentPasswordIncorrect'));
   }
 
   async function changePassword() {
     setMsg(null);
 
     if (!pwCurrent || !pwNext || !pwNext2) {
-      setMsg('Please fill all password fields.');
+      setMsg(t('accountSecurity.messages.fillAllPasswordFields'));
       return;
     }
     if (pwNext.length < 8) {
-      setMsg('New password must be at least 8 characters.');
+      setMsg(t('accountSecurity.messages.newPasswordMin'));
       return;
     }
     if (pwNext !== pwNext2) {
-      setMsg('New passwords do not match.');
+      setMsg(t('accountSecurity.messages.newPasswordsMismatch'));
       return;
     }
 
@@ -62,20 +64,20 @@ export default function AccountSecurityPage() {
       // 2) Update password
       const { error } = await supabase.auth.updateUser({ password: pwNext });
       if (error) {
-        setMsg(error.message || 'Failed to change password.');
+        setMsg(error.message || t('accountSecurity.messages.changePasswordFailed'));
         return;
       }
 
       setPwCurrent('');
       setPwNext('');
       setPwNext2('');
-      setMsg('Password updated.');
+      setMsg(t('accountSecurity.messages.passwordUpdated'));
 
       try { window.dispatchEvent(new Event('expatise:session-changed')); } catch {}
       try { window.dispatchEvent(new Event('expatise:entitlements-changed')); } catch {}
       router.refresh();
     } catch (e: any) {
-      setMsg(e?.message ?? 'Failed to change password.');
+      setMsg(e?.message ?? t('accountSecurity.messages.changePasswordFailed'));
     } finally {
       setBusy(false);
     }
@@ -86,11 +88,11 @@ export default function AccountSecurityPage() {
 
     const nextNorm = normalizeEmail(emailNext);
     if (!nextNorm || !isValidEmail(nextNorm)) {
-      setMsg('Please enter a valid new email.');
+      setMsg(t('accountSecurity.messages.invalidNewEmail'));
       return;
     }
     if (!emailPw) {
-      setMsg('Please enter your current password.');
+      setMsg(t('accountSecurity.messages.enterCurrentPassword'));
       return;
     }
 
@@ -107,7 +109,7 @@ export default function AccountSecurityPage() {
       } as any);
 
       if (error) {
-        setMsg(error.message || 'Failed to change email.');
+        setMsg(error.message || t('accountSecurity.messages.changeEmailFailed'));
         return;
       }
 
@@ -115,13 +117,13 @@ export default function AccountSecurityPage() {
       setEmailPw('');
 
       // Supabase often sends a confirmation email for email change.
-      setMsg('Email update requested. Please check your email to confirm the change.');
+      setMsg(t('accountSecurity.messages.emailUpdateRequested'));
 
       try { window.dispatchEvent(new Event('expatise:session-changed')); } catch {}
       try { window.dispatchEvent(new Event('expatise:entitlements-changed')); } catch {}
       router.refresh();
     } catch (e: any) {
-      setMsg(e?.message ?? 'Failed to change email.');
+      setMsg(e?.message ?? t('accountSecurity.messages.changeEmailFailed'));
     } finally {
       setBusy(false);
     }
@@ -133,16 +135,16 @@ export default function AccountSecurityPage() {
     return (
       <main className={styles.page}>
         <div className={styles.card}>
-          <h1 className={styles.title}>Account Security</h1>
+          <h1 className={styles.title}>{t('accountSecurity.pageTitle')}</h1>
           <p className={styles.text}>
-            This page is only available for accounts created with Email + Password.
+            {t('accountSecurity.emailPasswordOnly')}
           </p>
           <div className={styles.row}>
             <Link className={styles.linkBtn} href="/login">
-              Go to login
+              {t('accountSecurity.goToLogin')}
             </Link>
             <Link className={styles.ghostBtn} href="/profile">
-              Profile
+              {t('accountSecurity.profile')}
             </Link>
           </div>
         </div>
@@ -153,55 +155,55 @@ export default function AccountSecurityPage() {
   return (
     <main className={styles.page}>
       <div className={styles.card}>
-        <h1 className={styles.title}>Change Email / Password</h1>
+        <h1 className={styles.title}>{t('accountSecurity.title')}</h1>
 
         {msg && <div className={styles.msg}>{msg}</div>}
 
         <section className={styles.section}>
-          <h2 className={styles.sectionTitle}>Change Email</h2>
+          <h2 className={styles.sectionTitle}>{t('accountSecurity.changeEmail')}</h2>
           <input
             className={styles.input}
-            placeholder="New email"
+            placeholder={t('accountSecurity.newEmailPlaceholder')}
             value={emailNext}
             onChange={(e) => setEmailNext(e.target.value)}
           />
           <input
             className={styles.input}
-            placeholder="Current password"
+            placeholder={t('accountSecurity.currentPasswordPlaceholder')}
             type="password"
             value={emailPw}
             onChange={(e) => setEmailPw(e.target.value)}
           />
           <button className={styles.primaryBtn} disabled={busy} onClick={changeEmail}>
-            Update Email
+            {t('shared.common.updateEmail')}
           </button>
         </section>
 
         <section className={styles.section}>
-          <h2 className={styles.sectionTitle}>Change Password</h2>
+          <h2 className={styles.sectionTitle}>{t('accountSecurity.changePassword')}</h2>
           <input
             className={styles.input}
-            placeholder="Current password"
+            placeholder={t('accountSecurity.currentPasswordPlaceholder')}
             type="password"
             value={pwCurrent}
             onChange={(e) => setPwCurrent(e.target.value)}
           />
           <input
             className={styles.input}
-            placeholder="New password"
+            placeholder={t('accountSecurity.newPasswordPlaceholder')}
             type="password"
             value={pwNext}
             onChange={(e) => setPwNext(e.target.value)}
           />
           <input
             className={styles.input}
-            placeholder="Confirm new password"
+            placeholder={t('accountSecurity.confirmNewPasswordPlaceholder')}
             type="password"
             value={pwNext2}
             onChange={(e) => setPwNext2(e.target.value)}
           />
           <button className={styles.primaryBtn} disabled={busy} onClick={changePassword}>
-            Update Password
+            {t('shared.common.updatePassword')}
           </button>
         </section>
       </div>

@@ -2,11 +2,12 @@
 
 import React from 'react';
 import styles from '@/app/(premium)/stats/stats.module.css';
-
+import { useT } from '@/lib/i18n/useT';
 
 
 export default function CoachReportRich({ report }: { report: string }) {
-  const sections = parseSections(report);
+  const { t } = useT();
+  const sections = parseSections(report, t('stats.coach.reportTitle'));
 
   if (!sections.length) return null;
 
@@ -72,7 +73,7 @@ type Section = { key: string; title: string; lines: string[] };
 const AF_RE = /^([A-F])\)\s*(.+)\s*$/;
 const H_RE = /^#{2,3}\s+(.*)$/; // "## " or "### "
 
-function parseSections(report: string): Section[] {
+function parseSections(report: string, fallbackTitle: string): Section[] {
   const text = (report ?? "").replace(/\r\n/g, "\n").trim();
   if (!text) return [];
 
@@ -82,14 +83,14 @@ function parseSections(report: string): Section[] {
   const afHits = lines.reduce((n, l) => n + (AF_RE.test(l.trim()) ? 1 : 0), 0);
   const hHits = lines.reduce((n, l) => n + (H_RE.test(l.trim()) ? 1 : 0), 0);
 
-  if (afHits >= 2) return parseAF(lines);
-  if (hHits >= 2) return parseHeadings(lines);
+  if (afHits >= 2) return parseAF(lines, fallbackTitle);
+  if (hHits >= 2) return parseHeadings(lines, fallbackTitle);
 
   // Fallback: single section
-  return [{ key: "", title: "Coach Report", lines }];
+  return [{ key: "", title: fallbackTitle, lines }];
 }
 
-function parseAF(lines: string[]): Section[] {
+function parseAF(lines: string[], fallbackTitle: string): Section[] {
   const out: Section[] = [];
   let cur: Section | null = null;
 
@@ -103,7 +104,7 @@ function parseAF(lines: string[]): Section[] {
       continue;
     }
 
-    if (!cur) cur = { key: "", title: "Coach Report", lines: [] };
+    if (!cur) cur = { key: "", title: fallbackTitle, lines: [] };
     cur.lines.push(line.trim().length ? line : "");
   }
 
@@ -111,7 +112,7 @@ function parseAF(lines: string[]): Section[] {
   return out;
 }
 
-function parseHeadings(lines: string[]): Section[] {
+function parseHeadings(lines: string[], fallbackTitle: string): Section[] {
   const out: Section[] = [];
   let cur: Section | null = null;
 
@@ -144,7 +145,7 @@ function parseHeadings(lines: string[]): Section[] {
       continue;
     }
 
-    if (!cur) cur = { key: "", title: "Coach Report", lines: [] };
+    if (!cur) cur = { key: "", title: fallbackTitle, lines: [] };
     cur.lines.push(line.trim().length ? line : "");
   }
 

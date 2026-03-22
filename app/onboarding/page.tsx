@@ -5,9 +5,11 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import styles from './onboarding.module.css';
 import { markOnboarded } from '@/lib/onboarding/markOnboarded.client';
+import { useT } from '@/lib/i18n/useT';
 
 export default function OnboardingPage() {
   const router = useRouter();
+  const { t } = useT();
 
 const handleGetStarted = () => {
   try {
@@ -24,7 +26,7 @@ const handleGetStarted = () => {
         <div className={styles.hero}>
           <Image
             src="/images/auth/onboarding-girl.png"
-            alt="Onboarding hero"
+            alt={t('onboarding.heroAlt')}
             fill
             priority
             className={styles.heroImg}
@@ -34,15 +36,16 @@ const handleGetStarted = () => {
 
         <section className={styles.sheet}>
           <h1 className={styles.title}>
-  Study For The <span className={styles.highlight}>Driver&apos;s&nbsp;License</span>
+  {t('onboarding.title.before')}{' '}
+  <span className={styles.highlight}>{t('onboarding.title.highlight')}</span>
   <br />
-  Test Wherever You Are
+  {t('onboarding.title.after')}
 </h1>
 
-          <p className={styles.subtitle}>Get easy access to prepare for your license.</p>
+          <p className={styles.subtitle}>{t('onboarding.subtitle')}</p>
 
           <button className={styles.cta} onClick={handleGetStarted}>
-            Get Started
+            {t('onboarding.cta')}
           </button>
         </section>
       </div>

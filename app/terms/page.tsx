@@ -25,11 +25,7 @@ export default function TermsPage() {
         lineHeight: 1.6,
       }}
     >
-      <header style={{ marginBottom: 18 }}>
-        <Link href="/profile" style={{ textDecoration: "none" }}>
-          Profile
-        </Link>
-      </header>
+
 
       <h1 style={{ fontSize: 30, fontWeight: 900, marginBottom: 6 }}>
         Terms of Service

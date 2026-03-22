@@ -6,6 +6,7 @@ import styles from './ScoreChart.module.css';
 import { useBootSweepOnce } from '@/components/stats/useBootSweepOnce.client';
 import { useOnceInMidView } from '@/components/stats/useOnceInView.client';
 import { createPortal } from 'react-dom';
+import { useT } from '@/lib/i18n/useT';
 
 
 export function ScoreLegend({
@@ -15,16 +16,18 @@ export function ScoreLegend({
   animate?: boolean;
   delayMs?: number;
 }) {
+  const { t } = useT();
+
   return (
     <div
       className={`${styles.statsLegend} ${animate ? styles.waterIn : styles.waterHidden}`}
       style={animate ? ({ animationDelay: `${delayMs}ms` } as CSSProperties) : undefined}
     >
       <span className={`${styles.statsLegendDot} ${styles.statsLegendDotScore}`} />
-      <span className={styles.statsLegendLabel}>Score</span>
+      <span className={styles.statsLegendLabel}>{t('charts.score.legendScore')}</span>
 
       <span className={`${styles.statsLegendDot} ${styles.statsLegendDotAverage}`} />
-      <span className={styles.statsLegendLabel}>Average</span>
+      <span className={styles.statsLegendLabel}>{t('charts.score.legendAverage')}</span>
     </div>
   );
 }
@@ -87,6 +90,8 @@ export default function ScoreChart(props: {
   height?: number;     // px
   onLegendReveal?: () => void;
 }) {
+  const { t } = useT();
+
   const {
     series,
     scoreAvg,
@@ -467,7 +472,7 @@ const hover = activeIdx == null ? null : model.pts[activeIdx];
   className={styles.passLabel}
   style={{ opacity: clamp((tPass - 0.65) / 0.35, 0, 1) }} // label fades in near the end
 >
-  Pass {passLine}%
+  {t('charts.score.pass', { value: passLine })}
 </text>
 
 
@@ -623,15 +628,15 @@ style={{ opacity: lensReady ? 1 : 0 }}
         <div className={styles.tipTitle}>{fmtDayTime(hover.t)}</div>
 
         <div className={styles.tipSub}>
-          {hover.answered} answered · {hover.totalQ} total
+          {t('charts.score.tooltipAnswered', { answered: hover.answered, total: hover.totalQ })}
         </div>
 
         <div className={styles.tipBody}>
-          Score: <span className={styles.tipStrong}>{hover.scorePct}%</span>
+          {t('charts.score.tooltipScore')} <span className={styles.tipStrong}>{hover.scorePct}%</span>
         </div>
 
         <div className={styles.tipBody}>
-  Avg score: <span className={styles.tipStrong}>{Math.round(trendVals[activeIdx ?? 0] ?? scoreAvg)}%</span>
+  {t('charts.score.tooltipAverage')} <span className={styles.tipStrong}>{Math.round(trendVals[activeIdx ?? 0] ?? scoreAvg)}%</span>
 </div>
 
         <div className={styles.tipArrow} aria-hidden="true" />
@@ -647,10 +652,12 @@ style={{ opacity: lensReady ? 1 : 0 }}
   className={`${styles.summaryRow} ${animateIn ? styles.waterIn : styles.waterHidden}`}
   style={animateIn ? ({ animationDelay: `${detailsStartMs}ms` } as CSSProperties) : undefined}
 >
-  <span className={styles.metric}><b>Avg</b> {scoreAvg}%</span>
-  <span className={styles.metric}><b>Best</b> {scoreBest}%</span>
-  <span className={`${styles.metric} ${styles.metricHero}`}><b>Latest</b> {scoreLatest}%</span>
-  <span className={`${styles.metric} ${styles.metricMuted}`}><b>Based on</b> {attemptedTotal} answers</span>
+  <span className={styles.metric}><b>{t('charts.score.summaryAvg')}</b> {scoreAvg}%</span>
+  <span className={styles.metric}><b>{t('charts.score.summaryBest')}</b> {scoreBest}%</span>
+  <span className={`${styles.metric} ${styles.metricHero}`}><b>{t('charts.score.summaryLatest')}</b> {scoreLatest}%</span>
+  <span className={`${styles.metric} ${styles.metricMuted}`}>
+    <b>{t('charts.score.summaryBasedOn')}</b> {t('charts.score.summaryAnswers', { count: attemptedTotal })}
+  </span>
 </div>
 
       {/* Confidence note (explicit honesty) */}
@@ -659,7 +666,7 @@ style={{ opacity: lensReady ? 1 : 0 }}
     className={`${styles.confidence} ${animateIn ? styles.waterIn : styles.waterHidden}`}
     style={animateIn ? ({ animationDelay: `${detailsStartMs + detailsStaggerMs}ms` } as CSSProperties) : undefined}
   >
-    Low confidence: only {attemptsCount} tests / {attemptedTotal} answers in this window.
+    {t('charts.score.lowConfidence', { attempts: attemptsCount, answers: attemptedTotal })}
   </div>
 ) : null}
 

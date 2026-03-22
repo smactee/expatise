@@ -1,60 +1,79 @@
 // lib/qbank/tagTaxonomy.ts
 
+import type { MessageKey } from '@/lib/i18n/messages';
+import type { MessageParams } from '@/lib/i18n/types';
+
+type TaxonomyLabelKey = Extract<MessageKey, `qbank.taxonomy.${string}`>;
+type TaxonomyTranslator = (key: MessageKey, params?: MessageParams) => string;
+
+export type Subtopic = {
+  key: string; // internal key (stable)
+  labelKey: TaxonomyLabelKey;
+};
+
 export type Topic = {
-  key: string;   // internal key (stable)
-  label: string; // what the user sees
-  subtopics: { key: string; label: string }[];
+  key: string; // internal key (stable)
+  labelKey: TaxonomyLabelKey;
+  subtopics: Subtopic[];
 };
 
 export const TAG_TAXONOMY: Topic[] = [
   {
     key: "road-safety",
-    label: "Road Safety",
+    labelKey: "qbank.taxonomy.topics.roadSafety",
     subtopics: [
-      { key: "road-safety:license", label: "#License" },
-      { key: "road-safety:registration", label: "#Registration" },
-      { key: "road-safety:accidents", label: "#Accidents" },
-      { key: "road-safety:road-conditions", label: "#Road Conditions" },
+      { key: "road-safety:license", labelKey: "qbank.taxonomy.subtopics.license" },
+      { key: "road-safety:registration", labelKey: "qbank.taxonomy.subtopics.registration" },
+      { key: "road-safety:accidents", labelKey: "qbank.taxonomy.subtopics.accidents" },
+      { key: "road-safety:road-conditions", labelKey: "qbank.taxonomy.subtopics.roadConditions" },
     ],
   },
   {
     key: "traffic-signals",
-    label: "Traffic Signals",
+    labelKey: "qbank.taxonomy.topics.trafficSignals",
     subtopics: [
-      { key: "traffic-signals:signal-lights", label: "#Signal Lights" },
-      { key: "traffic-signals:road-signs", label: "#Road Signs" },
-      { key: "traffic-signals:road-markings", label: "#Road Markings" },
-      { key: "traffic-signals:police-signals", label: "#Police Signals" },
+      { key: "traffic-signals:signal-lights", labelKey: "qbank.taxonomy.subtopics.signalLights" },
+      { key: "traffic-signals:road-signs", labelKey: "qbank.taxonomy.subtopics.roadSigns" },
+      { key: "traffic-signals:road-markings", labelKey: "qbank.taxonomy.subtopics.roadMarkings" },
+      { key: "traffic-signals:police-signals", labelKey: "qbank.taxonomy.subtopics.policeSignals" },
     ],
   },
   {
     key: "proper-driving",
-    label: "Proper Driving",
+    labelKey: "qbank.taxonomy.topics.properDriving",
     subtopics: [
-      { key: "proper-driving:safe-driving", label: "#Safe Driving" },
-      { key: "proper-driving:traffic-laws", label: "#Traffic Laws" },
+      { key: "proper-driving:safe-driving", labelKey: "qbank.taxonomy.subtopics.safeDriving" },
+      { key: "proper-driving:traffic-laws", labelKey: "qbank.taxonomy.subtopics.trafficLaws" },
     ],
   },
   {
     key: "driving-operations",
-    label: "Driving Operations",
+    labelKey: "qbank.taxonomy.topics.drivingOperations",
     subtopics: [
-      { key: "driving-operations:indicators", label: "#Indicators" },
-      { key: "driving-operations:gears", label: "#Gears" },
+      { key: "driving-operations:indicators", labelKey: "qbank.taxonomy.subtopics.indicators" },
+      { key: "driving-operations:gears", labelKey: "qbank.taxonomy.subtopics.gears" },
     ],
   },
 ];
 
-// Optional helper (nice for tag pills)
-export function labelForTag(tagKey: string) {
-  for (const topic of TAG_TAXONOMY) {
-    if (topic.key === tagKey) return topic.label;
-    const found = topic.subtopics.find((s) => s.key === tagKey);
-    if (found) return found.label;
+const TAG_LABEL_KEYS = new Map<string, TaxonomyLabelKey>();
+
+for (const topic of TAG_TAXONOMY) {
+  TAG_LABEL_KEYS.set(topic.key, topic.labelKey);
+  for (const subtopic of topic.subtopics) {
+    TAG_LABEL_KEYS.set(subtopic.key, subtopic.labelKey);
   }
+}
+
+function fallbackLabelForTag(tagKey: string) {
   return tagKey
     .split(":")
     .pop()!
     .replace(/-/g, " ")
     .replace(/\b\w/g, (c) => c.toUpperCase());
+}
+
+export function labelForTag(tagKey: string, t: TaxonomyTranslator) {
+  const labelKey = TAG_LABEL_KEYS.get(tagKey);
+  return labelKey ? t(labelKey) : fallbackLabelForTag(tagKey);
 }

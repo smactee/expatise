@@ -2,13 +2,10 @@
 'use client';
 
 import styles from './TimeframeChips.module.css';
+import { useT } from '@/lib/i18n/useT';
 
 export type Timeframe = 7 | 30 | 'all';
 export const TIMEFRAMES: Timeframe[] = [7, 30, 'all'];
-
-export function tfShort(t: Timeframe) {
-  return t === 'all' ? 'All' : `${t}D`;
-}
 
 type Props = {
   value: Timeframe;
@@ -21,24 +18,28 @@ export default function TimeframeChips({
   onChange,
   align = 'center',
 }: Props) {
+  const { t } = useT();
+
   return (
     <div
       className={`${styles.statsChips} ${
         align === 'center' ? styles.statsChipsCenter : ''
       }`}
     >
-      {TIMEFRAMES.map((t) => {
-        const active = value === t;
+      {TIMEFRAMES.map((timeframe) => {
+        const active = value === timeframe;
         return (
           <button
-            key={String(t)}
+            key={String(timeframe)}
             type="button"
-            onClick={() => onChange(t)}
+            onClick={() => onChange(timeframe)}
             className={`${styles.statsChip} ${
               active ? styles.statsChipActive : ''
             }`}
           >
-            {tfShort(t)}
+            {timeframe === 'all'
+              ? t('stats.timeframes.allShort')
+              : t('stats.timeframes.daysShort', { days: timeframe })}
           </button>
         );
       })}

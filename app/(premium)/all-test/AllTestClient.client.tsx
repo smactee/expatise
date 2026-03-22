@@ -31,6 +31,7 @@ import { deriveTopicSubtags } from '@/lib/qbank/deriveTopicSubtags';
 import PremiumFeatureModal from '@/components/PremiumFeatureModal';
 import { useUsageCap } from '@/lib/freeAccess/useUsageCap';
 import { migrateLocalAttemptsToCanonical } from '@/lib/test-engine/attemptStorage';
+import { useT } from '@/lib/i18n/useT';
 
 
 
@@ -224,6 +225,7 @@ export default function AllTestClient({
   routeBase: string;
   autoAdvanceSeconds?: number;
 }) {
+  const { t } = useT();
 
 
   const router = useRouter();
@@ -903,7 +905,7 @@ useEffect(() => {
     return (
       <main className={styles.page}>
         <div className={styles.frame}>
-          <div className={styles.loading}>Loading…</div>
+          <div className={styles.loading}>{t('test.loading')}</div>
           <PremiumFeatureModal
             open={showPremiumModal}
             onClose={() => setShowPremiumModal(false)}
@@ -918,20 +920,20 @@ useEffect(() => {
 
   const emptyMsg =
   modeKey === "bookmarks-test"
-    ? "No bookmarks yet. Bookmark questions first — then come back to practice them here."
+    ? t('test.noBookmarks')
     : modeKey === "mistakes-test"
-    ? "No mistakes yet. Take a test first — then come back to retest and clear them by answering correctly."
+    ? t('test.noMistakes')
     : modeKey === "topics-test"
-    ? "No questions found for your weakest topics. Please make sure you've taken some tests and have weak topics to practice."
-    : "No questions found.";
+    ? t('test.noWeakTopics')
+    : t('test.noQuestionsFound');
 
 
 if (!item) {
   const msg = blockedByPremiumModal
-    ? "Upgrade to Premium to start this test."
+    ? t('test.premiumRequired')
     : items.length === 0
     ? emptyMsg
-    : "Loading…";
+    : t('test.loading');
 
   return (
     <main className={styles.page}>
@@ -987,7 +989,7 @@ if (!item) {
             ) : (
               <div className={styles.timer}>
                 <span className={styles.timerIcon} aria-hidden="true" />
-                <span className={styles.timerText}>No time limit</span>
+                <span className={styles.timerText}>{t('shared.common.noTimeLimit')}</span>
               </div>
             )}
 
@@ -996,7 +998,7 @@ if (!item) {
               <div className={styles.timer}>
                 <span className={styles.timerIcon} aria-hidden="true" />
                 <span className={styles.timerText}>
-                  Next in {autoLeft ?? autoAdvanceSeconds}s
+                  {t('test.autoAdvance', { seconds: autoLeft ?? autoAdvanceSeconds ?? 0 })}
                 </span>
               </div>
             )}
@@ -1021,8 +1023,8 @@ if (!item) {
           e.stopPropagation();
           toggle(item.id);
         }}
-        aria-label={isBookmarked(item.id) ? 'Remove bookmark' : 'Add bookmark'}
-        title={isBookmarked(item.id) ? 'Bookmarked' : 'Bookmark'}
+        aria-label={isBookmarked(item.id) ? t('shared.bookmarks.removeAria') : t('shared.bookmarks.addAria')}
+        title={isBookmarked(item.id) ? t('shared.bookmarks.activeTitle') : t('shared.bookmarks.idleTitle')}
         data-bookmarked={isBookmarked(item.id) ? 'true' : 'false'}
       >
         <span className={styles.bookmarkIcon} aria-hidden="true" />
@@ -1034,7 +1036,7 @@ if (!item) {
       <div className={styles.imageWrap}>
         <Image
           src={imageAsset.src}
-          alt="Question image"
+          alt={t('shared.questionImageAlt')}
           fill
           className={styles.image}
           priority
@@ -1054,7 +1056,7 @@ if (!item) {
             }`}
             onClick={() => onOptionTap('R')}
           >
-            <span className={styles.optionText}>Right</span>
+            <span className={styles.optionText}>{t('test.rowOptions.right')}</span>
           </button>
 
           <button
@@ -1064,7 +1066,7 @@ if (!item) {
             }`}
             onClick={() => onOptionTap('W')}
           >
-            <span className={styles.optionText}>Wrong</span>
+            <span className={styles.optionText}>{t('test.rowOptions.wrong')}</span>
           </button>
         </>
       )}
@@ -1095,7 +1097,7 @@ if (!item) {
       onClick={() => selectedKey && void commitAndAdvance(selectedKey)}
       disabled={!selectedKey}
     >
-      <span className={styles.nextLabel}>Next</span>
+      <span className={styles.nextLabel}>{t('shared.common.next')}</span>
       <span className={styles.nextArrow} aria-hidden="true">→</span>
     </button>
   </div>

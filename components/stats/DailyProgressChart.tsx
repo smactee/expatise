@@ -7,6 +7,7 @@ import { useOnceInMidView } from './useOnceInView.client';
 import { useEffect, useMemo, useRef, useState, useId, type CSSProperties } from 'react';
 import { useBootSweepOnce } from './useBootSweepOnce.client';
 import { createPortal } from 'react-dom';
+import { useT } from '@/lib/i18n/useT';
 
 export function DailyProgressLegend({
   animate = true,
@@ -15,16 +16,18 @@ export function DailyProgressLegend({
   animate?: boolean;
   delayMs?: number;
 }) {
+  const { t } = useT();
+
   return (
     <div
       className={`${styles.statsLegend} ${animate ? styles.waterIn : styles.waterHidden}`}
       style={animate ? ({ animationDelay: `${delayMs}ms` } as CSSProperties) : undefined}
     >
       <span className={`${styles.statsLegendDot} ${styles.statsLegendDotQuestions}`} />
-      <span className={styles.statsLegendLabel}>Questions</span>
+      <span className={styles.statsLegendLabel}>{t('charts.dailyProgress.legendQuestions')}</span>
 
       <span className={`${styles.statsLegendDot} ${styles.statsLegendDotAvg}`} />
-      <span className={styles.statsLegendLabel}>Avg score</span>
+      <span className={styles.statsLegendLabel}>{t('charts.dailyProgress.legendAvgScore')}</span>
     </div>
   );
 }
@@ -57,6 +60,7 @@ export default function DailyProgressChart(props: {
   onLegendReveal?: () => void;
 }) {
   const { series, bestDayQuestions, streakDays, rows = 7, onLegendReveal } = props;
+  const { t } = useT();
 
 
   const onLegendRevealRef = useRef<(() => void) | undefined>(onLegendReveal);
@@ -381,10 +385,10 @@ const avgDashOffset = (1 - tReveal) * dashLen;
 
             {/* corner labels */}
             <text x={xAxisL + 6} y={y0 + 12} textAnchor="start" className={styles.yAxisText}>
-              Questions
+              {t('charts.dailyProgress.axisQuestions')}
             </text>
             <text x={xAxisR - 6} y={y0 + 12} textAnchor="end" className={styles.yAxisTextRight}  style={{ fill: `url(#${avgGradId})` }}>
-              Score
+              {t('charts.dailyProgress.axisScore')}
             </text>
 
             {/* bars */}
@@ -406,7 +410,12 @@ const avgDashOffset = (1 - tReveal) * dashLen;
                     className={`${isLast ? styles.barActive : styles.bar} ${styles.barHidden} ${animateIn ? styles.barRise : ''}`}
                     style={animateIn ? { animationDelay: `${i * barStaggerMs}ms` } : undefined}
                   >
-                    <title>{`Day of ${label}\n${d.questionsAnswered} answered · ${d.testsCompleted} tests · Avg ${d.avgScore}%`}</title>
+                    <title>
+                      {`${label}\n${t('charts.dailyProgress.tooltipAnswered', {
+                        answered: d.questionsAnswered,
+                        tests: d.testsCompleted,
+                      })} · ${t('charts.dailyProgress.tooltipAvgScore')} ${d.avgScore}%`}
+                    </title>
                   </rect>
 
                   {showLabel(i) ? (() => {
@@ -539,10 +548,10 @@ const avgDashOffset = (1 - tReveal) * dashLen;
     >
       <div className={styles.tipTitle}>{label}</div>
       <div className={styles.tipSub}>
-        {d.questionsAnswered} answered · {d.testsCompleted} tests
+        {t('charts.dailyProgress.tooltipAnswered', { answered: d.questionsAnswered, tests: d.testsCompleted })}
       </div>
       <div className={styles.tipBody}>
-        Avg score: <span className={styles.tipStrong}>{score}%</span>
+        {t('charts.dailyProgress.tooltipAvgScore')} <span className={styles.tipStrong}>{score}%</span>
       </div>
       <div className={styles.tipArrow} aria-hidden="true" />
     </div>,
@@ -556,14 +565,13 @@ const avgDashOffset = (1 - tReveal) * dashLen;
     style={animateIn ? ({ animationDelay: `${detailsStartMs}ms` } as CSSProperties) : undefined}
   >
     <div className={styles.metaItem}>
-      <span className={styles.metaLabel}>Best day:</span> <b>{bestDayQuestions}</b> questions
+      <span className={styles.metaLabel}>{t('charts.dailyProgress.bestDay')}</span> <b>{t('charts.dailyProgress.bestDayQuestions', { count: bestDayQuestions })}</b>
     </div>
     <div className={styles.metaItem}>
-      <span className={styles.metaLabel}>Consistency streak:</span> <b>{streakDays}</b> days
+      <span className={styles.metaLabel}>{t('charts.dailyProgress.consistencyStreak')}</span> <b>{t('charts.dailyProgress.streakDays', { count: streakDays })}</b>
     </div>
   </div>
 
     </div>
   );
 }
-

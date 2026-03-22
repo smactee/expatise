@@ -2,10 +2,12 @@
 
 import { useEffect, useRef, useState } from "react";
 import styles from "./InfoTip.module.css";
+import { useT } from "@/lib/i18n/useT";
 
 export default function InfoTip({ text }: { text: string }) {
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLSpanElement | null>(null);
+  const { t } = useT();
 
   // Close when user taps/clicks outside
   useEffect(() => {
@@ -32,7 +34,7 @@ export default function InfoTip({ text }: { text: string }) {
       <button
         type="button"
         className={styles.btn}
-        aria-label="Info"
+        aria-label={t("shared.infoTip.ariaLabel")}
         aria-expanded={open}
         onClick={(e) => {
           e.stopPropagation();
