@@ -2,6 +2,7 @@
 
 import { useMemo, type CSSProperties } from 'react';
 import { useT } from '@/lib/i18n/useT';
+import { useSearchParams } from "next/navigation";
 
 const APP_NAME = 'Expatise';
 const SUPPORT_TEAM = 'Expatise Support';
@@ -9,13 +10,9 @@ const SUPPORT_EMAIL = 'maverixnmatrix@gmail.com';
 const PROCESSING_TIME_DAYS = 30;
 const LAST_UPDATED = '2026-03-01';
 
-type AccountDeletionClientProps = {
-  deleted: boolean;
-};
-
-export default function AccountDeletionClient({
-  deleted,
-}: AccountDeletionClientProps) {
+export default function AccountDeletionClient() {
+  const searchParams = useSearchParams();
+  const deleted = searchParams.get("deleted") === "1";
   const { t } = useT();
 
   const subject = t('accountDeletion.emailTemplate.subject');
