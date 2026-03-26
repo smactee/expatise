@@ -32,6 +32,7 @@ import PremiumFeatureModal from '@/components/PremiumFeatureModal';
 import { useUsageCap } from '@/lib/freeAccess/useUsageCap';
 import { migrateLocalAttemptsToCanonical } from '@/lib/test-engine/attemptStorage';
 import { useT } from '@/lib/i18n/useT';
+import { getRowDisplayLabel } from '@/lib/qbank/rowDisplay';
 
 
 
@@ -225,7 +226,7 @@ export default function AllTestClient({
   routeBase: string;
   autoAdvanceSeconds?: number;
 }) {
-  const { t } = useT();
+  const { t, locale } = useT();
 
 
   const router = useRouter();
@@ -370,7 +371,7 @@ useEffect(() => {
     (async () => {
       setLoading(true);
       setBlockedByPremiumModal(false);
-const ds = await loadDataset(datasetId);
+const ds = await loadDataset(datasetId, { locale });
 if (!mounted) return;
 
 // If auth is still loading, don't create attempts yet.
@@ -527,6 +528,7 @@ setLoading(false);
   questionCount,
   timeLimitMinutes,
   preflightRequiredQuestions,
+  locale,
   authLoading,
   attemptUserKey,
   legacyAttemptUserKey,
@@ -1056,7 +1058,7 @@ if (!item) {
             }`}
             onClick={() => onOptionTap('R')}
           >
-            <span className={styles.optionText}>{t('test.rowOptions.right')}</span>
+            <span className={styles.optionText}>{getRowDisplayLabel('R')}</span>
           </button>
 
           <button
@@ -1066,7 +1068,7 @@ if (!item) {
             }`}
             onClick={() => onOptionTap('W')}
           >
-            <span className={styles.optionText}>{t('test.rowOptions.wrong')}</span>
+            <span className={styles.optionText}>{getRowDisplayLabel('W')}</span>
           </button>
         </>
       )}

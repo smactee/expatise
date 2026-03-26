@@ -28,6 +28,7 @@ import { useEntitlements } from '@/components/EntitlementsProvider.client';
 import { userKeyFromEmail } from '@/lib/identity/userKey';
 import { migrateLocalAttemptsToCanonical } from '@/lib/test-engine/attemptStorage';
 import { useT } from '@/lib/i18n/useT';
+import { getRowDisplayLabel } from '@/lib/qbank/rowDisplay';
 
 
 
@@ -68,7 +69,7 @@ export default function AllTestClient({
   preflightRequiredQuestions?: number;
   routeBase: string;
 }) {
-  const { t } = useT();
+  const { t, locale } = useT();
 
   console.log("[RealTestClient] mounted", {
     modeKey,
@@ -157,7 +158,7 @@ const [attempt, setAttempt] = useState<TestAttemptV1 | null>(null);
 
     (async () => {
       setLoading(true);
-const ds = await loadDataset(datasetId);
+const ds = await loadDataset(datasetId, { locale });
 if (!mounted) return;
 
 // If auth is still loading, don't create attempts yet.
@@ -259,6 +260,7 @@ setLoading(false);
   questionCount,
   timeLimitMinutes,
   preflightRequiredQuestions,
+  locale,
   authLoading,
   attemptUserKey,
   legacyAttemptUserKey,
@@ -614,7 +616,7 @@ useEffect(() => {
       }`}
       onClick={() => onOptionTap('R')}
     >
-      <span className={styles.optionText}>{t('test.rowOptions.right')}</span>
+      <span className={styles.optionText}>{getRowDisplayLabel('R')}</span>
     </button>
 
     <button
@@ -624,7 +626,7 @@ useEffect(() => {
       }`}
      onClick={() => onOptionTap('W')}
     >
-      <span className={styles.optionText}>{t('test.rowOptions.wrong')}</span>
+      <span className={styles.optionText}>{getRowDisplayLabel('W')}</span>
     </button>
   </>
 )}

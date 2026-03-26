@@ -1,6 +1,14 @@
 // lib/qbank/loadDataset.ts
 import { DATASETS, type DatasetId } from './datasets';
-import type { Question, RawQBank, RawQuestion, CorrectRow } from './types';
+import { DEFAULT_LOCALE, type Locale } from '@/messages';
+import type {
+  Question,
+  RawQBank,
+  RawQuestion,
+  CorrectRow,
+  QuestionTranslationEntry,
+  QuestionTranslationFile,
+} from './types';
 import { suggestTags } from './suggestTags';
 
 function toArray<T>(v: unknown): T[] {
@@ -47,6 +55,7 @@ function extractTagArrays(rawTags: any) {
 }
 
 type TagPatch = Record<string, string[]>;
+type TranslationPatch = Record<string, QuestionTranslationEntry>;
 
 async function loadPatch(url?: string): Promise<TagPatch> {
   if (!url) return {};
@@ -61,6 +70,29 @@ async function loadPatch(url?: string): Promise<TagPatch> {
     return json as TagPatch;
   } catch (e) {
     console.warn('[qbank] Patch fetch failed:', url, e);
+    return {};
+  }
+}
+
+async function loadTranslations(url?: string): Promise<TranslationPatch> {
+  if (!url) return {};
+  try {
+    const res = await fetch(url, { cache: 'no-store' });
+    if (!res.ok) {
+      console.warn('[qbank] Translation patch not loaded:', url, res.status);
+      return {};
+    }
+    const json = (await res.json()) as unknown;
+    if (!json || typeof json !== 'object') return {};
+
+    const patchLike = json as Partial<QuestionTranslationFile> & Record<string, QuestionTranslationEntry>;
+    if (patchLike.questions && typeof patchLike.questions === 'object') {
+      return patchLike.questions as TranslationPatch;
+    }
+
+    return patchLike as TranslationPatch;
+  } catch (e) {
+    console.warn('[qbank] Translation patch fetch failed:', url, e);
     return {};
   }
 }
@@ -99,7 +131,7 @@ function normalizeType(rawType: unknown): Question['type'] {
 function normalizeOne(raw: RawQuestion): Question {
   const type = normalizeType(raw.type);
 
-  const options = toArray<any>(raw.options)
+  const sourceOptions = toArray<any>(raw.options)
     .map((o) => ({
       id: String(o?.id ?? o?.key ?? ''),
       originalKey: o?.originalKey ? String(o.originalKey) : (o?.key ? String(o.key) : undefined),
@@ -136,17 +168,22 @@ const explanation =
     ? (raw as any).explanation.trim()
     : undefined;
 
+  const sourcePrompt = String(raw.prompt ?? '');
+
 
   const q: Question = {
     id: String(raw.id),
     number: Number(raw.number),
     type,
-    prompt: String(raw.prompt ?? ''),
-    options,
+    prompt: sourcePrompt,
+    sourcePrompt,
+    options: sourceOptions,
+    sourceOptions,
     correctRow,
     correctOptionId,
     assets,
     explanation,
+    sourceExplanation: explanation,
     tags: userTags, // manual/user tags (if any)
     autoTags: [],     // fill below
   };
@@ -156,15 +193,44 @@ const explanation =
   return q;
 }
 
-export async function loadDataset(datasetId: DatasetId): Promise<Question[]> {
+function applyTranslation(q: Question, translation: QuestionTranslationEntry | undefined): Question {
+  if (!translation) return q;
+
+  const translatedOptions =
+    translation.options && Object.keys(translation.options).length > 0
+      ? q.options.map((opt) => ({
+          ...opt,
+          text: translation.options?.[opt.id] ?? opt.text,
+        }))
+      : q.options;
+
+  return {
+    ...q,
+    prompt: translation.prompt ?? q.prompt,
+    options: translatedOptions,
+    explanation: translation.explanation ?? q.explanation,
+  };
+}
+
+export async function loadDataset(
+  datasetId: DatasetId,
+  options: { locale?: Locale } = {}
+): Promise<Question[]> {
   const ds = DATASETS[datasetId];
+  const locale = options.locale ?? DEFAULT_LOCALE;
 
 const isDev = process.env.NODE_ENV === 'development';
 const url = isDev ? `${ds.url}?v=${Date.now()}` : ds.url;
 
-const [res, patch] = await Promise.all([
+const translationUrl =
+  locale !== DEFAULT_LOCALE
+    ? ds.translationUrls?.[locale]
+    : undefined;
+
+const [res, patch, translations] = await Promise.all([
   fetch(url, { cache: isDev ? 'no-store' : 'force-cache' }),
   loadPatch(ds.patchUrl),
+  loadTranslations(translationUrl),
 ]);
 
 
@@ -176,5 +242,6 @@ const [res, patch] = await Promise.all([
   return list
     .map(normalizeOne)
     .map((q) => applyPatchTags(q, patch[q.id]))
+    .map((q) => applyTranslation(q, translations[q.id]))
     .sort((a, b) => a.number - b.number);
 }

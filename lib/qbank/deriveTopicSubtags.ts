@@ -52,9 +52,9 @@ function applyLegacyMap(tagSet: Set<string>) {
 }
 
 function buildTexts(item: Question) {
-  const promptText = (item.prompt ?? "").toLowerCase();
+  const promptText = (item.sourcePrompt ?? item.prompt ?? "").toLowerCase();
 
-  const optionsText = (item.options ?? [])
+  const optionsText = (item.sourceOptions ?? item.options ?? [])
     .map((o) => `${o.originalKey ?? o.id}. ${o.text}`)
     .join(" ")
     .toLowerCase();

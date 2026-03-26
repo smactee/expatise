@@ -438,8 +438,8 @@ export const ko = {
     untimed: '시간 제한 없음',
     timeText: '{minutes}분 {seconds}초',
     rowOptions: {
-      right: '맞음',
-      wrong: '틀림',
+      right: 'Y',
+      wrong: 'N',
     },
   },
   questionReview: {
@@ -482,7 +482,7 @@ export const ko = {
         roadConditions: '도로 상황',
         signalLights: '신호등',
         roadSigns: '표지판',
-        roadMarkings: '도로 표시',
+        roadMarkings: '노면',
         policeSignals: '경찰 수신호',
         safeDriving: '안전운전',
         trafficLaws: '교통법규',
@@ -500,8 +500,8 @@ export const ko = {
     premiumRequired: '이 시험을 시작하려면 프리미엄이 필요합니다.',
     autoAdvance: '{seconds}초 후 다음 문항',
     rowOptions: {
-      right: '맞음',
-      wrong: '틀림',
+      right: 'Y',
+      wrong: 'N',
     },
   },
   charts: {

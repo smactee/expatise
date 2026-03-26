@@ -12,7 +12,7 @@ export function suggestTags(q: Question): CanonicalTagId[] {
   // media
   if (q.assets.length > 0) out.add('pic');
 
-  const text = norm(q.prompt);
+  const text = norm(q.sourcePrompt ?? q.prompt);
 
   (Object.keys(TAG_KEYWORDS) as CanonicalTagId[]).forEach((tag) => {
     const kws = TAG_KEYWORDS[tag];

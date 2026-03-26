@@ -148,7 +148,7 @@ function consumeSkipSyncToken(): boolean {
 export default function StatsPage() {
   const userKey = useUserKey();
   const router = useRouter();
-  const { t } = useT();
+  const { t, locale } = useT();
 
   const modeLabel = (key: string) =>
     key === "real-test"
@@ -219,7 +219,7 @@ const showDemoReseedButton =
     (async () => {
       try {
         setLoading(true);
-        const qs = await loadDataset(datasetId);
+        const qs = await loadDataset(datasetId, { locale });
         if (alive) setQuestions(qs);
       } finally {
         if (alive) setLoading(false);
@@ -229,7 +229,7 @@ const showDemoReseedButton =
     return () => {
       alive = false;
     };
-  }, [datasetId]);
+  }, [datasetId, locale]);
 
  // Load attempts: local first (instant) + remote (cross-device) then merge
 useEffect(() => {

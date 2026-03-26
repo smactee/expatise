@@ -54686,7 +54686,7 @@
       "id": "q0921",
       "number": 921,
       "type": "row",
-      "prompt": "If the registration paper, license plate and vehicle license of a motorized vehicle are lost or destroyed, the vehicle owner should apply for reissuing or replacing them to the vehicle management station at their residential place.",
+      "prompt": "If the registration paper, license plate, and vehicle license of a motorized vehicle are lost or destroyed, the vehicle owner should apply for a reissue at the vehicle management station in their registered residential place.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
@@ -56600,12 +56600,33 @@
     {
       "id": "q0958",
       "number": 958,
-      "type": "row",
-      "prompt": "This sign indicates a jammed section ahead and recommends passing slowly.",
-      "options": [],
-      "correctRow": "W",
-      "correctOptionId": null,
-      "answerRaw": "Wrong",
+      "type": "mcq",
+      "prompt": "What does this sign mean?",
+      "options": [
+        {
+          "id": "q0958_o1",
+          "originalKey": "A",
+          "text": "Slow driving section"
+        },
+        {
+          "id": "q0958_o2",
+          "originalKey": "B",
+          "text": "Construction zone"
+        },
+        {
+          "id": "q0958_o3",
+          "originalKey": "C",
+          "text": "Accident-prone section"
+        },
+        {
+          "id": "q0958_o4",
+          "originalKey": "D",
+          "text": "Traffic congestion section"
+        }
+      ],
+      "correctRow": null,
+      "correctOptionId": "q0958_o3",
+      "answerRaw": "C",
       "regions": [
         {
           "page": 103,
@@ -56640,9 +56661,9 @@
       },
       "tags": {
         "auto": [
-          "#row",
-          "#traffic-signs",
-          "#pic"
+          "#mcq",
+          "#pic",
+          "#traffic-signs"
         ],
         "user": [],
         "suggested": []

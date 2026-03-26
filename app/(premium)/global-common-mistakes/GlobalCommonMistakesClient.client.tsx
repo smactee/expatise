@@ -25,6 +25,7 @@ import { useAuthStatus } from "@/components/useAuthStatus";
 import { useEntitlements } from "@/components/EntitlementsProvider.client";
 import { useUsageCap } from "@/lib/freeAccess/useUsageCap";
 import { useT } from "@/lib/i18n/useT";
+import { getRowDisplayLabel } from "@/lib/qbank/rowDisplay";
 
 type GlobalRow = {
   qid: string;
@@ -58,7 +59,7 @@ function hash01(s: string) {
 
 export default function GlobalCommonMistakesClient({ datasetId }: { datasetId: DatasetId }) {
   const userKey = useUserKey();
-  const { t } = useT();
+  const { t, locale } = useT();
   const router = useRouter();
   const pathname = usePathname();
   const sp = useSearchParams();
@@ -104,7 +105,7 @@ export default function GlobalCommonMistakesClient({ datasetId }: { datasetId: D
     let alive = true;
     (async () => {
       try {
-        const data = await loadDataset(datasetId);
+        const data = await loadDataset(datasetId, { locale });
         if (alive) setQ(data);
       } finally {
         if (alive) setLoadingQ(false);
@@ -113,7 +114,7 @@ export default function GlobalCommonMistakesClient({ datasetId }: { datasetId: D
     return () => {
       alive = false;
     };
-  }, [datasetId]);
+  }, [datasetId, locale]);
 
   // 2) fetch global top list (API will be added later)
   useEffect(() => {
@@ -419,7 +420,7 @@ export default function GlobalCommonMistakesClient({ datasetId }: { datasetId: D
                   <div className={styles.answerRow}>
                     <span className={styles.answerLabel}>{t("questionReview.answerLabel")}</span>
                     <span className={styles.answerPill}>
-                      {item.correctRow === "R" ? t("test.rowOptions.right") : item.correctRow === "W" ? t("test.rowOptions.wrong") : item.correctRow}
+                      {getRowDisplayLabel(item.correctRow)}
                     </span>
                   </div>
                 )}

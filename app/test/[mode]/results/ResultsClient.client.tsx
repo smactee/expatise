@@ -21,6 +21,7 @@ import CSRBoundary from "@/components/CSRBoundary";
 import { useBootSweepOnce } from "@/components/stats/useBootSweepOnce.client";
 import { migrateLocalAttemptsToCanonical } from "@/lib/test-engine/attemptStorage";
 import { useT } from "@/lib/i18n/useT";
+import { getRowDisplayLabel } from "@/lib/qbank/rowDisplay";
 
 function clamp(n: number, min: number, max: number) {
   return Math.max(min, Math.min(max, n));
@@ -47,7 +48,7 @@ function Inner() {
   const router = useRouter();
   const sp = useSearchParams();
   const params = useParams<{ mode: string }>();
-  const { t } = useT();
+  const { t, locale } = useT();
 
   const modeId = (params.mode ?? "real") as TestModeId;
   const cfg = TEST_MODES[modeId] ?? TEST_MODES.real;
@@ -223,7 +224,7 @@ useEffect(() => {
 
       if (!a) return;
 
-      const ds = await loadDataset(a.datasetId as DatasetId);
+      const ds = await loadDataset(a.datasetId as DatasetId, { locale });
       const byId = new Map(ds.map((q) => [q.id, q] as const));
       const picked = a.questionIds.map((id: string) => byId.get(id)).filter(Boolean) as Question[];
 
@@ -296,12 +297,12 @@ if (modeId === "mistakes" && !didAutoClearRef.current) {
             options: [
               {
                 key: "R",
-                text: `R. ${t("results.rowOptions.right")}`,
+                text: getRowDisplayLabel("R"),
                 tone: correctRow === "R" ? "correct" : chosenRow === "R" ? "wrong" : "neutral",
               },
               {
                 key: "W",
-                text: `W. ${t("results.rowOptions.wrong")}`,
+                text: getRowDisplayLabel("W"),
                 tone: correctRow === "W" ? "correct" : chosenRow === "W" ? "wrong" : "neutral",
               },
             ],
@@ -351,7 +352,7 @@ if (modeId === "mistakes" && !didAutoClearRef.current) {
       items.sort((x, y) => x.testNo - y.testNo);
       setReviewItems(items);
     })();
-  }, [attemptId, attemptUserKey, legacyAttemptUserKey, modeId, clearMistakesMany, t]);
+  }, [attemptId, attemptUserKey, legacyAttemptUserKey, locale, modeId, clearMistakesMany, t]);
 
 
 

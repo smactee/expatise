@@ -27,6 +27,7 @@ import { useUsageCap } from '@/lib/freeAccess/useUsageCap';
 import { userKeyFromEmail } from '@/lib/identity/userKey';
 import { migrateLocalAttemptsToCanonical } from '@/lib/test-engine/attemptStorage';
 import { useT } from '@/lib/i18n/useT';
+import { getRowDisplayLabel } from '@/lib/qbank/rowDisplay';
 
 
 
@@ -49,7 +50,7 @@ function isCorrectMcq(item: Question, optId: string, optKey?: string) {
 export default function AllQuestionsClient({ datasetId, mode = 'all' }: { datasetId: DatasetId; mode?: 'all' | 'bookmarks' | 'mistakes' }) {
   // ✅ 1) hooks first
 const userKey = useUserKey();
-  const { t } = useT();
+  const { t, locale } = useT();
   const router = useRouter();
   const pathname = usePathname();
   const sp = useSearchParams();
@@ -103,7 +104,7 @@ useEffect(() => {
     let alive = true;
     (async () => {
       try {
-        const data = await loadDataset(datasetId);
+        const data = await loadDataset(datasetId, { locale });
         if (alive) setQ(data);
       } finally {
         if (alive) setLoading(false);
@@ -112,7 +113,7 @@ useEffect(() => {
     return () => {
       alive = false;
     };
-  }, [datasetId]);
+  }, [datasetId, locale]);
 
   const derivedById = useMemo(() => {
   const m = new Map<string, string[]>();
@@ -643,8 +644,7 @@ onClick={(e) => {
           key={k}
           className={`${styles.option} ${correct ? styles.optionCorrect : ''}`}
         >
-          <span className={styles.optionKey}>{k}.</span>
-          {k === 'R' ? t('test.rowOptions.right') : t('test.rowOptions.wrong')}
+          <span className={styles.optionKey}>{getRowDisplayLabel(k)}</span>
         </li>
       );
     })}

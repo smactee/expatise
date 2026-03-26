@@ -440,8 +440,8 @@ export const en = {
     untimed: 'Untimed',
     timeText: '{minutes}min {seconds}sec',
     rowOptions: {
-      right: 'Right',
-      wrong: 'Wrong',
+      right: 'Y',
+      wrong: 'N',
     },
   },
   questionReview: {
@@ -505,8 +505,8 @@ export const en = {
     premiumRequired: 'Upgrade to Premium to start this test.',
     autoAdvance: 'Next in {seconds}s',
     rowOptions: {
-      right: 'Right',
-      wrong: 'Wrong',
+      right: 'Y',
+      wrong: 'N',
     },
   },
   charts: {

@@ -197,6 +197,7 @@ import { useEntitlements } from '@/components/EntitlementsProvider.client';
 import { useUsageCap } from '@/lib/freeAccess/useUsageCap';
 import { userKeyFromEmail } from '@/lib/identity/userKey';
 import { migrateLocalAttemptsToCanonical } from '@/lib/test-engine/attemptStorage';
+import { useT } from '@/lib/i18n/useT';
 
 
 
@@ -219,6 +220,7 @@ function isCorrectMcq(item: Question, optId: string, optKey?: string) {
 export default function AllQuestionsClient({ datasetId, mode = 'all' }: { datasetId: DatasetId; mode?: 'all' | 'bookmarks' | 'mistakes' }) {
   // ✅ 1) hooks first
 const userKey = useUserKey();
+  const { t } = useT();
   const router = useRouter();
   const pathname = usePathname();
   const sp = useSearchParams();
@@ -577,20 +579,20 @@ const premiumPath = `/premium?next=${encodeURIComponent(premiumNextPath)}`;
   <div className={styles.titleWrap}>
   <h1 className={styles.title}>
     {mode === "bookmarks"
-      ? "My Bookmarks"
+      ? t("questionReview.myBookmarksTitle")
       : mode === "mistakes"
-      ? "My Mistakes"
-      : "All Questions"}
+      ? t("questionReview.myMistakesTitle")
+      : t("questionReview.allQuestionsTitle")}
   </h1>
 
   {mode === "mistakes" && compiledMistakesCount > 0 && (
-    <span className={styles.countPill} aria-label={`${compiledMistakesCount} questions`}>
+    <span className={styles.countPill} aria-label={t("questionReview.countAria", { count: compiledMistakesCount })}>
       {compiledMistakesCount}
     </span>
   )}
 
   {mode === "bookmarks" && compiledBookmarksCount > 0 && (
-    <span className={styles.countPill} aria-label={`${compiledBookmarksCount} questions`}>
+    <span className={styles.countPill} aria-label={t("questionReview.countAria", { count: compiledBookmarksCount })}>
       {compiledBookmarksCount}
     </span>
   )}
@@ -603,7 +605,7 @@ const premiumPath = `/premium?next=${encodeURIComponent(premiumNextPath)}`;
         className={styles.quizBtn}
         onClick={() => setShowPremiumModal(true)}
       >
-        Mistakes Quiz
+        {t("questionReview.mistakesQuiz")}
       </button>
     )}
 
@@ -613,7 +615,7 @@ const premiumPath = `/premium?next=${encodeURIComponent(premiumNextPath)}`;
         className={styles.quizBtn}
         onClick={() => setShowPremiumModal(true)}
       >
-        Bookmarks Quiz
+        {t("questionReview.bookmarksQuiz")}
       </button>
     )}
   </div>
@@ -626,7 +628,7 @@ const premiumPath = `/premium?next=${encodeURIComponent(premiumNextPath)}`;
         <div className={styles.searchRow}>
           <input
             className={styles.search}
-            placeholder="Search question text…"
+            placeholder={t("questionReview.searchPlaceholder")}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
           />
@@ -651,7 +653,7 @@ const premiumPath = `/premium?next=${encodeURIComponent(premiumNextPath)}`;
             }
           }}
         >
-          {topic.label}
+          {labelForTag(topic.key, t)}
         </button>
       );
     })}
@@ -664,10 +666,10 @@ const premiumPath = `/premium?next=${encodeURIComponent(premiumNextPath)}`;
         type="button"
         className={styles.deleteBtn}
         onClick={unbookmarkSelected}
-        aria-label={`Delete ${selectedIds.size} bookmarks`}
-        title={`Delete ${selectedIds.size} bookmarks`}
+        aria-label={t("questionReview.deleteBookmarksAria", { count: selectedIds.size })}
+        title={t("questionReview.deleteBookmarksAria", { count: selectedIds.size })}
       >
-        Delete
+        {t("shared.common.delete")}
       </button>
     )}
 
@@ -676,10 +678,10 @@ const premiumPath = `/premium?next=${encodeURIComponent(premiumNextPath)}`;
         type="button"
         className={styles.deleteBtn}
         onClick={clearMistakesSelected}
-        aria-label={`Remove ${selectedIds.size} mistakes from view`}
-        title={`Remove ${selectedIds.size} mistakes from view`}
+        aria-label={t("questionReview.removeMistakesAria", { count: selectedIds.size })}
+        title={t("questionReview.removeMistakesAria", { count: selectedIds.size })}
       >
-        Delete
+        {t("shared.common.delete")}
       </button>
     )}
 
@@ -687,8 +689,8 @@ const premiumPath = `/premium?next=${encodeURIComponent(premiumNextPath)}`;
       type="button"
       className={styles.selectAllBtn}
       onClick={toggleSelectAllVisible}
-      aria-label={allVisibleSelected ? "Clear selection" : "Select all visible"}
-      title={allVisibleSelected ? "Clear selection" : "Select all"}
+      aria-label={allVisibleSelected ? t("questionReview.clearSelectionAria") : t("questionReview.selectAllVisibleAria")}
+      title={allVisibleSelected ? t("questionReview.clearSelectionTitle") : t("questionReview.selectAllTitle")}
       data-active={allVisibleSelected ? "true" : "false"}
     >
       <Image
@@ -722,7 +724,7 @@ const premiumPath = `/premium?next=${encodeURIComponent(premiumNextPath)}`;
             setActiveSub(isActive ? null : sub.key);
           }}
         >
-          {sub.label.replace(/^#/, "")}
+          {labelForTag(sub.key, t)}
         </button>
       );
     })}
@@ -759,7 +761,7 @@ const premiumPath = `/premium?next=${encodeURIComponent(premiumNextPath)}`;
       const topicKey = tags.find((t) => !t.includes(':'));
       return (
         <span className={styles.qType}>
-          {topicKey ? labelForTag(topicKey) : 'Unclassified'}
+          {topicKey ? labelForTag(topicKey, t) : t('questionReview.unclassified')}
         </span>
       );
     })()}
@@ -771,8 +773,8 @@ onClick={(e) => {
   e.stopPropagation();
   toggle(item.id);
 }}
-  aria-label={isBookmarked(item.id) ? 'Remove bookmark' : 'Add bookmark'}
-  title={isBookmarked(item.id) ? 'Bookmarked' : 'Bookmark'}
+  aria-label={isBookmarked(item.id) ? t('shared.bookmarks.removeAria') : t('shared.bookmarks.addAria')}
+  title={isBookmarked(item.id) ? t('shared.bookmarks.activeTitle') : t('shared.bookmarks.idleTitle')}
   data-bookmarked={isBookmarked(item.id) ? 'true' : 'false'}
 >
   <span className={styles.bookmarkIcon} aria-hidden="true" />
@@ -791,7 +793,7 @@ onClick={(e) => {
                 <div className={styles.imageWrap}>
                   <Image
                     src={item.assets[0].src}
-                    alt={`Question ${item.number}`}
+                    alt={t('shared.questionImageAlt')}
                     fill
                     className={styles.image}
                     draggable={false}
@@ -813,7 +815,7 @@ onClick={(e) => {
           className={`${styles.option} ${correct ? styles.optionCorrect : ''}`}
         >
           <span className={styles.optionKey}>{k}.</span>
-          {k === 'R' ? 'Right' : 'Wrong'}
+          {k === 'R' ? t('test.rowOptions.right') : t('test.rowOptions.wrong')}
         </li>
       );
     })}
@@ -842,10 +844,10 @@ onClick={(e) => {
 <div className={styles.tagRow}>
   {(() => {
     const tags = derivedById.get(item.id) ?? [];
-    const subs = tags.filter((t) => t.includes(":") && !t.endsWith(":all"));
-    return subs.map((t) => (
-      <span key={t} className={styles.tagPill}>
-        {labelForTag(t)}
+    const subs = tags.filter((tag) => tag.includes(":") && !tag.endsWith(":all"));
+    return subs.map((tag) => (
+      <span key={tag} className={styles.tagPill}>
+        {labelForTag(tag, t)}
       </span>
     ));
   })()}
@@ -871,8 +873,8 @@ onClick={(e) => {
 
     window.scrollTo({ top: 0, behavior: prefersReduced ? 'auto' : 'smooth' });
   }}
-  aria-label="Scroll to top"
-  title="Back to top"
+  aria-label={t('shared.scrollToTop.ariaLabel')}
+  title={t('shared.scrollToTop.title')}
 >
   <span className={styles.toTopIcon} aria-hidden="true">
     <Image
@@ -1488,6 +1490,7 @@ import { deriveTopicSubtags } from '@/lib/qbank/deriveTopicSubtags';
 import PremiumFeatureModal from '@/components/PremiumFeatureModal';
 import { useUsageCap } from '@/lib/freeAccess/useUsageCap';
 import { migrateLocalAttemptsToCanonical } from '@/lib/test-engine/attemptStorage';
+import { useT } from '@/lib/i18n/useT';
 
 
 
@@ -1681,6 +1684,7 @@ export default function AllTestClient({
   routeBase: string;
   autoAdvanceSeconds?: number;
 }) {
+  const { t } = useT();
 
 
   const router = useRouter();
@@ -2360,7 +2364,7 @@ useEffect(() => {
     return (
       <main className={styles.page}>
         <div className={styles.frame}>
-          <div className={styles.loading}>Loading…</div>
+          <div className={styles.loading}>{t('test.loading')}</div>
           <PremiumFeatureModal
             open={showPremiumModal}
             onClose={() => setShowPremiumModal(false)}
@@ -2375,20 +2379,20 @@ useEffect(() => {
 
   const emptyMsg =
   modeKey === "bookmarks-test"
-    ? "No bookmarks yet. Bookmark questions first — then come back to practice them here."
+    ? t('test.noBookmarks')
     : modeKey === "mistakes-test"
-    ? "No mistakes yet. Take a test first — then come back to retest and clear them by answering correctly."
+    ? t('test.noMistakes')
     : modeKey === "topics-test"
-    ? "No questions found for your weakest topics. Please make sure you've taken some tests and have weak topics to practice."
-    : "No questions found.";
+    ? t('test.noWeakTopics')
+    : t('test.noQuestionsFound');
 
 
 if (!item) {
   const msg = blockedByPremiumModal
-    ? "Upgrade to Premium to start this test."
+    ? t('test.premiumRequired')
     : items.length === 0
     ? emptyMsg
-    : "Loading…";
+    : t('test.loading');
 
   return (
     <main className={styles.page}>
@@ -2444,7 +2448,7 @@ if (!item) {
             ) : (
               <div className={styles.timer}>
                 <span className={styles.timerIcon} aria-hidden="true" />
-                <span className={styles.timerText}>No time limit</span>
+                <span className={styles.timerText}>{t('shared.common.noTimeLimit')}</span>
               </div>
             )}
 
@@ -2453,7 +2457,7 @@ if (!item) {
               <div className={styles.timer}>
                 <span className={styles.timerIcon} aria-hidden="true" />
                 <span className={styles.timerText}>
-                  Next in {autoLeft ?? autoAdvanceSeconds}s
+                  {t('test.autoAdvance', { seconds: autoLeft ?? autoAdvanceSeconds ?? 0 })}
                 </span>
               </div>
             )}
@@ -2478,8 +2482,8 @@ if (!item) {
           e.stopPropagation();
           toggle(item.id);
         }}
-        aria-label={isBookmarked(item.id) ? 'Remove bookmark' : 'Add bookmark'}
-        title={isBookmarked(item.id) ? 'Bookmarked' : 'Bookmark'}
+        aria-label={isBookmarked(item.id) ? t('shared.bookmarks.removeAria') : t('shared.bookmarks.addAria')}
+        title={isBookmarked(item.id) ? t('shared.bookmarks.activeTitle') : t('shared.bookmarks.idleTitle')}
         data-bookmarked={isBookmarked(item.id) ? 'true' : 'false'}
       >
         <span className={styles.bookmarkIcon} aria-hidden="true" />
@@ -2491,7 +2495,7 @@ if (!item) {
       <div className={styles.imageWrap}>
         <Image
           src={imageAsset.src}
-          alt="Question image"
+          alt={t('shared.questionImageAlt')}
           fill
           className={styles.image}
           priority
@@ -2511,7 +2515,7 @@ if (!item) {
             }`}
             onClick={() => onOptionTap('R')}
           >
-            <span className={styles.optionText}>Right</span>
+            <span className={styles.optionText}>{t('test.rowOptions.right')}</span>
           </button>
 
           <button
@@ -2521,7 +2525,7 @@ if (!item) {
             }`}
             onClick={() => onOptionTap('W')}
           >
-            <span className={styles.optionText}>Wrong</span>
+            <span className={styles.optionText}>{t('test.rowOptions.wrong')}</span>
           </button>
         </>
       )}
@@ -2552,7 +2556,7 @@ if (!item) {
       onClick={() => selectedKey && void commitAndAdvance(selectedKey)}
       disabled={!selectedKey}
     >
-      <span className={styles.nextLabel}>Next</span>
+      <span className={styles.nextLabel}>{t('shared.common.next')}</span>
       <span className={styles.nextArrow} aria-hidden="true">→</span>
     </button>
   </div>
@@ -3871,6 +3875,7 @@ import PremiumFeatureModal from "@/components/PremiumFeatureModal";
 import { useAuthStatus } from "@/components/useAuthStatus";
 import { useEntitlements } from "@/components/EntitlementsProvider.client";
 import { useUsageCap } from "@/lib/freeAccess/useUsageCap";
+import { useT } from "@/lib/i18n/useT";
 
 type GlobalRow = {
   qid: string;
@@ -3904,6 +3909,7 @@ function hash01(s: string) {
 
 export default function GlobalCommonMistakesClient({ datasetId }: { datasetId: DatasetId }) {
   const userKey = useUserKey();
+  const { t } = useT();
   const router = useRouter();
   const pathname = usePathname();
   const sp = useSearchParams();
@@ -4111,9 +4117,9 @@ export default function GlobalCommonMistakesClient({ datasetId }: { datasetId: D
       <div className={styles.frame}>
         <header className={styles.header}>
           <h1 className={styles.title}>
-            Global Common Mistakes
+            {t("questionReview.globalMistakesTitle")}
             {count > 0 && (
-              <span className={styles.countPill} aria-label={`${count} questions`}>
+              <span className={styles.countPill} aria-label={t("questionReview.countAria", { count })}>
                 {count}
               </span>
             )}
@@ -4125,15 +4131,15 @@ export default function GlobalCommonMistakesClient({ datasetId }: { datasetId: D
               className={styles.quizBtn}
               onClick={() => setShowPremiumModal(true)}
             >
-              Global Mistakes Quiz
+              {t("questionReview.globalMistakesQuiz")}
             </button>
           </div>
 
           {(usingMock || (!loadingRows && rows.length === 0)) && (
             <p style={{ marginTop: 8, fontSize: 12, opacity: 0.75 }}>
               {usingMock
-                ? "Preview rankings (mock data)."
-                : "Not enough global data yet — this will fill in after backend is connected."}
+                ? t("questionReview.previewMock")
+                : t("questionReview.previewEmpty")}
             </p>
           )}
         </header>
@@ -4141,7 +4147,7 @@ export default function GlobalCommonMistakesClient({ datasetId }: { datasetId: D
         <div className={styles.searchRow}>
           <input
             className={styles.search}
-            placeholder="Search question text…"
+            placeholder={t("questionReview.searchPlaceholder")}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
           />
@@ -4167,7 +4173,7 @@ export default function GlobalCommonMistakesClient({ datasetId }: { datasetId: D
                     }
                   }}
                 >
-                  {topic.label}
+                  {labelForTag(topic.key, t)}
                 </button>
               );
             })}
@@ -4186,7 +4192,7 @@ export default function GlobalCommonMistakesClient({ datasetId }: { datasetId: D
                   className={`${styles.chip} ${isActive ? styles.chipActive : ""}`}
                   onClick={() => setActiveSub(isActive ? null : sub.key)}
                 >
-                  {sub.label.replace(/^#/, "")}
+                  {labelForTag(sub.key, t)}
                 </button>
               );
             })}
@@ -4195,12 +4201,12 @@ export default function GlobalCommonMistakesClient({ datasetId }: { datasetId: D
 
         <section className={styles.list}>
           {(loadingQ || loadingRows) && (
-            <p style={{ opacity: 0.8, padding: "8px 2px" }}>Loading…</p>
+            <p style={{ opacity: 0.8, padding: "8px 2px" }}>{t("questionReview.loading")}</p>
           )}
 
           {!loadingQ && !loadingRows && filtered.length === 0 && (
             <p style={{ opacity: 0.8, padding: "8px 2px" }}>
-              No questions to show yet.
+              {t("questionReview.noQuestions")}
             </p>
           )}
 
@@ -4218,12 +4224,12 @@ export default function GlobalCommonMistakesClient({ datasetId }: { datasetId: D
 
                   <div className={styles.cardTopRight}>
                     <span className={styles.qType}>
-                      {topicKey ? labelForTag(topicKey) : "Unclassified"}
+                      {topicKey ? labelForTag(topicKey, t) : t("questionReview.unclassified")}
                     </span>
 
                     {pctWrong !== null && (
-                      <span className={styles.qType} title={`${meta!.wrong}/${meta!.total} wrong`}>
-                        {pctWrong}% wrong
+                      <span className={styles.qType} title={t("questionReview.wrongRateTitle", { wrong: meta!.wrong, total: meta!.total })}>
+                        {t("questionReview.wrongRateLabel", { percent: pctWrong })}
                       </span>
                     )}
 
@@ -4234,8 +4240,8 @@ export default function GlobalCommonMistakesClient({ datasetId }: { datasetId: D
                         e.stopPropagation();
                         toggle(item.id);
                       }}
-                      aria-label={isBookmarked(item.id) ? "Remove bookmark" : "Add bookmark"}
-                      title={isBookmarked(item.id) ? "Bookmarked" : "Bookmark"}
+                      aria-label={isBookmarked(item.id) ? t("shared.bookmarks.removeAria") : t("shared.bookmarks.addAria")}
+                      title={isBookmarked(item.id) ? t("shared.bookmarks.activeTitle") : t("shared.bookmarks.idleTitle")}
                       data-bookmarked={isBookmarked(item.id) ? "true" : "false"}
                     >
                       <span className={styles.bookmarkIcon} aria-hidden="true" />
@@ -4249,7 +4255,7 @@ export default function GlobalCommonMistakesClient({ datasetId }: { datasetId: D
                   <div className={styles.imageWrap}>
                     <Image
                       src={item.assets[0].src}
-                      alt={`Question ${item.number}`}
+                      alt={t("shared.questionImageAlt")}
                       fill
                       className={styles.image}
                       draggable={false}
@@ -4262,9 +4268,9 @@ export default function GlobalCommonMistakesClient({ datasetId }: { datasetId: D
                 {/* Answers */}
                 {item.type === "ROW" && item.correctRow && (
                   <div className={styles.answerRow}>
-                    <span className={styles.answerLabel}>Answer</span>
+                    <span className={styles.answerLabel}>{t("questionReview.answerLabel")}</span>
                     <span className={styles.answerPill}>
-                      {item.correctRow === "R" ? "Right" : item.correctRow === "W" ? "Wrong" : item.correctRow}
+                      {item.correctRow === "R" ? t("test.rowOptions.right") : item.correctRow === "W" ? t("test.rowOptions.wrong") : item.correctRow}
                     </span>
                   </div>
                 )}
@@ -4286,10 +4292,10 @@ export default function GlobalCommonMistakesClient({ datasetId }: { datasetId: D
 
                 <div className={styles.tagRow}>
                   {tags
-                    .filter((t) => t.includes(":") && !t.endsWith(":all"))
-                    .map((t) => (
-                      <span key={t} className={styles.tagPill}>
-                        {labelForTag(t)}
+                    .filter((tag) => tag.includes(":") && !tag.endsWith(":all"))
+                    .map((tag) => (
+                      <span key={tag} className={styles.tagPill}>
+                        {labelForTag(tag, t)}
                       </span>
                     ))}
                 </div>
@@ -4308,8 +4314,8 @@ export default function GlobalCommonMistakesClient({ datasetId }: { datasetId: D
                 typeof window !== "undefined" && window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
               window.scrollTo({ top: 0, behavior: prefersReduced ? "auto" : "smooth" });
             }}
-            aria-label="Scroll to top"
-            title="Back to top"
+            aria-label={t("shared.scrollToTop.ariaLabel")}
+            title={t("shared.scrollToTop.title")}
           >
             <span className={styles.toTopIcon} aria-hidden="true">
               <Image src="/images/other/up-arrow.png" alt="" width={22} height={22} draggable={false} />
@@ -4417,6 +4423,7 @@ import {
 import { useEntitlements } from '@/components/EntitlementsProvider.client';
 import { userKeyFromEmail } from '@/lib/identity/userKey';
 import { migrateLocalAttemptsToCanonical } from '@/lib/test-engine/attemptStorage';
+import { useT } from '@/lib/i18n/useT';
 
 
 
@@ -4457,6 +4464,7 @@ export default function AllTestClient({
   preflightRequiredQuestions?: number;
   routeBase: string;
 }) {
+  const { t } = useT();
 
   console.log("[RealTestClient] mounted", {
     modeKey,
@@ -4904,7 +4912,7 @@ useEffect(() => {
     return (
       <main className={styles.page}>
         <div className={styles.frame}>
-          <div className={styles.loading}>Loading…</div>
+          <div className={styles.loading}>{t('test.loading')}</div>
         </div>
       </main>
     );
@@ -4914,7 +4922,7 @@ useEffect(() => {
     return (
       <main className={styles.page}>
         <div className={styles.frame}>
-          <div className={styles.loading}>No questions found.</div>
+          <div className={styles.loading}>{t('test.noQuestionsFound')}</div>
         </div>
       </main>
     );
@@ -4936,7 +4944,7 @@ useEffect(() => {
   ) : (
     <div className={styles.timer}>
       <span className={styles.timerIcon} aria-hidden="true" />
-      <span className={styles.timerText}>No time limit</span>
+      <span className={styles.timerText}>{t('shared.common.noTimeLimit')}</span>
     </div>
   )}
 
@@ -4967,8 +4975,8 @@ useEffect(() => {
               e.stopPropagation();
               toggle(item.id);
             }}
-            aria-label={isBookmarked(item.id) ? 'Remove bookmark' : 'Add bookmark'}
-            title={isBookmarked(item.id) ? 'Bookmarked' : 'Bookmark'}
+            aria-label={isBookmarked(item.id) ? t('shared.bookmarks.removeAria') : t('shared.bookmarks.addAria')}
+            title={isBookmarked(item.id) ? t('shared.bookmarks.activeTitle') : t('shared.bookmarks.idleTitle')}
             data-bookmarked={isBookmarked(item.id) ? 'true' : 'false'}
           >
             {/* NOTE: this is where your class rename matters */}
@@ -4981,7 +4989,7 @@ useEffect(() => {
   <div className={styles.imageWrap}>
     <Image
       src={imageAsset.src}
-      alt="Question image"
+      alt={t('shared.questionImageAlt')}
       fill
       className={styles.image}
       priority
@@ -5002,7 +5010,7 @@ useEffect(() => {
       }`}
       onClick={() => onOptionTap('R')}
     >
-      <span className={styles.optionText}>Right</span>
+      <span className={styles.optionText}>{t('test.rowOptions.right')}</span>
     </button>
 
     <button
@@ -5012,7 +5020,7 @@ useEffect(() => {
       }`}
      onClick={() => onOptionTap('W')}
     >
-      <span className={styles.optionText}>Wrong</span>
+      <span className={styles.optionText}>{t('test.rowOptions.wrong')}</span>
     </button>
   </>
 )}
@@ -5064,7 +5072,7 @@ useEffect(() => {
           onClick={() => selectedKey && void commitAndAdvance(selectedKey)}
           disabled={!selectedKey}
         >
-          Next <span className={styles.nextArrow} aria-hidden="true">→</span>
+          {t('shared.common.next')} <span className={styles.nextArrow} aria-hidden="true">→</span>
         </button>
       </div>
     </main>
@@ -5079,6 +5087,7 @@ useEffect(() => {
 
 import React, { useMemo } from 'react';
 import styles from './stats.module.css';
+import { useT } from '@/lib/i18n/useT';
 
 type Section = { title: string; lines: string[] };
 
@@ -5111,7 +5120,7 @@ function formatInline(line: string) {
   return s;
 }
 
-function parseCoachReport(report: string): Section[] {
+function parseCoachReport(report: string, fallbackTitle: string): Section[] {
   const lines = report.replace(/\r/g, '').split('\n');
 
   const sections: Section[] = [];
@@ -5127,7 +5136,7 @@ function parseCoachReport(report: string): Section[] {
       continue;
     }
 
-    if (!cur) cur = { title: 'Coach', lines: [] };
+    if (!cur) cur = { title: fallbackTitle, lines: [] };
     cur.lines.push(line);
   }
 
@@ -5142,7 +5151,9 @@ function parseCoachReport(report: string): Section[] {
 }
 
 export default function CoachReport({ report }: { report: string }) {
-  const sections = useMemo(() => parseCoachReport(report), [report]);
+  const { t } = useT();
+  const fallbackTitle = t('stats.coach.reportTitle');
+  const sections = useMemo(() => parseCoachReport(report, fallbackTitle), [fallbackTitle, report]);
 
   return (
     <div className={styles.coachReportRich}>
@@ -5227,11 +5238,12 @@ function renderLines(lines: string[]) {
 
 import React from 'react';
 import styles from '@/app/(premium)/stats/stats.module.css';
-
+import { useT } from '@/lib/i18n/useT';
 
 
 export default function CoachReportRich({ report }: { report: string }) {
-  const sections = parseSections(report);
+  const { t } = useT();
+  const sections = parseSections(report, t('stats.coach.reportTitle'));
 
   if (!sections.length) return null;
 
@@ -5297,7 +5309,7 @@ type Section = { key: string; title: string; lines: string[] };
 const AF_RE = /^([A-F])\)\s*(.+)\s*$/;
 const H_RE = /^#{2,3}\s+(.*)$/; // "## " or "### "
 
-function parseSections(report: string): Section[] {
+function parseSections(report: string, fallbackTitle: string): Section[] {
   const text = (report ?? "").replace(/\r\n/g, "\n").trim();
   if (!text) return [];
 
@@ -5307,14 +5319,14 @@ function parseSections(report: string): Section[] {
   const afHits = lines.reduce((n, l) => n + (AF_RE.test(l.trim()) ? 1 : 0), 0);
   const hHits = lines.reduce((n, l) => n + (H_RE.test(l.trim()) ? 1 : 0), 0);
 
-  if (afHits >= 2) return parseAF(lines);
-  if (hHits >= 2) return parseHeadings(lines);
+  if (afHits >= 2) return parseAF(lines, fallbackTitle);
+  if (hHits >= 2) return parseHeadings(lines, fallbackTitle);
 
   // Fallback: single section
-  return [{ key: "", title: "Coach Report", lines }];
+  return [{ key: "", title: fallbackTitle, lines }];
 }
 
-function parseAF(lines: string[]): Section[] {
+function parseAF(lines: string[], fallbackTitle: string): Section[] {
   const out: Section[] = [];
   let cur: Section | null = null;
 
@@ -5328,7 +5340,7 @@ function parseAF(lines: string[]): Section[] {
       continue;
     }
 
-    if (!cur) cur = { key: "", title: "Coach Report", lines: [] };
+    if (!cur) cur = { key: "", title: fallbackTitle, lines: [] };
     cur.lines.push(line.trim().length ? line : "");
   }
 
@@ -5336,7 +5348,7 @@ function parseAF(lines: string[]): Section[] {
   return out;
 }
 
-function parseHeadings(lines: string[]): Section[] {
+function parseHeadings(lines: string[], fallbackTitle: string): Section[] {
   const out: Section[] = [];
   let cur: Section | null = null;
 
@@ -5369,7 +5381,7 @@ function parseHeadings(lines: string[]): Section[] {
       continue;
     }
 
-    if (!cur) cur = { key: "", title: "Coach Report", lines: [] };
+    if (!cur) cur = { key: "", title: fallbackTitle, lines: [] };
     cur.lines.push(line.trim().length ? line : "");
   }
 
@@ -5559,6 +5571,7 @@ import styles from './stats.module.css';
 import { useOnceInView } from '@/components/stats/useOnceInView.client';
 import { useBootSweepOnce } from '@/components/stats/useBootSweepOnce.client';
 import InfoTip from '@/components/InfoTip.client';
+import { useT } from '@/lib/i18n/useT';
 
 export default function ReadinessRing(props: {
   valuePct: number;
@@ -5568,6 +5581,8 @@ export default function ReadinessRing(props: {
 
   onDone?: () => void;
 }) {
+  const { t } = useT();
+
   const {
     valuePct,
     enabled,
@@ -5654,17 +5669,17 @@ const fillDeg = (pctSafe / 100) * 360;
             var(--stats-ring-track) 360deg
           )`,
         }}
-        aria-label={`License Exam Readiness ${pct}%`}
+        aria-label={t('stats.readiness.ringAria', { pct })}
       >
         <div className={styles.statsGaugeCircleInner} style={{ transform: 'scaleX(-1)' }}>
           {/* ✅ always visible (counts up during sweep) */}
           <div className={styles.statsGaugeCenter}>
             <div className={styles.statsGaugeNumber}>{pct}</div>
             <div className={styles.statsGaugeLabel}>
-  License Exam
+  {t('stats.readiness.ringTitle')}
   <br />
   <span className={styles.readinessLabelWithInfo}>
-    Readiness<InfoTip text="Includes: Real Test only." />
+    {t('stats.readiness.ringLabel')}<InfoTip text={t('stats.readiness.ringInfo')} />
   </span>
 </div>
 
@@ -5695,7 +5710,7 @@ import type { TestAttemptV1 } from '@/lib/test-engine/attemptStorage';
 import { useUserKey } from '@/components/useUserKey.client';
 import { computeStats } from '@/lib/stats/computeStats';
 import { labelForTag } from '@/lib/qbank/tagTaxonomy';
-import TimeframeChips, { type Timeframe, tfShort } from '@/components/stats/TimeframeChips';
+import TimeframeChips, { type Timeframe } from '@/components/stats/TimeframeChips';
 import ScreenTimeChart, {ScreenTimeLegend} from '@/components/stats/ScreenTimeChart.client';
 import ReadinessRing from '@/app/(premium)/stats/ReadinessRing.client';
 import ScoreChart, { ScoreLegend } from '@/components/stats/ScoreChart.client';
@@ -5714,6 +5729,7 @@ import { fetchTimeLogsFromSupabase } from '@/lib/sync/timeLogs.client';
 import PremiumFeatureModal from "@/components/PremiumFeatureModal";
 import { useEntitlements } from "@/components/EntitlementsProvider.client";
 import { userKeyFromEmail } from "@/lib/identity/userKey";
+import { useT } from '@/lib/i18n/useT';
 
 
 
@@ -5723,26 +5739,6 @@ const datasetId: DatasetId = 'cn-2023-test1';
 
 const REAL_ONLY_MODE_KEYS = ["real-test"];
 const LEARNING_MODE_KEYS = ["real-test", "ten-percent-test", "half-test", "rapid-fire-test"]; // all non-practice modes
-
-
-const MODE_LABEL: Record<string, string> = {
-  "real-test": "Real Test",
-  "half-test": "Half Test",
-  "rapid-fire-test": "Rapid Fire",
-  "ten-percent-test": "10% Test",
-};
-
-function modesLabel(keys: string[]) {
-  return keys.map((k) => MODE_LABEL[k] ?? k).join(", ");
-}
-
-function tfLabelShort(t: Timeframe) {
-  return t === "all" ? "all time" : `last ${t} days`;
-}
-
-function statsTooltip(keys: string[], t: Timeframe) {
-  return `Includes: ${modesLabel(keys)} · ${tfLabelShort(t)}`;
-}
 
 
 // Topic Quiz config saver: builds a config that prioritizes weakest subtopics
@@ -5848,6 +5844,30 @@ function consumeSkipSyncToken(): boolean {
 export default function StatsPage() {
   const userKey = useUserKey();
   const router = useRouter();
+  const { t } = useT();
+
+  const modeLabel = (key: string) =>
+    key === "real-test"
+      ? t("stats.modes.realTest")
+      : key === "half-test"
+      ? t("stats.modes.halfTest")
+      : key === "rapid-fire-test"
+      ? t("stats.modes.rapidFire")
+      : key === "ten-percent-test"
+      ? t("stats.modes.tenPercent")
+      : key;
+
+  const modesLabel = (keys: string[]) => keys.map((key) => modeLabel(key)).join(", ");
+  const tfShortLabel = (timeframe: Timeframe) =>
+    timeframe === "all"
+      ? t("stats.timeframes.allShort")
+      : t("stats.timeframes.daysShort", { days: timeframe });
+  const tfLabel = (timeframe: Timeframe) =>
+    timeframe === "all"
+      ? t("stats.timeframes.allTime")
+      : t("stats.timeframes.lastDays", { days: timeframe });
+  const statsTooltip = (keys: string[], timeframe: Timeframe) =>
+    t("stats.tooltips.includes", { modes: modesLabel(keys), timeframe: tfLabel(timeframe) });
 
 
 
@@ -5884,10 +5904,6 @@ const showDemoReseedButton =
   supabaseAuthed &&
   DEMO_ADMIN_EMAILS.length > 0 &&
   DEMO_ADMIN_EMAILS.includes(normalizedSessionEmail);
-
-function tfLabel(t: Timeframe) {
-  return t === "all" ? "all time" : `last ${t} days`;
-}
 
 
 
@@ -6251,7 +6267,7 @@ async function handleGenerateCoach() {
     const weakest = (coachSkill.topicMastery?.weakestSubtopics ?? [])
       .slice(0, 5)
       .map((s: any) => ({
-        tagLabel: labelForTag(s.tag) ?? String(s.tag),
+        tagLabel: labelForTag(s.tag, t) ?? String(s.tag),
         attempted: Number(s.attempted ?? 0),
         accuracyPct: Number(s.accuracyPct ?? 0),
       }));
@@ -6291,7 +6307,7 @@ const supabase = createClient();
 
 const { data: sessionData, error: sessionErr } = await supabase.auth.getSession();
 if (sessionErr) {
-  setCoachError(`Could not read session: ${sessionErr.message}`);
+  setCoachError(t('stats.coach.errors.sessionRead', { message: sessionErr.message }));
   return;
 }
 
@@ -6299,14 +6315,14 @@ let token = sessionData.session?.access_token ?? null;
 if (!token) {
   const { data: refreshed, error: refreshErr } = await supabase.auth.refreshSession();
   if (refreshErr) {
-    setCoachError(`Could not refresh session: ${refreshErr.message}`);
+    setCoachError(t('stats.coach.errors.sessionRefresh', { message: refreshErr.message }));
     return;
   }
   token = refreshed.session?.access_token ?? null;
 }
 
 if (!token) {
-  setCoachError("You must be logged in to generate a Coach report.");
+  setCoachError(t('stats.coach.errors.loginRequired'));
   return;
 }
 
@@ -6318,7 +6334,7 @@ const anonKey = String(
 ).trim();
 
 if (!supabaseUrl || !anonKey) {
-  setCoachError("Missing Supabase URL or anon key in environment.");
+  setCoachError(t('stats.coach.errors.missingEnv'));
   return;
 }
 
@@ -6334,7 +6350,7 @@ const res = await fetch(`${supabaseUrl}/functions/v1/coach`, {
 const j = await res.json().catch(() => null);
 
 if (!res.ok) {
-  setCoachError(j?.error ?? j?.detail ?? `Coach request failed (${res.status}).`);
+  setCoachError(j?.error ?? j?.detail ?? t('stats.coach.errors.requestFailedStatus', { status: res.status }));
   return;
 }
 
@@ -6346,16 +6362,16 @@ if (!j?.ok) {
       setCooldownUntil(until);
       try { localStorage.setItem(LS_COOLDOWN_UNTIL, String(until)); } catch {}
     }
-    setCoachError(`Next Coach report available in ${formatRemaining(Math.max(0, until - Date.now()))}.`);
+    setCoachError(t('stats.coach.errors.cooldown', { time: formatRemaining(Math.max(0, until - Date.now())) }));
     return;
   }
 
   if (j?.error === "insufficient_data") {
-    setCoachError("Not enough data yet for personalized coaching. Complete 1 Real Test (80+ answers) or reach 120 answered total.");
+    setCoachError(t('stats.coach.errors.insufficientData'));
     return;
   }
 
-  setCoachError(j?.detail ? String(j.detail) : "Coach request failed. Please try again.");
+  setCoachError(j?.detail ? String(j.detail) : t('stats.coach.errors.requestFailed'));
   return;
 }
 
@@ -6364,7 +6380,7 @@ const report = String(j?.report ?? "").trim();
 const createdAt = Number(j?.createdAt ?? Date.now());
 
 if (!report) {
-  setCoachError("Coach returned an empty report. Please try again.");
+  setCoachError(t('stats.coach.errors.emptyReport'));
   return;
 }
 
@@ -6409,7 +6425,7 @@ try {
 
   if (!supabaseAuthed) {
     const goLogin = window.confirm(
-      "You need to log in to reset synced stats. Press OK to log in."
+      t("stats.reset.needLoginConfirm")
     );
     if (goLogin) {
       router.push("/login?next=/stats");
@@ -6418,7 +6434,7 @@ try {
   }
 
   const typed = window.prompt(
-    "This will permanently delete all stats data from your account and this device.\n\nType RESET to confirm:"
+    t("stats.reset.prompt")
   );
   if ((typed ?? "").trim().toUpperCase() !== "RESET") return;
 
@@ -6427,7 +6443,7 @@ try {
 
   const { data: sessionData, error: sessionErr } = await supabase.auth.getSession();
   if (sessionErr) {
-    window.alert(`Could not read session: ${sessionErr.message}`);
+    window.alert(t('stats.coach.errors.sessionRead', { message: sessionErr.message }));
     return;
   }
 
@@ -6435,14 +6451,14 @@ try {
   if (!token) {
     const { data: refreshed, error: refreshErr } = await supabase.auth.refreshSession();
     if (refreshErr) {
-      window.alert(`Could not refresh session: ${refreshErr.message}`);
+      window.alert(t('stats.coach.errors.sessionRefresh', { message: refreshErr.message }));
       return;
     }
     token = refreshed.session?.access_token ?? null;
   }
 
   if (!token) {
-    window.alert("You must be logged in to reset cloud stats.");
+    window.alert(t("stats.reset.mustBeLoggedIn"));
     return;
   }
 
@@ -6454,7 +6470,7 @@ try {
   ).trim();
 
   if (!supabaseUrl || !anonKey) {
-    window.alert("Missing Supabase URL or anon key in environment.");
+    window.alert(t("stats.reset.missingEnv"));
     return;
   }
 
@@ -6470,12 +6486,12 @@ try {
   const data = await res.json().catch(() => null);
 
   if (!res.ok) {
-    window.alert(data?.error ?? data?.message ?? `Cloud reset failed (${res.status}).`);
+    window.alert(data?.error ?? data?.message ?? `${t("stats.reset.cloudResetFailed")} (${res.status}).`);
     return;
   }
 
   if (!data?.ok) {
-    window.alert(data?.error ?? "Cloud reset failed.");
+    window.alert(data?.error ?? t("stats.reset.cloudResetFailed"));
     return;
   }
 
@@ -6485,13 +6501,13 @@ try {
   await resetAllLocalData({ includeCaches: true });
   window.location.reload();
 } catch (err: any) {
-  window.alert(err?.message ?? "Reset failed. Please try again.");
+  window.alert(err?.message ?? t("stats.reset.resetFailed"));
 }
 }}
-  aria-label="Reset all stats data"
-  title="Reset all stats data"
+  aria-label={t("stats.reset.aria")}
+  title={t("stats.reset.title")}
 >
-  Reset All Stats
+  {t("stats.reset.button")}
 </button>
 
 {showDemoReseedButton ? (
@@ -6502,10 +6518,10 @@ try {
       reenableDemoSeed();
       window.location.reload();
     }}
-    aria-label="Re-seed demo stats"
-    title="Re-seed demo stats"
+    aria-label={t("stats.reset.reseedAria")}
+    title={t("stats.reset.reseedTitle")}
   >
-    Re-seed Demo Data
+    {t("stats.reset.reseedButton")}
   </button>
 ) : null}
 
@@ -6532,11 +6548,14 @@ try {
     >
       <div className={styles.readinessMetaBlock}>
         <div className={styles.statsSummaryMeta}>
-          {tfShort(tfReadiness)} accuracy: {statsReadiness.accuracyPct}% · Tests:{' '}
-          {statsReadiness.attemptsCount}
+          {t('stats.readiness.summary', {
+            timeframe: tfShortLabel(tfReadiness),
+            accuracy: statsReadiness.accuracyPct,
+            count: statsReadiness.attemptsCount,
+          })}
         </div>
         <div className={styles.readinessMetaLine}>
-          Based on {statsReadiness.attemptedTotal} questions answered
+          {t('stats.readiness.basedOn', { count: statsReadiness.attemptedTotal })}
         </div>
       </div>
 
@@ -6545,7 +6564,7 @@ try {
         className={styles.statsTestButton}
         onClick={() => router.push('/test/real')}
       >
-        Take a Test ▸
+        {t('stats.readiness.takeTest')} ▸
       </button>
 
       <TimeframeChips value={tfReadiness} onChange={setTfReadiness} align="center" />
@@ -6565,8 +6584,8 @@ try {
 <article className={styles.statsCard}>
   <header className={styles.statsCardHeader}>
   <div className={styles.statsTitleRow}>
-    <h2 className={styles.statsCardTitle}>Screen Time</h2>
-    <InfoTip text={`Includes: ${modesLabel(LEARNING_MODE_KEYS)} · last 7 days`} />
+    <h2 className={styles.statsCardTitle}>{t('stats.cards.screenTime')}</h2>
+    <InfoTip text={statsTooltip(LEARNING_MODE_KEYS, 7)} />
   </div>
   <ScreenTimeLegend animate={screenLegendReady} />
 
@@ -6580,7 +6599,7 @@ try {
   style={{ width: "100%" }}
 >
       {loading ? (
-        "Loading…"
+        t('shared.common.loading')
       ) : (
         <ScreenTimeChart
   data={statsScreen.timeDailySeries}
@@ -6600,7 +6619,7 @@ try {
             <article className={styles.statsCard}>
              <header className={styles.statsCardHeader}>
   <div className={styles.statsTitleRow}>
-    <h2 className={styles.statsCardTitle}>Score</h2>
+    <h2 className={styles.statsCardTitle}>{t('stats.cards.score')}</h2>
     <InfoTip text={statsTooltip(REAL_ONLY_MODE_KEYS, tfScore)} />
   </div>
 
@@ -6612,9 +6631,9 @@ try {
               <div className={`${styles.statsGraphArea} ${styles.statsGraphClean}`}>
   <div className={`${styles.statsGraphPlaceholder} ${styles.statsGraphClean}`} style={{ width: '100%' }}>
     {loading ? (
-      'Loading…'
+      t('shared.common.loading')
     ) : statsScore.attemptsCount === 0 ? (
-      `No submitted tests yet (${tfLabel(tfScore)}).`
+      t('stats.scoreCard.noTests', { timeframe: tfLabel(tfScore) })
     ) : (
       <ScoreChart
         series={statsScore.scoreSeries}
@@ -6637,7 +6656,7 @@ try {
 <article className={styles.statsCard}>
   <header className={styles.statsCardHeader}>
   <div className={styles.statsTitleRow}>
-    <h2 className={styles.statsCardTitle}>Daily Progress</h2>
+    <h2 className={styles.statsCardTitle}>{t('stats.cards.dailyProgress')}</h2>
     <InfoTip text={statsTooltip(LEARNING_MODE_KEYS, tfWeekly)} />
   </div>
   <DailyProgressLegend animate={dailyLegendReady} />
@@ -6651,9 +6670,9 @@ try {
       style={{ width: "100%" }}
     >
       {loading ? (
-        "Loading…"
+        t('shared.common.loading')
       ) : statsWeekly.attemptsCount === 0 ? (
-        "No daily data yet."
+        t('stats.dailyProgressCard.noData')
       ) : (
         <DailyProgressChart
           series={statsWeekly.dailySeries}
@@ -6674,16 +6693,16 @@ try {
 <article className={styles.statsCard}>
   <header className={styles.statsCardHeader}>
   <div className={styles.statsTitleRow}>
-    <h2 className={styles.statsCardTitle}>Heatmap</h2>
+    <h2 className={styles.statsCardTitle}>{t('stats.cards.heatmap')}</h2>
     <InfoTip text={statsTooltip(REAL_ONLY_MODE_KEYS, tfBestTime)} />
   </div>
   </header>
 
   <div className={styles.statsGraphArea}>
     {loading ? (
-      "Loading…"
+      t('shared.common.loading')
     ) : !statsBestTime.Heatmap ? (
-      "Not enough data yet."
+      t('charts.heatmap.notEnoughData')
     ) : (
       <Heatmap data={statsBestTime.Heatmap} />
     )}
@@ -6698,7 +6717,7 @@ try {
 <article className={styles.statsCard}>
   <header className={`${styles.statsCardHeader} ${styles.statsCardHeaderRow}`}>
   <div className={styles.statsTitleRow}>
-    <h2 className={styles.statsCardTitle}>Topic Mastery</h2>
+    <h2 className={styles.statsCardTitle}>{t('stats.cards.topicMastery')}</h2>
     <InfoTip text={statsTooltip(LEARNING_MODE_KEYS, tfTopics)} />
   </div>
 
@@ -6739,18 +6758,18 @@ try {
   router.push("/test/topics");
 }}
 
-    title="Start a 20-question quiz from your weakest subtopics"
+    title={t('stats.topicMasteryCard.quizTitle')}
   >
-    Topic Quiz
+    {t('stats.topicMasteryCard.quizButton')}
   </button>
 </header>
 
 
   <div className={`${styles.statsGraphArea} ${styles.topicMasteryArea}`}>
   {loading ? (
-    "Loading…"
+    t('shared.common.loading')
   ) : !statsTopics.topicMastery || statsTopics.topicMastery.topics.length === 0 ? (
-    "Not enough data yet (need more answers per topic)."
+    t('stats.topicMasteryCard.noData')
   ) : (
     <TopicMasteryChart data={statsTopics.topicMastery} />
   )}
@@ -6774,27 +6793,23 @@ try {
           className={styles.statsReviewButton}
           onClick={() => router.push("/my-mistakes")}
           >
-            Review Your Mistakes
+            {t('stats.reviewMistakes')}
             </button>
         </div>
 
 {/* GPT Coach */}
 <article className={styles.statsCard}>
   <header className={styles.statsCardHeader}>
-    <h2 className={styles.statsCardTitle}>Ai Coach</h2>
+    <h2 className={styles.statsCardTitle}>{t('stats.cards.aiCoach')}</h2>
   </header>
 
   {loading ? (
-    <p className={styles.coachSubtle}>Loading…</p>
+    <p className={styles.coachSubtle}>{t('stats.coach.loading')}</p>
   ) : !minimumMet ? (
     <>
-      <p className={styles.coachSubtle}><strong>AI Coach needs a bit more data.</strong></p>
-      <p className={styles.coachHint}>
-        To generate a personalized report, complete either:<br />
-        • <strong>1 Real Test</strong> with <strong>80+ answers</strong>, or<br />
-        • <strong>120 total questions answered</strong> (practice + tests)
-      </p>
-      <p className={styles.coachHint}>More answers = less randomness → better advice.</p>
+      <p className={styles.coachSubtle}><strong>{t('stats.coach.needsDataTitle')}</strong></p>
+      <p className={styles.coachHint} style={{ whiteSpace: 'pre-line' }}>{t('stats.coach.needsDataBody')}</p>
+      <p className={styles.coachHint}>{t('stats.coach.needsDataHint')}</p>
 
       <div className={styles.coachRow}>
         <button
@@ -6802,14 +6817,14 @@ try {
           className={styles.coachBtnPrimary}
           onClick={() => router.push("/test/real")}
         >
-          Take a Real Test
+          {t('stats.readiness.takeTest')}
         </button>
         <button
           type="button"
           className={styles.coachBtnSecondary}
           onClick={() => router.push("/test/real")}
         >
-          Start Now
+          {t('stats.coach.startNow')}
         </button>
       </div>
     </>
@@ -6818,22 +6833,14 @@ try {
       {!bestResultsMet ? (
         <>
           <p className={styles.coachSubtle}>
-            <strong>You’re ready for a first Coach report</strong> — here’s how to make it “laser-accurate”.
+            <strong>{t('stats.coach.firstReportTitle')}</strong>
           </p>
-          <p className={styles.coachHint}>
-            For the most tailored advice (topics + habits + patterns), aim for:<br />
-            ✅ <strong>3 Real Tests (300 questions)</strong> across <strong>3+ days</strong>
-          </p>
-          <p className={styles.coachHint}>
-            Next steps:<br />
-            • Do <strong>2 more Real Tests</strong> on separate days<br />
-            • Try the <strong>2-pass rule</strong> (answer easy first, then return)<br />
-            • Keep a <strong>10-minute minimum</strong> on non-test days
-          </p>
+          <p className={styles.coachHint} style={{ whiteSpace: 'pre-line' }}>{t('stats.coach.firstReportBody')}</p>
+          <p className={styles.coachHint} style={{ whiteSpace: 'pre-line' }}>{t('stats.coach.firstReportNextSteps')}</p>
         </>
       ) : (
         <p className={styles.coachSubtle}>
-          <strong>Coach runs on demand</strong> (Skill: 30d · Habits: 7d). Tap to generate your latest plan.
+          <strong>{t('stats.coach.readyText')}</strong>
         </p>
       )}
 
@@ -6843,9 +6850,17 @@ try {
           className={styles.coachBtnPrimary}
           onClick={handleGenerateCoach}
           disabled={coachLoading || cooldownActive}
-          title={cooldownActive ? `Next available in ${formatRemaining(remainingMs)}` : "Generate Coach Report"}
+          title={
+            cooldownActive
+              ? t('stats.coach.nextAvailable', { time: formatRemaining(remainingMs) })
+              : t('stats.coach.generateTitle')
+          }
         >
-          {coachLoading ? "Generating…" : cooldownActive ? "Coach Locked" : "Generate Coach Report"}
+          {coachLoading
+            ? t('stats.coach.generating')
+            : cooldownActive
+            ? t('stats.coach.locked')
+            : t('stats.coach.generateTitle')}
         </button>
 
         <button
@@ -6853,15 +6868,15 @@ try {
           className={styles.coachBtnSecondary}
           onClick={() => router.push("/test/real")}
         >
-          Take a Test
+          {t('stats.readiness.takeTest')}
         </button>
       </div>
 
       <div className={styles.coachMeta}>
         {cooldownActive ? (
-          <>Next Coach report available in <strong>{formatRemaining(remainingMs)}</strong>. You can still read your last report anytime.</>
+          <>{t('stats.coach.cooldownActive', { time: formatRemaining(remainingMs) })}</>
         ) : (
-          <>Coach reports are limited to <strong>1 per 24 hours</strong>. Your latest report stays saved here.</>
+          <>{t('stats.coach.cooldownIdle')}</>
         )}
       </div>
 
@@ -6870,9 +6885,9 @@ try {
       {coachReport ? (
         <div className={styles.coachReportBox}>
           <div className={styles.coachReportHeader}>
-            <p className={styles.coachReportTitle}>Coach Report</p>
+            <p className={styles.coachReportTitle}>{t('stats.coach.reportTitle')}</p>
             <p className={styles.coachReportStamp}>
-              {coachCreatedAt ? `Last report: ${formatStamp(coachCreatedAt)}` : ""}
+              {coachCreatedAt ? t('stats.coach.reportStamp', { stamp: formatStamp(coachCreatedAt) }) : ""}
             </p>
           </div>
           <div className={styles.coachReportText}>
@@ -7894,64 +7909,59 @@ try {
 }
 ```
 
-### app/account-deletion/page.tsx
+### app/account-deletion/AccountDeletionClient.tsx
 ```tsx
-/* app/account-deletion/page.tsx */
+'use client';
 
-import type { Metadata } from "next";
+import { useMemo, type CSSProperties } from 'react';
+import { useT } from '@/lib/i18n/useT';
+import { useSearchParams } from "next/navigation";
 
-export const metadata: Metadata = {
-  title: "Account & Data Deletion · Expatise",
-  description:
-    "How to request deletion of your Expatise account and associated data (in-app or by email).",
-};
-
-const APP_NAME = "Expatise";
-const SUPPORT_TEAM = "Expatise Support";
-const SUPPORT_EMAIL = "maverixnmatrix@gmail.com";
+const APP_NAME = 'Expatise';
+const SUPPORT_TEAM = 'Expatise Support';
+const SUPPORT_EMAIL = 'maverixnmatrix@gmail.com';
 const PROCESSING_TIME_DAYS = 30;
+const LAST_UPDATED = '2026-03-01';
 
-type AccountDeletionPageProps = {
-  searchParams?: Promise<{ deleted?: string | string[] | undefined }>;
-};
+export default function AccountDeletionClient() {
+  const searchParams = useSearchParams();
+  const deleted = searchParams.get("deleted") === "1";
+  const { t } = useT();
 
-export default async function AccountDeletionPage({
-  searchParams,
-}: AccountDeletionPageProps) {
-  const params = (await searchParams) ?? {};
-  const deletedRaw = params.deleted;
-  const deleted =
-    Array.isArray(deletedRaw) ? deletedRaw[0] === "1" : deletedRaw === "1";
+  const subject = t('accountDeletion.emailTemplate.subject');
 
-  const subject = "Account deletion request";
-  const bodyLines = [
-    `Hello ${SUPPORT_TEAM},`,
-    "",
-    "Please delete my account and associated data.",
-    "",
-    "Account details (so you can locate me):",
-    "- Sign-in email (or provider, e.g., Google/Apple):",
-    "- Username / display name (if applicable):",
-    "",
-    "Thank you.",
-  ];
+  const bodyLines = useMemo(
+    () => [
+      t('accountDeletion.emailTemplate.greeting', { team: SUPPORT_TEAM }),
+      '',
+      t('accountDeletion.emailTemplate.request'),
+      '',
+      t('accountDeletion.emailTemplate.details'),
+      t('accountDeletion.emailTemplate.signIn'),
+      t('accountDeletion.emailTemplate.username'),
+      '',
+      t('accountDeletion.emailTemplate.thanks'),
+    ],
+    [t]
+  );
+
   const mailtoHref = `mailto:${SUPPORT_EMAIL}?subject=${encodeURIComponent(
     subject
-  )}&body=${encodeURIComponent(bodyLines.join("\n"))}`;
+  )}&body=${encodeURIComponent(bodyLines.join('\n'))}`;
 
-  const styles: Record<string, React.CSSProperties> = {
+  const styles: Record<string, CSSProperties> = {
     main: {
       maxWidth: 820,
-      margin: "0 auto",
-      padding: "28px 18px",
+      margin: '0 auto',
+      padding: '28px 18px',
       lineHeight: 1.65,
     },
     card: {
-      border: "1px solid rgba(255,255,255,0.12)",
+      border: '1px solid rgba(255,255,255,0.12)',
       borderRadius: 14,
       padding: 16,
       marginTop: 14,
-      background: "rgba(0,0,0,0.12)",
+      background: 'rgba(0,0,0,0.12)',
     },
     h1: { fontSize: 28, fontWeight: 800, marginBottom: 10 },
     h2: { fontSize: 18, fontWeight: 750, marginTop: 18, marginBottom: 8 },
@@ -7962,125 +7972,133 @@ export default async function AccountDeletionPage({
       fontFamily:
         'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
       fontSize: 13,
-      padding: "2px 6px",
+      padding: '2px 6px',
       borderRadius: 6,
-      background: "rgba(255,255,255,0.08)",
+      background: 'rgba(255,255,255,0.08)',
     },
-    a: { textDecoration: "underline" },
+    a: { textDecoration: 'underline' },
   };
 
   return (
     <main style={styles.main}>
-      <h1 style={styles.h1}>Account &amp; Data Deletion</h1>
+      <h1 style={styles.h1}>{t('accountDeletion.title')}</h1>
 
       <p style={styles.p}>
-        This page explains how to request deletion of your <b>{APP_NAME}</b>{" "}
-        account and associated data.
+        {t('accountDeletion.intro', { appName: APP_NAME })}
       </p>
 
       {deleted ? (
         <div style={styles.card}>
           <p style={{ ...styles.p, marginTop: 0 }}>
-            <b>Your in-app deletion is complete.</b> If you arrived here right
-            after using <b>Profile → Delete Account</b>, your account has
-            already been deleted and you have been signed out of the app.
+            <b>{t('accountDeletion.successTitle')}</b>{' '}
+            {t('accountDeletion.successBody')}
           </p>
         </div>
       ) : null}
 
       <div style={styles.card}>
         <p style={{ ...styles.p, marginTop: 0 }}>
-          <b>Quick options:</b>
+          <b>{t('accountDeletion.quickOptions')}</b>
         </p>
         <ul style={{ ...styles.ul, marginBottom: 0 }}>
           <li>
             <a style={styles.a} href="#in-app">
-              Option A — Delete inside the app
+              {t('accountDeletion.optionA')}
             </a>
           </li>
           <li>
             <a style={styles.a} href="#email">
-              Option B — Request deletion by email
+              {t('accountDeletion.optionB')}
             </a>
           </li>
         </ul>
       </div>
 
       <h2 id="in-app" style={styles.h2}>
-        Option A — In-app deletion
+        {t('accountDeletion.inAppTitle')}
       </h2>
-      <p style={styles.p}>
-        If you can access the app, go to <b>Profile → Delete Account</b> and
-        follow the steps shown on screen. When the in-app automated flow
-        succeeds, deletion happens immediately and signs you out.
-      </p>
+      <p style={styles.p}>{t('accountDeletion.inAppBody')}</p>
 
       <h2 id="email" style={styles.h2}>
-        Option B — Request deletion by email (if you can’t access the app)
+        {t('accountDeletion.emailTitle')}
       </h2>
       <p style={styles.p}>
-        Email {SUPPORT_TEAM} at{" "}
+        {t('accountDeletion.emailIntroPrefix', { team: SUPPORT_TEAM })}{' '}
         <a style={styles.a} href={mailtoHref}>
           {SUPPORT_EMAIL}
-        </a>{" "}
-        with the subject <span style={styles.code}>{subject}</span>.
+        </a>{' '}
+        {t('accountDeletion.emailIntroMiddle')}{' '}
+        <span style={styles.code}>{subject}</span>
+        {t('accountDeletion.emailIntroSuffix')}
       </p>
 
-      <p style={styles.p}>Please include:</p>
+      <p style={styles.p}>{t('accountDeletion.pleaseInclude')}</p>
       <ul style={styles.ul}>
-        <li>The email you used to sign in (or the provider, e.g., Google/Apple)</li>
-        <li>Any helpful identifier (username/display name) if applicable</li>
-        <li>A clear statement: “Please delete my account and associated data.”</li>
+        <li>{t('accountDeletion.includeSignIn')}</li>
+        <li>{t('accountDeletion.includeIdentifier')}</li>
+        <li>{t('accountDeletion.includeStatement')}</li>
       </ul>
 
-      <p style={styles.small}>
-        To protect your account, we may ask you to verify ownership before
-        processing the deletion request.
-      </p>
+      <p style={styles.small}>{t('accountDeletion.verifyNote')}</p>
 
-      <h2 style={styles.h2}>Processing time</h2>
+      <h2 style={styles.h2}>{t('accountDeletion.processingTimeTitle')}</h2>
       <p style={styles.p}>
-        <b>In-app deletion:</b> immediate when the automated flow succeeds.
+        <b>{t('accountDeletion.processingInApp')}</b>
         <br />
-        <b>Email deletion requests:</b> after verification (if needed), we
-        typically complete them within <b>{PROCESSING_TIME_DAYS} days</b>.
+        <b>{t('accountDeletion.processingEmail', { days: PROCESSING_TIME_DAYS })}</b>
       </p>
 
-      <h2 style={styles.h2}>What we delete</h2>
+      <h2 style={styles.h2}>{t('accountDeletion.whatWeDeleteTitle')}</h2>
       <ul style={styles.ul}>
-        <li>Your account record (authentication/profile)</li>
-        <li>Data associated with your account stored on our servers</li>
+        <li>{t('accountDeletion.deleteAccountRecord')}</li>
+        <li>{t('accountDeletion.deleteServerData')}</li>
       </ul>
 
-      <p style={styles.small}>
-       Examples may include profile details and content or activity tied to your account (if applicable).
-      </p>
+      <p style={styles.small}>{t('accountDeletion.examplesNote')}</p>
 
-      <h2 style={styles.h2}>What we may retain</h2>
+      <h2 style={styles.h2}>{t('accountDeletion.retainTitle')}</h2>
       <ul style={styles.ul}>
-        <li>Limited information if required by law, compliance, or dispute handling</li>
-        <li>Security/fraud-prevention records where applicable</li>
+        <li>{t('accountDeletion.retainLegal')}</li>
+        <li>{t('accountDeletion.retainSecurity')}</li>
       </ul>
 
-      <p style={styles.small}>
-        Backups may retain data for a limited period before being overwritten.
-        When possible, retained data is restricted and minimized.
-      </p>
+      <p style={styles.small}>{t('accountDeletion.retainNote')}</p>
 
-      <h2 style={styles.h2}>Need help?</h2>
+      <h2 style={styles.h2}>{t('accountDeletion.needHelpTitle')}</h2>
       <p style={styles.p}>
-        If you can’t access the email you signed up with, contact{" "}
+        {t('accountDeletion.needHelpPrefix')}{' '}
         <a style={styles.a} href={`mailto:${SUPPORT_EMAIL}`}>
           {SUPPORT_TEAM} ({SUPPORT_EMAIL})
-        </a>{" "}
-        and explain your situation. We’ll tell you what we can do safely.
+        </a>{' '}
+        {t('accountDeletion.needHelpSuffix')}
       </p>
 
-      <p style={styles.small}>Last updated: 2026-03-01</p>
+      <p style={styles.small}>{t('accountDeletion.lastUpdated', { date: LAST_UPDATED })}</p>
     </main>
   );
 }
 
+```
+
+### app/account-deletion/page.tsx
+```tsx
+import type { Metadata } from "next";
+import { Suspense } from "react";
+import AccountDeletionClient from "./AccountDeletionClient";
+
+export const metadata: Metadata = {
+  title: "Account & Data Deletion · Expatise",
+  description:
+    "How to request deletion of your Expatise account and associated data (in-app or by email).",
+};
+
+export default function AccountDeletionPage() {
+  return (
+    <Suspense fallback={null}>
+      <AccountDeletionClient />
+    </Suspense>
+  );
+}
 ```
 
 ### app/account-security/account-security.module.css
@@ -8232,11 +8250,13 @@ import { useAuthStatus } from '../../components/useAuthStatus';
 import { createClient } from '@/lib/supabase/client';
 import { isValidEmail, normalizeEmail } from '@/lib/auth';
 import { buildAuthCallbackUrl } from '@/lib/auth/oauth';
+import { useT } from '@/lib/i18n/useT';
 
 export default function AccountSecurityPage() {
   const router = useRouter();
   const supabase = useMemo(() => createClient(), []);
   const { authed, method, loading, email: currentEmail } = useAuthStatus();
+  const { t } = useT();
 
   // Only allow email/password accounts here
   const allowed = useMemo(() => authed && method === 'email', [authed, method]);
@@ -8253,27 +8273,27 @@ export default function AccountSecurityPage() {
 
   async function reauthWithCurrentPassword(password: string) {
     const emailNorm = normalizeEmail(currentEmail ?? '');
-    if (!emailNorm) throw new Error('Missing current email.');
+    if (!emailNorm) throw new Error(t('accountSecurity.messages.missingCurrentEmail'));
     const { error } = await supabase.auth.signInWithPassword({
       email: emailNorm,
       password,
     });
-    if (error) throw new Error('Current password is incorrect.');
+    if (error) throw new Error(t('accountSecurity.messages.currentPasswordIncorrect'));
   }
 
   async function changePassword() {
     setMsg(null);
 
     if (!pwCurrent || !pwNext || !pwNext2) {
-      setMsg('Please fill all password fields.');
+      setMsg(t('accountSecurity.messages.fillAllPasswordFields'));
       return;
     }
     if (pwNext.length < 8) {
-      setMsg('New password must be at least 8 characters.');
+      setMsg(t('accountSecurity.messages.newPasswordMin'));
       return;
     }
     if (pwNext !== pwNext2) {
-      setMsg('New passwords do not match.');
+      setMsg(t('accountSecurity.messages.newPasswordsMismatch'));
       return;
     }
 
@@ -8285,20 +8305,20 @@ export default function AccountSecurityPage() {
       // 2) Update password
       const { error } = await supabase.auth.updateUser({ password: pwNext });
       if (error) {
-        setMsg(error.message || 'Failed to change password.');
+        setMsg(error.message || t('accountSecurity.messages.changePasswordFailed'));
         return;
       }
 
       setPwCurrent('');
       setPwNext('');
       setPwNext2('');
-      setMsg('Password updated.');
+      setMsg(t('accountSecurity.messages.passwordUpdated'));
 
       try { window.dispatchEvent(new Event('expatise:session-changed')); } catch {}
       try { window.dispatchEvent(new Event('expatise:entitlements-changed')); } catch {}
       router.refresh();
     } catch (e: any) {
-      setMsg(e?.message ?? 'Failed to change password.');
+      setMsg(e?.message ?? t('accountSecurity.messages.changePasswordFailed'));
     } finally {
       setBusy(false);
     }
@@ -8309,11 +8329,11 @@ export default function AccountSecurityPage() {
 
     const nextNorm = normalizeEmail(emailNext);
     if (!nextNorm || !isValidEmail(nextNorm)) {
-      setMsg('Please enter a valid new email.');
+      setMsg(t('accountSecurity.messages.invalidNewEmail'));
       return;
     }
     if (!emailPw) {
-      setMsg('Please enter your current password.');
+      setMsg(t('accountSecurity.messages.enterCurrentPassword'));
       return;
     }
 
@@ -8330,7 +8350,7 @@ export default function AccountSecurityPage() {
       } as any);
 
       if (error) {
-        setMsg(error.message || 'Failed to change email.');
+        setMsg(error.message || t('accountSecurity.messages.changeEmailFailed'));
         return;
       }
 
@@ -8338,13 +8358,13 @@ export default function AccountSecurityPage() {
       setEmailPw('');
 
       // Supabase often sends a confirmation email for email change.
-      setMsg('Email update requested. Please check your email to confirm the change.');
+      setMsg(t('accountSecurity.messages.emailUpdateRequested'));
 
       try { window.dispatchEvent(new Event('expatise:session-changed')); } catch {}
       try { window.dispatchEvent(new Event('expatise:entitlements-changed')); } catch {}
       router.refresh();
     } catch (e: any) {
-      setMsg(e?.message ?? 'Failed to change email.');
+      setMsg(e?.message ?? t('accountSecurity.messages.changeEmailFailed'));
     } finally {
       setBusy(false);
     }
@@ -8356,16 +8376,16 @@ export default function AccountSecurityPage() {
     return (
       <main className={styles.page}>
         <div className={styles.card}>
-          <h1 className={styles.title}>Account Security</h1>
+          <h1 className={styles.title}>{t('accountSecurity.pageTitle')}</h1>
           <p className={styles.text}>
-            This page is only available for accounts created with Email + Password.
+            {t('accountSecurity.emailPasswordOnly')}
           </p>
           <div className={styles.row}>
             <Link className={styles.linkBtn} href="/login">
-              Go to login
+              {t('accountSecurity.goToLogin')}
             </Link>
             <Link className={styles.ghostBtn} href="/profile">
-              Profile
+              {t('accountSecurity.profile')}
             </Link>
           </div>
         </div>
@@ -8376,55 +8396,55 @@ export default function AccountSecurityPage() {
   return (
     <main className={styles.page}>
       <div className={styles.card}>
-        <h1 className={styles.title}>Change Email / Password</h1>
+        <h1 className={styles.title}>{t('accountSecurity.title')}</h1>
 
         {msg && <div className={styles.msg}>{msg}</div>}
 
         <section className={styles.section}>
-          <h2 className={styles.sectionTitle}>Change Email</h2>
+          <h2 className={styles.sectionTitle}>{t('accountSecurity.changeEmail')}</h2>
           <input
             className={styles.input}
-            placeholder="New email"
+            placeholder={t('accountSecurity.newEmailPlaceholder')}
             value={emailNext}
             onChange={(e) => setEmailNext(e.target.value)}
           />
           <input
             className={styles.input}
-            placeholder="Current password"
+            placeholder={t('accountSecurity.currentPasswordPlaceholder')}
             type="password"
             value={emailPw}
             onChange={(e) => setEmailPw(e.target.value)}
           />
           <button className={styles.primaryBtn} disabled={busy} onClick={changeEmail}>
-            Update Email
+            {t('shared.common.updateEmail')}
           </button>
         </section>
 
         <section className={styles.section}>
-          <h2 className={styles.sectionTitle}>Change Password</h2>
+          <h2 className={styles.sectionTitle}>{t('accountSecurity.changePassword')}</h2>
           <input
             className={styles.input}
-            placeholder="Current password"
+            placeholder={t('accountSecurity.currentPasswordPlaceholder')}
             type="password"
             value={pwCurrent}
             onChange={(e) => setPwCurrent(e.target.value)}
           />
           <input
             className={styles.input}
-            placeholder="New password"
+            placeholder={t('accountSecurity.newPasswordPlaceholder')}
             type="password"
             value={pwNext}
             onChange={(e) => setPwNext(e.target.value)}
           />
           <input
             className={styles.input}
-            placeholder="Confirm new password"
+            placeholder={t('accountSecurity.confirmNewPasswordPlaceholder')}
             type="password"
             value={pwNext2}
             onChange={(e) => setPwNext2(e.target.value)}
           />
           <button className={styles.primaryBtn} disabled={busy} onClick={changePassword}>
-            Update Password
+            {t('shared.common.updatePassword')}
           </button>
         </section>
       </div>
@@ -8444,6 +8464,7 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { resetAllLocalData } from "@/lib/stats/resetLocalData";
 import { FunctionsHttpError } from "@supabase/supabase-js";
+import { useT } from "@/lib/i18n/useT";
 
 const DELETE_SUCCESS_PATH = "/account-deletion?deleted=1";
 
@@ -8451,6 +8472,7 @@ export default function DeleteAccountPage() {
   const router = useRouter();
   const supabase = useMemo(() => createClient(), []);
   const deleteBusyRef = useRef(false);
+  const { t } = useT();
 
   const [typed, setTyped] = useState("");
   const [loading, setLoading] = useState(false);
@@ -8470,7 +8492,7 @@ async function onDelete() {
     const { data: sessionData } = await supabase.auth.getSession();
     const token = sessionData.session?.access_token ?? null;
     if (!token) {
-      setErr("Please log in to delete your account.");
+      setErr(t("deleteAccount.loginRequired"));
       return;
     }
 
@@ -8479,9 +8501,7 @@ async function onDelete() {
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
     if (!anonKey) {
-      throw new Error(
-        "Missing NEXT_PUBLIC_SUPABASE_ANON_KEY (or NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY)"
-      );
+      throw new Error(t("deleteAccount.missingEnv"));
     }
 
     const { data, error } = await supabase.functions.invoke("account-delete", {
@@ -8503,7 +8523,7 @@ async function onDelete() {
     }
 
     if (!j?.ok) {
-      throw new Error(j?.detail ?? j?.error ?? "Delete failed");
+      throw new Error(j?.detail ?? j?.error ?? t("deleteAccount.failed"));
     }
 
     // Backend deletion succeeded. From here on, local cleanup must be best-effort.
@@ -8521,7 +8541,7 @@ async function onDelete() {
     setDone(true);
     window.location.replace(DELETE_SUCCESS_PATH);
   } catch (e: any) {
-    setErr(e?.message ?? "Account deletion failed.");
+    setErr(e?.message ?? t("deleteAccount.failed"));
   } finally {
     setLoading(false);
     deleteBusyRef.current = false;
@@ -8530,24 +8550,24 @@ async function onDelete() {
 
   return (
     <main style={{ maxWidth: 520, margin: "0 auto", padding: "24px 16px" }}>
-      <h1 style={{ fontSize: 22, marginBottom: 10 }}>Delete Account</h1>
+      <h1 style={{ fontSize: 22, marginBottom: 10 }}>{t("deleteAccount.title")}</h1>
 
       {done ? (
-        <p style={{ opacity: 0.85 }}>Your account has been deleted. Redirecting…</p>
+        <p style={{ opacity: 0.85 }}>{t("deleteAccount.done")}</p>
       ) : (
         <>
           <p style={{ opacity: 0.85 }}>
-            This will permanently delete your account and server-stored data for this account.
+            {t("deleteAccount.body")}
           </p>
 
           <div style={{ marginTop: 16 }}>
             <label style={{ display: "block", fontSize: 13, opacity: 0.85, marginBottom: 6 }}>
-              Type <b>DELETE</b> to confirm
+              {t("deleteAccount.confirmLabel")}
             </label>
             <input
               value={typed}
               onChange={(e) => setTyped(e.target.value)}
-              placeholder="DELETE"
+              placeholder={t("deleteAccount.confirmPlaceholder")}
               style={{
                 width: "100%",
                 padding: "12px 12px",
@@ -8579,7 +8599,7 @@ async function onDelete() {
               cursor: canDelete && !loading ? "pointer" : "not-allowed",
             }}
           >
-            {loading ? "Deleting…" : "Delete My Account"}
+            {loading ? t("deleteAccount.deleting") : t("deleteAccount.deleteButton")}
           </button>
 
           <button
@@ -8596,7 +8616,7 @@ async function onDelete() {
               cursor: loading ? "not-allowed" : "pointer",
             }}
           >
-            Cancel
+            {t("shared.common.cancel")}
           </button>
         </>
       )}
@@ -8615,6 +8635,7 @@ import { useEffect, useState } from 'react';
 import type { AuthChangeEvent, Session } from '@supabase/supabase-js';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
+import { useT } from '@/lib/i18n/useT';
 
 function safeNextPathClient(nextRaw: string | null | undefined, fallback = '/') {
   const v = String(nextRaw ?? '').trim();
@@ -8627,7 +8648,8 @@ function safeNextPathClient(nextRaw: string | null | undefined, fallback = '/') 
 
 export default function AuthCallbackPage() {
   const router = useRouter();
-  const [msg, setMsg] = useState('Completing sign-in…');
+  const { t } = useT();
+  const [msg, setMsg] = useState(t('authCallback.completing'));
 
   useEffect(() => {
     const supabase = createClient();
@@ -8638,7 +8660,7 @@ export default function AuthCallbackPage() {
     // If provider sent an error back
     const err = url.searchParams.get('error_description') ?? url.searchParams.get('error');
     if (err) {
-      setMsg(`Sign-in failed: ${decodeURIComponent(err)}`);
+      setMsg(t('authCallback.failed', { reason: decodeURIComponent(err) }));
       return;
     }
 
@@ -8672,22 +8694,23 @@ export default function AuthCallbackPage() {
     })();
 
     // Safety timeout so you see a useful message instead of silently landing as guest
-    const t = window.setTimeout(async () => {
+    const timeoutId = window.setTimeout(async () => {
       if (done) return;
       const { data: s } = await supabase.auth.getSession();
       if (!s.session) {
-        setMsg('Sign-in failed: no session created. (Likely PKCE storage mismatch or blocked callback.)');
+        setMsg(t('authCallback.noSession'));
       }
     }, 5000);
 
     return () => {
-      window.clearTimeout(t);
+      window.clearTimeout(timeoutId);
       data.subscription.unsubscribe();
     };
-  }, [router]);
+  }, [router, t]);
 
   return <div style={{ padding: 16 }}>{msg}</div>;
 }
+
 ```
 
 ### app/checkout/checkout.module.css
@@ -8927,15 +8950,32 @@ import styles from "./checkout.module.css";
 import { PLAN_MAP, toPlanId, type PlanId } from "@/lib/plans";
 import CSRBoundary from "@/components/CSRBoundary";
 import BackButton from "@/components/BackButton";
+import { useT } from "@/lib/i18n/useT";
+
+const CHECKOUT_PLAN_TITLE_KEYS: Record<PlanId, keyof typeof PLAN_MAP> = {
+  monthly: "monthly",
+  three_month: "three_month",
+  six_month: "six_month",
+  lifetime: "lifetime",
+};
 
 function Inner() {
   const router = useRouter();
   const sp = useSearchParams();
+  const { t } = useT();
 
   const plan: PlanId = toPlanId(sp.get("plan"));
   const promoApplied = sp.get("promo") === "1";
   const planData = PLAN_MAP[plan];
-  const title = planData.checkoutTitle;
+  const titleKey = CHECKOUT_PLAN_TITLE_KEYS[plan];
+  const title =
+    titleKey === "monthly"
+      ? t("checkout.planTitles.monthly")
+      : titleKey === "three_month"
+      ? t("checkout.planTitles.threeMonth")
+      : titleKey === "six_month"
+      ? t("checkout.planTitles.sixMonth")
+      : t("checkout.planTitles.lifetime");
   const price = promoApplied ? planData.promoPrice : planData.price;
 
   return (
@@ -8947,10 +8987,10 @@ function Inner() {
           </div>
         </header>
 
-        <div className={styles.content}>
+          <div className={styles.content}>
           <div className={styles.summaryRow}>
             <div className={styles.planLabel}>{title}</div>
-            <div className={styles.orderNo}>Web checkout unavailable</div>
+            <div className={styles.orderNo}>{t("checkout.webCheckoutUnavailable")}</div>
           </div>
 
           <div className={styles.price}>{price}</div>
@@ -8959,12 +8999,10 @@ function Inner() {
 
           <div className={styles.form}>
             <p className={styles.label} style={{ marginBottom: 12 }}>
-              Web checkout is not available in this release.
+              {t("checkout.summary")}
             </p>
             <p style={{ margin: 0, lineHeight: 1.6, opacity: 0.85 }}>
-              Premium purchases are currently available only in the mobile app.
-              If you already purchased Premium there, open the app and use the
-              restore option from your profile if needed.
+              {t("checkout.detail")}
             </p>
           </div>
         </div>
@@ -8975,7 +9013,7 @@ function Inner() {
             className={styles.checkoutBtn}
             onClick={() => router.push("/premium")}
           >
-            Back to Premium
+            {t("shared.common.backToPremium")}
           </button>
         </footer>
       </div>
@@ -9001,9 +9039,11 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import styles from "./success.module.css";
 import CSRBoundary from "@/components/CSRBoundary";
+import { useT } from "@/lib/i18n/useT";
 
 function Inner() {
   const router = useRouter();
+  const { t } = useT();
 
   return (
     <main className={styles.page}>
@@ -9011,7 +9051,7 @@ function Inner() {
         <div className={styles.confettieWrap}>
           <Image
             src="/images/checkout/confetti-bg.png"
-            alt="checkout background"
+            alt={t("checkout.backgroundAlt")}
             fill
             priority
             className={styles.confettiBg}
@@ -9022,16 +9062,16 @@ function Inner() {
         <div className={styles.centerBlock}>
           <Image
             src="/images/checkout/bluecheck-icon.png"
-            alt="Checkout unavailable"
+            alt={t("checkout.iconAlt")}
             width={100}
             height={100}
             priority
             className={styles.checkIcon}
           />
 
-          <h1 className={styles.title}>Web Checkout Unavailable</h1>
+          <h1 className={styles.title}>{t("checkout.successTitle")}</h1>
           <p className={styles.subtitle}>
-            Premium purchases are currently available only in the mobile app.
+            {t("checkout.successSubtitle")}
           </p>
         </div>
 
@@ -9041,7 +9081,7 @@ function Inner() {
             className={styles.homeBtn}
             onClick={() => router.push("/premium")}
           >
-            Back to Premium
+            {t("shared.common.backToPremium")}
           </button>
         </footer>
       </div>
@@ -9176,6 +9216,7 @@ export default function CheckoutSuccessPage() {
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import CSRBoundary from '@/components/CSRBoundary';
+import { useT } from '@/lib/i18n/useT';
 
 function safeDecode(v: string) {
   try {
@@ -9191,6 +9232,7 @@ function isSafeInternalPath(p: string) {
 
 function Inner({ fallbackHref = '/' }: { fallbackHref?: string }) {
   const sp = useSearchParams();
+  const { t } = useT();
 
   // 1) Prefer explicit returnTo in URL
   const param = sp.get('returnTo') ?? '';
@@ -9210,7 +9252,7 @@ function Inner({ fallbackHref = '/' }: { fallbackHref?: string }) {
 
   const href = isSafeInternalPath(candidate) ? candidate : fallbackHref;
 
-  return <Link href={href}>Return</Link>;
+  return <Link href={href}>{t('shared.common.return')}</Link>;
 }
 
 export default function BackLink() {
@@ -9272,6 +9314,7 @@ import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import BackButton from "@/components/BackButton";
 import styles from "./coming-soon.module.css";
+import { useT } from "@/lib/i18n/useT";
 
 function safeReturnTo(raw: string | null) {
   if (!raw) return "/profile";
@@ -9296,20 +9339,25 @@ function safeReturnTo(raw: string | null) {
 
 function ComingSoonInner() {
   const searchParams = useSearchParams();
+  const { t } = useT();
   const rawFeature = searchParams.get("feature");
-  const feature = rawFeature ? decodeURIComponent(rawFeature) : "This feature";
+  const decodedFeature = rawFeature ? decodeURIComponent(rawFeature) : t("comingSoon.defaultFeature");
+  const feature =
+    rawFeature === t("comingSoon.notificationsKey")
+      ? t("comingSoon.featureNames.notifications")
+      : decodedFeature;
   const backHref = safeReturnTo(searchParams.get("returnTo"));
   const detailText =
-    feature.toLowerCase() === "notifications"
-      ? "Push notifications are not available in Expatise yet."
-      : `${feature} is not ready yet.`;
+    rawFeature === t("comingSoon.notificationsKey")
+      ? t("comingSoon.notificationsDetail")
+      : t("comingSoon.genericDetail", { feature });
 
   return (
     <main className={styles.page}>
       <BackButton variant="fixed" fallbackHref={backHref} />
 
       <div className={styles.content}>
-        <h1 className={styles.title}>Coming Soon</h1>
+        <h1 className={styles.title}>{t("comingSoon.title")}</h1>
         <p className={styles.text}>{detailText}</p>
       </div>
     </main>
@@ -9486,10 +9534,12 @@ import styles from "./forgot-password.module.css";
 import { isValidEmail, normalizeEmail } from "../../lib/auth";
 import { buildAuthCallbackUrl } from "@/lib/auth/oauth";
 import { createClient } from "@/lib/supabase/client";
+import { useT } from "@/lib/i18n/useT";
 
 export default function ForgotPasswordPage() {
   const router = useRouter();
   const supabase = useMemo(() => createClient(), []);
+  const { t } = useT();
 
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
@@ -9512,7 +9562,7 @@ export default function ForgotPasswordPage() {
 
     const emailNorm = normalizeEmail(email);
     if (!isValidEmail(emailNorm)) {
-      setError("Please enter a valid email.");
+      setError(t("forgotPassword.invalidEmail"));
       return;
     }
 
@@ -9536,13 +9586,13 @@ export default function ForgotPasswordPage() {
     <main className={styles.page}>
       <div className={styles.frame}>
         <section className={styles.sheet}>
-          <h1 className={styles.title}>Reset password</h1>
+          <h1 className={styles.title}>{t("forgotPassword.title")}</h1>
 
           {!sent ? (
             <>
-              <p className={styles.subtitle}>Enter your email and we’ll send you a reset link.</p>
+              <p className={styles.subtitle}>{t("forgotPassword.subtitle")}</p>
 
-              <label className={styles.label}>Email</label>
+              <label className={styles.label}>{t("forgotPassword.emailLabel")}</label>
               <input
                 className={styles.input}
                 value={email}
@@ -9550,22 +9600,22 @@ export default function ForgotPasswordPage() {
                 type="email"
                 autoComplete="email"
                 onFocus={() => setError(null)}
-                placeholder="user@expatise.com"
+                placeholder={t("forgotPassword.emailPlaceholder")}
               />
 
               {error && <div className={styles.errorBox}>{error}</div>}
 
               <button className={styles.cta} disabled={!canSend} onClick={sendLink}>
-                {loading ? "Sending..." : "Send reset link"}
+                {loading ? t("forgotPassword.sendLoading") : t("forgotPassword.sendIdle")}
               </button>
             </>
           ) : (
             <>
               <div className={styles.successBox}>
-                If that email exists, we sent a reset link. Open it to set a new password.
+                {t("forgotPassword.success")}
               </div>
               <button className={styles.cta} onClick={() => router.push("/login")}>
-                Back to sign in
+                {t("shared.common.backToSignIn")}
               </button>
             </>
           )}
@@ -9715,22 +9765,10 @@ body {
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Nunito_Sans } from "next/font/google";
 import "./globals.css";
-import { ThemeProvider } from '../components/ThemeProvider';
-import { UserProfileProvider } from "@/components/UserProfile";
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import { config } from "@fortawesome/fontawesome-svg-core";
 config.autoAddCss = false; // Prevent fontawesome from adding its CSS since we did it manually above  
-import { EntitlementsProvider } from "@/components/EntitlementsProvider.client";
-import SwipeBack from "@/components/SwipeBack.client";
-import TimeTracker from "@/components/TimeTracker.client";
-import AuthSelfHeal from "@/components/AuthSelfHeal";
-import BottomNav from "@/components/BottomNav";
-import OnboardingGate from "@/components/OnboardingGate.client";
-import NativeInsets from "@/components/NativeInsets.client";
-import BrandIntroSplash from "@/components/BrandIntroSplash.client";
-import BrandSplash from "@/components/BrandSplash.client";
-import FreeUsageProgressBadge from "@/components/FreeUsageProgressBadge.client";
-import CapacitorOAuthBridge from "@/components/CapacitorOAuthBridge.client";
+import Providers from "./providers";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -9762,26 +9800,11 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${nunitoSans.variable} antialiased`}
       >
-        <BrandSplash />
-        <EntitlementsProvider>
-          <FreeUsageProgressBadge />
-          <OnboardingGate />
-          <ThemeProvider>
-            <AuthSelfHeal />
-             <CapacitorOAuthBridge />
-            <UserProfileProvider>
-              <SwipeBack />
-              <TimeTracker />
-              <NativeInsets />
-              {children}
-              </UserProfileProvider>
-          </ThemeProvider>
-        </EntitlementsProvider>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );
 }
-
 
 ```
 
@@ -9799,6 +9822,7 @@ import styles from './create-account-modal.module.css';
 import { isValidEmail, normalizeEmail } from '@/lib/auth';
 import { buildAuthCallbackUrl, NATIVE_OAUTH_REDIRECT_URI } from '@/lib/auth/oauth';
 import { createClient } from '@/lib/supabase/client';
+import { useT } from '@/lib/i18n/useT';
 
 type Props = {
   open: boolean;
@@ -9809,6 +9833,7 @@ type Props = {
 export default function CreateAccountModal({ open, onClose, onCreated }: Props) {
   const router = useRouter();
   const supabase = useMemo(() => createClient(), []);
+  const { t } = useT();
 
   const [email, setEmail] = useState('');
   const [pw, setPw] = useState('');
@@ -9839,9 +9864,9 @@ export default function CreateAccountModal({ open, onClose, onCreated }: Props) 
 
     const trimmedEmail = normalizeEmail(email);
 
-    if (!isValidEmail(trimmedEmail)) return setError('Please enter a valid email.');
-    if (pw.trim().length < 8) return setError('Password must be at least 8 characters.');
-    if (pw !== pw2) return setError('Passwords do not match.');
+    if (!isValidEmail(trimmedEmail)) return setError(t('createAccount.errors.invalidEmail'));
+    if (pw.trim().length < 8) return setError(t('createAccount.errors.passwordMin'));
+    if (pw !== pw2) return setError(t('createAccount.errors.passwordMismatch'));
 
     setIsSubmitting(true);
     try {
@@ -9856,7 +9881,7 @@ export default function CreateAccountModal({ open, onClose, onCreated }: Props) 
 
       if (error) {
         if (/already registered/i.test(error.message) || /already exists/i.test(error.message)) {
-          setError("This email is already registered. Try logging in instead.");
+          setError(t('createAccount.errors.alreadyRegistered'));
         } else {
           setError(error.message);
         }
@@ -9879,7 +9904,7 @@ export default function CreateAccountModal({ open, onClose, onCreated }: Props) 
       onCreated?.(trimmedEmail);
       onClose();
     } catch {
-      setError('Network error. Please try again.');
+      setError(t('createAccount.errors.network'));
     } finally {
       setIsSubmitting(false);
     }
@@ -9888,8 +9913,8 @@ export default function CreateAccountModal({ open, onClose, onCreated }: Props) 
   return (
     <div className={styles.overlay} role="dialog" aria-modal="true">
       <div className={styles.modal}>
-        <h2 className={styles.title}>Create Account</h2>
-        <p className={styles.subtitle}>Sign up to get started</p>
+        <h2 className={styles.title}>{t('createAccount.title')}</h2>
+        <p className={styles.subtitle}>{t('createAccount.subtitle')}</p>
 
         {/* ✅ Email confirmation message */}
         {needsEmailConfirm && (
@@ -9900,11 +9925,11 @@ export default function CreateAccountModal({ open, onClose, onCreated }: Props) 
               borderColor: 'rgba(43,124,175,0.25)',
             }}
           >
-            <strong>Check your email</strong>
+            <strong>{t('createAccount.checkEmailTitle')}</strong>
             <div style={{ marginTop: 6 }}>
-              We sent a confirmation link to <strong>{normalizeEmail(email)}</strong>.
+              {t('createAccount.checkEmailBody', { email: normalizeEmail(email) })}
               <br />
-              Open it to activate your account, then come back and sign in.
+              {t('createAccount.checkEmailHelp')}
             </div>
 
             <button
@@ -9916,19 +9941,19 @@ export default function CreateAccountModal({ open, onClose, onCreated }: Props) 
                 onClose();
               }}
             >
-              Got it
+              {t('createAccount.gotIt')}
             </button>
           </div>
         )}
 
         <form onSubmit={submit} className={styles.form}>
           <label className={styles.row}>
-            <span className={styles.label}>Email</span>
+            <span className={styles.label}>{t('createAccount.emailLabel')}</span>
             <input
               className={styles.input}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="user@expatise.com"
+              placeholder={t('createAccount.emailPlaceholder')}
               type="email"
               autoComplete="email"
               onFocus={() => setError(null)}
@@ -9936,13 +9961,13 @@ export default function CreateAccountModal({ open, onClose, onCreated }: Props) 
           </label>
 
           <label className={styles.row}>
-            <span className={styles.label}>Password</span>
+            <span className={styles.label}>{t('createAccount.passwordLabel')}</span>
             <div className={styles.pwWrap}>
               <input
                 className={styles.input}
                 value={pw}
                 onChange={(e) => setPw(e.target.value)}
-                placeholder="Password"
+                placeholder={t('createAccount.passwordPlaceholder')}
                 type={showPw ? 'text' : 'password'}
                 autoComplete="new-password"
                 onFocus={() => setError(null)}
@@ -9951,7 +9976,7 @@ export default function CreateAccountModal({ open, onClose, onCreated }: Props) 
                 type="button"
                 className={styles.eyeBtn}
                 onClick={() => setShowPw((v) => !v)}
-                aria-label={showPw ? 'Hide password' : 'Show password'}
+                aria-label={showPw ? t('createAccount.passwordToggleHide') : t('createAccount.passwordToggleShow')}
               >
                 <FontAwesomeIcon icon={showPw ? faEyeSlash : faEye} />
               </button>
@@ -9959,13 +9984,13 @@ export default function CreateAccountModal({ open, onClose, onCreated }: Props) 
           </label>
 
           <label className={styles.row}>
-            <span className={styles.label}>Confirm</span>
+            <span className={styles.label}>{t('createAccount.confirmLabel')}</span>
             <div className={styles.pwWrap}>
               <input
                 className={styles.input}
                 value={pw2}
                 onChange={(e) => setPw2(e.target.value)}
-                placeholder="Confirm password"
+                placeholder={t('createAccount.confirmPlaceholder')}
                 type={showPw2 ? 'text' : 'password'}
                 autoComplete="new-password"
                 onFocus={() => setError(null)}
@@ -9974,7 +9999,7 @@ export default function CreateAccountModal({ open, onClose, onCreated }: Props) 
                 type="button"
                 className={styles.eyeBtn}
                 onClick={() => setShowPw2((v) => !v)}
-                aria-label={showPw2 ? 'Hide password' : 'Show password'}
+                aria-label={showPw2 ? t('createAccount.passwordToggleHide') : t('createAccount.passwordToggleShow')}
               >
                 <FontAwesomeIcon icon={showPw2 ? faEyeSlash : faEye} />
               </button>
@@ -9984,13 +10009,13 @@ export default function CreateAccountModal({ open, onClose, onCreated }: Props) 
           {error && <div className={styles.errorBox}>{error}</div>}
 
           <button type="submit" className={styles.cta} disabled={!canSubmit}>
-            {isSubmitting ? 'Creating...' : 'Create new account'}
+            {isSubmitting ? t('createAccount.submitLoading') : t('createAccount.submitIdle')}
           </button>
         </form>
 
         <div className={styles.dividerRow}>
           <span className={styles.dividerLine} />
-          <span className={styles.dividerText}>or continue with</span>
+          <span className={styles.dividerText}>{t('createAccount.divider')}</span>
           <span className={styles.dividerLine} />
         </div>
 
@@ -9998,7 +10023,7 @@ export default function CreateAccountModal({ open, onClose, onCreated }: Props) 
           <button
   type="button"
   className={styles.snsBtn}
-  aria-label="Sign up with Google"
+  aria-label={t('createAccount.social.googleAria')}
   disabled={isSubmitting || oauthSubmitting}
   aria-busy={oauthSubmitting ? "true" : "false"}
   onClick={async () => {
@@ -10038,7 +10063,7 @@ export default function CreateAccountModal({ open, onClose, onCreated }: Props) 
 
        const url = data?.url;
 if (!url) {
-  setError("No OAuth URL returned.");
+  setError(t('createAccount.errors.noOauthUrl'));
   return;
 }
 await Browser.open({ url });
@@ -10055,7 +10080,7 @@ return;
 
       if (error) setError(error.message);
     } catch (err: any) {
-      setError(err?.message ?? "Google sign-up failed. Please try again.");
+      setError(err?.message ?? t('createAccount.errors.googleFailed'));
     } finally {
       setOauthSubmitting(false);
       oauthBusyRef.current = false;
@@ -10065,18 +10090,18 @@ return;
   <FontAwesomeIcon icon={faGoogle} />
 </button>
 
-          <button type="button" className={styles.snsBtn} aria-label="Sign up with Apple">
+          <button type="button" className={styles.snsBtn} aria-label={t('createAccount.social.appleAria')}>
             <FontAwesomeIcon icon={faApple} />
           </button>
 
-          <button type="button" className={styles.snsBtn} aria-label="Sign up with WeChat">
+          <button type="button" className={styles.snsBtn} aria-label={t('createAccount.social.wechatAria')}>
             <FontAwesomeIcon icon={faWeixin} />
           </button>
         </div>
       </div>
 
       {/* click outside to close */}
-      <button type="button" className={styles.backdropClose} onClick={onClose} aria-label="Close" />
+      <button type="button" className={styles.backdropClose} onClick={onClose} aria-label={t('createAccount.closeAria')} />
     </div>
   );
 }
@@ -10293,6 +10318,8 @@ return;
 }
 
 .sheet {
+  --content-lift: 100px;
+
   position: relative;
   z-index: 2;
   margin-top: clamp(-128px, -15svh, -88px);
@@ -10301,7 +10328,7 @@ return;
   display: flex;
   flex-direction: column;
   min-height: 0;
-  transform: translateY(-50px);
+  transform: translateY(calc(-1 * var(--content-lift)));
 }
 
 .title {
@@ -10647,12 +10674,14 @@ import { isValidEmail, normalizeEmail, safeNextPath } from '@/lib/auth';
 import { NATIVE_OAUTH_REDIRECT_URI } from '@/lib/auth/oauth';
 import CSRBoundary from '@/components/CSRBoundary';
 import { createClient } from '@/lib/supabase/client';
+import { useT } from '@/lib/i18n/useT';
 
 
 function Inner() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const nextParam = safeNextPath(searchParams.get("next"), "/");
+  const { t } = useT();
 
 
   const [email, setEmail] = useState('user@expatise.com');
@@ -10684,7 +10713,7 @@ const showToast = (msg: string) => {
   if (toastTimerRef.current) window.clearTimeout(toastTimerRef.current);
   toastTimerRef.current = window.setTimeout(() => setError(null), 500);
 };
-const comingSoon = (provider: string) => showToast(`${provider} sign-in is coming soon.`);
+const comingSoon = (provider: string) => showToast(t('login.social.comingSoon', { provider }));
 
 
 
@@ -10698,7 +10727,7 @@ const comingSoon = (provider: string) => showToast(`${provider} sign-in is comin
     setError(null);
 
     if (!emailOK) {
-      setError("Please enter a valid email address.");
+      setError(t('login.errors.invalidEmail'));
       return;
     }
     if (!canSubmit) return;
@@ -10717,7 +10746,7 @@ const comingSoon = (provider: string) => showToast(`${provider} sign-in is comin
     // Friendly message for bad credentials
     const msg =
       /invalid login credentials/i.test(error.message)
-        ? "Email or password doesn’t match. Try again or reset your password."
+        ? t('login.errors.invalidCredentials')
         : error.message;
 
     setError(msg);
@@ -10733,7 +10762,7 @@ router.refresh();
 
 router.replace(nextParam);
 } catch {
-  setError("Network error. Please try again.");
+  setError(t('login.errors.network'));
 }
 
   finally {
@@ -10754,7 +10783,7 @@ router.replace(nextParam);
         <div className={styles.hero}>
           <Image
             src="/images/auth/login-screen.png"
-            alt="Welcome background"
+            alt={t('login.heroAlt')}
             fill
             priority
             className={styles.heroImg}
@@ -10763,15 +10792,15 @@ router.replace(nextParam);
         </div>
 
         <section className={styles.sheet}>
-          <h1 className={styles.title}>Welcome!</h1>
-          <p className={styles.subtitle}>Sign in to continue.</p>
+          <h1 className={styles.title}>{t('login.title')}</h1>
+          <p className={styles.subtitle}>{t('login.subtitle')}</p>
 
           <form onSubmit={onSubmit} className={styles.form}>
             <label className={styles.row}>
               <span className={styles.icon}>
                 <Image 
                 src="/images/auth/username-icon.png"
-                alt="Username"
+                alt={t('login.emailIconAlt')}
                 width={22}
                 height={22}
                 />
@@ -10780,7 +10809,7 @@ router.replace(nextParam);
                 className={styles.input}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="Email"
+                placeholder={t('login.emailPlaceholder')}
                 autoComplete="email"
                 type="email"
               />
@@ -10790,7 +10819,7 @@ router.replace(nextParam);
               <span className={styles.icon}>
                 <Image 
                 src="/images/auth/password-icon.png"
-                alt="Password"
+                alt={t('login.passwordIconAlt')}
                 width={22}
                 height={22}
                 />
@@ -10810,7 +10839,7 @@ router.replace(nextParam);
                 type="button"
                 className={styles.eyeBtn}
                 onClick={() => setShowPassword((v) => !v)}
-                aria-label={showPassword ? "Hide password" : "Show password"}
+                aria-label={showPassword ? t('login.passwordToggleHide') : t('login.passwordToggleShow')}
               >
                 <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
               </button>
@@ -10818,7 +10847,7 @@ router.replace(nextParam);
 
             {/* ✅ (2) Caps Lock warning */}
             {capsLockOn && (
-              <div className={styles.capsWarning}>Caps Lock is on</div>
+              <div className={styles.capsWarning}>{t('login.capsLockWarning')}</div>
             )}
 
             {/* ✅ (4) Friendly error state */}
@@ -10838,13 +10867,13 @@ router.replace(nextParam);
                 className={styles.linkInline}
                 onClick={() => router.push("/forgot-password")}
               >
-                Forgot password?
+                {t('login.forgotPassword')}
               </button>
             </div>
 
             <button type="submit" className={styles.cta} disabled={!canSubmit}>
               {/* ✅ (6) Loading state */}
-              <span>{isSubmitting ? "Signing in..." : "Sign In"}</span>
+              <span>{isSubmitting ? t('login.submitLoading') : t('login.submitIdle')}</span>
               <span className={styles.arrow}>→</span>
             </button>
           </form>
@@ -10856,7 +10885,7 @@ router.replace(nextParam);
             className={styles.linkBtn}
             onClick={() => setIsCreateOpen(true)}
             >
-              Create a new account
+              {t('login.createAccount')}
               </button>
 
 <button
@@ -10879,7 +10908,7 @@ router.replace(nextParam);
     router.replace(nextParam);
   }}
 >
-  Continue as guest
+  {t('login.continueAsGuest')}
 </button>
 
           </div>
@@ -10892,7 +10921,7 @@ router.replace(nextParam);
             />  
             <div className={styles.snsBlock}>
   <div className={styles.snsDivider}>
-    <span>or continue with</span>
+    <span>{t('login.socialDivider')}</span>
   </div>
 
   <div className={styles.snsRowSmall}>
@@ -10902,7 +10931,7 @@ router.replace(nextParam);
 <button
   type="button"
   className={styles.snsBtnSmall}
-  aria-label="Continue with Google"
+  aria-label={t('login.social.googleAria')}
   disabled={oauthSubmitting || isSubmitting}
   aria-busy={oauthSubmitting ? "true" : "false"}
   onClick={async () => {
@@ -10946,7 +10975,7 @@ router.replace(nextParam);
 
         const url = data?.url;
 if (!url) {
-  setError("No OAuth URL returned.");
+  setError(t('login.errors.noOauthUrl'));
   return;
 }
 await Browser.open({ url });
@@ -10965,7 +10994,7 @@ return;
 
       if (error) setError(error.message);
     } catch (err: any) {
-      setError(err?.message ?? "Google sign-in failed. Please try again.");
+      setError(err?.message ?? t('login.errors.googleFailed'));
     } finally {
       setOauthSubmitting(false);
       authBusyRef.current = false;
@@ -10980,10 +11009,10 @@ return;
 <button
   type="button"
   className={`${styles.snsBtnSmall} ${styles.snsBtnSoon}`}
-  aria-label="Continue with Apple"
+  aria-label={t('login.social.appleAria')}
   aria-disabled="true"
-  onClick={() => comingSoon("Apple")}
-  title="Coming soon"
+  onClick={() => comingSoon(t('login.providers.apple'))}
+  title={t('login.social.comingSoonTitle')}
 >
   <FontAwesomeIcon icon={faApple} />
 </button>
@@ -10993,10 +11022,10 @@ return;
 <button
   type="button"
   className={`${styles.snsBtnSmall} ${styles.snsBtnSoon}`}
-  aria-label="Continue with WeChat"
+  aria-label={t('login.social.wechatAria')}
   aria-disabled="true"
-  onClick={() => comingSoon("WeChat")}
-  title="Coming soon"
+  onClick={() => comingSoon(t('login.providers.wechat'))}
+  title={t('login.social.comingSoonTitle')}
 >
   <FontAwesomeIcon icon={faWeixin} />
 </button>
@@ -11066,7 +11095,7 @@ export default function LoginPage() {
   height: clamp(320px, 52svh, 420px);
   background: #111;
   overflow: hidden;
-  flex: 1 1 auto;
+  flex: 1 1 auto;   /* restore original behavior */
   min-height: 260px;
 }
 
@@ -11096,13 +11125,23 @@ export default function LoginPage() {
 }
 
 .sheet {
+  --content-lift: 100px;
   margin-top: -18px;
   padding: clamp(20px, 3.5svh, 26px) clamp(18px, 5vw, 22px) clamp(22px, 4svh, 30px);
   text-align: center;
 }
 
 
+.sheet {
+  --content-lift: 100px;
+  margin-top: -18px;
+  padding: clamp(20px, 3.5svh, 26px) clamp(18px, 5vw, 22px) clamp(22px, 4svh, 30px);
+  text-align: center;
+}
+
 .title {
+  position: relative;
+  top: calc(-1 * var(--content-lift));
   margin: 0;
   font-size: clamp(24px, 5.8vw, 28px);
   line-height: 1.15;
@@ -11110,16 +11149,9 @@ export default function LoginPage() {
   color: #111827;
 }
 
-.highlight {
-  background: var(--onboarding-highlight, #b9dcff);
-  padding: 0 4px;
-  border-radius: 2px;
-  box-decoration-break: clone;
-  -webkit-box-decoration-break: clone;
-  white-space: nowrap;
-}
-
 .subtitle {
+  position: relative;
+  top: calc(-1 * var(--content-lift));
   margin: clamp(10px, 2svh, 14px) 0 clamp(16px, 3svh, 22px);
   font-size: clamp(15px, 3.8vw, 16px);
   line-height: 1.45;
@@ -11127,6 +11159,8 @@ export default function LoginPage() {
 }
 
 .cta {
+  position: relative;
+  top: calc(-1 * var(--content-lift));
   width: 100%;
   max-width: 320px;
   min-height: 50px;
@@ -11139,6 +11173,15 @@ export default function LoginPage() {
   font-weight: 700;
   color: #111827;
   cursor: pointer;
+}
+
+.highlight {
+  background: var(--onboarding-highlight, #b9dcff);
+  padding: 0 4px;
+  border-radius: 2px;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+  white-space: nowrap;
 }
 
 @media (max-height: 760px) {
@@ -11186,9 +11229,11 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import styles from './onboarding.module.css';
 import { markOnboarded } from '@/lib/onboarding/markOnboarded.client';
+import { useT } from '@/lib/i18n/useT';
 
 export default function OnboardingPage() {
   const router = useRouter();
+  const { t } = useT();
 
 const handleGetStarted = () => {
   try {
@@ -11205,7 +11250,7 @@ const handleGetStarted = () => {
         <div className={styles.hero}>
           <Image
             src="/images/auth/onboarding-girl.png"
-            alt="Onboarding hero"
+            alt={t('onboarding.heroAlt')}
             fill
             priority
             className={styles.heroImg}
@@ -11215,15 +11260,16 @@ const handleGetStarted = () => {
 
         <section className={styles.sheet}>
           <h1 className={styles.title}>
-  Study For The <span className={styles.highlight}>Driver&apos;s&nbsp;License</span>
+  {t('onboarding.title.before')}{' '}
+  <span className={styles.highlight}>{t('onboarding.title.highlight')}</span>
   <br />
-  Test Wherever You Are
+  {t('onboarding.title.after')}
 </h1>
 
-          <p className={styles.subtitle}>Get easy access to prepare for your license.</p>
+          <p className={styles.subtitle}>{t('onboarding.subtitle')}</p>
 
           <button className={styles.cta} onClick={handleGetStarted}>
-            Get Started
+            {t('onboarding.cta')}
           </button>
         </section>
       </div>
@@ -12096,6 +12142,7 @@ import FeatureCard from '../components/FeatureCard';
 import BackButton from '@/components/BackButton';
 import { useEntitlements } from '@/components/EntitlementsProvider.client';
 import { useUsageCap } from '@/lib/freeAccess/useUsageCap';
+import { useT } from '@/lib/i18n/useT';
 
 
 
@@ -12104,132 +12151,17 @@ const CURRENT_YEAR = new Date().getFullYear();
 const DEFAULT_TEST_DATE = `${CURRENT_YEAR}-04-20`; // default 04/20 THIS year
 const DEFAULT_TEST_TIME = "09:00"; // 9 AM in 24h format
 
-function formatTimeLabel(time: string): string {
+function formatTimeLabel(time: string, labels: { am: string; pm: string }): string {
   if (!time) return "--:--";
   const [hStr, mStr] = time.split(":");
   const h = parseInt(hStr, 10);
-  const ampm = h >= 12 ? "PM" : "AM";
+  const ampm = h >= 12 ? labels.pm : labels.am;
   const displayH = h % 12 || 12; // 0/12 -> 12
   return `${displayH}:${mStr} ${ampm}`;
 }
 
-const TEST_MODE_CARDS = [
-    {
-    key: "real-test",
-    href: "/test/real",
-    ariaLabel: "Open Real Test",
-    bgSrc: "/images/home/cards/realtest-bg.png",
-    bgAlt: "Real Test Background",
-    iconSrc: "/images/home/icons/realtest-icon.png",
-    iconAlt: "Real Test Icon",
-    topText: "Practice under real exam conditions with a timer.",
-    title:  "Real Test",
-   },
-   
-   {
-    key: "ten-percent-test",
-    href: "/test/ten-percent",
-    ariaLabel: "Open 10% Test",
-    // ✅ reuse existing assets for now (swap later if you add new PNGs)
-    bgSrc: "/images/home/cards/quicktest-bg.png",
-    bgAlt: "10% Test Background",
-    iconSrc: "/images/home/icons/rapidfire-icon.png",
-    iconAlt: "10% Test Icon",
-    topText: "10 questions. 5 minutes.",
-    title: "10% Test",
-  },
-    {
-    key: "practice-test",
-    href: "/test/practice",
-    ariaLabel: "Open Practice Test",
-    bgSrc: "/images/home/cards/practice-bg.png",
-    bgAlt: "Practice Background",
-    iconSrc: "/images/home/icons/practice-icon.png",
-    iconAlt: "Practice Icon",
-    topText: "Study at your own pace. No time limit!",
-    title:  "Practice Test",
-   },
-     {
-    key: "half-test",
-    href: "/test/half",
-    ariaLabel: "Open Half Test",
-    bgSrc: "/images/home/cards/quicktest-bg.png",
-    bgAlt: "Half Test Background",
-    iconSrc: "/images/home/icons/globalmistakes-icon.png",
-    iconAlt: "Half Test Icon",
-    topText: "Half the questions. Half the time.",
-    title: "Half Test",
-  },
-
-    {
-    key: "rapid-fire-test",
-    href: "/test/rapid",
-    ariaLabel: "Open Rapid Fire Test",
-    bgSrc: "/images/home/cards/rapidfire-bg.png",
-    bgAlt: "Rapid Fire Background",
-    iconSrc: "/images/home/icons/rapidfire-icon.png",
-    iconAlt: "Rapid Fire Icon",
-    topText: "Sharpen your reflexes and memory in bursts.",
-    title:  "Rapid Fire Test",
-    },
-
-] as const;
-
-const OVERALL_CARDS = [
-  {
-    key: "all-questions",
-    href: ROUTES.allQuestions,
-    ariaLabel: "Open All Questions",
-    bgSrc: "/images/home/cards/allquestions-bg.png",
-    bgAlt: "All Questions Background",
-    iconSrc: "/images/home/icons/allquestions-icon.png",
-    iconAlt: "All Questions Icon",
-    topText: "Filter through the entire questions bank.",
-    title: "All Questions",
-  },
-      {
-  key: "global-mistakes",
-  href: ROUTES.globalCommonMistakes,
-  ariaLabel: "Open Global Common Mistakes",
-  bgSrc: "/images/home/cards/globalmistakes-bg.png",
-  bgAlt: "Global Common Mistakes Background",
-  iconSrc: "/images/home/icons/globalmistake-icon.png",
-  iconAlt: "Global Common Mistakes Icon",
-  topText: "See which questions others miss most.",
-  title: "Global Common Mistakes",
-},
-
-] as const;
-
-const MY_CARDS = [
-  {
-  key: "my-bookmarks",
-  href: ROUTES.bookmarks,
-  ariaLabel: "Open My Bookmarks",
-  bgSrc: "/images/home/cards/bookmark-bg.png",
-  bgAlt: "My Bookmarks Background",
-  iconSrc: "/images/home/icons/bookmarks-icon.png",
-  iconAlt: "Bookmark Icon",
-  topText: "Save questions and build your own study list.",
-  title: "My Bookmarks",
-  },
-  {
-  key: "my-mistakes",
-  href: ROUTES.mistakes,
-  ariaLabel: "Open My Mistakes",
-  bgSrc: "/images/home/cards/mymistakes-bg.png",
-  bgAlt: "My Mistakes Background",
-  iconSrc: "/images/home/icons/mymistakes-icon.png",
-  iconAlt: "My Mistakes Icon",
-  topText: "Revisit questions you got wrong.",
-  title: "My Mistakes",
-  },
-
-] as const
-
-
-
 export default function Home() {
+  const { t } = useT();
   const [testDate, setTestDate] = useState<string>(DEFAULT_TEST_DATE);
   const [testTime, setTestTime] = useState<string>(DEFAULT_TEST_TIME);
   const { isPremium, loading: entitlementsLoading } = useEntitlements();
@@ -12243,7 +12175,10 @@ const [pendingTime, setPendingTime] = useState<string | null>(null);
   const modalDateInputRef = useRef<HTMLInputElement | null>(null);
   const modalTimeInputRef = useRef<HTMLInputElement | null>(null);
 
-const displayTime = formatTimeLabel(testTime);
+const displayTime = formatTimeLabel(testTime, {
+  am: t('home.time.am'),
+  pm: t('home.time.pm'),
+});
 
 // Pull user profile info
 const { 
@@ -12339,8 +12274,119 @@ const modalMonth = modalDate.getMonth() + 1;
 const modalDay = modalDate.getDate();
 
 // Pretty label for the time in the modal ("9:00 AM")
-const modalTimeLabel = formatTimeLabel(modalSourceTime);
+const modalTimeLabel = formatTimeLabel(modalSourceTime, {
+  am: t('home.time.am'),
+  pm: t('home.time.pm'),
+});
 const shouldTriggerPremiumModal = !entitlementsLoading && !isPremium && isOverCap;
+
+const testModeCards = [
+  {
+    key: "real-test",
+    href: "/test/real",
+    ariaLabel: t('home.cards.testModes.real.ariaLabel'),
+    bgSrc: "/images/home/cards/realtest-bg.png",
+    bgAlt: t('home.cards.testModes.real.bgAlt'),
+    iconSrc: "/images/home/icons/realtest-icon.png",
+    iconAlt: t('home.cards.testModes.real.iconAlt'),
+    topText: t('home.cards.testModes.real.topText'),
+    title: t('home.cards.testModes.real.title'),
+  },
+  {
+    key: "ten-percent-test",
+    href: "/test/ten-percent",
+    ariaLabel: t('home.cards.testModes.tenPercent.ariaLabel'),
+    bgSrc: "/images/home/cards/quicktest-bg.png",
+    bgAlt: t('home.cards.testModes.tenPercent.bgAlt'),
+    iconSrc: "/images/home/icons/rapidfire-icon.png",
+    iconAlt: t('home.cards.testModes.tenPercent.iconAlt'),
+    topText: t('home.cards.testModes.tenPercent.topText'),
+    title: t('home.cards.testModes.tenPercent.title'),
+  },
+  {
+    key: "practice-test",
+    href: "/test/practice",
+    ariaLabel: t('home.cards.testModes.practice.ariaLabel'),
+    bgSrc: "/images/home/cards/practice-bg.png",
+    bgAlt: t('home.cards.testModes.practice.bgAlt'),
+    iconSrc: "/images/home/icons/practice-icon.png",
+    iconAlt: t('home.cards.testModes.practice.iconAlt'),
+    topText: t('home.cards.testModes.practice.topText'),
+    title: t('home.cards.testModes.practice.title'),
+  },
+  {
+    key: "half-test",
+    href: "/test/half",
+    ariaLabel: t('home.cards.testModes.half.ariaLabel'),
+    bgSrc: "/images/home/cards/quicktest-bg.png",
+    bgAlt: t('home.cards.testModes.half.bgAlt'),
+    iconSrc: "/images/home/icons/globalmistakes-icon.png",
+    iconAlt: t('home.cards.testModes.half.iconAlt'),
+    topText: t('home.cards.testModes.half.topText'),
+    title: t('home.cards.testModes.half.title'),
+  },
+  {
+    key: "rapid-fire-test",
+    href: "/test/rapid",
+    ariaLabel: t('home.cards.testModes.rapid.ariaLabel'),
+    bgSrc: "/images/home/cards/rapidfire-bg.png",
+    bgAlt: t('home.cards.testModes.rapid.bgAlt'),
+    iconSrc: "/images/home/icons/rapidfire-icon.png",
+    iconAlt: t('home.cards.testModes.rapid.iconAlt'),
+    topText: t('home.cards.testModes.rapid.topText'),
+    title: t('home.cards.testModes.rapid.title'),
+  },
+] as const;
+
+const overallCards = [
+  {
+    key: "all-questions",
+    href: ROUTES.allQuestions,
+    ariaLabel: t('home.cards.overall.allQuestions.ariaLabel'),
+    bgSrc: "/images/home/cards/allquestions-bg.png",
+    bgAlt: t('home.cards.overall.allQuestions.bgAlt'),
+    iconSrc: "/images/home/icons/allquestions-icon.png",
+    iconAlt: t('home.cards.overall.allQuestions.iconAlt'),
+    topText: t('home.cards.overall.allQuestions.topText'),
+    title: t('home.cards.overall.allQuestions.title'),
+  },
+  {
+    key: "global-mistakes",
+    href: ROUTES.globalCommonMistakes,
+    ariaLabel: t('home.cards.overall.globalMistakes.ariaLabel'),
+    bgSrc: "/images/home/cards/globalmistakes-bg.png",
+    bgAlt: t('home.cards.overall.globalMistakes.bgAlt'),
+    iconSrc: "/images/home/icons/globalmistake-icon.png",
+    iconAlt: t('home.cards.overall.globalMistakes.iconAlt'),
+    topText: t('home.cards.overall.globalMistakes.topText'),
+    title: t('home.cards.overall.globalMistakes.title'),
+  },
+] as const;
+
+const myCards = [
+  {
+    key: "my-bookmarks",
+    href: ROUTES.bookmarks,
+    ariaLabel: t('home.cards.my.bookmarks.ariaLabel'),
+    bgSrc: "/images/home/cards/bookmark-bg.png",
+    bgAlt: t('home.cards.my.bookmarks.bgAlt'),
+    iconSrc: "/images/home/icons/bookmarks-icon.png",
+    iconAlt: t('home.cards.my.bookmarks.iconAlt'),
+    topText: t('home.cards.my.bookmarks.topText'),
+    title: t('home.cards.my.bookmarks.title'),
+  },
+  {
+    key: "my-mistakes",
+    href: ROUTES.mistakes,
+    ariaLabel: t('home.cards.my.mistakes.ariaLabel'),
+    bgSrc: "/images/home/cards/mymistakes-bg.png",
+    bgAlt: t('home.cards.my.mistakes.bgAlt'),
+    iconSrc: "/images/home/icons/mymistakes-icon.png",
+    iconAlt: t('home.cards.my.mistakes.iconAlt'),
+    topText: t('home.cards.my.mistakes.topText'),
+    title: t('home.cards.my.mistakes.title'),
+  },
+] as const;
 
 const homeCardHref = (href: string) =>
   shouldTriggerPremiumModal
@@ -12355,15 +12401,15 @@ const homeCardHref = (href: string) =>
         <section className={styles.examCard}>
           {/* Left side: text */}
           <div className={styles.examText}>
-            <p className={styles.examLabel}>Exam</p>
-            <h1 className={styles.examTitle}>Registration</h1>
+            <p className={styles.examLabel}>{t('home.examCard.label')}</p>
+            <h1 className={styles.examTitle}>{t('home.examCard.title')}</h1>
 
             <button
   type="button"
   className={styles.myTestDayButton}
   onClick={openTestModal}
 >
-  My Test Day:
+  {t('home.examCard.myTestDay')}
 </button>
 
 
@@ -12377,7 +12423,7 @@ const homeCardHref = (href: string) =>
 
   <div className={styles.timeBlock}>
     <span className={styles.timeText}>{displayTime}</span>
-    <div className={styles.caption}>Test Time</div>
+    <div className={styles.caption}>{t('home.examCard.testTime')}</div>
   </div>
 </div>
 
@@ -12387,7 +12433,7 @@ const homeCardHref = (href: string) =>
               <div className={styles.daysLeftNumber}>
                 {daysLeft !== null ? daysLeft : "-"}
               </div>
-              <div className={styles.caption}>Days Left</div>
+              <div className={styles.caption}>{t('home.examCard.daysLeft')}</div>
             </div>
           </div>
 
@@ -12395,7 +12441,7 @@ const homeCardHref = (href: string) =>
           <div className={styles.carHero}>
             <Image
               src="/images/home/blue-car.png"
-              alt="Blue car"
+              alt={t('home.examCard.carAlt')}
               width={493}
               height={437}
               priority
@@ -12409,11 +12455,11 @@ const homeCardHref = (href: string) =>
 <section className={styles.sections}>
 {/* Test Mode */}
 <div className={styles.sectionGroup}>
-<h2 className={styles.sectionTitle}>Test Mode</h2>
+<h2 className={styles.sectionTitle}>{t('home.sections.testMode')}</h2>
             
 {/* Real Test */}
 <DragScrollRow className={styles.dragRow}>
-{TEST_MODE_CARDS.map((card) => (
+ {testModeCards.map((card) => (
     <FeatureCard
       key={card.key}
       href={homeCardHref(card.href)}
@@ -12435,10 +12481,10 @@ const homeCardHref = (href: string) =>
 
 {/* Overall */}
  <div className={styles.sectionGroup}>
-<h2 className={styles.sectionTitle}>Overall</h2>
+<h2 className={styles.sectionTitle}>{t('home.sections.overall')}</h2>
 <DragScrollRow className={styles.dragRow}>
 {/* All Questions */}
-{OVERALL_CARDS.map((card) => (
+{overallCards.map((card) => (
   <FeatureCard
     key={card.key}
     href={homeCardHref(card.href)}
@@ -12458,10 +12504,10 @@ const homeCardHref = (href: string) =>
 
 {/* My */}
           <div className={styles.sectionGroup}>
-            <h2 className={styles.sectionTitle}>My</h2>
+            <h2 className={styles.sectionTitle}>{t('home.sections.my')}</h2>
 <DragScrollRow className={styles.dragRow}>
 {/* Bookmark */}
-{MY_CARDS.map((card) => (
+{myCards.map((card) => (
     <FeatureCard
       key={card.key}
       href={homeCardHref(card.href)}
@@ -12501,11 +12547,11 @@ const homeCardHref = (href: string) =>
 <div className={styles.testModalHeaderCard}>
   <div className={styles.testModalHeaderLeft}>
     <div className={styles.testModalGreetingRow}>
-      <span className={styles.testModalGreetingText}>Have a great day!</span>
+      <span className={styles.testModalGreetingText}>{t('home.modal.greeting')}</span>
       <span className={styles.testModalSunIcon}></span>
       <Image 
         src="/images/home/icons/sun.png"
-        alt="Sun icon"
+        alt={t('home.modal.sunAlt')}
         width={16}
         height={16}
         className={styles.testModalSunImage}
@@ -12513,17 +12559,17 @@ const homeCardHref = (href: string) =>
     </div>
 
     <div className={styles.testModalName}>
-      {userName || 'Expat Expertise'}
+      {userName || t('home.modal.fallbackName')}
       </div>
     <div className={styles.testModalSubtext}>
-      Don&apos;t miss your exam date!
+      {t('home.modal.subtitle')}
     </div>
   </div>
 
   <div className={styles.testModalAvatarWrapper}>
     <Image
       src={avatarSrc}
-      alt={`${userName} avatar`}
+      alt={t('home.modal.avatarAlt', { name: userName || t('home.modal.fallbackName') })}
       fill
       sizes="44px"
       className={styles.testModalAvatar}
@@ -12534,11 +12580,10 @@ const homeCardHref = (href: string) =>
             {/* Main card */}
             <div className={styles.testModalMainCard}>
               <h2 className={styles.testModalTitle}>
-                When&apos;s your <span>Test?</span>
+                {t('home.modal.titleBefore')} <span>{t('home.modal.titleHighlight')}</span>
               </h2>
               <p className={styles.testModalDescription}>
-                Your test date will be updated on the home page,
-                making it easy for you to see and remember.
+                {t('home.modal.description')}
               </p>
 
 {/* MM / DD / YYYY row */}
@@ -12554,15 +12599,15 @@ const homeCardHref = (href: string) =>
   />
 
   <div className={styles.testModalDateBox}>
-    <span className={styles.testModalDateLabel}>MM</span>
+    <span className={styles.testModalDateLabel}>{t('home.modal.monthLabel')}</span>
     <span className={styles.testModalDateValue}>{modalMonth}</span>
   </div>
   <div className={styles.testModalDateBox}>
-    <span className={styles.testModalDateLabel}>DD</span>
+    <span className={styles.testModalDateLabel}>{t('home.modal.dayLabel')}</span>
     <span className={styles.testModalDateValue}>{modalDay}</span>
   </div>
   <div className={styles.testModalDateBox}>
-    <span className={styles.testModalDateLabel}>YYYY</span>
+    <span className={styles.testModalDateLabel}>{t('home.modal.yearLabel')}</span>
     <span className={styles.testModalDateValue}>{modalYear}</span>
   </div>
 </div>
@@ -12581,7 +12626,7 @@ const homeCardHref = (href: string) =>
   />
 
   <div className={styles.testModalTimeBox}>
-    <span className={styles.testModalDateLabel}>TIME</span>
+    <span className={styles.testModalDateLabel}>{t('home.modal.timeLabel')}</span>
     <span className={styles.testModalDateValue}>{modalTimeLabel}</span>
   </div>
 </div>
@@ -12595,14 +12640,14 @@ const homeCardHref = (href: string) =>
                   className={styles.testModalPrimaryButton}
                   onClick={handleConfirmTestDay}
                 >
-                  Set The Day
+                  {t('home.modal.setDay')}
                 </button>
                 <button
                   type="button"
                   className={styles.testModalSecondaryButton}
                   onClick={closeTestModal}
                 >
-                  Cancel
+                  {t('shared.common.cancel')}
                 </button>
               </div>
             </div>
@@ -12638,6 +12683,7 @@ import { useEntitlements } from "@/components/EntitlementsProvider.client";
 import { useSearchParams } from "next/navigation";
 import PremiumFeatureModal from "@/components/PremiumFeatureModal";
 import type { EntitlementSource } from "@/lib/entitlements/types";
+import { useT } from "@/lib/i18n/useT";
 
 
 
@@ -12673,6 +12719,7 @@ export default function PremiumPage() {
 
 function PremiumInner() {
   const router = useRouter();
+  const { t } = useT();
 
   const [selected, setSelected] = useState<PlanId | null>(null);
 
@@ -12732,12 +12779,12 @@ useEffect(() => {
 
     if (!code) {
       setPromoApplied(false);
-      setPromoError("Please enter a promo code.");
+      setPromoError(t("premium.promo.emptyError"));
       return;
     }
     if (!ok) {
       setPromoApplied(false);
-      setPromoError("Invalid promo code.");
+      setPromoError(t("premium.promo.invalidError"));
       return;
     }
 
@@ -12759,7 +12806,7 @@ useEffect(() => {
         <div className={styles.crownWrap}>
           <Image
             src="/images/premium/crown-icon.png"
-            alt="Premium"
+            alt={t("premium.imageAlt")}
             width={66}
             height={66}
             className={styles.crownIcon}
@@ -12769,12 +12816,12 @@ useEffect(() => {
 
         {/* Title block */}
         <div className={styles.titleBlock}>
-          <h1 className={styles.title}>Get premium today</h1>
-          <p className={styles.subtitle}>Remove ads and unlock all features:</p>
+          <h1 className={styles.title}>{t("premium.title")}</h1>
+          <p className={styles.subtitle}>{t("premium.subtitle")}</p>
         </div>
 
         {/* Features grid */}
-        <section className={styles.featuresBox} aria-label="Premium features">
+        <section className={styles.featuresBox} aria-label={t("premium.featuresAria")}>
           <div className={styles.featureGrid}>
             <div className={`${styles.featureCell} ${styles.cellTL}`}>
               <div className={styles.featureHead}>
@@ -12784,9 +12831,9 @@ useEffect(() => {
                   width={28}
                   height={28}
                 />
-                <span className={styles.featureTitle}>Personal Stats</span>
+                <span className={styles.featureTitle}>{t("premium.features.personalStats.title")}</span>
               </div>
-              <p className={styles.featureDesc}>Track scores, time & progress</p>
+              <p className={styles.featureDesc}>{t("premium.features.personalStats.description")}</p>
             </div>
 
             <div className={`${styles.featureCell} ${styles.cellTR}`}>
@@ -12797,10 +12844,10 @@ useEffect(() => {
                   width={28}
                   height={28}
                 />
-                <span className={styles.featureTitle}>Test Modes</span>
+                <span className={styles.featureTitle}>{t("premium.features.testModes.title")}</span>
               </div>
               <p className={styles.featureDesc}>
-                Real, Practice, Rapid Fire & more
+                {t("premium.features.testModes.description")}
               </p>
             </div>
 
@@ -12812,9 +12859,9 @@ useEffect(() => {
                   width={28}
                   height={28}
                 />
-                <span className={styles.featureTitle}>Mistakes Hub</span>
+                <span className={styles.featureTitle}>{t("premium.features.mistakesHub.title")}</span>
               </div>
-              <p className={styles.featureDesc}>Global + My Mistakes review</p>
+              <p className={styles.featureDesc}>{t("premium.features.mistakesHub.description")}</p>
             </div>
 
             <div className={`${styles.featureCell} ${styles.cellBR}`}>
@@ -12825,18 +12872,26 @@ useEffect(() => {
                   width={28}
                   height={28}
                 />
-                <span className={styles.featureTitle}>Question Bank</span>
+                <span className={styles.featureTitle}>{t("premium.features.questionBank.title")}</span>
               </div>
-              <p className={styles.featureDesc}>All questions & Bookmarks</p>
+              <p className={styles.featureDesc}>{t("premium.features.questionBank.description")}</p>
             </div>
           </div>
         </section>
 
         {/* Plan pills */}
-        <section className={styles.planList} aria-label="Choose a plan">
+        <section className={styles.planList} aria-label={t("premium.planListAria")}>
           {PLAN_LIST.map((p) => {
             const active = selected === p.id;
             const displayPrice = priceByPlanId[p.id] || p.price;
+            const planLabel =
+              p.id === "monthly"
+                ? t("premium.plans.monthly")
+                : p.id === "three_month"
+                ? t("premium.plans.threeMonth")
+                : p.id === "six_month"
+                ? t("premium.plans.sixMonth")
+                : t("premium.plans.lifetime");
 
             return (
               <button
@@ -12851,7 +12906,7 @@ useEffect(() => {
                 }}
               >
                 <div className={styles.planLeft}>
-                  <div className={styles.planTitle}>{p.pillTitle}</div>
+                  <div className={styles.planTitle}>{planLabel}</div>
                   
                 </div>
 
@@ -12876,7 +12931,7 @@ useEffect(() => {
 
         {/* Got a Promocode row */}
         <div className={styles.gotPromoRow}>
-          <span className={styles.gotPromoText}>Got a Promocode?</span>
+          <span className={styles.gotPromoText}>{t("premium.promo.label")}</span>
 
           <button
             type="button"
@@ -12884,7 +12939,7 @@ useEffect(() => {
             onClick={() => setShowPromo((v) => !v)}
             aria-expanded={showPromo}
           >
-            Apply Here
+            {t("premium.promo.toggle")}
           </button>
         </div>
 
@@ -12892,10 +12947,7 @@ useEffect(() => {
         {showPromo && (
           <>
             <p className={styles.note}>
-              Enjoying the app? A quick review helps a lot and goes a long way for
-              me. That&apos;s right <strong>me</strong>. I used to be on the same
-              side of that screen as <strong>you</strong>. I got fed up with the
-              options I had and learned how to make this app just for you. Enjoy!
+              {t("premium.promo.note")}
             </p>
 
             <div className={styles.promoRow}>
@@ -12906,7 +12958,7 @@ useEffect(() => {
                   setPromo(e.target.value);
                   if (promoError) setPromoError("");
                 }}
-                placeholder="Enter Promo Code"
+                placeholder={t("premium.promo.inputPlaceholder")}
               />
 
               <button
@@ -12914,7 +12966,7 @@ useEffect(() => {
                 className={styles.promoApply}
                 onClick={handleApplyCode}
               >
-                Apply Code
+                {t("premium.promo.apply")}
               </button>
             </div>
 
@@ -12931,7 +12983,7 @@ useEffect(() => {
             setPlanError("");
 
             if (!selected) {
-              setPlanError("Please select a plan.");
+              setPlanError(t("premium.errors.selectPlan"));
               return;
             }
 
@@ -12949,7 +13001,7 @@ useEffect(() => {
                 await ensureRevenueCat(userKey);
                 const offerings = await Purchases.getOfferings();
                 const o = offerings.current;
-                if (!o) throw new Error("No current offering configured in RevenueCat.");
+                if (!o) throw new Error(t("premium.errors.noCurrentOffering"));
 
                 let pkg: PurchasesPackage | null = null;
                 if (plan === "monthly") pkg = o.monthly;
@@ -12963,7 +13015,7 @@ useEffect(() => {
                     o.availablePackages.find((p) => p.identifier === plan) ??
                     null;
                 }
-                if (!pkg) throw new Error(`No package found for plan: ${plan}`);
+                if (!pkg) throw new Error(t("premium.errors.packageUnavailable"));
 
                 const { customerInfo } = await Purchases.purchasePackage({ aPackage: pkg });
                 const premiumData = premiumSourceFromCustomerInfo(customerInfo);
@@ -12979,17 +13031,15 @@ useEffect(() => {
                 const cancelled =
                   msg.toLowerCase().includes("cancel") ||
                   msg.toLowerCase().includes("usercancelled");
-                if (!cancelled) setPlanError(msg || "Purchase failed. Please try again.");
+                if (!cancelled) setPlanError(msg || t("premium.errors.purchaseFailed"));
               }
               return;
             }
 
-            setPlanError(
-              "Premium purchases are currently available only in the mobile app. Use the app to purchase or restore access."
-            );
+            setPlanError(t("premium.errors.mobileOnly"));
           }}
         >
-          <span className={styles.ctaText}>Get Premium Now</span>
+          <span className={styles.ctaText}>{t("premium.cta")}</span>
           <span className={styles.ctaChevron}>›</span>
         </button>
 
@@ -13734,7 +13784,7 @@ export default function PrivacyPolicyPage() {
 
 'use client';
 
-import React, { useRef, useState, useEffect, type ChangeEvent } from 'react';
+import React, { useId, useRef, useState, useEffect, type ChangeEvent } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import styles from './profile.module.css';
@@ -13755,11 +13805,14 @@ import { Purchases } from "@revenuecat/purchases-capacitor";
 import { ensureRevenueCat } from "@/lib/billing/revenuecat";
 import { useEntitlements } from "@/components/EntitlementsProvider.client";
 import type { EntitlementSource } from "@/lib/entitlements/types";
+import { useT } from '@/lib/i18n/useT';
+import { LANGUAGE_OPTIONS, getCurrentLanguageOption, isEnabledLanguageOption } from '@/lib/i18n/languageOptions';
 
 
 
 function Inner() {
   const { avatarUrl, setAvatarUrl, name, setName, email, setEmail, saveProfile, clearProfile } = useUserProfile(); // from context
+  const { locale, setLocale, t } = useT();
 
   // ---- avatar upload state + handlers ----
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
@@ -13772,34 +13825,38 @@ function Inner() {
   const [showPremiumModal, setShowPremiumModal] = useState(false);
   const [saving, setSaving] = useState(false);
   const [saveMsg, setSaveMsg] = useState<string | null>(null);
+  const [languageMenuOpen, setLanguageMenuOpen] = useState(false);
+  const languageMenuRef = useRef<HTMLDivElement | null>(null);
+  const languageMenuId = useId();
 
   const canManageCredentials = authed && (method === "email");
   const RC_ENTITLEMENT_ID = process.env.NEXT_PUBLIC_REVENUECAT_ENTITLEMENT_ID ?? "Premium";
+  const currentLanguage = getCurrentLanguageOption(locale);
 
 
 const signInDisplay = (() => {
   // 1) guest
   if (!authed) {
-    return { label: "Signed in as guest.", icon: null as any };
+    return { label: t('profile.signIn.guest'), icon: null as any };
   }
 
   // 2) email/password local account
   if (method === "email") {
-    return { label: sessionEmail ?? "Email sign-in", icon: faEnvelope };
+    return { label: sessionEmail ?? t('profile.signIn.email'), icon: faEnvelope };
   }
 
   // 3) social providers
   if (provider === "google") {
-    return { label: "Google sign-in", icon: faGoogle };
+    return { label: t('profile.signIn.google'), icon: faGoogle };
   }
   if (provider === "apple") {
-    return { label: "Apple ID", icon: faApple };
+    return { label: t('profile.signIn.apple'), icon: faApple };
   }
   if (provider === "wechat") {
-    return { label: "WeChat", icon: faWeixin };
+    return { label: t('profile.signIn.wechat'), icon: faWeixin };
   }
 
-  return { label: "Social sign-in", icon: null as any };
+  return { label: t('profile.signIn.social'), icon: null as any };
 })();
 
 
@@ -13887,7 +13944,7 @@ const handleSave = async (e: React.SyntheticEvent) => {
   setSaving(true);
   try {
     saveProfile();
-    setSaveMsg("Saved!");
+    setSaveMsg(t('profile.messages.saved'));
     setTimeout(() => setSaveMsg(null), 450);
   } finally {
     setSaving(false);
@@ -13932,6 +13989,32 @@ useEffect(() => {
   };
 }, []);
 
+useEffect(() => {
+  if (!languageMenuOpen) return;
+
+  const handlePointerDown = (event: MouseEvent | TouchEvent) => {
+    const target = event.target;
+    if (!languageMenuRef.current || !(target instanceof Node)) return;
+    if (languageMenuRef.current.contains(target)) return;
+    setLanguageMenuOpen(false);
+  };
+
+  const handleEscape = (event: KeyboardEvent) => {
+    if (event.key !== 'Escape') return;
+    setLanguageMenuOpen(false);
+  };
+
+  document.addEventListener('mousedown', handlePointerDown);
+  document.addEventListener('touchstart', handlePointerDown);
+  document.addEventListener('keydown', handleEscape);
+
+  return () => {
+    document.removeEventListener('mousedown', handlePointerDown);
+    document.removeEventListener('touchstart', handlePointerDown);
+    document.removeEventListener('keydown', handleEscape);
+  };
+}, [languageMenuOpen]);
+
 const handleRestorePurchases = async (e: React.SyntheticEvent) => {
   if (authLoading || restoreBusyRef.current || restoring) return;
 
@@ -13939,13 +14022,13 @@ const handleRestorePurchases = async (e: React.SyntheticEvent) => {
   if (!authed) {
     e.preventDefault();
     e.stopPropagation();
-    showRestoreMsg("Log in to restore past purchases.");
+    showRestoreMsg(t('profile.messages.restoreLoginRequired'));
     return;
   }
 
   // Restore only makes sense in native store builds
   if (!Capacitor.isNativePlatform()) {
-    showRestoreMsg("Restore purchases is available in the mobile app.");
+    showRestoreMsg(t('profile.messages.restoreMobileOnly'));
     return;
   }
 
@@ -13957,7 +14040,7 @@ const handleRestorePurchases = async (e: React.SyntheticEvent) => {
     // Ensure RC is configured + tied to the logged-in user
     const ready = await ensureRevenueCat(entUserKey);
     if (!ready) {
-      showRestoreMsg("Restore is temporarily unavailable. Please try again.");
+      showRestoreMsg(t('profile.messages.restoreUnavailable'));
       return;
     }
 
@@ -13965,7 +14048,7 @@ const handleRestorePurchases = async (e: React.SyntheticEvent) => {
     const active = customerInfo?.entitlements?.active?.[RC_ENTITLEMENT_ID];
 
     if (!active) {
-      showRestoreMsg("No purchases found to restore.");
+      showRestoreMsg(t('profile.messages.restoreNone'));
       return;
     }
 
@@ -13982,9 +14065,9 @@ const handleRestorePurchases = async (e: React.SyntheticEvent) => {
     grantPremium(source, expMs);
     refreshEnt();
 
-    showRestoreMsg("Purchases restored.");
+    showRestoreMsg(t('profile.messages.restoreSuccess'));
   } catch (err: any) {
-    showRestoreMsg(err?.message ?? "Restore failed. Please try again.");
+    showRestoreMsg(err?.message ?? t('profile.messages.restoreFailed'));
   } finally {
     setRestoring(false);
     restoreBusyRef.current = false;
@@ -14015,7 +14098,7 @@ const handleRestorePurchases = async (e: React.SyntheticEvent) => {
       {avatarPreview ? (
         <Image
           src={avatarPreview}
-          alt="User avatar"
+          alt={t('profile.avatarAlt')}
           width={120}
           height={120}
           className={styles.avatarImage}
@@ -14024,7 +14107,7 @@ const handleRestorePurchases = async (e: React.SyntheticEvent) => {
    // default before user uploads anything
         <Image
   src="/images/profile/imageupload-icon.png"
-  alt="image upload icon"
+  alt={t('profile.avatarPlaceholderAlt')}
   width={56}
   height={56}  
   className={styles.avatarPlaceholder}
@@ -14113,12 +14196,12 @@ const handleRestorePurchases = async (e: React.SyntheticEvent) => {
     <span className={styles.premiumIcon}>
       <Image 
         src="/images/profile/crown-icon.png"
-        alt="Premium Icon"
+        alt={t('profile.premiumIconAlt')}
         width={35}
         height={35}
       />
     </span>
-    <span className={styles.premiumText}>Premium Plan</span>
+    <span className={styles.premiumText}>{t('profile.premiumPlan')}</span>
 </button>
         {/* Settings list */}
       <div className={styles.settingsList}>
@@ -14132,13 +14215,13 @@ const handleRestorePurchases = async (e: React.SyntheticEvent) => {
                 <span className={styles.settingsIcon}>
                   <Image
                     src="/images/profile/lightdarkmode-icon.png"
-                    alt="Light / Dark Mode Icon"
+                    alt={t('profile.lightDarkModeIconAlt')}
                     width={24}
                     height={24}
                   />
                 </span>
                 <span className={styles.settingsLabel}>
-                  Light / Dark Mode
+                  {t('profile.lightDarkMode')}
                 </span>
               </div>
               <div
@@ -14164,13 +14247,13 @@ const handleRestorePurchases = async (e: React.SyntheticEvent) => {
       <span className={styles.settingsIcon}>
         <Image
           src="/images/profile/lock-icon.png"
-          alt="Account security"
+          alt={t('profile.accountSecurityIconAlt')}
           width={24}
           height={24}
         />
       </span>
 
-      <span className={styles.settingsLabel}>Change Email/Password</span>
+      <span className={styles.settingsLabel}>{t('profile.changeCredentials')}</span>
     </div>
 
     <span className={styles.chevron}>›</span>
@@ -14189,7 +14272,7 @@ const handleRestorePurchases = async (e: React.SyntheticEvent) => {
   aria-hidden="true"
 />
     <span className={styles.settingsLabel}>
-      {restoring ? "Restoring..." : "Restore Purchases"}
+      {restoring ? t('profile.restoring') : t('profile.restorePurchases')}
     </span>
   </div>
   <span className={styles.chevron}>›</span>
@@ -14204,12 +14287,12 @@ const handleRestorePurchases = async (e: React.SyntheticEvent) => {
     <span className={styles.settingsIcon}>
       <Image
         src="/images/profile/privacypolicy-icon.png"
-        alt="Privacy Policy"
+        alt={t('profile.privacyPolicyIconAlt')}
         width={24}
         height={24}
       />
     </span>
-    <span className={styles.settingsLabel}>Privacy Policy</span>
+    <span className={styles.settingsLabel}>{t('profile.privacyPolicy')}</span>
   </div>
   <span className={styles.chevron}>›</span>
 </button>
@@ -14223,12 +14306,12 @@ const handleRestorePurchases = async (e: React.SyntheticEvent) => {
     <span className={styles.settingsIcon}>
       <Image
         src="/images/profile/privacypolicy-icon.png"
-        alt="Terms of Service"
+        alt={t('profile.termsIconAlt')}
         width={24}
         height={24}
       />
     </span>
-    <span className={styles.settingsLabel}>Terms of Service</span>
+    <span className={styles.settingsLabel}>{t('profile.terms')}</span>
   </div>
   <span className={styles.chevron}>›</span>
 </button>
@@ -14245,52 +14328,108 @@ const handleRestorePurchases = async (e: React.SyntheticEvent) => {
     <span className={styles.settingsIcon}>
       <Image
         src="/images/profile/privacypolicy-icon.png"
-        alt="Delete Account"
+        alt={t('profile.deleteAccountIconAlt')}
         width={24}
         height={24}
       />
     </span>
-    <span className={styles.settingsLabel}>Delete Account</span>
+    <span className={styles.settingsLabel}>{t('profile.deleteAccount')}</span>
   </div>
   <span className={styles.chevron}>›</span>
 </button>
+        <div
+          className={`${styles.settingsMenuBlock} ${languageMenuOpen ? styles.settingsMenuBlockOpen : ''}`}
+          ref={languageMenuRef}
+        >
+          <button
+            type="button"
+            className={styles.settingsRow}
+            onClick={() => setLanguageMenuOpen((open) => !open)}
+            aria-haspopup="menu"
+            aria-expanded={languageMenuOpen}
+            aria-controls={languageMenuId}
+            aria-label={t('profile.language.switchAria', { language: currentLanguage.label })}
+          >
+            <div className={styles.settingsLeft}>
+              <span className={styles.settingsIcon}>
+                <Image 
+                  src="/images/profile/aboutus-icon.png"
+                  alt={t('profile.languageIconAlt')}
+                  width={24}
+                  height={24}
+                />
+              </span>
+              <span className={styles.settingsLabel}>{t('profile.language.label')}</span>
+            </div>
 
-        <button
-  type="button"
-  className={styles.settingsRow}
-  onClick={(e) => goComingSoon("Languages")}
->
-          <div className={styles.settingsLeft}>
-            <span className={styles.settingsIcon}>
-              <Image 
-                src="/images/profile/aboutus-icon.png"
-                alt="About Us Icon"
-                width={24}
-                height={24}
-              />
+            <span className={styles.languageValue}>
+              <span className={styles.languageCurrent}>{currentLanguage.label}</span>
+              <span
+                className={`${styles.chevron} ${languageMenuOpen ? styles.chevronOpen : ''}`}
+                aria-hidden="true"
+              >
+                ›
+              </span>
             </span>
-            <span className={styles.settingsLabel}>Languages</span>
-          </div>
-          <span className={styles.chevron}>›</span>
-        </button>
+          </button>
+
+          {languageMenuOpen ? (
+            <div
+              id={languageMenuId}
+              className={styles.languageDropdown}
+              role="menu"
+              aria-label={t('profile.language.label')}
+            >
+              {LANGUAGE_OPTIONS.map((option) => {
+                const isSelected = option.code === locale;
+
+                return (
+                  <button
+                    key={option.code}
+                    type="button"
+                    className={`${styles.languageOption} ${
+                      isSelected ? styles.languageOptionSelected : ''
+                    } ${!option.enabled ? styles.languageOptionDisabled : ''}`}
+                    role={option.enabled ? 'menuitemradio' : 'menuitem'}
+                    aria-checked={option.enabled ? isSelected : undefined}
+                    aria-disabled={!option.enabled}
+                    disabled={!option.enabled}
+                    onClick={() => {
+                      if (!isEnabledLanguageOption(option)) return;
+                      setLocale(option.code);
+                      setLanguageMenuOpen(false);
+                    }}
+                  >
+                    <span className={styles.languageOptionLabel}>{option.label}</span>
+                    {!option.enabled ? (
+                      <span className={`${styles.languageOptionMeta} ${styles.languageOptionStatus}`}>
+                        {t('profile.language.notReady')}
+                      </span>
+                    ) : null}
+                  </button>
+                );
+              })}
+            </div>
+          ) : null}
+        </div>
 
 
 
         <button
   type="button"
   className={styles.settingsRow}
-  onClick={() => goComingSoon("Notifications")}
+  onClick={() => goComingSoon(t('comingSoon.notificationsKey'))}
 >
           <div className={styles.settingsLeft}>
             <span className={styles.settingsIcon}>
               <Image 
                 src="/images/profile/bell-icon.png"
-                alt="Notifications"
+                alt={t('profile.notificationsIconAlt')}
                 width={24}
                 height={24}
               />
             </span>
-            <span className={styles.settingsLabel}>Notifications (Coming Soon)</span>
+            <span className={styles.settingsLabel}>{t('profile.notifications')}</span>
           </div>
           <span className={styles.chevron}>›</span>
         </button>
@@ -14300,11 +14439,11 @@ const handleRestorePurchases = async (e: React.SyntheticEvent) => {
 
 {/* Save & Log out button */}
 <div className={styles.actionRow}>
- <button
+<button
   className={styles.saveButton}
   onClick={handleSave}
 >
-  {saving ? "Saving..." : "Save"}
+  {saving ? t('shared.common.saving') : t('shared.common.save')}
 </button>
 
 
@@ -14312,7 +14451,7 @@ const handleRestorePurchases = async (e: React.SyntheticEvent) => {
   <LogoutButton className={styles.logoutButton} />
 ) : (
   <Link className={styles.loginButton} href="/login?next=/profile">
-    Log in
+    {t('shared.premiumFeatureModal.login')}
   </Link>
 )}
 </div>
@@ -14322,7 +14461,7 @@ const handleRestorePurchases = async (e: React.SyntheticEvent) => {
     <div className={styles.toastCard}>
       <Image
         src="/images/profile/greencheck-icon.png"
-        alt="Checkmark Icon"
+        alt={t('profile.toastCheckAlt')}
         width={16}
         height={16}
         className={styles.toastIcon}
@@ -14338,7 +14477,7 @@ const handleRestorePurchases = async (e: React.SyntheticEvent) => {
     <div className={styles.toastCard}>
       <Image
         src="/images/profile/greencheck-icon.png"
-        alt="Info"
+        alt={t('profile.toastInfoAlt')}
         width={16}
         height={16}
         className={styles.toastIcon}
@@ -14736,7 +14875,7 @@ export default function ProfilePage() {
 .settingsList {
   background: var(--color-settings-bg);
   border-radius: 24px;
-  overflow: hidden;
+  overflow: visible;
   box-shadow: 0 16px 40px rgba(15, 33, 70, 0.12);
 }
 
@@ -14752,8 +14891,25 @@ export default function ProfilePage() {
   cursor: pointer;
 }
 
-.settingsRow + .settingsRow {
+.settingsRow + .settingsRow,
+.settingsRow + .settingsMenuBlock,
+.settingsMenuBlock + .settingsRow,
+.settingsMenuBlock + .settingsMenuBlock {
   border-top: 1px solid rgba(148, 163, 184, 0.25);
+}
+
+.settingsMenuBlock {
+  position: relative;
+}
+
+.settingsMenuBlockOpen {
+  z-index: 30;
+}
+
+.settingsMenuBlock .settingsRow:focus-visible,
+.languageOption:focus-visible {
+  outline: 2px solid rgba(43, 124, 175, 0.45);
+  outline-offset: -2px;
 }
 
 .settingsLeft {
@@ -14803,6 +14959,89 @@ export default function ProfilePage() {
 .chevron {
   font-size: 20px;
   color: #9ca3af;
+  transition: transform 0.2s ease;
+}
+
+.chevronOpen {
+  transform: rotate(90deg);
+}
+
+.languageValue {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.languageCurrent {
+  font-size: 14px;
+  font-weight: 600;
+  color: #667085;
+}
+
+.languageDropdown {
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  top: calc(100% + 8px);
+  z-index: 40;
+  max-height: min(60vh, 360px);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  padding: 10px;
+  display: grid;
+  gap: 8px;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 20px 48px rgba(15, 33, 70, 0.18);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.languageOption {
+  width: 100%;
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  border-radius: 14px;
+  background: rgba(248, 250, 252, 0.88);
+  cursor: pointer;
+  text-align: left;
+}
+
+.languageOptionSelected {
+  background: rgba(43, 124, 175, 0.12);
+  border-color: rgba(43, 124, 175, 0.35);
+}
+
+.languageOptionDisabled {
+  background: rgba(248, 250, 252, 0.6);
+  color: #9ca3af;
+  cursor: not-allowed;
+}
+
+.languageOption:disabled {
+  opacity: 1;
+}
+
+.languageOptionLabel {
+  font-size: 15px;
+  font-weight: 600;
+  color: #41414D;
+}
+
+.languageOptionMeta {
+  font-size: 12px;
+  font-weight: 700;
+  color: #2B7CAF;
+}
+
+.languageOptionStatus {
+  color: #98a2b3;
 }
 
 /* Toggle (static ON state for now) */
@@ -14891,10 +15130,39 @@ export default function ProfilePage() {
 /* Text colors */
 :root[data-theme='dark'] .backButton,
 :root[data-theme='dark'] .settingsLabel,
+:root[data-theme='dark'] .languageOptionLabel,
 :root[data-theme='dark'] .logoutButton,
 :root[data-theme='dark'] .premiumText,
 :root[data-theme='dark'] .crown {
   color: #f9fafb;
+}
+
+:root[data-theme='dark'] .languageCurrent {
+  color: rgba(226, 232, 240, 0.72);
+}
+
+:root[data-theme='dark'] .languageDropdown {
+  background: rgba(2, 6, 23, 0.92);
+  border-color: rgba(148, 163, 184, 0.18);
+  box-shadow: 0 20px 48px rgba(2, 6, 23, 0.55);
+}
+
+:root[data-theme='dark'] .languageOption {
+  background: rgba(15, 23, 42, 0.82);
+  border-color: rgba(148, 163, 184, 0.16);
+}
+
+:root[data-theme='dark'] .languageOptionSelected {
+  background: rgba(43, 124, 175, 0.18);
+  border-color: rgba(125, 211, 252, 0.3);
+}
+
+:root[data-theme='dark'] .languageOptionDisabled {
+  background: rgba(15, 23, 42, 0.55);
+}
+
+:root[data-theme='dark'] .languageOptionStatus {
+  color: rgba(148, 163, 184, 0.82);
 }
 
 :root[data-theme='dark'] .email {
@@ -15033,6 +15301,54 @@ export default function ProfilePage() {
   opacity: 0.55;
   cursor: not-allowed;
 }
+
+```
+
+### app/providers.tsx
+```tsx
+'use client';
+
+import type { ReactNode } from 'react';
+
+import AuthSelfHeal from '@/components/AuthSelfHeal';
+import CapacitorOAuthBridge from '@/components/CapacitorOAuthBridge.client';
+import { EntitlementsProvider } from '@/components/EntitlementsProvider.client';
+import FreeUsageProgressBadge from '@/components/FreeUsageProgressBadge.client';
+import NativeInsets from '@/components/NativeInsets.client';
+import OnboardingGate from '@/components/OnboardingGate.client';
+import SwipeBack from '@/components/SwipeBack.client';
+import TimeTracker from '@/components/TimeTracker.client';
+import { ThemeProvider } from '@/components/ThemeProvider';
+import { UserProfileProvider } from '@/components/UserProfile';
+import BrandSplash from '@/components/BrandSplash.client';
+import { I18nProvider } from '@/lib/i18n/I18nProvider';
+
+type ProvidersProps = {
+  children: ReactNode;
+};
+
+export default function Providers({ children }: ProvidersProps) {
+  return (
+    <I18nProvider>
+      <BrandSplash />
+      <EntitlementsProvider>
+        <FreeUsageProgressBadge />
+        <OnboardingGate />
+        <ThemeProvider>
+          <AuthSelfHeal />
+          <CapacitorOAuthBridge />
+          <UserProfileProvider>
+            <SwipeBack />
+            <TimeTracker />
+            <NativeInsets />
+            {children}
+          </UserProfileProvider>
+        </ThemeProvider>
+      </EntitlementsProvider>
+    </I18nProvider>
+  );
+}
+
 ```
 
 ### app/reset-password/page.tsx
@@ -15043,16 +15359,21 @@ import { useMemo, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import styles from "./reset-password.module.css";
 import { createClient } from "@/lib/supabase/client";
+import { useT } from "@/lib/i18n/useT";
+
+type MessageTone = "success" | "error";
 
 export default function ResetPasswordPage() {
   const router = useRouter();
   const supabase = useMemo(() => createClient(), []);
+  const { t } = useT();
 
   const [pw, setPw] = useState("");
   const [pw2, setPw2] = useState("");
 
   const [loading, setLoading] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
+  const [msgTone, setMsgTone] = useState<MessageTone>("error");
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
@@ -15067,9 +15388,10 @@ export default function ResetPasswordPage() {
 
   const submit = async () => {
     setMsg(null);
+    setMsgTone("error");
 
-    if (pw.length < 8) return setMsg("Password must be at least 8 characters.");
-    if (pw !== pw2) return setMsg("Passwords do not match.");
+    if (pw.length < 8) return setMsg(t("resetPassword.errors.passwordMin"));
+    if (pw !== pw2) return setMsg(t("resetPassword.errors.passwordMismatch"));
 
     setLoading(true);
     try {
@@ -15080,7 +15402,8 @@ export default function ResetPasswordPage() {
         return;
       }
 
-      setMsg("Password updated. Please sign in again.");
+      setMsgTone("success");
+      setMsg(t("resetPassword.success"));
       await supabase.auth.signOut();
       router.replace("/login");
     } finally {
@@ -15092,17 +15415,17 @@ export default function ResetPasswordPage() {
     <main className={styles.page}>
       <div className={styles.frame}>
         <section className={styles.sheet}>
-          <h1 className={styles.title}>Set a new password</h1>
+          <h1 className={styles.title}>{t("resetPassword.title")}</h1>
 
           {!ready ? (
             <div className={styles.errorBox}>
-              This reset link is invalid or expired. Please request a new reset email.
+              {t("resetPassword.invalidLink")}
             </div>
           ) : (
             <>
-              {msg && <div className={msg.includes("updated") ? styles.successBox : styles.errorBox}>{msg}</div>}
+              {msg && <div className={msgTone === "success" ? styles.successBox : styles.errorBox}>{msg}</div>}
 
-              <label className={styles.label}>New password</label>
+              <label className={styles.label}>{t("resetPassword.newPasswordLabel")}</label>
               <input
                 className={styles.input}
                 value={pw}
@@ -15111,7 +15434,7 @@ export default function ResetPasswordPage() {
                 autoComplete="new-password"
               />
 
-              <label className={styles.label}>Confirm password</label>
+              <label className={styles.label}>{t("resetPassword.confirmPasswordLabel")}</label>
               <input
                 className={styles.input}
                 value={pw2}
@@ -15121,7 +15444,7 @@ export default function ResetPasswordPage() {
               />
 
               <button className={styles.cta} disabled={loading} onClick={submit}>
-                {loading ? "Updating..." : "Update password"}
+                {loading ? t("resetPassword.updateLoading") : t("resetPassword.updateIdle")}
               </button>
             </>
           )}
@@ -15130,6 +15453,7 @@ export default function ResetPasswordPage() {
     </main>
   );
 }
+
 ```
 
 ### app/reset-password/reset-password.module.css
@@ -15546,6 +15870,7 @@ import { useClearedMistakes } from "@/lib/mistakes/useClearedMistakes";
 import CSRBoundary from "@/components/CSRBoundary";
 import { useBootSweepOnce } from "@/components/stats/useBootSweepOnce.client";
 import { migrateLocalAttemptsToCanonical } from "@/lib/test-engine/attemptStorage";
+import { useT } from "@/lib/i18n/useT";
 
 function clamp(n: number, min: number, max: number) {
   return Math.max(min, Math.min(max, n));
@@ -15572,6 +15897,7 @@ function Inner() {
   const router = useRouter();
   const sp = useSearchParams();
   const params = useParams<{ mode: string }>();
+  const { t } = useT();
 
   const modeId = (params.mode ?? "real") as TestModeId;
   const cfg = TEST_MODES[modeId] ?? TEST_MODES.real;
@@ -15592,7 +15918,7 @@ const showUntimed = limitSeconds <= 0;
 
 const timeMin = Math.floor(usedSeconds / 60);
 const timeSec = usedSeconds % 60;
-const timeText = showUntimed ? "Untimed" : `${timeMin}min ${timeSec}sec`;
+const timeText = showUntimed ? t("results.untimed") : t("results.timeText", { minutes: timeMin, seconds: timeSec });
 
 
 const { email, loading: authLoading } = useAuthStatus();
@@ -15818,8 +16144,16 @@ if (modeId === "mistakes" && !didAutoClearRef.current) {
             prompt: (q as any).prompt,
             imageSrc,
             options: [
-              { key: "R", text: "R. Right", tone: correctRow === "R" ? "correct" : chosenRow === "R" ? "wrong" : "neutral" },
-              { key: "W", text: "W. Wrong", tone: correctRow === "W" ? "correct" : chosenRow === "W" ? "wrong" : "neutral" },
+              {
+                key: "R",
+                text: `R. ${t("results.rowOptions.right")}`,
+                tone: correctRow === "R" ? "correct" : chosenRow === "R" ? "wrong" : "neutral",
+              },
+              {
+                key: "W",
+                text: `W. ${t("results.rowOptions.wrong")}`,
+                tone: correctRow === "W" ? "correct" : chosenRow === "W" ? "wrong" : "neutral",
+              },
             ],
             explanation: (q as any).explanation,
           });
@@ -15867,7 +16201,7 @@ if (modeId === "mistakes" && !didAutoClearRef.current) {
       items.sort((x, y) => x.testNo - y.testNo);
       setReviewItems(items);
     })();
-  }, [attemptId, attemptUserKey, legacyAttemptUserKey, modeId, clearMistakesMany]);
+  }, [attemptId, attemptUserKey, legacyAttemptUserKey, modeId, clearMistakesMany, t]);
 
 
 
@@ -15915,7 +16249,7 @@ const animatedDeg = (animatedPctFloat / 100) * 360;
     <main className={styles.screen}>
 
           <div className={styles.card} />
-          <div style={{ padding: 16 }}>Loading results…</div>
+          <div style={{ padding: 16 }}>{t("results.loading")}</div>
         </main>
       </div>
     );
@@ -15928,9 +16262,9 @@ const animatedDeg = (animatedPctFloat / 100) * 360;
 
         <div className={styles.card} />
         <div className={styles.shiftUp}>
-          <h1 className={styles.congrats}>Congratulations!</h1>
+          <h1 className={styles.congrats}>{t("results.congratulations")}</h1>
 
-          <div className={styles.ringWrap} aria-label="Score progress">
+          <div className={styles.ringWrap} aria-label={t("results.scoreProgressAria")}>
   <div
     className={styles.ring}
     style={{ "--p": `${animatedDeg}deg` } as React.CSSProperties}
@@ -15947,20 +16281,20 @@ const animatedDeg = (animatedPctFloat / 100) * 360;
               <div className={styles.scoreValue}>
                 {computed.correct}/{computed.total || 0}
               </div>
-              <div className={styles.scoreLabel}>Score</div>
+              <div className={styles.scoreLabel}>{t("results.score")}</div>
             </div>
 
             <div className={styles.scoreRight}>
               <div className={styles.scoreValue}>{timeText}</div>
-              <div className={styles.scoreLabel}>Time</div>
+              <div className={styles.scoreLabel}>{t("results.time")}</div>
             </div>
           </div>
 
-          <div className={styles.testResultsTitle}>Test Results</div>
+          <div className={styles.testResultsTitle}>{t("results.title")}</div>
 
           <div className={styles.incorrectRow}>
-            <Image src="/images/test/red-x-icon.png" alt="Red X Icon" width={24} height={24} className={styles.btnIcon} />
-            <div className={styles.incorrectText}>Incorrect</div>
+            <Image src="/images/test/red-x-icon.png" alt={t("results.incorrect")} width={24} height={24} className={styles.btnIcon} />
+            <div className={styles.incorrectText}>{t("results.incorrect")}</div>
             <div className={styles.incorrectSpacer} />
 
             {reviewItems.length > 0 && viewMode === "carousel" && (
@@ -15974,8 +16308,8 @@ const animatedDeg = (animatedPctFloat / 100) * 360;
               className={styles.viewToggle}
               onClick={() => setViewMode((v) => (v === "list" ? "carousel" : "list"))}
               aria-pressed={viewMode === "carousel"}
-              aria-label={viewMode === "carousel" ? "Switch to list view" : "Switch to swipe view"}
-              title={viewMode === "carousel" ? "List view" : "Swipe view"}
+              aria-label={viewMode === "carousel" ? t("results.switchToListAria") : t("results.switchToSwipeAria")}
+              title={viewMode === "carousel" ? t("results.listViewTitle") : t("results.swipeViewTitle")}
             >
               <Image
                 src={viewMode === "carousel" ? "/images/test/list-icon.png" : "/images/test/carousel-icon.png"}
@@ -15990,7 +16324,7 @@ const animatedDeg = (animatedPctFloat / 100) * 360;
           data-noswipeback={viewMode === "carousel" ? "true" : undefined}
           className={[styles.reviewArea, viewMode === "carousel" ? styles.reviewAreaCarousel : ""].join(" ")}>
             {reviewItems.length === 0 ? (
-              <p className={styles.question}>Expatise! No incorrect questions! 🎉</p>
+              <p className={styles.question}>{t("results.noIncorrect")}</p>
             ) : viewMode === "list" ? (
               reviewItems.map((it) => (
                 <article key={it.qid} style={{ marginBottom: 18 }}>
@@ -16007,8 +16341,8 @@ const animatedDeg = (animatedPctFloat / 100) * 360;
                         e.stopPropagation();
                         toggle(it.qid);
                       }}
-                      aria-label={isBookmarked(it.qid) ? "Remove bookmark" : "Add bookmark"}
-                      title={isBookmarked(it.qid) ? "Bookmarked" : "Bookmark"}
+                      aria-label={isBookmarked(it.qid) ? t("shared.bookmarks.removeAria") : t("shared.bookmarks.addAria")}
+                      title={isBookmarked(it.qid) ? t("shared.bookmarks.activeTitle") : t("shared.bookmarks.idleTitle")}
                       data-bookmarked={isBookmarked(it.qid) ? "true" : "false"}
                     >
                       <span className={styles.bookmarkIcon} aria-hidden="true" />
@@ -16020,7 +16354,7 @@ const animatedDeg = (animatedPctFloat / 100) * 360;
                       <div className={styles.imageWrap}>
                         <Image
                           src={it.imageSrc}
-                          alt="Question image"
+                          alt={t("shared.questionImageAlt")}
                           fill
                           sizes="120px"
                           className={styles.image}
@@ -16051,7 +16385,7 @@ const animatedDeg = (animatedPctFloat / 100) * 360;
 
                   {(it.explanation ?? "").trim().length > 0 && (
                     <>
-                      <div className={styles.exTitle}>Explanation:</div>
+                      <div className={styles.exTitle}>{t("results.explanation")}</div>
                       <div className={styles.exBody}>{it.explanation}</div>
                     </>
                   )}
@@ -16089,8 +16423,8 @@ const animatedDeg = (animatedPctFloat / 100) * 360;
                             e.stopPropagation();
                             toggle(it.qid);
                           }}
-                          aria-label={isBookmarked(it.qid) ? "Remove bookmark" : "Add bookmark"}
-                          title={isBookmarked(it.qid) ? "Bookmarked" : "Bookmark"}
+                          aria-label={isBookmarked(it.qid) ? t("shared.bookmarks.removeAria") : t("shared.bookmarks.addAria")}
+                          title={isBookmarked(it.qid) ? t("shared.bookmarks.activeTitle") : t("shared.bookmarks.idleTitle")}
                           data-bookmarked={isBookmarked(it.qid) ? "true" : "false"}
                         >
                           <span className={styles.bookmarkIcon} aria-hidden="true" />
@@ -16102,7 +16436,7 @@ const animatedDeg = (animatedPctFloat / 100) * 360;
                           <div className={styles.imageWrap}>
                             <Image
                               src={it.imageSrc}
-                              alt="Question image"
+                              alt={t("shared.questionImageAlt")}
                               fill
                               sizes="120px"
                               className={styles.image}
@@ -16134,7 +16468,7 @@ const animatedDeg = (animatedPctFloat / 100) * 360;
 
                       {(it.explanation ?? "").trim().length > 0 && (
                         <>
-                          <div className={styles.exTitle}>Explanation:</div>
+                          <div className={styles.exTitle}>{t("results.explanation")}</div>
                           <div className={styles.exBody}>{it.explanation}</div>
                         </>
                       )}
@@ -16146,8 +16480,8 @@ const animatedDeg = (animatedPctFloat / 100) * 360;
           </section>
 
           <button type="button" className={styles.continueBtn} onClick={() => router.push("/")}>
-            <span className={styles.continueText}>Home</span>
-            <Image src="/images/other/right-arrow.png" alt="Home" width={18} height={18} className={styles.btnIcon} />
+            <span className={styles.continueText}>{t("shared.common.home")}</span>
+            <Image src="/images/other/right-arrow.png" alt={t("results.homeIconAlt")} width={18} height={18} className={styles.btnIcon} />
           </button>
         </div>
       </main>
@@ -17099,6 +17433,7 @@ import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import styles from './BottomNav.module.css';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { useT } from '@/lib/i18n/useT';
 
 type BottomNavProps = {
   onOffsetChange?: (offsetY: number) => void; // keep for compatibility
@@ -17106,6 +17441,7 @@ type BottomNavProps = {
 
 export default function BottomNav({ onOffsetChange }: BottomNavProps) {
   const pathname = usePathname();
+  const { t } = useT();
 
   const isHome = pathname === '/';
   const isStats = pathname === '/stats' || pathname?.startsWith('/stats/');
@@ -17226,13 +17562,13 @@ export default function BottomNav({ onOffsetChange }: BottomNavProps) {
           {isHome ? (
             <div className={styles.navPill}>
               <span className={styles.navIcon}>
-                <Image src="/images/home/icons/navbar-home-icon.png" alt="Navigation bar Home Icon" width={30} height={30} draggable={false} />
+                <Image src="/images/home/icons/navbar-home-icon.png" alt={t('shared.nav.homeIconAlt')} width={30} height={30} draggable={false} />
               </span>
-              <span className={styles.navLabel}>Home</span>
+              <span className={styles.navLabel}>{t('shared.nav.home')}</span>
             </div>
           ) : (
             <span className={styles.navIcon}>
-              <Image src="/images/home/icons/navbar-home-icon.png" alt="Navigation bar Home Icon" width={30} height={30} draggable={false} />
+              <Image src="/images/home/icons/navbar-home-icon.png" alt={t('shared.nav.homeIconAlt')} width={30} height={30} draggable={false} />
             </span>
           )}
         </Link>
@@ -17242,13 +17578,13 @@ export default function BottomNav({ onOffsetChange }: BottomNavProps) {
           {isStats ? (
             <div className={styles.navPill}>
               <span className={styles.navIcon}>
-                <Image src="/images/home/icons/navbar-stats-icon.png" alt="Navigation bar Stats Icon" width={30} height={30} draggable={false} />
+                <Image src="/images/home/icons/navbar-stats-icon.png" alt={t('shared.nav.statsIconAlt')} width={30} height={30} draggable={false} />
               </span>
-              <span className={styles.navLabel}>Stats</span>
+              <span className={styles.navLabel}>{t('shared.nav.stats')}</span>
             </div>
           ) : (
             <span className={styles.navIcon}>
-              <Image src="/images/home/icons/navbar-stats-icon.png" alt="Navigation bar Stats Icon" width={30} height={30} draggable={false} />
+              <Image src="/images/home/icons/navbar-stats-icon.png" alt={t('shared.nav.statsIconAlt')} width={30} height={30} draggable={false} />
             </span>
           )}
         </Link>
@@ -17258,13 +17594,13 @@ export default function BottomNav({ onOffsetChange }: BottomNavProps) {
           {isProfile ? (
             <div className={styles.navPill}>
               <span className={styles.navIcon}>
-                <Image src="/images/home/icons/navbar-profile-icon.png" alt="Navigation bar Profile Icon" width={30} height={30} draggable={false} />
+                <Image src="/images/home/icons/navbar-profile-icon.png" alt={t('shared.nav.profileIconAlt')} width={30} height={30} draggable={false} />
               </span>
-              <span className={styles.navLabel}>Profile</span>
+              <span className={styles.navLabel}>{t('shared.nav.profile')}</span>
             </div>
           ) : (
             <span className={styles.navIcon}>
-              <Image src="/images/home/icons/navbar-profile-icon.png" alt="Navigation bar Profile Icon" width={30} height={30} draggable={false} />
+              <Image src="/images/home/icons/navbar-profile-icon.png" alt={t('shared.nav.profileIconAlt')} width={30} height={30} draggable={false} />
             </span>
           )}
         </Link>
@@ -17281,9 +17617,11 @@ export default function BottomNav({ onOffsetChange }: BottomNavProps) {
 
 import { useEffect, useState } from 'react';
 import styles from './BrandIntroSplash.module.css';
+import { useT } from '@/lib/i18n/useT';
 
 export default function BrandIntroSplash() {
   const [show, setShow] = useState(true);
+  const { t } = useT();
 
   useEffect(() => {
     // optional: don't replay during same session
@@ -17308,12 +17646,13 @@ export default function BrandIntroSplash() {
         <img
           className={styles.wordmark}
           src="/splash/wordmark.webp"
-          alt="Expatise"
+          alt={t('shared.brandAlt')}
         />
       </div>
     </div>
   );
 }
+
 ```
 
 ### components/BrandIntroSplash.module.css
@@ -17371,6 +17710,7 @@ export default function BrandIntroSplash() {
 
 import { useEffect, useId, useState } from 'react';
 import styles from './BrandSplash.module.css';
+import { useT } from '@/lib/i18n/useT';
 
 type BrandSplashProps = {
   /** Called when the splash finishes (after durationMs). */
@@ -17403,6 +17743,7 @@ export default function BrandSplash({
   const [show, setShow] = useState(true);
   const uid = useId();
   const maskId = `pillarHoleMask-${uid}`;
+  const { t } = useT();
 
   useEffect(() => {
   const img = new Image();
@@ -17465,11 +17806,12 @@ export default function BrandSplash({
 
       {/* Wordmark reveal (your Splash_05) */}
       <div className={styles.wordmarkWrap} aria-hidden>
-        <img className={styles.wordmark} src={wordmarkSrc} alt="Expatise" />
+        <img className={styles.wordmark} src={wordmarkSrc} alt={t('shared.brandAlt')} />
       </div>
     </div>
   );
 }
+
 ```
 
 ### components/BrandSplash.module.css
@@ -18699,20 +19041,26 @@ export default function FeatureCard({
 
 ### components/FreeUsageProgressBadge.client.tsx
 ```tsx
-// components/FreeUsageProgressBadge.client.tsx
 "use client";
 
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useUserKey } from "@/components/useUserKey.client";
 import { FREE_CAPS } from "@/lib/freeAccess/localUsageCap";
 import { useEntitlements } from "@/components/EntitlementsProvider.client";
 import { useUsageCap } from "@/lib/freeAccess/useUsageCap";
 import { usePathname } from "next/navigation";
+import { useT } from "@/lib/i18n/useT";
 
 const HIDE_BADGE_EXACT = new Set<string>();
 const HIDE_BADGE_PREFIXES = ["/login", "/onboarding", "/forgot-password", "/premium", "/checkout", "/success"];
 
 export default function FreeUsageProgressBadge() {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   const pathname = usePathname() || "/";
   const userKey = useUserKey();
   const { isPremium, loading } = useEntitlements();
@@ -18723,6 +19071,9 @@ export default function FreeUsageProgressBadge() {
     (window.location.hostname === "localhost" ||
       window.location.hostname.endsWith(".vercel.app"));
 
+  // Prevent hydration mismatch for client-only usage state / hostname checks.
+  if (!mounted) return null;
+
   const hide =
     HIDE_BADGE_EXACT.has(pathname) ||
     HIDE_BADGE_PREFIXES.some((p) => pathname.startsWith(p));
@@ -18730,9 +19081,8 @@ export default function FreeUsageProgressBadge() {
   // Always hide on these routes / demo mode
   if (hide || demoPremium) return null;
 
-  // ✅ Key rule:
-  // - Guest: show immediately (don’t wait for entitlements)
-  // - Signed-in: wait until entitlements resolved (prevents showing badge to premium/admin)
+  // Guest: show immediately after mount
+  // Signed-in: wait until entitlements resolved
   if (userKey !== "guest" && loading) return null;
 
   if (isPremium) return null;
@@ -18742,38 +19092,43 @@ export default function FreeUsageProgressBadge() {
 
 function FreeUsageProgressBadgeInner({ userKey }: { userKey: string }) {
   const { questionsShown: shown, examsStarted: starts } = useUsageCap(userKey);
+  const { t } = useT();
 
   const text = useMemo(() => {
-    return `${shown}/${FREE_CAPS.questionsShown} Questions · ${starts}/${FREE_CAPS.examStarts} Exams`;
-  }, [shown, starts]);
+    return t("shared.progressBadge.text", {
+      shown,
+      questions: FREE_CAPS.questionsShown,
+      starts,
+      exams: FREE_CAPS.examStarts,
+    });
+  }, [shown, starts, t]);
 
-return (
-  <div
-  style={{
-    position: "fixed",
-    top: 30,
-    right: 12,
-    zIndex: 9999,
-    padding: "6px 10px",
-    borderRadius: 999,
-    fontSize: 12,
-    lineHeight: "14px",
-    background: "transparent",
-color: "#ffffff",
-border: "none",
-backdropFilter: "none",
-WebkitBackdropFilter: "none",
-boxShadow: "none",
-    pointerEvents: "none",
-  }}
-  aria-label="Free usage progress"
-  title={`Free usage progress (${userKey})`}
->
-    {text}
-  </div>
-);
+  return (
+    <div
+      style={{
+        position: "fixed",
+        top: 30,
+        right: 12,
+        zIndex: 9999,
+        padding: "6px 10px",
+        borderRadius: 999,
+        fontSize: 12,
+        lineHeight: "14px",
+        background: "transparent",
+        color: "#ffffff",
+        border: "none",
+        backdropFilter: "none",
+        WebkitBackdropFilter: "none",
+        boxShadow: "none",
+        pointerEvents: "none",
+      }}
+      aria-label={t("shared.progressBadge.ariaLabel")}
+      title={t("shared.progressBadge.title", { userKey })}
+    >
+      {text}
+    </div>
+  );
 }
-
 ```
 
 ### components/InfoTip.client.tsx
@@ -18782,10 +19137,12 @@ boxShadow: "none",
 
 import { useEffect, useRef, useState } from "react";
 import styles from "./InfoTip.module.css";
+import { useT } from "@/lib/i18n/useT";
 
 export default function InfoTip({ text }: { text: string }) {
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLSpanElement | null>(null);
+  const { t } = useT();
 
   // Close when user taps/clicks outside
   useEffect(() => {
@@ -18812,7 +19169,7 @@ export default function InfoTip({ text }: { text: string }) {
       <button
         type="button"
         className={styles.btn}
-        aria-label="Info"
+        aria-label={t("shared.infoTip.ariaLabel")}
         aria-expanded={open}
         onClick={(e) => {
           e.stopPropagation();
@@ -18905,11 +19262,13 @@ import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { logout } from "@/lib/auth/logout.client";
+import { useT } from "@/lib/i18n/useT";
 
 export default function LogoutButton({ className }: { className?: string }) {
   const router = useRouter();
   const supabase = useMemo(() => createClient(), []);
   const [busy, setBusy] = useState(false);
+  const { t } = useT();
 
   const onLogout = async () => {
     if (busy) return;
@@ -18930,10 +19289,11 @@ export default function LogoutButton({ className }: { className?: string }) {
 
   return (
     <button className={className} onClick={onLogout} type="button" disabled={busy}>
-      {busy ? "Logging out..." : "Log out"}
+      {busy ? t("shared.logout.loading") : t("shared.logout.idle")}
     </button>
   );
 }
+
 ```
 
 ### components/NativeInsets.client.tsx
@@ -19110,6 +19470,7 @@ export default function OnboardingGate() {
 
 import Link from "next/link";
 import styles from "./PremiumFeatureModal.module.css";
+import { useT } from "@/lib/i18n/useT";
 
 type PremiumFeatureModalProps = {
   open: boolean;
@@ -19126,15 +19487,15 @@ export default function PremiumFeatureModal({
   isAuthed,
   premiumPath = "/premium",
 }: PremiumFeatureModalProps) {
+  const { t } = useT();
+
   if (!open) return null;
 
   const loginHref = `/login?next=${encodeURIComponent(nextPath)}`;
-
-  const title = "This feature is available with Premium.";
-
+  const title = t("shared.premiumFeatureModal.title");
   const text = isAuthed
-    ? "You are currently on the free plan. Upgrade to Premium to access this feature and other premium tools."
-    : "You are currently using a free guest account. Log in to save your progress and upgrade to Premium to access this feature.";
+    ? t("shared.premiumFeatureModal.authedText")
+    : t("shared.premiumFeatureModal.guestText");
 
   return (
     <div className={styles.guestOverlay} onClick={onClose}>
@@ -19151,11 +19512,11 @@ export default function PremiumFeatureModal({
                 className={styles.guestPrimary}
                 onClick={onClose}
               >
-                Not now
+                {t("shared.premiumFeatureModal.notNow")}
               </button>
 
               <Link className={styles.guestSecondary} href={premiumPath}>
-                Upgrade to Premium
+                {t("shared.premiumFeatureModal.upgrade")}
               </Link>
             </>
           ) : (
@@ -19165,11 +19526,11 @@ export default function PremiumFeatureModal({
                 className={styles.guestPrimary}
                 onClick={onClose}
               >
-                Continue as guest
+                {t("shared.premiumFeatureModal.continueAsGuest")}
               </button>
 
               <Link className={styles.guestSecondary} href={loginHref}>
-                Log in
+                {t("shared.premiumFeatureModal.login")}
               </Link>
             </>
           )}
@@ -19178,6 +19539,7 @@ export default function PremiumFeatureModal({
     </div>
   );
 }
+
 ```
 
 ### components/RequirePremium.client.tsx
@@ -20256,6 +20618,7 @@ import { useOnceInMidView } from './useOnceInView.client';
 import { useEffect, useMemo, useRef, useState, useId, type CSSProperties } from 'react';
 import { useBootSweepOnce } from './useBootSweepOnce.client';
 import { createPortal } from 'react-dom';
+import { useT } from '@/lib/i18n/useT';
 
 export function DailyProgressLegend({
   animate = true,
@@ -20264,16 +20627,18 @@ export function DailyProgressLegend({
   animate?: boolean;
   delayMs?: number;
 }) {
+  const { t } = useT();
+
   return (
     <div
       className={`${styles.statsLegend} ${animate ? styles.waterIn : styles.waterHidden}`}
       style={animate ? ({ animationDelay: `${delayMs}ms` } as CSSProperties) : undefined}
     >
       <span className={`${styles.statsLegendDot} ${styles.statsLegendDotQuestions}`} />
-      <span className={styles.statsLegendLabel}>Questions</span>
+      <span className={styles.statsLegendLabel}>{t('charts.dailyProgress.legendQuestions')}</span>
 
       <span className={`${styles.statsLegendDot} ${styles.statsLegendDotAvg}`} />
-      <span className={styles.statsLegendLabel}>Avg score</span>
+      <span className={styles.statsLegendLabel}>{t('charts.dailyProgress.legendAvgScore')}</span>
     </div>
   );
 }
@@ -20306,6 +20671,7 @@ export default function DailyProgressChart(props: {
   onLegendReveal?: () => void;
 }) {
   const { series, bestDayQuestions, streakDays, rows = 7, onLegendReveal } = props;
+  const { t } = useT();
 
 
   const onLegendRevealRef = useRef<(() => void) | undefined>(onLegendReveal);
@@ -20630,10 +20996,10 @@ const avgDashOffset = (1 - tReveal) * dashLen;
 
             {/* corner labels */}
             <text x={xAxisL + 6} y={y0 + 12} textAnchor="start" className={styles.yAxisText}>
-              Questions
+              {t('charts.dailyProgress.axisQuestions')}
             </text>
             <text x={xAxisR - 6} y={y0 + 12} textAnchor="end" className={styles.yAxisTextRight}  style={{ fill: `url(#${avgGradId})` }}>
-              Score
+              {t('charts.dailyProgress.axisScore')}
             </text>
 
             {/* bars */}
@@ -20655,7 +21021,12 @@ const avgDashOffset = (1 - tReveal) * dashLen;
                     className={`${isLast ? styles.barActive : styles.bar} ${styles.barHidden} ${animateIn ? styles.barRise : ''}`}
                     style={animateIn ? { animationDelay: `${i * barStaggerMs}ms` } : undefined}
                   >
-                    <title>{`Day of ${label}\n${d.questionsAnswered} answered · ${d.testsCompleted} tests · Avg ${d.avgScore}%`}</title>
+                    <title>
+                      {`${label}\n${t('charts.dailyProgress.tooltipAnswered', {
+                        answered: d.questionsAnswered,
+                        tests: d.testsCompleted,
+                      })} · ${t('charts.dailyProgress.tooltipAvgScore')} ${d.avgScore}%`}
+                    </title>
                   </rect>
 
                   {showLabel(i) ? (() => {
@@ -20788,10 +21159,10 @@ const avgDashOffset = (1 - tReveal) * dashLen;
     >
       <div className={styles.tipTitle}>{label}</div>
       <div className={styles.tipSub}>
-        {d.questionsAnswered} answered · {d.testsCompleted} tests
+        {t('charts.dailyProgress.tooltipAnswered', { answered: d.questionsAnswered, tests: d.testsCompleted })}
       </div>
       <div className={styles.tipBody}>
-        Avg score: <span className={styles.tipStrong}>{score}%</span>
+        {t('charts.dailyProgress.tooltipAvgScore')} <span className={styles.tipStrong}>{score}%</span>
       </div>
       <div className={styles.tipArrow} aria-hidden="true" />
     </div>,
@@ -20805,17 +21176,16 @@ const avgDashOffset = (1 - tReveal) * dashLen;
     style={animateIn ? ({ animationDelay: `${detailsStartMs}ms` } as CSSProperties) : undefined}
   >
     <div className={styles.metaItem}>
-      <span className={styles.metaLabel}>Best day:</span> <b>{bestDayQuestions}</b> questions
+      <span className={styles.metaLabel}>{t('charts.dailyProgress.bestDay')}</span> <b>{t('charts.dailyProgress.bestDayQuestions', { count: bestDayQuestions })}</b>
     </div>
     <div className={styles.metaItem}>
-      <span className={styles.metaLabel}>Consistency streak:</span> <b>{streakDays}</b> days
+      <span className={styles.metaLabel}>{t('charts.dailyProgress.consistencyStreak')}</span> <b>{t('charts.dailyProgress.streakDays', { count: streakDays })}</b>
     </div>
   </div>
 
     </div>
   );
 }
-
 
 ```
 
@@ -20828,6 +21198,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import styles from './Heatmap.module.css';
 import { useOnceInMidView } from './useOnceInView.client';
+import { useT } from '@/lib/i18n/useT';
 
 type HeatmapVM = {
   weekdays: string[];
@@ -20893,24 +21264,8 @@ function cellBg(avgScore: number, attemptsCount: number) {
   return `rgba(${base.r}, ${base.g}, ${base.b}, ${clamp(alpha, 0.55, 0.98)})`;
 }
 
-const DAYPART_SHORT: Record<string, string> = {
-  morning: 'AM',
-  midday: 'Noon',
-  evening: 'PM',
-  late: 'Late',
-};
-
-const DAYPART_TIPS: Record<string, { title: string; sub?: string }> = {
-  morning: { title: 'Morning: 6~12 AM', sub: 'Based on your local time.' },
-  midday: { title: 'Midday: 12~5 PM', sub: 'Based on your local time.' },
-  evening: { title: 'Evening: 5~10 PM', sub: 'Based on your local time.' },
-  late:   { title: 'Late: 10~6 (crosses midnight)', sub: 'Based on your local time.' },
-};
-
-
-
-
 export default function Heatmap({ data }: { data: HeatmapVM }) {
+  const { t } = useT();
   // r = weekday row index, c = dayPart col index (swapped UI)
   const [hover, setHover] = useState<{ r: number; c: number } | null>(null);
   const [pinned, setPinned] = useState<{ r: number; c: number } | null>(null);
@@ -20958,12 +21313,26 @@ export default function Heatmap({ data }: { data: HeatmapVM }) {
   const partTipRef = useRef<HTMLDivElement | null>(null);
 
   const partActive = partPinned ?? partHover;
+  const confidenceNote = !data.best
+    ? t('charts.heatmap.notEnoughData')
+    : data.best.attemptsCount < 3
+    ? t('charts.heatmap.confidenceNote', { count: data.best.attemptsCount })
+    : null;
 
   const partTip =
     partActive != null
       ? (() => {
           const p = data.dayParts[partActive];
-          const info = DAYPART_TIPS[p?.key] ?? { title: `${p?.label ?? ''}` };
+          const info =
+            p?.key === 'morning'
+              ? { title: t('charts.heatmap.dayParts.morningTitle'), sub: t('charts.heatmap.dayParts.basedOnLocalTime') }
+              : p?.key === 'midday'
+              ? { title: t('charts.heatmap.dayParts.middayTitle'), sub: t('charts.heatmap.dayParts.basedOnLocalTime') }
+              : p?.key === 'evening'
+              ? { title: t('charts.heatmap.dayParts.eveningTitle'), sub: t('charts.heatmap.dayParts.basedOnLocalTime') }
+              : p?.key === 'late'
+              ? { title: t('charts.heatmap.dayParts.lateTitle'), sub: t('charts.heatmap.dayParts.basedOnLocalTime') }
+              : { title: `${p?.label ?? ''}` };
           return { ...info };
         })()
       : null;
@@ -21132,14 +21501,12 @@ useEffect(() => {
         <div className={styles.calloutText}>
           {data.best ? (
             <>
-              Your best window: <b>{data.best.weekdayLabel} {data.best.dayPartLabel}</b> — avg{' '}
+              {t('charts.heatmap.bestWindow')} <b>{data.best.weekdayLabel} {data.best.dayPartLabel}</b> —{' '}
               <b>{data.best.avgScore}%</b>{' '}
-              <span className={styles.calloutMuted}>
-                ({data.best.attemptsCount} test{data.best.attemptsCount === 1 ? '' : 's'})
-              </span>
+              <span className={styles.calloutMuted}>{t('charts.heatmap.bestWindowMeta', { count: data.best.attemptsCount })}</span>
             </>
           ) : (
-            <>Not enough data yet.</>
+            <>{t('charts.heatmap.notEnoughData')}</>
           )}
         </div>
       </div>
@@ -21187,7 +21554,15 @@ useEffect(() => {
       }
     }}
   >
- {DAYPART_SHORT[p.key] ?? p.label}
+ {p.key === 'morning'
+    ? t('charts.heatmap.dayParts.morningShort')
+    : p.key === 'midday'
+    ? t('charts.heatmap.dayParts.middayShort')
+    : p.key === 'evening'
+    ? t('charts.heatmap.dayParts.eveningShort')
+    : p.key === 'late'
+    ? t('charts.heatmap.dayParts.lateShort')
+    : p.label}
   </div>
 ))}
 
@@ -21294,24 +21669,24 @@ return (
         {/* Tiny legend (see section 2) */}
         <div className={styles.legend}>
           <div className={styles.legendRow}>
-            <span className={styles.legendLabel}>Score</span>
+            <span className={styles.legendLabel}>{t('charts.heatmap.legendScore')}</span>
             <span className={`${styles.swatch} ${styles.swLow}`} />
             <span className={`${styles.swatch} ${styles.swMid}`} />
             <span className={`${styles.swatch} ${styles.swHigh}`} />
-            <span className={styles.legendText}>low → high</span>
+            <span className={styles.legendText}>{t('charts.heatmap.legendLowToHigh')}</span>
           </div>
 
           <div className={styles.legendRow}>
-            <span className={styles.legendLabel}>Confidence</span>
+            <span className={styles.legendLabel}>{t('charts.heatmap.legendConfidence')}</span>
             <span className={styles.legendDot} style={{ opacity: 0.35 }} />
             <span className={styles.legendDot} style={{ opacity: 0.65 }} />
             <span className={styles.legendDot} style={{ opacity: 1 }} />
-            <span className={styles.legendText}>more tests = stronger</span>
+            <span className={styles.legendText}>{t('charts.heatmap.legendMoreTests')}</span>
           </div>
         </div>
 
-        {data.lowConfidenceNote ? (
-          <div className={styles.confidenceNote}>{data.lowConfidenceNote}</div>
+        {confidenceNote ? (
+          <div className={styles.confidenceNote}>{confidenceNote}</div>
         ) : null}
       </div>
 
@@ -21330,14 +21705,14 @@ return (
               </div>
 
               <div className={styles.tipSub}>
-                Avg {tip.cell.avgScore}% · {tip.cell.attemptsCount} test{tip.cell.attemptsCount === 1 ? '' : 's'}
+                {t('charts.heatmap.tooltipAvg', { score: tip.cell.avgScore, count: tip.cell.attemptsCount })}
               </div>
 
               <div className={styles.tipRule} />
 
               <div className={styles.tipBody}>
                 <div className={styles.tipMuted}>
-                  {tip.cell.attemptsCount < 3 ? 'Low confidence' : 'Good confidence'}
+                  {tip.cell.attemptsCount < 3 ? t('charts.heatmap.tooltipLowConfidence') : t('charts.heatmap.tooltipGoodConfidence')}
                 </div>
               </div>
 
@@ -22150,6 +22525,7 @@ import styles from './ScoreChart.module.css';
 import { useBootSweepOnce } from '@/components/stats/useBootSweepOnce.client';
 import { useOnceInMidView } from '@/components/stats/useOnceInView.client';
 import { createPortal } from 'react-dom';
+import { useT } from '@/lib/i18n/useT';
 
 
 export function ScoreLegend({
@@ -22159,16 +22535,18 @@ export function ScoreLegend({
   animate?: boolean;
   delayMs?: number;
 }) {
+  const { t } = useT();
+
   return (
     <div
       className={`${styles.statsLegend} ${animate ? styles.waterIn : styles.waterHidden}`}
       style={animate ? ({ animationDelay: `${delayMs}ms` } as CSSProperties) : undefined}
     >
       <span className={`${styles.statsLegendDot} ${styles.statsLegendDotScore}`} />
-      <span className={styles.statsLegendLabel}>Score</span>
+      <span className={styles.statsLegendLabel}>{t('charts.score.legendScore')}</span>
 
       <span className={`${styles.statsLegendDot} ${styles.statsLegendDotAverage}`} />
-      <span className={styles.statsLegendLabel}>Average</span>
+      <span className={styles.statsLegendLabel}>{t('charts.score.legendAverage')}</span>
     </div>
   );
 }
@@ -22231,6 +22609,8 @@ export default function ScoreChart(props: {
   height?: number;     // px
   onLegendReveal?: () => void;
 }) {
+  const { t } = useT();
+
   const {
     series,
     scoreAvg,
@@ -22611,7 +22991,7 @@ const hover = activeIdx == null ? null : model.pts[activeIdx];
   className={styles.passLabel}
   style={{ opacity: clamp((tPass - 0.65) / 0.35, 0, 1) }} // label fades in near the end
 >
-  Pass {passLine}%
+  {t('charts.score.pass', { value: passLine })}
 </text>
 
 
@@ -22767,15 +23147,15 @@ style={{ opacity: lensReady ? 1 : 0 }}
         <div className={styles.tipTitle}>{fmtDayTime(hover.t)}</div>
 
         <div className={styles.tipSub}>
-          {hover.answered} answered · {hover.totalQ} total
+          {t('charts.score.tooltipAnswered', { answered: hover.answered, total: hover.totalQ })}
         </div>
 
         <div className={styles.tipBody}>
-          Score: <span className={styles.tipStrong}>{hover.scorePct}%</span>
+          {t('charts.score.tooltipScore')} <span className={styles.tipStrong}>{hover.scorePct}%</span>
         </div>
 
         <div className={styles.tipBody}>
-  Avg score: <span className={styles.tipStrong}>{Math.round(trendVals[activeIdx ?? 0] ?? scoreAvg)}%</span>
+  {t('charts.score.tooltipAverage')} <span className={styles.tipStrong}>{Math.round(trendVals[activeIdx ?? 0] ?? scoreAvg)}%</span>
 </div>
 
         <div className={styles.tipArrow} aria-hidden="true" />
@@ -22791,10 +23171,12 @@ style={{ opacity: lensReady ? 1 : 0 }}
   className={`${styles.summaryRow} ${animateIn ? styles.waterIn : styles.waterHidden}`}
   style={animateIn ? ({ animationDelay: `${detailsStartMs}ms` } as CSSProperties) : undefined}
 >
-  <span className={styles.metric}><b>Avg</b> {scoreAvg}%</span>
-  <span className={styles.metric}><b>Best</b> {scoreBest}%</span>
-  <span className={`${styles.metric} ${styles.metricHero}`}><b>Latest</b> {scoreLatest}%</span>
-  <span className={`${styles.metric} ${styles.metricMuted}`}><b>Based on</b> {attemptedTotal} answers</span>
+  <span className={styles.metric}><b>{t('charts.score.summaryAvg')}</b> {scoreAvg}%</span>
+  <span className={styles.metric}><b>{t('charts.score.summaryBest')}</b> {scoreBest}%</span>
+  <span className={`${styles.metric} ${styles.metricHero}`}><b>{t('charts.score.summaryLatest')}</b> {scoreLatest}%</span>
+  <span className={`${styles.metric} ${styles.metricMuted}`}>
+    <b>{t('charts.score.summaryBasedOn')}</b> {t('charts.score.summaryAnswers', { count: attemptedTotal })}
+  </span>
 </div>
 
       {/* Confidence note (explicit honesty) */}
@@ -22803,7 +23185,7 @@ style={{ opacity: lensReady ? 1 : 0 }}
     className={`${styles.confidence} ${animateIn ? styles.waterIn : styles.waterHidden}`}
     style={animateIn ? ({ animationDelay: `${detailsStartMs + detailsStaggerMs}ms` } as CSSProperties) : undefined}
   >
-    Low confidence: only {attemptsCount} tests / {attemptedTotal} answers in this window.
+    {t('charts.score.lowConfidence', { attempts: attemptsCount, answers: attemptedTotal })}
   </div>
 ) : null}
 
@@ -23186,6 +23568,7 @@ import { useEffect, useMemo, useRef, useState, useId, type CSSProperties } from 
 import { useOnceInView } from './useOnceInView.client';
 import { useBootSweepOnce } from './useBootSweepOnce.client';
 import styles from './ScreenTimeChart.module.css';
+import { useT } from '@/lib/i18n/useT';
 
 // ✅ Legend for Screen Time card header (moved out of StatsPage)
 export function ScreenTimeLegend({
@@ -23195,22 +23578,24 @@ export function ScreenTimeLegend({
   animate?: boolean;
   delayMs?: number;
 }) {
+  const { t } = useT();
+
   return (
     <div
       className={`${styles.statsLegend} ${animate ? styles.waterIn : styles.waterHidden}`}
       style={animate ? ({ animationDelay: `${delayMs}ms` } as CSSProperties) : undefined}
     >
       <span className={`${styles.statsLegendDot} ${styles.statsLegendDotYellow}`} />
-      <span className={styles.statsLegendLabel}>Test</span>
+      <span className={styles.statsLegendLabel}>{t('charts.screenTime.legendTest')}</span>
 
       <span className={`${styles.statsLegendDot} ${styles.statsLegendDotBlue}`} />
-      <span className={styles.statsLegendLabel}>Study</span>
+      <span className={styles.statsLegendLabel}>{t('charts.screenTime.legendStudy')}</span>
 
       <span className={styles.statsLegend__screenTime__totalGradientSwatch} />
-      <span className={styles.statsLegendLabel}>Total</span>
+      <span className={styles.statsLegendLabel}>{t('charts.screenTime.legendTotal')}</span>
 
       <span className={styles.statsLegend__screenTime__avgDottedSwatch} />
-      <span className={`${styles.statsLegendLabel} ${styles.statsLegendLabelAvg}`}>7D avg</span>
+      <span className={`${styles.statsLegendLabel} ${styles.statsLegendLabelAvg}`}>{t('charts.screenTime.legendSevenDayAvg')}</span>
     </div>
   );
 }
@@ -23377,6 +23762,7 @@ export default function ScreenTimeChart({
   streakDays?: number;
   onLegendReveal?: () => void;
 }) {
+  const { t } = useT();
 
   const [hoverIdx, setHoverIdx] = useState<number | null>(null);
 
@@ -23689,11 +24075,11 @@ const areaClipW = useMemo(() => {
 
   const confidenceNote =
     tooLittleOverall
-      ? `Low confidence: only ${model.weekTotal} minutes logged this week.`
+      ? t('charts.screenTime.lowConfidenceWeek', { minutes: model.weekTotal })
       : lowConfidenceStudy
-      ? 'Low confidence: study tracking not enabled yet (showing 0m study).'
+      ? t('charts.screenTime.lowConfidenceStudy')
       : lowConfidenceTimed
-      ? `Low confidence: only ${timedTestMinutesEstimate} timed-test minutes detected.`
+      ? t('charts.screenTime.lowConfidenceTimed', { minutes: timedTestMinutesEstimate ?? 0 })
       : null;
 
   const hover = hoverIdx != null ? model.points[hoverIdx] : null;
@@ -23843,16 +24229,16 @@ const areaClipW = useMemo(() => {
 
                           {hoverIdx === idx ? (
                             <div className={styles.tooltip} role="tooltip">
-                              <div className={styles.tipTitle}>{isToday ? 'Today' : dayLabel}</div>
+                              <div className={styles.tipTitle}>{isToday ? t('charts.screenTime.today') : dayLabel}</div>
                               <div className={styles.tipBody}>
                                 <div>
-                                  Test: <b>{p.deliberateMin}m</b>
+                                  {t('charts.screenTime.tooltipTest')}: <b>{p.deliberateMin}m</b>
                                 </div>
                                 <div>
-                                  Study: <b>{p.studyMin}m</b>
+                                  {t('charts.screenTime.tooltipStudy')}: <b>{p.studyMin}m</b>
                                 </div>
                                 <div>
-                                  Total: <b>{p.total}m</b> · {pctOfWeek}% of week
+                                  {t('charts.screenTime.tooltipTotal')}: <b>{p.total}m</b> · {t('charts.screenTime.tooltipPercentOfWeek', { percent: pctOfWeek })}
                                 </div>
                               </div>
                             </div>
@@ -23884,7 +24270,7 @@ const areaClipW = useMemo(() => {
                       : { top: clamp(avgLineY - 12, 0, plotPx - 14) }
                   }
                 >
-                  7D avg
+                  {t('charts.screenTime.avgLabel')}
                 </div>
               </div>
             </div>
@@ -23903,7 +24289,7 @@ const areaClipW = useMemo(() => {
                     key={`x-${p.key}`}
                     className={`${styles.dayLabel} ${isToday ? styles.dayLabelToday : ''}`}
                   >
-                    {isToday ? 'Today' : dayLabel.slice(0, 3)}
+                    {isToday ? t('charts.screenTime.today') : dayLabel.slice(0, 3)}
                   </div>
                 );
               })}
@@ -23923,16 +24309,16 @@ const areaClipW = useMemo(() => {
           }
         >
           <div className={styles.summaryTop}>
-            <b>7D total</b>: {weekTestTotal}m test · {weekStudyTotal}m study
+            <b>{t('charts.screenTime.summaryTotal')}</b>: {weekTestTotal}m {t('charts.screenTime.legendTest').toLowerCase()} · {weekStudyTotal}m {t('charts.screenTime.legendStudy').toLowerCase()}
           </div>
 
           <div className={styles.summaryRow2}>
             <span>
-              <b>Avg/day</b>: {Math.round(model.avgTotal)}m
+              <b>{t('charts.screenTime.summaryAvgPerDay')}</b>: {Math.round(model.avgTotal)}m
             </span>
             <span className={styles.sep} aria-hidden="true" />
             <span>
-              <b>Best</b>: {bestLabel} ({bestPoint?.total ?? 0}m)
+              <b>{t('charts.screenTime.summaryBest')}</b>: {bestLabel} ({bestPoint?.total ?? 0}m)
             </span>
           </div>
         </div>
@@ -23946,12 +24332,12 @@ const areaClipW = useMemo(() => {
           }
         >
           <span>
-            <b>Routine</b>: {activeDays}/7 days
+            <b>{t('charts.screenTime.summaryRoutine')}</b>: {t('charts.screenTime.routineDays', { count: activeDays })}
             <span className={styles.sep}></span>
-            <b>Streak</b>: {streakDays ?? 0}d
+            <b>{t('charts.screenTime.summaryStreak')}</b>: {t('charts.screenTime.streakDays', { count: streakDays ?? 0 })}
           </span>
 
-          {model.hasCompare ? <span className={styles.muted}>Compare overlay: enabled</span> : null}
+          {model.hasCompare ? <span className={styles.muted}>{t('charts.screenTime.compareOverlay')}</span> : null}
         </div>
 
         {confidenceNote ? (
@@ -23970,6 +24356,7 @@ const areaClipW = useMemo(() => {
     </div>
   );
 }
+
 ```
 
 ### components/stats/ScreenTimeChart.module.css
@@ -24466,13 +24853,10 @@ const areaClipW = useMemo(() => {
 'use client';
 
 import styles from './TimeframeChips.module.css';
+import { useT } from '@/lib/i18n/useT';
 
 export type Timeframe = 7 | 30 | 'all';
 export const TIMEFRAMES: Timeframe[] = [7, 30, 'all'];
-
-export function tfShort(t: Timeframe) {
-  return t === 'all' ? 'All' : `${t}D`;
-}
 
 type Props = {
   value: Timeframe;
@@ -24485,24 +24869,28 @@ export default function TimeframeChips({
   onChange,
   align = 'center',
 }: Props) {
+  const { t } = useT();
+
   return (
     <div
       className={`${styles.statsChips} ${
         align === 'center' ? styles.statsChipsCenter : ''
       }`}
     >
-      {TIMEFRAMES.map((t) => {
-        const active = value === t;
+      {TIMEFRAMES.map((timeframe) => {
+        const active = value === timeframe;
         return (
           <button
-            key={String(t)}
+            key={String(timeframe)}
             type="button"
-            onClick={() => onChange(t)}
+            onClick={() => onChange(timeframe)}
             className={`${styles.statsChip} ${
               active ? styles.statsChipActive : ''
             }`}
           >
-            {tfShort(t)}
+            {timeframe === 'all'
+              ? t('stats.timeframes.allShort')
+              : t('stats.timeframes.daysShort', { days: timeframe })}
           </button>
         );
       })}
@@ -24524,6 +24912,7 @@ import DragScrollRow from "@/components/DragScrollRow";
 import { useEffect, useRef, useState, useMemo } from 'react';
 import { useOnceInMidView } from '@/components/stats/useOnceInView.client';
 import type { CSSProperties } from 'react';
+import { useT } from '@/lib/i18n/useT';
 
 
 
@@ -24556,6 +24945,7 @@ function chipBgFromPct(pct: number) {
 }
 
 export default function TopicMasteryChart({ data }: { data: TopicMasteryVM }) {
+  const { t } = useT();
   // show all (scrollable)
   // all topics
 const topics = data.topics ?? [];
@@ -24603,11 +24993,11 @@ const { ref: listRef, seen: listInView } = useOnceInMidView<HTMLDivElement>();
     <div className={styles.wrap}>
       {/* Top “wow” pills */}
       <div ref={heroRef} className={styles.hero}>
-        <div className={styles.heroTitle}>Weakest right now</div>
+        <div className={styles.heroTitle}>{t('charts.topicMastery.weakestRightNow')}</div>
 
         {topSub.length === 0 ? (
           <div className={styles.empty}>
-            Not enough topic data yet (need at least {data.minAttempted} answered per subtopic).
+            {t('charts.topicMastery.empty', { count: data.minAttempted })}
           </div>
         ) : (
           <DragScrollRow className={styles.heroScroller}>
@@ -24625,15 +25015,19 @@ const { ref: listRef, seen: listInView } = useOnceInMidView<HTMLDivElement>();
               ['--op' as any]: op,
               ['--d' as any]: `${heroDelay}ms`,
             } as CSSProperties}
-                  title={`${labelForTag(s.tag)} · ${s.accuracyPct}% · ${s.attempted} answered`}
+                  title={t('charts.topicMastery.chipTitle', {
+                    label: labelForTag(s.tag, t),
+                    accuracy: s.accuracyPct,
+                    answered: s.attempted,
+                  })}
                 >
 <div className={styles.pillTop}>
   <span className={styles.pillTitle}>
-    <span className={styles.pillLabel}>{labelForTag(s.tag)}</span>
+    <span className={styles.pillLabel}>{labelForTag(s.tag, t)}</span>
     <span className={styles.pillPct}>{s.accuracyPct}%</span>
   </span>
 </div>
- <div className={styles.pillMeta}>{s.attempted} answered</div>
+ <div className={styles.pillMeta}>{t('charts.topicMastery.answered', { count: s.attempted })}</div>
 </div>
               );
             })}
@@ -24645,14 +25039,14 @@ const { ref: listRef, seen: listInView } = useOnceInMidView<HTMLDivElement>();
 
       {/* Topic list */}
       <div ref={listRef} className={styles.list}>
-        {topics.map((t, ti) => {
-          const topicLabel = labelForTag(t.topicKey);
+        {topics.map((topic, ti) => {
+          const topicLabel = labelForTag(topic.topicKey, t);
 
 // topic-level confidence (no `s` here; `s` doesn't exist in this scope)
-const lowTopic = t.attempted < data.minAttempted;
-const op = confOpacity(t.attempted, maxAttempted) * (lowTopic ? 0.75 : 1);
+const lowTopic = topic.attempted < data.minAttempted;
+const op = confOpacity(topic.attempted, maxAttempted) * (lowTopic ? 0.75 : 1);
 
-const subs = t.subtopics ?? [];
+const subs = topic.subtopics ?? [];
 
 
            const rowDelay = 220 + ti * 90;      // rows come in after hero settles
@@ -24664,16 +25058,16 @@ const subs = t.subtopics ?? [];
 
           return (
     <div
-      key={t.topicKey}
+      key={topic.topicKey}
       className={`${styles.row} ${listInView ? styles.rowIn : styles.rowHidden}`}
       style={{ ['--d' as any]: `${rowDelay}ms` } as CSSProperties}
     >
       <div className={styles.rowHead}>
         <div className={styles.topicName}>{topicLabel}</div>
         <div className={styles.rightMeta}>
-          <span className={styles.topicPct}>{t.accuracyPct}%</span>
+          <span className={styles.topicPct}>{topic.accuracyPct}%</span>
           <span className={styles.dot} style={{ opacity: op }} />
-          <span className={styles.answered}>{t.attempted} answered</span>
+          <span className={styles.answered}>{t('charts.topicMastery.answered', { count: topic.attempted })}</span>
         </div>
       </div>
 
@@ -24681,7 +25075,7 @@ const subs = t.subtopics ?? [];
         <div
           className={`${styles.barFill} ${listInView ? styles.barFillGrow : styles.barFillHidden}`}
           style={{
-            ['--w' as any]: `${clamp(t.accuracyPct, 0, 100)}%`,
+            ['--w' as any]: `${clamp(topic.accuracyPct, 0, 100)}%`,
             ['--d' as any]: `${barDelay}ms`, // ✅ bar anim delay
           } as CSSProperties}
         />
@@ -24704,10 +25098,14 @@ const subs = t.subtopics ?? [];
                   ['--op' as any]: sop,
                   ['--d' as any]: `${chipDelay}ms`, // ✅ chip delay
                 } as CSSProperties}
-                title={`${labelForTag(s.tag)} · ${s.accuracyPct}% · ${s.attempted} answered`}
+                title={t('charts.topicMastery.chipTitle', {
+                  label: labelForTag(s.tag, t),
+                  accuracy: s.accuracyPct,
+                  answered: s.attempted,
+                })}
               >
                 <span className={styles.subText}>
-                  <span className={styles.subLabel}>{labelForTag(s.tag)}</span>
+                  <span className={styles.subLabel}>{labelForTag(s.tag, t)}</span>
                   <span className={styles.subPct}>{s.accuracyPct}%</span>
                 </span>
 
@@ -24727,7 +25125,7 @@ const subs = t.subtopics ?? [];
           })}
         </DragScrollRow>
       ) : (
-        <div className={styles.subEmpty}>Need more answers in this topic to rank subtopics.</div>
+        <div className={styles.subEmpty}>{t('charts.topicMastery.subEmpty')}</div>
       )}
     </div>
   );
@@ -24736,6 +25134,7 @@ const subs = t.subtopics ?? [];
     </div>
   );
 }
+
 ```
 
 ### components/stats/TopicMasteryChart.module.css
@@ -25670,6 +26069,279 @@ export function useUserKey() {
     return "guest";
   }, [authed, email, userId]);
 }
+```
+
+### docs/korean-qbank-glossary.md
+```md
+# Korean QBank Glossary and Style Guide
+
+## Scope
+
+- The English in-app question bank remains the source of truth.
+- The Korean PDF is a terminology and phrasing reference only.
+- Keep existing taxonomy keys, qbank IDs, and app structure unchanged.
+- Use the PDF's Korean where it reads naturally; modernize obvious calques when needed.
+
+## A. Korean PDF -> App Taxonomy Mapping
+
+| Korean PDF section | Observed in PDF | App taxonomy target | Mapping note |
+| --- | --- | --- | --- |
+| `도로교통안전 법률과 법규 및 규정` | section list on PDF p.6, questions start on PDF p.7 | `Road Safety` | Clean for `license`, `registration`, `accidents`. Some punishment/legal phrasing also feeds `Proper Driving > Traffic Laws`. |
+| `도로교통신호 및 의미` | section start on PDF p.20 | `Traffic Signals` | Cleanest one-to-one mapping. Its own outline already separates signal lights, signs, markings, and police signals. |
+| `안전운행과 문명운전 지식` | section start on PDF p.39 | `Proper Driving` | Main source for safe-driving phrasing, right-of-way, weather, highway, emergency handling. Also supplies some `Road Safety > Road Conditions` wording. |
+| `자동차 전체구조와 주요 안전장치 상식, 일상검사와 수리보양 기본지식` | section start on PDF p.45 | `Driving Operations` | Clean for indicators, controls, pedals, switches, and safety devices. The section title itself is dated and should be modernized in running prose. |
+
+### Subtopic alignment notes
+
+- `Traffic Signals` maps almost exactly:
+  `도로교통신호등` -> `signal-lights`
+  `도로교통표지` -> `road-signs`
+  `도로교통표시선` -> `road-markings`
+  `교통경찰관 수신호` -> `police-signals`
+- `Road Safety > road-conditions` does not exist as a single clean PDF section.
+  Most usable Korean comes from `안전운행과 문명운전 지식`.
+- `Proper Driving > traffic-laws` is split across section 1 and section 3.
+  Section 1 is more administrative/legal.
+  Section 3 is more behavior/rule application.
+- `Driving Operations > gears` is broader than "gears" in the PDF.
+  The Korean source groups pedals, switches, steering, wipers, and safety devices together.
+
+## B. Style Guide
+
+### Tone
+
+- Use concise exam-style Korean.
+- Prefer short official wording over conversational paraphrase.
+- Default to plain present tense: `한다`, `해야 한다`, `할 수 있다`, `할 수 없다`.
+- Keep stems short when the image or answer choices already carry detail.
+- Use Korean road-exam vocabulary consistently, but do not preserve awkward Chinese-source phrasing if a simpler Korean term is clearer.
+
+### Standardized recurring phrasing
+
+| English function | Preferred Korean pattern | Note |
+| --- | --- | --- |
+| What does this sign mean? | `이 표지의 뜻은?` | Matches PDF tone; short and reusable. |
+| What does this road marking mean? | `이 노면표시의 의미는?` | Prefer `노면표시` over longer literal forms. |
+| What does this hand signal mean? | `다음 교통경찰 수신호의 의미는?` | Keep `수신호` consistent. |
+| What should the driver do? | `운전자가 취해야 할 조치는?` | Best default for MCQ stems. |
+| How should the driver proceed? | `운전자는 어떻게 해야 하는가?` | Better for row statements or broader safe-driving prompts. |
+| Which violation is this? | `어떤 위반행위에 해당하는가?` | Prefer `해당하는가` to stiff legalese. |
+| What penalty applies? | `어떤 처벌을 받는가?` | Use only when penalty is the actual tested concept. |
+| may / may not | `할 수 있다 / 할 수 없다` | Keep the pair fixed across the bank. |
+| must / should | `해야 한다` | Use `반드시` only if the rule is explicitly mandatory. |
+| yield | `양보해야 한다` | Do not alternate casually with `비켜 줘야 한다`. |
+| reduce speed | `감속해야 한다` | Use `서행하다` when the point is slow passing, not mere deceleration. |
+| stop / pull over | `정차해야 한다` | Reserve `주차` for parking, not temporary stopping. |
+| keep distance | `안전거리를 유지해야 한다` | More exam-natural than a literal long paraphrase. |
+| turn on hazard lights | `비상점멸등을 켜야 한다` | Standardize on `비상점멸등`. |
+| report immediately | `즉시 신고해야 한다` | Good default for accident handling. |
+
+### Translation rules that help readability
+
+- Prefer `차로` when you mean the lane a vehicle drives in.
+- Prefer `차선` or `차선 경계선` when you mean painted lane lines.
+- Prefer `노면표시` for markings on the road surface.
+- Prefer `정차` for a temporary or required stop.
+- Prefer `주차` only for parking.
+- Prefer `안전거리` as the default translation of following distance.
+- Prefer `통행 우선권` when right-of-way is the tested concept.
+
+### Terms to avoid or modernize
+
+| Avoid as default | Prefer | Why |
+| --- | --- | --- |
+| `문명운전` | `배려 운전`, `안전하고 배려하는 운전` | PDF section title is old/literal; okay in citation, awkward in live question text. |
+| `수리보양` | `정비·관리`, `점검·정비` | Natural Korean is shorter and clearer. |
+| `도로교통표시선` as a blanket term | `노면표시` | More natural in Korean question text. |
+| `차선 변경` for every lane-change context | `차로 변경` | `차선` is better reserved for markings. |
+| `법에 의거하여` | `법에 따라` | Shorter and less bureaucratic. |
+| `비자동차` alone | `비자동차(자전거 등)` on first mention | The raw term is understandable but still feels like a calque. |
+| `차량을 몬다` | `운전하다` | Keep exam tone formal and neutral. |
+
+## C. Glossary By App Taxonomy
+
+### 1. Road Safety
+
+| Category | Subtopic | English concept | Preferred Korean wording | Notes |
+| --- | --- | --- | --- | --- |
+| Road Safety | license | driving licence | `운전면허` | Use `운전면허증` when the physical card/document is meant. |
+| Road Safety | license | driving licence card | `운전면허증` | Keep distinct from the abstract right/qualification. |
+| Road Safety | license | probation period | `실습기간` | This is the Korean form closest to the Chinese exam concept. |
+| Road Safety | license | penalty points | `벌점` | Stable and should stay consistent everywhere. |
+| Road Safety | license | reissue / replacement | `면허 재발급` | Good default for lost, damaged, or renewed licence-card wording. |
+| Road Safety | license | licence revocation / suspension | `면허 취소`, `면허 정지` | Keep the pair fixed; do not collapse them. |
+| Road Safety | license | detain the driving licence | `운전면허증을 압류하다` | Used in legal/admin questions. |
+| Road Safety | license | drive a vehicle matching licence class | `면허 종류에 맞는 차량을 운전하다` | Better than a literal "qualification listed on the licence". |
+| Road Safety | registration | vehicle registration | `자동차 등록` | Use as the core term. |
+| Road Safety | registration | licence plate | `번호판` | Use `자동차 번호판` on first mention if clarity helps. |
+| Road Safety | registration | temporary plate | `임시 운행 번호판` | Natural and close to PDF phrasing. |
+| Road Safety | registration | inspection label | `검사합격표시` | First mention can be `검사합격표시(검사표지)`. |
+| Road Safety | registration | insurance label | `보험표지` | Keep consistent in admin/legal questions. |
+| Road Safety | registration | vehicle management office | `차량관리소` | Useful for China-specific process wording; manual review still recommended. |
+| Road Safety | accidents | traffic accident | `교통사고` | Default term across the bank. |
+| Road Safety | accidents | accident scene | `사고 현장` | Use with `현장 보존` and `즉시 신고`. |
+| Road Safety | accidents | preserve the scene | `현장을 보존하다` | Strong recurring exam phrase. |
+| Road Safety | accidents | rescue the injured | `부상자를 구조하다` | `구호하다` also works, but `구조하다` is plainer. |
+| Road Safety | accidents | report to the police immediately | `즉시 경찰에 신고하다` | Good default for accident-handling stems. |
+| Road Safety | accidents | flee the scene | `사고 현장을 이탈하다` | Better exam/legal tone than casual `도주하다` as the main term. |
+| Road Safety | accidents | collect evidence | `증거를 확보하다` | Use when police detention or accident processing is involved. |
+| Road Safety | road-conditions | road / weather conditions | `노면·기상 상태` | Useful umbrella phrase for section-level summaries. |
+| Road Safety | road-conditions | wet road surface | `젖은 노면` | Better than a literal full-clause translation every time. |
+| Road Safety | road-conditions | slippery road | `미끄러운 노면` | Standardize with wet/icy conditions. |
+| Road Safety | road-conditions | muddy road | `진흙탕길` | Close to PDF wording and still natural. |
+| Road Safety | road-conditions | fog / rain / snow conditions | `안개길`, `빗길`, `눈길` | Prefer compact condition nouns in question text. |
+| Road Safety | road-conditions | tunnel / mountain road / sharp curve | `터널`, `산길`, `급커브` | Reusable for hazard and visibility prompts. |
+
+### 2. Traffic Signals
+
+| Category | Subtopic | English concept | Preferred Korean wording | Notes |
+| --- | --- | --- | --- | --- |
+| Traffic Signals | signal-lights | traffic lights | `신호등` | Default umbrella term. |
+| Traffic Signals | signal-lights | red / yellow / green light | `적색 신호`, `황색 신호`, `녹색 신호` | Slightly more exam-formal than `빨간불/노란불/초록불`. |
+| Traffic Signals | signal-lights | flashing yellow | `황색 점멸 신호` | Keep fixed for repeated signal-light questions. |
+| Traffic Signals | signal-lights | green arrow light | `녹색 화살표 신호` | Use when lane direction matters. |
+| Traffic Signals | signal-lights | intersection | `교차로` | Core term; use everywhere consistently. |
+| Traffic Signals | signal-lights | level crossing | `철길 건널목` | Natural Korean exam wording. |
+| Traffic Signals | signal-lights | lane signal | `차로별 진행 신호` | Useful for controlled-lane questions. |
+| Traffic Signals | road-signs | road sign | `교통표지` | In short stems, `표지` alone is often enough. |
+| Traffic Signals | road-signs | warning sign | `경고표지` | Stable category term from the PDF. |
+| Traffic Signals | road-signs | prohibitory sign | `금지표지` | Stable category term from the PDF. |
+| Traffic Signals | road-signs | mandatory / indication sign | `지시표지` | Use `지시표지` consistently, not ad hoc paraphrases. |
+| Traffic Signals | road-signs | guide sign | `안내표지` | Good default for directional/route guidance signs. |
+| Traffic Signals | road-signs | parking sign | `주차장 표지` | Prefer the simple Korean label when the image makes it obvious. |
+| Traffic Signals | road-signs | maximum / minimum speed sign | `최고속도`, `최저속도` | Keep concise; avoid over-explaining the sign name. |
+| Traffic Signals | road-markings | road marking | `노면표시` | Best default translation. |
+| Traffic Signals | road-markings | center line | `중앙선` | Standard road-marking term. |
+| Traffic Signals | road-markings | solid line / broken line | `실선`, `점선` | Reusable across sign-and-marking questions. |
+| Traffic Signals | road-markings | yellow solid / broken line | `황색 실선`, `황색 점선` | Keep color first for consistency. |
+| Traffic Signals | road-markings | white solid / broken line | `백색 실선`, `백색 점선` | Match the same pattern as yellow lines. |
+| Traffic Signals | road-markings | stop line | `정지선` | Stable traffic-law term. |
+| Traffic Signals | road-markings | crosswalk | `횡단보도` | Use everywhere; do not vary with casual paraphrases. |
+| Traffic Signals | road-markings | lane boundary line | `차선 경계선` | Use when the marking itself is the tested concept. |
+| Traffic Signals | road-markings | directional arrow marking | `진행 방향 화살표` | Better live-bank wording than a literal long form. |
+| Traffic Signals | police-signals | traffic police hand signal | `교통경찰 수신호` | Keep this exact phrase. |
+| Traffic Signals | police-signals | stop signal | `정지 신호` | Standard label for hand-signal questions. |
+| Traffic Signals | police-signals | proceed-straight signal | `직진 신호` | Standard label for hand-signal questions. |
+| Traffic Signals | police-signals | left-turn waiting signal | `좌회전 대기 신호` | Matches PDF usage. |
+| Traffic Signals | police-signals | left-turn signal | `좌회전 신호` | Keep parallel with other signal labels. |
+| Traffic Signals | police-signals | right-turn signal | `우회전 신호` | Keep parallel with other signal labels. |
+| Traffic Signals | police-signals | lane-change signal | `차선 변경 신호` | Keep as the conventional label inside this specific hand-signal set. |
+| Traffic Signals | police-signals | pull-over signal | `길가 정차 신호` | Useful for police-control questions. |
+| Traffic Signals | police-signals | slow-down signal | `감속 서행 신호` | Strong reusable phrase from the PDF set. |
+
+### 3. Proper Driving
+
+| Category | Subtopic | English concept | Preferred Korean wording | Notes |
+| --- | --- | --- | --- | --- |
+| Proper Driving | safe-driving | safe driving | `안전운전` | Core category term. |
+| Proper Driving | safe-driving | courteous / civilized driving | `배려 운전` | Prefer this in live questions; PDF `문명운전` can remain as a source note only. |
+| Proper Driving | safe-driving | yield / give way | `양보하다` | Standardize across pedestrians, non-motor vehicles, and oncoming traffic. |
+| Proper Driving | safe-driving | reduce speed | `감속하다` | Default for immediate speed reduction. |
+| Proper Driving | safe-driving | drive slowly | `서행하다` | Use when passing schools, curves, crowds, or hazards. |
+| Proper Driving | safe-driving | stop / pull over | `정차하다` | More precise than using `멈추다` everywhere. |
+| Proper Driving | safe-driving | keep a safe distance | `안전거리를 유지하다` | Strong recurring exam phrase. |
+| Proper Driving | safe-driving | lane change | `차로를 변경하다` | Prefer this wording outside police-hand-signal labels. |
+| Proper Driving | safe-driving | overtake | `추월하다` | Keep consistent across rules and safe-driving prompts. |
+| Proper Driving | safe-driving | right of way | `통행 우선권` | Use when the tested concept is priority, not politeness. |
+| Proper Driving | safe-driving | give way to pedestrians | `보행자에게 양보하다` | Stable and natural. |
+| Proper Driving | safe-driving | use hazard warning lights | `비상점멸등을 켜다` | Default wording for breakdown and poor-visibility questions. |
+| Proper Driving | safe-driving | shoulder / emergency lane | `갓길`, `비상차로` | Keep the distinction when the question makes it relevant. |
+| Proper Driving | safe-driving | warning triangle / breakdown sign | `고장 차량 경고표지판`, `삼각표지판` | Both are useful; keep one chosen term per question. |
+| Proper Driving | safe-driving | traffic jam / congestion | `교통 정체` | Better than long literal paraphrases. |
+| Proper Driving | safe-driving | tire blowout | `타이어가 터지다` | Preferred over casual slang. |
+| Proper Driving | safe-driving | engine braking | `엔진 브레이크를 사용하다` | Useful for downhill and emergency-control questions. |
+| Proper Driving | safe-driving | hold the steering wheel firmly | `핸들을 두 손으로 단단히 잡다` | Common in tire-blowout and skid-control items. |
+| Proper Driving | safe-driving | night / fog / rain / snow driving | `야간 운전`, `안개길`, `빗길`, `눈길` | Keep the compact condition labels. |
+| Proper Driving | safe-driving | expressway driving | `고속도로 주행` | Good default umbrella term. |
+| Proper Driving | traffic-laws | violation | `위반행위` | Best default across law-and-penalty questions. |
+| Proper Driving | traffic-laws | penalty / punishment | `처벌` | Short and reusable. |
+| Proper Driving | traffic-laws | penalty points | `벌점` | Do not alternate with loose paraphrases. |
+| Proper Driving | traffic-laws | fine / administrative fine | `범칙금·과태료` | Needs context-sensitive choice; see audit notes. |
+| Proper Driving | traffic-laws | criminal detention | `구류` | Keep distinct from fines and imprisonment. |
+| Proper Driving | traffic-laws | imprisonment | `징역` | Standard legal term. |
+| Proper Driving | traffic-laws | criminal liability | `형사책임` | Use when the legal consequence itself is tested. |
+| Proper Driving | traffic-laws | drunk driving | `음주운전` | Stable and standard. |
+| Proper Driving | traffic-laws | drug-impaired driving | `약물 복용 후 운전` | Safer/natural phrasing than a literal calque. |
+| Proper Driving | traffic-laws | speeding | `과속` | Keep concise. |
+| Proper Driving | traffic-laws | overloaded / over-seated | `과적`, `정원 초과` | Keep cargo and passenger violations distinct. |
+| Proper Driving | traffic-laws | use of mobile phone while driving | `운전 중 휴대전화 사용` | Natural standardized form. |
+
+### 4. Driving Operations
+
+| Category | Subtopic | English concept | Preferred Korean wording | Notes |
+| --- | --- | --- | --- | --- |
+| Driving Operations | indicators | instrument panel / dashboard | `계기판` | Default umbrella term. |
+| Driving Operations | indicators | speedometer | `속도계` | Prefer the common Korean term over a literal gauge phrase. |
+| Driving Operations | indicators | tachometer | `엔진 회전수계` | Natural for exam translation; PDF also uses gauge-style wording. |
+| Driving Operations | indicators | fuel gauge | `연료 게이지` | Clear and familiar. |
+| Driving Operations | indicators | coolant temperature gauge | `냉각수 온도 게이지` | Better live-bank wording than a direct long calque. |
+| Driving Operations | indicators | warning light | `경고등` | Use for fault/safety alerts. |
+| Driving Operations | indicators | indicator light | `표시등` | Use for state/status lights. |
+| Driving Operations | indicators | low-beam indicator | `하향 전조등 표시등` | Keep `전조등` consistent. |
+| Driving Operations | indicators | high-beam indicator | `상향 전조등 표시등` | Keep paired with low beam. |
+| Driving Operations | indicators | front / rear fog light | `전방 안개등`, `후방 안개등` | Strong recurring pair. |
+| Driving Operations | indicators | turn signal indicator | `방향지시등` | Use as the default vehicle-light term. |
+| Driving Operations | indicators | hazard warning lights | `비상점멸등` | Keep fixed across both driving and dashboard questions. |
+| Driving Operations | indicators | seat belt warning light | `안전벨트 경고등` | Standard term. |
+| Driving Operations | indicators | engine oil pressure warning | `엔진오일 압력 경고등` | Safer than alternating with shorter informal variants. |
+| Driving Operations | indicators | brake system warning light | `브레이크 시스템 경고등` | Good default wording. |
+| Driving Operations | indicators | ABS warning light | `ABS 경고등` | Stable acronym-based term. |
+| Driving Operations | indicators | airbag warning light | `에어백 경고등` | Stable acronym-based term. |
+| Driving Operations | indicators | door / trunk / hood open indicator | `문 열림`, `트렁크 열림`, `엔진룸 열림` | Short, image-friendly labels. |
+| Driving Operations | gears | steering wheel | `핸들` | Natural everyday Korean; acceptable in exam text. |
+| Driving Operations | gears | clutch pedal | `클러치 페달` | Standard control term. |
+| Driving Operations | gears | brake pedal | `브레이크 페달` | Standard control term. |
+| Driving Operations | gears | accelerator pedal | `가속 페달` | Prefer this over overly literal variants. |
+| Driving Operations | gears | parking brake | `주차 브레이크` | Good default for the control itself. |
+| Driving Operations | gears | gear shift lever | `기어 변속 레버` | Natural and implementation-friendly. |
+| Driving Operations | gears | ignition switch | `시동 스위치` | Standard term for key/switch items. |
+| Driving Operations | gears | light switch | `라이트 스위치` | Short and clear in image-based questions. |
+| Driving Operations | gears | wiper switch | `와이퍼 스위치` | Stable device term. |
+| Driving Operations | gears | washer fluid | `워셔액` | Best default consumer-facing term. |
+| Driving Operations | gears | defrost / defog | `서리 제거`, `김서림 제거` | Pick the one that matches the glass/visibility context. |
+| Driving Operations | gears | headrest | `헤드레스트` | Natural Korean; `머리 받침` can appear in notes if needed. |
+| Driving Operations | gears | seat belt | `안전벨트` | Stable safety-device term. |
+| Driving Operations | gears | airbag | `에어백` | Stable safety-device term. |
+| Driving Operations | gears | ABS | `ABS` | Leave the acronym as-is. |
+
+## D. Short Audit Notes
+
+### Mapped cleanly
+
+- `도로교통신호 및 의미` -> `Traffic Signals`
+- `자동차 전체구조...` -> `Driving Operations`
+- The PDF's signal-light, sign, marking, and police-signal wording is directly reusable.
+- Dashboard, warning-light, pedal, switch, and safety-device vocabulary is also directly reusable.
+
+### Awkward or ambiguous
+
+- `Road Safety` vs `Proper Driving` is not cleanly separated in the PDF.
+  Legal penalties live mostly in section 1.
+  Operational rule wording lives mostly in section 3.
+- `road-conditions` is distributed across hazard, weather, mountain-road, tunnel, highway, and emergency-driving pages rather than a single labeled section.
+- `Driving Operations > gears` is broader in practice than the subtopic name suggests; the PDF bundles controls, switches, and safety devices together.
+
+### Terms that need manual/native review
+
+- `문명운전`
+- `수리보양`
+- `비자동차`
+- `차량관리소`
+- `검사합격표시` vs `검사표지`
+- `보험표지`
+- penalty-language distinctions:
+  `범칙금`
+  `과태료`
+  `벌금`
+  `벌점`
+  `구류`
+
+## Recommendation For The Translation Pass
+
+- Treat this file as a Korean reference layer, not a replacement dataset.
+- Reuse the glossary wording first.
+- If a literal translation sounds stiff, prefer the style-guide pattern unless the question is explicitly testing a legal label or instrument name.
+
 ```
 
 ### lib/attempts/attemptStore.ts
@@ -27577,6 +28249,345 @@ export function isAnswerCorrect(question: Question, chosenKey: string | null | u
 
 ```
 
+### lib/i18n/I18nProvider.tsx
+```tsx
+'use client';
+
+import { createContext, useCallback, useEffect, useMemo, useState, type ReactNode } from 'react';
+
+import { DEFAULT_LOCALE, type Locale } from '@/messages';
+
+import { AVAILABLE_LOCALES, getLocaleLabel, getMessage, getNextLocale as getRegisteredNextLocale, LOCALE_STORAGE_KEY, resolveLocale, type LocaleOption, type MessageKey } from './messages';
+import { type MessageParams } from './types';
+
+type I18nContextValue = {
+  locale: Locale;
+  setLocale: (locale: Locale) => void;
+  locales: readonly LocaleOption[];
+  t: (key: MessageKey, params?: MessageParams) => string;
+  getLocaleLabel: (locale: Locale) => string;
+  getNextLocale: (locale?: Locale) => Locale;
+};
+
+type I18nProviderProps = {
+  children: ReactNode;
+  initialLocale?: Locale;
+};
+
+export const I18nContext = createContext<I18nContextValue | undefined>(undefined);
+
+export function I18nProvider({
+  children,
+  initialLocale = DEFAULT_LOCALE,
+}: I18nProviderProps) {
+  const [locale, setLocaleState] = useState<Locale>(initialLocale);
+  const [hydrated, setHydrated] = useState(false);
+
+  useEffect(() => {
+    let nextLocale = initialLocale;
+
+    try {
+      const storedLocale = window.localStorage.getItem(LOCALE_STORAGE_KEY);
+      nextLocale = resolveLocale(storedLocale, initialLocale);
+    } catch {
+      // Ignore storage access issues and keep the default locale.
+    }
+
+    setLocaleState(nextLocale);
+    setHydrated(true);
+  }, [initialLocale]);
+
+  useEffect(() => {
+    document.documentElement.lang = locale;
+  }, [locale]);
+
+  useEffect(() => {
+    if (!hydrated) return;
+
+    try {
+      window.localStorage.setItem(LOCALE_STORAGE_KEY, locale);
+    } catch {
+      // Ignore storage access issues; the in-memory locale still works.
+    }
+  }, [hydrated, locale]);
+
+  useEffect(() => {
+    const handleStorage = (event: StorageEvent) => {
+      if (event.key !== LOCALE_STORAGE_KEY) return;
+      setLocaleState(resolveLocale(event.newValue, DEFAULT_LOCALE));
+    };
+
+    window.addEventListener('storage', handleStorage);
+    return () => window.removeEventListener('storage', handleStorage);
+  }, []);
+
+  const setLocale = useCallback((nextLocale: Locale) => {
+    setLocaleState(nextLocale);
+  }, []);
+
+  const t = useCallback((key: MessageKey, params?: MessageParams) => {
+    return getMessage(locale, key, params);
+  }, [locale]);
+
+  const localeLabel = useCallback((targetLocale: Locale) => {
+    return getLocaleLabel(targetLocale);
+  }, []);
+
+  const nextLocale = useCallback((fromLocale: Locale = locale) => {
+    return getRegisteredNextLocale(fromLocale);
+  }, [locale]);
+
+  const value = useMemo<I18nContextValue>(() => ({
+    locale,
+    setLocale,
+    locales: AVAILABLE_LOCALES,
+    t,
+    getLocaleLabel: localeLabel,
+    getNextLocale: nextLocale,
+  }), [locale, localeLabel, nextLocale, setLocale, t]);
+
+  return <I18nContext.Provider value={value}>{children}</I18nContext.Provider>;
+}
+
+```
+
+### lib/i18n/languageOptions.ts
+```tsx
+//lib/i18n/languageOptions.ts
+
+import { LOCALE_REGISTRY, type Locale } from '@/messages';
+
+type FutureLanguageCode = 'zh' | 'ja' | 'es' | 'ru' | 'fr' | 'de' | 'ar';
+type PendingLanguageCode = Exclude<FutureLanguageCode, Locale>;
+
+type EnabledLanguageOption = {
+  code: Locale;
+  label: string;
+  enabled: true;
+};
+
+type PendingLanguageOption = {
+  code: PendingLanguageCode;
+  label: string;
+  enabled: false;
+};
+
+export type LanguageOption = EnabledLanguageOption | PendingLanguageOption;
+export type LanguageOptionCode = LanguageOption['code'];
+
+const IMPLEMENTED_LANGUAGE_OPTIONS: EnabledLanguageOption[] = (
+  Object.entries(LOCALE_REGISTRY) as [Locale, { label: string }][]
+).map(([code, definition]) => ({
+  code,
+  label: definition.label,
+  enabled: true,
+}));
+
+const PENDING_LANGUAGE_OPTIONS: readonly PendingLanguageOption[] = [
+  { code: 'zh', label: '中文', enabled: false },
+  { code: 'ja', label: '日本語', enabled: false },
+  { code: 'es', label: 'Español', enabled: false },
+  { code: 'ru', label: 'Русский', enabled: false },
+  { code: 'fr', label: 'Français', enabled: false },
+  { code: 'de', label: 'Deutsch', enabled: false },
+  { code: 'ar', label: 'العربية', enabled: false },
+] as const;
+
+// To enable a future language:
+// 1. Add/register its messages in messages/index.ts
+// 2. Remove its pending entry below so it becomes implemented via LOCALE_REGISTRY
+export const LANGUAGE_OPTIONS: readonly LanguageOption[] = [
+  ...IMPLEMENTED_LANGUAGE_OPTIONS,
+  ...PENDING_LANGUAGE_OPTIONS,
+];
+
+export function isEnabledLanguageOption(option: LanguageOption): option is EnabledLanguageOption {
+  return option.enabled;
+}
+
+export function getLanguageOption(code: LanguageOptionCode | Locale) {
+  return LANGUAGE_OPTIONS.find((option) => option.code === code) ?? null;
+}
+
+export function getCurrentLanguageOption(locale: Locale) {
+  return getLanguageOption(locale) ?? LANGUAGE_OPTIONS[0];
+}
+
+```
+
+### lib/i18n/messages.ts
+```tsx
+//lib/i18n/messages.ts
+
+import { DEFAULT_LOCALE, LOCALE_REGISTRY, type AppMessages, type Locale, type LocaleDefinition } from '@/messages';
+
+import { type MessageKeyOf, type MessageParams } from './types';
+
+export const LOCALE_STORAGE_KEY = 'expatise-locale';
+
+export type Messages = AppMessages;
+export type MessageKey = MessageKeyOf<Messages>;
+
+export type LocaleOption = {
+  code: Locale;
+  label: string;
+};
+
+const localeEntries = Object.entries(LOCALE_REGISTRY) as [Locale, LocaleDefinition<Messages>][];
+const warnedMessages = new Set<string>();
+
+export const AVAILABLE_LOCALES = localeEntries.map(([code, definition]) => ({
+  code,
+  label: definition.label,
+})) as readonly LocaleOption[];
+
+export function isLocale(value: string | null | undefined): value is Locale {
+  return typeof value === 'string' && value in LOCALE_REGISTRY;
+}
+
+export function resolveLocale(value: string | null | undefined, fallback: Locale = DEFAULT_LOCALE): Locale {
+  return isLocale(value) ? value : fallback;
+}
+
+function warnOnce(cacheKey: string, message: string) {
+  if (process.env.NODE_ENV === 'production') return;
+  if (warnedMessages.has(cacheKey)) return;
+
+  warnedMessages.add(cacheKey);
+  console.warn(message);
+}
+
+function readMessage(messages: Messages, key: MessageKey): string | undefined {
+  const resolved = key.split('.').reduce<unknown>((current, segment) => {
+    if (!current || typeof current !== 'object') return undefined;
+    return (current as Record<string, unknown>)[segment];
+  }, messages);
+
+  return typeof resolved === 'string' ? resolved : undefined;
+}
+
+function formatMessage(locale: Locale, key: MessageKey, template: string, params?: MessageParams): string {
+  if (!params) {
+    const unresolvedTokens = template.match(/\{(\w+)\}/g);
+    if (unresolvedTokens) {
+      warnOnce(
+        `missing-params:${locale}:${key}:${unresolvedTokens.join('|')}`,
+        `[i18n] Missing interpolation params for "${key}" in locale "${locale}": ${unresolvedTokens.join(', ')}`
+      );
+    }
+
+    return template;
+  }
+
+  const missingTokens = new Set<string>();
+
+  const formatted = template.replace(/\{(\w+)\}/g, (_, token: string) => {
+    const value = params[token];
+    if (value == null) {
+      missingTokens.add(token);
+      return `{${token}}`;
+    }
+
+    return String(value);
+  });
+
+  if (missingTokens.size > 0) {
+    warnOnce(
+      `missing-params:${locale}:${key}:${[...missingTokens].join('|')}`,
+      `[i18n] Missing interpolation params for "${key}" in locale "${locale}": ${[...missingTokens].join(', ')}`
+    );
+  }
+
+  return formatted;
+}
+
+function getLocaleMessages(locale: Locale): Messages {
+  return LOCALE_REGISTRY[locale]?.messages ?? LOCALE_REGISTRY[DEFAULT_LOCALE].messages;
+}
+
+export function getMessage(locale: Locale, key: MessageKey, params?: MessageParams): string {
+  const localeTemplate = readMessage(getLocaleMessages(locale), key);
+  if (localeTemplate != null) {
+    return formatMessage(locale, key, localeTemplate, params);
+  }
+
+  const fallbackTemplate = readMessage(getLocaleMessages(DEFAULT_LOCALE), key);
+  if (fallbackTemplate != null) {
+    warnOnce(
+      `missing-translation:${locale}:${key}`,
+      `[i18n] Missing translation for "${key}" in locale "${locale}". Falling back to "${DEFAULT_LOCALE}".`
+    );
+    return formatMessage(DEFAULT_LOCALE, key, fallbackTemplate, params);
+  }
+
+  warnOnce(
+    `missing-key:${key}`,
+    `[i18n] Missing translation key "${key}" in both locale "${locale}" and fallback "${DEFAULT_LOCALE}".`
+  );
+
+  return key;
+}
+
+export function getLocaleLabel(locale: Locale): string {
+  return LOCALE_REGISTRY[locale]?.label ?? LOCALE_REGISTRY[DEFAULT_LOCALE].label;
+}
+
+export function getNextLocale(locale: Locale): Locale {
+  const currentIndex = AVAILABLE_LOCALES.findIndex((option) => option.code === locale);
+  if (currentIndex < 0 || AVAILABLE_LOCALES.length === 0) return DEFAULT_LOCALE;
+
+  const nextIndex = (currentIndex + 1) % AVAILABLE_LOCALES.length;
+  return AVAILABLE_LOCALES[nextIndex].code;
+}
+
+```
+
+### lib/i18n/types.ts
+```tsx
+export type MessageParams = Record<string, string | number>;
+
+type Join<K extends string, P extends string> = `${K}.${P}`;
+
+export type MessageSchema<T> = {
+  [K in keyof T]:
+    T[K] extends string
+      ? string
+      : T[K] extends Record<string, unknown>
+        ? MessageSchema<T[K]>
+        : never;
+};
+
+export type MessageKeyOf<T> = {
+  [K in keyof T & string]:
+    T[K] extends string
+      ? K
+      : T[K] extends Record<string, unknown>
+        ? Join<K, MessageKeyOf<T[K]>>
+        : never;
+}[keyof T & string];
+
+```
+
+### lib/i18n/useT.ts
+```tsx
+'use client';
+
+import { useContext } from 'react';
+
+import { I18nContext } from './I18nProvider';
+
+export function useT() {
+  const context = useContext(I18nContext);
+
+  if (!context) {
+    throw new Error('useT must be used within an I18nProvider');
+  }
+
+  return context;
+}
+
+```
+
 ### lib/identity/userKey.ts
 ```tsx
 // lib/identity/userKey.ts
@@ -29082,63 +30093,82 @@ export const TAG_KEYWORDS: Record<CanonicalTagId, string[]> = {
 ```tsx
 // lib/qbank/tagTaxonomy.ts
 
+import type { MessageKey } from '@/lib/i18n/messages';
+import type { MessageParams } from '@/lib/i18n/types';
+
+type TaxonomyLabelKey = Extract<MessageKey, `qbank.taxonomy.${string}`>;
+type TaxonomyTranslator = (key: MessageKey, params?: MessageParams) => string;
+
+export type Subtopic = {
+  key: string; // internal key (stable)
+  labelKey: TaxonomyLabelKey;
+};
+
 export type Topic = {
-  key: string;   // internal key (stable)
-  label: string; // what the user sees
-  subtopics: { key: string; label: string }[];
+  key: string; // internal key (stable)
+  labelKey: TaxonomyLabelKey;
+  subtopics: Subtopic[];
 };
 
 export const TAG_TAXONOMY: Topic[] = [
   {
     key: "road-safety",
-    label: "Road Safety",
+    labelKey: "qbank.taxonomy.topics.roadSafety",
     subtopics: [
-      { key: "road-safety:license", label: "#License" },
-      { key: "road-safety:registration", label: "#Registration" },
-      { key: "road-safety:accidents", label: "#Accidents" },
-      { key: "road-safety:road-conditions", label: "#Road Conditions" },
+      { key: "road-safety:license", labelKey: "qbank.taxonomy.subtopics.license" },
+      { key: "road-safety:registration", labelKey: "qbank.taxonomy.subtopics.registration" },
+      { key: "road-safety:accidents", labelKey: "qbank.taxonomy.subtopics.accidents" },
+      { key: "road-safety:road-conditions", labelKey: "qbank.taxonomy.subtopics.roadConditions" },
     ],
   },
   {
     key: "traffic-signals",
-    label: "Traffic Signals",
+    labelKey: "qbank.taxonomy.topics.trafficSignals",
     subtopics: [
-      { key: "traffic-signals:signal-lights", label: "#Signal Lights" },
-      { key: "traffic-signals:road-signs", label: "#Road Signs" },
-      { key: "traffic-signals:road-markings", label: "#Road Markings" },
-      { key: "traffic-signals:police-signals", label: "#Police Signals" },
+      { key: "traffic-signals:signal-lights", labelKey: "qbank.taxonomy.subtopics.signalLights" },
+      { key: "traffic-signals:road-signs", labelKey: "qbank.taxonomy.subtopics.roadSigns" },
+      { key: "traffic-signals:road-markings", labelKey: "qbank.taxonomy.subtopics.roadMarkings" },
+      { key: "traffic-signals:police-signals", labelKey: "qbank.taxonomy.subtopics.policeSignals" },
     ],
   },
   {
     key: "proper-driving",
-    label: "Proper Driving",
+    labelKey: "qbank.taxonomy.topics.properDriving",
     subtopics: [
-      { key: "proper-driving:safe-driving", label: "#Safe Driving" },
-      { key: "proper-driving:traffic-laws", label: "#Traffic Laws" },
+      { key: "proper-driving:safe-driving", labelKey: "qbank.taxonomy.subtopics.safeDriving" },
+      { key: "proper-driving:traffic-laws", labelKey: "qbank.taxonomy.subtopics.trafficLaws" },
     ],
   },
   {
     key: "driving-operations",
-    label: "Driving Operations",
+    labelKey: "qbank.taxonomy.topics.drivingOperations",
     subtopics: [
-      { key: "driving-operations:indicators", label: "#Indicators" },
-      { key: "driving-operations:gears", label: "#Gears" },
+      { key: "driving-operations:indicators", labelKey: "qbank.taxonomy.subtopics.indicators" },
+      { key: "driving-operations:gears", labelKey: "qbank.taxonomy.subtopics.gears" },
     ],
   },
 ];
 
-// Optional helper (nice for tag pills)
-export function labelForTag(tagKey: string) {
-  for (const topic of TAG_TAXONOMY) {
-    if (topic.key === tagKey) return topic.label;
-    const found = topic.subtopics.find((s) => s.key === tagKey);
-    if (found) return found.label;
+const TAG_LABEL_KEYS = new Map<string, TaxonomyLabelKey>();
+
+for (const topic of TAG_TAXONOMY) {
+  TAG_LABEL_KEYS.set(topic.key, topic.labelKey);
+  for (const subtopic of topic.subtopics) {
+    TAG_LABEL_KEYS.set(subtopic.key, subtopic.labelKey);
   }
+}
+
+function fallbackLabelForTag(tagKey: string) {
   return tagKey
     .split(":")
     .pop()!
     .replace(/-/g, " ")
     .replace(/\b\w/g, (c) => c.toUpperCase());
+}
+
+export function labelForTag(tagKey: string, t: TaxonomyTranslator) {
+  const labelKey = TAG_LABEL_KEYS.get(tagKey);
+  return labelKey ? t(labelKey) : fallbackLabelForTag(tagKey);
 }
 
 ```
@@ -31363,6 +32393,1544 @@ export function seededShuffle<T>(arr: T[], seedString: string): T[] {
   }
   return a;
 }
+
+```
+
+### messages/en.ts
+```tsx
+export const en = {
+  shared: {
+    nav: {
+      home: 'Home',
+      stats: 'Stats',
+      profile: 'Profile',
+      homeIconAlt: 'Navigation bar home icon',
+      statsIconAlt: 'Navigation bar stats icon',
+      profileIconAlt: 'Navigation bar profile icon',
+    },
+    progressBadge: {
+      text: '{shown}/{questions} Questions · {starts}/{exams} Exams',
+      ariaLabel: 'Free usage progress',
+      title: 'Free usage progress ({userKey})',
+    },
+    premiumFeatureModal: {
+      title: 'This feature is available with Premium.',
+      authedText:
+        'You are currently on the free plan. Upgrade to Premium to access this feature and other premium tools.',
+      guestText:
+        'You are currently using a free guest account. Log in to save your progress and upgrade to Premium to access this feature.',
+      notNow: 'Not now',
+      upgrade: 'Upgrade to Premium',
+      continueAsGuest: 'Continue as guest',
+      login: 'Log in',
+    },
+    infoTip: {
+      ariaLabel: 'Info',
+    },
+    logout: {
+      idle: 'Log out',
+      loading: 'Logging out...',
+    },
+    bookmarks: {
+      addAria: 'Add bookmark',
+      removeAria: 'Remove bookmark',
+      idleTitle: 'Bookmark',
+      activeTitle: 'Bookmarked',
+    },
+    questionImageAlt: 'Question image',
+    scrollToTop: {
+      ariaLabel: 'Scroll to top',
+      title: 'Back to top',
+    },
+    brandAlt: 'Expatise',
+    common: {
+      loading: 'Loading...',
+      delete: 'Delete',
+      cancel: 'Cancel',
+      next: 'Next',
+      home: 'Home',
+      save: 'Save',
+      saving: 'Saving...',
+      backToPremium: 'Back to Premium',
+      backToSignIn: 'Back to sign in',
+      updateEmail: 'Update Email',
+      updatePassword: 'Update Password',
+      noTimeLimit: 'No time limit',
+      return: 'Return',
+    },
+  },
+  onboarding: {
+    heroAlt: 'Onboarding hero',
+    title: {
+      before: 'Study For The',
+      highlight: "Driver's License",
+      after: 'Test Wherever You Are',
+    },
+    subtitle: 'Get easy access to prepare for your license.',
+    cta: 'Get Started',
+  },
+  login: {
+    heroAlt: 'Welcome background',
+    title: 'Welcome!',
+    subtitle: 'Sign in to continue.',
+    emailIconAlt: 'Email',
+    emailPlaceholder: 'Email',
+    passwordIconAlt: 'Password',
+    passwordToggleShow: 'Show password',
+    passwordToggleHide: 'Hide password',
+    capsLockWarning: 'Caps Lock is on',
+    forgotPassword: 'Forgot password?',
+    submitIdle: 'Sign In',
+    submitLoading: 'Signing in...',
+    createAccount: 'Create a new account',
+    continueAsGuest: 'Continue as guest',
+    socialDivider: 'or continue with',
+    providers: {
+      google: 'Google',
+      apple: 'Apple',
+      wechat: 'WeChat',
+    },
+    social: {
+      googleAria: 'Continue with Google',
+      appleAria: 'Continue with Apple',
+      wechatAria: 'Continue with WeChat',
+      comingSoon: '{provider} sign-in is coming soon.',
+      comingSoonTitle: 'Coming soon',
+    },
+    errors: {
+      invalidEmail: 'Please enter a valid email address.',
+      invalidCredentials: "Email or password doesn’t match. Try again or reset your password.",
+      network: 'Network error. Please try again.',
+      noOauthUrl: 'No OAuth URL returned.',
+      googleFailed: 'Google sign-in failed. Please try again.',
+    },
+  },
+  createAccount: {
+    title: 'Create Account',
+    subtitle: 'Sign up to get started',
+    checkEmailTitle: 'Check your email',
+    checkEmailBody: 'We sent a confirmation link to {email}.',
+    checkEmailHelp: 'Open it to activate your account, then come back and sign in.',
+    gotIt: 'Got it',
+    emailLabel: 'Email',
+    emailPlaceholder: 'user@expatise.com',
+    passwordLabel: 'Password',
+    passwordPlaceholder: 'Password',
+    confirmLabel: 'Confirm',
+    confirmPlaceholder: 'Confirm password',
+    passwordToggleShow: 'Show password',
+    passwordToggleHide: 'Hide password',
+    submitIdle: 'Create new account',
+    submitLoading: 'Creating...',
+    divider: 'or continue with',
+    social: {
+      googleAria: 'Sign up with Google',
+      appleAria: 'Sign up with Apple',
+      wechatAria: 'Sign up with WeChat',
+    },
+    closeAria: 'Close',
+    errors: {
+      invalidEmail: 'Please enter a valid email.',
+      passwordMin: 'Password must be at least 8 characters.',
+      passwordMismatch: 'Passwords do not match.',
+      alreadyRegistered: 'This email is already registered. Try logging in instead.',
+      network: 'Network error. Please try again.',
+      noOauthUrl: 'No OAuth URL returned.',
+      googleFailed: 'Google sign-up failed. Please try again.',
+    },
+  },
+  home: {
+    time: {
+      am: 'AM',
+      pm: 'PM',
+    },
+    examCard: {
+      label: 'Exam',
+      title: 'Registration',
+      myTestDay: 'My Test Day:',
+      testTime: 'Test Time',
+      daysLeft: 'Days Left',
+      carAlt: 'Blue car',
+    },
+    sections: {
+      testMode: 'Test Mode',
+      overall: 'Overall',
+      my: 'My',
+    },
+    cards: {
+      testModes: {
+        real: {
+          ariaLabel: 'Open Real Test',
+          bgAlt: 'Real Test background',
+          iconAlt: 'Real Test icon',
+          topText: 'Practice under real exam conditions with a timer.',
+          title: 'Real Test',
+        },
+        tenPercent: {
+          ariaLabel: 'Open 10% Test',
+          bgAlt: '10% Test background',
+          iconAlt: '10% Test icon',
+          topText: '10 questions. 5 minutes.',
+          title: '10% Test',
+        },
+        practice: {
+          ariaLabel: 'Open Practice Test',
+          bgAlt: 'Practice Test background',
+          iconAlt: 'Practice Test icon',
+          topText: 'Study at your own pace. No time limit!',
+          title: 'Practice Test',
+        },
+        half: {
+          ariaLabel: 'Open Half Test',
+          bgAlt: 'Half Test background',
+          iconAlt: 'Half Test icon',
+          topText: 'Half the questions. Half the time.',
+          title: 'Half Test',
+        },
+        rapid: {
+          ariaLabel: 'Open Rapid Fire Test',
+          bgAlt: 'Rapid Fire background',
+          iconAlt: 'Rapid Fire icon',
+          topText: 'Sharpen your reflexes and memory in bursts.',
+          title: 'Rapid Fire Test',
+        },
+      },
+      overall: {
+        allQuestions: {
+          ariaLabel: 'Open All Questions',
+          bgAlt: 'All Questions background',
+          iconAlt: 'All Questions icon',
+          topText: 'Filter through the entire question bank.',
+          title: 'All Questions',
+        },
+        globalMistakes: {
+          ariaLabel: 'Open Global Common Mistakes',
+          bgAlt: 'Global Common Mistakes background',
+          iconAlt: 'Global Common Mistakes icon',
+          topText: 'See which questions others miss most.',
+          title: 'Global Common Mistakes',
+        },
+      },
+      my: {
+        bookmarks: {
+          ariaLabel: 'Open My Bookmarks',
+          bgAlt: 'My Bookmarks background',
+          iconAlt: 'My Bookmarks icon',
+          topText: 'Save questions and build your own study list.',
+          title: 'My Bookmarks',
+        },
+        mistakes: {
+          ariaLabel: 'Open My Mistakes',
+          bgAlt: 'My Mistakes background',
+          iconAlt: 'My Mistakes icon',
+          topText: 'Revisit questions you got wrong.',
+          title: 'My Mistakes',
+        },
+      },
+    },
+    modal: {
+      greeting: 'Have a great day!',
+      sunAlt: 'Sun icon',
+      fallbackName: 'Expat Expertise',
+      subtitle: "Don't miss your exam date!",
+      titleBefore: "When's your",
+      titleHighlight: 'Test?',
+      description:
+        'Your test date will be updated on the home page, making it easy for you to see and remember.',
+      monthLabel: 'MM',
+      dayLabel: 'DD',
+      yearLabel: 'YYYY',
+      timeLabel: 'TIME',
+      setDay: 'Set The Day',
+      avatarAlt: '{name} avatar',
+    },
+  },
+  premium: {
+    imageAlt: 'Premium',
+    title: 'Get premium today',
+    subtitle: 'Remove ads and unlock all features:',
+    featuresAria: 'Premium features',
+    planListAria: 'Choose a plan',
+    promo: {
+      label: 'Got a Promocode?',
+      toggle: 'Apply Here',
+      note:
+        "Enjoying the app? A quick review helps a lot and goes a long way for me. That's right me. I used to be on the same side of that screen as you. I got fed up with the options I had and learned how to make this app just for you. Enjoy!",
+      inputPlaceholder: 'Enter Promo Code',
+      apply: 'Apply Code',
+      emptyError: 'Please enter a promo code.',
+      invalidError: 'Invalid promo code.',
+    },
+    plans: {
+      monthly: '1 Month',
+      threeMonth: '3 Months',
+      sixMonth: '6 Months',
+      lifetime: 'Lifetime',
+    },
+    features: {
+      personalStats: {
+        title: 'Personal Stats',
+        description: 'Track scores, time & progress',
+      },
+      testModes: {
+        title: 'Test Modes',
+        description: 'Real, Practice, Rapid Fire & more',
+      },
+      mistakesHub: {
+        title: 'Mistakes Hub',
+        description: 'Global + My Mistakes review',
+      },
+      questionBank: {
+        title: 'Question Bank',
+        description: 'All questions & Bookmarks',
+      },
+    },
+    cta: 'Get Premium Now',
+    errors: {
+      selectPlan: 'Please select a plan.',
+      noCurrentOffering: 'No current offering is configured in RevenueCat.',
+      packageUnavailable: 'The selected plan is currently unavailable.',
+      purchaseFailed: 'Purchase failed. Please try again.',
+      mobileOnly:
+        'Premium purchases are currently available only in the mobile app. Use the app to purchase or restore access.',
+    },
+  },
+  profile: {
+    signIn: {
+      guest: 'Signed in as guest.',
+      email: 'Email sign-in',
+      google: 'Google sign-in',
+      apple: 'Apple ID',
+      wechat: 'WeChat',
+      social: 'Social sign-in',
+    },
+    messages: {
+      saved: 'Saved!',
+      restoreLoginRequired: 'Log in to restore past purchases.',
+      restoreMobileOnly: 'Restore purchases is available in the mobile app.',
+      restoreUnavailable: 'Restore is temporarily unavailable. Please try again.',
+      restoreNone: 'No purchases found to restore.',
+      restoreSuccess: 'Purchases restored.',
+      restoreFailed: 'Restore failed. Please try again.',
+    },
+    avatarAlt: 'User avatar',
+    avatarPlaceholderAlt: 'Image upload icon',
+    premiumIconAlt: 'Premium icon',
+    premiumPlan: 'Premium Plan',
+    lightDarkModeIconAlt: 'Light / Dark Mode icon',
+    lightDarkMode: 'Light / Dark Mode',
+    accountSecurityIconAlt: 'Account security',
+    changeCredentials: 'Change Email/Password',
+    restorePurchases: 'Restore Purchases',
+    restoring: 'Restoring...',
+    privacyPolicyIconAlt: 'Privacy Policy',
+    privacyPolicy: 'Privacy Policy',
+    termsIconAlt: 'Terms of Service',
+    terms: 'Terms of Service',
+    deleteAccountIconAlt: 'Delete Account',
+    deleteAccount: 'Delete Account',
+    languageIconAlt: 'Language',
+    notificationsIconAlt: 'Notifications',
+    notifications: 'Notifications',
+    toastCheckAlt: 'Checkmark icon',
+    toastInfoAlt: 'Info',
+    language: {
+      label: 'Language',
+      switchAria: 'Change app language. Current language: {language}',
+      notReady: 'Not ready',
+    },
+  },
+  forgotPassword: {
+    title: 'Reset password',
+    subtitle: 'Enter your email and we’ll send you a reset link.',
+    emailLabel: 'Email',
+    emailPlaceholder: 'user@expatise.com',
+    sendIdle: 'Send reset link',
+    sendLoading: 'Sending...',
+    success: 'If that email exists, we sent a reset link. Open it to set a new password.',
+    invalidEmail: 'Please enter a valid email.',
+  },
+  resetPassword: {
+    title: 'Set a new password',
+    newPasswordLabel: 'New password',
+    confirmPasswordLabel: 'Confirm password',
+    updateIdle: 'Update password',
+    updateLoading: 'Updating...',
+    success: 'Password updated. Please sign in again.',
+    invalidLink: 'This reset link is invalid or expired. Please request a new reset email.',
+    errors: {
+      passwordMin: 'Password must be at least 8 characters.',
+      passwordMismatch: 'Passwords do not match.',
+    },
+  },
+  accountSecurity: {
+    title: 'Change Email / Password',
+    pageTitle: 'Account Security',
+    emailPasswordOnly:
+      'This page is only available for accounts created with Email + Password.',
+    goToLogin: 'Go to login',
+    profile: 'Profile',
+    changeEmail: 'Change Email',
+    changePassword: 'Change Password',
+    newEmailPlaceholder: 'New email',
+    currentPasswordPlaceholder: 'Current password',
+    newPasswordPlaceholder: 'New password',
+    confirmNewPasswordPlaceholder: 'Confirm new password',
+    messages: {
+      missingCurrentEmail: 'Missing current email.',
+      currentPasswordIncorrect: 'Current password is incorrect.',
+      fillAllPasswordFields: 'Please fill all password fields.',
+      newPasswordMin: 'New password must be at least 8 characters.',
+      newPasswordsMismatch: 'New passwords do not match.',
+      changePasswordFailed: 'Failed to change password.',
+      passwordUpdated: 'Password updated.',
+      invalidNewEmail: 'Please enter a valid new email.',
+      enterCurrentPassword: 'Please enter your current password.',
+      changeEmailFailed: 'Failed to change email.',
+      emailUpdateRequested: 'Email update requested. Please check your email to confirm the change.',
+    },
+  },
+  comingSoon: {
+    title: 'Coming Soon',
+    defaultFeature: 'This feature',
+    notificationsKey: 'notifications',
+    featureNames: {
+      notifications: 'Notifications',
+    },
+    notificationsDetail: 'Push notifications are not available in Expatise yet.',
+    genericDetail: '{feature} is not ready yet.',
+  },
+  checkout: {
+    planTitles: {
+      monthly: '1 Month Plan',
+      threeMonth: '3 Month Plan',
+      sixMonth: '6 Month Plan',
+      lifetime: 'Lifetime Plan',
+    },
+    webCheckoutUnavailable: 'Web checkout unavailable',
+    summary: 'Web checkout is not available in this release.',
+    detail:
+      'Premium purchases are currently available only in the mobile app. If you already purchased Premium there, open the app and use the restore option from your profile if needed.',
+    backgroundAlt: 'Checkout background',
+    iconAlt: 'Checkout unavailable',
+    successTitle: 'Web Checkout Unavailable',
+    successSubtitle: 'Premium purchases are currently available only in the mobile app.',
+  },
+  authCallback: {
+    completing: 'Completing sign-in...',
+    failed: 'Sign-in failed: {reason}',
+    noSession:
+      'Sign-in failed: no session created. (Likely PKCE storage mismatch or blocked callback.)',
+  },
+  results: {
+    loading: 'Loading results...',
+    congratulations: 'Congratulations!',
+    scoreProgressAria: 'Score progress',
+    score: 'Score',
+    time: 'Time',
+    title: 'Test Results',
+    incorrect: 'Incorrect',
+    switchToListAria: 'Switch to list view',
+    switchToSwipeAria: 'Switch to swipe view',
+    listViewTitle: 'List view',
+    swipeViewTitle: 'Swipe view',
+    noIncorrect: 'Expatise! No incorrect questions! 🎉',
+    explanation: 'Explanation:',
+    homeIconAlt: 'Home',
+    untimed: 'Untimed',
+    timeText: '{minutes}min {seconds}sec',
+    rowOptions: {
+      right: 'Right',
+      wrong: 'Wrong',
+    },
+  },
+  questionReview: {
+    allQuestionsTitle: 'All Questions',
+    myBookmarksTitle: 'My Bookmarks',
+    myMistakesTitle: 'My Mistakes',
+    mistakesQuiz: 'Mistakes Quiz',
+    bookmarksQuiz: 'Bookmarks Quiz',
+    countAria: '{count} questions',
+    searchPlaceholder: 'Search question text...',
+    deleteBookmarksAria: 'Delete {count} bookmarks',
+    removeMistakesAria: 'Remove {count} mistakes from view',
+    selectAllVisibleAria: 'Select all visible',
+    clearSelectionAria: 'Clear selection',
+    selectAllTitle: 'Select all',
+    clearSelectionTitle: 'Clear selection',
+    unclassified: 'Unclassified',
+    globalMistakesTitle: 'Global Common Mistakes',
+    globalMistakesQuiz: 'Global Mistakes Quiz',
+    previewMock: 'Preview rankings (mock data).',
+    previewEmpty: 'Not enough global data yet — this will fill in after backend is connected.',
+    loading: 'Loading...',
+    noQuestions: 'No questions to show yet.',
+    wrongRateTitle: '{wrong}/{total} wrong',
+    wrongRateLabel: '{percent}% wrong',
+    answerLabel: 'Answer',
+  },
+  qbank: {
+    taxonomy: {
+      topics: {
+        roadSafety: 'Road Safety',
+        trafficSignals: 'Traffic Signals',
+        properDriving: 'Proper Driving',
+        drivingOperations: 'Driving Operations',
+      },
+      subtopics: {
+        license: 'License',
+        registration: 'Registration',
+        accidents: 'Accidents',
+        roadConditions: 'Road Conditions',
+        signalLights: 'Signal Lights',
+        roadSigns: 'Road Signs',
+        roadMarkings: 'Road Markings',
+        policeSignals: 'Police Signals',
+        safeDriving: 'Safe Driving',
+        trafficLaws: 'Traffic Laws',
+        indicators: 'Indicators',
+        gears: 'Gears',
+      },
+    },
+  },
+  test: {
+    loading: 'Loading...',
+    noQuestionsFound: 'No questions found.',
+    noBookmarks:
+      'No bookmarks yet. Bookmark questions first, then come back to practice them here.',
+    noMistakes:
+      'No mistakes yet. Take a test first, then come back to retest and clear them by answering correctly.',
+    noWeakTopics:
+      "No questions found for your weakest topics. Please make sure you've taken some tests and have weak topics to practice.",
+    premiumRequired: 'Upgrade to Premium to start this test.',
+    autoAdvance: 'Next in {seconds}s',
+    rowOptions: {
+      right: 'Right',
+      wrong: 'Wrong',
+    },
+  },
+  charts: {
+    score: {
+      legendScore: 'Score',
+      legendAverage: 'Average',
+      pass: 'Pass {value}%',
+      tooltipAnswered: '{answered} answered · {total} total',
+      tooltipScore: 'Score:',
+      tooltipAverage: 'Avg score:',
+      summaryAvg: 'Avg',
+      summaryBest: 'Best',
+      summaryLatest: 'Latest',
+      summaryBasedOn: 'Based on',
+      summaryAnswers: '{count} answers',
+      lowConfidence: 'Low confidence: only {attempts} tests / {answers} answers in this window.',
+    },
+    screenTime: {
+      legendTest: 'Test',
+      legendStudy: 'Study',
+      legendTotal: 'Total',
+      legendSevenDayAvg: '7D avg',
+      avgLabel: '7D avg',
+      today: 'Today',
+      tooltipTest: 'Test',
+      tooltipStudy: 'Study',
+      tooltipTotal: 'Total',
+      tooltipPercentOfWeek: '{percent}% of week',
+      summaryTotal: '7D total',
+      summaryAvgPerDay: 'Avg/day',
+      summaryBest: 'Best',
+      summaryRoutine: 'Routine',
+      summaryStreak: 'Streak',
+      routineDays: '{count}/7 days',
+      streakDays: '{count}d',
+      compareOverlay: 'Compare overlay: enabled',
+      lowConfidenceWeek: 'Low confidence: only {minutes} minutes logged this week.',
+      lowConfidenceStudy: 'Low confidence: study tracking not enabled yet (showing 0m study).',
+      lowConfidenceTimed: 'Low confidence: only {minutes} timed-test minutes detected.',
+    },
+    dailyProgress: {
+      legendQuestions: 'Questions',
+      legendAvgScore: 'Avg score',
+      axisQuestions: 'Questions',
+      axisScore: 'Score',
+      tooltipAnswered: '{answered} answered · {tests} tests',
+      tooltipAvgScore: 'Avg score:',
+      bestDay: 'Best day:',
+      bestDayQuestions: '{count} questions',
+      consistencyStreak: 'Consistency streak:',
+      streakDays: '{count} days',
+    },
+    heatmap: {
+      notEnoughData: 'Not enough data yet.',
+      bestWindow: 'Your best window:',
+      bestWindowMeta: '({count} tests)',
+      confidenceNote: 'Low confidence: only {count} tests in this window.',
+      legendScore: 'Score',
+      legendLowToHigh: 'low → high',
+      legendConfidence: 'Confidence',
+      legendMoreTests: 'more tests = stronger',
+      tooltipAvg: 'Avg {score}% · {count} tests',
+      tooltipLowConfidence: 'Low confidence',
+      tooltipGoodConfidence: 'Good confidence',
+      dayParts: {
+        morningShort: 'AM',
+        middayShort: 'Noon',
+        eveningShort: 'PM',
+        lateShort: 'Late',
+        morningTitle: 'Morning: 6~12 AM',
+        middayTitle: 'Midday: 12~5 PM',
+        eveningTitle: 'Evening: 5~10 PM',
+        lateTitle: 'Late: 10~6 (crosses midnight)',
+        basedOnLocalTime: 'Based on your local time.',
+      },
+    },
+    topicMastery: {
+      weakestRightNow: 'Weakest right now',
+      empty: 'Not enough topic data yet (need at least {count} answered per subtopic).',
+      answered: '{count} answered',
+      subEmpty: 'Need more answers in this topic to rank subtopics.',
+      chipTitle: '{label} · {accuracy}% · {answered} answered',
+    },
+  },
+  stats: {
+    modes: {
+      realTest: 'Real Test',
+      halfTest: 'Half Test',
+      rapidFire: 'Rapid Fire',
+      tenPercent: '10% Test',
+    },
+    timeframes: {
+      allShort: 'All',
+      daysShort: '{days}D',
+      allTime: 'all time',
+      lastDays: 'last {days} days',
+    },
+    tooltips: {
+      includes: 'Includes: {modes} · {timeframe}',
+    },
+    readiness: {
+      ringTitle: 'License Exam',
+      ringLabel: 'Readiness',
+      ringAria: 'License Exam Readiness {pct}%',
+      ringInfo: 'Includes: Real Test only.',
+      summary: '{timeframe} accuracy: {accuracy}% · Tests: {count}',
+      basedOn: 'Based on {count} questions answered',
+      takeTest: 'Take a Test',
+    },
+    reset: {
+      button: 'Reset All Stats',
+      aria: 'Reset all stats data',
+      title: 'Reset all stats data',
+      reseedButton: 'Re-seed Demo Data',
+      reseedAria: 'Re-seed demo stats',
+      reseedTitle: 'Re-seed demo stats',
+      needLoginConfirm: 'You need to log in to reset synced stats. Press OK to log in.',
+      prompt:
+        'This will permanently delete all stats data from your account and this device.\n\nType RESET to confirm:',
+      mustBeLoggedIn: 'You must be logged in to reset cloud stats.',
+      missingEnv: 'Missing Supabase URL or anon key in environment.',
+      cloudResetFailed: 'Cloud reset failed.',
+      resetFailed: 'Reset failed. Please try again.',
+    },
+    cards: {
+      screenTime: 'Screen Time',
+      score: 'Score',
+      dailyProgress: 'Daily Progress',
+      heatmap: 'Heatmap',
+      topicMastery: 'Topic Mastery',
+      aiCoach: 'AI Coach',
+    },
+    scoreCard: {
+      noTests: 'No submitted tests yet ({timeframe}).',
+    },
+    dailyProgressCard: {
+      noData: 'No daily data yet.',
+    },
+    topicMasteryCard: {
+      quizButton: 'Topic Quiz',
+      quizTitle: 'Start a 20-question quiz from your weakest subtopics',
+      noData: 'Not enough data yet (need more answers per topic).',
+    },
+    reviewMistakes: 'Review Your Mistakes',
+    coach: {
+      loading: 'Loading...',
+      needsDataTitle: 'AI Coach needs a bit more data.',
+      needsDataBody:
+        'To generate a personalized report, complete either:\n• 1 Real Test with 80+ answers, or\n• 120 total questions answered (practice + tests)',
+      needsDataHint: 'More answers = less randomness → better advice.',
+      startNow: 'Start Now',
+      firstReportTitle: 'You’re ready for a first Coach report — here’s how to make it “laser-accurate”.',
+      firstReportBody:
+        'For the most tailored advice (topics + habits + patterns), aim for:\n✅ 3 Real Tests (300 questions) across 3+ days',
+      firstReportNextSteps:
+        'Next steps:\n• Do 2 more Real Tests on separate days\n• Try the 2-pass rule (answer easy first, then return)\n• Keep a 10-minute minimum on non-test days',
+      readyText: 'Coach runs on demand (Skill: 30d · Habits: 7d). Tap to generate your latest plan.',
+      generateTitle: 'Generate Coach Report',
+      generating: 'Generating...',
+      locked: 'Coach Locked',
+      nextAvailable: 'Next available in {time}',
+      cooldownActive:
+        'Next Coach report available in {time}. You can still read your last report anytime.',
+      cooldownIdle: 'Coach reports are limited to 1 per 24 hours. Your latest report stays saved here.',
+      reportTitle: 'Coach Report',
+      reportStamp: 'Last report: {stamp}',
+      errors: {
+        sessionRead: 'Could not read session: {message}',
+        sessionRefresh: 'Could not refresh session: {message}',
+        loginRequired: 'You must be logged in to generate a Coach report.',
+        missingEnv: 'Missing Supabase URL or anon key in environment.',
+        requestFailedStatus: 'Coach request failed ({status}).',
+        requestFailed: 'Coach request failed. Please try again.',
+        cooldown: 'Next Coach report available in {time}.',
+        insufficientData:
+          'Not enough data yet for personalized coaching. Complete 1 Real Test (80+ answers) or reach 120 answered total.',
+        emptyReport: 'Coach returned an empty report. Please try again.',
+      },
+    },
+  },
+  accountDeletion: {
+    title: 'Account & Data Deletion',
+    intro: 'This page explains how to request deletion of your {appName} account and associated data.',
+    successTitle: 'Your in-app deletion is complete.',
+    successBody:
+      'If you arrived here right after using Profile → Delete Account, your account has already been deleted and you have been signed out of the app.',
+    quickOptions: 'Quick options:',
+    optionA: 'Option A — Delete inside the app',
+    optionB: 'Option B — Request deletion by email',
+    inAppTitle: 'Option A — In-app deletion',
+    inAppBody:
+      'If you can access the app, go to Profile → Delete Account and follow the steps shown on screen. When the in-app automated flow succeeds, deletion happens immediately and signs you out.',
+    emailTitle: 'Option B — Request deletion by email (if you can’t access the app)',
+    emailIntroPrefix: 'Email {team} at',
+    emailIntroMiddle: 'using the subject',
+    emailIntroSuffix: '.',
+    pleaseInclude: 'Please include:',
+    includeSignIn: 'The email you used to sign in (or the provider, e.g., Google/Apple)',
+    includeIdentifier: 'Any helpful identifier (username/display name) if applicable',
+    includeStatement: 'A clear statement: “Please delete my account and associated data.”',
+    verifyNote:
+      'To protect your account, we may ask you to verify ownership before processing the deletion request.',
+    processingTimeTitle: 'Processing time',
+    processingInApp: 'In-app deletion: immediate when the automated flow succeeds.',
+    processingEmail:
+      'Email deletion requests: after verification (if needed), we typically complete them within {days} days.',
+    whatWeDeleteTitle: 'What we delete',
+    deleteAccountRecord: 'Your account record (authentication/profile)',
+    deleteServerData: 'Data associated with your account stored on our servers',
+    examplesNote:
+      'Examples may include profile details and content or activity tied to your account (if applicable).',
+    retainTitle: 'What we may retain',
+    retainLegal: 'Limited information if required by law, compliance, or dispute handling',
+    retainSecurity: 'Security/fraud-prevention records where applicable',
+    retainNote:
+      'Backups may retain data for a limited period before being overwritten. When possible, retained data is restricted and minimized.',
+    needHelpTitle: 'Need help?',
+    needHelpPrefix: 'If you can’t access the email you signed up with, contact',
+    needHelpSuffix: 'and explain your situation. We’ll tell you what we can do safely.',
+    lastUpdated: 'Last updated: {date}',
+    emailTemplate: {
+      subject: 'Account deletion request',
+      greeting: 'Hello {team},',
+      request: 'Please delete my account and associated data.',
+      details: 'Account details (so you can locate me):',
+      signIn: '- Sign-in email (or provider, e.g., Google/Apple):',
+      username: '- Username / display name (if applicable):',
+      thanks: 'Thank you.',
+    },
+  },
+  deleteAccount: {
+    title: 'Delete Account',
+    done: 'Your account has been deleted. Redirecting...',
+    body: 'This will permanently delete your account and server-stored data for this account.',
+    confirmLabel: 'Type DELETE to confirm',
+    confirmPlaceholder: 'DELETE',
+    deleteButton: 'Delete My Account',
+    deleting: 'Deleting...',
+    loginRequired: 'Please log in to delete your account.',
+    missingEnv: 'App configuration is incomplete. Please try again later.',
+    failed: 'Account deletion failed.',
+  },
+} as const;
+
+```
+
+### messages/index.ts
+```tsx
+//messages/index.ts
+
+import type { MessageSchema } from '@/lib/i18n/types';
+
+import { en } from './en';
+import { ko } from './ko';
+
+export type AppMessages = MessageSchema<typeof en>;
+
+export type LocaleDefinition<TMessages = AppMessages> = {
+  label: string;
+  messages: TMessages;
+};
+
+// Add new locales by importing the messages file above and registering it here.
+export const LOCALE_REGISTRY = {
+  en: {
+    label: 'English',
+    messages: en,
+  },
+  ko: {
+    label: '한국어',
+    messages: ko,
+  },
+} as const satisfies Record<string, LocaleDefinition>;
+
+export type Locale = keyof typeof LOCALE_REGISTRY;
+
+export const DEFAULT_LOCALE = 'en' as const satisfies Locale;
+
+```
+
+### messages/ko.ts
+```tsx
+import { en } from './en';
+import type { MessageSchema } from '@/lib/i18n/types';
+
+export const ko = {
+  shared: {
+    nav: {
+      home: '홈',
+      stats: '통계',
+      profile: '프로필',
+      homeIconAlt: '하단 탐색 홈 아이콘',
+      statsIconAlt: '하단 탐색 통계 아이콘',
+      profileIconAlt: '하단 탐색 프로필 아이콘',
+    },
+    progressBadge: {
+      text: '{shown}/{questions}문항 · 시험 {starts}/{exams}회',
+      ariaLabel: '무료 사용 현황',
+      title: '무료 사용 현황 ({userKey})',
+    },
+    premiumFeatureModal: {
+      title: '이 기능은 프리미엄에서 사용할 수 있습니다.',
+      authedText: '현재 무료 플랜을 사용 중입니다. 이 기능과 다른 프리미엄 도구를 이용하려면 프리미엄으로 업그레이드하세요.',
+      guestText:
+        '현재 무료 게스트 계정을 사용 중입니다. 진행 상황을 저장하려면 로그인하고, 이 기능을 이용하려면 프리미엄으로 업그레이드하세요.',
+      notNow: '나중에',
+      upgrade: '프리미엄으로 업그레이드',
+      continueAsGuest: '게스트로 계속',
+      login: '로그인',
+    },
+    infoTip: {
+      ariaLabel: '정보',
+    },
+    logout: {
+      idle: '로그아웃',
+      loading: '로그아웃 중...',
+    },
+    bookmarks: {
+      addAria: '북마크 추가',
+      removeAria: '북마크 해제',
+      idleTitle: '북마크',
+      activeTitle: '북마크됨',
+    },
+    questionImageAlt: '문항 이미지',
+    scrollToTop: {
+      ariaLabel: '맨 위로 이동',
+      title: '맨 위로',
+    },
+    brandAlt: 'Expatise',
+    common: {
+      loading: '불러오는 중...',
+      delete: '삭제',
+      cancel: '취소',
+      next: '다음',
+      home: '홈',
+      save: '저장',
+      saving: '저장 중...',
+      backToPremium: '프리미엄으로 돌아가기',
+      backToSignIn: '로그인으로 돌아가기',
+      updateEmail: '이메일 업데이트',
+      updatePassword: '비밀번호 업데이트',
+      noTimeLimit: '시간 제한 없음',
+      return: '돌아가기',
+    },
+  },
+  onboarding: {
+    heroAlt: '온보딩 이미지',
+    title: {
+      before: '어디서든',
+      highlight: '운전면허',
+      after: '시험을 준비하세요',
+    },
+    subtitle: '면허 시험 준비를 간편하게 시작하세요.',
+    cta: '시작하기',
+  },
+  login: {
+    heroAlt: '로그인 배경',
+    title: '환영합니다!',
+    subtitle: '계속하려면 로그인하세요.',
+    emailIconAlt: '이메일',
+    emailPlaceholder: '이메일',
+    passwordIconAlt: '비밀번호',
+    passwordToggleShow: '비밀번호 표시',
+    passwordToggleHide: '비밀번호 숨기기',
+    capsLockWarning: 'Caps Lock이 켜져 있습니다',
+    forgotPassword: '비밀번호를 잊으셨나요?',
+    submitIdle: '로그인',
+    submitLoading: '로그인 중...',
+    createAccount: '새 계정 만들기',
+    continueAsGuest: '게스트로 계속하기',
+    socialDivider: '또는 소셜 계정으로 계속하기',
+    providers: {
+      google: 'Google',
+      apple: 'Apple',
+      wechat: 'WeChat',
+    },
+    social: {
+      googleAria: 'Google로 계속하기',
+      appleAria: 'Apple로 계속하기',
+      wechatAria: 'WeChat으로 계속하기',
+      comingSoon: '{provider} 로그인은 곧 지원됩니다.',
+      comingSoonTitle: '곧 지원 예정',
+    },
+    errors: {
+      invalidEmail: '올바른 이메일 주소를 입력해주세요.',
+      invalidCredentials: '이메일 또는 비밀번호가 일치하지 않습니다. 다시 시도하거나 비밀번호를 재설정하세요.',
+      network: '네트워크 오류가 발생했습니다. 다시 시도해주세요.',
+      noOauthUrl: 'OAuth URL을 불러오지 못했습니다.',
+      googleFailed: 'Google 로그인에 실패했습니다. 다시 시도해주세요.',
+    },
+  },
+  createAccount: {
+    title: '계정 만들기',
+    subtitle: '가입하고 시작하세요',
+    checkEmailTitle: '이메일을 확인하세요',
+    checkEmailBody: '{email}으로 확인 링크를 보냈습니다.',
+    checkEmailHelp: '링크를 열어 계정을 활성화한 뒤 다시 로그인하세요.',
+    gotIt: '확인',
+    emailLabel: '이메일',
+    emailPlaceholder: 'user@expatise.com',
+    passwordLabel: '비밀번호',
+    passwordPlaceholder: '비밀번호',
+    confirmLabel: '비밀번호 확인',
+    confirmPlaceholder: '비밀번호 다시 입력',
+    passwordToggleShow: '비밀번호 표시',
+    passwordToggleHide: '비밀번호 숨기기',
+    submitIdle: '새 계정 만들기',
+    submitLoading: '계정 생성 중...',
+    divider: '또는 소셜 계정으로 계속하기',
+    social: {
+      googleAria: 'Google로 가입하기',
+      appleAria: 'Apple로 가입하기',
+      wechatAria: 'WeChat으로 가입하기',
+    },
+    closeAria: '닫기',
+    errors: {
+      invalidEmail: '올바른 이메일을 입력해주세요.',
+      passwordMin: '비밀번호는 8자 이상이어야 합니다.',
+      passwordMismatch: '비밀번호가 일치하지 않습니다.',
+      alreadyRegistered: '이미 등록된 이메일입니다. 대신 로그인해보세요.',
+      network: '네트워크 오류가 발생했습니다. 다시 시도해주세요.',
+      noOauthUrl: 'OAuth URL을 불러오지 못했습니다.',
+      googleFailed: 'Google 가입에 실패했습니다. 다시 시도해주세요.',
+    },
+  },
+  home: {
+    time: {
+      am: '오전',
+      pm: '오후',
+    },
+    examCard: {
+      label: '시험',
+      title: '접수',
+      myTestDay: '내 시험일:',
+      testTime: '시험 시간',
+      daysLeft: '남은 일수',
+      carAlt: '파란 자동차',
+    },
+    sections: {
+      testMode: '테스트 모드',
+      overall: '전체',
+      my: '마이',
+    },
+    cards: {
+      testModes: {
+        real: {
+          ariaLabel: '실전 모드 열기',
+          bgAlt: '실전 모드 배경',
+          iconAlt: '실전 모드 아이콘',
+          topText: '실제 시험처럼 시간 제한으로 연습하세요.',
+          title: '실전 모드',
+        },
+        tenPercent: {
+          ariaLabel: '10% 테스트 열기',
+          bgAlt: '10% 테스트 배경',
+          iconAlt: '10% 테스트 아이콘',
+          topText: '10문항, 5분.',
+          title: '십일조(10%) 모드',
+        },
+        practice: {
+          ariaLabel: '연습 모드 열기',
+          bgAlt: '연습 모드 배경',
+          iconAlt: '연습 모드 아이콘',
+          topText: '시간 제한 없이 내 속도로 학습하세요.',
+          title: '연습 모드',
+        },
+        half: {
+          ariaLabel: '반반 모드 열기',
+          bgAlt: '반반 모드 배경',
+          iconAlt: '반반 모드 아이콘',
+          topText: '문항도 절반, 시간도 절반.',
+          title: '반반 테스트',
+        },
+        rapid: {
+          ariaLabel: '스피드 모드 열기',
+          bgAlt: '스피드 모드 배경',
+          iconAlt: '스피드 모드 아이콘',
+          topText: '짧고 빠르게 반응력과 기억력을 다져보세요.',
+          title: '스피드 모드',
+        },
+      },
+      overall: {
+        allQuestions: {
+          ariaLabel: '전체 문제 열기',
+          bgAlt: '전체 문제 배경',
+          iconAlt: '전체 문제 아이콘',
+          topText: '전 문제집을 필터해서 보세요.',
+          title: '전문항집',
+        },
+        globalMistakes: {
+          ariaLabel: '전체 공통 오답 열기',
+          bgAlt: '전체 공통 오답 배경',
+          iconAlt: '전체 공통 오답 아이콘',
+          topText: '다른 사람들이 자주 틀리는 문제를 확인하세요.',
+          title: '글로벌 공통 오답',
+        },
+      },
+      my: {
+        bookmarks: {
+          ariaLabel: '내 북마크 열기',
+          bgAlt: '내 북마크 배경',
+          iconAlt: '내 북마크 아이콘',
+          topText: '문제를 저장해 나만의 학습 목록을 만드세요.',
+          title: '북마크',
+        },
+        mistakes: {
+          ariaLabel: '내 오답 열기',
+          bgAlt: '내 오답 배경',
+          iconAlt: '내 오답 아이콘',
+          topText: '틀렸던 문제를 다시 복습하세요.',
+          title: '오답 노트',
+        },
+      },
+    },
+    modal: {
+      greeting: '좋은 하루 보내세요!',
+      sunAlt: '해 아이콘',
+      fallbackName: 'Expat Expertise',
+      subtitle: '시험 날짜를 놓치지 마세요!',
+      titleBefore: '언제',
+      titleHighlight: '시험인가요?',
+      description: '홈 화면에서 시험 날짜를 바로 확인하고 쉽게 기억할 수 있도록 업데이트됩니다.',
+      monthLabel: 'MM',
+      dayLabel: 'DD',
+      yearLabel: 'YYYY',
+      timeLabel: 'TIME',
+      setDay: '날짜 설정',
+      avatarAlt: '{name} 아바타',
+    },
+  },
+  premium: {
+    imageAlt: '프리미엄',
+    title: '지금 프리미엄을 시작하세요',
+    subtitle: '광고를 제거하고 모든 기능을 잠금 해제하세요:',
+    featuresAria: '프리미엄 기능',
+    planListAria: '플랜 선택',
+    promo: {
+      label: '프로모션 코드가 있나요?',
+      toggle: '적용하기',
+      note:
+        '앱이 마음에 드셨다면 짧은 리뷰가 큰 도움이 됩니다. 저도 같은 입장에서 불편함을 느껴 직접 이 앱을 만들었습니다. 즐겁게 사용해주세요!',
+      inputPlaceholder: '프로모션 코드 입력',
+      apply: '코드 적용',
+      emptyError: '프로모션 코드를 입력해주세요.',
+      invalidError: '유효하지 않은 프로모션 코드입니다.',
+    },
+    plans: {
+      monthly: '1개월',
+      threeMonth: '3개월',
+      sixMonth: '6개월',
+      lifetime: '평생',
+    },
+    features: {
+      personalStats: {
+        title: '개인 통계',
+        description: '점수, 시간, 진행도를 추적하세요',
+      },
+      testModes: {
+        title: '시험 모드',
+        description: '리얼, 연습, 스피드 모드 등',
+      },
+      mistakesHub: {
+        title: '오답 허브',
+        description: '전체 + 내 오답을 복습하세요',
+      },
+      questionBank: {
+        title: '문제 모음',
+        description: '전체 문제와 북마크 이용',
+      },
+    },
+    cta: '프리미엄 시작하기',
+    errors: {
+      selectPlan: '플랜을 선택해주세요.',
+      noCurrentOffering: 'RevenueCat에 현재 제공 중인 상품이 설정되어 있지 않습니다.',
+      packageUnavailable: '선택한 플랜을 현재 이용할 수 없습니다.',
+      purchaseFailed: '구매에 실패했습니다. 다시 시도해주세요.',
+      mobileOnly: '프리미엄 구매는 현재 모바일 앱에서만 가능합니다. 앱에서 구매하거나 복원해주세요.',
+    },
+  },
+  profile: {
+    signIn: {
+      guest: '게스트로 로그인됨',
+      email: '이메일 로그인',
+      google: 'Google 로그인',
+      apple: 'Apple ID',
+      wechat: 'WeChat',
+      social: '소셜 로그인',
+    },
+    messages: {
+      saved: '저장되었습니다!',
+      restoreLoginRequired: '이전 구매를 복원하려면 로그인하세요.',
+      restoreMobileOnly: '구매 복원은 모바일 앱에서만 가능합니다.',
+      restoreUnavailable: '현재 복원을 사용할 수 없습니다. 다시 시도해주세요.',
+      restoreNone: '복원할 구매 내역을 찾지 못했습니다.',
+      restoreSuccess: '구매가 복원되었습니다.',
+      restoreFailed: '복원에 실패했습니다. 다시 시도해주세요.',
+    },
+    avatarAlt: '사용자 아바타',
+    avatarPlaceholderAlt: '이미지 업로드 아이콘',
+    premiumIconAlt: '프리미엄 아이콘',
+    premiumPlan: '프리미엄 플랜',
+    lightDarkModeIconAlt: '라이트 / 다크 모드 아이콘',
+    lightDarkMode: '라이트 / 다크 모드',
+    accountSecurityIconAlt: '계정 보안',
+    changeCredentials: '이메일/비밀번호 변경',
+    restorePurchases: '구매 복원',
+    restoring: '복원 중...',
+    privacyPolicyIconAlt: '개인정보 처리방침',
+    privacyPolicy: '개인정보 처리방침',
+    termsIconAlt: '서비스 이용약관',
+    terms: '서비스 이용약관',
+    deleteAccountIconAlt: '계정 삭제',
+    deleteAccount: '계정 삭제하기',
+    languageIconAlt: '언어',
+    notificationsIconAlt: '알림',
+    notifications: '알림',
+    toastCheckAlt: '체크 아이콘',
+    toastInfoAlt: '정보',
+    language: {
+      label: '언어',
+      switchAria: '앱 언어 변경. 현재 언어: {language}',
+      notReady: '준비 중',
+    },
+  },
+  forgotPassword: {
+    title: '비밀번호 재설정',
+    subtitle: '이메일을 입력하면 재설정 링크를 보내드립니다.',
+    emailLabel: '이메일',
+    emailPlaceholder: 'user@expatise.com',
+    sendIdle: '재설정 링크 보내기',
+    sendLoading: '보내는 중...',
+    success: '해당 이메일이 존재하면 재설정 링크를 보냈습니다. 링크를 열어 새 비밀번호를 설정하세요.',
+    invalidEmail: '올바른 이메일을 입력해주세요.',
+  },
+  resetPassword: {
+    title: '새 비밀번호 설정',
+    newPasswordLabel: '새 비밀번호',
+    confirmPasswordLabel: '비밀번호 확인',
+    updateIdle: '비밀번호 업데이트',
+    updateLoading: '업데이트 중...',
+    success: '비밀번호가 변경되었습니다. 다시 로그인해주세요.',
+    invalidLink: '이 재설정 링크는 유효하지 않거나 만료되었습니다. 새 재설정 이메일을 요청해주세요.',
+    errors: {
+      passwordMin: '비밀번호는 8자 이상이어야 합니다.',
+      passwordMismatch: '비밀번호가 일치하지 않습니다.',
+    },
+  },
+  accountSecurity: {
+    title: '이메일 / 비밀번호 변경',
+    pageTitle: '계정 보안',
+    emailPasswordOnly: '이 페이지는 이메일 + 비밀번호로 만든 계정에서만 사용할 수 있습니다.',
+    goToLogin: '로그인으로 이동',
+    profile: '프로필',
+    changeEmail: '이메일 변경',
+    changePassword: '비밀번호 변경',
+    newEmailPlaceholder: '새 이메일',
+    currentPasswordPlaceholder: '현재 비밀번호',
+    newPasswordPlaceholder: '새 비밀번호',
+    confirmNewPasswordPlaceholder: '새 비밀번호 확인',
+    messages: {
+      missingCurrentEmail: '현재 이메일 정보가 없습니다.',
+      currentPasswordIncorrect: '현재 비밀번호가 올바르지 않습니다.',
+      fillAllPasswordFields: '비밀번호 항목을 모두 입력해주세요.',
+      newPasswordMin: '새 비밀번호는 8자 이상이어야 합니다.',
+      newPasswordsMismatch: '새 비밀번호가 일치하지 않습니다.',
+      changePasswordFailed: '비밀번호 변경에 실패했습니다.',
+      passwordUpdated: '비밀번호가 변경되었습니다.',
+      invalidNewEmail: '올바른 새 이메일을 입력해주세요.',
+      enterCurrentPassword: '현재 비밀번호를 입력해주세요.',
+      changeEmailFailed: '이메일 변경에 실패했습니다.',
+      emailUpdateRequested: '이메일 변경 요청을 보냈습니다. 변경을 확정하려면 이메일을 확인해주세요.',
+    },
+  },
+  comingSoon: {
+    title: '곧 지원 예정',
+    defaultFeature: '이 기능',
+    notificationsKey: 'notifications',
+    featureNames: {
+      notifications: '알림',
+    },
+    notificationsDetail: 'Expatise에서는 아직 푸시 알림을 지원하지 않습니다.',
+    genericDetail: '{feature} 기능은 아직 준비되지 않았습니다.',
+  },
+  checkout: {
+    planTitles: {
+      monthly: '1개월 플랜',
+      threeMonth: '3개월 플랜',
+      sixMonth: '6개월 플랜',
+      lifetime: '평생 플랜',
+    },
+    webCheckoutUnavailable: '웹 결제를 사용할 수 없습니다',
+    summary: '이 버전에서는 웹 결제를 지원하지 않습니다.',
+    detail:
+      '프리미엄 구매는 현재 모바일 앱에서만 가능합니다. 이미 앱에서 프리미엄을 구매했다면 프로필에서 복원 기능을 사용해주세요.',
+    backgroundAlt: '결제 배경',
+    iconAlt: '결제 사용 불가',
+    successTitle: '웹 결제를 사용할 수 없습니다',
+    successSubtitle: '프리미엄 구매는 현재 모바일 앱에서만 가능합니다.',
+  },
+  authCallback: {
+    completing: '로그인을 완료하는 중...',
+    failed: '로그인 실패: {reason}',
+    noSession: '로그인 실패: 세션이 생성되지 않았습니다. (PKCE 저장소 불일치 또는 콜백 차단 가능성)',
+  },
+  results: {
+    loading: '결과를 불러오는 중...',
+    congratulations: '축하합니다!',
+    scoreProgressAria: '점수 진행률',
+    score: '점수',
+    time: '시간',
+    title: '시험 결과',
+    incorrect: '오답',
+    switchToListAria: '목록 보기로 전환',
+    switchToSwipeAria: '스와이프 보기로 전환',
+    listViewTitle: '목록 보기',
+    swipeViewTitle: '스와이프 보기',
+    noIncorrect: 'Expatise! 오답이 없습니다! 🎉',
+    explanation: '해설:',
+    homeIconAlt: '홈',
+    untimed: '시간 제한 없음',
+    timeText: '{minutes}분 {seconds}초',
+    rowOptions: {
+      right: '맞음',
+      wrong: '틀림',
+    },
+  },
+  questionReview: {
+    allQuestionsTitle: '전체 문제',
+    myBookmarksTitle: '내 북마크',
+    myMistakesTitle: '내 오답',
+    mistakesQuiz: '오답 퀴즈',
+    bookmarksQuiz: '북마크 퀴즈',
+    countAria: '{count}문항',
+    searchPlaceholder: '문항 내용 검색...',
+    deleteBookmarksAria: '북마크 {count}개 삭제',
+    removeMistakesAria: '오답 {count}개를 목록에서 숨기기',
+    selectAllVisibleAria: '보이는 항목 모두 선택',
+    clearSelectionAria: '선택 해제',
+    selectAllTitle: '모두 선택',
+    clearSelectionTitle: '선택 해제',
+    unclassified: '미분류',
+    globalMistakesTitle: '전체 공통 오답',
+    globalMistakesQuiz: '전체 오답 퀴즈',
+    previewMock: '미리보기 순위입니다. (모의 데이터)',
+    previewEmpty: '아직 전체 데이터가 충분하지 않습니다. 백엔드가 연결되면 채워집니다.',
+    loading: '불러오는 중...',
+    noQuestions: '표시할 문항이 아직 없습니다.',
+    wrongRateTitle: '{wrong}/{total}회 오답',
+    wrongRateLabel: '오답 {percent}%',
+    answerLabel: '정답',
+  },
+  qbank: {
+    taxonomy: {
+      topics: {
+        roadSafety: '도로 안전',
+        trafficSignals: '교통신호·표지',
+        properDriving: '운전 수칙',
+        drivingOperations: '차량 조작·기능',
+      },
+      subtopics: {
+        license: '면허',
+        registration: '차량 등록',
+        accidents: '사고 대처',
+        roadConditions: '도로 상황',
+        signalLights: '신호등',
+        roadSigns: '표지판',
+        roadMarkings: '도로 표시',
+        policeSignals: '경찰 수신호',
+        safeDriving: '안전운전',
+        trafficLaws: '교통법규',
+        indicators: '계기판 표시등·경고등',
+        gears: '기어·변속·장치',
+      },
+    },
+  },
+  test: {
+    loading: '불러오는 중...',
+    noQuestionsFound: '문항을 찾을 수 없습니다.',
+    noBookmarks: '아직 북마크한 문항이 없습니다. 먼저 북마크한 뒤 여기에서 다시 연습해보세요.',
+    noMistakes: '아직 오답이 없습니다. 먼저 시험을 본 뒤 여기로 돌아와 다시 풀고 정답으로 지워보세요.',
+    noWeakTopics: '가장 약한 주제에 해당하는 문항을 찾지 못했습니다. 먼저 시험을 몇 번 봐서 약한 주제를 만들어주세요.',
+    premiumRequired: '이 시험을 시작하려면 프리미엄이 필요합니다.',
+    autoAdvance: '{seconds}초 후 다음 문항',
+    rowOptions: {
+      right: '맞음',
+      wrong: '틀림',
+    },
+  },
+  charts: {
+    score: {
+      legendScore: '점수',
+      legendAverage: '평균',
+      pass: '합격선 {value}%',
+      tooltipAnswered: '{answered}문항 응답 · 총 {total}문항',
+      tooltipScore: '점수:',
+      tooltipAverage: '평균 점수:',
+      summaryAvg: '평균',
+      summaryBest: '최고',
+      summaryLatest: '최근',
+      summaryBasedOn: '기준',
+      summaryAnswers: '{count}문항',
+      lowConfidence: '신뢰도 낮음: 이 구간에서 시험 {attempts}회 / 응답 {answers}문항만 있습니다.',
+    },
+    screenTime: {
+      legendTest: '시험',
+      legendStudy: '학습',
+      legendTotal: '전체',
+      legendSevenDayAvg: '7일 평균',
+      avgLabel: '7일 평균',
+      today: '오늘',
+      tooltipTest: '시험',
+      tooltipStudy: '학습',
+      tooltipTotal: '전체',
+      tooltipPercentOfWeek: '주간 비중 {percent}%',
+      summaryTotal: '7일 합계',
+      summaryAvgPerDay: '하루 평균',
+      summaryBest: '최고',
+      summaryRoutine: '루틴',
+      summaryStreak: '연속',
+      routineDays: '7일 중 {count}일',
+      streakDays: '{count}일',
+      compareOverlay: '비교 오버레이: 활성화됨',
+      lowConfidenceWeek: '신뢰도 낮음: 이번 주 기록된 시간이 {minutes}분뿐입니다.',
+      lowConfidenceStudy: '신뢰도 낮음: 학습 시간 추적이 아직 활성화되지 않아 학습 시간이 0분으로 표시됩니다.',
+      lowConfidenceTimed: '신뢰도 낮음: 감지된 제한 시간 시험 학습 시간이 {minutes}분뿐입니다.',
+    },
+    dailyProgress: {
+      legendQuestions: '문항 수',
+      legendAvgScore: '평균 점수',
+      axisQuestions: '문항 수',
+      axisScore: '점수',
+      tooltipAnswered: '{answered}문항 응답 · 시험 {tests}회',
+      tooltipAvgScore: '평균 점수:',
+      bestDay: '최고 기록:',
+      bestDayQuestions: '{count}문항',
+      consistencyStreak: '연속 학습:',
+      streakDays: '{count}일',
+    },
+    heatmap: {
+      notEnoughData: '아직 데이터가 부족합니다.',
+      bestWindow: '가장 잘 맞는 시간대:',
+      bestWindowMeta: '(시험 {count}회)',
+      confidenceNote: '신뢰도 낮음: 이 구간의 응시 수가 {count}회뿐입니다.',
+      legendScore: '점수',
+      legendLowToHigh: '낮음 → 높음',
+      legendConfidence: '신뢰도',
+      legendMoreTests: '응시 수가 많을수록 신뢰도 상승',
+      tooltipAvg: '평균 {score}% · 시험 {count}회',
+      tooltipLowConfidence: '신뢰도 낮음',
+      tooltipGoodConfidence: '신뢰도 양호',
+      dayParts: {
+        morningShort: '오전',
+        middayShort: '정오',
+        eveningShort: '오후',
+        lateShort: '심야',
+        morningTitle: '오전: 오전 6시~12시',
+        middayTitle: '낮: 오후 12시~5시',
+        eveningTitle: '저녁: 오후 5시~10시',
+        lateTitle: '심야: 오후 10시~오전 6시',
+        basedOnLocalTime: '사용자 현지 시간을 기준으로 합니다.',
+      },
+    },
+    topicMastery: {
+      weakestRightNow: '지금 가장 약한 영역',
+      empty: '아직 주제 데이터가 부족합니다. (세부 주제별 최소 {count}문항 응답 필요)',
+      answered: '{count}문항 응답',
+      subEmpty: '이 주제에서 세부 주제를 순위화하려면 더 많은 응답이 필요합니다.',
+      chipTitle: '{label} · {accuracy}% · {answered}문항 응답',
+    },
+  },
+  stats: {
+    modes: {
+      realTest: '실전 모드',
+      halfTest: '반반 모드',
+      rapidFire: '스피드 모드',
+      tenPercent: '10% 테스트',
+    },
+    timeframes: {
+      allShort: '전체',
+      daysShort: '{days}일',
+      allTime: '전체 기간',
+      lastDays: '최근 {days}일',
+    },
+    tooltips: {
+      includes: '{modes} · {timeframe}',
+    },
+    readiness: {
+      ringTitle: '시험',
+      ringLabel: '준비도',
+      ringAria: '시험 준비도 {pct}%',
+      ringInfo: '실전 모드 기준입니다.',
+      summary: '{timeframe} 정답률 {accuracy}% · 시험 {count}회',
+      basedOn: '{count}문항 응답 기준',
+      takeTest: '시험 보기',
+    },
+    reset: {
+      button: '데이터 초기화',
+      aria: '모든 통계 데이터 초기화',
+      title: '모든 통계 데이터 초기화',
+      reseedButton: '데모 데이터 다시 생성',
+      reseedAria: '데모 통계 다시 생성',
+      reseedTitle: '데모 통계 다시 생성',
+      needLoginConfirm: '동기화된 통계를 초기화하려면 로그인해야 합니다. 로그인하려면 확인을 눌러주세요.',
+      prompt:
+        '계정과 이 기기의 모든 통계 데이터가 영구 삭제됩니다.\n\n확인하려면 RESET을 입력하세요:',
+      mustBeLoggedIn: '클라우드 통계를 초기화하려면 로그인해야 합니다.',
+      missingEnv: '환경 변수에 Supabase URL 또는 anon key가 없습니다.',
+      cloudResetFailed: '클라우드 초기화에 실패했습니다.',
+      resetFailed: '초기화에 실패했습니다. 다시 시도해주세요.',
+    },
+    cards: {
+      screenTime: '스터디 타임',
+      score: '스코어',
+      dailyProgress: '일일 진행도',
+      heatmap: '히트맵',
+      topicMastery: '주제별 숙련도',
+      aiCoach: 'AI 코치',
+    },
+    scoreCard: {
+      noTests: '제출된 시험 결과가 아직 없습니다. ({timeframe})',
+    },
+    dailyProgressCard: {
+      noData: '아직 일일 데이터가 없습니다.',
+    },
+    topicMasteryCard: {
+      quizButton: '주제 퀴즈',
+      quizTitle: '가장 약한 세부 주제로 20문항 퀴즈 시작',
+      noData: '아직 데이터가 부족합니다. (주제별 더 많은 응답 필요)',
+    },
+    reviewMistakes: '오답 노트',
+    coach: {
+      loading: '불러오는 중...',
+      needsDataTitle: 'AI 코치가 분석하려면 데이터가 조금 더 필요합니다.',
+      needsDataBody:
+        '개인화 리포트를 생성하려면 아래 중 하나를 완료해주세요:\n• 80문항 이상 응답한 실전 모드 1회\n• 총 응답 120문항 이상 (연습 + 시험)',
+      needsDataHint: '응답이 많을수록 랜덤성이 줄어 더 정확한 조언을 받을 수 있습니다.',
+      startNow: '지금 시작',
+      firstReportTitle: '첫 코치 리포트를 받을 준비는 됐습니다. 더 정확하게 만들려면 이렇게 해보세요.',
+      firstReportBody:
+        '주제, 습관, 패턴까지 더 맞춤형으로 보려면:\n✅ 3일 이상에 걸쳐 실전 모드 3회 (총 300문항)',
+      firstReportNextSteps:
+        '다음 단계:\n• 다른 날에 실전 모드 2회 더 보기\n• 쉬운 문제부터 푼 뒤 다시 돌아오는 2-pass 규칙 사용하기\n• 시험이 없는 날에도 최소 10분 학습 유지하기',
+      readyText: '코치는 필요할 때 생성됩니다. (실력: 30일 · 습관: 7일) 버튼을 눌러 최신 계획을 받아보세요.',
+      generateTitle: '코치 리포트 생성',
+      generating: '생성 중...',
+      locked: '코치 잠김',
+      nextAvailable: '{time} 후 다시 가능',
+      cooldownActive: '다음 코치 리포트는 {time} 후에 생성할 수 있습니다. 이전 리포트는 언제든 다시 읽을 수 있습니다.',
+      cooldownIdle: '코치 리포트는 24시간에 1회만 생성할 수 있습니다. 가장 최근 리포트는 여기에 저장됩니다.',
+      reportTitle: '코치 리포트',
+      reportStamp: '최근 리포트: {stamp}',
+      errors: {
+        sessionRead: '세션을 불러올 수 없습니다: {message}',
+        sessionRefresh: '세션을 갱신할 수 없습니다: {message}',
+        loginRequired: '코치 리포트를 생성하려면 로그인해야 합니다.',
+        missingEnv: '환경 변수에 Supabase URL 또는 anon key가 없습니다.',
+        requestFailedStatus: '코치 요청에 실패했습니다. ({status})',
+        requestFailed: '코치 요청에 실패했습니다. 다시 시도해주세요.',
+        cooldown: '다음 코치 리포트는 {time} 후에 이용할 수 있습니다.',
+        insufficientData: '개인화 코칭을 만들 데이터가 아직 부족합니다. 실전 모드 1회(80문항 이상) 또는 총 120문항 응답을 채워주세요.',
+        emptyReport: '코치 리포트가 비어 있습니다. 다시 시도해주세요.',
+      },
+    },
+  },
+  accountDeletion: {
+    title: '계정 및 데이터 삭제',
+    intro: '이 페이지에서는 {appName} 계정과 연결된 데이터 삭제를 요청하는 방법을 안내합니다.',
+    successTitle: '앱 내 삭제가 완료되었습니다.',
+    successBody:
+      '방금 프로필 → 계정 삭제를 통해 이 페이지로 이동했다면, 계정 삭제가 이미 완료되었고 앱에서도 로그아웃되었습니다.',
+    quickOptions: '빠른 방법:',
+    optionA: '옵션 A — 앱에서 바로 삭제',
+    optionB: '옵션 B — 이메일로 삭제 요청',
+    inAppTitle: '옵션 A — 앱 내 삭제',
+    inAppBody:
+      '앱에 접속할 수 있다면 프로필 → 계정 삭제로 이동해 화면의 안내를 따라주세요. 앱 내 자동 삭제가 성공하면 즉시 삭제되고 로그아웃됩니다.',
+    emailTitle: '옵션 B — 이메일로 삭제 요청 (앱에 접속할 수 없는 경우)',
+    emailIntroPrefix: '{team}에',
+    emailIntroMiddle: '으로 메일을 보내고 제목은',
+    emailIntroSuffix: '를 사용해주세요.',
+    pleaseInclude: '다음 정보를 함께 보내주세요:',
+    includeSignIn: '로그인에 사용한 이메일 주소(또는 Google/Apple 등 로그인 방식)',
+    includeIdentifier: '가능하다면 확인에 도움이 되는 식별 정보(사용자명/표시 이름)',
+    includeStatement: '명확한 요청 문구: “제 계정과 관련 데이터를 삭제해주세요.”',
+    verifyNote: '계정 보호를 위해 삭제 요청 처리 전에 본인 확인을 요청할 수 있습니다.',
+    processingTimeTitle: '처리 기간',
+    processingInApp: '앱 내 삭제: 자동 삭제가 성공하면 즉시 처리됩니다.',
+    processingEmail: '이메일 삭제 요청: 필요 시 본인 확인 후 보통 {days}일 이내에 처리됩니다.',
+    whatWeDeleteTitle: '삭제되는 항목',
+    deleteAccountRecord: '계정 정보(인증/프로필)',
+    deleteServerData: '서버에 저장된 계정 관련 데이터',
+    examplesNote: '예를 들어 프로필 정보나 계정에 연결된 활동 기록 등이 포함될 수 있습니다.',
+    retainTitle: '보관될 수 있는 항목',
+    retainLegal: '법률, 규정 준수, 분쟁 처리상 필요한 최소 정보',
+    retainSecurity: '필요한 경우 보안 및 부정 사용 방지 기록',
+    retainNote:
+      '백업에는 일정 기간 데이터가 남아 있다가 덮어써질 수 있습니다. 가능한 경우 보관 데이터는 최소한으로 제한됩니다.',
+    needHelpTitle: '도움이 필요하신가요?',
+    needHelpPrefix: '가입에 사용한 이메일에 접근할 수 없다면',
+    needHelpSuffix: '로 연락해 상황을 설명해주세요. 안전하게 도와드릴 수 있는 방법을 안내해드리겠습니다.',
+    lastUpdated: '최종 업데이트: {date}',
+    emailTemplate: {
+      subject: '계정 삭제 요청',
+      greeting: '{team}님, 안녕하세요.',
+      request: '제 계정과 관련 데이터를 삭제해주세요.',
+      details: '계정을 확인할 수 있도록 아래 정보를 적겠습니다:',
+      signIn: '- 로그인 이메일(또는 Google/Apple 등 로그인 방식):',
+      username: '- 사용자명 / 표시 이름(해당하는 경우):',
+      thanks: '감사합니다.',
+    },
+  },
+  deleteAccount: {
+    title: '계정 삭제하기',
+    done: '계정이 삭제되었습니다. 이동 중...',
+    body: '이 작업은 계정과 서버에 저장된 해당 계정 데이터를 영구적으로 삭제합니다.',
+    confirmLabel: '확인을 위해 DELETE를 입력하세요',
+    confirmPlaceholder: 'DELETE',
+    deleteButton: '내 계정 삭제',
+    deleting: '삭제 중...',
+    loginRequired: '계정을 삭제하려면 로그인해주세요.',
+    missingEnv: '앱 설정이 올바르지 않습니다. 잠시 후 다시 시도해주세요.',
+    failed: '계정 삭제에 실패했습니다.',
+  },
+} as const satisfies MessageSchema<typeof en>;
 
 ```
 
@@ -53180,7 +55748,7 @@ export default nextConfig;
       "id": "q0202",
       "number": 202,
       "type": "row",
-      "prompt": "You can make an U-turn at this intersection.",
+      "prompt": "You can make a U-turn at this intersection.",
       "options": [],
       "correctRow": "W",
       "correctOptionId": null,
