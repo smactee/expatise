@@ -17,6 +17,15 @@
   --aq-correct-bg: rgba(43, 124, 175, 0.1);
   --aq-correct-border: rgba(43, 124, 175, 0.55);
   --aq-correct-shadow: 0 10px 22px rgba(43, 124, 175, 0.18);
+  --aq-control-bg: rgba(255, 255, 255, 0.6);
+  --aq-control-bg-hover: rgba(255, 255, 255, 0.75);
+  --aq-control-border: rgba(0, 0, 0, 0.12);
+  --aq-control-shadow: none;
+  --aq-control-text: var(--aq-text);
+  --aq-delete-bg: rgba(255, 255, 255, 0.6);
+  --aq-delete-bg-hover: rgba(255, 255, 255, 0.75);
+  --aq-delete-border: rgba(220, 38, 38, 0.55);
+  --aq-delete-text: #dc2626;
 
   color: var(--aq-text);
 }
@@ -34,6 +43,15 @@
   --aq-correct-bg: rgba(55, 178, 255, 0.18);
   --aq-correct-border: rgba(55, 178, 255, 0.85);
   --aq-correct-shadow: 0 12px 26px rgba(55, 178, 255, 0.22);
+  --aq-control-bg: var(--color-dark-button-secondary-bg);
+  --aq-control-bg-hover: var(--color-dark-button-secondary-bg-hover);
+  --aq-control-border: var(--color-dark-button-secondary-border);
+  --aq-control-shadow: var(--color-dark-button-secondary-shadow);
+  --aq-control-text: var(--color-dark-button-secondary-text);
+  --aq-delete-bg: rgba(127, 29, 29, 0.22);
+  --aq-delete-bg-hover: rgba(127, 29, 29, 0.32);
+  --aq-delete-border: rgba(248, 113, 113, 0.45);
+  --aq-delete-text: rgba(254, 202, 202, 0.96);
 }
 
 .frame {
@@ -146,17 +164,24 @@
   width: clamp(36px, 9vw, 40px);
   height: clamp(36px, 9vw, 40px);
   border-radius: 14px;
-  border: 1px solid rgba(0, 0, 0, 0.12);
-  background: rgba(255, 255, 255, 0.6);
+  border: 1px solid var(--aq-control-border);
+  background: var(--aq-control-bg);
+  box-shadow: var(--aq-control-shadow);
+  color: var(--aq-control-text);
   cursor: pointer;
 
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  transition:
+    transform 120ms ease,
+    box-shadow 120ms ease,
+    background-color 120ms ease,
+    border-color 120ms ease;
 }
 
 .selectAllBtn:hover {
-  background: rgba(255, 255, 255, 0.75);
+  background: var(--aq-control-bg-hover);
 }
 
 .selectAllBtn[data-active="true"] {
@@ -183,25 +208,38 @@
   height: clamp(36px, 9vw, 40px);
   padding: 0 clamp(10px, 3vw, 12px);
   border-radius: 14px;
-  border: 1px solid red;
-  background: rgba(255, 255, 255, 0.6);
+  border: 1px solid var(--aq-delete-border);
+  background: var(--aq-delete-bg);
+  box-shadow: var(--aq-control-shadow);
   cursor: pointer;
   font-size: clamp(12px, 3.2vw, 13px);
   font-weight: 600;
-  color: red;
+  color: var(--aq-delete-text);
+  transition:
+    transform 120ms ease,
+    box-shadow 120ms ease,
+    background-color 120ms ease,
+    border-color 120ms ease;
 }
 
 .deleteBtn:hover {
-  background: rgba(255, 255, 255, 0.75);
+  background: var(--aq-delete-bg-hover);
 }
 
 .chip {
-  border: 1px solid rgba(0, 0, 0, 0.12);
-  background: rgba(255, 255, 255, 0.6);
+  border: 1px solid var(--aq-control-border);
+  background: var(--aq-control-bg);
   border-radius: 999px;
   padding: 8px 10px;
   font-size: clamp(12px, 3.3vw, 13px);
+  color: var(--aq-control-text);
+  box-shadow: var(--aq-control-shadow);
   cursor: pointer;
+  transition:
+    transform 120ms ease,
+    box-shadow 120ms ease,
+    background-color 120ms ease,
+    border-color 120ms ease;
 }
 
 .chipActive {
@@ -504,6 +542,32 @@
   justify-content: center;
 
   white-space: nowrap;
+}
+
+.selectAllBtn:focus-visible,
+.deleteBtn:focus-visible,
+.chip:focus-visible,
+.retestBtn:focus-visible,
+.quizBtn:focus-visible {
+  outline: 2px solid rgba(43, 124, 175, 0.45);
+  outline-offset: 3px;
+}
+
+:root[data-theme='dark'] .chipActive,
+:root[data-theme='dark'] .selectAllBtn[data-active="true"] {
+  background: rgba(43, 124, 175, 0.18);
+}
+
+:root[data-theme='dark'] .selectAllIcon {
+  filter: brightness(0) invert(1);
+}
+
+:root[data-theme='dark'] .selectAllBtn:focus-visible,
+:root[data-theme='dark'] .deleteBtn:focus-visible,
+:root[data-theme='dark'] .chip:focus-visible,
+:root[data-theme='dark'] .retestBtn:focus-visible,
+:root[data-theme='dark'] .quizBtn:focus-visible {
+  outline-color: var(--color-dark-button-focus-ring);
 }
 
 @media (max-width: 420px) {

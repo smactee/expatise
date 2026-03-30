@@ -45,6 +45,12 @@ type DayPoint = {
   studyMin: number;
 };
 
+const SCREEN_TIME_CHART_MAX_MINUTES = 480;
+const SCREEN_TIME_MIN_DOMAIN_MINUTES = 15;
+const SCREEN_TIME_OVERFLOW_LABEL = '8h+';
+const SCREEN_TIME_DOMAIN_STEPS = [1, 2, 5, 10, 15, 20, 30, 45, 60, 90, 120] as const;
+const SCREEN_TIME_DOMAIN_TICK_COUNTS = [4, 5] as const;
+
 function fmtMin(min: number) {
   // Switch to hours when values get big, keeps axis labels compact
   if (min >= 120) {
@@ -55,18 +61,35 @@ function fmtMin(min: number) {
   return `${min}m`;
 }
 
-function niceStep(rough: number) {
-  // Pick a human-friendly step
-  if (rough <= 2) return 1;
-  if (rough <= 5) return 2;
-  if (rough <= 10) return 5;
-  if (rough <= 20) return 10;
-  if (rough <= 45) return 15;
-  if (rough <= 90) return 30;
-  if (rough <= 180) return 60;
-  return 120; // 2h steps
-}
+function resolveScreenTimeDomain(rawMax: number) {
+  const safeMax = Math.max(SCREEN_TIME_MIN_DOMAIN_MINUTES, rawMax);
+  const options = SCREEN_TIME_DOMAIN_TICK_COUNTS
+    .flatMap((tickCount) =>
+      SCREEN_TIME_DOMAIN_STEPS.map((step) => ({
+        tickCount,
+        step,
+        top: step * (tickCount - 1),
+      }))
+    )
+    .filter((option) => option.top <= SCREEN_TIME_CHART_MAX_MINUTES)
+    .sort((a, b) => a.top - b.top || b.step - a.step);
 
+  const selected = options.find((option) => option.top >= safeMax);
+
+  if (!selected) {
+    return {
+      scaleMax: SCREEN_TIME_CHART_MAX_MINUTES,
+      ticks: [0, 120, 240, 360, SCREEN_TIME_CHART_MAX_MINUTES],
+      isOverflow: rawMax > SCREEN_TIME_CHART_MAX_MINUTES,
+    };
+  }
+
+  return {
+    scaleMax: selected.top,
+    ticks: Array.from({ length: selected.tickCount }, (_, idx) => idx * selected.step),
+    isOverflow: rawMax > SCREEN_TIME_CHART_MAX_MINUTES,
+  };
+}
 
 function dayKeyFromDate(d: Date) {
   const yyyy = d.getFullYear();
@@ -238,9 +261,13 @@ const { ref: inViewRef, seen } = useOnceInView<HTMLDivElement>({
     });
 
     const totals = points.map((p) => p.total);
-    const maxTotal = Math.max(1, ...totals);
     const weekTotal = totals.reduce((a, b) => a + b, 0);
     const avgTotal = weekTotal / 7;
+    const plottedMax = Math.max(
+      0,
+      avgTotal,
+      ...points.flatMap((point) => [point.deliberateMin, point.studyMin, point.total])
+    );
 
     const bestTotal = Math.max(...totals);
     const bestIdx = bestTotal > 0 ? totals.indexOf(bestTotal) : -1;
@@ -257,9 +284,9 @@ const { ref: inViewRef, seen } = useOnceInView<HTMLDivElement>({
 
     return {
       points,
-      maxTotal,
       weekTotal,
       avgTotal,
+      plottedMax,
       bestIdx,
       todayIdx,
       consScore,
@@ -335,23 +362,10 @@ const plotPx = Math.max(1, plotH - 1); // ✅ shared pixel height used by axis +
 
 
 // ---- Y axis scale (responsive, never "breaks") ----
-const rawMax = Math.max(1, model.maxTotal);
-const tickCount = 4; // 0, 1/3, 2/3, top (nice)
-
-const { scaleMax, ticks } = useMemo(() => {
-  const roughStep = rawMax / (tickCount - 1);
-  const step = niceStep(roughStep);
-  const top = step * (tickCount - 1);
-
-  // If top is still below rawMax (rare), bump one step
-  const finalTop = top < rawMax ? top + step : top;
-
-  const tks = Array.from({ length: tickCount }, (_, i) => i * step);
-  // Make sure last tick matches finalTop
-  tks[tks.length - 1] = finalTop;
-
-  return { scaleMax: finalTop, ticks: tks };
-}, [rawMax]);
+const { scaleMax, ticks, isOverflow } = useMemo(
+  () => resolveScreenTimeDomain(model.plottedMax),
+  [model.plottedMax]
+);
 
 const yForMin = (min: number) => {
   const y01 = 1 - clamp(min / scaleMax, 0, 1);
@@ -377,7 +391,7 @@ const totalLinePts = useMemo<Pt[]>(() => {
   const w = 100 - padX * 2;
   const h = 100 - padTop;
 
-  const totals = model.points.map((p) => p.total);
+  const totals = model.points.map((p) => clamp(p.total, 0, scaleMax));
 
   // 3-point weighted smoothing (display only)
   const totalsSmooth = totals.map((v, i) => {
@@ -537,7 +551,7 @@ const areaClipW = useMemo(() => {
                   const y = yForMin(t);
                   return (
                     <div key={t} className={styles.yTick} style={{ top: y }}>
-                      {fmtMin(t)}
+                      {isOverflow && t === scaleMax ? SCREEN_TIME_OVERFLOW_LABEL : fmtMin(t)}
                     </div>
                   );
                 })}
@@ -617,12 +631,12 @@ const areaClipW = useMemo(() => {
 
                     const testH =
                       p.deliberateMin > 0
-                        ? Math.max(2, Math.round((p.deliberateMin / scaleMax) * plotPx))
+                        ? Math.max(2, Math.round((clamp(p.deliberateMin, 0, scaleMax) / scaleMax) * plotPx))
                         : 0;
 
                     const studyH =
                       p.studyMin > 0
-                        ? Math.max(2, Math.round((p.studyMin / scaleMax) * plotPx))
+                        ? Math.max(2, Math.round((clamp(p.studyMin, 0, scaleMax) / scaleMax) * plotPx))
                         : 0;
 
                     const isToday = idx === model.todayIdx;

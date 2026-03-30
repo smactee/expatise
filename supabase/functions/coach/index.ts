@@ -3,7 +3,20 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "npm:@supabase/supabase-js@2";
 import { corsHeaders } from "jsr:@supabase/supabase-js@2/cors";
-import { MASTER_PROMPT, FALLBACK_PROMPT } from "../_shared/coachPrompt.ts";
+import {
+  buildCoachFallbackInstructions,
+  buildCoachInstructions,
+} from "../_shared/coachPrompt.ts";
+import {
+  getCoachLocaleConfig,
+  getCoachWindowLabels,
+  resolveCoachLocale,
+} from "../../../lib/coach/locale.ts";
+import {
+  COACH_REPORT_CACHE_VERSION,
+  parseCoachReportDataFromText,
+  type CoachReportData,
+} from "../../../lib/coach/report.ts";
 
 function json(status: number, body: unknown, extraHeaders: Record<string, string> = {}) {
   return new Response(JSON.stringify(body), {
@@ -15,7 +28,6 @@ function json(status: number, body: unknown, extraHeaders: Record<string, string
 function normalizeProjectUrl(raw: string) {
   const withScheme = raw.startsWith("http") ? raw : `https://${raw}`;
   const u = new URL(withScheme);
-  // strip any path like /functions/v1/...
   return `${u.protocol}//${u.host}`;
 }
 
@@ -57,14 +69,36 @@ async function requireUser(req: Request) {
   if (error || !user) return { user: null, supabase, reason: error?.message ?? "No user" };
   return { user, supabase, reason: null };
 }
-// Keep same contract you had
-const COOLDOWN_MS = 24 * 60 * 60 * 1000;
 
-// DB table used for cooldown (we'll create it below)
+const COOLDOWN_MS = 24 * 60 * 60 * 1000;
 const COOLDOWN_TABLE = "coach_cooldown";
+
+function isLocalHost(url: string) {
+  try {
+    const { hostname } = new URL(url);
+    return hostname === "127.0.0.1" || hostname === "localhost";
+  } catch {
+    return false;
+  }
+}
+
+function isDevCooldownDiagnosticsEnabled() {
+  if (isLocalHost(SUPABASE_URL)) return true;
+  return (Deno.env.get("ENABLE_DEV_COACH_COOLDOWN_RESET") ?? "").trim() === "1";
+}
+
+function getProjectHost() {
+  try {
+    return new URL(SUPABASE_URL).host;
+  } catch {
+    return SUPABASE_URL;
+  }
+}
 
 type CoachPayload = {
   coachContractVersion: string;
+  locale?: string;
+  uiLanguageLabel?: string;
   skillWindowLabel: "30d" | "all";
   habitWindowLabel: "7d";
   skill: {
@@ -72,9 +106,16 @@ type CoachPayload = {
     attemptedTotal: number;
     scorePoints: Array<{ t: number; scorePct: number; answered: number; totalQ: number }>;
   };
+  habits?: {
+    timeThisWeekMin?: number;
+    timeBestDayMin?: number;
+    timeStreakDays?: number;
+    activeDays?: number;
+    requiredDays?: number;
+  };
 };
 
-function num(n: any, d = 0) {
+function num(n: unknown, d = 0) {
   const x = Number(n);
   return Number.isFinite(x) ? x : d;
 }
@@ -93,28 +134,89 @@ function extractText(openaiJson: any): string {
       if (typeof c?.refusal === "string") chunks.push(c.refusal);
     }
   }
+
   return chunks.join("").trim();
+}
+
+type CoachRequestResult =
+  | {
+      ok: true;
+      reportData: CoachReportData;
+    }
+  | {
+      ok: false;
+      error: string;
+      detail?: unknown;
+    };
+
+async function requestCoachReport(
+  openaiKey: string,
+  instructions: string,
+  inputJson: string,
+  outputLanguage: string
+): Promise<CoachRequestResult> {
+  const openaiRes = await fetch("https://api.openai.com/v1/responses", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${openaiKey}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      model: "gpt-5-mini",
+      reasoning: { effort: "minimal" },
+      text: { verbosity: "low" },
+      instructions,
+      input:
+        `Task: Generate a Stats Coach report for the user in ${outputLanguage}.\n` +
+        `Rules: Output strict JSON only. No markdown. No headings.\n\nJSON:\n${inputJson}`,
+      max_output_tokens: 900,
+    }),
+  });
+
+  const openaiJson = await openaiRes.json().catch(() => null);
+
+  if (!openaiRes.ok || !openaiJson) {
+    return {
+      ok: false,
+      error: "openai_failed",
+      detail: openaiJson ?? null,
+    };
+  }
+
+  const reportText = extractText(openaiJson);
+  if (!reportText) {
+    return { ok: false, error: "empty_output" };
+  }
+
+  const reportData = parseCoachReportDataFromText(reportText);
+  if (!reportData) {
+    return {
+      ok: false,
+      error: "invalid_output",
+      detail: reportText,
+    };
+  }
+
+  return { ok: true, reportData };
 }
 
 Deno.serve(async (req: Request) => {
   try {
-   // CORS preflight (required for browser invoke)
-if (req.method === "OPTIONS") {
-  return new Response("ok", { headers: corsHeaders });
-}
+    if (req.method === "OPTIONS") {
+      return new Response("ok", { headers: corsHeaders });
+    }
 
-// Only POST
-if (req.method !== "POST") {
-  return json(405, { ok: false, error: "method_not_allowed" });
-}
+    if (req.method !== "POST") {
+      return json(405, { ok: false, error: "method_not_allowed" });
+    }
 
-const { user, supabase, reason } = await requireUser(req);
-if (!user) {
-  return json(401, { ok: false, error: "unauthorized", detail: reason });
-}
+    const { user, supabase, reason } = await requireUser(req);
+    if (!user) {
+      return json(401, { ok: false, error: "unauthorized", detail: reason });
+    }
+
     const now = Date.now();
 
-    // ---- 1) Cooldown check (DB-based)
     const { data: cdRow, error: cdErr } = await supabase
       .from(COOLDOWN_TABLE)
       .select("last_ms")
@@ -122,118 +224,122 @@ if (!user) {
       .maybeSingle();
 
     if (cdErr) {
-      return new Response(JSON.stringify({ ok: false, error: "cooldown_read_failed", detail: cdErr.message }), {
-        status: 500,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+      return json(500, { ok: false, error: "cooldown_read_failed", detail: cdErr.message });
     }
 
     const last = Number(cdRow?.last_ms ?? 0);
     if (Number.isFinite(last) && last > 0 && now - last < COOLDOWN_MS) {
       const nextAllowedAt = last + COOLDOWN_MS;
-      return new Response(
-        JSON.stringify({
-          ok: false,
-          error: "cooldown",
-          nextAllowedAt,
-          retryAfterSec: Math.ceil((nextAllowedAt - now) / 1000),
-        }),
-        { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
+      const debug =
+        isDevCooldownDiagnosticsEnabled()
+          ? {
+              userId: user.id,
+              projectHost: getProjectHost(),
+              last_ms: last,
+              now,
+              nextAllowedAt,
+            }
+          : null;
 
-    // ---- 2) Parse payload
-    const body = (await req.json().catch(() => null)) as CoachPayload | null;
-    if (!body || typeof body !== "object") {
-      return new Response(JSON.stringify({ ok: false, error: "Invalid JSON" }), {
-        status: 400,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      if (debug) {
+        console.log("[coach-cooldown-429]", JSON.stringify(debug));
+      }
+
+      return json(429, {
+        ok: false,
+        error: "cooldown",
+        nextAllowedAt,
+        retryAfterSec: Math.ceil((nextAllowedAt - now) / 1000),
+        ...(debug ? { debug } : {}),
       });
     }
 
-    // ---- 3) Minimum data gate
+    const body = (await req.json().catch(() => null)) as CoachPayload | null;
+    if (!body || typeof body !== "object") {
+      return json(400, { ok: false, error: "Invalid JSON" });
+    }
+
+    const coachLocale = resolveCoachLocale(body.locale);
+    const localeConfig = getCoachLocaleConfig(coachLocale);
+    const windowLabels = getCoachWindowLabels(
+      coachLocale,
+      body.skillWindowLabel,
+      body.habitWindowLabel
+    );
+
     const attemptsCount = num(body?.skill?.attemptsCount);
     const attemptedTotal = num(body?.skill?.attemptedTotal);
     const maxAnswered = Math.max(0, ...(body?.skill?.scorePoints ?? []).map((p) => num(p.answered)));
     const meetsMinimum = (attemptsCount >= 1 && maxAnswered >= 80) || attemptedTotal >= 120;
 
     if (!meetsMinimum) {
-      return new Response(
-        JSON.stringify({
-          ok: false,
-          error: "insufficient_data",
-          required: "Submit 1 Real Test with ≥80 answered OR reach 120 questions answered total.",
-        }),
-        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      return json(400, {
+        ok: false,
+        error: "insufficient_data",
+        required: "Submit 1 Real Test with ≥80 answered OR reach 120 questions answered total.",
+      });
+    }
+
+    const openaiKey = Deno.env.get("OPENAI_API_KEY") ?? "";
+    if (!openaiKey) {
+      return json(500, { ok: false, error: "missing_openai_key" });
+    }
+
+    const inputJson = JSON.stringify({
+      ...body,
+      locale: coachLocale,
+      uiLanguageLabel: localeConfig.label,
+      skillWindowLabel: windowLabels.skill,
+      habitWindowLabel: windowLabels.habit,
+    });
+
+    let coachResult = await requestCoachReport(
+      openaiKey,
+      buildCoachInstructions(coachLocale, windowLabels),
+      inputJson,
+      localeConfig.outputLanguage
+    );
+
+    if (!coachResult.ok && coachResult.error === "invalid_output") {
+      coachResult = await requestCoachReport(
+        openaiKey,
+        buildCoachFallbackInstructions(coachLocale, windowLabels),
+        inputJson,
+        localeConfig.outputLanguage
       );
     }
 
-    // ---- 4) Call OpenAI
-    const openaiKey = Deno.env.get("OPENAI_API_KEY") ?? "";
-    if (!openaiKey) {
-      return new Response(JSON.stringify({ ok: false, error: "missing_openai_key" }), {
-        status: 500,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+    if (!coachResult.ok) {
+      return json(502, {
+        ok: false,
+        error: coachResult.error,
+        detail: coachResult.detail ?? null,
       });
     }
 
-    const inputJson = JSON.stringify(body);
-
-    const openaiRes = await fetch("https://api.openai.com/v1/responses", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${openaiKey}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: "gpt-5-mini",
-        reasoning: { effort: "minimal" },
-        text: { verbosity: "low" },
-        instructions: MASTER_PROMPT || FALLBACK_PROMPT,
-        input:
-          `Task: Generate a Stats Coach report for the user.\n` +
-          `Rules: <=250 words. Use ONLY the JSON.\n\nJSON:\n${inputJson}`,
-        max_output_tokens: 900,
-      }),
-    });
-
-    const openaiJson = await openaiRes.json().catch(() => null);
-
-    if (!openaiRes.ok || !openaiJson) {
-      return new Response(JSON.stringify({ ok: false, error: "openai_failed", detail: openaiJson ?? null }), {
-        status: 502,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
-
-    const report = extractText(openaiJson);
-    if (!report) {
-      return new Response(JSON.stringify({ ok: false, error: "empty_output" }), {
-        status: 502,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
-
-    // ---- 5) Write cooldown only after success
     const { error: cdWriteErr } = await supabase
       .from(COOLDOWN_TABLE)
       .upsert({ user_id: user.id, last_ms: now }, { onConflict: "user_id" });
 
     if (cdWriteErr) {
-      return new Response(JSON.stringify({ ok: false, error: "cooldown_write_failed", detail: cdWriteErr.message }), {
-        status: 500,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      return json(500, {
+        ok: false,
+        error: "cooldown_write_failed",
+        detail: cdWriteErr.message,
       });
     }
 
-    return new Response(JSON.stringify({ ok: true, report, createdAt: now }), {
-      status: 200,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    return json(200, {
+      ok: true,
+      reportData: coachResult.reportData,
+      createdAt: now,
+      reportLocale: coachLocale,
+      version: COACH_REPORT_CACHE_VERSION,
     });
   } catch (err: any) {
     return json(500, {
       ok: false,
-      error: "Stats Coach API failed",
+      error: "server_error",
       detail: String(err?.message ?? err),
     });
   }

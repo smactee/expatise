@@ -47,90 +47,142 @@
 }
 
 .crownWrap {
+  position: relative;
   display: flex;
   justify-content: center;
   margin-top: 0;
+  padding-top: 6px;
+}
+
+.crownWrap::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: -10px;
+  width: 136px;
+  height: 136px;
+  transform: translateX(-50%);
+  border-radius: 999px;
+  background:
+    radial-gradient(circle, rgba(255, 198, 74, 0.2) 0%, rgba(43, 124, 175, 0.16) 38%, rgba(7, 15, 25, 0) 74%);
+  filter: blur(12px);
+  pointer-events: none;
 }
 
 .crownIcon {
   width: 66px;
   height: 66px;
+  position: relative;
+  z-index: 1;
+  filter:
+    drop-shadow(0 10px 20px rgba(255, 197, 66, 0.18))
+    drop-shadow(0 0 22px rgba(43, 124, 175, 0.14));
 }
 
 .titleBlock {
   width: 100%;
-  max-width: 290px; /* your measurement */
-  height: 62px;
-  margin: 18px auto 0;
+  max-width: 324px;
+  margin: 20px auto 0;
+  padding: 0 12px;
   text-align: center;
 }
 
 .title {
   margin: 0;
-  font-size: 30px;
-  font-weight: 700;
-  color: #4b4b4b;
-  letter-spacing: 0.2px;
-  line-height: 1.05;
+  font-size: 34px;
+  font-weight: 800;
+  color: #f7fbff;
+  letter-spacing: -0.7px;
+  line-height: 1.08;
+  text-shadow: 0 8px 24px rgba(3, 10, 20, 0.34);
 }
 
 .subtitle {
-  margin: 6px 0 0;
+  margin: 10px 0 0;
   font-size: 16px;
-  color: #9aa0a6;
-  line-height: 1.05;
+  font-weight: 500;
+  color: rgba(225, 234, 244, 0.8);
+  line-height: 1.4;
 }
 
 .featuresBox {
-  margin-top: 9px;
-  display: flex;
-  justify-content: center;
+  width: 100%;
+  max-width: 335px;
+  margin: 18px auto 0;
+  display: block;
 }
 
 /* 335.04 x 172 (we’ll use 335px for layout sanity) */
 .featureGrid {
+  position: relative;
   width: 100%;
-  max-width: 335px;
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-template-rows: repeat(2, minmax(86px, auto));
   box-sizing: border-box;
-  /* no background in Figma (it sits on the page) */
+  overflow: hidden;
+  border-radius: 22px;
+  border: 1px solid rgba(145, 170, 196, 0.14);
+  background: linear-gradient(180deg, rgba(9, 19, 31, 0.68) 0%, rgba(7, 16, 27, 0.58) 100%);
+  box-shadow:
+    0 20px 44px rgba(3, 10, 20, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.featureGrid::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at top left, rgba(255, 197, 66, 0.1) 0%, rgba(255, 197, 66, 0) 42%),
+    radial-gradient(circle at top right, rgba(43, 124, 175, 0.14) 0%, rgba(43, 124, 175, 0) 44%);
+  pointer-events: none;
 }
 
 .featureCell {
-  padding: 10px 12px;
+  position: relative;
+  z-index: 1;
+  padding: 16px 16px 15px;
   box-sizing: border-box;
 }
 
 .featureHead {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 4px;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.featureHead img {
+  opacity: 0.98;
+  filter:
+    brightness(1.08)
+    saturate(1.08)
+    drop-shadow(0 6px 12px rgba(0, 0, 0, 0.18));
 }
 
 .featureTitle {
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 700;
-  color: #3a3a3a;
+  color: #f2f7fd;
+  letter-spacing: -0.2px;
 }
 
 .featureDesc {
   margin: 0;
-  font-size: 12px;
-  color: #9aa0a6;
-  line-height: 1.25;
+  font-size: 13px;
+  color: rgba(213, 225, 237, 0.76);
+  line-height: 1.45;
 }
 
 /* Divider lines */
 .cellTL,
 .cellTR {
-  border-bottom: 1px solid rgba(120, 120, 120, 0.35);
+  border-bottom: 1px solid rgba(145, 170, 196, 0.18);
 }
 .cellTL,
 .cellBL {
-  border-right: 1px solid rgba(120, 120, 120, 0.35);
+  border-right: 1px solid rgba(145, 170, 196, 0.18);
 }
 
 .planList {
@@ -161,6 +213,11 @@
   position: relative;
   overflow: hidden;
   isolation: isolate;
+  transition:
+    transform 120ms ease,
+    box-shadow 120ms ease,
+    background-color 120ms ease,
+    border-color 120ms ease;
 }
 
 .planPillActive {
@@ -320,6 +377,11 @@
   font-weight: 600;
   color: #4b4b4b;
   cursor: pointer;
+  transition:
+    transform 120ms ease,
+    box-shadow 120ms ease,
+    background-color 120ms ease,
+    border-color 120ms ease;
 }
 
 
@@ -329,6 +391,7 @@
   height: 52px;
   margin: 18px auto 0;
   border-radius: 12px;
+  border: 1px solid transparent;
 
   /* You already have a shared gradient var in globals if you want it later */
   background: linear-gradient(
@@ -345,6 +408,11 @@
   gap: 12px;
 
   cursor: pointer;
+  transition:
+    transform 120ms ease,
+    box-shadow 120ms ease,
+    background-color 120ms ease,
+    border-color 120ms ease;
 }
 
 .ctaText {
@@ -437,6 +505,15 @@
   cursor: not-allowed;
 }
 
+.planPill:focus-visible,
+.applyHereBtn:focus-visible,
+.promoApply:focus-visible,
+.cta:focus-visible,
+.promoLink:focus-visible {
+  outline: 2px solid rgba(43, 124, 175, 0.45);
+  outline-offset: 3px;
+}
+
 .planError {
   margin-top: 10px;
   text-align: center;
@@ -455,4 +532,81 @@
   top: 64px;
   left: 0;
   z-index: 5;
+}
+
+:root[data-theme='dark'] .planPill {
+  border-color: var(--color-dark-button-secondary-border);
+  background: rgba(2, 6, 23, 0.5);
+  box-shadow: var(--color-dark-button-secondary-shadow);
+}
+
+:root[data-theme='dark'] .planPillActive {
+  border: 1px solid transparent;
+  background-color: rgba(2, 6, 23, 0.52);
+  background-image:
+    linear-gradient(
+      90deg,
+      rgba(43, 124, 175, 0.16) 0%,
+      rgba(255, 197, 66, 0.16) 100%
+    ),
+    linear-gradient(
+      90deg,
+      rgba(43, 124, 175, 0.55) 0%,
+      rgba(255, 197, 66, 0.55) 100%
+    );
+  box-shadow: var(--color-dark-button-shadow);
+}
+
+:root[data-theme='dark'] .planTitle,
+:root[data-theme='dark'] .planPrice,
+:root[data-theme='dark'] .gotPromoText,
+:root[data-theme='dark'] .ctaText,
+:root[data-theme='dark'] .ctaChevron,
+:root[data-theme='dark'] .promoQuestion {
+  color: rgba(255, 255, 255, 0.92);
+}
+
+:root[data-theme='dark'] .radio {
+  border-color: var(--color-dark-button-border);
+  background: rgba(2, 6, 23, 0.22);
+}
+
+:root[data-theme='dark'] .radioOn {
+  background: var(--color-dark-button-bg);
+}
+
+:root[data-theme='dark'] .applyHereBtn,
+:root[data-theme='dark'] .promoLink {
+  color: #7dd3fc;
+}
+
+:root[data-theme='dark'] .promoInput {
+  border-color: rgba(125, 211, 252, 0.42);
+  background: rgba(2, 6, 23, 0.52);
+  color: rgba(255, 255, 255, 0.92);
+}
+
+:root[data-theme='dark'] .promoInput::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+:root[data-theme='dark'] .promoApply,
+:root[data-theme='dark'] .cta {
+  background: var(--color-dark-button-bg);
+  border-color: var(--color-dark-button-border);
+  box-shadow: var(--color-dark-button-shadow);
+  color: var(--color-dark-button-text);
+}
+
+:root[data-theme='dark'] .promoApply:disabled,
+:root[data-theme='dark'] .cta:disabled {
+  box-shadow: none;
+}
+
+:root[data-theme='dark'] .planPill:focus-visible,
+:root[data-theme='dark'] .applyHereBtn:focus-visible,
+:root[data-theme='dark'] .promoApply:focus-visible,
+:root[data-theme='dark'] .cta:focus-visible,
+:root[data-theme='dark'] .promoLink:focus-visible {
+  outline-color: var(--color-dark-button-focus-ring);
 }

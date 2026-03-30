@@ -420,7 +420,7 @@ export default function GlobalCommonMistakesClient({ datasetId }: { datasetId: D
                   <div className={styles.answerRow}>
                     <span className={styles.answerLabel}>{t("questionReview.answerLabel")}</span>
                     <span className={styles.answerPill}>
-                      {getRowDisplayLabel(item.correctRow)}
+                      {getRowDisplayLabel(item.correctRow, locale)}
                     </span>
                   </div>
                 )}

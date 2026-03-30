@@ -3,14 +3,48 @@
   display: flex;
   justify-content: center;
   background: var(--color-page-bg);
---test-text: #000;
+  --test-text: #000;
   --test-text-muted: rgba(0, 0, 0, 0.75);
+  --test-control-bg: rgba(255, 255, 255, 0.55);
+  --test-control-border: rgba(43, 124, 175, 0.18);
+  --test-control-shadow: 0 6px 14px rgba(15, 33, 70, 0.12);
+  --test-row-bg: linear-gradient(
+    90deg,
+    rgba(43, 124, 175, 0.15) 0%,
+    rgba(255, 197, 66, 0.15) 100%
+  );
+  --test-row-border: transparent;
+  --test-row-shadow: 0px 2px 1.1px rgba(169, 171, 187, 0.27);
+  --test-next-bg: linear-gradient(
+    90deg,
+    rgba(43, 124, 175, 0.20) 0%,
+    rgba(255, 197, 66, 0.20) 100%
+  );
+  --test-next-shadow: 0 10px 22px rgba(15, 33, 70, 0.18);
+  --test-next-border-gradient: linear-gradient(90deg, #2B7CAF 0%, #FFC542 100%);
+  --test-next-text: var(--test-text);
+  --test-focus-ring: rgba(43, 124, 175, 0.45);
   color: var(--test-text);
 }
 
 :root[data-theme='dark'] .page {
   --test-text: rgba(255, 255, 255, 0.92);
   --test-text-muted: rgba(255, 255, 255, 0.75);
+  --test-control-bg: rgba(2, 6, 23, 0.58);
+  --test-control-border: rgba(255, 255, 255, 0.14);
+  --test-control-shadow: 0 12px 26px rgba(2, 6, 23, 0.42);
+  --test-row-bg: var(--color-dark-button-secondary-bg);
+  --test-row-border: var(--color-dark-button-secondary-border);
+  --test-row-shadow: var(--color-dark-button-secondary-shadow);
+  --test-next-bg: var(--color-dark-button-bg);
+  --test-next-shadow: var(--color-dark-button-shadow);
+  --test-next-border-gradient: linear-gradient(
+    90deg,
+    rgba(43, 124, 175, 0.55) 0%,
+    rgba(255, 197, 66, 0.55) 100%
+  );
+  --test-next-text: var(--color-dark-button-text);
+  --test-focus-ring: var(--color-dark-button-focus-ring);
 }
 
 
@@ -336,15 +370,10 @@ height: min(clamp(180px, 45vw, 280px), 30vh);
   height: 46px;     /* if your design uses a different height, replace this */
   border-radius: 8px;
 
-  background: linear-gradient(
-    90deg,
-    rgba(43, 124, 175, 0.15) 0%,
-    rgba(255, 197, 66, 0.15) 100%
-  );
-
-  box-shadow: 0px 2px 1.1px rgba(169, 171, 187, 0.27);
-
-  border: 0;                /* Figma snippet didn’t include stroke */
+  background: var(--test-row-bg);
+  box-shadow: var(--test-row-shadow);
+  border: 1px solid var(--test-row-border);
+  color: var(--test-text);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -356,11 +385,12 @@ height: min(clamp(180px, 45vw, 280px), 30vh);
   width: min(315px, 100%);
   min-height: 41px;
   border-radius: 14px;
-  border: 1px solid rgba(43, 124, 175, 0.18);
-  background: rgba(255, 255, 255, 0.55);
+  border: 1px solid var(--test-control-border);
+  background: var(--test-control-bg);
   backdrop-filter: blur(10px);
-  box-shadow: 0 6px 14px rgba(15, 33, 70, 0.12);
+  box-shadow: var(--test-control-shadow);
   cursor: pointer;
+  color: var(--test-text);
 
   display: flex;
   align-items: center;
@@ -426,20 +456,17 @@ height: min(clamp(180px, 45vw, 280px), 30vh);
   font-size: 20px;
   font-weight: 600;
   letter-spacing: -0.24px;
+  color: var(--test-next-text);
 
-  background: linear-gradient(
-    90deg,
-    rgba(43, 124, 175, 0.20) 0%,
-    rgba(255, 197, 66, 0.20) 100%
-  );
+  background: var(--test-next-bg);
 
   position: relative;
-  border: none;
+  border: 1px solid transparent;
   display: flex;
   align-items: center;
   justify-content: center;
 
-  box-shadow: 0 10px 22px rgba(15, 33, 70, 0.18);
+  box-shadow: var(--test-next-shadow);
   gap: 10px;
 }
 
@@ -460,7 +487,7 @@ height: min(clamp(180px, 45vw, 280px), 30vh);
   inset: 0;
   border-radius: 14px;
   padding: 1px;
-  background: linear-gradient(90deg, #2B7CAF 0%, #FFC542 100%);
+  background: var(--test-next-border-gradient);
   pointer-events: none;
 
   /* Standard + WebKit versions */
@@ -479,6 +506,12 @@ height: min(clamp(180px, 45vw, 280px), 30vh);
 .nextBtn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+.optionBtn:focus-visible,
+.nextBtn:focus-visible {
+  outline: 2px solid var(--test-focus-ring);
+  outline-offset: 3px;
 }
 
 
@@ -560,4 +593,10 @@ height: min(clamp(180px, 45vw, 280px), 30vh);
   .contentArea {
     padding-top: 8px;
   }
+}
+
+:root[data-theme='dark'] .optionActive {
+  background: rgba(43, 124, 175, 0.16);
+  border-color: rgba(125, 211, 252, 0.5);
+  box-shadow: 0 14px 28px rgba(43, 124, 175, 0.24);
 }

@@ -64,6 +64,11 @@
   background: var(--color-premium-gradient);
   color: var(--color-heading-strong);
   font-weight: 700;
+  transition:
+    transform 120ms ease,
+    box-shadow 120ms ease,
+    background-color 120ms ease,
+    border-color 120ms ease;
 }
 
 .msg {
@@ -85,6 +90,8 @@
   border-radius: 12px;
   text-decoration: none;
   background: rgba(0,0,0,0.08);
+  border: 1px solid rgba(0,0,0,0.08);
+  color: inherit;
 }
 
 .ghostBtn {
@@ -93,6 +100,14 @@
   border: 1px solid rgba(0,0,0,0.15);
   background: transparent;
   cursor: pointer;
+  color: inherit;
+}
+
+.primaryBtn:focus-visible,
+.linkBtn:focus-visible,
+.ghostBtn:focus-visible {
+  outline: 2px solid rgba(43, 124, 175, 0.45);
+  outline-offset: 3px;
 }
 
 :root[data-theme='dark'] .page {
@@ -109,6 +124,33 @@
 
 :root[data-theme='dark'] .section {
   border-top-color: rgba(148, 163, 184, 0.18);
+}
+
+:root[data-theme='dark'] .primaryBtn {
+  background: var(--color-dark-button-bg);
+  border-color: var(--color-dark-button-border);
+  box-shadow: var(--color-dark-button-shadow);
+  color: var(--color-dark-button-text);
+}
+
+:root[data-theme='dark'] .linkBtn,
+:root[data-theme='dark'] .ghostBtn {
+  background: var(--color-dark-button-secondary-bg);
+  border-color: var(--color-dark-button-secondary-border);
+  box-shadow: var(--color-dark-button-secondary-shadow);
+  color: var(--color-dark-button-secondary-text);
+}
+
+:root[data-theme='dark'] .msg {
+  background: rgba(2, 6, 23, 0.58);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: rgba(255, 255, 255, 0.84);
+}
+
+:root[data-theme='dark'] .primaryBtn:focus-visible,
+:root[data-theme='dark'] .linkBtn:focus-visible,
+:root[data-theme='dark'] .ghostBtn:focus-visible {
+  outline-color: var(--color-dark-button-focus-ring);
 }
 
 .input {

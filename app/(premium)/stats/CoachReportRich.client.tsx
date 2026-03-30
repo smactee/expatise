@@ -1,198 +1,493 @@
 'use client';
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import styles from '@/app/(premium)/stats/stats.module.css';
 import { useT } from '@/lib/i18n/useT';
+import { COACH_LOCALE_REGISTRY } from '@/lib/coach/locale';
+import {
+  normalizeCoachReportData,
+  parseCoachReportDataFromText,
+  type CoachReportData,
+  type CoachTodayPlan,
+  type CoachTopLever,
+} from '@/lib/coach/report';
 
+type CoachReportRichProps = {
+  report: CoachReportData | string;
+};
 
-export default function CoachReportRich({ report }: { report: string }) {
-  const { t } = useT();
-  const sections = parseSections(report, t('stats.coach.reportTitle'));
+type LegacySection = {
+  key: string;
+  title: string;
+  lines: string[];
+};
 
-  if (!sections.length) return null;
-
-  return (
-    <div className={styles.coachReportRich}>
-      {sections.map((s, idx) => {
-        const blocks = toBlocks(s.lines);
-        const isTarget = s.key === 'F' || /target|one thing/i.test(s.title);
-
-
-        return (
-          <section
-            key={`${s.key}-${idx}`}
-            className={`${styles.coachSection} ${isTarget ? styles.coachTargetCallout : ''}`}
-          >
-            <h3 className={styles.coachSectionTitle}>{s.title}</h3>
-
-            <div className={styles.coachSectionBody}>
-              {blocks.map((b, i) => {
-                if (b.kind === 'p') {
-                  return (
-                    <p key={i} className={styles.coachP}>
-                      {renderInline(b.text)}
-                    </p>
-                  );
-                }
-
-                if (b.kind === 'ul') {
-                  return (
-                    <ul key={i} className={styles.coachList}>
-                      {b.items.map((it, j) => (
-                        <li key={j} className={styles.coachLi}>
-                          {renderItem(it)}
-                        </li>
-                      ))}
-                    </ul>
-                  );
-                }
-
-                return (
-                  <ol key={i} className={styles.coachList}>
-                    {b.items.map((it, j) => (
-                      <li key={j} className={styles.coachLi}>
-                        {renderItem(it)}
-                      </li>
-                    ))}
-                  </ol>
-                );
-              })}
-            </div>
-          </section>
-        );
-      })}
-    </div>
-  );
-}
-
-/** -----------------------------
- *  Parsing: A) ... → sections
- *  ----------------------------- */
-type Section = { key: string; title: string; lines: string[] };
-
-const AF_RE = /^([A-F])\)\s*(.+)\s*$/;
-const H_RE = /^#{2,3}\s+(.*)$/; // "## " or "### "
-
-function parseSections(report: string, fallbackTitle: string): Section[] {
-  const text = (report ?? "").replace(/\r\n/g, "\n").trim();
-  if (!text) return [];
-
-  const lines = text.split("\n");
-
-  // Decide which format we're in:
-  const afHits = lines.reduce((n, l) => n + (AF_RE.test(l.trim()) ? 1 : 0), 0);
-  const hHits = lines.reduce((n, l) => n + (H_RE.test(l.trim()) ? 1 : 0), 0);
-
-  if (afHits >= 2) return parseAF(lines, fallbackTitle);
-  if (hHits >= 2) return parseHeadings(lines, fallbackTitle);
-
-  // Fallback: single section
-  return [{ key: "", title: fallbackTitle, lines }];
-}
-
-function parseAF(lines: string[], fallbackTitle: string): Section[] {
-  const out: Section[] = [];
-  let cur: Section | null = null;
-
-  for (const raw of lines) {
-    const line = raw.trimEnd();
-    const m = line.trim().match(AF_RE);
-
-    if (m) {
-      if (cur) out.push(cur);
-      cur = { key: m[1], title: m[2].trim(), lines: [] };
-      continue;
-    }
-
-    if (!cur) cur = { key: "", title: fallbackTitle, lines: [] };
-    cur.lines.push(line.trim().length ? line : "");
-  }
-
-  if (cur) out.push(cur);
-  return out;
-}
-
-function parseHeadings(lines: string[], fallbackTitle: string): Section[] {
-  const out: Section[] = [];
-  let cur: Section | null = null;
-
-  for (const raw of lines) {
-    const line = raw.trimEnd();
-    const hm = line.trim().match(H_RE);
-
-    if (hm) {
-      // Start new section
-      if (cur) out.push(cur);
-
-      // Handle "### Summary You have ..." (heading + body same line)
-      const after = hm[1].trim();
-      const known = [
-        "Summary",
-        "Snapshot",
-        "Top levers",
-        "Today",
-        "Next 7 days",
-        "The One thing",
-      ];
-
-      const found = known.find((k) => after.toLowerCase().startsWith(k.toLowerCase()));
-      const title = found ?? after.split(/\s{2,}/)[0] ?? after;
-
-      const rest = found ? after.slice(found.length).trim() : "";
-      cur = { key: title, title, lines: [] };
-
-      if (rest) cur.lines.push(rest);
-      continue;
-    }
-
-    if (!cur) cur = { key: "", title: fallbackTitle, lines: [] };
-    cur.lines.push(line.trim().length ? line : "");
-  }
-
-  if (cur) out.push(cur);
-  return out;
-}
-
-
-/** --------------------------------
- *  Turn section lines into blocks
- *  -------------------------------- */
-type Block =
+type LegacyBlock =
   | { kind: 'p'; text: string }
   | { kind: 'ul'; items: string[] }
   | { kind: 'ol'; items: string[] };
 
-function toBlocks(lines: string[]): Block[] {
-  const blocks: Block[] = [];
-  let pBuf: string[] = [];
+type SectionKey = keyof CoachReportData;
+
+function unique(values: readonly string[]) {
+  return Array.from(new Set(values));
+}
+
+const localeConfigs = Object.values(COACH_LOCALE_REGISTRY);
+
+const LEGACY_SECTION_ALIASES: Record<SectionKey, string[]> = {
+  summary: unique([
+    ...localeConfigs.map((config) => config.sectionHeadings.summary),
+    'Summary',
+  ]),
+  snapshot: unique([
+    ...localeConfigs.map((config) => config.sectionHeadings.snapshot),
+    'Snapshot',
+  ]),
+  topLevers: unique([
+    ...localeConfigs.map((config) => config.sectionHeadings.topLevers),
+    'Top levers',
+  ]),
+  today: unique([
+    ...localeConfigs.map((config) => config.sectionHeadings.today),
+    'Today',
+    'Today (10 / 20 / 40)',
+  ]),
+  next7Days: unique([
+    ...localeConfigs.map((config) => config.sectionHeadings.next7Days),
+    'Next 7 days',
+  ]),
+  oneTarget: unique([
+    ...localeConfigs.map((config) => config.sectionHeadings.oneTarget),
+    'The One thing',
+    'One target',
+  ]),
+};
+
+const LEGACY_AF_SECTION_MAP: Record<string, SectionKey> = {
+  A: 'summary',
+  B: 'snapshot',
+  C: 'topLevers',
+  D: 'today',
+  E: 'next7Days',
+  F: 'oneTarget',
+};
+
+const WHY_LABELS = unique(localeConfigs.flatMap((config) => config.emphasisLabels.why));
+const NEXT_LABELS = unique(localeConfigs.flatMap((config) => config.emphasisLabels.next));
+const WINDOW_LABELS = unique(localeConfigs.flatMap((config) => Object.values(config.windowLabels)));
+
+const AF_RE = /^([A-F])\)\s*(.+)\s*$/;
+const H_RE = /^#{2,3}\s+(.*)$/;
+
+const WINDOW_LABEL_PATTERN = WINDOW_LABELS
+  .sort((a, b) => b.length - a.length)
+  .map(escapeRegex)
+  .join('|');
+
+const TIME_PREFIX_PATTERNS: Array<{ key: keyof CoachTodayPlan; re: RegExp }> = [
+  { key: 'ten', re: /^10\s*(?:min|mins?|minutes?|분)\s*[:：-]?\s*(.*)$/i },
+  { key: 'twenty', re: /^20\s*(?:min|mins?|minutes?|분)\s*[:：-]?\s*(.*)$/i },
+  { key: 'forty', re: /^40\s*(?:min|mins?|minutes?|분)\s*[:：-]?\s*(.*)$/i },
+];
+
+export default function CoachReportRich({ report }: CoachReportRichProps) {
+  const { t } = useT();
+  const reportData = useMemo(() => coerceCoachReportData(report), [report]);
+
+  if (!reportData) return null;
+
+  return (
+    <div className={styles.coachReportRich}>
+      <section className={styles.coachSection}>
+        <h3 className={styles.coachSectionTitle}>{t('stats.coach.sections.summary')}</h3>
+        <div className={styles.coachSectionBody}>
+          <p className={styles.coachP}>{renderInline(reportData.summary)}</p>
+        </div>
+      </section>
+
+      <section className={styles.coachSection}>
+        <h3 className={styles.coachSectionTitle}>{t('stats.coach.sections.snapshot')}</h3>
+        <div className={styles.coachSectionBody}>
+          <ul className={styles.coachList}>
+            {reportData.snapshot.map((item, idx) => (
+              <li key={idx} className={styles.coachLi}>
+                {renderInline(item)}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+
+      <section className={styles.coachSection}>
+        <h3 className={styles.coachSectionTitle}>{t('stats.coach.sections.topLevers')}</h3>
+        <div className={styles.coachSectionBody}>
+          <ol className={styles.coachList}>
+            {reportData.topLevers.map((lever, idx) => (
+              <li key={`${lever.title}-${idx}`} className={styles.coachLi}>
+                <p className={styles.coachP}>
+                  <strong className={styles.coachMetric}>{renderInline(lever.title)}</strong>
+                </p>
+                <p className={styles.coachP}>
+                  <span className={styles.coachKey}>{t('stats.coach.labels.why')}:</span>{' '}
+                  {renderInline(lever.why)}
+                </p>
+                <p className={styles.coachP}>
+                  <span className={styles.coachKey}>{t('stats.coach.labels.next')}:</span>{' '}
+                  {renderInline(lever.next)}
+                </p>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </section>
+
+      <section className={styles.coachSection}>
+        <h3 className={styles.coachSectionTitle}>{t('stats.coach.sections.today')}</h3>
+        <div className={styles.coachSectionBody}>
+          <ul className={styles.coachList}>
+            <li className={styles.coachLi}>
+              <span className={styles.coachChip}>{t('stats.coach.plans.ten')}</span>
+              {renderInline(reportData.today.ten)}
+            </li>
+            <li className={styles.coachLi}>
+              <span className={styles.coachChip}>{t('stats.coach.plans.twenty')}</span>
+              {renderInline(reportData.today.twenty)}
+            </li>
+            <li className={styles.coachLi}>
+              <span className={styles.coachChip}>{t('stats.coach.plans.forty')}</span>
+              {renderInline(reportData.today.forty)}
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <section className={styles.coachSection}>
+        <h3 className={styles.coachSectionTitle}>{t('stats.coach.sections.next7Days')}</h3>
+        <div className={styles.coachSectionBody}>
+          <ul className={styles.coachList}>
+            {reportData.next7Days.map((item, idx) => (
+              <li key={idx} className={styles.coachLi}>
+                {renderInline(item)}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+
+      <section className={`${styles.coachSection} ${styles.coachTargetCallout}`}>
+        <h3 className={styles.coachSectionTitle}>{t('stats.coach.sections.oneTarget')}</h3>
+        <div className={styles.coachSectionBody}>
+          <p className={styles.coachP}>
+            <span className={styles.coachKey}>{t('stats.coach.labels.target')}:</span>{' '}
+            {renderInline(reportData.oneTarget)}
+          </p>
+        </div>
+      </section>
+    </div>
+  );
+}
+
+function coerceCoachReportData(report: CoachReportData | string) {
+  if (typeof report !== 'string') {
+    return normalizeCoachReportData(report);
+  }
+
+  const structured = parseCoachReportDataFromText(report);
+  if (structured) return structured;
+
+  return parseLegacyCoachReport(report);
+}
+
+function parseLegacyCoachReport(report: string): CoachReportData | null {
+  const sections = parseSections(report);
+  if (!sections.length) return null;
+
+  const byKey = new Map<SectionKey, LegacySection>();
+
+  for (const section of sections) {
+    const key = getLegacySectionKey(section);
+    if (key && !byKey.has(key)) {
+      byKey.set(key, section);
+    }
+  }
+
+  const summary = extractSectionText(byKey.get('summary')?.lines ?? []);
+  const snapshot = extractSectionItems(byKey.get('snapshot')?.lines ?? []);
+  const topLevers = parseTopLevers(byKey.get('topLevers')?.lines ?? []);
+  const today = parseToday(byKey.get('today')?.lines ?? []);
+  const next7Days = extractSectionItems(byKey.get('next7Days')?.lines ?? []);
+  const oneTarget = extractSectionText(byKey.get('oneTarget')?.lines ?? []);
+
+  if (!summary || !snapshot.length || !topLevers.length || !today || !next7Days.length || !oneTarget) {
+    return null;
+  }
+
+  return {
+    summary,
+    snapshot,
+    topLevers,
+    today,
+    next7Days,
+    oneTarget,
+  };
+}
+
+function parseSections(report: string): LegacySection[] {
+  const text = report.replace(/\r\n/g, '\n').trim();
+  if (!text) return [];
+
+  const lines = text.split('\n');
+  const afHits = lines.reduce((count, line) => count + (AF_RE.test(line.trim()) ? 1 : 0), 0);
+  const headingHits = lines.reduce((count, line) => count + (H_RE.test(line.trim()) ? 1 : 0), 0);
+
+  if (afHits >= 2) return parseAFSections(lines);
+  if (headingHits >= 2) return parseHeadingSections(lines);
+
+  return [];
+}
+
+function parseAFSections(lines: string[]) {
+  const sections: LegacySection[] = [];
+  let current: LegacySection | null = null;
+
+  for (const raw of lines) {
+    const line = raw.trimEnd();
+    const match = line.trim().match(AF_RE);
+
+    if (match) {
+      if (current) sections.push(current);
+      current = { key: match[1], title: match[2].trim(), lines: [] };
+      continue;
+    }
+
+    if (!current) continue;
+    current.lines.push(line);
+  }
+
+  if (current) sections.push(current);
+  return sections;
+}
+
+function parseHeadingSections(lines: string[]) {
+  const sections: LegacySection[] = [];
+  let current: LegacySection | null = null;
+
+  for (const raw of lines) {
+    const line = raw.trimEnd();
+    const match = line.trim().match(H_RE);
+
+    if (match) {
+      if (current) sections.push(current);
+
+      const headingText = match[1].trim();
+      const split = splitLegacyHeadingContent(headingText);
+      current = { key: '', title: split.title, lines: split.body ? [split.body] : [] };
+      continue;
+    }
+
+    if (!current) continue;
+    current.lines.push(line);
+  }
+
+  if (current) sections.push(current);
+  return sections;
+}
+
+function splitLegacyHeadingContent(value: string) {
+  const aliases = Object.values(LEGACY_SECTION_ALIASES)
+    .flat()
+    .sort((a, b) => b.length - a.length);
+  const normalizedValue = normalizeHeading(value);
+
+  for (const alias of aliases) {
+    const normalizedAlias = normalizeHeading(alias);
+    if (normalizedValue === normalizedAlias) {
+      return { title: alias, body: '' };
+    }
+
+    if (normalizedValue.startsWith(`${normalizedAlias} `)) {
+      return {
+        title: alias,
+        body: cleanupSegment(value.slice(alias.length)),
+      };
+    }
+  }
+
+  return { title: value, body: '' };
+}
+
+function getLegacySectionKey(section: LegacySection): SectionKey | null {
+  const afKey = LEGACY_AF_SECTION_MAP[section.key];
+  if (afKey) return afKey;
+
+  const normalizedTitle = normalizeHeading(section.title);
+
+  for (const [key, aliases] of Object.entries(LEGACY_SECTION_ALIASES) as Array<[SectionKey, string[]]>) {
+    if (
+      aliases.some((alias) => {
+        const normalizedAlias = normalizeHeading(alias);
+        return normalizedTitle === normalizedAlias || normalizedTitle.startsWith(`${normalizedAlias} `);
+      })
+    ) {
+      return key;
+    }
+  }
+
+  return null;
+}
+
+function normalizeHeading(value: string) {
+  return value
+    .replace(/^#+\s*/, '')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .toLowerCase();
+}
+
+function extractSectionText(lines: string[]) {
+  const blocks = toBlocks(lines);
+  const paragraphs = blocks
+    .flatMap((block) => {
+      if (block.kind === 'p') return [block.text];
+      return block.items;
+    })
+    .map((item) => item.trim())
+    .filter(Boolean);
+
+  return paragraphs.join(' ').trim();
+}
+
+function extractSectionItems(lines: string[]) {
+  const blocks = toBlocks(lines);
+  const items = blocks
+    .flatMap((block) => {
+      if (block.kind === 'p') return block.text ? [block.text] : [];
+      return block.items;
+    })
+    .map((item) => item.trim())
+    .filter(Boolean);
+
+  return items;
+}
+
+function parseTopLevers(lines: string[]): CoachTopLever[] {
+  return extractSectionItems(lines)
+    .map((item) => parseTopLever(item))
+    .filter((item): item is CoachTopLever => Boolean(item));
+}
+
+function parseTopLever(item: string): CoachTopLever | null {
+  const whyMatch = findLabelMatch(item, WHY_LABELS);
+  const nextMatch = findLabelMatch(item, NEXT_LABELS, whyMatch ? whyMatch.end : 0);
+
+  if (whyMatch && nextMatch) {
+    const title = cleanupSegment(item.slice(0, whyMatch.index));
+    const why = cleanupSegment(item.slice(whyMatch.end, nextMatch.index));
+    const next = cleanupSegment(item.slice(nextMatch.end));
+
+    if (title && why && next) {
+      return { title, why, next };
+    }
+  }
+
+  const parts = item.split(/\s+[–—-]\s+/).map((part) => cleanupSegment(part));
+  if (parts.length >= 3 && parts[0] && parts[1] && parts[2]) {
+    return {
+      title: parts[0],
+      why: parts[1],
+      next: parts.slice(2).join(' - '),
+    };
+  }
+
+  return null;
+}
+
+function parseToday(lines: string[]): CoachTodayPlan | null {
+  const items = extractSectionItems(lines);
+  const today: Partial<CoachTodayPlan> = {};
+
+  for (const item of items) {
+    for (const { key, re } of TIME_PREFIX_PATTERNS) {
+      const match = item.match(re);
+      if (match?.[1]) {
+        today[key] = cleanupSegment(match[1]);
+      }
+    }
+  }
+
+  if (!today.ten || !today.twenty || !today.forty) {
+    return null;
+  }
+
+  return {
+    ten: today.ten,
+    twenty: today.twenty,
+    forty: today.forty,
+  };
+}
+
+function findLabelMatch(text: string, labels: string[], fromIndex = 0) {
+  let best: { index: number; end: number } | null = null;
+
+  for (const label of labels) {
+    const re = new RegExp(`${escapeRegex(label)}\\s*:`, 'i');
+    const slice = text.slice(fromIndex);
+    const match = slice.match(re);
+    if (!match || match.index == null) continue;
+
+    const index = fromIndex + match.index;
+    const end = index + match[0].length;
+
+    if (!best || index < best.index) {
+      best = { index, end };
+    }
+  }
+
+  return best;
+}
+
+function cleanupSegment(value: string) {
+  return value
+    .replace(/^[\s:：\-–—]+/, '')
+    .replace(/[\s:：\-–—]+$/, '')
+    .trim();
+}
+
+function toBlocks(lines: string[]): LegacyBlock[] {
+  const blocks: LegacyBlock[] = [];
+  let paragraphBuffer: string[] = [];
   let listKind: 'ul' | 'ol' | null = null;
   let listItems: string[] = [];
 
-  const flushP = () => {
-    const t = pBuf.join(' ').trim();
-    if (t) blocks.push({ kind: 'p', text: t });
-    pBuf = [];
+  const flushParagraph = () => {
+    const text = paragraphBuffer.join(' ').trim();
+    if (text) blocks.push({ kind: 'p', text });
+    paragraphBuffer = [];
   };
 
   const flushList = () => {
-    if (listKind && listItems.length) blocks.push({ kind: listKind, items: listItems });
+    if (listKind && listItems.length) {
+      blocks.push({ kind: listKind, items: listItems });
+    }
     listKind = null;
     listItems = [];
   };
 
   for (const raw of lines) {
-    const t = raw.trim();
-    if (!t) {
-      flushP();
+    const text = raw.trim();
+
+    if (!text) {
+      flushParagraph();
       flushList();
       continue;
     }
 
-    const bullet = t.match(/^[-•]\s+(.*)$/);
-    const ordered = t.match(/^\d+[\).\]]\s+(.*)$/);
+    const bullet = text.match(/^[-•]\s+(.*)$/);
+    const ordered = text.match(/^\d+[\).\]]\s+(.*)$/);
 
     if (bullet) {
-      flushP();
+      flushParagraph();
       if (listKind && listKind !== 'ul') flushList();
       listKind = 'ul';
       listItems.push(bullet[1]);
@@ -200,7 +495,7 @@ function toBlocks(lines: string[]): Block[] {
     }
 
     if (ordered) {
-      flushP();
+      flushParagraph();
       if (listKind && listKind !== 'ol') flushList();
       listKind = 'ol';
       listItems.push(ordered[1]);
@@ -208,117 +503,64 @@ function toBlocks(lines: string[]): Block[] {
     }
 
     flushList();
-    pBuf.push(t);
+    paragraphBuffer.push(text);
   }
 
-  flushP();
+  flushParagraph();
   flushList();
+
   return blocks;
 }
 
-/** --------------------------------
- *  Premium-ish deterministic chips
- *  -------------------------------- */
-const TIME_PREFIX_RE = /^(\d+\s*min)\s*:\s*(.*)$/i;
-const DAY_PREFIX_RE = /^(Day\s+\d+(?:\s*[–-]\s*\d+)?)\s*:\s*(.*)$/i;
-
-function renderItem(text: string) {
-  const t = text.trim();
-
-  const tm = t.match(TIME_PREFIX_RE);
-  if (tm) {
-    return (
-      <>
-        <span className={styles.coachChip}>{tm[1]}</span> {renderInline(tm[2])}
-      </>
-    );
-  }
-
-  const dm = t.match(DAY_PREFIX_RE);
-  if (dm) {
-    return (
-      <>
-        <span className={styles.coachChip}>{dm[1]}</span> {renderInline(dm[2])}
-      </>
-    );
-  }
-
-  return <>{renderInline(t)}</>;
+function escapeRegex(value: string) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
-/**
- * Deterministic emphasis:
- * - (30d)/(7d)/(all-time) → chip
- * - Why:/Next action:/Target: → key
- * - numbers (supports "3,200", "3, 200", "3, 200", "3，200") → metric
- */
 function renderInline(text: string): React.ReactNode {
-  const WINDOW_RE = /\(\s*(30d|7d|all-time)\s*\)/gi;
-
-  // ✅ Match numbers robustly:
-  // - comma groups with optional whitespace + full-width comma
-  // - plain integers/decimals
-  // - percents
-  // - ranges like 40–60
-  const METRIC_RE =
+  const windowRe = new RegExp(`\\(\\s*(?:${WINDOW_LABEL_PATTERN})\\s*\\)`, 'gi');
+  const metricRe =
     /\b\d{1,3}(?:[,\uFF0C]\s*\d{3})+(?:\.\d+)?%?\b|\b\d+(?:\.\d+)?%?\b|\b\d+\s*[–-]\s*\d+\b|\b\d+-day\b/gi;
+  const tokenRe = new RegExp(`${windowRe.source}|${metricRe.source}`, 'gi');
 
-  // ✅ include "Next action:"
-  const KEY_RE = /\b(Why|Next(?:\s+action)?|Target)\b:/gi;
-
-  const TOKEN_RE = new RegExp(
-    `${WINDOW_RE.source}|${KEY_RE.source}|${METRIC_RE.source}`,
-    'gi'
-  );
-
-  const out: React.ReactNode[] = [];
+  const nodes: React.ReactNode[] = [];
   let last = 0;
 
-  for (const m of text.matchAll(TOKEN_RE)) {
-    const start = m.index ?? 0;
-    const match = m[0];
+  for (const match of text.matchAll(tokenRe)) {
+    const start = match.index ?? 0;
+    const value = match[0];
 
-    if (start > last) out.push(text.slice(last, start));
+    if (start > last) {
+      nodes.push(text.slice(last, start));
+    }
 
-    // window chip
-    const w = match.match(WINDOW_RE);
-    if (w) {
-      const inner = match.replace(/[()]/g, '').replace(/\s+/g, '');
-      out.push(
-        <span key={`${start}-w`} className={styles.coachChip}>
+    if (value.match(windowRe)) {
+      const inner = value.replace(/[()]/g, '').trim();
+      nodes.push(
+        <span key={`${start}-window`} className={styles.coachChip}>
           {inner}
         </span>
       );
-      last = start + match.length;
+      last = start + value.length;
       continue;
     }
 
-    // key label
-    if (match.endsWith(':') && match.match(KEY_RE)) {
-      out.push(
-        <span key={`${start}-k`} className={styles.coachKey}>
-          {match}
-        </span>
-      );
-      last = start + match.length;
-      continue;
-    }
-
-    // metric
-    if (match.match(METRIC_RE)) {
-      out.push(
-        <strong key={`${start}-m`} className={styles.coachMetric}>
-          {match}
+    if (value.match(metricRe)) {
+      nodes.push(
+        <strong key={`${start}-metric`} className={styles.coachMetric}>
+          {value}
         </strong>
       );
-      last = start + match.length;
+      last = start + value.length;
       continue;
     }
 
-    out.push(match);
-    last = start + match.length;
+    nodes.push(value);
+    last = start + value.length;
   }
 
-  if (last < text.length) out.push(text.slice(last));
-  return <>{out}</>;
+  if (last < text.length) {
+    nodes.push(text.slice(last));
+  }
+
+  return <>{nodes}</>;
 }

@@ -616,7 +616,7 @@ useEffect(() => {
       }`}
       onClick={() => onOptionTap('R')}
     >
-      <span className={styles.optionText}>{getRowDisplayLabel('R')}</span>
+      <span className={styles.optionText}>{getRowDisplayLabel('R', locale)}</span>
     </button>
 
     <button
@@ -626,7 +626,7 @@ useEffect(() => {
       }`}
      onClick={() => onOptionTap('W')}
     >
-      <span className={styles.optionText}>{getRowDisplayLabel('W')}</span>
+      <span className={styles.optionText}>{getRowDisplayLabel('W', locale)}</span>
     </button>
   </>
 )}

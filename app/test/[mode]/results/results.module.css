@@ -500,7 +500,7 @@
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   border-radius: 14px;
 
-  border: 0;
+  border: 1px solid transparent;
   cursor: pointer;
 
   display: flex;
@@ -509,8 +509,17 @@
   gap: 10px;
 
   z-index: 50; /* ✅ stays above scroll content */
+  transition:
+    transform 120ms ease,
+    box-shadow 120ms ease,
+    background-color 120ms ease,
+    border-color 120ms ease;
 }
 
+.continueBtn:focus-visible {
+  outline: 2px solid rgba(43, 124, 175, 0.45);
+  outline-offset: 3px;
+}
 
 .continueText {
   font-family: 'Lato', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
@@ -520,6 +529,10 @@
   line-height: 130%;
   letter-spacing: 0.04em;
   color: var(--results-text);
+}
+
+.btnIcon {
+  display: block;
 }
 
 .shiftUp {
@@ -618,6 +631,10 @@
   font-weight: 700;
   font-size: 12px;
   cursor: pointer;
+  transition:
+    box-shadow 120ms ease,
+    background-color 120ms ease,
+    border-color 120ms ease;
 }
 
 .slideCounter {
@@ -679,4 +696,29 @@
 
 :root[data-theme='dark'] .bookmarkBtn[data-bookmarked='false'] .bookmarkIcon {
   background: rgba(255, 255, 255, 0.70);
+}
+
+:root[data-theme='dark'] .continueBtn {
+  background: var(--color-dark-button-bg);
+  border-color: var(--color-dark-button-border);
+  box-shadow: var(--color-dark-button-shadow);
+}
+
+:root[data-theme='dark'] .continueBtn:focus-visible {
+  outline-color: var(--color-dark-button-focus-ring);
+}
+
+:root[data-theme='dark'] .continueText {
+  color: var(--color-dark-button-text);
+}
+
+:root[data-theme='dark'] .btnIcon {
+  filter: brightness(0) invert(1);
+}
+
+:root[data-theme='dark'] .viewToggle {
+  border: 1px solid var(--color-dark-button-secondary-border);
+  background: var(--color-dark-button-secondary-bg);
+  box-shadow: var(--color-dark-button-secondary-shadow);
+  color: var(--results-text);
 }

@@ -644,7 +644,7 @@ onClick={(e) => {
           key={k}
           className={`${styles.option} ${correct ? styles.optionCorrect : ''}`}
         >
-          <span className={styles.optionKey}>{getRowDisplayLabel(k)}</span>
+          <span className={styles.optionKey}>{getRowDisplayLabel(k, locale)}</span>
         </li>
       );
     })}

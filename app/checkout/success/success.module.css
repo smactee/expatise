@@ -91,7 +91,7 @@
 .homeBtn {
   width: 70%;
   height: 56px;
-  border: none;
+  border: 1px solid transparent;
   border-radius: 14px;
 
   background: linear-gradient(90deg, rgba(43, 124, 175, 0.65) 0%, rgba(255, 255, 255, 0.95) 100%);
@@ -102,4 +102,25 @@
   color: rgba(75, 75, 75, 0.9);
 
   cursor: pointer;
+  transition:
+    transform 120ms ease,
+    box-shadow 120ms ease,
+    background-color 120ms ease,
+    border-color 120ms ease;
+}
+
+.homeBtn:focus-visible {
+  outline: 2px solid rgba(43, 124, 175, 0.45);
+  outline-offset: 3px;
+}
+
+:root[data-theme='dark'] .homeBtn {
+  background: var(--color-dark-button-bg);
+  border-color: var(--color-dark-button-border);
+  box-shadow: var(--color-dark-button-shadow);
+  color: var(--color-dark-button-text);
+}
+
+:root[data-theme='dark'] .homeBtn:focus-visible {
+  outline-color: var(--color-dark-button-focus-ring);
 }

@@ -1058,7 +1058,7 @@ if (!item) {
             }`}
             onClick={() => onOptionTap('R')}
           >
-            <span className={styles.optionText}>{getRowDisplayLabel('R')}</span>
+            <span className={styles.optionText}>{getRowDisplayLabel('R', locale)}</span>
           </button>
 
           <button
@@ -1068,7 +1068,7 @@ if (!item) {
             }`}
             onClick={() => onOptionTap('W')}
           >
-            <span className={styles.optionText}>{getRowDisplayLabel('W')}</span>
+            <span className={styles.optionText}>{getRowDisplayLabel('W', locale)}</span>
           </button>
         </>
       )}

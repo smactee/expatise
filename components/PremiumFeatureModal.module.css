@@ -16,23 +16,28 @@
   border-radius: 18px;
   padding: 18px 16px;
   background: var(--color-profile-card-bg);
+  border: 1px solid rgba(148, 163, 184, 0.16);
   box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+  color: var(--color-heading-strong);
 }
 
 .guestTitle {
   font-size: 18px;
   font-weight: 800;
   margin-bottom: 8px;
+  color: var(--color-heading-strong);
 }
 
 .guestText {
   font-size: 14px;
   opacity: 0.9;
   line-height: 1.4;
+  color: var(--color-text-main-muted, currentColor);
 }
 
 .guestButtons {
   display: flex;
+  align-items: stretch;
   gap: 10px;
   margin-top: 14px;
 }
@@ -56,6 +61,12 @@
   cursor: pointer;
   appearance: none;
   -webkit-appearance: none;
+  transition:
+    transform 120ms ease,
+    opacity 120ms ease,
+    background-color 120ms ease,
+    box-shadow 120ms ease,
+    border-color 120ms ease;
 }
 
 .guestPrimary {
@@ -78,7 +89,65 @@
   opacity: 0.96;
 }
 
+.guestPrimary:focus-visible,
+.guestSecondary:focus-visible {
+  outline: 2px solid rgba(43, 124, 175, 0.45);
+  outline-offset: 2px;
+}
+
 .guestPrimary:active,
 .guestSecondary:active {
   transform: translateY(1px);
+}
+
+:root[data-theme='dark'] .guestOverlay {
+  background: rgba(2, 6, 23, 0.72);
+}
+
+:root[data-theme='dark'] .guestModal {
+  background:
+    linear-gradient(
+      180deg,
+      rgba(43, 124, 175, 0.14),
+      rgba(255, 197, 66, 0.08)
+    ),
+    #111827;
+  border-color: rgba(255, 255, 255, 0.14);
+  box-shadow: 0 24px 60px rgba(2, 6, 23, 0.58);
+  color: rgba(255, 255, 255, 0.95);
+}
+
+:root[data-theme='dark'] .guestTitle {
+  color: rgba(255, 255, 255, 0.95);
+}
+
+:root[data-theme='dark'] .guestText {
+  color: rgba(255, 255, 255, 0.74);
+}
+
+:root[data-theme='dark'] .guestPrimary {
+  background: var(--color-dark-button-secondary-bg);
+  border-color: var(--color-dark-button-secondary-border);
+  box-shadow: var(--color-dark-button-secondary-shadow);
+  color: var(--color-dark-button-secondary-text);
+}
+
+:root[data-theme='dark'] .guestSecondary {
+  background: var(--color-dark-button-bg);
+  border-color: var(--color-dark-button-border);
+  box-shadow: var(--color-dark-button-shadow);
+  color: var(--color-dark-button-text);
+}
+
+:root[data-theme='dark'] .guestPrimary:hover {
+  background: var(--color-dark-button-secondary-bg-hover);
+}
+
+:root[data-theme='dark'] .guestSecondary:hover {
+  box-shadow: 0 22px 44px rgba(15, 23, 42, 0.48);
+}
+
+:root[data-theme='dark'] .guestPrimary:focus-visible,
+:root[data-theme='dark'] .guestSecondary:focus-visible {
+  outline-color: var(--color-dark-button-focus-ring);
 }

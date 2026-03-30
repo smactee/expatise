@@ -692,6 +692,11 @@
   color: var(--color-heading-strong);
   font-weight: 700;
   cursor: pointer;
+  transition:
+    transform 120ms ease,
+    box-shadow 120ms ease,
+    background-color 120ms ease,
+    border-color 120ms ease;
 }
 
 .loginButton {
@@ -706,6 +711,30 @@
   color: var(--color-heading-strong);
   background: var(--color-premium-gradient);
   font-weight: 700;
+  transition:
+    transform 120ms ease,
+    box-shadow 120ms ease,
+    background-color 120ms ease,
+    border-color 120ms ease;
+}
+
+.saveButton:focus-visible,
+.loginButton:focus-visible {
+  outline: 2px solid rgba(43, 124, 175, 0.45);
+  outline-offset: 3px;
+}
+
+:root[data-theme='dark'] .saveButton,
+:root[data-theme='dark'] .loginButton {
+  background: var(--color-dark-button-bg);
+  border-color: var(--color-dark-button-border);
+  box-shadow: var(--color-dark-button-shadow);
+  color: var(--color-dark-button-text);
+}
+
+:root[data-theme='dark'] .saveButton:focus-visible,
+:root[data-theme='dark'] .loginButton:focus-visible {
+  outline-color: var(--color-dark-button-focus-ring);
 }
 
 .toastOverlay {

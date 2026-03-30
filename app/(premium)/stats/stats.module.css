@@ -568,6 +568,12 @@
   cursor: not-allowed;
 }
 
+.loadingDots {
+  display: inline-block;
+  width: 3ch;
+  text-align: left;
+}
+
 .coachMeta {
   margin-top: 10px;
   font-size: 11px;
@@ -917,6 +923,7 @@
 .statsSummaryWrap {
   position: relative;
   margin-top: 8px;
+  --stats-summary-overlap-radius: 22px;
 }
 
 .pageTopRow{
@@ -931,6 +938,7 @@
   margin-top: 0;
   width: 100%;
   border-radius: 32px;
+  border-top-right-radius: var(--stats-summary-overlap-radius);
   padding: 24px 24px 18px;
   background:
     radial-gradient(circle at top, rgba(255, 255, 255, 0.9), transparent 60%),
@@ -944,7 +952,7 @@
   right: 2px;
   z-index: 6;
 
-  border-radius: 22px;
+  border-radius: var(--stats-summary-overlap-radius);
 
   border: 1px solid var(--color-logout-border);
   background: var(--color-premium-gradient);

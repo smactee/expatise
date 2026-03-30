@@ -16,7 +16,7 @@ export const PLAN_MAP: Record<PlanId, Plan> = {
     pillTitle: "1 Month",
     checkoutTitle: "1 Month Plan",
     sub: "",
-    price: "$7.99",
+    price: "$4.99",
     promoPrice: "",
   },
   three_month: {
@@ -24,7 +24,7 @@ export const PLAN_MAP: Record<PlanId, Plan> = {
     pillTitle: "3 Months",
     checkoutTitle: "3 Month Plan",
     sub: "",
-    price: "$14.99",
+    price: "$8.99",
     promoPrice: "",
   },
   six_month: {
@@ -32,7 +32,7 @@ export const PLAN_MAP: Record<PlanId, Plan> = {
     pillTitle: "6 Months",
     checkoutTitle: "6 Month Plan",
     sub: "", 
-    price: "$24.99", 
+    price: "$16.99", 
     promoPrice: "",  
   },
      lifetime: {
@@ -40,7 +40,7 @@ export const PLAN_MAP: Record<PlanId, Plan> = {
     pillTitle: "Lifetime",
     checkoutTitle: "Lifetime Plan",
     sub: "",
-    price: "$19.99",
+    price: "$12.99",
     promoPrice: "",
   },
 };

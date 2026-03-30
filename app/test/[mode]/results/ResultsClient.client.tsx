@@ -297,12 +297,12 @@ if (modeId === "mistakes" && !didAutoClearRef.current) {
             options: [
               {
                 key: "R",
-                text: getRowDisplayLabel("R"),
+                text: getRowDisplayLabel("R", locale),
                 tone: correctRow === "R" ? "correct" : chosenRow === "R" ? "wrong" : "neutral",
               },
               {
                 key: "W",
-                text: getRowDisplayLabel("W"),
+                text: getRowDisplayLabel("W", locale),
                 tone: correctRow === "W" ? "correct" : chosenRow === "W" ? "wrong" : "neutral",
               },
             ],

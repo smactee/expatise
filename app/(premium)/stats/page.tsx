@@ -34,6 +34,18 @@ import PremiumFeatureModal from "@/components/PremiumFeatureModal";
 import { useEntitlements } from "@/components/EntitlementsProvider.client";
 import { userKeyFromEmail } from "@/lib/identity/userKey";
 import { useT } from '@/lib/i18n/useT';
+import {
+  DEFAULT_COACH_LOCALE,
+  getCoachLocaleConfig,
+  resolveCoachLocale,
+  type CoachLocale,
+} from "@/lib/coach/locale";
+import {
+  COACH_REPORT_CACHE_VERSION,
+  normalizeCoachReportData,
+  parseCoachReportDataFromText,
+  type CoachReportData,
+} from "@/lib/coach/report";
 
 
 
@@ -118,6 +130,14 @@ function formatRemaining(ms: number) {
 
 const SKIP_SYNC_KEY = "__expatise_skip_sync_once";
 
+type CachedCoachReport = {
+  version?: number | null;
+  reportData?: CoachReportData | null;
+  report?: string;
+  createdAt?: number | null;
+  reportLocale?: string | null;
+};
+
 const DEMO_ADMIN_EMAILS =
   process.env.NODE_ENV === "production"
     ? []
@@ -149,6 +169,7 @@ export default function StatsPage() {
   const userKey = useUserKey();
   const router = useRouter();
   const { t, locale } = useT();
+  const currentCoachLocale = resolveCoachLocale(locale);
 
   const modeLabel = (key: string) =>
     key === "real-test"
@@ -208,6 +229,17 @@ const showDemoReseedButton =
   supabaseAuthed &&
   DEMO_ADMIN_EMAILS.length > 0 &&
   DEMO_ADMIN_EMAILS.includes(normalizedSessionEmail);
+
+const showCoachCooldownResetButton =
+  process.env.NODE_ENV !== "production" &&
+  !authLoading &&
+  supabaseAuthed;
+
+const resetCoachCooldownLabel = "Reset Coach Cooldown";
+const resetCoachCooldownAria = "Reset AI Coach cooldown";
+const resetCoachCooldownTitle = "Reset AI Coach cooldown for this user";
+const resetCoachCooldownSuccess = "Coach cooldown reset.";
+const resetCoachCooldownFailed = "Coach cooldown reset failed.";
 
 
 
@@ -408,10 +440,14 @@ useEffect(() => {
 const COOLDOWN_MS = 24 * 60 * 60 * 1000;
 
 const coachPrefix = userKey ? `expatise:${userKey}` : `expatise:anon`;
-const LS_REPORT = `${coachPrefix}:coach:lastReport:v2`;
+const LS_REPORT = `${coachPrefix}:coach:lastReport:v3`;
+const LEGACY_LS_REPORT_V2 = `${coachPrefix}:coach:lastReport:v2`;
 const LS_COOLDOWN_UNTIL = `${coachPrefix}:coach:cooldownUntil:v2`;
 const legacyCoachPrefix = legacyEmailUserKey ? `expatise:${legacyEmailUserKey}` : "";
 const legacyReportKey = legacyCoachPrefix
+  ? `${legacyCoachPrefix}:coach:lastReport:v3`
+  : "";
+const legacyReportKeyV2 = legacyCoachPrefix
   ? `${legacyCoachPrefix}:coach:lastReport:v2`
   : "";
 const legacyCooldownKey = legacyCoachPrefix
@@ -419,11 +455,14 @@ const legacyCooldownKey = legacyCoachPrefix
   : "";
 
 
-const [coachReport, setCoachReport] = useState<string>("");
+const [coachReport, setCoachReport] = useState<CoachReportData | string | null>(null);
 const [coachCreatedAt, setCoachCreatedAt] = useState<number | null>(null);
+const [coachReportLocale, setCoachReportLocale] = useState<CoachLocale | null>(null);
 const [coachLoading, setCoachLoading] = useState(false);
+const [coachLoadingDots, setCoachLoadingDots] = useState(1);
 const [coachError, setCoachError] = useState<string | null>(null);
 const [cooldownUntil, setCooldownUntil] = useState<number | null>(null);
+const [coachCooldownResetLoading, setCoachCooldownResetLoading] = useState(false);
 
 const [nowMs, setNowMs] = useState<number>(Date.now());
 useEffect(() => {
@@ -431,10 +470,30 @@ useEffect(() => {
   return () => window.clearInterval(id);
 }, []);
 
+useEffect(() => {
+  if (!coachLoading) {
+    setCoachLoadingDots(1);
+    return;
+  }
+
+  setCoachLoadingDots(1);
+  const id = window.setInterval(() => {
+    setCoachLoadingDots((prev) => (prev % 3) + 1);
+  }, 400);
+
+  return () => window.clearInterval(id);
+}, [coachLoading]);
+
 // Load saved report + cooldown when userKey changes
 useEffect(() => {
+  setCoachReport(null);
+  setCoachCreatedAt(null);
+  setCoachReportLocale(null);
+
   try {
-    const reportKeys = Array.from(new Set([LS_REPORT, legacyReportKey].filter(Boolean)));
+    const reportKeys = Array.from(
+      new Set([LS_REPORT, LEGACY_LS_REPORT_V2, legacyReportKey, legacyReportKeyV2].filter(Boolean))
+    );
     let reportRaw: string | null = null;
     let reportKeyUsed: string | null = null;
     for (const k of reportKeys) {
@@ -446,13 +505,33 @@ useEffect(() => {
       }
     }
     if (reportRaw) {
-      const obj = JSON.parse(reportRaw);
-      if (obj?.report) {
-        setCoachReport(String(obj.report));
-        const t = Number(obj.createdAt);
-        setCoachCreatedAt(Number.isFinite(t) ? t : null);
-        if (reportKeyUsed && reportKeyUsed !== LS_REPORT) {
-          localStorage.setItem(LS_REPORT, reportRaw);
+      const obj = JSON.parse(reportRaw) as CachedCoachReport;
+      const reportData = normalizeCoachReportData(obj?.reportData);
+      const legacyReport = typeof obj?.report === "string" ? obj.report.trim() : "";
+      const parsedLegacyReport = legacyReport ? parseCoachReportDataFromText(legacyReport) : null;
+      const report = reportData ?? parsedLegacyReport ?? (legacyReport || null);
+
+      if (report) {
+        const createdAt = Number(obj.createdAt);
+        const reportLocale = resolveCoachLocale(
+          typeof obj.reportLocale === "string" ? obj.reportLocale : DEFAULT_COACH_LOCALE
+        );
+
+        setCoachReport(report);
+        setCoachCreatedAt(Number.isFinite(createdAt) ? createdAt : null);
+        setCoachReportLocale(reportLocale);
+
+        if (reportKeyUsed !== LS_REPORT || reportData !== report || obj.version !== COACH_REPORT_CACHE_VERSION) {
+          localStorage.setItem(
+            LS_REPORT,
+            JSON.stringify({
+              version: COACH_REPORT_CACHE_VERSION,
+              reportData: typeof report === "string" ? null : report,
+              report: typeof report === "string" ? report : undefined,
+              createdAt: Number.isFinite(createdAt) ? createdAt : null,
+              reportLocale,
+            })
+          );
         }
       }
     }
@@ -475,7 +554,7 @@ useEffect(() => {
   } catch {
     // ignore
   }
-}, [LS_REPORT, LS_COOLDOWN_UNTIL, legacyReportKey, legacyCooldownKey]);
+}, [LEGACY_LS_REPORT_V2, LS_REPORT, LS_COOLDOWN_UNTIL, legacyReportKey, legacyReportKeyV2, legacyCooldownKey]);
 
 useEffect(() => {
   let alive = true;
@@ -555,6 +634,94 @@ const habitsActiveDays = useMemo(() => {
   return (coachHabits.timeDailySeries ?? []).filter((d) => (d.totalMin ?? 0) > 0).length;
 }, [coachHabits.timeDailySeries]);
 
+function clearCoachCooldownState() {
+  setCooldownUntil(null);
+  setNowMs(Date.now());
+  setCoachError(null);
+
+  try {
+    localStorage.removeItem(LS_COOLDOWN_UNTIL);
+    if (legacyCooldownKey) {
+      localStorage.removeItem(legacyCooldownKey);
+    }
+  } catch {
+    // ignore
+  }
+}
+
+async function handleResetCoachCooldown() {
+  if (coachCooldownResetLoading) return;
+
+  setCoachCooldownResetLoading(true);
+  try {
+    const supabase = createClient();
+
+    const { data: sessionData, error: sessionErr } = await supabase.auth.getSession();
+    if (sessionErr) {
+      window.alert(t('stats.coach.errors.sessionRead', { message: sessionErr.message }));
+      return;
+    }
+
+    let token = sessionData.session?.access_token ?? null;
+    if (!token) {
+      const { data: refreshed, error: refreshErr } = await supabase.auth.refreshSession();
+      if (refreshErr) {
+        window.alert(t('stats.coach.errors.sessionRefresh', { message: refreshErr.message }));
+        return;
+      }
+      token = refreshed.session?.access_token ?? null;
+    }
+
+    if (!token) {
+      window.alert(t("stats.reset.mustBeLoggedIn"));
+      return;
+    }
+
+    const supabaseUrl = String(process.env.NEXT_PUBLIC_SUPABASE_URL ?? "").trim();
+    const anonKey = String(
+      process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ??
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ??
+      ""
+    ).trim();
+
+    if (!supabaseUrl || !anonKey) {
+      window.alert(t("stats.reset.missingEnv"));
+      return;
+    }
+
+    const res = await fetch(`${supabaseUrl}/functions/v1/reset-stats`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        apikey: anonKey,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ scope: "coach_cooldown" }),
+    });
+    const data = await res.json().catch(() => null);
+
+    if (process.env.NODE_ENV !== "production") {
+      console.info("[coach-cooldown-reset]", data);
+    }
+
+    if (!res.ok || !data?.ok) {
+      window.alert(
+        data?.error ??
+          data?.message ??
+          `${resetCoachCooldownFailed} (${res.status}).`
+      );
+      return;
+    }
+
+    clearCoachCooldownState();
+    window.alert(resetCoachCooldownSuccess);
+  } catch (err: unknown) {
+    window.alert(err instanceof Error ? err.message : resetCoachCooldownFailed);
+  } finally {
+    setCoachCooldownResetLoading(false);
+  }
+}
+
 async function handleGenerateCoach() {
   if (coachLoading) return;
 
@@ -563,7 +730,7 @@ async function handleGenerateCoach() {
   // Client-side gate (server also enforces)
   if (!minimumMet) return;
 
-  // UI cooldown gate (server also enforces via cookie)
+  // UI cooldown gate (server also enforces via coach_cooldown.last_ms)
   if (cooldownActive) return;
 
   setCoachLoading(true);
@@ -577,7 +744,8 @@ async function handleGenerateCoach() {
       }));
 
     const payload = {
-      coachContractVersion: "v1.0",
+      coachContractVersion: "v2.0",
+      locale: currentCoachLocale,
       skillWindowLabel: "30d",
       habitWindowLabel: "7d",
       skill: {
@@ -653,47 +821,58 @@ const res = await fetch(`${supabaseUrl}/functions/v1/coach`, {
 });
 const j = await res.json().catch(() => null);
 
-if (!res.ok) {
-  setCoachError(j?.error ?? j?.detail ?? t('stats.coach.errors.requestFailedStatus', { status: res.status }));
+if (j?.error === "cooldown" && j?.nextAllowedAt) {
+  if (process.env.NODE_ENV !== "production") {
+    console.warn("[coach-cooldown-429]", j?.debug ?? j);
+  }
+  const until = Number(j.nextAllowedAt);
+  if (Number.isFinite(until) && until > 0) {
+    setCooldownUntil(until);
+    try { localStorage.setItem(LS_COOLDOWN_UNTIL, String(until)); } catch {}
+  }
+  setCoachError(t('stats.coach.errors.cooldown', { time: formatRemaining(Math.max(0, until - Date.now())) }));
   return;
 }
 
-if (!j?.ok) {
-  // keep your same error handling behavior
-  if (j?.error === "cooldown" && j?.nextAllowedAt) {
-    const until = Number(j.nextAllowedAt);
-    if (Number.isFinite(until) && until > 0) {
-      setCooldownUntil(until);
-      try { localStorage.setItem(LS_COOLDOWN_UNTIL, String(until)); } catch {}
-    }
-    setCoachError(t('stats.coach.errors.cooldown', { time: formatRemaining(Math.max(0, until - Date.now())) }));
-    return;
-  }
+if (j?.error === "insufficient_data") {
+  setCoachError(t('stats.coach.errors.insufficientData'));
+  return;
+}
 
-  if (j?.error === "insufficient_data") {
-    setCoachError(t('stats.coach.errors.insufficientData'));
-    return;
-  }
-
-  setCoachError(j?.detail ? String(j.detail) : t('stats.coach.errors.requestFailed'));
+if (!res.ok || !j?.ok) {
+  setCoachError(
+    j?.detail
+      ? String(j.detail)
+      : j?.error ?? t('stats.coach.errors.requestFailedStatus', { status: res.status })
+  );
   return;
 }
 
 // success
-const report = String(j?.report ?? "").trim();
+const reportData = normalizeCoachReportData(j?.reportData);
 const createdAt = Number(j?.createdAt ?? Date.now());
+const reportLocale = resolveCoachLocale(j?.reportLocale ?? currentCoachLocale);
 
-if (!report) {
+if (!reportData) {
   setCoachError(t('stats.coach.errors.emptyReport'));
   return;
 }
 
-setCoachReport(report);
+setCoachReport(reportData);
 setCoachCreatedAt(Number.isFinite(createdAt) ? createdAt : Date.now());
+setCoachReportLocale(reportLocale);
 
 // Save report locally
 try {
-  localStorage.setItem(LS_REPORT, JSON.stringify({ report, createdAt }));
+  localStorage.setItem(
+    LS_REPORT,
+    JSON.stringify({
+      version: Number(j?.version) || COACH_REPORT_CACHE_VERSION,
+      reportData,
+      createdAt,
+      reportLocale,
+    })
+  );
 } catch {}
 
 // Local UI cooldown (your existing UI logic)
@@ -804,8 +983,8 @@ try {
 
   await resetAllLocalData({ includeCaches: true });
   window.location.reload();
-} catch (err: any) {
-  window.alert(err?.message ?? t("stats.reset.resetFailed"));
+} catch (err: unknown) {
+  window.alert(err instanceof Error ? err.message : t("stats.reset.resetFailed"));
 }
 }}
   aria-label={t("stats.reset.aria")}
@@ -826,6 +1005,33 @@ try {
     title={t("stats.reset.reseedTitle")}
   >
     {t("stats.reset.reseedButton")}
+  </button>
+) : null}
+
+{showCoachCooldownResetButton ? (
+  <button
+    type="button"
+    className={styles.reseedBtn}
+    onClick={handleResetCoachCooldown}
+    disabled={coachCooldownResetLoading}
+    aria-label={resetCoachCooldownAria}
+    title={resetCoachCooldownTitle}
+    style={{
+      top: 34,
+      right: 150,
+      width: 132,
+      minHeight: 36,
+      height: "auto",
+      padding: "8px 12px",
+      fontSize: 12,
+      lineHeight: 1.15,
+      whiteSpace: "normal",
+      textAlign: "center",
+      opacity: coachCooldownResetLoading ? 0.7 : 1,
+      cursor: coachCooldownResetLoading ? "default" : "pointer",
+    }}
+  >
+    {resetCoachCooldownLabel}
   </button>
 ) : null}
 
@@ -1123,13 +1329,15 @@ try {
         >
           {t('stats.readiness.takeTest')}
         </button>
-        <button
-          type="button"
-          className={styles.coachBtnSecondary}
-          onClick={() => router.push("/test/real")}
-        >
-          {t('stats.coach.startNow')}
-        </button>
+        {!isPremium ? (
+          <button
+            type="button"
+            className={styles.coachBtnSecondary}
+            onClick={() => setShowPremiumModal(true)}
+          >
+            {t('stats.coach.upgradeToPremium')}
+          </button>
+        ) : null}
       </div>
     </>
   ) : (
@@ -1161,7 +1369,14 @@ try {
           }
         >
           {coachLoading
-            ? t('stats.coach.generating')
+            ? (
+              <>
+                <span>{t('stats.coach.generating')}</span>
+                <span className={styles.loadingDots} aria-hidden="true">
+                  {".".repeat(coachLoadingDots)}
+                </span>
+              </>
+            )
             : cooldownActive
             ? t('stats.coach.locked')
             : t('stats.coach.generateTitle')}
@@ -1192,6 +1407,9 @@ try {
             <p className={styles.coachReportTitle}>{t('stats.coach.reportTitle')}</p>
             <p className={styles.coachReportStamp}>
               {coachCreatedAt ? t('stats.coach.reportStamp', { stamp: formatStamp(coachCreatedAt) }) : ""}
+              {coachReportLocale
+                ? `${coachCreatedAt ? " · " : ""}${getCoachLocaleConfig(coachReportLocale).label}`
+                : ""}
             </p>
           </div>
           <div className={styles.coachReportText}>

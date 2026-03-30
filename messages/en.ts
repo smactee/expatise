@@ -440,8 +440,8 @@ export const en = {
     untimed: 'Untimed',
     timeText: '{minutes}min {seconds}sec',
     rowOptions: {
-      right: 'Y',
-      wrong: 'N',
+      right: 'Right',
+      wrong: 'Wrong',
     },
   },
   questionReview: {
@@ -505,8 +505,8 @@ export const en = {
     premiumRequired: 'Upgrade to Premium to start this test.',
     autoAdvance: 'Next in {seconds}s',
     rowOptions: {
-      right: 'Y',
-      wrong: 'N',
+      right: 'Right',
+      wrong: 'Wrong',
     },
   },
   charts: {
@@ -652,12 +652,12 @@ export const en = {
     },
     reviewMistakes: 'Review Your Mistakes',
     coach: {
-      loading: 'Loading...',
+      loading: 'Loading',
       needsDataTitle: 'AI Coach needs a bit more data.',
       needsDataBody:
         'To generate a personalized report, complete either:\n• 1 Real Test with 80+ answers, or\n• 120 total questions answered (practice + tests)',
       needsDataHint: 'More answers = less randomness → better advice.',
-      startNow: 'Start Now',
+      upgradeToPremium: 'Upgrade to Premium',
       firstReportTitle: 'You’re ready for a first Coach report — here’s how to make it “laser-accurate”.',
       firstReportBody:
         'For the most tailored advice (topics + habits + patterns), aim for:\n✅ 3 Real Tests (300 questions) across 3+ days',
@@ -665,7 +665,7 @@ export const en = {
         'Next steps:\n• Do 2 more Real Tests on separate days\n• Try the 2-pass rule (answer easy first, then return)\n• Keep a 10-minute minimum on non-test days',
       readyText: 'Coach runs on demand (Skill: 30d · Habits: 7d). Tap to generate your latest plan.',
       generateTitle: 'Generate Coach Report',
-      generating: 'Generating...',
+      generating: 'Generating',
       locked: 'Coach Locked',
       nextAvailable: 'Next available in {time}',
       cooldownActive:
@@ -673,6 +673,24 @@ export const en = {
       cooldownIdle: 'Coach reports are limited to 1 per 24 hours. Your latest report stays saved here.',
       reportTitle: 'Coach Report',
       reportStamp: 'Last report: {stamp}',
+      sections: {
+        summary: 'Summary',
+        snapshot: 'Snapshot',
+        topLevers: 'Top levers',
+        today: 'Today (10 / 20 / 40)',
+        next7Days: 'Next 7 days',
+        oneTarget: 'One target',
+      },
+      labels: {
+        why: 'Why',
+        next: 'Next',
+        target: 'Target',
+      },
+      plans: {
+        ten: '10 min',
+        twenty: '20 min',
+        forty: '40 min',
+      },
       errors: {
         sessionRead: 'Could not read session: {message}',
         sessionRefresh: 'Could not refresh session: {message}',

@@ -647,12 +647,12 @@ export const ko = {
     },
     reviewMistakes: '오답 노트',
     coach: {
-      loading: '불러오는 중...',
+      loading: '불러오는 중',
       needsDataTitle: 'AI 코치가 분석하려면 데이터가 조금 더 필요합니다.',
       needsDataBody:
         '개인화 리포트를 생성하려면 아래 중 하나를 완료해주세요:\n• 80문항 이상 응답한 실전 모드 1회\n• 총 응답 120문항 이상 (연습 + 시험)',
       needsDataHint: '응답이 많을수록 랜덤성이 줄어 더 정확한 조언을 받을 수 있습니다.',
-      startNow: '지금 시작',
+      upgradeToPremium: '프리미엄으로 업그레이드',
       firstReportTitle: '첫 코치 리포트를 받을 준비는 됐습니다. 더 정확하게 만들려면 이렇게 해보세요.',
       firstReportBody:
         '주제, 습관, 패턴까지 더 맞춤형으로 보려면:\n✅ 3일 이상에 걸쳐 실전 모드 3회 (총 300문항)',
@@ -660,13 +660,31 @@ export const ko = {
         '다음 단계:\n• 다른 날에 실전 모드 2회 더 보기\n• 쉬운 문제부터 푼 뒤 다시 돌아오는 2-pass 규칙 사용하기\n• 시험이 없는 날에도 최소 10분 학습 유지하기',
       readyText: '코치는 필요할 때 생성됩니다. (실력: 30일 · 습관: 7일) 버튼을 눌러 최신 계획을 받아보세요.',
       generateTitle: '코치 리포트 생성',
-      generating: '생성 중...',
+      generating: '생성 중',
       locked: '코치 잠김',
       nextAvailable: '{time} 후 다시 가능',
       cooldownActive: '다음 코치 리포트는 {time} 후에 생성할 수 있습니다. 이전 리포트는 언제든 다시 읽을 수 있습니다.',
       cooldownIdle: '코치 리포트는 24시간에 1회만 생성할 수 있습니다. 가장 최근 리포트는 여기에 저장됩니다.',
       reportTitle: '코치 리포트',
       reportStamp: '최근 리포트: {stamp}',
+      sections: {
+        summary: '요약',
+        snapshot: '스냅샷',
+        topLevers: '핵심 레버',
+        today: '오늘 (10 / 20 / 40)',
+        next7Days: '다음 7일',
+        oneTarget: '하나의 목표',
+      },
+      labels: {
+        why: '이유',
+        next: '다음 행동',
+        target: '목표',
+      },
+      plans: {
+        ten: '10분',
+        twenty: '20분',
+        forty: '40분',
+      },
       errors: {
         sessionRead: '세션을 불러올 수 없습니다: {message}',
         sessionRefresh: '세션을 갱신할 수 없습니다: {message}',
