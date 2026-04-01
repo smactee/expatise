@@ -1,8 +1,8 @@
 # Expatise
 
-**Expatise (Expat + Expertise)** – is a progressive web app built with Next.js that helps expats in China prepare for the local driver’s license exam through clear, localized practice tests and a mobile-first user experience.
+**Expatise (Expat + Expertise)** – is a mobile-first driver’s license exam prep app for expats in China, built with Next.js and packaged for Android with Capacitor.
 
-The long-term vision is to expand Expatise into a broader “toolbox for expat life” in China — and eventually other countries.
+The current product focus is helping non-Chinese speakers prepare for the Chinese driver’s license exam through guided test modes, review tools, progress tracking, and localized study support.
 
 ---
 
@@ -10,8 +10,9 @@ The long-term vision is to expand Expatise into a broader “toolbox for expat l
 
 - [Overview](#overview)
 - [Features](#features)
-  - [Planned Exam Features](#planned-exam-features)
-  - [Future Vision](#future-vision)
+  - [Current Exam Features](#current-exam-features)
+  - [In Progress / Planned](#in-progress--planned)
+  - [Long-Term Vision](#long-term-vision)
 - [Tech Stack](#tech-stack)
 - [Roadmap](#roadmap)
 
@@ -19,112 +20,116 @@ The long-term vision is to expand Expatise into a broader “toolbox for expat l
 
 ## Overview
 
-Expatise is designed for **non-Chinese speakers living in China** who need a simple, understandable way to prepare for the Chinese driver’s license exam.
+Expatise is designed for **non-Chinese speakers living in China** who need a simpler, clearer way to prepare for the Chinese driver’s license exam.
 
 The goal is to:
 
-- Make the exam **less intimidating** by providing clean modern UI, clear wording, and study modes tailored for expats.
-- Offer a **PWA** experience that feels like a native app: installable, offline-friendly, and fast.
-- Eventually grow into a broader **“toolbox” for expat life in China** and, long term, other countries.
+- Make the exam **less intimidating** by providing a clean mobile-first UI, clearer wording, and study flows built around how expats actually prepare.
+- Offer multiple ways to study, from **full tests** to **practice, rapid-fire, bookmarks, mistakes, and topic-based review**.
+- Help users improve through **progress tracking, readiness signals, and personalized study feedback**.
+- Build a strong app-first foundation for practical expat tools in China, starting with driving license prep.
 
 ---
 
 ## Features
 
-### Planned Exam Features
+### Current Exam Features
 
-> These are **planned** features for the first public version of Expatise.
+- **Multiple Test Modes**
+  - Real Test
+  - Practice Test
+  - Half Test
+  - 10% Test
+  - Rapid Fire Test
 
-- **Practice Tests**
-  - Full-length mock exams modeled after the official Chinese driver’s license test.
-  - Timed mode to simulate real exam pressure.
+- **Question Bank & Review**
+  - Browse the full question bank
+  - Search and filter questions by topic and subtopic
+  - Review correct answers
+  - Bookmark questions for later study
 
-- **Question Bank Explorer**
-  - Browse questions by category (traffic signs, laws, scenarios, penalties, etc.).
-  - Filter by difficulty or topic.
+- **Mistakes Workflows**
+  - Revisit your own wrong answers
+  - Review globally common mistakes
+  - Clear reviewed mistakes from your mistakes view
+  - Launch quiz flows based on mistakes or bookmarks
 
-- **Review & Analytics**
-  - See wrong answers and explanations.
-  - Track progress over time: weak topics, accuracy, and streaks.
+- **Stats & Progress**
+  - Personal stats and progress tracking
+  - Readiness-focused study views
+  - Topic mastery and weak-topic review flows
+  - Session-based score and study-time tracking
 
-- **Language & Localization**
-  - Designed primarily for **expats** (clear English, minimal jargon).
-  - Room to add additional languages later (e.g., Korean, Chinese, others).
+- **AI Coach**
+  - Personalized coaching based on study history and metrics
+  - Actionable next-step guidance for improving exam prep
 
-- **Offline-friendly Study**
-  - Core UI and previously loaded questions accessible while offline.
-  - Ideal for studying on the subway / in low-signal environments.
+- **Accounts, Premium, and App Support**
+  - Guest and account-based usage
+  - Premium-gated features
+  - Checkout / entitlement flow
+  - Login, onboarding, profile, password reset, and account security flows
 
-### Future Vision
+- **Localization**
+  - English support
+  - Korean support
+  - Additional languages planned for future releases
 
-If usage and adoption grows, Expatise may expand into:
+### In Progress / Planned
 
-- **Expat Toolbox for China**
-  - Other license test preps.
-  - Used-goods marketplace.
-  - Service listings
-  - Community resources
-  - Shared services and recommendations between expats.
-- **Multi-country support**
-  - Adapting the model for other countries’ driving exams and expat tools.
+- Continued improvement of question wording, categorization, and study UX
+- Deeper analytics and more useful coaching output
+- Broader localization support
+- Ongoing polish for premium, onboarding, and release-readiness flows
+- More refinement of review experiences around topic weaknesses and repeated mistakes
+
+### Long-Term Vision
+
+If usage and adoption grow, Expatise may expand into a broader **expat support product** starting in China and, over time, other countries.
+
+Possible future directions include:
+
+- Additional exam-prep products
+- Broader language support
+- More practical expat-focused utilities
+- A wider “toolbox” for navigating everyday life abroad
 
 ---
 
 ## Tech Stack
 
-- **Next.js (App Router)** -core framework
-- **React + TypeScript** -component logic + type safety
-- **Tailwind CSS** styling
-- **Node.js**-runtime environment
-- **PWA support**-manifest + service worker
+- **Next.js 16 (App Router)** — core application framework
+- **React 19 + TypeScript** — UI and type-safe application logic
+- **Tailwind CSS 4** — styling foundation
+- **Capacitor + Android Studio** — Android app packaging and deployment workflow
+- **Supabase** — auth and backend services
+- **RevenueCat** — premium entitlement and subscription infrastructure
+- **OpenAI** — AI coaching functionality
+- **Vercel Speed Insights** — performance monitoring
 
 ---
 
 ## Roadmap
 
-1. **MVP (v0.1)**
-   - Replace starter PWA content with Expatise branding and basic layout.
-   - Implement a minimal practice test using a small, static question set.
-   - Ensure a mobile-first, responsive layout that works well on phones.
+1. **Core Study Experience**
+   - Keep improving the main driver’s license prep flows already in place
+   - Refine question quality, topic tagging, and review UX
+   - Continue optimizing the app for mobile-first use
 
-2. **Question Bank & Study Modes (v0.2–v0.3)**
-   - Integrate a larger question bank (subject to licensing and data source).
-   - Add categories (signs, rules, penalties, scenarios, etc.).
-   - Provide both timed exam mode and untimed practice mode.
+2. **Progress & Coaching**
+   - Expand readiness and topic-level study feedback
+   - Improve the usefulness and consistency of AI coaching
+   - Make performance feedback easier to act on day to day
 
-3. **Progress & Analytics (v0.4)**
-   - Track user performance (accuracy, weak topics, recent attempts).
-   - Show a simple progress summary/dashboard.
-   - Allow users to revisit previously wrong questions.
+3. **Localization**
+   - Strengthen the English-first expat experience
+   - Continue improving Korean support
+   - Add more languages as the content pipeline matures
 
-4. **Offline & UX Improvements (v0.5)**
-   - Improve offline caching strategy for questions and key assets.
-   - Polish UI states: loading, errors, empty states, and micro-interactions.
-   - Add basic accessibility checks (contrast, keyboard navigation, ARIA where needed).
+4. **Platform & Product Maturity**
+   - Continue hardening auth, premium flows, legal/compliance pages, and account management
+   - Improve reliability, polish, and store-readiness for Android releases
 
-5. **Expat Toolbox (China) (v0.6+)**
-   - Add experimental utilities for expats in China (checklists, quick-reference guides, etc.).
-   - Explore early concepts for a used-goods marketplace or other community features.
-   - Gather feedback to shape which tools are most valuable.
-
-6. **Multi-country Expansion (Future)**
-   - Generalize the data model to support other countries’ exams.
-   - Add localization for multiple languages and regions.
-   - Explore separate “country profiles” that customize content and flows.
-
----
-
-## RevenueCat Webhook Replay
-
-Use this to test `revenuecat-webhook` before going live.
-
-1. Set env vars:
-   - `REVENUECAT_WEBHOOK_URL=https://<project-ref>.functions.supabase.co/revenuecat-webhook`
-   - `REVENUECAT_WEBHOOK_AUTH=<your-webhook-secret>`
-2. Replay sample payload:
-   - `npm run revenuecat:webhook:replay:sample`
-3. Replay custom payload:
-   - `npm run revenuecat:webhook:replay -- path/to/payload.json`
-
-Default sample payload lives at:
-- `scripts/fixtures/revenuecat-webhook.sample.json`
+5. **Future Expansion**
+   - Explore broader expat-facing utilities once the exam-prep experience is solid
+   - Evaluate whether Expatise should stay narrowly focused or evolve into a larger expat utility platform
