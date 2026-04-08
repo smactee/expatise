@@ -9,6 +9,7 @@ import Image from 'next/image';
 import styles from './all-test.module.css';
 
 import { loadDataset } from '@/lib/qbank/loadDataset';
+import { getTranslatedOnlyLocaleNotice, isTranslatedOnlyQuestionLocale } from '@/lib/qbank/localeSupport';
 import type { DatasetId } from '@/lib/qbank/datasets';
 import type { Question } from '@/lib/qbank/types';
 import { useBookmarks } from '@/lib/bookmarks/useBookmarks';
@@ -87,6 +88,7 @@ export default function AllTestClient({
 
 
   const [items, setItems] = useState<Question[]>([]);
+  const [availableQuestionCount, setAvailableQuestionCount] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
   
 
@@ -158,8 +160,12 @@ const [attempt, setAttempt] = useState<TestAttemptV1 | null>(null);
 
     (async () => {
       setLoading(true);
-const ds = await loadDataset(datasetId, { locale });
+const ds = await loadDataset(datasetId, {
+  locale,
+  translatedOnly: isTranslatedOnlyQuestionLocale(locale),
+});
 if (!mounted) return;
+setAvailableQuestionCount(ds.length);
 
 // If auth is still loading, don't create attempts yet.
 if (authLoading) {
@@ -177,6 +183,8 @@ if (enforceCaps) {
 }
 
 const allIds = ds.map((q) => q.id);
+const effectiveQuestionCount = Math.min(questionCount, allIds.length);
+const startRequirement = Math.min(required, Math.max(allIds.length, 0));
 
 // ✅ Preflight gate ONLY if there is no resumable attempt (so resume is always allowed)
 const existing = await attemptStore.listAttempts(attemptUserKey, datasetId);
@@ -187,8 +195,15 @@ const hasResumable = existing.some(
     (t.status === "in_progress" || t.status === "paused")
 );
 
-if (enforceCaps && !hasResumable && !canStartExam(usageCapUserKey, { requiredQuestions: required })) {
+if (enforceCaps && !hasResumable && !canStartExam(usageCapUserKey, { requiredQuestions: startRequirement })) {
   router.replace(`/premium?next=${encodeURIComponent(routeBase)}`);
+  return;
+}
+
+if (effectiveQuestionCount === 0) {
+  setAttempt(null);
+  setItems([]);
+  setLoading(false);
   return;
 }
 
@@ -200,13 +215,13 @@ const { attempt: a, reused } = await attemptStore.getOrCreateAttempt({
   datasetId,
   datasetVersion,
   allQuestionIds: allIds,
-  questionCount,
+  questionCount: effectiveQuestionCount,
   timeLimitSec: hasTimer ? timeLimitMinutes * 60 : 0,
 });
 
 // Only block *new* starts. Allow resuming even if cap is hit.
 if (!reused) {
-  if (enforceCaps && !canStartExam(usageCapUserKey, { requiredQuestions: required })) {
+  if (enforceCaps && !canStartExam(usageCapUserKey, { requiredQuestions: startRequirement })) {
     router.replace(`/premium?next=${encodeURIComponent(routeBase)}`);
     return;
   }
@@ -512,6 +527,7 @@ useEffect(() => {
     if (!items.length) return 0;
     return ((index + 1) / items.length) * 100;
   }, [index, items.length]);
+  const betaNotice = getTranslatedOnlyLocaleNotice(locale, availableQuestionCount ?? 0);
 
 
   if (loading) {
@@ -557,6 +573,8 @@ useEffect(() => {
 
           </div>
         </div>
+
+        {betaNotice ? <div className={styles.betaNotice}>{betaNotice}</div> : null}
 
         {/* Progress row */}
         <div className={styles.progressRow}>

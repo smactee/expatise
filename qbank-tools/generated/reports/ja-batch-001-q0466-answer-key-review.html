@@ -1,0 +1,362 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>q0466 manual answer-key review</title>
+  <style>
+    :root {
+      --bg: #f5f0e8;
+      --paper: #fffdf8;
+      --ink: #1f1a16;
+      --muted: #6f6356;
+      --line: #ddd1c0;
+      --accent: #145a52;
+      --accent-soft: #e6f2f0;
+      --warn: #855111;
+      --warn-soft: #f6ead7;
+      --shadow: 0 14px 28px rgba(42, 30, 17, 0.08);
+      --mono: "SFMono-Regular", Menlo, Consolas, monospace;
+      --sans: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif;
+      --radius: 18px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: var(--sans);
+      background: linear-gradient(180deg, #f8f3ea 0%, #f1ebe1 100%);
+      color: var(--ink);
+    }
+    .page {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 28px 20px 40px;
+    }
+    .hero, .card {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      box-shadow: var(--shadow);
+    }
+    .hero {
+      padding: 22px;
+      margin-bottom: 18px;
+    }
+    h1, h2, h3, p { margin-top: 0; }
+    h1 {
+      font-size: 30px;
+      line-height: 1.1;
+      margin-bottom: 10px;
+    }
+    .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 14px 0 0;
+    }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 12px;
+      border-radius: 999px;
+      background: #f3ebe0;
+      border: 1px solid var(--line);
+      font-size: 13px;
+      color: var(--muted);
+    }
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(280px, 360px) minmax(0, 1fr);
+      gap: 16px;
+    }
+    .card {
+      padding: 18px;
+    }
+    .card h2 {
+      font-size: 21px;
+      margin-bottom: 12px;
+    }
+    .image-frame {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      overflow: hidden;
+      background: #f0e9de;
+      min-height: 220px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+    .image-frame img {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+    .image-fallback {
+      padding: 14px;
+      text-align: center;
+      color: var(--muted);
+      line-height: 1.45;
+      font-size: 14px;
+      word-break: break-word;
+    }
+    .kv {
+      display: grid;
+      gap: 10px;
+      margin-top: 14px;
+    }
+    .kv-row {
+      padding: 10px 12px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: #fcf8f1;
+    }
+    .kv-label {
+      font-size: 12px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 5px;
+    }
+    .kv-value {
+      line-height: 1.45;
+      word-break: break-word;
+    }
+    .gloss {
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+    .canonical-box {
+      border: 1px solid #cfe1dd;
+      background: var(--accent-soft);
+      border-radius: 16px;
+      padding: 14px;
+      margin-bottom: 14px;
+    }
+    .canonical-box h3 {
+      margin-bottom: 8px;
+      font-size: 16px;
+      color: var(--accent);
+    }
+    .canonical-answer {
+      margin-top: 10px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: rgba(20, 90, 82, 0.08);
+      border: 1px solid rgba(20, 90, 82, 0.18);
+    }
+    .warn {
+      border: 1px solid #e5cfac;
+      background: var(--warn-soft);
+      color: var(--warn);
+      border-radius: 16px;
+      padding: 12px 14px;
+      line-height: 1.5;
+      margin-bottom: 14px;
+    }
+    .options {
+      display: grid;
+      gap: 10px;
+    }
+    .option {
+      display: grid;
+      grid-template-columns: 40px minmax(0, 1fr);
+      gap: 12px;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: #fcfaf6;
+    }
+    .option-current {
+      border-color: #a7cbc6;
+      background: #eef7f5;
+    }
+    .option-key {
+      width: 40px;
+      height: 40px;
+      border-radius: 999px;
+      display: grid;
+      place-items: center;
+      background: #ece3d8;
+      font-family: var(--mono);
+      font-size: 15px;
+    }
+    .option-current .option-key {
+      background: var(--accent);
+      color: white;
+    }
+    .option-ja {
+      font-size: 16px;
+      line-height: 1.45;
+    }
+    .option-en {
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.45;
+    }
+    .choice-grid {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 8px;
+      margin: 14px 0 10px;
+    }
+    .choice {
+      border: 1px solid var(--line);
+      background: #f9f3ea;
+      border-radius: 12px;
+      padding: 10px 8px;
+      text-align: center;
+      font-family: var(--mono);
+      font-size: 14px;
+    }
+    .choice.is-selected {
+      border-color: #a7cbc6;
+      background: #eef7f5;
+      color: var(--accent);
+      font-weight: 700;
+    }
+    .mono {
+      font-family: var(--mono);
+      font-size: 13px;
+    }
+    .footnote {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+    @media (max-width: 900px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <section class="hero">
+      <h1>q0466 answer-key confirmation</h1>
+      <p>Choose the Japanese option key whose meaning matches the canonical correct meaning. Do not assume the Japanese answer letter should match the English master letter.</p>
+      <div class="meta">
+        <span class="pill">Dataset: 2023-test1</span>
+        <span class="pill">Locale: ja</span>
+        <span class="pill">Batch: batch-001</span>
+        <span class="pill">Question #: 466</span>
+        <span class="pill">Current staged key: B</span>
+      </div>
+    </section>
+
+    <div class="layout">
+      <section class="card">
+        <h2>Source Screenshot</h2>
+        <div class="image-frame">
+<img src="../../../imports/ja/batch-001/screenshots/Screenshot 2026-04-07 at 17.49.57.png" alt="screenshots/Screenshot 2026-04-07 at 17.49.57.png" onerror="this.replaceWith(buildFallback('screenshots/Screenshot 2026-04-07 at 17.49.57.png'))">        </div>
+        <div class="kv">
+          <div class="kv-row">
+            <div class="kv-label">Source filename</div>
+            <div class="kv-value mono">screenshots/Screenshot 2026-04-07 at 17.49.57.png</div>
+          </div>
+          <div class="kv-row">
+            <div class="kv-label">Japanese prompt</div>
+            <div class="kv-value">夜間に狭い道や狭い橋で対向車とすれ違う場合、どのようにライトを使うのが適切か。</div>
+            <div class="gloss">At night, when passing an oncoming vehicle on a narrow road or narrow bridge, what is the appropriate way to use the headlights?</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="canonical-box">
+          <h3>Canonical/master question meaning</h3>
+          <div>How to use lights at night while crossing each other on a narrow road or bridge?</div>
+          <div class="canonical-answer">
+            <div><strong>Canonical correct meaning:</strong> turn on the low beam lights</div>
+            <div class="gloss">Master correct option: B · q0466_o2</div>
+          </div>
+        </div>
+
+        <div class="warn">
+          <strong>Why this needs review:</strong> Meaning-based option alignment was weak; verify the Japanese correct option key manually.<br>
+          <span class="mono">Blocker flags: answerKeyDecisionConsistent, answerKeyReady</span>
+        </div>
+
+        <h2>Japanese options in official order</h2>
+        <div class="options">
+      <label class="option ">
+        <div class="option-key">A</div>
+        <div class="option-copy">
+          <div class="option-ja">A すべてのライトを消す</div>
+          <div class="option-en">A Turn off all the lights</div>
+        </div>
+      </label>
+  
+      <label class="option option-current">
+        <div class="option-key">B</div>
+        <div class="option-copy">
+          <div class="option-ja">B ヘッドランプを下向きにする</div>
+          <div class="option-en">B Dim the headlights (use low beam)</div>
+        </div>
+      </label>
+  
+      <label class="option ">
+        <div class="option-key">C</div>
+        <div class="option-copy">
+          <div class="option-ja">C ヘッドランプを消す</div>
+          <div class="option-en">C Turn off the headlights</div>
+        </div>
+      </label>
+  
+      <label class="option ">
+        <div class="option-key">D</div>
+        <div class="option-copy">
+          <div class="option-ja">D ヘッドランプを上向きにする</div>
+          <div class="option-en">D Aim the headlights upward (use high beam)</div>
+        </div>
+      </label>
+  </div>
+
+        <div class="kv" style="margin-top:14px;">
+          <div class="kv-row">
+            <div class="kv-label">What you should choose</div>
+            <div class="kv-value">Pick <strong>A</strong>, <strong>B</strong>, <strong>C</strong>, <strong>D</strong>, or <strong>unknown</strong> based on which Japanese option matches the canonical correct meaning above.</div>
+            <div class="choice-grid">
+              <div class="choice ">A</div>
+              <div class="choice is-selected">B</div>
+              <div class="choice ">C</div>
+              <div class="choice ">D</div>
+              <div class="choice ">unknown</div>
+            </div>
+          </div>
+          <div class="kv-row">
+            <div class="kv-label">Decision file to edit</div>
+            <div class="kv-value mono">../staging/ja-batch-001-q0466-answer-key-decision.template.json</div>
+          </div>
+          <div class="kv-row">
+            <div class="kv-label">Template fields</div>
+            <div class="kv-value mono">item.confirmedCorrectOptionKey = "A" | "B" | "C" | "D"<br>item.unknown = true if you cannot confirm<br>item.reviewerNotes = optional note</div>
+          </div>
+        </div>
+
+        <p class="footnote">This page is review-only. It does not apply any decision. Update the JSON template after you confirm the correct Japanese locale answer key.</p>
+      </section>
+    </div>
+  </div>
+  <script>
+    function buildFallback(pathText) {
+      const box = document.createElement('div');
+      box.className = 'image-fallback';
+      box.innerHTML = '<strong>Screenshot could not be loaded.</strong><br>' + escapeHtmlClient(pathText || 'No local path available.');
+      return box;
+    }
+    function escapeHtmlClient(value) {
+      return String(value ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+  </script>
+</body>
+</html>

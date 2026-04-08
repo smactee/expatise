@@ -28,6 +28,7 @@ import { useEntitlements } from '@/components/EntitlementsProvider.client';
 import { userKeyFromEmail } from '@/lib/identity/userKey';
 import { useClearedMistakes } from '@/lib/mistakes/useClearedMistakes';
 import { deriveTopicSubtags } from '@/lib/qbank/deriveTopicSubtags';
+import { getTranslatedOnlyLocaleNotice, isTranslatedOnlyQuestionLocale } from '@/lib/qbank/localeSupport';
 import PremiumFeatureModal from '@/components/PremiumFeatureModal';
 import { useUsageCap } from '@/lib/freeAccess/useUsageCap';
 import { migrateLocalAttemptsToCanonical } from '@/lib/test-engine/attemptStorage';
@@ -75,11 +76,11 @@ function compileMistakeIds(
 
       if (question.type === "ROW") {
         const chosen = normalizeRowChoice(chosenKey);
-        const expected = normalizeRowChoice((question as any).correctRow ?? null);
+        const expected = normalizeRowChoice(question.correctRow ?? null);
         isCorrect = !!(chosen && expected && chosen === expected);
       } else {
-        const expected = (question as any).correctOptionId as string | undefined;
-        const opts = (question as any).options as any[] | undefined;
+        const expected = question.correctOptionId ?? undefined;
+        const opts = question.options;
 
         if (!expected || !opts?.length) {
           isCorrect = false;
@@ -239,6 +240,7 @@ export default function AllTestClient({
 
 
   const [items, setItems] = useState<Question[]>([]);
+  const [availableQuestionCount, setAvailableQuestionCount] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
   
 
@@ -371,8 +373,12 @@ useEffect(() => {
     (async () => {
       setLoading(true);
       setBlockedByPremiumModal(false);
-const ds = await loadDataset(datasetId, { locale });
+const ds = await loadDataset(datasetId, {
+  locale,
+  translatedOnly: isTranslatedOnlyQuestionLocale(locale),
+});
 if (!mounted) return;
+setAvailableQuestionCount(ds.length);
 
 // If auth is still loading, don't create attempts yet.
 if (authLoading) {
@@ -421,8 +427,9 @@ const hasResumable = existing.some(
     t.datasetVersion === datasetVersion &&
     (t.status === "in_progress" || t.status === "paused")
 );
+const startRequirement = Math.min(required, Math.max(poolIds.length, 0));
 
-if (enforceCaps && !hasResumable && !canStartExam(usageCapUserKey, { requiredQuestions: required })) {
+if (enforceCaps && !hasResumable && !canStartExam(usageCapUserKey, { requiredQuestions: startRequirement })) {
   if (allowTriggeredModalFlow) {
     setAttempt(null);
     setItems([]);
@@ -457,7 +464,7 @@ const { attempt: a, reused } = await attemptStore.getOrCreateAttempt({
 
 // Only block *new* starts. Allow resuming even if cap is hit.
 if (!reused) {
-  if (enforceCaps && !canStartExam(usageCapUserKey, { requiredQuestions: required })) {
+  if (enforceCaps && !canStartExam(usageCapUserKey, { requiredQuestions: startRequirement })) {
     if (allowTriggeredModalFlow) {
       setAttempt(null);
       setItems([]);
@@ -901,6 +908,7 @@ useEffect(() => {
     if (!items.length) return 0;
     return ((index + 1) / items.length) * 100;
   }, [index, items.length]);
+  const betaNotice = getTranslatedOnlyLocaleNotice(locale, availableQuestionCount ?? 0);
 
 
   if (loading) {
@@ -1007,6 +1015,8 @@ if (!item) {
           </div>
         </div>
       </div>
+
+      {betaNotice ? <div className={styles.betaNotice}>{betaNotice}</div> : null}
 
 
 

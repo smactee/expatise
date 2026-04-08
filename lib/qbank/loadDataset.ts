@@ -1,15 +1,31 @@
 // lib/qbank/loadDataset.ts
 import { DATASETS, type DatasetId } from './datasets';
 import { DEFAULT_LOCALE, type Locale } from '@/messages';
+import { isTranslatedOnlyQuestionLocale } from './localeSupport';
 import type {
   Question,
   RawQBank,
   RawQuestion,
   CorrectRow,
+  QuestionOption,
   QuestionTranslationEntry,
   QuestionTranslationFile,
 } from './types';
 import { suggestTags } from './suggestTags';
+
+type LooseObject = Record<string, unknown>;
+type RawOptionLike = {
+  id?: unknown;
+  key?: unknown;
+  originalKey?: unknown;
+  text?: unknown;
+};
+type RawAssetLike = {
+  src?: unknown;
+  path?: unknown;
+  width?: unknown;
+  height?: unknown;
+};
 
 function toArray<T>(v: unknown): T[] {
   return Array.isArray(v) ? (v as T[]) : [];
@@ -20,7 +36,7 @@ function normalizeTag(s: unknown) {
 }
 
 
-function extractTagArrays(rawTags: any) {
+function extractTagArrays(rawTags: unknown) {
   const user = new Set<string>();
   const auto = new Set<string>();
 
@@ -35,18 +51,20 @@ function extractTagArrays(rawTags: any) {
 
   // Case 2: new format -> tags: { auto:[], user:[], suggested:[{tag, score}] }
   if (rawTags && typeof rawTags === 'object') {
-    toArray<string>(rawTags.user).forEach((t) => {
+    const tagRecord = rawTags as LooseObject;
+
+    toArray<string>(tagRecord.user).forEach((t) => {
       const nt = normalizeTag(t);
       if (nt) user.add(nt);
     });
 
-    toArray<string>(rawTags.auto).forEach((t) => {
+    toArray<string>(tagRecord.auto).forEach((t) => {
       const nt = normalizeTag(t);
       if (nt) auto.add(nt);
     });
 
-    toArray<any>(rawTags.suggested).forEach((s) => {
-      const nt = normalizeTag(s?.tag);
+    toArray<LooseObject>(tagRecord.suggested).forEach((suggested) => {
+      const nt = normalizeTag(suggested.tag);
       if (nt) auto.add(nt);
     });
   }
@@ -128,10 +146,87 @@ function normalizeType(rawType: unknown): Question['type'] {
   return t === 'mcq' ? 'MCQ' : 'ROW';
 }
 
+function normalizeOptionKey(value: unknown): string | null {
+  const raw = String(value ?? '').trim().toUpperCase();
+  if (!raw) return null;
+  return /^[A-Z]$/.test(raw) ? raw : null;
+}
+
+function escapeRegExp(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+function stripOptionKeyPrefix(text: unknown, sourceKey?: string | null): string {
+  const raw = String(text ?? '').trim();
+  if (!raw) return '';
+  const keyPattern = sourceKey ? escapeRegExp(sourceKey) : '[A-Z]';
+  const stripped = raw.replace(
+    new RegExp(`^${keyPattern}(?:[\\s\\.:：\\)\\]\\-])?\\s*`, 'i'),
+    ''
+  ).trim();
+  return stripped || raw;
+}
+
+function buildTranslatedOptions(q: Question, translation: QuestionTranslationEntry): QuestionOption[] {
+  const translated = q.options.map((opt) => ({
+    ...opt,
+    text: translation.options?.[opt.id] ?? opt.text,
+  }));
+
+  const localeOptionOrder = Array.isArray(translation.localeOptionOrder)
+    ? translation.localeOptionOrder
+    : [];
+
+  if (q.type !== 'MCQ' || localeOptionOrder.length === 0) {
+    return translated;
+  }
+
+  const translatedById = new Map(translated.map((opt) => [opt.id, opt]));
+  const usedIds = new Set<string>();
+  const ordered: QuestionOption[] = [];
+
+  for (const localeOption of localeOptionOrder) {
+    const canonicalOptionId = String(localeOption?.canonicalOptionId ?? '').trim();
+    if (!canonicalOptionId || usedIds.has(canonicalOptionId)) {
+      continue;
+    }
+
+    const baseOption = translatedById.get(canonicalOptionId);
+    if (!baseOption) {
+      continue;
+    }
+
+    const localizedKey = normalizeOptionKey(localeOption?.sourceKey) ?? baseOption.originalKey ?? undefined;
+    const localizedText = stripOptionKeyPrefix(
+      localeOption?.sourceTextBody ?? localeOption?.sourceText ?? baseOption.text,
+      localizedKey
+    ) || baseOption.text;
+
+    ordered.push({
+      ...baseOption,
+      originalKey: localizedKey,
+      text: localizedText,
+    });
+    usedIds.add(canonicalOptionId);
+  }
+
+  for (const opt of translated) {
+    if (!usedIds.has(opt.id)) {
+      ordered.push(opt);
+    }
+  }
+
+  return ordered.length > 0 ? ordered : translated;
+}
+
+function normalizeOptionalNumber(value: unknown): number | undefined {
+  return typeof value === 'number' && Number.isFinite(value) ? value : undefined;
+}
+
 function normalizeOne(raw: RawQuestion): Question {
   const type = normalizeType(raw.type);
 
-  const sourceOptions = toArray<any>(raw.options)
+  const sourceOptions = toArray<RawOptionLike>(raw.options)
     .map((o) => ({
       id: String(o?.id ?? o?.key ?? ''),
       originalKey: o?.originalKey ? String(o.originalKey) : (o?.key ? String(o.key) : undefined),
@@ -139,33 +234,33 @@ function normalizeOne(raw: RawQuestion): Question {
     }))
     .filter((o) => o.id && o.text);
 
-  const assets = toArray<any>(raw.assets)
+  const assets = toArray<RawAssetLike>(raw.assets)
     .filter((a) => a?.src || a?.path)
     .map((a) => {
       const src = String(a.src ?? a.path);
       return {
         kind: 'image' as const,
         src: src.startsWith('/') ? src : `/${src}`,
-        width: a.width,
-        height: a.height,
+        width: normalizeOptionalNumber(a.width),
+        height: normalizeOptionalNumber(a.height),
       };
     });
 
   // answers can appear as correctRow / correctOptionId OR fallback to answer
   const correctRow = type === 'ROW'
-    ? normalizeCorrectRow((raw as any).correctRow ?? (raw as any).answer)
+    ? normalizeCorrectRow(raw.correctRow ?? raw.answer)
     : null;
 
   const correctOptionId =
     type === 'MCQ'
-      ? String(((raw as any).correctOptionId ?? (raw as any).answer ?? '') || '').trim() || null
+      ? String((raw.correctOptionId ?? raw.answer ?? '') || '').trim() || null
       : null;
 
-    const { userTags, autoTags: rawAutoTags } = extractTagArrays((raw as any).tags);
+  const { userTags, autoTags: rawAutoTags } = extractTagArrays(raw.tags);
 
-const explanation =
-  typeof (raw as any).explanation === 'string'
-    ? (raw as any).explanation.trim()
+  const explanation =
+    typeof raw.explanation === 'string'
+      ? raw.explanation.trim()
     : undefined;
 
   const sourcePrompt = String(raw.prompt ?? '');
@@ -196,13 +291,7 @@ const explanation =
 function applyTranslation(q: Question, translation: QuestionTranslationEntry | undefined): Question {
   if (!translation) return q;
 
-  const translatedOptions =
-    translation.options && Object.keys(translation.options).length > 0
-      ? q.options.map((opt) => ({
-          ...opt,
-          text: translation.options?.[opt.id] ?? opt.text,
-        }))
-      : q.options;
+  const translatedOptions = buildTranslatedOptions(q, translation);
 
   return {
     ...q,
@@ -214,10 +303,11 @@ function applyTranslation(q: Question, translation: QuestionTranslationEntry | u
 
 export async function loadDataset(
   datasetId: DatasetId,
-  options: { locale?: Locale } = {}
+  options: { locale?: Locale | string; translatedOnly?: boolean } = {}
 ): Promise<Question[]> {
   const ds = DATASETS[datasetId];
   const locale = options.locale ?? DEFAULT_LOCALE;
+  const translatedOnly = options.translatedOnly === true;
 
 const isDev = process.env.NODE_ENV === 'development';
 const url = isDev ? `${ds.url}?v=${Date.now()}` : ds.url;
@@ -237,11 +327,19 @@ const [res, patch, translations] = await Promise.all([
   if (!res.ok) throw new Error(`Failed to load dataset: ${datasetId}`);
 
   const json = (await res.json()) as RawQBank;
-  const list = Array.isArray(json) ? json : toArray<RawQuestion>((json as any).questions);
+  const list = Array.isArray(json)
+    ? json
+    : toArray<RawQuestion>((json as { questions?: unknown }).questions);
+  const translationIds = new Set(Object.keys(translations));
+  const shouldRestrictToTranslated =
+    translatedOnly &&
+    locale !== DEFAULT_LOCALE &&
+    isTranslatedOnlyQuestionLocale(locale);
 
   return list
     .map(normalizeOne)
     .map((q) => applyPatchTags(q, patch[q.id]))
     .map((q) => applyTranslation(q, translations[q.id]))
+    .filter((q) => !shouldRestrictToTranslated || translationIds.has(q.id))
     .sort((a, b) => a.number - b.number);
 }

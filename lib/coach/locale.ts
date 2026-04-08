@@ -83,6 +83,33 @@ export const COACH_LOCALE_REGISTRY = {
       habit7: "7일",
     },
   },
+  ja: {
+    label: "日本語",
+    outputLanguage: "Japanese",
+    sectionHeadings: {
+      summary: "要約",
+      snapshot: "現状",
+      topLevers: "優先ポイント",
+      today: "今日（10 / 20 / 40）",
+      next7Days: "今後7日間",
+      oneTarget: "ひとつの目標",
+    },
+    emphasisLabels: {
+      why: ["理由"],
+      next: ["次にやること", "次"],
+      target: ["目標"],
+    },
+    planLabels: {
+      ten: "10分",
+      twenty: "20分",
+      forty: "40分",
+    },
+    windowLabels: {
+      skill30: "30日",
+      skillAll: "全期間",
+      habit7: "7日",
+    },
+  },
 } as const satisfies Record<string, CoachLocaleConfig>;
 
 export type CoachLocale = keyof typeof COACH_LOCALE_REGISTRY;

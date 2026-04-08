@@ -30,7 +30,6 @@ const IMPLEMENTED_LANGUAGE_OPTIONS: EnabledLanguageOption[] = (
 
 const PENDING_LANGUAGE_OPTIONS: readonly PendingLanguageOption[] = [
   { code: 'zh', label: '中文', enabled: false },
-  { code: 'ja', label: '日本語', enabled: false },
   { code: 'es', label: 'Español', enabled: false },
   { code: 'ru', label: 'Русский', enabled: false },
   { code: 'fr', label: 'Français', enabled: false },

@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Nunito_Sans } from "next/font/google";
 import "./globals.css";
 import "@fortawesome/fontawesome-svg-core/styles.css";
+import { getThemeBootstrapScript } from "@/lib/theme/theme";
 import { config } from "@fortawesome/fontawesome-svg-core";
 config.autoAddCss = false; // Prevent fontawesome from adding its CSS since we did it manually above  
 import Providers from "./providers";
@@ -26,6 +27,7 @@ export const metadata: Metadata = {
   description: "Prepare for your Chinese driving exam with ease using Expatise. Practice, track your progress, and ace your test!",
 };
 
+const themeBootstrapScript = getThemeBootstrapScript();
 
 export default function RootLayout({
   children,
@@ -33,7 +35,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeBootstrapScript }} />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${nunitoSans.variable} antialiased`}
       >

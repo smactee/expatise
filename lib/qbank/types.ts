@@ -16,6 +16,21 @@ export interface QuestionOption {
   originalKey?: string;  // usually "A" | "B" | "C" | "D" if available
 }
 
+export interface QuestionTranslationOptionAlignmentEntry {
+  sourceIndex?: number;
+  sourceKey?: string | null;
+  sourceText?: string;
+  sourceTextBody?: string;
+  sourceGlossEn?: string;
+  canonicalOptionId?: string;
+  canonicalOptionKey?: string | null;
+  canonicalOptionText?: string;
+  alignmentScore?: number;
+  alignmentMethod?: string;
+  manualAnswerKeyConfirmed?: boolean;
+  confirmedAsCorrectKey?: boolean;
+}
+
 export type QuestionTranslationSourceMode = 'pdf-adapted' | 'pdf-template-guided' | 'direct';
 export type QuestionTranslationConfidence = 'high' | 'medium' | 'low';
 export type QuestionTranslationReviewStatus = 'ready' | 'needs-review';
@@ -24,6 +39,9 @@ export interface QuestionTranslationEntry {
   prompt?: string;
   explanation?: string;
   options?: Record<string, string>;
+  localeOptionOrder?: QuestionTranslationOptionAlignmentEntry[];
+  optionMeaningMap?: QuestionTranslationOptionAlignmentEntry[];
+  localeCorrectOptionKey?: string | null;
   sourceMode?: QuestionTranslationSourceMode;
   confidence?: QuestionTranslationConfidence;
   reviewStatus?: QuestionTranslationReviewStatus;

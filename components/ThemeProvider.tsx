@@ -3,12 +3,15 @@
 import React, {
     createContext,
     useContext,
-    useEffect,
     useState,
     type ReactNode,
 } from 'react';
-
-type Theme = 'light' | 'dark';
+import {
+    applyThemeToDocument,
+    getThemeFromDomOrStorage,
+    THEME_STORAGE_KEY,
+    type Theme,
+} from '@/lib/theme/theme';
 
 interface ThemeContextValue {
     theme: Theme;
@@ -24,32 +27,19 @@ const ThemeContext = createContext<ThemeContextValue | undefined>(
     undefined
 );
 
-const THEME_STORAGE_KEY = 'THEME_STORAGE_KEY';
-
 export function ThemeProvider ({ children }: ThemeProviderProps) {
-    const [theme, setThemeState] = useState<Theme>('dark');
-
-    //Hydrate theme from localStorage / system preference
-    useEffect(() => {
-        if (typeof window === 'undefined') return;
-
-        const saved = window.localStorage.getItem('THEME_STORAGE_KEY') as Theme | null;
-        const prefersDark = window.matchMedia?.('(prefers-color-scheme: dark)').matches;
-
-        const initial: Theme = saved || (prefersDark ? 'dark' : 'light');
-        
-        setThemeState(initial);
-        document.documentElement.dataset.theme = initial;
-    }, []);
+    const [theme, setThemeState] = useState<Theme>(() => getThemeFromDomOrStorage());
 
     const applyTheme = (next: Theme) => {
         setThemeState(next);
         if (typeof window !== 'undefined') {
-            window.localStorage.setItem('THEME_STORAGE_KEY', next);
+            try {
+                window.localStorage.setItem(THEME_STORAGE_KEY, next);
+            } catch {
+                // Ignore storage write failures and still update the document theme.
+            }
         }
-        if (typeof document !== 'undefined') {
-            document.documentElement.dataset.theme = next;
-        }
+        applyThemeToDocument(next);
     };
 
     const setTheme = (next: Theme) => {

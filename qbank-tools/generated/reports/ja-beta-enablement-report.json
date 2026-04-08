@@ -1,0 +1,57 @@
+{
+  "generatedAt": "2026-04-08T11:48:31.002Z",
+  "locale": "ja",
+  "mode": "beta-partial-coverage",
+  "dataset": "2023-test1",
+  "translatedQidCount": 12,
+  "translatedQids": [
+    "q0071",
+    "q0110",
+    "q0126",
+    "q0164",
+    "q0237",
+    "q0591",
+    "q0606",
+    "q0694",
+    "q0780",
+    "q0781",
+    "q0810",
+    "q0871"
+  ],
+  "languagePickerLabel": "日本語 (Beta)",
+  "runtimeSupport": {
+    "localeSpecificOptionOrder": true,
+    "localeSpecificCorrectOptionKey": true,
+    "rowQuestionsUnchanged": true
+  },
+  "translatedOnlyQuestionFlows": [
+    "all-questions",
+    "global-common-mistakes",
+    "all-test",
+    "real-test"
+  ],
+  "validations": {
+    "japaneseSelectable": true,
+    "translatedOnlyRestrictionEnabled": true,
+    "q0781LocaleCorrectOptionKey": "D",
+    "englishAndKoreanContentFilesUnchanged": true,
+    "lintErrors": false,
+    "typecheckPassed": true
+  },
+  "filesChanged": [
+    "public/qbank/2023-test1/translations.ja.json",
+    "messages/ja.ts",
+    "messages/index.ts",
+    "lib/i18n/languageOptions.ts",
+    "lib/qbank/loadDataset.ts",
+    "lib/qbank/localeSupport.ts",
+    "lib/qbank/rowDisplay.ts",
+    "app/(premium)/all-questions/AllQuestionsClient.client.tsx",
+    "app/(premium)/global-common-mistakes/GlobalCommonMistakesClient.client.tsx",
+    "app/(premium)/all-test/AllTestClient.client.tsx",
+    "app/(premium)/real-test/AllTestClient.client.tsx",
+    "app/(premium)/all-questions/all-questions.module.css",
+    "app/(premium)/all-test/all-test.module.css"
+  ],
+  "note": "Japanese UI strings currently reuse English while Japanese qbank content is served only for the translated subset."
+}

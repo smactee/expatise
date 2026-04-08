@@ -1,0 +1,538 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>JA batch-001 Answer-Key Confirmation</title>
+  <style>
+    :root {
+      --bg: #f6f2ea;
+      --paper: #fffdf9;
+      --ink: #1f1a17;
+      --muted: #6d6257;
+      --line: #dbd1c3;
+      --accent: #1b5e54;
+      --accent-soft: #e7f1ef;
+      --warn: #8c4f16;
+      --warn-soft: #f8ead7;
+      --shadow: 0 12px 28px rgba(42, 28, 11, 0.08);
+      --radius: 16px;
+      --mono: "SFMono-Regular", Menlo, Consolas, monospace;
+      --sans: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: var(--sans);
+      color: var(--ink);
+      background: linear-gradient(180deg, #f8f3ea 0%, #f1ece3 100%);
+    }
+    .page {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 28px 20px 48px;
+    }
+    .hero {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      box-shadow: var(--shadow);
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+    .hero h1 {
+      margin: 0 0 10px;
+      font-size: 32px;
+      line-height: 1.1;
+    }
+    .hero p {
+      margin: 0 0 10px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+    .hero .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 14px;
+    }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #f3ede4;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 7px 12px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+      margin-top: 16px;
+    }
+    button {
+      border: 0;
+      border-radius: 999px;
+      padding: 10px 14px;
+      font: inherit;
+      cursor: pointer;
+      background: var(--accent);
+      color: white;
+    }
+    button.secondary {
+      background: #e8dfd2;
+      color: var(--ink);
+    }
+    .hint {
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .list {
+      display: grid;
+      gap: 14px;
+    }
+    .item {
+      display: grid;
+      grid-template-columns: minmax(240px, 320px) minmax(0, 1fr) 280px;
+      gap: 14px;
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      box-shadow: var(--shadow);
+      padding: 16px;
+      align-items: start;
+    }
+    .screenshot-wrap, .details, .decision {
+      min-width: 0;
+    }
+    .item-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .item-head h2 {
+      margin: 0;
+      font-size: 22px;
+      line-height: 1.15;
+    }
+    .qid {
+      font-family: var(--mono);
+      font-size: 15px;
+      color: var(--accent);
+    }
+    .image-frame {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      overflow: hidden;
+      background: #f2ecdf;
+      min-height: 190px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+    .image-frame img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+    .image-fallback {
+      padding: 18px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+    .image-path {
+      margin-top: 8px;
+      font-family: var(--mono);
+      font-size: 12px;
+      word-break: break-all;
+    }
+    .filename {
+      margin-top: 10px;
+      font-size: 13px;
+      color: var(--muted);
+      font-family: var(--mono);
+      word-break: break-all;
+    }
+    .section {
+      margin-bottom: 12px;
+    }
+    .label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      margin-bottom: 5px;
+      display: block;
+    }
+    .prompt {
+      font-size: 18px;
+      line-height: 1.45;
+      margin: 0;
+    }
+    .prompt-gloss {
+      margin-top: 6px;
+      font-size: 14px;
+      line-height: 1.5;
+      color: var(--muted);
+    }
+    .options {
+      display: grid;
+      gap: 7px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+    .option {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 10px 12px;
+      background: #fbf7f0;
+      line-height: 1.4;
+    }
+    .option.current {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+      box-shadow: inset 0 0 0 1px rgba(27, 94, 84, 0.12);
+    }
+    .option-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+    .option strong {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 24px;
+      color: var(--accent);
+      font-family: var(--mono);
+    }
+    .option-ja {
+      font-size: 15px;
+      line-height: 1.45;
+    }
+    .option-gloss {
+      margin-top: 4px;
+      font-size: 13px;
+      line-height: 1.45;
+      color: var(--muted);
+    }
+    .mini-badge {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      padding: 4px 8px;
+      font-size: 11px;
+      line-height: 1;
+      border: 1px solid var(--line);
+      background: #f3ede4;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+    .mini-badge.current {
+      border-color: rgba(27, 94, 84, 0.24);
+      background: rgba(27, 94, 84, 0.1);
+      color: var(--accent);
+    }
+    .fact-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+    .fact {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 10px 12px;
+      background: #faf5ed;
+    }
+    .fact .value {
+      font-size: 15px;
+      line-height: 1.4;
+    }
+    .fact.accent {
+      border-color: rgba(27, 94, 84, 0.22);
+      background: var(--accent-soft);
+    }
+    .fact .value.small {
+      font-size: 13px;
+      color: var(--muted);
+    }
+    .decision {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: #fcf8f1;
+      padding: 14px;
+      position: sticky;
+      top: 14px;
+    }
+    .decision h3 {
+      margin: 0 0 10px;
+      font-size: 18px;
+    }
+    .choice-list {
+      display: grid;
+      gap: 8px;
+      margin: 0 0 14px;
+      padding: 0;
+      list-style: none;
+    }
+    .choice-list label {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 9px 10px;
+      background: white;
+      cursor: pointer;
+    }
+    .choice-list input[type="radio"] {
+      margin: 0;
+    }
+    textarea {
+      width: 100%;
+      min-height: 78px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 10px 12px;
+      font: inherit;
+      resize: vertical;
+      background: white;
+    }
+    .reason {
+      margin-top: 10px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: var(--warn-soft);
+      color: var(--warn);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+    .mono { font-family: var(--mono); }
+    @media (max-width: 980px) {
+      .item {
+        grid-template-columns: 1fr;
+      }
+      .decision {
+        position: static;
+      }
+      .fact-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <section class="hero">
+      <h1>JA Answer-Key Confirmation</h1>
+      <p>Only items with <span class="mono">answerKeyNeedsManualConfirmation === true</span> from the staged preview are shown here. This page is self-contained for <span class="mono">file://</span> review and does not rematch qids or touch production translations.</p>
+      <div class="meta">
+        <span class="pill">Batch <strong>batch-001</strong></span>
+        <span class="pill">Dataset <strong>2023-test1</strong></span>
+        <span class="pill">8 item(s)</span>
+      </div>
+      <div class="controls">
+        <button id="export-json">Export Decisions JSON</button>
+        <button id="reset" class="secondary">Reset Local Edits</button>
+        <span class="hint">Editable file: <span class="mono">../staging/ja-batch-001-answer-key-decisions.template.json</span>. Source preview: <span class="mono">../staging/translations.ja.batch-001.preview.json</span>.</span>
+      </div>
+    </section>
+    <section class="list" id="list"></section>
+  </div>
+  <script>
+    const ITEMS = [{"index":1,"qid":"q0871","sourceItemId":"screenshots/Screenshot 2026-04-07 at 17.49.24.png","sourceImage":"screenshots/Screenshot 2026-04-07 at 17.49.24.png","screenshotPath":"../../../imports/ja/batch-001/screenshots/Screenshot 2026-04-07 at 17.49.24.png","promptRawJa":"この標識は何を示しているか。","promptGlossEn":"What does this sign indicate?","optionsRawJa":[{"key":"A","text":"A 非動車車線","gloss":"A. Lane for non-motor vehicles"},{"key":"B","text":"B 自転車通行止め","gloss":"B. Bicycles prohibited"},{"key":"C","text":"C 自転車専用車線","gloss":"C. Exclusive bicycle lane"},{"key":"D","text":"D 自転車を駐輪できる区間","gloss":"D. Area where bicycles can be parked"}],"localeCorrectOptionKey":"A","canonicalCorrectMeaning":"q0871_o2 · key B","canonicalCorrectOptionText":"lane for non-motorized vehicles","correctKeyRaw":null,"correctAnswerRaw":null,"answerKeyConfirmationReason":"Meaning-based option alignment was weak; verify the Japanese correct option key manually.","sourceLang":"ja","sourceBatchId":"batch-001"},{"index":2,"qid":"q0781","sourceItemId":"screenshots/Screenshot 2026-04-07 at 17.49.49.png","sourceImage":"screenshots/Screenshot 2026-04-07 at 17.49.49.png","screenshotPath":"../../../imports/ja/batch-001/screenshots/Screenshot 2026-04-07 at 17.49.49.png","promptRawJa":"この標識は何を示しているか。","promptGlossEn":"What does this sign indicate?","optionsRawJa":[{"key":"A","text":"A 大型牧場あり","gloss":"A. Large ranch ahead"},{"key":"B","text":"B 野生動物保護区あり","gloss":"B. Wildlife protection area ahead"},{"key":"C","text":"C 野生動物が飛び出すおそれあり","gloss":"C. Wild animals may dart out"},{"key":"D","text":"D 家畜が飛び出すおそれあり","gloss":"D. Livestock may dart out"}],"localeCorrectOptionKey":"C","canonicalCorrectMeaning":"q0781_o1 · key A","canonicalCorrectOptionText":"watch out for animals","correctKeyRaw":null,"correctAnswerRaw":null,"answerKeyConfirmationReason":"Meaning-based option alignment was weak; verify the Japanese correct option key manually.","sourceLang":"ja","sourceBatchId":"batch-001"},{"index":3,"qid":"q0126","sourceItemId":"screenshots/Screenshot 2026-04-07 at 17.49.51.png","sourceImage":"screenshots/Screenshot 2026-04-07 at 17.49.51.png","screenshotPath":"../../../imports/ja/batch-001/screenshots/Screenshot 2026-04-07 at 17.49.51.png","promptRawJa":"夜間の運転では、どのような現象が生じるか。","promptGlossEn":"What phenomena occur when driving at night?","optionsRawJa":[{"key":"A","text":"A 視界が悪く、道路状況を把握しにくい","gloss":"A. Visibility is poor, making it difficult to grasp road conditions"},{"key":"B","text":"B 路面状況が複雑で変化しやすい","gloss":"B. Road surface conditions become complicated and change easily"},{"key":"C","text":"C 運転者の体力を低下させる","gloss":"C. The driver's physical strength decreases"},{"key":"D","text":"D 運転者に衝動や幻覚が起こりやすくなる","gloss":"D. Drivers are more likely to experience impulses or hallucinations"}],"localeCorrectOptionKey":"A","canonicalCorrectMeaning":"q0126_o1 · key A","canonicalCorrectOptionText":"the visibility is low and unfavorable for observing road traffic conditions","correctKeyRaw":null,"correctAnswerRaw":null,"answerKeyConfirmationReason":"Meaning-based option alignment was weak; verify the Japanese correct option key manually.","sourceLang":"ja","sourceBatchId":"batch-001"},{"index":4,"qid":"q0591","sourceItemId":"screenshots/Screenshot 2026-04-07 at 17.49.53 1.png","sourceImage":"screenshots/Screenshot 2026-04-07 at 17.49.53 1.png","screenshotPath":"../../../imports/ja/batch-001/screenshots/Screenshot 2026-04-07 at 17.49.53 1.png","promptRawJa":"自動車のインパネにが点灯し続けているのは、何を示しているか。","promptGlossEn":"What does it mean when this indicator light stays on the car dashboard?","optionsRawJa":[{"key":"A","text":"A アンチロックブレーキシステムの故障","gloss":"A. Malfunction of anti-lock braking system"},{"key":"B","text":"B エアバッグの故障","gloss":"B. Airbag malfunction"},{"key":"C","text":"C エアバッグが作動している","gloss":"C. Airbag is operating"},{"key":"D","text":"D シートベルトの未着用","gloss":"D. Seatbelt not fastened"}],"localeCorrectOptionKey":"B","canonicalCorrectMeaning":"q0591_o4 · key D","canonicalCorrectOptionText":"an airbag malfunction","correctKeyRaw":"B","correctAnswerRaw":"エアバッグの故障","answerKeyConfirmationReason":"Meaning-based option alignment was weak; verify the Japanese correct option key manually.","sourceLang":"ja","sourceBatchId":"batch-001"},{"index":5,"qid":"q0110","sourceItemId":"screenshots/Screenshot 2026-04-07 at 17.49.54.png","sourceImage":"screenshots/Screenshot 2026-04-07 at 17.49.54.png","screenshotPath":"../../../imports/ja/batch-001/screenshots/Screenshot 2026-04-07 at 17.49.54.png","promptRawJa":"雨で滑りやすい路面の走行時に急ブレーキを踏むと、どのようなことが起こりやすいか。","promptGlossEn":"What is likely to happen if you suddenly brake on a slippery road surface due to rain?","optionsRawJa":[{"key":"A","text":"A エンストを起こしやすい","gloss":"A. The engine is likely to stall"},{"key":"B","text":"B ほかの車両の運転者が気づきにくい","gloss":"B. It's hard for other drivers to notice"},{"key":"C","text":"C 視線がぼやけるため衝突事故を起こしやすい","gloss":"C. Your vision may blur, making collisions likely"},{"key":"D","text":"D 横滑りし、事故を起こしやすい","gloss":"D. You may skid sideways, making an accident likely"}],"localeCorrectOptionKey":"D","canonicalCorrectMeaning":"q0110_o1 · key A","canonicalCorrectOptionText":"cause sideways slide and traffic accident","correctKeyRaw":null,"correctAnswerRaw":null,"answerKeyConfirmationReason":"Meaning-based option alignment was weak; verify the Japanese correct option key manually.","sourceLang":"ja","sourceBatchId":"batch-001"},{"index":6,"qid":"q0780","sourceItemId":"screenshots/Screenshot 2026-04-07 at 17.49.56.png","sourceImage":"screenshots/Screenshot 2026-04-07 at 17.49.56.png","screenshotPath":"../../../imports/ja/batch-001/screenshots/Screenshot 2026-04-07 at 17.49.56.png","promptRawJa":"この標識は何を示しているか。","promptGlossEn":"What does this road sign indicate?","optionsRawJa":[{"key":"A","text":"A 狭い道","gloss":"A. Narrow road"},{"key":"B","text":"B 右側車線数減少","gloss":"B. Fewer lanes on the right side"},{"key":"C","text":"C 左側車線数減少","gloss":"C. Fewer lanes on the left side"},{"key":"D","text":"D 狭い橋","gloss":"D. Narrow bridge"}],"localeCorrectOptionKey":"D","canonicalCorrectMeaning":"q0780_o2 · key B","canonicalCorrectOptionText":"narrow bridge","correctKeyRaw":null,"correctAnswerRaw":null,"answerKeyConfirmationReason":"Meaning-based option alignment was weak; verify the Japanese correct option key manually.","sourceLang":"ja","sourceBatchId":"batch-001"},{"index":7,"qid":"q0694","sourceItemId":"screenshots/Screenshot 2026-04-07 at 17.49.59.png","sourceImage":"screenshots/Screenshot 2026-04-07 at 17.49.59.png","screenshotPath":"../../../imports/ja/batch-001/screenshots/Screenshot 2026-04-07 at 17.49.59.png","promptRawJa":"この標識の示す意味はどれか。","promptGlossEn":"What is the meaning of this road sign?","optionsRawJa":[{"key":"A","text":"A 路面に凹凸あり","gloss":"A Uneven road surface"},{"key":"B","text":"B 山なりの橋","gloss":"B Humpback bridge"},{"key":"C","text":"C 路面突出","gloss":"C Road surface protrusion"},{"key":"D","text":"D 路面に凹みあり","gloss":"D Depression in the road surface"}],"localeCorrectOptionKey":"B","canonicalCorrectMeaning":"q0694_o1 · key A","canonicalCorrectOptionText":"hump bridge","correctKeyRaw":null,"correctAnswerRaw":null,"answerKeyConfirmationReason":"Meaning-based option alignment was weak; verify the Japanese correct option key manually.","sourceLang":"ja","sourceBatchId":"batch-001"},{"index":8,"qid":"q0606","sourceItemId":"screenshots/Screenshot 2026-04-07 at 17.50.00.png","sourceImage":"screenshots/Screenshot 2026-04-07 at 17.50.00.png","screenshotPath":"../../../imports/ja/batch-001/screenshots/Screenshot 2026-04-07 at 17.50.00.png","promptRawJa":"自動車のインパネの点灯は、何を示しているか。","promptGlossEn":"What does this indicator light on the car dashboard mean?","optionsRawJa":[{"key":"A","text":"A 片側のドアが開いている","gloss":"A: One side door is open"},{"key":"B","text":"B ラゲージルームが開いている","gloss":"B: The luggage compartment is open"},{"key":"C","text":"C エンジンルームが開いている","gloss":"C: The engine compartment is open"},{"key":"D","text":"D 燃料タンクの蓋が開いている","gloss":"D: The fuel tank lid is open"}],"localeCorrectOptionKey":"C","canonicalCorrectMeaning":"q0606_o2 · key B","canonicalCorrectOptionText":"engine compartment is open","correctKeyRaw":null,"correctAnswerRaw":null,"answerKeyConfirmationReason":"Meaning-based option alignment was weak; verify the Japanese correct option key manually.","sourceLang":"ja","sourceBatchId":"batch-001"}];
+    const STORAGE_KEY = "qbank-answer-key-review-ja-batch-001";
+    const EXPORT_FILE_NAME = "ja-batch-001-answer-key-decisions.json";
+    const DEFAULT_STATE = ITEMS.map((item) => ({
+      qid: item.qid,
+      sourceItemId: item.sourceItemId || null,
+      sourceImage: item.sourceImage || null,
+      currentStagedLocaleCorrectOptionKey: item.localeCorrectOptionKey || null,
+      confirmedCorrectOptionKey: item.localeCorrectOptionKey || null,
+      unknown: item.localeCorrectOptionKey ? false : true,
+      reviewerNotes: "",
+    }));
+
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+
+    function cloneDefaultState() {
+      return JSON.parse(JSON.stringify(DEFAULT_STATE));
+    }
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return cloneDefaultState();
+        const parsed = JSON.parse(raw);
+        if (!Array.isArray(parsed)) return cloneDefaultState();
+        const byQid = new Map(parsed.map((row) => [row.qid, row]));
+        return DEFAULT_STATE.map((row) => ({
+          ...row,
+          ...(byQid.get(row.qid) || {}),
+        }));
+      } catch {
+        return cloneDefaultState();
+      }
+    }
+
+    function saveState() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+
+    function download(filename, content, type) {
+      const blob = new Blob([content], { type });
+      const url = URL.createObjectURL(blob);
+      const anchor = document.createElement("a");
+      anchor.href = url;
+      anchor.download = filename;
+      document.body.appendChild(anchor);
+      anchor.click();
+      anchor.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    function exportJson() {
+      const payload = {
+        exportedAt: new Date().toISOString(),
+        batch: {
+          lang: "ja",
+          batchId: "batch-001",
+          dataset: "2023-test1",
+          scope: "answer-key-confirmation",
+        },
+        items: state.map((row) => ({
+          qid: row.qid,
+          sourceItemId: row.sourceItemId || null,
+          sourceImage: row.sourceImage || null,
+          currentStagedLocaleCorrectOptionKey: row.currentStagedLocaleCorrectOptionKey || null,
+          confirmedCorrectOptionKey: row.unknown ? null : (row.confirmedCorrectOptionKey || null),
+          unknown: row.unknown === true,
+          reviewerNotes: row.reviewerNotes || "",
+        })),
+      };
+      download(EXPORT_FILE_NAME, JSON.stringify(payload, null, 2) + "\n", "application/json");
+    }
+
+    function renderImage(src, alt, localPath) {
+      if (!src) {
+        return '<div class="image-frame"><div class="image-fallback">Screenshot not found</div></div>';
+      }
+      return '<div class="image-frame">' +
+        '<img src="' + encodeURI(src) + '" alt="' + escapeHtml(alt) + '" onerror="this.style.display=\'none\'; this.nextElementSibling.style.display=\'block\';">' +
+        '<div class="image-fallback" style="display:none;">Unable to load screenshot<div class="image-path">' + escapeHtml(localPath || src) + '</div></div>' +
+      '</div>';
+    }
+
+    function renderOption(option, item) {
+      const isCurrent = item.localeCorrectOptionKey && option.key === item.localeCorrectOptionKey;
+      return '<li class="option' + (isCurrent ? ' current' : '') + '">' +
+        '<div class="option-head">' +
+          '<strong>' + escapeHtml(option.key || '?') + '</strong>' +
+          (isCurrent ? '<span class="mini-badge current">Current staged key</span>' : '') +
+        '</div>' +
+        '<div class="option-ja">' + escapeHtml(option.text || '') + '</div>' +
+        (option.gloss ? '<div class="option-gloss">' + escapeHtml(option.gloss) + '</div>' : '') +
+      '</li>';
+    }
+
+    function renderItem(item, decision) {
+      const visibleAnswer = [item.correctKeyRaw, item.correctAnswerRaw].filter(Boolean).join(' / ');
+      const choices = ['A', 'B', 'C', 'D', 'unknown'].map((choice) => {
+        const checked = choice === 'unknown'
+          ? decision.unknown === true
+          : decision.unknown !== true && decision.confirmedCorrectOptionKey === choice;
+        return '<li><label><input type="radio" name="choice-' + escapeHtml(item.qid) + '" value="' + escapeHtml(choice) + '"' + (checked ? ' checked' : '') + '>' +
+          '<span>' + escapeHtml(choice.toUpperCase()) + '</span></label></li>';
+      }).join('');
+
+      return '<article class="item" data-qid="' + escapeHtml(item.qid) + '">' +
+        '<div class="screenshot-wrap">' +
+          '<div class="item-head"><h2>' + escapeHtml(item.qid) + '</h2><span class="qid">#' + String(item.index).padStart(2, '0') + '</span></div>' +
+          renderImage(item.screenshotPath, item.qid, item.screenshotPath) +
+          '<div class="filename">' + escapeHtml(item.sourceImage || '') + '</div>' +
+        '</div>' +
+        '<div class="details">' +
+          '<div class="section"><span class="label">Japanese Prompt</span><p class="prompt">' + escapeHtml(item.promptRawJa || '') + '</p>' +
+            (item.promptGlossEn ? '<div class="prompt-gloss">' + escapeHtml(item.promptGlossEn) + '</div>' : '') +
+          '</div>' +
+          '<div class="section"><span class="label">Japanese Options</span><ol class="options">' + item.optionsRawJa.map((option) => renderOption(option, item)).join('') + '</ol></div>' +
+          '<div class="fact-grid">' +
+            '<div class="fact"><span class="label">Current Staged Key</span><div class="value mono">' + escapeHtml(item.localeCorrectOptionKey || 'unknown') + '</div></div>' +
+            '<div class="fact accent"><span class="label">Canonical Correct Meaning</span><div class="value mono">' + escapeHtml(item.canonicalCorrectMeaning || '') + '</div></div>' +
+            '<div class="fact accent"><span class="label">Canonical English Option</span><div class="value">' + escapeHtml(item.canonicalCorrectOptionText || '') + '</div></div>' +
+            '<div class="fact"><span class="label">Visible Source Answer</span><div class="value">' + escapeHtml(visibleAnswer || 'Not visible') + '</div></div>' +
+          '</div>' +
+          '<div class="reason">' + escapeHtml(item.answerKeyConfirmationReason || 'Manual answer-key confirmation requested.') + '</div>' +
+        '</div>' +
+        '<aside class="decision">' +
+          '<h3>Confirm Key</h3>' +
+          '<ol class="choice-list">' + choices + '</ol>' +
+          '<label class="label" for="notes-' + escapeHtml(item.qid) + '">Reviewer Notes</label>' +
+          '<textarea id="notes-' + escapeHtml(item.qid) + '" data-notes-for="' + escapeHtml(item.qid) + '">' + escapeHtml(decision.reviewerNotes || '') + '</textarea>' +
+        '</aside>' +
+      '</article>';
+    }
+
+    function render() {
+      const byQid = new Map(state.map((row) => [row.qid, row]));
+      document.getElementById('list').innerHTML = ITEMS.map((item) => renderItem(item, byQid.get(item.qid))).join('');
+
+      for (const input of document.querySelectorAll('input[type="radio"]')) {
+        input.addEventListener('change', (event) => {
+          const article = event.target.closest('[data-qid]');
+          const qid = article?.dataset?.qid;
+          const row = state.find((entry) => entry.qid === qid);
+          if (!row) return;
+          if (event.target.value === 'unknown') {
+            row.unknown = true;
+            row.confirmedCorrectOptionKey = null;
+          } else {
+            row.unknown = false;
+            row.confirmedCorrectOptionKey = event.target.value;
+          }
+          saveState();
+        });
+      }
+
+      for (const textarea of document.querySelectorAll('textarea[data-notes-for]')) {
+        textarea.addEventListener('input', (event) => {
+          const qid = event.target.getAttribute('data-notes-for');
+          const row = state.find((entry) => entry.qid === qid);
+          if (!row) return;
+          row.reviewerNotes = event.target.value;
+          saveState();
+        });
+      }
+    }
+
+    let state = loadState();
+    render();
+
+    document.getElementById('export-json').addEventListener('click', exportJson);
+    document.getElementById('reset').addEventListener('click', () => {
+      state = cloneDefaultState();
+      saveState();
+      render();
+    });
+  </script>
+</body>
+</html>

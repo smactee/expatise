@@ -235,11 +235,11 @@ const showCoachCooldownResetButton =
   !authLoading &&
   supabaseAuthed;
 
-const resetCoachCooldownLabel = "Reset Coach Cooldown";
-const resetCoachCooldownAria = "Reset AI Coach cooldown";
-const resetCoachCooldownTitle = "Reset AI Coach cooldown for this user";
-const resetCoachCooldownSuccess = "Coach cooldown reset.";
-const resetCoachCooldownFailed = "Coach cooldown reset failed.";
+const resetCoachCooldownLabel = locale === "ja" ? "コーチの待機時間をリセット" : "Reset Coach Cooldown";
+const resetCoachCooldownAria = locale === "ja" ? "AIコーチの待機時間をリセット" : "Reset AI Coach cooldown";
+const resetCoachCooldownTitle = locale === "ja" ? "このユーザーのAIコーチ待機時間をリセット" : "Reset AI Coach cooldown for this user";
+const resetCoachCooldownSuccess = locale === "ja" ? "コーチの待機時間をリセットしました。" : "Coach cooldown reset.";
+const resetCoachCooldownFailed = locale === "ja" ? "コーチの待機時間のリセットに失敗しました。" : "Coach cooldown reset failed.";
 
 
 

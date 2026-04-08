@@ -12,6 +12,7 @@ import type { DatasetId } from '@/lib/qbank/datasets';
 import type { Question } from '@/lib/qbank/types';
 import { TAG_TAXONOMY, labelForTag } from '@/lib/qbank/tagTaxonomy';
 import { deriveTopicSubtags } from '@/lib/qbank/deriveTopicSubtags';
+import { getTranslatedOnlyLocaleNotice, isTranslatedOnlyQuestionLocale } from '@/lib/qbank/localeSupport';
 import { useBookmarks } from "@/lib/bookmarks/useBookmarks"; // adjust path if you use "@/lib/..."
 import BackButton from '@/components/BackButton';
 import { useClearedMistakes } from '@/lib/mistakes/useClearedMistakes';
@@ -104,7 +105,10 @@ useEffect(() => {
     let alive = true;
     (async () => {
       try {
-        const data = await loadDataset(datasetId, { locale });
+        const data = await loadDataset(datasetId, {
+          locale,
+          translatedOnly: isTranslatedOnlyQuestionLocale(locale),
+        });
         if (alive) setQ(data);
       } finally {
         if (alive) setLoading(false);
@@ -395,6 +399,7 @@ const premiumNextPath =
   mode === "bookmarks" ? "/bookmarks" : mode === "mistakes" ? "/my-mistakes" : "/all-questions";
 
 const premiumPath = `/premium?next=${encodeURIComponent(premiumNextPath)}`;
+const betaNotice = getTranslatedOnlyLocaleNotice(locale, q.length);
 
 
   return (
@@ -454,6 +459,8 @@ const premiumPath = `/premium?next=${encodeURIComponent(premiumNextPath)}`;
 
 
 
+
+        {betaNotice ? <p className={styles.betaNotice}>{betaNotice}</p> : null}
 
         <div className={styles.searchRow}>
           <input

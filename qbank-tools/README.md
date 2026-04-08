@@ -1,0 +1,77 @@
+# QBank Localization Pipeline
+
+This folder contains the non-destructive screenshot-to-localization tooling scaffold for the qbank.
+
+What was created:
+
+- `qbank-tools/generated/match-index.json` builds a match-ready lookup index from `questions.json`, `questions.raw.json`, `tags.patch.json`, and `translations.ko.json`.
+- `qbank-tools/generated/asset-rename-map.json` and `qbank-tools/generated/asset-rename-preview.csv` are dry-run previews only. They do not rename any production assets.
+- `imports/<lang>/batch-###/` holds one screenshot batch at a time with raw screenshots, `intake.json`, `extraction-report.json`, `matched.json`, `review-needed.json`, and `unresolved.json`.
+- `qbank-tools/generated/staging/` is where reviewed localization merges are staged before any production merge.
+
+Run this first:
+
+```bash
+npm run build-match-index
+npm run dry-run-asset-rename
+```
+
+Extract screenshot intake from a batch directory:
+
+```bash
+npm run extract-screenshot-intake -- --lang ko --batch batch-001
+```
+
+Notes:
+
+- Put the temporary screenshot files directly inside `imports/ko/batch-001/` or a subfolder under that batch.
+- The extractor uses the OpenAI Responses API image-input flow and writes both raw OCR-style fields and the translated matcher fields into `imports/ko/batch-001/intake.json`.
+- Low-confidence screenshots are kept in the batch with `extractionStatus: "partial"` or `"failed"` instead of being forced into a bad parse.
+- The batch report is written to `imports/<lang>/batch-###/extraction-report.json`.
+
+Validate the extracted intake:
+
+```bash
+npm run validate-screenshot-intake -- --lang ko --batch batch-001
+```
+
+Run matching after extraction:
+
+```bash
+npm run process-screenshot-batch -- --lang ko --batch batch-001
+```
+
+Generate the self-contained review artifact:
+
+```bash
+npm run generate-batch-review-artifact -- --lang ja --batch batch-001
+```
+
+New-question candidate workflow:
+
+```bash
+npm run stage-new-question-candidates -- --lang ja --batch batch-001
+npm run prepare-new-question-promotion-preview -- --lang ja --batch batch-001
+npm run build-localization-coverage-report -- --lang ja --batch batch-001
+```
+
+Notes:
+
+- Review decisions now support `createNewQuestion: true` alongside `approvedQid`, `noneOfThese`, and `unsure`.
+- The self-contained review page is written to `qbank-tools/generated/reports/<lang>-<batch>-review.html`.
+- Edit `qbank-tools/generated/staging/<lang>-<batch>-review-decisions.template.json` after review, or export decisions from the HTML page and replace that staged file.
+- Running `stage-new-question-candidates` writes:
+  - `qbank-tools/generated/staging/new-question-decisions.<lang>.<batch>.json`
+  - `qbank-tools/generated/staging/new-question-candidates.<lang>.<batch>.json`
+- Running `prepare-new-question-promotion-preview` writes `qbank-tools/generated/staging/new-question-promotion-preview.<lang>.<batch>.json` with preview-only `qx....` ids and appended master numbers.
+- Running `build-localization-coverage-report` writes `qbank-tools/generated/reports/localization-coverage-matrix.<lang>.<batch>.json`.
+
+Manual review before Phase 2:
+
+- Review `imports/<lang>/batch-###/extraction-report.json` for failed or partial OCR items.
+- Review `imports/<lang>/batch-###/intake.json` for any screenshot where `manualReview` is true.
+- Review `qbank-tools/generated/asset-rename-preview.csv` for naming quality and any unexpected semantic slugs.
+- Review `imports/<lang>/batch-###/review-needed.json` and `imports/<lang>/batch-###/unresolved.json`.
+- Only add `reviewDecision: "approve"` and `approvedLocalization` after confirming the matched qid and translation-key mapping.
+- Use `createNewQuestion: true` when a screenshot appears to represent a genuinely new item that should be staged for a future superset master bank instead of forced into an existing qid.
+- Do not apply asset renames or write to `public/qbank/.../translations.<lang>.json` from this pass.

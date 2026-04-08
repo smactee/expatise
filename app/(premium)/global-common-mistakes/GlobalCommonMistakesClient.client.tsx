@@ -10,6 +10,7 @@ import BackButton from "@/components/BackButton";
 import type { DatasetId } from "@/lib/qbank/datasets";
 import type { Question } from "@/lib/qbank/types";
 import { loadDataset } from "@/lib/qbank/loadDataset";
+import { getTranslatedOnlyLocaleNotice, isTranslatedOnlyQuestionLocale } from "@/lib/qbank/localeSupport";
 
 import { TAG_TAXONOMY, labelForTag } from "@/lib/qbank/tagTaxonomy";
 import { deriveTopicSubtags } from "@/lib/qbank/deriveTopicSubtags";
@@ -105,7 +106,10 @@ export default function GlobalCommonMistakesClient({ datasetId }: { datasetId: D
     let alive = true;
     (async () => {
       try {
-        const data = await loadDataset(datasetId, { locale });
+        const data = await loadDataset(datasetId, {
+          locale,
+          translatedOnly: isTranslatedOnlyQuestionLocale(locale),
+        });
         if (alive) setQ(data);
       } finally {
         if (alive) setLoadingQ(false);
@@ -129,16 +133,17 @@ export default function GlobalCommonMistakesClient({ datasetId }: { datasetId: D
         if (!res.ok) throw new Error("no api yet");
         const json = await res.json();
 
-        const items: any[] = Array.isArray(json?.items) ? json.items : [];
+        const items: unknown[] = Array.isArray(json?.items) ? json.items : [];
 
         const parsed: GlobalRow[] = items
           .map((x) => {
-            const qid = String(x?.qid ?? x?.questionId ?? "");
-            const wrong = Number(x?.wrong ?? 0);
-            const total = Number(x?.total ?? 0);
+            const row = x && typeof x === "object" ? (x as Record<string, unknown>) : {};
+            const qid = String(row.qid ?? row.questionId ?? "");
+            const wrong = Number(row.wrong ?? 0);
+            const total = Number(row.total ?? 0);
             const score =
-              typeof x?.score === "number"
-                ? x.score
+              typeof row.score === "number"
+                ? row.score
                 : total > 0
                 ? (wrong + 1) / (total + 2) // fallback
                 : 0;
@@ -257,6 +262,7 @@ export default function GlobalCommonMistakesClient({ datasetId }: { datasetId: D
   }, []);
 
   const count = ranked.length;
+  const betaNotice = getTranslatedOnlyLocaleNotice(locale, q.length);
 
   return (
     <main className={styles.page}>
@@ -293,6 +299,8 @@ export default function GlobalCommonMistakesClient({ datasetId }: { datasetId: D
             </p>
           )}
         </header>
+
+        {betaNotice ? <p className={styles.betaNotice}>{betaNotice}</p> : null}
 
         <div className={styles.searchRow}>
           <input

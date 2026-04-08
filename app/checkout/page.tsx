@@ -6,6 +6,7 @@ import { PLAN_MAP, toPlanId, type PlanId } from "@/lib/plans";
 import CSRBoundary from "@/components/CSRBoundary";
 import BackButton from "@/components/BackButton";
 import { useT } from "@/lib/i18n/useT";
+import { useVisualViewportBottomOffset } from "@/lib/utils/useVisualViewportBottomOffset";
 
 const CHECKOUT_PLAN_TITLE_KEYS: Record<PlanId, keyof typeof PLAN_MAP> = {
   monthly: "monthly",
@@ -18,6 +19,7 @@ function Inner() {
   const router = useRouter();
   const sp = useSearchParams();
   const { t } = useT();
+  const viewportBottomOffsetStyle = useVisualViewportBottomOffset();
 
   const plan: PlanId = toPlanId(sp.get("plan"));
   const promoApplied = sp.get("promo") === "1";
@@ -34,7 +36,7 @@ function Inner() {
   const price = promoApplied ? planData.promoPrice : planData.price;
 
   return (
-    <main className={styles.page}>
+    <main className={styles.page} style={viewportBottomOffsetStyle}>
       <div className={styles.frame}>
         <header className={styles.topBar}>
           <div className={styles.topBackButton}>
@@ -42,7 +44,7 @@ function Inner() {
           </div>
         </header>
 
-          <div className={styles.content}>
+        <div className={styles.content}>
           <div className={styles.summaryRow}>
             <div className={styles.planLabel}>{title}</div>
             <div className={styles.orderNo}>{t("checkout.webCheckoutUnavailable")}</div>

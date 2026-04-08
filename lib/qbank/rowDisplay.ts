@@ -9,6 +9,10 @@ const ROW_DISPLAY_LABELS: Record<Locale, { right: string; wrong: string }> = {
     right: 'Y',
     wrong: 'N',
   },
+  ja: {
+    right: 'Yes',
+    wrong: 'No',
+  },
 };
 
 export function getRowDisplayLabel(
