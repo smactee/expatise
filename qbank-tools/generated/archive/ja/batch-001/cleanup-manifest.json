@@ -1,0 +1,258 @@
+{
+  "generatedAt": "2026-04-08T15:26:56.662Z",
+  "lang": "ja",
+  "batchId": "batch-001",
+  "dataset": "2023-test1",
+  "apply": true,
+  "policy": {
+    "keep": [
+      "Raw screenshot inputs and batch intake/audit JSON remain active in imports/<lang>/<batch>/.",
+      "Final review decisions, final answer-key decisions, and final production merge reports remain active.",
+      "Production translations.<lang>.json remains untouched and active."
+    ],
+    "archive": [
+      "Review HTML files and manifests.",
+      "Template decision files.",
+      "Preview and dry-run staging files that can be regenerated.",
+      "Intermediate validation and batch-processing reports.",
+      "New-question and follow-up staging artifacts."
+    ],
+    "delete": [
+      "Finder/OS clutter like .DS_Store."
+    ]
+  },
+  "keepActive": [
+    "imports/ja/batch-001/extraction-report.json",
+    "imports/ja/batch-001/intake.json",
+    "imports/ja/batch-001/matched.json",
+    "imports/ja/batch-001/review-needed.json",
+    "imports/ja/batch-001/screenshots/1.png",
+    "imports/ja/batch-001/screenshots/Screenshot 2026-04-07 at 17.49.24.png",
+    "imports/ja/batch-001/screenshots/Screenshot 2026-04-07 at 17.49.39.png",
+    "imports/ja/batch-001/screenshots/Screenshot 2026-04-07 at 17.49.43.png",
+    "imports/ja/batch-001/screenshots/Screenshot 2026-04-07 at 17.49.45.png",
+    "imports/ja/batch-001/screenshots/Screenshot 2026-04-07 at 17.49.47 1.png",
+    "imports/ja/batch-001/screenshots/Screenshot 2026-04-07 at 17.49.47.png",
+    "imports/ja/batch-001/screenshots/Screenshot 2026-04-07 at 17.49.49 1.png",
+    "imports/ja/batch-001/screenshots/Screenshot 2026-04-07 at 17.49.49.png",
+    "imports/ja/batch-001/screenshots/Screenshot 2026-04-07 at 17.49.50.png",
+    "imports/ja/batch-001/screenshots/Screenshot 2026-04-07 at 17.49.51.png",
+    "imports/ja/batch-001/screenshots/Screenshot 2026-04-07 at 17.49.53 1.png",
+    "imports/ja/batch-001/screenshots/Screenshot 2026-04-07 at 17.49.53.png",
+    "imports/ja/batch-001/screenshots/Screenshot 2026-04-07 at 17.49.54.png",
+    "imports/ja/batch-001/screenshots/Screenshot 2026-04-07 at 17.49.55.png",
+    "imports/ja/batch-001/screenshots/Screenshot 2026-04-07 at 17.49.56.png",
+    "imports/ja/batch-001/screenshots/Screenshot 2026-04-07 at 17.49.57.png",
+    "imports/ja/batch-001/screenshots/Screenshot 2026-04-07 at 17.49.58.png",
+    "imports/ja/batch-001/screenshots/Screenshot 2026-04-07 at 17.49.59.png",
+    "imports/ja/batch-001/screenshots/Screenshot 2026-04-07 at 17.50.00.png",
+    "imports/ja/batch-001/unresolved.json",
+    "qbank-tools/generated/reports/production-merge-ja-batch-001.json",
+    "qbank-tools/generated/reports/production-merge-ja-batch-001.md",
+    "qbank-tools/generated/staging/ja-batch-001-answer-key-decisions.json",
+    "qbank-tools/generated/staging/ja-batch-001-review-decisions.json",
+    "public/qbank/2023-test1/translations.ja.json"
+  ],
+  "archiveCandidates": [
+    "qbank-tools/generated/reports/apply-answer-key-decisions-ja-batch-001.json",
+    "qbank-tools/generated/reports/dry-run-merge-review-ja-batch-001.json",
+    "qbank-tools/generated/reports/dry-run-merge-review-ja-batch-001.md",
+    "qbank-tools/generated/reports/extract-screenshot-intake-ja-batch-001.json",
+    "qbank-tools/generated/reports/full-batch-merge-review-ja-batch-001.json",
+    "qbank-tools/generated/reports/full-batch-merge-review-ja-batch-001.md",
+    "qbank-tools/generated/reports/ja-batch-001-answer-key-review.html",
+    "qbank-tools/generated/reports/ja-batch-001-q0466-answer-key-review.html",
+    "qbank-tools/generated/reports/ja-batch-001-remaining-review.html",
+    "qbank-tools/generated/reports/ja-batch-001-remaining-review.manifest.json",
+    "qbank-tools/generated/reports/ja-batch-001-review-decisions.template.csv",
+    "qbank-tools/generated/reports/ja-batch-001-review-decisions.template.json",
+    "qbank-tools/generated/reports/ja-batch-001-review.html",
+    "qbank-tools/generated/reports/ja-batch-001-review.manifest.json",
+    "qbank-tools/generated/reports/localization-coverage-matrix.ja.batch-001.json",
+    "qbank-tools/generated/reports/process-screenshot-batch-ja-batch-001.json",
+    "qbank-tools/generated/reports/validate-localization-batch-ja-batch-001.json",
+    "qbank-tools/generated/reports/validate-screenshot-intake-ja-batch-001.json",
+    "qbank-tools/generated/staging/follow-up-review.ja.batch-001.json",
+    "qbank-tools/generated/staging/ja-batch-001-answer-key-decisions.template.json",
+    "qbank-tools/generated/staging/ja-batch-001-q0466-answer-key-decision.template.json",
+    "qbank-tools/generated/staging/ja-batch-001-remaining-review-decisions.template.csv",
+    "qbank-tools/generated/staging/ja-batch-001-remaining-review-decisions.template.json",
+    "qbank-tools/generated/staging/ja-batch-001-review-decisions.template.csv",
+    "qbank-tools/generated/staging/ja-batch-001-review-decisions.template.json",
+    "qbank-tools/generated/staging/new-question-candidates.ja.batch-001.json",
+    "qbank-tools/generated/staging/new-question-decisions.ja.batch-001.json",
+    "qbank-tools/generated/staging/new-question-promotion-preview.ja.batch-001.json",
+    "qbank-tools/generated/staging/translations.ja.batch-001.full.merge-dry-run.json",
+    "qbank-tools/generated/staging/translations.ja.batch-001.full.preview.json",
+    "qbank-tools/generated/staging/translations.ja.batch-001.merge-dry-run.json",
+    "qbank-tools/generated/staging/translations.ja.batch-001.preview.json"
+  ],
+  "deleteCandidates": [
+    "imports/ja/batch-001/.DS_Store"
+  ],
+  "archived": [
+    {
+      "from": "qbank-tools/generated/reports/apply-answer-key-decisions-ja-batch-001.json",
+      "to": "qbank-tools/generated/archive/ja/batch-001/reports/apply-answer-key-decisions-ja-batch-001.json",
+      "status": "archived"
+    },
+    {
+      "from": "qbank-tools/generated/reports/dry-run-merge-review-ja-batch-001.json",
+      "to": "qbank-tools/generated/archive/ja/batch-001/reports/dry-run-merge-review-ja-batch-001.json",
+      "status": "archived"
+    },
+    {
+      "from": "qbank-tools/generated/reports/dry-run-merge-review-ja-batch-001.md",
+      "to": "qbank-tools/generated/archive/ja/batch-001/reports/dry-run-merge-review-ja-batch-001.md",
+      "status": "archived"
+    },
+    {
+      "from": "qbank-tools/generated/reports/extract-screenshot-intake-ja-batch-001.json",
+      "to": "qbank-tools/generated/archive/ja/batch-001/reports/extract-screenshot-intake-ja-batch-001.json",
+      "status": "archived"
+    },
+    {
+      "from": "qbank-tools/generated/reports/full-batch-merge-review-ja-batch-001.json",
+      "to": "qbank-tools/generated/archive/ja/batch-001/reports/full-batch-merge-review-ja-batch-001.json",
+      "status": "archived"
+    },
+    {
+      "from": "qbank-tools/generated/reports/full-batch-merge-review-ja-batch-001.md",
+      "to": "qbank-tools/generated/archive/ja/batch-001/reports/full-batch-merge-review-ja-batch-001.md",
+      "status": "archived"
+    },
+    {
+      "from": "qbank-tools/generated/reports/ja-batch-001-answer-key-review.html",
+      "to": "qbank-tools/generated/archive/ja/batch-001/reports/ja-batch-001-answer-key-review.html",
+      "status": "archived"
+    },
+    {
+      "from": "qbank-tools/generated/reports/ja-batch-001-q0466-answer-key-review.html",
+      "to": "qbank-tools/generated/archive/ja/batch-001/reports/ja-batch-001-q0466-answer-key-review.html",
+      "status": "archived"
+    },
+    {
+      "from": "qbank-tools/generated/reports/ja-batch-001-remaining-review.html",
+      "to": "qbank-tools/generated/archive/ja/batch-001/reports/ja-batch-001-remaining-review.html",
+      "status": "archived"
+    },
+    {
+      "from": "qbank-tools/generated/reports/ja-batch-001-remaining-review.manifest.json",
+      "to": "qbank-tools/generated/archive/ja/batch-001/reports/ja-batch-001-remaining-review.manifest.json",
+      "status": "archived"
+    },
+    {
+      "from": "qbank-tools/generated/reports/ja-batch-001-review-decisions.template.csv",
+      "to": "qbank-tools/generated/archive/ja/batch-001/reports/ja-batch-001-review-decisions.template.csv",
+      "status": "archived"
+    },
+    {
+      "from": "qbank-tools/generated/reports/ja-batch-001-review-decisions.template.json",
+      "to": "qbank-tools/generated/archive/ja/batch-001/reports/ja-batch-001-review-decisions.template.json",
+      "status": "archived"
+    },
+    {
+      "from": "qbank-tools/generated/reports/ja-batch-001-review.html",
+      "to": "qbank-tools/generated/archive/ja/batch-001/reports/ja-batch-001-review.html",
+      "status": "archived"
+    },
+    {
+      "from": "qbank-tools/generated/reports/ja-batch-001-review.manifest.json",
+      "to": "qbank-tools/generated/archive/ja/batch-001/reports/ja-batch-001-review.manifest.json",
+      "status": "archived"
+    },
+    {
+      "from": "qbank-tools/generated/reports/localization-coverage-matrix.ja.batch-001.json",
+      "to": "qbank-tools/generated/archive/ja/batch-001/reports/localization-coverage-matrix.ja.batch-001.json",
+      "status": "archived"
+    },
+    {
+      "from": "qbank-tools/generated/reports/process-screenshot-batch-ja-batch-001.json",
+      "to": "qbank-tools/generated/archive/ja/batch-001/reports/process-screenshot-batch-ja-batch-001.json",
+      "status": "archived"
+    },
+    {
+      "from": "qbank-tools/generated/reports/validate-localization-batch-ja-batch-001.json",
+      "to": "qbank-tools/generated/archive/ja/batch-001/reports/validate-localization-batch-ja-batch-001.json",
+      "status": "archived"
+    },
+    {
+      "from": "qbank-tools/generated/reports/validate-screenshot-intake-ja-batch-001.json",
+      "to": "qbank-tools/generated/archive/ja/batch-001/reports/validate-screenshot-intake-ja-batch-001.json",
+      "status": "archived"
+    },
+    {
+      "from": "qbank-tools/generated/staging/follow-up-review.ja.batch-001.json",
+      "to": "qbank-tools/generated/archive/ja/batch-001/staging/follow-up-review.ja.batch-001.json",
+      "status": "archived"
+    },
+    {
+      "from": "qbank-tools/generated/staging/ja-batch-001-answer-key-decisions.template.json",
+      "to": "qbank-tools/generated/archive/ja/batch-001/staging/ja-batch-001-answer-key-decisions.template.json",
+      "status": "archived"
+    },
+    {
+      "from": "qbank-tools/generated/staging/ja-batch-001-q0466-answer-key-decision.template.json",
+      "to": "qbank-tools/generated/archive/ja/batch-001/staging/ja-batch-001-q0466-answer-key-decision.template.json",
+      "status": "archived"
+    },
+    {
+      "from": "qbank-tools/generated/staging/ja-batch-001-remaining-review-decisions.template.csv",
+      "to": "qbank-tools/generated/archive/ja/batch-001/staging/ja-batch-001-remaining-review-decisions.template.csv",
+      "status": "archived"
+    },
+    {
+      "from": "qbank-tools/generated/staging/ja-batch-001-remaining-review-decisions.template.json",
+      "to": "qbank-tools/generated/archive/ja/batch-001/staging/ja-batch-001-remaining-review-decisions.template.json",
+      "status": "archived"
+    },
+    {
+      "from": "qbank-tools/generated/staging/ja-batch-001-review-decisions.template.csv",
+      "to": "qbank-tools/generated/archive/ja/batch-001/staging/ja-batch-001-review-decisions.template.csv",
+      "status": "archived"
+    },
+    {
+      "from": "qbank-tools/generated/staging/ja-batch-001-review-decisions.template.json",
+      "to": "qbank-tools/generated/archive/ja/batch-001/staging/ja-batch-001-review-decisions.template.json",
+      "status": "archived"
+    },
+    {
+      "from": "qbank-tools/generated/staging/new-question-candidates.ja.batch-001.json",
+      "to": "qbank-tools/generated/archive/ja/batch-001/staging/new-question-candidates.ja.batch-001.json",
+      "status": "archived"
+    },
+    {
+      "from": "qbank-tools/generated/staging/new-question-decisions.ja.batch-001.json",
+      "to": "qbank-tools/generated/archive/ja/batch-001/staging/new-question-decisions.ja.batch-001.json",
+      "status": "archived"
+    },
+    {
+      "from": "qbank-tools/generated/staging/new-question-promotion-preview.ja.batch-001.json",
+      "to": "qbank-tools/generated/archive/ja/batch-001/staging/new-question-promotion-preview.ja.batch-001.json",
+      "status": "archived"
+    },
+    {
+      "from": "qbank-tools/generated/staging/translations.ja.batch-001.full.merge-dry-run.json",
+      "to": "qbank-tools/generated/archive/ja/batch-001/staging/translations.ja.batch-001.full.merge-dry-run.json",
+      "status": "archived"
+    },
+    {
+      "from": "qbank-tools/generated/staging/translations.ja.batch-001.full.preview.json",
+      "to": "qbank-tools/generated/archive/ja/batch-001/staging/translations.ja.batch-001.full.preview.json",
+      "status": "archived"
+    },
+    {
+      "from": "qbank-tools/generated/staging/translations.ja.batch-001.merge-dry-run.json",
+      "to": "qbank-tools/generated/archive/ja/batch-001/staging/translations.ja.batch-001.merge-dry-run.json",
+      "status": "archived"
+    },
+    {
+      "from": "qbank-tools/generated/staging/translations.ja.batch-001.preview.json",
+      "to": "qbank-tools/generated/archive/ja/batch-001/staging/translations.ja.batch-001.preview.json",
+      "status": "archived"
+    }
+  ],
+  "deleted": [
+    "imports/ja/batch-001/.DS_Store"
+  ]
+}

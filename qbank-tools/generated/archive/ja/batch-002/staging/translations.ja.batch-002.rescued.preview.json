@@ -1,0 +1,374 @@
+{
+  "meta": {
+    "locale": "ja",
+    "generatedAt": "2026-04-09T03:09:02.605Z",
+    "reviewedBatchId": "batch-002",
+    "dataset": "2023-test1",
+    "sourceUnresolvedPath": "imports/ja/batch-002/unresolved.json",
+    "sourceUnresolvedDecisionPath": "qbank-tools/generated/staging/ja-batch-002-unresolved-decisions.json",
+    "rescuedExistingQidCount": 3,
+    "manualAnswerKeyConfirmationCount": 0,
+    "stagingOnly": true
+  },
+  "questions": {
+    "q0647": {
+      "prompt": "この標識は何を示しているか。",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 17.50.03.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 17.50.03.png",
+      "reviewerNotes": "same image. and the correct answer should be A section where honking is allowed (A クラクションを鳴らす区間 )",
+      "promptRawJa": "この標識は何を示しているか。",
+      "promptGlossEn": "What does this sign indicate?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "ROW",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-002",
+        "approvedQid": "q0647",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "optionsRawJa": [],
+      "optionsGlossEn": [],
+      "localeCorrectOptionKey": null,
+      "canonicalCorrectRow": "W",
+      "canonicalCorrectAnswer": "wrong / false",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "ROW question; no locale-specific option key applies.",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ja-batch-002-unresolved-decisions.json",
+        "recommendedAction": "possible-existing-qid-rescue",
+        "reviewerNotes": "same image. and the correct answer should be A section where honking is allowed (A クラクションを鳴らす区間 )"
+      }
+    },
+    "q0376": {
+      "prompt": "運転者がに6点減点されるのはがつくのは、どの違法行為か。",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 17.50.07.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 17.50.07.png",
+      "reviewerNotes": "answer to that question is C 交通信号に違反する C. Violating traffic signals",
+      "promptRawJa": "運転者がに6点減点されるのはがつくのは、どの違法行為か。",
+      "promptGlossEn": "Which of the following violations will result in a 6-point penalty for the driver?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-002",
+        "approvedQid": "q0376",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "options": {
+        "q0376_o1": "C 交通信号に違反する",
+        "q0376_o2": "D スクールバス運転資格を取得せずに運転する",
+        "q0376_o3": "A 免許の種類と異なる自動車を運転する",
+        "q0376_o4": "B 飲酒運転をする"
+      },
+      "optionsRawJa": [
+        "A 免許の種類と異なる自動車を運転する",
+        "B 飲酒運転をする",
+        "C 交通信号に違反する",
+        "D スクールバス運転資格を取得せずに運転する"
+      ],
+      "optionsGlossEn": [
+        "A. Driving a vehicle with a license of a different type",
+        "B. Drunk driving",
+        "C. Violating traffic signals",
+        "D. Driving a school bus without obtaining the proper qualification"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A 免許の種類と異なる自動車を運転する",
+          "sourceTextBody": "免許の種類と異なる自動車を運転する",
+          "sourceGlossEn": "A. Driving a vehicle with a license of a different type",
+          "canonicalOptionId": "q0376_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "drive the vehicle which permission is different",
+          "alignmentScore": 0.23652406417112298,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B 飲酒運転をする",
+          "sourceTextBody": "飲酒運転をする",
+          "sourceGlossEn": "B. Drunk driving",
+          "canonicalOptionId": "q0376_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "drive after drink",
+          "alignmentScore": 0.046153846153846156,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C 交通信号に違反する",
+          "sourceTextBody": "交通信号に違反する",
+          "sourceGlossEn": "C. Violating traffic signals",
+          "canonicalOptionId": "q0376_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "violating traffic lights",
+          "alignmentScore": 0.19731707317073172,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D スクールバス運転資格を取得せずに運転する",
+          "sourceTextBody": "スクールバス運転資格を取得せずに運転する",
+          "sourceGlossEn": "D. Driving a school bus without obtaining the proper qualification",
+          "canonicalOptionId": "q0376_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "drive school bus without qualification",
+          "alignmentScore": 0.5406593406593407,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A 免許の種類と異なる自動車を運転する",
+          "sourceGlossEn": "A. Driving a vehicle with a license of a different type",
+          "canonicalOptionId": "q0376_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "drive the vehicle which permission is different",
+          "alignmentScore": 0.23652406417112298,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B 飲酒運転をする",
+          "sourceGlossEn": "B. Drunk driving",
+          "canonicalOptionId": "q0376_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "drive after drink",
+          "alignmentScore": 0.046153846153846156,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C 交通信号に違反する",
+          "sourceGlossEn": "C. Violating traffic signals",
+          "canonicalOptionId": "q0376_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "violating traffic lights",
+          "alignmentScore": 0.19731707317073172,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D スクールバス運転資格を取得せずに運転する",
+          "sourceGlossEn": "D. Driving a school bus without obtaining the proper qualification",
+          "canonicalOptionId": "q0376_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "drive school bus without qualification",
+          "alignmentScore": 0.5406593406593407,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "C",
+      "canonicalCorrectOptionId": "q0376_o1",
+      "canonicalCorrectOptionKey": "A",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed during unresolved rescue review on 2026-04-09T03:09:02.605Z; reviewer selected locale key C.",
+      "correctOptionAlignment": {
+        "sourceKey": "C",
+        "canonicalOptionId": "q0376_o1",
+        "canonicalOptionKey": "A",
+        "sourceText": "C 交通信号に違反する",
+        "sourceGlossEn": "C. Violating traffic signals",
+        "canonicalOptionText": "violating traffic lights",
+        "alignmentScore": 0.19731707317073172,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-09T03:09:02.605Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ja-batch-002-unresolved-decisions.json",
+      "answerKeyReviewerNotes": "answer to that question is C 交通信号に違反する C. Violating traffic signals",
+      "reviewerSuggestedLocaleCorrectOptionKey": "C",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ja-batch-002-unresolved-decisions.json",
+        "recommendedAction": "possible-existing-qid-rescue",
+        "reviewerNotes": "answer to that question is C 交通信号に違反する C. Violating traffic signals"
+      }
+    },
+    "q0170": {
+      "prompt": "対向車とすれ違うであろう位置が思わしくなかった場合どうすべきか。",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 17.50.16.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 17.50.16.png",
+      "reviewerNotes": "answer is B 減速して対向車とすれ違う、または停止して道をゆずる B: Slow down and pass the oncoming vehicle, or stop and yield the road",
+      "promptRawJa": "対向車とすれ違うであろう位置が思わしくなかった場合どうすべきか。",
+      "promptGlossEn": "What should you do if you are not comfortable with the position where you will pass an oncoming vehicle?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-002",
+        "approvedQid": "q0170",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "options": {
+        "q0170_o1": "B 減速して対向車とすれ違う、または停止して道をゆずる",
+        "q0170_o2": "C 左車道を占用し、対向車を減速させ道をゆずらせる",
+        "q0170_o3": "D ヘッドランプを切り対向車に停止するよう合図をする",
+        "q0170_o4": "A 加速して良い位置を選ぶ"
+      },
+      "optionsRawJa": [
+        "A 加速して良い位置を選ぶ",
+        "B 減速して対向車とすれ違う、または停止して道をゆずる",
+        "C 左車道を占用し、対向車を減速させ道をゆずらせる",
+        "D ヘッドランプを切り対向車に停止するよう合図をする"
+      ],
+      "optionsGlossEn": [
+        "A: Accelerate and choose a good position",
+        "B: Slow down and pass the oncoming vehicle, or stop and yield the road",
+        "C: Occupy the left lane and make the oncoming vehicle slow down and yield",
+        "D: Turn off your headlights to signal the oncoming vehicle to stop"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A 加速して良い位置を選ぶ",
+          "sourceTextBody": "加速して良い位置を選ぶ",
+          "sourceGlossEn": "A: Accelerate and choose a good position",
+          "canonicalOptionId": "q0170_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "Speed up and select a better place",
+          "alignmentScore": 0.28,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B 減速して対向車とすれ違う、または停止して道をゆずる",
+          "sourceTextBody": "減速して対向車とすれ違う、または停止して道をゆずる",
+          "sourceGlossEn": "B: Slow down and pass the oncoming vehicle, or stop and yield the road",
+          "canonicalOptionId": "q0170_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "reduce speed and cross each other slowly, or stop to yield",
+          "alignmentScore": 0.40335470085470093,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C 左車道を占用し、対向車を減速させ道をゆずらせる",
+          "sourceTextBody": "左車道を占用し、対向車を減速させ道をゆずらせる",
+          "sourceGlossEn": "C: Occupy the left lane and make the oncoming vehicle slow down and yield",
+          "canonicalOptionId": "q0170_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "Occupy the left lane to force the opposite party to reduce speed and yield",
+          "alignmentScore": 0.5126213592233009,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D ヘッドランプを切り対向車に停止するよう合図をする",
+          "sourceTextBody": "ヘッドランプを切り対向車に停止するよう合図をする",
+          "sourceGlossEn": "D: Turn off your headlights to signal the oncoming vehicle to stop",
+          "canonicalOptionId": "q0170_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "Turn the head light to indicate the opposite party to stop and yield",
+          "alignmentScore": 0.2366981132075472,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A 加速して良い位置を選ぶ",
+          "sourceGlossEn": "A: Accelerate and choose a good position",
+          "canonicalOptionId": "q0170_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "Speed up and select a better place",
+          "alignmentScore": 0.28,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B 減速して対向車とすれ違う、または停止して道をゆずる",
+          "sourceGlossEn": "B: Slow down and pass the oncoming vehicle, or stop and yield the road",
+          "canonicalOptionId": "q0170_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "reduce speed and cross each other slowly, or stop to yield",
+          "alignmentScore": 0.40335470085470093,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C 左車道を占用し、対向車を減速させ道をゆずらせる",
+          "sourceGlossEn": "C: Occupy the left lane and make the oncoming vehicle slow down and yield",
+          "canonicalOptionId": "q0170_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "Occupy the left lane to force the opposite party to reduce speed and yield",
+          "alignmentScore": 0.5126213592233009,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D ヘッドランプを切り対向車に停止するよう合図をする",
+          "sourceGlossEn": "D: Turn off your headlights to signal the oncoming vehicle to stop",
+          "canonicalOptionId": "q0170_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "Turn the head light to indicate the opposite party to stop and yield",
+          "alignmentScore": 0.2366981132075472,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "B",
+      "canonicalCorrectOptionId": "q0170_o1",
+      "canonicalCorrectOptionKey": "A",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed during unresolved rescue review on 2026-04-09T03:09:02.605Z; reviewer selected locale key B.",
+      "correctOptionAlignment": {
+        "sourceKey": "B",
+        "canonicalOptionId": "q0170_o1",
+        "canonicalOptionKey": "A",
+        "sourceText": "B 減速して対向車とすれ違う、または停止して道をゆずる",
+        "sourceGlossEn": "B: Slow down and pass the oncoming vehicle, or stop and yield the road",
+        "canonicalOptionText": "reduce speed and cross each other slowly, or stop to yield",
+        "alignmentScore": 0.40335470085470093,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-09T03:09:02.605Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ja-batch-002-unresolved-decisions.json",
+      "answerKeyReviewerNotes": "answer is B 減速して対向車とすれ違う、または停止して道をゆずる B: Slow down and pass the oncoming vehicle, or stop and yield the road",
+      "reviewerSuggestedLocaleCorrectOptionKey": "B",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ja-batch-002-unresolved-decisions.json",
+        "recommendedAction": "possible-existing-qid-rescue",
+        "reviewerNotes": "answer is B 減速して対向車とすれ違う、または停止して道をゆずる B: Slow down and pass the oncoming vehicle, or stop and yield the road"
+      }
+    }
+  }
+}

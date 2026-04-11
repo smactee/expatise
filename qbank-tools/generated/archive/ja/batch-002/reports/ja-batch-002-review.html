@@ -1,0 +1,897 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Japanese Batch Review batch-002</title>
+  <style>
+    :root {
+      --bg: #f4f0e8;
+      --paper: #fffdf8;
+      --ink: #1f1a17;
+      --muted: #6f6257;
+      --line: #d8cec1;
+      --accent: #165d52;
+      --accent-soft: #e3f0ed;
+      --warn: #8f4f12;
+      --warn-soft: #f9ead8;
+      --danger: #842029;
+      --danger-soft: #f8d7da;
+      --shadow: 0 14px 28px rgba(38, 25, 10, 0.08);
+      --radius: 18px;
+      --mono: "SFMono-Regular", Menlo, Consolas, monospace;
+      --sans: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background:
+        radial-gradient(circle at top left, rgba(22, 93, 82, 0.12), transparent 34%),
+        radial-gradient(circle at top right, rgba(143, 79, 18, 0.12), transparent 28%),
+        var(--bg);
+      color: var(--ink);
+      font-family: var(--sans);
+    }
+    a { color: var(--accent); }
+    .page {
+      width: min(1480px, calc(100vw - 32px));
+      margin: 24px auto 48px;
+    }
+    .hero {
+      background: linear-gradient(135deg, rgba(255,255,255,0.92), rgba(248, 244, 237, 0.96));
+      border: 1px solid rgba(216, 206, 193, 0.9);
+      border-radius: 28px;
+      padding: 28px 32px;
+      box-shadow: var(--shadow);
+      margin-bottom: 24px;
+    }
+    .hero h1 {
+      margin: 0 0 8px;
+      font-size: clamp(28px, 4vw, 44px);
+      line-height: 1;
+      letter-spacing: -0.04em;
+    }
+    .hero p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 17px;
+    }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px;
+      margin-top: 18px;
+    }
+    .stat {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 14px 16px;
+    }
+    .stat strong {
+      display: block;
+      font-size: 26px;
+      margin-top: 6px;
+      word-break: break-word;
+    }
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      margin-top: 22px;
+    }
+    .toolbar button {
+      appearance: none;
+      border: none;
+      border-radius: 999px;
+      background: var(--accent);
+      color: white;
+      padding: 11px 16px;
+      font: inherit;
+      cursor: pointer;
+    }
+    .toolbar button.secondary {
+      background: #efe8dd;
+      color: var(--ink);
+      border: 1px solid var(--line);
+    }
+    .toolbar .hint {
+      color: var(--muted);
+      font-size: 14px;
+    }
+    .item {
+      background: rgba(255,255,255,0.92);
+      border: 1px solid rgba(216, 206, 193, 0.95);
+      border-radius: 24px;
+      padding: 22px;
+      margin-top: 22px;
+      box-shadow: var(--shadow);
+    }
+    .item-head {
+      display: flex;
+      gap: 16px;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+    .item-head h2 {
+      margin: 0;
+      font-size: 24px;
+      letter-spacing: -0.03em;
+    }
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 8px;
+    }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: #f7f2ea;
+      color: var(--muted);
+      padding: 6px 10px;
+      font-size: 13px;
+      white-space: nowrap;
+    }
+    .pill.warn {
+      background: var(--warn-soft);
+      color: var(--warn);
+    }
+    .pill.danger {
+      background: var(--danger-soft);
+      color: var(--danger);
+    }
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(340px, 420px) minmax(0, 1fr);
+      gap: 20px;
+      align-items: start;
+    }
+    .panel {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 16px;
+    }
+    .panel h3 {
+      margin: 0 0 12px;
+      font-size: 18px;
+    }
+    .screenshot {
+      width: 100%;
+      height: auto;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      background: #f0ece6;
+    }
+    .prompt {
+      font-size: 18px;
+      line-height: 1.45;
+      margin: 0 0 12px;
+    }
+    .subtle {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.4;
+    }
+    .options {
+      display: grid;
+      gap: 8px;
+      margin: 10px 0 0;
+      padding: 0;
+      list-style: none;
+    }
+    .options li {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 10px 12px;
+      background: #fcfaf6;
+    }
+    .controls {
+      display: grid;
+      gap: 10px;
+      margin-top: 16px;
+      padding-top: 14px;
+      border-top: 1px dashed var(--line);
+    }
+    .choice-list {
+      display: grid;
+      gap: 8px;
+    }
+    .choice {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 10px 12px;
+      background: #fff;
+    }
+    .choice input {
+      margin-top: 4px;
+    }
+    .choice strong {
+      display: block;
+      margin-bottom: 4px;
+    }
+    textarea {
+      width: 100%;
+      min-height: 78px;
+      resize: vertical;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      padding: 12px;
+      font: inherit;
+      background: #fff;
+    }
+    .candidate-list {
+      display: grid;
+      gap: 10px;
+    }
+    .candidate {
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 14px;
+      background: #fffdfa;
+    }
+    .candidate-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
+    .candidate-head h4 {
+      margin: 0;
+      font-size: 17px;
+    }
+    .score {
+      font-family: var(--mono);
+      font-size: 14px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      border-radius: 999px;
+      padding: 7px 10px;
+      border: 1px solid rgba(22, 93, 82, 0.2);
+    }
+    .candidate-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 220px;
+      gap: 12px;
+      align-items: start;
+    }
+    .candidate .meta-row {
+      padding: 8px 10px;
+    }
+    .candidate .prompt {
+      font-size: 16px;
+      margin: 0 0 6px;
+    }
+    .candidate .options {
+      gap: 6px;
+      margin-top: 6px;
+    }
+    .candidate .options li {
+      padding: 8px 10px;
+    }
+    .meta {
+      display: grid;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .meta-row {
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: #f7f2ea;
+      border: 1px solid var(--line);
+    }
+    .breakdown {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .breakdown div {
+      border-radius: 12px;
+      padding: 10px;
+      border: 1px solid var(--line);
+      background: #fcfaf6;
+      font-size: 13px;
+    }
+    .breakdown strong {
+      display: block;
+      font-family: var(--mono);
+      font-size: 15px;
+      margin-bottom: 2px;
+    }
+    .badge-warn {
+      display: inline-block;
+      border-radius: 999px;
+      padding: 6px 10px;
+      background: var(--warn-soft);
+      color: var(--warn);
+      border: 1px solid rgba(143, 79, 18, 0.2);
+      font-size: 13px;
+      margin: 0 8px 8px 0;
+    }
+    .notes {
+      margin-top: 10px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: #f7f2ea;
+      border: 1px solid var(--line);
+      font-size: 14px;
+      color: var(--muted);
+    }
+    .facts {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .fact {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border-radius: 10px;
+      padding: 8px 10px;
+      border: 1px solid var(--line);
+      background: #fcfaf6;
+      font-size: 13px;
+    }
+    .fact strong,
+    .signal strong {
+      font-family: var(--mono);
+      font-size: 12px;
+    }
+    .signal-list {
+      display: grid;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .signal {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 10px 12px;
+      background: #fcfaf6;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+    .concept-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .concept-grid > div {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #fcfaf6;
+      padding: 10px 12px;
+    }
+    .concept-grid strong {
+      display: block;
+      font-size: 12px;
+      font-family: var(--mono);
+      margin-bottom: 6px;
+      color: var(--muted);
+    }
+    .concept-grid ul {
+      margin: 0;
+      padding-left: 18px;
+    }
+    .concept-grid li {
+      margin: 0 0 4px;
+    }
+    .mono {
+      font-family: var(--mono);
+      word-break: break-word;
+    }
+    .candidate-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 8px 0 0;
+    }
+    .advanced {
+      margin-top: 10px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #f8f4ec;
+      overflow: hidden;
+    }
+    .advanced summary {
+      cursor: pointer;
+      list-style: none;
+      padding: 10px 12px;
+      font-size: 13px;
+      color: var(--muted);
+      font-family: var(--mono);
+    }
+    .advanced summary::-webkit-details-marker {
+      display: none;
+    }
+    .advanced summary::before {
+      content: "+ ";
+    }
+    .advanced[open] summary::before {
+      content: "- ";
+    }
+    .advanced-body {
+      padding: 0 12px 12px;
+      display: grid;
+      gap: 10px;
+      border-top: 1px solid var(--line);
+      background: #fffdfa;
+    }
+    .image-frame {
+      margin-top: 10px;
+    }
+    .image-fallback {
+      display: none;
+      margin-top: 10px;
+      padding: 12px;
+      border-radius: 12px;
+      border: 1px dashed var(--line);
+      background: #fcfaf6;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+    .image-path {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.45;
+    }
+    .image-frame.is-broken .screenshot {
+      display: none;
+    }
+    .image-frame.is-broken .image-fallback {
+      display: block;
+    }
+    .empty {
+      margin-top: 20px;
+      padding: 24px;
+      border-radius: 18px;
+      border: 1px dashed var(--line);
+      color: var(--muted);
+      background: rgba(255,255,255,0.75);
+      text-align: center;
+    }
+    @media (max-width: 1080px) {
+      .layout,
+      .candidate-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <section class="hero">
+      <h1>Japanese Batch Review</h1>
+      <p>Batch <strong>batch-002</strong> in <strong>ja</strong>. Review the remaining difficult items, choose the approved qid, mark none/unsure, or mark <strong>create new question</strong>. All review data, CSS, and JavaScript are embedded in this file for direct <span class="mono">file://</span> use. This page does not modify production qbank data.</p>
+      <div class="hero-grid">
+        <div class="stat">
+          <span class="subtle">Total items</span>
+          <strong>12</strong>
+        </div>
+        <div class="stat">
+          <span class="subtle">Review-needed</span>
+          <strong>12</strong>
+        </div>
+        <div class="stat">
+          <span class="subtle">Unresolved</span>
+          <strong>0</strong>
+        </div>
+        <div class="stat">
+          <span class="subtle">Decisions template JSON</span>
+          <strong>../staging/ja-batch-002-review-decisions.template.json</strong>
+        </div>
+      </div>
+      <div class="hero-grid">
+        <div class="stat">
+          <span class="subtle">Decisions template CSV</span>
+          <strong>../staging/ja-batch-002-review-decisions.template.csv</strong>
+        </div>
+        <div class="stat">
+          <span class="subtle">New-question decisions</span>
+          <strong>../staging/new-question-decisions.ja.batch-002.json</strong>
+        </div>
+        <div class="stat">
+          <span class="subtle">New-question candidates</span>
+          <strong>../staging/new-question-candidates.ja.batch-002.json</strong>
+        </div>
+        <div class="stat">
+          <span class="subtle">Dataset</span>
+          <strong>2023-test1</strong>
+        </div>
+        <div class="stat">
+          <span class="subtle">Scope</span>
+          <strong>review-needed</strong>
+        </div>
+      </div>
+      <div class="toolbar">
+        <button id="export-json">Export Decisions JSON</button>
+        <button id="export-csv" class="secondary">Export Decisions CSV</button>
+        <button id="clear-storage" class="secondary">Clear Saved Decisions</button>
+        <span class="hint">Selections are stored in this browser until you export them. Edit the staged JSON file after review if you prefer a file-based workflow.</span>
+      </div>
+    </section>
+    <main id="app"></main>
+  </div>
+  <script>
+    const REVIEW_DATA = [{"index":1,"sourceKind":"review-needed","itemId":"screenshots/Screenshot 2026-04-07 at 17.50.01.png","sourceImage":"screenshots/Screenshot 2026-04-07 at 17.50.01.png","promptRawJa":"アイスバーン上や雪路で運転する場合、何に注意すべきか。","promptGlossEn":"What should you be careful about when driving on icy roads or snowy roads?","optionsRawJa":["A 制動距離が長くなる","B 滑りにくくなる","C 路面付着力が増す","D 制動性能に変化はおこらない"],"optionsGlossEn":["A. The braking distance becomes longer","B. It becomes harder to slip","C. Road surface adhesion increases","D. Braking performance does not change"],"correctKeyRaw":"A","correctAnswerRaw":"制動距離が長くなる","ocrConfidence":"high","provisionalTopic":"road-safety","provisionalSubtopics":["road-safety:road-conditions"],"topicConfidence":1,"topicSignals":[{"topic":"road-safety","subtopic":"road-safety:road-conditions","signal":"road-condition-or-hazard","weight":1.3}],"sourceConceptSlots":null,"reason":null,"localizedText":{"prompt":"アイスバーン上や雪路で運転する場合、何に注意すべきか。","options":["A 制動距離が長くなる","B 滑りにくくなる","C 路面付着力が増す","D 制動性能に変化はおこらない"],"correctAnswer":"制動距離が長くなる","explanation":null},"translatedText":{"prompt":"What should you be careful about when driving on icy roads or snowy roads?","options":["A. The braking distance becomes longer","B. It becomes harder to slip","C. Road surface adhesion increases","D. Braking performance does not change"],"correctAnswer":"The braking distance becomes longer"},"analysis":{"mode":"standard","effectiveQuestionType":"MCQ","declaredQuestionType":"MCQ","booleanChoiceDetected":false,"plausibleShortlist":true,"explanation":"Top candidate cleared the review floor but remains review-first."},"currentTopQid":"q0152","currentTopScore":83.516,"currentTopGap":28.031,"topCandidates":[{"qid":"q0152","number":152,"type":"MCQ","score":83.516,"scoreBreakdown":{"promptSimilarity":0.274,"rawPromptSimilarity":0.274,"englishPromptSimilarity":0.274,"syntheticPromptSimilarity":0,"optionSimilarity":0.606,"englishOptionSimilarity":0.606,"syntheticOptionSimilarity":0,"optionFingerprint":0.522,"englishOptionFingerprint":0.522,"syntheticOptionFingerprint":0,"optionExactSet":0.477,"optionRareCoverage":0.427,"mirrorAgreement":1,"correctAnswerMeaning":1,"englishCorrectAnswerMeaning":1,"syntheticCorrectAnswerMeaning":1,"questionType":1,"imageSignal":1,"topicWeighting":0.5,"assetTieBreak":0},"diagnostics":{"effectiveItemType":"MCQ","declaredItemType":"MCQ","binaryChoiceDetected":false,"promptSpecificity":1,"genericPromptPenalty":1,"missingCorrectAnswerNeutral":false,"exactCorrectKey":true,"optionSetMode":"unordered-semantic + synthetic-ja mirror","rareSetBonus":0,"syntheticMirrorUsed":true,"genericPromptFamily":null,"explanation":["Option comparison used unordered semantic set matching.","Synthetic Japanese correct-answer alignment reinforced the candidate.","English semantic option matching still supported the top candidate."]},"prompt":"When driving in icy and snowy weather, the ______.","syntheticJaPrompt":"when driving ice and snow weather ________","translatedPrompt":"빙설·눈길에서 어떤 현상이 나타나는가?","options":[{"id":"A","text":"braking distance becomes longer","translatedText":"제동거리가 길어진다"},{"id":"B","text":"resistance to slide becomes larger","translatedText":"미끄러짐에 대한 저항이 커진다"},{"id":"C","text":"braking performance does not change","translatedText":"제동 성능은 변하지 않는다"},{"id":"D","text":"road grip becomes stronger","translatedText":"노면의 접지력이 강해진다"}],"correctAnswer":{"kind":"MCQ","correctRow":null,"correctOptionId":"q0152_o1","correctOptionKey":"A","correctOptionText":"braking distance becomes longer","correctOptionTranslatedText":"제동거리가 길어진다","answerRaw":"A"},"image":{"hasImage":false,"currentAssetSrc":null,"assetHashes":[]},"topic":"mcq","subtopics":[],"conceptSlots":null,"scoreGapFromTop":0,"candidateImagePath":null},{"qid":"q0159","number":159,"type":"MCQ","score":55.485,"scoreBreakdown":{"promptSimilarity":0.19,"rawPromptSimilarity":0.19,"englishPromptSimilarity":0.19,"syntheticPromptSimilarity":0.05,"optionSimilarity":0.119,"englishOptionSimilarity":0.119,"syntheticOptionSimilarity":0,"optionFingerprint":0.07,"englishOptionFingerprint":0.07,"syntheticOptionFingerprint":0,"optionExactSet":0,"optionRareCoverage":0.096,"mirrorAgreement":1,"correctAnswerMeaning":1,"englishCorrectAnswerMeaning":1,"syntheticCorrectAnswerMeaning":1,"questionType":1,"imageSignal":1,"topicWeighting":0.5,"assetTieBreak":0},"diagnostics":{"effectiveItemType":"MCQ","declaredItemType":"MCQ","binaryChoiceDetected":false,"promptSpecificity":1,"genericPromptPenalty":1,"missingCorrectAnswerNeutral":false,"exactCorrectKey":true,"optionSetMode":"unordered-semantic + synthetic-ja mirror","rareSetBonus":0,"syntheticMirrorUsed":true,"genericPromptFamily":null,"explanation":["Synthetic Japanese correct-answer alignment reinforced the candidate."]},"prompt":"When a vehicle follows another vehicle on a mountain road, it should ______.","syntheticJaPrompt":"when 車両 follow another 車両 mountain road it べき ____。","translatedPrompt":"산길에서 앞차를 따라갈 때 운전자는 어떻게 해야 하는가?","options":[{"id":"A","text":"properly increase the safe distance","translatedText":"안전거리를 적절히 늘린다"},{"id":"B","text":"closely follow the vehicle in front","translatedText":"앞차에 바짝 붙어 따라간다"},{"id":"C","text":"properly reduce the safe distance","translatedText":"안전거리를 줄인다"},{"id":"D","text":"try to find a chance to overtake","translatedText":"추월 기회를 찾으려 한다"}],"correctAnswer":{"kind":"MCQ","correctRow":null,"correctOptionId":"q0159_o1","correctOptionKey":"A","correctOptionText":"properly increase the safe distance","correctOptionTranslatedText":"안전거리를 적절히 늘린다","answerRaw":"A"},"image":{"hasImage":false,"currentAssetSrc":null,"assetHashes":[]},"topic":"mcq","subtopics":[],"conceptSlots":null,"scoreGapFromTop":28.031,"candidateImagePath":null},{"qid":"q0486","number":486,"type":"MCQ","score":54.368,"scoreBreakdown":{"promptSimilarity":0.172,"rawPromptSimilarity":0.172,"englishPromptSimilarity":0.172,"syntheticPromptSimilarity":0.005,"optionSimilarity":0.109,"englishOptionSimilarity":0.109,"syntheticOptionSimilarity":0,"optionFingerprint":0.049,"englishOptionFingerprint":0.049,"syntheticOptionFingerprint":0,"optionExactSet":0,"optionRareCoverage":0.059,"mirrorAgreement":1,"correctAnswerMeaning":1,"englishCorrectAnswerMeaning":1,"syntheticCorrectAnswerMeaning":1,"questionType":1,"imageSignal":1,"topicWeighting":0.5,"assetTieBreak":0},"diagnostics":{"effectiveItemType":"MCQ","declaredItemType":"MCQ","binaryChoiceDetected":false,"promptSpecificity":1,"genericPromptPenalty":1,"missingCorrectAnswerNeutral":false,"exactCorrectKey":true,"optionSetMode":"unordered-semantic + synthetic-ja mirror","rareSetBonus":0,"syntheticMirrorUsed":true,"genericPromptFamily":null,"explanation":["Synthetic Japanese correct-answer alignment reinforced the candidate."]},"prompt":"What dangerous acts can the driver not conduct while driving downhill?","syntheticJaPrompt":"dangerou acts cant 運転者 conduct when driving downhill。","translatedPrompt":"내리막길을 주행할 때 운전자가 해서는 안 되는 위험한 행동은?","options":[{"id":"A","text":"slide the vehicle in the neutral gear","translatedText":"기어를 중립(뉴트럴)에 놓고 미끄러지듯 주행한다."},{"id":"B","text":"driving in lower gear","translatedText":"저단 기어로 주행한다."},{"id":"C","text":"braking to reduce speed","translatedText":"제동으로 감속한다."},{"id":"D","text":"changing to the lower gear in advance","translatedText":"미리 저단으로 변속한다."}],"correctAnswer":{"kind":"MCQ","correctRow":null,"correctOptionId":"q0486_o1","correctOptionKey":"A","correctOptionText":"slide the vehicle in the neutral gear","correctOptionTranslatedText":"기어를 중립(뉴트럴)에 놓고 미끄러지듯 주행한다.","answerRaw":"A"},"image":{"hasImage":false,"currentAssetSrc":null,"assetHashes":[]},"topic":"mcq","subtopics":[],"conceptSlots":null,"scoreGapFromTop":29.148,"candidateImagePath":null},{"qid":"q0175","number":175,"type":"MCQ","score":53.002,"scoreBreakdown":{"promptSimilarity":0.115,"rawPromptSimilarity":0.115,"englishPromptSimilarity":0.115,"syntheticPromptSimilarity":0,"optionSimilarity":0.099,"englishOptionSimilarity":0.099,"syntheticOptionSimilarity":0,"optionFingerprint":0.048,"englishOptionFingerprint":0.048,"syntheticOptionFingerprint":0,"optionExactSet":0,"optionRareCoverage":0.039,"mirrorAgreement":1,"correctAnswerMeaning":1,"englishCorrectAnswerMeaning":1,"syntheticCorrectAnswerMeaning":1,"questionType":1,"imageSignal":1,"topicWeighting":0.5,"assetTieBreak":0},"diagnostics":{"effectiveItemType":"MCQ","declaredItemType":"MCQ","binaryChoiceDetected":false,"promptSpecificity":1,"genericPromptPenalty":1,"missingCorrectAnswerNeutral":false,"exactCorrectKey":true,"optionSetMode":"unordered-semantic + synthetic-ja mirror","rareSetBonus":0,"syntheticMirrorUsed":true,"genericPromptFamily":null,"explanation":["Synthetic Japanese correct-answer alignment reinforced the candidate."]},"prompt":"The main impact of rainy weather on safe driving is that the ______.","syntheticJaPrompt":"main impact rain weather safe driving _______","translatedPrompt":"비 오는 날씨가 안전운전에 미치는 주된 영향은 무엇인가?","options":[{"id":"A","text":"road is wet and slippery and the visibility is poor","translatedText":"도로가 젖어 미끄럽고 가시거리가 짧다"},{"id":"B","text":"engine is prone to stop","translatedText":"엔진이 멈추기 쉽다"},{"id":"C","text":"resistance to the vehicle increases","translatedText":"주행 저항이 증가한다"},{"id":"D","text":"electric equipment is prone to getting wet and causing short circuit","translatedText":"전기장치가 젖어 합선이 생기기 쉽다"}],"correctAnswer":{"kind":"MCQ","correctRow":null,"correctOptionId":"q0175_o1","correctOptionKey":"A","correctOptionText":"road is wet and slippery and the visibility is poor","correctOptionTranslatedText":"도로가 젖어 미끄럽고 가시거리가 짧다","answerRaw":"A"},"image":{"hasImage":false,"currentAssetSrc":null,"assetHashes":[]},"topic":"proper-driving","subtopics":["proper-driving:safe-driving","road-safety:road-conditions"],"conceptSlots":null,"scoreGapFromTop":30.514,"candidateImagePath":null},{"qid":"q0395","number":395,"type":"MCQ","score":52.974,"scoreBreakdown":{"promptSimilarity":0.251,"rawPromptSimilarity":0.251,"englishPromptSimilarity":0.251,"syntheticPromptSimilarity":0,"optionSimilarity":0.05,"englishOptionSimilarity":0.05,"syntheticOptionSimilarity":0,"optionFingerprint":0.012,"englishOptionFingerprint":0.012,"syntheticOptionFingerprint":0,"optionExactSet":0,"optionRareCoverage":0,"mirrorAgreement":1,"correctAnswerMeaning":1,"englishCorrectAnswerMeaning":1,"syntheticCorrectAnswerMeaning":1,"questionType":1,"imageSignal":1,"topicWeighting":0.5,"assetTieBreak":0},"diagnostics":{"effectiveItemType":"MCQ","declaredItemType":"MCQ","binaryChoiceDetected":false,"promptSpecificity":1,"genericPromptPenalty":1,"missingCorrectAnswerNeutral":false,"exactCorrectKey":true,"optionSetMode":"unordered-semantic + synthetic-ja mirror","rareSetBonus":0,"syntheticMirrorUsed":true,"genericPromptFamily":null,"explanation":["Synthetic Japanese correct-answer alignment reinforced the candidate."]},"prompt":"Which is correct when learning how to drive on the road?","syntheticJaPrompt":"which correct when learning driving road","translatedPrompt":"도로에서 운전 연습을 할 때 옳은 것은?","options":[{"id":"A","text":"Drive the corresponding coach car with the coach sitting by to guide.","translatedText":"교관이 옆에 앉아 지도하는 해당 교습용 차량을 운전한다."},{"id":"B","text":"Drive the corresponding coach car alone.","translatedText":"교관 없이 해당 교습용 차량을 단독으로 운전한다."},{"id":"C","text":"Drive the corresponding coach car with another person who is not a coach sitting by to guide.","translatedText":"교관이 아닌 다른 사람을 옆에 앉혀 지도받으며 해당 교습용 차량을 운전한다."},{"id":"D","text":"Drive the private car with the coach sitting by to guide.","translatedText":"교관이 옆에 앉아 지도하는 개인 차량을 운전한다."}],"correctAnswer":{"kind":"MCQ","correctRow":null,"correctOptionId":"q0395_o1","correctOptionKey":"A","correctOptionText":"Drive the corresponding coach car with the coach sitting by to guide.","correctOptionTranslatedText":"교관이 옆에 앉아 지도하는 해당 교습용 차량을 운전한다.","answerRaw":"A"},"image":{"hasImage":false,"currentAssetSrc":null,"assetHashes":[]},"topic":"mcq","subtopics":[],"conceptSlots":null,"scoreGapFromTop":30.542,"candidateImagePath":null}],"screenshotPath":"../../../imports/ja/batch-002/screenshots/Screenshot 2026-04-07 at 17.50.01.png"},{"index":2,"sourceKind":"review-needed","itemId":"screenshots/Screenshot 2026-04-07 at 17.50.04.png","sourceImage":"screenshots/Screenshot 2026-04-07 at 17.50.04.png","promptRawJa":"走行してはいけないのはどれか。","promptGlossEn":"Which of the following is not allowed when driving?","optionsRawJa":["A 窓をしっかり閉めていない","B ドアをしっかり閉めていない","C 乗員がシートベルトを着用していない","D ルーフをしっかり閉めていない"],"optionsGlossEn":["A. The windows are not properly closed","B. The doors are not properly closed","C. Passengers are not wearing seat belts","D. The roof is not properly closed"],"correctKeyRaw":null,"correctAnswerRaw":null,"ocrConfidence":"high","provisionalTopic":"proper-driving","provisionalSubtopics":["proper-driving:traffic-laws"],"topicConfidence":1,"topicSignals":[{"topic":"proper-driving","subtopic":"proper-driving:traffic-laws","signal":"traffic-law","weight":1.15}],"sourceConceptSlots":null,"reason":null,"localizedText":{"prompt":"走行してはいけないのはどれか。","options":["A 窓をしっかり閉めていない","B ドアをしっかり閉めていない","C 乗員がシートベルトを着用していない","D ルーフをしっかり閉めていない"],"correctAnswer":null,"explanation":null},"translatedText":{"prompt":"Which of the following is not allowed when driving?","options":["A. The windows are not properly closed","B. The doors are not properly closed","C. Passengers are not wearing seat belts","D. The roof is not properly closed"],"correctAnswer":null},"analysis":{"mode":"standard","effectiveQuestionType":"MCQ","declaredQuestionType":"MCQ","booleanChoiceDetected":false,"plausibleShortlist":true,"explanation":"Top candidate cleared the review floor but remains review-first."},"currentTopQid":"q0514","currentTopScore":51.494,"currentTopGap":16.206,"topCandidates":[{"qid":"q0514","number":514,"type":"MCQ","score":51.494,"scoreBreakdown":{"promptSimilarity":0.137,"rawPromptSimilarity":0.148,"englishPromptSimilarity":0.137,"syntheticPromptSimilarity":0,"optionSimilarity":0.486,"englishOptionSimilarity":0.486,"syntheticOptionSimilarity":0,"optionFingerprint":0.319,"englishOptionFingerprint":0.319,"syntheticOptionFingerprint":0,"optionExactSet":0,"optionRareCoverage":0.4,"mirrorAgreement":0,"correctAnswerMeaning":0.5,"englishCorrectAnswerMeaning":0.5,"syntheticCorrectAnswerMeaning":0.5,"questionType":1,"imageSignal":1,"topicWeighting":0.5,"assetTieBreak":0},"diagnostics":{"effectiveItemType":"MCQ","declaredItemType":"MCQ","binaryChoiceDetected":false,"promptSpecificity":0.925,"genericPromptPenalty":0.925,"missingCorrectAnswerNeutral":true,"exactCorrectKey":false,"optionSetMode":"unordered-semantic + synthetic-ja mirror","rareSetBonus":0,"syntheticMirrorUsed":true,"genericPromptFamily":null,"explanation":["Missing correct answer was treated as a neutral signal.","Option comparison used unordered semantic set matching.","English semantic option matching still supported the top candidate."]},"prompt":"You may not drive if ______.","syntheticJaPrompt":"してはならない drive if _____。","translatedPrompt":"다음 중 운전할 수 없는 경우는?","options":[{"id":"A","text":"the window is not closed","translatedText":"창문이 닫혀 있지 않다"},{"id":"B","text":"the door is not closed","translatedText":"문이 닫혀 있지 않다"},{"id":"C","text":"the audio device is not closed","translatedText":"오디오 장치가 닫혀 있지 않다"},{"id":"D","text":"the roof window is not closed","translatedText":"썬루프가 닫혀 있지 않다"}],"correctAnswer":{"kind":"MCQ","correctRow":null,"correctOptionId":"q0514_o2","correctOptionKey":"B","correctOptionText":"the door is not closed","correctOptionTranslatedText":"문이 닫혀 있지 않다","answerRaw":"B"},"image":{"hasImage":false,"currentAssetSrc":null,"assetHashes":[]},"topic":"proper-driving","subtopics":["proper-driving:traffic-laws","proper-driving:safe-driving"],"conceptSlots":null,"scoreGapFromTop":0,"candidateImagePath":null},{"qid":"q0417","number":417,"type":"MCQ","score":35.289,"scoreBreakdown":{"promptSimilarity":0.377,"rawPromptSimilarity":0.377,"englishPromptSimilarity":0.377,"syntheticPromptSimilarity":0,"optionSimilarity":0.081,"englishOptionSimilarity":0.081,"syntheticOptionSimilarity":0,"optionFingerprint":0.012,"englishOptionFingerprint":0.012,"syntheticOptionFingerprint":0,"optionExactSet":0,"optionRareCoverage":0,"mirrorAgreement":0,"correctAnswerMeaning":0.5,"englishCorrectAnswerMeaning":0.5,"syntheticCorrectAnswerMeaning":0.5,"questionType":1,"imageSignal":1,"topicWeighting":0.5,"assetTieBreak":0},"diagnostics":{"effectiveItemType":"MCQ","declaredItemType":"MCQ","binaryChoiceDetected":false,"promptSpecificity":1,"genericPromptPenalty":1,"missingCorrectAnswerNeutral":true,"exactCorrectKey":false,"optionSetMode":"unordered-semantic + synthetic-ja mirror","rareSetBonus":0,"syntheticMirrorUsed":true,"genericPromptFamily":null,"explanation":["Missing correct answer was treated as a neutral signal."]},"prompt":"Which of the following vehicles in front in the same lane is not allowed to be overtaken?","syntheticJaPrompt":"which 後続車 front same 車線 してはならない be overtaken。","translatedPrompt":"같은 차로 앞에 있는 차량 중 추월해서는 안 되는 것은?","options":[{"id":"A","text":"The vehicle is reducing speed to yield.","translatedText":"양보하기 위해 감속하는 차량"},{"id":"B","text":"The vehicle is driving normally.","translatedText":"정상적으로 주행하는 차량"},{"id":"C","text":"The vehicle is overtaking.","translatedText":"추월 중인 차량"},{"id":"D","text":"The vehicle is making a stop.","translatedText":"정차 중인 차량"}],"correctAnswer":{"kind":"MCQ","correctRow":null,"correctOptionId":"q0417_o3","correctOptionKey":"C","correctOptionText":"The vehicle is overtaking.","correctOptionTranslatedText":"추월 중인 차량","answerRaw":"C"},"image":{"hasImage":false,"currentAssetSrc":null,"assetHashes":[]},"topic":"right-of-way","subtopics":[],"conceptSlots":null,"scoreGapFromTop":16.205,"candidateImagePath":null},{"qid":"q0406","number":406,"type":"MCQ","score":35.133,"scoreBreakdown":{"promptSimilarity":0.377,"rawPromptSimilarity":0.377,"englishPromptSimilarity":0.377,"syntheticPromptSimilarity":0,"optionSimilarity":0.077,"englishOptionSimilarity":0.077,"syntheticOptionSimilarity":0,"optionFingerprint":0.011,"englishOptionFingerprint":0.011,"syntheticOptionFingerprint":0,"optionExactSet":0,"optionRareCoverage":0,"mirrorAgreement":0,"correctAnswerMeaning":0.5,"englishCorrectAnswerMeaning":0.5,"syntheticCorrectAnswerMeaning":0.5,"questionType":1,"imageSignal":1,"topicWeighting":0.5,"assetTieBreak":0},"diagnostics":{"effectiveItemType":"MCQ","declaredItemType":"MCQ","binaryChoiceDetected":false,"promptSpecificity":1,"genericPromptPenalty":1,"missingCorrectAnswerNeutral":true,"exactCorrectKey":false,"optionSetMode":"unordered-semantic + synthetic-ja mirror","rareSetBonus":0,"syntheticMirrorUsed":true,"genericPromptFamily":null,"explanation":["Missing correct answer was treated as a neutral signal."]},"prompt":"Which of the following vehicles in front in the same lane is not allowed to be overtaken?","syntheticJaPrompt":"which 後続車 front same 車線 してはならない be overtaken。","translatedPrompt":"같은 차로 앞에 있는 다음 중 추월해서는 안 되는 차량은?","options":[{"id":"A","text":"The vehicle is making a stop.","translatedText":"정차 중인 차량"},{"id":"B","text":"The vehicle is reducing speed to yield.","translatedText":"양보하기 위해 감속하는 차량"},{"id":"C","text":"The vehicle is making a U-turn.","translatedText":"유턴 중인 차량"},{"id":"D","text":"The vehicle is driving normally.","translatedText":"정상적으로 주행하는 차량"}],"correctAnswer":{"kind":"MCQ","correctRow":null,"correctOptionId":"q0406_o3","correctOptionKey":"C","correctOptionText":"The vehicle is making a U-turn.","correctOptionTranslatedText":"유턴 중인 차량","answerRaw":"C"},"image":{"hasImage":false,"currentAssetSrc":null,"assetHashes":[]},"topic":"right-of-way","subtopics":[],"conceptSlots":null,"scoreGapFromTop":16.361,"candidateImagePath":null},{"qid":"q0180","number":180,"type":"MCQ","score":34.77,"scoreBreakdown":{"promptSimilarity":0.235,"rawPromptSimilarity":0.235,"englishPromptSimilarity":0.235,"syntheticPromptSimilarity":0,"optionSimilarity":0.126,"englishOptionSimilarity":0.126,"syntheticOptionSimilarity":0,"optionFingerprint":0.034,"englishOptionFingerprint":0.034,"syntheticOptionFingerprint":0,"optionExactSet":0,"optionRareCoverage":0,"mirrorAgreement":0,"correctAnswerMeaning":0.5,"englishCorrectAnswerMeaning":0.5,"syntheticCorrectAnswerMeaning":0.5,"questionType":1,"imageSignal":1,"topicWeighting":0.5,"assetTieBreak":0},"diagnostics":{"effectiveItemType":"MCQ","declaredItemType":"MCQ","binaryChoiceDetected":false,"promptSpecificity":1,"genericPromptPenalty":1,"missingCorrectAnswerNeutral":true,"exactCorrectKey":false,"optionSetMode":"unordered-semantic + synthetic-ja mirror","rareSetBonus":0,"syntheticMirrorUsed":true,"genericPromptFamily":null,"explanation":["Missing correct answer was treated as a neutral signal."]},"prompt":"The main impact of mountain roads on safe driving is that the ______.","syntheticJaPrompt":"main impact mountain road safe driving _______","translatedPrompt":"산길이 안전운전에 미치는 주요 영향은 무엇인가?","options":[{"id":"A","text":"traffic conditions are boring","translatedText":"교통 상황이 단조롭다"},{"id":"B","text":"slopes are long and the curves are sharp and visibility range is shorter.","translatedText":"경사가 길고 커브가 급하며 시야가 짧다"},{"id":"C","text":"traffic flow is heavy","translatedText":"교통 흐름이 혼잡하다"},{"id":"D","text":"road signs are fewer","translatedText":"도로 표지가 적다"}],"correctAnswer":{"kind":"MCQ","correctRow":null,"correctOptionId":"q0180_o2","correctOptionKey":"B","correctOptionText":"slopes are long and the curves are sharp and visibility range is shorter.","correctOptionTranslatedText":"경사가 길고 커브가 급하며 시야가 짧다","answerRaw":"B"},"image":{"hasImage":false,"currentAssetSrc":null,"assetHashes":[]},"topic":"proper-driving","subtopics":["proper-driving:safe-driving","road-safety:road-conditions"],"conceptSlots":null,"scoreGapFromTop":16.724,"candidateImagePath":null},{"qid":"q0395","number":395,"type":"MCQ","score":34.279,"scoreBreakdown":{"promptSimilarity":0.37,"rawPromptSimilarity":0.37,"englishPromptSimilarity":0.37,"syntheticPromptSimilarity":0,"optionSimilarity":0.056,"englishOptionSimilarity":0.056,"syntheticOptionSimilarity":0,"optionFingerprint":0.01,"englishOptionFingerprint":0.01,"syntheticOptionFingerprint":0,"optionExactSet":0,"optionRareCoverage":0,"mirrorAgreement":0,"correctAnswerMeaning":0.5,"englishCorrectAnswerMeaning":0.5,"syntheticCorrectAnswerMeaning":0.5,"questionType":1,"imageSignal":1,"topicWeighting":0.5,"assetTieBreak":0},"diagnostics":{"effectiveItemType":"MCQ","declaredItemType":"MCQ","binaryChoiceDetected":false,"promptSpecificity":1,"genericPromptPenalty":1,"missingCorrectAnswerNeutral":true,"exactCorrectKey":false,"optionSetMode":"unordered-semantic + synthetic-ja mirror","rareSetBonus":0,"syntheticMirrorUsed":true,"genericPromptFamily":null,"explanation":["Missing correct answer was treated as a neutral signal."]},"prompt":"Which is correct when learning how to drive on the road?","syntheticJaPrompt":"which correct when learning driving road","translatedPrompt":"도로에서 운전 연습을 할 때 옳은 것은?","options":[{"id":"A","text":"Drive the corresponding coach car with the coach sitting by to guide.","translatedText":"교관이 옆에 앉아 지도하는 해당 교습용 차량을 운전한다."},{"id":"B","text":"Drive the corresponding coach car alone.","translatedText":"교관 없이 해당 교습용 차량을 단독으로 운전한다."},{"id":"C","text":"Drive the corresponding coach car with another person who is not a coach sitting by to guide.","translatedText":"교관이 아닌 다른 사람을 옆에 앉혀 지도받으며 해당 교습용 차량을 운전한다."},{"id":"D","text":"Drive the private car with the coach sitting by to guide.","translatedText":"교관이 옆에 앉아 지도하는 개인 차량을 운전한다."}],"correctAnswer":{"kind":"MCQ","correctRow":null,"correctOptionId":"q0395_o1","correctOptionKey":"A","correctOptionText":"Drive the corresponding coach car with the coach sitting by to guide.","correctOptionTranslatedText":"교관이 옆에 앉아 지도하는 해당 교습용 차량을 운전한다.","answerRaw":"A"},"image":{"hasImage":false,"currentAssetSrc":null,"assetHashes":[]},"topic":"mcq","subtopics":[],"conceptSlots":null,"scoreGapFromTop":17.215,"candidateImagePath":null}],"screenshotPath":"../../../imports/ja/batch-002/screenshots/Screenshot 2026-04-07 at 17.50.04.png"},{"index":3,"sourceKind":"review-needed","itemId":"screenshots/Screenshot 2026-04-07 at 17.50.08.png","sourceImage":"screenshots/Screenshot 2026-04-07 at 17.50.08.png","promptRawJa":"法律に基づき交通警察は、他車の車検合格マークを使用した疑いのある車両を拘置できる。","promptGlossEn":"Based on the law, traffic police can detain a vehicle suspected of using another vehicle's inspection certification mark.","optionsRawJa":["A Yes","B No"],"optionsGlossEn":["Yes","No"],"correctKeyRaw":null,"correctAnswerRaw":null,"ocrConfidence":"high","provisionalTopic":"traffic-signals","provisionalSubtopics":["traffic-signals:police-signals"],"topicConfidence":1,"topicSignals":[{"topic":"traffic-signals","subtopic":"traffic-signals:police-signals","signal":"police-signal","weight":1.35}],"sourceConceptSlots":{"condition":[],"context":[],"action":[],"polarity":"positive","signals":[]},"reason":null,"localizedText":{"prompt":"法律に基づき交通警察は、他車の車検合格マークを使用した疑いのある車両を拘置できる。","options":["A Yes","B No"],"correctAnswer":null,"explanation":null},"translatedText":{"prompt":"Based on the law, traffic police can detain a vehicle suspected of using another vehicle's inspection certification mark.","options":["Yes","No"],"correctAnswer":null},"analysis":{"mode":"standard","effectiveQuestionType":"ROW","declaredQuestionType":"MCQ","booleanChoiceDetected":true,"plausibleShortlist":true,"explanation":"Top candidate cleared the review floor but remains review-first."},"currentTopQid":"q0213","currentTopScore":54.176,"currentTopGap":2.61,"topCandidates":[{"qid":"q0213","number":213,"type":"ROW","score":54.176,"scoreBreakdown":{"promptSimilarity":0.456,"rawPromptSimilarity":0.456,"englishPromptSimilarity":0.456,"syntheticPromptSimilarity":0.057,"questionType":1,"imageSignal":1,"topicWeighting":0.5,"answerPolarity":0.5,"conceptAlignment":0,"contradictionPenalty":0,"assetTieBreak":0},"diagnostics":{"effectiveItemType":"ROW","declaredItemType":"MCQ","binaryChoiceDetected":true,"promptSpecificity":1,"genericPromptPenalty":1,"missingCorrectAnswerNeutral":true,"optionSetMode":"binary-row-neutral + synthetic-ja mirror","syntheticMirrorUsed":true,"genericPromptFamily":null,"sourceConceptSlots":{"condition":[],"context":[],"action":[],"polarity":"positive","signals":[]},"candidateConceptSlots":{"condition":[],"context":[],"action":[],"polarity":"positive","signals":[]},"conceptMatches":[],"contradictionSignals":[],"rowConceptMode":"slot-alignment + contradiction-penalties","explanation":["Binary yes/no options were treated as ROW-like for type scoring.","Missing correct answer was treated as a neutral signal."]},"prompt":"Traffic police can detain the vehicle according to the law if it is suspected of using the label of inspection from other vehicle.","syntheticJaPrompt":"traffic police can detain 車両 according law if it suspected using label inspection other 車両。","translatedPrompt":"다른 차량의 검사표지를 사용한 혐의가 있는 경우 교통경찰은 법에 따라 차량을 압류할 수 있다.","options":[],"correctAnswer":{"kind":"ROW","correctRow":"R","correctOptionId":null,"correctOptionKey":null,"correctOptionText":"right / true","correctOptionTranslatedText":null,"answerRaw":"Right"},"image":{"hasImage":false,"currentAssetSrc":null,"assetHashes":[]},"topic":"license","subtopics":[],"conceptSlots":{"condition":[],"context":[],"action":[],"polarity":"positive","signals":[]},"scoreGapFromTop":0,"candidateImagePath":null},{"qid":"q0316","number":316,"type":"ROW","score":51.566,"scoreBreakdown":{"promptSimilarity":0.41,"rawPromptSimilarity":0.41,"englishPromptSimilarity":0.41,"syntheticPromptSimilarity":0.066,"questionType":1,"imageSignal":1,"topicWeighting":0.5,"answerPolarity":0.5,"conceptAlignment":0,"contradictionPenalty":0,"assetTieBreak":0},"diagnostics":{"effectiveItemType":"ROW","declaredItemType":"MCQ","binaryChoiceDetected":true,"promptSpecificity":1,"genericPromptPenalty":1,"missingCorrectAnswerNeutral":true,"optionSetMode":"binary-row-neutral + synthetic-ja mirror","syntheticMirrorUsed":true,"genericPromptFamily":null,"sourceConceptSlots":{"condition":[],"context":[],"action":[],"polarity":"positive","signals":[]},"candidateConceptSlots":{"condition":[],"context":[],"action":[],"polarity":"positive","signals":[]},"conceptMatches":[],"contradictionSignals":[],"rowConceptMode":"slot-alignment + contradiction-penalties","explanation":["Binary yes/no options were treated as ROW-like for type scoring.","Missing correct answer was treated as a neutral signal."]},"prompt":"If a motorized vehicle drives on the road without a label of inspection, the traffic police can detain the vehicle.","syntheticJaPrompt":"motorized 車両 runs road without label inspection traffic police can detain 車両。","translatedPrompt":"검사표지가 없는 자동차가 도로를 주행하면 교통경찰은 그 차량을 견인할 수 있다.","options":[],"correctAnswer":{"kind":"ROW","correctRow":"R","correctOptionId":null,"correctOptionKey":null,"correctOptionText":"right / true","correctOptionTranslatedText":null,"answerRaw":"Right"},"image":{"hasImage":false,"currentAssetSrc":null,"assetHashes":[]},"topic":"license","subtopics":[],"conceptSlots":{"condition":[],"context":[],"action":[],"polarity":"positive","signals":[]},"scoreGapFromTop":2.61,"candidateImagePath":null},{"qid":"q0294","number":294,"type":"ROW","score":50.969,"scoreBreakdown":{"promptSimilarity":0.4,"rawPromptSimilarity":0.4,"englishPromptSimilarity":0.4,"syntheticPromptSimilarity":0.061,"questionType":1,"imageSignal":1,"topicWeighting":0.5,"answerPolarity":0.5,"conceptAlignment":0,"contradictionPenalty":0,"assetTieBreak":0},"diagnostics":{"effectiveItemType":"ROW","declaredItemType":"MCQ","binaryChoiceDetected":true,"promptSpecificity":1,"genericPromptPenalty":1,"missingCorrectAnswerNeutral":true,"optionSetMode":"binary-row-neutral + synthetic-ja mirror","syntheticMirrorUsed":true,"genericPromptFamily":null,"sourceConceptSlots":{"condition":[],"context":[],"action":[],"polarity":"positive","signals":[]},"candidateConceptSlots":{"condition":[],"context":[],"action":[],"polarity":"positive","signals":[]},"conceptMatches":[],"contradictionSignals":[],"rowConceptMode":"slot-alignment + contradiction-penalties","explanation":["Binary yes/no options were treated as ROW-like for type scoring.","Missing correct answer was treated as a neutral signal."]},"prompt":"Traffic police can detain the vehicle which is suspected of using other vehicles' license plates or vehicle licenses.","syntheticJaPrompt":"traffic police can detain 車両 which suspected using other 車両 license plate and 車両 license。","translatedPrompt":"교통경찰은 타 차량의 번호판이나 등록증을 사용한 혐의가 있는 차량을 압류할 수 있다.","options":[],"correctAnswer":{"kind":"ROW","correctRow":"R","correctOptionId":null,"correctOptionKey":null,"correctOptionText":"right / true","correctOptionTranslatedText":null,"answerRaw":"Right"},"image":{"hasImage":false,"currentAssetSrc":null,"assetHashes":[]},"topic":"vehicle-registration","subtopics":[],"conceptSlots":{"condition":[],"context":[],"action":[],"polarity":"positive","signals":[]},"scoreGapFromTop":3.207,"candidateImagePath":null},{"qid":"q0248","number":248,"type":"ROW","score":50.726,"scoreBreakdown":{"promptSimilarity":0.397,"rawPromptSimilarity":0.397,"englishPromptSimilarity":0.397,"syntheticPromptSimilarity":0.057,"questionType":1,"imageSignal":1,"topicWeighting":0.5,"answerPolarity":0.5,"conceptAlignment":0,"contradictionPenalty":0,"assetTieBreak":0},"diagnostics":{"effectiveItemType":"ROW","declaredItemType":"MCQ","binaryChoiceDetected":true,"promptSpecificity":1,"genericPromptPenalty":1,"missingCorrectAnswerNeutral":true,"optionSetMode":"binary-row-neutral + synthetic-ja mirror","syntheticMirrorUsed":true,"genericPromptFamily":null,"sourceConceptSlots":{"condition":[],"context":[],"action":[],"polarity":"positive","signals":[]},"candidateConceptSlots":{"condition":[],"context":[],"action":[],"polarity":"positive","signals":[]},"conceptMatches":[],"contradictionSignals":[],"rowConceptMode":"slot-alignment + contradiction-penalties","explanation":["Binary yes/no options were treated as ROW-like for type scoring.","Missing correct answer was treated as a neutral signal."]},"prompt":"Traffic police can detain the vehicle according to the law if it is suspected of using the label of insurance from another vehicle.","syntheticJaPrompt":"traffic police can detain 車両 according law if it suspected using label insurance other 車両。","translatedPrompt":"다른 차량의 보험표지를 사용한 혐의가 있는 경우, 교통경찰은 법에 따라 차량을 압류할 수 있다.","options":[],"correctAnswer":{"kind":"ROW","correctRow":"R","correctOptionId":null,"correctOptionKey":null,"correctOptionText":"right / true","correctOptionTranslatedText":null,"answerRaw":"Right"},"image":{"hasImage":false,"currentAssetSrc":null,"assetHashes":[]},"topic":"violations-penalties","subtopics":[],"conceptSlots":{"condition":[],"context":[],"action":[],"polarity":"positive","signals":[]},"scoreGapFromTop":3.45,"candidateImagePath":null},{"qid":"q0211","number":211,"type":"ROW","score":49.605,"scoreBreakdown":{"promptSimilarity":0.377,"rawPromptSimilarity":0.377,"englishPromptSimilarity":0.377,"syntheticPromptSimilarity":0.057,"questionType":1,"imageSignal":1,"topicWeighting":0.5,"answerPolarity":0.5,"conceptAlignment":0,"contradictionPenalty":0,"assetTieBreak":0},"diagnostics":{"effectiveItemType":"ROW","declaredItemType":"MCQ","binaryChoiceDetected":true,"promptSpecificity":1,"genericPromptPenalty":1,"missingCorrectAnswerNeutral":true,"optionSetMode":"binary-row-neutral + synthetic-ja mirror","syntheticMirrorUsed":true,"genericPromptFamily":null,"sourceConceptSlots":{"condition":[],"context":[],"action":[],"polarity":"positive","signals":[]},"candidateConceptSlots":{"condition":[],"context":[],"action":[],"polarity":"positive","signals":[]},"conceptMatches":[],"contradictionSignals":[],"rowConceptMode":"slot-alignment + contradiction-penalties","explanation":["Binary yes/no options were treated as ROW-like for type scoring.","Missing correct answer was treated as a neutral signal."]},"prompt":"Traffic police can detain the vehicle according to the law if it drives on the road failing to place a label of inspection.","syntheticJaPrompt":"traffic police can detain 車両 according law if it runs road failing place label inspection。","translatedPrompt":"도로에서 검사표지를 붙이지 않고 주행하는 차량은 법에 따라 교통경찰이 압류할 수 있다.","options":[],"correctAnswer":{"kind":"ROW","correctRow":"R","correctOptionId":null,"correctOptionKey":null,"correctOptionText":"right / true","correctOptionTranslatedText":null,"answerRaw":"Right"},"image":{"hasImage":false,"currentAssetSrc":null,"assetHashes":[]},"topic":"license","subtopics":[],"conceptSlots":{"condition":[],"context":[],"action":[],"polarity":"positive","signals":[]},"scoreGapFromTop":4.571,"candidateImagePath":null}],"screenshotPath":"../../../imports/ja/batch-002/screenshots/Screenshot 2026-04-07 at 17.50.08.png"},{"index":4,"sourceKind":"review-needed","itemId":"screenshots/Screenshot 2026-04-07 at 17.50.10.png","sourceImage":"screenshots/Screenshot 2026-04-07 at 17.50.10.png","promptRawJa":"学校や住宅区のある区間を通過するさいは、路面標示に従って速度を落とし、クラクションを鳴らさないよう注意すべきである。","promptGlossEn":"When passing through areas with schools or residential districts, you should reduce your speed according to road markings and be careful not to sound your horn.","optionsRawJa":["A Yes","B No"],"optionsGlossEn":["Yes","No"],"correctKeyRaw":null,"correctAnswerRaw":null,"ocrConfidence":"high","provisionalTopic":"traffic-signals","provisionalSubtopics":["traffic-signals:road-markings","proper-driving:safe-driving"],"topicConfidence":0.51,"topicSignals":[{"topic":"traffic-signals","subtopic":"traffic-signals:road-markings","signal":"road-marking","weight":1.25},{"topic":"proper-driving","subtopic":"proper-driving:safe-driving","signal":"driving-action","weight":1.2}],"sourceConceptSlots":{"condition":[],"context":[],"action":["honk"],"polarity":"positive","signals":[{"slot":"action","value":"honk","signal":"honk"}]},"reason":null,"localizedText":{"prompt":"学校や住宅区のある区間を通過するさいは、路面標示に従って速度を落とし、クラクションを鳴らさないよう注意すべきである。","options":["A Yes","B No"],"correctAnswer":null,"explanation":null},"translatedText":{"prompt":"When passing through areas with schools or residential districts, you should reduce your speed according to road markings and be careful not to sound your horn.","options":["Yes","No"],"correctAnswer":null},"analysis":{"mode":"standard","effectiveQuestionType":"ROW","declaredQuestionType":"MCQ","booleanChoiceDetected":true,"plausibleShortlist":true,"explanation":"Top candidate cleared the review floor but remains review-first."},"currentTopQid":"q0016","currentTopScore":56.147,"currentTopGap":2.592,"topCandidates":[{"qid":"q0016","number":16,"type":"ROW","score":56.147,"scoreBreakdown":{"promptSimilarity":0.293,"rawPromptSimilarity":0.293,"englishPromptSimilarity":0.293,"syntheticPromptSimilarity":0.097,"questionType":1,"imageSignal":1,"topicWeighting":0.5,"answerPolarity":0.5,"conceptAlignment":0.563,"contradictionPenalty":0,"assetTieBreak":0},"diagnostics":{"effectiveItemType":"ROW","declaredItemType":"MCQ","binaryChoiceDetected":true,"promptSpecificity":1,"genericPromptPenalty":1,"missingCorrectAnswerNeutral":true,"optionSetMode":"binary-row-neutral + synthetic-ja mirror","syntheticMirrorUsed":true,"genericPromptFamily":null,"sourceConceptSlots":{"condition":[],"context":[],"action":["honk"],"polarity":"positive","signals":[{"slot":"action","value":"honk","signal":"honk"}]},"candidateConceptSlots":{"condition":[],"context":[],"action":["honk","pass"],"polarity":"positive","signals":[{"slot":"action","value":"honk","signal":"honk"},{"slot":"action","value":"pass","signal":"pass"}]},"conceptMatches":["action:honk"],"contradictionSignals":[],"rowConceptMode":"slot-alignment + contradiction-penalties","explanation":["Binary yes/no options were treated as ROW-like for type scoring.","Missing correct answer was treated as a neutral signal.","ROW concept slots aligned on condition/context/action."]},"prompt":"When a vehicle passes a school or a residential area, the driver should observe the signs and markings, go slowly and refrain from honking.","syntheticJaPrompt":"when 車両 追い越し school or residential area 運転者 べき observe 標識 and 路面標示 go slowly and refrain honk。","translatedPrompt":"학교나 주거지역을 지날 때는 표지와 도로 표시를 확인하고 서행하며 경적을 울리지 않아야 한다.","options":[],"correctAnswer":{"kind":"ROW","correctRow":"R","correctOptionId":null,"correctOptionKey":null,"correctOptionText":"right / true","correctOptionTranslatedText":null,"answerRaw":"Right"},"image":{"hasImage":false,"currentAssetSrc":null,"assetHashes":[]},"topic":"road-safety","subtopics":["road-safety:road-conditions","proper-driving:safe-driving"],"conceptSlots":{"condition":[],"context":[],"action":["honk","pass"],"polarity":"positive","signals":[{"slot":"action","value":"honk","signal":"honk"},{"slot":"action","value":"pass","signal":"pass"}]},"scoreGapFromTop":0,"candidateImagePath":null},{"qid":"q0071","number":71,"type":"ROW","score":53.555,"scoreBreakdown":{"promptSimilarity":0.099,"rawPromptSimilarity":0.099,"englishPromptSimilarity":0.099,"syntheticPromptSimilarity":0.076,"questionType":1,"imageSignal":1,"topicWeighting":0.5,"answerPolarity":0.5,"conceptAlignment":1,"contradictionPenalty":0,"assetTieBreak":0},"diagnostics":{"effectiveItemType":"ROW","declaredItemType":"MCQ","binaryChoiceDetected":true,"promptSpecificity":1,"genericPromptPenalty":1,"missingCorrectAnswerNeutral":true,"optionSetMode":"binary-row-neutral + synthetic-ja mirror","syntheticMirrorUsed":true,"genericPromptFamily":null,"sourceConceptSlots":{"condition":[],"context":[],"action":["honk"],"polarity":"positive","signals":[{"slot":"action","value":"honk","signal":"honk"}]},"candidateConceptSlots":{"condition":["fog"],"context":["oncoming-traffic"],"action":["honk"],"polarity":"positive","signals":[{"slot":"condition","value":"fog","signal":"fog"},{"slot":"context","value":"oncoming-traffic","signal":"oncoming"},{"slot":"action","value":"honk","signal":"honk"}]},"conceptMatches":["action:honk"],"contradictionSignals":[],"rowConceptMode":"slot-alignment + contradiction-penalties","explanation":["Binary yes/no options were treated as ROW-like for type scoring.","Missing correct answer was treated as a neutral signal.","ROW concept slots aligned on condition/context/action."]},"prompt":"Honking in a foggy day can arouse the attention of the opposite side. After hearing the honking from the opposite side, the driver should also honk in response.","syntheticJaPrompt":"honk fog day can arouse attention oncoming after hearing honk oncoming 運転者 べき also honk respond。","translatedPrompt":"안개 낀 날 경적은 반대편의 주의를 환기시킬 수 있다. 상대편이 경적을 울리는 것을 들으면 운전자는 응답하여 경적을 울려야 한다.","options":[],"correctAnswer":{"kind":"ROW","correctRow":"R","correctOptionId":null,"correctOptionKey":null,"correctOptionText":"right / true","correctOptionTranslatedText":null,"answerRaw":"Right"},"image":{"hasImage":false,"currentAssetSrc":null,"assetHashes":[]},"topic":"road-safety","subtopics":["road-safety:road-conditions","proper-driving:safe-driving"],"conceptSlots":{"condition":["fog"],"context":["oncoming-traffic"],"action":["honk"],"polarity":"positive","signals":[{"slot":"condition","value":"fog","signal":"fog"},{"slot":"context","value":"oncoming-traffic","signal":"oncoming"},{"slot":"action","value":"honk","signal":"honk"}]},"scoreGapFromTop":2.592,"candidateImagePath":null},{"qid":"q0195","number":195,"type":"ROW","score":50.203,"scoreBreakdown":{"promptSimilarity":0.192,"rawPromptSimilarity":0.192,"englishPromptSimilarity":0.192,"syntheticPromptSimilarity":0.075,"questionType":1,"imageSignal":1,"topicWeighting":0.5,"answerPolarity":0.5,"conceptAlignment":0.563,"contradictionPenalty":0,"assetTieBreak":0},"diagnostics":{"effectiveItemType":"ROW","declaredItemType":"MCQ","binaryChoiceDetected":true,"promptSpecificity":1,"genericPromptPenalty":1,"missingCorrectAnswerNeutral":true,"optionSetMode":"binary-row-neutral + synthetic-ja mirror","syntheticMirrorUsed":true,"genericPromptFamily":null,"sourceConceptSlots":{"condition":[],"context":[],"action":["honk"],"polarity":"positive","signals":[{"slot":"action","value":"honk","signal":"honk"}]},"candidateConceptSlots":{"condition":["uphill"],"context":[],"action":["honk","accelerate"],"polarity":"positive","signals":[{"slot":"condition","value":"uphill","signal":"uphill"},{"slot":"action","value":"honk","signal":"honk"},{"slot":"action","value":"accelerate","signal":"accelerate"}]},"conceptMatches":["action:honk"],"contradictionSignals":[],"rowConceptMode":"slot-alignment + contradiction-penalties","explanation":["Binary yes/no options were treated as ROW-like for type scoring.","Missing correct answer was treated as a neutral signal.","ROW concept slots aligned on condition/context/action."]},"prompt":"When driving a motorized vehicle uphill, you should speed up and honk when you going to reach the top of the slope.","syntheticJaPrompt":"when driving motorized 車両 uphill you べき 加速 and honk when you going reach top slope。","translatedPrompt":"오르막을 주행할 때 정상적으로 오르막 꼭대기에 도달할 때는 가속하고 경적을 울린다.","options":[],"correctAnswer":{"kind":"ROW","correctRow":"W","correctOptionId":null,"correctOptionKey":null,"correctOptionText":"wrong / false","correctOptionTranslatedText":null,"answerRaw":"Wrong"},"image":{"hasImage":false,"currentAssetSrc":null,"assetHashes":[]},"topic":"row","subtopics":[],"conceptSlots":{"condition":["uphill"],"context":[],"action":["honk","accelerate"],"polarity":"positive","signals":[{"slot":"condition","value":"uphill","signal":"uphill"},{"slot":"action","value":"honk","signal":"honk"},{"slot":"action","value":"accelerate","signal":"accelerate"}]},"scoreGapFromTop":5.944,"candidateImagePath":null},{"qid":"q0028","number":28,"type":"ROW","score":46.894,"scoreBreakdown":{"promptSimilarity":0.138,"rawPromptSimilarity":0.138,"englishPromptSimilarity":0.138,"syntheticPromptSimilarity":0.039,"questionType":1,"imageSignal":1,"topicWeighting":0.5,"answerPolarity":0.5,"conceptAlignment":0.563,"contradictionPenalty":0,"assetTieBreak":0},"diagnostics":{"effectiveItemType":"ROW","declaredItemType":"MCQ","binaryChoiceDetected":true,"promptSpecificity":1,"genericPromptPenalty":1,"missingCorrectAnswerNeutral":true,"optionSetMode":"binary-row-neutral + synthetic-ja mirror","syntheticMirrorUsed":true,"genericPromptFamily":null,"sourceConceptSlots":{"condition":[],"context":[],"action":["honk"],"polarity":"positive","signals":[{"slot":"action","value":"honk","signal":"honk"}]},"candidateConceptSlots":{"condition":[],"context":[],"action":["honk","accelerate"],"polarity":"positive","signals":[{"slot":"action","value":"honk","signal":"honk"},{"slot":"action","value":"accelerate","signal":"accelerate"}]},"conceptMatches":["action:honk"],"contradictionSignals":[],"rowConceptMode":"slot-alignment + contradiction-penalties","explanation":["Binary yes/no options were treated as ROW-like for type scoring.","Missing correct answer was treated as a neutral signal.","ROW concept slots aligned on condition/context/action."]},"prompt":"When bicycles ahead obstruct the traffic flow, the driver may honk to remind them, speed up and bypass.","syntheticJaPrompt":"when 自転車 この先 obstruct traffic flow 運転者 よい honk remind them 加速 and bypass。","translatedPrompt":"앞의 자전거가 통행을 방해하면 경적로 주의를 주고 가속하여 추월할 수 있다.","options":[],"correctAnswer":{"kind":"ROW","correctRow":"W","correctOptionId":null,"correctOptionKey":null,"correctOptionText":"wrong / false","correctOptionTranslatedText":null,"answerRaw":"Wrong"},"image":{"hasImage":false,"currentAssetSrc":null,"assetHashes":[]},"topic":"road-safety","subtopics":["road-safety:road-conditions","proper-driving:safe-driving"],"conceptSlots":{"condition":[],"context":[],"action":["honk","accelerate"],"polarity":"positive","signals":[{"slot":"action","value":"honk","signal":"honk"},{"slot":"action","value":"accelerate","signal":"accelerate"}]},"scoreGapFromTop":9.253,"candidateImagePath":null},{"qid":"q0093","number":93,"type":"ROW","score":46.279,"scoreBreakdown":{"promptSimilarity":0.175,"rawPromptSimilarity":0.175,"englishPromptSimilarity":0.175,"syntheticPromptSimilarity":0.076,"questionType":1,"imageSignal":1,"topicWeighting":0.5,"answerPolarity":0.5,"conceptAlignment":0.417,"contradictionPenalty":0,"assetTieBreak":0},"diagnostics":{"effectiveItemType":"ROW","declaredItemType":"MCQ","binaryChoiceDetected":true,"promptSpecificity":1,"genericPromptPenalty":1,"missingCorrectAnswerNeutral":true,"optionSetMode":"binary-row-neutral + synthetic-ja mirror","syntheticMirrorUsed":true,"genericPromptFamily":null,"sourceConceptSlots":{"condition":[],"context":[],"action":["honk"],"polarity":"positive","signals":[{"slot":"action","value":"honk","signal":"honk"}]},"candidateConceptSlots":{"condition":[],"context":[],"action":["honk","slow","pass"],"polarity":"positive","signals":[{"slot":"action","value":"honk","signal":"honk"},{"slot":"action","value":"slow","signal":"slow"},{"slot":"action","value":"pass","signal":"pass"}]},"conceptMatches":["action:honk"],"contradictionSignals":[],"rowConceptMode":"slot-alignment + contradiction-penalties","explanation":["Binary yes/no options were treated as ROW-like for type scoring.","Missing correct answer was treated as a neutral signal."]},"prompt":"When a vehicle passes a curve on a mountain road, the driver should reduce speed, honk, and stick to the right.","syntheticJaPrompt":"when 車両 追い越し curve mountain road 運転者 べき 減速 honk and stick right。","translatedPrompt":"산길의 커브 구간을 지날 때에는 감속하고 경적을 울리며 우측으로 붙어 주행해야 한다.","options":[],"correctAnswer":{"kind":"ROW","correctRow":"R","correctOptionId":null,"correctOptionKey":null,"correctOptionText":"right / true","correctOptionTranslatedText":null,"answerRaw":"Right"},"image":{"hasImage":false,"currentAssetSrc":null,"assetHashes":[]},"topic":"row","subtopics":[],"conceptSlots":{"condition":[],"context":[],"action":["honk","slow","pass"],"polarity":"positive","signals":[{"slot":"action","value":"honk","signal":"honk"},{"slot":"action","value":"slow","signal":"slow"},{"slot":"action","value":"pass","signal":"pass"}]},"scoreGapFromTop":9.868,"candidateImagePath":null}],"screenshotPath":"../../../imports/ja/batch-002/screenshots/Screenshot 2026-04-07 at 17.50.10.png"},{"index":5,"sourceKind":"review-needed","itemId":"screenshots/Screenshot 2026-04-07 at 17.50.11.png","sourceImage":"screenshots/Screenshot 2026-04-07 at 17.50.11.png","promptRawJa":"この都市道路を走行する場合の最高速度はどれか。","promptGlossEn":"What is the maximum speed limit when driving on this city road?","optionsRawJa":["A 30km/h","B 40km/h","C 50km/h","D 70km/h"],"optionsGlossEn":["30 km/h","40 km/h","50 km/h","70 km/h"],"correctKeyRaw":"A","correctAnswerRaw":"30km/h","ocrConfidence":"high","provisionalTopic":null,"provisionalSubtopics":[],"topicConfidence":0,"topicSignals":[],"sourceConceptSlots":null,"reason":null,"localizedText":{"prompt":"この都市道路を走行する場合の最高速度はどれか。","options":["A 30km/h","B 40km/h","C 50km/h","D 70km/h"],"correctAnswer":"30km/h","explanation":null},"translatedText":{"prompt":"What is the maximum speed limit when driving on this city road?","options":["30 km/h","40 km/h","50 km/h","70 km/h"],"correctAnswer":"30 km/h"},"analysis":{"mode":"standard","effectiveQuestionType":"MCQ","declaredQuestionType":"MCQ","booleanChoiceDetected":false,"plausibleShortlist":true,"explanation":"Top candidate cleared the review floor but remains review-first."},"currentTopQid":"q0454","currentTopScore":67.516,"currentTopGap":3.197,"topCandidates":[{"qid":"q0454","number":454,"type":"MCQ","score":67.516,"scoreBreakdown":{"promptSimilarity":0.539,"rawPromptSimilarity":0.553,"englishPromptSimilarity":0.539,"syntheticPromptSimilarity":0,"optionSimilarity":0.444,"englishOptionSimilarity":0.08,"syntheticOptionSimilarity":0.444,"optionFingerprint":0.433,"englishOptionFingerprint":0.023,"syntheticOptionFingerprint":0.433,"optionExactSet":0,"optionRareCoverage":0.644,"mirrorAgreement":0.444,"correctAnswerMeaning":0.444,"englishCorrectAnswerMeaning":0.444,"syntheticCorrectAnswerMeaning":0.444,"questionType":1,"imageSignal":1,"topicWeighting":0.5,"assetTieBreak":0},"diagnostics":{"effectiveItemType":"MCQ","declaredItemType":"MCQ","binaryChoiceDetected":false,"promptSpecificity":0.975,"genericPromptPenalty":0.975,"missingCorrectAnswerNeutral":false,"exactCorrectKey":false,"optionSetMode":"unordered-semantic + synthetic-ja mirror","rareSetBonus":0,"syntheticMirrorUsed":true,"genericPromptFamily":null,"explanation":["Option comparison used unordered semantic set matching.","Synthetic Japanese option matching strengthened the shortlist."]},"prompt":"What is the max speed on this city road?","syntheticJaPrompt":"max speed city road","translatedPrompt":"이 표시의 뜻은?","options":[{"id":"A","text":"40km/hr","translatedText":"시속 40km"},{"id":"B","text":"30km/hr","translatedText":"시속 30km"},{"id":"C","text":"50km/hr","translatedText":"시속 50km"},{"id":"D","text":"70km/hr","translatedText":"시속 70km"}],"correctAnswer":{"kind":"MCQ","correctRow":null,"correctOptionId":"q0454_o2","correctOptionKey":"B","correctOptionText":"30km/hr","correctOptionTranslatedText":"시속 30km","answerRaw":"B"},"image":{"hasImage":true,"currentAssetSrc":"/qbank/2023-test1/images/img_8dc0ed955810164f87f93a39e52ce63e.jpeg","assetHashes":["8dc0ed955810164f87f93a39e52ce63e"]},"topic":"mcq","subtopics":[],"conceptSlots":null,"scoreGapFromTop":0,"candidateImagePath":"../../../public/qbank/2023-test1/images/img_8dc0ed955810164f87f93a39e52ce63e.jpeg"},{"qid":"q0400","number":400,"type":"MCQ","score":64.319,"scoreBreakdown":{"promptSimilarity":0.361,"rawPromptSimilarity":0.361,"englishPromptSimilarity":0.361,"syntheticPromptSimilarity":0,"optionSimilarity":0.444,"englishOptionSimilarity":0.08,"syntheticOptionSimilarity":0.444,"optionFingerprint":0.433,"englishOptionFingerprint":0.023,"syntheticOptionFingerprint":0.433,"optionExactSet":0,"optionRareCoverage":0.644,"mirrorAgreement":0.444,"correctAnswerMeaning":0.444,"englishCorrectAnswerMeaning":0.444,"syntheticCorrectAnswerMeaning":0.444,"questionType":1,"imageSignal":1,"topicWeighting":0.5,"assetTieBreak":0},"diagnostics":{"effectiveItemType":"MCQ","declaredItemType":"MCQ","binaryChoiceDetected":false,"promptSpecificity":1,"genericPromptPenalty":1,"missingCorrectAnswerNeutral":false,"exactCorrectKey":false,"optionSetMode":"unordered-semantic + synthetic-ja mirror","rareSetBonus":0,"syntheticMirrorUsed":true,"genericPromptFamily":null,"explanation":["Option comparison used unordered semantic set matching.","Synthetic Japanese option matching strengthened the shortlist."]},"prompt":"What is the max speed when passing this curve?","syntheticJaPrompt":"max speed when passing curve","translatedPrompt":"이 커브를 통과할 때의 최고속도는 얼마인가?","options":[{"id":"A","text":"40km/hr","translatedText":"40km/hr"},{"id":"B","text":"30km/hr","translatedText":"30km/hr"},{"id":"C","text":"50km/hr","translatedText":"50km/hr"},{"id":"D","text":"70km/hr","translatedText":"70km/hr"}],"correctAnswer":{"kind":"MCQ","correctRow":null,"correctOptionId":"q0400_o2","correctOptionKey":"B","correctOptionText":"30km/hr","correctOptionTranslatedText":"30km/hr","answerRaw":"B"},"image":{"hasImage":true,"currentAssetSrc":"/qbank/2023-test1/images/img_45dfa2d68f93b92f18ee3b96b1bb9745.jpeg","assetHashes":["45dfa2d68f93b92f18ee3b96b1bb9745"]},"topic":"mcq","subtopics":[],"conceptSlots":null,"scoreGapFromTop":3.197,"candidateImagePath":"../../../public/qbank/2023-test1/images/img_45dfa2d68f93b92f18ee3b96b1bb9745.jpeg"},{"qid":"q0510","number":510,"type":"MCQ","score":60.05,"scoreBreakdown":{"promptSimilarity":0.539,"rawPromptSimilarity":0.553,"englishPromptSimilarity":0.539,"syntheticPromptSimilarity":0,"optionSimilarity":0.444,"englishOptionSimilarity":0.08,"syntheticOptionSimilarity":0.444,"optionFingerprint":0.433,"englishOptionFingerprint":0.023,"syntheticOptionFingerprint":0.433,"optionExactSet":0,"optionRareCoverage":0.644,"mirrorAgreement":0.133,"correctAnswerMeaning":0.133,"englishCorrectAnswerMeaning":0.133,"syntheticCorrectAnswerMeaning":0.133,"questionType":1,"imageSignal":1,"topicWeighting":0.5,"assetTieBreak":0},"diagnostics":{"effectiveItemType":"MCQ","declaredItemType":"MCQ","binaryChoiceDetected":false,"promptSpecificity":0.975,"genericPromptPenalty":0.975,"missingCorrectAnswerNeutral":false,"exactCorrectKey":false,"optionSetMode":"unordered-semantic + synthetic-ja mirror","rareSetBonus":0,"syntheticMirrorUsed":true,"genericPromptFamily":null,"explanation":["Option comparison used unordered semantic set matching.","Synthetic Japanese option matching strengthened the shortlist."]},"prompt":"What is the max speed on this city road?","syntheticJaPrompt":"max speed city road","translatedPrompt":"이 표시의 뜻은?","options":[{"id":"A","text":"30km/hr","translatedText":"시속 30km"},{"id":"B","text":"40km/hr","translatedText":"시속 40km"},{"id":"C","text":"50km/hr","translatedText":"시속 50km"},{"id":"D","text":"70km/hr","translatedText":"시속 70km"}],"correctAnswer":{"kind":"MCQ","correctRow":null,"correctOptionId":"q0510_o3","correctOptionKey":"C","correctOptionText":"50km/hr","correctOptionTranslatedText":"시속 50km","answerRaw":"C"},"image":{"hasImage":true,"currentAssetSrc":"/qbank/2023-test1/images/img_0ee5e8bd6ce626169cfe26ce7be193cd.jpeg","assetHashes":["0ee5e8bd6ce626169cfe26ce7be193cd"]},"topic":"mcq","subtopics":[],"conceptSlots":null,"scoreGapFromTop":7.466,"candidateImagePath":"../../../public/qbank/2023-test1/images/img_0ee5e8bd6ce626169cfe26ce7be193cd.jpeg"},{"qid":"q0480","number":480,"type":"MCQ","score":58.654,"scoreBreakdown":{"promptSimilarity":0.362,"rawPromptSimilarity":0.371,"englishPromptSimilarity":0.362,"syntheticPromptSimilarity":0,"optionSimilarity":0.128,"englishOptionSimilarity":0.077,"syntheticOptionSimilarity":0.128,"optionFingerprint":0.058,"englishOptionFingerprint":0.022,"syntheticOptionFingerprint":0.036,"optionExactSet":0,"optionRareCoverage":0,"mirrorAgreement":1,"correctAnswerMeaning":1,"englishCorrectAnswerMeaning":1,"syntheticCorrectAnswerMeaning":1,"questionType":1,"imageSignal":1,"topicWeighting":0.5,"assetTieBreak":0},"diagnostics":{"effectiveItemType":"MCQ","declaredItemType":"MCQ","binaryChoiceDetected":false,"promptSpecificity":0.975,"genericPromptPenalty":0.975,"missingCorrectAnswerNeutral":false,"exactCorrectKey":true,"optionSetMode":"unordered-semantic + synthetic-ja mirror","rareSetBonus":0,"syntheticMirrorUsed":true,"genericPromptFamily":null,"explanation":["Synthetic Japanese correct-answer alignment reinforced the candidate."]},"prompt":"What is the max speed on this expressway?","syntheticJaPrompt":"max speed 高速道路。","translatedPrompt":"이 표시의 뜻은?","options":[{"id":"A","text":"110km/hr","translatedText":"시속 110km"},{"id":"B","text":"120km/hr","translatedText":"시속 120km"},{"id":"C","text":"90km/hr","translatedText":"시속 90km"},{"id":"D","text":"100km/hr","translatedText":"시속 100km"}],"correctAnswer":{"kind":"MCQ","correctRow":null,"correctOptionId":"q0480_o1","correctOptionKey":"A","correctOptionText":"110km/hr","correctOptionTranslatedText":"시속 110km","answerRaw":"A"},"image":{"hasImage":true,"currentAssetSrc":"/qbank/2023-test1/images/img_5747f74941b3b58cb40e0eb46e37e5b1.jpeg","assetHashes":["5747f74941b3b58cb40e0eb46e37e5b1"]},"topic":"expressway","subtopics":[],"conceptSlots":null,"scoreGapFromTop":8.862,"candidateImagePath":"../../../public/qbank/2023-test1/images/img_5747f74941b3b58cb40e0eb46e37e5b1.jpeg"},{"qid":"q0438","number":438,"type":"MCQ","score":56.865,"scoreBreakdown":{"promptSimilarity":0.362,"rawPromptSimilarity":0.371,"englishPromptSimilarity":0.362,"syntheticPromptSimilarity":0,"optionSimilarity":0.444,"englishOptionSimilarity":0.08,"syntheticOptionSimilarity":0.444,"optionFingerprint":0.433,"englishOptionFingerprint":0.023,"syntheticOptionFingerprint":0.433,"optionExactSet":0,"optionRareCoverage":0.644,"mirrorAgreement":0.133,"correctAnswerMeaning":0.133,"englishCorrectAnswerMeaning":0.133,"syntheticCorrectAnswerMeaning":0.133,"questionType":1,"imageSignal":1,"topicWeighting":0.5,"assetTieBreak":0},"diagnostics":{"effectiveItemType":"MCQ","declaredItemType":"MCQ","binaryChoiceDetected":false,"promptSpecificity":0.975,"genericPromptPenalty":0.975,"missingCorrectAnswerNeutral":false,"exactCorrectKey":false,"optionSetMode":"unordered-semantic + synthetic-ja mirror","rareSetBonus":0,"syntheticMirrorUsed":true,"genericPromptFamily":null,"explanation":["Option comparison used unordered semantic set matching.","Synthetic Japanese option matching strengthened the shortlist."]},"prompt":"What is the max speed on this highway?","syntheticJaPrompt":"max speed 高速道路。","translatedPrompt":"이 표시의 뜻은?","options":[{"id":"A","text":"30km/hr","translatedText":"시속 30km"},{"id":"B","text":"40km/hr","translatedText":"시속 40km"},{"id":"C","text":"50km/hr","translatedText":"시속 50km"},{"id":"D","text":"70km/hr","translatedText":"시속 70km"}],"correctAnswer":{"kind":"MCQ","correctRow":null,"correctOptionId":"q0438_o4","correctOptionKey":"D","correctOptionText":"70km/hr","correctOptionTranslatedText":"시속 70km","answerRaw":"D"},"image":{"hasImage":true,"currentAssetSrc":"/qbank/2023-test1/images/img_c8890aa39e6f49a8256fb588405c4d50.jpeg","assetHashes":["c8890aa39e6f49a8256fb588405c4d50"]},"topic":"expressway","subtopics":[],"conceptSlots":null,"scoreGapFromTop":10.651,"candidateImagePath":"../../../public/qbank/2023-test1/images/img_c8890aa39e6f49a8256fb588405c4d50.jpeg"}],"screenshotPath":"../../../imports/ja/batch-002/screenshots/Screenshot 2026-04-07 at 17.50.11.png"},{"index":6,"sourceKind":"review-needed","itemId":"screenshots/Screenshot 2026-04-07 at 17.50.12.png","sourceImage":"screenshots/Screenshot 2026-04-07 at 17.50.12.png","promptRawJa":"ランプスイッチをこの位置へ回すと、自動車のすべてのランプが点灯する。","promptGlossEn":"If you turn the lamp switch to this position, all the car's lights will turn on.","optionsRawJa":["A Yes","B No"],"optionsGlossEn":["A Yes","B No"],"correctKeyRaw":null,"correctAnswerRaw":null,"ocrConfidence":"high","provisionalTopic":"driving-operations","provisionalSubtopics":["driving-operations:indicators"],"topicConfidence":1,"topicSignals":[{"topic":"driving-operations","subtopic":"driving-operations:indicators","signal":"indicator-operation","weight":1.25}],"sourceConceptSlots":{"condition":[],"context":[],"action":["head-light"],"polarity":null,"signals":[{"slot":"action","value":"head-light","signal":"head-light"}]},"reason":null,"localizedText":{"prompt":"ランプスイッチをこの位置へ回すと、自動車のすべてのランプが点灯する。","options":["A Yes","B No"],"correctAnswer":null,"explanation":null},"translatedText":{"prompt":"If you turn the lamp switch to this position, all the car's lights will turn on.","options":["A Yes","B No"],"correctAnswer":null},"analysis":{"mode":"standard","effectiveQuestionType":"ROW","declaredQuestionType":"MCQ","booleanChoiceDetected":true,"plausibleShortlist":true,"explanation":"Top candidate cleared the review floor but remains review-first."},"currentTopQid":"q0524","currentTopScore":69.834,"currentTopGap":0.026,"topCandidates":[{"qid":"q0524","number":524,"type":"ROW","score":69.834,"scoreBreakdown":{"promptSimilarity":0.37,"rawPromptSimilarity":0.37,"englishPromptSimilarity":0.37,"syntheticPromptSimilarity":0.213,"questionType":1,"imageSignal":1,"topicWeighting":0.5,"answerPolarity":0.5,"conceptAlignment":1,"contradictionPenalty":0,"assetTieBreak":0},"diagnostics":{"effectiveItemType":"ROW","declaredItemType":"MCQ","binaryChoiceDetected":true,"promptSpecificity":1,"genericPromptPenalty":1,"missingCorrectAnswerNeutral":true,"optionSetMode":"binary-row-neutral + synthetic-ja mirror","syntheticMirrorUsed":true,"genericPromptFamily":null,"sourceConceptSlots":{"condition":[],"context":[],"action":["head-light"],"polarity":null,"signals":[{"slot":"action","value":"head-light","signal":"head-light"}]},"candidateConceptSlots":{"condition":[],"context":[],"action":["head-light"],"polarity":null,"signals":[{"slot":"action","value":"head-light","signal":"head-light"}]},"conceptMatches":["action:head-light"],"contradictionSignals":[],"rowConceptMode":"slot-alignment + contradiction-penalties","explanation":["Binary yes/no options were treated as ROW-like for type scoring.","Missing correct answer was treated as a neutral signal.","ROW concept slots aligned on condition/context/action."]},"prompt":"When the light switch is rotated to the position, the whole car lights turn on.","syntheticJaPrompt":"when ライト switch rotated position whole car ライト 点灯する。","translatedPrompt":"라이트 스위치를 이 위치까지 돌리면 차 전체 라이트가 켜진다.","options":[],"correctAnswer":{"kind":"ROW","correctRow":"W","correctOptionId":null,"correctOptionKey":null,"correctOptionText":"wrong / false","correctOptionTranslatedText":null,"answerRaw":"Wrong"},"image":{"hasImage":true,"currentAssetSrc":"/qbank/2023-test1/images/img_bff6c554bca38da9249d752619304767.jpeg","assetHashes":["bff6c554bca38da9249d752619304767"]},"topic":"row","subtopics":[],"conceptSlots":{"condition":[],"context":[],"action":["head-light"],"polarity":null,"signals":[{"slot":"action","value":"head-light","signal":"head-light"}]},"scoreGapFromTop":0,"candidateImagePath":"../../../public/qbank/2023-test1/images/img_bff6c554bca38da9249d752619304767.jpeg"},{"qid":"q0525","number":525,"type":"ROW","score":69.808,"scoreBreakdown":{"promptSimilarity":0.368,"rawPromptSimilarity":0.368,"englishPromptSimilarity":0.368,"syntheticPromptSimilarity":0.238,"questionType":1,"imageSignal":1,"topicWeighting":0.5,"answerPolarity":0.5,"conceptAlignment":1,"contradictionPenalty":0,"assetTieBreak":0},"diagnostics":{"effectiveItemType":"ROW","declaredItemType":"MCQ","binaryChoiceDetected":true,"promptSpecificity":1,"genericPromptPenalty":1,"missingCorrectAnswerNeutral":true,"optionSetMode":"binary-row-neutral + synthetic-ja mirror","syntheticMirrorUsed":true,"genericPromptFamily":null,"sourceConceptSlots":{"condition":[],"context":[],"action":["head-light"],"polarity":null,"signals":[{"slot":"action","value":"head-light","signal":"head-light"}]},"candidateConceptSlots":{"condition":["fog"],"context":[],"action":["head-light"],"polarity":null,"signals":[{"slot":"condition","value":"fog","signal":"fog"},{"slot":"action","value":"head-light","signal":"head-light"}]},"conceptMatches":["action:head-light"],"contradictionSignals":[],"rowConceptMode":"slot-alignment + contradiction-penalties","explanation":["Binary yes/no options were treated as ROW-like for type scoring.","Missing correct answer was treated as a neutral signal.","ROW concept slots aligned on condition/context/action."]},"prompt":"When the light switch is in this position, the front fog lights turn on.","syntheticJaPrompt":"ライト switch position front fog ライト 点灯する。","translatedPrompt":"이 위치에서는 전방 안개등이 켜진다.","options":[],"correctAnswer":{"kind":"ROW","correctRow":"R","correctOptionId":null,"correctOptionKey":null,"correctOptionText":"right / true","correctOptionTranslatedText":null,"answerRaw":"Right"},"image":{"hasImage":true,"currentAssetSrc":"/qbank/2023-test1/images/img_fd5def965d8b96e20338c2ff92ecd64d.jpeg","assetHashes":["fd5def965d8b96e20338c2ff92ecd64d"]},"topic":"row","subtopics":[],"conceptSlots":{"condition":["fog"],"context":[],"action":["head-light"],"polarity":null,"signals":[{"slot":"condition","value":"fog","signal":"fog"},{"slot":"action","value":"head-light","signal":"head-light"}]},"scoreGapFromTop":0.026,"candidateImagePath":"../../../public/qbank/2023-test1/images/img_fd5def965d8b96e20338c2ff92ecd64d.jpeg"},{"qid":"q0562","number":562,"type":"ROW","score":61.487,"scoreBreakdown":{"promptSimilarity":0.236,"rawPromptSimilarity":0.236,"englishPromptSimilarity":0.236,"syntheticPromptSimilarity":0.071,"questionType":1,"imageSignal":1,"topicWeighting":0.5,"answerPolarity":0.5,"conceptAlignment":1,"contradictionPenalty":0,"assetTieBreak":0},"diagnostics":{"effectiveItemType":"ROW","declaredItemType":"MCQ","binaryChoiceDetected":true,"promptSpecificity":1,"genericPromptPenalty":1,"missingCorrectAnswerNeutral":true,"optionSetMode":"binary-row-neutral + synthetic-ja mirror","syntheticMirrorUsed":true,"genericPromptFamily":null,"sourceConceptSlots":{"condition":[],"context":[],"action":["head-light"],"polarity":null,"signals":[{"slot":"action","value":"head-light","signal":"head-light"}]},"candidateConceptSlots":{"condition":["fog"],"context":[],"action":["head-light"],"polarity":null,"signals":[{"slot":"condition","value":"fog","signal":"fog"},{"slot":"action","value":"head-light","signal":"head-light"}]},"conceptMatches":["action:head-light"],"contradictionSignals":[],"rowConceptMode":"slot-alignment + contradiction-penalties","explanation":["Binary yes/no options were treated as ROW-like for type scoring.","Missing correct answer was treated as a neutral signal.","ROW concept slots aligned on condition/context/action."]},"prompt":"Rear fog light lights when the light switch is at this position.","syntheticJaPrompt":"rear fog ライト ライト when ライト switch position 49。","translatedPrompt":"후면 안개등 스위치를 이 위치로 돌리면 후면 안개등이 켜진다.","options":[],"correctAnswer":{"kind":"ROW","correctRow":"R","correctOptionId":null,"correctOptionKey":null,"correctOptionText":"right / true","correctOptionTranslatedText":null,"answerRaw":"Right"},"image":{"hasImage":true,"currentAssetSrc":"/qbank/2023-test1/images/p49-562.jpg","assetHashes":["8a6d2cab1ffcd5b08a683dd69137e336"]},"topic":"row","subtopics":[],"conceptSlots":{"condition":["fog"],"context":[],"action":["head-light"],"polarity":null,"signals":[{"slot":"condition","value":"fog","signal":"fog"},{"slot":"action","value":"head-light","signal":"head-light"}]},"scoreGapFromTop":8.347,"candidateImagePath":"../../../public/qbank/2023-test1/images/p49-562.jpg"},{"qid":"q0231","number":231,"type":"ROW","score":58.891,"scoreBreakdown":{"promptSimilarity":0.192,"rawPromptSimilarity":0.192,"englishPromptSimilarity":0.192,"syntheticPromptSimilarity":0.066,"questionType":1,"imageSignal":1,"topicWeighting":0.5,"answerPolarity":0.5,"conceptAlignment":1,"contradictionPenalty":0,"assetTieBreak":0},"diagnostics":{"effectiveItemType":"ROW","declaredItemType":"MCQ","binaryChoiceDetected":true,"promptSpecificity":1,"genericPromptPenalty":1,"missingCorrectAnswerNeutral":true,"optionSetMode":"binary-row-neutral + synthetic-ja mirror","syntheticMirrorUsed":true,"genericPromptFamily":null,"sourceConceptSlots":{"condition":[],"context":[],"action":["head-light"],"polarity":null,"signals":[{"slot":"action","value":"head-light","signal":"head-light"}]},"candidateConceptSlots":{"condition":[],"context":["intersection"],"action":["head-light"],"polarity":null,"signals":[{"slot":"context","value":"intersection","signal":"intersection"},{"slot":"action","value":"head-light","signal":"head-light"}]},"conceptMatches":["action:head-light"],"contradictionSignals":[],"rowConceptMode":"slot-alignment + contradiction-penalties","explanation":["Binary yes/no options were treated as ROW-like for type scoring.","Missing correct answer was treated as a neutral signal.","ROW concept slots aligned on condition/context/action."]},"prompt":"You can speed up to go through the intersection before the light turns red in this case.","syntheticJaPrompt":"speeding up go though 交差点 before ライト turn red case。","translatedPrompt":"이 경우에는 적색 신호로 바뀌기 전에 교차로를 통과하려고 가속해도 된다.","options":[],"correctAnswer":{"kind":"ROW","correctRow":"W","correctOptionId":null,"correctOptionKey":null,"correctOptionText":"wrong / false","correctOptionTranslatedText":null,"answerRaw":"Wrong"},"image":{"hasImage":true,"currentAssetSrc":"/qbank/2023-test1/images/img_c47f0b466f45600666862d4b0bc703b0.jpeg","assetHashes":["c47f0b466f45600666862d4b0bc703b0"]},"topic":"proper-driving","subtopics":["proper-driving:safe-driving","traffic-signals:signal-lights"],"conceptSlots":{"condition":[],"context":["intersection"],"action":["head-light"],"polarity":null,"signals":[{"slot":"context","value":"intersection","signal":"intersection"},{"slot":"action","value":"head-light","signal":"head-light"}]},"scoreGapFromTop":10.943,"candidateImagePath":"../../../public/qbank/2023-test1/images/img_c47f0b466f45600666862d4b0bc703b0.jpeg"},{"qid":"q0632","number":632,"type":"ROW","score":56.427,"scoreBreakdown":{"promptSimilarity":0.148,"rawPromptSimilarity":0.148,"englishPromptSimilarity":0.086,"syntheticPromptSimilarity":0.148,"questionType":1,"imageSignal":1,"topicWeighting":0.5,"answerPolarity":0.5,"conceptAlignment":1,"contradictionPenalty":0,"assetTieBreak":0},"diagnostics":{"effectiveItemType":"ROW","declaredItemType":"MCQ","binaryChoiceDetected":true,"promptSpecificity":1,"genericPromptPenalty":1,"missingCorrectAnswerNeutral":true,"optionSetMode":"binary-row-neutral + synthetic-ja mirror","syntheticMirrorUsed":true,"genericPromptFamily":null,"sourceConceptSlots":{"condition":[],"context":[],"action":["head-light"],"polarity":null,"signals":[{"slot":"action","value":"head-light","signal":"head-light"}]},"candidateConceptSlots":{"condition":[],"context":["intersection"],"action":["head-light"],"polarity":"negative","signals":[{"slot":"context","value":"intersection","signal":"intersection"},{"slot":"action","value":"head-light","signal":"head-light"}]},"conceptMatches":["action:head-light"],"contradictionSignals":[],"rowConceptMode":"slot-alignment + contradiction-penalties","explanation":["Binary yes/no options were treated as ROW-like for type scoring.","Missing correct answer was treated as a neutral signal.","ROW concept slots aligned on condition/context/action."]},"prompt":"The vehicles are prohibited from passing when encountering this traffic light at the intersection.","syntheticJaPrompt":"車両 してはならない passing when encountering traffic ライト 交差点。","translatedPrompt":"교차로에서 이 신호등을 만났을 때 차량은 통과가 금지된다.","options":[],"correctAnswer":{"kind":"ROW","correctRow":"W","correctOptionId":null,"correctOptionKey":null,"correctOptionText":"wrong / false","correctOptionTranslatedText":null,"answerRaw":"Wrong"},"image":{"hasImage":true,"currentAssetSrc":"/qbank/2023-test1/images/img_a7e00dc7056df270d2c65a9ad825f5de.jpeg","assetHashes":["a7e00dc7056df270d2c65a9ad825f5de"]},"topic":"row","subtopics":[],"conceptSlots":{"condition":[],"context":["intersection"],"action":["head-light"],"polarity":"negative","signals":[{"slot":"context","value":"intersection","signal":"intersection"},{"slot":"action","value":"head-light","signal":"head-light"}]},"scoreGapFromTop":13.407,"candidateImagePath":"../../../public/qbank/2023-test1/images/img_a7e00dc7056df270d2c65a9ad825f5de.jpeg"}],"screenshotPath":"../../../imports/ja/batch-002/screenshots/Screenshot 2026-04-07 at 17.50.12.png"},{"index":7,"sourceKind":"review-needed","itemId":"screenshots/Screenshot 2026-04-07 at 17.50.13 1.png","sourceImage":"screenshots/Screenshot 2026-04-07 at 17.50.13 1.png","promptRawJa":"交通事故で人に怪我をさせた場合、現場を保護してただちに警察に通報すべきである。","promptGlossEn":"If you injure a person in a traffic accident, you should protect the scene and immediately report it to the police.","optionsRawJa":["A Yes","B No"],"optionsGlossEn":["Yes","No"],"correctKeyRaw":null,"correctAnswerRaw":null,"ocrConfidence":"high","provisionalTopic":"road-safety","provisionalSubtopics":["road-safety:accidents"],"topicConfidence":1,"topicSignals":[{"topic":"road-safety","subtopic":"road-safety:accidents","signal":"accident","weight":1.15}],"sourceConceptSlots":{"condition":[],"context":[],"action":[],"polarity":"positive","signals":[]},"reason":null,"localizedText":{"prompt":"交通事故で人に怪我をさせた場合、現場を保護してただちに警察に通報すべきである。","options":["A Yes","B No"],"correctAnswer":null,"explanation":null},"translatedText":{"prompt":"If you injure a person in a traffic accident, you should protect the scene and immediately report it to the police.","options":["Yes","No"],"correctAnswer":null},"analysis":{"mode":"standard","effectiveQuestionType":"ROW","declaredQuestionType":"MCQ","booleanChoiceDetected":true,"plausibleShortlist":true,"explanation":"Top candidate cleared the review floor but remains review-first."},"currentTopQid":"q0214","currentTopScore":52.366,"currentTopGap":2.001,"topCandidates":[{"qid":"q0214","number":214,"type":"ROW","score":52.366,"scoreBreakdown":{"promptSimilarity":0.429,"rawPromptSimilarity":0.429,"englishPromptSimilarity":0.429,"syntheticPromptSimilarity":0,"questionType":1,"imageSignal":1,"topicWeighting":0.5,"answerPolarity":0.5,"conceptAlignment":0,"contradictionPenalty":0,"assetTieBreak":0},"diagnostics":{"effectiveItemType":"ROW","declaredItemType":"MCQ","binaryChoiceDetected":true,"promptSpecificity":1,"genericPromptPenalty":1,"missingCorrectAnswerNeutral":true,"optionSetMode":"binary-row-neutral + synthetic-ja mirror","syntheticMirrorUsed":true,"genericPromptFamily":null,"sourceConceptSlots":{"condition":[],"context":[],"action":[],"polarity":"positive","signals":[]},"candidateConceptSlots":{"condition":[],"context":[],"action":[],"polarity":null,"signals":[]},"conceptMatches":[],"contradictionSignals":[],"rowConceptMode":"slot-alignment + contradiction-penalties","explanation":["Binary yes/no options were treated as ROW-like for type scoring.","Missing correct answer was treated as a neutral signal."]},"prompt":"When a traffic accident causing human injuries, preserve the scene and immediately report to the police.","syntheticJaPrompt":"when traffic accident causing human injury preserve scene and immediately report police","translatedPrompt":"사람이 다친 교통사고가 발생하면 사고 현장을 보존하고 즉시 경찰에 신고해야 한다.","options":[],"correctAnswer":{"kind":"ROW","correctRow":"R","correctOptionId":null,"correctOptionKey":null,"correctOptionText":"right / true","correctOptionTranslatedText":null,"answerRaw":"Right"},"image":{"hasImage":false,"currentAssetSrc":null,"assetHashes":[]},"topic":"accidents","subtopics":[],"conceptSlots":{"condition":[],"context":[],"action":[],"polarity":null,"signals":[]},"scoreGapFromTop":0,"candidateImagePath":null},{"qid":"q0215","number":215,"type":"ROW","score":50.364,"scoreBreakdown":{"promptSimilarity":0.394,"rawPromptSimilarity":0.394,"englishPromptSimilarity":0.394,"syntheticPromptSimilarity":0,"questionType":1,"imageSignal":1,"topicWeighting":0.5,"answerPolarity":0.5,"conceptAlignment":0,"contradictionPenalty":0,"assetTieBreak":0},"diagnostics":{"effectiveItemType":"ROW","declaredItemType":"MCQ","binaryChoiceDetected":true,"promptSpecificity":1,"genericPromptPenalty":1,"missingCorrectAnswerNeutral":true,"optionSetMode":"binary-row-neutral + synthetic-ja mirror","syntheticMirrorUsed":true,"genericPromptFamily":null,"sourceConceptSlots":{"condition":[],"context":[],"action":[],"polarity":"positive","signals":[]},"candidateConceptSlots":{"condition":[],"context":[],"action":[],"polarity":null,"signals":[]},"conceptMatches":[],"contradictionSignals":[],"rowConceptMode":"slot-alignment + contradiction-penalties","explanation":["Binary yes/no options were treated as ROW-like for type scoring.","Missing correct answer was treated as a neutral signal."]},"prompt":"When the driver is suspected of drinking or under the influence in a traffic accident, preserve the scene and immediately report to the police.","syntheticJaPrompt":"when 運転者 suspected drinking or drunk traffic accident preserve scene and immediately report police。","translatedPrompt":"교통사고에서 운전자가 음주 또는 약물 영향이 의심되는 경우 사고 현장을 보존하고 즉시 경찰에 신고해야 한다.","options":[],"correctAnswer":{"kind":"ROW","correctRow":"R","correctOptionId":null,"correctOptionKey":null,"correctOptionText":"right / true","correctOptionTranslatedText":null,"answerRaw":"Right"},"image":{"hasImage":false,"currentAssetSrc":null,"assetHashes":[]},"topic":"accidents","subtopics":[],"conceptSlots":{"condition":[],"context":[],"action":[],"polarity":null,"signals":[]},"scoreGapFromTop":2.002,"candidateImagePath":null},{"qid":"q0247","number":247,"type":"ROW","score":45.371,"scoreBreakdown":{"promptSimilarity":0.306,"rawPromptSimilarity":0.306,"englishPromptSimilarity":0.306,"syntheticPromptSimilarity":0.029,"questionType":1,"imageSignal":1,"topicWeighting":0.5,"answerPolarity":0.5,"conceptAlignment":0,"contradictionPenalty":0,"assetTieBreak":0},"diagnostics":{"effectiveItemType":"ROW","declaredItemType":"MCQ","binaryChoiceDetected":true,"promptSpecificity":1,"genericPromptPenalty":1,"missingCorrectAnswerNeutral":true,"optionSetMode":"binary-row-neutral + synthetic-ja mirror","syntheticMirrorUsed":true,"genericPromptFamily":null,"sourceConceptSlots":{"condition":[],"context":[],"action":[],"polarity":"positive","signals":[]},"candidateConceptSlots":{"condition":[],"context":[],"action":[],"polarity":"positive","signals":[]},"conceptMatches":[],"contradictionSignals":[],"rowConceptMode":"slot-alignment + contradiction-penalties","explanation":["Binary yes/no options were treated as ROW-like for type scoring.","Missing correct answer was treated as a neutral signal."]},"prompt":"When causing a road accident involving human casualties, the driver should immediately rescue the injured people and report to the traffic police as soon as possible.","syntheticJaPrompt":"when causing road accident involving human casualty 運転者 べき immediately rescue injured people and report traffic police as soon as possible。","translatedPrompt":"사람이 다친 교통사고를 발생시킨 경우, 운전자는 즉시 부상자를 구조하고 가능한 한 빨리 교통경찰에 신고해야 한다.","options":[],"correctAnswer":{"kind":"ROW","correctRow":"R","correctOptionId":null,"correctOptionKey":null,"correctOptionText":"right / true","correctOptionTranslatedText":null,"answerRaw":"Right"},"image":{"hasImage":false,"currentAssetSrc":null,"assetHashes":[]},"topic":"police-hand-signals","subtopics":[],"conceptSlots":{"condition":[],"context":[],"action":[],"polarity":"positive","signals":[]},"scoreGapFromTop":6.995,"candidateImagePath":null},{"qid":"q0222","number":222,"type":"ROW","score":44.633,"scoreBreakdown":{"promptSimilarity":0.295,"rawPromptSimilarity":0.295,"englishPromptSimilarity":0.295,"syntheticPromptSimilarity":0,"questionType":1,"imageSignal":1,"topicWeighting":0.5,"answerPolarity":0.5,"conceptAlignment":0,"contradictionPenalty":0,"assetTieBreak":0},"diagnostics":{"effectiveItemType":"ROW","declaredItemType":"MCQ","binaryChoiceDetected":true,"promptSpecificity":1,"genericPromptPenalty":1,"missingCorrectAnswerNeutral":true,"optionSetMode":"binary-row-neutral + synthetic-ja mirror","syntheticMirrorUsed":true,"genericPromptFamily":null,"sourceConceptSlots":{"condition":[],"context":[],"action":[],"polarity":"positive","signals":[]},"candidateConceptSlots":{"condition":[],"context":[],"action":[],"polarity":null,"signals":[]},"conceptMatches":[],"contradictionSignals":[],"rowConceptMode":"slot-alignment + contradiction-penalties","explanation":["Binary yes/no options were treated as ROW-like for type scoring.","Missing correct answer was treated as a neutral signal."]},"prompt":"If the vehicle has no license plate, a label of inspection, or a label of insurance, preserve the scene and immediately report it to the police.","syntheticJaPrompt":"if 車両 has いいえ license plate label inspection or label insurance preserve scene and immediately report police。","translatedPrompt":"차량에 번호판, 검사표지 또는 보험표지가 없으면 현장을 보존하고 즉시 경찰에 신고해야 한다.","options":[],"correctAnswer":{"kind":"ROW","correctRow":"R","correctOptionId":null,"correctOptionKey":null,"correctOptionText":"right / true","correctOptionTranslatedText":null,"answerRaw":"Right"},"image":{"hasImage":false,"currentAssetSrc":null,"assetHashes":[]},"topic":"vehicle-registration","subtopics":[],"conceptSlots":{"condition":[],"context":[],"action":[],"polarity":null,"signals":[]},"scoreGapFromTop":7.733,"candidateImagePath":null},{"qid":"q0310","number":310,"type":"ROW","score":42.48,"scoreBreakdown":{"promptSimilarity":0.256,"rawPromptSimilarity":0.256,"englishPromptSimilarity":0.256,"syntheticPromptSimilarity":0.04,"questionType":1,"imageSignal":1,"topicWeighting":0.5,"answerPolarity":0.5,"conceptAlignment":0,"contradictionPenalty":0,"assetTieBreak":0},"diagnostics":{"effectiveItemType":"ROW","declaredItemType":"MCQ","binaryChoiceDetected":true,"promptSpecificity":1,"genericPromptPenalty":1,"missingCorrectAnswerNeutral":true,"optionSetMode":"binary-row-neutral + synthetic-ja mirror","syntheticMirrorUsed":true,"genericPromptFamily":null,"sourceConceptSlots":{"condition":[],"context":[],"action":[],"polarity":"positive","signals":[]},"candidateConceptSlots":{"condition":[],"context":[],"action":[],"polarity":"positive","signals":[]},"conceptMatches":[],"contradictionSignals":[],"rowConceptMode":"slot-alignment + contradiction-penalties","explanation":["Binary yes/no options were treated as ROW-like for type scoring.","Missing correct answer was treated as a neutral signal."]},"prompt":"If a motorized vehicle causes a traffic accident on the road, the driver should immediately move the vehicle to the roadside.","syntheticJaPrompt":"if motorized 車両 cause traffic accident road 運転者 べき immediately move 車両 roadside。","translatedPrompt":"도로에서 자동차가 교통사고를 일으킨 경우 운전자는 즉시 차량을 갓길로 이동시켜야 한다.","options":[],"correctAnswer":{"kind":"ROW","correctRow":"W","correctOptionId":null,"correctOptionKey":null,"correctOptionText":"wrong / false","correctOptionTranslatedText":null,"answerRaw":"Wrong"},"image":{"hasImage":false,"currentAssetSrc":null,"assetHashes":[]},"topic":"accidents","subtopics":[],"conceptSlots":{"condition":[],"context":[],"action":[],"polarity":"positive","signals":[]},"scoreGapFromTop":9.886,"candidateImagePath":null}],"screenshotPath":"../../../imports/ja/batch-002/screenshots/Screenshot 2026-04-07 at 17.50.13 1.png"},{"index":8,"sourceKind":"review-needed","itemId":"screenshots/Screenshot 2026-04-07 at 17.50.14.png","sourceImage":"screenshots/Screenshot 2026-04-07 at 17.50.14.png","promptRawJa":"山道での走行時、カーブへ入る前に対向車が来ていない場合どうすべきか。","promptGlossEn":"When driving on a mountain road, what should you do before entering a curve if no oncoming vehicles are present?","optionsRawJa":["A 減速してクラクションを鳴らし右側寄りを走行する","B カーブの外側寄りを走行する","C 対向車線を一時占有する","D 加速しカーブの最短ルートを通過する"],"optionsGlossEn":["A. Slow down, sound the horn, and drive close to the right side","B. Drive close to the outside of the curve","C. Temporarily occupy the oncoming lane","D. Accelerate and take the shortest route through the curve"],"correctKeyRaw":null,"correctAnswerRaw":null,"ocrConfidence":"high","provisionalTopic":"road-safety","provisionalSubtopics":["road-safety:road-conditions","proper-driving:safe-driving"],"topicConfidence":0.52,"topicSignals":[{"topic":"road-safety","subtopic":"road-safety:road-conditions","signal":"road-condition-or-hazard","weight":1.3},{"topic":"proper-driving","subtopic":"proper-driving:safe-driving","signal":"driving-action","weight":1.2}],"sourceConceptSlots":null,"reason":null,"localizedText":{"prompt":"山道での走行時、カーブへ入る前に対向車が来ていない場合どうすべきか。","options":["A 減速してクラクションを鳴らし右側寄りを走行する","B カーブの外側寄りを走行する","C 対向車線を一時占有する","D 加速しカーブの最短ルートを通過する"],"correctAnswer":null,"explanation":null},"translatedText":{"prompt":"When driving on a mountain road, what should you do before entering a curve if no oncoming vehicles are present?","options":["A. Slow down, sound the horn, and drive close to the right side","B. Drive close to the outside of the curve","C. Temporarily occupy the oncoming lane","D. Accelerate and take the shortest route through the curve"],"correctAnswer":null},"analysis":{"mode":"standard","effectiveQuestionType":"MCQ","declaredQuestionType":"MCQ","booleanChoiceDetected":false,"plausibleShortlist":true,"explanation":"Top candidate cleared the review floor but remains review-first."},"currentTopQid":"q0130","currentTopScore":46.672,"currentTopGap":5.504,"topCandidates":[{"qid":"q0130","number":130,"type":"MCQ","score":46.672,"scoreBreakdown":{"promptSimilarity":0.25,"rawPromptSimilarity":0.25,"englishPromptSimilarity":0.25,"syntheticPromptSimilarity":0,"optionSimilarity":0.332,"englishOptionSimilarity":0.332,"syntheticOptionSimilarity":0.122,"optionFingerprint":0.214,"englishOptionFingerprint":0.214,"syntheticOptionFingerprint":0.101,"optionExactSet":0,"optionRareCoverage":0.242,"mirrorAgreement":0.115,"correctAnswerMeaning":0.5,"englishCorrectAnswerMeaning":0.5,"syntheticCorrectAnswerMeaning":0.5,"questionType":1,"imageSignal":1,"topicWeighting":0.5,"assetTieBreak":0},"diagnostics":{"effectiveItemType":"MCQ","declaredItemType":"MCQ","binaryChoiceDetected":false,"promptSpecificity":1,"genericPromptPenalty":1,"missingCorrectAnswerNeutral":true,"exactCorrectKey":false,"optionSetMode":"unordered-semantic + synthetic-ja mirror","rareSetBonus":0,"syntheticMirrorUsed":true,"genericPromptFamily":null,"explanation":["Missing correct answer was treated as a neutral signal."]},"prompt":"Before a vehicle enters a curve of a mountain road, the driver ______ if there is no vehicle coming in the opposite direction.","syntheticJaPrompt":"before 車両 enter curve mountain road 運転者 ______ if there いいえ 車両 coming opposite direction。","translatedPrompt":"산길의 커브에 진입하기 전에, 마주 오는 차량이 없으면 운전자는 어떻게 해야 하는가?","options":[{"id":"A","text":"should reduce speed, honk, and drive on the right side","translatedText":"감속하고 경적을 울리며 우측으로 주행하다"},{"id":"B","text":"should drive along the outer side of the curve","translatedText":"커브의 바깥쪽으로 주행하다"},{"id":"C","text":"may briefly borrow the opposite lane","translatedText":"일시적으로 반대 차로를 사용할 수 있다"},{"id":"D","text":"may speed up and pass along the tangent line of the curve","translatedText":"가속하여 커브의 접선 방향으로 통과할 수 있다"}],"correctAnswer":{"kind":"MCQ","correctRow":null,"correctOptionId":"q0130_o1","correctOptionKey":"A","correctOptionText":"should reduce speed, honk, and drive on the right side","correctOptionTranslatedText":"감속하고 경적을 울리며 우측으로 주행하다","answerRaw":"A"},"image":{"hasImage":false,"currentAssetSrc":null,"assetHashes":[]},"topic":"mcq","subtopics":[],"conceptSlots":null,"scoreGapFromTop":0,"candidateImagePath":null},{"qid":"q0165","number":165,"type":"MCQ","score":41.168,"scoreBreakdown":{"promptSimilarity":0.145,"rawPromptSimilarity":0.145,"englishPromptSimilarity":0.145,"syntheticPromptSimilarity":0.057,"optionSimilarity":0.271,"englishOptionSimilarity":0.271,"syntheticOptionSimilarity":0.061,"optionFingerprint":0.159,"englishOptionFingerprint":0.159,"syntheticOptionFingerprint":0.044,"optionExactSet":0,"optionRareCoverage":0.175,"mirrorAgreement":0.055,"correctAnswerMeaning":0.5,"englishCorrectAnswerMeaning":0.5,"syntheticCorrectAnswerMeaning":0.5,"questionType":1,"imageSignal":1,"topicWeighting":0.5,"assetTieBreak":0},"diagnostics":{"effectiveItemType":"MCQ","declaredItemType":"MCQ","binaryChoiceDetected":false,"promptSpecificity":1,"genericPromptPenalty":1,"missingCorrectAnswerNeutral":true,"exactCorrectKey":false,"optionSetMode":"unordered-semantic + synthetic-ja mirror","rareSetBonus":0,"syntheticMirrorUsed":true,"genericPromptFamily":null,"explanation":["Missing correct answer was treated as a neutral signal."]},"prompt":"When a vehicle reaches a sharp curve, the driver should ______.","syntheticJaPrompt":"when 車両 reach sharp curve 運転者 べき _______。","translatedPrompt":"급커브에 진입하면 운전자는 어떻게 해야 하는가?","options":[{"id":"A","text":"brake suddenly and go slowly","translatedText":"급제동 후 서행한다"},{"id":"B","text":"drive along the outer side of the curve","translatedText":"커브의 바깥쪽으로 주행한다"},{"id":"C","text":"fully reduce speed and drive on the right side","translatedText":"충분히 감속하고 우측으로 주행한다"},{"id":"D","text":"go forward by borrowing the opposite lane","translatedText":"반대편 차로를 침범하여 진행한다"}],"correctAnswer":{"kind":"MCQ","correctRow":null,"correctOptionId":"q0165_o3","correctOptionKey":"C","correctOptionText":"fully reduce speed and drive on the right side","correctOptionTranslatedText":"충분히 감속하고 우측으로 주행한다","answerRaw":"C"},"image":{"hasImage":false,"currentAssetSrc":null,"assetHashes":[]},"topic":"mcq","subtopics":[],"conceptSlots":null,"scoreGapFromTop":5.504,"candidateImagePath":null},{"qid":"q0483","number":483,"type":"MCQ","score":39.739,"scoreBreakdown":{"promptSimilarity":0.245,"rawPromptSimilarity":0.245,"englishPromptSimilarity":0.245,"syntheticPromptSimilarity":0.034,"optionSimilarity":0.19,"englishOptionSimilarity":0.19,"syntheticOptionSimilarity":0.115,"optionFingerprint":0.122,"englishOptionFingerprint":0.122,"syntheticOptionFingerprint":0.115,"optionExactSet":0,"optionRareCoverage":0.125,"mirrorAgreement":0.115,"correctAnswerMeaning":0.5,"englishCorrectAnswerMeaning":0.5,"syntheticCorrectAnswerMeaning":0.5,"questionType":1,"imageSignal":1,"topicWeighting":0.5,"assetTieBreak":0},"diagnostics":{"effectiveItemType":"MCQ","declaredItemType":"MCQ","binaryChoiceDetected":false,"promptSpecificity":1,"genericPromptPenalty":1,"missingCorrectAnswerNeutral":true,"exactCorrectKey":false,"optionSetMode":"unordered-semantic + synthetic-ja mirror","rareSetBonus":0,"syntheticMirrorUsed":true,"genericPromptFamily":null,"explanation":["Missing correct answer was treated as a neutral signal."]},"prompt":"What should the driver do, if conditions permit, when a following vehicle gives the overtaking signal on a road without a central line?","syntheticJaPrompt":"べき 運転者 do if condition permit when 後続車 give 追い越し signal road without central line。","translatedPrompt":"중앙선이 없는 도로에서 뒤차가 추월 신호를 보낼 때, 조건이 허용되면 운전자는 어떻게 해야 하는가?","options":[{"id":"A","text":"maintain the original speed","translatedText":"원래 속도를 유지한다."},{"id":"B","text":"speed up","translatedText":"가속한다."},{"id":"C","text":"reduce speed, move to the right side and yield","translatedText":"감속하고 우측으로 붙어 양보한다."},{"id":"D","text":"immediately stop and yield","translatedText":"즉시 정차하여 양보한다."}],"correctAnswer":{"kind":"MCQ","correctRow":null,"correctOptionId":"q0483_o3","correctOptionKey":"C","correctOptionText":"reduce speed, move to the right side and yield","correctOptionTranslatedText":"감속하고 우측으로 붙어 양보한다.","answerRaw":"C"},"image":{"hasImage":false,"currentAssetSrc":null,"assetHashes":[]},"topic":"license","subtopics":[],"conceptSlots":null,"scoreGapFromTop":6.933,"candidateImagePath":null},{"qid":"q0136","number":136,"type":"MCQ","score":39.316,"scoreBreakdown":{"promptSimilarity":0.131,"rawPromptSimilarity":0.131,"englishPromptSimilarity":0.131,"syntheticPromptSimilarity":0.046,"optionSimilarity":0.247,"englishOptionSimilarity":0.247,"syntheticOptionSimilarity":0.1,"optionFingerprint":0.115,"englishOptionFingerprint":0.115,"syntheticOptionFingerprint":0.053,"optionExactSet":0,"optionRareCoverage":0.144,"mirrorAgreement":0.083,"correctAnswerMeaning":0.5,"englishCorrectAnswerMeaning":0.5,"syntheticCorrectAnswerMeaning":0.5,"questionType":1,"imageSignal":1,"topicWeighting":0.5,"assetTieBreak":0},"diagnostics":{"effectiveItemType":"MCQ","declaredItemType":"MCQ","binaryChoiceDetected":false,"promptSpecificity":1,"genericPromptPenalty":1,"missingCorrectAnswerNeutral":true,"exactCorrectKey":false,"optionSetMode":"unordered-semantic + synthetic-ja mirror","rareSetBonus":0,"syntheticMirrorUsed":true,"genericPromptFamily":null,"explanation":["Missing correct answer was treated as a neutral signal."]},"prompt":"When a following vehicle gives the overtaking signal, the driver should ______ if conditions permit.","syntheticJaPrompt":"when 後続車 give 追い越し signal 運転者 べき ________ if condition permit。","translatedPrompt":"후속 차량이 추월 신호를 보낼 때, 조건이 허락하면 운전자는 어떻게 해야 하는가?","options":[{"id":"A","text":"move to the right side and speed up","translatedText":"우측으로 이동하고 속도를 높인다"},{"id":"B","text":"voluntarily reduce speed and drive along the right side","translatedText":"자발적으로 속도를 줄이고 우측으로 주행한다"},{"id":"C","text":"yield a proper space and speed up","translatedText":"적절한 간격을 확보하고 속도를 높인다"},{"id":"D","text":"reduce speed rapidly or apply an emergency braking","translatedText":"급감속하거나 비상제동을 한다"}],"correctAnswer":{"kind":"MCQ","correctRow":null,"correctOptionId":"q0136_o2","correctOptionKey":"B","correctOptionText":"voluntarily reduce speed and drive along the right side","correctOptionTranslatedText":"자발적으로 속도를 줄이고 우측으로 주행한다","answerRaw":"B"},"image":{"hasImage":false,"currentAssetSrc":null,"assetHashes":[]},"topic":"license","subtopics":[],"conceptSlots":null,"scoreGapFromTop":7.356,"candidateImagePath":null},{"qid":"q0105","number":105,"type":"MCQ","score":38.331,"scoreBreakdown":{"promptSimilarity":0.189,"rawPromptSimilarity":0.189,"englishPromptSimilarity":0.189,"syntheticPromptSimilarity":0.052,"optionSimilarity":0.179,"englishOptionSimilarity":0.179,"syntheticOptionSimilarity":0.141,"optionFingerprint":0.12,"englishOptionFingerprint":0.08,"syntheticOptionFingerprint":0.107,"optionExactSet":0,"optionRareCoverage":0.22,"mirrorAgreement":0.12,"correctAnswerMeaning":0.5,"englishCorrectAnswerMeaning":0.5,"syntheticCorrectAnswerMeaning":0.5,"questionType":1,"imageSignal":1,"topicWeighting":0.5,"assetTieBreak":0},"diagnostics":{"effectiveItemType":"MCQ","declaredItemType":"MCQ","binaryChoiceDetected":false,"promptSpecificity":1,"genericPromptPenalty":1,"missingCorrectAnswerNeutral":true,"exactCorrectKey":false,"optionSetMode":"unordered-semantic + synthetic-ja mirror","rareSetBonus":0,"syntheticMirrorUsed":true,"genericPromptFamily":null,"explanation":["Missing correct answer was treated as a neutral signal."]},"prompt":"When encountering non-motorized vehicles cutting in on the road, the driver should ______.","syntheticJaPrompt":"when encountering 自転車 車両 cutting road 運転者 べき ___。","translatedPrompt":"자전거 등 비동력 차량이 도로에 끼어들 경우 운전자는 ____.","options":[{"id":"A","text":"honk to warn","translatedText":"경적을 울려 경고한다"},{"id":"B","text":"speed up and pass","translatedText":"가속하여 추월한다"},{"id":"C","text":"reduce speed and yield","translatedText":"감속하여 양보한다"},{"id":"D","text":"suddenly speed up while approaching","translatedText":"접근하면서 갑자기 가속한다"}],"correctAnswer":{"kind":"MCQ","correctRow":null,"correctOptionId":"q0105_o3","correctOptionKey":"C","correctOptionText":"reduce speed and yield","correctOptionTranslatedText":"감속하여 양보한다","answerRaw":"C"},"image":{"hasImage":false,"currentAssetSrc":null,"assetHashes":[]},"topic":"road-safety","subtopics":["road-safety:road-conditions","proper-driving:safe-driving"],"conceptSlots":null,"scoreGapFromTop":8.341,"candidateImagePath":null}],"screenshotPath":"../../../imports/ja/batch-002/screenshots/Screenshot 2026-04-07 at 17.50.14.png"},{"index":9,"sourceKind":"review-needed","itemId":"screenshots/Screenshot 2026-04-07 at 17.50.15.png","sourceImage":"screenshots/Screenshot 2026-04-07 at 17.50.15.png","promptRawJa":"夜間に追従走行する場合、後続車はハイビームヘッドランプをつけてもよい。","promptGlossEn":"When following another vehicle at night, is it acceptable for the vehicle behind to use high beam headlights?","optionsRawJa":["A Yes","B No"],"optionsGlossEn":["Yes","No"],"correctKeyRaw":null,"correctAnswerRaw":null,"ocrConfidence":"high","provisionalTopic":"road-safety","provisionalSubtopics":["road-safety:road-conditions","proper-driving:safe-driving"],"topicConfidence":0.52,"topicSignals":[{"topic":"road-safety","subtopic":"road-safety:road-conditions","signal":"road-condition-or-hazard","weight":1.3},{"topic":"proper-driving","subtopic":"proper-driving:safe-driving","signal":"driving-action","weight":1.2}],"sourceConceptSlots":{"condition":["night"],"context":["following-traffic"],"action":["high-beam"],"polarity":null,"signals":[{"slot":"condition","value":"night","signal":"night"},{"slot":"context","value":"following-traffic","signal":"following"},{"slot":"action","value":"high-beam","signal":"high-beam"}]},"reason":null,"localizedText":{"prompt":"夜間に追従走行する場合、後続車はハイビームヘッドランプをつけてもよい。","options":["A Yes","B No"],"correctAnswer":null,"explanation":null},"translatedText":{"prompt":"When following another vehicle at night, is it acceptable for the vehicle behind to use high beam headlights?","options":["Yes","No"],"correctAnswer":null},"analysis":{"mode":"standard","effectiveQuestionType":"ROW","declaredQuestionType":"MCQ","booleanChoiceDetected":true,"plausibleShortlist":true,"explanation":"Top candidate cleared the review floor but remains review-first."},"currentTopQid":"q0051","currentTopScore":64.231,"currentTopGap":4.371,"topCandidates":[{"qid":"q0051","number":51,"type":"ROW","score":64.231,"scoreBreakdown":{"promptSimilarity":0.365,"rawPromptSimilarity":0.365,"englishPromptSimilarity":0.365,"syntheticPromptSimilarity":0.343,"questionType":1,"imageSignal":1,"topicWeighting":0.5,"answerPolarity":0.5,"conceptAlignment":0.708,"contradictionPenalty":0,"assetTieBreak":0},"diagnostics":{"effectiveItemType":"ROW","declaredItemType":"MCQ","binaryChoiceDetected":true,"promptSpecificity":1,"genericPromptPenalty":1,"missingCorrectAnswerNeutral":true,"optionSetMode":"binary-row-neutral + synthetic-ja mirror","syntheticMirrorUsed":true,"genericPromptFamily":null,"sourceConceptSlots":{"condition":["night"],"context":["following-traffic"],"action":["high-beam"],"polarity":null,"signals":[{"slot":"condition","value":"night","signal":"night"},{"slot":"context","value":"following-traffic","signal":"following"},{"slot":"action","value":"high-beam","signal":"high-beam"}]},"candidateConceptSlots":{"condition":[],"context":["following-traffic"],"action":["high-beam","head-light"],"polarity":"positive","signals":[{"slot":"context","value":"following-traffic","signal":"following"},{"slot":"action","value":"high-beam","signal":"high-beam"},{"slot":"action","value":"head-light","signal":"head-light"}]},"conceptMatches":["context:following-traffic","action:high-beam"],"contradictionSignals":[],"rowConceptMode":"slot-alignment + contradiction-penalties","explanation":["Binary yes/no options were treated as ROW-like for type scoring.","Missing correct answer was treated as a neutral signal.","ROW concept slots aligned on condition/context/action."]},"prompt":"When following a vehicle, the following vehicle may use the high beam light.","syntheticJaPrompt":"when 後続車 車両 後続車 よい use ハイビーム ライト。","translatedPrompt":"선행 차량을 따라갈 때 후행 차량은 상향등을 켤 수 있다.","options":[],"correctAnswer":{"kind":"ROW","correctRow":"W","correctOptionId":null,"correctOptionKey":null,"correctOptionText":"wrong / false","correctOptionTranslatedText":null,"answerRaw":"Wrong"},"image":{"hasImage":false,"currentAssetSrc":null,"assetHashes":[]},"topic":"driving-operations","subtopics":["driving-operations:indicators","proper-driving:safe-driving"],"conceptSlots":{"condition":[],"context":["following-traffic"],"action":["high-beam","head-light"],"polarity":"positive","signals":[{"slot":"context","value":"following-traffic","signal":"following"},{"slot":"action","value":"high-beam","signal":"high-beam"},{"slot":"action","value":"head-light","signal":"head-light"}]},"scoreGapFromTop":0,"candidateImagePath":null},{"qid":"q0269","number":269,"type":"ROW","score":59.86,"scoreBreakdown":{"promptSimilarity":0.293,"rawPromptSimilarity":0.293,"englishPromptSimilarity":0.293,"syntheticPromptSimilarity":0.097,"questionType":1,"imageSignal":1,"topicWeighting":0.5,"answerPolarity":0.5,"conceptAlignment":0.75,"contradictionPenalty":0,"assetTieBreak":0},"diagnostics":{"effectiveItemType":"ROW","declaredItemType":"MCQ","binaryChoiceDetected":true,"promptSpecificity":1,"genericPromptPenalty":1,"missingCorrectAnswerNeutral":true,"optionSetMode":"binary-row-neutral + synthetic-ja mirror","syntheticMirrorUsed":true,"genericPromptFamily":null,"sourceConceptSlots":{"condition":["night"],"context":["following-traffic"],"action":["high-beam"],"polarity":null,"signals":[{"slot":"condition","value":"night","signal":"night"},{"slot":"context","value":"following-traffic","signal":"following"},{"slot":"action","value":"high-beam","signal":"high-beam"}]},"candidateConceptSlots":{"condition":["night"],"context":[],"action":["high-beam","head-light"],"polarity":"positive","signals":[{"slot":"condition","value":"night","signal":"night"},{"slot":"action","value":"high-beam","signal":"high-beam"},{"slot":"action","value":"head-light","signal":"head-light"}]},"conceptMatches":["condition:night","action:high-beam"],"contradictionSignals":[],"rowConceptMode":"slot-alignment + contradiction-penalties","explanation":["Binary yes/no options were treated as ROW-like for type scoring.","Missing correct answer was treated as a neutral signal.","ROW concept slots aligned on condition/context/action."]},"prompt":"When a motorized vehicle crosses a non-motorized vehicle on a narrow road or a narrow bridge at night, the motorized vehicle should use the high beam light.","syntheticJaPrompt":"when motorized 車両 十字 自転車 車両 narrow road or narrow bridge night 20 motorized 車両 べき use ハイビーム ライト。","translatedPrompt":"자동차가 야간에 좁은 도로나 좁은 다리에서 비동력 차량과 교행할 때 상향등을 사용해야 한다.","options":[],"correctAnswer":{"kind":"ROW","correctRow":"W","correctOptionId":null,"correctOptionKey":null,"correctOptionText":"wrong / false","correctOptionTranslatedText":null,"answerRaw":"Wrong"},"image":{"hasImage":false,"currentAssetSrc":null,"assetHashes":[]},"topic":"row","subtopics":[],"conceptSlots":{"condition":["night"],"context":[],"action":["high-beam","head-light"],"polarity":"positive","signals":[{"slot":"condition","value":"night","signal":"night"},{"slot":"action","value":"high-beam","signal":"high-beam"},{"slot":"action","value":"head-light","signal":"head-light"}]},"scoreGapFromTop":4.371,"candidateImagePath":null},{"qid":"q0080","number":80,"type":"ROW","score":59.195,"scoreBreakdown":{"promptSimilarity":0.277,"rawPromptSimilarity":0.277,"englishPromptSimilarity":0.277,"syntheticPromptSimilarity":0.134,"questionType":1,"imageSignal":1,"topicWeighting":0.5,"answerPolarity":0.5,"conceptAlignment":0.754,"contradictionPenalty":0,"assetTieBreak":0},"diagnostics":{"effectiveItemType":"ROW","declaredItemType":"MCQ","binaryChoiceDetected":true,"promptSpecificity":1,"genericPromptPenalty":1,"missingCorrectAnswerNeutral":true,"optionSetMode":"binary-row-neutral + synthetic-ja mirror","syntheticMirrorUsed":true,"genericPromptFamily":null,"sourceConceptSlots":{"condition":["night"],"context":["following-traffic"],"action":["high-beam"],"polarity":null,"signals":[{"slot":"condition","value":"night","signal":"night"},{"slot":"context","value":"following-traffic","signal":"following"},{"slot":"action","value":"high-beam","signal":"high-beam"}]},"candidateConceptSlots":{"condition":["night"],"context":["following-traffic"],"action":["low-beam","high-beam","head-light"],"polarity":"negative","signals":[{"slot":"condition","value":"night","signal":"night"},{"slot":"context","value":"following-traffic","signal":"following"},{"slot":"action","value":"low-beam","signal":"low-beam"},{"slot":"action","value":"high-beam","signal":"high-beam"},{"slot":"action","value":"head-light","signal":"head-light"}]},"conceptMatches":["condition:night","context:following-traffic","action:high-beam"],"contradictionSignals":[],"rowConceptMode":"slot-alignment + contradiction-penalties","explanation":["Binary yes/no options were treated as ROW-like for type scoring.","Missing correct answer was treated as a neutral signal.","ROW concept slots aligned on condition/context/action."]},"prompt":"When driving at night on a road with no or poor lighting, the driver should switch from the low beam light to the high beam light. But the vehicle following in the same direction is not allowed to use the high beam light.","syntheticJaPrompt":"when driving night road いいえ or poor lighting 運転者 べき switch ロービーム ライト ハイビーム ライト but 後続車 same direction してはならない use ハイビーム ライト。","translatedPrompt":"조명이 없거나 부족한 도로에서 야간 운전 시 운전자는 하향등에서 상향등으로 전환해야 한다. 그러나 같은 방향으로 진행하는 뒤차는 상향등을 사용해서는 안 된다.","options":[],"correctAnswer":{"kind":"ROW","correctRow":"R","correctOptionId":null,"correctOptionKey":null,"correctOptionText":"right / true","correctOptionTranslatedText":null,"answerRaw":"Right"},"image":{"hasImage":false,"currentAssetSrc":null,"assetHashes":[]},"topic":"row","subtopics":[],"conceptSlots":{"condition":["night"],"context":["following-traffic"],"action":["low-beam","high-beam","head-light"],"polarity":"negative","signals":[{"slot":"condition","value":"night","signal":"night"},{"slot":"context","value":"following-traffic","signal":"following"},{"slot":"action","value":"low-beam","signal":"low-beam"},{"slot":"action","value":"high-beam","signal":"high-beam"},{"slot":"action","value":"head-light","signal":"head-light"}]},"scoreGapFromTop":5.036,"candidateImagePath":null},{"qid":"q0072","number":72,"type":"ROW","score":57.711,"scoreBreakdown":{"promptSimilarity":0.173,"rawPromptSimilarity":0.173,"englishPromptSimilarity":0.173,"syntheticPromptSimilarity":0.049,"questionType":1,"imageSignal":1,"topicWeighting":0.5,"answerPolarity":0.5,"conceptAlignment":1,"contradictionPenalty":0,"assetTieBreak":0},"diagnostics":{"effectiveItemType":"ROW","declaredItemType":"MCQ","binaryChoiceDetected":true,"promptSpecificity":1,"genericPromptPenalty":1,"missingCorrectAnswerNeutral":true,"optionSetMode":"binary-row-neutral + synthetic-ja mirror","syntheticMirrorUsed":true,"genericPromptFamily":null,"sourceConceptSlots":{"condition":["night"],"context":["following-traffic"],"action":["high-beam"],"polarity":null,"signals":[{"slot":"condition","value":"night","signal":"night"},{"slot":"context","value":"following-traffic","signal":"following"},{"slot":"action","value":"high-beam","signal":"high-beam"}]},"candidateConceptSlots":{"condition":[],"context":["following-traffic"],"action":[],"polarity":"positive","signals":[{"slot":"context","value":"following-traffic","signal":"following"}]},"conceptMatches":["context:following-traffic"],"contradictionSignals":[],"rowConceptMode":"slot-alignment + contradiction-penalties","explanation":["Binary yes/no options were treated as ROW-like for type scoring.","Missing correct answer was treated as a neutral signal.","ROW concept slots aligned on condition/context/action."]},"prompt":"When following a vehicle on the road, the distance from the vehicle in front is not important. As long as the driver goes forward at the same speed as the vehicle in front does, he can avoid rear-end collision.","syntheticJaPrompt":"when 後続車 車両 road distance 車両 front not important as long as 運転者 goes forward same speed as 車両 front he can avoid rear-end collision。","translatedPrompt":"도로에서 앞차를 따라갈 때 앞차와의 거리는 중요하지 않다. 앞차와 같은 속도로 주행하면 추돌을 피할 수 있다.","options":[],"correctAnswer":{"kind":"ROW","correctRow":"W","correctOptionId":null,"correctOptionKey":null,"correctOptionText":"wrong / false","correctOptionTranslatedText":null,"answerRaw":"Wrong"},"image":{"hasImage":false,"currentAssetSrc":null,"assetHashes":[]},"topic":"accidents","subtopics":[],"conceptSlots":{"condition":[],"context":["following-traffic"],"action":[],"polarity":"positive","signals":[{"slot":"context","value":"following-traffic","signal":"following"}]},"scoreGapFromTop":6.52,"candidateImagePath":null},{"qid":"q0099","number":99,"type":"ROW","score":56.179,"scoreBreakdown":{"promptSimilarity":0.147,"rawPromptSimilarity":0.147,"englishPromptSimilarity":0.147,"syntheticPromptSimilarity":0.04,"questionType":1,"imageSignal":1,"topicWeighting":0.5,"answerPolarity":0.5,"conceptAlignment":1,"contradictionPenalty":0,"assetTieBreak":0},"diagnostics":{"effectiveItemType":"ROW","declaredItemType":"MCQ","binaryChoiceDetected":true,"promptSpecificity":1,"genericPromptPenalty":1,"missingCorrectAnswerNeutral":true,"optionSetMode":"binary-row-neutral + synthetic-ja mirror","syntheticMirrorUsed":true,"genericPromptFamily":null,"sourceConceptSlots":{"condition":["night"],"context":["following-traffic"],"action":["high-beam"],"polarity":null,"signals":[{"slot":"condition","value":"night","signal":"night"},{"slot":"context","value":"following-traffic","signal":"following"},{"slot":"action","value":"high-beam","signal":"high-beam"}]},"candidateConceptSlots":{"condition":[],"context":["following-traffic"],"action":[],"polarity":"positive","signals":[{"slot":"context","value":"following-traffic","signal":"following"}]},"conceptMatches":["context:following-traffic"],"contradictionSignals":[],"rowConceptMode":"slot-alignment + contradiction-penalties","explanation":["Binary yes/no options were treated as ROW-like for type scoring.","Missing correct answer was treated as a neutral signal.","ROW concept slots aligned on condition/context/action."]},"prompt":"When the driver discovers a tire is leaking air and steers the vehicle off the main carriageway, he should refrain from applying the emergency break so as to avoid a vehicle turnover or a rear-end collision arising from the late braking of the following vehicle.","syntheticJaPrompt":"when 運転者 discover tire leaking and steer 車両 off main carriageway he べき refrain applying emergency so as avoid 車両 turnover or rear-end collision arising late braking 後続車。","translatedPrompt":"운전자가 타이어 공기 누출을 발견하여 차량을 본 차로 밖으로 유도했을 때에는 전복이나 뒤따르던 차량의 늦은 제동으로 인한 추돌을 피하기 위해 급제동을 하지 않아야 한다.","options":[],"correctAnswer":{"kind":"ROW","correctRow":"R","correctOptionId":null,"correctOptionKey":null,"correctOptionText":"right / true","correctOptionTranslatedText":null,"answerRaw":"Right"},"image":{"hasImage":false,"currentAssetSrc":null,"assetHashes":[]},"topic":"accidents","subtopics":[],"conceptSlots":{"condition":[],"context":["following-traffic"],"action":[],"polarity":"positive","signals":[{"slot":"context","value":"following-traffic","signal":"following"}]},"scoreGapFromTop":8.052,"candidateImagePath":null}],"screenshotPath":"../../../imports/ja/batch-002/screenshots/Screenshot 2026-04-07 at 17.50.15.png"},{"index":10,"sourceKind":"review-needed","itemId":"screenshots/Screenshot 2026-04-07 at 17.50.17.png","sourceImage":"screenshots/Screenshot 2026-04-07 at 17.50.17.png","promptRawJa":"自動車のインパネの点灯は、足元とフロントガラスにエアコンが送風しているすることを示す。","promptGlossEn":"This indicator light on the car's dashboard shows that the air conditioning is blowing air to both the feet and the front windshield.","optionsRawJa":["A Yes","B No"],"optionsGlossEn":["Yes","No"],"correctKeyRaw":null,"correctAnswerRaw":null,"ocrConfidence":"high","provisionalTopic":"driving-operations","provisionalSubtopics":["driving-operations:indicators"],"topicConfidence":1,"topicSignals":[{"topic":"driving-operations","subtopic":"driving-operations:indicators","signal":"indicator-operation","weight":1.25}],"sourceConceptSlots":{"condition":[],"context":[],"action":["head-light"],"polarity":null,"signals":[{"slot":"action","value":"head-light","signal":"head-light"}]},"reason":null,"localizedText":{"prompt":"自動車のインパネの点灯は、足元とフロントガラスにエアコンが送風しているすることを示す。","options":["A Yes","B No"],"correctAnswer":null,"explanation":null},"translatedText":{"prompt":"This indicator light on the car's dashboard shows that the air conditioning is blowing air to both the feet and the front windshield.","options":["Yes","No"],"correctAnswer":null},"analysis":{"mode":"standard","effectiveQuestionType":"ROW","declaredQuestionType":"MCQ","booleanChoiceDetected":true,"plausibleShortlist":true,"explanation":"Top candidate cleared the review floor but remains review-first."},"currentTopQid":"q0525","currentTopScore":60.923,"currentTopGap":0.651,"topCandidates":[{"qid":"q0525","number":525,"type":"ROW","score":60.923,"scoreBreakdown":{"promptSimilarity":0.22,"rawPromptSimilarity":0.22,"englishPromptSimilarity":0.22,"syntheticPromptSimilarity":0.167,"questionType":1,"imageSignal":1,"topicWeighting":0.5,"answerPolarity":0.5,"conceptAlignment":1,"contradictionPenalty":0,"assetTieBreak":0},"diagnostics":{"effectiveItemType":"ROW","declaredItemType":"MCQ","binaryChoiceDetected":true,"promptSpecificity":1,"genericPromptPenalty":1,"missingCorrectAnswerNeutral":true,"optionSetMode":"binary-row-neutral + synthetic-ja mirror","syntheticMirrorUsed":true,"genericPromptFamily":null,"sourceConceptSlots":{"condition":[],"context":[],"action":["head-light"],"polarity":null,"signals":[{"slot":"action","value":"head-light","signal":"head-light"}]},"candidateConceptSlots":{"condition":["fog"],"context":[],"action":["head-light"],"polarity":null,"signals":[{"slot":"condition","value":"fog","signal":"fog"},{"slot":"action","value":"head-light","signal":"head-light"}]},"conceptMatches":["action:head-light"],"contradictionSignals":[],"rowConceptMode":"slot-alignment + contradiction-penalties","explanation":["Binary yes/no options were treated as ROW-like for type scoring.","Missing correct answer was treated as a neutral signal.","ROW concept slots aligned on condition/context/action."]},"prompt":"When the light switch is in this position, the front fog lights turn on.","syntheticJaPrompt":"ライト switch position front fog ライト 点灯する。","translatedPrompt":"이 위치에서는 전방 안개등이 켜진다.","options":[],"correctAnswer":{"kind":"ROW","correctRow":"R","correctOptionId":null,"correctOptionKey":null,"correctOptionText":"right / true","correctOptionTranslatedText":null,"answerRaw":"Right"},"image":{"hasImage":true,"currentAssetSrc":"/qbank/2023-test1/images/img_fd5def965d8b96e20338c2ff92ecd64d.jpeg","assetHashes":["fd5def965d8b96e20338c2ff92ecd64d"]},"topic":"row","subtopics":[],"conceptSlots":{"condition":["fog"],"context":[],"action":["head-light"],"polarity":null,"signals":[{"slot":"condition","value":"fog","signal":"fog"},{"slot":"action","value":"head-light","signal":"head-light"}]},"scoreGapFromTop":0,"candidateImagePath":"../../../public/qbank/2023-test1/images/img_fd5def965d8b96e20338c2ff92ecd64d.jpeg"},{"qid":"q0545","number":545,"type":"ROW","score":60.272,"scoreBreakdown":{"promptSimilarity":0.213,"rawPromptSimilarity":0.213,"englishPromptSimilarity":0.213,"syntheticPromptSimilarity":0.099,"questionType":1,"imageSignal":1,"topicWeighting":0.5,"answerPolarity":0.5,"conceptAlignment":1,"contradictionPenalty":0,"assetTieBreak":0},"diagnostics":{"effectiveItemType":"ROW","declaredItemType":"MCQ","binaryChoiceDetected":true,"promptSpecificity":1,"genericPromptPenalty":1,"missingCorrectAnswerNeutral":true,"optionSetMode":"binary-row-neutral + synthetic-ja mirror","syntheticMirrorUsed":true,"genericPromptFamily":null,"sourceConceptSlots":{"condition":[],"context":[],"action":["head-light"],"polarity":null,"signals":[{"slot":"action","value":"head-light","signal":"head-light"}]},"candidateConceptSlots":{"condition":[],"context":[],"action":["head-light"],"polarity":null,"signals":[{"slot":"action","value":"head-light","signal":"head-light"}]},"conceptMatches":["action:head-light"],"contradictionSignals":[],"rowConceptMode":"slot-alignment + contradiction-penalties","explanation":["Binary yes/no options were treated as ROW-like for type scoring.","Missing correct answer was treated as a neutral signal.","ROW concept slots aligned on condition/context/action."]},"prompt":"This lights up continuously to indicate that the airbag is working.","syntheticJaPrompt":"it ライト continuously indicate airbag working。","translatedPrompt":"계기판의 이 등이은 트렁크 도어 열림을 뜻한다.","options":[],"correctAnswer":{"kind":"ROW","correctRow":"W","correctOptionId":null,"correctOptionKey":null,"correctOptionText":"wrong / false","correctOptionTranslatedText":null,"answerRaw":"Wrong"},"image":{"hasImage":true,"currentAssetSrc":"/qbank/2023-test1/images/img_f8c2ac8a06d452671d032140977c278e.jpeg","assetHashes":["f8c2ac8a06d452671d032140977c278e"]},"topic":"row","subtopics":[],"conceptSlots":{"condition":[],"context":[],"action":["head-light"],"polarity":null,"signals":[{"slot":"action","value":"head-light","signal":"head-light"}]},"scoreGapFromTop":0.651,"candidateImagePath":"../../../public/qbank/2023-test1/images/img_f8c2ac8a06d452671d032140977c278e.jpeg"},{"qid":"q0573","number":573,"type":"ROW","score":60.171,"scoreBreakdown":{"promptSimilarity":0.212,"rawPromptSimilarity":0.212,"englishPromptSimilarity":0.212,"syntheticPromptSimilarity":0.09,"questionType":1,"imageSignal":1,"topicWeighting":0.5,"answerPolarity":0.5,"conceptAlignment":1,"contradictionPenalty":0,"assetTieBreak":0},"diagnostics":{"effectiveItemType":"ROW","declaredItemType":"MCQ","binaryChoiceDetected":true,"promptSpecificity":1,"genericPromptPenalty":1,"missingCorrectAnswerNeutral":true,"optionSetMode":"binary-row-neutral + synthetic-ja mirror","syntheticMirrorUsed":true,"genericPromptFamily":null,"sourceConceptSlots":{"condition":[],"context":[],"action":["head-light"],"polarity":null,"signals":[{"slot":"action","value":"head-light","signal":"head-light"}]},"candidateConceptSlots":{"condition":[],"context":[],"action":["head-light"],"polarity":null,"signals":[{"slot":"action","value":"head-light","signal":"head-light"}]},"conceptMatches":["action:head-light"],"contradictionSignals":[],"rowConceptMode":"slot-alignment + contradiction-penalties","explanation":["Binary yes/no options were treated as ROW-like for type scoring.","Missing correct answer was treated as a neutral signal.","ROW concept slots aligned on condition/context/action."]},"prompt":"This lights up to indicate enabling the floor and the front windscreen fan.","syntheticJaPrompt":"it ライト indicate enabling floor and front windscreen fan。","translatedPrompt":"계기판에 등이 켜졌다. 바닥과 앞유리 송풍이 작동 중임을 나타낸다.","options":[],"correctAnswer":{"kind":"ROW","correctRow":"R","correctOptionId":null,"correctOptionKey":null,"correctOptionText":"right / true","correctOptionTranslatedText":null,"answerRaw":"Right"},"image":{"hasImage":true,"currentAssetSrc":"/qbank/2023-test1/images/img_16768543e01020ab97faf3ffd743d01b.jpeg","assetHashes":["16768543e01020ab97faf3ffd743d01b"]},"topic":"row","subtopics":[],"conceptSlots":{"condition":[],"context":[],"action":["head-light"],"polarity":null,"signals":[{"slot":"action","value":"head-light","signal":"head-light"}]},"scoreGapFromTop":0.752,"candidateImagePath":"../../../public/qbank/2023-test1/images/img_16768543e01020ab97faf3ffd743d01b.jpeg"},{"qid":"q0564","number":564,"type":"ROW","score":59.998,"scoreBreakdown":{"promptSimilarity":0.208,"rawPromptSimilarity":0.208,"englishPromptSimilarity":0.208,"syntheticPromptSimilarity":0.111,"questionType":1,"imageSignal":1,"topicWeighting":0.5,"answerPolarity":0.5,"conceptAlignment":1,"contradictionPenalty":0,"assetTieBreak":0},"diagnostics":{"effectiveItemType":"ROW","declaredItemType":"MCQ","binaryChoiceDetected":true,"promptSpecificity":1,"genericPromptPenalty":1,"missingCorrectAnswerNeutral":true,"optionSetMode":"binary-row-neutral + synthetic-ja mirror","syntheticMirrorUsed":true,"genericPromptFamily":null,"sourceConceptSlots":{"condition":[],"context":[],"action":["head-light"],"polarity":null,"signals":[{"slot":"action","value":"head-light","signal":"head-light"}]},"candidateConceptSlots":{"condition":[],"context":[],"action":["head-light"],"polarity":null,"signals":[{"slot":"action","value":"head-light","signal":"head-light"}]},"conceptMatches":["action:head-light"],"contradictionSignals":[],"rowConceptMode":"slot-alignment + contradiction-penalties","explanation":["Binary yes/no options were treated as ROW-like for type scoring.","Missing correct answer was treated as a neutral signal.","ROW concept slots aligned on condition/context/action."]},"prompt":"This lights up to indicate that the generator is charging the batteries.","syntheticJaPrompt":"it ライト indicate generator charging battery。","translatedPrompt":"발전기가 배터리를 충전하고 있음을 알리는 표시등이 켜진다.","options":[],"correctAnswer":{"kind":"ROW","correctRow":"W","correctOptionId":null,"correctOptionKey":null,"correctOptionText":"wrong / false","correctOptionTranslatedText":null,"answerRaw":"Wrong"},"image":{"hasImage":true,"currentAssetSrc":"/qbank/2023-test1/images/img_3ebb2335603a5e45c9566b1591907337.jpeg","assetHashes":["3ebb2335603a5e45c9566b1591907337"]},"topic":"row","subtopics":[],"conceptSlots":{"condition":[],"context":[],"action":["head-light"],"polarity":null,"signals":[{"slot":"action","value":"head-light","signal":"head-light"}]},"scoreGapFromTop":0.925,"candidateImagePath":"../../../public/qbank/2023-test1/images/img_3ebb2335603a5e45c9566b1591907337.jpeg"},{"qid":"q0554","number":554,"type":"ROW","score":59.771,"scoreBreakdown":{"promptSimilarity":0.205,"rawPromptSimilarity":0.205,"englishPromptSimilarity":0.205,"syntheticPromptSimilarity":0.1,"questionType":1,"imageSignal":1,"topicWeighting":0.5,"answerPolarity":0.5,"conceptAlignment":1,"contradictionPenalty":0,"assetTieBreak":0},"diagnostics":{"effectiveItemType":"ROW","declaredItemType":"MCQ","binaryChoiceDetected":true,"promptSpecificity":1,"genericPromptPenalty":1,"missingCorrectAnswerNeutral":true,"optionSetMode":"binary-row-neutral + synthetic-ja mirror","syntheticMirrorUsed":true,"genericPromptFamily":null,"sourceConceptSlots":{"condition":[],"context":[],"action":["head-light"],"polarity":null,"signals":[{"slot":"action","value":"head-light","signal":"head-light"}]},"candidateConceptSlots":{"condition":[],"context":[],"action":["head-light"],"polarity":null,"signals":[{"slot":"action","value":"head-light","signal":"head-light"}]},"conceptMatches":["action:head-light"],"contradictionSignals":[],"rowConceptMode":"slot-alignment + contradiction-penalties","explanation":["Binary yes/no options were treated as ROW-like for type scoring.","Missing correct answer was treated as a neutral signal.","ROW concept slots aligned on condition/context/action."]},"prompt":"This lights up to indicate that the luggage compartment is open.","syntheticJaPrompt":"it ライト indicate トランク 開いている。","translatedPrompt":"이 등이 켜지면 트렁크가 열려 있음을 나타낸다.","options":[],"correctAnswer":{"kind":"ROW","correctRow":"W","correctOptionId":null,"correctOptionKey":null,"correctOptionText":"wrong / false","correctOptionTranslatedText":null,"answerRaw":"Wrong"},"image":{"hasImage":true,"currentAssetSrc":"/qbank/2023-test1/images/img_aba3c4c909612e539beb48e066155f53.jpeg","assetHashes":["aba3c4c909612e539beb48e066155f53"]},"topic":"row","subtopics":[],"conceptSlots":{"condition":[],"context":[],"action":["head-light"],"polarity":null,"signals":[{"slot":"action","value":"head-light","signal":"head-light"}]},"scoreGapFromTop":1.152,"candidateImagePath":"../../../public/qbank/2023-test1/images/img_aba3c4c909612e539beb48e066155f53.jpeg"}],"screenshotPath":"../../../imports/ja/batch-002/screenshots/Screenshot 2026-04-07 at 17.50.17.png"},{"index":11,"sourceKind":"review-needed","itemId":"screenshots/Screenshot 2026-04-07 at 17.50.18 1.png","sourceImage":"screenshots/Screenshot 2026-04-07 at 17.50.18 1.png","promptRawJa":"運転者が実習期間内に交通違反法による累積点数が12点になった場合、運転できる車種の運転資格は取消される。","promptGlossEn":"If a driver accumulates 12 demerit points due to traffic violations during the training period, their license to drive vehicles will be revoked.","optionsRawJa":["A Yes","B No"],"optionsGlossEn":["A Yes","B No"],"correctKeyRaw":null,"correctAnswerRaw":null,"ocrConfidence":"high","provisionalTopic":"road-safety","provisionalSubtopics":["road-safety:license"],"topicConfidence":1,"topicSignals":[{"topic":"road-safety","subtopic":"road-safety:license","signal":"license","weight":1.15}],"sourceConceptSlots":{"condition":[],"context":[],"action":[],"polarity":"positive","signals":[]},"reason":null,"localizedText":{"prompt":"運転者が実習期間内に交通違反法による累積点数が12点になった場合、運転できる車種の運転資格は取消される。","options":["A Yes","B No"],"correctAnswer":null,"explanation":null},"translatedText":{"prompt":"If a driver accumulates 12 demerit points due to traffic violations during the training period, their license to drive vehicles will be revoked.","options":["A Yes","B No"],"correctAnswer":null},"analysis":{"mode":"standard","effectiveQuestionType":"ROW","declaredQuestionType":"MCQ","booleanChoiceDetected":true,"plausibleShortlist":true,"explanation":"Top candidate cleared the review floor but remains review-first."},"currentTopQid":"q0252","currentTopScore":48.281,"currentTopGap":2.977,"topCandidates":[{"qid":"q0252","number":252,"type":"ROW","score":48.281,"scoreBreakdown":{"promptSimilarity":0.355,"rawPromptSimilarity":0.355,"englishPromptSimilarity":0.355,"syntheticPromptSimilarity":0.043,"questionType":1,"imageSignal":1,"topicWeighting":0.5,"answerPolarity":0.5,"conceptAlignment":0,"contradictionPenalty":0,"assetTieBreak":0},"diagnostics":{"effectiveItemType":"ROW","declaredItemType":"MCQ","binaryChoiceDetected":true,"promptSpecificity":1,"genericPromptPenalty":1,"missingCorrectAnswerNeutral":true,"optionSetMode":"binary-row-neutral + synthetic-ja mirror","syntheticMirrorUsed":true,"genericPromptFamily":null,"sourceConceptSlots":{"condition":[],"context":[],"action":[],"polarity":"positive","signals":[]},"candidateConceptSlots":{"condition":[],"context":[],"action":[],"polarity":"positive","signals":[]},"conceptMatches":[],"contradictionSignals":[],"rowConceptMode":"slot-alignment + contradiction-penalties","explanation":["Binary yes/no options were treated as ROW-like for type scoring.","Missing correct answer was treated as a neutral signal."]},"prompt":"If a motorized vehicle driver reaches 12 penalty points during the period of probation, the probation qualification will be revoked.","syntheticJaPrompt":"if motorized 車両 運転者 reach 12 penalty point during period probation probation qualification べき be revoked。","translatedPrompt":"자동차 운전자가 실습기간 동안 벌점이 12점에 도달하면 실습 자격이 취소된다.","options":[],"correctAnswer":{"kind":"ROW","correctRow":"R","correctOptionId":null,"correctOptionKey":null,"correctOptionText":"right / true","correctOptionTranslatedText":null,"answerRaw":"Right"},"image":{"hasImage":false,"currentAssetSrc":null,"assetHashes":[]},"topic":"violations-penalties","subtopics":[],"conceptSlots":{"condition":[],"context":[],"action":[],"polarity":"positive","signals":[]},"scoreGapFromTop":0,"candidateImagePath":null},{"qid":"q0249","number":249,"type":"ROW","score":45.303,"scoreBreakdown":{"promptSimilarity":0.305,"rawPromptSimilarity":0.305,"englishPromptSimilarity":0.305,"syntheticPromptSimilarity":0.033,"questionType":1,"imageSignal":1,"topicWeighting":0.5,"answerPolarity":0.5,"conceptAlignment":0,"contradictionPenalty":0,"assetTieBreak":0},"diagnostics":{"effectiveItemType":"ROW","declaredItemType":"MCQ","binaryChoiceDetected":true,"promptSpecificity":1,"genericPromptPenalty":1,"missingCorrectAnswerNeutral":true,"optionSetMode":"binary-row-neutral + synthetic-ja mirror","syntheticMirrorUsed":true,"genericPromptFamily":null,"sourceConceptSlots":{"condition":[],"context":[],"action":[],"polarity":"positive","signals":[]},"candidateConceptSlots":{"condition":[],"context":[],"action":[],"polarity":null,"signals":[]},"conceptMatches":[],"contradictionSignals":[],"rowConceptMode":"slot-alignment + contradiction-penalties","explanation":["Binary yes/no options were treated as ROW-like for type scoring.","Missing correct answer was treated as a neutral signal."]},"prompt":"If a motorized vehicle driver allows his vehicle to be driven by a person whose driving license has been revoked, the traffic police will detain the driving license.","syntheticJaPrompt":"if motorized 車両 運転者 allow his 車両 be driven by person whose driving license has been revoked traffic police will detain driving license。","translatedPrompt":"자동차 운전자가 면허가 취소된 사람에게 차량 운전을 허용한 경우, 교통경찰은 운전면허증을 압류한다.","options":[],"correctAnswer":{"kind":"ROW","correctRow":"R","correctOptionId":null,"correctOptionKey":null,"correctOptionText":"right / true","correctOptionTranslatedText":null,"answerRaw":"Right"},"image":{"hasImage":false,"currentAssetSrc":null,"assetHashes":[]},"topic":"license","subtopics":[],"conceptSlots":{"condition":[],"context":[],"action":[],"polarity":null,"signals":[]},"scoreGapFromTop":2.978,"candidateImagePath":null},{"qid":"q0295","number":295,"type":"ROW","score":42.496,"scoreBreakdown":{"promptSimilarity":0.256,"rawPromptSimilarity":0.256,"englishPromptSimilarity":0.256,"syntheticPromptSimilarity":0.032,"questionType":1,"imageSignal":1,"topicWeighting":0.5,"answerPolarity":0.5,"conceptAlignment":0,"contradictionPenalty":0,"assetTieBreak":0},"diagnostics":{"effectiveItemType":"ROW","declaredItemType":"MCQ","binaryChoiceDetected":true,"promptSpecificity":1,"genericPromptPenalty":1,"missingCorrectAnswerNeutral":true,"optionSetMode":"binary-row-neutral + synthetic-ja mirror","syntheticMirrorUsed":true,"genericPromptFamily":null,"sourceConceptSlots":{"condition":[],"context":[],"action":[],"polarity":"positive","signals":[]},"candidateConceptSlots":{"condition":[],"context":[],"action":[],"polarity":null,"signals":[]},"conceptMatches":[],"contradictionSignals":[],"rowConceptMode":"slot-alignment + contradiction-penalties","explanation":["Binary yes/no options were treated as ROW-like for type scoring.","Missing correct answer was treated as a neutral signal."]},"prompt":"If a motorized vehicle driver allows his vehicle to be driven by a person whose driving license has been detained, the traffic police will serve him an oral warning.","syntheticJaPrompt":"if motorized 車両 運転者 allow his 車両 be driven by person whose driving license has been detained traffic police will serve oral warning。","translatedPrompt":"운전면허증이 압류된 사람에게 차량을 운전하게 한 경우 교통경찰은 구두 경고를 한다.","options":[],"correctAnswer":{"kind":"ROW","correctRow":"W","correctOptionId":null,"correctOptionKey":null,"correctOptionText":"wrong / false","correctOptionTranslatedText":null,"answerRaw":"Wrong"},"image":{"hasImage":false,"currentAssetSrc":null,"assetHashes":[]},"topic":"license","subtopics":[],"conceptSlots":{"condition":[],"context":[],"action":[],"polarity":null,"signals":[]},"scoreGapFromTop":5.785,"candidateImagePath":null},{"qid":"q0312","number":312,"type":"ROW","score":42.309,"scoreBreakdown":{"promptSimilarity":0.253,"rawPromptSimilarity":0.253,"englishPromptSimilarity":0.253,"syntheticPromptSimilarity":0.04,"questionType":1,"imageSignal":1,"topicWeighting":0.5,"answerPolarity":0.5,"conceptAlignment":0,"contradictionPenalty":0,"assetTieBreak":0},"diagnostics":{"effectiveItemType":"ROW","declaredItemType":"MCQ","binaryChoiceDetected":true,"promptSpecificity":1,"genericPromptPenalty":1,"missingCorrectAnswerNeutral":true,"optionSetMode":"binary-row-neutral + synthetic-ja mirror","syntheticMirrorUsed":true,"genericPromptFamily":null,"sourceConceptSlots":{"condition":[],"context":[],"action":[],"polarity":"positive","signals":[]},"candidateConceptSlots":{"condition":[],"context":[],"action":[],"polarity":null,"signals":[]},"conceptMatches":[],"contradictionSignals":[],"rowConceptMode":"slot-alignment + contradiction-penalties","explanation":["Binary yes/no options were treated as ROW-like for type scoring.","Missing correct answer was treated as a neutral signal."]},"prompt":"The driving license of a motorized vehicle driver will be detained after his penalty scores reaches 12 points in a scoring circle.","syntheticJaPrompt":"driving license motorized 車両 運転者 will be detained after his penalty score reach 12 point scoring circle。","translatedPrompt":"자동차 운전자의 벌점이 누계 12점에 달하면 운전면허증을 압류한다.","options":[],"correctAnswer":{"kind":"ROW","correctRow":"R","correctOptionId":null,"correctOptionKey":null,"correctOptionText":"right / true","correctOptionTranslatedText":null,"answerRaw":"Right"},"image":{"hasImage":false,"currentAssetSrc":null,"assetHashes":[]},"topic":"violations-penalties","subtopics":[],"conceptSlots":{"condition":[],"context":[],"action":[],"polarity":null,"signals":[]},"scoreGapFromTop":5.972,"candidateImagePath":null},{"qid":"q0918","number":918,"type":"ROW","score":42.222,"scoreBreakdown":{"promptSimilarity":0.254,"rawPromptSimilarity":0.254,"englishPromptSimilarity":0.254,"syntheticPromptSimilarity":0,"questionType":1,"imageSignal":1,"topicWeighting":0.5,"answerPolarity":0.5,"conceptAlignment":0,"contradictionPenalty":0,"assetTieBreak":0},"diagnostics":{"effectiveItemType":"ROW","declaredItemType":"MCQ","binaryChoiceDetected":true,"promptSpecificity":1,"genericPromptPenalty":1,"missingCorrectAnswerNeutral":true,"optionSetMode":"binary-row-neutral + synthetic-ja mirror","syntheticMirrorUsed":true,"genericPromptFamily":null,"sourceConceptSlots":{"condition":[],"context":[],"action":[],"polarity":"positive","signals":[]},"candidateConceptSlots":{"condition":[],"context":[],"action":[],"polarity":null,"signals":[]},"conceptMatches":[],"contradictionSignals":[],"rowConceptMode":"slot-alignment + contradiction-penalties","explanation":["Binary yes/no options were treated as ROW-like for type scoring.","Missing correct answer was treated as a neutral signal."]},"prompt":"The driving license will not be revoked if the person drives after drug taking and injection.","syntheticJaPrompt":"driving license will not be revoked if person drive after drug taking and injection","translatedPrompt":"약물을 복용하거나 주사한 후 운전하면 운전면허는 취소되지 않는다.","options":[],"correctAnswer":{"kind":"ROW","correctRow":"W","correctOptionId":null,"correctOptionKey":null,"correctOptionText":"wrong / false","correctOptionTranslatedText":null,"answerRaw":"Wrong"},"image":{"hasImage":false,"currentAssetSrc":null,"assetHashes":[]},"topic":"license","subtopics":[],"conceptSlots":{"condition":[],"context":[],"action":[],"polarity":null,"signals":[]},"scoreGapFromTop":6.059,"candidateImagePath":null}],"screenshotPath":"../../../imports/ja/batch-002/screenshots/Screenshot 2026-04-07 at 17.50.18 1.png"},{"index":12,"sourceKind":"review-needed","itemId":"screenshots/Screenshot 2026-04-07 at 17.50.19.png","sourceImage":"screenshots/Screenshot 2026-04-07 at 17.50.19.png","promptRawJa":"エアバッグとは、どのような装置か。","promptGlossEn":"What kind of device is an airbag?","optionsRawJa":["A 運転者の頭部を保護するシステム","B アンチロック・ブレーキシステム（ABS）","C 電子制動力分配システム","D 運転者を保護する補助システム"],"optionsGlossEn":["A system that protects the driver's head","Anti-lock braking system (ABS)","Electronic brakeforce distribution system","An auxiliary system that protects the driver"],"correctKeyRaw":null,"correctAnswerRaw":null,"ocrConfidence":"high","provisionalTopic":null,"provisionalSubtopics":[],"topicConfidence":0,"topicSignals":[],"sourceConceptSlots":null,"reason":null,"localizedText":{"prompt":"エアバッグとは、どのような装置か。","options":["A 運転者の頭部を保護するシステム","B アンチロック・ブレーキシステム（ABS）","C 電子制動力分配システム","D 運転者を保護する補助システム"],"correctAnswer":null,"explanation":null},"translatedText":{"prompt":"What kind of device is an airbag?","options":["A system that protects the driver's head","Anti-lock braking system (ABS)","Electronic brakeforce distribution system","An auxiliary system that protects the driver"],"correctAnswer":null},"analysis":{"mode":"standard","effectiveQuestionType":"MCQ","declaredQuestionType":"MCQ","booleanChoiceDetected":false,"plausibleShortlist":true,"explanation":"Top candidate cleared the review floor but remains review-first."},"currentTopQid":"q0593","currentTopScore":51.212,"currentTopGap":14.252,"topCandidates":[{"qid":"q0593","number":593,"type":"MCQ","score":51.212,"scoreBreakdown":{"promptSimilarity":0.453,"rawPromptSimilarity":0.465,"englishPromptSimilarity":0.453,"syntheticPromptSimilarity":0,"optionSimilarity":0.353,"englishOptionSimilarity":0.353,"syntheticOptionSimilarity":0.051,"optionFingerprint":0.241,"englishOptionFingerprint":0.241,"syntheticOptionFingerprint":0.016,"optionExactSet":0,"optionRareCoverage":0.325,"mirrorAgreement":0.039,"correctAnswerMeaning":0.5,"englishCorrectAnswerMeaning":0.5,"syntheticCorrectAnswerMeaning":0.5,"questionType":1,"imageSignal":1,"topicWeighting":0.5,"assetTieBreak":0},"diagnostics":{"effectiveItemType":"MCQ","declaredItemType":"MCQ","binaryChoiceDetected":false,"promptSpecificity":0.975,"genericPromptPenalty":0.975,"missingCorrectAnswerNeutral":true,"exactCorrectKey":false,"optionSetMode":"unordered-semantic + synthetic-ja mirror","rareSetBonus":0,"syntheticMirrorUsed":true,"genericPromptFamily":null,"explanation":["Missing correct answer was treated as a neutral signal.","Option comparison used unordered semantic set matching."]},"prompt":"What kind of device are airbags for?","syntheticJaPrompt":"kind device safety bags","translatedPrompt":"에어백은 어떤 장치인가?","options":[{"id":"A","text":"ABS system","translatedText":"ABS 장치"},{"id":"B","text":"electronic brake force distribution system","translatedText":"전자식 제동력 배분 장치"},{"id":"C","text":"assisted occupants protection system","translatedText":"탑승자 보호 보조 장치"},{"id":"D","text":"drivers head and neck protection system","translatedText":"운전자 머리·목 보호 장치"}],"correctAnswer":{"kind":"MCQ","correctRow":null,"correctOptionId":"q0593_o3","correctOptionKey":"C","correctOptionText":"assisted occupants protection system","correctOptionTranslatedText":"탑승자 보호 보조 장치","answerRaw":"C"},"image":{"hasImage":false,"currentAssetSrc":null,"assetHashes":[]},"topic":"vehicle-basics","subtopics":[],"conceptSlots":null,"scoreGapFromTop":0,"candidateImagePath":null},{"qid":"q0626","number":626,"type":"MCQ","score":36.96,"scoreBreakdown":{"promptSimilarity":0.198,"rawPromptSimilarity":0.203,"englishPromptSimilarity":0.198,"syntheticPromptSimilarity":0,"optionSimilarity":0.162,"englishOptionSimilarity":0.162,"syntheticOptionSimilarity":0.112,"optionFingerprint":0.087,"englishOptionFingerprint":0.087,"syntheticOptionFingerprint":0.031,"optionExactSet":0,"optionRareCoverage":0.128,"mirrorAgreement":0.084,"correctAnswerMeaning":0.5,"englishCorrectAnswerMeaning":0.5,"syntheticCorrectAnswerMeaning":0.5,"questionType":1,"imageSignal":1,"topicWeighting":0.5,"assetTieBreak":0},"diagnostics":{"effectiveItemType":"MCQ","declaredItemType":"MCQ","binaryChoiceDetected":false,"promptSpecificity":0.975,"genericPromptPenalty":0.975,"missingCorrectAnswerNeutral":true,"exactCorrectKey":false,"optionSetMode":"unordered-semantic + synthetic-ja mirror","rareSetBonus":0,"syntheticMirrorUsed":true,"genericPromptFamily":null,"explanation":["Missing correct answer was treated as a neutral signal."]},"prompt":"What is the main role of the seat belt when there is a collision?","syntheticJaPrompt":"main role seat belt when there collision","translatedPrompt":"충돌 시 안전벨트의 주된 역할은 무엇인가?","options":[{"id":"A","text":"to protect the driver and passengers' necks","translatedText":"운전자와 승객의 목을 보호하는 것"},{"id":"B","text":"to protect the driver and passengers' chests","translatedText":"운전자와 승객의 가슴을 보호하는 것"},{"id":"C","text":"to reduce the injuries of the driver and passengers","translatedText":"운전자와 승객의 부상 정도를 줄이는 것"},{"id":"D","text":"to protect the driver and passengers' waists","translatedText":"운전자와 승객의 허리를 보호하는 것"}],"correctAnswer":{"kind":"MCQ","correctRow":null,"correctOptionId":"q0626_o3","correctOptionKey":"C","correctOptionText":"to reduce the injuries of the driver and passengers","correctOptionTranslatedText":"운전자와 승객의 부상 정도를 줄이는 것","answerRaw":"C"},"image":{"hasImage":false,"currentAssetSrc":null,"assetHashes":[]},"topic":"accidents","subtopics":[],"conceptSlots":null,"scoreGapFromTop":14.252,"candidateImagePath":null},{"qid":"q0437","number":437,"type":"MCQ","score":35.466,"scoreBreakdown":{"promptSimilarity":0.115,"rawPromptSimilarity":0.118,"englishPromptSimilarity":0.115,"syntheticPromptSimilarity":0,"optionSimilarity":0.173,"englishOptionSimilarity":0.173,"syntheticOptionSimilarity":0,"optionFingerprint":0.092,"englishOptionFingerprint":0.092,"syntheticOptionFingerprint":0,"optionExactSet":0,"optionRareCoverage":0.045,"mirrorAgreement":0,"correctAnswerMeaning":0.5,"englishCorrectAnswerMeaning":0.5,"syntheticCorrectAnswerMeaning":0.5,"questionType":1,"imageSignal":1,"topicWeighting":0.5,"assetTieBreak":0},"diagnostics":{"effectiveItemType":"MCQ","declaredItemType":"MCQ","binaryChoiceDetected":false,"promptSpecificity":0.975,"genericPromptPenalty":0.975,"missingCorrectAnswerNeutral":true,"exactCorrectKey":false,"optionSetMode":"unordered-semantic + synthetic-ja mirror","rareSetBonus":0,"syntheticMirrorUsed":true,"genericPromptFamily":null,"explanation":["Missing correct answer was treated as a neutral signal."]},"prompt":"Besides administrative punishment, what kind of system implemented by the traffic control department of the public security authority to the driver who violated the traffic regulations?","syntheticJaPrompt":"beside administrative punishment kind system implemented by traffic control department public security organ 運転者 who violated traffic regulation。","translatedPrompt":"교통법규를 위반한 운전자에게 행정처분 외에 공안기관 교통관리 부서가 시행하는 제도는 무엇인가?","options":[{"id":"A","text":"violation registration system","translatedText":"위반 등록 제도"},{"id":"B","text":"mileage reward system","translatedText":"주행거리 보상 제도"},{"id":"C","text":"mandatory write-off system","translatedText":"강제 말소 제도"},{"id":"D","text":"accumulated penalty points system","translatedText":"누적 벌점 제도"}],"correctAnswer":{"kind":"MCQ","correctRow":null,"correctOptionId":"q0437_o4","correctOptionKey":"D","correctOptionText":"accumulated penalty points system","correctOptionTranslatedText":"누적 벌점 제도","answerRaw":"D"},"image":{"hasImage":false,"currentAssetSrc":null,"assetHashes":[]},"topic":"violations-penalties","subtopics":[],"conceptSlots":null,"scoreGapFromTop":15.746,"candidateImagePath":null},{"qid":"q0126","number":126,"type":"MCQ","score":31.606,"scoreBreakdown":{"promptSimilarity":0.125,"rawPromptSimilarity":0.128,"englishPromptSimilarity":0.125,"syntheticPromptSimilarity":0,"optionSimilarity":0.079,"englishOptionSimilarity":0.051,"syntheticOptionSimilarity":0.079,"optionFingerprint":0.042,"englishOptionFingerprint":0.026,"syntheticOptionFingerprint":0.028,"optionExactSet":0,"optionRareCoverage":0.037,"mirrorAgreement":0.042,"correctAnswerMeaning":0.5,"englishCorrectAnswerMeaning":0.5,"syntheticCorrectAnswerMeaning":0.5,"questionType":1,"imageSignal":1,"topicWeighting":0.5,"assetTieBreak":0},"diagnostics":{"effectiveItemType":"MCQ","declaredItemType":"MCQ","binaryChoiceDetected":false,"promptSpecificity":0.975,"genericPromptPenalty":0.975,"missingCorrectAnswerNeutral":true,"exactCorrectKey":false,"optionSetMode":"unordered-semantic + synthetic-ja mirror","rareSetBonus":0,"syntheticMirrorUsed":true,"genericPromptFamily":null,"explanation":["Missing correct answer was treated as a neutral signal."]},"prompt":"The main impact of the road conditions at night on safe driving is ______.","syntheticJaPrompt":"main impact road condition night safe driving ________","translatedPrompt":"야간의 도로 상태가 안전운전에 미치는 주된 영향은 무엇인가?","options":[{"id":"A","text":"the visibility is low and unfavorable for observing road traffic conditions","translatedText":"시야가 좁아 도로 및 교통 상황 관찰이 어렵다"},{"id":"B","text":"the road surface is complex and changing","translatedText":"노면 상태가 복잡하고 변화가 심하다"},{"id":"C","text":"the physical strength of the driver decreases","translatedText":"운전자의 체력이 저하된다"},{"id":"D","text":"the driver can easily have impulse and illusion","translatedText":"운전자가 쉽게 착각을 하거나 판단을 잘못할 수 있다"}],"correctAnswer":{"kind":"MCQ","correctRow":null,"correctOptionId":"q0126_o1","correctOptionKey":"A","correctOptionText":"the visibility is low and unfavorable for observing road traffic conditions","correctOptionTranslatedText":"시야가 좁아 도로 및 교통 상황 관찰이 어렵다","answerRaw":"A"},"image":{"hasImage":false,"currentAssetSrc":null,"assetHashes":[]},"topic":"mcq","subtopics":[],"conceptSlots":null,"scoreGapFromTop":19.606,"candidateImagePath":null},{"qid":"q0699","number":699,"type":"MCQ","score":31.291,"scoreBreakdown":{"promptSimilarity":0.276,"rawPromptSimilarity":0.306,"englishPromptSimilarity":0.276,"syntheticPromptSimilarity":0,"optionSimilarity":0.021,"englishOptionSimilarity":0.021,"syntheticOptionSimilarity":0,"optionFingerprint":0.005,"englishOptionFingerprint":0.005,"syntheticOptionFingerprint":0,"optionExactSet":0,"optionRareCoverage":0,"mirrorAgreement":0,"correctAnswerMeaning":0.5,"englishCorrectAnswerMeaning":0.5,"syntheticCorrectAnswerMeaning":0.5,"questionType":1,"imageSignal":1,"topicWeighting":0.5,"assetTieBreak":0},"diagnostics":{"effectiveItemType":"MCQ","declaredItemType":"MCQ","binaryChoiceDetected":false,"promptSpecificity":0.9,"genericPromptPenalty":0.9,"missingCorrectAnswerNeutral":true,"exactCorrectKey":false,"optionSetMode":"unordered-semantic + synthetic-ja mirror","rareSetBonus":0,"syntheticMirrorUsed":true,"genericPromptFamily":null,"explanation":["Missing correct answer was treated as a neutral signal."]},"prompt":"What’s the role of a directional sign?","syntheticJaPrompt":"role directional 標識。","translatedPrompt":"안내표지의 역할은 무엇인가?","options":[{"id":"A","text":"restricting the vehicles from passing","translatedText":"차량의 통행을 제한한다"},{"id":"B","text":"indicating speed limited information","translatedText":"속도 제한 정보를 표시한다"},{"id":"C","text":"providing direction information","translatedText":"방향 정보를 제공한다"},{"id":"D","text":"warning danger ahead","translatedText":"앞의 위험을 경고한다"}],"correctAnswer":{"kind":"MCQ","correctRow":null,"correctOptionId":"q0699_o3","correctOptionKey":"C","correctOptionText":"providing direction information","correctOptionTranslatedText":"방향 정보를 제공한다","answerRaw":"C"},"image":{"hasImage":false,"currentAssetSrc":null,"assetHashes":[]},"topic":"traffic-signs","subtopics":[],"conceptSlots":null,"scoreGapFromTop":19.921,"candidateImagePath":null}],"screenshotPath":"../../../imports/ja/batch-002/screenshots/Screenshot 2026-04-07 at 17.50.19.png"}];
+    const STORAGE_KEY = "qbank-remaining-review-ja-batch-002-review-needed";
+    const CONTEXT = {"lang":"ja","batchId":"batch-002","dataset":"2023-test1","scope":"review-needed"};
+    const JSON_FILENAME = "ja-batch-002-review-decisions.json";
+    const CSV_FILENAME = "ja-batch-002-review-decisions.csv";
+
+    function getSaved() {
+      try {
+        return JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+      } catch {
+        return {};
+      }
+    }
+
+    function save(saved) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(saved));
+    }
+
+    function text(value) {
+      return value == null || value === "" ? "None" : String(value);
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+
+    function renderOptions(options) {
+      if (!options || !options.length) {
+        return '<div class="subtle">No options</div>';
+      }
+      return '<ul class="options">' + options.map((option) => '<li>' + escapeHtml(option) + '</li>').join("") + '</ul>';
+    }
+
+    function renderCandidateOptions(options) {
+      if (!options || !options.length) {
+        return '<div class="subtle">No options</div>';
+      }
+      return '<ul class="options">' + options.map((option) => {
+        const translated = option.translatedText ? '<div class="subtle">' + escapeHtml(option.translatedText) + '</div>' : "";
+        return '<li><strong>' + escapeHtml(option.id) + '.</strong> ' + escapeHtml(option.text) + translated + '</li>';
+      }).join("") + '</ul>';
+    }
+
+    function renderFacts(entries) {
+      const items = entries.filter((entry) => entry && entry.value != null && entry.value !== "" && (!(Array.isArray(entry.value)) || entry.value.length > 0));
+      if (!items.length) {
+        return '<div class="subtle">No metadata</div>';
+      }
+      return '<div class="facts">' + items.map((entry) => {
+        const value = Array.isArray(entry.value) ? entry.value.join(", ") : entry.value;
+        return '<div class="fact"><strong>' + escapeHtml(entry.label) + '</strong><span>' + escapeHtml(String(value)) + '</span></div>';
+      }).join("") + '</div>';
+    }
+
+    function renderTopicSignals(signals) {
+      if (!signals || !signals.length) {
+        return '<div class="subtle">No topic signals</div>';
+      }
+      return '<div class="signal-list">' + signals.map((signal) => {
+        const parts = [
+          signal.topic || "unknown",
+          signal.subtopic || "no-subtopic",
+          signal.signal || "signal",
+          signal.weight == null ? null : 'weight ' + signal.weight,
+        ].filter(Boolean);
+        return '<div class="signal"><strong>' + escapeHtml(signal.signal || "signal") + '</strong><div>' + escapeHtml(parts.join(" · ")) + '</div></div>';
+      }).join("") + '</div>';
+    }
+
+    function renderConceptSlots(slots) {
+      if (!slots) {
+        return '<div class="subtle">No concept slots</div>';
+      }
+      return '<div class="concept-grid">' +
+        renderConceptColumn('Condition', slots.condition) +
+        renderConceptColumn('Context', slots.context) +
+        renderConceptColumn('Action', slots.action) +
+        renderConceptColumn('Polarity', slots.polarity ? [slots.polarity] : []) +
+      '</div>';
+    }
+
+    function renderConceptColumn(label, values) {
+      if (!values || !values.length) {
+        return '<div><strong>' + escapeHtml(label) + '</strong><div class="subtle">None</div></div>';
+      }
+      return '<div><strong>' + escapeHtml(label) + '</strong><ul>' + values.map((value) => '<li>' + escapeHtml(value) + '</li>').join("") + '</ul></div>';
+    }
+
+    function renderMetaRow(label, body) {
+      return '<div class="meta-row"><strong>' + escapeHtml(label) + '</strong>' + body + '</div>';
+    }
+
+    function renderBreakdown(breakdown) {
+      const entries = Object.entries(breakdown || {});
+      if (!entries.length) {
+        return '<div class="subtle">No score breakdown</div>';
+      }
+
+      return '<div class="breakdown">' + entries.map(([key, value]) => {
+        return '<div><strong>' + escapeHtml(value) + '</strong>' + escapeHtml(key) + '</div>';
+      }).join("") + '</div>';
+    }
+
+    function renderAdvancedDiagnostics(candidate) {
+      const notes = (candidate.diagnostics?.explanation || []).map((note) => '<span class="badge-warn">' + escapeHtml(note) + '</span>').join(" ");
+
+      return '<details class="advanced"><summary>Show advanced diagnostics</summary><div class="advanced-body">' +
+        renderMetaRow('Synthetic JA prompt', '<div class="prompt">' + escapeHtml(text(candidate.syntheticJaPrompt)) + '</div>') +
+        renderMetaRow('Candidate topic metadata', renderFacts([
+          { label: 'topic', value: candidate.topic || 'None' },
+          { label: 'subtopics', value: candidate.subtopics || [] },
+        ])) +
+        renderMetaRow('Candidate concept slots', renderConceptSlots(candidate.conceptSlots)) +
+        renderMetaRow('Score breakdown', renderBreakdown(candidate.scoreBreakdown)) +
+        '<div class="notes">' + (notes || '<span class="subtle">No extra diagnostics</span>') + '</div>' +
+      '</div></details>';
+    }
+
+    function renderImageBlock(src, alt, localPath, emptyLabel) {
+      if (!src) {
+        return '<div class="empty">' + escapeHtml(emptyLabel || "Image not available") + '</div>' +
+          (localPath
+            ? '<div class="image-path mono">' + escapeHtml(localPath) + '</div>'
+            : '');
+      }
+
+      const safeSrc = escapeHtml(src);
+      const safeAlt = escapeHtml(alt || "image");
+      const safePath = escapeHtml(localPath || src);
+      return '<div class="image-frame">' +
+        '<img class="screenshot" loading="lazy" src="' + safeSrc + '" alt="' + safeAlt + '" onerror="this.closest(&quot;.image-frame&quot;).classList.add(&quot;is-broken&quot;);">' +
+        '<div class="image-fallback">Image could not be loaded directly from this local file view.<br><span class="mono">' + safePath + '</span></div>' +
+        '<div class="image-path mono">' + safePath + '</div>' +
+      '</div>';
+    }
+
+    function normalizeDecision(raw) {
+      return {
+        approvedQid: raw?.approvedQid || "",
+        noneOfThese: raw?.noneOfThese === true,
+        createNewQuestion: raw?.createNewQuestion === true,
+        unsure: raw?.approvedQid ? false : raw?.noneOfThese ? false : raw?.createNewQuestion ? false : raw?.unsure !== false,
+        reviewerNotes: raw?.reviewerNotes || "",
+      };
+    }
+
+    function decisionRows(saved) {
+      return REVIEW_DATA.map((item) => {
+        const current = normalizeDecision(saved[item.itemId]);
+        return {
+          itemId: item.itemId,
+          approvedQid: current.approvedQid || "",
+          noneOfThese: String(current.noneOfThese),
+          createNewQuestion: String(current.createNewQuestion),
+          unsure: String(current.unsure),
+          reviewerNotes: current.reviewerNotes || "",
+        };
+      });
+    }
+
+    function exportJson() {
+      const payload = {
+        exportedAt: new Date().toISOString(),
+        batch: CONTEXT,
+        items: decisionRows(getSaved()).map((row) => ({
+          itemId: row.itemId,
+          approvedQid: row.approvedQid || null,
+          noneOfThese: row.noneOfThese === "true",
+          createNewQuestion: row.createNewQuestion === "true",
+          unsure: row.unsure === "true",
+          reviewerNotes: row.reviewerNotes,
+        })),
+      };
+      downloadFile(JSON_FILENAME, JSON.stringify(payload, null, 2), "application/json");
+    }
+
+    function exportCsv() {
+      const rows = decisionRows(getSaved());
+      const headers = ["itemId", "approvedQid", "noneOfThese", "createNewQuestion", "unsure", "reviewerNotes"];
+      const lines = [headers.join(",")].concat(rows.map((row) => headers.map((key) => csvEscape(row[key] || "")).join(",")));
+      downloadFile(CSV_FILENAME, lines.join("\n"), "text/csv");
+    }
+
+    function csvEscape(value) {
+      const text = String(value ?? "");
+      return /[",\n]/.test(text) ? '"' + text.replace(/"/g, '""') + '"' : text;
+    }
+
+    function downloadFile(filename, content, type) {
+      const blob = new Blob([content], { type });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = filename;
+      link.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function render() {
+      const saved = getSaved();
+      const app = document.getElementById("app");
+
+      if (!REVIEW_DATA.length) {
+        app.innerHTML = '<div class="empty">No remaining items were found for this batch.</div>';
+        return;
+      }
+
+      app.innerHTML = REVIEW_DATA.map((item) => {
+        const current = normalizeDecision(saved[item.itemId]);
+        const candidateChoices = (item.topCandidates || []).map((candidate) => {
+          const checked = current.approvedQid === candidate.qid ? "checked" : "";
+          return '<label class="choice"><input type="radio" name="decision-' + escapeHtml(item.itemId) + '" value="approved:' + escapeHtml(candidate.qid) + '" ' + checked + '><div><strong>Approve ' + escapeHtml(candidate.qid) + '</strong><div class="subtle">Question #' + escapeHtml(candidate.number) + ' · score ' + escapeHtml(candidate.score) + '</div></div></label>';
+        }).join("");
+
+        const noneChecked = current.noneOfThese ? "checked" : "";
+        const createNewChecked = current.createNewQuestion ? "checked" : "";
+        const unsureChecked = current.unsure ? "checked" : "";
+
+        return '<section class="item" data-item-id="' + escapeHtml(item.itemId) + '">' +
+          '<div class="item-head">' +
+            '<div>' +
+              '<h2>' + escapeHtml(item.itemId) + '</h2>' +
+              '<div class="subtle">' + escapeHtml(item.sourceImage || "") + '</div>' +
+              '<div class="pill-row">' +
+                '<span class="pill ' + (item.sourceKind === "unresolved" ? "danger" : "warn") + '">' + escapeHtml(item.sourceKind) + '</span>' +
+                '<span class="pill">Top qid ' + escapeHtml(item.currentTopQid || "none") + '</span>' +
+                '<span class="pill">Top score ' + escapeHtml(item.currentTopScore ?? "none") + '</span>' +
+                '<span class="pill">Top gap ' + escapeHtml(item.currentTopGap ?? "none") + '</span>' +
+                '<span class="pill">Effective type ' + escapeHtml(item.analysis?.effectiveQuestionType || "unknown") + '</span>' +
+                '<span class="pill">OCR ' + escapeHtml(item.ocrConfidence || "unknown") + '</span>' +
+                '<span class="pill">Provisional topic ' + escapeHtml(item.provisionalTopic || "none") + '</span>' +
+              '</div>' +
+            '</div>' +
+            '<div class="subtle">' + escapeHtml(item.analysis?.explanation || item.reason || "") + '</div>' +
+          '</div>' +
+          '<div class="layout">' +
+            '<div class="panel">' +
+              '<h3>Screenshot</h3>' +
+              renderImageBlock(item.screenshotPath, item.itemId, item.screenshotPath, 'Screenshot not found') +
+              '<div class="meta">' +
+                (item.reason ? '<div class="meta-row"><strong>Unresolved reason</strong><div class="prompt">' + escapeHtml(item.reason) + '</div></div>' : '') +
+                renderMetaRow('Source filename', '<div class="prompt mono">' + escapeHtml(text(item.sourceImage)) + '</div>') +
+                renderMetaRow('Prompt Raw JA', '<div class="prompt">' + escapeHtml(text(item.promptRawJa)) + '</div>') +
+                renderMetaRow('Prompt Gloss EN', '<div class="prompt">' + escapeHtml(text(item.promptGlossEn)) + '</div>') +
+                renderMetaRow('Options Raw JA', renderOptions(item.optionsRawJa)) +
+                renderMetaRow('Options Gloss EN', renderOptions(item.optionsGlossEn)) +
+                renderMetaRow('Visible answer data', renderFacts([
+                  { label: 'correctKeyRaw', value: item.correctKeyRaw || 'None' },
+                  { label: 'correctAnswerRaw', value: item.correctAnswerRaw || 'None' },
+                  { label: 'ocrConfidence', value: item.ocrConfidence || 'unknown' },
+                ])) +
+                renderMetaRow('Provisional topic review metadata', renderFacts([
+                  { label: 'topic', value: item.provisionalTopic || 'None' },
+                  { label: 'subtopics', value: item.provisionalSubtopics || [] },
+                  { label: 'topicConfidence', value: item.topicConfidence == null ? 'None' : item.topicConfidence },
+                ]) + renderTopicSignals(item.topicSignals)) +
+                renderMetaRow('Source concept slots', renderConceptSlots(item.sourceConceptSlots)) +
+              '</div>' +
+              '<div class="controls">' +
+                '<h3>Review Decision</h3>' +
+                '<div class="choice-list">' +
+                  candidateChoices +
+                  '<label class="choice"><input type="radio" name="decision-' + escapeHtml(item.itemId) + '" value="none" ' + noneChecked + '><div><strong>None of these</strong><div class="subtle">No candidate looks correct</div></div></label>' +
+                  '<label class="choice"><input type="radio" name="decision-' + escapeHtml(item.itemId) + '" value="create-new" ' + createNewChecked + '><div><strong>Create new question</strong><div class="subtle">Stage this item as a superset-bank candidate instead of forcing an existing qid</div></div></label>' +
+                  '<label class="choice"><input type="radio" name="decision-' + escapeHtml(item.itemId) + '" value="unsure" ' + unsureChecked + '><div><strong>Unsure</strong><div class="subtle">Keep for later review</div></div></label>' +
+                '</div>' +
+                '<label class="subtle" for="notes-' + escapeHtml(item.itemId) + '">Reviewer notes</label>' +
+                '<textarea id="notes-' + escapeHtml(item.itemId) + '" data-role="notes">' + escapeHtml(current.reviewerNotes || "") + '</textarea>' +
+              '</div>' +
+            '</div>' +
+            '<div class="candidate-list">' +
+              (item.topCandidates || []).map((candidate) => {
+                const correct = candidate.correctAnswer?.kind === "MCQ"
+                  ? (candidate.correctAnswer.correctOptionKey || "?") + ". " + (candidate.correctAnswer.correctOptionText || "")
+                  : candidate.correctAnswer?.correctRow || candidate.correctAnswer?.correctOptionText || "Unknown";
+                const gapText = candidate.scoreGapFromTop == null
+                  ? "No delta"
+                  : candidate.scoreGapFromTop === 0 && item.currentTopGap != null
+                    ? "top gap " + item.currentTopGap
+                    : "-" + candidate.scoreGapFromTop + " from top";
+                return '<article class="candidate">' +
+                  '<div class="candidate-head">' +
+                    '<div><h4>' + escapeHtml(candidate.qid) + ' · #' + escapeHtml(candidate.number) + '</h4><div class="subtle">' + escapeHtml(candidate.type) + '</div></div>' +
+                    '<div class="score">score ' + escapeHtml(candidate.score) + ' · ' + escapeHtml(gapText) + '</div>' +
+                  '</div>' +
+                  '<div class="candidate-grid">' +
+                    '<div>' +
+                      renderMetaRow('English prompt', '<div class="prompt">' + escapeHtml(text(candidate.prompt)) + '</div>') +
+                      renderMetaRow('English options', renderCandidateOptions(candidate.options)) +
+                      renderMetaRow('Correct answer', '<div class="prompt">' + escapeHtml(text(correct)) + '</div>') +
+                      renderAdvancedDiagnostics(candidate) +
+                    '</div>' +
+                    '<div>' +
+                      '<div class="meta-row"><strong>Production image</strong>' +
+                        renderImageBlock(candidate.candidateImagePath, candidate.qid, candidate.candidateImagePath, 'No production image') +
+                      '</div>' +
+                    '</div>' +
+                  '</div>' +
+                '</article>';
+              }).join("") +
+            '</div>' +
+          '</div>' +
+        '</section>';
+      }).join("");
+
+      bind();
+    }
+
+    function bind() {
+      const saved = getSaved();
+      document.querySelectorAll(".item").forEach((section) => {
+        const itemId = section.getAttribute("data-item-id");
+        section.querySelectorAll('input[type="radio"]').forEach((input) => {
+          input.addEventListener("change", () => {
+            const raw = input.value;
+            const next = normalizeDecision(saved[itemId]);
+            if (raw.startsWith("approved:")) {
+              next.approvedQid = raw.split(":")[1];
+              next.noneOfThese = false;
+              next.createNewQuestion = false;
+              next.unsure = false;
+            } else if (raw === "none") {
+              next.approvedQid = "";
+              next.noneOfThese = true;
+              next.createNewQuestion = false;
+              next.unsure = false;
+            } else if (raw === "create-new") {
+              next.approvedQid = "";
+              next.noneOfThese = false;
+              next.createNewQuestion = true;
+              next.unsure = false;
+            } else {
+              next.approvedQid = "";
+              next.noneOfThese = false;
+              next.createNewQuestion = false;
+              next.unsure = true;
+            }
+            saved[itemId] = next;
+            save(saved);
+          });
+        });
+
+        const notes = section.querySelector('textarea[data-role="notes"]');
+        notes.addEventListener("input", () => {
+          const next = normalizeDecision(saved[itemId]);
+          next.reviewerNotes = notes.value;
+          saved[itemId] = next;
+          save(saved);
+        });
+      });
+    }
+
+    document.getElementById("export-json").addEventListener("click", exportJson);
+    document.getElementById("export-csv").addEventListener("click", exportCsv);
+    document.getElementById("clear-storage").addEventListener("click", () => {
+      localStorage.removeItem(STORAGE_KEY);
+      render();
+    });
+
+    render();
+  </script>
+</body>
+</html>

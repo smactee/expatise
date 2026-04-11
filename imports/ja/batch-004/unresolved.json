@@ -1,0 +1,2465 @@
+{
+  "generatedAt": "2026-04-09T09:45:34.941Z",
+  "lang": "ja",
+  "batchId": "batch-004",
+  "dataset": "2023-test1",
+  "kind": "unresolved",
+  "items": [
+    {
+      "itemId": "screenshots/Screenshot 2026-04-07 at 17.50.54.png",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 17.50.54.png",
+      "promptRawJa": "このスイッチを上下に引くと、フロントガラスのワイパーが作動する。",
+      "promptGlossEn": "If you pull this switch up or down, the windshield wipers will operate.",
+      "optionsRawJa": [
+        "A Yes",
+        "B No"
+      ],
+      "optionsGlossEn": [
+        "Yes",
+        "No"
+      ],
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "ocrConfidence": "high",
+      "hasImage": true,
+      "provisionalTopic": null,
+      "provisionalSubtopics": [],
+      "topicConfidence": 0,
+      "topicSignals": [],
+      "sourceConceptSlots": {
+        "condition": [],
+        "context": [],
+        "action": [],
+        "polarity": null,
+        "signals": []
+      },
+      "reason": "No candidate passed the minimum similarity threshold.",
+      "analysis": {
+        "mode": "standard",
+        "effectiveQuestionType": "ROW",
+        "declaredQuestionType": "MCQ",
+        "booleanChoiceDetected": true,
+        "topScore": 42.637,
+        "topGap": 3.901,
+        "plausibleShortlist": true,
+        "imageParityApplied": true,
+        "candidateImageParityMode": "image-only candidate set",
+        "candidateCountBeforeParity": 973,
+        "candidateCountAfterParity": 491,
+        "explanation": "Shortlist is plausible but still below the review floor."
+      },
+      "topCandidates": [
+        {
+          "qid": "q0530",
+          "number": 530,
+          "type": "ROW",
+          "score": 42.637,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.261,
+            "rawPromptSimilarity": 0.261,
+            "englishPromptSimilarity": 0.261,
+            "syntheticPromptSimilarity": 0,
+            "questionType": 1,
+            "imageSignal": 1,
+            "topicWeighting": 0.5,
+            "answerPolarity": 0.5,
+            "conceptAlignment": 0,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0
+          },
+          "diagnostics": {
+            "effectiveItemType": "ROW",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": true,
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "optionSetMode": "binary-row-neutral + synthetic-ja mirror",
+            "syntheticMirrorUsed": true,
+            "genericPromptFamily": null,
+            "sourceConceptSlots": {
+              "condition": [],
+              "context": [],
+              "action": [],
+              "polarity": null,
+              "signals": []
+            },
+            "candidateConceptSlots": {
+              "condition": [],
+              "context": [],
+              "action": [],
+              "polarity": null,
+              "signals": []
+            },
+            "conceptMatches": [],
+            "contradictionSignals": [],
+            "rowConceptMode": "slot-alignment + contradiction-penalties",
+            "explanation": [
+              "Binary yes/no options were treated as ROW-like for type scoring.",
+              "Missing correct answer was treated as a neutral signal."
+            ]
+          },
+          "prompt": "Move the switch up and down, and the windscreen wipers start working.",
+          "syntheticJaPrompt": "move switch up and down windscreen wiper start working 46",
+          "translatedPrompt": "스위치를 위아래로 움직이면 와이퍼가 작동한다.",
+          "options": [],
+          "correctAnswer": {
+            "kind": "ROW",
+            "correctRow": "R",
+            "correctOptionId": null,
+            "correctOptionKey": null,
+            "correctOptionText": "right / true",
+            "correctOptionTranslatedText": null,
+            "answerRaw": "Right"
+          },
+          "image": {
+            "hasImage": true,
+            "currentAssetSrc": "/qbank/2023-test1/images/p46-530.jpg",
+            "assetHashes": [
+              "327849c2d589859abf8fbe10b0bbe3ba"
+            ]
+          },
+          "topic": "vehicle-basics",
+          "subtopics": [],
+          "conceptSlots": {
+            "condition": [],
+            "context": [],
+            "action": [],
+            "polarity": null,
+            "signals": []
+          }
+        },
+        {
+          "qid": "q0529",
+          "number": 529,
+          "type": "ROW",
+          "score": 38.736,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.194,
+            "rawPromptSimilarity": 0.194,
+            "englishPromptSimilarity": 0.194,
+            "syntheticPromptSimilarity": 0,
+            "questionType": 1,
+            "imageSignal": 1,
+            "topicWeighting": 0.5,
+            "answerPolarity": 0.5,
+            "conceptAlignment": 0,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0
+          },
+          "diagnostics": {
+            "effectiveItemType": "ROW",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": true,
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "optionSetMode": "binary-row-neutral + synthetic-ja mirror",
+            "syntheticMirrorUsed": true,
+            "genericPromptFamily": null,
+            "sourceConceptSlots": {
+              "condition": [],
+              "context": [],
+              "action": [],
+              "polarity": null,
+              "signals": []
+            },
+            "candidateConceptSlots": {
+              "condition": [],
+              "context": [],
+              "action": [
+                "turn-signal"
+              ],
+              "polarity": "positive",
+              "signals": [
+                {
+                  "slot": "action",
+                  "value": "turn-signal",
+                  "signal": "turn-signal"
+                }
+              ]
+            },
+            "conceptMatches": [],
+            "contradictionSignals": [],
+            "rowConceptMode": "slot-alignment + contradiction-penalties",
+            "explanation": [
+              "Binary yes/no options were treated as ROW-like for type scoring.",
+              "Missing correct answer was treated as a neutral signal."
+            ]
+          },
+          "prompt": "Pulling down the switch of the turn signal, turns the right-turn signal on.",
+          "syntheticJaPrompt": "pull down switch 方向指示器 right- 方向指示器。",
+          "translatedPrompt": "방향지시등 스위치를 아래로 당기면 우회전 신호가 켜진다.",
+          "options": [],
+          "correctAnswer": {
+            "kind": "ROW",
+            "correctRow": "W",
+            "correctOptionId": null,
+            "correctOptionKey": null,
+            "correctOptionText": "wrong / false",
+            "correctOptionTranslatedText": null,
+            "answerRaw": "Wrong"
+          },
+          "image": {
+            "hasImage": true,
+            "currentAssetSrc": "/qbank/2023-test1/images/img_fe03dac8e4025cc02d2d45c9eed02bac.jpeg",
+            "assetHashes": [
+              "fe03dac8e4025cc02d2d45c9eed02bac"
+            ]
+          },
+          "topic": "row",
+          "subtopics": [],
+          "conceptSlots": {
+            "condition": [],
+            "context": [],
+            "action": [
+              "turn-signal"
+            ],
+            "polarity": "positive",
+            "signals": [
+              {
+                "slot": "action",
+                "value": "turn-signal",
+                "signal": "turn-signal"
+              }
+            ]
+          }
+        },
+        {
+          "qid": "q0547",
+          "number": 547,
+          "type": "ROW",
+          "score": 37.927,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.18,
+            "rawPromptSimilarity": 0.18,
+            "englishPromptSimilarity": 0.18,
+            "syntheticPromptSimilarity": 0,
+            "questionType": 1,
+            "imageSignal": 1,
+            "topicWeighting": 0.5,
+            "answerPolarity": 0.5,
+            "conceptAlignment": 0,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0
+          },
+          "diagnostics": {
+            "effectiveItemType": "ROW",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": true,
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "optionSetMode": "binary-row-neutral + synthetic-ja mirror",
+            "syntheticMirrorUsed": true,
+            "genericPromptFamily": null,
+            "sourceConceptSlots": {
+              "condition": [],
+              "context": [],
+              "action": [],
+              "polarity": null,
+              "signals": []
+            },
+            "candidateConceptSlots": {
+              "condition": [],
+              "context": [],
+              "action": [],
+              "polarity": null,
+              "signals": []
+            },
+            "conceptMatches": [],
+            "contradictionSignals": [],
+            "rowConceptMode": "slot-alignment + contradiction-penalties",
+            "explanation": [
+              "Binary yes/no options were treated as ROW-like for type scoring.",
+              "Missing correct answer was treated as a neutral signal."
+            ]
+          },
+          "prompt": "The rear windshield defroster starts to work after pressing this switch.",
+          "syntheticJaPrompt": "rear windshield defroster start work after pressing switch",
+          "translatedPrompt": "이 스위치를 누르면 후면 유리 서리 제거 장치가 작동한다.",
+          "options": [],
+          "correctAnswer": {
+            "kind": "ROW",
+            "correctRow": "W",
+            "correctOptionId": null,
+            "correctOptionKey": null,
+            "correctOptionText": "wrong / false",
+            "correctOptionTranslatedText": null,
+            "answerRaw": "Wrong"
+          },
+          "image": {
+            "hasImage": true,
+            "currentAssetSrc": "/qbank/2023-test1/images/img_77220d7c5a01fe7848b9b5b63580bc67.jpeg",
+            "assetHashes": [
+              "77220d7c5a01fe7848b9b5b63580bc67"
+            ]
+          },
+          "topic": "driving-operations",
+          "subtopics": [
+            "driving-operations:indicators"
+          ],
+          "conceptSlots": {
+            "condition": [],
+            "context": [],
+            "action": [],
+            "polarity": null,
+            "signals": []
+          }
+        },
+        {
+          "qid": "q0538",
+          "number": 538,
+          "type": "ROW",
+          "score": 35.304,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.135,
+            "rawPromptSimilarity": 0.135,
+            "englishPromptSimilarity": 0.135,
+            "syntheticPromptSimilarity": 0,
+            "questionType": 1,
+            "imageSignal": 1,
+            "topicWeighting": 0.5,
+            "answerPolarity": 0.5,
+            "conceptAlignment": 0,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0
+          },
+          "diagnostics": {
+            "effectiveItemType": "ROW",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": true,
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "optionSetMode": "binary-row-neutral + synthetic-ja mirror",
+            "syntheticMirrorUsed": true,
+            "genericPromptFamily": null,
+            "sourceConceptSlots": {
+              "condition": [],
+              "context": [],
+              "action": [],
+              "polarity": null,
+              "signals": []
+            },
+            "candidateConceptSlots": {
+              "condition": [],
+              "context": [],
+              "action": [],
+              "polarity": null,
+              "signals": []
+            },
+            "conceptMatches": [],
+            "contradictionSignals": [],
+            "rowConceptMode": "slot-alignment + contradiction-penalties",
+            "explanation": [
+              "Binary yes/no options were treated as ROW-like for type scoring.",
+              "Missing correct answer was treated as a neutral signal."
+            ]
+          },
+          "prompt": "The steering wheel will be locked if you remove the key while the ignition switch is still in the LOCK position.",
+          "syntheticJaPrompt": "steering wheel will be locked if removing key ignition switch lock position",
+          "translatedPrompt": "시동 스위치가 LOCK 위치에 있을 때 키를 빼면 핸들이 잠긴다.",
+          "options": [],
+          "correctAnswer": {
+            "kind": "ROW",
+            "correctRow": "R",
+            "correctOptionId": null,
+            "correctOptionKey": null,
+            "correctOptionText": "right / true",
+            "correctOptionTranslatedText": null,
+            "answerRaw": "Right"
+          },
+          "image": {
+            "hasImage": true,
+            "currentAssetSrc": "/qbank/2023-test1/images/img_0d7bf0f0dcfd89d2be82df8a59e965e1.jpeg",
+            "assetHashes": [
+              "0d7bf0f0dcfd89d2be82df8a59e965e1"
+            ]
+          },
+          "topic": "vehicle-basics",
+          "subtopics": [],
+          "conceptSlots": {
+            "condition": [],
+            "context": [],
+            "action": [],
+            "polarity": null,
+            "signals": []
+          }
+        },
+        {
+          "qid": "q0220",
+          "number": 220,
+          "type": "ROW",
+          "score": 33.659,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.106,
+            "rawPromptSimilarity": 0.106,
+            "englishPromptSimilarity": 0.106,
+            "syntheticPromptSimilarity": 0,
+            "questionType": 1,
+            "imageSignal": 1,
+            "topicWeighting": 0.5,
+            "answerPolarity": 0.5,
+            "conceptAlignment": 0,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0
+          },
+          "diagnostics": {
+            "effectiveItemType": "ROW",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": true,
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "optionSetMode": "binary-row-neutral + synthetic-ja mirror",
+            "syntheticMirrorUsed": true,
+            "genericPromptFamily": null,
+            "sourceConceptSlots": {
+              "condition": [],
+              "context": [],
+              "action": [],
+              "polarity": null,
+              "signals": []
+            },
+            "candidateConceptSlots": {
+              "condition": [],
+              "context": [],
+              "action": [
+                "accelerate"
+              ],
+              "polarity": "positive",
+              "signals": [
+                {
+                  "slot": "action",
+                  "value": "accelerate",
+                  "signal": "accelerate"
+                }
+              ]
+            },
+            "conceptMatches": [],
+            "contradictionSignals": [],
+            "rowConceptMode": "slot-alignment + contradiction-penalties",
+            "explanation": [
+              "Binary yes/no options were treated as ROW-like for type scoring.",
+              "Missing correct answer was treated as a neutral signal."
+            ]
+          },
+          "prompt": "You should speed up through the section with this kind of traffic marking.",
+          "syntheticJaPrompt": "you べき 加速 through section kind traffic 路面標示。",
+          "translatedPrompt": "이러한 도로 표시가 있는 구간에서는 속도를 높여 통과해야 한다.",
+          "options": [],
+          "correctAnswer": {
+            "kind": "ROW",
+            "correctRow": "W",
+            "correctOptionId": null,
+            "correctOptionKey": null,
+            "correctOptionText": "wrong / false",
+            "correctOptionTranslatedText": null,
+            "answerRaw": "Wrong"
+          },
+          "image": {
+            "hasImage": true,
+            "currentAssetSrc": "/qbank/2023-test1/images/p17-220.jpg",
+            "assetHashes": [
+              "d8764aa6e86870da9819817118ab6a2c"
+            ]
+          },
+          "topic": "row",
+          "subtopics": [],
+          "conceptSlots": {
+            "condition": [],
+            "context": [],
+            "action": [
+              "accelerate"
+            ],
+            "polarity": "positive",
+            "signals": [
+              {
+                "slot": "action",
+                "value": "accelerate",
+                "signal": "accelerate"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "itemId": "screenshots/Screenshot 2026-04-07 at 17.50.55.png",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 17.50.55.png",
+      "promptRawJa": "前車が停車し列を作って待っているあるいは徐行している場合、どう対応するのが適切か。",
+      "promptGlossEn": "When the car in front is stopped and waiting in a line or moving slowly, what is the appropriate way to respond?",
+      "optionsRawJa": [
+        "A 他の車線を利用して追い越す",
+        "B 対向車線を利用する",
+        "C 待っている車両のすき間に割り込む",
+        "D 順番に走行する"
+      ],
+      "optionsGlossEn": [
+        "A. Overtake using another lane",
+        "B. Use the oncoming lane",
+        "C. Cut into the gap between the waiting cars",
+        "D. Proceed in order"
+      ],
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "ocrConfidence": "high",
+      "hasImage": false,
+      "provisionalTopic": "road-safety",
+      "provisionalSubtopics": [
+        "road-safety:road-conditions",
+        "proper-driving:safe-driving"
+      ],
+      "topicConfidence": 0.52,
+      "topicSignals": [
+        {
+          "topic": "road-safety",
+          "subtopic": "road-safety:road-conditions",
+          "signal": "road-condition-or-hazard",
+          "weight": 1.3
+        },
+        {
+          "topic": "proper-driving",
+          "subtopic": "proper-driving:safe-driving",
+          "signal": "driving-action",
+          "weight": 1.2
+        }
+      ],
+      "sourceConceptSlots": null,
+      "reason": "No candidate passed the minimum similarity threshold.",
+      "analysis": {
+        "mode": "standard",
+        "effectiveQuestionType": "MCQ",
+        "declaredQuestionType": "MCQ",
+        "booleanChoiceDetected": false,
+        "topScore": 41.193,
+        "topGap": 4.711,
+        "plausibleShortlist": true,
+        "imageParityApplied": true,
+        "candidateImageParityMode": "text-only candidate set",
+        "candidateCountBeforeParity": 973,
+        "candidateCountAfterParity": 482,
+        "explanation": "Shortlist is plausible but still below the review floor."
+      },
+      "topCandidates": [
+        {
+          "qid": "q0492",
+          "number": 492,
+          "type": "MCQ",
+          "score": 41.193,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.279,
+            "rawPromptSimilarity": 0.279,
+            "englishPromptSimilarity": 0.279,
+            "syntheticPromptSimilarity": 0.051,
+            "optionSimilarity": 0.2,
+            "englishOptionSimilarity": 0.2,
+            "syntheticOptionSimilarity": 0.145,
+            "optionFingerprint": 0.145,
+            "englishOptionFingerprint": 0.145,
+            "syntheticOptionFingerprint": 0.052,
+            "optionExactSet": 0,
+            "optionRareCoverage": 0.226,
+            "mirrorAgreement": 0.112,
+            "correctAnswerMeaning": 0.5,
+            "englishCorrectAnswerMeaning": 0.5,
+            "syntheticCorrectAnswerMeaning": 0.5,
+            "questionType": 1,
+            "imageSignal": 1,
+            "topicWeighting": 0.5,
+            "assetTieBreak": 0
+          },
+          "diagnostics": {
+            "effectiveItemType": "MCQ",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": false,
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "exactCorrectKey": false,
+            "optionSetMode": "unordered-semantic + synthetic-ja mirror",
+            "rareSetBonus": 0,
+            "syntheticMirrorUsed": true,
+            "genericPromptFamily": null,
+            "explanation": [
+              "Missing correct answer was treated as a neutral signal."
+            ]
+          },
+          "prompt": "When encountering stopping and waiting in turn or slow-moving vehicles in front, the motorized vehicle may ______.",
+          "syntheticJaPrompt": "when encountering stopping and waiting turn or 減速 -moving 車両 front motorized 車両 よい _________。",
+          "translatedPrompt": "앞차가 차례로 정차하거나 서행하고 있을 때, 자동차는 무엇을 할 수 있는가?",
+          "options": [
+            {
+              "id": "A",
+              "text": "borrow road to overtake",
+              "translatedText": "도로를 빌려 추월할 수 있다."
+            },
+            {
+              "id": "B",
+              "text": "occupy the opposite lane",
+              "translatedText": "반대 차로를 점유할 수 있다."
+            },
+            {
+              "id": "C",
+              "text": "follow the vehicles in front",
+              "translatedText": "앞차를 따라간다."
+            },
+            {
+              "id": "D",
+              "text": "cut in the waiting vehicles",
+              "translatedText": "대기 중인 차량들 사이로 끼어든다."
+            }
+          ],
+          "correctAnswer": {
+            "kind": "MCQ",
+            "correctRow": null,
+            "correctOptionId": "q0492_o3",
+            "correctOptionKey": "C",
+            "correctOptionText": "follow the vehicles in front",
+            "correctOptionTranslatedText": "앞차를 따라간다.",
+            "answerRaw": "C"
+          },
+          "image": {
+            "hasImage": false,
+            "currentAssetSrc": null,
+            "assetHashes": []
+          },
+          "topic": "parking",
+          "subtopics": [],
+          "conceptSlots": null
+        },
+        {
+          "qid": "q0138",
+          "number": 138,
+          "type": "MCQ",
+          "score": 36.481,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.093,
+            "rawPromptSimilarity": 0.093,
+            "englishPromptSimilarity": 0.093,
+            "syntheticPromptSimilarity": 0,
+            "optionSimilarity": 0.183,
+            "englishOptionSimilarity": 0.183,
+            "syntheticOptionSimilarity": 0.086,
+            "optionFingerprint": 0.12,
+            "englishOptionFingerprint": 0.12,
+            "syntheticOptionFingerprint": 0.047,
+            "optionExactSet": 0,
+            "optionRareCoverage": 0.148,
+            "mirrorAgreement": 0.072,
+            "correctAnswerMeaning": 0.5,
+            "englishCorrectAnswerMeaning": 0.5,
+            "syntheticCorrectAnswerMeaning": 0.5,
+            "questionType": 1,
+            "imageSignal": 1,
+            "topicWeighting": 0.5,
+            "assetTieBreak": 0
+          },
+          "diagnostics": {
+            "effectiveItemType": "MCQ",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": false,
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "exactCorrectKey": false,
+            "optionSetMode": "unordered-semantic + synthetic-ja mirror",
+            "rareSetBonus": 0,
+            "syntheticMirrorUsed": true,
+            "genericPromptFamily": null,
+            "explanation": [
+              "Missing correct answer was treated as a neutral signal."
+            ]
+          },
+          "prompt": "When encountering an ambulance rushing in the same lane in the opposite direction, the driver should ______.",
+          "syntheticJaPrompt": "when encountering ambulance rushing same 車線 opposite direction 運転者 べき ________。",
+          "translatedPrompt": "반대 방향 같은 차로에서 사이렌과 함께 급히 접근하는 구급차를 만나면 운전자는 어떻게 해야 하는가?",
+          "options": [
+            {
+              "id": "A",
+              "text": "move to the road side, reduce speed, or stop to yield",
+              "translatedText": "차로 가장자리로 이동하여 감속하거나 정차해 양보한다"
+            },
+            {
+              "id": "B",
+              "text": "drive on by using another lane",
+              "translatedText": "다른 차로로 진로를 변경해 통과한다"
+            },
+            {
+              "id": "C",
+              "text": "speed up and change lane to avoid",
+              "translatedText": "가속해 차선을 변경하여 피한다"
+            },
+            {
+              "id": "D",
+              "text": "continue to go in the original lane",
+              "translatedText": "원래 차로로 계속 진행한다"
+            }
+          ],
+          "correctAnswer": {
+            "kind": "MCQ",
+            "correctRow": null,
+            "correctOptionId": "q0138_o1",
+            "correctOptionKey": "A",
+            "correctOptionText": "move to the road side, reduce speed, or stop to yield",
+            "correctOptionTranslatedText": "차로 가장자리로 이동하여 감속하거나 정차해 양보한다",
+            "answerRaw": "A"
+          },
+          "image": {
+            "hasImage": false,
+            "currentAssetSrc": null,
+            "assetHashes": []
+          },
+          "topic": "right-of-way",
+          "subtopics": [],
+          "conceptSlots": null
+        },
+        {
+          "qid": "q0143",
+          "number": 143,
+          "type": "MCQ",
+          "score": 35.785,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.097,
+            "rawPromptSimilarity": 0.097,
+            "englishPromptSimilarity": 0.097,
+            "syntheticPromptSimilarity": 0,
+            "optionSimilarity": 0.158,
+            "englishOptionSimilarity": 0.147,
+            "syntheticOptionSimilarity": 0.158,
+            "optionFingerprint": 0.113,
+            "englishOptionFingerprint": 0.051,
+            "syntheticOptionFingerprint": 0.068,
+            "optionExactSet": 0,
+            "optionRareCoverage": 0.067,
+            "mirrorAgreement": 0.113,
+            "correctAnswerMeaning": 0.5,
+            "englishCorrectAnswerMeaning": 0.5,
+            "syntheticCorrectAnswerMeaning": 0.5,
+            "questionType": 1,
+            "imageSignal": 1,
+            "topicWeighting": 0.5,
+            "assetTieBreak": 0
+          },
+          "diagnostics": {
+            "effectiveItemType": "MCQ",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": false,
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "exactCorrectKey": false,
+            "optionSetMode": "unordered-semantic + synthetic-ja mirror",
+            "rareSetBonus": 0,
+            "syntheticMirrorUsed": true,
+            "genericPromptFamily": null,
+            "explanation": [
+              "Missing correct answer was treated as a neutral signal."
+            ]
+          },
+          "prompt": "When driving on an expressway that has four lanes in the same direction, the vehicles whose speed is higher than 110 km/h should drive on the ______.",
+          "syntheticJaPrompt": "when running 高速道路 has four 車線 same direction 車両 whose speed higher than 110 kilometer per hour べき run ______。",
+          "translatedPrompt": "한 방향으로 4차로인 고속도로에서 속도가 110 km/h를 초과하는 차량은 어느 차로로 주행해야 하는가?",
+          "options": [
+            {
+              "id": "A",
+              "text": "far left lane",
+              "translatedText": "가장 왼쪽 차로"
+            },
+            {
+              "id": "B",
+              "text": "second left lane",
+              "translatedText": "왼쪽에서 두 번째 차로"
+            },
+            {
+              "id": "C",
+              "text": "far right lane",
+              "translatedText": "가장 오른쪽 차로"
+            },
+            {
+              "id": "D",
+              "text": "third left lane",
+              "translatedText": "왼쪽에서 세 번째 차로"
+            }
+          ],
+          "correctAnswer": {
+            "kind": "MCQ",
+            "correctRow": null,
+            "correctOptionId": "q0143_o1",
+            "correctOptionKey": "A",
+            "correctOptionText": "far left lane",
+            "correctOptionTranslatedText": "가장 왼쪽 차로",
+            "answerRaw": "A"
+          },
+          "image": {
+            "hasImage": false,
+            "currentAssetSrc": null,
+            "assetHashes": []
+          },
+          "topic": "expressway",
+          "subtopics": [],
+          "conceptSlots": null
+        },
+        {
+          "qid": "q0458",
+          "number": 458,
+          "type": "MCQ",
+          "score": 34.939,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.128,
+            "rawPromptSimilarity": 0.128,
+            "englishPromptSimilarity": 0.128,
+            "syntheticPromptSimilarity": 0.005,
+            "optionSimilarity": 0.138,
+            "englishOptionSimilarity": 0.138,
+            "syntheticOptionSimilarity": 0.11,
+            "optionFingerprint": 0.088,
+            "englishOptionFingerprint": 0.078,
+            "syntheticOptionFingerprint": 0.046,
+            "optionExactSet": 0,
+            "optionRareCoverage": 0.138,
+            "mirrorAgreement": 0.088,
+            "correctAnswerMeaning": 0.5,
+            "englishCorrectAnswerMeaning": 0.5,
+            "syntheticCorrectAnswerMeaning": 0.5,
+            "questionType": 1,
+            "imageSignal": 1,
+            "topicWeighting": 0.5,
+            "assetTieBreak": 0
+          },
+          "diagnostics": {
+            "effectiveItemType": "MCQ",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": false,
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "exactCorrectKey": false,
+            "optionSetMode": "unordered-semantic + synthetic-ja mirror",
+            "rareSetBonus": 0,
+            "syntheticMirrorUsed": true,
+            "genericPromptFamily": null,
+            "explanation": [
+              "Missing correct answer was treated as a neutral signal."
+            ]
+          },
+          "prompt": "What do you do if there is a traffic jam at an intersection?",
+          "syntheticJaPrompt": "how do if there traffic jam 交差点。",
+          "translatedPrompt": "교차로에 교통 정체가 발생했을 때 운전자는 어떻게 해야 하는가?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Borrow the opposite lane to pass.",
+              "translatedText": "맞은편 차로를 이용해 통과한다."
+            },
+            {
+              "id": "B",
+              "text": "Stop and wait outside the intersection.",
+              "translatedText": "교차로 밖에 정차하여 기다린다."
+            },
+            {
+              "id": "C",
+              "text": "Cut in the front vehicles to pass.",
+              "translatedText": "다른 차량들 사이를 비집고 앞질러 간다."
+            },
+            {
+              "id": "D",
+              "text": "Enter the intersection and wait.",
+              "translatedText": "교차로 안으로 진입하여 대기한다."
+            }
+          ],
+          "correctAnswer": {
+            "kind": "MCQ",
+            "correctRow": null,
+            "correctOptionId": "q0458_o2",
+            "correctOptionKey": "B",
+            "correctOptionText": "Stop and wait outside the intersection.",
+            "correctOptionTranslatedText": "교차로 밖에 정차하여 기다린다.",
+            "answerRaw": "B"
+          },
+          "image": {
+            "hasImage": false,
+            "currentAssetSrc": null,
+            "assetHashes": []
+          },
+          "topic": "road-safety",
+          "subtopics": [
+            "road-safety:road-conditions"
+          ],
+          "conceptSlots": null
+        },
+        {
+          "qid": "q0119",
+          "number": 119,
+          "type": "MCQ",
+          "score": 34.037,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.223,
+            "rawPromptSimilarity": 0.223,
+            "englishPromptSimilarity": 0.223,
+            "syntheticPromptSimilarity": 0.003,
+            "optionSimilarity": 0.085,
+            "englishOptionSimilarity": 0.085,
+            "syntheticOptionSimilarity": 0.076,
+            "optionFingerprint": 0.059,
+            "englishOptionFingerprint": 0.026,
+            "syntheticOptionFingerprint": 0.027,
+            "optionExactSet": 0,
+            "optionRareCoverage": 0.039,
+            "mirrorAgreement": 0.059,
+            "correctAnswerMeaning": 0.5,
+            "englishCorrectAnswerMeaning": 0.5,
+            "syntheticCorrectAnswerMeaning": 0.5,
+            "questionType": 1,
+            "imageSignal": 1,
+            "topicWeighting": 0.5,
+            "assetTieBreak": 0
+          },
+          "diagnostics": {
+            "effectiveItemType": "MCQ",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": false,
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "exactCorrectKey": false,
+            "optionSetMode": "unordered-semantic + synthetic-ja mirror",
+            "rareSetBonus": 0,
+            "syntheticMirrorUsed": true,
+            "genericPromptFamily": null,
+            "explanation": [
+              "Missing correct answer was treated as a neutral signal."
+            ]
+          },
+          "prompt": "When a driver needs to borrow a lane to bypass an obstacle in front and a vehicle in the opposite direction is approaching the obstacle, the driver should ______.",
+          "syntheticJaPrompt": "when 運転者 need borrow 車線 bypass obstacle front and 車両 opposite direction approaching obstacle 運転者 べき ___________。",
+          "translatedPrompt": "앞의 장애물을 피하려고 차로를 잠시 빌려야 하는데 반대 방향 차량이 장애물 쪽으로 오고 있다면 운전자는 어떻게 해야 하는가?",
+          "options": [
+            {
+              "id": "A",
+              "text": "reduce speed or stop and yield to the vehicle coming in the opposite direction",
+              "translatedText": "감속하거나 정지하여 반대 방향 차량에 양보하다"
+            },
+            {
+              "id": "B",
+              "text": "speed up and bypass the obstacle in advance",
+              "translatedText": "가속하여 미리 장애물을 피해 통과하다"
+            },
+            {
+              "id": "C",
+              "text": "honk to indicate the vehicle in the opposite direction to yield",
+              "translatedText": "반대 방향 차량에 양보하라고 경적을 울리다"
+            },
+            {
+              "id": "D",
+              "text": "rapidly occupy the lane and force the vehicle coming in the opposite direction to stop and yield",
+              "translatedText": "급히 차로를 점유해 반대 차량을 정지시켜 양보를 강요하다"
+            }
+          ],
+          "correctAnswer": {
+            "kind": "MCQ",
+            "correctRow": null,
+            "correctOptionId": "q0119_o1",
+            "correctOptionKey": "A",
+            "correctOptionText": "reduce speed or stop and yield to the vehicle coming in the opposite direction",
+            "correctOptionTranslatedText": "감속하거나 정지하여 반대 방향 차량에 양보하다",
+            "answerRaw": "A"
+          },
+          "image": {
+            "hasImage": false,
+            "currentAssetSrc": null,
+            "assetHashes": []
+          },
+          "topic": "road-safety",
+          "subtopics": [
+            "road-safety:road-conditions",
+            "proper-driving:safe-driving"
+          ],
+          "conceptSlots": null
+        }
+      ]
+    },
+    {
+      "itemId": "screenshots/Screenshot 2026-04-07 at 17.50.58.png",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 17.50.58.png",
+      "promptRawJa": "運転者がに12点減点されるがつくのは、どの違法行為か。",
+      "promptGlossEn": "Which illegal act will result in a driver receiving a 12-point deduction?",
+      "optionsRawJa": [
+        "A 交通信号に違反する",
+        "B 偽造されたナンバープレートを使用する",
+        "C 禁止標識の指示に違反する",
+        "D 電話をかける、または電話に出る"
+      ],
+      "optionsGlossEn": [
+        "A. Violating a traffic signal",
+        "B. Using a forged license plate",
+        "C. Violating a prohibited sign",
+        "D. Making or answering a phone call"
+      ],
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "ocrConfidence": "high",
+      "hasImage": false,
+      "provisionalTopic": "road-safety",
+      "provisionalSubtopics": [
+        "road-safety:license",
+        "proper-driving:traffic-laws",
+        "traffic-signals:road-signs"
+      ],
+      "topicConfidence": 0.5,
+      "topicSignals": [
+        {
+          "topic": "road-safety",
+          "subtopic": "road-safety:license",
+          "signal": "license",
+          "weight": 1.15
+        },
+        {
+          "topic": "proper-driving",
+          "subtopic": "proper-driving:traffic-laws",
+          "signal": "traffic-law",
+          "weight": 1.15
+        },
+        {
+          "topic": "traffic-signals",
+          "subtopic": "traffic-signals:road-signs",
+          "signal": "sign-family",
+          "weight": 1.1
+        }
+      ],
+      "sourceConceptSlots": null,
+      "reason": "No candidate passed the minimum similarity threshold.",
+      "analysis": {
+        "mode": "standard",
+        "effectiveQuestionType": "MCQ",
+        "declaredQuestionType": "MCQ",
+        "booleanChoiceDetected": false,
+        "topScore": 43.533,
+        "topGap": 7.026,
+        "plausibleShortlist": true,
+        "imageParityApplied": true,
+        "candidateImageParityMode": "text-only candidate set",
+        "candidateCountBeforeParity": 973,
+        "candidateCountAfterParity": 482,
+        "explanation": "Shortlist is plausible but still below the review floor."
+      },
+      "topCandidates": [
+        {
+          "qid": "q0370",
+          "number": 370,
+          "type": "MCQ",
+          "score": 43.533,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.223,
+            "rawPromptSimilarity": 0.223,
+            "englishPromptSimilarity": 0.223,
+            "syntheticPromptSimilarity": 0.006,
+            "optionSimilarity": 0.295,
+            "englishOptionSimilarity": 0.295,
+            "syntheticOptionSimilarity": 0.027,
+            "optionFingerprint": 0.175,
+            "englishOptionFingerprint": 0.175,
+            "syntheticOptionFingerprint": 0.008,
+            "optionExactSet": 0,
+            "optionRareCoverage": 0.238,
+            "mirrorAgreement": 0.021,
+            "correctAnswerMeaning": 0.5,
+            "englishCorrectAnswerMeaning": 0.5,
+            "syntheticCorrectAnswerMeaning": 0.5,
+            "questionType": 1,
+            "imageSignal": 1,
+            "topicWeighting": 0.5,
+            "assetTieBreak": 0
+          },
+          "diagnostics": {
+            "effectiveItemType": "MCQ",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": false,
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "exactCorrectKey": false,
+            "optionSetMode": "unordered-semantic + synthetic-ja mirror",
+            "rareSetBonus": 0,
+            "syntheticMirrorUsed": true,
+            "genericPromptFamily": null,
+            "explanation": [
+              "Missing correct answer was treated as a neutral signal."
+            ]
+          },
+          "prompt": "Which illegal conduct is subject to a 12-point penalty?",
+          "syntheticJaPrompt": "which illegal conduct subject 12-point penalty",
+          "translatedPrompt": "어떤 위반행위가 벌점 12점에 해당하는가?",
+          "options": [
+            {
+              "id": "A",
+              "text": "violating traffic lights",
+              "translatedText": "신호 위반"
+            },
+            {
+              "id": "B",
+              "text": "using falsified license plate",
+              "translatedText": "위조 번호판 사용"
+            },
+            {
+              "id": "C",
+              "text": "calling or answering the mobile phone",
+              "translatedText": "운전 중 휴대전화 사용"
+            },
+            {
+              "id": "D",
+              "text": "violating prohibitive signs",
+              "translatedText": "금지표지 위반"
+            }
+          ],
+          "correctAnswer": {
+            "kind": "MCQ",
+            "correctRow": null,
+            "correctOptionId": "q0370_o2",
+            "correctOptionKey": "B",
+            "correctOptionText": "using falsified license plate",
+            "correctOptionTranslatedText": "위조 번호판 사용",
+            "answerRaw": "B"
+          },
+          "image": {
+            "hasImage": false,
+            "currentAssetSrc": null,
+            "assetHashes": []
+          },
+          "topic": "violations-penalties",
+          "subtopics": [],
+          "conceptSlots": null
+        },
+        {
+          "qid": "q0405",
+          "number": 405,
+          "type": "MCQ",
+          "score": 36.507,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.079,
+            "rawPromptSimilarity": 0.079,
+            "englishPromptSimilarity": 0.079,
+            "syntheticPromptSimilarity": 0,
+            "optionSimilarity": 0.22,
+            "englishOptionSimilarity": 0.22,
+            "syntheticOptionSimilarity": 0,
+            "optionFingerprint": 0.096,
+            "englishOptionFingerprint": 0.096,
+            "syntheticOptionFingerprint": 0,
+            "optionExactSet": 0,
+            "optionRareCoverage": 0.082,
+            "mirrorAgreement": 0,
+            "correctAnswerMeaning": 0.5,
+            "englishCorrectAnswerMeaning": 0.5,
+            "syntheticCorrectAnswerMeaning": 0.5,
+            "questionType": 1,
+            "imageSignal": 1,
+            "topicWeighting": 0.5,
+            "assetTieBreak": 0
+          },
+          "diagnostics": {
+            "effectiveItemType": "MCQ",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": false,
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "exactCorrectKey": false,
+            "optionSetMode": "unordered-semantic + synthetic-ja mirror",
+            "rareSetBonus": 0,
+            "syntheticMirrorUsed": true,
+            "genericPromptFamily": null,
+            "explanation": [
+              "Missing correct answer was treated as a neutral signal."
+            ]
+          },
+          "prompt": "A fine of 200~2000 yuan and driving license will be revoked if ______.",
+          "syntheticJaPrompt": "fine will be 200~2000 yuan and driving license will be revoked if _____",
+          "translatedPrompt": "다음 중 어느 경우에 200~2000위안의 벌금과 운전면허 취소를 받는가?",
+          "options": [
+            {
+              "id": "A",
+              "text": "violating traffic regulations",
+              "translatedText": "교통법규를 위반한 경우"
+            },
+            {
+              "id": "B",
+              "text": "driving 50% faster than the specified speed limit",
+              "translatedText": "지정 속도보다 50% 초과하여 운전한 경우"
+            },
+            {
+              "id": "C",
+              "text": "escaping after causing traffic accident",
+              "translatedText": "교통사고를 내고 도주한 경우"
+            },
+            {
+              "id": "D",
+              "text": "driving without a driver license",
+              "translatedText": "운전면허 없이 운전한 경우"
+            }
+          ],
+          "correctAnswer": {
+            "kind": "MCQ",
+            "correctRow": null,
+            "correctOptionId": "q0405_o2",
+            "correctOptionKey": "B",
+            "correctOptionText": "driving 50% faster than the specified speed limit",
+            "correctOptionTranslatedText": "지정 속도보다 50% 초과하여 운전한 경우",
+            "answerRaw": "B"
+          },
+          "image": {
+            "hasImage": false,
+            "currentAssetSrc": null,
+            "assetHashes": []
+          },
+          "topic": "license",
+          "subtopics": [],
+          "conceptSlots": null
+        },
+        {
+          "qid": "q0422",
+          "number": 422,
+          "type": "MCQ",
+          "score": 33.723,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.257,
+            "rawPromptSimilarity": 0.257,
+            "englishPromptSimilarity": 0.257,
+            "syntheticPromptSimilarity": 0.093,
+            "optionSimilarity": 0.082,
+            "englishOptionSimilarity": 0.082,
+            "syntheticOptionSimilarity": 0,
+            "optionFingerprint": 0.036,
+            "englishOptionFingerprint": 0.036,
+            "syntheticOptionFingerprint": 0,
+            "optionExactSet": 0,
+            "optionRareCoverage": 0.04,
+            "mirrorAgreement": 0,
+            "correctAnswerMeaning": 0.5,
+            "englishCorrectAnswerMeaning": 0.5,
+            "syntheticCorrectAnswerMeaning": 0.5,
+            "questionType": 1,
+            "imageSignal": 1,
+            "topicWeighting": 0.5,
+            "assetTieBreak": 0
+          },
+          "diagnostics": {
+            "effectiveItemType": "MCQ",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": false,
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "exactCorrectKey": false,
+            "optionSetMode": "unordered-semantic + synthetic-ja mirror",
+            "rareSetBonus": 0,
+            "syntheticMirrorUsed": true,
+            "genericPromptFamily": null,
+            "explanation": [
+              "Missing correct answer was treated as a neutral signal."
+            ]
+          },
+          "prompt": "In which situation will a driver not be allowed to drive?",
+          "syntheticJaPrompt": "which situation 運転者 will してはならない drive。",
+          "translatedPrompt": "다음 중 운전할 수 없는 경우는?",
+          "options": [
+            {
+              "id": "A",
+              "text": "penalty points reach 10 points",
+              "translatedText": "벌점이 10점에 달했을 때"
+            },
+            {
+              "id": "B",
+              "text": "penalty points reach 6 points",
+              "translatedText": "벌점이 6점에 달했을 때"
+            },
+            {
+              "id": "C",
+              "text": "driving license lost or destroyed",
+              "translatedText": "운전면허증을 분실하거나 훼손되었을 때"
+            },
+            {
+              "id": "D",
+              "text": "driving license is nearly expired",
+              "translatedText": "운전면허증의 유효기간이 임박했을 때"
+            }
+          ],
+          "correctAnswer": {
+            "kind": "MCQ",
+            "correctRow": null,
+            "correctOptionId": "q0422_o3",
+            "correctOptionKey": "C",
+            "correctOptionText": "driving license lost or destroyed",
+            "correctOptionTranslatedText": "운전면허증을 분실하거나 훼손되었을 때",
+            "answerRaw": "C"
+          },
+          "image": {
+            "hasImage": false,
+            "currentAssetSrc": null,
+            "assetHashes": []
+          },
+          "topic": "license",
+          "subtopics": [],
+          "conceptSlots": null
+        },
+        {
+          "qid": "q0433",
+          "number": 433,
+          "type": "MCQ",
+          "score": 33.611,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.144,
+            "rawPromptSimilarity": 0.147,
+            "englishPromptSimilarity": 0.144,
+            "syntheticPromptSimilarity": 0.007,
+            "optionSimilarity": 0.124,
+            "englishOptionSimilarity": 0.124,
+            "syntheticOptionSimilarity": 0,
+            "optionFingerprint": 0.06,
+            "englishOptionFingerprint": 0.06,
+            "syntheticOptionFingerprint": 0,
+            "optionExactSet": 0,
+            "optionRareCoverage": 0.07,
+            "mirrorAgreement": 0,
+            "correctAnswerMeaning": 0.5,
+            "englishCorrectAnswerMeaning": 0.5,
+            "syntheticCorrectAnswerMeaning": 0.5,
+            "questionType": 1,
+            "imageSignal": 1,
+            "topicWeighting": 0.5,
+            "assetTieBreak": 0
+          },
+          "diagnostics": {
+            "effectiveItemType": "MCQ",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": false,
+            "promptSpecificity": 0.975,
+            "genericPromptPenalty": 0.975,
+            "missingCorrectAnswerNeutral": true,
+            "exactCorrectKey": false,
+            "optionSetMode": "unordered-semantic + synthetic-ja mirror",
+            "rareSetBonus": 0,
+            "syntheticMirrorUsed": true,
+            "genericPromptFamily": null,
+            "explanation": [
+              "Missing correct answer was treated as a neutral signal."
+            ]
+          },
+          "prompt": "Which is subject to a 12-point penalty?",
+          "syntheticJaPrompt": "which subject 12-point penalty",
+          "translatedPrompt": "어떤 행위가 벌점 12점에 해당하는가?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Driving a motorized vehicle when driving license is temporarily detained.",
+              "translatedText": "운전면허가 일시 정지된 상태에서 자동차를 운전하는 행위"
+            },
+            {
+              "id": "B",
+              "text": "Applying for reissuing the driving license by concealment or deception.",
+              "translatedText": "은닉·기만으로 운전면허 재발급을 신청하는 행위"
+            },
+            {
+              "id": "C",
+              "text": "Not yielding to the school bus according to regulations.",
+              "translatedText": "규정에 따라 스쿨버스에 양보하지 않는 행위"
+            },
+            {
+              "id": "D",
+              "text": "Driving with the license plate deliberately stained.",
+              "translatedText": "번호판을 고의로 훼손한 상태로 운전하는 행위"
+            }
+          ],
+          "correctAnswer": {
+            "kind": "MCQ",
+            "correctRow": null,
+            "correctOptionId": "q0433_o4",
+            "correctOptionKey": "D",
+            "correctOptionText": "Driving with the license plate deliberately stained.",
+            "correctOptionTranslatedText": "번호판을 고의로 훼손한 상태로 운전하는 행위",
+            "answerRaw": "D"
+          },
+          "image": {
+            "hasImage": false,
+            "currentAssetSrc": null,
+            "assetHashes": []
+          },
+          "topic": "violations-penalties",
+          "subtopics": [],
+          "conceptSlots": null
+        },
+        {
+          "qid": "q0922",
+          "number": 922,
+          "type": "MCQ",
+          "score": 32.712,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.003,
+            "rawPromptSimilarity": 0.003,
+            "englishPromptSimilarity": 0.003,
+            "syntheticPromptSimilarity": 0,
+            "optionSimilarity": 0.16,
+            "englishOptionSimilarity": 0.16,
+            "syntheticOptionSimilarity": 0,
+            "optionFingerprint": 0.078,
+            "englishOptionFingerprint": 0.078,
+            "syntheticOptionFingerprint": 0,
+            "optionExactSet": 0,
+            "optionRareCoverage": 0.096,
+            "mirrorAgreement": 0,
+            "correctAnswerMeaning": 0.5,
+            "englishCorrectAnswerMeaning": 0.5,
+            "syntheticCorrectAnswerMeaning": 0.5,
+            "questionType": 1,
+            "imageSignal": 1,
+            "topicWeighting": 0.5,
+            "assetTieBreak": 0
+          },
+          "diagnostics": {
+            "effectiveItemType": "MCQ",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": false,
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "exactCorrectKey": false,
+            "optionSetMode": "unordered-semantic + synthetic-ja mirror",
+            "rareSetBonus": 0,
+            "syntheticMirrorUsed": true,
+            "genericPromptFamily": null,
+            "explanation": [
+              "Missing correct answer was treated as a neutral signal."
+            ]
+          },
+          "prompt": "An unregistered motorized vehicle should have a ______ if it has to drive on the road temporarily.",
+          "syntheticJaPrompt": "unregistered motorized 車両 べき have _________ if it has run road temporarily。",
+          "translatedPrompt": "미등록 자동차가 임시로 도로를 운행해야 할 때 갖추어야 하는 것은 무엇인가?",
+          "options": [
+            {
+              "id": "A",
+              "text": "certificate of legal origin",
+              "translatedText": "합법적 출처 증명서"
+            },
+            {
+              "id": "B",
+              "text": "license plate for temporary moving",
+              "translatedText": "임시 운행 번호판"
+            },
+            {
+              "id": "C",
+              "text": "borrowed license plate",
+              "translatedText": "타인에게 빌린 번호판"
+            },
+            {
+              "id": "D",
+              "text": "certificate of legal unit",
+              "translatedText": "법적 단위 증명서"
+            }
+          ],
+          "correctAnswer": {
+            "kind": "MCQ",
+            "correctRow": null,
+            "correctOptionId": "q0922_o2",
+            "correctOptionKey": "B",
+            "correctOptionText": "license plate for temporary moving",
+            "correctOptionTranslatedText": "임시 운행 번호판",
+            "answerRaw": "B"
+          },
+          "image": {
+            "hasImage": false,
+            "currentAssetSrc": null,
+            "assetHashes": []
+          },
+          "topic": "vehicle-registration",
+          "subtopics": [],
+          "conceptSlots": null
+        }
+      ]
+    },
+    {
+      "itemId": "screenshots/Screenshot 2026-04-07 at 17.51.01.png",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 17.51.01.png",
+      "promptRawJa": "道路交通安全達法による累積点数の制限は、一計算周期につき12点である。",
+      "promptGlossEn": "The cumulative point limit according to the Road Traffic Safety Act is 12 points per calculation period.",
+      "optionsRawJa": [
+        "A Yes",
+        "B No"
+      ],
+      "optionsGlossEn": [
+        "A Yes",
+        "B No"
+      ],
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "ocrConfidence": "high",
+      "hasImage": false,
+      "provisionalTopic": null,
+      "provisionalSubtopics": [],
+      "topicConfidence": 0,
+      "topicSignals": [],
+      "sourceConceptSlots": {
+        "condition": [],
+        "context": [],
+        "action": [],
+        "polarity": null,
+        "signals": []
+      },
+      "reason": "No candidate passed the minimum similarity threshold.",
+      "analysis": {
+        "mode": "standard",
+        "effectiveQuestionType": "ROW",
+        "declaredQuestionType": "MCQ",
+        "booleanChoiceDetected": true,
+        "topScore": 42.839,
+        "topGap": 1.224,
+        "plausibleShortlist": true,
+        "imageParityApplied": true,
+        "candidateImageParityMode": "text-only candidate set",
+        "candidateCountBeforeParity": 973,
+        "candidateCountAfterParity": 482,
+        "explanation": "Shortlist is plausible but still below the review floor."
+      },
+      "topCandidates": [
+        {
+          "qid": "q0264",
+          "number": 264,
+          "type": "ROW",
+          "score": 42.839,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.264,
+            "rawPromptSimilarity": 0.264,
+            "englishPromptSimilarity": 0.264,
+            "syntheticPromptSimilarity": 0,
+            "questionType": 1,
+            "imageSignal": 1,
+            "topicWeighting": 0.5,
+            "answerPolarity": 0.5,
+            "conceptAlignment": 0,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0
+          },
+          "diagnostics": {
+            "effectiveItemType": "ROW",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": true,
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "optionSetMode": "binary-row-neutral + synthetic-ja mirror",
+            "syntheticMirrorUsed": true,
+            "genericPromptFamily": null,
+            "sourceConceptSlots": {
+              "condition": [],
+              "context": [],
+              "action": [],
+              "polarity": null,
+              "signals": []
+            },
+            "candidateConceptSlots": {
+              "condition": [],
+              "context": [],
+              "action": [],
+              "polarity": null,
+              "signals": []
+            },
+            "conceptMatches": [],
+            "contradictionSignals": [],
+            "rowConceptMode": "slot-alignment + contradiction-penalties",
+            "explanation": [
+              "Binary yes/no options were treated as ROW-like for type scoring.",
+              "Missing correct answer was treated as a neutral signal."
+            ]
+          },
+          "prompt": "Causing a traffic accident due to violating the law and regulations on road traffic safety is a rule-breaking act.",
+          "syntheticJaPrompt": "causing traffic accident due violating law and regulation road traffic safety rule-breaking act",
+          "translatedPrompt": "도로교통안전 관련 법규를 위반하여 교통사고를 유발한 것은 위반행위에 해당한다.",
+          "options": [],
+          "correctAnswer": {
+            "kind": "ROW",
+            "correctRow": "W",
+            "correctOptionId": null,
+            "correctOptionKey": null,
+            "correctOptionText": "wrong / false",
+            "correctOptionTranslatedText": null,
+            "answerRaw": "Wrong"
+          },
+          "image": {
+            "hasImage": false,
+            "currentAssetSrc": null,
+            "assetHashes": []
+          },
+          "topic": "accidents",
+          "subtopics": [],
+          "conceptSlots": {
+            "condition": [],
+            "context": [],
+            "action": [],
+            "polarity": null,
+            "signals": []
+          }
+        },
+        {
+          "qid": "q0323",
+          "number": 323,
+          "type": "ROW",
+          "score": 41.615,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.243,
+            "rawPromptSimilarity": 0.243,
+            "englishPromptSimilarity": 0.243,
+            "syntheticPromptSimilarity": 0,
+            "questionType": 1,
+            "imageSignal": 1,
+            "topicWeighting": 0.5,
+            "answerPolarity": 0.5,
+            "conceptAlignment": 0,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0
+          },
+          "diagnostics": {
+            "effectiveItemType": "ROW",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": true,
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "optionSetMode": "binary-row-neutral + synthetic-ja mirror",
+            "syntheticMirrorUsed": true,
+            "genericPromptFamily": null,
+            "sourceConceptSlots": {
+              "condition": [],
+              "context": [],
+              "action": [],
+              "polarity": null,
+              "signals": []
+            },
+            "candidateConceptSlots": {
+              "condition": [],
+              "context": [],
+              "action": [],
+              "polarity": null,
+              "signals": []
+            },
+            "conceptMatches": [],
+            "contradictionSignals": [],
+            "rowConceptMode": "slot-alignment + contradiction-penalties",
+            "explanation": [
+              "Binary yes/no options were treated as ROW-like for type scoring.",
+              "Missing correct answer was treated as a neutral signal."
+            ]
+          },
+          "prompt": "Violating the law and regulations of road traffic safety is the act of violation of the law.",
+          "syntheticJaPrompt": "violating law and regulation road traffic safety act violation law",
+          "translatedPrompt": "도로교통안전 관련 법규를 위반하는 행위는 위법행위이다.",
+          "options": [],
+          "correctAnswer": {
+            "kind": "ROW",
+            "correctRow": "R",
+            "correctOptionId": null,
+            "correctOptionKey": null,
+            "correctOptionText": "right / true",
+            "correctOptionTranslatedText": null,
+            "answerRaw": "Right"
+          },
+          "image": {
+            "hasImage": false,
+            "currentAssetSrc": null,
+            "assetHashes": []
+          },
+          "topic": "violations-penalties",
+          "subtopics": [],
+          "conceptSlots": {
+            "condition": [],
+            "context": [],
+            "action": [],
+            "polarity": null,
+            "signals": []
+          }
+        },
+        {
+          "qid": "q0251",
+          "number": 251,
+          "type": "ROW",
+          "score": 40.009,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.216,
+            "rawPromptSimilarity": 0.216,
+            "englishPromptSimilarity": 0.216,
+            "syntheticPromptSimilarity": 0,
+            "questionType": 1,
+            "imageSignal": 1,
+            "topicWeighting": 0.5,
+            "answerPolarity": 0.5,
+            "conceptAlignment": 0,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0
+          },
+          "diagnostics": {
+            "effectiveItemType": "ROW",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": true,
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "optionSetMode": "binary-row-neutral + synthetic-ja mirror",
+            "syntheticMirrorUsed": true,
+            "genericPromptFamily": null,
+            "sourceConceptSlots": {
+              "condition": [],
+              "context": [],
+              "action": [],
+              "polarity": null,
+              "signals": []
+            },
+            "candidateConceptSlots": {
+              "condition": [],
+              "context": [],
+              "action": [],
+              "polarity": null,
+              "signals": []
+            },
+            "conceptMatches": [],
+            "contradictionSignals": [],
+            "rowConceptMode": "slot-alignment + contradiction-penalties",
+            "explanation": [
+              "Binary yes/no options were treated as ROW-like for type scoring.",
+              "Missing correct answer was treated as a neutral signal."
+            ]
+          },
+          "prompt": "Full penalty points of a scoring cycle because of violating the traffic regulations is 12 points.",
+          "syntheticJaPrompt": "full penalty point scoring cycle because violating traffic regulation 12 point",
+          "translatedPrompt": "교통법규 위반으로 인한 벌점 산정 기간의 총 벌점은 12점이다.",
+          "options": [],
+          "correctAnswer": {
+            "kind": "ROW",
+            "correctRow": "R",
+            "correctOptionId": null,
+            "correctOptionKey": null,
+            "correctOptionText": "right / true",
+            "correctOptionTranslatedText": null,
+            "answerRaw": "Right"
+          },
+          "image": {
+            "hasImage": false,
+            "currentAssetSrc": null,
+            "assetHashes": []
+          },
+          "topic": "violations-penalties",
+          "subtopics": [],
+          "conceptSlots": {
+            "condition": [],
+            "context": [],
+            "action": [],
+            "polarity": null,
+            "signals": []
+          }
+        },
+        {
+          "qid": "q0060",
+          "number": 60,
+          "type": "ROW",
+          "score": 37.739,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.177,
+            "rawPromptSimilarity": 0.177,
+            "englishPromptSimilarity": 0.177,
+            "syntheticPromptSimilarity": 0,
+            "questionType": 1,
+            "imageSignal": 1,
+            "topicWeighting": 0.5,
+            "answerPolarity": 0.5,
+            "conceptAlignment": 0,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0
+          },
+          "diagnostics": {
+            "effectiveItemType": "ROW",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": true,
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "optionSetMode": "binary-row-neutral + synthetic-ja mirror",
+            "syntheticMirrorUsed": true,
+            "genericPromptFamily": null,
+            "sourceConceptSlots": {
+              "condition": [],
+              "context": [],
+              "action": [],
+              "polarity": null,
+              "signals": []
+            },
+            "candidateConceptSlots": {
+              "condition": [],
+              "context": [
+                "expressway"
+              ],
+              "action": [],
+              "polarity": null,
+              "signals": [
+                {
+                  "slot": "context",
+                  "value": "expressway",
+                  "signal": "expressway"
+                }
+              ]
+            },
+            "conceptMatches": [],
+            "contradictionSignals": [],
+            "rowConceptMode": "slot-alignment + contradiction-penalties",
+            "explanation": [
+              "Binary yes/no options were treated as ROW-like for type scoring.",
+              "Missing correct answer was treated as a neutral signal."
+            ]
+          },
+          "prompt": "According to the rules on road traffic safety, the maximum speed on the expressway is less than 120km/hr, thus, it will not be in violation of the traffic regulations as long as the speed does not exceed 120km/hr on the expressway.",
+          "syntheticJaPrompt": "according rule road traffic safety maximum speed 高速道路 less than 120km hr thus it will not be violation traffic regulation as long as speed not exceed 120km hr 高速道路。",
+          "translatedPrompt": "도로교통안전 규정에 따르면 고속도로의 최고속도는 120km/h 미만이므로 고속도로에서 속도가 120km/h를 초과하지 않으면 교통법규 위반이 아니다.",
+          "options": [],
+          "correctAnswer": {
+            "kind": "ROW",
+            "correctRow": "W",
+            "correctOptionId": null,
+            "correctOptionKey": null,
+            "correctOptionText": "wrong / false",
+            "correctOptionTranslatedText": null,
+            "answerRaw": "Wrong"
+          },
+          "image": {
+            "hasImage": false,
+            "currentAssetSrc": null,
+            "assetHashes": []
+          },
+          "topic": "violations-penalties",
+          "subtopics": [],
+          "conceptSlots": {
+            "condition": [],
+            "context": [
+              "expressway"
+            ],
+            "action": [],
+            "polarity": null,
+            "signals": [
+              {
+                "slot": "context",
+                "value": "expressway",
+                "signal": "expressway"
+              }
+            ]
+          }
+        },
+        {
+          "qid": "q0188",
+          "number": 188,
+          "type": "ROW",
+          "score": 37.433,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.171,
+            "rawPromptSimilarity": 0.171,
+            "englishPromptSimilarity": 0.171,
+            "syntheticPromptSimilarity": 0,
+            "questionType": 1,
+            "imageSignal": 1,
+            "topicWeighting": 0.5,
+            "answerPolarity": 0.5,
+            "conceptAlignment": 0,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0
+          },
+          "diagnostics": {
+            "effectiveItemType": "ROW",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": true,
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "optionSetMode": "binary-row-neutral + synthetic-ja mirror",
+            "syntheticMirrorUsed": true,
+            "genericPromptFamily": null,
+            "sourceConceptSlots": {
+              "condition": [],
+              "context": [],
+              "action": [],
+              "polarity": null,
+              "signals": []
+            },
+            "candidateConceptSlots": {
+              "condition": [],
+              "context": [
+                "intersection"
+              ],
+              "action": [
+                "pass"
+              ],
+              "polarity": "positive",
+              "signals": [
+                {
+                  "slot": "context",
+                  "value": "intersection",
+                  "signal": "intersection"
+                },
+                {
+                  "slot": "action",
+                  "value": "pass",
+                  "signal": "pass"
+                }
+              ]
+            },
+            "conceptMatches": [],
+            "contradictionSignals": [],
+            "rowConceptMode": "slot-alignment + contradiction-penalties",
+            "explanation": [
+              "Binary yes/no options were treated as ROW-like for type scoring.",
+              "Missing correct answer was treated as a neutral signal."
+            ]
+          },
+          "prompt": "Motorized vehicles should pass intersections according to the traffic signals.",
+          "syntheticJaPrompt": "motorized 車両 べき 追い越し 交差点 according traffic signal。",
+          "translatedPrompt": "자동차는 신호에 따라 교차로를 통과해야 한다.",
+          "options": [],
+          "correctAnswer": {
+            "kind": "ROW",
+            "correctRow": "R",
+            "correctOptionId": null,
+            "correctOptionKey": null,
+            "correctOptionText": "right / true",
+            "correctOptionTranslatedText": null,
+            "answerRaw": "Right"
+          },
+          "image": {
+            "hasImage": false,
+            "currentAssetSrc": null,
+            "assetHashes": []
+          },
+          "topic": "traffic-signs",
+          "subtopics": [],
+          "conceptSlots": {
+            "condition": [],
+            "context": [
+              "intersection"
+            ],
+            "action": [
+              "pass"
+            ],
+            "polarity": "positive",
+            "signals": [
+              {
+                "slot": "context",
+                "value": "intersection",
+                "signal": "intersection"
+              },
+              {
+                "slot": "action",
+                "value": "pass",
+                "signal": "pass"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "itemId": "screenshots/Screenshot 2026-04-07 at 17.51.16.png",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 17.51.16.png",
+      "promptRawJa": "自動車のインパネのの点灯は、何を示しているか。",
+      "promptGlossEn": "What does the indicator light on the car's dashboard show?",
+      "optionsRawJa": [
+        "A ブレーキ液の不足",
+        "B 洗浄剤の不足",
+        "C 冷却システムの故障",
+        "D 冷却液の不足"
+      ],
+      "optionsGlossEn": [
+        "A. Low brake fluid",
+        "B. Low washer fluid",
+        "C. Cooling system failure",
+        "D. Low coolant"
+      ],
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "ocrConfidence": "high",
+      "hasImage": true,
+      "provisionalTopic": "traffic-signals",
+      "provisionalSubtopics": [
+        "traffic-signals:road-markings",
+        "driving-operations:indicators"
+      ],
+      "topicConfidence": 0.5,
+      "topicSignals": [
+        {
+          "topic": "traffic-signals",
+          "subtopic": "traffic-signals:road-markings",
+          "signal": "road-marking",
+          "weight": 1.25
+        },
+        {
+          "topic": "driving-operations",
+          "subtopic": "driving-operations:indicators",
+          "signal": "indicator-operation",
+          "weight": 1.25
+        }
+      ],
+      "sourceConceptSlots": null,
+      "reason": "No candidate passed the minimum similarity threshold.",
+      "analysis": {
+        "mode": "standard",
+        "effectiveQuestionType": "MCQ",
+        "declaredQuestionType": "MCQ",
+        "booleanChoiceDetected": false,
+        "topScore": 39.886,
+        "topGap": 2.724,
+        "plausibleShortlist": true,
+        "imageParityApplied": true,
+        "candidateImageParityMode": "image-only candidate set",
+        "candidateCountBeforeParity": 973,
+        "candidateCountAfterParity": 491,
+        "explanation": "Shortlist is plausible but still below the review floor."
+      },
+      "topCandidates": [
+        {
+          "qid": "q0629",
+          "number": 629,
+          "type": "MCQ",
+          "score": 39.886,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.145,
+            "rawPromptSimilarity": 0.166,
+            "englishPromptSimilarity": 0.135,
+            "syntheticPromptSimilarity": 0.145,
+            "optionSimilarity": 0.239,
+            "englishOptionSimilarity": 0.239,
+            "syntheticOptionSimilarity": 0,
+            "optionFingerprint": 0.165,
+            "englishOptionFingerprint": 0.165,
+            "syntheticOptionFingerprint": 0,
+            "optionExactSet": 0,
+            "optionRareCoverage": 0.232,
+            "mirrorAgreement": 0,
+            "correctAnswerMeaning": 0.5,
+            "englishCorrectAnswerMeaning": 0.5,
+            "syntheticCorrectAnswerMeaning": 0.5,
+            "questionType": 1,
+            "imageSignal": 1,
+            "topicWeighting": 0.5,
+            "assetTieBreak": 0
+          },
+          "diagnostics": {
+            "effectiveItemType": "MCQ",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": false,
+            "promptSpecificity": 0.95,
+            "genericPromptPenalty": 0.95,
+            "missingCorrectAnswerNeutral": true,
+            "exactCorrectKey": false,
+            "optionSetMode": "unordered-semantic + synthetic-ja mirror",
+            "rareSetBonus": 0,
+            "syntheticMirrorUsed": true,
+            "genericPromptFamily": null,
+            "explanation": [
+              "Missing correct answer was treated as a neutral signal."
+            ]
+          },
+          "prompt": "This lights up to indicate that the ______.",
+          "syntheticJaPrompt": "it ライト indicate ______。",
+          "translatedPrompt": "계기판에 등이 켜졌다. 무슨 의미인가?",
+          "options": [
+            {
+              "id": "A",
+              "text": "windscreen wash is lacking",
+              "translatedText": "워셔액이 부족하다"
+            },
+            {
+              "id": "B",
+              "text": "braking oil is lacking",
+              "translatedText": "브레이크 오일이 부족하다"
+            },
+            {
+              "id": "C",
+              "text": "cooling system has a malfunction",
+              "translatedText": "냉각 시스템에 이상이 있다"
+            },
+            {
+              "id": "D",
+              "text": "coolant is lacking",
+              "translatedText": "냉각수가 부족하다"
+            }
+          ],
+          "correctAnswer": {
+            "kind": "MCQ",
+            "correctRow": null,
+            "correctOptionId": "q0629_o4",
+            "correctOptionKey": "D",
+            "correctOptionText": "coolant is lacking",
+            "correctOptionTranslatedText": "냉각수가 부족하다",
+            "answerRaw": "D"
+          },
+          "image": {
+            "hasImage": true,
+            "currentAssetSrc": "/qbank/2023-test1/images/img_03be883c0b895c93b4a7b923c25b1e8e.jpeg",
+            "assetHashes": [
+              "03be883c0b895c93b4a7b923c25b1e8e"
+            ]
+          },
+          "topic": "driving-operations",
+          "subtopics": [
+            "driving-operations:indicators"
+          ],
+          "conceptSlots": null
+        },
+        {
+          "qid": "q0627",
+          "number": 627,
+          "type": "MCQ",
+          "score": 37.163,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.137,
+            "rawPromptSimilarity": 0.148,
+            "englishPromptSimilarity": 0.117,
+            "syntheticPromptSimilarity": 0.137,
+            "optionSimilarity": 0.197,
+            "englishOptionSimilarity": 0.197,
+            "syntheticOptionSimilarity": 0,
+            "optionFingerprint": 0.114,
+            "englishOptionFingerprint": 0.114,
+            "syntheticOptionFingerprint": 0,
+            "optionExactSet": 0,
+            "optionRareCoverage": 0.207,
+            "mirrorAgreement": 0,
+            "correctAnswerMeaning": 0.5,
+            "englishCorrectAnswerMeaning": 0.5,
+            "syntheticCorrectAnswerMeaning": 0.5,
+            "questionType": 1,
+            "imageSignal": 1,
+            "topicWeighting": 0.5,
+            "assetTieBreak": 0
+          },
+          "diagnostics": {
+            "effectiveItemType": "MCQ",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": false,
+            "promptSpecificity": 0.975,
+            "genericPromptPenalty": 0.975,
+            "missingCorrectAnswerNeutral": true,
+            "exactCorrectKey": false,
+            "optionSetMode": "unordered-semantic + synthetic-ja mirror",
+            "rareSetBonus": 0,
+            "syntheticMirrorUsed": true,
+            "genericPromptFamily": null,
+            "explanation": [
+              "Missing correct answer was treated as a neutral signal."
+            ]
+          },
+          "prompt": "This lights up while driving to indicate that the ______.",
+          "syntheticJaPrompt": "it ライト driving indicate ______。",
+          "translatedPrompt": "주행 중 계기판에 등이 켜졌다. 무슨 의미인가?",
+          "options": [
+            {
+              "id": "A",
+              "text": "engine temperature is too high",
+              "translatedText": "엔진 과열"
+            },
+            {
+              "id": "B",
+              "text": "engine cooling system has a malfunction",
+              "translatedText": "엔진 냉각시스템 고장"
+            },
+            {
+              "id": "C",
+              "text": "engine lubrication system has a malfunction",
+              "translatedText": "엔진 윤활시스템 고장"
+            },
+            {
+              "id": "D",
+              "text": "engine temperature is too low",
+              "translatedText": "엔진 온도 저하"
+            }
+          ],
+          "correctAnswer": {
+            "kind": "MCQ",
+            "correctRow": null,
+            "correctOptionId": "q0627_o1",
+            "correctOptionKey": "A",
+            "correctOptionText": "engine temperature is too high",
+            "correctOptionTranslatedText": "엔진 과열",
+            "answerRaw": "A"
+          },
+          "image": {
+            "hasImage": true,
+            "currentAssetSrc": "/qbank/2023-test1/images/img_8b804cf3856b0ed40d8e31151f0c6908.jpeg",
+            "assetHashes": [
+              "8b804cf3856b0ed40d8e31151f0c6908"
+            ]
+          },
+          "topic": "mcq",
+          "subtopics": [],
+          "conceptSlots": null
+        },
+        {
+          "qid": "q0604",
+          "number": 604,
+          "type": "MCQ",
+          "score": 34.933,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.145,
+            "rawPromptSimilarity": 0.166,
+            "englishPromptSimilarity": 0.135,
+            "syntheticPromptSimilarity": 0.145,
+            "optionSimilarity": 0.141,
+            "englishOptionSimilarity": 0.141,
+            "syntheticOptionSimilarity": 0,
+            "optionFingerprint": 0.093,
+            "englishOptionFingerprint": 0.093,
+            "syntheticOptionFingerprint": 0,
+            "optionExactSet": 0,
+            "optionRareCoverage": 0.187,
+            "mirrorAgreement": 0,
+            "correctAnswerMeaning": 0.5,
+            "englishCorrectAnswerMeaning": 0.5,
+            "syntheticCorrectAnswerMeaning": 0.5,
+            "questionType": 1,
+            "imageSignal": 1,
+            "topicWeighting": 0.5,
+            "assetTieBreak": 0
+          },
+          "diagnostics": {
+            "effectiveItemType": "MCQ",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": false,
+            "promptSpecificity": 0.95,
+            "genericPromptPenalty": 0.95,
+            "missingCorrectAnswerNeutral": true,
+            "exactCorrectKey": false,
+            "optionSetMode": "unordered-semantic + synthetic-ja mirror",
+            "rareSetBonus": 0,
+            "syntheticMirrorUsed": true,
+            "genericPromptFamily": null,
+            "explanation": [
+              "Missing correct answer was treated as a neutral signal."
+            ]
+          },
+          "prompt": "This lights up to indicate that the ______.",
+          "syntheticJaPrompt": "it ライト indicate ______。",
+          "translatedPrompt": "계기판에 등이 켜졌다. 무슨 의미인가?",
+          "options": [
+            {
+              "id": "A",
+              "text": "handbrake is released",
+              "translatedText": "주차 브레이크가 해제되었다"
+            },
+            {
+              "id": "B",
+              "text": "foot brake has failure",
+              "translatedText": "브레이크 페달에 이상이 있다"
+            },
+            {
+              "id": "C",
+              "text": "braking system is abnormal",
+              "translatedText": "제동 시스템에 이상이 있다"
+            },
+            {
+              "id": "D",
+              "text": "brake pedal does not return back",
+              "translatedText": "브레이크 페달이 복귀하지 않는다"
+            }
+          ],
+          "correctAnswer": {
+            "kind": "MCQ",
+            "correctRow": null,
+            "correctOptionId": "q0604_o3",
+            "correctOptionKey": "C",
+            "correctOptionText": "braking system is abnormal",
+            "correctOptionTranslatedText": "제동 시스템에 이상이 있다",
+            "answerRaw": "C"
+          },
+          "image": {
+            "hasImage": true,
+            "currentAssetSrc": "/qbank/2023-test1/images/img_899ee2adccff03327e47d9c523d0f8c6.jpeg",
+            "assetHashes": [
+              "899ee2adccff03327e47d9c523d0f8c6"
+            ]
+          },
+          "topic": "vehicle-basics",
+          "subtopics": [],
+          "conceptSlots": null
+        },
+        {
+          "qid": "q0601",
+          "number": 601,
+          "type": "MCQ",
+          "score": 32.52,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.145,
+            "rawPromptSimilarity": 0.166,
+            "englishPromptSimilarity": 0.135,
+            "syntheticPromptSimilarity": 0.145,
+            "optionSimilarity": 0.103,
+            "englishOptionSimilarity": 0.103,
+            "syntheticOptionSimilarity": 0,
+            "optionFingerprint": 0.041,
+            "englishOptionFingerprint": 0.041,
+            "syntheticOptionFingerprint": 0,
+            "optionExactSet": 0,
+            "optionRareCoverage": 0.047,
+            "mirrorAgreement": 0,
+            "correctAnswerMeaning": 0.5,
+            "englishCorrectAnswerMeaning": 0.5,
+            "syntheticCorrectAnswerMeaning": 0.5,
+            "questionType": 1,
+            "imageSignal": 1,
+            "topicWeighting": 0.5,
+            "assetTieBreak": 0
+          },
+          "diagnostics": {
+            "effectiveItemType": "MCQ",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": false,
+            "promptSpecificity": 0.95,
+            "genericPromptPenalty": 0.95,
+            "missingCorrectAnswerNeutral": true,
+            "exactCorrectKey": false,
+            "optionSetMode": "unordered-semantic + synthetic-ja mirror",
+            "rareSetBonus": 0,
+            "syntheticMirrorUsed": true,
+            "genericPromptFamily": null,
+            "explanation": [
+              "Missing correct answer was treated as a neutral signal."
+            ]
+          },
+          "prompt": "This lights up to indicate of a(n) ______.",
+          "syntheticJaPrompt": "it ライト indicate ______。",
+          "translatedPrompt": "계기판에 등이 켜졌다. 무슨 의미인가?",
+          "options": [
+            {
+              "id": "A",
+              "text": "ABS system malfunction",
+              "translatedText": "ABS 시스템 고장"
+            },
+            {
+              "id": "B",
+              "text": "handbrake release",
+              "translatedText": "주차 브레이크가 해제되었다."
+            },
+            {
+              "id": "C",
+              "text": "braking system malfunction",
+              "translatedText": "제동장치 고장"
+            },
+            {
+              "id": "D",
+              "text": "handbrake is pulled up",
+              "translatedText": "주차 브레이크가 체결되었다."
+            }
+          ],
+          "correctAnswer": {
+            "kind": "MCQ",
+            "correctRow": null,
+            "correctOptionId": "q0601_o4",
+            "correctOptionKey": "D",
+            "correctOptionText": "handbrake is pulled up",
+            "correctOptionTranslatedText": "주차 브레이크가 체결되었다.",
+            "answerRaw": "D"
+          },
+          "image": {
+            "hasImage": true,
+            "currentAssetSrc": "/qbank/2023-test1/images/img_a8e7279483a478741b758080dc9615ac.jpeg",
+            "assetHashes": [
+              "a8e7279483a478741b758080dc9615ac"
+            ]
+          },
+          "topic": "vehicle-basics",
+          "subtopics": [],
+          "conceptSlots": null
+        },
+        {
+          "qid": "q0586",
+          "number": 586,
+          "type": "MCQ",
+          "score": 32.454,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.145,
+            "rawPromptSimilarity": 0.166,
+            "englishPromptSimilarity": 0.135,
+            "syntheticPromptSimilarity": 0.145,
+            "optionSimilarity": 0.1,
+            "englishOptionSimilarity": 0.1,
+            "syntheticOptionSimilarity": 0,
+            "optionFingerprint": 0.043,
+            "englishOptionFingerprint": 0.043,
+            "syntheticOptionFingerprint": 0,
+            "optionExactSet": 0,
+            "optionRareCoverage": 0.057,
+            "mirrorAgreement": 0,
+            "correctAnswerMeaning": 0.5,
+            "englishCorrectAnswerMeaning": 0.5,
+            "syntheticCorrectAnswerMeaning": 0.5,
+            "questionType": 1,
+            "imageSignal": 1,
+            "topicWeighting": 0.5,
+            "assetTieBreak": 0
+          },
+          "diagnostics": {
+            "effectiveItemType": "MCQ",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": false,
+            "promptSpecificity": 0.95,
+            "genericPromptPenalty": 0.95,
+            "missingCorrectAnswerNeutral": true,
+            "exactCorrectKey": false,
+            "optionSetMode": "unordered-semantic + synthetic-ja mirror",
+            "rareSetBonus": 0,
+            "syntheticMirrorUsed": true,
+            "genericPromptFamily": null,
+            "explanation": [
+              "Missing correct answer was treated as a neutral signal."
+            ]
+          },
+          "prompt": "This lights up to indicate of a(n) ______.",
+          "syntheticJaPrompt": "it ライト indicate ______。",
+          "translatedPrompt": "계기판에 등이 켜졌다. 무슨 의미인가?",
+          "options": [
+            {
+              "id": "A",
+              "text": "ABS system malfunction",
+              "translatedText": "ABS 시스템 고장"
+            },
+            {
+              "id": "B",
+              "text": "handbrake is released",
+              "translatedText": "주차 브레이크가 해제되었다."
+            },
+            {
+              "id": "C",
+              "text": "braking system malfunction",
+              "translatedText": "제동장치 고장"
+            },
+            {
+              "id": "D",
+              "text": "safety bags malfunction",
+              "translatedText": "에어백 고장"
+            }
+          ],
+          "correctAnswer": {
+            "kind": "MCQ",
+            "correctRow": null,
+            "correctOptionId": "q0586_o1",
+            "correctOptionKey": "A",
+            "correctOptionText": "ABS system malfunction",
+            "correctOptionTranslatedText": "ABS 시스템 고장",
+            "answerRaw": "A"
+          },
+          "image": {
+            "hasImage": true,
+            "currentAssetSrc": "/qbank/2023-test1/images/img_d40ceb79464e5d364723f5e89ae6ade7.jpeg",
+            "assetHashes": [
+              "d40ceb79464e5d364723f5e89ae6ade7"
+            ]
+          },
+          "topic": "vehicle-basics",
+          "subtopics": [],
+          "conceptSlots": null
+        }
+      ]
+    }
+  ]
+}

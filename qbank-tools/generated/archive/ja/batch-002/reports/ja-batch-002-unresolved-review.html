@@ -1,0 +1,585 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>JA batch-002 Unresolved Review</title>
+  <style>
+    :root {
+      --bg: #f4f0e8;
+      --paper: #fffdf8;
+      --ink: #1f1a17;
+      --muted: #6d6257;
+      --line: #d8cec1;
+      --accent: #165d52;
+      --accent-soft: #e4f2ef;
+      --warn: #8c4f16;
+      --warn-soft: #f8ead7;
+      --danger: #842029;
+      --danger-soft: #f8d7da;
+      --note: #5541a6;
+      --note-soft: #ece8ff;
+      --shadow: 0 12px 28px rgba(38, 25, 10, 0.08);
+      --radius: 18px;
+      --mono: "SFMono-Regular", Menlo, Consolas, monospace;
+      --sans: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: linear-gradient(180deg, #f8f3ea 0%, #f1ece3 100%);
+      color: var(--ink);
+      font-family: var(--sans);
+    }
+    .page {
+      max-width: 1220px;
+      margin: 0 auto;
+      padding: 28px 18px 48px;
+    }
+    .hero {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      box-shadow: var(--shadow);
+      padding: 24px;
+      margin-bottom: 18px;
+    }
+    .hero h1 {
+      margin: 0 0 10px;
+      font-size: 32px;
+      line-height: 1.1;
+    }
+    .hero p {
+      margin: 0 0 8px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+    .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 14px;
+    }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border-radius: 999px;
+      padding: 7px 12px;
+      font-size: 13px;
+      border: 1px solid var(--line);
+      background: #f3ede4;
+      color: var(--muted);
+    }
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      margin-top: 16px;
+    }
+    button {
+      border: 0;
+      border-radius: 999px;
+      padding: 10px 14px;
+      font: inherit;
+      cursor: pointer;
+      background: var(--accent);
+      color: #fff;
+    }
+    button.secondary {
+      background: #e8dfd2;
+      color: var(--ink);
+    }
+    .hint {
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .list {
+      display: grid;
+      gap: 14px;
+    }
+    .item {
+      display: grid;
+      grid-template-columns: minmax(260px, 320px) minmax(0, 1fr) 290px;
+      gap: 14px;
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      box-shadow: var(--shadow);
+      padding: 16px;
+      align-items: start;
+    }
+    .item h2 {
+      margin: 0;
+      font-size: 22px;
+      line-height: 1.15;
+    }
+    .item-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+    .qid {
+      font-family: var(--mono);
+      color: var(--accent);
+      font-size: 14px;
+    }
+    .image-frame {
+      min-height: 180px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: #f1ebdf;
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .image-frame img {
+      width: 100%;
+      height: auto;
+      display: block;
+      object-fit: contain;
+    }
+    .fallback {
+      padding: 16px;
+      font-size: 13px;
+      color: var(--muted);
+      text-align: center;
+      line-height: 1.45;
+    }
+    .path {
+      margin-top: 10px;
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--muted);
+      word-break: break-all;
+    }
+    .section {
+      border-top: 1px solid var(--line);
+      padding-top: 10px;
+      margin-top: 10px;
+    }
+    .label {
+      display: block;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+    .ja {
+      font-size: 18px;
+      line-height: 1.45;
+    }
+    .gloss {
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.45;
+    }
+    .option-list {
+      display: grid;
+      gap: 8px;
+      margin-top: 8px;
+    }
+    .option {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 10px 12px;
+      background: #fcfaf5;
+    }
+    .option .ja {
+      font-size: 15px;
+    }
+    .summary {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 10px 0 0;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border-radius: 999px;
+      padding: 7px 10px;
+      font-size: 12px;
+      font-family: var(--mono);
+      border: 1px solid transparent;
+    }
+    .badge-rescue { background: var(--accent-soft); color: var(--accent); border-color: #b7d8d1; }
+    .badge-new { background: var(--warn-soft); color: var(--warn); border-color: #e7c49b; }
+    .badge-unclear { background: var(--note-soft); color: var(--note); border-color: #cfc6ff; }
+    .reason {
+      border: 1px solid #ead8c3;
+      background: #f9f1e6;
+      border-radius: 12px;
+      padding: 10px 12px;
+      color: #6e4e30;
+      line-height: 1.45;
+    }
+    .candidate-list {
+      display: grid;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .candidate {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: #fcfaf6;
+      padding: 12px;
+    }
+    .candidate-head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: 8px 10px;
+      margin-bottom: 6px;
+    }
+    .candidate-head strong {
+      font-family: var(--mono);
+      color: var(--accent);
+    }
+    .score {
+      font-family: var(--mono);
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .candidate-options {
+      display: grid;
+      gap: 6px;
+      margin-top: 8px;
+    }
+    .candidate-option {
+      border-left: 3px solid #ddd1c2;
+      padding-left: 8px;
+      color: var(--ink);
+      font-size: 14px;
+      line-height: 1.4;
+    }
+    .candidate-image {
+      margin-top: 10px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      overflow: hidden;
+      background: #f1ebdf;
+      min-height: 80px;
+    }
+    .candidate-image img {
+      width: 100%;
+      height: auto;
+      display: block;
+      object-fit: contain;
+    }
+    .decision {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: #faf5ee;
+      padding: 14px;
+      position: sticky;
+      top: 16px;
+    }
+    .decision h3 {
+      margin: 0 0 8px;
+      font-size: 16px;
+    }
+    .choice-group {
+      display: grid;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .choice {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+    .choice input[type="radio"] {
+      margin-top: 2px;
+    }
+    .text-input {
+      width: 100%;
+      margin-top: 10px;
+      min-height: 84px;
+      resize: vertical;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 10px 12px;
+      font: inherit;
+      background: #fffdfa;
+    }
+    .small {
+      font-size: 12px;
+      color: var(--muted);
+    }
+    @media (max-width: 1040px) {
+      .item {
+        grid-template-columns: 1fr;
+      }
+      .decision {
+        position: static;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <section class="hero">
+      <h1>JA batch-002 Unresolved Review</h1>
+      <p>These 4 items were left unresolved after the normal matcher pass. This page is for manual rescue only: match to an existing qid if the evidence is strong, stage as a new question if it looks genuinely new, or leave it unresolved.</p>
+      <p class="hint">No production files are modified from this page. Candidate evidence is shown for review only.</p>
+      <div class="meta">
+        <span class="pill">Dataset: <strong>2023-test1</strong></span>
+        <span class="pill">Items: <strong>4</strong></span>
+        <span class="pill">Possible existing-qid rescue: <strong>3</strong></span>
+        <span class="pill">Likely new-question candidate: <strong>1</strong></span>
+        <span class="pill">Still unclear: <strong>0</strong></span>
+      </div>
+      <div class="controls">
+        <button type="button" id="export-json">Export Decisions JSON</button>
+        <button type="button" class="secondary" id="reset-local">Reset Local Decisions</button>
+        <span class="hint">Save the exported file as <code>ja-batch-002-unresolved-decisions.template.json</code>.</span>
+      </div>
+    </section>
+
+    <section class="list" id="list"></section>
+  </div>
+
+  <script>
+    const items = [{"index":1,"itemId":"screenshots/Screenshot 2026-04-07 at 17.50.03.png","sourceImage":"screenshots/Screenshot 2026-04-07 at 17.50.03.png","screenshotPath":"../../../imports/ja/batch-002/screenshots/Screenshot 2026-04-07 at 17.50.03.png","promptRawJa":"この標識は何を示しているか。","promptGlossEn":"What does this sign indicate?","optionsRawJa":["A クラクションを鳴らす区間","B クラクション禁止","C 大きな音のクラクション禁止","D 小さな音のクラクション禁止"],"optionsGlossEn":["A Section where honking is allowed","B Honking is prohibited","C Loud honking is prohibited","D Quiet honking is prohibited"],"correctKeyRaw":null,"correctAnswerRaw":null,"ocrConfidence":"high","reason":"No candidate passed the minimum similarity threshold.","analysis":{"mode":"standard","effectiveQuestionType":"MCQ","declaredQuestionType":"MCQ","booleanChoiceDetected":false,"topScore":44.172,"topGap":1.646,"plausibleShortlist":true,"explanation":"Shortlist is plausible but still below the review floor."},"provisionalTopic":"proper-driving","provisionalSubtopics":["traffic-signals:road-signs","proper-driving:safe-driving","proper-driving:traffic-laws"],"topCandidates":[{"qid":"q0657","number":657,"type":"MCQ","score":44.172,"scoreGapFromTop":0,"prompt":"What’s the meaning of this sign?","options":[{"id":"A","text":"no honking the tweeter","translatedText":"트위터에 경적을 울려서는 안 된다"},{"id":"B","text":"no honking the woofer","translatedText":"우퍼에 경적을 울려서는 안 된다"},{"id":"C","text":"should honk","translatedText":"경적을 울려야 한다"},{"id":"D","text":"no honking","translatedText":"경적을 울려서는 안 된다"}],"correctAnswer":{"kind":"MCQ","correctRow":null,"correctOptionId":"q0657_o3","correctOptionKey":"C","correctOptionText":"should honk","correctOptionTranslatedText":"경적을 울려야 한다","answerRaw":"C"},"diagnostics":{"effectiveItemType":"MCQ","declaredItemType":"MCQ","binaryChoiceDetected":false,"promptSpecificity":0.5,"genericPromptPenalty":0.5,"missingCorrectAnswerNeutral":true,"exactCorrectKey":false,"optionSetMode":"unordered-semantic + synthetic-ja mirror","rareSetBonus":0,"syntheticMirrorUsed":true,"genericPromptFamily":null,"explanation":["Generic prompt wording was down-weighted to avoid overvaluing template matches.","Missing correct answer was treated as a neutral signal."]},"imagePath":"../../../public/qbank/2023-test1/images/img_322187746e0663e85937fc1470821498.jpeg"},{"qid":"q0889","number":889,"type":"MCQ","score":42.526,"scoreGapFromTop":1.646,"prompt":"What’s the meaning of this sign?","options":[{"id":"A","text":"no long time honking","translatedText":"장시간 경적 금지"},{"id":"B","text":"honk discontinuously","translatedText":"간헐적 경적 허용"},{"id":"C","text":"reduce speed and honk","translatedText":"감속하고 경적을 울리다"},{"id":"D","text":"no honking","translatedText":"경적 금지"}],"correctAnswer":{"kind":"MCQ","correctRow":null,"correctOptionId":"q0889_o4","correctOptionKey":"D","correctOptionText":"no honking","correctOptionTranslatedText":"경적 금지","answerRaw":"D"},"diagnostics":{"effectiveItemType":"MCQ","declaredItemType":"MCQ","binaryChoiceDetected":false,"promptSpecificity":0.5,"genericPromptPenalty":0.5,"missingCorrectAnswerNeutral":true,"exactCorrectKey":false,"optionSetMode":"unordered-semantic + synthetic-ja mirror","rareSetBonus":0,"syntheticMirrorUsed":true,"genericPromptFamily":null,"explanation":["Generic prompt wording was down-weighted to avoid overvaluing template matches.","Missing correct answer was treated as a neutral signal."]},"imagePath":"../../../public/qbank/2023-test1/images/img_1003882ae069a235b2ff6351d8b6a4dc.jpeg"},{"qid":"q0872","number":872,"type":"MCQ","score":38.341,"scoreGapFromTop":5.831,"prompt":"What’s the meaning of this sign?","options":[{"id":"A","text":"pass on both sides","translatedText":"양쪽으로 통과"},{"id":"B","text":"passing is prohibited","translatedText":"통과 금지"},{"id":"C","text":"pass by the left side","translatedText":"왼쪽으로 통과"},{"id":"D","text":"pass by the right side","translatedText":"오른쪽으로 통과"}],"correctAnswer":{"kind":"MCQ","correctRow":null,"correctOptionId":"q0872_o1","correctOptionKey":"A","correctOptionText":"pass on both sides","correctOptionTranslatedText":"양쪽으로 통과","answerRaw":"A"},"diagnostics":{"effectiveItemType":"MCQ","declaredItemType":"MCQ","binaryChoiceDetected":false,"promptSpecificity":0.6,"genericPromptPenalty":0.6,"missingCorrectAnswerNeutral":true,"exactCorrectKey":false,"optionSetMode":"unordered-semantic + synthetic-ja mirror","rareSetBonus":0,"syntheticMirrorUsed":true,"genericPromptFamily":null,"explanation":["Generic prompt wording was down-weighted to avoid overvaluing template matches.","Missing correct answer was treated as a neutral signal."]},"imagePath":"../../../public/qbank/2023-test1/images/img_a44bd80c0fa6e2747a90e7eb197655d2.jpeg"}],"recommendedAction":"possible-existing-qid-rescue"},{"index":2,"itemId":"screenshots/Screenshot 2026-04-07 at 17.50.06.png","sourceImage":"screenshots/Screenshot 2026-04-07 at 17.50.06.png","screenshotPath":"../../../imports/ja/batch-002/screenshots/Screenshot 2026-04-07 at 17.50.06.png","promptRawJa":"大型旅客車・牽引車・都市の公共バス・中型旅客車・大型貨物車の運転者は二年ごとに健康診断を提出しなければならない。","promptGlossEn":"Drivers of large passenger cars, towing vehicles, city public buses, medium-sized passenger cars, or large cargo vehicles must submit a health checkup every two years.","optionsRawJa":["A Yes","B No"],"optionsGlossEn":["Yes","No"],"correctKeyRaw":null,"correctAnswerRaw":null,"ocrConfidence":"high","reason":"No candidate passed the minimum similarity threshold.","analysis":{"mode":"standard","effectiveQuestionType":"ROW","declaredQuestionType":"MCQ","booleanChoiceDetected":true,"topScore":36.738,"topGap":0.711,"plausibleShortlist":false,"explanation":"Shortlist remains weak after semantic normalization."},"provisionalTopic":null,"provisionalSubtopics":[],"topCandidates":[{"qid":"q0274","number":274,"type":"ROW","score":36.738,"scoreGapFromTop":0,"prompt":"If a motorized vehicle driver has caused a major accident in violation of traffic regulations which has caused heavy loss to public or private property, the driver is subject to a prison term of less than 3 years or a criminal detention.","options":[],"correctAnswer":{"kind":"ROW","correctRow":"R","correctOptionId":null,"correctOptionKey":null,"correctOptionText":"right / true","correctOptionTranslatedText":null,"answerRaw":"Right"},"diagnostics":{"effectiveItemType":"ROW","declaredItemType":"MCQ","binaryChoiceDetected":true,"promptSpecificity":1,"genericPromptPenalty":1,"missingCorrectAnswerNeutral":true,"optionSetMode":"binary-row-neutral + synthetic-ja mirror","syntheticMirrorUsed":true,"genericPromptFamily":null,"sourceConceptSlots":{"condition":[],"context":[],"action":[],"polarity":"positive","signals":[]},"candidateConceptSlots":{"condition":[],"context":[],"action":[],"polarity":null,"signals":[]},"conceptMatches":[],"contradictionSignals":[],"rowConceptMode":"slot-alignment + contradiction-penalties","explanation":["Binary yes/no options were treated as ROW-like for type scoring.","Missing correct answer was treated as a neutral signal."]},"imagePath":null},{"qid":"q0314","number":314,"type":"ROW","score":36.027,"scoreGapFromTop":0.711,"prompt":"When a driver drives a motorized vehicle during the period of probation, the driver should paste or hang a uniform probation mark on the rear part of the vehicle.","options":[],"correctAnswer":{"kind":"ROW","correctRow":"R","correctOptionId":null,"correctOptionKey":null,"correctOptionText":"right / true","correctOptionTranslatedText":null,"answerRaw":"Right"},"diagnostics":{"effectiveItemType":"ROW","declaredItemType":"MCQ","binaryChoiceDetected":true,"promptSpecificity":1,"genericPromptPenalty":1,"missingCorrectAnswerNeutral":true,"optionSetMode":"binary-row-neutral + synthetic-ja mirror","syntheticMirrorUsed":true,"genericPromptFamily":null,"sourceConceptSlots":{"condition":[],"context":[],"action":[],"polarity":"positive","signals":[]},"candidateConceptSlots":{"condition":[],"context":[],"action":[],"polarity":"positive","signals":[]},"conceptMatches":[],"contradictionSignals":[],"rowConceptMode":"slot-alignment + contradiction-penalties","explanation":["Binary yes/no options were treated as ROW-like for type scoring.","Missing correct answer was treated as a neutral signal."]},"imagePath":null},{"qid":"q0187","number":187,"type":"ROW","score":35.63,"scoreGapFromTop":1.108,"prompt":"If a motorized vehicle driver has caused a major accident in violation of traffic regulations which has caused serious injury, the driver is subject to a prison term of less than 3 years or a criminal detention.","options":[],"correctAnswer":{"kind":"ROW","correctRow":"R","correctOptionId":null,"correctOptionKey":null,"correctOptionText":"right / true","correctOptionTranslatedText":null,"answerRaw":"Right"},"diagnostics":{"effectiveItemType":"ROW","declaredItemType":"MCQ","binaryChoiceDetected":true,"promptSpecificity":1,"genericPromptPenalty":1,"missingCorrectAnswerNeutral":true,"optionSetMode":"binary-row-neutral + synthetic-ja mirror","syntheticMirrorUsed":true,"genericPromptFamily":null,"sourceConceptSlots":{"condition":[],"context":[],"action":[],"polarity":"positive","signals":[]},"candidateConceptSlots":{"condition":[],"context":[],"action":[],"polarity":null,"signals":[]},"conceptMatches":[],"contradictionSignals":[],"rowConceptMode":"slot-alignment + contradiction-penalties","explanation":["Binary yes/no options were treated as ROW-like for type scoring.","Missing correct answer was treated as a neutral signal."]},"imagePath":null}],"recommendedAction":"likely-new-question-candidate"},{"index":3,"itemId":"screenshots/Screenshot 2026-04-07 at 17.50.07.png","sourceImage":"screenshots/Screenshot 2026-04-07 at 17.50.07.png","screenshotPath":"../../../imports/ja/batch-002/screenshots/Screenshot 2026-04-07 at 17.50.07.png","promptRawJa":"運転者がに6点減点されるのはがつくのは、どの違法行為か。","promptGlossEn":"Which of the following violations will result in a 6-point penalty for the driver?","optionsRawJa":["A 免許の種類と異なる自動車を運転する","B 飲酒運転をする","C 交通信号に違反する","D スクールバス運転資格を取得せずに運転する"],"optionsGlossEn":["A. Driving a vehicle with a license of a different type","B. Drunk driving","C. Violating traffic signals","D. Driving a school bus without obtaining the proper qualification"],"correctKeyRaw":null,"correctAnswerRaw":null,"ocrConfidence":"high","reason":"No candidate passed the minimum similarity threshold.","analysis":{"mode":"standard","effectiveQuestionType":"MCQ","declaredQuestionType":"MCQ","booleanChoiceDetected":false,"topScore":42.169,"topGap":3.712,"plausibleShortlist":true,"explanation":"Shortlist is plausible but still below the review floor."},"provisionalTopic":"road-safety","provisionalSubtopics":["road-safety:license"],"topCandidates":[{"qid":"q0376","number":376,"type":"MCQ","score":42.169,"scoreGapFromTop":0,"prompt":"Which is subject to a 6-point penalty?","options":[{"id":"A","text":"violating traffic lights","translatedText":"신호 위반"},{"id":"B","text":"driving a school bus without qualifications","translatedText":"자격 없는 통학버스 운전"},{"id":"C","text":"driving a vehicle which the permission is different","translatedText":"면허 종류와 다른 차량 운전"},{"id":"D","text":"driving after drinking","translatedText":"음주운전"}],"correctAnswer":{"kind":"MCQ","correctRow":null,"correctOptionId":"q0376_o1","correctOptionKey":"A","correctOptionText":"violating traffic lights","correctOptionTranslatedText":"신호 위반","answerRaw":"A"},"diagnostics":{"effectiveItemType":"MCQ","declaredItemType":"MCQ","binaryChoiceDetected":false,"promptSpecificity":0.975,"genericPromptPenalty":0.975,"missingCorrectAnswerNeutral":true,"exactCorrectKey":false,"optionSetMode":"unordered-semantic + synthetic-ja mirror","rareSetBonus":0,"syntheticMirrorUsed":true,"genericPromptFamily":null,"explanation":["Missing correct answer was treated as a neutral signal."]},"imagePath":null},{"qid":"q0405","number":405,"type":"MCQ","score":38.457,"scoreGapFromTop":3.712,"prompt":"A fine of 200~2000 yuan and driving license will be revoked if ______.","options":[{"id":"A","text":"violating traffic regulations","translatedText":"교통법규를 위반한 경우"},{"id":"B","text":"driving 50% faster than the specified speed limit","translatedText":"지정 속도보다 50% 초과하여 운전한 경우"},{"id":"C","text":"escaping after causing traffic accident","translatedText":"교통사고를 내고 도주한 경우"},{"id":"D","text":"driving without a driver license","translatedText":"운전면허 없이 운전한 경우"}],"correctAnswer":{"kind":"MCQ","correctRow":null,"correctOptionId":"q0405_o2","correctOptionKey":"B","correctOptionText":"driving 50% faster than the specified speed limit","correctOptionTranslatedText":"지정 속도보다 50% 초과하여 운전한 경우","answerRaw":"B"},"diagnostics":{"effectiveItemType":"MCQ","declaredItemType":"MCQ","binaryChoiceDetected":false,"promptSpecificity":1,"genericPromptPenalty":1,"missingCorrectAnswerNeutral":true,"exactCorrectKey":false,"optionSetMode":"unordered-semantic + synthetic-ja mirror","rareSetBonus":0,"syntheticMirrorUsed":true,"genericPromptFamily":null,"explanation":["Missing correct answer was treated as a neutral signal."]},"imagePath":null},{"qid":"q0972","number":972,"type":"MCQ","score":38.218,"scoreGapFromTop":3.951,"prompt":"For a driver who drives a commercial motor vehicle after drinking, besides being detained by the traffic management department of the public security authority till they sobers up, what will they be subject to?","options":[{"id":"A","text":"Temporary detainment of the motor vehicle.","translatedText":"자동차 일시 압류"},{"id":"B","text":"Temporary detainment of the driver's license.","translatedText":"운전면허증 일시 압류"},{"id":"C","text":"Revocation of the motor vehicle driver's license.","translatedText":"운전면허 취소"},{"id":"D","text":"They will be banned from driving for life.","translatedText":"영구 운전 금지"}],"correctAnswer":{"kind":"MCQ","correctRow":null,"correctOptionId":"q0972_o3","correctOptionKey":"C","correctOptionText":"Revocation of the motor vehicle driver's license.","correctOptionTranslatedText":"운전면허 취소","answerRaw":"C"},"diagnostics":{"effectiveItemType":"MCQ","declaredItemType":"MCQ","binaryChoiceDetected":false,"promptSpecificity":1,"genericPromptPenalty":1,"missingCorrectAnswerNeutral":true,"exactCorrectKey":false,"optionSetMode":"unordered-semantic + synthetic-ja mirror","rareSetBonus":0,"syntheticMirrorUsed":true,"genericPromptFamily":null,"explanation":["Missing correct answer was treated as a neutral signal."]},"imagePath":null}],"recommendedAction":"possible-existing-qid-rescue"},{"index":4,"itemId":"screenshots/Screenshot 2026-04-07 at 17.50.16.png","sourceImage":"screenshots/Screenshot 2026-04-07 at 17.50.16.png","screenshotPath":"../../../imports/ja/batch-002/screenshots/Screenshot 2026-04-07 at 17.50.16.png","promptRawJa":"対向車とすれ違うであろう位置が思わしくなかった場合どうすべきか。","promptGlossEn":"What should you do if you are not comfortable with the position where you will pass an oncoming vehicle?","optionsRawJa":["A 加速して良い位置を選ぶ","B 減速して対向車とすれ違う、または停止して道をゆずる","C 左車道を占用し、対向車を減速させ道をゆずらせる","D ヘッドランプを切り対向車に停止するよう合図をする"],"optionsGlossEn":["A: Accelerate and choose a good position","B: Slow down and pass the oncoming vehicle, or stop and yield the road","C: Occupy the left lane and make the oncoming vehicle slow down and yield","D: Turn off your headlights to signal the oncoming vehicle to stop"],"correctKeyRaw":null,"correctAnswerRaw":null,"ocrConfidence":"high","reason":"No candidate passed the minimum similarity threshold.","analysis":{"mode":"standard","effectiveQuestionType":"MCQ","declaredQuestionType":"MCQ","booleanChoiceDetected":false,"topScore":44.668,"topGap":2.087,"plausibleShortlist":true,"explanation":"Shortlist is plausible but still below the review floor."},"provisionalTopic":"road-safety","provisionalSubtopics":["road-safety:road-conditions","proper-driving:safe-driving","traffic-signals:road-signs"],"topCandidates":[{"qid":"q0170","number":170,"type":"MCQ","score":44.668,"scoreGapFromTop":0,"prompt":"If an improper place is chosen for crossing another vehicle, the driver should immediately ______.","options":[{"id":"A","text":"reduce speed and cross each other slowly, or stop to yield","translatedText":"감속하여 천천히 추월하거나 정차하여 양보한다"},{"id":"B","text":"occupy the left lane to force the opposite party to reduce speed and yield","translatedText":"좌측 차로를 점유하여 상대편이 감속·양보하게 한다"},{"id":"C","text":"turn the head light to indicate the opposite party to stop and yield","translatedText":"상향 전조등을 켜서 상대편에게 정지·양보를 알린다"},{"id":"D","text":"speed up and select a better place","translatedText":"가속하여 더 나은 장소로 이동해 추월한다"}],"correctAnswer":{"kind":"MCQ","correctRow":null,"correctOptionId":"q0170_o1","correctOptionKey":"A","correctOptionText":"reduce speed and cross each other slowly, or stop to yield","correctOptionTranslatedText":"감속하여 천천히 추월하거나 정차하여 양보한다","answerRaw":"A"},"diagnostics":{"effectiveItemType":"MCQ","declaredItemType":"MCQ","binaryChoiceDetected":false,"promptSpecificity":1,"genericPromptPenalty":1,"missingCorrectAnswerNeutral":true,"exactCorrectKey":false,"optionSetMode":"unordered-semantic + synthetic-ja mirror","rareSetBonus":0,"syntheticMirrorUsed":true,"genericPromptFamily":null,"explanation":["Missing correct answer was treated as a neutral signal.","Option comparison used unordered semantic set matching."]},"imagePath":null},{"qid":"q0483","number":483,"type":"MCQ","score":42.58,"scoreGapFromTop":2.088,"prompt":"What should the driver do, if conditions permit, when a following vehicle gives the overtaking signal on a road without a central line?","options":[{"id":"A","text":"maintain the original speed","translatedText":"원래 속도를 유지한다."},{"id":"B","text":"speed up","translatedText":"가속한다."},{"id":"C","text":"reduce speed, move to the right side and yield","translatedText":"감속하고 우측으로 붙어 양보한다."},{"id":"D","text":"immediately stop and yield","translatedText":"즉시 정차하여 양보한다."}],"correctAnswer":{"kind":"MCQ","correctRow":null,"correctOptionId":"q0483_o3","correctOptionKey":"C","correctOptionText":"reduce speed, move to the right side and yield","correctOptionTranslatedText":"감속하고 우측으로 붙어 양보한다.","answerRaw":"C"},"diagnostics":{"effectiveItemType":"MCQ","declaredItemType":"MCQ","binaryChoiceDetected":false,"promptSpecificity":1,"genericPromptPenalty":1,"missingCorrectAnswerNeutral":true,"exactCorrectKey":false,"optionSetMode":"unordered-semantic + synthetic-ja mirror","rareSetBonus":0,"syntheticMirrorUsed":true,"genericPromptFamily":null,"explanation":["Missing correct answer was treated as a neutral signal."]},"imagePath":null},{"qid":"q0112","number":112,"type":"MCQ","score":41.772,"scoreGapFromTop":2.896,"prompt":"When passing an unmanned level crossing, the driver should ______.","options":[{"id":"A","text":"speed up and pass","translatedText":"속도를 높여 통과한다"},{"id":"B","text":"reduce speed and pass","translatedText":"감속하여 통과한다"},{"id":"C","text":"maintain the speed and pass","translatedText":"속도를 유지하고 통과한다"},{"id":"D","text":"stop, look, and pass","translatedText":"정차하여 살핀 후 통과한다"}],"correctAnswer":{"kind":"MCQ","correctRow":null,"correctOptionId":"q0112_o4","correctOptionKey":"D","correctOptionText":"stop, look, and pass","correctOptionTranslatedText":"정차하여 살핀 후 통과한다","answerRaw":"D"},"diagnostics":{"effectiveItemType":"MCQ","declaredItemType":"MCQ","binaryChoiceDetected":false,"promptSpecificity":1,"genericPromptPenalty":1,"missingCorrectAnswerNeutral":true,"exactCorrectKey":false,"optionSetMode":"unordered-semantic + synthetic-ja mirror","rareSetBonus":0,"syntheticMirrorUsed":true,"genericPromptFamily":null,"explanation":["Missing correct answer was treated as a neutral signal."]},"imagePath":null}],"recommendedAction":"possible-existing-qid-rescue"}];
+    const storageKey = "qbank-unresolved-review-ja-batch-002";
+    const exportFileName = "ja-batch-002-unresolved-decisions.json";
+    const decisionsPath = "../staging/ja-batch-002-unresolved-decisions.template.json";
+    const actionLabels = {
+      "possible-existing-qid-rescue": "Possible Existing-Qid Rescue",
+      "likely-new-question-candidate": "Likely New-Question Candidate",
+      "still-unclear": "Still Unclear"
+    };
+
+    const actionClasses = {
+      "possible-existing-qid-rescue": "badge-rescue",
+      "likely-new-question-candidate": "badge-new",
+      "still-unclear": "badge-unclear"
+    };
+
+    const state = loadState();
+    const list = document.getElementById("list");
+    for (const item of items) {
+      list.appendChild(renderItem(item));
+    }
+
+    document.getElementById("export-json").addEventListener("click", () => {
+      const body = {
+        exportedAt: new Date().toISOString(),
+        batch: {
+          lang: "ja",
+          batchId: "batch-002",
+          scope: "unresolved-only"
+        },
+        sourceDecisionsTemplatePath: decisionsPath,
+        items: items.map((item) => {
+          const draft = state[item.itemId] || {};
+          return {
+            itemId: item.itemId,
+            sourceImage: item.sourceImage || null,
+            approvedQid: normalizeString(draft.approvedQid),
+            createNewQuestion: draft.decision === "createNewQuestion",
+            keepUnresolved: draft.decision === "keepUnresolved" || !draft.decision,
+            reviewerNotes: normalizeString(draft.reviewerNotes) || "",
+            recommendedAction: item.recommendedAction
+          };
+        })
+      };
+
+      const blob = new Blob([JSON.stringify(body, null, 2) + "\n"], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const anchor = document.createElement("a");
+      anchor.href = url;
+      anchor.download = exportFileName;
+      anchor.click();
+      URL.revokeObjectURL(url);
+    });
+
+    document.getElementById("reset-local").addEventListener("click", () => {
+      localStorage.removeItem(storageKey);
+      location.reload();
+    });
+
+    function renderItem(item) {
+      const article = document.createElement("article");
+      article.className = "item";
+      const draft = state[item.itemId] || {};
+      const actionClass = actionClasses[item.recommendedAction] || "badge-unclear";
+
+      article.innerHTML = `
+        <div class="left">
+          <div class="item-head">
+            <h2>Item ${item.index}</h2>
+            <span class="qid">${escapeHtml(item.itemId)}</span>
+          </div>
+          <div class="image-frame">
+            ${item.screenshotPath ? `<img src="${escapeAttr(item.screenshotPath)}" alt="${escapeAttr(item.itemId)}" onerror="this.remove(); this.parentElement.innerHTML = '<div class=&quot;fallback&quot;>Screenshot preview unavailable.<div class=&quot;path&quot;>${escapeHtml(item.screenshotPath)}</div></div>';">` : '<div class="fallback">No screenshot path available.</div>'}
+          </div>
+          <div class="path">${escapeHtml(item.sourceImage || item.itemId)}</div>
+          <div class="summary">
+            <span class="badge ${actionClass}">${escapeHtml(actionLabels[item.recommendedAction] || item.recommendedAction)}</span>
+            ${item.ocrConfidence ? `<span class="badge">${escapeHtml('OCR ' + item.ocrConfidence)}</span>` : ''}
+            ${item.analysis && item.analysis.topScore != null ? `<span class="badge">Top ${escapeHtml(String(item.analysis.topScore))}</span>` : ''}
+            ${item.analysis && item.analysis.topGap != null ? `<span class="badge">Gap ${escapeHtml(String(item.analysis.topGap))}</span>` : ''}
+          </div>
+        </div>
+
+        <div class="middle">
+          <div class="reason">
+            <strong>Why it stayed unresolved:</strong><br>
+            ${escapeHtml(item.reason || 'No reason recorded.')}
+            ${item.analysis && item.analysis.explanation ? '<br><br>' + escapeHtml(item.analysis.explanation) : ''}
+          </div>
+
+          <div class="section">
+            <span class="label">Prompt Raw JA</span>
+            <div class="ja">${escapeHtml(item.promptRawJa || 'Not available')}</div>
+            ${item.promptGlossEn ? `<div class="gloss">${escapeHtml(item.promptGlossEn)}</div>` : ''}
+          </div>
+
+          <div class="section">
+            <span class="label">Options</span>
+            <div class="option-list">
+              ${renderOptions(item)}
+            </div>
+          </div>
+
+          ${item.provisionalTopic ? `
+            <div class="section">
+              <span class="label">Provisional Topic Review Metadata</span>
+              <div class="ja">${escapeHtml(item.provisionalTopic)}</div>
+              ${item.provisionalSubtopics.length ? `<div class="gloss">${escapeHtml(item.provisionalSubtopics.join(', '))}</div>` : ''}
+            </div>
+          ` : ''}
+
+          <div class="section">
+            <span class="label">Best Candidate Evidence</span>
+            <div class="candidate-list">
+              ${item.topCandidates.length ? item.topCandidates.map(renderCandidate).join('') : '<div class="reason">No candidate shortlist was recorded.</div>'}
+            </div>
+          </div>
+        </div>
+
+        <div class="decision">
+          <h3>Decision</h3>
+          <div class="small">Recommended: ${escapeHtml(actionLabels[item.recommendedAction] || item.recommendedAction)}</div>
+          <div class="choice-group">
+            <label class="choice">
+              <input type="radio" name="decision-${escapeAttr(item.itemId)}" value="approveExistingQid" ${draft.decision === "approveExistingQid" ? 'checked' : ''}>
+              <span>Manually match to an existing qid</span>
+            </label>
+            <label class="choice">
+              <input type="radio" name="decision-${escapeAttr(item.itemId)}" value="createNewQuestion" ${draft.decision === "createNewQuestion" ? 'checked' : ''}>
+              <span>Stage as a new-question candidate</span>
+            </label>
+            <label class="choice">
+              <input type="radio" name="decision-${escapeAttr(item.itemId)}" value="keepUnresolved" ${draft.decision === "keepUnresolved" || !draft.decision ? 'checked' : ''}>
+              <span>Leave unresolved for now</span>
+            </label>
+          </div>
+          <div class="section">
+            <span class="label">Approved Qid</span>
+            <input class="text-input" style="min-height:auto" data-field="approvedQid" data-item-id="${escapeAttr(item.itemId)}" value="${escapeAttr(draft.approvedQid || '')}" placeholder="q0123">
+          </div>
+          <div class="section">
+            <span class="label">Reviewer Notes</span>
+            <textarea class="text-input" data-field="reviewerNotes" data-item-id="${escapeAttr(item.itemId)}" placeholder="Why you chose rescue vs new question">${escapeHtml(draft.reviewerNotes || '')}</textarea>
+          </div>
+        </div>
+      `;
+
+      article.querySelectorAll('input[type="radio"]').forEach((input) => {
+        input.addEventListener('change', (event) => {
+          const decision = event.target.value;
+          updateDraft(item.itemId, { decision });
+        });
+      });
+
+      article.querySelectorAll('[data-field]').forEach((input) => {
+        input.addEventListener('input', (event) => {
+          updateDraft(item.itemId, { [event.target.dataset.field]: event.target.value });
+        });
+      });
+
+      return article;
+    }
+
+    function renderOptions(item) {
+      const rows = [];
+      const count = Math.max(item.optionsRawJa.length, item.optionsGlossEn.length);
+      for (let index = 0; index < count; index += 1) {
+        rows.push(`
+          <div class="option">
+            <div class="ja">${escapeHtml(item.optionsRawJa[index] || 'Not available')}</div>
+            ${item.optionsGlossEn[index] ? `<div class="gloss">${escapeHtml(item.optionsGlossEn[index])}</div>` : ''}
+          </div>
+        `);
+      }
+      return rows.join('');
+    }
+
+    function renderCandidate(candidate) {
+      return `
+        <div class="candidate">
+          <div class="candidate-head">
+            <strong>${escapeHtml(candidate.qid || 'unknown')}</strong>
+            <span>#${escapeHtml(String(candidate.number ?? '—'))}</span>
+            <span>${escapeHtml(candidate.type || '—')}</span>
+            <span class="score">score ${escapeHtml(String(candidate.score ?? '—'))}</span>
+            ${candidate.scoreGapFromTop != null ? `<span class="score">gap ${escapeHtml(String(candidate.scoreGapFromTop))}</span>` : ''}
+          </div>
+          <div>${escapeHtml(candidate.prompt || 'No candidate prompt')}</div>
+          ${candidate.options.length ? `<div class="candidate-options">${candidate.options.map((option) => `<div class="candidate-option"><strong>${escapeHtml(option.id || '')}</strong> ${escapeHtml(option.text || '')}</div>`).join('')}</div>` : ''}
+          ${candidate.correctAnswer && candidate.correctAnswer.correctOptionText ? `<div class="gloss">Correct answer: ${escapeHtml(candidate.correctAnswer.correctOptionText)}</div>` : ''}
+          ${candidate.imagePath ? `<div class="candidate-image"><img src="${escapeAttr(candidate.imagePath)}" alt="${escapeAttr(candidate.qid || 'candidate image')}" onerror="this.remove(); this.parentElement.innerHTML='<div class=&quot;fallback&quot;>Candidate image unavailable.<div class=&quot;path&quot;>${escapeHtml(candidate.imagePath)}</div></div>';"></div>` : ''}
+        </div>
+      `;
+    }
+
+    function loadState() {
+      try {
+        return JSON.parse(localStorage.getItem(storageKey) || "{}");
+      } catch {
+        return {};
+      }
+    }
+
+    function saveState() {
+      localStorage.setItem(storageKey, JSON.stringify(state));
+    }
+
+    function updateDraft(itemId, patch) {
+      state[itemId] = { ...(state[itemId] || {}), ...patch };
+      saveState();
+    }
+
+    function normalizeString(value) {
+      const text = String(value || "").trim();
+      return text || null;
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+
+    function escapeAttr(value) {
+      return escapeHtml(value);
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,1640 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>JA Batch-001 Retro Auto-Match Audit</title>
+  <style>
+    :root {
+      --bg: #f4f0e8;
+      --paper: #fffdf8;
+      --ink: #1f1a17;
+      --muted: #6d6257;
+      --line: #d8cec1;
+      --accent: #165d52;
+      --accent-soft: #e4f2ef;
+      --warn: #8c4f16;
+      --warn-soft: #f8ead7;
+      --note: #4f3b96;
+      --note-soft: #ece8ff;
+      --correct-bg: #e5f3eb;
+      --correct-border: rgba(22, 93, 82, 0.28);
+      --correct-shadow: 0 8px 18px rgba(22, 93, 82, 0.10);
+      --shadow: 0 12px 28px rgba(38, 25, 10, 0.08);
+      --radius: 18px;
+      --mono: "SFMono-Regular", Menlo, Consolas, monospace;
+      --sans: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background:
+        radial-gradient(circle at top left, rgba(22, 93, 82, 0.10), transparent 32%),
+        radial-gradient(circle at top right, rgba(140, 79, 22, 0.10), transparent 28%),
+        var(--bg);
+      color: var(--ink);
+      font-family: var(--sans);
+    }
+    .page {
+      width: min(1460px, calc(100vw - 28px));
+      margin: 22px auto 44px;
+    }
+    .hero, .section, .item {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      box-shadow: var(--shadow);
+    }
+    .hero {
+      padding: 24px 28px;
+      margin-bottom: 18px;
+    }
+    .hero h1 {
+      margin: 0 0 8px;
+      font-size: clamp(28px, 4vw, 42px);
+      line-height: 1;
+    }
+    .hero p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.5;
+    }
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+      margin-top: 18px;
+    }
+    .stat {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 12px 14px;
+      background: #fcf8f1;
+    }
+    .stat strong {
+      display: block;
+      margin-top: 6px;
+      font-size: 24px;
+    }
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      margin-top: 18px;
+    }
+    button {
+      border: 0;
+      border-radius: 999px;
+      padding: 10px 14px;
+      font: inherit;
+      cursor: pointer;
+      background: var(--accent);
+      color: #fff;
+    }
+    button.secondary {
+      background: #e8dfd2;
+      color: var(--ink);
+    }
+    .hint {
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .section {
+      padding: 18px;
+      margin-top: 18px;
+    }
+    .section h2 {
+      margin: 0 0 6px;
+      font-size: 26px;
+    }
+    .section > p {
+      margin: 0;
+      color: var(--muted);
+    }
+    .list {
+      display: grid;
+      gap: 14px;
+      margin-top: 16px;
+    }
+    .item {
+      padding: 14px;
+      display: grid;
+      gap: 14px;
+      grid-template-columns: minmax(260px, 320px) minmax(0, 1fr) 320px;
+      align-items: start;
+    }
+    .item h3 {
+      margin: 0;
+      font-size: 21px;
+      line-height: 1.15;
+    }
+    .eyebrow {
+      color: var(--muted);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 6px;
+    }
+    .image-frame {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      overflow: hidden;
+      background: #f1ebdf;
+      min-height: 180px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      transition: transform 140ms ease, box-shadow 140ms ease, border-color 140ms ease;
+    }
+    .image-frame img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+    .image-button {
+      all: unset;
+      display: block;
+      width: 100%;
+      cursor: zoom-in;
+    }
+    .image-button:hover .image-frame,
+    .image-button:focus-visible .image-frame {
+      border-color: rgba(22, 93, 82, 0.28);
+      box-shadow: 0 12px 28px rgba(46, 31, 15, 0.12);
+      transform: translateY(-1px);
+    }
+    .image-button:focus-visible .image-frame {
+      outline: 2px solid rgba(22, 93, 82, 0.34);
+      outline-offset: 3px;
+    }
+    .image-zoom-hint {
+      position: absolute;
+      right: 10px;
+      bottom: 10px;
+      padding: 4px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(46, 31, 15, 0.12);
+      background: rgba(255, 252, 246, 0.92);
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      pointer-events: none;
+      box-shadow: 0 6px 18px rgba(46, 31, 15, 0.08);
+    }
+    .image-fallback {
+      padding: 14px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+      word-break: break-word;
+    }
+    .filename {
+      margin-top: 8px;
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--muted);
+      word-break: break-all;
+    }
+    .source-block, .decision-block {
+      min-width: 0;
+    }
+    .source-card {
+      display: grid;
+      gap: 10px;
+    }
+    .label {
+      display: block;
+      margin-bottom: 4px;
+      color: var(--muted);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    .prompt {
+      font-size: 17px;
+      line-height: 1.45;
+      margin: 0;
+    }
+    .gloss {
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.45;
+    }
+    .options {
+      display: grid;
+      gap: 8px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+    .option {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 9px 11px;
+      background: #fbf7f0;
+    }
+    .option-current {
+      background: var(--correct-bg);
+      border-color: var(--correct-border);
+      box-shadow: var(--correct-shadow);
+      transform: translateY(-1px);
+    }
+    .option-key {
+      display: inline-flex;
+      width: 24px;
+      font-family: var(--mono);
+      color: var(--accent);
+    }
+    .option-current .option-key {
+      font-weight: 800;
+    }
+    .option-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .option-correct-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 8px;
+      border-radius: 999px;
+      border: 1px solid var(--correct-border);
+      background: rgba(22, 93, 82, 0.10);
+      color: var(--accent);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      white-space: nowrap;
+    }
+    .option-gloss {
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .mini-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+    .fact {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #faf5ee;
+      padding: 10px 12px;
+    }
+    .fact.warn {
+      background: var(--warn-soft);
+      border-color: rgba(140, 79, 22, 0.18);
+    }
+    .fact .value {
+      font-size: 14px;
+      line-height: 1.4;
+      word-break: break-word;
+    }
+    .candidate-list {
+      display: grid;
+      gap: 10px;
+    }
+    .candidate {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: #fcf8f1;
+      padding: 12px;
+    }
+    .candidate-head {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+    .candidate-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 9px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      font-size: 12px;
+      background: #f3ede4;
+      color: var(--muted);
+    }
+    .pill.note {
+      background: var(--note-soft);
+      color: var(--note);
+      border-color: rgba(79, 59, 150, 0.18);
+    }
+    .pill.warn {
+      background: var(--warn-soft);
+      color: var(--warn);
+      border-color: rgba(140, 79, 22, 0.18);
+    }
+    .candidate .prompt {
+      font-size: 15px;
+    }
+    .candidate-media {
+      margin-top: 8px;
+    }
+    .candidate-image-frame {
+      min-height: 120px;
+      max-width: 260px;
+      margin-top: 8px;
+    }
+    .lightbox[hidden] {
+      display: none;
+    }
+    .lightbox {
+      position: fixed;
+      inset: 0;
+      z-index: 80;
+      display: grid;
+      place-items: center;
+      padding: 20px;
+      background: rgba(28, 18, 8, 0.72);
+      backdrop-filter: blur(4px);
+    }
+    .lightbox-backdrop {
+      position: absolute;
+      inset: 0;
+      cursor: zoom-out;
+    }
+    .lightbox-dialog {
+      position: relative;
+      z-index: 1;
+      width: min(96vw, 1180px);
+      max-height: calc(100vh - 40px);
+      display: flex;
+      flex-direction: column;
+      border: 1px solid rgba(255, 248, 239, 0.18);
+      border-radius: 18px;
+      overflow: hidden;
+      background: #fdf9f2;
+      box-shadow: 0 28px 80px rgba(15, 10, 5, 0.32);
+    }
+    .lightbox-toolbar {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--line);
+      background: #f8f1e6;
+    }
+    .lightbox-meta {
+      display: grid;
+      gap: 4px;
+    }
+    .lightbox-title {
+      font-size: 15px;
+      line-height: 1.4;
+      word-break: break-word;
+    }
+    .lightbox-subtitle {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.4;
+    }
+    .lightbox-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+    .lightbox-zoom-value {
+      min-width: 64px;
+      text-align: center;
+      padding: 7px 10px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: #fff;
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .lightbox-close {
+      flex: 0 0 auto;
+    }
+    .lightbox-body {
+      overflow: auto;
+      padding: 16px;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      background: #f4ecdf;
+    }
+    .lightbox-body.is-zoomed {
+      justify-content: flex-start;
+      align-items: flex-start;
+    }
+    .lightbox-body.is-zoomed .lightbox-stage {
+      justify-content: flex-start;
+      align-items: flex-start;
+    }
+    .lightbox-stage {
+      min-width: 100%;
+      min-height: 100%;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      position: relative;
+    }
+    .lightbox-stage.is-draggable {
+      cursor: grab;
+    }
+    .lightbox-stage.is-dragging {
+      cursor: grabbing;
+    }
+    .lightbox-body img {
+      display: block;
+      max-width: none;
+      height: auto;
+      border-radius: 14px;
+      box-shadow: 0 18px 48px rgba(24, 16, 8, 0.18);
+      background: #fffdf8;
+      user-select: none;
+      -webkit-user-drag: none;
+    }
+    .lightbox-fallback {
+      display: grid;
+      gap: 10px;
+      max-width: 680px;
+      text-align: center;
+      padding: 28px;
+    }
+    .candidate .options {
+      margin-top: 8px;
+    }
+    .decision-block {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: #fcf8f1;
+      padding: 14px;
+      position: sticky;
+      top: 14px;
+    }
+    .decision-row {
+      margin-bottom: 12px;
+    }
+    .decision-actions {
+      display: grid;
+      gap: 8px;
+    }
+    .decision-actions label, .answer-key-choices label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 8px 10px;
+      background: #fff;
+      cursor: pointer;
+    }
+    .decision-actions input, .answer-key-choices input {
+      margin: 0;
+    }
+    input[type="text"], textarea {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 10px 12px;
+      font: inherit;
+      background: #fff;
+    }
+    textarea {
+      min-height: 74px;
+      resize: vertical;
+    }
+    .answer-key-choices {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+    }
+    .answer-key-toolbar {
+      display: flex;
+      gap: 8px;
+      margin-top: 8px;
+    }
+    .answer-key-toolbar button {
+      padding: 8px 10px;
+      font-size: 13px;
+    }
+    details {
+      margin-top: 10px;
+    }
+    summary {
+      cursor: pointer;
+      color: var(--muted);
+      font-size: 13px;
+    }
+    pre {
+      white-space: pre-wrap;
+      font-family: var(--mono);
+      font-size: 12px;
+      background: #f6f0e6;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 10px;
+      overflow: auto;
+    }
+    @media (max-width: 1100px) {
+      .item {
+        grid-template-columns: 1fr;
+      }
+      .decision-block {
+        position: static;
+      }
+      .mini-grid {
+        grid-template-columns: 1fr;
+      }
+      .answer-key-choices {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <section class="hero">
+      <h1>JA Batch-001 Retro Auto-Match Audit</h1>
+      <p>Retroactive manual audit of batch-001 auto-matched items using the current unified workbench. Review only these previously unreviewed auto-matches and export one decisions JSON.</p>
+      <div class="stats">
+        <div class="stat"><span class="label">Batch</span><strong>batch-001</strong></div>
+        <div class="stat"><span class="label">Dataset</span><strong>2023-test1</strong></div>
+        <div class="stat"><span class="label">Auto-Matched</span><strong>8</strong></div>
+        <div class="stat"><span class="label">Review-Needed</span><strong>0</strong></div>
+        <div class="stat"><span class="label">Unresolved</span><strong>0</strong></div>
+        <div class="stat"><span class="label">Answer-Key Checks</span><strong>1</strong></div>
+      </div>
+      <div class="toolbar">
+        <button id="export-json">Export Decisions JSON</button>
+        <button id="reset" class="secondary">Reset Local Edits</button>
+        <span class="hint">Editable file: <span class="mono">../staging/ja-batch-001-retro-auto-workbench-decisions.json</span></span>
+      </div>
+    </section>
+
+    
+    <section class="section">
+      <h2>Auto-Matched (Quick Review)</h2>
+      <p>8 item(s) auto-matched by the pipeline and surfaced for quick human confirmation.</p>
+      <div class="list" data-section-list="auto-matched"></div>
+    </section>
+  
+    
+    
+    
+  </div>
+  <div class="lightbox" id="image-lightbox" hidden>
+    <div class="lightbox-backdrop" data-lightbox-close></div>
+    <div class="lightbox-dialog" role="dialog" aria-modal="true" aria-labelledby="image-lightbox-title">
+      <div class="lightbox-toolbar">
+        <div class="lightbox-meta">
+          <div class="label">Image Preview</div>
+          <div class="lightbox-title" id="image-lightbox-title"></div>
+          <div class="lightbox-subtitle">Double-click or Cmd/Ctrl + wheel to zoom. Drag or scroll when zoomed.</div>
+        </div>
+        <div class="lightbox-controls">
+          <button type="button" class="secondary" id="image-lightbox-fit">Fit</button>
+          <button type="button" class="secondary" id="image-lightbox-zoom-out" aria-label="Zoom out">-</button>
+          <div class="lightbox-zoom-value" id="image-lightbox-zoom-value">100%</div>
+          <button type="button" class="secondary" id="image-lightbox-zoom-in" aria-label="Zoom in">+</button>
+          <button type="button" class="lightbox-close secondary" data-lightbox-close>Close</button>
+        </div>
+      </div>
+      <div class="lightbox-body" id="image-lightbox-body">
+        <div class="lightbox-stage" id="image-lightbox-stage">
+          <img id="image-lightbox-img" alt="">
+        </div>
+        <div class="image-fallback lightbox-fallback" id="image-lightbox-fallback" hidden>
+          <div>Unable to load image preview.</div>
+          <div class="filename" id="image-lightbox-path"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    const ITEMS = [{"id":"auto-matched:screenshots/1.png","section":"auto-matched","index":1,"itemId":"screenshots/1.png","sourceImage":"screenshots/1.png","screenshotPath":"../../../imports/ja/batch-001/screenshots/1.png","hasImage":null,"qid":"q0761","number":761,"matchScore":81.628,"matchScoreGap":31.321,"candidateSetLabel":null,"initialSuggestedQid":"q0761","currentStagedLocaleCorrectOptionKey":"C","answerKeyNeedsManualConfirmation":false,"answerKeyConfirmationReason":null,"effectiveQuestionType":"MCQ","promptRawJa":"この標識の示す意味はどれか。","promptGlossEn":"What does this sign mean?","optionsRawJa":["A 高速道路の公衆電話","B 高速道路の通報電話","C 高速道路の緊急電話","D 高速道路への救援電話"],"optionsGlossEn":["A. Highway public telephone","B. Highway reporting telephone","C. Highway emergency telephone","D. Highway rescue telephone"],"correctKeyRaw":null,"correctAnswerRaw":null,"ocrConfidence":"high","provisionalTopic":"traffic-signals","provisionalSubtopics":["traffic-signals:road-signs"],"topicConfidence":1,"topicSignals":[{"topic":"traffic-signals","subtopic":"traffic-signals:road-signs","signal":"sign-family","weight":1.4}],"sourceConceptSlots":null,"reason":null,"analysis":{"mode":"diagnostic","effectiveQuestionType":"MCQ","declaredQuestionType":"MCQ","booleanChoiceDetected":false,"plausibleShortlist":true,"explanation":"Top candidate cleared the review floor but remains review-first."},"recommendedAction":"quick-review-auto-match","topCandidates":[{"qid":"q0761","number":761,"type":"MCQ","rawCandidateType":"MCQ","score":81.628,"scoreGapFromTop":0,"prompt":"What’s the meaning of this sign?","options":[{"id":"A","text":"expressway public phone"},{"id":"B","text":"expressway police phone"},{"id":"C","text":"expressway emergency phone"},{"id":"D","text":"expressway rescue phone"}],"correctOptionId":"q0761_o3","correctOptionKey":"C","correctRow":null,"correctAnswerText":"expressway emergency phone","hasImage":true,"imagePath":"../../../public/qbank/2023-test1/images/img_b62a01ce9aab16875a0640445b07520a.jpeg"},{"qid":"q0799","number":799,"type":"MCQ","rawCandidateType":"MCQ","score":50.307,"scoreGapFromTop":31.321,"prompt":"What’s the meaning of this sign?","options":[{"id":"A","text":"expressway exit"},{"id":"B","text":"expressway beginning"},{"id":"C","text":"expressway entry"},{"id":"D","text":"expressway ending"}],"correctOptionId":"q0799_o2","correctOptionKey":"B","correctRow":null,"correctAnswerText":"expressway beginning","hasImage":true,"imagePath":"../../../public/qbank/2023-test1/images/img_7304a3fccfa73182081cec963194238c.jpeg"},{"qid":"q0740","number":740,"type":"MCQ","rawCandidateType":"MCQ","score":45.678,"scoreGapFromTop":35.95,"prompt":"What’s the meaning of this sign?","options":[{"id":"A","text":"expressway emergency strip"},{"id":"B","text":"expressway yielding area"},{"id":"C","text":"expressway bus station"},{"id":"D","text":"expressway parking area"}],"correctOptionId":"q0740_o1","correctOptionKey":"A","correctRow":null,"correctAnswerText":"expressway emergency strip","hasImage":true,"imagePath":"../../../public/qbank/2023-test1/images/img_5062bd48bf2f065e58f1a545ac9544d3.jpeg"},{"qid":"q0760","number":760,"type":"MCQ","rawCandidateType":"MCQ","score":45.354,"scoreGapFromTop":36.274,"prompt":"What’s the meaning of this sign?","options":[{"id":"A","text":"expressway mileage No."},{"id":"B","text":"expressway border plate No."},{"id":"C","text":"expressway name No."},{"id":"D","text":"expressway section No."}],"correctOptionId":"q0760_o3","correctOptionKey":"C","correctRow":null,"correctAnswerText":"expressway name No.","hasImage":true,"imagePath":"../../../public/qbank/2023-test1/images/img_6c03381b460d0769b747b7225f37b814.jpeg"}]},{"id":"auto-matched:screenshots/Screenshot 2026-04-07 at 17.49.39.png","section":"auto-matched","index":2,"itemId":"screenshots/Screenshot 2026-04-07 at 17.49.39.png","sourceImage":"screenshots/Screenshot 2026-04-07 at 17.49.39.png","screenshotPath":"../../../imports/ja/batch-001/screenshots/Screenshot 2026-04-07 at 17.49.39.png","hasImage":null,"qid":"q0820","number":820,"matchScore":68.027,"matchScoreGap":8.867,"candidateSetLabel":null,"initialSuggestedQid":"q0820","currentStagedLocaleCorrectOptionKey":"B","answerKeyNeedsManualConfirmation":false,"answerKeyConfirmationReason":null,"effectiveQuestionType":"MCQ","promptRawJa":"この標識は何を示しているか。","promptGlossEn":"What does this road sign indicate?","optionsRawJa":["A T形道路交差点あり","B Y形交差点あり","C 十字交差点あり","D ロータリーあり"],"optionsGlossEn":["A T-shaped intersection ahead","B Y-shaped intersection ahead","C Cross (four-way) intersection ahead","D Roundabout ahead"],"correctKeyRaw":null,"correctAnswerRaw":null,"ocrConfidence":"high","provisionalTopic":"traffic-signals","provisionalSubtopics":["traffic-signals:road-signs"],"topicConfidence":1,"topicSignals":[{"topic":"traffic-signals","subtopic":"traffic-signals:road-signs","signal":"sign-family","weight":1.4}],"sourceConceptSlots":null,"reason":null,"analysis":{"mode":"diagnostic","effectiveQuestionType":"MCQ","declaredQuestionType":"MCQ","booleanChoiceDetected":false,"plausibleShortlist":true,"explanation":"Top candidate cleared the review floor but remains review-first."},"recommendedAction":"quick-review-auto-match","topCandidates":[{"qid":"q0820","number":820,"type":"MCQ","rawCandidateType":"MCQ","score":68.027,"scoreGapFromTop":0,"prompt":"What’s the meaning of this sign?","options":[{"id":"A","text":"ring intersection ahead"},{"id":"B","text":"intersection ahead"},{"id":"C","text":"Y-shaped intersection ahead"},{"id":"D","text":"T-shaped intersection ahead"}],"correctOptionId":"q0820_o3","correctOptionKey":"C","correctRow":null,"correctAnswerText":"Y-shaped intersection ahead","hasImage":true,"imagePath":"../../../public/qbank/2023-test1/images/img_9cd0eff3e9b4534c74d7f20811f10a3a.jpeg"},{"qid":"q0700","number":700,"type":"MCQ","rawCandidateType":"MCQ","score":59.16,"scoreGapFromTop":8.867,"prompt":"What’s the meaning of this sign?","options":[{"id":"A","text":"intersection ahead"},{"id":"B","text":"interchange ahead"},{"id":"C","text":"Y-shaped intersection ahead"},{"id":"D","text":"ring intersection ahead"}],"correctOptionId":"q0700_o4","correctOptionKey":"D","correctRow":null,"correctAnswerText":"ring intersection ahead","hasImage":true,"imagePath":"../../../public/qbank/2023-test1/images/img_c7cb5ed9a36c63b16365c34d2f350ff6.jpeg"},{"qid":"q0821","number":821,"type":"MCQ","rawCandidateType":"MCQ","score":59.16,"scoreGapFromTop":8.867,"prompt":"What’s the meaning of this sign?","options":[{"id":"A","text":"intersection ahead"},{"id":"B","text":"interchange ahead"},{"id":"C","text":"Y-shaped intersection ahead"},{"id":"D","text":"ring intersection ahead"}],"correctOptionId":"q0821_o2","correctOptionKey":"B","correctRow":null,"correctAnswerText":"interchange ahead","hasImage":true,"imagePath":"../../../public/qbank/2023-test1/images/img_6064f5544fa924c6b4a72915e79f5ddf.jpeg"},{"qid":"q0846","number":846,"type":"MCQ","rawCandidateType":"MCQ","score":58.285,"scoreGapFromTop":9.742,"prompt":"What’s the meaning of this sign?","options":[{"id":"A","text":"T-shaped int ersectio n ahead"},{"id":"B","text":"road branching point ahead"},{"id":"C","text":"Y-shaped intersection ahead"},{"id":"D","text":"intersection ahead"}],"correctOptionId":"q0846_o1","correctOptionKey":"A","correctRow":null,"correctAnswerText":"T-shaped int ersectio n ahead","hasImage":true,"imagePath":"../../../public/qbank/2023-test1/images/img_ac96448ce616eadbe7afe513514c4f11.jpeg"}]},{"id":"auto-matched:screenshots/Screenshot 2026-04-07 at 17.49.43.png","section":"auto-matched","index":3,"itemId":"screenshots/Screenshot 2026-04-07 at 17.49.43.png","sourceImage":"screenshots/Screenshot 2026-04-07 at 17.49.43.png","screenshotPath":"../../../imports/ja/batch-001/screenshots/Screenshot 2026-04-07 at 17.49.43.png","hasImage":null,"qid":"q0319","number":319,"matchScore":68.039,"matchScoreGap":7.875,"candidateSetLabel":null,"initialSuggestedQid":"q0319","currentStagedLocaleCorrectOptionKey":null,"answerKeyNeedsManualConfirmation":false,"answerKeyConfirmationReason":null,"effectiveQuestionType":"ROW","promptRawJa":"この道路でUターンしてはいけない。","promptGlossEn":"You must not make a U-turn on this road.","optionsRawJa":["A Yes","B No"],"optionsGlossEn":["Yes","No"],"correctKeyRaw":null,"correctAnswerRaw":null,"ocrConfidence":"high","provisionalTopic":"proper-driving","provisionalSubtopics":["traffic-signals:road-signs","proper-driving:safe-driving","proper-driving:traffic-laws"],"topicConfidence":0.627,"topicSignals":[{"topic":"traffic-signals","subtopic":"traffic-signals:road-signs","signal":"sign-family","weight":1.4},{"topic":"proper-driving","subtopic":"proper-driving:safe-driving","signal":"driving-action","weight":1.2},{"topic":"proper-driving","subtopic":"proper-driving:traffic-laws","signal":"traffic-law","weight":1.15}],"sourceConceptSlots":{"condition":[],"context":[],"action":["u-turn"],"polarity":"negative","signals":[{"slot":"action","value":"u-turn","signal":"u-turn"}]},"reason":null,"analysis":{"mode":"diagnostic","effectiveQuestionType":"ROW","declaredQuestionType":"MCQ","booleanChoiceDetected":true,"plausibleShortlist":true,"explanation":"Top candidate cleared the review floor but remains review-first."},"recommendedAction":"quick-review-auto-match","topCandidates":[{"qid":"q0319","number":319,"type":"ROW","rawCandidateType":"ROW","score":68.039,"scoreGapFromTop":0,"prompt":"You cannot make a U-turn in this section.","options":[],"correctOptionId":null,"correctOptionKey":null,"correctRow":"R","correctAnswerText":"right / true","hasImage":true,"imagePath":"../../../public/qbank/2023-test1/images/img_2652192e913c912d1358e8c40fb3134e.jpeg"},{"qid":"q0202","number":202,"type":"ROW","rawCandidateType":"ROW","score":60.164,"scoreGapFromTop":7.875,"prompt":"You can make a U-turn at this intersection.","options":[],"correctOptionId":null,"correctOptionKey":null,"correctRow":"W","correctAnswerText":"wrong / false","hasImage":true,"imagePath":"../../../public/qbank/2023-test1/images/img_6e35881612b74b47f18564d8f16d650d.jpeg"},{"qid":"q0290","number":290,"type":"ROW","rawCandidateType":"ROW","score":58.757,"scoreGapFromTop":9.282,"prompt":"No U-turning at this section.","options":[],"correctOptionId":null,"correctOptionKey":null,"correctRow":"W","correctAnswerText":"wrong / false","hasImage":true,"imagePath":"../../../public/qbank/2023-test1/images/img_07ca1403dc8f492e3a68d8f8fa3b7528.jpeg"},{"qid":"q0240","number":240,"type":"ROW","rawCandidateType":"ROW","score":57.678,"scoreGapFromTop":10.361,"prompt":"A motorized vehicle can make a U-turn on this road as long as it does not interfere with other vehicles.","options":[],"correctOptionId":null,"correctOptionKey":null,"correctRow":"R","correctAnswerText":"right / true","hasImage":true,"imagePath":"../../../public/qbank/2023-test1/images/img_c62059a1205d9c349690fff36e75a365.jpeg"}]},{"id":"auto-matched:screenshots/Screenshot 2026-04-07 at 17.49.49 1.png","section":"auto-matched","index":4,"itemId":"screenshots/Screenshot 2026-04-07 at 17.49.49 1.png","sourceImage":"screenshots/Screenshot 2026-04-07 at 17.49.49 1.png","screenshotPath":"../../../imports/ja/batch-001/screenshots/Screenshot 2026-04-07 at 17.49.49 1.png","hasImage":null,"qid":"q0345","number":345,"matchScore":71.378,"matchScoreGap":13.987,"candidateSetLabel":null,"initialSuggestedQid":"q0345","currentStagedLocaleCorrectOptionKey":null,"answerKeyNeedsManualConfirmation":false,"answerKeyConfirmationReason":null,"effectiveQuestionType":"ROW","promptRawJa":"水浸しになった道路を走行する場合、加速して走行すべきである。","promptGlossEn":"When driving on a flooded road, you should accelerate.","optionsRawJa":["A Yes","B No"],"optionsGlossEn":["A Yes","B No"],"correctKeyRaw":null,"correctAnswerRaw":null,"ocrConfidence":"high","provisionalTopic":"road-safety","provisionalSubtopics":["road-safety:road-conditions","proper-driving:safe-driving"],"topicConfidence":0.52,"topicSignals":[{"topic":"road-safety","subtopic":"road-safety:road-conditions","signal":"road-condition-or-hazard","weight":1.3},{"topic":"proper-driving","subtopic":"proper-driving:safe-driving","signal":"driving-action","weight":1.2}],"sourceConceptSlots":{"condition":["flooded-road"],"context":[],"action":["accelerate"],"polarity":"positive","signals":[{"slot":"condition","value":"flooded-road","signal":"flooded-road"},{"slot":"action","value":"accelerate","signal":"accelerate"}]},"reason":null,"analysis":{"mode":"diagnostic","effectiveQuestionType":"ROW","declaredQuestionType":"MCQ","booleanChoiceDetected":true,"plausibleShortlist":true,"explanation":"Top candidate cleared the review floor but remains review-first."},"recommendedAction":"quick-review-auto-match","topCandidates":[{"qid":"q0345","number":345,"type":"ROW","rawCandidateType":"ROW","score":71.378,"scoreGapFromTop":0,"prompt":"Speed up when passing an overflowing road.","options":[],"correctOptionId":null,"correctOptionKey":null,"correctRow":"W","correctAnswerText":"wrong / false","hasImage":false,"imagePath":null},{"qid":"q0098","number":98,"type":"ROW","rawCandidateType":"ROW","score":57.391,"scoreGapFromTop":13.987,"prompt":"A vehicle should try to speed up after starting from the roadside and rapidly turn left into the traffic flow on the road.","options":[],"correctOptionId":null,"correctOptionKey":null,"correctRow":"W","correctAnswerText":"wrong / false","hasImage":false,"imagePath":null},{"qid":"q0220","number":220,"type":"ROW","rawCandidateType":"ROW","score":51.242,"scoreGapFromTop":20.136,"prompt":"You should speed up through the section with this kind of traffic marking.","options":[],"correctOptionId":null,"correctOptionKey":null,"correctRow":"W","correctAnswerText":"wrong / false","hasImage":true,"imagePath":"../../../public/qbank/2023-test1/images/p17-220.jpg"},{"qid":"q0189","number":189,"type":"ROW","rawCandidateType":"ROW","score":50.901,"scoreGapFromTop":20.477,"prompt":"You should speed up to go through the railway crossing in this case.","options":[],"correctOptionId":null,"correctOptionKey":null,"correctRow":"W","correctAnswerText":"wrong / false","hasImage":true,"imagePath":"../../../public/qbank/2023-test1/images/img_c0462f686976c0bc7d5e3ffc1ccc8250.jpeg"}]},{"id":"auto-matched:screenshots/Screenshot 2026-04-07 at 17.49.50.png","section":"auto-matched","index":5,"itemId":"screenshots/Screenshot 2026-04-07 at 17.49.50.png","sourceImage":"screenshots/Screenshot 2026-04-07 at 17.49.50.png","screenshotPath":"../../../imports/ja/batch-001/screenshots/Screenshot 2026-04-07 at 17.49.50.png","hasImage":null,"qid":"q0073","number":73,"matchScore":71.496,"matchScoreGap":19.338,"candidateSetLabel":null,"initialSuggestedQid":"q0073","currentStagedLocaleCorrectOptionKey":null,"answerKeyNeedsManualConfirmation":false,"answerKeyConfirmationReason":null,"effectiveQuestionType":"ROW","promptRawJa":"後方から車両が来ていないことを確認すれば、ウィンカーを出さずに車線変更を行なってもよい。","promptGlossEn":"If you confirm that no vehicles are coming from behind, you may change lanes without using your turn signal.","optionsRawJa":["A Yes","B No"],"optionsGlossEn":["A Yes","B No"],"correctKeyRaw":null,"correctAnswerRaw":null,"ocrConfidence":"high","provisionalTopic":"driving-operations","provisionalSubtopics":["driving-operations:indicators","proper-driving:safe-driving"],"topicConfidence":0.51,"topicSignals":[{"topic":"driving-operations","subtopic":"driving-operations:indicators","signal":"indicator-operation","weight":1.25},{"topic":"proper-driving","subtopic":"proper-driving:safe-driving","signal":"driving-action","weight":1.2}],"sourceConceptSlots":{"condition":[],"context":["following-traffic"],"action":["turn-signal","lane-change"],"polarity":"positive","signals":[{"slot":"context","value":"following-traffic","signal":"following"},{"slot":"action","value":"turn-signal","signal":"turn-signal"},{"slot":"action","value":"lane-change","signal":"lane-change"}]},"reason":null,"analysis":{"mode":"diagnostic","effectiveQuestionType":"ROW","declaredQuestionType":"MCQ","booleanChoiceDetected":true,"plausibleShortlist":true,"explanation":"Top candidate cleared the review floor but remains review-first."},"recommendedAction":"quick-review-auto-match","topCandidates":[{"qid":"q0073","number":73,"type":"ROW","rawCandidateType":"ROW","score":71.496,"scoreGapFromTop":0,"prompt":"If the driver finds there is no vehicle following, he can change lanes without turning on the turn signal.","options":[],"correctOptionId":null,"correctOptionKey":null,"correctRow":"W","correctAnswerText":"wrong / false","hasImage":false,"imagePath":null},{"qid":"q0099","number":99,"type":"ROW","rawCandidateType":"ROW","score":52.158,"scoreGapFromTop":19.338,"prompt":"When the driver discovers a tire is leaking air and steers the vehicle off the main carriageway, he should refrain from applying the emergency break so as to avoid a vehicle turnover or a rear-end collision arising from the late braking of the following vehicle.","options":[],"correctOptionId":null,"correctOptionKey":null,"correctRow":"R","correctAnswerText":"right / true","hasImage":false,"imagePath":null},{"qid":"q0072","number":72,"type":"ROW","rawCandidateType":"ROW","score":51.97,"scoreGapFromTop":19.526,"prompt":"When following a vehicle on the road, the distance from the vehicle in front is not important. As long as the driver goes forward at the same speed as the vehicle in front does, he can avoid rear-end collision.","options":[],"correctOptionId":null,"correctOptionKey":null,"correctRow":"W","correctAnswerText":"wrong / false","hasImage":false,"imagePath":null},{"qid":"q0003","number":3,"type":"ROW","rawCandidateType":"ROW","score":50.331,"scoreGapFromTop":21.165,"prompt":"A vehicle driving on an expressway may frequently change lanes.","options":[],"correctOptionId":null,"correctOptionKey":null,"correctRow":"W","correctAnswerText":"wrong / false","hasImage":false,"imagePath":null}]},{"id":"auto-matched:screenshots/Screenshot 2026-04-07 at 17.49.53.png","section":"auto-matched","index":6,"itemId":"screenshots/Screenshot 2026-04-07 at 17.49.53.png","sourceImage":"screenshots/Screenshot 2026-04-07 at 17.49.53.png","screenshotPath":"../../../imports/ja/batch-001/screenshots/Screenshot 2026-04-07 at 17.49.53.png","hasImage":null,"qid":"q0333","number":333,"matchScore":77.06,"matchScoreGap":16.077,"candidateSetLabel":null,"initialSuggestedQid":"q0333","currentStagedLocaleCorrectOptionKey":null,"answerKeyNeedsManualConfirmation":false,"answerKeyConfirmationReason":null,"effectiveQuestionType":"ROW","promptRawJa":"高速道路でg動車が故障した場合、車両が来る方向へ50〜100メートル離し三角板を設置する。","promptGlossEn":"If your vehicle breaks down on a highway, you should place a triangular warning sign 50 to 100 meters away in the direction cars will come from.","optionsRawJa":["A Yes","B No"],"optionsGlossEn":["A Yes","B No"],"correctKeyRaw":null,"correctAnswerRaw":null,"ocrConfidence":"high","provisionalTopic":"traffic-signals","provisionalSubtopics":["traffic-signals:road-signs"],"topicConfidence":1,"topicSignals":[{"topic":"traffic-signals","subtopic":"traffic-signals:road-signs","signal":"sign-family","weight":1.1}],"sourceConceptSlots":{"condition":[],"context":["expressway"],"action":[],"polarity":"positive","signals":[{"slot":"context","value":"expressway","signal":"expressway"}]},"reason":null,"analysis":{"mode":"diagnostic","effectiveQuestionType":"ROW","declaredQuestionType":"MCQ","booleanChoiceDetected":true,"plausibleShortlist":true,"explanation":"Top candidate cleared the review floor but remains review-first."},"recommendedAction":"quick-review-auto-match","topCandidates":[{"qid":"q0333","number":333,"type":"ROW","rawCandidateType":"ROW","score":77.06,"scoreGapFromTop":0,"prompt":"When a motorized vehicle breaks down on the expressway, the driver should place a warning sign 50~100 meters in the coming direction.","options":[],"correctOptionId":null,"correctOptionKey":null,"correctRow":"W","correctAnswerText":"wrong / false","hasImage":false,"imagePath":null},{"qid":"q0048","number":48,"type":"ROW","rawCandidateType":"ROW","score":60.982,"scoreGapFromTop":16.078,"prompt":"A vehicle may stop on the ramp of an expressway.","options":[],"correctOptionId":null,"correctOptionKey":null,"correctRow":"W","correctAnswerText":"wrong / false","hasImage":false,"imagePath":null},{"qid":"q0003","number":3,"type":"ROW","rawCandidateType":"ROW","score":59.916,"scoreGapFromTop":17.144,"prompt":"A vehicle driving on an expressway may frequently change lanes.","options":[],"correctOptionId":null,"correctOptionKey":null,"correctRow":"W","correctAnswerText":"wrong / false","hasImage":false,"imagePath":null},{"qid":"q0002","number":2,"type":"ROW","rawCandidateType":"ROW","score":59.867,"scoreGapFromTop":17.193,"prompt":"When a vehicle runs on an expressway at the speed of 100km/h, its safe distance from the vehicle in front is no less than 100 meters.","options":[],"correctOptionId":null,"correctOptionKey":null,"correctRow":"R","correctAnswerText":"right / true","hasImage":false,"imagePath":null}]},{"id":"auto-matched:screenshots/Screenshot 2026-04-07 at 17.49.57.png","section":"auto-matched","index":7,"itemId":"screenshots/Screenshot 2026-04-07 at 17.49.57.png","sourceImage":"screenshots/Screenshot 2026-04-07 at 17.49.57.png","screenshotPath":"../../../imports/ja/batch-001/screenshots/Screenshot 2026-04-07 at 17.49.57.png","hasImage":null,"qid":"q0466","number":466,"matchScore":62.541,"matchScoreGap":14.299,"candidateSetLabel":null,"initialSuggestedQid":"q0466","currentStagedLocaleCorrectOptionKey":"B","answerKeyNeedsManualConfirmation":true,"answerKeyConfirmationReason":null,"effectiveQuestionType":"MCQ","promptRawJa":"夜間に狭い道や狭い橋で対向車とすれ違う場合、どのようにライトを使うのが適切か。","promptGlossEn":"At night, when passing an oncoming vehicle on a narrow road or narrow bridge, what is the appropriate way to use the headlights?","optionsRawJa":["A すべてのライトを消す","B ヘッドランプを下向きにする","C ヘッドランプを消す","D ヘッドランプを上向きにする"],"optionsGlossEn":["A Turn off all the lights","B Dim the headlights (use low beam)","C Turn off the headlights","D Aim the headlights upward (use high beam)"],"correctKeyRaw":null,"correctAnswerRaw":null,"ocrConfidence":"high","provisionalTopic":"road-safety","provisionalSubtopics":["road-safety:road-conditions","proper-driving:safe-driving"],"topicConfidence":0.52,"topicSignals":[{"topic":"road-safety","subtopic":"road-safety:road-conditions","signal":"road-condition-or-hazard","weight":1.3},{"topic":"proper-driving","subtopic":"proper-driving:safe-driving","signal":"driving-action","weight":1.2}],"sourceConceptSlots":null,"reason":null,"analysis":{"mode":"diagnostic","effectiveQuestionType":"MCQ","declaredQuestionType":"MCQ","booleanChoiceDetected":false,"plausibleShortlist":true,"explanation":"Top candidate cleared the review floor but remains review-first."},"recommendedAction":"quick-review-auto-match","topCandidates":[{"qid":"q0466","number":466,"type":"MCQ","rawCandidateType":"MCQ","score":62.541,"scoreGapFromTop":0,"prompt":"How to use lights at night while crossing each other on a narrow road or bridge?","options":[{"id":"A","text":"turn off all the lights"},{"id":"B","text":"turn on the low beam lights"},{"id":"C","text":"turn off the head lights"},{"id":"D","text":"turn on the high beam lights"}],"correctOptionId":"q0466_o2","correctOptionKey":"B","correctRow":null,"correctAnswerText":"turn on the low beam lights","hasImage":false,"imagePath":null},{"qid":"q0511","number":511,"type":"MCQ","rawCandidateType":"MCQ","score":48.241,"scoreGapFromTop":14.3,"prompt":"How to use lights when overtaking at night?","options":[{"id":"A","text":"Turn off the high beam light."},{"id":"B","text":"Turn on high beam lights."},{"id":"C","text":"Use fog lights."},{"id":"D","text":"Use the high and low beam lights alternately."}],"correctOptionId":"q0511_o4","correctOptionKey":"D","correctRow":null,"correctAnswerText":"Use the high and low beam lights alternately.","hasImage":false,"imagePath":null},{"qid":"q0509","number":509,"type":"MCQ","rawCandidateType":"MCQ","score":44.785,"scoreGapFromTop":17.756,"prompt":"How to use the lights when pulling over on the road?","options":[{"id":"A","text":"Turn on the hazard lights."},{"id":"B","text":"Turn on the right-turn signal in advance."},{"id":"C","text":"Use the high and low beam lights alternately."},{"id":"D","text":"No need to use any lights to indicate."}],"correctOptionId":"q0509_o2","correctOptionKey":"B","correctRow":null,"correctAnswerText":"Turn on the right-turn signal in advance.","hasImage":false,"imagePath":null},{"qid":"q0134","number":134,"type":"MCQ","rawCandidateType":"MCQ","score":44.008,"scoreGapFromTop":18.533,"prompt":"When driving at night on a road that has good lighting, the driver should use _______.","options":[{"id":"A","text":"the fog light"},{"id":"B","text":"the low beam light"},{"id":"C","text":"the high beam light"},{"id":"D","text":"the hazard lights"}],"correctOptionId":"q0134_o2","correctOptionKey":"B","correctRow":null,"correctAnswerText":"the low beam light","hasImage":false,"imagePath":null}]},{"id":"auto-matched:screenshots/Screenshot 2026-04-07 at 17.49.58.png","section":"auto-matched","index":8,"itemId":"screenshots/Screenshot 2026-04-07 at 17.49.58.png","sourceImage":"screenshots/Screenshot 2026-04-07 at 17.49.58.png","screenshotPath":"../../../imports/ja/batch-001/screenshots/Screenshot 2026-04-07 at 17.49.58.png","hasImage":null,"qid":"q0033","number":33,"matchScore":68.764,"matchScoreGap":9.57,"candidateSetLabel":null,"initialSuggestedQid":"q0033","currentStagedLocaleCorrectOptionKey":null,"answerKeyNeedsManualConfirmation":false,"answerKeyConfirmationReason":null,"effectiveQuestionType":"ROW","promptRawJa":"大雨の中での走行は路面の水によるスリップを起こしやすいため、速度を抑控えて走るべきである。","promptGlossEn":"When driving in heavy rain, it is easy to slip due to water on the road, so you should reduce your speed.","optionsRawJa":["A Yes","B No"],"optionsGlossEn":["Yes","No"],"correctKeyRaw":null,"correctAnswerRaw":null,"ocrConfidence":"high","provisionalTopic":"road-safety","provisionalSubtopics":["road-safety:road-conditions"],"topicConfidence":1,"topicSignals":[{"topic":"road-safety","subtopic":"road-safety:road-conditions","signal":"road-condition-or-hazard","weight":1.3}],"sourceConceptSlots":{"condition":["rain"],"context":[],"action":[],"polarity":"positive","signals":[{"slot":"condition","value":"rain","signal":"rain"}]},"reason":null,"analysis":{"mode":"diagnostic","effectiveQuestionType":"ROW","declaredQuestionType":"MCQ","booleanChoiceDetected":true,"plausibleShortlist":true,"explanation":"Top candidate cleared the review floor but remains review-first."},"recommendedAction":"quick-review-auto-match","topCandidates":[{"qid":"q0033","number":33,"type":"ROW","rawCandidateType":"ROW","score":68.764,"scoreGapFromTop":0,"prompt":"When driving in a heavy rain, the driver should control the speed to avoid the danger arising from a water slide.","options":[],"correctOptionId":null,"correctOptionKey":null,"correctRow":"R","correctAnswerText":"right / true","hasImage":false,"imagePath":null},{"qid":"q0052","number":52,"type":"ROW","rawCandidateType":"ROW","score":59.194,"scoreGapFromTop":9.57,"prompt":"As the braking distance increases on a wet road on a rainy day, the driver should use the emergency brake as much as possible to reduce speed.","options":[],"correctOptionId":null,"correctOptionKey":null,"correctRow":"W","correctAnswerText":"wrong / false","hasImage":false,"imagePath":null},{"qid":"q0082","number":82,"type":"ROW","rawCandidateType":"ROW","score":58.816,"scoreGapFromTop":9.948,"prompt":"When there is a continuous rain, the shoulders of the mountain roads may become loose and the embankments may collapse. When driving in this weather, the driver should select the middle solid road and refrain from going close to the roadsides.","options":[],"correctOptionId":null,"correctOptionKey":null,"correctRow":"R","correctAnswerText":"right / true","hasImage":false,"imagePath":null},{"qid":"q0360","number":360,"type":"ROW","rawCandidateType":"ROW","score":46.185,"scoreGapFromTop":22.579,"prompt":"Reduce speed when driving in sand, hail, rain, fog, ice, or other weather conditions.","options":[],"correctOptionId":null,"correctOptionKey":null,"correctRow":"R","correctAnswerText":"right / true","hasImage":false,"imagePath":null}]}];
+    const ITEMS_BY_ID = new Map(ITEMS.map((item) => [item.id, item]));
+    const INITIAL_DECISIONS = [{"id":"auto-matched:screenshots/1.png","section":"auto-matched","itemId":"screenshots/1.png","sourceImage":"screenshots/1.png","qid":"q0761","approvedQid":"q0761","initialSuggestedQid":"q0761","createNewQuestion":false,"keepUnresolved":false,"confirmedCorrectOptionKey":null,"answerKeyUnknown":false,"currentStagedLocaleCorrectOptionKey":"C","useCurrentStagedAnswerKey":false,"reviewerNotes":"","newQuestionProvisionalTopic":"traffic-signals","newQuestionProvisionalSubtopics":["traffic-signals:road-signs"]},{"id":"auto-matched:screenshots/Screenshot 2026-04-07 at 17.49.39.png","section":"auto-matched","itemId":"screenshots/Screenshot 2026-04-07 at 17.49.39.png","sourceImage":"screenshots/Screenshot 2026-04-07 at 17.49.39.png","qid":"q0820","approvedQid":"q0820","initialSuggestedQid":"q0820","createNewQuestion":false,"keepUnresolved":false,"confirmedCorrectOptionKey":null,"answerKeyUnknown":false,"currentStagedLocaleCorrectOptionKey":"B","useCurrentStagedAnswerKey":false,"reviewerNotes":"","newQuestionProvisionalTopic":"traffic-signals","newQuestionProvisionalSubtopics":["traffic-signals:road-signs"]},{"id":"auto-matched:screenshots/Screenshot 2026-04-07 at 17.49.43.png","section":"auto-matched","itemId":"screenshots/Screenshot 2026-04-07 at 17.49.43.png","sourceImage":"screenshots/Screenshot 2026-04-07 at 17.49.43.png","qid":"q0319","approvedQid":"q0319","initialSuggestedQid":"q0319","createNewQuestion":false,"keepUnresolved":false,"confirmedCorrectOptionKey":null,"answerKeyUnknown":false,"currentStagedLocaleCorrectOptionKey":null,"useCurrentStagedAnswerKey":false,"reviewerNotes":"","newQuestionProvisionalTopic":"proper-driving","newQuestionProvisionalSubtopics":["traffic-signals:road-signs","proper-driving:safe-driving","proper-driving:traffic-laws"]},{"id":"auto-matched:screenshots/Screenshot 2026-04-07 at 17.49.49 1.png","section":"auto-matched","itemId":"screenshots/Screenshot 2026-04-07 at 17.49.49 1.png","sourceImage":"screenshots/Screenshot 2026-04-07 at 17.49.49 1.png","qid":"q0345","approvedQid":"q0345","initialSuggestedQid":"q0345","createNewQuestion":false,"keepUnresolved":false,"confirmedCorrectOptionKey":null,"answerKeyUnknown":false,"currentStagedLocaleCorrectOptionKey":null,"useCurrentStagedAnswerKey":false,"reviewerNotes":"","newQuestionProvisionalTopic":"road-safety","newQuestionProvisionalSubtopics":["road-safety:road-conditions","proper-driving:safe-driving"]},{"id":"auto-matched:screenshots/Screenshot 2026-04-07 at 17.49.50.png","section":"auto-matched","itemId":"screenshots/Screenshot 2026-04-07 at 17.49.50.png","sourceImage":"screenshots/Screenshot 2026-04-07 at 17.49.50.png","qid":"q0073","approvedQid":"q0073","initialSuggestedQid":"q0073","createNewQuestion":false,"keepUnresolved":false,"confirmedCorrectOptionKey":null,"answerKeyUnknown":false,"currentStagedLocaleCorrectOptionKey":null,"useCurrentStagedAnswerKey":false,"reviewerNotes":"","newQuestionProvisionalTopic":"driving-operations","newQuestionProvisionalSubtopics":["driving-operations:indicators","proper-driving:safe-driving"]},{"id":"auto-matched:screenshots/Screenshot 2026-04-07 at 17.49.53.png","section":"auto-matched","itemId":"screenshots/Screenshot 2026-04-07 at 17.49.53.png","sourceImage":"screenshots/Screenshot 2026-04-07 at 17.49.53.png","qid":"q0333","approvedQid":"q0333","initialSuggestedQid":"q0333","createNewQuestion":false,"keepUnresolved":false,"confirmedCorrectOptionKey":null,"answerKeyUnknown":false,"currentStagedLocaleCorrectOptionKey":null,"useCurrentStagedAnswerKey":false,"reviewerNotes":"","newQuestionProvisionalTopic":"traffic-signals","newQuestionProvisionalSubtopics":["traffic-signals:road-signs"]},{"id":"auto-matched:screenshots/Screenshot 2026-04-07 at 17.49.57.png","section":"auto-matched","itemId":"screenshots/Screenshot 2026-04-07 at 17.49.57.png","sourceImage":"screenshots/Screenshot 2026-04-07 at 17.49.57.png","qid":"q0466","approvedQid":"q0466","initialSuggestedQid":"q0466","createNewQuestion":false,"keepUnresolved":false,"confirmedCorrectOptionKey":null,"answerKeyUnknown":false,"currentStagedLocaleCorrectOptionKey":"B","useCurrentStagedAnswerKey":false,"reviewerNotes":"","newQuestionProvisionalTopic":"road-safety","newQuestionProvisionalSubtopics":["road-safety:road-conditions","proper-driving:safe-driving"]},{"id":"auto-matched:screenshots/Screenshot 2026-04-07 at 17.49.58.png","section":"auto-matched","itemId":"screenshots/Screenshot 2026-04-07 at 17.49.58.png","sourceImage":"screenshots/Screenshot 2026-04-07 at 17.49.58.png","qid":"q0033","approvedQid":"q0033","initialSuggestedQid":"q0033","createNewQuestion":false,"keepUnresolved":false,"confirmedCorrectOptionKey":null,"answerKeyUnknown":false,"currentStagedLocaleCorrectOptionKey":null,"useCurrentStagedAnswerKey":false,"reviewerNotes":"","newQuestionProvisionalTopic":"road-safety","newQuestionProvisionalSubtopics":["road-safety:road-conditions"]}];
+    const VISIBLE_SECTIONS = ["auto-matched"];
+    const QUESTION_TYPE_BY_QID = {"q0001":"ROW","q0002":"ROW","q0003":"ROW","q0004":"ROW","q0005":"ROW","q0006":"ROW","q0007":"ROW","q0008":"ROW","q0009":"ROW","q0010":"ROW","q0011":"ROW","q0012":"ROW","q0013":"ROW","q0014":"ROW","q0015":"ROW","q0016":"ROW","q0017":"ROW","q0018":"ROW","q0019":"ROW","q0020":"ROW","q0021":"ROW","q0022":"ROW","q0023":"ROW","q0024":"ROW","q0025":"ROW","q0026":"ROW","q0027":"ROW","q0028":"ROW","q0029":"ROW","q0030":"ROW","q0031":"ROW","q0032":"ROW","q0033":"ROW","q0034":"ROW","q0035":"ROW","q0036":"ROW","q0037":"ROW","q0038":"ROW","q0039":"ROW","q0040":"ROW","q0041":"ROW","q0042":"ROW","q0043":"ROW","q0044":"ROW","q0045":"ROW","q0046":"ROW","q0047":"ROW","q0048":"ROW","q0049":"ROW","q0050":"ROW","q0051":"ROW","q0052":"ROW","q0053":"ROW","q0054":"ROW","q0055":"ROW","q0056":"ROW","q0057":"ROW","q0058":"ROW","q0059":"ROW","q0060":"ROW","q0061":"ROW","q0062":"ROW","q0063":"ROW","q0064":"ROW","q0065":"ROW","q0066":"ROW","q0067":"ROW","q0068":"ROW","q0069":"ROW","q0070":"ROW","q0071":"ROW","q0072":"ROW","q0073":"ROW","q0074":"ROW","q0075":"ROW","q0076":"ROW","q0077":"ROW","q0078":"ROW","q0079":"ROW","q0080":"ROW","q0081":"ROW","q0082":"ROW","q0083":"ROW","q0084":"ROW","q0085":"ROW","q0086":"ROW","q0087":"ROW","q0088":"ROW","q0089":"ROW","q0090":"ROW","q0091":"ROW","q0092":"ROW","q0093":"ROW","q0094":"ROW","q0095":"ROW","q0096":"ROW","q0097":"ROW","q0098":"ROW","q0099":"ROW","q0100":"ROW","q0101":"ROW","q0102":"ROW","q0103":"ROW","q0104":"ROW","q0105":"MCQ","q0106":"MCQ","q0107":"MCQ","q0108":"MCQ","q0109":"MCQ","q0110":"MCQ","q0111":"MCQ","q0112":"MCQ","q0113":"MCQ","q0114":"MCQ","q0115":"MCQ","q0116":"MCQ","q0117":"MCQ","q0118":"MCQ","q0119":"MCQ","q0120":"MCQ","q0121":"MCQ","q0122":"MCQ","q0123":"MCQ","q0124":"MCQ","q0125":"MCQ","q0126":"MCQ","q0127":"MCQ","q0128":"MCQ","q0129":"MCQ","q0130":"MCQ","q0131":"MCQ","q0132":"MCQ","q0133":"MCQ","q0134":"MCQ","q0135":"MCQ","q0136":"MCQ","q0137":"MCQ","q0138":"MCQ","q0139":"MCQ","q0140":"MCQ","q0141":"MCQ","q0142":"MCQ","q0143":"MCQ","q0144":"MCQ","q0145":"MCQ","q0146":"MCQ","q0147":"MCQ","q0148":"MCQ","q0149":"MCQ","q0150":"MCQ","q0151":"MCQ","q0152":"MCQ","q0153":"MCQ","q0154":"MCQ","q0155":"MCQ","q0156":"MCQ","q0157":"MCQ","q0158":"MCQ","q0159":"MCQ","q0160":"MCQ","q0161":"MCQ","q0162":"MCQ","q0163":"MCQ","q0164":"MCQ","q0165":"MCQ","q0166":"MCQ","q0167":"MCQ","q0168":"MCQ","q0169":"MCQ","q0170":"MCQ","q0171":"MCQ","q0172":"MCQ","q0173":"MCQ","q0174":"MCQ","q0175":"MCQ","q0176":"MCQ","q0177":"MCQ","q0178":"MCQ","q0179":"MCQ","q0180":"MCQ","q0181":"MCQ","q0182":"MCQ","q0183":"MCQ","q0184":"MCQ","q0185":"MCQ","q0186":"MCQ","q0187":"ROW","q0188":"ROW","q0189":"ROW","q0190":"ROW","q0191":"ROW","q0192":"ROW","q0193":"ROW","q0194":"ROW","q0195":"ROW","q0196":"ROW","q0197":"ROW","q0198":"ROW","q0199":"ROW","q0200":"ROW","q0201":"ROW","q0202":"ROW","q0203":"ROW","q0204":"ROW","q0205":"ROW","q0206":"ROW","q0207":"ROW","q0208":"ROW","q0209":"ROW","q0210":"ROW","q0211":"ROW","q0212":"ROW","q0213":"ROW","q0214":"ROW","q0215":"ROW","q0216":"ROW","q0217":"ROW","q0218":"ROW","q0219":"ROW","q0220":"ROW","q0221":"ROW","q0222":"ROW","q0223":"ROW","q0224":"ROW","q0225":"ROW","q0226":"ROW","q0227":"ROW","q0228":"ROW","q0229":"ROW","q0230":"ROW","q0231":"ROW","q0232":"ROW","q0233":"ROW","q0234":"ROW","q0235":"ROW","q0236":"ROW","q0237":"ROW","q0238":"ROW","q0239":"ROW","q0240":"ROW","q0241":"ROW","q0242":"ROW","q0243":"ROW","q0244":"ROW","q0245":"ROW","q0246":"ROW","q0247":"ROW","q0248":"ROW","q0249":"ROW","q0250":"ROW","q0251":"ROW","q0252":"ROW","q0253":"ROW","q0254":"ROW","q0255":"ROW","q0256":"ROW","q0257":"ROW","q0258":"ROW","q0259":"ROW","q0260":"ROW","q0261":"ROW","q0262":"ROW","q0263":"ROW","q0264":"ROW","q0265":"ROW","q0266":"ROW","q0267":"ROW","q0268":"ROW","q0269":"ROW","q0270":"ROW","q0271":"ROW","q0272":"ROW","q0273":"ROW","q0274":"ROW","q0275":"ROW","q0276":"ROW","q0277":"ROW","q0278":"ROW","q0279":"ROW","q0280":"ROW","q0281":"ROW","q0282":"ROW","q0283":"ROW","q0284":"ROW","q0285":"ROW","q0286":"ROW","q0287":"ROW","q0288":"ROW","q0289":"ROW","q0290":"ROW","q0291":"ROW","q0292":"ROW","q0293":"ROW","q0294":"ROW","q0295":"ROW","q0296":"ROW","q0297":"ROW","q0298":"ROW","q0299":"ROW","q0300":"ROW","q0301":"ROW","q0302":"ROW","q0303":"ROW","q0304":"ROW","q0305":"ROW","q0306":"ROW","q0307":"ROW","q0308":"ROW","q0309":"ROW","q0310":"ROW","q0311":"ROW","q0312":"ROW","q0313":"ROW","q0314":"ROW","q0315":"ROW","q0316":"ROW","q0317":"ROW","q0318":"ROW","q0319":"ROW","q0320":"ROW","q0321":"ROW","q0322":"ROW","q0323":"ROW","q0324":"ROW","q0325":"ROW","q0326":"ROW","q0327":"ROW","q0328":"ROW","q0329":"ROW","q0330":"ROW","q0331":"ROW","q0332":"ROW","q0333":"ROW","q0334":"ROW","q0335":"ROW","q0336":"ROW","q0337":"ROW","q0338":"ROW","q0339":"ROW","q0340":"ROW","q0341":"ROW","q0342":"ROW","q0343":"ROW","q0344":"ROW","q0345":"ROW","q0346":"ROW","q0347":"ROW","q0348":"ROW","q0349":"ROW","q0350":"ROW","q0351":"ROW","q0352":"ROW","q0353":"ROW","q0354":"ROW","q0355":"ROW","q0356":"ROW","q0357":"ROW","q0358":"ROW","q0359":"ROW","q0360":"ROW","q0361":"ROW","q0362":"MCQ","q0363":"MCQ","q0364":"MCQ","q0365":"MCQ","q0366":"MCQ","q0367":"MCQ","q0368":"MCQ","q0369":"MCQ","q0370":"MCQ","q0371":"MCQ","q0372":"MCQ","q0373":"MCQ","q0374":"MCQ","q0375":"MCQ","q0376":"MCQ","q0377":"MCQ","q0378":"MCQ","q0379":"MCQ","q0380":"MCQ","q0381":"MCQ","q0382":"MCQ","q0383":"MCQ","q0384":"MCQ","q0385":"MCQ","q0386":"MCQ","q0387":"MCQ","q0388":"MCQ","q0389":"MCQ","q0390":"MCQ","q0391":"MCQ","q0392":"MCQ","q0393":"MCQ","q0394":"MCQ","q0395":"MCQ","q0396":"MCQ","q0397":"MCQ","q0398":"MCQ","q0399":"MCQ","q0400":"MCQ","q0401":"MCQ","q0402":"MCQ","q0403":"MCQ","q0404":"MCQ","q0405":"MCQ","q0406":"MCQ","q0407":"MCQ","q0408":"MCQ","q0409":"MCQ","q0410":"MCQ","q0411":"MCQ","q0412":"MCQ","q0413":"MCQ","q0414":"MCQ","q0415":"MCQ","q0416":"MCQ","q0417":"MCQ","q0418":"MCQ","q0419":"MCQ","q0420":"MCQ","q0421":"MCQ","q0422":"MCQ","q0423":"MCQ","q0424":"MCQ","q0425":"MCQ","q0426":"MCQ","q0427":"MCQ","q0428":"MCQ","q0429":"MCQ","q0430":"MCQ","q0431":"MCQ","q0432":"MCQ","q0433":"MCQ","q0434":"MCQ","q0435":"MCQ","q0436":"MCQ","q0437":"MCQ","q0438":"MCQ","q0439":"MCQ","q0440":"MCQ","q0441":"MCQ","q0442":"MCQ","q0443":"MCQ","q0444":"MCQ","q0445":"MCQ","q0446":"MCQ","q0447":"MCQ","q0448":"MCQ","q0449":"MCQ","q0450":"MCQ","q0451":"MCQ","q0452":"MCQ","q0453":"MCQ","q0454":"MCQ","q0455":"MCQ","q0456":"MCQ","q0457":"MCQ","q0458":"MCQ","q0459":"MCQ","q0460":"MCQ","q0461":"MCQ","q0462":"MCQ","q0463":"MCQ","q0464":"MCQ","q0465":"MCQ","q0466":"MCQ","q0467":"MCQ","q0468":"MCQ","q0469":"MCQ","q0470":"MCQ","q0471":"MCQ","q0472":"MCQ","q0473":"MCQ","q0474":"MCQ","q0475":"MCQ","q0476":"MCQ","q0477":"MCQ","q0478":"MCQ","q0479":"MCQ","q0480":"MCQ","q0481":"MCQ","q0482":"MCQ","q0483":"MCQ","q0484":"MCQ","q0485":"MCQ","q0486":"MCQ","q0487":"MCQ","q0488":"MCQ","q0489":"MCQ","q0490":"MCQ","q0491":"MCQ","q0492":"MCQ","q0493":"MCQ","q0494":"MCQ","q0495":"MCQ","q0496":"MCQ","q0497":"MCQ","q0498":"MCQ","q0499":"MCQ","q0500":"MCQ","q0501":"MCQ","q0502":"MCQ","q0503":"MCQ","q0504":"MCQ","q0505":"MCQ","q0506":"MCQ","q0507":"MCQ","q0508":"MCQ","q0509":"MCQ","q0510":"MCQ","q0511":"MCQ","q0512":"MCQ","q0513":"MCQ","q0514":"MCQ","q0515":"MCQ","q0516":"MCQ","q0517":"MCQ","q0518":"MCQ","q0519":"MCQ","q0520":"MCQ","q0521":"MCQ","q0522":"ROW","q0523":"ROW","q0524":"ROW","q0525":"ROW","q0526":"ROW","q0527":"ROW","q0528":"ROW","q0529":"ROW","q0530":"ROW","q0531":"ROW","q0532":"ROW","q0533":"ROW","q0534":"ROW","q0535":"ROW","q0536":"ROW","q0537":"ROW","q0538":"ROW","q0539":"ROW","q0540":"ROW","q0541":"ROW","q0542":"ROW","q0543":"ROW","q0544":"ROW","q0545":"ROW","q0546":"ROW","q0547":"ROW","q0548":"ROW","q0549":"ROW","q0550":"ROW","q0551":"ROW","q0552":"ROW","q0553":"ROW","q0554":"ROW","q0555":"ROW","q0556":"ROW","q0557":"ROW","q0558":"ROW","q0559":"ROW","q0560":"ROW","q0561":"ROW","q0562":"ROW","q0563":"ROW","q0564":"ROW","q0565":"ROW","q0566":"ROW","q0567":"ROW","q0568":"ROW","q0569":"ROW","q0570":"ROW","q0571":"ROW","q0572":"ROW","q0573":"ROW","q0574":"ROW","q0575":"ROW","q0576":"MCQ","q0577":"MCQ","q0578":"MCQ","q0579":"MCQ","q0580":"MCQ","q0581":"MCQ","q0582":"MCQ","q0583":"MCQ","q0584":"MCQ","q0585":"MCQ","q0586":"MCQ","q0587":"MCQ","q0588":"MCQ","q0589":"MCQ","q0590":"MCQ","q0591":"MCQ","q0592":"MCQ","q0593":"MCQ","q0594":"MCQ","q0595":"MCQ","q0596":"MCQ","q0597":"MCQ","q0598":"MCQ","q0599":"MCQ","q0600":"MCQ","q0601":"MCQ","q0602":"MCQ","q0603":"MCQ","q0604":"MCQ","q0605":"MCQ","q0606":"MCQ","q0607":"MCQ","q0608":"MCQ","q0609":"MCQ","q0610":"MCQ","q0611":"MCQ","q0612":"MCQ","q0613":"MCQ","q0614":"MCQ","q0615":"MCQ","q0616":"MCQ","q0617":"MCQ","q0618":"MCQ","q0619":"MCQ","q0620":"MCQ","q0621":"MCQ","q0622":"MCQ","q0623":"MCQ","q0624":"MCQ","q0625":"MCQ","q0626":"MCQ","q0627":"MCQ","q0628":"MCQ","q0629":"MCQ","q0630":"MCQ","q0631":"ROW","q0632":"ROW","q0633":"ROW","q0634":"ROW","q0635":"ROW","q0636":"ROW","q0637":"ROW","q0638":"ROW","q0639":"ROW","q0640":"ROW","q0641":"ROW","q0642":"ROW","q0643":"ROW","q0644":"ROW","q0645":"ROW","q0646":"ROW","q0647":"ROW","q0648":"ROW","q0649":"ROW","q0650":"ROW","q0651":"MCQ","q0652":"MCQ","q0653":"MCQ","q0654":"MCQ","q0655":"MCQ","q0656":"MCQ","q0657":"MCQ","q0658":"MCQ","q0659":"MCQ","q0660":"MCQ","q0661":"MCQ","q0662":"MCQ","q0663":"MCQ","q0664":"MCQ","q0665":"MCQ","q0666":"MCQ","q0667":"MCQ","q0668":"MCQ","q0669":"MCQ","q0670":"MCQ","q0671":"MCQ","q0672":"MCQ","q0673":"MCQ","q0674":"MCQ","q0675":"MCQ","q0676":"MCQ","q0677":"MCQ","q0678":"MCQ","q0679":"MCQ","q0680":"MCQ","q0681":"MCQ","q0682":"MCQ","q0683":"MCQ","q0684":"MCQ","q0685":"MCQ","q0686":"MCQ","q0687":"MCQ","q0688":"MCQ","q0689":"MCQ","q0690":"MCQ","q0691":"MCQ","q0692":"MCQ","q0693":"MCQ","q0694":"MCQ","q0695":"MCQ","q0696":"MCQ","q0697":"MCQ","q0698":"MCQ","q0699":"MCQ","q0700":"MCQ","q0701":"MCQ","q0702":"MCQ","q0703":"MCQ","q0704":"MCQ","q0705":"MCQ","q0706":"MCQ","q0707":"MCQ","q0708":"MCQ","q0709":"MCQ","q0710":"MCQ","q0711":"MCQ","q0712":"MCQ","q0713":"MCQ","q0714":"MCQ","q0715":"MCQ","q0716":"MCQ","q0717":"MCQ","q0718":"MCQ","q0719":"MCQ","q0720":"MCQ","q0721":"MCQ","q0722":"MCQ","q0723":"MCQ","q0724":"MCQ","q0725":"MCQ","q0726":"MCQ","q0727":"MCQ","q0728":"MCQ","q0729":"MCQ","q0730":"MCQ","q0731":"MCQ","q0732":"MCQ","q0733":"MCQ","q0734":"MCQ","q0735":"MCQ","q0736":"MCQ","q0737":"MCQ","q0738":"MCQ","q0739":"MCQ","q0740":"MCQ","q0741":"MCQ","q0742":"MCQ","q0743":"MCQ","q0744":"MCQ","q0745":"MCQ","q0746":"MCQ","q0747":"MCQ","q0748":"MCQ","q0749":"MCQ","q0750":"MCQ","q0751":"MCQ","q0752":"MCQ","q0753":"MCQ","q0754":"MCQ","q0755":"MCQ","q0756":"MCQ","q0757":"MCQ","q0758":"MCQ","q0759":"MCQ","q0760":"MCQ","q0761":"MCQ","q0762":"MCQ","q0763":"MCQ","q0764":"MCQ","q0765":"MCQ","q0766":"MCQ","q0767":"MCQ","q0768":"MCQ","q0769":"MCQ","q0770":"MCQ","q0771":"MCQ","q0772":"MCQ","q0773":"MCQ","q0774":"MCQ","q0775":"MCQ","q0776":"MCQ","q0777":"MCQ","q0778":"MCQ","q0779":"MCQ","q0780":"MCQ","q0781":"MCQ","q0782":"MCQ","q0783":"MCQ","q0784":"MCQ","q0785":"MCQ","q0786":"MCQ","q0787":"MCQ","q0788":"MCQ","q0789":"MCQ","q0790":"MCQ","q0791":"MCQ","q0792":"MCQ","q0793":"MCQ","q0794":"MCQ","q0795":"MCQ","q0796":"MCQ","q0797":"MCQ","q0798":"MCQ","q0799":"MCQ","q0800":"MCQ","q0801":"MCQ","q0802":"MCQ","q0803":"MCQ","q0804":"MCQ","q0805":"MCQ","q0806":"MCQ","q0807":"MCQ","q0808":"MCQ","q0809":"MCQ","q0810":"MCQ","q0811":"MCQ","q0812":"MCQ","q0813":"MCQ","q0814":"MCQ","q0815":"MCQ","q0816":"MCQ","q0817":"MCQ","q0818":"MCQ","q0819":"MCQ","q0820":"MCQ","q0821":"MCQ","q0822":"MCQ","q0823":"MCQ","q0824":"MCQ","q0825":"MCQ","q0826":"MCQ","q0827":"MCQ","q0828":"MCQ","q0829":"MCQ","q0830":"MCQ","q0831":"MCQ","q0832":"MCQ","q0833":"MCQ","q0834":"MCQ","q0835":"MCQ","q0836":"MCQ","q0837":"MCQ","q0838":"MCQ","q0839":"MCQ","q0840":"MCQ","q0841":"MCQ","q0842":"MCQ","q0843":"MCQ","q0844":"MCQ","q0845":"MCQ","q0846":"MCQ","q0847":"MCQ","q0848":"MCQ","q0849":"MCQ","q0850":"MCQ","q0851":"MCQ","q0852":"MCQ","q0853":"MCQ","q0854":"MCQ","q0855":"MCQ","q0856":"MCQ","q0857":"MCQ","q0858":"MCQ","q0859":"MCQ","q0860":"MCQ","q0861":"MCQ","q0862":"MCQ","q0863":"MCQ","q0864":"MCQ","q0865":"MCQ","q0866":"MCQ","q0867":"MCQ","q0868":"MCQ","q0869":"MCQ","q0870":"MCQ","q0871":"MCQ","q0872":"MCQ","q0873":"MCQ","q0874":"MCQ","q0875":"MCQ","q0876":"MCQ","q0877":"MCQ","q0878":"MCQ","q0879":"MCQ","q0880":"MCQ","q0881":"MCQ","q0882":"MCQ","q0883":"MCQ","q0884":"MCQ","q0885":"MCQ","q0886":"MCQ","q0887":"MCQ","q0888":"MCQ","q0889":"MCQ","q0890":"MCQ","q0891":"MCQ","q0892":"MCQ","q0893":"MCQ","q0894":"MCQ","q0895":"MCQ","q0896":"MCQ","q0897":"MCQ","q0898":"MCQ","q0899":"MCQ","q0900":"MCQ","q0901":"MCQ","q0902":"MCQ","q0903":"ROW","q0904":"ROW","q0905":"ROW","q0906":"ROW","q0907":"ROW","q0908":"ROW","q0909":"MCQ","q0910":"MCQ","q0911":"ROW","q0912":"ROW","q0913":"ROW","q0914":"MCQ","q0915":"MCQ","q0916":"ROW","q0917":"ROW","q0918":"ROW","q0919":"ROW","q0920":"MCQ","q0921":"ROW","q0922":"MCQ","q0923":"MCQ","q0924":"ROW","q0925":"MCQ","q0926":"ROW","q0927":"MCQ","q0928":"MCQ","q0929":"MCQ","q0930":"ROW","q0931":"ROW","q0932":"ROW","q0933":"ROW","q0934":"ROW","q0935":"ROW","q0936":"ROW","q0937":"ROW","q0938":"ROW","q0939":"ROW","q0940":"ROW","q0941":"ROW","q0942":"ROW","q0943":"ROW","q0944":"ROW","q0945":"ROW","q0946":"ROW","q0947":"ROW","q0948":"ROW","q0949":"ROW","q0950":"ROW","q0951":"ROW","q0952":"ROW","q0953":"ROW","q0954":"ROW","q0955":"ROW","q0956":"ROW","q0957":"ROW","q0958":"MCQ","q0959":"ROW","q0960":"ROW","q0961":"ROW","q0962":"ROW","q0963":"ROW","q0964":"ROW","q0965":"ROW","q0966":"ROW","q0967":"ROW","q0968":"ROW","q0969":"ROW","q0970":"MCQ","q0971":"MCQ","q0972":"MCQ","q0973":"ROW"};
+    const STORAGE_KEY = "qbank-workbench:ja:batch-001:ja-batch-001-retro-auto-workbench-decisions.json";
+    const EXPORT_FILE_NAME = "ja-batch-001-retro-auto-workbench-decisions.json";
+    const ACTIVE_REVIEW_LOCALE = "ja";
+    const ROW_DISPLAY_LABELS = {
+      en: { R: 'Right', W: 'Wrong' },
+      ko: { R: 'Y', W: 'N' },
+      ja: { R: 'Yes', W: 'No' },
+    };
+    const LIGHTBOX = document.getElementById('image-lightbox');
+    const LIGHTBOX_BODY = document.getElementById('image-lightbox-body');
+    const LIGHTBOX_STAGE = document.getElementById('image-lightbox-stage');
+    const LIGHTBOX_IMAGE = document.getElementById('image-lightbox-img');
+    const LIGHTBOX_FALLBACK = document.getElementById('image-lightbox-fallback');
+    const LIGHTBOX_TITLE = document.getElementById('image-lightbox-title');
+    const LIGHTBOX_PATH = document.getElementById('image-lightbox-path');
+    const LIGHTBOX_ZOOM_VALUE = document.getElementById('image-lightbox-zoom-value');
+    const LIGHTBOX_ZOOM_IN = document.getElementById('image-lightbox-zoom-in');
+    const LIGHTBOX_ZOOM_OUT = document.getElementById('image-lightbox-zoom-out');
+    const LIGHTBOX_FIT = document.getElementById('image-lightbox-fit');
+    const LIGHTBOX_ZOOM_STEP = 1.2;
+    let lightboxReturnFocus = null;
+    let lightboxDrag = null;
+    const lightboxState = {
+      zoom: 1,
+      fitZoom: 1,
+      minZoom: 0.2,
+      maxZoom: 5,
+      naturalWidth: 0,
+      naturalHeight: 0,
+    };
+
+    function clone(value) {
+      return JSON.parse(JSON.stringify(value));
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return clone(INITIAL_DECISIONS);
+        const parsed = JSON.parse(raw);
+        if (!Array.isArray(parsed)) return clone(INITIAL_DECISIONS);
+        const byId = new Map(parsed.map((item) => [item.id, item]));
+        return INITIAL_DECISIONS.map((item) => ({ ...item, ...(byId.get(item.id) || {}) }));
+      } catch {
+        return clone(INITIAL_DECISIONS);
+      }
+    }
+
+    let state = loadState();
+
+    function saveState() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+
+    function download(filename, content, type) {
+      const blob = new Blob([content], { type });
+      const url = URL.createObjectURL(blob);
+      const anchor = document.createElement("a");
+      anchor.href = url;
+      anchor.download = filename;
+      document.body.appendChild(anchor);
+      anchor.click();
+      anchor.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    function exportJson() {
+      const payload = {
+        exportedAt: new Date().toISOString(),
+        lang: "ja",
+        batchId: "batch-001",
+        dataset: "2023-test1",
+        source: "workbench",
+        items: state,
+      };
+      download(EXPORT_FILE_NAME, JSON.stringify(payload, null, 2) + "\n", "application/json");
+    }
+
+    function getDecision(id) {
+      return state.find((item) => item.id === id);
+    }
+
+    function normalizeDecisionQid(value) {
+      const text = String(value ?? '').trim();
+      return text || null;
+    }
+
+    function getApprovedMasterQuestionType(decision) {
+      const approvedQid = normalizeDecisionQid(decision?.approvedQid);
+      return approvedQid ? (QUESTION_TYPE_BY_QID[approvedQid] || null) : null;
+    }
+
+    function getResolvedQuestionType(item, decision) {
+      const approvedMasterType = getApprovedMasterQuestionType(decision);
+      if (approvedMasterType) {
+        return approvedMasterType;
+      }
+
+      return item?.effectiveQuestionType || null;
+    }
+
+    function getTypeMismatchInfo(item, decision) {
+      const sourceType = item?.effectiveQuestionType || null;
+      const approvedMasterType = getApprovedMasterQuestionType(decision);
+      const approvedQid = normalizeDecisionQid(decision?.approvedQid);
+
+      if (!sourceType || !approvedMasterType || sourceType === approvedMasterType) {
+        return null;
+      }
+
+      return {
+        sourceType,
+        approvedMasterType,
+        approvedQid,
+      };
+    }
+
+    function getCurrentStagedAnswerKey(id) {
+      return (
+        getDecision(id)?.currentStagedLocaleCorrectOptionKey ||
+        ITEMS_BY_ID.get(id)?.currentStagedLocaleCorrectOptionKey ||
+        null
+      );
+    }
+
+    function selectorForActiveElement(element) {
+      if (!element || element === document.body) {
+        return null;
+      }
+
+      if (element.dataset?.approvedQidFor) {
+        return '[data-approved-qid-for=' + JSON.stringify(element.dataset.approvedQidFor) + ']';
+      }
+
+      if (element.dataset?.notesFor) {
+        return '[data-notes-for=' + JSON.stringify(element.dataset.notesFor) + ']';
+      }
+
+      if (element.dataset?.newTopicFor) {
+        return '[data-new-topic-for=' + JSON.stringify(element.dataset.newTopicFor) + ']';
+      }
+
+      if (element.dataset?.newSubtopicsFor) {
+        return '[data-new-subtopics-for=' + JSON.stringify(element.dataset.newSubtopicsFor) + ']';
+      }
+
+      if (element.dataset?.useCurrentAnswerKey) {
+        return '[data-use-current-answer-key=' + JSON.stringify(element.dataset.useCurrentAnswerKey) + ']';
+      }
+
+      if (element.dataset?.useQid && element.dataset?.qid) {
+        return '[data-use-qid=' + JSON.stringify(element.dataset.useQid) + '][data-qid=' + JSON.stringify(element.dataset.qid) + ']';
+      }
+
+      if (element.name && element.value) {
+        return '[name=' + JSON.stringify(element.name) + '][value=' + JSON.stringify(element.value) + ']';
+      }
+
+      return null;
+    }
+
+    function captureRenderContext() {
+      const active = document.activeElement;
+      const context = {
+        scrollX: window.scrollX,
+        scrollY: window.scrollY,
+        selector: selectorForActiveElement(active),
+      };
+
+      if (active && typeof active.selectionStart === 'number' && typeof active.selectionEnd === 'number') {
+        context.selectionStart = active.selectionStart;
+        context.selectionEnd = active.selectionEnd;
+      }
+
+      return context;
+    }
+
+    function restoreRenderContext(context) {
+      if (!context) {
+        return;
+      }
+
+      window.scrollTo(context.scrollX, context.scrollY);
+
+      if (!context.selector) {
+        return;
+      }
+
+      const nextActive = document.querySelector(context.selector);
+      if (!nextActive) {
+        return;
+      }
+
+      try {
+        nextActive.focus({ preventScroll: true });
+      } catch {
+        nextActive.focus();
+      }
+
+      if (
+        typeof context.selectionStart === 'number' &&
+        typeof context.selectionEnd === 'number' &&
+        typeof nextActive.setSelectionRange === 'function'
+      ) {
+        nextActive.setSelectionRange(context.selectionStart, context.selectionEnd);
+      }
+
+      window.scrollTo(context.scrollX, context.scrollY);
+    }
+
+    function updateDecision(id, patch, options = {}) {
+      state = state.map((item) => item.id === id ? { ...item, ...patch } : item);
+      saveState();
+
+      if (options.rerender !== false) {
+        render({ preserveContext: options.preserveContext !== false });
+      }
+    }
+
+    function useCandidate(id, qid) {
+      updateDecision(id, { approvedQid: qid || "", createNewQuestion: false, keepUnresolved: false });
+    }
+
+    function setDecisionMode(id, mode) {
+      if (mode === "approve") {
+        updateDecision(id, { createNewQuestion: false, keepUnresolved: false });
+        return;
+      }
+      if (mode === "new") {
+        updateDecision(id, { approvedQid: null, createNewQuestion: true, keepUnresolved: false });
+        return;
+      }
+      updateDecision(id, { approvedQid: null, createNewQuestion: false, keepUnresolved: true });
+    }
+
+    function itemNeedsStructuredAnswerKey(item, decision) {
+      return Boolean(
+        item &&
+        getResolvedQuestionType(item, decision) === 'MCQ' &&
+        item.initialSuggestedQid &&
+        decision?.approvedQid &&
+        decision.approvedQid !== item.initialSuggestedQid
+      );
+    }
+
+    function hasStructuredAnswerKeyDecision(decision) {
+      return Boolean(
+        decision &&
+        (
+          decision.useCurrentStagedAnswerKey === true ||
+          decision.answerKeyUnknown === true ||
+          decision.confirmedCorrectOptionKey
+        )
+      );
+    }
+
+    function getRowDisplayLabel(rowValue) {
+      const labels = ROW_DISPLAY_LABELS[ACTIVE_REVIEW_LOCALE] || ROW_DISPLAY_LABELS.en;
+      return labels[rowValue] || ROW_DISPLAY_LABELS.en[rowValue] || rowValue || '';
+    }
+
+    function getRowCanonicalHint(rowValue) {
+      if (rowValue === 'R') {
+        return 'R · right / true';
+      }
+      if (rowValue === 'W') {
+        return 'W · wrong / false';
+      }
+      return '';
+    }
+
+    function normalizeRowValue(value) {
+      const normalized = String(value ?? '').trim().toLowerCase();
+      if (!normalized) {
+        return null;
+      }
+
+      if (
+        normalized === 'r' ||
+        normalized === 'right' ||
+        normalized === 'true' ||
+        normalized === 'yes' ||
+        normalized === 'y' ||
+        /(^|[^a-z])(yes|right|true|y)([^a-z]|$)/.test(normalized) ||
+        /はい/.test(normalized)
+      ) {
+        return 'R';
+      }
+
+      if (
+        normalized === 'w' ||
+        normalized === 'wrong' ||
+        normalized === 'false' ||
+        normalized === 'no' ||
+        normalized === 'n' ||
+        /(^|[^a-z])(no|wrong|false|n)([^a-z]|$)/.test(normalized) ||
+        /いいえ/.test(normalized)
+      ) {
+        return 'W';
+      }
+
+      return null;
+    }
+
+    function getRowSourceOptionMap(item) {
+      const rawOptions = Array.isArray(item?.optionsRawJa) ? item.optionsRawJa : [];
+      const optionGlosses = Array.isArray(item?.optionsGlossEn) ? item.optionsGlossEn : [];
+      const byRow = new Map();
+
+      rawOptions.forEach((option, index) => {
+        const rowValue = normalizeRowValue(option);
+        if (!rowValue || byRow.has(rowValue)) {
+          return;
+        }
+
+        byRow.set(rowValue, {
+          raw: option || '',
+          gloss: optionGlosses[index] || '',
+        });
+      });
+
+      return byRow;
+    }
+
+    function inferSourceRowSelection(item) {
+      const direct = normalizeRowValue(item?.correctAnswerRaw);
+      if (direct) {
+        return direct;
+      }
+
+      const key = String(item?.correctKeyRaw ?? '').trim().toUpperCase();
+      if (/^[A-D]$/.test(key)) {
+        const rawOptions = Array.isArray(item?.optionsRawJa) ? item.optionsRawJa : [];
+        const keyedOption = rawOptions.find((option) =>
+          String(option ?? '').trim().toUpperCase().startsWith(key)
+        );
+        const keyedRow = normalizeRowValue(keyedOption);
+        if (keyedRow) {
+          return keyedRow;
+        }
+      }
+
+      return null;
+    }
+
+    function renderNormalizedRowChoices({ highlightRow = null, rawByRow = null, sourceSide = false }) {
+      return '<ol class="options">' +
+        ['R', 'W'].map((rowValue) => {
+          const rawEntry = rawByRow?.get?.(rowValue) || null;
+          return '<li class="option' + (highlightRow === rowValue ? ' option-current' : '') + '">' +
+            '<div class="option-row"><div><span class="option-key">' + escapeHtml(getRowDisplayLabel(rowValue)) + '</span></div>' +
+              (highlightRow === rowValue ? '<span class="option-correct-badge">Correct</span>' : '') +
+            '</div>' +
+            '<div class="option-gloss">' + escapeHtml(getRowCanonicalHint(rowValue)) + '</div>' +
+            (sourceSide && rawEntry?.raw ? '<div class="option-gloss">OCR: ' + escapeHtml(rawEntry.raw) + '</div>' : '') +
+            (sourceSide && rawEntry?.gloss ? '<div class="option-gloss">Gloss: ' + escapeHtml(rawEntry.gloss) + '</div>' : '') +
+          '</li>';
+        }).join('') +
+      '</ol>';
+    }
+
+    function renderImage(item) {
+      if (!item.screenshotPath) {
+        return '<div class="image-frame"><div class="image-fallback">Screenshot not available</div></div>';
+      }
+      return renderInlineImage(item.screenshotPath, item.sourceImage || item.itemId || item.qid || "screenshot", "image-frame", {
+        caption: item.sourceImage || item.itemId || item.qid || 'Source screenshot',
+      });
+    }
+
+    function renderInlineImage(imagePath, altText, frameClass, options = {}) {
+      const encodedPath = encodeURI(imagePath);
+      const caption = options.caption || altText || imagePath || 'image';
+      return '<button type="button" class="image-button" data-lightbox-src="' + escapeHtml(encodedPath) + '" data-lightbox-alt="' + escapeHtml(altText || "image") + '" data-lightbox-caption="' + escapeHtml(caption) + '">' +
+        '<span class="' + escapeHtml(frameClass || 'image-frame') + '">' +
+          '<img src="' + encodedPath + '" alt="' + escapeHtml(altText || "image") + '" onerror="this.style.display=\'none\'; this.nextElementSibling.style.display=\'grid\';">' +
+          '<span class="image-fallback" style="display:none;">Unable to load image<div class="filename">' + escapeHtml(imagePath) + '</div></span>' +
+          '<span class="image-zoom-hint">Click to enlarge</span>' +
+        '</span>' +
+      '</button>';
+    }
+
+    function renderOptionList(item, highlightKey) {
+      const options = Array.isArray(item.optionsRawJa) ? item.optionsRawJa : [];
+      const glosses = Array.isArray(item.optionsGlossEn) ? item.optionsGlossEn : [];
+      return options.map((option, index) => {
+        const key = option && /^[A-D]/i.test(option) ? option.trim().charAt(0).toUpperCase() : String.fromCharCode(65 + index);
+        const isHighlight = highlightKey && highlightKey === key;
+        return '<li class="option' + (isHighlight ? ' option-current' : '') + '">' +
+          '<div class="option-row"><div><span class="option-key">' + escapeHtml(key) + '</span>' + escapeHtml(option || '') + '</div>' +
+            (isHighlight ? '<span class="option-correct-badge">Correct</span>' : '') +
+          '</div>' +
+          (glosses[index] ? '<div class="option-gloss">' + escapeHtml(glosses[index]) + '</div>' : '') +
+        '</li>';
+      }).join('');
+    }
+
+    function renderSourceOptionSection(item, decision) {
+      const resolvedQuestionType = getResolvedQuestionType(item, decision);
+      if (resolvedQuestionType === 'ROW') {
+        return '<div><span class="label">ROW Choices</span>' +
+          renderNormalizedRowChoices({
+            highlightRow: inferSourceRowSelection(item),
+            rawByRow: getRowSourceOptionMap(item),
+            sourceSide: true,
+          }) +
+        '</div>';
+      }
+
+      if ((item.optionsRawJa || []).length > 0) {
+        return '<div><span class="label">Options</span><ol class="options">' + renderOptionList(item, item.section === 'answer-key' ? item.currentStagedLocaleCorrectOptionKey : null) + '</ol></div>';
+      }
+
+      return '';
+    }
+
+    function renderCandidate(candidate, itemId) {
+      const candidateType = candidate.type || null;
+      const isRowCandidate = candidateType === 'ROW';
+      const rowValue = isRowCandidate
+        ? normalizeRowValue(candidate.correctRow || candidate.correctAnswerText || candidate.correctOptionKey)
+        : null;
+      const correctOptionKey = String(candidate.correctOptionKey ?? '').trim().toUpperCase() || null;
+      const options = rowValue
+        ? renderNormalizedRowChoices({ highlightRow: rowValue })
+        : (candidate.options || []).map((option) => {
+          const optionKey = String(option.id ?? '').trim().toUpperCase() || null;
+          const isCorrect = Boolean(correctOptionKey && optionKey && optionKey === correctOptionKey);
+          return '<li class="option' + (isCorrect ? ' option-current' : '') + '">' +
+            '<div class="option-row"><div><span class="option-key">' + escapeHtml(option.id || '?') + '</span>' + escapeHtml(option.text || '') + '</div>' +
+              (isCorrect ? '<span class="option-correct-badge">Correct</span>' : '') +
+            '</div>' +
+          '</li>';
+        }).join('');
+      return '<article class="candidate">' +
+        '<div class="candidate-head">' +
+          '<div class="candidate-badges">' +
+            '<span class="pill note">' + escapeHtml(candidate.qid || 'unknown') + '</span>' +
+            '<span class="pill">#' + escapeHtml(candidate.number ?? '') + '</span>' +
+            '<span class="pill">' + escapeHtml(candidate.type || '') + '</span>' +
+            (candidate.rawCandidateType && candidate.rawCandidateType !== candidate.type
+              ? '<span class="pill warn">resolved from ' + escapeHtml(candidate.rawCandidateType) + '</span>'
+              : '') +
+            '<span class="pill">score ' + escapeHtml(candidate.score ?? '') + '</span>' +
+            (candidate.scoreGapFromTop != null ? '<span class="pill">gap ' + escapeHtml(candidate.scoreGapFromTop) + '</span>' : '') +
+            '<span class="pill">' + escapeHtml(candidate.hasImage ? 'has image' : 'no image') + '</span>' +
+          '</div>' +
+          '<button type="button" data-use-qid="' + escapeHtml(itemId) + '" data-qid="' + escapeHtml(candidate.qid || '') + '">Use qid</button>' +
+        '</div>' +
+        '<div class="prompt">' + escapeHtml(candidate.prompt || '') + '</div>' +
+        (candidate.imagePath
+          ? '<div class="candidate-media">' + renderInlineImage(candidate.imagePath, candidate.qid || 'candidate image', 'image-frame candidate-image-frame', {
+              caption: [candidate.qid || null, candidate.prompt || null].filter(Boolean).join(' · ') || 'Candidate image',
+            }) + '</div>'
+          : '') +
+        (options ? (rowValue ? options : '<ol class="options">' + options + '</ol>') : '') +
+        (rowValue
+          ? '<div class="gloss">Correct: ' + escapeHtml(getRowDisplayLabel(rowValue)) + '</div>'
+          : (candidate.correctAnswerText ? '<div class="gloss">Correct answer: ' + escapeHtml(candidate.correctAnswerText) + '</div>' : '')) +
+        (candidate.imagePath ? '<div class="filename">' + escapeHtml(candidate.imagePath) + '</div>' : '') +
+      '</article>';
+    }
+
+    function renderStructuredAnswerKeyNote(item, decision) {
+      const needsStructuredAnswerKey = itemNeedsStructuredAnswerKey(item, decision);
+      const hasStructuredAnswerKey = hasStructuredAnswerKeyDecision(decision);
+
+      if (!needsStructuredAnswerKey) {
+        return '';
+      }
+
+      return '<div class="fact' + (hasStructuredAnswerKey ? '' : ' warn') + '"><span class="label">Answer-Key Confirmation</span><div class="value">' +
+        escapeHtml(
+          hasStructuredAnswerKey
+            ? 'Structured locale answer-key confirmation recorded for manual qid change from ' + String(item.initialSuggestedQid || '') + '.'
+            : 'Required because approved qid differs from initial suggestion ' + String(item.initialSuggestedQid || '') + '. Select "Use current staged key", choose A/B/C/D, or mark unknown.'
+        ) +
+      '</div></div>';
+    }
+
+    function renderDecisionPanel(item, decision) {
+      const answerChoices = ['A', 'B', 'C', 'D', 'unknown'].map((choice) => {
+        const checked = choice === 'unknown'
+          ? decision.answerKeyUnknown === true
+          : decision.confirmedCorrectOptionKey === choice;
+        return '<label><input type="radio" name="answer-' + escapeHtml(item.id) + '" value="' + escapeHtml(choice) + '"' + (checked ? ' checked' : '') + '>' +
+          '<span>' + escapeHtml(choice.toUpperCase()) + '</span></label>';
+      }).join('');
+      const needsStructuredAnswerKey = itemNeedsStructuredAnswerKey(item, decision);
+      const resolvedQuestionType = getResolvedQuestionType(item, decision);
+
+      if (item.section === 'answer-key') {
+        return '<div class="decision-block">' +
+          '<div class="decision-row"><span class="label">Current Staged Key</span><div class="fact"><div class="value mono">' + escapeHtml(item.currentStagedLocaleCorrectOptionKey || 'unknown') + '</div></div></div>' +
+          '<div class="decision-row"><span class="label">Confirm / Override</span><div class="answer-key-choices">' + answerChoices + '</div>' +
+            (item.currentStagedLocaleCorrectOptionKey
+              ? '<div class="answer-key-toolbar"><button type="button" data-use-current-answer-key="' + escapeHtml(item.id) + '">Use current staged key (' + escapeHtml(item.currentStagedLocaleCorrectOptionKey) + ')</button></div>'
+              : '') + '</div>' +
+          '<label class="label" for="notes-' + escapeHtml(item.id) + '">Reviewer Notes</label>' +
+          '<textarea id="notes-' + escapeHtml(item.id) + '" data-notes-for="' + escapeHtml(item.id) + '">' + escapeHtml(decision.reviewerNotes || '') + '</textarea>' +
+        '</div>';
+      }
+
+      return '<div class="decision-block">' +
+        '<div class="decision-row">' +
+          '<span class="label">Decision</span>' +
+          '<div class="decision-actions">' +
+            '<label><input type="radio" name="mode-' + escapeHtml(item.id) + '" value="approve"' + (decision.approvedQid ? ' checked' : '') + '><span>' + escapeHtml(item.section === 'auto-matched' ? 'Confirm auto-match / existing qid' : 'Approve existing qid') + '</span></label>' +
+            '<label><input type="radio" name="mode-' + escapeHtml(item.id) + '" value="new"' + (decision.createNewQuestion ? ' checked' : '') + '><span>Create new question</span></label>' +
+            '<label><input type="radio" name="mode-' + escapeHtml(item.id) + '" value="unresolved"' + (!decision.approvedQid && !decision.createNewQuestion && decision.keepUnresolved ? ' checked' : '') + '><span>Keep unresolved</span></label>' +
+          '</div>' +
+        '</div>' +
+        '<div class="decision-row"><span class="label">Approved Qid</span><input type="text" value="' + escapeHtml(decision.approvedQid || '') + '" data-approved-qid-for="' + escapeHtml(item.id) + '" placeholder="q0123"></div>' +
+        (resolvedQuestionType === 'MCQ'
+          ? '<div class="decision-row"><span class="label" data-answer-key-label-for="' + escapeHtml(item.id) + '">Locale Answer Key' + (needsStructuredAnswerKey ? ' (required for manual qid change)' : ' (optional)') + '</span><div class="answer-key-choices">' + answerChoices + '</div>' +
+              (item.currentStagedLocaleCorrectOptionKey
+                ? '<div class="answer-key-toolbar"><button type="button" data-use-current-answer-key="' + escapeHtml(item.id) + '">Use current staged key (' + escapeHtml(item.currentStagedLocaleCorrectOptionKey) + ')</button></div>'
+                : '') +
+            '</div><div data-answer-key-note-for="' + escapeHtml(item.id) + '">' + renderStructuredAnswerKeyNote(item, decision) + '</div>'
+          : '') +
+        '<div class="decision-row"><span class="label">New-Question Topic (optional)</span><input type="text" value="' + escapeHtml(decision.newQuestionProvisionalTopic || '') + '" data-new-topic-for="' + escapeHtml(item.id) + '" placeholder="road-safety"></div>' +
+        '<div class="decision-row"><span class="label">New-Question Subtopics (comma or newline separated)</span><textarea data-new-subtopics-for="' + escapeHtml(item.id) + '" placeholder="traffic-signals:road-signs">' + escapeHtml((decision.newQuestionProvisionalSubtopics || []).join(', ')) + '</textarea></div>' +
+        '<label class="label" for="notes-' + escapeHtml(item.id) + '">Reviewer Notes</label>' +
+        '<textarea id="notes-' + escapeHtml(item.id) + '" data-notes-for="' + escapeHtml(item.id) + '">' + escapeHtml(decision.reviewerNotes || '') + '</textarea>' +
+      '</div>';
+    }
+
+    function renderCard(item) {
+      const decision = getDecision(item.id);
+      const typeMismatch = getTypeMismatchInfo(item, decision);
+      const facts = [];
+      if (item.reason) facts.push(['Reason', item.reason]);
+      if (item.ocrConfidence) facts.push(['OCR', item.ocrConfidence]);
+      if (item.section === 'auto-matched' && item.qid) facts.push(['Matched Qid', item.qid]);
+      if (item.section === 'auto-matched' && item.matchScore != null) facts.push(['Match Score', item.matchScore]);
+      if (item.section === 'auto-matched' && item.matchScoreGap != null) facts.push(['Match Gap', item.matchScoreGap]);
+      if (item.candidateSetLabel) facts.push(['Candidate Set', item.candidateSetLabel]);
+      if (item.initialSuggestedQid) facts.push(['Initial Suggested Qid', item.initialSuggestedQid]);
+      if (item.currentStagedLocaleCorrectOptionKey) facts.push(['Current Staged Key', item.currentStagedLocaleCorrectOptionKey]);
+      if (item.answerKeyNeedsManualConfirmation && item.answerKeyConfirmationReason) {
+        facts.push(['Answer-Key Check', item.answerKeyConfirmationReason]);
+      }
+      if (item.provisionalTopic) facts.push(['Topic', item.provisionalTopic]);
+      if (Array.isArray(item.provisionalSubtopics) && item.provisionalSubtopics.length > 0) facts.push(['Subtopics', item.provisionalSubtopics.join(', ')]);
+      if (item.section === 'answer-key') {
+        facts.push(['Canonical Prompt', item.canonicalPrompt || '']);
+        facts.push(['Canonical Correct', [item.canonicalCorrectOptionKey, item.canonicalCorrectOptionText].filter(Boolean).join(' · ')]);
+      }
+      return '<article class="item" data-item-id="' + escapeHtml(item.id) + '">' +
+        '<div>' +
+          '<div class="eyebrow">' + escapeHtml(item.section.replace('-', ' ')) + '</div>' +
+          '<h3>' + escapeHtml(item.section === 'answer-key' ? item.qid : (item.itemId || item.sourceImage || 'item')) + '</h3>' +
+          renderImage(item) +
+          '<div class="filename">' + escapeHtml(item.sourceImage || item.itemId || item.qid || '') + '</div>' +
+        '</div>' +
+        '<div class="source-block">' +
+          '<div class="source-card">' +
+            '<div><span class="label">Japanese Prompt</span><p class="prompt">' + escapeHtml(item.promptRawJa || '') + '</p>' + (item.promptGlossEn ? '<div class="gloss">' + escapeHtml(item.promptGlossEn) + '</div>' : '') + '</div>' +
+            renderSourceOptionSection(item, decision) +
+            '<div class="mini-grid">' +
+              facts.map(([label, value]) => '<div class="fact"><span class="label">' + escapeHtml(label) + '</span><div class="value">' + escapeHtml(value || '') + '</div></div>').join('') +
+              (typeMismatch
+                ? '<div class="fact warn"><span class="label">Type Mismatch</span><div class="value">Source inferred ' + escapeHtml(typeMismatch.sourceType) + ', but approved master ' + escapeHtml(typeMismatch.approvedQid || 'qid') + ' is ' + escapeHtml(typeMismatch.approvedMasterType) + '. Rendering and answer-key handling use the approved master type.</div></div>'
+                : '') +
+            '</div>' +
+            (item.section !== 'answer-key'
+              ? '<div><span class="label">Candidates</span><div class="candidate-list">' + (item.topCandidates || []).map((candidate) => renderCandidate(candidate, item.id)).join('') + '</div></div>'
+              : '<div><span class="label">Answer-Key Review</span><div class="fact"><div class="value">' + escapeHtml(item.answerKeyConfirmationReason || 'Manual confirmation required.') + '</div></div></div>') +
+            (item.analysis || item.sourceConceptSlots ? '<details><summary>Advanced Details</summary><pre>' + escapeHtml(JSON.stringify({ analysis: item.analysis || null, sourceConceptSlots: item.sourceConceptSlots || null }, null, 2)) + '</pre></details>' : '') +
+          '</div>' +
+        '</div>' +
+        renderDecisionPanel(item, decision) +
+      '</article>';
+    }
+
+    function renderSection(sectionId, items) {
+      const target = document.querySelector('[data-section-list="' + sectionId + '"]');
+      target.innerHTML = items.map((item) => renderCard(item)).join('');
+    }
+
+    function syncDecisionUi(id) {
+      const item = ITEMS_BY_ID.get(id);
+      const decision = getDecision(id);
+      if (!item || !decision) {
+        return;
+      }
+
+      const modeName = 'mode-' + id;
+      const approveRadio = document.querySelector('input[name=' + JSON.stringify(modeName) + '][value="approve"]');
+      const newRadio = document.querySelector('input[name=' + JSON.stringify(modeName) + '][value="new"]');
+      const unresolvedRadio = document.querySelector('input[name=' + JSON.stringify(modeName) + '][value="unresolved"]');
+
+      if (approveRadio) {
+        approveRadio.checked = Boolean(decision.approvedQid);
+      }
+      if (newRadio) {
+        newRadio.checked = Boolean(!decision.approvedQid && decision.createNewQuestion);
+      }
+      if (unresolvedRadio) {
+        unresolvedRadio.checked = Boolean(!decision.approvedQid && !decision.createNewQuestion && decision.keepUnresolved);
+      }
+
+      const answerKeyLabel = document.querySelector('[data-answer-key-label-for=' + JSON.stringify(id) + ']');
+      if (answerKeyLabel) {
+        answerKeyLabel.textContent = 'Locale Answer Key' + (
+          itemNeedsStructuredAnswerKey(item, decision)
+            ? ' (required for manual qid change)'
+            : ' (optional)'
+        );
+      }
+
+      const answerKeyNote = document.querySelector('[data-answer-key-note-for=' + JSON.stringify(id) + ']');
+      if (answerKeyNote) {
+        answerKeyNote.innerHTML = renderStructuredAnswerKeyNote(item, decision);
+      }
+    }
+
+    function clampLightboxZoom(value) {
+      return Math.min(lightboxState.maxZoom, Math.max(lightboxState.minZoom, value));
+    }
+
+    function updateLightboxControls() {
+      const percent = Math.round(lightboxState.zoom * 100);
+      LIGHTBOX_ZOOM_VALUE.textContent = percent + '%';
+      LIGHTBOX_ZOOM_IN.disabled = lightboxState.zoom >= lightboxState.maxZoom - 0.001;
+      LIGHTBOX_ZOOM_OUT.disabled = lightboxState.zoom <= lightboxState.minZoom + 0.001;
+      const zoomed = lightboxState.zoom > lightboxState.fitZoom + 0.01;
+      LIGHTBOX_BODY.classList.toggle('is-zoomed', zoomed);
+      LIGHTBOX_STAGE.classList.toggle('is-draggable', zoomed && !LIGHTBOX_IMAGE.hidden);
+    }
+
+    function updateLightboxImageDimensions() {
+      if (!lightboxState.naturalWidth || LIGHTBOX_IMAGE.hidden) {
+        return;
+      }
+
+      LIGHTBOX_IMAGE.style.width = Math.max(48, Math.round(lightboxState.naturalWidth * lightboxState.zoom)) + 'px';
+      LIGHTBOX_IMAGE.style.height = 'auto';
+      updateLightboxControls();
+    }
+
+    function buildLightboxAnchor(clientX, clientY) {
+      const imageRect = LIGHTBOX_IMAGE.getBoundingClientRect();
+      if (!imageRect.width || !imageRect.height) {
+        return null;
+      }
+
+      const relativeX = Math.min(1, Math.max(0, (clientX - imageRect.left) / imageRect.width));
+      const relativeY = Math.min(1, Math.max(0, (clientY - imageRect.top) / imageRect.height));
+      return { clientX, clientY, relativeX, relativeY };
+    }
+
+    function applyLightboxZoom(nextZoom, options = {}) {
+      if (!lightboxState.naturalWidth) {
+        return;
+      }
+
+      const clamped = clampLightboxZoom(nextZoom);
+      lightboxState.zoom = clamped;
+      updateLightboxImageDimensions();
+
+      const anchor = options.anchor || null;
+      if (anchor) {
+        requestAnimationFrame(() => {
+          const imageRect = LIGHTBOX_IMAGE.getBoundingClientRect();
+          const targetX = imageRect.left + (imageRect.width * anchor.relativeX);
+          const targetY = imageRect.top + (imageRect.height * anchor.relativeY);
+          LIGHTBOX_BODY.scrollLeft += targetX - anchor.clientX;
+          LIGHTBOX_BODY.scrollTop += targetY - anchor.clientY;
+        });
+      }
+    }
+
+    function computeFitZoom() {
+      if (!lightboxState.naturalWidth || !lightboxState.naturalHeight) {
+        return 1;
+      }
+
+      const viewportWidth = Math.max(1, LIGHTBOX_BODY.clientWidth - 16);
+      const viewportHeight = Math.max(1, LIGHTBOX_BODY.clientHeight - 16);
+      return Math.min(
+        1,
+        viewportWidth / lightboxState.naturalWidth,
+        viewportHeight / lightboxState.naturalHeight,
+      );
+    }
+
+    function fitLightboxImage() {
+      if (!lightboxState.naturalWidth) {
+        return;
+      }
+
+      lightboxState.fitZoom = computeFitZoom();
+      applyLightboxZoom(lightboxState.fitZoom);
+      LIGHTBOX_BODY.scrollLeft = 0;
+      LIGHTBOX_BODY.scrollTop = 0;
+    }
+
+    function openLightbox(src, altText, caption) {
+      if (!src) {
+        return;
+      }
+
+      lightboxReturnFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+      LIGHTBOX.hidden = false;
+      LIGHTBOX_TITLE.textContent = caption || altText || src;
+      LIGHTBOX_PATH.textContent = src;
+      LIGHTBOX_STAGE.hidden = false;
+      LIGHTBOX_FALLBACK.hidden = true;
+      LIGHTBOX_IMAGE.hidden = false;
+      LIGHTBOX_IMAGE.style.width = '';
+      LIGHTBOX_IMAGE.style.height = '';
+      lightboxState.zoom = 1;
+      lightboxState.fitZoom = 1;
+      lightboxState.naturalWidth = 0;
+      lightboxState.naturalHeight = 0;
+      updateLightboxControls();
+      LIGHTBOX_IMAGE.src = src;
+      LIGHTBOX_IMAGE.alt = altText || caption || 'Image preview';
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeLightbox() {
+      if (LIGHTBOX.hidden) {
+        return;
+      }
+
+      LIGHTBOX.hidden = true;
+      LIGHTBOX_IMAGE.removeAttribute('src');
+      LIGHTBOX_IMAGE.alt = '';
+      LIGHTBOX_IMAGE.style.width = '';
+      LIGHTBOX_IMAGE.style.height = '';
+      LIGHTBOX_IMAGE.hidden = false;
+      LIGHTBOX_STAGE.hidden = false;
+      LIGHTBOX_STAGE.classList.remove('is-dragging', 'is-draggable');
+      LIGHTBOX_BODY.classList.remove('is-zoomed');
+      LIGHTBOX_FALLBACK.hidden = true;
+      LIGHTBOX_TITLE.textContent = '';
+      LIGHTBOX_PATH.textContent = '';
+      lightboxDrag = null;
+      lightboxState.zoom = 1;
+      lightboxState.fitZoom = 1;
+      lightboxState.naturalWidth = 0;
+      lightboxState.naturalHeight = 0;
+      document.body.style.overflow = '';
+
+      if (lightboxReturnFocus && typeof lightboxReturnFocus.focus === 'function') {
+        lightboxReturnFocus.focus({ preventScroll: true });
+      }
+      lightboxReturnFocus = null;
+    }
+
+    function bindEventHandlers() {
+      document.querySelectorAll('[data-lightbox-src]').forEach((button) => {
+        button.addEventListener('click', () => {
+          openLightbox(button.dataset.lightboxSrc, button.dataset.lightboxAlt, button.dataset.lightboxCaption);
+        });
+      });
+
+      document.querySelectorAll('[data-use-qid]').forEach((button) => {
+        button.addEventListener('click', () => useCandidate(button.dataset.useQid, button.dataset.qid));
+      });
+
+      document.querySelectorAll('input[name^="mode-"]').forEach((input) => {
+        input.addEventListener('change', () => setDecisionMode(input.name.replace(/^mode-/, ''), input.value));
+      });
+
+      document.querySelectorAll('[data-approved-qid-for]').forEach((input) => {
+        input.addEventListener('input', () => {
+          const id = input.dataset.approvedQidFor;
+          updateDecision(
+            id,
+            {
+              approvedQid: input.value.trim() || null,
+              createNewQuestion: false,
+              keepUnresolved: false,
+            },
+            { rerender: false },
+          );
+          syncDecisionUi(id);
+        });
+
+        input.addEventListener('change', () => {
+          const id = input.dataset.approvedQidFor;
+          updateDecision(
+            id,
+            {
+              approvedQid: input.value.trim() || null,
+              createNewQuestion: false,
+              keepUnresolved: false,
+            },
+            { preserveContext: false },
+          );
+        });
+      });
+
+      document.querySelectorAll('input[name^="answer-"]').forEach((input) => {
+        input.addEventListener('change', () => {
+          const id = input.name.replace(/^answer-/, '');
+          if (input.value === 'unknown') {
+            updateDecision(id, { confirmedCorrectOptionKey: null, useCurrentStagedAnswerKey: false, answerKeyUnknown: true });
+          } else {
+            updateDecision(id, { confirmedCorrectOptionKey: input.value, useCurrentStagedAnswerKey: false, answerKeyUnknown: false });
+          }
+        });
+      });
+
+      document.querySelectorAll('[data-use-current-answer-key]').forEach((button) => {
+        button.addEventListener('click', () => {
+          const id = button.dataset.useCurrentAnswerKey;
+          const current = getCurrentStagedAnswerKey(id);
+          if (!current) {
+            return;
+          }
+          updateDecision(id, {
+            confirmedCorrectOptionKey: current,
+            useCurrentStagedAnswerKey: true,
+            answerKeyUnknown: false,
+          });
+        });
+      });
+
+      document.querySelectorAll('[data-notes-for]').forEach((textarea) => {
+        textarea.addEventListener('input', () => updateDecision(textarea.dataset.notesFor, { reviewerNotes: textarea.value }, { rerender: false }));
+      });
+
+      document.querySelectorAll('[data-new-topic-for]').forEach((input) => {
+        input.addEventListener('input', () => updateDecision(
+          input.dataset.newTopicFor,
+          { newQuestionProvisionalTopic: input.value.trim() || null },
+          { rerender: false },
+        ));
+      });
+
+      document.querySelectorAll('[data-new-subtopics-for]').forEach((textarea) => {
+        textarea.addEventListener('input', () => updateDecision(textarea.dataset.newSubtopicsFor, {
+          newQuestionProvisionalSubtopics: textarea.value
+            .split(/[,\n]/)
+            .map((entry) => entry.trim())
+            .filter(Boolean),
+        }, { rerender: false }));
+      });
+    }
+
+    LIGHTBOX_FIT.addEventListener('click', () => {
+      fitLightboxImage();
+    });
+
+    LIGHTBOX_ZOOM_IN.addEventListener('click', () => {
+      applyLightboxZoom(lightboxState.zoom * LIGHTBOX_ZOOM_STEP);
+    });
+
+    LIGHTBOX_ZOOM_OUT.addEventListener('click', () => {
+      applyLightboxZoom(lightboxState.zoom / LIGHTBOX_ZOOM_STEP);
+    });
+
+    LIGHTBOX.addEventListener('click', (event) => {
+      if (event.target.closest('[data-lightbox-close]')) {
+        closeLightbox();
+        return;
+      }
+
+      if (event.target === LIGHTBOX || event.target.classList.contains('lightbox-backdrop')) {
+        closeLightbox();
+      }
+    });
+
+    LIGHTBOX_STAGE.addEventListener('click', (event) => {
+      if (event.target === LIGHTBOX_STAGE && !lightboxDrag?.moved) {
+        closeLightbox();
+      }
+    });
+
+    LIGHTBOX_IMAGE.addEventListener('load', () => {
+      lightboxState.naturalWidth = LIGHTBOX_IMAGE.naturalWidth || 0;
+      lightboxState.naturalHeight = LIGHTBOX_IMAGE.naturalHeight || 0;
+      fitLightboxImage();
+    });
+
+    LIGHTBOX_IMAGE.addEventListener('error', () => {
+      LIGHTBOX_IMAGE.hidden = true;
+      LIGHTBOX_STAGE.hidden = true;
+      LIGHTBOX_FALLBACK.hidden = false;
+      updateLightboxControls();
+    });
+
+    LIGHTBOX_IMAGE.addEventListener('dblclick', (event) => {
+      event.preventDefault();
+      const anchor = buildLightboxAnchor(event.clientX, event.clientY);
+      const targetZoom = lightboxState.zoom > (lightboxState.fitZoom * 1.4)
+        ? lightboxState.fitZoom
+        : Math.max(1, lightboxState.fitZoom * 2);
+      applyLightboxZoom(targetZoom, { anchor });
+    });
+
+    LIGHTBOX_BODY.addEventListener('wheel', (event) => {
+      if (LIGHTBOX.hidden || !(event.metaKey || event.ctrlKey)) {
+        return;
+      }
+
+      event.preventDefault();
+      const anchor = buildLightboxAnchor(event.clientX, event.clientY);
+      const factor = event.deltaY < 0 ? LIGHTBOX_ZOOM_STEP : (1 / LIGHTBOX_ZOOM_STEP);
+      applyLightboxZoom(lightboxState.zoom * factor, { anchor });
+    }, { passive: false });
+
+    LIGHTBOX_STAGE.addEventListener('pointerdown', (event) => {
+      if (LIGHTBOX.hidden || event.button !== 0 || lightboxState.zoom <= lightboxState.fitZoom + 0.01) {
+        return;
+      }
+
+      lightboxDrag = {
+        pointerId: event.pointerId,
+        startX: event.clientX,
+        startY: event.clientY,
+        startScrollLeft: LIGHTBOX_BODY.scrollLeft,
+        startScrollTop: LIGHTBOX_BODY.scrollTop,
+        moved: false,
+      };
+      LIGHTBOX_STAGE.classList.add('is-dragging');
+      event.preventDefault();
+    });
+
+    LIGHTBOX_STAGE.addEventListener('pointermove', (event) => {
+      if (!lightboxDrag || event.pointerId !== lightboxDrag.pointerId) {
+        return;
+      }
+
+      const deltaX = event.clientX - lightboxDrag.startX;
+      const deltaY = event.clientY - lightboxDrag.startY;
+      if (Math.abs(deltaX) > 2 || Math.abs(deltaY) > 2) {
+        lightboxDrag.moved = true;
+      }
+      LIGHTBOX_BODY.scrollLeft = lightboxDrag.startScrollLeft - deltaX;
+      LIGHTBOX_BODY.scrollTop = lightboxDrag.startScrollTop - deltaY;
+    });
+
+    function clearLightboxDrag(event) {
+      if (!lightboxDrag || (event && event.pointerId !== lightboxDrag.pointerId)) {
+        return;
+      }
+
+      LIGHTBOX_STAGE.classList.remove('is-dragging');
+      lightboxDrag = null;
+    }
+
+    LIGHTBOX_STAGE.addEventListener('pointerup', clearLightboxDrag);
+    LIGHTBOX_STAGE.addEventListener('pointercancel', clearLightboxDrag);
+    LIGHTBOX_STAGE.addEventListener('pointerleave', clearLightboxDrag);
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && !LIGHTBOX.hidden) {
+        event.preventDefault();
+        closeLightbox();
+      }
+    });
+
+    window.addEventListener('resize', () => {
+      if (LIGHTBOX.hidden || !lightboxState.naturalWidth) {
+        return;
+      }
+
+      const wasFit = Math.abs(lightboxState.zoom - lightboxState.fitZoom) < 0.02;
+      lightboxState.fitZoom = computeFitZoom();
+      if (wasFit) {
+        fitLightboxImage();
+      } else {
+        updateLightboxControls();
+      }
+    });
+
+    function render(options = {}) {
+      const context = options.preserveContext ? captureRenderContext() : null;
+      VISIBLE_SECTIONS.forEach((sectionId) => {
+        const target = document.querySelector('[data-section-list="' + sectionId + '"]');
+        if (!target) {
+          return;
+        }
+        renderSection(sectionId, ITEMS.filter((item) => item.section === sectionId));
+      });
+
+      bindEventHandlers();
+      restoreRenderContext(context);
+    }
+
+    document.getElementById('export-json').addEventListener('click', exportJson);
+    document.getElementById('reset').addEventListener('click', () => {
+      state = clone(INITIAL_DECISIONS);
+      saveState();
+      render();
+    });
+
+    render();
+  </script>
+</body>
+</html>

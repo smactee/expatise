@@ -1,0 +1,658 @@
+{
+  "meta": {
+    "locale": "ja",
+    "generatedAt": "2026-04-11T15:13:25.413Z",
+    "dataset": "2023-test1",
+    "sourceRetroDecisionPaths": [
+      "qbank-tools/generated/staging/ja-batch-001-retro-auto-workbench-decisions.json",
+      "qbank-tools/generated/staging/ja-batch-002-retro-auto-workbench-decisions.json",
+      "qbank-tools/generated/staging/ja-batch-003-retro-auto-workbench-decisions.json"
+    ],
+    "retroReviewedItemCount": 21,
+    "changedQidCount": 4,
+    "stagingOnly": true,
+    "note": "Retro auto-review correction preview built only from pre-batch-004 Japanese retro auto-workbench decisions."
+  },
+  "questions": {
+    "q0447": {
+      "prompt": "免許証に記されている運転者の個人情報が変わる場合、次のどの期間内に免許更新を申請すべきか。",
+      "explanation": "",
+      "sourceMode": "retro-auto-review-correction",
+      "confidence": "retro-reviewed",
+      "reviewStatus": "retro-corrected-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 17.50.30.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 17.50.30.png",
+      "reviewerNotes": "",
+      "promptRawJa": "免許証に記されている運転者の個人情報が変わる場合、次のどの期間内に免許更新を申請すべきか。",
+      "promptGlossEn": "If the personal information of the driver recorded on the license changes, within which of the following periods should you apply for license renewal?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English master letter.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-003",
+        "approvedQid": "q0447",
+        "approvalSource": "retro-auto-review"
+      },
+      "options": {
+        "q0447_o1": "D 30日",
+        "q0447_o2": "C 40日",
+        "q0447_o3": "B 50日",
+        "q0447_o4": "A 60日"
+      },
+      "optionsRawJa": [
+        "A 60日",
+        "B 50日",
+        "C 40日",
+        "D 30日"
+      ],
+      "optionsGlossEn": [
+        "A: 60 days",
+        "B: 50 days",
+        "C: 40 days",
+        "D: 30 days"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A 60日",
+          "sourceTextBody": "60日",
+          "sourceGlossEn": "A: 60 days",
+          "canonicalOptionId": "q0447_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "60 days",
+          "alignmentScore": 1,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B 50日",
+          "sourceTextBody": "50日",
+          "sourceGlossEn": "B: 50 days",
+          "canonicalOptionId": "q0447_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "50 days",
+          "alignmentScore": 1,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C 40日",
+          "sourceTextBody": "40日",
+          "sourceGlossEn": "C: 40 days",
+          "canonicalOptionId": "q0447_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "40 days",
+          "alignmentScore": 1,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D 30日",
+          "sourceTextBody": "30日",
+          "sourceGlossEn": "D: 30 days",
+          "canonicalOptionId": "q0447_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "30 days",
+          "alignmentScore": 1,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A 60日",
+          "sourceTextBody": "60日",
+          "sourceGlossEn": "A: 60 days",
+          "canonicalOptionId": "q0447_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "60 days",
+          "alignmentScore": 1,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B 50日",
+          "sourceTextBody": "50日",
+          "sourceGlossEn": "B: 50 days",
+          "canonicalOptionId": "q0447_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "50 days",
+          "alignmentScore": 1,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C 40日",
+          "sourceTextBody": "40日",
+          "sourceGlossEn": "C: 40 days",
+          "canonicalOptionId": "q0447_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "40 days",
+          "alignmentScore": 1,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D 30日",
+          "sourceTextBody": "30日",
+          "sourceGlossEn": "D: 30 days",
+          "canonicalOptionId": "q0447_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "30 days",
+          "alignmentScore": 1,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        }
+      ],
+      "localeCorrectOptionKey": "D",
+      "canonicalCorrectOptionId": "q0447_o1",
+      "canonicalCorrectOptionKey": "A",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed via retro auto-review on 2026-04-11T15:13:25.409Z.",
+      "correctOptionAlignment": {
+        "sourceKey": "D",
+        "canonicalOptionId": "q0447_o1",
+        "canonicalOptionKey": "A",
+        "sourceText": "D 30日",
+        "sourceGlossEn": "D: 30 days",
+        "canonicalOptionText": "30 days",
+        "alignmentScore": 1,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-11T15:13:25.409Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ja-batch-003-retro-auto-workbench-decisions.json",
+      "answerKeyReviewerNotes": ""
+    },
+    "q0595": {
+      "prompt": "正面エアバッグは次のなかのどれと組み合わせることで十分な保護作用を得られるか。",
+      "explanation": "",
+      "sourceMode": "retro-auto-review-correction",
+      "confidence": "retro-reviewed",
+      "reviewStatus": "retro-corrected-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 17.50.33.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 17.50.33.png",
+      "reviewerNotes": "",
+      "promptRawJa": "正面エアバッグは次のなかのどれと組み合わせることで十分な保護作用を得られるか。",
+      "promptGlossEn": "Which of the following should be combined with a front airbag to provide sufficient protection?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English master letter.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-003",
+        "approvedQid": "q0595",
+        "approvalSource": "retro-auto-review"
+      },
+      "options": {
+        "q0595_o1": "B アンチロック・ブレーキシステム（ABS）",
+        "q0595_o2": "A シートベルト",
+        "q0595_o3": "C ヘッドレスト",
+        "q0595_o4": "D 安全ガラス"
+      },
+      "optionsRawJa": [
+        "A シートベルト",
+        "B アンチロック・ブレーキシステム（ABS）",
+        "C ヘッドレスト",
+        "D 安全ガラス"
+      ],
+      "optionsGlossEn": [
+        "A Seat belt",
+        "B Anti-lock braking system (ABS)",
+        "C Headrest",
+        "D Safety glass"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A シートベルト",
+          "sourceTextBody": "シートベルト",
+          "sourceGlossEn": "A Seat belt",
+          "canonicalOptionId": "q0595_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "seat belt",
+          "alignmentScore": 1,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B アンチロック・ブレーキシステム（ABS）",
+          "sourceTextBody": "アンチロック・ブレーキシステム（ABS）",
+          "sourceGlossEn": "B Anti-lock braking system (ABS)",
+          "canonicalOptionId": "q0595_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "ABS system",
+          "alignmentScore": 0.47058823529411764,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C ヘッドレスト",
+          "sourceTextBody": "ヘッドレスト",
+          "sourceGlossEn": "C Headrest",
+          "canonicalOptionId": "q0595_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "safety pillow of the chair",
+          "alignmentScore": 0,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D 安全ガラス",
+          "sourceTextBody": "安全ガラス",
+          "sourceGlossEn": "D Safety glass",
+          "canonicalOptionId": "q0595_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "safety glasses",
+          "alignmentScore": 1,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A シートベルト",
+          "sourceTextBody": "シートベルト",
+          "sourceGlossEn": "A Seat belt",
+          "canonicalOptionId": "q0595_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "seat belt",
+          "alignmentScore": 1,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B アンチロック・ブレーキシステム（ABS）",
+          "sourceTextBody": "アンチロック・ブレーキシステム（ABS）",
+          "sourceGlossEn": "B Anti-lock braking system (ABS)",
+          "canonicalOptionId": "q0595_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "ABS system",
+          "alignmentScore": 0.47058823529411764,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C ヘッドレスト",
+          "sourceTextBody": "ヘッドレスト",
+          "sourceGlossEn": "C Headrest",
+          "canonicalOptionId": "q0595_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "safety pillow of the chair",
+          "alignmentScore": 0,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D 安全ガラス",
+          "sourceTextBody": "安全ガラス",
+          "sourceGlossEn": "D Safety glass",
+          "canonicalOptionId": "q0595_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "safety glasses",
+          "alignmentScore": 1,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "A",
+      "canonicalCorrectOptionId": "q0595_o2",
+      "canonicalCorrectOptionKey": "B",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed via retro auto-review on 2026-04-11T15:13:25.413Z.",
+      "correctOptionAlignment": {
+        "sourceKey": "A",
+        "canonicalOptionId": "q0595_o2",
+        "canonicalOptionKey": "B",
+        "sourceText": "A シートベルト",
+        "sourceGlossEn": "A Seat belt",
+        "canonicalOptionText": "seat belt",
+        "alignmentScore": 1,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-11T15:13:25.413Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ja-batch-003-retro-auto-workbench-decisions.json",
+      "answerKeyReviewerNotes": ""
+    },
+    "q0688": {
+      "prompt": "この標識の示す意味はどれか。",
+      "explanation": "",
+      "sourceMode": "retro-auto-review-correction",
+      "confidence": "retro-reviewed",
+      "reviewStatus": "retro-corrected-preview",
+      "sourceImage": "screenshots/1.png",
+      "sourceItemId": "screenshots/1.png",
+      "reviewerNotes": "",
+      "promptRawJa": "この標識の示す意味はどれか。",
+      "promptGlossEn": "What does this sign mean?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English master letter.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-001",
+        "approvedQid": "q0688",
+        "approvalSource": "retro-auto-review"
+      },
+      "options": {
+        "q0688_o1": "B 高速道路の通報電話",
+        "q0688_o2": "A 高速道路の公衆電話",
+        "q0688_o3": "C 高速道路の緊急電話",
+        "q0688_o4": "D 高速道路への救援電話"
+      },
+      "optionsRawJa": [
+        "A 高速道路の公衆電話",
+        "B 高速道路の通報電話",
+        "C 高速道路の緊急電話",
+        "D 高速道路への救援電話"
+      ],
+      "optionsGlossEn": [
+        "A. Highway public telephone",
+        "B. Highway reporting telephone",
+        "C. Highway emergency telephone",
+        "D. Highway rescue telephone"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A 高速道路の公衆電話",
+          "sourceTextBody": "高速道路の公衆電話",
+          "sourceGlossEn": "A. Highway public telephone",
+          "canonicalOptionId": "q0688_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "public pho ne on expressway 66",
+          "alignmentScore": 0.22857142857142854,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B 高速道路の通報電話",
+          "sourceTextBody": "高速道路の通報電話",
+          "sourceGlossEn": "B. Highway reporting telephone",
+          "canonicalOptionId": "q0688_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "police call number on expressway",
+          "alignmentScore": 0.20775193798449612,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C 高速道路の緊急電話",
+          "sourceTextBody": "高速道路の緊急電話",
+          "sourceGlossEn": "C. Highway emergency telephone",
+          "canonicalOptionId": "q0688_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "emergency call number on expressway",
+          "alignmentScore": 0.5448275862068965,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D 高速道路への救援電話",
+          "sourceTextBody": "高速道路への救援電話",
+          "sourceGlossEn": "D. Highway rescue telephone",
+          "canonicalOptionId": "q0688_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "rescue call number on expressway",
+          "alignmentScore": 0.22745098039215686,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A 高速道路の公衆電話",
+          "sourceTextBody": "高速道路の公衆電話",
+          "sourceGlossEn": "A. Highway public telephone",
+          "canonicalOptionId": "q0688_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "public pho ne on expressway 66",
+          "alignmentScore": 0.22857142857142854,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B 高速道路の通報電話",
+          "sourceTextBody": "高速道路の通報電話",
+          "sourceGlossEn": "B. Highway reporting telephone",
+          "canonicalOptionId": "q0688_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "police call number on expressway",
+          "alignmentScore": 0.20775193798449612,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C 高速道路の緊急電話",
+          "sourceTextBody": "高速道路の緊急電話",
+          "sourceGlossEn": "C. Highway emergency telephone",
+          "canonicalOptionId": "q0688_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "emergency call number on expressway",
+          "alignmentScore": 0.5448275862068965,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D 高速道路への救援電話",
+          "sourceTextBody": "高速道路への救援電話",
+          "sourceGlossEn": "D. Highway rescue telephone",
+          "canonicalOptionId": "q0688_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "rescue call number on expressway",
+          "alignmentScore": 0.22745098039215686,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        }
+      ],
+      "localeCorrectOptionKey": "D",
+      "canonicalCorrectOptionId": "q0688_o4",
+      "canonicalCorrectOptionKey": "D",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed via retro auto-review on 2026-04-11T15:13:25.373Z.",
+      "correctOptionAlignment": {
+        "sourceKey": "D",
+        "canonicalOptionId": "q0688_o4",
+        "canonicalOptionKey": "D",
+        "sourceText": "D 高速道路への救援電話",
+        "sourceGlossEn": "D. Highway rescue telephone",
+        "canonicalOptionText": "rescue call number on expressway",
+        "alignmentScore": 0.22745098039215686,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-11T15:13:25.373Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ja-batch-001-retro-auto-workbench-decisions.json",
+      "answerKeyReviewerNotes": ""
+    },
+    "q0764": {
+      "prompt": "この標識は何を示しているか。",
+      "explanation": "",
+      "sourceMode": "retro-auto-review-correction",
+      "confidence": "retro-reviewed",
+      "reviewStatus": "retro-corrected-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 17.49.39.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 17.49.39.png",
+      "reviewerNotes": "",
+      "promptRawJa": "この標識は何を示しているか。",
+      "promptGlossEn": "What does this road sign indicate?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English master letter.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-001",
+        "approvedQid": "q0764",
+        "approvalSource": "retro-auto-review"
+      },
+      "options": {
+        "q0764_o1": "C 十字交差点あり",
+        "q0764_o2": "D ロータリーあり",
+        "q0764_o3": "A T形道路交差点あり",
+        "q0764_o4": "B Y形交差点あり"
+      },
+      "optionsRawJa": [
+        "A T形道路交差点あり",
+        "B Y形交差点あり",
+        "C 十字交差点あり",
+        "D ロータリーあり"
+      ],
+      "optionsGlossEn": [
+        "A T-shaped intersection ahead",
+        "B Y-shaped intersection ahead",
+        "C Cross (four-way) intersection ahead",
+        "D Roundabout ahead"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A T形道路交差点あり",
+          "sourceTextBody": "T形道路交差点あり",
+          "sourceGlossEn": "A T-shaped intersection ahead",
+          "canonicalOptionId": "q0764_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "T-shaped intersection",
+          "alignmentScore": 0.6464285714285714,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B Y形交差点あり",
+          "sourceTextBody": "Y形交差点あり",
+          "sourceGlossEn": "B Y-shaped intersection ahead",
+          "canonicalOptionId": "q0764_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "Y-shaped intersection",
+          "alignmentScore": 0.6464285714285714,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C 十字交差点あり",
+          "sourceTextBody": "十字交差点あり",
+          "sourceGlossEn": "C Cross (four-way) intersection ahead",
+          "canonicalOptionId": "q0764_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "intersection",
+          "alignmentScore": 0.29285714285714287,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D ロータリーあり",
+          "sourceTextBody": "ロータリーあり",
+          "sourceGlossEn": "D Roundabout ahead",
+          "canonicalOptionId": "q0764_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "ring intersection",
+          "alignmentScore": 0,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A T形道路交差点あり",
+          "sourceTextBody": "T形道路交差点あり",
+          "sourceGlossEn": "A T-shaped intersection ahead",
+          "canonicalOptionId": "q0764_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "T-shaped intersection",
+          "alignmentScore": 0.6464285714285714,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B Y形交差点あり",
+          "sourceTextBody": "Y形交差点あり",
+          "sourceGlossEn": "B Y-shaped intersection ahead",
+          "canonicalOptionId": "q0764_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "Y-shaped intersection",
+          "alignmentScore": 0.6464285714285714,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C 十字交差点あり",
+          "sourceTextBody": "十字交差点あり",
+          "sourceGlossEn": "C Cross (four-way) intersection ahead",
+          "canonicalOptionId": "q0764_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "intersection",
+          "alignmentScore": 0.29285714285714287,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D ロータリーあり",
+          "sourceTextBody": "ロータリーあり",
+          "sourceGlossEn": "D Roundabout ahead",
+          "canonicalOptionId": "q0764_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "ring intersection",
+          "alignmentScore": 0,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "C",
+      "canonicalCorrectOptionId": "q0764_o1",
+      "canonicalCorrectOptionKey": "A",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed via retro auto-review on 2026-04-11T15:13:25.380Z.",
+      "correctOptionAlignment": {
+        "sourceKey": "C",
+        "canonicalOptionId": "q0764_o1",
+        "canonicalOptionKey": "A",
+        "sourceText": "C 十字交差点あり",
+        "sourceGlossEn": "C Cross (four-way) intersection ahead",
+        "canonicalOptionText": "intersection",
+        "alignmentScore": 0.29285714285714287,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-11T15:13:25.380Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ja-batch-001-retro-auto-workbench-decisions.json",
+      "answerKeyReviewerNotes": ""
+    }
+  }
+}

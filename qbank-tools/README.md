@@ -22,6 +22,12 @@ Extract screenshot intake from a batch directory:
 npm run extract-screenshot-intake -- --lang ko --batch batch-001
 ```
 
+Start the next Japanese batch after adding screenshots to `imports/ja/batch-002/screenshots/`:
+
+```bash
+npm run extract-screenshot-intake -- --lang ja --batch batch-002
+```
+
 Notes:
 
 - Put the temporary screenshot files directly inside `imports/ko/batch-001/` or a subfolder under that batch.
@@ -47,6 +53,34 @@ Generate the self-contained review artifact:
 npm run generate-batch-review-artifact -- --lang ja --batch batch-001
 ```
 
+Preferred compressed workflow for new batches:
+
+```bash
+npm run extract-screenshot-intake -- --lang ja --batch batch-003
+npm run validate-screenshot-intake -- --lang ja --batch batch-003
+npm run process-screenshot-batch -- --lang ja --batch batch-003
+npm run validate-localization-batch -- --lang ja --batch batch-003
+npm run generate-batch-workbench -- --lang ja --batch batch-003
+```
+
+After reviewing the single workbench HTML and exporting the unified decisions JSON:
+
+```bash
+npm run apply-batch-workbench-decisions -- --lang ja --batch batch-003
+```
+
+Notes:
+
+- The preferred workbench page is written to `qbank-tools/generated/reports/<lang>-<batch>-workbench.html`.
+- The unified editable/exported decisions file is `qbank-tools/generated/staging/<lang>-<batch>-workbench-decisions.json`.
+- One apply command stages reviewed items, applies answer-key confirmations, applies unresolved rescues, keeps new-question candidates separate, and rebuilds the full existing-qid dry-run merge set.
+- The final dry-run outputs remain:
+  - `qbank-tools/generated/staging/translations.<lang>.<batch>.full.preview.json`
+  - `qbank-tools/generated/staging/translations.<lang>.<batch>.full.merge-dry-run.json`
+  - `qbank-tools/generated/reports/full-batch-merge-review-<lang>-<batch>.json`
+  - `qbank-tools/generated/reports/full-batch-merge-review-<lang>-<batch>.md`
+- The older multi-page flow remains available for compatibility, but the unified workbench is the preferred path for new batches.
+
 New-question candidate workflow:
 
 ```bash
@@ -65,6 +99,19 @@ Notes:
   - `qbank-tools/generated/staging/new-question-candidates.<lang>.<batch>.json`
 - Running `prepare-new-question-promotion-preview` writes `qbank-tools/generated/staging/new-question-promotion-preview.<lang>.<batch>.json` with preview-only `qx....` ids and appended master numbers.
 - Running `build-localization-coverage-report` writes `qbank-tools/generated/reports/localization-coverage-matrix.<lang>.<batch>.json`.
+
+Completed-batch cleanup:
+
+```bash
+npm run cleanup-localization-batch -- --lang ja --batch batch-001 --apply true
+```
+
+Notes:
+
+- Active audit/source files stay in place under `imports/<lang>/<batch>/`.
+- Final review decisions, final answer-key decisions, final production merge reports, and `public/qbank/.../translations.<lang>.json` stay active.
+- Regenerable review HTML, templates, dry-run previews, and intermediate batch reports are archived to `qbank-tools/generated/archive/<lang>/<batch>/`.
+- Only obvious junk such as `.DS_Store` is deleted.
 
 Manual review before Phase 2:
 

@@ -1,0 +1,1105 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>JA batch-004 Workbench</title>
+  <style>
+    :root {
+      --bg: #f4f0e8;
+      --paper: #fffdf8;
+      --ink: #1f1a17;
+      --muted: #6d6257;
+      --line: #d8cec1;
+      --accent: #165d52;
+      --accent-soft: #e4f2ef;
+      --warn: #8c4f16;
+      --warn-soft: #f8ead7;
+      --note: #4f3b96;
+      --note-soft: #ece8ff;
+      --correct-bg: #e5f3eb;
+      --correct-border: rgba(22, 93, 82, 0.28);
+      --correct-shadow: 0 8px 18px rgba(22, 93, 82, 0.10);
+      --shadow: 0 12px 28px rgba(38, 25, 10, 0.08);
+      --radius: 18px;
+      --mono: "SFMono-Regular", Menlo, Consolas, monospace;
+      --sans: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background:
+        radial-gradient(circle at top left, rgba(22, 93, 82, 0.10), transparent 32%),
+        radial-gradient(circle at top right, rgba(140, 79, 22, 0.10), transparent 28%),
+        var(--bg);
+      color: var(--ink);
+      font-family: var(--sans);
+    }
+    .page {
+      width: min(1460px, calc(100vw - 28px));
+      margin: 22px auto 44px;
+    }
+    .hero, .section, .item {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      box-shadow: var(--shadow);
+    }
+    .hero {
+      padding: 24px 28px;
+      margin-bottom: 18px;
+    }
+    .hero h1 {
+      margin: 0 0 8px;
+      font-size: clamp(28px, 4vw, 42px);
+      line-height: 1;
+    }
+    .hero p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.5;
+    }
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+      margin-top: 18px;
+    }
+    .stat {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 12px 14px;
+      background: #fcf8f1;
+    }
+    .stat strong {
+      display: block;
+      margin-top: 6px;
+      font-size: 24px;
+    }
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      margin-top: 18px;
+    }
+    button {
+      border: 0;
+      border-radius: 999px;
+      padding: 10px 14px;
+      font: inherit;
+      cursor: pointer;
+      background: var(--accent);
+      color: #fff;
+    }
+    button.secondary {
+      background: #e8dfd2;
+      color: var(--ink);
+    }
+    .hint {
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .section {
+      padding: 18px;
+      margin-top: 18px;
+    }
+    .section h2 {
+      margin: 0 0 6px;
+      font-size: 26px;
+    }
+    .section > p {
+      margin: 0;
+      color: var(--muted);
+    }
+    .list {
+      display: grid;
+      gap: 14px;
+      margin-top: 16px;
+    }
+    .item {
+      padding: 14px;
+      display: grid;
+      gap: 14px;
+      grid-template-columns: minmax(260px, 320px) minmax(0, 1fr) 320px;
+      align-items: start;
+    }
+    .item h3 {
+      margin: 0;
+      font-size: 21px;
+      line-height: 1.15;
+    }
+    .eyebrow {
+      color: var(--muted);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 6px;
+    }
+    .image-frame {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      overflow: hidden;
+      background: #f1ebdf;
+      min-height: 180px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .image-frame img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+    .image-fallback {
+      padding: 14px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+      word-break: break-word;
+    }
+    .filename {
+      margin-top: 8px;
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--muted);
+      word-break: break-all;
+    }
+    .source-block, .decision-block {
+      min-width: 0;
+    }
+    .source-card {
+      display: grid;
+      gap: 10px;
+    }
+    .label {
+      display: block;
+      margin-bottom: 4px;
+      color: var(--muted);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    .prompt {
+      font-size: 17px;
+      line-height: 1.45;
+      margin: 0;
+    }
+    .gloss {
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.45;
+    }
+    .options {
+      display: grid;
+      gap: 8px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+    .option {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 9px 11px;
+      background: #fbf7f0;
+    }
+    .option-current {
+      background: var(--correct-bg);
+      border-color: var(--correct-border);
+      box-shadow: var(--correct-shadow);
+      transform: translateY(-1px);
+    }
+    .option-key {
+      display: inline-flex;
+      width: 24px;
+      font-family: var(--mono);
+      color: var(--accent);
+    }
+    .option-current .option-key {
+      font-weight: 800;
+    }
+    .option-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .option-correct-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 8px;
+      border-radius: 999px;
+      border: 1px solid var(--correct-border);
+      background: rgba(22, 93, 82, 0.10);
+      color: var(--accent);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      white-space: nowrap;
+    }
+    .option-gloss {
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .mini-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+    .fact {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #faf5ee;
+      padding: 10px 12px;
+    }
+    .fact.warn {
+      background: var(--warn-soft);
+      border-color: rgba(140, 79, 22, 0.18);
+    }
+    .fact .value {
+      font-size: 14px;
+      line-height: 1.4;
+      word-break: break-word;
+    }
+    .candidate-list {
+      display: grid;
+      gap: 10px;
+    }
+    .candidate {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: #fcf8f1;
+      padding: 12px;
+    }
+    .candidate-head {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+    .candidate-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 9px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      font-size: 12px;
+      background: #f3ede4;
+      color: var(--muted);
+    }
+    .pill.note {
+      background: var(--note-soft);
+      color: var(--note);
+      border-color: rgba(79, 59, 150, 0.18);
+    }
+    .pill.warn {
+      background: var(--warn-soft);
+      color: var(--warn);
+      border-color: rgba(140, 79, 22, 0.18);
+    }
+    .candidate .prompt {
+      font-size: 15px;
+    }
+    .candidate-media {
+      margin-top: 8px;
+    }
+    .candidate-image-frame {
+      min-height: 120px;
+      max-width: 260px;
+      margin-top: 8px;
+    }
+    .candidate .options {
+      margin-top: 8px;
+    }
+    .decision-block {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: #fcf8f1;
+      padding: 14px;
+      position: sticky;
+      top: 14px;
+    }
+    .decision-row {
+      margin-bottom: 12px;
+    }
+    .decision-actions {
+      display: grid;
+      gap: 8px;
+    }
+    .decision-actions label, .answer-key-choices label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 8px 10px;
+      background: #fff;
+      cursor: pointer;
+    }
+    .decision-actions input, .answer-key-choices input {
+      margin: 0;
+    }
+    input[type="text"], textarea {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 10px 12px;
+      font: inherit;
+      background: #fff;
+    }
+    textarea {
+      min-height: 74px;
+      resize: vertical;
+    }
+    .answer-key-choices {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+    }
+    .answer-key-toolbar {
+      display: flex;
+      gap: 8px;
+      margin-top: 8px;
+    }
+    .answer-key-toolbar button {
+      padding: 8px 10px;
+      font-size: 13px;
+    }
+    details {
+      margin-top: 10px;
+    }
+    summary {
+      cursor: pointer;
+      color: var(--muted);
+      font-size: 13px;
+    }
+    pre {
+      white-space: pre-wrap;
+      font-family: var(--mono);
+      font-size: 12px;
+      background: #f6f0e6;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 10px;
+      overflow: auto;
+    }
+    @media (max-width: 1100px) {
+      .item {
+        grid-template-columns: 1fr;
+      }
+      .decision-block {
+        position: static;
+      }
+      .mini-grid {
+        grid-template-columns: 1fr;
+      }
+      .answer-key-choices {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <section class="hero">
+      <h1>JA Batch Workbench</h1>
+      <p>One page for existing-qid review, answer-key confirmation, and unresolved rescue/new-question handling. Export one decisions JSON, then apply everything in one pass.</p>
+      <div class="stats">
+        <div class="stat"><span class="label">Batch</span><strong>batch-004</strong></div>
+        <div class="stat"><span class="label">Dataset</span><strong>2023-test1</strong></div>
+        <div class="stat"><span class="label">Auto-Matched</span><strong>3</strong></div>
+        <div class="stat"><span class="label">Review-Needed</span><strong>12</strong></div>
+        <div class="stat"><span class="label">Unresolved</span><strong>5</strong></div>
+        <div class="stat"><span class="label">Answer-Key Checks</span><strong>0</strong></div>
+      </div>
+      <div class="toolbar">
+        <button id="export-json">Export Decisions JSON</button>
+        <button id="reset" class="secondary">Reset Local Edits</button>
+        <span class="hint">Editable file: <span class="mono">../staging/ja-batch-004-workbench-decisions.json</span></span>
+      </div>
+    </section>
+
+    
+    <section class="section">
+      <h2>Auto-Matched (Quick Review)</h2>
+      <p>3 item(s) auto-matched by the pipeline and surfaced for quick human confirmation.</p>
+      <div class="list" data-section-list="auto-matched"></div>
+    </section>
+  
+    
+    <section class="section">
+      <h2>Review-Needed</h2>
+      <p>12 item(s) that need an approve/new/unresolved decision.</p>
+      <div class="list" data-section-list="review-needed"></div>
+    </section>
+  
+    
+    
+    <section class="section">
+      <h2>Unresolved</h2>
+      <p>5 item(s) that may need rescue, new-question staging, or to remain unresolved.</p>
+      <div class="list" data-section-list="unresolved"></div>
+    </section>
+  
+  </div>
+  <script>
+    const ITEMS = [{"id":"auto-matched:screenshots/Screenshot 2026-04-07 at 17.51.12.png","section":"auto-matched","index":1,"itemId":"screenshots/Screenshot 2026-04-07 at 17.51.12.png","sourceImage":"screenshots/Screenshot 2026-04-07 at 17.51.12.png","screenshotPath":"../../../imports/ja/batch-004/screenshots/Screenshot 2026-04-07 at 17.51.12.png","hasImage":false,"qid":"q0078","number":78,"matchScore":66.748,"matchScoreGap":7.935,"candidateSetLabel":"text-only candidate set","initialSuggestedQid":"q0078","currentStagedLocaleCorrectOptionKey":null,"answerKeyNeedsManualConfirmation":false,"answerKeyConfirmationReason":null,"effectiveQuestionType":"ROW","promptRawJa":"坂を下る場合、適度に速度を控えエンジンを十分し利用し制動する。","promptGlossEn":"When going downhill, you should moderately reduce your speed and fully utilize the engine for braking.","optionsRawJa":["A Yes","B No"],"optionsGlossEn":["Yes","No"],"correctKeyRaw":null,"correctAnswerRaw":null,"ocrConfidence":"high","provisionalTopic":"road-safety","provisionalSubtopics":["road-safety:road-conditions","traffic-signals:road-markings"],"topicConfidence":0.51,"topicSignals":[{"topic":"road-safety","subtopic":"road-safety:road-conditions","signal":"road-condition-or-hazard","weight":1.3},{"topic":"traffic-signals","subtopic":"traffic-signals:road-markings","signal":"road-marking","weight":1.25}],"sourceConceptSlots":{"condition":["downhill"],"context":[],"action":[],"polarity":"positive","signals":[{"slot":"condition","value":"downhill","signal":"downhill"}]},"reason":null,"analysis":{"mode":"standard","effectiveQuestionType":"ROW","declaredQuestionType":"MCQ","booleanChoiceDetected":true,"plausibleShortlist":true,"imageParityApplied":true,"candidateImageParityMode":"text-only candidate set","candidateCountBeforeParity":973,"candidateCountAfterParity":482,"explanation":"Top candidate cleared the review floor but remains review-first."},"recommendedAction":"quick-review-auto-match","topCandidates":[{"qid":"q0078","number":78,"type":"ROW","score":66.748,"scoreGapFromTop":0,"prompt":"When a vehicle goes downhill, the driver should properly control the speed and fully use the engine to brake.","options":[],"correctOptionId":null,"correctOptionKey":null,"correctRow":"R","correctAnswerText":"right / true","hasImage":false,"imagePath":null},{"qid":"q0037","number":37,"type":"ROW","score":58.814,"scoreGapFromTop":7.934,"prompt":"When a vehicle goes downhill, it may fully use the neutral gear and coast.","options":[],"correctOptionId":null,"correctOptionKey":null,"correctRow":"W","correctAnswerText":"wrong / false","hasImage":false,"imagePath":null},{"qid":"q0352","number":352,"type":"ROW","score":56.034,"scoreGapFromTop":10.714,"prompt":"When driving a small vehicle downhill, the driver may coast down by stopping the engine.","options":[],"correctOptionId":null,"correctOptionKey":null,"correctRow":"W","correctAnswerText":"wrong / false","hasImage":false,"imagePath":null},{"qid":"q0086","number":86,"type":"ROW","score":50.762,"scoreGapFromTop":15.986,"prompt":"When a vehicle goes downhill on a mountain road, it is not allowed to overtake.","options":[],"correctOptionId":null,"correctOptionKey":null,"correctRow":"R","correctAnswerText":"right / true","hasImage":false,"imagePath":null}]},{"id":"auto-matched:screenshots/Screenshot 2026-04-07 at 17.51.16 1.png","section":"auto-matched","index":2,"itemId":"screenshots/Screenshot 2026-04-07 at 17.51.16 1.png","sourceImage":"screenshots/Screenshot 2026-04-07 at 17.51.16 1.png","screenshotPath":"../../../imports/ja/batch-004/screenshots/Screenshot 2026-04-07 at 17.51.16 1.png","hasImage":true,"qid":"q0284","number":284,"matchScore":75.534,"matchScoreGap":10.933,"candidateSetLabel":"image-only candidate set","initialSuggestedQid":"q0284","currentStagedLocaleCorrectOptionKey":null,"answerKeyNeedsManualConfirmation":false,"answerKeyConfirmationReason":null,"effectiveQuestionType":"ROW","promptRawJa":"交差点のこの位置にいる場合、速度を上げて通過できる。","promptGlossEn":"If you are at this position in the intersection, you can speed up and pass through.","optionsRawJa":["A Yes","B No"],"optionsGlossEn":["Yes","No"],"correctKeyRaw":null,"correctAnswerRaw":null,"ocrConfidence":"high","provisionalTopic":"proper-driving","provisionalSubtopics":["proper-driving:safe-driving"],"topicConfidence":1,"topicSignals":[{"topic":"proper-driving","subtopic":"proper-driving:safe-driving","signal":"driving-action","weight":1.2}],"sourceConceptSlots":{"condition":[],"context":["intersection"],"action":["accelerate","pass"],"polarity":"positive","signals":[{"slot":"context","value":"intersection","signal":"intersection"},{"slot":"action","value":"accelerate","signal":"accelerate"},{"slot":"action","value":"pass","signal":"pass"}]},"reason":null,"analysis":{"mode":"standard","effectiveQuestionType":"ROW","declaredQuestionType":"MCQ","booleanChoiceDetected":true,"plausibleShortlist":true,"imageParityApplied":true,"candidateImageParityMode":"image-only candidate set","candidateCountBeforeParity":973,"candidateCountAfterParity":491,"explanation":"Top candidate cleared the review floor but remains review-first."},"recommendedAction":"quick-review-auto-match","topCandidates":[{"qid":"q0284","number":284,"type":"ROW","score":75.534,"scoreGapFromTop":0,"prompt":"At this position, you may speed up to pass through the section.","options":[],"correctOptionId":null,"correctOptionKey":null,"correctRow":"W","correctAnswerText":"wrong / false","hasImage":true,"imagePath":"../../../public/qbank/2023-test1/images/img_0f552212d0c9ac073a9b8761e80c71e3.jpeg"},{"qid":"q0635","number":635,"type":"ROW","score":64.602,"scoreGapFromTop":10.932,"prompt":"Speed up and pass when encountering this traffic light at the intersection.","options":[],"correctOptionId":null,"correctOptionKey":null,"correctRow":"W","correctAnswerText":"wrong / false","hasImage":true,"imagePath":"../../../public/qbank/2023-test1/images/img_59fb269d6c8a434da93b16c35bb5ca6b.jpeg"},{"qid":"q0194","number":194,"type":"ROW","score":63.739,"scoreGapFromTop":11.795,"prompt":"You may speed up to go through the intersection in this case.","options":[],"correctOptionId":null,"correctOptionKey":null,"correctRow":"W","correctAnswerText":"wrong / false","hasImage":true,"imagePath":"../../../public/qbank/2023-test1/images/img_2459276275148d3a5a64f032971cec81.jpeg"},{"qid":"q0303","number":303,"type":"ROW","score":62.368,"scoreGapFromTop":13.166,"prompt":"You have the priviledged passing right of way at the intersection in this situation.","options":[],"correctOptionId":null,"correctOptionKey":null,"correctRow":"R","correctAnswerText":"right / true","hasImage":true,"imagePath":"../../../public/qbank/2023-test1/images/img-303.jpg"}]},{"id":"auto-matched:screenshots/Screenshot 2026-04-07 at 17.51.18.png","section":"auto-matched","index":3,"itemId":"screenshots/Screenshot 2026-04-07 at 17.51.18.png","sourceImage":"screenshots/Screenshot 2026-04-07 at 17.51.18.png","screenshotPath":"../../../imports/ja/batch-004/screenshots/Screenshot 2026-04-07 at 17.51.18.png","hasImage":false,"qid":"q0195","number":195,"matchScore":64.342,"matchScoreGap":8.052,"candidateSetLabel":"text-only candidate set","initialSuggestedQid":"q0195","currentStagedLocaleCorrectOptionKey":null,"answerKeyNeedsManualConfirmation":false,"answerKeyConfirmationReason":null,"effectiveQuestionType":"ROW","promptRawJa":"自動車で坂を登る場合、頂上に達しようとするさいに速度を上げクラクションを鳴らす。","promptGlossEn":"When driving a car up a slope, you should increase speed and sound the horn as you approach the top.","optionsRawJa":["A Yes","B No"],"optionsGlossEn":["Yes","No"],"correctKeyRaw":null,"correctAnswerRaw":null,"ocrConfidence":"high","provisionalTopic":"proper-driving","provisionalSubtopics":["proper-driving:safe-driving"],"topicConfidence":1,"topicSignals":[{"topic":"proper-driving","subtopic":"proper-driving:safe-driving","signal":"driving-action","weight":1.2}],"sourceConceptSlots":{"condition":["uphill"],"context":[],"action":["honk"],"polarity":"positive","signals":[{"slot":"condition","value":"uphill","signal":"uphill"},{"slot":"action","value":"honk","signal":"honk"}]},"reason":null,"analysis":{"mode":"standard","effectiveQuestionType":"ROW","declaredQuestionType":"MCQ","booleanChoiceDetected":true,"plausibleShortlist":true,"imageParityApplied":true,"candidateImageParityMode":"text-only candidate set","candidateCountBeforeParity":973,"candidateCountAfterParity":482,"explanation":"Top candidate cleared the review floor but remains review-first."},"recommendedAction":"quick-review-auto-match","topCandidates":[{"qid":"q0195","number":195,"type":"ROW","score":64.342,"scoreGapFromTop":0,"prompt":"When driving a motorized vehicle uphill, you should speed up and honk when you going to reach the top of the slope.","options":[],"correctOptionId":null,"correctOptionKey":null,"correctRow":"W","correctAnswerText":"wrong / false","hasImage":false,"imagePath":null},{"qid":"q0030","number":30,"type":"ROW","score":56.29,"scoreGapFromTop":8.052,"prompt":"When a vehicle goes down a long slope, it should drive at a lower gear and fully use the engine to brake.","options":[],"correctOptionId":null,"correctOptionKey":null,"correctRow":"R","correctAnswerText":"right / true","hasImage":false,"imagePath":null},{"qid":"q0043","number":43,"type":"ROW","score":55.552,"scoreGapFromTop":8.79,"prompt":"When a vehicle goes uphill on a mountain road, it should change to a lower gear in a timely, accurate, and rapid manner so as to avoid a situation in which driving at a higher gear can reduce the power of the engine.","options":[],"correctOptionId":null,"correctOptionKey":null,"correctRow":"R","correctAnswerText":"right / true","hasImage":false,"imagePath":null},{"qid":"q0070","number":70,"type":"ROW","score":54.898,"scoreGapFromTop":9.444,"prompt":"When a vehicle goes uphill, the driver should observe the road conditions and the length of the slope in advance and shift to a lower gear in a timely manner to ensure the vehicle has sufficient power.","options":[],"correctOptionId":null,"correctOptionKey":null,"correctRow":"R","correctAnswerText":"right / true","hasImage":false,"imagePath":null}]},{"id":"review-needed:screenshots/100.png","section":"review-needed","index":1,"itemId":"screenshots/100.png","sourceImage":"screenshots/100.png","screenshotPath":"../../../imports/ja/batch-004/screenshots/100.png","hasImage":true,"candidateSetLabel":"image-only candidate set","initialSuggestedQid":"q0784","currentStagedLocaleCorrectOptionKey":"D","effectiveQuestionType":"MCQ","promptRawJa":"この標識の示す意味はどれか。","promptGlossEn":"What does this sign mean?","optionsRawJa":["工事区間迂回せよ","二方向通行","危険に注意","左右へ迂回せよ"],"optionsGlossEn":["Detour through construction area","Two-way traffic","Caution: Danger","Detour to the left or right"],"correctKeyRaw":"C","correctAnswerRaw":"危険に注意","ocrConfidence":"high","provisionalTopic":"traffic-signals","provisionalSubtopics":["traffic-signals:road-signs"],"topicConfidence":1,"topicSignals":[{"topic":"traffic-signals","subtopic":"traffic-signals:road-signs","signal":"sign-family","weight":1.4}],"sourceConceptSlots":null,"reason":null,"analysis":{"mode":"standard","effectiveQuestionType":"MCQ","declaredQuestionType":"MCQ","booleanChoiceDetected":false,"plausibleShortlist":true,"imageParityApplied":true,"candidateImageParityMode":"image-only candidate set","candidateCountBeforeParity":973,"candidateCountAfterParity":491,"explanation":"Top candidate cleared the review floor but remains review-first."},"recommendedAction":"needs-existing-qid-review","topCandidates":[{"qid":"q0784","number":784,"type":"MCQ","score":74.724,"scoreGapFromTop":0,"prompt":"What’s the meaning of this sign?","options":[{"id":"A","text":"bypass at construction section"},{"id":"B","text":"two-way traffic"},{"id":"C","text":"bypass from left or right side"},{"id":"D","text":"watch for danger"}],"correctOptionId":"q0784_o3","correctOptionKey":"C","correctRow":null,"correctAnswerText":"bypass from left or right side","hasImage":true,"imagePath":"../../../public/qbank/2023-test1/images/p80-784.jpg"},{"qid":"q0866","number":866,"type":"MCQ","score":56.933,"scoreGapFromTop":17.791,"prompt":"What’s the meaning of this sign?","options":[{"id":"A","text":"watch for danger"},{"id":"B","text":"bypass from right side"},{"id":"C","text":"bypass from left side"},{"id":"D","text":"one-way pass"}],"correctOptionId":"q0866_o3","correctOptionKey":"C","correctRow":null,"correctAnswerText":"bypass from left side","hasImage":true,"imagePath":"../../../public/qbank/2023-test1/images/img_3ca266799107f4f7052db039c893c13d.jpeg"},{"qid":"q0716","number":716,"type":"MCQ","score":55.534,"scoreGapFromTop":19.19,"prompt":"What’s the meaning of this sign?","options":[{"id":"A","text":"no U-turn at intersection"},{"id":"B","text":"no changing lane from both sides"},{"id":"C","text":"no left or right turn"},{"id":"D","text":"no going straight"}],"correctOptionId":"q0716_o3","correctOptionKey":"C","correctRow":null,"correctAnswerText":"no left or right turn","hasImage":true,"imagePath":"../../../public/qbank/2023-test1/images/img_d7248d389b30d90bd310c8ba3f9184e9.jpeg"},{"qid":"q0852","number":852,"type":"MCQ","score":54.905,"scoreGapFromTop":19.819,"prompt":"What’s the meaning of this sign?","options":[{"id":"A","text":"watch for two-way road"},{"id":"B","text":"driving by either side of the road"},{"id":"C","text":"watch for variable lane"},{"id":"D","text":"variable lane"}],"correctOptionId":"q0852_o3","correctOptionKey":"C","correctRow":null,"correctAnswerText":"watch for variable lane","hasImage":true,"imagePath":"../../../public/qbank/2023-test1/images/img_6687a6862538dc2a7b97ad4f95a5c61b.jpeg"}]},{"id":"review-needed:screenshots/Screenshot 2026-04-07 at 17.50.56.png","section":"review-needed","index":2,"itemId":"screenshots/Screenshot 2026-04-07 at 17.50.56.png","sourceImage":"screenshots/Screenshot 2026-04-07 at 17.50.56.png","screenshotPath":"../../../imports/ja/batch-004/screenshots/Screenshot 2026-04-07 at 17.50.56.png","hasImage":true,"candidateSetLabel":"image-only candidate set","initialSuggestedQid":"q0692","currentStagedLocaleCorrectOptionKey":"A","effectiveQuestionType":"MCQ","promptRawJa":"この交通警察の手信号は何を示しているか。","promptGlossEn":"What does the traffic police officer's hand signal indicate?","optionsRawJa":["A 右折","B 減速徐行","C 左折車は待機","D 道端に停車せよ"],"optionsGlossEn":["A Turn right","B Slow down and proceed with caution","C Left-turning vehicles must wait","D Stop at the roadside"],"correctKeyRaw":null,"correctAnswerRaw":null,"ocrConfidence":"high","provisionalTopic":"traffic-signals","provisionalSubtopics":["traffic-signals:police-signals","proper-driving:safe-driving"],"topicConfidence":0.529,"topicSignals":[{"topic":"traffic-signals","subtopic":"traffic-signals:police-signals","signal":"police-signal","weight":1.35},{"topic":"proper-driving","subtopic":"proper-driving:safe-driving","signal":"driving-action","weight":1.2}],"sourceConceptSlots":null,"reason":null,"analysis":{"mode":"standard","effectiveQuestionType":"MCQ","declaredQuestionType":"MCQ","booleanChoiceDetected":false,"plausibleShortlist":true,"imageParityApplied":true,"candidateImageParityMode":"image-only candidate set","candidateCountBeforeParity":973,"candidateCountAfterParity":491,"explanation":"Top candidate cleared the review floor but remains review-first."},"recommendedAction":"needs-existing-qid-review","topCandidates":[{"qid":"q0692","number":692,"type":"MCQ","score":53.92,"scoreGapFromTop":0,"prompt":"This set of hand signals of the traffic police indicates that vehicles should ______.","options":[{"id":"A","text":"reduce speed and pass slowly"},{"id":"B","text":"pull over"},{"id":"C","text":"stop"},{"id":"D","text":"turn right"}],"correctOptionId":"q0692_o4","correctOptionKey":"D","correctRow":null,"correctAnswerText":"turn right","hasImage":true,"imagePath":"../../../public/qbank/2023-test1/images/img_8186cb52035df346d563d71d6b25a24d.jpeg"},{"qid":"q0875","number":875,"type":"MCQ","score":53.151,"scoreGapFromTop":0.769,"prompt":"This set of hand signals of the traffic police indicates that vehicles should ______.","options":[{"id":"A","text":"turn left"},{"id":"B","text":"wait to turn left"},{"id":"C","text":"reduce speed and pass slowly"},{"id":"D","text":"turn right"}],"correctOptionId":"q0875_o2","correctOptionKey":"B","correctRow":null,"correctAnswerText":"wait to turn left","hasImage":true,"imagePath":"../../../public/qbank/2023-test1/images/p95-875.jpg"},{"qid":"q0806","number":806,"type":"MCQ","score":51.942,"scoreGapFromTop":1.978,"prompt":"This set of hand signals of the traffic police indicates that vehicles should ______.","options":[{"id":"A","text":"wait to turn left"},{"id":"B","text":"pull over"},{"id":"C","text":"turn right"},{"id":"D","text":"reduce speed and pass slowly"}],"correctOptionId":"q0806_o3","correctOptionKey":"C","correctRow":null,"correctAnswerText":"turn right","hasImage":true,"imagePath":"../../../public/qbank/2023-test1/images/p84-806.jpg"},{"qid":"q0899","number":899,"type":"MCQ","score":51.186,"scoreGapFromTop":2.734,"prompt":"This set of hand signals of the traffic police indicates that vehicles should ______.","options":[{"id":"A","text":"turn right"},{"id":"B","text":"pull over"},{"id":"C","text":"turn left"},{"id":"D","text":"stop"}],"correctOptionId":"q0899_o4","correctOptionKey":"D","correctRow":null,"correctAnswerText":"stop","hasImage":true,"imagePath":"../../../public/qbank/2023-test1/images/img_7d79de0c7901af7e07023485dd9c091b.jpeg"}]},{"id":"review-needed:screenshots/Screenshot 2026-04-07 at 17.50.57 1.png","section":"review-needed","index":3,"itemId":"screenshots/Screenshot 2026-04-07 at 17.50.57 1.png","sourceImage":"screenshots/Screenshot 2026-04-07 at 17.50.57 1.png","screenshotPath":"../../../imports/ja/batch-004/screenshots/Screenshot 2026-04-07 at 17.50.57 1.png","hasImage":false,"candidateSetLabel":"text-only candidate set","initialSuggestedQid":"q0095","currentStagedLocaleCorrectOptionKey":null,"effectiveQuestionType":"ROW","promptRawJa":"アイスバーン上水雪路での走行は自動車の安定性を低下させるため、アクセルを急に踏むと車輪が空転し横滑りを起こしやすい。","promptGlossEn":"Driving on icy or snowy roads reduces the stability of the car, so suddenly stepping on the accelerator makes the wheels spin and it is easy to skid sideways.","optionsRawJa":["A Yes","B No"],"optionsGlossEn":["A Yes","B No"],"correctKeyRaw":null,"correctAnswerRaw":null,"ocrConfidence":"high","provisionalTopic":"road-safety","provisionalSubtopics":["road-safety:road-conditions"],"topicConfidence":1,"topicSignals":[{"topic":"road-safety","subtopic":"road-safety:road-conditions","signal":"road-condition-or-hazard","weight":1.3}],"sourceConceptSlots":{"condition":["snow","ice"],"context":[],"action":[],"polarity":null,"signals":[{"slot":"condition","value":"snow","signal":"snow"},{"slot":"condition","value":"ice","signal":"ice"}]},"reason":null,"analysis":{"mode":"standard","effectiveQuestionType":"ROW","declaredQuestionType":"MCQ","booleanChoiceDetected":true,"plausibleShortlist":true,"imageParityApplied":true,"candidateImageParityMode":"text-only candidate set","candidateCountBeforeParity":973,"candidateCountAfterParity":482,"explanation":"Top candidate cleared the review floor but remains review-first."},"recommendedAction":"needs-existing-qid-review","topCandidates":[{"qid":"q0095","number":95,"type":"ROW","score":58.716,"scoreGapFromTop":0,"prompt":"When driving on a road covered with ice and snow, the driver must reduce speed and increase the safe distance.","options":[],"correctOptionId":null,"correctOptionKey":null,"correctRow":"R","correctAnswerText":"right / true","hasImage":false,"imagePath":null},{"qid":"q0575","number":575,"type":"ROW","score":58.509,"scoreGapFromTop":0.207,"prompt":"The vehicle with an ABS system can minimize the braking distance when driving on a road covered by ice and snow.","options":[],"correctOptionId":null,"correctOptionKey":null,"correctRow":"W","correctAnswerText":"wrong / false","hasImage":false,"imagePath":null},{"qid":"q0102","number":102,"type":"ROW","score":58.354,"scoreGapFromTop":0.362,"prompt":"Emergency braking on a road covered by ice and snow can easily cause side skidding. The driver should use engine braking to reduce speed.","options":[],"correctOptionId":null,"correctOptionKey":null,"correctRow":"R","correctAnswerText":"right / true","hasImage":false,"imagePath":null},{"qid":"q0064","number":64,"type":"ROW","score":58.3,"scoreGapFromTop":0.416,"prompt":"When driving in icy and snowy weather, the vehicle steadiness decreases and sudden acceleration can very easily cause spins and slides.","options":[],"correctOptionId":null,"correctOptionKey":null,"correctRow":"R","correctAnswerText":"right / true","hasImage":false,"imagePath":null}]},{"id":"review-needed:screenshots/Screenshot 2026-04-07 at 17.50.57.png","section":"review-needed","index":4,"itemId":"screenshots/Screenshot 2026-04-07 at 17.50.57.png","sourceImage":"screenshots/Screenshot 2026-04-07 at 17.50.57.png","screenshotPath":"../../../imports/ja/batch-004/screenshots/Screenshot 2026-04-07 at 17.50.57.png","hasImage":false,"candidateSetLabel":"text-only candidate set","initialSuggestedQid":"q0426","currentStagedLocaleCorrectOptionKey":"A","effectiveQuestionType":"MCQ","promptRawJa":"信号がない交差点ではどのように通行するのが適切か。","promptGlossEn":"What is the appropriate way to proceed at an intersection with no signals?","optionsRawJa":["A 速度を落として徐行する","B 速度を上げて走行する","C 大型車両が優先通行する","D 左側にある車両が優先通行する"],"optionsGlossEn":["A: Slow down and go slowly","B: Speed up and go","C: Large vehicles have priority","D: Vehicles on the left have priority"],"correctKeyRaw":null,"correctAnswerRaw":null,"ocrConfidence":"high","provisionalTopic":"traffic-signals","provisionalSubtopics":["traffic-signals:road-markings","proper-driving:safe-driving"],"topicConfidence":0.51,"topicSignals":[{"topic":"traffic-signals","subtopic":"traffic-signals:road-markings","signal":"road-marking","weight":1.25},{"topic":"proper-driving","subtopic":"proper-driving:safe-driving","signal":"driving-action","weight":1.2}],"sourceConceptSlots":null,"reason":null,"analysis":{"mode":"standard","effectiveQuestionType":"MCQ","declaredQuestionType":"MCQ","booleanChoiceDetected":false,"plausibleShortlist":true,"imageParityApplied":true,"candidateImageParityMode":"text-only candidate set","candidateCountBeforeParity":973,"candidateCountAfterParity":482,"explanation":"Top candidate cleared the review floor but remains review-first."},"recommendedAction":"needs-existing-qid-review","topCandidates":[{"qid":"q0426","number":426,"type":"MCQ","score":55.625,"scoreGapFromTop":0,"prompt":"How to drive through the intersection without traffic lights?","options":[{"id":"A","text":"reduce speed and go slowly"},{"id":"B","text":"speed up and pass"},{"id":"C","text":"let large vehicle go first"},{"id":"D","text":"let the left vehicle go first"}],"correctOptionId":"q0426_o1","correctOptionKey":"A","correctRow":null,"correctAnswerText":"reduce speed and go slowly","hasImage":false,"imagePath":null},{"qid":"q0153","number":153,"type":"MCQ","score":47.612,"scoreGapFromTop":8.013,"prompt":"When driving a vehicle through a flooded road with pedestrians on both sides, the driver should ______.","options":[{"id":"A","text":"speed up and pass"},{"id":"B","text":"go forward normally"},{"id":"C","text":"continuously honk"},{"id":"D","text":"reduce speed and go slowly"}],"correctOptionId":"q0153_o4","correctOptionKey":"D","correctRow":null,"correctAnswerText":"reduce speed and go slowly","hasImage":false,"imagePath":null},{"qid":"q0107","number":107,"type":"MCQ","score":47.55,"scoreGapFromTop":8.075,"prompt":"When driving a vehicle through an flooded road with non-motorized vehicles on both sides, the driver should ______.","options":[{"id":"A","text":"reduce speed and go slowly"},{"id":"B","text":"go forward normally"},{"id":"C","text":"speed up and pass"},{"id":"D","text":"continuously honk"}],"correctOptionId":"q0107_o1","correctOptionKey":"A","correctRow":null,"correctAnswerText":"reduce speed and go slowly","hasImage":false,"imagePath":null},{"qid":"q0117","number":117,"type":"MCQ","score":46.415,"scoreGapFromTop":9.21,"prompt":"When passing through an flooded road, the driver should ______.","options":[{"id":"A","text":"reduce speed and go slowly"},{"id":"B","text":"maintain the normal speed and pass"},{"id":"C","text":"slide over in the neutral gear"},{"id":"D","text":"speed up and pass"}],"correctOptionId":"q0117_o1","correctOptionKey":"A","correctRow":null,"correctAnswerText":"reduce speed and go slowly","hasImage":false,"imagePath":null}]},{"id":"review-needed:screenshots/Screenshot 2026-04-07 at 17.50.59.png","section":"review-needed","index":5,"itemId":"screenshots/Screenshot 2026-04-07 at 17.50.59.png","sourceImage":"screenshots/Screenshot 2026-04-07 at 17.50.59.png","screenshotPath":"../../../imports/ja/batch-004/screenshots/Screenshot 2026-04-07 at 17.50.59.png","hasImage":true,"candidateSetLabel":"image-only candidate set","initialSuggestedQid":"q0610","currentStagedLocaleCorrectOptionKey":"C","effectiveQuestionType":"MCQ","promptRawJa":"このメーターは何か。","promptGlossEn":"What is this meter?","optionsRawJa":["A 電流計","B 圧力計","C 水温計","D 燃料計"],"optionsGlossEn":["A Ammeter","B Pressure gauge","C Water temperature gauge","D Fuel gauge"],"correctKeyRaw":null,"correctAnswerRaw":null,"ocrConfidence":"high","provisionalTopic":"driving-operations","provisionalSubtopics":["driving-operations:indicators"],"topicConfidence":1,"topicSignals":[{"topic":"driving-operations","subtopic":"driving-operations:indicators","signal":"indicator-operation","weight":1.25}],"sourceConceptSlots":null,"reason":null,"analysis":{"mode":"standard","effectiveQuestionType":"MCQ","declaredQuestionType":"MCQ","booleanChoiceDetected":false,"plausibleShortlist":true,"imageParityApplied":true,"candidateImageParityMode":"image-only candidate set","candidateCountBeforeParity":973,"candidateCountAfterParity":491,"explanation":"Top candidate cleared the review floor but remains review-first."},"recommendedAction":"needs-existing-qid-review","topCandidates":[{"qid":"q0610","number":610,"type":"MCQ","score":62.732,"scoreGapFromTop":0,"prompt":"What is this instrument?","options":[{"id":"A","text":"water temperature meter"},{"id":"B","text":"fuel meter"},{"id":"C","text":"ammeter"},{"id":"D","text":"pressure meter"}],"correctOptionId":"q0610_o1","correctOptionKey":"A","correctRow":null,"correctAnswerText":"water temperature meter","hasImage":true,"imagePath":"../../../public/qbank/2023-test1/images/img_a78603fbc73f97b11a5b001fc89bf760.jpeg"},{"qid":"q0600","number":600,"type":"MCQ","score":61.15,"scoreGapFromTop":1.582,"prompt":"What is this instrument?","options":[{"id":"A","text":"pressure meter"},{"id":"B","text":"ammeter"},{"id":"C","text":"water temperature meter"},{"id":"D","text":"fuel meter"}],"correctOptionId":"q0600_o4","correctOptionKey":"D","correctRow":null,"correctAnswerText":"fuel meter","hasImage":true,"imagePath":"../../../public/qbank/2023-test1/images/img_3a6a9cd33561e3b0c8954697be95f41f.jpeg"},{"qid":"q0599","number":599,"type":"MCQ","score":35.239,"scoreGapFromTop":27.493,"prompt":"What is this instrument?","options":[{"id":"A","text":"speed and mileage meter"},{"id":"B","text":"engine tachometer"},{"id":"C","text":"top speed meter"},{"id":"D","text":"fuel consumption per 100km"}],"correctOptionId":"q0599_o1","correctOptionKey":"A","correctRow":null,"correctAnswerText":"speed and mileage meter","hasImage":true,"imagePath":"../../../public/qbank/2023-test1/images/img_c23528a789d60e9da8c4a30e43bca394.jpeg"},{"qid":"q0609","number":609,"type":"MCQ","score":34.608,"scoreGapFromTop":28.124,"prompt":"What is this instrument?","options":[{"id":"A","text":"engine tachometer"},{"id":"B","text":"driving speed meter"},{"id":"C","text":"interval mileage meter"},{"id":"D","text":"fuel consumption per 100km"}],"correctOptionId":"q0609_o1","correctOptionKey":"A","correctRow":null,"correctAnswerText":"engine tachometer","hasImage":true,"imagePath":"../../../public/qbank/2023-test1/images/img_12c0fa2bd0eb9aaa2238c4e71fb4afd0.jpeg"}]},{"id":"review-needed:screenshots/Screenshot 2026-04-07 at 17.51.00.png","section":"review-needed","index":6,"itemId":"screenshots/Screenshot 2026-04-07 at 17.51.00.png","sourceImage":"screenshots/Screenshot 2026-04-07 at 17.51.00.png","screenshotPath":"../../../imports/ja/batch-004/screenshots/Screenshot 2026-04-07 at 17.51.00.png","hasImage":true,"candidateSetLabel":"image-only candidate set","initialSuggestedQid":"q0673","currentStagedLocaleCorrectOptionKey":"A","effectiveQuestionType":"MCQ","promptRawJa":"この標識は何を示しているか。","promptGlossEn":"What does this sign indicate?","optionsRawJa":["A 高速道路の次の出口の予告","B 高速道路の右側出口の予告","C 高速道路の目的地の予告","D 高速道路の左側出口の予告"],"optionsGlossEn":["A Notice of the next exit on the expressway","B Notice of a right-side exit on the expressway","C Notice of the destination on the expressway","D Notice of a left-side exit on the expressway"],"correctKeyRaw":null,"correctAnswerRaw":null,"ocrConfidence":"high","provisionalTopic":"traffic-signals","provisionalSubtopics":["traffic-signals:road-signs"],"topicConfidence":1,"topicSignals":[{"topic":"traffic-signals","subtopic":"traffic-signals:road-signs","signal":"sign-family","weight":1.4}],"sourceConceptSlots":null,"reason":null,"analysis":{"mode":"standard","effectiveQuestionType":"MCQ","declaredQuestionType":"MCQ","booleanChoiceDetected":false,"plausibleShortlist":true,"imageParityApplied":true,"candidateImageParityMode":"image-only candidate set","candidateCountBeforeParity":973,"candidateCountAfterParity":491,"explanation":"Top candidate cleared the review floor but remains review-first."},"recommendedAction":"needs-existing-qid-review","topCandidates":[{"qid":"q0673","number":673,"type":"MCQ","score":49.527,"scoreGapFromTop":0,"prompt":"What’s the meaning of this sign?","options":[{"id":"A","text":"expressway left exit ahead"},{"id":"B","text":"expressway destination ahead"},{"id":"C","text":"expressway right exit ahead"},{"id":"D","text":"expressway next exit ahead"}],"correctOptionId":"q0673_o4","correctOptionKey":"D","correctRow":null,"correctAnswerText":"expressway next exit ahead","hasImage":true,"imagePath":"../../../public/qbank/2023-test1/images/img_cec0a427f76e29bc1a23f5f81fe548bc.jpeg"},{"qid":"q0824","number":824,"type":"MCQ","score":48.953,"scoreGapFromTop":0.574,"prompt":"What’s the meaning of this sign?","options":[{"id":"A","text":"expressway next exit ahead"},{"id":"B","text":"expressway right exit ahead"},{"id":"C","text":"expressway left exit ahead"},{"id":"D","text":"expressway destination indication"}],"correctOptionId":"q0824_o3","correctOptionKey":"C","correctRow":null,"correctAnswerText":"expressway left exit ahead","hasImage":true,"imagePath":"../../../public/qbank/2023-test1/images/img_bea6c4fa5586da3ff592d9fce9175d2a.jpeg"},{"qid":"q0883","number":883,"type":"MCQ","score":48.953,"scoreGapFromTop":0.574,"prompt":"What’s the meaning of this sign?","options":[{"id":"A","text":"expressway right exit ahead"},{"id":"B","text":"expressway destination indication"},{"id":"C","text":"expressway left exit ahead"},{"id":"D","text":"expressway next exit ahead"}],"correctOptionId":"q0883_o1","correctOptionKey":"A","correctRow":null,"correctAnswerText":"expressway right exit ahead","hasImage":true,"imagePath":"../../../public/qbank/2023-test1/images/img_4f17aefd93999a05022721cbe59db95b.jpeg"},{"qid":"q0799","number":799,"type":"MCQ","score":45.623,"scoreGapFromTop":3.904,"prompt":"What’s the meaning of this sign?","options":[{"id":"A","text":"expressway exit"},{"id":"B","text":"expressway beginning"},{"id":"C","text":"expressway entry"},{"id":"D","text":"expressway ending"}],"correctOptionId":"q0799_o2","correctOptionKey":"B","correctRow":null,"correctAnswerText":"expressway beginning","hasImage":true,"imagePath":"../../../public/qbank/2023-test1/images/img_7304a3fccfa73182081cec963194238c.jpeg"}]},{"id":"review-needed:screenshots/Screenshot 2026-04-07 at 17.51.02 1.png","section":"review-needed","index":7,"itemId":"screenshots/Screenshot 2026-04-07 at 17.51.02 1.png","sourceImage":"screenshots/Screenshot 2026-04-07 at 17.51.02 1.png","screenshotPath":"../../../imports/ja/batch-004/screenshots/Screenshot 2026-04-07 at 17.51.02 1.png","hasImage":true,"candidateSetLabel":"image-only candidate set","initialSuggestedQid":"q0889","currentStagedLocaleCorrectOptionKey":"C","effectiveQuestionType":"MCQ","promptRawJa":"この標識は何を示しているか。","promptGlossEn":"What does this traffic sign indicate?","optionsRawJa":["A 長時間クラクションを鳴らすことを禁ず","B 断続的にクラクションを鳴らせ","C クラクション禁止","D 速度を落としクラクションを鳴らせ"],"optionsGlossEn":["A. Not prohibited to honk the horn for a long time","B. Honk the horn intermittently","C. Horn prohibited","D. Slow down and honk the horn"],"correctKeyRaw":null,"correctAnswerRaw":null,"ocrConfidence":"high","provisionalTopic":"proper-driving","provisionalSubtopics":["traffic-signals:road-signs","proper-driving:safe-driving","proper-driving:traffic-laws"],"topicConfidence":0.627,"topicSignals":[{"topic":"traffic-signals","subtopic":"traffic-signals:road-signs","signal":"sign-family","weight":1.4},{"topic":"proper-driving","subtopic":"proper-driving:safe-driving","signal":"driving-action","weight":1.2},{"topic":"proper-driving","subtopic":"proper-driving:traffic-laws","signal":"traffic-law","weight":1.15}],"sourceConceptSlots":null,"reason":null,"analysis":{"mode":"standard","effectiveQuestionType":"MCQ","declaredQuestionType":"MCQ","booleanChoiceDetected":false,"plausibleShortlist":true,"imageParityApplied":true,"candidateImageParityMode":"image-only candidate set","candidateCountBeforeParity":973,"candidateCountAfterParity":491,"explanation":"Top candidate cleared the review floor but remains review-first."},"recommendedAction":"needs-existing-qid-review","topCandidates":[{"qid":"q0889","number":889,"type":"MCQ","score":54.075,"scoreGapFromTop":0,"prompt":"What’s the meaning of this sign?","options":[{"id":"A","text":"no long time honking"},{"id":"B","text":"honk discontinuously"},{"id":"C","text":"reduce speed and honk"},{"id":"D","text":"no honking"}],"correctOptionId":"q0889_o4","correctOptionKey":"D","correctRow":null,"correctAnswerText":"no honking","hasImage":true,"imagePath":"../../../public/qbank/2023-test1/images/img_1003882ae069a235b2ff6351d8b6a4dc.jpeg"},{"qid":"q0373","number":373,"type":"MCQ","score":44.498,"scoreGapFromTop":9.577,"prompt":"How to drive in this section?","options":[{"id":"A","text":"Occupy the road of the other side to pass the curve."},{"id":"B","text":"Drive along the middle of the curve."},{"id":"C","text":"Speed up and honk to pass."},{"id":"D","text":"Reduce speed and honk."}],"correctOptionId":"q0373_o4","correctOptionKey":"D","correctRow":null,"correctAnswerText":"Reduce speed and honk.","hasImage":true,"imagePath":"../../../public/qbank/2023-test1/images/img_2cfba658be4a687b8f3fff72d55b1075.jpeg"},{"qid":"q0657","number":657,"type":"MCQ","score":44.143,"scoreGapFromTop":9.932,"prompt":"What’s the meaning of this sign?","options":[{"id":"A","text":"no honking the tweeter"},{"id":"B","text":"no honking the woofer"},{"id":"C","text":"should honk"},{"id":"D","text":"no honking"}],"correctOptionId":"q0657_o3","correctOptionKey":"C","correctRow":null,"correctAnswerText":"should honk","hasImage":true,"imagePath":"../../../public/qbank/2023-test1/images/img_322187746e0663e85937fc1470821498.jpeg"},{"qid":"q0364","number":364,"type":"MCQ","score":38.308,"scoreGapFromTop":15.767,"prompt":"How to pass this intersection?","options":[{"id":"A","text":"Keep the speed and go through"},{"id":"B","text":"Honk to urge"},{"id":"C","text":"Reduce speed and go through slowly"},{"id":"D","text":"Speed up and go through"}],"correctOptionId":"q0364_o3","correctOptionKey":"C","correctRow":null,"correctAnswerText":"Reduce speed and go through slowly","hasImage":true,"imagePath":"../../../public/qbank/2023-test1/images/img_472909ac12ee4ca4a82700ad22834ae2.jpeg"}]},{"id":"review-needed:screenshots/Screenshot 2026-04-07 at 17.51.02.png","section":"review-needed","index":8,"itemId":"screenshots/Screenshot 2026-04-07 at 17.51.02.png","sourceImage":"screenshots/Screenshot 2026-04-07 at 17.51.02.png","screenshotPath":"../../../imports/ja/batch-004/screenshots/Screenshot 2026-04-07 at 17.51.02.png","hasImage":false,"candidateSetLabel":"text-only candidate set","initialSuggestedQid":"q0307","currentStagedLocaleCorrectOptionKey":null,"effectiveQuestionType":"ROW","promptRawJa":"交通状況が複雑な交差点では、「三分停まっても、一秒を争わない」ことが大切である。","promptGlossEn":"At intersections with complicated traffic situations, it is important not to rush, even if you have to stop for three minutes.","optionsRawJa":["A Yes","B No"],"optionsGlossEn":["Yes","No"],"correctKeyRaw":null,"correctAnswerRaw":null,"ocrConfidence":"high","provisionalTopic":"proper-driving","provisionalSubtopics":["proper-driving:safe-driving"],"topicConfidence":1,"topicSignals":[{"topic":"proper-driving","subtopic":"proper-driving:safe-driving","signal":"driving-action","weight":1.2}],"sourceConceptSlots":{"condition":[],"context":["intersection"],"action":["stop"],"polarity":null,"signals":[{"slot":"context","value":"intersection","signal":"intersection"},{"slot":"action","value":"stop","signal":"stop"}]},"reason":null,"analysis":{"mode":"standard","effectiveQuestionType":"ROW","declaredQuestionType":"MCQ","booleanChoiceDetected":true,"plausibleShortlist":true,"imageParityApplied":true,"candidateImageParityMode":"text-only candidate set","candidateCountBeforeParity":973,"candidateCountAfterParity":482,"explanation":"Top candidate cleared the review floor but remains review-first."},"recommendedAction":"needs-existing-qid-review","topCandidates":[{"qid":"q0307","number":307,"type":"ROW","score":57.786,"scoreGapFromTop":0,"prompt":"A motorized vehicle is not allowed to stop in the section 50 meters to the intersection.","options":[],"correctOptionId":null,"correctOptionKey":null,"correctRow":"R","correctAnswerText":"right / true","hasImage":false,"imagePath":null},{"qid":"q0092","number":92,"type":"ROW","score":56.116,"scoreGapFromTop":1.67,"prompt":"When the traffic conditions at an intersection are complicated, the driver should be waiting patiently instead of taking any chances.","options":[],"correctOptionId":null,"correctOptionKey":null,"correctRow":"R","correctAnswerText":"right / true","hasImage":false,"imagePath":null},{"qid":"q0011","number":11,"type":"ROW","score":55.581,"scoreGapFromTop":2.205,"prompt":"When passing a section of a mountain road which is prone to landside and mudflow, the driver should not stop.","options":[],"correctOptionId":null,"correctOptionKey":null,"correctRow":"R","correctAnswerText":"right / true","hasImage":false,"imagePath":null},{"qid":"q0244","number":244,"type":"ROW","score":55.272,"scoreGapFromTop":2.514,"prompt":"A Social vehicle is not allowed to stop in the section 30 meters to the fire hydrant or the fire brigade (station).","options":[],"correctOptionId":null,"correctOptionKey":null,"correctRow":"R","correctAnswerText":"right / true","hasImage":false,"imagePath":null}]},{"id":"review-needed:screenshots/Screenshot 2026-04-07 at 17.51.13.png","section":"review-needed","index":9,"itemId":"screenshots/Screenshot 2026-04-07 at 17.51.13.png","sourceImage":"screenshots/Screenshot 2026-04-07 at 17.51.13.png","screenshotPath":"../../../imports/ja/batch-004/screenshots/Screenshot 2026-04-07 at 17.51.13.png","hasImage":true,"candidateSetLabel":"image-only candidate set","initialSuggestedQid":"q0820","currentStagedLocaleCorrectOptionKey":"B","effectiveQuestionType":"MCQ","promptRawJa":"この標識の示す意味はどれか。","promptGlossEn":"What does this road sign mean?","optionsRawJa":["A 立体交差に注意","B 分離式道路に注意","C 平面交差あり","D ロータリーあり"],"optionsGlossEn":["A. Beware of grade-separated crossing","B. Beware of divided road","C. Flat intersection ahead","D. There is a rotary"],"correctKeyRaw":"C","correctAnswerRaw":"平面交差あり","ocrConfidence":"high","provisionalTopic":"traffic-signals","provisionalSubtopics":["traffic-signals:road-signs"],"topicConfidence":1,"topicSignals":[{"topic":"traffic-signals","subtopic":"traffic-signals:road-signs","signal":"sign-family","weight":1.4}],"sourceConceptSlots":null,"reason":null,"analysis":{"mode":"standard","effectiveQuestionType":"MCQ","declaredQuestionType":"MCQ","booleanChoiceDetected":false,"plausibleShortlist":true,"imageParityApplied":true,"candidateImageParityMode":"image-only candidate set","candidateCountBeforeParity":973,"candidateCountAfterParity":491,"explanation":"Top candidate cleared the review floor but remains review-first."},"recommendedAction":"needs-existing-qid-review","topCandidates":[{"qid":"q0820","number":820,"type":"MCQ","score":63.041,"scoreGapFromTop":0,"prompt":"What’s the meaning of this sign?","options":[{"id":"A","text":"ring intersection ahead"},{"id":"B","text":"intersection ahead"},{"id":"C","text":"Y-shaped intersection ahead"},{"id":"D","text":"T-shaped intersection ahead"}],"correctOptionId":"q0820_o3","correctOptionKey":"C","correctRow":null,"correctAnswerText":"Y-shaped intersection ahead","hasImage":true,"imagePath":"../../../public/qbank/2023-test1/images/img_9cd0eff3e9b4534c74d7f20811f10a3a.jpeg"},{"qid":"q0852","number":852,"type":"MCQ","score":58.24,"scoreGapFromTop":4.801,"prompt":"What’s the meaning of this sign?","options":[{"id":"A","text":"watch for two-way road"},{"id":"B","text":"driving by either side of the road"},{"id":"C","text":"watch for variable lane"},{"id":"D","text":"variable lane"}],"correctOptionId":"q0852_o3","correctOptionKey":"C","correctRow":null,"correctAnswerText":"watch for variable lane","hasImage":true,"imagePath":"../../../public/qbank/2023-test1/images/img_6687a6862538dc2a7b97ad4f95a5c61b.jpeg"},{"qid":"q0765","number":765,"type":"MCQ","score":57.641,"scoreGapFromTop":5.4,"prompt":"What’s the meaning of this sign?","options":[{"id":"A","text":"crosswalk lights"},{"id":"B","text":"watch for pedestrians"},{"id":"C","text":"attention to traffic lights"},{"id":"D","text":"intersection"}],"correctOptionId":"q0765_o3","correctOptionKey":"C","correctRow":null,"correctAnswerText":"attention to traffic lights","hasImage":true,"imagePath":"../../../public/qbank/2023-test1/images/img_0f4df5f1375e954ba534d594ed706e40.jpeg"},{"qid":"q0861","number":861,"type":"MCQ","score":56.935,"scoreGapFromTop":6.106,"prompt":"What’s the meaning of this guide arrow?","options":[{"id":"A","text":"Y-shaped intersection ahead"},{"id":"B","text":"separate road ahead"},{"id":"C","text":"only left or right turn ahead"},{"id":"D","text":"merging with both sides ahead"}],"correctOptionId":"q0861_o3","correctOptionKey":"C","correctRow":null,"correctAnswerText":"only left or right turn ahead","hasImage":true,"imagePath":"../../../public/qbank/2023-test1/images/img_c02bfb6b95caee32bae1fb685ecec869.jpeg"}]},{"id":"review-needed:screenshots/Screenshot 2026-04-07 at 17.51.14.png","section":"review-needed","index":10,"itemId":"screenshots/Screenshot 2026-04-07 at 17.51.14.png","sourceImage":"screenshots/Screenshot 2026-04-07 at 17.51.14.png","screenshotPath":"../../../imports/ja/batch-004/screenshots/Screenshot 2026-04-07 at 17.51.14.png","hasImage":false,"candidateSetLabel":"text-only candidate set","initialSuggestedQid":"q0512","currentStagedLocaleCorrectOptionKey":"D","effectiveQuestionType":"MCQ","promptRawJa":"中央線のない狭い山道を運転している場合、どのように対向車とすれ違うのが適切か。","promptGlossEn":"When driving on a narrow mountain road without a center line, what is the appropriate way to pass an oncoming vehicle?","optionsRawJa":["A 速度が遅い自動車が先に走行する","B 貨物満載車が空車に道を譲って先に走行させる","C 山体から近い側の自動車が先に走行する","D 山体から遠い側の自動車が先に走行する"],"optionsGlossEn":["A vehicle moving at a slower speed should go first.","A fully-loaded cargo vehicle should yield to an empty vehicle and let it go first.","The vehicle on the side closer to the mountain should go first.","The vehicle on the side farther from the mountain should go first."],"correctKeyRaw":null,"correctAnswerRaw":null,"ocrConfidence":"high","provisionalTopic":"road-safety","provisionalSubtopics":["road-safety:road-conditions","proper-driving:safe-driving","traffic-signals:road-signs"],"topicConfidence":0.52,"topicSignals":[{"topic":"road-safety","subtopic":"road-safety:road-conditions","signal":"road-condition-or-hazard","weight":1.3},{"topic":"proper-driving","subtopic":"proper-driving:safe-driving","signal":"driving-action","weight":1.2},{"topic":"traffic-signals","subtopic":"traffic-signals:road-signs","signal":"sign-family","weight":1.1}],"sourceConceptSlots":null,"reason":null,"analysis":{"mode":"standard","effectiveQuestionType":"MCQ","declaredQuestionType":"MCQ","booleanChoiceDetected":false,"plausibleShortlist":true,"imageParityApplied":true,"candidateImageParityMode":"text-only candidate set","candidateCountBeforeParity":973,"candidateCountAfterParity":482,"explanation":"Top candidate cleared the review floor but remains review-first."},"recommendedAction":"needs-existing-qid-review","topCandidates":[{"qid":"q0512","number":512,"type":"MCQ","score":48.327,"scoreGapFromTop":0,"prompt":"How to cross each other on a narrow mountain road without a central dividing line?","options":[{"id":"A","text":"The vehicle not close to the mountain goes first."},{"id":"B","text":"The vehicle close to the mountain goes first."},{"id":"C","text":"The empty vehicle goes first."},{"id":"D","text":"The slow-moving vehicle goes first."}],"correctOptionId":"q0512_o1","correctOptionKey":"A","correctRow":null,"correctAnswerText":"The vehicle not close to the mountain goes first.","hasImage":false,"imagePath":null},{"qid":"q0426","number":426,"type":"MCQ","score":40.017,"scoreGapFromTop":8.31,"prompt":"How to drive through the intersection without traffic lights?","options":[{"id":"A","text":"reduce speed and go slowly"},{"id":"B","text":"speed up and pass"},{"id":"C","text":"let large vehicle go first"},{"id":"D","text":"let the left vehicle go first"}],"correctOptionId":"q0426_o1","correctOptionKey":"A","correctRow":null,"correctAnswerText":"reduce speed and go slowly","hasImage":false,"imagePath":null},{"qid":"q0086","number":86,"type":"ROW","score":36.55,"scoreGapFromTop":11.777,"prompt":"When a vehicle goes downhill on a mountain road, it is not allowed to overtake.","options":[],"correctOptionId":null,"correctOptionKey":null,"correctRow":"R","correctAnswerText":"right / true","hasImage":false,"imagePath":null},{"qid":"q0417","number":417,"type":"MCQ","score":36.31,"scoreGapFromTop":12.017,"prompt":"Which of the following vehicles in front in the same lane is not allowed to be overtaken?","options":[{"id":"A","text":"The vehicle is reducing speed to yield."},{"id":"B","text":"The vehicle is driving normally."},{"id":"C","text":"The vehicle is overtaking."},{"id":"D","text":"The vehicle is making a stop."}],"correctOptionId":"q0417_o3","correctOptionKey":"C","correctRow":null,"correctAnswerText":"The vehicle is overtaking.","hasImage":false,"imagePath":null}]},{"id":"review-needed:screenshots/Screenshot 2026-04-07 at 17.51.15.png","section":"review-needed","index":11,"itemId":"screenshots/Screenshot 2026-04-07 at 17.51.15.png","sourceImage":"screenshots/Screenshot 2026-04-07 at 17.51.15.png","screenshotPath":"../../../imports/ja/batch-004/screenshots/Screenshot 2026-04-07 at 17.51.15.png","hasImage":true,"candidateSetLabel":"image-only candidate set","initialSuggestedQid":"q0664","currentStagedLocaleCorrectOptionKey":"A","effectiveQuestionType":"MCQ","promptRawJa":"この標識の示す意味はどれか。","promptGlossEn":"What does this road sign mean?","optionsRawJa":["A 路面突出","B 山なりの橋","C 路面に凹凸あり","D 路面し凹みあり"],"optionsGlossEn":["A: Road surface protrusion","B: Hump bridge","C: Uneven road surface","D: Road surface depression"],"correctKeyRaw":null,"correctAnswerRaw":null,"ocrConfidence":"high","provisionalTopic":"traffic-signals","provisionalSubtopics":["traffic-signals:road-signs"],"topicConfidence":1,"topicSignals":[{"topic":"traffic-signals","subtopic":"traffic-signals:road-signs","signal":"sign-family","weight":1.4}],"sourceConceptSlots":null,"reason":null,"analysis":{"mode":"standard","effectiveQuestionType":"MCQ","declaredQuestionType":"MCQ","booleanChoiceDetected":false,"plausibleShortlist":true,"imageParityApplied":true,"candidateImageParityMode":"image-only candidate set","candidateCountBeforeParity":973,"candidateCountAfterParity":491,"explanation":"Top candidate cleared the review floor but remains review-first."},"recommendedAction":"needs-existing-qid-review","topCandidates":[{"qid":"q0664","number":664,"type":"MCQ","score":45.998,"scoreGapFromTop":0,"prompt":"What’s the meaning of this sign?","options":[{"id":"A","text":"bump road"},{"id":"B","text":"low-lying road"},{"id":"C","text":"high outburst road"},{"id":"D","text":"hump bridge"}],"correctOptionId":"q0664_o2","correctOptionKey":"B","correctRow":null,"correctAnswerText":"low-lying road","hasImage":true,"imagePath":"../../../public/qbank/2023-test1/images/img_3f1fb40c4147e43e0bde84ed26341f7f.jpeg"},{"qid":"q0694","number":694,"type":"MCQ","score":45.998,"scoreGapFromTop":0,"prompt":"What’s the meaning of this sign?","options":[{"id":"A","text":"hump bridge"},{"id":"B","text":"high outburst road"},{"id":"C","text":"low-lying road"},{"id":"D","text":"bump road"}],"correctOptionId":"q0694_o1","correctOptionKey":"A","correctRow":null,"correctAnswerText":"hump bridge","hasImage":true,"imagePath":"../../../public/qbank/2023-test1/images/img_57f39b462b51f82e12cef9a65dd3eba6.jpeg"},{"qid":"q0766","number":766,"type":"MCQ","score":45.998,"scoreGapFromTop":0,"prompt":"What’s the meaning of this sign?","options":[{"id":"A","text":"low-lying road"},{"id":"B","text":"hump bridge"},{"id":"C","text":"bump road"},{"id":"D","text":"high outburst road"}],"correctOptionId":"q0766_o3","correctOptionKey":"C","correctRow":null,"correctAnswerText":"bump road","hasImage":true,"imagePath":"../../../public/qbank/2023-test1/images/img_aa083fd6e0208fa8e8333582e0a53dfa.jpeg"},{"qid":"q0782","number":782,"type":"MCQ","score":45.998,"scoreGapFromTop":0,"prompt":"What’s the meaning of this sign?","options":[{"id":"A","text":"bump road"},{"id":"B","text":"high outburst road"},{"id":"C","text":"low-lying road"},{"id":"D","text":"hump bridge"}],"correctOptionId":"q0782_o2","correctOptionKey":"B","correctRow":null,"correctAnswerText":"high outburst road","hasImage":true,"imagePath":"../../../public/qbank/2023-test1/images/img_04fdae10b067730db62a2ba85cea4f6e.jpeg"}]},{"id":"review-needed:screenshots/Screenshot 2026-04-07 at 17.51.17.png","section":"review-needed","index":12,"itemId":"screenshots/Screenshot 2026-04-07 at 17.51.17.png","sourceImage":"screenshots/Screenshot 2026-04-07 at 17.51.17.png","screenshotPath":"../../../imports/ja/batch-004/screenshots/Screenshot 2026-04-07 at 17.51.17.png","hasImage":true,"candidateSetLabel":"image-only candidate set","initialSuggestedQid":"q0259","currentStagedLocaleCorrectOptionKey":null,"effectiveQuestionType":"ROW","promptRawJa":"高速道路を降りる場合、図の位置から直接ランプに入ることができる。","promptGlossEn":"When exiting the expressway, is it possible to enter the ramp directly from the position shown in the illustration?","optionsRawJa":["A Yes","B No"],"optionsGlossEn":["A Yes","B No"],"correctKeyRaw":null,"correctAnswerRaw":null,"ocrConfidence":"high","provisionalTopic":null,"provisionalSubtopics":[],"topicConfidence":0,"topicSignals":[],"sourceConceptSlots":{"condition":[],"context":["expressway"],"action":[],"polarity":"positive","signals":[{"slot":"context","value":"expressway","signal":"expressway"}]},"reason":null,"analysis":{"mode":"standard","effectiveQuestionType":"ROW","declaredQuestionType":"MCQ","booleanChoiceDetected":true,"plausibleShortlist":true,"imageParityApplied":true,"candidateImageParityMode":"image-only candidate set","candidateCountBeforeParity":973,"candidateCountAfterParity":491,"explanation":"Top candidate cleared the review floor but remains review-first."},"recommendedAction":"needs-existing-qid-review","topCandidates":[{"qid":"q0259","number":259,"type":"ROW","score":62.707,"scoreGapFromTop":0,"prompt":"You can leave the expressway into the ramp from this location directly.","options":[],"correctOptionId":null,"correctOptionKey":null,"correctRow":"W","correctAnswerText":"wrong / false","hasImage":true,"imagePath":"../../../public/qbank/2023-test1/images/img_a5b00bf340ddd40d19965cea0ece45b1.jpeg"},{"qid":"q0308","number":308,"type":"ROW","score":62.589,"scoreGapFromTop":0.118,"prompt":"You can drive directly into the expressway from this position.","options":[],"correctOptionId":null,"correctOptionKey":null,"correctRow":"W","correctAnswerText":"wrong / false","hasImage":true,"imagePath":"../../../public/qbank/2023-test1/images/img_e28e798efd2a722ccd0272178cdde33c.jpeg"},{"qid":"q0260","number":260,"type":"ROW","score":59.674,"scoreGapFromTop":3.033,"prompt":"The act of this small passenger vehicle to enter the expressway lane is correct.","options":[],"correctOptionId":null,"correctOptionKey":null,"correctRow":"W","correctAnswerText":"wrong / false","hasImage":true,"imagePath":"../../../public/qbank/2023-test1/images/p20-260.jpg"},{"qid":"q0292","number":292,"type":"ROW","score":56.539,"scoreGapFromTop":6.168,"prompt":"The method of this small passenger vehicle to leave the expressway lane is correct.","options":[],"correctOptionId":null,"correctOptionKey":null,"correctRow":"R","correctAnswerText":"right / true","hasImage":true,"imagePath":"../../../public/qbank/2023-test1/images/img_6861187521c054495274830602e2a103.jpeg"}]},{"id":"unresolved:screenshots/Screenshot 2026-04-07 at 17.50.54.png","section":"unresolved","index":1,"itemId":"screenshots/Screenshot 2026-04-07 at 17.50.54.png","sourceImage":"screenshots/Screenshot 2026-04-07 at 17.50.54.png","screenshotPath":"../../../imports/ja/batch-004/screenshots/Screenshot 2026-04-07 at 17.50.54.png","hasImage":true,"candidateSetLabel":"image-only candidate set","initialSuggestedQid":"q0530","currentStagedLocaleCorrectOptionKey":null,"effectiveQuestionType":"ROW","promptRawJa":"このスイッチを上下に引くと、フロントガラスのワイパーが作動する。","promptGlossEn":"If you pull this switch up or down, the windshield wipers will operate.","optionsRawJa":["A Yes","B No"],"optionsGlossEn":["Yes","No"],"correctKeyRaw":null,"correctAnswerRaw":null,"ocrConfidence":"high","provisionalTopic":null,"provisionalSubtopics":[],"topicConfidence":0,"topicSignals":[],"sourceConceptSlots":{"condition":[],"context":[],"action":[],"polarity":null,"signals":[]},"reason":"No candidate passed the minimum similarity threshold.","analysis":{"mode":"standard","effectiveQuestionType":"ROW","declaredQuestionType":"MCQ","booleanChoiceDetected":true,"topScore":42.637,"topGap":3.901,"plausibleShortlist":true,"imageParityApplied":true,"candidateImageParityMode":"image-only candidate set","candidateCountBeforeParity":973,"candidateCountAfterParity":491,"explanation":"Shortlist is plausible but still below the review floor."},"recommendedAction":"possible-existing-qid-rescue","topCandidates":[{"qid":"q0530","number":530,"type":"ROW","score":42.637,"scoreGapFromTop":0,"prompt":"Move the switch up and down, and the windscreen wipers start working.","options":[],"correctOptionId":null,"correctOptionKey":null,"correctRow":"R","correctAnswerText":"right / true","hasImage":true,"imagePath":"../../../public/qbank/2023-test1/images/p46-530.jpg"},{"qid":"q0529","number":529,"type":"ROW","score":38.736,"scoreGapFromTop":3.901,"prompt":"Pulling down the switch of the turn signal, turns the right-turn signal on.","options":[],"correctOptionId":null,"correctOptionKey":null,"correctRow":"W","correctAnswerText":"wrong / false","hasImage":true,"imagePath":"../../../public/qbank/2023-test1/images/img_fe03dac8e4025cc02d2d45c9eed02bac.jpeg"},{"qid":"q0547","number":547,"type":"ROW","score":37.927,"scoreGapFromTop":4.71,"prompt":"The rear windshield defroster starts to work after pressing this switch.","options":[],"correctOptionId":null,"correctOptionKey":null,"correctRow":"W","correctAnswerText":"wrong / false","hasImage":true,"imagePath":"../../../public/qbank/2023-test1/images/img_77220d7c5a01fe7848b9b5b63580bc67.jpeg"},{"qid":"q0538","number":538,"type":"ROW","score":35.304,"scoreGapFromTop":7.333,"prompt":"The steering wheel will be locked if you remove the key while the ignition switch is still in the LOCK position.","options":[],"correctOptionId":null,"correctOptionKey":null,"correctRow":"R","correctAnswerText":"right / true","hasImage":true,"imagePath":"../../../public/qbank/2023-test1/images/img_0d7bf0f0dcfd89d2be82df8a59e965e1.jpeg"}]},{"id":"unresolved:screenshots/Screenshot 2026-04-07 at 17.50.55.png","section":"unresolved","index":2,"itemId":"screenshots/Screenshot 2026-04-07 at 17.50.55.png","sourceImage":"screenshots/Screenshot 2026-04-07 at 17.50.55.png","screenshotPath":"../../../imports/ja/batch-004/screenshots/Screenshot 2026-04-07 at 17.50.55.png","hasImage":false,"candidateSetLabel":"text-only candidate set","initialSuggestedQid":"q0492","currentStagedLocaleCorrectOptionKey":"D","effectiveQuestionType":"MCQ","promptRawJa":"前車が停車し列を作って待っているあるいは徐行している場合、どう対応するのが適切か。","promptGlossEn":"When the car in front is stopped and waiting in a line or moving slowly, what is the appropriate way to respond?","optionsRawJa":["A 他の車線を利用して追い越す","B 対向車線を利用する","C 待っている車両のすき間に割り込む","D 順番に走行する"],"optionsGlossEn":["A. Overtake using another lane","B. Use the oncoming lane","C. Cut into the gap between the waiting cars","D. Proceed in order"],"correctKeyRaw":null,"correctAnswerRaw":null,"ocrConfidence":"high","provisionalTopic":"road-safety","provisionalSubtopics":["road-safety:road-conditions","proper-driving:safe-driving"],"topicConfidence":0.52,"topicSignals":[{"topic":"road-safety","subtopic":"road-safety:road-conditions","signal":"road-condition-or-hazard","weight":1.3},{"topic":"proper-driving","subtopic":"proper-driving:safe-driving","signal":"driving-action","weight":1.2}],"sourceConceptSlots":null,"reason":"No candidate passed the minimum similarity threshold.","analysis":{"mode":"standard","effectiveQuestionType":"MCQ","declaredQuestionType":"MCQ","booleanChoiceDetected":false,"topScore":41.193,"topGap":4.711,"plausibleShortlist":true,"imageParityApplied":true,"candidateImageParityMode":"text-only candidate set","candidateCountBeforeParity":973,"candidateCountAfterParity":482,"explanation":"Shortlist is plausible but still below the review floor."},"recommendedAction":"possible-existing-qid-rescue","topCandidates":[{"qid":"q0492","number":492,"type":"MCQ","score":41.193,"scoreGapFromTop":0,"prompt":"When encountering stopping and waiting in turn or slow-moving vehicles in front, the motorized vehicle may ______.","options":[{"id":"A","text":"borrow road to overtake"},{"id":"B","text":"occupy the opposite lane"},{"id":"C","text":"follow the vehicles in front"},{"id":"D","text":"cut in the waiting vehicles"}],"correctOptionId":"q0492_o3","correctOptionKey":"C","correctRow":null,"correctAnswerText":"follow the vehicles in front","hasImage":false,"imagePath":null},{"qid":"q0138","number":138,"type":"MCQ","score":36.481,"scoreGapFromTop":4.712,"prompt":"When encountering an ambulance rushing in the same lane in the opposite direction, the driver should ______.","options":[{"id":"A","text":"move to the road side, reduce speed, or stop to yield"},{"id":"B","text":"drive on by using another lane"},{"id":"C","text":"speed up and change lane to avoid"},{"id":"D","text":"continue to go in the original lane"}],"correctOptionId":"q0138_o1","correctOptionKey":"A","correctRow":null,"correctAnswerText":"move to the road side, reduce speed, or stop to yield","hasImage":false,"imagePath":null},{"qid":"q0143","number":143,"type":"MCQ","score":35.785,"scoreGapFromTop":5.408,"prompt":"When driving on an expressway that has four lanes in the same direction, the vehicles whose speed is higher than 110 km/h should drive on the ______.","options":[{"id":"A","text":"far left lane"},{"id":"B","text":"second left lane"},{"id":"C","text":"far right lane"},{"id":"D","text":"third left lane"}],"correctOptionId":"q0143_o1","correctOptionKey":"A","correctRow":null,"correctAnswerText":"far left lane","hasImage":false,"imagePath":null},{"qid":"q0458","number":458,"type":"MCQ","score":34.939,"scoreGapFromTop":6.254,"prompt":"What do you do if there is a traffic jam at an intersection?","options":[{"id":"A","text":"Borrow the opposite lane to pass."},{"id":"B","text":"Stop and wait outside the intersection."},{"id":"C","text":"Cut in the front vehicles to pass."},{"id":"D","text":"Enter the intersection and wait."}],"correctOptionId":"q0458_o2","correctOptionKey":"B","correctRow":null,"correctAnswerText":"Stop and wait outside the intersection.","hasImage":false,"imagePath":null}]},{"id":"unresolved:screenshots/Screenshot 2026-04-07 at 17.50.58.png","section":"unresolved","index":3,"itemId":"screenshots/Screenshot 2026-04-07 at 17.50.58.png","sourceImage":"screenshots/Screenshot 2026-04-07 at 17.50.58.png","screenshotPath":"../../../imports/ja/batch-004/screenshots/Screenshot 2026-04-07 at 17.50.58.png","hasImage":false,"candidateSetLabel":"text-only candidate set","initialSuggestedQid":"q0370","currentStagedLocaleCorrectOptionKey":"B","effectiveQuestionType":"MCQ","promptRawJa":"運転者がに12点減点されるがつくのは、どの違法行為か。","promptGlossEn":"Which illegal act will result in a driver receiving a 12-point deduction?","optionsRawJa":["A 交通信号に違反する","B 偽造されたナンバープレートを使用する","C 禁止標識の指示に違反する","D 電話をかける、または電話に出る"],"optionsGlossEn":["A. Violating a traffic signal","B. Using a forged license plate","C. Violating a prohibited sign","D. Making or answering a phone call"],"correctKeyRaw":null,"correctAnswerRaw":null,"ocrConfidence":"high","provisionalTopic":"road-safety","provisionalSubtopics":["road-safety:license","proper-driving:traffic-laws","traffic-signals:road-signs"],"topicConfidence":0.5,"topicSignals":[{"topic":"road-safety","subtopic":"road-safety:license","signal":"license","weight":1.15},{"topic":"proper-driving","subtopic":"proper-driving:traffic-laws","signal":"traffic-law","weight":1.15},{"topic":"traffic-signals","subtopic":"traffic-signals:road-signs","signal":"sign-family","weight":1.1}],"sourceConceptSlots":null,"reason":"No candidate passed the minimum similarity threshold.","analysis":{"mode":"standard","effectiveQuestionType":"MCQ","declaredQuestionType":"MCQ","booleanChoiceDetected":false,"topScore":43.533,"topGap":7.026,"plausibleShortlist":true,"imageParityApplied":true,"candidateImageParityMode":"text-only candidate set","candidateCountBeforeParity":973,"candidateCountAfterParity":482,"explanation":"Shortlist is plausible but still below the review floor."},"recommendedAction":"possible-existing-qid-rescue","topCandidates":[{"qid":"q0370","number":370,"type":"MCQ","score":43.533,"scoreGapFromTop":0,"prompt":"Which illegal conduct is subject to a 12-point penalty?","options":[{"id":"A","text":"violating traffic lights"},{"id":"B","text":"using falsified license plate"},{"id":"C","text":"calling or answering the mobile phone"},{"id":"D","text":"violating prohibitive signs"}],"correctOptionId":"q0370_o2","correctOptionKey":"B","correctRow":null,"correctAnswerText":"using falsified license plate","hasImage":false,"imagePath":null},{"qid":"q0405","number":405,"type":"MCQ","score":36.507,"scoreGapFromTop":7.026,"prompt":"A fine of 200~2000 yuan and driving license will be revoked if ______.","options":[{"id":"A","text":"violating traffic regulations"},{"id":"B","text":"driving 50% faster than the specified speed limit"},{"id":"C","text":"escaping after causing traffic accident"},{"id":"D","text":"driving without a driver license"}],"correctOptionId":"q0405_o2","correctOptionKey":"B","correctRow":null,"correctAnswerText":"driving 50% faster than the specified speed limit","hasImage":false,"imagePath":null},{"qid":"q0422","number":422,"type":"MCQ","score":33.723,"scoreGapFromTop":9.81,"prompt":"In which situation will a driver not be allowed to drive?","options":[{"id":"A","text":"penalty points reach 10 points"},{"id":"B","text":"penalty points reach 6 points"},{"id":"C","text":"driving license lost or destroyed"},{"id":"D","text":"driving license is nearly expired"}],"correctOptionId":"q0422_o3","correctOptionKey":"C","correctRow":null,"correctAnswerText":"driving license lost or destroyed","hasImage":false,"imagePath":null},{"qid":"q0433","number":433,"type":"MCQ","score":33.611,"scoreGapFromTop":9.922,"prompt":"Which is subject to a 12-point penalty?","options":[{"id":"A","text":"Driving a motorized vehicle when driving license is temporarily detained."},{"id":"B","text":"Applying for reissuing the driving license by concealment or deception."},{"id":"C","text":"Not yielding to the school bus according to regulations."},{"id":"D","text":"Driving with the license plate deliberately stained."}],"correctOptionId":"q0433_o4","correctOptionKey":"D","correctRow":null,"correctAnswerText":"Driving with the license plate deliberately stained.","hasImage":false,"imagePath":null}]},{"id":"unresolved:screenshots/Screenshot 2026-04-07 at 17.51.01.png","section":"unresolved","index":4,"itemId":"screenshots/Screenshot 2026-04-07 at 17.51.01.png","sourceImage":"screenshots/Screenshot 2026-04-07 at 17.51.01.png","screenshotPath":"../../../imports/ja/batch-004/screenshots/Screenshot 2026-04-07 at 17.51.01.png","hasImage":false,"candidateSetLabel":"text-only candidate set","initialSuggestedQid":"q0264","currentStagedLocaleCorrectOptionKey":null,"effectiveQuestionType":"ROW","promptRawJa":"道路交通安全達法による累積点数の制限は、一計算周期につき12点である。","promptGlossEn":"The cumulative point limit according to the Road Traffic Safety Act is 12 points per calculation period.","optionsRawJa":["A Yes","B No"],"optionsGlossEn":["A Yes","B No"],"correctKeyRaw":null,"correctAnswerRaw":null,"ocrConfidence":"high","provisionalTopic":null,"provisionalSubtopics":[],"topicConfidence":0,"topicSignals":[],"sourceConceptSlots":{"condition":[],"context":[],"action":[],"polarity":null,"signals":[]},"reason":"No candidate passed the minimum similarity threshold.","analysis":{"mode":"standard","effectiveQuestionType":"ROW","declaredQuestionType":"MCQ","booleanChoiceDetected":true,"topScore":42.839,"topGap":1.224,"plausibleShortlist":true,"imageParityApplied":true,"candidateImageParityMode":"text-only candidate set","candidateCountBeforeParity":973,"candidateCountAfterParity":482,"explanation":"Shortlist is plausible but still below the review floor."},"recommendedAction":"still-unclear","topCandidates":[{"qid":"q0264","number":264,"type":"ROW","score":42.839,"scoreGapFromTop":0,"prompt":"Causing a traffic accident due to violating the law and regulations on road traffic safety is a rule-breaking act.","options":[],"correctOptionId":null,"correctOptionKey":null,"correctRow":"W","correctAnswerText":"wrong / false","hasImage":false,"imagePath":null},{"qid":"q0323","number":323,"type":"ROW","score":41.615,"scoreGapFromTop":1.224,"prompt":"Violating the law and regulations of road traffic safety is the act of violation of the law.","options":[],"correctOptionId":null,"correctOptionKey":null,"correctRow":"R","correctAnswerText":"right / true","hasImage":false,"imagePath":null},{"qid":"q0251","number":251,"type":"ROW","score":40.009,"scoreGapFromTop":2.83,"prompt":"Full penalty points of a scoring cycle because of violating the traffic regulations is 12 points.","options":[],"correctOptionId":null,"correctOptionKey":null,"correctRow":"R","correctAnswerText":"right / true","hasImage":false,"imagePath":null},{"qid":"q0060","number":60,"type":"ROW","score":37.739,"scoreGapFromTop":5.1,"prompt":"According to the rules on road traffic safety, the maximum speed on the expressway is less than 120km/hr, thus, it will not be in violation of the traffic regulations as long as the speed does not exceed 120km/hr on the expressway.","options":[],"correctOptionId":null,"correctOptionKey":null,"correctRow":"W","correctAnswerText":"wrong / false","hasImage":false,"imagePath":null}]},{"id":"unresolved:screenshots/Screenshot 2026-04-07 at 17.51.16.png","section":"unresolved","index":5,"itemId":"screenshots/Screenshot 2026-04-07 at 17.51.16.png","sourceImage":"screenshots/Screenshot 2026-04-07 at 17.51.16.png","screenshotPath":"../../../imports/ja/batch-004/screenshots/Screenshot 2026-04-07 at 17.51.16.png","hasImage":true,"candidateSetLabel":"image-only candidate set","initialSuggestedQid":"q0629","currentStagedLocaleCorrectOptionKey":"D","effectiveQuestionType":"MCQ","promptRawJa":"自動車のインパネのの点灯は、何を示しているか。","promptGlossEn":"What does the indicator light on the car's dashboard show?","optionsRawJa":["A ブレーキ液の不足","B 洗浄剤の不足","C 冷却システムの故障","D 冷却液の不足"],"optionsGlossEn":["A. Low brake fluid","B. Low washer fluid","C. Cooling system failure","D. Low coolant"],"correctKeyRaw":null,"correctAnswerRaw":null,"ocrConfidence":"high","provisionalTopic":"traffic-signals","provisionalSubtopics":["traffic-signals:road-markings","driving-operations:indicators"],"topicConfidence":0.5,"topicSignals":[{"topic":"traffic-signals","subtopic":"traffic-signals:road-markings","signal":"road-marking","weight":1.25},{"topic":"driving-operations","subtopic":"driving-operations:indicators","signal":"indicator-operation","weight":1.25}],"sourceConceptSlots":null,"reason":"No candidate passed the minimum similarity threshold.","analysis":{"mode":"standard","effectiveQuestionType":"MCQ","declaredQuestionType":"MCQ","booleanChoiceDetected":false,"topScore":39.886,"topGap":2.724,"plausibleShortlist":true,"imageParityApplied":true,"candidateImageParityMode":"image-only candidate set","candidateCountBeforeParity":973,"candidateCountAfterParity":491,"explanation":"Shortlist is plausible but still below the review floor."},"recommendedAction":"still-unclear","topCandidates":[{"qid":"q0629","number":629,"type":"MCQ","score":39.886,"scoreGapFromTop":0,"prompt":"This lights up to indicate that the ______.","options":[{"id":"A","text":"windscreen wash is lacking"},{"id":"B","text":"braking oil is lacking"},{"id":"C","text":"cooling system has a malfunction"},{"id":"D","text":"coolant is lacking"}],"correctOptionId":"q0629_o4","correctOptionKey":"D","correctRow":null,"correctAnswerText":"coolant is lacking","hasImage":true,"imagePath":"../../../public/qbank/2023-test1/images/img_03be883c0b895c93b4a7b923c25b1e8e.jpeg"},{"qid":"q0627","number":627,"type":"MCQ","score":37.163,"scoreGapFromTop":2.723,"prompt":"This lights up while driving to indicate that the ______.","options":[{"id":"A","text":"engine temperature is too high"},{"id":"B","text":"engine cooling system has a malfunction"},{"id":"C","text":"engine lubrication system has a malfunction"},{"id":"D","text":"engine temperature is too low"}],"correctOptionId":"q0627_o1","correctOptionKey":"A","correctRow":null,"correctAnswerText":"engine temperature is too high","hasImage":true,"imagePath":"../../../public/qbank/2023-test1/images/img_8b804cf3856b0ed40d8e31151f0c6908.jpeg"},{"qid":"q0604","number":604,"type":"MCQ","score":34.933,"scoreGapFromTop":4.953,"prompt":"This lights up to indicate that the ______.","options":[{"id":"A","text":"handbrake is released"},{"id":"B","text":"foot brake has failure"},{"id":"C","text":"braking system is abnormal"},{"id":"D","text":"brake pedal does not return back"}],"correctOptionId":"q0604_o3","correctOptionKey":"C","correctRow":null,"correctAnswerText":"braking system is abnormal","hasImage":true,"imagePath":"../../../public/qbank/2023-test1/images/img_899ee2adccff03327e47d9c523d0f8c6.jpeg"},{"qid":"q0601","number":601,"type":"MCQ","score":32.52,"scoreGapFromTop":7.366,"prompt":"This lights up to indicate of a(n) ______.","options":[{"id":"A","text":"ABS system malfunction"},{"id":"B","text":"handbrake release"},{"id":"C","text":"braking system malfunction"},{"id":"D","text":"handbrake is pulled up"}],"correctOptionId":"q0601_o4","correctOptionKey":"D","correctRow":null,"correctAnswerText":"handbrake is pulled up","hasImage":true,"imagePath":"../../../public/qbank/2023-test1/images/img_a8e7279483a478741b758080dc9615ac.jpeg"}]}];
+    const ITEMS_BY_ID = new Map(ITEMS.map((item) => [item.id, item]));
+    const INITIAL_DECISIONS = [{"id":"auto-matched:screenshots/Screenshot 2026-04-07 at 17.51.12.png","section":"auto-matched","itemId":"screenshots/Screenshot 2026-04-07 at 17.51.12.png","sourceImage":"screenshots/Screenshot 2026-04-07 at 17.51.12.png","qid":"q0078","approvedQid":"q0078","initialSuggestedQid":"q0078","createNewQuestion":false,"keepUnresolved":false,"confirmedCorrectOptionKey":null,"answerKeyUnknown":false,"currentStagedLocaleCorrectOptionKey":null,"useCurrentStagedAnswerKey":false,"reviewerNotes":"","newQuestionProvisionalTopic":"road-safety","newQuestionProvisionalSubtopics":["road-safety:road-conditions","traffic-signals:road-markings"]},{"id":"auto-matched:screenshots/Screenshot 2026-04-07 at 17.51.16 1.png","section":"auto-matched","itemId":"screenshots/Screenshot 2026-04-07 at 17.51.16 1.png","sourceImage":"screenshots/Screenshot 2026-04-07 at 17.51.16 1.png","qid":"q0284","approvedQid":"q0284","initialSuggestedQid":"q0284","createNewQuestion":false,"keepUnresolved":false,"confirmedCorrectOptionKey":null,"answerKeyUnknown":false,"currentStagedLocaleCorrectOptionKey":null,"useCurrentStagedAnswerKey":false,"reviewerNotes":"","newQuestionProvisionalTopic":"proper-driving","newQuestionProvisionalSubtopics":["proper-driving:safe-driving"]},{"id":"auto-matched:screenshots/Screenshot 2026-04-07 at 17.51.18.png","section":"auto-matched","itemId":"screenshots/Screenshot 2026-04-07 at 17.51.18.png","sourceImage":"screenshots/Screenshot 2026-04-07 at 17.51.18.png","qid":"q0195","approvedQid":"q0195","initialSuggestedQid":"q0195","createNewQuestion":false,"keepUnresolved":false,"confirmedCorrectOptionKey":null,"answerKeyUnknown":false,"currentStagedLocaleCorrectOptionKey":null,"useCurrentStagedAnswerKey":false,"reviewerNotes":"","newQuestionProvisionalTopic":"proper-driving","newQuestionProvisionalSubtopics":["proper-driving:safe-driving"]},{"id":"review-needed:screenshots/100.png","section":"review-needed","itemId":"screenshots/100.png","sourceImage":"screenshots/100.png","qid":null,"approvedQid":null,"initialSuggestedQid":"q0784","createNewQuestion":false,"keepUnresolved":false,"confirmedCorrectOptionKey":null,"answerKeyUnknown":false,"currentStagedLocaleCorrectOptionKey":"D","useCurrentStagedAnswerKey":false,"reviewerNotes":"","newQuestionProvisionalTopic":"traffic-signals","newQuestionProvisionalSubtopics":["traffic-signals:road-signs"]},{"id":"review-needed:screenshots/Screenshot 2026-04-07 at 17.50.56.png","section":"review-needed","itemId":"screenshots/Screenshot 2026-04-07 at 17.50.56.png","sourceImage":"screenshots/Screenshot 2026-04-07 at 17.50.56.png","qid":null,"approvedQid":null,"initialSuggestedQid":"q0692","createNewQuestion":false,"keepUnresolved":false,"confirmedCorrectOptionKey":null,"answerKeyUnknown":false,"currentStagedLocaleCorrectOptionKey":"A","useCurrentStagedAnswerKey":false,"reviewerNotes":"","newQuestionProvisionalTopic":"traffic-signals","newQuestionProvisionalSubtopics":["traffic-signals:police-signals","proper-driving:safe-driving"]},{"id":"review-needed:screenshots/Screenshot 2026-04-07 at 17.50.57 1.png","section":"review-needed","itemId":"screenshots/Screenshot 2026-04-07 at 17.50.57 1.png","sourceImage":"screenshots/Screenshot 2026-04-07 at 17.50.57 1.png","qid":null,"approvedQid":null,"initialSuggestedQid":"q0095","createNewQuestion":false,"keepUnresolved":false,"confirmedCorrectOptionKey":null,"answerKeyUnknown":false,"currentStagedLocaleCorrectOptionKey":null,"useCurrentStagedAnswerKey":false,"reviewerNotes":"","newQuestionProvisionalTopic":"road-safety","newQuestionProvisionalSubtopics":["road-safety:road-conditions"]},{"id":"review-needed:screenshots/Screenshot 2026-04-07 at 17.50.57.png","section":"review-needed","itemId":"screenshots/Screenshot 2026-04-07 at 17.50.57.png","sourceImage":"screenshots/Screenshot 2026-04-07 at 17.50.57.png","qid":null,"approvedQid":null,"initialSuggestedQid":"q0426","createNewQuestion":false,"keepUnresolved":false,"confirmedCorrectOptionKey":null,"answerKeyUnknown":false,"currentStagedLocaleCorrectOptionKey":"A","useCurrentStagedAnswerKey":false,"reviewerNotes":"","newQuestionProvisionalTopic":"traffic-signals","newQuestionProvisionalSubtopics":["traffic-signals:road-markings","proper-driving:safe-driving"]},{"id":"review-needed:screenshots/Screenshot 2026-04-07 at 17.50.59.png","section":"review-needed","itemId":"screenshots/Screenshot 2026-04-07 at 17.50.59.png","sourceImage":"screenshots/Screenshot 2026-04-07 at 17.50.59.png","qid":null,"approvedQid":null,"initialSuggestedQid":"q0610","createNewQuestion":false,"keepUnresolved":false,"confirmedCorrectOptionKey":null,"answerKeyUnknown":false,"currentStagedLocaleCorrectOptionKey":"C","useCurrentStagedAnswerKey":false,"reviewerNotes":"","newQuestionProvisionalTopic":"driving-operations","newQuestionProvisionalSubtopics":["driving-operations:indicators"]},{"id":"review-needed:screenshots/Screenshot 2026-04-07 at 17.51.00.png","section":"review-needed","itemId":"screenshots/Screenshot 2026-04-07 at 17.51.00.png","sourceImage":"screenshots/Screenshot 2026-04-07 at 17.51.00.png","qid":null,"approvedQid":null,"initialSuggestedQid":"q0673","createNewQuestion":false,"keepUnresolved":false,"confirmedCorrectOptionKey":null,"answerKeyUnknown":false,"currentStagedLocaleCorrectOptionKey":"A","useCurrentStagedAnswerKey":false,"reviewerNotes":"","newQuestionProvisionalTopic":"traffic-signals","newQuestionProvisionalSubtopics":["traffic-signals:road-signs"]},{"id":"review-needed:screenshots/Screenshot 2026-04-07 at 17.51.02 1.png","section":"review-needed","itemId":"screenshots/Screenshot 2026-04-07 at 17.51.02 1.png","sourceImage":"screenshots/Screenshot 2026-04-07 at 17.51.02 1.png","qid":null,"approvedQid":null,"initialSuggestedQid":"q0889","createNewQuestion":false,"keepUnresolved":false,"confirmedCorrectOptionKey":null,"answerKeyUnknown":false,"currentStagedLocaleCorrectOptionKey":"C","useCurrentStagedAnswerKey":false,"reviewerNotes":"","newQuestionProvisionalTopic":"proper-driving","newQuestionProvisionalSubtopics":["traffic-signals:road-signs","proper-driving:safe-driving","proper-driving:traffic-laws"]},{"id":"review-needed:screenshots/Screenshot 2026-04-07 at 17.51.02.png","section":"review-needed","itemId":"screenshots/Screenshot 2026-04-07 at 17.51.02.png","sourceImage":"screenshots/Screenshot 2026-04-07 at 17.51.02.png","qid":null,"approvedQid":null,"initialSuggestedQid":"q0307","createNewQuestion":false,"keepUnresolved":false,"confirmedCorrectOptionKey":null,"answerKeyUnknown":false,"currentStagedLocaleCorrectOptionKey":null,"useCurrentStagedAnswerKey":false,"reviewerNotes":"","newQuestionProvisionalTopic":"proper-driving","newQuestionProvisionalSubtopics":["proper-driving:safe-driving"]},{"id":"review-needed:screenshots/Screenshot 2026-04-07 at 17.51.13.png","section":"review-needed","itemId":"screenshots/Screenshot 2026-04-07 at 17.51.13.png","sourceImage":"screenshots/Screenshot 2026-04-07 at 17.51.13.png","qid":null,"approvedQid":null,"initialSuggestedQid":"q0820","createNewQuestion":false,"keepUnresolved":false,"confirmedCorrectOptionKey":null,"answerKeyUnknown":false,"currentStagedLocaleCorrectOptionKey":"B","useCurrentStagedAnswerKey":false,"reviewerNotes":"","newQuestionProvisionalTopic":"traffic-signals","newQuestionProvisionalSubtopics":["traffic-signals:road-signs"]},{"id":"review-needed:screenshots/Screenshot 2026-04-07 at 17.51.14.png","section":"review-needed","itemId":"screenshots/Screenshot 2026-04-07 at 17.51.14.png","sourceImage":"screenshots/Screenshot 2026-04-07 at 17.51.14.png","qid":null,"approvedQid":null,"initialSuggestedQid":"q0512","createNewQuestion":false,"keepUnresolved":false,"confirmedCorrectOptionKey":null,"answerKeyUnknown":false,"currentStagedLocaleCorrectOptionKey":"D","useCurrentStagedAnswerKey":false,"reviewerNotes":"","newQuestionProvisionalTopic":"road-safety","newQuestionProvisionalSubtopics":["road-safety:road-conditions","proper-driving:safe-driving","traffic-signals:road-signs"]},{"id":"review-needed:screenshots/Screenshot 2026-04-07 at 17.51.15.png","section":"review-needed","itemId":"screenshots/Screenshot 2026-04-07 at 17.51.15.png","sourceImage":"screenshots/Screenshot 2026-04-07 at 17.51.15.png","qid":null,"approvedQid":null,"initialSuggestedQid":"q0664","createNewQuestion":false,"keepUnresolved":false,"confirmedCorrectOptionKey":null,"answerKeyUnknown":false,"currentStagedLocaleCorrectOptionKey":"A","useCurrentStagedAnswerKey":false,"reviewerNotes":"","newQuestionProvisionalTopic":"traffic-signals","newQuestionProvisionalSubtopics":["traffic-signals:road-signs"]},{"id":"review-needed:screenshots/Screenshot 2026-04-07 at 17.51.17.png","section":"review-needed","itemId":"screenshots/Screenshot 2026-04-07 at 17.51.17.png","sourceImage":"screenshots/Screenshot 2026-04-07 at 17.51.17.png","qid":null,"approvedQid":null,"initialSuggestedQid":"q0259","createNewQuestion":false,"keepUnresolved":false,"confirmedCorrectOptionKey":null,"answerKeyUnknown":false,"currentStagedLocaleCorrectOptionKey":null,"useCurrentStagedAnswerKey":false,"reviewerNotes":"","newQuestionProvisionalTopic":null,"newQuestionProvisionalSubtopics":[]},{"id":"unresolved:screenshots/Screenshot 2026-04-07 at 17.50.54.png","section":"unresolved","itemId":"screenshots/Screenshot 2026-04-07 at 17.50.54.png","sourceImage":"screenshots/Screenshot 2026-04-07 at 17.50.54.png","qid":null,"approvedQid":null,"initialSuggestedQid":"q0530","createNewQuestion":false,"keepUnresolved":true,"confirmedCorrectOptionKey":null,"answerKeyUnknown":false,"currentStagedLocaleCorrectOptionKey":null,"useCurrentStagedAnswerKey":false,"reviewerNotes":"","newQuestionProvisionalTopic":null,"newQuestionProvisionalSubtopics":[]},{"id":"unresolved:screenshots/Screenshot 2026-04-07 at 17.50.55.png","section":"unresolved","itemId":"screenshots/Screenshot 2026-04-07 at 17.50.55.png","sourceImage":"screenshots/Screenshot 2026-04-07 at 17.50.55.png","qid":null,"approvedQid":null,"initialSuggestedQid":"q0492","createNewQuestion":false,"keepUnresolved":true,"confirmedCorrectOptionKey":null,"answerKeyUnknown":false,"currentStagedLocaleCorrectOptionKey":"D","useCurrentStagedAnswerKey":false,"reviewerNotes":"","newQuestionProvisionalTopic":"road-safety","newQuestionProvisionalSubtopics":["road-safety:road-conditions","proper-driving:safe-driving"]},{"id":"unresolved:screenshots/Screenshot 2026-04-07 at 17.50.58.png","section":"unresolved","itemId":"screenshots/Screenshot 2026-04-07 at 17.50.58.png","sourceImage":"screenshots/Screenshot 2026-04-07 at 17.50.58.png","qid":null,"approvedQid":null,"initialSuggestedQid":"q0370","createNewQuestion":false,"keepUnresolved":true,"confirmedCorrectOptionKey":null,"answerKeyUnknown":false,"currentStagedLocaleCorrectOptionKey":"B","useCurrentStagedAnswerKey":false,"reviewerNotes":"","newQuestionProvisionalTopic":"road-safety","newQuestionProvisionalSubtopics":["road-safety:license","proper-driving:traffic-laws","traffic-signals:road-signs"]},{"id":"unresolved:screenshots/Screenshot 2026-04-07 at 17.51.01.png","section":"unresolved","itemId":"screenshots/Screenshot 2026-04-07 at 17.51.01.png","sourceImage":"screenshots/Screenshot 2026-04-07 at 17.51.01.png","qid":null,"approvedQid":null,"initialSuggestedQid":"q0264","createNewQuestion":false,"keepUnresolved":true,"confirmedCorrectOptionKey":null,"answerKeyUnknown":false,"currentStagedLocaleCorrectOptionKey":null,"useCurrentStagedAnswerKey":false,"reviewerNotes":"","newQuestionProvisionalTopic":null,"newQuestionProvisionalSubtopics":[]},{"id":"unresolved:screenshots/Screenshot 2026-04-07 at 17.51.16.png","section":"unresolved","itemId":"screenshots/Screenshot 2026-04-07 at 17.51.16.png","sourceImage":"screenshots/Screenshot 2026-04-07 at 17.51.16.png","qid":null,"approvedQid":null,"initialSuggestedQid":"q0629","createNewQuestion":false,"keepUnresolved":true,"confirmedCorrectOptionKey":null,"answerKeyUnknown":false,"currentStagedLocaleCorrectOptionKey":"D","useCurrentStagedAnswerKey":false,"reviewerNotes":"","newQuestionProvisionalTopic":"traffic-signals","newQuestionProvisionalSubtopics":["traffic-signals:road-markings","driving-operations:indicators"]}];
+    const STORAGE_KEY = "qbank-workbench-ja-batch-004";
+    const EXPORT_FILE_NAME = "ja-batch-004-workbench-decisions.json";
+    const ACTIVE_REVIEW_LOCALE = "ja";
+    const ROW_DISPLAY_LABELS = {
+      en: { R: 'Right', W: 'Wrong' },
+      ko: { R: 'Y', W: 'N' },
+      ja: { R: 'Yes', W: 'No' },
+    };
+
+    function clone(value) {
+      return JSON.parse(JSON.stringify(value));
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return clone(INITIAL_DECISIONS);
+        const parsed = JSON.parse(raw);
+        if (!Array.isArray(parsed)) return clone(INITIAL_DECISIONS);
+        const byId = new Map(parsed.map((item) => [item.id, item]));
+        return INITIAL_DECISIONS.map((item) => ({ ...item, ...(byId.get(item.id) || {}) }));
+      } catch {
+        return clone(INITIAL_DECISIONS);
+      }
+    }
+
+    let state = loadState();
+
+    function saveState() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+
+    function download(filename, content, type) {
+      const blob = new Blob([content], { type });
+      const url = URL.createObjectURL(blob);
+      const anchor = document.createElement("a");
+      anchor.href = url;
+      anchor.download = filename;
+      document.body.appendChild(anchor);
+      anchor.click();
+      anchor.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    function exportJson() {
+      const payload = {
+        exportedAt: new Date().toISOString(),
+        lang: "ja",
+        batchId: "batch-004",
+        dataset: "2023-test1",
+        source: "workbench",
+        items: state,
+      };
+      download(EXPORT_FILE_NAME, JSON.stringify(payload, null, 2) + "\n", "application/json");
+    }
+
+    function getDecision(id) {
+      return state.find((item) => item.id === id);
+    }
+
+    function getCurrentStagedAnswerKey(id) {
+      return (
+        getDecision(id)?.currentStagedLocaleCorrectOptionKey ||
+        ITEMS_BY_ID.get(id)?.currentStagedLocaleCorrectOptionKey ||
+        null
+      );
+    }
+
+    function selectorForActiveElement(element) {
+      if (!element || element === document.body) {
+        return null;
+      }
+
+      if (element.dataset?.approvedQidFor) {
+        return '[data-approved-qid-for=' + JSON.stringify(element.dataset.approvedQidFor) + ']';
+      }
+
+      if (element.dataset?.notesFor) {
+        return '[data-notes-for=' + JSON.stringify(element.dataset.notesFor) + ']';
+      }
+
+      if (element.dataset?.newTopicFor) {
+        return '[data-new-topic-for=' + JSON.stringify(element.dataset.newTopicFor) + ']';
+      }
+
+      if (element.dataset?.newSubtopicsFor) {
+        return '[data-new-subtopics-for=' + JSON.stringify(element.dataset.newSubtopicsFor) + ']';
+      }
+
+      if (element.dataset?.useCurrentAnswerKey) {
+        return '[data-use-current-answer-key=' + JSON.stringify(element.dataset.useCurrentAnswerKey) + ']';
+      }
+
+      if (element.dataset?.useQid && element.dataset?.qid) {
+        return '[data-use-qid=' + JSON.stringify(element.dataset.useQid) + '][data-qid=' + JSON.stringify(element.dataset.qid) + ']';
+      }
+
+      if (element.name && element.value) {
+        return '[name=' + JSON.stringify(element.name) + '][value=' + JSON.stringify(element.value) + ']';
+      }
+
+      return null;
+    }
+
+    function captureRenderContext() {
+      const active = document.activeElement;
+      const context = {
+        scrollX: window.scrollX,
+        scrollY: window.scrollY,
+        selector: selectorForActiveElement(active),
+      };
+
+      if (active && typeof active.selectionStart === 'number' && typeof active.selectionEnd === 'number') {
+        context.selectionStart = active.selectionStart;
+        context.selectionEnd = active.selectionEnd;
+      }
+
+      return context;
+    }
+
+    function restoreRenderContext(context) {
+      if (!context) {
+        return;
+      }
+
+      window.scrollTo(context.scrollX, context.scrollY);
+
+      if (!context.selector) {
+        return;
+      }
+
+      const nextActive = document.querySelector(context.selector);
+      if (!nextActive) {
+        return;
+      }
+
+      try {
+        nextActive.focus({ preventScroll: true });
+      } catch {
+        nextActive.focus();
+      }
+
+      if (
+        typeof context.selectionStart === 'number' &&
+        typeof context.selectionEnd === 'number' &&
+        typeof nextActive.setSelectionRange === 'function'
+      ) {
+        nextActive.setSelectionRange(context.selectionStart, context.selectionEnd);
+      }
+
+      window.scrollTo(context.scrollX, context.scrollY);
+    }
+
+    function updateDecision(id, patch, options = {}) {
+      state = state.map((item) => item.id === id ? { ...item, ...patch } : item);
+      saveState();
+
+      if (options.rerender !== false) {
+        render({ preserveContext: options.preserveContext !== false });
+      }
+    }
+
+    function useCandidate(id, qid) {
+      updateDecision(id, { approvedQid: qid || "", createNewQuestion: false, keepUnresolved: false });
+    }
+
+    function setDecisionMode(id, mode) {
+      if (mode === "approve") {
+        updateDecision(id, { createNewQuestion: false, keepUnresolved: false });
+        return;
+      }
+      if (mode === "new") {
+        updateDecision(id, { approvedQid: null, createNewQuestion: true, keepUnresolved: false });
+        return;
+      }
+      updateDecision(id, { approvedQid: null, createNewQuestion: false, keepUnresolved: true });
+    }
+
+    function itemNeedsStructuredAnswerKey(item, decision) {
+      return Boolean(
+        item &&
+        item.effectiveQuestionType === 'MCQ' &&
+        item.initialSuggestedQid &&
+        decision?.approvedQid &&
+        decision.approvedQid !== item.initialSuggestedQid
+      );
+    }
+
+    function hasStructuredAnswerKeyDecision(decision) {
+      return Boolean(
+        decision &&
+        (
+          decision.useCurrentStagedAnswerKey === true ||
+          decision.answerKeyUnknown === true ||
+          decision.confirmedCorrectOptionKey
+        )
+      );
+    }
+
+    function getRowDisplayLabel(rowValue) {
+      const labels = ROW_DISPLAY_LABELS[ACTIVE_REVIEW_LOCALE] || ROW_DISPLAY_LABELS.en;
+      return labels[rowValue] || ROW_DISPLAY_LABELS.en[rowValue] || rowValue || '';
+    }
+
+    function getRowCanonicalHint(rowValue) {
+      if (rowValue === 'R') {
+        return 'R · right / true';
+      }
+      if (rowValue === 'W') {
+        return 'W · wrong / false';
+      }
+      return '';
+    }
+
+    function normalizeRowValue(value) {
+      const normalized = String(value ?? '').trim().toLowerCase();
+      if (!normalized) {
+        return null;
+      }
+
+      if (
+        normalized === 'r' ||
+        normalized === 'right' ||
+        normalized === 'true' ||
+        normalized === 'yes' ||
+        normalized === 'y' ||
+        /(^|[^a-z])(yes|right|true|y)([^a-z]|$)/.test(normalized) ||
+        /はい/.test(normalized)
+      ) {
+        return 'R';
+      }
+
+      if (
+        normalized === 'w' ||
+        normalized === 'wrong' ||
+        normalized === 'false' ||
+        normalized === 'no' ||
+        normalized === 'n' ||
+        /(^|[^a-z])(no|wrong|false|n)([^a-z]|$)/.test(normalized) ||
+        /いいえ/.test(normalized)
+      ) {
+        return 'W';
+      }
+
+      return null;
+    }
+
+    function getRowSourceOptionMap(item) {
+      const rawOptions = Array.isArray(item?.optionsRawJa) ? item.optionsRawJa : [];
+      const optionGlosses = Array.isArray(item?.optionsGlossEn) ? item.optionsGlossEn : [];
+      const byRow = new Map();
+
+      rawOptions.forEach((option, index) => {
+        const rowValue = normalizeRowValue(option);
+        if (!rowValue || byRow.has(rowValue)) {
+          return;
+        }
+
+        byRow.set(rowValue, {
+          raw: option || '',
+          gloss: optionGlosses[index] || '',
+        });
+      });
+
+      return byRow;
+    }
+
+    function inferSourceRowSelection(item) {
+      const direct = normalizeRowValue(item?.correctAnswerRaw);
+      if (direct) {
+        return direct;
+      }
+
+      const key = String(item?.correctKeyRaw ?? '').trim().toUpperCase();
+      if (/^[A-D]$/.test(key)) {
+        const rawOptions = Array.isArray(item?.optionsRawJa) ? item.optionsRawJa : [];
+        const keyedOption = rawOptions.find((option) =>
+          String(option ?? '').trim().toUpperCase().startsWith(key)
+        );
+        const keyedRow = normalizeRowValue(keyedOption);
+        if (keyedRow) {
+          return keyedRow;
+        }
+      }
+
+      return null;
+    }
+
+    function renderNormalizedRowChoices({ highlightRow = null, rawByRow = null, sourceSide = false }) {
+      return '<ol class="options">' +
+        ['R', 'W'].map((rowValue) => {
+          const rawEntry = rawByRow?.get?.(rowValue) || null;
+          return '<li class="option' + (highlightRow === rowValue ? ' option-current' : '') + '">' +
+            '<div class="option-row"><div><span class="option-key">' + escapeHtml(getRowDisplayLabel(rowValue)) + '</span></div>' +
+              (highlightRow === rowValue ? '<span class="option-correct-badge">Correct</span>' : '') +
+            '</div>' +
+            '<div class="option-gloss">' + escapeHtml(getRowCanonicalHint(rowValue)) + '</div>' +
+            (sourceSide && rawEntry?.raw ? '<div class="option-gloss">OCR: ' + escapeHtml(rawEntry.raw) + '</div>' : '') +
+            (sourceSide && rawEntry?.gloss ? '<div class="option-gloss">Gloss: ' + escapeHtml(rawEntry.gloss) + '</div>' : '') +
+          '</li>';
+        }).join('') +
+      '</ol>';
+    }
+
+    function renderImage(item) {
+      if (!item.screenshotPath) {
+        return '<div class="image-frame"><div class="image-fallback">Screenshot not available</div></div>';
+      }
+      return renderInlineImage(item.screenshotPath, item.sourceImage || item.itemId || item.qid || "screenshot", "image-frame");
+    }
+
+    function renderInlineImage(imagePath, altText, frameClass) {
+      return '<div class="' + escapeHtml(frameClass || 'image-frame') + '">' +
+        '<img src="' + encodeURI(imagePath) + '" alt="' + escapeHtml(altText || "image") + '" onerror="this.style.display=\'none\'; this.nextElementSibling.style.display=\'block\';">' +
+        '<div class="image-fallback" style="display:none;">Unable to load image<div class="filename">' + escapeHtml(imagePath) + '</div></div>' +
+      '</div>';
+    }
+
+    function renderOptionList(item, highlightKey) {
+      const options = Array.isArray(item.optionsRawJa) ? item.optionsRawJa : [];
+      const glosses = Array.isArray(item.optionsGlossEn) ? item.optionsGlossEn : [];
+      return options.map((option, index) => {
+        const key = option && /^[A-D]/i.test(option) ? option.trim().charAt(0).toUpperCase() : String.fromCharCode(65 + index);
+        const isHighlight = highlightKey && highlightKey === key;
+        return '<li class="option' + (isHighlight ? ' option-current' : '') + '">' +
+          '<div class="option-row"><div><span class="option-key">' + escapeHtml(key) + '</span>' + escapeHtml(option || '') + '</div>' +
+            (isHighlight ? '<span class="option-correct-badge">Correct</span>' : '') +
+          '</div>' +
+          (glosses[index] ? '<div class="option-gloss">' + escapeHtml(glosses[index]) + '</div>' : '') +
+        '</li>';
+      }).join('');
+    }
+
+    function renderSourceOptionSection(item) {
+      if (item.effectiveQuestionType === 'ROW') {
+        return '<div><span class="label">ROW Choices</span>' +
+          renderNormalizedRowChoices({
+            highlightRow: inferSourceRowSelection(item),
+            rawByRow: getRowSourceOptionMap(item),
+            sourceSide: true,
+          }) +
+        '</div>';
+      }
+
+      if ((item.optionsRawJa || []).length > 0) {
+        return '<div><span class="label">Options</span><ol class="options">' + renderOptionList(item, item.section === 'answer-key' ? item.currentStagedLocaleCorrectOptionKey : null) + '</ol></div>';
+      }
+
+      return '';
+    }
+
+    function renderCandidate(candidate, itemId) {
+      const rowValue = normalizeRowValue(candidate.correctRow || candidate.correctAnswerText);
+      const correctOptionKey = String(candidate.correctOptionKey ?? '').trim().toUpperCase() || null;
+      const options = rowValue
+        ? renderNormalizedRowChoices({ highlightRow: rowValue })
+        : (candidate.options || []).map((option) => {
+          const optionKey = String(option.id ?? '').trim().toUpperCase() || null;
+          const isCorrect = Boolean(correctOptionKey && optionKey && optionKey === correctOptionKey);
+          return '<li class="option' + (isCorrect ? ' option-current' : '') + '">' +
+            '<div class="option-row"><div><span class="option-key">' + escapeHtml(option.id || '?') + '</span>' + escapeHtml(option.text || '') + '</div>' +
+              (isCorrect ? '<span class="option-correct-badge">Correct</span>' : '') +
+            '</div>' +
+          '</li>';
+        }).join('');
+      return '<article class="candidate">' +
+        '<div class="candidate-head">' +
+          '<div class="candidate-badges">' +
+            '<span class="pill note">' + escapeHtml(candidate.qid || 'unknown') + '</span>' +
+            '<span class="pill">#' + escapeHtml(candidate.number ?? '') + '</span>' +
+            '<span class="pill">' + escapeHtml(candidate.type || '') + '</span>' +
+            '<span class="pill">score ' + escapeHtml(candidate.score ?? '') + '</span>' +
+            (candidate.scoreGapFromTop != null ? '<span class="pill">gap ' + escapeHtml(candidate.scoreGapFromTop) + '</span>' : '') +
+            '<span class="pill">' + escapeHtml(candidate.hasImage ? 'has image' : 'no image') + '</span>' +
+          '</div>' +
+          '<button type="button" data-use-qid="' + escapeHtml(itemId) + '" data-qid="' + escapeHtml(candidate.qid || '') + '">Use qid</button>' +
+        '</div>' +
+        '<div class="prompt">' + escapeHtml(candidate.prompt || '') + '</div>' +
+        (candidate.imagePath
+          ? '<div class="candidate-media">' + renderInlineImage(candidate.imagePath, candidate.qid || 'candidate image', 'image-frame candidate-image-frame') + '</div>'
+          : '') +
+        (options ? (rowValue ? options : '<ol class="options">' + options + '</ol>') : '') +
+        (rowValue
+          ? '<div class="gloss">Correct: ' + escapeHtml(getRowDisplayLabel(rowValue)) + '</div>'
+          : (candidate.correctAnswerText ? '<div class="gloss">Correct answer: ' + escapeHtml(candidate.correctAnswerText) + '</div>' : '')) +
+        (candidate.imagePath ? '<div class="filename">' + escapeHtml(candidate.imagePath) + '</div>' : '') +
+      '</article>';
+    }
+
+    function renderStructuredAnswerKeyNote(item, decision) {
+      const needsStructuredAnswerKey = itemNeedsStructuredAnswerKey(item, decision);
+      const hasStructuredAnswerKey = hasStructuredAnswerKeyDecision(decision);
+
+      if (!needsStructuredAnswerKey) {
+        return '';
+      }
+
+      return '<div class="fact' + (hasStructuredAnswerKey ? '' : ' warn') + '"><span class="label">Answer-Key Confirmation</span><div class="value">' +
+        escapeHtml(
+          hasStructuredAnswerKey
+            ? 'Structured locale answer-key confirmation recorded for manual qid change from ' + String(item.initialSuggestedQid || '') + '.'
+            : 'Required because approved qid differs from initial suggestion ' + String(item.initialSuggestedQid || '') + '. Select "Use current staged key", choose A/B/C/D, or mark unknown.'
+        ) +
+      '</div></div>';
+    }
+
+    function renderDecisionPanel(item, decision) {
+      const answerChoices = ['A', 'B', 'C', 'D', 'unknown'].map((choice) => {
+        const checked = choice === 'unknown'
+          ? decision.answerKeyUnknown === true
+          : decision.confirmedCorrectOptionKey === choice;
+        return '<label><input type="radio" name="answer-' + escapeHtml(item.id) + '" value="' + escapeHtml(choice) + '"' + (checked ? ' checked' : '') + '>' +
+          '<span>' + escapeHtml(choice.toUpperCase()) + '</span></label>';
+      }).join('');
+      const needsStructuredAnswerKey = itemNeedsStructuredAnswerKey(item, decision);
+
+      if (item.section === 'answer-key') {
+        return '<div class="decision-block">' +
+          '<div class="decision-row"><span class="label">Current Staged Key</span><div class="fact"><div class="value mono">' + escapeHtml(item.currentStagedLocaleCorrectOptionKey || 'unknown') + '</div></div></div>' +
+          '<div class="decision-row"><span class="label">Confirm / Override</span><div class="answer-key-choices">' + answerChoices + '</div>' +
+            (item.currentStagedLocaleCorrectOptionKey
+              ? '<div class="answer-key-toolbar"><button type="button" data-use-current-answer-key="' + escapeHtml(item.id) + '">Use current staged key (' + escapeHtml(item.currentStagedLocaleCorrectOptionKey) + ')</button></div>'
+              : '') + '</div>' +
+          '<label class="label" for="notes-' + escapeHtml(item.id) + '">Reviewer Notes</label>' +
+          '<textarea id="notes-' + escapeHtml(item.id) + '" data-notes-for="' + escapeHtml(item.id) + '">' + escapeHtml(decision.reviewerNotes || '') + '</textarea>' +
+        '</div>';
+      }
+
+      return '<div class="decision-block">' +
+        '<div class="decision-row">' +
+          '<span class="label">Decision</span>' +
+          '<div class="decision-actions">' +
+            '<label><input type="radio" name="mode-' + escapeHtml(item.id) + '" value="approve"' + (decision.approvedQid ? ' checked' : '') + '><span>' + escapeHtml(item.section === 'auto-matched' ? 'Confirm auto-match / existing qid' : 'Approve existing qid') + '</span></label>' +
+            '<label><input type="radio" name="mode-' + escapeHtml(item.id) + '" value="new"' + (decision.createNewQuestion ? ' checked' : '') + '><span>Create new question</span></label>' +
+            '<label><input type="radio" name="mode-' + escapeHtml(item.id) + '" value="unresolved"' + (!decision.approvedQid && !decision.createNewQuestion && decision.keepUnresolved ? ' checked' : '') + '><span>Keep unresolved</span></label>' +
+          '</div>' +
+        '</div>' +
+        '<div class="decision-row"><span class="label">Approved Qid</span><input type="text" value="' + escapeHtml(decision.approvedQid || '') + '" data-approved-qid-for="' + escapeHtml(item.id) + '" placeholder="q0123"></div>' +
+        (item.effectiveQuestionType === 'MCQ'
+          ? '<div class="decision-row"><span class="label" data-answer-key-label-for="' + escapeHtml(item.id) + '">Locale Answer Key' + (needsStructuredAnswerKey ? ' (required for manual qid change)' : ' (optional)') + '</span><div class="answer-key-choices">' + answerChoices + '</div>' +
+              (item.currentStagedLocaleCorrectOptionKey
+                ? '<div class="answer-key-toolbar"><button type="button" data-use-current-answer-key="' + escapeHtml(item.id) + '">Use current staged key (' + escapeHtml(item.currentStagedLocaleCorrectOptionKey) + ')</button></div>'
+                : '') +
+            '</div><div data-answer-key-note-for="' + escapeHtml(item.id) + '">' + renderStructuredAnswerKeyNote(item, decision) + '</div>'
+          : '') +
+        '<div class="decision-row"><span class="label">New-Question Topic (optional)</span><input type="text" value="' + escapeHtml(decision.newQuestionProvisionalTopic || '') + '" data-new-topic-for="' + escapeHtml(item.id) + '" placeholder="road-safety"></div>' +
+        '<div class="decision-row"><span class="label">New-Question Subtopics (comma or newline separated)</span><textarea data-new-subtopics-for="' + escapeHtml(item.id) + '" placeholder="traffic-signals:road-signs">' + escapeHtml((decision.newQuestionProvisionalSubtopics || []).join(', ')) + '</textarea></div>' +
+        '<label class="label" for="notes-' + escapeHtml(item.id) + '">Reviewer Notes</label>' +
+        '<textarea id="notes-' + escapeHtml(item.id) + '" data-notes-for="' + escapeHtml(item.id) + '">' + escapeHtml(decision.reviewerNotes || '') + '</textarea>' +
+      '</div>';
+    }
+
+    function renderCard(item) {
+      const decision = getDecision(item.id);
+      const facts = [];
+      if (item.reason) facts.push(['Reason', item.reason]);
+      if (item.ocrConfidence) facts.push(['OCR', item.ocrConfidence]);
+      if (item.section === 'auto-matched' && item.qid) facts.push(['Matched Qid', item.qid]);
+      if (item.section === 'auto-matched' && item.matchScore != null) facts.push(['Match Score', item.matchScore]);
+      if (item.section === 'auto-matched' && item.matchScoreGap != null) facts.push(['Match Gap', item.matchScoreGap]);
+      if (item.candidateSetLabel) facts.push(['Candidate Set', item.candidateSetLabel]);
+      if (item.initialSuggestedQid) facts.push(['Initial Suggested Qid', item.initialSuggestedQid]);
+      if (item.currentStagedLocaleCorrectOptionKey) facts.push(['Current Staged Key', item.currentStagedLocaleCorrectOptionKey]);
+      if (item.answerKeyNeedsManualConfirmation && item.answerKeyConfirmationReason) {
+        facts.push(['Answer-Key Check', item.answerKeyConfirmationReason]);
+      }
+      if (item.provisionalTopic) facts.push(['Topic', item.provisionalTopic]);
+      if (Array.isArray(item.provisionalSubtopics) && item.provisionalSubtopics.length > 0) facts.push(['Subtopics', item.provisionalSubtopics.join(', ')]);
+      if (item.section === 'answer-key') {
+        facts.push(['Canonical Prompt', item.canonicalPrompt || '']);
+        facts.push(['Canonical Correct', [item.canonicalCorrectOptionKey, item.canonicalCorrectOptionText].filter(Boolean).join(' · ')]);
+      }
+      return '<article class="item" data-item-id="' + escapeHtml(item.id) + '">' +
+        '<div>' +
+          '<div class="eyebrow">' + escapeHtml(item.section.replace('-', ' ')) + '</div>' +
+          '<h3>' + escapeHtml(item.section === 'answer-key' ? item.qid : (item.itemId || item.sourceImage || 'item')) + '</h3>' +
+          renderImage(item) +
+          '<div class="filename">' + escapeHtml(item.sourceImage || item.itemId || item.qid || '') + '</div>' +
+        '</div>' +
+        '<div class="source-block">' +
+          '<div class="source-card">' +
+            '<div><span class="label">Japanese Prompt</span><p class="prompt">' + escapeHtml(item.promptRawJa || '') + '</p>' + (item.promptGlossEn ? '<div class="gloss">' + escapeHtml(item.promptGlossEn) + '</div>' : '') + '</div>' +
+            renderSourceOptionSection(item) +
+            '<div class="mini-grid">' + facts.map(([label, value]) => '<div class="fact"><span class="label">' + escapeHtml(label) + '</span><div class="value">' + escapeHtml(value || '') + '</div></div>').join('') + '</div>' +
+            (item.section !== 'answer-key'
+              ? '<div><span class="label">Candidates</span><div class="candidate-list">' + (item.topCandidates || []).map((candidate) => renderCandidate(candidate, item.id)).join('') + '</div></div>'
+              : '<div><span class="label">Answer-Key Review</span><div class="fact"><div class="value">' + escapeHtml(item.answerKeyConfirmationReason || 'Manual confirmation required.') + '</div></div></div>') +
+            (item.analysis || item.sourceConceptSlots ? '<details><summary>Advanced Details</summary><pre>' + escapeHtml(JSON.stringify({ analysis: item.analysis || null, sourceConceptSlots: item.sourceConceptSlots || null }, null, 2)) + '</pre></details>' : '') +
+          '</div>' +
+        '</div>' +
+        renderDecisionPanel(item, decision) +
+      '</article>';
+    }
+
+    function renderSection(sectionId, items) {
+      const target = document.querySelector('[data-section-list="' + sectionId + '"]');
+      target.innerHTML = items.map((item) => renderCard(item)).join('');
+    }
+
+    function syncDecisionUi(id) {
+      const item = ITEMS_BY_ID.get(id);
+      const decision = getDecision(id);
+      if (!item || !decision) {
+        return;
+      }
+
+      const modeName = 'mode-' + id;
+      const approveRadio = document.querySelector('input[name=' + JSON.stringify(modeName) + '][value="approve"]');
+      const newRadio = document.querySelector('input[name=' + JSON.stringify(modeName) + '][value="new"]');
+      const unresolvedRadio = document.querySelector('input[name=' + JSON.stringify(modeName) + '][value="unresolved"]');
+
+      if (approveRadio) {
+        approveRadio.checked = Boolean(decision.approvedQid);
+      }
+      if (newRadio) {
+        newRadio.checked = Boolean(!decision.approvedQid && decision.createNewQuestion);
+      }
+      if (unresolvedRadio) {
+        unresolvedRadio.checked = Boolean(!decision.approvedQid && !decision.createNewQuestion && decision.keepUnresolved);
+      }
+
+      const answerKeyLabel = document.querySelector('[data-answer-key-label-for=' + JSON.stringify(id) + ']');
+      if (answerKeyLabel) {
+        answerKeyLabel.textContent = 'Locale Answer Key' + (
+          itemNeedsStructuredAnswerKey(item, decision)
+            ? ' (required for manual qid change)'
+            : ' (optional)'
+        );
+      }
+
+      const answerKeyNote = document.querySelector('[data-answer-key-note-for=' + JSON.stringify(id) + ']');
+      if (answerKeyNote) {
+        answerKeyNote.innerHTML = renderStructuredAnswerKeyNote(item, decision);
+      }
+    }
+
+    function bindEventHandlers() {
+      document.querySelectorAll('[data-use-qid]').forEach((button) => {
+        button.addEventListener('click', () => useCandidate(button.dataset.useQid, button.dataset.qid));
+      });
+
+      document.querySelectorAll('input[name^="mode-"]').forEach((input) => {
+        input.addEventListener('change', () => setDecisionMode(input.name.replace(/^mode-/, ''), input.value));
+      });
+
+      document.querySelectorAll('[data-approved-qid-for]').forEach((input) => {
+        input.addEventListener('input', () => {
+          const id = input.dataset.approvedQidFor;
+          updateDecision(
+            id,
+            {
+              approvedQid: input.value.trim() || null,
+              createNewQuestion: false,
+              keepUnresolved: false,
+            },
+            { rerender: false },
+          );
+          syncDecisionUi(id);
+        });
+      });
+
+      document.querySelectorAll('input[name^="answer-"]').forEach((input) => {
+        input.addEventListener('change', () => {
+          const id = input.name.replace(/^answer-/, '');
+          if (input.value === 'unknown') {
+            updateDecision(id, { confirmedCorrectOptionKey: null, useCurrentStagedAnswerKey: false, answerKeyUnknown: true });
+          } else {
+            updateDecision(id, { confirmedCorrectOptionKey: input.value, useCurrentStagedAnswerKey: false, answerKeyUnknown: false });
+          }
+        });
+      });
+
+      document.querySelectorAll('[data-use-current-answer-key]').forEach((button) => {
+        button.addEventListener('click', () => {
+          const id = button.dataset.useCurrentAnswerKey;
+          const current = getCurrentStagedAnswerKey(id);
+          if (!current) {
+            return;
+          }
+          updateDecision(id, {
+            confirmedCorrectOptionKey: current,
+            useCurrentStagedAnswerKey: true,
+            answerKeyUnknown: false,
+          });
+        });
+      });
+
+      document.querySelectorAll('[data-notes-for]').forEach((textarea) => {
+        textarea.addEventListener('input', () => updateDecision(textarea.dataset.notesFor, { reviewerNotes: textarea.value }, { rerender: false }));
+      });
+
+      document.querySelectorAll('[data-new-topic-for]').forEach((input) => {
+        input.addEventListener('input', () => updateDecision(
+          input.dataset.newTopicFor,
+          { newQuestionProvisionalTopic: input.value.trim() || null },
+          { rerender: false },
+        ));
+      });
+
+      document.querySelectorAll('[data-new-subtopics-for]').forEach((textarea) => {
+        textarea.addEventListener('input', () => updateDecision(textarea.dataset.newSubtopicsFor, {
+          newQuestionProvisionalSubtopics: textarea.value
+            .split(/[,\n]/)
+            .map((entry) => entry.trim())
+            .filter(Boolean),
+        }, { rerender: false }));
+      });
+    }
+
+    function render(options = {}) {
+      const context = options.preserveContext ? captureRenderContext() : null;
+
+      renderSection('auto-matched', ITEMS.filter((item) => item.section === 'auto-matched'));
+      renderSection('review-needed', ITEMS.filter((item) => item.section === 'review-needed'));
+      if (document.querySelector('[data-section-list="answer-key"]')) {
+        renderSection('answer-key', ITEMS.filter((item) => item.section === 'answer-key'));
+      }
+      renderSection('unresolved', ITEMS.filter((item) => item.section === 'unresolved'));
+
+      bindEventHandlers();
+      restoreRenderContext(context);
+    }
+
+    document.getElementById('export-json').addEventListener('click', exportJson);
+    document.getElementById('reset').addEventListener('click', () => {
+      state = clone(INITIAL_DECISIONS);
+      saveState();
+      render();
+    });
+
+    render();
+  </script>
+</body>
+</html>

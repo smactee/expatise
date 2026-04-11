@@ -43,7 +43,19 @@ if (!fileExists(decisionPath)) {
 
 const reviewDoc = readJson(batchFiles.reviewNeededPath);
 const reviewItems = Array.isArray(reviewDoc.items) ? reviewDoc.items : [];
-const reviewMap = new Map(reviewItems.map((item) => [item.itemId, item]));
+const matchedDoc = fileExists(batchFiles.matchedPath) ? readJson(batchFiles.matchedPath) : { items: [] };
+const matchedItems = Array.isArray(matchedDoc.items) ? matchedDoc.items : [];
+const sourceItemMap = new Map();
+for (const item of reviewItems) {
+  if (item?.itemId) {
+    sourceItemMap.set(item.itemId, item);
+  }
+}
+for (const item of matchedItems) {
+  if (item?.itemId && !sourceItemMap.has(item.itemId)) {
+    sourceItemMap.set(item.itemId, item);
+  }
+}
 const decisionsDoc = readJson(decisionPath);
 const decisionItems = Array.isArray(decisionsDoc.items) ? decisionsDoc.items : [];
 const context = loadQbankContext({ dataset, referenceLang: "ko" });
@@ -68,11 +80,12 @@ let candidateOrdinal = 1;
 for (const rawDecision of decisionItems) {
   const decision = normalizeDecision(rawDecision);
   const itemId = String(rawDecision?.itemId ?? "").trim();
-  const sourceItem = reviewMap.get(itemId) ?? null;
+  const sourceItem = sourceItemMap.get(itemId) ?? null;
   const status = decisionStatus(decision);
 
   decisionSnapshotItems.push({
     itemId,
+    sourceSection: normalizeText(rawDecision?.sourceSection) ?? null,
     sourceImage: sourceItem?.sourceImage ?? null,
     currentTopQid: sourceItem?.match?.qid ?? sourceItem?.topCandidates?.[0]?.qid ?? null,
     currentTopScore: sourceItem?.match?.score ?? sourceItem?.topCandidates?.[0]?.score ?? null,
@@ -242,10 +255,17 @@ function normalizeDecision(item) {
       : item?.unsure !== false;
 
   return {
+    sourceSection: normalizeText(item?.sourceSection) ?? null,
     approvedQid: approvedQid || null,
+    initialSuggestedQid: normalizeText(item?.initialSuggestedQid) ?? null,
     noneOfThese,
     createNewQuestion,
+    keepUnresolved: item?.keepUnresolved === true,
     unsure,
+    confirmedCorrectOptionKey: normalizeChoiceKey(item?.confirmedCorrectOptionKey),
+    answerKeyUnknown: item?.answerKeyUnknown === true || item?.unknown === true,
+    currentStagedLocaleCorrectOptionKey: normalizeChoiceKey(item?.currentStagedLocaleCorrectOptionKey),
+    useCurrentStagedAnswerKey: item?.useCurrentStagedAnswerKey === true,
     reviewerNotes: normalizeText(item?.reviewerNotes) ?? "",
   };
 }
@@ -354,6 +374,16 @@ function buildApprovedPreviewEntry({ sourceItem, decision, question, lang: sourc
       alignmentScore: correctAlignment.alignmentScore,
       method: correctAlignment.method,
     };
+
+    if (requiresStructuredAnswerKeyConfirmation(decision, question)) {
+      previewEntry.answerKeyNeedsManualConfirmation = true;
+      previewEntry.answerKeyConfirmationReason = decision.answerKeyUnknown
+        ? `Approved qid differs from initial suggestion ${decision.initialSuggestedQid}; reviewer marked the locale-specific answer key as unknown.`
+        : `Approved qid differs from initial suggestion ${decision.initialSuggestedQid}; structured locale answer-key confirmation is required.`;
+      previewEntry.manualQidChangeRequiresAnswerKeyConfirmation = true;
+      previewEntry.initialSuggestedQid = decision.initialSuggestedQid;
+      previewEntry.initialSuggestedLocaleCorrectOptionKey = decision.currentStagedLocaleCorrectOptionKey ?? null;
+    }
 
     return {
       previewEntry,
@@ -697,4 +727,33 @@ function fallbackChoiceKey(index) {
 function normalizeText(value) {
   const text = String(value ?? "").replace(/\s+/g, " ").trim();
   return text || null;
+}
+
+function normalizeChoiceKey(value) {
+  const text = String(value ?? "").trim().toUpperCase();
+  return /^[A-D]$/.test(text) ? text : null;
+}
+
+function requiresStructuredAnswerKeyConfirmation(decision, question) {
+  if (!question || question.type !== "MCQ") {
+    return false;
+  }
+
+  if (!decision?.approvedQid || !decision?.initialSuggestedQid) {
+    return false;
+  }
+
+  if (decision.approvedQid === decision.initialSuggestedQid) {
+    return false;
+  }
+
+  if (decision.useCurrentStagedAnswerKey === true && decision.currentStagedLocaleCorrectOptionKey) {
+    return false;
+  }
+
+  if (decision.confirmedCorrectOptionKey) {
+    return false;
+  }
+
+  return true;
 }

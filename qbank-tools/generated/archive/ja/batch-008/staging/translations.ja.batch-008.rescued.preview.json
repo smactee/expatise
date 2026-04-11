@@ -1,0 +1,698 @@
+{
+  "meta": {
+    "locale": "ja",
+    "generatedAt": "2026-04-11T14:42:40.459Z",
+    "reviewedBatchId": "batch-008",
+    "dataset": "2023-test1",
+    "sourceUnresolvedPath": "imports/ja/batch-008/unresolved.json",
+    "sourceUnresolvedDecisionPath": "qbank-tools/generated/staging/ja-batch-008-unresolved-decisions.json",
+    "rescuedExistingQidCount": 5,
+    "manualAnswerKeyConfirmationCount": 0,
+    "stagingOnly": true
+  },
+  "questions": {
+    "q0519": {
+      "prompt": "この交差点は、どう左折するのが適切か。",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.04.11.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 18.04.11.png",
+      "reviewerNotes": "",
+      "promptRawJa": "この交差点は、どう左折するのが適切か。",
+      "promptGlossEn": "What is the correct way to make a left turn at this intersection?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-008",
+        "approvedQid": "q0519",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "options": {
+        "q0519_o1": "D 交差点の中心を通って曲がる",
+        "q0519_o2": "A 交差点の中心に寄り左折する",
+        "q0519_o3": "B 交差点の中心に寄り左折する",
+        "q0519_o4": "C 左折してはいけない"
+      },
+      "optionsRawJa": [
+        "A 交差点の中心に寄り左折する",
+        "B 交差点の中心に寄り左折する",
+        "C 左折してはいけない",
+        "D 交差点の中心を通って曲がる"
+      ],
+      "optionsGlossEn": [
+        "A. Move toward the center of the intersection and then make a left turn",
+        "B. Move toward the center of the intersection and then make a left turn",
+        "C. Left turn is not allowed",
+        "D. Go through the center of the intersection and turn"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A 交差点の中心に寄り左折する",
+          "sourceTextBody": "交差点の中心に寄り左折する",
+          "sourceGlossEn": "A. Move toward the center of the intersection and then make a left turn",
+          "canonicalOptionId": "q0519_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "along the left side of the center point in the intersection",
+          "alignmentScore": 0.30042976825155043,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B 交差点の中心に寄り左折する",
+          "sourceTextBody": "交差点の中心に寄り左折する",
+          "sourceGlossEn": "B. Move toward the center of the intersection and then make a left turn",
+          "canonicalOptionId": "q0519_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "along the left side of the center point in the intersection",
+          "alignmentScore": 0.18021561771561773,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C 左折してはいけない",
+          "sourceTextBody": "左折してはいけない",
+          "sourceGlossEn": "C. Left turn is not allowed",
+          "canonicalOptionId": "q0519_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "can not turn left",
+          "alignmentScore": 0.2742857142857143,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D 交差点の中心を通って曲がる",
+          "sourceTextBody": "交差点の中心を通って曲がる",
+          "sourceGlossEn": "D. Go through the center of the intersection and turn",
+          "canonicalOptionId": "q0519_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "along the right side of the center point in the intersection",
+          "alignmentScore": 0.2645084566596194,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A 交差点の中心に寄り左折する",
+          "sourceGlossEn": "A. Move toward the center of the intersection and then make a left turn",
+          "canonicalOptionId": "q0519_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "along the left side of the center point in the intersection",
+          "alignmentScore": 0.30042976825155043,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B 交差点の中心に寄り左折する",
+          "sourceGlossEn": "B. Move toward the center of the intersection and then make a left turn",
+          "canonicalOptionId": "q0519_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "along the left side of the center point in the intersection",
+          "alignmentScore": 0.18021561771561773,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C 左折してはいけない",
+          "sourceGlossEn": "C. Left turn is not allowed",
+          "canonicalOptionId": "q0519_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "can not turn left",
+          "alignmentScore": 0.2742857142857143,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D 交差点の中心を通って曲がる",
+          "sourceGlossEn": "D. Go through the center of the intersection and turn",
+          "canonicalOptionId": "q0519_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "along the right side of the center point in the intersection",
+          "alignmentScore": 0.2645084566596194,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "B",
+      "canonicalCorrectOptionId": "q0519_o2",
+      "canonicalCorrectOptionKey": "B",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed during unresolved rescue review on 2026-04-11T14:42:40.459Z; reviewer selected locale key B.",
+      "correctOptionAlignment": {
+        "sourceKey": "B",
+        "canonicalOptionId": "q0519_o2",
+        "canonicalOptionKey": "B",
+        "sourceText": "B 交差点の中心に寄り左折する",
+        "sourceGlossEn": "B. Move toward the center of the intersection and then make a left turn",
+        "canonicalOptionText": "along the left side of the center point in the intersection",
+        "alignmentScore": 0.30042976825155043,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-11T14:42:40.459Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ja-batch-008-unresolved-decisions.json",
+      "answerKeyReviewerNotes": "",
+      "reviewerSuggestedLocaleCorrectOptionKey": "B",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ja-batch-008-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0493": {
+      "prompt": "このように駐車するのは、どのような違法行為であるか。",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.04.31.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 18.04.31.png",
+      "reviewerNotes": "",
+      "promptRawJa": "このように駐車するのは、どのような違法行為であるか。",
+      "promptGlossEn": "What kind of illegal act is it to park like this?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-008",
+        "approvedQid": "q0493",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "options": {
+        "q0493_o1": "D 非自動車専用車線に駐車した",
+        "q0493_o2": "C 駐車禁止標識のある道路に駐車した",
+        "q0493_o3": "B バス停に駐車した",
+        "q0493_o4": "A 横断歩道を占用して駐車した"
+      },
+      "optionsRawJa": [
+        "A 横断歩道を占用して駐車した",
+        "B バス停に駐車した",
+        "C 駐車禁止標識のある道路に駐車した",
+        "D 非自動車専用車線に駐車した"
+      ],
+      "optionsGlossEn": [
+        "A: Parked occupying a pedestrian crossing",
+        "B: Parked at a bus stop",
+        "C: Parked on a road with a No Parking sign",
+        "D: Parked in a non-motor vehicle only lane"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A 横断歩道を占用して駐車した",
+          "sourceTextBody": "横断歩道を占用して駐車した",
+          "sourceGlossEn": "A: Parked occupying a pedestrian crossing",
+          "canonicalOptionId": "q0493_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "stop occupying sidewalk",
+          "alignmentScore": 0.19878787878787876,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B バス停に駐車した",
+          "sourceTextBody": "バス停に駐車した",
+          "sourceGlossEn": "B: Parked at a bus stop",
+          "canonicalOptionId": "q0493_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "Stopping at a bus stop.",
+          "alignmentScore": 0.6012121212121212,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C 駐車禁止標識のある道路に駐車した",
+          "sourceTextBody": "駐車禁止標識のある道路に駐車した",
+          "sourceGlossEn": "C: Parked on a road with a No Parking sign",
+          "canonicalOptionId": "q0493_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "stop in the section with no stopping marking",
+          "alignmentScore": 0.22601721439749606,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D 非自動車専用車線に駐車した",
+          "sourceTextBody": "非自動車専用車線に駐車した",
+          "sourceGlossEn": "D: Parked in a non-motor vehicle only lane",
+          "canonicalOptionId": "q0493_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "stop occupying the lane for non-motorized vehicles",
+          "alignmentScore": 0.1679245283018868,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A 横断歩道を占用して駐車した",
+          "sourceGlossEn": "A: Parked occupying a pedestrian crossing",
+          "canonicalOptionId": "q0493_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "stop occupying sidewalk",
+          "alignmentScore": 0.19878787878787876,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B バス停に駐車した",
+          "sourceGlossEn": "B: Parked at a bus stop",
+          "canonicalOptionId": "q0493_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "Stopping at a bus stop.",
+          "alignmentScore": 0.6012121212121212,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C 駐車禁止標識のある道路に駐車した",
+          "sourceGlossEn": "C: Parked on a road with a No Parking sign",
+          "canonicalOptionId": "q0493_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "stop in the section with no stopping marking",
+          "alignmentScore": 0.22601721439749606,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D 非自動車専用車線に駐車した",
+          "sourceGlossEn": "D: Parked in a non-motor vehicle only lane",
+          "canonicalOptionId": "q0493_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "stop occupying the lane for non-motorized vehicles",
+          "alignmentScore": 0.1679245283018868,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "B",
+      "canonicalCorrectOptionId": "q0493_o3",
+      "canonicalCorrectOptionKey": "C",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed during unresolved rescue review on 2026-04-11T14:42:40.459Z; reviewer selected locale key B.",
+      "correctOptionAlignment": {
+        "sourceKey": "B",
+        "canonicalOptionId": "q0493_o3",
+        "canonicalOptionKey": "C",
+        "sourceText": "B バス停に駐車した",
+        "sourceGlossEn": "B: Parked at a bus stop",
+        "canonicalOptionText": "Stopping at a bus stop.",
+        "alignmentScore": 0.6012121212121212,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-11T14:42:40.459Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ja-batch-008-unresolved-decisions.json",
+      "answerKeyReviewerNotes": "",
+      "reviewerSuggestedLocaleCorrectOptionKey": "B",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ja-batch-008-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0278": {
+      "prompt": "交通事故を起こして逃走したが犯罪にならなかった犯罪者は、12点が減点されるつく。",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.04.39.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 18.04.39.png",
+      "reviewerNotes": "",
+      "promptRawJa": "交通事故を起こして逃走したが犯罪にならなかった犯罪者は、12点が減点されるつく。",
+      "promptGlossEn": "If a person causes a traffic accident and flees, but it does not become a crime, 12 points will be deducted from the driver's license.",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "ROW",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-008",
+        "approvedQid": "q0278",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "optionsRawJa": [],
+      "optionsGlossEn": [],
+      "localeCorrectOptionKey": null,
+      "canonicalCorrectRow": "R",
+      "canonicalCorrectAnswer": "right / true",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "ROW question; no locale-specific option key applies.",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ja-batch-008-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0161": {
+      "prompt": "夜間の走行では運転者が物を見にくくなるが、視界はどう変化するか。",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.04.42.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 18.04.42.png",
+      "reviewerNotes": "",
+      "promptRawJa": "夜間の走行では運転者が物を見にくくなるが、視界はどう変化するか。",
+      "promptGlossEn": "At night, it becomes harder for drivers to see objects. How does visibility change?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-008",
+        "approvedQid": "q0161",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "options": {
+        "q0161_o1": "C 変化しない",
+        "q0161_o2": "B 悪くなる",
+        "q0161_o3": "D 法則性がない",
+        "q0161_o4": "A 良くなる"
+      },
+      "optionsRawJa": [
+        "A 良くなる",
+        "B 悪くなる",
+        "C 変化しない",
+        "D 法則性がない"
+      ],
+      "optionsGlossEn": [
+        "A: It gets better",
+        "B: It gets worse",
+        "C: It does not change",
+        "D: There is no pattern"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A 良くなる",
+          "sourceTextBody": "良くなる",
+          "sourceGlossEn": "A: It gets better",
+          "canonicalOptionId": "q0161_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "Shorter",
+          "alignmentScore": 0.023529411764705882,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B 悪くなる",
+          "sourceTextBody": "悪くなる",
+          "sourceGlossEn": "B: It gets worse",
+          "canonicalOptionId": "q0161_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "shorter",
+          "alignmentScore": 0,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C 変化しない",
+          "sourceTextBody": "変化しない",
+          "sourceGlossEn": "C: It does not change",
+          "canonicalOptionId": "q0161_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "Unchanged",
+          "alignmentScore": 0.06956521739130435,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D 法則性がない",
+          "sourceTextBody": "法則性がない",
+          "sourceGlossEn": "D: There is no pattern",
+          "canonicalOptionId": "q0161_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "Longer",
+          "alignmentScore": 0,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A 良くなる",
+          "sourceGlossEn": "A: It gets better",
+          "canonicalOptionId": "q0161_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "Shorter",
+          "alignmentScore": 0.023529411764705882,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B 悪くなる",
+          "sourceGlossEn": "B: It gets worse",
+          "canonicalOptionId": "q0161_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "shorter",
+          "alignmentScore": 0,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C 変化しない",
+          "sourceGlossEn": "C: It does not change",
+          "canonicalOptionId": "q0161_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "Unchanged",
+          "alignmentScore": 0.06956521739130435,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D 法則性がない",
+          "sourceGlossEn": "D: There is no pattern",
+          "canonicalOptionId": "q0161_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "Longer",
+          "alignmentScore": 0,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "B",
+      "canonicalCorrectOptionId": "q0161_o4",
+      "canonicalCorrectOptionKey": "D",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed during unresolved rescue review on 2026-04-11T14:42:40.459Z; reviewer selected locale key B.",
+      "correctOptionAlignment": {
+        "sourceKey": "B",
+        "canonicalOptionId": "q0161_o4",
+        "canonicalOptionKey": "D",
+        "sourceText": "B 悪くなる",
+        "sourceGlossEn": "B: It gets worse",
+        "canonicalOptionText": "shorter",
+        "alignmentScore": 0.023529411764705882,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-11T14:42:40.459Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ja-batch-008-unresolved-decisions.json",
+      "answerKeyReviewerNotes": "",
+      "reviewerSuggestedLocaleCorrectOptionKey": "B",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ja-batch-008-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0430": {
+      "prompt": "法律に基づき交通警察が路上で運転している車両を拘置することができるのは、どれか。",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.04.43 1.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 18.04.43 1.png",
+      "reviewerNotes": "",
+      "promptRawJa": "法律に基づき交通警察が路上で運転している車両を拘置することができるのは、どれか。",
+      "promptGlossEn": "Which of the following allows a traffic police officer to legally detain a vehicle being driven on the road?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-008",
+        "approvedQid": "q0430",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "options": {
+        "q0430_o1": "A 運転者が自動車登録証明書を携帯していない",
+        "q0430_o2": "B 運転者が動車保険契約書を携帯していない",
+        "q0430_o3": "D エコマークを掲示していない",
+        "q0430_o4": "C 保険マークを掲示していない"
+      },
+      "optionsRawJa": [
+        "A 運転者が自動車登録証明書を携帯していない",
+        "B 運転者が動車保険契約書を携帯していない",
+        "C 保険マークを掲示していない",
+        "D エコマークを掲示していない"
+      ],
+      "optionsGlossEn": [
+        "A. The driver does not carry the vehicle registration certificate.",
+        "B. The driver does not carry the automobile insurance contract.",
+        "C. The insurance mark is not displayed.",
+        "D. The eco mark is not displayed."
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A 運転者が自動車登録証明書を携帯していない",
+          "sourceTextBody": "運転者が自動車登録証明書を携帯していない",
+          "sourceGlossEn": "A. The driver does not carry the vehicle registration certificate.",
+          "canonicalOptionId": "q0430_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "no vehicle registration papers",
+          "alignmentScore": 0.2887658227848101,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B 運転者が動車保険契約書を携帯していない",
+          "sourceTextBody": "運転者が動車保険契約書を携帯していない",
+          "sourceGlossEn": "B. The driver does not carry the automobile insurance contract.",
+          "canonicalOptionId": "q0430_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "no insurance contract",
+          "alignmentScore": 0.3125,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C 保険マークを掲示していない",
+          "sourceTextBody": "保険マークを掲示していない",
+          "sourceGlossEn": "C. The insurance mark is not displayed.",
+          "canonicalOptionId": "q0430_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "no label of insurance",
+          "alignmentScore": 0.15833333333333333,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D エコマークを掲示していない",
+          "sourceTextBody": "エコマークを掲示していない",
+          "sourceGlossEn": "D. The eco mark is not displayed.",
+          "canonicalOptionId": "q0430_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "no lable of environmental protection",
+          "alignmentScore": 0,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A 運転者が自動車登録証明書を携帯していない",
+          "sourceGlossEn": "A. The driver does not carry the vehicle registration certificate.",
+          "canonicalOptionId": "q0430_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "no vehicle registration papers",
+          "alignmentScore": 0.2887658227848101,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B 運転者が動車保険契約書を携帯していない",
+          "sourceGlossEn": "B. The driver does not carry the automobile insurance contract.",
+          "canonicalOptionId": "q0430_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "no insurance contract",
+          "alignmentScore": 0.3125,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C 保険マークを掲示していない",
+          "sourceGlossEn": "C. The insurance mark is not displayed.",
+          "canonicalOptionId": "q0430_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "no label of insurance",
+          "alignmentScore": 0.15833333333333333,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D エコマークを掲示していない",
+          "sourceGlossEn": "D. The eco mark is not displayed.",
+          "canonicalOptionId": "q0430_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "no lable of environmental protection",
+          "alignmentScore": 0,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "C",
+      "canonicalCorrectOptionId": "q0430_o4",
+      "canonicalCorrectOptionKey": "D",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed during unresolved rescue review on 2026-04-11T14:42:40.459Z; reviewer selected locale key C.",
+      "correctOptionAlignment": {
+        "sourceKey": "C",
+        "canonicalOptionId": "q0430_o4",
+        "canonicalOptionKey": "D",
+        "sourceText": "C 保険マークを掲示していない",
+        "sourceGlossEn": "C. The insurance mark is not displayed.",
+        "canonicalOptionText": "no label of insurance",
+        "alignmentScore": 0.15833333333333333,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-11T14:42:40.459Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ja-batch-008-unresolved-decisions.json",
+      "answerKeyReviewerNotes": "",
+      "reviewerSuggestedLocaleCorrectOptionKey": "C",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ja-batch-008-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    }
+  }
+}

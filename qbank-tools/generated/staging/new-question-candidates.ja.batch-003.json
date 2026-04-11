@@ -1,0 +1,54 @@
+{
+  "generatedAt": "2026-04-09T09:02:19.386Z",
+  "lang": "ja",
+  "batchId": "batch-003",
+  "dataset": "2023-test1",
+  "sourceDecisionPath": "qbank-tools/generated/staging/new-question-decisions.ja.batch-003.json",
+  "items": [
+    {
+      "candidateId": "nqc-ja-batch-003-001",
+      "sourceLang": "ja",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 17.50.48.png",
+      "effectiveQuestionType": "MCQ",
+      "promptRawJa": "中央線のない道路で対向車とすれ違う場合、どう運転するのが適切か。",
+      "promptGlossEn": "When passing an oncoming vehicle on a road without a center line, what is the appropriate way to drive?",
+      "optionsRawJa": [
+        "A 速度を落とし、右側に寄って走行する",
+        "B 非自動車道を利用して走行する",
+        "C 路肩に寄って走行する",
+        "D 道路の中央に寄って走行する"
+      ],
+      "optionsGlossEn": [
+        "A. Slow down and keep to the right side",
+        "B. Use a non-motor vehicle lane",
+        "C. Keep to the shoulder",
+        "D. Keep to the center of the road"
+      ],
+      "correctKeyRaw": "A",
+      "correctAnswerRaw": "速度を落とし、右側に寄って走行する",
+      "provisionalTopic": "road-safety",
+      "provisionalSubtopics": [
+        "road-safety:road-conditions",
+        "proper-driving:safe-driving"
+      ],
+      "topicConfidence": 0.52,
+      "topicSignals": [
+        {
+          "topic": "road-safety",
+          "subtopic": "road-safety:road-conditions",
+          "signal": "road-condition-or-hazard",
+          "weight": 1.3
+        },
+        {
+          "topic": "proper-driving",
+          "subtopic": "proper-driving:safe-driving",
+          "signal": "driving-action",
+          "weight": 1.2
+        }
+      ],
+      "linkedExistingAssetCandidate": null,
+      "reviewerNotes": "",
+      "status": "pending-superset-review"
+    }
+  ]
+}

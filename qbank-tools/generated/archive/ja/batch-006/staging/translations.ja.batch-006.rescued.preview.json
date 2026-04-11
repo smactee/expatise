@@ -1,0 +1,1022 @@
+{
+  "meta": {
+    "locale": "ja",
+    "generatedAt": "2026-04-10T13:20:35.927Z",
+    "reviewedBatchId": "batch-006",
+    "dataset": "2023-test1",
+    "sourceUnresolvedPath": "imports/ja/batch-006/unresolved.json",
+    "sourceUnresolvedDecisionPath": "qbank-tools/generated/staging/ja-batch-006-unresolved-decisions.json",
+    "rescuedExistingQidCount": 7,
+    "manualAnswerKeyConfirmationCount": 0,
+    "stagingOnly": true
+  },
+  "questions": {
+    "q0682": {
+      "prompt": "この標識の示す意味はどれか。",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.01.19.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 18.01.19.png",
+      "reviewerNotes": "",
+      "promptRawJa": "この標識の示す意味はどれか。",
+      "promptGlossEn": "What does this road sign mean?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-006",
+        "approvedQid": "q0682",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "options": {
+        "q0682_o1": "C 番をする人がいない踏切まで100メートル",
+        "q0682_o2": "D 番をする人がいる踏切まで100メートル",
+        "q0682_o3": "A 番をする人がいない踏切までから50メートル",
+        "q0682_o4": "B 番をする人がいる踏切まで50メートル"
+      },
+      "optionsRawJa": [
+        "A 番をする人がいない踏切までから50メートル",
+        "B 番をする人がいる踏切まで50メートル",
+        "C 番をする人がいない踏切まで100メートル",
+        "D 番をする人がいる踏切まで100メートル"
+      ],
+      "optionsGlossEn": [
+        "A. 50 meters to an unattended railroad crossing",
+        "B. 50 meters to an attended railroad crossing",
+        "C. 100 meters to an unattended railroad crossing",
+        "D. 100 meters to an attended railroad crossing"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A 番をする人がいない踏切までから50メートル",
+          "sourceTextBody": "番をする人がいない踏切までから50メートル",
+          "sourceGlossEn": "A. 50 meters to an unattended railroad crossing",
+          "canonicalOptionId": "q0682_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "an unmanned level crossing 50m ahead",
+          "alignmentScore": 0.12637681159420291,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B 番をする人がいる踏切まで50メートル",
+          "sourceTextBody": "番をする人がいる踏切まで50メートル",
+          "sourceGlossEn": "B. 50 meters to an attended railroad crossing",
+          "canonicalOptionId": "q0682_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "a manned level crossing 50m ahead",
+          "alignmentScore": 0.12923076923076923,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C 番をする人がいない踏切まで100メートル",
+          "sourceTextBody": "番をする人がいない踏切まで100メートル",
+          "sourceGlossEn": "C. 100 meters to an unattended railroad crossing",
+          "canonicalOptionId": "q0682_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "an unmanned level crossing 100m ahead",
+          "alignmentScore": 0.13070422535211268,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D 番をする人がいる踏切まで100メートル",
+          "sourceTextBody": "番をする人がいる踏切まで100メートル",
+          "sourceGlossEn": "D. 100 meters to an attended railroad crossing",
+          "canonicalOptionId": "q0682_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "a manned level crossing 100m ahead",
+          "alignmentScore": 0.1337313432835821,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A 番をする人がいない踏切までから50メートル",
+          "sourceGlossEn": "A. 50 meters to an unattended railroad crossing",
+          "canonicalOptionId": "q0682_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "an unmanned level crossing 50m ahead",
+          "alignmentScore": 0.12637681159420291,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B 番をする人がいる踏切まで50メートル",
+          "sourceGlossEn": "B. 50 meters to an attended railroad crossing",
+          "canonicalOptionId": "q0682_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "a manned level crossing 50m ahead",
+          "alignmentScore": 0.12923076923076923,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C 番をする人がいない踏切まで100メートル",
+          "sourceGlossEn": "C. 100 meters to an unattended railroad crossing",
+          "canonicalOptionId": "q0682_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "an unmanned level crossing 100m ahead",
+          "alignmentScore": 0.13070422535211268,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D 番をする人がいる踏切まで100メートル",
+          "sourceGlossEn": "D. 100 meters to an attended railroad crossing",
+          "canonicalOptionId": "q0682_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "a manned level crossing 100m ahead",
+          "alignmentScore": 0.1337313432835821,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "A",
+      "canonicalCorrectOptionId": "q0682_o3",
+      "canonicalCorrectOptionKey": "C",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed during unresolved rescue review on 2026-04-10T13:20:35.927Z; reviewer selected locale key A.",
+      "correctOptionAlignment": {
+        "sourceKey": "A",
+        "canonicalOptionId": "q0682_o3",
+        "canonicalOptionKey": "C",
+        "sourceText": "A 番をする人がいない踏切までから50メートル",
+        "sourceGlossEn": "A. 50 meters to an unattended railroad crossing",
+        "canonicalOptionText": "an unmanned level crossing 50m ahead",
+        "alignmentScore": 0.12637681159420291,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-10T13:20:35.927Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ja-batch-006-unresolved-decisions.json",
+      "answerKeyReviewerNotes": "",
+      "reviewerSuggestedLocaleCorrectOptionKey": "A",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ja-batch-006-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0675": {
+      "prompt": "図が示す円中の白い半円状の標記は、なにを示す路面標示か。",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.01.28.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 18.01.28.png",
+      "reviewerNotes": "",
+      "promptRawJa": "図が示す円中の白い半円状の標記は、なにを示す路面標示か。",
+      "promptGlossEn": "What does the white semicircular road marking in the circle indicated in the diagram mean?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-006",
+        "approvedQid": "q0675",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "options": {
+        "q0675_o1": "A 減速して運転する標示",
+        "q0675_o2": "B 速度を確認する標示",
+        "q0675_o3": "D 交差点で減速する標示",
+        "q0675_o4": "C 車間距離を確認する標示"
+      },
+      "optionsRawJa": [
+        "A 減速して運転する標示",
+        "B 速度を確認する標示",
+        "C 車間距離を確認する標示",
+        "D 交差点で減速する標示"
+      ],
+      "optionsGlossEn": [
+        "A: Sign to drive with reduced speed",
+        "B: Sign to check your speed",
+        "C: Sign to check your following distance",
+        "D: Sign to reduce speed at intersections"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A 減速して運転する標示",
+          "sourceTextBody": "減速して運転する標示",
+          "sourceGlossEn": "A: Sign to drive with reduced speed",
+          "canonicalOptionId": "q0675_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "driving at reduced speed",
+          "alignmentScore": 0.32019230769230766,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B 速度を確認する標示",
+          "sourceTextBody": "速度を確認する標示",
+          "sourceGlossEn": "B: Sign to check your speed",
+          "canonicalOptionId": "q0675_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "ascertaining the vehicles speed",
+          "alignmentScore": 0.15740165631469977,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C 車間距離を確認する標示",
+          "sourceTextBody": "車間距離を確認する標示",
+          "sourceGlossEn": "C: Sign to check your following distance",
+          "canonicalOptionId": "q0675_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "ascertain the distance between vehicles",
+          "alignmentScore": 0.15089285714285713,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D 交差点で減速する標示",
+          "sourceTextBody": "交差点で減速する標示",
+          "sourceGlossEn": "D: Sign to reduce speed at intersections",
+          "canonicalOptionId": "q0675_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "reducing the speed at the intersection",
+          "alignmentScore": 0.30227513227513225,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A 減速して運転する標示",
+          "sourceGlossEn": "A: Sign to drive with reduced speed",
+          "canonicalOptionId": "q0675_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "driving at reduced speed",
+          "alignmentScore": 0.32019230769230766,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B 速度を確認する標示",
+          "sourceGlossEn": "B: Sign to check your speed",
+          "canonicalOptionId": "q0675_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "ascertaining the vehicles speed",
+          "alignmentScore": 0.15740165631469977,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C 車間距離を確認する標示",
+          "sourceGlossEn": "C: Sign to check your following distance",
+          "canonicalOptionId": "q0675_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "ascertain the distance between vehicles",
+          "alignmentScore": 0.15089285714285713,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D 交差点で減速する標示",
+          "sourceGlossEn": "D: Sign to reduce speed at intersections",
+          "canonicalOptionId": "q0675_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "reducing the speed at the intersection",
+          "alignmentScore": 0.30227513227513225,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "C",
+      "canonicalCorrectOptionId": "q0675_o4",
+      "canonicalCorrectOptionKey": "D",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed during unresolved rescue review on 2026-04-10T13:20:35.927Z; reviewer selected locale key C.",
+      "correctOptionAlignment": {
+        "sourceKey": "C",
+        "canonicalOptionId": "q0675_o4",
+        "canonicalOptionKey": "D",
+        "sourceText": "C 車間距離を確認する標示",
+        "sourceGlossEn": "C: Sign to check your following distance",
+        "canonicalOptionText": "ascertain the distance between vehicles",
+        "alignmentScore": 0.15089285714285713,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-10T13:20:35.927Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ja-batch-006-unresolved-decisions.json",
+      "answerKeyReviewerNotes": "",
+      "reviewerSuggestedLocaleCorrectOptionKey": "C",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ja-batch-006-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0377": {
+      "prompt": "次のなかで、すでに登録した小型乗用車の所有者が登録変更手続きをしなくていいのはどれか。",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.01.29.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 18.01.29.png",
+      "reviewerNotes": "",
+      "promptRawJa": "次のなかで、すでに登録した小型乗用車の所有者が登録変更手続きをしなくていいのはどれか。",
+      "promptGlossEn": "Which of the following does NOT require the owner of an already registered small passenger car to complete a registration change procedure?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-006",
+        "approvedQid": "q0377",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "options": {
+        "q0377_o1": "A 自動車のエンジンを変えたられる",
+        "q0377_o2": "B 自動車の前後に衝突防止装置を装着した",
+        "q0377_o3": "C 車体色を変えた",
+        "q0377_o4": "D 車体あるいは車台を変えた"
+      },
+      "optionsRawJa": [
+        "A 自動車のエンジンを変えたられる",
+        "B 自動車の前後に衝突防止装置を装着した",
+        "C 車体色を変えた",
+        "D 車体あるいは車台を変えた"
+      ],
+      "optionsGlossEn": [
+        "A. Changed the car's engine",
+        "B. Installed collision prevention devices on the front and rear of the car",
+        "C. Changed the car body color",
+        "D. Changed the car body or chassis"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A 自動車のエンジンを変えたられる",
+          "sourceTextBody": "自動車のエンジンを変えたられる",
+          "sourceGlossEn": "A. Changed the car's engine",
+          "canonicalOptionId": "q0377_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "change engine",
+          "alignmentScore": 0.3285714285714286,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B 自動車の前後に衝突防止装置を装着した",
+          "sourceTextBody": "自動車の前後に衝突防止装置を装着した",
+          "sourceGlossEn": "B. Installed collision prevention devices on the front and rear of the car",
+          "canonicalOptionId": "q0377_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "adding an anti-collision device",
+          "alignmentScore": 0.14377510040160643,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C 車体色を変えた",
+          "sourceTextBody": "車体色を変えた",
+          "sourceGlossEn": "C. Changed the car body color",
+          "canonicalOptionId": "q0377_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "change vehicles colour",
+          "alignmentScore": 0.0717948717948718,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D 車体あるいは車台を変えた",
+          "sourceTextBody": "車体あるいは車台を変えた",
+          "sourceGlossEn": "D. Changed the car body or chassis",
+          "canonicalOptionId": "q0377_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "change the chassis",
+          "alignmentScore": 0.23619047619047617,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A 自動車のエンジンを変えたられる",
+          "sourceGlossEn": "A. Changed the car's engine",
+          "canonicalOptionId": "q0377_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "change engine",
+          "alignmentScore": 0.3285714285714286,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B 自動車の前後に衝突防止装置を装着した",
+          "sourceGlossEn": "B. Installed collision prevention devices on the front and rear of the car",
+          "canonicalOptionId": "q0377_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "adding an anti-collision device",
+          "alignmentScore": 0.14377510040160643,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C 車体色を変えた",
+          "sourceGlossEn": "C. Changed the car body color",
+          "canonicalOptionId": "q0377_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "change vehicles colour",
+          "alignmentScore": 0.0717948717948718,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D 車体あるいは車台を変えた",
+          "sourceGlossEn": "D. Changed the car body or chassis",
+          "canonicalOptionId": "q0377_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "change the chassis",
+          "alignmentScore": 0.23619047619047617,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "B",
+      "canonicalCorrectOptionId": "q0377_o2",
+      "canonicalCorrectOptionKey": "B",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed during unresolved rescue review on 2026-04-10T13:20:35.927Z; reviewer selected locale key B.",
+      "correctOptionAlignment": {
+        "sourceKey": "B",
+        "canonicalOptionId": "q0377_o2",
+        "canonicalOptionKey": "B",
+        "sourceText": "B 自動車の前後に衝突防止装置を装着した",
+        "sourceGlossEn": "B. Installed collision prevention devices on the front and rear of the car",
+        "canonicalOptionText": "adding an anti-collision device",
+        "alignmentScore": 0.14377510040160643,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-10T13:20:35.927Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ja-batch-006-unresolved-decisions.json",
+      "answerKeyReviewerNotes": "",
+      "reviewerSuggestedLocaleCorrectOptionKey": "B",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ja-batch-006-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0787": {
+      "prompt": "この標識の示す意味はどれか。",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.01.30 1.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 18.01.30 1.png",
+      "reviewerNotes": "",
+      "promptRawJa": "この標識の示す意味はどれか。",
+      "promptGlossEn": "What does this road sign mean?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-006",
+        "approvedQid": "q0787",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "options": {
+        "q0787_o1": "B 通行禁止",
+        "q0787_o2": "C 減速走行",
+        "q0787_o3": "D 進入に時間制限あり",
+        "q0787_o4": "A 進入禁止"
+      },
+      "optionsRawJa": [
+        "A 進入禁止",
+        "B 通行禁止",
+        "C 減速走行",
+        "D 進入に時間制限あり"
+      ],
+      "optionsGlossEn": [
+        "A No entry",
+        "B No passage",
+        "C Reduce speed",
+        "D Time-limited entry"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A 進入禁止",
+          "sourceTextBody": "進入禁止",
+          "sourceGlossEn": "A No entry",
+          "canonicalOptionId": "q0787_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "no entering 81",
+          "alignmentScore": 0.56,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B 通行禁止",
+          "sourceTextBody": "通行禁止",
+          "sourceGlossEn": "B No passage",
+          "canonicalOptionId": "q0787_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "No passing",
+          "alignmentScore": 0.39166666666666666,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C 減速走行",
+          "sourceTextBody": "減速走行",
+          "sourceGlossEn": "C Reduce speed",
+          "canonicalOptionId": "q0787_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "driving at reduced speed",
+          "alignmentScore": 0,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D 進入に時間制限あり",
+          "sourceTextBody": "進入に時間制限あり",
+          "sourceGlossEn": "D Time-limited entry",
+          "canonicalOptionId": "q0787_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "time limit for entering",
+          "alignmentScore": 0.07567567567567568,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A 進入禁止",
+          "sourceGlossEn": "A No entry",
+          "canonicalOptionId": "q0787_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "no entering 81",
+          "alignmentScore": 0.56,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B 通行禁止",
+          "sourceGlossEn": "B No passage",
+          "canonicalOptionId": "q0787_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "No passing",
+          "alignmentScore": 0.39166666666666666,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C 減速走行",
+          "sourceGlossEn": "C Reduce speed",
+          "canonicalOptionId": "q0787_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "driving at reduced speed",
+          "alignmentScore": 0,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D 進入に時間制限あり",
+          "sourceGlossEn": "D Time-limited entry",
+          "canonicalOptionId": "q0787_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "time limit for entering",
+          "alignmentScore": 0.07567567567567568,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "B",
+      "canonicalCorrectOptionId": "q0787_o1",
+      "canonicalCorrectOptionKey": "A",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed during unresolved rescue review on 2026-04-10T13:20:35.927Z; reviewer selected locale key B.",
+      "correctOptionAlignment": {
+        "sourceKey": "B",
+        "canonicalOptionId": "q0787_o1",
+        "canonicalOptionKey": "A",
+        "sourceText": "B 通行禁止",
+        "sourceGlossEn": "B No passage",
+        "canonicalOptionText": "No passing",
+        "alignmentScore": 0.39166666666666666,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-10T13:20:35.927Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ja-batch-006-unresolved-decisions.json",
+      "answerKeyReviewerNotes": "",
+      "reviewerSuggestedLocaleCorrectOptionKey": "B",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ja-batch-006-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0885": {
+      "prompt": "指示標示の役割はどれか。",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.01.37.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 18.01.37.png",
+      "reviewerNotes": "",
+      "promptRawJa": "指示標示の役割はどれか。",
+      "promptGlossEn": "What is the role of an instruction sign?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-006",
+        "approvedQid": "q0885",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "options": {
+        "q0885_o1": "A 通行を禁止する",
+        "q0885_o2": "B 通行を指示する",
+        "q0885_o3": "C 通行を制限する",
+        "q0885_o4": "D 警告と注意"
+      },
+      "optionsRawJa": [
+        "A 通行を禁止する",
+        "B 通行を指示する",
+        "C 通行を制限する",
+        "D 警告と注意"
+      ],
+      "optionsGlossEn": [
+        "A. Prohibit passage",
+        "B. Indicate passage",
+        "C. Restrict passage",
+        "D. Warning and caution"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A 通行を禁止する",
+          "sourceTextBody": "通行を禁止する",
+          "sourceGlossEn": "A. Prohibit passage",
+          "canonicalOptionId": "q0885_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "No passing 96",
+          "alignmentScore": 0.048,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B 通行を指示する",
+          "sourceTextBody": "通行を指示する",
+          "sourceGlossEn": "B. Indicate passage",
+          "canonicalOptionId": "q0885_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "indicating vehicles to pass",
+          "alignmentScore": 0.20111111111111113,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C 通行を制限する",
+          "sourceTextBody": "通行を制限する",
+          "sourceGlossEn": "C. Restrict passage",
+          "canonicalOptionId": "q0885_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "restrict from passing",
+          "alignmentScore": 0.32121212121212117,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D 警告と注意",
+          "sourceTextBody": "警告と注意",
+          "sourceGlossEn": "D. Warning and caution",
+          "canonicalOptionId": "q0885_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "warn and remind",
+          "alignmentScore": 0.22666666666666668,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A 通行を禁止する",
+          "sourceGlossEn": "A. Prohibit passage",
+          "canonicalOptionId": "q0885_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "No passing 96",
+          "alignmentScore": 0.048,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B 通行を指示する",
+          "sourceGlossEn": "B. Indicate passage",
+          "canonicalOptionId": "q0885_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "indicating vehicles to pass",
+          "alignmentScore": 0.20111111111111113,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C 通行を制限する",
+          "sourceGlossEn": "C. Restrict passage",
+          "canonicalOptionId": "q0885_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "restrict from passing",
+          "alignmentScore": 0.32121212121212117,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D 警告と注意",
+          "sourceGlossEn": "D. Warning and caution",
+          "canonicalOptionId": "q0885_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "warn and remind",
+          "alignmentScore": 0.22666666666666668,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "B",
+      "canonicalCorrectOptionId": "q0885_o2",
+      "canonicalCorrectOptionKey": "B",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed during unresolved rescue review on 2026-04-10T13:20:35.927Z; reviewer selected locale key B.",
+      "correctOptionAlignment": {
+        "sourceKey": "B",
+        "canonicalOptionId": "q0885_o2",
+        "canonicalOptionKey": "B",
+        "sourceText": "B 通行を指示する",
+        "sourceGlossEn": "B. Indicate passage",
+        "canonicalOptionText": "indicating vehicles to pass",
+        "alignmentScore": 0.20111111111111113,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-10T13:20:35.927Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ja-batch-006-unresolved-decisions.json",
+      "answerKeyReviewerNotes": "",
+      "reviewerSuggestedLocaleCorrectOptionKey": "B",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ja-batch-006-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0169": {
+      "prompt": "ぬかるんだ道路での運転は、どのような現象が生じるか。",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.01.41.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 18.01.41.png",
+      "reviewerNotes": "",
+      "promptRawJa": "ぬかるんだ道路での運転は、どのような現象が生じるか。",
+      "promptGlossEn": "What phenomena occur when driving on a muddy road?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-006",
+        "approvedQid": "q0169",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "options": {
+        "q0169_o1": "A 走行抵抗力が減る",
+        "q0169_o2": "B 車輪が空転し横滑りしやすくなる",
+        "q0169_o3": "C 視界が悪くぼやける",
+        "q0169_o4": "D 路面付着力が増す"
+      },
+      "optionsRawJa": [
+        "A 走行抵抗力が減る",
+        "B 車輪が空転し横滑りしやすくなる",
+        "C 視界が悪くぼやける",
+        "D 路面付着力が増す"
+      ],
+      "optionsGlossEn": [
+        "A. Rolling resistance decreases",
+        "B. Wheels are more likely to spin and skid sideways",
+        "C. Visibility becomes poor and blurry",
+        "D. Surface adhesion increases"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A 走行抵抗力が減る",
+          "sourceTextBody": "走行抵抗力が減る",
+          "sourceGlossEn": "A. Rolling resistance decreases",
+          "canonicalOptionId": "q0169_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "The resistance to the vehicle becomes weaker",
+          "alignmentScore": 0.17635467980295566,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B 車輪が空転し横滑りしやすくなる",
+          "sourceTextBody": "車輪が空転し横滑りしやすくなる",
+          "sourceGlossEn": "B. Wheels are more likely to spin and skid sideways",
+          "canonicalOptionId": "q0169_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "tires can easily spin and skid",
+          "alignmentScore": 0.2788732394366197,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C 視界が悪くぼやける",
+          "sourceTextBody": "視界が悪くぼやける",
+          "sourceGlossEn": "C. Visibility becomes poor and blurry",
+          "canonicalOptionId": "q0169_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "The visibility become lower and blurs the field of vision",
+          "alignmentScore": 0.36467532467532465,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D 路面付着力が増す",
+          "sourceTextBody": "路面付着力が増す",
+          "sourceGlossEn": "D. Surface adhesion increases",
+          "canonicalOptionId": "q0169_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "The road grip becomes stronger",
+          "alignmentScore": 0,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A 走行抵抗力が減る",
+          "sourceGlossEn": "A. Rolling resistance decreases",
+          "canonicalOptionId": "q0169_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "The resistance to the vehicle becomes weaker",
+          "alignmentScore": 0.17635467980295566,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B 車輪が空転し横滑りしやすくなる",
+          "sourceGlossEn": "B. Wheels are more likely to spin and skid sideways",
+          "canonicalOptionId": "q0169_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "tires can easily spin and skid",
+          "alignmentScore": 0.2788732394366197,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C 視界が悪くぼやける",
+          "sourceGlossEn": "C. Visibility becomes poor and blurry",
+          "canonicalOptionId": "q0169_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "The visibility become lower and blurs the field of vision",
+          "alignmentScore": 0.36467532467532465,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D 路面付着力が増す",
+          "sourceGlossEn": "D. Surface adhesion increases",
+          "canonicalOptionId": "q0169_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "The road grip becomes stronger",
+          "alignmentScore": 0,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "B",
+      "canonicalCorrectOptionId": "q0169_o2",
+      "canonicalCorrectOptionKey": "B",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed during unresolved rescue review on 2026-04-10T13:20:35.927Z; reviewer selected locale key B.",
+      "correctOptionAlignment": {
+        "sourceKey": "B",
+        "canonicalOptionId": "q0169_o2",
+        "canonicalOptionKey": "B",
+        "sourceText": "B 車輪が空転し横滑りしやすくなる",
+        "sourceGlossEn": "B. Wheels are more likely to spin and skid sideways",
+        "canonicalOptionText": "tires can easily spin and skid",
+        "alignmentScore": 0.2788732394366197,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-10T13:20:35.927Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ja-batch-006-unresolved-decisions.json",
+      "answerKeyReviewerNotes": "",
+      "reviewerSuggestedLocaleCorrectOptionKey": "B",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ja-batch-006-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0282": {
+      "prompt": "国家規制の精神薬を服用しても短距離運転であれば許可される。",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.01.47.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 18.01.47.png",
+      "reviewerNotes": "",
+      "promptRawJa": "国家規制の精神薬を服用しても短距離運転であれば許可される。",
+      "promptGlossEn": "Even if you take nationally regulated psychotropic drugs, it is permitted to drive short distances.",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "ROW",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-006",
+        "approvedQid": "q0282",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "optionsRawJa": [],
+      "optionsGlossEn": [],
+      "localeCorrectOptionKey": null,
+      "canonicalCorrectRow": "W",
+      "canonicalCorrectAnswer": "wrong / false",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "ROW question; no locale-specific option key applies.",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ja-batch-006-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    }
+  }
+}

@@ -69,6 +69,9 @@ const approvedReviewSet = new Set(
     .filter((item) => typeof item?.approvedQid === "string" && item.approvedQid.trim())
     .map((item) => String(item.approvedQid).trim()),
 );
+const autoMatchedDecisionLookup = buildAutoMatchedDecisionLookup(
+  Array.isArray(reviewDecisionsDoc.items) ? reviewDecisionsDoc.items : [],
+);
 const answerKeyDecisionMap = new Map(
   (Array.isArray(answerKeyDecisionsDoc.items) ? answerKeyDecisionsDoc.items : []).map((item) => [
     String(item?.qid ?? "").trim(),
@@ -95,9 +98,14 @@ const autoDerivedStats = {
   manualAnswerKeyConfirmationCount: 0,
 };
 const autoInputIssues = [];
+let skippedAutoMatchedCount = 0;
 
 for (const item of matchedItems) {
   const qid = normalizeText(item?.match?.qid);
+  if (shouldSkipAutoMatchedSourceItem(item, autoMatchedDecisionLookup, qid)) {
+    skippedAutoMatchedCount += 1;
+    continue;
+  }
   if (!qid) {
     autoInputIssues.push({
       itemId: item?.itemId ?? null,
@@ -187,6 +195,21 @@ if (conflicts.length > 0) {
 }
 
 const appliedAt = stableNow();
+
+for (const [qid, decision] of answerKeyDecisionMap.entries()) {
+  const question = combinedQuestions[qid];
+  if (!question || String(question.canonicalQuestionType ?? "").toUpperCase() !== "MCQ") {
+    continue;
+  }
+
+  applyConfirmedDecisionToQuestion({
+    question,
+    decision,
+    decisionsPath: answerKeyDecisionPath,
+    appliedAt,
+  });
+}
+
 const appliedExtraDecisionQids = [];
 for (const decision of extraAnswerKeyDecisions) {
   const question = combinedQuestions[decision.qid];
@@ -203,9 +226,9 @@ for (const decision of extraAnswerKeyDecisions) {
   appliedExtraDecisionQids.push(decision.qid);
 }
 
-const expectedTotal = matchedItems.length + reviewedEntries.length - overlaps.length;
+const expectedTotal = matchedItems.length - skippedAutoMatchedCount + reviewedEntries.length - overlaps.length;
 const finalTotal = Object.keys(combinedQuestions).length;
-const finalTotalShortfallReason = finalTotal < matchedItems.length + reviewedEntries.length
+const finalTotalShortfallReason = finalTotal < expectedTotal
   ? overlaps.length > 0
     ? `${overlaps.length} overlapping qid(s) were equivalent after normalization and were deduplicated.`
     : "The combined set is smaller than the source total because one or more input items could not be staged."
@@ -225,6 +248,7 @@ const fullPreviewDoc = {
       path.relative(process.cwd(), decision.sourcePath),
     ),
     autoMatchedCount: matchedItems.length,
+    skippedAutoMatchedCount,
     reviewedCount: reviewedEntries.length,
     duplicateEquivalentCount: overlaps.length,
     duplicateConflictCount: conflicts.length,
@@ -326,6 +350,7 @@ const dryRunMerge = {
       path.relative(process.cwd(), decision.sourcePath),
     ),
     autoMatchedCount: matchedItems.length,
+    skippedAutoMatchedCount,
     reviewedCount: reviewedEntries.length,
     duplicateEquivalentCount: overlaps.length,
     readyQidCount: finalTotal - blockers.length,
@@ -377,6 +402,7 @@ const reportJson = {
   fullPreviewPath: path.relative(process.cwd(), fullPreviewPath),
   fullDryRunPath: path.relative(process.cwd(), fullDryRunPath),
   autoMatchedCount: matchedItems.length,
+  skippedAutoMatchedCount,
   reviewedCount: reviewedEntries.length,
   duplicateEquivalentCount: overlaps.length,
   duplicateConflictCount: conflicts.length,
@@ -395,7 +421,7 @@ const reportJson = {
   autoDerivedStats,
   reviewedApprovalCount: approvedReviewSet.size,
   appliedExtraDecisionQids,
-  note: "This report covers the combined 20-item Japanese batch-001 staging set, not just the earlier 12-item reviewed preview subset.",
+  note: `This report covers the combined ${finalTotal}-item ${lang} ${batchId} staging set, not just the reviewed preview subset.`,
 };
 
 await writeJson(reportJsonPath, reportJson);
@@ -899,6 +925,52 @@ function answerKeyDecisionConsistent(question, decision) {
   return normalizeChoiceKey(question.localeCorrectOptionKey) === decision.confirmedCorrectOptionKey;
 }
 
+function buildAutoMatchedDecisionLookup(decisionItems) {
+  const byItemId = new Map();
+  const bySourceImage = new Map();
+
+  for (const item of Array.isArray(decisionItems) ? decisionItems : []) {
+    if (String(item?.sourceSection ?? "").trim() !== "auto-matched") {
+      continue;
+    }
+
+    if (item?.itemId) {
+      byItemId.set(String(item.itemId), item);
+    }
+    if (item?.sourceImage) {
+      bySourceImage.set(String(item.sourceImage), item);
+    }
+  }
+
+  return { byItemId, bySourceImage };
+}
+
+function shouldSkipAutoMatchedSourceItem(sourceItem, lookup, matchedQid) {
+  const decision =
+    lookup.byItemId.get(String(sourceItem?.itemId ?? "")) ??
+    lookup.bySourceImage.get(String(sourceItem?.sourceImage ?? "")) ??
+    null;
+
+  if (!decision) {
+    return false;
+  }
+
+  if (decision.createNewQuestion === true) {
+    return true;
+  }
+
+  if (decision.keepUnresolved === true || decision.noneOfThese === true || decision.unsure === true) {
+    return true;
+  }
+
+  const approvedQid = normalizeText(decision.approvedQid);
+  if (approvedQid && approvedQid !== normalizeText(matchedQid)) {
+    return true;
+  }
+
+  return false;
+}
+
 function inferSourceBucket(question) {
   return String(question?.sourceMode ?? "").includes("auto-matched") ? "auto-matched" : "reviewed";
 }
@@ -1031,7 +1103,7 @@ function loadExtraAnswerKeyDecisions({ lang: sourceLang, batchId: sourceBatchId 
     }
 
     const name = entry.name;
-    if (!name.startsWith(prefix) || !name.includes(suffix) || !name.endsWith(".json")) {
+    if (!name.startsWith(prefix) || !name.includes(suffix) || !name.endsWith(".json") || name.endsWith(".template.json")) {
       continue;
     }
 

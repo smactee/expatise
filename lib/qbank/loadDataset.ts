@@ -288,16 +288,36 @@ function normalizeOne(raw: RawQuestion): Question {
   return q;
 }
 
-function applyTranslation(q: Question, translation: QuestionTranslationEntry | undefined): Question {
-  if (!translation) return q;
+function normalizeExplanation(value: unknown): string | undefined {
+  if (typeof value !== 'string') return undefined;
+  const trimmed = value.trim();
+  return trimmed.length > 0 ? trimmed : undefined;
+}
+
+function applyTranslation(
+  q: Question,
+  translation: QuestionTranslationEntry | undefined,
+  locale: Locale | string
+): Question {
+  const isSourceLocale = locale === DEFAULT_LOCALE;
+
+  if (!translation) {
+    return isSourceLocale
+      ? q
+      : {
+          ...q,
+          explanation: undefined,
+        };
+  }
 
   const translatedOptions = buildTranslatedOptions(q, translation);
+  const translatedExplanation = normalizeExplanation(translation.explanation);
 
   return {
     ...q,
     prompt: translation.prompt ?? q.prompt,
     options: translatedOptions,
-    explanation: translation.explanation ?? q.explanation,
+    explanation: isSourceLocale ? q.sourceExplanation : translatedExplanation,
   };
 }
 
@@ -339,7 +359,7 @@ const [res, patch, translations] = await Promise.all([
   return list
     .map(normalizeOne)
     .map((q) => applyPatchTags(q, patch[q.id]))
-    .map((q) => applyTranslation(q, translations[q.id]))
+    .map((q) => applyTranslation(q, translations[q.id], locale))
     .filter((q) => !shouldRestrictToTranslated || translationIds.has(q.id))
     .sort((a, b) => a.number - b.number);
 }

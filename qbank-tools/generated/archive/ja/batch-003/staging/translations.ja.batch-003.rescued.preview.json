@@ -1,0 +1,860 @@
+{
+  "meta": {
+    "locale": "ja",
+    "generatedAt": "2026-04-09T09:02:18.641Z",
+    "reviewedBatchId": "batch-003",
+    "dataset": "2023-test1",
+    "sourceUnresolvedPath": "imports/ja/batch-003/unresolved.json",
+    "sourceUnresolvedDecisionPath": "qbank-tools/generated/staging/ja-batch-003-unresolved-decisions.json",
+    "rescuedExistingQidCount": 6,
+    "manualAnswerKeyConfirmationCount": 0,
+    "stagingOnly": true
+  },
+  "questions": {
+    "q0394": {
+      "prompt": "交通信号に違反した場合、何点減点されるか点がつくか〇",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 17.50.20.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 17.50.20.png",
+      "reviewerNotes": "",
+      "promptRawJa": "交通信号に違反した場合、何点減点されるか点がつくか〇",
+      "promptGlossEn": "If you violate a traffic signal, how many demerit points will you receive?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-003",
+        "approvedQid": "q0394",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "options": {
+        "q0394_o1": "A 2点",
+        "q0394_o2": "B 3点",
+        "q0394_o3": "C 6点",
+        "q0394_o4": "D 12点"
+      },
+      "optionsRawJa": [
+        "A 2点",
+        "B 3点",
+        "C 6点",
+        "D 12点"
+      ],
+      "optionsGlossEn": [
+        "A: 2 points",
+        "B: 3 points",
+        "C: 6 points",
+        "D: 12 points"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A 2点",
+          "sourceTextBody": "2点",
+          "sourceGlossEn": "A: 2 points",
+          "canonicalOptionId": "q0394_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "2-point penalty",
+          "alignmentScore": 0.06666666666666667,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B 3点",
+          "sourceTextBody": "3点",
+          "sourceGlossEn": "B: 3 points",
+          "canonicalOptionId": "q0394_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "3-point penalty",
+          "alignmentScore": 0.06666666666666667,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C 6点",
+          "sourceTextBody": "6点",
+          "sourceGlossEn": "C: 6 points",
+          "canonicalOptionId": "q0394_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "6-point penalty",
+          "alignmentScore": 0.06666666666666667,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D 12点",
+          "sourceTextBody": "12点",
+          "sourceGlossEn": "D: 12 points",
+          "canonicalOptionId": "q0394_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "12-point penalty",
+          "alignmentScore": 0.06,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A 2点",
+          "sourceGlossEn": "A: 2 points",
+          "canonicalOptionId": "q0394_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "2-point penalty",
+          "alignmentScore": 0.06666666666666667,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B 3点",
+          "sourceGlossEn": "B: 3 points",
+          "canonicalOptionId": "q0394_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "3-point penalty",
+          "alignmentScore": 0.06666666666666667,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C 6点",
+          "sourceGlossEn": "C: 6 points",
+          "canonicalOptionId": "q0394_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "6-point penalty",
+          "alignmentScore": 0.06666666666666667,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D 12点",
+          "sourceGlossEn": "D: 12 points",
+          "canonicalOptionId": "q0394_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "12-point penalty",
+          "alignmentScore": 0.06,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "C",
+      "canonicalCorrectOptionId": "q0394_o3",
+      "canonicalCorrectOptionKey": "C",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed during unresolved rescue review on 2026-04-09T09:02:18.641Z; reviewer selected locale key C.",
+      "correctOptionAlignment": {
+        "sourceKey": "C",
+        "canonicalOptionId": "q0394_o3",
+        "canonicalOptionKey": "C",
+        "sourceText": "C 6点",
+        "sourceGlossEn": "C: 6 points",
+        "canonicalOptionText": "6-point penalty",
+        "alignmentScore": 0.06666666666666667,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-09T09:02:18.641Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ja-batch-003-unresolved-decisions.json",
+      "answerKeyReviewerNotes": "",
+      "reviewerSuggestedLocaleCorrectOptionKey": "C",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ja-batch-003-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0279": {
+      "prompt": "飲酒運転をした運転者には12点が減点されるつく。",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 17.50.25 1.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 17.50.25 1.png",
+      "reviewerNotes": "",
+      "promptRawJa": "飲酒運転をした運転者には12点が減点されるつく。",
+      "promptGlossEn": "A driver who drives under the influence of alcohol will have 12 points deducted.",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "ROW",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-003",
+        "approvedQid": "q0279",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "optionsRawJa": [],
+      "optionsGlossEn": [],
+      "localeCorrectOptionKey": null,
+      "canonicalCorrectRow": "R",
+      "canonicalCorrectAnswer": "right / true",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "ROW question; no locale-specific option key applies.",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ja-batch-003-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0877": {
+      "prompt": "この標識は何を示しているか。",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 17.50.35.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 17.50.35.png",
+      "reviewerNotes": "",
+      "promptRawJa": "この標識は何を示しているか。",
+      "promptGlossEn": "What does this road sign indicate?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-003",
+        "approvedQid": "q0877",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "options": {
+        "q0877_o1": "B 停車してゆずり合う",
+        "q0877_o2": "C 一方通行",
+        "q0877_o3": "A 対向車優先",
+        "q0877_o4": "D すれ違いするさい、自車に優先権がある"
+      },
+      "optionsRawJa": [
+        "A 対向車優先",
+        "B 停車してゆずり合う",
+        "C 一方通行",
+        "D すれ違いするさい、自車に優先権がある"
+      ],
+      "optionsGlossEn": [
+        "A Oncoming vehicles have the right of way",
+        "B Stop and yield to each other",
+        "C One-way traffic",
+        "D When passing, your vehicle has the right of way"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A 対向車優先",
+          "sourceTextBody": "対向車優先",
+          "sourceGlossEn": "A Oncoming vehicles have the right of way",
+          "canonicalOptionId": "q0877_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "going first when crossing each other",
+          "alignmentScore": 0.013793103448275862,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B 停車してゆずり合う",
+          "sourceTextBody": "停車してゆずり合う",
+          "sourceGlossEn": "B Stop and yield to each other",
+          "canonicalOptionId": "q0877_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "stop to yield",
+          "alignmentScore": 0.49729729729729727,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C 一方通行",
+          "sourceTextBody": "一方通行",
+          "sourceGlossEn": "C One-way traffic",
+          "canonicalOptionId": "q0877_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "one-way road",
+          "alignmentScore": 0.6043478260869565,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D すれ違いするさい、自車に優先権がある",
+          "sourceTextBody": "すれ違いするさい、自車に優先権がある",
+          "sourceGlossEn": "D When passing, your vehicle has the right of way",
+          "canonicalOptionId": "q0877_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "going first when crossing each other",
+          "alignmentScore": 0.1765079365079365,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A 対向車優先",
+          "sourceGlossEn": "A Oncoming vehicles have the right of way",
+          "canonicalOptionId": "q0877_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "going first when crossing each other",
+          "alignmentScore": 0.013793103448275862,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B 停車してゆずり合う",
+          "sourceGlossEn": "B Stop and yield to each other",
+          "canonicalOptionId": "q0877_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "stop to yield",
+          "alignmentScore": 0.49729729729729727,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C 一方通行",
+          "sourceGlossEn": "C One-way traffic",
+          "canonicalOptionId": "q0877_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "one-way road",
+          "alignmentScore": 0.6043478260869565,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D すれ違いするさい、自車に優先権がある",
+          "sourceGlossEn": "D When passing, your vehicle has the right of way",
+          "canonicalOptionId": "q0877_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "going first when crossing each other",
+          "alignmentScore": 0.1765079365079365,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        }
+      ],
+      "localeCorrectOptionKey": "D",
+      "canonicalCorrectOptionId": "q0877_o3",
+      "canonicalCorrectOptionKey": "C",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed during unresolved rescue review on 2026-04-09T09:02:18.641Z; reviewer selected locale key D.",
+      "correctOptionAlignment": {
+        "sourceKey": "D",
+        "canonicalOptionId": "q0877_o3",
+        "canonicalOptionKey": "C",
+        "sourceText": "D すれ違いするさい、自車に優先権がある",
+        "sourceGlossEn": "D When passing, your vehicle has the right of way",
+        "canonicalOptionText": "going first when crossing each other",
+        "alignmentScore": 0.013793103448275862,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-09T09:02:18.641Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ja-batch-003-unresolved-decisions.json",
+      "answerKeyReviewerNotes": "",
+      "reviewerSuggestedLocaleCorrectOptionKey": "D",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ja-batch-003-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0159": {
+      "prompt": "山道での運転時に注意しなければならないのはどれか。",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 17.50.42.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 17.50.42.png",
+      "reviewerNotes": "",
+      "promptRawJa": "山道での運転時に注意しなければならないのはどれか。",
+      "promptGlossEn": "Which of the following should you be careful about when driving on a mountain road?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-003",
+        "approvedQid": "q0159",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "options": {
+        "q0159_o1": "B 車間距離を大きくする",
+        "q0159_o2": "A 前車者の後にぴったりと付く",
+        "q0159_o3": "C 車間距離を小さくする",
+        "q0159_o4": "D できるだけ追い越しの機会を探す"
+      },
+      "optionsRawJa": [
+        "A 前車者の後にぴったりと付く",
+        "B 車間距離を大きくする",
+        "C 車間距離を小さくする",
+        "D できるだけ追い越しの機会を探す"
+      ],
+      "optionsGlossEn": [
+        "A. Following closely behind the vehicle in front",
+        "B. Increasing the distance between vehicles",
+        "C. Decreasing the distance between vehicles",
+        "D. Seeking opportunities to overtake as much as possible"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A 前車者の後にぴったりと付く",
+          "sourceTextBody": "前車者の後にぴったりと付く",
+          "sourceGlossEn": "A. Following closely behind the vehicle in front",
+          "canonicalOptionId": "q0159_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "Closely follow the vehicle in front",
+          "alignmentScore": 0.6042016806722689,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B 車間距離を大きくする",
+          "sourceTextBody": "車間距離を大きくする",
+          "sourceGlossEn": "B. Increasing the distance between vehicles",
+          "canonicalOptionId": "q0159_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "properly increase the safe distance",
+          "alignmentScore": 0.19170506912442395,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C 車間距離を小さくする",
+          "sourceTextBody": "車間距離を小さくする",
+          "sourceGlossEn": "C. Decreasing the distance between vehicles",
+          "canonicalOptionId": "q0159_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "Properly reduce the safe distance",
+          "alignmentScore": 0.1676190476190476,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D できるだけ追い越しの機会を探す",
+          "sourceTextBody": "できるだけ追い越しの機会を探す",
+          "sourceGlossEn": "D. Seeking opportunities to overtake as much as possible",
+          "canonicalOptionId": "q0159_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "Try to find a chance to overtake",
+          "alignmentScore": 0.20057971014492754,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A 前車者の後にぴったりと付く",
+          "sourceGlossEn": "A. Following closely behind the vehicle in front",
+          "canonicalOptionId": "q0159_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "Closely follow the vehicle in front",
+          "alignmentScore": 0.6042016806722689,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B 車間距離を大きくする",
+          "sourceGlossEn": "B. Increasing the distance between vehicles",
+          "canonicalOptionId": "q0159_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "properly increase the safe distance",
+          "alignmentScore": 0.19170506912442395,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C 車間距離を小さくする",
+          "sourceGlossEn": "C. Decreasing the distance between vehicles",
+          "canonicalOptionId": "q0159_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "Properly reduce the safe distance",
+          "alignmentScore": 0.1676190476190476,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D できるだけ追い越しの機会を探す",
+          "sourceGlossEn": "D. Seeking opportunities to overtake as much as possible",
+          "canonicalOptionId": "q0159_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "Try to find a chance to overtake",
+          "alignmentScore": 0.20057971014492754,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "B",
+      "canonicalCorrectOptionId": "q0159_o1",
+      "canonicalCorrectOptionKey": "A",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed during unresolved rescue review on 2026-04-09T09:02:18.641Z; reviewer selected locale key B.",
+      "correctOptionAlignment": {
+        "sourceKey": "B",
+        "canonicalOptionId": "q0159_o1",
+        "canonicalOptionKey": "A",
+        "sourceText": "B 車間距離を大きくする",
+        "sourceGlossEn": "B. Increasing the distance between vehicles",
+        "canonicalOptionText": "properly increase the safe distance",
+        "alignmentScore": 0.19170506912442395,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-09T09:02:18.641Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ja-batch-003-unresolved-decisions.json",
+      "answerKeyReviewerNotes": "",
+      "reviewerSuggestedLocaleCorrectOptionKey": "B",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ja-batch-003-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0470": {
+      "prompt": "高速道路のこの故障車は、車の後方何メートルの位置に三角板を設置すべきか。",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 17.50.45.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 17.50.45.png",
+      "reviewerNotes": "",
+      "promptRawJa": "高速道路のこの故障車は、車の後方何メートルの位置に三角板を設置すべきか。",
+      "promptGlossEn": "For this broken-down car on the expressway, how many meters behind the car should the triangular warning sign be placed?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-003",
+        "approvedQid": "q0470",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "options": {
+        "q0470_o1": "B 50〜150メートル",
+        "q0470_o2": "A 150メートル以上",
+        "q0470_o3": "D 50メートル以内",
+        "q0470_o4": "C 50〜100メートル"
+      },
+      "optionsRawJa": [
+        "A 150メートル以上",
+        "B 50〜150メートル",
+        "C 50〜100メートル",
+        "D 50メートル以内"
+      ],
+      "optionsGlossEn": [
+        "A: 150 meters or more",
+        "B: 50–150 meters",
+        "C: 50–100 meters",
+        "D: Within 50 meters"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A 150メートル以上",
+          "sourceTextBody": "150メートル以上",
+          "sourceGlossEn": "A: 150 meters or more",
+          "canonicalOptionId": "q0470_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "beyond 150m",
+          "alignmentScore": 0.03333333333333333,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B 50〜150メートル",
+          "sourceTextBody": "50〜150メートル",
+          "sourceGlossEn": "B: 50–150 meters",
+          "canonicalOptionId": "q0470_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "beyond 150m",
+          "alignmentScore": 0.023529411764705882,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C 50〜100メートル",
+          "sourceTextBody": "50〜100メートル",
+          "sourceGlossEn": "C: 50–100 meters",
+          "canonicalOptionId": "q0470_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "50~100m",
+          "alignmentScore": 0.03076923076923077,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D 50メートル以内",
+          "sourceTextBody": "50メートル以内",
+          "sourceGlossEn": "D: Within 50 meters",
+          "canonicalOptionId": "q0470_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "within 50m",
+          "alignmentScore": 0.33333333333333337,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A 150メートル以上",
+          "sourceGlossEn": "A: 150 meters or more",
+          "canonicalOptionId": "q0470_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "beyond 150m",
+          "alignmentScore": 0.03333333333333333,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B 50〜150メートル",
+          "sourceGlossEn": "B: 50–150 meters",
+          "canonicalOptionId": "q0470_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "beyond 150m",
+          "alignmentScore": 0.023529411764705882,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C 50〜100メートル",
+          "sourceGlossEn": "C: 50–100 meters",
+          "canonicalOptionId": "q0470_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "50~100m",
+          "alignmentScore": 0.03076923076923077,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D 50メートル以内",
+          "sourceGlossEn": "D: Within 50 meters",
+          "canonicalOptionId": "q0470_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "within 50m",
+          "alignmentScore": 0.33333333333333337,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "A",
+      "canonicalCorrectOptionId": "q0470_o1",
+      "canonicalCorrectOptionKey": "A",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed during unresolved rescue review on 2026-04-09T09:02:18.641Z; reviewer selected locale key A.",
+      "correctOptionAlignment": {
+        "sourceKey": "A",
+        "canonicalOptionId": "q0470_o1",
+        "canonicalOptionKey": "A",
+        "sourceText": "A 150メートル以上",
+        "sourceGlossEn": "A: 150 meters or more",
+        "canonicalOptionText": "beyond 150m",
+        "alignmentScore": 0.023529411764705882,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-09T09:02:18.641Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ja-batch-003-unresolved-decisions.json",
+      "answerKeyReviewerNotes": "",
+      "reviewerSuggestedLocaleCorrectOptionKey": "A",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ja-batch-003-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0132": {
+      "prompt": "長い坂を下る場合、連続してブレーキをかけるとどのようなことが起こるか。",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 17.50.52.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 17.50.52.png",
+      "reviewerNotes": "",
+      "promptRawJa": "長い坂を下る場合、連続してブレーキをかけるとどのようなことが起こるか。",
+      "promptGlossEn": "What happens if you continuously apply the brakes when descending a long slope?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-003",
+        "approvedQid": "q0132",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "options": {
+        "q0132_o1": "A エンジンの寿命を縮める",
+        "q0132_o2": "B 運転者の疲労度が高まる",
+        "q0132_o3": "C ブレーキの温度が高くなり、ブレーキが効かなくなる",
+        "q0132_o4": "D 車両が横転する可能性が高まる"
+      },
+      "optionsRawJa": [
+        "A エンジンの寿命を縮める",
+        "B 運転者の疲労度が高まる",
+        "C ブレーキの温度が高くなり、ブレーキが効かなくなる",
+        "D 車両が横転する可能性が高まる"
+      ],
+      "optionsGlossEn": [
+        "A. Shortens the engine's lifespan",
+        "B. Increases driver fatigue",
+        "C. The brake temperature rises and the brakes stop working",
+        "D. Increases the risk of the vehicle overturning"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A エンジンの寿命を縮める",
+          "sourceTextBody": "エンジンの寿命を縮める",
+          "sourceGlossEn": "A. Shortens the engine's lifespan",
+          "canonicalOptionId": "q0132_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "Can shorten the engines service life",
+          "alignmentScore": 0.2319327731092437,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B 運転者の疲労度が高まる",
+          "sourceTextBody": "運転者の疲労度が高まる",
+          "sourceGlossEn": "B. Increases driver fatigue",
+          "canonicalOptionId": "q0132_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "Increases the drivers labor intensity",
+          "alignmentScore": 0.43200000000000005,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C ブレーキの温度が高くなり、ブレーキが効かなくなる",
+          "sourceTextBody": "ブレーキの温度が高くなり、ブレーキが効かなくなる",
+          "sourceGlossEn": "C. The brake temperature rises and the brakes stop working",
+          "canonicalOptionId": "q0132_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "can drastically reduce the braking efficiency due to the rising temperature of the brake",
+          "alignmentScore": 0.18188034188034188,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D 車両が横転する可能性が高まる",
+          "sourceTextBody": "車両が横転する可能性が高まる",
+          "sourceGlossEn": "D. Increases the risk of the vehicle overturning",
+          "canonicalOptionId": "q0132_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "Can easily cause vehicle overturn",
+          "alignmentScore": 0.19350427350427352,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A エンジンの寿命を縮める",
+          "sourceGlossEn": "A. Shortens the engine's lifespan",
+          "canonicalOptionId": "q0132_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "Can shorten the engines service life",
+          "alignmentScore": 0.2319327731092437,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B 運転者の疲労度が高まる",
+          "sourceGlossEn": "B. Increases driver fatigue",
+          "canonicalOptionId": "q0132_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "Increases the drivers labor intensity",
+          "alignmentScore": 0.43200000000000005,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C ブレーキの温度が高くなり、ブレーキが効かなくなる",
+          "sourceGlossEn": "C. The brake temperature rises and the brakes stop working",
+          "canonicalOptionId": "q0132_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "can drastically reduce the braking efficiency due to the rising temperature of the brake",
+          "alignmentScore": 0.18188034188034188,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D 車両が横転する可能性が高まる",
+          "sourceGlossEn": "D. Increases the risk of the vehicle overturning",
+          "canonicalOptionId": "q0132_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "Can easily cause vehicle overturn",
+          "alignmentScore": 0.19350427350427352,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "C",
+      "canonicalCorrectOptionId": "q0132_o3",
+      "canonicalCorrectOptionKey": "C",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed during unresolved rescue review on 2026-04-09T09:02:18.641Z; reviewer selected locale key C.",
+      "correctOptionAlignment": {
+        "sourceKey": "C",
+        "canonicalOptionId": "q0132_o3",
+        "canonicalOptionKey": "C",
+        "sourceText": "C ブレーキの温度が高くなり、ブレーキが効かなくなる",
+        "sourceGlossEn": "C. The brake temperature rises and the brakes stop working",
+        "canonicalOptionText": "can drastically reduce the braking efficiency due to the rising temperature of the brake",
+        "alignmentScore": 0.18188034188034188,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-09T09:02:18.641Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ja-batch-003-unresolved-decisions.json",
+      "answerKeyReviewerNotes": "",
+      "reviewerSuggestedLocaleCorrectOptionKey": "C",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ja-batch-003-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    }
+  }
+}

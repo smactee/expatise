@@ -184,22 +184,26 @@ const existingProductionDoc = fileExists(productionPath)
 const masterQuestions = extractQuestionList(readJson(masterQuestionsPath));
 const masterById = new Map(masterQuestions.map((question) => [String(question?.id ?? "").trim(), question]));
 
-const readyQuestions = dryRunDoc?.questions && typeof dryRunDoc.questions === "object" ? dryRunDoc.questions : {};
-const qidsToMerge = Object.keys(readyQuestions).sort();
+const previewQuestions = previewDoc?.questions && typeof previewDoc.questions === "object" ? previewDoc.questions : {};
+const qidsToMerge = Object.keys(previewQuestions).sort();
+const existingCountBefore = Object.keys(existingProductionDoc.questions ?? {}).length;
+const overlappingProductionQids = qidsToMerge.filter((qid) => qid in (existingProductionDoc.questions ?? {}));
 
 const nextQuestions = {
   ...(existingProductionDoc.questions ?? {}),
 };
 
 for (const qid of qidsToMerge) {
-  nextQuestions[qid] = sanitizeQuestionEntry(readyQuestions[qid]);
+  nextQuestions[qid] = sanitizeQuestionEntry(previewQuestions[qid]);
 }
+
+const existingCountAfter = Object.keys(nextQuestions).length;
 
 const nextDoc = {
   meta: {
     ...(existingProductionDoc.meta ?? {}),
     locale: lang,
-    translatedQuestions: Object.keys(nextQuestions).length,
+    translatedQuestions: existingCountAfter,
     generatedAt: new Date().toISOString(),
     mergedBatches: Array.from(
       new Set([...(existingProductionDoc.meta?.mergedBatches ?? []), batchId].map((value) => String(value)))
@@ -249,6 +253,10 @@ const report = {
   sourceDryRunReviewPath: path.relative(ROOT, dryRunReviewPath),
   qidsMerged: qidsToMerge,
   qidCount: qidsToMerge.length,
+  productionTranslatedCountBefore: existingCountBefore,
+  productionTranslatedCountAfter: existingCountAfter,
+  productionOverlapCount: overlappingProductionQids.length,
+  overlappingProductionQids,
   runtimeSupport,
   dryRunReadyQidCount: Number(dryRunDoc?.meta?.readyQidCount ?? qidsToMerge.length),
   dryRunBlockerCount: Number(dryRunDoc?.meta?.blockerCount ?? 0),
@@ -265,8 +273,11 @@ const lines = [
   "",
   `- Dataset: ${dataset}`,
   `- Qids merged: ${qidsToMerge.length}`,
-  `- Runtime support already existed: no`,
-  `- Runtime support added: yes`,
+  `- Production translated count before merge: ${existingCountBefore}`,
+  `- Production translated count after merge: ${existingCountAfter}`,
+  `- Production overlap count: ${overlappingProductionQids.length}`,
+  `- Runtime support already existed: ${report.runtimeSupport.existedBeforeMerge ? "yes" : "no"}`,
+  `- Runtime support added: ${report.runtimeSupport.addedByMerge ? "yes" : "no"}`,
   `- Ready for Japanese batch-002: ${blockers.length === 0 ? "yes" : "no"}`,
   "",
   "## Files Changed",

@@ -1,0 +1,371 @@
+{
+  "generatedAt": "2026-04-11T15:13:25.420Z",
+  "lang": "ja",
+  "dataset": "2023-test1",
+  "batches": [
+    "batch-001",
+    "batch-002",
+    "batch-003"
+  ],
+  "sourceRetroDecisionPaths": [
+    "qbank-tools/generated/staging/ja-batch-001-retro-auto-workbench-decisions.json",
+    "qbank-tools/generated/staging/ja-batch-002-retro-auto-workbench-decisions.json",
+    "qbank-tools/generated/staging/ja-batch-003-retro-auto-workbench-decisions.json"
+  ],
+  "retroReviewedItemCount": 21,
+  "noChangeCount": 17,
+  "existingQidProductionCorrectionsApplied": 2,
+  "answerKeyOnlyCorrectionsApplied": 2,
+  "removedFromPreviouslyAcceptedAutoMatchedSetCount": 2,
+  "stagedCreateNewQuestionCount": 0,
+  "stagedUnresolvedCount": 0,
+  "productionJapaneseTranslatedCountBefore": 289,
+  "productionJapaneseTranslatedCountAfter": 291,
+  "productionChanged": true,
+  "filesChanged": [
+    "qbank-tools/generated/staging/translations.ja.retro-auto-batch-001-batch-002-batch-003.preview.json",
+    "qbank-tools/generated/reports/retro-auto-correction-pass-ja-batch-001-batch-002-batch-003.json",
+    "qbank-tools/generated/reports/retro-auto-correction-pass-ja-batch-001-batch-002-batch-003.md",
+    "public/qbank/2023-test1/translations.ja.json"
+  ],
+  "changedQids": [
+    "q0447",
+    "q0595",
+    "q0688",
+    "q0764"
+  ],
+  "changedItems": [
+    {
+      "qid": "q0688",
+      "batchId": "batch-001",
+      "itemId": "screenshots/1.png",
+      "sourceImage": "screenshots/1.png",
+      "originalQid": "q0761",
+      "approvedQid": "q0688",
+      "classification": "corrected-to-different-existing-qid",
+      "productionAction": "add-corrected-qid"
+    },
+    {
+      "qid": "q0764",
+      "batchId": "batch-001",
+      "itemId": "screenshots/Screenshot 2026-04-07 at 17.49.39.png",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 17.49.39.png",
+      "originalQid": "q0820",
+      "approvedQid": "q0764",
+      "classification": "corrected-to-different-existing-qid",
+      "productionAction": "add-corrected-qid"
+    },
+    {
+      "qid": "q0447",
+      "batchId": "batch-003",
+      "itemId": "screenshots/Screenshot 2026-04-07 at 17.50.30.png",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 17.50.30.png",
+      "originalQid": "q0447",
+      "approvedQid": "q0447",
+      "classification": "answer-key-confirmed",
+      "productionAction": "answer-key-only-correction"
+    },
+    {
+      "qid": "q0595",
+      "batchId": "batch-003",
+      "itemId": "screenshots/Screenshot 2026-04-07 at 17.50.33.png",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 17.50.33.png",
+      "originalQid": "q0595",
+      "approvedQid": "q0595",
+      "classification": "answer-key-confirmed",
+      "productionAction": "answer-key-only-correction"
+    }
+  ],
+  "supersededMappings": [
+    {
+      "batchId": "batch-001",
+      "itemId": "screenshots/1.png",
+      "sourceImage": "screenshots/1.png",
+      "originalQid": "q0761",
+      "correctedQid": "q0688"
+    },
+    {
+      "batchId": "batch-001",
+      "itemId": "screenshots/Screenshot 2026-04-07 at 17.49.39.png",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 17.49.39.png",
+      "originalQid": "q0820",
+      "correctedQid": "q0764"
+    }
+  ],
+  "skippedProductionRemovals": [
+    {
+      "batchId": "batch-001",
+      "itemId": "screenshots/1.png",
+      "sourceImage": "screenshots/1.png",
+      "originalQid": "q0761",
+      "correctedQid": "q0688",
+      "reason": "Skipped deleting q0761; it also appears in later production merge batch(es): batch-008."
+    },
+    {
+      "batchId": "batch-001",
+      "itemId": "screenshots/Screenshot 2026-04-07 at 17.49.39.png",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 17.49.39.png",
+      "originalQid": "q0820",
+      "correctedQid": "q0764",
+      "reason": "Skipped deleting q0820; it also appears in later production merge batch(es): batch-007."
+    }
+  ],
+  "stagedNewQuestionItems": [],
+  "stagedUnresolvedItems": [],
+  "validations": [
+    {
+      "qid": "q0447",
+      "type": "MCQ",
+      "qidExists": true,
+      "localeOptionOrderPreserved": true,
+      "localeCorrectOptionKeyPresent": true,
+      "localeCorrectOptionKeyMapped": true,
+      "localeCorrectOptionKey": "D",
+      "correctMeaningCanonicalOptionId": "q0447_o1"
+    },
+    {
+      "qid": "q0595",
+      "type": "MCQ",
+      "qidExists": true,
+      "localeOptionOrderPreserved": true,
+      "localeCorrectOptionKeyPresent": true,
+      "localeCorrectOptionKeyMapped": true,
+      "localeCorrectOptionKey": "A",
+      "correctMeaningCanonicalOptionId": "q0595_o2"
+    },
+    {
+      "qid": "q0688",
+      "type": "MCQ",
+      "qidExists": true,
+      "localeOptionOrderPreserved": true,
+      "localeCorrectOptionKeyPresent": true,
+      "localeCorrectOptionKeyMapped": true,
+      "localeCorrectOptionKey": "D",
+      "correctMeaningCanonicalOptionId": "q0688_o4"
+    },
+    {
+      "qid": "q0764",
+      "type": "MCQ",
+      "qidExists": true,
+      "localeOptionOrderPreserved": true,
+      "localeCorrectOptionKeyPresent": true,
+      "localeCorrectOptionKeyMapped": true,
+      "localeCorrectOptionKey": "C",
+      "correctMeaningCanonicalOptionId": "q0764_o1"
+    }
+  ],
+  "retroPassCompletedCleanly": true,
+  "note": "Only production-safe existing-qid retro corrections were merged. No production qids were deleted in this pass.",
+  "itemSummaries": [
+    {
+      "batchId": "batch-001",
+      "itemId": "screenshots/1.png",
+      "sourceImage": "screenshots/1.png",
+      "initialSuggestedQid": "q0761",
+      "approvedQid": "q0688",
+      "structuredAnswerKey": "D",
+      "classification": "corrected-to-different-existing-qid",
+      "productionAction": "add-corrected-qid"
+    },
+    {
+      "batchId": "batch-001",
+      "itemId": "screenshots/Screenshot 2026-04-07 at 17.49.39.png",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 17.49.39.png",
+      "initialSuggestedQid": "q0820",
+      "approvedQid": "q0764",
+      "structuredAnswerKey": "C",
+      "classification": "corrected-to-different-existing-qid",
+      "productionAction": "add-corrected-qid"
+    },
+    {
+      "batchId": "batch-001",
+      "itemId": "screenshots/Screenshot 2026-04-07 at 17.49.43.png",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 17.49.43.png",
+      "initialSuggestedQid": "q0319",
+      "approvedQid": "q0319",
+      "structuredAnswerKey": null,
+      "classification": "unchanged",
+      "productionAction": "none"
+    },
+    {
+      "batchId": "batch-001",
+      "itemId": "screenshots/Screenshot 2026-04-07 at 17.49.49 1.png",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 17.49.49 1.png",
+      "initialSuggestedQid": "q0345",
+      "approvedQid": "q0345",
+      "structuredAnswerKey": null,
+      "classification": "unchanged",
+      "productionAction": "none"
+    },
+    {
+      "batchId": "batch-001",
+      "itemId": "screenshots/Screenshot 2026-04-07 at 17.49.50.png",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 17.49.50.png",
+      "initialSuggestedQid": "q0073",
+      "approvedQid": "q0073",
+      "structuredAnswerKey": null,
+      "classification": "unchanged",
+      "productionAction": "none"
+    },
+    {
+      "batchId": "batch-001",
+      "itemId": "screenshots/Screenshot 2026-04-07 at 17.49.53.png",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 17.49.53.png",
+      "initialSuggestedQid": "q0333",
+      "approvedQid": "q0333",
+      "structuredAnswerKey": null,
+      "classification": "unchanged",
+      "productionAction": "none"
+    },
+    {
+      "batchId": "batch-001",
+      "itemId": "screenshots/Screenshot 2026-04-07 at 17.49.57.png",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 17.49.57.png",
+      "initialSuggestedQid": "q0466",
+      "approvedQid": "q0466",
+      "structuredAnswerKey": null,
+      "classification": "unchanged",
+      "productionAction": "none"
+    },
+    {
+      "batchId": "batch-001",
+      "itemId": "screenshots/Screenshot 2026-04-07 at 17.49.58.png",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 17.49.58.png",
+      "initialSuggestedQid": "q0033",
+      "approvedQid": "q0033",
+      "structuredAnswerKey": null,
+      "classification": "unchanged",
+      "productionAction": "none"
+    },
+    {
+      "batchId": "batch-002",
+      "itemId": "screenshots/Screenshot 2026-04-07 at 17.50.02.png",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 17.50.02.png",
+      "initialSuggestedQid": "q0695",
+      "approvedQid": "q0695",
+      "structuredAnswerKey": "A",
+      "classification": "answer-key-confirmed",
+      "productionAction": "none"
+    },
+    {
+      "batchId": "batch-002",
+      "itemId": "screenshots/Screenshot 2026-04-07 at 17.50.04 1.png",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 17.50.04 1.png",
+      "initialSuggestedQid": "q0041",
+      "approvedQid": "q0041",
+      "structuredAnswerKey": null,
+      "classification": "unchanged",
+      "productionAction": "none"
+    },
+    {
+      "batchId": "batch-002",
+      "itemId": "screenshots/Screenshot 2026-04-07 at 17.50.13.png",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 17.50.13.png",
+      "initialSuggestedQid": "q0089",
+      "approvedQid": "q0089",
+      "structuredAnswerKey": null,
+      "classification": "unchanged",
+      "productionAction": "none"
+    },
+    {
+      "batchId": "batch-002",
+      "itemId": "screenshots/Screenshot 2026-04-07 at 17.50.18.png",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 17.50.18.png",
+      "initialSuggestedQid": "q0307",
+      "approvedQid": "q0307",
+      "structuredAnswerKey": null,
+      "classification": "unchanged",
+      "productionAction": "none"
+    },
+    {
+      "batchId": "batch-003",
+      "itemId": "screenshots/Screenshot 2026-04-07 at 17.50.24.png",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 17.50.24.png",
+      "initialSuggestedQid": "q0080",
+      "approvedQid": "q0080",
+      "structuredAnswerKey": null,
+      "classification": "unchanged",
+      "productionAction": "none"
+    },
+    {
+      "batchId": "batch-003",
+      "itemId": "screenshots/Screenshot 2026-04-07 at 17.50.26.png",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 17.50.26.png",
+      "initialSuggestedQid": "q0134",
+      "approvedQid": "q0134",
+      "structuredAnswerKey": "B",
+      "classification": "answer-key-confirmed",
+      "productionAction": "none"
+    },
+    {
+      "batchId": "batch-003",
+      "itemId": "screenshots/Screenshot 2026-04-07 at 17.50.29.png",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 17.50.29.png",
+      "initialSuggestedQid": "q0076",
+      "approvedQid": "q0076",
+      "structuredAnswerKey": null,
+      "classification": "unchanged",
+      "productionAction": "none"
+    },
+    {
+      "batchId": "batch-003",
+      "itemId": "screenshots/Screenshot 2026-04-07 at 17.50.30.png",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 17.50.30.png",
+      "initialSuggestedQid": "q0447",
+      "approvedQid": "q0447",
+      "structuredAnswerKey": "D",
+      "classification": "answer-key-confirmed",
+      "productionAction": "answer-key-only-correction"
+    },
+    {
+      "batchId": "batch-003",
+      "itemId": "screenshots/Screenshot 2026-04-07 at 17.50.33 1.png",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 17.50.33 1.png",
+      "initialSuggestedQid": "q0291",
+      "approvedQid": "q0291",
+      "structuredAnswerKey": null,
+      "classification": "unchanged",
+      "productionAction": "none"
+    },
+    {
+      "batchId": "batch-003",
+      "itemId": "screenshots/Screenshot 2026-04-07 at 17.50.33.png",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 17.50.33.png",
+      "initialSuggestedQid": "q0595",
+      "approvedQid": "q0595",
+      "structuredAnswerKey": "A",
+      "classification": "answer-key-confirmed",
+      "productionAction": "answer-key-only-correction"
+    },
+    {
+      "batchId": "batch-003",
+      "itemId": "screenshots/Screenshot 2026-04-07 at 17.50.43.png",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 17.50.43.png",
+      "initialSuggestedQid": "q0065",
+      "approvedQid": "q0065",
+      "structuredAnswerKey": null,
+      "classification": "unchanged",
+      "productionAction": "none"
+    },
+    {
+      "batchId": "batch-003",
+      "itemId": "screenshots/Screenshot 2026-04-07 at 17.50.47.png",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 17.50.47.png",
+      "initialSuggestedQid": "q0002",
+      "approvedQid": "q0002",
+      "structuredAnswerKey": null,
+      "classification": "unchanged",
+      "productionAction": "none"
+    },
+    {
+      "batchId": "batch-003",
+      "itemId": "screenshots/Screenshot 2026-04-07 at 17.50.53.png",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 17.50.53.png",
+      "initialSuggestedQid": "q0236",
+      "approvedQid": "q0236",
+      "structuredAnswerKey": null,
+      "classification": "unchanged",
+      "productionAction": "none"
+    }
+  ]
+}

@@ -1,0 +1,484 @@
+{
+  "generatedAt": "2026-04-09T09:02:18.641Z",
+  "lang": "ja",
+  "batchId": "batch-003",
+  "dataset": "2023-test1",
+  "sourceDecisionPath": "qbank-tools/generated/staging/ja-batch-003-unresolved-decisions.json",
+  "items": [
+    {
+      "itemId": "screenshots/Screenshot 2026-04-07 at 17.50.32.png",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 17.50.32.png",
+      "status": "kept-unresolved",
+      "reason": "Reviewer chose to keep this item unresolved.",
+      "reviewerNotes": "due to no image, impossible to decide which question this is there are about 6:best potential candidates are 710, 714, 771, 789",
+      "approvedQid": null,
+      "promptRawJa": "この標識は次のなかのどの種類に属しますか。",
+      "promptGlossEn": "Which of the following types does this sign belong to?",
+      "optionsRawJa": [
+        "A 警戒標識",
+        "B 規制標識",
+        "C 指示標識",
+        "D 案内標識"
+      ],
+      "optionsGlossEn": [
+        "A Warning sign",
+        "B Regulatory sign",
+        "C Instruction sign",
+        "D Guide sign"
+      ],
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "provisionalTopic": "traffic-signals",
+      "provisionalSubtopics": [
+        "traffic-signals:road-signs"
+      ],
+      "topicConfidence": 1,
+      "topicSignals": [
+        {
+          "topic": "traffic-signals",
+          "subtopic": "traffic-signals:road-signs",
+          "signal": "sign-family",
+          "weight": 1.1
+        }
+      ],
+      "topCandidates": [
+        {
+          "qid": "q0389",
+          "number": 389,
+          "type": "MCQ",
+          "score": 33.03,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.046,
+            "rawPromptSimilarity": 0.047,
+            "englishPromptSimilarity": 0.046,
+            "syntheticPromptSimilarity": 0,
+            "optionSimilarity": 0.134,
+            "englishOptionSimilarity": 0.134,
+            "syntheticOptionSimilarity": 0.07,
+            "optionFingerprint": 0.084,
+            "englishOptionFingerprint": 0.084,
+            "syntheticOptionFingerprint": 0.008,
+            "optionExactSet": 0,
+            "optionRareCoverage": 0.066,
+            "mirrorAgreement": 0.048,
+            "correctAnswerMeaning": 0.5,
+            "englishCorrectAnswerMeaning": 0.5,
+            "syntheticCorrectAnswerMeaning": 0.5,
+            "questionType": 1,
+            "imageSignal": 1,
+            "topicWeighting": 0.5,
+            "assetTieBreak": 0
+          },
+          "diagnostics": {
+            "effectiveItemType": "MCQ",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": false,
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "exactCorrectKey": false,
+            "optionSetMode": "unordered-semantic + synthetic-ja mirror",
+            "rareSetBonus": 0,
+            "syntheticMirrorUsed": true,
+            "genericPromptFamily": null,
+            "explanation": [
+              "Missing correct answer was treated as a neutral signal."
+            ]
+          },
+          "prompt": "Which is incorrect when a motorized vehicle breaks down on the expressway?",
+          "syntheticJaPrompt": "which incorrect when motorized 車両 break down 高速道路。",
+          "translatedPrompt": "고속도로에서 차량이 고장 났을 때 틀린 것은 무엇인가?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Place warning sign as required.",
+              "translatedText": "경고표지를 설치한다."
+            },
+            {
+              "id": "B",
+              "text": "Passengers cannot get off.",
+              "translatedText": "승객은 하차할 수 없다."
+            },
+            {
+              "id": "C",
+              "text": "Call the police at once.",
+              "translatedText": "즉시 경찰에 신고한다."
+            },
+            {
+              "id": "D",
+              "text": "Turn on the hazard lights.",
+              "translatedText": "비상점멸등을 켠다."
+            }
+          ],
+          "correctAnswer": {
+            "kind": "MCQ",
+            "correctRow": null,
+            "correctOptionId": "q0389_o2",
+            "correctOptionKey": "B",
+            "correctOptionText": "Passengers cannot get off.",
+            "correctOptionTranslatedText": "승객은 하차할 수 없다.",
+            "answerRaw": "B"
+          },
+          "image": {
+            "hasImage": false,
+            "currentAssetSrc": null,
+            "assetHashes": []
+          },
+          "topic": "traffic-lights",
+          "subtopics": [],
+          "conceptSlots": null
+        },
+        {
+          "qid": "q0370",
+          "number": 370,
+          "type": "MCQ",
+          "score": 32.958,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.118,
+            "rawPromptSimilarity": 0.121,
+            "englishPromptSimilarity": 0.118,
+            "syntheticPromptSimilarity": 0,
+            "optionSimilarity": 0.101,
+            "englishOptionSimilarity": 0.101,
+            "syntheticOptionSimilarity": 0.098,
+            "optionFingerprint": 0.068,
+            "englishOptionFingerprint": 0.013,
+            "syntheticOptionFingerprint": 0.011,
+            "optionExactSet": 0,
+            "optionRareCoverage": 0,
+            "mirrorAgreement": 0.068,
+            "correctAnswerMeaning": 0.5,
+            "englishCorrectAnswerMeaning": 0.5,
+            "syntheticCorrectAnswerMeaning": 0.5,
+            "questionType": 1,
+            "imageSignal": 1,
+            "topicWeighting": 0.5,
+            "assetTieBreak": 0
+          },
+          "diagnostics": {
+            "effectiveItemType": "MCQ",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": false,
+            "promptSpecificity": 0.975,
+            "genericPromptPenalty": 0.975,
+            "missingCorrectAnswerNeutral": true,
+            "exactCorrectKey": false,
+            "optionSetMode": "unordered-semantic + synthetic-ja mirror",
+            "rareSetBonus": 0,
+            "syntheticMirrorUsed": true,
+            "genericPromptFamily": null,
+            "explanation": [
+              "Missing correct answer was treated as a neutral signal."
+            ]
+          },
+          "prompt": "Which illegal conduct is subject to a 12-point penalty?",
+          "syntheticJaPrompt": "which illegal conduct subject 12-point penalty",
+          "translatedPrompt": "어떤 위반행위가 벌점 12점에 해당하는가?",
+          "options": [
+            {
+              "id": "A",
+              "text": "violating traffic lights",
+              "translatedText": "신호 위반"
+            },
+            {
+              "id": "B",
+              "text": "using falsified license plate",
+              "translatedText": "위조 번호판 사용"
+            },
+            {
+              "id": "C",
+              "text": "calling or answering the mobile phone",
+              "translatedText": "운전 중 휴대전화 사용"
+            },
+            {
+              "id": "D",
+              "text": "violating prohibitive signs",
+              "translatedText": "금지표지 위반"
+            }
+          ],
+          "correctAnswer": {
+            "kind": "MCQ",
+            "correctRow": null,
+            "correctOptionId": "q0370_o2",
+            "correctOptionKey": "B",
+            "correctOptionText": "using falsified license plate",
+            "correctOptionTranslatedText": "위조 번호판 사용",
+            "answerRaw": "B"
+          },
+          "image": {
+            "hasImage": false,
+            "currentAssetSrc": null,
+            "assetHashes": []
+          },
+          "topic": "violations-penalties",
+          "subtopics": [],
+          "conceptSlots": null
+        },
+        {
+          "qid": "q0381",
+          "number": 381,
+          "type": "MCQ",
+          "score": 32.831,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.099,
+            "rawPromptSimilarity": 0.101,
+            "englishPromptSimilarity": 0.099,
+            "syntheticPromptSimilarity": 0,
+            "optionSimilarity": 0.102,
+            "englishOptionSimilarity": 0.102,
+            "syntheticOptionSimilarity": 0.068,
+            "optionFingerprint": 0.082,
+            "englishOptionFingerprint": 0.082,
+            "syntheticOptionFingerprint": 0.008,
+            "optionExactSet": 0,
+            "optionRareCoverage": 0.078,
+            "mirrorAgreement": 0.047,
+            "correctAnswerMeaning": 0.5,
+            "englishCorrectAnswerMeaning": 0.5,
+            "syntheticCorrectAnswerMeaning": 0.5,
+            "questionType": 1,
+            "imageSignal": 1,
+            "topicWeighting": 0.5,
+            "assetTieBreak": 0
+          },
+          "diagnostics": {
+            "effectiveItemType": "MCQ",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": false,
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "exactCorrectKey": false,
+            "optionSetMode": "unordered-semantic + synthetic-ja mirror",
+            "rareSetBonus": 0,
+            "syntheticMirrorUsed": true,
+            "genericPromptFamily": null,
+            "explanation": [
+              "Missing correct answer was treated as a neutral signal."
+            ]
+          },
+          "prompt": "Which is correct if a vehicle breaks down and is difficult to move?",
+          "syntheticJaPrompt": "which correct if 車両 break down and difficult move。",
+          "translatedPrompt": "차량이 고장 나서 이동하기 어려울 때 어떻게 해야 하는가?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Turn on the hazard lights.",
+              "translatedText": "비상점멸등을 켜다"
+            },
+            {
+              "id": "B",
+              "text": "Turn on all the lights of the vehicle.",
+              "translatedText": "차량의 모든 등화를 켜다"
+            },
+            {
+              "id": "C",
+              "text": "Forbid the passengers to get off.",
+              "translatedText": "승객의 하차를 금지하다"
+            },
+            {
+              "id": "D",
+              "text": "Place a warning sign in front of the vehicle.",
+              "translatedText": "차량 앞에 경고표지판을 세우다"
+            }
+          ],
+          "correctAnswer": {
+            "kind": "MCQ",
+            "correctRow": null,
+            "correctOptionId": "q0381_o1",
+            "correctOptionKey": "A",
+            "correctOptionText": "Turn on the hazard lights.",
+            "correctOptionTranslatedText": "비상점멸등을 켜다",
+            "answerRaw": "A"
+          },
+          "image": {
+            "hasImage": false,
+            "currentAssetSrc": null,
+            "assetHashes": []
+          },
+          "topic": "driving-operations",
+          "subtopics": [
+            "driving-operations:indicators",
+            "proper-driving:safe-driving"
+          ],
+          "conceptSlots": null
+        },
+        {
+          "qid": "q0180",
+          "number": 180,
+          "type": "MCQ",
+          "score": 32.372,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.074,
+            "rawPromptSimilarity": 0.076,
+            "englishPromptSimilarity": 0.074,
+            "syntheticPromptSimilarity": 0,
+            "optionSimilarity": 0.112,
+            "englishOptionSimilarity": 0.088,
+            "syntheticOptionSimilarity": 0.112,
+            "optionFingerprint": 0.062,
+            "englishOptionFingerprint": 0.013,
+            "syntheticOptionFingerprint": 0.013,
+            "optionExactSet": 0,
+            "optionRareCoverage": 0,
+            "mirrorAgreement": 0.062,
+            "correctAnswerMeaning": 0.5,
+            "englishCorrectAnswerMeaning": 0.5,
+            "syntheticCorrectAnswerMeaning": 0.5,
+            "questionType": 1,
+            "imageSignal": 1,
+            "topicWeighting": 0.5,
+            "assetTieBreak": 0
+          },
+          "diagnostics": {
+            "effectiveItemType": "MCQ",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": false,
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "exactCorrectKey": false,
+            "optionSetMode": "unordered-semantic + synthetic-ja mirror",
+            "rareSetBonus": 0,
+            "syntheticMirrorUsed": true,
+            "genericPromptFamily": null,
+            "explanation": [
+              "Missing correct answer was treated as a neutral signal."
+            ]
+          },
+          "prompt": "The main impact of mountain roads on safe driving is that the ______.",
+          "syntheticJaPrompt": "main impact mountain road safe driving _______",
+          "translatedPrompt": "산길이 안전운전에 미치는 주요 영향은 무엇인가?",
+          "options": [
+            {
+              "id": "A",
+              "text": "traffic conditions are boring",
+              "translatedText": "교통 상황이 단조롭다"
+            },
+            {
+              "id": "B",
+              "text": "slopes are long and the curves are sharp and visibility range is shorter.",
+              "translatedText": "경사가 길고 커브가 급하며 시야가 짧다"
+            },
+            {
+              "id": "C",
+              "text": "traffic flow is heavy",
+              "translatedText": "교통 흐름이 혼잡하다"
+            },
+            {
+              "id": "D",
+              "text": "road signs are fewer",
+              "translatedText": "도로 표지가 적다"
+            }
+          ],
+          "correctAnswer": {
+            "kind": "MCQ",
+            "correctRow": null,
+            "correctOptionId": "q0180_o2",
+            "correctOptionKey": "B",
+            "correctOptionText": "slopes are long and the curves are sharp and visibility range is shorter.",
+            "correctOptionTranslatedText": "경사가 길고 커브가 급하며 시야가 짧다",
+            "answerRaw": "B"
+          },
+          "image": {
+            "hasImage": false,
+            "currentAssetSrc": null,
+            "assetHashes": []
+          },
+          "topic": "proper-driving",
+          "subtopics": [
+            "proper-driving:safe-driving",
+            "road-safety:road-conditions"
+          ],
+          "conceptSlots": null
+        },
+        {
+          "qid": "q0115",
+          "number": 115,
+          "type": "MCQ",
+          "score": 32.311,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.076,
+            "rawPromptSimilarity": 0.078,
+            "englishPromptSimilarity": 0.076,
+            "syntheticPromptSimilarity": 0.038,
+            "optionSimilarity": 0.105,
+            "englishOptionSimilarity": 0.105,
+            "syntheticOptionSimilarity": 0.097,
+            "optionFingerprint": 0.067,
+            "englishOptionFingerprint": 0.018,
+            "syntheticOptionFingerprint": 0.011,
+            "optionExactSet": 0,
+            "optionRareCoverage": 0,
+            "mirrorAgreement": 0.067,
+            "correctAnswerMeaning": 0.5,
+            "englishCorrectAnswerMeaning": 0.5,
+            "syntheticCorrectAnswerMeaning": 0.5,
+            "questionType": 1,
+            "imageSignal": 1,
+            "topicWeighting": 0.5,
+            "assetTieBreak": 0
+          },
+          "diagnostics": {
+            "effectiveItemType": "MCQ",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": false,
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "exactCorrectKey": false,
+            "optionSetMode": "unordered-semantic + synthetic-ja mirror",
+            "rareSetBonus": 0,
+            "syntheticMirrorUsed": true,
+            "genericPromptFamily": null,
+            "explanation": [
+              "Missing correct answer was treated as a neutral signal."
+            ]
+          },
+          "prompt": "Driving on the expressway with full signs and markings, the driver should drive in the lane and at the speed according to the ______.",
+          "syntheticJaPrompt": "driving 高速道路 full 標識 and 路面標示 運転者 べき run 車線 and speed according _________。",
+          "translatedPrompt": "표지와 도로 표시가 완비된 고속도로에서 운전자는 차로와 속도를 무엇에 따라 운행해야 하는가?",
+          "options": [
+            {
+              "id": "A",
+              "text": "signs and markings",
+              "translatedText": "표지와 도로 표시"
+            },
+            {
+              "id": "B",
+              "text": "rules on road traffic safety",
+              "translatedText": "도로교통안전 규정"
+            },
+            {
+              "id": "C",
+              "text": "vehicle manual",
+              "translatedText": "차량 취급 설명서"
+            },
+            {
+              "id": "D",
+              "text": "local regulations",
+              "translatedText": "지역 규정"
+            }
+          ],
+          "correctAnswer": {
+            "kind": "MCQ",
+            "correctRow": null,
+            "correctOptionId": "q0115_o1",
+            "correctOptionKey": "A",
+            "correctOptionText": "signs and markings",
+            "correctOptionTranslatedText": "표지와 도로 표시",
+            "answerRaw": "A"
+          },
+          "image": {
+            "hasImage": false,
+            "currentAssetSrc": null,
+            "assetHashes": []
+          },
+          "topic": "road-markings",
+          "subtopics": [],
+          "conceptSlots": null
+        }
+      ]
+    }
+  ]
+}

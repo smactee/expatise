@@ -1,0 +1,70 @@
+{
+  "generatedAt": "2026-04-11T14:42:40.880Z",
+  "lang": "ja",
+  "batchId": "batch-008",
+  "dataset": "2023-test1",
+  "sourceDecisionPath": "qbank-tools/generated/staging/new-question-decisions.ja.batch-008.json",
+  "items": [
+    {
+      "candidateId": "nqc-ja-batch-008-001",
+      "sourceLang": "ja",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.04.36.png",
+      "effectiveQuestionType": "MCQ",
+      "promptRawJa": "この標識は次のなかのどの種類に属しますか。",
+      "promptGlossEn": "Which of the following types does this sign belong to?",
+      "optionsRawJa": [
+        "A 警戒標識",
+        "B 規制標識",
+        "C 指示標識",
+        "D 案内標識"
+      ],
+      "optionsGlossEn": [
+        "A. Warning sign",
+        "B. Regulatory sign",
+        "C. Instruction sign",
+        "D. Guide sign"
+      ],
+      "correctKeyRaw": "B",
+      "correctAnswerRaw": "規制標識",
+      "provisionalTopic": "traffic-signals",
+      "provisionalSubtopics": [
+        "traffic-signals:road-signs",
+        "traffic-signals:road-markings",
+        "proper-driving:safe-driving"
+      ],
+      "topicConfidence": 0.688,
+      "topicSignals": [
+        {
+          "topic": "traffic-signals",
+          "subtopic": "traffic-signals:road-signs",
+          "signal": "sign-family",
+          "weight": 1.4
+        },
+        {
+          "topic": "traffic-signals",
+          "subtopic": "traffic-signals:road-markings",
+          "signal": "road-marking",
+          "weight": 1.25
+        },
+        {
+          "topic": "proper-driving",
+          "subtopic": "proper-driving:safe-driving",
+          "signal": "driving-action",
+          "weight": 1.2
+        }
+      ],
+      "linkedExistingAssetCandidate": {
+        "qid": "q0714",
+        "number": 714,
+        "score": 70.391,
+        "currentAssetSrc": "/qbank/2023-test1/images/img_ad7e9a5b3ab41e77c8ce6dfbc648c59d.jpeg",
+        "assetHashes": [
+          "ad7e9a5b3ab41e77c8ce6dfbc648c59d"
+        ],
+        "status": "unconfirmed-existing-production-asset"
+      },
+      "reviewerNotes": "",
+      "status": "pending-superset-review"
+    }
+  ]
+}

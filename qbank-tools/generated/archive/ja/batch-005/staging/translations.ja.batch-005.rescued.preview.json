@@ -1,0 +1,733 @@
+{
+  "meta": {
+    "locale": "ja",
+    "generatedAt": "2026-04-10T12:21:52.662Z",
+    "reviewedBatchId": "batch-005",
+    "dataset": "2023-test1",
+    "sourceUnresolvedPath": "imports/ja/batch-005/unresolved.json",
+    "sourceUnresolvedDecisionPath": "qbank-tools/generated/staging/ja-batch-005-unresolved-decisions.json",
+    "rescuedExistingQidCount": 6,
+    "manualAnswerKeyConfirmationCount": 0,
+    "stagingOnly": true
+  },
+  "questions": {
+    "q0897": {
+      "prompt": "この標識の示す意味はどれか。",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.00.39.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 18.00.39.png",
+      "reviewerNotes": "",
+      "promptRawJa": "この標識の示す意味はどれか。",
+      "promptGlossEn": "What does this road sign mean?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-005",
+        "approvedQid": "q0897",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "options": {
+        "q0897_o1": "B 番をする人がいる踏切",
+        "q0897_o2": "C レールが多い鉄道と道路が交差",
+        "q0897_o3": "D 立体交差式の踏切",
+        "q0897_o4": "A 番をする人がいない踏切"
+      },
+      "optionsRawJa": [
+        "A 番をする人がいない踏切",
+        "B 番をする人がいる踏切",
+        "C レールが多い鉄道と道路が交差",
+        "D 立体交差式の踏切"
+      ],
+      "optionsGlossEn": [
+        "A: Railroad crossing without a gatekeeper",
+        "B: Railroad crossing with a gatekeeper",
+        "C: Intersection of railway with many rails and road",
+        "D: Grade-separated (elevated) railroad crossing"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A 番をする人がいない踏切",
+          "sourceTextBody": "番をする人がいない踏切",
+          "sourceGlossEn": "A: Railroad crossing without a gatekeeper",
+          "canonicalOptionId": "q0897_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "an unmanned level crossing 98",
+          "alignmentScore": 0.16945812807881772,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B 番をする人がいる踏切",
+          "sourceTextBody": "番をする人がいる踏切",
+          "sourceGlossEn": "B: Railroad crossing with a gatekeeper",
+          "canonicalOptionId": "q0897_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "a manned level crossing",
+          "alignmentScore": 0.18933333333333333,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C レールが多い鉄道と道路が交差",
+          "sourceTextBody": "レールが多い鉄道と道路が交差",
+          "sourceGlossEn": "C: Intersection of railway with many rails and road",
+          "canonicalOptionId": "q0897_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "multi-crossing of rail way and road",
+          "alignmentScore": 0.39330128205128206,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D 立体交差式の踏切",
+          "sourceTextBody": "立体交差式の踏切",
+          "sourceGlossEn": "D: Grade-separated (elevated) railroad crossing",
+          "canonicalOptionId": "q0897_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "grade separation level crossing",
+          "alignmentScore": 0.20703933747412007,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A 番をする人がいない踏切",
+          "sourceGlossEn": "A: Railroad crossing without a gatekeeper",
+          "canonicalOptionId": "q0897_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "an unmanned level crossing 98",
+          "alignmentScore": 0.16945812807881772,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B 番をする人がいる踏切",
+          "sourceGlossEn": "B: Railroad crossing with a gatekeeper",
+          "canonicalOptionId": "q0897_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "a manned level crossing",
+          "alignmentScore": 0.18933333333333333,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C レールが多い鉄道と道路が交差",
+          "sourceGlossEn": "C: Intersection of railway with many rails and road",
+          "canonicalOptionId": "q0897_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "multi-crossing of rail way and road",
+          "alignmentScore": 0.39330128205128206,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D 立体交差式の踏切",
+          "sourceGlossEn": "D: Grade-separated (elevated) railroad crossing",
+          "canonicalOptionId": "q0897_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "grade separation level crossing",
+          "alignmentScore": 0.20703933747412007,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "B",
+      "canonicalCorrectOptionId": "q0897_o1",
+      "canonicalCorrectOptionKey": "A",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed during unresolved rescue review on 2026-04-10T12:21:52.662Z; reviewer selected locale key B.",
+      "correctOptionAlignment": {
+        "sourceKey": "B",
+        "canonicalOptionId": "q0897_o1",
+        "canonicalOptionKey": "A",
+        "sourceText": "B 番をする人がいる踏切",
+        "sourceGlossEn": "B: Railroad crossing with a gatekeeper",
+        "canonicalOptionText": "a manned level crossing",
+        "alignmentScore": 0.18933333333333333,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-10T12:21:52.662Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ja-batch-005-unresolved-decisions.json",
+      "answerKeyReviewerNotes": "",
+      "reviewerSuggestedLocaleCorrectOptionKey": "B",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ja-batch-005-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0463": {
+      "prompt": "自動車を路上で運転する場合、車に掲示しなければならない標識はどれか。",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.00.44.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 18.00.44.png",
+      "reviewerNotes": "",
+      "promptRawJa": "自動車を路上で運転する場合、車に掲示しなければならない標識はどれか。",
+      "promptGlossEn": "When driving a car on the road, which sign must be displayed on the vehicle?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-005",
+        "approvedQid": "q0463",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "options": {
+        "q0463_o1": "B 追突注意マーク",
+        "q0463_o2": "C 危険注意マーク",
+        "q0463_o3": "D 検査合格マーク",
+        "q0463_o4": "A 製品合格マーク"
+      },
+      "optionsRawJa": [
+        "A 製品合格マーク",
+        "B 追突注意マーク",
+        "C 危険注意マーク",
+        "D 検査合格マーク"
+      ],
+      "optionsGlossEn": [
+        "A Product approval mark",
+        "B Rear-end collision warning mark",
+        "C Danger warning mark",
+        "D Inspection approval mark"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A 製品合格マーク",
+          "sourceTextBody": "製品合格マーク",
+          "sourceGlossEn": "A Product approval mark",
+          "canonicalOptionId": "q0463_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "a label of product qualification",
+          "alignmentScore": 0.18439716312056736,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B 追突注意マーク",
+          "sourceTextBody": "追突注意マーク",
+          "sourceGlossEn": "B Rear-end collision warning mark",
+          "canonicalOptionId": "q0463_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "a label of keeping distance",
+          "alignmentScore": 0.015384615384615385,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C 危険注意マーク",
+          "sourceTextBody": "危険注意マーク",
+          "sourceGlossEn": "C Danger warning mark",
+          "canonicalOptionId": "q0463_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "a label of reminding danger",
+          "alignmentScore": 0.19333333333333333,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D 検査合格マーク",
+          "sourceTextBody": "検査合格マーク",
+          "sourceGlossEn": "D Inspection approval mark",
+          "canonicalOptionId": "q0463_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "a label of inspection",
+          "alignmentScore": 0.24205128205128207,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A 製品合格マーク",
+          "sourceGlossEn": "A Product approval mark",
+          "canonicalOptionId": "q0463_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "a label of product qualification",
+          "alignmentScore": 0.18439716312056736,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B 追突注意マーク",
+          "sourceGlossEn": "B Rear-end collision warning mark",
+          "canonicalOptionId": "q0463_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "a label of keeping distance",
+          "alignmentScore": 0.015384615384615385,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C 危険注意マーク",
+          "sourceGlossEn": "C Danger warning mark",
+          "canonicalOptionId": "q0463_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "a label of reminding danger",
+          "alignmentScore": 0.19333333333333333,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D 検査合格マーク",
+          "sourceGlossEn": "D Inspection approval mark",
+          "canonicalOptionId": "q0463_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "a label of inspection",
+          "alignmentScore": 0.24205128205128207,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        }
+      ],
+      "localeCorrectOptionKey": "D",
+      "canonicalCorrectOptionId": "q0463_o3",
+      "canonicalCorrectOptionKey": "C",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed during unresolved rescue review on 2026-04-10T12:21:52.662Z; reviewer selected locale key D.",
+      "correctOptionAlignment": {
+        "sourceKey": "D",
+        "canonicalOptionId": "q0463_o3",
+        "canonicalOptionKey": "C",
+        "sourceText": "D 検査合格マーク",
+        "sourceGlossEn": "D Inspection approval mark",
+        "canonicalOptionText": "a label of inspection",
+        "alignmentScore": 0.24205128205128207,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-10T12:21:52.662Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ja-batch-005-unresolved-decisions.json",
+      "answerKeyReviewerNotes": "",
+      "reviewerSuggestedLocaleCorrectOptionKey": "D",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ja-batch-005-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0654": {
+      "prompt": "路面の標記は、なにを示す路面標示か。",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.00.45.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 18.00.45.png",
+      "reviewerNotes": "",
+      "promptRawJa": "路面の標記は、なにを示す路面標示か。",
+      "promptGlossEn": "What does this road marking indicate?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-005",
+        "approvedQid": "q0654",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "options": {
+        "q0654_o1": "A 運転禁止区間",
+        "q0654_o2": "B 網状線",
+        "q0654_o3": "D 自動車の流れを導く線",
+        "q0654_o4": "C センターサークル"
+      },
+      "optionsRawJa": [
+        "A 運転禁止区間",
+        "B 網状線",
+        "C センターサークル",
+        "D 自動車の流れを導く線"
+      ],
+      "optionsGlossEn": [
+        "A. No-driving zone",
+        "B. Grid marking",
+        "C. Center circle",
+        "D. Line to guide vehicle flow"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A 運転禁止区間",
+          "sourceTextBody": "運転禁止区間",
+          "sourceGlossEn": "A. No-driving zone",
+          "canonicalOptionId": "q0654_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "prohibitive area",
+          "alignmentScore": 0,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B 網状線",
+          "sourceTextBody": "網状線",
+          "sourceGlossEn": "B. Grid marking",
+          "canonicalOptionId": "q0654_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "cross-hatched marking",
+          "alignmentScore": 0.24655172413793103,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C センターサークル",
+          "sourceTextBody": "センターサークル",
+          "sourceGlossEn": "C. Center circle",
+          "canonicalOptionId": "q0654_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "central circle",
+          "alignmentScore": 0.07407407407407407,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D 自動車の流れを導く線",
+          "sourceTextBody": "自動車の流れを導く線",
+          "sourceGlossEn": "D. Line to guide vehicle flow",
+          "canonicalOptionId": "q0654_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "guide line",
+          "alignmentScore": 0.395,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A 運転禁止区間",
+          "sourceGlossEn": "A. No-driving zone",
+          "canonicalOptionId": "q0654_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "prohibitive area",
+          "alignmentScore": 0,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B 網状線",
+          "sourceGlossEn": "B. Grid marking",
+          "canonicalOptionId": "q0654_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "cross-hatched marking",
+          "alignmentScore": 0.24655172413793103,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C センターサークル",
+          "sourceGlossEn": "C. Center circle",
+          "canonicalOptionId": "q0654_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "central circle",
+          "alignmentScore": 0.07407407407407407,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D 自動車の流れを導く線",
+          "sourceGlossEn": "D. Line to guide vehicle flow",
+          "canonicalOptionId": "q0654_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "guide line",
+          "alignmentScore": 0.395,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "C",
+      "canonicalCorrectOptionId": "q0654_o4",
+      "canonicalCorrectOptionKey": "D",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed during unresolved rescue review on 2026-04-10T12:21:52.662Z; reviewer selected locale key C.",
+      "correctOptionAlignment": {
+        "sourceKey": "C",
+        "canonicalOptionId": "q0654_o4",
+        "canonicalOptionKey": "D",
+        "sourceText": "C センターサークル",
+        "sourceGlossEn": "C. Center circle",
+        "canonicalOptionText": "central circle",
+        "alignmentScore": 0.07407407407407407,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-10T12:21:52.662Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ja-batch-005-unresolved-decisions.json",
+      "answerKeyReviewerNotes": "",
+      "reviewerSuggestedLocaleCorrectOptionKey": "C",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ja-batch-005-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0321": {
+      "prompt": "交通運輸管理法を違反して重大な交通事故を起こし死者を出した場合、運転者は3年以上の有期懲役を受ける可能性がある。",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.00.49.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 18.00.49.png",
+      "reviewerNotes": "",
+      "promptRawJa": "交通運輸管理法を違反して重大な交通事故を起こし死者を出した場合、運転者は3年以上の有期懲役を受ける可能性がある。",
+      "promptGlossEn": "If you violate the Road Transport Control Law and cause a serious traffic accident resulting in death, the driver may be sentenced to imprisonment for more than 3 years.",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "ROW",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-005",
+        "approvedQid": "q0321",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "optionsRawJa": [],
+      "optionsGlossEn": [],
+      "localeCorrectOptionKey": null,
+      "canonicalCorrectRow": "W",
+      "canonicalCorrectAnswer": "wrong / false",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "ROW question; no locale-specific option key applies.",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ja-batch-005-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0348": {
+      "prompt": "交通信号に違反した運転者には6点が減点されるつく。",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.01.00 1.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 18.01.00 1.png",
+      "reviewerNotes": "",
+      "promptRawJa": "交通信号に違反した運転者には6点が減点されるつく。",
+      "promptGlossEn": "A driver who violates a traffic signal will have 6 points deducted.",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "ROW",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-005",
+        "approvedQid": "q0348",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "optionsRawJa": [],
+      "optionsGlossEn": [],
+      "localeCorrectOptionKey": null,
+      "canonicalCorrectRow": "R",
+      "canonicalCorrectAnswer": "right / true",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "ROW question; no locale-specific option key applies.",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ja-batch-005-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0404": {
+      "prompt": "廃棄基準に達した自動車を路上で運転した運転者には、どのような処罰が課されるか。",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.01.06.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 18.01.06.png",
+      "reviewerNotes": "",
+      "promptRawJa": "廃棄基準に達した自動車を路上で運転した運転者には、どのような処罰が課されるか。",
+      "promptGlossEn": "What kind of punishment is given to a driver who drives a vehicle that has reached the discard standard on the road?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-005",
+        "approvedQid": "q0404",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "options": {
+        "q0404_o1": "C 20元以上200元以下の罰金",
+        "q0404_o2": "D 刑事責任の追及",
+        "q0404_o3": "A 15日以下の収監",
+        "q0404_o4": "B 運転免許証の取消"
+      },
+      "optionsRawJa": [
+        "A 15日以下の収監",
+        "B 運転免許証の取消",
+        "C 20元以上200元以下の罰金",
+        "D 刑事責任の追及"
+      ],
+      "optionsGlossEn": [
+        "A: Imprisonment for 15 days or less",
+        "B: Cancellation of driver's license",
+        "C: Fine of not less than 20 yuan and not more than 200 yuan",
+        "D: Pursuit of criminal responsibility"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A 15日以下の収監",
+          "sourceTextBody": "15日以下の収監",
+          "sourceGlossEn": "A: Imprisonment for 15 days or less",
+          "canonicalOptionId": "q0404_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "being detained for less than 15 days",
+          "alignmentScore": 0.43680555555555556,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B 運転免許証の取消",
+          "sourceTextBody": "運転免許証の取消",
+          "sourceGlossEn": "B: Cancellation of driver's license",
+          "canonicalOptionId": "q0404_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "being revoked the driving license",
+          "alignmentScore": 0.17857142857142855,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C 20元以上200元以下の罰金",
+          "sourceTextBody": "20元以上200元以下の罰金",
+          "sourceGlossEn": "C: Fine of not less than 20 yuan and not more than 200 yuan",
+          "canonicalOptionId": "q0404_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "a 20~200 yuan fine",
+          "alignmentScore": 0.1983957219251337,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D 刑事責任の追及",
+          "sourceTextBody": "刑事責任の追及",
+          "sourceGlossEn": "D: Pursuit of criminal responsibility",
+          "canonicalOptionId": "q0404_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "being held for criminal liabilities",
+          "alignmentScore": 0.17619047619047618,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A 15日以下の収監",
+          "sourceGlossEn": "A: Imprisonment for 15 days or less",
+          "canonicalOptionId": "q0404_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "being detained for less than 15 days",
+          "alignmentScore": 0.43680555555555556,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B 運転免許証の取消",
+          "sourceGlossEn": "B: Cancellation of driver's license",
+          "canonicalOptionId": "q0404_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "being revoked the driving license",
+          "alignmentScore": 0.17857142857142855,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C 20元以上200元以下の罰金",
+          "sourceGlossEn": "C: Fine of not less than 20 yuan and not more than 200 yuan",
+          "canonicalOptionId": "q0404_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "a 20~200 yuan fine",
+          "alignmentScore": 0.1983957219251337,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D 刑事責任の追及",
+          "sourceGlossEn": "D: Pursuit of criminal responsibility",
+          "canonicalOptionId": "q0404_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "being held for criminal liabilities",
+          "alignmentScore": 0.17619047619047618,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "B",
+      "canonicalCorrectOptionId": "q0404_o4",
+      "canonicalCorrectOptionKey": "D",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed during unresolved rescue review on 2026-04-10T12:21:52.662Z; reviewer selected locale key B.",
+      "correctOptionAlignment": {
+        "sourceKey": "B",
+        "canonicalOptionId": "q0404_o4",
+        "canonicalOptionKey": "D",
+        "sourceText": "B 運転免許証の取消",
+        "sourceGlossEn": "B: Cancellation of driver's license",
+        "canonicalOptionText": "being revoked the driving license",
+        "alignmentScore": 0.17857142857142855,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-10T12:21:52.662Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ja-batch-005-unresolved-decisions.json",
+      "answerKeyReviewerNotes": "",
+      "reviewerSuggestedLocaleCorrectOptionKey": "B",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ja-batch-005-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    }
+  }
+}

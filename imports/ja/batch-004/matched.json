@@ -1,0 +1,2226 @@
+{
+  "generatedAt": "2026-04-09T09:45:34.939Z",
+  "lang": "ja",
+  "batchId": "batch-004",
+  "dataset": "2023-test1",
+  "kind": "matched",
+  "items": [
+    {
+      "itemId": "screenshots/Screenshot 2026-04-07 at 17.51.12.png",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 17.51.12.png",
+      "promptRawJa": "坂を下る場合、適度に速度を控えエンジンを十分し利用し制動する。",
+      "promptGlossEn": "When going downhill, you should moderately reduce your speed and fully utilize the engine for braking.",
+      "optionsRawJa": [
+        "A Yes",
+        "B No"
+      ],
+      "optionsGlossEn": [
+        "Yes",
+        "No"
+      ],
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "ocrConfidence": "high",
+      "hasImage": false,
+      "provisionalTopic": "road-safety",
+      "provisionalSubtopics": [
+        "road-safety:road-conditions",
+        "traffic-signals:road-markings"
+      ],
+      "topicConfidence": 0.51,
+      "topicSignals": [
+        {
+          "topic": "road-safety",
+          "subtopic": "road-safety:road-conditions",
+          "signal": "road-condition-or-hazard",
+          "weight": 1.3
+        },
+        {
+          "topic": "traffic-signals",
+          "subtopic": "traffic-signals:road-markings",
+          "signal": "road-marking",
+          "weight": 1.25
+        }
+      ],
+      "sourceConceptSlots": {
+        "condition": [
+          "downhill"
+        ],
+        "context": [],
+        "action": [],
+        "polarity": "positive",
+        "signals": [
+          {
+            "slot": "condition",
+            "value": "downhill",
+            "signal": "downhill"
+          }
+        ]
+      },
+      "localizedText": {
+        "prompt": "坂を下る場合、適度に速度を控えエンジンを十分し利用し制動する。",
+        "options": [
+          "A Yes",
+          "B No"
+        ],
+        "correctAnswer": null,
+        "explanation": null
+      },
+      "translatedText": {
+        "prompt": "When going downhill, you should moderately reduce your speed and fully utilize the engine for braking.",
+        "options": [
+          "Yes",
+          "No"
+        ],
+        "correctAnswer": null
+      },
+      "topicHints": [],
+      "answerPolarity": null,
+      "match": {
+        "qid": "q0078",
+        "number": 78,
+        "score": 66.748,
+        "scoreGap": 7.935,
+        "scoreBreakdown": {
+          "promptSimilarity": 0.332,
+          "rawPromptSimilarity": 0.332,
+          "englishPromptSimilarity": 0.332,
+          "syntheticPromptSimilarity": 0,
+          "questionType": 1,
+          "imageSignal": 1,
+          "topicWeighting": 0.5,
+          "answerPolarity": 0.5,
+          "conceptAlignment": 1,
+          "contradictionPenalty": 0,
+          "assetTieBreak": 0
+        },
+        "candidateTopicTruth": {
+          "topic": null,
+          "subtopics": [],
+          "tags": []
+        },
+        "candidateImageRef": {
+          "hasImage": false,
+          "currentAssetSrc": null,
+          "assetHashes": []
+        }
+      },
+      "analysis": {
+        "mode": "standard",
+        "effectiveQuestionType": "ROW",
+        "declaredQuestionType": "MCQ",
+        "booleanChoiceDetected": true,
+        "plausibleShortlist": true,
+        "imageParityApplied": true,
+        "candidateImageParityMode": "text-only candidate set",
+        "candidateCountBeforeParity": 973,
+        "candidateCountAfterParity": 482,
+        "explanation": "Top candidate cleared the review floor but remains review-first."
+      },
+      "proposedLocalization": {
+        "prompt": "坂を下る場合、適度に速度を控えエンジンを十分し利用し制動する。",
+        "explanation": ""
+      },
+      "reviewDecision": null,
+      "approvedLocalization": null,
+      "topCandidates": [
+        {
+          "qid": "q0078",
+          "number": 78,
+          "type": "ROW",
+          "score": 66.748,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.332,
+            "rawPromptSimilarity": 0.332,
+            "englishPromptSimilarity": 0.332,
+            "syntheticPromptSimilarity": 0,
+            "questionType": 1,
+            "imageSignal": 1,
+            "topicWeighting": 0.5,
+            "answerPolarity": 0.5,
+            "conceptAlignment": 1,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0
+          },
+          "diagnostics": {
+            "effectiveItemType": "ROW",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": true,
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "optionSetMode": "binary-row-neutral + synthetic-ja mirror",
+            "syntheticMirrorUsed": true,
+            "genericPromptFamily": null,
+            "sourceConceptSlots": {
+              "condition": [
+                "downhill"
+              ],
+              "context": [],
+              "action": [],
+              "polarity": "positive",
+              "signals": [
+                {
+                  "slot": "condition",
+                  "value": "downhill",
+                  "signal": "downhill"
+                }
+              ]
+            },
+            "candidateConceptSlots": {
+              "condition": [
+                "downhill"
+              ],
+              "context": [],
+              "action": [],
+              "polarity": "positive",
+              "signals": [
+                {
+                  "slot": "condition",
+                  "value": "downhill",
+                  "signal": "downhill"
+                }
+              ]
+            },
+            "conceptMatches": [
+              "condition:downhill"
+            ],
+            "contradictionSignals": [],
+            "rowConceptMode": "slot-alignment + contradiction-penalties",
+            "explanation": [
+              "Binary yes/no options were treated as ROW-like for type scoring.",
+              "Missing correct answer was treated as a neutral signal.",
+              "ROW concept slots aligned on condition/context/action."
+            ]
+          },
+          "prompt": "When a vehicle goes downhill, the driver should properly control the speed and fully use the engine to brake.",
+          "syntheticJaPrompt": "when 車両 goes downhill 運転者 べき properly control speed and fully use engine brake。",
+          "translatedPrompt": "내리막길에서는 속도를 적절히 조절하고 엔진 브레이크를 충분히 사용해야 한다.",
+          "options": [],
+          "correctAnswer": {
+            "kind": "ROW",
+            "correctRow": "R",
+            "correctOptionId": null,
+            "correctOptionKey": null,
+            "correctOptionText": "right / true",
+            "correctOptionTranslatedText": null,
+            "answerRaw": "Right"
+          },
+          "image": {
+            "hasImage": false,
+            "currentAssetSrc": null,
+            "assetHashes": []
+          },
+          "topic": "row",
+          "subtopics": [],
+          "conceptSlots": {
+            "condition": [
+              "downhill"
+            ],
+            "context": [],
+            "action": [],
+            "polarity": "positive",
+            "signals": [
+              {
+                "slot": "condition",
+                "value": "downhill",
+                "signal": "downhill"
+              }
+            ]
+          }
+        },
+        {
+          "qid": "q0037",
+          "number": 37,
+          "type": "ROW",
+          "score": 58.814,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.195,
+            "rawPromptSimilarity": 0.195,
+            "englishPromptSimilarity": 0.195,
+            "syntheticPromptSimilarity": 0,
+            "questionType": 1,
+            "imageSignal": 1,
+            "topicWeighting": 0.5,
+            "answerPolarity": 0.5,
+            "conceptAlignment": 1,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0
+          },
+          "diagnostics": {
+            "effectiveItemType": "ROW",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": true,
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "optionSetMode": "binary-row-neutral + synthetic-ja mirror",
+            "syntheticMirrorUsed": true,
+            "genericPromptFamily": null,
+            "sourceConceptSlots": {
+              "condition": [
+                "downhill"
+              ],
+              "context": [],
+              "action": [],
+              "polarity": "positive",
+              "signals": [
+                {
+                  "slot": "condition",
+                  "value": "downhill",
+                  "signal": "downhill"
+                }
+              ]
+            },
+            "candidateConceptSlots": {
+              "condition": [
+                "downhill"
+              ],
+              "context": [],
+              "action": [],
+              "polarity": "positive",
+              "signals": [
+                {
+                  "slot": "condition",
+                  "value": "downhill",
+                  "signal": "downhill"
+                }
+              ]
+            },
+            "conceptMatches": [
+              "condition:downhill"
+            ],
+            "contradictionSignals": [],
+            "rowConceptMode": "slot-alignment + contradiction-penalties",
+            "explanation": [
+              "Binary yes/no options were treated as ROW-like for type scoring.",
+              "Missing correct answer was treated as a neutral signal.",
+              "ROW concept slots aligned on condition/context/action."
+            ]
+          },
+          "prompt": "When a vehicle goes downhill, it may fully use the neutral gear and coast.",
+          "syntheticJaPrompt": "when 車両 goes downhill it よい fully use neutral gear and slide。",
+          "translatedPrompt": "내리막길에서는 중립 기어를 사용해 관성 주행해도 된다.",
+          "options": [],
+          "correctAnswer": {
+            "kind": "ROW",
+            "correctRow": "W",
+            "correctOptionId": null,
+            "correctOptionKey": null,
+            "correctOptionText": "wrong / false",
+            "correctOptionTranslatedText": null,
+            "answerRaw": "Wrong"
+          },
+          "image": {
+            "hasImage": false,
+            "currentAssetSrc": null,
+            "assetHashes": []
+          },
+          "topic": "road-safety",
+          "subtopics": [
+            "road-safety:road-conditions",
+            "proper-driving:safe-driving"
+          ],
+          "conceptSlots": {
+            "condition": [
+              "downhill"
+            ],
+            "context": [],
+            "action": [],
+            "polarity": "positive",
+            "signals": [
+              {
+                "slot": "condition",
+                "value": "downhill",
+                "signal": "downhill"
+              }
+            ]
+          }
+        },
+        {
+          "qid": "q0352",
+          "number": 352,
+          "type": "ROW",
+          "score": 56.034,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.147,
+            "rawPromptSimilarity": 0.147,
+            "englishPromptSimilarity": 0.147,
+            "syntheticPromptSimilarity": 0,
+            "questionType": 1,
+            "imageSignal": 1,
+            "topicWeighting": 0.5,
+            "answerPolarity": 0.5,
+            "conceptAlignment": 1,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0
+          },
+          "diagnostics": {
+            "effectiveItemType": "ROW",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": true,
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "optionSetMode": "binary-row-neutral + synthetic-ja mirror",
+            "syntheticMirrorUsed": true,
+            "genericPromptFamily": null,
+            "sourceConceptSlots": {
+              "condition": [
+                "downhill"
+              ],
+              "context": [],
+              "action": [],
+              "polarity": "positive",
+              "signals": [
+                {
+                  "slot": "condition",
+                  "value": "downhill",
+                  "signal": "downhill"
+                }
+              ]
+            },
+            "candidateConceptSlots": {
+              "condition": [
+                "downhill"
+              ],
+              "context": [],
+              "action": [],
+              "polarity": "positive",
+              "signals": [
+                {
+                  "slot": "condition",
+                  "value": "downhill",
+                  "signal": "downhill"
+                }
+              ]
+            },
+            "conceptMatches": [
+              "condition:downhill"
+            ],
+            "contradictionSignals": [],
+            "rowConceptMode": "slot-alignment + contradiction-penalties",
+            "explanation": [
+              "Binary yes/no options were treated as ROW-like for type scoring.",
+              "Missing correct answer was treated as a neutral signal.",
+              "ROW concept slots aligned on condition/context/action."
+            ]
+          },
+          "prompt": "When driving a small vehicle downhill, the driver may coast down by stopping the engine.",
+          "syntheticJaPrompt": "when driving small 車両 downhill 運転者 よい coast down by stopping engine。",
+          "translatedPrompt": "소형차가 내리막길을 주행할 때 운전자는 시동을 끄고 관성으로 내려갈 수 있다.",
+          "options": [],
+          "correctAnswer": {
+            "kind": "ROW",
+            "correctRow": "W",
+            "correctOptionId": null,
+            "correctOptionKey": null,
+            "correctOptionText": "wrong / false",
+            "correctOptionTranslatedText": null,
+            "answerRaw": "Wrong"
+          },
+          "image": {
+            "hasImage": false,
+            "currentAssetSrc": null,
+            "assetHashes": []
+          },
+          "topic": "parking",
+          "subtopics": [],
+          "conceptSlots": {
+            "condition": [
+              "downhill"
+            ],
+            "context": [],
+            "action": [],
+            "polarity": "positive",
+            "signals": [
+              {
+                "slot": "condition",
+                "value": "downhill",
+                "signal": "downhill"
+              }
+            ]
+          }
+        },
+        {
+          "qid": "q0086",
+          "number": 86,
+          "type": "ROW",
+          "score": 50.762,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.099,
+            "rawPromptSimilarity": 0.099,
+            "englishPromptSimilarity": 0.099,
+            "syntheticPromptSimilarity": 0,
+            "questionType": 1,
+            "imageSignal": 1,
+            "topicWeighting": 0.5,
+            "answerPolarity": 0.5,
+            "conceptAlignment": 0.875,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0
+          },
+          "diagnostics": {
+            "effectiveItemType": "ROW",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": true,
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "optionSetMode": "binary-row-neutral + synthetic-ja mirror",
+            "syntheticMirrorUsed": true,
+            "genericPromptFamily": null,
+            "sourceConceptSlots": {
+              "condition": [
+                "downhill"
+              ],
+              "context": [],
+              "action": [],
+              "polarity": "positive",
+              "signals": [
+                {
+                  "slot": "condition",
+                  "value": "downhill",
+                  "signal": "downhill"
+                }
+              ]
+            },
+            "candidateConceptSlots": {
+              "condition": [
+                "downhill"
+              ],
+              "context": [],
+              "action": [
+                "pass"
+              ],
+              "polarity": "negative",
+              "signals": [
+                {
+                  "slot": "condition",
+                  "value": "downhill",
+                  "signal": "downhill"
+                },
+                {
+                  "slot": "action",
+                  "value": "pass",
+                  "signal": "pass"
+                }
+              ]
+            },
+            "conceptMatches": [
+              "condition:downhill"
+            ],
+            "contradictionSignals": [],
+            "rowConceptMode": "slot-alignment + contradiction-penalties",
+            "explanation": [
+              "Binary yes/no options were treated as ROW-like for type scoring.",
+              "Missing correct answer was treated as a neutral signal.",
+              "ROW concept slots aligned on condition/context/action."
+            ]
+          },
+          "prompt": "When a vehicle goes downhill on a mountain road, it is not allowed to overtake.",
+          "syntheticJaPrompt": "when 車両 goes downhill mountain road it してはならない 追い越し。",
+          "translatedPrompt": "산길의 내리막길에서 차량이 주행할 때 추월할 수 없다.",
+          "options": [],
+          "correctAnswer": {
+            "kind": "ROW",
+            "correctRow": "R",
+            "correctOptionId": null,
+            "correctOptionKey": null,
+            "correctOptionText": "right / true",
+            "correctOptionTranslatedText": null,
+            "answerRaw": "Right"
+          },
+          "image": {
+            "hasImage": false,
+            "currentAssetSrc": null,
+            "assetHashes": []
+          },
+          "topic": "row",
+          "subtopics": [],
+          "conceptSlots": {
+            "condition": [
+              "downhill"
+            ],
+            "context": [],
+            "action": [
+              "pass"
+            ],
+            "polarity": "negative",
+            "signals": [
+              {
+                "slot": "condition",
+                "value": "downhill",
+                "signal": "downhill"
+              },
+              {
+                "slot": "action",
+                "value": "pass",
+                "signal": "pass"
+              }
+            ]
+          }
+        },
+        {
+          "qid": "q0192",
+          "number": 192,
+          "type": "ROW",
+          "score": 45.546,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.117,
+            "rawPromptSimilarity": 0.117,
+            "englishPromptSimilarity": 0.117,
+            "syntheticPromptSimilarity": 0,
+            "questionType": 1,
+            "imageSignal": 1,
+            "topicWeighting": 0.5,
+            "answerPolarity": 0.5,
+            "conceptAlignment": 0.563,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0
+          },
+          "diagnostics": {
+            "effectiveItemType": "ROW",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": true,
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "optionSetMode": "binary-row-neutral + synthetic-ja mirror",
+            "syntheticMirrorUsed": true,
+            "genericPromptFamily": null,
+            "sourceConceptSlots": {
+              "condition": [
+                "downhill"
+              ],
+              "context": [],
+              "action": [],
+              "polarity": "positive",
+              "signals": [
+                {
+                  "slot": "condition",
+                  "value": "downhill",
+                  "signal": "downhill"
+                }
+              ]
+            },
+            "candidateConceptSlots": {
+              "condition": [
+                "uphill",
+                "downhill"
+              ],
+              "context": [],
+              "action": [
+                "yield"
+              ],
+              "polarity": "positive",
+              "signals": [
+                {
+                  "slot": "condition",
+                  "value": "uphill",
+                  "signal": "uphill"
+                },
+                {
+                  "slot": "condition",
+                  "value": "downhill",
+                  "signal": "downhill"
+                },
+                {
+                  "slot": "action",
+                  "value": "yield",
+                  "signal": "yield"
+                }
+              ]
+            },
+            "conceptMatches": [
+              "condition:downhill"
+            ],
+            "contradictionSignals": [],
+            "rowConceptMode": "slot-alignment + contradiction-penalties",
+            "explanation": [
+              "Binary yes/no options were treated as ROW-like for type scoring.",
+              "Missing correct answer was treated as a neutral signal.",
+              "ROW concept slots aligned on condition/context/action."
+            ]
+          },
+          "prompt": "In this case, if it has not begun going up the slope, the vehicle going uphill should yield to the one going downhill.",
+          "syntheticJaPrompt": "case if it has not begun going up slope 車両 going uphill べき 譲れ one going downhill。",
+          "translatedPrompt": "이 경우 오르막을 아직 오르기 시작하지 않은 차량은 내리막 차량에 양보해야 한다.",
+          "options": [],
+          "correctAnswer": {
+            "kind": "ROW",
+            "correctRow": "R",
+            "correctOptionId": null,
+            "correctOptionKey": null,
+            "correctOptionText": "right / true",
+            "correctOptionTranslatedText": null,
+            "answerRaw": "Right"
+          },
+          "image": {
+            "hasImage": false,
+            "currentAssetSrc": null,
+            "assetHashes": []
+          },
+          "topic": "right-of-way",
+          "subtopics": [],
+          "conceptSlots": {
+            "condition": [
+              "uphill",
+              "downhill"
+            ],
+            "context": [],
+            "action": [
+              "yield"
+            ],
+            "polarity": "positive",
+            "signals": [
+              {
+                "slot": "condition",
+                "value": "uphill",
+                "signal": "uphill"
+              },
+              {
+                "slot": "condition",
+                "value": "downhill",
+                "signal": "downhill"
+              },
+              {
+                "slot": "action",
+                "value": "yield",
+                "signal": "yield"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "itemId": "screenshots/Screenshot 2026-04-07 at 17.51.16 1.png",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 17.51.16 1.png",
+      "promptRawJa": "交差点のこの位置にいる場合、速度を上げて通過できる。",
+      "promptGlossEn": "If you are at this position in the intersection, you can speed up and pass through.",
+      "optionsRawJa": [
+        "A Yes",
+        "B No"
+      ],
+      "optionsGlossEn": [
+        "Yes",
+        "No"
+      ],
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "ocrConfidence": "high",
+      "hasImage": true,
+      "provisionalTopic": "proper-driving",
+      "provisionalSubtopics": [
+        "proper-driving:safe-driving"
+      ],
+      "topicConfidence": 1,
+      "topicSignals": [
+        {
+          "topic": "proper-driving",
+          "subtopic": "proper-driving:safe-driving",
+          "signal": "driving-action",
+          "weight": 1.2
+        }
+      ],
+      "sourceConceptSlots": {
+        "condition": [],
+        "context": [
+          "intersection"
+        ],
+        "action": [
+          "accelerate",
+          "pass"
+        ],
+        "polarity": "positive",
+        "signals": [
+          {
+            "slot": "context",
+            "value": "intersection",
+            "signal": "intersection"
+          },
+          {
+            "slot": "action",
+            "value": "accelerate",
+            "signal": "accelerate"
+          },
+          {
+            "slot": "action",
+            "value": "pass",
+            "signal": "pass"
+          }
+        ]
+      },
+      "localizedText": {
+        "prompt": "交差点のこの位置にいる場合、速度を上げて通過できる。",
+        "options": [
+          "A Yes",
+          "B No"
+        ],
+        "correctAnswer": null,
+        "explanation": null
+      },
+      "translatedText": {
+        "prompt": "If you are at this position in the intersection, you can speed up and pass through.",
+        "options": [
+          "Yes",
+          "No"
+        ],
+        "correctAnswer": null
+      },
+      "topicHints": [],
+      "answerPolarity": null,
+      "match": {
+        "qid": "q0284",
+        "number": 284,
+        "score": 75.534,
+        "scoreGap": 10.933,
+        "scoreBreakdown": {
+          "promptSimilarity": 0.481,
+          "rawPromptSimilarity": 0.481,
+          "englishPromptSimilarity": 0.481,
+          "syntheticPromptSimilarity": 0.031,
+          "questionType": 1,
+          "imageSignal": 1,
+          "topicWeighting": 0.5,
+          "answerPolarity": 0.5,
+          "conceptAlignment": 1,
+          "contradictionPenalty": 0,
+          "assetTieBreak": 0
+        },
+        "candidateTopicTruth": {
+          "topic": "traffic-signals",
+          "subtopics": [
+            "traffic-signals:signal-lights"
+          ],
+          "tags": [
+            "traffic-signals",
+            "traffic-signals:signal-lights"
+          ]
+        },
+        "candidateImageRef": {
+          "hasImage": true,
+          "currentAssetSrc": "/qbank/2023-test1/images/img_0f552212d0c9ac073a9b8761e80c71e3.jpeg",
+          "assetHashes": [
+            "0f552212d0c9ac073a9b8761e80c71e3"
+          ]
+        }
+      },
+      "analysis": {
+        "mode": "standard",
+        "effectiveQuestionType": "ROW",
+        "declaredQuestionType": "MCQ",
+        "booleanChoiceDetected": true,
+        "plausibleShortlist": true,
+        "imageParityApplied": true,
+        "candidateImageParityMode": "image-only candidate set",
+        "candidateCountBeforeParity": 973,
+        "candidateCountAfterParity": 491,
+        "explanation": "Top candidate cleared the review floor but remains review-first."
+      },
+      "proposedLocalization": {
+        "prompt": "交差点のこの位置にいる場合、速度を上げて通過できる。",
+        "explanation": ""
+      },
+      "reviewDecision": null,
+      "approvedLocalization": null,
+      "topCandidates": [
+        {
+          "qid": "q0284",
+          "number": 284,
+          "type": "ROW",
+          "score": 75.534,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.481,
+            "rawPromptSimilarity": 0.481,
+            "englishPromptSimilarity": 0.481,
+            "syntheticPromptSimilarity": 0.031,
+            "questionType": 1,
+            "imageSignal": 1,
+            "topicWeighting": 0.5,
+            "answerPolarity": 0.5,
+            "conceptAlignment": 1,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0
+          },
+          "diagnostics": {
+            "effectiveItemType": "ROW",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": true,
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "optionSetMode": "binary-row-neutral + synthetic-ja mirror",
+            "syntheticMirrorUsed": true,
+            "genericPromptFamily": null,
+            "sourceConceptSlots": {
+              "condition": [],
+              "context": [
+                "intersection"
+              ],
+              "action": [
+                "accelerate",
+                "pass"
+              ],
+              "polarity": "positive",
+              "signals": [
+                {
+                  "slot": "context",
+                  "value": "intersection",
+                  "signal": "intersection"
+                },
+                {
+                  "slot": "action",
+                  "value": "accelerate",
+                  "signal": "accelerate"
+                },
+                {
+                  "slot": "action",
+                  "value": "pass",
+                  "signal": "pass"
+                }
+              ]
+            },
+            "candidateConceptSlots": {
+              "condition": [],
+              "context": [],
+              "action": [
+                "accelerate",
+                "pass"
+              ],
+              "polarity": "positive",
+              "signals": [
+                {
+                  "slot": "action",
+                  "value": "accelerate",
+                  "signal": "accelerate"
+                },
+                {
+                  "slot": "action",
+                  "value": "pass",
+                  "signal": "pass"
+                }
+              ]
+            },
+            "conceptMatches": [
+              "action:accelerate|pass"
+            ],
+            "contradictionSignals": [],
+            "rowConceptMode": "slot-alignment + contradiction-penalties",
+            "explanation": [
+              "Binary yes/no options were treated as ROW-like for type scoring.",
+              "Missing correct answer was treated as a neutral signal.",
+              "ROW concept slots aligned on condition/context/action."
+            ]
+          },
+          "prompt": "At this position, you may speed up to pass through the section.",
+          "syntheticJaPrompt": "position you よい 加速 追い越し through section。",
+          "translatedPrompt": "이 지점에서는 가속하여 구간을 통과할 수 있다.",
+          "options": [],
+          "correctAnswer": {
+            "kind": "ROW",
+            "correctRow": "W",
+            "correctOptionId": null,
+            "correctOptionKey": null,
+            "correctOptionText": "wrong / false",
+            "correctOptionTranslatedText": null,
+            "answerRaw": "Wrong"
+          },
+          "image": {
+            "hasImage": true,
+            "currentAssetSrc": "/qbank/2023-test1/images/img_0f552212d0c9ac073a9b8761e80c71e3.jpeg",
+            "assetHashes": [
+              "0f552212d0c9ac073a9b8761e80c71e3"
+            ]
+          },
+          "topic": "traffic-signals",
+          "subtopics": [
+            "traffic-signals:signal-lights"
+          ],
+          "conceptSlots": {
+            "condition": [],
+            "context": [],
+            "action": [
+              "accelerate",
+              "pass"
+            ],
+            "polarity": "positive",
+            "signals": [
+              {
+                "slot": "action",
+                "value": "accelerate",
+                "signal": "accelerate"
+              },
+              {
+                "slot": "action",
+                "value": "pass",
+                "signal": "pass"
+              }
+            ]
+          }
+        },
+        {
+          "qid": "q0635",
+          "number": 635,
+          "type": "ROW",
+          "score": 64.602,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.357,
+            "rawPromptSimilarity": 0.357,
+            "englishPromptSimilarity": 0.357,
+            "syntheticPromptSimilarity": 0.074,
+            "questionType": 1,
+            "imageSignal": 1,
+            "topicWeighting": 0.5,
+            "answerPolarity": 0.5,
+            "conceptAlignment": 0.806,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0
+          },
+          "diagnostics": {
+            "effectiveItemType": "ROW",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": true,
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "optionSetMode": "binary-row-neutral + synthetic-ja mirror",
+            "syntheticMirrorUsed": true,
+            "genericPromptFamily": null,
+            "sourceConceptSlots": {
+              "condition": [],
+              "context": [
+                "intersection"
+              ],
+              "action": [
+                "accelerate",
+                "pass"
+              ],
+              "polarity": "positive",
+              "signals": [
+                {
+                  "slot": "context",
+                  "value": "intersection",
+                  "signal": "intersection"
+                },
+                {
+                  "slot": "action",
+                  "value": "accelerate",
+                  "signal": "accelerate"
+                },
+                {
+                  "slot": "action",
+                  "value": "pass",
+                  "signal": "pass"
+                }
+              ]
+            },
+            "candidateConceptSlots": {
+              "condition": [],
+              "context": [
+                "intersection"
+              ],
+              "action": [
+                "accelerate",
+                "pass",
+                "head-light"
+              ],
+              "polarity": null,
+              "signals": [
+                {
+                  "slot": "context",
+                  "value": "intersection",
+                  "signal": "intersection"
+                },
+                {
+                  "slot": "action",
+                  "value": "accelerate",
+                  "signal": "accelerate"
+                },
+                {
+                  "slot": "action",
+                  "value": "pass",
+                  "signal": "pass"
+                },
+                {
+                  "slot": "action",
+                  "value": "head-light",
+                  "signal": "head-light"
+                }
+              ]
+            },
+            "conceptMatches": [
+              "context:intersection",
+              "action:accelerate|pass"
+            ],
+            "contradictionSignals": [],
+            "rowConceptMode": "slot-alignment + contradiction-penalties",
+            "explanation": [
+              "Binary yes/no options were treated as ROW-like for type scoring.",
+              "Missing correct answer was treated as a neutral signal.",
+              "ROW concept slots aligned on condition/context/action."
+            ]
+          },
+          "prompt": "Speed up and pass when encountering this traffic light at the intersection.",
+          "syntheticJaPrompt": "加速 and 追い越し when encountering traffic ライト 交差点。",
+          "translatedPrompt": "교차로에서 이 신호등을 만났을 때 가속하여 통과해야 한다.",
+          "options": [],
+          "correctAnswer": {
+            "kind": "ROW",
+            "correctRow": "W",
+            "correctOptionId": null,
+            "correctOptionKey": null,
+            "correctOptionText": "wrong / false",
+            "correctOptionTranslatedText": null,
+            "answerRaw": "Wrong"
+          },
+          "image": {
+            "hasImage": true,
+            "currentAssetSrc": "/qbank/2023-test1/images/img_59fb269d6c8a434da93b16c35bb5ca6b.jpeg",
+            "assetHashes": [
+              "59fb269d6c8a434da93b16c35bb5ca6b"
+            ]
+          },
+          "topic": "row",
+          "subtopics": [],
+          "conceptSlots": {
+            "condition": [],
+            "context": [
+              "intersection"
+            ],
+            "action": [
+              "accelerate",
+              "pass",
+              "head-light"
+            ],
+            "polarity": null,
+            "signals": [
+              {
+                "slot": "context",
+                "value": "intersection",
+                "signal": "intersection"
+              },
+              {
+                "slot": "action",
+                "value": "accelerate",
+                "signal": "accelerate"
+              },
+              {
+                "slot": "action",
+                "value": "pass",
+                "signal": "pass"
+              },
+              {
+                "slot": "action",
+                "value": "head-light",
+                "signal": "head-light"
+              }
+            ]
+          }
+        },
+        {
+          "qid": "q0194",
+          "number": 194,
+          "type": "ROW",
+          "score": 63.739,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.366,
+            "rawPromptSimilarity": 0.366,
+            "englishPromptSimilarity": 0.366,
+            "syntheticPromptSimilarity": 0.093,
+            "questionType": 1,
+            "imageSignal": 1,
+            "topicWeighting": 0.5,
+            "answerPolarity": 0.5,
+            "conceptAlignment": 0.731,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0
+          },
+          "diagnostics": {
+            "effectiveItemType": "ROW",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": true,
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "optionSetMode": "binary-row-neutral + synthetic-ja mirror",
+            "syntheticMirrorUsed": true,
+            "genericPromptFamily": null,
+            "sourceConceptSlots": {
+              "condition": [],
+              "context": [
+                "intersection"
+              ],
+              "action": [
+                "accelerate",
+                "pass"
+              ],
+              "polarity": "positive",
+              "signals": [
+                {
+                  "slot": "context",
+                  "value": "intersection",
+                  "signal": "intersection"
+                },
+                {
+                  "slot": "action",
+                  "value": "accelerate",
+                  "signal": "accelerate"
+                },
+                {
+                  "slot": "action",
+                  "value": "pass",
+                  "signal": "pass"
+                }
+              ]
+            },
+            "candidateConceptSlots": {
+              "condition": [],
+              "context": [
+                "intersection"
+              ],
+              "action": [
+                "accelerate"
+              ],
+              "polarity": "positive",
+              "signals": [
+                {
+                  "slot": "context",
+                  "value": "intersection",
+                  "signal": "intersection"
+                },
+                {
+                  "slot": "action",
+                  "value": "accelerate",
+                  "signal": "accelerate"
+                }
+              ]
+            },
+            "conceptMatches": [
+              "context:intersection",
+              "action:accelerate"
+            ],
+            "contradictionSignals": [],
+            "rowConceptMode": "slot-alignment + contradiction-penalties",
+            "explanation": [
+              "Binary yes/no options were treated as ROW-like for type scoring.",
+              "Missing correct answer was treated as a neutral signal.",
+              "ROW concept slots aligned on condition/context/action."
+            ]
+          },
+          "prompt": "You may speed up to go through the intersection in this case.",
+          "syntheticJaPrompt": "you よい 加速 go through 交差点 case。",
+          "translatedPrompt": "이 경우 교차로를 통과하기 위해 가속해도 된다.",
+          "options": [],
+          "correctAnswer": {
+            "kind": "ROW",
+            "correctRow": "W",
+            "correctOptionId": null,
+            "correctOptionKey": null,
+            "correctOptionText": "wrong / false",
+            "correctOptionTranslatedText": null,
+            "answerRaw": "Wrong"
+          },
+          "image": {
+            "hasImage": true,
+            "currentAssetSrc": "/qbank/2023-test1/images/img_2459276275148d3a5a64f032971cec81.jpeg",
+            "assetHashes": [
+              "2459276275148d3a5a64f032971cec81"
+            ]
+          },
+          "topic": "proper-driving",
+          "subtopics": [
+            "proper-driving:safe-driving",
+            "traffic-signals:signal-lights"
+          ],
+          "conceptSlots": {
+            "condition": [],
+            "context": [
+              "intersection"
+            ],
+            "action": [
+              "accelerate"
+            ],
+            "polarity": "positive",
+            "signals": [
+              {
+                "slot": "context",
+                "value": "intersection",
+                "signal": "intersection"
+              },
+              {
+                "slot": "action",
+                "value": "accelerate",
+                "signal": "accelerate"
+              }
+            ]
+          }
+        },
+        {
+          "qid": "q0303",
+          "number": 303,
+          "type": "ROW",
+          "score": 62.368,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.251,
+            "rawPromptSimilarity": 0.251,
+            "englishPromptSimilarity": 0.251,
+            "syntheticPromptSimilarity": 0.08,
+            "questionType": 1,
+            "imageSignal": 1,
+            "topicWeighting": 0.5,
+            "answerPolarity": 0.5,
+            "conceptAlignment": 1,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0
+          },
+          "diagnostics": {
+            "effectiveItemType": "ROW",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": true,
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "optionSetMode": "binary-row-neutral + synthetic-ja mirror",
+            "syntheticMirrorUsed": true,
+            "genericPromptFamily": null,
+            "sourceConceptSlots": {
+              "condition": [],
+              "context": [
+                "intersection"
+              ],
+              "action": [
+                "accelerate",
+                "pass"
+              ],
+              "polarity": "positive",
+              "signals": [
+                {
+                  "slot": "context",
+                  "value": "intersection",
+                  "signal": "intersection"
+                },
+                {
+                  "slot": "action",
+                  "value": "accelerate",
+                  "signal": "accelerate"
+                },
+                {
+                  "slot": "action",
+                  "value": "pass",
+                  "signal": "pass"
+                }
+              ]
+            },
+            "candidateConceptSlots": {
+              "condition": [],
+              "context": [
+                "intersection"
+              ],
+              "action": [],
+              "polarity": "positive",
+              "signals": [
+                {
+                  "slot": "context",
+                  "value": "intersection",
+                  "signal": "intersection"
+                }
+              ]
+            },
+            "conceptMatches": [
+              "context:intersection"
+            ],
+            "contradictionSignals": [],
+            "rowConceptMode": "slot-alignment + contradiction-penalties",
+            "explanation": [
+              "Binary yes/no options were treated as ROW-like for type scoring.",
+              "Missing correct answer was treated as a neutral signal.",
+              "ROW concept slots aligned on condition/context/action."
+            ]
+          },
+          "prompt": "You have the priviledged passing right of way at the intersection in this situation.",
+          "syntheticJaPrompt": "you have priviledged passing right way 交差点 situation。",
+          "translatedPrompt": "이 상황에서 교차로에서 통행 우선권이 있다.",
+          "options": [],
+          "correctAnswer": {
+            "kind": "ROW",
+            "correctRow": "R",
+            "correctOptionId": null,
+            "correctOptionKey": null,
+            "correctOptionText": "right / true",
+            "correctOptionTranslatedText": null,
+            "answerRaw": "Right"
+          },
+          "image": {
+            "hasImage": true,
+            "currentAssetSrc": "/qbank/2023-test1/images/img-303.jpg",
+            "assetHashes": [
+              "516c11deea0462bb385eef299189c163"
+            ]
+          },
+          "topic": "right-of-way",
+          "subtopics": [],
+          "conceptSlots": {
+            "condition": [],
+            "context": [
+              "intersection"
+            ],
+            "action": [],
+            "polarity": "positive",
+            "signals": [
+              {
+                "slot": "context",
+                "value": "intersection",
+                "signal": "intersection"
+              }
+            ]
+          }
+        },
+        {
+          "qid": "q0304",
+          "number": 304,
+          "type": "ROW",
+          "score": 62.368,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.251,
+            "rawPromptSimilarity": 0.251,
+            "englishPromptSimilarity": 0.251,
+            "syntheticPromptSimilarity": 0.08,
+            "questionType": 1,
+            "imageSignal": 1,
+            "topicWeighting": 0.5,
+            "answerPolarity": 0.5,
+            "conceptAlignment": 1,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0
+          },
+          "diagnostics": {
+            "effectiveItemType": "ROW",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": true,
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "optionSetMode": "binary-row-neutral + synthetic-ja mirror",
+            "syntheticMirrorUsed": true,
+            "genericPromptFamily": null,
+            "sourceConceptSlots": {
+              "condition": [],
+              "context": [
+                "intersection"
+              ],
+              "action": [
+                "accelerate",
+                "pass"
+              ],
+              "polarity": "positive",
+              "signals": [
+                {
+                  "slot": "context",
+                  "value": "intersection",
+                  "signal": "intersection"
+                },
+                {
+                  "slot": "action",
+                  "value": "accelerate",
+                  "signal": "accelerate"
+                },
+                {
+                  "slot": "action",
+                  "value": "pass",
+                  "signal": "pass"
+                }
+              ]
+            },
+            "candidateConceptSlots": {
+              "condition": [],
+              "context": [
+                "intersection"
+              ],
+              "action": [],
+              "polarity": "positive",
+              "signals": [
+                {
+                  "slot": "context",
+                  "value": "intersection",
+                  "signal": "intersection"
+                }
+              ]
+            },
+            "conceptMatches": [
+              "context:intersection"
+            ],
+            "contradictionSignals": [],
+            "rowConceptMode": "slot-alignment + contradiction-penalties",
+            "explanation": [
+              "Binary yes/no options were treated as ROW-like for type scoring.",
+              "Missing correct answer was treated as a neutral signal.",
+              "ROW concept slots aligned on condition/context/action."
+            ]
+          },
+          "prompt": "You have the priviledged passing right of way at the intersection in this situation.",
+          "syntheticJaPrompt": "you have priviledged passing right way 交差点 situation。",
+          "translatedPrompt": "이 상황에서 교차로에서 통행 우선권이 있다.",
+          "options": [],
+          "correctAnswer": {
+            "kind": "ROW",
+            "correctRow": "W",
+            "correctOptionId": null,
+            "correctOptionKey": null,
+            "correctOptionText": "wrong / false",
+            "correctOptionTranslatedText": null,
+            "answerRaw": "Wrong"
+          },
+          "image": {
+            "hasImage": true,
+            "currentAssetSrc": "/qbank/2023-test1/images/img_df16ca3c108845d694e39a5aef9d6800.jpeg",
+            "assetHashes": [
+              "df16ca3c108845d694e39a5aef9d6800"
+            ]
+          },
+          "topic": "right-of-way",
+          "subtopics": [],
+          "conceptSlots": {
+            "condition": [],
+            "context": [
+              "intersection"
+            ],
+            "action": [],
+            "polarity": "positive",
+            "signals": [
+              {
+                "slot": "context",
+                "value": "intersection",
+                "signal": "intersection"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "itemId": "screenshots/Screenshot 2026-04-07 at 17.51.18.png",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 17.51.18.png",
+      "promptRawJa": "自動車で坂を登る場合、頂上に達しようとするさいに速度を上げクラクションを鳴らす。",
+      "promptGlossEn": "When driving a car up a slope, you should increase speed and sound the horn as you approach the top.",
+      "optionsRawJa": [
+        "A Yes",
+        "B No"
+      ],
+      "optionsGlossEn": [
+        "Yes",
+        "No"
+      ],
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "ocrConfidence": "high",
+      "hasImage": false,
+      "provisionalTopic": "proper-driving",
+      "provisionalSubtopics": [
+        "proper-driving:safe-driving"
+      ],
+      "topicConfidence": 1,
+      "topicSignals": [
+        {
+          "topic": "proper-driving",
+          "subtopic": "proper-driving:safe-driving",
+          "signal": "driving-action",
+          "weight": 1.2
+        }
+      ],
+      "sourceConceptSlots": {
+        "condition": [
+          "uphill"
+        ],
+        "context": [],
+        "action": [
+          "honk"
+        ],
+        "polarity": "positive",
+        "signals": [
+          {
+            "slot": "condition",
+            "value": "uphill",
+            "signal": "uphill"
+          },
+          {
+            "slot": "action",
+            "value": "honk",
+            "signal": "honk"
+          }
+        ]
+      },
+      "localizedText": {
+        "prompt": "自動車で坂を登る場合、頂上に達しようとするさいに速度を上げクラクションを鳴らす。",
+        "options": [
+          "A Yes",
+          "B No"
+        ],
+        "correctAnswer": null,
+        "explanation": null
+      },
+      "translatedText": {
+        "prompt": "When driving a car up a slope, you should increase speed and sound the horn as you approach the top.",
+        "options": [
+          "Yes",
+          "No"
+        ],
+        "correctAnswer": null
+      },
+      "topicHints": [],
+      "answerPolarity": null,
+      "match": {
+        "qid": "q0195",
+        "number": 195,
+        "score": 64.342,
+        "scoreGap": 8.052,
+        "scoreBreakdown": {
+          "promptSimilarity": 0.364,
+          "rawPromptSimilarity": 0.364,
+          "englishPromptSimilarity": 0.364,
+          "syntheticPromptSimilarity": 0.097,
+          "questionType": 1,
+          "imageSignal": 1,
+          "topicWeighting": 0.5,
+          "answerPolarity": 0.5,
+          "conceptAlignment": 0.767,
+          "contradictionPenalty": 0,
+          "assetTieBreak": 0
+        },
+        "candidateTopicTruth": {
+          "topic": null,
+          "subtopics": [],
+          "tags": []
+        },
+        "candidateImageRef": {
+          "hasImage": false,
+          "currentAssetSrc": null,
+          "assetHashes": []
+        }
+      },
+      "analysis": {
+        "mode": "standard",
+        "effectiveQuestionType": "ROW",
+        "declaredQuestionType": "MCQ",
+        "booleanChoiceDetected": true,
+        "plausibleShortlist": true,
+        "imageParityApplied": true,
+        "candidateImageParityMode": "text-only candidate set",
+        "candidateCountBeforeParity": 973,
+        "candidateCountAfterParity": 482,
+        "explanation": "Top candidate cleared the review floor but remains review-first."
+      },
+      "proposedLocalization": {
+        "prompt": "自動車で坂を登る場合、頂上に達しようとするさいに速度を上げクラクションを鳴らす。",
+        "explanation": ""
+      },
+      "reviewDecision": null,
+      "approvedLocalization": null,
+      "topCandidates": [
+        {
+          "qid": "q0195",
+          "number": 195,
+          "type": "ROW",
+          "score": 64.342,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.364,
+            "rawPromptSimilarity": 0.364,
+            "englishPromptSimilarity": 0.364,
+            "syntheticPromptSimilarity": 0.097,
+            "questionType": 1,
+            "imageSignal": 1,
+            "topicWeighting": 0.5,
+            "answerPolarity": 0.5,
+            "conceptAlignment": 0.767,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0
+          },
+          "diagnostics": {
+            "effectiveItemType": "ROW",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": true,
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "optionSetMode": "binary-row-neutral + synthetic-ja mirror",
+            "syntheticMirrorUsed": true,
+            "genericPromptFamily": null,
+            "sourceConceptSlots": {
+              "condition": [
+                "uphill"
+              ],
+              "context": [],
+              "action": [
+                "honk"
+              ],
+              "polarity": "positive",
+              "signals": [
+                {
+                  "slot": "condition",
+                  "value": "uphill",
+                  "signal": "uphill"
+                },
+                {
+                  "slot": "action",
+                  "value": "honk",
+                  "signal": "honk"
+                }
+              ]
+            },
+            "candidateConceptSlots": {
+              "condition": [
+                "uphill"
+              ],
+              "context": [],
+              "action": [
+                "honk",
+                "accelerate"
+              ],
+              "polarity": "positive",
+              "signals": [
+                {
+                  "slot": "condition",
+                  "value": "uphill",
+                  "signal": "uphill"
+                },
+                {
+                  "slot": "action",
+                  "value": "honk",
+                  "signal": "honk"
+                },
+                {
+                  "slot": "action",
+                  "value": "accelerate",
+                  "signal": "accelerate"
+                }
+              ]
+            },
+            "conceptMatches": [
+              "condition:uphill",
+              "action:honk"
+            ],
+            "contradictionSignals": [],
+            "rowConceptMode": "slot-alignment + contradiction-penalties",
+            "explanation": [
+              "Binary yes/no options were treated as ROW-like for type scoring.",
+              "Missing correct answer was treated as a neutral signal.",
+              "ROW concept slots aligned on condition/context/action."
+            ]
+          },
+          "prompt": "When driving a motorized vehicle uphill, you should speed up and honk when you going to reach the top of the slope.",
+          "syntheticJaPrompt": "when driving motorized 車両 uphill you べき 加速 and honk when you going reach top slope。",
+          "translatedPrompt": "오르막을 주행할 때 정상적으로 오르막 꼭대기에 도달할 때는 가속하고 경적을 울린다.",
+          "options": [],
+          "correctAnswer": {
+            "kind": "ROW",
+            "correctRow": "W",
+            "correctOptionId": null,
+            "correctOptionKey": null,
+            "correctOptionText": "wrong / false",
+            "correctOptionTranslatedText": null,
+            "answerRaw": "Wrong"
+          },
+          "image": {
+            "hasImage": false,
+            "currentAssetSrc": null,
+            "assetHashes": []
+          },
+          "topic": "row",
+          "subtopics": [],
+          "conceptSlots": {
+            "condition": [
+              "uphill"
+            ],
+            "context": [],
+            "action": [
+              "honk",
+              "accelerate"
+            ],
+            "polarity": "positive",
+            "signals": [
+              {
+                "slot": "condition",
+                "value": "uphill",
+                "signal": "uphill"
+              },
+              {
+                "slot": "action",
+                "value": "honk",
+                "signal": "honk"
+              },
+              {
+                "slot": "action",
+                "value": "accelerate",
+                "signal": "accelerate"
+              }
+            ]
+          }
+        },
+        {
+          "qid": "q0030",
+          "number": 30,
+          "type": "ROW",
+          "score": 56.29,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.148,
+            "rawPromptSimilarity": 0.148,
+            "englishPromptSimilarity": 0.148,
+            "syntheticPromptSimilarity": 0.05,
+            "questionType": 1,
+            "imageSignal": 1,
+            "topicWeighting": 0.5,
+            "answerPolarity": 0.5,
+            "conceptAlignment": 1,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0
+          },
+          "diagnostics": {
+            "effectiveItemType": "ROW",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": true,
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "optionSetMode": "binary-row-neutral + synthetic-ja mirror",
+            "syntheticMirrorUsed": true,
+            "genericPromptFamily": null,
+            "sourceConceptSlots": {
+              "condition": [
+                "uphill"
+              ],
+              "context": [],
+              "action": [
+                "honk"
+              ],
+              "polarity": "positive",
+              "signals": [
+                {
+                  "slot": "condition",
+                  "value": "uphill",
+                  "signal": "uphill"
+                },
+                {
+                  "slot": "action",
+                  "value": "honk",
+                  "signal": "honk"
+                }
+              ]
+            },
+            "candidateConceptSlots": {
+              "condition": [
+                "uphill"
+              ],
+              "context": [],
+              "action": [],
+              "polarity": "positive",
+              "signals": [
+                {
+                  "slot": "condition",
+                  "value": "uphill",
+                  "signal": "uphill"
+                }
+              ]
+            },
+            "conceptMatches": [
+              "condition:uphill"
+            ],
+            "contradictionSignals": [],
+            "rowConceptMode": "slot-alignment + contradiction-penalties",
+            "explanation": [
+              "Binary yes/no options were treated as ROW-like for type scoring.",
+              "Missing correct answer was treated as a neutral signal.",
+              "ROW concept slots aligned on condition/context/action."
+            ]
+          },
+          "prompt": "When a vehicle goes down a long slope, it should drive at a lower gear and fully use the engine to brake.",
+          "syntheticJaPrompt": "when 車両 goes down long slope it べき run lower gear and fully use engine brake。",
+          "translatedPrompt": "차량이 긴 내리막을 내려갈 때는 저단으로 주행하여 엔진 브레이크를 충분히 사용해야 한다.",
+          "options": [],
+          "correctAnswer": {
+            "kind": "ROW",
+            "correctRow": "R",
+            "correctOptionId": null,
+            "correctOptionKey": null,
+            "correctOptionText": "right / true",
+            "correctOptionTranslatedText": null,
+            "answerRaw": "Right"
+          },
+          "image": {
+            "hasImage": false,
+            "currentAssetSrc": null,
+            "assetHashes": []
+          },
+          "topic": "row",
+          "subtopics": [],
+          "conceptSlots": {
+            "condition": [
+              "uphill"
+            ],
+            "context": [],
+            "action": [],
+            "polarity": "positive",
+            "signals": [
+              {
+                "slot": "condition",
+                "value": "uphill",
+                "signal": "uphill"
+              }
+            ]
+          }
+        },
+        {
+          "qid": "q0043",
+          "number": 43,
+          "type": "ROW",
+          "score": 55.552,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.137,
+            "rawPromptSimilarity": 0.137,
+            "englishPromptSimilarity": 0.137,
+            "syntheticPromptSimilarity": 0.033,
+            "questionType": 1,
+            "imageSignal": 1,
+            "topicWeighting": 0.5,
+            "answerPolarity": 0.5,
+            "conceptAlignment": 1,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0
+          },
+          "diagnostics": {
+            "effectiveItemType": "ROW",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": true,
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "optionSetMode": "binary-row-neutral + synthetic-ja mirror",
+            "syntheticMirrorUsed": true,
+            "genericPromptFamily": null,
+            "sourceConceptSlots": {
+              "condition": [
+                "uphill"
+              ],
+              "context": [],
+              "action": [
+                "honk"
+              ],
+              "polarity": "positive",
+              "signals": [
+                {
+                  "slot": "condition",
+                  "value": "uphill",
+                  "signal": "uphill"
+                },
+                {
+                  "slot": "action",
+                  "value": "honk",
+                  "signal": "honk"
+                }
+              ]
+            },
+            "candidateConceptSlots": {
+              "condition": [
+                "uphill"
+              ],
+              "context": [],
+              "action": [],
+              "polarity": "positive",
+              "signals": [
+                {
+                  "slot": "condition",
+                  "value": "uphill",
+                  "signal": "uphill"
+                }
+              ]
+            },
+            "conceptMatches": [
+              "condition:uphill"
+            ],
+            "contradictionSignals": [],
+            "rowConceptMode": "slot-alignment + contradiction-penalties",
+            "explanation": [
+              "Binary yes/no options were treated as ROW-like for type scoring.",
+              "Missing correct answer was treated as a neutral signal.",
+              "ROW concept slots aligned on condition/context/action."
+            ]
+          },
+          "prompt": "When a vehicle goes uphill on a mountain road, it should change to a lower gear in a timely, accurate, and rapid manner so as to avoid a situation in which driving at a higher gear can reduce the power of the engine.",
+          "syntheticJaPrompt": "when 車両 goes uphill mountain road it べき change lower gear timely accurate and rapid manner so as avoid situation which driving high gear can reduce power engine。",
+          "translatedPrompt": "산길의 오르막을 주행할 때에는 엔진 출력이 떨어지는 상황을 피하기 위해 적시에 정확하고 신속하게 저단으로 변속해야 한다.",
+          "options": [],
+          "correctAnswer": {
+            "kind": "ROW",
+            "correctRow": "R",
+            "correctOptionId": null,
+            "correctOptionKey": null,
+            "correctOptionText": "right / true",
+            "correctOptionTranslatedText": null,
+            "answerRaw": "Right"
+          },
+          "image": {
+            "hasImage": false,
+            "currentAssetSrc": null,
+            "assetHashes": []
+          },
+          "topic": "row",
+          "subtopics": [],
+          "conceptSlots": {
+            "condition": [
+              "uphill"
+            ],
+            "context": [],
+            "action": [],
+            "polarity": "positive",
+            "signals": [
+              {
+                "slot": "condition",
+                "value": "uphill",
+                "signal": "uphill"
+              }
+            ]
+          }
+        },
+        {
+          "qid": "q0070",
+          "number": 70,
+          "type": "ROW",
+          "score": 54.898,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.125,
+            "rawPromptSimilarity": 0.125,
+            "englishPromptSimilarity": 0.125,
+            "syntheticPromptSimilarity": 0.037,
+            "questionType": 1,
+            "imageSignal": 1,
+            "topicWeighting": 0.5,
+            "answerPolarity": 0.5,
+            "conceptAlignment": 1,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0
+          },
+          "diagnostics": {
+            "effectiveItemType": "ROW",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": true,
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "optionSetMode": "binary-row-neutral + synthetic-ja mirror",
+            "syntheticMirrorUsed": true,
+            "genericPromptFamily": null,
+            "sourceConceptSlots": {
+              "condition": [
+                "uphill"
+              ],
+              "context": [],
+              "action": [
+                "honk"
+              ],
+              "polarity": "positive",
+              "signals": [
+                {
+                  "slot": "condition",
+                  "value": "uphill",
+                  "signal": "uphill"
+                },
+                {
+                  "slot": "action",
+                  "value": "honk",
+                  "signal": "honk"
+                }
+              ]
+            },
+            "candidateConceptSlots": {
+              "condition": [
+                "uphill"
+              ],
+              "context": [],
+              "action": [],
+              "polarity": "positive",
+              "signals": [
+                {
+                  "slot": "condition",
+                  "value": "uphill",
+                  "signal": "uphill"
+                }
+              ]
+            },
+            "conceptMatches": [
+              "condition:uphill"
+            ],
+            "contradictionSignals": [],
+            "rowConceptMode": "slot-alignment + contradiction-penalties",
+            "explanation": [
+              "Binary yes/no options were treated as ROW-like for type scoring.",
+              "Missing correct answer was treated as a neutral signal.",
+              "ROW concept slots aligned on condition/context/action."
+            ]
+          },
+          "prompt": "When a vehicle goes uphill, the driver should observe the road conditions and the length of the slope in advance and shift to a lower gear in a timely manner to ensure the vehicle has sufficient power.",
+          "syntheticJaPrompt": "when 車両 goes uphill 運転者 べき observe road condition and length slope advance and shift lower gear timely manner ensure 車両 has sufficient power。",
+          "translatedPrompt": "오르막길을 운행할 때 운전자는 노면과 경사의 길이를 미리 파악하고 제때 저단 기어로 변속하여 차량의 충분한 동력을 확보해야 한다.",
+          "options": [],
+          "correctAnswer": {
+            "kind": "ROW",
+            "correctRow": "R",
+            "correctOptionId": null,
+            "correctOptionKey": null,
+            "correctOptionText": "right / true",
+            "correctOptionTranslatedText": null,
+            "answerRaw": "Right"
+          },
+          "image": {
+            "hasImage": false,
+            "currentAssetSrc": null,
+            "assetHashes": []
+          },
+          "topic": "row",
+          "subtopics": [],
+          "conceptSlots": {
+            "condition": [
+              "uphill"
+            ],
+            "context": [],
+            "action": [],
+            "polarity": "positive",
+            "signals": [
+              {
+                "slot": "condition",
+                "value": "uphill",
+                "signal": "uphill"
+              }
+            ]
+          }
+        },
+        {
+          "qid": "q0016",
+          "number": 16,
+          "type": "ROW",
+          "score": 47.986,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.153,
+            "rawPromptSimilarity": 0.153,
+            "englishPromptSimilarity": 0.153,
+            "syntheticPromptSimilarity": 0.087,
+            "questionType": 1,
+            "imageSignal": 1,
+            "topicWeighting": 0.5,
+            "answerPolarity": 0.5,
+            "conceptAlignment": 0.563,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0
+          },
+          "diagnostics": {
+            "effectiveItemType": "ROW",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": true,
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "optionSetMode": "binary-row-neutral + synthetic-ja mirror",
+            "syntheticMirrorUsed": true,
+            "genericPromptFamily": null,
+            "sourceConceptSlots": {
+              "condition": [
+                "uphill"
+              ],
+              "context": [],
+              "action": [
+                "honk"
+              ],
+              "polarity": "positive",
+              "signals": [
+                {
+                  "slot": "condition",
+                  "value": "uphill",
+                  "signal": "uphill"
+                },
+                {
+                  "slot": "action",
+                  "value": "honk",
+                  "signal": "honk"
+                }
+              ]
+            },
+            "candidateConceptSlots": {
+              "condition": [],
+              "context": [],
+              "action": [
+                "honk",
+                "pass"
+              ],
+              "polarity": "positive",
+              "signals": [
+                {
+                  "slot": "action",
+                  "value": "honk",
+                  "signal": "honk"
+                },
+                {
+                  "slot": "action",
+                  "value": "pass",
+                  "signal": "pass"
+                }
+              ]
+            },
+            "conceptMatches": [
+              "action:honk"
+            ],
+            "contradictionSignals": [],
+            "rowConceptMode": "slot-alignment + contradiction-penalties",
+            "explanation": [
+              "Binary yes/no options were treated as ROW-like for type scoring.",
+              "Missing correct answer was treated as a neutral signal.",
+              "ROW concept slots aligned on condition/context/action."
+            ]
+          },
+          "prompt": "When a vehicle passes a school or a residential area, the driver should observe the signs and markings, go slowly and refrain from honking.",
+          "syntheticJaPrompt": "when 車両 追い越し school or residential area 運転者 べき observe 標識 and 路面標示 go slowly and refrain honk。",
+          "translatedPrompt": "학교나 주거지역을 지날 때는 표지와 도로 표시를 확인하고 서행하며 경적을 울리지 않아야 한다.",
+          "options": [],
+          "correctAnswer": {
+            "kind": "ROW",
+            "correctRow": "R",
+            "correctOptionId": null,
+            "correctOptionKey": null,
+            "correctOptionText": "right / true",
+            "correctOptionTranslatedText": null,
+            "answerRaw": "Right"
+          },
+          "image": {
+            "hasImage": false,
+            "currentAssetSrc": null,
+            "assetHashes": []
+          },
+          "topic": "road-safety",
+          "subtopics": [
+            "road-safety:road-conditions",
+            "proper-driving:safe-driving"
+          ],
+          "conceptSlots": {
+            "condition": [],
+            "context": [],
+            "action": [
+              "honk",
+              "pass"
+            ],
+            "polarity": "positive",
+            "signals": [
+              {
+                "slot": "action",
+                "value": "honk",
+                "signal": "honk"
+              },
+              {
+                "slot": "action",
+                "value": "pass",
+                "signal": "pass"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

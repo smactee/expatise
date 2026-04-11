@@ -1,0 +1,606 @@
+{
+  "meta": {
+    "locale": "ja",
+    "generatedAt": "2026-04-10T14:47:54.625Z",
+    "reviewedBatchId": "batch-007",
+    "dataset": "2023-test1",
+    "sourceUnresolvedPath": "imports/ja/batch-007/unresolved.json",
+    "sourceUnresolvedDecisionPath": "qbank-tools/generated/staging/ja-batch-007-unresolved-decisions.json",
+    "rescuedExistingQidCount": 6,
+    "manualAnswerKeyConfirmationCount": 0,
+    "stagingOnly": true
+  },
+  "questions": {
+    "q0234": {
+      "prompt": "運転者の免許が法律に基づき押収または一時的に没収された場合、運転してはならない。",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.03.35.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 18.03.35.png",
+      "reviewerNotes": "",
+      "promptRawJa": "運転者の免許が法律に基づき押収または一時的に没収された場合、運転してはならない。",
+      "promptGlossEn": "If a driver's license has been seized or temporarily confiscated under the law, the driver must not drive.",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "ROW",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-007",
+        "approvedQid": "q0234",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "optionsRawJa": [],
+      "optionsGlossEn": [],
+      "localeCorrectOptionKey": null,
+      "canonicalCorrectRow": "R",
+      "canonicalCorrectAnswer": "right / true",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "ROW question; no locale-specific option key applies.",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ja-batch-007-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0834": {
+      "prompt": "路面のひし形点線は何を示しているか。",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.03.37 1.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 18.03.37 1.png",
+      "reviewerNotes": "",
+      "promptRawJa": "路面のひし形点線は何を示しているか。",
+      "promptGlossEn": "What does the diamond-shaped dashed line on the road indicate?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-007",
+        "approvedQid": "q0834",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "options": {
+        "q0834_o1": "B 道路工事標示",
+        "q0834_o2": "A 自動車車線縦向き減速標示",
+        "q0834_o3": "C 自動車車線横向き減速標示",
+        "q0834_o4": "D 車線数減少"
+      },
+      "optionsRawJa": [
+        "A 自動車車線縦向き減速標示",
+        "B 道路工事標示",
+        "C 自動車車線横向き減速標示",
+        "D 車線数減少"
+      ],
+      "optionsGlossEn": [
+        "A. Speed reduction marking for vehicle lanes (longitudinal direction)",
+        "B. Road work marking",
+        "C. Speed reduction marking for vehicle lanes (horizontal direction)",
+        "D. Reduction in number of lanes"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A 自動車車線縦向き減速標示",
+          "sourceTextBody": "自動車車線縦向き減速標示",
+          "sourceGlossEn": "A. Speed reduction marking for vehicle lanes (longitudinal direction)",
+          "canonicalOptionId": "q0834_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "vertical deceleration marking",
+          "alignmentScore": 0.10873015873015873,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B 道路工事標示",
+          "sourceTextBody": "道路工事標示",
+          "sourceGlossEn": "B. Road work marking",
+          "canonicalOptionId": "q0834_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "road construction marking",
+          "alignmentScore": 0.31973684210526315,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C 自動車車線横向き減速標示",
+          "sourceTextBody": "自動車車線横向き減速標示",
+          "sourceGlossEn": "C. Speed reduction marking for vehicle lanes (horizontal direction)",
+          "canonicalOptionId": "q0834_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "horizontal deceleration marking",
+          "alignmentScore": 0.23465909090909093,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D 車線数減少",
+          "sourceTextBody": "車線数減少",
+          "sourceGlossEn": "D. Reduction in number of lanes",
+          "canonicalOptionId": "q0834_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "fewer lanes indication marking",
+          "alignmentScore": 0.21386363636363637,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A 自動車車線縦向き減速標示",
+          "sourceGlossEn": "A. Speed reduction marking for vehicle lanes (longitudinal direction)",
+          "canonicalOptionId": "q0834_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "vertical deceleration marking",
+          "alignmentScore": 0.10873015873015873,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B 道路工事標示",
+          "sourceGlossEn": "B. Road work marking",
+          "canonicalOptionId": "q0834_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "road construction marking",
+          "alignmentScore": 0.31973684210526315,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C 自動車車線横向き減速標示",
+          "sourceGlossEn": "C. Speed reduction marking for vehicle lanes (horizontal direction)",
+          "canonicalOptionId": "q0834_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "horizontal deceleration marking",
+          "alignmentScore": 0.23465909090909093,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D 車線数減少",
+          "sourceGlossEn": "D. Reduction in number of lanes",
+          "canonicalOptionId": "q0834_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "fewer lanes indication marking",
+          "alignmentScore": 0.21386363636363637,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "A",
+      "canonicalCorrectOptionId": "q0834_o2",
+      "canonicalCorrectOptionKey": "B",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed during unresolved rescue review on 2026-04-10T14:47:54.625Z; reviewer selected locale key A.",
+      "correctOptionAlignment": {
+        "sourceKey": "A",
+        "canonicalOptionId": "q0834_o2",
+        "canonicalOptionKey": "B",
+        "sourceText": "A 自動車車線縦向き減速標示",
+        "sourceGlossEn": "A. Speed reduction marking for vehicle lanes (longitudinal direction)",
+        "canonicalOptionText": "vertical deceleration marking",
+        "alignmentScore": 0.10873015873015873,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-10T14:47:54.625Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ja-batch-007-unresolved-decisions.json",
+      "answerKeyReviewerNotes": "",
+      "reviewerSuggestedLocaleCorrectOptionKey": "A",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ja-batch-007-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0299": {
+      "prompt": "無免許運転の運転者は、法律責任を追及される。",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.03.52.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 18.03.52.png",
+      "reviewerNotes": "",
+      "promptRawJa": "無免許運転の運転者は、法律責任を追及される。",
+      "promptGlossEn": "A driver without a license will be held legally responsible.",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "ROW",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-007",
+        "approvedQid": "q0299",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "optionsRawJa": [],
+      "optionsGlossEn": [],
+      "localeCorrectOptionKey": null,
+      "canonicalCorrectRow": "R",
+      "canonicalCorrectAnswer": "right / true",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "ROW question; no locale-specific option key applies.",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ja-batch-007-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0435": {
+      "prompt": "不正改造車くるま車を路上で運転した運転者は、どのような処罰が課されるか。",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.03.59 1.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 18.03.59 1.png",
+      "reviewerNotes": "",
+      "promptRawJa": "不正改造車くるま車を路上で運転した運転者は、どのような処罰が課されるか。",
+      "promptGlossEn": "What penalty is imposed on a driver who drives an illegally modified vehicle on the road?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-007",
+        "approvedQid": "q0435",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "options": {
+        "q0435_o1": "B 法律に基づき刑事責任の追及",
+        "q0435_o2": "C 200元以上2000元以下の罰金",
+        "q0435_o3": "D 車両走行証の取消",
+        "q0435_o4": "A 15日以下の収監"
+      },
+      "optionsRawJa": [
+        "A 15日以下の収監",
+        "B 法律に基づき刑事責任の追及",
+        "C 200元以上2000元以下の罰金",
+        "D 車両走行証の取消"
+      ],
+      "optionsGlossEn": [
+        "A Detention of up to 15 days",
+        "B Pursuit of criminal responsibility in accordance with the law",
+        "C A fine of more than 200 yuan and less than 2000 yuan",
+        "D Cancellation of vehicle registration"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A 15日以下の収監",
+          "sourceTextBody": "15日以下の収監",
+          "sourceGlossEn": "A Detention of up to 15 days",
+          "canonicalOptionId": "q0435_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "being detained for less than 15 days 35",
+          "alignmentScore": 0.1792349726775956,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B 法律に基づき刑事責任の追及",
+          "sourceTextBody": "法律に基づき刑事責任の追及",
+          "sourceGlossEn": "B Pursuit of criminal responsibility in accordance with the law",
+          "canonicalOptionId": "q0435_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "being held for criminal liabilities according to law",
+          "alignmentScore": 0.19195561719833565,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C 200元以上2000元以下の罰金",
+          "sourceTextBody": "200元以上2000元以下の罰金",
+          "sourceGlossEn": "C A fine of more than 200 yuan and less than 2000 yuan",
+          "canonicalOptionId": "q0435_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "a fine of 200~2,000 yuan",
+          "alignmentScore": 0.3733333333333333,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D 車両走行証の取消",
+          "sourceTextBody": "車両走行証の取消",
+          "sourceGlossEn": "D Cancellation of vehicle registration",
+          "canonicalOptionId": "q0435_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "being revoked the vehicle license",
+          "alignmentScore": 0.19487179487179487,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A 15日以下の収監",
+          "sourceGlossEn": "A Detention of up to 15 days",
+          "canonicalOptionId": "q0435_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "being detained for less than 15 days 35",
+          "alignmentScore": 0.1792349726775956,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B 法律に基づき刑事責任の追及",
+          "sourceGlossEn": "B Pursuit of criminal responsibility in accordance with the law",
+          "canonicalOptionId": "q0435_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "being held for criminal liabilities according to law",
+          "alignmentScore": 0.19195561719833565,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C 200元以上2000元以下の罰金",
+          "sourceGlossEn": "C A fine of more than 200 yuan and less than 2000 yuan",
+          "canonicalOptionId": "q0435_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "a fine of 200~2,000 yuan",
+          "alignmentScore": 0.3733333333333333,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D 車両走行証の取消",
+          "sourceGlossEn": "D Cancellation of vehicle registration",
+          "canonicalOptionId": "q0435_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "being revoked the vehicle license",
+          "alignmentScore": 0.19487179487179487,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "C",
+      "canonicalCorrectOptionId": "q0435_o2",
+      "canonicalCorrectOptionKey": "B",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed during unresolved rescue review on 2026-04-10T14:47:54.625Z; reviewer selected locale key C.",
+      "correctOptionAlignment": {
+        "sourceKey": "C",
+        "canonicalOptionId": "q0435_o2",
+        "canonicalOptionKey": "B",
+        "sourceText": "C 200元以上2000元以下の罰金",
+        "sourceGlossEn": "C A fine of more than 200 yuan and less than 2000 yuan",
+        "canonicalOptionText": "a fine of 200~2,000 yuan",
+        "alignmentScore": 0.3733333333333333,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-10T14:47:54.625Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ja-batch-007-unresolved-decisions.json",
+      "answerKeyReviewerNotes": "",
+      "reviewerSuggestedLocaleCorrectOptionKey": "C",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ja-batch-007-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0891": {
+      "prompt": "この標識は何を示しているか。",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.04.03.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 18.04.03.png",
+      "reviewerNotes": "",
+      "promptRawJa": "この標識は何を示しているか。",
+      "promptGlossEn": "What does this sign indicate?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-007",
+        "approvedQid": "q0891",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "options": {
+        "q0891_o1": "B 最低制限速度50キロメートル",
+        "q0891_o2": "A 最高制限速度50キロメートル",
+        "q0891_o3": "D 海抜50メートル",
+        "q0891_o4": "C 水平高度50メートル"
+      },
+      "optionsRawJa": [
+        "A 最高制限速度50キロメートル",
+        "B 最低制限速度50キロメートル",
+        "C 水平高度50メートル",
+        "D 海抜50メートル"
+      ],
+      "optionsGlossEn": [
+        "A Maximum speed limit 50 km/h",
+        "B Minimum speed limit 50 km/h",
+        "C Altitude 50 meters",
+        "D Elevation above sea level 50 meters"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A 最高制限速度50キロメートル",
+          "sourceTextBody": "最高制限速度50キロメートル",
+          "sourceGlossEn": "A Maximum speed limit 50 km/h",
+          "canonicalOptionId": "q0891_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "maximum speed limit is 50km/hr 97",
+          "alignmentScore": 0.39,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B 最低制限速度50キロメートル",
+          "sourceTextBody": "最低制限速度50キロメートル",
+          "sourceGlossEn": "B Minimum speed limit 50 km/h",
+          "canonicalOptionId": "q0891_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "minimum speed limit is 50km/hr",
+          "alignmentScore": 0.2861952861952862,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C 水平高度50メートル",
+          "sourceTextBody": "水平高度50メートル",
+          "sourceGlossEn": "C Altitude 50 meters",
+          "canonicalOptionId": "q0891_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "the altitude is 50m",
+          "alignmentScore": 0.2742857142857143,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D 海抜50メートル",
+          "sourceTextBody": "海抜50メートル",
+          "sourceGlossEn": "D Elevation above sea level 50 meters",
+          "canonicalOptionId": "q0891_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "the height is 50m",
+          "alignmentScore": 0.009302325581395349,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A 最高制限速度50キロメートル",
+          "sourceGlossEn": "A Maximum speed limit 50 km/h",
+          "canonicalOptionId": "q0891_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "maximum speed limit is 50km/hr 97",
+          "alignmentScore": 0.39,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B 最低制限速度50キロメートル",
+          "sourceGlossEn": "B Minimum speed limit 50 km/h",
+          "canonicalOptionId": "q0891_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "minimum speed limit is 50km/hr",
+          "alignmentScore": 0.2861952861952862,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C 水平高度50メートル",
+          "sourceGlossEn": "C Altitude 50 meters",
+          "canonicalOptionId": "q0891_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "the altitude is 50m",
+          "alignmentScore": 0.2742857142857143,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D 海抜50メートル",
+          "sourceGlossEn": "D Elevation above sea level 50 meters",
+          "canonicalOptionId": "q0891_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "the height is 50m",
+          "alignmentScore": 0.009302325581395349,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "B",
+      "canonicalCorrectOptionId": "q0891_o1",
+      "canonicalCorrectOptionKey": "A",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed during unresolved rescue review on 2026-04-10T14:47:54.625Z; reviewer selected locale key B.",
+      "correctOptionAlignment": {
+        "sourceKey": "B",
+        "canonicalOptionId": "q0891_o1",
+        "canonicalOptionKey": "A",
+        "sourceText": "B 最低制限速度50キロメートル",
+        "sourceGlossEn": "B Minimum speed limit 50 km/h",
+        "canonicalOptionText": "minimum speed limit is 50km/hr",
+        "alignmentScore": 0.2861952861952862,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-10T14:47:54.625Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ja-batch-007-unresolved-decisions.json",
+      "answerKeyReviewerNotes": "",
+      "reviewerSuggestedLocaleCorrectOptionKey": "B",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ja-batch-007-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0098": {
+      "prompt": "自動車を道端から発進させたらできるだけ早く速度を上げ、すぐに左側の通常走行道路に移動すべきである。",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.04.06.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 18.04.06.png",
+      "reviewerNotes": "",
+      "promptRawJa": "自動車を道端から発進させたらできるだけ早く速度を上げ、すぐに左側の通常走行道路に移動すべきである。",
+      "promptGlossEn": "When starting a car from the roadside, you should increase your speed as quickly as possible and immediately move to the normal driving lane on the left.",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "ROW",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-007",
+        "approvedQid": "q0098",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "optionsRawJa": [],
+      "optionsGlossEn": [],
+      "localeCorrectOptionKey": null,
+      "canonicalCorrectRow": "W",
+      "canonicalCorrectAnswer": "wrong / false",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "ROW question; no locale-specific option key applies.",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ja-batch-007-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    }
+  }
+}

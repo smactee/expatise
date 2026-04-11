@@ -1,0 +1,571 @@
+{
+  "meta": {
+    "locale": "ja",
+    "generatedAt": "2026-04-10T07:44:33.879Z",
+    "reviewedBatchId": "batch-004",
+    "dataset": "2023-test1",
+    "sourceUnresolvedPath": "imports/ja/batch-004/unresolved.json",
+    "sourceUnresolvedDecisionPath": "qbank-tools/generated/staging/ja-batch-004-unresolved-decisions.json",
+    "rescuedExistingQidCount": 5,
+    "manualAnswerKeyConfirmationCount": 0,
+    "stagingOnly": true
+  },
+  "questions": {
+    "q0530": {
+      "prompt": "このスイッチを上下に引くと、フロントガラスのワイパーが作動する。",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 17.50.54.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 17.50.54.png",
+      "reviewerNotes": "",
+      "promptRawJa": "このスイッチを上下に引くと、フロントガラスのワイパーが作動する。",
+      "promptGlossEn": "If you pull this switch up or down, the windshield wipers will operate.",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "ROW",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-004",
+        "approvedQid": "q0530",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "optionsRawJa": [],
+      "optionsGlossEn": [],
+      "localeCorrectOptionKey": null,
+      "canonicalCorrectRow": "R",
+      "canonicalCorrectAnswer": "right / true",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "ROW question; no locale-specific option key applies.",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ja-batch-004-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0492": {
+      "prompt": "前車が停車し列を作って待っているあるいは徐行している場合、どう対応するのが適切か。",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 17.50.55.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 17.50.55.png",
+      "reviewerNotes": "",
+      "promptRawJa": "前車が停車し列を作って待っているあるいは徐行している場合、どう対応するのが適切か。",
+      "promptGlossEn": "When the car in front is stopped and waiting in a line or moving slowly, what is the appropriate way to respond?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-004",
+        "approvedQid": "q0492",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "options": {
+        "q0492_o1": "A 他の車線を利用して追い越す",
+        "q0492_o2": "B 対向車線を利用する",
+        "q0492_o3": "D 順番に走行する",
+        "q0492_o4": "C 待っている車両のすき間に割り込む"
+      },
+      "optionsRawJa": [
+        "A 他の車線を利用して追い越す",
+        "B 対向車線を利用する",
+        "C 待っている車両のすき間に割り込む",
+        "D 順番に走行する"
+      ],
+      "optionsGlossEn": [
+        "A. Overtake using another lane",
+        "B. Use the oncoming lane",
+        "C. Cut into the gap between the waiting cars",
+        "D. Proceed in order"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A 他の車線を利用して追い越す",
+          "sourceTextBody": "他の車線を利用して追い越す",
+          "sourceGlossEn": "A. Overtake using another lane",
+          "canonicalOptionId": "q0492_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "borrow road to overtake",
+          "alignmentScore": 0.14367167919799498,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B 対向車線を利用する",
+          "sourceTextBody": "対向車線を利用する",
+          "sourceGlossEn": "B. Use the oncoming lane",
+          "canonicalOptionId": "q0492_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "occupy the opposite lane",
+          "alignmentScore": 0.20285714285714285,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C 待っている車両のすき間に割り込む",
+          "sourceTextBody": "待っている車両のすき間に割り込む",
+          "sourceGlossEn": "C. Cut into the gap between the waiting cars",
+          "canonicalOptionId": "q0492_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "cut in the waiting vehicles",
+          "alignmentScore": 0.2941176470588235,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D 順番に走行する",
+          "sourceTextBody": "順番に走行する",
+          "sourceGlossEn": "D. Proceed in order",
+          "canonicalOptionId": "q0492_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "follow the vehicles in front",
+          "alignmentScore": 0.15619047619047619,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A 他の車線を利用して追い越す",
+          "sourceGlossEn": "A. Overtake using another lane",
+          "canonicalOptionId": "q0492_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "borrow road to overtake",
+          "alignmentScore": 0.14367167919799498,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B 対向車線を利用する",
+          "sourceGlossEn": "B. Use the oncoming lane",
+          "canonicalOptionId": "q0492_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "occupy the opposite lane",
+          "alignmentScore": 0.20285714285714285,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C 待っている車両のすき間に割り込む",
+          "sourceGlossEn": "C. Cut into the gap between the waiting cars",
+          "canonicalOptionId": "q0492_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "cut in the waiting vehicles",
+          "alignmentScore": 0.2941176470588235,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D 順番に走行する",
+          "sourceGlossEn": "D. Proceed in order",
+          "canonicalOptionId": "q0492_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "follow the vehicles in front",
+          "alignmentScore": 0.15619047619047619,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        }
+      ],
+      "localeCorrectOptionKey": "D",
+      "canonicalCorrectOptionId": "q0492_o3",
+      "canonicalCorrectOptionKey": "C",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed during unresolved rescue review on 2026-04-10T07:44:33.879Z; reviewer selected locale key D.",
+      "correctOptionAlignment": {
+        "sourceKey": "D",
+        "canonicalOptionId": "q0492_o3",
+        "canonicalOptionKey": "C",
+        "sourceText": "D 順番に走行する",
+        "sourceGlossEn": "D. Proceed in order",
+        "canonicalOptionText": "follow the vehicles in front",
+        "alignmentScore": 0.15619047619047619,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-10T07:44:33.879Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ja-batch-004-unresolved-decisions.json",
+      "answerKeyReviewerNotes": "",
+      "reviewerSuggestedLocaleCorrectOptionKey": "D",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ja-batch-004-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0370": {
+      "prompt": "運転者がに12点減点されるがつくのは、どの違法行為か。",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 17.50.58.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 17.50.58.png",
+      "reviewerNotes": "",
+      "promptRawJa": "運転者がに12点減点されるがつくのは、どの違法行為か。",
+      "promptGlossEn": "Which illegal act will result in a driver receiving a 12-point deduction?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-004",
+        "approvedQid": "q0370",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "options": {
+        "q0370_o1": "A 交通信号に違反する",
+        "q0370_o2": "B 偽造されたナンバープレートを使用する",
+        "q0370_o3": "D 電話をかける、または電話に出る",
+        "q0370_o4": "C 禁止標識の指示に違反する"
+      },
+      "optionsRawJa": [
+        "A 交通信号に違反する",
+        "B 偽造されたナンバープレートを使用する",
+        "C 禁止標識の指示に違反する",
+        "D 電話をかける、または電話に出る"
+      ],
+      "optionsGlossEn": [
+        "A. Violating a traffic signal",
+        "B. Using a forged license plate",
+        "C. Violating a prohibited sign",
+        "D. Making or answering a phone call"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A 交通信号に違反する",
+          "sourceTextBody": "交通信号に違反する",
+          "sourceGlossEn": "A. Violating a traffic signal",
+          "canonicalOptionId": "q0370_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "violate traffic lights",
+          "alignmentScore": 0.19731707317073172,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B 偽造されたナンバープレートを使用する",
+          "sourceTextBody": "偽造されたナンバープレートを使用する",
+          "sourceGlossEn": "B. Using a forged license plate",
+          "canonicalOptionId": "q0370_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "using falsified license plate",
+          "alignmentScore": 0.38095238095238093,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C 禁止標識の指示に違反する",
+          "sourceTextBody": "禁止標識の指示に違反する",
+          "sourceGlossEn": "C. Violating a prohibited sign",
+          "canonicalOptionId": "q0370_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "violate prohibitive signs",
+          "alignmentScore": 0.15511627906976747,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D 電話をかける、または電話に出る",
+          "sourceTextBody": "電話をかける、または電話に出る",
+          "sourceGlossEn": "D. Making or answering a phone call",
+          "canonicalOptionId": "q0370_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "call or answer the mobile phone",
+          "alignmentScore": 0.4485175202156334,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A 交通信号に違反する",
+          "sourceGlossEn": "A. Violating a traffic signal",
+          "canonicalOptionId": "q0370_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "violate traffic lights",
+          "alignmentScore": 0.19731707317073172,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B 偽造されたナンバープレートを使用する",
+          "sourceGlossEn": "B. Using a forged license plate",
+          "canonicalOptionId": "q0370_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "using falsified license plate",
+          "alignmentScore": 0.38095238095238093,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C 禁止標識の指示に違反する",
+          "sourceGlossEn": "C. Violating a prohibited sign",
+          "canonicalOptionId": "q0370_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "violate prohibitive signs",
+          "alignmentScore": 0.15511627906976747,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D 電話をかける、または電話に出る",
+          "sourceGlossEn": "D. Making or answering a phone call",
+          "canonicalOptionId": "q0370_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "call or answer the mobile phone",
+          "alignmentScore": 0.4485175202156334,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "B",
+      "canonicalCorrectOptionId": "q0370_o2",
+      "canonicalCorrectOptionKey": "B",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed during unresolved rescue review on 2026-04-10T07:44:33.879Z; reviewer selected locale key B.",
+      "correctOptionAlignment": {
+        "sourceKey": "B",
+        "canonicalOptionId": "q0370_o2",
+        "canonicalOptionKey": "B",
+        "sourceText": "B 偽造されたナンバープレートを使用する",
+        "sourceGlossEn": "B. Using a forged license plate",
+        "canonicalOptionText": "using falsified license plate",
+        "alignmentScore": 0.38095238095238093,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-10T07:44:33.879Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ja-batch-004-unresolved-decisions.json",
+      "answerKeyReviewerNotes": "",
+      "reviewerSuggestedLocaleCorrectOptionKey": "B",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ja-batch-004-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0251": {
+      "prompt": "道路交通安全達法による累積点数の制限は、一計算周期につき12点である。",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 17.51.01.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 17.51.01.png",
+      "reviewerNotes": "",
+      "promptRawJa": "道路交通安全達法による累積点数の制限は、一計算周期につき12点である。",
+      "promptGlossEn": "The cumulative point limit according to the Road Traffic Safety Act is 12 points per calculation period.",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "ROW",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-004",
+        "approvedQid": "q0251",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "optionsRawJa": [],
+      "optionsGlossEn": [],
+      "localeCorrectOptionKey": null,
+      "canonicalCorrectRow": "R",
+      "canonicalCorrectAnswer": "right / true",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "ROW question; no locale-specific option key applies.",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ja-batch-004-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0629": {
+      "prompt": "自動車のインパネのの点灯は、何を示しているか。",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 17.51.16.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 17.51.16.png",
+      "reviewerNotes": "",
+      "promptRawJa": "自動車のインパネのの点灯は、何を示しているか。",
+      "promptGlossEn": "What does the indicator light on the car's dashboard show?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-004",
+        "approvedQid": "q0629",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "options": {
+        "q0629_o1": "B 洗浄剤の不足",
+        "q0629_o2": "A ブレーキ液の不足",
+        "q0629_o3": "C 冷却システムの故障",
+        "q0629_o4": "D 冷却液の不足"
+      },
+      "optionsRawJa": [
+        "A ブレーキ液の不足",
+        "B 洗浄剤の不足",
+        "C 冷却システムの故障",
+        "D 冷却液の不足"
+      ],
+      "optionsGlossEn": [
+        "A. Low brake fluid",
+        "B. Low washer fluid",
+        "C. Cooling system failure",
+        "D. Low coolant"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A ブレーキ液の不足",
+          "sourceTextBody": "ブレーキ液の不足",
+          "sourceGlossEn": "A. Low brake fluid",
+          "canonicalOptionId": "q0629_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "braking oil lacks",
+          "alignmentScore": 0.02962962962962963,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B 洗浄剤の不足",
+          "sourceTextBody": "洗浄剤の不足",
+          "sourceGlossEn": "B. Low washer fluid",
+          "canonicalOptionId": "q0629_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "windscreen wash lacks",
+          "alignmentScore": 0.037500000000000006,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C 冷却システムの故障",
+          "sourceTextBody": "冷却システムの故障",
+          "sourceGlossEn": "C. Cooling system failure",
+          "canonicalOptionId": "q0629_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "cooling system malfunction",
+          "alignmentScore": 0.5181818181818182,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D 冷却液の不足",
+          "sourceTextBody": "冷却液の不足",
+          "sourceGlossEn": "D. Low coolant",
+          "canonicalOptionId": "q0629_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "coolant is lacking",
+          "alignmentScore": 0.3719298245614035,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A ブレーキ液の不足",
+          "sourceGlossEn": "A. Low brake fluid",
+          "canonicalOptionId": "q0629_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "braking oil lacks",
+          "alignmentScore": 0.02962962962962963,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B 洗浄剤の不足",
+          "sourceGlossEn": "B. Low washer fluid",
+          "canonicalOptionId": "q0629_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "windscreen wash lacks",
+          "alignmentScore": 0.037500000000000006,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C 冷却システムの故障",
+          "sourceGlossEn": "C. Cooling system failure",
+          "canonicalOptionId": "q0629_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "cooling system malfunction",
+          "alignmentScore": 0.5181818181818182,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D 冷却液の不足",
+          "sourceGlossEn": "D. Low coolant",
+          "canonicalOptionId": "q0629_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "coolant is lacking",
+          "alignmentScore": 0.3719298245614035,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        }
+      ],
+      "localeCorrectOptionKey": "D",
+      "canonicalCorrectOptionId": "q0629_o4",
+      "canonicalCorrectOptionKey": "D",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed during unresolved rescue review on 2026-04-10T07:44:33.879Z; reviewer selected locale key D.",
+      "correctOptionAlignment": {
+        "sourceKey": "D",
+        "canonicalOptionId": "q0629_o4",
+        "canonicalOptionKey": "D",
+        "sourceText": "D 冷却液の不足",
+        "sourceGlossEn": "D. Low coolant",
+        "canonicalOptionText": "coolant is lacking",
+        "alignmentScore": 0.3719298245614035,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-10T07:44:33.879Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ja-batch-004-unresolved-decisions.json",
+      "answerKeyReviewerNotes": "",
+      "reviewerSuggestedLocaleCorrectOptionKey": "D",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ja-batch-004-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    }
+  }
+}

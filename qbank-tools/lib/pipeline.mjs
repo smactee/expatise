@@ -1803,6 +1803,7 @@ function buildSourceReviewFields(item) {
     correctKeyRaw: item.correctKeyRaw || null,
     correctAnswerRaw: item.correctAnswerRaw || item.localizedCorrectAnswer || null,
     ocrConfidence: item.ocrConfidence || null,
+    hasImage: item.hasImage,
   };
 }
 
@@ -3126,6 +3127,33 @@ function candidateSnapshot(item, question, score) {
   };
 }
 
+function filterQuestionsByImageParity(item, questions) {
+  if (item.hasImage === true) {
+    return {
+      applied: true,
+      sourceHasImage: true,
+      label: "image-only candidate set",
+      questions: questions.filter((question) => question.image.hasImage),
+    };
+  }
+
+  if (item.hasImage === false) {
+    return {
+      applied: true,
+      sourceHasImage: false,
+      label: "text-only candidate set",
+      questions: questions.filter((question) => !question.image.hasImage),
+    };
+  }
+
+  return {
+    applied: false,
+    sourceHasImage: null,
+    label: "image-status-unknown",
+    questions,
+  };
+}
+
 export function processBatchAgainstIndex(batchIntake, matchIndex, options = {}) {
   const analysisMode = options.analysisMode ?? "standard";
   const candidateLimit = Number(options.candidateLimit ?? (analysisMode === "diagnostic" ? 8 : 5));
@@ -3141,6 +3169,7 @@ export function processBatchAgainstIndex(batchIntake, matchIndex, options = {}) 
   for (const item of batchIntake.items) {
     const itemShape = analyzeItemShape(item);
     const sourceReviewMetadata = buildSourceReviewMetadata(item, itemShape);
+    const parity = filterQuestionsByImageParity(item, matchIndex.questions);
     const hasComparableText =
       Boolean(item.translatedPrompt) ||
       item.translatedOptions.length > 0 ||
@@ -3161,7 +3190,32 @@ export function processBatchAgainstIndex(batchIntake, matchIndex, options = {}) 
       continue;
     }
 
-    const ranked = matchIndex.questions
+    if (parity.questions.length === 0) {
+      unresolved.push({
+        itemId: item.itemId,
+        sourceImage: item.sourceImage,
+        ...sourceReviewMetadata,
+        reason: `Image-parity filtering found no eligible master questions for this ${parity.label}.`,
+        analysis: {
+          mode: analysisMode,
+          effectiveQuestionType: itemShape.effectiveType,
+          declaredQuestionType: itemShape.declaredType,
+          booleanChoiceDetected: itemShape.booleanOptions,
+          topScore: 0,
+          topGap: 0,
+          plausibleShortlist: false,
+          imageParityApplied: parity.applied,
+          candidateImageParityMode: parity.label,
+          candidateCountBeforeParity: matchIndex.questions.length,
+          candidateCountAfterParity: 0,
+          explanation: "Parity filtering removed all candidates, so no image-mismatched comparisons were produced.",
+        },
+        topCandidates: [],
+      });
+      continue;
+    }
+
+    const ranked = parity.questions
       .map((question) => {
         const score = scoreQuestionForBatchItem(item, question, corpus);
         return {
@@ -3196,6 +3250,10 @@ export function processBatchAgainstIndex(batchIntake, matchIndex, options = {}) 
           topScore: round(top?.score.total ?? 0),
           topGap: round(gap),
           plausibleShortlist,
+          imageParityApplied: parity.applied,
+          candidateImageParityMode: parity.label,
+          candidateCountBeforeParity: matchIndex.questions.length,
+          candidateCountAfterParity: parity.questions.length,
           explanation: plausibleShortlist
             ? "Shortlist is plausible but still below the review floor."
             : "Shortlist remains weak after semantic normalization.",
@@ -3245,6 +3303,10 @@ export function processBatchAgainstIndex(batchIntake, matchIndex, options = {}) 
         declaredQuestionType: itemShape.declaredType,
         booleanChoiceDetected: itemShape.booleanOptions,
         plausibleShortlist,
+        imageParityApplied: parity.applied,
+        candidateImageParityMode: parity.label,
+        candidateCountBeforeParity: matchIndex.questions.length,
+        candidateCountAfterParity: parity.questions.length,
         explanation: plausibleShortlist
           ? "Top candidate cleared the review floor but remains review-first."
           : "Top candidate is available for inspection, but confidence is still weak.",

@@ -13,6 +13,7 @@ import type { Question } from '@/lib/qbank/types';
 import { TAG_TAXONOMY, labelForTag } from '@/lib/qbank/tagTaxonomy';
 import { deriveTopicSubtags } from '@/lib/qbank/deriveTopicSubtags';
 import { getTranslatedOnlyLocaleNotice, isTranslatedOnlyQuestionLocale } from '@/lib/qbank/localeSupport';
+import { loadImageColorTags, type QuestionImageColorEntry } from '@/lib/qbank/loadImageColorTags';
 import { useBookmarks } from "@/lib/bookmarks/useBookmarks"; // adjust path if you use "@/lib/..."
 import BackButton from '@/components/BackButton';
 import { useClearedMistakes } from '@/lib/mistakes/useClearedMistakes';
@@ -42,6 +43,58 @@ function normalizeRowChoice(v: string | null | undefined): "R" | "W" | null {
   return null;
 }
 
+function normalizeSearchText(value: string | null | undefined): string {
+  return String(value ?? "")
+    .toLowerCase()
+    .replace(/[:/_-]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function buildQuestionSearchIndex(
+  item: Question,
+  derivedTags: string[],
+  colorEntry: QuestionImageColorEntry | undefined,
+  t: ReturnType<typeof useT>["t"],
+): string {
+  const tagLabels = derivedTags.map((tag) => labelForTag(tag, t));
+  const colorTags = colorEntry?.colorTags ?? [];
+  const roadSignHeuristics: string[] = [];
+  const isRoadSignQuestion =
+    derivedTags.includes("traffic-signals:road-signs") ||
+    item.autoTags.some((tag) => tag.includes("traffic-signs")) ||
+    item.tags.some((tag) => tag.includes("traffic-signs"));
+
+  if (isRoadSignQuestion) {
+    for (const color of colorTags) {
+      roadSignHeuristics.push(`${color} sign`, `${color}-sign`);
+    }
+    if (colorTags.includes("yellow")) {
+      roadSignHeuristics.push("warning", "warning sign", "yellow warning");
+    }
+    if (colorTags.includes("brown")) {
+      roadSignHeuristics.push("tourist", "tourist sign", "brown tourist");
+    }
+  }
+
+  const parts = [
+    item.prompt,
+    item.sourcePrompt,
+    item.explanation,
+    item.sourceExplanation,
+    ...item.options.map((option) => option.text),
+    ...item.sourceOptions.map((option) => option.text),
+    ...item.tags,
+    ...item.autoTags,
+    ...derivedTags,
+    ...tagLabels,
+    ...colorTags,
+    ...roadSignHeuristics,
+  ];
+
+  return normalizeSearchText(parts.filter(Boolean).join(" "));
+}
+
 
 function isCorrectMcq(item: Question, optId: string, optKey?: string) {
   if (item.type !== 'MCQ' || !item.correctOptionId) return false;
@@ -69,6 +122,7 @@ const userKey = useUserKey();
 
   
   const [q, setQ] = useState<Question[]>([]);
+  const [imageColorTagsById, setImageColorTagsById] = useState<Record<string, QuestionImageColorEntry>>({});
   const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState('');
   const [activeTopic, setActiveTopic] = useState<string | null>(null);
@@ -105,11 +159,17 @@ useEffect(() => {
     let alive = true;
     (async () => {
       try {
-        const data = await loadDataset(datasetId, {
-          locale,
-          translatedOnly: isTranslatedOnlyQuestionLocale(locale),
-        });
-        if (alive) setQ(data);
+        const [data, imageColorTags] = await Promise.all([
+          loadDataset(datasetId, {
+            locale,
+            translatedOnly: isTranslatedOnlyQuestionLocale(locale),
+          }),
+          loadImageColorTags(datasetId),
+        ]);
+        if (alive) {
+          setQ(data);
+          setImageColorTagsById(imageColorTags);
+        }
       } finally {
         if (alive) setLoading(false);
       }
@@ -154,6 +214,17 @@ useEffect(() => {
   }
 }, [unclassified]);
 
+const searchIndexById = useMemo(() => {
+  const index = new Map<string, string>();
+
+  for (const item of q) {
+    const derivedTags = derivedById.get(item.id) ?? [];
+    index.set(item.id, buildQuestionSearchIndex(item, derivedTags, imageColorTagsById[item.id], t));
+  }
+
+  return index;
+}, [derivedById, imageColorTagsById, q, t]);
+
 useEffect(() => {
   if (mode !== "bookmarks" && mode !== "mistakes") {
     setSelectedIds(new Set());
@@ -163,20 +234,21 @@ useEffect(() => {
 
 
   const filtered = useMemo(() => {
-  const qNorm = query.trim().toLowerCase();
+  const qNorm = normalizeSearchText(query);
+  const queryTerms = qNorm ? qNorm.split(" ").filter(Boolean) : [];
 
   return q.filter((item) => {
     const derivedTags = new Set(derivedById.get(item.id) ?? []);
+    const searchableText = searchIndexById.get(item.id) ?? "";
 
-        const qDigits = qNorm.replace(/[^0-9]/g, ""); // allows "103", "#103", "103."
+        const qDigits = query.replace(/[^0-9]/g, ""); // allows "103", "#103", "103."
    const matchesNumber = qDigits.length > 0 && Number(qDigits) === item.number;
 
 
     const matchesText =
-      !qNorm ||
+      queryTerms.length === 0 ||
       matchesNumber ||
-      item.prompt.toLowerCase().includes(qNorm) ||
-      (item.autoTags ?? []).some((t) => t.toLowerCase().includes(qNorm));
+      queryTerms.every((term) => searchableText.includes(term));
 
 
     // Topic/subtopic filtering
@@ -185,7 +257,7 @@ useEffect(() => {
 
     return matchesText && matchesTopic && matchesSub;
   });
-}, [q, query, activeTopic, activeSub, derivedById]);
+}, [q, query, activeTopic, activeSub, derivedById, searchIndexById]);
 
 
 type MistakeMeta = { wrongCount: number; lastWrongAt: number };

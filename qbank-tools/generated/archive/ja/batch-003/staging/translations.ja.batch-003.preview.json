@@ -1,0 +1,2831 @@
+{
+  "meta": {
+    "locale": "ja",
+    "generatedAt": "2026-04-09T09:02:18.129Z",
+    "reviewedBatchId": "batch-003",
+    "dataset": "2023-test1",
+    "sourceReviewDecisionsPath": "qbank-tools/generated/staging/ja-batch-003-review-decisions.json",
+    "sourceReviewNeededPath": "imports/ja/batch-003/review-needed.json",
+    "approvedCount": 23,
+    "createNewQuestionCount": 1,
+    "noneOfTheseCount": 0,
+    "unsureCount": 0,
+    "localeSpecificCorrectOptionKeyCount": 17,
+    "manualAnswerKeyConfirmationCount": 0,
+    "stagingOnly": true,
+    "answerKeyPolicy": "Locale-specific answer keys are derived by answer meaning and preserved independently from the English master letter.",
+    "sourceAnswerKeyDecisionPath": "qbank-tools/generated/staging/ja-batch-003-answer-key-decisions.json",
+    "answerKeyConfirmedCount": 17
+  },
+  "questions": {
+    "q0633": {
+      "prompt": "踏切で一つの赤信号が点灯している場合、ただりに通過すべきである。",
+      "explanation": "",
+      "sourceMode": "reviewed-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/50.png",
+      "sourceItemId": "screenshots/50.png",
+      "reviewerNotes": "",
+      "promptRawJa": "踏切で一つの赤信号が点灯している場合、ただりに通過すべきである。",
+      "promptGlossEn": "If one red signal is lit at a railway crossing, you should proceed through it.",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "ROW",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-003",
+        "approvedQid": "q0633"
+      },
+      "optionsRawJa": [],
+      "optionsGlossEn": [],
+      "localeCorrectOptionKey": null,
+      "canonicalCorrectRow": "W",
+      "canonicalCorrectAnswer": "wrong / false",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "ROW question; no locale-specific option key applies."
+    },
+    "q0418": {
+      "prompt": "交差点でこのような状況であった場合、どう対応するのが適切か。",
+      "explanation": "",
+      "sourceMode": "reviewed-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 17.50.21.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 17.50.21.png",
+      "reviewerNotes": "",
+      "promptRawJa": "交差点でこのような状況であった場合、どう対応するのが適切か。",
+      "promptGlossEn": "In this situation at the intersection, what is the appropriate response?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-003",
+        "approvedQid": "q0418"
+      },
+      "options": {
+        "q0418_o1": "A 網状線部に停車して待つ",
+        "q0418_o2": "B 交差点より以外のエリアに停車して待つ",
+        "q0418_o3": "C 前車について交差点を通る",
+        "q0418_o4": "D 交差点内に停車して待つ"
+      },
+      "optionsRawJa": [
+        "A 網状線部に停車して待つ",
+        "B 交差点より以外のエリアに停車して待つ",
+        "C 前車について交差点を通る",
+        "D 交差点内に停車して待つ"
+      ],
+      "optionsGlossEn": [
+        "A. Stop and wait in the hatched area",
+        "B. Stop and wait in an area other than the intersection",
+        "C. Follow the car in front through the intersection",
+        "D. Stop and wait inside the intersection"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A 網状線部に停車して待つ",
+          "sourceTextBody": "網状線部に停車して待つ",
+          "sourceGlossEn": "A. Stop and wait in the hatched area",
+          "canonicalOptionId": "q0418_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "wait in the cross-hatched marking area",
+          "alignmentScore": 0.42044491525423733,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B 交差点より以外のエリアに停車して待つ",
+          "sourceTextBody": "交差点より以外のエリアに停車して待つ",
+          "sourceGlossEn": "B. Stop and wait in an area other than the intersection",
+          "canonicalOptionId": "q0418_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "Stop and wait outside the intersection.",
+          "alignmentScore": 0.45391666666666663,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C 前車について交差点を通る",
+          "sourceTextBody": "前車について交差点を通る",
+          "sourceGlossEn": "C. Follow the car in front through the intersection",
+          "canonicalOptionId": "q0418_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "follow the vehicle in front and pass",
+          "alignmentScore": 0.35772058823529407,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D 交差点内に停車して待つ",
+          "sourceTextBody": "交差点内に停車して待つ",
+          "sourceGlossEn": "D. Stop and wait inside the intersection",
+          "canonicalOptionId": "q0418_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "wait inside the intersection",
+          "alignmentScore": 0.6110377358490566,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A 網状線部に停車して待つ",
+          "sourceGlossEn": "A. Stop and wait in the hatched area",
+          "canonicalOptionId": "q0418_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "wait in the cross-hatched marking area",
+          "alignmentScore": 0.42044491525423733,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B 交差点より以外のエリアに停車して待つ",
+          "sourceGlossEn": "B. Stop and wait in an area other than the intersection",
+          "canonicalOptionId": "q0418_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "Stop and wait outside the intersection.",
+          "alignmentScore": 0.45391666666666663,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C 前車について交差点を通る",
+          "sourceGlossEn": "C. Follow the car in front through the intersection",
+          "canonicalOptionId": "q0418_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "follow the vehicle in front and pass",
+          "alignmentScore": 0.35772058823529407,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D 交差点内に停車して待つ",
+          "sourceGlossEn": "D. Stop and wait inside the intersection",
+          "canonicalOptionId": "q0418_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "wait inside the intersection",
+          "alignmentScore": 0.6110377358490566,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "B",
+      "canonicalCorrectOptionId": "q0418_o2",
+      "canonicalCorrectOptionKey": "B",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed via exported answer-key review decision on 2026-04-09T09:02:18.129Z.",
+      "correctOptionAlignment": {
+        "sourceKey": "B",
+        "canonicalOptionId": "q0418_o2",
+        "canonicalOptionKey": "B",
+        "sourceText": "B 交差点より以外のエリアに停車して待つ",
+        "sourceGlossEn": "B. Stop and wait in an area other than the intersection",
+        "canonicalOptionText": "Stop and wait outside the intersection.",
+        "alignmentScore": 0.45391666666666663,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-09T09:02:18.129Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ja-batch-003-answer-key-decisions.json",
+      "answerKeyReviewerNotes": ""
+    },
+    "q0566": {
+      "prompt": "衝突事故のさい、シートベルトは乗員への傷害を緩和する。",
+      "explanation": "",
+      "sourceMode": "reviewed-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 17.50.22.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 17.50.22.png",
+      "reviewerNotes": "",
+      "promptRawJa": "衝突事故のさい、シートベルトは乗員への傷害を緩和する。",
+      "promptGlossEn": "In the event of a collision, seatbelts reduce injuries to occupants.",
+      "correctKeyRaw": "A",
+      "correctAnswerRaw": "Yes",
+      "canonicalQuestionType": "ROW",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-003",
+        "approvedQid": "q0566"
+      },
+      "optionsRawJa": [],
+      "optionsGlossEn": [],
+      "localeCorrectOptionKey": null,
+      "canonicalCorrectRow": "R",
+      "canonicalCorrectAnswer": "right / true",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "ROW question; no locale-specific option key applies."
+    },
+    "q0491": {
+      "prompt": "この図のように列を作って待っている場合、ど対応するのが適当か",
+      "explanation": "",
+      "sourceMode": "reviewed-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 17.50.23.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 17.50.23.png",
+      "reviewerNotes": "",
+      "promptRawJa": "この図のように列を作って待っている場合、ど対応するのが適当か",
+      "promptGlossEn": "When waiting in line as shown in the illustration, what is the appropriate action?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-003",
+        "approvedQid": "q0491"
+      },
+      "options": {
+        "q0491_o1": "C 左側から実線を超えて追い越す",
+        "q0491_o2": "D 左右両側から自由に追い越す",
+        "q0491_o3": "A 順番し待つ",
+        "q0491_o4": "B 右側の車線を利用して追い越す"
+      },
+      "optionsRawJa": [
+        "A 順番し待つ",
+        "B 右側の車線を利用して追い越す",
+        "C 左側から実線を超えて追い越す",
+        "D 左右両側から自由に追い越す"
+      ],
+      "optionsGlossEn": [
+        "A: Wait your turn",
+        "B: Overtake using the right lane",
+        "C: Overtake by crossing the solid line on the left",
+        "D: Overtake freely from either side"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A 順番し待つ",
+          "sourceTextBody": "順番し待つ",
+          "sourceGlossEn": "A: Wait your turn",
+          "canonicalOptionId": "q0491_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "wait in line",
+          "alignmentScore": 0.21454545454545454,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B 右側の車線を利用して追い越す",
+          "sourceTextBody": "右側の車線を利用して追い越す",
+          "sourceGlossEn": "B: Overtake using the right lane",
+          "canonicalOptionId": "q0491_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "borrow the lane from right side to overtake",
+          "alignmentScore": 0.3769230769230769,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C 左側から実線を超えて追い越す",
+          "sourceTextBody": "左側から実線を超えて追い越す",
+          "sourceGlossEn": "C: Overtake by crossing the solid line on the left",
+          "canonicalOptionId": "q0491_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "cross the solid line from left side to overtake",
+          "alignmentScore": 0.3994805194805195,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D 左右両側から自由に追い越す",
+          "sourceTextBody": "左右両側から自由に追い越す",
+          "sourceGlossEn": "D: Overtake freely from either side",
+          "canonicalOptionId": "q0491_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "overtake from both sides as will",
+          "alignmentScore": 0.3862745098039216,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A 順番し待つ",
+          "sourceGlossEn": "A: Wait your turn",
+          "canonicalOptionId": "q0491_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "wait in line",
+          "alignmentScore": 0.21454545454545454,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B 右側の車線を利用して追い越す",
+          "sourceGlossEn": "B: Overtake using the right lane",
+          "canonicalOptionId": "q0491_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "borrow the lane from right side to overtake",
+          "alignmentScore": 0.3769230769230769,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C 左側から実線を超えて追い越す",
+          "sourceGlossEn": "C: Overtake by crossing the solid line on the left",
+          "canonicalOptionId": "q0491_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "cross the solid line from left side to overtake",
+          "alignmentScore": 0.3994805194805195,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D 左右両側から自由に追い越す",
+          "sourceGlossEn": "D: Overtake freely from either side",
+          "canonicalOptionId": "q0491_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "overtake from both sides as will",
+          "alignmentScore": 0.3862745098039216,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "A",
+      "canonicalCorrectOptionId": "q0491_o3",
+      "canonicalCorrectOptionKey": "C",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed via exported answer-key review decision on 2026-04-09T09:02:18.129Z.",
+      "correctOptionAlignment": {
+        "sourceKey": "A",
+        "canonicalOptionId": "q0491_o3",
+        "canonicalOptionKey": "C",
+        "sourceText": "A 順番し待つ",
+        "sourceGlossEn": "A: Wait your turn",
+        "canonicalOptionText": "wait in line",
+        "alignmentScore": 0.21454545454545454,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-09T09:02:18.129Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ja-batch-003-answer-key-decisions.json",
+      "answerKeyReviewerNotes": ""
+    },
+    "q0263": {
+      "prompt": "財産への損失のある交通事故を起こした運転者が、現場を離れるべきなのに離れず、しかも交通渋滞の発生を招いた場合、交通警察は運転者に 200元の罰金を課することができる。",
+      "explanation": "",
+      "sourceMode": "reviewed-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 17.50.25.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 17.50.25.png",
+      "reviewerNotes": "",
+      "promptRawJa": "財産への損失のある交通事故を起こした運転者が、現場を離れるべきなのに離れず、しかも交通渋滞の発生を招いた場合、交通警察は運転者に 200元の罰金を課することができる。",
+      "promptGlossEn": "If a driver who caused a traffic accident resulting in property damage does not leave the scene when they should and causes traffic congestion, the traffic police can impose a fine of 200 yuan on the driver.",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "ROW",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-003",
+        "approvedQid": "q0263"
+      },
+      "optionsRawJa": [],
+      "optionsGlossEn": [],
+      "localeCorrectOptionKey": null,
+      "canonicalCorrectRow": "R",
+      "canonicalCorrectAnswer": "right / true",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "ROW question; no locale-specific option key applies."
+    },
+    "q0405": {
+      "prompt": "次のなかで200元以上2000元以下の罰金を課され、かつ免許取り消しとなるのはどれか。",
+      "explanation": "",
+      "sourceMode": "reviewed-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 17.50.27.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 17.50.27.png",
+      "reviewerNotes": "",
+      "promptRawJa": "次のなかで200元以上2000元以下の罰金を課され、かつ免許取り消しとなるのはどれか。",
+      "promptGlossEn": "Which of the following will result in a fine of between 200 and 2000 yuan and also a license cancellation?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-003",
+        "approvedQid": "q0405"
+      },
+      "options": {
+        "q0405_o1": "A 道路通行規定に違反する",
+        "q0405_o2": "B 制限速度規定時速を50%超過する",
+        "q0405_o3": "C 交通事故を起こして逃げる",
+        "q0405_o4": "D 免許証を携帯せずに運転する"
+      },
+      "optionsRawJa": [
+        "A 道路通行規定に違反する",
+        "B 制限速度規定時速を50%超過する",
+        "C 交通事故を起こして逃げる",
+        "D 免許証を携帯せずに運転する"
+      ],
+      "optionsGlossEn": [
+        "A. Violate road traffic regulations",
+        "B. Exceed the speed limit by more than 50%",
+        "C. Cause a traffic accident and flee",
+        "D. Drive without carrying a license"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A 道路通行規定に違反する",
+          "sourceTextBody": "道路通行規定に違反する",
+          "sourceGlossEn": "A. Violate road traffic regulations",
+          "canonicalOptionId": "q0405_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "violating traffic regulations",
+          "alignmentScore": 0.4493939393939394,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B 制限速度規定時速を50%超過する",
+          "sourceTextBody": "制限速度規定時速を50%超過する",
+          "sourceGlossEn": "B. Exceed the speed limit by more than 50%",
+          "canonicalOptionId": "q0405_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "driving 50% faster than the specified speed limit",
+          "alignmentScore": 0.4147368421052632,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C 交通事故を起こして逃げる",
+          "sourceTextBody": "交通事故を起こして逃げる",
+          "sourceGlossEn": "C. Cause a traffic accident and flee",
+          "canonicalOptionId": "q0405_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "escaped after causing traffic accident",
+          "alignmentScore": 0.26711538461538464,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D 免許証を携帯せずに運転する",
+          "sourceTextBody": "免許証を携帯せずに運転する",
+          "sourceGlossEn": "D. Drive without carrying a license",
+          "canonicalOptionId": "q0405_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "driving without driver license",
+          "alignmentScore": 0.3952380952380952,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A 道路通行規定に違反する",
+          "sourceGlossEn": "A. Violate road traffic regulations",
+          "canonicalOptionId": "q0405_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "violating traffic regulations",
+          "alignmentScore": 0.4493939393939394,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B 制限速度規定時速を50%超過する",
+          "sourceGlossEn": "B. Exceed the speed limit by more than 50%",
+          "canonicalOptionId": "q0405_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "driving 50% faster than the specified speed limit",
+          "alignmentScore": 0.4147368421052632,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C 交通事故を起こして逃げる",
+          "sourceGlossEn": "C. Cause a traffic accident and flee",
+          "canonicalOptionId": "q0405_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "escaped after causing traffic accident",
+          "alignmentScore": 0.26711538461538464,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D 免許証を携帯せずに運転する",
+          "sourceGlossEn": "D. Drive without carrying a license",
+          "canonicalOptionId": "q0405_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "driving without driver license",
+          "alignmentScore": 0.3952380952380952,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "B",
+      "canonicalCorrectOptionId": "q0405_o2",
+      "canonicalCorrectOptionKey": "B",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed via exported answer-key review decision on 2026-04-09T09:02:18.129Z.",
+      "correctOptionAlignment": {
+        "sourceKey": "B",
+        "canonicalOptionId": "q0405_o2",
+        "canonicalOptionKey": "B",
+        "sourceText": "B 制限速度規定時速を50%超過する",
+        "sourceGlossEn": "B. Exceed the speed limit by more than 50%",
+        "canonicalOptionText": "driving 50% faster than the specified speed limit",
+        "alignmentScore": 0.4147368421052632,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-09T09:02:18.129Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ja-batch-003-answer-key-decisions.json",
+      "answerKeyReviewerNotes": ""
+    },
+    "q0893": {
+      "prompt": "赤い円中の路面標示はなにを示すか。",
+      "explanation": "",
+      "sourceMode": "reviewed-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 17.50.31.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 17.50.31.png",
+      "reviewerNotes": "",
+      "promptRawJa": "赤い円中の路面標示はなにを示すか。",
+      "promptGlossEn": "What does the road marking inside the red circle indicate?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-003",
+        "approvedQid": "q0893"
+      },
+      "options": {
+        "q0893_o1": "A 一時的な停留所",
+        "q0893_o2": "B 大型旅客車停留所",
+        "q0893_o3": "C バス停留所",
+        "q0893_o4": "D 緊急駐車エリア"
+      },
+      "optionsRawJa": [
+        "A 一時的な停留所",
+        "B 大型旅客車停留所",
+        "C バス停留所",
+        "D 緊急駐車エリア"
+      ],
+      "optionsGlossEn": [
+        "A. Temporary stop",
+        "B. Large passenger vehicle stop",
+        "C. Bus stop",
+        "D. Emergency parking area"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A 一時的な停留所",
+          "sourceTextBody": "一時的な停留所",
+          "sourceGlossEn": "A. Temporary stop",
+          "canonicalOptionId": "q0893_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "temporary stopping",
+          "alignmentScore": 0.43809523809523804,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B 大型旅客車停留所",
+          "sourceTextBody": "大型旅客車停留所",
+          "sourceGlossEn": "B. Large passenger vehicle stop",
+          "canonicalOptionId": "q0893_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "large bus stopping",
+          "alignmentScore": 0.19999999999999998,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C バス停留所",
+          "sourceTextBody": "バス停留所",
+          "sourceGlossEn": "C. Bus stop",
+          "canonicalOptionId": "q0893_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "bus station",
+          "alignmentScore": 0.3733333333333333,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D 緊急駐車エリア",
+          "sourceTextBody": "緊急駐車エリア",
+          "sourceGlossEn": "D. Emergency parking area",
+          "canonicalOptionId": "q0893_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "emergency stopping",
+          "alignmentScore": 0.30000000000000004,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A 一時的な停留所",
+          "sourceGlossEn": "A. Temporary stop",
+          "canonicalOptionId": "q0893_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "temporary stopping",
+          "alignmentScore": 0.43809523809523804,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B 大型旅客車停留所",
+          "sourceGlossEn": "B. Large passenger vehicle stop",
+          "canonicalOptionId": "q0893_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "large bus stopping",
+          "alignmentScore": 0.19999999999999998,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C バス停留所",
+          "sourceGlossEn": "C. Bus stop",
+          "canonicalOptionId": "q0893_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "bus station",
+          "alignmentScore": 0.3733333333333333,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D 緊急駐車エリア",
+          "sourceGlossEn": "D. Emergency parking area",
+          "canonicalOptionId": "q0893_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "emergency stopping",
+          "alignmentScore": 0.30000000000000004,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "C",
+      "canonicalCorrectOptionId": "q0893_o3",
+      "canonicalCorrectOptionKey": "C",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed via exported answer-key review decision on 2026-04-09T09:02:18.129Z.",
+      "correctOptionAlignment": {
+        "sourceKey": "C",
+        "canonicalOptionId": "q0893_o3",
+        "canonicalOptionKey": "C",
+        "sourceText": "C バス停留所",
+        "sourceGlossEn": "C. Bus stop",
+        "canonicalOptionText": "bus station",
+        "alignmentScore": 0.3733333333333333,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-09T09:02:18.129Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ja-batch-003-answer-key-decisions.json",
+      "answerKeyReviewerNotes": ""
+    },
+    "q0391": {
+      "prompt": "減速車道に進入するさい、どのようにライトを用いるのが適切か。",
+      "explanation": "",
+      "sourceMode": "reviewed-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 17.50.34.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 17.50.34.png",
+      "reviewerNotes": "",
+      "promptRawJa": "減速車道に進入するさい、どのようにライトを用いるのが適切か。",
+      "promptGlossEn": "When entering the deceleration lane, how should you use your vehicle lights appropriately?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-003",
+        "approvedQid": "q0391"
+      },
+      "options": {
+        "q0391_o1": "C ハザードランプをつける",
+        "q0391_o2": "D ヘッドライトをつける",
+        "q0391_o3": "A 左ウインカーを出す",
+        "q0391_o4": "B 右ウインカーを出す"
+      },
+      "optionsRawJa": [
+        "A 左ウインカーを出す",
+        "B 右ウインカーを出す",
+        "C ハザードランプをつける",
+        "D ヘッドライトをつける"
+      ],
+      "optionsGlossEn": [
+        "A. Turn on the left indicator",
+        "B. Turn on the right indicator",
+        "C. Turn on the hazard lights",
+        "D. Turn on the headlights"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A 左ウインカーを出す",
+          "sourceTextBody": "左ウインカーを出す",
+          "sourceGlossEn": "A. Turn on the left indicator",
+          "canonicalOptionId": "q0391_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "turn on the left-turn signal",
+          "alignmentScore": 0.4152380952380953,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B 右ウインカーを出す",
+          "sourceTextBody": "右ウインカーを出す",
+          "sourceGlossEn": "B. Turn on the right indicator",
+          "canonicalOptionId": "q0391_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "turn on the right-turn signal",
+          "alignmentScore": 0.42000000000000004,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C ハザードランプをつける",
+          "sourceTextBody": "ハザードランプをつける",
+          "sourceGlossEn": "C. Turn on the hazard lights",
+          "canonicalOptionId": "q0391_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "turn on the hazard lights",
+          "alignmentScore": 1,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D ヘッドライトをつける",
+          "sourceTextBody": "ヘッドライトをつける",
+          "sourceGlossEn": "D. Turn on the headlights",
+          "canonicalOptionId": "q0391_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "turn on the head light",
+          "alignmentScore": 0.487741935483871,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A 左ウインカーを出す",
+          "sourceGlossEn": "A. Turn on the left indicator",
+          "canonicalOptionId": "q0391_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "turn on the left-turn signal",
+          "alignmentScore": 0.4152380952380953,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B 右ウインカーを出す",
+          "sourceGlossEn": "B. Turn on the right indicator",
+          "canonicalOptionId": "q0391_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "turn on the right-turn signal",
+          "alignmentScore": 0.42000000000000004,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C ハザードランプをつける",
+          "sourceGlossEn": "C. Turn on the hazard lights",
+          "canonicalOptionId": "q0391_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "turn on the hazard lights",
+          "alignmentScore": 1,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D ヘッドライトをつける",
+          "sourceGlossEn": "D. Turn on the headlights",
+          "canonicalOptionId": "q0391_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "turn on the head light",
+          "alignmentScore": 0.487741935483871,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "B",
+      "canonicalCorrectOptionId": "q0391_o4",
+      "canonicalCorrectOptionKey": "D",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed via exported answer-key review decision on 2026-04-09T09:02:18.129Z.",
+      "correctOptionAlignment": {
+        "sourceKey": "B",
+        "canonicalOptionId": "q0391_o4",
+        "canonicalOptionKey": "D",
+        "sourceText": "B 右ウインカーを出す",
+        "sourceGlossEn": "B. Turn on the right indicator",
+        "canonicalOptionText": "turn on the right-turn signal",
+        "alignmentScore": 0.42000000000000004,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-09T09:02:18.129Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ja-batch-003-answer-key-decisions.json",
+      "answerKeyReviewerNotes": ""
+    },
+    "q0410": {
+      "prompt": "この車道を走行する場合の制限最低速度はどれか。",
+      "explanation": "",
+      "sourceMode": "reviewed-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 17.50.36.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 17.50.36.png",
+      "reviewerNotes": "",
+      "promptRawJa": "この車道を走行する場合の制限最低速度はどれか。",
+      "promptGlossEn": "What is the minimum speed limit for driving on this road?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-003",
+        "approvedQid": "q0410"
+      },
+      "options": {
+        "q0410_o1": "C 100km/h",
+        "q0410_o2": "D 110km/h",
+        "q0410_o3": "A 60km/h",
+        "q0410_o4": "B 90km/h"
+      },
+      "optionsRawJa": [
+        "A 60km/h",
+        "B 90km/h",
+        "C 100km/h",
+        "D 110km/h"
+      ],
+      "optionsGlossEn": [
+        "A 60km/h",
+        "B 90km/h",
+        "C 100km/h",
+        "D 110km/h"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A 60km/h",
+          "sourceTextBody": "60km/h",
+          "sourceGlossEn": "A 60km/h",
+          "canonicalOptionId": "q0410_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "60km/hr",
+          "alignmentScore": 0.4444444444444444,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B 90km/h",
+          "sourceTextBody": "90km/h",
+          "sourceGlossEn": "B 90km/h",
+          "canonicalOptionId": "q0410_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "90km/hr",
+          "alignmentScore": 0.4444444444444444,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C 100km/h",
+          "sourceTextBody": "100km/h",
+          "sourceGlossEn": "C 100km/h",
+          "canonicalOptionId": "q0410_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "100km/hr",
+          "alignmentScore": 0.44848484848484843,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D 110km/h",
+          "sourceTextBody": "110km/h",
+          "sourceGlossEn": "D 110km/h",
+          "canonicalOptionId": "q0410_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "110km/hr",
+          "alignmentScore": 0.44848484848484843,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A 60km/h",
+          "sourceGlossEn": "A 60km/h",
+          "canonicalOptionId": "q0410_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "60km/hr",
+          "alignmentScore": 0.4444444444444444,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B 90km/h",
+          "sourceGlossEn": "B 90km/h",
+          "canonicalOptionId": "q0410_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "90km/hr",
+          "alignmentScore": 0.4444444444444444,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C 100km/h",
+          "sourceGlossEn": "C 100km/h",
+          "canonicalOptionId": "q0410_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "100km/hr",
+          "alignmentScore": 0.44848484848484843,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D 110km/h",
+          "sourceGlossEn": "D 110km/h",
+          "canonicalOptionId": "q0410_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "110km/hr",
+          "alignmentScore": 0.44848484848484843,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "B",
+      "canonicalCorrectOptionId": "q0410_o4",
+      "canonicalCorrectOptionKey": "D",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed via exported answer-key review decision on 2026-04-09T09:02:18.129Z.",
+      "correctOptionAlignment": {
+        "sourceKey": "B",
+        "canonicalOptionId": "q0410_o4",
+        "canonicalOptionKey": "D",
+        "sourceText": "B 90km/h",
+        "sourceGlossEn": "B 90km/h",
+        "canonicalOptionText": "90km/hr",
+        "alignmentScore": 0.4444444444444444,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-09T09:02:18.129Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ja-batch-003-answer-key-decisions.json",
+      "answerKeyReviewerNotes": ""
+    },
+    "q0800": {
+      "prompt": "この標識の示す意味はどれか。",
+      "explanation": "",
+      "sourceMode": "reviewed-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 17.50.37.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 17.50.37.png",
+      "reviewerNotes": "",
+      "promptRawJa": "この標識の示す意味はどれか。",
+      "promptGlossEn": "What does this sign mean?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-003",
+        "approvedQid": "q0800"
+      },
+      "options": {
+        "q0800_o1": "A 停車しカード受領せよ",
+        "q0800_o2": "B 停車し料金を支払え",
+        "q0800_o3": "D ETC通路",
+        "q0800_o4": "C 停車し検査を受けよ"
+      },
+      "optionsRawJa": [
+        "A 停車しカード受領せよ",
+        "B 停車し料金を支払え",
+        "C 停車し検査を受けよ",
+        "D ETC通路"
+      ],
+      "optionsGlossEn": [
+        "A. Stop and receive a card",
+        "B. Stop and pay the fee",
+        "C. Stop and undergo inspection",
+        "D. ETC lane"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A 停車しカード受領せよ",
+          "sourceTextBody": "停車しカード受領せよ",
+          "sourceGlossEn": "A. Stop and receive a card",
+          "canonicalOptionId": "q0800_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "stop to get card",
+          "alignmentScore": 0.33939393939393936,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B 停車し料金を支払え",
+          "sourceTextBody": "停車し料金を支払え",
+          "sourceGlossEn": "B. Stop and pay the fee",
+          "canonicalOptionId": "q0800_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "stop to pay",
+          "alignmentScore": 0.40695652173913044,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C 停車し検査を受けよ",
+          "sourceTextBody": "停車し検査を受けよ",
+          "sourceGlossEn": "C. Stop and undergo inspection",
+          "canonicalOptionId": "q0800_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "stop for inspection",
+          "alignmentScore": 0.4342857142857143,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D ETC通路",
+          "sourceTextBody": "ETC通路",
+          "sourceGlossEn": "D. ETC lane",
+          "canonicalOptionId": "q0800_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "ETC lane",
+          "alignmentScore": 1,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A 停車しカード受領せよ",
+          "sourceGlossEn": "A. Stop and receive a card",
+          "canonicalOptionId": "q0800_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "stop to get card",
+          "alignmentScore": 0.33939393939393936,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B 停車し料金を支払え",
+          "sourceGlossEn": "B. Stop and pay the fee",
+          "canonicalOptionId": "q0800_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "stop to pay",
+          "alignmentScore": 0.40695652173913044,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C 停車し検査を受けよ",
+          "sourceGlossEn": "C. Stop and undergo inspection",
+          "canonicalOptionId": "q0800_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "stop for inspection",
+          "alignmentScore": 0.4342857142857143,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D ETC通路",
+          "sourceGlossEn": "D. ETC lane",
+          "canonicalOptionId": "q0800_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "ETC lane",
+          "alignmentScore": 1,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "A",
+      "canonicalCorrectOptionId": "q0800_o1",
+      "canonicalCorrectOptionKey": "A",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed via exported answer-key review decision on 2026-04-09T09:02:18.129Z.",
+      "correctOptionAlignment": {
+        "sourceKey": "A",
+        "canonicalOptionId": "q0800_o1",
+        "canonicalOptionKey": "A",
+        "sourceText": "A 停車しカード受領せよ",
+        "sourceGlossEn": "A. Stop and receive a card",
+        "canonicalOptionText": "stop to get card",
+        "alignmentScore": 0.33939393939393936,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-09T09:02:18.129Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ja-batch-003-answer-key-decisions.json",
+      "answerKeyReviewerNotes": ""
+    },
+    "q0712": {
+      "prompt": "この標識は何を示しているか。",
+      "explanation": "",
+      "sourceMode": "reviewed-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 17.50.38 1.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 17.50.38 1.png",
+      "reviewerNotes": "",
+      "promptRawJa": "この標識は何を示しているか。",
+      "promptGlossEn": "What does this sign indicate?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-003",
+        "approvedQid": "q0712"
+      },
+      "options": {
+        "q0712_o1": "B 歩行者G注意",
+        "q0712_o2": "C 児童あり",
+        "q0712_o3": "D 学校あり",
+        "q0712_o4": "A 横断歩道あり"
+      },
+      "optionsRawJa": [
+        "A 横断歩道あり",
+        "B 歩行者G注意",
+        "C 児童あり",
+        "D 学校あり"
+      ],
+      "optionsGlossEn": [
+        "A: There is a pedestrian crossing",
+        "B: Beware of pedestrians",
+        "C: Children present",
+        "D: School ahead"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A 横断歩道あり",
+          "sourceTextBody": "横断歩道あり",
+          "sourceGlossEn": "A: There is a pedestrian crossing",
+          "canonicalOptionId": "q0712_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "crosswalk",
+          "alignmentScore": 0.03636363636363637,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B 歩行者G注意",
+          "sourceTextBody": "歩行者G注意",
+          "sourceGlossEn": "B: Beware of pedestrians",
+          "canonicalOptionId": "q0712_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "watch for pedestrians",
+          "alignmentScore": 1,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C 児童あり",
+          "sourceTextBody": "児童あり",
+          "sourceGlossEn": "C: Children present",
+          "canonicalOptionId": "q0712_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "watch for children",
+          "alignmentScore": 0.3466666666666667,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D 学校あり",
+          "sourceTextBody": "学校あり",
+          "sourceGlossEn": "D: School ahead",
+          "canonicalOptionId": "q0712_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "school area",
+          "alignmentScore": 0.3929824561403508,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A 横断歩道あり",
+          "sourceGlossEn": "A: There is a pedestrian crossing",
+          "canonicalOptionId": "q0712_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "crosswalk",
+          "alignmentScore": 0.03636363636363637,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B 歩行者G注意",
+          "sourceGlossEn": "B: Beware of pedestrians",
+          "canonicalOptionId": "q0712_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "watch for pedestrians",
+          "alignmentScore": 1,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C 児童あり",
+          "sourceGlossEn": "C: Children present",
+          "canonicalOptionId": "q0712_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "watch for children",
+          "alignmentScore": 0.3466666666666667,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D 学校あり",
+          "sourceGlossEn": "D: School ahead",
+          "canonicalOptionId": "q0712_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "school area",
+          "alignmentScore": 0.3929824561403508,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "B",
+      "canonicalCorrectOptionId": "q0712_o1",
+      "canonicalCorrectOptionKey": "A",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed via exported answer-key review decision on 2026-04-09T09:02:18.129Z.",
+      "correctOptionAlignment": {
+        "sourceKey": "B",
+        "canonicalOptionId": "q0712_o1",
+        "canonicalOptionKey": "A",
+        "sourceText": "B 歩行者G注意",
+        "sourceGlossEn": "B: Beware of pedestrians",
+        "canonicalOptionText": "watch for pedestrians",
+        "alignmentScore": 1,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-09T09:02:18.129Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ja-batch-003-answer-key-decisions.json",
+      "answerKeyReviewerNotes": ""
+    },
+    "q0777": {
+      "prompt": "この矢印はなにを示すか。",
+      "explanation": "",
+      "sourceMode": "reviewed-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 17.50.38.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 17.50.38.png",
+      "reviewerNotes": "the answer is: left turn and U-turn are allowed ahead",
+      "promptRawJa": "この矢印はなにを示すか。",
+      "promptGlossEn": "What does this arrow indicate?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-003",
+        "approvedQid": "q0777"
+      },
+      "options": {
+        "q0777_o1": "C 前方直進またはUターンを指示する",
+        "q0777_o2": "D 前方左折またはUターンを指示する",
+        "q0777_o3": "A 直進または左への車道変更を指示する",
+        "q0777_o4": "B 前方直進または左折を指示する"
+      },
+      "optionsRawJa": [
+        "A 直進または左への車道変更を指示する",
+        "B 前方直進または左折を指示する",
+        "C 前方直進またはUターンを指示する",
+        "D 前方左折またはUターンを指示する"
+      ],
+      "optionsGlossEn": [
+        "A: Go straight or change lanes to the left",
+        "B: Go straight ahead or turn left",
+        "C: Go straight ahead or make a U-turn",
+        "D: Turn left ahead or make a U-turn"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A 直進または左への車道変更を指示する",
+          "sourceTextBody": "直進または左への車道変更を指示する",
+          "sourceGlossEn": "A: Go straight or change lanes to the left",
+          "canonicalOptionId": "q0777_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "going str aight and changing to left lane are allowed ahead",
+          "alignmentScore": 0.18756554307116105,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B 前方直進または左折を指示する",
+          "sourceTextBody": "前方直進または左折を指示する",
+          "sourceGlossEn": "B: Go straight ahead or turn left",
+          "canonicalOptionId": "q0777_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "going straight and left turn are allowed ahead",
+          "alignmentScore": 0.15151515151515152,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C 前方直進またはUターンを指示する",
+          "sourceTextBody": "前方直進またはUターンを指示する",
+          "sourceGlossEn": "C: Go straight ahead or make a U-turn",
+          "canonicalOptionId": "q0777_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "going straight and U turn are allowed ahead",
+          "alignmentScore": 0.2644444444444444,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D 前方左折またはUターンを指示する",
+          "sourceTextBody": "前方左折またはUターンを指示する",
+          "sourceGlossEn": "D: Turn left ahead or make a U-turn",
+          "canonicalOptionId": "q0777_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "left turn and U-turn are allowed ahead",
+          "alignmentScore": 0.28122605363984676,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A 直進または左への車道変更を指示する",
+          "sourceGlossEn": "A: Go straight or change lanes to the left",
+          "canonicalOptionId": "q0777_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "going str aight and changing to left lane are allowed ahead",
+          "alignmentScore": 0.18756554307116105,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B 前方直進または左折を指示する",
+          "sourceGlossEn": "B: Go straight ahead or turn left",
+          "canonicalOptionId": "q0777_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "going straight and left turn are allowed ahead",
+          "alignmentScore": 0.15151515151515152,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C 前方直進またはUターンを指示する",
+          "sourceGlossEn": "C: Go straight ahead or make a U-turn",
+          "canonicalOptionId": "q0777_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "going straight and U turn are allowed ahead",
+          "alignmentScore": 0.2644444444444444,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D 前方左折またはUターンを指示する",
+          "sourceGlossEn": "D: Turn left ahead or make a U-turn",
+          "canonicalOptionId": "q0777_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "left turn and U-turn are allowed ahead",
+          "alignmentScore": 0.28122605363984676,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        }
+      ],
+      "localeCorrectOptionKey": "D",
+      "canonicalCorrectOptionId": "q0777_o2",
+      "canonicalCorrectOptionKey": "B",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed via exported answer-key review decision on 2026-04-09T09:02:18.129Z.",
+      "correctOptionAlignment": {
+        "sourceKey": "D",
+        "canonicalOptionId": "q0777_o2",
+        "canonicalOptionKey": "B",
+        "sourceText": "D 前方左折またはUターンを指示する",
+        "sourceGlossEn": "D: Turn left ahead or make a U-turn",
+        "canonicalOptionText": "left turn and U-turn are allowed ahead",
+        "alignmentScore": 0.28122605363984676,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-09T09:02:18.129Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ja-batch-003-answer-key-decisions.json",
+      "answerKeyReviewerNotes": "the answer is: left turn and U-turn are allowed ahead"
+    },
+    "q0681": {
+      "prompt": "この標識の示す意味はどれか。",
+      "explanation": "",
+      "sourceMode": "reviewed-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 17.50.39.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 17.50.39.png",
+      "reviewerNotes": "",
+      "promptRawJa": "この標識の示す意味はどれか。",
+      "promptGlossEn": "What does this sign mean?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-003",
+        "approvedQid": "q0681"
+      },
+      "options": {
+        "q0681_o1": "C ぬかるんだ道路",
+        "q0681_o2": "D 路面に凹みあり",
+        "q0681_o3": "A 冠水の恐れあり",
+        "q0681_o4": "B 渡し場"
+      },
+      "optionsRawJa": [
+        "A 冠水の恐れあり",
+        "B 渡し場",
+        "C ぬかるんだ道路",
+        "D 路面に凹みあり"
+      ],
+      "optionsGlossEn": [
+        "A: Risk of flooding",
+        "B: Ferry crossing",
+        "C: Muddy road",
+        "D: Road surface depression"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A 冠水の恐れあり",
+          "sourceTextBody": "冠水の恐れあり",
+          "sourceGlossEn": "A: Risk of flooding",
+          "canonicalOptionId": "q0681_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "overflowing road",
+          "alignmentScore": 0.05,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B 渡し場",
+          "sourceTextBody": "渡し場",
+          "sourceGlossEn": "B: Ferry crossing",
+          "canonicalOptionId": "q0681_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "ferry",
+          "alignmentScore": 0.48000000000000004,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C ぬかるんだ道路",
+          "sourceTextBody": "ぬかるんだ道路",
+          "sourceGlossEn": "C: Muddy road",
+          "canonicalOptionId": "q0681_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "muddy road",
+          "alignmentScore": 1,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D 路面に凹みあり",
+          "sourceTextBody": "路面に凹みあり",
+          "sourceGlossEn": "D: Road surface depression",
+          "canonicalOptionId": "q0681_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "low-lying road",
+          "alignmentScore": 0.13674242424242425,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A 冠水の恐れあり",
+          "sourceGlossEn": "A: Risk of flooding",
+          "canonicalOptionId": "q0681_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "overflowing road",
+          "alignmentScore": 0.05,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B 渡し場",
+          "sourceGlossEn": "B: Ferry crossing",
+          "canonicalOptionId": "q0681_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "ferry",
+          "alignmentScore": 0.48000000000000004,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C ぬかるんだ道路",
+          "sourceGlossEn": "C: Muddy road",
+          "canonicalOptionId": "q0681_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "muddy road",
+          "alignmentScore": 1,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D 路面に凹みあり",
+          "sourceGlossEn": "D: Road surface depression",
+          "canonicalOptionId": "q0681_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "low-lying road",
+          "alignmentScore": 0.13674242424242425,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "A",
+      "canonicalCorrectOptionId": "q0681_o3",
+      "canonicalCorrectOptionKey": "C",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed via exported answer-key review decision on 2026-04-09T09:02:18.129Z.",
+      "correctOptionAlignment": {
+        "sourceKey": "A",
+        "canonicalOptionId": "q0681_o3",
+        "canonicalOptionKey": "C",
+        "sourceText": "A 冠水の恐れあり",
+        "sourceGlossEn": "A: Risk of flooding",
+        "canonicalOptionText": "overflowing road",
+        "alignmentScore": 0.05,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-09T09:02:18.129Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ja-batch-003-answer-key-decisions.json",
+      "answerKeyReviewerNotes": ""
+    },
+    "q0706": {
+      "prompt": "この矢印はなにを示すか。",
+      "explanation": "",
+      "sourceMode": "reviewed-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 17.50.40.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 17.50.40.png",
+      "reviewerNotes": "",
+      "promptRawJa": "この矢印はなにを示すか。",
+      "promptGlossEn": "What does this arrow indicate?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-003",
+        "approvedQid": "q0706"
+      },
+      "options": {
+        "q0706_o1": "C 前方直進を指示する",
+        "q0706_o2": "D 左への車道変更を指示する",
+        "q0706_o3": "B 前方Uターンを指示する",
+        "q0706_o4": "A 前方右折を指示する"
+      },
+      "optionsRawJa": [
+        "A 前方右折を指示する",
+        "B 前方Uターンを指示する",
+        "C 前方直進を指示する",
+        "D 左への車道変更を指示する"
+      ],
+      "optionsGlossEn": [
+        "A. Indicates right turn ahead",
+        "B. Indicates U-turn ahead",
+        "C. Indicates go straight ahead",
+        "D. Indicates lane change to the left"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A 前方右折を指示する",
+          "sourceTextBody": "前方右折を指示する",
+          "sourceGlossEn": "A. Indicates right turn ahead",
+          "canonicalOptionId": "q0706_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "indicates turning right ahead",
+          "alignmentScore": 0.6001020408163265,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B 前方Uターンを指示する",
+          "sourceTextBody": "前方Uターンを指示する",
+          "sourceGlossEn": "B. Indicates U-turn ahead",
+          "canonicalOptionId": "q0706_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "indicate making a U turn ahead",
+          "alignmentScore": 0.7308333333333333,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C 前方直進を指示する",
+          "sourceTextBody": "前方直進を指示する",
+          "sourceGlossEn": "C. Indicates go straight ahead",
+          "canonicalOptionId": "q0706_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "indicate changing to left lane",
+          "alignmentScore": 0.1251552795031056,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D 左への車道変更を指示する",
+          "sourceTextBody": "左への車道変更を指示する",
+          "sourceGlossEn": "D. Indicates lane change to the left",
+          "canonicalOptionId": "q0706_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "indicate changing to left lane",
+          "alignmentScore": 0.5057407407407407,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A 前方右折を指示する",
+          "sourceGlossEn": "A. Indicates right turn ahead",
+          "canonicalOptionId": "q0706_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "indicates turning right ahead",
+          "alignmentScore": 0.6001020408163265,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B 前方Uターンを指示する",
+          "sourceGlossEn": "B. Indicates U-turn ahead",
+          "canonicalOptionId": "q0706_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "indicate making a U turn ahead",
+          "alignmentScore": 0.7308333333333333,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C 前方直進を指示する",
+          "sourceGlossEn": "C. Indicates go straight ahead",
+          "canonicalOptionId": "q0706_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "indicate changing to left lane",
+          "alignmentScore": 0.1251552795031056,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D 左への車道変更を指示する",
+          "sourceGlossEn": "D. Indicates lane change to the left",
+          "canonicalOptionId": "q0706_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "indicate changing to left lane",
+          "alignmentScore": 0.5057407407407407,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "A",
+      "canonicalCorrectOptionId": "q0706_o4",
+      "canonicalCorrectOptionKey": "D",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed via exported answer-key review decision on 2026-04-09T09:02:18.129Z.",
+      "correctOptionAlignment": {
+        "sourceKey": "A",
+        "canonicalOptionId": "q0706_o4",
+        "canonicalOptionKey": "D",
+        "sourceText": "A 前方右折を指示する",
+        "sourceGlossEn": "A. Indicates right turn ahead",
+        "canonicalOptionText": "indicates turning right ahead",
+        "alignmentScore": 0.6001020408163265,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-09T09:02:18.129Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ja-batch-003-answer-key-decisions.json",
+      "answerKeyReviewerNotes": ""
+    },
+    "q0748": {
+      "prompt": "この標識は何を示しているか。",
+      "explanation": "",
+      "sourceMode": "reviewed-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 17.50.41.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 17.50.41.png",
+      "reviewerNotes": "",
+      "promptRawJa": "この標識は何を示しているか。",
+      "promptGlossEn": "What does this sign indicate?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-003",
+        "approvedQid": "q0748"
+      },
+      "options": {
+        "q0748_o1": "A 堤防道路あり",
+        "q0748_o2": "B 上り急勾配あり",
+        "q0748_o3": "D 連続上り勾配あり",
+        "q0748_o4": "C 下り急勾配あり"
+      },
+      "optionsRawJa": [
+        "A 堤防道路あり",
+        "B 上り急勾配あり",
+        "C 下り急勾配あり",
+        "D 連続上り勾配あり"
+      ],
+      "optionsGlossEn": [
+        "A. Embankment road ahead",
+        "B. Steep uphill ahead",
+        "C. Steep downhill ahead",
+        "D. Continuous uphill ahead"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A 堤防道路あり",
+          "sourceTextBody": "堤防道路あり",
+          "sourceGlossEn": "A. Embankment road ahead",
+          "canonicalOptionId": "q0748_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "embankment road",
+          "alignmentScore": 0.6375,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B 上り急勾配あり",
+          "sourceTextBody": "上り急勾配あり",
+          "sourceGlossEn": "B. Steep uphill ahead",
+          "canonicalOptionId": "q0748_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "steep uphill road",
+          "alignmentScore": 0.600268817204301,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C 下り急勾配あり",
+          "sourceTextBody": "下り急勾配あり",
+          "sourceGlossEn": "C. Steep downhill ahead",
+          "canonicalOptionId": "q0748_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "steep downhill road",
+          "alignmentScore": 0.6069047619047618,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D 連続上り勾配あり",
+          "sourceTextBody": "連続上り勾配あり",
+          "sourceGlossEn": "D. Continuous uphill ahead",
+          "canonicalOptionId": "q0748_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "continuous up slopes",
+          "alignmentScore": 0.27111111111111114,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A 堤防道路あり",
+          "sourceGlossEn": "A. Embankment road ahead",
+          "canonicalOptionId": "q0748_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "embankment road",
+          "alignmentScore": 0.6375,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B 上り急勾配あり",
+          "sourceGlossEn": "B. Steep uphill ahead",
+          "canonicalOptionId": "q0748_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "steep uphill road",
+          "alignmentScore": 0.600268817204301,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C 下り急勾配あり",
+          "sourceGlossEn": "C. Steep downhill ahead",
+          "canonicalOptionId": "q0748_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "steep downhill road",
+          "alignmentScore": 0.6069047619047618,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D 連続上り勾配あり",
+          "sourceGlossEn": "D. Continuous uphill ahead",
+          "canonicalOptionId": "q0748_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "continuous up slopes",
+          "alignmentScore": 0.27111111111111114,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "C",
+      "canonicalCorrectOptionId": "q0748_o4",
+      "canonicalCorrectOptionKey": "D",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed via exported answer-key review decision on 2026-04-09T09:02:18.129Z.",
+      "correctOptionAlignment": {
+        "sourceKey": "C",
+        "canonicalOptionId": "q0748_o4",
+        "canonicalOptionKey": "D",
+        "sourceText": "C 下り急勾配あり",
+        "sourceGlossEn": "C. Steep downhill ahead",
+        "canonicalOptionText": "steep downhill road",
+        "alignmentScore": 0.6069047619047618,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-09T09:02:18.129Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ja-batch-003-answer-key-decisions.json",
+      "answerKeyReviewerNotes": ""
+    },
+    "q0035": {
+      "prompt": "踏み切りでは追い越しをしてはいけない。",
+      "explanation": "",
+      "sourceMode": "reviewed-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 17.50.43 1.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 17.50.43 1.png",
+      "reviewerNotes": "",
+      "promptRawJa": "踏み切りでは追い越しをしてはいけない。",
+      "promptGlossEn": "You must not overtake at a railroad crossing.",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "ROW",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-003",
+        "approvedQid": "q0035"
+      },
+      "optionsRawJa": [],
+      "optionsGlossEn": [],
+      "localeCorrectOptionKey": null,
+      "canonicalCorrectRow": "R",
+      "canonicalCorrectAnswer": "right / true",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "ROW question; no locale-specific option key applies."
+    },
+    "q0770": {
+      "prompt": "この標識は何を示しているか。",
+      "explanation": "",
+      "sourceMode": "reviewed-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 17.50.44.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 17.50.44.png",
+      "reviewerNotes": "",
+      "promptRawJa": "この標識は何を示しているか。",
+      "promptGlossEn": "What does this road sign indicate?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-003",
+        "approvedQid": "q0770"
+      },
+      "options": {
+        "q0770_o1": "B Uターン車線",
+        "q0770_o2": "C 迂回車線右側通行",
+        "q0770_o3": "D 進行方向別通行区分",
+        "q0770_o4": "A 左折車線"
+      },
+      "optionsRawJa": [
+        "A 左折車線",
+        "B Uターン車線",
+        "C 迂回車線右側通行",
+        "D 進行方向別通行区分"
+      ],
+      "optionsGlossEn": [
+        "A: Left turn lane",
+        "B: U-turn lane",
+        "C: Detour lane right-side traffic",
+        "D: Lane separation by direction of travel"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A 左折車線",
+          "sourceTextBody": "左折車線",
+          "sourceGlossEn": "A: Left turn lane",
+          "canonicalOptionId": "q0770_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "left-turn lane",
+          "alignmentScore": 0.35,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B Uターン車線",
+          "sourceTextBody": "Uターン車線",
+          "sourceGlossEn": "B: U-turn lane",
+          "canonicalOptionId": "q0770_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "U-turn lane",
+          "alignmentScore": 1,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C 迂回車線右側通行",
+          "sourceTextBody": "迂回車線右側通行",
+          "sourceGlossEn": "C: Detour lane right-side traffic",
+          "canonicalOptionId": "q0770_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "bypassing lane",
+          "alignmentScore": 0.2545454545454545,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D 進行方向別通行区分",
+          "sourceTextBody": "進行方向別通行区分",
+          "sourceGlossEn": "D: Lane separation by direction of travel",
+          "canonicalOptionId": "q0770_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "lanes for going in different directions",
+          "alignmentScore": 0.2219718309859155,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A 左折車線",
+          "sourceGlossEn": "A: Left turn lane",
+          "canonicalOptionId": "q0770_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "left-turn lane",
+          "alignmentScore": 0.35,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B Uターン車線",
+          "sourceGlossEn": "B: U-turn lane",
+          "canonicalOptionId": "q0770_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "U-turn lane",
+          "alignmentScore": 1,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C 迂回車線右側通行",
+          "sourceGlossEn": "C: Detour lane right-side traffic",
+          "canonicalOptionId": "q0770_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "bypassing lane",
+          "alignmentScore": 0.2545454545454545,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D 進行方向別通行区分",
+          "sourceGlossEn": "D: Lane separation by direction of travel",
+          "canonicalOptionId": "q0770_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "lanes for going in different directions",
+          "alignmentScore": 0.2219718309859155,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "B",
+      "canonicalCorrectOptionId": "q0770_o1",
+      "canonicalCorrectOptionKey": "A",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed via exported answer-key review decision on 2026-04-09T09:02:18.129Z.",
+      "correctOptionAlignment": {
+        "sourceKey": "B",
+        "canonicalOptionId": "q0770_o1",
+        "canonicalOptionKey": "A",
+        "sourceText": "B Uターン車線",
+        "sourceGlossEn": "B: U-turn lane",
+        "canonicalOptionText": "U-turn lane",
+        "alignmentScore": 1,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-09T09:02:18.129Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ja-batch-003-answer-key-decisions.json",
+      "answerKeyReviewerNotes": ""
+    },
+    "q0340": {
+      "prompt": "走行速度が規定時速の50%以上を超過した運転者には12点が減点されるつく。",
+      "explanation": "",
+      "sourceMode": "reviewed-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 17.50.46.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 17.50.46.png",
+      "reviewerNotes": "",
+      "promptRawJa": "走行速度が規定時速の50%以上を超過した運転者には12点が減点されるつく。",
+      "promptGlossEn": "A driver who exceeds the speed limit by more than 50% will have 12 points deducted.",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "ROW",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-003",
+        "approvedQid": "q0340"
+      },
+      "optionsRawJa": [],
+      "optionsGlossEn": [],
+      "localeCorrectOptionKey": null,
+      "canonicalCorrectRow": "R",
+      "canonicalCorrectAnswer": "right / true",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "ROW question; no locale-specific option key applies."
+    },
+    "q0875": {
+      "prompt": "この交通警察の手信号は何を示しているか。",
+      "explanation": "",
+      "sourceMode": "reviewed-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 17.50.48 1.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 17.50.48 1.png",
+      "reviewerNotes": "",
+      "promptRawJa": "この交通警察の手信号は何を示しているか。",
+      "promptGlossEn": "What does this traffic police hand signal indicate?",
+      "correctKeyRaw": "C",
+      "correctAnswerRaw": "減速徐行",
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-003",
+        "approvedQid": "q0875"
+      },
+      "options": {
+        "q0875_o1": "B 左折",
+        "q0875_o2": "A 左折車は待機",
+        "q0875_o3": "C 減速徐行",
+        "q0875_o4": "D 右折"
+      },
+      "optionsRawJa": [
+        "A 左折車は待機",
+        "B 左折",
+        "C 減速徐行",
+        "D 右折"
+      ],
+      "optionsGlossEn": [
+        "A: Left-turning vehicles must wait",
+        "B: Left turn",
+        "C: Slow down and proceed carefully",
+        "D: Right turn"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A 左折車は待機",
+          "sourceTextBody": "左折車は待機",
+          "sourceGlossEn": "A: Left-turning vehicles must wait",
+          "canonicalOptionId": "q0875_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "wait to turn left",
+          "alignmentScore": 0.21705426356589147,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B 左折",
+          "sourceTextBody": "左折",
+          "sourceGlossEn": "B: Left turn",
+          "canonicalOptionId": "q0875_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "turn left",
+          "alignmentScore": 0.11428571428571428,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C 減速徐行",
+          "sourceTextBody": "減速徐行",
+          "sourceGlossEn": "C: Slow down and proceed carefully",
+          "canonicalOptionId": "q0875_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "reduce speed and pass slowly",
+          "alignmentScore": 0.34285714285714286,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D 右折",
+          "sourceTextBody": "右折",
+          "sourceGlossEn": "D: Right turn",
+          "canonicalOptionId": "q0875_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "turn right",
+          "alignmentScore": 0.125,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A 左折車は待機",
+          "sourceGlossEn": "A: Left-turning vehicles must wait",
+          "canonicalOptionId": "q0875_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "wait to turn left",
+          "alignmentScore": 0.21705426356589147,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B 左折",
+          "sourceGlossEn": "B: Left turn",
+          "canonicalOptionId": "q0875_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "turn left",
+          "alignmentScore": 0.11428571428571428,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C 減速徐行",
+          "sourceGlossEn": "C: Slow down and proceed carefully",
+          "canonicalOptionId": "q0875_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "reduce speed and pass slowly",
+          "alignmentScore": 0.34285714285714286,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D 右折",
+          "sourceGlossEn": "D: Right turn",
+          "canonicalOptionId": "q0875_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "turn right",
+          "alignmentScore": 0.125,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "A",
+      "canonicalCorrectOptionId": "q0875_o2",
+      "canonicalCorrectOptionKey": "B",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed via exported answer-key review decision on 2026-04-09T09:02:18.129Z.",
+      "correctOptionAlignment": {
+        "sourceKey": "A",
+        "canonicalOptionId": "q0875_o2",
+        "canonicalOptionKey": "B",
+        "sourceText": "A 左折車は待機",
+        "sourceGlossEn": "A: Left-turning vehicles must wait",
+        "canonicalOptionText": "wait to turn left",
+        "alignmentScore": 0.21705426356589147,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-09T09:02:18.129Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ja-batch-003-answer-key-decisions.json",
+      "answerKeyReviewerNotes": ""
+    },
+    "q0562": {
+      "prompt": "ランプスイッチをこの位置にすると、リアフォグランプが点灯する。",
+      "explanation": "",
+      "sourceMode": "reviewed-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 17.50.49.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 17.50.49.png",
+      "reviewerNotes": "",
+      "promptRawJa": "ランプスイッチをこの位置にすると、リアフォグランプが点灯する。",
+      "promptGlossEn": "If you set the lamp switch to this position, the rear fog lamp will turn on.",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "ROW",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-003",
+        "approvedQid": "q0562"
+      },
+      "optionsRawJa": [],
+      "optionsGlossEn": [],
+      "localeCorrectOptionKey": null,
+      "canonicalCorrectRow": "R",
+      "canonicalCorrectAnswer": "right / true",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "ROW question; no locale-specific option key applies."
+    },
+    "q0811": {
+      "prompt": "この標識は何を示しているか。",
+      "explanation": "",
+      "sourceMode": "reviewed-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 17.50.50.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 17.50.50.png",
+      "reviewerNotes": "",
+      "promptRawJa": "この標識は何を示しているか。",
+      "promptGlossEn": "What does this road sign indicate?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-003",
+        "approvedQid": "q0811"
+      },
+      "options": {
+        "q0811_o1": "D 危険な道路",
+        "q0811_o2": "B 崖沿いの道路",
+        "q0811_o3": "C 落石のおそれあり",
+        "q0811_o4": "A 山はだの危険な道路"
+      },
+      "optionsRawJa": [
+        "A 山はだの危険な道路",
+        "B 崖沿いの道路",
+        "C 落石のおそれあり",
+        "D 危険な道路"
+      ],
+      "optionsGlossEn": [
+        "A. Dangerous mountain-side road",
+        "B. Road along a cliff",
+        "C. Beware of falling rocks",
+        "D. Dangerous road"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A 山はだの危険な道路",
+          "sourceTextBody": "山はだの危険な道路",
+          "sourceGlossEn": "A. Dangerous mountain-side road",
+          "canonicalOptionId": "q0811_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "dangerous section",
+          "alignmentScore": 0.30096153846153845,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B 崖沿いの道路",
+          "sourceTextBody": "崖沿いの道路",
+          "sourceGlossEn": "B. Road along a cliff",
+          "canonicalOptionId": "q0811_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "cliff section",
+          "alignmentScore": 0.2771666666666667,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C 落石のおそれあり",
+          "sourceTextBody": "落石のおそれあり",
+          "sourceGlossEn": "C. Beware of falling rocks",
+          "canonicalOptionId": "q0811_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "watch for dropping stone",
+          "alignmentScore": 0.25523809523809526,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D 危険な道路",
+          "sourceTextBody": "危険な道路",
+          "sourceGlossEn": "D. Dangerous road",
+          "canonicalOptionId": "q0811_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "dangerous hillside road",
+          "alignmentScore": 0.6040322580645161,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A 山はだの危険な道路",
+          "sourceGlossEn": "A. Dangerous mountain-side road",
+          "canonicalOptionId": "q0811_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "dangerous section",
+          "alignmentScore": 0.30096153846153845,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B 崖沿いの道路",
+          "sourceGlossEn": "B. Road along a cliff",
+          "canonicalOptionId": "q0811_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "cliff section",
+          "alignmentScore": 0.2771666666666667,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C 落石のおそれあり",
+          "sourceGlossEn": "C. Beware of falling rocks",
+          "canonicalOptionId": "q0811_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "watch for dropping stone",
+          "alignmentScore": 0.25523809523809526,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D 危険な道路",
+          "sourceGlossEn": "D. Dangerous road",
+          "canonicalOptionId": "q0811_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "dangerous hillside road",
+          "alignmentScore": 0.6040322580645161,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "C",
+      "canonicalCorrectOptionId": "q0811_o3",
+      "canonicalCorrectOptionKey": "C",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed via exported answer-key review decision on 2026-04-09T09:02:18.129Z.",
+      "correctOptionAlignment": {
+        "sourceKey": "C",
+        "canonicalOptionId": "q0811_o3",
+        "canonicalOptionKey": "C",
+        "sourceText": "C 落石のおそれあり",
+        "sourceGlossEn": "C. Beware of falling rocks",
+        "canonicalOptionText": "watch for dropping stone",
+        "alignmentScore": 0.25523809523809526,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-09T09:02:18.129Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ja-batch-003-answer-key-decisions.json",
+      "answerKeyReviewerNotes": ""
+    },
+    "q0759": {
+      "prompt": "この標識は何を示しているか。",
+      "explanation": "",
+      "sourceMode": "reviewed-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 17.50.51.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 17.50.51.png",
+      "reviewerNotes": "",
+      "promptRawJa": "この標識は何を示しているか。",
+      "promptGlossEn": "What does this sign indicate?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-003",
+        "approvedQid": "q0759"
+      },
+      "options": {
+        "q0759_o1": "A 高速道路の右側出口の予告",
+        "q0759_o2": "B 高速道路の次の出口の予告",
+        "q0759_o3": "C 高速道路の地名・方向の予告",
+        "q0759_o4": "D 高速道路の左側出口の予告"
+      },
+      "optionsRawJa": [
+        "A 高速道路の右側出口の予告",
+        "B 高速道路の次の出口の予告",
+        "C 高速道路の地名・方向の予告",
+        "D 高速道路の左側出口の予告"
+      ],
+      "optionsGlossEn": [
+        "A Advance notice of a right-side highway exit",
+        "B Advance notice of the next highway exit",
+        "C Advance notice of the place name/direction on the highway",
+        "D Advance notice of a left-side highway exit"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A 高速道路の右側出口の予告",
+          "sourceTextBody": "高速道路の右側出口の予告",
+          "sourceGlossEn": "A Advance notice of a right-side highway exit",
+          "canonicalOptionId": "q0759_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "expressway right side exit ahead",
+          "alignmentScore": 0.28888888888888886,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B 高速道路の次の出口の予告",
+          "sourceTextBody": "高速道路の次の出口の予告",
+          "sourceGlossEn": "B Advance notice of the next highway exit",
+          "canonicalOptionId": "q0759_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "expressway next exit indication",
+          "alignmentScore": 0.4474725274725274,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C 高速道路の地名・方向の予告",
+          "sourceTextBody": "高速道路の地名・方向の予告",
+          "sourceGlossEn": "C Advance notice of the place name/direction on the highway",
+          "canonicalOptionId": "q0759_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "expressway location and direction indication",
+          "alignmentScore": 0.22371541501976286,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D 高速道路の左側出口の予告",
+          "sourceTextBody": "高速道路の左側出口の予告",
+          "sourceGlossEn": "D Advance notice of a left-side highway exit",
+          "canonicalOptionId": "q0759_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "expressway left side exit ahead",
+          "alignmentScore": 0.28634920634920635,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A 高速道路の右側出口の予告",
+          "sourceGlossEn": "A Advance notice of a right-side highway exit",
+          "canonicalOptionId": "q0759_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "expressway right side exit ahead",
+          "alignmentScore": 0.28888888888888886,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B 高速道路の次の出口の予告",
+          "sourceGlossEn": "B Advance notice of the next highway exit",
+          "canonicalOptionId": "q0759_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "expressway next exit indication",
+          "alignmentScore": 0.4474725274725274,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C 高速道路の地名・方向の予告",
+          "sourceGlossEn": "C Advance notice of the place name/direction on the highway",
+          "canonicalOptionId": "q0759_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "expressway location and direction indication",
+          "alignmentScore": 0.22371541501976286,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D 高速道路の左側出口の予告",
+          "sourceGlossEn": "D Advance notice of a left-side highway exit",
+          "canonicalOptionId": "q0759_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "expressway left side exit ahead",
+          "alignmentScore": 0.28634920634920635,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "C",
+      "canonicalCorrectOptionId": "q0759_o3",
+      "canonicalCorrectOptionKey": "C",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed via exported answer-key review decision on 2026-04-09T09:02:18.129Z.",
+      "correctOptionAlignment": {
+        "sourceKey": "C",
+        "canonicalOptionId": "q0759_o3",
+        "canonicalOptionKey": "C",
+        "sourceText": "C 高速道路の地名・方向の予告",
+        "sourceGlossEn": "C Advance notice of the place name/direction on the highway",
+        "canonicalOptionText": "expressway location and direction indication",
+        "alignmentScore": 0.22371541501976286,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-09T09:02:18.129Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ja-batch-003-answer-key-decisions.json",
+      "answerKeyReviewerNotes": ""
+    },
+    "q0804": {
+      "prompt": "交差点の中央にある黄色い路面にある標記は、どういう路面標示であるか。",
+      "explanation": "",
+      "sourceMode": "reviewed-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 17.50.53 1.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 17.50.53 1.png",
+      "reviewerNotes": "",
+      "promptRawJa": "交差点の中央にある黄色い路面にある標記は、どういう路面標示であるか。",
+      "promptGlossEn": "What does the yellow marking in the center of the intersection indicate?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-003",
+        "approvedQid": "q0804"
+      },
+      "options": {
+        "q0804_o1": "A センターサークル",
+        "q0804_o2": "B 自動車の流れを導く線",
+        "q0804_o3": "C 網状線",
+        "q0804_o4": "D 駐車エリア"
+      },
+      "optionsRawJa": [
+        "A センターサークル",
+        "B 自動車の流れを導く線",
+        "C 網状線",
+        "D 駐車エリア"
+      ],
+      "optionsGlossEn": [
+        "A. Center circle",
+        "B. Line guiding the flow of vehicles",
+        "C. Grid line (cross-hatch line)",
+        "D. Parking area"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A センターサークル",
+          "sourceTextBody": "センターサークル",
+          "sourceGlossEn": "A. Center circle",
+          "canonicalOptionId": "q0804_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "central circle",
+          "alignmentScore": 0.38840579710144923,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B 自動車の流れを導く線",
+          "sourceTextBody": "自動車の流れを導く線",
+          "sourceGlossEn": "B. Line guiding the flow of vehicles",
+          "canonicalOptionId": "q0804_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "guide line",
+          "alignmentScore": 0.1803921568627451,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C 網状線",
+          "sourceTextBody": "網状線",
+          "sourceGlossEn": "C. Grid line (cross-hatch line)",
+          "canonicalOptionId": "q0804_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "cross-hatched marking",
+          "alignmentScore": 0.08372093023255815,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D 駐車エリア",
+          "sourceTextBody": "駐車エリア",
+          "sourceGlossEn": "D. Parking area",
+          "canonicalOptionId": "q0804_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "parking area",
+          "alignmentScore": 1,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A センターサークル",
+          "sourceGlossEn": "A. Center circle",
+          "canonicalOptionId": "q0804_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "central circle",
+          "alignmentScore": 0.38840579710144923,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B 自動車の流れを導く線",
+          "sourceGlossEn": "B. Line guiding the flow of vehicles",
+          "canonicalOptionId": "q0804_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "guide line",
+          "alignmentScore": 0.1803921568627451,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C 網状線",
+          "sourceGlossEn": "C. Grid line (cross-hatch line)",
+          "canonicalOptionId": "q0804_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "cross-hatched marking",
+          "alignmentScore": 0.08372093023255815,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D 駐車エリア",
+          "sourceGlossEn": "D. Parking area",
+          "canonicalOptionId": "q0804_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "parking area",
+          "alignmentScore": 1,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "C",
+      "canonicalCorrectOptionId": "q0804_o3",
+      "canonicalCorrectOptionKey": "C",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed via exported answer-key review decision on 2026-04-09T09:02:18.129Z.",
+      "correctOptionAlignment": {
+        "sourceKey": "C",
+        "canonicalOptionId": "q0804_o3",
+        "canonicalOptionKey": "C",
+        "sourceText": "C 網状線",
+        "sourceGlossEn": "C. Grid line (cross-hatch line)",
+        "canonicalOptionText": "cross-hatched marking",
+        "alignmentScore": 0.08372093023255815,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-09T09:02:18.129Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ja-batch-003-answer-key-decisions.json",
+      "answerKeyReviewerNotes": ""
+    }
+  }
+}
