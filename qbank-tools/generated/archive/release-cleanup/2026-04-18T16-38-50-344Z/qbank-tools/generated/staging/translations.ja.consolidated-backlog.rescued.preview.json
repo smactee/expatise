@@ -1,0 +1,825 @@
+{
+  "meta": {
+    "locale": "ja",
+    "generatedAt": "2026-04-17T14:30:40.847Z",
+    "reviewedBatchId": "consolidated-backlog",
+    "dataset": "2023-test1",
+    "sourceUnresolvedPath": "qbank-tools/generated/staging/consolidated-backlog.ja.json",
+    "sourceUnresolvedDecisionPath": "qbank-tools/generated/staging/ja-consolidated-backlog-unresolved-decisions.json",
+    "rescuedExistingQidCount": 5,
+    "manualAnswerKeyConfirmationCount": 0,
+    "stagingOnly": true
+  },
+  "questions": {
+    "q0502": {
+      "prompt": "中央線のない道路で対向車とすれ違う場合、どう運転するのが適切か。",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 17.50.48.png",
+      "sourceItemId": "batch-003:screenshots/Screenshot 2026-04-07 at 17.50.48.png",
+      "reviewerNotes": "",
+      "promptRawJa": "中央線のない道路で対向車とすれ違う場合、どう運転するのが適切か。",
+      "promptGlossEn": "When passing an oncoming vehicle on a road without a center line, what is the appropriate way to drive?",
+      "correctKeyRaw": "A",
+      "correctAnswerRaw": "速度を落とし、右側に寄って走行する",
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "consolidated-backlog",
+        "approvedQid": "q0502",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "options": {
+        "q0502_o1": "C 路肩に寄って走行する",
+        "q0502_o2": "D 道路の中央に寄って走行する",
+        "q0502_o3": "A 速度を落とし、右側に寄って走行する",
+        "q0502_o4": "B 非自動車道を利用して走行する"
+      },
+      "optionsRawJa": [
+        "A 速度を落とし、右側に寄って走行する",
+        "B 非自動車道を利用して走行する",
+        "C 路肩に寄って走行する",
+        "D 道路の中央に寄って走行する"
+      ],
+      "optionsGlossEn": [
+        "A. Slow down and keep to the right side",
+        "B. Use a non-motor vehicle lane",
+        "C. Keep to the shoulder",
+        "D. Keep to the center of the road"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A 速度を落とし、右側に寄って走行する",
+          "sourceTextBody": "速度を落とし、右側に寄って走行する",
+          "sourceGlossEn": "A. Slow down and keep to the right side",
+          "canonicalOptionId": "q0502_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "Reduce speed and drive by the right side.",
+          "alignmentScore": 0.3161904761904762,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B 非自動車道を利用して走行する",
+          "sourceTextBody": "非自動車道を利用して走行する",
+          "sourceGlossEn": "B. Use a non-motor vehicle lane",
+          "canonicalOptionId": "q0502_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "run by using the lane for non-motorized vehicles",
+          "alignmentScore": 0.2311111111111111,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C 路肩に寄って走行する",
+          "sourceTextBody": "路肩に寄って走行する",
+          "sourceGlossEn": "C. Keep to the shoulder",
+          "canonicalOptionId": "q0502_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "driving closely by the roadside",
+          "alignmentScore": 0,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D 道路の中央に寄って走行する",
+          "sourceTextBody": "道路の中央に寄って走行する",
+          "sourceGlossEn": "D. Keep to the center of the road",
+          "canonicalOptionId": "q0502_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "driving by the central of the road",
+          "alignmentScore": 0.24431818181818182,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A 速度を落とし、右側に寄って走行する",
+          "sourceGlossEn": "A. Slow down and keep to the right side",
+          "canonicalOptionId": "q0502_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "Reduce speed and drive by the right side.",
+          "alignmentScore": 0.3161904761904762,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B 非自動車道を利用して走行する",
+          "sourceGlossEn": "B. Use a non-motor vehicle lane",
+          "canonicalOptionId": "q0502_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "run by using the lane for non-motorized vehicles",
+          "alignmentScore": 0.2311111111111111,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C 路肩に寄って走行する",
+          "sourceGlossEn": "C. Keep to the shoulder",
+          "canonicalOptionId": "q0502_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "driving closely by the roadside",
+          "alignmentScore": 0,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D 道路の中央に寄って走行する",
+          "sourceGlossEn": "D. Keep to the center of the road",
+          "canonicalOptionId": "q0502_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "driving by the central of the road",
+          "alignmentScore": 0.24431818181818182,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "A",
+      "canonicalCorrectOptionId": "q0502_o3",
+      "canonicalCorrectOptionKey": "C",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed during unresolved rescue review on 2026-04-17T14:30:40.847Z; reviewer selected locale key A.",
+      "correctOptionAlignment": {
+        "sourceKey": "A",
+        "canonicalOptionId": "q0502_o3",
+        "canonicalOptionKey": "C",
+        "sourceText": "A 速度を落とし、右側に寄って走行する",
+        "sourceGlossEn": "A. Slow down and keep to the right side",
+        "canonicalOptionText": "Reduce speed and drive by the right side.",
+        "alignmentScore": 0.3161904761904762,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-17T14:30:40.847Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ja-consolidated-backlog-unresolved-decisions.json",
+      "answerKeyReviewerNotes": "",
+      "reviewerSuggestedLocaleCorrectOptionKey": "A",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ja-consolidated-backlog-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0775": {
+      "prompt": "この矢印はなにを示すか。",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.22.41.png",
+      "sourceItemId": "batch-014:screenshots/Screenshot 2026-04-07 at 18.22.41.png",
+      "reviewerNotes": "",
+      "promptRawJa": "この矢印はなにを示すか。",
+      "promptGlossEn": "What does this arrow indicate?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "consolidated-backlog",
+        "approvedQid": "q0775",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "options": {
+        "q0775_o1": "B 通行禁止を指示する",
+        "q0775_o2": "A 車線を指示する",
+        "q0775_o3": "C 合流を指示する",
+        "q0775_o4": "D 直進を指示する"
+      },
+      "optionsRawJa": [
+        "A 車線を指示する",
+        "B 通行禁止を指示する",
+        "C 合流を指示する",
+        "D 直進を指示する"
+      ],
+      "optionsGlossEn": [
+        "A. Lane indication",
+        "B. No entry indication",
+        "C. Merge indication",
+        "D. Straight ahead indication"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A 車線を指示する",
+          "sourceTextBody": "車線を指示する",
+          "sourceGlossEn": "A. Lane indication",
+          "canonicalOptionId": "q0775_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "driving lane",
+          "alignmentScore": 0.3137254901960784,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B 通行禁止を指示する",
+          "sourceTextBody": "通行禁止を指示する",
+          "sourceGlossEn": "B. No entry indication",
+          "canonicalOptionId": "q0775_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "no passing",
+          "alignmentScore": 0,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C 合流を指示する",
+          "sourceTextBody": "合流を指示する",
+          "sourceGlossEn": "C. Merge indication",
+          "canonicalOptionId": "q0775_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "merging",
+          "alignmentScore": 0.042105263157894736,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D 直進を指示する",
+          "sourceTextBody": "直進を指示する",
+          "sourceGlossEn": "D. Straight ahead indication",
+          "canonicalOptionId": "q0775_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "going straight",
+          "alignmentScore": 0.34942528735632183,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A 車線を指示する",
+          "sourceGlossEn": "A. Lane indication",
+          "canonicalOptionId": "q0775_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "driving lane",
+          "alignmentScore": 0.3137254901960784,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B 通行禁止を指示する",
+          "sourceGlossEn": "B. No entry indication",
+          "canonicalOptionId": "q0775_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "no passing",
+          "alignmentScore": 0,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C 合流を指示する",
+          "sourceGlossEn": "C. Merge indication",
+          "canonicalOptionId": "q0775_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "merging",
+          "alignmentScore": 0.042105263157894736,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D 直進を指示する",
+          "sourceGlossEn": "D. Straight ahead indication",
+          "canonicalOptionId": "q0775_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "going straight",
+          "alignmentScore": 0.34942528735632183,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        }
+      ],
+      "localeCorrectOptionKey": "D",
+      "canonicalCorrectOptionId": "q0775_o4",
+      "canonicalCorrectOptionKey": "D",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed during unresolved rescue review on 2026-04-17T14:30:40.847Z; reviewer selected locale key D.",
+      "correctOptionAlignment": {
+        "sourceKey": "D",
+        "canonicalOptionId": "q0775_o4",
+        "canonicalOptionKey": "D",
+        "sourceText": "D 直進を指示する",
+        "sourceGlossEn": "D. Straight ahead indication",
+        "canonicalOptionText": "going straight",
+        "alignmentScore": 0.34942528735632183,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-17T14:30:40.847Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ja-consolidated-backlog-unresolved-decisions.json",
+      "answerKeyReviewerNotes": "",
+      "reviewerSuggestedLocaleCorrectOptionKey": "D",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ja-consolidated-backlog-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0434": {
+      "prompt": "路上での道路交通安全法を違反した運転は、どの行為になるか。",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.24.29 1.png",
+      "sourceItemId": "batch-015:screenshots/Screenshot 2026-04-07 at 18.24.29 1.png",
+      "reviewerNotes": "",
+      "promptRawJa": "路上での道路交通安全法を違反した運転は、どの行為になるか。",
+      "promptGlossEn": "Which act is driving that violates the Road Traffic Safety Law on the road considered?",
+      "correctKeyRaw": "B",
+      "correctAnswerRaw": "法律違反",
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "consolidated-backlog",
+        "approvedQid": "q0434",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "options": {
+        "q0434_o1": "C 過失",
+        "q0434_o2": "A 規制違反",
+        "q0434_o3": "D 規定違反",
+        "q0434_o4": "B 法律違反"
+      },
+      "optionsRawJa": [
+        "A 規制違反",
+        "B 法律違反",
+        "C 過失",
+        "D 規定違反"
+      ],
+      "optionsGlossEn": [
+        "A: Regulation violation",
+        "B: Law violation",
+        "C: Negligence",
+        "D: Rule violation"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A 規制違反",
+          "sourceTextBody": "規制違反",
+          "sourceGlossEn": "A: Regulation violation",
+          "canonicalOptionId": "q0434_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "violation of regulations",
+          "alignmentScore": 0.6974358974358974,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B 法律違反",
+          "sourceTextBody": "法律違反",
+          "sourceGlossEn": "B: Law violation",
+          "canonicalOptionId": "q0434_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "violation of law",
+          "alignmentScore": 0.6613333333333333,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C 過失",
+          "sourceTextBody": "過失",
+          "sourceGlossEn": "C: Negligence",
+          "canonicalOptionId": "q0434_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "faulty act",
+          "alignmentScore": 0,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D 規定違反",
+          "sourceTextBody": "規定違反",
+          "sourceGlossEn": "D: Rule violation",
+          "canonicalOptionId": "q0434_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "rule-breaking act",
+          "alignmentScore": 0.02962962962962963,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A 規制違反",
+          "sourceGlossEn": "A: Regulation violation",
+          "canonicalOptionId": "q0434_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "violation of regulations",
+          "alignmentScore": 0.6974358974358974,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B 法律違反",
+          "sourceGlossEn": "B: Law violation",
+          "canonicalOptionId": "q0434_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "violation of law",
+          "alignmentScore": 0.6613333333333333,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C 過失",
+          "sourceGlossEn": "C: Negligence",
+          "canonicalOptionId": "q0434_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "faulty act",
+          "alignmentScore": 0,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D 規定違反",
+          "sourceGlossEn": "D: Rule violation",
+          "canonicalOptionId": "q0434_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "rule-breaking act",
+          "alignmentScore": 0.02962962962962963,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "B",
+      "canonicalCorrectOptionId": "q0434_o4",
+      "canonicalCorrectOptionKey": "D",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed during unresolved rescue review on 2026-04-17T14:30:40.847Z; reviewer selected locale key B.",
+      "correctOptionAlignment": {
+        "sourceKey": "B",
+        "canonicalOptionId": "q0434_o4",
+        "canonicalOptionKey": "D",
+        "sourceText": "B 法律違反",
+        "sourceGlossEn": "B: Law violation",
+        "canonicalOptionText": "violation of law",
+        "alignmentScore": 0.6613333333333333,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-17T14:30:40.847Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ja-consolidated-backlog-unresolved-decisions.json",
+      "answerKeyReviewerNotes": "",
+      "reviewerSuggestedLocaleCorrectOptionKey": "B",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ja-consolidated-backlog-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0513": {
+      "prompt": "この道から何メートル以内に停車してはいけないか。",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.24.36 1.png",
+      "sourceItemId": "batch-015:screenshots/Screenshot 2026-04-07 at 18.24.36 1.png",
+      "reviewerNotes": "",
+      "promptRawJa": "この道から何メートル以内に停車してはいけないか。",
+      "promptGlossEn": "Within how many meters from this road is it prohibited to park?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "consolidated-backlog",
+        "approvedQid": "q0513",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "options": {
+        "q0513_o1": "A 5メートル以内",
+        "q0513_o2": "B 10メートル以内",
+        "q0513_o3": "C 30メートル以内",
+        "q0513_o4": "D 50メートル以内"
+      },
+      "optionsRawJa": [
+        "A 5メートル以内",
+        "B 10メートル以内",
+        "C 30メートル以内",
+        "D 50メートル以内"
+      ],
+      "optionsGlossEn": [
+        "Within 5 meters",
+        "Within 10 meters",
+        "Within 30 meters",
+        "Within 50 meters"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A 5メートル以内",
+          "sourceTextBody": "5メートル以内",
+          "sourceGlossEn": "Within 5 meters",
+          "canonicalOptionId": "q0513_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "5m",
+          "alignmentScore": 0,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B 10メートル以内",
+          "sourceTextBody": "10メートル以内",
+          "sourceGlossEn": "Within 10 meters",
+          "canonicalOptionId": "q0513_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "10m 44",
+          "alignmentScore": 0,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C 30メートル以内",
+          "sourceTextBody": "30メートル以内",
+          "sourceGlossEn": "Within 30 meters",
+          "canonicalOptionId": "q0513_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "50m",
+          "alignmentScore": 0,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D 50メートル以内",
+          "sourceTextBody": "50メートル以内",
+          "sourceGlossEn": "Within 50 meters",
+          "canonicalOptionId": "q0513_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "50m",
+          "alignmentScore": 0,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A 5メートル以内",
+          "sourceGlossEn": "Within 5 meters",
+          "canonicalOptionId": "q0513_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "5m",
+          "alignmentScore": 0,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B 10メートル以内",
+          "sourceGlossEn": "Within 10 meters",
+          "canonicalOptionId": "q0513_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "10m 44",
+          "alignmentScore": 0,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C 30メートル以内",
+          "sourceGlossEn": "Within 30 meters",
+          "canonicalOptionId": "q0513_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "50m",
+          "alignmentScore": 0,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D 50メートル以内",
+          "sourceGlossEn": "Within 50 meters",
+          "canonicalOptionId": "q0513_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "50m",
+          "alignmentScore": 0,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        }
+      ],
+      "localeCorrectOptionKey": "D",
+      "canonicalCorrectOptionId": "q0513_o3",
+      "canonicalCorrectOptionKey": "C",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed during unresolved rescue review on 2026-04-17T14:30:40.847Z; reviewer selected locale key D.",
+      "correctOptionAlignment": {
+        "sourceKey": "D",
+        "canonicalOptionId": "q0513_o3",
+        "canonicalOptionKey": "C",
+        "sourceText": "D 50メートル以内",
+        "sourceGlossEn": "Within 50 meters",
+        "canonicalOptionText": "50m",
+        "alignmentScore": 0,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-17T14:30:40.847Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ja-consolidated-backlog-unresolved-decisions.json",
+      "answerKeyReviewerNotes": "",
+      "reviewerSuggestedLocaleCorrectOptionKey": "D",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ja-consolidated-backlog-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0730": {
+      "prompt": "この標識は何を示しているか。",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.27.59.png",
+      "sourceItemId": "batch-019:screenshots/Screenshot 2026-04-07 at 18.27.59.png",
+      "reviewerNotes": "",
+      "promptRawJa": "この標識は何を示しているか。",
+      "promptGlossEn": "What does this road sign indicate?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "consolidated-backlog",
+        "approvedQid": "q0730",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "options": {
+        "q0730_o1": "C 右側通行",
+        "q0730_o2": "B 上り右急勾配あり",
+        "q0730_o3": "D つづら折りあり",
+        "q0730_o4": "A 下り左急勾配あり"
+      },
+      "optionsRawJa": [
+        "A 下り左急勾配あり",
+        "B 上り右急勾配あり",
+        "C 右側通行",
+        "D つづら折りあり"
+      ],
+      "optionsGlossEn": [
+        "A. Steep descent to the left",
+        "B. Steep ascent to the right",
+        "C. Keep right",
+        "D. Winding (zigzag) ahead"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A 下り左急勾配あり",
+          "sourceTextBody": "下り左急勾配あり",
+          "sourceGlossEn": "A. Steep descent to the left",
+          "canonicalOptionId": "q0730_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "sharp left curve",
+          "alignmentScore": 0.16969696969696968,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B 上り右急勾配あり",
+          "sourceTextBody": "上り右急勾配あり",
+          "sourceGlossEn": "B. Steep ascent to the right",
+          "canonicalOptionId": "q0730_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "sharp right curve",
+          "alignmentScore": 0.1553113553113553,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C 右側通行",
+          "sourceTextBody": "右側通行",
+          "sourceGlossEn": "C. Keep right",
+          "canonicalOptionId": "q0730_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "sharp right curve",
+          "alignmentScore": 0.28695652173913044,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D つづら折りあり",
+          "sourceTextBody": "つづら折りあり",
+          "sourceGlossEn": "D. Winding (zigzag) ahead",
+          "canonicalOptionId": "q0730_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "continuous curves",
+          "alignmentScore": 0,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A 下り左急勾配あり",
+          "sourceGlossEn": "A. Steep descent to the left",
+          "canonicalOptionId": "q0730_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "sharp left curve",
+          "alignmentScore": 0.16969696969696968,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B 上り右急勾配あり",
+          "sourceGlossEn": "B. Steep ascent to the right",
+          "canonicalOptionId": "q0730_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "sharp right curve",
+          "alignmentScore": 0.1553113553113553,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C 右側通行",
+          "sourceGlossEn": "C. Keep right",
+          "canonicalOptionId": "q0730_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "sharp right curve",
+          "alignmentScore": 0.28695652173913044,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D つづら折りあり",
+          "sourceGlossEn": "D. Winding (zigzag) ahead",
+          "canonicalOptionId": "q0730_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "continuous curves",
+          "alignmentScore": 0,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "B",
+      "canonicalCorrectOptionId": "q0730_o1",
+      "canonicalCorrectOptionKey": "A",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed during unresolved rescue review on 2026-04-17T14:30:40.847Z; reviewer selected locale key B.",
+      "correctOptionAlignment": {
+        "sourceKey": "B",
+        "canonicalOptionId": "q0730_o1",
+        "canonicalOptionKey": "A",
+        "sourceText": "B 上り右急勾配あり",
+        "sourceGlossEn": "B. Steep ascent to the right",
+        "canonicalOptionText": "sharp right curve",
+        "alignmentScore": 0.28695652173913044,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-17T14:30:40.847Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ja-consolidated-backlog-unresolved-decisions.json",
+      "answerKeyReviewerNotes": "",
+      "reviewerSuggestedLocaleCorrectOptionKey": "B",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ja-consolidated-backlog-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    }
+  }
+}

@@ -1,0 +1,420 @@
+{
+  "generatedAt": "2026-04-17T14:30:40.847Z",
+  "lang": "ja",
+  "batchId": "consolidated-backlog",
+  "dataset": "2023-test1",
+  "sourceDecisionPath": "qbank-tools/generated/staging/new-question-decisions.ja.consolidated-backlog.json",
+  "items": [
+    {
+      "candidateId": "nqc-ja-consolidated-backlog-001",
+      "sourceLang": "ja",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 17.50.06.png",
+      "effectiveQuestionType": null,
+      "promptRawJa": "大型旅客車・牽引車・都市の公共バス・中型旅客車・大型貨物車の運転者は二年ごとに健康診断を提出しなければならない。",
+      "promptGlossEn": "Drivers of large passenger cars, towing vehicles, city public buses, medium-sized passenger cars, or large cargo vehicles must submit a health checkup every two years.",
+      "optionsRawJa": [
+        "A Yes",
+        "B No"
+      ],
+      "optionsGlossEn": [
+        "Yes",
+        "No"
+      ],
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "newQuestionLocalAnswerKey": "A",
+      "provisionalTopic": null,
+      "provisionalSubtopics": [],
+      "topicConfidence": 0,
+      "topicSignals": [],
+      "linkedExistingAssetCandidate": null,
+      "reviewerNotes": "",
+      "status": "pending-superset-review"
+    },
+    {
+      "candidateId": "nqc-ja-consolidated-backlog-002",
+      "sourceLang": "ja",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.03.36.png",
+      "effectiveQuestionType": null,
+      "promptRawJa": "他の道路から合流しようとする場合、斜め後ろの自動車の動きを注意すべきである。",
+      "promptGlossEn": "When merging from another road, you should pay attention to the movement of cars diagonally behind you.",
+      "optionsRawJa": [
+        "A Yes",
+        "B No"
+      ],
+      "optionsGlossEn": [
+        "Yes",
+        "No"
+      ],
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "newQuestionLocalAnswerKey": "A",
+      "provisionalTopic": null,
+      "provisionalSubtopics": [
+        "proper-driving"
+      ],
+      "topicConfidence": 0,
+      "topicSignals": [],
+      "linkedExistingAssetCandidate": null,
+      "reviewerNotes": "",
+      "status": "pending-superset-review"
+    },
+    {
+      "candidateId": "nqc-ja-consolidated-backlog-003",
+      "sourceLang": "ja",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.04.36.png",
+      "effectiveQuestionType": null,
+      "promptRawJa": "この標識は次のなかのどの種類に属しますか。",
+      "promptGlossEn": "Which of the following types does this sign belong to?",
+      "optionsRawJa": [
+        "A 警戒標識",
+        "B 規制標識",
+        "C 指示標識",
+        "D 案内標識"
+      ],
+      "optionsGlossEn": [
+        "A. Warning sign",
+        "B. Regulatory sign",
+        "C. Instruction sign",
+        "D. Guide sign"
+      ],
+      "correctKeyRaw": "B",
+      "correctAnswerRaw": "規制標識",
+      "newQuestionLocalAnswerKey": "B",
+      "provisionalTopic": "traffic-signals",
+      "provisionalSubtopics": [
+        "traffic-signals:road-signs",
+        "traffic-signals:road-markings",
+        "proper-driving:safe-driving"
+      ],
+      "topicConfidence": 0.688,
+      "topicSignals": [
+        {
+          "topic": "traffic-signals",
+          "subtopic": "traffic-signals:road-signs",
+          "signal": "sign-family",
+          "weight": 1.4
+        },
+        {
+          "topic": "traffic-signals",
+          "subtopic": "traffic-signals:road-markings",
+          "signal": "road-marking",
+          "weight": 1.25
+        },
+        {
+          "topic": "proper-driving",
+          "subtopic": "proper-driving:safe-driving",
+          "signal": "driving-action",
+          "weight": 1.2
+        }
+      ],
+      "linkedExistingAssetCandidate": {
+        "qid": "q0714",
+        "number": 714,
+        "score": 70.391,
+        "currentAssetSrc": "/qbank/2023-test1/images/img_ad7e9a5b3ab41e77c8ce6dfbc648c59d.jpeg",
+        "assetHashes": [
+          "ad7e9a5b3ab41e77c8ce6dfbc648c59d"
+        ],
+        "status": "unconfirmed-existing-production-asset"
+      },
+      "reviewerNotes": "",
+      "status": "pending-superset-review"
+    },
+    {
+      "candidateId": "nqc-ja-consolidated-backlog-004",
+      "sourceLang": "ja",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.19.16.png",
+      "effectiveQuestionType": null,
+      "promptRawJa": "歩行者が交通違反の行為をしている場合、歩行者に道を譲らなくてもよい。",
+      "promptGlossEn": "If a pedestrian is committing a traffic violation, you do not have to yield to the pedestrian.",
+      "optionsRawJa": [
+        "A Yes",
+        "B No"
+      ],
+      "optionsGlossEn": [
+        "A Yes",
+        "B No"
+      ],
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "newQuestionLocalAnswerKey": "A",
+      "provisionalTopic": "proper-driving",
+      "provisionalSubtopics": [
+        "proper-driving:safe-driving"
+      ],
+      "topicConfidence": 0.522,
+      "topicSignals": [
+        {
+          "topic": "proper-driving",
+          "subtopic": "proper-driving:safe-driving",
+          "signal": "driving-action",
+          "weight": 1.2
+        },
+        {
+          "topic": "traffic-signals",
+          "subtopic": "traffic-signals:road-signs",
+          "signal": "sign-family",
+          "weight": 1.1
+        }
+      ],
+      "linkedExistingAssetCandidate": null,
+      "reviewerNotes": "",
+      "status": "pending-superset-review"
+    },
+    {
+      "candidateId": "nqc-ja-consolidated-backlog-005",
+      "sourceLang": "ja",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.22.45.png",
+      "effectiveQuestionType": null,
+      "promptRawJa": "自動車を走行するさいは、運転マナーを守り、強勢を張ったり危険を冒す運転をしてはいけない。",
+      "promptGlossEn": "When driving a car, you must follow driving manners and must not drive in a way that is forceful or takes risks.",
+      "optionsRawJa": [
+        "A Yes",
+        "B No"
+      ],
+      "optionsGlossEn": [
+        "Yes",
+        "No"
+      ],
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "newQuestionLocalAnswerKey": "A",
+      "provisionalTopic": "proper-driving",
+      "provisionalSubtopics": [
+        "proper-driving:traffic-laws"
+      ],
+      "topicConfidence": 1,
+      "topicSignals": [
+        {
+          "topic": "proper-driving",
+          "subtopic": "proper-driving:traffic-laws",
+          "signal": "traffic-law",
+          "weight": 1.15
+        }
+      ],
+      "linkedExistingAssetCandidate": null,
+      "reviewerNotes": "",
+      "status": "pending-superset-review"
+    },
+    {
+      "candidateId": "nqc-ja-consolidated-backlog-006",
+      "sourceLang": "ja",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.24.21.png",
+      "effectiveQuestionType": null,
+      "promptRawJa": "廃棄標準に適合する恐れのある自動車を運転する場合、交通警察は法律に基づき車を拘置できる。",
+      "promptGlossEn": "If you drive a vehicle that is suspected of not meeting disposal standards, the traffic police may detain the vehicle based on the law.",
+      "optionsRawJa": [
+        "A Yes",
+        "B No"
+      ],
+      "optionsGlossEn": [
+        "Yes",
+        "No"
+      ],
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "newQuestionLocalAnswerKey": "A",
+      "provisionalTopic": "road-safety",
+      "provisionalSubtopics": [
+        "road-safety:registration"
+      ],
+      "topicConfidence": 1,
+      "topicSignals": [
+        {
+          "topic": "traffic-signals",
+          "subtopic": "traffic-signals:police-signals",
+          "signal": "police-signal",
+          "weight": 1.35
+        }
+      ],
+      "linkedExistingAssetCandidate": null,
+      "reviewerNotes": "",
+      "status": "pending-superset-review"
+    },
+    {
+      "candidateId": "nqc-ja-consolidated-backlog-007",
+      "sourceLang": "ja",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.25.27.png",
+      "effectiveQuestionType": null,
+      "promptRawJa": "偽造・変造された自動車走行許可証を使用した場合、何点がつくか。",
+      "promptGlossEn": "If you use a forged or altered vehicle transit permit, how many points will you receive?",
+      "optionsRawJa": [
+        "A 12点",
+        "B 6点",
+        "C 3点",
+        "D 2点"
+      ],
+      "optionsGlossEn": [
+        "A: 12 points",
+        "B: 6 points",
+        "C: 3 points",
+        "D: 2 points"
+      ],
+      "correctKeyRaw": "A",
+      "correctAnswerRaw": "12点",
+      "newQuestionLocalAnswerKey": "A",
+      "provisionalTopic": null,
+      "provisionalSubtopics": [],
+      "topicConfidence": 0,
+      "topicSignals": [],
+      "linkedExistingAssetCandidate": null,
+      "reviewerNotes": "",
+      "status": "pending-superset-review"
+    },
+    {
+      "candidateId": "nqc-ja-consolidated-backlog-008",
+      "sourceLang": "ja",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.26.51.png",
+      "effectiveQuestionType": null,
+      "promptRawJa": "安全性リスクを有する自動車を路上で運転してはならない。",
+      "promptGlossEn": "You must not drive a vehicle with safety risks on the road.",
+      "optionsRawJa": [
+        "A Yes",
+        "B No"
+      ],
+      "optionsGlossEn": [
+        "A Yes",
+        "B No"
+      ],
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "newQuestionLocalAnswerKey": "A",
+      "provisionalTopic": "proper-driving",
+      "provisionalSubtopics": [
+        "proper-driving:traffic-laws"
+      ],
+      "topicConfidence": 1,
+      "topicSignals": [
+        {
+          "topic": "proper-driving",
+          "subtopic": "proper-driving:traffic-laws",
+          "signal": "traffic-law",
+          "weight": 1.15
+        }
+      ],
+      "linkedExistingAssetCandidate": null,
+      "reviewerNotes": "",
+      "status": "pending-superset-review"
+    },
+    {
+      "candidateId": "nqc-ja-consolidated-backlog-009",
+      "sourceLang": "ja",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.26.57.png",
+      "effectiveQuestionType": null,
+      "promptRawJa": "作業中の道路をメンテナンスする車両や工事作業車が作業中の時には道をゆずる義務がある。",
+      "promptGlossEn": "Vehicles and construction vehicles maintaining roads during work are obligated to yield the road while working.",
+      "optionsRawJa": [
+        "A Yes",
+        "B No"
+      ],
+      "optionsGlossEn": [
+        "A Yes",
+        "B No"
+      ],
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "newQuestionLocalAnswerKey": "B",
+      "provisionalTopic": "proper-driving",
+      "provisionalSubtopics": [
+        "proper-driving:safe-driving",
+        "traffic-signals:road-signs"
+      ],
+      "topicConfidence": 0.522,
+      "topicSignals": [
+        {
+          "topic": "proper-driving",
+          "subtopic": "proper-driving:safe-driving",
+          "signal": "driving-action",
+          "weight": 1.2
+        },
+        {
+          "topic": "traffic-signals",
+          "subtopic": "traffic-signals:road-signs",
+          "signal": "sign-family",
+          "weight": 1.1
+        }
+      ],
+      "linkedExistingAssetCandidate": null,
+      "reviewerNotes": "",
+      "status": "pending-superset-review"
+    },
+    {
+      "candidateId": "nqc-ja-consolidated-backlog-010",
+      "sourceLang": "ja",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.28.38 1.png",
+      "effectiveQuestionType": null,
+      "promptRawJa": "ITトランプのスイッチをオンにす点灯する。",
+      "promptGlossEn": "It lights up when you turn on the switch for the fog lamps.",
+      "optionsRawJa": [
+        "A Yes",
+        "B No"
+      ],
+      "optionsGlossEn": [
+        "Yes",
+        "No"
+      ],
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "newQuestionLocalAnswerKey": "B",
+      "provisionalTopic": "road-safety",
+      "provisionalSubtopics": [
+        "road-safety:road-conditions",
+        "driving-operations:indicators"
+      ],
+      "topicConfidence": 0.51,
+      "topicSignals": [
+        {
+          "topic": "road-safety",
+          "subtopic": "road-safety:road-conditions",
+          "signal": "road-condition-or-hazard",
+          "weight": 1.3
+        },
+        {
+          "topic": "driving-operations",
+          "subtopic": "driving-operations:indicators",
+          "signal": "indicator-operation",
+          "weight": 1.25
+        }
+      ],
+      "linkedExistingAssetCandidate": {
+        "qid": "q0565",
+        "number": 565,
+        "score": 71.602,
+        "currentAssetSrc": "/qbank/2023-test1/images/img_7ae51200ea841830de1000cdad800d89.jpeg",
+        "assetHashes": [
+          "7ae51200ea841830de1000cdad800d89"
+        ],
+        "status": "unconfirmed-existing-production-asset"
+      },
+      "reviewerNotes": "",
+      "status": "pending-superset-review"
+    },
+    {
+      "candidateId": "nqc-ja-consolidated-backlog-011",
+      "sourceLang": "ja",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.28.40.png",
+      "effectiveQuestionType": null,
+      "promptRawJa": "自動車走行許可証を紛失した場合、自動車所有者は登録地の車両管理所に自動車走行許可証の再交付・更新を申請しなければならない。",
+      "promptGlossEn": "If a vehicle registration certificate is lost, the vehicle owner must apply for reissuance or renewal of the certificate at the vehicle administration office of the registered location.",
+      "optionsRawJa": [
+        "A Yes",
+        "B No"
+      ],
+      "optionsGlossEn": [
+        "Yes",
+        "No"
+      ],
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "newQuestionLocalAnswerKey": "A",
+      "provisionalTopic": null,
+      "provisionalSubtopics": [],
+      "topicConfidence": 0,
+      "topicSignals": [],
+      "linkedExistingAssetCandidate": null,
+      "reviewerNotes": "",
+      "status": "pending-superset-review"
+    }
+  ]
+}

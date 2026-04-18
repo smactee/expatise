@@ -1,0 +1,768 @@
+{
+  "meta": {
+    "locale": "ja",
+    "generatedAt": "2026-04-14T09:10:39.764Z",
+    "reviewedBatchId": "batch-013",
+    "dataset": "2023-test1",
+    "sourceUnresolvedPath": "imports/ja/batch-013/unresolved.json",
+    "sourceUnresolvedDecisionPath": "qbank-tools/generated/staging/ja-batch-013-unresolved-decisions.json",
+    "rescuedExistingQidCount": 7,
+    "manualAnswerKeyConfirmationCount": 0,
+    "stagingOnly": true
+  },
+  "questions": {
+    "q0108": {
+      "prompt": "青信号が点灯したが、前方の横断歩道にまだ歩行者がいる場合どうすべきか。",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.22.06 1.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 18.22.06 1.png",
+      "reviewerNotes": "",
+      "promptRawJa": "青信号が点灯したが、前方の横断歩道にまだ歩行者がいる場合どうすべきか。",
+      "promptGlossEn": "The light turned green, but there are still pedestrians on the crosswalk ahead. What should you do?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-013",
+        "approvedQid": "q0108",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "options": {
+        "q0108_o1": "A 発進し通過する",
+        "q0108_o2": "C 発進し歩行者の前を横切り通過する",
+        "q0108_o3": "B 発進し歩行者の後ろへ回り通過する",
+        "q0108_o4": "D 歩行者が通過するのを待ち発進する"
+      },
+      "optionsRawJa": [
+        "A 発進し通過する",
+        "B 発進し歩行者の後ろへ回り通過する",
+        "C 発進し歩行者の前を横切り通過する",
+        "D 歩行者が通過するのを待ち発進する"
+      ],
+      "optionsGlossEn": [
+        "A. Proceed and go through",
+        "B. Proceed and go behind the pedestrian",
+        "C. Proceed and cross in front of the pedestrian",
+        "D. Wait until the pedestrian has crossed, then proceed"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A 発進し通過する",
+          "sourceTextBody": "発進し通過する",
+          "sourceGlossEn": "A. Proceed and go through",
+          "canonicalOptionId": "q0108_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "Directly start up and pass",
+          "alignmentScore": 0.12727272727272726,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B 発進し歩行者の後ろへ回り通過する",
+          "sourceTextBody": "発進し歩行者の後ろへ回り通過する",
+          "sourceGlossEn": "B. Proceed and go behind the pedestrian",
+          "canonicalOptionId": "q0108_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "Start up and bypass before the pedestrians",
+          "alignmentScore": 0.2577777777777778,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C 発進し歩行者の前を横切り通過する",
+          "sourceTextBody": "発進し歩行者の前を横切り通過する",
+          "sourceGlossEn": "C. Proceed and cross in front of the pedestrian",
+          "canonicalOptionId": "q0108_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "Start up and bypass the pedestrians from behind",
+          "alignmentScore": 0.21913875598086122,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D 歩行者が通過するのを待ち発進する",
+          "sourceTextBody": "歩行者が通過するのを待ち発進する",
+          "sourceGlossEn": "D. Wait until the pedestrian has crossed, then proceed",
+          "canonicalOptionId": "q0108_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "start up after the pedestrians have passed",
+          "alignmentScore": 0.14526754890678945,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A 発進し通過する",
+          "sourceGlossEn": "A. Proceed and go through",
+          "canonicalOptionId": "q0108_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "Directly start up and pass",
+          "alignmentScore": 0.12727272727272726,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B 発進し歩行者の後ろへ回り通過する",
+          "sourceGlossEn": "B. Proceed and go behind the pedestrian",
+          "canonicalOptionId": "q0108_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "Start up and bypass before the pedestrians",
+          "alignmentScore": 0.2577777777777778,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C 発進し歩行者の前を横切り通過する",
+          "sourceGlossEn": "C. Proceed and cross in front of the pedestrian",
+          "canonicalOptionId": "q0108_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "Start up and bypass the pedestrians from behind",
+          "alignmentScore": 0.21913875598086122,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D 歩行者が通過するのを待ち発進する",
+          "sourceGlossEn": "D. Wait until the pedestrian has crossed, then proceed",
+          "canonicalOptionId": "q0108_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "start up after the pedestrians have passed",
+          "alignmentScore": 0.14526754890678945,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        }
+      ],
+      "localeCorrectOptionKey": "D",
+      "canonicalCorrectOptionId": "q0108_o4",
+      "canonicalCorrectOptionKey": "D",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed during unresolved rescue review on 2026-04-14T09:10:39.764Z; reviewer selected locale key D.",
+      "correctOptionAlignment": {
+        "sourceKey": "D",
+        "canonicalOptionId": "q0108_o4",
+        "canonicalOptionKey": "D",
+        "sourceText": "D 歩行者が通過するのを待ち発進する",
+        "sourceGlossEn": "D. Wait until the pedestrian has crossed, then proceed",
+        "canonicalOptionText": "start up after the pedestrians have passed",
+        "alignmentScore": 0.14526754890678945,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-14T09:10:39.764Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ja-batch-013-unresolved-decisions.json",
+      "answerKeyReviewerNotes": "",
+      "reviewerSuggestedLocaleCorrectOptionKey": "D",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ja-batch-013-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0205": {
+      "prompt": "小型自動車運転者が、交通事故を起こして人を死亡させ過シ%を上回る過失責任を負い、しかも運転免許証が取り消されない場合、累積点数計算周期が終わってから30日以内に審査を受けなければならない。",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.22.18.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 18.22.18.png",
+      "reviewerNotes": "",
+      "promptRawJa": "小型自動車運転者が、交通事故を起こして人を死亡させ過シ%を上回る過失責任を負い、しかも運転免許証が取り消されない場合、累積点数計算周期が終わってから30日以内に審査を受けなければならない。",
+      "promptGlossEn": "If a small vehicle driver causes a traffic accident resulting in a fatality and is found to have more than a certain percentage of fault, but their license is not revoked, they must undergo an examination within 30 days after the cumulative point calculation period ends.",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "ROW",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-013",
+        "approvedQid": "q0205",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "optionsRawJa": [],
+      "optionsGlossEn": [],
+      "localeCorrectOptionKey": null,
+      "canonicalCorrectRow": "R",
+      "canonicalCorrectAnswer": "right / true",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "ROW question; no locale-specific option key applies.",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ja-batch-013-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0300": {
+      "prompt": "違法運転によって重大交通事故を起こし犯罪となった場合、刑事責任は追及されない。",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.22.22.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 18.22.22.png",
+      "reviewerNotes": "",
+      "promptRawJa": "違法運転によって重大交通事故を起こし犯罪となった場合、刑事責任は追及されない。",
+      "promptGlossEn": "If you cause a serious traffic accident due to illegal driving and it becomes a crime, you will not be held criminally responsible.",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "ROW",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-013",
+        "approvedQid": "q0300",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "optionsRawJa": [],
+      "optionsGlossEn": [],
+      "localeCorrectOptionKey": null,
+      "canonicalCorrectRow": "W",
+      "canonicalCorrectAnswer": "wrong / false",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "ROW question; no locale-specific option key applies.",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ja-batch-013-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0379": {
+      "prompt": "路上で自動車を運転するさい、携帯しなくてはならないのはどの証明書か。",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.22.25 1.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 18.22.25 1.png",
+      "reviewerNotes": "",
+      "promptRawJa": "路上で自動車を運転するさい、携帯しなくてはならないのはどの証明書か。",
+      "promptGlossEn": "When driving a car on the road, which certificate must you carry?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-013",
+        "approvedQid": "q0379",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "options": {
+        "q0379_o1": "B 自動車保険証明書",
+        "q0379_o2": "C 自動車走行許可証",
+        "q0379_o3": "D 出荷合格証明書",
+        "q0379_o4": "A 自動車登録証"
+      },
+      "optionsRawJa": [
+        "A 自動車登録証",
+        "B 自動車保険証明書",
+        "C 自動車走行許可証",
+        "D 出荷合格証明書"
+      ],
+      "optionsGlossEn": [
+        "A Vehicle registration certificate",
+        "B Automobile insurance certificate",
+        "C Vehicle operation permit",
+        "D Shipping conformity certificate"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A 自動車登録証",
+          "sourceTextBody": "自動車登録証",
+          "sourceGlossEn": "A Vehicle registration certificate",
+          "canonicalOptionId": "q0379_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "vehicle registration papers",
+          "alignmentScore": 0.5407407407407407,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B 自動車保険証明書",
+          "sourceTextBody": "自動車保険証明書",
+          "sourceGlossEn": "B Automobile insurance certificate",
+          "canonicalOptionId": "q0379_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "insurance policy",
+          "alignmentScore": 0.2727272727272727,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C 自動車走行許可証",
+          "sourceTextBody": "自動車走行許可証",
+          "sourceGlossEn": "C Vehicle operation permit",
+          "canonicalOptionId": "q0379_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "vehicle license",
+          "alignmentScore": 0.36666666666666664,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D 出荷合格証明書",
+          "sourceTextBody": "出荷合格証明書",
+          "sourceGlossEn": "D Shipping conformity certificate",
+          "canonicalOptionId": "q0379_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "certificate of ex-factory inspection",
+          "alignmentScore": 0.19047619047619047,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A 自動車登録証",
+          "sourceGlossEn": "A Vehicle registration certificate",
+          "canonicalOptionId": "q0379_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "vehicle registration papers",
+          "alignmentScore": 0.5407407407407407,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B 自動車保険証明書",
+          "sourceGlossEn": "B Automobile insurance certificate",
+          "canonicalOptionId": "q0379_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "insurance policy",
+          "alignmentScore": 0.2727272727272727,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C 自動車走行許可証",
+          "sourceGlossEn": "C Vehicle operation permit",
+          "canonicalOptionId": "q0379_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "vehicle license",
+          "alignmentScore": 0.36666666666666664,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D 出荷合格証明書",
+          "sourceGlossEn": "D Shipping conformity certificate",
+          "canonicalOptionId": "q0379_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "certificate of ex-factory inspection",
+          "alignmentScore": 0.19047619047619047,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "C",
+      "canonicalCorrectOptionId": "q0379_o2",
+      "canonicalCorrectOptionKey": "B",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed during unresolved rescue review on 2026-04-14T09:10:39.764Z; reviewer selected locale key C.",
+      "correctOptionAlignment": {
+        "sourceKey": "C",
+        "canonicalOptionId": "q0379_o2",
+        "canonicalOptionKey": "B",
+        "sourceText": "C 自動車走行許可証",
+        "sourceGlossEn": "C Vehicle operation permit",
+        "canonicalOptionText": "vehicle license",
+        "alignmentScore": 0.36666666666666664,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-14T09:10:39.764Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ja-batch-013-unresolved-decisions.json",
+      "answerKeyReviewerNotes": "",
+      "reviewerSuggestedLocaleCorrectOptionKey": "C",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ja-batch-013-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0220": {
+      "prompt": "このような車線を走行する場合、速度をあげて走行すべきである。",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.22.27 1.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 18.22.27 1.png",
+      "reviewerNotes": "",
+      "promptRawJa": "このような車線を走行する場合、速度をあげて走行すべきである。",
+      "promptGlossEn": "When driving in a lane like this, you should increase your speed.",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "ROW",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-013",
+        "approvedQid": "q0220",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "optionsRawJa": [],
+      "optionsGlossEn": [],
+      "localeCorrectOptionKey": null,
+      "canonicalCorrectRow": "W",
+      "canonicalCorrectAnswer": "wrong / false",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "ROW question; no locale-specific option key applies.",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ja-batch-013-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0605": {
+      "prompt": "自動車のインパネの点灯は、何を示しているか。",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.22.32.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 18.22.32.png",
+      "reviewerNotes": "",
+      "promptRawJa": "自動車のインパネの点灯は、何を示しているか。",
+      "promptGlossEn": "What does this indicator light on a car's dashboard mean?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-013",
+        "approvedQid": "q0605",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "options": {
+        "q0605_o1": "A シートベルトの未着用",
+        "q0605_o2": "B シートベルトの故障",
+        "q0605_o3": "D シートベルトが緩んでいる",
+        "q0605_o4": "C シートベルトの着用"
+      },
+      "optionsRawJa": [
+        "A シートベルトの未着用",
+        "B シートベルトの故障",
+        "C シートベルトの着用",
+        "D シートベルトが緩んでいる"
+      ],
+      "optionsGlossEn": [
+        "A. Seatbelt not fastened",
+        "B. Seatbelt malfunction",
+        "C. Seatbelt fastened",
+        "D. Seatbelt is loose"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A シートベルトの未着用",
+          "sourceTextBody": "シートベルトの未着用",
+          "sourceGlossEn": "A. Seatbelt not fastened",
+          "canonicalOptionId": "q0605_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "not buckled up",
+          "alignmentScore": 0.1858064516129032,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B シートベルトの故障",
+          "sourceTextBody": "シートベルトの故障",
+          "sourceGlossEn": "B. Seatbelt malfunction",
+          "canonicalOptionId": "q0605_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "safety belt malfunction",
+          "alignmentScore": 0.3435897435897436,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C シートベルトの着用",
+          "sourceTextBody": "シートベルトの着用",
+          "sourceGlossEn": "C. Seatbelt fastened",
+          "canonicalOptionId": "q0605_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "buckled up already",
+          "alignmentScore": 0,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D シートベルトが緩んでいる",
+          "sourceTextBody": "シートベルトが緩んでいる",
+          "sourceGlossEn": "D. Seatbelt is loose",
+          "canonicalOptionId": "q0605_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "the safety belts are too loose",
+          "alignmentScore": 0.18796992481203006,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A シートベルトの未着用",
+          "sourceGlossEn": "A. Seatbelt not fastened",
+          "canonicalOptionId": "q0605_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "not buckled up",
+          "alignmentScore": 0.1858064516129032,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B シートベルトの故障",
+          "sourceGlossEn": "B. Seatbelt malfunction",
+          "canonicalOptionId": "q0605_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "safety belt malfunction",
+          "alignmentScore": 0.3435897435897436,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C シートベルトの着用",
+          "sourceGlossEn": "C. Seatbelt fastened",
+          "canonicalOptionId": "q0605_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "buckled up already",
+          "alignmentScore": 0,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D シートベルトが緩んでいる",
+          "sourceGlossEn": "D. Seatbelt is loose",
+          "canonicalOptionId": "q0605_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "the safety belts are too loose",
+          "alignmentScore": 0.18796992481203006,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "A",
+      "canonicalCorrectOptionId": "q0605_o1",
+      "canonicalCorrectOptionKey": "A",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed during unresolved rescue review on 2026-04-14T09:10:39.764Z; reviewer selected locale key A.",
+      "correctOptionAlignment": {
+        "sourceKey": "A",
+        "canonicalOptionId": "q0605_o1",
+        "canonicalOptionKey": "A",
+        "sourceText": "A シートベルトの未着用",
+        "sourceGlossEn": "A. Seatbelt not fastened",
+        "canonicalOptionText": "not buckled up",
+        "alignmentScore": 0.1858064516129032,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-14T09:10:39.764Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ja-batch-013-unresolved-decisions.json",
+      "answerKeyReviewerNotes": "",
+      "reviewerSuggestedLocaleCorrectOptionKey": "A",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ja-batch-013-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0659": {
+      "prompt": "この標識は何を示しているか。",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.22.35 1.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 18.22.35 1.png",
+      "reviewerNotes": "",
+      "promptRawJa": "この標識は何を示しているか。",
+      "promptGlossEn": "What does this sign indicate?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-013",
+        "approvedQid": "q0659",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "options": {
+        "q0659_o1": "B 省道番号",
+        "q0659_o2": "A 国道番号",
+        "q0659_o3": "D 郷道番号",
+        "q0659_o4": "C 県道番号"
+      },
+      "optionsRawJa": [
+        "A 国道番号",
+        "B 省道番号",
+        "C 県道番号",
+        "D 郷道番号"
+      ],
+      "optionsGlossEn": [
+        "A National route number",
+        "B Provincial (ministerial) road number",
+        "C Prefectural road number",
+        "D Rural road number"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A 国道番号",
+          "sourceTextBody": "国道番号",
+          "sourceGlossEn": "A National route number",
+          "canonicalOptionId": "q0659_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "national highway No.",
+          "alignmentScore": 0.2317948717948718,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B 省道番号",
+          "sourceTextBody": "省道番号",
+          "sourceGlossEn": "B Provincial (ministerial) road number",
+          "canonicalOptionId": "q0659_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "provincial highway No.",
+          "alignmentScore": 0.21166666666666667,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C 県道番号",
+          "sourceTextBody": "県道番号",
+          "sourceGlossEn": "C Prefectural road number",
+          "canonicalOptionId": "q0659_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "township road No.",
+          "alignmentScore": 0.14714285714285716,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D 郷道番号",
+          "sourceTextBody": "郷道番号",
+          "sourceGlossEn": "D Rural road number",
+          "canonicalOptionId": "q0659_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "county road No.",
+          "alignmentScore": 0.1640740740740741,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A 国道番号",
+          "sourceGlossEn": "A National route number",
+          "canonicalOptionId": "q0659_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "national highway No.",
+          "alignmentScore": 0.2317948717948718,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B 省道番号",
+          "sourceGlossEn": "B Provincial (ministerial) road number",
+          "canonicalOptionId": "q0659_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "provincial highway No.",
+          "alignmentScore": 0.21166666666666667,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C 県道番号",
+          "sourceGlossEn": "C Prefectural road number",
+          "canonicalOptionId": "q0659_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "township road No.",
+          "alignmentScore": 0.14714285714285716,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D 郷道番号",
+          "sourceGlossEn": "D Rural road number",
+          "canonicalOptionId": "q0659_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "county road No.",
+          "alignmentScore": 0.1640740740740741,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "B",
+      "canonicalCorrectOptionId": "q0659_o1",
+      "canonicalCorrectOptionKey": "A",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed during unresolved rescue review on 2026-04-14T09:10:39.764Z; reviewer selected locale key B.",
+      "correctOptionAlignment": {
+        "sourceKey": "B",
+        "canonicalOptionId": "q0659_o1",
+        "canonicalOptionKey": "A",
+        "sourceText": "B 省道番号",
+        "sourceGlossEn": "B Provincial (ministerial) road number",
+        "canonicalOptionText": "provincial highway No.",
+        "alignmentScore": 0.21166666666666667,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-14T09:10:39.764Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ja-batch-013-unresolved-decisions.json",
+      "answerKeyReviewerNotes": "",
+      "reviewerSuggestedLocaleCorrectOptionKey": "B",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ja-batch-013-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    }
+  }
+}

@@ -1,0 +1,128 @@
+{
+  "generatedAt": "2026-04-16T07:11:42.160Z",
+  "lang": "ja",
+  "batchId": "batch-015",
+  "dataset": "2023-test1",
+  "sourceDecisionPath": "qbank-tools/generated/staging/new-question-decisions.ja.batch-015.json",
+  "items": [
+    {
+      "candidateId": "nqc-ja-batch-015-001",
+      "sourceLang": "ja",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.24.21.png",
+      "effectiveQuestionType": "ROW",
+      "promptRawJa": "廃棄標準に適合する恐れのある自動車を運転する場合、交通警察は法律に基づき車を拘置できる。",
+      "promptGlossEn": "If you drive a vehicle that is suspected of not meeting disposal standards, the traffic police may detain the vehicle based on the law.",
+      "optionsRawJa": [
+        "A Yes",
+        "B No"
+      ],
+      "optionsGlossEn": [
+        "Yes",
+        "No"
+      ],
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "provisionalTopic": "road-safety",
+      "provisionalSubtopics": [
+        "road-safety:registration"
+      ],
+      "topicConfidence": 1,
+      "topicSignals": [
+        {
+          "topic": "traffic-signals",
+          "subtopic": "traffic-signals:police-signals",
+          "signal": "police-signal",
+          "weight": 1.35
+        }
+      ],
+      "linkedExistingAssetCandidate": null,
+      "reviewerNotes": "",
+      "status": "pending-superset-review"
+    },
+    {
+      "candidateId": "nqc-ja-batch-015-002",
+      "sourceLang": "ja",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.24.29 1.png",
+      "effectiveQuestionType": "MCQ",
+      "promptRawJa": "路上での道路交通安全法を違反した運転は、どの行為になるか。",
+      "promptGlossEn": "Which act is driving that violates the Road Traffic Safety Law on the road considered?",
+      "optionsRawJa": [
+        "A 規制違反",
+        "B 法律違反",
+        "C 過失",
+        "D 規定違反"
+      ],
+      "optionsGlossEn": [
+        "A: Regulation violation",
+        "B: Law violation",
+        "C: Negligence",
+        "D: Rule violation"
+      ],
+      "correctKeyRaw": "B",
+      "correctAnswerRaw": "法律違反",
+      "provisionalTopic": "traffic-signals",
+      "provisionalSubtopics": [
+        "traffic-signals:road-signs"
+      ],
+      "topicConfidence": 1,
+      "topicSignals": [
+        {
+          "topic": "traffic-signals",
+          "subtopic": "traffic-signals:road-signs",
+          "signal": "sign-family",
+          "weight": 1.1
+        }
+      ],
+      "linkedExistingAssetCandidate": null,
+      "reviewerNotes": "",
+      "status": "pending-superset-review"
+    },
+    {
+      "candidateId": "nqc-ja-batch-015-001",
+      "sourceLang": "ja",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.24.36 1.png",
+      "effectiveQuestionType": "MCQ",
+      "promptRawJa": "この道から何メートル以内に停車してはいけないか。",
+      "promptGlossEn": "Within how many meters from this road is it prohibited to park?",
+      "optionsRawJa": [
+        "A 5メートル以内",
+        "B 10メートル以内",
+        "C 30メートル以内",
+        "D 50メートル以内"
+      ],
+      "optionsGlossEn": [
+        "Within 5 meters",
+        "Within 10 meters",
+        "Within 30 meters",
+        "Within 50 meters"
+      ],
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "provisionalTopic": "proper-driving",
+      "provisionalSubtopics": [
+        "proper-driving:traffic-laws"
+      ],
+      "topicConfidence": 1,
+      "topicSignals": [
+        {
+          "topic": "proper-driving",
+          "subtopic": "proper-driving:traffic-laws",
+          "signal": "traffic-law",
+          "weight": 1.15
+        }
+      ],
+      "linkedExistingAssetCandidate": {
+        "qid": "q0610",
+        "number": 610,
+        "score": 38.271,
+        "currentAssetSrc": "/qbank/2023-test1/images/img_a78603fbc73f97b11a5b001fc89bf760.jpeg",
+        "assetHashes": [
+          "a78603fbc73f97b11a5b001fc89bf760"
+        ],
+        "status": "unconfirmed-existing-production-asset"
+      },
+      "reviewerNotes": "",
+      "status": "pending-superset-review"
+    }
+  ]
+}

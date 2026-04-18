@@ -8,6 +8,7 @@ import sharp from "sharp";
 const ROOT = process.cwd();
 const DEFAULT_DATASET = "2023-test1";
 const COLOR_VOCABULARY = ["blue", "red", "yellow", "brown", "green", "white", "black", "gray"];
+const OBJECT_VOCABULARY = ["arrow", "crosswalk", "traffic-light", "bicycle", "bus", "train", "mountain", "railroad", "snow", "rain", "intersection"];
 const PRIMARY_THRESHOLD = 0.3;
 const SECONDARY_THRESHOLD = 0.15;
 const CHROMATIC_PRIMARY_THRESHOLD = 0.3;
@@ -186,6 +187,14 @@ async function main() {
     throw new Error(`questions.json does not contain an array: ${questionsPath}`);
   }
 
+  let existingQuestionTags = {};
+  try {
+    const existingDoc = JSON.parse(await fs.readFile(outputPath, "utf8"));
+    if (existingDoc && typeof existingDoc === "object" && existingDoc.questions && typeof existingDoc.questions === "object") {
+      existingQuestionTags = existingDoc.questions;
+    }
+  } catch {}
+
   const questionsWithImages = questions.filter((question) => Array.isArray(question.assets) && question.assets.length > 0);
   const byQuestion = {};
   let analyzedAssets = 0;
@@ -224,9 +233,15 @@ async function main() {
 
     if (assetEntries.length === 0) continue;
 
+    const existingEntry = existingQuestionTags[String(question.id)];
+    const objectTags = Array.isArray(existingEntry?.objectTags)
+      ? OBJECT_VOCABULARY.filter((tag) => existingEntry.objectTags.includes(tag))
+      : [];
+
     byQuestion[String(question.id)] = {
       assetSrcs: assetEntries,
       colorTags: COLOR_VOCABULARY.filter((color) => allTags.has(color)),
+      ...(objectTags.length > 0 ? { objectTags } : {}),
       dominantByAsset,
     };
   }
@@ -240,6 +255,7 @@ async function main() {
       analyzedAssets,
       missingAssets,
       colorVocabulary: COLOR_VOCABULARY,
+      objectVocabulary: OBJECT_VOCABULARY,
       thresholds: {
         primaryThreshold: PRIMARY_THRESHOLD,
         secondaryThreshold: SECONDARY_THRESHOLD,

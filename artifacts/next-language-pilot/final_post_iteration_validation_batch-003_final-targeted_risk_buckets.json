@@ -1,0 +1,61 @@
+{
+  "generatedAt": "2026-04-18T15:34:11.003Z",
+  "lang": "ja",
+  "batchId": "batch-003",
+  "dataset": "2023-test1",
+  "calibrationProfile": "final-targeted",
+  "pilotItemCount": 40,
+  "countsByBaselineSection": {
+    "matched": 9,
+    "review-needed": 24,
+    "unresolved": 7
+  },
+  "countsByPreflightStatus": {
+    "pass": 11,
+    "warn": 28,
+    "reroute": 1
+  },
+  "countsByRecommendedRoute": {
+    "auto-match ok": 9,
+    "manual review": 24,
+    "likely unresolved": 6,
+    "likely create-new-question": 1
+  },
+  "countsByAdjustedTrustBand": {
+    "very-high": 2,
+    "high": 4,
+    "medium": 6,
+    "low": 13,
+    "none": 3,
+    "very-low": 12
+  },
+  "triggeredChecks": {
+    "trust-band-caution": 5,
+    "topic-subtopic-drift-risk": 11,
+    "image-sign-symbol-mismatch-risk": 20,
+    "choice-shape-mismatch": 1,
+    "likely-create-new-question": 1
+  },
+  "decisionSignals": {
+    "trust-band-caution": 5,
+    "topic-subtopic-drift-risk": 11,
+    "image-sign-symbol-mismatch-risk": 20,
+    "choice-shape-mismatch": 1,
+    "combo-image-sign-context-risk": 4,
+    "likely-create-new-question": 1
+  },
+  "reroutes": [
+    {
+      "itemId": "screenshots/Screenshot 2026-04-07 at 17.50.32.png",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 17.50.32.png",
+      "baselineRoute": "likely unresolved",
+      "recommendedRoute": "likely create-new-question",
+      "suggestedQid": "q0389",
+      "suggestedScore": 33.03,
+      "checks": [
+        "topic-subtopic-drift-risk",
+        "likely-create-new-question"
+      ]
+    }
+  ]
+}

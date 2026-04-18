@@ -1,0 +1,544 @@
+{
+  "generatedAt": "2026-04-16T11:42:11.519Z",
+  "lang": "ja",
+  "batchId": "batch-018",
+  "dataset": "2023-test1",
+  "sourceDecisionPath": "qbank-tools/generated/staging/ja-batch-018-unresolved-decisions.json",
+  "items": [
+    {
+      "itemId": "screenshots/Screenshot 2026-04-07 at 18.26.51.png",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.26.51.png",
+      "status": "kept-unresolved",
+      "reason": "Reviewer chose to keep this item unresolved.",
+      "reviewerNotes": "",
+      "approvedQid": null,
+      "promptRawJa": "安全性リスクを有する自動車を路上で運転してはならない。",
+      "promptGlossEn": "You must not drive a vehicle with safety risks on the road.",
+      "optionsRawJa": [
+        "A Yes",
+        "B No"
+      ],
+      "optionsGlossEn": [
+        "A Yes",
+        "B No"
+      ],
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "provisionalTopic": "proper-driving",
+      "provisionalSubtopics": [
+        "proper-driving:traffic-laws"
+      ],
+      "topicConfidence": 1,
+      "topicSignals": [
+        {
+          "topic": "proper-driving",
+          "subtopic": "proper-driving:traffic-laws",
+          "signal": "traffic-law",
+          "weight": 1.15
+        }
+      ],
+      "topCandidates": [
+        {
+          "qid": "q0218",
+          "number": 218,
+          "type": "ROW",
+          "score": 44.79,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.288,
+            "rawPromptSimilarity": 0.288,
+            "englishPromptSimilarity": 0.288,
+            "syntheticPromptSimilarity": 0.141,
+            "questionType": 1,
+            "imageSignal": 1,
+            "topicWeighting": 0.5,
+            "answerPolarity": 0.5,
+            "conceptAlignment": 0,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0
+          },
+          "diagnostics": {
+            "effectiveItemType": "ROW",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": true,
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "optionSetMode": "binary-row-neutral + synthetic-ja mirror",
+            "syntheticMirrorUsed": true,
+            "genericPromptFamily": null,
+            "sourceConceptSlots": {
+              "condition": [],
+              "context": [],
+              "action": [],
+              "polarity": "negative",
+              "signals": []
+            },
+            "candidateConceptSlots": {
+              "condition": [],
+              "context": [],
+              "action": [
+                "head-light"
+              ],
+              "polarity": "negative",
+              "signals": [
+                {
+                  "slot": "action",
+                  "value": "head-light",
+                  "signal": "head-light"
+                }
+              ]
+            },
+            "conceptMatches": [],
+            "contradictionSignals": [],
+            "rowConceptMode": "slot-alignment + contradiction-penalties",
+            "explanation": [
+              "Binary yes/no options were treated as ROW-like for type scoring.",
+              "Missing correct answer was treated as a neutral signal."
+            ]
+          },
+          "prompt": "You can not drive a motorized vehicle into the lane where the red X-shaped light or the red arrow light is on.",
+          "syntheticJaPrompt": "you してはならない drive motorized 車両 into 車線 where red x-shaped ライト or red arrow ライト。",
+          "translatedPrompt": "적색 X형 신호 또는 적색 화살표 신호가 켜진 차로에는 자동차가 진입할 수 없다.",
+          "options": [],
+          "correctAnswer": {
+            "kind": "ROW",
+            "correctRow": "R",
+            "correctOptionId": null,
+            "correctOptionKey": null,
+            "correctOptionText": "right / true",
+            "correctOptionTranslatedText": null,
+            "answerRaw": "Right"
+          },
+          "image": {
+            "hasImage": false,
+            "currentAssetSrc": null,
+            "assetHashes": []
+          },
+          "topic": "traffic-signals",
+          "subtopics": [
+            "traffic-signals:signal-lights",
+            "traffic-signals:road-markings",
+            "proper-driving:traffic-laws"
+          ],
+          "conceptSlots": {
+            "condition": [],
+            "context": [],
+            "action": [
+              "head-light"
+            ],
+            "polarity": "negative",
+            "signals": [
+              {
+                "slot": "action",
+                "value": "head-light",
+                "signal": "head-light"
+              }
+            ]
+          }
+        },
+        {
+          "qid": "q0010",
+          "number": 10,
+          "type": "ROW",
+          "score": 42.946,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.25,
+            "rawPromptSimilarity": 0.257,
+            "englishPromptSimilarity": 0.234,
+            "syntheticPromptSimilarity": 0.25,
+            "questionType": 1,
+            "imageSignal": 1,
+            "topicWeighting": 0.5,
+            "answerPolarity": 0.5,
+            "conceptAlignment": 0,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0
+          },
+          "diagnostics": {
+            "effectiveItemType": "ROW",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": true,
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "optionSetMode": "binary-row-neutral + synthetic-ja mirror",
+            "syntheticMirrorUsed": true,
+            "genericPromptFamily": null,
+            "sourceConceptSlots": {
+              "condition": [],
+              "context": [],
+              "action": [],
+              "polarity": "negative",
+              "signals": []
+            },
+            "candidateConceptSlots": {
+              "condition": [],
+              "context": [
+                "expressway"
+              ],
+              "action": [
+                "u-turn"
+              ],
+              "polarity": "negative",
+              "signals": [
+                {
+                  "slot": "context",
+                  "value": "expressway",
+                  "signal": "expressway"
+                },
+                {
+                  "slot": "action",
+                  "value": "u-turn",
+                  "signal": "u-turn"
+                }
+              ]
+            },
+            "conceptMatches": [],
+            "contradictionSignals": [],
+            "rowConceptMode": "slot-alignment + contradiction-penalties",
+            "explanation": [
+              "Binary yes/no options were treated as ROW-like for type scoring.",
+              "Missing correct answer was treated as a neutral signal."
+            ]
+          },
+          "prompt": "A vehicle is not allowed to make a U-turn on the ramp of an expressway.",
+          "syntheticJaPrompt": "車両 してはならない Uターン ramp 高速道路。",
+          "translatedPrompt": "고속도로의 램프(진입·진출로)에서는 유턴을 해서는 안 된다.",
+          "options": [],
+          "correctAnswer": {
+            "kind": "ROW",
+            "correctRow": "R",
+            "correctOptionId": null,
+            "correctOptionKey": null,
+            "correctOptionText": "right / true",
+            "correctOptionTranslatedText": null,
+            "answerRaw": "Right"
+          },
+          "image": {
+            "hasImage": false,
+            "currentAssetSrc": null,
+            "assetHashes": []
+          },
+          "topic": "expressway",
+          "subtopics": [],
+          "conceptSlots": {
+            "condition": [],
+            "context": [
+              "expressway"
+            ],
+            "action": [
+              "u-turn"
+            ],
+            "polarity": "negative",
+            "signals": [
+              {
+                "slot": "context",
+                "value": "expressway",
+                "signal": "expressway"
+              },
+              {
+                "slot": "action",
+                "value": "u-turn",
+                "signal": "u-turn"
+              }
+            ]
+          }
+        },
+        {
+          "qid": "q0207",
+          "number": 207,
+          "type": "ROW",
+          "score": 42.89,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.259,
+            "rawPromptSimilarity": 0.259,
+            "englishPromptSimilarity": 0.259,
+            "syntheticPromptSimilarity": 0.087,
+            "questionType": 1,
+            "imageSignal": 1,
+            "topicWeighting": 0.5,
+            "answerPolarity": 0.5,
+            "conceptAlignment": 0,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0
+          },
+          "diagnostics": {
+            "effectiveItemType": "ROW",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": true,
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "optionSetMode": "binary-row-neutral + synthetic-ja mirror",
+            "syntheticMirrorUsed": true,
+            "genericPromptFamily": null,
+            "sourceConceptSlots": {
+              "condition": [],
+              "context": [],
+              "action": [],
+              "polarity": "negative",
+              "signals": []
+            },
+            "candidateConceptSlots": {
+              "condition": [],
+              "context": [],
+              "action": [],
+              "polarity": "positive",
+              "signals": []
+            },
+            "conceptMatches": [],
+            "contradictionSignals": [],
+            "rowConceptMode": "slot-alignment + contradiction-penalties",
+            "explanation": [
+              "Binary yes/no options were treated as ROW-like for type scoring.",
+              "Missing correct answer was treated as a neutral signal."
+            ]
+          },
+          "prompt": "A driver should drive the vehicles in accordance with the qualification listed on their driving license.",
+          "syntheticJaPrompt": "運転者 べき drive 車両 accordance qualification listed driving license。",
+          "translatedPrompt": "운전자는 운전면허에 기재된 면허 종류에 맞는 차량을 운전해야 한다.",
+          "options": [],
+          "correctAnswer": {
+            "kind": "ROW",
+            "correctRow": "R",
+            "correctOptionId": null,
+            "correctOptionKey": null,
+            "correctOptionText": "right / true",
+            "correctOptionTranslatedText": null,
+            "answerRaw": "Right"
+          },
+          "image": {
+            "hasImage": false,
+            "currentAssetSrc": null,
+            "assetHashes": []
+          },
+          "topic": "license",
+          "subtopics": [],
+          "conceptSlots": {
+            "condition": [],
+            "context": [],
+            "action": [],
+            "polarity": "positive",
+            "signals": []
+          }
+        },
+        {
+          "qid": "q0049",
+          "number": 49,
+          "type": "ROW",
+          "score": 42.75,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.247,
+            "rawPromptSimilarity": 0.253,
+            "englishPromptSimilarity": 0.234,
+            "syntheticPromptSimilarity": 0.247,
+            "questionType": 1,
+            "imageSignal": 1,
+            "topicWeighting": 0.5,
+            "answerPolarity": 0.5,
+            "conceptAlignment": 0,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0
+          },
+          "diagnostics": {
+            "effectiveItemType": "ROW",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": true,
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "optionSetMode": "binary-row-neutral + synthetic-ja mirror",
+            "syntheticMirrorUsed": true,
+            "genericPromptFamily": null,
+            "sourceConceptSlots": {
+              "condition": [],
+              "context": [],
+              "action": [],
+              "polarity": "negative",
+              "signals": []
+            },
+            "candidateConceptSlots": {
+              "condition": [
+                "backing"
+              ],
+              "context": [
+                "expressway"
+              ],
+              "action": [],
+              "polarity": "negative",
+              "signals": [
+                {
+                  "slot": "condition",
+                  "value": "backing",
+                  "signal": "backing"
+                },
+                {
+                  "slot": "context",
+                  "value": "expressway",
+                  "signal": "expressway"
+                }
+              ]
+            },
+            "conceptMatches": [],
+            "contradictionSignals": [],
+            "rowConceptMode": "slot-alignment + contradiction-penalties",
+            "explanation": [
+              "Binary yes/no options were treated as ROW-like for type scoring.",
+              "Missing correct answer was treated as a neutral signal."
+            ]
+          },
+          "prompt": "A vehicle is not allowed to reverse on the ramp of an expressway.",
+          "syntheticJaPrompt": "車両 してはならない backing ramp 高速道路。",
+          "translatedPrompt": "고속도로 램프에서 차량은 후진할 수 없다.",
+          "options": [],
+          "correctAnswer": {
+            "kind": "ROW",
+            "correctRow": "R",
+            "correctOptionId": null,
+            "correctOptionKey": null,
+            "correctOptionText": "right / true",
+            "correctOptionTranslatedText": null,
+            "answerRaw": "Right"
+          },
+          "image": {
+            "hasImage": false,
+            "currentAssetSrc": null,
+            "assetHashes": []
+          },
+          "topic": "expressway",
+          "subtopics": [],
+          "conceptSlots": {
+            "condition": [
+              "backing"
+            ],
+            "context": [
+              "expressway"
+            ],
+            "action": [],
+            "polarity": "negative",
+            "signals": [
+              {
+                "slot": "condition",
+                "value": "backing",
+                "signal": "backing"
+              },
+              {
+                "slot": "context",
+                "value": "expressway",
+                "signal": "expressway"
+              }
+            ]
+          }
+        },
+        {
+          "qid": "q0086",
+          "number": 86,
+          "type": "ROW",
+          "score": 42.53,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.246,
+            "rawPromptSimilarity": 0.246,
+            "englishPromptSimilarity": 0.246,
+            "syntheticPromptSimilarity": 0.193,
+            "questionType": 1,
+            "imageSignal": 1,
+            "topicWeighting": 0.5,
+            "answerPolarity": 0.5,
+            "conceptAlignment": 0,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0
+          },
+          "diagnostics": {
+            "effectiveItemType": "ROW",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": true,
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "optionSetMode": "binary-row-neutral + synthetic-ja mirror",
+            "syntheticMirrorUsed": true,
+            "genericPromptFamily": null,
+            "sourceConceptSlots": {
+              "condition": [],
+              "context": [],
+              "action": [],
+              "polarity": "negative",
+              "signals": []
+            },
+            "candidateConceptSlots": {
+              "condition": [
+                "downhill"
+              ],
+              "context": [],
+              "action": [
+                "pass"
+              ],
+              "polarity": "negative",
+              "signals": [
+                {
+                  "slot": "condition",
+                  "value": "downhill",
+                  "signal": "downhill"
+                },
+                {
+                  "slot": "action",
+                  "value": "pass",
+                  "signal": "pass"
+                }
+              ]
+            },
+            "conceptMatches": [],
+            "contradictionSignals": [],
+            "rowConceptMode": "slot-alignment + contradiction-penalties",
+            "explanation": [
+              "Binary yes/no options were treated as ROW-like for type scoring.",
+              "Missing correct answer was treated as a neutral signal."
+            ]
+          },
+          "prompt": "When a vehicle goes downhill on a mountain road, it is not allowed to overtake.",
+          "syntheticJaPrompt": "when 車両 goes downhill mountain road it してはならない 追い越し。",
+          "translatedPrompt": "산길의 내리막길에서 차량이 주행할 때 추월할 수 없다.",
+          "options": [],
+          "correctAnswer": {
+            "kind": "ROW",
+            "correctRow": "R",
+            "correctOptionId": null,
+            "correctOptionKey": null,
+            "correctOptionText": "right / true",
+            "correctOptionTranslatedText": null,
+            "answerRaw": "Right"
+          },
+          "image": {
+            "hasImage": false,
+            "currentAssetSrc": null,
+            "assetHashes": []
+          },
+          "topic": "row",
+          "subtopics": [],
+          "conceptSlots": {
+            "condition": [
+              "downhill"
+            ],
+            "context": [],
+            "action": [
+              "pass"
+            ],
+            "polarity": "negative",
+            "signals": [
+              {
+                "slot": "condition",
+                "value": "downhill",
+                "signal": "downhill"
+              },
+              {
+                "slot": "action",
+                "value": "pass",
+                "signal": "pass"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

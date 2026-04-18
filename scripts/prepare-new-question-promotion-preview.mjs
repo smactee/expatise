@@ -42,6 +42,7 @@ const preview = {
     sourceLang: candidate.sourceLang,
     sourceImage: candidate.sourceImage,
     effectiveQuestionType: candidate.effectiveQuestionType,
+    newQuestionLocalAnswerKey: candidate.newQuestionLocalAnswerKey ?? null,
     provisionalTopic: candidate.provisionalTopic,
     provisionalSubtopics: candidate.provisionalSubtopics,
     linkedExistingAssetCandidate: candidate.linkedExistingAssetCandidate ?? null,

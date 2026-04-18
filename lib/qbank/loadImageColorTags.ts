@@ -3,6 +3,7 @@ import { DATASETS, type DatasetId } from "./datasets";
 export type QuestionImageColorEntry = {
   assetSrcs?: string[];
   colorTags?: string[];
+  objectTags?: string[];
   dominantByAsset?: Array<{
     assetSrc: string;
     colors: Array<{
@@ -17,6 +18,24 @@ export type QuestionImageColorTagFile = {
   meta?: Record<string, unknown>;
   questions?: Record<string, QuestionImageColorEntry>;
 };
+
+function isQuestionImageColorTagFile(value: unknown): value is QuestionImageColorTagFile {
+  return Boolean(
+    value &&
+    typeof value === "object" &&
+    !Array.isArray(value) &&
+    ("questions" in value || "meta" in value),
+  );
+}
+
+function isQuestionImageColorEntryMap(value: unknown): value is Record<string, QuestionImageColorEntry> {
+  return Boolean(
+    value &&
+    typeof value === "object" &&
+    !Array.isArray(value) &&
+    !("questions" in value),
+  );
+}
 
 function imageColorTagsUrl(datasetId: DatasetId) {
   const dataset = DATASETS[datasetId];
@@ -36,12 +55,14 @@ export async function loadImageColorTags(datasetId: DatasetId): Promise<Record<s
       return {};
     }
 
-    const json = (await res.json()) as QuestionImageColorTagFile | Record<string, QuestionImageColorEntry>;
-    if (json && typeof json === "object" && "questions" in json && json.questions && typeof json.questions === "object") {
-      return json.questions;
+    const json = (await res.json()) as unknown;
+    if (isQuestionImageColorTagFile(json)) {
+      return json.questions && typeof json.questions === "object" && !Array.isArray(json.questions)
+        ? json.questions
+        : {};
     }
 
-    return json && typeof json === "object" ? (json as Record<string, QuestionImageColorEntry>) : {};
+    return isQuestionImageColorEntryMap(json) ? json : {};
   } catch {
     return {};
   }

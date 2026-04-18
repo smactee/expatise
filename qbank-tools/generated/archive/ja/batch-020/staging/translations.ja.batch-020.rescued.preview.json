@@ -1,0 +1,733 @@
+{
+  "meta": {
+    "locale": "ja",
+    "generatedAt": "2026-04-17T02:12:45.960Z",
+    "reviewedBatchId": "batch-020",
+    "dataset": "2023-test1",
+    "sourceUnresolvedPath": "imports/ja/batch-020/unresolved.json",
+    "sourceUnresolvedDecisionPath": "qbank-tools/generated/staging/ja-batch-020-unresolved-decisions.json",
+    "rescuedExistingQidCount": 6,
+    "manualAnswerKeyConfirmationCount": 0,
+    "stagingOnly": true
+  },
+  "questions": {
+    "q0851": {
+      "prompt": "この標識の示す意味はどれか。",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.28.24.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 18.28.24.png",
+      "reviewerNotes": "",
+      "promptRawJa": "この標識の示す意味はどれか。",
+      "promptGlossEn": "What does this sign mean?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-020",
+        "approvedQid": "q0851",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "options": {
+        "q0851_o1": "B 冠水橋",
+        "q0851_o2": "C 渡し場",
+        "q0851_o3": "D 船用埠頭",
+        "q0851_o4": "A 冠水の恐れあり"
+      },
+      "optionsRawJa": [
+        "A 冠水の恐れあり",
+        "B 冠水橋",
+        "C 渡し場",
+        "D 船用埠頭"
+      ],
+      "optionsGlossEn": [
+        "A: Risk of flooding",
+        "B: Submersible bridge",
+        "C: Ferry crossing",
+        "D: Dock for ships"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A 冠水の恐れあり",
+          "sourceTextBody": "冠水の恐れあり",
+          "sourceGlossEn": "A: Risk of flooding",
+          "canonicalOptionId": "q0851_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "overflowing road",
+          "alignmentScore": 0.05,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B 冠水橋",
+          "sourceTextBody": "冠水橋",
+          "sourceGlossEn": "B: Submersible bridge",
+          "canonicalOptionId": "q0851_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "overflowing bridge",
+          "alignmentScore": 0.32916666666666666,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C 渡し場",
+          "sourceTextBody": "渡し場",
+          "sourceGlossEn": "C: Ferry crossing",
+          "canonicalOptionId": "q0851_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "ferry",
+          "alignmentScore": 0.48000000000000004,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D 船用埠頭",
+          "sourceTextBody": "船用埠頭",
+          "sourceGlossEn": "D: Dock for ships",
+          "canonicalOptionId": "q0851_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "pier",
+          "alignmentScore": 0,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A 冠水の恐れあり",
+          "sourceGlossEn": "A: Risk of flooding",
+          "canonicalOptionId": "q0851_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "overflowing road",
+          "alignmentScore": 0.05,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B 冠水橋",
+          "sourceGlossEn": "B: Submersible bridge",
+          "canonicalOptionId": "q0851_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "overflowing bridge",
+          "alignmentScore": 0.32916666666666666,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C 渡し場",
+          "sourceGlossEn": "C: Ferry crossing",
+          "canonicalOptionId": "q0851_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "ferry",
+          "alignmentScore": 0.48000000000000004,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D 船用埠頭",
+          "sourceGlossEn": "D: Dock for ships",
+          "canonicalOptionId": "q0851_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "pier",
+          "alignmentScore": 0,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "C",
+      "canonicalCorrectOptionId": "q0851_o2",
+      "canonicalCorrectOptionKey": "B",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed during unresolved rescue review on 2026-04-17T02:12:45.960Z; reviewer selected locale key C.",
+      "correctOptionAlignment": {
+        "sourceKey": "C",
+        "canonicalOptionId": "q0851_o2",
+        "canonicalOptionKey": "B",
+        "sourceText": "C 渡し場",
+        "sourceGlossEn": "C: Ferry crossing",
+        "canonicalOptionText": "ferry",
+        "alignmentScore": 0.48000000000000004,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-17T02:12:45.960Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ja-batch-020-unresolved-decisions.json",
+      "answerKeyReviewerNotes": "",
+      "reviewerSuggestedLocaleCorrectOptionKey": "C",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ja-batch-020-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0873": {
+      "prompt": "道路中央の黄色い斜線部分は、なにを示す標示か。",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.28.29.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 18.28.29.png",
+      "reviewerNotes": "",
+      "promptRawJa": "道路中央の黄色い斜線部分は、なにを示す標示か。",
+      "promptGlossEn": "What does the yellow diagonal marking in the center of the road indicate?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-020",
+        "approvedQid": "q0873",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "options": {
+        "q0873_o1": "D 一方通行車線の境界線",
+        "q0873_o2": "C 対向車線の境界線を越えてはいけない",
+        "q0873_o3": "B 両側から同一方向車線の境界線を越えてよい",
+        "q0873_o4": "A 対向車線の境界線を越えてよい"
+      },
+      "optionsRawJa": [
+        "A 対向車線の境界線を越えてよい",
+        "B 両側から同一方向車線の境界線を越えてよい",
+        "C 対向車線の境界線を越えてはいけない",
+        "D 一方通行車線の境界線"
+      ],
+      "optionsGlossEn": [
+        "A. You may cross the boundary line of the oncoming lane",
+        "B. You may cross the boundary line of the same direction lane from both sides",
+        "C. You must not cross the boundary line of the oncoming lane",
+        "D. One-way lane boundary"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A 対向車線の境界線を越えてよい",
+          "sourceTextBody": "対向車線の境界線を越えてよい",
+          "sourceGlossEn": "A. You may cross the boundary line of the oncoming lane",
+          "canonicalOptionId": "q0873_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "opposite direction lanes dividing line that can be crossed",
+          "alignmentScore": 0.16439862542955325,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B 両側から同一方向車線の境界線を越えてよい",
+          "sourceTextBody": "両側から同一方向車線の境界線を越えてよい",
+          "sourceGlossEn": "B. You may cross the boundary line of the same direction lane from both sides",
+          "canonicalOptionId": "q0873_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "bilateral same direction lanes dividing line that can be crossed",
+          "alignmentScore": 0.26487455197132614,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C 対向車線の境界線を越えてはいけない",
+          "sourceTextBody": "対向車線の境界線を越えてはいけない",
+          "sourceGlossEn": "C. You must not cross the boundary line of the oncoming lane",
+          "canonicalOptionId": "q0873_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "opposite direction lanes dividing line that can not be crossed",
+          "alignmentScore": 0.253671562082777,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D 一方通行車線の境界線",
+          "sourceTextBody": "一方通行車線の境界線",
+          "sourceGlossEn": "D. One-way lane boundary",
+          "canonicalOptionId": "q0873_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "one-way lanes dividing line",
+          "alignmentScore": 0.4223255813953488,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A 対向車線の境界線を越えてよい",
+          "sourceGlossEn": "A. You may cross the boundary line of the oncoming lane",
+          "canonicalOptionId": "q0873_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "opposite direction lanes dividing line that can be crossed",
+          "alignmentScore": 0.16439862542955325,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B 両側から同一方向車線の境界線を越えてよい",
+          "sourceGlossEn": "B. You may cross the boundary line of the same direction lane from both sides",
+          "canonicalOptionId": "q0873_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "bilateral same direction lanes dividing line that can be crossed",
+          "alignmentScore": 0.26487455197132614,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C 対向車線の境界線を越えてはいけない",
+          "sourceGlossEn": "C. You must not cross the boundary line of the oncoming lane",
+          "canonicalOptionId": "q0873_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "opposite direction lanes dividing line that can not be crossed",
+          "alignmentScore": 0.253671562082777,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D 一方通行車線の境界線",
+          "sourceGlossEn": "D. One-way lane boundary",
+          "canonicalOptionId": "q0873_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "one-way lanes dividing line",
+          "alignmentScore": 0.4223255813953488,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "C",
+      "canonicalCorrectOptionId": "q0873_o2",
+      "canonicalCorrectOptionKey": "B",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed during unresolved rescue review on 2026-04-17T02:12:45.960Z; reviewer selected locale key C.",
+      "correctOptionAlignment": {
+        "sourceKey": "C",
+        "canonicalOptionId": "q0873_o2",
+        "canonicalOptionKey": "B",
+        "sourceText": "C 対向車線の境界線を越えてはいけない",
+        "sourceGlossEn": "C. You must not cross the boundary line of the oncoming lane",
+        "canonicalOptionText": "opposite direction lanes dividing line that can not be crossed",
+        "alignmentScore": 0.253671562082777,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-17T02:12:45.960Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ja-batch-020-unresolved-decisions.json",
+      "answerKeyReviewerNotes": "",
+      "reviewerSuggestedLocaleCorrectOptionKey": "C",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ja-batch-020-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0221": {
+      "prompt": "路上で自動車を運転する前に、規定に基づきシートベルトを着用すべきである。",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.28.32.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 18.28.32.png",
+      "reviewerNotes": "",
+      "promptRawJa": "路上で自動車を運転する前に、規定に基づきシートベルトを着用すべきである。",
+      "promptGlossEn": "Before driving a car on the road, you should wear a seatbelt according to the regulations.",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "ROW",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-020",
+        "approvedQid": "q0221",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "optionsRawJa": [],
+      "optionsGlossEn": [],
+      "localeCorrectOptionKey": null,
+      "canonicalCorrectRow": "R",
+      "canonicalCorrectAnswer": "right / true",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "ROW question; no locale-specific option key applies.",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ja-batch-020-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0419": {
+      "prompt": "このように一時駐車した赤い自動車の違法行為はどれか。",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.28.45.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 18.28.45.png",
+      "reviewerNotes": "",
+      "promptRawJa": "このように一時駐車した赤い自動車の違法行為はどれか。",
+      "promptGlossEn": "Which is the traffic violation committed by the red car that stopped temporarily like this?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-020",
+        "approvedQid": "q0419",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "options": {
+        "q0419_o1": "C 道端から30cm以上の間隔を空けた",
+        "q0419_o2": "D 駐車禁止線のある道路に駐車した",
+        "q0419_o3": "A ガソリンスタンドから30メートル以内である",
+        "q0419_o4": "B 非自動車専用駐車線を占用した"
+      },
+      "optionsRawJa": [
+        "A ガソリンスタンドから30メートル以内である",
+        "B 非自動車専用駐車線を占用した",
+        "C 道端から30cm以上の間隔を空けた",
+        "D 駐車禁止線のある道路に駐車した"
+      ],
+      "optionsGlossEn": [
+        "A: It is within 30 meters of a gas station.",
+        "B: Occupied a non-automobile-only parking lane.",
+        "C: Left more than 30 cm away from the roadside.",
+        "D: Parked on a road with a no-parking line."
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A ガソリンスタンドから30メートル以内である",
+          "sourceTextBody": "ガソリンスタンドから30メートル以内である",
+          "sourceGlossEn": "A: It is within 30 meters of a gas station.",
+          "canonicalOptionId": "q0419_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "less than 30m from gas station",
+          "alignmentScore": 0.21075268817204298,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B 非自動車専用駐車線を占用した",
+          "sourceTextBody": "非自動車専用駐車線を占用した",
+          "sourceGlossEn": "B: Occupied a non-automobile-only parking lane.",
+          "canonicalOptionId": "q0419_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "stop occupying the lane for non-motorized vehicles",
+          "alignmentScore": 0.16666666666666669,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C 道端から30cm以上の間隔を空けた",
+          "sourceTextBody": "道端から30cm以上の間隔を空けた",
+          "sourceGlossEn": "C: Left more than 30 cm away from the roadside.",
+          "canonicalOptionId": "q0419_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "more than 30cm from roadside",
+          "alignmentScore": 0.5015873015873016,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D 駐車禁止線のある道路に駐車した",
+          "sourceTextBody": "駐車禁止線のある道路に駐車した",
+          "sourceGlossEn": "D: Parked on a road with a no-parking line.",
+          "canonicalOptionId": "q0419_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "stop in the section with no stopping marking",
+          "alignmentScore": 0.1401056338028169,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A ガソリンスタンドから30メートル以内である",
+          "sourceGlossEn": "A: It is within 30 meters of a gas station.",
+          "canonicalOptionId": "q0419_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "less than 30m from gas station",
+          "alignmentScore": 0.21075268817204298,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B 非自動車専用駐車線を占用した",
+          "sourceGlossEn": "B: Occupied a non-automobile-only parking lane.",
+          "canonicalOptionId": "q0419_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "stop occupying the lane for non-motorized vehicles",
+          "alignmentScore": 0.16666666666666669,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C 道端から30cm以上の間隔を空けた",
+          "sourceGlossEn": "C: Left more than 30 cm away from the roadside.",
+          "canonicalOptionId": "q0419_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "more than 30cm from roadside",
+          "alignmentScore": 0.5015873015873016,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D 駐車禁止線のある道路に駐車した",
+          "sourceGlossEn": "D: Parked on a road with a no-parking line.",
+          "canonicalOptionId": "q0419_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "stop in the section with no stopping marking",
+          "alignmentScore": 0.1401056338028169,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "A",
+      "canonicalCorrectOptionId": "q0419_o3",
+      "canonicalCorrectOptionKey": "C",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed during unresolved rescue review on 2026-04-17T02:12:45.960Z; reviewer selected locale key A.",
+      "correctOptionAlignment": {
+        "sourceKey": "A",
+        "canonicalOptionId": "q0419_o3",
+        "canonicalOptionKey": "C",
+        "sourceText": "A ガソリンスタンドから30メートル以内である",
+        "sourceGlossEn": "A: It is within 30 meters of a gas station.",
+        "canonicalOptionText": "less than 30m from gas station",
+        "alignmentScore": 0.21075268817204298,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-17T02:12:45.960Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ja-batch-020-unresolved-decisions.json",
+      "answerKeyReviewerNotes": "",
+      "reviewerSuggestedLocaleCorrectOptionKey": "A",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ja-batch-020-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0665": {
+      "prompt": "この標識は何を示しているか。",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.28.49.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 18.28.49.png",
+      "reviewerNotes": "",
+      "promptRawJa": "この標識は何を示しているか。",
+      "promptGlossEn": "What does this sign indicate?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-020",
+        "approvedQid": "q0665",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "options": {
+        "q0665_o1": "C 両側通行",
+        "q0665_o2": "D 右側通行",
+        "q0665_o3": "A 左側通行",
+        "q0665_o4": "B 通行止め"
+      },
+      "optionsRawJa": [
+        "A 左側通行",
+        "B 通行止め",
+        "C 両側通行",
+        "D 右側通行"
+      ],
+      "optionsGlossEn": [
+        "A. Keep left",
+        "B. Road closed",
+        "C. Both sides allowed",
+        "D. Keep right"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A 左側通行",
+          "sourceTextBody": "左側通行",
+          "sourceGlossEn": "A. Keep left",
+          "canonicalOptionId": "q0665_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "Pass by the left side",
+          "alignmentScore": 0.20800000000000002,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B 通行止め",
+          "sourceTextBody": "通行止め",
+          "sourceGlossEn": "B. Road closed",
+          "canonicalOptionId": "q0665_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "Passing is prohibited",
+          "alignmentScore": 0.37101449275362314,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C 両側通行",
+          "sourceTextBody": "両側通行",
+          "sourceGlossEn": "C. Both sides allowed",
+          "canonicalOptionId": "q0665_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "Passing on both sides",
+          "alignmentScore": 0.4048484848484849,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D 右側通行",
+          "sourceTextBody": "右側通行",
+          "sourceGlossEn": "D. Keep right",
+          "canonicalOptionId": "q0665_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "Passing by the right side",
+          "alignmentScore": 0.21925925925925926,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A 左側通行",
+          "sourceGlossEn": "A. Keep left",
+          "canonicalOptionId": "q0665_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "Pass by the left side",
+          "alignmentScore": 0.20800000000000002,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B 通行止め",
+          "sourceGlossEn": "B. Road closed",
+          "canonicalOptionId": "q0665_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "Passing is prohibited",
+          "alignmentScore": 0.37101449275362314,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C 両側通行",
+          "sourceGlossEn": "C. Both sides allowed",
+          "canonicalOptionId": "q0665_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "Passing on both sides",
+          "alignmentScore": 0.4048484848484849,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D 右側通行",
+          "sourceGlossEn": "D. Keep right",
+          "canonicalOptionId": "q0665_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "Passing by the right side",
+          "alignmentScore": 0.21925925925925926,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "A",
+      "canonicalCorrectOptionId": "q0665_o3",
+      "canonicalCorrectOptionKey": "C",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed during unresolved rescue review on 2026-04-17T02:12:45.960Z; reviewer selected locale key A.",
+      "correctOptionAlignment": {
+        "sourceKey": "A",
+        "canonicalOptionId": "q0665_o3",
+        "canonicalOptionKey": "C",
+        "sourceText": "A 左側通行",
+        "sourceGlossEn": "A. Keep left",
+        "canonicalOptionText": "Pass by the left side",
+        "alignmentScore": 0.20800000000000002,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-17T02:12:45.960Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ja-batch-020-unresolved-decisions.json",
+      "answerKeyReviewerNotes": "",
+      "reviewerSuggestedLocaleCorrectOptionKey": "A",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ja-batch-020-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0224": {
+      "prompt": "運転者は服役や出国（塀）のため、免許証の審査延長を申請している間、自動車を運転してはいけない。",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.28.50.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 18.28.50.png",
+      "reviewerNotes": "",
+      "promptRawJa": "運転者は服役や出国（塀）のため、免許証の審査延長を申請している間、自動車を運転してはいけない。",
+      "promptGlossEn": "A driver must not drive a car while applying for an extension of their license examination period due to imprisonment or leaving the country (abroad).",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "ROW",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-020",
+        "approvedQid": "q0224",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "optionsRawJa": [],
+      "optionsGlossEn": [],
+      "localeCorrectOptionKey": null,
+      "canonicalCorrectRow": "R",
+      "canonicalCorrectAnswer": "right / true",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "ROW question; no locale-specific option key applies.",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ja-batch-020-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    }
+  }
+}

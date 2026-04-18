@@ -1,0 +1,895 @@
+{
+  "meta": {
+    "locale": "ja",
+    "generatedAt": "2026-04-14T11:12:30.460Z",
+    "reviewedBatchId": "batch-014",
+    "dataset": "2023-test1",
+    "sourceUnresolvedPath": "imports/ja/batch-014/unresolved.json",
+    "sourceUnresolvedDecisionPath": "qbank-tools/generated/staging/ja-batch-014-unresolved-decisions.json",
+    "rescuedExistingQidCount": 7,
+    "manualAnswerKeyConfirmationCount": 0,
+    "stagingOnly": true
+  },
+  "questions": {
+    "q0384": {
+      "prompt": "小型自動車運転免許証を持っている運転者は、次のなかのどの状況において運転免許証審査を受ける必要があるか。",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/600.png",
+      "sourceItemId": "screenshots/600.png",
+      "reviewerNotes": "",
+      "promptRawJa": "小型自動車運転免許証を持っている運転者は、次のなかのどの状況において運転免許証審査を受ける必要があるか。",
+      "promptGlossEn": "In which of the following situations does a driver with a small vehicle driver's license need to undergo a license review?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-014",
+        "approvedQid": "q0384",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "options": {
+        "q0384_o1": "B 一累積点数計算周期が終わる頃",
+        "q0384_o2": "A 免許証の有効期間が切れ、免許更新をする時",
+        "q0384_o3": "C 一計算周期に、累積点数が満点に達していない時",
+        "q0384_o4": "D 一計算周期に、累積点数が12点となった時"
+      },
+      "optionsRawJa": [
+        "A 免許証の有効期間が切れ、免許更新をする時",
+        "B 一累積点数計算周期が終わる頃",
+        "C 一計算周期に、累積点数が満点に達していない時",
+        "D 一計算周期に、累積点数が12点となった時"
+      ],
+      "optionsGlossEn": [
+        "A: When the license period has expired and you are renewing the license",
+        "B: When the cumulative point calculation period is about to end",
+        "C: When the cumulative points have not reached the full score during the calculation period",
+        "D: When the cumulative points reach 12 points during the calculation period"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A 免許証の有効期間が切れ、免許更新をする時",
+          "sourceTextBody": "免許証の有効期間が切れ、免許更新をする時",
+          "sourceGlossEn": "A: When the license period has expired and you are renewing the license",
+          "canonicalOptionId": "q0384_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "Changing their driver's license due to expiration.",
+          "alignmentScore": 0.11547619047619048,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B 一累積点数計算周期が終わる頃",
+          "sourceTextBody": "一累積点数計算周期が終わる頃",
+          "sourceGlossEn": "B: When the cumulative point calculation period is about to end",
+          "canonicalOptionId": "q0384_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "the end of a scoring cycle",
+          "alignmentScore": 0.07222222222222222,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C 一計算周期に、累積点数が満点に達していない時",
+          "sourceTextBody": "一計算周期に、累積点数が満点に達していない時",
+          "sourceGlossEn": "C: When the cumulative points have not reached the full score during the calculation period",
+          "canonicalOptionId": "q0384_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "fail to reach 12 points in one scoring cycle",
+          "alignmentScore": 0.09824561403508772,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D 一計算周期に、累積点数が12点となった時",
+          "sourceTextBody": "一計算周期に、累積点数が12点となった時",
+          "sourceGlossEn": "D: When the cumulative points reach 12 points during the calculation period",
+          "canonicalOptionId": "q0384_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "reach 12 points in one scoring cycle",
+          "alignmentScore": 0.27311827956989243,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A 免許証の有効期間が切れ、免許更新をする時",
+          "sourceGlossEn": "A: When the license period has expired and you are renewing the license",
+          "canonicalOptionId": "q0384_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "Changing their driver's license due to expiration.",
+          "alignmentScore": 0.11547619047619048,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B 一累積点数計算周期が終わる頃",
+          "sourceGlossEn": "B: When the cumulative point calculation period is about to end",
+          "canonicalOptionId": "q0384_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "the end of a scoring cycle",
+          "alignmentScore": 0.07222222222222222,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C 一計算周期に、累積点数が満点に達していない時",
+          "sourceGlossEn": "C: When the cumulative points have not reached the full score during the calculation period",
+          "canonicalOptionId": "q0384_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "fail to reach 12 points in one scoring cycle",
+          "alignmentScore": 0.09824561403508772,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D 一計算周期に、累積点数が12点となった時",
+          "sourceGlossEn": "D: When the cumulative points reach 12 points during the calculation period",
+          "canonicalOptionId": "q0384_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "reach 12 points in one scoring cycle",
+          "alignmentScore": 0.27311827956989243,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "A",
+      "canonicalCorrectOptionId": "q0384_o2",
+      "canonicalCorrectOptionKey": "B",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed during unresolved rescue review on 2026-04-14T11:12:30.460Z; reviewer selected locale key A.",
+      "correctOptionAlignment": {
+        "sourceKey": "A",
+        "canonicalOptionId": "q0384_o2",
+        "canonicalOptionKey": "B",
+        "sourceText": "A 免許証の有効期間が切れ、免許更新をする時",
+        "sourceGlossEn": "A: When the license period has expired and you are renewing the license",
+        "canonicalOptionText": "Changing their driver's license due to expiration.",
+        "alignmentScore": 0.11547619047619048,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-14T11:12:30.460Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ja-batch-014-unresolved-decisions.json",
+      "answerKeyReviewerNotes": "",
+      "reviewerSuggestedLocaleCorrectOptionKey": "A",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ja-batch-014-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0489": {
+      "prompt": "廃棄車を路上で運転すると、規定に基づき罰金に処せられる以外に、どのような処分を受けるか。",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.22.40.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 18.22.40.png",
+      "reviewerNotes": "",
+      "promptRawJa": "廃棄車を路上で運転すると、規定に基づき罰金に処せられる以外に、どのような処分を受けるか。",
+      "promptGlossEn": "If you drive an abandoned vehicle on the road, in addition to being fined according to regulations, what other penalty do you receive?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-014",
+        "approvedQid": "q0489",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "options": {
+        "q0489_o1": "B 免許証の没収",
+        "q0489_o2": "A 運転資格の取消",
+        "q0489_o3": "C 以前の状態への回復を強制する",
+        "q0489_o4": "D 免許証の取消"
+      },
+      "optionsRawJa": [
+        "A 運転資格の取消",
+        "B 免許証の没収",
+        "C 以前の状態への回復を強制する",
+        "D 免許証の取消"
+      ],
+      "optionsGlossEn": [
+        "A. Revocation of driving qualification",
+        "B. Confiscation of driver's license",
+        "C. Forced restoration to previous state",
+        "D. Cancellation of driver's license"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A 運転資格の取消",
+          "sourceTextBody": "運転資格の取消",
+          "sourceGlossEn": "A. Revocation of driving qualification",
+          "canonicalOptionId": "q0489_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "revoked the driving license",
+          "alignmentScore": 0.18095238095238092,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B 免許証の没収",
+          "sourceTextBody": "免許証の没収",
+          "sourceGlossEn": "B. Confiscation of driver's license",
+          "canonicalOptionId": "q0489_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "be confiscated the driving license",
+          "alignmentScore": 0.22656641604010025,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C 以前の状態への回復を強制する",
+          "sourceTextBody": "以前の状態への回復を強制する",
+          "sourceGlossEn": "C. Forced restoration to previous state",
+          "canonicalOptionId": "q0489_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "be forced to recover the vehicle condition",
+          "alignmentScore": 0.23574879227053142,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D 免許証の取消",
+          "sourceTextBody": "免許証の取消",
+          "sourceGlossEn": "D. Cancellation of driver's license",
+          "canonicalOptionId": "q0489_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "be revoked the driving license",
+          "alignmentScore": 0.18221024258760105,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A 運転資格の取消",
+          "sourceGlossEn": "A. Revocation of driving qualification",
+          "canonicalOptionId": "q0489_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "revoked the driving license",
+          "alignmentScore": 0.18095238095238092,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B 免許証の没収",
+          "sourceGlossEn": "B. Confiscation of driver's license",
+          "canonicalOptionId": "q0489_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "be confiscated the driving license",
+          "alignmentScore": 0.22656641604010025,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C 以前の状態への回復を強制する",
+          "sourceGlossEn": "C. Forced restoration to previous state",
+          "canonicalOptionId": "q0489_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "be forced to recover the vehicle condition",
+          "alignmentScore": 0.23574879227053142,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D 免許証の取消",
+          "sourceGlossEn": "D. Cancellation of driver's license",
+          "canonicalOptionId": "q0489_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "be revoked the driving license",
+          "alignmentScore": 0.18221024258760105,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "A",
+      "canonicalCorrectOptionId": "q0489_o4",
+      "canonicalCorrectOptionKey": "D",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed during unresolved rescue review on 2026-04-14T11:12:30.460Z; reviewer selected locale key A.",
+      "correctOptionAlignment": {
+        "sourceKey": "A",
+        "canonicalOptionId": "q0489_o4",
+        "canonicalOptionKey": "D",
+        "sourceText": "A 運転資格の取消",
+        "sourceGlossEn": "A. Revocation of driving qualification",
+        "canonicalOptionText": "revoked the driving license",
+        "alignmentScore": 0.18221024258760105,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-14T11:12:30.460Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ja-batch-014-unresolved-decisions.json",
+      "answerKeyReviewerNotes": "",
+      "reviewerSuggestedLocaleCorrectOptionKey": "A",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ja-batch-014-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0782": {
+      "prompt": "この標識の示す意味はどれか。",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.22.50.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 18.22.50.png",
+      "reviewerNotes": "",
+      "promptRawJa": "この標識の示す意味はどれか。",
+      "promptGlossEn": "What does this road sign mean?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-014",
+        "approvedQid": "q0782",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "options": {
+        "q0782_o1": "C 路面に凹凸あり",
+        "q0782_o2": "A 路面し凹あり",
+        "q0782_o3": "D 路面突出",
+        "q0782_o4": "B 山なりの橋"
+      },
+      "optionsRawJa": [
+        "A 路面し凹あり",
+        "B 山なりの橋",
+        "C 路面に凹凸あり",
+        "D 路面突出"
+      ],
+      "optionsGlossEn": [
+        "A. There is a dip in the road surface",
+        "B. Arched bridge",
+        "C. Uneven road surface",
+        "D. Road protrusion"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A 路面し凹あり",
+          "sourceTextBody": "路面し凹あり",
+          "sourceGlossEn": "A. There is a dip in the road surface",
+          "canonicalOptionId": "q0782_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "high outburst road",
+          "alignmentScore": 0.08482142857142858,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B 山なりの橋",
+          "sourceTextBody": "山なりの橋",
+          "sourceGlossEn": "B. Arched bridge",
+          "canonicalOptionId": "q0782_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "hump bridge",
+          "alignmentScore": 0.36666666666666664,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C 路面に凹凸あり",
+          "sourceTextBody": "路面に凹凸あり",
+          "sourceGlossEn": "C. Uneven road surface",
+          "canonicalOptionId": "q0782_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "bump road",
+          "alignmentScore": 0.1625,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D 路面突出",
+          "sourceTextBody": "路面突出",
+          "sourceGlossEn": "D. Road protrusion",
+          "canonicalOptionId": "q0782_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "high outburst road",
+          "alignmentScore": 0.182,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A 路面し凹あり",
+          "sourceGlossEn": "A. There is a dip in the road surface",
+          "canonicalOptionId": "q0782_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "high outburst road",
+          "alignmentScore": 0.08482142857142858,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B 山なりの橋",
+          "sourceGlossEn": "B. Arched bridge",
+          "canonicalOptionId": "q0782_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "hump bridge",
+          "alignmentScore": 0.36666666666666664,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C 路面に凹凸あり",
+          "sourceGlossEn": "C. Uneven road surface",
+          "canonicalOptionId": "q0782_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "bump road",
+          "alignmentScore": 0.1625,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D 路面突出",
+          "sourceGlossEn": "D. Road protrusion",
+          "canonicalOptionId": "q0782_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "high outburst road",
+          "alignmentScore": 0.182,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        }
+      ],
+      "localeCorrectOptionKey": "D",
+      "canonicalCorrectOptionId": "q0782_o2",
+      "canonicalCorrectOptionKey": "B",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed during unresolved rescue review on 2026-04-14T11:12:30.460Z; reviewer selected locale key D.",
+      "correctOptionAlignment": {
+        "sourceKey": "D",
+        "canonicalOptionId": "q0782_o2",
+        "canonicalOptionKey": "B",
+        "sourceText": "D 路面突出",
+        "sourceGlossEn": "D. Road protrusion",
+        "canonicalOptionText": "high outburst road",
+        "alignmentScore": 0.08482142857142858,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-14T11:12:30.460Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ja-batch-014-unresolved-decisions.json",
+      "answerKeyReviewerNotes": "",
+      "reviewerSuggestedLocaleCorrectOptionKey": "D",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ja-batch-014-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0276": {
+      "prompt": "保険マークが標示されていない車両に対し、交通警察は車両走行許可証通行証を取り上げることができる。",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.22.52.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 18.22.52.png",
+      "reviewerNotes": "",
+      "promptRawJa": "保険マークが標示されていない車両に対し、交通警察は車両走行許可証通行証を取り上げることができる。",
+      "promptGlossEn": "For vehicles not displaying an insurance mark, traffic police can confiscate the vehicle operation permit.",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "ROW",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-014",
+        "approvedQid": "q0276",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "optionsRawJa": [],
+      "optionsGlossEn": [],
+      "localeCorrectOptionKey": null,
+      "canonicalCorrectRow": "W",
+      "canonicalCorrectAnswer": "wrong / false",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "ROW question; no locale-specific option key applies.",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ja-batch-014-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0118": {
+      "prompt": "前方の渋滞に気づいた場合、どう対応するのが適切か。",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.22.56.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 18.22.56.png",
+      "reviewerNotes": "",
+      "promptRawJa": "前方の渋滞に気づいた場合、どう対応するのが適切か。",
+      "promptGlossEn": "What is the appropriate response when you notice a traffic jam ahead?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-014",
+        "approvedQid": "q0118",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "options": {
+        "q0118_o1": "A 車間のすき間を見つけて通過する",
+        "q0118_o2": "B 車間のすき間を見つけて追い越す",
+        "q0118_o3": "C クラクションを鳴らして合図し、前方車両の走行速度を上げさせる",
+        "q0118_o4": "D 順番を守り停車して待つ"
+      },
+      "optionsRawJa": [
+        "A 車間のすき間を見つけて通過する",
+        "B 車間のすき間を見つけて追い越す",
+        "C クラクションを鳴らして合図し、前方車両の走行速度を上げさせる",
+        "D 順番を守り停車して待つ"
+      ],
+      "optionsGlossEn": [
+        "A: Find a gap between cars and go through",
+        "B: Find a gap between cars and overtake",
+        "C: Honk to signal and make the cars ahead speed up",
+        "D: Wait your turn and stop"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A 車間のすき間を見つけて通過する",
+          "sourceTextBody": "車間のすき間を見つけて通過する",
+          "sourceGlossEn": "A: Find a gap between cars and go through",
+          "canonicalOptionId": "q0118_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "Continue to weave through",
+          "alignmentScore": 0.12210526315789474,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B 車間のすき間を見つけて追い越す",
+          "sourceTextBody": "車間のすき間を見つけて追い越す",
+          "sourceGlossEn": "B: Find a gap between cars and overtake",
+          "canonicalOptionId": "q0118_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "Find space and overtake one vehicle after another",
+          "alignmentScore": 0.27451984635083226,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C クラクションを鳴らして合図し、前方車両の走行速度を上げさせる",
+          "sourceTextBody": "クラクションを鳴らして合図し、前方車両の走行速度を上げさせる",
+          "sourceGlossEn": "C: Honk to signal and make the cars ahead speed up",
+          "canonicalOptionId": "q0118_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "Honk to indicate the vehicle in front to speed up",
+          "alignmentScore": 0.2761363636363636,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D 順番を守り停車して待つ",
+          "sourceTextBody": "順番を守り停車して待つ",
+          "sourceGlossEn": "D: Wait your turn and stop",
+          "canonicalOptionId": "q0118_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "stop and wait in line",
+          "alignmentScore": 0.4228571428571428,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A 車間のすき間を見つけて通過する",
+          "sourceGlossEn": "A: Find a gap between cars and go through",
+          "canonicalOptionId": "q0118_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "Continue to weave through",
+          "alignmentScore": 0.12210526315789474,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B 車間のすき間を見つけて追い越す",
+          "sourceGlossEn": "B: Find a gap between cars and overtake",
+          "canonicalOptionId": "q0118_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "Find space and overtake one vehicle after another",
+          "alignmentScore": 0.27451984635083226,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C クラクションを鳴らして合図し、前方車両の走行速度を上げさせる",
+          "sourceGlossEn": "C: Honk to signal and make the cars ahead speed up",
+          "canonicalOptionId": "q0118_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "Honk to indicate the vehicle in front to speed up",
+          "alignmentScore": 0.2761363636363636,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D 順番を守り停車して待つ",
+          "sourceGlossEn": "D: Wait your turn and stop",
+          "canonicalOptionId": "q0118_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "stop and wait in line",
+          "alignmentScore": 0.4228571428571428,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        }
+      ],
+      "localeCorrectOptionKey": "D",
+      "canonicalCorrectOptionId": "q0118_o4",
+      "canonicalCorrectOptionKey": "D",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed during unresolved rescue review on 2026-04-14T11:12:30.460Z; reviewer selected locale key D.",
+      "correctOptionAlignment": {
+        "sourceKey": "D",
+        "canonicalOptionId": "q0118_o4",
+        "canonicalOptionKey": "D",
+        "sourceText": "D 順番を守り停車して待つ",
+        "sourceGlossEn": "D: Wait your turn and stop",
+        "canonicalOptionText": "stop and wait in line",
+        "alignmentScore": 0.4228571428571428,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-14T11:12:30.460Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ja-batch-014-unresolved-decisions.json",
+      "answerKeyReviewerNotes": "",
+      "reviewerSuggestedLocaleCorrectOptionKey": "D",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ja-batch-014-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0544": {
+      "prompt": "正面衝突のさい、エアバッグにシートベルトがあってはじめて十分な保護作用が発揮される。",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.23.04.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 18.23.04.png",
+      "reviewerNotes": "",
+      "promptRawJa": "正面衝突のさい、エアバッグにシートベルトがあってはじめて十分な保護作用が発揮される。",
+      "promptGlossEn": "In a frontal collision, sufficient protection is provided only when both airbags and seat belts are used.",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "ROW",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-014",
+        "approvedQid": "q0544",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "optionsRawJa": [],
+      "optionsGlossEn": [],
+      "localeCorrectOptionKey": null,
+      "canonicalCorrectRow": "R",
+      "canonicalCorrectAnswer": "right / true",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "ROW question; no locale-specific option key applies.",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ja-batch-014-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0863": {
+      "prompt": "この路面の標示はなにを示すか。",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.23.08.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 18.23.08.png",
+      "reviewerNotes": "",
+      "promptRawJa": "この路面の標示はなにを示すか。",
+      "promptGlossEn": "What does this road marking indicate?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-014",
+        "approvedQid": "q0863",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "options": {
+        "q0863_o1": "A 自動車専用道",
+        "q0863_o2": "C オートバイ専用道",
+        "q0863_o3": "D 原動機付き自転車の専用道",
+        "q0863_o4": "B 非自動車道"
+      },
+      "optionsRawJa": [
+        "A 自動車専用道",
+        "B 非自動車道",
+        "C オートバイ専用道",
+        "D 原動機付き自転車の専用道"
+      ],
+      "optionsGlossEn": [
+        "A. Motor vehicles only road",
+        "B. Non-motor vehicles road",
+        "C. Motorcycle only road",
+        "D. Road exclusively for motorized bicycles"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A 自動車専用道",
+          "sourceTextBody": "自動車専用道",
+          "sourceGlossEn": "A. Motor vehicles only road",
+          "canonicalOptionId": "q0863_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "the lane for non-motorized vehicles",
+          "alignmentScore": 0.34074074074074073,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B 非自動車道",
+          "sourceTextBody": "非自動車道",
+          "sourceGlossEn": "B. Non-motor vehicles road",
+          "canonicalOptionId": "q0863_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "the lane for non-motorized vehicles",
+          "alignmentScore": 0.07142857142857144,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C オートバイ専用道",
+          "sourceTextBody": "オートバイ専用道",
+          "sourceGlossEn": "C. Motorcycle only road",
+          "canonicalOptionId": "q0863_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "the special lane for motorcycles",
+          "alignmentScore": 0.24648648648648652,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D 原動機付き自転車の専用道",
+          "sourceTextBody": "原動機付き自転車の専用道",
+          "sourceGlossEn": "D. Road exclusively for motorized bicycles",
+          "canonicalOptionId": "q0863_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "the special lane for battery bicycles",
+          "alignmentScore": 0.26704545454545453,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A 自動車専用道",
+          "sourceGlossEn": "A. Motor vehicles only road",
+          "canonicalOptionId": "q0863_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "the lane for non-motorized vehicles",
+          "alignmentScore": 0.34074074074074073,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B 非自動車道",
+          "sourceGlossEn": "B. Non-motor vehicles road",
+          "canonicalOptionId": "q0863_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "the lane for non-motorized vehicles",
+          "alignmentScore": 0.07142857142857144,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C オートバイ専用道",
+          "sourceGlossEn": "C. Motorcycle only road",
+          "canonicalOptionId": "q0863_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "the special lane for motorcycles",
+          "alignmentScore": 0.24648648648648652,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D 原動機付き自転車の専用道",
+          "sourceGlossEn": "D. Road exclusively for motorized bicycles",
+          "canonicalOptionId": "q0863_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "the special lane for battery bicycles",
+          "alignmentScore": 0.26704545454545453,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "B",
+      "canonicalCorrectOptionId": "q0863_o1",
+      "canonicalCorrectOptionKey": "A",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed during unresolved rescue review on 2026-04-14T11:12:30.460Z; reviewer selected locale key B.",
+      "correctOptionAlignment": {
+        "sourceKey": "B",
+        "canonicalOptionId": "q0863_o1",
+        "canonicalOptionKey": "A",
+        "sourceText": "B 非自動車道",
+        "sourceGlossEn": "B. Non-motor vehicles road",
+        "canonicalOptionText": "the lane for non-motorized vehicles",
+        "alignmentScore": 0.34074074074074073,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-14T11:12:30.460Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ja-batch-014-unresolved-decisions.json",
+      "answerKeyReviewerNotes": "",
+      "reviewerSuggestedLocaleCorrectOptionKey": "B",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ja-batch-014-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    }
+  }
+}

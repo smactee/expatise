@@ -78,9 +78,16 @@ const counts = {
 
 for (const rawItem of workbenchItems) {
   const item = normalizeWorkbenchDecision(rawItem);
+  const newQuestionLocalAnswerKey = resolveNewQuestionLocalAnswerKey(item);
+
+  if (item.createNewQuestion === true && !newQuestionLocalAnswerKey) {
+    const itemLabel = item.itemId ?? item.sourceImage ?? item.id ?? "unknown-item";
+    throw new Error(`Apply blocked: create-new item ${itemLabel} is missing newQuestionLocalAnswerKey.`);
+  }
 
   if (item.section === "auto-matched") {
     const structuralOverride =
+      item.deleteQuestion === true ||
       item.createNewQuestion === true ||
       item.keepUnresolved === true ||
       !item.approvedQid ||
@@ -90,16 +97,18 @@ for (const rawItem of workbenchItems) {
       reviewDecisionItems.push({
         itemId: item.itemId,
         sourceSection: item.section,
-        approvedQid: item.approvedQid,
+        approvedQid: item.deleteQuestion === true ? null : item.approvedQid,
         initialSuggestedQid: item.initialSuggestedQid,
         noneOfThese: false,
-        createNewQuestion: item.createNewQuestion,
-        keepUnresolved: item.keepUnresolved === true,
-        unsure: !item.approvedQid && !item.createNewQuestion,
-        confirmedCorrectOptionKey: resolveStructuredAnswerKey(item),
-        answerKeyUnknown: item.answerKeyUnknown === true,
+        createNewQuestion: item.deleteQuestion === true ? false : item.createNewQuestion,
+        keepUnresolved: item.deleteQuestion === true ? false : item.keepUnresolved === true,
+        deleteQuestion: item.deleteQuestion === true,
+        unsure: !item.approvedQid && !item.createNewQuestion && item.deleteQuestion !== true,
+        confirmedCorrectOptionKey: item.createNewQuestion && item.deleteQuestion !== true ? null : resolveStructuredAnswerKey(item),
+        newQuestionLocalAnswerKey,
+        answerKeyUnknown: item.createNewQuestion && item.deleteQuestion !== true ? false : item.answerKeyUnknown === true,
         currentStagedLocaleCorrectOptionKey: item.currentStagedLocaleCorrectOptionKey,
-        useCurrentStagedAnswerKey: item.useCurrentStagedAnswerKey === true,
+        useCurrentStagedAnswerKey: item.createNewQuestion && item.deleteQuestion !== true ? false : item.useCurrentStagedAnswerKey === true,
         reviewerNotes: item.reviewerNotes,
         sourceExplanation: item.sourceExplanation,
       });
@@ -135,16 +144,18 @@ for (const rawItem of workbenchItems) {
     reviewDecisionItems.push({
       itemId: item.itemId,
       sourceSection: item.section,
-      approvedQid: item.approvedQid,
+      approvedQid: item.deleteQuestion === true ? null : item.approvedQid,
       initialSuggestedQid: item.initialSuggestedQid,
       noneOfThese: false,
-      createNewQuestion: item.createNewQuestion,
-      keepUnresolved: item.keepUnresolved === true,
-      unsure: !item.approvedQid && !item.createNewQuestion,
-      confirmedCorrectOptionKey: resolveStructuredAnswerKey(item),
-      answerKeyUnknown: item.answerKeyUnknown === true,
+      createNewQuestion: item.deleteQuestion === true ? false : item.createNewQuestion,
+      keepUnresolved: item.deleteQuestion === true ? false : item.keepUnresolved === true,
+      deleteQuestion: item.deleteQuestion === true,
+      unsure: !item.approvedQid && !item.createNewQuestion && item.deleteQuestion !== true,
+      confirmedCorrectOptionKey: item.createNewQuestion && item.deleteQuestion !== true ? null : resolveStructuredAnswerKey(item),
+      newQuestionLocalAnswerKey,
+      answerKeyUnknown: item.createNewQuestion && item.deleteQuestion !== true ? false : item.answerKeyUnknown === true,
       currentStagedLocaleCorrectOptionKey: item.currentStagedLocaleCorrectOptionKey,
-      useCurrentStagedAnswerKey: item.useCurrentStagedAnswerKey === true,
+      useCurrentStagedAnswerKey: item.createNewQuestion && item.deleteQuestion !== true ? false : item.useCurrentStagedAnswerKey === true,
       reviewerNotes: item.reviewerNotes,
       sourceExplanation: item.sourceExplanation,
     });
@@ -178,14 +189,19 @@ for (const rawItem of workbenchItems) {
       itemId: item.itemId,
       sourceSection: item.section,
       sourceImage: item.sourceImage,
-      approvedQid: item.approvedQid,
+      approvedQid: item.deleteQuestion === true ? null : item.approvedQid,
       initialSuggestedQid: item.initialSuggestedQid,
-      createNewQuestion: item.createNewQuestion,
-      keepUnresolved: !item.approvedQid && !item.createNewQuestion ? true : item.keepUnresolved,
-      confirmedCorrectOptionKey: resolveStructuredAnswerKey(item),
-      answerKeyUnknown: item.answerKeyUnknown === true,
+      createNewQuestion: item.deleteQuestion === true ? false : item.createNewQuestion,
+      keepUnresolved:
+        item.deleteQuestion === true
+          ? false
+          : (!item.approvedQid && !item.createNewQuestion ? true : item.keepUnresolved),
+      deleteQuestion: item.deleteQuestion === true,
+      confirmedCorrectOptionKey: item.createNewQuestion && item.deleteQuestion !== true ? null : resolveStructuredAnswerKey(item),
+      newQuestionLocalAnswerKey,
+      answerKeyUnknown: item.createNewQuestion && item.deleteQuestion !== true ? false : item.answerKeyUnknown === true,
       currentStagedLocaleCorrectOptionKey: item.currentStagedLocaleCorrectOptionKey,
-      useCurrentStagedAnswerKey: item.useCurrentStagedAnswerKey === true,
+      useCurrentStagedAnswerKey: item.createNewQuestion && item.deleteQuestion !== true ? false : item.useCurrentStagedAnswerKey === true,
       reviewerNotes: item.reviewerNotes,
       sourceExplanation: item.sourceExplanation,
       recommendedAction: rawItem.recommendedAction ?? null,
@@ -378,17 +394,26 @@ console.log(
 );
 
 function normalizeWorkbenchDecision(item) {
+  const deleteQuestion = item?.deleteQuestion === true;
   return {
     id: String(item?.id ?? "").trim(),
     section: String(item?.section ?? "").trim(),
     itemId: String(item?.itemId ?? "").trim() || null,
     sourceImage: String(item?.sourceImage ?? "").trim() || null,
     qid: normalizeText(item?.qid),
-    approvedQid: normalizeText(item?.approvedQid),
+    approvedQid: deleteQuestion ? null : normalizeText(item?.approvedQid),
     initialSuggestedQid: normalizeText(item?.initialSuggestedQid),
-    createNewQuestion: item?.createNewQuestion === true,
-    keepUnresolved: item?.keepUnresolved === true,
+    createNewQuestion: deleteQuestion ? false : item?.createNewQuestion === true,
+    keepUnresolved: deleteQuestion ? false : item?.keepUnresolved === true,
+    deleteQuestion,
     confirmedCorrectOptionKey: normalizeChoiceKey(item?.confirmedCorrectOptionKey),
+    newQuestionLocalAnswerKey: normalizeChoiceKey(
+      item?.newQuestionLocalAnswerKey ?? (
+        item?.createNewQuestion === true
+          ? item?.confirmedCorrectOptionKey
+          : null
+      ),
+    ),
     answerKeyUnknown: item?.answerKeyUnknown === true || item?.unknown === true,
     currentStagedLocaleCorrectOptionKey: normalizeChoiceKey(item?.currentStagedLocaleCorrectOptionKey),
     useCurrentStagedAnswerKey: item?.useCurrentStagedAnswerKey === true,
@@ -408,6 +433,7 @@ function rememberNewQuestionOverrides(targetMap, item) {
   targetMap.set(key, {
     provisionalTopic: item.newQuestionProvisionalTopic ?? null,
     provisionalSubtopics: Array.isArray(item.newQuestionProvisionalSubtopics) ? item.newQuestionProvisionalSubtopics : [],
+    newQuestionLocalAnswerKey: resolveNewQuestionLocalAnswerKey(item),
     reviewerNotes: item.reviewerNotes ?? "",
     sourceExplanation: normalizeExplanationText(item.sourceExplanation),
   });
@@ -436,6 +462,11 @@ async function applyNewQuestionOverrides(candidatesPath, overrides) {
 
     if (override.provisionalSubtopics.length > 0) {
       item.provisionalSubtopics = [...override.provisionalSubtopics];
+      changed = true;
+    }
+
+    if (override.newQuestionLocalAnswerKey) {
+      item.newQuestionLocalAnswerKey = override.newQuestionLocalAnswerKey;
       changed = true;
     }
 
@@ -503,6 +534,18 @@ function resolveStructuredAnswerKey(item) {
   }
 
   return normalizeChoiceKey(item?.confirmedCorrectOptionKey);
+}
+
+function resolveNewQuestionLocalAnswerKey(item) {
+  if (item?.createNewQuestion !== true) {
+    return null;
+  }
+
+  return normalizeChoiceKey(
+    item?.newQuestionLocalAnswerKey ?? (
+      item?.confirmedCorrectOptionKey
+    ),
+  );
 }
 
 function shouldWriteAnswerKeyDecision(item, approvedQuestion) {

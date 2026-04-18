@@ -338,7 +338,7 @@ const translationUrl =
     : undefined;
 
 const [res, patch, translations] = await Promise.all([
-  fetch(url, { cache: isDev ? 'no-store' : 'force-cache' }),
+  fetch(url, { cache: 'no-store' }),
   loadPatch(ds.patchUrl),
   loadTranslations(translationUrl),
 ]);

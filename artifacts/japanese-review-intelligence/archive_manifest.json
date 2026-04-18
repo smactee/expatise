@@ -1,0 +1,138 @@
+{
+  "generatedAt": "2026-04-18T07:49:38.757Z",
+  "lang": "ja",
+  "dryRunOnly": true,
+  "totals": {
+    "fileCount": 1641,
+    "totalBytes": 674512071,
+    "totalMegabytes": 643.26,
+    "groupCount": 7
+  },
+  "groups": [
+    {
+      "id": "imports-ja-source-batches",
+      "classification": "ARCHIVE",
+      "reason": "Original Japanese screenshot intake, OCR outputs, and review source JSONs are the heaviest source materials and should move out of the active workspace first.",
+      "fileCount": 1022,
+      "totalBytes": 617349462,
+      "totalMegabytes": 588.75,
+      "samplePaths": [
+        "imports/ja/.DS_Store",
+        "imports/ja/batch-001/extraction-report.json",
+        "imports/ja/batch-001/intake.json",
+        "imports/ja/batch-001/matched.json",
+        "imports/ja/batch-001/review-needed.json",
+        "imports/ja/batch-001/screenshots/1.png",
+        "imports/ja/batch-001/screenshots/Screenshot 2026-04-07 at 17.49.24.png",
+        "imports/ja/batch-001/screenshots/Screenshot 2026-04-07 at 17.49.39.png"
+      ]
+    },
+    {
+      "id": "active-ja-decision-json",
+      "classification": "ARCHIVE",
+      "reason": "Compact but high-value reviewer decision JSONs remain the main source-of-truth for manual outcomes and should be archived before any workspace cleanup.",
+      "fileCount": 168,
+      "totalBytes": 4441384,
+      "totalMegabytes": 4.24,
+      "samplePaths": [
+        "qbank-tools/generated/staging/consolidated-backlog.ja.json",
+        "qbank-tools/generated/staging/follow-up-review.ja.consolidated-backlog.unresolved.json",
+        "qbank-tools/generated/staging/ja-batch-001-answer-key-decisions.json",
+        "qbank-tools/generated/staging/ja-batch-001-retro-auto-workbench-decisions.json",
+        "qbank-tools/generated/staging/ja-batch-001-review-decisions.json",
+        "qbank-tools/generated/staging/ja-batch-002-answer-key-decisions.json",
+        "qbank-tools/generated/staging/ja-batch-002-existing-qid-decisions.json",
+        "qbank-tools/generated/staging/ja-batch-002-retro-auto-workbench-decisions.json"
+      ]
+    },
+    {
+      "id": "active-ja-preview-and-follow-up",
+      "classification": "SAFE_TO_DELETE_AFTER_ARCHIVE",
+      "reason": "Generated preview, follow-up, dry-run, and promotion JSONs are reproducible once archived and extracted, so they are the safest active staging files to remove next.",
+      "fileCount": 22,
+      "totalBytes": 5750592,
+      "totalMegabytes": 5.48,
+      "samplePaths": [
+        "qbank-tools/generated/staging/follow-up-review.ja.batch-009.json",
+        "qbank-tools/generated/staging/follow-up-review.ja.batch-009.unresolved.json",
+        "qbank-tools/generated/staging/follow-up-review.ja.batch-010.json",
+        "qbank-tools/generated/staging/follow-up-review.ja.batch-010.unresolved.json",
+        "qbank-tools/generated/staging/follow-up-review.ja.consolidated-backlog.unresolved.json",
+        "qbank-tools/generated/staging/new-question-promotion-config.ja.consolidated-backlog.json",
+        "qbank-tools/generated/staging/new-question-promotion-preview.ja.consolidated-backlog.json",
+        "qbank-tools/generated/staging/translations.ja.batch-009.existing.preview.json"
+      ]
+    },
+    {
+      "id": "active-ja-generated-reports",
+      "classification": "SAFE_TO_DELETE_AFTER_ARCHIVE",
+      "reason": "Workbench HTML, merge review reports, and apply reports are bulky and reproducible; archive them, then remove the active copies.",
+      "fileCount": 96,
+      "totalBytes": 2015185,
+      "totalMegabytes": 1.92,
+      "samplePaths": [
+        "qbank-tools/generated/reports/apply-consolidated-backlog-workbench-decisions-ja.json",
+        "qbank-tools/generated/reports/apply-unresolved-decisions-ja-batch-002.json",
+        "qbank-tools/generated/reports/apply-unresolved-decisions-ja-batch-003.json",
+        "qbank-tools/generated/reports/apply-unresolved-decisions-ja-batch-004.json",
+        "qbank-tools/generated/reports/apply-unresolved-decisions-ja-batch-005.json",
+        "qbank-tools/generated/reports/apply-unresolved-decisions-ja-batch-006.json",
+        "qbank-tools/generated/reports/apply-unresolved-decisions-ja-batch-007.json",
+        "qbank-tools/generated/reports/apply-unresolved-decisions-ja-batch-008.json"
+      ]
+    },
+    {
+      "id": "archived-ja-review-tree",
+      "classification": "KEEP_ACTIVE",
+      "reason": "The existing archive tree is already the safest historical landing zone and should remain until the compact intelligence package is accepted as sufficient.",
+      "fileCount": 308,
+      "totalBytes": 39289191,
+      "totalMegabytes": 37.47,
+      "samplePaths": [
+        "qbank-tools/generated/archive/ja/batch-001/cleanup-manifest.json",
+        "qbank-tools/generated/archive/ja/batch-001/reports/apply-answer-key-decisions-ja-batch-001.json",
+        "qbank-tools/generated/archive/ja/batch-001/reports/dry-run-merge-review-ja-batch-001.json",
+        "qbank-tools/generated/archive/ja/batch-001/reports/dry-run-merge-review-ja-batch-001.md",
+        "qbank-tools/generated/archive/ja/batch-001/reports/extract-screenshot-intake-ja-batch-001.json",
+        "qbank-tools/generated/archive/ja/batch-001/reports/full-batch-merge-review-ja-batch-001.json",
+        "qbank-tools/generated/archive/ja/batch-001/reports/full-batch-merge-review-ja-batch-001.md",
+        "qbank-tools/generated/archive/ja/batch-001/reports/ja-batch-001-answer-key-review.html"
+      ]
+    },
+    {
+      "id": "review-workflow-scripts",
+      "classification": "KEEP_ACTIVE",
+      "reason": "The generator, apply, merge, and promotion scripts remain part of the live review workflow and should stay in the active repo.",
+      "fileCount": 18,
+      "totalBytes": 476228,
+      "totalMegabytes": 0.45,
+      "samplePaths": [
+        "scripts/apply-answer-key-decisions.mjs",
+        "scripts/apply-batch-workbench-decisions.mjs",
+        "scripts/apply-consolidated-backlog-workbench-decisions.mjs",
+        "scripts/apply-new-question-promotion.mjs",
+        "scripts/apply-production-localization-merge.mjs",
+        "scripts/apply-retro-auto-review-corrections.mjs",
+        "scripts/apply-unresolved-decisions.mjs",
+        "scripts/build-full-batch-staging-preview.mjs"
+      ]
+    },
+    {
+      "id": "japanese-review-intelligence-package",
+      "classification": "KEEP_ACTIVE",
+      "reason": "The compact intelligence package is the reusable learning layer that should stay active after the bulky Japanese artifacts are archived.",
+      "fileCount": 7,
+      "totalBytes": 5190029,
+      "totalMegabytes": 4.95,
+      "samplePaths": [
+        "artifacts/japanese-review-intelligence/archive_manifest.json",
+        "artifacts/japanese-review-intelligence/automatch_eval.csv",
+        "artifacts/japanese-review-intelligence/benchmark_set.jsonl",
+        "artifacts/japanese-review-intelligence/extraction_summary.md",
+        "artifacts/japanese-review-intelligence/next-language-bootstrap-plan.md",
+        "artifacts/japanese-review-intelligence/reusable_rule_candidates.md",
+        "artifacts/japanese-review-intelligence/review_ground_truth.jsonl"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,1346 @@
+{
+  "meta": {
+    "locale": "ja",
+    "generatedAt": "2026-04-16T11:05:19.434Z",
+    "reviewedBatchId": "batch-017",
+    "dataset": "2023-test1",
+    "sourceUnresolvedPath": "imports/ja/batch-017/unresolved.json",
+    "sourceUnresolvedDecisionPath": "qbank-tools/generated/staging/ja-batch-017-unresolved-decisions.json",
+    "rescuedExistingQidCount": 9,
+    "manualAnswerKeyConfirmationCount": 0,
+    "stagingOnly": true
+  },
+  "questions": {
+    "q0785": {
+      "prompt": "この標識の示す意味はどれか。",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.26.08.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 18.26.08.png",
+      "reviewerNotes": "",
+      "promptRawJa": "この標識の示す意味はどれか。",
+      "promptGlossEn": "What does this sign mean?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-017",
+        "approvedQid": "q0785",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "options": {
+        "q0785_o1": "B 右へ迂回せよ",
+        "q0785_o2": "A 一方通行",
+        "q0785_o3": "C 危険に注意",
+        "q0785_o4": "D 左へ迂回せよ"
+      },
+      "optionsRawJa": [
+        "A 一方通行",
+        "B 右へ迂回せよ",
+        "C 危険に注意",
+        "D 左へ迂回せよ"
+      ],
+      "optionsGlossEn": [
+        "A One way",
+        "B Detour to the right",
+        "C Be careful of danger",
+        "D Detour to the left"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A 一方通行",
+          "sourceTextBody": "一方通行",
+          "sourceGlossEn": "A One way",
+          "canonicalOptionId": "q0785_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "one-way passing",
+          "alignmentScore": 0.044444444444444446,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B 右へ迂回せよ",
+          "sourceTextBody": "右へ迂回せよ",
+          "sourceGlossEn": "B Detour to the right",
+          "canonicalOptionId": "q0785_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "bypass from right side",
+          "alignmentScore": 0.18181818181818182,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C 危険に注意",
+          "sourceTextBody": "危険に注意",
+          "sourceGlossEn": "C Be careful of danger",
+          "canonicalOptionId": "q0785_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "watch for danger",
+          "alignmentScore": 0.3833333333333333,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D 左へ迂回せよ",
+          "sourceTextBody": "左へ迂回せよ",
+          "sourceGlossEn": "D Detour to the left",
+          "canonicalOptionId": "q0785_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "bypass from left side",
+          "alignmentScore": 0.17204301075268816,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A 一方通行",
+          "sourceGlossEn": "A One way",
+          "canonicalOptionId": "q0785_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "one-way passing",
+          "alignmentScore": 0.044444444444444446,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B 右へ迂回せよ",
+          "sourceGlossEn": "B Detour to the right",
+          "canonicalOptionId": "q0785_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "bypass from right side",
+          "alignmentScore": 0.18181818181818182,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C 危険に注意",
+          "sourceGlossEn": "C Be careful of danger",
+          "canonicalOptionId": "q0785_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "watch for danger",
+          "alignmentScore": 0.3833333333333333,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D 左へ迂回せよ",
+          "sourceGlossEn": "D Detour to the left",
+          "canonicalOptionId": "q0785_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "bypass from left side",
+          "alignmentScore": 0.17204301075268816,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "B",
+      "canonicalCorrectOptionId": "q0785_o1",
+      "canonicalCorrectOptionKey": "A",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed during unresolved rescue review on 2026-04-16T11:05:19.434Z; reviewer selected locale key B.",
+      "correctOptionAlignment": {
+        "sourceKey": "B",
+        "canonicalOptionId": "q0785_o1",
+        "canonicalOptionKey": "A",
+        "sourceText": "B 右へ迂回せよ",
+        "sourceGlossEn": "B Detour to the right",
+        "canonicalOptionText": "bypass from right side",
+        "alignmentScore": 0.18181818181818182,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-16T11:05:19.434Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ja-batch-017-unresolved-decisions.json",
+      "answerKeyReviewerNotes": "",
+      "reviewerSuggestedLocaleCorrectOptionKey": "B",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ja-batch-017-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0713": {
+      "prompt": "この標識は何を示しているか。",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.26.15 1.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 18.26.15 1.png",
+      "reviewerNotes": "",
+      "promptRawJa": "この標識は何を示しているか。",
+      "promptGlossEn": "What does this sign indicate?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-017",
+        "approvedQid": "q0713",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "options": {
+        "q0713_o1": "B 家畜が飛び出すおそれがあり",
+        "q0713_o2": "A 野生動物が飛び出すおそれあり",
+        "q0713_o3": "C 動物公園あり",
+        "q0713_o4": "D 放牧区あり"
+      },
+      "optionsRawJa": [
+        "A 野生動物が飛び出すおそれあり",
+        "B 家畜が飛び出すおそれがあり",
+        "C 動物公園あり",
+        "D 放牧区あり"
+      ],
+      "optionsGlossEn": [
+        "A. Risk of wild animals darting out",
+        "B. Risk of livestock darting out",
+        "C. Zoo ahead",
+        "D. Pasture area"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A 野生動物が飛び出すおそれあり",
+          "sourceTextBody": "野生動物が飛び出すおそれあり",
+          "sourceGlossEn": "A. Risk of wild animals darting out",
+          "canonicalOptionId": "q0713_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "watch out for wildlife",
+          "alignmentScore": 0.17009966777408636,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B 家畜が飛び出すおそれがあり",
+          "sourceTextBody": "家畜が飛び出すおそれがあり",
+          "sourceGlossEn": "B. Risk of livestock darting out",
+          "canonicalOptionId": "q0713_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "watch for wildlife",
+          "alignmentScore": 0.009302325581395349,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C 動物公園あり",
+          "sourceTextBody": "動物公園あり",
+          "sourceGlossEn": "C. Zoo ahead",
+          "canonicalOptionId": "q0713_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "zoo park",
+          "alignmentScore": 0.3282051282051282,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D 放牧区あり",
+          "sourceTextBody": "放牧区あり",
+          "sourceGlossEn": "D. Pasture area",
+          "canonicalOptionId": "q0713_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "opened pastoral area",
+          "alignmentScore": 0.27142857142857146,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A 野生動物が飛び出すおそれあり",
+          "sourceGlossEn": "A. Risk of wild animals darting out",
+          "canonicalOptionId": "q0713_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "watch out for wildlife",
+          "alignmentScore": 0.17009966777408636,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B 家畜が飛び出すおそれがあり",
+          "sourceGlossEn": "B. Risk of livestock darting out",
+          "canonicalOptionId": "q0713_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "watch for wildlife",
+          "alignmentScore": 0.009302325581395349,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C 動物公園あり",
+          "sourceGlossEn": "C. Zoo ahead",
+          "canonicalOptionId": "q0713_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "zoo park",
+          "alignmentScore": 0.3282051282051282,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D 放牧区あり",
+          "sourceGlossEn": "D. Pasture area",
+          "canonicalOptionId": "q0713_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "opened pastoral area",
+          "alignmentScore": 0.27142857142857146,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "A",
+      "canonicalCorrectOptionId": "q0713_o1",
+      "canonicalCorrectOptionKey": "A",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed during unresolved rescue review on 2026-04-16T11:05:19.434Z; reviewer selected locale key A.",
+      "correctOptionAlignment": {
+        "sourceKey": "A",
+        "canonicalOptionId": "q0713_o1",
+        "canonicalOptionKey": "A",
+        "sourceText": "A 野生動物が飛び出すおそれあり",
+        "sourceGlossEn": "A. Risk of wild animals darting out",
+        "canonicalOptionText": "watch out for wildlife",
+        "alignmentScore": 0.009302325581395349,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-16T11:05:19.434Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ja-batch-017-unresolved-decisions.json",
+      "answerKeyReviewerNotes": "",
+      "reviewerSuggestedLocaleCorrectOptionKey": "A",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ja-batch-017-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0256": {
+      "prompt": "このような状況であれば、優先通行してよい。",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.26.16 1.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 18.26.16 1.png",
+      "reviewerNotes": "",
+      "promptRawJa": "このような状況であれば、優先通行してよい。",
+      "promptGlossEn": "In this situation, it is okay to proceed with priority.",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "ROW",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-017",
+        "approvedQid": "q0256",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "optionsRawJa": [],
+      "optionsGlossEn": [],
+      "localeCorrectOptionKey": null,
+      "canonicalCorrectRow": "R",
+      "canonicalCorrectAnswer": "right / true",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "ROW question; no locale-specific option key applies.",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ja-batch-017-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0696": {
+      "prompt": "この標識は何を示しているか。",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.26.21 1.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 18.26.21 1.png",
+      "reviewerNotes": "",
+      "promptRawJa": "この標識は何を示しているか。",
+      "promptGlossEn": "What does this road sign indicate?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-017",
+        "approvedQid": "q0696",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "options": {
+        "q0696_o1": "D 追い越し禁止解除",
+        "q0696_o2": "C 車線変更許可",
+        "q0696_o3": "B 車線変更禁止解除",
+        "q0696_o4": "A 車線の一時占用禁止解除"
+      },
+      "optionsRawJa": [
+        "A 車線の一時占用禁止解除",
+        "B 車線変更禁止解除",
+        "C 車線変更許可",
+        "D 追い越し禁止解除"
+      ],
+      "optionsGlossEn": [
+        "A. End of temporary lane occupation prohibition",
+        "B. End of lane change prohibition",
+        "C. Lane change permitted",
+        "D. End of overtaking prohibition"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A 車線の一時占用禁止解除",
+          "sourceTextBody": "車線の一時占用禁止解除",
+          "sourceGlossEn": "A. End of temporary lane occupation prohibition",
+          "canonicalOptionId": "q0696_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "borrowing lane ban is lifted",
+          "alignmentScore": 0.16576576576576577,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B 車線変更禁止解除",
+          "sourceTextBody": "車線変更禁止解除",
+          "sourceGlossEn": "B. End of lane change prohibition",
+          "canonicalOptionId": "q0696_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "changing lane ban is lifted",
+          "alignmentScore": 0.26810810810810815,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C 車線変更許可",
+          "sourceTextBody": "車線変更許可",
+          "sourceGlossEn": "C. Lane change permitted",
+          "canonicalOptionId": "q0696_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "changing lane is allowed",
+          "alignmentScore": 0.32499999999999996,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D 追い越し禁止解除",
+          "sourceTextBody": "追い越し禁止解除",
+          "sourceGlossEn": "D. End of overtaking prohibition",
+          "canonicalOptionId": "q0696_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "overtaking ban is lifted",
+          "alignmentScore": 0.21217391304347827,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A 車線の一時占用禁止解除",
+          "sourceGlossEn": "A. End of temporary lane occupation prohibition",
+          "canonicalOptionId": "q0696_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "borrowing lane ban is lifted",
+          "alignmentScore": 0.16576576576576577,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B 車線変更禁止解除",
+          "sourceGlossEn": "B. End of lane change prohibition",
+          "canonicalOptionId": "q0696_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "changing lane ban is lifted",
+          "alignmentScore": 0.26810810810810815,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C 車線変更許可",
+          "sourceGlossEn": "C. Lane change permitted",
+          "canonicalOptionId": "q0696_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "changing lane is allowed",
+          "alignmentScore": 0.32499999999999996,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D 追い越し禁止解除",
+          "sourceGlossEn": "D. End of overtaking prohibition",
+          "canonicalOptionId": "q0696_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "overtaking ban is lifted",
+          "alignmentScore": 0.21217391304347827,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        }
+      ],
+      "localeCorrectOptionKey": "D",
+      "canonicalCorrectOptionId": "q0696_o1",
+      "canonicalCorrectOptionKey": "A",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed during unresolved rescue review on 2026-04-16T11:05:19.434Z; reviewer selected locale key D.",
+      "correctOptionAlignment": {
+        "sourceKey": "D",
+        "canonicalOptionId": "q0696_o1",
+        "canonicalOptionKey": "A",
+        "sourceText": "D 追い越し禁止解除",
+        "sourceGlossEn": "D. End of overtaking prohibition",
+        "canonicalOptionText": "overtaking ban is lifted",
+        "alignmentScore": 0.21217391304347827,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-16T11:05:19.434Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ja-batch-017-unresolved-decisions.json",
+      "answerKeyReviewerNotes": "",
+      "reviewerSuggestedLocaleCorrectOptionKey": "D",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ja-batch-017-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0487": {
+      "prompt": "飲酒運転をした場合、何点減点されるかがつくか。",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.26.22.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 18.26.22.png",
+      "reviewerNotes": "",
+      "promptRawJa": "飲酒運転をした場合、何点減点されるかがつくか。",
+      "promptGlossEn": "If you drive under the influence of alcohol, how many points will be deducted?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-017",
+        "approvedQid": "q0487",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "options": {
+        "q0487_o1": "A 2点",
+        "q0487_o2": "B 3点",
+        "q0487_o3": "C 6点",
+        "q0487_o4": "D 12点"
+      },
+      "optionsRawJa": [
+        "A 2点",
+        "B 3点",
+        "C 6点",
+        "D 12点"
+      ],
+      "optionsGlossEn": [
+        "A. 2 points",
+        "B. 3 points",
+        "C. 6 points",
+        "D. 12 points"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A 2点",
+          "sourceTextBody": "2点",
+          "sourceGlossEn": "A. 2 points",
+          "canonicalOptionId": "q0487_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "3-point penalty",
+          "alignmentScore": 0.06666666666666667,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B 3点",
+          "sourceTextBody": "3点",
+          "sourceGlossEn": "B. 3 points",
+          "canonicalOptionId": "q0487_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "2-point penalty",
+          "alignmentScore": 0.06666666666666667,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C 6点",
+          "sourceTextBody": "6点",
+          "sourceGlossEn": "C. 6 points",
+          "canonicalOptionId": "q0487_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "6-point penalty",
+          "alignmentScore": 0.06666666666666667,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D 12点",
+          "sourceTextBody": "12点",
+          "sourceGlossEn": "D. 12 points",
+          "canonicalOptionId": "q0487_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "12-point penalty",
+          "alignmentScore": 0.06,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A 2点",
+          "sourceGlossEn": "A. 2 points",
+          "canonicalOptionId": "q0487_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "3-point penalty",
+          "alignmentScore": 0.06666666666666667,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B 3点",
+          "sourceGlossEn": "B. 3 points",
+          "canonicalOptionId": "q0487_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "2-point penalty",
+          "alignmentScore": 0.06666666666666667,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C 6点",
+          "sourceGlossEn": "C. 6 points",
+          "canonicalOptionId": "q0487_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "6-point penalty",
+          "alignmentScore": 0.06666666666666667,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D 12点",
+          "sourceGlossEn": "D. 12 points",
+          "canonicalOptionId": "q0487_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "12-point penalty",
+          "alignmentScore": 0.06,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        }
+      ],
+      "localeCorrectOptionKey": "D",
+      "canonicalCorrectOptionId": "q0487_o4",
+      "canonicalCorrectOptionKey": "D",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed during unresolved rescue review on 2026-04-16T11:05:19.434Z; reviewer selected locale key D.",
+      "correctOptionAlignment": {
+        "sourceKey": "D",
+        "canonicalOptionId": "q0487_o4",
+        "canonicalOptionKey": "D",
+        "sourceText": "D 12点",
+        "sourceGlossEn": "D. 12 points",
+        "canonicalOptionText": "12-point penalty",
+        "alignmentScore": 0.06,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-16T11:05:19.434Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ja-batch-017-unresolved-decisions.json",
+      "answerKeyReviewerNotes": "",
+      "reviewerSuggestedLocaleCorrectOptionKey": "D",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ja-batch-017-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0181": {
+      "prompt": "走行中、救急が必要な交通事故負傷者がいた場合どうすべきか。",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.26.23 1.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 18.26.23 1.png",
+      "reviewerNotes": "",
+      "promptRawJa": "走行中、救急が必要な交通事故負傷者がいた場合どうすべきか。",
+      "promptGlossEn": "While driving, what should you do if there is an injured person from a traffic accident who needs emergency aid?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-017",
+        "approvedQid": "q0181",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "options": {
+        "q0181_o1": "A ただちに負傷者を病院に運ぶまたは救急電話をかける",
+        "q0181_o2": "C 現場から回り道をして走行する",
+        "q0181_o3": "B 面倒なことを避けるために逃避する",
+        "q0181_o4": "D 理由をつけて現場から離れる"
+      },
+      "optionsRawJa": [
+        "A ただちに負傷者を病院に運ぶまたは救急電話をかける",
+        "B 面倒なことを避けるために逃避する",
+        "C 現場から回り道をして走行する",
+        "D 理由をつけて現場から離れる"
+      ],
+      "optionsGlossEn": [
+        "A. Immediately take the injured person to the hospital or call emergency services",
+        "B. Avoid trouble by fleeing",
+        "C. Take a detour and drive away from the scene",
+        "D. Leave the scene with an excuse"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A ただちに負傷者を病院に運ぶまたは救急電話をかける",
+          "sourceTextBody": "ただちに負傷者を病院に運ぶまたは救急電話をかける",
+          "sourceGlossEn": "A. Immediately take the injured person to the hospital or call emergency services",
+          "canonicalOptionId": "q0181_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "send the injured people to hospital in a timely manner or make emergency calls",
+          "alignmentScore": 0.5027450980392157,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B 面倒なことを避けるために逃避する",
+          "sourceTextBody": "面倒なことを避けるために逃避する",
+          "sourceGlossEn": "B. Avoid trouble by fleeing",
+          "canonicalOptionId": "q0181_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "Go ahead by bypassing the scene",
+          "alignmentScore": 0.12553191489361704,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C 現場から回り道をして走行する",
+          "sourceTextBody": "現場から回り道をして走行する",
+          "sourceGlossEn": "C. Take a detour and drive away from the scene",
+          "canonicalOptionId": "q0181_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "Dodge as much as possible",
+          "alignmentScore": 0.006896551724137931,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D 理由をつけて現場から離れる",
+          "sourceTextBody": "理由をつけて現場から離れる",
+          "sourceGlossEn": "D. Leave the scene with an excuse",
+          "canonicalOptionId": "q0181_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "Find an excuse to dodge the scene",
+          "alignmentScore": 0.31746031746031744,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A ただちに負傷者を病院に運ぶまたは救急電話をかける",
+          "sourceGlossEn": "A. Immediately take the injured person to the hospital or call emergency services",
+          "canonicalOptionId": "q0181_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "send the injured people to hospital in a timely manner or make emergency calls",
+          "alignmentScore": 0.5027450980392157,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B 面倒なことを避けるために逃避する",
+          "sourceGlossEn": "B. Avoid trouble by fleeing",
+          "canonicalOptionId": "q0181_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "Go ahead by bypassing the scene",
+          "alignmentScore": 0.12553191489361704,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C 現場から回り道をして走行する",
+          "sourceGlossEn": "C. Take a detour and drive away from the scene",
+          "canonicalOptionId": "q0181_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "Dodge as much as possible",
+          "alignmentScore": 0.006896551724137931,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D 理由をつけて現場から離れる",
+          "sourceGlossEn": "D. Leave the scene with an excuse",
+          "canonicalOptionId": "q0181_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "Find an excuse to dodge the scene",
+          "alignmentScore": 0.31746031746031744,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "A",
+      "canonicalCorrectOptionId": "q0181_o1",
+      "canonicalCorrectOptionKey": "A",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed during unresolved rescue review on 2026-04-16T11:05:19.434Z; reviewer selected locale key A.",
+      "correctOptionAlignment": {
+        "sourceKey": "A",
+        "canonicalOptionId": "q0181_o1",
+        "canonicalOptionKey": "A",
+        "sourceText": "A ただちに負傷者を病院に運ぶまたは救急電話をかける",
+        "sourceGlossEn": "A. Immediately take the injured person to the hospital or call emergency services",
+        "canonicalOptionText": "send the injured people to hospital in a timely manner or make emergency calls",
+        "alignmentScore": 0.5027450980392157,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-16T11:05:19.434Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ja-batch-017-unresolved-decisions.json",
+      "answerKeyReviewerNotes": "",
+      "reviewerSuggestedLocaleCorrectOptionKey": "A",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ja-batch-017-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0796": {
+      "prompt": "この標識は何を示しているか。",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.26.24.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 18.26.24.png",
+      "reviewerNotes": "",
+      "promptRawJa": "この標識は何を示しているか。",
+      "promptGlossEn": "What does this sign indicate?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-017",
+        "approvedQid": "q0796",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "options": {
+        "q0796_o1": "A 左右折誘導標識",
+        "q0796_o2": "C 合流誘導標識",
+        "q0796_o3": "B 線形誘導標識",
+        "q0796_o4": "D 分流誘導標識"
+      },
+      "optionsRawJa": [
+        "A 左右折誘導標識",
+        "B 線形誘導標識",
+        "C 合流誘導標識",
+        "D 分流誘導標識"
+      ],
+      "optionsGlossEn": [
+        "A: Left/right turn guidance sign",
+        "B: Alignment guidance sign",
+        "C: Merging guidance sign",
+        "D: Diverging guidance sign"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A 左右折誘導標識",
+          "sourceTextBody": "左右折誘導標識",
+          "sourceGlossEn": "A: Left/right turn guidance sign",
+          "canonicalOptionId": "q0796_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "line guide signs",
+          "alignmentScore": 0.16964285714285715,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B 線形誘導標識",
+          "sourceTextBody": "線形誘導標識",
+          "sourceGlossEn": "B: Alignment guidance sign",
+          "canonicalOptionId": "q0796_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "lane branching guide signs",
+          "alignmentScore": 0.14772727272727273,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C 合流誘導標識",
+          "sourceTextBody": "合流誘導標識",
+          "sourceGlossEn": "C: Merging guidance sign",
+          "canonicalOptionId": "q0796_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "lane merging guide signs",
+          "alignmentScore": 0.4075,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D 分流誘導標識",
+          "sourceTextBody": "分流誘導標識",
+          "sourceGlossEn": "D: Diverging guidance sign",
+          "canonicalOptionId": "q0796_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "turning guide signs",
+          "alignmentScore": 0.19810810810810814,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A 左右折誘導標識",
+          "sourceGlossEn": "A: Left/right turn guidance sign",
+          "canonicalOptionId": "q0796_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "line guide signs",
+          "alignmentScore": 0.16964285714285715,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B 線形誘導標識",
+          "sourceGlossEn": "B: Alignment guidance sign",
+          "canonicalOptionId": "q0796_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "lane branching guide signs",
+          "alignmentScore": 0.14772727272727273,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C 合流誘導標識",
+          "sourceGlossEn": "C: Merging guidance sign",
+          "canonicalOptionId": "q0796_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "lane merging guide signs",
+          "alignmentScore": 0.4075,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D 分流誘導標識",
+          "sourceGlossEn": "D: Diverging guidance sign",
+          "canonicalOptionId": "q0796_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "turning guide signs",
+          "alignmentScore": 0.19810810810810814,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "A",
+      "canonicalCorrectOptionId": "q0796_o1",
+      "canonicalCorrectOptionKey": "A",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed during unresolved rescue review on 2026-04-16T11:05:19.434Z; reviewer selected locale key A.",
+      "correctOptionAlignment": {
+        "sourceKey": "A",
+        "canonicalOptionId": "q0796_o1",
+        "canonicalOptionKey": "A",
+        "sourceText": "A 左右折誘導標識",
+        "sourceGlossEn": "A: Left/right turn guidance sign",
+        "canonicalOptionText": "line guide signs",
+        "alignmentScore": 0.16964285714285715,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-16T11:05:19.434Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ja-batch-017-unresolved-decisions.json",
+      "answerKeyReviewerNotes": "",
+      "reviewerSuggestedLocaleCorrectOptionKey": "A",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ja-batch-017-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0622": {
+      "prompt": "自動車のインパネの点滅は、何を示しているか。",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.26.32 1.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 18.26.32 1.png",
+      "reviewerNotes": "",
+      "promptRawJa": "自動車のインパネの点滅は、何を示しているか。",
+      "promptGlossEn": "What does this flashing symbol on the car dashboard indicate?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-017",
+        "approvedQid": "q0622",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "options": {
+        "q0622_o1": "D 車幅灯の点灯",
+        "q0622_o2": "C フロント・リアサイドランプの点灯",
+        "q0622_o3": "A 左ウインカーインジケーターの点滅",
+        "q0622_o4": "B 右ウインカーインジケーターの点滅"
+      },
+      "optionsRawJa": [
+        "A 左ウインカーインジケーターの点滅",
+        "B 右ウインカーインジケーターの点滅",
+        "C フロント・リアサイドランプの点灯",
+        "D 車幅灯の点灯"
+      ],
+      "optionsGlossEn": [
+        "A: Flashing of the left turn indicator",
+        "B: Flashing of the right turn indicator",
+        "C: Lighting of the front/rear side lamps",
+        "D: Lighting of the width marker lamps"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A 左ウインカーインジケーターの点滅",
+          "sourceTextBody": "左ウインカーインジケーターの点滅",
+          "sourceGlossEn": "A: Flashing of the left turn indicator",
+          "canonicalOptionId": "q0622_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "left-turn signal flashes",
+          "alignmentScore": 0.09523809523809523,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B 右ウインカーインジケーターの点滅",
+          "sourceTextBody": "右ウインカーインジケーターの点滅",
+          "sourceGlossEn": "B: Flashing of the right turn indicator",
+          "canonicalOptionId": "q0622_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "right-turn signal",
+          "alignmentScore": 0.09302325581395349,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C フロント・リアサイドランプの点灯",
+          "sourceTextBody": "フロント・リアサイドランプの点灯",
+          "sourceGlossEn": "C: Lighting of the front/rear side lamps",
+          "canonicalOptionId": "q0622_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "front and rear width lights light on",
+          "alignmentScore": 0.22984126984126985,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D 車幅灯の点灯",
+          "sourceTextBody": "車幅灯の点灯",
+          "sourceGlossEn": "D: Lighting of the width marker lamps",
+          "canonicalOptionId": "q0622_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "front and rear width lights light on 57",
+          "alignmentScore": 0.12352092352092352,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A 左ウインカーインジケーターの点滅",
+          "sourceGlossEn": "A: Flashing of the left turn indicator",
+          "canonicalOptionId": "q0622_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "left-turn signal flashes",
+          "alignmentScore": 0.09523809523809523,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B 右ウインカーインジケーターの点滅",
+          "sourceGlossEn": "B: Flashing of the right turn indicator",
+          "canonicalOptionId": "q0622_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "right-turn signal",
+          "alignmentScore": 0.09302325581395349,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C フロント・リアサイドランプの点灯",
+          "sourceGlossEn": "C: Lighting of the front/rear side lamps",
+          "canonicalOptionId": "q0622_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "front and rear width lights light on",
+          "alignmentScore": 0.22984126984126985,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D 車幅灯の点灯",
+          "sourceGlossEn": "D: Lighting of the width marker lamps",
+          "canonicalOptionId": "q0622_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "front and rear width lights light on 57",
+          "alignmentScore": 0.12352092352092352,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "B",
+      "canonicalCorrectOptionId": "q0622_o4",
+      "canonicalCorrectOptionKey": "D",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed during unresolved rescue review on 2026-04-16T11:05:19.434Z; reviewer selected locale key B.",
+      "correctOptionAlignment": {
+        "sourceKey": "B",
+        "canonicalOptionId": "q0622_o4",
+        "canonicalOptionKey": "D",
+        "sourceText": "B 右ウインカーインジケーターの点滅",
+        "sourceGlossEn": "B: Flashing of the right turn indicator",
+        "canonicalOptionText": "right-turn signal",
+        "alignmentScore": 0.09302325581395349,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-16T11:05:19.434Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ja-batch-017-unresolved-decisions.json",
+      "answerKeyReviewerNotes": "",
+      "reviewerSuggestedLocaleCorrectOptionKey": "B",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ja-batch-017-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0898": {
+      "prompt": "この標識の示す意味はどれか。",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.26.35.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 18.26.35.png",
+      "reviewerNotes": "",
+      "promptRawJa": "この標識の示す意味はどれか。",
+      "promptGlossEn": "What does this sign mean?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-017",
+        "approvedQid": "q0898",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "options": {
+        "q0898_o1": "D 長時間クラクションを鳴らせ",
+        "q0898_o2": "C 番をする人がいない踏切",
+        "q0898_o3": "B 番をする人がいる踏切",
+        "q0898_o4": "A レールが多い鉄道と道路が交差"
+      },
+      "optionsRawJa": [
+        "A レールが多い鉄道と道路が交差",
+        "B 番をする人がいる踏切",
+        "C 番をする人がいない踏切",
+        "D 長時間クラクションを鳴らせ"
+      ],
+      "optionsGlossEn": [
+        "A. A railroad crossing with many rails intersects with a road",
+        "B. Railroad crossing with a guard",
+        "C. Railroad crossing without a guard",
+        "D. Sound the horn for a long time"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A レールが多い鉄道と道路が交差",
+          "sourceTextBody": "レールが多い鉄道と道路が交差",
+          "sourceGlossEn": "A. A railroad crossing with many rails intersects with a road",
+          "canonicalOptionId": "q0898_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "multi-crossing of railway and road",
+          "alignmentScore": 0.10432372505543237,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B 番をする人がいる踏切",
+          "sourceTextBody": "番をする人がいる踏切",
+          "sourceGlossEn": "B. Railroad crossing with a guard",
+          "canonicalOptionId": "q0898_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "a manned level crossing",
+          "alignmentScore": 0.19555555555555554,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C 番をする人がいない踏切",
+          "sourceTextBody": "番をする人がいない踏切",
+          "sourceGlossEn": "C. Railroad crossing without a guard",
+          "canonicalOptionId": "q0898_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "an unmanned level crossing",
+          "alignmentScore": 0.18933333333333333,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D 長時間クラクションを鳴らせ",
+          "sourceTextBody": "長時間クラクションを鳴らせ",
+          "sourceGlossEn": "D. Sound the horn for a long time",
+          "canonicalOptionId": "q0898_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "watch for long time honking",
+          "alignmentScore": 0.5,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A レールが多い鉄道と道路が交差",
+          "sourceGlossEn": "A. A railroad crossing with many rails intersects with a road",
+          "canonicalOptionId": "q0898_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "multi-crossing of railway and road",
+          "alignmentScore": 0.10432372505543237,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B 番をする人がいる踏切",
+          "sourceGlossEn": "B. Railroad crossing with a guard",
+          "canonicalOptionId": "q0898_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "a manned level crossing",
+          "alignmentScore": 0.19555555555555554,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C 番をする人がいない踏切",
+          "sourceGlossEn": "C. Railroad crossing without a guard",
+          "canonicalOptionId": "q0898_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "an unmanned level crossing",
+          "alignmentScore": 0.18933333333333333,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D 長時間クラクションを鳴らせ",
+          "sourceGlossEn": "D. Sound the horn for a long time",
+          "canonicalOptionId": "q0898_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "watch for long time honking",
+          "alignmentScore": 0.5,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "C",
+      "canonicalCorrectOptionId": "q0898_o2",
+      "canonicalCorrectOptionKey": "B",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed during unresolved rescue review on 2026-04-16T11:05:19.434Z; reviewer selected locale key C.",
+      "correctOptionAlignment": {
+        "sourceKey": "C",
+        "canonicalOptionId": "q0898_o2",
+        "canonicalOptionKey": "B",
+        "sourceText": "C 番をする人がいない踏切",
+        "sourceGlossEn": "C. Railroad crossing without a guard",
+        "canonicalOptionText": "an unmanned level crossing",
+        "alignmentScore": 0.18933333333333333,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-16T11:05:19.434Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ja-batch-017-unresolved-decisions.json",
+      "answerKeyReviewerNotes": "",
+      "reviewerSuggestedLocaleCorrectOptionKey": "C",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ja-batch-017-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    }
+  }
+}

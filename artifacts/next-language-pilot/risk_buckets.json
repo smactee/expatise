@@ -1,0 +1,137 @@
+{
+  "generatedAt": "2026-04-18T08:35:03.041Z",
+  "lang": "ja",
+  "batchId": "batch-020",
+  "dataset": "2023-test1",
+  "calibrationProfile": "original",
+  "pilotItemCount": 40,
+  "countsByBaselineSection": {
+    "matched": 9,
+    "review-needed": 25,
+    "unresolved": 6
+  },
+  "countsByPreflightStatus": {
+    "pass": 13,
+    "downgrade": 8,
+    "warn": 19
+  },
+  "countsByRecommendedRoute": {
+    "auto-match ok": 1,
+    "manual review": 33,
+    "likely unresolved": 6
+  },
+  "countsByAdjustedTrustBand": {
+    "very-high": 1,
+    "medium": 9,
+    "low": 9,
+    "very-low": 10,
+    "none": 9,
+    "high": 2
+  },
+  "triggeredChecks": {
+    "topic-subtopic-drift-risk": 8,
+    "image-sign-symbol-mismatch-risk": 21,
+    "trust-band-caution": 5,
+    "answer-key-consistency-risk": 1
+  },
+  "decisionSignals": {
+    "topic-subtopic-drift-risk": 8,
+    "image-sign-symbol-mismatch-risk": 21,
+    "trust-band-caution": 5,
+    "answer-key-consistency-risk": 1
+  },
+  "reroutes": [
+    {
+      "itemId": "screenshots/900.png",
+      "sourceImage": "screenshots/900.png",
+      "baselineRoute": "auto-match ok",
+      "recommendedRoute": "manual review",
+      "suggestedQid": "q0328",
+      "suggestedScore": 80.766,
+      "checks": [
+        "topic-subtopic-drift-risk"
+      ]
+    },
+    {
+      "itemId": "screenshots/Screenshot 2026-04-07 at 18.28.29 1.png",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.28.29 1.png",
+      "baselineRoute": "auto-match ok",
+      "recommendedRoute": "manual review",
+      "suggestedQid": "q0380",
+      "suggestedScore": 78.868,
+      "checks": [
+        "image-sign-symbol-mismatch-risk",
+        "trust-band-caution"
+      ]
+    },
+    {
+      "itemId": "screenshots/Screenshot 2026-04-07 at 18.28.43 1.png",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.28.43 1.png",
+      "baselineRoute": "auto-match ok",
+      "recommendedRoute": "manual review",
+      "suggestedQid": "q0892",
+      "suggestedScore": 74.11,
+      "checks": [
+        "topic-subtopic-drift-risk",
+        "image-sign-symbol-mismatch-risk"
+      ]
+    },
+    {
+      "itemId": "screenshots/Screenshot 2026-04-07 at 18.28.27 1.png",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.28.27 1.png",
+      "baselineRoute": "auto-match ok",
+      "recommendedRoute": "manual review",
+      "suggestedQid": "q0876",
+      "suggestedScore": 71.128,
+      "checks": [
+        "image-sign-symbol-mismatch-risk",
+        "trust-band-caution"
+      ]
+    },
+    {
+      "itemId": "screenshots/Screenshot 2026-04-07 at 18.28.54.png",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.28.54.png",
+      "baselineRoute": "auto-match ok",
+      "recommendedRoute": "manual review",
+      "suggestedQid": "q0017",
+      "suggestedScore": 68.166,
+      "checks": [
+        "trust-band-caution"
+      ]
+    },
+    {
+      "itemId": "screenshots/Screenshot 2026-04-07 at 18.28.52 1.png",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.28.52 1.png",
+      "baselineRoute": "auto-match ok",
+      "recommendedRoute": "manual review",
+      "suggestedQid": "q0268",
+      "suggestedScore": 66.769,
+      "checks": [
+        "topic-subtopic-drift-risk",
+        "trust-band-caution"
+      ]
+    },
+    {
+      "itemId": "screenshots/902.png",
+      "sourceImage": "screenshots/902.png",
+      "baselineRoute": "auto-match ok",
+      "recommendedRoute": "manual review",
+      "suggestedQid": "q0314",
+      "suggestedScore": 53.736,
+      "checks": [
+        "trust-band-caution"
+      ]
+    },
+    {
+      "itemId": "screenshots/Screenshot 2026-04-07 at 18.28.33.png",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.28.33.png",
+      "baselineRoute": "auto-match ok",
+      "recommendedRoute": "manual review",
+      "suggestedQid": "q0283",
+      "suggestedScore": 52.06,
+      "checks": [
+        "topic-subtopic-drift-risk"
+      ]
+    }
+  ]
+}

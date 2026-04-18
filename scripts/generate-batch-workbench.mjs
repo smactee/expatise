@@ -37,6 +37,15 @@ const workbenchDescription =
 await ensurePipelineDirs({ lang, batchId });
 
 const batchFiles = getBatchFiles(lang, batchId);
+const matchedPath = args["matched-path"]
+  ? path.resolve(String(args["matched-path"]))
+  : batchFiles.matchedPath;
+const reviewNeededPath = args["review-needed-path"]
+  ? path.resolve(String(args["review-needed-path"]))
+  : batchFiles.reviewNeededPath;
+const unresolvedPath = args["unresolved-path"]
+  ? path.resolve(String(args["unresolved-path"]))
+  : batchFiles.unresolvedPath;
 const htmlPath = args["html-path"]
   ? path.resolve(String(args["html-path"]))
   : path.join(REPORTS_DIR, `${lang}-${batchId}-workbench.html`);
@@ -46,15 +55,22 @@ const decisionsPath = args["decisions-path"]
 const decisionsFileName = path.basename(decisionsPath);
 const storageKey = `qbank-workbench:${lang}:${batchId}:${decisionsFileName}`;
 
-for (const requiredPath of [batchFiles.matchedPath, batchFiles.reviewNeededPath, batchFiles.unresolvedPath]) {
+for (const [sectionId, requiredPath] of [
+  ["auto-matched", matchedPath],
+  ["review-needed", reviewNeededPath],
+  ["unresolved", unresolvedPath],
+]) {
+  if (!shouldIncludeSection(sectionId, includedSections)) {
+    continue;
+  }
   if (!fileExists(requiredPath)) {
     throw new Error(`Required input not found: ${path.relative(process.cwd(), requiredPath)}`);
   }
 }
 
-const matchedDoc = readJson(batchFiles.matchedPath);
-const reviewDoc = readJson(batchFiles.reviewNeededPath);
-const unresolvedDoc = readJson(batchFiles.unresolvedPath);
+const matchedDoc = fileExists(matchedPath) ? readJson(matchedPath) : { items: [] };
+const reviewDoc = fileExists(reviewNeededPath) ? readJson(reviewNeededPath) : { items: [] };
+const unresolvedDoc = fileExists(unresolvedPath) ? readJson(unresolvedPath) : { items: [] };
 
 const matchedItems = Array.isArray(matchedDoc.items) ? matchedDoc.items : [];
 const reviewItems = Array.isArray(reviewDoc.items) ? reviewDoc.items : [];
@@ -107,9 +123,9 @@ const defaultDecisions = {
   batchId,
   dataset,
   sourcePaths: {
-    matched: path.relative(process.cwd(), batchFiles.matchedPath),
-    reviewNeeded: path.relative(process.cwd(), batchFiles.reviewNeededPath),
-    unresolved: path.relative(process.cwd(), batchFiles.unresolvedPath),
+    matched: path.relative(process.cwd(), matchedPath),
+    reviewNeeded: path.relative(process.cwd(), reviewNeededPath),
+    unresolved: path.relative(process.cwd(), unresolvedPath),
   },
   items: sourceItems.map(buildDefaultDecision),
 };
@@ -158,9 +174,11 @@ function buildDefaultDecision(item) {
     qid: item.qid ?? null,
     approvedQid: item.section === "auto-matched" || item.section === "answer-key" ? item.qid : null,
     initialSuggestedQid: item.initialSuggestedQid ?? item.qid ?? null,
-    createNewQuestion: false,
-    keepUnresolved: item.section === "unresolved",
+    createNewQuestion: item.defaultCreateNewQuestion === true,
+    keepUnresolved: item.defaultCreateNewQuestion === true ? false : item.section === "unresolved",
+    deleteQuestion: false,
     confirmedCorrectOptionKey: null,
+    newQuestionLocalAnswerKey: normalizeChoiceKey(item?.newQuestionLocalAnswerKey) ?? null,
     answerKeyUnknown: false,
     currentStagedLocaleCorrectOptionKey: item.currentStagedLocaleCorrectOptionKey ?? null,
     useCurrentStagedAnswerKey: false,
@@ -170,7 +188,77 @@ function buildDefaultDecision(item) {
     newQuestionProvisionalSubtopics: Array.isArray(item.provisionalSubtopics) ? item.provisionalSubtopics : [],
   };
 
+  const autoMatchedLocalAnswerKey = deriveAutoMatchedLocalAnswerKeyDefault(item);
+  if (autoMatchedLocalAnswerKey) {
+    base.confirmedCorrectOptionKey = autoMatchedLocalAnswerKey;
+  }
+
   return base;
+}
+
+function deriveAutoMatchedLocalAnswerKeyDefault(item) {
+  if (item?.section !== "auto-matched") {
+    return null;
+  }
+
+  const targetMeaning = normalizeText(item.canonicalCorrectOptionText);
+  if (!targetMeaning) {
+    return null;
+  }
+
+  const candidateOrder = [];
+  const stagedKey = normalizeChoiceKey(item.currentStagedLocaleCorrectOptionKey);
+  if (stagedKey) {
+    candidateOrder.push(stagedKey);
+  }
+  for (const key of ["A", "B", "C", "D"]) {
+    if (!candidateOrder.includes(key)) {
+      candidateOrder.push(key);
+    }
+  }
+
+  const scoredCandidates = candidateOrder.map((key, orderIndex) => {
+    const optionIndex = key.charCodeAt(0) - 65;
+    const glossCandidate = normalizeText(parseChoice(item.optionsGlossEn?.[optionIndex]).body ?? item.optionsGlossEn?.[optionIndex]);
+    const textCandidate = normalizeText(parseChoice(item.optionsRawJa?.[optionIndex]).body ?? item.optionsRawJa?.[optionIndex]);
+
+    return {
+      key,
+      orderIndex,
+      glossScore: glossCandidate ? textSimilarity(glossCandidate, targetMeaning) : null,
+      textScore: textCandidate ? textSimilarity(textCandidate, targetMeaning) : null,
+    };
+  });
+
+  function chooseWinner(scoreKey, minimumScore, minimumGap) {
+    const ranked = scoredCandidates
+      .filter((candidate) => Number.isFinite(candidate[scoreKey]))
+      .sort((left, right) => {
+        const scoreDelta = Number(right[scoreKey]) - Number(left[scoreKey]);
+        if (scoreDelta !== 0) {
+          return scoreDelta;
+        }
+        return left.orderIndex - right.orderIndex;
+      });
+
+    const best = ranked[0] ?? null;
+    if (!best || Number(best[scoreKey]) < minimumScore) {
+      return null;
+    }
+
+    const runnerUpScore = Number(ranked[1]?.[scoreKey] ?? 0);
+    if (Number(best[scoreKey]) - runnerUpScore < minimumGap) {
+      return null;
+    }
+
+    return best.key;
+  }
+
+  return (
+    chooseWinner("glossScore", 0.78, 0.12) ??
+    chooseWinner("textScore", 0.92, 0.2) ??
+    null
+  );
 }
 
 function mergeExistingDecisions(defaultDoc, existingDoc) {
@@ -190,10 +278,19 @@ function mergeExistingDecisions(defaultDoc, existingDoc) {
 
       return {
         ...item,
-        approvedQid: normalizeText(previous.approvedQid) ?? item.approvedQid,
-        createNewQuestion: previous.createNewQuestion === true,
-        keepUnresolved: previous.keepUnresolved === true,
+        approvedQid: previous.deleteQuestion === true ? null : normalizeText(previous.approvedQid) ?? item.approvedQid,
+        createNewQuestion: previous.deleteQuestion === true ? false : previous.createNewQuestion === true,
+        keepUnresolved: previous.deleteQuestion === true ? false : previous.keepUnresolved === true,
+        deleteQuestion: previous.deleteQuestion === true,
         confirmedCorrectOptionKey: normalizeChoiceKey(previous.confirmedCorrectOptionKey) ?? item.confirmedCorrectOptionKey,
+        newQuestionLocalAnswerKey:
+          normalizeChoiceKey(previous.newQuestionLocalAnswerKey) ??
+          (
+            previous.createNewQuestion === true
+              ? normalizeChoiceKey(previous.confirmedCorrectOptionKey)
+              : null
+          ) ??
+          item.newQuestionLocalAnswerKey,
         answerKeyUnknown: previous.answerKeyUnknown === true || previous.unknown === true,
         currentStagedLocaleCorrectOptionKey:
           normalizeChoiceKey(previous.currentStagedLocaleCorrectOptionKey) ?? item.currentStagedLocaleCorrectOptionKey,
@@ -240,18 +337,19 @@ function normalizeWorkbenchReviewItem(item, { section, index, batchDir, question
     index: index + 1,
     itemId: item.itemId,
     sourceImage: item.sourceImage ?? null,
-    screenshotPath: item.sourceImage ? relativeFromReports(path.join(batchDir, item.sourceImage)) : null,
+    screenshotPath: item.screenshotPath ?? (item.sourceImage ? relativeFromReports(path.join(batchDir, item.sourceImage)) : null),
     hasImage: typeof item.hasImage === "boolean" ? item.hasImage : null,
     candidateSetLabel: item.analysis?.candidateImageParityMode ?? inferCandidateSetLabel(item.hasImage),
     initialSuggestedQid,
     currentStagedLocaleCorrectOptionKey: initialSuggestedPreview?.localeCorrectOptionKey ?? null,
-    effectiveQuestionType: item.analysis?.effectiveQuestionType ?? item.analysis?.declaredQuestionType ?? null,
+    effectiveQuestionType: item.effectiveQuestionType ?? item.analysis?.effectiveQuestionType ?? item.analysis?.declaredQuestionType ?? null,
     promptRawJa: item.promptRawJa ?? item.localizedText?.prompt ?? null,
     promptGlossEn: item.promptGlossEn ?? item.translatedText?.prompt ?? null,
     optionsRawJa: sourceOptionsRaw(item),
     optionsGlossEn: sourceOptionsGloss(item),
     correctKeyRaw: item.correctKeyRaw ?? null,
     correctAnswerRaw: item.correctAnswerRaw ?? item.localizedText?.correctAnswer ?? null,
+    newQuestionLocalAnswerKey: normalizeChoiceKey(item?.newQuestionLocalAnswerKey) ?? null,
     ocrConfidence: item.ocrConfidence ?? null,
     provisionalTopic: item.provisionalTopic ?? null,
     provisionalSubtopics: Array.isArray(item.provisionalSubtopics) ? item.provisionalSubtopics : [],
@@ -280,7 +378,7 @@ function normalizeWorkbenchAutoMatchedItem(item, { section, index, batchDir, que
     index: index + 1,
     itemId: item.itemId,
     sourceImage: item.sourceImage ?? null,
-    screenshotPath: item.sourceImage ? relativeFromReports(path.join(batchDir, item.sourceImage)) : null,
+    screenshotPath: item.screenshotPath ?? (item.sourceImage ? relativeFromReports(path.join(batchDir, item.sourceImage)) : null),
     hasImage: typeof item.hasImage === "boolean" ? item.hasImage : null,
     qid: matchedQid,
     number: item?.match?.number ?? matchedQuestion?.number ?? null,
@@ -289,6 +387,7 @@ function normalizeWorkbenchAutoMatchedItem(item, { section, index, batchDir, que
     candidateSetLabel: item.analysis?.candidateImageParityMode ?? inferCandidateSetLabel(item.hasImage),
     initialSuggestedQid: matchedQid,
     currentStagedLocaleCorrectOptionKey: staged?.localeCorrectOptionKey ?? null,
+    canonicalCorrectOptionText: matchedQuestion?.correctAnswer?.correctOptionText ?? null,
     answerKeyNeedsManualConfirmation: staged?.answerKeyNeedsManualConfirmation === true,
     answerKeyConfirmationReason: staged?.answerKeyConfirmationReason ?? null,
     effectiveQuestionType: item.analysis?.effectiveQuestionType ?? item.analysis?.declaredQuestionType ?? matchedQuestion?.type ?? null,
@@ -298,6 +397,7 @@ function normalizeWorkbenchAutoMatchedItem(item, { section, index, batchDir, que
     optionsGlossEn: sourceOptionsGloss(item),
     correctKeyRaw: item.correctKeyRaw ?? null,
     correctAnswerRaw: item.correctAnswerRaw ?? item.localizedText?.correctAnswer ?? null,
+    newQuestionLocalAnswerKey: normalizeChoiceKey(item?.newQuestionLocalAnswerKey) ?? null,
     ocrConfidence: item.ocrConfidence ?? null,
     provisionalTopic: item.provisionalTopic ?? null,
     provisionalSubtopics: Array.isArray(item.provisionalSubtopics) ? item.provisionalSubtopics : [],
@@ -326,18 +426,23 @@ function normalizeWorkbenchUnresolvedItem(item, { section, index, batchDir, ques
     index: index + 1,
     itemId: item.itemId,
     sourceImage: item.sourceImage ?? null,
-    screenshotPath: item.sourceImage ? relativeFromReports(path.join(batchDir, item.sourceImage)) : null,
+    screenshotPath: item.screenshotPath ?? (item.sourceImage ? relativeFromReports(path.join(batchDir, item.sourceImage)) : null),
     hasImage: typeof item.hasImage === "boolean" ? item.hasImage : null,
     candidateSetLabel: item.analysis?.candidateImageParityMode ?? inferCandidateSetLabel(item.hasImage),
     initialSuggestedQid,
-    currentStagedLocaleCorrectOptionKey: initialSuggestedPreview?.localeCorrectOptionKey ?? null,
-    effectiveQuestionType: item.analysis?.effectiveQuestionType ?? item.analysis?.declaredQuestionType ?? null,
+    currentStagedLocaleCorrectOptionKey:
+      initialSuggestedPreview?.localeCorrectOptionKey ??
+      item.currentStagedLocaleCorrectOptionKey ??
+      null,
+    defaultCreateNewQuestion: item.defaultCreateNewQuestion === true,
+    effectiveQuestionType: item.effectiveQuestionType ?? item.analysis?.effectiveQuestionType ?? item.analysis?.declaredQuestionType ?? null,
     promptRawJa: item.promptRawJa ?? null,
     promptGlossEn: item.promptGlossEn ?? null,
     optionsRawJa: sourceOptionsRaw(item),
     optionsGlossEn: sourceOptionsGloss(item),
     correctKeyRaw: item.correctKeyRaw ?? null,
     correctAnswerRaw: item.correctAnswerRaw ?? null,
+    newQuestionLocalAnswerKey: normalizeChoiceKey(item?.newQuestionLocalAnswerKey) ?? null,
     ocrConfidence: item.ocrConfidence ?? null,
     provisionalTopic: item.provisionalTopic ?? null,
     provisionalSubtopics: Array.isArray(item.provisionalSubtopics) ? item.provisionalSubtopics : [],
@@ -346,6 +451,11 @@ function normalizeWorkbenchUnresolvedItem(item, { section, index, batchDir, ques
     sourceConceptSlots: item.sourceConceptSlots ?? null,
     reason: item.reason ?? null,
     analysis: item.analysis ?? null,
+    sourceBatchId: item.sourceBatchId ?? null,
+    backlogKind: item.backlogKind ?? null,
+    backlogStatus: item.backlogStatus ?? null,
+    sourceBacklogPath: item.sourceBacklogPath ?? null,
+    provenance: Array.isArray(item.provenance) ? item.provenance : [],
     recommendedAction: classifyUnresolvedItem(item),
     topCandidates: topCandidates.map((candidate) => normalizeCandidate(candidate, topScore, questionMap)),
   };
@@ -381,7 +491,7 @@ function normalizeWorkbenchAnswerKeyItem(item, { index, batchDir, questionMap })
     number: question.number ?? null,
     itemId: item.itemId ?? null,
     sourceImage: item.sourceImage ?? null,
-    screenshotPath: item.sourceImage ? relativeFromReports(path.join(batchDir, item.sourceImage)) : null,
+    screenshotPath: item.screenshotPath ?? (item.sourceImage ? relativeFromReports(path.join(batchDir, item.sourceImage)) : null),
     hasImage: typeof item.hasImage === "boolean" ? item.hasImage : null,
     candidateSetLabel: item.analysis?.candidateImageParityMode ?? inferCandidateSetLabel(item.hasImage),
     initialSuggestedQid: qid,
@@ -593,6 +703,20 @@ function buildHtml({
       align-items: center;
       margin-top: 18px;
     }
+    .page-end {
+      margin-top: 28px;
+      padding-bottom: 12px;
+    }
+    .export-status {
+      margin-top: 12px;
+      padding: 10px 12px;
+      border: 1px solid rgba(140, 79, 22, 0.28);
+      border-radius: 14px;
+      background: var(--warn-soft);
+      color: var(--warn);
+      font-size: 13px;
+      line-height: 1.45;
+    }
     button {
       border: 0;
       border-radius: 999px;
@@ -633,6 +757,11 @@ function buildHtml({
       gap: 14px;
       grid-template-columns: minmax(260px, 320px) minmax(0, 1fr) 320px;
       align-items: start;
+      scroll-margin-top: 20px;
+    }
+    .item.needs-attention {
+      border-color: rgba(140, 79, 22, 0.48);
+      box-shadow: 0 0 0 3px rgba(140, 79, 22, 0.14), var(--shadow);
     }
     .item h3 {
       margin: 0;
@@ -709,8 +838,21 @@ function buildHtml({
       color: var(--muted);
       word-break: break-all;
     }
+    .filename-number {
+      margin-right: 6px;
+      color: var(--ink);
+      font-weight: 700;
+    }
+    .item.needs-attention .filename-number {
+      color: var(--warn);
+    }
     .source-block, .decision-block {
       min-width: 0;
+    }
+    .control-needs-attention {
+      border-color: rgba(140, 79, 22, 0.42) !important;
+      background: #fff8ef !important;
+      box-shadow: 0 0 0 2px rgba(140, 79, 22, 0.12);
     }
     .source-card {
       display: grid;
@@ -1091,9 +1233,7 @@ function buildHtml({
         <div class="stat"><span class="label">Answer-Key Checks</span><strong>${counts.answerKeyConfirmations}</strong></div>
       </div>
       <div class="toolbar">
-        <button id="export-json">Export Decisions JSON</button>
         <button id="reset" class="secondary">Reset Local Edits</button>
-        <span class="hint">Editable file: <span class="mono">${escapeHtml(decisionsPath)}</span></span>
       </div>
     </section>
 
@@ -1101,6 +1241,13 @@ function buildHtml({
     ${sectionSet.has("review-needed") ? renderSectionShell("review-needed", "Review-Needed", `${reviewNeeded.length} item(s) that need an approve/new/unresolved decision.`) : ""}
     ${sectionSet.has("answer-key") && answerKey.length > 0 ? renderSectionShell("answer-key", "Answer-Key Confirmations", `${answerKey.length} auto-matched MCQ item(s) whose staged locale key still needs explicit confirmation.`) : ""}
     ${sectionSet.has("unresolved") ? renderSectionShell("unresolved", "Unresolved", `${unresolved.length} item(s) that may need rescue, new-question staging, or to remain unresolved.`) : ""}
+    <section class="page-end">
+      <div class="toolbar">
+        <button id="export-json">Export Decisions JSON</button>
+        <span class="hint">Editable file: <span class="mono">${escapeHtml(decisionsPath)}</span></span>
+      </div>
+      <div class="export-status" id="export-status" role="alert" aria-live="assertive" hidden></div>
+    </section>
   </div>
   <div class="lightbox" id="image-lightbox" hidden>
     <div class="lightbox-backdrop" data-lightbox-close></div>
@@ -1135,6 +1282,8 @@ function buildHtml({
     const ITEMS_BY_ID = new Map(ITEMS.map((item) => [item.id, item]));
     const INITIAL_DECISIONS = ${serializeJsonForInlineScript(decisions)};
     const VISIBLE_SECTIONS = ${serializeJsonForInlineScript(Array.from(sectionSet))};
+    const DISPLAY_ITEMS = VISIBLE_SECTIONS.flatMap((sectionId) => ITEMS.filter((item) => item.section === sectionId));
+    const DISPLAY_INDEX_BY_ID = new Map(DISPLAY_ITEMS.map((item, index) => [item.id, index + 1]));
     const QUESTION_TYPE_BY_QID = ${serializeJsonForInlineScript(questionTypeByQid)};
     const QUESTION_EXPLANATION_BY_QID = ${serializeJsonForInlineScript(questionExplanationByQid)};
     const STORAGE_KEY = ${JSON.stringify(storageKey)};
@@ -1156,9 +1305,11 @@ function buildHtml({
     const LIGHTBOX_ZOOM_IN = document.getElementById('image-lightbox-zoom-in');
     const LIGHTBOX_ZOOM_OUT = document.getElementById('image-lightbox-zoom-out');
     const LIGHTBOX_FIT = document.getElementById('image-lightbox-fit');
+    const EXPORT_STATUS = document.getElementById('export-status');
     const LIGHTBOX_ZOOM_STEP = 1.2;
     let lightboxReturnFocus = null;
     let lightboxDrag = null;
+    let exportBlockState = null;
     const lightboxState = {
       zoom: 1,
       fitZoom: 1,
@@ -1181,16 +1332,44 @@ function buildHtml({
         .replace(/'/g, "&#39;");
     }
 
+    function normalizeDecisionChoiceKey(value) {
+      const text = String(value ?? '').trim().toUpperCase();
+      return /^[A-D]$/.test(text) ? text : null;
+    }
+
+    function normalizeLoadedDecision(item) {
+      const decision = { ...item };
+      const deleteQuestion = decision.deleteQuestion === true;
+      const fallbackNewQuestionLocalAnswerKey = decision.createNewQuestion === true
+        ? (
+          normalizeDecisionChoiceKey(decision.newQuestionLocalAnswerKey) ||
+          normalizeDecisionChoiceKey(decision.confirmedCorrectOptionKey)
+        )
+        : normalizeDecisionChoiceKey(decision.newQuestionLocalAnswerKey);
+
+      decision.deleteQuestion = deleteQuestion;
+      decision.approvedQid = deleteQuestion ? null : (decision.approvedQid || null);
+      decision.createNewQuestion = deleteQuestion ? false : decision.createNewQuestion === true;
+      decision.keepUnresolved = deleteQuestion ? false : decision.keepUnresolved === true;
+      decision.confirmedCorrectOptionKey = normalizeDecisionChoiceKey(decision.confirmedCorrectOptionKey);
+      decision.newQuestionLocalAnswerKey = fallbackNewQuestionLocalAnswerKey || null;
+      decision.currentStagedLocaleCorrectOptionKey = normalizeDecisionChoiceKey(decision.currentStagedLocaleCorrectOptionKey);
+      decision.answerKeyUnknown = decision.answerKeyUnknown === true || decision.unknown === true;
+      decision.useCurrentStagedAnswerKey = decision.useCurrentStagedAnswerKey === true;
+
+      return decision;
+    }
+
     function loadState() {
       try {
         const raw = localStorage.getItem(STORAGE_KEY);
-        if (!raw) return clone(INITIAL_DECISIONS);
+        if (!raw) return clone(INITIAL_DECISIONS).map((item) => normalizeLoadedDecision(item));
         const parsed = JSON.parse(raw);
-        if (!Array.isArray(parsed)) return clone(INITIAL_DECISIONS);
+        if (!Array.isArray(parsed)) return clone(INITIAL_DECISIONS).map((item) => normalizeLoadedDecision(item));
         const byId = new Map(parsed.map((item) => [item.id, item]));
-        return INITIAL_DECISIONS.map((item) => ({ ...item, ...(byId.get(item.id) || {}) }));
+        return INITIAL_DECISIONS.map((item) => normalizeLoadedDecision({ ...item, ...(byId.get(item.id) || {}) }));
       } catch {
-        return clone(INITIAL_DECISIONS);
+        return clone(INITIAL_DECISIONS).map((item) => normalizeLoadedDecision(item));
       }
     }
 
@@ -1212,7 +1391,195 @@ function buildHtml({
       URL.revokeObjectURL(url);
     }
 
+    function setExportStatus(message) {
+      const text = String(message ?? '').trim();
+      EXPORT_STATUS.textContent = text;
+      EXPORT_STATUS.hidden = !text;
+    }
+
+    function clearExportBlockDecorations() {
+      document.querySelectorAll('.item.needs-attention').forEach((element) => {
+        element.classList.remove('needs-attention');
+      });
+      document.querySelectorAll('.control-needs-attention').forEach((element) => {
+        element.classList.remove('control-needs-attention');
+      });
+    }
+
+    function clearExportBlockState() {
+      exportBlockState = null;
+      clearExportBlockDecorations();
+      setExportStatus('');
+    }
+
+    function getItemCompletionIssue(item, decision) {
+      if (!item || !decision) {
+        return {
+          reason: 'Choose a decision before exporting.',
+          focusTarget: 'decision',
+        };
+      }
+
+      if (item.section === 'answer-key') {
+        if (!hasStructuredAnswerKeyDecision(item, decision)) {
+          return {
+            reason: 'Confirm the locale answer key or mark it unknown before exporting.',
+            focusTarget: 'answer-key',
+          };
+        }
+        return null;
+      }
+
+      const approvedQid = normalizeDecisionQid(decision.approvedQid);
+      const hasApprovedQid = Boolean(approvedQid);
+      const hasNewQuestionDecision = decision.createNewQuestion === true;
+      const hasDeleteQuestionDecision = decision.deleteQuestion === true;
+      const hasKeepUnresolvedDecision = !hasApprovedQid && !hasNewQuestionDecision && decision.keepUnresolved === true;
+
+      if (!hasApprovedQid && !hasNewQuestionDecision && !hasKeepUnresolvedDecision && !hasDeleteQuestionDecision) {
+        return {
+          reason: 'Choose an existing qid, create a new question, keep it unresolved, or delete question before exporting.',
+          focusTarget: 'decision',
+        };
+      }
+
+      if (hasNewQuestionDecision && requiresLocalAnswerKeyForNewQuestion(item, decision) && !hasStructuredAnswerKeyDecision(item, decision)) {
+        return {
+          reason: 'Confirm the local answer key for this new question before exporting.',
+          focusTarget: 'answer-key',
+        };
+      }
+
+      if (hasApprovedQid && itemNeedsStructuredAnswerKey(item, decision) && !hasStructuredAnswerKeyDecision(item, decision)) {
+        return {
+          reason: 'Confirm the locale answer key for this manual qid change before exporting.',
+          focusTarget: 'answer-key',
+        };
+      }
+
+      return null;
+    }
+
+    function findFirstIncompleteItem() {
+      for (const item of DISPLAY_ITEMS) {
+        const issue = getItemCompletionIssue(item, getDecision(item.id));
+        if (issue) {
+          return {
+            itemId: item.id,
+            issue,
+          };
+        }
+      }
+
+      return null;
+    }
+
+    function getExportBlockElements(itemId, issue) {
+      const article = document.querySelector('[data-item-id=' + JSON.stringify(itemId) + ']');
+      if (!article) {
+        return {
+          article: null,
+          control: null,
+          decorationTarget: null,
+        };
+      }
+
+      let control = null;
+      if (issue.focusTarget === 'answer-key') {
+        const answerName = 'answer-' + itemId;
+        control =
+          article.querySelector('input[name=' + JSON.stringify(answerName) + ']:checked') ||
+          article.querySelector('input[name=' + JSON.stringify(answerName) + ']') ||
+          article.querySelector('[data-use-current-answer-key=' + JSON.stringify(itemId) + ']');
+      } else {
+        const modeName = 'mode-' + itemId;
+        control =
+          article.querySelector('input[name=' + JSON.stringify(modeName) + ']:checked') ||
+          article.querySelector('input[name=' + JSON.stringify(modeName) + ']') ||
+          article.querySelector('[data-approved-qid-for=' + JSON.stringify(itemId) + ']');
+      }
+
+      if (!control) {
+        control = article.querySelector('input, textarea, button');
+      }
+
+      return {
+        article,
+        control,
+        decorationTarget: control?.closest?.('label') || control || null,
+      };
+    }
+
+    function applyExportBlockFeedback(options = {}) {
+      clearExportBlockDecorations();
+
+      if (!exportBlockState) {
+        setExportStatus('');
+        return;
+      }
+
+      const item = ITEMS_BY_ID.get(exportBlockState.itemId);
+      if (!item) {
+        clearExportBlockState();
+        return;
+      }
+
+      const questionNumber = DISPLAY_INDEX_BY_ID.get(exportBlockState.itemId) ?? item.index ?? '?';
+      setExportStatus(
+        'Export blocked until all questions are answered. Question ' +
+        questionNumber +
+        ' needs attention: ' +
+        exportBlockState.issue.reason
+      );
+
+      const { article, control, decorationTarget } = getExportBlockElements(exportBlockState.itemId, exportBlockState.issue);
+      if (article) {
+        article.classList.add('needs-attention');
+      }
+      if (decorationTarget) {
+        decorationTarget.classList.add('control-needs-attention');
+      }
+
+      if (options.scroll === false || !article) {
+        return;
+      }
+
+      article.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      if (control && typeof control.focus === 'function') {
+        requestAnimationFrame(() => {
+          try {
+            control.focus({ preventScroll: true });
+          } catch {
+            control.focus();
+          }
+        });
+      }
+    }
+
+    function syncExportBlockState(options = {}) {
+      if (!exportBlockState) {
+        return;
+      }
+
+      const nextIncomplete = findFirstIncompleteItem();
+      if (!nextIncomplete) {
+        clearExportBlockState();
+        return;
+      }
+
+      exportBlockState = nextIncomplete;
+      applyExportBlockFeedback({ scroll: options.scroll === true });
+    }
+
     function exportJson() {
+      const nextIncomplete = findFirstIncompleteItem();
+      if (nextIncomplete) {
+        exportBlockState = nextIncomplete;
+        applyExportBlockFeedback({ scroll: true });
+        return;
+      }
+
+      clearExportBlockState();
       const payload = {
         exportedAt: new Date().toISOString(),
         lang: ${JSON.stringify(lang)},
@@ -1269,6 +1636,31 @@ function buildHtml({
         ITEMS_BY_ID.get(id)?.currentStagedLocaleCorrectOptionKey ||
         null
       );
+    }
+
+    function parseVisibleChoice(value) {
+      const text = String(value ?? '').replace(/\s+/g, ' ').trim();
+      if (!text) {
+        return { key: null, body: null };
+      }
+
+      const match = text.match(/^\s*([A-Z])[\s.:：、．\)\]-]+(.*)$/i);
+      if (match) {
+        const body = String(match[2] ?? '').replace(/\s+/g, ' ').trim();
+        return {
+          key: match[1].toUpperCase(),
+          body: body || null,
+        };
+      }
+
+      return {
+        key: null,
+        body: text,
+      };
+    }
+
+    function fallbackVisibleChoiceKey(index) {
+      return String.fromCharCode(65 + index);
     }
 
     function selectorForActiveElement(element) {
@@ -1362,23 +1754,38 @@ function buildHtml({
 
       if (options.rerender !== false) {
         render({ preserveContext: options.preserveContext !== false });
+        return;
       }
+
+      syncExportBlockState();
     }
 
     function useCandidate(id, qid) {
-      updateDecision(id, { approvedQid: qid || "", createNewQuestion: false, keepUnresolved: false });
+      updateDecision(id, { approvedQid: qid || "", createNewQuestion: false, keepUnresolved: false, deleteQuestion: false });
     }
 
     function setDecisionMode(id, mode) {
       if (mode === "approve") {
-        updateDecision(id, { createNewQuestion: false, keepUnresolved: false });
+        updateDecision(id, { createNewQuestion: false, keepUnresolved: false, deleteQuestion: false });
         return;
       }
       if (mode === "new") {
-        updateDecision(id, { approvedQid: null, createNewQuestion: true, keepUnresolved: false });
+        updateDecision(id, {
+          approvedQid: null,
+          createNewQuestion: true,
+          keepUnresolved: false,
+          deleteQuestion: false,
+          useCurrentStagedAnswerKey: false,
+          answerKeyUnknown: false,
+        });
         return;
       }
-      updateDecision(id, { approvedQid: null, createNewQuestion: false, keepUnresolved: true });
+      if (mode === "delete") {
+        // Delete question intentionally resolves the item without promotion or follow-up.
+        updateDecision(id, { approvedQid: null, createNewQuestion: false, keepUnresolved: false, deleteQuestion: true });
+        return;
+      }
+      updateDecision(id, { approvedQid: null, createNewQuestion: false, keepUnresolved: true, deleteQuestion: false });
     }
 
     function itemNeedsStructuredAnswerKey(item, decision) {
@@ -1391,15 +1798,160 @@ function buildHtml({
       );
     }
 
-    function hasStructuredAnswerKeyDecision(decision) {
+    function requiresLocalAnswerKeyForNewQuestion(item, decision) {
+      return Boolean(
+        item &&
+        decision?.createNewQuestion === true &&
+        getAnswerKeyVariant(item, decision) !== null
+      );
+    }
+
+    function allowsUnknownAnswerKey(item, decision) {
+      return Boolean(item && decision?.createNewQuestion !== true);
+    }
+
+    function getSelectedAnswerKey(item, decision) {
+      if (!decision) {
+        return null;
+      }
+
+      if (decision.createNewQuestion === true) {
+        return normalizeDecisionChoiceKey(decision.newQuestionLocalAnswerKey);
+      }
+
+      if (decision.useCurrentStagedAnswerKey === true && decision.currentStagedLocaleCorrectOptionKey) {
+        return normalizeDecisionChoiceKey(decision.currentStagedLocaleCorrectOptionKey);
+      }
+
+      return normalizeDecisionChoiceKey(decision.confirmedCorrectOptionKey);
+    }
+
+    function hasStructuredAnswerKeyDecision(item, decision) {
       return Boolean(
         decision &&
         (
-          decision.useCurrentStagedAnswerKey === true ||
-          decision.answerKeyUnknown === true ||
-          decision.confirmedCorrectOptionKey
+          getSelectedAnswerKey(item, decision) ||
+          (allowsUnknownAnswerKey(item, decision) && decision.answerKeyUnknown === true)
         )
       );
+    }
+
+    function getAnswerKeyVariant(item, decision) {
+      if (!item) {
+        return null;
+      }
+
+      if (item.section === 'answer-key') {
+        return 'mcq';
+      }
+
+      const resolvedQuestionType = getResolvedQuestionType(item, decision);
+      if (resolvedQuestionType === 'ROW') {
+        return 'row';
+      }
+
+      if (resolvedQuestionType === 'MCQ') {
+        return 'mcq';
+      }
+
+      return null;
+    }
+
+    function getVisibleChoiceKeys(item, decision) {
+      const variant = getAnswerKeyVariant(item, decision);
+      if (!variant) {
+        return [];
+      }
+
+      if (variant === 'row') {
+        return ['A', 'B'];
+      }
+
+      const rawOptions = Array.isArray(item?.optionsRawJa) ? item.optionsRawJa : [];
+      const glossOptions = Array.isArray(item?.optionsGlossEn) ? item.optionsGlossEn : [];
+      const length = Math.max(rawOptions.length, glossOptions.length);
+      const keys = [];
+
+      for (let index = 0; index < length; index += 1) {
+        const rawChoice = parseVisibleChoice(rawOptions[index]);
+        const glossChoice = parseVisibleChoice(glossOptions[index]);
+        const key = normalizeDecisionChoiceKey(rawChoice.key) ||
+          normalizeDecisionChoiceKey(glossChoice.key) ||
+          normalizeDecisionChoiceKey(fallbackVisibleChoiceKey(index));
+
+        if (key && !keys.includes(key)) {
+          keys.push(key);
+        }
+      }
+
+      return keys.length > 0 ? keys : ['A', 'B', 'C', 'D'];
+    }
+
+    function getAnswerKeyChoices(item, decision) {
+      const variant = getAnswerKeyVariant(item, decision);
+      const visibleKeys = getVisibleChoiceKeys(item, decision);
+      if (variant === 'row') {
+        const choices = [
+          { value: 'A', label: 'A', hint: 'Yes / Right / True' },
+          { value: 'B', label: 'B', hint: 'No / Wrong / False' },
+        ].filter((choice) => visibleKeys.includes(choice.value));
+        if (allowsUnknownAnswerKey(item, decision)) {
+          choices.push({ value: 'unknown', label: 'UNKNOWN', hint: null });
+        }
+        return choices;
+      }
+
+      if (variant === 'mcq') {
+        const choices = visibleKeys.map((key) => ({ value: key, label: key, hint: null }));
+        if (allowsUnknownAnswerKey(item, decision)) {
+          choices.push({ value: 'unknown', label: 'UNKNOWN', hint: null });
+        }
+        return choices;
+      }
+
+      return [];
+    }
+
+    function getAnswerKeyLabelText(item, decision) {
+      if (item?.section === 'answer-key') {
+        return 'Confirm / Override';
+      }
+
+      if (decision?.createNewQuestion === true) {
+        return 'Local Answer Key (required for new question)';
+      }
+
+      if (itemNeedsStructuredAnswerKey(item, decision)) {
+        return 'Locale Answer Key (required for manual qid change)';
+      }
+
+      if (getAnswerKeyVariant(item, decision)) {
+        return 'Locale Answer Key (optional)';
+      }
+
+      return '';
+    }
+
+    function getAnswerKeyNoteText(item, decision) {
+      if (decision?.createNewQuestion === true) {
+        const choiceText = getVisibleChoiceKeys(item, decision).join('/');
+        const hasAnswerKey = hasStructuredAnswerKeyDecision(item, decision);
+        return hasAnswerKey
+          ? 'Structured local answer key recorded for the new question.'
+          : 'Required because Create new question is selected. Select ' + choiceText + '.';
+      }
+
+      if (itemNeedsStructuredAnswerKey(item, decision)) {
+        const choiceText = getVisibleChoiceKeys(item, decision).join('/');
+        const currentStagedInstruction = item.currentStagedLocaleCorrectOptionKey
+          ? ' Select "Use current staged key", choose ' + choiceText + ', or mark unknown.'
+          : ' Choose ' + choiceText + ' or mark unknown.';
+        return hasStructuredAnswerKeyDecision(item, decision)
+          ? 'Structured locale answer-key confirmation recorded for manual qid change from ' + String(item.initialSuggestedQid || '') + '.'
+          : 'Required because approved qid differs from initial suggestion ' + String(item.initialSuggestedQid || '') + '.' + currentStagedInstruction;
+      }
+
+      return '';
     }
 
     function getRowDisplayLabel(rowValue) {
@@ -1610,32 +2162,31 @@ function buildHtml({
     }
 
     function renderStructuredAnswerKeyNote(item, decision) {
-      const needsStructuredAnswerKey = itemNeedsStructuredAnswerKey(item, decision);
-      const hasStructuredAnswerKey = hasStructuredAnswerKeyDecision(decision);
-
-      if (!needsStructuredAnswerKey) {
+      const noteText = getAnswerKeyNoteText(item, decision);
+      if (!noteText) {
         return '';
       }
 
-      return '<div class="fact' + (hasStructuredAnswerKey ? '' : ' warn') + '"><span class="label">Answer-Key Confirmation</span><div class="value">' +
-        escapeHtml(
-          hasStructuredAnswerKey
-            ? 'Structured locale answer-key confirmation recorded for manual qid change from ' + String(item.initialSuggestedQid || '') + '.'
-            : 'Required because approved qid differs from initial suggestion ' + String(item.initialSuggestedQid || '') + '. Select "Use current staged key", choose A/B/C/D, or mark unknown.'
-        ) +
+      return '<div class="fact' + (hasStructuredAnswerKeyDecision(item, decision) ? '' : ' warn') + '"><span class="label">Answer-Key Confirmation</span><div class="value">' +
+        escapeHtml(noteText) +
       '</div></div>';
     }
 
     function renderDecisionPanel(item, decision) {
-      const answerChoices = ['A', 'B', 'C', 'D', 'unknown'].map((choice) => {
-        const checked = choice === 'unknown'
-          ? decision.answerKeyUnknown === true
-          : decision.confirmedCorrectOptionKey === choice;
-        return '<label><input type="radio" name="answer-' + escapeHtml(item.id) + '" value="' + escapeHtml(choice) + '"' + (checked ? ' checked' : '') + '>' +
-          '<span>' + escapeHtml(choice.toUpperCase()) + '</span></label>';
+      const selectedAnswerKey = getSelectedAnswerKey(item, decision);
+      const answerChoices = getAnswerKeyChoices(item, decision).map((choice) => {
+        const checked = choice.value === 'unknown'
+          ? allowsUnknownAnswerKey(item, decision) && decision.answerKeyUnknown === true
+          : selectedAnswerKey === choice.value;
+        return '<label><input type="radio" name="answer-' + escapeHtml(item.id) + '" value="' + escapeHtml(choice.value) + '"' + (checked ? ' checked' : '') + '>' +
+          '<span>' + escapeHtml(choice.label + (choice.hint ? ' (' + choice.hint + ')' : '')) + '</span></label>';
       }).join('');
-      const needsStructuredAnswerKey = itemNeedsStructuredAnswerKey(item, decision);
       const resolvedQuestionType = getResolvedQuestionType(item, decision);
+      const answerKeyVariant = getAnswerKeyVariant(item, decision);
+      const showAnswerKey =
+        item.section === 'answer-key' ||
+        answerKeyVariant === 'mcq' ||
+        (decision.createNewQuestion === true && answerKeyVariant === 'row');
       const explanationValue = getResolvedSourceExplanation(item, decision);
 
       if (item.section === 'answer-key') {
@@ -1656,15 +2207,16 @@ function buildHtml({
         '<div class="decision-row">' +
           '<span class="label">Decision</span>' +
           '<div class="decision-actions">' +
-            '<label><input type="radio" name="mode-' + escapeHtml(item.id) + '" value="approve"' + (decision.approvedQid ? ' checked' : '') + '><span>' + escapeHtml(item.section === 'auto-matched' ? 'Confirm auto-match / existing qid' : 'Approve existing qid') + '</span></label>' +
-            '<label><input type="radio" name="mode-' + escapeHtml(item.id) + '" value="new"' + (decision.createNewQuestion ? ' checked' : '') + '><span>Create new question</span></label>' +
-            '<label><input type="radio" name="mode-' + escapeHtml(item.id) + '" value="unresolved"' + (!decision.approvedQid && !decision.createNewQuestion && decision.keepUnresolved ? ' checked' : '') + '><span>Keep unresolved</span></label>' +
-          '</div>' +
+            '<label><input type="radio" name="mode-' + escapeHtml(item.id) + '" value="approve"' + (decision.approvedQid && decision.deleteQuestion !== true ? ' checked' : '') + '><span>' + escapeHtml(item.section === 'auto-matched' ? 'Confirm auto-match / existing qid' : 'Approve existing qid') + '</span></label>' +
+            '<label><input type="radio" name="mode-' + escapeHtml(item.id) + '" value="new"' + (decision.createNewQuestion && decision.deleteQuestion !== true ? ' checked' : '') + '><span>Create new question</span></label>' +
+            '<label><input type="radio" name="mode-' + escapeHtml(item.id) + '" value="unresolved"' + (!decision.approvedQid && !decision.createNewQuestion && decision.keepUnresolved && decision.deleteQuestion !== true ? ' checked' : '') + '><span>Keep unresolved</span></label>' +
+            '<label><input type="radio" name="mode-' + escapeHtml(item.id) + '" value="delete"' + (decision.deleteQuestion === true ? ' checked' : '') + '><span>Delete question</span></label>' +
+        '</div>' +
         '</div>' +
         '<div class="decision-row"><span class="label">Approved Qid</span><input type="text" value="' + escapeHtml(decision.approvedQid || '') + '" data-approved-qid-for="' + escapeHtml(item.id) + '" placeholder="q0123"></div>' +
-        (resolvedQuestionType === 'MCQ'
-          ? '<div class="decision-row"><span class="label" data-answer-key-label-for="' + escapeHtml(item.id) + '">Locale Answer Key' + (needsStructuredAnswerKey ? ' (required for manual qid change)' : ' (optional)') + '</span><div class="answer-key-choices">' + answerChoices + '</div>' +
-              (item.currentStagedLocaleCorrectOptionKey
+        (showAnswerKey
+          ? '<div class="decision-row"><span class="label" data-answer-key-label-for="' + escapeHtml(item.id) + '">' + escapeHtml(getAnswerKeyLabelText(item, decision)) + '</span><div class="answer-key-choices">' + answerChoices + '</div>' +
+              (item.currentStagedLocaleCorrectOptionKey && decision.createNewQuestion !== true
                 ? '<div class="answer-key-toolbar"><button type="button" data-use-current-answer-key="' + escapeHtml(item.id) + '">Use current staged key (' + escapeHtml(item.currentStagedLocaleCorrectOptionKey) + ')</button></div>'
                 : '') +
             '</div><div data-answer-key-note-for="' + escapeHtml(item.id) + '">' + renderStructuredAnswerKeyNote(item, decision) + '</div>'
@@ -1680,6 +2232,7 @@ function buildHtml({
 
     function renderCard(item) {
       const decision = getDecision(item.id);
+      const displayNumber = DISPLAY_INDEX_BY_ID.get(item.id) ?? item.index ?? '?';
       const typeMismatch = getTypeMismatchInfo(item, decision);
       const facts = [];
       if (item.reason) facts.push(['Reason', item.reason]);
@@ -1695,6 +2248,9 @@ function buildHtml({
       }
       if (item.provisionalTopic) facts.push(['Topic', item.provisionalTopic]);
       if (Array.isArray(item.provisionalSubtopics) && item.provisionalSubtopics.length > 0) facts.push(['Subtopics', item.provisionalSubtopics.join(', ')]);
+      if (item.sourceBatchId) facts.push(['Source Batch', item.sourceBatchId]);
+      if (item.backlogKind) facts.push(['Backlog', item.backlogKind]);
+      if (item.backlogStatus) facts.push(['Backlog Status', item.backlogStatus]);
       if (item.section === 'answer-key') {
         facts.push(['Canonical Prompt', item.canonicalPrompt || '']);
         facts.push(['Canonical Correct', [item.canonicalCorrectOptionKey, item.canonicalCorrectOptionText].filter(Boolean).join(' · ')]);
@@ -1704,7 +2260,7 @@ function buildHtml({
           '<div class="eyebrow">' + escapeHtml(item.section.replace('-', ' ')) + '</div>' +
           '<h3>' + escapeHtml(item.section === 'answer-key' ? item.qid : (item.itemId || item.sourceImage || 'item')) + '</h3>' +
           renderImage(item) +
-          '<div class="filename">' + escapeHtml(item.sourceImage || item.itemId || item.qid || '') + '</div>' +
+          '<div class="filename"><span class="filename-number">' + escapeHtml(displayNumber) + '.</span>' + escapeHtml(item.sourceImage || item.itemId || item.qid || '') + '</div>' +
         '</div>' +
         '<div class="source-block">' +
           '<div class="source-card">' +
@@ -1717,7 +2273,9 @@ function buildHtml({
                 : '') +
             '</div>' +
             (item.section !== 'answer-key'
-              ? '<div><span class="label">Candidates</span><div class="candidate-list">' + (item.topCandidates || []).map((candidate) => renderCandidate(candidate, item.id)).join('') + '</div></div>'
+              ? ((Array.isArray(item.topCandidates) && item.topCandidates.length > 0)
+                  ? '<div><span class="label">Candidates</span><div class="candidate-list">' + item.topCandidates.map((candidate) => renderCandidate(candidate, item.id)).join('') + '</div></div>'
+                  : '')
               : '<div><span class="label">Answer-Key Review</span><div class="fact"><div class="value">' + escapeHtml(item.answerKeyConfirmationReason || 'Manual confirmation required.') + '</div></div></div>') +
             (item.analysis || item.sourceConceptSlots ? '<details><summary>Advanced Details</summary><pre>' + escapeHtml(JSON.stringify({ analysis: item.analysis || null, sourceConceptSlots: item.sourceConceptSlots || null }, null, 2)) + '</pre></details>' : '') +
           '</div>' +
@@ -1742,24 +2300,24 @@ function buildHtml({
       const approveRadio = document.querySelector('input[name=' + JSON.stringify(modeName) + '][value="approve"]');
       const newRadio = document.querySelector('input[name=' + JSON.stringify(modeName) + '][value="new"]');
       const unresolvedRadio = document.querySelector('input[name=' + JSON.stringify(modeName) + '][value="unresolved"]');
+      const deleteRadio = document.querySelector('input[name=' + JSON.stringify(modeName) + '][value="delete"]');
 
       if (approveRadio) {
-        approveRadio.checked = Boolean(decision.approvedQid);
+        approveRadio.checked = Boolean(decision.approvedQid && decision.deleteQuestion !== true);
       }
       if (newRadio) {
-        newRadio.checked = Boolean(!decision.approvedQid && decision.createNewQuestion);
+        newRadio.checked = Boolean(!decision.approvedQid && decision.createNewQuestion && decision.deleteQuestion !== true);
       }
       if (unresolvedRadio) {
-        unresolvedRadio.checked = Boolean(!decision.approvedQid && !decision.createNewQuestion && decision.keepUnresolved);
+        unresolvedRadio.checked = Boolean(!decision.approvedQid && !decision.createNewQuestion && decision.keepUnresolved && decision.deleteQuestion !== true);
+      }
+      if (deleteRadio) {
+        deleteRadio.checked = decision.deleteQuestion === true;
       }
 
       const answerKeyLabel = document.querySelector('[data-answer-key-label-for=' + JSON.stringify(id) + ']');
       if (answerKeyLabel) {
-        answerKeyLabel.textContent = 'Locale Answer Key' + (
-          itemNeedsStructuredAnswerKey(item, decision)
-            ? ' (required for manual qid change)'
-            : ' (optional)'
-        );
+        answerKeyLabel.textContent = getAnswerKeyLabelText(item, decision);
       }
 
       const answerKeyNote = document.querySelector('[data-answer-key-note-for=' + JSON.stringify(id) + ']');
@@ -1946,6 +2504,7 @@ function buildHtml({
               approvedQid: input.value.trim() || null,
               createNewQuestion: false,
               keepUnresolved: false,
+              deleteQuestion: false,
             },
             { rerender: false },
           );
@@ -1960,6 +2519,7 @@ function buildHtml({
               approvedQid: input.value.trim() || null,
               createNewQuestion: false,
               keepUnresolved: false,
+              deleteQuestion: false,
             },
             { preserveContext: false },
           );
@@ -1969,10 +2529,29 @@ function buildHtml({
       document.querySelectorAll('input[name^=\"answer-\"]').forEach((input) => {
         input.addEventListener('change', () => {
           const id = input.name.replace(/^answer-/, '');
+          const decision = getDecision(id);
           if (input.value === 'unknown') {
-            updateDecision(id, { confirmedCorrectOptionKey: null, useCurrentStagedAnswerKey: false, answerKeyUnknown: true });
+            if (decision?.createNewQuestion === true) {
+              return;
+            }
+            updateDecision(id, {
+              confirmedCorrectOptionKey: null,
+              newQuestionLocalAnswerKey: null,
+              useCurrentStagedAnswerKey: false,
+              answerKeyUnknown: true,
+            });
+          } else if (decision?.createNewQuestion === true) {
+            updateDecision(id, {
+              newQuestionLocalAnswerKey: input.value,
+              useCurrentStagedAnswerKey: false,
+              answerKeyUnknown: false,
+            });
           } else {
-            updateDecision(id, { confirmedCorrectOptionKey: input.value, useCurrentStagedAnswerKey: false, answerKeyUnknown: false });
+            updateDecision(id, {
+              confirmedCorrectOptionKey: input.value,
+              useCurrentStagedAnswerKey: false,
+              answerKeyUnknown: false,
+            });
           }
         });
       });
@@ -2161,10 +2740,12 @@ function buildHtml({
 
       bindEventHandlers();
       restoreRenderContext(context);
+      syncExportBlockState();
     }
 
     document.getElementById('export-json').addEventListener('click', exportJson);
     document.getElementById('reset').addEventListener('click', () => {
+      clearExportBlockState();
       state = clone(INITIAL_DECISIONS);
       saveState();
       render();

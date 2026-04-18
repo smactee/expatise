@@ -1,0 +1,50 @@
+{
+  "generatedAt": "2026-04-16T11:42:11.915Z",
+  "lang": "ja",
+  "batchId": "batch-018",
+  "dataset": "2023-test1",
+  "sourceDecisionPath": "qbank-tools/generated/staging/new-question-decisions.ja.batch-018.json",
+  "items": [
+    {
+      "candidateId": "nqc-ja-batch-018-001",
+      "sourceLang": "ja",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.26.57.png",
+      "effectiveQuestionType": "ROW",
+      "promptRawJa": "作業中の道路をメンテナンスする車両や工事作業車が作業中の時には道をゆずる義務がある。",
+      "promptGlossEn": "Vehicles and construction vehicles maintaining roads during work are obligated to yield the road while working.",
+      "optionsRawJa": [
+        "A Yes",
+        "B No"
+      ],
+      "optionsGlossEn": [
+        "A Yes",
+        "B No"
+      ],
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "provisionalTopic": "proper-driving",
+      "provisionalSubtopics": [
+        "proper-driving:safe-driving",
+        "traffic-signals:road-signs"
+      ],
+      "topicConfidence": 0.522,
+      "topicSignals": [
+        {
+          "topic": "proper-driving",
+          "subtopic": "proper-driving:safe-driving",
+          "signal": "driving-action",
+          "weight": 1.2
+        },
+        {
+          "topic": "traffic-signals",
+          "subtopic": "traffic-signals:road-signs",
+          "signal": "sign-family",
+          "weight": 1.1
+        }
+      ],
+      "linkedExistingAssetCandidate": null,
+      "reviewerNotes": "",
+      "status": "pending-superset-review"
+    }
+  ]
+}

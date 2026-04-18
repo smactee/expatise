@@ -1,0 +1,493 @@
+{
+  "generatedAt": "2026-04-16T14:25:02.621Z",
+  "lang": "ja",
+  "batchId": "batch-019",
+  "dataset": "2023-test1",
+  "sourceDecisionPath": "qbank-tools/generated/staging/ja-batch-019-unresolved-decisions.json",
+  "items": [
+    {
+      "itemId": "screenshots/Screenshot 2026-04-07 at 18.27.59.png",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.27.59.png",
+      "status": "kept-unresolved",
+      "reason": "Reviewer chose to keep this item unresolved.",
+      "reviewerNotes": "",
+      "approvedQid": null,
+      "promptRawJa": "この標識は何を示しているか。",
+      "promptGlossEn": "What does this road sign indicate?",
+      "optionsRawJa": [
+        "A 下り左急勾配あり",
+        "B 上り右急勾配あり",
+        "C 右側通行",
+        "D つづら折りあり"
+      ],
+      "optionsGlossEn": [
+        "A. Steep descent to the left",
+        "B. Steep ascent to the right",
+        "C. Keep right",
+        "D. Winding (zigzag) ahead"
+      ],
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "provisionalTopic": "traffic-signals",
+      "provisionalSubtopics": [
+        "traffic-signals:road-signs"
+      ],
+      "topicConfidence": 1,
+      "topicSignals": [
+        {
+          "topic": "traffic-signals",
+          "subtopic": "traffic-signals:road-signs",
+          "signal": "sign-family",
+          "weight": 1.4
+        }
+      ],
+      "topCandidates": [
+        {
+          "qid": "q0848",
+          "number": 848,
+          "type": "MCQ",
+          "score": 38.244,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.075,
+            "rawPromptSimilarity": 0.126,
+            "englishPromptSimilarity": 0.075,
+            "syntheticPromptSimilarity": 0,
+            "optionSimilarity": 0.239,
+            "englishOptionSimilarity": 0.239,
+            "syntheticOptionSimilarity": 0,
+            "optionFingerprint": 0.148,
+            "englishOptionFingerprint": 0.148,
+            "syntheticOptionFingerprint": 0,
+            "optionExactSet": 0,
+            "optionRareCoverage": 0.208,
+            "mirrorAgreement": 0,
+            "correctAnswerMeaning": 0.5,
+            "englishCorrectAnswerMeaning": 0.5,
+            "syntheticCorrectAnswerMeaning": 0.5,
+            "questionType": 1,
+            "imageSignal": 1,
+            "topicWeighting": 0.5,
+            "assetTieBreak": 0
+          },
+          "diagnostics": {
+            "effectiveItemType": "MCQ",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": false,
+            "promptSpecificity": 0.6,
+            "genericPromptPenalty": 0.6,
+            "missingCorrectAnswerNeutral": true,
+            "exactCorrectKey": false,
+            "optionSetMode": "unordered-semantic + synthetic-ja mirror",
+            "rareSetBonus": 0,
+            "syntheticMirrorUsed": true,
+            "genericPromptFamily": null,
+            "explanation": [
+              "Generic prompt wording was down-weighted to avoid overvaluing template matches.",
+              "Missing correct answer was treated as a neutral signal."
+            ]
+          },
+          "prompt": "What’s the meaning of this guide arrow?",
+          "syntheticJaPrompt": "meaning guide arrow",
+          "translatedPrompt": "다음 교통경찰 수신호의 의미는?",
+          "options": [
+            {
+              "id": "A",
+              "text": "change to left lane",
+              "translatedText": "좌측 차로로 변경하라"
+            },
+            {
+              "id": "B",
+              "text": "going straight ahead",
+              "translatedText": "직진하라"
+            },
+            {
+              "id": "C",
+              "text": "U-turn ahead",
+              "translatedText": "U턴하라"
+            },
+            {
+              "id": "D",
+              "text": "right turn ahead",
+              "translatedText": "우회전하라"
+            }
+          ],
+          "correctAnswer": {
+            "kind": "MCQ",
+            "correctRow": null,
+            "correctOptionId": "q0848_o3",
+            "correctOptionKey": "C",
+            "correctOptionText": "U-turn ahead",
+            "correctOptionTranslatedText": "U턴하라",
+            "answerRaw": "C"
+          },
+          "image": {
+            "hasImage": true,
+            "currentAssetSrc": "/qbank/2023-test1/images/img_d6e02d99cd59f459d8a7eb549a859038.jpeg",
+            "assetHashes": [
+              "d6e02d99cd59f459d8a7eb549a859038"
+            ]
+          },
+          "topic": "police-hand-signals",
+          "subtopics": [],
+          "conceptSlots": null
+        },
+        {
+          "qid": "q0706",
+          "number": 706,
+          "type": "MCQ",
+          "score": 38.14,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.075,
+            "rawPromptSimilarity": 0.126,
+            "englishPromptSimilarity": 0.075,
+            "syntheticPromptSimilarity": 0,
+            "optionSimilarity": 0.241,
+            "englishOptionSimilarity": 0.241,
+            "syntheticOptionSimilarity": 0,
+            "optionFingerprint": 0.14,
+            "englishOptionFingerprint": 0.14,
+            "syntheticOptionFingerprint": 0,
+            "optionExactSet": 0,
+            "optionRareCoverage": 0.211,
+            "mirrorAgreement": 0,
+            "correctAnswerMeaning": 0.5,
+            "englishCorrectAnswerMeaning": 0.5,
+            "syntheticCorrectAnswerMeaning": 0.5,
+            "questionType": 1,
+            "imageSignal": 1,
+            "topicWeighting": 0.5,
+            "assetTieBreak": 0
+          },
+          "diagnostics": {
+            "effectiveItemType": "MCQ",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": false,
+            "promptSpecificity": 0.6,
+            "genericPromptPenalty": 0.6,
+            "missingCorrectAnswerNeutral": true,
+            "exactCorrectKey": false,
+            "optionSetMode": "unordered-semantic + synthetic-ja mirror",
+            "rareSetBonus": 0,
+            "syntheticMirrorUsed": true,
+            "genericPromptFamily": null,
+            "explanation": [
+              "Generic prompt wording was down-weighted to avoid overvaluing template matches.",
+              "Missing correct answer was treated as a neutral signal."
+            ]
+          },
+          "prompt": "What’s the meaning of this guide arrow?",
+          "syntheticJaPrompt": "meaning guide arrow",
+          "translatedPrompt": "이 유도 화살표의 뜻은?",
+          "options": [
+            {
+              "id": "A",
+              "text": "indicates changing to left lane",
+              "translatedText": "좌측 차로 변경을 표시한다"
+            },
+            {
+              "id": "B",
+              "text": "indicates changing to left lane",
+              "translatedText": "좌측 차로 변경을 표시한다"
+            },
+            {
+              "id": "C",
+              "text": "indicates making a U-turn ahead",
+              "translatedText": "앞에 유턴이 있음을 표시한다"
+            },
+            {
+              "id": "D",
+              "text": "indicates turning right ahead",
+              "translatedText": "앞에 우회전이 있음을 표시한다"
+            }
+          ],
+          "correctAnswer": {
+            "kind": "MCQ",
+            "correctRow": null,
+            "correctOptionId": "q0706_o4",
+            "correctOptionKey": "D",
+            "correctOptionText": "indicates turning right ahead",
+            "correctOptionTranslatedText": "앞에 우회전이 있음을 표시한다",
+            "answerRaw": "D"
+          },
+          "image": {
+            "hasImage": true,
+            "currentAssetSrc": "/qbank/2023-test1/images/img_eb28b4f09ee745299cb6264709200f9e.jpeg",
+            "assetHashes": [
+              "eb28b4f09ee745299cb6264709200f9e"
+            ]
+          },
+          "topic": "mcq",
+          "subtopics": [],
+          "conceptSlots": null
+        },
+        {
+          "qid": "q0776",
+          "number": 776,
+          "type": "MCQ",
+          "score": 37.737,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.075,
+            "rawPromptSimilarity": 0.126,
+            "englishPromptSimilarity": 0.075,
+            "syntheticPromptSimilarity": 0,
+            "optionSimilarity": 0.227,
+            "englishOptionSimilarity": 0.227,
+            "syntheticOptionSimilarity": 0,
+            "optionFingerprint": 0.144,
+            "englishOptionFingerprint": 0.144,
+            "syntheticOptionFingerprint": 0,
+            "optionExactSet": 0,
+            "optionRareCoverage": 0.228,
+            "mirrorAgreement": 0,
+            "correctAnswerMeaning": 0.5,
+            "englishCorrectAnswerMeaning": 0.5,
+            "syntheticCorrectAnswerMeaning": 0.5,
+            "questionType": 1,
+            "imageSignal": 1,
+            "topicWeighting": 0.5,
+            "assetTieBreak": 0
+          },
+          "diagnostics": {
+            "effectiveItemType": "MCQ",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": false,
+            "promptSpecificity": 0.6,
+            "genericPromptPenalty": 0.6,
+            "missingCorrectAnswerNeutral": true,
+            "exactCorrectKey": false,
+            "optionSetMode": "unordered-semantic + synthetic-ja mirror",
+            "rareSetBonus": 0,
+            "syntheticMirrorUsed": true,
+            "genericPromptFamily": null,
+            "explanation": [
+              "Generic prompt wording was down-weighted to avoid overvaluing template matches.",
+              "Missing correct answer was treated as a neutral signal."
+            ]
+          },
+          "prompt": "What’s the meaning of this guide arrow?",
+          "syntheticJaPrompt": "meaning guide arrow",
+          "translatedPrompt": "이 안내 화살표의 뜻은?",
+          "options": [
+            {
+              "id": "A",
+              "text": "changing to left lane",
+              "translatedText": "왼쪽 차로로 변경"
+            },
+            {
+              "id": "B",
+              "text": "going straight ahead",
+              "translatedText": "직진"
+            },
+            {
+              "id": "C",
+              "text": "left turn ahead",
+              "translatedText": "좌회전"
+            },
+            {
+              "id": "D",
+              "text": "right turn ahead",
+              "translatedText": "우회전"
+            }
+          ],
+          "correctAnswer": {
+            "kind": "MCQ",
+            "correctRow": null,
+            "correctOptionId": "q0776_o3",
+            "correctOptionKey": "C",
+            "correctOptionText": "left turn ahead",
+            "correctOptionTranslatedText": "좌회전",
+            "answerRaw": "C"
+          },
+          "image": {
+            "hasImage": true,
+            "currentAssetSrc": "/qbank/2023-test1/images/img_e36d60d3d76562cab5e27d368fa2e6e7.jpeg",
+            "assetHashes": [
+              "e36d60d3d76562cab5e27d368fa2e6e7"
+            ]
+          },
+          "topic": "police-hand-signals",
+          "subtopics": [],
+          "conceptSlots": null
+        },
+        {
+          "qid": "q0790",
+          "number": 790,
+          "type": "MCQ",
+          "score": 36.951,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.11,
+            "rawPromptSimilarity": 0.22,
+            "englishPromptSimilarity": 0.11,
+            "syntheticPromptSimilarity": 0.043,
+            "optionSimilarity": 0.2,
+            "englishOptionSimilarity": 0.2,
+            "syntheticOptionSimilarity": 0,
+            "optionFingerprint": 0.121,
+            "englishOptionFingerprint": 0.121,
+            "syntheticOptionFingerprint": 0,
+            "optionExactSet": 0,
+            "optionRareCoverage": 0.199,
+            "mirrorAgreement": 0,
+            "correctAnswerMeaning": 0.5,
+            "englishCorrectAnswerMeaning": 0.5,
+            "syntheticCorrectAnswerMeaning": 0.5,
+            "questionType": 1,
+            "imageSignal": 1,
+            "topicWeighting": 0.5,
+            "assetTieBreak": 0
+          },
+          "diagnostics": {
+            "effectiveItemType": "MCQ",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": false,
+            "promptSpecificity": 0.5,
+            "genericPromptPenalty": 0.5,
+            "missingCorrectAnswerNeutral": true,
+            "exactCorrectKey": false,
+            "optionSetMode": "unordered-semantic + synthetic-ja mirror",
+            "rareSetBonus": 0,
+            "syntheticMirrorUsed": true,
+            "genericPromptFamily": null,
+            "explanation": [
+              "Generic prompt wording was down-weighted to avoid overvaluing template matches.",
+              "Missing correct answer was treated as a neutral signal."
+            ]
+          },
+          "prompt": "What’s the meaning of this sign?",
+          "syntheticJaPrompt": "meaning 標識。",
+          "translatedPrompt": "이 표지의 뜻은?",
+          "options": [
+            {
+              "id": "A",
+              "text": "no left turn",
+              "translatedText": "좌회전 금지"
+            },
+            {
+              "id": "B",
+              "text": "left and right turn",
+              "translatedText": "좌·우회전"
+            },
+            {
+              "id": "C",
+              "text": "no left and right turn",
+              "translatedText": "좌·우회전 금지"
+            },
+            {
+              "id": "D",
+              "text": "no right turn",
+              "translatedText": "우회전 금지"
+            }
+          ],
+          "correctAnswer": {
+            "kind": "MCQ",
+            "correctRow": null,
+            "correctOptionId": "q0790_o2",
+            "correctOptionKey": "B",
+            "correctOptionText": "left and right turn",
+            "correctOptionTranslatedText": "좌·우회전",
+            "answerRaw": "B"
+          },
+          "image": {
+            "hasImage": true,
+            "currentAssetSrc": "/qbank/2023-test1/images/img_3bc676043f4850a2b259d2c2d62be734.jpeg",
+            "assetHashes": [
+              "3bc676043f4850a2b259d2c2d62be734"
+            ]
+          },
+          "topic": "police-hand-signals",
+          "subtopics": [],
+          "conceptSlots": null
+        },
+        {
+          "qid": "q0929",
+          "number": 929,
+          "type": "MCQ",
+          "score": 36.451,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.228,
+            "rawPromptSimilarity": 0.65,
+            "englishPromptSimilarity": 0.135,
+            "syntheticPromptSimilarity": 0.228,
+            "optionSimilarity": 0.145,
+            "englishOptionSimilarity": 0.145,
+            "syntheticOptionSimilarity": 0,
+            "optionFingerprint": 0.087,
+            "englishOptionFingerprint": 0.087,
+            "syntheticOptionFingerprint": 0,
+            "optionExactSet": 0,
+            "optionRareCoverage": 0.125,
+            "mirrorAgreement": 0,
+            "correctAnswerMeaning": 0.5,
+            "englishCorrectAnswerMeaning": 0.5,
+            "syntheticCorrectAnswerMeaning": 0.5,
+            "questionType": 1,
+            "imageSignal": 1,
+            "topicWeighting": 0.5,
+            "assetTieBreak": 0
+          },
+          "diagnostics": {
+            "effectiveItemType": "MCQ",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": false,
+            "promptSpecificity": 0.35,
+            "genericPromptPenalty": 0.35,
+            "missingCorrectAnswerNeutral": true,
+            "exactCorrectKey": false,
+            "optionSetMode": "unordered-semantic + synthetic-ja mirror",
+            "rareSetBonus": 0,
+            "syntheticMirrorUsed": true,
+            "genericPromptFamily": "sign-meaning",
+            "explanation": [
+              "Generic prompt wording was down-weighted to avoid overvaluing template matches.",
+              "Missing correct answer was treated as a neutral signal."
+            ]
+          },
+          "prompt": "What does this sign mean?",
+          "syntheticJaPrompt": "この標識は何を示していますか",
+          "translatedPrompt": "이 표지의 뜻은?",
+          "options": [
+            {
+              "id": "A",
+              "text": "reminder of continuous two or more up slopes ahead",
+              "translatedText": "앞으로 연속되는 2개 이상의 오르막길"
+            },
+            {
+              "id": "B",
+              "text": "reminder of a steep uphill road ahead",
+              "translatedText": "앞으로 가파른 오르막길"
+            },
+            {
+              "id": "C",
+              "text": "reminder of a steep downhill road ahead",
+              "translatedText": "앞으로 가파른 내리막길"
+            },
+            {
+              "id": "D",
+              "text": "reminder of continuous two or more down slopes ahead",
+              "translatedText": "앞으로 연속되는 2개 이상의 내리막길"
+            }
+          ],
+          "correctAnswer": {
+            "kind": "MCQ",
+            "correctRow": null,
+            "correctOptionId": "q0929_o4",
+            "correctOptionKey": "D",
+            "correctOptionText": "reminder of continuous two or more down slopes ahead",
+            "correctOptionTranslatedText": "앞으로 연속되는 2개 이상의 내리막길",
+            "answerRaw": "D"
+          },
+          "image": {
+            "hasImage": true,
+            "currentAssetSrc": "/qbank/2023-test1/images/img_cc208f4769f6c05764567cf67776dd25.jpeg",
+            "assetHashes": [
+              "cc208f4769f6c05764567cf67776dd25"
+            ]
+          },
+          "topic": "mcq",
+          "subtopics": [],
+          "conceptSlots": null
+        }
+      ]
+    }
+  ]
+}

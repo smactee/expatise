@@ -5,6 +5,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter, useSearchParams, useParams } from "next/navigation";
 import Image from "next/image";
 import styles from "./results.module.css";
+import QuestionExplanationToggle from "@/components/QuestionExplanationToggle";
 import { loadDataset } from "@/lib/qbank/loadDataset";
 import type { DatasetId } from "@/lib/qbank/datasets";
 import type { Question } from "@/lib/qbank/types";
@@ -306,7 +307,7 @@ if (modeId === "mistakes" && !didAutoClearRef.current) {
                 tone: correctRow === "W" ? "correct" : chosenRow === "W" ? "wrong" : "neutral",
               },
             ],
-            explanation: (q as any).explanation,
+            explanation: (q as any).explanation ?? (q as any).sourceExplanation,
           });
           continue;
         }
@@ -344,7 +345,7 @@ if (modeId === "mistakes" && !didAutoClearRef.current) {
             if (chosenKey && key === chosenKey && key !== correctKey) tone = "wrong";
             return { key, text, tone };
           }),
-          explanation: (q as any).explanation,
+          explanation: (q as any).explanation ?? (q as any).sourceExplanation,
         });
       }
 
@@ -534,12 +535,10 @@ const animatedDeg = (animatedPctFloat / 100) * 360;
                     </div>
                   </div>
 
-                  {(it.explanation ?? "").trim().length > 0 && (
-                    <>
-                      <div className={styles.exTitle}>{t("results.explanation")}</div>
-                      <div className={styles.exBody}>{it.explanation}</div>
-                    </>
-                  )}
+                  <QuestionExplanationToggle
+                    explanation={it.explanation}
+                    label={t("results.explanation")}
+                  />
                 </article>
               ))
             ) : (
@@ -617,12 +616,10 @@ const animatedDeg = (animatedPctFloat / 100) * 360;
                         </div>
                       </div>
 
-                      {(it.explanation ?? "").trim().length > 0 && (
-                        <>
-                          <div className={styles.exTitle}>{t("results.explanation")}</div>
-                          <div className={styles.exBody}>{it.explanation}</div>
-                        </>
-                      )}
+                      <QuestionExplanationToggle
+                        explanation={it.explanation}
+                        label={t("results.explanation")}
+                      />
                     </article>
                   </div>
                 ))}

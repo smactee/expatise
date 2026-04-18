@@ -1,0 +1,85 @@
+{
+  "generatedAt": "2026-04-17T02:12:46.356Z",
+  "lang": "ja",
+  "batchId": "batch-020",
+  "dataset": "2023-test1",
+  "sourceDecisionPath": "qbank-tools/generated/staging/new-question-decisions.ja.batch-020.json",
+  "items": [
+    {
+      "candidateId": "nqc-ja-batch-020-001",
+      "sourceLang": "ja",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.28.38 1.png",
+      "effectiveQuestionType": "ROW",
+      "promptRawJa": "ITトランプのスイッチをオンにす点灯する。",
+      "promptGlossEn": "It lights up when you turn on the switch for the fog lamps.",
+      "optionsRawJa": [
+        "A Yes",
+        "B No"
+      ],
+      "optionsGlossEn": [
+        "Yes",
+        "No"
+      ],
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "provisionalTopic": "road-safety",
+      "provisionalSubtopics": [
+        "road-safety:road-conditions",
+        "driving-operations:indicators"
+      ],
+      "topicConfidence": 0.51,
+      "topicSignals": [
+        {
+          "topic": "road-safety",
+          "subtopic": "road-safety:road-conditions",
+          "signal": "road-condition-or-hazard",
+          "weight": 1.3
+        },
+        {
+          "topic": "driving-operations",
+          "subtopic": "driving-operations:indicators",
+          "signal": "indicator-operation",
+          "weight": 1.25
+        }
+      ],
+      "linkedExistingAssetCandidate": {
+        "qid": "q0565",
+        "number": 565,
+        "score": 71.602,
+        "currentAssetSrc": "/qbank/2023-test1/images/img_7ae51200ea841830de1000cdad800d89.jpeg",
+        "assetHashes": [
+          "7ae51200ea841830de1000cdad800d89"
+        ],
+        "status": "unconfirmed-existing-production-asset"
+      },
+      "reviewerNotes": "",
+      "status": "pending-superset-review",
+      "sourceExplanation": "front and rear width lights"
+    },
+    {
+      "candidateId": "nqc-ja-batch-020-002",
+      "sourceLang": "ja",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.28.40.png",
+      "effectiveQuestionType": "ROW",
+      "promptRawJa": "自動車走行許可証を紛失した場合、自動車所有者は登録地の車両管理所に自動車走行許可証の再交付・更新を申請しなければならない。",
+      "promptGlossEn": "If a vehicle registration certificate is lost, the vehicle owner must apply for reissuance or renewal of the certificate at the vehicle administration office of the registered location.",
+      "optionsRawJa": [
+        "A Yes",
+        "B No"
+      ],
+      "optionsGlossEn": [
+        "Yes",
+        "No"
+      ],
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "provisionalTopic": null,
+      "provisionalSubtopics": [],
+      "topicConfidence": 0,
+      "topicSignals": [],
+      "linkedExistingAssetCandidate": null,
+      "reviewerNotes": "",
+      "status": "pending-superset-review"
+    }
+  ]
+}

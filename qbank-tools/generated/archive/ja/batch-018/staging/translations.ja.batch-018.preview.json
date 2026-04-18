@@ -1,0 +1,3675 @@
+{
+  "meta": {
+    "locale": "ja",
+    "generatedAt": "2026-04-16T11:42:11.252Z",
+    "reviewedBatchId": "batch-018",
+    "dataset": "2023-test1",
+    "sourceReviewDecisionsPath": "qbank-tools/generated/staging/ja-batch-018-review-decisions.json",
+    "sourceReviewNeededPath": "imports/ja/batch-018/review-needed.json",
+    "approvedCount": 35,
+    "createNewQuestionCount": 1,
+    "noneOfTheseCount": 0,
+    "unsureCount": 0,
+    "localeSpecificCorrectOptionKeyCount": 21,
+    "manualAnswerKeyConfirmationCount": 1,
+    "stagingOnly": true,
+    "answerKeyPolicy": "Locale-specific answer keys are derived by answer meaning and preserved independently from the English master letter.",
+    "sourceAnswerKeyDecisionPath": "qbank-tools/generated/staging/ja-batch-018-answer-key-decisions.review-scope.json",
+    "answerKeyConfirmedCount": 20
+  },
+  "questions": {
+    "q0365": {
+      "prompt": "このような交差点を通過する場合、正しい操作はどれか。",
+      "explanation": "",
+      "sourceMode": "reviewed-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.26.41 1.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 18.26.41 1.png",
+      "reviewerNotes": "",
+      "promptRawJa": "このような交差点を通過する場合、正しい操作はどれか。",
+      "promptGlossEn": "When passing through an intersection like this, which operation is correct?",
+      "correctKeyRaw": "B",
+      "correctAnswerRaw": "この交差点でUターンできない",
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-018",
+        "approvedQid": "q0365"
+      },
+      "options": {
+        "q0365_o1": "A 左側の車線によってUターンする",
+        "q0365_o2": "B この交差点でUターンできない",
+        "q0365_o3": "C 中央部の車線からUターンする",
+        "q0365_o4": "D 交差点内でUターンする"
+      },
+      "optionsRawJa": [
+        "A 左側の車線によってUターンする",
+        "B この交差点でUターンできない",
+        "C 中央部の車線からUターンする",
+        "D 交差点内でUターンする"
+      ],
+      "optionsGlossEn": [
+        "A. Make a U-turn from the left lane",
+        "B. Cannot make a U-turn at this intersection",
+        "C. Make a U-turn from the center lane",
+        "D. Make a U-turn inside the intersection"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A 左側の車線によってUターンする",
+          "sourceTextBody": "左側の車線によってUターンする",
+          "sourceGlossEn": "A. Make a U-turn from the left lane",
+          "canonicalOptionId": "q0365_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "make a U turn along the left lane",
+          "alignmentScore": 0.6133333333333333,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B この交差点でUターンできない",
+          "sourceTextBody": "この交差点でUターンできない",
+          "sourceGlossEn": "B. Cannot make a U-turn at this intersection",
+          "canonicalOptionId": "q0365_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "Cannot make a U-turn.",
+          "alignmentScore": 0.5239716312056738,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C 中央部の車線からUターンする",
+          "sourceTextBody": "中央部の車線からUターンする",
+          "sourceGlossEn": "C. Make a U-turn from the center lane",
+          "canonicalOptionId": "q0365_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "make a U turn through the middle lane",
+          "alignmentScore": 0.33777777777777773,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D 交差点内でUターンする",
+          "sourceTextBody": "交差点内でUターンする",
+          "sourceGlossEn": "D. Make a U-turn inside the intersection",
+          "canonicalOptionId": "q0365_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "make a U turn inside the intersection",
+          "alignmentScore": 1,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A 左側の車線によってUターンする",
+          "sourceGlossEn": "A. Make a U-turn from the left lane",
+          "canonicalOptionId": "q0365_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "make a U turn along the left lane",
+          "alignmentScore": 0.6133333333333333,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B この交差点でUターンできない",
+          "sourceGlossEn": "B. Cannot make a U-turn at this intersection",
+          "canonicalOptionId": "q0365_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "Cannot make a U-turn.",
+          "alignmentScore": 0.5239716312056738,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C 中央部の車線からUターンする",
+          "sourceGlossEn": "C. Make a U-turn from the center lane",
+          "canonicalOptionId": "q0365_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "make a U turn through the middle lane",
+          "alignmentScore": 0.33777777777777773,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D 交差点内でUターンする",
+          "sourceGlossEn": "D. Make a U-turn inside the intersection",
+          "canonicalOptionId": "q0365_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "make a U turn inside the intersection",
+          "alignmentScore": 1,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "B",
+      "canonicalCorrectOptionId": "q0365_o2",
+      "canonicalCorrectOptionKey": "B",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed via exported answer-key review decision on 2026-04-16T11:42:11.252Z.",
+      "correctOptionAlignment": {
+        "sourceKey": "B",
+        "canonicalOptionId": "q0365_o2",
+        "canonicalOptionKey": "B",
+        "sourceText": "B この交差点でUターンできない",
+        "sourceGlossEn": "B. Cannot make a U-turn at this intersection",
+        "canonicalOptionText": "Cannot make a U-turn.",
+        "alignmentScore": 0.5239716312056738,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-16T11:42:11.252Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ja-batch-018-answer-key-decisions.review-scope.json",
+      "answerKeyReviewerNotes": ""
+    },
+    "q0509": {
+      "prompt": "道端に寄って自動車を停車させる場合、どのようにライトを使用するのが適切か。",
+      "explanation": "",
+      "sourceMode": "reviewed-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.26.41.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 18.26.41.png",
+      "reviewerNotes": "",
+      "promptRawJa": "道端に寄って自動車を停車させる場合、どのようにライトを使用するのが適切か。",
+      "promptGlossEn": "When stopping your car on the side of the road, what is the appropriate way to use your lights?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-018",
+        "approvedQid": "q0509"
+      },
+      "options": {
+        "q0509_o1": "C ハザードランプをつける",
+        "q0509_o2": "D 早めに右ウィンカーを出す",
+        "q0509_o3": "A ハイビームとロービームヘッドランプを交互に使用する",
+        "q0509_o4": "B ランプをつけない"
+      },
+      "optionsRawJa": [
+        "A ハイビームとロービームヘッドランプを交互に使用する",
+        "B ランプをつけない",
+        "C ハザードランプをつける",
+        "D 早めに右ウィンカーを出す"
+      ],
+      "optionsGlossEn": [
+        "A Use the high beam and low beam headlights alternately",
+        "B Do not turn on any lights",
+        "C Turn on the hazard lights",
+        "D Signal right early"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A ハイビームとロービームヘッドランプを交互に使用する",
+          "sourceTextBody": "ハイビームとロービームヘッドランプを交互に使用する",
+          "sourceGlossEn": "A Use the high beam and low beam headlights alternately",
+          "canonicalOptionId": "q0509_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "use the high and low beam lights alternately",
+          "alignmentScore": 0.763855421686747,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B ランプをつけない",
+          "sourceTextBody": "ランプをつけない",
+          "sourceGlossEn": "B Do not turn on any lights",
+          "canonicalOptionId": "q0509_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "not need to use any light to indicate",
+          "alignmentScore": 0.328859649122807,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C ハザードランプをつける",
+          "sourceTextBody": "ハザードランプをつける",
+          "sourceGlossEn": "C Turn on the hazard lights",
+          "canonicalOptionId": "q0509_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "turn on the hazard lights",
+          "alignmentScore": 1,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D 早めに右ウィンカーを出す",
+          "sourceTextBody": "早めに右ウィンカーを出す",
+          "sourceGlossEn": "D Signal right early",
+          "canonicalOptionId": "q0509_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "Turn on the right-turn signal in advance.",
+          "alignmentScore": 0.0784313725490196,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A ハイビームとロービームヘッドランプを交互に使用する",
+          "sourceGlossEn": "A Use the high beam and low beam headlights alternately",
+          "canonicalOptionId": "q0509_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "use the high and low beam lights alternately",
+          "alignmentScore": 0.763855421686747,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B ランプをつけない",
+          "sourceGlossEn": "B Do not turn on any lights",
+          "canonicalOptionId": "q0509_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "not need to use any light to indicate",
+          "alignmentScore": 0.328859649122807,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C ハザードランプをつける",
+          "sourceGlossEn": "C Turn on the hazard lights",
+          "canonicalOptionId": "q0509_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "turn on the hazard lights",
+          "alignmentScore": 1,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D 早めに右ウィンカーを出す",
+          "sourceGlossEn": "D Signal right early",
+          "canonicalOptionId": "q0509_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "Turn on the right-turn signal in advance.",
+          "alignmentScore": 0.0784313725490196,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        }
+      ],
+      "localeCorrectOptionKey": "D",
+      "canonicalCorrectOptionId": "q0509_o2",
+      "canonicalCorrectOptionKey": "B",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed via exported answer-key review decision on 2026-04-16T11:42:11.252Z.",
+      "correctOptionAlignment": {
+        "sourceKey": "D",
+        "canonicalOptionId": "q0509_o2",
+        "canonicalOptionKey": "B",
+        "sourceText": "D 早めに右ウィンカーを出す",
+        "sourceGlossEn": "D Signal right early",
+        "canonicalOptionText": "Turn on the right-turn signal in advance.",
+        "alignmentScore": 0.0784313725490196,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-16T11:42:11.252Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ja-batch-018-answer-key-decisions.review-scope.json",
+      "answerKeyReviewerNotes": ""
+    },
+    "q0052": {
+      "prompt": "雨での走行は路面が滑りやすいため制動距離が長くなる。走行するさいは、できるだけ急ブレーキをかけ速度を落とすべきである。",
+      "explanation": "",
+      "sourceMode": "reviewed-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.26.43.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 18.26.43.png",
+      "reviewerNotes": "",
+      "promptRawJa": "雨での走行は路面が滑りやすいため制動距離が長くなる。走行するさいは、できるだけ急ブレーキをかけ速度を落とすべきである。",
+      "promptGlossEn": "When driving in the rain, the road surface becomes slippery, so the braking distance becomes longer. When driving, you should apply the brakes suddenly as much as possible to reduce your speed.",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "ROW",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-018",
+        "approvedQid": "q0052"
+      },
+      "optionsRawJa": [],
+      "optionsGlossEn": [],
+      "localeCorrectOptionKey": null,
+      "canonicalCorrectRow": "W",
+      "canonicalCorrectAnswer": "wrong / false",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "ROW question; no locale-specific option key applies."
+    },
+    "q0958": {
+      "prompt": "この標識の示す意味はどれか。",
+      "explanation": "",
+      "sourceMode": "reviewed-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.26.44 1.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 18.26.44 1.png",
+      "reviewerNotes": "",
+      "promptRawJa": "この標識の示す意味はどれか。",
+      "promptGlossEn": "What does this sign mean?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-018",
+        "approvedQid": "q0958"
+      },
+      "options": {
+        "q0958_o1": "C 減速徐行区間",
+        "q0958_o2": "A 工事区間",
+        "q0958_o3": "B 事故多発区間",
+        "q0958_o4": "D 渋滞区間"
+      },
+      "optionsRawJa": [
+        "A 工事区間",
+        "B 事故多発区間",
+        "C 減速徐行区間",
+        "D 渋滞区間"
+      ],
+      "optionsGlossEn": [
+        "A. Construction zone",
+        "B. Frequent accident area",
+        "C. Slow down zone",
+        "D. Congestion zone"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A 工事区間",
+          "sourceTextBody": "工事区間",
+          "sourceGlossEn": "A. Construction zone",
+          "canonicalOptionId": "q0958_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "Construction zone",
+          "alignmentScore": 1,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B 事故多発区間",
+          "sourceTextBody": "事故多発区間",
+          "sourceGlossEn": "B. Frequent accident area",
+          "canonicalOptionId": "q0958_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "Accident-prone section",
+          "alignmentScore": 0.06,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C 減速徐行区間",
+          "sourceTextBody": "減速徐行区間",
+          "sourceGlossEn": "C. Slow down zone",
+          "canonicalOptionId": "q0958_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "Slow driving section",
+          "alignmentScore": 0.248,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D 渋滞区間",
+          "sourceTextBody": "渋滞区間",
+          "sourceGlossEn": "D. Congestion zone",
+          "canonicalOptionId": "q0958_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "Traffic congestion section",
+          "alignmentScore": 0.32646396396396393,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A 工事区間",
+          "sourceGlossEn": "A. Construction zone",
+          "canonicalOptionId": "q0958_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "Construction zone",
+          "alignmentScore": 1,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B 事故多発区間",
+          "sourceGlossEn": "B. Frequent accident area",
+          "canonicalOptionId": "q0958_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "Accident-prone section",
+          "alignmentScore": 0.06,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C 減速徐行区間",
+          "sourceGlossEn": "C. Slow down zone",
+          "canonicalOptionId": "q0958_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "Slow driving section",
+          "alignmentScore": 0.248,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D 渋滞区間",
+          "sourceGlossEn": "D. Congestion zone",
+          "canonicalOptionId": "q0958_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "Traffic congestion section",
+          "alignmentScore": 0.32646396396396393,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "B",
+      "canonicalCorrectOptionId": "q0958_o3",
+      "canonicalCorrectOptionKey": "C",
+      "answerKeyNeedsManualConfirmation": true,
+      "answerKeyConfirmationReason": "Meaning-based option alignment was weak; verify the Japanese correct option key manually.",
+      "correctOptionAlignment": {
+        "sourceKey": "B",
+        "canonicalOptionId": "q0958_o3",
+        "canonicalOptionKey": "C",
+        "sourceText": "B 事故多発区間",
+        "sourceGlossEn": "B. Frequent accident area",
+        "canonicalOptionText": "Accident-prone section",
+        "alignmentScore": 0.06,
+        "method": "meaning-derived"
+      }
+    },
+    "q0579": {
+      "prompt": "アンチロック・ブレーキシステム（ABS）は、どのような状況においてブレーキの制動効果を最大限に発揮できるか。",
+      "explanation": "",
+      "sourceMode": "reviewed-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.26.44.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 18.26.44.png",
+      "reviewerNotes": "",
+      "promptRawJa": "アンチロック・ブレーキシステム（ABS）は、どのような状況においてブレーキの制動効果を最大限に発揮できるか。",
+      "promptGlossEn": "In which situation does the Anti-lock Braking System (ABS) maximize the braking effect?",
+      "correctKeyRaw": "B",
+      "correctAnswerRaw": "持続的にブレーキをかける",
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-018",
+        "approvedQid": "q0579"
+      },
+      "options": {
+        "q0579_o1": "A 断続的にブレーキをかける",
+        "q0579_o2": "B 持続的にブレーキをかける",
+        "q0579_o3": "D 急ブレーキをかける",
+        "q0579_o4": "C ブレーキペダルをゆっくりと踏む"
+      },
+      "optionsRawJa": [
+        "A 断続的にブレーキをかける",
+        "B 持続的にブレーキをかける",
+        "C ブレーキペダルをゆっくりと踏む",
+        "D 急ブレーキをかける"
+      ],
+      "optionsGlossEn": [
+        "A. Apply the brakes intermittently",
+        "B. Apply the brakes continuously",
+        "C. Press the brake pedal slowly",
+        "D. Apply the brakes suddenly"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A 断続的にブレーキをかける",
+          "sourceTextBody": "断続的にブレーキをかける",
+          "sourceGlossEn": "A. Apply the brakes intermittently",
+          "canonicalOptionId": "q0579_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "braking intermittently",
+          "alignmentScore": 0.3363636363636363,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B 持続的にブレーキをかける",
+          "sourceTextBody": "持続的にブレーキをかける",
+          "sourceGlossEn": "B. Apply the brakes continuously",
+          "canonicalOptionId": "q0579_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "braking continuously",
+          "alignmentScore": 0.32999999999999996,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C ブレーキペダルをゆっくりと踏む",
+          "sourceTextBody": "ブレーキペダルをゆっくりと踏む",
+          "sourceGlossEn": "C. Press the brake pedal slowly",
+          "canonicalOptionId": "q0579_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "applying emergency braking",
+          "alignmentScore": 0.3727891156462585,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D 急ブレーキをかける",
+          "sourceTextBody": "急ブレーキをかける",
+          "sourceGlossEn": "D. Apply the brakes suddenly",
+          "canonicalOptionId": "q0579_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "applying emergency braking",
+          "alignmentScore": 0.06,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A 断続的にブレーキをかける",
+          "sourceGlossEn": "A. Apply the brakes intermittently",
+          "canonicalOptionId": "q0579_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "braking intermittently",
+          "alignmentScore": 0.3363636363636363,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B 持続的にブレーキをかける",
+          "sourceGlossEn": "B. Apply the brakes continuously",
+          "canonicalOptionId": "q0579_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "braking continuously",
+          "alignmentScore": 0.32999999999999996,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C ブレーキペダルをゆっくりと踏む",
+          "sourceGlossEn": "C. Press the brake pedal slowly",
+          "canonicalOptionId": "q0579_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "applying emergency braking",
+          "alignmentScore": 0.3727891156462585,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D 急ブレーキをかける",
+          "sourceGlossEn": "D. Apply the brakes suddenly",
+          "canonicalOptionId": "q0579_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "applying emergency braking",
+          "alignmentScore": 0.06,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "C",
+      "canonicalCorrectOptionId": "q0579_o3",
+      "canonicalCorrectOptionKey": "C",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed via exported answer-key review decision on 2026-04-16T11:42:11.252Z; reviewer changed locale key from D to C.",
+      "correctOptionAlignment": {
+        "sourceKey": "C",
+        "canonicalOptionId": "q0579_o3",
+        "canonicalOptionKey": "C",
+        "sourceText": "C ブレーキペダルをゆっくりと踏む",
+        "sourceGlossEn": "C. Press the brake pedal slowly",
+        "canonicalOptionText": "applying emergency braking",
+        "alignmentScore": 0.06,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-16T11:42:11.252Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ja-batch-018-answer-key-decisions.review-scope.json",
+      "answerKeyReviewerNotes": ""
+    },
+    "q0583": {
+      "prompt": "自動車のインパネのこの点灯は、何を示しているか。",
+      "explanation": "",
+      "sourceMode": "reviewed-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.26.45.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 18.26.45.png",
+      "reviewerNotes": "",
+      "promptRawJa": "自動車のインパネのこの点灯は、何を示しているか。",
+      "promptGlossEn": "What does this indicator light on the car's dashboard mean?",
+      "correctKeyRaw": "B",
+      "correctAnswerRaw": "フロントフォグランプの点灯",
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-018",
+        "approvedQid": "q0583"
+      },
+      "options": {
+        "q0583_o1": "B フロントフォグランプの点灯",
+        "q0583_o2": "D ロービームヘッドランプの点灯",
+        "q0583_o3": "A ハイビームヘッドランプの点灯",
+        "q0583_o4": "C リアフォグランプの点灯"
+      },
+      "optionsRawJa": [
+        "A ハイビームヘッドランプの点灯",
+        "B フロントフォグランプの点灯",
+        "C リアフォグランプの点灯",
+        "D ロービームヘッドランプの点灯"
+      ],
+      "optionsGlossEn": [
+        "A. High beam headlamp on",
+        "B. Front fog lamp on",
+        "C. Rear fog lamp on",
+        "D. Low beam headlamp on"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A ハイビームヘッドランプの点灯",
+          "sourceTextBody": "ハイビームヘッドランプの点灯",
+          "sourceGlossEn": "A. High beam headlamp on",
+          "canonicalOptionId": "q0583_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "the high beam light is turned on",
+          "alignmentScore": 0.4228571428571428,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B フロントフォグランプの点灯",
+          "sourceTextBody": "フロントフォグランプの点灯",
+          "sourceGlossEn": "B. Front fog lamp on",
+          "canonicalOptionId": "q0583_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "the tail fog light is turned on",
+          "alignmentScore": 0.25,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C リアフォグランプの点灯",
+          "sourceTextBody": "リアフォグランプの点灯",
+          "sourceGlossEn": "C. Rear fog lamp on",
+          "canonicalOptionId": "q0583_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "the head fog light is turned on",
+          "alignmentScore": 0.2512820512820513,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D ロービームヘッドランプの点灯",
+          "sourceTextBody": "ロービームヘッドランプの点灯",
+          "sourceGlossEn": "D. Low beam headlamp on",
+          "canonicalOptionId": "q0583_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "low beam light is turned on",
+          "alignmentScore": 0.41727574750830565,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A ハイビームヘッドランプの点灯",
+          "sourceGlossEn": "A. High beam headlamp on",
+          "canonicalOptionId": "q0583_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "the high beam light is turned on",
+          "alignmentScore": 0.4228571428571428,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B フロントフォグランプの点灯",
+          "sourceGlossEn": "B. Front fog lamp on",
+          "canonicalOptionId": "q0583_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "the tail fog light is turned on",
+          "alignmentScore": 0.25,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C リアフォグランプの点灯",
+          "sourceGlossEn": "C. Rear fog lamp on",
+          "canonicalOptionId": "q0583_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "the head fog light is turned on",
+          "alignmentScore": 0.2512820512820513,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D ロービームヘッドランプの点灯",
+          "sourceGlossEn": "D. Low beam headlamp on",
+          "canonicalOptionId": "q0583_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "low beam light is turned on",
+          "alignmentScore": 0.41727574750830565,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        }
+      ],
+      "localeCorrectOptionKey": "D",
+      "canonicalCorrectOptionId": "q0583_o2",
+      "canonicalCorrectOptionKey": "B",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed via exported answer-key review decision on 2026-04-16T11:42:11.252Z.",
+      "correctOptionAlignment": {
+        "sourceKey": "D",
+        "canonicalOptionId": "q0583_o2",
+        "canonicalOptionKey": "B",
+        "sourceText": "D ロービームヘッドランプの点灯",
+        "sourceGlossEn": "D. Low beam headlamp on",
+        "canonicalOptionText": "low beam light is turned on",
+        "alignmentScore": 0.41727574750830565,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-16T11:42:11.252Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ja-batch-018-answer-key-decisions.review-scope.json",
+      "answerKeyReviewerNotes": ""
+    },
+    "q0021": {
+      "prompt": "高速道路で分流交通管制があっても、高速道路から降りずに路肩に寄って停車し、管制が終わってから運転を続けてもよい。",
+      "explanation": "",
+      "sourceMode": "reviewed-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.26.46 1.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 18.26.46 1.png",
+      "reviewerNotes": "",
+      "promptRawJa": "高速道路で分流交通管制があっても、高速道路から降りずに路肩に寄って停車し、管制が終わってから運転を続けてもよい。",
+      "promptGlossEn": "Even if there is traffic control at a highway diversion, you may pull over to the shoulder and stop without exiting the highway, and then continue driving after the control ends.",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "ROW",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-018",
+        "approvedQid": "q0021"
+      },
+      "optionsRawJa": [],
+      "optionsGlossEn": [],
+      "localeCorrectOptionKey": null,
+      "canonicalCorrectRow": "W",
+      "canonicalCorrectAnswer": "wrong / false",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "ROW question; no locale-specific option key applies."
+    },
+    "q0472": {
+      "prompt": "つぎの状況のなかで、交通警察が運転者の免許証を押収することができるのはどれか。",
+      "explanation": "",
+      "sourceMode": "reviewed-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.26.46.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 18.26.46.png",
+      "reviewerNotes": "",
+      "promptRawJa": "つぎの状況のなかで、交通警察が運転者の免許証を押収することができるのはどれか。",
+      "promptGlossEn": "In which of the following situations can the traffic police confiscate the driver's license?",
+      "correctKeyRaw": "A",
+      "correctAnswerRaw": "飲酒運転",
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-018",
+        "approvedQid": "q0472"
+      },
+      "options": {
+        "q0472_o1": "B 規定速度を10%上回る",
+        "q0472_o2": "C 疲労運転",
+        "q0472_o3": "D 運転中、シートベルト非着用を締めていない",
+        "q0472_o4": "A 飲酒運転"
+      },
+      "optionsRawJa": [
+        "A 飲酒運転",
+        "B 規定速度を10%上回る",
+        "C 疲労運転",
+        "D 運転中、シートベルト非着用を締めていない"
+      ],
+      "optionsGlossEn": [
+        "A: Drunk driving",
+        "B: Exceeding the speed limit by 10%",
+        "C: Driving while fatigued",
+        "D: Not wearing a seatbelt while driving"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A 飲酒運転",
+          "sourceTextBody": "飲酒運転",
+          "sourceGlossEn": "A: Drunk driving",
+          "canonicalOptionId": "q0472_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "driving after drinking",
+          "alignmentScore": 0.2774193548387097,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B 規定速度を10%上回る",
+          "sourceTextBody": "規定速度を10%上回る",
+          "sourceGlossEn": "B: Exceeding the speed limit by 10%",
+          "canonicalOptionId": "q0472_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "exceeding 10% of the prescribed speed limits",
+          "alignmentScore": 0.584126984126984,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C 疲労運転",
+          "sourceTextBody": "疲労運転",
+          "sourceGlossEn": "C: Driving while fatigued",
+          "canonicalOptionId": "q0472_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "driving when he is exhausted",
+          "alignmentScore": 0.1838509316770186,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D 運転中、シートベルト非着用を締めていない",
+          "sourceTextBody": "運転中、シートベルト非着用を締めていない",
+          "sourceGlossEn": "D: Not wearing a seatbelt while driving",
+          "canonicalOptionId": "q0472_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "not buckled up while driving",
+          "alignmentScore": 0.43940886699507387,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A 飲酒運転",
+          "sourceGlossEn": "A: Drunk driving",
+          "canonicalOptionId": "q0472_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "driving after drinking",
+          "alignmentScore": 0.2774193548387097,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B 規定速度を10%上回る",
+          "sourceGlossEn": "B: Exceeding the speed limit by 10%",
+          "canonicalOptionId": "q0472_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "exceeding 10% of the prescribed speed limits",
+          "alignmentScore": 0.584126984126984,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C 疲労運転",
+          "sourceGlossEn": "C: Driving while fatigued",
+          "canonicalOptionId": "q0472_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "driving when he is exhausted",
+          "alignmentScore": 0.1838509316770186,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D 運転中、シートベルト非着用を締めていない",
+          "sourceGlossEn": "D: Not wearing a seatbelt while driving",
+          "canonicalOptionId": "q0472_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "not buckled up while driving",
+          "alignmentScore": 0.43940886699507387,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "A",
+      "canonicalCorrectOptionId": "q0472_o4",
+      "canonicalCorrectOptionKey": "D",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed via exported answer-key review decision on 2026-04-16T11:42:11.252Z.",
+      "correctOptionAlignment": {
+        "sourceKey": "A",
+        "canonicalOptionId": "q0472_o4",
+        "canonicalOptionKey": "D",
+        "sourceText": "A 飲酒運転",
+        "sourceGlossEn": "A: Drunk driving",
+        "canonicalOptionText": "driving after drinking",
+        "alignmentScore": 0.2774193548387097,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-16T11:42:11.252Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ja-batch-018-answer-key-decisions.review-scope.json",
+      "answerKeyReviewerNotes": ""
+    },
+    "q0818": {
+      "prompt": "この標識は何を示しているか。",
+      "explanation": "",
+      "sourceMode": "reviewed-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.26.47.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 18.26.47.png",
+      "reviewerNotes": "",
+      "promptRawJa": "この標識は何を示しているか。",
+      "promptGlossEn": "What does this road sign indicate?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-018",
+        "approvedQid": "q0818"
+      },
+      "options": {
+        "q0818_o1": "A 右側に寄って走行せよ",
+        "q0818_o2": "B 直進禁止",
+        "q0818_o3": "C 直進一方通行",
+        "q0818_o4": "D 直進車は対向Uターン車へ道をゆずれ"
+      },
+      "optionsRawJa": [
+        "A 右側に寄って走行せよ",
+        "B 直進禁止",
+        "C 直進一方通行",
+        "D 直進車は対向Uターン車へ道をゆずれ"
+      ],
+      "optionsGlossEn": [
+        "A: Keep to the right",
+        "B: No going straight",
+        "C: One-way straight traffic",
+        "D: Vehicles going straight must yield to oncoming U-turn vehicles"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A 右側に寄って走行せよ",
+          "sourceTextBody": "右側に寄って走行せよ",
+          "sourceGlossEn": "A: Keep to the right",
+          "canonicalOptionId": "q0818_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "running by right side",
+          "alignmentScore": 0.18666666666666665,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B 直進禁止",
+          "sourceTextBody": "直進禁止",
+          "sourceGlossEn": "B: No going straight",
+          "canonicalOptionId": "q0818_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "no going straight",
+          "alignmentScore": 1,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C 直進一方通行",
+          "sourceTextBody": "直進一方通行",
+          "sourceGlossEn": "C: One-way straight traffic",
+          "canonicalOptionId": "q0818_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "straight one-way road",
+          "alignmentScore": 0.7018292682926829,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D 直進車は対向Uターン車へ道をゆずれ",
+          "sourceTextBody": "直進車は対向Uターン車へ道をゆずれ",
+          "sourceGlossEn": "D: Vehicles going straight must yield to oncoming U-turn vehicles",
+          "canonicalOptionId": "q0818_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "yield if going to go straight",
+          "alignmentScore": 0.40470588235294125,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A 右側に寄って走行せよ",
+          "sourceGlossEn": "A: Keep to the right",
+          "canonicalOptionId": "q0818_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "running by right side",
+          "alignmentScore": 0.18666666666666665,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B 直進禁止",
+          "sourceGlossEn": "B: No going straight",
+          "canonicalOptionId": "q0818_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "no going straight",
+          "alignmentScore": 1,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C 直進一方通行",
+          "sourceGlossEn": "C: One-way straight traffic",
+          "canonicalOptionId": "q0818_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "straight one-way road",
+          "alignmentScore": 0.7018292682926829,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D 直進車は対向Uターン車へ道をゆずれ",
+          "sourceGlossEn": "D: Vehicles going straight must yield to oncoming U-turn vehicles",
+          "canonicalOptionId": "q0818_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "yield if going to go straight",
+          "alignmentScore": 0.40470588235294125,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "C",
+      "canonicalCorrectOptionId": "q0818_o3",
+      "canonicalCorrectOptionKey": "C",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed via exported answer-key review decision on 2026-04-16T11:42:11.252Z.",
+      "correctOptionAlignment": {
+        "sourceKey": "C",
+        "canonicalOptionId": "q0818_o3",
+        "canonicalOptionKey": "C",
+        "sourceText": "C 直進一方通行",
+        "sourceGlossEn": "C: One-way straight traffic",
+        "canonicalOptionText": "straight one-way road",
+        "alignmentScore": 0.7018292682926829,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-16T11:42:11.252Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ja-batch-018-answer-key-decisions.review-scope.json",
+      "answerKeyReviewerNotes": ""
+    },
+    "q0620": {
+      "prompt": "自動車のインパネのこの点灯は何を示しているか。",
+      "explanation": "",
+      "sourceMode": "reviewed-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.26.49 1.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 18.26.49 1.png",
+      "reviewerNotes": "",
+      "promptRawJa": "自動車のインパネのこの点灯は何を示しているか。",
+      "promptGlossEn": "What does this indicator light on the car dashboard show?",
+      "correctKeyRaw": "C",
+      "correctAnswerRaw": "サイドランプの点灯",
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-018",
+        "approvedQid": "q0620"
+      },
+      "options": {
+        "q0620_o1": "C サイドランプの点灯",
+        "q0620_o2": "D フロント・リアフォグランプの点灯",
+        "q0620_o3": "B ヘッドランプの点灯",
+        "q0620_o4": "A ハザードランプの点滅"
+      },
+      "optionsRawJa": [
+        "A ハザードランプの点滅",
+        "B ヘッドランプの点灯",
+        "C サイドランプの点灯",
+        "D フロント・リアフォグランプの点灯"
+      ],
+      "optionsGlossEn": [
+        "A Hazard lights flashing",
+        "B Headlights on",
+        "C Sidelights on",
+        "D Front/rear fog lights on"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A ハザードランプの点滅",
+          "sourceTextBody": "ハザードランプの点滅",
+          "sourceGlossEn": "A Hazard lights flashing",
+          "canonicalOptionId": "q0620_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "the hazard lights are turned on",
+          "alignmentScore": 0.36899224806201547,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B ヘッドランプの点灯",
+          "sourceTextBody": "ヘッドランプの点灯",
+          "sourceGlossEn": "B Headlights on",
+          "canonicalOptionId": "q0620_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "the head lights are turned on",
+          "alignmentScore": 0.22083333333333333,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C サイドランプの点灯",
+          "sourceTextBody": "サイドランプの点灯",
+          "sourceGlossEn": "C Sidelights on",
+          "canonicalOptionId": "q0620_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "front and rear width lights",
+          "alignmentScore": 0.13333333333333333,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D フロント・リアフォグランプの点灯",
+          "sourceTextBody": "フロント・リアフォグランプの点灯",
+          "sourceGlossEn": "D Front/rear fog lights on",
+          "canonicalOptionId": "q0620_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "front and rear width lights are turned on",
+          "alignmentScore": 0.4504708097928437,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A ハザードランプの点滅",
+          "sourceGlossEn": "A Hazard lights flashing",
+          "canonicalOptionId": "q0620_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "the hazard lights are turned on",
+          "alignmentScore": 0.36899224806201547,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B ヘッドランプの点灯",
+          "sourceGlossEn": "B Headlights on",
+          "canonicalOptionId": "q0620_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "the head lights are turned on",
+          "alignmentScore": 0.22083333333333333,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C サイドランプの点灯",
+          "sourceGlossEn": "C Sidelights on",
+          "canonicalOptionId": "q0620_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "front and rear width lights",
+          "alignmentScore": 0.13333333333333333,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D フロント・リアフォグランプの点灯",
+          "sourceGlossEn": "D Front/rear fog lights on",
+          "canonicalOptionId": "q0620_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "front and rear width lights are turned on",
+          "alignmentScore": 0.4504708097928437,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "C",
+      "canonicalCorrectOptionId": "q0620_o2",
+      "canonicalCorrectOptionKey": "B",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed via exported answer-key review decision on 2026-04-16T11:42:11.252Z; reviewer changed locale key from D to C.",
+      "correctOptionAlignment": {
+        "sourceKey": "C",
+        "canonicalOptionId": "q0620_o2",
+        "canonicalOptionKey": "B",
+        "sourceText": "C サイドランプの点灯",
+        "sourceGlossEn": "C Sidelights on",
+        "canonicalOptionText": "front and rear width lights",
+        "alignmentScore": 0.4504708097928437,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-16T11:42:11.252Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ja-batch-018-answer-key-decisions.review-scope.json",
+      "answerKeyReviewerNotes": ""
+    },
+    "q0728": {
+      "prompt": "この信号が点滅している場合、自動車はどう走行すべきか。",
+      "explanation": "",
+      "sourceMode": "reviewed-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.26.49.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 18.26.49.png",
+      "reviewerNotes": "",
+      "promptRawJa": "この信号が点滅している場合、自動車はどう走行すべきか。",
+      "promptGlossEn": "If this traffic signal is flashing, how should a car proceed?",
+      "correctKeyRaw": "C",
+      "correctAnswerRaw": "目視で安全確認して通過する",
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-018",
+        "approvedQid": "q0728"
+      },
+      "options": {
+        "q0728_o1": "A 加速して通過する",
+        "q0728_o2": "B 道端に停車して待つ",
+        "q0728_o3": "C 目視で安全確認して通過する",
+        "q0728_o4": "D 通行禁止"
+      },
+      "optionsRawJa": [
+        "A 加速して通過する",
+        "B 道端に停車して待つ",
+        "C 目視で安全確認して通過する",
+        "D 通行禁止"
+      ],
+      "optionsGlossEn": [
+        "A. Accelerate and pass through",
+        "B. Stop and wait at the roadside",
+        "C. Check for safety visually and pass through",
+        "D. Passage prohibited"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A 加速して通過する",
+          "sourceTextBody": "加速して通過する",
+          "sourceGlossEn": "A. Accelerate and pass through",
+          "canonicalOptionId": "q0728_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "speed up and pass as soon as possible 72",
+          "alignmentScore": 0.4107692307692308,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B 道端に停車して待つ",
+          "sourceTextBody": "道端に停車して待つ",
+          "sourceGlossEn": "B. Stop and wait at the roadside",
+          "canonicalOptionId": "q0728_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "stop by the side to wait",
+          "alignmentScore": 0.2780487804878049,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C 目視で安全確認して通過する",
+          "sourceTextBody": "目視で安全確認して通過する",
+          "sourceGlossEn": "C. Check for safety visually and pass through",
+          "canonicalOptionId": "q0728_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "look and make sure it is safe to pass",
+          "alignmentScore": 0.16228571428571428,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D 通行禁止",
+          "sourceTextBody": "通行禁止",
+          "sourceGlossEn": "D. Passage prohibited",
+          "canonicalOptionId": "q0728_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "apply emergency braking",
+          "alignmentScore": 0,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A 加速して通過する",
+          "sourceGlossEn": "A. Accelerate and pass through",
+          "canonicalOptionId": "q0728_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "speed up and pass as soon as possible 72",
+          "alignmentScore": 0.4107692307692308,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B 道端に停車して待つ",
+          "sourceGlossEn": "B. Stop and wait at the roadside",
+          "canonicalOptionId": "q0728_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "stop by the side to wait",
+          "alignmentScore": 0.2780487804878049,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C 目視で安全確認して通過する",
+          "sourceGlossEn": "C. Check for safety visually and pass through",
+          "canonicalOptionId": "q0728_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "look and make sure it is safe to pass",
+          "alignmentScore": 0.16228571428571428,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D 通行禁止",
+          "sourceGlossEn": "D. Passage prohibited",
+          "canonicalOptionId": "q0728_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "apply emergency braking",
+          "alignmentScore": 0,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "C",
+      "canonicalCorrectOptionId": "q0728_o3",
+      "canonicalCorrectOptionKey": "C",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed via exported answer-key review decision on 2026-04-16T11:42:11.252Z.",
+      "correctOptionAlignment": {
+        "sourceKey": "C",
+        "canonicalOptionId": "q0728_o3",
+        "canonicalOptionKey": "C",
+        "sourceText": "C 目視で安全確認して通過する",
+        "sourceGlossEn": "C. Check for safety visually and pass through",
+        "canonicalOptionText": "look and make sure it is safe to pass",
+        "alignmentScore": 0.16228571428571428,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-16T11:42:11.252Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ja-batch-018-answer-key-decisions.review-scope.json",
+      "answerKeyReviewerNotes": ""
+    },
+    "q0193": {
+      "prompt": "道端に停止している自動車には違法行為がない。",
+      "explanation": "",
+      "sourceMode": "reviewed-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.26.52.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 18.26.52.png",
+      "reviewerNotes": "",
+      "promptRawJa": "道端に停止している自動車には違法行為がない。",
+      "promptGlossEn": "There is nothing illegal about a car stopped at the edge of the road.",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "ROW",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-018",
+        "approvedQid": "q0193"
+      },
+      "optionsRawJa": [],
+      "optionsGlossEn": [],
+      "localeCorrectOptionKey": null,
+      "canonicalCorrectRow": "W",
+      "canonicalCorrectAnswer": "wrong / false",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "ROW question; no locale-specific option key applies."
+    },
+    "q0248": {
+      "prompt": "法律に基づき交通警察は、他車の自動車保険マークを使用した疑いのある車両を拘置できる。",
+      "explanation": "",
+      "sourceMode": "reviewed-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.26.55 1.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 18.26.55 1.png",
+      "reviewerNotes": "",
+      "promptRawJa": "法律に基づき交通警察は、他車の自動車保険マークを使用した疑いのある車両を拘置できる。",
+      "promptGlossEn": "Based on the law, traffic police can detain vehicles suspected of using another car's insurance mark.",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "ROW",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-018",
+        "approvedQid": "q0248"
+      },
+      "optionsRawJa": [],
+      "optionsGlossEn": [],
+      "localeCorrectOptionKey": null,
+      "canonicalCorrectRow": "R",
+      "canonicalCorrectAnswer": "right / true",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "ROW question; no locale-specific option key applies."
+    },
+    "q0646": {
+      "prompt": "自動車は緑の矢印が点灯する車線を走行すべきである。",
+      "explanation": "",
+      "sourceMode": "reviewed-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.26.55.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 18.26.55.png",
+      "reviewerNotes": "",
+      "promptRawJa": "自動車は緑の矢印が点灯する車線を走行すべきである。",
+      "promptGlossEn": "The car should drive in the lane where the green arrow is lit.",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "ROW",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-018",
+        "approvedQid": "q0646"
+      },
+      "optionsRawJa": [],
+      "optionsGlossEn": [],
+      "localeCorrectOptionKey": null,
+      "canonicalCorrectRow": "R",
+      "canonicalCorrectAnswer": "right / true",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "ROW question; no locale-specific option key applies."
+    },
+    "q0683": {
+      "prompt": "この標識の示す意味はどれか。",
+      "explanation": "",
+      "sourceMode": "reviewed-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.26.56.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 18.26.56.png",
+      "reviewerNotes": "",
+      "promptRawJa": "この標識の示す意味はどれか。",
+      "promptGlossEn": "What does this road sign mean?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-018",
+        "approvedQid": "q0683"
+      },
+      "options": {
+        "q0683_o1": "B 直進禁止・左へ車線変更禁止",
+        "q0683_o2": "A 直進・左折禁止",
+        "q0683_o3": "C 直進・左折可",
+        "q0683_o4": "D 直進・右折禁止"
+      },
+      "optionsRawJa": [
+        "A 直進・左折禁止",
+        "B 直進禁止・左へ車線変更禁止",
+        "C 直進・左折可",
+        "D 直進・右折禁止"
+      ],
+      "optionsGlossEn": [
+        "A: No going straight or turning left",
+        "B: No going straight, no changing lanes to the left",
+        "C: Going straight or turning left is allowed",
+        "D: No going straight or turning right"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A 直進・左折禁止",
+          "sourceTextBody": "直進・左折禁止",
+          "sourceGlossEn": "A: No going straight or turning left",
+          "canonicalOptionId": "q0683_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "no going straight and no left turn",
+          "alignmentScore": 0.5396825396825398,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B 直進禁止・左へ車線変更禁止",
+          "sourceTextBody": "直進禁止・左へ車線変更禁止",
+          "sourceGlossEn": "B: No going straight, no changing lanes to the left",
+          "canonicalOptionId": "q0683_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "no straight-through or turning left",
+          "alignmentScore": 0.4210295728368017,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C 直進・左折可",
+          "sourceTextBody": "直進・左折可",
+          "sourceGlossEn": "C: Going straight or turning left is allowed",
+          "canonicalOptionId": "q0683_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "allowed to go straight and turn left",
+          "alignmentScore": 0.24408468244084683,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D 直進・右折禁止",
+          "sourceTextBody": "直進・右折禁止",
+          "sourceGlossEn": "D: No going straight or turning right",
+          "canonicalOptionId": "q0683_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "no going straight and no right turn",
+          "alignmentScore": 0.5415384615384615,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A 直進・左折禁止",
+          "sourceGlossEn": "A: No going straight or turning left",
+          "canonicalOptionId": "q0683_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "no going straight and no left turn",
+          "alignmentScore": 0.5396825396825398,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B 直進禁止・左へ車線変更禁止",
+          "sourceGlossEn": "B: No going straight, no changing lanes to the left",
+          "canonicalOptionId": "q0683_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "no straight-through or turning left",
+          "alignmentScore": 0.4210295728368017,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C 直進・左折可",
+          "sourceGlossEn": "C: Going straight or turning left is allowed",
+          "canonicalOptionId": "q0683_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "allowed to go straight and turn left",
+          "alignmentScore": 0.24408468244084683,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D 直進・右折禁止",
+          "sourceGlossEn": "D: No going straight or turning right",
+          "canonicalOptionId": "q0683_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "no going straight and no right turn",
+          "alignmentScore": 0.5415384615384615,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "B",
+      "canonicalCorrectOptionId": "q0683_o2",
+      "canonicalCorrectOptionKey": "B",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed via exported answer-key review decision on 2026-04-16T11:42:11.252Z; reviewer changed locale key from A to B.",
+      "correctOptionAlignment": {
+        "sourceKey": "B",
+        "canonicalOptionId": "q0683_o2",
+        "canonicalOptionKey": "B",
+        "sourceText": "B 直進禁止・左へ車線変更禁止",
+        "sourceGlossEn": "B: No going straight, no changing lanes to the left",
+        "canonicalOptionText": "no straight-through or turning left",
+        "alignmentScore": 0.5396825396825398,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-16T11:42:11.252Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ja-batch-018-answer-key-decisions.review-scope.json",
+      "answerKeyReviewerNotes": ""
+    },
+    "q0850": {
+      "prompt": "このような場合、どう走行すべきか。",
+      "explanation": "",
+      "sourceMode": "reviewed-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.26.58 1.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 18.26.58 1.png",
+      "reviewerNotes": "",
+      "promptRawJa": "このような場合、どう走行すべきか。",
+      "promptGlossEn": "In this situation, how should you drive?",
+      "correctKeyRaw": "B",
+      "correctAnswerRaw": "速度を落として両側の車線に入る",
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-018",
+        "approvedQid": "q0850"
+      },
+      "options": {
+        "q0850_o1": "D 加速して両側の車線に進入し走行する",
+        "q0850_o2": "C 右側の車線に進入して走行する",
+        "q0850_o3": "B 速度を落として両側の車線に入る",
+        "q0850_o4": "A 両側の車線を通行してはいけない"
+      },
+      "optionsRawJa": [
+        "A 両側の車線を通行してはいけない",
+        "B 速度を落として両側の車線に入る",
+        "C 右側の車線に進入して走行する",
+        "D 加速して両側の車線に進入し走行する"
+      ],
+      "optionsGlossEn": [
+        "A. Do not drive across both lanes",
+        "B. Reduce speed and move into both lanes",
+        "C. Enter and drive in the right lane",
+        "D. Accelerate and enter and drive in both lanes"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A 両側の車線を通行してはいけない",
+          "sourceTextBody": "両側の車線を通行してはいけない",
+          "sourceGlossEn": "A. Do not drive across both lanes",
+          "canonicalOptionId": "q0850_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "can not drive in the lane of either side",
+          "alignmentScore": 0.1034965034965035,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B 速度を落として両側の車線に入る",
+          "sourceTextBody": "速度を落として両側の車線に入る",
+          "sourceGlossEn": "B. Reduce speed and move into both lanes",
+          "canonicalOptionId": "q0850_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "reduce speed and enter the lane of either side",
+          "alignmentScore": 0.30896551724137933,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C 右側の車線に進入して走行する",
+          "sourceTextBody": "右側の車線に進入して走行する",
+          "sourceGlossEn": "C. Enter and drive in the right lane",
+          "canonicalOptionId": "q0850_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "enter the right lane",
+          "alignmentScore": 0.526829268292683,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D 加速して両側の車線に進入し走行する",
+          "sourceTextBody": "加速して両側の車線に進入し走行する",
+          "sourceGlossEn": "D. Accelerate and enter and drive in both lanes",
+          "canonicalOptionId": "q0850_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "speed up to enter the lane of either side",
+          "alignmentScore": 0.30536130536130535,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A 両側の車線を通行してはいけない",
+          "sourceGlossEn": "A. Do not drive across both lanes",
+          "canonicalOptionId": "q0850_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "can not drive in the lane of either side",
+          "alignmentScore": 0.1034965034965035,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B 速度を落として両側の車線に入る",
+          "sourceGlossEn": "B. Reduce speed and move into both lanes",
+          "canonicalOptionId": "q0850_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "reduce speed and enter the lane of either side",
+          "alignmentScore": 0.30896551724137933,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C 右側の車線に進入して走行する",
+          "sourceGlossEn": "C. Enter and drive in the right lane",
+          "canonicalOptionId": "q0850_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "enter the right lane",
+          "alignmentScore": 0.526829268292683,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D 加速して両側の車線に進入し走行する",
+          "sourceGlossEn": "D. Accelerate and enter and drive in both lanes",
+          "canonicalOptionId": "q0850_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "speed up to enter the lane of either side",
+          "alignmentScore": 0.30536130536130535,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "A",
+      "canonicalCorrectOptionId": "q0850_o4",
+      "canonicalCorrectOptionKey": "D",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed via exported answer-key review decision on 2026-04-16T11:42:11.252Z.",
+      "correctOptionAlignment": {
+        "sourceKey": "A",
+        "canonicalOptionId": "q0850_o4",
+        "canonicalOptionKey": "D",
+        "sourceText": "A 両側の車線を通行してはいけない",
+        "sourceGlossEn": "A. Do not drive across both lanes",
+        "canonicalOptionText": "can not drive in the lane of either side",
+        "alignmentScore": 0.1034965034965035,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-16T11:42:11.252Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ja-batch-018-answer-key-decisions.review-scope.json",
+      "answerKeyReviewerNotes": ""
+    },
+    "q0841": {
+      "prompt": "この標識は何を示しているか。",
+      "explanation": "",
+      "sourceMode": "reviewed-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.26.58.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 18.26.58.png",
+      "reviewerNotes": "",
+      "promptRawJa": "この標識は何を示しているか。",
+      "promptGlossEn": "What does this road sign indicate?",
+      "correctKeyRaw": "A",
+      "correctAnswerRaw": "高さ制限3.5メートル",
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-018",
+        "approvedQid": "q0841"
+      },
+      "options": {
+        "q0841_o1": "B 幅制限3.5メートル",
+        "q0841_o2": "C 高さ制限3.5メートル解除",
+        "q0841_o3": "D 最小車間距離3.5メートル",
+        "q0841_o4": "A 高さ制限3.5メートル"
+      },
+      "optionsRawJa": [
+        "A 高さ制限3.5メートル",
+        "B 幅制限3.5メートル",
+        "C 高さ制限3.5メートル解除",
+        "D 最小車間距離3.5メートル"
+      ],
+      "optionsGlossEn": [
+        "A Height limit 3.5 meters",
+        "B Width limit 3.5 meters",
+        "C Height limit 3.5 meters lifted",
+        "D Minimum vehicle distance 3.5 meters"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A 高さ制限3.5メートル",
+          "sourceTextBody": "高さ制限3.5メートル",
+          "sourceGlossEn": "A Height limit 3.5 meters",
+          "canonicalOptionId": "q0841_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "3.5m height limit",
+          "alignmentScore": 0.5257142857142858,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B 幅制限3.5メートル",
+          "sourceTextBody": "幅制限3.5メートル",
+          "sourceGlossEn": "B Width limit 3.5 meters",
+          "canonicalOptionId": "q0841_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "3.5m width limit",
+          "alignmentScore": 0.5212121212121212,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C 高さ制限3.5メートル解除",
+          "sourceTextBody": "高さ制限3.5メートル解除",
+          "sourceGlossEn": "C Height limit 3.5 meters lifted",
+          "canonicalOptionId": "q0841_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "3.5m width limit ban is lifted",
+          "alignmentScore": 0.32,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D 最小車間距離3.5メートル",
+          "sourceTextBody": "最小車間距離3.5メートル",
+          "sourceGlossEn": "D Minimum vehicle distance 3.5 meters",
+          "canonicalOptionId": "q0841_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "3.5m distance from vehicles limit",
+          "alignmentScore": 0.3763440860215053,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A 高さ制限3.5メートル",
+          "sourceGlossEn": "A Height limit 3.5 meters",
+          "canonicalOptionId": "q0841_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "3.5m height limit",
+          "alignmentScore": 0.5257142857142858,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B 幅制限3.5メートル",
+          "sourceGlossEn": "B Width limit 3.5 meters",
+          "canonicalOptionId": "q0841_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "3.5m width limit",
+          "alignmentScore": 0.5212121212121212,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C 高さ制限3.5メートル解除",
+          "sourceGlossEn": "C Height limit 3.5 meters lifted",
+          "canonicalOptionId": "q0841_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "3.5m width limit ban is lifted",
+          "alignmentScore": 0.32,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D 最小車間距離3.5メートル",
+          "sourceGlossEn": "D Minimum vehicle distance 3.5 meters",
+          "canonicalOptionId": "q0841_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "3.5m distance from vehicles limit",
+          "alignmentScore": 0.3763440860215053,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "A",
+      "canonicalCorrectOptionId": "q0841_o4",
+      "canonicalCorrectOptionKey": "D",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed via exported answer-key review decision on 2026-04-16T11:42:11.252Z.",
+      "correctOptionAlignment": {
+        "sourceKey": "A",
+        "canonicalOptionId": "q0841_o4",
+        "canonicalOptionKey": "D",
+        "sourceText": "A 高さ制限3.5メートル",
+        "sourceGlossEn": "A Height limit 3.5 meters",
+        "canonicalOptionText": "3.5m height limit",
+        "alignmentScore": 0.5257142857142858,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-16T11:42:11.252Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ja-batch-018-answer-key-decisions.review-scope.json",
+      "answerKeyReviewerNotes": ""
+    },
+    "q0758": {
+      "prompt": "この標識は何を示しているか。",
+      "explanation": "",
+      "sourceMode": "reviewed-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.26.59.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 18.26.59.png",
+      "reviewerNotes": "",
+      "promptRawJa": "この標識は何を示しているか。",
+      "promptGlossEn": "What does this sign indicate?",
+      "correctKeyRaw": "A",
+      "correctAnswerRaw": "目的地までの距離",
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-018",
+        "approvedQid": "q0758"
+      },
+      "options": {
+        "q0758_o1": "A 目的地までの距離",
+        "q0758_o2": "B 車線",
+        "q0758_o3": "D 目的地の地名",
+        "q0758_o4": "C 進行方向"
+      },
+      "optionsRawJa": [
+        "A 目的地までの距離",
+        "B 車線",
+        "C 進行方向",
+        "D 目的地の地名"
+      ],
+      "optionsGlossEn": [
+        "A Distance to the destination",
+        "B Lane",
+        "C Direction of travel",
+        "D Name of the destination"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A 目的地までの距離",
+          "sourceTextBody": "目的地までの距離",
+          "sourceGlossEn": "A Distance to the destination",
+          "canonicalOptionId": "q0758_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "location and distance",
+          "alignmentScore": 0.25,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B 車線",
+          "sourceTextBody": "車線",
+          "sourceGlossEn": "B Lane",
+          "canonicalOptionId": "q0758_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "driving route",
+          "alignmentScore": 0,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C 進行方向",
+          "sourceTextBody": "進行方向",
+          "sourceGlossEn": "C Direction of travel",
+          "canonicalOptionId": "q0758_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "driving direction",
+          "alignmentScore": 0.2875,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D 目的地の地名",
+          "sourceTextBody": "目的地の地名",
+          "sourceGlossEn": "D Name of the destination",
+          "canonicalOptionId": "q0758_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "destination name",
+          "alignmentScore": 0.675268817204301,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A 目的地までの距離",
+          "sourceGlossEn": "A Distance to the destination",
+          "canonicalOptionId": "q0758_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "location and distance",
+          "alignmentScore": 0.25,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B 車線",
+          "sourceGlossEn": "B Lane",
+          "canonicalOptionId": "q0758_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "driving route",
+          "alignmentScore": 0,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C 進行方向",
+          "sourceGlossEn": "C Direction of travel",
+          "canonicalOptionId": "q0758_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "driving direction",
+          "alignmentScore": 0.2875,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D 目的地の地名",
+          "sourceGlossEn": "D Name of the destination",
+          "canonicalOptionId": "q0758_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "destination name",
+          "alignmentScore": 0.675268817204301,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "A",
+      "canonicalCorrectOptionId": "q0758_o1",
+      "canonicalCorrectOptionKey": "A",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed via exported answer-key review decision on 2026-04-16T11:42:11.252Z.",
+      "correctOptionAlignment": {
+        "sourceKey": "A",
+        "canonicalOptionId": "q0758_o1",
+        "canonicalOptionKey": "A",
+        "sourceText": "A 目的地までの距離",
+        "sourceGlossEn": "A Distance to the destination",
+        "canonicalOptionText": "location and distance",
+        "alignmentScore": 0.25,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-16T11:42:11.252Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ja-batch-018-answer-key-decisions.review-scope.json",
+      "answerKeyReviewerNotes": ""
+    },
+    "q0327": {
+      "prompt": "減点が満点12点に達した運転者が練習や試験への参加を拒否した場合、免許は使用停止となる。",
+      "explanation": "",
+      "sourceMode": "reviewed-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.27.00.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 18.27.00.png",
+      "reviewerNotes": "",
+      "promptRawJa": "減点が満点12点に達した運転者が練習や試験への参加を拒否した場合、免許は使用停止となる。",
+      "promptGlossEn": "If a driver who has accrued the full 12 demerit points refuses to participate in practice or testing, their license will be suspended.",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "ROW",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-018",
+        "approvedQid": "q0327"
+      },
+      "optionsRawJa": [],
+      "optionsGlossEn": [],
+      "localeCorrectOptionKey": null,
+      "canonicalCorrectRow": "R",
+      "canonicalCorrectAnswer": "right / true",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "ROW question; no locale-specific option key applies."
+    },
+    "q0187": {
+      "prompt": "交通運輸管理法を違反し重大な交通事故を起こし重傷者を出した場合、運転者は3年以下の懲役または拘留を受ける可能性がある。",
+      "explanation": "",
+      "sourceMode": "reviewed-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.27.01 1.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 18.27.01 1.png",
+      "reviewerNotes": "",
+      "promptRawJa": "交通運輸管理法を違反し重大な交通事故を起こし重傷者を出した場合、運転者は3年以下の懲役または拘留を受ける可能性がある。",
+      "promptGlossEn": "If you violate the Road Traffic Management Law and cause a serious traffic accident resulting in serious injury, the driver may be subject to imprisonment of up to 3 years or detention.",
+      "correctKeyRaw": "A",
+      "correctAnswerRaw": "Yes",
+      "canonicalQuestionType": "ROW",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-018",
+        "approvedQid": "q0187"
+      },
+      "optionsRawJa": [],
+      "optionsGlossEn": [],
+      "localeCorrectOptionKey": null,
+      "canonicalCorrectRow": "R",
+      "canonicalCorrectAnswer": "right / true",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "ROW question; no locale-specific option key applies."
+    },
+    "q0294": {
+      "prompt": "法律に基づき交通警察は、他車のナンバープレートや車両走行許可証通行証を使用した疑いのある車両を拘置できる。",
+      "explanation": "",
+      "sourceMode": "reviewed-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.27.01.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 18.27.01.png",
+      "reviewerNotes": "",
+      "promptRawJa": "法律に基づき交通警察は、他車のナンバープレートや車両走行許可証通行証を使用した疑いのある車両を拘置できる。",
+      "promptGlossEn": "Based on the law, traffic police can detain a vehicle suspected of using another vehicle's license plate or vehicle permit.",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "ROW",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-018",
+        "approvedQid": "q0294"
+      },
+      "optionsRawJa": [],
+      "optionsGlossEn": [],
+      "localeCorrectOptionKey": null,
+      "canonicalCorrectRow": "R",
+      "canonicalCorrectAnswer": "right / true",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "ROW question; no locale-specific option key applies."
+    },
+    "q0611": {
+      "prompt": "エンジンが起動したあとの点灯は何を示しているか。",
+      "explanation": "",
+      "sourceMode": "reviewed-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.27.03.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 18.27.03.png",
+      "reviewerNotes": "",
+      "promptRawJa": "エンジンが起動したあとの点灯は何を示しているか。",
+      "promptGlossEn": "What does this indicator light mean after the engine is started?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-018",
+        "approvedQid": "q0611"
+      },
+      "options": {
+        "q0611_o1": "B オイルホースが詰まっている",
+        "q0611_o2": "C 油圧が低すぎる",
+        "q0611_o3": "D クランクケースがエア漏れ",
+        "q0611_o4": "A 油圧が高すぎる"
+      },
+      "optionsRawJa": [
+        "A 油圧が高すぎる",
+        "B オイルホースが詰まっている",
+        "C 油圧が低すぎる",
+        "D クランクケースがエア漏れ"
+      ],
+      "optionsGlossEn": [
+        "A. Oil pressure is too high",
+        "B. Oil hose is clogged",
+        "C. Oil pressure is too low",
+        "D. Crankcase has an air leak"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A 油圧が高すぎる",
+          "sourceTextBody": "油圧が高すぎる",
+          "sourceGlossEn": "A. Oil pressure is too high",
+          "canonicalOptionId": "q0611_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "engine oil pressure is too high",
+          "alignmentScore": 0.8392156862745099,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B オイルホースが詰まっている",
+          "sourceTextBody": "オイルホースが詰まっている",
+          "sourceGlossEn": "B. Oil hose is clogged",
+          "canonicalOptionId": "q0611_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "engine main oil way blockage",
+          "alignmentScore": 0.11860465116279069,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C 油圧が低すぎる",
+          "sourceTextBody": "油圧が低すぎる",
+          "sourceGlossEn": "C. Oil pressure is too low",
+          "canonicalOptionId": "q0611_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "engine oil pressure is too low",
+          "alignmentScore": 0.8380952380952382,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D クランクケースがエア漏れ",
+          "sourceTextBody": "クランクケースがエア漏れ",
+          "sourceGlossEn": "D. Crankcase has an air leak",
+          "canonicalOptionId": "q0611_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "engine crankshaft box leaks",
+          "alignmentScore": 0.1688311688311688,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A 油圧が高すぎる",
+          "sourceGlossEn": "A. Oil pressure is too high",
+          "canonicalOptionId": "q0611_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "engine oil pressure is too high",
+          "alignmentScore": 0.8392156862745099,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B オイルホースが詰まっている",
+          "sourceGlossEn": "B. Oil hose is clogged",
+          "canonicalOptionId": "q0611_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "engine main oil way blockage",
+          "alignmentScore": 0.11860465116279069,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C 油圧が低すぎる",
+          "sourceGlossEn": "C. Oil pressure is too low",
+          "canonicalOptionId": "q0611_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "engine oil pressure is too low",
+          "alignmentScore": 0.8380952380952382,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D クランクケースがエア漏れ",
+          "sourceGlossEn": "D. Crankcase has an air leak",
+          "canonicalOptionId": "q0611_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "engine crankshaft box leaks",
+          "alignmentScore": 0.1688311688311688,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "C",
+      "canonicalCorrectOptionId": "q0611_o2",
+      "canonicalCorrectOptionKey": "B",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed via exported answer-key review decision on 2026-04-16T11:42:11.252Z.",
+      "correctOptionAlignment": {
+        "sourceKey": "C",
+        "canonicalOptionId": "q0611_o2",
+        "canonicalOptionKey": "B",
+        "sourceText": "C 油圧が低すぎる",
+        "sourceGlossEn": "C. Oil pressure is too low",
+        "canonicalOptionText": "engine oil pressure is too low",
+        "alignmentScore": 0.8380952380952382,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-16T11:42:11.252Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ja-batch-018-answer-key-decisions.review-scope.json",
+      "answerKeyReviewerNotes": ""
+    },
+    "q0311": {
+      "prompt": "運転席のフロントウインドおよびバックウインドとの間のスペースに、運転者の視野を妨げる物品を置いたり掛けたりしてはいけない。",
+      "explanation": "",
+      "sourceMode": "reviewed-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.27.06 1.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 18.27.06 1.png",
+      "reviewerNotes": "",
+      "promptRawJa": "運転席のフロントウインドおよびバックウインドとの間のスペースに、運転者の視野を妨げる物品を置いたり掛けたりしてはいけない。",
+      "promptGlossEn": "You must not place or hang objects that obstruct the driver's view in the space between the front and rear windshields.",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "ROW",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-018",
+        "approvedQid": "q0311"
+      },
+      "optionsRawJa": [],
+      "optionsGlossEn": [],
+      "localeCorrectOptionKey": null,
+      "canonicalCorrectRow": "R",
+      "canonicalCorrectAnswer": "right / true",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "ROW question; no locale-specific option key applies."
+    },
+    "q0839": {
+      "prompt": "この標識は何を示しているか。",
+      "explanation": "",
+      "sourceMode": "reviewed-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.27.07.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 18.27.07.png",
+      "reviewerNotes": "",
+      "promptRawJa": "この標識は何を示しているか。",
+      "promptGlossEn": "What does this road sign indicate?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-018",
+        "approvedQid": "q0839"
+      },
+      "options": {
+        "q0839_o1": "A 車線の一時占用禁止",
+        "q0839_o2": "B 車線変更禁止",
+        "q0839_o3": "C 追い越し禁止",
+        "q0839_o4": "D Uターン禁止"
+      },
+      "optionsRawJa": [
+        "A 車線の一時占用禁止",
+        "B 車線変更禁止",
+        "C 追い越し禁止",
+        "D Uターン禁止"
+      ],
+      "optionsGlossEn": [
+        "A Temporary lane occupation prohibited",
+        "B Lane change prohibited",
+        "C Overtaking prohibited",
+        "D U-turn prohibited"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A 車線の一時占用禁止",
+          "sourceTextBody": "車線の一時占用禁止",
+          "sourceGlossEn": "A Temporary lane occupation prohibited",
+          "canonicalOptionId": "q0839_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "no borrowing lane",
+          "alignmentScore": 0.23333333333333334,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B 車線変更禁止",
+          "sourceTextBody": "車線変更禁止",
+          "sourceGlossEn": "B Lane change prohibited",
+          "canonicalOptionId": "q0839_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "no changing lane",
+          "alignmentScore": 0.4166666666666667,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C 追い越し禁止",
+          "sourceTextBody": "追い越し禁止",
+          "sourceGlossEn": "C Overtaking prohibited",
+          "canonicalOptionId": "q0839_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "no overtaking",
+          "alignmentScore": 0.29230769230769227,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D Uターン禁止",
+          "sourceTextBody": "Uターン禁止",
+          "sourceGlossEn": "D U-turn prohibited",
+          "canonicalOptionId": "q0839_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "no U turn",
+          "alignmentScore": 0.3466666666666667,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A 車線の一時占用禁止",
+          "sourceGlossEn": "A Temporary lane occupation prohibited",
+          "canonicalOptionId": "q0839_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "no borrowing lane",
+          "alignmentScore": 0.23333333333333334,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B 車線変更禁止",
+          "sourceGlossEn": "B Lane change prohibited",
+          "canonicalOptionId": "q0839_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "no changing lane",
+          "alignmentScore": 0.4166666666666667,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C 追い越し禁止",
+          "sourceGlossEn": "C Overtaking prohibited",
+          "canonicalOptionId": "q0839_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "no overtaking",
+          "alignmentScore": 0.29230769230769227,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D Uターン禁止",
+          "sourceGlossEn": "D U-turn prohibited",
+          "canonicalOptionId": "q0839_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "no U turn",
+          "alignmentScore": 0.3466666666666667,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "C",
+      "canonicalCorrectOptionId": "q0839_o3",
+      "canonicalCorrectOptionKey": "C",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed via exported answer-key review decision on 2026-04-16T11:42:11.252Z.",
+      "correctOptionAlignment": {
+        "sourceKey": "C",
+        "canonicalOptionId": "q0839_o3",
+        "canonicalOptionKey": "C",
+        "sourceText": "C 追い越し禁止",
+        "sourceGlossEn": "C Overtaking prohibited",
+        "canonicalOptionText": "no overtaking",
+        "alignmentScore": 0.29230769230769227,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-16T11:42:11.252Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ja-batch-018-answer-key-decisions.review-scope.json",
+      "answerKeyReviewerNotes": ""
+    },
+    "q0585": {
+      "prompt": "これは何のペダルか。",
+      "explanation": "",
+      "sourceMode": "reviewed-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.27.08.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 18.27.08.png",
+      "reviewerNotes": "",
+      "promptRawJa": "これは何のペダルか。",
+      "promptGlossEn": "What pedal is this?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-018",
+        "approvedQid": "q0585"
+      },
+      "options": {
+        "q0585_o1": "B クラッチ・ペダル",
+        "q0585_o2": "A アクセル",
+        "q0585_o3": "C ブレーキペダル",
+        "q0585_o4": "D パーキングブレーキ"
+      },
+      "optionsRawJa": [
+        "A アクセル",
+        "B クラッチ・ペダル",
+        "C ブレーキペダル",
+        "D パーキングブレーキ"
+      ],
+      "optionsGlossEn": [
+        "A Accelerator",
+        "B Clutch pedal",
+        "C Brake pedal",
+        "D Parking brake"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A アクセル",
+          "sourceTextBody": "アクセル",
+          "sourceGlossEn": "A Accelerator",
+          "canonicalOptionId": "q0585_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "accelerator pedal",
+          "alignmentScore": 0.55,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B クラッチ・ペダル",
+          "sourceTextBody": "クラッチ・ペダル",
+          "sourceGlossEn": "B Clutch pedal",
+          "canonicalOptionId": "q0585_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "clutch pedal",
+          "alignmentScore": 1,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C ブレーキペダル",
+          "sourceTextBody": "ブレーキペダル",
+          "sourceGlossEn": "C Brake pedal",
+          "canonicalOptionId": "q0585_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "brake pedal",
+          "alignmentScore": 1,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D パーキングブレーキ",
+          "sourceTextBody": "パーキングブレーキ",
+          "sourceGlossEn": "D Parking brake",
+          "canonicalOptionId": "q0585_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "handbrake",
+          "alignmentScore": 0.06666666666666667,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A アクセル",
+          "sourceGlossEn": "A Accelerator",
+          "canonicalOptionId": "q0585_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "accelerator pedal",
+          "alignmentScore": 0.55,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B クラッチ・ペダル",
+          "sourceGlossEn": "B Clutch pedal",
+          "canonicalOptionId": "q0585_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "clutch pedal",
+          "alignmentScore": 1,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C ブレーキペダル",
+          "sourceGlossEn": "C Brake pedal",
+          "canonicalOptionId": "q0585_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "brake pedal",
+          "alignmentScore": 1,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D パーキングブレーキ",
+          "sourceGlossEn": "D Parking brake",
+          "canonicalOptionId": "q0585_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "handbrake",
+          "alignmentScore": 0.06666666666666667,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "C",
+      "canonicalCorrectOptionId": "q0585_o3",
+      "canonicalCorrectOptionKey": "C",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed via exported answer-key review decision on 2026-04-16T11:42:11.252Z.",
+      "correctOptionAlignment": {
+        "sourceKey": "C",
+        "canonicalOptionId": "q0585_o3",
+        "canonicalOptionKey": "C",
+        "sourceText": "C ブレーキペダル",
+        "sourceGlossEn": "C Brake pedal",
+        "canonicalOptionText": "brake pedal",
+        "alignmentScore": 1,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-16T11:42:11.252Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ja-batch-018-answer-key-decisions.review-scope.json",
+      "answerKeyReviewerNotes": ""
+    },
+    "q0087": {
+      "prompt": "車両はぬかるんだ道を走行する場合、停止して路面状況を観察し平らでできるだけ堅い部位を選び低速で通過すべきである。",
+      "explanation": "",
+      "sourceMode": "reviewed-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.27.09 1.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 18.27.09 1.png",
+      "reviewerNotes": "",
+      "promptRawJa": "車両はぬかるんだ道を走行する場合、停止して路面状況を観察し平らでできるだけ堅い部位を選び低速で通過すべきである。",
+      "promptGlossEn": "When driving a vehicle on a muddy road, you should stop, observe the road conditions, choose a flat and as firm part as possible, and pass at low speed.",
+      "correctKeyRaw": "A",
+      "correctAnswerRaw": "Yes",
+      "canonicalQuestionType": "ROW",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-018",
+        "approvedQid": "q0087"
+      },
+      "optionsRawJa": [],
+      "optionsGlossEn": [],
+      "localeCorrectOptionKey": null,
+      "canonicalCorrectRow": "R",
+      "canonicalCorrectAnswer": "right / true",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "ROW question; no locale-specific option key applies."
+    },
+    "q0253": {
+      "prompt": "規定に反しスクールバスに道を譲らない運転者には6点が減点されるつく。",
+      "explanation": "",
+      "sourceMode": "reviewed-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.27.09.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 18.27.09.png",
+      "reviewerNotes": "",
+      "promptRawJa": "規定に反しスクールバスに道を譲らない運転者には6点が減点されるつく。",
+      "promptGlossEn": "A driver who does not yield to a school bus, in violation of regulations, will have 6 points deducted.",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "ROW",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-018",
+        "approvedQid": "q0253"
+      },
+      "optionsRawJa": [],
+      "optionsGlossEn": [],
+      "localeCorrectOptionKey": null,
+      "canonicalCorrectRow": "R",
+      "canonicalCorrectAnswer": "right / true",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "ROW question; no locale-specific option key applies."
+    },
+    "q0020": {
+      "prompt": "歩行者が急に道路を横切った場合、運転者は迅速に速度を落とし、道を譲るべきである。",
+      "explanation": "",
+      "sourceMode": "reviewed-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.27.10.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 18.27.10.png",
+      "reviewerNotes": "",
+      "promptRawJa": "歩行者が急に道路を横切った場合、運転者は迅速に速度を落とし、道を譲るべきである。",
+      "promptGlossEn": "If a pedestrian suddenly crosses the road, the driver should promptly reduce speed and yield.",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "ROW",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-018",
+        "approvedQid": "q0020"
+      },
+      "optionsRawJa": [],
+      "optionsGlossEn": [],
+      "localeCorrectOptionKey": null,
+      "canonicalCorrectRow": "R",
+      "canonicalCorrectAnswer": "right / true",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "ROW question; no locale-specific option key applies."
+    },
+    "q0442": {
+      "prompt": "この交差点は、どう右折するのが適当か。",
+      "explanation": "",
+      "sourceMode": "reviewed-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.27.11.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 18.27.11.png",
+      "reviewerNotes": "",
+      "promptRawJa": "この交差点は、どう右折するのが適当か。",
+      "promptGlossEn": "What is the proper way to turn right at this intersection?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-018",
+        "approvedQid": "q0442"
+      },
+      "options": {
+        "q0442_o1": "B 直接右折する",
+        "q0442_o2": "C 対向車に先駆けて右折する",
+        "q0442_o3": "D クラクションを鳴らして律使する",
+        "q0442_o4": "A 対向車に先に優先権を譲って左折させる"
+      },
+      "optionsRawJa": [
+        "A 対向車に先に優先権を譲って左折させる",
+        "B 直接右折する",
+        "C 対向車に先駆けて右折する",
+        "D クラクションを鳴らして律使する"
+      ],
+      "optionsGlossEn": [
+        "A. Yield the right of way to the oncoming car and let it turn left first",
+        "B. Turn right directly",
+        "C. Make the right turn ahead of the oncoming car",
+        "D. Sound the horn and proceed"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A 対向車に先に優先権を譲って左折させる",
+          "sourceTextBody": "対向車に先に優先権を譲って左折させる",
+          "sourceGlossEn": "A. Yield the right of way to the oncoming car and let it turn left first",
+          "canonicalOptionId": "q0442_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "let the opposite car turn left first",
+          "alignmentScore": 0.33604148660328437,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B 直接右折する",
+          "sourceTextBody": "直接右折する",
+          "sourceGlossEn": "B. Turn right directly",
+          "canonicalOptionId": "q0442_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "turn right directly",
+          "alignmentScore": 1,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C 対向車に先駆けて右折する",
+          "sourceTextBody": "対向車に先駆けて右折する",
+          "sourceGlossEn": "C. Make the right turn ahead of the oncoming car",
+          "canonicalOptionId": "q0442_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "turn right at the front of the opposite car in advance",
+          "alignmentScore": 0.18383641674780918,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D クラクションを鳴らして律使する",
+          "sourceTextBody": "クラクションを鳴らして律使する",
+          "sourceGlossEn": "D. Sound the horn and proceed",
+          "canonicalOptionId": "q0442_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "honk to urge",
+          "alignmentScore": 0.26666666666666666,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A 対向車に先に優先権を譲って左折させる",
+          "sourceGlossEn": "A. Yield the right of way to the oncoming car and let it turn left first",
+          "canonicalOptionId": "q0442_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "let the opposite car turn left first",
+          "alignmentScore": 0.33604148660328437,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B 直接右折する",
+          "sourceGlossEn": "B. Turn right directly",
+          "canonicalOptionId": "q0442_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "turn right directly",
+          "alignmentScore": 1,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C 対向車に先駆けて右折する",
+          "sourceGlossEn": "C. Make the right turn ahead of the oncoming car",
+          "canonicalOptionId": "q0442_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "turn right at the front of the opposite car in advance",
+          "alignmentScore": 0.18383641674780918,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D クラクションを鳴らして律使する",
+          "sourceGlossEn": "D. Sound the horn and proceed",
+          "canonicalOptionId": "q0442_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "honk to urge",
+          "alignmentScore": 0.26666666666666666,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "A",
+      "canonicalCorrectOptionId": "q0442_o4",
+      "canonicalCorrectOptionKey": "D",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed via exported answer-key review decision on 2026-04-16T11:42:11.252Z.",
+      "correctOptionAlignment": {
+        "sourceKey": "A",
+        "canonicalOptionId": "q0442_o4",
+        "canonicalOptionKey": "D",
+        "sourceText": "A 対向車に先に優先権を譲って左折させる",
+        "sourceGlossEn": "A. Yield the right of way to the oncoming car and let it turn left first",
+        "canonicalOptionText": "let the opposite car turn left first",
+        "alignmentScore": 0.33604148660328437,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-16T11:42:11.252Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ja-batch-018-answer-key-decisions.review-scope.json",
+      "answerKeyReviewerNotes": ""
+    },
+    "q0823": {
+      "prompt": "この標識はA・を示しているか。",
+      "explanation": "",
+      "sourceMode": "reviewed-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.27.12 1.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 18.27.12 1.png",
+      "reviewerNotes": "",
+      "promptRawJa": "この標識はA・を示しているか。",
+      "promptGlossEn": "Does this sign indicate A?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-018",
+        "approvedQid": "q0823"
+      },
+      "options": {
+        "q0823_o1": "A 右へ車線変更",
+        "q0823_o2": "B 分流交差点あり",
+        "q0823_o3": "D 幅員増加",
+        "q0823_o4": "C 車線数増加"
+      },
+      "optionsRawJa": [
+        "A 右へ車線変更",
+        "B 分流交差点あり",
+        "C 車線数増加",
+        "D 幅員増加"
+      ],
+      "optionsGlossEn": [
+        "A Lane change to the right",
+        "B Diverging intersection",
+        "C Increase in the number of lanes",
+        "D Road width increase"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A 右へ車線変更",
+          "sourceTextBody": "右へ車線変更",
+          "sourceGlossEn": "A Lane change to the right",
+          "canonicalOptionId": "q0823_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "change to right lane",
+          "alignmentScore": 0.4866666666666667,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B 分流交差点あり",
+          "sourceTextBody": "分流交差点あり",
+          "sourceGlossEn": "B Diverging intersection",
+          "canonicalOptionId": "q0823_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "branching point",
+          "alignmentScore": 0.03636363636363637,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C 車線数増加",
+          "sourceTextBody": "車線数増加",
+          "sourceGlossEn": "C Increase in the number of lanes",
+          "canonicalOptionId": "q0823_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "the number of lanes increases",
+          "alignmentScore": 0.8177777777777777,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D 幅員増加",
+          "sourceTextBody": "幅員増加",
+          "sourceGlossEn": "D Road width increase",
+          "canonicalOptionId": "q0823_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "road surface becomes wider",
+          "alignmentScore": 0.125,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A 右へ車線変更",
+          "sourceGlossEn": "A Lane change to the right",
+          "canonicalOptionId": "q0823_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "change to right lane",
+          "alignmentScore": 0.4866666666666667,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B 分流交差点あり",
+          "sourceGlossEn": "B Diverging intersection",
+          "canonicalOptionId": "q0823_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "branching point",
+          "alignmentScore": 0.03636363636363637,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C 車線数増加",
+          "sourceGlossEn": "C Increase in the number of lanes",
+          "canonicalOptionId": "q0823_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "the number of lanes increases",
+          "alignmentScore": 0.8177777777777777,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D 幅員増加",
+          "sourceGlossEn": "D Road width increase",
+          "canonicalOptionId": "q0823_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "road surface becomes wider",
+          "alignmentScore": 0.125,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "C",
+      "canonicalCorrectOptionId": "q0823_o4",
+      "canonicalCorrectOptionKey": "D",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed via exported answer-key review decision on 2026-04-16T11:42:11.252Z.",
+      "correctOptionAlignment": {
+        "sourceKey": "C",
+        "canonicalOptionId": "q0823_o4",
+        "canonicalOptionKey": "D",
+        "sourceText": "C 車線数増加",
+        "sourceGlossEn": "C Increase in the number of lanes",
+        "canonicalOptionText": "the number of lanes increases",
+        "alignmentScore": 0.8177777777777777,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-16T11:42:11.252Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ja-batch-018-answer-key-decisions.review-scope.json",
+      "answerKeyReviewerNotes": ""
+    },
+    "q0564": {
+      "prompt": "自動車のインパネの点灯は、エンジンがバッテリーを充電していることを示している。",
+      "explanation": "",
+      "sourceMode": "reviewed-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.27.12.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 18.27.12.png",
+      "reviewerNotes": "",
+      "promptRawJa": "自動車のインパネの点灯は、エンジンがバッテリーを充電していることを示している。",
+      "promptGlossEn": "The indicator light on a car's instrument panel means the engine is charging the battery.",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "ROW",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-018",
+        "approvedQid": "q0564"
+      },
+      "optionsRawJa": [],
+      "optionsGlossEn": [],
+      "localeCorrectOptionKey": null,
+      "canonicalCorrectRow": "W",
+      "canonicalCorrectAnswer": "wrong / false",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "ROW question; no locale-specific option key applies."
+    },
+    "q0199": {
+      "prompt": "中央線のない公道を運転する場合、自動車の最高速度は70km/hを超過してはいけない。",
+      "explanation": "",
+      "sourceMode": "reviewed-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.27.13.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 18.27.13.png",
+      "reviewerNotes": "",
+      "promptRawJa": "中央線のない公道を運転する場合、自動車の最高速度は70km/hを超過してはいけない。",
+      "promptGlossEn": "When driving on a public road without a center line, the maximum speed for automobiles must not exceed 70 km/h.",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "ROW",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-018",
+        "approvedQid": "q0199"
+      },
+      "optionsRawJa": [],
+      "optionsGlossEn": [],
+      "localeCorrectOptionKey": null,
+      "canonicalCorrectRow": "W",
+      "canonicalCorrectAnswer": "wrong / false",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "ROW question; no locale-specific option key applies."
+    },
+    "q0431": {
+      "prompt": "運転者がどの証明証を携帯せずに道路を運転していた場合、警察は法律に基づき車両を拘置できるか。",
+      "explanation": "",
+      "sourceMode": "reviewed-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.27.14 1.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 18.27.14 1.png",
+      "reviewerNotes": "",
+      "promptRawJa": "運転者がどの証明証を携帯せずに道路を運転していた場合、警察は法律に基づき車両を拘置できるか。",
+      "promptGlossEn": "If a driver is operating a vehicle on the road without carrying which of the following certificates, can the police detain the vehicle based on the law?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-018",
+        "approvedQid": "q0431"
+      },
+      "options": {
+        "q0431_o1": "A 運転免許証",
+        "q0431_o2": "B 身分証明書",
+        "q0431_o3": "D 自動車通行証",
+        "q0431_o4": "C 就職資格証明書"
+      },
+      "optionsRawJa": [
+        "A 運転免許証",
+        "B 身分証明書",
+        "C 就職資格証明書",
+        "D 自動車通行証"
+      ],
+      "optionsGlossEn": [
+        "A. Driver's license",
+        "B. ID card",
+        "C. Employment qualification certificate",
+        "D. Automobile pass"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A 運転免許証",
+          "sourceTextBody": "運転免許証",
+          "sourceGlossEn": "A. Driver's license",
+          "canonicalOptionId": "q0431_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "driving license",
+          "alignmentScore": 0.38974358974358975,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B 身分証明書",
+          "sourceTextBody": "身分証明書",
+          "sourceGlossEn": "B. ID card",
+          "canonicalOptionId": "q0431_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "ID card",
+          "alignmentScore": 1,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C 就職資格証明書",
+          "sourceTextBody": "就職資格証明書",
+          "sourceGlossEn": "C. Employment qualification certificate",
+          "canonicalOptionId": "q0431_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "qualification certificate",
+          "alignmentScore": 0.6947368421052631,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D 自動車通行証",
+          "sourceTextBody": "自動車通行証",
+          "sourceGlossEn": "D. Automobile pass",
+          "canonicalOptionId": "q0431_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "pass paper",
+          "alignmentScore": 0.32380952380952377,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A 運転免許証",
+          "sourceGlossEn": "A. Driver's license",
+          "canonicalOptionId": "q0431_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "driving license",
+          "alignmentScore": 0.38974358974358975,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B 身分証明書",
+          "sourceGlossEn": "B. ID card",
+          "canonicalOptionId": "q0431_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "ID card",
+          "alignmentScore": 1,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C 就職資格証明書",
+          "sourceGlossEn": "C. Employment qualification certificate",
+          "canonicalOptionId": "q0431_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "qualification certificate",
+          "alignmentScore": 0.6947368421052631,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D 自動車通行証",
+          "sourceGlossEn": "D. Automobile pass",
+          "canonicalOptionId": "q0431_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "pass paper",
+          "alignmentScore": 0.32380952380952377,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "A",
+      "canonicalCorrectOptionId": "q0431_o1",
+      "canonicalCorrectOptionKey": "A",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed via exported answer-key review decision on 2026-04-16T11:42:11.252Z.",
+      "correctOptionAlignment": {
+        "sourceKey": "A",
+        "canonicalOptionId": "q0431_o1",
+        "canonicalOptionKey": "A",
+        "sourceText": "A 運転免許証",
+        "sourceGlossEn": "A. Driver's license",
+        "canonicalOptionText": "driving license",
+        "alignmentScore": 0.38974358974358975,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-16T11:42:11.252Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ja-batch-018-answer-key-decisions.review-scope.json",
+      "answerKeyReviewerNotes": ""
+    },
+    "q0163": {
+      "prompt": "渋滞道路を低速走行しているさい、他車が無理に割り込んできた場合どうすべきか。",
+      "explanation": "",
+      "sourceMode": "reviewed-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.27.14.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 18.27.14.png",
+      "reviewerNotes": "",
+      "promptRawJa": "渋滞道路を低速走行しているさい、他車が無理に割り込んできた場合どうすべきか。",
+      "promptGlossEn": "What should you do if another vehicle tries to forcefully cut in while you are driving slowly in a traffic jam?",
+      "correctKeyRaw": "C",
+      "correctAnswerRaw": "道をゆずり、安全走行を確保する",
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-018",
+        "approvedQid": "q0163"
+      },
+      "options": {
+        "q0163_o1": "A クラクションを鳴らし注意し割り込ませない",
+        "q0163_o2": "B 加速し前車にぴったりつけ割り込ませない",
+        "q0163_o3": "D 割り込もうとする車両を押しのける",
+        "q0163_o4": "C 道をゆずり、安全走行を確保する"
+      },
+      "optionsRawJa": [
+        "A クラクションを鳴らし注意し割り込ませない",
+        "B 加速し前車にぴったりつけ割り込ませない",
+        "C 道をゆずり、安全走行を確保する",
+        "D 割り込もうとする車両を押しのける"
+      ],
+      "optionsGlossEn": [
+        "A. Sound your horn and do not let them cut in",
+        "B. Accelerate and keep close to the car in front so they cannot cut in",
+        "C. Yield and ensure safe driving",
+        "D. Push away the vehicle that is trying to cut in"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A クラクションを鳴らし注意し割り込ませない",
+          "sourceTextBody": "クラクションを鳴らし注意し割り込ませない",
+          "sourceGlossEn": "A. Sound your horn and do not let them cut in",
+          "canonicalOptionId": "q0163_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "Honk to warn it against cutting in",
+          "alignmentScore": 0.13999999999999999,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B 加速し前車にぴったりつけ割り込ませない",
+          "sourceTextBody": "加速し前車にぴったりつけ割り込ませない",
+          "sourceGlossEn": "B. Accelerate and keep close to the car in front so they cannot cut in",
+          "canonicalOptionId": "q0163_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "Speed up to closely follow the vehicle in front and refuse to allow it to cut in",
+          "alignmentScore": 0.3645083932853717,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C 道をゆずり、安全走行を確保する",
+          "sourceTextBody": "道をゆずり、安全走行を確保する",
+          "sourceGlossEn": "C. Yield and ensure safe driving",
+          "canonicalOptionId": "q0163_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "voluntarily yield to ensure safe driving",
+          "alignmentScore": 0.5925274725274725,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D 割り込もうとする車両を押しのける",
+          "sourceTextBody": "割り込もうとする車両を押しのける",
+          "sourceGlossEn": "D. Push away the vehicle that is trying to cut in",
+          "canonicalOptionId": "q0163_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "Squeeze the cutting-in vehicle to force it to leave",
+          "alignmentScore": 0.17546218487394957,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A クラクションを鳴らし注意し割り込ませない",
+          "sourceGlossEn": "A. Sound your horn and do not let them cut in",
+          "canonicalOptionId": "q0163_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "Honk to warn it against cutting in",
+          "alignmentScore": 0.13999999999999999,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B 加速し前車にぴったりつけ割り込ませない",
+          "sourceGlossEn": "B. Accelerate and keep close to the car in front so they cannot cut in",
+          "canonicalOptionId": "q0163_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "Speed up to closely follow the vehicle in front and refuse to allow it to cut in",
+          "alignmentScore": 0.3645083932853717,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C 道をゆずり、安全走行を確保する",
+          "sourceGlossEn": "C. Yield and ensure safe driving",
+          "canonicalOptionId": "q0163_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "voluntarily yield to ensure safe driving",
+          "alignmentScore": 0.5925274725274725,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D 割り込もうとする車両を押しのける",
+          "sourceGlossEn": "D. Push away the vehicle that is trying to cut in",
+          "canonicalOptionId": "q0163_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "Squeeze the cutting-in vehicle to force it to leave",
+          "alignmentScore": 0.17546218487394957,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "C",
+      "canonicalCorrectOptionId": "q0163_o4",
+      "canonicalCorrectOptionKey": "D",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed via exported answer-key review decision on 2026-04-16T11:42:11.252Z.",
+      "correctOptionAlignment": {
+        "sourceKey": "C",
+        "canonicalOptionId": "q0163_o4",
+        "canonicalOptionKey": "D",
+        "sourceText": "C 道をゆずり、安全走行を確保する",
+        "sourceGlossEn": "C. Yield and ensure safe driving",
+        "canonicalOptionText": "voluntarily yield to ensure safe driving",
+        "alignmentScore": 0.5925274725274725,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-16T11:42:11.252Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ja-batch-018-answer-key-decisions.review-scope.json",
+      "answerKeyReviewerNotes": ""
+    },
+    "q0105": {
+      "prompt": "運転中、非自動車に追い越しされる場合、どう対応するのが適切か。",
+      "explanation": "",
+      "sourceMode": "reviewed-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.27.16.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 18.27.16.png",
+      "reviewerNotes": "",
+      "promptRawJa": "運転中、非自動車に追い越しされる場合、どう対応するのが適切か。",
+      "promptGlossEn": "While driving, what is the appropriate response when being overtaken by a non-motor vehicle?",
+      "correctKeyRaw": "C",
+      "correctAnswerRaw": "減速して道を譲る",
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-018",
+        "approvedQid": "q0105"
+      },
+      "options": {
+        "q0105_o1": "A クラクションを鳴らして注意する",
+        "q0105_o2": "B 加速して通過する",
+        "q0105_o3": "C 減速して道を譲る",
+        "q0105_o4": "D 非自動車が近づいたら、急加速する"
+      },
+      "optionsRawJa": [
+        "A クラクションを鳴らして注意する",
+        "B 加速して通過する",
+        "C 減速して道を譲る",
+        "D 非自動車が近づいたら、急加速する"
+      ],
+      "optionsGlossEn": [
+        "A. Sound the horn to alert them",
+        "B. Accelerate and pass through",
+        "C. Slow down and yield the road",
+        "D. When the non-motor vehicle approaches, accelerate rapidly"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A クラクションを鳴らして注意する",
+          "sourceTextBody": "クラクションを鳴らして注意する",
+          "sourceGlossEn": "A. Sound the horn to alert them",
+          "canonicalOptionId": "q0105_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "Honk to warn",
+          "alignmentScore": 0.3416666666666667,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B 加速して通過する",
+          "sourceTextBody": "加速して通過する",
+          "sourceGlossEn": "B. Accelerate and pass through",
+          "canonicalOptionId": "q0105_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "Speed up and pass",
+          "alignmentScore": 0.7619047619047619,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C 減速して道を譲る",
+          "sourceTextBody": "減速して道を譲る",
+          "sourceGlossEn": "C. Slow down and yield the road",
+          "canonicalOptionId": "q0105_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "reduce speed and yield",
+          "alignmentScore": 0.8530172413793103,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D 非自動車が近づいたら、急加速する",
+          "sourceTextBody": "非自動車が近づいたら、急加速する",
+          "sourceGlossEn": "D. When the non-motor vehicle approaches, accelerate rapidly",
+          "canonicalOptionId": "q0105_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "Suddenly speed up when approaching",
+          "alignmentScore": 0.33968253968253964,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A クラクションを鳴らして注意する",
+          "sourceGlossEn": "A. Sound the horn to alert them",
+          "canonicalOptionId": "q0105_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "Honk to warn",
+          "alignmentScore": 0.3416666666666667,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B 加速して通過する",
+          "sourceGlossEn": "B. Accelerate and pass through",
+          "canonicalOptionId": "q0105_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "Speed up and pass",
+          "alignmentScore": 0.7619047619047619,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C 減速して道を譲る",
+          "sourceGlossEn": "C. Slow down and yield the road",
+          "canonicalOptionId": "q0105_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "reduce speed and yield",
+          "alignmentScore": 0.8530172413793103,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D 非自動車が近づいたら、急加速する",
+          "sourceGlossEn": "D. When the non-motor vehicle approaches, accelerate rapidly",
+          "canonicalOptionId": "q0105_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "Suddenly speed up when approaching",
+          "alignmentScore": 0.33968253968253964,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "C",
+      "canonicalCorrectOptionId": "q0105_o3",
+      "canonicalCorrectOptionKey": "C",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed via exported answer-key review decision on 2026-04-16T11:42:11.252Z.",
+      "correctOptionAlignment": {
+        "sourceKey": "C",
+        "canonicalOptionId": "q0105_o3",
+        "canonicalOptionKey": "C",
+        "sourceText": "C 減速して道を譲る",
+        "sourceGlossEn": "C. Slow down and yield the road",
+        "canonicalOptionText": "reduce speed and yield",
+        "alignmentScore": 0.8530172413793103,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-16T11:42:11.252Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ja-batch-018-answer-key-decisions.review-scope.json",
+      "answerKeyReviewerNotes": ""
+    }
+  }
+}

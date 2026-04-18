@@ -1,0 +1,571 @@
+{
+  "meta": {
+    "locale": "ja",
+    "generatedAt": "2026-04-16T09:54:30.359Z",
+    "reviewedBatchId": "batch-016",
+    "dataset": "2023-test1",
+    "sourceUnresolvedPath": "imports/ja/batch-016/unresolved.json",
+    "sourceUnresolvedDecisionPath": "qbank-tools/generated/staging/ja-batch-016-unresolved-decisions.json",
+    "rescuedExistingQidCount": 5,
+    "manualAnswerKeyConfirmationCount": 0,
+    "stagingOnly": true
+  },
+  "questions": {
+    "q0261": {
+      "prompt": "走行中、交通の流れがよければカービデオを見てもよい。",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.25.01.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 18.25.01.png",
+      "reviewerNotes": "",
+      "promptRawJa": "走行中、交通の流れがよければカービデオを見てもよい。",
+      "promptGlossEn": "While driving, if the traffic flow is good, is it okay to watch a car video?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "ROW",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-016",
+        "approvedQid": "q0261",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "optionsRawJa": [],
+      "optionsGlossEn": [],
+      "localeCorrectOptionKey": null,
+      "canonicalCorrectRow": "W",
+      "canonicalCorrectAnswer": "wrong / false",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "ROW question; no locale-specific option key applies.",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ja-batch-016-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0265": {
+      "prompt": "自動車運転免許の偽造変造により犯罪となった場合、法律に基づき刑事責任が追及される。",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.25.14.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 18.25.14.png",
+      "reviewerNotes": "",
+      "promptRawJa": "自動車運転免許の偽造変造により犯罪となった場合、法律に基づき刑事責任が追及される。",
+      "promptGlossEn": "If you commit a crime by forging or altering a driver's license, you will be held criminally responsible according to the law.",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "ROW",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-016",
+        "approvedQid": "q0265",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "optionsRawJa": [],
+      "optionsGlossEn": [],
+      "localeCorrectOptionKey": null,
+      "canonicalCorrectRow": "R",
+      "canonicalCorrectAnswer": "right / true",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "ROW question; no locale-specific option key applies.",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ja-batch-016-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0808": {
+      "prompt": "この標識は何を示しているか。",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.25.19.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 18.25.19.png",
+      "reviewerNotes": "",
+      "promptRawJa": "この標識は何を示しているか。",
+      "promptGlossEn": "What does this sign indicate?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-016",
+        "approvedQid": "q0808",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "options": {
+        "q0808_o1": "B 急勾配あり",
+        "q0808_o2": "A N形カーブあり",
+        "q0808_o3": "C 背向屈折あり",
+        "q0808_o4": "D つづら折りあり"
+      },
+      "optionsRawJa": [
+        "A N形カーブあり",
+        "B 急勾配あり",
+        "C 背向屈折あり",
+        "D つづら折りあり"
+      ],
+      "optionsGlossEn": [
+        "A: N-shaped curve ahead",
+        "B: Steep slope ahead",
+        "C: Reverse bend ahead",
+        "D: Zigzag (hairpin turns) ahead"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A N形カーブあり",
+          "sourceTextBody": "N形カーブあり",
+          "sourceGlossEn": "A: N-shaped curve ahead",
+          "canonicalOptionId": "q0808_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "inverse curve",
+          "alignmentScore": 0.274074074074074,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B 急勾配あり",
+          "sourceTextBody": "急勾配あり",
+          "sourceGlossEn": "B: Steep slope ahead",
+          "canonicalOptionId": "q0808_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "slippery section",
+          "alignmentScore": 0,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C 背向屈折あり",
+          "sourceTextBody": "背向屈折あり",
+          "sourceGlossEn": "C: Reverse bend ahead",
+          "canonicalOptionId": "q0808_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "inverse curve",
+          "alignmentScore": 0,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D つづら折りあり",
+          "sourceTextBody": "つづら折りあり",
+          "sourceGlossEn": "D: Zigzag (hairpin turns) ahead",
+          "canonicalOptionId": "q0808_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "continuous curves",
+          "alignmentScore": 0,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A N形カーブあり",
+          "sourceGlossEn": "A: N-shaped curve ahead",
+          "canonicalOptionId": "q0808_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "inverse curve",
+          "alignmentScore": 0.274074074074074,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B 急勾配あり",
+          "sourceGlossEn": "B: Steep slope ahead",
+          "canonicalOptionId": "q0808_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "slippery section",
+          "alignmentScore": 0,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C 背向屈折あり",
+          "sourceGlossEn": "C: Reverse bend ahead",
+          "canonicalOptionId": "q0808_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "inverse curve",
+          "alignmentScore": 0,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D つづら折りあり",
+          "sourceGlossEn": "D: Zigzag (hairpin turns) ahead",
+          "canonicalOptionId": "q0808_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "continuous curves",
+          "alignmentScore": 0,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "A",
+      "canonicalCorrectOptionId": "q0808_o3",
+      "canonicalCorrectOptionKey": "C",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed during unresolved rescue review on 2026-04-16T09:54:30.359Z; reviewer selected locale key A.",
+      "correctOptionAlignment": {
+        "sourceKey": "A",
+        "canonicalOptionId": "q0808_o3",
+        "canonicalOptionKey": "C",
+        "sourceText": "A N形カーブあり",
+        "sourceGlossEn": "A: N-shaped curve ahead",
+        "canonicalOptionText": "inverse curve",
+        "alignmentScore": 0,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-16T09:54:30.359Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ja-batch-016-unresolved-decisions.json",
+      "answerKeyReviewerNotes": "",
+      "reviewerSuggestedLocaleCorrectOptionKey": "A",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ja-batch-016-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0450": {
+      "prompt": "不正改造車不法にパーツを組み合わせて作った車を路上で運転すると、規定に基づ着罰金に処せられる以外に、どのような処分を受けるか。",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.25.20.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 18.25.20.png",
+      "reviewerNotes": "",
+      "promptRawJa": "不正改造車不法にパーツを組み合わせて作った車を路上で運転すると、規定に基づ着罰金に処せられる以外に、どのような処分を受けるか。",
+      "promptGlossEn": "If you drive a car illegally modified by combining unauthorized parts on the road, in addition to being fined according to regulations, what other punishment can you receive?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-016",
+        "approvedQid": "q0450",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "options": {
+        "q0450_o1": "B 免許証の一時没収",
+        "q0450_o2": "C 免許証の取消",
+        "q0450_o3": "D 刑事責任の追及",
+        "q0450_o4": "A 10日以下の収監"
+      },
+      "optionsRawJa": [
+        "A 10日以下の収監",
+        "B 免許証の一時没収",
+        "C 免許証の取消",
+        "D 刑事責任の追及"
+      ],
+      "optionsGlossEn": [
+        "A: Imprisonment for up to 10 days",
+        "B: Temporary confiscation of the driver's license",
+        "C: Revocation of the driver's license",
+        "D: Criminal liability"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A 10日以下の収監",
+          "sourceTextBody": "10日以下の収監",
+          "sourceGlossEn": "A: Imprisonment for up to 10 days",
+          "canonicalOptionId": "q0450_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "be detained for less than 10 days",
+          "alignmentScore": 0.3010169491525424,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B 免許証の一時没収",
+          "sourceTextBody": "免許証の一時没収",
+          "sourceGlossEn": "B: Temporary confiscation of the driver's license",
+          "canonicalOptionId": "q0450_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "be temporarily detained the driving license",
+          "alignmentScore": 0.16783625730994153,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C 免許証の取消",
+          "sourceTextBody": "免許証の取消",
+          "sourceGlossEn": "C: Revocation of the driver's license",
+          "canonicalOptionId": "q0450_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "be revoked the driving license",
+          "alignmentScore": 0.20056022408963586,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D 刑事責任の追及",
+          "sourceTextBody": "刑事責任の追及",
+          "sourceGlossEn": "D: Criminal liability",
+          "canonicalOptionId": "q0450_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "be held for criminal liabilities",
+          "alignmentScore": 0.46545454545454545,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A 10日以下の収監",
+          "sourceGlossEn": "A: Imprisonment for up to 10 days",
+          "canonicalOptionId": "q0450_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "be detained for less than 10 days",
+          "alignmentScore": 0.3010169491525424,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B 免許証の一時没収",
+          "sourceGlossEn": "B: Temporary confiscation of the driver's license",
+          "canonicalOptionId": "q0450_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "be temporarily detained the driving license",
+          "alignmentScore": 0.16783625730994153,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C 免許証の取消",
+          "sourceGlossEn": "C: Revocation of the driver's license",
+          "canonicalOptionId": "q0450_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "be revoked the driving license",
+          "alignmentScore": 0.20056022408963586,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D 刑事責任の追及",
+          "sourceGlossEn": "D: Criminal liability",
+          "canonicalOptionId": "q0450_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "be held for criminal liabilities",
+          "alignmentScore": 0.46545454545454545,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "C",
+      "canonicalCorrectOptionId": "q0450_o2",
+      "canonicalCorrectOptionKey": "B",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed during unresolved rescue review on 2026-04-16T09:54:30.359Z; reviewer selected locale key C.",
+      "correctOptionAlignment": {
+        "sourceKey": "C",
+        "canonicalOptionId": "q0450_o2",
+        "canonicalOptionKey": "B",
+        "sourceText": "C 免許証の取消",
+        "sourceGlossEn": "C: Revocation of the driver's license",
+        "canonicalOptionText": "be revoked the driving license",
+        "alignmentScore": 0.20056022408963586,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-16T09:54:30.359Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ja-batch-016-unresolved-decisions.json",
+      "answerKeyReviewerNotes": "",
+      "reviewerSuggestedLocaleCorrectOptionKey": "C",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ja-batch-016-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0521": {
+      "prompt": "運転者がに6点減点されるがつくのは、次のどの違法行為か。",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.25.29 1.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 18.25.29 1.png",
+      "reviewerNotes": "",
+      "promptRawJa": "運転者がに6点減点されるがつくのは、次のどの違法行為か。",
+      "promptGlossEn": "Which of the following illegal acts will result in a 6-point deduction for the driver?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-016",
+        "approvedQid": "q0521",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "options": {
+        "q0521_o1": "B 他車の自動車走行許可証を使用する",
+        "q0521_o2": "C 走行速度が規定時速を50%以上回る",
+        "q0521_o3": "D 緊急車線を違法占用して運転する",
+        "q0521_o4": "A 飲酒運転"
+      },
+      "optionsRawJa": [
+        "A 飲酒運転",
+        "B 他車の自動車走行許可証を使用する",
+        "C 走行速度が規定時速を50%以上回る",
+        "D 緊急車線を違法占用して運転する"
+      ],
+      "optionsGlossEn": [
+        "A: Drunk driving",
+        "B: Using another vehicle's driving permit",
+        "C: Driving at a speed more than 50% above the legal speed limit",
+        "D: Illegally occupying and driving in the emergency lane"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A 飲酒運転",
+          "sourceTextBody": "飲酒運転",
+          "sourceGlossEn": "A: Drunk driving",
+          "canonicalOptionId": "q0521_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "drive after drinking",
+          "alignmentScore": 0.05517241379310345,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B 他車の自動車走行許可証を使用する",
+          "sourceTextBody": "他車の自動車走行許可証を使用する",
+          "sourceGlossEn": "B: Using another vehicle's driving permit",
+          "canonicalOptionId": "q0521_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "use other vehicles vehicle license",
+          "alignmentScore": 0.1702857142857143,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C 走行速度が規定時速を50%以上回る",
+          "sourceTextBody": "走行速度が規定時速を50%以上回る",
+          "sourceGlossEn": "C: Driving at a speed more than 50% above the legal speed limit",
+          "canonicalOptionId": "q0521_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "run 50% faster than the prescribed speed limit",
+          "alignmentScore": 0.34927536231884054,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D 緊急車線を違法占用して運転する",
+          "sourceTextBody": "緊急車線を違法占用して運転する",
+          "sourceGlossEn": "D: Illegally occupying and driving in the emergency lane",
+          "canonicalOptionId": "q0521_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "illegally occupying emergency lane",
+          "alignmentScore": 0.4421052631578947,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A 飲酒運転",
+          "sourceGlossEn": "A: Drunk driving",
+          "canonicalOptionId": "q0521_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "drive after drinking",
+          "alignmentScore": 0.05517241379310345,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B 他車の自動車走行許可証を使用する",
+          "sourceGlossEn": "B: Using another vehicle's driving permit",
+          "canonicalOptionId": "q0521_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "use other vehicles vehicle license",
+          "alignmentScore": 0.1702857142857143,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C 走行速度が規定時速を50%以上回る",
+          "sourceGlossEn": "C: Driving at a speed more than 50% above the legal speed limit",
+          "canonicalOptionId": "q0521_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "run 50% faster than the prescribed speed limit",
+          "alignmentScore": 0.34927536231884054,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D 緊急車線を違法占用して運転する",
+          "sourceGlossEn": "D: Illegally occupying and driving in the emergency lane",
+          "canonicalOptionId": "q0521_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "illegally occupying emergency lane",
+          "alignmentScore": 0.4421052631578947,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        }
+      ],
+      "localeCorrectOptionKey": "D",
+      "canonicalCorrectOptionId": "q0521_o3",
+      "canonicalCorrectOptionKey": "C",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed during unresolved rescue review on 2026-04-16T09:54:30.359Z; reviewer selected locale key D.",
+      "correctOptionAlignment": {
+        "sourceKey": "D",
+        "canonicalOptionId": "q0521_o3",
+        "canonicalOptionKey": "C",
+        "sourceText": "D 緊急車線を違法占用して運転する",
+        "sourceGlossEn": "D: Illegally occupying and driving in the emergency lane",
+        "canonicalOptionText": "illegally occupying emergency lane",
+        "alignmentScore": 0.4421052631578947,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-16T09:54:30.359Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ja-batch-016-unresolved-decisions.json",
+      "answerKeyReviewerNotes": "",
+      "reviewerSuggestedLocaleCorrectOptionKey": "D",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ja-batch-016-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    }
+  }
+}

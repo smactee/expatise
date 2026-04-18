@@ -1,0 +1,1219 @@
+{
+  "meta": {
+    "locale": "ja",
+    "generatedAt": "2026-04-13T05:14:01.521Z",
+    "reviewedBatchId": "batch-010",
+    "dataset": "2023-test1",
+    "sourceUnresolvedPath": "imports/ja/batch-010/unresolved.json",
+    "sourceUnresolvedDecisionPath": "qbank-tools/generated/staging/ja-batch-010-unresolved-decisions.json",
+    "rescuedExistingQidCount": 9,
+    "manualAnswerKeyConfirmationCount": 0,
+    "stagingOnly": true
+  },
+  "questions": {
+    "q0797": {
+      "prompt": "この標識は何を示しているか。",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/400.png",
+      "sourceItemId": "screenshots/400.png",
+      "reviewerNotes": "",
+      "promptRawJa": "この標識は何を示しているか。",
+      "promptGlossEn": "What does this road sign indicate?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-010",
+        "approvedQid": "q0797",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "options": {
+        "q0797_o1": "C 両側通行",
+        "q0797_o2": "D 右側通行",
+        "q0797_o3": "A 左側通行",
+        "q0797_o4": "B 通行止め"
+      },
+      "optionsRawJa": [
+        "A 左側通行",
+        "B 通行止め",
+        "C 両側通行",
+        "D 右側通行"
+      ],
+      "optionsGlossEn": [
+        "A: Keep left",
+        "B: Road closed",
+        "C: Both sides pass",
+        "D: Keep right"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A 左側通行",
+          "sourceTextBody": "左側通行",
+          "sourceGlossEn": "A: Keep left",
+          "canonicalOptionId": "q0797_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "Passing by the left side",
+          "alignmentScore": 0.20800000000000002,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B 通行止め",
+          "sourceTextBody": "通行止め",
+          "sourceGlossEn": "B: Road closed",
+          "canonicalOptionId": "q0797_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "Passing is prohibited",
+          "alignmentScore": 0.37101449275362314,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C 両側通行",
+          "sourceTextBody": "両側通行",
+          "sourceGlossEn": "C: Both sides pass",
+          "canonicalOptionId": "q0797_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "Passing on both sides",
+          "alignmentScore": 0.44000000000000006,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D 右側通行",
+          "sourceTextBody": "右側通行",
+          "sourceGlossEn": "D: Keep right",
+          "canonicalOptionId": "q0797_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "Passing by the right side",
+          "alignmentScore": 0.21925925925925926,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A 左側通行",
+          "sourceGlossEn": "A: Keep left",
+          "canonicalOptionId": "q0797_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "Passing by the left side",
+          "alignmentScore": 0.20800000000000002,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B 通行止め",
+          "sourceGlossEn": "B: Road closed",
+          "canonicalOptionId": "q0797_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "Passing is prohibited",
+          "alignmentScore": 0.37101449275362314,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C 両側通行",
+          "sourceGlossEn": "C: Both sides pass",
+          "canonicalOptionId": "q0797_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "Passing on both sides",
+          "alignmentScore": 0.44000000000000006,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D 右側通行",
+          "sourceGlossEn": "D: Keep right",
+          "canonicalOptionId": "q0797_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "Passing by the right side",
+          "alignmentScore": 0.21925925925925926,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        }
+      ],
+      "localeCorrectOptionKey": "D",
+      "canonicalCorrectOptionId": "q0797_o2",
+      "canonicalCorrectOptionKey": "B",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed during unresolved rescue review on 2026-04-13T05:14:01.521Z; reviewer selected locale key D.",
+      "correctOptionAlignment": {
+        "sourceKey": "D",
+        "canonicalOptionId": "q0797_o2",
+        "canonicalOptionKey": "B",
+        "sourceText": "D 右側通行",
+        "sourceGlossEn": "D: Keep right",
+        "canonicalOptionText": "Passing by the right side",
+        "alignmentScore": 0.21925925925925926,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-13T05:14:01.521Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ja-batch-010-unresolved-decisions.json",
+      "answerKeyReviewerNotes": "",
+      "reviewerSuggestedLocaleCorrectOptionKey": "D",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ja-batch-010-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0779": {
+      "prompt": "路面の黄色い区間標示は何を示しているか。",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.06.40.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 18.06.40.png",
+      "reviewerNotes": "",
+      "promptRawJa": "路面の黄色い区間標示は何を示しているか。",
+      "promptGlossEn": "What does the yellow section marking on the road indicate?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-010",
+        "approvedQid": "q0779",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "options": {
+        "q0779_o1": "C 路上障害物が近い",
+        "q0779_o2": "B 中央分離帯の幅員増加",
+        "q0779_o3": "A 移動障害物が近い",
+        "q0779_o4": "D 狭い道路が近い"
+      },
+      "optionsRawJa": [
+        "A 移動障害物が近い",
+        "B 中央分離帯の幅員増加",
+        "C 路上障害物が近い",
+        "D 狭い道路が近い"
+      ],
+      "optionsGlossEn": [
+        "A: There is a movable obstacle nearby",
+        "B: The width of the median strip is increasing",
+        "C: There is a road obstacle nearby",
+        "D: There is a narrow road ahead"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A 移動障害物が近い",
+          "sourceTextBody": "移動障害物が近い",
+          "sourceGlossEn": "A: There is a movable obstacle nearby",
+          "canonicalOptionId": "q0779_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "closing the moving obstacle",
+          "alignmentScore": 0.18487394957983194,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B 中央分離帯の幅員増加",
+          "sourceTextBody": "中央分離帯の幅員増加",
+          "sourceGlossEn": "B: The width of the median strip is increasing",
+          "canonicalOptionId": "q0779_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "closing narrowed road",
+          "alignmentScore": 0.015384615384615385,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C 路上障害物が近い",
+          "sourceTextBody": "路上障害物が近い",
+          "sourceGlossEn": "C: There is a road obstacle nearby",
+          "canonicalOptionId": "q0779_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "closing to the obstacle",
+          "alignmentScore": 0.18625541125541126,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D 狭い道路が近い",
+          "sourceTextBody": "狭い道路が近い",
+          "sourceGlossEn": "D: There is a narrow road ahead",
+          "canonicalOptionId": "q0779_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "Marking of approaching a narrow road",
+          "alignmentScore": 0.27683229813664595,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A 移動障害物が近い",
+          "sourceGlossEn": "A: There is a movable obstacle nearby",
+          "canonicalOptionId": "q0779_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "closing the moving obstacle",
+          "alignmentScore": 0.18487394957983194,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B 中央分離帯の幅員増加",
+          "sourceGlossEn": "B: The width of the median strip is increasing",
+          "canonicalOptionId": "q0779_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "closing narrowed road",
+          "alignmentScore": 0.015384615384615385,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C 路上障害物が近い",
+          "sourceGlossEn": "C: There is a road obstacle nearby",
+          "canonicalOptionId": "q0779_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "closing to the obstacle",
+          "alignmentScore": 0.18625541125541126,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D 狭い道路が近い",
+          "sourceGlossEn": "D: There is a narrow road ahead",
+          "canonicalOptionId": "q0779_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "Marking of approaching a narrow road",
+          "alignmentScore": 0.27683229813664595,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "C",
+      "canonicalCorrectOptionId": "q0779_o1",
+      "canonicalCorrectOptionKey": "A",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed during unresolved rescue review on 2026-04-13T05:14:01.521Z; reviewer selected locale key C.",
+      "correctOptionAlignment": {
+        "sourceKey": "C",
+        "canonicalOptionId": "q0779_o1",
+        "canonicalOptionKey": "A",
+        "sourceText": "C 路上障害物が近い",
+        "sourceGlossEn": "C: There is a road obstacle nearby",
+        "canonicalOptionText": "closing to the obstacle",
+        "alignmentScore": 0.18625541125541126,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-13T05:14:01.521Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ja-batch-010-unresolved-decisions.json",
+      "answerKeyReviewerNotes": "",
+      "reviewerSuggestedLocaleCorrectOptionKey": "C",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ja-batch-010-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0476": {
+      "prompt": "路上で走行するこの自動車は次のなかのどの違法行為になるか。",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.06.43.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 18.06.43.png",
+      "reviewerNotes": "",
+      "promptRawJa": "路上で走行するこの自動車は次のなかのどの違法行為になるか。",
+      "promptGlossEn": "Which of the following violations is committed by this car driving on the road?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-010",
+        "approvedQid": "q0476",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "options": {
+        "q0476_o1": "B 規定に基づいてナンバープレートを取り付けていない",
+        "q0476_o2": "C わざとナンバープレートを隠している遮ていしている",
+        "q0476_o3": "D 非自動車車道を占用する",
+        "q0476_o4": "A 逆方向走行"
+      },
+      "optionsRawJa": [
+        "A 逆方向走行",
+        "B 規定に基づいてナンバープレートを取り付けていない",
+        "C わざとナンバープレートを隠している遮ていしている",
+        "D 非自動車車道を占用する"
+      ],
+      "optionsGlossEn": [
+        "A. Driving in the wrong direction",
+        "B. Not attaching the license plate according to regulations",
+        "C. Intentionally hiding or covering the license plate",
+        "D. Occupying a roadway not designated for automobiles"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A 逆方向走行",
+          "sourceTextBody": "逆方向走行",
+          "sourceGlossEn": "A. Driving in the wrong direction",
+          "canonicalOptionId": "q0476_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "run in the opposite direction",
+          "alignmentScore": 0.3517730496453901,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B 規定に基づいてナンバープレートを取り付けていない",
+          "sourceTextBody": "規定に基づいてナンバープレートを取り付けていない",
+          "sourceGlossEn": "B. Not attaching the license plate according to regulations",
+          "canonicalOptionId": "q0476_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "not hang the license plate as required",
+          "alignmentScore": 0.33382716049382716,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C わざとナンバープレートを隠している遮ていしている",
+          "sourceTextBody": "わざとナンバープレートを隠している遮ていしている",
+          "sourceGlossEn": "C. Intentionally hiding or covering the license plate",
+          "canonicalOptionId": "q0476_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "Deliberately covering the license plate.",
+          "alignmentScore": 0.2918918918918919,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D 非自動車車道を占用する",
+          "sourceTextBody": "非自動車車道を占用する",
+          "sourceGlossEn": "D. Occupying a roadway not designated for automobiles",
+          "canonicalOptionId": "q0476_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "occupy the lane for non-motorized vehicles",
+          "alignmentScore": 0.19333333333333333,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A 逆方向走行",
+          "sourceGlossEn": "A. Driving in the wrong direction",
+          "canonicalOptionId": "q0476_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "run in the opposite direction",
+          "alignmentScore": 0.3517730496453901,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B 規定に基づいてナンバープレートを取り付けていない",
+          "sourceGlossEn": "B. Not attaching the license plate according to regulations",
+          "canonicalOptionId": "q0476_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "not hang the license plate as required",
+          "alignmentScore": 0.33382716049382716,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C わざとナンバープレートを隠している遮ていしている",
+          "sourceGlossEn": "C. Intentionally hiding or covering the license plate",
+          "canonicalOptionId": "q0476_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "Deliberately covering the license plate.",
+          "alignmentScore": 0.2918918918918919,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D 非自動車車道を占用する",
+          "sourceGlossEn": "D. Occupying a roadway not designated for automobiles",
+          "canonicalOptionId": "q0476_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "occupy the lane for non-motorized vehicles",
+          "alignmentScore": 0.19333333333333333,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "C",
+      "canonicalCorrectOptionId": "q0476_o2",
+      "canonicalCorrectOptionKey": "B",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed during unresolved rescue review on 2026-04-13T05:14:01.521Z; reviewer selected locale key C.",
+      "correctOptionAlignment": {
+        "sourceKey": "C",
+        "canonicalOptionId": "q0476_o2",
+        "canonicalOptionKey": "B",
+        "sourceText": "C わざとナンバープレートを隠している遮ていしている",
+        "sourceGlossEn": "C. Intentionally hiding or covering the license plate",
+        "canonicalOptionText": "Deliberately covering the license plate.",
+        "alignmentScore": 0.2918918918918919,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-13T05:14:01.521Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ja-batch-010-unresolved-decisions.json",
+      "answerKeyReviewerNotes": "",
+      "reviewerSuggestedLocaleCorrectOptionKey": "C",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ja-batch-010-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0112": {
+      "prompt": "番をしている人がいない踏み切りを通過するさい、運転者はどうすべきか。",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.06.49.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 18.06.49.png",
+      "reviewerNotes": "",
+      "promptRawJa": "番をしている人がいない踏み切りを通過するさい、運転者はどうすべきか。",
+      "promptGlossEn": "When passing over a railroad crossing with no attendant, what should the driver do?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-010",
+        "approvedQid": "q0112",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "options": {
+        "q0112_o1": "A 速度を上げて通過する",
+        "q0112_o2": "B 速度を落として通過する",
+        "q0112_o3": "C 一定の速度で通過する",
+        "q0112_o4": "D 車を止め、様子を見てから通過する"
+      },
+      "optionsRawJa": [
+        "A 速度を上げて通過する",
+        "B 速度を落として通過する",
+        "C 一定の速度で通過する",
+        "D 車を止め、様子を見てから通過する"
+      ],
+      "optionsGlossEn": [
+        "A. Pass through while increasing speed",
+        "B. Pass through while reducing speed",
+        "C. Pass through at a constant speed",
+        "D. Stop the car, check the situation, then pass through"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A 速度を上げて通過する",
+          "sourceTextBody": "速度を上げて通過する",
+          "sourceGlossEn": "A. Pass through while increasing speed",
+          "canonicalOptionId": "q0112_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "Speed up and pass",
+          "alignmentScore": 0.13028571428571428,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B 速度を落として通過する",
+          "sourceTextBody": "速度を落として通過する",
+          "sourceGlossEn": "B. Pass through while reducing speed",
+          "canonicalOptionId": "q0112_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "Reduce speed and pass",
+          "alignmentScore": 0.13333333333333333,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C 一定の速度で通過する",
+          "sourceTextBody": "一定の速度で通過する",
+          "sourceGlossEn": "C. Pass through at a constant speed",
+          "canonicalOptionId": "q0112_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "Maintain the speed and pass",
+          "alignmentScore": 0.27755102040816326,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D 車を止め、様子を見てから通過する",
+          "sourceTextBody": "車を止め、様子を見てから通過する",
+          "sourceGlossEn": "D. Stop the car, check the situation, then pass through",
+          "canonicalOptionId": "q0112_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "stop, look, and pass",
+          "alignmentScore": 0.22063492063492063,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A 速度を上げて通過する",
+          "sourceGlossEn": "A. Pass through while increasing speed",
+          "canonicalOptionId": "q0112_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "Speed up and pass",
+          "alignmentScore": 0.13028571428571428,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B 速度を落として通過する",
+          "sourceGlossEn": "B. Pass through while reducing speed",
+          "canonicalOptionId": "q0112_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "Reduce speed and pass",
+          "alignmentScore": 0.13333333333333333,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C 一定の速度で通過する",
+          "sourceGlossEn": "C. Pass through at a constant speed",
+          "canonicalOptionId": "q0112_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "Maintain the speed and pass",
+          "alignmentScore": 0.27755102040816326,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D 車を止め、様子を見てから通過する",
+          "sourceGlossEn": "D. Stop the car, check the situation, then pass through",
+          "canonicalOptionId": "q0112_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "stop, look, and pass",
+          "alignmentScore": 0.22063492063492063,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        }
+      ],
+      "localeCorrectOptionKey": "D",
+      "canonicalCorrectOptionId": "q0112_o4",
+      "canonicalCorrectOptionKey": "D",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed during unresolved rescue review on 2026-04-13T05:14:01.521Z; reviewer selected locale key D.",
+      "correctOptionAlignment": {
+        "sourceKey": "D",
+        "canonicalOptionId": "q0112_o4",
+        "canonicalOptionKey": "D",
+        "sourceText": "D 車を止め、様子を見てから通過する",
+        "sourceGlossEn": "D. Stop the car, check the situation, then pass through",
+        "canonicalOptionText": "stop, look, and pass",
+        "alignmentScore": 0.22063492063492063,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-13T05:14:01.521Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ja-batch-010-unresolved-decisions.json",
+      "answerKeyReviewerNotes": "",
+      "reviewerSuggestedLocaleCorrectOptionKey": "D",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ja-batch-010-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0766": {
+      "prompt": "この標識の示す意味はどれか。",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.07.01.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 18.07.01.png",
+      "reviewerNotes": "",
+      "promptRawJa": "この標識の示す意味はどれか。",
+      "promptGlossEn": "What does this road sign mean?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-010",
+        "approvedQid": "q0766",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "options": {
+        "q0766_o1": "D 路面突出",
+        "q0766_o2": "B 山なりの橋",
+        "q0766_o3": "C 路面に凸凹あり",
+        "q0766_o4": "A 路面に凹みあり"
+      },
+      "optionsRawJa": [
+        "A 路面に凹みあり",
+        "B 山なりの橋",
+        "C 路面に凸凹あり",
+        "D 路面突出"
+      ],
+      "optionsGlossEn": [
+        "A. There is a depression in the road",
+        "B. Arched bridge",
+        "C. The road is uneven",
+        "D. Road protrusion"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A 路面に凹みあり",
+          "sourceTextBody": "路面に凹みあり",
+          "sourceGlossEn": "A. There is a depression in the road",
+          "canonicalOptionId": "q0766_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "high outburst road",
+          "alignmentScore": 0.0935540069686411,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B 山なりの橋",
+          "sourceTextBody": "山なりの橋",
+          "sourceGlossEn": "B. Arched bridge",
+          "canonicalOptionId": "q0766_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "hump bridge",
+          "alignmentScore": 0.36666666666666664,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C 路面に凸凹あり",
+          "sourceTextBody": "路面に凸凹あり",
+          "sourceGlossEn": "C. The road is uneven",
+          "canonicalOptionId": "q0766_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "bump road",
+          "alignmentScore": 0.15460526315789475,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D 路面突出",
+          "sourceTextBody": "路面突出",
+          "sourceGlossEn": "D. Road protrusion",
+          "canonicalOptionId": "q0766_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "low-lying road",
+          "alignmentScore": 0.182,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A 路面に凹みあり",
+          "sourceGlossEn": "A. There is a depression in the road",
+          "canonicalOptionId": "q0766_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "high outburst road",
+          "alignmentScore": 0.0935540069686411,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B 山なりの橋",
+          "sourceGlossEn": "B. Arched bridge",
+          "canonicalOptionId": "q0766_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "hump bridge",
+          "alignmentScore": 0.36666666666666664,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C 路面に凸凹あり",
+          "sourceGlossEn": "C. The road is uneven",
+          "canonicalOptionId": "q0766_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "bump road",
+          "alignmentScore": 0.15460526315789475,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D 路面突出",
+          "sourceGlossEn": "D. Road protrusion",
+          "canonicalOptionId": "q0766_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "low-lying road",
+          "alignmentScore": 0.182,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "C",
+      "canonicalCorrectOptionId": "q0766_o3",
+      "canonicalCorrectOptionKey": "C",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed during unresolved rescue review on 2026-04-13T05:14:01.521Z; reviewer selected locale key C.",
+      "correctOptionAlignment": {
+        "sourceKey": "C",
+        "canonicalOptionId": "q0766_o3",
+        "canonicalOptionKey": "C",
+        "sourceText": "C 路面に凸凹あり",
+        "sourceGlossEn": "C. The road is uneven",
+        "canonicalOptionText": "bump road",
+        "alignmentScore": 0.15460526315789475,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-13T05:14:01.521Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ja-batch-010-unresolved-decisions.json",
+      "answerKeyReviewerNotes": "",
+      "reviewerSuggestedLocaleCorrectOptionKey": "C",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ja-batch-010-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0349": {
+      "prompt": "国が規定する強制廃棄基準に達している自動車は、登録手続きをすることができない。",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.07.06.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 18.07.06.png",
+      "reviewerNotes": "",
+      "promptRawJa": "国が規定する強制廃棄基準に達している自動車は、登録手続きをすることができない。",
+      "promptGlossEn": "A vehicle that meets the compulsory disposal standards set by the government cannot be registered.",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "ROW",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-010",
+        "approvedQid": "q0349",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "optionsRawJa": [],
+      "optionsGlossEn": [],
+      "localeCorrectOptionKey": null,
+      "canonicalCorrectRow": "R",
+      "canonicalCorrectAnswer": "right / true",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "ROW question; no locale-specific option key applies.",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ja-batch-010-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0490": {
+      "prompt": "このような交差点は、どのように通るのが適切か。",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.07.12.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 18.07.12.png",
+      "reviewerNotes": "",
+      "promptRawJa": "このような交差点は、どのように通るのが適切か。",
+      "promptGlossEn": "What is the appropriate way to pass through an intersection like this?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-010",
+        "approvedQid": "q0490",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "options": {
+        "q0490_o1": "C 前車の後にぴったりついて通過する",
+        "q0490_o2": "B できるだけ早く通過する",
+        "q0490_o3": "A 速度を落とさずに走行する",
+        "q0490_o4": "D 速度を落とすあるいは停止して状況を見る"
+      },
+      "optionsRawJa": [
+        "A 速度を落とさずに走行する",
+        "B できるだけ早く通過する",
+        "C 前車の後にぴったりついて通過する",
+        "D 速度を落とすあるいは停止して状況を見る"
+      ],
+      "optionsGlossEn": [
+        "A. Go through without reducing speed",
+        "B. Go through as quickly as possible",
+        "C. Pass closely behind the car in front",
+        "D. Slow down or stop to check the situation"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A 速度を落とさずに走行する",
+          "sourceTextBody": "速度を落とさずに走行する",
+          "sourceGlossEn": "A. Go through without reducing speed",
+          "canonicalOptionId": "q0490_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "slide over in the neutral gear",
+          "alignmentScore": 0,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B できるだけ早く通過する",
+          "sourceTextBody": "できるだけ早く通過する",
+          "sourceGlossEn": "B. Go through as quickly as possible",
+          "canonicalOptionId": "q0490_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "speed up to pass as soon as possible",
+          "alignmentScore": 0.2494195688225539,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C 前車の後にぴったりついて通過する",
+          "sourceTextBody": "前車の後にぴったりついて通過する",
+          "sourceGlossEn": "C. Pass closely behind the car in front",
+          "canonicalOptionId": "q0490_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "not reduce speed to pass",
+          "alignmentScore": 0.10707070707070707,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D 速度を落とすあるいは停止して状況を見る",
+          "sourceTextBody": "速度を落とすあるいは停止して状況を見る",
+          "sourceGlossEn": "D. Slow down or stop to check the situation",
+          "canonicalOptionId": "q0490_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "reduce speed or stop to observe",
+          "alignmentScore": 0.5691428571428571,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A 速度を落とさずに走行する",
+          "sourceGlossEn": "A. Go through without reducing speed",
+          "canonicalOptionId": "q0490_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "slide over in the neutral gear",
+          "alignmentScore": 0,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B できるだけ早く通過する",
+          "sourceGlossEn": "B. Go through as quickly as possible",
+          "canonicalOptionId": "q0490_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "speed up to pass as soon as possible",
+          "alignmentScore": 0.2494195688225539,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C 前車の後にぴったりついて通過する",
+          "sourceGlossEn": "C. Pass closely behind the car in front",
+          "canonicalOptionId": "q0490_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "not reduce speed to pass",
+          "alignmentScore": 0.10707070707070707,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D 速度を落とすあるいは停止して状況を見る",
+          "sourceGlossEn": "D. Slow down or stop to check the situation",
+          "canonicalOptionId": "q0490_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "reduce speed or stop to observe",
+          "alignmentScore": 0.5691428571428571,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        }
+      ],
+      "localeCorrectOptionKey": "D",
+      "canonicalCorrectOptionId": "q0490_o4",
+      "canonicalCorrectOptionKey": "D",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed during unresolved rescue review on 2026-04-13T05:14:01.521Z; reviewer selected locale key D.",
+      "correctOptionAlignment": {
+        "sourceKey": "D",
+        "canonicalOptionId": "q0490_o4",
+        "canonicalOptionKey": "D",
+        "sourceText": "D 速度を落とすあるいは停止して状況を見る",
+        "sourceGlossEn": "D. Slow down or stop to check the situation",
+        "canonicalOptionText": "reduce speed or stop to observe",
+        "alignmentScore": 0.5691428571428571,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-13T05:14:01.521Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ja-batch-010-unresolved-decisions.json",
+      "answerKeyReviewerNotes": "",
+      "reviewerSuggestedLocaleCorrectOptionKey": "D",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ja-batch-010-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0460": {
+      "prompt": "このような道端での一時駐車は、どのような違法行為であるか。",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.07.14.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 18.07.14.png",
+      "reviewerNotes": "",
+      "promptRawJa": "このような道端での一時駐車は、どのような違法行為であるか。",
+      "promptGlossEn": "What kind of illegal act is temporary parking at the roadside like this?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-010",
+        "approvedQid": "q0460",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "options": {
+        "q0460_o1": "B 横断歩道に駐車した",
+        "q0460_o2": "C 道端から30cm以上の間隔を空けた",
+        "q0460_o3": "D 駐車禁止線のある道路に駐車した",
+        "q0460_o4": "A 非動車専用車線に駐車した"
+      },
+      "optionsRawJa": [
+        "A 非動車専用車線に駐車した",
+        "B 横断歩道に駐車した",
+        "C 道端から30cm以上の間隔を空けた",
+        "D 駐車禁止線のある道路に駐車した"
+      ],
+      "optionsGlossEn": [
+        "A. Parked in a lane reserved for non-motor vehicles",
+        "B. Parked on a pedestrian crosswalk",
+        "C. Parked leaving a gap of more than 30 cm from the roadside",
+        "D. Parked on a road with a no-parking line"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A 非動車専用車線に駐車した",
+          "sourceTextBody": "非動車専用車線に駐車した",
+          "sourceGlossEn": "A. Parked in a lane reserved for non-motor vehicles",
+          "canonicalOptionId": "q0460_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "stop occupying the lane for non-motorized vehicles",
+          "alignmentScore": 0.20169491525423727,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B 横断歩道に駐車した",
+          "sourceTextBody": "横断歩道に駐車した",
+          "sourceGlossEn": "B. Parked on a pedestrian crosswalk",
+          "canonicalOptionId": "q0460_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "stopping in the crosswalk",
+          "alignmentScore": 0.21705426356589147,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C 道端から30cm以上の間隔を空けた",
+          "sourceTextBody": "道端から30cm以上の間隔を空けた",
+          "sourceGlossEn": "C. Parked leaving a gap of more than 30 cm from the roadside",
+          "canonicalOptionId": "q0460_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "stop more than 30cm from the roadside",
+          "alignmentScore": 0.39166666666666666,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D 駐車禁止線のある道路に駐車した",
+          "sourceTextBody": "駐車禁止線のある道路に駐車した",
+          "sourceGlossEn": "D. Parked on a road with a no-parking line",
+          "canonicalOptionId": "q0460_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "stop in the section with no stopping marking",
+          "alignmentScore": 0.1401056338028169,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A 非動車専用車線に駐車した",
+          "sourceGlossEn": "A. Parked in a lane reserved for non-motor vehicles",
+          "canonicalOptionId": "q0460_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "stop occupying the lane for non-motorized vehicles",
+          "alignmentScore": 0.20169491525423727,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B 横断歩道に駐車した",
+          "sourceGlossEn": "B. Parked on a pedestrian crosswalk",
+          "canonicalOptionId": "q0460_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "stopping in the crosswalk",
+          "alignmentScore": 0.21705426356589147,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C 道端から30cm以上の間隔を空けた",
+          "sourceGlossEn": "C. Parked leaving a gap of more than 30 cm from the roadside",
+          "canonicalOptionId": "q0460_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "stop more than 30cm from the roadside",
+          "alignmentScore": 0.39166666666666666,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D 駐車禁止線のある道路に駐車した",
+          "sourceGlossEn": "D. Parked on a road with a no-parking line",
+          "canonicalOptionId": "q0460_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "stop in the section with no stopping marking",
+          "alignmentScore": 0.1401056338028169,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "B",
+      "canonicalCorrectOptionId": "q0460_o1",
+      "canonicalCorrectOptionKey": "A",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed during unresolved rescue review on 2026-04-13T05:14:01.521Z; reviewer selected locale key B.",
+      "correctOptionAlignment": {
+        "sourceKey": "B",
+        "canonicalOptionId": "q0460_o1",
+        "canonicalOptionKey": "A",
+        "sourceText": "B 横断歩道に駐車した",
+        "sourceGlossEn": "B. Parked on a pedestrian crosswalk",
+        "canonicalOptionText": "stopping in the crosswalk",
+        "alignmentScore": 0.21705426356589147,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-13T05:14:01.521Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ja-batch-010-unresolved-decisions.json",
+      "answerKeyReviewerNotes": "",
+      "reviewerSuggestedLocaleCorrectOptionKey": "B",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ja-batch-010-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0547": {
+      "prompt": "このスイッチを押すと、リアウインドガラスのデフロスタが作動する。",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.07.15.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 18.07.15.png",
+      "reviewerNotes": "",
+      "promptRawJa": "このスイッチを押すと、リアウインドガラスのデフロスタが作動する。",
+      "promptGlossEn": "When you press this switch, the rear window glass defroster operates.",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "ROW",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-010",
+        "approvedQid": "q0547",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "optionsRawJa": [],
+      "optionsGlossEn": [],
+      "localeCorrectOptionKey": null,
+      "canonicalCorrectRow": "W",
+      "canonicalCorrectAnswer": "wrong / false",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "ROW question; no locale-specific option key applies.",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ja-batch-010-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    }
+  }
+}

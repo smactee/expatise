@@ -1,0 +1,1613 @@
+{
+  "meta": {
+    "locale": "ja",
+    "generatedAt": "2026-04-12T15:20:26.929Z",
+    "reviewedBatchId": "batch-009",
+    "dataset": "2023-test1",
+    "sourceUnresolvedPath": "imports/ja/batch-009/unresolved.json",
+    "sourceUnresolvedDecisionPath": "qbank-tools/generated/staging/ja-batch-009-unresolved-decisions.json",
+    "rescuedExistingQidCount": 13,
+    "manualAnswerKeyConfirmationCount": 0,
+    "stagingOnly": true
+  },
+  "questions": {
+    "q0783": {
+      "prompt": "この標識の示す意味はどれか。",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.06.09 1.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 18.06.09 1.png",
+      "reviewerNotes": "",
+      "promptRawJa": "この標識の示す意味はどれか。",
+      "promptGlossEn": "What does this sign mean?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-009",
+        "approvedQid": "q0783",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "options": {
+        "q0783_o1": "B 番をする人がいない踏切まで150メートル",
+        "q0783_o2": "C 番をする人がいない踏切まで100メートル",
+        "q0783_o3": "D 番をする人がいる踏切まで100メートル",
+        "q0783_o4": "A 番をする人がいる踏切まで150メートル"
+      },
+      "optionsRawJa": [
+        "A 番をする人がいる踏切まで150メートル",
+        "B 番をする人がいない踏切まで150メートル",
+        "C 番をする人がいない踏切まで100メートル",
+        "D 番をする人がいる踏切まで100メートル"
+      ],
+      "optionsGlossEn": [
+        "A: 150 meters to a level crossing with an attendant",
+        "B: 150 meters to a level crossing without an attendant",
+        "C: 100 meters to a level crossing without an attendant",
+        "D: 100 meters to a level crossing with an attendant"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A 番をする人がいる踏切まで150メートル",
+          "sourceTextBody": "番をする人がいる踏切まで150メートル",
+          "sourceGlossEn": "A: 150 meters to a level crossing with an attendant",
+          "canonicalOptionId": "q0783_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "a manned level crossing 150m ahead",
+          "alignmentScore": 0.24571428571428572,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B 番をする人がいない踏切まで150メートル",
+          "sourceTextBody": "番をする人がいない踏切まで150メートル",
+          "sourceGlossEn": "B: 150 meters to a level crossing without an attendant",
+          "canonicalOptionId": "q0783_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "an unmanned level crossing 150m ahead",
+          "alignmentScore": 0.24000000000000005,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C 番をする人がいない踏切まで100メートル",
+          "sourceTextBody": "番をする人がいない踏切まで100メートル",
+          "sourceGlossEn": "C: 100 meters to a level crossing without an attendant",
+          "canonicalOptionId": "q0783_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "an unmanned level crossing 100m ahead",
+          "alignmentScore": 0.24000000000000005,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D 番をする人がいる踏切まで100メートル",
+          "sourceTextBody": "番をする人がいる踏切まで100メートル",
+          "sourceGlossEn": "D: 100 meters to a level crossing with an attendant",
+          "canonicalOptionId": "q0783_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "a manned level crossing 100m ahead",
+          "alignmentScore": 0.24571428571428572,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A 番をする人がいる踏切まで150メートル",
+          "sourceGlossEn": "A: 150 meters to a level crossing with an attendant",
+          "canonicalOptionId": "q0783_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "a manned level crossing 150m ahead",
+          "alignmentScore": 0.24571428571428572,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B 番をする人がいない踏切まで150メートル",
+          "sourceGlossEn": "B: 150 meters to a level crossing without an attendant",
+          "canonicalOptionId": "q0783_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "an unmanned level crossing 150m ahead",
+          "alignmentScore": 0.24000000000000005,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C 番をする人がいない踏切まで100メートル",
+          "sourceGlossEn": "C: 100 meters to a level crossing without an attendant",
+          "canonicalOptionId": "q0783_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "an unmanned level crossing 100m ahead",
+          "alignmentScore": 0.24000000000000005,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D 番をする人がいる踏切まで100メートル",
+          "sourceGlossEn": "D: 100 meters to a level crossing with an attendant",
+          "canonicalOptionId": "q0783_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "a manned level crossing 100m ahead",
+          "alignmentScore": 0.24571428571428572,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "B",
+      "canonicalCorrectOptionId": "q0783_o1",
+      "canonicalCorrectOptionKey": "A",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed during unresolved rescue review on 2026-04-12T15:20:26.929Z; reviewer selected locale key B.",
+      "correctOptionAlignment": {
+        "sourceKey": "B",
+        "canonicalOptionId": "q0783_o1",
+        "canonicalOptionKey": "A",
+        "sourceText": "B 番をする人がいない踏切まで150メートル",
+        "sourceGlossEn": "B: 150 meters to a level crossing without an attendant",
+        "canonicalOptionText": "an unmanned level crossing 150m ahead",
+        "alignmentScore": 0.24000000000000005,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-12T15:20:26.929Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ja-batch-009-unresolved-decisions.json",
+      "answerKeyReviewerNotes": "",
+      "reviewerSuggestedLocaleCorrectOptionKey": "B",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ja-batch-009-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0066": {
+      "prompt": "自動車を発進させる前に、周囲の交通状況を観察して安全を確認しなければならない。",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.06.10.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 18.06.10.png",
+      "reviewerNotes": "",
+      "promptRawJa": "自動車を発進させる前に、周囲の交通状況を観察して安全を確認しなければならない。",
+      "promptGlossEn": "Before starting the car, you must observe the surrounding traffic situation and confirm safety.",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "ROW",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-009",
+        "approvedQid": "q0066",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "optionsRawJa": [],
+      "optionsGlossEn": [],
+      "localeCorrectOptionKey": null,
+      "canonicalCorrectRow": "R",
+      "canonicalCorrectAnswer": "right / true",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "ROW question; no locale-specific option key applies.",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ja-batch-009-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0711": {
+      "prompt": "この標識は何を示しているか。",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.06.11 1.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 18.06.11 1.png",
+      "reviewerNotes": "",
+      "promptRawJa": "この標識は何を示しているか。",
+      "promptGlossEn": "What does this road sign indicate?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-009",
+        "approvedQid": "q0711",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "options": {
+        "q0711_o1": "A 下り左急勾配あり",
+        "q0711_o2": "D つづら折りあり",
+        "q0711_o3": "C 左側通行",
+        "q0711_o4": "B 上より右急勾配あり"
+      },
+      "optionsRawJa": [
+        "A 下り左急勾配あり",
+        "B 上より右急勾配あり",
+        "C 左側通行",
+        "D つづら折りあり"
+      ],
+      "optionsGlossEn": [
+        "A. Steep downhill to the left",
+        "B. Steep uphill to the right",
+        "C. Keep left",
+        "D. Hairpin curve ahead"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A 下り左急勾配あり",
+          "sourceTextBody": "下り左急勾配あり",
+          "sourceGlossEn": "A. Steep downhill to the left",
+          "canonicalOptionId": "q0711_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "bypass from left side",
+          "alignmentScore": 0.14505494505494504,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B 上より右急勾配あり",
+          "sourceTextBody": "上より右急勾配あり",
+          "sourceGlossEn": "B. Steep uphill to the right",
+          "canonicalOptionId": "q0711_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "sharp right curve",
+          "alignmentScore": 0.1803921568627451,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C 左側通行",
+          "sourceTextBody": "左側通行",
+          "sourceGlossEn": "C. Keep left",
+          "canonicalOptionId": "q0711_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "sharp left curve",
+          "alignmentScore": 0.2761904761904762,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D つづら折りあり",
+          "sourceTextBody": "つづら折りあり",
+          "sourceGlossEn": "D. Hairpin curve ahead",
+          "canonicalOptionId": "q0711_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "sharp left curve",
+          "alignmentScore": 0.2533333333333333,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A 下り左急勾配あり",
+          "sourceGlossEn": "A. Steep downhill to the left",
+          "canonicalOptionId": "q0711_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "bypass from left side",
+          "alignmentScore": 0.14505494505494504,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B 上より右急勾配あり",
+          "sourceGlossEn": "B. Steep uphill to the right",
+          "canonicalOptionId": "q0711_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "sharp right curve",
+          "alignmentScore": 0.1803921568627451,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C 左側通行",
+          "sourceGlossEn": "C. Keep left",
+          "canonicalOptionId": "q0711_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "sharp left curve",
+          "alignmentScore": 0.2761904761904762,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D つづら折りあり",
+          "sourceGlossEn": "D. Hairpin curve ahead",
+          "canonicalOptionId": "q0711_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "sharp left curve",
+          "alignmentScore": 0.2533333333333333,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        }
+      ],
+      "localeCorrectOptionKey": "D",
+      "canonicalCorrectOptionId": "q0711_o3",
+      "canonicalCorrectOptionKey": "C",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed during unresolved rescue review on 2026-04-12T15:20:26.929Z; reviewer selected locale key D.",
+      "correctOptionAlignment": {
+        "sourceKey": "D",
+        "canonicalOptionId": "q0711_o3",
+        "canonicalOptionKey": "C",
+        "sourceText": "D つづら折りあり",
+        "sourceGlossEn": "D. Hairpin curve ahead",
+        "canonicalOptionText": "sharp left curve",
+        "alignmentScore": 0.2761904761904762,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-12T15:20:26.929Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ja-batch-009-unresolved-decisions.json",
+      "answerKeyReviewerNotes": "",
+      "reviewerSuggestedLocaleCorrectOptionKey": "D",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ja-batch-009-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0872": {
+      "prompt": "この標識は何を示しているか。",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.06.11.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 18.06.11.png",
+      "reviewerNotes": "",
+      "promptRawJa": "この標識は何を示しているか。",
+      "promptGlossEn": "What does this road sign indicate?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-009",
+        "approvedQid": "q0872",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "options": {
+        "q0872_o1": "C 両側通行",
+        "q0872_o2": "D 通行止め",
+        "q0872_o3": "A 左側通行",
+        "q0872_o4": "B 右側通行"
+      },
+      "optionsRawJa": [
+        "A 左側通行",
+        "B 右側通行",
+        "C 両側通行",
+        "D 通行止め"
+      ],
+      "optionsGlossEn": [
+        "A: Keep left",
+        "B: Keep right",
+        "C: Keep to both sides",
+        "D: No entry"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A 左側通行",
+          "sourceTextBody": "左側通行",
+          "sourceGlossEn": "A: Keep left",
+          "canonicalOptionId": "q0872_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "Passing by the left side",
+          "alignmentScore": 0.20800000000000002,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B 右側通行",
+          "sourceTextBody": "右側通行",
+          "sourceGlossEn": "B: Keep right",
+          "canonicalOptionId": "q0872_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "Passing by the right side",
+          "alignmentScore": 0.21925925925925926,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C 両側通行",
+          "sourceTextBody": "両側通行",
+          "sourceGlossEn": "C: Keep to both sides",
+          "canonicalOptionId": "q0872_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "pass on both sides",
+          "alignmentScore": 0.36363636363636365,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D 通行止め",
+          "sourceTextBody": "通行止め",
+          "sourceGlossEn": "D: No entry",
+          "canonicalOptionId": "q0872_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "Passing is prohibited",
+          "alignmentScore": 0.37101449275362314,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A 左側通行",
+          "sourceGlossEn": "A: Keep left",
+          "canonicalOptionId": "q0872_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "Passing by the left side",
+          "alignmentScore": 0.20800000000000002,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B 右側通行",
+          "sourceGlossEn": "B: Keep right",
+          "canonicalOptionId": "q0872_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "Passing by the right side",
+          "alignmentScore": 0.21925925925925926,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C 両側通行",
+          "sourceGlossEn": "C: Keep to both sides",
+          "canonicalOptionId": "q0872_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "pass on both sides",
+          "alignmentScore": 0.36363636363636365,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D 通行止め",
+          "sourceGlossEn": "D: No entry",
+          "canonicalOptionId": "q0872_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "Passing is prohibited",
+          "alignmentScore": 0.37101449275362314,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "C",
+      "canonicalCorrectOptionId": "q0872_o1",
+      "canonicalCorrectOptionKey": "A",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed during unresolved rescue review on 2026-04-12T15:20:26.929Z; reviewer selected locale key C.",
+      "correctOptionAlignment": {
+        "sourceKey": "C",
+        "canonicalOptionId": "q0872_o1",
+        "canonicalOptionKey": "A",
+        "sourceText": "C 両側通行",
+        "sourceGlossEn": "C: Keep to both sides",
+        "canonicalOptionText": "pass on both sides",
+        "alignmentScore": 0.36363636363636365,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-12T15:20:26.929Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ja-batch-009-unresolved-decisions.json",
+      "answerKeyReviewerNotes": "",
+      "reviewerSuggestedLocaleCorrectOptionKey": "C",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ja-batch-009-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0326": {
+      "prompt": "運転者は免許を遺失しても3ヶ月以内ならば自動車を運転することができる。",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.06.13 1.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 18.06.13 1.png",
+      "reviewerNotes": "",
+      "promptRawJa": "運転者は免許を遺失しても3ヶ月以内ならば自動車を運転することができる。",
+      "promptGlossEn": "A driver can drive a car even if they lose their license, as long as it is within 3 months.",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "ROW",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-009",
+        "approvedQid": "q0326",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "optionsRawJa": [],
+      "optionsGlossEn": [],
+      "localeCorrectOptionKey": null,
+      "canonicalCorrectRow": "W",
+      "canonicalCorrectAnswer": "wrong / false",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "ROW question; no locale-specific option key applies.",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ja-batch-009-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0280": {
+      "prompt": "走行速度が規定時速の50％超過した運転者には3点が減点されるつく。",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.06.13.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 18.06.13.png",
+      "reviewerNotes": "",
+      "promptRawJa": "走行速度が規定時速の50％超過した運転者には3点が減点されるつく。",
+      "promptGlossEn": "A driver who exceeds the speed limit by 50% will have 3 points deducted.",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "ROW",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-009",
+        "approvedQid": "q0280",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "optionsRawJa": [],
+      "optionsGlossEn": [],
+      "localeCorrectOptionKey": null,
+      "canonicalCorrectRow": "W",
+      "canonicalCorrectAnswer": "wrong / false",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "ROW question; no locale-specific option key applies.",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ja-batch-009-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0859": {
+      "prompt": "図が示す円中の鋸の歯型をした白い実線は、なにを示す路面標示か。",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.06.21.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 18.06.21.png",
+      "reviewerNotes": "",
+      "promptRawJa": "図が示す円中の鋸の歯型をした白い実線は、なにを示す路面標示か。",
+      "promptGlossEn": "What does the white solid line with a sawtooth pattern shown in the circle in the diagram indicate as a road marking?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-009",
+        "approvedQid": "q0859",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "options": {
+        "q0859_o1": "B 左折を待つエリア",
+        "q0859_o2": "A 方向を導く標示",
+        "q0859_o3": "C 車線変更が可能な方向を導く標示",
+        "q0859_o4": "D 一方通行標示"
+      },
+      "optionsRawJa": [
+        "A 方向を導く標示",
+        "B 左折を待つエリア",
+        "C 車線変更が可能な方向を導く標示",
+        "D 一方通行標示"
+      ],
+      "optionsGlossEn": [
+        "A. Direction guidance marking",
+        "B. Area to wait for left turn",
+        "C. Direction guidance marking for possible lane change",
+        "D. One-way street marking"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A 方向を導く標示",
+          "sourceTextBody": "方向を導く標示",
+          "sourceGlossEn": "A. Direction guidance marking",
+          "canonicalOptionId": "q0859_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "direction guide line",
+          "alignmentScore": 0.2917857142857143,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B 左折を待つエリア",
+          "sourceTextBody": "左折を待つエリア",
+          "sourceGlossEn": "B. Area to wait for left turn",
+          "canonicalOptionId": "q0859_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "guide lane lines",
+          "alignmentScore": 0,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C 車線変更が可能な方向を導く標示",
+          "sourceTextBody": "車線変更が可能な方向を導く標示",
+          "sourceGlossEn": "C. Direction guidance marking for possible lane change",
+          "canonicalOptionId": "q0859_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "variable guide lane line",
+          "alignmentScore": 0.05070422535211268,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D 一方通行標示",
+          "sourceTextBody": "一方通行標示",
+          "sourceGlossEn": "D. One-way street marking",
+          "canonicalOptionId": "q0859_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "one-way driving line 92",
+          "alignmentScore": 0.2132926829268293,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A 方向を導く標示",
+          "sourceGlossEn": "A. Direction guidance marking",
+          "canonicalOptionId": "q0859_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "direction guide line",
+          "alignmentScore": 0.2917857142857143,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B 左折を待つエリア",
+          "sourceGlossEn": "B. Area to wait for left turn",
+          "canonicalOptionId": "q0859_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "guide lane lines",
+          "alignmentScore": 0,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C 車線変更が可能な方向を導く標示",
+          "sourceGlossEn": "C. Direction guidance marking for possible lane change",
+          "canonicalOptionId": "q0859_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "variable guide lane line",
+          "alignmentScore": 0.05070422535211268,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D 一方通行標示",
+          "sourceGlossEn": "D. One-way street marking",
+          "canonicalOptionId": "q0859_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "one-way driving line 92",
+          "alignmentScore": 0.2132926829268293,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "C",
+      "canonicalCorrectOptionId": "q0859_o3",
+      "canonicalCorrectOptionKey": "C",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed during unresolved rescue review on 2026-04-12T15:20:26.929Z; reviewer selected locale key C.",
+      "correctOptionAlignment": {
+        "sourceKey": "C",
+        "canonicalOptionId": "q0859_o3",
+        "canonicalOptionKey": "C",
+        "sourceText": "C 車線変更が可能な方向を導く標示",
+        "sourceGlossEn": "C. Direction guidance marking for possible lane change",
+        "canonicalOptionText": "variable guide lane line",
+        "alignmentScore": 0.05070422535211268,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-12T15:20:26.929Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ja-batch-009-unresolved-decisions.json",
+      "answerKeyReviewerNotes": "",
+      "reviewerSuggestedLocaleCorrectOptionKey": "C",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ja-batch-009-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0809": {
+      "prompt": "この標識は何を示しているか。",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.06.26 1.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 18.06.26 1.png",
+      "reviewerNotes": "",
+      "promptRawJa": "この標識は何を示しているか。",
+      "promptGlossEn": "What does this sign indicate?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-009",
+        "approvedQid": "q0809",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "options": {
+        "q0809_o1": "B 急勾配あり",
+        "q0809_o2": "A N形カーブあり",
+        "q0809_o3": "C 背向屈折あり",
+        "q0809_o4": "D つづら折りあり"
+      },
+      "optionsRawJa": [
+        "A N形カーブあり",
+        "B 急勾配あり",
+        "C 背向屈折あり",
+        "D つづら折りあり"
+      ],
+      "optionsGlossEn": [
+        "A: N-shaped curve ahead",
+        "B: Steep slope ahead",
+        "C: Reverse bend ahead",
+        "D: Switchback (zigzag) ahead"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A N形カーブあり",
+          "sourceTextBody": "N形カーブあり",
+          "sourceGlossEn": "A: N-shaped curve ahead",
+          "canonicalOptionId": "q0809_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "sharp curve",
+          "alignmentScore": 0.274074074074074,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B 急勾配あり",
+          "sourceTextBody": "急勾配あり",
+          "sourceGlossEn": "B: Steep slope ahead",
+          "canonicalOptionId": "q0809_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "slippery section",
+          "alignmentScore": 0,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C 背向屈折あり",
+          "sourceTextBody": "背向屈折あり",
+          "sourceGlossEn": "C: Reverse bend ahead",
+          "canonicalOptionId": "q0809_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "inverse curve",
+          "alignmentScore": 0,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D つづら折りあり",
+          "sourceTextBody": "つづら折りあり",
+          "sourceGlossEn": "D: Switchback (zigzag) ahead",
+          "canonicalOptionId": "q0809_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "continuous curves",
+          "alignmentScore": 0,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A N形カーブあり",
+          "sourceGlossEn": "A: N-shaped curve ahead",
+          "canonicalOptionId": "q0809_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "sharp curve",
+          "alignmentScore": 0.274074074074074,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B 急勾配あり",
+          "sourceGlossEn": "B: Steep slope ahead",
+          "canonicalOptionId": "q0809_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "slippery section",
+          "alignmentScore": 0,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C 背向屈折あり",
+          "sourceGlossEn": "C: Reverse bend ahead",
+          "canonicalOptionId": "q0809_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "inverse curve",
+          "alignmentScore": 0,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D つづら折りあり",
+          "sourceGlossEn": "D: Switchback (zigzag) ahead",
+          "canonicalOptionId": "q0809_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "continuous curves",
+          "alignmentScore": 0,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        }
+      ],
+      "localeCorrectOptionKey": "D",
+      "canonicalCorrectOptionId": "q0809_o4",
+      "canonicalCorrectOptionKey": "D",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed during unresolved rescue review on 2026-04-12T15:20:26.929Z; reviewer selected locale key D.",
+      "correctOptionAlignment": {
+        "sourceKey": "D",
+        "canonicalOptionId": "q0809_o4",
+        "canonicalOptionKey": "D",
+        "sourceText": "D つづら折りあり",
+        "sourceGlossEn": "D: Switchback (zigzag) ahead",
+        "canonicalOptionText": "continuous curves",
+        "alignmentScore": 0,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-12T15:20:26.929Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ja-batch-009-unresolved-decisions.json",
+      "answerKeyReviewerNotes": "",
+      "reviewerSuggestedLocaleCorrectOptionKey": "D",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ja-batch-009-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0882": {
+      "prompt": "この標識は何を示しているか。",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.06.27.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 18.06.27.png",
+      "reviewerNotes": "",
+      "promptRawJa": "この標識は何を示しているか。",
+      "promptGlossEn": "What does this sign indicate?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-009",
+        "approvedQid": "q0882",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "options": {
+        "q0882_o1": "B 省道番号",
+        "q0882_o2": "A 国道番号",
+        "q0882_o3": "D 郷道番号",
+        "q0882_o4": "C 県道番号"
+      },
+      "optionsRawJa": [
+        "A 国道番号",
+        "B 省道番号",
+        "C 県道番号",
+        "D 郷道番号"
+      ],
+      "optionsGlossEn": [
+        "A National highway number",
+        "B Provincial road number",
+        "C Prefectural road number",
+        "D Village road number"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A 国道番号",
+          "sourceTextBody": "国道番号",
+          "sourceGlossEn": "A National highway number",
+          "canonicalOptionId": "q0882_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "national highway No.",
+          "alignmentScore": 0.5727272727272728,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B 省道番号",
+          "sourceTextBody": "省道番号",
+          "sourceGlossEn": "B Provincial road number",
+          "canonicalOptionId": "q0882_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "provincial highway No.",
+          "alignmentScore": 0.26321428571428573,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C 県道番号",
+          "sourceTextBody": "県道番号",
+          "sourceGlossEn": "C Prefectural road number",
+          "canonicalOptionId": "q0882_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "county road No.",
+          "alignmentScore": 0.14714285714285716,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D 郷道番号",
+          "sourceTextBody": "郷道番号",
+          "sourceGlossEn": "D Village road number",
+          "canonicalOptionId": "q0882_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "county road No.",
+          "alignmentScore": 0.15896551724137933,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A 国道番号",
+          "sourceGlossEn": "A National highway number",
+          "canonicalOptionId": "q0882_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "national highway No.",
+          "alignmentScore": 0.5727272727272728,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B 省道番号",
+          "sourceGlossEn": "B Provincial road number",
+          "canonicalOptionId": "q0882_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "provincial highway No.",
+          "alignmentScore": 0.26321428571428573,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C 県道番号",
+          "sourceGlossEn": "C Prefectural road number",
+          "canonicalOptionId": "q0882_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "county road No.",
+          "alignmentScore": 0.14714285714285716,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D 郷道番号",
+          "sourceGlossEn": "D Village road number",
+          "canonicalOptionId": "q0882_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "county road No.",
+          "alignmentScore": 0.15896551724137933,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "C",
+      "canonicalCorrectOptionId": "q0882_o3",
+      "canonicalCorrectOptionKey": "C",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed during unresolved rescue review on 2026-04-12T15:20:26.929Z; reviewer selected locale key C.",
+      "correctOptionAlignment": {
+        "sourceKey": "C",
+        "canonicalOptionId": "q0882_o3",
+        "canonicalOptionKey": "C",
+        "sourceText": "C 県道番号",
+        "sourceGlossEn": "C Prefectural road number",
+        "canonicalOptionText": "county road No.",
+        "alignmentScore": 0.15896551724137933,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-12T15:20:26.929Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ja-batch-009-unresolved-decisions.json",
+      "answerKeyReviewerNotes": "",
+      "reviewerSuggestedLocaleCorrectOptionKey": "C",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ja-batch-009-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0738": {
+      "prompt": "この標識は何を示しているか。",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.06.28.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 18.06.28.png",
+      "reviewerNotes": "",
+      "promptRawJa": "この標識は何を示しているか。",
+      "promptGlossEn": "What does this sign indicate?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-009",
+        "approvedQid": "q0738",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "options": {
+        "q0738_o1": "C 県道番号",
+        "q0738_o2": "D 郷道番号",
+        "q0738_o3": "B 省道番号",
+        "q0738_o4": "A 国道番号"
+      },
+      "optionsRawJa": [
+        "A 国道番号",
+        "B 省道番号",
+        "C 県道番号",
+        "D 郷道番号"
+      ],
+      "optionsGlossEn": [
+        "A National road number",
+        "B Provincial road number",
+        "C Prefectural road number",
+        "D Local road number"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A 国道番号",
+          "sourceTextBody": "国道番号",
+          "sourceGlossEn": "A National road number",
+          "canonicalOptionId": "q0738_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "national highway No.",
+          "alignmentScore": 0.2511842105263158,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B 省道番号",
+          "sourceTextBody": "省道番号",
+          "sourceGlossEn": "B Provincial road number",
+          "canonicalOptionId": "q0738_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "provincial highway No.",
+          "alignmentScore": 0.26321428571428573,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C 県道番号",
+          "sourceTextBody": "県道番号",
+          "sourceGlossEn": "C Prefectural road number",
+          "canonicalOptionId": "q0738_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "township road No.",
+          "alignmentScore": 0.14714285714285716,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D 郷道番号",
+          "sourceTextBody": "郷道番号",
+          "sourceGlossEn": "D Local road number",
+          "canonicalOptionId": "q0738_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "county road No.",
+          "alignmentScore": 0.1640740740740741,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A 国道番号",
+          "sourceGlossEn": "A National road number",
+          "canonicalOptionId": "q0738_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "national highway No.",
+          "alignmentScore": 0.2511842105263158,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B 省道番号",
+          "sourceGlossEn": "B Provincial road number",
+          "canonicalOptionId": "q0738_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "provincial highway No.",
+          "alignmentScore": 0.26321428571428573,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C 県道番号",
+          "sourceGlossEn": "C Prefectural road number",
+          "canonicalOptionId": "q0738_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "township road No.",
+          "alignmentScore": 0.14714285714285716,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D 郷道番号",
+          "sourceGlossEn": "D Local road number",
+          "canonicalOptionId": "q0738_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "county road No.",
+          "alignmentScore": 0.1640740740740741,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "A",
+      "canonicalCorrectOptionId": "q0738_o4",
+      "canonicalCorrectOptionKey": "D",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed during unresolved rescue review on 2026-04-12T15:20:26.929Z; reviewer selected locale key A.",
+      "correctOptionAlignment": {
+        "sourceKey": "A",
+        "canonicalOptionId": "q0738_o4",
+        "canonicalOptionKey": "D",
+        "sourceText": "A 国道番号",
+        "sourceGlossEn": "A National road number",
+        "canonicalOptionText": "national highway No.",
+        "alignmentScore": 0.2511842105263158,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-12T15:20:26.929Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ja-batch-009-unresolved-decisions.json",
+      "answerKeyReviewerNotes": "",
+      "reviewerSuggestedLocaleCorrectOptionKey": "A",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ja-batch-009-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0449": {
+      "prompt": "偽造・変造されたナンバープレートを使用した場合、何点減点されるかがつくか。",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.06.29.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 18.06.29.png",
+      "reviewerNotes": "",
+      "promptRawJa": "偽造・変造されたナンバープレートを使用した場合、何点減点されるかがつくか。",
+      "promptGlossEn": "If you use a forged or altered license plate, how many points will be deducted?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-009",
+        "approvedQid": "q0449",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "options": {
+        "q0449_o1": "A 2点",
+        "q0449_o2": "B 3点",
+        "q0449_o3": "D 12点",
+        "q0449_o4": "C 6点"
+      },
+      "optionsRawJa": [
+        "A 2点",
+        "B 3点",
+        "C 6点",
+        "D 12点"
+      ],
+      "optionsGlossEn": [
+        "A. 2 points",
+        "B. 3 points",
+        "C. 6 points",
+        "D. 12 points"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A 2点",
+          "sourceTextBody": "2点",
+          "sourceGlossEn": "A. 2 points",
+          "canonicalOptionId": "q0449_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "2-point penalty",
+          "alignmentScore": 0.06666666666666667,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B 3点",
+          "sourceTextBody": "3点",
+          "sourceGlossEn": "B. 3 points",
+          "canonicalOptionId": "q0449_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "3-point penalty",
+          "alignmentScore": 0.06666666666666667,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C 6点",
+          "sourceTextBody": "6点",
+          "sourceGlossEn": "C. 6 points",
+          "canonicalOptionId": "q0449_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "6-point penalty",
+          "alignmentScore": 0.06666666666666667,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D 12点",
+          "sourceTextBody": "12点",
+          "sourceGlossEn": "D. 12 points",
+          "canonicalOptionId": "q0449_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "12-point penalty",
+          "alignmentScore": 0.06,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A 2点",
+          "sourceGlossEn": "A. 2 points",
+          "canonicalOptionId": "q0449_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "2-point penalty",
+          "alignmentScore": 0.06666666666666667,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B 3点",
+          "sourceGlossEn": "B. 3 points",
+          "canonicalOptionId": "q0449_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "3-point penalty",
+          "alignmentScore": 0.06666666666666667,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C 6点",
+          "sourceGlossEn": "C. 6 points",
+          "canonicalOptionId": "q0449_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "6-point penalty",
+          "alignmentScore": 0.06666666666666667,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D 12点",
+          "sourceGlossEn": "D. 12 points",
+          "canonicalOptionId": "q0449_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "12-point penalty",
+          "alignmentScore": 0.06,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        }
+      ],
+      "localeCorrectOptionKey": "D",
+      "canonicalCorrectOptionId": "q0449_o3",
+      "canonicalCorrectOptionKey": "C",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed during unresolved rescue review on 2026-04-12T15:20:26.929Z; reviewer selected locale key D.",
+      "correctOptionAlignment": {
+        "sourceKey": "D",
+        "canonicalOptionId": "q0449_o3",
+        "canonicalOptionKey": "C",
+        "sourceText": "D 12点",
+        "sourceGlossEn": "D. 12 points",
+        "canonicalOptionText": "12-point penalty",
+        "alignmentScore": 0.06,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-12T15:20:26.929Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ja-batch-009-unresolved-decisions.json",
+      "answerKeyReviewerNotes": "",
+      "reviewerSuggestedLocaleCorrectOptionKey": "D",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ja-batch-009-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0223": {
+      "prompt": "運転者が交通事故を起こしたあと逃走した場合、免許証が取消しとなり、生涯再取得不可能となる。",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.06.36.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 18.06.36.png",
+      "reviewerNotes": "",
+      "promptRawJa": "運転者が交通事故を起こしたあと逃走した場合、免許証が取消しとなり、生涯再取得不可能となる。",
+      "promptGlossEn": "If a driver flees after causing a traffic accident, their license will be revoked and they will never be able to obtain it again.",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "ROW",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-009",
+        "approvedQid": "q0223",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "optionsRawJa": [],
+      "optionsGlossEn": [],
+      "localeCorrectOptionKey": null,
+      "canonicalCorrectRow": "R",
+      "canonicalCorrectAnswer": "right / true",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "ROW question; no locale-specific option key applies.",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ja-batch-009-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0842": {
+      "prompt": "この標識は何を示しているか。",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.06.37 1.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 18.06.37 1.png",
+      "reviewerNotes": "",
+      "promptRawJa": "この標識は何を示しているか。",
+      "promptGlossEn": "What does this traffic sign indicate?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-009",
+        "approvedQid": "q0842",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "options": {
+        "q0842_o1": "A ここから40メートル減速区間",
+        "q0842_o2": "B 最低時速40キロメートル",
+        "q0842_o3": "D 最高時速40キロメートル",
+        "q0842_o4": "C 時速制限40キロメートルの解除"
+      },
+      "optionsRawJa": [
+        "A ここから40メートル減速区間",
+        "B 最低時速40キロメートル",
+        "C 時速制限40キロメートルの解除",
+        "D 最高時速40キロメートル"
+      ],
+      "optionsGlossEn": [
+        "A: Deceleration section from here for 40 meters",
+        "B: Minimum speed 40 kilometers per hour",
+        "C: End of 40 km/h speed limit",
+        "D: Maximum speed 40 kilometers per hour"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A ここから40メートル減速区間",
+          "sourceTextBody": "ここから40メートル減速区間",
+          "sourceGlossEn": "A: Deceleration section from here for 40 meters",
+          "canonicalOptionId": "q0842_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "driving at reduced speed in the section of 40 meters",
+          "alignmentScore": 0.25438282647584975,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B 最低時速40キロメートル",
+          "sourceTextBody": "最低時速40キロメートル",
+          "sourceGlossEn": "B: Minimum speed 40 kilometers per hour",
+          "canonicalOptionId": "q0842_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "minimum speed is 40km/hr",
+          "alignmentScore": 0.2723232323232323,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C 時速制限40キロメートルの解除",
+          "sourceTextBody": "時速制限40キロメートルの解除",
+          "sourceGlossEn": "C: End of 40 km/h speed limit",
+          "canonicalOptionId": "q0842_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "40km/hr speed limit ban is lifted",
+          "alignmentScore": 0.2206060606060606,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D 最高時速40キロメートル",
+          "sourceTextBody": "最高時速40キロメートル",
+          "sourceGlossEn": "D: Maximum speed 40 kilometers per hour",
+          "canonicalOptionId": "q0842_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "maximum speed is 40km/hr",
+          "alignmentScore": 0.2723232323232323,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A ここから40メートル減速区間",
+          "sourceGlossEn": "A: Deceleration section from here for 40 meters",
+          "canonicalOptionId": "q0842_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "driving at reduced speed in the section of 40 meters",
+          "alignmentScore": 0.25438282647584975,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B 最低時速40キロメートル",
+          "sourceGlossEn": "B: Minimum speed 40 kilometers per hour",
+          "canonicalOptionId": "q0842_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "minimum speed is 40km/hr",
+          "alignmentScore": 0.2723232323232323,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C 時速制限40キロメートルの解除",
+          "sourceGlossEn": "C: End of 40 km/h speed limit",
+          "canonicalOptionId": "q0842_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "40km/hr speed limit ban is lifted",
+          "alignmentScore": 0.2206060606060606,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D 最高時速40キロメートル",
+          "sourceGlossEn": "D: Maximum speed 40 kilometers per hour",
+          "canonicalOptionId": "q0842_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "maximum speed is 40km/hr",
+          "alignmentScore": 0.2723232323232323,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "C",
+      "canonicalCorrectOptionId": "q0842_o4",
+      "canonicalCorrectOptionKey": "D",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed during unresolved rescue review on 2026-04-12T15:20:26.929Z; reviewer selected locale key C.",
+      "correctOptionAlignment": {
+        "sourceKey": "C",
+        "canonicalOptionId": "q0842_o4",
+        "canonicalOptionKey": "D",
+        "sourceText": "C 時速制限40キロメートルの解除",
+        "sourceGlossEn": "C: End of 40 km/h speed limit",
+        "canonicalOptionText": "40km/hr speed limit ban is lifted",
+        "alignmentScore": 0.2206060606060606,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-12T15:20:26.929Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ja-batch-009-unresolved-decisions.json",
+      "answerKeyReviewerNotes": "",
+      "reviewerSuggestedLocaleCorrectOptionKey": "C",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ja-batch-009-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    }
+  }
+}

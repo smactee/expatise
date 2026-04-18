@@ -1,0 +1,4536 @@
+{
+  "generatedAt": "2026-04-13T01:11:30.915Z",
+  "lang": "ja",
+  "batchId": "batch-010",
+  "dataset": "2023-test1",
+  "kind": "unresolved",
+  "items": [
+    {
+      "itemId": "screenshots/400.png",
+      "sourceImage": "screenshots/400.png",
+      "promptRawJa": "この標識は何を示しているか。",
+      "promptGlossEn": "What does this road sign indicate?",
+      "optionsRawJa": [
+        "A 左側通行",
+        "B 通行止め",
+        "C 両側通行",
+        "D 右側通行"
+      ],
+      "optionsGlossEn": [
+        "A: Keep left",
+        "B: Road closed",
+        "C: Both sides pass",
+        "D: Keep right"
+      ],
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "ocrConfidence": "high",
+      "hasImage": true,
+      "provisionalTopic": "proper-driving",
+      "provisionalSubtopics": [
+        "traffic-signals:road-signs",
+        "proper-driving:safe-driving",
+        "proper-driving:traffic-laws"
+      ],
+      "topicConfidence": 0.627,
+      "topicSignals": [
+        {
+          "topic": "traffic-signals",
+          "subtopic": "traffic-signals:road-signs",
+          "signal": "sign-family",
+          "weight": 1.4
+        },
+        {
+          "topic": "proper-driving",
+          "subtopic": "proper-driving:safe-driving",
+          "signal": "driving-action",
+          "weight": 1.2
+        },
+        {
+          "topic": "proper-driving",
+          "subtopic": "proper-driving:traffic-laws",
+          "signal": "traffic-law",
+          "weight": 1.15
+        }
+      ],
+      "sourceConceptSlots": null,
+      "reason": "No candidate passed the minimum similarity threshold.",
+      "analysis": {
+        "mode": "standard",
+        "effectiveQuestionType": "MCQ",
+        "declaredQuestionType": "MCQ",
+        "booleanChoiceDetected": false,
+        "topScore": 43.712,
+        "topGap": 3.731,
+        "plausibleShortlist": true,
+        "imageParityApplied": true,
+        "candidateImageParityMode": "image-only candidate set",
+        "candidateCountBeforeParity": 973,
+        "candidateCountAfterParity": 493,
+        "explanation": "Shortlist is plausible but still below the review floor."
+      },
+      "topCandidates": [
+        {
+          "qid": "q0425",
+          "number": 425,
+          "type": "MCQ",
+          "score": 43.712,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.005,
+            "rawPromptSimilarity": 0.01,
+            "englishPromptSimilarity": 0.005,
+            "syntheticPromptSimilarity": 0.005,
+            "optionSimilarity": 0.36,
+            "englishOptionSimilarity": 0.36,
+            "syntheticOptionSimilarity": 0,
+            "optionFingerprint": 0.268,
+            "englishOptionFingerprint": 0.268,
+            "syntheticOptionFingerprint": 0,
+            "optionExactSet": 0,
+            "optionRareCoverage": 0.366,
+            "mirrorAgreement": 0,
+            "correctAnswerMeaning": 0.5,
+            "englishCorrectAnswerMeaning": 0.5,
+            "syntheticCorrectAnswerMeaning": 0.5,
+            "questionType": 1,
+            "imageSignal": 1,
+            "topicWeighting": 0.5,
+            "assetTieBreak": 0
+          },
+          "diagnostics": {
+            "effectiveItemType": "MCQ",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": false,
+            "promptSpecificity": 0.6,
+            "genericPromptPenalty": 0.6,
+            "missingCorrectAnswerNeutral": true,
+            "exactCorrectKey": false,
+            "optionSetMode": "unordered-semantic + synthetic-ja mirror",
+            "rareSetBonus": 0,
+            "syntheticMirrorUsed": true,
+            "genericPromptFamily": null,
+            "explanation": [
+              "Generic prompt wording was down-weighted to avoid overvaluing template matches.",
+              "Missing correct answer was treated as a neutral signal.",
+              "Option comparison used unordered semantic set matching."
+            ]
+          },
+          "prompt": "From which side should you overtake?",
+          "syntheticJaPrompt": "which side 追い越し。",
+          "translatedPrompt": "어느 쪽에서 추월해야 하는가?",
+          "options": [
+            {
+              "id": "A",
+              "text": "both sides",
+              "translatedText": "양쪽 모두"
+            },
+            {
+              "id": "B",
+              "text": "right side",
+              "translatedText": "우측"
+            },
+            {
+              "id": "C",
+              "text": "left side",
+              "translatedText": "좌측"
+            },
+            {
+              "id": "D",
+              "text": "the side with no obstacle",
+              "translatedText": "장애물이 없는 쪽"
+            }
+          ],
+          "correctAnswer": {
+            "kind": "MCQ",
+            "correctRow": null,
+            "correctOptionId": "q0425_o3",
+            "correctOptionKey": "C",
+            "correctOptionText": "left side",
+            "correctOptionTranslatedText": "좌측",
+            "answerRaw": "C"
+          },
+          "image": {
+            "hasImage": true,
+            "currentAssetSrc": "/qbank/2023-test1/images/img_fde2c5644fa9065e50deb8dc631141b1.jpeg",
+            "assetHashes": [
+              "fde2c5644fa9065e50deb8dc631141b1"
+            ]
+          },
+          "topic": "mcq",
+          "subtopics": [],
+          "conceptSlots": null
+        },
+        {
+          "qid": "q0872",
+          "number": 872,
+          "type": "MCQ",
+          "score": 39.981,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.116,
+            "rawPromptSimilarity": 0.194,
+            "englishPromptSimilarity": 0.116,
+            "syntheticPromptSimilarity": 0.043,
+            "optionSimilarity": 0.22,
+            "englishOptionSimilarity": 0.22,
+            "syntheticOptionSimilarity": 0.13,
+            "optionFingerprint": 0.188,
+            "englishOptionFingerprint": 0.188,
+            "syntheticOptionFingerprint": 0.126,
+            "optionExactSet": 0,
+            "optionRareCoverage": 0.367,
+            "mirrorAgreement": 0.128,
+            "correctAnswerMeaning": 0.5,
+            "englishCorrectAnswerMeaning": 0.5,
+            "syntheticCorrectAnswerMeaning": 0.5,
+            "questionType": 1,
+            "imageSignal": 1,
+            "topicWeighting": 0.5,
+            "assetTieBreak": 0
+          },
+          "diagnostics": {
+            "effectiveItemType": "MCQ",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": false,
+            "promptSpecificity": 0.6,
+            "genericPromptPenalty": 0.6,
+            "missingCorrectAnswerNeutral": true,
+            "exactCorrectKey": false,
+            "optionSetMode": "unordered-semantic + synthetic-ja mirror",
+            "rareSetBonus": 0,
+            "syntheticMirrorUsed": true,
+            "genericPromptFamily": null,
+            "explanation": [
+              "Generic prompt wording was down-weighted to avoid overvaluing template matches.",
+              "Missing correct answer was treated as a neutral signal."
+            ]
+          },
+          "prompt": "What’s the meaning of this sign?",
+          "syntheticJaPrompt": "th e meaning 標識。",
+          "translatedPrompt": "이 표지의 뜻은?",
+          "options": [
+            {
+              "id": "A",
+              "text": "pass on both sides",
+              "translatedText": "양쪽으로 통과"
+            },
+            {
+              "id": "B",
+              "text": "passing is prohibited",
+              "translatedText": "통과 금지"
+            },
+            {
+              "id": "C",
+              "text": "pass by the left side",
+              "translatedText": "왼쪽으로 통과"
+            },
+            {
+              "id": "D",
+              "text": "pass by the right side",
+              "translatedText": "오른쪽으로 통과"
+            }
+          ],
+          "correctAnswer": {
+            "kind": "MCQ",
+            "correctRow": null,
+            "correctOptionId": "q0872_o1",
+            "correctOptionKey": "A",
+            "correctOptionText": "pass on both sides",
+            "correctOptionTranslatedText": "양쪽으로 통과",
+            "answerRaw": "A"
+          },
+          "image": {
+            "hasImage": true,
+            "currentAssetSrc": "/qbank/2023-test1/images/img_a44bd80c0fa6e2747a90e7eb197655d2.jpeg",
+            "assetHashes": [
+              "a44bd80c0fa6e2747a90e7eb197655d2"
+            ]
+          },
+          "topic": "mcq",
+          "subtopics": [],
+          "conceptSlots": null
+        },
+        {
+          "qid": "q0665",
+          "number": 665,
+          "type": "MCQ",
+          "score": 39.871,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.11,
+            "rawPromptSimilarity": 0.22,
+            "englishPromptSimilarity": 0.11,
+            "syntheticPromptSimilarity": 0.043,
+            "optionSimilarity": 0.22,
+            "englishOptionSimilarity": 0.22,
+            "syntheticOptionSimilarity": 0.13,
+            "optionFingerprint": 0.188,
+            "englishOptionFingerprint": 0.188,
+            "syntheticOptionFingerprint": 0.126,
+            "optionExactSet": 0,
+            "optionRareCoverage": 0.367,
+            "mirrorAgreement": 0.128,
+            "correctAnswerMeaning": 0.5,
+            "englishCorrectAnswerMeaning": 0.5,
+            "syntheticCorrectAnswerMeaning": 0.5,
+            "questionType": 1,
+            "imageSignal": 1,
+            "topicWeighting": 0.5,
+            "assetTieBreak": 0
+          },
+          "diagnostics": {
+            "effectiveItemType": "MCQ",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": false,
+            "promptSpecificity": 0.5,
+            "genericPromptPenalty": 0.5,
+            "missingCorrectAnswerNeutral": true,
+            "exactCorrectKey": false,
+            "optionSetMode": "unordered-semantic + synthetic-ja mirror",
+            "rareSetBonus": 0,
+            "syntheticMirrorUsed": true,
+            "genericPromptFamily": null,
+            "explanation": [
+              "Generic prompt wording was down-weighted to avoid overvaluing template matches.",
+              "Missing correct answer was treated as a neutral signal."
+            ]
+          },
+          "prompt": "What’s the meaning of this sign?",
+          "syntheticJaPrompt": "meaning 標識。",
+          "translatedPrompt": "이 표지의 뜻은?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Pass on both sides",
+              "translatedText": "양쪽 통과"
+            },
+            {
+              "id": "B",
+              "text": "Pass by the right side",
+              "translatedText": "우측 통과"
+            },
+            {
+              "id": "C",
+              "text": "Pass by the left side",
+              "translatedText": "좌측 통과"
+            },
+            {
+              "id": "D",
+              "text": "Passing is prohibited",
+              "translatedText": "통과 금지"
+            }
+          ],
+          "correctAnswer": {
+            "kind": "MCQ",
+            "correctRow": null,
+            "correctOptionId": "q0665_o3",
+            "correctOptionKey": "C",
+            "correctOptionText": "Pass by the left side",
+            "correctOptionTranslatedText": "좌측 통과",
+            "answerRaw": "C"
+          },
+          "image": {
+            "hasImage": true,
+            "currentAssetSrc": "/qbank/2023-test1/images/img_13a5463bf99109f96c203cb27cea474e.jpeg",
+            "assetHashes": [
+              "13a5463bf99109f96c203cb27cea474e"
+            ]
+          },
+          "topic": "mcq",
+          "subtopics": [],
+          "conceptSlots": null
+        },
+        {
+          "qid": "q0797",
+          "number": 797,
+          "type": "MCQ",
+          "score": 39.871,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.11,
+            "rawPromptSimilarity": 0.22,
+            "englishPromptSimilarity": 0.11,
+            "syntheticPromptSimilarity": 0.043,
+            "optionSimilarity": 0.22,
+            "englishOptionSimilarity": 0.22,
+            "syntheticOptionSimilarity": 0.13,
+            "optionFingerprint": 0.188,
+            "englishOptionFingerprint": 0.188,
+            "syntheticOptionFingerprint": 0.126,
+            "optionExactSet": 0,
+            "optionRareCoverage": 0.367,
+            "mirrorAgreement": 0.128,
+            "correctAnswerMeaning": 0.5,
+            "englishCorrectAnswerMeaning": 0.5,
+            "syntheticCorrectAnswerMeaning": 0.5,
+            "questionType": 1,
+            "imageSignal": 1,
+            "topicWeighting": 0.5,
+            "assetTieBreak": 0
+          },
+          "diagnostics": {
+            "effectiveItemType": "MCQ",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": false,
+            "promptSpecificity": 0.5,
+            "genericPromptPenalty": 0.5,
+            "missingCorrectAnswerNeutral": true,
+            "exactCorrectKey": false,
+            "optionSetMode": "unordered-semantic + synthetic-ja mirror",
+            "rareSetBonus": 0,
+            "syntheticMirrorUsed": true,
+            "genericPromptFamily": null,
+            "explanation": [
+              "Generic prompt wording was down-weighted to avoid overvaluing template matches.",
+              "Missing correct answer was treated as a neutral signal."
+            ]
+          },
+          "prompt": "What’s the meaning of this sign?",
+          "syntheticJaPrompt": "meaning 標識。",
+          "translatedPrompt": "이 표지의 뜻은?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Passing on both sides",
+              "translatedText": "양쪽 모두 추월 가능"
+            },
+            {
+              "id": "B",
+              "text": "Passing by the right side",
+              "translatedText": "우측으로 추월"
+            },
+            {
+              "id": "C",
+              "text": "Passing by the left side",
+              "translatedText": "좌측으로 추월"
+            },
+            {
+              "id": "D",
+              "text": "Passing is prohibited",
+              "translatedText": "추월 금지"
+            }
+          ],
+          "correctAnswer": {
+            "kind": "MCQ",
+            "correctRow": null,
+            "correctOptionId": "q0797_o2",
+            "correctOptionKey": "B",
+            "correctOptionText": "Passing by the right side",
+            "correctOptionTranslatedText": "우측으로 추월",
+            "answerRaw": "B"
+          },
+          "image": {
+            "hasImage": true,
+            "currentAssetSrc": "/qbank/2023-test1/images/img_25120a7c2ea5de6c38afa07ab8a7e167.jpeg",
+            "assetHashes": [
+              "25120a7c2ea5de6c38afa07ab8a7e167"
+            ]
+          },
+          "topic": "mcq",
+          "subtopics": [],
+          "conceptSlots": null
+        },
+        {
+          "qid": "q0680",
+          "number": 680,
+          "type": "MCQ",
+          "score": 39.679,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.193,
+            "rawPromptSimilarity": 0.55,
+            "englishPromptSimilarity": 0.117,
+            "syntheticPromptSimilarity": 0.193,
+            "optionSimilarity": 0.203,
+            "englishOptionSimilarity": 0.203,
+            "syntheticOptionSimilarity": 0,
+            "optionFingerprint": 0.173,
+            "englishOptionFingerprint": 0.173,
+            "syntheticOptionFingerprint": 0,
+            "optionExactSet": 0,
+            "optionRareCoverage": 0.351,
+            "mirrorAgreement": 0,
+            "correctAnswerMeaning": 0.5,
+            "englishCorrectAnswerMeaning": 0.5,
+            "syntheticCorrectAnswerMeaning": 0.5,
+            "questionType": 1,
+            "imageSignal": 1,
+            "topicWeighting": 0.5,
+            "assetTieBreak": 0
+          },
+          "diagnostics": {
+            "effectiveItemType": "MCQ",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": false,
+            "promptSpecificity": 0.5,
+            "genericPromptPenalty": 0.5,
+            "missingCorrectAnswerNeutral": true,
+            "exactCorrectKey": false,
+            "optionSetMode": "unordered-semantic + synthetic-ja mirror",
+            "rareSetBonus": 0,
+            "syntheticMirrorUsed": true,
+            "genericPromptFamily": "road-sign-meaning",
+            "explanation": [
+              "Generic prompt wording was down-weighted to avoid overvaluing template matches.",
+              "Missing correct answer was treated as a neutral signal."
+            ]
+          },
+          "prompt": "What is this traffic sign?",
+          "syntheticJaPrompt": "この道路標識は何を示していますか",
+          "translatedPrompt": "이 표지의 뜻은?",
+          "options": [
+            {
+              "id": "A",
+              "text": "road narrows on both sides",
+              "translatedText": "도로가 양쪽에서 좁아진다"
+            },
+            {
+              "id": "B",
+              "text": "road narrows on the right side",
+              "translatedText": "도로가 오른쪽에서 좁아진다"
+            },
+            {
+              "id": "C",
+              "text": "road narrows on the left side",
+              "translatedText": "도로가 왼쪽에서 좁아진다"
+            },
+            {
+              "id": "D",
+              "text": "bridge narrows",
+              "translatedText": "다리 폭이 좁아진다"
+            }
+          ],
+          "correctAnswer": {
+            "kind": "MCQ",
+            "correctRow": null,
+            "correctOptionId": "q0680_o1",
+            "correctOptionKey": "A",
+            "correctOptionText": "road narrows on both sides",
+            "correctOptionTranslatedText": "도로가 양쪽에서 좁아진다",
+            "answerRaw": "A"
+          },
+          "image": {
+            "hasImage": true,
+            "currentAssetSrc": "/qbank/2023-test1/images/img_0d5b6d9219d496aa20c6f81a81f76246.jpeg",
+            "assetHashes": [
+              "0d5b6d9219d496aa20c6f81a81f76246"
+            ]
+          },
+          "topic": "traffic-signs",
+          "subtopics": [],
+          "conceptSlots": null
+        }
+      ]
+    },
+    {
+      "itemId": "screenshots/Screenshot 2026-04-07 at 18.06.40.png",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.06.40.png",
+      "promptRawJa": "路面の黄色い区間標示は何を示しているか。",
+      "promptGlossEn": "What does the yellow section marking on the road indicate?",
+      "optionsRawJa": [
+        "A 移動障害物が近い",
+        "B 中央分離帯の幅員増加",
+        "C 路上障害物が近い",
+        "D 狭い道路が近い"
+      ],
+      "optionsGlossEn": [
+        "A: There is a movable obstacle nearby",
+        "B: The width of the median strip is increasing",
+        "C: There is a road obstacle nearby",
+        "D: There is a narrow road ahead"
+      ],
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "ocrConfidence": "high",
+      "hasImage": true,
+      "provisionalTopic": "traffic-signals",
+      "provisionalSubtopics": [
+        "traffic-signals:road-markings"
+      ],
+      "topicConfidence": 1,
+      "topicSignals": [
+        {
+          "topic": "traffic-signals",
+          "subtopic": "traffic-signals:road-markings",
+          "signal": "road-marking",
+          "weight": 1.25
+        }
+      ],
+      "sourceConceptSlots": null,
+      "reason": "No candidate passed the minimum similarity threshold.",
+      "analysis": {
+        "mode": "standard",
+        "effectiveQuestionType": "MCQ",
+        "declaredQuestionType": "MCQ",
+        "booleanChoiceDetected": false,
+        "topScore": 41.123,
+        "topGap": 2.886,
+        "plausibleShortlist": true,
+        "imageParityApplied": true,
+        "candidateImageParityMode": "image-only candidate set",
+        "candidateCountBeforeParity": 973,
+        "candidateCountAfterParity": 493,
+        "explanation": "Shortlist is plausible but still below the review floor."
+      },
+      "topCandidates": [
+        {
+          "qid": "q0779",
+          "number": 779,
+          "type": "MCQ",
+          "score": 41.123,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.343,
+            "rawPromptSimilarity": 0.403,
+            "englishPromptSimilarity": 0.343,
+            "syntheticPromptSimilarity": 0.076,
+            "optionSimilarity": 0.184,
+            "englishOptionSimilarity": 0.184,
+            "syntheticOptionSimilarity": 0.1,
+            "optionFingerprint": 0.121,
+            "englishOptionFingerprint": 0.121,
+            "syntheticOptionFingerprint": 0.071,
+            "optionExactSet": 0,
+            "optionRareCoverage": 0.17,
+            "mirrorAgreement": 0.09,
+            "correctAnswerMeaning": 0.5,
+            "englishCorrectAnswerMeaning": 0.5,
+            "syntheticCorrectAnswerMeaning": 0.5,
+            "questionType": 1,
+            "imageSignal": 1,
+            "topicWeighting": 0.5,
+            "assetTieBreak": 0
+          },
+          "diagnostics": {
+            "effectiveItemType": "MCQ",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": false,
+            "promptSpecificity": 0.85,
+            "genericPromptPenalty": 0.85,
+            "missingCorrectAnswerNeutral": true,
+            "exactCorrectKey": false,
+            "optionSetMode": "unordered-semantic + synthetic-ja mirror",
+            "rareSetBonus": 0,
+            "syntheticMirrorUsed": true,
+            "genericPromptFamily": null,
+            "explanation": [
+              "Missing correct answer was treated as a neutral signal."
+            ]
+          },
+          "prompt": "What’s the meaning of the yellow filled markings on the road?",
+          "syntheticJaPrompt": "meaning yellow filled 路面標示 road。",
+          "translatedPrompt": "이 노면의 황색 채움 표시의 의미는?",
+          "options": [
+            {
+              "id": "A",
+              "text": "closing to the obstacle",
+              "translatedText": "장애물 접근 표시"
+            },
+            {
+              "id": "B",
+              "text": "closing narrowed road",
+              "translatedText": "도로 폭 좁아짐 표시"
+            },
+            {
+              "id": "C",
+              "text": "closing the moving obstacle",
+              "translatedText": "이동 장애물 접근 표시"
+            },
+            {
+              "id": "D",
+              "text": "Marking of approaching a narrow road",
+              "translatedText": "좁아지는 도로 접근 표시"
+            }
+          ],
+          "correctAnswer": {
+            "kind": "MCQ",
+            "correctRow": null,
+            "correctOptionId": "q0779_o1",
+            "correctOptionKey": "A",
+            "correctOptionText": "closing to the obstacle",
+            "correctOptionTranslatedText": "장애물 접근 표시",
+            "answerRaw": "A"
+          },
+          "image": {
+            "hasImage": true,
+            "currentAssetSrc": "/qbank/2023-test1/images/img_ac530dc22a5b40d5dc3578c7ab110d87.jpeg",
+            "assetHashes": [
+              "ac530dc22a5b40d5dc3578c7ab110d87"
+            ]
+          },
+          "topic": "road-markings",
+          "subtopics": [],
+          "conceptSlots": null
+        },
+        {
+          "qid": "q0780",
+          "number": 780,
+          "type": "MCQ",
+          "score": 38.237,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.047,
+            "rawPromptSimilarity": 0.067,
+            "englishPromptSimilarity": 0.047,
+            "syntheticPromptSimilarity": 0.016,
+            "optionSimilarity": 0.222,
+            "englishOptionSimilarity": 0.187,
+            "syntheticOptionSimilarity": 0.222,
+            "optionFingerprint": 0.155,
+            "englishOptionFingerprint": 0.094,
+            "syntheticOptionFingerprint": 0.13,
+            "optionExactSet": 0,
+            "optionRareCoverage": 0.131,
+            "mirrorAgreement": 0.155,
+            "correctAnswerMeaning": 0.5,
+            "englishCorrectAnswerMeaning": 0.5,
+            "syntheticCorrectAnswerMeaning": 0.5,
+            "questionType": 1,
+            "imageSignal": 1,
+            "topicWeighting": 0.5,
+            "assetTieBreak": 0
+          },
+          "diagnostics": {
+            "effectiveItemType": "MCQ",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": false,
+            "promptSpecificity": 0.7,
+            "genericPromptPenalty": 0.7,
+            "missingCorrectAnswerNeutral": true,
+            "exactCorrectKey": false,
+            "optionSetMode": "unordered-semantic + synthetic-ja mirror",
+            "rareSetBonus": 0,
+            "syntheticMirrorUsed": true,
+            "genericPromptFamily": null,
+            "explanation": [
+              "Generic prompt wording was down-weighted to avoid overvaluing template matches.",
+              "Missing correct answer was treated as a neutral signal."
+            ]
+          },
+          "prompt": "What’s the meaning of this sign?",
+          "syntheticJaPrompt": "meaning 標識。",
+          "translatedPrompt": "이 표지의 뜻은?",
+          "options": [
+            {
+              "id": "A",
+              "text": "road narrows on the left side",
+              "translatedText": "도로가 좌측에서 좁아진다"
+            },
+            {
+              "id": "B",
+              "text": "narrow bridge",
+              "translatedText": "다리 폭이 좁아진다"
+            },
+            {
+              "id": "C",
+              "text": "narrow road",
+              "translatedText": "도로 폭이 좁아진다"
+            },
+            {
+              "id": "D",
+              "text": "road narrows on the right side",
+              "translatedText": "도로가 우측에서 좁아진다"
+            }
+          ],
+          "correctAnswer": {
+            "kind": "MCQ",
+            "correctRow": null,
+            "correctOptionId": "q0780_o2",
+            "correctOptionKey": "B",
+            "correctOptionText": "narrow bridge",
+            "correctOptionTranslatedText": "다리 폭이 좁아진다",
+            "answerRaw": "B"
+          },
+          "image": {
+            "hasImage": true,
+            "currentAssetSrc": "/qbank/2023-test1/images/img_d2a41eec4685b9cdbb1f8d9168f78263.jpeg",
+            "assetHashes": [
+              "d2a41eec4685b9cdbb1f8d9168f78263"
+            ]
+          },
+          "topic": "mcq",
+          "subtopics": [],
+          "conceptSlots": null
+        },
+        {
+          "qid": "q0745",
+          "number": 745,
+          "type": "MCQ",
+          "score": 38.004,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.361,
+            "rawPromptSimilarity": 0.452,
+            "englishPromptSimilarity": 0.361,
+            "syntheticPromptSimilarity": 0.075,
+            "optionSimilarity": 0.119,
+            "englishOptionSimilarity": 0.119,
+            "syntheticOptionSimilarity": 0.034,
+            "optionFingerprint": 0.082,
+            "englishOptionFingerprint": 0.082,
+            "syntheticOptionFingerprint": 0.009,
+            "optionExactSet": 0,
+            "optionRareCoverage": 0.137,
+            "mirrorAgreement": 0.025,
+            "correctAnswerMeaning": 0.5,
+            "englishCorrectAnswerMeaning": 0.5,
+            "syntheticCorrectAnswerMeaning": 0.5,
+            "questionType": 1,
+            "imageSignal": 1,
+            "topicWeighting": 0.5,
+            "assetTieBreak": 0
+          },
+          "diagnostics": {
+            "effectiveItemType": "MCQ",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": false,
+            "promptSpecificity": 0.8,
+            "genericPromptPenalty": 0.8,
+            "missingCorrectAnswerNeutral": true,
+            "exactCorrectKey": false,
+            "optionSetMode": "unordered-semantic + synthetic-ja mirror",
+            "rareSetBonus": 0,
+            "syntheticMirrorUsed": true,
+            "genericPromptFamily": null,
+            "explanation": [
+              "Missing correct answer was treated as a neutral signal."
+            ]
+          },
+          "prompt": "What’s the meaning of the yellow marking on the road?",
+          "syntheticJaPrompt": "meaning yellow 路面標示 road。",
+          "translatedPrompt": "이 노면표시의 의미는?",
+          "options": [
+            {
+              "id": "A",
+              "text": "gradual road width",
+              "translatedText": "도로 폭이 점차 변함."
+            },
+            {
+              "id": "B",
+              "text": "more carriageways",
+              "translatedText": "차로 수가 증가함."
+            },
+            {
+              "id": "C",
+              "text": "closing to obstacle",
+              "translatedText": "장애물로 인해 도로가 점차 좁아짐."
+            },
+            {
+              "id": "D",
+              "text": "construction section indication",
+              "translatedText": "공사 구간 표시."
+            }
+          ],
+          "correctAnswer": {
+            "kind": "MCQ",
+            "correctRow": null,
+            "correctOptionId": "q0745_o1",
+            "correctOptionKey": "A",
+            "correctOptionText": "gradual road width",
+            "correctOptionTranslatedText": "도로 폭이 점차 변함.",
+            "answerRaw": "A"
+          },
+          "image": {
+            "hasImage": true,
+            "currentAssetSrc": "/qbank/2023-test1/images/img_a9b0919fa3101744f4f9b3121d365abc.jpeg",
+            "assetHashes": [
+              "a9b0919fa3101744f4f9b3121d365abc"
+            ]
+          },
+          "topic": "mcq",
+          "subtopics": [],
+          "conceptSlots": null
+        },
+        {
+          "qid": "q0680",
+          "number": 680,
+          "type": "MCQ",
+          "score": 35.33,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.036,
+            "rawPromptSimilarity": 0.051,
+            "englishPromptSimilarity": 0.036,
+            "syntheticPromptSimilarity": 0,
+            "optionSimilarity": 0.17,
+            "englishOptionSimilarity": 0.157,
+            "syntheticOptionSimilarity": 0.17,
+            "optionFingerprint": 0.122,
+            "englishOptionFingerprint": 0.057,
+            "syntheticOptionFingerprint": 0.078,
+            "optionExactSet": 0,
+            "optionRareCoverage": 0.176,
+            "mirrorAgreement": 0.122,
+            "correctAnswerMeaning": 0.5,
+            "englishCorrectAnswerMeaning": 0.5,
+            "syntheticCorrectAnswerMeaning": 0.5,
+            "questionType": 1,
+            "imageSignal": 1,
+            "topicWeighting": 0.5,
+            "assetTieBreak": 0
+          },
+          "diagnostics": {
+            "effectiveItemType": "MCQ",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": false,
+            "promptSpecificity": 0.7,
+            "genericPromptPenalty": 0.7,
+            "missingCorrectAnswerNeutral": true,
+            "exactCorrectKey": false,
+            "optionSetMode": "unordered-semantic + synthetic-ja mirror",
+            "rareSetBonus": 0,
+            "syntheticMirrorUsed": true,
+            "genericPromptFamily": "road-sign-meaning",
+            "explanation": [
+              "Generic prompt wording was down-weighted to avoid overvaluing template matches.",
+              "Missing correct answer was treated as a neutral signal."
+            ]
+          },
+          "prompt": "What is this traffic sign?",
+          "syntheticJaPrompt": "この道路標識は何を示していますか",
+          "translatedPrompt": "이 표지의 뜻은?",
+          "options": [
+            {
+              "id": "A",
+              "text": "road narrows on both sides",
+              "translatedText": "도로가 양쪽에서 좁아진다"
+            },
+            {
+              "id": "B",
+              "text": "road narrows on the right side",
+              "translatedText": "도로가 오른쪽에서 좁아진다"
+            },
+            {
+              "id": "C",
+              "text": "road narrows on the left side",
+              "translatedText": "도로가 왼쪽에서 좁아진다"
+            },
+            {
+              "id": "D",
+              "text": "bridge narrows",
+              "translatedText": "다리 폭이 좁아진다"
+            }
+          ],
+          "correctAnswer": {
+            "kind": "MCQ",
+            "correctRow": null,
+            "correctOptionId": "q0680_o1",
+            "correctOptionKey": "A",
+            "correctOptionText": "road narrows on both sides",
+            "correctOptionTranslatedText": "도로가 양쪽에서 좁아진다",
+            "answerRaw": "A"
+          },
+          "image": {
+            "hasImage": true,
+            "currentAssetSrc": "/qbank/2023-test1/images/img_0d5b6d9219d496aa20c6f81a81f76246.jpeg",
+            "assetHashes": [
+              "0d5b6d9219d496aa20c6f81a81f76246"
+            ]
+          },
+          "topic": "traffic-signs",
+          "subtopics": [],
+          "conceptSlots": null
+        },
+        {
+          "qid": "q0731",
+          "number": 731,
+          "type": "MCQ",
+          "score": 35.228,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.03,
+            "rawPromptSimilarity": 0.055,
+            "englishPromptSimilarity": 0.03,
+            "syntheticPromptSimilarity": 0,
+            "optionSimilarity": 0.17,
+            "englishOptionSimilarity": 0.157,
+            "syntheticOptionSimilarity": 0.17,
+            "optionFingerprint": 0.122,
+            "englishOptionFingerprint": 0.057,
+            "syntheticOptionFingerprint": 0.078,
+            "optionExactSet": 0,
+            "optionRareCoverage": 0.176,
+            "mirrorAgreement": 0.122,
+            "correctAnswerMeaning": 0.5,
+            "englishCorrectAnswerMeaning": 0.5,
+            "syntheticCorrectAnswerMeaning": 0.5,
+            "questionType": 1,
+            "imageSignal": 1,
+            "topicWeighting": 0.5,
+            "assetTieBreak": 0
+          },
+          "diagnostics": {
+            "effectiveItemType": "MCQ",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": false,
+            "promptSpecificity": 0.6,
+            "genericPromptPenalty": 0.6,
+            "missingCorrectAnswerNeutral": true,
+            "exactCorrectKey": false,
+            "optionSetMode": "unordered-semantic + synthetic-ja mirror",
+            "rareSetBonus": 0,
+            "syntheticMirrorUsed": true,
+            "genericPromptFamily": "road-sign-meaning",
+            "explanation": [
+              "Generic prompt wording was down-weighted to avoid overvaluing template matches.",
+              "Missing correct answer was treated as a neutral signal."
+            ]
+          },
+          "prompt": "What is this traffic sign?",
+          "syntheticJaPrompt": "この道路標識は何を示していますか",
+          "translatedPrompt": "이 표지의 뜻은?",
+          "options": [
+            {
+              "id": "A",
+              "text": "road narrows on both sides",
+              "translatedText": "폭 좁아짐"
+            },
+            {
+              "id": "B",
+              "text": "road narrows on the right side",
+              "translatedText": "우측 좁아짐"
+            },
+            {
+              "id": "C",
+              "text": "road narrows on the left side",
+              "translatedText": "좌측 좁아짐"
+            },
+            {
+              "id": "D",
+              "text": "bridge narrows",
+              "translatedText": "양측 좁아짐"
+            }
+          ],
+          "correctAnswer": {
+            "kind": "MCQ",
+            "correctRow": null,
+            "correctOptionId": "q0731_o2",
+            "correctOptionKey": "B",
+            "correctOptionText": "road narrows on the right side",
+            "correctOptionTranslatedText": "우측 좁아짐",
+            "answerRaw": "B"
+          },
+          "image": {
+            "hasImage": true,
+            "currentAssetSrc": "/qbank/2023-test1/images/img_26f21e5f350b015405d54dd6a6bff9a7.jpeg",
+            "assetHashes": [
+              "26f21e5f350b015405d54dd6a6bff9a7"
+            ]
+          },
+          "topic": "traffic-signs",
+          "subtopics": [],
+          "conceptSlots": null
+        }
+      ]
+    },
+    {
+      "itemId": "screenshots/Screenshot 2026-04-07 at 18.06.43.png",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.06.43.png",
+      "promptRawJa": "路上で走行するこの自動車は次のなかのどの違法行為になるか。",
+      "promptGlossEn": "Which of the following violations is committed by this car driving on the road?",
+      "optionsRawJa": [
+        "A 逆方向走行",
+        "B 規定に基づいてナンバープレートを取り付けていない",
+        "C わざとナンバープレートを隠している遮ていしている",
+        "D 非自動車車道を占用する"
+      ],
+      "optionsGlossEn": [
+        "A. Driving in the wrong direction",
+        "B. Not attaching the license plate according to regulations",
+        "C. Intentionally hiding or covering the license plate",
+        "D. Occupying a roadway not designated for automobiles"
+      ],
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "ocrConfidence": "high",
+      "hasImage": true,
+      "provisionalTopic": "road-safety",
+      "provisionalSubtopics": [
+        "road-safety:license"
+      ],
+      "topicConfidence": 1,
+      "topicSignals": [
+        {
+          "topic": "road-safety",
+          "subtopic": "road-safety:license",
+          "signal": "license",
+          "weight": 1.15
+        }
+      ],
+      "sourceConceptSlots": null,
+      "reason": "No candidate passed the minimum similarity threshold.",
+      "analysis": {
+        "mode": "standard",
+        "effectiveQuestionType": "MCQ",
+        "declaredQuestionType": "MCQ",
+        "booleanChoiceDetected": false,
+        "topScore": 43.219,
+        "topGap": 5.71,
+        "plausibleShortlist": true,
+        "imageParityApplied": true,
+        "candidateImageParityMode": "image-only candidate set",
+        "candidateCountBeforeParity": 973,
+        "candidateCountAfterParity": 493,
+        "explanation": "Shortlist is plausible but still below the review floor."
+      },
+      "topCandidates": [
+        {
+          "qid": "q0476",
+          "number": 476,
+          "type": "MCQ",
+          "score": 43.219,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.294,
+            "rawPromptSimilarity": 0.294,
+            "englishPromptSimilarity": 0.294,
+            "syntheticPromptSimilarity": 0.096,
+            "optionSimilarity": 0.259,
+            "englishOptionSimilarity": 0.259,
+            "syntheticOptionSimilarity": 0.041,
+            "optionFingerprint": 0.156,
+            "englishOptionFingerprint": 0.156,
+            "syntheticOptionFingerprint": 0.012,
+            "optionExactSet": 0,
+            "optionRareCoverage": 0.159,
+            "mirrorAgreement": 0.031,
+            "correctAnswerMeaning": 0.5,
+            "englishCorrectAnswerMeaning": 0.5,
+            "syntheticCorrectAnswerMeaning": 0.5,
+            "questionType": 1,
+            "imageSignal": 1,
+            "topicWeighting": 0.5,
+            "assetTieBreak": 0
+          },
+          "diagnostics": {
+            "effectiveItemType": "MCQ",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": false,
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "exactCorrectKey": false,
+            "optionSetMode": "unordered-semantic + synthetic-ja mirror",
+            "rareSetBonus": 0,
+            "syntheticMirrorUsed": true,
+            "genericPromptFamily": "violation-kind",
+            "explanation": [
+              "Missing correct answer was treated as a neutral signal."
+            ]
+          },
+          "prompt": "What kind of violation does this vehicle on the road have?",
+          "syntheticJaPrompt": "この車両の違反は何ですか",
+          "translatedPrompt": "도로에 있는 이 차량은 어떤 위반행위를 하고 있는가?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Not hanging the license plate as required.",
+              "translatedText": "번호판을 규정대로 부착하지 않음"
+            },
+            {
+              "id": "B",
+              "text": "Deliberately covering the license plate.",
+              "translatedText": "번호판을 고의로 가림"
+            },
+            {
+              "id": "C",
+              "text": "Occupying the lane for non-motorized vehicles.",
+              "translatedText": "비동력 차량용 차로를 점유함"
+            },
+            {
+              "id": "D",
+              "text": "Driving in the opposite direction.",
+              "translatedText": "역주행함"
+            }
+          ],
+          "correctAnswer": {
+            "kind": "MCQ",
+            "correctRow": null,
+            "correctOptionId": "q0476_o2",
+            "correctOptionKey": "B",
+            "correctOptionText": "Deliberately covering the license plate.",
+            "correctOptionTranslatedText": "번호판을 고의로 가림",
+            "answerRaw": "B"
+          },
+          "image": {
+            "hasImage": true,
+            "currentAssetSrc": "/qbank/2023-test1/images/img_11c014faa00a85b6442798672a83d91d.jpeg",
+            "assetHashes": [
+              "11c014faa00a85b6442798672a83d91d"
+            ]
+          },
+          "topic": "vehicle-registration",
+          "subtopics": [],
+          "conceptSlots": null
+        },
+        {
+          "qid": "q0758",
+          "number": 758,
+          "type": "MCQ",
+          "score": 37.508,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.177,
+            "rawPromptSimilarity": 0.215,
+            "englishPromptSimilarity": 0.177,
+            "syntheticPromptSimilarity": 0,
+            "optionSimilarity": 0.183,
+            "englishOptionSimilarity": 0.183,
+            "syntheticOptionSimilarity": 0,
+            "optionFingerprint": 0.117,
+            "englishOptionFingerprint": 0.117,
+            "syntheticOptionFingerprint": 0,
+            "optionExactSet": 0,
+            "optionRareCoverage": 0.111,
+            "mirrorAgreement": 0,
+            "correctAnswerMeaning": 0.5,
+            "englishCorrectAnswerMeaning": 0.5,
+            "syntheticCorrectAnswerMeaning": 0.5,
+            "questionType": 1,
+            "imageSignal": 1,
+            "topicWeighting": 0.5,
+            "assetTieBreak": 0
+          },
+          "diagnostics": {
+            "effectiveItemType": "MCQ",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": false,
+            "promptSpecificity": 0.825,
+            "genericPromptPenalty": 0.825,
+            "missingCorrectAnswerNeutral": true,
+            "exactCorrectKey": false,
+            "optionSetMode": "unordered-semantic + synthetic-ja mirror",
+            "rareSetBonus": 0,
+            "syntheticMirrorUsed": true,
+            "genericPromptFamily": null,
+            "explanation": [
+              "Missing correct answer was treated as a neutral signal."
+            ]
+          },
+          "prompt": "What’s the meaning of this sign?",
+          "syntheticJaPrompt": "meaning 標識。",
+          "translatedPrompt": "이 표지의 뜻은?",
+          "options": [
+            {
+              "id": "A",
+              "text": "location and distance",
+              "translatedText": "위치와 거리"
+            },
+            {
+              "id": "B",
+              "text": "driving route",
+              "translatedText": "주행 경로"
+            },
+            {
+              "id": "C",
+              "text": "destination name",
+              "translatedText": "목적지 명칭"
+            },
+            {
+              "id": "D",
+              "text": "driving direction",
+              "translatedText": "주행 방향"
+            }
+          ],
+          "correctAnswer": {
+            "kind": "MCQ",
+            "correctRow": null,
+            "correctOptionId": "q0758_o1",
+            "correctOptionKey": "A",
+            "correctOptionText": "location and distance",
+            "correctOptionTranslatedText": "위치와 거리",
+            "answerRaw": "A"
+          },
+          "image": {
+            "hasImage": true,
+            "currentAssetSrc": "/qbank/2023-test1/images/img_ceb4917c082950cc057894d78b60180c.jpeg",
+            "assetHashes": [
+              "ceb4917c082950cc057894d78b60180c"
+            ]
+          },
+          "topic": "mcq",
+          "subtopics": [],
+          "conceptSlots": null
+        },
+        {
+          "qid": "q0366",
+          "number": 366,
+          "type": "MCQ",
+          "score": 36.941,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.125,
+            "rawPromptSimilarity": 0.125,
+            "englishPromptSimilarity": 0.125,
+            "syntheticPromptSimilarity": 0,
+            "optionSimilarity": 0.201,
+            "englishOptionSimilarity": 0.201,
+            "syntheticOptionSimilarity": 0.003,
+            "optionFingerprint": 0.106,
+            "englishOptionFingerprint": 0.106,
+            "syntheticOptionFingerprint": 0.001,
+            "optionExactSet": 0,
+            "optionRareCoverage": 0.137,
+            "mirrorAgreement": 0.002,
+            "correctAnswerMeaning": 0.5,
+            "englishCorrectAnswerMeaning": 0.5,
+            "syntheticCorrectAnswerMeaning": 0.5,
+            "questionType": 1,
+            "imageSignal": 1,
+            "topicWeighting": 0.5,
+            "assetTieBreak": 0
+          },
+          "diagnostics": {
+            "effectiveItemType": "MCQ",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": false,
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "exactCorrectKey": false,
+            "optionSetMode": "unordered-semantic + synthetic-ja mirror",
+            "rareSetBonus": 0,
+            "syntheticMirrorUsed": true,
+            "genericPromptFamily": null,
+            "explanation": [
+              "Missing correct answer was treated as a neutral signal."
+            ]
+          },
+          "prompt": "What kind of behavior of this driver violates the law?",
+          "syntheticJaPrompt": "kind behavior 運転者 violate law。",
+          "translatedPrompt": "이 운전자의 어떤 행위가 법을 위반하는가?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Not hold the steering wheel according to regulation.",
+              "translatedText": "규정대로 핸들을 잡지 않는다."
+            },
+            {
+              "id": "B",
+              "text": "Angle of the seat is not correct.",
+              "translatedText": "시트 각도가 맞지 않는다."
+            },
+            {
+              "id": "C",
+              "text": "Not buckled up.",
+              "translatedText": "안전벨트를 매지 않는다."
+            },
+            {
+              "id": "D",
+              "text": "The driving posture is incorrect.",
+              "translatedText": "운전 자세가 올바르지 않다."
+            }
+          ],
+          "correctAnswer": {
+            "kind": "MCQ",
+            "correctRow": null,
+            "correctOptionId": "q0366_o3",
+            "correctOptionKey": "C",
+            "correctOptionText": "Not buckled up.",
+            "correctOptionTranslatedText": "안전벨트를 매지 않는다.",
+            "answerRaw": "C"
+          },
+          "image": {
+            "hasImage": true,
+            "currentAssetSrc": "/qbank/2023-test1/images/img_6764515c171df322c9a5c63f5d9a927b.jpeg",
+            "assetHashes": [
+              "6764515c171df322c9a5c63f5d9a927b"
+            ]
+          },
+          "topic": "proper-driving",
+          "subtopics": [
+            "proper-driving:traffic-laws",
+            "driving-operations:gears"
+          ],
+          "conceptSlots": null
+        },
+        {
+          "qid": "q0444",
+          "number": 444,
+          "type": "MCQ",
+          "score": 35.658,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.268,
+            "rawPromptSimilarity": 0.268,
+            "englishPromptSimilarity": 0.268,
+            "syntheticPromptSimilarity": 0.096,
+            "optionSimilarity": 0.114,
+            "englishOptionSimilarity": 0.114,
+            "syntheticOptionSimilarity": 0.055,
+            "optionFingerprint": 0.056,
+            "englishOptionFingerprint": 0.056,
+            "syntheticOptionFingerprint": 0.011,
+            "optionExactSet": 0,
+            "optionRareCoverage": 0.064,
+            "mirrorAgreement": 0.04,
+            "correctAnswerMeaning": 0.5,
+            "englishCorrectAnswerMeaning": 0.5,
+            "syntheticCorrectAnswerMeaning": 0.5,
+            "questionType": 1,
+            "imageSignal": 1,
+            "topicWeighting": 0.5,
+            "assetTieBreak": 0
+          },
+          "diagnostics": {
+            "effectiveItemType": "MCQ",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": false,
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "exactCorrectKey": false,
+            "optionSetMode": "unordered-semantic + synthetic-ja mirror",
+            "rareSetBonus": 0,
+            "syntheticMirrorUsed": true,
+            "genericPromptFamily": "violation-kind",
+            "explanation": [
+              "Missing correct answer was treated as a neutral signal."
+            ]
+          },
+          "prompt": "What kind of violation does this car have while stopping temporarily by the roadside?",
+          "syntheticJaPrompt": "この車両の違反は何ですか",
+          "translatedPrompt": "도로변에 일시 정차한 이 차량은 어떤 위반행위에 해당하는가?",
+          "options": [
+            {
+              "id": "A",
+              "text": "occupying the lane for motorized vehicles",
+              "translatedText": "자동차 통행 차로를 점유하고 있다."
+            },
+            {
+              "id": "B",
+              "text": "stopping more than 30cm from the roadside",
+              "translatedText": "도로 가장자리에서 30cm 이상 떨어져 정차했다."
+            },
+            {
+              "id": "C",
+              "text": "stopping in the section with no stopping marking",
+              "translatedText": "정차 금지 구간에 정차했다."
+            },
+            {
+              "id": "D",
+              "text": "occupying the lane for non-motorized vehicles",
+              "translatedText": "비동력 차량용 차로를 점유하고 있다."
+            }
+          ],
+          "correctAnswer": {
+            "kind": "MCQ",
+            "correctRow": null,
+            "correctOptionId": "q0444_o3",
+            "correctOptionKey": "C",
+            "correctOptionText": "stopping in the section with no stopping marking",
+            "correctOptionTranslatedText": "정차 금지 구간에 정차했다.",
+            "answerRaw": "C"
+          },
+          "image": {
+            "hasImage": true,
+            "currentAssetSrc": "/qbank/2023-test1/images/p36-444.jpg",
+            "assetHashes": [
+              "e1fdb31f7cb095d6f1a1811306b0c97e"
+            ]
+          },
+          "topic": "violations-penalties",
+          "subtopics": [],
+          "conceptSlots": null
+        },
+        {
+          "qid": "q0493",
+          "number": 493,
+          "type": "MCQ",
+          "score": 34.974,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.263,
+            "rawPromptSimilarity": 0.263,
+            "englishPromptSimilarity": 0.263,
+            "syntheticPromptSimilarity": 0.096,
+            "optionSimilarity": 0.098,
+            "englishOptionSimilarity": 0.098,
+            "syntheticOptionSimilarity": 0.036,
+            "optionFingerprint": 0.057,
+            "englishOptionFingerprint": 0.057,
+            "syntheticOptionFingerprint": 0.011,
+            "optionExactSet": 0,
+            "optionRareCoverage": 0.074,
+            "mirrorAgreement": 0.027,
+            "correctAnswerMeaning": 0.5,
+            "englishCorrectAnswerMeaning": 0.5,
+            "syntheticCorrectAnswerMeaning": 0.5,
+            "questionType": 1,
+            "imageSignal": 1,
+            "topicWeighting": 0.5,
+            "assetTieBreak": 0
+          },
+          "diagnostics": {
+            "effectiveItemType": "MCQ",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": false,
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "exactCorrectKey": false,
+            "optionSetMode": "unordered-semantic + synthetic-ja mirror",
+            "rareSetBonus": 0,
+            "syntheticMirrorUsed": true,
+            "genericPromptFamily": "violation-kind",
+            "explanation": [
+              "Missing correct answer was treated as a neutral signal."
+            ]
+          },
+          "prompt": "What kind of violation does this stopping car have?",
+          "syntheticJaPrompt": "この車両の違反は何ですか",
+          "translatedPrompt": "이 차량의 정차는 어떤 위반행위에 해당하는가?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Stopping and occupying the lane for non-motorized vehicles.",
+              "translatedText": "비동력 차량용 차로에 정차하여 점유했다"
+            },
+            {
+              "id": "B",
+              "text": "Stopping in a section with no stopping marking.",
+              "translatedText": "정차 금지 표지가 없는 구간에 정차했다"
+            },
+            {
+              "id": "C",
+              "text": "Stopping at a bus stop.",
+              "translatedText": "버스 정류장에 정차했다"
+            },
+            {
+              "id": "D",
+              "text": "Stopping and occupying the sidewalk.",
+              "translatedText": "인도(보도)에 정차하여 점유했다"
+            }
+          ],
+          "correctAnswer": {
+            "kind": "MCQ",
+            "correctRow": null,
+            "correctOptionId": "q0493_o3",
+            "correctOptionKey": "C",
+            "correctOptionText": "Stopping at a bus stop.",
+            "correctOptionTranslatedText": "버스 정류장에 정차했다",
+            "answerRaw": "C"
+          },
+          "image": {
+            "hasImage": true,
+            "currentAssetSrc": "/qbank/2023-test1/images/img_32965d9b2ba20f4be6946d9edba4079a.jpeg",
+            "assetHashes": [
+              "32965d9b2ba20f4be6946d9edba4079a"
+            ]
+          },
+          "topic": "violations-penalties",
+          "subtopics": [],
+          "conceptSlots": null
+        }
+      ]
+    },
+    {
+      "itemId": "screenshots/Screenshot 2026-04-07 at 18.06.49.png",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.06.49.png",
+      "promptRawJa": "番をしている人がいない踏み切りを通過するさい、運転者はどうすべきか。",
+      "promptGlossEn": "When passing over a railroad crossing with no attendant, what should the driver do?",
+      "optionsRawJa": [
+        "A 速度を上げて通過する",
+        "B 速度を落として通過する",
+        "C 一定の速度で通過する",
+        "D 車を止め、様子を見てから通過する"
+      ],
+      "optionsGlossEn": [
+        "A. Pass through while increasing speed",
+        "B. Pass through while reducing speed",
+        "C. Pass through at a constant speed",
+        "D. Stop the car, check the situation, then pass through"
+      ],
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "ocrConfidence": "high",
+      "hasImage": false,
+      "provisionalTopic": "proper-driving",
+      "provisionalSubtopics": [
+        "proper-driving:safe-driving"
+      ],
+      "topicConfidence": 1,
+      "topicSignals": [
+        {
+          "topic": "proper-driving",
+          "subtopic": "proper-driving:safe-driving",
+          "signal": "driving-action",
+          "weight": 1.2
+        }
+      ],
+      "sourceConceptSlots": null,
+      "reason": "No candidate passed the minimum similarity threshold.",
+      "analysis": {
+        "mode": "standard",
+        "effectiveQuestionType": "MCQ",
+        "declaredQuestionType": "MCQ",
+        "booleanChoiceDetected": false,
+        "topScore": 42.494,
+        "topGap": 5.305,
+        "plausibleShortlist": true,
+        "imageParityApplied": true,
+        "candidateImageParityMode": "text-only candidate set",
+        "candidateCountBeforeParity": 973,
+        "candidateCountAfterParity": 480,
+        "explanation": "Shortlist is plausible but still below the review floor."
+      },
+      "topCandidates": [
+        {
+          "qid": "q0112",
+          "number": 112,
+          "type": "MCQ",
+          "score": 42.494,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.353,
+            "rawPromptSimilarity": 0.353,
+            "englishPromptSimilarity": 0.353,
+            "syntheticPromptSimilarity": 0.055,
+            "optionSimilarity": 0.226,
+            "englishOptionSimilarity": 0.226,
+            "syntheticOptionSimilarity": 0,
+            "optionFingerprint": 0.134,
+            "englishOptionFingerprint": 0.134,
+            "syntheticOptionFingerprint": 0,
+            "optionExactSet": 0,
+            "optionRareCoverage": 0.156,
+            "mirrorAgreement": 0,
+            "correctAnswerMeaning": 0.5,
+            "englishCorrectAnswerMeaning": 0.5,
+            "syntheticCorrectAnswerMeaning": 0.5,
+            "questionType": 1,
+            "imageSignal": 1,
+            "topicWeighting": 0.5,
+            "assetTieBreak": 0
+          },
+          "diagnostics": {
+            "effectiveItemType": "MCQ",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": false,
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "exactCorrectKey": false,
+            "optionSetMode": "unordered-semantic + synthetic-ja mirror",
+            "rareSetBonus": 0,
+            "syntheticMirrorUsed": true,
+            "genericPromptFamily": null,
+            "explanation": [
+              "Missing correct answer was treated as a neutral signal."
+            ]
+          },
+          "prompt": "When passing an unmanned level crossing, the driver should ______.",
+          "syntheticJaPrompt": "when passing unmanned level crossing 運転者 べき ________。",
+          "translatedPrompt": "무인 건널목을 통과할 때 운전자는 어떻게 해야 하는가?",
+          "options": [
+            {
+              "id": "A",
+              "text": "speed up and pass",
+              "translatedText": "속도를 높여 통과한다"
+            },
+            {
+              "id": "B",
+              "text": "reduce speed and pass",
+              "translatedText": "감속하여 통과한다"
+            },
+            {
+              "id": "C",
+              "text": "maintain the speed and pass",
+              "translatedText": "속도를 유지하고 통과한다"
+            },
+            {
+              "id": "D",
+              "text": "stop, look, and pass",
+              "translatedText": "정차하여 살핀 후 통과한다"
+            }
+          ],
+          "correctAnswer": {
+            "kind": "MCQ",
+            "correctRow": null,
+            "correctOptionId": "q0112_o4",
+            "correctOptionKey": "D",
+            "correctOptionText": "stop, look, and pass",
+            "correctOptionTranslatedText": "정차하여 살핀 후 통과한다",
+            "answerRaw": "D"
+          },
+          "image": {
+            "hasImage": false,
+            "currentAssetSrc": null,
+            "assetHashes": []
+          },
+          "topic": "traffic-lights",
+          "subtopics": [],
+          "conceptSlots": null
+        },
+        {
+          "qid": "q0117",
+          "number": 117,
+          "type": "MCQ",
+          "score": 37.189,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.28,
+            "rawPromptSimilarity": 0.28,
+            "englishPromptSimilarity": 0.28,
+            "syntheticPromptSimilarity": 0.056,
+            "optionSimilarity": 0.152,
+            "englishOptionSimilarity": 0.152,
+            "syntheticOptionSimilarity": 0,
+            "optionFingerprint": 0.067,
+            "englishOptionFingerprint": 0.067,
+            "syntheticOptionFingerprint": 0,
+            "optionExactSet": 0,
+            "optionRareCoverage": 0.075,
+            "mirrorAgreement": 0,
+            "correctAnswerMeaning": 0.5,
+            "englishCorrectAnswerMeaning": 0.5,
+            "syntheticCorrectAnswerMeaning": 0.5,
+            "questionType": 1,
+            "imageSignal": 1,
+            "topicWeighting": 0.5,
+            "assetTieBreak": 0
+          },
+          "diagnostics": {
+            "effectiveItemType": "MCQ",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": false,
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "exactCorrectKey": false,
+            "optionSetMode": "unordered-semantic + synthetic-ja mirror",
+            "rareSetBonus": 0,
+            "syntheticMirrorUsed": true,
+            "genericPromptFamily": null,
+            "explanation": [
+              "Missing correct answer was treated as a neutral signal."
+            ]
+          },
+          "prompt": "When passing through an flooded road, the driver should ______.",
+          "syntheticJaPrompt": "when passing through inundated road 運転者 べき ________。",
+          "translatedPrompt": "침수된 도로를 지날 때 운전자는 어떻게 해야 하는가?",
+          "options": [
+            {
+              "id": "A",
+              "text": "reduce speed and go slowly",
+              "translatedText": "감속하여 서행하다"
+            },
+            {
+              "id": "B",
+              "text": "maintain the normal speed and pass",
+              "translatedText": "정상 속도를 유지하며 통과하다"
+            },
+            {
+              "id": "C",
+              "text": "slide over in the neutral gear",
+              "translatedText": "중립 기어로 미끄러지듯 지나가다"
+            },
+            {
+              "id": "D",
+              "text": "speed up and pass",
+              "translatedText": "속도를 올려 통과하다"
+            }
+          ],
+          "correctAnswer": {
+            "kind": "MCQ",
+            "correctRow": null,
+            "correctOptionId": "q0117_o1",
+            "correctOptionKey": "A",
+            "correctOptionText": "reduce speed and go slowly",
+            "correctOptionTranslatedText": "감속하여 서행하다",
+            "answerRaw": "A"
+          },
+          "image": {
+            "hasImage": false,
+            "currentAssetSrc": null,
+            "assetHashes": []
+          },
+          "topic": "road-safety",
+          "subtopics": [
+            "road-safety:road-conditions",
+            "proper-driving:safe-driving"
+          ],
+          "conceptSlots": null
+        },
+        {
+          "qid": "q0185",
+          "number": 185,
+          "type": "MCQ",
+          "score": 35.547,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.146,
+            "rawPromptSimilarity": 0.146,
+            "englishPromptSimilarity": 0.146,
+            "syntheticPromptSimilarity": 0.046,
+            "optionSimilarity": 0.165,
+            "englishOptionSimilarity": 0.165,
+            "syntheticOptionSimilarity": 0,
+            "optionFingerprint": 0.082,
+            "englishOptionFingerprint": 0.082,
+            "syntheticOptionFingerprint": 0,
+            "optionExactSet": 0,
+            "optionRareCoverage": 0.064,
+            "mirrorAgreement": 0,
+            "correctAnswerMeaning": 0.5,
+            "englishCorrectAnswerMeaning": 0.5,
+            "syntheticCorrectAnswerMeaning": 0.5,
+            "questionType": 1,
+            "imageSignal": 1,
+            "topicWeighting": 0.5,
+            "assetTieBreak": 0
+          },
+          "diagnostics": {
+            "effectiveItemType": "MCQ",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": false,
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "exactCorrectKey": false,
+            "optionSetMode": "unordered-semantic + synthetic-ja mirror",
+            "rareSetBonus": 0,
+            "syntheticMirrorUsed": true,
+            "genericPromptFamily": null,
+            "explanation": [
+              "Missing correct answer was treated as a neutral signal."
+            ]
+          },
+          "prompt": "When overtaking, the driver should ______ if the vehicle in front refuses to reduce speed or yield.",
+          "syntheticJaPrompt": "when 追い越し 運転者 べき ________ if 車両 front refuse 減速 or 譲れ。",
+          "translatedPrompt": "추월 중 앞차가 감속하거나 양보하지 않을 때 운전자는 어떻게 해야 하는가?",
+          "options": [
+            {
+              "id": "A",
+              "text": "follow closely and find chance to overtake again",
+              "translatedText": "바짝 붙어 다시 추월 기회를 찾는다"
+            },
+            {
+              "id": "B",
+              "text": "stop overtaking",
+              "translatedText": "추월을 중지한다"
+            },
+            {
+              "id": "C",
+              "text": "speed up and continue to overtake",
+              "translatedText": "가속하여 계속 추월한다"
+            },
+            {
+              "id": "D",
+              "text": "continuously honk and speed up to overtake",
+              "translatedText": "계속 경적을 울리며 가속해 추월한다"
+            }
+          ],
+          "correctAnswer": {
+            "kind": "MCQ",
+            "correctRow": null,
+            "correctOptionId": "q0185_o2",
+            "correctOptionKey": "B",
+            "correctOptionText": "stop overtaking",
+            "correctOptionTranslatedText": "추월을 중지한다",
+            "answerRaw": "B"
+          },
+          "image": {
+            "hasImage": false,
+            "currentAssetSrc": null,
+            "assetHashes": []
+          },
+          "topic": "right-of-way",
+          "subtopics": [],
+          "conceptSlots": null
+        },
+        {
+          "qid": "q0156",
+          "number": 156,
+          "type": "MCQ",
+          "score": 35.546,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.201,
+            "rawPromptSimilarity": 0.201,
+            "englishPromptSimilarity": 0.201,
+            "syntheticPromptSimilarity": 0.057,
+            "optionSimilarity": 0.149,
+            "englishOptionSimilarity": 0.149,
+            "syntheticOptionSimilarity": 0,
+            "optionFingerprint": 0.061,
+            "englishOptionFingerprint": 0.061,
+            "syntheticOptionFingerprint": 0,
+            "optionExactSet": 0,
+            "optionRareCoverage": 0.059,
+            "mirrorAgreement": 0,
+            "correctAnswerMeaning": 0.5,
+            "englishCorrectAnswerMeaning": 0.5,
+            "syntheticCorrectAnswerMeaning": 0.5,
+            "questionType": 1,
+            "imageSignal": 1,
+            "topicWeighting": 0.5,
+            "assetTieBreak": 0
+          },
+          "diagnostics": {
+            "effectiveItemType": "MCQ",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": false,
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "exactCorrectKey": false,
+            "optionSetMode": "unordered-semantic + synthetic-ja mirror",
+            "rareSetBonus": 0,
+            "syntheticMirrorUsed": true,
+            "genericPromptFamily": null,
+            "explanation": [
+              "Missing correct answer was treated as a neutral signal."
+            ]
+          },
+          "prompt": "When a vehicle passes a bumped road, the driver should ______.",
+          "syntheticJaPrompt": "when 車両 追い越し bumped road 運転者 べき ________。",
+          "translatedPrompt": "차량이 요철(울퉁불퉁한 노면)을 지날 때 운전자는 어떻게 해야 하는가?",
+          "options": [
+            {
+              "id": "A",
+              "text": "speed up and dash over under inertia",
+              "translatedText": "속도를 올려 관성으로 급히 통과한다"
+            },
+            {
+              "id": "B",
+              "text": "change to the neutral gear and slide over",
+              "translatedText": "중립 기어로 변속하여 미끄러지듯 통과한다"
+            },
+            {
+              "id": "C",
+              "text": "maintain the original speed and pass",
+              "translatedText": "기존 속도를 유지하고 통과한다"
+            },
+            {
+              "id": "D",
+              "text": "pass slowly and steadily",
+              "translatedText": "서행하면서 안정적으로 통과한다"
+            }
+          ],
+          "correctAnswer": {
+            "kind": "MCQ",
+            "correctRow": null,
+            "correctOptionId": "q0156_o4",
+            "correctOptionKey": "D",
+            "correctOptionText": "pass slowly and steadily",
+            "correctOptionTranslatedText": "서행하면서 안정적으로 통과한다",
+            "answerRaw": "D"
+          },
+          "image": {
+            "hasImage": false,
+            "currentAssetSrc": null,
+            "assetHashes": []
+          },
+          "topic": "mcq",
+          "subtopics": [],
+          "conceptSlots": null
+        },
+        {
+          "qid": "q0131",
+          "number": 131,
+          "type": "MCQ",
+          "score": 34.667,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.161,
+            "rawPromptSimilarity": 0.161,
+            "englishPromptSimilarity": 0.161,
+            "syntheticPromptSimilarity": 0.049,
+            "optionSimilarity": 0.127,
+            "englishOptionSimilarity": 0.127,
+            "syntheticOptionSimilarity": 0,
+            "optionFingerprint": 0.088,
+            "englishOptionFingerprint": 0.088,
+            "syntheticOptionFingerprint": 0,
+            "optionExactSet": 0,
+            "optionRareCoverage": 0.136,
+            "mirrorAgreement": 0,
+            "correctAnswerMeaning": 0.5,
+            "englishCorrectAnswerMeaning": 0.5,
+            "syntheticCorrectAnswerMeaning": 0.5,
+            "questionType": 1,
+            "imageSignal": 1,
+            "topicWeighting": 0.5,
+            "assetTieBreak": 0
+          },
+          "diagnostics": {
+            "effectiveItemType": "MCQ",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": false,
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "exactCorrectKey": false,
+            "optionSetMode": "unordered-semantic + synthetic-ja mirror",
+            "rareSetBonus": 0,
+            "syntheticMirrorUsed": true,
+            "genericPromptFamily": null,
+            "explanation": [
+              "Missing correct answer was treated as a neutral signal."
+            ]
+          },
+          "prompt": "When reaching an intersection, the driver should _____ if a turning vehicle cuts in.",
+          "syntheticJaPrompt": "when reaching 交差点 運転者 べき _____ if turning 車両 cuts。",
+          "translatedPrompt": "교차로에 접근할 때 회전 차량이 끼어들면 운전자는 어떻게 해야 하는가?",
+          "options": [
+            {
+              "id": "A",
+              "text": "stop to evade",
+              "translatedText": "피하기 위해 정차하다"
+            },
+            {
+              "id": "B",
+              "text": "maintain the normal speed",
+              "translatedText": "정상 속도를 유지하다"
+            },
+            {
+              "id": "C",
+              "text": "speed up and pass ahead of it",
+              "translatedText": "속도를 높여 먼저 통과하다"
+            },
+            {
+              "id": "D",
+              "text": "honk and pass ahead of it",
+              "translatedText": "경적을 울리고 먼저 통과하다"
+            }
+          ],
+          "correctAnswer": {
+            "kind": "MCQ",
+            "correctRow": null,
+            "correctOptionId": "q0131_o1",
+            "correctOptionKey": "A",
+            "correctOptionText": "stop to evade",
+            "correctOptionTranslatedText": "피하기 위해 정차하다",
+            "answerRaw": "A"
+          },
+          "image": {
+            "hasImage": false,
+            "currentAssetSrc": null,
+            "assetHashes": []
+          },
+          "topic": "proper-driving",
+          "subtopics": [
+            "proper-driving:safe-driving"
+          ],
+          "conceptSlots": null
+        }
+      ]
+    },
+    {
+      "itemId": "screenshots/Screenshot 2026-04-07 at 18.07.01.png",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.07.01.png",
+      "promptRawJa": "この標識の示す意味はどれか。",
+      "promptGlossEn": "What does this road sign mean?",
+      "optionsRawJa": [
+        "A 路面に凹みあり",
+        "B 山なりの橋",
+        "C 路面に凸凹あり",
+        "D 路面突出"
+      ],
+      "optionsGlossEn": [
+        "A. There is a depression in the road",
+        "B. Arched bridge",
+        "C. The road is uneven",
+        "D. Road protrusion"
+      ],
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "ocrConfidence": "high",
+      "hasImage": true,
+      "provisionalTopic": "traffic-signals",
+      "provisionalSubtopics": [
+        "traffic-signals:road-signs"
+      ],
+      "topicConfidence": 1,
+      "topicSignals": [
+        {
+          "topic": "traffic-signals",
+          "subtopic": "traffic-signals:road-signs",
+          "signal": "sign-family",
+          "weight": 1.4
+        }
+      ],
+      "sourceConceptSlots": null,
+      "reason": "No candidate passed the minimum similarity threshold.",
+      "analysis": {
+        "mode": "standard",
+        "effectiveQuestionType": "MCQ",
+        "declaredQuestionType": "MCQ",
+        "booleanChoiceDetected": false,
+        "topScore": 37.235,
+        "topGap": 0,
+        "plausibleShortlist": true,
+        "imageParityApplied": true,
+        "candidateImageParityMode": "image-only candidate set",
+        "candidateCountBeforeParity": 973,
+        "candidateCountAfterParity": 493,
+        "explanation": "Shortlist is plausible but still below the review floor."
+      },
+      "topCandidates": [
+        {
+          "qid": "q0664",
+          "number": 664,
+          "type": "MCQ",
+          "score": 37.235,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.124,
+            "rawPromptSimilarity": 0.248,
+            "englishPromptSimilarity": 0.124,
+            "syntheticPromptSimilarity": 0.087,
+            "optionSimilarity": 0.213,
+            "englishOptionSimilarity": 0.213,
+            "syntheticOptionSimilarity": 0,
+            "optionFingerprint": 0.103,
+            "englishOptionFingerprint": 0.103,
+            "syntheticOptionFingerprint": 0,
+            "optionExactSet": 0,
+            "optionRareCoverage": 0.103,
+            "mirrorAgreement": 0,
+            "correctAnswerMeaning": 0.5,
+            "englishCorrectAnswerMeaning": 0.5,
+            "syntheticCorrectAnswerMeaning": 0.5,
+            "questionType": 1,
+            "imageSignal": 1,
+            "topicWeighting": 0.5,
+            "assetTieBreak": 0
+          },
+          "diagnostics": {
+            "effectiveItemType": "MCQ",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": false,
+            "promptSpecificity": 0.6,
+            "genericPromptPenalty": 0.6,
+            "missingCorrectAnswerNeutral": true,
+            "exactCorrectKey": false,
+            "optionSetMode": "unordered-semantic + synthetic-ja mirror",
+            "rareSetBonus": 0,
+            "syntheticMirrorUsed": true,
+            "genericPromptFamily": null,
+            "explanation": [
+              "Generic prompt wording was down-weighted to avoid overvaluing template matches.",
+              "Missing correct answer was treated as a neutral signal."
+            ]
+          },
+          "prompt": "What’s the meaning of this sign?",
+          "syntheticJaPrompt": "meaning 標識。",
+          "translatedPrompt": "이 표지의 뜻은?",
+          "options": [
+            {
+              "id": "A",
+              "text": "bump road",
+              "translatedText": "과속 방지턱"
+            },
+            {
+              "id": "B",
+              "text": "low-lying road",
+              "translatedText": "움푹 패인 도로"
+            },
+            {
+              "id": "C",
+              "text": "high outburst road",
+              "translatedText": "높게 돌출된 도로"
+            },
+            {
+              "id": "D",
+              "text": "hump bridge",
+              "translatedText": "험프 브리지"
+            }
+          ],
+          "correctAnswer": {
+            "kind": "MCQ",
+            "correctRow": null,
+            "correctOptionId": "q0664_o2",
+            "correctOptionKey": "B",
+            "correctOptionText": "low-lying road",
+            "correctOptionTranslatedText": "움푹 패인 도로",
+            "answerRaw": "B"
+          },
+          "image": {
+            "hasImage": true,
+            "currentAssetSrc": "/qbank/2023-test1/images/img_3f1fb40c4147e43e0bde84ed26341f7f.jpeg",
+            "assetHashes": [
+              "3f1fb40c4147e43e0bde84ed26341f7f"
+            ]
+          },
+          "topic": "mcq",
+          "subtopics": [],
+          "conceptSlots": null
+        },
+        {
+          "qid": "q0766",
+          "number": 766,
+          "type": "MCQ",
+          "score": 37.235,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.124,
+            "rawPromptSimilarity": 0.248,
+            "englishPromptSimilarity": 0.124,
+            "syntheticPromptSimilarity": 0.087,
+            "optionSimilarity": 0.213,
+            "englishOptionSimilarity": 0.213,
+            "syntheticOptionSimilarity": 0,
+            "optionFingerprint": 0.103,
+            "englishOptionFingerprint": 0.103,
+            "syntheticOptionFingerprint": 0,
+            "optionExactSet": 0,
+            "optionRareCoverage": 0.103,
+            "mirrorAgreement": 0,
+            "correctAnswerMeaning": 0.5,
+            "englishCorrectAnswerMeaning": 0.5,
+            "syntheticCorrectAnswerMeaning": 0.5,
+            "questionType": 1,
+            "imageSignal": 1,
+            "topicWeighting": 0.5,
+            "assetTieBreak": 0
+          },
+          "diagnostics": {
+            "effectiveItemType": "MCQ",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": false,
+            "promptSpecificity": 0.6,
+            "genericPromptPenalty": 0.6,
+            "missingCorrectAnswerNeutral": true,
+            "exactCorrectKey": false,
+            "optionSetMode": "unordered-semantic + synthetic-ja mirror",
+            "rareSetBonus": 0,
+            "syntheticMirrorUsed": true,
+            "genericPromptFamily": null,
+            "explanation": [
+              "Generic prompt wording was down-weighted to avoid overvaluing template matches.",
+              "Missing correct answer was treated as a neutral signal."
+            ]
+          },
+          "prompt": "What’s the meaning of this sign?",
+          "syntheticJaPrompt": "meaning 標識。",
+          "translatedPrompt": "이 표지의 뜻은?",
+          "options": [
+            {
+              "id": "A",
+              "text": "low-lying road",
+              "translatedText": "저지대 도로"
+            },
+            {
+              "id": "B",
+              "text": "hump bridge",
+              "translatedText": "요철형 교량"
+            },
+            {
+              "id": "C",
+              "text": "bump road",
+              "translatedText": "울퉁불퉁한 도로"
+            },
+            {
+              "id": "D",
+              "text": "high outburst road",
+              "translatedText": "고저차가 큰 도로"
+            }
+          ],
+          "correctAnswer": {
+            "kind": "MCQ",
+            "correctRow": null,
+            "correctOptionId": "q0766_o3",
+            "correctOptionKey": "C",
+            "correctOptionText": "bump road",
+            "correctOptionTranslatedText": "울퉁불퉁한 도로",
+            "answerRaw": "C"
+          },
+          "image": {
+            "hasImage": true,
+            "currentAssetSrc": "/qbank/2023-test1/images/img_aa083fd6e0208fa8e8333582e0a53dfa.jpeg",
+            "assetHashes": [
+              "aa083fd6e0208fa8e8333582e0a53dfa"
+            ]
+          },
+          "topic": "mcq",
+          "subtopics": [],
+          "conceptSlots": null
+        },
+        {
+          "qid": "q0782",
+          "number": 782,
+          "type": "MCQ",
+          "score": 37.235,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.124,
+            "rawPromptSimilarity": 0.248,
+            "englishPromptSimilarity": 0.124,
+            "syntheticPromptSimilarity": 0.087,
+            "optionSimilarity": 0.213,
+            "englishOptionSimilarity": 0.213,
+            "syntheticOptionSimilarity": 0,
+            "optionFingerprint": 0.103,
+            "englishOptionFingerprint": 0.103,
+            "syntheticOptionFingerprint": 0,
+            "optionExactSet": 0,
+            "optionRareCoverage": 0.103,
+            "mirrorAgreement": 0,
+            "correctAnswerMeaning": 0.5,
+            "englishCorrectAnswerMeaning": 0.5,
+            "syntheticCorrectAnswerMeaning": 0.5,
+            "questionType": 1,
+            "imageSignal": 1,
+            "topicWeighting": 0.5,
+            "assetTieBreak": 0
+          },
+          "diagnostics": {
+            "effectiveItemType": "MCQ",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": false,
+            "promptSpecificity": 0.6,
+            "genericPromptPenalty": 0.6,
+            "missingCorrectAnswerNeutral": true,
+            "exactCorrectKey": false,
+            "optionSetMode": "unordered-semantic + synthetic-ja mirror",
+            "rareSetBonus": 0,
+            "syntheticMirrorUsed": true,
+            "genericPromptFamily": null,
+            "explanation": [
+              "Generic prompt wording was down-weighted to avoid overvaluing template matches.",
+              "Missing correct answer was treated as a neutral signal."
+            ]
+          },
+          "prompt": "What’s the meaning of this sign?",
+          "syntheticJaPrompt": "meaning 標識。",
+          "translatedPrompt": "이 표지의 뜻은?",
+          "options": [
+            {
+              "id": "A",
+              "text": "bump road",
+              "translatedText": "요철 도로"
+            },
+            {
+              "id": "B",
+              "text": "high outburst road",
+              "translatedText": "높은 돌출부 도로"
+            },
+            {
+              "id": "C",
+              "text": "low-lying road",
+              "translatedText": "저지대 도로"
+            },
+            {
+              "id": "D",
+              "text": "hump bridge",
+              "translatedText": "다리 돌출부"
+            }
+          ],
+          "correctAnswer": {
+            "kind": "MCQ",
+            "correctRow": null,
+            "correctOptionId": "q0782_o2",
+            "correctOptionKey": "B",
+            "correctOptionText": "high outburst road",
+            "correctOptionTranslatedText": "높은 돌출부 도로",
+            "answerRaw": "B"
+          },
+          "image": {
+            "hasImage": true,
+            "currentAssetSrc": "/qbank/2023-test1/images/img_04fdae10b067730db62a2ba85cea4f6e.jpeg",
+            "assetHashes": [
+              "04fdae10b067730db62a2ba85cea4f6e"
+            ]
+          },
+          "topic": "mcq",
+          "subtopics": [],
+          "conceptSlots": null
+        },
+        {
+          "qid": "q0694",
+          "number": 694,
+          "type": "MCQ",
+          "score": 37.235,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.124,
+            "rawPromptSimilarity": 0.248,
+            "englishPromptSimilarity": 0.124,
+            "syntheticPromptSimilarity": 0.087,
+            "optionSimilarity": 0.213,
+            "englishOptionSimilarity": 0.213,
+            "syntheticOptionSimilarity": 0,
+            "optionFingerprint": 0.103,
+            "englishOptionFingerprint": 0.103,
+            "syntheticOptionFingerprint": 0,
+            "optionExactSet": 0,
+            "optionRareCoverage": 0.103,
+            "mirrorAgreement": 0,
+            "correctAnswerMeaning": 0.5,
+            "englishCorrectAnswerMeaning": 0.5,
+            "syntheticCorrectAnswerMeaning": 0.5,
+            "questionType": 1,
+            "imageSignal": 1,
+            "topicWeighting": 0.5,
+            "assetTieBreak": 0
+          },
+          "diagnostics": {
+            "effectiveItemType": "MCQ",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": false,
+            "promptSpecificity": 0.6,
+            "genericPromptPenalty": 0.6,
+            "missingCorrectAnswerNeutral": true,
+            "exactCorrectKey": false,
+            "optionSetMode": "unordered-semantic + synthetic-ja mirror",
+            "rareSetBonus": 0,
+            "syntheticMirrorUsed": true,
+            "genericPromptFamily": null,
+            "explanation": [
+              "Generic prompt wording was down-weighted to avoid overvaluing template matches.",
+              "Missing correct answer was treated as a neutral signal."
+            ]
+          },
+          "prompt": "What’s the meaning of this sign?",
+          "syntheticJaPrompt": "meaning 標識。",
+          "translatedPrompt": "이 표지의 뜻은?",
+          "options": [
+            {
+              "id": "A",
+              "text": "hump bridge",
+              "translatedText": "중간이 솟은 다리(요철 교량)"
+            },
+            {
+              "id": "B",
+              "text": "high outburst road",
+              "translatedText": "높은 도로"
+            },
+            {
+              "id": "C",
+              "text": "low-lying road",
+              "translatedText": "저지대 도로"
+            },
+            {
+              "id": "D",
+              "text": "bump road",
+              "translatedText": "울퉁불퉁한 도로"
+            }
+          ],
+          "correctAnswer": {
+            "kind": "MCQ",
+            "correctRow": null,
+            "correctOptionId": "q0694_o1",
+            "correctOptionKey": "A",
+            "correctOptionText": "hump bridge",
+            "correctOptionTranslatedText": "중간이 솟은 다리(요철 교량)",
+            "answerRaw": "A"
+          },
+          "image": {
+            "hasImage": true,
+            "currentAssetSrc": "/qbank/2023-test1/images/img_57f39b462b51f82e12cef9a65dd3eba6.jpeg",
+            "assetHashes": [
+              "57f39b462b51f82e12cef9a65dd3eba6"
+            ]
+          },
+          "topic": "mcq",
+          "subtopics": [],
+          "conceptSlots": null
+        },
+        {
+          "qid": "q0680",
+          "number": 680,
+          "type": "MCQ",
+          "score": 35.289,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.12,
+            "rawPromptSimilarity": 0.241,
+            "englishPromptSimilarity": 0.12,
+            "syntheticPromptSimilarity": 0.048,
+            "optionSimilarity": 0.162,
+            "englishOptionSimilarity": 0.162,
+            "syntheticOptionSimilarity": 0,
+            "optionFingerprint": 0.096,
+            "englishOptionFingerprint": 0.096,
+            "syntheticOptionFingerprint": 0,
+            "optionExactSet": 0,
+            "optionRareCoverage": 0.123,
+            "mirrorAgreement": 0,
+            "correctAnswerMeaning": 0.5,
+            "englishCorrectAnswerMeaning": 0.5,
+            "syntheticCorrectAnswerMeaning": 0.5,
+            "questionType": 1,
+            "imageSignal": 1,
+            "topicWeighting": 0.5,
+            "assetTieBreak": 0
+          },
+          "diagnostics": {
+            "effectiveItemType": "MCQ",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": false,
+            "promptSpecificity": 0.55,
+            "genericPromptPenalty": 0.55,
+            "missingCorrectAnswerNeutral": true,
+            "exactCorrectKey": false,
+            "optionSetMode": "unordered-semantic + synthetic-ja mirror",
+            "rareSetBonus": 0,
+            "syntheticMirrorUsed": true,
+            "genericPromptFamily": "road-sign-meaning",
+            "explanation": [
+              "Generic prompt wording was down-weighted to avoid overvaluing template matches.",
+              "Missing correct answer was treated as a neutral signal."
+            ]
+          },
+          "prompt": "What is this traffic sign?",
+          "syntheticJaPrompt": "この道路標識は何を示していますか",
+          "translatedPrompt": "이 표지의 뜻은?",
+          "options": [
+            {
+              "id": "A",
+              "text": "road narrows on both sides",
+              "translatedText": "도로가 양쪽에서 좁아진다"
+            },
+            {
+              "id": "B",
+              "text": "road narrows on the right side",
+              "translatedText": "도로가 오른쪽에서 좁아진다"
+            },
+            {
+              "id": "C",
+              "text": "road narrows on the left side",
+              "translatedText": "도로가 왼쪽에서 좁아진다"
+            },
+            {
+              "id": "D",
+              "text": "bridge narrows",
+              "translatedText": "다리 폭이 좁아진다"
+            }
+          ],
+          "correctAnswer": {
+            "kind": "MCQ",
+            "correctRow": null,
+            "correctOptionId": "q0680_o1",
+            "correctOptionKey": "A",
+            "correctOptionText": "road narrows on both sides",
+            "correctOptionTranslatedText": "도로가 양쪽에서 좁아진다",
+            "answerRaw": "A"
+          },
+          "image": {
+            "hasImage": true,
+            "currentAssetSrc": "/qbank/2023-test1/images/img_0d5b6d9219d496aa20c6f81a81f76246.jpeg",
+            "assetHashes": [
+              "0d5b6d9219d496aa20c6f81a81f76246"
+            ]
+          },
+          "topic": "traffic-signs",
+          "subtopics": [],
+          "conceptSlots": null
+        }
+      ]
+    },
+    {
+      "itemId": "screenshots/Screenshot 2026-04-07 at 18.07.06.png",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.07.06.png",
+      "promptRawJa": "国が規定する強制廃棄基準に達している自動車は、登録手続きをすることができない。",
+      "promptGlossEn": "A vehicle that meets the compulsory disposal standards set by the government cannot be registered.",
+      "optionsRawJa": [
+        "A Yes",
+        "B No"
+      ],
+      "optionsGlossEn": [
+        "Yes",
+        "No"
+      ],
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "ocrConfidence": "high",
+      "hasImage": false,
+      "provisionalTopic": "proper-driving",
+      "provisionalSubtopics": [
+        "proper-driving:traffic-laws"
+      ],
+      "topicConfidence": 1,
+      "topicSignals": [
+        {
+          "topic": "proper-driving",
+          "subtopic": "proper-driving:traffic-laws",
+          "signal": "traffic-law",
+          "weight": 1.15
+        }
+      ],
+      "sourceConceptSlots": {
+        "condition": [],
+        "context": [],
+        "action": [],
+        "polarity": "negative",
+        "signals": []
+      },
+      "reason": "No candidate passed the minimum similarity threshold.",
+      "analysis": {
+        "mode": "standard",
+        "effectiveQuestionType": "ROW",
+        "declaredQuestionType": "MCQ",
+        "booleanChoiceDetected": true,
+        "topScore": 36.882,
+        "topGap": 0.194,
+        "plausibleShortlist": false,
+        "imageParityApplied": true,
+        "candidateImageParityMode": "text-only candidate set",
+        "candidateCountBeforeParity": 973,
+        "candidateCountAfterParity": 480,
+        "explanation": "Shortlist remains weak after semantic normalization."
+      },
+      "topCandidates": [
+        {
+          "qid": "q0349",
+          "number": 349,
+          "type": "ROW",
+          "score": 36.882,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.158,
+            "rawPromptSimilarity": 0.158,
+            "englishPromptSimilarity": 0.158,
+            "syntheticPromptSimilarity": 0.058,
+            "questionType": 1,
+            "imageSignal": 1,
+            "topicWeighting": 0.5,
+            "answerPolarity": 0.5,
+            "conceptAlignment": 0,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0
+          },
+          "diagnostics": {
+            "effectiveItemType": "ROW",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": true,
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "optionSetMode": "binary-row-neutral + synthetic-ja mirror",
+            "syntheticMirrorUsed": true,
+            "genericPromptFamily": null,
+            "sourceConceptSlots": {
+              "condition": [],
+              "context": [],
+              "action": [],
+              "polarity": "negative",
+              "signals": []
+            },
+            "candidateConceptSlots": {
+              "condition": [],
+              "context": [],
+              "action": [],
+              "polarity": null,
+              "signals": []
+            },
+            "conceptMatches": [],
+            "contradictionSignals": [],
+            "rowConceptMode": "slot-alignment + contradiction-penalties",
+            "explanation": [
+              "Binary yes/no options were treated as ROW-like for type scoring.",
+              "Missing correct answer was treated as a neutral signal."
+            ]
+          },
+          "prompt": "If a motorized vehicle has reached the state's mandatory write-off standard, its registration will not be handled.",
+          "syntheticJaPrompt": "if motorized 車両 has reached state mandatory write-off standard its registration will not be handled。",
+          "translatedPrompt": "자동차가 국가의 강제 폐차 기준에 해당하면 등록 처리를 받을 수 없다.",
+          "options": [],
+          "correctAnswer": {
+            "kind": "ROW",
+            "correctRow": "R",
+            "correctOptionId": null,
+            "correctOptionKey": null,
+            "correctOptionText": "right / true",
+            "correctOptionTranslatedText": null,
+            "answerRaw": "Right"
+          },
+          "image": {
+            "hasImage": false,
+            "currentAssetSrc": null,
+            "assetHashes": []
+          },
+          "topic": "vehicle-registration",
+          "subtopics": [],
+          "conceptSlots": {
+            "condition": [],
+            "context": [],
+            "action": [],
+            "polarity": null,
+            "signals": []
+          }
+        },
+        {
+          "qid": "q0309",
+          "number": 309,
+          "type": "ROW",
+          "score": 36.688,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.155,
+            "rawPromptSimilarity": 0.155,
+            "englishPromptSimilarity": 0.155,
+            "syntheticPromptSimilarity": 0.05,
+            "questionType": 1,
+            "imageSignal": 1,
+            "topicWeighting": 0.5,
+            "answerPolarity": 0.5,
+            "conceptAlignment": 0,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0
+          },
+          "diagnostics": {
+            "effectiveItemType": "ROW",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": true,
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "optionSetMode": "binary-row-neutral + synthetic-ja mirror",
+            "syntheticMirrorUsed": true,
+            "genericPromptFamily": null,
+            "sourceConceptSlots": {
+              "condition": [],
+              "context": [],
+              "action": [],
+              "polarity": "negative",
+              "signals": []
+            },
+            "candidateConceptSlots": {
+              "condition": [],
+              "context": [
+                "expressway"
+              ],
+              "action": [],
+              "polarity": "negative",
+              "signals": [
+                {
+                  "slot": "context",
+                  "value": "expressway",
+                  "signal": "expressway"
+                }
+              ]
+            },
+            "conceptMatches": [],
+            "contradictionSignals": [],
+            "rowConceptMode": "slot-alignment + contradiction-penalties",
+            "explanation": [
+              "Binary yes/no options were treated as ROW-like for type scoring.",
+              "Missing correct answer was treated as a neutral signal."
+            ]
+          },
+          "prompt": "If a motorized vehicle causes a traffic accident on the expressway and cannot function properly, the vehicle should be towed by a rescue vehicle or a tow truck.",
+          "syntheticJaPrompt": "if motorized 車両 cause traffic accident 高速道路 and してはならない run normally 車両 べき be towed by rescue 車両 or tow truck。",
+          "translatedPrompt": "자동차가 고속도로에서 교통사고로 정상 운행할 수 없게 된 경우에는 구조차량이나 견인차로 견인해야 한다.",
+          "options": [],
+          "correctAnswer": {
+            "kind": "ROW",
+            "correctRow": "R",
+            "correctOptionId": null,
+            "correctOptionKey": null,
+            "correctOptionText": "right / true",
+            "correctOptionTranslatedText": null,
+            "answerRaw": "Right"
+          },
+          "image": {
+            "hasImage": false,
+            "currentAssetSrc": null,
+            "assetHashes": []
+          },
+          "topic": "accidents",
+          "subtopics": [],
+          "conceptSlots": {
+            "condition": [],
+            "context": [
+              "expressway"
+            ],
+            "action": [],
+            "polarity": "negative",
+            "signals": [
+              {
+                "slot": "context",
+                "value": "expressway",
+                "signal": "expressway"
+              }
+            ]
+          }
+        },
+        {
+          "qid": "q0358",
+          "number": 358,
+          "type": "ROW",
+          "score": 36.546,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.151,
+            "rawPromptSimilarity": 0.151,
+            "englishPromptSimilarity": 0.151,
+            "syntheticPromptSimilarity": 0.067,
+            "questionType": 1,
+            "imageSignal": 1,
+            "topicWeighting": 0.5,
+            "answerPolarity": 0.5,
+            "conceptAlignment": 0,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0
+          },
+          "diagnostics": {
+            "effectiveItemType": "ROW",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": true,
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "optionSetMode": "binary-row-neutral + synthetic-ja mirror",
+            "syntheticMirrorUsed": true,
+            "genericPromptFamily": null,
+            "sourceConceptSlots": {
+              "condition": [],
+              "context": [],
+              "action": [],
+              "polarity": "negative",
+              "signals": []
+            },
+            "candidateConceptSlots": {
+              "condition": [],
+              "context": [],
+              "action": [],
+              "polarity": "negative",
+              "signals": []
+            },
+            "conceptMatches": [],
+            "contradictionSignals": [],
+            "rowConceptMode": "slot-alignment + contradiction-penalties",
+            "explanation": [
+              "Binary yes/no options were treated as ROW-like for type scoring.",
+              "Missing correct answer was treated as a neutral signal."
+            ]
+          },
+          "prompt": "A driver can park the vehicle by borrowing the sidewalk if he cannot find a parking area.",
+          "syntheticJaPrompt": "運転者 can park 車両 by borrowing sidewalk if he してはならない find parking area。",
+          "translatedPrompt": "운전자는 주차할 장소를 찾을 수 없을 경우 보도를 이용해 차량을 주차할 수 있다.",
+          "options": [],
+          "correctAnswer": {
+            "kind": "ROW",
+            "correctRow": "W",
+            "correctOptionId": null,
+            "correctOptionKey": null,
+            "correctOptionText": "wrong / false",
+            "correctOptionTranslatedText": null,
+            "answerRaw": "Wrong"
+          },
+          "image": {
+            "hasImage": false,
+            "currentAssetSrc": null,
+            "assetHashes": []
+          },
+          "topic": "parking",
+          "subtopics": [],
+          "conceptSlots": {
+            "condition": [],
+            "context": [],
+            "action": [],
+            "polarity": "negative",
+            "signals": []
+          }
+        },
+        {
+          "qid": "q0026",
+          "number": 26,
+          "type": "ROW",
+          "score": 35.528,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.131,
+            "rawPromptSimilarity": 0.131,
+            "englishPromptSimilarity": 0.131,
+            "syntheticPromptSimilarity": 0.103,
+            "questionType": 1,
+            "imageSignal": 1,
+            "topicWeighting": 0.5,
+            "answerPolarity": 0.5,
+            "conceptAlignment": 0,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0
+          },
+          "diagnostics": {
+            "effectiveItemType": "ROW",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": true,
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "optionSetMode": "binary-row-neutral + synthetic-ja mirror",
+            "syntheticMirrorUsed": true,
+            "genericPromptFamily": null,
+            "sourceConceptSlots": {
+              "condition": [],
+              "context": [],
+              "action": [],
+              "polarity": "negative",
+              "signals": []
+            },
+            "candidateConceptSlots": {
+              "condition": [],
+              "context": [],
+              "action": [
+                "pass"
+              ],
+              "polarity": "negative",
+              "signals": [
+                {
+                  "slot": "action",
+                  "value": "pass",
+                  "signal": "pass"
+                }
+              ]
+            },
+            "conceptMatches": [],
+            "contradictionSignals": [],
+            "rowConceptMode": "slot-alignment + contradiction-penalties",
+            "explanation": [
+              "Binary yes/no options were treated as ROW-like for type scoring.",
+              "Missing correct answer was treated as a neutral signal."
+            ]
+          },
+          "prompt": "When a vehicle passes a tunnel, it is prohibited from overtaking.",
+          "syntheticJaPrompt": "when 車両 追い越し tunnel it してはならない 追い越し。",
+          "translatedPrompt": "차량이 터널을 통과할 때는 추월해서는 안 된다.",
+          "options": [],
+          "correctAnswer": {
+            "kind": "ROW",
+            "correctRow": "R",
+            "correctOptionId": null,
+            "correctOptionKey": null,
+            "correctOptionText": "right / true",
+            "correctOptionTranslatedText": null,
+            "answerRaw": "Right"
+          },
+          "image": {
+            "hasImage": false,
+            "currentAssetSrc": null,
+            "assetHashes": []
+          },
+          "topic": "road-safety",
+          "subtopics": [
+            "road-safety:road-conditions",
+            "proper-driving:safe-driving",
+            "proper-driving:traffic-laws"
+          ],
+          "conceptSlots": {
+            "condition": [],
+            "context": [],
+            "action": [
+              "pass"
+            ],
+            "polarity": "negative",
+            "signals": [
+              {
+                "slot": "action",
+                "value": "pass",
+                "signal": "pass"
+              }
+            ]
+          }
+        },
+        {
+          "qid": "q0010",
+          "number": 10,
+          "type": "ROW",
+          "score": 35.222,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.126,
+            "rawPromptSimilarity": 0.126,
+            "englishPromptSimilarity": 0.126,
+            "syntheticPromptSimilarity": 0.103,
+            "questionType": 1,
+            "imageSignal": 1,
+            "topicWeighting": 0.5,
+            "answerPolarity": 0.5,
+            "conceptAlignment": 0,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0
+          },
+          "diagnostics": {
+            "effectiveItemType": "ROW",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": true,
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "optionSetMode": "binary-row-neutral + synthetic-ja mirror",
+            "syntheticMirrorUsed": true,
+            "genericPromptFamily": null,
+            "sourceConceptSlots": {
+              "condition": [],
+              "context": [],
+              "action": [],
+              "polarity": "negative",
+              "signals": []
+            },
+            "candidateConceptSlots": {
+              "condition": [],
+              "context": [
+                "expressway"
+              ],
+              "action": [
+                "u-turn"
+              ],
+              "polarity": "negative",
+              "signals": [
+                {
+                  "slot": "context",
+                  "value": "expressway",
+                  "signal": "expressway"
+                },
+                {
+                  "slot": "action",
+                  "value": "u-turn",
+                  "signal": "u-turn"
+                }
+              ]
+            },
+            "conceptMatches": [],
+            "contradictionSignals": [],
+            "rowConceptMode": "slot-alignment + contradiction-penalties",
+            "explanation": [
+              "Binary yes/no options were treated as ROW-like for type scoring.",
+              "Missing correct answer was treated as a neutral signal."
+            ]
+          },
+          "prompt": "A vehicle is not allowed to make a U-turn on the ramp of an expressway.",
+          "syntheticJaPrompt": "車両 してはならない Uターン ramp 高速道路。",
+          "translatedPrompt": "고속도로의 램프(진입·진출로)에서는 유턴을 해서는 안 된다.",
+          "options": [],
+          "correctAnswer": {
+            "kind": "ROW",
+            "correctRow": "R",
+            "correctOptionId": null,
+            "correctOptionKey": null,
+            "correctOptionText": "right / true",
+            "correctOptionTranslatedText": null,
+            "answerRaw": "Right"
+          },
+          "image": {
+            "hasImage": false,
+            "currentAssetSrc": null,
+            "assetHashes": []
+          },
+          "topic": "expressway",
+          "subtopics": [],
+          "conceptSlots": {
+            "condition": [],
+            "context": [
+              "expressway"
+            ],
+            "action": [
+              "u-turn"
+            ],
+            "polarity": "negative",
+            "signals": [
+              {
+                "slot": "context",
+                "value": "expressway",
+                "signal": "expressway"
+              },
+              {
+                "slot": "action",
+                "value": "u-turn",
+                "signal": "u-turn"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "itemId": "screenshots/Screenshot 2026-04-07 at 18.07.12.png",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.07.12.png",
+      "promptRawJa": "このような交差点は、どのように通るのが適切か。",
+      "promptGlossEn": "What is the appropriate way to pass through an intersection like this?",
+      "optionsRawJa": [
+        "A 速度を落とさずに走行する",
+        "B できるだけ早く通過する",
+        "C 前車の後にぴったりついて通過する",
+        "D 速度を落とすあるいは停止して状況を見る"
+      ],
+      "optionsGlossEn": [
+        "A. Go through without reducing speed",
+        "B. Go through as quickly as possible",
+        "C. Pass closely behind the car in front",
+        "D. Slow down or stop to check the situation"
+      ],
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "ocrConfidence": "high",
+      "hasImage": true,
+      "provisionalTopic": "traffic-signals",
+      "provisionalSubtopics": [
+        "traffic-signals:road-signs",
+        "proper-driving:safe-driving"
+      ],
+      "topicConfidence": 0.538,
+      "topicSignals": [
+        {
+          "topic": "traffic-signals",
+          "subtopic": "traffic-signals:road-signs",
+          "signal": "sign-family",
+          "weight": 1.4
+        },
+        {
+          "topic": "proper-driving",
+          "subtopic": "proper-driving:safe-driving",
+          "signal": "driving-action",
+          "weight": 1.2
+        }
+      ],
+      "sourceConceptSlots": null,
+      "reason": "No candidate passed the minimum similarity threshold.",
+      "analysis": {
+        "mode": "standard",
+        "effectiveQuestionType": "MCQ",
+        "declaredQuestionType": "MCQ",
+        "booleanChoiceDetected": false,
+        "topScore": 42.923,
+        "topGap": 0.385,
+        "plausibleShortlist": true,
+        "imageParityApplied": true,
+        "candidateImageParityMode": "image-only candidate set",
+        "candidateCountBeforeParity": 973,
+        "candidateCountAfterParity": 493,
+        "explanation": "Shortlist is plausible but still below the review floor."
+      },
+      "topCandidates": [
+        {
+          "qid": "q0490",
+          "number": 490,
+          "type": "MCQ",
+          "score": 42.923,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.305,
+            "rawPromptSimilarity": 0.369,
+            "englishPromptSimilarity": 0.305,
+            "syntheticPromptSimilarity": 0.109,
+            "optionSimilarity": 0.262,
+            "englishOptionSimilarity": 0.262,
+            "syntheticOptionSimilarity": 0.033,
+            "optionFingerprint": 0.13,
+            "englishOptionFingerprint": 0.13,
+            "syntheticOptionFingerprint": 0.03,
+            "optionExactSet": 0,
+            "optionRareCoverage": 0.136,
+            "mirrorAgreement": 0.032,
+            "correctAnswerMeaning": 0.5,
+            "englishCorrectAnswerMeaning": 0.5,
+            "syntheticCorrectAnswerMeaning": 0.5,
+            "questionType": 1,
+            "imageSignal": 1,
+            "topicWeighting": 0.5,
+            "assetTieBreak": 0
+          },
+          "diagnostics": {
+            "effectiveItemType": "MCQ",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": false,
+            "promptSpecificity": 0.825,
+            "genericPromptPenalty": 0.825,
+            "missingCorrectAnswerNeutral": true,
+            "exactCorrectKey": false,
+            "optionSetMode": "unordered-semantic + synthetic-ja mirror",
+            "rareSetBonus": 0,
+            "syntheticMirrorUsed": true,
+            "genericPromptFamily": null,
+            "explanation": [
+              "Missing correct answer was treated as a neutral signal."
+            ]
+          },
+          "prompt": "How to pass this intersection?",
+          "syntheticJaPrompt": "how 追い越し 交差点。",
+          "translatedPrompt": "운전자는 이 교차로를 어떻게 통과해야 하는가?",
+          "options": [
+            {
+              "id": "A",
+              "text": "not reduce speed to pass",
+              "translatedText": "감속하지 않고 통과한다"
+            },
+            {
+              "id": "B",
+              "text": "speed up to pass as soon as possible",
+              "translatedText": "속도를 높여 가능한 빨리 통과한다"
+            },
+            {
+              "id": "C",
+              "text": "slide over in the neutral gear",
+              "translatedText": "중립 기어로 미끄러지듯 통과한다"
+            },
+            {
+              "id": "D",
+              "text": "reduce speed or stop to observe",
+              "translatedText": "감속하거나 정차하여 관찰한다"
+            }
+          ],
+          "correctAnswer": {
+            "kind": "MCQ",
+            "correctRow": null,
+            "correctOptionId": "q0490_o4",
+            "correctOptionKey": "D",
+            "correctOptionText": "reduce speed or stop to observe",
+            "correctOptionTranslatedText": "감속하거나 정차하여 관찰한다",
+            "answerRaw": "D"
+          },
+          "image": {
+            "hasImage": true,
+            "currentAssetSrc": "/qbank/2023-test1/images/img_574b2850edfe18363a617a04f9db8e39.jpeg",
+            "assetHashes": [
+              "574b2850edfe18363a617a04f9db8e39"
+            ]
+          },
+          "topic": "traffic-signals",
+          "subtopics": [
+            "traffic-signals:road-signs"
+          ],
+          "conceptSlots": null
+        },
+        {
+          "qid": "q0364",
+          "number": 364,
+          "type": "MCQ",
+          "score": 42.538,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.305,
+            "rawPromptSimilarity": 0.369,
+            "englishPromptSimilarity": 0.305,
+            "syntheticPromptSimilarity": 0.109,
+            "optionSimilarity": 0.244,
+            "englishOptionSimilarity": 0.244,
+            "syntheticOptionSimilarity": 0,
+            "optionFingerprint": 0.148,
+            "englishOptionFingerprint": 0.148,
+            "syntheticOptionFingerprint": 0,
+            "optionExactSet": 0,
+            "optionRareCoverage": 0.169,
+            "mirrorAgreement": 0,
+            "correctAnswerMeaning": 0.5,
+            "englishCorrectAnswerMeaning": 0.5,
+            "syntheticCorrectAnswerMeaning": 0.5,
+            "questionType": 1,
+            "imageSignal": 1,
+            "topicWeighting": 0.5,
+            "assetTieBreak": 0
+          },
+          "diagnostics": {
+            "effectiveItemType": "MCQ",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": false,
+            "promptSpecificity": 0.825,
+            "genericPromptPenalty": 0.825,
+            "missingCorrectAnswerNeutral": true,
+            "exactCorrectKey": false,
+            "optionSetMode": "unordered-semantic + synthetic-ja mirror",
+            "rareSetBonus": 0,
+            "syntheticMirrorUsed": true,
+            "genericPromptFamily": null,
+            "explanation": [
+              "Missing correct answer was treated as a neutral signal."
+            ]
+          },
+          "prompt": "How to pass this intersection?",
+          "syntheticJaPrompt": "how 追い越し 交差点。",
+          "translatedPrompt": "이 교차로는 어떻게 통과해야 하는가?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Keep the speed and go through",
+              "translatedText": "속도를 유지하고 통과한다"
+            },
+            {
+              "id": "B",
+              "text": "Honk to urge",
+              "translatedText": "경적을 울려 재촉한다"
+            },
+            {
+              "id": "C",
+              "text": "Reduce speed and go through slowly",
+              "translatedText": "감속하여 서서히 통과한다"
+            },
+            {
+              "id": "D",
+              "text": "Speed up and go through",
+              "translatedText": "가속하여 통과한다"
+            }
+          ],
+          "correctAnswer": {
+            "kind": "MCQ",
+            "correctRow": null,
+            "correctOptionId": "q0364_o3",
+            "correctOptionKey": "C",
+            "correctOptionText": "Reduce speed and go through slowly",
+            "correctOptionTranslatedText": "감속하여 서서히 통과한다",
+            "answerRaw": "C"
+          },
+          "image": {
+            "hasImage": true,
+            "currentAssetSrc": "/qbank/2023-test1/images/img_472909ac12ee4ca4a82700ad22834ae2.jpeg",
+            "assetHashes": [
+              "472909ac12ee4ca4a82700ad22834ae2"
+            ]
+          },
+          "topic": "proper-driving",
+          "subtopics": [
+            "proper-driving:safe-driving"
+          ],
+          "conceptSlots": null
+        },
+        {
+          "qid": "q0418",
+          "number": 418,
+          "type": "MCQ",
+          "score": 35.228,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.193,
+            "rawPromptSimilarity": 0.22,
+            "englishPromptSimilarity": 0.193,
+            "syntheticPromptSimilarity": 0.112,
+            "optionSimilarity": 0.131,
+            "englishOptionSimilarity": 0.131,
+            "syntheticOptionSimilarity": 0.027,
+            "optionFingerprint": 0.075,
+            "englishOptionFingerprint": 0.075,
+            "syntheticOptionFingerprint": 0.027,
+            "optionExactSet": 0,
+            "optionRareCoverage": 0.099,
+            "mirrorAgreement": 0.027,
+            "correctAnswerMeaning": 0.5,
+            "englishCorrectAnswerMeaning": 0.5,
+            "syntheticCorrectAnswerMeaning": 0.5,
+            "questionType": 1,
+            "imageSignal": 1,
+            "topicWeighting": 0.5,
+            "assetTieBreak": 0
+          },
+          "diagnostics": {
+            "effectiveItemType": "MCQ",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": false,
+            "promptSpecificity": 0.875,
+            "genericPromptPenalty": 0.875,
+            "missingCorrectAnswerNeutral": true,
+            "exactCorrectKey": false,
+            "optionSetMode": "unordered-semantic + synthetic-ja mirror",
+            "rareSetBonus": 0,
+            "syntheticMirrorUsed": true,
+            "genericPromptFamily": null,
+            "explanation": [
+              "Missing correct answer was treated as a neutral signal."
+            ]
+          },
+          "prompt": "What should you do at this intersection?",
+          "syntheticJaPrompt": "how do 交差点。",
+          "translatedPrompt": "운전자는 이 교차로에서 어떻게 해야 하는가?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Wait in the cross-hatched marking area.",
+              "translatedText": "격자무늬(교차로 안) 표시 구역 안에서 기다린다."
+            },
+            {
+              "id": "B",
+              "text": "Stop and wait outside the intersection.",
+              "translatedText": "교차로 밖에서 정차하여 기다린다."
+            },
+            {
+              "id": "C",
+              "text": "Follow the vehicle in front and pass.",
+              "translatedText": "앞차를 따라 통과한다."
+            },
+            {
+              "id": "D",
+              "text": "Wait inside the intersection.",
+              "translatedText": "교차로 안에서 기다린다."
+            }
+          ],
+          "correctAnswer": {
+            "kind": "MCQ",
+            "correctRow": null,
+            "correctOptionId": "q0418_o2",
+            "correctOptionKey": "B",
+            "correctOptionText": "Stop and wait outside the intersection.",
+            "correctOptionTranslatedText": "교차로 밖에서 정차하여 기다린다.",
+            "answerRaw": "B"
+          },
+          "image": {
+            "hasImage": true,
+            "currentAssetSrc": "/qbank/2023-test1/images/img_a2a55269176c435a5c424f2814171fe4.jpeg",
+            "assetHashes": [
+              "a2a55269176c435a5c424f2814171fe4"
+            ]
+          },
+          "topic": "road-safety",
+          "subtopics": [
+            "road-safety:road-conditions"
+          ],
+          "conceptSlots": null
+        },
+        {
+          "qid": "q0398",
+          "number": 398,
+          "type": "MCQ",
+          "score": 34.877,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.297,
+            "rawPromptSimilarity": 0.34,
+            "englishPromptSimilarity": 0.297,
+            "syntheticPromptSimilarity": 0.108,
+            "optionSimilarity": 0.087,
+            "englishOptionSimilarity": 0.087,
+            "syntheticOptionSimilarity": 0,
+            "optionFingerprint": 0.049,
+            "englishOptionFingerprint": 0.049,
+            "syntheticOptionFingerprint": 0,
+            "optionExactSet": 0,
+            "optionRareCoverage": 0.07,
+            "mirrorAgreement": 0,
+            "correctAnswerMeaning": 0.5,
+            "englishCorrectAnswerMeaning": 0.5,
+            "syntheticCorrectAnswerMeaning": 0.5,
+            "questionType": 1,
+            "imageSignal": 1,
+            "topicWeighting": 0.5,
+            "assetTieBreak": 0
+          },
+          "diagnostics": {
+            "effectiveItemType": "MCQ",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": false,
+            "promptSpecificity": 0.875,
+            "genericPromptPenalty": 0.875,
+            "missingCorrectAnswerNeutral": true,
+            "exactCorrectKey": false,
+            "optionSetMode": "unordered-semantic + synthetic-ja mirror",
+            "rareSetBonus": 0,
+            "syntheticMirrorUsed": true,
+            "genericPromptFamily": null,
+            "explanation": [
+              "Missing correct answer was treated as a neutral signal."
+            ]
+          },
+          "prompt": "How to drive through this intersection?",
+          "syntheticJaPrompt": "how run through 交差点。",
+          "translatedPrompt": "이 교차로를 어떻게 통과해야 하는가?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Honk to let to the coming car yield.",
+              "translatedText": "경적을 울려 다가오는 차량이 양보하도록 한다."
+            },
+            {
+              "id": "B",
+              "text": "Directly speed up to make a turn.",
+              "translatedText": "바로 속도를 올려 회전한다."
+            },
+            {
+              "id": "C",
+              "text": "Reduce speed and turn slowly.",
+              "translatedText": "감속하여 서행으로 회전한다."
+            },
+            {
+              "id": "D",
+              "text": "Yield to the car coming from left.",
+              "translatedText": "좌측에서 오는 차량에 양보한다."
+            }
+          ],
+          "correctAnswer": {
+            "kind": "MCQ",
+            "correctRow": null,
+            "correctOptionId": "q0398_o4",
+            "correctOptionKey": "D",
+            "correctOptionText": "Yield to the car coming from left.",
+            "correctOptionTranslatedText": "좌측에서 오는 차량에 양보한다.",
+            "answerRaw": "D"
+          },
+          "image": {
+            "hasImage": true,
+            "currentAssetSrc": "/qbank/2023-test1/images/img_f5e5264d403c455cd1a74f22201af3d6.jpeg",
+            "assetHashes": [
+              "f5e5264d403c455cd1a74f22201af3d6"
+            ]
+          },
+          "topic": "proper-driving",
+          "subtopics": [
+            "proper-driving:safe-driving"
+          ],
+          "conceptSlots": null
+        },
+        {
+          "qid": "q0284",
+          "number": 284,
+          "type": "ROW",
+          "score": 34.797,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.296,
+            "rawPromptSimilarity": 0.296,
+            "englishPromptSimilarity": 0.296,
+            "syntheticPromptSimilarity": 0.035,
+            "questionType": 0,
+            "imageSignal": 1,
+            "topicWeighting": 0.5,
+            "answerPolarity": 0.5,
+            "conceptAlignment": 0,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0
+          },
+          "diagnostics": {
+            "effectiveItemType": "MCQ",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": false,
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "optionSetMode": "synthetic-ja mirror",
+            "syntheticMirrorUsed": true,
+            "genericPromptFamily": null,
+            "sourceConceptSlots": null,
+            "candidateConceptSlots": {
+              "condition": [],
+              "context": [],
+              "action": [
+                "accelerate",
+                "pass"
+              ],
+              "polarity": "positive",
+              "signals": [
+                {
+                  "slot": "action",
+                  "value": "accelerate",
+                  "signal": "accelerate"
+                },
+                {
+                  "slot": "action",
+                  "value": "pass",
+                  "signal": "pass"
+                }
+              ]
+            },
+            "conceptMatches": [],
+            "contradictionSignals": [],
+            "rowConceptMode": "slot-alignment + contradiction-penalties",
+            "explanation": [
+              "Missing correct answer was treated as a neutral signal.",
+              "Candidate type conflicts with the extracted item shape."
+            ]
+          },
+          "prompt": "At this position, you may speed up to pass through the section.",
+          "syntheticJaPrompt": "position you よい 加速 追い越し through section。",
+          "translatedPrompt": "이 지점에서는 가속하여 구간을 통과할 수 있다.",
+          "options": [],
+          "correctAnswer": {
+            "kind": "ROW",
+            "correctRow": "W",
+            "correctOptionId": null,
+            "correctOptionKey": null,
+            "correctOptionText": "wrong / false",
+            "correctOptionTranslatedText": null,
+            "answerRaw": "Wrong"
+          },
+          "image": {
+            "hasImage": true,
+            "currentAssetSrc": "/qbank/2023-test1/images/img_0f552212d0c9ac073a9b8761e80c71e3.jpeg",
+            "assetHashes": [
+              "0f552212d0c9ac073a9b8761e80c71e3"
+            ]
+          },
+          "topic": "traffic-signals",
+          "subtopics": [
+            "traffic-signals:signal-lights"
+          ],
+          "conceptSlots": {
+            "condition": [],
+            "context": [],
+            "action": [
+              "accelerate",
+              "pass"
+            ],
+            "polarity": "positive",
+            "signals": [
+              {
+                "slot": "action",
+                "value": "accelerate",
+                "signal": "accelerate"
+              },
+              {
+                "slot": "action",
+                "value": "pass",
+                "signal": "pass"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "itemId": "screenshots/Screenshot 2026-04-07 at 18.07.14.png",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.07.14.png",
+      "promptRawJa": "このような道端での一時駐車は、どのような違法行為であるか。",
+      "promptGlossEn": "What kind of illegal act is temporary parking at the roadside like this?",
+      "optionsRawJa": [
+        "A 非動車専用車線に駐車した",
+        "B 横断歩道に駐車した",
+        "C 道端から30cm以上の間隔を空けた",
+        "D 駐車禁止線のある道路に駐車した"
+      ],
+      "optionsGlossEn": [
+        "A. Parked in a lane reserved for non-motor vehicles",
+        "B. Parked on a pedestrian crosswalk",
+        "C. Parked leaving a gap of more than 30 cm from the roadside",
+        "D. Parked on a road with a no-parking line"
+      ],
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "ocrConfidence": "high",
+      "hasImage": true,
+      "provisionalTopic": "proper-driving",
+      "provisionalSubtopics": [
+        "proper-driving:traffic-laws"
+      ],
+      "topicConfidence": 1,
+      "topicSignals": [
+        {
+          "topic": "proper-driving",
+          "subtopic": "proper-driving:traffic-laws",
+          "signal": "traffic-law",
+          "weight": 1.15
+        }
+      ],
+      "sourceConceptSlots": null,
+      "reason": "No candidate passed the minimum similarity threshold.",
+      "analysis": {
+        "mode": "standard",
+        "effectiveQuestionType": "MCQ",
+        "declaredQuestionType": "MCQ",
+        "booleanChoiceDetected": false,
+        "topScore": 41.562,
+        "topGap": 0.434,
+        "plausibleShortlist": true,
+        "imageParityApplied": true,
+        "candidateImageParityMode": "image-only candidate set",
+        "candidateCountBeforeParity": 973,
+        "candidateCountAfterParity": 493,
+        "explanation": "Shortlist is plausible but still below the review floor."
+      },
+      "topCandidates": [
+        {
+          "qid": "q0863",
+          "number": 863,
+          "type": "MCQ",
+          "score": 41.562,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.222,
+            "rawPromptSimilarity": 0.24,
+            "englishPromptSimilarity": 0.222,
+            "syntheticPromptSimilarity": 0,
+            "optionSimilarity": 0.238,
+            "englishOptionSimilarity": 0.147,
+            "syntheticOptionSimilarity": 0.238,
+            "optionFingerprint": 0.148,
+            "englishOptionFingerprint": 0.074,
+            "syntheticOptionFingerprint": 0.148,
+            "optionExactSet": 0,
+            "optionRareCoverage": 0.258,
+            "mirrorAgreement": 0.122,
+            "correctAnswerMeaning": 0.5,
+            "englishCorrectAnswerMeaning": 0.5,
+            "syntheticCorrectAnswerMeaning": 0.5,
+            "questionType": 1,
+            "imageSignal": 1,
+            "topicWeighting": 0.5,
+            "assetTieBreak": 0
+          },
+          "diagnostics": {
+            "effectiveItemType": "MCQ",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": false,
+            "promptSpecificity": 0.925,
+            "genericPromptPenalty": 0.925,
+            "missingCorrectAnswerNeutral": true,
+            "exactCorrectKey": false,
+            "optionSetMode": "unordered-semantic + synthetic-ja mirror",
+            "rareSetBonus": 0,
+            "syntheticMirrorUsed": true,
+            "genericPromptFamily": null,
+            "explanation": [
+              "Missing correct answer was treated as a neutral signal."
+            ]
+          },
+          "prompt": "What’s the meaning of this mark on the road?",
+          "syntheticJaPrompt": "meaning mark road",
+          "translatedPrompt": "이 노면표시의 의미는?",
+          "options": [
+            {
+              "id": "A",
+              "text": "the lane for non-motorized vehicles",
+              "translatedText": "비동력 차량 전용차로"
+            },
+            {
+              "id": "B",
+              "text": "the special lane for motorcycles",
+              "translatedText": "이륜차 전용차로"
+            },
+            {
+              "id": "C",
+              "text": "the special lane for battery bicycles",
+              "translatedText": "전기 자전거 전용차로"
+            },
+            {
+              "id": "D",
+              "text": "the special lane for bicycles",
+              "translatedText": "자전거 전용차로"
+            }
+          ],
+          "correctAnswer": {
+            "kind": "MCQ",
+            "correctRow": null,
+            "correctOptionId": "q0863_o1",
+            "correctOptionKey": "A",
+            "correctOptionText": "the lane for non-motorized vehicles",
+            "correctOptionTranslatedText": "비동력 차량 전용차로",
+            "answerRaw": "A"
+          },
+          "image": {
+            "hasImage": true,
+            "currentAssetSrc": "/qbank/2023-test1/images/p92-863.jpg",
+            "assetHashes": [
+              "beac08b7d93027b230ba44be0cb0d138"
+            ]
+          },
+          "topic": "mcq",
+          "subtopics": [],
+          "conceptSlots": null
+        },
+        {
+          "qid": "q0444",
+          "number": 444,
+          "type": "MCQ",
+          "score": 41.127,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.256,
+            "rawPromptSimilarity": 0.256,
+            "englishPromptSimilarity": 0.256,
+            "syntheticPromptSimilarity": 0,
+            "optionSimilarity": 0.194,
+            "englishOptionSimilarity": 0.194,
+            "syntheticOptionSimilarity": 0.189,
+            "optionFingerprint": 0.158,
+            "englishOptionFingerprint": 0.126,
+            "syntheticOptionFingerprint": 0.102,
+            "optionExactSet": 0,
+            "optionRareCoverage": 0.201,
+            "mirrorAgreement": 0.158,
+            "correctAnswerMeaning": 0.5,
+            "englishCorrectAnswerMeaning": 0.5,
+            "syntheticCorrectAnswerMeaning": 0.5,
+            "questionType": 1,
+            "imageSignal": 1,
+            "topicWeighting": 0.5,
+            "assetTieBreak": 0
+          },
+          "diagnostics": {
+            "effectiveItemType": "MCQ",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": false,
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "exactCorrectKey": false,
+            "optionSetMode": "unordered-semantic + synthetic-ja mirror",
+            "rareSetBonus": 0,
+            "syntheticMirrorUsed": true,
+            "genericPromptFamily": "violation-kind",
+            "explanation": [
+              "Missing correct answer was treated as a neutral signal."
+            ]
+          },
+          "prompt": "What kind of violation does this car have while stopping temporarily by the roadside?",
+          "syntheticJaPrompt": "この車両の違反は何ですか",
+          "translatedPrompt": "도로변에 일시 정차한 이 차량은 어떤 위반행위에 해당하는가?",
+          "options": [
+            {
+              "id": "A",
+              "text": "occupying the lane for motorized vehicles",
+              "translatedText": "자동차 통행 차로를 점유하고 있다."
+            },
+            {
+              "id": "B",
+              "text": "stopping more than 30cm from the roadside",
+              "translatedText": "도로 가장자리에서 30cm 이상 떨어져 정차했다."
+            },
+            {
+              "id": "C",
+              "text": "stopping in the section with no stopping marking",
+              "translatedText": "정차 금지 구간에 정차했다."
+            },
+            {
+              "id": "D",
+              "text": "occupying the lane for non-motorized vehicles",
+              "translatedText": "비동력 차량용 차로를 점유하고 있다."
+            }
+          ],
+          "correctAnswer": {
+            "kind": "MCQ",
+            "correctRow": null,
+            "correctOptionId": "q0444_o3",
+            "correctOptionKey": "C",
+            "correctOptionText": "stopping in the section with no stopping marking",
+            "correctOptionTranslatedText": "정차 금지 구간에 정차했다.",
+            "answerRaw": "C"
+          },
+          "image": {
+            "hasImage": true,
+            "currentAssetSrc": "/qbank/2023-test1/images/p36-444.jpg",
+            "assetHashes": [
+              "e1fdb31f7cb095d6f1a1811306b0c97e"
+            ]
+          },
+          "topic": "violations-penalties",
+          "subtopics": [],
+          "conceptSlots": null
+        },
+        {
+          "qid": "q0871",
+          "number": 871,
+          "type": "MCQ",
+          "score": 41.071,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.211,
+            "rawPromptSimilarity": 0.256,
+            "englishPromptSimilarity": 0.211,
+            "syntheticPromptSimilarity": 0,
+            "optionSimilarity": 0.225,
+            "englishOptionSimilarity": 0.113,
+            "syntheticOptionSimilarity": 0.225,
+            "optionFingerprint": 0.162,
+            "englishOptionFingerprint": 0.057,
+            "syntheticOptionFingerprint": 0.162,
+            "optionExactSet": 0,
+            "optionRareCoverage": 0.328,
+            "mirrorAgreement": 0.093,
+            "correctAnswerMeaning": 0.5,
+            "englishCorrectAnswerMeaning": 0.5,
+            "syntheticCorrectAnswerMeaning": 0.5,
+            "questionType": 1,
+            "imageSignal": 1,
+            "topicWeighting": 0.5,
+            "assetTieBreak": 0
+          },
+          "diagnostics": {
+            "effectiveItemType": "MCQ",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": false,
+            "promptSpecificity": 0.825,
+            "genericPromptPenalty": 0.825,
+            "missingCorrectAnswerNeutral": true,
+            "exactCorrectKey": false,
+            "optionSetMode": "unordered-semantic + synthetic-ja mirror",
+            "rareSetBonus": 0,
+            "syntheticMirrorUsed": true,
+            "genericPromptFamily": null,
+            "explanation": [
+              "Missing correct answer was treated as a neutral signal."
+            ]
+          },
+          "prompt": "What’s the meaning of this sign?",
+          "syntheticJaPrompt": "meaning 標識。",
+          "translatedPrompt": "이 표지의 뜻은?",
+          "options": [
+            {
+              "id": "A",
+              "text": "no entry for bicycles",
+              "translatedText": "자전거 통행 금지"
+            },
+            {
+              "id": "B",
+              "text": "lane for non-motorized vehicles",
+              "translatedText": "비동력 차량 전용 차로"
+            },
+            {
+              "id": "C",
+              "text": "special lane for bicycles",
+              "translatedText": "자전거 전용 차로"
+            },
+            {
+              "id": "D",
+              "text": "bicycle stopping area",
+              "translatedText": "자전거 정차 구역"
+            }
+          ],
+          "correctAnswer": {
+            "kind": "MCQ",
+            "correctRow": null,
+            "correctOptionId": "q0871_o2",
+            "correctOptionKey": "B",
+            "correctOptionText": "lane for non-motorized vehicles",
+            "correctOptionTranslatedText": "비동력 차량 전용 차로",
+            "answerRaw": "B"
+          },
+          "image": {
+            "hasImage": true,
+            "currentAssetSrc": "/qbank/2023-test1/images/img_e124ff5b5d8fd3091f442ccb11e58530.jpeg",
+            "assetHashes": [
+              "e124ff5b5d8fd3091f442ccb11e58530"
+            ]
+          },
+          "topic": "parking",
+          "subtopics": [],
+          "conceptSlots": null
+        },
+        {
+          "qid": "q0460",
+          "number": 460,
+          "type": "MCQ",
+          "score": 40.892,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.231,
+            "rawPromptSimilarity": 0.231,
+            "englishPromptSimilarity": 0.231,
+            "syntheticPromptSimilarity": 0,
+            "optionSimilarity": 0.209,
+            "englishOptionSimilarity": 0.209,
+            "syntheticOptionSimilarity": 0.156,
+            "optionFingerprint": 0.151,
+            "englishOptionFingerprint": 0.151,
+            "syntheticOptionFingerprint": 0.102,
+            "optionExactSet": 0,
+            "optionRareCoverage": 0.239,
+            "mirrorAgreement": 0.137,
+            "correctAnswerMeaning": 0.5,
+            "englishCorrectAnswerMeaning": 0.5,
+            "syntheticCorrectAnswerMeaning": 0.5,
+            "questionType": 1,
+            "imageSignal": 1,
+            "topicWeighting": 0.5,
+            "assetTieBreak": 0
+          },
+          "diagnostics": {
+            "effectiveItemType": "MCQ",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": false,
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "exactCorrectKey": false,
+            "optionSetMode": "unordered-semantic + synthetic-ja mirror",
+            "rareSetBonus": 0,
+            "syntheticMirrorUsed": true,
+            "genericPromptFamily": "violation-kind",
+            "explanation": [
+              "Missing correct answer was treated as a neutral signal."
+            ]
+          },
+          "prompt": "What kind of violation does the green vehicle have while temporarily stopping by the roadside?",
+          "syntheticJaPrompt": "この車両の違反は何ですか",
+          "translatedPrompt": "도로변에 일시 정차한 녹색 차량은 어떤 위반행위에 해당하는가?",
+          "options": [
+            {
+              "id": "A",
+              "text": "stopping in the crosswalk",
+              "translatedText": "횡단보도에 정차했다"
+            },
+            {
+              "id": "B",
+              "text": "stopping more than 30cm from the roadside",
+              "translatedText": "도로 가장자리에서 0.3미터 이상 떨어져 정차했다"
+            },
+            {
+              "id": "C",
+              "text": "stopping in the section with no stopping marking",
+              "translatedText": "정차 금지 구간에 정차했다"
+            },
+            {
+              "id": "D",
+              "text": "stopping and occupying the lane for non-motorized vehicles",
+              "translatedText": "비동력 차량 차로를 점유하여 정차했다"
+            }
+          ],
+          "correctAnswer": {
+            "kind": "MCQ",
+            "correctRow": null,
+            "correctOptionId": "q0460_o1",
+            "correctOptionKey": "A",
+            "correctOptionText": "stopping in the crosswalk",
+            "correctOptionTranslatedText": "횡단보도에 정차했다",
+            "answerRaw": "A"
+          },
+          "image": {
+            "hasImage": true,
+            "currentAssetSrc": "/qbank/2023-test1/images/img_e589ab18a8d91341e027264f7e2dc607.jpeg",
+            "assetHashes": [
+              "e589ab18a8d91341e027264f7e2dc607"
+            ]
+          },
+          "topic": "violations-penalties",
+          "subtopics": [],
+          "conceptSlots": null
+        },
+        {
+          "qid": "q0686",
+          "number": 686,
+          "type": "MCQ",
+          "score": 39.541,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.211,
+            "rawPromptSimilarity": 0.256,
+            "englishPromptSimilarity": 0.211,
+            "syntheticPromptSimilarity": 0,
+            "optionSimilarity": 0.207,
+            "englishOptionSimilarity": 0.155,
+            "syntheticOptionSimilarity": 0.207,
+            "optionFingerprint": 0.115,
+            "englishOptionFingerprint": 0.039,
+            "syntheticOptionFingerprint": 0.052,
+            "optionExactSet": 0,
+            "optionRareCoverage": 0.078,
+            "mirrorAgreement": 0.115,
+            "correctAnswerMeaning": 0.5,
+            "englishCorrectAnswerMeaning": 0.5,
+            "syntheticCorrectAnswerMeaning": 0.5,
+            "questionType": 1,
+            "imageSignal": 1,
+            "topicWeighting": 0.5,
+            "assetTieBreak": 0
+          },
+          "diagnostics": {
+            "effectiveItemType": "MCQ",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": false,
+            "promptSpecificity": 0.825,
+            "genericPromptPenalty": 0.825,
+            "missingCorrectAnswerNeutral": true,
+            "exactCorrectKey": false,
+            "optionSetMode": "unordered-semantic + synthetic-ja mirror",
+            "rareSetBonus": 0,
+            "syntheticMirrorUsed": true,
+            "genericPromptFamily": null,
+            "explanation": [
+              "Missing correct answer was treated as a neutral signal."
+            ]
+          },
+          "prompt": "What’s the meaning of this sign?",
+          "syntheticJaPrompt": "meaning 標識。",
+          "translatedPrompt": "이 표지의 뜻은?",
+          "options": [
+            {
+              "id": "A",
+              "text": "lane for small vehicles",
+              "translatedText": "소형차용 차로"
+            },
+            {
+              "id": "B",
+              "text": "special lane for small vehicles",
+              "translatedText": "소형차 전용 차로"
+            },
+            {
+              "id": "C",
+              "text": "special lane for multi-passenger vehicles",
+              "translatedText": "다인승 차량 전용 차로"
+            },
+            {
+              "id": "D",
+              "text": "lane for motorized vehicles",
+              "translatedText": "자동차 통행 차로"
+            }
+          ],
+          "correctAnswer": {
+            "kind": "MCQ",
+            "correctRow": null,
+            "correctOptionId": "q0686_o4",
+            "correctOptionKey": "D",
+            "correctOptionText": "lane for motorized vehicles",
+            "correctOptionTranslatedText": "자동차 통행 차로",
+            "answerRaw": "D"
+          },
+          "image": {
+            "hasImage": true,
+            "currentAssetSrc": "/qbank/2023-test1/images/img_e5510d4d79341a2686f456a43545b637.jpeg",
+            "assetHashes": [
+              "e5510d4d79341a2686f456a43545b637"
+            ]
+          },
+          "topic": "mcq",
+          "subtopics": [],
+          "conceptSlots": null
+        }
+      ]
+    },
+    {
+      "itemId": "screenshots/Screenshot 2026-04-07 at 18.07.15.png",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.07.15.png",
+      "promptRawJa": "このスイッチを押すと、リアウインドガラスのデフロスタが作動する。",
+      "promptGlossEn": "When you press this switch, the rear window glass defroster operates.",
+      "optionsRawJa": [
+        "A Yes",
+        "B No"
+      ],
+      "optionsGlossEn": [
+        "Yes",
+        "No"
+      ],
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "ocrConfidence": "high",
+      "hasImage": true,
+      "provisionalTopic": null,
+      "provisionalSubtopics": [],
+      "topicConfidence": 0,
+      "topicSignals": [],
+      "sourceConceptSlots": {
+        "condition": [],
+        "context": [],
+        "action": [],
+        "polarity": null,
+        "signals": []
+      },
+      "reason": "No candidate passed the minimum similarity threshold.",
+      "analysis": {
+        "mode": "standard",
+        "effectiveQuestionType": "ROW",
+        "declaredQuestionType": "MCQ",
+        "booleanChoiceDetected": true,
+        "topScore": 43.698,
+        "topGap": 2.494,
+        "plausibleShortlist": true,
+        "imageParityApplied": true,
+        "candidateImageParityMode": "image-only candidate set",
+        "candidateCountBeforeParity": 973,
+        "candidateCountAfterParity": 493,
+        "explanation": "Shortlist is plausible but still below the review floor."
+      },
+      "topCandidates": [
+        {
+          "qid": "q0547",
+          "number": 547,
+          "type": "ROW",
+          "score": 43.698,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.279,
+            "rawPromptSimilarity": 0.279,
+            "englishPromptSimilarity": 0.279,
+            "syntheticPromptSimilarity": 0,
+            "questionType": 1,
+            "imageSignal": 1,
+            "topicWeighting": 0.5,
+            "answerPolarity": 0.5,
+            "conceptAlignment": 0,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0
+          },
+          "diagnostics": {
+            "effectiveItemType": "ROW",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": true,
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "optionSetMode": "binary-row-neutral + synthetic-ja mirror",
+            "syntheticMirrorUsed": true,
+            "genericPromptFamily": null,
+            "sourceConceptSlots": {
+              "condition": [],
+              "context": [],
+              "action": [],
+              "polarity": null,
+              "signals": []
+            },
+            "candidateConceptSlots": {
+              "condition": [],
+              "context": [],
+              "action": [],
+              "polarity": null,
+              "signals": []
+            },
+            "conceptMatches": [],
+            "contradictionSignals": [],
+            "rowConceptMode": "slot-alignment + contradiction-penalties",
+            "explanation": [
+              "Binary yes/no options were treated as ROW-like for type scoring.",
+              "Missing correct answer was treated as a neutral signal."
+            ]
+          },
+          "prompt": "The rear windshield defroster starts to work after pressing this switch.",
+          "syntheticJaPrompt": "rear windshield defroster start work after pressing switch",
+          "translatedPrompt": "이 스위치를 누르면 후면 유리 서리 제거 장치가 작동한다.",
+          "options": [],
+          "correctAnswer": {
+            "kind": "ROW",
+            "correctRow": "W",
+            "correctOptionId": null,
+            "correctOptionKey": null,
+            "correctOptionText": "wrong / false",
+            "correctOptionTranslatedText": null,
+            "answerRaw": "Wrong"
+          },
+          "image": {
+            "hasImage": true,
+            "currentAssetSrc": "/qbank/2023-test1/images/img_77220d7c5a01fe7848b9b5b63580bc67.jpeg",
+            "assetHashes": [
+              "77220d7c5a01fe7848b9b5b63580bc67"
+            ]
+          },
+          "topic": "driving-operations",
+          "subtopics": [
+            "driving-operations:indicators"
+          ],
+          "conceptSlots": {
+            "condition": [],
+            "context": [],
+            "action": [],
+            "polarity": null,
+            "signals": []
+          }
+        },
+        {
+          "qid": "q0562",
+          "number": 562,
+          "type": "ROW",
+          "score": 41.204,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.236,
+            "rawPromptSimilarity": 0.236,
+            "englishPromptSimilarity": 0.236,
+            "syntheticPromptSimilarity": 0,
+            "questionType": 1,
+            "imageSignal": 1,
+            "topicWeighting": 0.5,
+            "answerPolarity": 0.5,
+            "conceptAlignment": 0,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0
+          },
+          "diagnostics": {
+            "effectiveItemType": "ROW",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": true,
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "optionSetMode": "binary-row-neutral + synthetic-ja mirror",
+            "syntheticMirrorUsed": true,
+            "genericPromptFamily": null,
+            "sourceConceptSlots": {
+              "condition": [],
+              "context": [],
+              "action": [],
+              "polarity": null,
+              "signals": []
+            },
+            "candidateConceptSlots": {
+              "condition": [
+                "fog"
+              ],
+              "context": [],
+              "action": [
+                "head-light"
+              ],
+              "polarity": null,
+              "signals": [
+                {
+                  "slot": "condition",
+                  "value": "fog",
+                  "signal": "fog"
+                },
+                {
+                  "slot": "action",
+                  "value": "head-light",
+                  "signal": "head-light"
+                }
+              ]
+            },
+            "conceptMatches": [],
+            "contradictionSignals": [],
+            "rowConceptMode": "slot-alignment + contradiction-penalties",
+            "explanation": [
+              "Binary yes/no options were treated as ROW-like for type scoring.",
+              "Missing correct answer was treated as a neutral signal."
+            ]
+          },
+          "prompt": "Rear fog light lights when the light switch is at this position.",
+          "syntheticJaPrompt": "rear fog ライト ライト when ライト switch position 49。",
+          "translatedPrompt": "후면 안개등 스위치를 이 위치로 돌리면 후면 안개등이 켜진다.",
+          "options": [],
+          "correctAnswer": {
+            "kind": "ROW",
+            "correctRow": "R",
+            "correctOptionId": null,
+            "correctOptionKey": null,
+            "correctOptionText": "right / true",
+            "correctOptionTranslatedText": null,
+            "answerRaw": "Right"
+          },
+          "image": {
+            "hasImage": true,
+            "currentAssetSrc": "/qbank/2023-test1/images/p49-562.jpg",
+            "assetHashes": [
+              "8a6d2cab1ffcd5b08a683dd69137e336"
+            ]
+          },
+          "topic": "row",
+          "subtopics": [],
+          "conceptSlots": {
+            "condition": [
+              "fog"
+            ],
+            "context": [],
+            "action": [
+              "head-light"
+            ],
+            "polarity": null,
+            "signals": [
+              {
+                "slot": "condition",
+                "value": "fog",
+                "signal": "fog"
+              },
+              {
+                "slot": "action",
+                "value": "head-light",
+                "signal": "head-light"
+              }
+            ]
+          }
+        },
+        {
+          "qid": "q0539",
+          "number": 539,
+          "type": "ROW",
+          "score": 35.933,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.145,
+            "rawPromptSimilarity": 0.145,
+            "englishPromptSimilarity": 0.145,
+            "syntheticPromptSimilarity": 0,
+            "questionType": 1,
+            "imageSignal": 1,
+            "topicWeighting": 0.5,
+            "answerPolarity": 0.5,
+            "conceptAlignment": 0,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0
+          },
+          "diagnostics": {
+            "effectiveItemType": "ROW",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": true,
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "optionSetMode": "binary-row-neutral + synthetic-ja mirror",
+            "syntheticMirrorUsed": true,
+            "genericPromptFamily": null,
+            "sourceConceptSlots": {
+              "condition": [],
+              "context": [],
+              "action": [],
+              "polarity": null,
+              "signals": []
+            },
+            "candidateConceptSlots": {
+              "condition": [],
+              "context": [],
+              "action": [],
+              "polarity": null,
+              "signals": []
+            },
+            "conceptMatches": [],
+            "contradictionSignals": [],
+            "rowConceptMode": "slot-alignment + contradiction-penalties",
+            "explanation": [
+              "Binary yes/no options were treated as ROW-like for type scoring.",
+              "Missing correct answer was treated as a neutral signal."
+            ]
+          },
+          "prompt": "When the ignition switch is in the START position, the starter engages.",
+          "syntheticJaPrompt": "when ignition switch start position starter start",
+          "translatedPrompt": "엔진 스위치 START에서 시동이 걸린다.",
+          "options": [],
+          "correctAnswer": {
+            "kind": "ROW",
+            "correctRow": "R",
+            "correctOptionId": null,
+            "correctOptionKey": null,
+            "correctOptionText": "right / true",
+            "correctOptionTranslatedText": null,
+            "answerRaw": "Right"
+          },
+          "image": {
+            "hasImage": true,
+            "currentAssetSrc": "/qbank/2023-test1/images/img_0c0edad954a03a3ae621e8c141f72f2e.jpeg",
+            "assetHashes": [
+              "0c0edad954a03a3ae621e8c141f72f2e"
+            ]
+          },
+          "topic": "vehicle-basics",
+          "subtopics": [],
+          "conceptSlots": {
+            "condition": [],
+            "context": [],
+            "action": [],
+            "polarity": null,
+            "signals": []
+          }
+        },
+        {
+          "qid": "q0565",
+          "number": 565,
+          "type": "ROW",
+          "score": 35.554,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.139,
+            "rawPromptSimilarity": 0.139,
+            "englishPromptSimilarity": 0.139,
+            "syntheticPromptSimilarity": 0,
+            "questionType": 1,
+            "imageSignal": 1,
+            "topicWeighting": 0.5,
+            "answerPolarity": 0.5,
+            "conceptAlignment": 0,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0
+          },
+          "diagnostics": {
+            "effectiveItemType": "ROW",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": true,
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "optionSetMode": "binary-row-neutral + synthetic-ja mirror",
+            "syntheticMirrorUsed": true,
+            "genericPromptFamily": null,
+            "sourceConceptSlots": {
+              "condition": [],
+              "context": [],
+              "action": [],
+              "polarity": null,
+              "signals": []
+            },
+            "candidateConceptSlots": {
+              "condition": [
+                "fog"
+              ],
+              "context": [],
+              "action": [
+                "head-light"
+              ],
+              "polarity": null,
+              "signals": [
+                {
+                  "slot": "condition",
+                  "value": "fog",
+                  "signal": "fog"
+                },
+                {
+                  "slot": "action",
+                  "value": "head-light",
+                  "signal": "head-light"
+                }
+              ]
+            },
+            "conceptMatches": [],
+            "contradictionSignals": [],
+            "rowConceptMode": "slot-alignment + contradiction-penalties",
+            "explanation": [
+              "Binary yes/no options were treated as ROW-like for type scoring.",
+              "Missing correct answer was treated as a neutral signal."
+            ]
+          },
+          "prompt": "This lights up when the rear fog light is turned on.",
+          "syntheticJaPrompt": "it ライト when turning rear fog ライト。",
+          "translatedPrompt": "후면 안개등을 켰을 때 이 표시등이 켜진다.",
+          "options": [],
+          "correctAnswer": {
+            "kind": "ROW",
+            "correctRow": "W",
+            "correctOptionId": null,
+            "correctOptionKey": null,
+            "correctOptionText": "wrong / false",
+            "correctOptionTranslatedText": null,
+            "answerRaw": "Wrong"
+          },
+          "image": {
+            "hasImage": true,
+            "currentAssetSrc": "/qbank/2023-test1/images/img_d5502ca0ae50a51708a00400bade8be3.jpeg",
+            "assetHashes": [
+              "d5502ca0ae50a51708a00400bade8be3"
+            ]
+          },
+          "topic": "row",
+          "subtopics": [],
+          "conceptSlots": {
+            "condition": [
+              "fog"
+            ],
+            "context": [],
+            "action": [
+              "head-light"
+            ],
+            "polarity": null,
+            "signals": [
+              {
+                "slot": "condition",
+                "value": "fog",
+                "signal": "fog"
+              },
+              {
+                "slot": "action",
+                "value": "head-light",
+                "signal": "head-light"
+              }
+            ]
+          }
+        },
+        {
+          "qid": "q0558",
+          "number": 558,
+          "type": "ROW",
+          "score": 35.529,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.138,
+            "rawPromptSimilarity": 0.138,
+            "englishPromptSimilarity": 0.138,
+            "syntheticPromptSimilarity": 0,
+            "questionType": 1,
+            "imageSignal": 1,
+            "topicWeighting": 0.5,
+            "answerPolarity": 0.5,
+            "conceptAlignment": 0,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0
+          },
+          "diagnostics": {
+            "effectiveItemType": "ROW",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": true,
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "optionSetMode": "binary-row-neutral + synthetic-ja mirror",
+            "syntheticMirrorUsed": true,
+            "genericPromptFamily": null,
+            "sourceConceptSlots": {
+              "condition": [],
+              "context": [],
+              "action": [],
+              "polarity": null,
+              "signals": []
+            },
+            "candidateConceptSlots": {
+              "condition": [],
+              "context": [],
+              "action": [],
+              "polarity": null,
+              "signals": []
+            },
+            "conceptMatches": [],
+            "contradictionSignals": [],
+            "rowConceptMode": "slot-alignment + contradiction-penalties",
+            "explanation": [
+              "Binary yes/no options were treated as ROW-like for type scoring.",
+              "Missing correct answer was treated as a neutral signal."
+            ]
+          },
+          "prompt": "The starter works when turning the ignition switch to the ACC position.",
+          "syntheticJaPrompt": "starter work when turning ignition switch acc position",
+          "translatedPrompt": "시동 스위치를 ACC 위치로 돌리면 시동 모터가 작동한다.",
+          "options": [],
+          "correctAnswer": {
+            "kind": "ROW",
+            "correctRow": "W",
+            "correctOptionId": null,
+            "correctOptionKey": null,
+            "correctOptionText": "wrong / false",
+            "correctOptionTranslatedText": null,
+            "answerRaw": "Wrong"
+          },
+          "image": {
+            "hasImage": true,
+            "currentAssetSrc": "/qbank/2023-test1/images/p49-558.jpg",
+            "assetHashes": [
+              "a46fc204e31aefb6d7aa980037206d5e"
+            ]
+          },
+          "topic": "vehicle-basics",
+          "subtopics": [],
+          "conceptSlots": {
+            "condition": [],
+            "context": [],
+            "action": [],
+            "polarity": null,
+            "signals": []
+          }
+        }
+      ]
+    }
+  ]
+}

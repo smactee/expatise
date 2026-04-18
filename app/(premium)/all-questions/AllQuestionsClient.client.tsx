@@ -6,6 +6,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import Image from 'next/image';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import BottomNav from '@/components/BottomNav';
+import QuestionExplanationToggle from '@/components/QuestionExplanationToggle';
 import styles from './all-questions.module.css';
 import { loadDataset } from '@/lib/qbank/loadDataset';
 import type { DatasetId } from '@/lib/qbank/datasets';
@@ -51,6 +52,28 @@ function normalizeSearchText(value: string | null | undefined): string {
     .trim();
 }
 
+function hasImageAsset(item: Question): boolean {
+  return item.assets.some((asset) => asset?.kind === "image" && typeof asset?.src === "string" && asset.src.trim().length > 0);
+}
+
+function parseExplicitFilterTokens(value: string | null | undefined): string[] | null {
+  const raw = String(value ?? "");
+  if (!/\s{2,}/.test(raw)) return null;
+
+  return raw
+    .split(/\s{2,}/)
+    .map((token) => normalizeSearchText(token))
+    .filter(Boolean);
+}
+
+function matchesExplicitFilterToken(token: string, searchableText: string, questionNumber: number): boolean {
+  if (/^\d+$/.test(token) && Number(token) === questionNumber) {
+    return true;
+  }
+
+  return ` ${searchableText} `.includes(` ${token} `);
+}
+
 function buildQuestionSearchIndex(
   item: Question,
   derivedTags: string[],
@@ -59,6 +82,8 @@ function buildQuestionSearchIndex(
 ): string {
   const tagLabels = derivedTags.map((tag) => labelForTag(tag, t));
   const colorTags = colorEntry?.colorTags ?? [];
+  const objectTags = colorEntry?.objectTags ?? [];
+  const hiddenTags = hasImageAsset(item) ? ["image"] : [];
   const roadSignHeuristics: string[] = [];
   const isRoadSignQuestion =
     derivedTags.includes("traffic-signals:road-signs") ||
@@ -82,6 +107,7 @@ function buildQuestionSearchIndex(
     item.sourcePrompt,
     item.explanation,
     item.sourceExplanation,
+    item.type,
     ...item.options.map((option) => option.text),
     ...item.sourceOptions.map((option) => option.text),
     ...item.tags,
@@ -89,6 +115,8 @@ function buildQuestionSearchIndex(
     ...derivedTags,
     ...tagLabels,
     ...colorTags,
+    ...objectTags,
+    ...hiddenTags,
     ...roadSignHeuristics,
   ];
 
@@ -234,8 +262,9 @@ useEffect(() => {
 
 
   const filtered = useMemo(() => {
+  const explicitFilterTokens = parseExplicitFilterTokens(query);
   const qNorm = normalizeSearchText(query);
-  const queryTerms = qNorm ? qNorm.split(" ").filter(Boolean) : [];
+  const queryTerms = explicitFilterTokens === null && qNorm ? qNorm.split(" ").filter(Boolean) : [];
 
   return q.filter((item) => {
     const derivedTags = new Set(derivedById.get(item.id) ?? []);
@@ -246,9 +275,12 @@ useEffect(() => {
 
 
     const matchesText =
-      queryTerms.length === 0 ||
-      matchesNumber ||
-      queryTerms.every((term) => searchableText.includes(term));
+      explicitFilterTokens !== null
+        ? explicitFilterTokens.length === 0 ||
+          explicitFilterTokens.every((token) => matchesExplicitFilterToken(token, searchableText, item.number))
+        : queryTerms.length === 0 ||
+          matchesNumber ||
+          queryTerms.every((term) => searchableText.includes(term));
 
 
     // Topic/subtopic filtering
@@ -748,6 +780,11 @@ onClick={(e) => {
                   })}
                 </ul>
               )}
+
+<QuestionExplanationToggle
+  explanation={item.explanation ?? item.sourceExplanation}
+  label={t('results.explanation')}
+/>
 
 <div className={styles.tagRow}>
   {(() => {

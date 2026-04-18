@@ -1,0 +1,536 @@
+{
+  "meta": {
+    "locale": "ja",
+    "generatedAt": "2026-04-13T14:24:43.015Z",
+    "reviewedBatchId": "batch-012",
+    "dataset": "2023-test1",
+    "sourceUnresolvedPath": "imports/ja/batch-012/unresolved.json",
+    "sourceUnresolvedDecisionPath": "qbank-tools/generated/staging/ja-batch-012-unresolved-decisions.json",
+    "rescuedExistingQidCount": 4,
+    "manualAnswerKeyConfirmationCount": 0,
+    "stagingOnly": true
+  },
+  "questions": {
+    "q0146": {
+      "prompt": "水浸しの道路が通行しにくい原因は何か。",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/500.png",
+      "sourceItemId": "screenshots/500.png",
+      "reviewerNotes": "",
+      "promptRawJa": "水浸しの道路が通行しにくい原因は何か。",
+      "promptGlossEn": "What is the reason why flooded roads are difficult to drive on?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-012",
+        "approvedQid": "q0146",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "options": {
+        "q0146_o1": "B 路面付着力が増す",
+        "q0146_o2": "A 路面の凹凸状況が観察できない",
+        "q0146_o3": "C 視界が悪くぼやける",
+        "q0146_o4": "D 日光の反射により視界が妨げられる"
+      },
+      "optionsRawJa": [
+        "A 路面の凹凸状況が観察できない",
+        "B 路面付着力が増す",
+        "C 視界が悪くぼやける",
+        "D 日光の反射により視界が妨げられる"
+      ],
+      "optionsGlossEn": [
+        "A The surface bumps and dents cannot be observed",
+        "B Road adhesion increases",
+        "C Visibility becomes poor and blurry",
+        "D Visibility is impaired by sunlight reflection"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A 路面の凹凸状況が観察できない",
+          "sourceTextBody": "路面の凹凸状況が観察できない",
+          "sourceGlossEn": "A The surface bumps and dents cannot be observed",
+          "canonicalOptionId": "q0146_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "it is impossible to see the hidden holes and bumps in road surface",
+          "alignmentScore": 0.20743622448979593,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B 路面付着力が増す",
+          "sourceTextBody": "路面付着力が増す",
+          "sourceGlossEn": "B Road adhesion increases",
+          "canonicalOptionId": "q0146_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "The road grip becomes stronger",
+          "alignmentScore": 0.10290697674418604,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C 視界が悪くぼやける",
+          "sourceTextBody": "視界が悪くぼやける",
+          "sourceGlossEn": "C Visibility becomes poor and blurry",
+          "canonicalOptionId": "q0146_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "The visibility become lower and blurs the field of vision",
+          "alignmentScore": 0.36467532467532465,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D 日光の反射により視界が妨げられる",
+          "sourceTextBody": "日光の反射により視界が妨げられる",
+          "sourceGlossEn": "D Visibility is impaired by sunlight reflection",
+          "canonicalOptionId": "q0146_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "The sunshine reflection blurs the view",
+          "alignmentScore": 0.146031746031746,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A 路面の凹凸状況が観察できない",
+          "sourceGlossEn": "A The surface bumps and dents cannot be observed",
+          "canonicalOptionId": "q0146_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "it is impossible to see the hidden holes and bumps in road surface",
+          "alignmentScore": 0.20743622448979593,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B 路面付着力が増す",
+          "sourceGlossEn": "B Road adhesion increases",
+          "canonicalOptionId": "q0146_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "The road grip becomes stronger",
+          "alignmentScore": 0.10290697674418604,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C 視界が悪くぼやける",
+          "sourceGlossEn": "C Visibility becomes poor and blurry",
+          "canonicalOptionId": "q0146_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "The visibility become lower and blurs the field of vision",
+          "alignmentScore": 0.36467532467532465,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D 日光の反射により視界が妨げられる",
+          "sourceGlossEn": "D Visibility is impaired by sunlight reflection",
+          "canonicalOptionId": "q0146_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "The sunshine reflection blurs the view",
+          "alignmentScore": 0.146031746031746,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "A",
+      "canonicalCorrectOptionId": "q0146_o2",
+      "canonicalCorrectOptionKey": "B",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed during unresolved rescue review on 2026-04-13T14:24:43.015Z; reviewer selected locale key A.",
+      "correctOptionAlignment": {
+        "sourceKey": "A",
+        "canonicalOptionId": "q0146_o2",
+        "canonicalOptionKey": "B",
+        "sourceText": "A 路面の凹凸状況が観察できない",
+        "sourceGlossEn": "A The surface bumps and dents cannot be observed",
+        "canonicalOptionText": "it is impossible to see the hidden holes and bumps in road surface",
+        "alignmentScore": 0.20743622448979593,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-13T14:24:43.015Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ja-batch-012-unresolved-decisions.json",
+      "answerKeyReviewerNotes": "",
+      "reviewerSuggestedLocaleCorrectOptionKey": "A",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ja-batch-012-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0312": {
+      "prompt": "一計算周期で交通違反による累積点数が12点となったる場合、交通警察は法律に基づき免許証を押収することができる。",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.19.12 1.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 18.19.12 1.png",
+      "reviewerNotes": "",
+      "promptRawJa": "一計算周期で交通違反による累積点数が12点となったる場合、交通警察は法律に基づき免許証を押収することができる。",
+      "promptGlossEn": "If the cumulative demerit points from traffic violations reach 12 points within one assessment period, the traffic police can confiscate a driver's license according to the law.",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "ROW",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-012",
+        "approvedQid": "q0312",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "optionsRawJa": [],
+      "optionsGlossEn": [],
+      "localeCorrectOptionKey": null,
+      "canonicalCorrectRow": "R",
+      "canonicalCorrectAnswer": "right / true",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "ROW question; no locale-specific option key applies.",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ja-batch-012-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0414": {
+      "prompt": "前方の交差点のこの信号は、なにを示しているか。",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.19.18 1.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 18.19.18 1.png",
+      "reviewerNotes": "",
+      "promptRawJa": "前方の交差点のこの信号は、なにを示しているか。",
+      "promptGlossEn": "What does this signal at the upcoming intersection indicate?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-012",
+        "approvedQid": "q0414",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "options": {
+        "q0414_o1": "C 通行許可",
+        "q0414_o2": "A 注意して進め",
+        "q0414_o3": "D 注意喚起",
+        "q0414_o4": "B 通行禁止"
+      },
+      "optionsRawJa": [
+        "A 注意して進め",
+        "B 通行禁止",
+        "C 通行許可",
+        "D 注意喚起"
+      ],
+      "optionsGlossEn": [
+        "A Proceed with caution",
+        "B No entry",
+        "C Passage allowed",
+        "D Warning"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A 注意して進め",
+          "sourceTextBody": "注意して進め",
+          "sourceGlossEn": "A Proceed with caution",
+          "canonicalOptionId": "q0414_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "draw attention",
+          "alignmentScore": 0.02666666666666667,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B 通行禁止",
+          "sourceTextBody": "通行禁止",
+          "sourceGlossEn": "B No entry",
+          "canonicalOptionId": "q0414_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "prohibited from passing",
+          "alignmentScore": 0,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C 通行許可",
+          "sourceTextBody": "通行許可",
+          "sourceGlossEn": "C Passage allowed",
+          "canonicalOptionId": "q0414_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "allowed to pass",
+          "alignmentScore": 0.3076923076923077,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D 注意喚起",
+          "sourceTextBody": "注意喚起",
+          "sourceGlossEn": "D Warning",
+          "canonicalOptionId": "q0414_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "intersection warning",
+          "alignmentScore": 0.6619565217391304,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A 注意して進め",
+          "sourceGlossEn": "A Proceed with caution",
+          "canonicalOptionId": "q0414_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "draw attention",
+          "alignmentScore": 0.02666666666666667,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B 通行禁止",
+          "sourceGlossEn": "B No entry",
+          "canonicalOptionId": "q0414_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "prohibited from passing",
+          "alignmentScore": 0,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C 通行許可",
+          "sourceGlossEn": "C Passage allowed",
+          "canonicalOptionId": "q0414_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "allowed to pass",
+          "alignmentScore": 0.3076923076923077,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D 注意喚起",
+          "sourceGlossEn": "D Warning",
+          "canonicalOptionId": "q0414_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "intersection warning",
+          "alignmentScore": 0.6619565217391304,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "B",
+      "canonicalCorrectOptionId": "q0414_o4",
+      "canonicalCorrectOptionKey": "D",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed during unresolved rescue review on 2026-04-13T14:24:43.015Z; reviewer selected locale key B.",
+      "correctOptionAlignment": {
+        "sourceKey": "B",
+        "canonicalOptionId": "q0414_o4",
+        "canonicalOptionKey": "D",
+        "sourceText": "B 通行禁止",
+        "sourceGlossEn": "B No entry",
+        "canonicalOptionText": "prohibited from passing",
+        "alignmentScore": 0,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-13T14:24:43.015Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ja-batch-012-unresolved-decisions.json",
+      "answerKeyReviewerNotes": "",
+      "reviewerSuggestedLocaleCorrectOptionKey": "B",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ja-batch-012-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0767": {
+      "prompt": "この標識の示す意味はどれか。",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-07 at 18.19.20 1.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-07 at 18.19.20 1.png",
+      "reviewerNotes": "",
+      "promptRawJa": "この標識の示す意味はどれか。",
+      "promptGlossEn": "What does this sign mean?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ja",
+        "batchId": "batch-012",
+        "approvedQid": "q0767",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "options": {
+        "q0767_o1": "B 減速徐行",
+        "q0767_o2": "C 危険に注意",
+        "q0767_o3": "D 渋滞区間",
+        "q0767_o4": "A 事故多発区間"
+      },
+      "optionsRawJa": [
+        "A 事故多発区間",
+        "B 減速徐行",
+        "C 危険に注意",
+        "D 渋滞区間"
+      ],
+      "optionsGlossEn": [
+        "A: Area with frequent accidents",
+        "B: Slow down",
+        "C: Caution: Danger",
+        "D: Congestion area"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A 事故多発区間",
+          "sourceTextBody": "事故多発区間",
+          "sourceGlossEn": "A: Area with frequent accidents",
+          "canonicalOptionId": "q0767_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "accident-prone section",
+          "alignmentScore": 0.05333333333333334,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B 減速徐行",
+          "sourceTextBody": "減速徐行",
+          "sourceGlossEn": "B: Slow down",
+          "canonicalOptionId": "q0767_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "reduce speed and go slowly",
+          "alignmentScore": 0.30434782608695654,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C 危険に注意",
+          "sourceTextBody": "危険に注意",
+          "sourceGlossEn": "C: Caution: Danger",
+          "canonicalOptionId": "q0767_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "watch for danger",
+          "alignmentScore": 0.3833333333333333,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D 渋滞区間",
+          "sourceTextBody": "渋滞区間",
+          "sourceGlossEn": "D: Congestion area",
+          "canonicalOptionId": "q0767_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "jammed section",
+          "alignmentScore": 0.032,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A 事故多発区間",
+          "sourceGlossEn": "A: Area with frequent accidents",
+          "canonicalOptionId": "q0767_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "accident-prone section",
+          "alignmentScore": 0.05333333333333334,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B 減速徐行",
+          "sourceGlossEn": "B: Slow down",
+          "canonicalOptionId": "q0767_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "reduce speed and go slowly",
+          "alignmentScore": 0.30434782608695654,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C 危険に注意",
+          "sourceGlossEn": "C: Caution: Danger",
+          "canonicalOptionId": "q0767_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "watch for danger",
+          "alignmentScore": 0.3833333333333333,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D 渋滞区間",
+          "sourceGlossEn": "D: Congestion area",
+          "canonicalOptionId": "q0767_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "jammed section",
+          "alignmentScore": 0.032,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "C",
+      "canonicalCorrectOptionId": "q0767_o2",
+      "canonicalCorrectOptionKey": "B",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed during unresolved rescue review on 2026-04-13T14:24:43.015Z; reviewer selected locale key C.",
+      "correctOptionAlignment": {
+        "sourceKey": "C",
+        "canonicalOptionId": "q0767_o2",
+        "canonicalOptionKey": "B",
+        "sourceText": "C 危険に注意",
+        "sourceGlossEn": "C: Caution: Danger",
+        "canonicalOptionText": "watch for danger",
+        "alignmentScore": 0.3833333333333333,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-13T14:24:43.015Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ja-batch-012-unresolved-decisions.json",
+      "answerKeyReviewerNotes": "",
+      "reviewerSuggestedLocaleCorrectOptionKey": "C",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ja-batch-012-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    }
+  }
+}

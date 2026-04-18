@@ -202,10 +202,14 @@ for (const rawDecision of Array.isArray(unresolvedDecisionsDoc.items) ? unresolv
   }
 
   if (decision.createNewQuestion) {
+    if (!resolveNewQuestionLocalAnswerKey(decision)) {
+      throw new Error(`Create-new unresolved decision for ${sourceItem.itemId ?? sourceItem.sourceImage ?? "unknown-item"} is missing newQuestionLocalAnswerKey.`);
+    }
     newQuestionDecisionItems.push({
       itemId: sourceItem.itemId ?? null,
       sourceImage: sourceItem.sourceImage ?? null,
       createNewQuestion: true,
+      newQuestionLocalAnswerKey: resolveNewQuestionLocalAnswerKey(decision),
       reviewerNotes: decision.reviewerNotes,
       decisionSource: "unresolved-rescue-review",
       recommendedAction: decision.recommendedAction ?? null,
@@ -220,6 +224,10 @@ for (const rawDecision of Array.isArray(unresolvedDecisionsDoc.items) ? unresolv
       }),
     );
     newQuestionOrdinal += 1;
+    continue;
+  }
+
+  if (decision.deleteQuestion) {
     continue;
   }
 
@@ -398,13 +406,22 @@ console.log(
 );
 
 function normalizeUnresolvedDecision(item) {
+  const deleteQuestion = item?.deleteQuestion === true;
   return {
     itemId: String(item?.itemId ?? "").trim(),
     sourceImage: String(item?.sourceImage ?? "").trim(),
-    approvedQid: normalizeText(item?.approvedQid),
-    createNewQuestion: item?.createNewQuestion === true,
-    keepUnresolved: item?.keepUnresolved === true,
+    approvedQid: deleteQuestion ? null : normalizeText(item?.approvedQid),
+    createNewQuestion: deleteQuestion ? false : item?.createNewQuestion === true,
+    keepUnresolved: deleteQuestion ? false : item?.keepUnresolved === true,
+    deleteQuestion,
     confirmedCorrectOptionKey: normalizeChoiceKey(item?.confirmedCorrectOptionKey),
+    newQuestionLocalAnswerKey: normalizeChoiceKey(
+      item?.newQuestionLocalAnswerKey ?? (
+        item?.createNewQuestion === true
+          ? item?.confirmedCorrectOptionKey
+          : null
+      ),
+    ),
     answerKeyUnknown: item?.answerKeyUnknown === true || item?.unknown === true,
     currentStagedLocaleCorrectOptionKey: normalizeChoiceKey(item?.currentStagedLocaleCorrectOptionKey),
     initialSuggestedQid: normalizeText(item?.initialSuggestedQid),
@@ -812,6 +829,7 @@ function buildNewQuestionCandidate({ item, decision, lang: sourceLang, batchId: 
     optionsGlossEn: sourceOptionsGloss(item),
     correctKeyRaw: item.correctKeyRaw ?? null,
     correctAnswerRaw: item.correctAnswerRaw ?? null,
+    newQuestionLocalAnswerKey: resolveNewQuestionLocalAnswerKey(decision),
     provisionalTopic: item.provisionalTopic ?? null,
     provisionalSubtopics: Array.isArray(item.provisionalSubtopics) ? item.provisionalSubtopics : [],
     topicConfidence: item.topicConfidence ?? null,
@@ -931,6 +949,18 @@ function resolveStructuredAnswerKey(decision) {
   }
 
   return normalizeChoiceKey(decision?.confirmedCorrectOptionKey);
+}
+
+function resolveNewQuestionLocalAnswerKey(decision) {
+  if (decision?.createNewQuestion !== true) {
+    return null;
+  }
+
+  return normalizeChoiceKey(
+    decision?.newQuestionLocalAnswerKey ?? (
+      decision?.confirmedCorrectOptionKey
+    ),
+  );
 }
 
 function requiresStructuredAnswerKeyConfirmation(decision, question) {

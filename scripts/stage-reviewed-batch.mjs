@@ -64,6 +64,7 @@ const questionMap = new Map(context.questions.map((question) => [question.qid, q
 const counts = {
   approvedExistingQid: 0,
   createNewQuestion: 0,
+  deleteQuestion: 0,
   noneOfThese: 0,
   unsure: 0,
   localeSpecificCorrectOptionKey: 0,
@@ -92,6 +93,8 @@ for (const rawDecision of decisionItems) {
     approvedQid: decision.approvedQid,
     noneOfThese: decision.noneOfThese,
     createNewQuestion: decision.createNewQuestion,
+    deleteQuestion: decision.deleteQuestion === true,
+    newQuestionLocalAnswerKey: resolveNewQuestionLocalAnswerKey(decision),
     unsure: decision.unsure,
     reviewerNotes: decision.reviewerNotes,
     status,
@@ -140,6 +143,9 @@ for (const rawDecision of decisionItems) {
   }
 
   if (decision.createNewQuestion) {
+    if (!resolveNewQuestionLocalAnswerKey(decision)) {
+      throw new Error(`Create-new decision for ${itemId || sourceItem.sourceImage || "unknown-item"} is missing newQuestionLocalAnswerKey.`);
+    }
     counts.createNewQuestion += 1;
     newQuestionItems.push(buildNewQuestionCandidate({
       item: sourceItem,
@@ -149,6 +155,11 @@ for (const rawDecision of decisionItems) {
       ordinal: candidateOrdinal,
     }));
     candidateOrdinal += 1;
+    continue;
+  }
+
+  if (decision.deleteQuestion) {
+    counts.deleteQuestion += 1;
     continue;
   }
 
@@ -178,6 +189,7 @@ const previewDoc = {
     sourceReviewNeededPath: path.relative(process.cwd(), batchFiles.reviewNeededPath),
     approvedCount: counts.approvedExistingQid,
     createNewQuestionCount: counts.createNewQuestion,
+    deleteQuestionCount: counts.deleteQuestion,
     noneOfTheseCount: counts.noneOfThese,
     unsureCount: counts.unsure,
     localeSpecificCorrectOptionKeyCount: counts.localeSpecificCorrectOptionKey,
@@ -225,6 +237,7 @@ console.log(
   [
     `Approved existing-qid: ${counts.approvedExistingQid}`,
     `createNewQuestion: ${counts.createNewQuestion}`,
+    `deleteQuestion: ${counts.deleteQuestion}`,
     `noneOfThese: ${counts.noneOfThese}`,
     `unsure: ${counts.unsure}`,
     `localeCorrectOptionKey: ${counts.localeSpecificCorrectOptionKey}`,
@@ -246,23 +259,32 @@ function resolveDecisionPath({ explicitPath, lang: sourceLang, batchId: sourceBa
 }
 
 function normalizeDecision(item) {
+  const deleteQuestion = item?.deleteQuestion === true;
   const approvedQid = normalizeText(item?.approvedQid);
   const noneOfThese = item?.noneOfThese === true;
-  const createNewQuestion = item?.createNewQuestion === true;
+  const createNewQuestion = deleteQuestion ? false : item?.createNewQuestion === true;
   const unsure =
-    approvedQid || noneOfThese || createNewQuestion
+    approvedQid || noneOfThese || createNewQuestion || deleteQuestion
       ? false
       : item?.unsure !== false;
 
   return {
     sourceSection: normalizeText(item?.sourceSection) ?? null,
-    approvedQid: approvedQid || null,
+    approvedQid: deleteQuestion ? null : (approvedQid || null),
     initialSuggestedQid: normalizeText(item?.initialSuggestedQid) ?? null,
     noneOfThese,
     createNewQuestion,
-    keepUnresolved: item?.keepUnresolved === true,
+    keepUnresolved: deleteQuestion ? false : item?.keepUnresolved === true,
+    deleteQuestion,
     unsure,
     confirmedCorrectOptionKey: normalizeChoiceKey(item?.confirmedCorrectOptionKey),
+    newQuestionLocalAnswerKey: normalizeChoiceKey(
+      item?.newQuestionLocalAnswerKey ?? (
+        item?.createNewQuestion === true
+          ? item?.confirmedCorrectOptionKey
+          : null
+      ),
+    ),
     answerKeyUnknown: item?.answerKeyUnknown === true || item?.unknown === true,
     currentStagedLocaleCorrectOptionKey: normalizeChoiceKey(item?.currentStagedLocaleCorrectOptionKey),
     useCurrentStagedAnswerKey: item?.useCurrentStagedAnswerKey === true,
@@ -277,6 +299,10 @@ function decisionStatus(decision) {
 
   if (decision.createNewQuestion) {
     return "selected-for-new-question";
+  }
+
+  if (decision.deleteQuestion) {
+    return "deleted-question";
   }
 
   if (decision.noneOfThese) {
@@ -649,6 +675,7 @@ function buildNewQuestionCandidate({ item, decision, lang: sourceLang, batchId: 
     optionsGlossEn: sourceOptionsGloss(item),
     correctKeyRaw: item.correctKeyRaw ?? null,
     correctAnswerRaw: item.correctAnswerRaw ?? null,
+    newQuestionLocalAnswerKey: resolveNewQuestionLocalAnswerKey(decision),
     provisionalTopic: item.provisionalTopic ?? null,
     provisionalSubtopics: Array.isArray(item.provisionalSubtopics) ? item.provisionalSubtopics : [],
     topicConfidence: item.topicConfidence ?? null,
@@ -756,4 +783,16 @@ function requiresStructuredAnswerKeyConfirmation(decision, question) {
   }
 
   return true;
+}
+
+function resolveNewQuestionLocalAnswerKey(decision) {
+  if (decision?.createNewQuestion !== true) {
+    return null;
+  }
+
+  return normalizeChoiceKey(
+    decision?.newQuestionLocalAnswerKey ?? (
+      decision?.confirmedCorrectOptionKey
+    ),
+  );
 }
