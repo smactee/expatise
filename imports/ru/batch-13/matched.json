@@ -1,0 +1,3411 @@
+{
+  "generatedAt": "2026-04-29T08:01:21.270Z",
+  "lang": "ru",
+  "batchId": "batch-13",
+  "dataset": "2023-test1",
+  "kind": "matched",
+  "items": [
+    {
+      "itemId": "screenshots/Screenshot 2026-04-19 at 18.56.44 1.png",
+      "sourceImage": "screenshots/Screenshot 2026-04-19 at 18.56.44 1.png",
+      "promptRawJa": "Данная кнопка загорается тогда, когда рычаг стояночного тормоза не полностью разжимается.",
+      "promptGlossEn": "This indicator lights up when the parking brake lever is not fully released.",
+      "optionsRawJa": [
+        "A Правильно",
+        "B Не правильно"
+      ],
+      "optionsGlossEn": [
+        "A Correct",
+        "B Incorrect"
+      ],
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "ocrConfidence": "high",
+      "hasImage": true,
+      "visualObjectTags": [
+        "!",
+        "p"
+      ],
+      "visualColorTags": [
+        "red",
+        "gray"
+      ],
+      "visualNumberTags": [],
+      "visualLayoutTags": [],
+      "visualEvidenceNotes": [
+        "Dashboard warning symbol showing a red exclamation mark inside a circle in parentheses, typical for parking brake warning."
+      ],
+      "provisionalTopic": "driving-operations",
+      "provisionalSubtopics": [
+        "driving-operations:indicators"
+      ],
+      "topicConfidence": 1,
+      "topicSignals": [
+        {
+          "topic": "driving-operations",
+          "subtopic": "driving-operations:indicators",
+          "signal": "indicator-operation",
+          "weight": 1.25
+        }
+      ],
+      "visualEvidenceAvailable": true,
+      "sourcePromptFamily": null,
+      "sourcePromptFamilyBucket": "indicator",
+      "sourceOptionCount": 2,
+      "optionCountReliable": true,
+      "expectedObjectTags": [
+        "!",
+        "p",
+        "indicator",
+        "dashboard-indicator",
+        "warning-light",
+        "gray-background"
+      ],
+      "expectedColorTags": [
+        "red",
+        "gray"
+      ],
+      "sourceIsSignHeavy": true,
+      "sourceConceptSlots": {
+        "condition": [],
+        "context": [],
+        "action": [
+          "head-light",
+          "park"
+        ],
+        "polarity": null,
+        "obligation": null,
+        "signals": [
+          {
+            "slot": "action",
+            "value": "head-light",
+            "signal": "head-light"
+          },
+          {
+            "slot": "action",
+            "value": "park",
+            "signal": "park"
+          }
+        ]
+      },
+      "mcqFingerprint": null,
+      "localizedText": {
+        "prompt": "Данная кнопка загорается тогда, когда рычаг стояночного тормоза не полностью разжимается.",
+        "options": [
+          "A Правильно",
+          "B Не правильно"
+        ],
+        "correctAnswer": null,
+        "explanation": null
+      },
+      "translatedText": {
+        "prompt": "This indicator lights up when the parking brake lever is not fully released.",
+        "options": [
+          "A Correct",
+          "B Incorrect"
+        ],
+        "correctAnswer": null
+      },
+      "topicHints": [],
+      "answerPolarity": null,
+      "match": {
+        "qid": "q0534",
+        "number": 534,
+        "score": 112.564,
+        "scoreGap": 26.978,
+        "scoreBreakdown": {
+          "optionScore": 0.869,
+          "glossScore": 0.429,
+          "promptSimilarity": 0.429,
+          "rawPromptSimilarity": 0.429,
+          "englishPromptSimilarity": 0.287,
+          "bridgePromptSimilarity": 0.022,
+          "syntheticPromptSimilarity": 0,
+          "localizedPromptSimilarity": 0.429,
+          "localizedAgreement": 0.566,
+          "localizedGlossSimilarity": 0.686,
+          "localizedKeywordSupport": 0.441,
+          "multilingualSupportScore": 0.566,
+          "keywordScore": 0.741,
+          "rowKeywordSignal": 0.419,
+          "rowDistinctiveKeywordScore": 0.18,
+          "rowConceptKeywordSupport": 0.39,
+          "rowContrastPenalty": 0,
+          "numericGroupScore": 0.5,
+          "numericGroupPenalty": 0,
+          "numericGroupBoost": 0,
+          "promptFamilyMismatchPenalty": 0,
+          "promptFamilySupport": 0.06,
+          "imageScore": 1,
+          "rawImageScore": 1,
+          "indicatorVisualScore": 0.839,
+          "indicatorVisualBoost": 11.537,
+          "missingImagePenalty": 0,
+          "imageFamilyMismatchPenalty": 0,
+          "optionSimilarity": 0.869,
+          "questionType": 1,
+          "optionCountAgreement": 1,
+          "answerStructureAgreement": 0.5,
+          "promptFamilyAgreement": 0.82,
+          "provisionalTopicAgreement": 1,
+          "structuralAgreement": 0.89,
+          "structuralPenalty": 0,
+          "imageSignal": 1,
+          "imageObjectAgreement": 0.733,
+          "imageColorAgreement": 1,
+          "topicWeighting": 0.5,
+          "answerPolarity": 0.5,
+          "conceptAlignment": 0.935,
+          "conditionAlignment": 1,
+          "contextAlignment": 1,
+          "actionAlignment": 0.8,
+          "obligationAlignment": 0,
+          "polarityAlignment": 1,
+          "contradictionPenalty": 0,
+          "assetTieBreak": 0,
+          "totalScore": 87.066,
+          "baseScore": 87.066,
+          "rerankAdjustment": 25.498
+        },
+        "candidateTopicTruth": {
+          "topic": "driving-operations",
+          "subtopics": [
+            "driving-operations:indicators"
+          ],
+          "tags": [
+            "driving-operations",
+            "driving-operations:indicators"
+          ]
+        },
+        "candidateImageRef": {
+          "hasImage": true,
+          "currentAssetSrc": "/qbank/2023-test1/images/img_e428f1567e3758e428cc83120c049c6a.jpeg",
+          "assetHashes": [
+            "e428f1567e3758e428cc83120c049c6a"
+          ],
+          "colorTags": [
+            "red",
+            "gray"
+          ],
+          "objectTags": [
+            "p"
+          ]
+        }
+      },
+      "analysis": {
+        "mode": "standard",
+        "effectiveQuestionType": "ROW",
+        "declaredQuestionType": "MCQ",
+        "booleanChoiceDetected": true,
+        "plausibleShortlist": true,
+        "imageParityApplied": true,
+        "candidateImageParityMode": "image-only candidate set",
+        "candidateCountBeforeParity": 985,
+        "candidateCountAfterParity": 498,
+        "candidateCountAfterStructuralFilter": 141,
+        "candidateCountAfterMcqShortlist": 141,
+        "structuralFilterMode": "hard-structural",
+        "structuralHardCandidateCount": 141,
+        "structuralSoftCandidateCount": 142,
+        "mcqShortlistApplied": false,
+        "mcqShortlistMode": "row-bypass",
+        "mcqShortlistTopScore": null,
+        "correctionRuleIdsAppliedToRanking": [],
+        "correctionRuleIdsAppliedToGating": [],
+        "matchingProfile": "row-image",
+        "decisionReasonCodes": [
+          "profile-pass"
+        ],
+        "autoMatchThresholdDelta": 0,
+        "autoGapThresholdDelta": 0,
+        "autoMatch": {
+          "profile": "row-image",
+          "topScore": 112.564,
+          "rank2Score": 85.586,
+          "scoreGap": 26.978,
+          "thresholds": {
+            "reviewFloor": 40,
+            "autoMatchThreshold": 64,
+            "autoGapThreshold": 7
+          },
+          "signalAgreement": {
+            "agreementScore": 0.786,
+            "strongSignalCount": 5,
+            "weakSignalCount": 0,
+            "signalSpread": 0.434,
+            "signalConflict": false,
+            "signalVector": {
+              "option": 0.935,
+              "gloss": 0.686,
+              "keyword": 0.741,
+              "image": 1,
+              "multilingual": 0.566,
+              "concept": 0.935
+            }
+          },
+          "separation": {
+            "signalSeparation": 0.181,
+            "tooClose": false
+          },
+          "autoMatched": true,
+          "reasonCodes": [
+            "profile-pass"
+          ]
+        },
+        "explanation": "Top candidate cleared the review floor but remains review-first."
+      },
+      "proposedLocalization": {
+        "prompt": "Данная кнопка загорается тогда, когда рычаг стояночного тормоза не полностью разжимается.",
+        "explanation": ""
+      },
+      "reviewDecision": null,
+      "approvedLocalization": null,
+      "topCandidates": [
+        {
+          "qid": "q0534",
+          "number": 534,
+          "type": "ROW",
+          "score": 112.564,
+          "scoreBreakdown": {
+            "optionScore": 0.869,
+            "glossScore": 0.429,
+            "promptSimilarity": 0.429,
+            "rawPromptSimilarity": 0.429,
+            "englishPromptSimilarity": 0.287,
+            "bridgePromptSimilarity": 0.022,
+            "syntheticPromptSimilarity": 0,
+            "localizedPromptSimilarity": 0.429,
+            "localizedAgreement": 0.566,
+            "localizedGlossSimilarity": 0.686,
+            "localizedKeywordSupport": 0.441,
+            "multilingualSupportScore": 0.566,
+            "keywordScore": 0.741,
+            "rowKeywordSignal": 0.419,
+            "rowDistinctiveKeywordScore": 0.18,
+            "rowConceptKeywordSupport": 0.39,
+            "rowContrastPenalty": 0,
+            "numericGroupScore": 0.5,
+            "numericGroupPenalty": 0,
+            "numericGroupBoost": 0,
+            "promptFamilyMismatchPenalty": 0,
+            "promptFamilySupport": 0.06,
+            "imageScore": 1,
+            "rawImageScore": 1,
+            "indicatorVisualScore": 0.839,
+            "indicatorVisualBoost": 11.537,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatchPenalty": 0,
+            "optionSimilarity": 0.869,
+            "questionType": 1,
+            "optionCountAgreement": 1,
+            "answerStructureAgreement": 0.5,
+            "promptFamilyAgreement": 0.82,
+            "provisionalTopicAgreement": 1,
+            "structuralAgreement": 0.89,
+            "structuralPenalty": 0,
+            "imageSignal": 1,
+            "imageObjectAgreement": 0.733,
+            "imageColorAgreement": 1,
+            "topicWeighting": 0.5,
+            "answerPolarity": 0.5,
+            "conceptAlignment": 0.935,
+            "conditionAlignment": 1,
+            "contextAlignment": 1,
+            "actionAlignment": 0.8,
+            "obligationAlignment": 0,
+            "polarityAlignment": 1,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0,
+            "totalScore": 87.066,
+            "baseScore": 87.066,
+            "rerankAdjustment": 25.498
+          },
+          "diagnostics": {
+            "effectiveItemType": "ROW",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": true,
+            "matchingProfile": "row-image",
+            "signalWeights": {
+              "option": 0.08,
+              "gloss": 0.34,
+              "keyword": 0.14,
+              "image": 0.28,
+              "multilingual": 0.16
+            },
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "optionSetMode": "row + translation-ru corroboration",
+            "localizedMirrorUsed": true,
+            "localizedMirrorLabel": "translation-ru",
+            "localizedSignalAvailable": true,
+            "syntheticMirrorUsed": false,
+            "genericPromptFamily": null,
+            "sourcePromptFamily": "dashboard-indicator",
+            "sourcePromptFamilyBucket": "indicator",
+            "candidatePromptFamilyBucket": "indicator",
+            "promptFamilyReasonCodes": [],
+            "sourceConceptSlots": {
+              "condition": [
+                "night"
+              ],
+              "context": [
+                "parking-area"
+              ],
+              "action": [
+                "head-light",
+                "park",
+                "turn-signal",
+                "parking-brake",
+                "brake"
+              ],
+              "polarity": "positive",
+              "obligation": null,
+              "signals": [
+                {
+                  "slot": "action",
+                  "value": "head-light",
+                  "signal": "head-light"
+                },
+                {
+                  "slot": "action",
+                  "value": "park",
+                  "signal": "park"
+                },
+                {
+                  "slot": "condition",
+                  "value": "night",
+                  "signal": "night"
+                },
+                {
+                  "slot": "context",
+                  "value": "parking-area",
+                  "signal": "parking"
+                },
+                {
+                  "slot": "action",
+                  "value": "turn-signal",
+                  "signal": "turn-signal"
+                },
+                {
+                  "slot": "action",
+                  "value": "parking-brake",
+                  "signal": "parking-brake"
+                },
+                {
+                  "slot": "action",
+                  "value": "brake",
+                  "signal": "brake"
+                }
+              ]
+            },
+            "candidateConceptSlots": {
+              "condition": [
+                "night"
+              ],
+              "context": [
+                "parking-area"
+              ],
+              "action": [
+                "head-light",
+                "turn-signal",
+                "parking-brake",
+                "brake"
+              ],
+              "polarity": "positive",
+              "obligation": null,
+              "signals": [
+                {
+                  "slot": "action",
+                  "value": "head-light",
+                  "signal": "head-light"
+                },
+                {
+                  "slot": "condition",
+                  "value": "night",
+                  "signal": "night"
+                },
+                {
+                  "slot": "context",
+                  "value": "parking-area",
+                  "signal": "parking"
+                },
+                {
+                  "slot": "action",
+                  "value": "turn-signal",
+                  "signal": "turn-signal"
+                },
+                {
+                  "slot": "action",
+                  "value": "parking-brake",
+                  "signal": "parking-brake"
+                },
+                {
+                  "slot": "action",
+                  "value": "brake",
+                  "signal": "brake"
+                }
+              ]
+            },
+            "conceptMatches": [
+              "condition:night",
+              "context:parking-area",
+              "action:head-light|turn-signal|parking-brake|brake"
+            ],
+            "contradictionSignals": [],
+            "rowContrastSignals": [],
+            "rowConceptMode": "slot-alignment + contradiction-penalties",
+            "sourceNumericGroups": [],
+            "candidateNumericGroups": [],
+            "numericGroupScore": 0.5,
+            "numericGroupPenalty": 0,
+            "numericGroupReasonCodes": [],
+            "numericGroupMatches": [],
+            "sourceFeatureGloss": "dashboard indicator meaning: dashboard indicator, parking brake, night, gray background, indicator",
+            "sourceFeatureKeywords": [
+              "dashboard-indicator",
+              "parking-brake",
+              "turn-signal",
+              "night",
+              "parking",
+              "brake",
+              "gray-background",
+              "indicator",
+              "p",
+              "warning-light",
+              "background",
+              "dashboard",
+              "fully",
+              "incorrect",
+              "lever",
+              "lights",
+              "released",
+              "driving-operations"
+            ],
+            "candidateFeatureKeywords": [
+              "head-light",
+              "p",
+              "handbrake",
+              "lights",
+              "pulled",
+              "right",
+              "driving-operations",
+              "indicators",
+              "dashboard-indicator",
+              "parking-brake",
+              "turn-signal",
+              "night",
+              "parking",
+              "brake",
+              "dashboard",
+              "indicator"
+            ],
+            "candidateImageTags": [
+              "p",
+              "red",
+              "gray",
+              "gray-background"
+            ],
+            "imageObjectMatch": 0.733,
+            "dominantColorMatch": 1,
+            "indicatorVisualMatch": 0.839,
+            "imageCandidateBoost": 11.537,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatch": 0,
+            "imageVisualReasonCodes": [
+              "dominant-color-match",
+              "image-object-match",
+              "indicator-visual-match",
+              "image-candidate-boost"
+            ],
+            "sourceIndicatorVisual": true,
+            "candidateIndicatorVisual": true,
+            "structuralSevereSignals": [],
+            "structuralSoftSignals": [],
+            "imageObjectComparable": true,
+            "imageColorComparable": true,
+            "explanation": [
+              "Binary yes/no options were treated as ROW-like for type scoring.",
+              "Missing correct answer was treated as a neutral signal.",
+              "Option comparison used unordered semantic set matching.",
+              "Localized gloss and keyword evidence converged on the same candidate.",
+              "Indicator visual tags, dominant colors, and image presence strengthened this candidate.",
+              "Distinctive keyword overlap strengthened the MCQ match.",
+              "Question family alignment reinforced this candidate.",
+              "Structural filtering and scoring strongly agree with this candidate.",
+              "ROW concept slots aligned on condition/context/action.",
+              "Source-side action intent aligned strongly with the candidate.",
+              "Scenario context tags aligned strongly with the candidate."
+            ]
+          },
+          "prompt": "It lights when the handbrake is pulled up.",
+          "syntheticJaPrompt": "it ライト when handbrake pulled up。",
+          "translatedPrompt": "주차 브레이크를 당기면 이 등이 켜진다.",
+          "options": [],
+          "correctAnswer": {
+            "kind": "ROW",
+            "correctRow": "R",
+            "correctOptionId": null,
+            "correctOptionKey": null,
+            "correctOptionText": "right / true",
+            "correctOptionTranslatedText": null,
+            "answerRaw": "Right"
+          },
+          "image": {
+            "hasImage": true,
+            "currentAssetSrc": "/qbank/2023-test1/images/img_e428f1567e3758e428cc83120c049c6a.jpeg",
+            "assetHashes": [
+              "e428f1567e3758e428cc83120c049c6a"
+            ],
+            "colorTags": [
+              "red",
+              "gray"
+            ],
+            "dominantColorTags": [
+              "red",
+              "gray"
+            ],
+            "objectTags": [
+              "p"
+            ]
+          },
+          "topic": "driving-operations",
+          "subtopics": [
+            "driving-operations:indicators"
+          ],
+          "conceptSlots": {
+            "condition": [],
+            "context": [],
+            "action": [
+              "head-light"
+            ],
+            "polarity": null,
+            "obligation": null,
+            "signals": [
+              {
+                "slot": "action",
+                "value": "head-light",
+                "signal": "head-light"
+              }
+            ]
+          }
+        },
+        {
+          "qid": "q0522",
+          "number": 522,
+          "type": "ROW",
+          "score": 85.586,
+          "scoreBreakdown": {
+            "optionScore": 0.689,
+            "glossScore": 0.351,
+            "promptSimilarity": 0.351,
+            "rawPromptSimilarity": 0.351,
+            "englishPromptSimilarity": 0.079,
+            "bridgePromptSimilarity": 0.027,
+            "syntheticPromptSimilarity": 0,
+            "localizedPromptSimilarity": 0.351,
+            "localizedAgreement": 0.365,
+            "localizedGlossSimilarity": 0.468,
+            "localizedKeywordSupport": 0.194,
+            "multilingualSupportScore": 0.365,
+            "keywordScore": 0.37,
+            "rowKeywordSignal": 0.185,
+            "rowDistinctiveKeywordScore": 0,
+            "rowConceptKeywordSupport": 0.189,
+            "rowContrastPenalty": 0,
+            "numericGroupScore": 0.5,
+            "numericGroupPenalty": 0,
+            "numericGroupBoost": 0,
+            "promptFamilyMismatchPenalty": 0,
+            "promptFamilySupport": 0,
+            "imageScore": 1,
+            "rawImageScore": 1,
+            "indicatorVisualScore": 0.748,
+            "indicatorVisualBoost": 8.443,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatchPenalty": 0,
+            "optionSimilarity": 0.689,
+            "questionType": 1,
+            "optionCountAgreement": 1,
+            "answerStructureAgreement": 0.5,
+            "promptFamilyAgreement": 0.35,
+            "provisionalTopicAgreement": 0,
+            "structuralAgreement": 0.757,
+            "structuralPenalty": 0.16,
+            "imageSignal": 1,
+            "imageObjectAgreement": 0.733,
+            "imageColorAgreement": 1,
+            "topicWeighting": 0.5,
+            "answerPolarity": 0.5,
+            "conceptAlignment": 0.684,
+            "conditionAlignment": 0,
+            "contextAlignment": 0,
+            "actionAlignment": 0.6,
+            "obligationAlignment": 0,
+            "polarityAlignment": 1,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0,
+            "totalScore": 69.672,
+            "baseScore": 69.672,
+            "rerankAdjustment": 15.914
+          },
+          "diagnostics": {
+            "effectiveItemType": "ROW",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": true,
+            "matchingProfile": "row-image",
+            "signalWeights": {
+              "option": 0.08,
+              "gloss": 0.34,
+              "keyword": 0.14,
+              "image": 0.28,
+              "multilingual": 0.16
+            },
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "optionSetMode": "row + translation-ru corroboration",
+            "localizedMirrorUsed": true,
+            "localizedMirrorLabel": "translation-ru",
+            "localizedSignalAvailable": true,
+            "syntheticMirrorUsed": false,
+            "genericPromptFamily": null,
+            "sourcePromptFamily": "dashboard-indicator",
+            "sourcePromptFamilyBucket": "indicator",
+            "candidatePromptFamilyBucket": null,
+            "promptFamilyReasonCodes": [],
+            "sourceConceptSlots": {
+              "condition": [
+                "night"
+              ],
+              "context": [
+                "parking-area"
+              ],
+              "action": [
+                "head-light",
+                "park",
+                "turn-signal",
+                "parking-brake",
+                "brake"
+              ],
+              "polarity": "positive",
+              "obligation": null,
+              "signals": [
+                {
+                  "slot": "action",
+                  "value": "head-light",
+                  "signal": "head-light"
+                },
+                {
+                  "slot": "action",
+                  "value": "park",
+                  "signal": "park"
+                },
+                {
+                  "slot": "condition",
+                  "value": "night",
+                  "signal": "night"
+                },
+                {
+                  "slot": "context",
+                  "value": "parking-area",
+                  "signal": "parking"
+                },
+                {
+                  "slot": "action",
+                  "value": "turn-signal",
+                  "signal": "turn-signal"
+                },
+                {
+                  "slot": "action",
+                  "value": "parking-brake",
+                  "signal": "parking-brake"
+                },
+                {
+                  "slot": "action",
+                  "value": "brake",
+                  "signal": "brake"
+                }
+              ]
+            },
+            "candidateConceptSlots": {
+              "condition": [],
+              "context": [],
+              "action": [
+                "head-light",
+                "turn-signal",
+                "brake"
+              ],
+              "polarity": "positive",
+              "obligation": "may",
+              "signals": [
+                {
+                  "slot": "action",
+                  "value": "head-light",
+                  "signal": "head-light"
+                },
+                {
+                  "slot": "action",
+                  "value": "turn-signal",
+                  "signal": "turn-signal"
+                },
+                {
+                  "slot": "action",
+                  "value": "brake",
+                  "signal": "brake"
+                }
+              ]
+            },
+            "conceptMatches": [
+              "action:head-light|turn-signal|brake"
+            ],
+            "contradictionSignals": [],
+            "rowContrastSignals": [],
+            "rowConceptMode": "slot-alignment + contradiction-penalties",
+            "sourceNumericGroups": [],
+            "candidateNumericGroups": [
+              {
+                "values": [
+                  45
+                ],
+                "range": false,
+                "unit": null,
+                "comparator": "exact",
+                "text": "45"
+              }
+            ],
+            "numericGroupScore": 0.5,
+            "numericGroupPenalty": 0,
+            "numericGroupReasonCodes": [],
+            "numericGroupMatches": [],
+            "sourceFeatureGloss": "dashboard indicator meaning: dashboard indicator, parking brake, night, gray background, indicator",
+            "sourceFeatureKeywords": [
+              "dashboard-indicator",
+              "parking-brake",
+              "turn-signal",
+              "night",
+              "parking",
+              "brake",
+              "gray-background",
+              "indicator",
+              "p",
+              "warning-light",
+              "background",
+              "dashboard",
+              "fully",
+              "incorrect",
+              "lever",
+              "lights",
+              "released",
+              "driving-operations"
+            ],
+            "candidateFeatureKeywords": [
+              "head-light",
+              "may",
+              "braking",
+              "lights",
+              "malfunction",
+              "right",
+              "system",
+              "dashboard-indicator",
+              "turn-signal",
+              "brake-system",
+              "brake",
+              "dashboard",
+              "indicator"
+            ],
+            "candidateImageTags": [
+              "!",
+              "red",
+              "gray",
+              "gray-background"
+            ],
+            "imageObjectMatch": 0.733,
+            "dominantColorMatch": 1,
+            "indicatorVisualMatch": 0.748,
+            "imageCandidateBoost": 8.443,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatch": 0,
+            "imageVisualReasonCodes": [
+              "dominant-color-match",
+              "image-object-match",
+              "image-candidate-boost"
+            ],
+            "sourceIndicatorVisual": true,
+            "candidateIndicatorVisual": false,
+            "structuralSevereSignals": [],
+            "structuralSoftSignals": [
+              "topic"
+            ],
+            "imageObjectComparable": true,
+            "imageColorComparable": true,
+            "explanation": [
+              "Binary yes/no options were treated as ROW-like for type scoring.",
+              "Missing correct answer was treated as a neutral signal.",
+              "Option comparison used unordered semantic set matching.",
+              "Indicator visual tags, dominant colors, and image presence strengthened this candidate.",
+              "Structural filtering and scoring strongly agree with this candidate.",
+              "ROW concept slots aligned on condition/context/action.",
+              "Source-side action intent aligned strongly with the candidate."
+            ]
+          },
+          "prompt": "The braking system may malfunction if it lights.",
+          "syntheticJaPrompt": "braking system よい malfunction if it ライト 45。",
+          "translatedPrompt": "이 등이 켜지면 제동장치에 이상이 생길 수 있다.",
+          "options": [],
+          "correctAnswer": {
+            "kind": "ROW",
+            "correctRow": "R",
+            "correctOptionId": null,
+            "correctOptionKey": null,
+            "correctOptionText": "right / true",
+            "correctOptionTranslatedText": null,
+            "answerRaw": "Right"
+          },
+          "image": {
+            "hasImage": true,
+            "currentAssetSrc": "/qbank/2023-test1/images/img_25a7f86a8db6cc9f3974423cac729930.jpeg",
+            "assetHashes": [
+              "25a7f86a8db6cc9f3974423cac729930"
+            ],
+            "colorTags": [
+              "red",
+              "gray"
+            ],
+            "dominantColorTags": [
+              "red",
+              "gray"
+            ],
+            "objectTags": [
+              "!"
+            ]
+          },
+          "topic": "row",
+          "subtopics": [],
+          "conceptSlots": {
+            "condition": [],
+            "context": [],
+            "action": [
+              "head-light"
+            ],
+            "polarity": "positive",
+            "obligation": "may",
+            "signals": [
+              {
+                "slot": "action",
+                "value": "head-light",
+                "signal": "head-light"
+              }
+            ]
+          }
+        },
+        {
+          "qid": "q0571",
+          "number": 571,
+          "type": "ROW",
+          "score": 83.303,
+          "scoreBreakdown": {
+            "optionScore": 0.583,
+            "glossScore": 0.174,
+            "promptSimilarity": 0.174,
+            "rawPromptSimilarity": 0.174,
+            "englishPromptSimilarity": 0.174,
+            "bridgePromptSimilarity": 0.014,
+            "syntheticPromptSimilarity": 0,
+            "localizedPromptSimilarity": 0,
+            "localizedAgreement": 0.2,
+            "localizedGlossSimilarity": 0,
+            "localizedKeywordSupport": 0.2,
+            "multilingualSupportScore": 0.2,
+            "keywordScore": 0.3,
+            "rowKeywordSignal": 0.086,
+            "rowDistinctiveKeywordScore": 0,
+            "rowConceptKeywordSupport": 0.164,
+            "rowContrastPenalty": 0,
+            "numericGroupScore": 0.5,
+            "numericGroupPenalty": 0,
+            "numericGroupBoost": 0,
+            "promptFamilyMismatchPenalty": 0,
+            "promptFamilySupport": 0.06,
+            "imageScore": 1,
+            "rawImageScore": 1,
+            "indicatorVisualScore": 0.885,
+            "indicatorVisualBoost": 13.079,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatchPenalty": 0,
+            "optionSimilarity": 0.583,
+            "questionType": 1,
+            "optionCountAgreement": 1,
+            "answerStructureAgreement": 0.5,
+            "promptFamilyAgreement": 0.82,
+            "provisionalTopicAgreement": 0,
+            "structuralAgreement": 0.77,
+            "structuralPenalty": 0.16,
+            "imageSignal": 1,
+            "imageObjectAgreement": 0.867,
+            "imageColorAgreement": 1,
+            "topicWeighting": 0.5,
+            "answerPolarity": 0.5,
+            "conceptAlignment": 0.526,
+            "conditionAlignment": 0,
+            "contextAlignment": 0,
+            "actionAlignment": 0.4,
+            "obligationAlignment": 0,
+            "polarityAlignment": 1,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0,
+            "totalScore": 63.761,
+            "baseScore": 63.761,
+            "rerankAdjustment": 19.542
+          },
+          "diagnostics": {
+            "effectiveItemType": "ROW",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": true,
+            "matchingProfile": "row-image",
+            "signalWeights": {
+              "option": 0.08,
+              "gloss": 0.34,
+              "keyword": 0.14,
+              "image": 0.28,
+              "multilingual": 0.16
+            },
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "optionSetMode": "row-semantic",
+            "localizedMirrorUsed": true,
+            "localizedMirrorLabel": null,
+            "localizedSignalAvailable": true,
+            "syntheticMirrorUsed": false,
+            "genericPromptFamily": null,
+            "sourcePromptFamily": "dashboard-indicator",
+            "sourcePromptFamilyBucket": "indicator",
+            "candidatePromptFamilyBucket": "indicator",
+            "promptFamilyReasonCodes": [],
+            "sourceConceptSlots": {
+              "condition": [
+                "night"
+              ],
+              "context": [
+                "parking-area"
+              ],
+              "action": [
+                "head-light",
+                "park",
+                "turn-signal",
+                "parking-brake",
+                "brake"
+              ],
+              "polarity": "positive",
+              "obligation": null,
+              "signals": [
+                {
+                  "slot": "action",
+                  "value": "head-light",
+                  "signal": "head-light"
+                },
+                {
+                  "slot": "action",
+                  "value": "park",
+                  "signal": "park"
+                },
+                {
+                  "slot": "condition",
+                  "value": "night",
+                  "signal": "night"
+                },
+                {
+                  "slot": "context",
+                  "value": "parking-area",
+                  "signal": "parking"
+                },
+                {
+                  "slot": "action",
+                  "value": "turn-signal",
+                  "signal": "turn-signal"
+                },
+                {
+                  "slot": "action",
+                  "value": "parking-brake",
+                  "signal": "parking-brake"
+                },
+                {
+                  "slot": "action",
+                  "value": "brake",
+                  "signal": "brake"
+                }
+              ]
+            },
+            "candidateConceptSlots": {
+              "condition": [],
+              "context": [],
+              "action": [
+                "head-light",
+                "turn-signal"
+              ],
+              "polarity": "positive",
+              "obligation": null,
+              "signals": [
+                {
+                  "slot": "action",
+                  "value": "head-light",
+                  "signal": "head-light"
+                },
+                {
+                  "slot": "action",
+                  "value": "turn-signal",
+                  "signal": "turn-signal"
+                }
+              ]
+            },
+            "conceptMatches": [
+              "action:head-light|turn-signal"
+            ],
+            "contradictionSignals": [],
+            "rowContrastSignals": [],
+            "rowConceptMode": "slot-alignment + contradiction-penalties",
+            "sourceNumericGroups": [],
+            "candidateNumericGroups": [
+              {
+                "values": [
+                  50
+                ],
+                "range": false,
+                "unit": null,
+                "comparator": "exact",
+                "text": "50"
+              }
+            ],
+            "numericGroupScore": 0.5,
+            "numericGroupPenalty": 0,
+            "numericGroupReasonCodes": [],
+            "numericGroupMatches": [],
+            "sourceFeatureGloss": "dashboard indicator meaning: dashboard indicator, parking brake, night, gray background, indicator",
+            "sourceFeatureKeywords": [
+              "dashboard-indicator",
+              "parking-brake",
+              "turn-signal",
+              "night",
+              "parking",
+              "brake",
+              "gray-background",
+              "indicator",
+              "p",
+              "warning-light",
+              "background",
+              "dashboard",
+              "fully",
+              "incorrect",
+              "lever",
+              "lights",
+              "released",
+              "driving-operations"
+            ],
+            "candidateFeatureKeywords": [
+              "seatbelt",
+              "turn-signal",
+              "head-light",
+              "buckled",
+              "fastened",
+              "indicator",
+              "lights",
+              "remind",
+              "right"
+            ],
+            "candidateImageTags": [
+              "seatbelt",
+              "red",
+              "gray",
+              "gray-background",
+              "indicator",
+              "dashboard-indicator",
+              "warning-light"
+            ],
+            "imageObjectMatch": 0.867,
+            "dominantColorMatch": 1,
+            "indicatorVisualMatch": 0.885,
+            "imageCandidateBoost": 13.079,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatch": 0,
+            "imageVisualReasonCodes": [
+              "dominant-color-match",
+              "image-object-match",
+              "indicator-visual-match",
+              "image-candidate-boost"
+            ],
+            "sourceIndicatorVisual": true,
+            "candidateIndicatorVisual": true,
+            "structuralSevereSignals": [],
+            "structuralSoftSignals": [
+              "topic"
+            ],
+            "imageObjectComparable": true,
+            "imageColorComparable": true,
+            "explanation": [
+              "Binary yes/no options were treated as ROW-like for type scoring.",
+              "Missing correct answer was treated as a neutral signal.",
+              "Option comparison used unordered semantic set matching.",
+              "Indicator visual tags, dominant colors, and image presence strengthened this candidate.",
+              "Question family alignment reinforced this candidate.",
+              "Structural filtering and scoring strongly agree with this candidate.",
+              "Source-side visual cues overlap with the candidate image tags.",
+              "ROW concept slots aligned on condition/context/action."
+            ]
+          },
+          "prompt": "This indicator lights up when the seatbelt is not fastened.",
+          "syntheticJaPrompt": "it ライト remind 運転者 has not buckled up 50。",
+          "translatedPrompt": "계기판에 등이 켜졌다. 운전자가 안전벨트를 착용하지 않았음을 알려준다.",
+          "options": [],
+          "correctAnswer": {
+            "kind": "ROW",
+            "correctRow": "R",
+            "correctOptionId": null,
+            "correctOptionKey": null,
+            "correctOptionText": "right / true",
+            "correctOptionTranslatedText": null,
+            "answerRaw": "Right"
+          },
+          "image": {
+            "hasImage": true,
+            "currentAssetSrc": "/qbank/2023-test1/images/img_d076f94c8cc6060a61fefc27258a25e8.jpeg",
+            "assetHashes": [
+              "d076f94c8cc6060a61fefc27258a25e8"
+            ],
+            "colorTags": [
+              "red",
+              "gray"
+            ],
+            "dominantColorTags": [
+              "red",
+              "gray"
+            ],
+            "objectTags": [
+              "seatbelt"
+            ]
+          },
+          "topic": "row",
+          "subtopics": [],
+          "conceptSlots": {
+            "condition": [],
+            "context": [],
+            "action": [
+              "head-light"
+            ],
+            "polarity": null,
+            "obligation": null,
+            "signals": [
+              {
+                "slot": "action",
+                "value": "head-light",
+                "signal": "head-light"
+              }
+            ]
+          }
+        },
+        {
+          "qid": "q0551",
+          "number": 551,
+          "type": "ROW",
+          "score": 79.803,
+          "scoreBreakdown": {
+            "optionScore": 0.473,
+            "glossScore": 0.057,
+            "promptSimilarity": 0.057,
+            "rawPromptSimilarity": 0.057,
+            "englishPromptSimilarity": 0.057,
+            "bridgePromptSimilarity": 0.007,
+            "syntheticPromptSimilarity": 0,
+            "localizedPromptSimilarity": 0.026,
+            "localizedAgreement": 0.311,
+            "localizedGlossSimilarity": 0.46,
+            "localizedKeywordSupport": 0.226,
+            "multilingualSupportScore": 0.311,
+            "keywordScore": 0.375,
+            "rowKeywordSignal": 0.217,
+            "rowDistinctiveKeywordScore": 0.158,
+            "rowConceptKeywordSupport": 0.139,
+            "rowContrastPenalty": 0,
+            "numericGroupScore": 0.5,
+            "numericGroupPenalty": 0,
+            "numericGroupBoost": 0,
+            "promptFamilyMismatchPenalty": 0,
+            "promptFamilySupport": 0.06,
+            "imageScore": 1,
+            "rawImageScore": 1,
+            "indicatorVisualScore": 0.862,
+            "indicatorVisualBoost": 12.308,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatchPenalty": 0,
+            "optionSimilarity": 0.473,
+            "questionType": 1,
+            "optionCountAgreement": 1,
+            "answerStructureAgreement": 0.5,
+            "promptFamilyAgreement": 0.82,
+            "provisionalTopicAgreement": 0,
+            "structuralAgreement": 0.763,
+            "structuralPenalty": 0.16,
+            "imageSignal": 1,
+            "imageObjectAgreement": 0.8,
+            "imageColorAgreement": 1,
+            "topicWeighting": 0.5,
+            "answerPolarity": 0.5,
+            "conceptAlignment": 0.368,
+            "conditionAlignment": 0,
+            "contextAlignment": 0,
+            "actionAlignment": 0.2,
+            "obligationAlignment": 0,
+            "polarityAlignment": 1,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0,
+            "totalScore": 61.041,
+            "baseScore": 61.041,
+            "rerankAdjustment": 18.762
+          },
+          "diagnostics": {
+            "effectiveItemType": "ROW",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": true,
+            "matchingProfile": "row-image",
+            "signalWeights": {
+              "option": 0.08,
+              "gloss": 0.34,
+              "keyword": 0.14,
+              "image": 0.28,
+              "multilingual": 0.16
+            },
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "optionSetMode": "row + translation-ru corroboration",
+            "localizedMirrorUsed": true,
+            "localizedMirrorLabel": "translation-ru",
+            "localizedSignalAvailable": true,
+            "syntheticMirrorUsed": false,
+            "genericPromptFamily": null,
+            "sourcePromptFamily": "dashboard-indicator",
+            "sourcePromptFamilyBucket": "indicator",
+            "candidatePromptFamilyBucket": "indicator",
+            "promptFamilyReasonCodes": [],
+            "sourceConceptSlots": {
+              "condition": [
+                "night"
+              ],
+              "context": [
+                "parking-area"
+              ],
+              "action": [
+                "head-light",
+                "park",
+                "turn-signal",
+                "parking-brake",
+                "brake"
+              ],
+              "polarity": "positive",
+              "obligation": null,
+              "signals": [
+                {
+                  "slot": "action",
+                  "value": "head-light",
+                  "signal": "head-light"
+                },
+                {
+                  "slot": "action",
+                  "value": "park",
+                  "signal": "park"
+                },
+                {
+                  "slot": "condition",
+                  "value": "night",
+                  "signal": "night"
+                },
+                {
+                  "slot": "context",
+                  "value": "parking-area",
+                  "signal": "parking"
+                },
+                {
+                  "slot": "action",
+                  "value": "turn-signal",
+                  "signal": "turn-signal"
+                },
+                {
+                  "slot": "action",
+                  "value": "parking-brake",
+                  "signal": "parking-brake"
+                },
+                {
+                  "slot": "action",
+                  "value": "brake",
+                  "signal": "brake"
+                }
+              ]
+            },
+            "candidateConceptSlots": {
+              "condition": [],
+              "context": [],
+              "action": [
+                "turn-signal"
+              ],
+              "polarity": "positive",
+              "obligation": null,
+              "signals": [
+                {
+                  "slot": "action",
+                  "value": "turn-signal",
+                  "signal": "turn-signal"
+                }
+              ]
+            },
+            "conceptMatches": [
+              "action:turn-signal"
+            ],
+            "contradictionSignals": [],
+            "rowContrastSignals": [],
+            "rowConceptMode": "slot-alignment + contradiction-penalties",
+            "sourceNumericGroups": [],
+            "candidateNumericGroups": [
+              {
+                "values": [
+                  20
+                ],
+                "range": false,
+                "unit": "km/h",
+                "comparator": "exact",
+                "text": "20 km/h"
+              },
+              {
+                "values": [
+                  20
+                ],
+                "range": false,
+                "unit": "km",
+                "comparator": "exact",
+                "text": "20 km"
+              }
+            ],
+            "numericGroupScore": 0.5,
+            "numericGroupPenalty": 0,
+            "numericGroupReasonCodes": [],
+            "numericGroupMatches": [],
+            "sourceFeatureGloss": "dashboard indicator meaning: dashboard indicator, parking brake, night, gray background, indicator",
+            "sourceFeatureKeywords": [
+              "dashboard-indicator",
+              "parking-brake",
+              "turn-signal",
+              "night",
+              "parking",
+              "brake",
+              "gray-background",
+              "indicator",
+              "p",
+              "warning-light",
+              "background",
+              "dashboard",
+              "fully",
+              "incorrect",
+              "lever",
+              "lights",
+              "released",
+              "driving-operations"
+            ],
+            "candidateFeatureKeywords": [
+              "dashboard-indicator",
+              "car-icon",
+              "gray-background",
+              "indicator",
+              "open-trunk",
+              "vehicle-side-view",
+              "warning-light",
+              "yellow-car-icon",
+              "current",
+              "displays",
+              "false",
+              "speed",
+              "wrong",
+              "turn-signal",
+              "background",
+              "dashboard",
+              "trunk"
+            ],
+            "candidateImageTags": [
+              "indicator",
+              "dashboard-indicator",
+              "car-icon",
+              "yellow-car-icon",
+              "open-trunk",
+              "vehicle-side-view",
+              "warning-light",
+              "gray-background",
+              "gray",
+              "red"
+            ],
+            "imageObjectMatch": 0.8,
+            "dominantColorMatch": 1,
+            "indicatorVisualMatch": 0.862,
+            "imageCandidateBoost": 12.308,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatch": 0,
+            "imageVisualReasonCodes": [
+              "dominant-color-match",
+              "image-object-match",
+              "indicator-visual-match",
+              "image-candidate-boost"
+            ],
+            "sourceIndicatorVisual": true,
+            "candidateIndicatorVisual": true,
+            "structuralSevereSignals": [],
+            "structuralSoftSignals": [
+              "topic"
+            ],
+            "imageObjectComparable": true,
+            "imageColorComparable": true,
+            "explanation": [
+              "Binary yes/no options were treated as ROW-like for type scoring.",
+              "Missing correct answer was treated as a neutral signal.",
+              "Option comparison used unordered semantic set matching.",
+              "Indicator visual tags, dominant colors, and image presence strengthened this candidate.",
+              "Question family alignment reinforced this candidate.",
+              "Structural filtering and scoring strongly agree with this candidate.",
+              "Source-side visual cues overlap with the candidate image tags."
+            ]
+          },
+          "prompt": "Displays the current speed is 20 km/h.",
+          "syntheticJaPrompt": "display current speed 20 kmh",
+          "translatedPrompt": "이 계기는 현재 속도를 시속 20km로 표시한다.",
+          "options": [],
+          "correctAnswer": {
+            "kind": "ROW",
+            "correctRow": "W",
+            "correctOptionId": null,
+            "correctOptionKey": null,
+            "correctOptionText": "wrong / false",
+            "correctOptionTranslatedText": null,
+            "answerRaw": "Wrong"
+          },
+          "image": {
+            "hasImage": true,
+            "currentAssetSrc": "/qbank/2023-test1/images/img_83244b3bd80ad77329922bc031e95cc8.jpeg",
+            "assetHashes": [
+              "83244b3bd80ad77329922bc031e95cc8"
+            ],
+            "colorTags": [
+              "gray"
+            ],
+            "dominantColorTags": [
+              "gray",
+              "red"
+            ],
+            "objectTags": [
+              "indicator",
+              "dashboard-indicator",
+              "car-icon",
+              "yellow-car-icon",
+              "open-trunk",
+              "vehicle-side-view",
+              "warning-light",
+              "gray-background"
+            ]
+          },
+          "topic": "row",
+          "subtopics": [],
+          "conceptSlots": {
+            "condition": [],
+            "context": [],
+            "action": [],
+            "polarity": null,
+            "obligation": null,
+            "signals": []
+          }
+        },
+        {
+          "qid": "q0527",
+          "number": 527,
+          "type": "ROW",
+          "score": 79.133,
+          "scoreBreakdown": {
+            "optionScore": 0.583,
+            "glossScore": 0.051,
+            "promptSimilarity": 0.051,
+            "rawPromptSimilarity": 0.051,
+            "englishPromptSimilarity": 0.051,
+            "bridgePromptSimilarity": 0.012,
+            "syntheticPromptSimilarity": 0,
+            "localizedPromptSimilarity": 0,
+            "localizedAgreement": 0.2,
+            "localizedGlossSimilarity": 0,
+            "localizedKeywordSupport": 0.2,
+            "multilingualSupportScore": 0.2,
+            "keywordScore": 0.3,
+            "rowKeywordSignal": 0.086,
+            "rowDistinctiveKeywordScore": 0,
+            "rowConceptKeywordSupport": 0.164,
+            "rowContrastPenalty": 0,
+            "numericGroupScore": 0.5,
+            "numericGroupPenalty": 0,
+            "numericGroupBoost": 0,
+            "promptFamilyMismatchPenalty": 0,
+            "promptFamilySupport": 0.06,
+            "imageScore": 1,
+            "rawImageScore": 1,
+            "indicatorVisualScore": 0.885,
+            "indicatorVisualBoost": 13.079,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatchPenalty": 0,
+            "optionSimilarity": 0.583,
+            "questionType": 1,
+            "optionCountAgreement": 1,
+            "answerStructureAgreement": 0.5,
+            "promptFamilyAgreement": 0.82,
+            "provisionalTopicAgreement": 0,
+            "structuralAgreement": 0.77,
+            "structuralPenalty": 0.16,
+            "imageSignal": 1,
+            "imageObjectAgreement": 0.867,
+            "imageColorAgreement": 1,
+            "topicWeighting": 0.5,
+            "answerPolarity": 0.5,
+            "conceptAlignment": 0.526,
+            "conditionAlignment": 0,
+            "contextAlignment": 0,
+            "actionAlignment": 0.4,
+            "obligationAlignment": 0,
+            "polarityAlignment": 1,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0,
+            "totalScore": 59.591,
+            "baseScore": 59.591,
+            "rerankAdjustment": 19.542
+          },
+          "diagnostics": {
+            "effectiveItemType": "ROW",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": true,
+            "matchingProfile": "row-image",
+            "signalWeights": {
+              "option": 0.08,
+              "gloss": 0.34,
+              "keyword": 0.14,
+              "image": 0.28,
+              "multilingual": 0.16
+            },
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "optionSetMode": "row-semantic",
+            "localizedMirrorUsed": true,
+            "localizedMirrorLabel": null,
+            "localizedSignalAvailable": true,
+            "syntheticMirrorUsed": false,
+            "genericPromptFamily": null,
+            "sourcePromptFamily": "dashboard-indicator",
+            "sourcePromptFamilyBucket": "indicator",
+            "candidatePromptFamilyBucket": "indicator",
+            "promptFamilyReasonCodes": [],
+            "sourceConceptSlots": {
+              "condition": [
+                "night"
+              ],
+              "context": [
+                "parking-area"
+              ],
+              "action": [
+                "head-light",
+                "park",
+                "turn-signal",
+                "parking-brake",
+                "brake"
+              ],
+              "polarity": "positive",
+              "obligation": null,
+              "signals": [
+                {
+                  "slot": "action",
+                  "value": "head-light",
+                  "signal": "head-light"
+                },
+                {
+                  "slot": "action",
+                  "value": "park",
+                  "signal": "park"
+                },
+                {
+                  "slot": "condition",
+                  "value": "night",
+                  "signal": "night"
+                },
+                {
+                  "slot": "context",
+                  "value": "parking-area",
+                  "signal": "parking"
+                },
+                {
+                  "slot": "action",
+                  "value": "turn-signal",
+                  "signal": "turn-signal"
+                },
+                {
+                  "slot": "action",
+                  "value": "parking-brake",
+                  "signal": "parking-brake"
+                },
+                {
+                  "slot": "action",
+                  "value": "brake",
+                  "signal": "brake"
+                }
+              ]
+            },
+            "candidateConceptSlots": {
+              "condition": [],
+              "context": [],
+              "action": [
+                "head-light",
+                "turn-signal"
+              ],
+              "polarity": "positive",
+              "obligation": "may",
+              "signals": [
+                {
+                  "slot": "action",
+                  "value": "head-light",
+                  "signal": "head-light"
+                },
+                {
+                  "slot": "action",
+                  "value": "turn-signal",
+                  "signal": "turn-signal"
+                }
+              ]
+            },
+            "conceptMatches": [
+              "action:head-light|turn-signal"
+            ],
+            "contradictionSignals": [],
+            "rowContrastSignals": [],
+            "rowConceptMode": "slot-alignment + contradiction-penalties",
+            "sourceNumericGroups": [],
+            "candidateNumericGroups": [],
+            "numericGroupScore": 0.5,
+            "numericGroupPenalty": 0,
+            "numericGroupReasonCodes": [],
+            "numericGroupMatches": [],
+            "sourceFeatureGloss": "dashboard indicator meaning: dashboard indicator, parking brake, night, gray background, indicator",
+            "sourceFeatureKeywords": [
+              "dashboard-indicator",
+              "parking-brake",
+              "turn-signal",
+              "night",
+              "parking",
+              "brake",
+              "gray-background",
+              "indicator",
+              "p",
+              "warning-light",
+              "background",
+              "dashboard",
+              "fully",
+              "incorrect",
+              "lever",
+              "lights",
+              "released",
+              "driving-operations"
+            ],
+            "candidateFeatureKeywords": [
+              "turn-signal",
+              "engine",
+              "head-light",
+              "lamp",
+              "may",
+              "false",
+              "indicator",
+              "lights",
+              "pressure",
+              "wrong"
+            ],
+            "candidateImageTags": [
+              "lamp",
+              "red",
+              "gray",
+              "gray-background",
+              "indicator",
+              "dashboard-indicator",
+              "warning-light"
+            ],
+            "imageObjectMatch": 0.867,
+            "dominantColorMatch": 1,
+            "indicatorVisualMatch": 0.885,
+            "imageCandidateBoost": 13.079,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatch": 0,
+            "imageVisualReasonCodes": [
+              "dominant-color-match",
+              "image-object-match",
+              "indicator-visual-match",
+              "image-candidate-boost"
+            ],
+            "sourceIndicatorVisual": true,
+            "candidateIndicatorVisual": true,
+            "structuralSevereSignals": [],
+            "structuralSoftSignals": [
+              "topic"
+            ],
+            "imageObjectComparable": true,
+            "imageColorComparable": true,
+            "explanation": [
+              "Binary yes/no options were treated as ROW-like for type scoring.",
+              "Missing correct answer was treated as a neutral signal.",
+              "Option comparison used unordered semantic set matching.",
+              "Indicator visual tags, dominant colors, and image presence strengthened this candidate.",
+              "Question family alignment reinforced this candidate.",
+              "Structural filtering and scoring strongly agree with this candidate.",
+              "Source-side visual cues overlap with the candidate image tags.",
+              "ROW concept slots aligned on condition/context/action."
+            ]
+          },
+          "prompt": "This indicator lights up when engine oil pressure is too high.",
+          "syntheticJaPrompt": "oil pressure engine よい be too high if it ライト。",
+          "translatedPrompt": "이 등이 켜지면 엔진오일 압력이 너무 높을 수 있다.",
+          "options": [],
+          "correctAnswer": {
+            "kind": "ROW",
+            "correctRow": "W",
+            "correctOptionId": null,
+            "correctOptionKey": null,
+            "correctOptionText": "wrong / false",
+            "correctOptionTranslatedText": null,
+            "answerRaw": "Wrong"
+          },
+          "image": {
+            "hasImage": true,
+            "currentAssetSrc": "/qbank/2023-test1/images/img_3811ecc5a9ee2d696ca650a6ae5a17bb.jpeg",
+            "assetHashes": [
+              "3811ecc5a9ee2d696ca650a6ae5a17bb"
+            ],
+            "colorTags": [
+              "red",
+              "gray"
+            ],
+            "dominantColorTags": [
+              "gray",
+              "red"
+            ],
+            "objectTags": [
+              "lamp"
+            ]
+          },
+          "topic": "row",
+          "subtopics": [],
+          "conceptSlots": {
+            "condition": [],
+            "context": [],
+            "action": [
+              "head-light"
+            ],
+            "polarity": "positive",
+            "obligation": "may",
+            "signals": [
+              {
+                "slot": "action",
+                "value": "head-light",
+                "signal": "head-light"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "itemId": "screenshots/Screenshot 2026-04-19 at 18.56.55.png",
+      "sourceImage": "screenshots/Screenshot 2026-04-19 at 18.56.55.png",
+      "promptRawJa": "Данная кнопка загорается тогда, когда водитель включает сигнал поворота направо.",
+      "promptGlossEn": "This indicator lights up when the driver turns on the right turn signal.",
+      "optionsRawJa": [
+        "A Правильно",
+        "B Не правильно"
+      ],
+      "optionsGlossEn": [
+        "A Correct",
+        "B Incorrect"
+      ],
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "ocrConfidence": "high",
+      "hasImage": true,
+      "visualObjectTags": [
+        "arrow"
+      ],
+      "visualColorTags": [
+        "green",
+        "gray"
+      ],
+      "visualNumberTags": [],
+      "visualLayoutTags": [],
+      "visualEvidenceNotes": [
+        "Image shows two arrows (pointing left and right); only the left arrow is brightly colored green."
+      ],
+      "provisionalTopic": "driving-operations",
+      "provisionalSubtopics": [
+        "driving-operations:indicators",
+        "proper-driving:safe-driving"
+      ],
+      "topicConfidence": 0.51,
+      "topicSignals": [
+        {
+          "topic": "driving-operations",
+          "subtopic": "driving-operations:indicators",
+          "signal": "indicator-operation",
+          "weight": 1.25
+        },
+        {
+          "topic": "proper-driving",
+          "subtopic": "proper-driving:safe-driving",
+          "signal": "driving-action",
+          "weight": 1.2
+        }
+      ],
+      "visualEvidenceAvailable": true,
+      "sourcePromptFamily": null,
+      "sourcePromptFamilyBucket": "indicator",
+      "sourceOptionCount": 2,
+      "optionCountReliable": true,
+      "expectedObjectTags": [
+        "arrow",
+        "indicator",
+        "dashboard-indicator",
+        "warning-light",
+        "gray-background"
+      ],
+      "expectedColorTags": [
+        "green",
+        "gray"
+      ],
+      "sourceIsSignHeavy": true,
+      "sourceConceptSlots": {
+        "condition": [],
+        "context": [],
+        "action": [
+          "head-light",
+          "turn-signal"
+        ],
+        "polarity": "positive",
+        "obligation": null,
+        "signals": [
+          {
+            "slot": "action",
+            "value": "head-light",
+            "signal": "head-light"
+          },
+          {
+            "slot": "action",
+            "value": "turn-signal",
+            "signal": "turn-signal"
+          }
+        ]
+      },
+      "mcqFingerprint": null,
+      "localizedText": {
+        "prompt": "Данная кнопка загорается тогда, когда водитель включает сигнал поворота направо.",
+        "options": [
+          "A Правильно",
+          "B Не правильно"
+        ],
+        "correctAnswer": null,
+        "explanation": null
+      },
+      "translatedText": {
+        "prompt": "This indicator lights up when the driver turns on the right turn signal.",
+        "options": [
+          "A Correct",
+          "B Incorrect"
+        ],
+        "correctAnswer": null
+      },
+      "topicHints": [],
+      "answerPolarity": null,
+      "match": {
+        "qid": "q0549",
+        "number": 549,
+        "score": 119.124,
+        "scoreGap": 27.958,
+        "scoreBreakdown": {
+          "optionScore": 0.91,
+          "glossScore": 0.843,
+          "promptSimilarity": 0.843,
+          "rawPromptSimilarity": 0.843,
+          "englishPromptSimilarity": 0.285,
+          "bridgePromptSimilarity": 0.041,
+          "syntheticPromptSimilarity": 0,
+          "localizedPromptSimilarity": 0.843,
+          "localizedAgreement": 0.619,
+          "localizedGlossSimilarity": 0.721,
+          "localizedKeywordSupport": 0.31,
+          "multilingualSupportScore": 0.619,
+          "keywordScore": 0.497,
+          "rowKeywordSignal": 0.28,
+          "rowDistinctiveKeywordScore": 0.1,
+          "rowConceptKeywordSupport": 0.24,
+          "rowContrastPenalty": 0,
+          "numericGroupScore": 0.5,
+          "numericGroupPenalty": 0,
+          "numericGroupBoost": 0,
+          "promptFamilyMismatchPenalty": 0,
+          "promptFamilySupport": 0,
+          "imageScore": 1,
+          "rawImageScore": 1,
+          "indicatorVisualScore": 0.757,
+          "indicatorVisualBoost": 8.752,
+          "missingImagePenalty": 0,
+          "imageFamilyMismatchPenalty": 0,
+          "optionSimilarity": 0.91,
+          "questionType": 1,
+          "optionCountAgreement": 1,
+          "answerStructureAgreement": 0.5,
+          "promptFamilyAgreement": 0.35,
+          "provisionalTopicAgreement": 0.5,
+          "structuralAgreement": 0.826,
+          "structuralPenalty": 0,
+          "imageSignal": 1,
+          "imageObjectAgreement": 0.76,
+          "imageColorAgreement": 1,
+          "topicWeighting": 0.5,
+          "answerPolarity": 0.5,
+          "conceptAlignment": 1,
+          "conditionAlignment": 0,
+          "contextAlignment": 0,
+          "actionAlignment": 1,
+          "obligationAlignment": 0,
+          "polarityAlignment": 1,
+          "contradictionPenalty": 0,
+          "assetTieBreak": 0,
+          "totalScore": 95.91,
+          "baseScore": 95.91,
+          "rerankAdjustment": 23.214
+        },
+        "candidateTopicTruth": {
+          "topic": null,
+          "subtopics": [],
+          "tags": []
+        },
+        "candidateImageRef": {
+          "hasImage": true,
+          "currentAssetSrc": "/qbank/2023-test1/images/img_4b59defeff4100264ff89469b462c50e.jpeg",
+          "assetHashes": [
+            "4b59defeff4100264ff89469b462c50e"
+          ],
+          "colorTags": [
+            "green",
+            "gray"
+          ],
+          "objectTags": [
+            "arrow"
+          ]
+        }
+      },
+      "analysis": {
+        "mode": "standard",
+        "effectiveQuestionType": "ROW",
+        "declaredQuestionType": "MCQ",
+        "booleanChoiceDetected": true,
+        "plausibleShortlist": true,
+        "imageParityApplied": true,
+        "candidateImageParityMode": "image-only candidate set",
+        "candidateCountBeforeParity": 985,
+        "candidateCountAfterParity": 498,
+        "candidateCountAfterStructuralFilter": 141,
+        "candidateCountAfterMcqShortlist": 141,
+        "structuralFilterMode": "hard-structural",
+        "structuralHardCandidateCount": 141,
+        "structuralSoftCandidateCount": 142,
+        "mcqShortlistApplied": false,
+        "mcqShortlistMode": "row-bypass",
+        "mcqShortlistTopScore": null,
+        "correctionRuleIdsAppliedToRanking": [],
+        "correctionRuleIdsAppliedToGating": [],
+        "matchingProfile": "row-image",
+        "decisionReasonCodes": [
+          "profile-pass"
+        ],
+        "autoMatchThresholdDelta": 0,
+        "autoGapThresholdDelta": 0,
+        "autoMatch": {
+          "profile": "row-image",
+          "topScore": 119.124,
+          "rank2Score": 91.166,
+          "scoreGap": 27.958,
+          "thresholds": {
+            "reviewFloor": 40,
+            "autoMatchThreshold": 64,
+            "autoGapThreshold": 7
+          },
+          "signalAgreement": {
+            "agreementScore": 0.792,
+            "strongSignalCount": 5,
+            "weakSignalCount": 0,
+            "signalSpread": 0.5,
+            "signalConflict": false,
+            "signalVector": {
+              "option": 1,
+              "gloss": 0.843,
+              "keyword": 0.5,
+              "image": 1,
+              "multilingual": 0.619,
+              "concept": 1
+            }
+          },
+          "separation": {
+            "signalSeparation": 0.273,
+            "tooClose": false
+          },
+          "autoMatched": true,
+          "reasonCodes": [
+            "profile-pass"
+          ]
+        },
+        "explanation": "Top candidate cleared the review floor but remains review-first."
+      },
+      "proposedLocalization": {
+        "prompt": "Данная кнопка загорается тогда, когда водитель включает сигнал поворота направо.",
+        "explanation": ""
+      },
+      "reviewDecision": null,
+      "approvedLocalization": null,
+      "topCandidates": [
+        {
+          "qid": "q0549",
+          "number": 549,
+          "type": "ROW",
+          "score": 119.124,
+          "scoreBreakdown": {
+            "optionScore": 0.91,
+            "glossScore": 0.843,
+            "promptSimilarity": 0.843,
+            "rawPromptSimilarity": 0.843,
+            "englishPromptSimilarity": 0.285,
+            "bridgePromptSimilarity": 0.041,
+            "syntheticPromptSimilarity": 0,
+            "localizedPromptSimilarity": 0.843,
+            "localizedAgreement": 0.619,
+            "localizedGlossSimilarity": 0.721,
+            "localizedKeywordSupport": 0.31,
+            "multilingualSupportScore": 0.619,
+            "keywordScore": 0.497,
+            "rowKeywordSignal": 0.28,
+            "rowDistinctiveKeywordScore": 0.1,
+            "rowConceptKeywordSupport": 0.24,
+            "rowContrastPenalty": 0,
+            "numericGroupScore": 0.5,
+            "numericGroupPenalty": 0,
+            "numericGroupBoost": 0,
+            "promptFamilyMismatchPenalty": 0,
+            "promptFamilySupport": 0,
+            "imageScore": 1,
+            "rawImageScore": 1,
+            "indicatorVisualScore": 0.757,
+            "indicatorVisualBoost": 8.752,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatchPenalty": 0,
+            "optionSimilarity": 0.91,
+            "questionType": 1,
+            "optionCountAgreement": 1,
+            "answerStructureAgreement": 0.5,
+            "promptFamilyAgreement": 0.35,
+            "provisionalTopicAgreement": 0.5,
+            "structuralAgreement": 0.826,
+            "structuralPenalty": 0,
+            "imageSignal": 1,
+            "imageObjectAgreement": 0.76,
+            "imageColorAgreement": 1,
+            "topicWeighting": 0.5,
+            "answerPolarity": 0.5,
+            "conceptAlignment": 1,
+            "conditionAlignment": 0,
+            "contextAlignment": 0,
+            "actionAlignment": 1,
+            "obligationAlignment": 0,
+            "polarityAlignment": 1,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0,
+            "totalScore": 95.91,
+            "baseScore": 95.91,
+            "rerankAdjustment": 23.214
+          },
+          "diagnostics": {
+            "effectiveItemType": "ROW",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": true,
+            "matchingProfile": "row-image",
+            "signalWeights": {
+              "option": 0.08,
+              "gloss": 0.34,
+              "keyword": 0.14,
+              "image": 0.28,
+              "multilingual": 0.16
+            },
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "optionSetMode": "row + translation-ru corroboration",
+            "localizedMirrorUsed": true,
+            "localizedMirrorLabel": "translation-ru",
+            "localizedSignalAvailable": true,
+            "syntheticMirrorUsed": false,
+            "genericPromptFamily": null,
+            "sourcePromptFamily": "dashboard-indicator",
+            "sourcePromptFamilyBucket": "indicator",
+            "candidatePromptFamilyBucket": null,
+            "promptFamilyReasonCodes": [],
+            "sourceConceptSlots": {
+              "condition": [],
+              "context": [],
+              "action": [
+                "head-light",
+                "turn-signal"
+              ],
+              "polarity": "positive",
+              "obligation": null,
+              "signals": [
+                {
+                  "slot": "action",
+                  "value": "head-light",
+                  "signal": "head-light"
+                },
+                {
+                  "slot": "action",
+                  "value": "turn-signal",
+                  "signal": "turn-signal"
+                }
+              ]
+            },
+            "candidateConceptSlots": {
+              "condition": [],
+              "context": [],
+              "action": [
+                "head-light",
+                "turn-signal"
+              ],
+              "polarity": "positive",
+              "obligation": null,
+              "signals": [
+                {
+                  "slot": "action",
+                  "value": "head-light",
+                  "signal": "head-light"
+                },
+                {
+                  "slot": "action",
+                  "value": "turn-signal",
+                  "signal": "turn-signal"
+                }
+              ]
+            },
+            "conceptMatches": [
+              "action:head-light|turn-signal"
+            ],
+            "contradictionSignals": [],
+            "rowContrastSignals": [],
+            "rowConceptMode": "slot-alignment + contradiction-penalties",
+            "sourceNumericGroups": [],
+            "candidateNumericGroups": [],
+            "numericGroupScore": 0.5,
+            "numericGroupPenalty": 0,
+            "numericGroupReasonCodes": [],
+            "numericGroupMatches": [],
+            "sourceFeatureGloss": "dashboard indicator meaning: dashboard indicator, turn signal, arrow, gray background, indicator",
+            "sourceFeatureKeywords": [
+              "dashboard-indicator",
+              "turn-signal",
+              "right-turn",
+              "arrow",
+              "gray-background",
+              "indicator",
+              "warning-light",
+              "background",
+              "dashboard",
+              "incorrect",
+              "lights",
+              "right",
+              "signal",
+              "turns",
+              "driving-operations",
+              "indicators",
+              "safe-driving"
+            ],
+            "candidateFeatureKeywords": [
+              "turn-signal",
+              "left-turn",
+              "arrow",
+              "head-light",
+              "false",
+              "lights",
+              "signal",
+              "turning",
+              "wrong",
+              "dashboard-indicator",
+              "dashboard",
+              "indicator"
+            ],
+            "candidateImageTags": [
+              "arrow",
+              "green",
+              "gray",
+              "gray-background"
+            ],
+            "imageObjectMatch": 0.76,
+            "dominantColorMatch": 1,
+            "indicatorVisualMatch": 0.757,
+            "imageCandidateBoost": 8.752,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatch": 0,
+            "imageVisualReasonCodes": [
+              "dominant-color-match",
+              "image-object-match",
+              "image-candidate-boost"
+            ],
+            "sourceIndicatorVisual": true,
+            "candidateIndicatorVisual": false,
+            "structuralSevereSignals": [],
+            "structuralSoftSignals": [],
+            "imageObjectComparable": true,
+            "imageColorComparable": true,
+            "explanation": [
+              "Binary yes/no options were treated as ROW-like for type scoring.",
+              "Missing correct answer was treated as a neutral signal.",
+              "Option comparison used unordered semantic set matching.",
+              "Localized gloss and keyword evidence converged on the same candidate.",
+              "Indicator visual tags, dominant colors, and image presence strengthened this candidate.",
+              "Distinctive keyword overlap strengthened the MCQ match.",
+              "Structural filtering and scoring strongly agree with this candidate.",
+              "ROW concept slots aligned on condition/context/action.",
+              "Source-side action intent aligned strongly with the candidate."
+            ]
+          },
+          "prompt": "It lights when turning on the left turn signal.",
+          "syntheticJaPrompt": "it ライト when turning left- 方向指示器。",
+          "translatedPrompt": "좌회전 방향지시등을 켰을 때 이 등이 켜진다.",
+          "options": [],
+          "correctAnswer": {
+            "kind": "ROW",
+            "correctRow": "W",
+            "correctOptionId": null,
+            "correctOptionKey": null,
+            "correctOptionText": "wrong / false",
+            "correctOptionTranslatedText": null,
+            "answerRaw": "Wrong"
+          },
+          "image": {
+            "hasImage": true,
+            "currentAssetSrc": "/qbank/2023-test1/images/img_4b59defeff4100264ff89469b462c50e.jpeg",
+            "assetHashes": [
+              "4b59defeff4100264ff89469b462c50e"
+            ],
+            "colorTags": [
+              "green",
+              "gray"
+            ],
+            "dominantColorTags": [
+              "gray",
+              "green"
+            ],
+            "objectTags": [
+              "arrow"
+            ]
+          },
+          "topic": "row",
+          "subtopics": [],
+          "conceptSlots": {
+            "condition": [],
+            "context": [],
+            "action": [
+              "head-light",
+              "turn-signal"
+            ],
+            "polarity": null,
+            "obligation": null,
+            "signals": [
+              {
+                "slot": "action",
+                "value": "head-light",
+                "signal": "head-light"
+              },
+              {
+                "slot": "action",
+                "value": "turn-signal",
+                "signal": "turn-signal"
+              }
+            ]
+          }
+        },
+        {
+          "qid": "q0555",
+          "number": 555,
+          "type": "ROW",
+          "score": 91.166,
+          "scoreBreakdown": {
+            "optionScore": 0.638,
+            "glossScore": 0.26,
+            "promptSimilarity": 0.26,
+            "rawPromptSimilarity": 0.26,
+            "englishPromptSimilarity": 0.26,
+            "bridgePromptSimilarity": 0.02,
+            "syntheticPromptSimilarity": 0,
+            "localizedPromptSimilarity": 0,
+            "localizedAgreement": 0.2,
+            "localizedGlossSimilarity": 0,
+            "localizedKeywordSupport": 0.2,
+            "multilingualSupportScore": 0.2,
+            "keywordScore": 0.395,
+            "rowKeywordSignal": 0.204,
+            "rowDistinctiveKeywordScore": 0.117,
+            "rowConceptKeywordSupport": 0.177,
+            "rowContrastPenalty": 0,
+            "numericGroupScore": 0.5,
+            "numericGroupPenalty": 0,
+            "numericGroupBoost": 0,
+            "promptFamilyMismatchPenalty": 0,
+            "promptFamilySupport": 0.06,
+            "imageScore": 1,
+            "rawImageScore": 1,
+            "indicatorVisualScore": 0.862,
+            "indicatorVisualBoost": 12.308,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatchPenalty": 0,
+            "optionSimilarity": 0.638,
+            "questionType": 1,
+            "optionCountAgreement": 1,
+            "answerStructureAgreement": 0.5,
+            "promptFamilyAgreement": 0.82,
+            "provisionalTopicAgreement": 0.5,
+            "structuralAgreement": 0.83,
+            "structuralPenalty": 0,
+            "imageSignal": 1,
+            "imageObjectAgreement": 0.8,
+            "imageColorAgreement": 1,
+            "topicWeighting": 0.5,
+            "answerPolarity": 0.5,
+            "conceptAlignment": 0.605,
+            "conditionAlignment": 0,
+            "contextAlignment": 0,
+            "actionAlignment": 0.5,
+            "obligationAlignment": 0,
+            "polarityAlignment": 1,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0,
+            "totalScore": 68.67,
+            "baseScore": 68.67,
+            "rerankAdjustment": 22.496
+          },
+          "diagnostics": {
+            "effectiveItemType": "ROW",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": true,
+            "matchingProfile": "row-image",
+            "signalWeights": {
+              "option": 0.08,
+              "gloss": 0.34,
+              "keyword": 0.14,
+              "image": 0.28,
+              "multilingual": 0.16
+            },
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "optionSetMode": "row-semantic",
+            "localizedMirrorUsed": true,
+            "localizedMirrorLabel": null,
+            "localizedSignalAvailable": true,
+            "syntheticMirrorUsed": false,
+            "genericPromptFamily": null,
+            "sourcePromptFamily": "dashboard-indicator",
+            "sourcePromptFamilyBucket": "indicator",
+            "candidatePromptFamilyBucket": "indicator",
+            "promptFamilyReasonCodes": [],
+            "sourceConceptSlots": {
+              "condition": [],
+              "context": [],
+              "action": [
+                "head-light",
+                "turn-signal"
+              ],
+              "polarity": "positive",
+              "obligation": null,
+              "signals": [
+                {
+                  "slot": "action",
+                  "value": "head-light",
+                  "signal": "head-light"
+                },
+                {
+                  "slot": "action",
+                  "value": "turn-signal",
+                  "signal": "turn-signal"
+                }
+              ]
+            },
+            "candidateConceptSlots": {
+              "condition": [],
+              "context": [],
+              "action": [
+                "head-light"
+              ],
+              "polarity": "positive",
+              "obligation": null,
+              "signals": [
+                {
+                  "slot": "action",
+                  "value": "head-light",
+                  "signal": "head-light"
+                }
+              ]
+            },
+            "conceptMatches": [
+              "action:head-light"
+            ],
+            "contradictionSignals": [],
+            "rowContrastSignals": [],
+            "rowConceptMode": "slot-alignment + contradiction-penalties",
+            "sourceNumericGroups": [],
+            "candidateNumericGroups": [],
+            "numericGroupScore": 0.5,
+            "numericGroupPenalty": 0,
+            "numericGroupReasonCodes": [],
+            "numericGroupMatches": [],
+            "sourceFeatureGloss": "dashboard indicator meaning: dashboard indicator, turn signal, arrow, gray background, indicator",
+            "sourceFeatureKeywords": [
+              "dashboard-indicator",
+              "turn-signal",
+              "right-turn",
+              "arrow",
+              "gray-background",
+              "indicator",
+              "warning-light",
+              "background",
+              "dashboard",
+              "incorrect",
+              "lights",
+              "right",
+              "signal",
+              "turns",
+              "driving-operations",
+              "indicators",
+              "safe-driving"
+            ],
+            "candidateFeatureKeywords": [
+              "dashboard-indicator",
+              "car-icon",
+              "gray-background",
+              "head-light",
+              "indicator",
+              "open-hood",
+              "vehicle-side-view",
+              "warning-light",
+              "yellow-car-icon",
+              "light",
+              "lights",
+              "right",
+              "turning",
+              "width"
+            ],
+            "candidateImageTags": [
+              "indicator",
+              "dashboard-indicator",
+              "car-icon",
+              "yellow-car-icon",
+              "open-hood",
+              "vehicle-side-view",
+              "warning-light",
+              "gray-background",
+              "green",
+              "gray"
+            ],
+            "imageObjectMatch": 0.8,
+            "dominantColorMatch": 1,
+            "indicatorVisualMatch": 0.862,
+            "imageCandidateBoost": 12.308,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatch": 0,
+            "imageVisualReasonCodes": [
+              "dominant-color-match",
+              "image-object-match",
+              "indicator-visual-match",
+              "image-candidate-boost"
+            ],
+            "sourceIndicatorVisual": true,
+            "candidateIndicatorVisual": true,
+            "structuralSevereSignals": [],
+            "structuralSoftSignals": [],
+            "imageObjectComparable": true,
+            "imageColorComparable": true,
+            "explanation": [
+              "Binary yes/no options were treated as ROW-like for type scoring.",
+              "Missing correct answer was treated as a neutral signal.",
+              "Option comparison used unordered semantic set matching.",
+              "Indicator visual tags, dominant colors, and image presence strengthened this candidate.",
+              "Question family alignment reinforced this candidate.",
+              "Structural filtering and scoring strongly agree with this candidate.",
+              "Source-side visual cues overlap with the candidate image tags.",
+              "ROW concept slots aligned on condition/context/action.",
+              "Source-side action intent aligned strongly with the candidate."
+            ]
+          },
+          "prompt": "It lights when turning on the sidelights(parking lights).",
+          "syntheticJaPrompt": "it ライト when turning width ライト。",
+          "translatedPrompt": "차폭등을 켰을 때 이 등이 켜진다.",
+          "options": [],
+          "correctAnswer": {
+            "kind": "ROW",
+            "correctRow": "R",
+            "correctOptionId": null,
+            "correctOptionKey": null,
+            "correctOptionText": "right / true",
+            "correctOptionTranslatedText": null,
+            "answerRaw": "Right"
+          },
+          "image": {
+            "hasImage": true,
+            "currentAssetSrc": "/qbank/2023-test1/images/img_e71668f2b3368e3b7d4cf94b089b65eb.jpeg",
+            "assetHashes": [
+              "e71668f2b3368e3b7d4cf94b089b65eb"
+            ],
+            "colorTags": [
+              "green",
+              "gray"
+            ],
+            "dominantColorTags": [
+              "gray",
+              "green"
+            ],
+            "objectTags": [
+              "indicator",
+              "dashboard-indicator",
+              "car-icon",
+              "yellow-car-icon",
+              "open-hood",
+              "vehicle-side-view",
+              "warning-light",
+              "gray-background"
+            ]
+          },
+          "topic": "row",
+          "subtopics": [],
+          "conceptSlots": {
+            "condition": [],
+            "context": [],
+            "action": [
+              "head-light"
+            ],
+            "polarity": null,
+            "obligation": null,
+            "signals": [
+              {
+                "slot": "action",
+                "value": "head-light",
+                "signal": "head-light"
+              }
+            ]
+          }
+        },
+        {
+          "qid": "q0546",
+          "number": 546,
+          "type": "ROW",
+          "score": 89.34,
+          "scoreBreakdown": {
+            "optionScore": 0.91,
+            "glossScore": 0.304,
+            "promptSimilarity": 0.304,
+            "rawPromptSimilarity": 0.304,
+            "englishPromptSimilarity": 0.304,
+            "bridgePromptSimilarity": 0.04,
+            "syntheticPromptSimilarity": 0,
+            "localizedPromptSimilarity": 0,
+            "localizedAgreement": 0.2,
+            "localizedGlossSimilarity": 0,
+            "localizedKeywordSupport": 0.2,
+            "multilingualSupportScore": 0.2,
+            "keywordScore": 0.457,
+            "rowKeywordSignal": 0.206,
+            "rowDistinctiveKeywordScore": 0.107,
+            "rowConceptKeywordSupport": 0.24,
+            "rowContrastPenalty": 0,
+            "numericGroupScore": 0.5,
+            "numericGroupPenalty": 0,
+            "numericGroupBoost": 0,
+            "promptFamilyMismatchPenalty": 0,
+            "promptFamilySupport": 0,
+            "imageScore": 1,
+            "rawImageScore": 1,
+            "indicatorVisualScore": 0.757,
+            "indicatorVisualBoost": 8.752,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatchPenalty": 0,
+            "optionSimilarity": 0.91,
+            "questionType": 1,
+            "optionCountAgreement": 1,
+            "answerStructureAgreement": 0.5,
+            "promptFamilyAgreement": 0.35,
+            "provisionalTopicAgreement": 0.5,
+            "structuralAgreement": 0.826,
+            "structuralPenalty": 0,
+            "imageSignal": 1,
+            "imageObjectAgreement": 0.76,
+            "imageColorAgreement": 1,
+            "topicWeighting": 0.5,
+            "answerPolarity": 0.5,
+            "conceptAlignment": 1,
+            "conditionAlignment": 0,
+            "contextAlignment": 0,
+            "actionAlignment": 1,
+            "obligationAlignment": 0,
+            "polarityAlignment": 1,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0,
+            "totalScore": 69.478,
+            "baseScore": 69.478,
+            "rerankAdjustment": 19.862
+          },
+          "diagnostics": {
+            "effectiveItemType": "ROW",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": true,
+            "matchingProfile": "row-image",
+            "signalWeights": {
+              "option": 0.08,
+              "gloss": 0.34,
+              "keyword": 0.14,
+              "image": 0.28,
+              "multilingual": 0.16
+            },
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "optionSetMode": "row-semantic",
+            "localizedMirrorUsed": true,
+            "localizedMirrorLabel": null,
+            "localizedSignalAvailable": true,
+            "syntheticMirrorUsed": false,
+            "genericPromptFamily": null,
+            "sourcePromptFamily": "dashboard-indicator",
+            "sourcePromptFamilyBucket": "indicator",
+            "candidatePromptFamilyBucket": null,
+            "promptFamilyReasonCodes": [],
+            "sourceConceptSlots": {
+              "condition": [],
+              "context": [],
+              "action": [
+                "head-light",
+                "turn-signal"
+              ],
+              "polarity": "positive",
+              "obligation": null,
+              "signals": [
+                {
+                  "slot": "action",
+                  "value": "head-light",
+                  "signal": "head-light"
+                },
+                {
+                  "slot": "action",
+                  "value": "turn-signal",
+                  "signal": "turn-signal"
+                }
+              ]
+            },
+            "candidateConceptSlots": {
+              "condition": [],
+              "context": [],
+              "action": [
+                "head-light",
+                "turn-signal"
+              ],
+              "polarity": "positive",
+              "obligation": null,
+              "signals": [
+                {
+                  "slot": "action",
+                  "value": "head-light",
+                  "signal": "head-light"
+                },
+                {
+                  "slot": "action",
+                  "value": "turn-signal",
+                  "signal": "turn-signal"
+                }
+              ]
+            },
+            "conceptMatches": [
+              "action:head-light|turn-signal"
+            ],
+            "contradictionSignals": [],
+            "rowContrastSignals": [],
+            "rowConceptMode": "slot-alignment + contradiction-penalties",
+            "sourceNumericGroups": [],
+            "candidateNumericGroups": [],
+            "numericGroupScore": 0.5,
+            "numericGroupPenalty": 0,
+            "numericGroupReasonCodes": [],
+            "numericGroupMatches": [],
+            "sourceFeatureGloss": "dashboard indicator meaning: dashboard indicator, turn signal, arrow, gray background, indicator",
+            "sourceFeatureKeywords": [
+              "dashboard-indicator",
+              "turn-signal",
+              "right-turn",
+              "arrow",
+              "gray-background",
+              "indicator",
+              "warning-light",
+              "background",
+              "dashboard",
+              "incorrect",
+              "lights",
+              "right",
+              "signal",
+              "turns",
+              "driving-operations",
+              "indicators",
+              "safe-driving"
+            ],
+            "candidateFeatureKeywords": [
+              "turn-signal",
+              "arrow",
+              "head-light",
+              "right-turn",
+              "false",
+              "lights",
+              "signal",
+              "turning",
+              "wrong"
+            ],
+            "candidateImageTags": [
+              "arrow",
+              "green",
+              "gray",
+              "gray-background"
+            ],
+            "imageObjectMatch": 0.76,
+            "dominantColorMatch": 1,
+            "indicatorVisualMatch": 0.757,
+            "imageCandidateBoost": 8.752,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatch": 0,
+            "imageVisualReasonCodes": [
+              "dominant-color-match",
+              "image-object-match",
+              "image-candidate-boost"
+            ],
+            "sourceIndicatorVisual": true,
+            "candidateIndicatorVisual": false,
+            "structuralSevereSignals": [],
+            "structuralSoftSignals": [],
+            "imageObjectComparable": true,
+            "imageColorComparable": true,
+            "explanation": [
+              "Binary yes/no options were treated as ROW-like for type scoring.",
+              "Missing correct answer was treated as a neutral signal.",
+              "Option comparison used unordered semantic set matching.",
+              "Indicator visual tags, dominant colors, and image presence strengthened this candidate.",
+              "Distinctive keyword overlap strengthened the MCQ match.",
+              "Structural filtering and scoring strongly agree with this candidate.",
+              "ROW concept slots aligned on condition/context/action.",
+              "Source-side action intent aligned strongly with the candidate."
+            ]
+          },
+          "prompt": "It lights when turning on the right-turn signal.",
+          "syntheticJaPrompt": "it ライト when turning right- 方向指示器。",
+          "translatedPrompt": "우회전 방향지시등을 켜면 이 등이 켜진다.",
+          "options": [],
+          "correctAnswer": {
+            "kind": "ROW",
+            "correctRow": "W",
+            "correctOptionId": null,
+            "correctOptionKey": null,
+            "correctOptionText": "wrong / false",
+            "correctOptionTranslatedText": null,
+            "answerRaw": "Wrong"
+          },
+          "image": {
+            "hasImage": true,
+            "currentAssetSrc": "/qbank/2023-test1/images/img_fa5554e2982b8cf89463a74c018927cf.jpeg",
+            "assetHashes": [
+              "fa5554e2982b8cf89463a74c018927cf"
+            ],
+            "colorTags": [
+              "green",
+              "gray"
+            ],
+            "dominantColorTags": [
+              "green",
+              "gray"
+            ],
+            "objectTags": [
+              "arrow"
+            ]
+          },
+          "topic": "row",
+          "subtopics": [],
+          "conceptSlots": {
+            "condition": [],
+            "context": [],
+            "action": [
+              "head-light",
+              "turn-signal"
+            ],
+            "polarity": "positive",
+            "obligation": null,
+            "signals": [
+              {
+                "slot": "action",
+                "value": "head-light",
+                "signal": "head-light"
+              },
+              {
+                "slot": "action",
+                "value": "turn-signal",
+                "signal": "turn-signal"
+              }
+            ]
+          }
+        },
+        {
+          "qid": "q0553",
+          "number": 553,
+          "type": "ROW",
+          "score": 85.818,
+          "scoreBreakdown": {
+            "optionScore": 0.915,
+            "glossScore": 0.18,
+            "promptSimilarity": 0.18,
+            "rawPromptSimilarity": 0.18,
+            "englishPromptSimilarity": 0.18,
+            "bridgePromptSimilarity": 0.106,
+            "syntheticPromptSimilarity": 0,
+            "localizedPromptSimilarity": 0,
+            "localizedAgreement": 0.2,
+            "localizedGlossSimilarity": 0,
+            "localizedKeywordSupport": 0.2,
+            "multilingualSupportScore": 0.2,
+            "keywordScore": 0.505,
+            "rowKeywordSignal": 0.246,
+            "rowDistinctiveKeywordScore": 0.233,
+            "rowConceptKeywordSupport": 0.24,
+            "rowContrastPenalty": 0,
+            "numericGroupScore": 0.5,
+            "numericGroupPenalty": 0,
+            "numericGroupBoost": 0,
+            "promptFamilyMismatchPenalty": 0,
+            "promptFamilySupport": 0.06,
+            "imageScore": 0.907,
+            "rawImageScore": 0.907,
+            "indicatorVisualScore": 0.828,
+            "indicatorVisualBoost": 11.147,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatchPenalty": 0,
+            "optionSimilarity": 0.915,
+            "questionType": 1,
+            "optionCountAgreement": 1,
+            "answerStructureAgreement": 0.5,
+            "promptFamilyAgreement": 0.82,
+            "provisionalTopicAgreement": 0.5,
+            "structuralAgreement": 0.82,
+            "structuralPenalty": 0,
+            "imageSignal": 1,
+            "imageObjectAgreement": 0.76,
+            "imageColorAgreement": 0.867,
+            "topicWeighting": 0.5,
+            "answerPolarity": 0.5,
+            "conceptAlignment": 1,
+            "conditionAlignment": 0,
+            "contextAlignment": 0,
+            "actionAlignment": 1,
+            "obligationAlignment": 0,
+            "polarityAlignment": 1,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0,
+            "totalScore": 65.924,
+            "baseScore": 65.924,
+            "rerankAdjustment": 19.894
+          },
+          "diagnostics": {
+            "effectiveItemType": "ROW",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": true,
+            "matchingProfile": "row-image",
+            "signalWeights": {
+              "option": 0.08,
+              "gloss": 0.34,
+              "keyword": 0.14,
+              "image": 0.28,
+              "multilingual": 0.16
+            },
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "optionSetMode": "row-semantic",
+            "localizedMirrorUsed": true,
+            "localizedMirrorLabel": null,
+            "localizedSignalAvailable": true,
+            "syntheticMirrorUsed": false,
+            "genericPromptFamily": null,
+            "sourcePromptFamily": "dashboard-indicator",
+            "sourcePromptFamilyBucket": "indicator",
+            "candidatePromptFamilyBucket": "indicator",
+            "promptFamilyReasonCodes": [],
+            "sourceConceptSlots": {
+              "condition": [],
+              "context": [],
+              "action": [
+                "head-light",
+                "turn-signal"
+              ],
+              "polarity": "positive",
+              "obligation": null,
+              "signals": [
+                {
+                  "slot": "action",
+                  "value": "head-light",
+                  "signal": "head-light"
+                },
+                {
+                  "slot": "action",
+                  "value": "turn-signal",
+                  "signal": "turn-signal"
+                }
+              ]
+            },
+            "candidateConceptSlots": {
+              "condition": [],
+              "context": [],
+              "action": [
+                "head-light",
+                "turn-signal"
+              ],
+              "polarity": "positive",
+              "obligation": null,
+              "signals": [
+                {
+                  "slot": "action",
+                  "value": "head-light",
+                  "signal": "head-light"
+                },
+                {
+                  "slot": "action",
+                  "value": "turn-signal",
+                  "signal": "turn-signal"
+                }
+              ]
+            },
+            "conceptMatches": [
+              "action:head-light|turn-signal"
+            ],
+            "contradictionSignals": [],
+            "rowContrastSignals": [],
+            "rowConceptMode": "slot-alignment + contradiction-penalties",
+            "sourceNumericGroups": [],
+            "candidateNumericGroups": [],
+            "numericGroupScore": 0.5,
+            "numericGroupPenalty": 0,
+            "numericGroupReasonCodes": [],
+            "numericGroupMatches": [],
+            "sourceFeatureGloss": "dashboard indicator meaning: dashboard indicator, turn signal, arrow, gray background, indicator",
+            "sourceFeatureKeywords": [
+              "dashboard-indicator",
+              "turn-signal",
+              "right-turn",
+              "arrow",
+              "gray-background",
+              "indicator",
+              "warning-light",
+              "background",
+              "dashboard",
+              "incorrect",
+              "lights",
+              "right",
+              "signal",
+              "turns",
+              "driving-operations",
+              "indicators",
+              "safe-driving"
+            ],
+            "candidateFeatureKeywords": [
+              "turn-signal",
+              "switch",
+              "arrow",
+              "head-light",
+              "left-turn",
+              "false",
+              "lights",
+              "signal",
+              "upward",
+              "wrong",
+              "driving-operations",
+              "indicators"
+            ],
+            "candidateImageTags": [
+              "arrow",
+              "gray",
+              "red",
+              "green",
+              "gray-background"
+            ],
+            "imageObjectMatch": 0.76,
+            "dominantColorMatch": 0.907,
+            "indicatorVisualMatch": 0.828,
+            "imageCandidateBoost": 11.147,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatch": 0,
+            "imageVisualReasonCodes": [
+              "dominant-color-match",
+              "image-object-match",
+              "indicator-visual-match",
+              "image-candidate-boost"
+            ],
+            "sourceIndicatorVisual": true,
+            "candidateIndicatorVisual": true,
+            "structuralSevereSignals": [],
+            "structuralSoftSignals": [],
+            "imageObjectComparable": true,
+            "imageColorComparable": true,
+            "explanation": [
+              "Binary yes/no options were treated as ROW-like for type scoring.",
+              "Missing correct answer was treated as a neutral signal.",
+              "Option comparison used unordered semantic set matching.",
+              "Indicator visual tags, dominant colors, and image presence strengthened this candidate.",
+              "Distinctive keyword overlap strengthened the MCQ match.",
+              "Question family alignment reinforced this candidate.",
+              "Structural filtering and scoring strongly agree with this candidate.",
+              "ROW concept slots aligned on condition/context/action.",
+              "Source-side action intent aligned strongly with the candidate."
+            ]
+          },
+          "prompt": "Move the turn signal switch upward, the left-turn signal lights.",
+          "syntheticJaPrompt": "move 方向指示器 switch upward left- 方向指示器 ライト。",
+          "translatedPrompt": "방향지시등 스위치를 위로 올리면 좌회전 방향지시등이 켜진다.",
+          "options": [],
+          "correctAnswer": {
+            "kind": "ROW",
+            "correctRow": "W",
+            "correctOptionId": null,
+            "correctOptionKey": null,
+            "correctOptionText": "wrong / false",
+            "correctOptionTranslatedText": null,
+            "answerRaw": "Wrong"
+          },
+          "image": {
+            "hasImage": true,
+            "currentAssetSrc": "/qbank/2023-test1/images/img_84f4fa9e2c1d8989f9dff41d8b5ea5c6.jpeg",
+            "assetHashes": [
+              "84f4fa9e2c1d8989f9dff41d8b5ea5c6"
+            ],
+            "colorTags": [
+              "gray"
+            ],
+            "dominantColorTags": [
+              "gray",
+              "red",
+              "green"
+            ],
+            "objectTags": [
+              "arrow"
+            ]
+          },
+          "topic": "driving-operations",
+          "subtopics": [
+            "driving-operations:indicators"
+          ],
+          "conceptSlots": {
+            "condition": [],
+            "context": [],
+            "action": [
+              "head-light",
+              "turn-signal"
+            ],
+            "polarity": null,
+            "obligation": null,
+            "signals": [
+              {
+                "slot": "action",
+                "value": "head-light",
+                "signal": "head-light"
+              },
+              {
+                "slot": "action",
+                "value": "turn-signal",
+                "signal": "turn-signal"
+              }
+            ]
+          }
+        },
+        {
+          "qid": "q0571",
+          "number": 571,
+          "type": "ROW",
+          "score": 83.367,
+          "scoreBreakdown": {
+            "optionScore": 0.915,
+            "glossScore": 0.192,
+            "promptSimilarity": 0.192,
+            "rawPromptSimilarity": 0.192,
+            "englishPromptSimilarity": 0.192,
+            "bridgePromptSimilarity": 0.006,
+            "syntheticPromptSimilarity": 0,
+            "localizedPromptSimilarity": 0,
+            "localizedAgreement": 0.2,
+            "localizedGlossSimilarity": 0,
+            "localizedKeywordSupport": 0.2,
+            "multilingualSupportScore": 0.2,
+            "keywordScore": 0.391,
+            "rowKeywordSignal": 0.121,
+            "rowDistinctiveKeywordScore": 0,
+            "rowConceptKeywordSupport": 0.24,
+            "rowContrastPenalty": 0,
+            "numericGroupScore": 0.5,
+            "numericGroupPenalty": 0,
+            "numericGroupBoost": 0,
+            "promptFamilyMismatchPenalty": 0,
+            "promptFamilySupport": 0.06,
+            "imageScore": 0.92,
+            "rawImageScore": 0.92,
+            "indicatorVisualScore": 0.793,
+            "indicatorVisualBoost": 9.955,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatchPenalty": 0,
+            "optionSimilarity": 0.915,
+            "questionType": 1,
+            "optionCountAgreement": 1,
+            "answerStructureAgreement": 0.5,
+            "promptFamilyAgreement": 0.82,
+            "provisionalTopicAgreement": 0.5,
+            "structuralAgreement": 0.833,
+            "structuralPenalty": 0,
+            "imageSignal": 1,
+            "imageObjectAgreement": 0.92,
+            "imageColorAgreement": 0.8,
+            "topicWeighting": 0.5,
+            "answerPolarity": 0.5,
+            "conceptAlignment": 1,
+            "conditionAlignment": 0,
+            "contextAlignment": 0,
+            "actionAlignment": 1,
+            "obligationAlignment": 0,
+            "polarityAlignment": 1,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0,
+            "totalScore": 63.915,
+            "baseScore": 63.915,
+            "rerankAdjustment": 19.452
+          },
+          "diagnostics": {
+            "effectiveItemType": "ROW",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": true,
+            "matchingProfile": "row-image",
+            "signalWeights": {
+              "option": 0.08,
+              "gloss": 0.34,
+              "keyword": 0.14,
+              "image": 0.28,
+              "multilingual": 0.16
+            },
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "optionSetMode": "row-semantic",
+            "localizedMirrorUsed": true,
+            "localizedMirrorLabel": null,
+            "localizedSignalAvailable": true,
+            "syntheticMirrorUsed": false,
+            "genericPromptFamily": null,
+            "sourcePromptFamily": "dashboard-indicator",
+            "sourcePromptFamilyBucket": "indicator",
+            "candidatePromptFamilyBucket": "indicator",
+            "promptFamilyReasonCodes": [],
+            "sourceConceptSlots": {
+              "condition": [],
+              "context": [],
+              "action": [
+                "head-light",
+                "turn-signal"
+              ],
+              "polarity": "positive",
+              "obligation": null,
+              "signals": [
+                {
+                  "slot": "action",
+                  "value": "head-light",
+                  "signal": "head-light"
+                },
+                {
+                  "slot": "action",
+                  "value": "turn-signal",
+                  "signal": "turn-signal"
+                }
+              ]
+            },
+            "candidateConceptSlots": {
+              "condition": [],
+              "context": [],
+              "action": [
+                "head-light",
+                "turn-signal"
+              ],
+              "polarity": "positive",
+              "obligation": null,
+              "signals": [
+                {
+                  "slot": "action",
+                  "value": "head-light",
+                  "signal": "head-light"
+                },
+                {
+                  "slot": "action",
+                  "value": "turn-signal",
+                  "signal": "turn-signal"
+                }
+              ]
+            },
+            "conceptMatches": [
+              "action:head-light|turn-signal"
+            ],
+            "contradictionSignals": [],
+            "rowContrastSignals": [],
+            "rowConceptMode": "slot-alignment + contradiction-penalties",
+            "sourceNumericGroups": [],
+            "candidateNumericGroups": [
+              {
+                "values": [
+                  50
+                ],
+                "range": false,
+                "unit": null,
+                "comparator": "exact",
+                "text": "50"
+              }
+            ],
+            "numericGroupScore": 0.5,
+            "numericGroupPenalty": 0,
+            "numericGroupReasonCodes": [],
+            "numericGroupMatches": [],
+            "sourceFeatureGloss": "dashboard indicator meaning: dashboard indicator, turn signal, arrow, gray background, indicator",
+            "sourceFeatureKeywords": [
+              "dashboard-indicator",
+              "turn-signal",
+              "right-turn",
+              "arrow",
+              "gray-background",
+              "indicator",
+              "warning-light",
+              "background",
+              "dashboard",
+              "incorrect",
+              "lights",
+              "right",
+              "signal",
+              "turns",
+              "driving-operations",
+              "indicators",
+              "safe-driving"
+            ],
+            "candidateFeatureKeywords": [
+              "seatbelt",
+              "turn-signal",
+              "head-light",
+              "buckled",
+              "fastened",
+              "indicator",
+              "lights",
+              "remind",
+              "right"
+            ],
+            "candidateImageTags": [
+              "seatbelt",
+              "red",
+              "gray",
+              "gray-background",
+              "indicator",
+              "dashboard-indicator",
+              "warning-light"
+            ],
+            "imageObjectMatch": 0.92,
+            "dominantColorMatch": 0.5,
+            "indicatorVisualMatch": 0.793,
+            "imageCandidateBoost": 9.955,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatch": 0,
+            "imageVisualReasonCodes": [
+              "dominant-color-match",
+              "image-object-match",
+              "indicator-visual-match",
+              "image-candidate-boost"
+            ],
+            "sourceIndicatorVisual": true,
+            "candidateIndicatorVisual": true,
+            "structuralSevereSignals": [],
+            "structuralSoftSignals": [],
+            "imageObjectComparable": true,
+            "imageColorComparable": true,
+            "explanation": [
+              "Binary yes/no options were treated as ROW-like for type scoring.",
+              "Missing correct answer was treated as a neutral signal.",
+              "Option comparison used unordered semantic set matching.",
+              "Indicator visual tags, dominant colors, and image presence strengthened this candidate.",
+              "Question family alignment reinforced this candidate.",
+              "Structural filtering and scoring strongly agree with this candidate.",
+              "Source-side visual cues overlap with the candidate image tags.",
+              "ROW concept slots aligned on condition/context/action.",
+              "Source-side action intent aligned strongly with the candidate."
+            ]
+          },
+          "prompt": "This indicator lights up when the seatbelt is not fastened.",
+          "syntheticJaPrompt": "it ライト remind 運転者 has not buckled up 50。",
+          "translatedPrompt": "계기판에 등이 켜졌다. 운전자가 안전벨트를 착용하지 않았음을 알려준다.",
+          "options": [],
+          "correctAnswer": {
+            "kind": "ROW",
+            "correctRow": "R",
+            "correctOptionId": null,
+            "correctOptionKey": null,
+            "correctOptionText": "right / true",
+            "correctOptionTranslatedText": null,
+            "answerRaw": "Right"
+          },
+          "image": {
+            "hasImage": true,
+            "currentAssetSrc": "/qbank/2023-test1/images/img_d076f94c8cc6060a61fefc27258a25e8.jpeg",
+            "assetHashes": [
+              "d076f94c8cc6060a61fefc27258a25e8"
+            ],
+            "colorTags": [
+              "red",
+              "gray"
+            ],
+            "dominantColorTags": [
+              "red",
+              "gray"
+            ],
+            "objectTags": [
+              "seatbelt"
+            ]
+          },
+          "topic": "row",
+          "subtopics": [],
+          "conceptSlots": {
+            "condition": [],
+            "context": [],
+            "action": [
+              "head-light"
+            ],
+            "polarity": null,
+            "obligation": null,
+            "signals": [
+              {
+                "slot": "action",
+                "value": "head-light",
+                "signal": "head-light"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

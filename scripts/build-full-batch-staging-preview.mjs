@@ -156,6 +156,7 @@ const combinedQuestions = {};
 const qidSources = new Map();
 const overlaps = [];
 const conflicts = [];
+const reviewedOverrides = [];
 
 for (const [qid, question] of reviewedEntries) {
   combinedQuestions[qid] = structuredClone(question);
@@ -177,6 +178,21 @@ for (const [qid, question] of Object.entries(autoPreviewQuestions)) {
       sourceB: "auto-matched",
       resolution: "kept-existing-equivalent-record",
     });
+    continue;
+  }
+
+  if ((qidSources.get(qid) ?? "reviewed") === "reviewed") {
+    const override = {
+      qid,
+      sourceA: "reviewed",
+      sourceB: "auto-matched",
+      resolution: "kept-reviewed-over-auto-matched",
+      differingFields: differingFields(existing, question),
+    };
+    reviewedOverrides.push(override);
+    console.warn(
+      `[build-full-batch-staging-preview] reviewed override: qid ${qid} appears in both reviewed and auto-matched inputs; keeping reviewed entry. Differing fields: ${override.differingFields.join(", ") || "none"}.`,
+    );
     continue;
   }
 
@@ -226,7 +242,7 @@ for (const decision of extraAnswerKeyDecisions) {
   appliedExtraDecisionQids.push(decision.qid);
 }
 
-const expectedTotal = matchedItems.length - skippedAutoMatchedCount + reviewedEntries.length - overlaps.length;
+const expectedTotal = matchedItems.length - skippedAutoMatchedCount + reviewedEntries.length - overlaps.length - reviewedOverrides.length;
 const finalTotal = Object.keys(combinedQuestions).length;
 const finalTotalShortfallReason = finalTotal < expectedTotal
   ? overlaps.length > 0
@@ -251,12 +267,14 @@ const fullPreviewDoc = {
     skippedAutoMatchedCount,
     reviewedCount: reviewedEntries.length,
     duplicateEquivalentCount: overlaps.length,
+    reviewedOverrideCount: reviewedOverrides.length,
     duplicateConflictCount: conflicts.length,
     autoInputIssueCount: autoInputIssues.length,
     finalTotal,
     stagingOnly: true,
     answerKeyPolicy: "Locale-specific answer keys are derived by answer meaning and preserved independently from the English master letter.",
-    note: "This full-batch preview combines earlier auto-matched Japanese items with the reviewed and answer-key-confirmed Japanese preview set.",
+    note: "This full-batch preview combines earlier auto-matched items with the reviewed and answer-key-confirmed preview set.",
+    reviewedOverrides,
   },
   questions: combinedQuestions,
 };
@@ -428,7 +446,7 @@ await writeJson(reportJsonPath, reportJson);
 await writeText(reportMdPath, buildMarkdownReport(reportJson));
 
 console.log(
-  `Built full Japanese batch preview: ${finalTotal} qid(s), ${finalTotal - blockers.length} ready for dry-run merge review.`,
+  `Built full ${lang} batch preview: ${finalTotal} qid(s), ${finalTotal - blockers.length} ready for dry-run merge review.`,
 );
 
 function buildStagedPreviewEntry({
@@ -461,7 +479,7 @@ function buildStagedPreviewEntry({
     correctAnswerRaw: sourceItem.correctAnswerRaw ?? null,
     canonicalQuestionType: question.type,
     stagingOnly: true,
-    localeAnswerKeyPolicy: "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+    localeAnswerKeyPolicy: "Preserve locale answer meaning and source-side key independently from canonical English option letters.",
     provenance: {
       sourceLang,
       batchId: sourceBatchId,
@@ -745,7 +763,7 @@ function deriveCorrectAlignment({ sourceItem, question, alignment }) {
     return {
       localeCorrectOptionKey: normalizeText(sourceItem.correctKeyRaw),
       needsManualConfirmation: true,
-      reason: "Could not align the approved canonical correct option to a Japanese choice.",
+      reason: "Could not align the approved canonical correct option to a reviewed locale choice.",
       alignmentScore: null,
       method: "unresolved",
     };
@@ -773,11 +791,11 @@ function deriveCorrectAlignment({ sourceItem, question, alignment }) {
     needsManualConfirmation,
     reason: needsManualConfirmation
       ? visibleKeyMismatch
-        ? `Visible Japanese answer key ${visibleKey} disagrees with meaning-based alignment ${sourceMatch.sourceKey}.`
+        ? `Visible locale answer key ${visibleKey} disagrees with meaning-based alignment ${sourceMatch.sourceKey}.`
         : best < 0.65
-          ? "Meaning-based option alignment was weak; verify the Japanese correct option key manually."
-          : "Top option alignment was too close to another source choice; verify the Japanese correct option key manually."
-      : "Meaning-based option alignment cleanly identified the Japanese correct option key.",
+          ? "Meaning-based option alignment was weak; verify the locale correct option key manually."
+          : "Top option alignment was too close to another source choice; verify the locale correct option key manually."
+      : "Meaning-based option alignment cleanly identified the locale correct option key.",
     alignmentScore: sourceMatch.alignmentScore,
     method: visibleKey ? "visible-key-and-meaning" : "meaning-derived",
   };

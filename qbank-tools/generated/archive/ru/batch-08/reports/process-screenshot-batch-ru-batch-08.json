@@ -1,0 +1,148 @@
+{
+  "generatedAt": "2026-04-27T01:38:27.361Z",
+  "lang": "ru",
+  "batchId": "batch-08",
+  "dataset": "2023-test1",
+  "matchIndexPath": "qbank-tools/generated/match-index.json",
+  "syntheticMatchIndexPath": "qbank-tools/generated/match-index.ja.synthetic.json",
+  "featureStorePath": "qbank-tools/history/qid-feature-store.json",
+  "featureStoreRebuilt": false,
+  "featureSchemaVersion": 3,
+  "correctionRulesPath": null,
+  "analysisMode": "standard",
+  "intakeStats": {
+    "originalItems": 50,
+    "itemsProcessed": 50,
+    "nonImageItemsSkipped": 0,
+    "imageOnly": false
+  },
+  "outputs": [
+    {
+      "kind": "matched",
+      "count": 0
+    },
+    {
+      "kind": "review-needed",
+      "count": 45
+    },
+    {
+      "kind": "unresolved",
+      "count": 5
+    }
+  ],
+  "decisionSummary": {
+    "byDisposition": {
+      "matched": {
+        "count": 0,
+        "profiles": {},
+        "reasonCodes": {}
+      },
+      "review-needed": {
+        "count": 45,
+        "profiles": {
+          "row-text": 9,
+          "mcq-image": 22,
+          "row-image": 9,
+          "mcq-text": 5
+        },
+        "reasonCodes": {
+          "total-low": 21,
+          "gap-small": 33,
+          "signal-separation-low": 13,
+          "runner-up-close": 12,
+          "option-weak": 20,
+          "gloss-weak": 11,
+          "signal-agreement-low": 20,
+          "option-signature-weak": 26,
+          "option-set-mismatch": 20,
+          "top2-semantic-near-duplicate": 6,
+          "contrast-unclear": 7,
+          "weak-action-separation": 8,
+          "contradiction": 2,
+          "action-conflict": 1,
+          "weak-family-separation": 16,
+          "insufficient-discriminative-evidence": 5,
+          "structural-weak": 5,
+          "family-mismatch": 4,
+          "image-weak": 3,
+          "indicator-vs-action-conflict": 3,
+          "option-set-near-match": 2,
+          "signal-conflict": 4,
+          "obligation-mismatch": 1,
+          "context-mismatch": 1,
+          "negation-conflict": 1,
+          "numeric-mismatch": 2,
+          "indicator-vs-sign-conflict": 1,
+          "prompt-family-mismatch": 2
+        }
+      },
+      "unresolved": {
+        "count": 5,
+        "profiles": {
+          "mcq-text": 4,
+          "row-text": 1
+        },
+        "reasonCodes": {
+          "review-floor": 5,
+          "total-low": 5,
+          "gap-small": 4,
+          "signal-separation-low": 1,
+          "runner-up-close": 1,
+          "numeric-mismatch": 2,
+          "option-weak": 4,
+          "prompt-family-mismatch": 2,
+          "gloss-weak": 2,
+          "family-mismatch": 1,
+          "signal-agreement-low": 3,
+          "option-signature-weak": 3,
+          "option-set-mismatch": 2,
+          "indicator-vs-sign-conflict": 1
+        }
+      }
+    },
+    "byReasonCode": {
+      "total-low": 26,
+      "gap-small": 37,
+      "signal-separation-low": 14,
+      "runner-up-close": 13,
+      "option-weak": 24,
+      "gloss-weak": 13,
+      "signal-agreement-low": 23,
+      "option-signature-weak": 29,
+      "option-set-mismatch": 22,
+      "top2-semantic-near-duplicate": 6,
+      "contrast-unclear": 7,
+      "weak-action-separation": 8,
+      "contradiction": 2,
+      "action-conflict": 1,
+      "weak-family-separation": 16,
+      "insufficient-discriminative-evidence": 5,
+      "structural-weak": 5,
+      "family-mismatch": 5,
+      "image-weak": 3,
+      "indicator-vs-action-conflict": 3,
+      "option-set-near-match": 2,
+      "signal-conflict": 4,
+      "obligation-mismatch": 1,
+      "context-mismatch": 1,
+      "negation-conflict": 1,
+      "numeric-mismatch": 4,
+      "indicator-vs-sign-conflict": 2,
+      "prompt-family-mismatch": 4,
+      "review-floor": 5
+    },
+    "byProfile": {
+      "matched": {},
+      "review-needed": {
+        "row-text": 9,
+        "mcq-image": 22,
+        "row-image": 9,
+        "mcq-text": 5
+      },
+      "unresolved": {
+        "mcq-text": 4,
+        "row-text": 1
+      }
+    }
+  }
+}

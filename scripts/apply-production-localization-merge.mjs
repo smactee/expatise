@@ -264,8 +264,8 @@ const report = {
   validations,
   blockers,
   q0781LocaleCorrectOptionKey: nextQuestions.q0781?.localeCorrectOptionKey ?? null,
-  readyForJapaneseBatch002: blockers.length === 0,
-  note: "Japanese qbank content is now production-merged. Full app-locale exposure for ja remains a separate concern from qbank runtime support.",
+  readyForNextBatch: blockers.length === 0,
+  note: `${lang} qbank content is now production-merged. Full app-locale exposure for ${lang} remains a separate concern from qbank runtime support.`,
 };
 
 const lines = [
@@ -278,7 +278,7 @@ const lines = [
   `- Production overlap count: ${overlappingProductionQids.length}`,
   `- Runtime support already existed: ${report.runtimeSupport.existedBeforeMerge ? "yes" : "no"}`,
   `- Runtime support added: ${report.runtimeSupport.addedByMerge ? "yes" : "no"}`,
-  `- Ready for Japanese batch-002: ${blockers.length === 0 ? "yes" : "no"}`,
+  `- Ready for next batch: ${blockers.length === 0 ? "yes" : "no"}`,
   "",
   "## Files Changed",
   ...report.filesChanged.map((filePath) => `- ${filePath}`),

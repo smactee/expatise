@@ -1,0 +1,282 @@
+{
+  "meta": {
+    "locale": "ru",
+    "generatedAt": "2026-04-28T02:36:39.814Z",
+    "reviewedBatchId": "batch-10",
+    "dataset": "2023-test1",
+    "sourceUnresolvedPath": "imports/ru/batch-10/unresolved.json",
+    "sourceUnresolvedDecisionPath": "qbank-tools/generated/staging/ru-batch-10-unresolved-decisions.json",
+    "rescuedExistingQidCount": 4,
+    "manualAnswerKeyConfirmationCount": 0,
+    "stagingOnly": true
+  },
+  "questions": {
+    "q0386": {
+      "prompt": "Какой автомобиль, при движении в одной полосе с вами, запрещено обгонять?",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-19 at 18.54.28.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-19 at 18.54.28.png",
+      "reviewerNotes": "",
+      "promptRawJa": "Какой автомобиль, при движении в одной полосе с вами, запрещено обгонять?",
+      "promptGlossEn": "Which vehicle is prohibited from being overtaken when moving in the same lane with you?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ru",
+        "batchId": "batch-10",
+        "approvedQid": "q0386",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "options": {
+        "q0386_o1": "A Полицейские автомобили",
+        "q0386_o2": "C Большие междугородские пассажирские автобусы",
+        "q0386_o3": "B Перегруженный грузовой транспорт",
+        "q0386_o4": "D Городские автобусы"
+      },
+      "optionsRawJa": [
+        "A Полицейские автомобили",
+        "B Перегруженный грузовой транспорт",
+        "C Большие междугородские пассажирские автобусы",
+        "D Городские автобусы"
+      ],
+      "optionsGlossEn": [
+        "Police cars",
+        "Overloaded freight vehicles",
+        "Large intercity passenger buses",
+        "City buses"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A Полицейские автомобили",
+          "sourceTextBody": "Полицейские автомобили",
+          "sourceGlossEn": "Police cars",
+          "canonicalOptionId": "q0386_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "police car on duty",
+          "alignmentScore": 0.2476190476190476,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B Перегруженный грузовой транспорт",
+          "sourceTextBody": "Перегруженный грузовой транспорт",
+          "sourceGlossEn": "Overloaded freight vehicles",
+          "canonicalOptionId": "q0386_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "taxis",
+          "alignmentScore": 0,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C Большие междугородские пассажирские автобусы",
+          "sourceTextBody": "Большие междугородские пассажирские автобусы",
+          "sourceGlossEn": "Large intercity passenger buses",
+          "canonicalOptionId": "q0386_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "large bus or large truck",
+          "alignmentScore": 0.16228571428571428,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D Городские автобусы",
+          "sourceTextBody": "Городские автобусы",
+          "sourceGlossEn": "City buses",
+          "canonicalOptionId": "q0386_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "public bus",
+          "alignmentScore": 0.05333333333333334,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A Полицейские автомобили",
+          "sourceGlossEn": "Police cars",
+          "canonicalOptionId": "q0386_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "police car on duty",
+          "alignmentScore": 0.2476190476190476,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B Перегруженный грузовой транспорт",
+          "sourceGlossEn": "Overloaded freight vehicles",
+          "canonicalOptionId": "q0386_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "taxis",
+          "alignmentScore": 0,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C Большие междугородские пассажирские автобусы",
+          "sourceGlossEn": "Large intercity passenger buses",
+          "canonicalOptionId": "q0386_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "large bus or large truck",
+          "alignmentScore": 0.16228571428571428,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D Городские автобусы",
+          "sourceGlossEn": "City buses",
+          "canonicalOptionId": "q0386_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "public bus",
+          "alignmentScore": 0.05333333333333334,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "A",
+      "canonicalCorrectOptionId": "q0386_o1",
+      "canonicalCorrectOptionKey": "A",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed during unresolved rescue review on 2026-04-28T02:36:39.814Z; reviewer selected locale key A.",
+      "correctOptionAlignment": {
+        "sourceKey": "A",
+        "canonicalOptionId": "q0386_o1",
+        "canonicalOptionKey": "A",
+        "sourceText": "A Полицейские автомобили",
+        "sourceGlossEn": "Police cars",
+        "canonicalOptionText": "police car on duty",
+        "alignmentScore": 0.2476190476190476,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-28T02:36:39.814Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ru-batch-10-unresolved-decisions.json",
+      "answerKeyReviewerNotes": "",
+      "reviewerSuggestedLocaleCorrectOptionKey": "A",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ru-batch-10-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0009": {
+      "prompt": "При наличии ремней безопасности в автомобиле, водителю следует требовать от пассажиров пристегнуть ремни безопасности.",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-19 at 18.54.32.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-19 at 18.54.32.png",
+      "reviewerNotes": "",
+      "promptRawJa": "При наличии ремней безопасности в автомобиле, водителю следует требовать от пассажиров пристегнуть ремни безопасности.",
+      "promptGlossEn": "If seat belts are available in the car, the driver should require passengers to fasten their seat belts.",
+      "correctKeyRaw": "A",
+      "correctAnswerRaw": "Правильно",
+      "canonicalQuestionType": "ROW",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ru",
+        "batchId": "batch-10",
+        "approvedQid": "q0009",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "optionsRawJa": [],
+      "optionsGlossEn": [],
+      "localeCorrectOptionKey": null,
+      "canonicalCorrectRow": "R",
+      "canonicalCorrectAnswer": "right / true",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "ROW question; no locale-specific option key applies.",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ru-batch-10-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0262": {
+      "prompt": "Разрешено разбрасывать предметы при управлении транспортными средствами.",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-19 at 18.54.46 1.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-19 at 18.54.46 1.png",
+      "reviewerNotes": "",
+      "promptRawJa": "Разрешено разбрасывать предметы при управлении транспортными средствами.",
+      "promptGlossEn": "Is it allowed to throw objects while driving vehicles?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "ROW",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ru",
+        "batchId": "batch-10",
+        "approvedQid": "q0262",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "optionsRawJa": [],
+      "optionsGlossEn": [],
+      "localeCorrectOptionKey": null,
+      "canonicalCorrectRow": "W",
+      "canonicalCorrectAnswer": "wrong / false",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "ROW question; no locale-specific option key applies.",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ru-batch-10-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0336": {
+      "prompt": "При совершении ДТП, повредив здание или общественное благоустройство, можно покинуть место ДТП.",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-19 at 18.54.52.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-19 at 18.54.52.png",
+      "reviewerNotes": "",
+      "promptRawJa": "При совершении ДТП, повредив здание или общественное благоустройство, можно покинуть место ДТП.",
+      "promptGlossEn": "In the event of a traffic accident, if you damage a building or public property, you can leave the scene of the accident.",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "ROW",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ru",
+        "batchId": "batch-10",
+        "approvedQid": "q0336",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "optionsRawJa": [],
+      "optionsGlossEn": [],
+      "localeCorrectOptionKey": null,
+      "canonicalCorrectRow": "W",
+      "canonicalCorrectAnswer": "wrong / false",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "ROW question; no locale-specific option key applies.",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ru-batch-10-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    }
+  }
+}

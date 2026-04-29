@@ -1,0 +1,177 @@
+{
+  "meta": {
+    "locale": "ru",
+    "generatedAt": "2026-04-21T03:08:42.190Z",
+    "reviewedBatchId": "batch-05",
+    "dataset": "2023-test1",
+    "sourceUnresolvedPath": "imports/ru/batch-05/unresolved.json",
+    "sourceUnresolvedDecisionPath": "qbank-tools/generated/staging/ru-batch-05-unresolved-decisions.json",
+    "rescuedExistingQidCount": 1,
+    "manualAnswerKeyConfirmationCount": 0,
+    "stagingOnly": true
+  },
+  "questions": {
+    "q0419": {
+      "prompt": "К какому незаконному действию относится временная остановка красного легкового автомобиля, в ситуации на рисунке?",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-19 at 18.50.15 1.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-19 at 18.50.15 1.png",
+      "reviewerNotes": "",
+      "promptRawJa": "К какому незаконному действию относится временная остановка красного легкового автомобиля, в ситуации на рисунке?",
+      "promptGlossEn": "Which illegal action applies to the temporary stop of the red passenger car in the situation shown?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ru",
+        "batchId": "batch-05",
+        "approvedQid": "q0419",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "options": {
+        "q0419_o1": "C Превышение расстояния от обочины больше чем на 30 см",
+        "q0419_o2": "D Остановка на участке с нанесенной разметкой, запрещающей остановку",
+        "q0419_o3": "A Остановка на расстоянии 30 м от заправочной станции",
+        "q0419_o4": "B Остановка на велосипедной полосе"
+      },
+      "optionsRawJa": [
+        "A Остановка на расстоянии 30 м от заправочной станции",
+        "B Остановка на велосипедной полосе",
+        "C Превышение расстояния от обочины больше чем на 30 см",
+        "D Остановка на участке с нанесенной разметкой, запрещающей остановку"
+      ],
+      "optionsGlossEn": [
+        "A. Stopping at a distance of 30 m from a gas station",
+        "B. Stopping in the bicycle lane",
+        "C. Distance from the curb exceeds 30 cm",
+        "D. Stopping in an area marked with a line prohibiting stopping"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A Остановка на расстоянии 30 м от заправочной станции",
+          "sourceTextBody": "Остановка на расстоянии 30 м от заправочной станции",
+          "sourceGlossEn": "A. Stopping at a distance of 30 m from a gas station",
+          "canonicalOptionId": "q0419_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "less than 30m from gas station",
+          "alignmentScore": 0.29577464788732394,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B Остановка на велосипедной полосе",
+          "sourceTextBody": "Остановка на велосипедной полосе",
+          "sourceGlossEn": "B. Stopping in the bicycle lane",
+          "canonicalOptionId": "q0419_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "stop occupying the lane for non-motorized vehicles",
+          "alignmentScore": 0.2424242424242424,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C Превышение расстояния от обочины больше чем на 30 см",
+          "sourceTextBody": "Превышение расстояния от обочины больше чем на 30 см",
+          "sourceGlossEn": "C. Distance from the curb exceeds 30 cm",
+          "canonicalOptionId": "q0419_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "more than 30cm from roadside",
+          "alignmentScore": 0.11636363636363636,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D Остановка на участке с нанесенной разметкой, запрещающей остановку",
+          "sourceTextBody": "Остановка на участке с нанесенной разметкой, запрещающей остановку",
+          "sourceGlossEn": "D. Stopping in an area marked with a line prohibiting stopping",
+          "canonicalOptionId": "q0419_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "stop in the section with no stopping marking",
+          "alignmentScore": 0.31661616161616163,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A Остановка на расстоянии 30 м от заправочной станции",
+          "sourceGlossEn": "A. Stopping at a distance of 30 m from a gas station",
+          "canonicalOptionId": "q0419_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "less than 30m from gas station",
+          "alignmentScore": 0.29577464788732394,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B Остановка на велосипедной полосе",
+          "sourceGlossEn": "B. Stopping in the bicycle lane",
+          "canonicalOptionId": "q0419_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "stop occupying the lane for non-motorized vehicles",
+          "alignmentScore": 0.2424242424242424,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C Превышение расстояния от обочины больше чем на 30 см",
+          "sourceGlossEn": "C. Distance from the curb exceeds 30 cm",
+          "canonicalOptionId": "q0419_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "more than 30cm from roadside",
+          "alignmentScore": 0.11636363636363636,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D Остановка на участке с нанесенной разметкой, запрещающей остановку",
+          "sourceGlossEn": "D. Stopping in an area marked with a line prohibiting stopping",
+          "canonicalOptionId": "q0419_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "stop in the section with no stopping marking",
+          "alignmentScore": 0.31661616161616163,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "A",
+      "canonicalCorrectOptionId": "q0419_o3",
+      "canonicalCorrectOptionKey": "C",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed during unresolved rescue review on 2026-04-21T03:08:42.190Z; reviewer selected locale key A.",
+      "correctOptionAlignment": {
+        "sourceKey": "A",
+        "canonicalOptionId": "q0419_o3",
+        "canonicalOptionKey": "C",
+        "sourceText": "A Остановка на расстоянии 30 м от заправочной станции",
+        "sourceGlossEn": "A. Stopping at a distance of 30 m from a gas station",
+        "canonicalOptionText": "less than 30m from gas station",
+        "alignmentScore": 0.29577464788732394,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-21T03:08:42.190Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ru-batch-05-unresolved-decisions.json",
+      "answerKeyReviewerNotes": "",
+      "reviewerSuggestedLocaleCorrectOptionKey": "A",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ru-batch-05-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    }
+  }
+}

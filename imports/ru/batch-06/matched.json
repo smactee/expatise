@@ -1,0 +1,1618 @@
+{
+  "generatedAt": "2026-04-21T07:24:36.864Z",
+  "lang": "ru",
+  "batchId": "batch-06",
+  "dataset": "2023-test1",
+  "kind": "matched",
+  "items": [
+    {
+      "itemId": "screenshots/Screenshot 2026-04-19 at 18.51.23 1.png",
+      "sourceImage": "screenshots/Screenshot 2026-04-19 at 18.51.23 1.png",
+      "promptRawJa": "Дорожные знаки и разметки не принадлежат к дорожным сигналам.",
+      "promptGlossEn": "Road signs and markings do not belong to traffic signals.",
+      "optionsRawJa": [
+        "A Правильно",
+        "B Не правильно"
+      ],
+      "optionsGlossEn": [
+        "Correct",
+        "Incorrect"
+      ],
+      "correctKeyRaw": "B",
+      "correctAnswerRaw": "Не правильно",
+      "ocrConfidence": "high",
+      "hasImage": false,
+      "provisionalTopic": "traffic-signals",
+      "provisionalSubtopics": [
+        "traffic-signals:road-markings",
+        "traffic-signals:road-signs"
+      ],
+      "topicConfidence": 1,
+      "topicSignals": [
+        {
+          "topic": "traffic-signals",
+          "subtopic": "traffic-signals:road-markings",
+          "signal": "road-marking",
+          "weight": 1.25
+        },
+        {
+          "topic": "traffic-signals",
+          "subtopic": "traffic-signals:road-signs",
+          "signal": "sign-family",
+          "weight": 1.1
+        }
+      ],
+      "sourcePromptFamily": null,
+      "sourceOptionCount": 2,
+      "optionCountReliable": true,
+      "expectedObjectTags": [],
+      "expectedColorTags": [],
+      "sourceIsSignHeavy": false,
+      "sourceConceptSlots": {
+        "condition": [],
+        "context": [],
+        "action": [],
+        "polarity": null,
+        "signals": []
+      },
+      "mcqFingerprint": null,
+      "localizedText": {
+        "prompt": "Дорожные знаки и разметки не принадлежат к дорожным сигналам.",
+        "options": [
+          "A Правильно",
+          "B Не правильно"
+        ],
+        "correctAnswer": "Не правильно",
+        "explanation": null
+      },
+      "translatedText": {
+        "prompt": "Road signs and markings do not belong to traffic signals.",
+        "options": [
+          "Correct",
+          "Incorrect"
+        ],
+        "correctAnswer": "Incorrect"
+      },
+      "topicHints": [],
+      "answerPolarity": "negative",
+      "match": {
+        "qid": "q0266",
+        "number": 266,
+        "score": 63.677,
+        "scoreGap": 11.925,
+        "scoreBreakdown": {
+          "promptSimilarity": 0.476,
+          "rawPromptSimilarity": 0.515,
+          "englishPromptSimilarity": 0.476,
+          "syntheticPromptSimilarity": 0,
+          "localizedPromptSimilarity": 0,
+          "localizedAgreement": 0.5,
+          "questionType": 1,
+          "optionCountAgreement": 1,
+          "answerStructureAgreement": 1,
+          "promptFamilyAgreement": 0.5,
+          "provisionalTopicAgreement": 0,
+          "structuralAgreement": 0.844,
+          "structuralPenalty": 0.16,
+          "imageSignal": 1,
+          "imageObjectAgreement": 0.5,
+          "imageColorAgreement": 0.5,
+          "topicWeighting": 0.5,
+          "answerPolarity": 1,
+          "conceptAlignment": 0,
+          "contradictionPenalty": 0,
+          "assetTieBreak": 0,
+          "baseScore": 57.613,
+          "rerankAdjustment": 6.064
+        },
+        "candidateTopicTruth": {
+          "topic": null,
+          "subtopics": [],
+          "tags": []
+        },
+        "candidateImageRef": {
+          "hasImage": false,
+          "currentAssetSrc": null,
+          "assetHashes": [],
+          "colorTags": [],
+          "objectTags": []
+        }
+      },
+      "analysis": {
+        "mode": "standard",
+        "effectiveQuestionType": "ROW",
+        "declaredQuestionType": "MCQ",
+        "booleanChoiceDetected": true,
+        "plausibleShortlist": true,
+        "imageParityApplied": true,
+        "candidateImageParityMode": "text-only candidate set",
+        "candidateCountBeforeParity": 985,
+        "candidateCountAfterParity": 487,
+        "candidateCountAfterStructuralFilter": 94,
+        "candidateCountAfterMcqShortlist": 94,
+        "structuralFilterMode": "hard-structural",
+        "structuralHardCandidateCount": 94,
+        "structuralSoftCandidateCount": 94,
+        "mcqShortlistApplied": false,
+        "mcqShortlistMode": "row-bypass",
+        "mcqShortlistTopScore": null,
+        "explanation": "Top candidate cleared the review floor but remains review-first."
+      },
+      "proposedLocalization": {
+        "prompt": "Дорожные знаки и разметки не принадлежат к дорожным сигналам.",
+        "explanation": ""
+      },
+      "reviewDecision": null,
+      "approvedLocalization": null,
+      "topCandidates": [
+        {
+          "qid": "q0266",
+          "number": 266,
+          "type": "ROW",
+          "score": 63.677,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.476,
+            "rawPromptSimilarity": 0.515,
+            "englishPromptSimilarity": 0.476,
+            "syntheticPromptSimilarity": 0,
+            "localizedPromptSimilarity": 0,
+            "localizedAgreement": 0.5,
+            "questionType": 1,
+            "optionCountAgreement": 1,
+            "answerStructureAgreement": 1,
+            "promptFamilyAgreement": 0.5,
+            "provisionalTopicAgreement": 0,
+            "structuralAgreement": 0.844,
+            "structuralPenalty": 0.16,
+            "imageSignal": 1,
+            "imageObjectAgreement": 0.5,
+            "imageColorAgreement": 0.5,
+            "topicWeighting": 0.5,
+            "answerPolarity": 1,
+            "conceptAlignment": 0,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0,
+            "baseScore": 57.613,
+            "rerankAdjustment": 6.064
+          },
+          "diagnostics": {
+            "effectiveItemType": "ROW",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": true,
+            "promptSpecificity": 0.925,
+            "genericPromptPenalty": 0.925,
+            "missingCorrectAnswerNeutral": true,
+            "optionSetMode": "row-semantic",
+            "localizedMirrorUsed": false,
+            "localizedMirrorLabel": null,
+            "localizedSignalAvailable": false,
+            "syntheticMirrorUsed": false,
+            "genericPromptFamily": null,
+            "sourceConceptSlots": {
+              "condition": [],
+              "context": [],
+              "action": [],
+              "polarity": null,
+              "signals": []
+            },
+            "candidateConceptSlots": {
+              "condition": [],
+              "context": [],
+              "action": [],
+              "polarity": null,
+              "signals": []
+            },
+            "conceptMatches": [],
+            "contradictionSignals": [],
+            "rowConceptMode": "slot-alignment + contradiction-penalties",
+            "structuralSevereSignals": [],
+            "structuralSoftSignals": [
+              "topic"
+            ],
+            "imageObjectComparable": false,
+            "imageColorComparable": false,
+            "explanation": [
+              "Binary yes/no options were treated as ROW-like for type scoring.",
+              "Missing correct answer was treated as a neutral signal.",
+              "Structural filtering and scoring strongly agree with this candidate."
+            ]
+          },
+          "prompt": "Traffic Signs and traffic markings are not traffic signals.",
+          "syntheticJaPrompt": "traffic 標識 and traffic 路面標示 not traffic signal。",
+          "translatedPrompt": "교통표지와 도로 표시는 신호등이 아니다.",
+          "options": [],
+          "correctAnswer": {
+            "kind": "ROW",
+            "correctRow": "W",
+            "correctOptionId": null,
+            "correctOptionKey": null,
+            "correctOptionText": "wrong / false",
+            "correctOptionTranslatedText": null,
+            "answerRaw": "Wrong"
+          },
+          "image": {
+            "hasImage": false,
+            "currentAssetSrc": null,
+            "assetHashes": [],
+            "colorTags": [],
+            "objectTags": []
+          },
+          "topic": "traffic-signs",
+          "subtopics": [],
+          "conceptSlots": {
+            "condition": [],
+            "context": [],
+            "action": [],
+            "polarity": null,
+            "signals": []
+          }
+        },
+        {
+          "qid": "q0225",
+          "number": 225,
+          "type": "ROW",
+          "score": 51.752,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.151,
+            "rawPromptSimilarity": 0.151,
+            "englishPromptSimilarity": 0.151,
+            "syntheticPromptSimilarity": 0,
+            "localizedPromptSimilarity": 0,
+            "localizedAgreement": 0.5,
+            "questionType": 1,
+            "optionCountAgreement": 1,
+            "answerStructureAgreement": 1,
+            "promptFamilyAgreement": 0.5,
+            "provisionalTopicAgreement": 1,
+            "structuralAgreement": 1,
+            "structuralPenalty": 0,
+            "imageSignal": 1,
+            "imageObjectAgreement": 0.5,
+            "imageColorAgreement": 0.5,
+            "topicWeighting": 0.5,
+            "answerPolarity": 1,
+            "conceptAlignment": 0,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0,
+            "baseScore": 38.752,
+            "rerankAdjustment": 13
+          },
+          "diagnostics": {
+            "effectiveItemType": "ROW",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": true,
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "optionSetMode": "row-semantic",
+            "localizedMirrorUsed": false,
+            "localizedMirrorLabel": null,
+            "localizedSignalAvailable": false,
+            "syntheticMirrorUsed": false,
+            "genericPromptFamily": null,
+            "sourceConceptSlots": {
+              "condition": [],
+              "context": [],
+              "action": [],
+              "polarity": null,
+              "signals": []
+            },
+            "candidateConceptSlots": {
+              "condition": [],
+              "context": [
+                "intersection"
+              ],
+              "action": [
+                "head-light"
+              ],
+              "polarity": null,
+              "signals": [
+                {
+                  "slot": "context",
+                  "value": "intersection",
+                  "signal": "intersection"
+                },
+                {
+                  "slot": "action",
+                  "value": "head-light",
+                  "signal": "head-light"
+                }
+              ]
+            },
+            "conceptMatches": [],
+            "contradictionSignals": [],
+            "rowConceptMode": "slot-alignment + contradiction-penalties",
+            "structuralSevereSignals": [],
+            "structuralSoftSignals": [],
+            "imageObjectComparable": false,
+            "imageColorComparable": false,
+            "explanation": [
+              "Binary yes/no options were treated as ROW-like for type scoring.",
+              "Missing correct answer was treated as a neutral signal.",
+              "Structural filtering and scoring strongly agree with this candidate."
+            ]
+          },
+          "prompt": "Going though the intersection according to the traffic lights when traffic lights and command of the traffic police are inconsistent.",
+          "syntheticJaPrompt": "going though 交差点 according traffic ライト when traffic ライト and command traffic police inconsistency。",
+          "translatedPrompt": "교통경찰의 지시가 신호등과 상충하더라도 신호등에 따라 교차로를 통과해도 된다.",
+          "options": [],
+          "correctAnswer": {
+            "kind": "ROW",
+            "correctRow": "W",
+            "correctOptionId": null,
+            "correctOptionKey": null,
+            "correctOptionText": "wrong / false",
+            "correctOptionTranslatedText": null,
+            "answerRaw": "Wrong"
+          },
+          "image": {
+            "hasImage": false,
+            "currentAssetSrc": null,
+            "assetHashes": [],
+            "colorTags": [],
+            "objectTags": []
+          },
+          "topic": "traffic-signals",
+          "subtopics": [
+            "traffic-signals:police-signals",
+            "traffic-signals:signal-lights"
+          ],
+          "conceptSlots": {
+            "condition": [],
+            "context": [
+              "intersection"
+            ],
+            "action": [
+              "head-light"
+            ],
+            "polarity": null,
+            "signals": [
+              {
+                "slot": "context",
+                "value": "intersection",
+                "signal": "intersection"
+              },
+              {
+                "slot": "action",
+                "value": "head-light",
+                "signal": "head-light"
+              }
+            ]
+          }
+        },
+        {
+          "qid": "q0271",
+          "number": 271,
+          "type": "ROW",
+          "score": 47.474,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.197,
+            "rawPromptSimilarity": 0.197,
+            "englishPromptSimilarity": 0.197,
+            "syntheticPromptSimilarity": 0,
+            "localizedPromptSimilarity": 0,
+            "localizedAgreement": 0.5,
+            "questionType": 1,
+            "optionCountAgreement": 1,
+            "answerStructureAgreement": 1,
+            "promptFamilyAgreement": 0.5,
+            "provisionalTopicAgreement": 0,
+            "structuralAgreement": 0.844,
+            "structuralPenalty": 0.16,
+            "imageSignal": 1,
+            "imageObjectAgreement": 0.5,
+            "imageColorAgreement": 0.5,
+            "topicWeighting": 0.5,
+            "answerPolarity": 1,
+            "conceptAlignment": 0,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0,
+            "baseScore": 41.41,
+            "rerankAdjustment": 6.064
+          },
+          "diagnostics": {
+            "effectiveItemType": "ROW",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": true,
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "optionSetMode": "row-semantic",
+            "localizedMirrorUsed": false,
+            "localizedMirrorLabel": null,
+            "localizedSignalAvailable": false,
+            "syntheticMirrorUsed": false,
+            "genericPromptFamily": null,
+            "sourceConceptSlots": {
+              "condition": [],
+              "context": [],
+              "action": [],
+              "polarity": null,
+              "signals": []
+            },
+            "candidateConceptSlots": {
+              "condition": [],
+              "context": [],
+              "action": [],
+              "polarity": null,
+              "signals": []
+            },
+            "conceptMatches": [],
+            "contradictionSignals": [],
+            "rowConceptMode": "slot-alignment + contradiction-penalties",
+            "structuralSevereSignals": [],
+            "structuralSoftSignals": [
+              "topic"
+            ],
+            "imageObjectComparable": false,
+            "imageColorComparable": false,
+            "explanation": [
+              "Binary yes/no options were treated as ROW-like for type scoring.",
+              "Missing correct answer was treated as a neutral signal.",
+              "Structural filtering and scoring strongly agree with this candidate."
+            ]
+          },
+          "prompt": "When a motorized vehicle causes a minor traffic accident and obstructs traffic flow, it does not need to move.",
+          "syntheticJaPrompt": "when 車両 cause minor traffic accident and obstruct traffic flow it not need move。",
+          "translatedPrompt": "자동차가 경미한 교통사고를 일으켜 교통 흐름을 방해할 경우 이동할 필요가 없다.",
+          "options": [],
+          "correctAnswer": {
+            "kind": "ROW",
+            "correctRow": "W",
+            "correctOptionId": null,
+            "correctOptionKey": null,
+            "correctOptionText": "wrong / false",
+            "correctOptionTranslatedText": null,
+            "answerRaw": "Wrong"
+          },
+          "image": {
+            "hasImage": false,
+            "currentAssetSrc": null,
+            "assetHashes": [],
+            "colorTags": [],
+            "objectTags": []
+          },
+          "topic": "accidents",
+          "subtopics": [],
+          "conceptSlots": {
+            "condition": [],
+            "context": [],
+            "action": [],
+            "polarity": null,
+            "signals": []
+          }
+        },
+        {
+          "qid": "q0031",
+          "number": 31,
+          "type": "ROW",
+          "score": 46.825,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.186,
+            "rawPromptSimilarity": 0.186,
+            "englishPromptSimilarity": 0.186,
+            "syntheticPromptSimilarity": 0,
+            "localizedPromptSimilarity": 0,
+            "localizedAgreement": 0.5,
+            "questionType": 1,
+            "optionCountAgreement": 1,
+            "answerStructureAgreement": 1,
+            "promptFamilyAgreement": 0.5,
+            "provisionalTopicAgreement": 0,
+            "structuralAgreement": 0.844,
+            "structuralPenalty": 0.16,
+            "imageSignal": 1,
+            "imageObjectAgreement": 0.5,
+            "imageColorAgreement": 0.5,
+            "topicWeighting": 0.5,
+            "answerPolarity": 1,
+            "conceptAlignment": 0,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0,
+            "baseScore": 40.761,
+            "rerankAdjustment": 6.064
+          },
+          "diagnostics": {
+            "effectiveItemType": "ROW",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": true,
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "optionSetMode": "row-semantic",
+            "localizedMirrorUsed": false,
+            "localizedMirrorLabel": null,
+            "localizedSignalAvailable": false,
+            "syntheticMirrorUsed": false,
+            "genericPromptFamily": null,
+            "sourceConceptSlots": {
+              "condition": [],
+              "context": [],
+              "action": [],
+              "polarity": null,
+              "signals": []
+            },
+            "candidateConceptSlots": {
+              "condition": [],
+              "context": [],
+              "action": [
+                "slow"
+              ],
+              "polarity": null,
+              "signals": [
+                {
+                  "slot": "action",
+                  "value": "slow",
+                  "signal": "slow"
+                }
+              ]
+            },
+            "conceptMatches": [],
+            "contradictionSignals": [],
+            "rowConceptMode": "slot-alignment + contradiction-penalties",
+            "structuralSevereSignals": [],
+            "structuralSoftSignals": [
+              "topic"
+            ],
+            "imageObjectComparable": false,
+            "imageColorComparable": false,
+            "explanation": [
+              "Binary yes/no options were treated as ROW-like for type scoring.",
+              "Missing correct answer was treated as a neutral signal.",
+              "Structural filtering and scoring strongly agree with this candidate."
+            ]
+          },
+          "prompt": "As the traffic flow at an interchange is generally one-way, the vehicles do not have to reduce speed when passing.",
+          "syntheticJaPrompt": "as traffic flow interchange generally one-way 車両 do not have 減速 when passing。",
+          "translatedPrompt": "교차로의 교통 흐름은 일반적으로 일방통행이므로 차량은 통과할 때 감속할 필요가 없다.",
+          "options": [],
+          "correctAnswer": {
+            "kind": "ROW",
+            "correctRow": "W",
+            "correctOptionId": null,
+            "correctOptionKey": null,
+            "correctOptionText": "wrong / false",
+            "correctOptionTranslatedText": null,
+            "answerRaw": "Wrong"
+          },
+          "image": {
+            "hasImage": false,
+            "currentAssetSrc": null,
+            "assetHashes": [],
+            "colorTags": [],
+            "objectTags": []
+          },
+          "topic": "road-safety",
+          "subtopics": [
+            "road-safety:road-conditions",
+            "proper-driving:safe-driving"
+          ],
+          "conceptSlots": {
+            "condition": [],
+            "context": [],
+            "action": [
+              "slow"
+            ],
+            "polarity": null,
+            "signals": [
+              {
+                "slot": "action",
+                "value": "slow",
+                "signal": "slow"
+              }
+            ]
+          }
+        },
+        {
+          "qid": "q0264",
+          "number": 264,
+          "type": "ROW",
+          "score": 46.608,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.182,
+            "rawPromptSimilarity": 0.182,
+            "englishPromptSimilarity": 0.182,
+            "syntheticPromptSimilarity": 0,
+            "localizedPromptSimilarity": 0,
+            "localizedAgreement": 0.5,
+            "questionType": 1,
+            "optionCountAgreement": 1,
+            "answerStructureAgreement": 1,
+            "promptFamilyAgreement": 0.5,
+            "provisionalTopicAgreement": 0,
+            "structuralAgreement": 0.844,
+            "structuralPenalty": 0.16,
+            "imageSignal": 1,
+            "imageObjectAgreement": 0.5,
+            "imageColorAgreement": 0.5,
+            "topicWeighting": 0.5,
+            "answerPolarity": 1,
+            "conceptAlignment": 0,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0,
+            "baseScore": 40.544,
+            "rerankAdjustment": 6.064
+          },
+          "diagnostics": {
+            "effectiveItemType": "ROW",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": true,
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "optionSetMode": "row-semantic",
+            "localizedMirrorUsed": false,
+            "localizedMirrorLabel": null,
+            "localizedSignalAvailable": false,
+            "syntheticMirrorUsed": false,
+            "genericPromptFamily": null,
+            "sourceConceptSlots": {
+              "condition": [],
+              "context": [],
+              "action": [],
+              "polarity": null,
+              "signals": []
+            },
+            "candidateConceptSlots": {
+              "condition": [],
+              "context": [],
+              "action": [],
+              "polarity": null,
+              "signals": []
+            },
+            "conceptMatches": [],
+            "contradictionSignals": [],
+            "rowConceptMode": "slot-alignment + contradiction-penalties",
+            "structuralSevereSignals": [],
+            "structuralSoftSignals": [
+              "topic"
+            ],
+            "imageObjectComparable": false,
+            "imageColorComparable": false,
+            "explanation": [
+              "Binary yes/no options were treated as ROW-like for type scoring.",
+              "Missing correct answer was treated as a neutral signal.",
+              "Structural filtering and scoring strongly agree with this candidate."
+            ]
+          },
+          "prompt": "Causing a traffic accident due to violating the law and regulations on road traffic safety is the rule-breaking act.",
+          "syntheticJaPrompt": "causing traffic accident due violating law and regulation road traffic safety rule-breaking act",
+          "translatedPrompt": "도로교통안전 관련 법규를 위반하여 교통사고를 유발한 것은 위반행위에 해당한다.",
+          "options": [],
+          "correctAnswer": {
+            "kind": "ROW",
+            "correctRow": "W",
+            "correctOptionId": null,
+            "correctOptionKey": null,
+            "correctOptionText": "wrong / false",
+            "correctOptionTranslatedText": null,
+            "answerRaw": "Wrong"
+          },
+          "image": {
+            "hasImage": false,
+            "currentAssetSrc": null,
+            "assetHashes": [],
+            "colorTags": [],
+            "objectTags": []
+          },
+          "topic": "accidents",
+          "subtopics": [],
+          "conceptSlots": {
+            "condition": [],
+            "context": [],
+            "action": [],
+            "polarity": null,
+            "signals": []
+          }
+        }
+      ]
+    },
+    {
+      "itemId": "screenshots/Screenshot 2026-04-19 at 18.51.39.png",
+      "sourceImage": "screenshots/Screenshot 2026-04-19 at 18.51.39.png",
+      "promptRawJa": "После порчи задних шин возникает колебание задней части автомобиля, в связи с этим водителю следует цепко держать руль двумя руками, продолжить движение по линии и замедлить ход для остановки.",
+      "promptGlossEn": "After the rear tires are damaged, the rear of the car begins to sway. In this situation, should the driver firmly hold the steering wheel with both hands, continue driving in a straight line, and slow down to stop?",
+      "optionsRawJa": [
+        "A Правильно",
+        "B Не правильно"
+      ],
+      "optionsGlossEn": [
+        "Correct",
+        "Incorrect"
+      ],
+      "correctKeyRaw": "A",
+      "correctAnswerRaw": "Правильно",
+      "ocrConfidence": "high",
+      "hasImage": false,
+      "provisionalTopic": "proper-driving",
+      "provisionalSubtopics": [
+        "proper-driving:safe-driving"
+      ],
+      "topicConfidence": 1,
+      "topicSignals": [
+        {
+          "topic": "proper-driving",
+          "subtopic": "proper-driving:safe-driving",
+          "signal": "driving-action",
+          "weight": 1.2
+        }
+      ],
+      "sourcePromptFamily": null,
+      "sourceOptionCount": 2,
+      "optionCountReliable": true,
+      "expectedObjectTags": [
+        "arrow"
+      ],
+      "expectedColorTags": [
+        "green"
+      ],
+      "sourceIsSignHeavy": false,
+      "sourceConceptSlots": {
+        "condition": [],
+        "context": [],
+        "action": [
+          "stop",
+          "slow"
+        ],
+        "polarity": "positive",
+        "signals": [
+          {
+            "slot": "action",
+            "value": "stop",
+            "signal": "stop"
+          },
+          {
+            "slot": "action",
+            "value": "slow",
+            "signal": "slow"
+          }
+        ]
+      },
+      "mcqFingerprint": null,
+      "localizedText": {
+        "prompt": "После порчи задних шин возникает колебание задней части автомобиля, в связи с этим водителю следует цепко держать руль двумя руками, продолжить движение по линии и замедлить ход для остановки.",
+        "options": [
+          "A Правильно",
+          "B Не правильно"
+        ],
+        "correctAnswer": "Правильно",
+        "explanation": null
+      },
+      "translatedText": {
+        "prompt": "After the rear tires are damaged, the rear of the car begins to sway. In this situation, should the driver firmly hold the steering wheel with both hands, continue driving in a straight line, and slow down to stop?",
+        "options": [
+          "Correct",
+          "Incorrect"
+        ],
+        "correctAnswer": "Correct"
+      },
+      "topicHints": [],
+      "answerPolarity": "positive",
+      "match": {
+        "qid": "q0062",
+        "number": 62,
+        "score": 80.691,
+        "scoreGap": 18.496,
+        "scoreBreakdown": {
+          "promptSimilarity": 0.487,
+          "rawPromptSimilarity": 0.487,
+          "englishPromptSimilarity": 0.487,
+          "syntheticPromptSimilarity": 0,
+          "localizedPromptSimilarity": 0,
+          "localizedAgreement": 0.5,
+          "questionType": 1,
+          "optionCountAgreement": 1,
+          "answerStructureAgreement": 1,
+          "promptFamilyAgreement": 0.5,
+          "provisionalTopicAgreement": 0,
+          "structuralAgreement": 0.773,
+          "structuralPenalty": 0.16,
+          "imageSignal": 1,
+          "imageObjectAgreement": 0.35,
+          "imageColorAgreement": 0.35,
+          "topicWeighting": 0.5,
+          "answerPolarity": 1,
+          "conceptAlignment": 1,
+          "contradictionPenalty": 0,
+          "assetTieBreak": 0,
+          "baseScore": 78.273,
+          "rerankAdjustment": 2.418
+        },
+        "candidateTopicTruth": {
+          "topic": null,
+          "subtopics": [],
+          "tags": []
+        },
+        "candidateImageRef": {
+          "hasImage": false,
+          "currentAssetSrc": null,
+          "assetHashes": [],
+          "colorTags": [],
+          "objectTags": []
+        }
+      },
+      "analysis": {
+        "mode": "standard",
+        "effectiveQuestionType": "ROW",
+        "declaredQuestionType": "MCQ",
+        "booleanChoiceDetected": true,
+        "plausibleShortlist": true,
+        "imageParityApplied": true,
+        "candidateImageParityMode": "text-only candidate set",
+        "candidateCountBeforeParity": 985,
+        "candidateCountAfterParity": 487,
+        "candidateCountAfterStructuralFilter": 175,
+        "candidateCountAfterMcqShortlist": 175,
+        "structuralFilterMode": "hard-structural",
+        "structuralHardCandidateCount": 175,
+        "structuralSoftCandidateCount": 175,
+        "mcqShortlistApplied": false,
+        "mcqShortlistMode": "row-bypass",
+        "mcqShortlistTopScore": null,
+        "explanation": "Top candidate cleared the review floor but remains review-first."
+      },
+      "proposedLocalization": {
+        "prompt": "После порчи задних шин возникает колебание задней части автомобиля, в связи с этим водителю следует цепко держать руль двумя руками, продолжить движение по линии и замедлить ход для остановки.",
+        "explanation": ""
+      },
+      "reviewDecision": null,
+      "approvedLocalization": null,
+      "topCandidates": [
+        {
+          "qid": "q0062",
+          "number": 62,
+          "type": "ROW",
+          "score": 80.691,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.487,
+            "rawPromptSimilarity": 0.487,
+            "englishPromptSimilarity": 0.487,
+            "syntheticPromptSimilarity": 0,
+            "localizedPromptSimilarity": 0,
+            "localizedAgreement": 0.5,
+            "questionType": 1,
+            "optionCountAgreement": 1,
+            "answerStructureAgreement": 1,
+            "promptFamilyAgreement": 0.5,
+            "provisionalTopicAgreement": 0,
+            "structuralAgreement": 0.773,
+            "structuralPenalty": 0.16,
+            "imageSignal": 1,
+            "imageObjectAgreement": 0.35,
+            "imageColorAgreement": 0.35,
+            "topicWeighting": 0.5,
+            "answerPolarity": 1,
+            "conceptAlignment": 1,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0,
+            "baseScore": 78.273,
+            "rerankAdjustment": 2.418
+          },
+          "diagnostics": {
+            "effectiveItemType": "ROW",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": true,
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "optionSetMode": "row-semantic",
+            "localizedMirrorUsed": false,
+            "localizedMirrorLabel": null,
+            "localizedSignalAvailable": false,
+            "syntheticMirrorUsed": false,
+            "genericPromptFamily": null,
+            "sourceConceptSlots": {
+              "condition": [],
+              "context": [],
+              "action": [
+                "stop",
+                "slow"
+              ],
+              "polarity": "positive",
+              "signals": [
+                {
+                  "slot": "action",
+                  "value": "stop",
+                  "signal": "stop"
+                },
+                {
+                  "slot": "action",
+                  "value": "slow",
+                  "signal": "slow"
+                }
+              ]
+            },
+            "candidateConceptSlots": {
+              "condition": [],
+              "context": [],
+              "action": [
+                "stop",
+                "slow"
+              ],
+              "polarity": "positive",
+              "signals": [
+                {
+                  "slot": "action",
+                  "value": "stop",
+                  "signal": "stop"
+                },
+                {
+                  "slot": "action",
+                  "value": "slow",
+                  "signal": "slow"
+                }
+              ]
+            },
+            "conceptMatches": [
+              "action:stop|slow"
+            ],
+            "contradictionSignals": [],
+            "rowConceptMode": "slot-alignment + contradiction-penalties",
+            "structuralSevereSignals": [],
+            "structuralSoftSignals": [
+              "topic"
+            ],
+            "imageObjectComparable": true,
+            "imageColorComparable": true,
+            "explanation": [
+              "Binary yes/no options were treated as ROW-like for type scoring.",
+              "Missing correct answer was treated as a neutral signal.",
+              "Structural filtering and scoring strongly agree with this candidate.",
+              "ROW concept slots aligned on condition/context/action."
+            ]
+          },
+          "prompt": "A rear tire blowout can sway the tail of the vehicle. The driver should firmly hold the steering wheel with both hands to ensure the vehicle go straight, reduce speed and then stop.",
+          "syntheticJaPrompt": "rear tire blowout can sway tail 車両 運転者 べき firmly hold steering wheel both hand ensure 車両 go 減速 and then stop。",
+          "translatedPrompt": "뒷타이어가 터지면 차량 꼬리가 흔들릴 수 있다. 운전자는 핸들을 두 손으로 단단히 잡아 차량이 직진하도록 유지하고 감속한 뒤 정차해야 한다.",
+          "options": [],
+          "correctAnswer": {
+            "kind": "ROW",
+            "correctRow": "R",
+            "correctOptionId": null,
+            "correctOptionKey": null,
+            "correctOptionText": "right / true",
+            "correctOptionTranslatedText": null,
+            "answerRaw": "Right"
+          },
+          "image": {
+            "hasImage": false,
+            "currentAssetSrc": null,
+            "assetHashes": [],
+            "colorTags": [],
+            "objectTags": []
+          },
+          "topic": "vehicle-basics",
+          "subtopics": [],
+          "conceptSlots": {
+            "condition": [],
+            "context": [],
+            "action": [
+              "stop",
+              "slow"
+            ],
+            "polarity": "positive",
+            "signals": [
+              {
+                "slot": "action",
+                "value": "stop",
+                "signal": "stop"
+              },
+              {
+                "slot": "action",
+                "value": "slow",
+                "signal": "slow"
+              }
+            ]
+          }
+        },
+        {
+          "qid": "q0059",
+          "number": 59,
+          "type": "ROW",
+          "score": 62.195,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.225,
+            "rawPromptSimilarity": 0.225,
+            "englishPromptSimilarity": 0.225,
+            "syntheticPromptSimilarity": 0,
+            "localizedPromptSimilarity": 0,
+            "localizedAgreement": 0.5,
+            "questionType": 1,
+            "optionCountAgreement": 1,
+            "answerStructureAgreement": 1,
+            "promptFamilyAgreement": 0.5,
+            "provisionalTopicAgreement": 0.75,
+            "structuralAgreement": 0.873,
+            "structuralPenalty": 0,
+            "imageSignal": 1,
+            "imageObjectAgreement": 0.35,
+            "imageColorAgreement": 0.35,
+            "topicWeighting": 0.5,
+            "answerPolarity": 1,
+            "conceptAlignment": 0.563,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0,
+            "baseScore": 54.297,
+            "rerankAdjustment": 7.898
+          },
+          "diagnostics": {
+            "effectiveItemType": "ROW",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": true,
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "optionSetMode": "row-semantic",
+            "localizedMirrorUsed": false,
+            "localizedMirrorLabel": null,
+            "localizedSignalAvailable": false,
+            "syntheticMirrorUsed": false,
+            "genericPromptFamily": null,
+            "sourceConceptSlots": {
+              "condition": [],
+              "context": [],
+              "action": [
+                "stop",
+                "slow"
+              ],
+              "polarity": "positive",
+              "signals": [
+                {
+                  "slot": "action",
+                  "value": "stop",
+                  "signal": "stop"
+                },
+                {
+                  "slot": "action",
+                  "value": "slow",
+                  "signal": "slow"
+                }
+              ]
+            },
+            "candidateConceptSlots": {
+              "condition": [],
+              "context": [],
+              "action": [
+                "slow"
+              ],
+              "polarity": "positive",
+              "signals": [
+                {
+                  "slot": "action",
+                  "value": "slow",
+                  "signal": "slow"
+                }
+              ]
+            },
+            "conceptMatches": [
+              "action:slow"
+            ],
+            "contradictionSignals": [],
+            "rowConceptMode": "slot-alignment + contradiction-penalties",
+            "structuralSevereSignals": [],
+            "structuralSoftSignals": [],
+            "imageObjectComparable": true,
+            "imageColorComparable": true,
+            "explanation": [
+              "Binary yes/no options were treated as ROW-like for type scoring.",
+              "Missing correct answer was treated as a neutral signal.",
+              "Structural filtering and scoring strongly agree with this candidate.",
+              "ROW concept slots aligned on condition/context/action."
+            ]
+          },
+          "prompt": "When reaching a sharp curve, the driver should reduce speed and drive on the right side so as to avoid colliding with the vehicle crossing the central line of the curve in the opposite direction.",
+          "syntheticJaPrompt": "when reaching sharp curve 運転者 べき 減速 and drive right side so as avoid colliding 車両 crossing central line curve opposite direction。",
+          "translatedPrompt": "급커브 접근 시 반대편 차량이 중앙선을 침범할 수 있으므로 감속하고 우측으로 주행하여 충돌을 피해야 한다.",
+          "options": [],
+          "correctAnswer": {
+            "kind": "ROW",
+            "correctRow": "R",
+            "correctOptionId": null,
+            "correctOptionKey": null,
+            "correctOptionText": "right / true",
+            "correctOptionTranslatedText": null,
+            "answerRaw": "Right"
+          },
+          "image": {
+            "hasImage": false,
+            "currentAssetSrc": null,
+            "assetHashes": [],
+            "colorTags": [],
+            "objectTags": []
+          },
+          "topic": "traffic-signals",
+          "subtopics": [
+            "traffic-signals:road-markings",
+            "proper-driving:safe-driving"
+          ],
+          "conceptSlots": {
+            "condition": [],
+            "context": [],
+            "action": [
+              "slow"
+            ],
+            "polarity": "positive",
+            "signals": [
+              {
+                "slot": "action",
+                "value": "slow",
+                "signal": "slow"
+              }
+            ]
+          }
+        },
+        {
+          "qid": "q0008",
+          "number": 8,
+          "type": "ROW",
+          "score": 57.946,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.246,
+            "rawPromptSimilarity": 0.246,
+            "englishPromptSimilarity": 0.246,
+            "syntheticPromptSimilarity": 0,
+            "localizedPromptSimilarity": 0,
+            "localizedAgreement": 0.5,
+            "questionType": 1,
+            "optionCountAgreement": 1,
+            "answerStructureAgreement": 1,
+            "promptFamilyAgreement": 0.5,
+            "provisionalTopicAgreement": 0,
+            "structuralAgreement": 0.773,
+            "structuralPenalty": 0.16,
+            "imageSignal": 1,
+            "imageObjectAgreement": 0.35,
+            "imageColorAgreement": 0.35,
+            "topicWeighting": 0.5,
+            "answerPolarity": 1,
+            "conceptAlignment": 0.563,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0,
+            "baseScore": 55.528,
+            "rerankAdjustment": 2.418
+          },
+          "diagnostics": {
+            "effectiveItemType": "ROW",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": true,
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "optionSetMode": "row-semantic",
+            "localizedMirrorUsed": false,
+            "localizedMirrorLabel": null,
+            "localizedSignalAvailable": false,
+            "syntheticMirrorUsed": false,
+            "genericPromptFamily": null,
+            "sourceConceptSlots": {
+              "condition": [],
+              "context": [],
+              "action": [
+                "stop",
+                "slow"
+              ],
+              "polarity": "positive",
+              "signals": [
+                {
+                  "slot": "action",
+                  "value": "stop",
+                  "signal": "stop"
+                },
+                {
+                  "slot": "action",
+                  "value": "slow",
+                  "signal": "slow"
+                }
+              ]
+            },
+            "candidateConceptSlots": {
+              "condition": [
+                "backing"
+              ],
+              "context": [],
+              "action": [
+                "stop"
+              ],
+              "polarity": "positive",
+              "signals": [
+                {
+                  "slot": "condition",
+                  "value": "backing",
+                  "signal": "backing"
+                },
+                {
+                  "slot": "action",
+                  "value": "stop",
+                  "signal": "stop"
+                }
+              ]
+            },
+            "conceptMatches": [
+              "action:stop"
+            ],
+            "contradictionSignals": [],
+            "rowConceptMode": "slot-alignment + contradiction-penalties",
+            "structuralSevereSignals": [],
+            "structuralSoftSignals": [
+              "topic"
+            ],
+            "imageObjectComparable": true,
+            "imageColorComparable": true,
+            "explanation": [
+              "Binary yes/no options were treated as ROW-like for type scoring.",
+              "Missing correct answer was treated as a neutral signal.",
+              "Structural filtering and scoring strongly agree with this candidate.",
+              "ROW concept slots aligned on condition/context/action."
+            ]
+          },
+          "prompt": "In the course of reversing, the driver should move slowly, observe the conditions on both sides and in the rear and be ready to stop anytime.",
+          "syntheticJaPrompt": "course backing 運転者 べき move slowly observe condition both side and rear and be ready stop anytime。",
+          "translatedPrompt": "후진할 때에는 서행하며 좌우와 후방의 상황을 살피고 언제든 정차할 준비를 해야 한다.",
+          "options": [],
+          "correctAnswer": {
+            "kind": "ROW",
+            "correctRow": "R",
+            "correctOptionId": null,
+            "correctOptionKey": null,
+            "correctOptionText": "right / true",
+            "correctOptionTranslatedText": null,
+            "answerRaw": "Right"
+          },
+          "image": {
+            "hasImage": false,
+            "currentAssetSrc": null,
+            "assetHashes": [],
+            "colorTags": [],
+            "objectTags": []
+          },
+          "topic": "row",
+          "subtopics": [],
+          "conceptSlots": {
+            "condition": [
+              "backing"
+            ],
+            "context": [],
+            "action": [
+              "stop"
+            ],
+            "polarity": "positive",
+            "signals": [
+              {
+                "slot": "condition",
+                "value": "backing",
+                "signal": "backing"
+              },
+              {
+                "slot": "action",
+                "value": "stop",
+                "signal": "stop"
+              }
+            ]
+          }
+        },
+        {
+          "qid": "q0006",
+          "number": 6,
+          "type": "ROW",
+          "score": 57.697,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.147,
+            "rawPromptSimilarity": 0.147,
+            "englishPromptSimilarity": 0.147,
+            "syntheticPromptSimilarity": 0,
+            "localizedPromptSimilarity": 0,
+            "localizedAgreement": 0.5,
+            "questionType": 1,
+            "optionCountAgreement": 1,
+            "answerStructureAgreement": 1,
+            "promptFamilyAgreement": 0.5,
+            "provisionalTopicAgreement": 0.75,
+            "structuralAgreement": 0.873,
+            "structuralPenalty": 0,
+            "imageSignal": 1,
+            "imageObjectAgreement": 0.35,
+            "imageColorAgreement": 0.35,
+            "topicWeighting": 0.5,
+            "answerPolarity": 1,
+            "conceptAlignment": 0.563,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0,
+            "baseScore": 49.799,
+            "rerankAdjustment": 7.898
+          },
+          "diagnostics": {
+            "effectiveItemType": "ROW",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": true,
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "optionSetMode": "row-semantic",
+            "localizedMirrorUsed": false,
+            "localizedMirrorLabel": null,
+            "localizedSignalAvailable": false,
+            "syntheticMirrorUsed": false,
+            "genericPromptFamily": null,
+            "sourceConceptSlots": {
+              "condition": [],
+              "context": [],
+              "action": [
+                "stop",
+                "slow"
+              ],
+              "polarity": "positive",
+              "signals": [
+                {
+                  "slot": "action",
+                  "value": "stop",
+                  "signal": "stop"
+                },
+                {
+                  "slot": "action",
+                  "value": "slow",
+                  "signal": "slow"
+                }
+              ]
+            },
+            "candidateConceptSlots": {
+              "condition": [],
+              "context": [],
+              "action": [
+                "honk",
+                "slow"
+              ],
+              "polarity": "positive",
+              "signals": [
+                {
+                  "slot": "action",
+                  "value": "honk",
+                  "signal": "honk"
+                },
+                {
+                  "slot": "action",
+                  "value": "slow",
+                  "signal": "slow"
+                }
+              ]
+            },
+            "conceptMatches": [
+              "action:slow"
+            ],
+            "contradictionSignals": [],
+            "rowConceptMode": "slot-alignment + contradiction-penalties",
+            "structuralSevereSignals": [],
+            "structuralSoftSignals": [],
+            "imageObjectComparable": true,
+            "imageColorComparable": true,
+            "explanation": [
+              "Binary yes/no options were treated as ROW-like for type scoring.",
+              "Missing correct answer was treated as a neutral signal.",
+              "Structural filtering and scoring strongly agree with this candidate.",
+              "ROW concept slots aligned on condition/context/action."
+            ]
+          },
+          "prompt": "After a vehicle enters a mountain road, it should pay special attention to the continuous curves sign. In addition, it should voluntarily evade vehicles and pedestrians, reduce speed in a time manner and honk in advance.",
+          "syntheticJaPrompt": "after 車両 enter mountain road it べき pay special attention continuou curve 標識 addition it べき voluntarily evade 車両 and pedestrian 減速 time manner and honk advance。",
+          "translatedPrompt": "산길에 진입하면 연속 커브 표지에 특별히 주의하고, 차량과 보행자를 만나면 양보하거나 피하며, 필요 시 감속하고 미리 경적을 울려야 한다.",
+          "options": [],
+          "correctAnswer": {
+            "kind": "ROW",
+            "correctRow": "R",
+            "correctOptionId": null,
+            "correctOptionKey": null,
+            "correctOptionText": "right / true",
+            "correctOptionTranslatedText": null,
+            "answerRaw": "Right"
+          },
+          "image": {
+            "hasImage": false,
+            "currentAssetSrc": null,
+            "assetHashes": [],
+            "colorTags": [],
+            "objectTags": []
+          },
+          "topic": "road-safety",
+          "subtopics": [
+            "road-safety:road-conditions",
+            "traffic-signals:road-signs",
+            "proper-driving:safe-driving"
+          ],
+          "conceptSlots": {
+            "condition": [],
+            "context": [],
+            "action": [
+              "honk",
+              "slow"
+            ],
+            "polarity": "positive",
+            "signals": [
+              {
+                "slot": "action",
+                "value": "honk",
+                "signal": "honk"
+              },
+              {
+                "slot": "action",
+                "value": "slow",
+                "signal": "slow"
+              }
+            ]
+          }
+        },
+        {
+          "qid": "q0017",
+          "number": 17,
+          "type": "ROW",
+          "score": 57.473,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.194,
+            "rawPromptSimilarity": 0.194,
+            "englishPromptSimilarity": 0.194,
+            "syntheticPromptSimilarity": 0,
+            "localizedPromptSimilarity": 0,
+            "localizedAgreement": 0.5,
+            "questionType": 1,
+            "optionCountAgreement": 1,
+            "answerStructureAgreement": 1,
+            "promptFamilyAgreement": 0.5,
+            "provisionalTopicAgreement": 0.75,
+            "structuralAgreement": 0.873,
+            "structuralPenalty": 0,
+            "imageSignal": 1,
+            "imageObjectAgreement": 0.35,
+            "imageColorAgreement": 0.35,
+            "topicWeighting": 0.5,
+            "answerPolarity": 1,
+            "conceptAlignment": 0.417,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0,
+            "baseScore": 49.575,
+            "rerankAdjustment": 7.898
+          },
+          "diagnostics": {
+            "effectiveItemType": "ROW",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": true,
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "optionSetMode": "row-semantic",
+            "localizedMirrorUsed": false,
+            "localizedMirrorLabel": null,
+            "localizedSignalAvailable": false,
+            "syntheticMirrorUsed": false,
+            "genericPromptFamily": null,
+            "sourceConceptSlots": {
+              "condition": [],
+              "context": [],
+              "action": [
+                "stop",
+                "slow"
+              ],
+              "polarity": "positive",
+              "signals": [
+                {
+                  "slot": "action",
+                  "value": "stop",
+                  "signal": "stop"
+                },
+                {
+                  "slot": "action",
+                  "value": "slow",
+                  "signal": "slow"
+                }
+              ]
+            },
+            "candidateConceptSlots": {
+              "condition": [
+                "night"
+              ],
+              "context": [],
+              "action": [
+                "slow",
+                "high-beam",
+                "head-light"
+              ],
+              "polarity": "positive",
+              "signals": [
+                {
+                  "slot": "condition",
+                  "value": "night",
+                  "signal": "night"
+                },
+                {
+                  "slot": "action",
+                  "value": "slow",
+                  "signal": "slow"
+                },
+                {
+                  "slot": "action",
+                  "value": "high-beam",
+                  "signal": "high-beam"
+                },
+                {
+                  "slot": "action",
+                  "value": "head-light",
+                  "signal": "head-light"
+                }
+              ]
+            },
+            "conceptMatches": [
+              "action:slow"
+            ],
+            "contradictionSignals": [],
+            "rowConceptMode": "slot-alignment + contradiction-penalties",
+            "structuralSevereSignals": [],
+            "structuralSoftSignals": [],
+            "imageObjectComparable": true,
+            "imageColorComparable": true,
+            "explanation": [
+              "Binary yes/no options were treated as ROW-like for type scoring.",
+              "Missing correct answer was treated as a neutral signal.",
+              "Structural filtering and scoring strongly agree with this candidate."
+            ]
+          },
+          "prompt": "When driving at night, the driver should reduce speed and go forward if the vehicle coming in the opposite direction fails to turn off the high beam light. This is designed to prevent an accident from happening when there are pedestrians crossing the place where the lights of the two vehicles meet.",
+          "syntheticJaPrompt": "when driving night 運転者 べき 減速 and go if 車両 coming opposite direction fail 消灯する ハイビーム ライト designed prevent accident happening when there pedestrian crossing place where ライト two 車両 meet。",
+          "translatedPrompt": "야간 운전 시 마주 오는 차량이 상향등을 끄지 않을 때에는 운전자는 감속하여 진행해야 한다. 이는 두 차량의 등빛이 겹치는 지점에서 보행자가 횡단할 경우 사고를 예방하기 위한 것이다.",
+          "options": [],
+          "correctAnswer": {
+            "kind": "ROW",
+            "correctRow": "R",
+            "correctOptionId": null,
+            "correctOptionKey": null,
+            "correctOptionText": "right / true",
+            "correctOptionTranslatedText": null,
+            "answerRaw": "Right"
+          },
+          "image": {
+            "hasImage": false,
+            "currentAssetSrc": null,
+            "assetHashes": [],
+            "colorTags": [],
+            "objectTags": []
+          },
+          "topic": "road-safety",
+          "subtopics": [
+            "road-safety:road-conditions",
+            "proper-driving:safe-driving"
+          ],
+          "conceptSlots": {
+            "condition": [
+              "night"
+            ],
+            "context": [],
+            "action": [
+              "slow",
+              "high-beam",
+              "head-light"
+            ],
+            "polarity": "positive",
+            "signals": [
+              {
+                "slot": "condition",
+                "value": "night",
+                "signal": "night"
+              },
+              {
+                "slot": "action",
+                "value": "slow",
+                "signal": "slow"
+              },
+              {
+                "slot": "action",
+                "value": "high-beam",
+                "signal": "high-beam"
+              },
+              {
+                "slot": "action",
+                "value": "head-light",
+                "signal": "head-light"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,156 @@
+{
+  "generatedAt": "2026-04-25T12:31:01.276Z",
+  "lang": "ru",
+  "batchId": "batch-07",
+  "dataset": "2023-test1",
+  "sourceDecisionPath": "qbank-tools/generated/staging/new-question-decisions.ru.batch-07.json",
+  "items": [
+    {
+      "candidateId": "nqc-ru-batch-07-001",
+      "sourceLang": "ru",
+      "sourceImage": "screenshots/Screenshot 2026-04-19 at 18.51.55.png",
+      "effectiveQuestionType": "MCQ",
+      "promptRawJa": "На какой срок лишают права управления автотранспортным средством участника, совершившего наезд на человека, при этом покинувшего место преступления.",
+      "promptGlossEn": "For how long is the driving license revoked for a person who hit a person with a vehicle and left the scene of the crime?",
+      "optionsRawJa": [
+        "A На протяжении 5 лет",
+        "B На протяжении 10 лет",
+        "C На протяжении всей жизни",
+        "D На протяжении 20 лет"
+      ],
+      "optionsGlossEn": [
+        "For 5 years",
+        "For 10 years",
+        "For life",
+        "For 20 years"
+      ],
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "newQuestionLocalAnswerKey": "C",
+      "provisionalTopic": "road-safety",
+      "provisionalSubtopics": [
+        "road-safety:license"
+      ],
+      "topicConfidence": 1,
+      "topicSignals": [
+        {
+          "topic": "road-safety",
+          "subtopic": "road-safety:license",
+          "signal": "license",
+          "weight": 1.15
+        }
+      ],
+      "linkedExistingAssetCandidate": null,
+      "reviewerNotes": "",
+      "status": "pending-superset-review"
+    },
+    {
+      "candidateId": "nqc-ru-batch-07-001",
+      "sourceLang": "ru",
+      "sourceImage": "screenshots/350.png",
+      "effectiveQuestionType": "ROW",
+      "promptRawJa": "Курение за рулем не мешает вождению.",
+      "promptGlossEn": "Smoking while driving does not interfere with driving.",
+      "optionsRawJa": [
+        "A Правильно",
+        "B Не правильно"
+      ],
+      "optionsGlossEn": [
+        "Correct",
+        "Incorrect"
+      ],
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "newQuestionLocalAnswerKey": "B",
+      "provisionalTopic": "proper-driving",
+      "provisionalSubtopics": [
+        "proper-driving:safe-driving"
+      ],
+      "topicConfidence": 0,
+      "topicSignals": [],
+      "linkedExistingAssetCandidate": null,
+      "reviewerNotes": "",
+      "status": "pending-superset-review"
+    },
+    {
+      "candidateId": "nqc-ru-batch-07-002",
+      "sourceLang": "ru",
+      "sourceImage": "screenshots/Screenshot 2026-04-19 at 18.52.13 1.png",
+      "effectiveQuestionType": "MCQ",
+      "promptRawJa": "При вождении транспортного средства на затопленной водой дороге, водителю следует:",
+      "promptGlossEn": "When driving a vehicle on a road flooded with water, the driver should:",
+      "optionsRawJa": [
+        "A. Уделить особое внимание снижению скорости",
+        "B. Проехать с ускоренной скоростью",
+        "C. Проехать со средней скоростью",
+        "D. Проехать ускоренно на низкой передаче скорости"
+      ],
+      "optionsGlossEn": [
+        "Pay special attention to reducing speed",
+        "Drive at increased speed",
+        "Drive at an average speed",
+        "Pass quickly in a low gear"
+      ],
+      "correctKeyRaw": "A",
+      "correctAnswerRaw": "Уделить особое внимание снижению скорости",
+      "newQuestionLocalAnswerKey": "A",
+      "provisionalTopic": "road-safety",
+      "provisionalSubtopics": [
+        "road-safety:road-conditions"
+      ],
+      "topicConfidence": 0.51,
+      "topicSignals": [
+        {
+          "topic": "driving-operations",
+          "subtopic": "driving-operations:gears",
+          "signal": "gear-operation",
+          "weight": 1.25
+        },
+        {
+          "topic": "proper-driving",
+          "subtopic": "proper-driving:safe-driving",
+          "signal": "driving-action",
+          "weight": 1.2
+        }
+      ],
+      "linkedExistingAssetCandidate": null,
+      "reviewerNotes": "",
+      "status": "pending-superset-review"
+    },
+    {
+      "candidateId": "nqc-ru-batch-07-003",
+      "sourceLang": "ru",
+      "sourceImage": "screenshots/Screenshot 2026-04-19 at 18.52.16.png",
+      "effectiveQuestionType": "ROW",
+      "promptRawJa": "Водителю нужно придерживаться культурной езды за рулем, не желательно управлять автотранспортом в плохом состоянии здоровья или плохом настроении.",
+      "promptGlossEn": "A driver should practice courteous driving and should not drive when in poor health or in a bad mood.",
+      "optionsRawJa": [
+        "A Правильно",
+        "B Не правильно"
+      ],
+      "optionsGlossEn": [
+        "Correct",
+        "Incorrect"
+      ],
+      "correctKeyRaw": "A",
+      "correctAnswerRaw": "Правильно",
+      "newQuestionLocalAnswerKey": "A",
+      "provisionalTopic": "proper-driving",
+      "provisionalSubtopics": [
+        "proper-driving:safe-driving"
+      ],
+      "topicConfidence": 1,
+      "topicSignals": [
+        {
+          "topic": "proper-driving",
+          "subtopic": "proper-driving:traffic-laws",
+          "signal": "traffic-law",
+          "weight": 1.15
+        }
+      ],
+      "linkedExistingAssetCandidate": null,
+      "reviewerNotes": "",
+      "status": "pending-superset-review"
+    }
+  ]
+}

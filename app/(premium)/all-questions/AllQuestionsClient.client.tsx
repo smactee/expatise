@@ -47,9 +47,36 @@ function normalizeRowChoice(v: string | null | undefined): "R" | "W" | null {
 function normalizeSearchText(value: string | null | undefined): string {
   return String(value ?? "")
     .toLowerCase()
-    .replace(/[:/_-]+/g, " ")
+    .replace(/[^\p{L}\p{N}]+/gu, " ")
     .replace(/\s+/g, " ")
     .trim();
+}
+
+function tokenizeSearchText(text: string | null | undefined): string[] {
+  return normalizeSearchText(text)
+    .split(" ")
+    .map((token) => token.trim())
+    .filter(Boolean);
+}
+
+function searchTokenMatches(queryToken: string, textToken: string): boolean {
+  if (queryToken === textToken) return true;
+
+  // Keep searches token-aware: "ice" should not match "police" or "service".
+  // Allow a small common adjective variant so "ice" can still find "icy".
+  if (queryToken.endsWith("e") && textToken === `${queryToken.slice(0, -1)}y`) {
+    return true;
+  }
+
+  return false;
+}
+
+function matchesSearchToken(queryToken: string, searchableText: string): boolean {
+  return tokenizeSearchText(searchableText).some((textToken) => searchTokenMatches(queryToken, textToken));
+}
+
+function matchesSearchQuery(searchableText: string, queryTokens: string[]): boolean {
+  return queryTokens.every((token) => matchesSearchToken(token, searchableText));
 }
 
 function hasImageAsset(item: Question): boolean {
@@ -71,7 +98,7 @@ function matchesExplicitFilterToken(token: string, searchableText: string, quest
     return true;
   }
 
-  return ` ${searchableText} `.includes(` ${token} `);
+  return matchesSearchToken(token, searchableText);
 }
 
 function buildQuestionSearchIndex(
@@ -103,6 +130,8 @@ function buildQuestionSearchIndex(
   }
 
   const parts = [
+    item.id,
+    String(item.number),
     item.prompt,
     item.sourcePrompt,
     item.explanation,
@@ -280,7 +309,7 @@ useEffect(() => {
           explicitFilterTokens.every((token) => matchesExplicitFilterToken(token, searchableText, item.number))
         : queryTerms.length === 0 ||
           matchesNumber ||
-          queryTerms.every((term) => searchableText.includes(term));
+          matchesSearchQuery(searchableText, queryTerms);
 
 
     // Topic/subtopic filtering

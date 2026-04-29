@@ -337,7 +337,7 @@ function buildApprovedPreviewEntry({ sourceItem, decision, question, lang: sourc
     correctAnswerRaw: sourceItem.correctAnswerRaw ?? null,
     canonicalQuestionType: question.type,
     stagingOnly: true,
-    localeAnswerKeyPolicy: "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+    localeAnswerKeyPolicy: "Preserve locale answer meaning and source-side key independently from canonical English option letters.",
     provenance: {
       sourceLang,
       batchId: sourceBatchId,
@@ -626,7 +626,7 @@ function deriveCorrectAlignment({ sourceItem, question, alignment }) {
     return {
       localeCorrectOptionKey: normalizeText(sourceItem.correctKeyRaw),
       needsManualConfirmation: true,
-      reason: "Could not align the approved canonical correct option to a reviewed Japanese choice.",
+      reason: "Could not align the approved canonical correct option to a reviewed locale choice.",
       alignmentScore: null,
       method: "unresolved",
     };
@@ -653,11 +653,11 @@ function deriveCorrectAlignment({ sourceItem, question, alignment }) {
     needsManualConfirmation,
     reason: needsManualConfirmation
       ? visibleKey && visibleKey !== sourceMatch.sourceKey
-        ? `Visible Japanese answer key ${visibleKey} disagrees with meaning-based alignment ${sourceMatch.sourceKey}.`
+        ? `Visible locale answer key ${visibleKey} disagrees with meaning-based alignment ${sourceMatch.sourceKey}.`
         : best < 0.65
-          ? "Meaning-based option alignment was weak; verify the Japanese correct option key manually."
-          : "Top option alignment was too close to another source choice; verify the Japanese correct option key manually."
-      : "Meaning-based option alignment cleanly identified the Japanese correct option key.",
+          ? "Meaning-based option alignment was weak; verify the locale correct option key manually."
+          : "Top option alignment was too close to another source choice; verify the locale correct option key manually."
+      : "Meaning-based option alignment cleanly identified the locale correct option key.",
     alignmentScore: sourceMatch.alignmentScore,
     method: visibleKey ? "visible-key-and-meaning" : "meaning-derived",
   };

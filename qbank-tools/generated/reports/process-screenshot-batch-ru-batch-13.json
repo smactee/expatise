@@ -1,0 +1,161 @@
+{
+  "generatedAt": "2026-04-29T08:01:21.282Z",
+  "lang": "ru",
+  "batchId": "batch-13",
+  "dataset": "2023-test1",
+  "matchIndexPath": "qbank-tools/generated/match-index.json",
+  "syntheticMatchIndexPath": "qbank-tools/generated/match-index.ja.synthetic.json",
+  "featureStorePath": "qbank-tools/history/qid-feature-store.json",
+  "featureStoreRebuilt": false,
+  "featureSchemaVersion": 3,
+  "correctionRulesPath": null,
+  "analysisMode": "standard",
+  "intakeStats": {
+    "originalItems": 50,
+    "itemsProcessed": 50,
+    "nonImageItemsSkipped": 0,
+    "imageOnly": false
+  },
+  "outputs": [
+    {
+      "kind": "matched",
+      "count": 2
+    },
+    {
+      "kind": "review-needed",
+      "count": 39
+    },
+    {
+      "kind": "unresolved",
+      "count": 9
+    }
+  ],
+  "decisionSummary": {
+    "byDisposition": {
+      "matched": {
+        "count": 2,
+        "profiles": {
+          "row-image": 2
+        },
+        "reasonCodes": {
+          "profile-pass": 2
+        }
+      },
+      "review-needed": {
+        "count": 39,
+        "profiles": {
+          "row-text": 9,
+          "row-image": 7,
+          "mcq-image": 17,
+          "mcq-text": 6
+        },
+        "reasonCodes": {
+          "total-low": 28,
+          "signal-separation-low": 17,
+          "structural-weak": 5,
+          "gap-small": 26,
+          "runner-up-close": 16,
+          "gloss-weak": 10,
+          "top2-semantic-near-duplicate": 9,
+          "contrast-unclear": 11,
+          "insufficient-discriminative-evidence": 10,
+          "option-weak": 15,
+          "signal-agreement-low": 19,
+          "option-signature-weak": 21,
+          "option-set-mismatch": 15,
+          "signal-conflict": 3,
+          "weak-family-separation": 7,
+          "negation-conflict": 3,
+          "family-mismatch": 4,
+          "indicator-vs-sign-conflict": 1,
+          "sign-vs-action-conflict": 2,
+          "weak-action-separation": 4,
+          "contradiction": 1,
+          "action-conflict": 1,
+          "structural-penalty": 1,
+          "numeric-mismatch": 1,
+          "indicator-vs-action-conflict": 1,
+          "prompt-family-mismatch": 1
+        }
+      },
+      "unresolved": {
+        "count": 9,
+        "profiles": {
+          "mcq-text": 4,
+          "row-text": 4,
+          "mcq-image": 1
+        },
+        "reasonCodes": {
+          "review-floor": 9,
+          "total-low": 9,
+          "gap-small": 9,
+          "signal-separation-low": 5,
+          "runner-up-close": 5,
+          "number-conflict": 1,
+          "option-weak": 5,
+          "signal-agreement-low": 6,
+          "top2-semantic-near-duplicate": 3,
+          "contrast-unclear": 2,
+          "weak-action-separation": 3,
+          "gloss-weak": 3,
+          "option-signature-weak": 3,
+          "option-set-mismatch": 1,
+          "insufficient-discriminative-evidence": 1,
+          "structural-weak": 1,
+          "structural-penalty": 1,
+          "numeric-group-mismatch": 1,
+          "keyword-weak": 1
+        }
+      }
+    },
+    "byReasonCode": {
+      "profile-pass": 2,
+      "total-low": 37,
+      "signal-separation-low": 22,
+      "structural-weak": 6,
+      "gap-small": 35,
+      "runner-up-close": 21,
+      "gloss-weak": 13,
+      "top2-semantic-near-duplicate": 12,
+      "contrast-unclear": 13,
+      "insufficient-discriminative-evidence": 11,
+      "option-weak": 20,
+      "signal-agreement-low": 25,
+      "option-signature-weak": 24,
+      "option-set-mismatch": 16,
+      "signal-conflict": 3,
+      "weak-family-separation": 7,
+      "negation-conflict": 3,
+      "family-mismatch": 4,
+      "indicator-vs-sign-conflict": 1,
+      "sign-vs-action-conflict": 2,
+      "weak-action-separation": 7,
+      "contradiction": 1,
+      "action-conflict": 1,
+      "structural-penalty": 2,
+      "numeric-mismatch": 1,
+      "indicator-vs-action-conflict": 1,
+      "prompt-family-mismatch": 1,
+      "review-floor": 9,
+      "number-conflict": 1,
+      "numeric-group-mismatch": 1,
+      "keyword-weak": 1
+    },
+    "byProfile": {
+      "matched": {
+        "row-image": 2
+      },
+      "review-needed": {
+        "row-text": 9,
+        "row-image": 7,
+        "mcq-image": 17,
+        "mcq-text": 6
+      },
+      "unresolved": {
+        "mcq-text": 4,
+        "row-text": 4,
+        "mcq-image": 1
+      }
+    }
+  }
+}

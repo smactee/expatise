@@ -15,6 +15,7 @@ import {
   fileExists,
   getBatchDir,
   getBatchFiles,
+  getDatasetPaths,
   listBatchScreenshotFiles,
   normalizeLang,
   normalizeWhitespace,
@@ -29,37 +30,24 @@ import {
 
 const DEFAULT_MODEL = "gpt-4.1";
 const IMAGE_DETAIL = "high";
-const SYSTEM_PROMPT = `
-You extract driving-test question content from a screenshot.
-
-Return JSON only with this exact shape:
-{
-  "typeHint": "MCQ" | "ROW" | null,
-  "hasEmbeddedQuestionImage": true | false | null,
-  "promptRaw": string,
-  "optionsRaw": string[],
-  "correctKeyRaw": string | null,
-  "correctAnswerRaw": string | null,
-  "promptTranslated": string,
-  "optionsTranslated": string[],
-  "correctAnswerTranslated": string | null,
-  "status": "success" | "partial" | "failed",
-  "confidence": "high" | "medium" | "low",
-  "notes": string[]
-}
-
-Rules:
-- Read only what is actually visible in the screenshot.
-- Do not invent missing text. If unreadable, leave the field empty or null and explain in notes.
-- Preserve the screenshot language in promptRaw/optionsRaw/correct*Raw.
-- Translate visible question text into concise English in promptTranslated/optionsTranslated/correctAnswerTranslated when possible.
-- typeHint is MCQ only when multiple answer options are visibly present. Use ROW only for right/wrong style statements without a visible option list. Otherwise return null.
-- hasEmbeddedQuestionImage should be true only when the screenshot contains a separate sign, symbol, diagram, dashboard light, or scene image that belongs to the question content.
-- If the screenshot is too cropped, blurry, or incomplete, prefer status "partial" or "failed" over guessing.
-- For MCQ, keep optionsRaw/optionsTranslated in visual order.
-- correctKeyRaw is only for visible labels like A/B/C/D or similar. If the answer key is not visible, return null.
-- correctAnswerRaw and correctAnswerTranslated are only for answers that are directly visible in the screenshot.
-`.trim();
+const VISUAL_LAYOUT_VOCABULARY = [
+  "left",
+  "right",
+  "straight",
+  "u-turn",
+  "merge",
+  "split",
+  "circular-sign",
+  "triangular-sign",
+  "rectangular-sign",
+  "warning-sign",
+  "prohibition-sign",
+  "mandatory-sign",
+  "lane-assignment",
+  "intersection-diagram",
+  "traffic-light-state",
+  "pov-scene",
+];
 
 main().catch((error) => {
   console.error(error);
@@ -73,10 +61,13 @@ async function main() {
   const overwrite = stringArg(args, "overwrite", "true") !== "false";
   const model = stringArg(args, "model", DEFAULT_MODEL);
   const limit = Number(stringArg(args, "limit", "")) || null;
+  const imageOnly = stringArg(args, "image-only", "false") === "true";
 
   const batchDir = batchPathArg
     ? path.resolve(process.cwd(), batchPathArg)
     : getBatchDir(lang, batchId);
+  const visualVocabulary = loadVisualVocabulary(dataset);
+  const systemPrompt = buildSystemPrompt(visualVocabulary);
 
   await ensurePipelineDirs({ lang, batchId });
   await ensureDir(batchDir);
@@ -89,9 +80,15 @@ async function main() {
       }
     : getBatchFiles(lang, batchId);
 
-  const screenshotFiles = listBatchScreenshotFiles(batchDir);
-  const targetFiles = limit ? screenshotFiles.slice(0, limit) : screenshotFiles;
   const existing = loadExistingIntake(batchFiles.intakePath, lang, batchId, dataset);
+  const screenshotFiles = listBatchScreenshotFiles(batchDir);
+  const candidateFiles = imageOnly
+    ? screenshotFiles.filter((file) => {
+      const relativeFile = path.relative(batchDir, file);
+      return findExistingItem(existing.items, relativeFile)?.hasImage === true;
+    })
+    : screenshotFiles;
+  const targetFiles = limit ? candidateFiles.slice(0, limit) : candidateFiles;
 
   if (targetFiles.length === 0) {
     const intakeDoc = buildIntakeDocument({
@@ -137,6 +134,8 @@ async function main() {
       lang,
       batchDir,
       screenshotPath,
+      systemPrompt,
+      visualVocabulary,
     });
 
     extractedItems.push(mergeIntakeItem(existingItem, extracted, { overwrite }));
@@ -225,7 +224,75 @@ function findExistingItem(items, relativeFile) {
   }) ?? null;
 }
 
-async function extractOneScreenshot({ client, model, lang, batchDir, screenshotPath }) {
+function loadVisualVocabulary(dataset) {
+  const datasetPaths = getDatasetPaths(dataset);
+  const imageTagDoc = readJson(datasetPaths.imageColorTagsPath);
+  const meta = imageTagDoc?.meta ?? {};
+
+  return {
+    objectVocabulary: normalizeTagVocabulary(meta.objectVocabulary),
+    colorVocabulary: normalizeTagVocabulary(meta.colorVocabulary),
+    layoutVocabulary: [...VISUAL_LAYOUT_VOCABULARY],
+  };
+}
+
+function normalizeTagVocabulary(value) {
+  return unique(
+    (Array.isArray(value) ? value : [])
+      .map((entry) => normalizeWhitespace(entry).toLowerCase())
+      .filter(Boolean),
+  );
+}
+
+function buildSystemPrompt({ objectVocabulary, colorVocabulary, layoutVocabulary }) {
+  return `
+You extract driving-test question content from a screenshot.
+
+Return JSON only with this exact shape:
+{
+  "typeHint": "MCQ" | "ROW" | null,
+  "hasEmbeddedQuestionImage": true | false | null,
+  "visualObjectTags": string[],
+  "visualColorTags": string[],
+  "visualNumberTags": string[],
+  "visualLayoutTags": string[],
+  "visualEvidenceNotes": string[],
+  "promptRaw": string,
+  "optionsRaw": string[],
+  "correctKeyRaw": string | null,
+  "correctAnswerRaw": string | null,
+  "promptTranslated": string,
+  "optionsTranslated": string[],
+  "correctAnswerTranslated": string | null,
+  "status": "success" | "partial" | "failed",
+  "confidence": "high" | "medium" | "low",
+  "notes": string[]
+}
+
+Rules:
+- Read only what is actually visible in the screenshot.
+- Do not invent missing text. If unreadable, leave the field empty or null and explain in notes.
+- Preserve the screenshot language in promptRaw/optionsRaw/correct*Raw.
+- Translate visible question text into concise English in promptTranslated/optionsTranslated/correctAnswerTranslated when possible.
+- typeHint is MCQ only when multiple answer options are visibly present. Use ROW only for right/wrong style statements without a visible option list. Otherwise return null.
+- hasEmbeddedQuestionImage should be true only when the screenshot contains a separate sign, symbol, diagram, dashboard light, or scene image that belongs to the question content.
+- Ignore app UI chrome, headers, buttons, pagination, watermarks, and status icons. Visual tags must describe only the embedded question image itself.
+- If no embedded question image is present, set visualObjectTags / visualColorTags / visualNumberTags / visualLayoutTags / visualEvidenceNotes to empty arrays.
+- Use only high-confidence visual facts. If a tag is ambiguous, omit it.
+- visualObjectTags must use exact strings from this allowed list only: ${objectVocabulary.join(", ")}.
+- visualColorTags must use exact strings from this allowed list only: ${colorVocabulary.join(", ")}.
+- visualNumberTags must contain only exact numerals that are visibly present inside the embedded question image or sign, not UI numbers or answer labels.
+- visualLayoutTags must use exact strings from this allowed list only: ${layoutVocabulary.join(", ")}.
+- For sign images, capture obvious sign family/layout tags when visible.
+- For scene images, use tags like pov-scene, intersection-diagram, traffic-light-state, left, right, straight only when visually clear.
+- If the screenshot is too cropped, blurry, or incomplete, prefer status "partial" or "failed" over guessing.
+- For MCQ, keep optionsRaw/optionsTranslated in visual order.
+- correctKeyRaw is only for visible labels like A/B/C/D or similar. If the answer key is not visible, return null.
+- correctAnswerRaw and correctAnswerTranslated are only for answers that are directly visible in the screenshot.
+`.trim();
+}
+
+async function extractOneScreenshot({ client, model, lang, batchDir, screenshotPath, systemPrompt, visualVocabulary }) {
   const relativeFile = path.relative(batchDir, screenshotPath);
   const mimeType = mimeTypeForFile(screenshotPath);
   const fileData = await fs.readFile(screenshotPath);
@@ -244,7 +311,7 @@ async function extractOneScreenshot({ client, model, lang, batchDir, screenshotP
         input: [
           {
             role: "system",
-            content: [{ type: "input_text", text: SYSTEM_PROMPT }],
+            content: [{ type: "input_text", text: systemPrompt }],
           },
           {
             role: "user",
@@ -257,7 +324,7 @@ async function extractOneScreenshot({ client, model, lang, batchDir, screenshotP
       });
 
       const parsed = parseJsonObject(String(response.output_text ?? "").trim());
-      return normalizeExtractedItem(parsed, { file: relativeFile, lang });
+      return normalizeExtractedItem(parsed, { file: relativeFile, lang, visualVocabulary });
     } catch (error) {
       if (attempt >= 3) {
         return fallbackFailedExtraction(relativeFile, lang, error);
@@ -269,7 +336,27 @@ async function extractOneScreenshot({ client, model, lang, batchDir, screenshotP
   return fallbackFailedExtraction(relativeFile, lang, new Error("Unreachable extraction state"));
 }
 
-function normalizeExtractedItem(raw, { file, lang }) {
+function normalizeVisualTagArray(value, { allowed = null, pattern = null } = {}) {
+  const entries = Array.isArray(value) ? value : [];
+  return unique(
+    entries
+      .map((entry) => normalizeWhitespace(entry).toLowerCase())
+      .filter((entry) => {
+        if (!entry) {
+          return false;
+        }
+        if (allowed && !allowed.has(entry)) {
+          return false;
+        }
+        if (pattern && !pattern.test(entry)) {
+          return false;
+        }
+        return true;
+      }),
+  );
+}
+
+function normalizeExtractedItem(raw, { file, lang, visualVocabulary }) {
   const typeHint = normalizeTypeHint(raw?.typeHint);
   const promptRaw = normalizeWhitespace(raw?.promptRaw);
   const optionsRaw = normalizeTextArray(raw?.optionsRaw);
@@ -280,6 +367,14 @@ function normalizeExtractedItem(raw, { file, lang }) {
   const correctAnswerTranslated = normalizeNullableText(raw?.correctAnswerTranslated);
   const confidence = normalizeConfidence(raw?.confidence);
   const notes = normalizeNotes(raw?.notes);
+  const allowedObjects = new Set(visualVocabulary?.objectVocabulary ?? []);
+  const allowedColors = new Set(visualVocabulary?.colorVocabulary ?? []);
+  const allowedLayouts = new Set(visualVocabulary?.layoutVocabulary ?? []);
+  const visualObjectTags = normalizeVisualTagArray(raw?.visualObjectTags, { allowed: allowedObjects });
+  const visualColorTags = normalizeVisualTagArray(raw?.visualColorTags, { allowed: allowedColors });
+  const visualNumberTags = normalizeVisualTagArray(raw?.visualNumberTags, { pattern: /^\d+(?:\.\d+)?$/ });
+  const visualLayoutTags = normalizeVisualTagArray(raw?.visualLayoutTags, { allowed: allowedLayouts });
+  const visualEvidenceNotes = normalizeNotes(raw?.visualEvidenceNotes);
   const status = classifyExtractionStatus({
     status: raw?.status,
     promptRaw,
@@ -312,6 +407,11 @@ function normalizeExtractedItem(raw, { file, lang }) {
     localizedExplanation: "",
     productionAssetHints: [],
     topicHints: [],
+    visualObjectTags,
+    visualColorTags,
+    visualNumberTags,
+    visualLayoutTags,
+    visualEvidenceNotes,
     extractionStatus: status,
     extractionConfidence: confidence,
     manualReview: status !== "success" || confidence !== "high",
@@ -341,6 +441,21 @@ function mergeIntakeItem(existingItem, extractedItem, { overwrite }) {
     next.productionAssetHints = Array.isArray(base.productionAssetHints) && base.productionAssetHints.length > 0
       ? unique([...(next.productionAssetHints ?? []), ...base.productionAssetHints])
       : next.productionAssetHints;
+    next.visualObjectTags = Array.isArray(base.visualObjectTags) && base.visualObjectTags.length > 0
+      ? unique([...(next.visualObjectTags ?? []), ...base.visualObjectTags])
+      : next.visualObjectTags;
+    next.visualColorTags = Array.isArray(base.visualColorTags) && base.visualColorTags.length > 0
+      ? unique([...(next.visualColorTags ?? []), ...base.visualColorTags])
+      : next.visualColorTags;
+    next.visualNumberTags = Array.isArray(base.visualNumberTags) && base.visualNumberTags.length > 0
+      ? unique([...(next.visualNumberTags ?? []), ...base.visualNumberTags])
+      : next.visualNumberTags;
+    next.visualLayoutTags = Array.isArray(base.visualLayoutTags) && base.visualLayoutTags.length > 0
+      ? unique([...(next.visualLayoutTags ?? []), ...base.visualLayoutTags])
+      : next.visualLayoutTags;
+    next.visualEvidenceNotes = Array.isArray(base.visualEvidenceNotes) && base.visualEvidenceNotes.length > 0
+      ? unique([...(next.visualEvidenceNotes ?? []), ...base.visualEvidenceNotes])
+      : next.visualEvidenceNotes;
   }
 
   return {
@@ -482,6 +597,11 @@ function fallbackFailedExtraction(file, lang, error) {
     localizedExplanation: "",
     productionAssetHints: [],
     topicHints: [],
+    visualObjectTags: [],
+    visualColorTags: [],
+    visualNumberTags: [],
+    visualLayoutTags: [],
+    visualEvidenceNotes: [],
     extractionStatus: "failed",
     extractionConfidence: "low",
     manualReview: true,

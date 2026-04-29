@@ -1,0 +1,1162 @@
+{
+  "meta": {
+    "locale": "ru",
+    "generatedAt": "2026-04-20T02:59:08.791Z",
+    "reviewedBatchId": "batch-002",
+    "dataset": "2023-test1",
+    "sourceUnresolvedPath": "imports/ru/batch-002/unresolved.json",
+    "sourceUnresolvedDecisionPath": "qbank-tools/generated/staging/ru-batch-002-unresolved-decisions.json",
+    "rescuedExistingQidCount": 11,
+    "manualAnswerKeyConfirmationCount": 0,
+    "stagingOnly": true
+  },
+  "questions": {
+    "q0099": {
+      "prompt": "Обнаружив утечку воздуха в шинах, при съезде с главной полосы, запрещено резкое торможение во избежание случая опрокидывания автомобиля или столкновения с передним автомобилем.",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "Screenshot 2026-04-19 at 18.47.31.png",
+      "sourceItemId": "Screenshot 2026-04-19 at 18.47.31.png",
+      "reviewerNotes": "",
+      "promptRawJa": "Обнаружив утечку воздуха в шинах, при съезде с главной полосы, запрещено резкое торможение во избежание случая опрокидывания автомобиля или столкновения с передним автомобилем.",
+      "promptGlossEn": "If you detect air leakage in the tires while exiting the main lane, sudden braking is prohibited to avoid the possibility of overturning the vehicle or colliding with the vehicle in front.",
+      "correctKeyRaw": "A",
+      "correctAnswerRaw": "Правильно",
+      "canonicalQuestionType": "ROW",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ru",
+        "batchId": "batch-002",
+        "approvedQid": "q0099",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "optionsRawJa": [],
+      "optionsGlossEn": [],
+      "localeCorrectOptionKey": null,
+      "canonicalCorrectRow": "R",
+      "canonicalCorrectAnswer": "right / true",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "ROW question; no locale-specific option key applies.",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ru-batch-002-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0808": {
+      "prompt": "Что означает данный знак?",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "Screenshot 2026-04-19 at 18.47.37.png",
+      "sourceItemId": "Screenshot 2026-04-19 at 18.47.37.png",
+      "reviewerNotes": "",
+      "promptRawJa": "Что означает данный знак?",
+      "promptGlossEn": "What does this sign mean?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ru",
+        "batchId": "batch-002",
+        "approvedQid": "q0808",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "options": {
+        "q0808_o1": "C Сплошная кривая дорога в виде «И»",
+        "q0808_o2": "B Дорога с резкими поворотами",
+        "q0808_o3": "D Дорога с многочисленными поворотами",
+        "q0808_o4": "A Сплошная кривая дорога в виде N"
+      },
+      "optionsRawJa": [
+        "A Сплошная кривая дорога в виде N",
+        "B Дорога с резкими поворотами",
+        "C Сплошная кривая дорога в виде «И»",
+        "D Дорога с многочисленными поворотами"
+      ],
+      "optionsGlossEn": [
+        "A Continuous winding road in the shape of N",
+        "B Road with sharp turns",
+        "C Continuous winding road in the shape of 'I'",
+        "D Road with multiple turns"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A Сплошная кривая дорога в виде N",
+          "sourceTextBody": "Сплошная кривая дорога в виде N",
+          "sourceGlossEn": "A Continuous winding road in the shape of N",
+          "canonicalOptionId": "q0808_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "inverse curve",
+          "alignmentScore": 0.17433510638297872,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B Дорога с резкими поворотами",
+          "sourceTextBody": "Дорога с резкими поворотами",
+          "sourceGlossEn": "B Road with sharp turns",
+          "canonicalOptionId": "q0808_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "sharp curve",
+          "alignmentScore": 0.23675925925925925,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C Сплошная кривая дорога в виде «И»",
+          "sourceTextBody": "Сплошная кривая дорога в виде «И»",
+          "sourceGlossEn": "C Continuous winding road in the shape of 'I'",
+          "canonicalOptionId": "q0808_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "slippery section",
+          "alignmentScore": 0,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D Дорога с многочисленными поворотами",
+          "sourceTextBody": "Дорога с многочисленными поворотами",
+          "sourceGlossEn": "D Road with multiple turns",
+          "canonicalOptionId": "q0808_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "inverse curve",
+          "alignmentScore": 0,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A Сплошная кривая дорога в виде N",
+          "sourceGlossEn": "A Continuous winding road in the shape of N",
+          "canonicalOptionId": "q0808_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "inverse curve",
+          "alignmentScore": 0.17433510638297872,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B Дорога с резкими поворотами",
+          "sourceGlossEn": "B Road with sharp turns",
+          "canonicalOptionId": "q0808_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "sharp curve",
+          "alignmentScore": 0.23675925925925925,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C Сплошная кривая дорога в виде «И»",
+          "sourceGlossEn": "C Continuous winding road in the shape of 'I'",
+          "canonicalOptionId": "q0808_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "slippery section",
+          "alignmentScore": 0,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D Дорога с многочисленными поворотами",
+          "sourceGlossEn": "D Road with multiple turns",
+          "canonicalOptionId": "q0808_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "inverse curve",
+          "alignmentScore": 0,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "A",
+      "canonicalCorrectOptionId": "q0808_o3",
+      "canonicalCorrectOptionKey": "C",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed during unresolved rescue review on 2026-04-20T02:59:08.791Z; reviewer selected locale key A.",
+      "correctOptionAlignment": {
+        "sourceKey": "A",
+        "canonicalOptionId": "q0808_o3",
+        "canonicalOptionKey": "C",
+        "sourceText": "A Сплошная кривая дорога в виде N",
+        "sourceGlossEn": "A Continuous winding road in the shape of N",
+        "canonicalOptionText": "inverse curve",
+        "alignmentScore": 0,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-20T02:59:08.791Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ru-batch-002-unresolved-decisions.json",
+      "answerKeyReviewerNotes": "",
+      "reviewerSuggestedLocaleCorrectOptionKey": "A",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ru-batch-002-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0054": {
+      "prompt": "Следует придерживаться разрешимой скорости движения.",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "Screenshot 2026-04-19 at 18.47.39.png",
+      "sourceItemId": "Screenshot 2026-04-19 at 18.47.39.png",
+      "reviewerNotes": "",
+      "promptRawJa": "Следует придерживаться разрешимой скорости движения.",
+      "promptGlossEn": "Should you observe the permitted speed limit?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "ROW",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ru",
+        "batchId": "batch-002",
+        "approvedQid": "q0054",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "optionsRawJa": [],
+      "optionsGlossEn": [],
+      "localeCorrectOptionKey": null,
+      "canonicalCorrectRow": "R",
+      "canonicalCorrectAnswer": "right / true",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "ROW question; no locale-specific option key applies.",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ru-batch-002-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0752": {
+      "prompt": "Что означает данный знак?",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "Screenshot 2026-04-19 at 18.47.40 1.png",
+      "sourceItemId": "Screenshot 2026-04-19 at 18.47.40 1.png",
+      "reviewerNotes": "",
+      "promptRawJa": "Что означает данный знак?",
+      "promptGlossEn": "What does this sign mean?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ru",
+        "batchId": "batch-002",
+        "approvedQid": "q0752",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "options": {
+        "q0752_o1": "C Снижение скорости на протяженности 40км",
+        "q0752_o2": "D Минимальная скорость — 40км/ч",
+        "q0752_o3": "A Ограничение груза — 40т",
+        "q0752_o4": "B Ограниченная максимальная скорость — 40км/ч"
+      },
+      "optionsRawJa": [
+        "A Ограничение груза — 40т",
+        "B Ограниченная максимальная скорость — 40км/ч",
+        "C Снижение скорости на протяженности 40км",
+        "D Минимальная скорость — 40км/ч"
+      ],
+      "optionsGlossEn": [
+        "A Load limit — 40 tons",
+        "B Maximum speed limit — 40 km/h",
+        "C Speed reduction over a distance of 40 km",
+        "D Minimum speed — 40 km/h"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A Ограничение груза — 40т",
+          "sourceTextBody": "Ограничение груза — 40т",
+          "sourceGlossEn": "A Load limit — 40 tons",
+          "canonicalOptionId": "q0752_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "axle weight limit is 40 tons",
+          "alignmentScore": 0.4,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B Ограниченная максимальная скорость — 40км/ч",
+          "sourceTextBody": "Ограниченная максимальная скорость — 40км/ч",
+          "sourceGlossEn": "B Maximum speed limit — 40 km/h",
+          "canonicalOptionId": "q0752_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "maximum speed limit is 40km/hr",
+          "alignmentScore": 0.3927272727272727,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C Снижение скорости на протяженности 40км",
+          "sourceTextBody": "Снижение скорости на протяженности 40км",
+          "sourceGlossEn": "C Speed reduction over a distance of 40 km",
+          "canonicalOptionId": "q0752_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "reducing speed 40m ahead",
+          "alignmentScore": 0.13517241379310346,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D Минимальная скорость — 40км/ч",
+          "sourceTextBody": "Минимальная скорость — 40км/ч",
+          "sourceGlossEn": "D Minimum speed — 40 km/h",
+          "canonicalOptionId": "q0752_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "minimum speed is 40km/hr",
+          "alignmentScore": 0.317312661498708,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A Ограничение груза — 40т",
+          "sourceGlossEn": "A Load limit — 40 tons",
+          "canonicalOptionId": "q0752_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "axle weight limit is 40 tons",
+          "alignmentScore": 0.4,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B Ограниченная максимальная скорость — 40км/ч",
+          "sourceGlossEn": "B Maximum speed limit — 40 km/h",
+          "canonicalOptionId": "q0752_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "maximum speed limit is 40km/hr",
+          "alignmentScore": 0.3927272727272727,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C Снижение скорости на протяженности 40км",
+          "sourceGlossEn": "C Speed reduction over a distance of 40 km",
+          "canonicalOptionId": "q0752_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "reducing speed 40m ahead",
+          "alignmentScore": 0.13517241379310346,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D Минимальная скорость — 40км/ч",
+          "sourceGlossEn": "D Minimum speed — 40 km/h",
+          "canonicalOptionId": "q0752_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "minimum speed is 40km/hr",
+          "alignmentScore": 0.317312661498708,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "B",
+      "canonicalCorrectOptionId": "q0752_o4",
+      "canonicalCorrectOptionKey": "D",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed during unresolved rescue review on 2026-04-20T02:59:08.791Z; reviewer selected locale key B.",
+      "correctOptionAlignment": {
+        "sourceKey": "B",
+        "canonicalOptionId": "q0752_o4",
+        "canonicalOptionKey": "D",
+        "sourceText": "B Ограниченная максимальная скорость — 40км/ч",
+        "sourceGlossEn": "B Maximum speed limit — 40 km/h",
+        "canonicalOptionText": "maximum speed limit is 40km/hr",
+        "alignmentScore": 0.3927272727272727,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-20T02:59:08.791Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ru-batch-002-unresolved-decisions.json",
+      "answerKeyReviewerNotes": "",
+      "reviewerSuggestedLocaleCorrectOptionKey": "B",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ru-batch-002-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0376": {
+      "prompt": "За какое нарушение водителю начисляется 6 баллов?",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "Screenshot 2026-04-19 at 18.47.42 1.png",
+      "sourceItemId": "Screenshot 2026-04-19 at 18.47.42 1.png",
+      "reviewerNotes": "",
+      "promptRawJa": "За какое нарушение водителю начисляется 6 баллов?",
+      "promptGlossEn": "For which violation does the driver receive 6 points?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ru",
+        "batchId": "batch-002",
+        "approvedQid": "q0376",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "options": {
+        "q0376_o1": "C За несоблюдение сигналов светофора",
+        "q0376_o2": "D За управление школьным автобусом без соответствующего водительского удостоверения",
+        "q0376_o3": "A За использование не соответствующего требованиям автомобиля",
+        "q0376_o4": "B Вождение автомобиля в состоянии алкогольного опьянения"
+      },
+      "optionsRawJa": [
+        "A За использование не соответствующего требованиям автомобиля",
+        "B Вождение автомобиля в состоянии алкогольного опьянения",
+        "C За несоблюдение сигналов светофора",
+        "D За управление школьным автобусом без соответствующего водительского удостоверения"
+      ],
+      "optionsGlossEn": [
+        "A For using a vehicle that does not meet requirements",
+        "B Driving a vehicle under the influence of alcohol",
+        "C For not obeying traffic light signals",
+        "D Driving a school bus without the appropriate driver's license"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A За использование не соответствующего требованиям автомобиля",
+          "sourceTextBody": "За использование не соответствующего требованиям автомобиля",
+          "sourceGlossEn": "A For using a vehicle that does not meet requirements",
+          "canonicalOptionId": "q0376_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "drive the vehicle which permission is different",
+          "alignmentScore": 0.10321517562896873,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B Вождение автомобиля в состоянии алкогольного опьянения",
+          "sourceTextBody": "Вождение автомобиля в состоянии алкогольного опьянения",
+          "sourceGlossEn": "B Driving a vehicle under the influence of alcohol",
+          "canonicalOptionId": "q0376_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "drive after drink",
+          "alignmentScore": 0.02181818181818182,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C За несоблюдение сигналов светофора",
+          "sourceTextBody": "За несоблюдение сигналов светофора",
+          "sourceGlossEn": "C For not obeying traffic light signals",
+          "canonicalOptionId": "q0376_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "violate the traffic lights",
+          "alignmentScore": 0.27747079964061094,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D За управление школьным автобусом без соответствующего водительского удостоверения",
+          "sourceTextBody": "За управление школьным автобусом без соответствующего водительского удостоверения",
+          "sourceGlossEn": "D Driving a school bus without the appropriate driver's license",
+          "canonicalOptionId": "q0376_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "drive school bus without qualification",
+          "alignmentScore": 0.3621212121212121,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A За использование не соответствующего требованиям автомобиля",
+          "sourceGlossEn": "A For using a vehicle that does not meet requirements",
+          "canonicalOptionId": "q0376_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "drive the vehicle which permission is different",
+          "alignmentScore": 0.10321517562896873,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B Вождение автомобиля в состоянии алкогольного опьянения",
+          "sourceGlossEn": "B Driving a vehicle under the influence of alcohol",
+          "canonicalOptionId": "q0376_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "drive after drink",
+          "alignmentScore": 0.02181818181818182,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C За несоблюдение сигналов светофора",
+          "sourceGlossEn": "C For not obeying traffic light signals",
+          "canonicalOptionId": "q0376_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "violate the traffic lights",
+          "alignmentScore": 0.27747079964061094,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D За управление школьным автобусом без соответствующего водительского удостоверения",
+          "sourceGlossEn": "D Driving a school bus without the appropriate driver's license",
+          "canonicalOptionId": "q0376_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "drive school bus without qualification",
+          "alignmentScore": 0.3621212121212121,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "C",
+      "canonicalCorrectOptionId": "q0376_o1",
+      "canonicalCorrectOptionKey": "A",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed during unresolved rescue review on 2026-04-20T02:59:08.791Z; reviewer selected locale key C.",
+      "correctOptionAlignment": {
+        "sourceKey": "C",
+        "canonicalOptionId": "q0376_o1",
+        "canonicalOptionKey": "A",
+        "sourceText": "C За несоблюдение сигналов светофора",
+        "sourceGlossEn": "C For not obeying traffic light signals",
+        "canonicalOptionText": "violate the traffic lights",
+        "alignmentScore": 0.27747079964061094,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-20T02:59:08.791Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ru-batch-002-unresolved-decisions.json",
+      "answerKeyReviewerNotes": "",
+      "reviewerSuggestedLocaleCorrectOptionKey": "C",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ru-batch-002-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0463": {
+      "prompt": "Какой из следующих знаков обязан быть прикрепленным на автомобиле?",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "Screenshot 2026-04-19 at 18.47.42.png",
+      "sourceItemId": "Screenshot 2026-04-19 at 18.47.42.png",
+      "reviewerNotes": "",
+      "promptRawJa": "Какой из следующих знаков обязан быть прикрепленным на автомобиле?",
+      "promptGlossEn": "Which of the following signs is required to be attached to a car?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ru",
+        "batchId": "batch-002",
+        "approvedQid": "q0463",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "options": {
+        "q0463_o1": "B Знак соблюдения дистанции между автомобилями",
+        "q0463_o2": "C Знак указания на опасность",
+        "q0463_o3": "D Знак прохождения государственного технического осмотра",
+        "q0463_o4": "A Заводской знак соответствия автотранспорта"
+      },
+      "optionsRawJa": [
+        "A Заводской знак соответствия автотранспорта",
+        "B Знак соблюдения дистанции между автомобилями",
+        "C Знак указания на опасность",
+        "D Знак прохождения государственного технического осмотра"
+      ],
+      "optionsGlossEn": [
+        "A Factory compliance mark for motor vehicles",
+        "B Sign for maintaining distance between cars",
+        "C Danger indication sign",
+        "D State technical inspection passage mark"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A Заводской знак соответствия автотранспорта",
+          "sourceTextBody": "Заводской знак соответствия автотранспорта",
+          "sourceGlossEn": "A Factory compliance mark for motor vehicles",
+          "canonicalOptionId": "q0463_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "a label of product qualification",
+          "alignmentScore": 0,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B Знак соблюдения дистанции между автомобилями",
+          "sourceTextBody": "Знак соблюдения дистанции между автомобилями",
+          "sourceGlossEn": "B Sign for maintaining distance between cars",
+          "canonicalOptionId": "q0463_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "a label of keeping distance",
+          "alignmentScore": 0.1572420634920635,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C Знак указания на опасность",
+          "sourceTextBody": "Знак указания на опасность",
+          "sourceGlossEn": "C Danger indication sign",
+          "canonicalOptionId": "q0463_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "a label of reminding danger",
+          "alignmentScore": 0.2008139534883721,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D Знак прохождения государственного технического осмотра",
+          "sourceTextBody": "Знак прохождения государственного технического осмотра",
+          "sourceGlossEn": "D State technical inspection passage mark",
+          "canonicalOptionId": "q0463_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "a label of inspection",
+          "alignmentScore": 0.18095238095238092,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A Заводской знак соответствия автотранспорта",
+          "sourceGlossEn": "A Factory compliance mark for motor vehicles",
+          "canonicalOptionId": "q0463_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "a label of product qualification",
+          "alignmentScore": 0,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B Знак соблюдения дистанции между автомобилями",
+          "sourceGlossEn": "B Sign for maintaining distance between cars",
+          "canonicalOptionId": "q0463_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "a label of keeping distance",
+          "alignmentScore": 0.1572420634920635,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C Знак указания на опасность",
+          "sourceGlossEn": "C Danger indication sign",
+          "canonicalOptionId": "q0463_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "a label of reminding danger",
+          "alignmentScore": 0.2008139534883721,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D Знак прохождения государственного технического осмотра",
+          "sourceGlossEn": "D State technical inspection passage mark",
+          "canonicalOptionId": "q0463_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "a label of inspection",
+          "alignmentScore": 0.18095238095238092,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        }
+      ],
+      "localeCorrectOptionKey": "D",
+      "canonicalCorrectOptionId": "q0463_o3",
+      "canonicalCorrectOptionKey": "C",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed during unresolved rescue review on 2026-04-20T02:59:08.791Z; reviewer selected locale key D.",
+      "correctOptionAlignment": {
+        "sourceKey": "D",
+        "canonicalOptionId": "q0463_o3",
+        "canonicalOptionKey": "C",
+        "sourceText": "D Знак прохождения государственного технического осмотра",
+        "sourceGlossEn": "D State technical inspection passage mark",
+        "canonicalOptionText": "a label of inspection",
+        "alignmentScore": 0.18095238095238092,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-20T02:59:08.791Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ru-batch-002-unresolved-decisions.json",
+      "answerKeyReviewerNotes": "",
+      "reviewerSuggestedLocaleCorrectOptionKey": "D",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ru-batch-002-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0203": {
+      "prompt": "Автоинспектор имеет право задержать автомобиль и поставить его на штраф-стоянку, в случае если автомобиль не имеет страховой полис.",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "Screenshot 2026-04-19 at 18.47.44.png",
+      "sourceItemId": "Screenshot 2026-04-19 at 18.47.44.png",
+      "reviewerNotes": "",
+      "promptRawJa": "Автоинспектор имеет право задержать автомобиль и поставить его на штраф-стоянку, в случае если автомобиль не имеет страховой полис.",
+      "promptGlossEn": "A traffic inspector has the right to detain a car and place it in an impound lot if the car does not have an insurance policy.",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "ROW",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ru",
+        "batchId": "batch-002",
+        "approvedQid": "q0203",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "optionsRawJa": [],
+      "optionsGlossEn": [],
+      "localeCorrectOptionKey": null,
+      "canonicalCorrectRow": "R",
+      "canonicalCorrectAnswer": "right / true",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "ROW question; no locale-specific option key applies.",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ru-batch-002-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0313": {
+      "prompt": "При ДТП с имущественным ущербом, не имея при этом личных претензий, следует сфотографировать место ДТП или пометить его.",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "Screenshot 2026-04-19 at 18.47.57 1.png",
+      "sourceItemId": "Screenshot 2026-04-19 at 18.47.57 1.png",
+      "reviewerNotes": "",
+      "promptRawJa": "При ДТП с имущественным ущербом, не имея при этом личных претензий, следует сфотографировать место ДТП или пометить его.",
+      "promptGlossEn": "In an accident with property damage, if there are no personal claims, you should photograph or mark the accident scene.",
+      "correctKeyRaw": "A",
+      "correctAnswerRaw": "Правильно",
+      "canonicalQuestionType": "ROW",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ru",
+        "batchId": "batch-002",
+        "approvedQid": "q0313",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "optionsRawJa": [],
+      "optionsGlossEn": [],
+      "localeCorrectOptionKey": null,
+      "canonicalCorrectRow": "R",
+      "canonicalCorrectAnswer": "right / true",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "ROW question; no locale-specific option key applies.",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ru-batch-002-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0787": {
+      "prompt": "Что означает данный знак?",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "Screenshot 2026-04-19 at 18.47.59.png",
+      "sourceItemId": "Screenshot 2026-04-19 at 18.47.59.png",
+      "reviewerNotes": "",
+      "promptRawJa": "Что означает данный знак?",
+      "promptGlossEn": "What does this sign mean?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ru",
+        "batchId": "batch-002",
+        "approvedQid": "q0787",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "options": {
+        "q0787_o1": "B) Проезд запрещён",
+        "q0787_o2": "C) Замедление хода",
+        "q0787_o3": "D) Въезд с ограничением времени",
+        "q0787_o4": "A) Въезд запрещён"
+      },
+      "optionsRawJa": [
+        "A) Въезд запрещён",
+        "B) Проезд запрещён",
+        "C) Замедление хода",
+        "D) Въезд с ограничением времени"
+      ],
+      "optionsGlossEn": [
+        "A) No entry",
+        "B) Passage prohibited",
+        "C) Slow down",
+        "D) Entry with time restriction"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A) Въезд запрещён",
+          "sourceTextBody": "Въезд запрещён",
+          "sourceGlossEn": "A) No entry",
+          "canonicalOptionId": "q0787_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "no entering 81",
+          "alignmentScore": 0.56,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B) Проезд запрещён",
+          "sourceTextBody": "Проезд запрещён",
+          "sourceGlossEn": "B) Passage prohibited",
+          "canonicalOptionId": "q0787_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "No passing",
+          "alignmentScore": 0.03636363636363637,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C) Замедление хода",
+          "sourceTextBody": "Замедление хода",
+          "sourceGlossEn": "C) Slow down",
+          "canonicalOptionId": "q0787_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "driving at reduced speed",
+          "alignmentScore": 0,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D) Въезд с ограничением времени",
+          "sourceTextBody": "Въезд с ограничением времени",
+          "sourceGlossEn": "D) Entry with time restriction",
+          "canonicalOptionId": "q0787_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "time limit for entering",
+          "alignmentScore": 0.14906832298136644,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A) Въезд запрещён",
+          "sourceGlossEn": "A) No entry",
+          "canonicalOptionId": "q0787_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "no entering 81",
+          "alignmentScore": 0.56,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B) Проезд запрещён",
+          "sourceGlossEn": "B) Passage prohibited",
+          "canonicalOptionId": "q0787_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "No passing",
+          "alignmentScore": 0.03636363636363637,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C) Замедление хода",
+          "sourceGlossEn": "C) Slow down",
+          "canonicalOptionId": "q0787_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "driving at reduced speed",
+          "alignmentScore": 0,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D) Въезд с ограничением времени",
+          "sourceGlossEn": "D) Entry with time restriction",
+          "canonicalOptionId": "q0787_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "time limit for entering",
+          "alignmentScore": 0.14906832298136644,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "B",
+      "canonicalCorrectOptionId": "q0787_o1",
+      "canonicalCorrectOptionKey": "A",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed during unresolved rescue review on 2026-04-20T02:59:08.791Z; reviewer selected locale key B.",
+      "correctOptionAlignment": {
+        "sourceKey": "B",
+        "canonicalOptionId": "q0787_o1",
+        "canonicalOptionKey": "A",
+        "sourceText": "B) Проезд запрещён",
+        "sourceGlossEn": "B) Passage prohibited",
+        "canonicalOptionText": "No passing",
+        "alignmentScore": 0.03636363636363637,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-20T02:59:08.791Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ru-batch-002-unresolved-decisions.json",
+      "answerKeyReviewerNotes": "",
+      "reviewerSuggestedLocaleCorrectOptionKey": "B",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ru-batch-002-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0268": {
+      "prompt": "При крутом повороте или резком спуске максимальная скорость автомобиля не может превышать 40 км/ч.",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "Screenshot 2026-04-19 at 18.48.00 1.png",
+      "sourceItemId": "Screenshot 2026-04-19 at 18.48.00 1.png",
+      "reviewerNotes": "",
+      "promptRawJa": "При крутом повороте или резком спуске максимальная скорость автомобиля не может превышать 40 км/ч.",
+      "promptGlossEn": "When making a sharp turn or steep descent, the maximum speed of a car must not exceed 40 km/h.",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "ROW",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ru",
+        "batchId": "batch-002",
+        "approvedQid": "q0268",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "optionsRawJa": [],
+      "optionsGlossEn": [],
+      "localeCorrectOptionKey": null,
+      "canonicalCorrectRow": "W",
+      "canonicalCorrectAnswer": "wrong / false",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "ROW question; no locale-specific option key applies.",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ru-batch-002-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0692": {
+      "prompt": "Данный ряд жестов регулировщика относится к:",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "Screenshot 2026-04-19 at 18.48.01.png",
+      "sourceItemId": "Screenshot 2026-04-19 at 18.48.01.png",
+      "reviewerNotes": "",
+      "promptRawJa": "Данный ряд жестов регулировщика относится к:",
+      "promptGlossEn": "This series of gestures by the traffic controller refers to:",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ru",
+        "batchId": "batch-002",
+        "approvedQid": "q0692",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "options": {
+        "q0692_o1": "B) Сигналу снижения скорости",
+        "q0692_o2": "A) Сигналу остановки на обочине",
+        "q0692_o3": "C) Сигналу остановки",
+        "q0692_o4": "D) Сигналу поворота направо"
+      },
+      "optionsRawJa": [
+        "A) Сигналу остановки на обочине",
+        "B) Сигналу снижения скорости",
+        "C) Сигналу остановки",
+        "D) Сигналу поворота направо"
+      ],
+      "optionsGlossEn": [
+        "Signal to stop on the shoulder",
+        "Signal to reduce speed",
+        "Signal to stop",
+        "Signal to turn right"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A) Сигналу остановки на обочине",
+          "sourceTextBody": "Сигналу остановки на обочине",
+          "sourceGlossEn": "Signal to stop on the shoulder",
+          "canonicalOptionId": "q0692_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "pull over",
+          "alignmentScore": 0,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B) Сигналу снижения скорости",
+          "sourceTextBody": "Сигналу снижения скорости",
+          "sourceGlossEn": "Signal to reduce speed",
+          "canonicalOptionId": "q0692_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "reduce speed and pass slowly",
+          "alignmentScore": 0.17333333333333334,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C) Сигналу остановки",
+          "sourceTextBody": "Сигналу остановки",
+          "sourceGlossEn": "Signal to stop",
+          "canonicalOptionId": "q0692_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "stop",
+          "alignmentScore": 0.32380952380952377,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D) Сигналу поворота направо",
+          "sourceTextBody": "Сигналу поворота направо",
+          "sourceGlossEn": "Signal to turn right",
+          "canonicalOptionId": "q0692_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "turn right",
+          "alignmentScore": 0.38974358974358975,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A) Сигналу остановки на обочине",
+          "sourceGlossEn": "Signal to stop on the shoulder",
+          "canonicalOptionId": "q0692_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "pull over",
+          "alignmentScore": 0,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B) Сигналу снижения скорости",
+          "sourceGlossEn": "Signal to reduce speed",
+          "canonicalOptionId": "q0692_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "reduce speed and pass slowly",
+          "alignmentScore": 0.17333333333333334,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C) Сигналу остановки",
+          "sourceGlossEn": "Signal to stop",
+          "canonicalOptionId": "q0692_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "stop",
+          "alignmentScore": 0.32380952380952377,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D) Сигналу поворота направо",
+          "sourceGlossEn": "Signal to turn right",
+          "canonicalOptionId": "q0692_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "turn right",
+          "alignmentScore": 0.38974358974358975,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        }
+      ],
+      "localeCorrectOptionKey": "D",
+      "canonicalCorrectOptionId": "q0692_o4",
+      "canonicalCorrectOptionKey": "D",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed during unresolved rescue review on 2026-04-20T02:59:08.791Z; reviewer selected locale key D.",
+      "correctOptionAlignment": {
+        "sourceKey": "D",
+        "canonicalOptionId": "q0692_o4",
+        "canonicalOptionKey": "D",
+        "sourceText": "D) Сигналу поворота направо",
+        "sourceGlossEn": "Signal to turn right",
+        "canonicalOptionText": "turn right",
+        "alignmentScore": 0.38974358974358975,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-20T02:59:08.791Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ru-batch-002-unresolved-decisions.json",
+      "answerKeyReviewerNotes": "",
+      "reviewerSuggestedLocaleCorrectOptionKey": "D",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ru-batch-002-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    }
+  }
+}

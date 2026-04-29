@@ -1,0 +1,107 @@
+# Production Merge Report · ru batch-08
+
+- Dataset: 2023-test1
+- Qids merged: 44
+- Production translated count before merge: 283
+- Production translated count after merge: 326
+- Production overlap count: 1
+- Runtime support already existed: yes
+- Runtime support added: no
+- Ready for next batch: yes
+
+## Files Changed
+- public/qbank/2023-test1/translations.ru.json
+- qbank-tools/generated/reports/production-merge-ru-batch-08.json
+- qbank-tools/generated/reports/production-merge-ru-batch-08.md
+
+## Qids Merged
+- q0014
+- q0038
+- q0076
+- q0129
+- q0140
+- q0162
+- q0189
+- q0207
+- q0212
+- q0256
+- q0269
+- q0330
+- q0342
+- q0364
+- q0372
+- q0373
+- q0378
+- q0460
+- q0475
+- q0493
+- q0498
+- q0527
+- q0540
+- q0548
+- q0568
+- q0571
+- q0583
+- q0590
+- q0606
+- q0609
+- q0619
+- q0622
+- q0625
+- q0628
+- q0631
+- q0636
+- q0680
+- q0706
+- q0707
+- q0722
+- q0748
+- q0784
+- q0830
+- q0859
+
+## Validation
+- q0014: ROW, order=ok, key=n/a, mapped=ok
+- q0038: ROW, order=ok, key=n/a, mapped=ok
+- q0076: ROW, order=ok, key=n/a, mapped=ok
+- q0129: MCQ, order=ok, key=D, mapped=ok
+- q0140: MCQ, order=ok, key=A, mapped=ok
+- q0162: MCQ, order=ok, key=D, mapped=ok
+- q0189: ROW, order=ok, key=n/a, mapped=ok
+- q0207: ROW, order=ok, key=n/a, mapped=ok
+- q0212: ROW, order=ok, key=n/a, mapped=ok
+- q0256: ROW, order=ok, key=n/a, mapped=ok
+- q0269: ROW, order=ok, key=n/a, mapped=ok
+- q0330: ROW, order=ok, key=n/a, mapped=ok
+- q0342: ROW, order=ok, key=n/a, mapped=ok
+- q0364: MCQ, order=ok, key=C, mapped=ok
+- q0372: MCQ, order=ok, key=C, mapped=ok
+- q0373: MCQ, order=ok, key=A, mapped=ok
+- q0378: MCQ, order=ok, key=B, mapped=ok
+- q0460: MCQ, order=ok, key=B, mapped=ok
+- q0475: MCQ, order=ok, key=C, mapped=ok
+- q0493: MCQ, order=ok, key=B, mapped=ok
+- q0498: MCQ, order=ok, key=A, mapped=ok
+- q0527: ROW, order=ok, key=n/a, mapped=ok
+- q0540: ROW, order=ok, key=n/a, mapped=ok
+- q0548: ROW, order=ok, key=n/a, mapped=ok
+- q0568: ROW, order=ok, key=n/a, mapped=ok
+- q0571: ROW, order=ok, key=n/a, mapped=ok
+- q0583: MCQ, order=ok, key=D, mapped=ok
+- q0590: MCQ, order=ok, key=B, mapped=ok
+- q0606: MCQ, order=ok, key=C, mapped=ok
+- q0609: MCQ, order=ok, key=A, mapped=ok
+- q0619: MCQ, order=ok, key=B, mapped=ok
+- q0622: MCQ, order=ok, key=B, mapped=ok
+- q0625: MCQ, order=ok, key=C, mapped=ok
+- q0628: MCQ, order=ok, key=D, mapped=ok
+- q0631: ROW, order=ok, key=n/a, mapped=ok
+- q0636: ROW, order=ok, key=n/a, mapped=ok
+- q0680: MCQ, order=ok, key=A, mapped=ok
+- q0706: MCQ, order=ok, key=A, mapped=ok
+- q0707: MCQ, order=ok, key=C, mapped=ok
+- q0722: MCQ, order=ok, key=B, mapped=ok
+- q0748: MCQ, order=ok, key=C, mapped=ok
+- q0784: MCQ, order=ok, key=D, mapped=ok
+- q0830: MCQ, order=ok, key=A, mapped=ok
+- q0859: MCQ, order=ok, key=C, mapped=ok

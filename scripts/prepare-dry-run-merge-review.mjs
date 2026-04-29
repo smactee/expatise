@@ -191,7 +191,7 @@ const reportJson = {
   productionFilesUnchanged,
   productionFiles: productionPaths.map((filePath) => path.relative(process.cwd(), filePath)),
   safeToMergeNextStep: blockers.length === 0,
-  note: "This dry-run merge review covers the qids present in the staged Japanese preview file.",
+  note: "This dry-run merge review covers the qids present in the staged preview file.",
 };
 
 await writeJson(reportJsonPath, reportJson);

@@ -12,6 +12,7 @@ import {
   ensurePipelineDirs,
   fileExists,
   getBatchFiles,
+  getDatasetPaths,
   getNewQuestionFiles,
   loadQbankContext,
   parseArgs,
@@ -53,7 +54,9 @@ const fullPreviewPath = path.join(STAGING_DIR, `translations.${lang}.${batchId}.
 const fullDryRunPath = path.join(STAGING_DIR, `translations.${lang}.${batchId}.full.merge-dry-run.json`);
 const fullReportPath = path.join(REPORTS_DIR, `full-batch-merge-review-${lang}-${batchId}.json`);
 const workbenchApplyReportPath = path.join(REPORTS_DIR, `apply-workbench-decisions-${lang}-${batchId}.json`);
-const questionsPath = path.join(ROOT, "public", "qbank", dataset, "questions.json");
+const datasetPaths = getDatasetPaths(dataset);
+const questionsPath = datasetPaths.questionsPath;
+const rawQuestionsPath = datasetPaths.rawQuestionsPath;
 const explanationReportPath = path.join(REPORTS_DIR, `apply-workbench-explanations-${lang}-${batchId}.json`);
 
 const matchedDoc = readJson(batchFiles.matchedPath);
@@ -329,7 +332,7 @@ runNodeScript("scripts/apply-unresolved-decisions.mjs", [
 await applyNewQuestionOverrides(newQuestionFiles.candidatesPath, newQuestionOverrides);
 
 const explanationApplyResult = await applySourceExplanationUpdates({
-  questionsPath,
+  targetPaths: [rawQuestionsPath, questionsPath],
   reportPath: explanationReportPath,
   sourceWorkbenchDecisionsPath: workbenchDecisionsPath,
   lang,
@@ -369,6 +372,7 @@ await writeJson(workbenchApplyReportPath, {
   fullDryRunPath: path.relative(process.cwd(), fullDryRunPath),
   fullReportPath: path.relative(process.cwd(), fullReportPath),
   questionsPath: path.relative(process.cwd(), questionsPath),
+  rawQuestionsPath: path.relative(process.cwd(), rawQuestionsPath),
   explanationReportPath: path.relative(process.cwd(), explanationReportPath),
   counts: {
     autoMatched: counts.autoMatched,
@@ -395,14 +399,25 @@ console.log(
 
 function normalizeWorkbenchDecision(item) {
   const deleteQuestion = item?.deleteQuestion === true;
+  const itemLabel =
+    normalizeText(item?.itemId) ??
+    normalizeText(item?.sourceImage) ??
+    normalizeText(item?.id) ??
+    "unknown-item";
   return {
     id: String(item?.id ?? "").trim(),
     section: String(item?.section ?? "").trim(),
     itemId: String(item?.itemId ?? "").trim() || null,
     sourceImage: String(item?.sourceImage ?? "").trim() || null,
-    qid: normalizeText(item?.qid),
-    approvedQid: deleteQuestion ? null : normalizeText(item?.approvedQid),
-    initialSuggestedQid: normalizeText(item?.initialSuggestedQid),
+    qid: normalizeWorkbenchQid(item?.qid, { fieldName: "qid", itemLabel }),
+    approvedQid:
+      deleteQuestion
+        ? null
+        : normalizeWorkbenchQid(item?.approvedQid, { fieldName: "approvedQid", itemLabel }),
+    initialSuggestedQid: normalizeWorkbenchQid(item?.initialSuggestedQid, {
+      fieldName: "initialSuggestedQid",
+      itemLabel,
+    }),
     createNewQuestion: deleteQuestion ? false : item?.createNewQuestion === true,
     keepUnresolved: deleteQuestion ? false : item?.keepUnresolved === true,
     deleteQuestion,
@@ -508,6 +523,25 @@ function normalizeSubtopics(value) {
 function normalizeText(value) {
   const text = String(value ?? "").replace(/\s+/g, " ").trim();
   return text || null;
+}
+
+function normalizeWorkbenchQid(value, { fieldName = "qid", itemLabel = "unknown-item" } = {}) {
+  const text = normalizeText(value);
+  if (!text) {
+    return null;
+  }
+
+  const match = text.match(/^q?(\d+)$/i);
+  if (!match) {
+    throw new Error(`Invalid ${fieldName} for ${itemLabel}: ${text}`);
+  }
+
+  const number = Number.parseInt(match[1], 10);
+  if (!Number.isSafeInteger(number) || number <= 0 || number > 9999) {
+    throw new Error(`Invalid ${fieldName} for ${itemLabel}: ${text}`);
+  }
+
+  return `q${String(number).padStart(4, "0")}`;
 }
 
 function normalizeExplanationText(value, options = {}) {
@@ -626,7 +660,7 @@ function recordSourceExplanationUpdate(targetMap, item, qid) {
 }
 
 async function applySourceExplanationUpdates({
-  questionsPath,
+  targetPaths,
   reportPath,
   sourceWorkbenchDecisionsPath,
   lang: sourceLang,
@@ -634,63 +668,94 @@ async function applySourceExplanationUpdates({
   dataset: sourceDataset,
   updates,
 }) {
-  const doc = readJson(questionsPath);
-  const isArray = Array.isArray(doc);
-  const questions = isArray ? doc : Array.isArray(doc?.questions) ? doc.questions : null;
+  const targets = targetPaths.map((filePath) => {
+    const doc = readJson(filePath);
+    const isArray = Array.isArray(doc);
+    const questions = isArray ? doc : Array.isArray(doc?.questions) ? doc.questions : null;
 
-  if (!questions) {
-    throw new Error(`questions.json does not contain a questions array: ${path.relative(process.cwd(), questionsPath)}`);
-  }
+    if (!questions) {
+      throw new Error(`questions file does not contain a questions array: ${path.relative(process.cwd(), filePath)}`);
+    }
 
-  const byId = new Map(
-    questions.map((question, index) => [normalizeText(question?.id), { index, question }]),
-  );
+    return {
+      filePath,
+      doc,
+      isArray,
+      questions,
+      byId: new Map(
+        questions.map((question, index) => [normalizeText(question?.id), { index, question }]),
+      ),
+      changed: false,
+      updatedCount: 0,
+      unchangedCount: 0,
+    };
+  });
   const items = [];
   const updatedQids = [];
   let updatedCount = 0;
   let unchangedCount = 0;
 
   for (const [qid, update] of [...updates.entries()].sort(([a], [b]) => a.localeCompare(b))) {
-    const current = byId.get(qid);
-    if (!current) {
-      throw new Error(`Question id not found in questions.json: ${qid}`);
-    }
+    let anyUpdated = false;
+    const targetResults = [];
 
-    const existingExplanation = normalizeExplanationText(current.question?.explanation, { preserveEmpty: true }) ?? "";
-    if (existingExplanation === update.sourceExplanation) {
-      unchangedCount += 1;
-      items.push({
-        qid,
-        itemId: update.itemId,
-        sourceImage: update.sourceImage,
-        section: update.section,
-        action: "unchanged",
-        sourceExplanation: update.sourceExplanation,
+    for (const target of targets) {
+      const current = target.byId.get(qid);
+      if (!current) {
+        throw new Error(`Question id not found in ${path.relative(process.cwd(), target.filePath)}: ${qid}`);
+      }
+
+      const existingExplanation = normalizeExplanationText(current.question?.explanation, { preserveEmpty: true }) ?? "";
+      if (existingExplanation === update.sourceExplanation) {
+        target.unchangedCount += 1;
+        targetResults.push({
+          filePath: path.relative(process.cwd(), target.filePath),
+          action: "unchanged",
+          previousExplanation: existingExplanation,
+        });
+        continue;
+      }
+
+      target.questions[current.index] = {
+        ...current.question,
+        explanation: update.sourceExplanation,
+      };
+      target.changed = true;
+      target.updatedCount += 1;
+      anyUpdated = true;
+      targetResults.push({
+        filePath: path.relative(process.cwd(), target.filePath),
+        action: "updated",
+        previousExplanation: existingExplanation,
       });
-      continue;
     }
 
-    questions[current.index] = {
-      ...current.question,
-      explanation: update.sourceExplanation,
-    };
-    updatedCount += 1;
-    updatedQids.push(qid);
+    if (anyUpdated) {
+      updatedCount += 1;
+      updatedQids.push(qid);
+    } else {
+      unchangedCount += 1;
+    }
+
     items.push({
       qid,
       itemId: update.itemId,
       sourceImage: update.sourceImage,
       section: update.section,
-      action: "updated",
-      previousExplanation: existingExplanation,
+      action: anyUpdated ? "updated" : "unchanged",
       sourceExplanation: update.sourceExplanation,
+      targets: targetResults,
     });
   }
 
-  if (updatedCount > 0) {
+  for (const target of targets) {
+    if (!target.changed) {
+      continue;
+    }
+
     await writeJson(
-      questionsPath,
-      isArray ? questions : { ...doc, questions },
+      target.filePath,
+      target.isArray ? target.questions : { ...target.doc, questions: target.questions },
     );
   }
 
@@ -700,11 +765,16 @@ async function applySourceExplanationUpdates({
     batchId: sourceBatchId,
     dataset: sourceDataset,
     sourceWorkbenchDecisionsPath: path.relative(process.cwd(), sourceWorkbenchDecisionsPath),
-    questionsPath: path.relative(process.cwd(), questionsPath),
+    targetPaths: targets.map((target) => path.relative(process.cwd(), target.filePath)),
     decidedCount: updates.size,
     updatedCount,
     unchangedCount,
     updatedQids,
+    targetSummaries: targets.map((target) => ({
+      filePath: path.relative(process.cwd(), target.filePath),
+      updatedCount: target.updatedCount,
+      unchangedCount: target.unchangedCount,
+    })),
     items,
   });
 
@@ -713,6 +783,11 @@ async function applySourceExplanationUpdates({
     updatedCount,
     unchangedCount,
     updatedQids,
+    targetSummaries: targets.map((target) => ({
+      filePath: path.relative(process.cwd(), target.filePath),
+      updatedCount: target.updatedCount,
+      unchangedCount: target.unchangedCount,
+    })),
   };
 }
 

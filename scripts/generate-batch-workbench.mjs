@@ -116,6 +116,14 @@ const sourceItems = [
   ...(shouldIncludeSection("review-needed", includedSections) ? normalizedReviewItems : []),
   ...(shouldIncludeSection("unresolved", includedSections) ? normalizedUnresolvedItems : []),
 ];
+const notebookSuggestionsPath = path.join(STAGING_DIR, `${lang}-${batchId}-notebooklm-suggestions.json`);
+const combinedRecommendationsPath = path.join(STAGING_DIR, `${lang}-${batchId}-combined-recommendations.json`);
+const notebookSuggestionsDoc = fileExists(notebookSuggestionsPath) ? readJson(notebookSuggestionsPath) : null;
+const combinedRecommendationsDoc = fileExists(combinedRecommendationsPath) ? readJson(combinedRecommendationsPath) : null;
+const enrichedSourceItems = enrichSourceItemsWithNotebookLm(sourceItems, {
+  notebookSuggestionsDoc,
+  combinedRecommendationsDoc,
+});
 
 const defaultDecisions = {
   generatedAt: stableNow(),
@@ -126,12 +134,15 @@ const defaultDecisions = {
     matched: path.relative(process.cwd(), matchedPath),
     reviewNeeded: path.relative(process.cwd(), reviewNeededPath),
     unresolved: path.relative(process.cwd(), unresolvedPath),
+    notebookSuggestions: notebookSuggestionsDoc ? path.relative(process.cwd(), notebookSuggestionsPath) : null,
+    combinedRecommendations: combinedRecommendationsDoc ? path.relative(process.cwd(), combinedRecommendationsPath) : null,
   },
-  items: sourceItems.map(buildDefaultDecision),
+  items: enrichedSourceItems.map(buildDefaultDecision),
 };
 
 const existingDecisions = fileExists(decisionsPath) ? readJson(decisionsPath) : null;
 const mergedDecisions = mergeExistingDecisions(defaultDecisions, existingDecisions);
+const displayPlan = buildWorkbenchDisplayPlan(enrichedSourceItems, mergedDecisions.items);
 
 await writeJson(decisionsPath, mergedDecisions);
 await writeText(htmlPath, buildHtml({
@@ -142,16 +153,18 @@ await writeText(htmlPath, buildHtml({
   workbenchDescription,
   visibleSections: includedSections,
   counts: {
-    autoMatched: shouldIncludeSection("auto-matched", includedSections) ? normalizedAutoMatchedItems.length : 0,
-    reviewNeeded: shouldIncludeSection("review-needed", includedSections) ? normalizedReviewItems.length : 0,
-    unresolved: shouldIncludeSection("unresolved", includedSections) ? normalizedUnresolvedItems.length : 0,
+    autoMatched: displayPlan.counts.autoMatched,
+    preserved: displayPlan.counts.preserved,
+    reviewNeeded: displayPlan.counts.reviewNeeded,
+    unresolved: displayPlan.counts.unresolved,
     answerKeyConfirmations:
       shouldIncludeSection("auto-matched", includedSections)
         ? normalizedAutoMatchedItems.filter((item) => item.answerKeyNeedsManualConfirmation === true).length
         : 0,
   },
-  items: sourceItems,
+  items: enrichedSourceItems,
   decisions: mergedDecisions.items,
+  displaySectionById: displayPlan.sectionById,
   decisionsPath: path.relative(REPORTS_DIR, decisionsPath).split(path.sep).join("/"),
   decisionsFileName,
   storageKey,
@@ -161,6 +174,11 @@ await writeText(htmlPath, buildHtml({
   questionExplanationByQid: Object.fromEntries(
     context.questions.map((question) => [question.qid, typeof question.explanation === "string" ? question.explanation : ""]),
   ),
+  topicCatalog: buildTopicCatalog(context.questions),
+  notebookArtifacts: {
+    suggestionsPath: notebookSuggestionsDoc ? path.relative(REPORTS_DIR, notebookSuggestionsPath).split(path.sep).join("/") : null,
+    combinedRecommendationsPath: combinedRecommendationsDoc ? path.relative(REPORTS_DIR, combinedRecommendationsPath).split(path.sep).join("/") : null,
+  },
 }));
 
 console.log(`Wrote ${path.relative(process.cwd(), htmlPath)} and ${path.relative(process.cwd(), decisionsPath)}.`);
@@ -193,7 +211,84 @@ function buildDefaultDecision(item) {
     base.confirmedCorrectOptionKey = autoMatchedLocalAnswerKey;
   }
 
+  if (
+    !base.confirmedCorrectOptionKey &&
+    item.section === "review-needed" &&
+    normalizeChoiceKey(item.suggestedLocalAnswerKey) &&
+    item.suggestedLocalAnswerKeyNeedsManualConfirmation !== true
+  ) {
+    base.confirmedCorrectOptionKey = normalizeChoiceKey(item.suggestedLocalAnswerKey);
+  }
+
   return base;
+}
+
+function displayLabelFromSlug(slug) {
+  return String(slug ?? "")
+    .split(":")
+    .pop()
+    .split("-")
+    .filter(Boolean)
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(" ");
+}
+
+function buildTopicCatalog(questions) {
+  const topics = new Set();
+  const subtopics = new Set();
+
+  for (const question of questions) {
+    const tags = question?.tags ?? {};
+    for (const topic of [tags.truthTopic, tags.weightedTopic].filter(Boolean)) {
+      topics.add(topic);
+    }
+
+    for (const subtopic of [
+      ...(Array.isArray(tags.truthSubtopics) ? tags.truthSubtopics : []),
+      ...(Array.isArray(tags.weightedSubtopics) ? tags.weightedSubtopics : []),
+    ].filter(Boolean)) {
+      subtopics.add(subtopic);
+      const [topic] = String(subtopic).split(":");
+      if (topic) {
+        topics.add(topic);
+      }
+    }
+  }
+
+  return {
+    topics: [...topics].sort().map((slug) => ({
+      slug,
+      label: displayLabelFromSlug(slug),
+    })),
+    subtopics: [...subtopics].sort().map((slug) => ({
+      slug,
+      topic: String(slug).includes(":") ? String(slug).split(":")[0] : null,
+      label: displayLabelFromSlug(slug),
+    })),
+  };
+}
+
+function enrichSourceItemsWithNotebookLm(items, { notebookSuggestionsDoc, combinedRecommendationsDoc }) {
+  const suggestionsByItemId = new Map(
+    (Array.isArray(notebookSuggestionsDoc?.items) ? notebookSuggestionsDoc.items : [])
+      .filter((item) => item?.itemId)
+      .map((item) => [String(item.itemId), item]),
+  );
+  const combinedByItemId = new Map(
+    (Array.isArray(combinedRecommendationsDoc?.items) ? combinedRecommendationsDoc.items : [])
+      .filter((item) => item?.itemId)
+      .map((item) => [String(item.itemId), item]),
+  );
+
+  return items.map((item) => {
+    const combined = combinedByItemId.get(String(item.itemId ?? "")) ?? null;
+    return {
+      ...item,
+      notebookLmSuggestion: suggestionsByItemId.get(String(item.itemId ?? "")) ?? null,
+      combinedRecommendation: combined?.combinedRecommendation ?? null,
+      combinedRerankedCandidates: sanitizeWorkbenchDiagnostics(combined?.rerankedCandidates ?? null),
+    };
+  });
 }
 
 function deriveAutoMatchedLocalAnswerKeyDefault(item) {
@@ -267,34 +362,59 @@ function mergeExistingDecisions(defaultDoc, existingDoc) {
   }
 
   const byId = new Map(existingDoc.items.map((item) => [String(item?.id ?? ""), item]));
+  const byItemId = buildUniqueExistingDecisionMap(existingDoc.items, "itemId");
   return {
     ...defaultDoc,
     generatedAt: stableNow(),
     items: defaultDoc.items.map((item) => {
-      const previous = byId.get(item.id);
+      const previous =
+        byId.get(item.id) ??
+        (normalizeText(item.itemId) ? byItemId.get(normalizeText(item.itemId)) : null);
       if (!previous || typeof previous !== "object") {
         return item;
       }
 
+      const deleteQuestion = previous.deleteQuestion === true;
+      const createNewQuestion = deleteQuestion ? false : previous.createNewQuestion === true;
+      const useCurrentStagedAnswerKey = createNewQuestion ? false : previous.useCurrentStagedAnswerKey === true;
+      const explicitApprovedQid =
+        deleteQuestion || createNewQuestion
+          ? null
+          : normalizeWorkbenchApprovedQidValue(previous.approvedQid);
+      const keepUnresolved =
+        deleteQuestion || createNewQuestion || explicitApprovedQid
+          ? false
+          : previous.keepUnresolved === true;
+
       return {
         ...item,
-        approvedQid: previous.deleteQuestion === true ? null : normalizeText(previous.approvedQid) ?? item.approvedQid,
-        createNewQuestion: previous.deleteQuestion === true ? false : previous.createNewQuestion === true,
-        keepUnresolved: previous.deleteQuestion === true ? false : previous.keepUnresolved === true,
-        deleteQuestion: previous.deleteQuestion === true,
-        confirmedCorrectOptionKey: normalizeChoiceKey(previous.confirmedCorrectOptionKey) ?? item.confirmedCorrectOptionKey,
+        approvedQid: keepUnresolved ? null : explicitApprovedQid ?? item.approvedQid,
+        createNewQuestion,
+        keepUnresolved,
+        deleteQuestion,
+        confirmedCorrectOptionKey:
+          createNewQuestion
+            ? null
+            : useCurrentStagedAnswerKey
+              ? null
+              : normalizeChoiceKey(previous.confirmedCorrectOptionKey) ?? item.confirmedCorrectOptionKey,
         newQuestionLocalAnswerKey:
-          normalizeChoiceKey(previous.newQuestionLocalAnswerKey) ??
-          (
-            previous.createNewQuestion === true
-              ? normalizeChoiceKey(previous.confirmedCorrectOptionKey)
-              : null
-          ) ??
-          item.newQuestionLocalAnswerKey,
-        answerKeyUnknown: previous.answerKeyUnknown === true || previous.unknown === true,
-        currentStagedLocaleCorrectOptionKey:
-          normalizeChoiceKey(previous.currentStagedLocaleCorrectOptionKey) ?? item.currentStagedLocaleCorrectOptionKey,
-        useCurrentStagedAnswerKey: previous.useCurrentStagedAnswerKey === true,
+          createNewQuestion
+            ? (
+                normalizeChoiceKey(previous.newQuestionLocalAnswerKey) ??
+                (
+                  previous.createNewQuestion === true
+                    ? normalizeChoiceKey(previous.confirmedCorrectOptionKey)
+                    : null
+                ) ??
+                item.newQuestionLocalAnswerKey
+              )
+            : item.newQuestionLocalAnswerKey,
+        answerKeyUnknown:
+          createNewQuestion
+            ? false
+            : previous.answerKeyUnknown === true || previous.unknown === true,
+        useCurrentStagedAnswerKey,
         reviewerNotes: normalizeText(previous.reviewerNotes) ?? "",
         sourceExplanation: normalizeEditableText(previous.sourceExplanation, { preserveEmpty: true }) ?? item.sourceExplanation,
         newQuestionProvisionalTopic: normalizeText(previous.newQuestionProvisionalTopic) ?? item.newQuestionProvisionalTopic,
@@ -302,6 +422,91 @@ function mergeExistingDecisions(defaultDoc, existingDoc) {
       };
     }),
   };
+}
+
+function buildUniqueExistingDecisionMap(items, key) {
+  const map = new Map();
+  const duplicates = new Set();
+
+  for (const item of items) {
+    const value = normalizeText(item?.[key]);
+    if (!value) {
+      continue;
+    }
+
+    if (map.has(value)) {
+      duplicates.add(value);
+      continue;
+    }
+
+    map.set(value, item);
+  }
+
+  for (const value of duplicates) {
+    map.delete(value);
+  }
+
+  return map;
+}
+
+function buildWorkbenchDisplayPlan(items, decisions) {
+  const decisionsById = new Map(
+    (Array.isArray(decisions) ? decisions : []).map((item) => [String(item?.id ?? ""), item]),
+  );
+  const counts = {
+    autoMatched: 0,
+    preserved: 0,
+    reviewNeeded: 0,
+    unresolved: 0,
+  };
+  const sectionById = {};
+
+  for (const item of items) {
+    const displaySection = determineWorkbenchDisplaySection(item, decisionsById.get(item.id));
+    sectionById[item.id] = displaySection;
+
+    if (displaySection === "auto-matched") {
+      counts.autoMatched += 1;
+      continue;
+    }
+
+    if (displaySection === "preserved") {
+      counts.preserved += 1;
+      continue;
+    }
+
+    if (displaySection === "review-needed") {
+      counts.reviewNeeded += 1;
+      continue;
+    }
+
+    if (displaySection === "unresolved") {
+      counts.unresolved += 1;
+    }
+  }
+
+  return { counts, sectionById };
+}
+
+function determineWorkbenchDisplaySection(item, decision) {
+  if (!item || item.section === "auto-matched" || item.section === "answer-key") {
+    return item?.section ?? "review-needed";
+  }
+
+  const approvedQid = normalizeWorkbenchApprovedQidValue(decision?.approvedQid);
+  const createNewQuestion = decision?.createNewQuestion === true;
+  const deleteQuestion = decision?.deleteQuestion === true;
+  const keepUnresolved = decision?.keepUnresolved === true;
+
+  if ((item.section === "review-needed" || item.section === "unresolved") && (approvedQid || createNewQuestion || deleteQuestion)) {
+    return "preserved";
+  }
+
+  if ((item.section === "review-needed" || item.section === "unresolved") && keepUnresolved) {
+    return "unresolved";
+  }
+
+  return item.section;
 }
 
 function normalizeSubtopics(value, fallback = []) {
@@ -342,6 +547,9 @@ function normalizeWorkbenchReviewItem(item, { section, index, batchDir, question
     candidateSetLabel: item.analysis?.candidateImageParityMode ?? inferCandidateSetLabel(item.hasImage),
     initialSuggestedQid,
     currentStagedLocaleCorrectOptionKey: initialSuggestedPreview?.localeCorrectOptionKey ?? null,
+    suggestedLocalAnswerKey: initialSuggestedPreview?.localeCorrectOptionKey ?? null,
+    suggestedLocalAnswerKeyNeedsManualConfirmation: initialSuggestedPreview?.previewEntry?.answerKeyNeedsManualConfirmation === true,
+    suggestedLocalAnswerKeyReason: initialSuggestedPreview?.previewEntry?.answerKeyConfirmationReason ?? null,
     effectiveQuestionType: item.effectiveQuestionType ?? item.analysis?.effectiveQuestionType ?? item.analysis?.declaredQuestionType ?? null,
     promptRawJa: item.promptRawJa ?? item.localizedText?.prompt ?? null,
     promptGlossEn: item.promptGlossEn ?? item.translatedText?.prompt ?? null,
@@ -357,7 +565,7 @@ function normalizeWorkbenchReviewItem(item, { section, index, batchDir, question
     topicSignals: Array.isArray(item.topicSignals) ? item.topicSignals : [],
     sourceConceptSlots: item.sourceConceptSlots ?? null,
     reason: item.reason ?? null,
-    analysis: item.analysis ?? null,
+    analysis: sanitizeWorkbenchDiagnostics(item.analysis),
     recommendedAction: "needs-existing-qid-review",
     topCandidates: topCandidates.map((candidate) => normalizeCandidate(candidate, topScore, questionMap)),
   };
@@ -387,6 +595,9 @@ function normalizeWorkbenchAutoMatchedItem(item, { section, index, batchDir, que
     candidateSetLabel: item.analysis?.candidateImageParityMode ?? inferCandidateSetLabel(item.hasImage),
     initialSuggestedQid: matchedQid,
     currentStagedLocaleCorrectOptionKey: staged?.localeCorrectOptionKey ?? null,
+    suggestedLocalAnswerKey: staged?.localeCorrectOptionKey ?? null,
+    suggestedLocalAnswerKeyNeedsManualConfirmation: staged?.previewEntry?.answerKeyNeedsManualConfirmation === true,
+    suggestedLocalAnswerKeyReason: staged?.previewEntry?.answerKeyConfirmationReason ?? null,
     canonicalCorrectOptionText: matchedQuestion?.correctAnswer?.correctOptionText ?? null,
     answerKeyNeedsManualConfirmation: staged?.answerKeyNeedsManualConfirmation === true,
     answerKeyConfirmationReason: staged?.answerKeyConfirmationReason ?? null,
@@ -405,7 +616,7 @@ function normalizeWorkbenchAutoMatchedItem(item, { section, index, batchDir, que
     topicSignals: Array.isArray(item.topicSignals) ? item.topicSignals : [],
     sourceConceptSlots: item.sourceConceptSlots ?? null,
     reason: item.reason ?? null,
-    analysis: item.analysis ?? null,
+    analysis: sanitizeWorkbenchDiagnostics(item.analysis),
     recommendedAction: "quick-review-auto-match",
     topCandidates: topCandidates.map((candidate) => normalizeCandidate(candidate, topScore, questionMap)),
   };
@@ -434,6 +645,9 @@ function normalizeWorkbenchUnresolvedItem(item, { section, index, batchDir, ques
       initialSuggestedPreview?.localeCorrectOptionKey ??
       item.currentStagedLocaleCorrectOptionKey ??
       null,
+    suggestedLocalAnswerKey: initialSuggestedPreview?.localeCorrectOptionKey ?? null,
+    suggestedLocalAnswerKeyNeedsManualConfirmation: initialSuggestedPreview?.previewEntry?.answerKeyNeedsManualConfirmation === true,
+    suggestedLocalAnswerKeyReason: initialSuggestedPreview?.previewEntry?.answerKeyConfirmationReason ?? null,
     defaultCreateNewQuestion: item.defaultCreateNewQuestion === true,
     effectiveQuestionType: item.effectiveQuestionType ?? item.analysis?.effectiveQuestionType ?? item.analysis?.declaredQuestionType ?? null,
     promptRawJa: item.promptRawJa ?? null,
@@ -450,7 +664,7 @@ function normalizeWorkbenchUnresolvedItem(item, { section, index, batchDir, ques
     topicSignals: Array.isArray(item.topicSignals) ? item.topicSignals : [],
     sourceConceptSlots: item.sourceConceptSlots ?? null,
     reason: item.reason ?? null,
-    analysis: item.analysis ?? null,
+    analysis: sanitizeWorkbenchDiagnostics(item.analysis),
     sourceBatchId: item.sourceBatchId ?? null,
     backlogKind: item.backlogKind ?? null,
     backlogStatus: item.backlogStatus ?? null,
@@ -517,9 +731,68 @@ function normalizeWorkbenchAnswerKeyItem(item, { index, batchDir, questionMap })
   };
 }
 
+function resolveQuestionImageSrc(question) {
+  const currentAssetSrc = normalizeText(question?.image?.currentAssetSrc);
+  if (currentAssetSrc) {
+    return currentAssetSrc;
+  }
+
+  const imageAsset = Array.isArray(question?.image?.assets)
+    ? question.image.assets.find((asset) => normalizeText(asset?.src))
+    : null;
+  if (imageAsset) {
+    return normalizeText(imageAsset.src);
+  }
+
+  const rawAsset = Array.isArray(question?.assets)
+    ? question.assets.find((asset) => asset?.kind === "image" && normalizeText(asset?.src))
+    : null;
+  return normalizeText(rawAsset?.src);
+}
+
+function resolveWorkbenchImagePathFromAssetSrc(src) {
+  const assetSrc = normalizeText(src);
+  if (!assetSrc) {
+    return null;
+  }
+
+  if (/^(?:data:|https?:|file:)/i.test(assetSrc)) {
+    return assetSrc;
+  }
+
+  const publicRelativePath = assetSrc.replace(/^\/+/, "").replace(/^public\//, "");
+  return relativeFromReports(path.join(process.cwd(), "public", publicRelativePath));
+}
+
 function normalizeCandidate(candidate, topScore, questionMap) {
   const canonicalQuestion = candidate?.qid ? questionMap.get(candidate.qid) ?? null : null;
   const resolvedType = canonicalQuestion?.type ?? candidate?.type ?? null;
+  const scoreBreakdown = candidate?.scoreBreakdown && typeof candidate.scoreBreakdown === "object"
+    ? {
+      answerScore:
+        candidate.scoreBreakdown.answerScore ??
+        candidate.scoreBreakdown.answerGlossScore ??
+        candidate.scoreBreakdown.correctAnswerMeaning ??
+        null,
+      optionSetScore:
+        candidate.scoreBreakdown.optionSetScore ??
+        candidate.scoreBreakdown.optionSimilarity ??
+        null,
+      optionKeywordScore:
+        candidate.scoreBreakdown.optionKeywordScore ??
+        candidate.scoreBreakdown.optionRowKeywordScore ??
+        null,
+      promptScore:
+        candidate.scoreBreakdown.promptScore ??
+        candidate.scoreBreakdown.promptSimilarity ??
+        null,
+      numberScore: candidate.scoreBreakdown.numberScore ?? null,
+      numericGroupScore: candidate.scoreBreakdown.numericGroupScore ?? null,
+      numericGroupPenalty: candidate.scoreBreakdown.numericGroupPenalty ?? null,
+      contradictionPenalty: candidate.scoreBreakdown.contradictionPenalty ?? null,
+      priorBonus: candidate.scoreBreakdown.priorBonus ?? null,
+    }
+    : null;
   const resolvedOptions = resolvedType === "MCQ"
     ? (
       Array.isArray(canonicalQuestion?.options) && canonicalQuestion.options.length > 0
@@ -556,13 +829,47 @@ function normalizeCandidate(candidate, topScore, questionMap) {
       candidate?.correctAnswer?.correctOptionText ??
       candidate?.correctAnswer?.correctOptionKey ??
       null,
-    hasImage: canonicalQuestion?.image?.hasImage === true || candidate?.image?.hasImage === true,
-    imagePath: canonicalQuestion?.image?.currentAssetSrc
-      ? relativeFromReports(path.join(process.cwd(), "public", canonicalQuestion.image.currentAssetSrc.replace(/^\//, "")))
-      : candidate?.image?.currentAssetSrc
-        ? relativeFromReports(path.join(process.cwd(), "public", candidate.image.currentAssetSrc.replace(/^\//, "")))
-      : null,
+    scoreBreakdown,
+    hasImage:
+      canonicalQuestion?.image?.hasImage === true ||
+      Boolean(resolveQuestionImageSrc(canonicalQuestion)) ||
+      candidate?.image?.hasImage === true ||
+      Boolean(resolveQuestionImageSrc(candidate)),
+    imagePath: resolveWorkbenchImagePathFromAssetSrc(
+      resolveQuestionImageSrc(canonicalQuestion) ?? resolveQuestionImageSrc(candidate),
+    ),
   };
+}
+
+function sanitizeWorkbenchDiagnostics(value) {
+  const hiddenKeys = new Set([
+    "sourceNumericGroups",
+    "candidateNumericGroups",
+    "numericGroupReasonCodes",
+    "numericGroupMatches",
+  ]);
+  const hiddenStringValues = new Set([
+    "numeric-group-match",
+    "numeric-range-missing-value",
+  ]);
+
+  if (Array.isArray(value)) {
+    return value
+      .filter((entry) => !hiddenStringValues.has(String(entry)))
+      .map((entry) => sanitizeWorkbenchDiagnostics(entry));
+  }
+  if (!value || typeof value !== "object") {
+    return value;
+  }
+
+  const sanitized = {};
+  for (const [key, entry] of Object.entries(value)) {
+    if (hiddenKeys.has(key)) {
+      continue;
+    }
+    sanitized[key] = sanitizeWorkbenchDiagnostics(entry);
+  }
+  return sanitized;
 }
 
 function inferCandidateSetLabel(hasImage) {
@@ -605,17 +912,41 @@ function buildHtml({
   counts,
   items,
   decisions,
+  displaySectionById,
   decisionsPath,
   decisionsFileName,
   storageKey,
   questionTypeByQid,
   questionExplanationByQid,
+  topicCatalog,
+  notebookArtifacts,
 }) {
-  const autoMatched = items.filter((item) => item.section === "auto-matched");
-  const reviewNeeded = items.filter((item) => item.section === "review-needed");
-  const unresolved = items.filter((item) => item.section === "unresolved");
-  const answerKey = items.filter((item) => item.section === "answer-key");
-  const sectionSet = new Set(visibleSections ?? ["auto-matched", "review-needed", "answer-key", "unresolved"]);
+  const displaySectionMap = new Map(Object.entries(displaySectionById ?? {}));
+  const itemsInDisplaySection = (sectionId) =>
+    items.filter((item) => (displaySectionMap.get(item.id) ?? item.section) === sectionId);
+  const autoMatched = itemsInDisplaySection("auto-matched");
+  const preserved = itemsInDisplaySection("preserved");
+  const reviewNeeded = itemsInDisplaySection("review-needed");
+  const unresolved = itemsInDisplaySection("unresolved");
+  const answerKey = itemsInDisplaySection("answer-key");
+  const requestedSectionSet = new Set(visibleSections ?? ["auto-matched", "review-needed", "answer-key", "unresolved"]);
+  const visibleDisplaySections = [];
+
+  if (requestedSectionSet.has("auto-matched")) {
+    visibleDisplaySections.push("auto-matched");
+  }
+  if (preserved.length > 0) {
+    visibleDisplaySections.push("preserved");
+  }
+  if (requestedSectionSet.has("review-needed")) {
+    visibleDisplaySections.push("review-needed");
+  }
+  if (requestedSectionSet.has("answer-key") && answerKey.length > 0) {
+    visibleDisplaySections.push("answer-key");
+  }
+  if (requestedSectionSet.has("unresolved")) {
+    visibleDisplaySections.push("unresolved");
+  }
 
   return `<!doctype html>
 <html lang="en">
@@ -655,7 +986,7 @@ function buildHtml({
       font-family: var(--sans);
     }
     .page {
-      width: min(1460px, calc(100vw - 28px));
+      width: min(1680px, calc(100vw - 28px));
       margin: 22px auto 44px;
     }
     .hero, .section, .item {
@@ -755,7 +1086,7 @@ function buildHtml({
       padding: 14px;
       display: grid;
       gap: 14px;
-      grid-template-columns: minmax(260px, 320px) minmax(0, 1fr) 320px;
+      grid-template-columns: minmax(300px, 360px) minmax(420px, 1fr) minmax(280px, 320px);
       align-items: start;
       scroll-margin-top: 20px;
     }
@@ -846,8 +1177,12 @@ function buildHtml({
     .item.needs-attention .filename-number {
       color: var(--warn);
     }
-    .source-block, .decision-block {
+    .source-asset-column, .source-block, .decision-block {
       min-width: 0;
+    }
+    .source-asset-column {
+      display: grid;
+      gap: 10px;
     }
     .control-needs-attention {
       border-color: rgba(140, 79, 22, 0.42) !important;
@@ -911,6 +1246,12 @@ function buildHtml({
       justify-content: space-between;
       gap: 10px;
     }
+    .option-row-badges {
+      display: inline-flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      justify-content: flex-end;
+    }
     .option-correct-badge {
       display: inline-flex;
       align-items: center;
@@ -945,6 +1286,35 @@ function buildHtml({
       background: var(--warn-soft);
       border-color: rgba(140, 79, 22, 0.18);
     }
+    .notebook-panel {
+      border: 1px solid rgba(79, 59, 150, 0.22);
+      border-radius: 14px;
+      background: var(--note-soft);
+      padding: 12px;
+      display: grid;
+      gap: 10px;
+    }
+    .notebook-panel.conflict {
+      border-color: rgba(140, 79, 22, 0.35);
+      background: var(--warn-soft);
+    }
+    .notebook-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+    .notebook-warning {
+      border: 1px solid rgba(140, 79, 22, 0.24);
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.45);
+      padding: 8px 10px;
+      color: var(--warn);
+      font-size: 13px;
+    }
+    .recommendation-review {
+      display: grid;
+      gap: 8px;
+    }
     .fact .value {
       font-size: 14px;
       line-height: 1.4;
@@ -959,6 +1329,10 @@ function buildHtml({
       border-radius: 14px;
       background: #fcf8f1;
       padding: 12px;
+    }
+    .candidate.compact {
+      padding: 10px;
+      background: #fffaf2;
     }
     .candidate-head {
       display: flex;
@@ -998,13 +1372,88 @@ function buildHtml({
     .candidate .prompt {
       font-size: 15px;
     }
-    .candidate-media {
+    .candidate.compact .prompt {
+      font-size: 13px;
+      max-height: 94px;
+    }
+    .recommendation-review .candidate.compact .prompt {
+      max-height: none;
+    }
+    .candidate.compact .filename,
+    .candidate.compact .options {
+      display: none;
+    }
+    .recommendation-review .candidate.compact .options {
+      display: grid;
+      gap: 6px;
       margin-top: 8px;
+      margin-left: 6px;
+    }
+    .recommendation-review .candidate.compact .option {
+      padding: 7px 9px;
+    }
+    .recommendation-review .candidate.compact .option-row {
+      align-items: flex-start;
+    }
+    .recommendation-review .candidate.compact .option.option-source-match {
+      background: #eef7f4;
+      border-color: rgba(22, 93, 82, 0.22);
+    }
+    .recommendation-review .candidate.compact .option.option-source-correct-match {
+      border-color: rgba(22, 93, 82, 0.42);
+      box-shadow: inset 3px 0 0 rgba(22, 93, 82, 0.35);
+    }
+    .option-match-badge {
+      display: inline-flex;
+      align-items: center;
+      white-space: nowrap;
+      margin-left: 6px;
+      padding: 2px 7px;
+      border: 1px solid rgba(79, 59, 150, 0.18);
+      border-radius: 999px;
+      background: var(--note-soft);
+      color: var(--note);
+      font-size: 11px;
+      line-height: 1.2;
+    }
+    .option-match-badge.strong {
+      border-color: rgba(22, 93, 82, 0.28);
+      background: var(--correct-bg);
+      color: var(--accent);
+      font-weight: 700;
+    }
+    .option-alignment-warning {
+      margin-top: 8px;
+      padding: 7px 9px;
+      border: 1px solid rgba(140, 79, 22, 0.28);
+      border-radius: 10px;
+      background: var(--warn-soft);
+      color: var(--warn);
+      font-size: 12px;
+      line-height: 1.35;
+    }
+    .candidate-media {
+      margin: 0 0 10px;
+    }
+    .candidate-image-unavailable {
+      margin-bottom: 10px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.4;
     }
     .candidate-image-frame {
-      min-height: 120px;
-      max-width: 260px;
-      margin-top: 8px;
+      width: 100%;
+      max-width: 100%;
+      min-height: 0;
+      max-height: 190px;
+      margin: 0;
+      border-radius: 12px;
+      background: #fffdf8;
+    }
+    .candidate-image-frame img {
+      width: 100%;
+      max-height: 190px;
+      object-fit: contain;
     }
     .lightbox[hidden] {
       display: none;
@@ -1203,7 +1652,7 @@ function buildHtml({
       padding: 10px;
       overflow: auto;
     }
-    @media (max-width: 1100px) {
+    @media (max-width: 1180px) {
       .item {
         grid-template-columns: 1fr;
       }
@@ -1228,6 +1677,7 @@ function buildHtml({
         <div class="stat"><span class="label">Batch</span><strong>${escapeHtml(batchId)}</strong></div>
         <div class="stat"><span class="label">Dataset</span><strong>${escapeHtml(dataset)}</strong></div>
         <div class="stat"><span class="label">Auto-Matched</span><strong>${counts.autoMatched}</strong></div>
+        <div class="stat"><span class="label">Preserved</span><strong>${counts.preserved}</strong></div>
         <div class="stat"><span class="label">Review-Needed</span><strong>${counts.reviewNeeded}</strong></div>
         <div class="stat"><span class="label">Unresolved</span><strong>${counts.unresolved}</strong></div>
         <div class="stat"><span class="label">Answer-Key Checks</span><strong>${counts.answerKeyConfirmations}</strong></div>
@@ -1237,10 +1687,11 @@ function buildHtml({
       </div>
     </section>
 
-    ${sectionSet.has("auto-matched") ? renderSectionShell("auto-matched", "Auto-Matched (Quick Review)", `${autoMatched.length} item(s) auto-matched by the pipeline and surfaced for quick human confirmation.`) : ""}
-    ${sectionSet.has("review-needed") ? renderSectionShell("review-needed", "Review-Needed", `${reviewNeeded.length} item(s) that need an approve/new/unresolved decision.`) : ""}
-    ${sectionSet.has("answer-key") && answerKey.length > 0 ? renderSectionShell("answer-key", "Answer-Key Confirmations", `${answerKey.length} auto-matched MCQ item(s) whose staged locale key still needs explicit confirmation.`) : ""}
-    ${sectionSet.has("unresolved") ? renderSectionShell("unresolved", "Unresolved", `${unresolved.length} item(s) that may need rescue, new-question staging, or to remain unresolved.`) : ""}
+    ${visibleDisplaySections.includes("auto-matched") ? renderSectionShell("auto-matched", "Auto-Matched (Quick Review)", `${autoMatched.length} item(s) auto-matched by the pipeline and surfaced for quick human confirmation.`) : ""}
+    ${visibleDisplaySections.includes("preserved") ? renderSectionShell("preserved", "Preserved Decisions", `${preserved.length} item(s) already carry a prior human decision and were pulled out of the pending review queues.`) : ""}
+    ${visibleDisplaySections.includes("review-needed") ? renderSectionShell("review-needed", "Review-Needed", `${reviewNeeded.length} item(s) that still need an approve/new/unresolved decision.`) : ""}
+    ${visibleDisplaySections.includes("answer-key") ? renderSectionShell("answer-key", "Answer-Key Confirmations", `${answerKey.length} auto-matched MCQ item(s) whose staged locale key still needs explicit confirmation.`) : ""}
+    ${visibleDisplaySections.includes("unresolved") ? renderSectionShell("unresolved", "Unresolved", `${unresolved.length} item(s) that may need rescue, new-question staging, or to remain unresolved.`) : ""}
     <section class="page-end">
       <div class="toolbar">
         <button id="export-json">Export Decisions JSON</button>
@@ -1281,11 +1732,16 @@ function buildHtml({
     const ITEMS = ${serializeJsonForInlineScript(items)};
     const ITEMS_BY_ID = new Map(ITEMS.map((item) => [item.id, item]));
     const INITIAL_DECISIONS = ${serializeJsonForInlineScript(decisions)};
-    const VISIBLE_SECTIONS = ${serializeJsonForInlineScript(Array.from(sectionSet))};
-    const DISPLAY_ITEMS = VISIBLE_SECTIONS.flatMap((sectionId) => ITEMS.filter((item) => item.section === sectionId));
+    const DISPLAY_SECTION_BY_ID = ${serializeJsonForInlineScript(displaySectionById)};
+    const VISIBLE_SECTIONS = ${serializeJsonForInlineScript(visibleDisplaySections)};
+    const DISPLAY_ITEMS = VISIBLE_SECTIONS.flatMap((sectionId) =>
+      ITEMS.filter((item) => (DISPLAY_SECTION_BY_ID[item.id] || item.section) === sectionId),
+    );
     const DISPLAY_INDEX_BY_ID = new Map(DISPLAY_ITEMS.map((item, index) => [item.id, index + 1]));
     const QUESTION_TYPE_BY_QID = ${serializeJsonForInlineScript(questionTypeByQid)};
     const QUESTION_EXPLANATION_BY_QID = ${serializeJsonForInlineScript(questionExplanationByQid)};
+    const TOPIC_CATALOG = ${serializeJsonForInlineScript(topicCatalog)};
+    const NOTEBOOK_ARTIFACTS = ${serializeJsonForInlineScript(notebookArtifacts)};
     const STORAGE_KEY = ${JSON.stringify(storageKey)};
     const EXPORT_FILE_NAME = ${JSON.stringify(decisionsFileName)};
     const ACTIVE_REVIEW_LOCALE = ${JSON.stringify(lang)};
@@ -1294,6 +1750,11 @@ function buildHtml({
       ko: { R: 'Y', W: 'N' },
       ja: { R: 'Yes', W: 'No' },
     };
+    const TOPIC_SLUGS = new Set((TOPIC_CATALOG.topics || []).map((entry) => entry.slug));
+    const SUBTOPIC_SLUGS = new Set((TOPIC_CATALOG.subtopics || []).map((entry) => entry.slug));
+    const TOPIC_ALIAS_TO_SLUG = new Map();
+    const SUBTOPIC_ALIAS_TO_ENTRIES = new Map();
+    const SUBTOPICS_BY_TOPIC = new Map();
     const LIGHTBOX = document.getElementById('image-lightbox');
     const LIGHTBOX_BODY = document.getElementById('image-lightbox-body');
     const LIGHTBOX_STAGE = document.getElementById('image-lightbox-stage');
@@ -1337,6 +1798,144 @@ function buildHtml({
       return /^[A-D]$/.test(text) ? text : null;
     }
 
+    function normalizeDecisionQid(value) {
+      const text = String(value ?? '').trim();
+      if (!text) {
+        return null;
+      }
+
+      const match = text.match(/^q?(\\d+)$/i);
+      if (!match) {
+        return null;
+      }
+
+      const number = Number.parseInt(match[1], 10);
+      if (!Number.isSafeInteger(number) || number <= 0 || number > 9999) {
+        return null;
+      }
+
+      return 'q' + String(number).padStart(4, '0');
+    }
+
+    function normalizeStoredApprovedQid(value) {
+      const text = String(value ?? '').trim();
+      if (!text) {
+        return null;
+      }
+
+      return normalizeDecisionQid(text) || text;
+    }
+
+    function normalizeTopicLabelKey(value) {
+      return String(value ?? '')
+        .replace(/[-_:]+/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim()
+        .toLowerCase();
+    }
+
+    function slugFromDisplayLabel(value) {
+      return normalizeTopicLabelKey(value).replace(/\s+/g, '-');
+    }
+
+    function addTopicAlias(alias, slug) {
+      const key = normalizeTopicLabelKey(alias);
+      if (key && slug && !TOPIC_ALIAS_TO_SLUG.has(key)) {
+        TOPIC_ALIAS_TO_SLUG.set(key, slug);
+      }
+    }
+
+    function addSubtopicAlias(alias, entry) {
+      const key = normalizeTopicLabelKey(alias);
+      if (!key || !entry?.slug) {
+        return;
+      }
+
+      const entries = SUBTOPIC_ALIAS_TO_ENTRIES.get(key) || [];
+      if (!entries.some((candidate) => candidate.slug === entry.slug)) {
+        entries.push(entry);
+      }
+      SUBTOPIC_ALIAS_TO_ENTRIES.set(key, entries);
+    }
+
+    for (const entry of TOPIC_CATALOG.topics || []) {
+      addTopicAlias(entry.slug, entry.slug);
+      addTopicAlias(entry.label, entry.slug);
+      addTopicAlias(slugFromDisplayLabel(entry.label), entry.slug);
+    }
+
+    for (const entry of TOPIC_CATALOG.subtopics || []) {
+      addSubtopicAlias(entry.slug, entry);
+      addSubtopicAlias(entry.label, entry);
+      addSubtopicAlias(slugFromDisplayLabel(entry.label), entry);
+      if (entry.topic) {
+        const list = SUBTOPICS_BY_TOPIC.get(entry.topic) || [];
+        list.push(entry);
+        SUBTOPICS_BY_TOPIC.set(entry.topic, list);
+      }
+    }
+
+    function normalizeTopicInputValue(value) {
+      const text = String(value ?? '').replace(/\s+/g, ' ').trim();
+      if (!text) {
+        return null;
+      }
+
+      if (TOPIC_SLUGS.has(text)) {
+        return text;
+      }
+
+      const key = normalizeTopicLabelKey(text);
+      return TOPIC_ALIAS_TO_SLUG.get(key) || (TOPIC_SLUGS.has(slugFromDisplayLabel(text)) ? slugFromDisplayLabel(text) : text);
+    }
+
+    function normalizeSubtopicInputValue(value, topicValue) {
+      const text = String(value ?? '').replace(/\s+/g, ' ').trim();
+      if (!text) {
+        return null;
+      }
+
+      if (SUBTOPIC_SLUGS.has(text)) {
+        return text;
+      }
+
+      const topicSlug = normalizeTopicInputValue(topicValue);
+      const key = normalizeTopicLabelKey(text);
+      const topicScoped = topicSlug ? (SUBTOPICS_BY_TOPIC.get(topicSlug) || []) : [];
+      const scopedMatch = topicScoped.find((entry) =>
+        normalizeTopicLabelKey(entry.slug) === key ||
+        normalizeTopicLabelKey(entry.label) === key ||
+        slugFromDisplayLabel(entry.label) === slugFromDisplayLabel(text)
+      );
+      if (scopedMatch) {
+        return scopedMatch.slug;
+      }
+
+      const matches = SUBTOPIC_ALIAS_TO_ENTRIES.get(key) || SUBTOPIC_ALIAS_TO_ENTRIES.get(slugFromDisplayLabel(text)) || [];
+      if (matches.length === 1) {
+        return matches[0].slug;
+      }
+
+      return text;
+    }
+
+    function normalizeSubtopicInputList(value, topicValue) {
+      const rawValues = Array.isArray(value)
+        ? value
+        : String(value ?? '').split(/[,\\n]/);
+      return rawValues
+        .map((entry) => normalizeSubtopicInputValue(entry, topicValue))
+        .filter(Boolean);
+    }
+
+    function normalizeTopicDecisionFields(decision) {
+      const topic = normalizeTopicInputValue(decision?.newQuestionProvisionalTopic);
+      return {
+        newQuestionProvisionalTopic: topic,
+        newQuestionProvisionalSubtopics: normalizeSubtopicInputList(decision?.newQuestionProvisionalSubtopics, topic),
+      };
+    }
+
     function normalizeLoadedDecision(item) {
       const decision = { ...item };
       const deleteQuestion = decision.deleteQuestion === true;
@@ -1348,7 +1947,7 @@ function buildHtml({
         : normalizeDecisionChoiceKey(decision.newQuestionLocalAnswerKey);
 
       decision.deleteQuestion = deleteQuestion;
-      decision.approvedQid = deleteQuestion ? null : (decision.approvedQid || null);
+      decision.approvedQid = deleteQuestion ? null : normalizeStoredApprovedQid(decision.approvedQid);
       decision.createNewQuestion = deleteQuestion ? false : decision.createNewQuestion === true;
       decision.keepUnresolved = deleteQuestion ? false : decision.keepUnresolved === true;
       decision.confirmedCorrectOptionKey = normalizeDecisionChoiceKey(decision.confirmedCorrectOptionKey);
@@ -1356,6 +1955,7 @@ function buildHtml({
       decision.currentStagedLocaleCorrectOptionKey = normalizeDecisionChoiceKey(decision.currentStagedLocaleCorrectOptionKey);
       decision.answerKeyUnknown = decision.answerKeyUnknown === true || decision.unknown === true;
       decision.useCurrentStagedAnswerKey = decision.useCurrentStagedAnswerKey === true;
+      Object.assign(decision, normalizeTopicDecisionFields(decision));
 
       return decision;
     }
@@ -1430,7 +2030,15 @@ function buildHtml({
         return null;
       }
 
-      const approvedQid = normalizeDecisionQid(decision.approvedQid);
+      const rawApprovedQid = String(decision.approvedQid ?? '').trim();
+      const approvedQid = normalizeDecisionQid(rawApprovedQid);
+      if (rawApprovedQid && !approvedQid) {
+        return {
+          reason: 'Approved qid must be a positive number like 92 or a canonical qid like q0092.',
+          focusTarget: 'decision',
+        };
+      }
+
       const hasApprovedQid = Boolean(approvedQid);
       const hasNewQuestionDecision = decision.createNewQuestion === true;
       const hasDeleteQuestionDecision = decision.deleteQuestion === true;
@@ -1586,18 +2194,20 @@ function buildHtml({
         batchId: ${JSON.stringify(batchId)},
         dataset: ${JSON.stringify(dataset)},
         source: "workbench",
-        items: state,
+        items: state.map((item) => {
+          const normalizedTopicFields = normalizeTopicDecisionFields(item);
+          return {
+            ...item,
+            ...normalizedTopicFields,
+            approvedQid: item.deleteQuestion === true ? null : normalizeDecisionQid(item.approvedQid),
+          };
+        }),
       };
       download(EXPORT_FILE_NAME, JSON.stringify(payload, null, 2) + "\\n", "application/json");
     }
 
     function getDecision(id) {
       return state.find((item) => item.id === id);
-    }
-
-    function normalizeDecisionQid(value) {
-      const text = String(value ?? '').trim();
-      return text || null;
     }
 
     function getApprovedMasterQuestionType(decision) {
@@ -1749,7 +2359,7 @@ function buildHtml({
     }
 
     function updateDecision(id, patch, options = {}) {
-      state = state.map((item) => item.id === id ? { ...item, ...patch } : item);
+      state = state.map((item) => item.id === id ? normalizeLoadedDecision({ ...item, ...patch }) : item);
       saveState();
 
       if (options.rerender !== false) {
@@ -1762,6 +2372,27 @@ function buildHtml({
 
     function useCandidate(id, qid) {
       updateDecision(id, { approvedQid: qid || "", createNewQuestion: false, keepUnresolved: false, deleteQuestion: false });
+    }
+
+    function useCombinedRecommendation(id) {
+      const item = ITEMS_BY_ID.get(id);
+      const combined = item?.combinedRecommendation || null;
+      if (!combined?.recommendedQid) {
+        return;
+      }
+      const patch = {
+        approvedQid: combined.recommendedQid,
+        createNewQuestion: false,
+        keepUnresolved: false,
+        deleteQuestion: false,
+      };
+      const answerKey = normalizeDecisionChoiceKey(combined.recommendedAnswerKey);
+      if (answerKey) {
+        patch.confirmedCorrectOptionKey = answerKey;
+        patch.answerKeyUnknown = false;
+        patch.useCurrentStagedAnswerKey = false;
+      }
+      updateDecision(id, patch);
     }
 
     function setDecisionMode(id, mode) {
@@ -1789,12 +2420,13 @@ function buildHtml({
     }
 
     function itemNeedsStructuredAnswerKey(item, decision) {
+      const approvedQid = normalizeDecisionQid(decision?.approvedQid);
       return Boolean(
         item &&
         getResolvedQuestionType(item, decision) === 'MCQ' &&
         item.initialSuggestedQid &&
-        decision?.approvedQid &&
-        decision.approvedQid !== item.initialSuggestedQid
+        approvedQid &&
+        approvedQid !== item.initialSuggestedQid
       );
     }
 
@@ -2043,13 +2675,24 @@ function buildHtml({
       return null;
     }
 
-    function renderNormalizedRowChoices({ highlightRow = null, rawByRow = null, sourceSide = false }) {
+    function renderNormalizedRowChoices({ highlightRow = null, rawByRow = null, sourceSide = false, optionAnnotations = null }) {
       return '<ol class="options">' +
         ['R', 'W'].map((rowValue) => {
           const rawEntry = rawByRow?.get?.(rowValue) || null;
-          return '<li class="option' + (highlightRow === rowValue ? ' option-current' : '') + '">' +
+          const annotation = optionAnnotations?.get?.(rowValue) || null;
+          const isCorrect = highlightRow === rowValue;
+          const optionClass = [
+            'option',
+            isCorrect ? 'option-current' : '',
+            annotation ? 'option-source-match' : '',
+            annotation && isCorrect ? 'option-source-correct-match' : '',
+          ].filter(Boolean).join(' ');
+          return '<li class="' + optionClass + '">' +
             '<div class="option-row"><div><span class="option-key">' + escapeHtml(getRowDisplayLabel(rowValue)) + '</span></div>' +
-              (highlightRow === rowValue ? '<span class="option-correct-badge">Correct</span>' : '') +
+              '<div class="option-row-badges">' +
+                renderOptionMatchBadge(annotation, isCorrect) +
+                (isCorrect ? '<span class="option-correct-badge">Correct</span>' : '') +
+              '</div>' +
             '</div>' +
             '<div class="option-gloss">' + escapeHtml(getRowCanonicalHint(rowValue)) + '</div>' +
             (sourceSide && rawEntry?.raw ? '<div class="option-gloss">OCR: ' + escapeHtml(rawEntry.raw) + '</div>' : '') +
@@ -2114,25 +2757,228 @@ function buildHtml({
       return '';
     }
 
-    function renderCandidate(candidate, itemId) {
+    function renderCandidateImage(candidate) {
+      if (candidate.imagePath) {
+        return '<div class="candidate-media">' + renderInlineImage(candidate.imagePath, candidate.qid || 'candidate image', 'image-frame candidate-image-frame', {
+          caption: [candidate.qid || null, candidate.prompt || null].filter(Boolean).join(' · ') || 'Candidate image',
+        }) + '</div>';
+      }
+
+      if (candidate.hasImage) {
+        return '<div class="candidate-image-unavailable">Image unavailable</div>';
+      }
+
+      return '';
+    }
+
+    const OPTION_FILLER_WORDS = new Set([
+      'a', 'an', 'the', 'and', 'or', 'of', 'to', 'for', 'from', 'in', 'on',
+      'at', 'by', 'with', 'as', 'is', 'are', 'be', 'being', 'been', 'can',
+      'could', 'may', 'must', 'shall', 'should', 'will', 'would', 'you',
+      'your', 'it', 'its', 'this', 'that', 'these', 'those',
+    ]);
+
+    function normalizeOptionText(text) {
+      return String(text ?? '')
+        .replace(/^\\s*[A-D][\\s.:：、．\\)\\]-]+/i, ' ')
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, ' ')
+        .split(/\\s+/)
+        .filter((token) => token && !OPTION_FILLER_WORDS.has(token))
+        .join(' ')
+        .trim();
+    }
+
+    function scoreOptionSimilarity(a, b) {
+      const normalizedA = normalizeOptionText(a);
+      const normalizedB = normalizeOptionText(b);
+      if (!normalizedA || !normalizedB) {
+        return 0;
+      }
+      if (normalizedA === normalizedB) {
+        return 1;
+      }
+
+      const tokensA = normalizedA.split(' ').filter(Boolean);
+      const tokensB = normalizedB.split(' ').filter(Boolean);
+      const setA = new Set(tokensA);
+      const setB = new Set(tokensB);
+      let intersection = 0;
+      setA.forEach((token) => {
+        if (setB.has(token)) {
+          intersection += 1;
+        }
+      });
+
+      const dice = (2 * intersection) / Math.max(1, setA.size + setB.size);
+      const containment = intersection / Math.max(1, Math.min(setA.size, setB.size));
+      const containmentScore = containment >= 0.8 && intersection >= 2 ? containment * 0.94 : 0;
+      const substringScore =
+        (normalizedA.includes(normalizedB) || normalizedB.includes(normalizedA)) &&
+        Math.min(normalizedA.length, normalizedB.length) >= 8
+          ? 0.9
+          : 0;
+      return Math.max(dice, containmentScore, substringScore);
+    }
+
+    function buildSourceOptionEntries(item, candidateType) {
+      if (candidateType === 'ROW') {
+        const rawByRow = getRowSourceOptionMap(item);
+        return [
+          { key: 'A', rowValue: 'R', text: rawByRow.get('R')?.gloss || rawByRow.get('R')?.raw || 'Right true' },
+          { key: 'B', rowValue: 'W', text: rawByRow.get('W')?.gloss || rawByRow.get('W')?.raw || 'Wrong false' },
+        ];
+      }
+
+      const rawOptions = Array.isArray(item?.optionsRawJa) ? item.optionsRawJa : [];
+      const glossOptions = Array.isArray(item?.optionsGlossEn) ? item.optionsGlossEn : [];
+      const length = Math.max(rawOptions.length, glossOptions.length);
+      const entries = [];
+
+      for (let index = 0; index < length; index += 1) {
+        const rawChoice = parseVisibleChoice(rawOptions[index]);
+        const glossChoice = parseVisibleChoice(glossOptions[index]);
+        const key = normalizeDecisionChoiceKey(rawChoice.key) ||
+          normalizeDecisionChoiceKey(glossChoice.key) ||
+          normalizeDecisionChoiceKey(fallbackVisibleChoiceKey(index));
+        const text = glossChoice.body || rawChoice.body || glossOptions[index] || rawOptions[index] || '';
+        if (key && text) {
+          entries.push({ key, text });
+        }
+      }
+
+      return entries;
+    }
+
+    function buildCandidateOptionEntries(candidate, rowValue) {
+      if (rowValue) {
+        return [
+          { key: 'R', rowValue: 'R', text: 'Right true' },
+          { key: 'W', rowValue: 'W', text: 'Wrong false' },
+        ];
+      }
+
+      return (candidate.options || []).map((option, index) => {
+        const key = normalizeDecisionChoiceKey(option.id) ||
+          normalizeDecisionChoiceKey(fallbackVisibleChoiceKey(index));
+        return key && option.text ? { key, text: option.text } : null;
+      }).filter(Boolean);
+    }
+
+    function findBestOptionMatches(sourceOptions, candidateOptions) {
+      const scored = [];
+      sourceOptions.forEach((sourceOption) => {
+        candidateOptions.forEach((candidateOption) => {
+          const score = sourceOption.rowValue && candidateOption.rowValue
+            ? (sourceOption.rowValue === candidateOption.rowValue ? 1 : 0)
+            : scoreOptionSimilarity(sourceOption.text, candidateOption.text);
+          if (score >= 0.66) {
+            scored.push({ sourceOption, candidateOption, score });
+          }
+        });
+      });
+
+      scored.sort((a, b) => b.score - a.score);
+      const usedSourceKeys = new Set();
+      const usedCandidateKeys = new Set();
+      const matches = new Map();
+
+      for (const entry of scored) {
+        if (usedSourceKeys.has(entry.sourceOption.key) || usedCandidateKeys.has(entry.candidateOption.key)) {
+          continue;
+        }
+        usedSourceKeys.add(entry.sourceOption.key);
+        usedCandidateKeys.add(entry.candidateOption.key);
+        matches.set(entry.candidateOption.key, {
+          sourceKey: entry.sourceOption.key,
+          score: entry.score,
+        });
+      }
+
+      return matches;
+    }
+
+    function rowValueToSourceChoiceKey(rowValue) {
+      if (rowValue === 'R') {
+        return 'A';
+      }
+      if (rowValue === 'W') {
+        return 'B';
+      }
+      return null;
+    }
+
+    function renderOptionMatchBadge(annotation, isCorrect) {
+      if (!annotation?.sourceKey) {
+        return '';
+      }
+      return '<span class="option-match-badge' + (isCorrect ? ' strong' : '') + '">matches source ' + escapeHtml(annotation.sourceKey) + '</span>';
+    }
+
+    function buildOptionAlignmentInfo({ item, candidate, decision, rowValue, correctOptionKey }) {
+      if (!item || !candidate) {
+        return { annotationsByCandidateKey: new Map(), warningHtml: '' };
+      }
+
+      const sourceOptions = buildSourceOptionEntries(item, candidate.type || null);
+      const candidateOptions = buildCandidateOptionEntries(candidate, rowValue);
+      const annotationsByCandidateKey = findBestOptionMatches(sourceOptions, candidateOptions);
+      const sourceSelectedKey =
+        getSelectedAnswerKey(item, decision) ||
+        normalizeDecisionChoiceKey(item.currentStagedLocaleCorrectOptionKey) ||
+        normalizeDecisionChoiceKey(item.suggestedLocalAnswerKey);
+      const candidateCorrectKey = rowValue
+        ? rowValueToSourceChoiceKey(rowValue)
+        : normalizeDecisionChoiceKey(correctOptionKey);
+      const warningHtml = sourceSelectedKey && candidateCorrectKey && sourceSelectedKey !== candidateCorrectKey
+        ? '<div class="option-alignment-warning">Answer-key mismatch: source ' + escapeHtml(sourceSelectedKey) + ' vs candidate ' + escapeHtml(candidateCorrectKey) + '</div>'
+        : '';
+
+      return { annotationsByCandidateKey, warningHtml };
+    }
+
+    function renderCandidate(candidate, itemId, renderOptions = {}) {
+      const compact = renderOptions.compact === true;
       const candidateType = candidate.type || null;
       const isRowCandidate = candidateType === 'ROW';
       const rowValue = isRowCandidate
         ? normalizeRowValue(candidate.correctRow || candidate.correctAnswerText || candidate.correctOptionKey)
         : null;
       const correctOptionKey = String(candidate.correctOptionKey ?? '').trim().toUpperCase() || null;
-      const options = rowValue
-        ? renderNormalizedRowChoices({ highlightRow: rowValue })
+      const optionAlignment = renderOptions.showOptionAlignment
+        ? buildOptionAlignmentInfo({
+            item: renderOptions.sourceItem || ITEMS_BY_ID.get(itemId),
+            candidate,
+            decision: renderOptions.decision || getDecision(itemId),
+            rowValue,
+            correctOptionKey,
+          })
+        : { annotationsByCandidateKey: new Map(), warningHtml: '' };
+      const candidateOptions = rowValue
+        ? renderNormalizedRowChoices({
+            highlightRow: rowValue,
+            optionAnnotations: optionAlignment.annotationsByCandidateKey,
+          })
         : (candidate.options || []).map((option) => {
           const optionKey = String(option.id ?? '').trim().toUpperCase() || null;
           const isCorrect = Boolean(correctOptionKey && optionKey && optionKey === correctOptionKey);
-          return '<li class="option' + (isCorrect ? ' option-current' : '') + '">' +
+          const annotation = optionAlignment.annotationsByCandidateKey.get(optionKey);
+          const optionClass = [
+            'option',
+            isCorrect ? 'option-current' : '',
+            annotation ? 'option-source-match' : '',
+            annotation && isCorrect ? 'option-source-correct-match' : '',
+          ].filter(Boolean).join(' ');
+          return '<li class="' + optionClass + '">' +
             '<div class="option-row"><div><span class="option-key">' + escapeHtml(option.id || '?') + '</span>' + escapeHtml(option.text || '') + '</div>' +
-              (isCorrect ? '<span class="option-correct-badge">Correct</span>' : '') +
+              '<div class="option-row-badges">' +
+                renderOptionMatchBadge(annotation, isCorrect) +
+                (isCorrect ? '<span class="option-correct-badge">Correct</span>' : '') +
+              '</div>' +
             '</div>' +
           '</li>';
         }).join('');
-      return '<article class="candidate">' +
+      return '<article class="candidate' + (compact ? ' compact' : '') + '">' +
         '<div class="candidate-head">' +
           '<div class="candidate-badges">' +
             '<span class="pill note">' + escapeHtml(candidate.qid || 'unknown') + '</span>' +
@@ -2147,18 +2993,33 @@ function buildHtml({
           '</div>' +
           '<button type="button" data-use-qid="' + escapeHtml(itemId) + '" data-qid="' + escapeHtml(candidate.qid || '') + '">Use qid</button>' +
         '</div>' +
+        renderCandidateImage(candidate) +
         '<div class="prompt">' + escapeHtml(candidate.prompt || '') + '</div>' +
-        (candidate.imagePath
-          ? '<div class="candidate-media">' + renderInlineImage(candidate.imagePath, candidate.qid || 'candidate image', 'image-frame candidate-image-frame', {
-              caption: [candidate.qid || null, candidate.prompt || null].filter(Boolean).join(' · ') || 'Candidate image',
-            }) + '</div>'
-          : '') +
-        (options ? (rowValue ? options : '<ol class="options">' + options + '</ol>') : '') +
-        (rowValue
-          ? '<div class="gloss">Correct: ' + escapeHtml(getRowDisplayLabel(rowValue)) + '</div>'
-          : (candidate.correctAnswerText ? '<div class="gloss">Correct answer: ' + escapeHtml(candidate.correctAnswerText) + '</div>' : '')) +
-        (candidate.imagePath ? '<div class="filename">' + escapeHtml(candidate.imagePath) + '</div>' : '') +
-      '</article>';
+        (candidateOptions ? (rowValue ? candidateOptions : '<ol class="options">' + candidateOptions + '</ol>') : '') +
+        optionAlignment.warningHtml +
+        '</article>';
+    }
+
+    function renderRecommendationReview(item, decision) {
+      if (!item.combinedRecommendation) {
+        return '';
+      }
+      const topCandidate = Array.isArray(item.topCandidates) ? item.topCandidates[0] : null;
+      const panel = renderNotebookLmPanel(item);
+      if (!topCandidate || !panel) {
+        return '';
+      }
+      return '<div class="recommendation-review"><span class="label">Recommendation Review</span>' +
+        '<div>' +
+          '<span class="label">Top Matcher Candidate</span>' +
+          renderCandidate(topCandidate, item.id, {
+            compact: true,
+            sourceItem: item,
+            decision,
+            showOptionAlignment: true,
+          }) +
+        '</div>' +
+      '</div>';
     }
 
     function renderStructuredAnswerKeyNote(item, decision) {
@@ -2213,7 +3074,7 @@ function buildHtml({
             '<label><input type="radio" name="mode-' + escapeHtml(item.id) + '" value="delete"' + (decision.deleteQuestion === true ? ' checked' : '') + '><span>Delete question</span></label>' +
         '</div>' +
         '</div>' +
-        '<div class="decision-row"><span class="label">Approved Qid</span><input type="text" value="' + escapeHtml(decision.approvedQid || '') + '" data-approved-qid-for="' + escapeHtml(item.id) + '" placeholder="q0123"></div>' +
+        '<div class="decision-row"><span class="label">Approved Qid</span><input type="text" value="' + escapeHtml(decision.approvedQid || '') + '" data-approved-qid-for="' + escapeHtml(item.id) + '" placeholder="92 or q0092"></div>' +
         (showAnswerKey
           ? '<div class="decision-row"><span class="label" data-answer-key-label-for="' + escapeHtml(item.id) + '">' + escapeHtml(getAnswerKeyLabelText(item, decision)) + '</span><div class="answer-key-choices">' + answerChoices + '</div>' +
               (item.currentStagedLocaleCorrectOptionKey && decision.createNewQuestion !== true
@@ -2230,24 +3091,75 @@ function buildHtml({
       '</div>';
     }
 
+    function renderNotebookLmPanel(item) {
+      const combined = item.combinedRecommendation || null;
+      const suggestion = item.notebookLmSuggestion || null;
+      if (!combined && !suggestion) {
+        return '';
+      }
+
+      const warnings = [];
+      if (combined?.confidence === 'conflict') warnings.push(combined.reason || 'NotebookLM conflicts with matcher evidence.');
+      if (combined?.answerKeyConflict) warnings.push('Answer key conflict: NotebookLM and local/candidate answer key differ.');
+      if (combined?.notebookQidNotInMatcherCandidates) warnings.push('NotebookLM qid is not in the matcher candidate list.');
+      if (suggestion && (suggestion.isCloseMatch !== true || Number(suggestion.confidence || 0) < 70)) warnings.push('NotebookLM confidence is low; original matcher ranking is preserved.');
+
+      return '<div class="notebook-panel' + (combined?.confidence === 'conflict' ? ' conflict' : '') + '">' +
+        '<div><span class="label">Final Combined Recommendation</span>' +
+          (combined
+            ? '<div class="notebook-grid">' +
+                renderMiniFact('Recommended Qid', combined.recommendedQid || 'none') +
+                renderMiniFact('Answer Key', combined.recommendedAnswerKey || 'unknown') +
+                renderMiniFact('Confidence', combined.confidence || 'unknown') +
+                renderMiniFact('Sources', (combined.sources || []).join(' + ') || 'none') +
+              '</div>' +
+              '<div class="fact"><div class="value">' + escapeHtml(combined.reason || '') + '</div></div>' +
+              '<button type="button" class="secondary" data-use-combined="' + escapeHtml(item.id) + '">Use combined recommendation</button>'
+            : '<div class="fact"><div class="value">No combined recommendation has been generated yet.</div></div>') +
+        '</div>' +
+        (suggestion
+          ? '<div><span class="label">NotebookLM Evidence</span>' +
+              '<div class="notebook-grid">' +
+                renderMiniFact('Suggested Qid', suggestion.notebookSuggestedQid || 'none') +
+                renderMiniFact('Answer Key', suggestion.notebookAnswerKey || 'unknown') +
+                renderMiniFact('Confidence', suggestion.confidence != null ? String(suggestion.confidence) : 'unknown') +
+                renderMiniFact('Status', suggestion.status || 'unknown') +
+              '</div>' +
+              (suggestion.reason ? '<div class="fact"><span class="label">Reason</span><div class="value">' + escapeHtml(suggestion.reason) + '</div></div>' : '') +
+              (suggestion.matchedText ? '<div class="fact"><span class="label">Matched Text</span><div class="value">' + escapeHtml(suggestion.matchedText) + '</div></div>' : '') +
+            '</div>'
+          : '') +
+        (warnings.length ? warnings.map((warning) => '<div class="notebook-warning">' + escapeHtml(warning) + '</div>').join('') : '') +
+      '</div>';
+    }
+
+    function renderMiniFact(label, value) {
+      return '<div class="fact"><span class="label">' + escapeHtml(label) + '</span><div class="value">' + escapeHtml(value || '') + '</div></div>';
+    }
+
+    function renderFactGrid(facts) {
+      return facts.map(([label, value]) => renderMiniFact(label, value)).join('');
+    }
+
     function renderCard(item) {
       const decision = getDecision(item.id);
       const displayNumber = DISPLAY_INDEX_BY_ID.get(item.id) ?? item.index ?? '?';
       const typeMismatch = getTypeMismatchInfo(item, decision);
       const facts = [];
+      const advancedFacts = [];
       if (item.reason) facts.push(['Reason', item.reason]);
-      if (item.ocrConfidence) facts.push(['OCR', item.ocrConfidence]);
+      if (item.ocrConfidence) advancedFacts.push(['OCR', item.ocrConfidence]);
       if (item.section === 'auto-matched' && item.qid) facts.push(['Matched Qid', item.qid]);
       if (item.section === 'auto-matched' && item.matchScore != null) facts.push(['Match Score', item.matchScore]);
       if (item.section === 'auto-matched' && item.matchScoreGap != null) facts.push(['Match Gap', item.matchScoreGap]);
-      if (item.candidateSetLabel) facts.push(['Candidate Set', item.candidateSetLabel]);
-      if (item.initialSuggestedQid) facts.push(['Initial Suggested Qid', item.initialSuggestedQid]);
-      if (item.currentStagedLocaleCorrectOptionKey) facts.push(['Current Staged Key', item.currentStagedLocaleCorrectOptionKey]);
+      if (item.candidateSetLabel) advancedFacts.push(['Candidate Set', item.candidateSetLabel]);
+      if (item.initialSuggestedQid) advancedFacts.push(['Initial Suggested Qid', item.initialSuggestedQid]);
+      if (item.currentStagedLocaleCorrectOptionKey) advancedFacts.push(['Current Staged Key', item.currentStagedLocaleCorrectOptionKey]);
       if (item.answerKeyNeedsManualConfirmation && item.answerKeyConfirmationReason) {
         facts.push(['Answer-Key Check', item.answerKeyConfirmationReason]);
       }
-      if (item.provisionalTopic) facts.push(['Topic', item.provisionalTopic]);
-      if (Array.isArray(item.provisionalSubtopics) && item.provisionalSubtopics.length > 0) facts.push(['Subtopics', item.provisionalSubtopics.join(', ')]);
+      if (item.provisionalTopic) advancedFacts.push(['Topic', item.provisionalTopic]);
+      if (Array.isArray(item.provisionalSubtopics) && item.provisionalSubtopics.length > 0) advancedFacts.push(['Subtopics', item.provisionalSubtopics.join(', ')]);
       if (item.sourceBatchId) facts.push(['Source Batch', item.sourceBatchId]);
       if (item.backlogKind) facts.push(['Backlog', item.backlogKind]);
       if (item.backlogStatus) facts.push(['Backlog Status', item.backlogStatus]);
@@ -2256,28 +3168,39 @@ function buildHtml({
         facts.push(['Canonical Correct', [item.canonicalCorrectOptionKey, item.canonicalCorrectOptionText].filter(Boolean).join(' · ')]);
       }
       return '<article class="item" data-item-id="' + escapeHtml(item.id) + '">' +
-        '<div>' +
+        '<div class="source-asset-column">' +
           '<div class="eyebrow">' + escapeHtml(item.section.replace('-', ' ')) + '</div>' +
           '<h3>' + escapeHtml(item.section === 'answer-key' ? item.qid : (item.itemId || item.sourceImage || 'item')) + '</h3>' +
           renderImage(item) +
           '<div class="filename"><span class="filename-number">' + escapeHtml(displayNumber) + '.</span>' + escapeHtml(item.sourceImage || item.itemId || item.qid || '') + '</div>' +
+          (item.section !== 'answer-key'
+            ? renderRecommendationReview(item, decision)
+            : '') +
         '</div>' +
         '<div class="source-block">' +
           '<div class="source-card">' +
-            '<div><span class="label">Japanese Prompt</span><p class="prompt">' + escapeHtml(item.promptRawJa || '') + '</p>' + (item.promptGlossEn ? '<div class="gloss">' + escapeHtml(item.promptGlossEn) + '</div>' : '') + '</div>' +
+            '<div><span class="label">Source Prompt</span><p class="prompt">' + escapeHtml(item.promptRawJa || '') + '</p>' + (item.promptGlossEn ? '<div class="gloss">' + escapeHtml(item.promptGlossEn) + '</div>' : '') + '</div>' +
             renderSourceOptionSection(item, decision) +
-            '<div class="mini-grid">' +
-              facts.map(([label, value]) => '<div class="fact"><span class="label">' + escapeHtml(label) + '</span><div class="value">' + escapeHtml(value || '') + '</div></div>').join('') +
+            (item.section !== 'answer-key' ? renderNotebookLmPanel(item) : '') +
+            (facts.length || typeMismatch
+              ? '<div class="mini-grid">' +
+                renderFactGrid(facts) +
               (typeMismatch
                 ? '<div class="fact warn"><span class="label">Type Mismatch</span><div class="value">Source inferred ' + escapeHtml(typeMismatch.sourceType) + ', but approved master ' + escapeHtml(typeMismatch.approvedQid || 'qid') + ' is ' + escapeHtml(typeMismatch.approvedMasterType) + '. Rendering and answer-key handling use the approved master type.</div></div>'
                 : '') +
-            '</div>' +
+              '</div>'
+              : '') +
             (item.section !== 'answer-key'
               ? ((Array.isArray(item.topCandidates) && item.topCandidates.length > 0)
                   ? '<div><span class="label">Candidates</span><div class="candidate-list">' + item.topCandidates.map((candidate) => renderCandidate(candidate, item.id)).join('') + '</div></div>'
                   : '')
               : '<div><span class="label">Answer-Key Review</span><div class="fact"><div class="value">' + escapeHtml(item.answerKeyConfirmationReason || 'Manual confirmation required.') + '</div></div></div>') +
-            (item.analysis || item.sourceConceptSlots ? '<details><summary>Advanced Details</summary><pre>' + escapeHtml(JSON.stringify({ analysis: item.analysis || null, sourceConceptSlots: item.sourceConceptSlots || null }, null, 2)) + '</pre></details>' : '') +
+            (advancedFacts.length || item.analysis || item.sourceConceptSlots
+              ? '<details><summary>Advanced Details</summary>' +
+                  (advancedFacts.length ? '<div class="mini-grid">' + renderFactGrid(advancedFacts) + '</div>' : '') +
+                  (item.analysis || item.sourceConceptSlots ? '<pre>' + escapeHtml(JSON.stringify({ analysis: item.analysis || null, sourceConceptSlots: item.sourceConceptSlots || null }, null, 2)) + '</pre>' : '') +
+                '</details>'
+              : '') +
           '</div>' +
         '</div>' +
         renderDecisionPanel(item, decision) +
@@ -2332,7 +3255,7 @@ function buildHtml({
       }
 
       const qid = String(
-        decision?.approvedQid ||
+        normalizeDecisionQid(decision?.approvedQid) ||
         item?.qid ||
         item?.initialSuggestedQid ||
         ''
@@ -2491,6 +3414,10 @@ function buildHtml({
         button.addEventListener('click', () => useCandidate(button.dataset.useQid, button.dataset.qid));
       });
 
+      document.querySelectorAll('[data-use-combined]').forEach((button) => {
+        button.addEventListener('click', () => useCombinedRecommendation(button.dataset.useCombined));
+      });
+
       document.querySelectorAll('input[name^=\"mode-\"]').forEach((input) => {
         input.addEventListener('change', () => setDecisionMode(input.name.replace(/^mode-/, ''), input.value));
       });
@@ -2501,7 +3428,7 @@ function buildHtml({
           updateDecision(
             id,
             {
-              approvedQid: input.value.trim() || null,
+              approvedQid: input.value,
               createNewQuestion: false,
               keepUnresolved: false,
               deleteQuestion: false,
@@ -2511,19 +3438,23 @@ function buildHtml({
           syncDecisionUi(id);
         });
 
-        input.addEventListener('change', () => {
+        function commitApprovedQidInput() {
           const id = input.dataset.approvedQidFor;
           updateDecision(
             id,
             {
-              approvedQid: input.value.trim() || null,
+              approvedQid: input.value,
               createNewQuestion: false,
               keepUnresolved: false,
               deleteQuestion: false,
             },
             { preserveContext: false },
           );
-        });
+          input.value = getDecision(id)?.approvedQid || '';
+        }
+
+        input.addEventListener('blur', commitApprovedQidInput);
+        input.addEventListener('change', commitApprovedQidInput);
       });
 
       document.querySelectorAll('input[name^=\"answer-\"]').forEach((input) => {
@@ -2586,18 +3517,56 @@ function buildHtml({
       document.querySelectorAll('[data-new-topic-for]').forEach((input) => {
         input.addEventListener('input', () => updateDecision(
           input.dataset.newTopicFor,
-          { newQuestionProvisionalTopic: input.value.trim() || null },
+          { newQuestionProvisionalTopic: input.value.replace(/\s+/g, ' ').trim() || null },
           { rerender: false },
         ));
+        input.addEventListener('blur', () => {
+          const id = input.dataset.newTopicFor;
+          const decision = getDecision(id) || {};
+          const normalizedTopic = normalizeTopicInputValue(input.value);
+          const normalizedSubtopics = normalizeSubtopicInputList(decision.newQuestionProvisionalSubtopics, normalizedTopic);
+          updateDecision(
+            id,
+            {
+              newQuestionProvisionalTopic: normalizedTopic,
+              newQuestionProvisionalSubtopics: normalizedSubtopics,
+            },
+            { rerender: false },
+          );
+          input.value = normalizedTopic || '';
+          const subtopicsInput = document.querySelector('[data-new-subtopics-for=' + JSON.stringify(id) + ']');
+          if (subtopicsInput) {
+            subtopicsInput.value = normalizedSubtopics.join(', ');
+          }
+        });
       });
 
       document.querySelectorAll('[data-new-subtopics-for]').forEach((textarea) => {
         textarea.addEventListener('input', () => updateDecision(textarea.dataset.newSubtopicsFor, {
           newQuestionProvisionalSubtopics: textarea.value
             .split(/[,\\n]/)
-            .map((entry) => entry.trim())
+            .map((entry) => entry.replace(/\s+/g, ' ').trim())
             .filter(Boolean),
         }, { rerender: false }));
+        textarea.addEventListener('blur', () => {
+          const id = textarea.dataset.newSubtopicsFor;
+          const decision = getDecision(id) || {};
+          const normalizedTopic = normalizeTopicInputValue(decision.newQuestionProvisionalTopic);
+          const normalizedSubtopics = normalizeSubtopicInputList(textarea.value, normalizedTopic);
+          updateDecision(
+            id,
+            {
+              newQuestionProvisionalTopic: normalizedTopic,
+              newQuestionProvisionalSubtopics: normalizedSubtopics,
+            },
+            { rerender: false },
+          );
+          textarea.value = normalizedSubtopics.join(', ');
+          const topicInput = document.querySelector('[data-new-topic-for=' + JSON.stringify(id) + ']');
+          if (topicInput) {
+            topicInput.value = normalizedTopic || '';
+          }
+        });
       });
     }
 
@@ -2735,7 +3704,10 @@ function buildHtml({
         if (!target) {
           return;
         }
-        renderSection(sectionId, ITEMS.filter((item) => item.section === sectionId));
+        renderSection(
+          sectionId,
+          ITEMS.filter((item) => (DISPLAY_SECTION_BY_ID[item.id] || item.section) === sectionId),
+        );
       });
 
       bindEventHandlers();
@@ -3080,7 +4052,7 @@ function deriveCorrectAlignment({ sourceItem, question, alignment }) {
     return {
       localeCorrectOptionKey: normalizeText(sourceItem.correctKeyRaw),
       needsManualConfirmation: true,
-      reason: "Could not align the approved canonical correct option to a Japanese choice.",
+      reason: "Could not align the approved canonical correct option to a reviewed locale choice.",
       alignmentScore: null,
       method: "unresolved",
     };
@@ -3108,11 +4080,11 @@ function deriveCorrectAlignment({ sourceItem, question, alignment }) {
     needsManualConfirmation,
     reason: needsManualConfirmation
       ? visibleKeyMismatch
-        ? `Visible Japanese answer key ${visibleKey} disagrees with meaning-based alignment ${sourceMatch.sourceKey}.`
+        ? `Visible locale answer key ${visibleKey} disagrees with meaning-based alignment ${sourceMatch.sourceKey}.`
         : best < 0.65
-          ? "Meaning-based option alignment was weak; verify the Japanese correct option key manually."
-          : "Top option alignment was too close to another source choice; verify the Japanese correct option key manually."
-      : "Meaning-based option alignment cleanly identified the Japanese correct option key.",
+          ? "Meaning-based option alignment was weak; verify the locale correct option key manually."
+          : "Top option alignment was too close to another source choice; verify the locale correct option key manually."
+      : "Meaning-based option alignment cleanly identified the locale correct option key.",
     alignmentScore: sourceMatch.alignmentScore,
     method: visibleKey ? "visible-key-and-meaning" : "meaning-derived",
   };
@@ -3145,6 +4117,34 @@ function fallbackChoiceKey(index) {
 function normalizeChoiceKey(value) {
   const text = String(value ?? "").trim().toUpperCase();
   return /^[A-D]$/.test(text) ? text : null;
+}
+
+function normalizeCanonicalQid(value) {
+  const text = normalizeText(value);
+  if (!text) {
+    return null;
+  }
+
+  const match = text.match(/^q?(\d+)$/i);
+  if (!match) {
+    return null;
+  }
+
+  const number = Number.parseInt(match[1], 10);
+  if (!Number.isSafeInteger(number) || number <= 0 || number > 9999) {
+    return null;
+  }
+
+  return `q${String(number).padStart(4, "0")}`;
+}
+
+function normalizeWorkbenchApprovedQidValue(value) {
+  const text = normalizeText(value);
+  if (!text) {
+    return null;
+  }
+
+  return normalizeCanonicalQid(text) ?? text;
 }
 
 function normalizeText(value) {

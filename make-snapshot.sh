@@ -1,44 +1,35 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-OUTPUT="expatise-snapshot.md"
-TMP="${OUTPUT}.tmp"
+# Curated snapshot defaults.
+# Override any of these at invocation time, for example:
+#   MAX_FILES=24 MAX_TOTAL_BYTES=220000 ./make-snapshot.sh
+OUTPUT="${OUTPUT:-expatise-snapshot.md}"
 
-: > "$TMP"
+COMPACT=0
+for arg in "$@"; do
+  if [[ "$arg" == "--compact" ]]; then
+    COMPACT=1
+    break
+  fi
+done
 
-FILES=$(
-  {
-    git ls-files
-    git ls-files --others --exclude-standard
-  } |
-  # include only code/text (avoid images/binaries)
-  grep -E '\.(ts|tsx|js|jsx|css|json|md)$' |
-  # exclude generated/noisy folders + public images
-  grep -vE '^(node_modules/|\.next/|dist/|build/|out/|coverage/|\.git/|\.vercel/|\.venv/|public/images/)' |
+if [[ "$COMPACT" -eq 1 ]]; then
+  MAX_FILES="${MAX_FILES:-22}"
+  MAX_TOTAL_BYTES="${MAX_TOTAL_BYTES:-180000}"
+  MAX_FILE_BYTES="${MAX_FILE_BYTES:-5000}"
+else
+  MAX_FILES="${MAX_FILES:-28}"
+  MAX_TOTAL_BYTES="${MAX_TOTAL_BYTES:-300000}"
+  MAX_FILE_BYTES="${MAX_FILE_BYTES:-8000}"
+fi
 
-  # CRITICAL: never include the snapshot itself
-  grep -vE "^${OUTPUT}$" |
-  sort -u
-)
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-while IFS= read -r file; do
-  [ -f "$file" ] || continue
-
-  echo "### $file" >> "$TMP"
-
-  ext="${file##*.}"
-  case "$ext" in
-    ts|tsx|js|jsx) lang="tsx" ;;
-    css)           lang="css" ;;
-    json)          lang="json" ;;
-    md)            lang="md" ;;
-    *)             lang="" ;;
-  esac
-
-  printf '```%s\n' "$lang" >> "$TMP"
-  cat "$file" >> "$TMP"
-  printf '\n```\n\n' >> "$TMP"
-done <<< "$FILES"
-
-mv "$TMP" "$OUTPUT"
-echo "✅ Snapshot written to $OUTPUT"
+node "$ROOT_DIR/scripts/generate-curated-snapshot.mjs" \
+  --repo-root "$ROOT_DIR" \
+  --output "$OUTPUT" \
+  --max-files "$MAX_FILES" \
+  --max-total-bytes "$MAX_TOTAL_BYTES" \
+  --max-file-bytes "$MAX_FILE_BYTES" \
+  "$@"

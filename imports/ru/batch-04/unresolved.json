@@ -1,0 +1,678 @@
+{
+  "generatedAt": "2026-04-20T07:56:41.117Z",
+  "lang": "ru",
+  "batchId": "batch-04",
+  "dataset": "2023-test1",
+  "kind": "unresolved",
+  "items": [
+    {
+      "itemId": "screenshots/Screenshot 2026-04-19 at 18.49.17.png",
+      "sourceImage": "screenshots/Screenshot 2026-04-19 at 18.49.17.png",
+      "promptRawJa": "Что означает данный знак?",
+      "promptGlossEn": "What does this sign mean?",
+      "optionsRawJa": [
+        "A) Указание полосы дороги",
+        "B) Указание запрета",
+        "C) Указание слияния",
+        "D) Указания движения вперед"
+      ],
+      "optionsGlossEn": [
+        "A) Indication of the lane",
+        "B) Indication of prohibition",
+        "C) Indication of merging",
+        "D) Indication of movement forward"
+      ],
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "ocrConfidence": "high",
+      "hasImage": true,
+      "provisionalTopic": "traffic-signals",
+      "provisionalSubtopics": [
+        "traffic-signals:road-signs"
+      ],
+      "topicConfidence": 1,
+      "topicSignals": [
+        {
+          "topic": "traffic-signals",
+          "subtopic": "traffic-signals:road-signs",
+          "signal": "sign-family",
+          "weight": 1.4
+        }
+      ],
+      "sourcePromptFamily": "sign-meaning",
+      "sourceOptionCount": 4,
+      "optionCountReliable": true,
+      "expectedObjectTags": [
+        "arrow"
+      ],
+      "expectedColorTags": [],
+      "sourceIsSignHeavy": true,
+      "sourceConceptSlots": null,
+      "reason": "No candidate passed the minimum similarity threshold.",
+      "analysis": {
+        "mode": "standard",
+        "effectiveQuestionType": "MCQ",
+        "declaredQuestionType": "MCQ",
+        "booleanChoiceDetected": false,
+        "topScore": 44.843,
+        "topGap": 0.787,
+        "plausibleShortlist": true,
+        "imageParityApplied": true,
+        "candidateImageParityMode": "image-only candidate set",
+        "candidateCountBeforeParity": 985,
+        "candidateCountAfterParity": 498,
+        "candidateCountAfterStructuralFilter": 356,
+        "structuralFilterMode": "hard-structural",
+        "structuralHardCandidateCount": 356,
+        "structuralSoftCandidateCount": 357,
+        "explanation": "Shortlist is plausible but still below the review floor."
+      },
+      "topCandidates": [
+        {
+          "qid": "q0795",
+          "number": 795,
+          "type": "MCQ",
+          "score": 44.843,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.147,
+            "rawPromptSimilarity": 0.268,
+            "englishPromptSimilarity": 0.147,
+            "syntheticPromptSimilarity": 0,
+            "localizedPromptSimilarity": 0,
+            "optionSimilarity": 0.182,
+            "englishOptionSimilarity": 0.182,
+            "syntheticOptionSimilarity": 0,
+            "localizedOptionSimilarity": 0,
+            "optionFingerprint": 0.106,
+            "englishOptionFingerprint": 0.106,
+            "syntheticOptionFingerprint": 0,
+            "localizedOptionFingerprint": 0,
+            "optionExactSet": 0,
+            "optionRareCoverage": 0.172,
+            "mirrorAgreement": 0,
+            "localizedAgreement": 0.5,
+            "correctAnswerMeaning": 0.5,
+            "englishCorrectAnswerMeaning": 0.5,
+            "syntheticCorrectAnswerMeaning": 0,
+            "localizedCorrectAnswerMeaning": 0.5,
+            "questionType": 1,
+            "optionCountAgreement": 1,
+            "answerStructureAgreement": 0.5,
+            "promptFamilyAgreement": 0.35,
+            "provisionalTopicAgreement": 0,
+            "structuralAgreement": 0.772,
+            "structuralPenalty": 0.16,
+            "imageSignal": 1,
+            "imageObjectAgreement": 1,
+            "imageColorAgreement": 0.5,
+            "topicWeighting": 0.5,
+            "assetTieBreak": 0,
+            "baseScore": 36.651,
+            "rerankAdjustment": 8.192
+          },
+          "diagnostics": {
+            "effectiveItemType": "MCQ",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": false,
+            "promptSpecificity": 0.55,
+            "genericPromptPenalty": 0.55,
+            "missingCorrectAnswerNeutral": true,
+            "exactCorrectKey": false,
+            "optionSetMode": "unordered-semantic",
+            "rareSetBonus": 0,
+            "localizedMirrorUsed": false,
+            "localizedMirrorLabel": null,
+            "localizedSignalAvailable": false,
+            "syntheticMirrorUsed": false,
+            "genericPromptFamily": null,
+            "structuralSevereSignals": [],
+            "structuralSoftSignals": [
+              "topic"
+            ],
+            "imageObjectComparable": true,
+            "imageColorComparable": false,
+            "explanation": [
+              "Generic prompt wording was down-weighted to avoid overvaluing template matches.",
+              "Missing correct answer was treated as a neutral signal.",
+              "Structural filtering and scoring strongly agree with this candidate.",
+              "Source-side visual cues overlap with the candidate image tags."
+            ]
+          },
+          "prompt": "What’s the meaning of this sign?",
+          "syntheticJaPrompt": "meaning 標識 82。",
+          "translatedPrompt": "이 표지의 뜻은?",
+          "options": [
+            {
+              "id": "A",
+              "text": "fewer lanes",
+              "translatedText": "차로 수 감소"
+            },
+            {
+              "id": "B",
+              "text": "merging point",
+              "translatedText": "합류 지점"
+            },
+            {
+              "id": "C",
+              "text": "emergency lane",
+              "translatedText": "비상차로"
+            },
+            {
+              "id": "D",
+              "text": "changing to left lane",
+              "translatedText": "좌측 차로로 변경"
+            }
+          ],
+          "correctAnswer": {
+            "kind": "MCQ",
+            "correctRow": null,
+            "correctOptionId": "q0795_o1",
+            "correctOptionKey": "A",
+            "correctOptionText": "fewer lanes",
+            "correctOptionTranslatedText": "차로 수 감소",
+            "answerRaw": "A"
+          },
+          "image": {
+            "hasImage": true,
+            "currentAssetSrc": "/qbank/2023-test1/images/img_68647d5fe4b25df77bcad3620ca55d46.jpeg",
+            "assetHashes": [
+              "68647d5fe4b25df77bcad3620ca55d46"
+            ],
+            "colorTags": [
+              "blue",
+              "white"
+            ],
+            "objectTags": [
+              "arrow"
+            ]
+          },
+          "topic": "police-hand-signals",
+          "subtopics": [],
+          "conceptSlots": null
+        },
+        {
+          "qid": "q0660",
+          "number": 660,
+          "type": "MCQ",
+          "score": 44.056,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.143,
+            "rawPromptSimilarity": 0.285,
+            "englishPromptSimilarity": 0.143,
+            "syntheticPromptSimilarity": 0,
+            "localizedPromptSimilarity": 0,
+            "optionSimilarity": 0.337,
+            "englishOptionSimilarity": 0.337,
+            "syntheticOptionSimilarity": 0,
+            "localizedOptionSimilarity": 0,
+            "optionFingerprint": 0.157,
+            "englishOptionFingerprint": 0.157,
+            "syntheticOptionFingerprint": 0,
+            "localizedOptionFingerprint": 0,
+            "optionExactSet": 0,
+            "optionRareCoverage": 0.071,
+            "mirrorAgreement": 0,
+            "localizedAgreement": 0.5,
+            "correctAnswerMeaning": 0.5,
+            "englishCorrectAnswerMeaning": 0.5,
+            "syntheticCorrectAnswerMeaning": 0,
+            "localizedCorrectAnswerMeaning": 0.5,
+            "questionType": 1,
+            "optionCountAgreement": 1,
+            "answerStructureAgreement": 0.5,
+            "promptFamilyAgreement": 0.35,
+            "provisionalTopicAgreement": 0,
+            "structuralAgreement": 0.699,
+            "structuralPenalty": 0.16,
+            "imageSignal": 1,
+            "imageObjectAgreement": 0.35,
+            "imageColorAgreement": 0.5,
+            "topicWeighting": 0.5,
+            "assetTieBreak": 0,
+            "baseScore": 42.962,
+            "rerankAdjustment": 1.094
+          },
+          "diagnostics": {
+            "effectiveItemType": "MCQ",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": false,
+            "promptSpecificity": 0.5,
+            "genericPromptPenalty": 0.5,
+            "missingCorrectAnswerNeutral": true,
+            "exactCorrectKey": false,
+            "optionSetMode": "unordered-semantic",
+            "rareSetBonus": 0,
+            "localizedMirrorUsed": false,
+            "localizedMirrorLabel": null,
+            "localizedSignalAvailable": false,
+            "syntheticMirrorUsed": false,
+            "genericPromptFamily": null,
+            "structuralSevereSignals": [],
+            "structuralSoftSignals": [
+              "topic"
+            ],
+            "imageObjectComparable": true,
+            "imageColorComparable": false,
+            "explanation": [
+              "Generic prompt wording was down-weighted to avoid overvaluing template matches.",
+              "Missing correct answer was treated as a neutral signal."
+            ]
+          },
+          "prompt": "What’s the meaning of this sign?",
+          "syntheticJaPrompt": "meaning 標識。",
+          "translatedPrompt": "이 표지의 뜻은?",
+          "options": [
+            {
+              "id": "A",
+              "text": "indication of the place name of the expressway ending",
+              "translatedText": "고속도로 종점의 지명 표시"
+            },
+            {
+              "id": "B",
+              "text": "indication of the driving route of the expressway",
+              "translatedText": "고속도로의 주행 경로 표시"
+            },
+            {
+              "id": "C",
+              "text": "indication of the driving direction of the expressway",
+              "translatedText": "고속도로의 진행 방향 표시"
+            },
+            {
+              "id": "D",
+              "text": "indication of the location and distance of the expressway",
+              "translatedText": "고속도로의 위치와 거리 표시"
+            }
+          ],
+          "correctAnswer": {
+            "kind": "MCQ",
+            "correctRow": null,
+            "correctOptionId": "q0660_o4",
+            "correctOptionKey": "D",
+            "correctOptionText": "indication of the location and distance of the expressway",
+            "correctOptionTranslatedText": "고속도로의 위치와 거리 표시",
+            "answerRaw": "D"
+          },
+          "image": {
+            "hasImage": true,
+            "currentAssetSrc": "/qbank/2023-test1/images/img_cde94ebc5864b5a6a25aa34b064cf741.jpeg",
+            "assetHashes": [
+              "cde94ebc5864b5a6a25aa34b064cf741"
+            ],
+            "colorTags": [
+              "green"
+            ],
+            "objectTags": []
+          },
+          "topic": "expressway",
+          "subtopics": [],
+          "conceptSlots": null
+        },
+        {
+          "qid": "q0775",
+          "number": 775,
+          "type": "MCQ",
+          "score": 43.961,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.098,
+            "rawPromptSimilarity": 0.163,
+            "englishPromptSimilarity": 0.098,
+            "syntheticPromptSimilarity": 0,
+            "localizedPromptSimilarity": 0,
+            "optionSimilarity": 0.153,
+            "englishOptionSimilarity": 0.153,
+            "syntheticOptionSimilarity": 0,
+            "localizedOptionSimilarity": 0,
+            "optionFingerprint": 0.151,
+            "englishOptionFingerprint": 0.151,
+            "syntheticOptionFingerprint": 0,
+            "localizedOptionFingerprint": 0,
+            "optionExactSet": 0,
+            "optionRareCoverage": 0.188,
+            "mirrorAgreement": 0,
+            "localizedAgreement": 0.5,
+            "correctAnswerMeaning": 0.5,
+            "englishCorrectAnswerMeaning": 0.5,
+            "syntheticCorrectAnswerMeaning": 0,
+            "localizedCorrectAnswerMeaning": 0.5,
+            "questionType": 1,
+            "optionCountAgreement": 1,
+            "answerStructureAgreement": 0.5,
+            "promptFamilyAgreement": 0.35,
+            "provisionalTopicAgreement": 0,
+            "structuralAgreement": 0.772,
+            "structuralPenalty": 0.16,
+            "imageSignal": 1,
+            "imageObjectAgreement": 1,
+            "imageColorAgreement": 0.5,
+            "topicWeighting": 0.5,
+            "assetTieBreak": 0,
+            "baseScore": 35.769,
+            "rerankAdjustment": 8.192
+          },
+          "diagnostics": {
+            "effectiveItemType": "MCQ",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": false,
+            "promptSpecificity": 0.6,
+            "genericPromptPenalty": 0.6,
+            "missingCorrectAnswerNeutral": true,
+            "exactCorrectKey": false,
+            "optionSetMode": "unordered-semantic",
+            "rareSetBonus": 0,
+            "localizedMirrorUsed": false,
+            "localizedMirrorLabel": null,
+            "localizedSignalAvailable": false,
+            "syntheticMirrorUsed": false,
+            "genericPromptFamily": null,
+            "structuralSevereSignals": [],
+            "structuralSoftSignals": [
+              "topic"
+            ],
+            "imageObjectComparable": true,
+            "imageColorComparable": false,
+            "explanation": [
+              "Generic prompt wording was down-weighted to avoid overvaluing template matches.",
+              "Missing correct answer was treated as a neutral signal.",
+              "Structural filtering and scoring strongly agree with this candidate.",
+              "Source-side visual cues overlap with the candidate image tags."
+            ]
+          },
+          "prompt": "What’s the meaning of this guide arrow?",
+          "syntheticJaPrompt": "meaning guide arrow",
+          "translatedPrompt": "이 방향 화살표의 의미는?",
+          "options": [
+            {
+              "id": "A",
+              "text": "no passing",
+              "translatedText": "추월 금지"
+            },
+            {
+              "id": "B",
+              "text": "driving lane",
+              "translatedText": "주행 차로"
+            },
+            {
+              "id": "C",
+              "text": "merging",
+              "translatedText": "차로 합류"
+            },
+            {
+              "id": "D",
+              "text": "going straight",
+              "translatedText": "직진"
+            }
+          ],
+          "correctAnswer": {
+            "kind": "MCQ",
+            "correctRow": null,
+            "correctOptionId": "q0775_o4",
+            "correctOptionKey": "D",
+            "correctOptionText": "going straight",
+            "correctOptionTranslatedText": "직진",
+            "answerRaw": "D"
+          },
+          "image": {
+            "hasImage": true,
+            "currentAssetSrc": "/qbank/2023-test1/images/img_98b77976d485b63849000f95e91cbcd0.jpeg",
+            "assetHashes": [
+              "98b77976d485b63849000f95e91cbcd0"
+            ],
+            "colorTags": [
+              "gray"
+            ],
+            "objectTags": [
+              "arrow"
+            ]
+          },
+          "topic": "mcq",
+          "subtopics": [],
+          "conceptSlots": null
+        },
+        {
+          "qid": "q0823",
+          "number": 823,
+          "type": "MCQ",
+          "score": 43.164,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.143,
+            "rawPromptSimilarity": 0.285,
+            "englishPromptSimilarity": 0.143,
+            "syntheticPromptSimilarity": 0,
+            "localizedPromptSimilarity": 0,
+            "optionSimilarity": 0.173,
+            "englishOptionSimilarity": 0.173,
+            "syntheticOptionSimilarity": 0,
+            "localizedOptionSimilarity": 0,
+            "optionFingerprint": 0.046,
+            "englishOptionFingerprint": 0.046,
+            "syntheticOptionFingerprint": 0,
+            "localizedOptionFingerprint": 0,
+            "optionExactSet": 0,
+            "optionRareCoverage": 0.04,
+            "mirrorAgreement": 0,
+            "localizedAgreement": 0.5,
+            "correctAnswerMeaning": 0.5,
+            "englishCorrectAnswerMeaning": 0.5,
+            "syntheticCorrectAnswerMeaning": 0,
+            "localizedCorrectAnswerMeaning": 0.5,
+            "questionType": 1,
+            "optionCountAgreement": 1,
+            "answerStructureAgreement": 0.5,
+            "promptFamilyAgreement": 0.35,
+            "provisionalTopicAgreement": 0,
+            "structuralAgreement": 0.772,
+            "structuralPenalty": 0.16,
+            "imageSignal": 1,
+            "imageObjectAgreement": 1,
+            "imageColorAgreement": 0.5,
+            "topicWeighting": 0.5,
+            "assetTieBreak": 0,
+            "baseScore": 34.972,
+            "rerankAdjustment": 8.192
+          },
+          "diagnostics": {
+            "effectiveItemType": "MCQ",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": false,
+            "promptSpecificity": 0.5,
+            "genericPromptPenalty": 0.5,
+            "missingCorrectAnswerNeutral": true,
+            "exactCorrectKey": false,
+            "optionSetMode": "unordered-semantic",
+            "rareSetBonus": 0,
+            "localizedMirrorUsed": false,
+            "localizedMirrorLabel": null,
+            "localizedSignalAvailable": false,
+            "syntheticMirrorUsed": false,
+            "genericPromptFamily": null,
+            "structuralSevereSignals": [],
+            "structuralSoftSignals": [
+              "topic"
+            ],
+            "imageObjectComparable": true,
+            "imageColorComparable": false,
+            "explanation": [
+              "Generic prompt wording was down-weighted to avoid overvaluing template matches.",
+              "Missing correct answer was treated as a neutral signal.",
+              "Structural filtering and scoring strongly agree with this candidate.",
+              "Source-side visual cues overlap with the candidate image tags."
+            ]
+          },
+          "prompt": "What’s the meaning of this sign?",
+          "syntheticJaPrompt": "meaning 標識。",
+          "translatedPrompt": "이 표지의 뜻은?",
+          "options": [
+            {
+              "id": "A",
+              "text": "change to right lane",
+              "translatedText": "우측 차로로 변경하라"
+            },
+            {
+              "id": "B",
+              "text": "branching point",
+              "translatedText": "분기점"
+            },
+            {
+              "id": "C",
+              "text": "road surface becomes wider",
+              "translatedText": "도로 폭이 넓어짐"
+            },
+            {
+              "id": "D",
+              "text": "the number of lanes increases",
+              "translatedText": "차로 수가 증가함"
+            }
+          ],
+          "correctAnswer": {
+            "kind": "MCQ",
+            "correctRow": null,
+            "correctOptionId": "q0823_o4",
+            "correctOptionKey": "D",
+            "correctOptionText": "the number of lanes increases",
+            "correctOptionTranslatedText": "차로 수가 증가함",
+            "answerRaw": "D"
+          },
+          "image": {
+            "hasImage": true,
+            "currentAssetSrc": "/qbank/2023-test1/images/img_1c38323a5d0fc66968ea69d6a69db449.jpeg",
+            "assetHashes": [
+              "1c38323a5d0fc66968ea69d6a69db449"
+            ],
+            "colorTags": [
+              "blue",
+              "white"
+            ],
+            "objectTags": [
+              "arrow"
+            ]
+          },
+          "topic": "mcq",
+          "subtopics": [],
+          "conceptSlots": null
+        },
+        {
+          "qid": "q0755",
+          "number": 755,
+          "type": "MCQ",
+          "score": 42.317,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.143,
+            "rawPromptSimilarity": 0.285,
+            "englishPromptSimilarity": 0.143,
+            "syntheticPromptSimilarity": 0,
+            "localizedPromptSimilarity": 0,
+            "optionSimilarity": 0.148,
+            "englishOptionSimilarity": 0.148,
+            "syntheticOptionSimilarity": 0,
+            "localizedOptionSimilarity": 0,
+            "optionFingerprint": 0.046,
+            "englishOptionFingerprint": 0.046,
+            "syntheticOptionFingerprint": 0,
+            "localizedOptionFingerprint": 0,
+            "optionExactSet": 0,
+            "optionRareCoverage": 0.057,
+            "mirrorAgreement": 0,
+            "localizedAgreement": 0.5,
+            "correctAnswerMeaning": 0.5,
+            "englishCorrectAnswerMeaning": 0.5,
+            "syntheticCorrectAnswerMeaning": 0,
+            "localizedCorrectAnswerMeaning": 0.5,
+            "questionType": 1,
+            "optionCountAgreement": 1,
+            "answerStructureAgreement": 0.5,
+            "promptFamilyAgreement": 0.35,
+            "provisionalTopicAgreement": 0,
+            "structuralAgreement": 0.772,
+            "structuralPenalty": 0.16,
+            "imageSignal": 1,
+            "imageObjectAgreement": 1,
+            "imageColorAgreement": 0.5,
+            "topicWeighting": 0.5,
+            "assetTieBreak": 0,
+            "baseScore": 34.125,
+            "rerankAdjustment": 8.192
+          },
+          "diagnostics": {
+            "effectiveItemType": "MCQ",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": false,
+            "promptSpecificity": 0.5,
+            "genericPromptPenalty": 0.5,
+            "missingCorrectAnswerNeutral": true,
+            "exactCorrectKey": false,
+            "optionSetMode": "unordered-semantic",
+            "rareSetBonus": 0,
+            "localizedMirrorUsed": false,
+            "localizedMirrorLabel": null,
+            "localizedSignalAvailable": false,
+            "syntheticMirrorUsed": false,
+            "genericPromptFamily": null,
+            "structuralSevereSignals": [],
+            "structuralSoftSignals": [
+              "topic"
+            ],
+            "imageObjectComparable": true,
+            "imageColorComparable": false,
+            "explanation": [
+              "Generic prompt wording was down-weighted to avoid overvaluing template matches.",
+              "Missing correct answer was treated as a neutral signal.",
+              "Structural filtering and scoring strongly agree with this candidate.",
+              "Source-side visual cues overlap with the candidate image tags."
+            ]
+          },
+          "prompt": "What’s the meaning of this sign?",
+          "syntheticJaPrompt": "meaning 標識。",
+          "translatedPrompt": "이 표지의 뜻은?",
+          "options": [
+            {
+              "id": "A",
+              "text": "right-turn lane",
+              "translatedText": "우회전 차로"
+            },
+            {
+              "id": "B",
+              "text": "U turn lane",
+              "translatedText": "U턴 차로"
+            },
+            {
+              "id": "C",
+              "text": "left-turn lane",
+              "translatedText": "좌회전 차로"
+            },
+            {
+              "id": "D",
+              "text": "lanes for going in different directions",
+              "translatedText": "방향별 차로"
+            }
+          ],
+          "correctAnswer": {
+            "kind": "MCQ",
+            "correctRow": null,
+            "correctOptionId": "q0755_o3",
+            "correctOptionKey": "C",
+            "correctOptionText": "left-turn lane",
+            "correctOptionTranslatedText": "좌회전 차로",
+            "answerRaw": "C"
+          },
+          "image": {
+            "hasImage": true,
+            "currentAssetSrc": "/qbank/2023-test1/images/img_5638eb5d1220596566b2ff0ed37fe4a7.jpeg",
+            "assetHashes": [
+              "5638eb5d1220596566b2ff0ed37fe4a7"
+            ],
+            "colorTags": [
+              "blue",
+              "white"
+            ],
+            "objectTags": [
+              "arrow"
+            ]
+          },
+          "topic": "mcq",
+          "subtopics": [],
+          "conceptSlots": null
+        }
+      ]
+    }
+  ]
+}

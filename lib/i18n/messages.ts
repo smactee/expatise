@@ -26,8 +26,14 @@ export function isLocale(value: string | null | undefined): value is Locale {
   return typeof value === 'string' && value in LOCALE_REGISTRY;
 }
 
+function isDevelopmentQuestionLocale(value: string | null | undefined): boolean {
+  return process.env.NODE_ENV !== 'production' && value === 'ru';
+}
+
 export function resolveLocale(value: string | null | undefined, fallback: Locale = DEFAULT_LOCALE): Locale {
-  return isLocale(value) ? value : fallback;
+  if (isLocale(value)) return value;
+  if (isDevelopmentQuestionLocale(value)) return value as Locale;
+  return fallback;
 }
 
 function warnOnce(cacheKey: string, message: string) {
@@ -47,7 +53,7 @@ function readMessage(messages: Messages, key: MessageKey): string | undefined {
   return typeof resolved === 'string' ? resolved : undefined;
 }
 
-function formatMessage(locale: Locale, key: MessageKey, template: string, params?: MessageParams): string {
+function formatMessage(locale: Locale | string, key: MessageKey, template: string, params?: MessageParams): string {
   if (!params) {
     const unresolvedTokens = template.match(/\{(\w+)\}/g);
     if (unresolvedTokens) {
@@ -82,11 +88,11 @@ function formatMessage(locale: Locale, key: MessageKey, template: string, params
   return formatted;
 }
 
-function getLocaleMessages(locale: Locale): Messages {
-  return LOCALE_REGISTRY[locale]?.messages ?? LOCALE_REGISTRY[DEFAULT_LOCALE].messages;
+function getLocaleMessages(locale: Locale | string): Messages {
+  return LOCALE_REGISTRY[locale as Locale]?.messages ?? LOCALE_REGISTRY[DEFAULT_LOCALE].messages;
 }
 
-export function getMessage(locale: Locale, key: MessageKey, params?: MessageParams): string {
+export function getMessage(locale: Locale | string, key: MessageKey, params?: MessageParams): string {
   const localeTemplate = readMessage(getLocaleMessages(locale), key);
   if (localeTemplate != null) {
     return formatMessage(locale, key, localeTemplate, params);
@@ -109,8 +115,8 @@ export function getMessage(locale: Locale, key: MessageKey, params?: MessagePara
   return key;
 }
 
-export function getLocaleLabel(locale: Locale): string {
-  return LOCALE_REGISTRY[locale]?.label ?? LOCALE_REGISTRY[DEFAULT_LOCALE].label;
+export function getLocaleLabel(locale: Locale | string): string {
+  return LOCALE_REGISTRY[locale as Locale]?.label ?? LOCALE_REGISTRY[DEFAULT_LOCALE].label;
 }
 
 export function getNextLocale(locale: Locale): Locale {

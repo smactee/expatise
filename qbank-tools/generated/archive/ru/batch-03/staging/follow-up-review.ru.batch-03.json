@@ -1,0 +1,1865 @@
+{
+  "generatedAt": "2026-04-20T07:47:33.043Z",
+  "lang": "ru",
+  "batchId": "batch-03",
+  "dataset": "2023-test1",
+  "sourceReviewDecisionsPath": "qbank-tools/generated/staging/ru-batch-03-review-decisions.json",
+  "items": [
+    {
+      "itemId": "screenshots/Screenshot 2026-04-19 at 18.48.21.png",
+      "sourceImage": "screenshots/Screenshot 2026-04-19 at 18.48.21.png",
+      "status": "unsure",
+      "reason": "Reviewer marked this item as unsure and it needs follow-up review.",
+      "reviewerNotes": "",
+      "approvedQid": null,
+      "promptRawJa": "К какому типу разметки относится жёлтая пунктирная линия в центре дороги?",
+      "promptGlossEn": "What type of road marking is the yellow dashed line in the center of the road?",
+      "optionsRawJa": [
+        "A) Указательная разметка",
+        "B) Запрещающая разметка",
+        "C) Предупреждающая разметка",
+        "D) Вспомогательная разметка"
+      ],
+      "optionsGlossEn": [
+        "A) Indicative marking",
+        "B) Prohibitory marking",
+        "C) Warning marking",
+        "D) Auxiliary marking"
+      ],
+      "correctKeyRaw": "C",
+      "correctAnswerRaw": "Предупреждающая разметка",
+      "provisionalTopic": "traffic-signals",
+      "provisionalSubtopics": [
+        "traffic-signals:road-markings"
+      ],
+      "topicConfidence": 1,
+      "topicSignals": [
+        {
+          "topic": "traffic-signals",
+          "subtopic": "traffic-signals:road-markings",
+          "signal": "road-marking",
+          "weight": 1.25
+        }
+      ],
+      "topCandidates": [
+        {
+          "qid": "q0724",
+          "number": 724,
+          "type": "MCQ",
+          "score": 86.035,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.408,
+            "rawPromptSimilarity": 0.408,
+            "englishPromptSimilarity": 0.408,
+            "syntheticPromptSimilarity": 0,
+            "localizedPromptSimilarity": 0,
+            "optionSimilarity": 0.724,
+            "englishOptionSimilarity": 0.724,
+            "syntheticOptionSimilarity": 0,
+            "localizedOptionSimilarity": 0,
+            "optionFingerprint": 0.665,
+            "englishOptionFingerprint": 0.665,
+            "syntheticOptionFingerprint": 0,
+            "localizedOptionFingerprint": 0,
+            "optionExactSet": 0.48,
+            "optionRareCoverage": 0.729,
+            "mirrorAgreement": 0,
+            "localizedAgreement": 0.5,
+            "correctAnswerMeaning": 1,
+            "englishCorrectAnswerMeaning": 1,
+            "syntheticCorrectAnswerMeaning": 0,
+            "localizedCorrectAnswerMeaning": 0.5,
+            "questionType": 1,
+            "optionCountAgreement": 1,
+            "answerStructureAgreement": 0.5,
+            "promptFamilyAgreement": 0.5,
+            "provisionalTopicAgreement": 0,
+            "structuralAgreement": 0.758,
+            "structuralPenalty": 0.32,
+            "imageSignal": 1,
+            "imageObjectAgreement": 0.5,
+            "imageColorAgreement": 0,
+            "topicWeighting": 0.5,
+            "assetTieBreak": 0,
+            "baseScore": 87.087,
+            "rerankAdjustment": -1.052
+          },
+          "diagnostics": {
+            "effectiveItemType": "MCQ",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": false,
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": false,
+            "exactCorrectKey": true,
+            "optionSetMode": "unordered-semantic",
+            "rareSetBonus": 0,
+            "localizedMirrorUsed": false,
+            "localizedMirrorLabel": null,
+            "localizedSignalAvailable": false,
+            "syntheticMirrorUsed": false,
+            "genericPromptFamily": null,
+            "structuralSevereSignals": [],
+            "structuralSoftSignals": [
+              "topic",
+              "image-color"
+            ],
+            "imageObjectComparable": false,
+            "imageColorComparable": true,
+            "explanation": [
+              "Option comparison used unordered semantic set matching.",
+              "English semantic option matching still supported the top candidate.",
+              "Rare option-combination fingerprint increased candidate separation.",
+              "Structural filtering and scoring strongly agree with this candidate.",
+              "Structural mismatch penalties reduced this candidate's rank."
+            ]
+          },
+          "prompt": "What kind of marking are the double yellow solid lines in the middle of the road?",
+          "syntheticJaPrompt": "kind 路面標示 double yellow solid line middle road。",
+          "translatedPrompt": "도로 중앙의 황색 이중 실선은 어떤 노면표시인가?",
+          "options": [
+            {
+              "id": "A",
+              "text": "auxiliary marking",
+              "translatedText": "보조 표시"
+            },
+            {
+              "id": "B",
+              "text": "warning sign",
+              "translatedText": "경고 표시"
+            },
+            {
+              "id": "C",
+              "text": "prohibitive marking",
+              "translatedText": "금지 표시"
+            },
+            {
+              "id": "D",
+              "text": "indicative marking",
+              "translatedText": "지시 표시"
+            }
+          ],
+          "correctAnswer": {
+            "kind": "MCQ",
+            "correctRow": null,
+            "correctOptionId": "q0724_o3",
+            "correctOptionKey": "C",
+            "correctOptionText": "prohibitive marking",
+            "correctOptionTranslatedText": "금지 표시",
+            "answerRaw": "C"
+          },
+          "image": {
+            "hasImage": true,
+            "currentAssetSrc": "/qbank/2023-test1/images/img_8ecfb12a689a25ae75e596998c10c83d.jpeg",
+            "assetHashes": [
+              "8ecfb12a689a25ae75e596998c10c83d"
+            ],
+            "colorTags": [
+              "blue"
+            ],
+            "objectTags": []
+          },
+          "topic": "traffic-signs",
+          "subtopics": [],
+          "conceptSlots": null
+        },
+        {
+          "qid": "q0710",
+          "number": 710,
+          "type": "MCQ",
+          "score": 59.566,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.142,
+            "rawPromptSimilarity": 0.154,
+            "englishPromptSimilarity": 0.142,
+            "syntheticPromptSimilarity": 0,
+            "localizedPromptSimilarity": 0,
+            "optionSimilarity": 0.328,
+            "englishOptionSimilarity": 0.328,
+            "syntheticOptionSimilarity": 0,
+            "localizedOptionSimilarity": 0,
+            "optionFingerprint": 0.281,
+            "englishOptionFingerprint": 0.281,
+            "syntheticOptionFingerprint": 0,
+            "localizedOptionFingerprint": 0,
+            "optionExactSet": 0,
+            "optionRareCoverage": 0.36,
+            "mirrorAgreement": 0,
+            "localizedAgreement": 0.5,
+            "correctAnswerMeaning": 0.604,
+            "englishCorrectAnswerMeaning": 0.604,
+            "syntheticCorrectAnswerMeaning": 0,
+            "localizedCorrectAnswerMeaning": 0.5,
+            "questionType": 1,
+            "optionCountAgreement": 1,
+            "answerStructureAgreement": 0.5,
+            "promptFamilyAgreement": 0.5,
+            "provisionalTopicAgreement": 0,
+            "structuralAgreement": 0.806,
+            "structuralPenalty": 0.16,
+            "imageSignal": 1,
+            "imageObjectAgreement": 0.5,
+            "imageColorAgreement": 0.8,
+            "topicWeighting": 0.5,
+            "assetTieBreak": 0,
+            "baseScore": 53.29,
+            "rerankAdjustment": 6.276
+          },
+          "diagnostics": {
+            "effectiveItemType": "MCQ",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": false,
+            "promptSpecificity": 0.925,
+            "genericPromptPenalty": 0.925,
+            "missingCorrectAnswerNeutral": false,
+            "exactCorrectKey": false,
+            "optionSetMode": "unordered-semantic",
+            "rareSetBonus": 0,
+            "localizedMirrorUsed": false,
+            "localizedMirrorLabel": null,
+            "localizedSignalAvailable": false,
+            "syntheticMirrorUsed": false,
+            "genericPromptFamily": null,
+            "structuralSevereSignals": [],
+            "structuralSoftSignals": [
+              "topic"
+            ],
+            "imageObjectComparable": false,
+            "imageColorComparable": true,
+            "explanation": [
+              "Structural filtering and scoring strongly agree with this candidate."
+            ]
+          },
+          "prompt": "Which kind of sign is it?",
+          "syntheticJaPrompt": "which kind 標識 it。",
+          "translatedPrompt": "이 표지는 어떤 종류인가?",
+          "options": [
+            {
+              "id": "A",
+              "text": "warning sign",
+              "translatedText": "경고표지"
+            },
+            {
+              "id": "B",
+              "text": "directional sign",
+              "translatedText": "안내표지"
+            },
+            {
+              "id": "C",
+              "text": "indicative sign",
+              "translatedText": "지시표지"
+            },
+            {
+              "id": "D",
+              "text": "prohibitive sign",
+              "translatedText": "금지표지"
+            }
+          ],
+          "correctAnswer": {
+            "kind": "MCQ",
+            "correctRow": null,
+            "correctOptionId": "q0710_o1",
+            "correctOptionKey": "A",
+            "correctOptionText": "warning sign",
+            "correctOptionTranslatedText": "경고표지",
+            "answerRaw": "A"
+          },
+          "image": {
+            "hasImage": true,
+            "currentAssetSrc": "/qbank/2023-test1/images/img_4645d0bbff8980d774be9fcbcefc1d61.jpeg",
+            "assetHashes": [
+              "4645d0bbff8980d774be9fcbcefc1d61"
+            ],
+            "colorTags": [
+              "yellow",
+              "white"
+            ],
+            "objectTags": []
+          },
+          "topic": "traffic-signs",
+          "subtopics": [],
+          "conceptSlots": null
+        },
+        {
+          "qid": "q0789",
+          "number": 789,
+          "type": "MCQ",
+          "score": 59.36,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.142,
+            "rawPromptSimilarity": 0.154,
+            "englishPromptSimilarity": 0.142,
+            "syntheticPromptSimilarity": 0,
+            "localizedPromptSimilarity": 0,
+            "optionSimilarity": 0.328,
+            "englishOptionSimilarity": 0.328,
+            "syntheticOptionSimilarity": 0,
+            "localizedOptionSimilarity": 0,
+            "optionFingerprint": 0.281,
+            "englishOptionFingerprint": 0.281,
+            "syntheticOptionFingerprint": 0,
+            "localizedOptionFingerprint": 0,
+            "optionExactSet": 0,
+            "optionRareCoverage": 0.36,
+            "mirrorAgreement": 0,
+            "localizedAgreement": 0.5,
+            "correctAnswerMeaning": 1,
+            "englishCorrectAnswerMeaning": 1,
+            "syntheticCorrectAnswerMeaning": 0,
+            "localizedCorrectAnswerMeaning": 0.5,
+            "questionType": 1,
+            "optionCountAgreement": 1,
+            "answerStructureAgreement": 0.5,
+            "promptFamilyAgreement": 0.5,
+            "provisionalTopicAgreement": 0,
+            "structuralAgreement": 0.758,
+            "structuralPenalty": 0.32,
+            "imageSignal": 1,
+            "imageObjectAgreement": 0.5,
+            "imageColorAgreement": 0,
+            "topicWeighting": 0.5,
+            "assetTieBreak": 0,
+            "baseScore": 60.412,
+            "rerankAdjustment": -1.052
+          },
+          "diagnostics": {
+            "effectiveItemType": "MCQ",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": false,
+            "promptSpecificity": 0.925,
+            "genericPromptPenalty": 0.925,
+            "missingCorrectAnswerNeutral": false,
+            "exactCorrectKey": true,
+            "optionSetMode": "unordered-semantic",
+            "rareSetBonus": 0,
+            "localizedMirrorUsed": false,
+            "localizedMirrorLabel": null,
+            "localizedSignalAvailable": false,
+            "syntheticMirrorUsed": false,
+            "genericPromptFamily": null,
+            "structuralSevereSignals": [],
+            "structuralSoftSignals": [
+              "topic",
+              "image-color"
+            ],
+            "imageObjectComparable": false,
+            "imageColorComparable": true,
+            "explanation": [
+              "Structural filtering and scoring strongly agree with this candidate.",
+              "Structural mismatch penalties reduced this candidate's rank."
+            ]
+          },
+          "prompt": "Which kind of sign is it?",
+          "syntheticJaPrompt": "which kind 標識 it。",
+          "translatedPrompt": "이 표지는 어떤 종류의 표지인가?",
+          "options": [
+            {
+              "id": "A",
+              "text": "warning sign",
+              "translatedText": "경고표지"
+            },
+            {
+              "id": "B",
+              "text": "prohibitive sign",
+              "translatedText": "금지표지"
+            },
+            {
+              "id": "C",
+              "text": "indicative sign",
+              "translatedText": "지시표지"
+            },
+            {
+              "id": "D",
+              "text": "directional sign",
+              "translatedText": "안내표지"
+            }
+          ],
+          "correctAnswer": {
+            "kind": "MCQ",
+            "correctRow": null,
+            "correctOptionId": "q0789_o3",
+            "correctOptionKey": "C",
+            "correctOptionText": "indicative sign",
+            "correctOptionTranslatedText": "지시표지",
+            "answerRaw": "C"
+          },
+          "image": {
+            "hasImage": true,
+            "currentAssetSrc": "/qbank/2023-test1/images/img_67a0920870de5c836cc60cbee5121c4c.jpeg",
+            "assetHashes": [
+              "67a0920870de5c836cc60cbee5121c4c"
+            ],
+            "colorTags": [
+              "blue",
+              "white"
+            ],
+            "objectTags": []
+          },
+          "topic": "traffic-signs",
+          "subtopics": [],
+          "conceptSlots": null
+        },
+        {
+          "qid": "q0804",
+          "number": 804,
+          "type": "MCQ",
+          "score": 55.68,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.593,
+            "rawPromptSimilarity": 0.593,
+            "englishPromptSimilarity": 0.593,
+            "syntheticPromptSimilarity": 0,
+            "localizedPromptSimilarity": 0,
+            "optionSimilarity": 0.149,
+            "englishOptionSimilarity": 0.149,
+            "syntheticOptionSimilarity": 0,
+            "localizedOptionSimilarity": 0,
+            "optionFingerprint": 0.022,
+            "englishOptionFingerprint": 0.022,
+            "syntheticOptionFingerprint": 0,
+            "localizedOptionFingerprint": 0,
+            "optionExactSet": 0,
+            "optionRareCoverage": 0,
+            "mirrorAgreement": 0,
+            "localizedAgreement": 0.5,
+            "correctAnswerMeaning": 1,
+            "englishCorrectAnswerMeaning": 1,
+            "syntheticCorrectAnswerMeaning": 0,
+            "localizedCorrectAnswerMeaning": 0.5,
+            "questionType": 1,
+            "optionCountAgreement": 1,
+            "answerStructureAgreement": 0.5,
+            "promptFamilyAgreement": 0.5,
+            "provisionalTopicAgreement": 0,
+            "structuralAgreement": 0.758,
+            "structuralPenalty": 0.32,
+            "imageSignal": 1,
+            "imageObjectAgreement": 0.5,
+            "imageColorAgreement": 0,
+            "topicWeighting": 0.5,
+            "assetTieBreak": 0,
+            "baseScore": 56.732,
+            "rerankAdjustment": -1.052
+          },
+          "diagnostics": {
+            "effectiveItemType": "MCQ",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": false,
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": false,
+            "exactCorrectKey": true,
+            "optionSetMode": "unordered-semantic",
+            "rareSetBonus": 0,
+            "localizedMirrorUsed": false,
+            "localizedMirrorLabel": null,
+            "localizedSignalAvailable": false,
+            "syntheticMirrorUsed": false,
+            "genericPromptFamily": null,
+            "structuralSevereSignals": [],
+            "structuralSoftSignals": [
+              "topic",
+              "image-color"
+            ],
+            "imageObjectComparable": false,
+            "imageColorComparable": true,
+            "explanation": [
+              "Structural filtering and scoring strongly agree with this candidate.",
+              "Structural mismatch penalties reduced this candidate's rank."
+            ]
+          },
+          "prompt": "What marking is the yellow road surface in the center of the intersection?",
+          "syntheticJaPrompt": "路面標示 yellow road surface center 交差点。",
+          "translatedPrompt": "교차로 중앙에 있는 노란색 노면표시의 의미는?",
+          "options": [
+            {
+              "id": "A",
+              "text": "central circle",
+              "translatedText": "유도"
+            },
+            {
+              "id": "B",
+              "text": "guide line",
+              "translatedText": "유도선"
+            },
+            {
+              "id": "C",
+              "text": "cross-hatched marking",
+              "translatedText": "정차금지지대"
+            },
+            {
+              "id": "D",
+              "text": "parking area",
+              "translatedText": "정차구역"
+            }
+          ],
+          "correctAnswer": {
+            "kind": "MCQ",
+            "correctRow": null,
+            "correctOptionId": "q0804_o3",
+            "correctOptionKey": "C",
+            "correctOptionText": "cross-hatched marking",
+            "correctOptionTranslatedText": "정차금지지대",
+            "answerRaw": "C"
+          },
+          "image": {
+            "hasImage": true,
+            "currentAssetSrc": "/qbank/2023-test1/images/img_ce34400c7b85e782409acad0b6b72ff0.jpeg",
+            "assetHashes": [
+              "ce34400c7b85e782409acad0b6b72ff0"
+            ],
+            "colorTags": [
+              "blue",
+              "white"
+            ],
+            "objectTags": []
+          },
+          "topic": "parking",
+          "subtopics": [],
+          "conceptSlots": null
+        },
+        {
+          "qid": "q0805",
+          "number": 805,
+          "type": "MCQ",
+          "score": 54.265,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.342,
+            "rawPromptSimilarity": 0.351,
+            "englishPromptSimilarity": 0.342,
+            "syntheticPromptSimilarity": 0,
+            "localizedPromptSimilarity": 0,
+            "optionSimilarity": 0.036,
+            "englishOptionSimilarity": 0.036,
+            "syntheticOptionSimilarity": 0,
+            "localizedOptionSimilarity": 0,
+            "optionFingerprint": 0.006,
+            "englishOptionFingerprint": 0.006,
+            "syntheticOptionFingerprint": 0,
+            "localizedOptionFingerprint": 0,
+            "optionExactSet": 0,
+            "optionRareCoverage": 0,
+            "mirrorAgreement": 0,
+            "localizedAgreement": 0.5,
+            "correctAnswerMeaning": 1,
+            "englishCorrectAnswerMeaning": 1,
+            "syntheticCorrectAnswerMeaning": 0,
+            "localizedCorrectAnswerMeaning": 0.5,
+            "questionType": 1,
+            "optionCountAgreement": 1,
+            "answerStructureAgreement": 0.5,
+            "promptFamilyAgreement": 0.5,
+            "provisionalTopicAgreement": 0,
+            "structuralAgreement": 0.806,
+            "structuralPenalty": 0.16,
+            "imageSignal": 1,
+            "imageObjectAgreement": 0.5,
+            "imageColorAgreement": 0.8,
+            "topicWeighting": 0.5,
+            "assetTieBreak": 0,
+            "baseScore": 47.989,
+            "rerankAdjustment": 6.276
+          },
+          "diagnostics": {
+            "effectiveItemType": "MCQ",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": false,
+            "promptSpecificity": 0.975,
+            "genericPromptPenalty": 0.975,
+            "missingCorrectAnswerNeutral": false,
+            "exactCorrectKey": true,
+            "optionSetMode": "unordered-semantic",
+            "rareSetBonus": 0,
+            "localizedMirrorUsed": false,
+            "localizedMirrorLabel": null,
+            "localizedSignalAvailable": false,
+            "syntheticMirrorUsed": false,
+            "genericPromptFamily": null,
+            "structuralSevereSignals": [],
+            "structuralSoftSignals": [
+              "topic"
+            ],
+            "imageObjectComparable": false,
+            "imageColorComparable": true,
+            "explanation": [
+              "Structural filtering and scoring strongly agree with this candidate."
+            ]
+          },
+          "prompt": "What’s the meaning of the yellow mark on the road?",
+          "syntheticJaPrompt": "meaning yellow mark road",
+          "translatedPrompt": "이 노면의 노란 표시의 의미는?",
+          "options": [
+            {
+              "id": "A",
+              "text": "no going straight",
+              "translatedText": "직진 금지"
+            },
+            {
+              "id": "B",
+              "text": "allowed to make a U turn",
+              "translatedText": "U턴 허용"
+            },
+            {
+              "id": "C",
+              "text": "no U turn",
+              "translatedText": "U턴 금지"
+            },
+            {
+              "id": "D",
+              "text": "no making a turn",
+              "translatedText": "회전 금지"
+            }
+          ],
+          "correctAnswer": {
+            "kind": "MCQ",
+            "correctRow": null,
+            "correctOptionId": "q0805_o3",
+            "correctOptionKey": "C",
+            "correctOptionText": "no U turn",
+            "correctOptionTranslatedText": "U턴 금지",
+            "answerRaw": "C"
+          },
+          "image": {
+            "hasImage": true,
+            "currentAssetSrc": "/qbank/2023-test1/images/img_2c7da818f188a768cef0dcd4952905a7.jpeg",
+            "assetHashes": [
+              "2c7da818f188a768cef0dcd4952905a7"
+            ],
+            "colorTags": [
+              "yellow",
+              "gray"
+            ],
+            "objectTags": []
+          },
+          "topic": "mcq",
+          "subtopics": [],
+          "conceptSlots": null
+        }
+      ]
+    },
+    {
+      "itemId": "screenshots/Screenshot 2026-04-19 at 18.48.34.png",
+      "sourceImage": "screenshots/Screenshot 2026-04-19 at 18.48.34.png",
+      "status": "unsure",
+      "reason": "Reviewer marked this item as unsure and it needs follow-up review.",
+      "reviewerNotes": "",
+      "approvedQid": null,
+      "promptRawJa": "Нельзя управлять автомобилем с неисправностями.",
+      "promptGlossEn": "It is not allowed to drive a car with malfunctions.",
+      "optionsRawJa": [
+        "A Правильно",
+        "B Не правильно"
+      ],
+      "optionsGlossEn": [
+        "A Correct",
+        "B Incorrect"
+      ],
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "provisionalTopic": "proper-driving",
+      "provisionalSubtopics": [
+        "proper-driving:traffic-laws"
+      ],
+      "topicConfidence": 1,
+      "topicSignals": [
+        {
+          "topic": "proper-driving",
+          "subtopic": "proper-driving:traffic-laws",
+          "signal": "traffic-law",
+          "weight": 1.15
+        }
+      ],
+      "topCandidates": [
+        {
+          "qid": "q0026",
+          "number": 26,
+          "type": "ROW",
+          "score": 51.06,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.243,
+            "rawPromptSimilarity": 0.243,
+            "englishPromptSimilarity": 0.243,
+            "syntheticPromptSimilarity": 0,
+            "localizedPromptSimilarity": 0,
+            "localizedAgreement": 0.5,
+            "questionType": 1,
+            "optionCountAgreement": 1,
+            "answerStructureAgreement": 0.5,
+            "promptFamilyAgreement": 0.5,
+            "provisionalTopicAgreement": 0.75,
+            "structuralAgreement": 0.864,
+            "structuralPenalty": 0,
+            "imageSignal": 1,
+            "imageObjectAgreement": 0.5,
+            "imageColorAgreement": 0.5,
+            "topicWeighting": 0.5,
+            "answerPolarity": 0.5,
+            "conceptAlignment": 0,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0,
+            "baseScore": 41.596,
+            "rerankAdjustment": 9.464
+          },
+          "diagnostics": {
+            "effectiveItemType": "ROW",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": true,
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "optionSetMode": "row-semantic",
+            "localizedMirrorUsed": false,
+            "localizedMirrorLabel": null,
+            "localizedSignalAvailable": false,
+            "syntheticMirrorUsed": false,
+            "genericPromptFamily": null,
+            "sourceConceptSlots": {
+              "condition": [],
+              "context": [],
+              "action": [],
+              "polarity": "negative",
+              "signals": []
+            },
+            "candidateConceptSlots": {
+              "condition": [],
+              "context": [],
+              "action": [
+                "pass"
+              ],
+              "polarity": "negative",
+              "signals": [
+                {
+                  "slot": "action",
+                  "value": "pass",
+                  "signal": "pass"
+                }
+              ]
+            },
+            "conceptMatches": [],
+            "contradictionSignals": [],
+            "rowConceptMode": "slot-alignment + contradiction-penalties",
+            "structuralSevereSignals": [],
+            "structuralSoftSignals": [],
+            "imageObjectComparable": false,
+            "imageColorComparable": false,
+            "explanation": [
+              "Binary yes/no options were treated as ROW-like for type scoring.",
+              "Missing correct answer was treated as a neutral signal.",
+              "Structural filtering and scoring strongly agree with this candidate."
+            ]
+          },
+          "prompt": "When a vehicle passes a tunnel, it is prohibited from overtaking.",
+          "syntheticJaPrompt": "when 車両 追い越し tunnel it してはならない 追い越し。",
+          "translatedPrompt": "차량이 터널을 통과할 때는 추월해서는 안 된다.",
+          "options": [],
+          "correctAnswer": {
+            "kind": "ROW",
+            "correctRow": "R",
+            "correctOptionId": null,
+            "correctOptionKey": null,
+            "correctOptionText": "right / true",
+            "correctOptionTranslatedText": null,
+            "answerRaw": "Right"
+          },
+          "image": {
+            "hasImage": false,
+            "currentAssetSrc": null,
+            "assetHashes": [],
+            "colorTags": [],
+            "objectTags": []
+          },
+          "topic": "road-safety",
+          "subtopics": [
+            "road-safety:road-conditions",
+            "proper-driving:safe-driving",
+            "proper-driving:traffic-laws"
+          ],
+          "conceptSlots": {
+            "condition": [],
+            "context": [],
+            "action": [
+              "pass"
+            ],
+            "polarity": "negative",
+            "signals": [
+              {
+                "slot": "action",
+                "value": "pass",
+                "signal": "pass"
+              }
+            ]
+          }
+        },
+        {
+          "qid": "q0035",
+          "number": 35,
+          "type": "ROW",
+          "score": 50.016,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.225,
+            "rawPromptSimilarity": 0.225,
+            "englishPromptSimilarity": 0.225,
+            "syntheticPromptSimilarity": 0,
+            "localizedPromptSimilarity": 0,
+            "localizedAgreement": 0.5,
+            "questionType": 1,
+            "optionCountAgreement": 1,
+            "answerStructureAgreement": 0.5,
+            "promptFamilyAgreement": 0.5,
+            "provisionalTopicAgreement": 0.75,
+            "structuralAgreement": 0.864,
+            "structuralPenalty": 0,
+            "imageSignal": 1,
+            "imageObjectAgreement": 0.5,
+            "imageColorAgreement": 0.5,
+            "topicWeighting": 0.5,
+            "answerPolarity": 0.5,
+            "conceptAlignment": 0,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0,
+            "baseScore": 40.552,
+            "rerankAdjustment": 9.464
+          },
+          "diagnostics": {
+            "effectiveItemType": "ROW",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": true,
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "optionSetMode": "row-semantic",
+            "localizedMirrorUsed": false,
+            "localizedMirrorLabel": null,
+            "localizedSignalAvailable": false,
+            "syntheticMirrorUsed": false,
+            "genericPromptFamily": null,
+            "sourceConceptSlots": {
+              "condition": [],
+              "context": [],
+              "action": [],
+              "polarity": "negative",
+              "signals": []
+            },
+            "candidateConceptSlots": {
+              "condition": [],
+              "context": [],
+              "action": [
+                "pass"
+              ],
+              "polarity": "negative",
+              "signals": [
+                {
+                  "slot": "action",
+                  "value": "pass",
+                  "signal": "pass"
+                }
+              ]
+            },
+            "conceptMatches": [],
+            "contradictionSignals": [],
+            "rowConceptMode": "slot-alignment + contradiction-penalties",
+            "structuralSevereSignals": [],
+            "structuralSoftSignals": [],
+            "imageObjectComparable": false,
+            "imageColorComparable": false,
+            "explanation": [
+              "Binary yes/no options were treated as ROW-like for type scoring.",
+              "Missing correct answer was treated as a neutral signal.",
+              "Structural filtering and scoring strongly agree with this candidate."
+            ]
+          },
+          "prompt": "When a vehicle passes a level crossing, it is prohibited from overtaking.",
+          "syntheticJaPrompt": "when 車両 追い越し level crossing it してはならない 追い越し。",
+          "translatedPrompt": "철길 건널목을 통과할 때는 추월해서는 안 된다.",
+          "options": [],
+          "correctAnswer": {
+            "kind": "ROW",
+            "correctRow": "R",
+            "correctOptionId": null,
+            "correctOptionKey": null,
+            "correctOptionText": "right / true",
+            "correctOptionTranslatedText": null,
+            "answerRaw": "Right"
+          },
+          "image": {
+            "hasImage": false,
+            "currentAssetSrc": null,
+            "assetHashes": [],
+            "colorTags": [],
+            "objectTags": []
+          },
+          "topic": "road-safety",
+          "subtopics": [
+            "road-safety:road-conditions",
+            "proper-driving:traffic-laws"
+          ],
+          "conceptSlots": {
+            "condition": [],
+            "context": [],
+            "action": [
+              "pass"
+            ],
+            "polarity": "negative",
+            "signals": [
+              {
+                "slot": "action",
+                "value": "pass",
+                "signal": "pass"
+              }
+            ]
+          }
+        },
+        {
+          "qid": "q0218",
+          "number": 218,
+          "type": "ROW",
+          "score": 46.824,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.17,
+            "rawPromptSimilarity": 0.17,
+            "englishPromptSimilarity": 0.17,
+            "syntheticPromptSimilarity": 0,
+            "localizedPromptSimilarity": 0,
+            "localizedAgreement": 0.5,
+            "questionType": 1,
+            "optionCountAgreement": 1,
+            "answerStructureAgreement": 0.5,
+            "promptFamilyAgreement": 0.5,
+            "provisionalTopicAgreement": 0.75,
+            "structuralAgreement": 0.864,
+            "structuralPenalty": 0,
+            "imageSignal": 1,
+            "imageObjectAgreement": 0.5,
+            "imageColorAgreement": 0.5,
+            "topicWeighting": 0.5,
+            "answerPolarity": 0.5,
+            "conceptAlignment": 0,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0,
+            "baseScore": 37.36,
+            "rerankAdjustment": 9.464
+          },
+          "diagnostics": {
+            "effectiveItemType": "ROW",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": true,
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "optionSetMode": "row-semantic",
+            "localizedMirrorUsed": false,
+            "localizedMirrorLabel": null,
+            "localizedSignalAvailable": false,
+            "syntheticMirrorUsed": false,
+            "genericPromptFamily": null,
+            "sourceConceptSlots": {
+              "condition": [],
+              "context": [],
+              "action": [],
+              "polarity": "negative",
+              "signals": []
+            },
+            "candidateConceptSlots": {
+              "condition": [],
+              "context": [],
+              "action": [
+                "head-light"
+              ],
+              "polarity": "negative",
+              "signals": [
+                {
+                  "slot": "action",
+                  "value": "head-light",
+                  "signal": "head-light"
+                }
+              ]
+            },
+            "conceptMatches": [],
+            "contradictionSignals": [],
+            "rowConceptMode": "slot-alignment + contradiction-penalties",
+            "structuralSevereSignals": [],
+            "structuralSoftSignals": [],
+            "imageObjectComparable": false,
+            "imageColorComparable": false,
+            "explanation": [
+              "Binary yes/no options were treated as ROW-like for type scoring.",
+              "Missing correct answer was treated as a neutral signal.",
+              "Structural filtering and scoring strongly agree with this candidate."
+            ]
+          },
+          "prompt": "You can not drive a motorized vehicle into the lane where the red X-shaped light or the red arrow light is on.",
+          "syntheticJaPrompt": "you してはならない drive motorized 車両 into 車線 where red x-shaped ライト or red arrow ライト。",
+          "translatedPrompt": "적색 X형 신호 또는 적색 화살표 신호가 켜진 차로에는 자동차가 진입할 수 없다.",
+          "options": [],
+          "correctAnswer": {
+            "kind": "ROW",
+            "correctRow": "R",
+            "correctOptionId": null,
+            "correctOptionKey": null,
+            "correctOptionText": "right / true",
+            "correctOptionTranslatedText": null,
+            "answerRaw": "Right"
+          },
+          "image": {
+            "hasImage": false,
+            "currentAssetSrc": null,
+            "assetHashes": [],
+            "colorTags": [],
+            "objectTags": []
+          },
+          "topic": "traffic-signals",
+          "subtopics": [
+            "traffic-signals:signal-lights",
+            "traffic-signals:road-markings",
+            "proper-driving:traffic-laws"
+          ],
+          "conceptSlots": {
+            "condition": [],
+            "context": [],
+            "action": [
+              "head-light"
+            ],
+            "polarity": "negative",
+            "signals": [
+              {
+                "slot": "action",
+                "value": "head-light",
+                "signal": "head-light"
+              }
+            ]
+          }
+        },
+        {
+          "qid": "q0086",
+          "number": 86,
+          "type": "ROW",
+          "score": 46.482,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.266,
+            "rawPromptSimilarity": 0.266,
+            "englishPromptSimilarity": 0.266,
+            "syntheticPromptSimilarity": 0,
+            "localizedPromptSimilarity": 0,
+            "localizedAgreement": 0.5,
+            "questionType": 1,
+            "optionCountAgreement": 1,
+            "answerStructureAgreement": 0.5,
+            "promptFamilyAgreement": 0.5,
+            "provisionalTopicAgreement": 0,
+            "structuralAgreement": 0.747,
+            "structuralPenalty": 0.16,
+            "imageSignal": 1,
+            "imageObjectAgreement": 0.5,
+            "imageColorAgreement": 0.5,
+            "topicWeighting": 0.5,
+            "answerPolarity": 0.5,
+            "conceptAlignment": 0,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0,
+            "baseScore": 42.94,
+            "rerankAdjustment": 3.542
+          },
+          "diagnostics": {
+            "effectiveItemType": "ROW",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": true,
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "optionSetMode": "row-semantic",
+            "localizedMirrorUsed": false,
+            "localizedMirrorLabel": null,
+            "localizedSignalAvailable": false,
+            "syntheticMirrorUsed": false,
+            "genericPromptFamily": null,
+            "sourceConceptSlots": {
+              "condition": [],
+              "context": [],
+              "action": [],
+              "polarity": "negative",
+              "signals": []
+            },
+            "candidateConceptSlots": {
+              "condition": [
+                "downhill"
+              ],
+              "context": [],
+              "action": [
+                "pass"
+              ],
+              "polarity": "negative",
+              "signals": [
+                {
+                  "slot": "condition",
+                  "value": "downhill",
+                  "signal": "downhill"
+                },
+                {
+                  "slot": "action",
+                  "value": "pass",
+                  "signal": "pass"
+                }
+              ]
+            },
+            "conceptMatches": [],
+            "contradictionSignals": [],
+            "rowConceptMode": "slot-alignment + contradiction-penalties",
+            "structuralSevereSignals": [],
+            "structuralSoftSignals": [
+              "topic"
+            ],
+            "imageObjectComparable": false,
+            "imageColorComparable": false,
+            "explanation": [
+              "Binary yes/no options were treated as ROW-like for type scoring.",
+              "Missing correct answer was treated as a neutral signal.",
+              "Structural filtering and scoring strongly agree with this candidate."
+            ]
+          },
+          "prompt": "When a vehicle goes downhill on a mountain road, it is not allowed to overtake.",
+          "syntheticJaPrompt": "when 車両 goes downhill mountain road it してはならない 追い越し。",
+          "translatedPrompt": "산길의 내리막길에서 차량이 주행할 때 추월할 수 없다.",
+          "options": [],
+          "correctAnswer": {
+            "kind": "ROW",
+            "correctRow": "R",
+            "correctOptionId": null,
+            "correctOptionKey": null,
+            "correctOptionText": "right / true",
+            "correctOptionTranslatedText": null,
+            "answerRaw": "Right"
+          },
+          "image": {
+            "hasImage": false,
+            "currentAssetSrc": null,
+            "assetHashes": [],
+            "colorTags": [],
+            "objectTags": []
+          },
+          "topic": "row",
+          "subtopics": [],
+          "conceptSlots": {
+            "condition": [
+              "downhill"
+            ],
+            "context": [],
+            "action": [
+              "pass"
+            ],
+            "polarity": "negative",
+            "signals": [
+              {
+                "slot": "condition",
+                "value": "downhill",
+                "signal": "downhill"
+              },
+              {
+                "slot": "action",
+                "value": "pass",
+                "signal": "pass"
+              }
+            ]
+          }
+        },
+        {
+          "qid": "q0234",
+          "number": 234,
+          "type": "ROW",
+          "score": 45.956,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.257,
+            "rawPromptSimilarity": 0.257,
+            "englishPromptSimilarity": 0.257,
+            "syntheticPromptSimilarity": 0,
+            "localizedPromptSimilarity": 0,
+            "localizedAgreement": 0.5,
+            "questionType": 1,
+            "optionCountAgreement": 1,
+            "answerStructureAgreement": 0.5,
+            "promptFamilyAgreement": 0.5,
+            "provisionalTopicAgreement": 0,
+            "structuralAgreement": 0.747,
+            "structuralPenalty": 0.16,
+            "imageSignal": 1,
+            "imageObjectAgreement": 0.5,
+            "imageColorAgreement": 0.5,
+            "topicWeighting": 0.5,
+            "answerPolarity": 0.5,
+            "conceptAlignment": 0,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0,
+            "baseScore": 42.414,
+            "rerankAdjustment": 3.542
+          },
+          "diagnostics": {
+            "effectiveItemType": "ROW",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": true,
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "optionSetMode": "row-semantic",
+            "localizedMirrorUsed": false,
+            "localizedMirrorLabel": null,
+            "localizedSignalAvailable": false,
+            "syntheticMirrorUsed": false,
+            "genericPromptFamily": null,
+            "sourceConceptSlots": {
+              "condition": [],
+              "context": [],
+              "action": [],
+              "polarity": "negative",
+              "signals": []
+            },
+            "candidateConceptSlots": {
+              "condition": [],
+              "context": [],
+              "action": [],
+              "polarity": "negative",
+              "signals": []
+            },
+            "conceptMatches": [],
+            "contradictionSignals": [],
+            "rowConceptMode": "slot-alignment + contradiction-penalties",
+            "structuralSevereSignals": [],
+            "structuralSoftSignals": [
+              "topic"
+            ],
+            "imageObjectComparable": false,
+            "imageColorComparable": false,
+            "explanation": [
+              "Binary yes/no options were treated as ROW-like for type scoring.",
+              "Missing correct answer was treated as a neutral signal.",
+              "Structural filtering and scoring strongly agree with this candidate."
+            ]
+          },
+          "prompt": "The motorized vehicle driver is not allowed to drive a motorized vehicle when his driving license is detained.",
+          "syntheticJaPrompt": "motorized 車両 運転者 してはならない drive motorized 車両 when his driving license detained。",
+          "translatedPrompt": "운전면허증이 압류된 동안에는 자동차 운전자가 자동차를 운전할 수 없다.",
+          "options": [],
+          "correctAnswer": {
+            "kind": "ROW",
+            "correctRow": "R",
+            "correctOptionId": null,
+            "correctOptionKey": null,
+            "correctOptionText": "right / true",
+            "correctOptionTranslatedText": null,
+            "answerRaw": "Right"
+          },
+          "image": {
+            "hasImage": false,
+            "currentAssetSrc": null,
+            "assetHashes": [],
+            "colorTags": [],
+            "objectTags": []
+          },
+          "topic": "license",
+          "subtopics": [],
+          "conceptSlots": {
+            "condition": [],
+            "context": [],
+            "action": [],
+            "polarity": "negative",
+            "signals": []
+          }
+        }
+      ]
+    },
+    {
+      "itemId": "screenshots/Screenshot 2026-04-19 at 18.48.44.png",
+      "sourceImage": "screenshots/Screenshot 2026-04-19 at 18.48.44.png",
+      "status": "unsure",
+      "reason": "Reviewer marked this item as unsure and it needs follow-up review.",
+      "reviewerNotes": "",
+      "approvedQid": null,
+      "promptRawJa": "При проезде дороги, которая резко сужается или соединяются в одну - как правильно проехать в этом случае?",
+      "promptGlossEn": "When driving on a road that suddenly narrows or merges into one lane, what is the correct way to proceed?",
+      "optionsRawJa": [
+        "A Обгонять автомобили, занимая другую полосу дороги",
+        "B Занимать встречную полосу дороги",
+        "C Объезжая всех проехать затор",
+        "D Проехать по очереди"
+      ],
+      "optionsGlossEn": [
+        "Overtake vehicles by taking another lane",
+        "Use the oncoming traffic lane",
+        "Bypassing everyone, drive through the traffic jam",
+        "Proceed in turn"
+      ],
+      "correctKeyRaw": "D",
+      "correctAnswerRaw": "Проехать по очереди",
+      "provisionalTopic": "road-safety",
+      "provisionalSubtopics": [
+        "road-safety:road-conditions",
+        "proper-driving:safe-driving"
+      ],
+      "topicConfidence": 0.52,
+      "topicSignals": [
+        {
+          "topic": "road-safety",
+          "subtopic": "road-safety:road-conditions",
+          "signal": "road-condition-or-hazard",
+          "weight": 1.3
+        },
+        {
+          "topic": "proper-driving",
+          "subtopic": "proper-driving:safe-driving",
+          "signal": "driving-action",
+          "weight": 1.2
+        }
+      ],
+      "topCandidates": [
+        {
+          "qid": "q0118",
+          "number": 118,
+          "type": "MCQ",
+          "score": 62.975,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.243,
+            "rawPromptSimilarity": 0.243,
+            "englishPromptSimilarity": 0.243,
+            "syntheticPromptSimilarity": 0,
+            "localizedPromptSimilarity": 0,
+            "optionSimilarity": 0.162,
+            "englishOptionSimilarity": 0.162,
+            "syntheticOptionSimilarity": 0,
+            "localizedOptionSimilarity": 0,
+            "optionFingerprint": 0.096,
+            "englishOptionFingerprint": 0.096,
+            "syntheticOptionFingerprint": 0,
+            "localizedOptionFingerprint": 0,
+            "optionExactSet": 0,
+            "optionRareCoverage": 0.146,
+            "mirrorAgreement": 0,
+            "localizedAgreement": 0.5,
+            "correctAnswerMeaning": 1,
+            "englishCorrectAnswerMeaning": 1,
+            "syntheticCorrectAnswerMeaning": 0,
+            "localizedCorrectAnswerMeaning": 0.5,
+            "questionType": 1,
+            "optionCountAgreement": 1,
+            "answerStructureAgreement": 0.5,
+            "promptFamilyAgreement": 0.5,
+            "provisionalTopicAgreement": 0.5,
+            "structuralAgreement": 0.903,
+            "structuralPenalty": 0,
+            "imageSignal": 1,
+            "imageObjectAgreement": 0.5,
+            "imageColorAgreement": 0.5,
+            "topicWeighting": 0.5,
+            "assetTieBreak": 0,
+            "baseScore": 52.497,
+            "rerankAdjustment": 10.478
+          },
+          "diagnostics": {
+            "effectiveItemType": "MCQ",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": false,
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": false,
+            "exactCorrectKey": true,
+            "optionSetMode": "unordered-semantic",
+            "rareSetBonus": 0,
+            "localizedMirrorUsed": false,
+            "localizedMirrorLabel": null,
+            "localizedSignalAvailable": false,
+            "syntheticMirrorUsed": false,
+            "genericPromptFamily": null,
+            "structuralSevereSignals": [],
+            "structuralSoftSignals": [],
+            "imageObjectComparable": false,
+            "imageColorComparable": false,
+            "explanation": [
+              "Structural filtering and scoring strongly agree with this candidate."
+            ]
+          },
+          "prompt": "When discovering a road congestion ahead, the correct way to deal with this situation is to _______.",
+          "syntheticJaPrompt": "when discovering road congestion この先 correct way deal situation _______。",
+          "translatedPrompt": "앞에 교통 정체가 보이면 운전자는 어떻게 해야 하는가?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Continue to weave through",
+              "translatedText": "계속 차선을 바꿔가며 지나가다"
+            },
+            {
+              "id": "B",
+              "text": "Find space and overtake one vehicle after another",
+              "translatedText": "틈을 찾아 차를 하나씩 추월하다"
+            },
+            {
+              "id": "C",
+              "text": "Honk to indicate the vehicle in front to speed up",
+              "translatedText": "앞차에 속도 올리라고 경적을 울리다"
+            },
+            {
+              "id": "D",
+              "text": "Stop and wait in line",
+              "translatedText": "정차하여 줄을 서서 기다리다"
+            }
+          ],
+          "correctAnswer": {
+            "kind": "MCQ",
+            "correctRow": null,
+            "correctOptionId": "q0118_o4",
+            "correctOptionKey": "D",
+            "correctOptionText": "Stop and wait in line",
+            "correctOptionTranslatedText": "정차하여 줄을 서서 기다리다",
+            "answerRaw": "D"
+          },
+          "image": {
+            "hasImage": false,
+            "currentAssetSrc": null,
+            "assetHashes": [],
+            "colorTags": [],
+            "objectTags": []
+          },
+          "topic": "mcq",
+          "subtopics": [],
+          "conceptSlots": null
+        },
+        {
+          "qid": "q0511",
+          "number": 511,
+          "type": "MCQ",
+          "score": 57.845,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.103,
+            "rawPromptSimilarity": 0.103,
+            "englishPromptSimilarity": 0.103,
+            "syntheticPromptSimilarity": 0,
+            "localizedPromptSimilarity": 0,
+            "optionSimilarity": 0.101,
+            "englishOptionSimilarity": 0.101,
+            "syntheticOptionSimilarity": 0,
+            "localizedOptionSimilarity": 0,
+            "optionFingerprint": 0.073,
+            "englishOptionFingerprint": 0.073,
+            "syntheticOptionFingerprint": 0,
+            "localizedOptionFingerprint": 0,
+            "optionExactSet": 0,
+            "optionRareCoverage": 0.099,
+            "mirrorAgreement": 0,
+            "localizedAgreement": 0.5,
+            "correctAnswerMeaning": 1,
+            "englishCorrectAnswerMeaning": 1,
+            "syntheticCorrectAnswerMeaning": 0,
+            "localizedCorrectAnswerMeaning": 0.5,
+            "questionType": 1,
+            "optionCountAgreement": 1,
+            "answerStructureAgreement": 0.5,
+            "promptFamilyAgreement": 0.5,
+            "provisionalTopicAgreement": 0.5,
+            "structuralAgreement": 0.903,
+            "structuralPenalty": 0,
+            "imageSignal": 1,
+            "imageObjectAgreement": 0.5,
+            "imageColorAgreement": 0.5,
+            "topicWeighting": 0.5,
+            "assetTieBreak": 0,
+            "baseScore": 47.367,
+            "rerankAdjustment": 10.478
+          },
+          "diagnostics": {
+            "effectiveItemType": "MCQ",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": false,
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": false,
+            "exactCorrectKey": true,
+            "optionSetMode": "unordered-semantic",
+            "rareSetBonus": 0,
+            "localizedMirrorUsed": false,
+            "localizedMirrorLabel": null,
+            "localizedSignalAvailable": false,
+            "syntheticMirrorUsed": false,
+            "genericPromptFamily": null,
+            "structuralSevereSignals": [],
+            "structuralSoftSignals": [],
+            "imageObjectComparable": false,
+            "imageColorComparable": false,
+            "explanation": [
+              "Structural filtering and scoring strongly agree with this candidate."
+            ]
+          },
+          "prompt": "How to use lights when overtaking at night?",
+          "syntheticJaPrompt": "how use ライト when 追い越し night。",
+          "translatedPrompt": "야간에 추월할 때 등화는 어떻게 사용해야 하는가?",
+          "options": [
+            {
+              "id": "A",
+              "text": "turn off the high beam light",
+              "translatedText": "상향등을 끈다."
+            },
+            {
+              "id": "B",
+              "text": "turn on high beam lights",
+              "translatedText": "상향등을 켠다."
+            },
+            {
+              "id": "C",
+              "text": "use fog lights",
+              "translatedText": "전면 안개등을 켠다."
+            },
+            {
+              "id": "D",
+              "text": "using the high and low beam lights alternately",
+              "translatedText": "상향등과 하향등을 번갈아 사용한다."
+            }
+          ],
+          "correctAnswer": {
+            "kind": "MCQ",
+            "correctRow": null,
+            "correctOptionId": "q0511_o4",
+            "correctOptionKey": "D",
+            "correctOptionText": "using the high and low beam lights alternately",
+            "correctOptionTranslatedText": "상향등과 하향등을 번갈아 사용한다.",
+            "answerRaw": "D"
+          },
+          "image": {
+            "hasImage": false,
+            "currentAssetSrc": null,
+            "assetHashes": [],
+            "colorTags": [],
+            "objectTags": []
+          },
+          "topic": "mcq",
+          "subtopics": [],
+          "conceptSlots": null
+        },
+        {
+          "qid": "q0184",
+          "number": 184,
+          "type": "MCQ",
+          "score": 57.442,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.166,
+            "rawPromptSimilarity": 0.166,
+            "englishPromptSimilarity": 0.166,
+            "syntheticPromptSimilarity": 0,
+            "localizedPromptSimilarity": 0,
+            "optionSimilarity": 0.073,
+            "englishOptionSimilarity": 0.073,
+            "syntheticOptionSimilarity": 0,
+            "localizedOptionSimilarity": 0,
+            "optionFingerprint": 0.045,
+            "englishOptionFingerprint": 0.045,
+            "syntheticOptionFingerprint": 0,
+            "localizedOptionFingerprint": 0,
+            "optionExactSet": 0,
+            "optionRareCoverage": 0.078,
+            "mirrorAgreement": 0,
+            "localizedAgreement": 0.5,
+            "correctAnswerMeaning": 1,
+            "englishCorrectAnswerMeaning": 1,
+            "syntheticCorrectAnswerMeaning": 0,
+            "localizedCorrectAnswerMeaning": 0.5,
+            "questionType": 1,
+            "optionCountAgreement": 1,
+            "answerStructureAgreement": 0.5,
+            "promptFamilyAgreement": 0.5,
+            "provisionalTopicAgreement": 0.5,
+            "structuralAgreement": 0.903,
+            "structuralPenalty": 0,
+            "imageSignal": 1,
+            "imageObjectAgreement": 0.5,
+            "imageColorAgreement": 0.5,
+            "topicWeighting": 0.5,
+            "assetTieBreak": 0,
+            "baseScore": 46.964,
+            "rerankAdjustment": 10.478
+          },
+          "diagnostics": {
+            "effectiveItemType": "MCQ",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": false,
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": false,
+            "exactCorrectKey": true,
+            "optionSetMode": "unordered-semantic",
+            "rareSetBonus": 0,
+            "localizedMirrorUsed": false,
+            "localizedMirrorLabel": null,
+            "localizedSignalAvailable": false,
+            "syntheticMirrorUsed": false,
+            "genericPromptFamily": null,
+            "structuralSevereSignals": [],
+            "structuralSoftSignals": [],
+            "imageObjectComparable": false,
+            "imageColorComparable": false,
+            "explanation": [
+              "Structural filtering and scoring strongly agree with this candidate."
+            ]
+          },
+          "prompt": "When driving in thick or extremely thick fog, the driver should ____ due to low visibility.",
+          "syntheticJaPrompt": "when driving thick or extremely fog visibility-low 運転者 べき ____ due visibility-low。",
+          "translatedPrompt": "짙은 안개 또는 매우 짙은 안개로 시야가 낮을 때 운전자는 어떻게 해야 하는가?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Turn on the head light and keep driving",
+              "translatedText": "전조등을 켜고 계속 주행한다"
+            },
+            {
+              "id": "B",
+              "text": "Turn on the contour light, fog light and drive along the right side",
+              "translatedText": "주행등과 전면 안개등을 켜고 우측으로 주행한다"
+            },
+            {
+              "id": "C",
+              "text": "Turn on the hazard lights and keep driving",
+              "translatedText": "비상점멸등을 켜고 계속 주행한다"
+            },
+            {
+              "id": "D",
+              "text": "Turn on the hazard lights, fog light, and stop at a safe place",
+              "translatedText": "비상점멸등과 전면 안개등을 켜고 안전한 장소에 정차한다"
+            }
+          ],
+          "correctAnswer": {
+            "kind": "MCQ",
+            "correctRow": null,
+            "correctOptionId": "q0184_o4",
+            "correctOptionKey": "D",
+            "correctOptionText": "Turn on the hazard lights, fog light, and stop at a safe place",
+            "correctOptionTranslatedText": "비상점멸등과 전면 안개등을 켜고 안전한 장소에 정차한다",
+            "answerRaw": "D"
+          },
+          "image": {
+            "hasImage": false,
+            "currentAssetSrc": null,
+            "assetHashes": [],
+            "colorTags": [],
+            "objectTags": []
+          },
+          "topic": "traffic-lights",
+          "subtopics": [],
+          "conceptSlots": null
+        },
+        {
+          "qid": "q0122",
+          "number": 122,
+          "type": "MCQ",
+          "score": 57.087,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.089,
+            "rawPromptSimilarity": 0.089,
+            "englishPromptSimilarity": 0.089,
+            "syntheticPromptSimilarity": 0,
+            "localizedPromptSimilarity": 0,
+            "optionSimilarity": 0.095,
+            "englishOptionSimilarity": 0.095,
+            "syntheticOptionSimilarity": 0,
+            "localizedOptionSimilarity": 0,
+            "optionFingerprint": 0.059,
+            "englishOptionFingerprint": 0.059,
+            "syntheticOptionFingerprint": 0,
+            "localizedOptionFingerprint": 0,
+            "optionExactSet": 0,
+            "optionRareCoverage": 0.083,
+            "mirrorAgreement": 0,
+            "localizedAgreement": 0.5,
+            "correctAnswerMeaning": 1,
+            "englishCorrectAnswerMeaning": 1,
+            "syntheticCorrectAnswerMeaning": 0,
+            "localizedCorrectAnswerMeaning": 0.5,
+            "questionType": 1,
+            "optionCountAgreement": 1,
+            "answerStructureAgreement": 0.5,
+            "promptFamilyAgreement": 0.5,
+            "provisionalTopicAgreement": 0.5,
+            "structuralAgreement": 0.903,
+            "structuralPenalty": 0,
+            "imageSignal": 1,
+            "imageObjectAgreement": 0.5,
+            "imageColorAgreement": 0.5,
+            "topicWeighting": 0.5,
+            "assetTieBreak": 0,
+            "baseScore": 46.609,
+            "rerankAdjustment": 10.478
+          },
+          "diagnostics": {
+            "effectiveItemType": "MCQ",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": false,
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": false,
+            "exactCorrectKey": true,
+            "optionSetMode": "unordered-semantic",
+            "rareSetBonus": 0,
+            "localizedMirrorUsed": false,
+            "localizedMirrorLabel": null,
+            "localizedSignalAvailable": false,
+            "syntheticMirrorUsed": false,
+            "genericPromptFamily": null,
+            "structuralSevereSignals": [],
+            "structuralSoftSignals": [],
+            "imageObjectComparable": false,
+            "imageColorComparable": false,
+            "explanation": [
+              "Structural filtering and scoring strongly agree with this candidate."
+            ]
+          },
+          "prompt": "When a motorized vehicle runs on an expressway, it ________.",
+          "syntheticJaPrompt": "when motorized 車両 runs 高速道路 it ________。",
+          "translatedPrompt": "고속도로에서 자동차가 주행할 때, 어떻게 해야 하는가?",
+          "options": [
+            {
+              "id": "A",
+              "text": "May stop on the road shoulder to let passengers on and off",
+              "translatedText": "갓길에 정차하여 승객을 태우거나 내리게 할 수 있다"
+            },
+            {
+              "id": "B",
+              "text": "May stop in the emergency lane to load and unload cargos",
+              "translatedText": "비상차로에 정차하여 화물을 싣거나 내릴 수 있다"
+            },
+            {
+              "id": "C",
+              "text": "May overtake or stop in the acceleration or deceleration lane",
+              "translatedText": "가속차로 또는 감속차로에서 추월하거나 정차할 수 있다"
+            },
+            {
+              "id": "D",
+              "text": "Is not allowed to drive or stop in the emergency lane in a non-emergency case",
+              "translatedText": "비상상황이 아닌 경우 비상차로를 주행하거나 정차할 수 없다"
+            }
+          ],
+          "correctAnswer": {
+            "kind": "MCQ",
+            "correctRow": null,
+            "correctOptionId": "q0122_o4",
+            "correctOptionKey": "D",
+            "correctOptionText": "Is not allowed to drive or stop in the emergency lane in a non-emergency case",
+            "correctOptionTranslatedText": "비상상황이 아닌 경우 비상차로를 주행하거나 정차할 수 없다",
+            "answerRaw": "D"
+          },
+          "image": {
+            "hasImage": false,
+            "currentAssetSrc": null,
+            "assetHashes": [],
+            "colorTags": [],
+            "objectTags": []
+          },
+          "topic": "expressway",
+          "subtopics": [],
+          "conceptSlots": null
+        },
+        {
+          "qid": "q0148",
+          "number": 148,
+          "type": "MCQ",
+          "score": 57.083,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.187,
+            "rawPromptSimilarity": 0.187,
+            "englishPromptSimilarity": 0.187,
+            "syntheticPromptSimilarity": 0,
+            "localizedPromptSimilarity": 0,
+            "optionSimilarity": 0.063,
+            "englishOptionSimilarity": 0.063,
+            "syntheticOptionSimilarity": 0,
+            "localizedOptionSimilarity": 0,
+            "optionFingerprint": 0.027,
+            "englishOptionFingerprint": 0.027,
+            "syntheticOptionFingerprint": 0,
+            "localizedOptionFingerprint": 0,
+            "optionExactSet": 0,
+            "optionRareCoverage": 0.036,
+            "mirrorAgreement": 0,
+            "localizedAgreement": 0.5,
+            "correctAnswerMeaning": 1,
+            "englishCorrectAnswerMeaning": 1,
+            "syntheticCorrectAnswerMeaning": 0,
+            "localizedCorrectAnswerMeaning": 0.5,
+            "questionType": 1,
+            "optionCountAgreement": 1,
+            "answerStructureAgreement": 0.5,
+            "promptFamilyAgreement": 0.5,
+            "provisionalTopicAgreement": 0.5,
+            "structuralAgreement": 0.903,
+            "structuralPenalty": 0,
+            "imageSignal": 1,
+            "imageObjectAgreement": 0.5,
+            "imageColorAgreement": 0.5,
+            "topicWeighting": 0.5,
+            "assetTieBreak": 0,
+            "baseScore": 46.605,
+            "rerankAdjustment": 10.478
+          },
+          "diagnostics": {
+            "effectiveItemType": "MCQ",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": false,
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": false,
+            "exactCorrectKey": true,
+            "optionSetMode": "unordered-semantic",
+            "rareSetBonus": 0,
+            "localizedMirrorUsed": false,
+            "localizedMirrorLabel": null,
+            "localizedSignalAvailable": false,
+            "syntheticMirrorUsed": false,
+            "genericPromptFamily": null,
+            "structuralSevereSignals": [],
+            "structuralSoftSignals": [],
+            "imageObjectComparable": false,
+            "imageColorComparable": false,
+            "explanation": [
+              "Structural filtering and scoring strongly agree with this candidate."
+            ]
+          },
+          "prompt": "When overtaking a vehicle stopping on the right side, the driver should ________ in case that vehicle starts up suddenly or opens the door.",
+          "syntheticJaPrompt": "when 追い越し 車両 stopping right side 運転者 べき ________ case 車両 start up suddenly or 開いている door。",
+          "translatedPrompt": "오른쪽에 정차한 차량을 추월할 때 그 차량이 갑자기 출발하거나 문을 열 수 있으므로 운전자는 어떻게 해야 하는가?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Speed up and pass",
+              "translatedText": "가속하여 추월한다"
+            },
+            {
+              "id": "B",
+              "text": "Keep honking",
+              "translatedText": "계속 경적을 울린다"
+            },
+            {
+              "id": "C",
+              "text": "Maintain the normal speed",
+              "translatedText": "정상 속도를 유지한다"
+            },
+            {
+              "id": "D",
+              "text": "Keep a safe horizontal distance from that vehicle, reduce speed and pass",
+              "translatedText": "그 차량과의 옆간격을 충분히 유지하고 감속하여 통과한다"
+            }
+          ],
+          "correctAnswer": {
+            "kind": "MCQ",
+            "correctRow": null,
+            "correctOptionId": "q0148_o4",
+            "correctOptionKey": "D",
+            "correctOptionText": "Keep a safe horizontal distance from that vehicle, reduce speed and pass",
+            "correctOptionTranslatedText": "그 차량과의 옆간격을 충분히 유지하고 감속하여 통과한다",
+            "answerRaw": "D"
+          },
+          "image": {
+            "hasImage": false,
+            "currentAssetSrc": null,
+            "assetHashes": [],
+            "colorTags": [],
+            "objectTags": []
+          },
+          "topic": "parking",
+          "subtopics": [],
+          "conceptSlots": null
+        }
+      ]
+    }
+  ]
+}

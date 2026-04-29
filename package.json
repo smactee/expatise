@@ -15,6 +15,8 @@
     "apply-unresolved-decisions": "node scripts/apply-unresolved-decisions.mjs",
     "apply-answer-key-decisions": "node scripts/apply-answer-key-decisions.mjs",
     "generate-batch-workbench": "node scripts/generate-batch-workbench.mjs",
+    "notebooklm-suggest-batch": "node scripts/notebooklm-suggest-batch.mjs",
+    "notebooklm-rerank-workbench": "node scripts/notebooklm-rerank-workbench.mjs",
     "apply-batch-workbench-decisions": "node scripts/apply-batch-workbench-decisions.mjs",
     "apply-production-localization-merge": "node scripts/apply-production-localization-merge.mjs",
     "prepare-dry-run-merge-review": "node scripts/prepare-dry-run-merge-review.mjs",
@@ -31,6 +33,7 @@
     "validate-screenshot-intake": "node scripts/validate-screenshot-intake.mjs",
     "validate-renamed-assets": "node scripts/validate-renamed-assets.mjs",
     "validate-localization-batch": "node scripts/validate-localization-batch.mjs",
+    "report-localization-counts": "node scripts/report-production-localization-counts.mjs",
     "revenuecat:webhook:replay": "node scripts/replay-revenuecat-webhook.mjs",
     "revenuecat:webhook:replay:sample": "node scripts/replay-revenuecat-webhook.mjs scripts/fixtures/revenuecat-webhook.sample.json"
   },
@@ -70,6 +73,7 @@
     "baseline-browser-mapping": "^2.9.5",
     "eslint": "^9",
     "eslint-config-next": "16.0.3",
+    "playwright": "^1.59.1",
     "supabase": "^2.76.14",
     "tailwindcss": "^4",
     "typescript": "^5"

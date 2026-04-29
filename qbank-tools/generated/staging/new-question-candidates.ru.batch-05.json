@@ -1,0 +1,90 @@
+{
+  "generatedAt": "2026-04-21T03:08:42.534Z",
+  "lang": "ru",
+  "batchId": "batch-05",
+  "dataset": "2023-test1",
+  "sourceDecisionPath": "qbank-tools/generated/staging/new-question-decisions.ru.batch-05.json",
+  "items": [
+    {
+      "candidateId": "nqc-ru-batch-05-001",
+      "sourceLang": "ru",
+      "sourceImage": "screenshots/Screenshot 2026-04-19 at 18.50.07.png",
+      "effectiveQuestionType": "MCQ",
+      "promptRawJa": "До начала въезда в двусторонний туннель, следует выключить:",
+      "promptGlossEn": "Before entering a two-way tunnel, you should turn off:",
+      "optionsRawJa": [
+        "A: Аварийный световой сигнал",
+        "B: Фары дальнего света",
+        "C: Противотуманные фары",
+        "D: Габаритные фары или фары дальнего света"
+      ],
+      "optionsGlossEn": [
+        "A: Hazard warning lights",
+        "B: High beam headlights",
+        "C: Fog lights",
+        "D: Parking lights or high beam headlights"
+      ],
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "newQuestionLocalAnswerKey": "B",
+      "provisionalTopic": "road-safety",
+      "provisionalSubtopics": [
+        "road-safety:road-conditions",
+        "proper-driving:safe-driving"
+      ],
+      "topicConfidence": 0.52,
+      "topicSignals": [
+        {
+          "topic": "road-safety",
+          "subtopic": "road-safety:road-conditions",
+          "signal": "road-condition-or-hazard",
+          "weight": 1.3
+        },
+        {
+          "topic": "proper-driving",
+          "subtopic": "proper-driving:safe-driving",
+          "signal": "driving-action",
+          "weight": 1.2
+        }
+      ],
+      "linkedExistingAssetCandidate": null,
+      "reviewerNotes": "",
+      "status": "pending-superset-review"
+    },
+    {
+      "candidateId": "nqc-ru-batch-05-001",
+      "sourceLang": "ru",
+      "sourceImage": "screenshots/Screenshot 2026-04-19 at 18.50.01.png",
+      "effectiveQuestionType": "ROW",
+      "promptRawJa": "За использование поддельного водительского удостоверения начисляется 12 баллов.",
+      "promptGlossEn": "Using a fake driver's license is assigned 12 points.",
+      "optionsRawJa": [
+        "A Правильно",
+        "B Не правильно"
+      ],
+      "optionsGlossEn": [
+        "A Correct",
+        "B Incorrect"
+      ],
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "newQuestionLocalAnswerKey": "A",
+      "provisionalTopic": "road-safety",
+      "provisionalSubtopics": [
+        "road-safety:license"
+      ],
+      "topicConfidence": 1,
+      "topicSignals": [
+        {
+          "topic": "road-safety",
+          "subtopic": "road-safety:license",
+          "signal": "license",
+          "weight": 1.15
+        }
+      ],
+      "linkedExistingAssetCandidate": null,
+      "reviewerNotes": "",
+      "status": "pending-superset-review"
+    }
+  ]
+}

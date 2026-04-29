@@ -18,6 +18,7 @@ export const DATASETS: Record<DatasetId, DatasetConfig> = {
     translationUrls: {
       ja: '/qbank/2023-test1/translations.ja.json',
       ko: '/qbank/2023-test1/translations.ko.json',
+      ru: '/qbank/2023-test1/translations.ru.json',
     },
   },
 } as const;

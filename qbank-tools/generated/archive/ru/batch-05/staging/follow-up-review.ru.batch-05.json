@@ -1,0 +1,1341 @@
+{
+  "generatedAt": "2026-04-21T03:08:41.849Z",
+  "lang": "ru",
+  "batchId": "batch-05",
+  "dataset": "2023-test1",
+  "sourceReviewDecisionsPath": "qbank-tools/generated/staging/ru-batch-05-review-decisions.json",
+  "items": [
+    {
+      "itemId": "screenshots/Screenshot 2026-04-19 at 18.50.20.png",
+      "sourceImage": "screenshots/Screenshot 2026-04-19 at 18.50.20.png",
+      "status": "unsure",
+      "reason": "Reviewer marked this item as unsure and it needs follow-up review.",
+      "reviewerNotes": "",
+      "approvedQid": null,
+      "promptRawJa": "Водители автотранспорта, совершающие серьезные нарушения при обгоне друг друга на дороге, подвергаются:",
+      "promptGlossEn": "Drivers of vehicles who commit serious violations while overtaking each other on the road are subject to:",
+      "optionsRawJa": [
+        "A) Задержанию и штрафу",
+        "B) Заключению под стражу и штраф",
+        "C) Заключению под стражу сроком более 1 года",
+        "D) Заключению под стражу сроком на 6 месяцев"
+      ],
+      "optionsGlossEn": [
+        "A) Detention and a fine",
+        "B) Imprisonment and a fine",
+        "C) Imprisonment for more than 1 year",
+        "D) Imprisonment for 6 months"
+      ],
+      "correctKeyRaw": "B",
+      "correctAnswerRaw": "Заключению под стражу и штраф",
+      "provisionalTopic": "proper-driving",
+      "provisionalSubtopics": [
+        "proper-driving:safe-driving"
+      ],
+      "topicConfidence": 1,
+      "topicSignals": [
+        {
+          "topic": "proper-driving",
+          "subtopic": "proper-driving:safe-driving",
+          "signal": "driving-action",
+          "weight": 1.2
+        }
+      ],
+      "topCandidates": [
+        {
+          "qid": "q0506",
+          "number": 506,
+          "type": "MCQ",
+          "score": 69.543,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.405,
+            "rawPromptSimilarity": 0.405,
+            "englishPromptSimilarity": 0.405,
+            "syntheticPromptSimilarity": 0,
+            "localizedPromptSimilarity": 0,
+            "optionSimilarity": 0.492,
+            "englishOptionSimilarity": 0.492,
+            "syntheticOptionSimilarity": 0,
+            "localizedOptionSimilarity": 0,
+            "optionFingerprint": 0.406,
+            "englishOptionFingerprint": 0.406,
+            "syntheticOptionFingerprint": 0,
+            "localizedOptionFingerprint": 0,
+            "optionExactSet": 0,
+            "optionRareCoverage": 0.619,
+            "mirrorAgreement": 0,
+            "localizedAgreement": 0.5,
+            "correctAnswerMeaning": 0.5,
+            "englishCorrectAnswerMeaning": 0.393,
+            "syntheticCorrectAnswerMeaning": 0,
+            "localizedCorrectAnswerMeaning": 0.5,
+            "questionType": 1,
+            "optionCountAgreement": 1,
+            "answerStructureAgreement": 0.5,
+            "promptFamilyAgreement": 0.5,
+            "provisionalTopicAgreement": 0,
+            "structuralAgreement": 0.806,
+            "structuralPenalty": 0.16,
+            "imageSignal": 1,
+            "imageObjectAgreement": 0.5,
+            "imageColorAgreement": 0.5,
+            "topicWeighting": 0.5,
+            "assetTieBreak": 0,
+            "baseScore": 64.467,
+            "rerankAdjustment": 5.076
+          },
+          "diagnostics": {
+            "effectiveItemType": "MCQ",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": false,
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": false,
+            "exactCorrectKey": false,
+            "optionSetMode": "unordered-semantic",
+            "rareSetBonus": 0,
+            "localizedMirrorUsed": false,
+            "localizedMirrorLabel": null,
+            "localizedSignalAvailable": false,
+            "syntheticMirrorUsed": false,
+            "genericPromptFamily": null,
+            "structuralSevereSignals": [],
+            "structuralSoftSignals": [
+              "topic"
+            ],
+            "imageObjectComparable": false,
+            "imageColorComparable": false,
+            "explanation": [
+              "Option comparison used unordered semantic set matching.",
+              "English semantic option matching still supported the top candidate.",
+              "Structural filtering and scoring strongly agree with this candidate."
+            ]
+          },
+          "prompt": "The driver who chases and races while driving on the road, and commits serious acts is subject to ______",
+          "syntheticJaPrompt": "運転者 who chase and race driving road and commit seriou acts subject ______。",
+          "translatedPrompt": "도로에서 난폭·경주 행위를 하고 중대한 행위가 인정되는 운전자는 어떤 처벌을 받는가?",
+          "options": [
+            {
+              "id": "A",
+              "text": "a prison term of 6 months",
+              "translatedText": "징역 6개월"
+            },
+            {
+              "id": "B",
+              "text": "a prison term of more than 1 year",
+              "translatedText": "1년 초과의 징역"
+            },
+            {
+              "id": "C",
+              "text": "a criminal restriction and a fine",
+              "translatedText": "형사 처벌 및 벌금"
+            },
+            {
+              "id": "D",
+              "text": "a criminal detention and a fine",
+              "translatedText": "구류 및 벌금"
+            }
+          ],
+          "correctAnswer": {
+            "kind": "MCQ",
+            "correctRow": null,
+            "correctOptionId": "q0506_o4",
+            "correctOptionKey": "D",
+            "correctOptionText": "a criminal detention and a fine",
+            "correctOptionTranslatedText": "구류 및 벌금",
+            "answerRaw": "D"
+          },
+          "image": {
+            "hasImage": false,
+            "currentAssetSrc": null,
+            "assetHashes": [],
+            "colorTags": [],
+            "objectTags": []
+          },
+          "topic": "violations-penalties",
+          "subtopics": [],
+          "conceptSlots": null
+        },
+        {
+          "qid": "q0507",
+          "number": 507,
+          "type": "MCQ",
+          "score": 60.49,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.209,
+            "rawPromptSimilarity": 0.209,
+            "englishPromptSimilarity": 0.209,
+            "syntheticPromptSimilarity": 0,
+            "localizedPromptSimilarity": 0,
+            "optionSimilarity": 0.41,
+            "englishOptionSimilarity": 0.41,
+            "syntheticOptionSimilarity": 0,
+            "localizedOptionSimilarity": 0,
+            "optionFingerprint": 0.283,
+            "englishOptionFingerprint": 0.283,
+            "syntheticOptionFingerprint": 0,
+            "localizedOptionFingerprint": 0,
+            "optionExactSet": 0,
+            "optionRareCoverage": 0.339,
+            "mirrorAgreement": 0,
+            "localizedAgreement": 0.5,
+            "correctAnswerMeaning": 0.5,
+            "englishCorrectAnswerMeaning": 0.393,
+            "syntheticCorrectAnswerMeaning": 0,
+            "localizedCorrectAnswerMeaning": 0.5,
+            "questionType": 1,
+            "optionCountAgreement": 1,
+            "answerStructureAgreement": 0.5,
+            "promptFamilyAgreement": 0.5,
+            "provisionalTopicAgreement": 0,
+            "structuralAgreement": 0.806,
+            "structuralPenalty": 0.16,
+            "imageSignal": 1,
+            "imageObjectAgreement": 0.5,
+            "imageColorAgreement": 0.5,
+            "topicWeighting": 0.5,
+            "assetTieBreak": 0,
+            "baseScore": 55.414,
+            "rerankAdjustment": 5.076
+          },
+          "diagnostics": {
+            "effectiveItemType": "MCQ",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": false,
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": false,
+            "exactCorrectKey": false,
+            "optionSetMode": "unordered-semantic",
+            "rareSetBonus": 0,
+            "localizedMirrorUsed": false,
+            "localizedMirrorLabel": null,
+            "localizedSignalAvailable": false,
+            "syntheticMirrorUsed": false,
+            "genericPromptFamily": null,
+            "structuralSevereSignals": [],
+            "structuralSoftSignals": [
+              "topic"
+            ],
+            "imageObjectComparable": false,
+            "imageColorComparable": false,
+            "explanation": [
+              "Option comparison used unordered semantic set matching.",
+              "English semantic option matching still supported the top candidate.",
+              "Structural filtering and scoring strongly agree with this candidate."
+            ]
+          },
+          "prompt": "The driver who drives after drunk is subject to ______",
+          "syntheticJaPrompt": "運転者 who drive after drunk subject ______。",
+          "translatedPrompt": "음주운전을 한 운전자는 어떤 처벌을 받는가?",
+          "options": [
+            {
+              "id": "A",
+              "text": "a criminal restriction and a fine",
+              "translatedText": "형사 처벌 및 벌금"
+            },
+            {
+              "id": "B",
+              "text": "a prison term of more than 2 years",
+              "translatedText": "2년 초과의 징역"
+            },
+            {
+              "id": "C",
+              "text": "a criminal detention and a fine",
+              "translatedText": "구류 및 벌금"
+            },
+            {
+              "id": "D",
+              "text": "a prison term of less than 2 years",
+              "translatedText": "2년 미만의 징역"
+            }
+          ],
+          "correctAnswer": {
+            "kind": "MCQ",
+            "correctRow": null,
+            "correctOptionId": "q0507_o3",
+            "correctOptionKey": "C",
+            "correctOptionText": "a criminal detention and a fine",
+            "correctOptionTranslatedText": "구류 및 벌금",
+            "answerRaw": "C"
+          },
+          "image": {
+            "hasImage": false,
+            "currentAssetSrc": null,
+            "assetHashes": [],
+            "colorTags": [],
+            "objectTags": []
+          },
+          "topic": "violations-penalties",
+          "subtopics": [],
+          "conceptSlots": null
+        },
+        {
+          "qid": "q0164",
+          "number": 164,
+          "type": "MCQ",
+          "score": 59.763,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.191,
+            "rawPromptSimilarity": 0.191,
+            "englishPromptSimilarity": 0.191,
+            "syntheticPromptSimilarity": 0,
+            "localizedPromptSimilarity": 0,
+            "optionSimilarity": 0.102,
+            "englishOptionSimilarity": 0.102,
+            "syntheticOptionSimilarity": 0,
+            "localizedOptionSimilarity": 0,
+            "optionFingerprint": 0.027,
+            "englishOptionFingerprint": 0.027,
+            "syntheticOptionFingerprint": 0,
+            "localizedOptionFingerprint": 0,
+            "optionExactSet": 0,
+            "optionRareCoverage": 0,
+            "mirrorAgreement": 0,
+            "localizedAgreement": 0.5,
+            "correctAnswerMeaning": 1,
+            "englishCorrectAnswerMeaning": 1,
+            "syntheticCorrectAnswerMeaning": 0,
+            "localizedCorrectAnswerMeaning": 0.5,
+            "questionType": 1,
+            "optionCountAgreement": 1,
+            "answerStructureAgreement": 0.5,
+            "promptFamilyAgreement": 0.5,
+            "provisionalTopicAgreement": 0.75,
+            "structuralAgreement": 0.952,
+            "structuralPenalty": 0,
+            "imageSignal": 1,
+            "imageObjectAgreement": 0.5,
+            "imageColorAgreement": 0.5,
+            "topicWeighting": 0.5,
+            "assetTieBreak": 0,
+            "baseScore": 48.011,
+            "rerankAdjustment": 11.752
+          },
+          "diagnostics": {
+            "effectiveItemType": "MCQ",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": false,
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": false,
+            "exactCorrectKey": true,
+            "optionSetMode": "unordered-semantic",
+            "rareSetBonus": 0,
+            "localizedMirrorUsed": false,
+            "localizedMirrorLabel": null,
+            "localizedSignalAvailable": false,
+            "syntheticMirrorUsed": false,
+            "genericPromptFamily": null,
+            "structuralSevereSignals": [],
+            "structuralSoftSignals": [],
+            "imageObjectComparable": false,
+            "imageColorComparable": false,
+            "explanation": [
+              "Structural filtering and scoring strongly agree with this candidate."
+            ]
+          },
+          "prompt": "When reversing on an ordinary road and discovering some vehicles are passing, the driver should _________.",
+          "syntheticJaPrompt": "when backing ordinary-road and discovering some 車両 passing 運転者 べき _________。",
+          "translatedPrompt": "일반 도로에서 후진 중 앞지르는 차량이 보이면 운전자는 어떻게 해야 하는가?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Honk to indicate the intention",
+              "translatedText": "후진 의사를 알리기 위해 경적을 울린다"
+            },
+            {
+              "id": "B",
+              "text": "Voluntarily stop and yield",
+              "translatedText": "자발적으로 정차하여 양보한다"
+            },
+            {
+              "id": "C",
+              "text": "Speed up and reverse",
+              "translatedText": "속도를 내어 후진한다"
+            },
+            {
+              "id": "D",
+              "text": "Continue to reverse",
+              "translatedText": "계속 후진한다"
+            }
+          ],
+          "correctAnswer": {
+            "kind": "MCQ",
+            "correctRow": null,
+            "correctOptionId": "q0164_o2",
+            "correctOptionKey": "B",
+            "correctOptionText": "Voluntarily stop and yield",
+            "correctOptionTranslatedText": "자발적으로 정차하여 양보한다",
+            "answerRaw": "B"
+          },
+          "image": {
+            "hasImage": false,
+            "currentAssetSrc": null,
+            "assetHashes": [],
+            "colorTags": [],
+            "objectTags": []
+          },
+          "topic": "road-safety",
+          "subtopics": [
+            "road-safety:road-conditions",
+            "proper-driving:safe-driving"
+          ],
+          "conceptSlots": null
+        },
+        {
+          "qid": "q0508",
+          "number": 508,
+          "type": "MCQ",
+          "score": 59.056,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.138,
+            "rawPromptSimilarity": 0.138,
+            "englishPromptSimilarity": 0.138,
+            "syntheticPromptSimilarity": 0,
+            "localizedPromptSimilarity": 0,
+            "optionSimilarity": 0.206,
+            "englishOptionSimilarity": 0.206,
+            "syntheticOptionSimilarity": 0,
+            "localizedOptionSimilarity": 0,
+            "optionFingerprint": 0.181,
+            "englishOptionFingerprint": 0.181,
+            "syntheticOptionFingerprint": 0,
+            "localizedOptionFingerprint": 0,
+            "optionExactSet": 0,
+            "optionRareCoverage": 0.234,
+            "mirrorAgreement": 0,
+            "localizedAgreement": 0.5,
+            "correctAnswerMeaning": 1,
+            "englishCorrectAnswerMeaning": 1,
+            "syntheticCorrectAnswerMeaning": 0,
+            "localizedCorrectAnswerMeaning": 0.5,
+            "questionType": 1,
+            "optionCountAgreement": 1,
+            "answerStructureAgreement": 0.5,
+            "promptFamilyAgreement": 0.5,
+            "provisionalTopicAgreement": 0,
+            "structuralAgreement": 0.806,
+            "structuralPenalty": 0.16,
+            "imageSignal": 1,
+            "imageObjectAgreement": 0.5,
+            "imageColorAgreement": 0.5,
+            "topicWeighting": 0.5,
+            "assetTieBreak": 0,
+            "baseScore": 53.98,
+            "rerankAdjustment": 5.076
+          },
+          "diagnostics": {
+            "effectiveItemType": "MCQ",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": false,
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": false,
+            "exactCorrectKey": true,
+            "optionSetMode": "unordered-semantic",
+            "rareSetBonus": 0,
+            "localizedMirrorUsed": false,
+            "localizedMirrorLabel": null,
+            "localizedSignalAvailable": false,
+            "syntheticMirrorUsed": false,
+            "genericPromptFamily": null,
+            "structuralSevereSignals": [],
+            "structuralSoftSignals": [
+              "topic"
+            ],
+            "imageObjectComparable": false,
+            "imageColorComparable": false,
+            "explanation": [
+              "Structural filtering and scoring strongly agree with this candidate."
+            ]
+          },
+          "prompt": "How long is the period of probation after a motorized vehicle driver obtains his driving license for the first time or the permission to drive higher level vehicles.",
+          "syntheticJaPrompt": "how long period probation after motorized 車両 運転者 obtain his driving license first time or permission drive higher level 車両。",
+          "translatedPrompt": "자동차 운전자가 처음으로 운전면허를 취득하거나 상위 등급 차량 운전 허가를 받을 때의 실습기간은 얼마인가?",
+          "options": [
+            {
+              "id": "A",
+              "text": "6 months",
+              "translatedText": "6개월"
+            },
+            {
+              "id": "B",
+              "text": "12 months",
+              "translatedText": "12개월"
+            },
+            {
+              "id": "C",
+              "text": "2 years",
+              "translatedText": "2년"
+            },
+            {
+              "id": "D",
+              "text": "3 months",
+              "translatedText": "3개월"
+            }
+          ],
+          "correctAnswer": {
+            "kind": "MCQ",
+            "correctRow": null,
+            "correctOptionId": "q0508_o2",
+            "correctOptionKey": "B",
+            "correctOptionText": "12 months",
+            "correctOptionTranslatedText": "12개월",
+            "answerRaw": "B"
+          },
+          "image": {
+            "hasImage": false,
+            "currentAssetSrc": null,
+            "assetHashes": [],
+            "colorTags": [],
+            "objectTags": []
+          },
+          "topic": "license",
+          "subtopics": [],
+          "conceptSlots": null
+        },
+        {
+          "qid": "q0169",
+          "number": 169,
+          "type": "MCQ",
+          "score": 58.367,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.122,
+            "rawPromptSimilarity": 0.122,
+            "englishPromptSimilarity": 0.122,
+            "syntheticPromptSimilarity": 0,
+            "localizedPromptSimilarity": 0,
+            "optionSimilarity": 0.067,
+            "englishOptionSimilarity": 0.067,
+            "syntheticOptionSimilarity": 0,
+            "localizedOptionSimilarity": 0,
+            "optionFingerprint": 0.018,
+            "englishOptionFingerprint": 0.018,
+            "syntheticOptionFingerprint": 0,
+            "localizedOptionFingerprint": 0,
+            "optionExactSet": 0,
+            "optionRareCoverage": 0,
+            "mirrorAgreement": 0,
+            "localizedAgreement": 0.5,
+            "correctAnswerMeaning": 1,
+            "englishCorrectAnswerMeaning": 1,
+            "syntheticCorrectAnswerMeaning": 0,
+            "localizedCorrectAnswerMeaning": 0.5,
+            "questionType": 1,
+            "optionCountAgreement": 1,
+            "answerStructureAgreement": 0.5,
+            "promptFamilyAgreement": 0.5,
+            "provisionalTopicAgreement": 1,
+            "structuralAgreement": 1,
+            "structuralPenalty": 0,
+            "imageSignal": 1,
+            "imageObjectAgreement": 0.5,
+            "imageColorAgreement": 0.5,
+            "topicWeighting": 0.5,
+            "assetTieBreak": 0,
+            "baseScore": 45.367,
+            "rerankAdjustment": 13
+          },
+          "diagnostics": {
+            "effectiveItemType": "MCQ",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": false,
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": false,
+            "exactCorrectKey": true,
+            "optionSetMode": "unordered-semantic",
+            "rareSetBonus": 0,
+            "localizedMirrorUsed": false,
+            "localizedMirrorLabel": null,
+            "localizedSignalAvailable": false,
+            "syntheticMirrorUsed": false,
+            "genericPromptFamily": null,
+            "structuralSevereSignals": [],
+            "structuralSoftSignals": [],
+            "imageObjectComparable": false,
+            "imageColorComparable": false,
+            "explanation": [
+              "Structural filtering and scoring strongly agree with this candidate."
+            ]
+          },
+          "prompt": "The main impact of muddy roads on safe driving is _________.",
+          "syntheticJaPrompt": "main impact mud road safe driving _________",
+          "translatedPrompt": "진흙길의 노면 상태가 안전운전에 미치는 주된 영향은 무엇인가?",
+          "options": [
+            {
+              "id": "A",
+              "text": "The resistance to the vehicle becomes weaker",
+              "translatedText": "주행 저항이 약해진다"
+            },
+            {
+              "id": "B",
+              "text": "The tires can easily spin and skid",
+              "translatedText": "타이어가 쉽게 헛돌거나 미끄러진다"
+            },
+            {
+              "id": "C",
+              "text": "The visibility become lower and blurs the field of vision",
+              "translatedText": "가시거리가 줄어 시야가 흐려진다"
+            },
+            {
+              "id": "D",
+              "text": "The road grip becomes stronger",
+              "translatedText": "노면의 그립력이 강해진다"
+            }
+          ],
+          "correctAnswer": {
+            "kind": "MCQ",
+            "correctRow": null,
+            "correctOptionId": "q0169_o2",
+            "correctOptionKey": "B",
+            "correctOptionText": "The tires can easily spin and skid",
+            "correctOptionTranslatedText": "타이어가 쉽게 헛돌거나 미끄러진다",
+            "answerRaw": "B"
+          },
+          "image": {
+            "hasImage": false,
+            "currentAssetSrc": null,
+            "assetHashes": [],
+            "colorTags": [],
+            "objectTags": []
+          },
+          "topic": "proper-driving",
+          "subtopics": [
+            "proper-driving:safe-driving",
+            "road-safety:road-conditions"
+          ],
+          "conceptSlots": null
+        }
+      ]
+    },
+    {
+      "itemId": "screenshots/Screenshot 2026-04-19 at 18.50.23 1.png",
+      "sourceImage": "screenshots/Screenshot 2026-04-19 at 18.50.23 1.png",
+      "status": "unsure",
+      "reason": "Reviewer marked this item as unsure and it needs follow-up review.",
+      "reviewerNotes": "",
+      "approvedQid": null,
+      "promptRawJa": "При движении транспортного средства на автомагистрали, водителю следует придерживаться правой полосы дороги.",
+      "promptGlossEn": "When driving a vehicle on a highway, should the driver keep to the right lane?",
+      "optionsRawJa": [
+        "A Правильно",
+        "B Не правильно"
+      ],
+      "optionsGlossEn": [
+        "A Correct",
+        "B Incorrect"
+      ],
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "provisionalTopic": null,
+      "provisionalSubtopics": [],
+      "topicConfidence": 0,
+      "topicSignals": [],
+      "topCandidates": [
+        {
+          "qid": "q0077",
+          "number": 77,
+          "type": "ROW",
+          "score": 79.908,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.386,
+            "rawPromptSimilarity": 0.386,
+            "englishPromptSimilarity": 0.386,
+            "syntheticPromptSimilarity": 0,
+            "localizedPromptSimilarity": 0,
+            "localizedAgreement": 0.5,
+            "questionType": 1,
+            "optionCountAgreement": 1,
+            "answerStructureAgreement": 0.5,
+            "promptFamilyAgreement": 0.5,
+            "provisionalTopicAgreement": 0.5,
+            "structuralAgreement": 0.885,
+            "structuralPenalty": 0,
+            "imageSignal": 1,
+            "imageObjectAgreement": 0.5,
+            "imageColorAgreement": 0.5,
+            "topicWeighting": 0.5,
+            "answerPolarity": 0.5,
+            "conceptAlignment": 1,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0,
+            "baseScore": 69.898,
+            "rerankAdjustment": 10.01
+          },
+          "diagnostics": {
+            "effectiveItemType": "ROW",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": true,
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "optionSetMode": "row-semantic",
+            "localizedMirrorUsed": false,
+            "localizedMirrorLabel": null,
+            "localizedSignalAvailable": false,
+            "syntheticMirrorUsed": false,
+            "genericPromptFamily": null,
+            "sourceConceptSlots": {
+              "condition": [],
+              "context": [
+                "expressway"
+              ],
+              "action": [],
+              "polarity": "positive",
+              "signals": [
+                {
+                  "slot": "context",
+                  "value": "expressway",
+                  "signal": "expressway"
+                }
+              ]
+            },
+            "candidateConceptSlots": {
+              "condition": [
+                "fog",
+                "visibility-low"
+              ],
+              "context": [
+                "expressway"
+              ],
+              "action": [
+                "stop",
+                "emergency-brake"
+              ],
+              "polarity": "positive",
+              "signals": [
+                {
+                  "slot": "condition",
+                  "value": "fog",
+                  "signal": "fog"
+                },
+                {
+                  "slot": "condition",
+                  "value": "visibility-low",
+                  "signal": "visibility-low"
+                },
+                {
+                  "slot": "context",
+                  "value": "expressway",
+                  "signal": "expressway"
+                },
+                {
+                  "slot": "action",
+                  "value": "stop",
+                  "signal": "stop"
+                },
+                {
+                  "slot": "action",
+                  "value": "emergency-brake",
+                  "signal": "emergency-brake"
+                }
+              ]
+            },
+            "conceptMatches": [
+              "context:expressway"
+            ],
+            "contradictionSignals": [],
+            "rowConceptMode": "slot-alignment + contradiction-penalties",
+            "structuralSevereSignals": [],
+            "structuralSoftSignals": [],
+            "imageObjectComparable": false,
+            "imageColorComparable": false,
+            "explanation": [
+              "Binary yes/no options were treated as ROW-like for type scoring.",
+              "Missing correct answer was treated as a neutral signal.",
+              "Structural filtering and scoring strongly agree with this candidate.",
+              "ROW concept slots aligned on condition/context/action."
+            ]
+          },
+          "prompt": "When driving in thick fog causing poor visibility on the expressway, the driver should apply emergency braking to stop at once.",
+          "syntheticJaPrompt": "when driving fog visibility-low causing visibility-low 高速道路 運転者 べき apply emergency-brake stop。",
+          "translatedPrompt": "고속도로에서 짙은 안개로 시야가 불량할 때 운전자는 긴급 제동을 걸어 즉시 정차해야 한다.",
+          "options": [],
+          "correctAnswer": {
+            "kind": "ROW",
+            "correctRow": "W",
+            "correctOptionId": null,
+            "correctOptionKey": null,
+            "correctOptionText": "wrong / false",
+            "correctOptionTranslatedText": null,
+            "answerRaw": "Wrong"
+          },
+          "image": {
+            "hasImage": false,
+            "currentAssetSrc": null,
+            "assetHashes": [],
+            "colorTags": [],
+            "objectTags": []
+          },
+          "topic": "expressway",
+          "subtopics": [],
+          "conceptSlots": {
+            "condition": [
+              "fog",
+              "visibility-low"
+            ],
+            "context": [
+              "expressway"
+            ],
+            "action": [
+              "stop",
+              "emergency-brake"
+            ],
+            "polarity": "positive",
+            "signals": [
+              {
+                "slot": "condition",
+                "value": "fog",
+                "signal": "fog"
+              },
+              {
+                "slot": "condition",
+                "value": "visibility-low",
+                "signal": "visibility-low"
+              },
+              {
+                "slot": "context",
+                "value": "expressway",
+                "signal": "expressway"
+              },
+              {
+                "slot": "action",
+                "value": "stop",
+                "signal": "stop"
+              },
+              {
+                "slot": "action",
+                "value": "emergency-brake",
+                "signal": "emergency-brake"
+              }
+            ]
+          }
+        },
+        {
+          "qid": "q0036",
+          "number": 36,
+          "type": "ROW",
+          "score": 78.619,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.364,
+            "rawPromptSimilarity": 0.364,
+            "englishPromptSimilarity": 0.364,
+            "syntheticPromptSimilarity": 0,
+            "localizedPromptSimilarity": 0,
+            "localizedAgreement": 0.5,
+            "questionType": 1,
+            "optionCountAgreement": 1,
+            "answerStructureAgreement": 0.5,
+            "promptFamilyAgreement": 0.5,
+            "provisionalTopicAgreement": 0.5,
+            "structuralAgreement": 0.885,
+            "structuralPenalty": 0,
+            "imageSignal": 1,
+            "imageObjectAgreement": 0.5,
+            "imageColorAgreement": 0.5,
+            "topicWeighting": 0.5,
+            "answerPolarity": 0.5,
+            "conceptAlignment": 1,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0,
+            "baseScore": 68.609,
+            "rerankAdjustment": 10.01
+          },
+          "diagnostics": {
+            "effectiveItemType": "ROW",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": true,
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "optionSetMode": "row-semantic",
+            "localizedMirrorUsed": false,
+            "localizedMirrorLabel": null,
+            "localizedSignalAvailable": false,
+            "syntheticMirrorUsed": false,
+            "genericPromptFamily": null,
+            "sourceConceptSlots": {
+              "condition": [],
+              "context": [
+                "expressway"
+              ],
+              "action": [],
+              "polarity": "positive",
+              "signals": [
+                {
+                  "slot": "context",
+                  "value": "expressway",
+                  "signal": "expressway"
+                }
+              ]
+            },
+            "candidateConceptSlots": {
+              "condition": [],
+              "context": [
+                "expressway"
+              ],
+              "action": [],
+              "polarity": "positive",
+              "signals": [
+                {
+                  "slot": "context",
+                  "value": "expressway",
+                  "signal": "expressway"
+                }
+              ]
+            },
+            "conceptMatches": [
+              "context:expressway"
+            ],
+            "contradictionSignals": [],
+            "rowConceptMode": "slot-alignment + contradiction-penalties",
+            "structuralSevereSignals": [],
+            "structuralSoftSignals": [],
+            "imageObjectComparable": false,
+            "imageColorComparable": false,
+            "explanation": [
+              "Binary yes/no options were treated as ROW-like for type scoring.",
+              "Missing correct answer was treated as a neutral signal.",
+              "Structural filtering and scoring strongly agree with this candidate.",
+              "ROW concept slots aligned on condition/context/action."
+            ]
+          },
+          "prompt": "When a vehicle runs on an expressway, the driver may ascertain the speed according to his feeling.",
+          "syntheticJaPrompt": "when 車両 runs 高速道路 運転者 よい ascertain speed according his feeling。",
+          "translatedPrompt": "고속도로에서 운전할 때 운전자는 자신의 기분대로 주행 속도를 정할 수 있다.",
+          "options": [],
+          "correctAnswer": {
+            "kind": "ROW",
+            "correctRow": "W",
+            "correctOptionId": null,
+            "correctOptionKey": null,
+            "correctOptionText": "wrong / false",
+            "correctOptionTranslatedText": null,
+            "answerRaw": "Wrong"
+          },
+          "image": {
+            "hasImage": false,
+            "currentAssetSrc": null,
+            "assetHashes": [],
+            "colorTags": [],
+            "objectTags": []
+          },
+          "topic": "expressway",
+          "subtopics": [],
+          "conceptSlots": {
+            "condition": [],
+            "context": [
+              "expressway"
+            ],
+            "action": [],
+            "polarity": "positive",
+            "signals": [
+              {
+                "slot": "context",
+                "value": "expressway",
+                "signal": "expressway"
+              }
+            ]
+          }
+        },
+        {
+          "qid": "q0029",
+          "number": 29,
+          "type": "ROW",
+          "score": 76.375,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.325,
+            "rawPromptSimilarity": 0.325,
+            "englishPromptSimilarity": 0.325,
+            "syntheticPromptSimilarity": 0,
+            "localizedPromptSimilarity": 0,
+            "localizedAgreement": 0.5,
+            "questionType": 1,
+            "optionCountAgreement": 1,
+            "answerStructureAgreement": 0.5,
+            "promptFamilyAgreement": 0.5,
+            "provisionalTopicAgreement": 0.5,
+            "structuralAgreement": 0.885,
+            "structuralPenalty": 0,
+            "imageSignal": 1,
+            "imageObjectAgreement": 0.5,
+            "imageColorAgreement": 0.5,
+            "topicWeighting": 0.5,
+            "answerPolarity": 0.5,
+            "conceptAlignment": 1,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0,
+            "baseScore": 66.365,
+            "rerankAdjustment": 10.01
+          },
+          "diagnostics": {
+            "effectiveItemType": "ROW",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": true,
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "optionSetMode": "row-semantic",
+            "localizedMirrorUsed": false,
+            "localizedMirrorLabel": null,
+            "localizedSignalAvailable": false,
+            "syntheticMirrorUsed": false,
+            "genericPromptFamily": null,
+            "sourceConceptSlots": {
+              "condition": [],
+              "context": [
+                "expressway"
+              ],
+              "action": [],
+              "polarity": "positive",
+              "signals": [
+                {
+                  "slot": "context",
+                  "value": "expressway",
+                  "signal": "expressway"
+                }
+              ]
+            },
+            "candidateConceptSlots": {
+              "condition": [],
+              "context": [
+                "expressway"
+              ],
+              "action": [
+                "stop"
+              ],
+              "polarity": "positive",
+              "signals": [
+                {
+                  "slot": "context",
+                  "value": "expressway",
+                  "signal": "expressway"
+                },
+                {
+                  "slot": "action",
+                  "value": "stop",
+                  "signal": "stop"
+                }
+              ]
+            },
+            "conceptMatches": [
+              "context:expressway"
+            ],
+            "contradictionSignals": [],
+            "rowConceptMode": "slot-alignment + contradiction-penalties",
+            "structuralSevereSignals": [],
+            "structuralSoftSignals": [],
+            "imageObjectComparable": false,
+            "imageColorComparable": false,
+            "explanation": [
+              "Binary yes/no options were treated as ROW-like for type scoring.",
+              "Missing correct answer was treated as a neutral signal.",
+              "Structural filtering and scoring strongly agree with this candidate.",
+              "ROW concept slots aligned on condition/context/action."
+            ]
+          },
+          "prompt": "A driver should stop on the expressway at once to have a rest when he feel tired.",
+          "syntheticJaPrompt": "運転者 べき stop 高速道路 once have rest when he feel tired。",
+          "translatedPrompt": "운전자가 피곤하면 고속도로에서 휴식을 위해 즉시 정차해야 한다.",
+          "options": [],
+          "correctAnswer": {
+            "kind": "ROW",
+            "correctRow": "W",
+            "correctOptionId": null,
+            "correctOptionKey": null,
+            "correctOptionText": "wrong / false",
+            "correctOptionTranslatedText": null,
+            "answerRaw": "Wrong"
+          },
+          "image": {
+            "hasImage": false,
+            "currentAssetSrc": null,
+            "assetHashes": [],
+            "colorTags": [],
+            "objectTags": []
+          },
+          "topic": "expressway",
+          "subtopics": [],
+          "conceptSlots": {
+            "condition": [],
+            "context": [
+              "expressway"
+            ],
+            "action": [
+              "stop"
+            ],
+            "polarity": "positive",
+            "signals": [
+              {
+                "slot": "context",
+                "value": "expressway",
+                "signal": "expressway"
+              },
+              {
+                "slot": "action",
+                "value": "stop",
+                "signal": "stop"
+              }
+            ]
+          }
+        },
+        {
+          "qid": "q0315",
+          "number": 315,
+          "type": "ROW",
+          "score": 76.196,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.322,
+            "rawPromptSimilarity": 0.322,
+            "englishPromptSimilarity": 0.322,
+            "syntheticPromptSimilarity": 0,
+            "localizedPromptSimilarity": 0,
+            "localizedAgreement": 0.5,
+            "questionType": 1,
+            "optionCountAgreement": 1,
+            "answerStructureAgreement": 0.5,
+            "promptFamilyAgreement": 0.5,
+            "provisionalTopicAgreement": 0.5,
+            "structuralAgreement": 0.885,
+            "structuralPenalty": 0,
+            "imageSignal": 1,
+            "imageObjectAgreement": 0.5,
+            "imageColorAgreement": 0.5,
+            "topicWeighting": 0.5,
+            "answerPolarity": 0.5,
+            "conceptAlignment": 1,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0,
+            "baseScore": 66.186,
+            "rerankAdjustment": 10.01
+          },
+          "diagnostics": {
+            "effectiveItemType": "ROW",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": true,
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "optionSetMode": "row-semantic",
+            "localizedMirrorUsed": false,
+            "localizedMirrorLabel": null,
+            "localizedSignalAvailable": false,
+            "syntheticMirrorUsed": false,
+            "genericPromptFamily": null,
+            "sourceConceptSlots": {
+              "condition": [],
+              "context": [
+                "expressway"
+              ],
+              "action": [],
+              "polarity": "positive",
+              "signals": [
+                {
+                  "slot": "context",
+                  "value": "expressway",
+                  "signal": "expressway"
+                }
+              ]
+            },
+            "candidateConceptSlots": {
+              "condition": [],
+              "context": [
+                "expressway"
+              ],
+              "action": [],
+              "polarity": null,
+              "signals": [
+                {
+                  "slot": "context",
+                  "value": "expressway",
+                  "signal": "expressway"
+                }
+              ]
+            },
+            "conceptMatches": [
+              "context:expressway"
+            ],
+            "contradictionSignals": [],
+            "rowConceptMode": "slot-alignment + contradiction-penalties",
+            "structuralSevereSignals": [],
+            "structuralSoftSignals": [],
+            "imageObjectComparable": false,
+            "imageColorComparable": false,
+            "explanation": [
+              "Binary yes/no options were treated as ROW-like for type scoring.",
+              "Missing correct answer was treated as a neutral signal.",
+              "Structural filtering and scoring strongly agree with this candidate.",
+              "ROW concept slots aligned on condition/context/action."
+            ]
+          },
+          "prompt": "A motorized vehicle driver who illegally occupies the emergency lane on the expressway is subject to a 6-point penalty.",
+          "syntheticJaPrompt": "motorized 車両 運転者 who illegally occupy emergency 車線 高速道路 subject 6-point penalty。",
+          "translatedPrompt": "고속도로에서 비상차로를 불법 점유한 자동차 운전자는 벌점 6점을 받는다.",
+          "options": [],
+          "correctAnswer": {
+            "kind": "ROW",
+            "correctRow": "R",
+            "correctOptionId": null,
+            "correctOptionKey": null,
+            "correctOptionText": "right / true",
+            "correctOptionTranslatedText": null,
+            "answerRaw": "Right"
+          },
+          "image": {
+            "hasImage": false,
+            "currentAssetSrc": null,
+            "assetHashes": [],
+            "colorTags": [],
+            "objectTags": []
+          },
+          "topic": "violations-penalties",
+          "subtopics": [],
+          "conceptSlots": {
+            "condition": [],
+            "context": [
+              "expressway"
+            ],
+            "action": [],
+            "polarity": null,
+            "signals": [
+              {
+                "slot": "context",
+                "value": "expressway",
+                "signal": "expressway"
+              }
+            ]
+          }
+        },
+        {
+          "qid": "q0210",
+          "number": 210,
+          "type": "ROW",
+          "score": 75.231,
+          "scoreBreakdown": {
+            "promptSimilarity": 0.306,
+            "rawPromptSimilarity": 0.306,
+            "englishPromptSimilarity": 0.306,
+            "syntheticPromptSimilarity": 0,
+            "localizedPromptSimilarity": 0,
+            "localizedAgreement": 0.5,
+            "questionType": 1,
+            "optionCountAgreement": 1,
+            "answerStructureAgreement": 0.5,
+            "promptFamilyAgreement": 0.5,
+            "provisionalTopicAgreement": 0.5,
+            "structuralAgreement": 0.885,
+            "structuralPenalty": 0,
+            "imageSignal": 1,
+            "imageObjectAgreement": 0.5,
+            "imageColorAgreement": 0.5,
+            "topicWeighting": 0.5,
+            "answerPolarity": 0.5,
+            "conceptAlignment": 1,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0,
+            "baseScore": 65.221,
+            "rerankAdjustment": 10.01
+          },
+          "diagnostics": {
+            "effectiveItemType": "ROW",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": true,
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "optionSetMode": "row-semantic",
+            "localizedMirrorUsed": false,
+            "localizedMirrorLabel": null,
+            "localizedSignalAvailable": false,
+            "syntheticMirrorUsed": false,
+            "genericPromptFamily": null,
+            "sourceConceptSlots": {
+              "condition": [],
+              "context": [
+                "expressway"
+              ],
+              "action": [],
+              "polarity": "positive",
+              "signals": [
+                {
+                  "slot": "context",
+                  "value": "expressway",
+                  "signal": "expressway"
+                }
+              ]
+            },
+            "candidateConceptSlots": {
+              "condition": [],
+              "context": [
+                "expressway"
+              ],
+              "action": [],
+              "polarity": "positive",
+              "signals": [
+                {
+                  "slot": "context",
+                  "value": "expressway",
+                  "signal": "expressway"
+                }
+              ]
+            },
+            "conceptMatches": [
+              "context:expressway"
+            ],
+            "contradictionSignals": [],
+            "rowConceptMode": "slot-alignment + contradiction-penalties",
+            "structuralSevereSignals": [],
+            "structuralSoftSignals": [],
+            "imageObjectComparable": false,
+            "imageColorComparable": false,
+            "explanation": [
+              "Binary yes/no options were treated as ROW-like for type scoring.",
+              "Missing correct answer was treated as a neutral signal.",
+              "Structural filtering and scoring strongly agree with this candidate.",
+              "ROW concept slots aligned on condition/context/action."
+            ]
+          },
+          "prompt": "When a motorized vehicle breaks down on the expressway, the persons on board should swiftly move to the right side road shoulder or emergency lane, and report to the police rapidly.",
+          "syntheticJaPrompt": "when motorized 車両 break down 高速道路 person board べき swiftly move right side road shoulder or emergency 車線 and report police rapidly。",
+          "translatedPrompt": "고속도로에서 자동차가 고장 났을 때 탑승자는 신속히 우측 갓길 또는 비상차로로 이동하여 즉시 경찰에 신고해야 한다.",
+          "options": [],
+          "correctAnswer": {
+            "kind": "ROW",
+            "correctRow": "R",
+            "correctOptionId": null,
+            "correctOptionKey": null,
+            "correctOptionText": "right / true",
+            "correctOptionTranslatedText": null,
+            "answerRaw": "Right"
+          },
+          "image": {
+            "hasImage": false,
+            "currentAssetSrc": null,
+            "assetHashes": [],
+            "colorTags": [],
+            "objectTags": []
+          },
+          "topic": "expressway",
+          "subtopics": [],
+          "conceptSlots": {
+            "condition": [],
+            "context": [
+              "expressway"
+            ],
+            "action": [],
+            "polarity": "positive",
+            "signals": [
+              {
+                "slot": "context",
+                "value": "expressway",
+                "signal": "expressway"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,83 @@
+{
+  "generatedAt": "2026-04-28T02:36:40.324Z",
+  "lang": "ru",
+  "batchId": "batch-10",
+  "dataset": "2023-test1",
+  "sourceDecisionPath": "qbank-tools/generated/staging/new-question-decisions.ru.batch-10.json",
+  "items": [
+    {
+      "candidateId": "nqc-ru-batch-10-001",
+      "sourceLang": "ru",
+      "sourceImage": "screenshots/Screenshot 2026-04-19 at 18.54.28 1.png",
+      "effectiveQuestionType": "ROW",
+      "promptRawJa": "Водители транспортных средств совершающие обгон друг друга, при этом нарушающие правила дорожного движения, заключаются под стражу сроком до 3 лет лишения свободы.",
+      "promptGlossEn": "Drivers of vehicles overtaking each other, while violating traffic rules, are subject to imprisonment for up to 3 years.",
+      "optionsRawJa": [
+        "A Правильно",
+        "B Не правильно"
+      ],
+      "optionsGlossEn": [
+        "Correct",
+        "Incorrect"
+      ],
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "newQuestionLocalAnswerKey": "B",
+      "provisionalTopic": "proper-driving",
+      "provisionalSubtopics": [
+        "proper-driving:traffic-laws"
+      ],
+      "topicConfidence": 1,
+      "topicSignals": [
+        {
+          "topic": "proper-driving",
+          "subtopic": "proper-driving:safe-driving",
+          "signal": "driving-action",
+          "weight": 1.2
+        }
+      ],
+      "linkedExistingAssetCandidate": null,
+      "reviewerNotes": "",
+      "status": "pending-superset-review"
+    },
+    {
+      "candidateId": "nqc-ru-batch-10-001",
+      "sourceLang": "ru",
+      "sourceImage": "screenshots/Screenshot 2026-04-19 at 18.54.38 1.png",
+      "effectiveQuestionType": "MCQ",
+      "promptRawJa": "Отрицательное влияние гололеда на движение заключается в том, что:",
+      "promptGlossEn": "The negative effect of ice on driving is that:",
+      "optionsRawJa": [
+        "A Возможно замыкание электроники",
+        "B Снижение видимости",
+        "C Увеличение сопротивления движения",
+        "D Затруднение торможения и отклонение от правильного направления"
+      ],
+      "optionsGlossEn": [
+        "A Possible short circuit of electronics",
+        "B Reduced visibility",
+        "C Increased driving resistance",
+        "D Difficulty braking and deviation from the correct direction"
+      ],
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "newQuestionLocalAnswerKey": "D",
+      "provisionalTopic": "road-safety",
+      "provisionalSubtopics": [
+        "road-safety:road-conditions"
+      ],
+      "topicConfidence": 1,
+      "topicSignals": [
+        {
+          "topic": "road-safety",
+          "subtopic": "road-safety:road-conditions",
+          "signal": "road-condition-or-hazard",
+          "weight": 1.3
+        }
+      ],
+      "linkedExistingAssetCandidate": null,
+      "reviewerNotes": "",
+      "status": "pending-superset-review"
+    }
+  ]
+}

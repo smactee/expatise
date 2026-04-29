@@ -1,0 +1,1613 @@
+{
+  "meta": {
+    "locale": "ru",
+    "generatedAt": "2026-04-28T11:08:22.134Z",
+    "reviewedBatchId": "batch-11",
+    "dataset": "2023-test1",
+    "sourceUnresolvedPath": "imports/ru/batch-11/unresolved.json",
+    "sourceUnresolvedDecisionPath": "qbank-tools/generated/staging/ru-batch-11-unresolved-decisions.json",
+    "rescuedExistingQidCount": 13,
+    "manualAnswerKeyConfirmationCount": 0,
+    "stagingOnly": true
+  },
+  "questions": {
+    "q0921": {
+      "prompt": "При повреждении гос.номера, водителю следует сообщить об этом в гос-автоинспекцию.",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-19 at 18.55.05 1.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-19 at 18.55.05 1.png",
+      "reviewerNotes": "No existing candidate matches reporting a damaged license plate to the traffic inspectorate. Top candidate q0921 concerns reissuing a lost/destroyed registration certificate, license plate, or license, which is broader and asks a different action.",
+      "promptRawJa": "При повреждении гос.номера, водителю следует сообщить об этом в гос-автоинспекцию.",
+      "promptGlossEn": "If the license plate is damaged, the driver should report this to the state traffic inspectorate.",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "ROW",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ru",
+        "batchId": "batch-11",
+        "approvedQid": "q0921",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "optionsRawJa": [],
+      "optionsGlossEn": [],
+      "localeCorrectOptionKey": null,
+      "canonicalCorrectRow": "W",
+      "canonicalCorrectAnswer": "wrong / false",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "ROW question; no locale-specific option key applies.",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ru-batch-11-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": "No existing candidate matches reporting a damaged license plate to the traffic inspectorate. Top candidate q0921 concerns reissuing a lost/destroyed registration certificate, license plate, or license, which is broader and asks a different action."
+      }
+    },
+    "q0396": {
+      "prompt": "При вождении транспортных средств по грязевой дороге, максимальная скорость не может превышать:",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-19 at 18.55.08 1.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-19 at 18.55.08 1.png",
+      "reviewerNotes": "Question matches q0396 muddy-road maximum speed. The extracted key says 20 km/h, but q0396 and the standard option set indicate 30 km/h, which is option C in this source ordering.",
+      "promptRawJa": "При вождении транспортных средств по грязевой дороге, максимальная скорость не может превышать:",
+      "promptGlossEn": "When driving vehicles on a dirt road, the maximum speed cannot exceed:",
+      "correctKeyRaw": "B",
+      "correctAnswerRaw": "20км/ч",
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ru",
+        "batchId": "batch-11",
+        "approvedQid": "q0396",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "options": {
+        "q0396_o1": "A) 15км/ч",
+        "q0396_o2": "B) 20км/ч",
+        "q0396_o3": "D) 40км/ч",
+        "q0396_o4": "C) 30км/ч"
+      },
+      "optionsRawJa": [
+        "A) 15км/ч",
+        "B) 20км/ч",
+        "C) 30км/ч",
+        "D) 40км/ч"
+      ],
+      "optionsGlossEn": [
+        "15 km/h",
+        "20 km/h",
+        "30 km/h",
+        "40 km/h"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A) 15км/ч",
+          "sourceTextBody": "15км/ч",
+          "sourceGlossEn": "15 km/h",
+          "canonicalOptionId": "q0396_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "15km/hr",
+          "alignmentScore": 0,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B) 20км/ч",
+          "sourceTextBody": "20км/ч",
+          "sourceGlossEn": "20 km/h",
+          "canonicalOptionId": "q0396_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "20km/hr",
+          "alignmentScore": 0,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C) 30км/ч",
+          "sourceTextBody": "30км/ч",
+          "sourceGlossEn": "30 km/h",
+          "canonicalOptionId": "q0396_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "30km/hr",
+          "alignmentScore": 0.2,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D) 40км/ч",
+          "sourceTextBody": "40км/ч",
+          "sourceGlossEn": "40 km/h",
+          "canonicalOptionId": "q0396_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "40km/hr",
+          "alignmentScore": 0,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A) 15км/ч",
+          "sourceGlossEn": "15 km/h",
+          "canonicalOptionId": "q0396_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "15km/hr",
+          "alignmentScore": 0,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B) 20км/ч",
+          "sourceGlossEn": "20 km/h",
+          "canonicalOptionId": "q0396_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "20km/hr",
+          "alignmentScore": 0,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C) 30км/ч",
+          "sourceGlossEn": "30 km/h",
+          "canonicalOptionId": "q0396_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "30km/hr",
+          "alignmentScore": 0.2,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D) 40км/ч",
+          "sourceGlossEn": "40 km/h",
+          "canonicalOptionId": "q0396_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "40km/hr",
+          "alignmentScore": 0,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "C",
+      "canonicalCorrectOptionId": "q0396_o4",
+      "canonicalCorrectOptionKey": "D",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed during unresolved rescue review on 2026-04-28T11:08:22.134Z; reviewer selected locale key C.",
+      "correctOptionAlignment": {
+        "sourceKey": "C",
+        "canonicalOptionId": "q0396_o4",
+        "canonicalOptionKey": "D",
+        "sourceText": "C) 30км/ч",
+        "sourceGlossEn": "30 km/h",
+        "canonicalOptionText": "30km/hr",
+        "alignmentScore": 0.2,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-28T11:08:22.134Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ru-batch-11-unresolved-decisions.json",
+      "answerKeyReviewerNotes": "Question matches q0396 muddy-road maximum speed. The extracted key says 20 km/h, but q0396 and the standard option set indicate 30 km/h, which is option C in this source ordering.",
+      "reviewerSuggestedLocaleCorrectOptionKey": "C",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ru-batch-11-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": "Question matches q0396 muddy-road maximum speed. The extracted key says 20 km/h, but q0396 and the standard option set indicate 30 km/h, which is option C in this source ordering."
+      }
+    },
+    "q0155": {
+      "prompt": "Сталкиваясь с миганием зеленого сигнала светофора на перекрестке в пробке, водителю следует:",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-19 at 18.55.10 1.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-19 at 18.55.10 1.png",
+      "reviewerNotes": "",
+      "promptRawJa": "Сталкиваясь с миганием зеленого сигнала светофора на перекрестке в пробке, водителю следует:",
+      "promptGlossEn": "When facing a flashing green traffic light at an intersection in a traffic jam, the driver should:",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ru",
+        "batchId": "batch-11",
+        "approvedQid": "q0155",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "options": {
+        "q0155_o1": "B) Не въезжать на перекресток",
+        "q0155_o2": "A) Въехать на перекресток",
+        "q0155_o3": "D) Проехать перекресток по полосе встречного транспортного средства",
+        "q0155_o4": "C) Въехать на перекресток при безопасном условии"
+      },
+      "optionsRawJa": [
+        "A) Въехать на перекресток",
+        "B) Не въезжать на перекресток",
+        "C) Въехать на перекресток при безопасном условии",
+        "D) Проехать перекресток по полосе встречного транспортного средства"
+      ],
+      "optionsGlossEn": [
+        "A) Enter the intersection",
+        "B) Do not enter the intersection",
+        "C) Enter the intersection if it is safe",
+        "D) Cross the intersection in the oncoming traffic lane"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A) Въехать на перекресток",
+          "sourceTextBody": "Въехать на перекресток",
+          "sourceGlossEn": "A) Enter the intersection",
+          "canonicalOptionId": "q0155_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "Cannot enter the intersection",
+          "alignmentScore": 0.6310975609756098,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B) Не въезжать на перекресток",
+          "sourceTextBody": "Не въезжать на перекресток",
+          "sourceGlossEn": "B) Do not enter the intersection",
+          "canonicalOptionId": "q0155_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "May directly enter the intersection",
+          "alignmentScore": 0.19,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C) Въехать на перекресток при безопасном условии",
+          "sourceTextBody": "Въехать на перекресток при безопасном условии",
+          "sourceGlossEn": "C) Enter the intersection if it is safe",
+          "canonicalOptionId": "q0155_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "cannot enter the intersection",
+          "alignmentScore": 0.6926630434782608,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D) Проехать перекресток по полосе встречного транспортного средства",
+          "sourceTextBody": "Проехать перекресток по полосе встречного транспортного средства",
+          "sourceGlossEn": "D) Cross the intersection in the oncoming traffic lane",
+          "canonicalOptionId": "q0155_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "May pass the intersection by borrowing the opposite lane",
+          "alignmentScore": 0.20806339254615117,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A) Въехать на перекресток",
+          "sourceGlossEn": "A) Enter the intersection",
+          "canonicalOptionId": "q0155_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "Cannot enter the intersection",
+          "alignmentScore": 0.6310975609756098,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B) Не въезжать на перекресток",
+          "sourceGlossEn": "B) Do not enter the intersection",
+          "canonicalOptionId": "q0155_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "May directly enter the intersection",
+          "alignmentScore": 0.19,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C) Въехать на перекресток при безопасном условии",
+          "sourceGlossEn": "C) Enter the intersection if it is safe",
+          "canonicalOptionId": "q0155_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "cannot enter the intersection",
+          "alignmentScore": 0.6926630434782608,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D) Проехать перекресток по полосе встречного транспортного средства",
+          "sourceGlossEn": "D) Cross the intersection in the oncoming traffic lane",
+          "canonicalOptionId": "q0155_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "May pass the intersection by borrowing the opposite lane",
+          "alignmentScore": 0.20806339254615117,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "C",
+      "canonicalCorrectOptionId": "q0155_o2",
+      "canonicalCorrectOptionKey": "B",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed during unresolved rescue review on 2026-04-28T11:08:22.134Z; reviewer selected locale key C.",
+      "correctOptionAlignment": {
+        "sourceKey": "C",
+        "canonicalOptionId": "q0155_o2",
+        "canonicalOptionKey": "B",
+        "sourceText": "C) Въехать на перекресток при безопасном условии",
+        "sourceGlossEn": "C) Enter the intersection if it is safe",
+        "canonicalOptionText": "cannot enter the intersection",
+        "alignmentScore": 0.6310975609756098,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-28T11:08:22.134Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ru-batch-11-unresolved-decisions.json",
+      "answerKeyReviewerNotes": "",
+      "reviewerSuggestedLocaleCorrectOptionKey": "C",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ru-batch-11-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0161": {
+      "prompt": "При вождении в темное время суток расстояние видимости водителя становится:",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-19 at 18.55.13.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-19 at 18.55.13.png",
+      "reviewerNotes": "",
+      "promptRawJa": "При вождении в темное время суток расстояние видимости водителя становится:",
+      "promptGlossEn": "When driving at night, the driver's visibility distance becomes:",
+      "correctKeyRaw": "B",
+      "correctAnswerRaw": "Уменьшается",
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ru",
+        "batchId": "batch-11",
+        "approvedQid": "q0161",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "options": {
+        "q0161_o1": "C Неизменное",
+        "q0161_o2": "D Нерегулярное",
+        "q0161_o3": "A Увеличивается",
+        "q0161_o4": "B Уменьшается"
+      },
+      "optionsRawJa": [
+        "A Увеличивается",
+        "B Уменьшается",
+        "C Неизменное",
+        "D Нерегулярное"
+      ],
+      "optionsGlossEn": [
+        "Increases",
+        "Decreases",
+        "Unchanged",
+        "Irregular"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A Увеличивается",
+          "sourceTextBody": "Увеличивается",
+          "sourceGlossEn": "Increases",
+          "canonicalOptionId": "q0161_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "Longer",
+          "alignmentScore": 0,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B Уменьшается",
+          "sourceTextBody": "Уменьшается",
+          "sourceGlossEn": "Decreases",
+          "canonicalOptionId": "q0161_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "shorter",
+          "alignmentScore": 0,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C Неизменное",
+          "sourceTextBody": "Неизменное",
+          "sourceGlossEn": "Unchanged",
+          "canonicalOptionId": "q0161_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "Unchanged",
+          "alignmentScore": 1,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D Нерегулярное",
+          "sourceTextBody": "Нерегулярное",
+          "sourceGlossEn": "Irregular",
+          "canonicalOptionId": "q0161_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "Irregular",
+          "alignmentScore": 1,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A Увеличивается",
+          "sourceGlossEn": "Increases",
+          "canonicalOptionId": "q0161_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "Longer",
+          "alignmentScore": 0,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B Уменьшается",
+          "sourceGlossEn": "Decreases",
+          "canonicalOptionId": "q0161_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "shorter",
+          "alignmentScore": 0,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C Неизменное",
+          "sourceGlossEn": "Unchanged",
+          "canonicalOptionId": "q0161_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "Unchanged",
+          "alignmentScore": 1,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D Нерегулярное",
+          "sourceGlossEn": "Irregular",
+          "canonicalOptionId": "q0161_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "Irregular",
+          "alignmentScore": 1,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "B",
+      "canonicalCorrectOptionId": "q0161_o4",
+      "canonicalCorrectOptionKey": "D",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed during unresolved rescue review on 2026-04-28T11:08:22.134Z; reviewer selected locale key B.",
+      "correctOptionAlignment": {
+        "sourceKey": "B",
+        "canonicalOptionId": "q0161_o4",
+        "canonicalOptionKey": "D",
+        "sourceText": "B Уменьшается",
+        "sourceGlossEn": "Decreases",
+        "canonicalOptionText": "shorter",
+        "alignmentScore": 0,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-28T11:08:22.134Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ru-batch-11-unresolved-decisions.json",
+      "answerKeyReviewerNotes": "",
+      "reviewerSuggestedLocaleCorrectOptionKey": "B",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ru-batch-11-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0384": {
+      "prompt": "Водительское удостоверение водителя легкового автомобиля подвергнется проверке в случае:",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-19 at 18.55.14 1.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-19 at 18.55.14 1.png",
+      "reviewerNotes": "",
+      "promptRawJa": "Водительское удостоверение водителя легкового автомобиля подвергнется проверке в случае:",
+      "promptGlossEn": "A passenger car driver's license will be subject to verification in the following case:",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ru",
+        "batchId": "batch-11",
+        "approvedQid": "q0384",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "options": {
+        "q0384_o1": "B. По истечению цикла подсчета очков",
+        "q0384_o2": "A. По истечению срока водительского удостоверения",
+        "q0384_o3": "C. По истечению цикла подсчета очков и при этом не достигшего максимального балла",
+        "q0384_o4": "D. По истечению цикла подсчета очков и при этом достигшего 12 баллов (максимальный балл)"
+      },
+      "optionsRawJa": [
+        "A. По истечению срока водительского удостоверения",
+        "B. По истечению цикла подсчета очков",
+        "C. По истечению цикла подсчета очков и при этом не достигшего максимального балла",
+        "D. По истечению цикла подсчета очков и при этом достигшего 12 баллов (максимальный балл)"
+      ],
+      "optionsGlossEn": [
+        "A. Upon expiration of the driver's license",
+        "B. Upon completion of the point calculation cycle",
+        "C. Upon completion of the point calculation cycle and not reaching the maximum points",
+        "D. Upon completion of the point calculation cycle and having reached 12 points (maximum points)"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A. По истечению срока водительского удостоверения",
+          "sourceTextBody": "По истечению срока водительского удостоверения",
+          "sourceGlossEn": "A. Upon expiration of the driver's license",
+          "canonicalOptionId": "q0384_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "change driving license due to expiration",
+          "alignmentScore": 0.2806349206349206,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B. По истечению цикла подсчета очков",
+          "sourceTextBody": "По истечению цикла подсчета очков",
+          "sourceGlossEn": "B. Upon completion of the point calculation cycle",
+          "canonicalOptionId": "q0384_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "the end of a scoring cycle",
+          "alignmentScore": 0.2413793103448276,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C. По истечению цикла подсчета очков и при этом не достигшего максимального балла",
+          "sourceTextBody": "По истечению цикла подсчета очков и при этом не достигшего максимального балла",
+          "sourceGlossEn": "C. Upon completion of the point calculation cycle and not reaching the maximum points",
+          "canonicalOptionId": "q0384_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "fail to reach 12 points in one scoring cycle",
+          "alignmentScore": 0.1533769063180828,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D. По истечению цикла подсчета очков и при этом достигшего 12 баллов (максимальный балл)",
+          "sourceTextBody": "По истечению цикла подсчета очков и при этом достигшего 12 баллов (максимальный балл)",
+          "sourceGlossEn": "D. Upon completion of the point calculation cycle and having reached 12 points (maximum points)",
+          "canonicalOptionId": "q0384_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "reach 12 points in one scoring cycle",
+          "alignmentScore": 0.2248648648648649,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A. По истечению срока водительского удостоверения",
+          "sourceGlossEn": "A. Upon expiration of the driver's license",
+          "canonicalOptionId": "q0384_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "change driving license due to expiration",
+          "alignmentScore": 0.2806349206349206,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B. По истечению цикла подсчета очков",
+          "sourceGlossEn": "B. Upon completion of the point calculation cycle",
+          "canonicalOptionId": "q0384_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "the end of a scoring cycle",
+          "alignmentScore": 0.2413793103448276,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C. По истечению цикла подсчета очков и при этом не достигшего максимального балла",
+          "sourceGlossEn": "C. Upon completion of the point calculation cycle and not reaching the maximum points",
+          "canonicalOptionId": "q0384_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "fail to reach 12 points in one scoring cycle",
+          "alignmentScore": 0.1533769063180828,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D. По истечению цикла подсчета очков и при этом достигшего 12 баллов (максимальный балл)",
+          "sourceGlossEn": "D. Upon completion of the point calculation cycle and having reached 12 points (maximum points)",
+          "canonicalOptionId": "q0384_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "reach 12 points in one scoring cycle",
+          "alignmentScore": 0.2248648648648649,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "A",
+      "canonicalCorrectOptionId": "q0384_o2",
+      "canonicalCorrectOptionKey": "B",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed during unresolved rescue review on 2026-04-28T11:08:22.134Z; reviewer selected locale key A.",
+      "correctOptionAlignment": {
+        "sourceKey": "A",
+        "canonicalOptionId": "q0384_o2",
+        "canonicalOptionKey": "B",
+        "sourceText": "A. По истечению срока водительского удостоверения",
+        "sourceGlossEn": "A. Upon expiration of the driver's license",
+        "canonicalOptionText": "change driving license due to expiration",
+        "alignmentScore": 0.2806349206349206,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-28T11:08:22.134Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ru-batch-11-unresolved-decisions.json",
+      "answerKeyReviewerNotes": "",
+      "reviewerSuggestedLocaleCorrectOptionKey": "A",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ru-batch-11-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0106": {
+      "prompt": "За сколько метров до транспортного средства, водителю следует установить предупредительный знак и включить габаритные огни при поломке автотранспорта?",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-19 at 18.55.18 1.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-19 at 18.55.18 1.png",
+      "reviewerNotes": "No candidate matches this breakdown warning-sign/parking-light distance question. The top candidate q0368 is about following distance at high speed, not warning sign placement after a breakdown.",
+      "promptRawJa": "За сколько метров до транспортного средства, водителю следует установить предупредительный знак и включить габаритные огни при поломке автотранспорта?",
+      "promptGlossEn": "At what distance from the vehicle should the driver place a warning sign and turn on the parking lights in case of a vehicle breakdown?",
+      "correctKeyRaw": "C",
+      "correctAnswerRaw": "100 метров",
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ru",
+        "batchId": "batch-11",
+        "approvedQid": "q0106",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "options": {
+        "q0106_o1": "A 200 метров",
+        "q0106_o2": "B 150 метров",
+        "q0106_o3": "C 100 метров",
+        "q0106_o4": "D 50 метров"
+      },
+      "optionsRawJa": [
+        "A 200 метров",
+        "B 150 метров",
+        "C 100 метров",
+        "D 50 метров"
+      ],
+      "optionsGlossEn": [
+        "200 meters",
+        "150 meters",
+        "100 meters",
+        "50 meters"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A 200 метров",
+          "sourceTextBody": "200 метров",
+          "sourceGlossEn": "200 meters",
+          "canonicalOptionId": "q0106_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "25",
+          "alignmentScore": 0,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B 150 метров",
+          "sourceTextBody": "150 метров",
+          "sourceGlossEn": "150 meters",
+          "canonicalOptionId": "q0106_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "150",
+          "alignmentScore": 0.45,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C 100 метров",
+          "sourceTextBody": "100 метров",
+          "sourceGlossEn": "100 meters",
+          "canonicalOptionId": "q0106_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "100",
+          "alignmentScore": 0.45,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D 50 метров",
+          "sourceTextBody": "50 метров",
+          "sourceGlossEn": "50 meters",
+          "canonicalOptionId": "q0106_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "50",
+          "alignmentScore": 0.4,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A 200 метров",
+          "sourceGlossEn": "200 meters",
+          "canonicalOptionId": "q0106_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "25",
+          "alignmentScore": 0,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B 150 метров",
+          "sourceGlossEn": "150 meters",
+          "canonicalOptionId": "q0106_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "150",
+          "alignmentScore": 0.45,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C 100 метров",
+          "sourceGlossEn": "100 meters",
+          "canonicalOptionId": "q0106_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "100",
+          "alignmentScore": 0.45,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D 50 метров",
+          "sourceGlossEn": "50 meters",
+          "canonicalOptionId": "q0106_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "50",
+          "alignmentScore": 0.4,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "B",
+      "canonicalCorrectOptionId": "q0106_o2",
+      "canonicalCorrectOptionKey": "B",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed during unresolved rescue review on 2026-04-28T11:08:22.134Z; reviewer selected locale key B.",
+      "correctOptionAlignment": {
+        "sourceKey": "B",
+        "canonicalOptionId": "q0106_o2",
+        "canonicalOptionKey": "B",
+        "sourceText": "B 150 метров",
+        "sourceGlossEn": "150 meters",
+        "canonicalOptionText": "150",
+        "alignmentScore": 0.45,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-28T11:08:22.134Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ru-batch-11-unresolved-decisions.json",
+      "answerKeyReviewerNotes": "No candidate matches this breakdown warning-sign/parking-light distance question. The top candidate q0368 is about following distance at high speed, not warning sign placement after a breakdown.",
+      "reviewerSuggestedLocaleCorrectOptionKey": "B",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ru-batch-11-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": "No candidate matches this breakdown warning-sign/parking-light distance question. The top candidate q0368 is about following distance at high speed, not warning sign placement after a breakdown."
+      }
+    },
+    "q0190": {
+      "prompt": "Водитель обязан повесить номерной знак на автомобиль в соответствии с правилами.",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-19 at 18.55.18.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-19 at 18.55.18.png",
+      "reviewerNotes": "",
+      "promptRawJa": "Водитель обязан повесить номерной знак на автомобиль в соответствии с правилами.",
+      "promptGlossEn": "The driver is required to attach the license plate to the car in accordance with the rules.",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "ROW",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ru",
+        "batchId": "batch-11",
+        "approvedQid": "q0190",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "optionsRawJa": [],
+      "optionsGlossEn": [],
+      "localeCorrectOptionKey": null,
+      "canonicalCorrectRow": "R",
+      "canonicalCorrectAnswer": "right / true",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "ROW question; no locale-specific option key applies.",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ru-batch-11-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0385": {
+      "prompt": "При крутом развороте, спуске или смене направления движения, максимальная скорость не может превышать:",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-19 at 18.55.19.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-19 at 18.55.19.png",
+      "reviewerNotes": "",
+      "promptRawJa": "При крутом развороте, спуске или смене направления движения, максимальная скорость не может превышать:",
+      "promptGlossEn": "When making a sharp turn, descending, or changing the direction of movement, the maximum speed must not exceed:",
+      "correctKeyRaw": "A",
+      "correctAnswerRaw": "30км/ч",
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ru",
+        "batchId": "batch-11",
+        "approvedQid": "q0385",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "options": {
+        "q0385_o1": "A 30км/ч",
+        "q0385_o2": "B 40км/ч",
+        "q0385_o3": "C 50км/ч",
+        "q0385_o4": "D 60км/ч"
+      },
+      "optionsRawJa": [
+        "A 30км/ч",
+        "B 40км/ч",
+        "C 50км/ч",
+        "D 60км/ч"
+      ],
+      "optionsGlossEn": [
+        "30 km/h",
+        "40 km/h",
+        "50 km/h",
+        "60 km/h"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A 30км/ч",
+          "sourceTextBody": "30км/ч",
+          "sourceGlossEn": "30 km/h",
+          "canonicalOptionId": "q0385_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "30km/hr",
+          "alignmentScore": 0,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B 40км/ч",
+          "sourceTextBody": "40км/ч",
+          "sourceGlossEn": "40 km/h",
+          "canonicalOptionId": "q0385_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "60km/hr",
+          "alignmentScore": 0,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C 50км/ч",
+          "sourceTextBody": "50км/ч",
+          "sourceGlossEn": "50 km/h",
+          "canonicalOptionId": "q0385_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "30km/hr",
+          "alignmentScore": 0,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D 60км/ч",
+          "sourceTextBody": "60км/ч",
+          "sourceGlossEn": "60 km/h",
+          "canonicalOptionId": "q0385_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "40km/hr",
+          "alignmentScore": 0,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A 30км/ч",
+          "sourceGlossEn": "30 km/h",
+          "canonicalOptionId": "q0385_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "30km/hr",
+          "alignmentScore": 0,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B 40км/ч",
+          "sourceGlossEn": "40 km/h",
+          "canonicalOptionId": "q0385_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "60km/hr",
+          "alignmentScore": 0,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C 50км/ч",
+          "sourceGlossEn": "50 km/h",
+          "canonicalOptionId": "q0385_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "30km/hr",
+          "alignmentScore": 0,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D 60км/ч",
+          "sourceGlossEn": "60 km/h",
+          "canonicalOptionId": "q0385_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "40km/hr",
+          "alignmentScore": 0,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "A",
+      "canonicalCorrectOptionId": "q0385_o3",
+      "canonicalCorrectOptionKey": "C",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed during unresolved rescue review on 2026-04-28T11:08:22.134Z; reviewer selected locale key A.",
+      "correctOptionAlignment": {
+        "sourceKey": "A",
+        "canonicalOptionId": "q0385_o3",
+        "canonicalOptionKey": "C",
+        "sourceText": "A 30км/ч",
+        "sourceGlossEn": "30 km/h",
+        "canonicalOptionText": "30km/hr",
+        "alignmentScore": 0,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-28T11:08:22.134Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ru-batch-11-unresolved-decisions.json",
+      "answerKeyReviewerNotes": "",
+      "reviewerSuggestedLocaleCorrectOptionKey": "A",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ru-batch-11-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0472": {
+      "prompt": "Автоинспектор имеет право изъять водительское удостоверение, если водитель:",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-19 at 18.55.21.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-19 at 18.55.21.png",
+      "reviewerNotes": "The source asks whether traffic police may confiscate a driver license from an intoxicated driver. Top candidate q0472 is about detaining the vehicle, not confiscating the license, and no exact legal match was found.",
+      "promptRawJa": "Автоинспектор имеет право изъять водительское удостоверение, если водитель:",
+      "promptGlossEn": "A traffic inspector has the right to confiscate a driver's license if the driver:",
+      "correctKeyRaw": "A",
+      "correctAnswerRaw": "Управляет автомобилем в состоянии опьянения",
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ru",
+        "batchId": "batch-11",
+        "approvedQid": "q0472",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "options": {
+        "q0472_o1": "B. Превышает установленную норму скоростного режима на 10%",
+        "q0472_o2": "A. Управляет автомобилем в состоянии опьянения",
+        "q0472_o3": "C. Управляет автомобилем в состоянии усталости",
+        "q0472_o4": "D. При вождении без ремня безопасности"
+      },
+      "optionsRawJa": [
+        "A. Управляет автомобилем в состоянии опьянения",
+        "B. Превышает установленную норму скоростного режима на 10%",
+        "C. Управляет автомобилем в состоянии усталости",
+        "D. При вождении без ремня безопасности"
+      ],
+      "optionsGlossEn": [
+        "Drives a car while intoxicated",
+        "Exceeds the established speed limit by 10%",
+        "Drives a car while fatigued",
+        "Drives without a seatbelt"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A. Управляет автомобилем в состоянии опьянения",
+          "sourceTextBody": "Управляет автомобилем в состоянии опьянения",
+          "sourceGlossEn": "Drives a car while intoxicated",
+          "canonicalOptionId": "q0472_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "driving after drinking",
+          "alignmentScore": 0.0392156862745098,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B. Превышает установленную норму скоростного режима на 10%",
+          "sourceTextBody": "Превышает установленную норму скоростного режима на 10%",
+          "sourceGlossEn": "Exceeds the established speed limit by 10%",
+          "canonicalOptionId": "q0472_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "exceeding 10% of the prescribed speed limits",
+          "alignmentScore": 0.36666666666666664,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C. Управляет автомобилем в состоянии усталости",
+          "sourceTextBody": "Управляет автомобилем в состоянии усталости",
+          "sourceGlossEn": "Drives a car while fatigued",
+          "canonicalOptionId": "q0472_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "not buckled up while driving",
+          "alignmentScore": 0.15833333333333333,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D. При вождении без ремня безопасности",
+          "sourceTextBody": "При вождении без ремня безопасности",
+          "sourceGlossEn": "Drives without a seatbelt",
+          "canonicalOptionId": "q0472_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "driving after drinking",
+          "alignmentScore": 0.020000000000000004,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A. Управляет автомобилем в состоянии опьянения",
+          "sourceGlossEn": "Drives a car while intoxicated",
+          "canonicalOptionId": "q0472_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "driving after drinking",
+          "alignmentScore": 0.0392156862745098,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B. Превышает установленную норму скоростного режима на 10%",
+          "sourceGlossEn": "Exceeds the established speed limit by 10%",
+          "canonicalOptionId": "q0472_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "exceeding 10% of the prescribed speed limits",
+          "alignmentScore": 0.36666666666666664,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C. Управляет автомобилем в состоянии усталости",
+          "sourceGlossEn": "Drives a car while fatigued",
+          "canonicalOptionId": "q0472_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "not buckled up while driving",
+          "alignmentScore": 0.15833333333333333,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D. При вождении без ремня безопасности",
+          "sourceGlossEn": "Drives without a seatbelt",
+          "canonicalOptionId": "q0472_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "driving after drinking",
+          "alignmentScore": 0.020000000000000004,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "A",
+      "canonicalCorrectOptionId": "q0472_o4",
+      "canonicalCorrectOptionKey": "D",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed during unresolved rescue review on 2026-04-28T11:08:22.134Z; reviewer selected locale key A.",
+      "correctOptionAlignment": {
+        "sourceKey": "A",
+        "canonicalOptionId": "q0472_o4",
+        "canonicalOptionKey": "D",
+        "sourceText": "A. Управляет автомобилем в состоянии опьянения",
+        "sourceGlossEn": "Drives a car while intoxicated",
+        "canonicalOptionText": "driving after drinking",
+        "alignmentScore": 0.020000000000000004,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-28T11:08:22.134Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ru-batch-11-unresolved-decisions.json",
+      "answerKeyReviewerNotes": "The source asks whether traffic police may confiscate a driver license from an intoxicated driver. Top candidate q0472 is about detaining the vehicle, not confiscating the license, and no exact legal match was found.",
+      "reviewerSuggestedLocaleCorrectOptionKey": "A",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ru-batch-11-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": "The source asks whether traffic police may confiscate a driver license from an intoxicated driver. Top candidate q0472 is about detaining the vehicle, not confiscating the license, and no exact legal match was found."
+      }
+    },
+    "q0165": {
+      "prompt": "На резком повороте дороги следует:",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-19 at 18.55.24.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-19 at 18.55.24.png",
+      "reviewerNotes": "",
+      "promptRawJa": "На резком повороте дороги следует:",
+      "promptGlossEn": "On a sharp turn in the road, you should:",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ru",
+        "batchId": "batch-11",
+        "approvedQid": "q0165",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "options": {
+        "q0165_o1": "B. Резко тормозить и ехать на малой скорости",
+        "q0165_o2": "C. Ехать по внешней стороне поворота",
+        "q0165_o3": "D. Полностью замедлить ход и ехать по правой стороне дороги",
+        "q0165_o4": "A. Ехать по встречной полосе"
+      },
+      "optionsRawJa": [
+        "A. Ехать по встречной полосе",
+        "B. Резко тормозить и ехать на малой скорости",
+        "C. Ехать по внешней стороне поворота",
+        "D. Полностью замедлить ход и ехать по правой стороне дороги"
+      ],
+      "optionsGlossEn": [
+        "Drive in the oncoming lane",
+        "Brake sharply and drive at low speed",
+        "Drive on the outer side of the turn",
+        "Completely slow down and drive on the right side of the road"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A. Ехать по встречной полосе",
+          "sourceTextBody": "Ехать по встречной полосе",
+          "sourceGlossEn": "Drive in the oncoming lane",
+          "canonicalOptionId": "q0165_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "Go forward by borrowing the opposite lane",
+          "alignmentScore": 0.14255319148936169,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B. Резко тормозить и ехать на малой скорости",
+          "sourceTextBody": "Резко тормозить и ехать на малой скорости",
+          "sourceGlossEn": "Brake sharply and drive at low speed",
+          "canonicalOptionId": "q0165_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "Brake suddenly and go slowly",
+          "alignmentScore": 0.23333333333333334,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C. Ехать по внешней стороне поворота",
+          "sourceTextBody": "Ехать по внешней стороне поворота",
+          "sourceGlossEn": "Drive on the outer side of the turn",
+          "canonicalOptionId": "q0165_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "Drive along the outer side of the curve",
+          "alignmentScore": 0.5259259259259259,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D. Полностью замедлить ход и ехать по правой стороне дороги",
+          "sourceTextBody": "Полностью замедлить ход и ехать по правой стороне дороги",
+          "sourceGlossEn": "Completely slow down and drive on the right side of the road",
+          "canonicalOptionId": "q0165_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "fully reduce speed and drive on the right side",
+          "alignmentScore": 0.653982683982684,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A. Ехать по встречной полосе",
+          "sourceGlossEn": "Drive in the oncoming lane",
+          "canonicalOptionId": "q0165_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "Go forward by borrowing the opposite lane",
+          "alignmentScore": 0.14255319148936169,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B. Резко тормозить и ехать на малой скорости",
+          "sourceGlossEn": "Brake sharply and drive at low speed",
+          "canonicalOptionId": "q0165_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "Brake suddenly and go slowly",
+          "alignmentScore": 0.23333333333333334,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C. Ехать по внешней стороне поворота",
+          "sourceGlossEn": "Drive on the outer side of the turn",
+          "canonicalOptionId": "q0165_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "Drive along the outer side of the curve",
+          "alignmentScore": 0.5259259259259259,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D. Полностью замедлить ход и ехать по правой стороне дороги",
+          "sourceGlossEn": "Completely slow down and drive on the right side of the road",
+          "canonicalOptionId": "q0165_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "fully reduce speed and drive on the right side",
+          "alignmentScore": 0.653982683982684,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        }
+      ],
+      "localeCorrectOptionKey": "D",
+      "canonicalCorrectOptionId": "q0165_o3",
+      "canonicalCorrectOptionKey": "C",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed during unresolved rescue review on 2026-04-28T11:08:22.134Z; reviewer selected locale key D.",
+      "correctOptionAlignment": {
+        "sourceKey": "D",
+        "canonicalOptionId": "q0165_o3",
+        "canonicalOptionKey": "C",
+        "sourceText": "D. Полностью замедлить ход и ехать по правой стороне дороги",
+        "sourceGlossEn": "Completely slow down and drive on the right side of the road",
+        "canonicalOptionText": "fully reduce speed and drive on the right side",
+        "alignmentScore": 0.653982683982684,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-28T11:08:22.134Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ru-batch-11-unresolved-decisions.json",
+      "answerKeyReviewerNotes": "",
+      "reviewerSuggestedLocaleCorrectOptionKey": "D",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ru-batch-11-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0311": {
+      "prompt": "Запрещено вешать и ставить, мешающие видимости, предметы внутри салона автомобиля.",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-19 at 18.55.26.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-19 at 18.55.26.png",
+      "reviewerNotes": "",
+      "promptRawJa": "Запрещено вешать и ставить, мешающие видимости, предметы внутри салона автомобиля.",
+      "promptGlossEn": "It is prohibited to hang or place items inside the car that obstruct visibility.",
+      "correctKeyRaw": "A",
+      "correctAnswerRaw": "Правильно",
+      "canonicalQuestionType": "ROW",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ru",
+        "batchId": "batch-11",
+        "approvedQid": "q0311",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "optionsRawJa": [],
+      "optionsGlossEn": [],
+      "localeCorrectOptionKey": null,
+      "canonicalCorrectRow": "R",
+      "canonicalCorrectAnswer": "right / true",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "ROW question; no locale-specific option key applies.",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ru-batch-11-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0388": {
+      "prompt": "При крутом повороте, максимальная скорость не может превышать:",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-19 at 18.55.29.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-19 at 18.55.29.png",
+      "reviewerNotes": "",
+      "promptRawJa": "При крутом повороте, максимальная скорость не может превышать:",
+      "promptGlossEn": "When making a sharp turn, the maximum speed must not exceed:",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ru",
+        "batchId": "batch-11",
+        "approvedQid": "q0388",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "options": {
+        "q0388_o1": "A 20км/ч",
+        "q0388_o2": "B 30км/ч",
+        "q0388_o3": "C 40км/ч",
+        "q0388_o4": "D 50км/ч"
+      },
+      "optionsRawJa": [
+        "A 20км/ч",
+        "B 30км/ч",
+        "C 40км/ч",
+        "D 50км/ч"
+      ],
+      "optionsGlossEn": [
+        "A 20 km/h",
+        "B 30 km/h",
+        "C 40 km/h",
+        "D 50 km/h"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A 20км/ч",
+          "sourceTextBody": "20км/ч",
+          "sourceGlossEn": "A 20 km/h",
+          "canonicalOptionId": "q0388_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "20km/hr",
+          "alignmentScore": 0,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B 30км/ч",
+          "sourceTextBody": "30км/ч",
+          "sourceGlossEn": "B 30 km/h",
+          "canonicalOptionId": "q0388_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "30km/hr",
+          "alignmentScore": 0,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C 40км/ч",
+          "sourceTextBody": "40км/ч",
+          "sourceGlossEn": "C 40 km/h",
+          "canonicalOptionId": "q0388_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "40km/hr",
+          "alignmentScore": 0,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D 50км/ч",
+          "sourceTextBody": "50км/ч",
+          "sourceGlossEn": "D 50 km/h",
+          "canonicalOptionId": "q0388_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "50km/hr",
+          "alignmentScore": 0,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A 20км/ч",
+          "sourceGlossEn": "A 20 km/h",
+          "canonicalOptionId": "q0388_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "20km/hr",
+          "alignmentScore": 0,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B 30км/ч",
+          "sourceGlossEn": "B 30 km/h",
+          "canonicalOptionId": "q0388_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "30km/hr",
+          "alignmentScore": 0,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C 40км/ч",
+          "sourceGlossEn": "C 40 km/h",
+          "canonicalOptionId": "q0388_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "40km/hr",
+          "alignmentScore": 0,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D 50км/ч",
+          "sourceGlossEn": "D 50 km/h",
+          "canonicalOptionId": "q0388_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "50km/hr",
+          "alignmentScore": 0,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "B",
+      "canonicalCorrectOptionId": "q0388_o2",
+      "canonicalCorrectOptionKey": "B",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed during unresolved rescue review on 2026-04-28T11:08:22.134Z; reviewer selected locale key B.",
+      "correctOptionAlignment": {
+        "sourceKey": "B",
+        "canonicalOptionId": "q0388_o2",
+        "canonicalOptionKey": "B",
+        "sourceText": "B 30км/ч",
+        "sourceGlossEn": "B 30 km/h",
+        "canonicalOptionText": "30km/hr",
+        "alignmentScore": 0,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-28T11:08:22.134Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ru-batch-11-unresolved-decisions.json",
+      "answerKeyReviewerNotes": "",
+      "reviewerSuggestedLocaleCorrectOptionKey": "B",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ru-batch-11-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0544": {
+      "prompt": "При столкновении двух автомобилей, подушка безопасности и ремень безопасности играют значительную роль.",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-19 at 18.55.39 1.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-19 at 18.55.39 1.png",
+      "reviewerNotes": "",
+      "promptRawJa": "При столкновении двух автомобилей, подушка безопасности и ремень безопасности играют значительную роль.",
+      "promptGlossEn": "In a collision between two cars, the airbag and seatbelt play a significant role.",
+      "correctKeyRaw": "A",
+      "correctAnswerRaw": "Правильно",
+      "canonicalQuestionType": "ROW",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ru",
+        "batchId": "batch-11",
+        "approvedQid": "q0544",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "optionsRawJa": [],
+      "optionsGlossEn": [],
+      "localeCorrectOptionKey": null,
+      "canonicalCorrectRow": "R",
+      "canonicalCorrectAnswer": "right / true",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "ROW question; no locale-specific option key applies.",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ru-batch-11-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    }
+  }
+}

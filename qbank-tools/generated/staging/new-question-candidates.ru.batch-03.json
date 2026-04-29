@@ -1,0 +1,51 @@
+{
+  "generatedAt": "2026-04-20T07:47:33.686Z",
+  "lang": "ru",
+  "batchId": "batch-03",
+  "dataset": "2023-test1",
+  "sourceDecisionPath": "qbank-tools/generated/staging/new-question-decisions.ru.batch-03.json",
+  "items": [
+    {
+      "candidateId": "nqc-ru-batch-03-001",
+      "sourceLang": "ru",
+      "sourceImage": "screenshots/150.png",
+      "effectiveQuestionType": "ROW",
+      "promptRawJa": "Сталкиваясь при движении с работающим автомобилем обслуживания дороги и технических работ, водителю следует уступить дорогу.",
+      "promptGlossEn": "When encountering a working road maintenance or technical service vehicle while driving, the driver should yield.",
+      "optionsRawJa": [
+        "A Правильно",
+        "B Не правильно"
+      ],
+      "optionsGlossEn": [
+        "Correct",
+        "Incorrect"
+      ],
+      "correctKeyRaw": "A",
+      "correctAnswerRaw": "Правильно",
+      "newQuestionLocalAnswerKey": "A",
+      "provisionalTopic": "proper-driving",
+      "provisionalSubtopics": [
+        "proper-driving:safe-driving",
+        "traffic-signals:road-signs"
+      ],
+      "topicConfidence": 0.522,
+      "topicSignals": [
+        {
+          "topic": "proper-driving",
+          "subtopic": "proper-driving:safe-driving",
+          "signal": "driving-action",
+          "weight": 1.2
+        },
+        {
+          "topic": "traffic-signals",
+          "subtopic": "traffic-signals:road-signs",
+          "signal": "sign-family",
+          "weight": 1.1
+        }
+      ],
+      "linkedExistingAssetCandidate": null,
+      "reviewerNotes": "",
+      "status": "pending-superset-review"
+    }
+  ]
+}

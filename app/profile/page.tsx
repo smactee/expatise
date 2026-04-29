@@ -23,8 +23,10 @@ import { Purchases } from "@revenuecat/purchases-capacitor";
 import { ensureRevenueCat } from "@/lib/billing/revenuecat";
 import { useEntitlements } from "@/components/EntitlementsProvider.client";
 import type { EntitlementSource } from "@/lib/entitlements/types";
+import type { Locale } from '@/messages';
 import { useT } from '@/lib/i18n/useT';
 import { LANGUAGE_OPTIONS, getCurrentLanguageOption, isEnabledLanguageOption } from '@/lib/i18n/languageOptions';
+import { getTranslatedOnlyLocaleNotice, loadProductionTranslationCounts } from '@/lib/qbank/localeSupport';
 
 
 
@@ -44,12 +46,25 @@ function Inner() {
   const [saving, setSaving] = useState(false);
   const [saveMsg, setSaveMsg] = useState<string | null>(null);
   const [languageMenuOpen, setLanguageMenuOpen] = useState(false);
+  const [translationCounts, setTranslationCounts] = useState<Record<string, number>>({});
   const languageMenuRef = useRef<HTMLDivElement | null>(null);
   const languageMenuId = useId();
 
   const canManageCredentials = authed && (method === "email");
   const RC_ENTITLEMENT_ID = process.env.NEXT_PUBLIC_REVENUECAT_ENTITLEMENT_ID ?? "Premium";
   const currentLanguage = getCurrentLanguageOption(locale);
+
+  useEffect(() => {
+    let alive = true;
+
+    loadProductionTranslationCounts().then((counts) => {
+      if (alive) setTranslationCounts(counts);
+    });
+
+    return () => {
+      alive = false;
+    };
+  }, []);
 
 
 const signInDisplay = (() => {
@@ -600,6 +615,11 @@ const handleRestorePurchases = async (e: React.SyntheticEvent) => {
             >
               {LANGUAGE_OPTIONS.map((option) => {
                 const isSelected = option.code === locale;
+                const enabled = isEnabledLanguageOption(option);
+                const translatedQuestionNotice = getTranslatedOnlyLocaleNotice(
+                  option.code,
+                  translationCounts[option.code] ?? 0,
+                );
 
                 return (
                   <button
@@ -607,19 +627,23 @@ const handleRestorePurchases = async (e: React.SyntheticEvent) => {
                     type="button"
                     className={`${styles.languageOption} ${
                       isSelected ? styles.languageOptionSelected : ''
-                    } ${!option.enabled ? styles.languageOptionDisabled : ''}`}
-                    role={option.enabled ? 'menuitemradio' : 'menuitem'}
-                    aria-checked={option.enabled ? isSelected : undefined}
-                    aria-disabled={!option.enabled}
-                    disabled={!option.enabled}
+                    } ${!enabled ? styles.languageOptionDisabled : ''}`}
+                    role={enabled ? 'menuitemradio' : 'menuitem'}
+                    aria-checked={enabled ? isSelected : undefined}
+                    aria-disabled={!enabled}
+                    disabled={!enabled}
                     onClick={() => {
-                      if (!isEnabledLanguageOption(option)) return;
-                      setLocale(option.code);
+                      if (!enabled) return;
+                      setLocale(option.code as Locale);
                       setLanguageMenuOpen(false);
                     }}
                   >
                     <span className={styles.languageOptionLabel}>{option.label}</span>
-                    {!option.enabled ? (
+                    {translatedQuestionNotice ? (
+                      <span className={styles.languageOptionMeta}>
+                        {translatedQuestionNotice}
+                      </span>
+                    ) : !enabled ? (
                       <span className={`${styles.languageOptionMeta} ${styles.languageOptionStatus}`}>
                         {t('profile.language.notReady')}
                       </span>

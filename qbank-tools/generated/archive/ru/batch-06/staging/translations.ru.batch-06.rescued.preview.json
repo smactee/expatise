@@ -1,0 +1,1705 @@
+{
+  "meta": {
+    "locale": "ru",
+    "generatedAt": "2026-04-21T09:22:14.729Z",
+    "reviewedBatchId": "batch-06",
+    "dataset": "2023-test1",
+    "sourceUnresolvedPath": "imports/ru/batch-06/unresolved.json",
+    "sourceUnresolvedDecisionPath": "qbank-tools/generated/staging/ru-batch-06-unresolved-decisions.json",
+    "rescuedExistingQidCount": 12,
+    "manualAnswerKeyConfirmationCount": 0,
+    "stagingOnly": true
+  },
+  "questions": {
+    "q0828": {
+      "prompt": "Что означает данная отметка на земле?",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/300.png",
+      "sourceItemId": "screenshots/300.png",
+      "reviewerNotes": "",
+      "promptRawJa": "Что означает данная отметка на земле?",
+      "promptGlossEn": "What does this road marking mean?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ru",
+        "batchId": "batch-06",
+        "approvedQid": "q0828",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "options": {
+        "q0828_o1": "A) Предупреждение о зебре",
+        "q0828_o2": "B) Предупреждение о перекрестке",
+        "q0828_o3": "C) Предупреждение о снижении скорости и уступке дороги",
+        "q0828_o4": "D) Предупреждение об остановке"
+      },
+      "optionsRawJa": [
+        "A) Предупреждение о зебре",
+        "B) Предупреждение о перекрестке",
+        "C) Предупреждение о снижении скорости и уступке дороги",
+        "D) Предупреждение об остановке"
+      ],
+      "optionsGlossEn": [
+        "A) Warning about a pedestrian crossing",
+        "B) Warning about an intersection",
+        "C) Warning to reduce speed and yield",
+        "D) Warning about a stop"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A) Предупреждение о зебре",
+          "sourceTextBody": "Предупреждение о зебре",
+          "sourceGlossEn": "A) Warning about a pedestrian crossing",
+          "canonicalOptionId": "q0828_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "crosswalk ahead",
+          "alignmentScore": 0.02727272727272727,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B) Предупреждение о перекрестке",
+          "sourceTextBody": "Предупреждение о перекрестке",
+          "sourceGlossEn": "B) Warning about an intersection",
+          "canonicalOptionId": "q0828_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "intersection ahead",
+          "alignmentScore": 0.21250000000000002,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C) Предупреждение о снижении скорости и уступке дороги",
+          "sourceTextBody": "Предупреждение о снижении скорости и уступке дороги",
+          "sourceGlossEn": "C) Warning to reduce speed and yield",
+          "canonicalOptionId": "q0828_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "reduce speed and yield ahead",
+          "alignmentScore": 0.5170731707317073,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D) Предупреждение об остановке",
+          "sourceTextBody": "Предупреждение об остановке",
+          "sourceGlossEn": "D) Warning about a stop",
+          "canonicalOptionId": "q0828_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "stop to yield ahead",
+          "alignmentScore": 0.15757575757575756,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A) Предупреждение о зебре",
+          "sourceGlossEn": "A) Warning about a pedestrian crossing",
+          "canonicalOptionId": "q0828_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "crosswalk ahead",
+          "alignmentScore": 0.02727272727272727,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B) Предупреждение о перекрестке",
+          "sourceGlossEn": "B) Warning about an intersection",
+          "canonicalOptionId": "q0828_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "intersection ahead",
+          "alignmentScore": 0.21250000000000002,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C) Предупреждение о снижении скорости и уступке дороги",
+          "sourceGlossEn": "C) Warning to reduce speed and yield",
+          "canonicalOptionId": "q0828_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "reduce speed and yield ahead",
+          "alignmentScore": 0.5170731707317073,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D) Предупреждение об остановке",
+          "sourceGlossEn": "D) Warning about a stop",
+          "canonicalOptionId": "q0828_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "stop to yield ahead",
+          "alignmentScore": 0.15757575757575756,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "A",
+      "canonicalCorrectOptionId": "q0828_o1",
+      "canonicalCorrectOptionKey": "A",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed during unresolved rescue review on 2026-04-21T09:22:14.729Z; reviewer selected locale key A.",
+      "correctOptionAlignment": {
+        "sourceKey": "A",
+        "canonicalOptionId": "q0828_o1",
+        "canonicalOptionKey": "A",
+        "sourceText": "A) Предупреждение о зебре",
+        "sourceGlossEn": "A) Warning about a pedestrian crossing",
+        "canonicalOptionText": "crosswalk ahead",
+        "alignmentScore": 0.02727272727272727,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-21T09:22:14.729Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ru-batch-06-unresolved-decisions.json",
+      "answerKeyReviewerNotes": "",
+      "reviewerSuggestedLocaleCorrectOptionKey": "A",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ru-batch-06-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0115": {
+      "prompt": "Каких из следующих разметок и правил следует придерживаться на автомагистрали:",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-19 at 18.51.12.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-19 at 18.51.12.png",
+      "reviewerNotes": "",
+      "promptRawJa": "Каких из следующих разметок и правил следует придерживаться на автомагистрали:",
+      "promptGlossEn": "Which of the following markings and rules should be followed on a motorway:",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ru",
+        "batchId": "batch-06",
+        "approvedQid": "q0115",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "options": {
+        "q0115_o1": "B Знаков и разметок",
+        "q0115_o2": "A Правила безопасности дорожного движения",
+        "q0115_o3": "C Инструкций",
+        "q0115_o4": "D Местных правил"
+      },
+      "optionsRawJa": [
+        "A Правила безопасности дорожного движения",
+        "B Знаков и разметок",
+        "C Инструкций",
+        "D Местных правил"
+      ],
+      "optionsGlossEn": [
+        "A Road safety regulations",
+        "B Signs and markings",
+        "C Instructions",
+        "D Local rules"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A Правила безопасности дорожного движения",
+          "sourceTextBody": "Правила безопасности дорожного движения",
+          "sourceGlossEn": "A Road safety regulations",
+          "canonicalOptionId": "q0115_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "Rules on road traffic safety",
+          "alignmentScore": 0.30861111111111106,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B Знаков и разметок",
+          "sourceTextBody": "Знаков и разметок",
+          "sourceGlossEn": "B Signs and markings",
+          "canonicalOptionId": "q0115_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "signs and markings",
+          "alignmentScore": 1,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C Инструкций",
+          "sourceTextBody": "Инструкций",
+          "sourceGlossEn": "C Instructions",
+          "canonicalOptionId": "q0115_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "Vehicle manual",
+          "alignmentScore": 0,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D Местных правил",
+          "sourceTextBody": "Местных правил",
+          "sourceGlossEn": "D Local rules",
+          "canonicalOptionId": "q0115_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "Local regulations",
+          "alignmentScore": 0.35757575757575755,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A Правила безопасности дорожного движения",
+          "sourceGlossEn": "A Road safety regulations",
+          "canonicalOptionId": "q0115_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "Rules on road traffic safety",
+          "alignmentScore": 0.30861111111111106,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B Знаков и разметок",
+          "sourceGlossEn": "B Signs and markings",
+          "canonicalOptionId": "q0115_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "signs and markings",
+          "alignmentScore": 1,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C Инструкций",
+          "sourceGlossEn": "C Instructions",
+          "canonicalOptionId": "q0115_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "Vehicle manual",
+          "alignmentScore": 0,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D Местных правил",
+          "sourceGlossEn": "D Local rules",
+          "canonicalOptionId": "q0115_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "Local regulations",
+          "alignmentScore": 0.35757575757575755,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "B",
+      "canonicalCorrectOptionId": "q0115_o1",
+      "canonicalCorrectOptionKey": "A",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed during unresolved rescue review on 2026-04-21T09:22:14.729Z; reviewer selected locale key B.",
+      "correctOptionAlignment": {
+        "sourceKey": "B",
+        "canonicalOptionId": "q0115_o1",
+        "canonicalOptionKey": "A",
+        "sourceText": "B Знаков и разметок",
+        "sourceGlossEn": "B Signs and markings",
+        "canonicalOptionText": "signs and markings",
+        "alignmentScore": 1,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-21T09:22:14.729Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ru-batch-06-unresolved-decisions.json",
+      "answerKeyReviewerNotes": "",
+      "reviewerSuggestedLocaleCorrectOptionKey": "B",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ru-batch-06-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0160": {
+      "prompt": "Как замедлить ход в условиях испорченных передних шин и резкого поворота?",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-19 at 18.51.14.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-19 at 18.51.14.png",
+      "reviewerNotes": "",
+      "promptRawJa": "Как замедлить ход в условиях испорченных передних шин и резкого поворота?",
+      "promptGlossEn": "How do you slow down in the event of damaged front tires and a sharp turn?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ru",
+        "batchId": "batch-06",
+        "approvedQid": "q0160",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "options": {
+        "q0160_o1": "A. Предпринять аварийное торможение",
+        "q0160_o2": "B. Использовать ручной тормоз",
+        "q0160_o3": "C. Плавно нажать на педаль тормоза",
+        "q0160_o4": "D. Быстро нажать на педаль тормоза"
+      },
+      "optionsRawJa": [
+        "A. Предпринять аварийное торможение",
+        "B. Использовать ручной тормоз",
+        "C. Плавно нажать на педаль тормоза",
+        "D. Быстро нажать на педаль тормоза"
+      ],
+      "optionsGlossEn": [
+        "A. Perform emergency braking",
+        "B. Use the handbrake",
+        "C. Gently press the brake pedal",
+        "D. Quickly press the brake pedal"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A. Предпринять аварийное торможение",
+          "sourceTextBody": "Предпринять аварийное торможение",
+          "sourceGlossEn": "A. Perform emergency braking",
+          "canonicalOptionId": "q0160_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "Apply emergency braking",
+          "alignmentScore": 0.4066666666666666,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B. Использовать ручной тормоз",
+          "sourceTextBody": "Использовать ручной тормоз",
+          "sourceGlossEn": "B. Use the handbrake",
+          "canonicalOptionId": "q0160_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "Use the handbrake",
+          "alignmentScore": 1,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C. Плавно нажать на педаль тормоза",
+          "sourceTextBody": "Плавно нажать на педаль тормоза",
+          "sourceGlossEn": "C. Gently press the brake pedal",
+          "canonicalOptionId": "q0160_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "lightly press the brake pedal",
+          "alignmentScore": 0.6539130434782608,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D. Быстро нажать на педаль тормоза",
+          "sourceTextBody": "Быстро нажать на педаль тормоза",
+          "sourceGlossEn": "D. Quickly press the brake pedal",
+          "canonicalOptionId": "q0160_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "Swiftly depress the brake pedal",
+          "alignmentScore": 0.39999999999999997,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A. Предпринять аварийное торможение",
+          "sourceGlossEn": "A. Perform emergency braking",
+          "canonicalOptionId": "q0160_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "Apply emergency braking",
+          "alignmentScore": 0.4066666666666666,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B. Использовать ручной тормоз",
+          "sourceGlossEn": "B. Use the handbrake",
+          "canonicalOptionId": "q0160_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "Use the handbrake",
+          "alignmentScore": 1,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C. Плавно нажать на педаль тормоза",
+          "sourceGlossEn": "C. Gently press the brake pedal",
+          "canonicalOptionId": "q0160_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "lightly press the brake pedal",
+          "alignmentScore": 0.6539130434782608,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D. Быстро нажать на педаль тормоза",
+          "sourceGlossEn": "D. Quickly press the brake pedal",
+          "canonicalOptionId": "q0160_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "Swiftly depress the brake pedal",
+          "alignmentScore": 0.39999999999999997,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "C",
+      "canonicalCorrectOptionId": "q0160_o3",
+      "canonicalCorrectOptionKey": "C",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed during unresolved rescue review on 2026-04-21T09:22:14.729Z; reviewer selected locale key C.",
+      "correctOptionAlignment": {
+        "sourceKey": "C",
+        "canonicalOptionId": "q0160_o3",
+        "canonicalOptionKey": "C",
+        "sourceText": "C. Плавно нажать на педаль тормоза",
+        "sourceGlossEn": "C. Gently press the brake pedal",
+        "canonicalOptionText": "lightly press the brake pedal",
+        "alignmentScore": 0.6539130434782608,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-21T09:22:14.729Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ru-batch-06-unresolved-decisions.json",
+      "answerKeyReviewerNotes": "",
+      "reviewerSuggestedLocaleCorrectOptionKey": "C",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ru-batch-06-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0417": {
+      "prompt": "В каком из следующих случаев запрещен обгон автомобиля, движущегося в той же полосе?",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-19 at 18.51.16 1.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-19 at 18.51.16 1.png",
+      "reviewerNotes": "",
+      "promptRawJa": "В каком из следующих случаев запрещен обгон автомобиля, движущегося в той же полосе?",
+      "promptGlossEn": "In which of the following cases is overtaking a car moving in the same lane prohibited?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ru",
+        "batchId": "batch-06",
+        "approvedQid": "q0417",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "options": {
+        "q0417_o1": "B. Когда передний автомобиль снижает скорость и уступает дорогу другим участникам дороги",
+        "q0417_o2": "C. При нормальном движении",
+        "q0417_o3": "D. Когда передний автомобиль совершает обгон",
+        "q0417_o4": "A. Когда впереди едущий автомобиль готовится к остановке"
+      },
+      "optionsRawJa": [
+        "A. Когда впереди едущий автомобиль готовится к остановке",
+        "B. Когда передний автомобиль снижает скорость и уступает дорогу другим участникам дороги",
+        "C. При нормальном движении",
+        "D. Когда передний автомобиль совершает обгон"
+      ],
+      "optionsGlossEn": [
+        "A. When the car ahead is preparing to stop",
+        "B. When the car in front is slowing down and yielding to other road users",
+        "C. During normal driving",
+        "D. When the car in front is overtaking"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A. Когда впереди едущий автомобиль готовится к остановке",
+          "sourceTextBody": "Когда впереди едущий автомобиль готовится к остановке",
+          "sourceGlossEn": "A. When the car ahead is preparing to stop",
+          "canonicalOptionId": "q0417_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "the vehicle is making a stop",
+          "alignmentScore": 0.23060796645702303,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B. Когда передний автомобиль снижает скорость и уступает дорогу другим участникам дороги",
+          "sourceTextBody": "Когда передний автомобиль снижает скорость и уступает дорогу другим участникам дороги",
+          "sourceGlossEn": "B. When the car in front is slowing down and yielding to other road users",
+          "canonicalOptionId": "q0417_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "the vehicle is reducing speed to yield",
+          "alignmentScore": 0.20220108695652173,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C. При нормальном движении",
+          "sourceTextBody": "При нормальном движении",
+          "sourceGlossEn": "C. During normal driving",
+          "canonicalOptionId": "q0417_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "the vehicle is running normally",
+          "alignmentScore": 0.07272727272727274,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D. Когда передний автомобиль совершает обгон",
+          "sourceTextBody": "Когда передний автомобиль совершает обгон",
+          "sourceGlossEn": "D. When the car in front is overtaking",
+          "canonicalOptionId": "q0417_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "the vehicle is overtaking",
+          "alignmentScore": 0.2952380952380952,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A. Когда впереди едущий автомобиль готовится к остановке",
+          "sourceGlossEn": "A. When the car ahead is preparing to stop",
+          "canonicalOptionId": "q0417_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "the vehicle is making a stop",
+          "alignmentScore": 0.23060796645702303,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B. Когда передний автомобиль снижает скорость и уступает дорогу другим участникам дороги",
+          "sourceGlossEn": "B. When the car in front is slowing down and yielding to other road users",
+          "canonicalOptionId": "q0417_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "the vehicle is reducing speed to yield",
+          "alignmentScore": 0.20220108695652173,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C. При нормальном движении",
+          "sourceGlossEn": "C. During normal driving",
+          "canonicalOptionId": "q0417_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "the vehicle is running normally",
+          "alignmentScore": 0.07272727272727274,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D. Когда передний автомобиль совершает обгон",
+          "sourceGlossEn": "D. When the car in front is overtaking",
+          "canonicalOptionId": "q0417_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "the vehicle is overtaking",
+          "alignmentScore": 0.2952380952380952,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        }
+      ],
+      "localeCorrectOptionKey": "D",
+      "canonicalCorrectOptionId": "q0417_o3",
+      "canonicalCorrectOptionKey": "C",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed during unresolved rescue review on 2026-04-21T09:22:14.729Z; reviewer selected locale key D.",
+      "correctOptionAlignment": {
+        "sourceKey": "D",
+        "canonicalOptionId": "q0417_o3",
+        "canonicalOptionKey": "C",
+        "sourceText": "D. Когда передний автомобиль совершает обгон",
+        "sourceGlossEn": "D. When the car in front is overtaking",
+        "canonicalOptionText": "the vehicle is overtaking",
+        "alignmentScore": 0.2952380952380952,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-21T09:22:14.729Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ru-batch-06-unresolved-decisions.json",
+      "answerKeyReviewerNotes": "",
+      "reviewerSuggestedLocaleCorrectOptionKey": "D",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ru-batch-06-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0731": {
+      "prompt": "Что означает данный знак?",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-19 at 18.51.16.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-19 at 18.51.16.png",
+      "reviewerNotes": "",
+      "promptRawJa": "Что означает данный знак?",
+      "promptGlossEn": "What does this sign mean?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ru",
+        "batchId": "batch-06",
+        "approvedQid": "q0731",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "options": {
+        "q0731_o1": "A Сужение обеих дорог",
+        "q0731_o2": "B Сужение правой стороны дороги",
+        "q0731_o3": "C Сужение левой стороны дороги",
+        "q0731_o4": "D Изменение ширины дороги"
+      },
+      "optionsRawJa": [
+        "A Сужение обеих дорог",
+        "B Сужение правой стороны дороги",
+        "C Сужение левой стороны дороги",
+        "D Изменение ширины дороги"
+      ],
+      "optionsGlossEn": [
+        "A Narrowing of both sides of the road",
+        "B Narrowing on the right side of the road",
+        "C Narrowing on the left side of the road",
+        "D Change in road width"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A Сужение обеих дорог",
+          "sourceTextBody": "Сужение обеих дорог",
+          "sourceGlossEn": "A Narrowing of both sides of the road",
+          "canonicalOptionId": "q0731_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "Road narrows on both sides",
+          "alignmentScore": 0.42152380952380947,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B Сужение правой стороны дороги",
+          "sourceTextBody": "Сужение правой стороны дороги",
+          "sourceGlossEn": "B Narrowing on the right side of the road",
+          "canonicalOptionId": "q0731_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "road narrows on the right side",
+          "alignmentScore": 0.5706043956043956,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C Сужение левой стороны дороги",
+          "sourceTextBody": "Сужение левой стороны дороги",
+          "sourceGlossEn": "C Narrowing on the left side of the road",
+          "canonicalOptionId": "q0731_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "Road narrows on the left side",
+          "alignmentScore": 0.5681428571428571,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D Изменение ширины дороги",
+          "sourceTextBody": "Изменение ширины дороги",
+          "sourceGlossEn": "D Change in road width",
+          "canonicalOptionId": "q0731_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "Bridge narrows",
+          "alignmentScore": 0.013793103448275862,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A Сужение обеих дорог",
+          "sourceGlossEn": "A Narrowing of both sides of the road",
+          "canonicalOptionId": "q0731_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "Road narrows on both sides",
+          "alignmentScore": 0.42152380952380947,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B Сужение правой стороны дороги",
+          "sourceGlossEn": "B Narrowing on the right side of the road",
+          "canonicalOptionId": "q0731_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "road narrows on the right side",
+          "alignmentScore": 0.5706043956043956,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C Сужение левой стороны дороги",
+          "sourceGlossEn": "C Narrowing on the left side of the road",
+          "canonicalOptionId": "q0731_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "Road narrows on the left side",
+          "alignmentScore": 0.5681428571428571,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D Изменение ширины дороги",
+          "sourceGlossEn": "D Change in road width",
+          "canonicalOptionId": "q0731_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "Bridge narrows",
+          "alignmentScore": 0.013793103448275862,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "B",
+      "canonicalCorrectOptionId": "q0731_o2",
+      "canonicalCorrectOptionKey": "B",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed during unresolved rescue review on 2026-04-21T09:22:14.729Z; reviewer selected locale key B.",
+      "correctOptionAlignment": {
+        "sourceKey": "B",
+        "canonicalOptionId": "q0731_o2",
+        "canonicalOptionKey": "B",
+        "sourceText": "B Сужение правой стороны дороги",
+        "sourceGlossEn": "B Narrowing on the right side of the road",
+        "canonicalOptionText": "road narrows on the right side",
+        "alignmentScore": 0.5706043956043956,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-21T09:22:14.729Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ru-batch-06-unresolved-decisions.json",
+      "answerKeyReviewerNotes": "",
+      "reviewerSuggestedLocaleCorrectOptionKey": "B",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ru-batch-06-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0793": {
+      "prompt": "Что означает данный знак?",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-19 at 18.51.17.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-19 at 18.51.17.png",
+      "reviewerNotes": "",
+      "promptRawJa": "Что означает данный знак?",
+      "promptGlossEn": "What does this sign mean?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ru",
+        "batchId": "batch-06",
+        "approvedQid": "q0793",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "options": {
+        "q0793_o1": "A Полоса для малогабаритного автомобиля",
+        "q0793_o2": "B Полоса для автотранспортного средства",
+        "q0793_o3": "D Полоса для такси",
+        "q0793_o4": "C Полоса для многопассажирского автомобиля"
+      },
+      "optionsRawJa": [
+        "A Полоса для малогабаритного автомобиля",
+        "B Полоса для автотранспортного средства",
+        "C Полоса для многопассажирского автомобиля",
+        "D Полоса для такси"
+      ],
+      "optionsGlossEn": [
+        "Lane for compact cars",
+        "Lane for motor vehicles",
+        "Lane for multi-passenger vehicles",
+        "Lane for taxis"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A Полоса для малогабаритного автомобиля",
+          "sourceTextBody": "Полоса для малогабаритного автомобиля",
+          "sourceGlossEn": "Lane for compact cars",
+          "canonicalOptionId": "q0793_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "special lane for small vehicles",
+          "alignmentScore": 0.28814589665653495,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B Полоса для автотранспортного средства",
+          "sourceTextBody": "Полоса для автотранспортного средства",
+          "sourceGlossEn": "Lane for motor vehicles",
+          "canonicalOptionId": "q0793_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "special lane for motorized vehicles",
+          "alignmentScore": 0.6133333333333333,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C Полоса для многопассажирского автомобиля",
+          "sourceTextBody": "Полоса для многопассажирского автомобиля",
+          "sourceGlossEn": "Lane for multi-passenger vehicles",
+          "canonicalOptionId": "q0793_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "special lane for multi-passenger vehicles",
+          "alignmentScore": 0.8164705882352941,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D Полоса для такси",
+          "sourceTextBody": "Полоса для такси",
+          "sourceGlossEn": "Lane for taxis",
+          "canonicalOptionId": "q0793_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "special lane for taxis",
+          "alignmentScore": 0.7466666666666666,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A Полоса для малогабаритного автомобиля",
+          "sourceGlossEn": "Lane for compact cars",
+          "canonicalOptionId": "q0793_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "special lane for small vehicles",
+          "alignmentScore": 0.28814589665653495,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B Полоса для автотранспортного средства",
+          "sourceGlossEn": "Lane for motor vehicles",
+          "canonicalOptionId": "q0793_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "special lane for motorized vehicles",
+          "alignmentScore": 0.6133333333333333,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C Полоса для многопассажирского автомобиля",
+          "sourceGlossEn": "Lane for multi-passenger vehicles",
+          "canonicalOptionId": "q0793_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "special lane for multi-passenger vehicles",
+          "alignmentScore": 0.8164705882352941,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D Полоса для такси",
+          "sourceGlossEn": "Lane for taxis",
+          "canonicalOptionId": "q0793_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "special lane for taxis",
+          "alignmentScore": 0.7466666666666666,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "C",
+      "canonicalCorrectOptionId": "q0793_o4",
+      "canonicalCorrectOptionKey": "D",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed during unresolved rescue review on 2026-04-21T09:22:14.729Z; reviewer selected locale key C.",
+      "correctOptionAlignment": {
+        "sourceKey": "C",
+        "canonicalOptionId": "q0793_o4",
+        "canonicalOptionKey": "D",
+        "sourceText": "C Полоса для многопассажирского автомобиля",
+        "sourceGlossEn": "Lane for multi-passenger vehicles",
+        "canonicalOptionText": "special lane for multi-passenger vehicles",
+        "alignmentScore": 0.8164705882352941,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-21T09:22:14.729Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ru-batch-06-unresolved-decisions.json",
+      "answerKeyReviewerNotes": "",
+      "reviewerSuggestedLocaleCorrectOptionKey": "C",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ru-batch-06-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0889": {
+      "prompt": "Что означает данный знак?",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-19 at 18.51.18 1.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-19 at 18.51.18 1.png",
+      "reviewerNotes": "",
+      "promptRawJa": "Что означает данный знак?",
+      "promptGlossEn": "What does this sign mean?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ru",
+        "batchId": "batch-06",
+        "approvedQid": "q0889",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "options": {
+        "q0889_o1": "C Запрет подачи звукового сигнала",
+        "q0889_o2": "B Сигнал подачи звукового сигнала",
+        "q0889_o3": "D Подача звукового сигнала во время снижения скорости",
+        "q0889_o4": "A Сигналить запрещено"
+      },
+      "optionsRawJa": [
+        "A Сигналить запрещено",
+        "B Сигнал подачи звукового сигнала",
+        "C Запрет подачи звукового сигнала",
+        "D Подача звукового сигнала во время снижения скорости"
+      ],
+      "optionsGlossEn": [
+        "A Honking is prohibited",
+        "B Sound signal indicator",
+        "C Prohibition of using the sound signal",
+        "D Using the sound signal while slowing down"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A Сигналить запрещено",
+          "sourceTextBody": "Сигналить запрещено",
+          "sourceGlossEn": "A Honking is prohibited",
+          "canonicalOptionId": "q0889_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "no honking",
+          "alignmentScore": 0.24210526315789474,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B Сигнал подачи звукового сигнала",
+          "sourceTextBody": "Сигнал подачи звукового сигнала",
+          "sourceGlossEn": "B Sound signal indicator",
+          "canonicalOptionId": "q0889_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "honk discontinuously",
+          "alignmentScore": 0,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C Запрет подачи звукового сигнала",
+          "sourceTextBody": "Запрет подачи звукового сигнала",
+          "sourceGlossEn": "C Prohibition of using the sound signal",
+          "canonicalOptionId": "q0889_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "no long time honking",
+          "alignmentScore": 0.008695652173913044,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D Подача звукового сигнала во время снижения скорости",
+          "sourceTextBody": "Подача звукового сигнала во время снижения скорости",
+          "sourceGlossEn": "D Using the sound signal while slowing down",
+          "canonicalOptionId": "q0889_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "reduce speed and honk",
+          "alignmentScore": 0.026086956521739132,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A Сигналить запрещено",
+          "sourceGlossEn": "A Honking is prohibited",
+          "canonicalOptionId": "q0889_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "no honking",
+          "alignmentScore": 0.24210526315789474,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B Сигнал подачи звукового сигнала",
+          "sourceGlossEn": "B Sound signal indicator",
+          "canonicalOptionId": "q0889_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "honk discontinuously",
+          "alignmentScore": 0,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C Запрет подачи звукового сигнала",
+          "sourceGlossEn": "C Prohibition of using the sound signal",
+          "canonicalOptionId": "q0889_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "no long time honking",
+          "alignmentScore": 0.008695652173913044,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D Подача звукового сигнала во время снижения скорости",
+          "sourceGlossEn": "D Using the sound signal while slowing down",
+          "canonicalOptionId": "q0889_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "reduce speed and honk",
+          "alignmentScore": 0.026086956521739132,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "A",
+      "canonicalCorrectOptionId": "q0889_o4",
+      "canonicalCorrectOptionKey": "D",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed during unresolved rescue review on 2026-04-21T09:22:14.729Z; reviewer selected locale key A.",
+      "correctOptionAlignment": {
+        "sourceKey": "A",
+        "canonicalOptionId": "q0889_o4",
+        "canonicalOptionKey": "D",
+        "sourceText": "A Сигналить запрещено",
+        "sourceGlossEn": "A Honking is prohibited",
+        "canonicalOptionText": "no honking",
+        "alignmentScore": 0.24210526315789474,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-21T09:22:14.729Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ru-batch-06-unresolved-decisions.json",
+      "answerKeyReviewerNotes": "",
+      "reviewerSuggestedLocaleCorrectOptionKey": "A",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ru-batch-06-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0526": {
+      "prompt": "Данное табло показывает, что настоящая скорость оборотов - 6000 оборотов в минуту.",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-19 at 18.51.30.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-19 at 18.51.30.png",
+      "reviewerNotes": "",
+      "promptRawJa": "Данное табло показывает, что настоящая скорость оборотов - 6000 оборотов в минуту.",
+      "promptGlossEn": "This dashboard shows that the actual engine speed is 6,000 revolutions per minute.",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "ROW",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ru",
+        "batchId": "batch-06",
+        "approvedQid": "q0526",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "optionsRawJa": [],
+      "optionsGlossEn": [],
+      "localeCorrectOptionKey": null,
+      "canonicalCorrectRow": "W",
+      "canonicalCorrectAnswer": "wrong / false",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "ROW question; no locale-specific option key applies.",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ru-batch-06-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0773": {
+      "prompt": "Белая пунктирная линия на дороге означает:",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-19 at 18.51.31.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-19 at 18.51.31.png",
+      "reviewerNotes": "",
+      "promptRawJa": "Белая пунктирная линия на дороге означает:",
+      "promptGlossEn": "A white dashed line on the road means:",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ru",
+        "batchId": "batch-06",
+        "approvedQid": "q0773",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "options": {
+        "q0773_o1": "A. Проезд разделительной линии встречной полосы запрещен",
+        "q0773_o2": "B. Проезд разделительной",
+        "q0773_o3": "D. Центральная разделительная линия односторонней полосы",
+        "q0773_o4": "C. Проезд разделительной центральной полосы разрешен"
+      },
+      "optionsRawJa": [
+        "A. Проезд разделительной линии встречной полосы запрещен",
+        "B. Проезд разделительной",
+        "C. Проезд разделительной центральной полосы разрешен",
+        "D. Центральная разделительная линия односторонней полосы"
+      ],
+      "optionsGlossEn": [
+        "A. Crossing the dividing line of an oncoming lane is prohibited",
+        "B. Crossing the dividing line",
+        "C. Crossing the central dividing line is allowed",
+        "D. The central dividing line of a one-way lane"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A. Проезд разделительной линии встречной полосы запрещен",
+          "sourceTextBody": "Проезд разделительной линии встречной полосы запрещен",
+          "sourceGlossEn": "A. Crossing the dividing line of an oncoming lane is prohibited",
+          "canonicalOptionId": "q0773_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "central line of opposite lanes which is prohibited from crossing",
+          "alignmentScore": 0.5196127946127946,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B. Проезд разделительной",
+          "sourceTextBody": "Проезд разделительной",
+          "sourceGlossEn": "B. Crossing the dividing line",
+          "canonicalOptionId": "q0773_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "central line of opposite lanes which is restricted from crossing",
+          "alignmentScore": 0.19626262626262625,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C. Проезд разделительной центральной полосы разрешен",
+          "sourceTextBody": "Проезд разделительной центральной полосы разрешен",
+          "sourceGlossEn": "C. Crossing the central dividing line is allowed",
+          "canonicalOptionId": "q0773_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "central line of same direction lanes which is allowed to cross",
+          "alignmentScore": 0.3490057561486133,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D. Центральная разделительная линия односторонней полосы",
+          "sourceTextBody": "Центральная разделительная линия односторонней полосы",
+          "sourceGlossEn": "D. The central dividing line of a one-way lane",
+          "canonicalOptionId": "q0773_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "central dividing line of the one-way road lanes",
+          "alignmentScore": 0.917047619047619,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A. Проезд разделительной линии встречной полосы запрещен",
+          "sourceGlossEn": "A. Crossing the dividing line of an oncoming lane is prohibited",
+          "canonicalOptionId": "q0773_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "central line of opposite lanes which is prohibited from crossing",
+          "alignmentScore": 0.5196127946127946,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B. Проезд разделительной",
+          "sourceGlossEn": "B. Crossing the dividing line",
+          "canonicalOptionId": "q0773_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "central line of opposite lanes which is restricted from crossing",
+          "alignmentScore": 0.19626262626262625,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C. Проезд разделительной центральной полосы разрешен",
+          "sourceGlossEn": "C. Crossing the central dividing line is allowed",
+          "canonicalOptionId": "q0773_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "central line of same direction lanes which is allowed to cross",
+          "alignmentScore": 0.3490057561486133,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D. Центральная разделительная линия односторонней полосы",
+          "sourceGlossEn": "D. The central dividing line of a one-way lane",
+          "canonicalOptionId": "q0773_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "central dividing line of the one-way road lanes",
+          "alignmentScore": 0.917047619047619,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "C",
+      "canonicalCorrectOptionId": "q0773_o4",
+      "canonicalCorrectOptionKey": "D",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed during unresolved rescue review on 2026-04-21T09:22:14.729Z; reviewer selected locale key C.",
+      "correctOptionAlignment": {
+        "sourceKey": "C",
+        "canonicalOptionId": "q0773_o4",
+        "canonicalOptionKey": "D",
+        "sourceText": "C. Проезд разделительной центральной полосы разрешен",
+        "sourceGlossEn": "C. Crossing the central dividing line is allowed",
+        "canonicalOptionText": "central line of same direction lanes which is allowed to cross",
+        "alignmentScore": 0.3490057561486133,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-21T09:22:14.729Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ru-batch-06-unresolved-decisions.json",
+      "answerKeyReviewerNotes": "",
+      "reviewerSuggestedLocaleCorrectOptionKey": "C",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ru-batch-06-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0827": {
+      "prompt": "Что означает данная отметка, выделенная в кольце?",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-19 at 18.51.34.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-19 at 18.51.34.png",
+      "reviewerNotes": "",
+      "promptRawJa": "Что означает данная отметка, выделенная в кольце?",
+      "promptGlossEn": "What does this marking, highlighted in the circle, mean?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ru",
+        "batchId": "batch-06",
+        "approvedQid": "q0827",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "options": {
+        "q0827_o1": "C) Линия замедления",
+        "q0827_o2": "D) Зебра",
+        "q0827_o3": "B) Линия остановки «уступи дорогу»",
+        "q0827_o4": "A) Указательная линия на перекрестке"
+      },
+      "optionsRawJa": [
+        "A) Указательная линия на перекрестке",
+        "B) Линия остановки «уступи дорогу»",
+        "C) Линия замедления",
+        "D) Зебра"
+      ],
+      "optionsGlossEn": [
+        "A) Guiding line at the intersection",
+        "B) Stop line 'give way'",
+        "C) Deceleration line",
+        "D) Zebra crossing"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A) Указательная линия на перекрестке",
+          "sourceTextBody": "Указательная линия на перекрестке",
+          "sourceGlossEn": "A) Guiding line at the intersection",
+          "canonicalOptionId": "q0827_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "intersection signal line",
+          "alignmentScore": 0.37583333333333335,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B) Линия остановки «уступи дорогу»",
+          "sourceTextBody": "Линия остановки «уступи дорогу»",
+          "sourceGlossEn": "B) Stop line 'give way'",
+          "canonicalOptionId": "q0827_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "stopping and yield line",
+          "alignmentScore": 0.2222222222222222,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C) Линия замедления",
+          "sourceTextBody": "Линия замедления",
+          "sourceGlossEn": "C) Deceleration line",
+          "canonicalOptionId": "q0827_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "crosswalk line",
+          "alignmentScore": 0.3111111111111111,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D) Зебра",
+          "sourceTextBody": "Зебра",
+          "sourceGlossEn": "D) Zebra crossing",
+          "canonicalOptionId": "q0827_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "crosswalk line",
+          "alignmentScore": 0,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A) Указательная линия на перекрестке",
+          "sourceGlossEn": "A) Guiding line at the intersection",
+          "canonicalOptionId": "q0827_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "intersection signal line",
+          "alignmentScore": 0.37583333333333335,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B) Линия остановки «уступи дорогу»",
+          "sourceGlossEn": "B) Stop line 'give way'",
+          "canonicalOptionId": "q0827_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "stopping and yield line",
+          "alignmentScore": 0.2222222222222222,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C) Линия замедления",
+          "sourceGlossEn": "C) Deceleration line",
+          "canonicalOptionId": "q0827_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "crosswalk line",
+          "alignmentScore": 0.3111111111111111,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D) Зебра",
+          "sourceGlossEn": "D) Zebra crossing",
+          "canonicalOptionId": "q0827_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "crosswalk line",
+          "alignmentScore": 0,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        }
+      ],
+      "localeCorrectOptionKey": "D",
+      "canonicalCorrectOptionId": "q0827_o1",
+      "canonicalCorrectOptionKey": "A",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed during unresolved rescue review on 2026-04-21T09:22:14.729Z; reviewer selected locale key D.",
+      "correctOptionAlignment": {
+        "sourceKey": "D",
+        "canonicalOptionId": "q0827_o1",
+        "canonicalOptionKey": "A",
+        "sourceText": "D) Зебра",
+        "sourceGlossEn": "D) Zebra crossing",
+        "canonicalOptionText": "crosswalk line",
+        "alignmentScore": 0.3111111111111111,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-21T09:22:14.729Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ru-batch-06-unresolved-decisions.json",
+      "answerKeyReviewerNotes": "",
+      "reviewerSuggestedLocaleCorrectOptionKey": "D",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ru-batch-06-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0554": {
+      "prompt": "Сигнал об открытом багажном отсеке.",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-19 at 18.51.37.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-19 at 18.51.37.png",
+      "reviewerNotes": "",
+      "promptRawJa": "Сигнал об открытом багажном отсеке.",
+      "promptGlossEn": "Signal about an open trunk compartment.",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "ROW",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ru",
+        "batchId": "batch-06",
+        "approvedQid": "q0554",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "optionsRawJa": [],
+      "optionsGlossEn": [],
+      "localeCorrectOptionKey": null,
+      "canonicalCorrectRow": "W",
+      "canonicalCorrectAnswer": "wrong / false",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "ROW question; no locale-specific option key applies.",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ru-batch-06-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0674": {
+      "prompt": "Линия, указанная на обочине дороги означает:",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-19 at 18.51.38.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-19 at 18.51.38.png",
+      "reviewerNotes": "",
+      "promptRawJa": "Линия, указанная на обочине дороги означает:",
+      "promptGlossEn": "The line indicated on the roadside means:",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ru",
+        "batchId": "batch-06",
+        "approvedQid": "q0674",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "options": {
+        "q0674_o1": "A. Временное разрешение проезда транспортного средства",
+        "q0674_o2": "D. Проезд запрещен",
+        "q0674_o3": "C. Временное разрешение проезда всех транспортных средств",
+        "q0674_o4": "B. Временное разрешение проезда безмоторного транспорта (например — велосипед)"
+      },
+      "optionsRawJa": [
+        "A. Временное разрешение проезда транспортного средства",
+        "B. Временное разрешение проезда безмоторного транспорта (например — велосипед)",
+        "C. Временное разрешение проезда всех транспортных средств",
+        "D. Проезд запрещен"
+      ],
+      "optionsGlossEn": [
+        "A. Temporary permission for a vehicle to pass",
+        "B. Temporary permission for non-motorized vehicles to pass (e.g., bicycle)",
+        "C. Temporary permission for all vehicles to pass",
+        "D. Passage is prohibited"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A. Временное разрешение проезда транспортного средства",
+          "sourceTextBody": "Временное разрешение проезда транспортного средства",
+          "sourceGlossEn": "A. Temporary permission for a vehicle to pass",
+          "canonicalOptionId": "q0674_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "Vehicles may cross temporarily",
+          "alignmentScore": 0.16273504273504275,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B. Временное разрешение проезда безмоторного транспорта (например — велосипед)",
+          "sourceTextBody": "Временное разрешение проезда безмоторного транспорта (например — велосипед)",
+          "sourceGlossEn": "B. Temporary permission for non-motorized vehicles to pass (e.g., bicycle)",
+          "canonicalOptionId": "q0674_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "Non-motorized vehicles may cross temporarily",
+          "alignmentScore": 0.1466666666666667,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C. Временное разрешение проезда всех транспортных средств",
+          "sourceTextBody": "Временное разрешение проезда всех транспортных средств",
+          "sourceGlossEn": "C. Temporary permission for all vehicles to pass",
+          "canonicalOptionId": "q0674_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "Motorized vehicles may cross temporarily.",
+          "alignmentScore": 0.14956521739130435,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D. Проезд запрещен",
+          "sourceTextBody": "Проезд запрещен",
+          "sourceGlossEn": "D. Passage is prohibited",
+          "canonicalOptionId": "q0674_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "vehicles are not allowed to cross",
+          "alignmentScore": 0.17792207792207793,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A. Временное разрешение проезда транспортного средства",
+          "sourceGlossEn": "A. Temporary permission for a vehicle to pass",
+          "canonicalOptionId": "q0674_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "Vehicles may cross temporarily",
+          "alignmentScore": 0.16273504273504275,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B. Временное разрешение проезда безмоторного транспорта (например — велосипед)",
+          "sourceGlossEn": "B. Temporary permission for non-motorized vehicles to pass (e.g., bicycle)",
+          "canonicalOptionId": "q0674_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "Non-motorized vehicles may cross temporarily",
+          "alignmentScore": 0.1466666666666667,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C. Временное разрешение проезда всех транспортных средств",
+          "sourceGlossEn": "C. Temporary permission for all vehicles to pass",
+          "canonicalOptionId": "q0674_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "Motorized vehicles may cross temporarily.",
+          "alignmentScore": 0.14956521739130435,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D. Проезд запрещен",
+          "sourceGlossEn": "D. Passage is prohibited",
+          "canonicalOptionId": "q0674_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "vehicles are not allowed to cross",
+          "alignmentScore": 0.17792207792207793,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        }
+      ],
+      "localeCorrectOptionKey": "D",
+      "canonicalCorrectOptionId": "q0674_o2",
+      "canonicalCorrectOptionKey": "B",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed during unresolved rescue review on 2026-04-21T09:22:14.729Z; reviewer selected locale key D.",
+      "correctOptionAlignment": {
+        "sourceKey": "D",
+        "canonicalOptionId": "q0674_o2",
+        "canonicalOptionKey": "B",
+        "sourceText": "D. Проезд запрещен",
+        "sourceGlossEn": "D. Passage is prohibited",
+        "canonicalOptionText": "vehicles are not allowed to cross",
+        "alignmentScore": 0.17792207792207793,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-21T09:22:14.729Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ru-batch-06-unresolved-decisions.json",
+      "answerKeyReviewerNotes": "",
+      "reviewerSuggestedLocaleCorrectOptionKey": "D",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ru-batch-06-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    }
+  }
+}

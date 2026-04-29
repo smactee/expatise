@@ -1,0 +1,3103 @@
+{
+  "generatedAt": "2026-04-27T03:02:29.586Z",
+  "lang": "ru",
+  "batchId": "batch-09",
+  "dataset": "2023-test1",
+  "kind": "matched",
+  "items": [
+    {
+      "itemId": "screenshots/Screenshot 2026-04-19 at 18.53.56.png",
+      "sourceImage": "screenshots/Screenshot 2026-04-19 at 18.53.56.png",
+      "promptRawJa": "Дорожные сигналы включают в себя сигналы светофора, дорожные знаки, дорожные разметки и жесты регулировщика.",
+      "promptGlossEn": "Road signals include traffic light signals, road signs, road markings, and traffic controller gestures.",
+      "optionsRawJa": [
+        "A Правильно",
+        "B Не правильно"
+      ],
+      "optionsGlossEn": [
+        "Correct",
+        "Incorrect"
+      ],
+      "correctKeyRaw": "A",
+      "correctAnswerRaw": "Правильно",
+      "ocrConfidence": "high",
+      "hasImage": false,
+      "visualObjectTags": [],
+      "visualColorTags": [],
+      "visualNumberTags": [],
+      "visualLayoutTags": [],
+      "visualEvidenceNotes": [],
+      "provisionalTopic": "traffic-signals",
+      "provisionalSubtopics": [
+        "traffic-signals:signal-lights",
+        "traffic-signals:road-markings",
+        "traffic-signals:road-signs"
+      ],
+      "topicConfidence": 1,
+      "topicSignals": [
+        {
+          "topic": "traffic-signals",
+          "subtopic": "traffic-signals:signal-lights",
+          "signal": "signal-light",
+          "weight": 1.35
+        },
+        {
+          "topic": "traffic-signals",
+          "subtopic": "traffic-signals:road-markings",
+          "signal": "road-marking",
+          "weight": 1.25
+        },
+        {
+          "topic": "traffic-signals",
+          "subtopic": "traffic-signals:road-signs",
+          "signal": "sign-family",
+          "weight": 1.1
+        }
+      ],
+      "visualEvidenceAvailable": false,
+      "sourcePromptFamily": null,
+      "sourcePromptFamilyBucket": "sign",
+      "sourceOptionCount": 2,
+      "optionCountReliable": true,
+      "expectedObjectTags": [],
+      "expectedColorTags": [],
+      "sourceIsSignHeavy": false,
+      "sourceConceptSlots": {
+        "condition": [],
+        "context": [],
+        "action": [
+          "head-light"
+        ],
+        "polarity": null,
+        "obligation": null,
+        "signals": [
+          {
+            "slot": "action",
+            "value": "head-light",
+            "signal": "head-light"
+          }
+        ]
+      },
+      "mcqFingerprint": null,
+      "localizedText": {
+        "prompt": "Дорожные сигналы включают в себя сигналы светофора, дорожные знаки, дорожные разметки и жесты регулировщика.",
+        "options": [
+          "A Правильно",
+          "B Не правильно"
+        ],
+        "correctAnswer": "Правильно",
+        "explanation": null
+      },
+      "translatedText": {
+        "prompt": "Road signals include traffic light signals, road signs, road markings, and traffic controller gestures.",
+        "options": [
+          "Correct",
+          "Incorrect"
+        ],
+        "correctAnswer": "Correct"
+      },
+      "topicHints": [],
+      "answerPolarity": "positive",
+      "match": {
+        "qid": "q0328",
+        "number": 328,
+        "score": 54.764,
+        "scoreGap": 16.537,
+        "scoreBreakdown": {
+          "optionScore": 1,
+          "glossScore": 0.465,
+          "promptSimilarity": 0.465,
+          "rawPromptSimilarity": 0.465,
+          "englishPromptSimilarity": 0.465,
+          "bridgePromptSimilarity": 0.387,
+          "syntheticPromptSimilarity": 0,
+          "localizedPromptSimilarity": 0,
+          "localizedAgreement": 0.2,
+          "localizedGlossSimilarity": 0,
+          "localizedKeywordSupport": 0.2,
+          "multilingualSupportScore": 0.2,
+          "keywordScore": 0.522,
+          "rowKeywordSignal": 0.242,
+          "rowDistinctiveKeywordScore": 0.309,
+          "rowConceptKeywordSupport": 0.24,
+          "rowContrastPenalty": 0,
+          "numericGroupScore": 0.5,
+          "numericGroupPenalty": 0,
+          "numericGroupBoost": 0,
+          "promptFamilyMismatchPenalty": 0,
+          "promptFamilySupport": 0.06,
+          "imageScore": 0.5,
+          "rawImageScore": 0.5,
+          "indicatorVisualScore": 0.5,
+          "indicatorVisualBoost": 0,
+          "missingImagePenalty": 0,
+          "imageFamilyMismatchPenalty": 0,
+          "optionSimilarity": 1,
+          "questionType": 1,
+          "optionCountAgreement": 1,
+          "answerStructureAgreement": 1,
+          "promptFamilyAgreement": 0.82,
+          "provisionalTopicAgreement": 0,
+          "structuralAgreement": 0.844,
+          "structuralPenalty": 0.16,
+          "imageSignal": 1,
+          "imageObjectAgreement": 0.5,
+          "imageColorAgreement": 0.5,
+          "topicWeighting": 0.5,
+          "answerPolarity": 1,
+          "conceptAlignment": 1,
+          "conditionAlignment": 0,
+          "contextAlignment": 0,
+          "actionAlignment": 1,
+          "obligationAlignment": 0,
+          "polarityAlignment": 1,
+          "contradictionPenalty": 0,
+          "assetTieBreak": 0,
+          "totalScore": 51.1,
+          "baseScore": 51.1,
+          "rerankAdjustment": 3.664
+        },
+        "candidateTopicTruth": {
+          "topic": "no-image",
+          "subtopics": [],
+          "tags": [
+            "no-image"
+          ]
+        },
+        "candidateImageRef": {
+          "hasImage": false,
+          "currentAssetSrc": null,
+          "assetHashes": [],
+          "colorTags": [],
+          "objectTags": []
+        }
+      },
+      "analysis": {
+        "mode": "standard",
+        "effectiveQuestionType": "ROW",
+        "declaredQuestionType": "MCQ",
+        "booleanChoiceDetected": true,
+        "plausibleShortlist": true,
+        "imageParityApplied": true,
+        "candidateImageParityMode": "text-only candidate set",
+        "candidateCountBeforeParity": 985,
+        "candidateCountAfterParity": 487,
+        "candidateCountAfterStructuralFilter": 175,
+        "candidateCountAfterMcqShortlist": 175,
+        "structuralFilterMode": "hard-structural",
+        "structuralHardCandidateCount": 175,
+        "structuralSoftCandidateCount": 175,
+        "mcqShortlistApplied": false,
+        "mcqShortlistMode": "row-bypass",
+        "mcqShortlistTopScore": null,
+        "correctionRuleIdsAppliedToRanking": [],
+        "correctionRuleIdsAppliedToGating": [],
+        "matchingProfile": "row-text",
+        "decisionReasonCodes": [
+          "safe-pass"
+        ],
+        "autoMatchThresholdDelta": 0,
+        "autoGapThresholdDelta": 0,
+        "autoMatch": {
+          "profile": "row-text",
+          "topScore": 54.764,
+          "rank2Score": 38.227,
+          "scoreGap": 16.537,
+          "thresholds": {
+            "reviewFloor": 38,
+            "autoMatchThreshold": 60,
+            "autoGapThreshold": 6
+          },
+          "signalAgreement": {
+            "agreementScore": 0.662,
+            "strongSignalCount": 3,
+            "weakSignalCount": 0,
+            "signalSpread": 0.535,
+            "signalConflict": false,
+            "signalVector": {
+              "option": 1,
+              "gloss": 0.465,
+              "keyword": 0.522,
+              "image": 0.5,
+              "multilingual": 0.2,
+              "concept": 1
+            }
+          },
+          "separation": {
+            "signalSeparation": 0.1,
+            "tooClose": false
+          },
+          "autoMatched": true,
+          "reasonCodes": [
+            "safe-pass"
+          ]
+        },
+        "explanation": "Top candidate cleared the review floor but remains review-first."
+      },
+      "proposedLocalization": {
+        "prompt": "Дорожные сигналы включают в себя сигналы светофора, дорожные знаки, дорожные разметки и жесты регулировщика.",
+        "explanation": ""
+      },
+      "reviewDecision": null,
+      "approvedLocalization": null,
+      "topCandidates": [
+        {
+          "qid": "q0328",
+          "number": 328,
+          "type": "ROW",
+          "score": 54.764,
+          "scoreBreakdown": {
+            "optionScore": 1,
+            "glossScore": 0.465,
+            "promptSimilarity": 0.465,
+            "rawPromptSimilarity": 0.465,
+            "englishPromptSimilarity": 0.465,
+            "bridgePromptSimilarity": 0.387,
+            "syntheticPromptSimilarity": 0,
+            "localizedPromptSimilarity": 0,
+            "localizedAgreement": 0.2,
+            "localizedGlossSimilarity": 0,
+            "localizedKeywordSupport": 0.2,
+            "multilingualSupportScore": 0.2,
+            "keywordScore": 0.522,
+            "rowKeywordSignal": 0.242,
+            "rowDistinctiveKeywordScore": 0.309,
+            "rowConceptKeywordSupport": 0.24,
+            "rowContrastPenalty": 0,
+            "numericGroupScore": 0.5,
+            "numericGroupPenalty": 0,
+            "numericGroupBoost": 0,
+            "promptFamilyMismatchPenalty": 0,
+            "promptFamilySupport": 0.06,
+            "imageScore": 0.5,
+            "rawImageScore": 0.5,
+            "indicatorVisualScore": 0.5,
+            "indicatorVisualBoost": 0,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatchPenalty": 0,
+            "optionSimilarity": 1,
+            "questionType": 1,
+            "optionCountAgreement": 1,
+            "answerStructureAgreement": 1,
+            "promptFamilyAgreement": 0.82,
+            "provisionalTopicAgreement": 0,
+            "structuralAgreement": 0.844,
+            "structuralPenalty": 0.16,
+            "imageSignal": 1,
+            "imageObjectAgreement": 0.5,
+            "imageColorAgreement": 0.5,
+            "topicWeighting": 0.5,
+            "answerPolarity": 1,
+            "conceptAlignment": 1,
+            "conditionAlignment": 0,
+            "contextAlignment": 0,
+            "actionAlignment": 1,
+            "obligationAlignment": 0,
+            "polarityAlignment": 1,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0,
+            "totalScore": 51.1,
+            "baseScore": 51.1,
+            "rerankAdjustment": 3.664
+          },
+          "diagnostics": {
+            "effectiveItemType": "ROW",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": true,
+            "matchingProfile": "row-text",
+            "signalWeights": {
+              "option": 0.08,
+              "gloss": 0.44,
+              "keyword": 0.24,
+              "image": 0.02,
+              "multilingual": 0.22
+            },
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "optionSetMode": "row-semantic",
+            "localizedMirrorUsed": true,
+            "localizedMirrorLabel": null,
+            "localizedSignalAvailable": true,
+            "syntheticMirrorUsed": false,
+            "genericPromptFamily": null,
+            "sourcePromptFamily": "police-hand-signal",
+            "sourcePromptFamilyBucket": "sign",
+            "candidatePromptFamilyBucket": "sign",
+            "promptFamilyReasonCodes": [],
+            "sourceConceptSlots": {
+              "condition": [],
+              "context": [
+                "traffic-light"
+              ],
+              "action": [
+                "head-light"
+              ],
+              "polarity": "positive",
+              "obligation": null,
+              "signals": [
+                {
+                  "slot": "action",
+                  "value": "head-light",
+                  "signal": "head-light"
+                },
+                {
+                  "slot": "context",
+                  "value": "traffic-light",
+                  "signal": "traffic-light"
+                }
+              ]
+            },
+            "candidateConceptSlots": {
+              "condition": [],
+              "context": [],
+              "action": [
+                "head-light"
+              ],
+              "polarity": "positive",
+              "obligation": null,
+              "signals": [
+                {
+                  "slot": "action",
+                  "value": "head-light",
+                  "signal": "head-light"
+                }
+              ]
+            },
+            "conceptMatches": [
+              "action:head-light"
+            ],
+            "contradictionSignals": [],
+            "rowContrastSignals": [],
+            "rowConceptMode": "slot-alignment + contradiction-penalties",
+            "sourceNumericGroups": [],
+            "candidateNumericGroups": [],
+            "numericGroupScore": 0.5,
+            "numericGroupPenalty": 0,
+            "numericGroupReasonCodes": [],
+            "numericGroupMatches": [],
+            "sourceFeatureGloss": "police hand signal meaning: traffic light, police hand signal",
+            "sourceFeatureKeywords": [
+              "traffic-light",
+              "police-hand-signal",
+              "road-marking",
+              "sign",
+              "controller",
+              "gestures",
+              "include",
+              "incorrect",
+              "light",
+              "markings",
+              "police",
+              "signal",
+              "signals",
+              "signs",
+              "signal-lights",
+              "road-markings",
+              "road-signs"
+            ],
+            "candidateFeatureKeywords": [
+              "head-light",
+              "command",
+              "include",
+              "lights",
+              "police",
+              "right",
+              "signals",
+              "signs"
+            ],
+            "candidateImageTags": [],
+            "imageObjectMatch": 0.5,
+            "dominantColorMatch": 0.5,
+            "indicatorVisualMatch": 0.5,
+            "imageCandidateBoost": 0,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatch": 0,
+            "imageVisualReasonCodes": [],
+            "sourceIndicatorVisual": false,
+            "candidateIndicatorVisual": false,
+            "structuralSevereSignals": [],
+            "structuralSoftSignals": [
+              "topic"
+            ],
+            "imageObjectComparable": false,
+            "imageColorComparable": false,
+            "explanation": [
+              "Binary yes/no options were treated as ROW-like for type scoring.",
+              "Missing correct answer was treated as a neutral signal.",
+              "Option comparison used unordered semantic set matching.",
+              "Distinctive keyword overlap strengthened the MCQ match.",
+              "Question family alignment reinforced this candidate.",
+              "Structural filtering and scoring strongly agree with this candidate.",
+              "ROW concept slots aligned on condition/context/action.",
+              "Source-side action intent aligned strongly with the candidate."
+            ]
+          },
+          "prompt": "Traffic signals include Traffic lights, Traffic signs and Command of the traffic police.",
+          "syntheticJaPrompt": "traffic signal include traffic ライト traffic 標識 and command traffic police。",
+          "translatedPrompt": "도로교통신호는 신호등·교통표지·교통경찰의 수신호를 포함한다.",
+          "options": [],
+          "correctAnswer": {
+            "kind": "ROW",
+            "correctRow": "R",
+            "correctOptionId": null,
+            "correctOptionKey": null,
+            "correctOptionText": "right / true",
+            "correctOptionTranslatedText": null,
+            "answerRaw": "Right"
+          },
+          "image": {
+            "hasImage": false,
+            "currentAssetSrc": null,
+            "assetHashes": [],
+            "colorTags": [],
+            "dominantColorTags": [],
+            "objectTags": []
+          },
+          "topic": "no-image",
+          "subtopics": [],
+          "conceptSlots": {
+            "condition": [],
+            "context": [],
+            "action": [
+              "head-light"
+            ],
+            "polarity": null,
+            "obligation": null,
+            "signals": [
+              {
+                "slot": "action",
+                "value": "head-light",
+                "signal": "head-light"
+              }
+            ]
+          }
+        },
+        {
+          "qid": "q0301",
+          "number": 301,
+          "type": "ROW",
+          "score": 38.227,
+          "scoreBreakdown": {
+            "optionScore": 1,
+            "glossScore": 0.186,
+            "promptSimilarity": 0.186,
+            "rawPromptSimilarity": 0.186,
+            "englishPromptSimilarity": 0.186,
+            "bridgePromptSimilarity": 0.151,
+            "syntheticPromptSimilarity": 0,
+            "localizedPromptSimilarity": 0,
+            "localizedAgreement": 0.2,
+            "localizedGlossSimilarity": 0,
+            "localizedKeywordSupport": 0.2,
+            "multilingualSupportScore": 0.2,
+            "keywordScore": 0.351,
+            "rowKeywordSignal": 0.033,
+            "rowDistinctiveKeywordScore": 0,
+            "rowConceptKeywordSupport": 0.24,
+            "rowContrastPenalty": 0,
+            "numericGroupScore": 0.5,
+            "numericGroupPenalty": 0,
+            "numericGroupBoost": 0,
+            "promptFamilyMismatchPenalty": 0,
+            "promptFamilySupport": 0,
+            "imageScore": 0.5,
+            "rawImageScore": 0.5,
+            "indicatorVisualScore": 0.5,
+            "indicatorVisualBoost": 0,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatchPenalty": 0,
+            "optionSimilarity": 1,
+            "questionType": 1,
+            "optionCountAgreement": 1,
+            "answerStructureAgreement": 1,
+            "promptFamilyAgreement": 0.35,
+            "provisionalTopicAgreement": 0,
+            "structuralAgreement": 0.844,
+            "structuralPenalty": 0.16,
+            "imageSignal": 1,
+            "imageObjectAgreement": 0.5,
+            "imageColorAgreement": 0.5,
+            "topicWeighting": 0.5,
+            "answerPolarity": 1,
+            "conceptAlignment": 1,
+            "conditionAlignment": 0,
+            "contextAlignment": 0,
+            "actionAlignment": 1,
+            "obligationAlignment": 0,
+            "polarityAlignment": 1,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0,
+            "totalScore": 34.563,
+            "baseScore": 34.563,
+            "rerankAdjustment": 3.664
+          },
+          "diagnostics": {
+            "effectiveItemType": "ROW",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": true,
+            "matchingProfile": "row-text",
+            "signalWeights": {
+              "option": 0.08,
+              "gloss": 0.44,
+              "keyword": 0.24,
+              "image": 0.02,
+              "multilingual": 0.22
+            },
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "optionSetMode": "row-semantic",
+            "localizedMirrorUsed": true,
+            "localizedMirrorLabel": null,
+            "localizedSignalAvailable": true,
+            "syntheticMirrorUsed": false,
+            "genericPromptFamily": null,
+            "sourcePromptFamily": "police-hand-signal",
+            "sourcePromptFamilyBucket": "sign",
+            "candidatePromptFamilyBucket": null,
+            "promptFamilyReasonCodes": [],
+            "sourceConceptSlots": {
+              "condition": [],
+              "context": [
+                "traffic-light"
+              ],
+              "action": [
+                "head-light"
+              ],
+              "polarity": "positive",
+              "obligation": null,
+              "signals": [
+                {
+                  "slot": "action",
+                  "value": "head-light",
+                  "signal": "head-light"
+                },
+                {
+                  "slot": "context",
+                  "value": "traffic-light",
+                  "signal": "traffic-light"
+                }
+              ]
+            },
+            "candidateConceptSlots": {
+              "condition": [],
+              "context": [],
+              "action": [
+                "head-light"
+              ],
+              "polarity": "positive",
+              "obligation": null,
+              "signals": [
+                {
+                  "slot": "action",
+                  "value": "head-light",
+                  "signal": "head-light"
+                }
+              ]
+            },
+            "conceptMatches": [
+              "action:head-light"
+            ],
+            "contradictionSignals": [],
+            "rowContrastSignals": [],
+            "rowConceptMode": "slot-alignment + contradiction-penalties",
+            "sourceNumericGroups": [],
+            "candidateNumericGroups": [],
+            "numericGroupScore": 0.5,
+            "numericGroupPenalty": 0,
+            "numericGroupReasonCodes": [],
+            "numericGroupMatches": [],
+            "sourceFeatureGloss": "police hand signal meaning: traffic light, police hand signal",
+            "sourceFeatureKeywords": [
+              "traffic-light",
+              "police-hand-signal",
+              "road-marking",
+              "sign",
+              "controller",
+              "gestures",
+              "include",
+              "incorrect",
+              "light",
+              "markings",
+              "police",
+              "signal",
+              "signals",
+              "signs",
+              "signal-lights",
+              "road-markings",
+              "road-signs"
+            ],
+            "candidateFeatureKeywords": [
+              "head-light",
+              "divided",
+              "green",
+              "light",
+              "lights",
+              "right",
+              "yellow"
+            ],
+            "candidateImageTags": [],
+            "imageObjectMatch": 0.5,
+            "dominantColorMatch": 0.5,
+            "indicatorVisualMatch": 0.5,
+            "imageCandidateBoost": 0,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatch": 0,
+            "imageVisualReasonCodes": [],
+            "sourceIndicatorVisual": false,
+            "candidateIndicatorVisual": false,
+            "structuralSevereSignals": [],
+            "structuralSoftSignals": [
+              "topic"
+            ],
+            "imageObjectComparable": false,
+            "imageColorComparable": false,
+            "explanation": [
+              "Binary yes/no options were treated as ROW-like for type scoring.",
+              "Missing correct answer was treated as a neutral signal.",
+              "Option comparison used unordered semantic set matching.",
+              "Structural filtering and scoring strongly agree with this candidate.",
+              "ROW concept slots aligned on condition/context/action.",
+              "Source-side action intent aligned strongly with the candidate."
+            ]
+          },
+          "prompt": "Traffic lights are divided into red, green and yellow light.",
+          "syntheticJaPrompt": "traffic ライト divided into red green and yellow ライト。",
+          "translatedPrompt": "신호등은 적색·녹색·황색으로 구분된다.",
+          "options": [],
+          "correctAnswer": {
+            "kind": "ROW",
+            "correctRow": "R",
+            "correctOptionId": null,
+            "correctOptionKey": null,
+            "correctOptionText": "right / true",
+            "correctOptionTranslatedText": null,
+            "answerRaw": "Right"
+          },
+          "image": {
+            "hasImage": false,
+            "currentAssetSrc": null,
+            "assetHashes": [],
+            "colorTags": [],
+            "dominantColorTags": [],
+            "objectTags": []
+          },
+          "topic": "no-image",
+          "subtopics": [],
+          "conceptSlots": {
+            "condition": [],
+            "context": [],
+            "action": [
+              "head-light"
+            ],
+            "polarity": null,
+            "obligation": null,
+            "signals": [
+              {
+                "slot": "action",
+                "value": "head-light",
+                "signal": "head-light"
+              }
+            ]
+          }
+        },
+        {
+          "qid": "q0218",
+          "number": 218,
+          "type": "ROW",
+          "score": 37.053,
+          "scoreBreakdown": {
+            "optionScore": 0.917,
+            "glossScore": 0.058,
+            "promptSimilarity": 0.058,
+            "rawPromptSimilarity": 0.058,
+            "englishPromptSimilarity": 0.052,
+            "bridgePromptSimilarity": 0.058,
+            "syntheticPromptSimilarity": 0,
+            "localizedPromptSimilarity": 0.007,
+            "localizedAgreement": 0.082,
+            "localizedGlossSimilarity": 0.072,
+            "localizedKeywordSupport": 0.146,
+            "multilingualSupportScore": 0.082,
+            "keywordScore": 0.374,
+            "rowKeywordSignal": 0.138,
+            "rowDistinctiveKeywordScore": 0.052,
+            "rowConceptKeywordSupport": 0.206,
+            "rowContrastPenalty": 0,
+            "numericGroupScore": 0.5,
+            "numericGroupPenalty": 0,
+            "numericGroupBoost": 0,
+            "promptFamilyMismatchPenalty": 0,
+            "promptFamilySupport": 0.06,
+            "imageScore": 0.5,
+            "rawImageScore": 0.5,
+            "indicatorVisualScore": 0.5,
+            "indicatorVisualBoost": 0,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatchPenalty": 0,
+            "optionSimilarity": 0.917,
+            "questionType": 1,
+            "optionCountAgreement": 1,
+            "answerStructureAgreement": 1,
+            "promptFamilyAgreement": 0.82,
+            "provisionalTopicAgreement": 1,
+            "structuralAgreement": 1,
+            "structuralPenalty": 0,
+            "imageSignal": 1,
+            "imageObjectAgreement": 0.5,
+            "imageColorAgreement": 0.5,
+            "topicWeighting": 0.5,
+            "answerPolarity": 1,
+            "conceptAlignment": 0.789,
+            "conditionAlignment": 0,
+            "contextAlignment": 0,
+            "actionAlignment": 1,
+            "obligationAlignment": 0,
+            "polarityAlignment": 0,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0,
+            "totalScore": 27.397,
+            "baseScore": 27.397,
+            "rerankAdjustment": 9.656
+          },
+          "diagnostics": {
+            "effectiveItemType": "ROW",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": true,
+            "matchingProfile": "row-text",
+            "signalWeights": {
+              "option": 0.08,
+              "gloss": 0.44,
+              "keyword": 0.24,
+              "image": 0.02,
+              "multilingual": 0.22
+            },
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "optionSetMode": "row + translation-ru corroboration",
+            "localizedMirrorUsed": true,
+            "localizedMirrorLabel": "translation-ru",
+            "localizedSignalAvailable": true,
+            "syntheticMirrorUsed": false,
+            "genericPromptFamily": null,
+            "sourcePromptFamily": "police-hand-signal",
+            "sourcePromptFamilyBucket": "sign",
+            "candidatePromptFamilyBucket": "sign",
+            "promptFamilyReasonCodes": [],
+            "sourceConceptSlots": {
+              "condition": [],
+              "context": [
+                "traffic-light"
+              ],
+              "action": [
+                "head-light"
+              ],
+              "polarity": "positive",
+              "obligation": null,
+              "signals": [
+                {
+                  "slot": "action",
+                  "value": "head-light",
+                  "signal": "head-light"
+                },
+                {
+                  "slot": "context",
+                  "value": "traffic-light",
+                  "signal": "traffic-light"
+                }
+              ]
+            },
+            "candidateConceptSlots": {
+              "condition": [],
+              "context": [],
+              "action": [
+                "head-light"
+              ],
+              "polarity": "negative",
+              "obligation": "prohibited",
+              "signals": [
+                {
+                  "slot": "action",
+                  "value": "head-light",
+                  "signal": "head-light"
+                }
+              ]
+            },
+            "conceptMatches": [
+              "action:head-light"
+            ],
+            "contradictionSignals": [],
+            "rowContrastSignals": [],
+            "rowConceptMode": "slot-alignment + contradiction-penalties",
+            "sourceNumericGroups": [],
+            "candidateNumericGroups": [],
+            "numericGroupScore": 0.5,
+            "numericGroupPenalty": 0,
+            "numericGroupReasonCodes": [],
+            "numericGroupMatches": [],
+            "sourceFeatureGloss": "police hand signal meaning: traffic light, police hand signal",
+            "sourceFeatureKeywords": [
+              "traffic-light",
+              "police-hand-signal",
+              "road-marking",
+              "sign",
+              "controller",
+              "gestures",
+              "include",
+              "incorrect",
+              "light",
+              "markings",
+              "police",
+              "signal",
+              "signals",
+              "signs",
+              "signal-lights",
+              "road-markings",
+              "road-signs"
+            ],
+            "candidateFeatureKeywords": [
+              "arrow",
+              "head-light",
+              "light",
+              "motorized",
+              "right",
+              "where",
+              "x-shaped",
+              "signal-lights",
+              "road-markings",
+              "traffic-laws",
+              "sign"
+            ],
+            "candidateImageTags": [],
+            "imageObjectMatch": 0.5,
+            "dominantColorMatch": 0.5,
+            "indicatorVisualMatch": 0.5,
+            "imageCandidateBoost": 0,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatch": 0,
+            "imageVisualReasonCodes": [],
+            "sourceIndicatorVisual": false,
+            "candidateIndicatorVisual": false,
+            "structuralSevereSignals": [],
+            "structuralSoftSignals": [],
+            "imageObjectComparable": false,
+            "imageColorComparable": false,
+            "explanation": [
+              "Binary yes/no options were treated as ROW-like for type scoring.",
+              "Missing correct answer was treated as a neutral signal.",
+              "Option comparison used unordered semantic set matching.",
+              "Question family alignment reinforced this candidate.",
+              "Structural filtering and scoring strongly agree with this candidate.",
+              "ROW concept slots aligned on condition/context/action.",
+              "Source-side action intent aligned strongly with the candidate."
+            ]
+          },
+          "prompt": "You can not drive a vehicle into the lane where the red X-shaped light or the red arrow light is on.",
+          "syntheticJaPrompt": "you してはならない drive 車両 into 車線 where red x-shaped ライト or red arrow ライト。",
+          "translatedPrompt": "적색 X형 신호 또는 적색 화살표 신호가 켜진 차로에는 자동차가 진입할 수 없다.",
+          "options": [],
+          "correctAnswer": {
+            "kind": "ROW",
+            "correctRow": "R",
+            "correctOptionId": null,
+            "correctOptionKey": null,
+            "correctOptionText": "right / true",
+            "correctOptionTranslatedText": null,
+            "answerRaw": "Right"
+          },
+          "image": {
+            "hasImage": false,
+            "currentAssetSrc": null,
+            "assetHashes": [],
+            "colorTags": [],
+            "dominantColorTags": [],
+            "objectTags": []
+          },
+          "topic": "traffic-signals",
+          "subtopics": [
+            "traffic-signals:signal-lights",
+            "traffic-signals:road-markings",
+            "proper-driving:traffic-laws"
+          ],
+          "conceptSlots": {
+            "condition": [],
+            "context": [],
+            "action": [
+              "head-light"
+            ],
+            "polarity": "negative",
+            "obligation": "prohibited",
+            "signals": [
+              {
+                "slot": "action",
+                "value": "head-light",
+                "signal": "head-light"
+              }
+            ]
+          }
+        },
+        {
+          "qid": "q0648",
+          "number": 648,
+          "type": "ROW",
+          "score": 36.846,
+          "scoreBreakdown": {
+            "optionScore": 0.834,
+            "glossScore": 0.106,
+            "promptSimilarity": 0.106,
+            "rawPromptSimilarity": 0.106,
+            "englishPromptSimilarity": 0.106,
+            "bridgePromptSimilarity": 0.062,
+            "syntheticPromptSimilarity": 0,
+            "localizedPromptSimilarity": 0.098,
+            "localizedAgreement": 0.214,
+            "localizedGlossSimilarity": 0.335,
+            "localizedKeywordSupport": 0.074,
+            "multilingualSupportScore": 0.214,
+            "keywordScore": 0.465,
+            "rowKeywordSignal": 0.067,
+            "rowDistinctiveKeywordScore": 0,
+            "rowConceptKeywordSupport": 0.348,
+            "rowContrastPenalty": 0,
+            "numericGroupScore": 0.5,
+            "numericGroupPenalty": 0,
+            "numericGroupBoost": 0,
+            "promptFamilyMismatchPenalty": 0,
+            "promptFamilySupport": 0,
+            "imageScore": 0.5,
+            "rawImageScore": 0.5,
+            "indicatorVisualScore": 0.5,
+            "indicatorVisualBoost": 0,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatchPenalty": 0,
+            "optionSimilarity": 0.834,
+            "questionType": 1,
+            "optionCountAgreement": 1,
+            "answerStructureAgreement": 1,
+            "promptFamilyAgreement": 0.35,
+            "provisionalTopicAgreement": 0,
+            "structuralAgreement": 0.844,
+            "structuralPenalty": 0.16,
+            "imageSignal": 1,
+            "imageObjectAgreement": 0.5,
+            "imageColorAgreement": 0.5,
+            "topicWeighting": 0.5,
+            "answerPolarity": 1,
+            "conceptAlignment": 0.677,
+            "conditionAlignment": 0,
+            "contextAlignment": 1,
+            "actionAlignment": 0.333,
+            "obligationAlignment": 0,
+            "polarityAlignment": 1,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0,
+            "totalScore": 33.07,
+            "baseScore": 33.07,
+            "rerankAdjustment": 3.776
+          },
+          "diagnostics": {
+            "effectiveItemType": "ROW",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": true,
+            "matchingProfile": "row-text",
+            "signalWeights": {
+              "option": 0.08,
+              "gloss": 0.44,
+              "keyword": 0.24,
+              "image": 0.02,
+              "multilingual": 0.22
+            },
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "optionSetMode": "row + translation-ru corroboration",
+            "localizedMirrorUsed": true,
+            "localizedMirrorLabel": "translation-ru",
+            "localizedSignalAvailable": true,
+            "syntheticMirrorUsed": false,
+            "genericPromptFamily": null,
+            "sourcePromptFamily": "police-hand-signal",
+            "sourcePromptFamilyBucket": "sign",
+            "candidatePromptFamilyBucket": null,
+            "promptFamilyReasonCodes": [],
+            "sourceConceptSlots": {
+              "condition": [],
+              "context": [
+                "traffic-light"
+              ],
+              "action": [
+                "head-light"
+              ],
+              "polarity": "positive",
+              "obligation": null,
+              "signals": [
+                {
+                  "slot": "action",
+                  "value": "head-light",
+                  "signal": "head-light"
+                },
+                {
+                  "slot": "context",
+                  "value": "traffic-light",
+                  "signal": "traffic-light"
+                }
+              ]
+            },
+            "candidateConceptSlots": {
+              "condition": [],
+              "context": [
+                "traffic-light"
+              ],
+              "action": [
+                "overtake",
+                "pass",
+                "head-light"
+              ],
+              "polarity": "positive",
+              "obligation": "should",
+              "signals": [
+                {
+                  "slot": "action",
+                  "value": "overtake",
+                  "signal": "overtake"
+                },
+                {
+                  "slot": "action",
+                  "value": "pass",
+                  "signal": "overtake"
+                },
+                {
+                  "slot": "action",
+                  "value": "head-light",
+                  "signal": "head-light"
+                },
+                {
+                  "slot": "context",
+                  "value": "traffic-light",
+                  "signal": "traffic-light"
+                }
+              ]
+            },
+            "conceptMatches": [
+              "context:traffic-light",
+              "action:head-light"
+            ],
+            "contradictionSignals": [],
+            "rowContrastSignals": [],
+            "rowConceptMode": "slot-alignment + contradiction-penalties",
+            "sourceNumericGroups": [],
+            "candidateNumericGroups": [],
+            "numericGroupScore": 0.5,
+            "numericGroupPenalty": 0,
+            "numericGroupReasonCodes": [],
+            "numericGroupMatches": [],
+            "sourceFeatureGloss": "police hand signal meaning: traffic light, police hand signal",
+            "sourceFeatureKeywords": [
+              "traffic-light",
+              "police-hand-signal",
+              "road-marking",
+              "sign",
+              "controller",
+              "gestures",
+              "include",
+              "incorrect",
+              "light",
+              "markings",
+              "police",
+              "signal",
+              "signals",
+              "signs",
+              "signal-lights",
+              "road-markings",
+              "road-signs"
+            ],
+            "candidateFeatureKeywords": [
+              "overtake",
+              "head-light",
+              "pass",
+              "should",
+              "continuously",
+              "flashing",
+              "light",
+              "right",
+              "yellow",
+              "traffic-light"
+            ],
+            "candidateImageTags": [],
+            "imageObjectMatch": 0.5,
+            "dominantColorMatch": 0.5,
+            "indicatorVisualMatch": 0.5,
+            "imageCandidateBoost": 0,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatch": 0,
+            "imageVisualReasonCodes": [],
+            "sourceIndicatorVisual": false,
+            "candidateIndicatorVisual": false,
+            "structuralSevereSignals": [],
+            "structuralSoftSignals": [
+              "topic"
+            ],
+            "imageObjectComparable": false,
+            "imageColorComparable": false,
+            "explanation": [
+              "Binary yes/no options were treated as ROW-like for type scoring.",
+              "Missing correct answer was treated as a neutral signal.",
+              "Option comparison used unordered semantic set matching.",
+              "Distinctive keyword overlap strengthened the MCQ match.",
+              "Structural filtering and scoring strongly agree with this candidate.",
+              "ROW concept slots aligned on condition/context/action.",
+              "Scenario context tags aligned strongly with the candidate."
+            ]
+          },
+          "prompt": "The continuously flashing yellow light is to warn that the driver should look and make sure it is safe to pass.",
+          "syntheticJaPrompt": "continuously flashing yellow ライト warn 運転者 べき look and make sure it safe 追い越し。",
+          "translatedPrompt": "황색 점멸 신호는 운전자에게 주위를 살피고 안전을 확인한 후 통과하라는 의미이다.",
+          "options": [],
+          "correctAnswer": {
+            "kind": "ROW",
+            "correctRow": "R",
+            "correctOptionId": null,
+            "correctOptionKey": null,
+            "correctOptionText": "right / true",
+            "correctOptionTranslatedText": null,
+            "answerRaw": "Right"
+          },
+          "image": {
+            "hasImage": false,
+            "currentAssetSrc": null,
+            "assetHashes": [],
+            "colorTags": [],
+            "dominantColorTags": [],
+            "objectTags": []
+          },
+          "topic": "no-image",
+          "subtopics": [],
+          "conceptSlots": {
+            "condition": [],
+            "context": [],
+            "action": [
+              "overtake",
+              "pass",
+              "head-light"
+            ],
+            "polarity": "positive",
+            "obligation": "should",
+            "signals": [
+              {
+                "slot": "action",
+                "value": "overtake",
+                "signal": "overtake"
+              },
+              {
+                "slot": "action",
+                "value": "pass",
+                "signal": "overtake"
+              },
+              {
+                "slot": "action",
+                "value": "head-light",
+                "signal": "head-light"
+              }
+            ]
+          }
+        },
+        {
+          "qid": "q0348",
+          "number": 348,
+          "type": "ROW",
+          "score": 35.306,
+          "scoreBreakdown": {
+            "optionScore": 1,
+            "glossScore": 0.128,
+            "promptSimilarity": 0.128,
+            "rawPromptSimilarity": 0.128,
+            "englishPromptSimilarity": 0.104,
+            "bridgePromptSimilarity": 0.128,
+            "syntheticPromptSimilarity": 0,
+            "localizedPromptSimilarity": 0,
+            "localizedAgreement": 0.2,
+            "localizedGlossSimilarity": 0,
+            "localizedKeywordSupport": 0.2,
+            "multilingualSupportScore": 0.2,
+            "keywordScore": 0.336,
+            "rowKeywordSignal": 0,
+            "rowDistinctiveKeywordScore": 0,
+            "rowConceptKeywordSupport": 0.24,
+            "rowContrastPenalty": 0,
+            "numericGroupScore": 0.5,
+            "numericGroupPenalty": 0,
+            "numericGroupBoost": 0,
+            "promptFamilyMismatchPenalty": 0,
+            "promptFamilySupport": 0,
+            "imageScore": 0.5,
+            "rawImageScore": 0.5,
+            "indicatorVisualScore": 0.5,
+            "indicatorVisualBoost": 0,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatchPenalty": 0,
+            "optionSimilarity": 1,
+            "questionType": 1,
+            "optionCountAgreement": 1,
+            "answerStructureAgreement": 1,
+            "promptFamilyAgreement": 0.35,
+            "provisionalTopicAgreement": 0,
+            "structuralAgreement": 0.844,
+            "structuralPenalty": 0.16,
+            "imageSignal": 1,
+            "imageObjectAgreement": 0.5,
+            "imageColorAgreement": 0.5,
+            "topicWeighting": 0.5,
+            "answerPolarity": 1,
+            "conceptAlignment": 1,
+            "conditionAlignment": 0,
+            "contextAlignment": 0,
+            "actionAlignment": 1,
+            "obligationAlignment": 0,
+            "polarityAlignment": 1,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0,
+            "totalScore": 31.642,
+            "baseScore": 31.642,
+            "rerankAdjustment": 3.664
+          },
+          "diagnostics": {
+            "effectiveItemType": "ROW",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": true,
+            "matchingProfile": "row-text",
+            "signalWeights": {
+              "option": 0.08,
+              "gloss": 0.44,
+              "keyword": 0.24,
+              "image": 0.02,
+              "multilingual": 0.22
+            },
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "optionSetMode": "row-semantic",
+            "localizedMirrorUsed": true,
+            "localizedMirrorLabel": null,
+            "localizedSignalAvailable": true,
+            "syntheticMirrorUsed": false,
+            "genericPromptFamily": null,
+            "sourcePromptFamily": "police-hand-signal",
+            "sourcePromptFamilyBucket": "sign",
+            "candidatePromptFamilyBucket": null,
+            "promptFamilyReasonCodes": [],
+            "sourceConceptSlots": {
+              "condition": [],
+              "context": [
+                "traffic-light"
+              ],
+              "action": [
+                "head-light"
+              ],
+              "polarity": "positive",
+              "obligation": null,
+              "signals": [
+                {
+                  "slot": "action",
+                  "value": "head-light",
+                  "signal": "head-light"
+                },
+                {
+                  "slot": "context",
+                  "value": "traffic-light",
+                  "signal": "traffic-light"
+                }
+              ]
+            },
+            "candidateConceptSlots": {
+              "condition": [],
+              "context": [],
+              "action": [
+                "head-light"
+              ],
+              "polarity": "positive",
+              "obligation": null,
+              "signals": [
+                {
+                  "slot": "action",
+                  "value": "head-light",
+                  "signal": "head-light"
+                }
+              ]
+            },
+            "conceptMatches": [
+              "action:head-light"
+            ],
+            "contradictionSignals": [],
+            "rowContrastSignals": [],
+            "rowConceptMode": "slot-alignment + contradiction-penalties",
+            "sourceNumericGroups": [],
+            "candidateNumericGroups": [
+              {
+                "values": [
+                  6
+                ],
+                "range": false,
+                "unit": null,
+                "comparator": "exact",
+                "text": "6"
+              }
+            ],
+            "numericGroupScore": 0.5,
+            "numericGroupPenalty": 0,
+            "numericGroupReasonCodes": [],
+            "numericGroupMatches": [],
+            "sourceFeatureGloss": "police hand signal meaning: traffic light, police hand signal",
+            "sourceFeatureKeywords": [
+              "traffic-light",
+              "police-hand-signal",
+              "road-marking",
+              "sign",
+              "controller",
+              "gestures",
+              "include",
+              "incorrect",
+              "light",
+              "markings",
+              "police",
+              "signal",
+              "signals",
+              "signs",
+              "signal-lights",
+              "road-markings",
+              "road-signs"
+            ],
+            "candidateFeatureKeywords": [
+              "head-light",
+              "6-point",
+              "lights",
+              "motorized",
+              "penalty",
+              "right",
+              "subject",
+              "violates"
+            ],
+            "candidateImageTags": [],
+            "imageObjectMatch": 0.5,
+            "dominantColorMatch": 0.5,
+            "indicatorVisualMatch": 0.5,
+            "imageCandidateBoost": 0,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatch": 0,
+            "imageVisualReasonCodes": [],
+            "sourceIndicatorVisual": false,
+            "candidateIndicatorVisual": false,
+            "structuralSevereSignals": [],
+            "structuralSoftSignals": [
+              "topic"
+            ],
+            "imageObjectComparable": false,
+            "imageColorComparable": false,
+            "explanation": [
+              "Binary yes/no options were treated as ROW-like for type scoring.",
+              "Missing correct answer was treated as a neutral signal.",
+              "Option comparison used unordered semantic set matching.",
+              "Structural filtering and scoring strongly agree with this candidate.",
+              "ROW concept slots aligned on condition/context/action.",
+              "Source-side action intent aligned strongly with the candidate."
+            ]
+          },
+          "prompt": "A driver who violates of traffic lights is subject to a 6-point penalty.",
+          "syntheticJaPrompt": "車両 運転者 who violate traffic ライト subject 6-point penalty。",
+          "translatedPrompt": "교통신호를 위반한 자동차 운전자는 벌점 6점을 받는다.",
+          "options": [],
+          "correctAnswer": {
+            "kind": "ROW",
+            "correctRow": "R",
+            "correctOptionId": null,
+            "correctOptionKey": null,
+            "correctOptionText": "right / true",
+            "correctOptionTranslatedText": null,
+            "answerRaw": "Right"
+          },
+          "image": {
+            "hasImage": false,
+            "currentAssetSrc": null,
+            "assetHashes": [],
+            "colorTags": [],
+            "dominantColorTags": [],
+            "objectTags": []
+          },
+          "topic": "no-image",
+          "subtopics": [],
+          "conceptSlots": {
+            "condition": [],
+            "context": [],
+            "action": [
+              "head-light"
+            ],
+            "polarity": null,
+            "obligation": null,
+            "signals": [
+              {
+                "slot": "action",
+                "value": "head-light",
+                "signal": "head-light"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "itemId": "screenshots/Screenshot 2026-04-19 at 18.53.59 1.png",
+      "sourceImage": "screenshots/Screenshot 2026-04-19 at 18.53.59 1.png",
+      "promptRawJa": "Водитель, совершивший ДТП из-за нарушения правил дорожного движения, при этом нанесший тяжелые раны человеку, подвергается тюремному заключению сроком не более 3 лет лишения свободы.",
+      "promptGlossEn": "A driver who has an accident due to traffic violations and causes serious injury to a person may be sentenced to imprisonment for up to 3 years.",
+      "optionsRawJa": [
+        "A Правильно",
+        "B Не правильно"
+      ],
+      "optionsGlossEn": [
+        "Correct",
+        "Incorrect"
+      ],
+      "correctKeyRaw": "A",
+      "correctAnswerRaw": "Правильно",
+      "ocrConfidence": "high",
+      "hasImage": false,
+      "visualObjectTags": [],
+      "visualColorTags": [],
+      "visualNumberTags": [],
+      "visualLayoutTags": [],
+      "visualEvidenceNotes": [],
+      "provisionalTopic": "road-safety",
+      "provisionalSubtopics": [
+        "road-safety:accidents"
+      ],
+      "topicConfidence": 1,
+      "topicSignals": [
+        {
+          "topic": "road-safety",
+          "subtopic": "road-safety:accidents",
+          "signal": "accident",
+          "weight": 1.15
+        }
+      ],
+      "visualEvidenceAvailable": false,
+      "sourcePromptFamily": null,
+      "sourcePromptFamilyBucket": null,
+      "sourceOptionCount": 2,
+      "optionCountReliable": true,
+      "expectedObjectTags": [],
+      "expectedColorTags": [],
+      "sourceIsSignHeavy": false,
+      "sourceConceptSlots": {
+        "condition": [],
+        "context": [],
+        "action": [],
+        "polarity": "positive",
+        "obligation": "may",
+        "signals": []
+      },
+      "mcqFingerprint": null,
+      "localizedText": {
+        "prompt": "Водитель, совершивший ДТП из-за нарушения правил дорожного движения, при этом нанесший тяжелые раны человеку, подвергается тюремному заключению сроком не более 3 лет лишения свободы.",
+        "options": [
+          "A Правильно",
+          "B Не правильно"
+        ],
+        "correctAnswer": "Правильно",
+        "explanation": null
+      },
+      "translatedText": {
+        "prompt": "A driver who has an accident due to traffic violations and causes serious injury to a person may be sentenced to imprisonment for up to 3 years.",
+        "options": [
+          "Correct",
+          "Incorrect"
+        ],
+        "correctAnswer": "Correct"
+      },
+      "topicHints": [],
+      "answerPolarity": "positive",
+      "match": {
+        "qid": "q0274",
+        "number": 274,
+        "score": 86.626,
+        "scoreGap": 33.646,
+        "scoreBreakdown": {
+          "optionScore": 0.403,
+          "glossScore": 0.792,
+          "promptSimilarity": 0.792,
+          "rawPromptSimilarity": 0.792,
+          "englishPromptSimilarity": 0.213,
+          "bridgePromptSimilarity": 0.065,
+          "syntheticPromptSimilarity": 0,
+          "localizedPromptSimilarity": 0.792,
+          "localizedAgreement": 0.396,
+          "localizedGlossSimilarity": 0.447,
+          "localizedKeywordSupport": 0.069,
+          "multilingualSupportScore": 0.396,
+          "keywordScore": 0.174,
+          "rowKeywordSignal": 0.068,
+          "rowDistinctiveKeywordScore": 0,
+          "rowConceptKeywordSupport": 0,
+          "rowContrastPenalty": 0,
+          "numericGroupScore": 0.86,
+          "numericGroupPenalty": 0,
+          "numericGroupBoost": 20.64,
+          "promptFamilyMismatchPenalty": 0,
+          "promptFamilySupport": 0,
+          "imageScore": 0.5,
+          "rawImageScore": 0.5,
+          "indicatorVisualScore": 0.5,
+          "indicatorVisualBoost": 0,
+          "missingImagePenalty": 0,
+          "imageFamilyMismatchPenalty": 0,
+          "optionSimilarity": 0.403,
+          "questionType": 1,
+          "optionCountAgreement": 1,
+          "answerStructureAgreement": 1,
+          "promptFamilyAgreement": 0.5,
+          "provisionalTopicAgreement": 0,
+          "structuralAgreement": 0.844,
+          "structuralPenalty": 0.16,
+          "imageSignal": 1,
+          "imageObjectAgreement": 0.5,
+          "imageColorAgreement": 0.5,
+          "topicWeighting": 0.5,
+          "answerPolarity": 1,
+          "conceptAlignment": 0,
+          "conditionAlignment": 0,
+          "contextAlignment": 0,
+          "actionAlignment": 0,
+          "obligationAlignment": 0,
+          "polarityAlignment": 0,
+          "contradictionPenalty": 0,
+          "assetTieBreak": 0,
+          "totalScore": 77.794,
+          "baseScore": 77.794,
+          "rerankAdjustment": 8.832
+        },
+        "candidateTopicTruth": {
+          "topic": "no-image",
+          "subtopics": [],
+          "tags": [
+            "no-image"
+          ]
+        },
+        "candidateImageRef": {
+          "hasImage": false,
+          "currentAssetSrc": null,
+          "assetHashes": [],
+          "colorTags": [],
+          "objectTags": []
+        }
+      },
+      "analysis": {
+        "mode": "standard",
+        "effectiveQuestionType": "ROW",
+        "declaredQuestionType": "MCQ",
+        "booleanChoiceDetected": true,
+        "plausibleShortlist": true,
+        "imageParityApplied": true,
+        "candidateImageParityMode": "text-only candidate set",
+        "candidateCountBeforeParity": 985,
+        "candidateCountAfterParity": 487,
+        "candidateCountAfterStructuralFilter": 175,
+        "candidateCountAfterMcqShortlist": 175,
+        "structuralFilterMode": "hard-structural",
+        "structuralHardCandidateCount": 175,
+        "structuralSoftCandidateCount": 175,
+        "mcqShortlistApplied": false,
+        "mcqShortlistMode": "row-bypass",
+        "mcqShortlistTopScore": null,
+        "correctionRuleIdsAppliedToRanking": [],
+        "correctionRuleIdsAppliedToGating": [],
+        "matchingProfile": "row-text",
+        "decisionReasonCodes": [
+          "gap-relaxed-profile"
+        ],
+        "autoMatchThresholdDelta": 0,
+        "autoGapThresholdDelta": 0,
+        "autoMatch": {
+          "profile": "row-text",
+          "topScore": 86.626,
+          "rank2Score": 52.98,
+          "scoreGap": 33.646,
+          "thresholds": {
+            "reviewFloor": 38,
+            "autoMatchThreshold": 60,
+            "autoGapThreshold": 6
+          },
+          "signalAgreement": {
+            "agreementScore": 0.727,
+            "strongSignalCount": 3,
+            "weakSignalCount": 0,
+            "signalSpread": 0.464,
+            "signalConflict": false,
+            "signalVector": {
+              "option": 1,
+              "gloss": 0.792,
+              "keyword": 0.86,
+              "image": 0.5,
+              "multilingual": 0.396,
+              "concept": 0.86
+            }
+          },
+          "separation": {
+            "signalSeparation": 0.226,
+            "tooClose": false
+          },
+          "autoMatched": true,
+          "reasonCodes": [
+            "gap-relaxed-profile"
+          ]
+        },
+        "explanation": "Top candidate cleared the review floor but remains review-first."
+      },
+      "proposedLocalization": {
+        "prompt": "Водитель, совершивший ДТП из-за нарушения правил дорожного движения, при этом нанесший тяжелые раны человеку, подвергается тюремному заключению сроком не более 3 лет лишения свободы.",
+        "explanation": ""
+      },
+      "reviewDecision": null,
+      "approvedLocalization": null,
+      "topCandidates": [
+        {
+          "qid": "q0274",
+          "number": 274,
+          "type": "ROW",
+          "score": 86.626,
+          "scoreBreakdown": {
+            "optionScore": 0.403,
+            "glossScore": 0.792,
+            "promptSimilarity": 0.792,
+            "rawPromptSimilarity": 0.792,
+            "englishPromptSimilarity": 0.213,
+            "bridgePromptSimilarity": 0.065,
+            "syntheticPromptSimilarity": 0,
+            "localizedPromptSimilarity": 0.792,
+            "localizedAgreement": 0.396,
+            "localizedGlossSimilarity": 0.447,
+            "localizedKeywordSupport": 0.069,
+            "multilingualSupportScore": 0.396,
+            "keywordScore": 0.174,
+            "rowKeywordSignal": 0.068,
+            "rowDistinctiveKeywordScore": 0,
+            "rowConceptKeywordSupport": 0,
+            "rowContrastPenalty": 0,
+            "numericGroupScore": 0.86,
+            "numericGroupPenalty": 0,
+            "numericGroupBoost": 20.64,
+            "promptFamilyMismatchPenalty": 0,
+            "promptFamilySupport": 0,
+            "imageScore": 0.5,
+            "rawImageScore": 0.5,
+            "indicatorVisualScore": 0.5,
+            "indicatorVisualBoost": 0,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatchPenalty": 0,
+            "optionSimilarity": 0.403,
+            "questionType": 1,
+            "optionCountAgreement": 1,
+            "answerStructureAgreement": 1,
+            "promptFamilyAgreement": 0.5,
+            "provisionalTopicAgreement": 0,
+            "structuralAgreement": 0.844,
+            "structuralPenalty": 0.16,
+            "imageSignal": 1,
+            "imageObjectAgreement": 0.5,
+            "imageColorAgreement": 0.5,
+            "topicWeighting": 0.5,
+            "answerPolarity": 1,
+            "conceptAlignment": 0,
+            "conditionAlignment": 0,
+            "contextAlignment": 0,
+            "actionAlignment": 0,
+            "obligationAlignment": 0,
+            "polarityAlignment": 0,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0,
+            "totalScore": 77.794,
+            "baseScore": 77.794,
+            "rerankAdjustment": 8.832
+          },
+          "diagnostics": {
+            "effectiveItemType": "ROW",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": true,
+            "matchingProfile": "row-text",
+            "signalWeights": {
+              "option": 0.08,
+              "gloss": 0.44,
+              "keyword": 0.24,
+              "image": 0.02,
+              "multilingual": 0.22
+            },
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "optionSetMode": "row + translation-ru corroboration",
+            "localizedMirrorUsed": true,
+            "localizedMirrorLabel": "translation-ru",
+            "localizedSignalAvailable": true,
+            "syntheticMirrorUsed": false,
+            "genericPromptFamily": null,
+            "sourcePromptFamily": null,
+            "sourcePromptFamilyBucket": null,
+            "candidatePromptFamilyBucket": null,
+            "promptFamilyReasonCodes": [],
+            "sourceConceptSlots": {
+              "condition": [],
+              "context": [],
+              "action": [],
+              "polarity": "positive",
+              "obligation": "may",
+              "signals": []
+            },
+            "candidateConceptSlots": {
+              "condition": [],
+              "context": [],
+              "action": [],
+              "polarity": null,
+              "obligation": null,
+              "signals": []
+            },
+            "conceptMatches": [],
+            "contradictionSignals": [],
+            "rowContrastSignals": [],
+            "rowConceptMode": "slot-alignment + contradiction-penalties",
+            "sourceNumericGroups": [
+              {
+                "values": [
+                  3
+                ],
+                "range": false,
+                "unit": "years",
+                "comparator": "exact",
+                "text": "3 лет"
+              },
+              {
+                "values": [
+                  3
+                ],
+                "range": false,
+                "unit": "years",
+                "comparator": "lte",
+                "text": "up to 3 years"
+              }
+            ],
+            "candidateNumericGroups": [
+              {
+                "values": [
+                  3
+                ],
+                "range": false,
+                "unit": "years",
+                "comparator": "lt",
+                "text": "less than 3 years"
+              },
+              {
+                "values": [
+                  3
+                ],
+                "range": false,
+                "unit": null,
+                "comparator": "exact",
+                "text": "3"
+              },
+              {
+                "values": [
+                  3
+                ],
+                "range": false,
+                "unit": "years",
+                "comparator": "exact",
+                "text": "3 лет"
+              }
+            ],
+            "numericGroupScore": 0.86,
+            "numericGroupPenalty": 0,
+            "numericGroupReasonCodes": [
+              "numeric-group-match"
+            ],
+            "numericGroupMatches": [
+              {
+                "source": {
+                  "values": [
+                    3
+                  ],
+                  "range": false,
+                  "unit": "years",
+                  "comparator": "exact",
+                  "text": "3 лет"
+                },
+                "candidate": {
+                  "values": [
+                    3
+                  ],
+                  "range": false,
+                  "unit": "years",
+                  "comparator": "exact",
+                  "text": "3 лет"
+                },
+                "score": 0.86,
+                "penalty": 0,
+                "reasonCodes": [
+                  "numeric-group-match"
+                ]
+              },
+              {
+                "source": {
+                  "values": [
+                    3
+                  ],
+                  "range": false,
+                  "unit": "years",
+                  "comparator": "lte",
+                  "text": "up to 3 years"
+                },
+                "candidate": {
+                  "values": [
+                    3
+                  ],
+                  "range": false,
+                  "unit": "years",
+                  "comparator": "lt",
+                  "text": "less than 3 years"
+                },
+                "score": 0.86,
+                "penalty": 0,
+                "reasonCodes": [
+                  "numeric-group-match"
+                ]
+              }
+            ],
+            "sourceFeatureGloss": "traffic rule statement: accident, may",
+            "sourceFeatureKeywords": [
+              "accident",
+              "may",
+              "causes",
+              "imprisonment",
+              "incorrect",
+              "injury",
+              "person",
+              "sentenced",
+              "serious",
+              "violations",
+              "years",
+              "accidents"
+            ],
+            "candidateFeatureKeywords": [
+              "accident",
+              "caused",
+              "criminal",
+              "detention",
+              "heavy",
+              "major",
+              "motorized",
+              "prison",
+              "private",
+              "property",
+              "public",
+              "regulations",
+              "right",
+              "subject",
+              "violation",
+              "which",
+              "years"
+            ],
+            "candidateImageTags": [],
+            "imageObjectMatch": 0.5,
+            "dominantColorMatch": 0.5,
+            "indicatorVisualMatch": 0.5,
+            "imageCandidateBoost": 0,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatch": 0,
+            "imageVisualReasonCodes": [],
+            "sourceIndicatorVisual": false,
+            "candidateIndicatorVisual": false,
+            "structuralSevereSignals": [],
+            "structuralSoftSignals": [
+              "topic"
+            ],
+            "imageObjectComparable": false,
+            "imageColorComparable": false,
+            "explanation": [
+              "Binary yes/no options were treated as ROW-like for type scoring.",
+              "Missing correct answer was treated as a neutral signal.",
+              "Option comparison used unordered semantic set matching.",
+              "Structural filtering and scoring strongly agree with this candidate."
+            ]
+          },
+          "prompt": "If a driver has caused a major accident in violation of the traffic regulations which has caused heavy loss to public or private property, the driver is subject to a prison term of less than 3 years or a criminal detention.",
+          "syntheticJaPrompt": "if 車両 運転者 has caused major accident violation traffic regulation which has caused heavy loss public or private property 運転者 subject prison term less than 3 year or criminal detention。",
+          "translatedPrompt": "자동차 운전자가 교통법규를 위반하여 중대한 사고를 일으켜 공·사유 재산에 큰 손실을 초래한 경우 운전자는 3년 미만의 징역 또는 구류에 처한다.",
+          "options": [],
+          "correctAnswer": {
+            "kind": "ROW",
+            "correctRow": "R",
+            "correctOptionId": null,
+            "correctOptionKey": null,
+            "correctOptionText": "right / true",
+            "correctOptionTranslatedText": null,
+            "answerRaw": "Right"
+          },
+          "image": {
+            "hasImage": false,
+            "currentAssetSrc": null,
+            "assetHashes": [],
+            "colorTags": [],
+            "dominantColorTags": [],
+            "objectTags": []
+          },
+          "topic": "no-image",
+          "subtopics": [],
+          "conceptSlots": {
+            "condition": [],
+            "context": [],
+            "action": [],
+            "polarity": null,
+            "obligation": null,
+            "signals": []
+          }
+        },
+        {
+          "qid": "q0187",
+          "number": 187,
+          "type": "ROW",
+          "score": 52.98,
+          "scoreBreakdown": {
+            "optionScore": 0.369,
+            "glossScore": 0.293,
+            "promptSimilarity": 0.293,
+            "rawPromptSimilarity": 0.293,
+            "englishPromptSimilarity": 0.293,
+            "bridgePromptSimilarity": 0.07,
+            "syntheticPromptSimilarity": 0,
+            "localizedPromptSimilarity": 0,
+            "localizedAgreement": 0.2,
+            "localizedGlossSimilarity": 0,
+            "localizedKeywordSupport": 0.2,
+            "multilingualSupportScore": 0.2,
+            "keywordScore": 0.269,
+            "rowKeywordSignal": 0.209,
+            "rowDistinctiveKeywordScore": 0.201,
+            "rowConceptKeywordSupport": 0,
+            "rowContrastPenalty": 0,
+            "numericGroupScore": 0.755,
+            "numericGroupPenalty": 0.12,
+            "numericGroupBoost": 18.12,
+            "promptFamilyMismatchPenalty": 0,
+            "promptFamilySupport": 0,
+            "imageScore": 0.5,
+            "rawImageScore": 0.5,
+            "indicatorVisualScore": 0.5,
+            "indicatorVisualBoost": 0,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatchPenalty": 0,
+            "optionSimilarity": 0.369,
+            "questionType": 1,
+            "optionCountAgreement": 1,
+            "answerStructureAgreement": 1,
+            "promptFamilyAgreement": 0.5,
+            "provisionalTopicAgreement": 0,
+            "structuralAgreement": 0.844,
+            "structuralPenalty": 0.16,
+            "imageSignal": 1,
+            "imageObjectAgreement": 0.5,
+            "imageColorAgreement": 0.5,
+            "topicWeighting": 0.5,
+            "answerPolarity": 1,
+            "conceptAlignment": 0,
+            "conditionAlignment": 0,
+            "contextAlignment": 0,
+            "actionAlignment": 0,
+            "obligationAlignment": 0,
+            "polarityAlignment": 0,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0,
+            "totalScore": 47.966,
+            "baseScore": 47.966,
+            "rerankAdjustment": 5.014
+          },
+          "diagnostics": {
+            "effectiveItemType": "ROW",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": true,
+            "matchingProfile": "row-text",
+            "signalWeights": {
+              "option": 0.08,
+              "gloss": 0.44,
+              "keyword": 0.24,
+              "image": 0.02,
+              "multilingual": 0.22
+            },
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "optionSetMode": "row-semantic",
+            "localizedMirrorUsed": true,
+            "localizedMirrorLabel": null,
+            "localizedSignalAvailable": true,
+            "syntheticMirrorUsed": false,
+            "genericPromptFamily": null,
+            "sourcePromptFamily": null,
+            "sourcePromptFamilyBucket": null,
+            "candidatePromptFamilyBucket": null,
+            "promptFamilyReasonCodes": [],
+            "sourceConceptSlots": {
+              "condition": [],
+              "context": [],
+              "action": [],
+              "polarity": "positive",
+              "obligation": "may",
+              "signals": []
+            },
+            "candidateConceptSlots": {
+              "condition": [],
+              "context": [],
+              "action": [],
+              "polarity": null,
+              "obligation": null,
+              "signals": []
+            },
+            "conceptMatches": [],
+            "contradictionSignals": [],
+            "rowContrastSignals": [],
+            "rowConceptMode": "slot-alignment + contradiction-penalties",
+            "sourceNumericGroups": [
+              {
+                "values": [
+                  3
+                ],
+                "range": false,
+                "unit": "years",
+                "comparator": "exact",
+                "text": "3 лет"
+              },
+              {
+                "values": [
+                  3
+                ],
+                "range": false,
+                "unit": "years",
+                "comparator": "lte",
+                "text": "up to 3 years"
+              }
+            ],
+            "candidateNumericGroups": [
+              {
+                "values": [
+                  3
+                ],
+                "range": false,
+                "unit": "years",
+                "comparator": "lt",
+                "text": "less than 3 years"
+              },
+              {
+                "values": [
+                  3
+                ],
+                "range": false,
+                "unit": null,
+                "comparator": "exact",
+                "text": "3"
+              }
+            ],
+            "numericGroupScore": 0.755,
+            "numericGroupPenalty": 0.12,
+            "numericGroupReasonCodes": [
+              "numeric-group-match"
+            ],
+            "numericGroupMatches": [
+              {
+                "source": {
+                  "values": [
+                    3
+                  ],
+                  "range": false,
+                  "unit": "years",
+                  "comparator": "exact",
+                  "text": "3 лет"
+                },
+                "candidate": {
+                  "values": [
+                    3
+                  ],
+                  "range": false,
+                  "unit": null,
+                  "comparator": "exact",
+                  "text": "3"
+                },
+                "score": 0.65,
+                "penalty": 0.12,
+                "reasonCodes": [
+                  "numeric-group-match"
+                ]
+              },
+              {
+                "source": {
+                  "values": [
+                    3
+                  ],
+                  "range": false,
+                  "unit": "years",
+                  "comparator": "lte",
+                  "text": "up to 3 years"
+                },
+                "candidate": {
+                  "values": [
+                    3
+                  ],
+                  "range": false,
+                  "unit": "years",
+                  "comparator": "lt",
+                  "text": "less than 3 years"
+                },
+                "score": 0.86,
+                "penalty": 0,
+                "reasonCodes": [
+                  "numeric-group-match"
+                ]
+              }
+            ],
+            "sourceFeatureGloss": "traffic rule statement: accident, may",
+            "sourceFeatureKeywords": [
+              "accident",
+              "may",
+              "causes",
+              "imprisonment",
+              "incorrect",
+              "injury",
+              "person",
+              "sentenced",
+              "serious",
+              "violations",
+              "years",
+              "accidents"
+            ],
+            "candidateFeatureKeywords": [
+              "accident",
+              "caused",
+              "criminal",
+              "detention",
+              "injury",
+              "major",
+              "motorized",
+              "prison",
+              "regulations",
+              "right",
+              "serious",
+              "subject",
+              "violation",
+              "which",
+              "years"
+            ],
+            "candidateImageTags": [],
+            "imageObjectMatch": 0.5,
+            "dominantColorMatch": 0.5,
+            "indicatorVisualMatch": 0.5,
+            "imageCandidateBoost": 0,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatch": 0,
+            "imageVisualReasonCodes": [],
+            "sourceIndicatorVisual": false,
+            "candidateIndicatorVisual": false,
+            "structuralSevereSignals": [],
+            "structuralSoftSignals": [
+              "topic"
+            ],
+            "imageObjectComparable": false,
+            "imageColorComparable": false,
+            "explanation": [
+              "Binary yes/no options were treated as ROW-like for type scoring.",
+              "Missing correct answer was treated as a neutral signal.",
+              "Option comparison used unordered semantic set matching.",
+              "Structural filtering and scoring strongly agree with this candidate."
+            ]
+          },
+          "prompt": "If a driver has caused a major accident in violation of the traffic regulations which has caused serious injury, the driver is subject to a prison term of less than 3 years or a criminal detention.",
+          "syntheticJaPrompt": "if 車両 運転者 has caused major accident violation traffic regulation which has caused seriou injury 運転者 subject prison term less than 3 year or criminal detention。",
+          "translatedPrompt": "자동차 운전자가 교통법규를 위반하여 중대한 사고를 일으켜 중상을 발생시킨 경우 운전자는 3년 미만의 징역 또는 구류에 처해진다.",
+          "options": [],
+          "correctAnswer": {
+            "kind": "ROW",
+            "correctRow": "R",
+            "correctOptionId": null,
+            "correctOptionKey": null,
+            "correctOptionText": "right / true",
+            "correctOptionTranslatedText": null,
+            "answerRaw": "Right"
+          },
+          "image": {
+            "hasImage": false,
+            "currentAssetSrc": null,
+            "assetHashes": [],
+            "colorTags": [],
+            "dominantColorTags": [],
+            "objectTags": []
+          },
+          "topic": "no-image",
+          "subtopics": [],
+          "conceptSlots": {
+            "condition": [],
+            "context": [],
+            "action": [],
+            "polarity": null,
+            "obligation": null,
+            "signals": []
+          }
+        },
+        {
+          "qid": "q0205",
+          "number": 205,
+          "type": "ROW",
+          "score": 12.97,
+          "scoreBreakdown": {
+            "optionScore": 0.224,
+            "glossScore": 0.15,
+            "promptSimilarity": 0.15,
+            "rawPromptSimilarity": 0.15,
+            "englishPromptSimilarity": 0.15,
+            "bridgePromptSimilarity": 0.054,
+            "syntheticPromptSimilarity": 0,
+            "localizedPromptSimilarity": 0,
+            "localizedAgreement": 0.2,
+            "localizedGlossSimilarity": 0,
+            "localizedKeywordSupport": 0.2,
+            "multilingualSupportScore": 0.2,
+            "keywordScore": 0.027,
+            "rowKeywordSignal": 0.027,
+            "rowDistinctiveKeywordScore": 0,
+            "rowConceptKeywordSupport": 0,
+            "rowContrastPenalty": 0,
+            "numericGroupScore": 0,
+            "numericGroupPenalty": 0.42,
+            "numericGroupBoost": 0,
+            "promptFamilyMismatchPenalty": 0,
+            "promptFamilySupport": 0,
+            "imageScore": 0.5,
+            "rawImageScore": 0.5,
+            "indicatorVisualScore": 0.5,
+            "indicatorVisualBoost": 0,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatchPenalty": 0,
+            "optionSimilarity": 0.224,
+            "questionType": 1,
+            "optionCountAgreement": 1,
+            "answerStructureAgreement": 1,
+            "promptFamilyAgreement": 0.5,
+            "provisionalTopicAgreement": 1,
+            "structuralAgreement": 1,
+            "structuralPenalty": 0,
+            "imageSignal": 1,
+            "imageObjectAgreement": 0.5,
+            "imageColorAgreement": 0.5,
+            "topicWeighting": 0.5,
+            "answerPolarity": 1,
+            "conceptAlignment": 0,
+            "conditionAlignment": 0,
+            "contextAlignment": 0,
+            "actionAlignment": 0,
+            "obligationAlignment": 0,
+            "polarityAlignment": 0,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0,
+            "totalScore": 11.57,
+            "baseScore": 11.57,
+            "rerankAdjustment": 1.4
+          },
+          "diagnostics": {
+            "effectiveItemType": "ROW",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": true,
+            "matchingProfile": "row-text",
+            "signalWeights": {
+              "option": 0.08,
+              "gloss": 0.44,
+              "keyword": 0.24,
+              "image": 0.02,
+              "multilingual": 0.22
+            },
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "optionSetMode": "row-semantic",
+            "localizedMirrorUsed": true,
+            "localizedMirrorLabel": null,
+            "localizedSignalAvailable": true,
+            "syntheticMirrorUsed": false,
+            "genericPromptFamily": null,
+            "sourcePromptFamily": null,
+            "sourcePromptFamilyBucket": null,
+            "candidatePromptFamilyBucket": null,
+            "promptFamilyReasonCodes": [],
+            "sourceConceptSlots": {
+              "condition": [],
+              "context": [],
+              "action": [],
+              "polarity": "positive",
+              "obligation": "may",
+              "signals": []
+            },
+            "candidateConceptSlots": {
+              "condition": [],
+              "context": [],
+              "action": [],
+              "polarity": null,
+              "obligation": "must",
+              "signals": []
+            },
+            "conceptMatches": [],
+            "contradictionSignals": [],
+            "rowContrastSignals": [],
+            "rowConceptMode": "slot-alignment + contradiction-penalties",
+            "sourceNumericGroups": [
+              {
+                "values": [
+                  3
+                ],
+                "range": false,
+                "unit": "years",
+                "comparator": "exact",
+                "text": "3 лет"
+              },
+              {
+                "values": [
+                  3
+                ],
+                "range": false,
+                "unit": "years",
+                "comparator": "lte",
+                "text": "up to 3 years"
+              }
+            ],
+            "candidateNumericGroups": [
+              {
+                "values": [
+                  30
+                ],
+                "range": false,
+                "unit": "days",
+                "comparator": "exact",
+                "text": "30 days"
+              },
+              {
+                "values": [
+                  30
+                ],
+                "range": false,
+                "unit": null,
+                "comparator": "exact",
+                "text": "30"
+              }
+            ],
+            "numericGroupScore": 0,
+            "numericGroupPenalty": 0.42,
+            "numericGroupReasonCodes": [
+              "numeric-range-missing-value"
+            ],
+            "numericGroupMatches": [
+              {
+                "source": {
+                  "values": [
+                    3
+                  ],
+                  "range": false,
+                  "unit": "years",
+                  "comparator": "exact",
+                  "text": "3 лет"
+                },
+                "candidate": {
+                  "values": [
+                    30
+                  ],
+                  "range": false,
+                  "unit": "days",
+                  "comparator": "exact",
+                  "text": "30 days"
+                },
+                "score": 0,
+                "penalty": 0.42,
+                "reasonCodes": [
+                  "numeric-range-missing-value"
+                ]
+              },
+              {
+                "source": {
+                  "values": [
+                    3
+                  ],
+                  "range": false,
+                  "unit": "years",
+                  "comparator": "lte",
+                  "text": "up to 3 years"
+                },
+                "candidate": {
+                  "values": [
+                    30
+                  ],
+                  "range": false,
+                  "unit": "days",
+                  "comparator": "exact",
+                  "text": "30 days"
+                },
+                "score": 0,
+                "penalty": 0.42,
+                "reasonCodes": [
+                  "numeric-range-missing-value"
+                ]
+              }
+            ],
+            "sourceFeatureGloss": "traffic rule statement: accident, may",
+            "sourceFeatureKeywords": [
+              "accident",
+              "may",
+              "causes",
+              "imprisonment",
+              "incorrect",
+              "injury",
+              "person",
+              "sentenced",
+              "serious",
+              "violations",
+              "years",
+              "accidents"
+            ],
+            "candidateFeatureKeywords": [
+              "accident",
+              "after",
+              "assumed",
+              "causing",
+              "checked",
+              "cycle",
+              "deaths",
+              "equal",
+              "human",
+              "liability",
+              "license",
+              "motor",
+              "revoked",
+              "right",
+              "scoring",
+              "shall",
+              "small",
+              "within"
+            ],
+            "candidateImageTags": [],
+            "imageObjectMatch": 0.5,
+            "dominantColorMatch": 0.5,
+            "indicatorVisualMatch": 0.5,
+            "imageCandidateBoost": 0,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatch": 0,
+            "imageVisualReasonCodes": [],
+            "sourceIndicatorVisual": false,
+            "candidateIndicatorVisual": false,
+            "structuralSevereSignals": [],
+            "structuralSoftSignals": [],
+            "imageObjectComparable": false,
+            "imageColorComparable": false,
+            "explanation": [
+              "Binary yes/no options were treated as ROW-like for type scoring.",
+              "Missing correct answer was treated as a neutral signal.",
+              "Structural filtering and scoring strongly agree with this candidate."
+            ]
+          },
+          "prompt": "If a driver has assumed equal or main liability for a traffic accident causing human deaths, and his driving license has not been revoked, it shall be checked within 30 days after the end of the scoring cycle.",
+          "syntheticJaPrompt": "if small motor 車両 運転者 has assumed equal or main liability traffic accident causing human death and his driving license has not been revoked it shall be checked within 30 days after end scoring cycle。",
+          "translatedPrompt": "소형차 운전자는 교총사고로 인해 사람을 숨지게 한 후 관련 법적 책임을 모두 졌으나 운전면허증이 취소되지 않았다. 이때에는 벌점 기록 주기가 끝난 후 30일내 반드시 면허증 심사를 다시 받아야한다.",
+          "options": [],
+          "correctAnswer": {
+            "kind": "ROW",
+            "correctRow": "R",
+            "correctOptionId": null,
+            "correctOptionKey": null,
+            "correctOptionText": "right / true",
+            "correctOptionTranslatedText": null,
+            "answerRaw": "Right"
+          },
+          "image": {
+            "hasImage": false,
+            "currentAssetSrc": null,
+            "assetHashes": [],
+            "colorTags": [],
+            "dominantColorTags": [],
+            "objectTags": []
+          },
+          "topic": "road-safety",
+          "subtopics": [
+            "road-safety:license",
+            "road-safety:accidents"
+          ],
+          "conceptSlots": {
+            "condition": [],
+            "context": [],
+            "action": [],
+            "polarity": null,
+            "obligation": "must",
+            "signals": []
+          }
+        },
+        {
+          "qid": "q0263",
+          "number": 263,
+          "type": "ROW",
+          "score": 11.66,
+          "scoreBreakdown": {
+            "optionScore": 0.224,
+            "glossScore": 0.175,
+            "promptSimilarity": 0.175,
+            "rawPromptSimilarity": 0.175,
+            "englishPromptSimilarity": 0.175,
+            "bridgePromptSimilarity": 0.093,
+            "syntheticPromptSimilarity": 0,
+            "localizedPromptSimilarity": 0.11,
+            "localizedAgreement": 0.292,
+            "localizedGlossSimilarity": 0.447,
+            "localizedKeywordSupport": 0.131,
+            "multilingualSupportScore": 0.292,
+            "keywordScore": 0.128,
+            "rowKeywordSignal": 0.128,
+            "rowDistinctiveKeywordScore": 0.104,
+            "rowConceptKeywordSupport": 0,
+            "rowContrastPenalty": 0,
+            "numericGroupScore": 0,
+            "numericGroupPenalty": 0.42,
+            "numericGroupBoost": 0,
+            "promptFamilyMismatchPenalty": 0,
+            "promptFamilySupport": 0,
+            "imageScore": 0.5,
+            "rawImageScore": 0.5,
+            "indicatorVisualScore": 0.5,
+            "indicatorVisualBoost": 0,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatchPenalty": 0,
+            "optionSimilarity": 0.224,
+            "questionType": 1,
+            "optionCountAgreement": 1,
+            "answerStructureAgreement": 1,
+            "promptFamilyAgreement": 0.5,
+            "provisionalTopicAgreement": 0,
+            "structuralAgreement": 0.844,
+            "structuralPenalty": 0.16,
+            "imageSignal": 1,
+            "imageObjectAgreement": 0.5,
+            "imageColorAgreement": 0.5,
+            "topicWeighting": 0.5,
+            "answerPolarity": 1,
+            "conceptAlignment": 0,
+            "conditionAlignment": 0,
+            "contextAlignment": 0,
+            "actionAlignment": 0,
+            "obligationAlignment": 0,
+            "polarityAlignment": 1,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0,
+            "totalScore": 16.46,
+            "baseScore": 16.46,
+            "rerankAdjustment": -4.8
+          },
+          "diagnostics": {
+            "effectiveItemType": "ROW",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": true,
+            "matchingProfile": "row-text",
+            "signalWeights": {
+              "option": 0.08,
+              "gloss": 0.44,
+              "keyword": 0.24,
+              "image": 0.02,
+              "multilingual": 0.22
+            },
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "optionSetMode": "row + translation-ru corroboration",
+            "localizedMirrorUsed": true,
+            "localizedMirrorLabel": "translation-ru",
+            "localizedSignalAvailable": true,
+            "syntheticMirrorUsed": false,
+            "genericPromptFamily": null,
+            "sourcePromptFamily": null,
+            "sourcePromptFamilyBucket": null,
+            "candidatePromptFamilyBucket": null,
+            "promptFamilyReasonCodes": [],
+            "sourceConceptSlots": {
+              "condition": [],
+              "context": [],
+              "action": [],
+              "polarity": "positive",
+              "obligation": "may",
+              "signals": []
+            },
+            "candidateConceptSlots": {
+              "condition": [],
+              "context": [],
+              "action": [],
+              "polarity": "positive",
+              "obligation": "should",
+              "signals": []
+            },
+            "conceptMatches": [],
+            "contradictionSignals": [],
+            "rowContrastSignals": [],
+            "rowConceptMode": "slot-alignment + contradiction-penalties",
+            "sourceNumericGroups": [
+              {
+                "values": [
+                  3
+                ],
+                "range": false,
+                "unit": "years",
+                "comparator": "exact",
+                "text": "3 лет"
+              },
+              {
+                "values": [
+                  3
+                ],
+                "range": false,
+                "unit": "years",
+                "comparator": "lte",
+                "text": "up to 3 years"
+              }
+            ],
+            "candidateNumericGroups": [
+              {
+                "values": [
+                  200
+                ],
+                "range": false,
+                "unit": "yuan",
+                "comparator": "exact",
+                "text": "200 yuan"
+              },
+              {
+                "values": [
+                  200
+                ],
+                "range": false,
+                "unit": null,
+                "comparator": "exact",
+                "text": "200"
+              }
+            ],
+            "numericGroupScore": 0,
+            "numericGroupPenalty": 0.42,
+            "numericGroupReasonCodes": [
+              "numeric-range-missing-value"
+            ],
+            "numericGroupMatches": [
+              {
+                "source": {
+                  "values": [
+                    3
+                  ],
+                  "range": false,
+                  "unit": "years",
+                  "comparator": "exact",
+                  "text": "3 лет"
+                },
+                "candidate": {
+                  "values": [
+                    200
+                  ],
+                  "range": false,
+                  "unit": "yuan",
+                  "comparator": "exact",
+                  "text": "200 yuan"
+                },
+                "score": 0,
+                "penalty": 0.42,
+                "reasonCodes": [
+                  "numeric-range-missing-value"
+                ]
+              },
+              {
+                "source": {
+                  "values": [
+                    3
+                  ],
+                  "range": false,
+                  "unit": "years",
+                  "comparator": "lte",
+                  "text": "up to 3 years"
+                },
+                "candidate": {
+                  "values": [
+                    200
+                  ],
+                  "range": false,
+                  "unit": "yuan",
+                  "comparator": "exact",
+                  "text": "200 yuan"
+                },
+                "score": 0,
+                "penalty": 0.42,
+                "reasonCodes": [
+                  "numeric-range-missing-value"
+                ]
+              }
+            ],
+            "sourceFeatureGloss": "traffic rule statement: accident, may",
+            "sourceFeatureKeywords": [
+              "accident",
+              "may",
+              "causes",
+              "imprisonment",
+              "incorrect",
+              "injury",
+              "person",
+              "sentenced",
+              "serious",
+              "violations",
+              "years",
+              "accidents"
+            ],
+            "candidateFeatureKeywords": [
+              "accident",
+              "may",
+              "should",
+              "causes",
+              "causing",
+              "damage",
+              "involving",
+              "leave",
+              "party",
+              "property",
+              "right",
+              "scene",
+              "subject"
+            ],
+            "candidateImageTags": [],
+            "imageObjectMatch": 0.5,
+            "dominantColorMatch": 0.5,
+            "indicatorVisualMatch": 0.5,
+            "imageCandidateBoost": 0,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatch": 0,
+            "imageVisualReasonCodes": [],
+            "sourceIndicatorVisual": false,
+            "candidateIndicatorVisual": false,
+            "structuralSevereSignals": [],
+            "structuralSoftSignals": [
+              "topic"
+            ],
+            "imageObjectComparable": false,
+            "imageColorComparable": false,
+            "explanation": [
+              "Binary yes/no options were treated as ROW-like for type scoring.",
+              "Missing correct answer was treated as a neutral signal.",
+              "Structural filtering and scoring strongly agree with this candidate."
+            ]
+          },
+          "prompt": "When causing a road accident involving property damage, the party should leave the scene on his own but he does not leave and causes a traffic jam, he may be subject to a fine of 200 yuan.",
+          "syntheticJaPrompt": "when causing road accident involving property damage party べき leave scene his own but he not leave and cause traffic jam he よい be subject fine 200 yuan。",
+          "translatedPrompt": "재산 피해가 발생한 교통사고를 낸 경우 당사자는 스스로 사고 현장을 떠날 수 있으나, 떠나지 않고 교통정체를 유발하면 200위안의 벌금을 받을 수 있다.",
+          "options": [],
+          "correctAnswer": {
+            "kind": "ROW",
+            "correctRow": "R",
+            "correctOptionId": null,
+            "correctOptionKey": null,
+            "correctOptionText": "right / true",
+            "correctOptionTranslatedText": null,
+            "answerRaw": "Right"
+          },
+          "image": {
+            "hasImage": false,
+            "currentAssetSrc": null,
+            "assetHashes": [],
+            "colorTags": [],
+            "dominantColorTags": [],
+            "objectTags": []
+          },
+          "topic": "no-image",
+          "subtopics": [],
+          "conceptSlots": {
+            "condition": [],
+            "context": [],
+            "action": [],
+            "polarity": "positive",
+            "obligation": "should",
+            "signals": []
+          }
+        },
+        {
+          "qid": "q0047",
+          "number": 47,
+          "type": "ROW",
+          "score": 9.721,
+          "scoreBreakdown": {
+            "optionScore": 0.245,
+            "glossScore": 0.075,
+            "promptSimilarity": 0.075,
+            "rawPromptSimilarity": 0.075,
+            "englishPromptSimilarity": 0.075,
+            "bridgePromptSimilarity": 0.008,
+            "syntheticPromptSimilarity": 0,
+            "localizedPromptSimilarity": 0,
+            "localizedAgreement": 0.2,
+            "localizedGlossSimilarity": 0,
+            "localizedKeywordSupport": 0.2,
+            "multilingualSupportScore": 0.2,
+            "keywordScore": 0.016,
+            "rowKeywordSignal": 0,
+            "rowDistinctiveKeywordScore": 0,
+            "rowConceptKeywordSupport": 0,
+            "rowContrastPenalty": 0,
+            "numericGroupScore": 0.325,
+            "numericGroupPenalty": 0.52,
+            "numericGroupBoost": 7.8,
+            "promptFamilyMismatchPenalty": 0,
+            "promptFamilySupport": 0,
+            "imageScore": 0.5,
+            "rawImageScore": 0.5,
+            "indicatorVisualScore": 0.5,
+            "indicatorVisualBoost": 0,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatchPenalty": 0,
+            "optionSimilarity": 0.245,
+            "questionType": 1,
+            "optionCountAgreement": 1,
+            "answerStructureAgreement": 1,
+            "promptFamilyAgreement": 0.5,
+            "provisionalTopicAgreement": 0,
+            "structuralAgreement": 0.844,
+            "structuralPenalty": 0.16,
+            "imageSignal": 1,
+            "imageObjectAgreement": 0.5,
+            "imageColorAgreement": 0.5,
+            "topicWeighting": 0.5,
+            "answerPolarity": 1,
+            "conceptAlignment": 0,
+            "conditionAlignment": 0,
+            "contextAlignment": 0,
+            "actionAlignment": 0,
+            "obligationAlignment": 0,
+            "polarityAlignment": 1,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0,
+            "totalScore": 13.007,
+            "baseScore": 13.007,
+            "rerankAdjustment": -3.286
+          },
+          "diagnostics": {
+            "effectiveItemType": "ROW",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": true,
+            "matchingProfile": "row-text",
+            "signalWeights": {
+              "option": 0.08,
+              "gloss": 0.44,
+              "keyword": 0.24,
+              "image": 0.02,
+              "multilingual": 0.22
+            },
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "optionSetMode": "row-semantic",
+            "localizedMirrorUsed": true,
+            "localizedMirrorLabel": null,
+            "localizedSignalAvailable": true,
+            "syntheticMirrorUsed": false,
+            "genericPromptFamily": null,
+            "sourcePromptFamily": null,
+            "sourcePromptFamilyBucket": null,
+            "candidatePromptFamilyBucket": null,
+            "promptFamilyReasonCodes": [],
+            "sourceConceptSlots": {
+              "condition": [],
+              "context": [],
+              "action": [],
+              "polarity": "positive",
+              "obligation": "may",
+              "signals": []
+            },
+            "candidateConceptSlots": {
+              "condition": [],
+              "context": [],
+              "action": [],
+              "polarity": "positive",
+              "obligation": "should",
+              "signals": []
+            },
+            "conceptMatches": [],
+            "contradictionSignals": [],
+            "rowContrastSignals": [],
+            "rowConceptMode": "slot-alignment + contradiction-penalties",
+            "sourceNumericGroups": [
+              {
+                "values": [
+                  3
+                ],
+                "range": false,
+                "unit": "years",
+                "comparator": "exact",
+                "text": "3 лет"
+              },
+              {
+                "values": [
+                  3
+                ],
+                "range": false,
+                "unit": "years",
+                "comparator": "lte",
+                "text": "up to 3 years"
+              }
+            ],
+            "candidateNumericGroups": [
+              {
+                "values": [
+                  3
+                ],
+                "range": false,
+                "unit": null,
+                "comparator": "exact",
+                "text": "3"
+              }
+            ],
+            "numericGroupScore": 0.325,
+            "numericGroupPenalty": 0.52,
+            "numericGroupReasonCodes": [
+              "numeric-group-match",
+              "numeric-comparator-conflict"
+            ],
+            "numericGroupMatches": [
+              {
+                "source": {
+                  "values": [
+                    3
+                  ],
+                  "range": false,
+                  "unit": "years",
+                  "comparator": "exact",
+                  "text": "3 лет"
+                },
+                "candidate": {
+                  "values": [
+                    3
+                  ],
+                  "range": false,
+                  "unit": null,
+                  "comparator": "exact",
+                  "text": "3"
+                },
+                "score": 0.65,
+                "penalty": 0.12,
+                "reasonCodes": [
+                  "numeric-group-match"
+                ]
+              },
+              {
+                "source": {
+                  "values": [
+                    3
+                  ],
+                  "range": false,
+                  "unit": "years",
+                  "comparator": "lte",
+                  "text": "up to 3 years"
+                },
+                "candidate": {
+                  "values": [
+                    3
+                  ],
+                  "range": false,
+                  "unit": null,
+                  "comparator": "exact",
+                  "text": "3"
+                },
+                "score": 0,
+                "penalty": 0.52,
+                "reasonCodes": [
+                  "numeric-comparator-conflict"
+                ]
+              }
+            ],
+            "sourceFeatureGloss": "traffic rule statement: accident, may",
+            "sourceFeatureKeywords": [
+              "accident",
+              "may",
+              "causes",
+              "imprisonment",
+              "incorrect",
+              "injury",
+              "person",
+              "sentenced",
+              "serious",
+              "violations",
+              "years",
+              "accidents"
+            ],
+            "candidateFeatureKeywords": [
+              "left-turn",
+              "right-turn",
+              "should",
+              "gentle",
+              "occupying",
+              "other",
+              "party",
+              "refrain",
+              "right",
+              "sharp",
+              "turns"
+            ],
+            "candidateImageTags": [],
+            "imageObjectMatch": 0.5,
+            "dominantColorMatch": 0.5,
+            "indicatorVisualMatch": 0.5,
+            "imageCandidateBoost": 0,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatch": 0,
+            "imageVisualReasonCodes": [],
+            "sourceIndicatorVisual": false,
+            "candidateIndicatorVisual": false,
+            "structuralSevereSignals": [],
+            "structuralSoftSignals": [
+              "topic"
+            ],
+            "imageObjectComparable": false,
+            "imageColorComparable": false,
+            "explanation": [
+              "Binary yes/no options were treated as ROW-like for type scoring.",
+              "Missing correct answer was treated as a neutral signal.",
+              "Structural filtering and scoring strongly agree with this candidate."
+            ]
+          },
+          "prompt": "When a vehicles turns, it should do so on the right side and refrain from occupying the lane of the other party. The left turn should be gentle and the right turn should be sharp.",
+          "syntheticJaPrompt": "when 車両 turn it べき do so right side and refrain occupying 車線 other party left turn べき be gentle and right turn べき be sharp 3。",
+          "translatedPrompt": "회전할 때에는 우측에서 회전하고 상대방의 차로를 침범해서는 안 된다. 좌회전은 완만하게, 우회전은 급격하게 해야 한다.",
+          "options": [],
+          "correctAnswer": {
+            "kind": "ROW",
+            "correctRow": "R",
+            "correctOptionId": null,
+            "correctOptionKey": null,
+            "correctOptionText": "right / true",
+            "correctOptionTranslatedText": null,
+            "answerRaw": "Right"
+          },
+          "image": {
+            "hasImage": false,
+            "currentAssetSrc": null,
+            "assetHashes": [],
+            "colorTags": [],
+            "dominantColorTags": [],
+            "objectTags": []
+          },
+          "topic": "no-image",
+          "subtopics": [],
+          "conceptSlots": {
+            "condition": [],
+            "context": [],
+            "action": [],
+            "polarity": "positive",
+            "obligation": "should",
+            "signals": []
+          }
+        }
+      ]
+    }
+  ]
+}

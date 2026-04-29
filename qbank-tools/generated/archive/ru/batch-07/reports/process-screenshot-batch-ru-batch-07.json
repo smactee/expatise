@@ -1,0 +1,170 @@
+{
+  "generatedAt": "2026-04-25T12:05:53.840Z",
+  "lang": "ru",
+  "batchId": "batch-07",
+  "dataset": "2023-test1",
+  "matchIndexPath": "qbank-tools/generated/match-index.json",
+  "syntheticMatchIndexPath": "qbank-tools/generated/match-index.ja.synthetic.json",
+  "featureStorePath": "qbank-tools/history/qid-feature-store.json",
+  "featureStoreRebuilt": false,
+  "featureSchemaVersion": 2,
+  "correctionRulesPath": null,
+  "analysisMode": "standard",
+  "intakeStats": {
+    "originalItems": 50,
+    "itemsProcessed": 50,
+    "nonImageItemsSkipped": 0,
+    "imageOnly": false
+  },
+  "outputs": [
+    {
+      "kind": "matched",
+      "count": 4
+    },
+    {
+      "kind": "review-needed",
+      "count": 36
+    },
+    {
+      "kind": "unresolved",
+      "count": 10
+    }
+  ],
+  "decisionSummary": {
+    "byDisposition": {
+      "matched": {
+        "count": 4,
+        "profiles": {
+          "mcq-text": 1,
+          "row-image": 1,
+          "row-text": 2
+        },
+        "reasonCodes": {
+          "option-signature-dominant": 1,
+          "mcq-top2-option-separated": 1,
+          "profile-pass": 1,
+          "safe-pass": 1,
+          "gap-relaxed-profile": 1
+        }
+      },
+      "review-needed": {
+        "count": 36,
+        "profiles": {
+          "mcq-text": 6,
+          "row-image": 6,
+          "row-text": 9,
+          "mcq-image": 15
+        },
+        "reasonCodes": {
+          "total-low": 28,
+          "gap-small": 24,
+          "option-weak": 16,
+          "signal-agreement-low": 15,
+          "option-signature-weak": 18,
+          "option-set-mismatch": 15,
+          "structural-weak": 7,
+          "weak-family-separation": 10,
+          "gloss-weak": 11,
+          "family-mismatch": 3,
+          "indicator-vs-action-conflict": 1,
+          "number-conflict": 1,
+          "signal-conflict": 3,
+          "image-weak": 6,
+          "structural-penalty": 2,
+          "sign-vs-action-conflict": 1,
+          "contradiction": 1,
+          "signal-separation-low": 5,
+          "runner-up-close": 5,
+          "numeric-mismatch": 2,
+          "prompt-family-mismatch": 2,
+          "top2-semantic-near-duplicate": 4,
+          "contrast-unclear": 5,
+          "weak-action-separation": 4,
+          "insufficient-discriminative-evidence": 6,
+          "negation-conflict": 1,
+          "indicator-vs-sign-conflict": 1,
+          "numeric-group-mismatch": 1
+        }
+      },
+      "unresolved": {
+        "count": 10,
+        "profiles": {
+          "row-text": 4,
+          "mcq-text": 6
+        },
+        "reasonCodes": {
+          "review-floor": 10,
+          "total-low": 10,
+          "gap-small": 9,
+          "signal-separation-low": 4,
+          "runner-up-close": 4,
+          "gloss-weak": 3,
+          "signal-agreement-low": 5,
+          "top2-semantic-near-duplicate": 4,
+          "numeric-mismatch": 2,
+          "option-weak": 6,
+          "prompt-family-mismatch": 2,
+          "contrast-unclear": 3,
+          "weak-family-separation": 1,
+          "option-signature-weak": 4,
+          "option-set-mismatch": 3,
+          "insufficient-discriminative-evidence": 2,
+          "number-conflict": 1
+        }
+      }
+    },
+    "byReasonCode": {
+      "option-signature-dominant": 1,
+      "mcq-top2-option-separated": 1,
+      "profile-pass": 1,
+      "safe-pass": 1,
+      "gap-relaxed-profile": 1,
+      "total-low": 38,
+      "gap-small": 33,
+      "option-weak": 22,
+      "signal-agreement-low": 20,
+      "option-signature-weak": 22,
+      "option-set-mismatch": 18,
+      "structural-weak": 7,
+      "weak-family-separation": 11,
+      "gloss-weak": 14,
+      "family-mismatch": 3,
+      "indicator-vs-action-conflict": 1,
+      "number-conflict": 2,
+      "signal-conflict": 3,
+      "image-weak": 6,
+      "structural-penalty": 2,
+      "sign-vs-action-conflict": 1,
+      "contradiction": 1,
+      "signal-separation-low": 9,
+      "runner-up-close": 9,
+      "numeric-mismatch": 4,
+      "prompt-family-mismatch": 4,
+      "top2-semantic-near-duplicate": 8,
+      "contrast-unclear": 8,
+      "weak-action-separation": 4,
+      "insufficient-discriminative-evidence": 8,
+      "negation-conflict": 1,
+      "indicator-vs-sign-conflict": 1,
+      "numeric-group-mismatch": 1,
+      "review-floor": 10
+    },
+    "byProfile": {
+      "matched": {
+        "mcq-text": 1,
+        "row-image": 1,
+        "row-text": 2
+      },
+      "review-needed": {
+        "mcq-text": 6,
+        "row-image": 6,
+        "row-text": 9,
+        "mcq-image": 15
+      },
+      "unresolved": {
+        "row-text": 4,
+        "mcq-text": 6
+      }
+    }
+  }
+}

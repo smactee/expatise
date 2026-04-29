@@ -1,0 +1,158 @@
+{
+  "generatedAt": "2026-04-27T09:26:16.878Z",
+  "lang": "ru",
+  "batchId": "batch-10",
+  "dataset": "2023-test1",
+  "matchIndexPath": "qbank-tools/generated/match-index.json",
+  "syntheticMatchIndexPath": "qbank-tools/generated/match-index.ja.synthetic.json",
+  "featureStorePath": "qbank-tools/history/qid-feature-store.json",
+  "featureStoreRebuilt": false,
+  "featureSchemaVersion": 3,
+  "correctionRulesPath": null,
+  "analysisMode": "standard",
+  "intakeStats": {
+    "originalItems": 50,
+    "itemsProcessed": 50,
+    "nonImageItemsSkipped": 0,
+    "imageOnly": false
+  },
+  "outputs": [
+    {
+      "kind": "matched",
+      "count": 4
+    },
+    {
+      "kind": "review-needed",
+      "count": 40
+    },
+    {
+      "kind": "unresolved",
+      "count": 6
+    }
+  ],
+  "decisionSummary": {
+    "byDisposition": {
+      "matched": {
+        "count": 4,
+        "profiles": {
+          "mcq-text": 1,
+          "row-image": 2,
+          "mcq-image": 1
+        },
+        "reasonCodes": {
+          "profile-pass": 3,
+          "option-signature-dominant": 1,
+          "mcq-top2-option-separated": 2,
+          "safe-pass": 1
+        }
+      },
+      "review-needed": {
+        "count": 40,
+        "profiles": {
+          "mcq-image": 21,
+          "row-text": 8,
+          "mcq-text": 9,
+          "row-image": 2
+        },
+        "reasonCodes": {
+          "total-low": 24,
+          "gap-small": 21,
+          "signal-separation-low": 9,
+          "runner-up-close": 9,
+          "option-weak": 19,
+          "gloss-weak": 7,
+          "signal-agreement-low": 19,
+          "option-signature-weak": 29,
+          "option-set-mismatch": 22,
+          "weak-family-separation": 12,
+          "structural-weak": 4,
+          "contradiction": 5,
+          "action-conflict": 3,
+          "negation-conflict": 4,
+          "numeric-mismatch": 4,
+          "prompt-family-mismatch": 4,
+          "family-mismatch": 3,
+          "sign-vs-action-conflict": 3,
+          "image-weak": 1,
+          "top2-semantic-near-duplicate": 1,
+          "contrast-unclear": 3,
+          "weak-action-separation": 5,
+          "insufficient-discriminative-evidence": 2,
+          "obligation-mismatch": 2,
+          "signal-conflict": 1
+        }
+      },
+      "unresolved": {
+        "count": 6,
+        "profiles": {
+          "mcq-text": 3,
+          "row-text": 3
+        },
+        "reasonCodes": {
+          "review-floor": 6,
+          "total-low": 6,
+          "gap-small": 6,
+          "signal-separation-low": 4,
+          "runner-up-close": 4,
+          "option-weak": 3,
+          "gloss-weak": 1,
+          "signal-agreement-low": 2,
+          "numeric-mismatch": 1,
+          "prompt-family-mismatch": 1,
+          "weak-action-separation": 2,
+          "option-signature-weak": 1,
+          "structural-weak": 2
+        }
+      }
+    },
+    "byReasonCode": {
+      "profile-pass": 3,
+      "option-signature-dominant": 1,
+      "mcq-top2-option-separated": 2,
+      "safe-pass": 1,
+      "total-low": 30,
+      "gap-small": 27,
+      "signal-separation-low": 13,
+      "runner-up-close": 13,
+      "option-weak": 22,
+      "gloss-weak": 8,
+      "signal-agreement-low": 21,
+      "option-signature-weak": 30,
+      "option-set-mismatch": 22,
+      "weak-family-separation": 12,
+      "structural-weak": 6,
+      "contradiction": 5,
+      "action-conflict": 3,
+      "negation-conflict": 4,
+      "numeric-mismatch": 5,
+      "prompt-family-mismatch": 5,
+      "family-mismatch": 3,
+      "sign-vs-action-conflict": 3,
+      "image-weak": 1,
+      "top2-semantic-near-duplicate": 1,
+      "contrast-unclear": 3,
+      "weak-action-separation": 7,
+      "insufficient-discriminative-evidence": 2,
+      "obligation-mismatch": 2,
+      "signal-conflict": 1,
+      "review-floor": 6
+    },
+    "byProfile": {
+      "matched": {
+        "mcq-text": 1,
+        "row-image": 2,
+        "mcq-image": 1
+      },
+      "review-needed": {
+        "mcq-image": 21,
+        "row-text": 8,
+        "mcq-text": 9,
+        "row-image": 2
+      },
+      "unresolved": {
+        "mcq-text": 3,
+        "row-text": 3
+      }
+    }
+  }
+}

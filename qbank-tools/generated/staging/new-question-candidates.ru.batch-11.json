@@ -1,0 +1,48 @@
+{
+  "generatedAt": "2026-04-28T11:08:22.688Z",
+  "lang": "ru",
+  "batchId": "batch-11",
+  "dataset": "2023-test1",
+  "sourceDecisionPath": "qbank-tools/generated/staging/new-question-decisions.ru.batch-11.json",
+  "items": [
+    {
+      "candidateId": "nqc-ru-batch-11-001",
+      "sourceLang": "ru",
+      "sourceImage": "screenshots/Screenshot 2026-04-19 at 18.55.26 1.png",
+      "effectiveQuestionType": "MCQ",
+      "promptRawJa": "Значением разметки дороги является:",
+      "promptGlossEn": "The meaning of road markings is:",
+      "optionsRawJa": [
+        "A: Запрет проезда",
+        "B: Указание проезда",
+        "C: Ограничение проезда",
+        "D: Предупреждение"
+      ],
+      "optionsGlossEn": [
+        "A: Prohibition of passage",
+        "B: Indication of passage",
+        "C: Limitation of passage",
+        "D: Warning"
+      ],
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "newQuestionLocalAnswerKey": "B",
+      "provisionalTopic": "traffic-signals",
+      "provisionalSubtopics": [
+        "traffic-signals:road-markings"
+      ],
+      "topicConfidence": 1,
+      "topicSignals": [
+        {
+          "topic": "traffic-signals",
+          "subtopic": "traffic-signals:road-markings",
+          "signal": "road-marking",
+          "weight": 1.25
+        }
+      ],
+      "linkedExistingAssetCandidate": null,
+      "reviewerNotes": "The source asks about the meaning/category of road markings but no required marking image/context is available. Candidate q0111 concerns lane changing over broken lines and does not match.",
+      "status": "pending-superset-review"
+    }
+  ]
+}

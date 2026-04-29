@@ -1,0 +1,62 @@
+{
+  "generatedAt": "2026-04-21T09:22:15.205Z",
+  "lang": "ru",
+  "batchId": "batch-06",
+  "dataset": "2023-test1",
+  "sourceDecisionPath": "qbank-tools/generated/staging/new-question-decisions.ru.batch-06.json",
+  "items": [
+    {
+      "candidateId": "nqc-ru-batch-06-001",
+      "sourceLang": "ru",
+      "sourceImage": "screenshots/Screenshot 2026-04-19 at 18.51.32.png",
+      "effectiveQuestionType": "MCQ",
+      "promptRawJa": "Как правильно припарковаться водителю на обочине?",
+      "promptGlossEn": "How should a driver properly park on the shoulder?",
+      "optionsRawJa": [
+        "A. Остановиться на встречной полосе",
+        "B. Остановиться параллельно дороге",
+        "C. Нельзя останавливаться параллельно или на встречной полосе",
+        "D. Можно останавливаться везде, по своему желанию"
+      ],
+      "optionsGlossEn": [
+        "Stop in the oncoming lane",
+        "Stop parallel to the road",
+        "It is not allowed to stop parallel or on the oncoming lane",
+        "You can stop anywhere as you wish"
+      ],
+      "correctKeyRaw": "B",
+      "correctAnswerRaw": "Остановиться параллельно дороге",
+      "newQuestionLocalAnswerKey": "C",
+      "provisionalTopic": "proper-driving",
+      "provisionalSubtopics": [
+        "road-safety:road-conditions",
+        "proper-driving:safe-driving",
+        "proper-driving:traffic-laws"
+      ],
+      "topicConfidence": 0.644,
+      "topicSignals": [
+        {
+          "topic": "road-safety",
+          "subtopic": "road-safety:road-conditions",
+          "signal": "road-condition-or-hazard",
+          "weight": 1.3
+        },
+        {
+          "topic": "proper-driving",
+          "subtopic": "proper-driving:safe-driving",
+          "signal": "driving-action",
+          "weight": 1.2
+        },
+        {
+          "topic": "proper-driving",
+          "subtopic": "proper-driving:traffic-laws",
+          "signal": "traffic-law",
+          "weight": 1.15
+        }
+      ],
+      "linkedExistingAssetCandidate": null,
+      "reviewerNotes": "",
+      "status": "pending-superset-review"
+    }
+  ]
+}

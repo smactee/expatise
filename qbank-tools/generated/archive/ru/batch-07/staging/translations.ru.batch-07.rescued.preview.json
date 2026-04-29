@@ -1,0 +1,895 @@
+{
+  "meta": {
+    "locale": "ru",
+    "generatedAt": "2026-04-25T12:31:00.780Z",
+    "reviewedBatchId": "batch-07",
+    "dataset": "2023-test1",
+    "sourceUnresolvedPath": "imports/ru/batch-07/unresolved.json",
+    "sourceUnresolvedDecisionPath": "qbank-tools/generated/staging/ru-batch-07-unresolved-decisions.json",
+    "rescuedExistingQidCount": 7,
+    "manualAnswerKeyConfirmationCount": 0,
+    "stagingOnly": true
+  },
+  "questions": {
+    "q0128": {
+      "prompt": "Приближаясь к пешеходному переходу, водителю следует:",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-19 at 18.51.57.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-19 at 18.51.57.png",
+      "reviewerNotes": "",
+      "promptRawJa": "Приближаясь к пешеходному переходу, водителю следует:",
+      "promptGlossEn": "When approaching a pedestrian crossing, the driver should:",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ru",
+        "batchId": "batch-07",
+        "approvedQid": "q0128",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "options": {
+        "q0128_o1": "A Ускоренно проехать",
+        "q0128_o2": "B Резко остановиться",
+        "q0128_o3": "C Заставить пешехода уступить дорогу с помощью звукового сигнала",
+        "q0128_o4": "D Замедлить ход, принимая во внимание состояние пешехода и велосипедиста, и проехать"
+      },
+      "optionsRawJa": [
+        "A Ускоренно проехать",
+        "B Резко остановиться",
+        "C Заставить пешехода уступить дорогу с помощью звукового сигнала",
+        "D Замедлить ход, принимая во внимание состояние пешехода и велосипедиста, и проехать"
+      ],
+      "optionsGlossEn": [
+        "A. Pass quickly",
+        "B. Stop abruptly",
+        "C. Make the pedestrian yield by using the horn",
+        "D. Slow down, taking into account the condition of the pedestrian and cyclist, and pass"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A Ускоренно проехать",
+          "sourceTextBody": "Ускоренно проехать",
+          "sourceGlossEn": "A. Pass quickly",
+          "canonicalOptionId": "q0128_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "Speed up and pass",
+          "alignmentScore": 0.22962962962962963,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B Резко остановиться",
+          "sourceTextBody": "Резко остановиться",
+          "sourceGlossEn": "B. Stop abruptly",
+          "canonicalOptionId": "q0128_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "Stop immediately",
+          "alignmentScore": 0.4615384615384615,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C Заставить пешехода уступить дорогу с помощью звукового сигнала",
+          "sourceTextBody": "Заставить пешехода уступить дорогу с помощью звукового сигнала",
+          "sourceGlossEn": "C. Make the pedestrian yield by using the horn",
+          "canonicalOptionId": "q0128_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "Honk to indicate the pedestrians to yield",
+          "alignmentScore": 0.42024253731343286,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D Замедлить ход, принимая во внимание состояние пешехода и велосипедиста, и проехать",
+          "sourceTextBody": "Замедлить ход, принимая во внимание состояние пешехода и велосипедиста, и проехать",
+          "sourceGlossEn": "D. Slow down, taking into account the condition of the pedestrian and cyclist, and pass",
+          "canonicalOptionId": "q0128_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "observe the movement of pedestrians and non-vehicles, make sure it is safe before passing",
+          "alignmentScore": 0.1798639455782313,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A Ускоренно проехать",
+          "sourceGlossEn": "A. Pass quickly",
+          "canonicalOptionId": "q0128_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "Speed up and pass",
+          "alignmentScore": 0.22962962962962963,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B Резко остановиться",
+          "sourceGlossEn": "B. Stop abruptly",
+          "canonicalOptionId": "q0128_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "Stop immediately",
+          "alignmentScore": 0.4615384615384615,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C Заставить пешехода уступить дорогу с помощью звукового сигнала",
+          "sourceGlossEn": "C. Make the pedestrian yield by using the horn",
+          "canonicalOptionId": "q0128_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "Honk to indicate the pedestrians to yield",
+          "alignmentScore": 0.42024253731343286,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D Замедлить ход, принимая во внимание состояние пешехода и велосипедиста, и проехать",
+          "sourceGlossEn": "D. Slow down, taking into account the condition of the pedestrian and cyclist, and pass",
+          "canonicalOptionId": "q0128_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "observe the movement of pedestrians and non-vehicles, make sure it is safe before passing",
+          "alignmentScore": 0.1798639455782313,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        }
+      ],
+      "localeCorrectOptionKey": "D",
+      "canonicalCorrectOptionId": "q0128_o4",
+      "canonicalCorrectOptionKey": "D",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed during unresolved rescue review on 2026-04-25T12:31:00.780Z; reviewer selected locale key D.",
+      "correctOptionAlignment": {
+        "sourceKey": "D",
+        "canonicalOptionId": "q0128_o4",
+        "canonicalOptionKey": "D",
+        "sourceText": "D Замедлить ход, принимая во внимание состояние пешехода и велосипедиста, и проехать",
+        "sourceGlossEn": "D. Slow down, taking into account the condition of the pedestrian and cyclist, and pass",
+        "canonicalOptionText": "observe the movement of pedestrians and non-vehicles, make sure it is safe before passing",
+        "alignmentScore": 0.1798639455782313,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-25T12:31:00.780Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ru-batch-07-unresolved-decisions.json",
+      "answerKeyReviewerNotes": "",
+      "reviewerSuggestedLocaleCorrectOptionKey": "D",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ru-batch-07-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0533": {
+      "prompt": "При наличии в транспортном средстве установленной антиблокировочной системы (ABS) значительно сокращается тормозной путь, поэтому соблюдение безопасной дистанции не обязательно.",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-19 at 18.52.00.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-19 at 18.52.00.png",
+      "reviewerNotes": "",
+      "promptRawJa": "При наличии в транспортном средстве установленной антиблокировочной системы (ABS) значительно сокращается тормозной путь, поэтому соблюдение безопасной дистанции не обязательно.",
+      "promptGlossEn": "If a vehicle is equipped with an anti-lock braking system (ABS), the braking distance is significantly reduced, so maintaining a safe distance is not necessary.",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "ROW",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ru",
+        "batchId": "batch-07",
+        "approvedQid": "q0533",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "optionsRawJa": [],
+      "optionsGlossEn": [],
+      "localeCorrectOptionKey": null,
+      "canonicalCorrectRow": "W",
+      "canonicalCorrectAnswer": "wrong / false",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "ROW question; no locale-specific option key applies.",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ru-batch-07-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0426": {
+      "prompt": "Как проехать перекресток без светофора?",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-19 at 18.52.05.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-19 at 18.52.05.png",
+      "reviewerNotes": "",
+      "promptRawJa": "Как проехать перекресток без светофора?",
+      "promptGlossEn": "How do you cross an intersection without a traffic light?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ru",
+        "batchId": "batch-07",
+        "approvedQid": "q0426",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "options": {
+        "q0426_o1": "A: Замедлить ход и проехать",
+        "q0426_o2": "B: Ускориться и проехать",
+        "q0426_o3": "C: Уступить крупногабаритному транспорту",
+        "q0426_o4": "D: Уступить автомобилю который едет слева"
+      },
+      "optionsRawJa": [
+        "A: Замедлить ход и проехать",
+        "B: Ускориться и проехать",
+        "C: Уступить крупногабаритному транспорту",
+        "D: Уступить автомобилю который едет слева"
+      ],
+      "optionsGlossEn": [
+        "A: Slow down and cross",
+        "B: Speed up and cross",
+        "C: Yield to large vehicles",
+        "D: Yield to the car coming from the left"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A: Замедлить ход и проехать",
+          "sourceTextBody": "Замедлить ход и проехать",
+          "sourceGlossEn": "A: Slow down and cross",
+          "canonicalOptionId": "q0426_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "reduce speed and go slowly",
+          "alignmentScore": 0.42000000000000004,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B: Ускориться и проехать",
+          "sourceTextBody": "Ускориться и проехать",
+          "sourceGlossEn": "B: Speed up and cross",
+          "canonicalOptionId": "q0426_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "speed up and pass",
+          "alignmentScore": 0.5485714285714285,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C: Уступить крупногабаритному транспорту",
+          "sourceTextBody": "Уступить крупногабаритному транспорту",
+          "sourceGlossEn": "C: Yield to large vehicles",
+          "canonicalOptionId": "q0426_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "let large vehicle go first",
+          "alignmentScore": 0.3376623376623376,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D: Уступить автомобилю который едет слева",
+          "sourceTextBody": "Уступить автомобилю который едет слева",
+          "sourceGlossEn": "D: Yield to the car coming from the left",
+          "canonicalOptionId": "q0426_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "let the left vehicle go first 34",
+          "alignmentScore": 0.095368782161235,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A: Замедлить ход и проехать",
+          "sourceGlossEn": "A: Slow down and cross",
+          "canonicalOptionId": "q0426_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "reduce speed and go slowly",
+          "alignmentScore": 0.42000000000000004,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B: Ускориться и проехать",
+          "sourceGlossEn": "B: Speed up and cross",
+          "canonicalOptionId": "q0426_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "speed up and pass",
+          "alignmentScore": 0.5485714285714285,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C: Уступить крупногабаритному транспорту",
+          "sourceGlossEn": "C: Yield to large vehicles",
+          "canonicalOptionId": "q0426_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "let large vehicle go first",
+          "alignmentScore": 0.3376623376623376,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D: Уступить автомобилю который едет слева",
+          "sourceGlossEn": "D: Yield to the car coming from the left",
+          "canonicalOptionId": "q0426_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "let the left vehicle go first 34",
+          "alignmentScore": 0.095368782161235,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "A",
+      "canonicalCorrectOptionId": "q0426_o1",
+      "canonicalCorrectOptionKey": "A",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed during unresolved rescue review on 2026-04-25T12:31:00.780Z; reviewer selected locale key A.",
+      "correctOptionAlignment": {
+        "sourceKey": "A",
+        "canonicalOptionId": "q0426_o1",
+        "canonicalOptionKey": "A",
+        "sourceText": "A: Замедлить ход и проехать",
+        "sourceGlossEn": "A: Slow down and cross",
+        "canonicalOptionText": "reduce speed and go slowly",
+        "alignmentScore": 0.42000000000000004,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-25T12:31:00.780Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ru-batch-07-unresolved-decisions.json",
+      "answerKeyReviewerNotes": "",
+      "reviewerSuggestedLocaleCorrectOptionKey": "A",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ru-batch-07-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0037": {
+      "prompt": "При спуске разрешено двигаться на нейтральной скорости.",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-19 at 18.52.10 1.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-19 at 18.52.10 1.png",
+      "reviewerNotes": "",
+      "promptRawJa": "При спуске разрешено двигаться на нейтральной скорости.",
+      "promptGlossEn": "When descending, is it allowed to move in neutral gear?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "ROW",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ru",
+        "batchId": "batch-07",
+        "approvedQid": "q0037",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "optionsRawJa": [],
+      "optionsGlossEn": [],
+      "localeCorrectOptionKey": null,
+      "canonicalCorrectRow": "W",
+      "canonicalCorrectAnswer": "wrong / false",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "ROW question; no locale-specific option key applies.",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ru-batch-07-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0467": {
+      "prompt": "В каком месте водитель может припарковаться?",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-19 at 18.52.17.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-19 at 18.52.17.png",
+      "reviewerNotes": "",
+      "promptRawJa": "В каком месте водитель может припарковаться?",
+      "promptGlossEn": "Where can a driver park?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ru",
+        "batchId": "batch-07",
+        "approvedQid": "q0467",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "options": {
+        "q0467_o1": "D Остановиться на левой стороне дороги встречной полосы",
+        "q0467_o2": "C Остановиться на стоянке",
+        "q0467_o3": "B На обочине дороги",
+        "q0467_o4": "A На тротуаре"
+      },
+      "optionsRawJa": [
+        "A На тротуаре",
+        "B На обочине дороги",
+        "C Остановиться на стоянке",
+        "D Остановиться на левой стороне дороги встречной полосы"
+      ],
+      "optionsGlossEn": [
+        "A On the sidewalk",
+        "B On the road shoulder",
+        "C In a parking lot",
+        "D On the left side of a road in the oncoming lane"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A На тротуаре",
+          "sourceTextBody": "На тротуаре",
+          "sourceGlossEn": "A On the sidewalk",
+          "canonicalOptionId": "q0467_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "stop in the sidewalk",
+          "alignmentScore": 0.33913043478260874,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B На обочине дороги",
+          "sourceTextBody": "На обочине дороги",
+          "sourceGlossEn": "B On the road shoulder",
+          "canonicalOptionId": "q0467_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "stop anywhere as will by the roadside",
+          "alignmentScore": 0,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C Остановиться на стоянке",
+          "sourceTextBody": "Остановиться на стоянке",
+          "sourceGlossEn": "C In a parking lot",
+          "canonicalOptionId": "q0467_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "stop in the parking area",
+          "alignmentScore": 0.44000000000000006,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D Остановиться на левой стороне дороги встречной полосы",
+          "sourceTextBody": "Остановиться на левой стороне дороги встречной полосы",
+          "sourceGlossEn": "D On the left side of a road in the oncoming lane",
+          "canonicalOptionId": "q0467_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "stop in the opposite direction by the left roadside",
+          "alignmentScore": 0.19598515519568152,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A На тротуаре",
+          "sourceGlossEn": "A On the sidewalk",
+          "canonicalOptionId": "q0467_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "stop in the sidewalk",
+          "alignmentScore": 0.33913043478260874,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B На обочине дороги",
+          "sourceGlossEn": "B On the road shoulder",
+          "canonicalOptionId": "q0467_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "stop anywhere as will by the roadside",
+          "alignmentScore": 0,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C Остановиться на стоянке",
+          "sourceGlossEn": "C In a parking lot",
+          "canonicalOptionId": "q0467_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "stop in the parking area",
+          "alignmentScore": 0.44000000000000006,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D Остановиться на левой стороне дороги встречной полосы",
+          "sourceGlossEn": "D On the left side of a road in the oncoming lane",
+          "canonicalOptionId": "q0467_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "stop in the opposite direction by the left roadside",
+          "alignmentScore": 0.19598515519568152,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "C",
+      "canonicalCorrectOptionId": "q0467_o2",
+      "canonicalCorrectOptionKey": "B",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed during unresolved rescue review on 2026-04-25T12:31:00.780Z; reviewer selected locale key C.",
+      "correctOptionAlignment": {
+        "sourceKey": "C",
+        "canonicalOptionId": "q0467_o2",
+        "canonicalOptionKey": "B",
+        "sourceText": "C Остановиться на стоянке",
+        "sourceGlossEn": "C In a parking lot",
+        "canonicalOptionText": "stop in the parking area",
+        "alignmentScore": 0.44000000000000006,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-25T12:31:00.780Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ru-batch-07-unresolved-decisions.json",
+      "answerKeyReviewerNotes": "",
+      "reviewerSuggestedLocaleCorrectOptionKey": "C",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ru-batch-07-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0446": {
+      "prompt": "Кто из следующих людей не имеет право подачи заявления на водительское удостоверение в течение 3 лет?",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-19 at 18.52.19 1.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-19 at 18.52.19 1.png",
+      "reviewerNotes": "",
+      "promptRawJa": "Кто из следующих людей не имеет право подачи заявления на водительское удостоверение в течение 3 лет?",
+      "promptGlossEn": "Which of the following people does not have the right to apply for a driver's license for 3 years?",
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ru",
+        "batchId": "batch-07",
+        "approvedQid": "q0446",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "options": {
+        "q0446_o1": "C Человек, принимающий инъекции инсулина",
+        "q0446_o2": "D Человек с опытом выявления вождения автомобиля в состоянии алкогольного опьянения",
+        "q0446_o3": "A Курильщик",
+        "q0446_o4": "B Наркоман"
+      },
+      "optionsRawJa": [
+        "A Курильщик",
+        "B Наркоман",
+        "C Человек, принимающий инъекции инсулина",
+        "D Человек с опытом выявления вождения автомобиля в состоянии алкогольного опьянения"
+      ],
+      "optionsGlossEn": [
+        "A Smoker",
+        "B Drug addict",
+        "C Person taking insulin injections",
+        "D Person with a history of driving under the influence of alcohol"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A Курильщик",
+          "sourceTextBody": "Курильщик",
+          "sourceGlossEn": "A Smoker",
+          "canonicalOptionId": "q0446_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "smoking addiction",
+          "alignmentScore": 0.042105263157894736,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B Наркоман",
+          "sourceTextBody": "Наркоман",
+          "sourceGlossEn": "B Drug addict",
+          "canonicalOptionId": "q0446_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "drug injections",
+          "alignmentScore": 0.32380952380952377,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C Человек, принимающий инъекции инсулина",
+          "sourceTextBody": "Человек, принимающий инъекции инсулина",
+          "sourceGlossEn": "C Person taking insulin injections",
+          "canonicalOptionId": "q0446_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "insulin injections",
+          "alignmentScore": 0.5363636363636364,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D Человек с опытом выявления вождения автомобиля в состоянии алкогольного опьянения",
+          "sourceTextBody": "Человек с опытом выявления вождения автомобиля в состоянии алкогольного опьянения",
+          "sourceGlossEn": "D Person with a history of driving under the influence of alcohol",
+          "canonicalOptionId": "q0446_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "drunken experience",
+          "alignmentScore": 0.016901408450704227,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A Курильщик",
+          "sourceGlossEn": "A Smoker",
+          "canonicalOptionId": "q0446_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "smoking addiction",
+          "alignmentScore": 0.042105263157894736,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B Наркоман",
+          "sourceGlossEn": "B Drug addict",
+          "canonicalOptionId": "q0446_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "drug injections",
+          "alignmentScore": 0.32380952380952377,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C Человек, принимающий инъекции инсулина",
+          "sourceGlossEn": "C Person taking insulin injections",
+          "canonicalOptionId": "q0446_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "insulin injections",
+          "alignmentScore": 0.5363636363636364,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D Человек с опытом выявления вождения автомобиля в состоянии алкогольного опьянения",
+          "sourceGlossEn": "D Person with a history of driving under the influence of alcohol",
+          "canonicalOptionId": "q0446_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "drunken experience",
+          "alignmentScore": 0.016901408450704227,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "B",
+      "canonicalCorrectOptionId": "q0446_o4",
+      "canonicalCorrectOptionKey": "D",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed during unresolved rescue review on 2026-04-25T12:31:00.780Z; reviewer selected locale key B.",
+      "correctOptionAlignment": {
+        "sourceKey": "B",
+        "canonicalOptionId": "q0446_o4",
+        "canonicalOptionKey": "D",
+        "sourceText": "B Наркоман",
+        "sourceGlossEn": "B Drug addict",
+        "canonicalOptionText": "drug injections",
+        "alignmentScore": 0.32380952380952377,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-25T12:31:00.780Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ru-batch-07-unresolved-decisions.json",
+      "answerKeyReviewerNotes": "",
+      "reviewerSuggestedLocaleCorrectOptionKey": "B",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ru-batch-07-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    },
+    "q0468": {
+      "prompt": "При встрече с пассажирским автомобилем, едущим со скоростью менее чем 100 км/ч на автомагистрали, следует держать дистанцию:",
+      "explanation": "",
+      "sourceMode": "unresolved-rescue-screenshot-batch",
+      "confidence": "reviewed-approved",
+      "reviewStatus": "staged-preview",
+      "sourceImage": "screenshots/Screenshot 2026-04-19 at 18.52.30.png",
+      "sourceItemId": "screenshots/Screenshot 2026-04-19 at 18.52.30.png",
+      "reviewerNotes": "",
+      "promptRawJa": "При встрече с пассажирским автомобилем, едущим со скоростью менее чем 100 км/ч на автомагистрали, следует держать дистанцию:",
+      "promptGlossEn": "When passing a passenger car traveling at less than 100 km/h on a highway, you should keep a distance of:",
+      "correctKeyRaw": "A",
+      "correctAnswerRaw": "Не меньше 50м",
+      "canonicalQuestionType": "MCQ",
+      "stagingOnly": true,
+      "localeAnswerKeyPolicy": "Preserve Japanese answer meaning and source-side key independently from canonical English option letters.",
+      "provenance": {
+        "sourceLang": "ru",
+        "batchId": "batch-07",
+        "approvedQid": "q0468",
+        "approvalSource": "unresolved-rescue-review"
+      },
+      "options": {
+        "q0468_o1": "C Не меньше 20м",
+        "q0468_o2": "D Не меньше 10м",
+        "q0468_o3": "A Не меньше 50м",
+        "q0468_o4": "B Не меньше 30м"
+      },
+      "optionsRawJa": [
+        "A Не меньше 50м",
+        "B Не меньше 30м",
+        "C Не меньше 20м",
+        "D Не меньше 10м"
+      ],
+      "optionsGlossEn": [
+        "At least 50 m",
+        "At least 30 m",
+        "At least 20 m",
+        "At least 10 m"
+      ],
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A Не меньше 50м",
+          "sourceTextBody": "Не меньше 50м",
+          "sourceGlossEn": "At least 50 m",
+          "canonicalOptionId": "q0468_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "not less than 50 meters",
+          "alignmentScore": 0.16451612903225804,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B Не меньше 30м",
+          "sourceTextBody": "Не меньше 30м",
+          "sourceGlossEn": "At least 30 m",
+          "canonicalOptionId": "q0468_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "not less than 30 mete rs",
+          "alignmentScore": 0.1494949494949495,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C Не меньше 20м",
+          "sourceTextBody": "Не меньше 20м",
+          "sourceGlossEn": "At least 20 m",
+          "canonicalOptionId": "q0468_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "not less than 20 meters",
+          "alignmentScore": 0.16451612903225804,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D Не меньше 10м",
+          "sourceTextBody": "Не меньше 10м",
+          "sourceGlossEn": "At least 10 m",
+          "canonicalOptionId": "q0468_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "not less than 10 meters",
+          "alignmentScore": 0.16451612903225804,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A Не меньше 50м",
+          "sourceGlossEn": "At least 50 m",
+          "canonicalOptionId": "q0468_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "not less than 50 meters",
+          "alignmentScore": 0.16451612903225804,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B Не меньше 30м",
+          "sourceGlossEn": "At least 30 m",
+          "canonicalOptionId": "q0468_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "not less than 30 mete rs",
+          "alignmentScore": 0.1494949494949495,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C Не меньше 20м",
+          "sourceGlossEn": "At least 20 m",
+          "canonicalOptionId": "q0468_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "not less than 20 meters",
+          "alignmentScore": 0.16451612903225804,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D Не меньше 10м",
+          "sourceGlossEn": "At least 10 m",
+          "canonicalOptionId": "q0468_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "not less than 10 meters",
+          "alignmentScore": 0.16451612903225804,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "A",
+      "canonicalCorrectOptionId": "q0468_o3",
+      "canonicalCorrectOptionKey": "C",
+      "answerKeyNeedsManualConfirmation": false,
+      "answerKeyConfirmationReason": "Confirmed during unresolved rescue review on 2026-04-25T12:31:00.780Z; reviewer selected locale key A.",
+      "correctOptionAlignment": {
+        "sourceKey": "A",
+        "canonicalOptionId": "q0468_o3",
+        "canonicalOptionKey": "C",
+        "sourceText": "A Не меньше 50м",
+        "sourceGlossEn": "At least 50 m",
+        "canonicalOptionText": "not less than 50 meters",
+        "alignmentScore": 0.16451612903225804,
+        "method": "manual-answer-key-confirmed",
+        "manualAnswerKeyConfirmed": true
+      },
+      "answerKeyConfirmedAt": "2026-04-25T12:31:00.780Z",
+      "answerKeyDecisionSourcePath": "qbank-tools/generated/staging/ru-batch-07-unresolved-decisions.json",
+      "answerKeyReviewerNotes": "",
+      "reviewerSuggestedLocaleCorrectOptionKey": "A",
+      "unresolvedRescueMetadata": {
+        "decisionSourcePath": "qbank-tools/generated/staging/ru-batch-07-unresolved-decisions.json",
+        "recommendedAction": null,
+        "reviewerNotes": ""
+      }
+    }
+  }
+}

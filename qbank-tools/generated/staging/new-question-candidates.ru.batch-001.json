@@ -1,0 +1,114 @@
+{
+  "generatedAt": "2026-04-19T23:37:08.652Z",
+  "lang": "ru",
+  "batchId": "batch-001",
+  "dataset": "2023-test1",
+  "sourceDecisionPath": "qbank-tools/generated/staging/new-question-decisions.ru.batch-001.json",
+  "items": [
+    {
+      "candidateId": "nqc-ru-batch-001-001",
+      "sourceLang": "ru",
+      "sourceImage": "Screenshot 2026-04-19 at 18.46.46.png",
+      "effectiveQuestionType": "MCQ",
+      "promptRawJa": "Что означает данный знак?",
+      "promptGlossEn": "What does this sign mean?",
+      "optionsRawJa": [
+        "A Многочисленные железнодорожные пути пересекающие дорогу",
+        "B Железнодорожный переезд с пунктом охраны",
+        "C Железнодорожный переезд без пункта охраны",
+        "D Подавать звуковой сигнал"
+      ],
+      "optionsGlossEn": [
+        "A Multiple railway tracks crossing the road",
+        "B Railway crossing with a guard post",
+        "C Railway crossing without a guard post",
+        "D Sound the horn"
+      ],
+      "correctKeyRaw": "C",
+      "correctAnswerRaw": "Железнодорожный переезд без пункта охраны",
+      "newQuestionLocalAnswerKey": "C",
+      "provisionalTopic": "traffic-signals",
+      "provisionalSubtopics": [
+        "traffic-signals:road-signs"
+      ],
+      "topicConfidence": 0.538,
+      "topicSignals": [
+        {
+          "topic": "traffic-signals",
+          "subtopic": "traffic-signals:road-signs",
+          "signal": "sign-family",
+          "weight": 1.4
+        },
+        {
+          "topic": "proper-driving",
+          "subtopic": "proper-driving:safe-driving",
+          "signal": "driving-action",
+          "weight": 1.2
+        }
+      ],
+      "linkedExistingAssetCandidate": {
+        "qid": "q0657",
+        "number": 657,
+        "score": 58.455,
+        "currentAssetSrc": "/qbank/2023-test1/images/img_322187746e0663e85937fc1470821498.jpeg",
+        "assetHashes": [
+          "322187746e0663e85937fc1470821498"
+        ],
+        "status": "unconfirmed-existing-production-asset"
+      },
+      "reviewerNotes": "",
+      "status": "pending-superset-review"
+    },
+    {
+      "candidateId": "nqc-ru-batch-001-002",
+      "sourceLang": "ru",
+      "sourceImage": "Screenshot 2026-04-19 at 18.46.51.png",
+      "effectiveQuestionType": "MCQ",
+      "promptRawJa": "При встрече с встречным автотранспортом на узкой дороге без разметок — какие следует предпринять действия?",
+      "promptGlossEn": "When meeting oncoming vehicles on a narrow road without markings, what actions should be taken?",
+      "optionsRawJa": [
+        "A. Замедлить скорость и двигаться по правой стороне",
+        "B. Двигаться по полосе безмоторных автотранспортных средств",
+        "C. Ехать ближе к обочине",
+        "D. Ехать в центре дороги"
+      ],
+      "optionsGlossEn": [
+        "A. Slow down and keep to the right side",
+        "B. Drive in the lane for non-motorized vehicles",
+        "C. Drive closer to the roadside",
+        "D. Drive in the center of the road"
+      ],
+      "correctKeyRaw": "A",
+      "correctAnswerRaw": "Замедлить скорость и двигаться по правой стороне",
+      "newQuestionLocalAnswerKey": "A",
+      "provisionalTopic": "proper-driving",
+      "provisionalSubtopics": [
+        "proper-driving:safe-driving"
+      ],
+      "topicConfidence": 0.51,
+      "topicSignals": [
+        {
+          "topic": "road-safety",
+          "subtopic": "road-safety:road-conditions",
+          "signal": "road-condition-or-hazard",
+          "weight": 1.3
+        },
+        {
+          "topic": "traffic-signals",
+          "subtopic": "traffic-signals:road-markings",
+          "signal": "road-marking",
+          "weight": 1.25
+        },
+        {
+          "topic": "proper-driving",
+          "subtopic": "proper-driving:safe-driving",
+          "signal": "driving-action",
+          "weight": 1.2
+        }
+      ],
+      "linkedExistingAssetCandidate": null,
+      "reviewerNotes": "",
+      "status": "pending-superset-review"
+    }
+  ]
+}
