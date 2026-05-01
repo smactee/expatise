@@ -120,6 +120,7 @@ function buildCombinedRecommendation(entry, suggestion, questionMap) {
   const notebookQid = normalizeQid(suggestion.notebookSuggestedQid);
   const notebookConfidence = Number(suggestion.confidence ?? 0);
   const isCloseMatch = suggestion.isCloseMatch === true;
+  const suggestionSource = normalizeSuggestionSource(suggestion.judgeSource ?? suggestion.source);
   const notebookRank = notebookQid
     ? topCandidates.findIndex((candidate) => normalizeQid(candidate.qid) === notebookQid) + 1
     : 0;
@@ -155,30 +156,30 @@ function buildCombinedRecommendation(entry, suggestion, questionMap) {
     confidence = answerKeyConflict ? "conflict" : "strong";
     recommendedQid = matcherTopQid;
     recommendedAnswerKey = notebookAnswerKey ?? matcherTopAnswerKey ?? candidateAnswerKey ?? null;
-    sources = ["matcher", "notebooklm"];
+    sources = ["matcher", suggestionSource];
     reason = answerKeyConflict
-      ? "NotebookLM agrees with matcher top qid but answer key evidence conflicts."
-      : "NotebookLM agrees with matcher top candidate and confidence is high.";
+      ? `${displaySourceName(suggestionSource)} agrees with matcher top qid but answer key evidence conflicts.`
+      : `${displaySourceName(suggestionSource)} agrees with matcher top candidate and confidence is high.`;
   } else if (notebookRank > 1 && notebookConfidence >= 80) {
     confidence = answerKeyConflict ? "conflict" : "medium";
     recommendedQid = notebookQid;
     recommendedAnswerKey = notebookAnswerKey ?? candidateAnswerKey ?? null;
-    sources = ["matcher", "notebooklm"];
-    reason = `NotebookLM supports matcher candidate rank ${notebookRank}, so that candidate is promoted for review.`;
+    sources = ["matcher", suggestionSource];
+    reason = `${displaySourceName(suggestionSource)} supports matcher candidate rank ${notebookRank}, so that candidate is promoted for review.`;
   } else if (notebookRank === 1) {
     confidence = answerKeyConflict ? "conflict" : "medium";
     recommendedQid = matcherTopQid;
     recommendedAnswerKey = notebookAnswerKey ?? matcherTopAnswerKey ?? candidateAnswerKey ?? null;
-    sources = ["matcher", "notebooklm"];
-    reason = "NotebookLM agrees with matcher top qid, but confidence is below the strong threshold.";
+    sources = ["matcher", suggestionSource];
+    reason = `${displaySourceName(suggestionSource)} agrees with matcher top qid, but confidence is below the strong threshold.`;
   } else if (notebookRank === 0 && notebookConfidence >= 85) {
     confidence = matcherTopQid ? "conflict" : "medium";
     recommendedQid = notebookQid;
     recommendedAnswerKey = notebookAnswerKey ?? candidateAnswerKey ?? null;
-    sources = ["notebooklm"];
+    sources = [suggestionSource];
     reason = matcherTopQid
-      ? "NotebookLM suggests a high-confidence qid outside the matcher candidate list."
-      : "NotebookLM suggests a high-confidence qid for an item without matcher candidates.";
+      ? `${displaySourceName(suggestionSource)} suggests a high-confidence qid outside the matcher candidate list.`
+      : `${displaySourceName(suggestionSource)} suggests a high-confidence qid for an item without matcher candidates.`;
   }
 
   if (answerKeyConflict) {
@@ -192,6 +193,7 @@ function buildCombinedRecommendation(entry, suggestion, questionMap) {
     notebookRank,
     questionMap,
     suggestion,
+    suggestionSource,
   });
 
   return {
@@ -210,6 +212,7 @@ function buildCombinedRecommendation(entry, suggestion, questionMap) {
       reason: suggestion.reason ?? null,
       matchedText: suggestion.matchedText ?? null,
       status: suggestion.status ?? null,
+      source: suggestionSource,
     },
     combinedRecommendation: {
       recommendedQid,
@@ -230,7 +233,7 @@ function buildCombinedRecommendation(entry, suggestion, questionMap) {
   };
 }
 
-function buildRerankedCandidates({ topCandidates, notebookQid, notebookConfidence, notebookRank, questionMap, suggestion }) {
+function buildRerankedCandidates({ topCandidates, notebookQid, notebookConfidence, notebookRank, questionMap, suggestion, suggestionSource }) {
   const snapshots = topCandidates.map((candidate, index) => ({
     ...candidate,
     originalRank: index + 1,
@@ -246,7 +249,7 @@ function buildRerankedCandidates({ topCandidates, notebookQid, notebookConfidenc
     const index = notebookRank - 1;
     snapshots[index] = {
       ...snapshots[index],
-      sources: normalizeSources(snapshots[index].sources, "notebooklm"),
+      sources: normalizeSources(snapshots[index].sources, suggestionSource),
       notebookConfidence,
       notebookBoosted: notebookConfidence >= 80 && notebookRank > 1,
     };
@@ -267,7 +270,7 @@ function buildRerankedCandidates({ topCandidates, notebookQid, notebookConfidenc
       prompt: question?.prompt ?? suggestion.matchedText ?? null,
       correctAnswer: question?.correctAnswer ?? null,
       originalRank: null,
-      sources: ["notebooklm"],
+      sources: [suggestionSource],
       notebookConfidence,
       notebookBoosted: true,
       externalCandidate: true,
@@ -280,6 +283,33 @@ function buildRerankedCandidates({ topCandidates, notebookQid, notebookConfidenc
 function normalizeSources(value, source) {
   const list = Array.isArray(value) ? value : [];
   return [...new Set([...list, source].filter(Boolean))];
+}
+
+function normalizeSuggestionSource(value) {
+  const normalized = String(value ?? "").trim().toLowerCase();
+  if (normalized === "local-auto") {
+    return "local-auto";
+  }
+  if (normalized === "cache" || normalized === "cached") {
+    return "cache";
+  }
+  if (normalized === "skipped") {
+    return "skipped";
+  }
+  return "notebooklm";
+}
+
+function displaySourceName(value) {
+  if (value === "local-auto") {
+    return "Local auto";
+  }
+  if (value === "cache") {
+    return "Cache";
+  }
+  if (value === "skipped") {
+    return "Skipped";
+  }
+  return "NotebookLM";
 }
 
 function normalizeQid(value) {

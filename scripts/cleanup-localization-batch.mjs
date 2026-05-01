@@ -21,8 +21,10 @@ const args = parseArgs();
 const { lang, batchId } = batchOptionsFromArgs(args);
 const dataset = String(args.dataset ?? DEFAULT_DATASET);
 const apply = String(args.apply ?? "false").trim().toLowerCase() === "true";
+const archiveImports = String(args["archive-imports"] ?? args.archiveImports ?? "false").trim().toLowerCase() === "true";
 
 const archiveRoot = path.join(GENERATED_DIR, "archive", lang, batchId);
+const archiveImportsDir = path.join(archiveRoot, "imports");
 const archiveReportsDir = path.join(archiveRoot, "reports");
 const archiveStagingDir = path.join(archiveRoot, "staging");
 const cleanupManifestPath = path.join(archiveRoot, "cleanup-manifest.json");
@@ -32,6 +34,8 @@ const productionTranslationPath = path.join(process.cwd(), "public", "qbank", da
 const keepGeneratedBasenames = new Set([
   `production-merge-${lang}-${batchId}.json`,
   `production-merge-${lang}-${batchId}.md`,
+  `full-batch-merge-review-${lang}-${batchId}.json`,
+  `full-batch-merge-review-${lang}-${batchId}.md`,
   `new-question-candidates.${lang}.${batchId}.json`,
 ]);
 
@@ -50,9 +54,13 @@ const stagingFiles = (await listFiles(STAGING_DIR)).filter((filePath) =>
   isBatchGeneratedArtifact(path.basename(filePath), lang, batchId),
 );
 const importFiles = await listFilesRecursive(batchDir);
+const importArchiveCandidates = archiveImports ? importFiles.filter((filePath) => path.basename(filePath) !== ".DS_Store") : [];
+const importArchiveSet = new Set(importArchiveCandidates);
 
 const keepActive = [
-  ...importFiles.filter((filePath) => shouldKeepImportFile(batchDir, filePath, keepImportRelativePaths)),
+  ...importFiles.filter((filePath) =>
+    !importArchiveSet.has(filePath) && shouldKeepImportFile(batchDir, filePath, keepImportRelativePaths)
+  ),
   ...reportFiles.filter((filePath) => shouldKeepGeneratedFile(path.basename(filePath))),
   ...stagingFiles.filter((filePath) => shouldKeepGeneratedFile(path.basename(filePath))),
 ].filter((filePath, index, all) => all.indexOf(filePath) === index);
@@ -62,6 +70,7 @@ if (fileExists(productionTranslationPath)) {
 }
 
 const archiveCandidates = [
+  ...importArchiveCandidates,
   ...reportFiles.filter((filePath) => !shouldKeepGeneratedFile(path.basename(filePath))),
   ...stagingFiles.filter((filePath) => !shouldKeepGeneratedFile(path.basename(filePath))),
 ];
@@ -83,9 +92,12 @@ const manifest = {
   batchId,
   dataset,
   apply,
+  archiveImports,
   policy: {
     keep: [
-      "Raw screenshot inputs and batch intake/audit JSON remain active in imports/<lang>/<batch>/.",
+      archiveImports
+        ? "Raw screenshot inputs and batch intake/audit JSON are archived under qbank-tools/generated/archive/<lang>/<batch>/imports/."
+        : "Raw screenshot inputs and batch intake/audit JSON remain active in imports/<lang>/<batch>/.",
       "Final decision JSON files remain active, including unresolved/existing-qid/single-item answer-key decisions.",
       "Staged new-question candidate files remain active and untouched.",
       "Final production merge reports remain active.",
@@ -93,6 +105,7 @@ const manifest = {
     ],
     archive: [
       "Review HTML files and manifests.",
+      "Raw screenshots and batch input/intermediate JSON when --archive-imports true is used.",
       "Template decision files.",
       "Preview and dry-run staging files that can be regenerated.",
       "Intermediate validation and batch-processing reports.",
@@ -116,12 +129,10 @@ if (!apply) {
 
 await ensureDir(archiveReportsDir);
 await ensureDir(archiveStagingDir);
+await ensureDir(archiveImportsDir);
 
 for (const sourcePath of archiveCandidates) {
-  const destinationPath = path.join(
-    sourcePath.startsWith(REPORTS_DIR) ? archiveReportsDir : archiveStagingDir,
-    path.basename(sourcePath),
-  );
+  const destinationPath = archiveDestinationFor(sourcePath);
   const result = await moveFileSafely(sourcePath, destinationPath);
   if (result) {
     manifest.archived.push(result);
@@ -168,6 +179,17 @@ function shouldKeepGeneratedFile(name) {
   }
 
   return name.includes("decision") && name.endsWith(".json");
+}
+
+function archiveDestinationFor(sourcePath) {
+  if (sourcePath.startsWith(batchDir)) {
+    return path.join(archiveImportsDir, path.relative(batchDir, sourcePath));
+  }
+
+  return path.join(
+    sourcePath.startsWith(REPORTS_DIR) ? archiveReportsDir : archiveStagingDir,
+    path.basename(sourcePath),
+  );
 }
 
 async function listFiles(dirPath) {
@@ -223,17 +245,12 @@ async function moveFileSafely(sourcePath, destinationPath) {
   await ensureDir(path.dirname(destinationPath));
 
   if (fileExists(destinationPath)) {
-    const same = await filesEqual(sourcePath, destinationPath);
-    if (!same) {
-      throw new Error(
-        `Archive destination already exists with different content: ${relativePath(sourcePath)} -> ${relativePath(destinationPath)}`,
-      );
-    }
-    await fs.unlink(sourcePath);
+    const versionedDestinationPath = await nextAvailableArchivePath(destinationPath);
+    await fs.rename(sourcePath, versionedDestinationPath);
     return {
       from: relativePath(sourcePath),
-      to: relativePath(destinationPath),
-      status: "deduped-into-existing-archive",
+      to: relativePath(versionedDestinationPath),
+      status: "archived-with-versioned-name",
     };
   }
 
@@ -245,9 +262,16 @@ async function moveFileSafely(sourcePath, destinationPath) {
   };
 }
 
-async function filesEqual(leftPath, rightPath) {
-  const [left, right] = await Promise.all([fs.readFile(leftPath), fs.readFile(rightPath)]);
-  return left.equals(right);
+async function nextAvailableArchivePath(destinationPath) {
+  const parsed = path.parse(destinationPath);
+  for (let index = 1; index < 1000; index += 1) {
+    const candidate = path.join(parsed.dir, `${parsed.name}.archive-${index}${parsed.ext}`);
+    if (!fileExists(candidate)) {
+      return candidate;
+    }
+  }
+
+  throw new Error(`Could not find available archive path for ${relativePath(destinationPath)}`);
 }
 
 function relativePath(targetPath) {

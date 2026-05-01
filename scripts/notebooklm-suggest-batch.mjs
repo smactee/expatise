@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+import crypto from "node:crypto";
 import path from "node:path";
 import { mkdir, writeFile } from "node:fs/promises";
 
@@ -21,6 +22,10 @@ const NOTEBOOK_URL = "https://notebooklm.google.com/notebook/f7750796-0812-4563-
 const CDP_ENDPOINT = "http://localhost:9222";
 const LOW_CONFIDENCE_AUTO_SCORE = 85;
 const LOW_CONFIDENCE_AUTO_GAP = 12;
+const HIGH_CONFIDENCE_AUTO_SCORE = 92;
+const HIGH_CONFIDENCE_AUTO_GAP = 12;
+const CANDIDATE_JUDGE_LIMIT = 5;
+const CACHE_VERSION = 5;
 
 const args = parseArgs();
 const { lang, batchId } = batchOptionsFromArgs(args);
@@ -31,6 +36,8 @@ const force = args.force === true || String(args.force ?? "").toLowerCase() === 
 const dryRun = args["dry-run"] === true || String(args["dry-run"] ?? "").toLowerCase() === "true";
 const simplePrompt = args["simple-prompt"] === true || String(args["simple-prompt"] ?? "").toLowerCase() === "true";
 const candidateJudge = args["candidate-judge"] === true || String(args["candidate-judge"] ?? "").toLowerCase() === "true";
+const compactPrompt = args["compact-prompt"] === true || String(args["compact-prompt"] ?? "").toLowerCase() === "true";
+const maxNotebookLmCalls = parseOptionalPositiveInteger(args["max-notebooklm-calls"]);
 const timeoutMs = parsePositiveNumber(args["timeout-ms"], 120_000);
 
 await ensurePipelineDirs({ lang, batchId });
@@ -38,6 +45,7 @@ await ensurePipelineDirs({ lang, batchId });
 const batchFiles = getBatchFiles(lang, batchId);
 const suggestionsPath = path.join(STAGING_DIR, `${lang}-${batchId}-notebooklm-suggestions.json`);
 const decisionsPath = path.join(STAGING_DIR, `${lang}-${batchId}-workbench-decisions.json`);
+const cachePath = path.join(STAGING_DIR, `notebooklm-cache.${lang}.${batchId}.json`);
 const existingSuggestions = fileExists(suggestionsPath)
   ? readJson(suggestionsPath)
   : {
@@ -50,6 +58,20 @@ const existingSuggestions = fileExists(suggestionsPath)
       cdpEndpoint: CDP_ENDPOINT,
       items: [],
     };
+const cacheDoc = fileExists(cachePath)
+  ? normalizeCacheDoc(readJson(cachePath))
+  : {
+      version: CACHE_VERSION,
+      lang,
+      batch: batchId,
+      batchId,
+      dataset,
+      generatedAt: stableNow(),
+      entries: {},
+    };
+const cacheEntries = cacheDoc.entries && typeof cacheDoc.entries === "object" && !Array.isArray(cacheDoc.entries)
+  ? cacheDoc.entries
+  : {};
 
 const suggestionByItemId = new Map(
   (Array.isArray(existingSuggestions.items) ? existingSuggestions.items : [])
@@ -71,9 +93,13 @@ const selectedItems = selectItems(sourceItems, decisionByItemId)
 
 console.log(`NotebookLM suggestion selection: ${selectedItems.length} item(s) selected from ${sourceItems.length} source item(s).`);
 console.log(`Output: ${path.relative(ROOT, suggestionsPath)}`);
+console.log(`Cache: ${path.relative(ROOT, cachePath)}`);
 console.log(`Chrome CDP endpoint: ${CDP_ENDPOINT}`);
-console.log(`Prompt mode: ${candidateJudge ? "candidate-judge" : simplePrompt ? "simple" : "full"}`);
+console.log(`Prompt mode: ${candidateJudge ? compactPrompt ? "candidate-judge compact" : "candidate-judge full" : simplePrompt ? "simple" : "full"}`);
 console.log(`NotebookLM timeout: ${timeoutMs}ms`);
+if (maxNotebookLmCalls != null) {
+  console.log(`NotebookLM max calls: ${maxNotebookLmCalls}`);
+}
 
 if (dryRun) {
   for (const entry of selectedItems) {
@@ -85,24 +111,115 @@ if (dryRun) {
 let browserContext = null;
 let browser = null;
 let page = null;
-if (selectedItems.length > 0) {
-  ({ browser, browserContext, page } = await openNotebook());
-}
 
 let processed = 0;
 let parsed = 0;
 let closeMatches = 0;
+let cacheHits = 0;
+let localAutoMatches = 0;
+let localAutoNulls = 0;
+let notebookCallsMade = 0;
+let notebookMatches = 0;
+let notebookNulls = 0;
+let skippedDueToMaxCalls = 0;
+let skippedDueToDailyLimit = 0;
+let dailyLimitDetected = false;
+const outputFilesUpdated = new Set([path.relative(ROOT, suggestionsPath)]);
+if (candidateJudge) {
+  outputFilesUpdated.add(path.relative(ROOT, cachePath));
+}
 
 for (const entry of selectedItems) {
   const itemId = entry.item.itemId;
-  const prompt = buildPrompt(entry);
   const startedAt = new Date().toISOString();
   let rawNotebookAnswer = null;
   let output;
+  let cacheKey = null;
+
+  if (candidateJudge) {
+    const localDecision = buildLocalAutoDecision(entry);
+    if (localDecision) {
+      output = buildSuggestionOutput(entry, {
+        ...localDecision,
+        processedAt: startedAt,
+      });
+      if (localDecision.notebookSuggestedQid) {
+        localAutoMatches += 1;
+        closeMatches += 1;
+      } else {
+        localAutoNulls += 1;
+      }
+      parsed += 1;
+      suggestionByItemId.set(itemId, output);
+      await persistSuggestions();
+      processed += 1;
+      console.log(`${processed}/${selectedItems.length} ${itemId}: ${output.status}${output.notebookSuggestedQid ? ` ${output.notebookSuggestedQid}` : ""}`);
+      continue;
+    }
+
+    cacheKey = buildNotebookCacheKey(entry);
+    const cached = cacheEntries[cacheKey]?.result ?? null;
+    if (cached) {
+      output = buildCachedSuggestionOutput(entry, cached, cacheKey, startedAt);
+      cacheHits += 1;
+      parsed += hasSuggestionAnswerShape(output) ? 1 : 0;
+      if (output.isCloseMatch === true && output.notebookSuggestedQid) {
+        closeMatches += 1;
+      }
+      suggestionByItemId.set(itemId, output);
+      await persistSuggestions();
+      processed += 1;
+      console.log(`${processed}/${selectedItems.length} ${itemId}: ${output.status} cache-hit${output.notebookSuggestedQid ? ` ${output.notebookSuggestedQid}` : ""}`);
+      continue;
+    }
+  }
+
+  if (dailyLimitDetected) {
+    output = buildSkippedSuggestionOutput(entry, "skipped_notebooklm_limit", "NotebookLM daily limit already detected.", startedAt);
+    skippedDueToDailyLimit += 1;
+    suggestionByItemId.set(itemId, output);
+    await persistSuggestions();
+    processed += 1;
+    console.log(`${processed}/${selectedItems.length} ${itemId}: ${output.status}`);
+    continue;
+  }
+
+  if (maxNotebookLmCalls != null && notebookCallsMade >= maxNotebookLmCalls) {
+    output = buildSkippedSuggestionOutput(entry, "skipped_max_notebooklm_calls", `Max NotebookLM call limit reached (${maxNotebookLmCalls}).`, startedAt);
+    skippedDueToMaxCalls += 1;
+    suggestionByItemId.set(itemId, output);
+    await persistSuggestions();
+    processed += 1;
+    console.log(`${processed}/${selectedItems.length} ${itemId}: ${output.status}`);
+    continue;
+  }
+
+  if (!page) {
+    ({ browser, browserContext, page } = await openNotebook());
+  }
 
   try {
+    const prompt = buildPrompt(entry);
     const notebookResponse = await askNotebook(page, prompt);
+    if (notebookResponse.submitted) {
+      notebookCallsMade += 1;
+    }
     rawNotebookAnswer = notebookResponse.text;
+
+    if (notebookResponse.limitDetected || isNotebookLimitText(rawNotebookAnswer)) {
+      dailyLimitDetected = true;
+      output = buildSkippedSuggestionOutput(entry, "skipped_notebooklm_limit", "NotebookLM daily limit detected.", startedAt, {
+        rawNotebookAnswer,
+        waitDiagnostics: notebookResponse.diagnostics,
+      });
+      skippedDueToDailyLimit += 1;
+      suggestionByItemId.set(itemId, output);
+      await persistSuggestions();
+      processed += 1;
+      console.warn("NotebookLM daily limit detected.");
+      console.log(`${processed}/${selectedItems.length} ${itemId}: ${output.status}`);
+      continue;
+    }
 
     if (notebookResponse.timedOut) {
       output = {
@@ -112,9 +229,14 @@ for (const entry of selectedItems) {
         status: "timeout",
         waitDiagnostics: notebookResponse.diagnostics,
         processedAt: startedAt,
+        promptMode: getPromptMode(),
+        source: "notebooklm",
+        judgeSource: "notebooklm",
+        cacheKey,
       };
       console.warn(`NotebookLM response timeout for ${itemId}: ${notebookResponse.diagnostics.summary}`);
       suggestionByItemId.set(itemId, output);
+      await persistCacheEntry(cacheKey, output);
       await persistSuggestions();
       processed += 1;
       console.log(`${processed}/${selectedItems.length} ${itemId}: ${output.status}`);
@@ -133,6 +255,10 @@ for (const entry of selectedItems) {
         status: "parse-failed",
         parseDiagnostics: parsedResult.diagnostics,
         processedAt: startedAt,
+        promptMode: getPromptMode(),
+        source: "notebooklm",
+        judgeSource: "notebooklm",
+        cacheKey,
       };
       console.warn(`Parse failed for ${itemId}: ${formatParseFailureDiagnostics(parsedResult.diagnostics)}`);
     } else {
@@ -140,6 +266,9 @@ for (const entry of selectedItems) {
       parsed += 1;
       if (normalized.isCloseMatch) {
         closeMatches += 1;
+        notebookMatches += 1;
+      } else {
+        notebookNulls += 1;
       }
       output = {
         itemId,
@@ -155,20 +284,43 @@ for (const entry of selectedItems) {
         parseDiagnostics: parsedResult.diagnostics,
         status: "ok",
         processedAt: startedAt,
+        promptMode: getPromptMode(),
+        source: "notebooklm",
+        judgeSource: "notebooklm",
+        cacheKey,
       };
     }
   } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    if (isNotebookLimitText(errorMessage)) {
+      dailyLimitDetected = true;
+      output = buildSkippedSuggestionOutput(entry, "skipped_notebooklm_limit", "NotebookLM daily limit detected.", startedAt, {
+        error: errorMessage,
+      });
+      skippedDueToDailyLimit += 1;
+      suggestionByItemId.set(itemId, output);
+      await persistSuggestions();
+      processed += 1;
+      console.warn("NotebookLM daily limit detected.");
+      console.log(`${processed}/${selectedItems.length} ${itemId}: ${output.status}`);
+      continue;
+    }
     output = {
       itemId,
       sourceImage: entry.item.sourceImage ?? null,
       rawNotebookAnswer,
       status: "error",
-      error: error instanceof Error ? error.message : String(error),
+      error: errorMessage,
       processedAt: startedAt,
+      promptMode: getPromptMode(),
+      source: "notebooklm",
+      judgeSource: "notebooklm",
+      cacheKey,
     };
   }
 
   suggestionByItemId.set(itemId, output);
+  await persistCacheEntry(cacheKey, output);
   await persistSuggestions();
   processed += 1;
   console.log(`${processed}/${selectedItems.length} ${itemId}: ${output.status}${output.notebookSuggestedQid ? ` ${output.notebookSuggestedQid}` : ""}`);
@@ -183,6 +335,7 @@ if (browser) {
 }
 
 console.log(`NotebookLM suggestions complete: processed=${processed}, parsed=${parsed}, closeMatches=${closeMatches}.`);
+printSummary();
 
 function loadSourceItems() {
   const docs = [
@@ -255,7 +408,7 @@ function isLowConfidenceAutoMatch(item) {
 
 function buildPrompt(entry) {
   if (candidateJudge) {
-    return buildCandidateJudgePrompt(entry);
+    return compactPrompt ? buildCompactCandidateJudgePrompt(entry) : buildCandidateJudgePrompt(entry);
   }
   if (simplePrompt) {
     return buildSimplePrompt(entry);
@@ -344,7 +497,7 @@ function buildCandidateJudgePrompt(entry) {
   const item = entry.item;
   const sourcePrompt = item.promptRawJa ?? item.localizedText?.prompt ?? "";
   const choices = item.optionsRawJa ?? item.localizedText?.options ?? [];
-  const candidates = getTopCandidates(item, 5);
+  const candidates = getTopCandidates(item, CANDIDATE_JUDGE_LIMIT);
   return `Choose the best matching candidate from this list only. If none match, return null.
 
 Return ONLY JSON:
@@ -364,6 +517,23 @@ ${formatChoices(choices)}
 
 Candidates:
 ${formatCandidateJudgeCandidates(candidates)}`;
+}
+
+function buildCompactCandidateJudgePrompt(entry) {
+  const item = entry.item;
+  const sourcePrompt = item.promptGlossEn ?? item.translatedText?.prompt ?? item.promptRawJa ?? item.localizedText?.prompt ?? "";
+  const choices = item.optionsGlossEn ?? item.translatedText?.options ?? item.optionsRawJa ?? item.localizedText?.options ?? [];
+  const candidates = getTopCandidates(item, CANDIDATE_JUDGE_LIMIT);
+  return [
+    'Return ONLY minified JSON:{"qid":"q0000|null","answerKey":"A|B|C|D|Right|Wrong|null","confidence":0-100,"isCloseMatch":true|false,"reason":"max 12 words"}',
+    "Match source to one candidate only. Return null if no candidate matches.",
+    "Rules: same meaning + same answer options/order = match; different sign/meaning/options = null; do not invent qids; use only listed candidates.",
+    "S:",
+    `Q: ${compactField(sourcePrompt)}`,
+    formatCompactSourceChoices(choices),
+    "CAND:",
+    formatCompactCandidateLines(candidates),
+  ].filter(Boolean).join("\n");
 }
 
 function getTopCandidates(item, count) {
@@ -419,6 +589,63 @@ function formatCandidateOptions(options) {
     .join("\n");
 }
 
+function formatCompactSourceChoices(choices) {
+  const list = Array.isArray(choices) ? choices : [];
+  if (!list.length) {
+    return "";
+  }
+  return list
+    .map((choice, index) => {
+      const parsed = parseChoiceText(choice, index);
+      return `${parsed.key}: ${compactField(parsed.body)}`;
+    })
+    .join("\n");
+}
+
+function formatCompactCandidateLines(candidates) {
+  if (!candidates.length) {
+    return "none";
+  }
+  return candidates
+    .map((candidate) => {
+      const qid = normalizeQid(candidate.qid) ?? String(candidate.qid ?? "null");
+      const answerKey = formatCompactAnswerKey(candidateAnswerKey(candidate)) ?? "null";
+      const fields = [
+        qid,
+        answerKey,
+        compactField(candidate.prompt ?? ""),
+        ...formatCompactCandidateOptions(candidate.options),
+      ];
+      return fields.filter((field) => field !== "").join("|");
+    })
+    .join("\n");
+}
+
+function formatCompactCandidateOptions(options) {
+  return (Array.isArray(options) ? options : [])
+    .map((option, index) => {
+      const key = option && typeof option === "object"
+        ? option.id ?? option.key ?? String.fromCharCode(65 + index)
+        : String.fromCharCode(65 + index);
+      const text = option && typeof option === "object"
+        ? option.text ?? ""
+        : String(option ?? "");
+      return `${normalizeChoiceLetter(key) ?? String.fromCharCode(65 + index)} ${compactField(stripChoicePrefix(text))}`.trim();
+    })
+    .filter(Boolean);
+}
+
+function compactField(value) {
+  return String(value ?? "")
+    .replace(/\|/g, "/")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function formatCompactAnswerKey(value) {
+  return normalizeAnswerKey(value);
+}
+
 function indentLines(text, prefix) {
   return String(text || "none")
     .split("\n")
@@ -432,6 +659,424 @@ function getCandidateQids(item) {
     ...(Array.isArray(item.topCandidates) ? item.topCandidates.map((candidate) => candidate?.qid) : []),
   ].map(normalizeQid).filter(Boolean);
   return [...new Set(qids)];
+}
+
+function buildLocalAutoDecision(entry) {
+  const item = entry.item;
+  const candidates = getTopCandidates(item, CANDIDATE_JUDGE_LIMIT);
+
+  if (candidates.length === 0) {
+    return {
+      notebookSuggestedQid: null,
+      notebookAnswerKey: null,
+      confidence: 0,
+      isCloseMatch: false,
+      reason: "No candidates.",
+      status: "local-auto",
+      source: "local-auto",
+      judgeSource: "local-auto",
+      localAutoRule: "no-candidates",
+    };
+  }
+
+  const exactCandidate = findExactPromptAndChoicesCandidate(item, candidates);
+  if (exactCandidate) {
+    return {
+      notebookSuggestedQid: normalizeQid(exactCandidate.qid),
+      notebookAnswerKey: deriveSuggestionAnswerKey(item, exactCandidate),
+      confidence: 100,
+      isCloseMatch: true,
+      reason: "Exact prompt and choices match.",
+      matchedText: exactCandidate.prompt ?? null,
+      status: "local-auto",
+      source: "local-auto",
+      judgeSource: "local-auto",
+      localAutoRule: "exact-prompt-choices",
+    };
+  }
+
+  const topCandidate = candidates[0];
+  if (isSafeHighScoreAutoMatch(item, topCandidate)) {
+    return {
+      notebookSuggestedQid: normalizeQid(topCandidate.qid),
+      notebookAnswerKey: deriveSuggestionAnswerKey(item, topCandidate),
+      confidence: 95,
+      isCloseMatch: true,
+      reason: "High score, gap, type, and answer agree.",
+      matchedText: topCandidate.prompt ?? null,
+      status: "local-auto",
+      source: "local-auto",
+      judgeSource: "local-auto",
+      localAutoRule: "high-score-strong-gap",
+    };
+  }
+
+  if (shouldAutoNullForImageOptionMismatch(item, candidates)) {
+    return {
+      notebookSuggestedQid: null,
+      notebookAnswerKey: null,
+      confidence: 90,
+      isCloseMatch: false,
+      reason: "Image/sign choices do not overlap.",
+      status: "local-auto",
+      source: "local-auto",
+      judgeSource: "local-auto",
+      localAutoRule: "image-option-mismatch",
+    };
+  }
+
+  return null;
+}
+
+function findExactPromptAndChoicesCandidate(item, candidates) {
+  const sourceType = inferSourceType(item);
+  const sourcePrompt = comparableText(item.promptGlossEn ?? item.translatedText?.prompt ?? item.promptRawJa ?? item.localizedText?.prompt);
+  if (!sourcePrompt) {
+    return null;
+  }
+  const sourceChoices = normalizeComparableChoiceList(item.optionsGlossEn ?? item.translatedText?.options ?? item.optionsRawJa ?? item.localizedText?.options);
+
+  return candidates.find((candidate) => {
+    if (inferCandidateType(candidate) !== sourceType) {
+      return false;
+    }
+    if (comparableText(candidate.prompt) !== sourcePrompt) {
+      return false;
+    }
+    if (sourceType === "ROW") {
+      return true;
+    }
+    const candidateChoices = normalizeComparableChoiceList(candidate.options);
+    return sameStringList(sourceChoices, candidateChoices);
+  }) ?? null;
+}
+
+function isSafeHighScoreAutoMatch(item, topCandidate) {
+  if (!topCandidate) {
+    return false;
+  }
+  const score = Number(item?.match?.score ?? topCandidate?.score ?? 0);
+  const gap = Number(item?.match?.scoreGap ?? item?.analysis?.autoMatch?.scoreGap ?? item?.analysis?.topGap ?? 0);
+  if (score < HIGH_CONFIDENCE_AUTO_SCORE || gap < HIGH_CONFIDENCE_AUTO_GAP) {
+    return false;
+  }
+  const sourceType = inferSourceType(item);
+  const candidateType = inferCandidateType(topCandidate);
+  if (sourceType !== candidateType) {
+    return false;
+  }
+  if (!choiceCountMatches(item, topCandidate, sourceType)) {
+    return false;
+  }
+  if (!deriveSuggestionAnswerKey(item, topCandidate)) {
+    return false;
+  }
+
+  // The matcher can over-score items with identical numeric options but different legal facts.
+  // Keep this auto path for genuinely obvious cases with strong prompt evidence.
+  const promptEvidence = Number(
+    item?.match?.scoreBreakdown?.promptSimilarity ??
+    item?.match?.scoreBreakdown?.glossScore ??
+    item?.match?.scoreBreakdown?.rawPromptSimilarity ??
+    0,
+  );
+  if (promptEvidence < 0.78 && !findExactPromptAndChoicesCandidate(item, [topCandidate])) {
+    return false;
+  }
+
+  return true;
+}
+
+function shouldAutoNullForImageOptionMismatch(item, candidates) {
+  if (!isImageOrSignQuestion(item) || inferSourceType(item) !== "MCQ") {
+    return false;
+  }
+  const sourceChoices = item.optionsGlossEn ?? item.translatedText?.options ?? item.optionsRawJa ?? item.localizedText?.options ?? [];
+  const sourceKeywords = choiceKeywordSet(sourceChoices);
+  if (sourceKeywords.size < 2) {
+    return false;
+  }
+
+  return candidates.every((candidate) => {
+    if (inferCandidateType(candidate) !== "MCQ") {
+      return true;
+    }
+    const overlap = countKeywordOverlap(sourceKeywords, choiceKeywordSet(candidate.options));
+    return overlap < 2;
+  });
+}
+
+function isImageOrSignQuestion(item) {
+  const text = [
+    item.promptGlossEn,
+    item.promptRawJa,
+    item.sourcePromptFamily,
+    item.sourcePromptFamilyBucket,
+    ...(Array.isArray(item.visualObjectTags) ? item.visualObjectTags : []),
+    ...(Array.isArray(item.provisionalSubtopics) ? item.provisionalSubtopics : []),
+  ].join(" ").toLowerCase();
+  return item.hasImage === true || /\b(sign|symbol|marking|arrow|traffic light|dashboard|indicator|road-sign)\b/.test(text);
+}
+
+function choiceKeywordSet(choices) {
+  const texts = Array.isArray(choices) ? choices : [];
+  const tokens = new Set();
+  for (const choice of texts) {
+    const body = choice && typeof choice === "object"
+      ? choice.text ?? choice.translatedText ?? ""
+      : parseChoiceText(choice).body;
+    for (const token of comparableText(body).split(/\s+/)) {
+      if (token.length >= 3 && !isGenericChoiceToken(token)) {
+        tokens.add(token);
+      }
+    }
+  }
+  return tokens;
+}
+
+function countKeywordOverlap(left, right) {
+  let count = 0;
+  for (const token of left) {
+    if (right.has(token)) {
+      count += 1;
+    }
+  }
+  return count;
+}
+
+function isGenericChoiceToken(token) {
+  return new Set([
+    "the",
+    "and",
+    "for",
+    "with",
+    "road",
+    "traffic",
+    "vehicle",
+    "vehicles",
+    "ahead",
+    "turn",
+    "sign",
+    "area",
+    "lane",
+    "correct",
+    "incorrect",
+    "right",
+    "wrong",
+  ]).has(token);
+}
+
+function choiceCountMatches(item, candidate, sourceType) {
+  if (sourceType === "ROW") {
+    return inferCandidateType(candidate) === "ROW";
+  }
+  const sourceCount = normalizeComparableChoiceList(item.optionsGlossEn ?? item.translatedText?.options ?? item.optionsRawJa ?? item.localizedText?.options).length;
+  const candidateCount = normalizeComparableChoiceList(candidate.options).length;
+  return sourceCount > 0 && sourceCount === candidateCount;
+}
+
+function inferSourceType(item) {
+  const choices = item.optionsGlossEn ?? item.translatedText?.options ?? item.optionsRawJa ?? item.localizedText?.options ?? [];
+  if (isBooleanChoiceSet(choices)) {
+    return "ROW";
+  }
+  const declared = String(item.questionType ?? item.typeHint ?? "").trim().toUpperCase();
+  if (declared === "MCQ" || declared === "ROW") {
+    return declared;
+  }
+  return Number(item.sourceOptionCount ?? 0) > 2 ? "MCQ" : "ROW";
+}
+
+function inferCandidateType(candidate) {
+  const declared = String(candidate?.type ?? candidate?.correctAnswer?.kind ?? "").trim().toUpperCase();
+  if (declared === "MCQ" || declared === "ROW") {
+    return declared;
+  }
+  return Array.isArray(candidate?.options) && candidate.options.length > 0 ? "MCQ" : "ROW";
+}
+
+function isBooleanChoiceSet(choices) {
+  const normalized = (Array.isArray(choices) ? choices : [])
+    .map((choice, index) => comparableText(parseChoiceText(choice, index).body))
+    .filter(Boolean);
+  if (normalized.length !== 2) {
+    return false;
+  }
+  const joined = normalized.join(" ");
+  return /(right|wrong|correct|incorrect|true|false|правильно|не правильно|неправильно)/i.test(joined);
+}
+
+function deriveSuggestionAnswerKey(item, candidate) {
+  const sourceKey = normalizeAnswerKey(item.correctKeyRaw ?? item.correctAnswerRaw);
+  if (sourceKey === "Right" || sourceKey === "Wrong") {
+    return sourceKey;
+  }
+  if (/^[A-D]$/.test(String(sourceKey ?? ""))) {
+    if (inferSourceType(item) === "ROW") {
+      return booleanAnswerForSourceChoice(item, sourceKey);
+    }
+    return sourceKey;
+  }
+  return normalizeAnswerKey(candidateAnswerKey(candidate));
+}
+
+function booleanAnswerForSourceChoice(item, sourceKey) {
+  const choices = item.optionsGlossEn ?? item.translatedText?.options ?? item.optionsRawJa ?? item.localizedText?.options ?? [];
+  const index = String(sourceKey).charCodeAt(0) - 65;
+  const parsed = parseChoiceText(choices[index], index);
+  const normalized = comparableText(parsed.body);
+  if (/(right|correct|true|правильно)/i.test(normalized) && !/(wrong|incorrect|false|не\s*правильно|неправильно)/i.test(normalized)) {
+    return "Right";
+  }
+  if (/(wrong|incorrect|false|не\s*правильно|неправильно)/i.test(normalized)) {
+    return "Wrong";
+  }
+  return null;
+}
+
+function candidateAnswerKey(candidate) {
+  return candidate?.correctAnswer?.correctOptionKey ??
+    candidate?.correctAnswer?.correctRow ??
+    candidate?.correctAnswer?.answerRaw ??
+    null;
+}
+
+function normalizeComparableChoiceList(choices) {
+  return (Array.isArray(choices) ? choices : [])
+    .map((choice, index) => comparableText(parseChoiceText(choice, index).body))
+    .filter(Boolean);
+}
+
+function sameStringList(left, right) {
+  return left.length === right.length && left.every((value, index) => value === right[index]);
+}
+
+function parseChoiceText(choice, index = 0) {
+  if (choice && typeof choice === "object") {
+    return {
+      key: normalizeChoiceLetter(choice.id ?? choice.key) ?? String.fromCharCode(65 + index),
+      body: String(choice.text ?? choice.translatedText ?? ""),
+    };
+  }
+  const text = String(choice ?? "").trim();
+  const match = text.match(/^\s*([A-D])(?:[.)。:]|\s+)(.*)$/i);
+  return {
+    key: match ? match[1].toUpperCase() : String.fromCharCode(65 + index),
+    body: match ? match[2].trim() : text,
+  };
+}
+
+function normalizeChoiceLetter(value) {
+  const text = String(value ?? "").trim().toUpperCase();
+  return /^[A-D]$/.test(text) ? text : null;
+}
+
+function stripChoicePrefix(value) {
+  return parseChoiceText(value).body;
+}
+
+function comparableText(value) {
+  return String(value ?? "")
+    .normalize("NFKD")
+    .toLowerCase()
+    .replace(/[’']/g, "")
+    .replace(/\bwhat's\b/g, "what is")
+    .replace(/\bcan't\b/g, "cannot")
+    .replace(/\bwon't\b/g, "will not")
+    .replace(/\bkm\s*\/\s*h(?:r)?\b/g, "kmh")
+    .replace(/\bkm\s*\/\s*hr\b/g, "kmh")
+    .replace(/[^a-zа-яё0-9]+/giu, " ")
+    .replace(/\b(?:a|an|the)\b/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function buildNotebookCacheKey(entry) {
+  const item = entry.item;
+  const candidates = getTopCandidates(item, CANDIDATE_JUDGE_LIMIT);
+  const payload = {
+    version: CACHE_VERSION,
+    mode: getPromptMode(),
+    sourcePrompt: comparableText([item.promptRawJa, item.promptGlossEn, item.translatedText?.prompt, item.localizedText?.prompt].filter(Boolean).join(" | ")),
+    sourceChoices: [
+      ...normalizeComparableChoiceList(item.optionsRawJa ?? item.localizedText?.options),
+      ...normalizeComparableChoiceList(item.optionsGlossEn ?? item.translatedText?.options),
+    ],
+    candidates: candidates.map((candidate) => ({
+      qid: normalizeQid(candidate.qid),
+      answerKey: normalizeAnswerKey(candidateAnswerKey(candidate)),
+    })),
+  };
+  return crypto.createHash("sha256").update(JSON.stringify(payload)).digest("hex");
+}
+
+function buildSuggestionOutput(entry, result) {
+  const qid = normalizeQid(result.notebookSuggestedQid ?? result.qid);
+  return {
+    itemId: entry.item.itemId,
+    sourceImage: entry.item.sourceImage ?? null,
+    notebookSuggestedQid: qid,
+    notebookQuestionNumber: result.notebookQuestionNumber ?? result.questionNumber ?? numberFromQid(qid),
+    notebookAnswerKey: normalizeAnswerKey(result.notebookAnswerKey ?? result.answerKey),
+    confidence: clamp(Number(result.confidence ?? 0), 0, 100),
+    isCloseMatch: result.isCloseMatch === true,
+    reason: typeof result.reason === "string" ? result.reason : null,
+    matchedText: typeof result.matchedText === "string" ? result.matchedText : null,
+    rawNotebookAnswer: result.rawNotebookAnswer ?? null,
+    parseDiagnostics: result.parseDiagnostics ?? null,
+    status: result.status ?? "ok",
+    processedAt: result.processedAt ?? new Date().toISOString(),
+    promptMode: getPromptMode(),
+    source: result.source ?? result.judgeSource ?? "notebooklm",
+    judgeSource: result.judgeSource ?? result.source ?? "notebooklm",
+    localAutoRule: result.localAutoRule ?? null,
+    cacheKey: result.cacheKey ?? null,
+  };
+}
+
+function buildCachedSuggestionOutput(entry, cached, cacheKey, processedAt) {
+  return {
+    ...buildSuggestionOutput(entry, {
+      ...cached,
+      processedAt,
+      cacheKey,
+    }),
+    cacheHit: true,
+    cachedAt: cached.processedAt ?? cached.cachedAt ?? null,
+  };
+}
+
+function buildSkippedSuggestionOutput(entry, status, reason, processedAt, extra = {}) {
+  return {
+    itemId: entry.item.itemId,
+    sourceImage: entry.item.sourceImage ?? null,
+    notebookSuggestedQid: null,
+    notebookQuestionNumber: null,
+    notebookAnswerKey: null,
+    confidence: 0,
+    isCloseMatch: false,
+    reason,
+    matchedText: null,
+    rawNotebookAnswer: extra.rawNotebookAnswer ?? null,
+    waitDiagnostics: extra.waitDiagnostics ?? null,
+    status,
+    error: extra.error ?? null,
+    processedAt,
+    promptMode: getPromptMode(),
+    source: "skipped",
+    judgeSource: "skipped",
+  };
+}
+
+function hasSuggestionAnswerShape(value) {
+  return value && typeof value === "object" && "confidence" in value && "isCloseMatch" in value;
+}
+
+function getPromptMode() {
+  if (candidateJudge) {
+    return compactPrompt ? "candidate-judge-compact" : "candidate-judge-full";
+  }
+  return simplePrompt ? "simple" : "full";
 }
 
 async function openNotebook() {
@@ -518,27 +1163,70 @@ async function writeNotebookDiagnostics(page, extra = {}) {
 }
 
 async function findPromptInput(page) {
-  const candidates = [
-    page.getByRole("textbox").last(),
-    page.locator("textarea").last(),
-    page.locator("div[contenteditable='true']").last(),
-    page.locator("[contenteditable='true']").last(),
+  const candidateGroups = [
+    page.locator("div[contenteditable='true']"),
+    page.locator("[contenteditable='true']"),
+    page.locator("textarea"),
+    page.getByRole("textbox"),
   ];
-  for (const locator of candidates) {
-    try {
-      if ((await locator.count()) > 0 && (await locator.isVisible({ timeout: 1000 }))) {
-        return locator;
+  for (const group of candidateGroups) {
+    const count = await group.count().catch(() => 0);
+    for (let index = count - 1; index >= 0; index -= 1) {
+      const locator = group.nth(index);
+      try {
+        if ((await locator.isVisible({ timeout: 500 })) && await isUsablePromptInput(locator)) {
+          return locator;
+        }
+      } catch {
+        // Try the next locator.
       }
-    } catch {
-      // Try the next locator.
     }
   }
   return null;
 }
 
+async function waitForPromptInput(page, waitMs = 30_000) {
+  const deadline = Date.now() + waitMs;
+  while (Date.now() < deadline) {
+    const input = await findPromptInput(page);
+    if (input) {
+      return input;
+    }
+    await delay(750);
+  }
+  return null;
+}
+
+async function isUsablePromptInput(locator) {
+  return locator.evaluate((node) => {
+    const element = /** @type {HTMLElement & { disabled?: boolean, readOnly?: boolean }} */ (node);
+    const label = [
+      element.getAttribute("aria-label"),
+      element.getAttribute("placeholder"),
+      element.getAttribute("formcontrolname"),
+      element.id,
+      element.className,
+    ].filter(Boolean).join(" ").toLowerCase();
+    if (/discover\s+sources|source.*query/.test(label)) {
+      return false;
+    }
+    if (element.getAttribute("aria-disabled") === "true") {
+      return false;
+    }
+    if (element.disabled === true || element.readOnly === true || element.hasAttribute("readonly")) {
+      return false;
+    }
+    if (element.isContentEditable) {
+      return true;
+    }
+    const tagName = element.tagName.toLowerCase();
+    return tagName === "textarea" || tagName === "input";
+  }).catch(() => false);
+}
+
 async function askNotebook(page, prompt) {
   const beforeState = await waitForNotebookConversationBaseline(page);
-  const input = await findPromptInput(page);
+  const input = await waitForPromptInput(page);
   if (!input) {
     throw new Error("NotebookLM prompt input not found.");
   }
@@ -568,7 +1256,23 @@ async function askNotebook(page, prompt) {
     const conversationChanged =
       latestState.messageCount > beforeState.messageCount ||
       (latestState.messageCount === beforeState.messageCount && latestState.lastMessageText !== beforeState.lastMessageText);
-    const responseText = conversationChanged ? getPostSubmitText(beforeState.text, latestState.text) : "";
+    const responseText = conversationChanged
+      ? latestState.messageCount > beforeState.messageCount && latestState.lastMessageText
+        ? latestState.lastMessageText
+        : getPostSubmitText(beforeState.lastMessageText || beforeState.text, latestState.lastMessageText || latestState.text)
+      : "";
+    if (isNotebookLimitText(responseText) || isNotebookLimitText(latestState.text)) {
+      return {
+        text: responseText || latestState.text,
+        timedOut: false,
+        limitDetected: true,
+        submitted: true,
+        diagnostics: {
+          summary: "NotebookLM daily limit detected",
+          elapsedMs: Date.now() - waitStartedAt,
+        },
+      };
+    }
     if (responseText !== lastResponseText) {
       lastResponseText = responseText;
       lastChangedAt = Date.now();
@@ -588,6 +1292,7 @@ async function askNotebook(page, prompt) {
       return {
         text: responseText,
         timedOut: false,
+        submitted: true,
         diagnostics: {
           summary: "valid JSON response detected",
           elapsedMs: Date.now() - waitStartedAt,
@@ -600,6 +1305,7 @@ async function askNotebook(page, prompt) {
       return {
         text: responseText,
         timedOut: false,
+        submitted: true,
         diagnostics: {
           summary: "response stabilized",
           elapsedMs: Date.now() - waitStartedAt,
@@ -622,6 +1328,8 @@ async function askNotebook(page, prompt) {
   return {
     text: latest,
     timedOut: true,
+    submitted: true,
+    limitDetected: isNotebookLimitText(latest),
     diagnostics: {
       summary: "timed out waiting for NotebookLM to finish responding",
       timeoutMs,
@@ -629,6 +1337,12 @@ async function askNotebook(page, prompt) {
       lastResponseLength: lastResponseText.length,
     },
   };
+}
+
+function isNotebookLimitText(text) {
+  return /(?:daily\s+(?:chat\s+)?limit|chat\s+limit|message\s+limit|usage\s+limit|quota|you(?:'ve| have)\s+reached|reached\s+(?:your|the).*(?:limit|quota)|try\s+again\s+tomorrow|come\s+back\s+tomorrow|too\s+many\s+requests|rate\s+limit)/i.test(
+    String(text ?? ""),
+  );
 }
 
 async function getNotebookConversationState(page) {
@@ -746,13 +1460,16 @@ function parseNotebookJson(text) {
   candidates.push(...balanced.map((candidate) => ({ source: "balanced-object", text: candidate.text, index: candidate.index })));
 
   const seen = new Set();
-  for (const candidate of candidates) {
+  const newestFirstCandidates = candidates
+    .slice()
+    .sort((left, right) => Number(right.index ?? -1) - Number(left.index ?? -1));
+  for (const candidate of newestFirstCandidates) {
     const raw = String(candidate.text ?? "").trim();
     if (!raw || seen.has(raw)) {
       continue;
     }
     seen.add(raw);
-    if (isPromptExampleCandidate(source, candidate.index)) {
+    if (isPromptExampleCandidate(source, candidate.index, raw)) {
       diagnostics.skippedPromptExamples += 1;
       continue;
     }
@@ -903,14 +1620,22 @@ function extractJsonCandidates(text) {
   return candidates;
 }
 
-function isPromptExampleCandidate(source, index) {
+function isPromptExampleCandidate(source, index, candidateText = "") {
+  const candidate = String(candidateText ?? "").toLowerCase();
+  if (
+    candidate.includes("q0000 or null") ||
+    candidate.includes("q0000|null") ||
+    candidate.includes("0-100") ||
+    candidate.includes("true/false") ||
+    candidate.includes("short reason")
+  ) {
+    return true;
+  }
   if (!Number.isFinite(index) || index < 0) {
     return false;
   }
   const before = source.slice(Math.max(0, index - 800), index).toLowerCase();
   return (
-    before.includes("return only json in this exact format") ||
-    before.includes("if there is no close match, return") ||
     before.includes("current topcandidates") ||
     before.includes("source item:")
   );
@@ -930,6 +1655,14 @@ function parsePositiveNumber(value, fallback) {
   return Number.isFinite(number) && number > 0 ? number : fallback;
 }
 
+function parseOptionalPositiveInteger(value) {
+  if (value == null) {
+    return null;
+  }
+  const number = Number(value);
+  return Number.isInteger(number) && number >= 0 ? number : null;
+}
+
 function normalizeNotebookAnswer(answer) {
   const questionNumber = normalizeQuestionNumber(answer.questionNumber);
   const qid = normalizeQid(answer.qid) ?? (questionNumber == null ? null : qidFromNumber(questionNumber));
@@ -939,9 +1672,17 @@ function normalizeNotebookAnswer(answer) {
     answerKey: normalizeAnswerKey(answer.answerKey),
     confidence: clamp(Number(answer.confidence ?? 0), 0, 100),
     isCloseMatch: answer.isCloseMatch === true,
-    reason: typeof answer.reason === "string" ? answer.reason : null,
+    reason: typeof answer.reason === "string" ? limitReasonWords(answer.reason) : null,
     matchedText: typeof answer.matchedText === "string" ? answer.matchedText : null,
   };
+}
+
+function limitReasonWords(value) {
+  if (!compactPrompt) {
+    return value;
+  }
+  const words = String(value ?? "").trim().split(/\s+/).filter(Boolean);
+  return words.length > 12 ? words.slice(0, 12).join(" ") : words.join(" ");
 }
 
 async function persistSuggestions() {
@@ -955,6 +1696,89 @@ async function persistSuggestions() {
     cdpEndpoint: CDP_ENDPOINT,
     items: [...suggestionByItemId.values()],
   });
+}
+
+async function persistCacheEntry(cacheKey, output) {
+  if (
+    !candidateJudge ||
+    !cacheKey ||
+    !output ||
+    output.status === "error" ||
+    output.status === "skipped_notebooklm_limit" ||
+    output.status === "skipped_max_notebooklm_calls"
+  ) {
+    return;
+  }
+  cacheEntries[cacheKey] = {
+    key: cacheKey,
+    version: CACHE_VERSION,
+    promptMode: getPromptMode(),
+    cachedAt: stableNow(),
+    result: {
+      ...output,
+      itemId: null,
+      sourceImage: null,
+      cacheHit: false,
+    },
+  };
+  await persistCache();
+}
+
+async function persistCache() {
+  await writeJson(cachePath, {
+    version: CACHE_VERSION,
+    lang,
+    batch: batchId,
+    batchId,
+    dataset,
+    generatedAt: stableNow(),
+    entries: cacheEntries,
+  });
+}
+
+function normalizeCacheDoc(value) {
+  if (!value || typeof value !== "object") {
+    return { version: CACHE_VERSION, lang, batch: batchId, batchId, dataset, generatedAt: stableNow(), entries: {} };
+  }
+  if (value.entries && typeof value.entries === "object" && !Array.isArray(value.entries)) {
+    return value;
+  }
+  const entries = {};
+  for (const entry of Array.isArray(value.items) ? value.items : []) {
+    if (entry?.key) {
+      entries[entry.key] = entry;
+    }
+  }
+  return {
+    ...value,
+    version: value.version ?? CACHE_VERSION,
+    entries,
+  };
+}
+
+function printSummary() {
+  const summary = {
+    totalItems: selectedItems.length,
+    cacheHits,
+    localAutoMatches,
+    localAutoNulls,
+    notebookCallsMade,
+    notebookMatches,
+    notebookNulls,
+    skippedDueToMaxCalls,
+    skippedDueToDailyLimit,
+    outputFilesUpdated: [...outputFilesUpdated],
+  };
+  if (dailyLimitDetected) {
+    console.log("NotebookLM daily limit detected.");
+    console.log(`Processed: ${processed}`);
+    console.log(`Cache hits: ${cacheHits}`);
+    console.log(`Local auto decisions: ${localAutoMatches + localAutoNulls}`);
+    console.log(`NotebookLM calls used: ${notebookCallsMade}`);
+    console.log(`Skipped due to limit: ${skippedDueToDailyLimit}`);
+  }
+  console.log("NotebookLM quota summary:");
+  console.log(JSON.stringify(summary, null, 2));
 }
 
 function normalizeQid(value) {
@@ -992,8 +1816,11 @@ function normalizeAnswerKey(value) {
   if (/^[A-D]$/.test(upper)) {
     return upper;
   }
-  if (/^(RIGHT|WRONG)$/i.test(text)) {
-    return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
+  if (/^(RIGHT|R|TRUE|YES|CORRECT)$/i.test(text)) {
+    return "Right";
+  }
+  if (/^(WRONG|W|FALSE|NO|INCORRECT)$/i.test(text)) {
+    return "Wrong";
   }
   return text;
 }

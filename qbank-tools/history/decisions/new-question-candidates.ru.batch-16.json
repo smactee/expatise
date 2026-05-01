@@ -1,0 +1,54 @@
+{
+  "generatedAt": "2026-04-30T12:34:58.948Z",
+  "lang": "ru",
+  "batchId": "batch-16",
+  "dataset": "2023-test1",
+  "sourceDecisionPath": "qbank-tools/generated/staging/new-question-decisions.ru.batch-16.json",
+  "items": [
+    {
+      "candidateId": "nqc-ru-batch-16-001",
+      "sourceLang": "ru",
+      "sourceImage": "screenshots/800.png",
+      "effectiveQuestionType": "MCQ",
+      "promptRawJa": "Что следует сделать водителю, если безмоторные средства передвижения мешают проезду:",
+      "promptGlossEn": "What should a driver do if non-motorized vehicles are obstructing the road?",
+      "optionsRawJa": [
+        "A) Сигналить и предупредить",
+        "B) Ускориться и проехать",
+        "C) Замедлить ход и уступить дорогу",
+        "D) Внезапно ускориться"
+      ],
+      "optionsGlossEn": [
+        "A) Honk and warn",
+        "B) Speed up and drive through",
+        "C) Slow down and yield",
+        "D) Suddenly accelerate"
+      ],
+      "correctKeyRaw": "C",
+      "correctAnswerRaw": "Замедлить ход и уступить дорогу",
+      "newQuestionLocalAnswerKey": "C",
+      "provisionalTopic": "proper-driving",
+      "provisionalSubtopics": [
+        "proper-driving:safe-driving"
+      ],
+      "topicConfidence": 0.522,
+      "topicSignals": [
+        {
+          "topic": "proper-driving",
+          "subtopic": "proper-driving:safe-driving",
+          "signal": "driving-action",
+          "weight": 1.2
+        },
+        {
+          "topic": "traffic-signals",
+          "subtopic": "traffic-signals:road-signs",
+          "signal": "sign-family",
+          "weight": 1.1
+        }
+      ],
+      "linkedExistingAssetCandidate": null,
+      "reviewerNotes": "",
+      "status": "pending-superset-review"
+    }
+  ]
+}

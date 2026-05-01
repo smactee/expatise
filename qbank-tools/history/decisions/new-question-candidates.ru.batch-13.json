@@ -1,0 +1,37 @@
+{
+  "generatedAt": "2026-04-29T12:04:04.901Z",
+  "lang": "ru",
+  "batchId": "batch-13",
+  "dataset": "2023-test1",
+  "sourceDecisionPath": "qbank-tools/generated/staging/new-question-decisions.ru.batch-13.json",
+  "items": [
+    {
+      "candidateId": "nqc-ru-batch-13-001",
+      "sourceLang": "ru",
+      "sourceImage": "screenshots/Screenshot 2026-04-19 at 18.56.51.png",
+      "effectiveQuestionType": "ROW",
+      "promptRawJa": "Разрешено управление неисправным автомобилем после капитального ремонта.",
+      "promptGlossEn": "Is it allowed to drive a faulty car after a major repair?",
+      "optionsRawJa": [
+        "A Правильно",
+        "B Не правильно"
+      ],
+      "optionsGlossEn": [
+        "Correct",
+        "Incorrect"
+      ],
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "newQuestionLocalAnswerKey": "B",
+      "provisionalTopic": "road-safety",
+      "provisionalSubtopics": [
+        "road-safety:registration"
+      ],
+      "topicConfidence": 0,
+      "topicSignals": [],
+      "linkedExistingAssetCandidate": null,
+      "reviewerNotes": "No reliable existing qid and no visible answer key. Russian wording says driving a faulty vehicle after major repair is allowed, which is internally ambiguous/corrupted, so do not create or approve without human confirmation.",
+      "status": "pending-superset-review"
+    }
+  ]
+}

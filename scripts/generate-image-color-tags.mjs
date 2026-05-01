@@ -7,8 +7,26 @@ import sharp from "sharp";
 
 const ROOT = process.cwd();
 const DEFAULT_DATASET = "2023-test1";
-const COLOR_VOCABULARY = ["blue", "red", "yellow", "brown", "green", "white", "black", "gray"];
-const OBJECT_VOCABULARY = ["arrow", "crosswalk", "traffic-light", "bicycle", "bus", "train", "mountain", "railroad", "snow", "rain", "intersection"];
+const BASE_COLOR_VOCABULARY = ["blue", "red", "yellow", "brown", "green", "white", "black", "gray"];
+const BASE_OBJECT_VOCABULARY = [
+  "arrow",
+  "crosswalk",
+  "traffic-light",
+  "bicycle",
+  "bus",
+  "train",
+  "mountain",
+  "railroad",
+  "snow",
+  "rain",
+  "intersection",
+  "stalk",
+  "control-lever",
+  "blinkers",
+  "turn-signals",
+  "wiper",
+];
+const IMAGE_TEXT_FIELDS = ["chineseText", "hanziText", "signText", "ocrText"];
 const PRIMARY_THRESHOLD = 0.3;
 const SECONDARY_THRESHOLD = 0.15;
 const CHROMATIC_PRIMARY_THRESHOLD = 0.3;
@@ -29,6 +47,36 @@ function argValue(flag) {
 
 function round(value) {
   return Math.round((value + Number.EPSILON) * 1000) / 1000;
+}
+
+function normalizeStringList(value, { lowercase = false } = {}) {
+  const list = Array.isArray(value)
+    ? value
+    : value === null || value === undefined
+    ? []
+    : [value];
+
+  return list
+    .map((item) => String(item ?? "").trim())
+    .map((item) => (lowercase ? item.toLowerCase() : item))
+    .filter(Boolean);
+}
+
+function uniqueStrings(values) {
+  const seen = new Set();
+  const result = [];
+
+  for (const value of values) {
+    if (seen.has(value)) continue;
+    seen.add(value);
+    result.push(value);
+  }
+
+  return result;
+}
+
+function sortedUniqueStrings(values) {
+  return uniqueStrings(values).sort((left, right) => left.localeCompare(right));
 }
 
 function rgbToHsv(r, g, b) {
@@ -79,11 +127,11 @@ function isChromatic(color) {
 }
 
 function pickColorTags(counts, totalWeight) {
-  const chromaticTotal = COLOR_VOCABULARY
+  const chromaticTotal = BASE_COLOR_VOCABULARY
     .filter((color) => isChromatic(color))
     .reduce((sum, color) => sum + (counts.get(color) ?? 0), 0);
 
-  const ranked = COLOR_VOCABULARY
+  const ranked = BASE_COLOR_VOCABULARY
     .map((color) => {
       const count = counts.get(color) ?? 0;
       const overallShare = totalWeight > 0 ? count / totalWeight : 0;
@@ -155,7 +203,7 @@ async function analyzeAsset(assetPath) {
     .raw()
     .toBuffer({ resolveWithObject: true });
 
-  const counts = new Map(COLOR_VOCABULARY.map((color) => [color, 0]));
+  const counts = new Map(BASE_COLOR_VOCABULARY.map((color) => [color, 0]));
   let totalWeight = 0;
 
   for (let index = 0; index < data.length; index += info.channels) {
@@ -187,13 +235,39 @@ async function main() {
     throw new Error(`questions.json does not contain an array: ${questionsPath}`);
   }
 
+  let existingMeta = {};
   let existingQuestionTags = {};
   try {
     const existingDoc = JSON.parse(await fs.readFile(outputPath, "utf8"));
+    if (existingDoc && typeof existingDoc === "object" && existingDoc.meta && typeof existingDoc.meta === "object") {
+      existingMeta = existingDoc.meta;
+    }
     if (existingDoc && typeof existingDoc === "object" && existingDoc.questions && typeof existingDoc.questions === "object") {
       existingQuestionTags = existingDoc.questions;
     }
   } catch {}
+
+  const existingEntries = Object.values(existingQuestionTags);
+  const colorVocabulary = uniqueStrings([
+    ...BASE_COLOR_VOCABULARY,
+    ...normalizeStringList(existingMeta.colorVocabulary),
+    ...existingEntries.flatMap((entry) => normalizeStringList(entry?.colorTags)),
+  ]);
+  const objectVocabulary = uniqueStrings([
+    ...BASE_OBJECT_VOCABULARY,
+    ...normalizeStringList(existingMeta.objectVocabulary),
+    ...existingEntries.flatMap((entry) => normalizeStringList(entry?.objectTags)),
+  ]);
+  const pinyinVocabulary = sortedUniqueStrings([
+    ...normalizeStringList(existingMeta.pinyinVocabulary, { lowercase: true }),
+    ...existingEntries.flatMap((entry) => normalizeStringList(entry?.pinyinText, { lowercase: true })),
+  ]);
+  const chineseTextVocabulary = sortedUniqueStrings([
+    ...normalizeStringList(existingMeta.chineseTextVocabulary),
+    ...existingEntries.flatMap((entry) =>
+      IMAGE_TEXT_FIELDS.flatMap((field) => normalizeStringList(entry?.[field])),
+    ),
+  ]);
 
   const questionsWithImages = questions.filter((question) => Array.isArray(question.assets) && question.assets.length > 0);
   const byQuestion = {};
@@ -234,14 +308,23 @@ async function main() {
     if (assetEntries.length === 0) continue;
 
     const existingEntry = existingQuestionTags[String(question.id)];
-    const objectTags = Array.isArray(existingEntry?.objectTags)
-      ? OBJECT_VOCABULARY.filter((tag) => existingEntry.objectTags.includes(tag))
-      : [];
+    const colorTags = uniqueStrings([
+      ...BASE_COLOR_VOCABULARY.filter((color) => allTags.has(color)),
+      ...normalizeStringList(existingEntry?.colorTags).filter((tag) => colorVocabulary.includes(tag)),
+    ]);
+    const objectTags = normalizeStringList(existingEntry?.objectTags).filter((tag) => objectVocabulary.includes(tag));
+    const pinyinText = normalizeStringList(existingEntry?.pinyinText, { lowercase: true });
+    const imageTextFields = Object.fromEntries(
+      IMAGE_TEXT_FIELDS.map((field) => [field, normalizeStringList(existingEntry?.[field])])
+        .filter(([, values]) => values.length > 0),
+    );
 
     byQuestion[String(question.id)] = {
       assetSrcs: assetEntries,
-      colorTags: COLOR_VOCABULARY.filter((color) => allTags.has(color)),
+      colorTags,
       ...(objectTags.length > 0 ? { objectTags } : {}),
+      ...(pinyinText.length > 0 ? { pinyinText } : {}),
+      ...imageTextFields,
       dominantByAsset,
     };
   }
@@ -254,8 +337,10 @@ async function main() {
       imageQuestionCount: questionsWithImages.length,
       analyzedAssets,
       missingAssets,
-      colorVocabulary: COLOR_VOCABULARY,
-      objectVocabulary: OBJECT_VOCABULARY,
+      colorVocabulary,
+      objectVocabulary,
+      ...(pinyinVocabulary.length > 0 ? { pinyinVocabulary } : {}),
+      ...(chineseTextVocabulary.length > 0 ? { chineseTextVocabulary } : {}),
       thresholds: {
         primaryThreshold: PRIMARY_THRESHOLD,
         secondaryThreshold: SECONDARY_THRESHOLD,

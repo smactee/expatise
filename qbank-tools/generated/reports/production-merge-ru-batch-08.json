@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-04-27T02:57:40.699Z",
+  "generatedAt": "2026-05-01T13:18:32.055Z",
   "lang": "ru",
   "batchId": "batch-08",
   "dataset": "2023-test1",
@@ -17,7 +17,57 @@
     "q0076",
     "q0129",
     "q0140",
-    "q0162",
+    "q0176",
+    "q0189",
+    "q0207",
+    "q0212",
+    "q0245",
+    "q0256",
+    "q0269",
+    "q0330",
+    "q0342",
+    "q0364",
+    "q0372",
+    "q0373",
+    "q0378",
+    "q0460",
+    "q0475",
+    "q0493",
+    "q0498",
+    "q0527",
+    "q0540",
+    "q0548",
+    "q0568",
+    "q0571",
+    "q0583",
+    "q0590",
+    "q0606",
+    "q0609",
+    "q0619",
+    "q0622",
+    "q0625",
+    "q0628",
+    "q0631",
+    "q0636",
+    "q0680",
+    "q0706",
+    "q0707",
+    "q0722",
+    "q0748",
+    "q0784",
+    "q0830",
+    "q0859"
+  ],
+  "qidCount": 45,
+  "productionTranslatedCountBefore": 811,
+  "productionTranslatedCountAfter": 813,
+  "productionOverlapCount": 43,
+  "overlappingProductionQids": [
+    "q0014",
+    "q0038",
+    "q0076",
+    "q0129",
+    "q0140",
     "q0189",
     "q0207",
     "q0212",
@@ -57,21 +107,14 @@
     "q0830",
     "q0859"
   ],
-  "qidCount": 44,
-  "productionTranslatedCountBefore": 283,
-  "productionTranslatedCountAfter": 326,
-  "productionOverlapCount": 1,
-  "overlappingProductionQids": [
-    "q0162"
-  ],
   "runtimeSupport": {
     "existedBeforeMerge": true,
     "addedByMerge": false,
     "summary": "loadDataset already applies localeOptionOrder for translated MCQs, preserves localized originalKey labels, and keeps canonical correctOptionId for scoring."
   },
-  "dryRunReadyQidCount": 43,
-  "dryRunBlockerCount": 1,
-  "previousDryRunSafeToMerge": false,
+  "dryRunReadyQidCount": 45,
+  "dryRunBlockerCount": 0,
+  "previousDryRunSafeToMerge": true,
   "validations": [
     {
       "qid": "q0014",
@@ -124,14 +167,14 @@
       "correctMeaningCanonicalOptionId": "q0140_o2"
     },
     {
-      "qid": "q0162",
+      "qid": "q0176",
       "type": "MCQ",
       "qidExists": true,
       "localeOptionOrderPreserved": true,
       "localeCorrectOptionKeyPresent": true,
       "localeCorrectOptionKeyMapped": true,
-      "localeCorrectOptionKey": "D",
-      "correctMeaningCanonicalOptionId": "q0162_o2"
+      "localeCorrectOptionKey": "B",
+      "correctMeaningCanonicalOptionId": "q0176_o3"
     },
     {
       "qid": "q0189",
@@ -155,6 +198,16 @@
     },
     {
       "qid": "q0212",
+      "type": "ROW",
+      "qidExists": true,
+      "localeOptionOrderPreserved": true,
+      "localeCorrectOptionKeyPresent": true,
+      "localeCorrectOptionKeyMapped": true,
+      "localeCorrectOptionKey": null,
+      "correctMeaningCanonicalOptionId": null
+    },
+    {
+      "qid": "q0245",
       "type": "ROW",
       "qidExists": true,
       "localeOptionOrderPreserved": true,
@@ -260,7 +313,7 @@
       "localeOptionOrderPreserved": true,
       "localeCorrectOptionKeyPresent": true,
       "localeCorrectOptionKeyMapped": true,
-      "localeCorrectOptionKey": "C",
+      "localeCorrectOptionKey": "D",
       "correctMeaningCanonicalOptionId": "q0475_o3"
     },
     {
@@ -460,7 +513,7 @@
       "localeOptionOrderPreserved": true,
       "localeCorrectOptionKeyPresent": true,
       "localeCorrectOptionKeyMapped": true,
-      "localeCorrectOptionKey": "C",
+      "localeCorrectOptionKey": "A",
       "correctMeaningCanonicalOptionId": "q0707_o4"
     },
     {
@@ -515,7 +568,7 @@
     }
   ],
   "blockers": [],
-  "q0781LocaleCorrectOptionKey": null,
+  "q0781LocaleCorrectOptionKey": "D",
   "readyForNextBatch": true,
   "note": "ru qbank content is now production-merged. Full app-locale exposure for ru remains a separate concern from qbank runtime support."
 }

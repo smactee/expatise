@@ -1099,6 +1099,9 @@ function buildHtml({
       font-size: 21px;
       line-height: 1.15;
     }
+    .item h3.source-screenshot-path {
+      font-size: 10pt;
+    }
     .eyebrow {
       color: var(--muted);
       font-size: 12px;
@@ -3144,6 +3147,12 @@ function buildHtml({
     function renderCard(item) {
       const decision = getDecision(item.id);
       const displayNumber = DISPLAY_INDEX_BY_ID.get(item.id) ?? item.index ?? '?';
+      const assetTitle = item.section === 'answer-key' ? item.qid : (item.itemId || item.sourceImage || 'item');
+      const assetPath = item.sourceImage || item.itemId || item.qid || '';
+      const showPostImagePath = Boolean(assetPath && assetPath !== assetTitle);
+      const assetTitleClass = item.section !== 'answer-key' && item.sourceImage
+        ? 'source-asset-title source-screenshot-path'
+        : 'source-asset-title';
       const typeMismatch = getTypeMismatchInfo(item, decision);
       const facts = [];
       const advancedFacts = [];
@@ -3169,10 +3178,10 @@ function buildHtml({
       }
       return '<article class="item" data-item-id="' + escapeHtml(item.id) + '">' +
         '<div class="source-asset-column">' +
-          '<div class="eyebrow">' + escapeHtml(item.section.replace('-', ' ')) + '</div>' +
-          '<h3>' + escapeHtml(item.section === 'answer-key' ? item.qid : (item.itemId || item.sourceImage || 'item')) + '</h3>' +
+          '<div class="eyebrow"><span class="filename-number">' + escapeHtml(displayNumber) + '.</span> ' + escapeHtml(item.section.replace('-', ' ')) + '</div>' +
+          '<h3 class="' + assetTitleClass + '">' + escapeHtml(assetTitle) + '</h3>' +
           renderImage(item) +
-          '<div class="filename"><span class="filename-number">' + escapeHtml(displayNumber) + '.</span>' + escapeHtml(item.sourceImage || item.itemId || item.qid || '') + '</div>' +
+          (showPostImagePath ? '<div class="filename">' + escapeHtml(assetPath) + '</div>' : '') +
           (item.section !== 'answer-key'
             ? renderRecommendationReview(item, decision)
             : '') +

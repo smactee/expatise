@@ -1,0 +1,83 @@
+{
+  "generatedAt": "2026-05-01T05:17:04.336Z",
+  "lang": "ru",
+  "batchId": "batch-18",
+  "dataset": "2023-test1",
+  "sourceDecisionPath": "qbank-tools/generated/staging/new-question-decisions.ru.batch-18.json",
+  "items": [
+    {
+      "candidateId": "nqc-ru-batch-18-001",
+      "sourceLang": "ru",
+      "sourceImage": "screenshots/Screenshot 2026-04-19 at 19.00.40.png",
+      "effectiveQuestionType": "ROW",
+      "promptRawJa": "При вождении автомобиля с поддельным гос.номером, водительским удостоверением или техническим паспортом средства, автоинспектор имеет право задержать автомобиль и поставить его на штраф-стоянку.",
+      "promptGlossEn": "When driving a car with a fake license plate, driver's license, or vehicle registration certificate, the traffic inspector has the right to detain the vehicle and place it in the impound lot.",
+      "optionsRawJa": [
+        "A Правильно",
+        "B Не правильно"
+      ],
+      "optionsGlossEn": [
+        "Correct",
+        "Incorrect"
+      ],
+      "correctKeyRaw": "A",
+      "correctAnswerRaw": "Правильно",
+      "newQuestionLocalAnswerKey": "A",
+      "provisionalTopic": "road-safety",
+      "provisionalSubtopics": [
+        "road-safety:registration"
+      ],
+      "topicConfidence": 1,
+      "topicSignals": [
+        {
+          "topic": "road-safety",
+          "subtopic": "road-safety:license",
+          "signal": "license",
+          "weight": 1.15
+        }
+      ],
+      "linkedExistingAssetCandidate": null,
+      "reviewerNotes": "",
+      "status": "pending-superset-review"
+    },
+    {
+      "candidateId": "nqc-ru-batch-18-001",
+      "sourceLang": "ru",
+      "sourceImage": "screenshots/Screenshot 2026-04-19 at 19.00.51.png",
+      "effectiveQuestionType": "MCQ",
+      "promptRawJa": "При проезде дороги, которая резко сужается или соединяются в одну - как правильно проехать в этом случае?",
+      "promptGlossEn": "When driving on a road that suddenly narrows or merges into one lane, how should you proceed in this situation?",
+      "optionsRawJa": [
+        "A Первымы должны проехать водители с правой стороны",
+        "B Найти свободное место и проехать",
+        "C С каждой полосы проезжать по очереди по одной машине",
+        "D Перестроиться на левую полосу и объезжая всех, проехать затор"
+      ],
+      "optionsGlossEn": [
+        "A. Drivers on the right side should go first",
+        "B. Find a free space and proceed",
+        "C. Take turns from each lane, one car at a time",
+        "D. Move into the left lane and overtake everyone, bypassing the traffic jam"
+      ],
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "newQuestionLocalAnswerKey": "C",
+      "provisionalTopic": "proper-driving",
+      "provisionalSubtopics": [
+        "proper-driving:safe-driving"
+      ],
+      "topicConfidence": 1,
+      "topicSignals": [
+        {
+          "topic": "proper-driving",
+          "subtopic": "proper-driving:safe-driving",
+          "signal": "driving-action",
+          "weight": 1.2
+        }
+      ],
+      "linkedExistingAssetCandidate": null,
+      "reviewerNotes": "closest is 484",
+      "status": "pending-superset-review"
+    }
+  ]
+}

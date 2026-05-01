@@ -40,6 +40,29 @@ yarn-error.log*
 .local/
 qbank-tools/.local/
 
+# localization pipeline bulk/generated artifacts
+**/screenshots/
+imports/*/batch-*/screenshots/
+imports/*/batch-*/extraction-report.json
+imports/*/batch-*/intake.json
+imports/*/batch-*/matched.json
+imports/*/batch-*/review-needed.json
+imports/*/batch-*/unresolved.json
+qbank-tools/generated/staging/*.preview.json
+qbank-tools/generated/staging/*.merge-dry-run.json
+qbank-tools/generated/staging/*.template.json
+qbank-tools/generated/staging/*diagnostics*/
+qbank-tools/generated/archive/
+qbank-tools/generated/archive/**
+!qbank-tools/history/
+!qbank-tools/history/decisions/
+!qbank-tools/history/decisions/**
+!qbank-tools/generated/staging/*workbench-decisions.json
+!qbank-tools/generated/reports/*ship-readiness-report.json
+!qbank-tools/generated/reports/*ship-readiness-report.md
+!qbank-tools/generated/reports/full-batch-merge-review-*.json
+!qbank-tools/generated/reports/full-batch-merge-review-*.md
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts

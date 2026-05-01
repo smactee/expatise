@@ -1,0 +1,256 @@
+{
+  "generatedAt": "2026-05-01T07:29:28.864Z",
+  "lang": "ru",
+  "batchId": "batch-12",
+  "dataset": "2023-test1",
+  "sourceDecisionPath": "qbank-tools/generated/staging/new-question-decisions.ru.batch-12.json",
+  "items": [
+    {
+      "candidateId": "nqc-ru-batch-12-001",
+      "sourceLang": "ru",
+      "sourceImage": "screenshots/Screenshot 2026-04-19 at 18.56.11.png",
+      "effectiveQuestionType": "ROW",
+      "promptRawJa": "Если после подсчета баллов за нарушение, общий бал превышает 12, водитель обязан повторно пройти курс обучения и сдачи экзаменов на вождение.",
+      "promptGlossEn": "If, after calculating the penalty points, the total exceeds 12, the driver is required to retake the training course and driving exams.",
+      "optionsRawJa": [
+        "A Правильно",
+        "B Не правильно"
+      ],
+      "optionsGlossEn": [
+        "Correct",
+        "Incorrect"
+      ],
+      "correctKeyRaw": "A",
+      "correctAnswerRaw": "Правильно",
+      "newQuestionLocalAnswerKey": "A",
+      "provisionalTopic": "road-safety",
+      "provisionalSubtopics": [
+        "road-safety:license"
+      ],
+      "topicConfidence": 0,
+      "topicSignals": [],
+      "linkedExistingAssetCandidate": null,
+      "reviewerNotes": "Valid source row item about reaching/exceeding 12 penalty points and retaking study/exams. q0312/q0327 are related but cover license detention/refusal consequences, not this exact statement.",
+      "status": "pending-superset-review"
+    },
+    {
+      "candidateId": "nqc-ru-batch-12-002",
+      "sourceLang": "ru",
+      "sourceImage": "screenshots/Screenshot 2026-04-19 at 18.56.21 1.png",
+      "effectiveQuestionType": "ROW",
+      "promptRawJa": "Мигание зеленого сигнала светофора означает разрешение проехать перекресток.",
+      "promptGlossEn": "A flashing green traffic light means it is permitted to cross the intersection.",
+      "optionsRawJa": [
+        "А Правильно",
+        "Б Не правильно"
+      ],
+      "optionsGlossEn": [
+        "Correct",
+        "Incorrect"
+      ],
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "newQuestionLocalAnswerKey": "A",
+      "provisionalTopic": "traffic-signals",
+      "provisionalSubtopics": [
+        "traffic-signals:signal-lights"
+      ],
+      "topicConfidence": 1,
+      "topicSignals": [
+        {
+          "topic": "traffic-signals",
+          "subtopic": "traffic-signals:signal-lights",
+          "signal": "signal-light",
+          "weight": 1.35
+        },
+        {
+          "topic": "traffic-signals",
+          "subtopic": "traffic-signals:road-signs",
+          "signal": "sign-family",
+          "weight": 1.1
+        }
+      ],
+      "linkedExistingAssetCandidate": null,
+      "reviewerNotes": "No exact existing qid found for the flashing-green-light statement, and the source screenshot provides no reliable answer mark. Kept unresolved rather than creating a question with an uncertain answer.",
+      "status": "pending-superset-review"
+    },
+    {
+      "candidateId": "nqc-ru-batch-12-003",
+      "sourceLang": "ru",
+      "sourceImage": "screenshots/Screenshot 2026-04-19 at 18.56.24.png",
+      "effectiveQuestionType": "ROW",
+      "promptRawJa": "Дорожная полиция имеет право задержать автотранспортное средство в том случае, если водитель не имеет при себе паспорт.",
+      "promptGlossEn": "Does the road police have the right to detain a vehicle if the driver does not have a passport with them?",
+      "optionsRawJa": [
+        "A Правильно",
+        "B Не правильно"
+      ],
+      "optionsGlossEn": [
+        "A Correct",
+        "B Incorrect"
+      ],
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "newQuestionLocalAnswerKey": "B",
+      "provisionalTopic": null,
+      "provisionalSubtopics": [],
+      "topicConfidence": 0,
+      "topicSignals": [],
+      "linkedExistingAssetCandidate": null,
+      "reviewerNotes": "Source says passport/ID. q0341 is the matching Wrong row item: police cannot detain the vehicle only because the driver lacks an ID card.",
+      "status": "pending-superset-review"
+    },
+    {
+      "candidateId": "nqc-ru-batch-12-001",
+      "sourceLang": "ru",
+      "sourceImage": "screenshots/Screenshot 2026-04-19 at 18.56.00.png",
+      "effectiveQuestionType": "ROW",
+      "promptRawJa": "Разрешена остановка транспортных средств на пешеходном переходе, в том случае, когда нет места на стоянке.",
+      "promptGlossEn": "Is it allowed to stop vehicles on a pedestrian crossing if there is no parking space available?",
+      "optionsRawJa": [
+        "A Правильно",
+        "B Не правильно"
+      ],
+      "optionsGlossEn": [
+        "Correct",
+        "Incorrect"
+      ],
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "newQuestionLocalAnswerKey": "B",
+      "provisionalTopic": "proper-driving",
+      "provisionalSubtopics": [
+        "proper-driving:traffic-laws"
+      ],
+      "topicConfidence": 1,
+      "topicSignals": [
+        {
+          "topic": "proper-driving",
+          "subtopic": "proper-driving:safe-driving",
+          "signal": "driving-action",
+          "weight": 1.2
+        }
+      ],
+      "linkedExistingAssetCandidate": null,
+      "reviewerNotes": "Valid row item: stopping on a crosswalk because no parking space is available is Wrong. q0926 is related but is the opposite true statement, so using it would localize the wrong prompt polarity.",
+      "status": "pending-superset-review"
+    },
+    {
+      "candidateId": "nqc-ru-batch-12-002",
+      "sourceLang": "ru",
+      "sourceImage": "screenshots/Screenshot 2026-04-19 at 18.56.03.png",
+      "effectiveQuestionType": "ROW",
+      "promptRawJa": "При движении транспортных средств по кольцевой дороге, при нарушении одним водителем правил обгона, можно не уступать ему дорогу.",
+      "promptGlossEn": "When driving vehicles on a ring road, if one driver violates the overtaking rules, you do not have to yield to them.",
+      "optionsRawJa": [
+        "A Правильно",
+        "B Не правильно"
+      ],
+      "optionsGlossEn": [
+        "Correct",
+        "Incorrect"
+      ],
+      "correctKeyRaw": "B",
+      "correctAnswerRaw": "Не правильно",
+      "newQuestionLocalAnswerKey": "B",
+      "provisionalTopic": "road-safety",
+      "provisionalSubtopics": [
+        "road-safety:road-conditions"
+      ],
+      "topicConfidence": 0.681,
+      "topicSignals": [
+        {
+          "topic": "proper-driving",
+          "subtopic": "proper-driving:safe-driving",
+          "signal": "driving-action",
+          "weight": 1.2
+        },
+        {
+          "topic": "proper-driving",
+          "subtopic": "proper-driving:traffic-laws",
+          "signal": "traffic-law",
+          "weight": 1.15
+        },
+        {
+          "topic": "traffic-signals",
+          "subtopic": "traffic-signals:road-signs",
+          "signal": "sign-family",
+          "weight": 1.1
+        }
+      ],
+      "linkedExistingAssetCandidate": null,
+      "reviewerNotes": "",
+      "status": "pending-superset-review"
+    },
+    {
+      "candidateId": "nqc-ru-batch-12-003",
+      "sourceLang": "ru",
+      "sourceImage": "screenshots/Screenshot 2026-04-19 at 18.56.15.png",
+      "effectiveQuestionType": "ROW",
+      "promptRawJa": "Автоинспектор имеет право лишь оштрафовать водитель автотранспорта за подделку или изменение гос. номера.",
+      "promptGlossEn": "A traffic inspector only has the right to fine a driver for forging or changing a license plate.",
+      "optionsRawJa": [
+        "A Правильно",
+        "B Не правильно"
+      ],
+      "optionsGlossEn": [
+        "Correct",
+        "Incorrect"
+      ],
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "newQuestionLocalAnswerKey": "B",
+      "provisionalTopic": "road-safety",
+      "provisionalSubtopics": [
+        "road-safety:license"
+      ],
+      "topicConfidence": 1,
+      "topicSignals": [
+        {
+          "topic": "road-safety",
+          "subtopic": "road-safety:license",
+          "signal": "license",
+          "weight": 1.15
+        }
+      ],
+      "linkedExistingAssetCandidate": null,
+      "reviewerNotes": "Valid false row item: traffic police only fining for forged/altered license plates. q0293 is related but states the true detention authority, so this source prompt has opposite polarity.",
+      "status": "pending-superset-review"
+    },
+    {
+      "candidateId": "nqc-ru-batch-12-004",
+      "sourceLang": "ru",
+      "sourceImage": "screenshots/Screenshot 2026-04-19 at 18.56.30.png",
+      "effectiveQuestionType": "ROW",
+      "promptRawJa": "Следует обязательно сообщить о произошедшем ДТП и о количестве пострадавших в милицию.",
+      "promptGlossEn": "It is mandatory to report an accident and the number of injured persons to the police.",
+      "optionsRawJa": [
+        "А Правильно",
+        "В Не правильно"
+      ],
+      "optionsGlossEn": [
+        "Correct",
+        "Incorrect"
+      ],
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "newQuestionLocalAnswerKey": "A",
+      "provisionalTopic": "road-safety",
+      "provisionalSubtopics": [
+        "road-safety:accidents"
+      ],
+      "topicConfidence": 1,
+      "topicSignals": [
+        {
+          "topic": "road-safety",
+          "subtopic": "road-safety:accidents",
+          "signal": "accident",
+          "weight": 1.15
+        }
+      ],
+      "linkedExistingAssetCandidate": null,
+      "reviewerNotes": "",
+      "status": "pending-superset-review"
+    }
+  ]
+}

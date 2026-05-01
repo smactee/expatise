@@ -1,0 +1,48 @@
+{
+  "generatedAt": "2026-04-30T10:45:43.328Z",
+  "lang": "ru",
+  "batchId": "batch-15",
+  "dataset": "2023-test1",
+  "sourceDecisionPath": "qbank-tools/generated/staging/new-question-decisions.ru.batch-15.json",
+  "items": [
+    {
+      "candidateId": "nqc-ru-batch-15-001",
+      "sourceLang": "ru",
+      "sourceImage": "screenshots/Screenshot 2026-04-19 at 18.58.25.png",
+      "effectiveQuestionType": "MCQ",
+      "promptRawJa": "Водителю запрещено непрерывно управлять транспортным средством более:",
+      "promptGlossEn": "A driver is prohibited from continuously driving a vehicle for more than:",
+      "optionsRawJa": [
+        "A 4 ч",
+        "B 6 ч",
+        "C 8 ч",
+        "D 10 ч"
+      ],
+      "optionsGlossEn": [
+        "A 4 hours",
+        "B 6 hours",
+        "C 8 hours",
+        "D 10 hours"
+      ],
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "newQuestionLocalAnswerKey": "A",
+      "provisionalTopic": "proper-driving",
+      "provisionalSubtopics": [
+        "proper-driving:safe-driving"
+      ],
+      "topicConfidence": 1,
+      "topicSignals": [
+        {
+          "topic": "proper-driving",
+          "subtopic": "proper-driving:traffic-laws",
+          "signal": "traffic-law",
+          "weight": 1.15
+        }
+      ],
+      "linkedExistingAssetCandidate": null,
+      "reviewerNotes": "Valid MCQ asking the maximum continuous driving time; no exact master qid found. Related q0445 asks the required rest time after more than four hours.",
+      "status": "pending-superset-review"
+    }
+  ]
+}

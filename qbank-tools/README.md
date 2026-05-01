@@ -7,7 +7,9 @@ What was created:
 - `qbank-tools/generated/match-index.json` builds a match-ready lookup index from `questions.json`, `questions.raw.json`, `tags.patch.json`, and `translations.ko.json`.
 - `qbank-tools/generated/asset-rename-map.json` and `qbank-tools/generated/asset-rename-preview.csv` are dry-run previews only. They do not rename any production assets.
 - `imports/<lang>/batch-###/` holds one screenshot batch at a time with raw screenshots, `intake.json`, `extraction-report.json`, `matched.json`, `review-needed.json`, and `unresolved.json`.
-- `qbank-tools/generated/staging/` is where reviewed localization merges are staged before any production merge.
+- `qbank-tools/generated/staging/` is the temporary active workspace for the current batch or release-critical apply inputs only.
+- `qbank-tools/history/decisions/` preserves completed human/Codex/Notebook/script decision JSON so old batch intelligence remains available without crowding active staging.
+- `qbank-tools/generated/archive/` holds old regenerated artifacts, previews, dry-runs, diagnostics, and bulky cleanup outputs that are not active inputs.
 
 Run this first:
 
@@ -106,11 +108,20 @@ Completed-batch cleanup:
 npm run cleanup-localization-batch -- --lang ja --batch batch-001 --apply true
 ```
 
+To archive raw batch inputs/screenshots after a production merge:
+
+```bash
+npm run cleanup-localization-batch -- --lang ja --batch batch-001 --archive-imports true --apply true
+```
+
 Notes:
 
 - Active audit/source files stay in place under `imports/<lang>/<batch>/`.
-- Final review decisions, final answer-key decisions, final production merge reports, and `public/qbank/.../translations.<lang>.json` stay active.
+- With `--archive-imports true`, active audit/source files and screenshots are moved to `qbank-tools/generated/archive/<lang>/<batch>/imports/`.
+- Final review decisions, final answer-key decisions, final production merge reports, and `public/qbank/.../translations.<lang>.json` are preserved.
+- After a batch/release is no longer active, promote completed decision JSON from `qbank-tools/generated/staging/` to `qbank-tools/history/decisions/`; keep staging limited to the current batch/release apply inputs.
 - Regenerable review HTML, templates, dry-run previews, and intermediate batch reports are archived to `qbank-tools/generated/archive/<lang>/<batch>/`.
+- Screenshot folders and other heavy raw intake assets are local/generated artifacts and should not be tracked in Git.
 - Only obvious junk such as `.DS_Store` is deleted.
 
 Manual review before Phase 2:

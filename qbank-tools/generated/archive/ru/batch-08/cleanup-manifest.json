@@ -1,12 +1,13 @@
 {
-  "generatedAt": "2026-04-27T02:57:47.304Z",
+  "generatedAt": "2026-05-01T13:24:03.444Z",
   "lang": "ru",
   "batchId": "batch-08",
   "dataset": "2023-test1",
   "apply": true,
+  "archiveImports": true,
   "policy": {
     "keep": [
-      "Raw screenshot inputs and batch intake/audit JSON remain active in imports/<lang>/<batch>/.",
+      "Raw screenshot inputs and batch intake/audit JSON are archived under qbank-tools/generated/archive/<lang>/<batch>/imports/.",
       "Final decision JSON files remain active, including unresolved/existing-qid/single-item answer-key decisions.",
       "Staged new-question candidate files remain active and untouched.",
       "Final production merge reports remain active.",
@@ -14,6 +15,7 @@
     ],
     "archive": [
       "Review HTML files and manifests.",
+      "Raw screenshots and batch input/intermediate JSON when --archive-imports true is used.",
       "Template decision files.",
       "Preview and dry-run staging files that can be regenerated.",
       "Intermediate validation and batch-processing reports.",
@@ -24,65 +26,11 @@
     ]
   },
   "keepActive": [
-    "imports/ru/batch-08/extraction-report.json",
-    "imports/ru/batch-08/intake.json",
-    "imports/ru/batch-08/matched.json",
-    "imports/ru/batch-08/review-needed.json",
-    "imports/ru/batch-08/screenshots/.gitkeep",
-    "imports/ru/batch-08/screenshots/400.png",
-    "imports/ru/batch-08/screenshots/Screenshot 2026-04-19 at 18.52.41.png",
-    "imports/ru/batch-08/screenshots/Screenshot 2026-04-19 at 18.52.42.png",
-    "imports/ru/batch-08/screenshots/Screenshot 2026-04-19 at 18.52.43 1.png",
-    "imports/ru/batch-08/screenshots/Screenshot 2026-04-19 at 18.52.43.png",
-    "imports/ru/batch-08/screenshots/Screenshot 2026-04-19 at 18.52.44.png",
-    "imports/ru/batch-08/screenshots/Screenshot 2026-04-19 at 18.52.45 1.png",
-    "imports/ru/batch-08/screenshots/Screenshot 2026-04-19 at 18.52.45.png",
-    "imports/ru/batch-08/screenshots/Screenshot 2026-04-19 at 18.52.46.png",
-    "imports/ru/batch-08/screenshots/Screenshot 2026-04-19 at 18.52.47 1.png",
-    "imports/ru/batch-08/screenshots/Screenshot 2026-04-19 at 18.52.47.png",
-    "imports/ru/batch-08/screenshots/Screenshot 2026-04-19 at 18.52.48.png",
-    "imports/ru/batch-08/screenshots/Screenshot 2026-04-19 at 18.52.49.png",
-    "imports/ru/batch-08/screenshots/Screenshot 2026-04-19 at 18.52.50 1.png",
-    "imports/ru/batch-08/screenshots/Screenshot 2026-04-19 at 18.52.50.png",
-    "imports/ru/batch-08/screenshots/Screenshot 2026-04-19 at 18.52.51.png",
-    "imports/ru/batch-08/screenshots/Screenshot 2026-04-19 at 18.52.52.png",
-    "imports/ru/batch-08/screenshots/Screenshot 2026-04-19 at 18.52.53 1.png",
-    "imports/ru/batch-08/screenshots/Screenshot 2026-04-19 at 18.52.53.png",
-    "imports/ru/batch-08/screenshots/Screenshot 2026-04-19 at 18.52.54.png",
-    "imports/ru/batch-08/screenshots/Screenshot 2026-04-19 at 18.52.55 1.png",
-    "imports/ru/batch-08/screenshots/Screenshot 2026-04-19 at 18.52.55.png",
-    "imports/ru/batch-08/screenshots/Screenshot 2026-04-19 at 18.52.56.png",
-    "imports/ru/batch-08/screenshots/Screenshot 2026-04-19 at 18.52.57.png",
-    "imports/ru/batch-08/screenshots/Screenshot 2026-04-19 at 18.52.58 1.png",
-    "imports/ru/batch-08/screenshots/Screenshot 2026-04-19 at 18.52.58.png",
-    "imports/ru/batch-08/screenshots/Screenshot 2026-04-19 at 18.52.59.png",
-    "imports/ru/batch-08/screenshots/Screenshot 2026-04-19 at 18.53.00.png",
-    "imports/ru/batch-08/screenshots/Screenshot 2026-04-19 at 18.53.01.png",
-    "imports/ru/batch-08/screenshots/Screenshot 2026-04-19 at 18.53.02.png",
-    "imports/ru/batch-08/screenshots/Screenshot 2026-04-19 at 18.53.03.png",
-    "imports/ru/batch-08/screenshots/Screenshot 2026-04-19 at 18.53.04 1.png",
-    "imports/ru/batch-08/screenshots/Screenshot 2026-04-19 at 18.53.04.png",
-    "imports/ru/batch-08/screenshots/Screenshot 2026-04-19 at 18.53.05.png",
-    "imports/ru/batch-08/screenshots/Screenshot 2026-04-19 at 18.53.06.png",
-    "imports/ru/batch-08/screenshots/Screenshot 2026-04-19 at 18.53.07.png",
-    "imports/ru/batch-08/screenshots/Screenshot 2026-04-19 at 18.53.08 1.png",
-    "imports/ru/batch-08/screenshots/Screenshot 2026-04-19 at 18.53.08.png",
-    "imports/ru/batch-08/screenshots/Screenshot 2026-04-19 at 18.53.09.png",
-    "imports/ru/batch-08/screenshots/Screenshot 2026-04-19 at 18.53.10.png",
-    "imports/ru/batch-08/screenshots/Screenshot 2026-04-19 at 18.53.11.png",
-    "imports/ru/batch-08/screenshots/Screenshot 2026-04-19 at 18.53.12.png",
-    "imports/ru/batch-08/screenshots/Screenshot 2026-04-19 at 18.53.13.png",
-    "imports/ru/batch-08/screenshots/Screenshot 2026-04-19 at 18.53.14 1.png",
-    "imports/ru/batch-08/screenshots/Screenshot 2026-04-19 at 18.53.14.png",
-    "imports/ru/batch-08/screenshots/Screenshot 2026-04-19 at 18.53.15.png",
-    "imports/ru/batch-08/screenshots/Screenshot 2026-04-19 at 18.53.16.png",
-    "imports/ru/batch-08/screenshots/Screenshot 2026-04-19 at 18.53.17 1.png",
-    "imports/ru/batch-08/screenshots/Screenshot 2026-04-19 at 18.53.17.png",
-    "imports/ru/batch-08/screenshots/Screenshot 2026-04-19 at 18.53.18.png",
-    "imports/ru/batch-08/unresolved.json",
     "qbank-tools/generated/reports/apply-answer-key-decisions-ru-batch-08.json",
     "qbank-tools/generated/reports/apply-unresolved-decisions-ru-batch-08.json",
     "qbank-tools/generated/reports/apply-workbench-decisions-ru-batch-08.json",
+    "qbank-tools/generated/reports/full-batch-merge-review-ru-batch-08.json",
+    "qbank-tools/generated/reports/full-batch-merge-review-ru-batch-08.md",
     "qbank-tools/generated/reports/production-merge-ru-batch-08.json",
     "qbank-tools/generated/reports/production-merge-ru-batch-08.md",
     "qbank-tools/generated/staging/new-question-candidates.ru.batch-08.json",
@@ -97,13 +45,8 @@
   ],
   "archiveCandidates": [
     "qbank-tools/generated/reports/apply-workbench-explanations-ru-batch-08.json",
-    "qbank-tools/generated/reports/extract-screenshot-intake-ru-batch-08.json",
-    "qbank-tools/generated/reports/full-batch-merge-review-ru-batch-08.json",
-    "qbank-tools/generated/reports/full-batch-merge-review-ru-batch-08.md",
-    "qbank-tools/generated/reports/process-screenshot-batch-ru-batch-08.json",
     "qbank-tools/generated/reports/ru-batch-08-workbench.html",
     "qbank-tools/generated/reports/validate-localization-batch-ru-batch-08.json",
-    "qbank-tools/generated/reports/validate-screenshot-intake-ru-batch-08.json",
     "qbank-tools/generated/staging/follow-up-review.ru.batch-08.json",
     "qbank-tools/generated/staging/follow-up-review.ru.batch-08.unresolved.json",
     "qbank-tools/generated/staging/translations.ru.batch-08.existing.preview.json",
@@ -116,78 +59,53 @@
   "archived": [
     {
       "from": "qbank-tools/generated/reports/apply-workbench-explanations-ru-batch-08.json",
-      "to": "qbank-tools/generated/archive/ru/batch-08/reports/apply-workbench-explanations-ru-batch-08.json",
-      "status": "archived"
-    },
-    {
-      "from": "qbank-tools/generated/reports/extract-screenshot-intake-ru-batch-08.json",
-      "to": "qbank-tools/generated/archive/ru/batch-08/reports/extract-screenshot-intake-ru-batch-08.json",
-      "status": "archived"
-    },
-    {
-      "from": "qbank-tools/generated/reports/full-batch-merge-review-ru-batch-08.json",
-      "to": "qbank-tools/generated/archive/ru/batch-08/reports/full-batch-merge-review-ru-batch-08.json",
-      "status": "archived"
-    },
-    {
-      "from": "qbank-tools/generated/reports/full-batch-merge-review-ru-batch-08.md",
-      "to": "qbank-tools/generated/archive/ru/batch-08/reports/full-batch-merge-review-ru-batch-08.md",
-      "status": "archived"
-    },
-    {
-      "from": "qbank-tools/generated/reports/process-screenshot-batch-ru-batch-08.json",
-      "to": "qbank-tools/generated/archive/ru/batch-08/reports/process-screenshot-batch-ru-batch-08.json",
-      "status": "archived"
+      "to": "qbank-tools/generated/archive/ru/batch-08/reports/apply-workbench-explanations-ru-batch-08.archive-1.json",
+      "status": "archived-with-versioned-name"
     },
     {
       "from": "qbank-tools/generated/reports/ru-batch-08-workbench.html",
-      "to": "qbank-tools/generated/archive/ru/batch-08/reports/ru-batch-08-workbench.html",
-      "status": "archived"
+      "to": "qbank-tools/generated/archive/ru/batch-08/reports/ru-batch-08-workbench.archive-1.html",
+      "status": "archived-with-versioned-name"
     },
     {
       "from": "qbank-tools/generated/reports/validate-localization-batch-ru-batch-08.json",
-      "to": "qbank-tools/generated/archive/ru/batch-08/reports/validate-localization-batch-ru-batch-08.json",
-      "status": "archived"
-    },
-    {
-      "from": "qbank-tools/generated/reports/validate-screenshot-intake-ru-batch-08.json",
-      "to": "qbank-tools/generated/archive/ru/batch-08/reports/validate-screenshot-intake-ru-batch-08.json",
-      "status": "archived"
+      "to": "qbank-tools/generated/archive/ru/batch-08/reports/validate-localization-batch-ru-batch-08.archive-1.json",
+      "status": "archived-with-versioned-name"
     },
     {
       "from": "qbank-tools/generated/staging/follow-up-review.ru.batch-08.json",
-      "to": "qbank-tools/generated/archive/ru/batch-08/staging/follow-up-review.ru.batch-08.json",
-      "status": "archived"
+      "to": "qbank-tools/generated/archive/ru/batch-08/staging/follow-up-review.ru.batch-08.archive-1.json",
+      "status": "archived-with-versioned-name"
     },
     {
       "from": "qbank-tools/generated/staging/follow-up-review.ru.batch-08.unresolved.json",
-      "to": "qbank-tools/generated/archive/ru/batch-08/staging/follow-up-review.ru.batch-08.unresolved.json",
-      "status": "archived"
+      "to": "qbank-tools/generated/archive/ru/batch-08/staging/follow-up-review.ru.batch-08.unresolved.archive-1.json",
+      "status": "archived-with-versioned-name"
     },
     {
       "from": "qbank-tools/generated/staging/translations.ru.batch-08.existing.preview.json",
-      "to": "qbank-tools/generated/archive/ru/batch-08/staging/translations.ru.batch-08.existing.preview.json",
-      "status": "archived"
+      "to": "qbank-tools/generated/archive/ru/batch-08/staging/translations.ru.batch-08.existing.preview.archive-1.json",
+      "status": "archived-with-versioned-name"
     },
     {
       "from": "qbank-tools/generated/staging/translations.ru.batch-08.full.merge-dry-run.json",
-      "to": "qbank-tools/generated/archive/ru/batch-08/staging/translations.ru.batch-08.full.merge-dry-run.json",
-      "status": "archived"
+      "to": "qbank-tools/generated/archive/ru/batch-08/staging/translations.ru.batch-08.full.merge-dry-run.archive-1.json",
+      "status": "archived-with-versioned-name"
     },
     {
       "from": "qbank-tools/generated/staging/translations.ru.batch-08.full.preview.json",
-      "to": "qbank-tools/generated/archive/ru/batch-08/staging/translations.ru.batch-08.full.preview.json",
-      "status": "archived"
+      "to": "qbank-tools/generated/archive/ru/batch-08/staging/translations.ru.batch-08.full.preview.archive-1.json",
+      "status": "archived-with-versioned-name"
     },
     {
       "from": "qbank-tools/generated/staging/translations.ru.batch-08.preview.json",
-      "to": "qbank-tools/generated/archive/ru/batch-08/staging/translations.ru.batch-08.preview.json",
-      "status": "archived"
+      "to": "qbank-tools/generated/archive/ru/batch-08/staging/translations.ru.batch-08.preview.archive-1.json",
+      "status": "archived-with-versioned-name"
     },
     {
       "from": "qbank-tools/generated/staging/translations.ru.batch-08.rescued.preview.json",
-      "to": "qbank-tools/generated/archive/ru/batch-08/staging/translations.ru.batch-08.rescued.preview.json",
-      "status": "archived"
+      "to": "qbank-tools/generated/archive/ru/batch-08/staging/translations.ru.batch-08.rescued.preview.archive-1.json",
+      "status": "archived-with-versioned-name"
     }
   ],
   "deleted": []

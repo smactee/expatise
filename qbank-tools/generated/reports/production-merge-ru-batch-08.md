@@ -1,10 +1,10 @@
 # Production Merge Report · ru batch-08
 
 - Dataset: 2023-test1
-- Qids merged: 44
-- Production translated count before merge: 283
-- Production translated count after merge: 326
-- Production overlap count: 1
+- Qids merged: 45
+- Production translated count before merge: 811
+- Production translated count after merge: 813
+- Production overlap count: 43
 - Runtime support already existed: yes
 - Runtime support added: no
 - Ready for next batch: yes
@@ -20,10 +20,11 @@
 - q0076
 - q0129
 - q0140
-- q0162
+- q0176
 - q0189
 - q0207
 - q0212
+- q0245
 - q0256
 - q0269
 - q0330
@@ -66,10 +67,11 @@
 - q0076: ROW, order=ok, key=n/a, mapped=ok
 - q0129: MCQ, order=ok, key=D, mapped=ok
 - q0140: MCQ, order=ok, key=A, mapped=ok
-- q0162: MCQ, order=ok, key=D, mapped=ok
+- q0176: MCQ, order=ok, key=B, mapped=ok
 - q0189: ROW, order=ok, key=n/a, mapped=ok
 - q0207: ROW, order=ok, key=n/a, mapped=ok
 - q0212: ROW, order=ok, key=n/a, mapped=ok
+- q0245: ROW, order=ok, key=n/a, mapped=ok
 - q0256: ROW, order=ok, key=n/a, mapped=ok
 - q0269: ROW, order=ok, key=n/a, mapped=ok
 - q0330: ROW, order=ok, key=n/a, mapped=ok
@@ -79,7 +81,7 @@
 - q0373: MCQ, order=ok, key=A, mapped=ok
 - q0378: MCQ, order=ok, key=B, mapped=ok
 - q0460: MCQ, order=ok, key=B, mapped=ok
-- q0475: MCQ, order=ok, key=C, mapped=ok
+- q0475: MCQ, order=ok, key=D, mapped=ok
 - q0493: MCQ, order=ok, key=B, mapped=ok
 - q0498: MCQ, order=ok, key=A, mapped=ok
 - q0527: ROW, order=ok, key=n/a, mapped=ok
@@ -99,7 +101,7 @@
 - q0636: ROW, order=ok, key=n/a, mapped=ok
 - q0680: MCQ, order=ok, key=A, mapped=ok
 - q0706: MCQ, order=ok, key=A, mapped=ok
-- q0707: MCQ, order=ok, key=C, mapped=ok
+- q0707: MCQ, order=ok, key=A, mapped=ok
 - q0722: MCQ, order=ok, key=B, mapped=ok
 - q0748: MCQ, order=ok, key=C, mapped=ok
 - q0784: MCQ, order=ok, key=D, mapped=ok

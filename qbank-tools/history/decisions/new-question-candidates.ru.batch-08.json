@@ -1,0 +1,180 @@
+{
+  "generatedAt": "2026-05-01T13:16:06.319Z",
+  "lang": "ru",
+  "batchId": "batch-08",
+  "dataset": "2023-test1",
+  "sourceDecisionPath": "qbank-tools/generated/staging/new-question-decisions.ru.batch-08.json",
+  "items": [
+    {
+      "candidateId": "nqc-ru-batch-08-001",
+      "sourceLang": "ru",
+      "sourceImage": "screenshots/Screenshot 2026-04-19 at 18.53.08.png",
+      "effectiveQuestionType": "ROW",
+      "promptRawJa": "При движении транспортного средства на автомагистрали, разрешена остановка на дороге въезда.",
+      "promptGlossEn": "When driving a vehicle on a motorway, is stopping on the entry road allowed?",
+      "optionsRawJa": [
+        "A Правильно",
+        "B Не правильно"
+      ],
+      "optionsGlossEn": [
+        "Correct",
+        "Incorrect"
+      ],
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "newQuestionLocalAnswerKey": "B",
+      "provisionalTopic": "proper-driving",
+      "provisionalSubtopics": [
+        "proper-driving:safe-driving"
+      ],
+      "topicConfidence": 0,
+      "topicSignals": [],
+      "linkedExistingAssetCandidate": null,
+      "reviewerNotes": "",
+      "status": "pending-superset-review"
+    },
+    {
+      "candidateId": "nqc-ru-batch-08-001",
+      "sourceLang": "ru",
+      "sourceImage": "screenshots/Screenshot 2026-04-19 at 18.52.41.png",
+      "effectiveQuestionType": "MCQ",
+      "promptRawJa": "Что следует сделать водителю спец. транспорта, имеющему преимущество на дороге, на перекрестке, если на его пути встречается другой транспорт?",
+      "promptGlossEn": "What should the driver of a special vehicle with priority on the road do at an intersection if another vehicle is encountered?",
+      "optionsRawJa": [
+        "A) Быстро проехать",
+        "B) Заранее ускориться и проехать",
+        "C) Проехать и не уступать дорогу",
+        "D) Замедлить ход и уступить, также остановиться при необходимости"
+      ],
+      "optionsGlossEn": [
+        "Quickly drive through",
+        "Accelerate in advance and drive through",
+        "Drive through and do not give way",
+        "Slow down and yield, and also stop if necessary"
+      ],
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "newQuestionLocalAnswerKey": "D",
+      "provisionalTopic": "proper-driving",
+      "provisionalSubtopics": [
+        "proper-driving:safe-driving",
+        "proper-driving:traffic-laws",
+        "traffic-signals:road-signs"
+      ],
+      "topicConfidence": 0.681,
+      "topicSignals": [
+        {
+          "topic": "proper-driving",
+          "subtopic": "proper-driving:safe-driving",
+          "signal": "driving-action",
+          "weight": 1.2
+        },
+        {
+          "topic": "proper-driving",
+          "subtopic": "proper-driving:traffic-laws",
+          "signal": "traffic-law",
+          "weight": 1.15
+        },
+        {
+          "topic": "traffic-signals",
+          "subtopic": "traffic-signals:road-signs",
+          "signal": "sign-family",
+          "weight": 1.1
+        }
+      ],
+      "linkedExistingAssetCandidate": null,
+      "reviewerNotes": "",
+      "status": "pending-superset-review"
+    },
+    {
+      "candidateId": "nqc-ru-batch-08-002",
+      "sourceLang": "ru",
+      "sourceImage": "screenshots/Screenshot 2026-04-19 at 18.52.55 1.png",
+      "effectiveQuestionType": "MCQ",
+      "promptRawJa": "Функция указательного знака заключается в:",
+      "promptGlossEn": "The function of a guide sign is:",
+      "optionsRawJa": [
+        "A Ограничение проезда транспортного средства и пешеходов",
+        "B Указание движения транспортного средства и пешеходов",
+        "C Сообщение информации о направлении",
+        "D Предупреждение об опасности"
+      ],
+      "optionsGlossEn": [
+        "A Limiting the passage of vehicles and pedestrians",
+        "B Indicating the movement of vehicles and pedestrians",
+        "C Providing information about direction",
+        "D Warning about danger"
+      ],
+      "correctKeyRaw": "C",
+      "correctAnswerRaw": "Сообщение информации о направлении",
+      "newQuestionLocalAnswerKey": "C",
+      "provisionalTopic": "traffic-signals",
+      "provisionalSubtopics": [
+        "traffic-signals:road-signs"
+      ],
+      "topicConfidence": 1,
+      "topicSignals": [
+        {
+          "topic": "traffic-signals",
+          "subtopic": "traffic-signals:road-signs",
+          "signal": "sign-family",
+          "weight": 1.1
+        }
+      ],
+      "linkedExistingAssetCandidate": null,
+      "reviewerNotes": "",
+      "status": "pending-superset-review"
+    },
+    {
+      "candidateId": "nqc-ru-batch-08-003",
+      "sourceLang": "ru",
+      "sourceImage": "screenshots/Screenshot 2026-04-19 at 18.53.08 1.png",
+      "effectiveQuestionType": "MCQ",
+      "promptRawJa": "За какое нарушение начисляется 12 баллов?",
+      "promptGlossEn": "For which violation are 12 points awarded?",
+      "optionsRawJa": [
+        "A Управление транспортным средством с испорченным гос.номером",
+        "B Управление транспортным средством во время изъятия водительского удостоверения",
+        "C Получение водительского удостоверения обманным путем",
+        "D Управление транспортным средством без правил уступки школьному автобусу"
+      ],
+      "optionsGlossEn": [
+        "A Driving a vehicle with a damaged license plate",
+        "B Driving a vehicle while the driver's license is confiscated",
+        "C Obtaining a driver's license by fraudulent means",
+        "D Failing to yield to a school bus while driving"
+      ],
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "newQuestionLocalAnswerKey": "C",
+      "provisionalTopic": "road-safety",
+      "provisionalSubtopics": [
+        "road-safety:license"
+      ],
+      "topicConfidence": 0.511,
+      "topicSignals": [
+        {
+          "topic": "proper-driving",
+          "subtopic": "proper-driving:safe-driving",
+          "signal": "driving-action",
+          "weight": 1.2
+        },
+        {
+          "topic": "road-safety",
+          "subtopic": "road-safety:license",
+          "signal": "license",
+          "weight": 1.15
+        },
+        {
+          "topic": "traffic-signals",
+          "subtopic": "traffic-signals:road-signs",
+          "signal": "sign-family",
+          "weight": 1.1
+        }
+      ],
+      "linkedExistingAssetCandidate": null,
+      "reviewerNotes": "",
+      "status": "pending-superset-review"
+    }
+  ]
+}

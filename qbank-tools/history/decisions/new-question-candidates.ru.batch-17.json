@@ -1,0 +1,115 @@
+{
+  "generatedAt": "2026-05-01T02:28:40.855Z",
+  "lang": "ru",
+  "batchId": "batch-17",
+  "dataset": "2023-test1",
+  "sourceDecisionPath": "qbank-tools/generated/staging/new-question-decisions.ru.batch-17.json",
+  "items": [
+    {
+      "candidateId": "nqc-ru-batch-17-001",
+      "sourceLang": "ru",
+      "sourceImage": "screenshots/Screenshot 2026-04-19 at 18.59.49.png",
+      "effectiveQuestionType": "MCQ",
+      "promptRawJa": "При покидании места ДТП начисляется:",
+      "promptGlossEn": "For leaving the scene of an accident, how many points are given?",
+      "optionsRawJa": [
+        "A 12 баллов",
+        "B 6 баллов",
+        "C 3 балла",
+        "D 2 балла"
+      ],
+      "optionsGlossEn": [
+        "12 points",
+        "6 points",
+        "3 points",
+        "2 points"
+      ],
+      "correctKeyRaw": "A",
+      "correctAnswerRaw": "12 баллов",
+      "newQuestionLocalAnswerKey": "A",
+      "provisionalTopic": "proper-driving",
+      "provisionalSubtopics": [
+        "proper-driving:traffic-laws"
+      ],
+      "topicConfidence": 0.511,
+      "topicSignals": [
+        {
+          "topic": "road-safety",
+          "subtopic": "road-safety:accidents",
+          "signal": "accident",
+          "weight": 1.15
+        },
+        {
+          "topic": "traffic-signals",
+          "subtopic": "traffic-signals:road-signs",
+          "signal": "sign-family",
+          "weight": 1.1
+        }
+      ],
+      "linkedExistingAssetCandidate": null,
+      "reviewerNotes": "Leaving accident scene without crime maps to q0495; source option order puts 12 points at A.",
+      "status": "pending-superset-review"
+    },
+    {
+      "candidateId": "nqc-ru-batch-17-002",
+      "sourceLang": "ru",
+      "sourceImage": "screenshots/Screenshot 2026-04-19 at 19.00.08 1.png",
+      "effectiveQuestionType": "MCQ",
+      "promptRawJa": "Что означает данный знак?",
+      "promptGlossEn": "What does this sign mean?",
+      "optionsRawJa": [
+        "A Поворот налево запрещен",
+        "B Въезд в левую полосу запрещен",
+        "C Разворот автомобиля запрещён",
+        "D Перестраивание на левую полосу запрещено"
+      ],
+      "optionsGlossEn": [
+        "A Left turn prohibited",
+        "B Entry into the left lane prohibited",
+        "C U-turn prohibited",
+        "D Lane change to the left prohibited"
+      ],
+      "correctKeyRaw": "A",
+      "correctAnswerRaw": "Поворот налево запрещен",
+      "newQuestionLocalAnswerKey": "A",
+      "provisionalTopic": "traffic-signals",
+      "provisionalSubtopics": [
+        "traffic-signals:road-signs",
+        "proper-driving:traffic-laws"
+      ],
+      "topicConfidence": 0.627,
+      "topicSignals": [
+        {
+          "topic": "traffic-signals",
+          "subtopic": "traffic-signals:road-signs",
+          "signal": "sign-family",
+          "weight": 1.4
+        },
+        {
+          "topic": "proper-driving",
+          "subtopic": "proper-driving:safe-driving",
+          "signal": "driving-action",
+          "weight": 1.2
+        },
+        {
+          "topic": "proper-driving",
+          "subtopic": "proper-driving:traffic-laws",
+          "signal": "traffic-law",
+          "weight": 1.15
+        }
+      ],
+      "linkedExistingAssetCandidate": {
+        "qid": "q0839",
+        "number": 839,
+        "score": 70.538,
+        "currentAssetSrc": "/qbank/2023-test1/images/img_5fa8e1a6acb74b94e63b42dd28fa6504.jpeg",
+        "assetHashes": [
+          "5fa8e1a6acb74b94e63b42dd28fa6504"
+        ],
+        "status": "unconfirmed-existing-production-asset"
+      },
+      "reviewerNotes": "Valid no-left-turn sign item; no exact master qid found. Closest prohibitory-sign qids are different signs.",
+      "status": "pending-superset-review"
+    }
+  ]
+}

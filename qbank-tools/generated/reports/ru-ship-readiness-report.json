@@ -1,0 +1,1688 @@
+{
+  "generatedAt": "2026-05-01T13:47:59.542Z",
+  "lang": "ru",
+  "dataset": "2023-test1",
+  "recommendation": "ship",
+  "safeEnoughToShip": true,
+  "rationale": "No critical production-data integrity failures were found. Coverage is partial, and q0245/q0176 remain staged-but-not-production, but those are release caveats rather than corrupt production data.",
+  "sourcePaths": {
+    "masterQuestions": "public/qbank/2023-test1/questions.json",
+    "rawMasterQuestions": "public/qbank/2023-test1/questions.raw.json",
+    "productionTranslations": "public/qbank/2023-test1/translations.ru.json",
+    "discrepancyApplyPreview": "qbank-tools/generated/reports/ru-discrepancy-apply-preview.json",
+    "batch08ApplyReport": "qbank-tools/generated/reports/apply-workbench-decisions-ru-batch-08.json",
+    "batch08FullMergeReview": "qbank-tools/generated/reports/full-batch-merge-review-ru-batch-08.json",
+    "batch08FullPreview": "qbank-tools/generated/staging/translations.ru.batch-08.full.preview.json",
+    "batch08FullDryRun": "qbank-tools/generated/staging/translations.ru.batch-08.full.merge-dry-run.json",
+    "createNewStage": "qbank-tools/generated/staging/ru-discrepancy-create-new-candidates.json",
+    "missingProductionStage": "qbank-tools/generated/staging/ru-discrepancy-missing-production-merge-candidates.json"
+  },
+  "fileHashes": {
+    "productionTranslationsSha256": "e1f6fe6f3c9913564089df68f023af380e5a006deae675127b2df68139900c1b",
+    "masterQuestionsSha256": "f25216798cd6d0d891985c33bc465200538b54a76b6251a4594ea556bdd4908d",
+    "rawMasterQuestionsSha256": "07f0b60d1db1df9ab13d9b22ff3c3716012606ab1e86ac8a462a0d1b8b9de960"
+  },
+  "counts": {
+    "masterQids": 985,
+    "rawMasterQids": 985,
+    "rawOnlyMasterQids": [],
+    "productionRussianTranslations": 813,
+    "productionCoveragePercent": 82.54,
+    "missingQidsComparedToQuestionsJson": 172,
+    "extraQidsNotInQuestionsJson": 0,
+    "masterTypeCounts": {
+      "row": 410,
+      "mcq": 575
+    },
+    "translatedTypeCounts": {
+      "row": 305,
+      "mcq": 508
+    }
+  },
+  "missingQids": [
+    "q0004",
+    "q0021",
+    "q0025",
+    "q0034",
+    "q0039",
+    "q0041",
+    "q0043",
+    "q0048",
+    "q0083",
+    "q0084",
+    "q0102",
+    "q0103",
+    "q0127",
+    "q0133",
+    "q0135",
+    "q0136",
+    "q0156",
+    "q0158",
+    "q0168",
+    "q0186",
+    "q0206",
+    "q0211",
+    "q0213",
+    "q0247",
+    "q0264",
+    "q0265",
+    "q0275",
+    "q0277",
+    "q0286",
+    "q0287",
+    "q0294",
+    "q0298",
+    "q0300",
+    "q0306",
+    "q0325",
+    "q0327",
+    "q0332",
+    "q0335",
+    "q0338",
+    "q0339",
+    "q0341",
+    "q0343",
+    "q0344",
+    "q0349",
+    "q0350",
+    "q0351",
+    "q0353",
+    "q0354",
+    "q0356",
+    "q0358",
+    "q0360",
+    "q0361",
+    "q0363",
+    "q0394",
+    "q0403",
+    "q0431",
+    "q0433",
+    "q0444",
+    "q0462",
+    "q0473",
+    "q0483",
+    "q0484",
+    "q0492",
+    "q0494",
+    "q0495",
+    "q0496",
+    "q0502",
+    "q0505",
+    "q0506",
+    "q0509",
+    "q0515",
+    "q0518",
+    "q0556",
+    "q0562",
+    "q0569",
+    "q0581",
+    "q0582",
+    "q0610",
+    "q0620",
+    "q0633",
+    "q0637",
+    "q0645",
+    "q0679",
+    "q0695",
+    "q0698",
+    "q0723",
+    "q0747",
+    "q0757",
+    "q0769",
+    "q0801",
+    "q0819",
+    "q0833",
+    "q0885",
+    "q0894",
+    "q0898",
+    "q0900",
+    "q0901",
+    "q0902",
+    "q0903",
+    "q0904",
+    "q0905",
+    "q0906",
+    "q0907",
+    "q0908",
+    "q0909",
+    "q0910",
+    "q0911",
+    "q0912",
+    "q0913",
+    "q0914",
+    "q0915",
+    "q0916",
+    "q0917",
+    "q0918",
+    "q0919",
+    "q0920",
+    "q0922",
+    "q0924",
+    "q0925",
+    "q0926",
+    "q0928",
+    "q0930",
+    "q0931",
+    "q0932",
+    "q0933",
+    "q0934",
+    "q0935",
+    "q0936",
+    "q0937",
+    "q0938",
+    "q0939",
+    "q0940",
+    "q0941",
+    "q0942",
+    "q0943",
+    "q0944",
+    "q0945",
+    "q0946",
+    "q0947",
+    "q0948",
+    "q0949",
+    "q0950",
+    "q0951",
+    "q0952",
+    "q0953",
+    "q0954",
+    "q0955",
+    "q0956",
+    "q0957",
+    "q0958",
+    "q0959",
+    "q0960",
+    "q0961",
+    "q0962",
+    "q0963",
+    "q0964",
+    "q0965",
+    "q0966",
+    "q0967",
+    "q0968",
+    "q0969",
+    "q0970",
+    "q0971",
+    "q0972",
+    "q0976",
+    "q0977",
+    "q0979",
+    "q0980",
+    "q0982",
+    "q0983",
+    "q0984",
+    "q0985"
+  ],
+  "extraQids": [],
+  "validation": {
+    "invalidLocaleAnswerKeys": [],
+    "invalidRowAnswers": [],
+    "translatedMcqMissingOptions": [],
+    "translatedMcqMissingLocaleAnswerKey": [],
+    "localeAnswerKeyNotInSourceOrder": [],
+    "rowTranslationsWithMcqAnswerKey": [],
+    "counts": {
+      "invalidLocaleAnswerKeys": 0,
+      "invalidRowAnswers": 0,
+      "translatedMcqMissingOptions": 0,
+      "translatedMcqMissingLocaleAnswerKey": 0,
+      "localeAnswerKeyNotInSourceOrder": 0,
+      "rowTranslationsWithMcqAnswerKey": 0
+    }
+  },
+  "duplicateQidConflicts": {
+    "productionJsonObjectDuplicateKeysDetectable": false,
+    "productionExtraQidCount": 0,
+    "discrepancyDuplicateApprovalItems": 44,
+    "note": "Duplicate object keys cannot be preserved after JSON.parse; this audit checks production extra qids and discrepancy duplicate-approval accounting."
+  },
+  "watchedQids": {
+    "q0245": {
+      "inMasterQuestions": true,
+      "inProduction": true,
+      "inBatch08FullPreview": false,
+      "inBatch08FullDryRun": false,
+      "inMissingProductionStage": true,
+      "stageItem": {
+        "id": "missing-production-qid:batch-08:9:q0245",
+        "batch": "batch-08",
+        "qid": "q0245",
+        "screenshotPath": "screenshots/Screenshot 2026-04-19 at 18.52.47.png",
+        "localeAnswerKey": "Right",
+        "productionStatus": "missing from production translations",
+        "eligibleNow": true,
+        "sourcePreviewPath": "qbank-tools/generated/staging/translations.ru.batch-08.full.preview.json",
+        "reason": "approved qid is missing from production and a staging/archive preview entry was found",
+        "confirmAmbiguousDuplicateLabel": false
+      }
+    },
+    "q0176": {
+      "inMasterQuestions": true,
+      "inProduction": true,
+      "inBatch08FullPreview": false,
+      "inBatch08FullDryRun": false,
+      "inMissingProductionStage": true,
+      "stageItem": {
+        "id": "missing-production-qid:batch-08:44:q0176",
+        "batch": "batch-08",
+        "qid": "q0176",
+        "screenshotPath": "screenshots/Screenshot 2026-04-19 at 18.53.17.png",
+        "localeAnswerKey": "B",
+        "productionStatus": "missing from production translations",
+        "eligibleNow": true,
+        "sourcePreviewPath": "qbank-tools/generated/staging/translations.ru.batch-08.full.preview.json",
+        "reason": "approved qid is missing from production and a staging/archive preview entry was found",
+        "confirmAmbiguousDuplicateLabel": false
+      }
+    }
+  },
+  "batch08": {
+    "applyCounts": {
+      "autoMatched": 0,
+      "reviewedFinalized": 43,
+      "rescuedUnresolved": 2,
+      "newQuestionCandidates": 4,
+      "sourceExplanationUpdates": 0,
+      "finalMergeReadyTotal": 45,
+      "blockerCount": 0
+    },
+    "applySafeToMergeNextStep": true,
+    "applyBlockers": [],
+    "fullReviewSafeToMergeNextStep": true,
+    "fullReviewBlockers": [],
+    "safeToMergeNextStep": true,
+    "fullPreviewQidCount": 0,
+    "fullDryRunProductionQidCount": 0,
+    "fullPreviewContainsQ0245": false,
+    "fullPreviewContainsQ0176": false,
+    "fullDryRunContainsQ0245": false,
+    "fullDryRunContainsQ0176": false
+  },
+  "discrepancy": {
+    "applied": true,
+    "summary": {
+      "totalItems": 96,
+      "validItemCount": 96,
+      "invalidItemCount": 0,
+      "skippedItemCount": 26,
+      "applyEligibleCount": 70,
+      "approveExistingQidCount": 18,
+      "createNewQuestionCount": 33,
+      "keepUnresolvedCount": 0,
+      "deleteQuestionCount": 45,
+      "ignoreReconciliationCount": 0,
+      "countsByAction": {
+        "approve": 18,
+        "new": 33,
+        "unresolved": 0,
+        "delete": 45,
+        "ignore": 0
+      },
+      "countsByCategory": {
+        "create-new": 30,
+        "unresolved": 16,
+        "deleted": 4,
+        "duplicate-approval": 44,
+        "missing-production-qid": 2
+      },
+      "countsByBatch": {
+        "batch-001": 5,
+        "batch-03": 4,
+        "batch-05": 5,
+        "batch-06": 2,
+        "batch-07": 6,
+        "batch-08": 7,
+        "batch-10": 8,
+        "batch-11": 7,
+        "batch-12": 12,
+        "batch-13": 5,
+        "batch-15": 6,
+        "batch-16": 4,
+        "batch-17": 5,
+        "batch-18": 8,
+        "batch-09": 4,
+        "batch-14": 3,
+        "batch-002": 3,
+        "batch-04": 2
+      },
+      "missingProductionQidMergeNeededCount": 2,
+      "autoNormalizedRowAnswerCount": 35,
+      "answerKeyLetterMismatchCount": 21,
+      "manuallyConfirmedDuplicateLabelCount": 2,
+      "corruptedSourceLabelCount": 47,
+      "corruptedSourceLabelBlockedCount": 0,
+      "riskyOrAmbiguousCount": 85
+    },
+    "skippedCount": 26,
+    "createNewRightWrongStagedOnlyCount": 20,
+    "createNewRightWrongStagedOnlyItems": [
+      {
+        "id": "create-new:batch-03:1:screenshots/150.png",
+        "batch": "batch-03",
+        "screenshotPath": "screenshots/150.png",
+        "finalDecision": "new",
+        "approvedQid": "",
+        "localeAnswerKey": "Right",
+        "riskLevel": "low",
+        "recommendation": "keep current decision",
+        "skipReasons": [
+          "create-new Right/Wrong items cannot be safely represented by the existing batch apply pipeline; staged separately only"
+        ]
+      },
+      {
+        "id": "create-new:batch-05:50:screenshots/Screenshot 2026-04-19 at 18.50.01.png",
+        "batch": "batch-05",
+        "screenshotPath": "screenshots/Screenshot 2026-04-19 at 18.50.01.png",
+        "finalDecision": "new",
+        "approvedQid": "",
+        "localeAnswerKey": "Right",
+        "riskLevel": "low",
+        "recommendation": "keep current decision",
+        "skipReasons": [
+          "create-new Right/Wrong items cannot be safely represented by the existing batch apply pipeline; staged separately only"
+        ]
+      },
+      {
+        "id": "create-new:batch-07:41:screenshots/350.png",
+        "batch": "batch-07",
+        "screenshotPath": "screenshots/350.png",
+        "finalDecision": "new",
+        "approvedQid": "",
+        "localeAnswerKey": "Wrong",
+        "riskLevel": "low",
+        "recommendation": "keep current decision",
+        "skipReasons": [
+          "create-new Right/Wrong items cannot be safely represented by the existing batch apply pipeline; staged separately only"
+        ]
+      },
+      {
+        "id": "create-new:batch-07:47:screenshots/Screenshot 2026-04-19 at 18.52.16.png",
+        "batch": "batch-07",
+        "screenshotPath": "screenshots/Screenshot 2026-04-19 at 18.52.16.png",
+        "finalDecision": "new",
+        "approvedQid": "",
+        "localeAnswerKey": "Right",
+        "riskLevel": "low",
+        "recommendation": "keep current decision",
+        "skipReasons": [
+          "create-new Right/Wrong items cannot be safely represented by the existing batch apply pipeline; staged separately only"
+        ]
+      },
+      {
+        "id": "create-new:batch-08:33:screenshots/Screenshot 2026-04-19 at 18.53.08.png",
+        "batch": "batch-08",
+        "screenshotPath": "screenshots/Screenshot 2026-04-19 at 18.53.08.png",
+        "finalDecision": "new",
+        "approvedQid": "",
+        "localeAnswerKey": "Wrong",
+        "riskLevel": "low",
+        "recommendation": "keep current decision",
+        "skipReasons": [
+          "create-new Right/Wrong items cannot be safely represented by the existing batch apply pipeline; staged separately only"
+        ]
+      },
+      {
+        "id": "create-new:batch-10:20:screenshots/Screenshot 2026-04-19 at 18.54.28 1.png",
+        "batch": "batch-10",
+        "screenshotPath": "screenshots/Screenshot 2026-04-19 at 18.54.28 1.png",
+        "finalDecision": "new",
+        "approvedQid": "",
+        "localeAnswerKey": "Wrong",
+        "riskLevel": "low",
+        "recommendation": "keep current decision",
+        "skipReasons": [
+          "create-new Right/Wrong items cannot be safely represented by the existing batch apply pipeline; staged separately only"
+        ]
+      },
+      {
+        "id": "create-new:batch-12:43:screenshots/Screenshot 2026-04-19 at 18.56.00.png",
+        "batch": "batch-12",
+        "screenshotPath": "screenshots/Screenshot 2026-04-19 at 18.56.00.png",
+        "finalDecision": "new",
+        "approvedQid": "",
+        "localeAnswerKey": "Wrong",
+        "riskLevel": "low",
+        "recommendation": "keep current decision",
+        "skipReasons": [
+          "create-new Right/Wrong items cannot be safely represented by the existing batch apply pipeline; staged separately only"
+        ]
+      },
+      {
+        "id": "create-new:batch-12:44:screenshots/Screenshot 2026-04-19 at 18.56.03.png",
+        "batch": "batch-12",
+        "screenshotPath": "screenshots/Screenshot 2026-04-19 at 18.56.03.png",
+        "finalDecision": "new",
+        "approvedQid": "",
+        "localeAnswerKey": "Wrong",
+        "riskLevel": "low",
+        "recommendation": "keep current decision",
+        "skipReasons": [
+          "create-new Right/Wrong items cannot be safely represented by the existing batch apply pipeline; staged separately only"
+        ]
+      },
+      {
+        "id": "create-new:batch-12:22:screenshots/Screenshot 2026-04-19 at 18.56.11.png",
+        "batch": "batch-12",
+        "screenshotPath": "screenshots/Screenshot 2026-04-19 at 18.56.11.png",
+        "finalDecision": "new",
+        "approvedQid": "",
+        "localeAnswerKey": "Right",
+        "riskLevel": "low",
+        "recommendation": "keep current decision",
+        "skipReasons": [
+          "create-new Right/Wrong items cannot be safely represented by the existing batch apply pipeline; staged separately only"
+        ]
+      },
+      {
+        "id": "create-new:batch-12:47:screenshots/Screenshot 2026-04-19 at 18.56.15.png",
+        "batch": "batch-12",
+        "screenshotPath": "screenshots/Screenshot 2026-04-19 at 18.56.15.png",
+        "finalDecision": "new",
+        "approvedQid": "",
+        "localeAnswerKey": "Wrong",
+        "riskLevel": "low",
+        "recommendation": "keep current decision",
+        "skipReasons": [
+          "create-new Right/Wrong items cannot be safely represented by the existing batch apply pipeline; staged separately only"
+        ]
+      },
+      {
+        "id": "create-new:batch-12:31:screenshots/Screenshot 2026-04-19 at 18.56.21 1.png",
+        "batch": "batch-12",
+        "screenshotPath": "screenshots/Screenshot 2026-04-19 at 18.56.21 1.png",
+        "finalDecision": "new",
+        "approvedQid": "",
+        "localeAnswerKey": "Right",
+        "riskLevel": "low",
+        "recommendation": "keep current decision",
+        "skipReasons": [
+          "create-new Right/Wrong items cannot be safely represented by the existing batch apply pipeline; staged separately only"
+        ]
+      },
+      {
+        "id": "create-new:batch-12:35:screenshots/Screenshot 2026-04-19 at 18.56.24.png",
+        "batch": "batch-12",
+        "screenshotPath": "screenshots/Screenshot 2026-04-19 at 18.56.24.png",
+        "finalDecision": "new",
+        "approvedQid": "",
+        "localeAnswerKey": "Wrong",
+        "riskLevel": "low",
+        "recommendation": "keep current decision",
+        "skipReasons": [
+          "create-new Right/Wrong items cannot be safely represented by the existing batch apply pipeline; staged separately only"
+        ]
+      },
+      {
+        "id": "create-new:batch-12:50:screenshots/Screenshot 2026-04-19 at 18.56.30.png",
+        "batch": "batch-12",
+        "screenshotPath": "screenshots/Screenshot 2026-04-19 at 18.56.30.png",
+        "finalDecision": "new",
+        "approvedQid": "",
+        "localeAnswerKey": "Right",
+        "riskLevel": "low",
+        "recommendation": "keep current decision",
+        "skipReasons": [
+          "create-new Right/Wrong items cannot be safely represented by the existing batch apply pipeline; staged separately only"
+        ]
+      },
+      {
+        "id": "create-new:batch-13:45:screenshots/Screenshot 2026-04-19 at 18.56.51.png",
+        "batch": "batch-13",
+        "screenshotPath": "screenshots/Screenshot 2026-04-19 at 18.56.51.png",
+        "finalDecision": "new",
+        "approvedQid": "",
+        "localeAnswerKey": "Wrong",
+        "riskLevel": "low",
+        "recommendation": "keep current decision",
+        "skipReasons": [
+          "create-new Right/Wrong items cannot be safely represented by the existing batch apply pipeline; staged separately only"
+        ]
+      },
+      {
+        "id": "create-new:batch-18:18:screenshots/Screenshot 2026-04-19 at 19.00.40.png",
+        "batch": "batch-18",
+        "screenshotPath": "screenshots/Screenshot 2026-04-19 at 19.00.40.png",
+        "finalDecision": "new",
+        "approvedQid": "",
+        "localeAnswerKey": "Right",
+        "riskLevel": "low",
+        "recommendation": "keep current decision",
+        "skipReasons": [
+          "create-new Right/Wrong items cannot be safely represented by the existing batch apply pipeline; staged separately only"
+        ]
+      },
+      {
+        "id": "unresolved:batch-001:14:Screenshot 2026-04-19 at 18.46.34.png",
+        "batch": "batch-001",
+        "screenshotPath": "Screenshot 2026-04-19 at 18.46.34.png",
+        "finalDecision": "new",
+        "approvedQid": "",
+        "localeAnswerKey": "Wrong",
+        "riskLevel": "medium",
+        "recommendation": "change to keep unresolved",
+        "skipReasons": [
+          "create-new Right/Wrong items cannot be safely represented by the existing batch apply pipeline; staged separately only"
+        ]
+      },
+      {
+        "id": "unresolved:batch-03:27:screenshots/Screenshot 2026-04-19 at 18.48.34.png",
+        "batch": "batch-03",
+        "screenshotPath": "screenshots/Screenshot 2026-04-19 at 18.48.34.png",
+        "finalDecision": "new",
+        "approvedQid": "",
+        "localeAnswerKey": "Wrong",
+        "riskLevel": "medium",
+        "recommendation": "change to keep unresolved",
+        "skipReasons": [
+          "create-new Right/Wrong items cannot be safely represented by the existing batch apply pipeline; staged separately only"
+        ]
+      },
+      {
+        "id": "unresolved:batch-09:45:screenshots/Screenshot 2026-04-19 at 18.53.34.png",
+        "batch": "batch-09",
+        "screenshotPath": "screenshots/Screenshot 2026-04-19 at 18.53.34.png",
+        "finalDecision": "new",
+        "approvedQid": "",
+        "localeAnswerKey": "Right",
+        "riskLevel": "medium",
+        "recommendation": "change to keep unresolved",
+        "skipReasons": [
+          "create-new Right/Wrong items cannot be safely represented by the existing batch apply pipeline; staged separately only"
+        ]
+      },
+      {
+        "id": "unresolved:batch-18:12:screenshots/Screenshot 2026-04-19 at 19.00.35.png",
+        "batch": "batch-18",
+        "screenshotPath": "screenshots/Screenshot 2026-04-19 at 19.00.35.png",
+        "finalDecision": "new",
+        "approvedQid": "",
+        "localeAnswerKey": "Right",
+        "riskLevel": "medium",
+        "recommendation": "change to keep unresolved",
+        "skipReasons": [
+          "create-new Right/Wrong items cannot be safely represented by the existing batch apply pipeline; staged separately only"
+        ]
+      },
+      {
+        "id": "deleted:batch-14:19:screenshots/Screenshot 2026-04-19 at 18.57.40.png",
+        "batch": "batch-14",
+        "screenshotPath": "screenshots/Screenshot 2026-04-19 at 18.57.40.png",
+        "finalDecision": "new",
+        "approvedQid": "",
+        "localeAnswerKey": "Right",
+        "riskLevel": "medium",
+        "recommendation": "needs human review",
+        "skipReasons": [
+          "create-new Right/Wrong items cannot be safely represented by the existing batch apply pipeline; staged separately only"
+        ]
+      }
+    ],
+    "highRiskAcceptedCount": 6,
+    "highRiskAcceptedItems": [
+      {
+        "id": "create-new:batch-17:1:screenshots/Screenshot 2026-04-19 at 18.59.49.png",
+        "batch": "batch-17",
+        "screenshotPath": "screenshots/Screenshot 2026-04-19 at 18.59.49.png",
+        "finalDecision": "new",
+        "approvedQid": "",
+        "localeAnswerKey": "A",
+        "riskLevel": "high",
+        "recommendation": "possible better qid: q0981",
+        "skipReasons": [
+          "high-risk item requires --allow-risky true for apply"
+        ]
+      },
+      {
+        "id": "unresolved:batch-03:7:screenshots/Screenshot 2026-04-19 at 18.48.21.png",
+        "batch": "batch-03",
+        "screenshotPath": "screenshots/Screenshot 2026-04-19 at 18.48.21.png",
+        "finalDecision": "approve",
+        "approvedQid": "q0801",
+        "localeAnswerKey": "B",
+        "riskLevel": "high",
+        "recommendation": "possible better qid: q0801",
+        "skipReasons": [
+          "high-risk item requires --allow-risky true for apply"
+        ]
+      },
+      {
+        "id": "unresolved:batch-12:38:screenshots/Screenshot 2026-04-19 at 18.56.27 1.png",
+        "batch": "batch-12",
+        "screenshotPath": "screenshots/Screenshot 2026-04-19 at 18.56.27 1.png",
+        "finalDecision": "delete",
+        "approvedQid": "",
+        "localeAnswerKey": "UNKNOWN",
+        "riskLevel": "high",
+        "recommendation": "possible better qid: q0719",
+        "skipReasons": [
+          "high-risk item requires --allow-risky true for apply"
+        ]
+      },
+      {
+        "id": "deleted:batch-15:14:screenshots/Screenshot 2026-04-19 at 18.58.20.png",
+        "batch": "batch-15",
+        "screenshotPath": "screenshots/Screenshot 2026-04-19 at 18.58.20.png",
+        "finalDecision": "delete",
+        "approvedQid": "",
+        "localeAnswerKey": "UNKNOWN",
+        "riskLevel": "high",
+        "recommendation": "possible better qid: q0592",
+        "skipReasons": [
+          "high-risk item requires --allow-risky true for apply"
+        ]
+      },
+      {
+        "id": "missing-production-qid:batch-08:9:q0245",
+        "batch": "batch-08",
+        "screenshotPath": "screenshots/Screenshot 2026-04-19 at 18.52.47.png",
+        "finalDecision": "approve",
+        "approvedQid": "q0245",
+        "localeAnswerKey": "Right",
+        "riskLevel": "high",
+        "recommendation": "production merge missing, apply merge only",
+        "skipReasons": [
+          "high-risk item requires --allow-risky true for apply"
+        ]
+      },
+      {
+        "id": "missing-production-qid:batch-08:44:q0176",
+        "batch": "batch-08",
+        "screenshotPath": "screenshots/Screenshot 2026-04-19 at 18.53.17.png",
+        "finalDecision": "approve",
+        "approvedQid": "q0176",
+        "localeAnswerKey": "B",
+        "riskLevel": "high",
+        "recommendation": "production merge missing, apply merge only",
+        "skipReasons": [
+          "high-risk item requires --allow-risky true for apply"
+        ]
+      }
+    ],
+    "unresolvedProductionBoundItems": [
+      {
+        "id": "create-new:batch-03:1:screenshots/150.png",
+        "batch": "batch-03",
+        "screenshotPath": "screenshots/150.png",
+        "finalDecision": "new",
+        "approvedQid": "",
+        "localeAnswerKey": "Right",
+        "riskLevel": "low",
+        "recommendation": "keep current decision",
+        "skipReasons": [
+          "create-new Right/Wrong items cannot be safely represented by the existing batch apply pipeline; staged separately only"
+        ]
+      },
+      {
+        "id": "create-new:batch-05:50:screenshots/Screenshot 2026-04-19 at 18.50.01.png",
+        "batch": "batch-05",
+        "screenshotPath": "screenshots/Screenshot 2026-04-19 at 18.50.01.png",
+        "finalDecision": "new",
+        "approvedQid": "",
+        "localeAnswerKey": "Right",
+        "riskLevel": "low",
+        "recommendation": "keep current decision",
+        "skipReasons": [
+          "create-new Right/Wrong items cannot be safely represented by the existing batch apply pipeline; staged separately only"
+        ]
+      },
+      {
+        "id": "create-new:batch-07:41:screenshots/350.png",
+        "batch": "batch-07",
+        "screenshotPath": "screenshots/350.png",
+        "finalDecision": "new",
+        "approvedQid": "",
+        "localeAnswerKey": "Wrong",
+        "riskLevel": "low",
+        "recommendation": "keep current decision",
+        "skipReasons": [
+          "create-new Right/Wrong items cannot be safely represented by the existing batch apply pipeline; staged separately only"
+        ]
+      },
+      {
+        "id": "create-new:batch-07:47:screenshots/Screenshot 2026-04-19 at 18.52.16.png",
+        "batch": "batch-07",
+        "screenshotPath": "screenshots/Screenshot 2026-04-19 at 18.52.16.png",
+        "finalDecision": "new",
+        "approvedQid": "",
+        "localeAnswerKey": "Right",
+        "riskLevel": "low",
+        "recommendation": "keep current decision",
+        "skipReasons": [
+          "create-new Right/Wrong items cannot be safely represented by the existing batch apply pipeline; staged separately only"
+        ]
+      },
+      {
+        "id": "create-new:batch-08:33:screenshots/Screenshot 2026-04-19 at 18.53.08.png",
+        "batch": "batch-08",
+        "screenshotPath": "screenshots/Screenshot 2026-04-19 at 18.53.08.png",
+        "finalDecision": "new",
+        "approvedQid": "",
+        "localeAnswerKey": "Wrong",
+        "riskLevel": "low",
+        "recommendation": "keep current decision",
+        "skipReasons": [
+          "create-new Right/Wrong items cannot be safely represented by the existing batch apply pipeline; staged separately only"
+        ]
+      },
+      {
+        "id": "create-new:batch-10:20:screenshots/Screenshot 2026-04-19 at 18.54.28 1.png",
+        "batch": "batch-10",
+        "screenshotPath": "screenshots/Screenshot 2026-04-19 at 18.54.28 1.png",
+        "finalDecision": "new",
+        "approvedQid": "",
+        "localeAnswerKey": "Wrong",
+        "riskLevel": "low",
+        "recommendation": "keep current decision",
+        "skipReasons": [
+          "create-new Right/Wrong items cannot be safely represented by the existing batch apply pipeline; staged separately only"
+        ]
+      },
+      {
+        "id": "create-new:batch-12:43:screenshots/Screenshot 2026-04-19 at 18.56.00.png",
+        "batch": "batch-12",
+        "screenshotPath": "screenshots/Screenshot 2026-04-19 at 18.56.00.png",
+        "finalDecision": "new",
+        "approvedQid": "",
+        "localeAnswerKey": "Wrong",
+        "riskLevel": "low",
+        "recommendation": "keep current decision",
+        "skipReasons": [
+          "create-new Right/Wrong items cannot be safely represented by the existing batch apply pipeline; staged separately only"
+        ]
+      },
+      {
+        "id": "create-new:batch-12:44:screenshots/Screenshot 2026-04-19 at 18.56.03.png",
+        "batch": "batch-12",
+        "screenshotPath": "screenshots/Screenshot 2026-04-19 at 18.56.03.png",
+        "finalDecision": "new",
+        "approvedQid": "",
+        "localeAnswerKey": "Wrong",
+        "riskLevel": "low",
+        "recommendation": "keep current decision",
+        "skipReasons": [
+          "create-new Right/Wrong items cannot be safely represented by the existing batch apply pipeline; staged separately only"
+        ]
+      },
+      {
+        "id": "create-new:batch-12:22:screenshots/Screenshot 2026-04-19 at 18.56.11.png",
+        "batch": "batch-12",
+        "screenshotPath": "screenshots/Screenshot 2026-04-19 at 18.56.11.png",
+        "finalDecision": "new",
+        "approvedQid": "",
+        "localeAnswerKey": "Right",
+        "riskLevel": "low",
+        "recommendation": "keep current decision",
+        "skipReasons": [
+          "create-new Right/Wrong items cannot be safely represented by the existing batch apply pipeline; staged separately only"
+        ]
+      },
+      {
+        "id": "create-new:batch-12:47:screenshots/Screenshot 2026-04-19 at 18.56.15.png",
+        "batch": "batch-12",
+        "screenshotPath": "screenshots/Screenshot 2026-04-19 at 18.56.15.png",
+        "finalDecision": "new",
+        "approvedQid": "",
+        "localeAnswerKey": "Wrong",
+        "riskLevel": "low",
+        "recommendation": "keep current decision",
+        "skipReasons": [
+          "create-new Right/Wrong items cannot be safely represented by the existing batch apply pipeline; staged separately only"
+        ]
+      },
+      {
+        "id": "create-new:batch-12:31:screenshots/Screenshot 2026-04-19 at 18.56.21 1.png",
+        "batch": "batch-12",
+        "screenshotPath": "screenshots/Screenshot 2026-04-19 at 18.56.21 1.png",
+        "finalDecision": "new",
+        "approvedQid": "",
+        "localeAnswerKey": "Right",
+        "riskLevel": "low",
+        "recommendation": "keep current decision",
+        "skipReasons": [
+          "create-new Right/Wrong items cannot be safely represented by the existing batch apply pipeline; staged separately only"
+        ]
+      },
+      {
+        "id": "create-new:batch-12:35:screenshots/Screenshot 2026-04-19 at 18.56.24.png",
+        "batch": "batch-12",
+        "screenshotPath": "screenshots/Screenshot 2026-04-19 at 18.56.24.png",
+        "finalDecision": "new",
+        "approvedQid": "",
+        "localeAnswerKey": "Wrong",
+        "riskLevel": "low",
+        "recommendation": "keep current decision",
+        "skipReasons": [
+          "create-new Right/Wrong items cannot be safely represented by the existing batch apply pipeline; staged separately only"
+        ]
+      },
+      {
+        "id": "create-new:batch-12:50:screenshots/Screenshot 2026-04-19 at 18.56.30.png",
+        "batch": "batch-12",
+        "screenshotPath": "screenshots/Screenshot 2026-04-19 at 18.56.30.png",
+        "finalDecision": "new",
+        "approvedQid": "",
+        "localeAnswerKey": "Right",
+        "riskLevel": "low",
+        "recommendation": "keep current decision",
+        "skipReasons": [
+          "create-new Right/Wrong items cannot be safely represented by the existing batch apply pipeline; staged separately only"
+        ]
+      },
+      {
+        "id": "create-new:batch-13:45:screenshots/Screenshot 2026-04-19 at 18.56.51.png",
+        "batch": "batch-13",
+        "screenshotPath": "screenshots/Screenshot 2026-04-19 at 18.56.51.png",
+        "finalDecision": "new",
+        "approvedQid": "",
+        "localeAnswerKey": "Wrong",
+        "riskLevel": "low",
+        "recommendation": "keep current decision",
+        "skipReasons": [
+          "create-new Right/Wrong items cannot be safely represented by the existing batch apply pipeline; staged separately only"
+        ]
+      },
+      {
+        "id": "create-new:batch-17:1:screenshots/Screenshot 2026-04-19 at 18.59.49.png",
+        "batch": "batch-17",
+        "screenshotPath": "screenshots/Screenshot 2026-04-19 at 18.59.49.png",
+        "finalDecision": "new",
+        "approvedQid": "",
+        "localeAnswerKey": "A",
+        "riskLevel": "high",
+        "recommendation": "possible better qid: q0981",
+        "skipReasons": [
+          "high-risk item requires --allow-risky true for apply"
+        ]
+      },
+      {
+        "id": "create-new:batch-18:18:screenshots/Screenshot 2026-04-19 at 19.00.40.png",
+        "batch": "batch-18",
+        "screenshotPath": "screenshots/Screenshot 2026-04-19 at 19.00.40.png",
+        "finalDecision": "new",
+        "approvedQid": "",
+        "localeAnswerKey": "Right",
+        "riskLevel": "low",
+        "recommendation": "keep current decision",
+        "skipReasons": [
+          "create-new Right/Wrong items cannot be safely represented by the existing batch apply pipeline; staged separately only"
+        ]
+      },
+      {
+        "id": "unresolved:batch-001:14:Screenshot 2026-04-19 at 18.46.34.png",
+        "batch": "batch-001",
+        "screenshotPath": "Screenshot 2026-04-19 at 18.46.34.png",
+        "finalDecision": "new",
+        "approvedQid": "",
+        "localeAnswerKey": "Wrong",
+        "riskLevel": "medium",
+        "recommendation": "change to keep unresolved",
+        "skipReasons": [
+          "create-new Right/Wrong items cannot be safely represented by the existing batch apply pipeline; staged separately only"
+        ]
+      },
+      {
+        "id": "unresolved:batch-03:7:screenshots/Screenshot 2026-04-19 at 18.48.21.png",
+        "batch": "batch-03",
+        "screenshotPath": "screenshots/Screenshot 2026-04-19 at 18.48.21.png",
+        "finalDecision": "approve",
+        "approvedQid": "q0801",
+        "localeAnswerKey": "B",
+        "riskLevel": "high",
+        "recommendation": "possible better qid: q0801",
+        "skipReasons": [
+          "high-risk item requires --allow-risky true for apply"
+        ]
+      },
+      {
+        "id": "unresolved:batch-03:27:screenshots/Screenshot 2026-04-19 at 18.48.34.png",
+        "batch": "batch-03",
+        "screenshotPath": "screenshots/Screenshot 2026-04-19 at 18.48.34.png",
+        "finalDecision": "new",
+        "approvedQid": "",
+        "localeAnswerKey": "Wrong",
+        "riskLevel": "medium",
+        "recommendation": "change to keep unresolved",
+        "skipReasons": [
+          "create-new Right/Wrong items cannot be safely represented by the existing batch apply pipeline; staged separately only"
+        ]
+      },
+      {
+        "id": "unresolved:batch-09:45:screenshots/Screenshot 2026-04-19 at 18.53.34.png",
+        "batch": "batch-09",
+        "screenshotPath": "screenshots/Screenshot 2026-04-19 at 18.53.34.png",
+        "finalDecision": "new",
+        "approvedQid": "",
+        "localeAnswerKey": "Right",
+        "riskLevel": "medium",
+        "recommendation": "change to keep unresolved",
+        "skipReasons": [
+          "create-new Right/Wrong items cannot be safely represented by the existing batch apply pipeline; staged separately only"
+        ]
+      },
+      {
+        "id": "unresolved:batch-18:12:screenshots/Screenshot 2026-04-19 at 19.00.35.png",
+        "batch": "batch-18",
+        "screenshotPath": "screenshots/Screenshot 2026-04-19 at 19.00.35.png",
+        "finalDecision": "new",
+        "approvedQid": "",
+        "localeAnswerKey": "Right",
+        "riskLevel": "medium",
+        "recommendation": "change to keep unresolved",
+        "skipReasons": [
+          "create-new Right/Wrong items cannot be safely represented by the existing batch apply pipeline; staged separately only"
+        ]
+      },
+      {
+        "id": "deleted:batch-14:19:screenshots/Screenshot 2026-04-19 at 18.57.40.png",
+        "batch": "batch-14",
+        "screenshotPath": "screenshots/Screenshot 2026-04-19 at 18.57.40.png",
+        "finalDecision": "new",
+        "approvedQid": "",
+        "localeAnswerKey": "Right",
+        "riskLevel": "medium",
+        "recommendation": "needs human review",
+        "skipReasons": [
+          "create-new Right/Wrong items cannot be safely represented by the existing batch apply pipeline; staged separately only"
+        ]
+      },
+      {
+        "id": "missing-production-qid:batch-08:9:q0245",
+        "batch": "batch-08",
+        "screenshotPath": "screenshots/Screenshot 2026-04-19 at 18.52.47.png",
+        "finalDecision": "approve",
+        "approvedQid": "q0245",
+        "localeAnswerKey": "Right",
+        "riskLevel": "high",
+        "recommendation": "production merge missing, apply merge only",
+        "skipReasons": [
+          "high-risk item requires --allow-risky true for apply"
+        ]
+      },
+      {
+        "id": "missing-production-qid:batch-08:44:q0176",
+        "batch": "batch-08",
+        "screenshotPath": "screenshots/Screenshot 2026-04-19 at 18.53.17.png",
+        "finalDecision": "approve",
+        "approvedQid": "q0176",
+        "localeAnswerKey": "B",
+        "riskLevel": "high",
+        "recommendation": "production merge missing, apply merge only",
+        "skipReasons": [
+          "high-risk item requires --allow-risky true for apply"
+        ]
+      }
+    ],
+    "manuallyConfirmedDuplicateLabelCount": 2
+  },
+  "createNewStagedOnly": {
+    "totalCreateNewStageItems": 33,
+    "rightWrongStagedOnlyItems": [
+      {
+        "id": "create-new:batch-03:1:screenshots/150.png",
+        "batch": "batch-03",
+        "screenshotPath": "screenshots/150.png",
+        "finalDecision": "new",
+        "approvedQid": "",
+        "localeAnswerKey": "Right",
+        "riskLevel": "low",
+        "recommendation": "keep current decision",
+        "skipReasons": [
+          "create-new Right/Wrong items cannot be safely represented by the existing batch apply pipeline; staged separately only"
+        ]
+      },
+      {
+        "id": "create-new:batch-05:50:screenshots/Screenshot 2026-04-19 at 18.50.01.png",
+        "batch": "batch-05",
+        "screenshotPath": "screenshots/Screenshot 2026-04-19 at 18.50.01.png",
+        "finalDecision": "new",
+        "approvedQid": "",
+        "localeAnswerKey": "Right",
+        "riskLevel": "low",
+        "recommendation": "keep current decision",
+        "skipReasons": [
+          "create-new Right/Wrong items cannot be safely represented by the existing batch apply pipeline; staged separately only"
+        ]
+      },
+      {
+        "id": "create-new:batch-07:41:screenshots/350.png",
+        "batch": "batch-07",
+        "screenshotPath": "screenshots/350.png",
+        "finalDecision": "new",
+        "approvedQid": "",
+        "localeAnswerKey": "Wrong",
+        "riskLevel": "low",
+        "recommendation": "keep current decision",
+        "skipReasons": [
+          "create-new Right/Wrong items cannot be safely represented by the existing batch apply pipeline; staged separately only"
+        ]
+      },
+      {
+        "id": "create-new:batch-07:47:screenshots/Screenshot 2026-04-19 at 18.52.16.png",
+        "batch": "batch-07",
+        "screenshotPath": "screenshots/Screenshot 2026-04-19 at 18.52.16.png",
+        "finalDecision": "new",
+        "approvedQid": "",
+        "localeAnswerKey": "Right",
+        "riskLevel": "low",
+        "recommendation": "keep current decision",
+        "skipReasons": [
+          "create-new Right/Wrong items cannot be safely represented by the existing batch apply pipeline; staged separately only"
+        ]
+      },
+      {
+        "id": "create-new:batch-08:33:screenshots/Screenshot 2026-04-19 at 18.53.08.png",
+        "batch": "batch-08",
+        "screenshotPath": "screenshots/Screenshot 2026-04-19 at 18.53.08.png",
+        "finalDecision": "new",
+        "approvedQid": "",
+        "localeAnswerKey": "Wrong",
+        "riskLevel": "low",
+        "recommendation": "keep current decision",
+        "skipReasons": [
+          "create-new Right/Wrong items cannot be safely represented by the existing batch apply pipeline; staged separately only"
+        ]
+      },
+      {
+        "id": "create-new:batch-10:20:screenshots/Screenshot 2026-04-19 at 18.54.28 1.png",
+        "batch": "batch-10",
+        "screenshotPath": "screenshots/Screenshot 2026-04-19 at 18.54.28 1.png",
+        "finalDecision": "new",
+        "approvedQid": "",
+        "localeAnswerKey": "Wrong",
+        "riskLevel": "low",
+        "recommendation": "keep current decision",
+        "skipReasons": [
+          "create-new Right/Wrong items cannot be safely represented by the existing batch apply pipeline; staged separately only"
+        ]
+      },
+      {
+        "id": "create-new:batch-12:43:screenshots/Screenshot 2026-04-19 at 18.56.00.png",
+        "batch": "batch-12",
+        "screenshotPath": "screenshots/Screenshot 2026-04-19 at 18.56.00.png",
+        "finalDecision": "new",
+        "approvedQid": "",
+        "localeAnswerKey": "Wrong",
+        "riskLevel": "low",
+        "recommendation": "keep current decision",
+        "skipReasons": [
+          "create-new Right/Wrong items cannot be safely represented by the existing batch apply pipeline; staged separately only"
+        ]
+      },
+      {
+        "id": "create-new:batch-12:44:screenshots/Screenshot 2026-04-19 at 18.56.03.png",
+        "batch": "batch-12",
+        "screenshotPath": "screenshots/Screenshot 2026-04-19 at 18.56.03.png",
+        "finalDecision": "new",
+        "approvedQid": "",
+        "localeAnswerKey": "Wrong",
+        "riskLevel": "low",
+        "recommendation": "keep current decision",
+        "skipReasons": [
+          "create-new Right/Wrong items cannot be safely represented by the existing batch apply pipeline; staged separately only"
+        ]
+      },
+      {
+        "id": "create-new:batch-12:22:screenshots/Screenshot 2026-04-19 at 18.56.11.png",
+        "batch": "batch-12",
+        "screenshotPath": "screenshots/Screenshot 2026-04-19 at 18.56.11.png",
+        "finalDecision": "new",
+        "approvedQid": "",
+        "localeAnswerKey": "Right",
+        "riskLevel": "low",
+        "recommendation": "keep current decision",
+        "skipReasons": [
+          "create-new Right/Wrong items cannot be safely represented by the existing batch apply pipeline; staged separately only"
+        ]
+      },
+      {
+        "id": "create-new:batch-12:47:screenshots/Screenshot 2026-04-19 at 18.56.15.png",
+        "batch": "batch-12",
+        "screenshotPath": "screenshots/Screenshot 2026-04-19 at 18.56.15.png",
+        "finalDecision": "new",
+        "approvedQid": "",
+        "localeAnswerKey": "Wrong",
+        "riskLevel": "low",
+        "recommendation": "keep current decision",
+        "skipReasons": [
+          "create-new Right/Wrong items cannot be safely represented by the existing batch apply pipeline; staged separately only"
+        ]
+      },
+      {
+        "id": "create-new:batch-12:31:screenshots/Screenshot 2026-04-19 at 18.56.21 1.png",
+        "batch": "batch-12",
+        "screenshotPath": "screenshots/Screenshot 2026-04-19 at 18.56.21 1.png",
+        "finalDecision": "new",
+        "approvedQid": "",
+        "localeAnswerKey": "Right",
+        "riskLevel": "low",
+        "recommendation": "keep current decision",
+        "skipReasons": [
+          "create-new Right/Wrong items cannot be safely represented by the existing batch apply pipeline; staged separately only"
+        ]
+      },
+      {
+        "id": "create-new:batch-12:35:screenshots/Screenshot 2026-04-19 at 18.56.24.png",
+        "batch": "batch-12",
+        "screenshotPath": "screenshots/Screenshot 2026-04-19 at 18.56.24.png",
+        "finalDecision": "new",
+        "approvedQid": "",
+        "localeAnswerKey": "Wrong",
+        "riskLevel": "low",
+        "recommendation": "keep current decision",
+        "skipReasons": [
+          "create-new Right/Wrong items cannot be safely represented by the existing batch apply pipeline; staged separately only"
+        ]
+      },
+      {
+        "id": "create-new:batch-12:50:screenshots/Screenshot 2026-04-19 at 18.56.30.png",
+        "batch": "batch-12",
+        "screenshotPath": "screenshots/Screenshot 2026-04-19 at 18.56.30.png",
+        "finalDecision": "new",
+        "approvedQid": "",
+        "localeAnswerKey": "Right",
+        "riskLevel": "low",
+        "recommendation": "keep current decision",
+        "skipReasons": [
+          "create-new Right/Wrong items cannot be safely represented by the existing batch apply pipeline; staged separately only"
+        ]
+      },
+      {
+        "id": "create-new:batch-13:45:screenshots/Screenshot 2026-04-19 at 18.56.51.png",
+        "batch": "batch-13",
+        "screenshotPath": "screenshots/Screenshot 2026-04-19 at 18.56.51.png",
+        "finalDecision": "new",
+        "approvedQid": "",
+        "localeAnswerKey": "Wrong",
+        "riskLevel": "low",
+        "recommendation": "keep current decision",
+        "skipReasons": [
+          "create-new Right/Wrong items cannot be safely represented by the existing batch apply pipeline; staged separately only"
+        ]
+      },
+      {
+        "id": "create-new:batch-18:18:screenshots/Screenshot 2026-04-19 at 19.00.40.png",
+        "batch": "batch-18",
+        "screenshotPath": "screenshots/Screenshot 2026-04-19 at 19.00.40.png",
+        "finalDecision": "new",
+        "approvedQid": "",
+        "localeAnswerKey": "Right",
+        "riskLevel": "low",
+        "recommendation": "keep current decision",
+        "skipReasons": [
+          "create-new Right/Wrong items cannot be safely represented by the existing batch apply pipeline; staged separately only"
+        ]
+      },
+      {
+        "id": "unresolved:batch-001:14:Screenshot 2026-04-19 at 18.46.34.png",
+        "batch": "batch-001",
+        "screenshotPath": "Screenshot 2026-04-19 at 18.46.34.png",
+        "finalDecision": "new",
+        "approvedQid": "",
+        "localeAnswerKey": "Wrong",
+        "riskLevel": "medium",
+        "recommendation": "change to keep unresolved",
+        "skipReasons": [
+          "create-new Right/Wrong items cannot be safely represented by the existing batch apply pipeline; staged separately only"
+        ]
+      },
+      {
+        "id": "unresolved:batch-03:27:screenshots/Screenshot 2026-04-19 at 18.48.34.png",
+        "batch": "batch-03",
+        "screenshotPath": "screenshots/Screenshot 2026-04-19 at 18.48.34.png",
+        "finalDecision": "new",
+        "approvedQid": "",
+        "localeAnswerKey": "Wrong",
+        "riskLevel": "medium",
+        "recommendation": "change to keep unresolved",
+        "skipReasons": [
+          "create-new Right/Wrong items cannot be safely represented by the existing batch apply pipeline; staged separately only"
+        ]
+      },
+      {
+        "id": "unresolved:batch-09:45:screenshots/Screenshot 2026-04-19 at 18.53.34.png",
+        "batch": "batch-09",
+        "screenshotPath": "screenshots/Screenshot 2026-04-19 at 18.53.34.png",
+        "finalDecision": "new",
+        "approvedQid": "",
+        "localeAnswerKey": "Right",
+        "riskLevel": "medium",
+        "recommendation": "change to keep unresolved",
+        "skipReasons": [
+          "create-new Right/Wrong items cannot be safely represented by the existing batch apply pipeline; staged separately only"
+        ]
+      },
+      {
+        "id": "unresolved:batch-18:12:screenshots/Screenshot 2026-04-19 at 19.00.35.png",
+        "batch": "batch-18",
+        "screenshotPath": "screenshots/Screenshot 2026-04-19 at 19.00.35.png",
+        "finalDecision": "new",
+        "approvedQid": "",
+        "localeAnswerKey": "Right",
+        "riskLevel": "medium",
+        "recommendation": "change to keep unresolved",
+        "skipReasons": [
+          "create-new Right/Wrong items cannot be safely represented by the existing batch apply pipeline; staged separately only"
+        ]
+      },
+      {
+        "id": "deleted:batch-14:19:screenshots/Screenshot 2026-04-19 at 18.57.40.png",
+        "batch": "batch-14",
+        "screenshotPath": "screenshots/Screenshot 2026-04-19 at 18.57.40.png",
+        "finalDecision": "new",
+        "approvedQid": "",
+        "localeAnswerKey": "Right",
+        "riskLevel": "medium",
+        "recommendation": "needs human review",
+        "skipReasons": [
+          "create-new Right/Wrong items cannot be safely represented by the existing batch apply pipeline; staged separately only"
+        ]
+      }
+    ]
+  },
+  "unresolvedProductionBoundItems": [
+    {
+      "id": "create-new:batch-03:1:screenshots/150.png",
+      "batch": "batch-03",
+      "screenshotPath": "screenshots/150.png",
+      "finalDecision": "new",
+      "approvedQid": "",
+      "localeAnswerKey": "Right",
+      "riskLevel": "low",
+      "recommendation": "keep current decision",
+      "skipReasons": [
+        "create-new Right/Wrong items cannot be safely represented by the existing batch apply pipeline; staged separately only"
+      ]
+    },
+    {
+      "id": "create-new:batch-05:50:screenshots/Screenshot 2026-04-19 at 18.50.01.png",
+      "batch": "batch-05",
+      "screenshotPath": "screenshots/Screenshot 2026-04-19 at 18.50.01.png",
+      "finalDecision": "new",
+      "approvedQid": "",
+      "localeAnswerKey": "Right",
+      "riskLevel": "low",
+      "recommendation": "keep current decision",
+      "skipReasons": [
+        "create-new Right/Wrong items cannot be safely represented by the existing batch apply pipeline; staged separately only"
+      ]
+    },
+    {
+      "id": "create-new:batch-07:41:screenshots/350.png",
+      "batch": "batch-07",
+      "screenshotPath": "screenshots/350.png",
+      "finalDecision": "new",
+      "approvedQid": "",
+      "localeAnswerKey": "Wrong",
+      "riskLevel": "low",
+      "recommendation": "keep current decision",
+      "skipReasons": [
+        "create-new Right/Wrong items cannot be safely represented by the existing batch apply pipeline; staged separately only"
+      ]
+    },
+    {
+      "id": "create-new:batch-07:47:screenshots/Screenshot 2026-04-19 at 18.52.16.png",
+      "batch": "batch-07",
+      "screenshotPath": "screenshots/Screenshot 2026-04-19 at 18.52.16.png",
+      "finalDecision": "new",
+      "approvedQid": "",
+      "localeAnswerKey": "Right",
+      "riskLevel": "low",
+      "recommendation": "keep current decision",
+      "skipReasons": [
+        "create-new Right/Wrong items cannot be safely represented by the existing batch apply pipeline; staged separately only"
+      ]
+    },
+    {
+      "id": "create-new:batch-08:33:screenshots/Screenshot 2026-04-19 at 18.53.08.png",
+      "batch": "batch-08",
+      "screenshotPath": "screenshots/Screenshot 2026-04-19 at 18.53.08.png",
+      "finalDecision": "new",
+      "approvedQid": "",
+      "localeAnswerKey": "Wrong",
+      "riskLevel": "low",
+      "recommendation": "keep current decision",
+      "skipReasons": [
+        "create-new Right/Wrong items cannot be safely represented by the existing batch apply pipeline; staged separately only"
+      ]
+    },
+    {
+      "id": "create-new:batch-10:20:screenshots/Screenshot 2026-04-19 at 18.54.28 1.png",
+      "batch": "batch-10",
+      "screenshotPath": "screenshots/Screenshot 2026-04-19 at 18.54.28 1.png",
+      "finalDecision": "new",
+      "approvedQid": "",
+      "localeAnswerKey": "Wrong",
+      "riskLevel": "low",
+      "recommendation": "keep current decision",
+      "skipReasons": [
+        "create-new Right/Wrong items cannot be safely represented by the existing batch apply pipeline; staged separately only"
+      ]
+    },
+    {
+      "id": "create-new:batch-12:43:screenshots/Screenshot 2026-04-19 at 18.56.00.png",
+      "batch": "batch-12",
+      "screenshotPath": "screenshots/Screenshot 2026-04-19 at 18.56.00.png",
+      "finalDecision": "new",
+      "approvedQid": "",
+      "localeAnswerKey": "Wrong",
+      "riskLevel": "low",
+      "recommendation": "keep current decision",
+      "skipReasons": [
+        "create-new Right/Wrong items cannot be safely represented by the existing batch apply pipeline; staged separately only"
+      ]
+    },
+    {
+      "id": "create-new:batch-12:44:screenshots/Screenshot 2026-04-19 at 18.56.03.png",
+      "batch": "batch-12",
+      "screenshotPath": "screenshots/Screenshot 2026-04-19 at 18.56.03.png",
+      "finalDecision": "new",
+      "approvedQid": "",
+      "localeAnswerKey": "Wrong",
+      "riskLevel": "low",
+      "recommendation": "keep current decision",
+      "skipReasons": [
+        "create-new Right/Wrong items cannot be safely represented by the existing batch apply pipeline; staged separately only"
+      ]
+    },
+    {
+      "id": "create-new:batch-12:22:screenshots/Screenshot 2026-04-19 at 18.56.11.png",
+      "batch": "batch-12",
+      "screenshotPath": "screenshots/Screenshot 2026-04-19 at 18.56.11.png",
+      "finalDecision": "new",
+      "approvedQid": "",
+      "localeAnswerKey": "Right",
+      "riskLevel": "low",
+      "recommendation": "keep current decision",
+      "skipReasons": [
+        "create-new Right/Wrong items cannot be safely represented by the existing batch apply pipeline; staged separately only"
+      ]
+    },
+    {
+      "id": "create-new:batch-12:47:screenshots/Screenshot 2026-04-19 at 18.56.15.png",
+      "batch": "batch-12",
+      "screenshotPath": "screenshots/Screenshot 2026-04-19 at 18.56.15.png",
+      "finalDecision": "new",
+      "approvedQid": "",
+      "localeAnswerKey": "Wrong",
+      "riskLevel": "low",
+      "recommendation": "keep current decision",
+      "skipReasons": [
+        "create-new Right/Wrong items cannot be safely represented by the existing batch apply pipeline; staged separately only"
+      ]
+    },
+    {
+      "id": "create-new:batch-12:31:screenshots/Screenshot 2026-04-19 at 18.56.21 1.png",
+      "batch": "batch-12",
+      "screenshotPath": "screenshots/Screenshot 2026-04-19 at 18.56.21 1.png",
+      "finalDecision": "new",
+      "approvedQid": "",
+      "localeAnswerKey": "Right",
+      "riskLevel": "low",
+      "recommendation": "keep current decision",
+      "skipReasons": [
+        "create-new Right/Wrong items cannot be safely represented by the existing batch apply pipeline; staged separately only"
+      ]
+    },
+    {
+      "id": "create-new:batch-12:35:screenshots/Screenshot 2026-04-19 at 18.56.24.png",
+      "batch": "batch-12",
+      "screenshotPath": "screenshots/Screenshot 2026-04-19 at 18.56.24.png",
+      "finalDecision": "new",
+      "approvedQid": "",
+      "localeAnswerKey": "Wrong",
+      "riskLevel": "low",
+      "recommendation": "keep current decision",
+      "skipReasons": [
+        "create-new Right/Wrong items cannot be safely represented by the existing batch apply pipeline; staged separately only"
+      ]
+    },
+    {
+      "id": "create-new:batch-12:50:screenshots/Screenshot 2026-04-19 at 18.56.30.png",
+      "batch": "batch-12",
+      "screenshotPath": "screenshots/Screenshot 2026-04-19 at 18.56.30.png",
+      "finalDecision": "new",
+      "approvedQid": "",
+      "localeAnswerKey": "Right",
+      "riskLevel": "low",
+      "recommendation": "keep current decision",
+      "skipReasons": [
+        "create-new Right/Wrong items cannot be safely represented by the existing batch apply pipeline; staged separately only"
+      ]
+    },
+    {
+      "id": "create-new:batch-13:45:screenshots/Screenshot 2026-04-19 at 18.56.51.png",
+      "batch": "batch-13",
+      "screenshotPath": "screenshots/Screenshot 2026-04-19 at 18.56.51.png",
+      "finalDecision": "new",
+      "approvedQid": "",
+      "localeAnswerKey": "Wrong",
+      "riskLevel": "low",
+      "recommendation": "keep current decision",
+      "skipReasons": [
+        "create-new Right/Wrong items cannot be safely represented by the existing batch apply pipeline; staged separately only"
+      ]
+    },
+    {
+      "id": "create-new:batch-17:1:screenshots/Screenshot 2026-04-19 at 18.59.49.png",
+      "batch": "batch-17",
+      "screenshotPath": "screenshots/Screenshot 2026-04-19 at 18.59.49.png",
+      "finalDecision": "new",
+      "approvedQid": "",
+      "localeAnswerKey": "A",
+      "riskLevel": "high",
+      "recommendation": "possible better qid: q0981",
+      "skipReasons": [
+        "high-risk item requires --allow-risky true for apply"
+      ]
+    },
+    {
+      "id": "create-new:batch-18:18:screenshots/Screenshot 2026-04-19 at 19.00.40.png",
+      "batch": "batch-18",
+      "screenshotPath": "screenshots/Screenshot 2026-04-19 at 19.00.40.png",
+      "finalDecision": "new",
+      "approvedQid": "",
+      "localeAnswerKey": "Right",
+      "riskLevel": "low",
+      "recommendation": "keep current decision",
+      "skipReasons": [
+        "create-new Right/Wrong items cannot be safely represented by the existing batch apply pipeline; staged separately only"
+      ]
+    },
+    {
+      "id": "unresolved:batch-001:14:Screenshot 2026-04-19 at 18.46.34.png",
+      "batch": "batch-001",
+      "screenshotPath": "Screenshot 2026-04-19 at 18.46.34.png",
+      "finalDecision": "new",
+      "approvedQid": "",
+      "localeAnswerKey": "Wrong",
+      "riskLevel": "medium",
+      "recommendation": "change to keep unresolved",
+      "skipReasons": [
+        "create-new Right/Wrong items cannot be safely represented by the existing batch apply pipeline; staged separately only"
+      ]
+    },
+    {
+      "id": "unresolved:batch-03:7:screenshots/Screenshot 2026-04-19 at 18.48.21.png",
+      "batch": "batch-03",
+      "screenshotPath": "screenshots/Screenshot 2026-04-19 at 18.48.21.png",
+      "finalDecision": "approve",
+      "approvedQid": "q0801",
+      "localeAnswerKey": "B",
+      "riskLevel": "high",
+      "recommendation": "possible better qid: q0801",
+      "skipReasons": [
+        "high-risk item requires --allow-risky true for apply"
+      ]
+    },
+    {
+      "id": "unresolved:batch-03:27:screenshots/Screenshot 2026-04-19 at 18.48.34.png",
+      "batch": "batch-03",
+      "screenshotPath": "screenshots/Screenshot 2026-04-19 at 18.48.34.png",
+      "finalDecision": "new",
+      "approvedQid": "",
+      "localeAnswerKey": "Wrong",
+      "riskLevel": "medium",
+      "recommendation": "change to keep unresolved",
+      "skipReasons": [
+        "create-new Right/Wrong items cannot be safely represented by the existing batch apply pipeline; staged separately only"
+      ]
+    },
+    {
+      "id": "unresolved:batch-09:45:screenshots/Screenshot 2026-04-19 at 18.53.34.png",
+      "batch": "batch-09",
+      "screenshotPath": "screenshots/Screenshot 2026-04-19 at 18.53.34.png",
+      "finalDecision": "new",
+      "approvedQid": "",
+      "localeAnswerKey": "Right",
+      "riskLevel": "medium",
+      "recommendation": "change to keep unresolved",
+      "skipReasons": [
+        "create-new Right/Wrong items cannot be safely represented by the existing batch apply pipeline; staged separately only"
+      ]
+    },
+    {
+      "id": "unresolved:batch-18:12:screenshots/Screenshot 2026-04-19 at 19.00.35.png",
+      "batch": "batch-18",
+      "screenshotPath": "screenshots/Screenshot 2026-04-19 at 19.00.35.png",
+      "finalDecision": "new",
+      "approvedQid": "",
+      "localeAnswerKey": "Right",
+      "riskLevel": "medium",
+      "recommendation": "change to keep unresolved",
+      "skipReasons": [
+        "create-new Right/Wrong items cannot be safely represented by the existing batch apply pipeline; staged separately only"
+      ]
+    },
+    {
+      "id": "deleted:batch-14:19:screenshots/Screenshot 2026-04-19 at 18.57.40.png",
+      "batch": "batch-14",
+      "screenshotPath": "screenshots/Screenshot 2026-04-19 at 18.57.40.png",
+      "finalDecision": "new",
+      "approvedQid": "",
+      "localeAnswerKey": "Right",
+      "riskLevel": "medium",
+      "recommendation": "needs human review",
+      "skipReasons": [
+        "create-new Right/Wrong items cannot be safely represented by the existing batch apply pipeline; staged separately only"
+      ]
+    },
+    {
+      "id": "missing-production-qid:batch-08:9:q0245",
+      "batch": "batch-08",
+      "screenshotPath": "screenshots/Screenshot 2026-04-19 at 18.52.47.png",
+      "finalDecision": "approve",
+      "approvedQid": "q0245",
+      "localeAnswerKey": "Right",
+      "riskLevel": "high",
+      "recommendation": "production merge missing, apply merge only",
+      "skipReasons": [
+        "high-risk item requires --allow-risky true for apply"
+      ]
+    },
+    {
+      "id": "missing-production-qid:batch-08:44:q0176",
+      "batch": "batch-08",
+      "screenshotPath": "screenshots/Screenshot 2026-04-19 at 18.53.17.png",
+      "finalDecision": "approve",
+      "approvedQid": "q0176",
+      "localeAnswerKey": "B",
+      "riskLevel": "high",
+      "recommendation": "production merge missing, apply merge only",
+      "skipReasons": [
+        "high-risk item requires --allow-risky true for apply"
+      ]
+    }
+  ],
+  "highRiskManuallyAcceptedItems": [
+    {
+      "id": "create-new:batch-17:1:screenshots/Screenshot 2026-04-19 at 18.59.49.png",
+      "batch": "batch-17",
+      "screenshotPath": "screenshots/Screenshot 2026-04-19 at 18.59.49.png",
+      "finalDecision": "new",
+      "approvedQid": "",
+      "localeAnswerKey": "A",
+      "riskLevel": "high",
+      "recommendation": "possible better qid: q0981",
+      "skipReasons": [
+        "high-risk item requires --allow-risky true for apply"
+      ]
+    },
+    {
+      "id": "unresolved:batch-03:7:screenshots/Screenshot 2026-04-19 at 18.48.21.png",
+      "batch": "batch-03",
+      "screenshotPath": "screenshots/Screenshot 2026-04-19 at 18.48.21.png",
+      "finalDecision": "approve",
+      "approvedQid": "q0801",
+      "localeAnswerKey": "B",
+      "riskLevel": "high",
+      "recommendation": "possible better qid: q0801",
+      "skipReasons": [
+        "high-risk item requires --allow-risky true for apply"
+      ]
+    },
+    {
+      "id": "unresolved:batch-12:38:screenshots/Screenshot 2026-04-19 at 18.56.27 1.png",
+      "batch": "batch-12",
+      "screenshotPath": "screenshots/Screenshot 2026-04-19 at 18.56.27 1.png",
+      "finalDecision": "delete",
+      "approvedQid": "",
+      "localeAnswerKey": "UNKNOWN",
+      "riskLevel": "high",
+      "recommendation": "possible better qid: q0719",
+      "skipReasons": [
+        "high-risk item requires --allow-risky true for apply"
+      ]
+    },
+    {
+      "id": "deleted:batch-15:14:screenshots/Screenshot 2026-04-19 at 18.58.20.png",
+      "batch": "batch-15",
+      "screenshotPath": "screenshots/Screenshot 2026-04-19 at 18.58.20.png",
+      "finalDecision": "delete",
+      "approvedQid": "",
+      "localeAnswerKey": "UNKNOWN",
+      "riskLevel": "high",
+      "recommendation": "possible better qid: q0592",
+      "skipReasons": [
+        "high-risk item requires --allow-risky true for apply"
+      ]
+    },
+    {
+      "id": "missing-production-qid:batch-08:9:q0245",
+      "batch": "batch-08",
+      "screenshotPath": "screenshots/Screenshot 2026-04-19 at 18.52.47.png",
+      "finalDecision": "approve",
+      "approvedQid": "q0245",
+      "localeAnswerKey": "Right",
+      "riskLevel": "high",
+      "recommendation": "production merge missing, apply merge only",
+      "skipReasons": [
+        "high-risk item requires --allow-risky true for apply"
+      ]
+    },
+    {
+      "id": "missing-production-qid:batch-08:44:q0176",
+      "batch": "batch-08",
+      "screenshotPath": "screenshots/Screenshot 2026-04-19 at 18.53.17.png",
+      "finalDecision": "approve",
+      "approvedQid": "q0176",
+      "localeAnswerKey": "B",
+      "riskLevel": "high",
+      "recommendation": "production merge missing, apply merge only",
+      "skipReasons": [
+        "high-risk item requires --allow-risky true for apply"
+      ]
+    }
+  ],
+  "imageAssets": {
+    "masterQidsWithImages": 498,
+    "translatedQidsWithMasterImages": 430,
+    "assetReferenceCount": 498,
+    "missingAssetReferences": []
+  },
+  "criticalIssues": [],
+  "warnings": [
+    "172 master qid(s) do not have Russian production translations",
+    "20 create-new Right/Wrong items remain staged-only and accepted for this release context",
+    "6 high-risk discrepancy items remain skipped by the conservative apply script and accepted for this release context"
+  ]
+}
