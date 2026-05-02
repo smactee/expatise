@@ -1,18 +1,18 @@
 # Missing Localization Backfill Production Merge (ru)
 
-Generated at: 2026-05-02T07:58:41.806Z
+Generated at: 2026-05-02T08:45:27.485Z
 
 ## Summary
 
 - Apply requested: yes
 - Applied: yes
-- Input items: 49
+- Input items: 50
 - Valid: yes
-- Mergeable items: 49
+- Mergeable items: 50
 - Existing production overlaps: 0
 - Errors: 0
 
 ## Mergeable Qids
 
-q0206, q0211, q0213, q0247, q0265, q0275, q0277, q0286, q0287, q0294, q0298, q0300, q0306, q0325, q0327, q0332, q0335, q0338, q0339, q0341, q0343, q0344, q0349, q0350, q0351, q0353, q0354, q0356, q0358, q0360, q0361, q0363, q0394, q0403, q0431, q0433, q0444, q0462, q0473, q0483, q0484, q0492, q0494, q0495, q0496, q0502, q0505, q0506, q0509
+q0264, q0515, q0556, q0562, q0569, q0581, q0582, q0610, q0620, q0633, q0637, q0645, q0679, q0695, q0698, q0723, q0747, q0757, q0769, q0801, q0819, q0833, q0885, q0894, q0898, q0900, q0901, q0902, q0903, q0904, q0905, q0906, q0907, q0908, q0909, q0910, q0911, q0912, q0913, q0914, q0915, q0916, q0917, q0918, q0919, q0920, q0922, q0924, q0925, q0926
 

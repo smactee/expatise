@@ -1,8 +1,8 @@
 {
   "meta": {
     "locale": "ru",
-    "translatedQuestions": 882,
-    "generatedAt": "2026-05-02T07:58:41.809Z",
+    "translatedQuestions": 932,
+    "generatedAt": "2026-05-02T08:45:27.488Z",
     "mergedBatches": [
       "batch-001",
       "batch-002",
@@ -26,7 +26,8 @@
     "localeAnswerKeySupport": true,
     "backfillMerges": [
       "missing-qid-backfill-2026-05-02T07:00:21.352Z",
-      "missing-qid-backfill-2026-05-02T07:58:41.809Z"
+      "missing-qid-backfill-2026-05-02T07:58:41.809Z",
+      "missing-qid-backfill-2026-05-02T08:45:27.488Z"
     ]
   },
   "questions": {
@@ -9977,6 +9978,13 @@
       "explanation": "",
       "sourceMode": "direct",
       "confidence": "high",
+      "reviewStatus": "ready"
+    },
+    "q0264": {
+      "prompt": "Причинение дорожно-транспортного происшествия вследствие нарушения законов и правил обеспечения безопасности дорожного движения является правонарушением.",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
       "reviewStatus": "ready"
     },
     "q0265": {
@@ -26885,6 +26893,120 @@
       ],
       "localeCorrectOptionKey": "B"
     },
+    "q0515": {
+      "prompt": "Если водитель скрылся после совершения крупной дорожной аварии, повлекшей гибель человека, водителю грозит лишение свободы на срок ________.",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready",
+      "options": {
+        "q0515_o1": "более 7 лет",
+        "q0515_o2": "менее 3 лет",
+        "q0515_o3": "3 ~ 7 лет",
+        "q0515_o4": "более 10 лет"
+      },
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "более 7 лет",
+          "sourceTextBody": "более 7 лет",
+          "canonicalOptionId": "q0515_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "more than 7 years",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "менее 3 лет",
+          "sourceTextBody": "менее 3 лет",
+          "canonicalOptionId": "q0515_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "less than 3 years",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "3 ~ 7 лет",
+          "sourceTextBody": "3 ~ 7 лет",
+          "canonicalOptionId": "q0515_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "3 ~ 7 years",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "более 10 лет",
+          "sourceTextBody": "более 10 лет",
+          "canonicalOptionId": "q0515_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "more than 10 years",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "более 7 лет",
+          "sourceTextBody": "более 7 лет",
+          "canonicalOptionId": "q0515_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "more than 7 years",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "менее 3 лет",
+          "sourceTextBody": "менее 3 лет",
+          "canonicalOptionId": "q0515_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "less than 3 years",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "3 ~ 7 лет",
+          "sourceTextBody": "3 ~ 7 лет",
+          "canonicalOptionId": "q0515_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "3 ~ 7 years",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "более 10 лет",
+          "sourceTextBody": "более 10 лет",
+          "canonicalOptionId": "q0515_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "more than 10 years",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "localeCorrectOptionKey": "C"
+    },
     "q0516": {
       "prompt": "Водителя, нарушающего правила управления автотранспортом и создавшего крупную аварию привлекут к:",
       "sourceMode": "direct",
@@ -27648,6 +27770,13 @@
       "confidence": "high",
       "reviewStatus": "ready"
     },
+    "q0556": {
+      "prompt": "Индикатор загорается, когда включена антиблокировочная тормозная система (ABS).",
+      "explanation": "антиблокировочная тормозная система (ABS)",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready"
+    },
     "q0557": {
       "prompt": "Данная Кнопка загорается, когда водитель включает фары ближнего света.",
       "explanation": "",
@@ -27681,6 +27810,13 @@
       "explanation": "",
       "sourceMode": "direct",
       "confidence": "high",
+      "reviewStatus": "ready"
+    },
+    "q0562": {
+      "prompt": "Задний противотуманный фонарь загорается, когда переключатель света находится в этом положении.",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
       "reviewStatus": "ready"
     },
     "q0563": {
@@ -27723,6 +27859,13 @@
       "explanation": "",
       "sourceMode": "direct",
       "confidence": "high",
+      "reviewStatus": "ready"
+    },
+    "q0569": {
+      "prompt": "Индикатор загорается, указывая на то, что стояночный (ручной) тормоз может быть не полностью отпущен.",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
       "reviewStatus": "ready"
     },
     "q0570": {
@@ -28291,6 +28434,234 @@
         }
       ],
       "localeCorrectOptionKey": "A"
+    },
+    "q0581": {
+      "prompt": "Какое устройство управляется переключателем с этим символом?",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready",
+      "options": {
+        "q0581_o1": "стеклоочиститель и омыватель лобового стекла",
+        "q0581_o2": "обогрев или размораживание заднего стекла",
+        "q0581_o3": "стеклоочиститель и омыватель заднего стекла",
+        "q0581_o4": "обогрев или размораживание лобового стекла"
+      },
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "стеклоочиститель и омыватель лобового стекла",
+          "sourceTextBody": "стеклоочиститель и омыватель лобового стекла",
+          "canonicalOptionId": "q0581_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "the windshield wiper and washer",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "обогрев или размораживание заднего стекла",
+          "sourceTextBody": "обогрев или размораживание заднего стекла",
+          "canonicalOptionId": "q0581_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "the rear window defrosting or defogging",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "стеклоочиститель и омыватель заднего стекла",
+          "sourceTextBody": "стеклоочиститель и омыватель заднего стекла",
+          "canonicalOptionId": "q0581_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "the rear window wiper and washer",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "обогрев или размораживание лобового стекла",
+          "sourceTextBody": "обогрев или размораживание лобового стекла",
+          "canonicalOptionId": "q0581_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "the windshield defrosting or defogging",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "стеклоочиститель и омыватель лобового стекла",
+          "sourceTextBody": "стеклоочиститель и омыватель лобового стекла",
+          "canonicalOptionId": "q0581_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "the windshield wiper and washer",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "обогрев или размораживание заднего стекла",
+          "sourceTextBody": "обогрев или размораживание заднего стекла",
+          "canonicalOptionId": "q0581_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "the rear window defrosting or defogging",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "стеклоочиститель и омыватель заднего стекла",
+          "sourceTextBody": "стеклоочиститель и омыватель заднего стекла",
+          "canonicalOptionId": "q0581_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "the rear window wiper and washer",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "обогрев или размораживание лобового стекла",
+          "sourceTextBody": "обогрев или размораживание лобового стекла",
+          "canonicalOptionId": "q0581_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "the windshield defrosting or defogging",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "localeCorrectOptionKey": "C"
+    },
+    "q0582": {
+      "prompt": "Что это за орган управления?",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready",
+      "options": {
+        "q0582_o1": "переключатель указателей поворота",
+        "q0582_o2": "переключатель передних фар",
+        "q0582_o3": "переключатель стеклоочистителя",
+        "q0582_o4": "переключатель обогрева стекла"
+      },
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "переключатель указателей поворота",
+          "sourceTextBody": "переключатель указателей поворота",
+          "canonicalOptionId": "q0582_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "switch of the turn signal",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "переключатель передних фар",
+          "sourceTextBody": "переключатель передних фар",
+          "canonicalOptionId": "q0582_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "switch of the front lights",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "переключатель стеклоочистителя",
+          "sourceTextBody": "переключатель стеклоочистителя",
+          "canonicalOptionId": "q0582_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "switch of wiper",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "переключатель обогрева стекла",
+          "sourceTextBody": "переключатель обогрева стекла",
+          "canonicalOptionId": "q0582_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "switch of defogger",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "переключатель указателей поворота",
+          "sourceTextBody": "переключатель указателей поворота",
+          "canonicalOptionId": "q0582_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "switch of the turn signal",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "переключатель передних фар",
+          "sourceTextBody": "переключатель передних фар",
+          "canonicalOptionId": "q0582_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "switch of the front lights",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "переключатель стеклоочистителя",
+          "sourceTextBody": "переключатель стеклоочистителя",
+          "canonicalOptionId": "q0582_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "switch of wiper",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "переключатель обогрева стекла",
+          "sourceTextBody": "переключатель обогрева стекла",
+          "canonicalOptionId": "q0582_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "switch of defogger",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "localeCorrectOptionKey": "D"
     },
     "q0583": {
       "prompt": "Данная кнопка загорается, когда:",
@@ -31127,6 +31498,120 @@
       ],
       "localeCorrectOptionKey": "A"
     },
+    "q0610": {
+      "prompt": "Что это за прибор?",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready",
+      "options": {
+        "q0610_o1": "указатель температуры охлаждающей жидкости",
+        "q0610_o2": "указатель уровня топлива",
+        "q0610_o3": "амперметр",
+        "q0610_o4": "манометр"
+      },
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "указатель температуры охлаждающей жидкости",
+          "sourceTextBody": "указатель температуры охлаждающей жидкости",
+          "canonicalOptionId": "q0610_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "water temperature meter",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "указатель уровня топлива",
+          "sourceTextBody": "указатель уровня топлива",
+          "canonicalOptionId": "q0610_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "fuel meter",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "амперметр",
+          "sourceTextBody": "амперметр",
+          "canonicalOptionId": "q0610_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "ammeter",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "манометр",
+          "sourceTextBody": "манометр",
+          "canonicalOptionId": "q0610_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "pressure meter",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "указатель температуры охлаждающей жидкости",
+          "sourceTextBody": "указатель температуры охлаждающей жидкости",
+          "canonicalOptionId": "q0610_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "water temperature meter",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "указатель уровня топлива",
+          "sourceTextBody": "указатель уровня топлива",
+          "canonicalOptionId": "q0610_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "fuel meter",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "амперметр",
+          "sourceTextBody": "амперметр",
+          "canonicalOptionId": "q0610_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "ammeter",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "манометр",
+          "sourceTextBody": "манометр",
+          "canonicalOptionId": "q0610_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "pressure meter",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "localeCorrectOptionKey": "A"
+    },
     "q0611": {
       "prompt": "Данная кнопка загорается тогда, когда:",
       "sourceMode": "direct",
@@ -32064,6 +32549,120 @@
           "canonicalOptionText": "hazard light",
           "alignmentScore": 0.2689655172413793,
           "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "B"
+    },
+    "q0620": {
+      "prompt": "Индикатор загорается, указывая на то, что ______.",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready",
+      "options": {
+        "q0620_o1": "включены передние и задние противотуманные фары",
+        "q0620_o2": "включены передние и задние габаритные огни",
+        "q0620_o3": "включены передние фары",
+        "q0620_o4": "включена аварийная сигнализация"
+      },
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "включены передние и задние противотуманные фары",
+          "sourceTextBody": "включены передние и задние противотуманные фары",
+          "canonicalOptionId": "q0620_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "the front and rear fog lights are turned on",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "включены передние и задние габаритные огни",
+          "sourceTextBody": "включены передние и задние габаритные огни",
+          "canonicalOptionId": "q0620_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "front and rear sidelights are turned on",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "включены передние фары",
+          "sourceTextBody": "включены передние фары",
+          "canonicalOptionId": "q0620_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "the front lights are turned on",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "включена аварийная сигнализация",
+          "sourceTextBody": "включена аварийная сигнализация",
+          "canonicalOptionId": "q0620_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "the hazard lights are turned on",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "включены передние и задние противотуманные фары",
+          "sourceTextBody": "включены передние и задние противотуманные фары",
+          "canonicalOptionId": "q0620_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "the front and rear fog lights are turned on",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "включены передние и задние габаритные огни",
+          "sourceTextBody": "включены передние и задние габаритные огни",
+          "canonicalOptionId": "q0620_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "front and rear sidelights are turned on",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "включены передние фары",
+          "sourceTextBody": "включены передние фары",
+          "canonicalOptionId": "q0620_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "the front lights are turned on",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "включена аварийная сигнализация",
+          "sourceTextBody": "включена аварийная сигнализация",
+          "canonicalOptionId": "q0620_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "the hazard lights are turned on",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
         }
       ],
       "localeCorrectOptionKey": "B"
@@ -33132,6 +33731,13 @@
       "confidence": "high",
       "reviewStatus": "ready"
     },
+    "q0633": {
+      "prompt": "Проезжать перекрёсток или железнодорожный переезд как можно быстрее, если на них горит красный свет.",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready"
+    },
     "q0634": {
       "prompt": "Следует остановиться перед разметкой и посмотреть по сторонам при мигании данного сигнала светофора.",
       "explanation": "",
@@ -33151,6 +33757,13 @@
       "explanation": "",
       "sourceMode": "direct",
       "confidence": "high",
+      "reviewStatus": "ready"
+    },
+    "q0637": {
+      "prompt": "В данной ситуации транспортное средство не может ехать прямо или повернуть налево.",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
       "reviewStatus": "ready"
     },
     "q0638": {
@@ -33200,6 +33813,13 @@
       "explanation": "",
       "sourceMode": "direct",
       "confidence": "high",
+      "reviewStatus": "ready"
+    },
+    "q0645": {
+      "prompt": "Транспортному средству разрешается проезжать предстоящий перекрёсток при зелёном сигнале светофора.",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
       "reviewStatus": "ready"
     },
     "q0646": {
@@ -36177,6 +36797,120 @@
       ],
       "localeCorrectOptionKey": "B"
     },
+    "q0679": {
+      "prompt": "Что означает этот знак?",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready",
+      "options": {
+        "q0679_o1": "последовательные спуски",
+        "q0679_o2": "крутой спуск",
+        "q0679_o3": "крутой подъём",
+        "q0679_o4": "последовательные подъёмы"
+      },
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "последовательные спуски",
+          "sourceTextBody": "последовательные спуски",
+          "canonicalOptionId": "q0679_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "continuous down slopes",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "крутой спуск",
+          "sourceTextBody": "крутой спуск",
+          "canonicalOptionId": "q0679_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "steep downhill road",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "крутой подъём",
+          "sourceTextBody": "крутой подъём",
+          "canonicalOptionId": "q0679_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "steep uphill road",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "последовательные подъёмы",
+          "sourceTextBody": "последовательные подъёмы",
+          "canonicalOptionId": "q0679_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "continuous up slopes",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "последовательные спуски",
+          "sourceTextBody": "последовательные спуски",
+          "canonicalOptionId": "q0679_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "continuous down slopes",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "крутой спуск",
+          "sourceTextBody": "крутой спуск",
+          "canonicalOptionId": "q0679_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "steep downhill road",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "крутой подъём",
+          "sourceTextBody": "крутой подъём",
+          "canonicalOptionId": "q0679_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "steep uphill road",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "последовательные подъёмы",
+          "sourceTextBody": "последовательные подъёмы",
+          "canonicalOptionId": "q0679_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "continuous up slopes",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "localeCorrectOptionKey": "A"
+    },
     "q0680": {
       "prompt": "Что означает данный знак?",
       "sourceMode": "direct",
@@ -37752,6 +38486,120 @@
       ],
       "localeCorrectOptionKey": "B"
     },
+    "q0695": {
+      "prompt": "Что означает этот знак?",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready",
+      "options": {
+        "q0695_o1": "разворот запрещён",
+        "q0695_o2": "перестроение в левую полосу запрещено",
+        "q0695_o3": "поворот налево запрещён",
+        "q0695_o4": "въезд в левую полосу запрещён"
+      },
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "разворот запрещён",
+          "sourceTextBody": "разворот запрещён",
+          "canonicalOptionId": "q0695_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "no U-turn",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "перестроение в левую полосу запрещено",
+          "sourceTextBody": "перестроение в левую полосу запрещено",
+          "canonicalOptionId": "q0695_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "no changing to left lane",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "поворот налево запрещён",
+          "sourceTextBody": "поворот налево запрещён",
+          "canonicalOptionId": "q0695_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "no turning left",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "въезд в левую полосу запрещён",
+          "sourceTextBody": "въезд в левую полосу запрещён",
+          "canonicalOptionId": "q0695_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "no entering the left lane",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "разворот запрещён",
+          "sourceTextBody": "разворот запрещён",
+          "canonicalOptionId": "q0695_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "no U-turn",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "перестроение в левую полосу запрещено",
+          "sourceTextBody": "перестроение в левую полосу запрещено",
+          "canonicalOptionId": "q0695_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "no changing to left lane",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "поворот налево запрещён",
+          "sourceTextBody": "поворот налево запрещён",
+          "canonicalOptionId": "q0695_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "no turning left",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "въезд в левую полосу запрещён",
+          "sourceTextBody": "въезд в левую полосу запрещён",
+          "canonicalOptionId": "q0695_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "no entering the left lane",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "localeCorrectOptionKey": "C"
+    },
     "q0696": {
       "prompt": "Что означает данный знак?",
       "sourceMode": "direct",
@@ -37958,6 +38806,120 @@
           "alignmentMethod": "manual-answer-key-confirmed",
           "manualAnswerKeyConfirmed": true,
           "confirmedAsCorrectKey": true
+        }
+      ],
+      "localeCorrectOptionKey": "D"
+    },
+    "q0698": {
+      "prompt": "Какова роль указательного знака?",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready",
+      "options": {
+        "q0698_o1": "сообщает информацию о направлении",
+        "q0698_o2": "предупреждает об опасности впереди",
+        "q0698_o3": "ограничивает проезд транспортных средств и пешеходов",
+        "q0698_o4": "указывает транспортным средствам и пешеходам продолжать движение"
+      },
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "сообщает информацию о направлении",
+          "sourceTextBody": "сообщает информацию о направлении",
+          "canonicalOptionId": "q0698_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "tell the direction information",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "предупреждает об опасности впереди",
+          "sourceTextBody": "предупреждает об опасности впереди",
+          "canonicalOptionId": "q0698_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "warn danger ahead",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "ограничивает проезд транспортных средств и пешеходов",
+          "sourceTextBody": "ограничивает проезд транспортных средств и пешеходов",
+          "canonicalOptionId": "q0698_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "restrict the vehicles and pedestrians from passing",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "указывает транспортным средствам и пешеходам продолжать движение",
+          "sourceTextBody": "указывает транспортным средствам и пешеходам продолжать движение",
+          "canonicalOptionId": "q0698_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "indicate the vehicles and pedestrians to go ahead",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "сообщает информацию о направлении",
+          "sourceTextBody": "сообщает информацию о направлении",
+          "canonicalOptionId": "q0698_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "tell the direction information",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "предупреждает об опасности впереди",
+          "sourceTextBody": "предупреждает об опасности впереди",
+          "canonicalOptionId": "q0698_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "warn danger ahead",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "ограничивает проезд транспортных средств и пешеходов",
+          "sourceTextBody": "ограничивает проезд транспортных средств и пешеходов",
+          "canonicalOptionId": "q0698_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "restrict the vehicles and pedestrians from passing",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "указывает транспортным средствам и пешеходам продолжать движение",
+          "sourceTextBody": "указывает транспортным средствам и пешеходам продолжать движение",
+          "canonicalOptionId": "q0698_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "indicate the vehicles and pedestrians to go ahead",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
         }
       ],
       "localeCorrectOptionKey": "D"
@@ -40482,6 +41444,120 @@
       ],
       "localeCorrectOptionKey": "B"
     },
+    "q0723": {
+      "prompt": "Какая разметка представляет собой сочетание белых прерывистых линий и треугольной области?",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready",
+      "options": {
+        "q0723_o1": "разметка въезда на дорогу",
+        "q0723_o2": "разделительная линия полосы, которую разрешено пересекать",
+        "q0723_o3": "линия замедления при въезде на дорогу",
+        "q0723_o4": "разметка выезда с дороги"
+      },
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "разметка въезда на дорогу",
+          "sourceTextBody": "разметка въезда на дорогу",
+          "canonicalOptionId": "q0723_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "road entry marking",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "разделительная линия полосы, которую разрешено пересекать",
+          "sourceTextBody": "разделительная линия полосы, которую разрешено пересекать",
+          "canonicalOptionId": "q0723_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "lane-dividing line that can be crossed",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "линия замедления при въезде на дорогу",
+          "sourceTextBody": "линия замедления при въезде на дорогу",
+          "canonicalOptionId": "q0723_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "deceleration line at road entry",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "разметка выезда с дороги",
+          "sourceTextBody": "разметка выезда с дороги",
+          "canonicalOptionId": "q0723_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "road exit marking",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "разметка въезда на дорогу",
+          "sourceTextBody": "разметка въезда на дорогу",
+          "canonicalOptionId": "q0723_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "road entry marking",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "разделительная линия полосы, которую разрешено пересекать",
+          "sourceTextBody": "разделительная линия полосы, которую разрешено пересекать",
+          "canonicalOptionId": "q0723_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "lane-dividing line that can be crossed",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "линия замедления при въезде на дорогу",
+          "sourceTextBody": "линия замедления при въезде на дорогу",
+          "canonicalOptionId": "q0723_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "deceleration line at road entry",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "разметка выезда с дороги",
+          "sourceTextBody": "разметка выезда с дороги",
+          "canonicalOptionId": "q0723_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "road exit marking",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "localeCorrectOptionKey": "A"
+    },
     "q0724": {
       "prompt": "К какому типу отметки относятся две жёлтые сплошные линии в центре дороги?",
       "sourceMode": "direct",
@@ -42897,6 +43973,120 @@
       ],
       "localeCorrectOptionKey": "D"
     },
+    "q0747": {
+      "prompt": "Что означает этот знак?",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready",
+      "options": {
+        "q0747_o1": "крутой спуск",
+        "q0747_o2": "последовательные подъёмы",
+        "q0747_o3": "крутой подъём",
+        "q0747_o4": "дорога по насыпи"
+      },
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "крутой спуск",
+          "sourceTextBody": "крутой спуск",
+          "canonicalOptionId": "q0747_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "steep downhill road",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "последовательные подъёмы",
+          "sourceTextBody": "последовательные подъёмы",
+          "canonicalOptionId": "q0747_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "continuous up slopes",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "крутой подъём",
+          "sourceTextBody": "крутой подъём",
+          "canonicalOptionId": "q0747_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "steep uphill road",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "дорога по насыпи",
+          "sourceTextBody": "дорога по насыпи",
+          "canonicalOptionId": "q0747_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "embankment road",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "крутой спуск",
+          "sourceTextBody": "крутой спуск",
+          "canonicalOptionId": "q0747_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "steep downhill road",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "последовательные подъёмы",
+          "sourceTextBody": "последовательные подъёмы",
+          "canonicalOptionId": "q0747_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "continuous up slopes",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "крутой подъём",
+          "sourceTextBody": "крутой подъём",
+          "canonicalOptionId": "q0747_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "steep uphill road",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "дорога по насыпи",
+          "sourceTextBody": "дорога по насыпи",
+          "canonicalOptionId": "q0747_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "embankment road",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "localeCorrectOptionKey": "C"
+    },
     "q0748": {
       "prompt": "Что означает данный знак?",
       "sourceMode": "direct",
@@ -43841,6 +45031,120 @@
         }
       ],
       "localeCorrectOptionKey": "A"
+    },
+    "q0757": {
+      "prompt": "Что означает этот знак?",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready",
+      "options": {
+        "q0757_o1": "указание направления полосы",
+        "q0757_o2": "перекрёсток впереди",
+        "q0757_o3": "информация о полосах движения",
+        "q0757_o4": "ответвление дороги впереди"
+      },
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "указание направления полосы",
+          "sourceTextBody": "указание направления полосы",
+          "canonicalOptionId": "q0757_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "lane direction indication",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "перекрёсток впереди",
+          "sourceTextBody": "перекрёсток впереди",
+          "canonicalOptionId": "q0757_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "intersection ahead",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "информация о полосах движения",
+          "sourceTextBody": "информация о полосах движения",
+          "canonicalOptionId": "q0757_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "lane information indication",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "ответвление дороги впереди",
+          "sourceTextBody": "ответвление дороги впереди",
+          "canonicalOptionId": "q0757_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "road branching point ahead",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "указание направления полосы",
+          "sourceTextBody": "указание направления полосы",
+          "canonicalOptionId": "q0757_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "lane direction indication",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "перекрёсток впереди",
+          "sourceTextBody": "перекрёсток впереди",
+          "canonicalOptionId": "q0757_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "intersection ahead",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "информация о полосах движения",
+          "sourceTextBody": "информация о полосах движения",
+          "canonicalOptionId": "q0757_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "lane information indication",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "ответвление дороги впереди",
+          "sourceTextBody": "ответвление дороги впереди",
+          "canonicalOptionId": "q0757_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "road branching point ahead",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "localeCorrectOptionKey": "B"
     },
     "q0758": {
       "prompt": "Что означает данный знак?",
@@ -44992,6 +46296,120 @@
         }
       ],
       "localeCorrectOptionKey": "A"
+    },
+    "q0769": {
+      "prompt": "Что означает этот знак?",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready",
+      "options": {
+        "q0769_o1": "дороги с обеих сторон",
+        "q0769_o2": "движение по главной дороге имеет приоритет",
+        "q0769_o3": "остановиться и уступить дорогу",
+        "q0769_o4": "односторонняя дорога"
+      },
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "дороги с обеих сторон",
+          "sourceTextBody": "дороги с обеих сторон",
+          "canonicalOptionId": "q0769_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "streets on both sides",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "движение по главной дороге имеет приоритет",
+          "sourceTextBody": "движение по главной дороге имеет приоритет",
+          "canonicalOptionId": "q0769_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "main road goes first",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "остановиться и уступить дорогу",
+          "sourceTextBody": "остановиться и уступить дорогу",
+          "canonicalOptionId": "q0769_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "stop to yield",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "односторонняя дорога",
+          "sourceTextBody": "односторонняя дорога",
+          "canonicalOptionId": "q0769_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "one-way road",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "дороги с обеих сторон",
+          "sourceTextBody": "дороги с обеих сторон",
+          "canonicalOptionId": "q0769_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "streets on both sides",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "движение по главной дороге имеет приоритет",
+          "sourceTextBody": "движение по главной дороге имеет приоритет",
+          "canonicalOptionId": "q0769_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "main road goes first",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "остановиться и уступить дорогу",
+          "sourceTextBody": "остановиться и уступить дорогу",
+          "canonicalOptionId": "q0769_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "stop to yield",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "односторонняя дорога",
+          "sourceTextBody": "односторонняя дорога",
+          "canonicalOptionId": "q0769_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "one-way road",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "localeCorrectOptionKey": "B"
     },
     "q0770": {
       "prompt": "Что означает данный знак?",
@@ -48248,6 +49666,120 @@
       ],
       "localeCorrectOptionKey": "A"
     },
+    "q0801": {
+      "prompt": "Какая это разметка — жёлтая прерывистая линия в центре дороги?",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready",
+      "options": {
+        "q0801_o1": "указательная разметка",
+        "q0801_o2": "запрещающая разметка",
+        "q0801_o3": "предупредительный знак",
+        "q0801_o4": "вспомогательная разметка"
+      },
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "указательная разметка",
+          "sourceTextBody": "указательная разметка",
+          "canonicalOptionId": "q0801_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "indicative marking",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "запрещающая разметка",
+          "sourceTextBody": "запрещающая разметка",
+          "canonicalOptionId": "q0801_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "prohibitive marking",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "предупредительный знак",
+          "sourceTextBody": "предупредительный знак",
+          "canonicalOptionId": "q0801_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "warning sign",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "вспомогательная разметка",
+          "sourceTextBody": "вспомогательная разметка",
+          "canonicalOptionId": "q0801_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "auxiliary marking",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "указательная разметка",
+          "sourceTextBody": "указательная разметка",
+          "canonicalOptionId": "q0801_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "indicative marking",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "запрещающая разметка",
+          "sourceTextBody": "запрещающая разметка",
+          "canonicalOptionId": "q0801_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "prohibitive marking",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "предупредительный знак",
+          "sourceTextBody": "предупредительный знак",
+          "canonicalOptionId": "q0801_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "warning sign",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "вспомогательная разметка",
+          "sourceTextBody": "вспомогательная разметка",
+          "canonicalOptionId": "q0801_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "auxiliary marking",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "localeCorrectOptionKey": "A"
+    },
     "q0802": {
       "prompt": "Что означает данная пунктирная линия и треугольная зона?",
       "sourceMode": "direct",
@@ -50033,6 +51565,120 @@
       ],
       "localeCorrectOptionKey": "C"
     },
+    "q0819": {
+      "prompt": "Что означает этот знак?",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready",
+      "options": {
+        "q0819_o1": "специальная полоса для больших автобусов",
+        "q0819_o2": "специальная полоса для транспортных средств с несколькими пассажирами",
+        "q0819_o3": "специальная полоса для общественных автобусов",
+        "q0819_o4": "специальная полоса для транспортных средств BRT"
+      },
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "специальная полоса для больших автобусов",
+          "sourceTextBody": "специальная полоса для больших автобусов",
+          "canonicalOptionId": "q0819_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "special lane for large buses",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "специальная полоса для транспортных средств с несколькими пассажирами",
+          "sourceTextBody": "специальная полоса для транспортных средств с несколькими пассажирами",
+          "canonicalOptionId": "q0819_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "special lane for multi-passenger vehicles",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "специальная полоса для общественных автобусов",
+          "sourceTextBody": "специальная полоса для общественных автобусов",
+          "canonicalOptionId": "q0819_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "special lane for public buses",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "специальная полоса для транспортных средств BRT",
+          "sourceTextBody": "специальная полоса для транспортных средств BRT",
+          "canonicalOptionId": "q0819_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "special lane for BRT vehicles",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "специальная полоса для больших автобусов",
+          "sourceTextBody": "специальная полоса для больших автобусов",
+          "canonicalOptionId": "q0819_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "special lane for large buses",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "специальная полоса для транспортных средств с несколькими пассажирами",
+          "sourceTextBody": "специальная полоса для транспортных средств с несколькими пассажирами",
+          "canonicalOptionId": "q0819_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "special lane for multi-passenger vehicles",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "специальная полоса для общественных автобусов",
+          "sourceTextBody": "специальная полоса для общественных автобусов",
+          "canonicalOptionId": "q0819_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "special lane for public buses",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "специальная полоса для транспортных средств BRT",
+          "sourceTextBody": "специальная полоса для транспортных средств BRT",
+          "canonicalOptionId": "q0819_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "special lane for BRT vehicles",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "localeCorrectOptionKey": "D"
+    },
     "q0820": {
       "prompt": "Что означает данный знак?",
       "sourceMode": "direct",
@@ -51397,6 +53043,120 @@
         }
       ],
       "localeCorrectOptionKey": "A"
+    },
+    "q0833": {
+      "prompt": "Что означает двойная белая прерывистая линия, расположенная в передней части перекрёстка?",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready",
+      "options": {
+        "q0833_o1": "линия ожидания для начала движения",
+        "q0833_o2": "линия остановки и уступки",
+        "q0833_o3": "линия замедления и уступки",
+        "q0833_o4": "линия ожидания для левого поворота"
+      },
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "линия ожидания для начала движения",
+          "sourceTextBody": "линия ожидания для начала движения",
+          "canonicalOptionId": "q0833_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "waiting to run line",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "линия остановки и уступки",
+          "sourceTextBody": "линия остановки и уступки",
+          "canonicalOptionId": "q0833_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "stopping and yield line",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "линия замедления и уступки",
+          "sourceTextBody": "линия замедления и уступки",
+          "canonicalOptionId": "q0833_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "slowdown and yield line",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "линия ожидания для левого поворота",
+          "sourceTextBody": "линия ожидания для левого поворота",
+          "canonicalOptionId": "q0833_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "left-turn waiting line",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "линия ожидания для начала движения",
+          "sourceTextBody": "линия ожидания для начала движения",
+          "canonicalOptionId": "q0833_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "waiting to run line",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "линия остановки и уступки",
+          "sourceTextBody": "линия остановки и уступки",
+          "canonicalOptionId": "q0833_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "stopping and yield line",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "линия замедления и уступки",
+          "sourceTextBody": "линия замедления и уступки",
+          "canonicalOptionId": "q0833_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "slowdown and yield line",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "линия ожидания для левого поворота",
+          "sourceTextBody": "линия ожидания для левого поворота",
+          "canonicalOptionId": "q0833_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "left-turn waiting line",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "localeCorrectOptionKey": "C"
     },
     "q0834": {
       "prompt": "Данная вертикальная линия, образующая ромб, относится к:",
@@ -56753,6 +58513,120 @@
       ],
       "localeCorrectOptionKey": "B"
     },
+    "q0885": {
+      "prompt": "Какова роль указательной разметки?",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready",
+      "options": {
+        "q0885_o1": "запрет обгона",
+        "q0885_o2": "указывать место проезда транспортных средств",
+        "q0885_o3": "ограничивать проезд",
+        "q0885_o4": "предупреждать и напоминать"
+      },
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "запрет обгона",
+          "sourceTextBody": "запрет обгона",
+          "canonicalOptionId": "q0885_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "no passing",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "указывать место проезда транспортных средств",
+          "sourceTextBody": "указывать место проезда транспортных средств",
+          "canonicalOptionId": "q0885_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "indicate vehicles to pass",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "ограничивать проезд",
+          "sourceTextBody": "ограничивать проезд",
+          "canonicalOptionId": "q0885_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "restrict from passing",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "предупреждать и напоминать",
+          "sourceTextBody": "предупреждать и напоминать",
+          "canonicalOptionId": "q0885_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "warn and remind",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "запрет обгона",
+          "sourceTextBody": "запрет обгона",
+          "canonicalOptionId": "q0885_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "no passing",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "указывать место проезда транспортных средств",
+          "sourceTextBody": "указывать место проезда транспортных средств",
+          "canonicalOptionId": "q0885_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "indicate vehicles to pass",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "ограничивать проезд",
+          "sourceTextBody": "ограничивать проезд",
+          "canonicalOptionId": "q0885_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "restrict from passing",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "предупреждать и напоминать",
+          "sourceTextBody": "предупреждать и напоминать",
+          "canonicalOptionId": "q0885_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "warn and remind",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "localeCorrectOptionKey": "B"
+    },
     "q0886": {
       "prompt": "Промежуток между двумя желтыми пунктирными линиями в круге означает:",
       "sourceMode": "direct",
@@ -57593,6 +59467,120 @@
       ],
       "localeCorrectOptionKey": "C"
     },
+    "q0894": {
+      "prompt": "Что это за разметка — наклонные жёлто-чёрные полосы?",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready",
+      "options": {
+        "q0894_o1": "сплошная (непрерывная) разметка",
+        "q0894_o2": "выступающая (рельефная) разметка",
+        "q0894_o3": "трёхмерная разметка",
+        "q0894_o4": "разметка для замедления"
+      },
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "сплошная (непрерывная) разметка",
+          "sourceTextBody": "сплошная (непрерывная) разметка",
+          "canonicalOptionId": "q0894_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "entity mark",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "выступающая (рельефная) разметка",
+          "sourceTextBody": "выступающая (рельефная) разметка",
+          "canonicalOptionId": "q0894_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "protrusions mark",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "трёхмерная разметка",
+          "sourceTextBody": "трёхмерная разметка",
+          "canonicalOptionId": "q0894_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "three-dimensional mark",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "разметка для замедления",
+          "sourceTextBody": "разметка для замедления",
+          "canonicalOptionId": "q0894_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "deceleration mark",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "сплошная (непрерывная) разметка",
+          "sourceTextBody": "сплошная (непрерывная) разметка",
+          "canonicalOptionId": "q0894_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "entity mark",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "выступающая (рельефная) разметка",
+          "sourceTextBody": "выступающая (рельефная) разметка",
+          "canonicalOptionId": "q0894_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "protrusions mark",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "трёхмерная разметка",
+          "sourceTextBody": "трёхмерная разметка",
+          "canonicalOptionId": "q0894_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "three-dimensional mark",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "разметка для замедления",
+          "sourceTextBody": "разметка для замедления",
+          "canonicalOptionId": "q0894_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "deceleration mark",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "localeCorrectOptionKey": "C"
+    },
     "q0895": {
       "prompt": "Что предупреждает данный знак?",
       "sourceMode": "direct",
@@ -57908,6 +59896,120 @@
       ],
       "localeCorrectOptionKey": "C"
     },
+    "q0898": {
+      "prompt": "Что означает этот знак?",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready",
+      "options": {
+        "q0898_o1": "внимание: длительное сигналение",
+        "q0898_o2": "неохраняемый железнодорожный переезд",
+        "q0898_o3": "охраняемый железнодорожный переезд",
+        "q0898_o4": "множественное пересечение железной и автомобильной дорог"
+      },
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "внимание: длительное сигналение",
+          "sourceTextBody": "внимание: длительное сигналение",
+          "canonicalOptionId": "q0898_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "watch for long time honking",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "неохраняемый железнодорожный переезд",
+          "sourceTextBody": "неохраняемый железнодорожный переезд",
+          "canonicalOptionId": "q0898_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "an unmanned railway crossing",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "охраняемый железнодорожный переезд",
+          "sourceTextBody": "охраняемый железнодорожный переезд",
+          "canonicalOptionId": "q0898_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "a manned railway crossing",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "множественное пересечение железной и автомобильной дорог",
+          "sourceTextBody": "множественное пересечение железной и автомобильной дорог",
+          "canonicalOptionId": "q0898_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "multi-crossing of railway and road",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "внимание: длительное сигналение",
+          "sourceTextBody": "внимание: длительное сигналение",
+          "canonicalOptionId": "q0898_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "watch for long time honking",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "неохраняемый железнодорожный переезд",
+          "sourceTextBody": "неохраняемый железнодорожный переезд",
+          "canonicalOptionId": "q0898_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "an unmanned railway crossing",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "охраняемый железнодорожный переезд",
+          "sourceTextBody": "охраняемый железнодорожный переезд",
+          "canonicalOptionId": "q0898_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "a manned railway crossing",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "множественное пересечение железной и автомобильной дорог",
+          "sourceTextBody": "множественное пересечение железной и автомобильной дорог",
+          "canonicalOptionId": "q0898_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "multi-crossing of railway and road",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "localeCorrectOptionKey": "B"
+    },
     "q0899": {
       "prompt": "Данный ряд жестов регулировщика относится к:",
       "sourceMode": "direct",
@@ -58013,12 +60115,1129 @@
       ],
       "localeCorrectOptionKey": "A"
     },
+    "q0900": {
+      "prompt": "Срок действия водительского удостоверения, выданного при первоначальном оформлении, составляет ______.",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready",
+      "options": {
+        "q0900_o1": "3 года",
+        "q0900_o2": "5 лет",
+        "q0900_o3": "6 лет",
+        "q0900_o4": "12 лет"
+      },
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "3 года",
+          "sourceTextBody": "3 года",
+          "canonicalOptionId": "q0900_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "3 years",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "5 лет",
+          "sourceTextBody": "5 лет",
+          "canonicalOptionId": "q0900_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "5 years",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "6 лет",
+          "sourceTextBody": "6 лет",
+          "canonicalOptionId": "q0900_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "6 years",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "12 лет",
+          "sourceTextBody": "12 лет",
+          "canonicalOptionId": "q0900_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "12 years",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "3 года",
+          "sourceTextBody": "3 года",
+          "canonicalOptionId": "q0900_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "3 years",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "5 лет",
+          "sourceTextBody": "5 лет",
+          "canonicalOptionId": "q0900_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "5 years",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "6 лет",
+          "sourceTextBody": "6 лет",
+          "canonicalOptionId": "q0900_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "6 years",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "12 лет",
+          "sourceTextBody": "12 лет",
+          "canonicalOptionId": "q0900_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "12 years",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "localeCorrectOptionKey": "C"
+    },
+    "q0901": {
+      "prompt": "Каким видом транспортного средства можно управлять, если в водительском удостоверении указана категория «малое моторное транспортное средство»?",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready",
+      "options": {
+        "q0901_o1": "низкоскоростной грузовик",
+        "q0901_o2": "автобус среднего размера",
+        "q0901_o3": "моторный трицикл",
+        "q0901_o4": "самоходная колёсная машина"
+      },
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "низкоскоростной грузовик",
+          "sourceTextBody": "низкоскоростной грузовик",
+          "canonicalOptionId": "q0901_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "low-speed truck",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "автобус среднего размера",
+          "sourceTextBody": "автобус среднего размера",
+          "canonicalOptionId": "q0901_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "midsize bus",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "моторный трицикл",
+          "sourceTextBody": "моторный трицикл",
+          "canonicalOptionId": "q0901_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "motor tricycle",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "самоходная колёсная машина",
+          "sourceTextBody": "самоходная колёсная машина",
+          "canonicalOptionId": "q0901_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "self-propelled wheeled machinery",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "низкоскоростной грузовик",
+          "sourceTextBody": "низкоскоростной грузовик",
+          "canonicalOptionId": "q0901_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "low-speed truck",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "автобус среднего размера",
+          "sourceTextBody": "автобус среднего размера",
+          "canonicalOptionId": "q0901_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "midsize bus",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "моторный трицикл",
+          "sourceTextBody": "моторный трицикл",
+          "canonicalOptionId": "q0901_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "motor tricycle",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "самоходная колёсная машина",
+          "sourceTextBody": "самоходная колёсная машина",
+          "canonicalOptionId": "q0901_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "self-propelled wheeled machinery",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "localeCorrectOptionKey": "A"
+    },
+    "q0902": {
+      "prompt": "Каким видом транспортного средства можно управлять, если в водительском удостоверении указана категория «малое моторное транспортное средство с автоматической трансмиссией»?",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready",
+      "options": {
+        "q0902_o1": "низкоскоростной грузовик",
+        "q0902_o2": "малое моторное транспортное средство",
+        "q0902_o3": "мотоцикл",
+        "q0902_o4": "лёгкий грузовик с автоматической коробкой передач"
+      },
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "низкоскоростной грузовик",
+          "sourceTextBody": "низкоскоростной грузовик",
+          "canonicalOptionId": "q0902_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "low-speed truck",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "малое моторное транспортное средство",
+          "sourceTextBody": "малое моторное транспортное средство",
+          "canonicalOptionId": "q0902_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "small motor vehicle",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "мотоцикл",
+          "sourceTextBody": "мотоцикл",
+          "canonicalOptionId": "q0902_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "motorcycle",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "лёгкий грузовик с автоматической коробкой передач",
+          "sourceTextBody": "лёгкий грузовик с автоматической коробкой передач",
+          "canonicalOptionId": "q0902_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "light truck with automatic transmission",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "низкоскоростной грузовик",
+          "sourceTextBody": "низкоскоростной грузовик",
+          "canonicalOptionId": "q0902_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "low-speed truck",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "малое моторное транспортное средство",
+          "sourceTextBody": "малое моторное транспортное средство",
+          "canonicalOptionId": "q0902_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "small motor vehicle",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "мотоцикл",
+          "sourceTextBody": "мотоцикл",
+          "canonicalOptionId": "q0902_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "motorcycle",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "лёгкий грузовик с автоматической коробкой передач",
+          "sourceTextBody": "лёгкий грузовик с автоматической коробкой передач",
+          "canonicalOptionId": "q0902_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "light truck with automatic transmission",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "localeCorrectOptionKey": "D"
+    },
+    "q0903": {
+      "prompt": "Водительское удостоверение со сроком действия 10 лет будет выдано, если штрафные баллы никогда не достигали 12 баллов в каждом цикле начисления баллов в течение 6-летнего срока действия удостоверения.",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready"
+    },
+    "q0904": {
+      "prompt": "Срок действия водительского удостоверения делится на 6-летний, 10-летний и 20-летний периоды.",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready"
+    },
+    "q0905": {
+      "prompt": "Можно управлять малым моторным транспортным средством с автоматической трансмиссией, если в заявлении на получение водительского удостоверения указан малый моторный транспорт.",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready"
+    },
+    "q0906": {
+      "prompt": "Можно управлять низкоскоростным грузовиком, если в заявлении на получение водительского удостоверения указан малый моторный транспорт с автоматической трансмиссией.",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready"
+    },
+    "q0907": {
+      "prompt": "Срок действия водительского удостоверения, выдаваемого при первоначальном оформлении, — 6 лет.",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready"
+    },
+    "q0908": {
+      "prompt": "Срок действия водительского удостоверения, выдаваемого при первоначальном оформлении, — 4 года.",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready"
+    },
+    "q0909": {
+      "prompt": "При первоначальном оформлении водительского удостоверения на какой тип транспортного средства можно подать заявление?",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready",
+      "options": {
+        "q0909_o1": "автобус среднего размера",
+        "q0909_o2": "большой автобус",
+        "q0909_o3": "обычный моторный трицикл",
+        "q0909_o4": "прицеп"
+      },
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "автобус среднего размера",
+          "sourceTextBody": "автобус среднего размера",
+          "canonicalOptionId": "q0909_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "midsize bus",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "большой автобус",
+          "sourceTextBody": "большой автобус",
+          "canonicalOptionId": "q0909_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "large bus",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "обычный моторный трицикл",
+          "sourceTextBody": "обычный моторный трицикл",
+          "canonicalOptionId": "q0909_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "ordinary motor tricycle",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "прицеп",
+          "sourceTextBody": "прицеп",
+          "canonicalOptionId": "q0909_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "trailer",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "автобус среднего размера",
+          "sourceTextBody": "автобус среднего размера",
+          "canonicalOptionId": "q0909_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "midsize bus",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "большой автобус",
+          "sourceTextBody": "большой автобус",
+          "canonicalOptionId": "q0909_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "large bus",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "обычный моторный трицикл",
+          "sourceTextBody": "обычный моторный трицикл",
+          "canonicalOptionId": "q0909_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "ordinary motor tricycle",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "прицеп",
+          "sourceTextBody": "прицеп",
+          "canonicalOptionId": "q0909_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "trailer",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "localeCorrectOptionKey": "C"
+    },
+    "q0910": {
+      "prompt": "На какое транспортное средство можно подать заявление при первоначальном оформлении водительского удостоверения при достижении 20 лет?",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready",
+      "options": {
+        "q0910_o1": "большой грузовик",
+        "q0910_o2": "большой автобус",
+        "q0910_o3": "средний автобус",
+        "q0910_o4": "прицеп"
+      },
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "большой грузовик",
+          "sourceTextBody": "большой грузовик",
+          "canonicalOptionId": "q0910_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "large truck",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "большой автобус",
+          "sourceTextBody": "большой автобус",
+          "canonicalOptionId": "q0910_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "large bus",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "средний автобус",
+          "sourceTextBody": "средний автобус",
+          "canonicalOptionId": "q0910_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "midsize bus",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "прицеп",
+          "sourceTextBody": "прицеп",
+          "canonicalOptionId": "q0910_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "trailer",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "большой грузовик",
+          "sourceTextBody": "большой грузовик",
+          "canonicalOptionId": "q0910_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "large truck",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "большой автобус",
+          "sourceTextBody": "большой автобус",
+          "canonicalOptionId": "q0910_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "large bus",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "средний автобус",
+          "sourceTextBody": "средний автобус",
+          "canonicalOptionId": "q0910_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "midsize bus",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "прицеп",
+          "sourceTextBody": "прицеп",
+          "canonicalOptionId": "q0910_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "trailer",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "localeCorrectOptionKey": "A"
+    },
+    "q0911": {
+      "prompt": "В экзамен по предмету 2 для легковых автомобилей входят: парковка задним ходом в бокс, остановка в указанном месте и трогание в гору, остановка у обочины, проезд по S-образной линии, резкий поворот.",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready"
+    },
+    "q0912": {
+      "prompt": "Экзамен по предмету 3 делится на две части: Навыки вождения и Общие знания по безопасному и вежливому вождению.",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready"
+    },
+    "q0913": {
+      "prompt": "Максимальный балл за «Навыки вождения» и «Общие знания по безопасному и вежливому вождению» в экзамене по предмету 3 составляет 100; проходные баллы для каждой части — 80 и 90.",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready"
+    },
+    "q0914": {
+      "prompt": "В течение срока действия бланка допуска количество попыток записи на экзамен по навыкам вождения для предметов 2 и 3 не может превышать ______.",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready",
+      "options": {
+        "q0914_o1": "3 раза",
+        "q0914_o2": "4 раза",
+        "q0914_o3": "5 раз",
+        "q0914_o4": "6 раз"
+      },
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "3 раза",
+          "sourceTextBody": "3 раза",
+          "canonicalOptionId": "q0914_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "3 times",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "4 раза",
+          "sourceTextBody": "4 раза",
+          "canonicalOptionId": "q0914_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "4 times",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "5 раз",
+          "sourceTextBody": "5 раз",
+          "canonicalOptionId": "q0914_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "5 times",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "6 раз",
+          "sourceTextBody": "6 раз",
+          "canonicalOptionId": "q0914_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "6 times",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "3 раза",
+          "sourceTextBody": "3 раза",
+          "canonicalOptionId": "q0914_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "3 times",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "4 раза",
+          "sourceTextBody": "4 раза",
+          "canonicalOptionId": "q0914_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "4 times",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "5 раз",
+          "sourceTextBody": "5 раз",
+          "canonicalOptionId": "q0914_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "5 times",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "6 раз",
+          "sourceTextBody": "6 раз",
+          "canonicalOptionId": "q0914_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "6 times",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "localeCorrectOptionKey": "C"
+    },
+    "q0915": {
+      "prompt": "Срок действия бланка допуска составляет _________.",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready",
+      "options": {
+        "q0915_o1": "1 год",
+        "q0915_o2": "2 года",
+        "q0915_o3": "3 года",
+        "q0915_o4": "4 года"
+      },
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "1 год",
+          "sourceTextBody": "1 год",
+          "canonicalOptionId": "q0915_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "1 year",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "2 года",
+          "sourceTextBody": "2 года",
+          "canonicalOptionId": "q0915_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "2 years",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "3 года",
+          "sourceTextBody": "3 года",
+          "canonicalOptionId": "q0915_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "3 years",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "4 года",
+          "sourceTextBody": "4 года",
+          "canonicalOptionId": "q0915_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "4 years",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "1 год",
+          "sourceTextBody": "1 год",
+          "canonicalOptionId": "q0915_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "1 year",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "2 года",
+          "sourceTextBody": "2 года",
+          "canonicalOptionId": "q0915_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "2 years",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "3 года",
+          "sourceTextBody": "3 года",
+          "canonicalOptionId": "q0915_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "3 years",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "4 года",
+          "sourceTextBody": "4 года",
+          "canonicalOptionId": "q0915_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "4 years",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "localeCorrectOptionKey": "C"
+    },
+    "q0916": {
+      "prompt": "Если заявитель не сможет пройти экзамен в назначенное время, ему следует заранее, за один день, подать заявление об отмене бронирования; если он не явится на экзамен в забронированное время, его будут считать таким, что не сдал экзамен.",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready"
+    },
+    "q0917": {
+      "prompt": "Если водительское удостоверение утеряно или повреждено до неузнаваемости, водитель должен обратиться в орган или подразделение, выдавшее удостоверение, для его переоформления.",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready"
+    },
+    "q0918": {
+      "prompt": "Водительское удостоверение не будет аннулировано, если человек садится за руль после употребления и инъекции наркотиков.",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready"
+    },
+    "q0919": {
+      "prompt": "Водительское удостоверение будет аннулировано, если лицо проходит общественное лечение от наркозависимости, проходит принудительное изоляционное лечение или подвергается мерам общественной реабилитации.",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready"
+    },
+    "q0920": {
+      "prompt": "Если регистрационные документы, номерной знак и водительское удостоверение транспортного средства утеряны или уничтожены, владелец транспортного средства должен подать заявление на их переоформление или замену в _______________.",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready",
+      "options": {
+        "q0920_o1": "отдел регистрации транспортных средств дорожной полиции по месту жительства",
+        "q0920_o2": "отдел регистрации транспортных средств по месту выдачи водительского удостоверения",
+        "q0920_o3": "отдел регистрации транспортных средств по месту регистрации",
+        "q0920_o4": "местный отдел полиции"
+      },
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "отдел регистрации транспортных средств дорожной полиции по месту жительства",
+          "sourceTextBody": "отдел регистрации транспортных средств дорожной полиции по месту жительства",
+          "canonicalOptionId": "q0920_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "traffic police detachment vehicle management station at the residential place",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "отдел регистрации транспортных средств по месту выдачи водительского удостоверения",
+          "sourceTextBody": "отдел регистрации транспортных средств по месту выдачи водительского удостоверения",
+          "canonicalOptionId": "q0920_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "vehicle management station at the issuing place of the driving license",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "отдел регистрации транспортных средств по месту регистрации",
+          "sourceTextBody": "отдел регистрации транспортных средств по месту регистрации",
+          "canonicalOptionId": "q0920_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "vehicle management station at the registration place",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "местный отдел полиции",
+          "sourceTextBody": "местный отдел полиции",
+          "canonicalOptionId": "q0920_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "local police station",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "отдел регистрации транспортных средств дорожной полиции по месту жительства",
+          "sourceTextBody": "отдел регистрации транспортных средств дорожной полиции по месту жительства",
+          "canonicalOptionId": "q0920_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "traffic police detachment vehicle management station at the residential place",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "отдел регистрации транспортных средств по месту выдачи водительского удостоверения",
+          "sourceTextBody": "отдел регистрации транспортных средств по месту выдачи водительского удостоверения",
+          "canonicalOptionId": "q0920_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "vehicle management station at the issuing place of the driving license",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "отдел регистрации транспортных средств по месту регистрации",
+          "sourceTextBody": "отдел регистрации транспортных средств по месту регистрации",
+          "canonicalOptionId": "q0920_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "vehicle management station at the registration place",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "местный отдел полиции",
+          "sourceTextBody": "местный отдел полиции",
+          "canonicalOptionId": "q0920_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "local police station",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "localeCorrectOptionKey": "C"
+    },
     "q0921": {
       "prompt": "При повреждении гос.номера, водителю следует сообщить об этом в гос-автоинспекцию.",
       "explanation": "",
       "sourceMode": "direct",
       "confidence": "high",
       "reviewStatus": "ready"
+    },
+    "q0922": {
+      "prompt": "Если незарегистрированное транспортное средство должно временно выезжать на дорогу, оно должно иметь _________.",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready",
+      "options": {
+        "q0922_o1": "свидетельство законного происхождения",
+        "q0922_o2": "временный номерной знак для передвижения",
+        "q0922_o3": "заимствованный номерной знак",
+        "q0922_o4": "свидетельство юридического лица"
+      },
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "свидетельство законного происхождения",
+          "sourceTextBody": "свидетельство законного происхождения",
+          "canonicalOptionId": "q0922_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "certificate of legal origin",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "временный номерной знак для передвижения",
+          "sourceTextBody": "временный номерной знак для передвижения",
+          "canonicalOptionId": "q0922_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "license plate for temporary moving",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "заимствованный номерной знак",
+          "sourceTextBody": "заимствованный номерной знак",
+          "canonicalOptionId": "q0922_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "borrowed license plate",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "свидетельство юридического лица",
+          "sourceTextBody": "свидетельство юридического лица",
+          "canonicalOptionId": "q0922_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "certificate of legal unit",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "свидетельство законного происхождения",
+          "sourceTextBody": "свидетельство законного происхождения",
+          "canonicalOptionId": "q0922_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "certificate of legal origin",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "временный номерной знак для передвижения",
+          "sourceTextBody": "временный номерной знак для передвижения",
+          "canonicalOptionId": "q0922_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "license plate for temporary moving",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "заимствованный номерной знак",
+          "sourceTextBody": "заимствованный номерной знак",
+          "canonicalOptionId": "q0922_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "borrowed license plate",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "свидетельство юридического лица",
+          "sourceTextBody": "свидетельство юридического лица",
+          "canonicalOptionId": "q0922_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "certificate of legal unit",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "localeCorrectOptionKey": "B"
     },
     "q0923": {
       "prompt": "На протяжении какого периода времени запрещено подавать заявление на повторное получение водительского удостоверения, аннулированного после выявления получения водительского удостоверения обманным путем или подкупом?",
@@ -58124,6 +61343,134 @@
         }
       ],
       "localeCorrectOptionKey": "A"
+    },
+    "q0924": {
+      "prompt": "Если заявитель даст взятку или будет списывать во время экзамена, его допуск к этому экзамену будет аннулирован, а результаты других экзаменов, которые он сдал, будут признаны недействительными.",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready"
+    },
+    "q0925": {
+      "prompt": "Пересечение двойной сплошной линии является _______.",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready",
+      "options": {
+        "q0925_o1": "нарушением правил",
+        "q0925_o2": "нарушением закона",
+        "q0925_o3": "ошибочным действием",
+        "q0925_o4": "нарушением предписаний"
+      },
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "нарушением правил",
+          "sourceTextBody": "нарушением правил",
+          "canonicalOptionId": "q0925_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "rule-breaking act",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "нарушением закона",
+          "sourceTextBody": "нарушением закона",
+          "canonicalOptionId": "q0925_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "violation of law",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "ошибочным действием",
+          "sourceTextBody": "ошибочным действием",
+          "canonicalOptionId": "q0925_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "faulty act",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "нарушением предписаний",
+          "sourceTextBody": "нарушением предписаний",
+          "canonicalOptionId": "q0925_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "violation of regulations",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "нарушением правил",
+          "sourceTextBody": "нарушением правил",
+          "canonicalOptionId": "q0925_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "rule-breaking act",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "нарушением закона",
+          "sourceTextBody": "нарушением закона",
+          "canonicalOptionId": "q0925_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "violation of law",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "ошибочным действием",
+          "sourceTextBody": "ошибочным действием",
+          "canonicalOptionId": "q0925_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "faulty act",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "нарушением предписаний",
+          "sourceTextBody": "нарушением предписаний",
+          "canonicalOptionId": "q0925_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "violation of regulations",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "localeCorrectOptionKey": "B"
+    },
+    "q0926": {
+      "prompt": "Временная остановка транспортного средства на пешеходном переходе является нарушением закона.",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready"
     },
     "q0927": {
       "prompt": "Что означает данный знак?",
