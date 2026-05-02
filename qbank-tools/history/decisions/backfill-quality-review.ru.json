@@ -1,0 +1,65 @@
+{
+  "generatedAt": "2026-05-02T11:25:15.015Z",
+  "source": "english_master_backfill_quality_review",
+  "lang": "ru",
+  "dataset": "2023-test1",
+  "inputPath": "qbank-tools/generated/staging/backfill.ru.generated-draft.json",
+  "qualityReviewPath": "qbank-tools/generated/reports/backfill-quality-review.ru.json",
+  "needsFixPath": "qbank-tools/generated/staging/backfill.ru.needs-fix.json",
+  "reviewedPath": "qbank-tools/generated/staging/backfill.ru.reviewed.json",
+  "model": "gpt-5-mini",
+  "aiReviewUsed": true,
+  "productionModified": false,
+  "counts": {
+    "inputItems": 1,
+    "sourceInputItems": 1,
+    "approved": 1,
+    "needsFix": 0,
+    "reject": 0,
+    "belowConfidenceThreshold": 0,
+    "answerKeyLogicRisk": 0,
+    "preflightErrors": 0,
+    "preflightWarnings": 0
+  },
+  "rules": {
+    "confidenceApprovalThreshold": 0.92,
+    "answerKeyLogicRiskRejects": true,
+    "humanOwnerMustReviewReportBeforeApply": true
+  },
+  "preflight": {
+    "valid": true,
+    "counts": {
+      "inputItems": 1,
+      "validItems": 1,
+      "errorCount": 0,
+      "warningCount": 0,
+      "duplicateQidCount": 0
+    },
+    "errors": [],
+    "warnings": [],
+    "items": [
+      {
+        "index": 0,
+        "qid": "q0962",
+        "type": "row",
+        "valid": true,
+        "errors": [],
+        "warnings": []
+      }
+    ]
+  },
+  "items": [
+    {
+      "qid": "q0962",
+      "number": 962,
+      "qualityStatus": "approved",
+      "confidence": 0.96,
+      "answerKeyLogicMayBeWrong": false,
+      "issues": [],
+      "suggestedFix": null,
+      "reviewerReasoningSummary": "Перевод передаёт исходный смысл точно и естественно: «участок, подверженный оползням» и «объезд» соответствуют «landslide section ahead and bypassing». Нет изменений в логике ответа; формат и терминология адекватны экзаменационному стилю.",
+      "reviewedAt": "2026-05-02T11:25:15.014Z",
+      "reviewer": "ai-localization-quality-review"
+    }
+  ]
+}

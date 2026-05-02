@@ -1,0 +1,715 @@
+{
+  "generatedAt": "2026-05-02T12:47:55.652Z",
+  "lang": "ru",
+  "applyRequested": false,
+  "applied": false,
+  "safeToApply": true,
+  "validation": {
+    "checks": {
+      "missingBackfillQids": 0,
+      "extraTranslationQids": 0,
+      "shipReadinessRecommendation": "ship",
+      "integrityCriticalBlockers": 10,
+      "targetIntegrityCriticalBlockers": 0,
+      "trackedScreenshots": 0,
+      "decisionMemoryRecords": 18023
+    },
+    "readyToFinalize": true,
+    "missingQids": [],
+    "extraQids": [],
+    "trackedScreenshots": [],
+    "shipReportPath": "qbank-tools/generated/reports/ru-ship-readiness-report.json",
+    "integrityReportPath": "qbank-tools/generated/reports/qbank-integrity-audit.json",
+    "targetCriticalBlockers": []
+  },
+  "plan": {
+    "toHistory": [
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/staging/backfill.ru.generated-draft.json",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/history/decisions/backfill.ru.generated-draft.json",
+        "reason": "decision intelligence from active staging"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/staging/backfill.ru.reviewed.json",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/history/decisions/backfill.ru.reviewed.json",
+        "reason": "decision intelligence from active staging"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/staging/ru-batch-08-workbench-decisions.json",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/history/decisions/ru-batch-08-workbench-decisions.json",
+        "reason": "decision intelligence from active staging"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/staging/ru-discrepancy-create-new-candidates.json",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/history/decisions/ru-discrepancy-create-new-candidates.json",
+        "reason": "decision intelligence from active staging"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/staging/ru-discrepancy-missing-production-merge-candidates.json",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/history/decisions/ru-discrepancy-missing-production-merge-candidates.json",
+        "reason": "decision intelligence from active staging"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/staging/ru-discrepancy-review-decisions.json",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/history/decisions/ru-discrepancy-review-decisions.json",
+        "reason": "decision intelligence from active staging"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/staging/ru-discrepancy-review-items.json",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/history/decisions/ru-discrepancy-review-items.json",
+        "reason": "decision intelligence from active staging"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/apply-answer-key-decisions-ru-batch-001.json",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/history/decisions/apply-answer-key-decisions-ru-batch-001.json",
+        "reason": "decision/report intelligence"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/apply-answer-key-decisions-ru-batch-002.json",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/history/decisions/apply-answer-key-decisions-ru-batch-002.json",
+        "reason": "decision/report intelligence"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/apply-answer-key-decisions-ru-batch-03.json",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/history/decisions/apply-answer-key-decisions-ru-batch-03.json",
+        "reason": "decision/report intelligence"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/apply-answer-key-decisions-ru-batch-04.json",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/history/decisions/apply-answer-key-decisions-ru-batch-04.json",
+        "reason": "decision/report intelligence"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/apply-answer-key-decisions-ru-batch-05.json",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/history/decisions/apply-answer-key-decisions-ru-batch-05.json",
+        "reason": "decision/report intelligence"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/apply-answer-key-decisions-ru-batch-06.json",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/history/decisions/apply-answer-key-decisions-ru-batch-06.json",
+        "reason": "decision/report intelligence"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/apply-answer-key-decisions-ru-batch-07.json",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/history/decisions/apply-answer-key-decisions-ru-batch-07.json",
+        "reason": "decision/report intelligence"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/apply-answer-key-decisions-ru-batch-08.json",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/history/decisions/apply-answer-key-decisions-ru-batch-08.json",
+        "reason": "decision/report intelligence"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/apply-answer-key-decisions-ru-batch-09.json",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/history/decisions/apply-answer-key-decisions-ru-batch-09.json",
+        "reason": "decision/report intelligence"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/apply-answer-key-decisions-ru-batch-10.json",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/history/decisions/apply-answer-key-decisions-ru-batch-10.json",
+        "reason": "decision/report intelligence"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/apply-answer-key-decisions-ru-batch-11.json",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/history/decisions/apply-answer-key-decisions-ru-batch-11.json",
+        "reason": "decision/report intelligence"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/apply-answer-key-decisions-ru-batch-12.json",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/history/decisions/apply-answer-key-decisions-ru-batch-12.json",
+        "reason": "decision/report intelligence"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/apply-answer-key-decisions-ru-batch-13.json",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/history/decisions/apply-answer-key-decisions-ru-batch-13.json",
+        "reason": "decision/report intelligence"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/apply-answer-key-decisions-ru-batch-14.json",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/history/decisions/apply-answer-key-decisions-ru-batch-14.json",
+        "reason": "decision/report intelligence"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/apply-answer-key-decisions-ru-batch-15.json",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/history/decisions/apply-answer-key-decisions-ru-batch-15.json",
+        "reason": "decision/report intelligence"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/apply-answer-key-decisions-ru-batch-16.json",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/history/decisions/apply-answer-key-decisions-ru-batch-16.json",
+        "reason": "decision/report intelligence"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/apply-answer-key-decisions-ru-batch-17.json",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/history/decisions/apply-answer-key-decisions-ru-batch-17.json",
+        "reason": "decision/report intelligence"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/apply-answer-key-decisions-ru-batch-18.json",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/history/decisions/apply-answer-key-decisions-ru-batch-18.json",
+        "reason": "decision/report intelligence"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/apply-unresolved-decisions-ru-batch-001.json",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/history/decisions/apply-unresolved-decisions-ru-batch-001.json",
+        "reason": "decision/report intelligence"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/apply-unresolved-decisions-ru-batch-002.json",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/history/decisions/apply-unresolved-decisions-ru-batch-002.json",
+        "reason": "decision/report intelligence"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/apply-unresolved-decisions-ru-batch-03.json",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/history/decisions/apply-unresolved-decisions-ru-batch-03.json",
+        "reason": "decision/report intelligence"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/apply-unresolved-decisions-ru-batch-04.json",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/history/decisions/apply-unresolved-decisions-ru-batch-04.json",
+        "reason": "decision/report intelligence"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/apply-unresolved-decisions-ru-batch-05.json",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/history/decisions/apply-unresolved-decisions-ru-batch-05.json",
+        "reason": "decision/report intelligence"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/apply-unresolved-decisions-ru-batch-06.json",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/history/decisions/apply-unresolved-decisions-ru-batch-06.json",
+        "reason": "decision/report intelligence"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/apply-unresolved-decisions-ru-batch-07.json",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/history/decisions/apply-unresolved-decisions-ru-batch-07.json",
+        "reason": "decision/report intelligence"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/apply-unresolved-decisions-ru-batch-08.json",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/history/decisions/apply-unresolved-decisions-ru-batch-08.json",
+        "reason": "decision/report intelligence"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/apply-unresolved-decisions-ru-batch-09.json",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/history/decisions/apply-unresolved-decisions-ru-batch-09.json",
+        "reason": "decision/report intelligence"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/apply-unresolved-decisions-ru-batch-10.json",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/history/decisions/apply-unresolved-decisions-ru-batch-10.json",
+        "reason": "decision/report intelligence"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/apply-unresolved-decisions-ru-batch-11.json",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/history/decisions/apply-unresolved-decisions-ru-batch-11.json",
+        "reason": "decision/report intelligence"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/apply-unresolved-decisions-ru-batch-12.json",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/history/decisions/apply-unresolved-decisions-ru-batch-12.json",
+        "reason": "decision/report intelligence"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/apply-unresolved-decisions-ru-batch-13.json",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/history/decisions/apply-unresolved-decisions-ru-batch-13.json",
+        "reason": "decision/report intelligence"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/apply-unresolved-decisions-ru-batch-14.json",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/history/decisions/apply-unresolved-decisions-ru-batch-14.json",
+        "reason": "decision/report intelligence"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/apply-unresolved-decisions-ru-batch-15.json",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/history/decisions/apply-unresolved-decisions-ru-batch-15.json",
+        "reason": "decision/report intelligence"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/apply-unresolved-decisions-ru-batch-16.json",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/history/decisions/apply-unresolved-decisions-ru-batch-16.json",
+        "reason": "decision/report intelligence"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/apply-unresolved-decisions-ru-batch-17.json",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/history/decisions/apply-unresolved-decisions-ru-batch-17.json",
+        "reason": "decision/report intelligence"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/apply-unresolved-decisions-ru-batch-18.json",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/history/decisions/apply-unresolved-decisions-ru-batch-18.json",
+        "reason": "decision/report intelligence"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/apply-workbench-decisions-ru-batch-001.json",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/history/decisions/apply-workbench-decisions-ru-batch-001.json",
+        "reason": "decision/report intelligence"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/apply-workbench-decisions-ru-batch-002.json",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/history/decisions/apply-workbench-decisions-ru-batch-002.json",
+        "reason": "decision/report intelligence"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/apply-workbench-decisions-ru-batch-03.json",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/history/decisions/apply-workbench-decisions-ru-batch-03.json",
+        "reason": "decision/report intelligence"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/apply-workbench-decisions-ru-batch-04.json",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/history/decisions/apply-workbench-decisions-ru-batch-04.json",
+        "reason": "decision/report intelligence"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/apply-workbench-decisions-ru-batch-05.json",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/history/decisions/apply-workbench-decisions-ru-batch-05.json",
+        "reason": "decision/report intelligence"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/apply-workbench-decisions-ru-batch-06.json",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/history/decisions/apply-workbench-decisions-ru-batch-06.json",
+        "reason": "decision/report intelligence"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/apply-workbench-decisions-ru-batch-07.json",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/history/decisions/apply-workbench-decisions-ru-batch-07.json",
+        "reason": "decision/report intelligence"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/apply-workbench-decisions-ru-batch-08.json",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/history/decisions/apply-workbench-decisions-ru-batch-08.json",
+        "reason": "decision/report intelligence"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/apply-workbench-decisions-ru-batch-09.json",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/history/decisions/apply-workbench-decisions-ru-batch-09.json",
+        "reason": "decision/report intelligence"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/apply-workbench-decisions-ru-batch-10.json",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/history/decisions/apply-workbench-decisions-ru-batch-10.json",
+        "reason": "decision/report intelligence"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/apply-workbench-decisions-ru-batch-11.json",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/history/decisions/apply-workbench-decisions-ru-batch-11.json",
+        "reason": "decision/report intelligence"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/apply-workbench-decisions-ru-batch-12.json",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/history/decisions/apply-workbench-decisions-ru-batch-12.json",
+        "reason": "decision/report intelligence"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/apply-workbench-decisions-ru-batch-13.json",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/history/decisions/apply-workbench-decisions-ru-batch-13.json",
+        "reason": "decision/report intelligence"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/apply-workbench-decisions-ru-batch-14.json",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/history/decisions/apply-workbench-decisions-ru-batch-14.json",
+        "reason": "decision/report intelligence"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/apply-workbench-decisions-ru-batch-15.json",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/history/decisions/apply-workbench-decisions-ru-batch-15.json",
+        "reason": "decision/report intelligence"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/apply-workbench-decisions-ru-batch-16.json",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/history/decisions/apply-workbench-decisions-ru-batch-16.json",
+        "reason": "decision/report intelligence"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/apply-workbench-decisions-ru-batch-17.json",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/history/decisions/apply-workbench-decisions-ru-batch-17.json",
+        "reason": "decision/report intelligence"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/apply-workbench-decisions-ru-batch-18.json",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/history/decisions/apply-workbench-decisions-ru-batch-18.json",
+        "reason": "decision/report intelligence"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/backfill-production-merge.ru.json",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/history/decisions/backfill-production-merge.ru.json",
+        "reason": "decision/report intelligence"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/backfill-quality-review.ru.json",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/history/decisions/backfill-quality-review.ru.json",
+        "reason": "decision/report intelligence"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/full-batch-merge-review-ru-batch-04.json",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/history/decisions/full-batch-merge-review-ru-batch-04.json",
+        "reason": "decision/report intelligence"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/full-batch-merge-review-ru-batch-08.json",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/history/decisions/full-batch-merge-review-ru-batch-08.json",
+        "reason": "decision/report intelligence"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/production-merge-ru-batch-001.json",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/history/decisions/production-merge-ru-batch-001.json",
+        "reason": "decision/report intelligence"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/production-merge-ru-batch-002.json",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/history/decisions/production-merge-ru-batch-002.json",
+        "reason": "decision/report intelligence"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/production-merge-ru-batch-03.json",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/history/decisions/production-merge-ru-batch-03.json",
+        "reason": "decision/report intelligence"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/production-merge-ru-batch-04.json",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/history/decisions/production-merge-ru-batch-04.json",
+        "reason": "decision/report intelligence"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/production-merge-ru-batch-05.json",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/history/decisions/production-merge-ru-batch-05.json",
+        "reason": "decision/report intelligence"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/production-merge-ru-batch-06.json",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/history/decisions/production-merge-ru-batch-06.json",
+        "reason": "decision/report intelligence"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/production-merge-ru-batch-07.json",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/history/decisions/production-merge-ru-batch-07.json",
+        "reason": "decision/report intelligence"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/production-merge-ru-batch-08.json",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/history/decisions/production-merge-ru-batch-08.json",
+        "reason": "decision/report intelligence"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/production-merge-ru-batch-09.json",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/history/decisions/production-merge-ru-batch-09.json",
+        "reason": "decision/report intelligence"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/production-merge-ru-batch-10.json",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/history/decisions/production-merge-ru-batch-10.json",
+        "reason": "decision/report intelligence"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/production-merge-ru-batch-11.json",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/history/decisions/production-merge-ru-batch-11.json",
+        "reason": "decision/report intelligence"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/production-merge-ru-batch-12.json",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/history/decisions/production-merge-ru-batch-12.json",
+        "reason": "decision/report intelligence"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/production-merge-ru-batch-13.json",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/history/decisions/production-merge-ru-batch-13.json",
+        "reason": "decision/report intelligence"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/production-merge-ru-batch-14.json",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/history/decisions/production-merge-ru-batch-14.json",
+        "reason": "decision/report intelligence"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/production-merge-ru-batch-15.json",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/history/decisions/production-merge-ru-batch-15.json",
+        "reason": "decision/report intelligence"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/production-merge-ru-batch-16.json",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/history/decisions/production-merge-ru-batch-16.json",
+        "reason": "decision/report intelligence"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/production-merge-ru-batch-17.json",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/history/decisions/production-merge-ru-batch-17.json",
+        "reason": "decision/report intelligence"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/production-merge-ru-batch-18.json",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/history/decisions/production-merge-ru-batch-18.json",
+        "reason": "decision/report intelligence"
+      }
+    ],
+    "toArchive": [
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/staging/backfill.ru.missing-qids.json",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/generated/archive/finalized-runs/ru/2026-05-02T12-47-55-587Z/staging/backfill.ru.missing-qids.json",
+        "reason": "regenerable staging artifact"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/staging/backfill.ru.needs-fix.json",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/generated/archive/finalized-runs/ru/2026-05-02T12-47-55-587Z/staging/backfill.ru.needs-fix.json",
+        "reason": "regenerable staging artifact"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/apply-workbench-explanations-ru-batch-04.json",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/generated/archive/finalized-runs/ru/2026-05-02T12-47-55-587Z/reports/apply-workbench-explanations-ru-batch-04.json",
+        "reason": "regenerable report artifact"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/backfill-production-merge.ru.md",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/generated/archive/finalized-runs/ru/2026-05-02T12-47-55-587Z/reports/backfill-production-merge.ru.md",
+        "reason": "regenerable report artifact"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/backfill-quality-review.ru.md",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/generated/archive/finalized-runs/ru/2026-05-02T12-47-55-587Z/reports/backfill-quality-review.ru.md",
+        "reason": "regenerable report artifact"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/backfill-validation.ru.json",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/generated/archive/finalized-runs/ru/2026-05-02T12-47-55-587Z/reports/backfill-validation.ru.json",
+        "reason": "regenerable report artifact"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/backfill-validation.ru.md",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/generated/archive/finalized-runs/ru/2026-05-02T12-47-55-587Z/reports/backfill-validation.ru.md",
+        "reason": "regenerable report artifact"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/full-batch-merge-review-ru-batch-04.md",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/generated/archive/finalized-runs/ru/2026-05-02T12-47-55-587Z/reports/full-batch-merge-review-ru-batch-04.md",
+        "reason": "regenerable report artifact"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/full-batch-merge-review-ru-batch-08.md",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/generated/archive/finalized-runs/ru/2026-05-02T12-47-55-587Z/reports/full-batch-merge-review-ru-batch-08.md",
+        "reason": "regenerable report artifact"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/process-screenshot-batch-ru-batch-003.json",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/generated/archive/finalized-runs/ru/2026-05-02T12-47-55-587Z/reports/process-screenshot-batch-ru-batch-003.json",
+        "reason": "regenerable report artifact"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/process-screenshot-batch-ru-batch-07.json",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/generated/archive/finalized-runs/ru/2026-05-02T12-47-55-587Z/reports/process-screenshot-batch-ru-batch-07.json",
+        "reason": "regenerable report artifact"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/process-screenshot-batch-ru-batch-19.json",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/generated/archive/finalized-runs/ru/2026-05-02T12-47-55-587Z/reports/process-screenshot-batch-ru-batch-19.json",
+        "reason": "regenerable report artifact"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/production-merge-ru-batch-001.md",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/generated/archive/finalized-runs/ru/2026-05-02T12-47-55-587Z/reports/production-merge-ru-batch-001.md",
+        "reason": "regenerable report artifact"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/production-merge-ru-batch-002.md",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/generated/archive/finalized-runs/ru/2026-05-02T12-47-55-587Z/reports/production-merge-ru-batch-002.md",
+        "reason": "regenerable report artifact"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/production-merge-ru-batch-03.md",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/generated/archive/finalized-runs/ru/2026-05-02T12-47-55-587Z/reports/production-merge-ru-batch-03.md",
+        "reason": "regenerable report artifact"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/production-merge-ru-batch-04.md",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/generated/archive/finalized-runs/ru/2026-05-02T12-47-55-587Z/reports/production-merge-ru-batch-04.md",
+        "reason": "regenerable report artifact"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/production-merge-ru-batch-05.md",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/generated/archive/finalized-runs/ru/2026-05-02T12-47-55-587Z/reports/production-merge-ru-batch-05.md",
+        "reason": "regenerable report artifact"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/production-merge-ru-batch-06.md",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/generated/archive/finalized-runs/ru/2026-05-02T12-47-55-587Z/reports/production-merge-ru-batch-06.md",
+        "reason": "regenerable report artifact"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/production-merge-ru-batch-07.md",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/generated/archive/finalized-runs/ru/2026-05-02T12-47-55-587Z/reports/production-merge-ru-batch-07.md",
+        "reason": "regenerable report artifact"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/production-merge-ru-batch-08.md",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/generated/archive/finalized-runs/ru/2026-05-02T12-47-55-587Z/reports/production-merge-ru-batch-08.md",
+        "reason": "regenerable report artifact"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/production-merge-ru-batch-09.md",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/generated/archive/finalized-runs/ru/2026-05-02T12-47-55-587Z/reports/production-merge-ru-batch-09.md",
+        "reason": "regenerable report artifact"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/production-merge-ru-batch-10.md",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/generated/archive/finalized-runs/ru/2026-05-02T12-47-55-587Z/reports/production-merge-ru-batch-10.md",
+        "reason": "regenerable report artifact"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/production-merge-ru-batch-11.md",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/generated/archive/finalized-runs/ru/2026-05-02T12-47-55-587Z/reports/production-merge-ru-batch-11.md",
+        "reason": "regenerable report artifact"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/production-merge-ru-batch-12.md",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/generated/archive/finalized-runs/ru/2026-05-02T12-47-55-587Z/reports/production-merge-ru-batch-12.md",
+        "reason": "regenerable report artifact"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/production-merge-ru-batch-13.md",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/generated/archive/finalized-runs/ru/2026-05-02T12-47-55-587Z/reports/production-merge-ru-batch-13.md",
+        "reason": "regenerable report artifact"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/production-merge-ru-batch-14.md",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/generated/archive/finalized-runs/ru/2026-05-02T12-47-55-587Z/reports/production-merge-ru-batch-14.md",
+        "reason": "regenerable report artifact"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/production-merge-ru-batch-15.md",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/generated/archive/finalized-runs/ru/2026-05-02T12-47-55-587Z/reports/production-merge-ru-batch-15.md",
+        "reason": "regenerable report artifact"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/production-merge-ru-batch-16.md",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/generated/archive/finalized-runs/ru/2026-05-02T12-47-55-587Z/reports/production-merge-ru-batch-16.md",
+        "reason": "regenerable report artifact"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/production-merge-ru-batch-17.md",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/generated/archive/finalized-runs/ru/2026-05-02T12-47-55-587Z/reports/production-merge-ru-batch-17.md",
+        "reason": "regenerable report artifact"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/production-merge-ru-batch-18.md",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/generated/archive/finalized-runs/ru/2026-05-02T12-47-55-587Z/reports/production-merge-ru-batch-18.md",
+        "reason": "regenerable report artifact"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/ru-batch-003-workbench.html",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/generated/archive/finalized-runs/ru/2026-05-02T12-47-55-587Z/reports/ru-batch-003-workbench.html",
+        "reason": "regenerable report artifact"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/ru-batch-04-workbench.html",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/generated/archive/finalized-runs/ru/2026-05-02T12-47-55-587Z/reports/ru-batch-04-workbench.html",
+        "reason": "regenerable report artifact"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/ru-batch-10-workbench.html",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/generated/archive/finalized-runs/ru/2026-05-02T12-47-55-587Z/reports/ru-batch-10-workbench.html",
+        "reason": "regenerable report artifact"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/ru-batch-12-workbench.html",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/generated/archive/finalized-runs/ru/2026-05-02T12-47-55-587Z/reports/ru-batch-12-workbench.html",
+        "reason": "regenerable report artifact"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/ru-batch-13-workbench.html",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/generated/archive/finalized-runs/ru/2026-05-02T12-47-55-587Z/reports/ru-batch-13-workbench.html",
+        "reason": "regenerable report artifact"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/ru-batch-19-workbench.html",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/generated/archive/finalized-runs/ru/2026-05-02T12-47-55-587Z/reports/ru-batch-19-workbench.html",
+        "reason": "regenerable report artifact"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/ru-discrepancy-apply-preview.json",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/generated/archive/finalized-runs/ru/2026-05-02T12-47-55-587Z/reports/ru-discrepancy-apply-preview.json",
+        "reason": "regenerable report artifact"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/ru-discrepancy-apply-preview.md",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/generated/archive/finalized-runs/ru/2026-05-02T12-47-55-587Z/reports/ru-discrepancy-apply-preview.md",
+        "reason": "regenerable report artifact"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/ru-discrepancy-blockers-review.html",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/generated/archive/finalized-runs/ru/2026-05-02T12-47-55-587Z/reports/ru-discrepancy-blockers-review.html",
+        "reason": "regenerable report artifact"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/ru-discrepancy-blockers-review.md",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/generated/archive/finalized-runs/ru/2026-05-02T12-47-55-587Z/reports/ru-discrepancy-blockers-review.md",
+        "reason": "regenerable report artifact"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/ru-discrepancy-review-summary.md",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/generated/archive/finalized-runs/ru/2026-05-02T12-47-55-587Z/reports/ru-discrepancy-review-summary.md",
+        "reason": "regenerable report artifact"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/ru-discrepancy-review-workbench.html",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/generated/archive/finalized-runs/ru/2026-05-02T12-47-55-587Z/reports/ru-discrepancy-review-workbench.html",
+        "reason": "regenerable report artifact"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/ru-translation-count-discrepancy-audit-post-811.md",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/generated/archive/finalized-runs/ru/2026-05-02T12-47-55-587Z/reports/ru-translation-count-discrepancy-audit-post-811.md",
+        "reason": "regenerable report artifact"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/ru-translation-count-discrepancy-audit.md",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/generated/archive/finalized-runs/ru/2026-05-02T12-47-55-587Z/reports/ru-translation-count-discrepancy-audit.md",
+        "reason": "regenerable report artifact"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/validate-localization-batch-ru-batch-003.json",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/generated/archive/finalized-runs/ru/2026-05-02T12-47-55-587Z/reports/validate-localization-batch-ru-batch-003.json",
+        "reason": "regenerable report artifact"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/validate-localization-batch-ru-batch-04.json",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/generated/archive/finalized-runs/ru/2026-05-02T12-47-55-587Z/reports/validate-localization-batch-ru-batch-04.json",
+        "reason": "regenerable report artifact"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/validate-localization-batch-ru-batch-19.json",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/generated/archive/finalized-runs/ru/2026-05-02T12-47-55-587Z/reports/validate-localization-batch-ru-batch-19.json",
+        "reason": "regenerable report artifact"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/validate-screenshot-intake-ru-batch-003.json",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/generated/archive/finalized-runs/ru/2026-05-02T12-47-55-587Z/reports/validate-screenshot-intake-ru-batch-003.json",
+        "reason": "regenerable report artifact"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/validate-screenshot-intake-ru-batch-19.json",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/generated/archive/finalized-runs/ru/2026-05-02T12-47-55-587Z/reports/validate-screenshot-intake-ru-batch-19.json",
+        "reason": "regenerable report artifact"
+      }
+    ],
+    "deleteJunk": [],
+    "keepActive": [
+      "qbank-tools/generated/reports/ru-ship-readiness-report.json",
+      "qbank-tools/generated/reports/ru-ship-readiness-report.md",
+      "qbank-tools/generated/reports/qbank-integrity-audit.json",
+      "qbank-tools/generated/reports/qbank-integrity-audit.md"
+    ],
+    "archiveRoot": "qbank-tools/generated/archive/finalized-runs/ru/2026-05-02T12-47-55-587Z",
+    "manifestPaths": {
+      "json": "qbank-tools/history/finalized-runs/ru-finalization-2026-05-02T12-47-55-587Z.json",
+      "md": "qbank-tools/history/finalized-runs/ru-finalization-2026-05-02T12-47-55-587Z.md"
+    }
+  },
+  "results": {
+    "filesMovedToHistory": [],
+    "filesMovedToArchive": [],
+    "filesDeleted": [],
+    "filesKeptActive": [
+      "qbank-tools/generated/reports/ru-ship-readiness-report.json",
+      "qbank-tools/generated/reports/ru-ship-readiness-report.md",
+      "qbank-tools/generated/reports/qbank-integrity-audit.json",
+      "qbank-tools/generated/reports/qbank-integrity-audit.md"
+    ],
+    "skipped": []
+  }
+}

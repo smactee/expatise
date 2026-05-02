@@ -1,0 +1,44 @@
+{
+  "generatedAt": "2026-04-21T03:08:42.535Z",
+  "lang": "ru",
+  "batchId": "batch-05",
+  "dataset": "2023-test1",
+  "sourceWorkbenchDecisionsPath": "qbank-tools/generated/staging/ru-batch-05-workbench-decisions.json",
+  "sourceMatchedPath": "imports/ru/batch-05/matched.json",
+  "reviewDecisionsPath": "qbank-tools/generated/staging/ru-batch-05-review-decisions.json",
+  "answerKeyDecisionsPath": "qbank-tools/generated/staging/ru-batch-05-answer-key-decisions.json",
+  "reviewScopedAnswerKeyDecisionsPath": "qbank-tools/generated/staging/ru-batch-05-answer-key-decisions.review-scope.json",
+  "unresolvedDecisionsPath": "qbank-tools/generated/staging/ru-batch-05-unresolved-decisions.json",
+  "fullPreviewPath": "qbank-tools/generated/staging/translations.ru.batch-05.full.preview.json",
+  "fullDryRunPath": "qbank-tools/generated/staging/translations.ru.batch-05.full.merge-dry-run.json",
+  "fullReportPath": "qbank-tools/generated/reports/full-batch-merge-review-ru-batch-05.json",
+  "questionsPath": "public/qbank/2023-test1/questions.json",
+  "rawQuestionsPath": "public/qbank/2023-test1/questions.raw.json",
+  "explanationReportPath": "qbank-tools/generated/reports/apply-workbench-explanations-ru-batch-05.json",
+  "counts": {
+    "autoMatched": 6,
+    "reviewedFinalized": 41,
+    "rescuedUnresolved": 1,
+    "newQuestionCandidates": 2,
+    "sourceExplanationUpdates": 0,
+    "finalMergeReadyTotal": 46,
+    "blockerCount": 1
+  },
+  "sourceExplanationSummary": {
+    "decidedCount": 0,
+    "updatedCount": 0,
+    "unchangedCount": 0,
+    "updatedQids": []
+  },
+  "blockers": [
+    {
+      "qid": "q0615",
+      "sourceBucket": "auto-matched",
+      "reasons": [
+        "answerKeyDecisionConsistent",
+        "answerKeyReady"
+      ]
+    }
+  ],
+  "safeToMergeNextStep": false
+}

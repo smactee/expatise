@@ -118,11 +118,90 @@ npm run apply-reviewed-missing-localization-backfill -- --lang ru --input qbank-
 Notes:
 
 - `build-missing-localization-backfill` writes `qbank-tools/generated/staging/backfill.<lang>.missing-qids.json` with English prompt/options, correct answer metadata, tags, and image metadata for each qid missing from `translations.<lang>.json`.
-- `generate-missing-localization-draft` writes `qbank-tools/generated/staging/backfill.<lang>.generated-draft.json`. It currently creates review-ready scaffolding with `generationStatus: "not_generated"` unless safe generation is explicitly added later; it must not invent translations.
+- `generate-missing-localization-draft` writes `qbank-tools/generated/staging/backfill.<lang>.generated-draft.json`. With `OPENAI_API_KEY` available it generates review-only draft translations; with `--no-ai true` or no key it fails closed with `generationStatus: "not_generated"`. It must not invent production translations or bypass review.
 - `review-generated-localization-quality` writes `qbank-tools/generated/reports/backfill-quality-review.<lang>.json` and `.md`, plus `qbank-tools/generated/staging/backfill.<lang>.needs-fix.json` and `qbank-tools/generated/staging/backfill.<lang>.reviewed.json`. It reviews generated target-language text against English master meaning, option mapping, answer logic, numeric/legal/traffic terminology, and image context. If no OpenAI key is available or confidence is below `0.92`, it fails closed into `needs_fix`; answer-key risk is always `reject`.
 - `validate-missing-localization-backfill` writes `qbank-tools/generated/reports/backfill-validation.<lang>.json` and `.md`, checking qid existence, production-missing status, duplicate qids, option coverage, answer mapping, and human-review requirements.
 - `apply-reviewed-missing-localization-backfill` is dry-run by default and writes `qbank-tools/generated/reports/backfill-production-merge.<lang>.json` and `.md`. It refuses unapproved items and refuses to overwrite existing production qids unless explicitly allowed.
 - Reviewed backfill files should keep `reviewStatus: "approved"` only after human review; do not merge generated draft output directly.
+
+QBank Integrity Audit:
+
+Run this before starting a new language and after any master/backfill merge:
+
+```bash
+npm run audit-qbank-integrity
+npm run audit-qbank-integrity -- --strict true
+```
+
+Notes:
+
+- The audit writes `qbank-tools/generated/reports/qbank-integrity-audit.json` and `.md`.
+- It checks `questions.json`, `questions.raw.json`, `tags.patch.json`, `image-color-tags.json`, image assets, and every `translations.<lang>.json`.
+- Critical blockers include invalid ROW/MCQ answer schema, malformed translation entries, ROW translations carrying MCQ-only answer-key fields, and missing referenced image assets.
+- Warnings include raw/master qid drift such as raw-only qids, missing/extra translation qids, tag inconsistencies, and conservative duplicate candidates.
+- The default audit is report-only. `--strict true` exits nonzero when critical blockers are present.
+
+Decision Memory System:
+
+After a language run, normalize reusable decision intelligence into history:
+
+```bash
+npm run build-decision-memory
+```
+
+Notes:
+
+- The memory builder writes `qbank-tools/history/decision-memory.json` and `.md`.
+- It extracts decisions from `qbank-tools/history/decisions/`, generated reports, active staging, archives, relevant imports, and final production translation state.
+- It preserves human decisions, AI quality reviews, rejected/needs-fix records, answer-key fixes, duplicate decisions, master-data issues, and backfill merge evidence.
+- It does not include screenshots or image blobs.
+- Future matchers and reviewer prompts should use this memory as reusable examples, not as an independent question source.
+
+Finalizing a Localization Run:
+
+Use the finalizer after a language is fully merged, audited, and ship-ready:
+
+```bash
+npm run finalize-localization-run -- --lang ru --apply false
+npm run finalize-localization-run -- --lang ru --apply true
+```
+
+Notes:
+
+- The finalizer is dry-run by default. It only moves files with `--apply true`.
+- It verifies zero missing qids for the language, ship-readiness `ship`, zero qbank-integrity critical blockers, and zero tracked screenshots.
+- Decision-like staging/report JSON is moved into `qbank-tools/history/decisions/`.
+- Regenerable staging/report clutter is moved into `qbank-tools/generated/archive/finalized-runs/<lang>/<timestamp>/`.
+- It keeps active reports limited to the latest ship-readiness report and qbank integrity audit.
+- It writes a manifest to `qbank-tools/history/finalized-runs/<lang>-finalization-<timestamp>.json` and `.md`.
+
+Rules for staging/history/archive:
+
+- `qbank-tools/generated/staging/` is temporary active workspace only.
+- `qbank-tools/history/decisions/` stores reusable decision intelligence after a batch or language is complete.
+- `qbank-tools/history/decision-memory.json` is normalized memory generated from preserved decisions and reports.
+- `qbank-tools/generated/archive/` stores old regenerated artifacts, previews, dry-runs, report clutter, and bulky outputs.
+- Production should only contain app-needed qbank files and translations.
+- Screenshots and raw intake artifacts should not be tracked by Git.
+- If unsure whether a file contains decision value, preserve it in history or archive rather than deleting it.
+
+Recommended sequence before starting a new language:
+
+```bash
+npm run audit-qbank-integrity -- --strict true
+npm run build-decision-memory
+```
+
+Recommended sequence after completing a language:
+
+```bash
+npm run audit-qbank-integrity
+npm run build-decision-memory
+npm run finalize-localization-run -- --lang ru --apply false
+npm run finalize-localization-run -- --lang ru --apply true
+npm run build
+git status --short
+```
 
 Completed-batch cleanup:
 

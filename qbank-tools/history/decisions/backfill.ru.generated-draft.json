@@ -1,0 +1,113 @@
+{
+  "meta": {
+    "generatedAt": "2026-05-02T11:18:20.599Z",
+    "source": "english_master_backfill",
+    "lang": "ru",
+    "dataset": "2023-test1",
+    "applyRequested": false,
+    "aiGenerationUsed": true,
+    "generationModel": "gpt-5-mini",
+    "productionModified": false,
+    "inputPath": "qbank-tools/generated/staging/backfill.ru.missing-qids.json",
+    "outputPath": "qbank-tools/generated/staging/backfill.ru.generated-draft.json",
+    "limit": 1,
+    "batchSize": 10,
+    "note": "Generated from English master. All items still require human review before merge."
+  },
+  "counts": {
+    "inputItems": 1,
+    "emittedItems": 1,
+    "generatedItems": 1,
+    "notGeneratedItems": 0
+  },
+  "items": [
+    {
+      "qid": "q0962",
+      "number": 962,
+      "source": "english_master_backfill",
+      "lang": "ru",
+      "type": "row",
+      "topic": "traffic-signs",
+      "subtopic": null,
+      "tags": {
+        "auto": [
+          "#row",
+          "#pic",
+          "#traffic-signs"
+        ],
+        "user": [],
+        "suggested": []
+      },
+      "image": "/qbank/2023-test1/images/img_17408c8faa687e6b0763135d9800e3c2.jpeg",
+      "imageAssets": [
+        "/qbank/2023-test1/images/img_17408c8faa687e6b0763135d9800e3c2.jpeg",
+        "/qbank/2023-test1/images/img_052766a1f72ece09b472fcce26e3e869.jpeg"
+      ],
+      "imageTags": {
+        "assetSrcs": [
+          "/qbank/2023-test1/images/img_052766a1f72ece09b472fcce26e3e869.jpeg"
+        ],
+        "colorTags": [
+          "yellow",
+          "black"
+        ],
+        "objectTags": [
+          "construction",
+          "shovel",
+          "stick-figure",
+          "human",
+          "dig"
+        ],
+        "dominantByAsset": [
+          {
+            "assetSrc": "/qbank/2023-test1/images/img_052766a1f72ece09b472fcce26e3e869.jpeg",
+            "colors": [
+              {
+                "color": "black",
+                "overallShare": 0.445,
+                "chromaticShare": null
+              },
+              {
+                "color": "yellow",
+                "overallShare": 0.288,
+                "chromaticShare": 0.826
+              },
+              {
+                "color": "black",
+                "overallShare": 0.175,
+                "chromaticShare": null
+              },
+              {
+                "color": "gray",
+                "overallShare": 0.031,
+                "chromaticShare": null
+              }
+            ]
+          }
+        ]
+      },
+      "objectTags": [
+        "construction",
+        "shovel",
+        "stick-figure",
+        "human",
+        "dig"
+      ],
+      "englishPrompt": "This sign indicates landslide section ahead and bypassing.",
+      "englishOptions": [],
+      "englishExplanation": "",
+      "correctOptionKey": "Wrong",
+      "generatedTranslation": {
+        "prompt": "Этот знак указывает на участок, подверженный оползням, и на объезд.",
+        "options": {},
+        "explanation": ""
+      },
+      "generationStatus": "generated",
+      "generationProvider": "openai",
+      "generationModel": "gpt-5-mini",
+      "needsHumanReview": true,
+      "reviewStatus": "pending",
+      "warnings": []
+    }
+  ]
+}

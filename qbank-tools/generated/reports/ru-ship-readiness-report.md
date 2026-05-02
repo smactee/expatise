@@ -1,6 +1,6 @@
 # RU Ship-Readiness Report
 
-Generated at: 2026-05-02T11:31:32.330Z
+Generated at: 2026-05-02T12:53:37.725Z
 Recommendation: **SHIP**
 
 ## Executive Summary
@@ -10,11 +10,6 @@ Recommendation: **SHIP**
 - Extra qids not in questions.json: 0
 - Critical issues: none
 - Rationale: No critical production-data integrity failures were found. Coverage is partial, and q0245/q0176 remain staged-but-not-production, but those are release caveats rather than corrupt production data.
-
-## Release Warnings
-
-- 20 create-new Right/Wrong items remain staged-only and accepted for this release context
-- 6 high-risk discrepancy items remain skipped by the conservative apply script and accepted for this release context
 
 ## Counts
 
@@ -35,23 +30,23 @@ Recommendation: **SHIP**
 
 ## q0245 / q0176
 
-- q0245: production=yes, batch08 full preview=no, batch08 full dry-run=no, missing-production stage=yes
-- q0176: production=yes, batch08 full preview=no, batch08 full dry-run=no, missing-production stage=yes
+- q0245: production=yes, batch08 full preview=no, batch08 full dry-run=no, missing-production stage=no
+- q0176: production=yes, batch08 full preview=no, batch08 full dry-run=no, missing-production stage=no
 
 ## Discrepancy Apply Status
 
-- Apply run marked applied: yes
-- Skipped after conservative apply: 26
-- Create-new Right/Wrong staged-only items: 20
-- High-risk manually accepted items still skipped by conservative apply: 6
-- Manually confirmed duplicate-label answers: 2
+- Apply run marked applied: unknown
+- Skipped after conservative apply: 0
+- Create-new Right/Wrong staged-only items: 0
+- High-risk manually accepted items still skipped by conservative apply: 0
+- Manually confirmed duplicate-label answers: null
 
 ## Batch-08 Staging
 
-- Apply counts: {"autoMatched":0,"reviewedFinalized":43,"rescuedUnresolved":2,"newQuestionCandidates":4,"sourceExplanationUpdates":0,"finalMergeReadyTotal":45,"blockerCount":0}
+- Apply counts: null
 - Full preview qids: 0
 - Full dry-run production qids: 0
-- Safe to merge next step: yes
+- Safe to merge next step: unknown
 - Blockers: 0
 
 ## Image Asset References
