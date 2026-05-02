@@ -1,0 +1,987 @@
+{
+  "meta": {
+    "generatedAt": "2026-05-02T06:41:31.480Z",
+    "source": "english_master_backfill",
+    "lang": "ru",
+    "dataset": "2023-test1",
+    "applyRequested": false,
+    "aiGenerationUsed": true,
+    "generationModel": "gpt-5-mini",
+    "productionModified": false,
+    "inputPath": "qbank-tools/generated/staging/backfill.ru.missing-qids.json",
+    "outputPath": "qbank-tools/generated/staging/backfill.ru.generated-draft.json",
+    "limit": 20,
+    "batchSize": 10,
+    "note": "Generated from English master. All items still require human review before merge."
+  },
+  "counts": {
+    "inputItems": 171,
+    "emittedItems": 20,
+    "generatedItems": 20,
+    "notGeneratedItems": 0
+  },
+  "items": [
+    {
+      "qid": "q0004",
+      "number": 4,
+      "source": "english_master_backfill",
+      "lang": "ru",
+      "type": "row",
+      "topic": null,
+      "subtopic": null,
+      "tags": {
+        "auto": [
+          "#row"
+        ],
+        "user": [],
+        "suggested": []
+      },
+      "image": null,
+      "imageAssets": [],
+      "imageTags": null,
+      "objectTags": [],
+      "englishPrompt": "When a vehicle changes lane, the driver should turn on the turn signal in advance,observe traffic conditions, maintain a safe distance and move into the new lane.",
+      "englishOptions": [],
+      "englishExplanation": "",
+      "correctOptionKey": "Right",
+      "generatedTranslation": {
+        "prompt": "При перестроении водитель должен заранее включить указатель поворота, наблюдать за дорожной обстановкой, соблюдать безопасную дистанцию и перестроиться в другую полосу.",
+        "options": {},
+        "explanation": ""
+      },
+      "generationStatus": "generated",
+      "generationProvider": "openai",
+      "generationModel": "gpt-5-mini",
+      "needsHumanReview": true,
+      "reviewStatus": "pending",
+      "warnings": []
+    },
+    {
+      "qid": "q0021",
+      "number": 21,
+      "source": "english_master_backfill",
+      "lang": "ru",
+      "type": "row",
+      "topic": "highway",
+      "subtopic": null,
+      "tags": {
+        "auto": [
+          "#row"
+        ],
+        "user": [],
+        "suggested": [
+          {
+            "tag": "#highway",
+            "score": 1
+          }
+        ]
+      },
+      "image": null,
+      "imageAssets": [],
+      "imageTags": null,
+      "objectTags": [],
+      "englishPrompt": "When there’s a diversion traffic control on the highway, a driver can stop by the side to wait instead of leaving out of the highway, for continually running after the traffic control.",
+      "englishOptions": [],
+      "englishExplanation": "",
+      "correctOptionKey": "Wrong",
+      "generatedTranslation": {
+        "prompt": "Если на автомагистрали введено объездное движение, водитель может остановиться у обочины и ждать, вместо того чтобы съехать с автомагистрали и следовать по объездному маршруту.",
+        "options": {},
+        "explanation": ""
+      },
+      "generationStatus": "generated",
+      "generationProvider": "openai",
+      "generationModel": "gpt-5-mini",
+      "needsHumanReview": true,
+      "reviewStatus": "pending",
+      "warnings": []
+    },
+    {
+      "qid": "q0025",
+      "number": 25,
+      "source": "english_master_backfill",
+      "lang": "ru",
+      "type": "row",
+      "topic": null,
+      "subtopic": null,
+      "tags": {
+        "auto": [
+          "#row"
+        ],
+        "user": [],
+        "suggested": []
+      },
+      "image": null,
+      "imageAssets": [],
+      "imageTags": null,
+      "objectTags": [],
+      "englishPrompt": "When passing through an overflowing road, a high gear should be used to pass rapidly.",
+      "englishOptions": [],
+      "englishExplanation": "",
+      "correctOptionKey": "Wrong",
+      "generatedTranslation": {
+        "prompt": "При движении через затопленную дорогу следует использовать высокую передачу, чтобы проехать быстро.",
+        "options": {},
+        "explanation": ""
+      },
+      "generationStatus": "generated",
+      "generationProvider": "openai",
+      "generationModel": "gpt-5-mini",
+      "needsHumanReview": true,
+      "reviewStatus": "pending",
+      "warnings": []
+    },
+    {
+      "qid": "q0034",
+      "number": 34,
+      "source": "english_master_backfill",
+      "lang": "ru",
+      "type": "row",
+      "topic": null,
+      "subtopic": null,
+      "tags": {
+        "auto": [
+          "#row"
+        ],
+        "user": [],
+        "suggested": []
+      },
+      "image": null,
+      "imageAssets": [],
+      "imageTags": null,
+      "objectTags": [],
+      "englishPrompt": "When driving, the driver should be courteous and defensive, instead of being offensive.",
+      "englishOptions": [],
+      "englishExplanation": "",
+      "correctOptionKey": "Right",
+      "generatedTranslation": {
+        "prompt": "При вождении водитель должен быть вежливым и придерживаться оборонительного, осторожного стиля вождения, а не вести себя агрессивно.",
+        "options": {},
+        "explanation": ""
+      },
+      "generationStatus": "generated",
+      "generationProvider": "openai",
+      "generationModel": "gpt-5-mini",
+      "needsHumanReview": true,
+      "reviewStatus": "pending",
+      "warnings": []
+    },
+    {
+      "qid": "q0039",
+      "number": 39,
+      "source": "english_master_backfill",
+      "lang": "ru",
+      "type": "row",
+      "topic": "right-of-way",
+      "subtopic": null,
+      "tags": {
+        "auto": [
+          "#row"
+        ],
+        "user": [],
+        "suggested": [
+          {
+            "tag": "#right-of-way",
+            "score": 1
+          }
+        ]
+      },
+      "image": null,
+      "imageAssets": [],
+      "imageTags": null,
+      "objectTags": [],
+      "englishPrompt": "When a vehicle encounters the cut in by another vehicle in a roundabout, the driver may not evade as long as he has the right of way.",
+      "englishOptions": [],
+      "englishExplanation": "",
+      "correctOptionKey": "Wrong",
+      "generatedTranslation": {
+        "prompt": "Когда на кольце другой автомобиль вклинивается перед ним, водитель может не уклоняться при условии, что у него преимущество в движении.",
+        "options": {},
+        "explanation": ""
+      },
+      "generationStatus": "generated",
+      "generationProvider": "openai",
+      "generationModel": "gpt-5-mini",
+      "needsHumanReview": true,
+      "reviewStatus": "pending",
+      "warnings": []
+    },
+    {
+      "qid": "q0041",
+      "number": 41,
+      "source": "english_master_backfill",
+      "lang": "ru",
+      "type": "row",
+      "topic": "highway",
+      "subtopic": null,
+      "tags": {
+        "auto": [
+          "#row"
+        ],
+        "user": [],
+        "suggested": [
+          {
+            "tag": "#highway",
+            "score": 1
+          }
+        ]
+      },
+      "image": null,
+      "imageAssets": [],
+      "imageTags": null,
+      "objectTags": [],
+      "englishPrompt": "When a vehicle leaves a highway, it should reduce speed in the deceleration lane before entering the ramp.",
+      "englishOptions": [],
+      "englishExplanation": "",
+      "correctOptionKey": "Right",
+      "generatedTranslation": {
+        "prompt": "При съезде с автомагистрали следует снизить скорость на полосе замедления перед съездом.",
+        "options": {},
+        "explanation": ""
+      },
+      "generationStatus": "generated",
+      "generationProvider": "openai",
+      "generationModel": "gpt-5-mini",
+      "needsHumanReview": true,
+      "reviewStatus": "pending",
+      "warnings": []
+    },
+    {
+      "qid": "q0043",
+      "number": 43,
+      "source": "english_master_backfill",
+      "lang": "ru",
+      "type": "row",
+      "topic": null,
+      "subtopic": null,
+      "tags": {
+        "auto": [
+          "#row"
+        ],
+        "user": [],
+        "suggested": []
+      },
+      "image": null,
+      "imageAssets": [],
+      "imageTags": null,
+      "objectTags": [],
+      "englishPrompt": "When a vehicle goes uphill on a mountain road, it should change to a lower gear in a timely, accurate and rapid manner so as to avoid a situation in which driving at a high gear can reduce the power of the engine.",
+      "englishOptions": [],
+      "englishExplanation": "",
+      "correctOptionKey": "Right",
+      "generatedTranslation": {
+        "prompt": "При подъёме по горной дороге водитель должен своевременно, точно и быстро переключиться на пониженную передачу, чтобы избежать ситуации, когда движение на высокой передаче может снизить мощность двигателя.",
+        "options": {},
+        "explanation": ""
+      },
+      "generationStatus": "generated",
+      "generationProvider": "openai",
+      "generationModel": "gpt-5-mini",
+      "needsHumanReview": true,
+      "reviewStatus": "pending",
+      "warnings": []
+    },
+    {
+      "qid": "q0048",
+      "number": 48,
+      "source": "english_master_backfill",
+      "lang": "ru",
+      "type": "row",
+      "topic": "highway",
+      "subtopic": null,
+      "tags": {
+        "auto": [
+          "#row"
+        ],
+        "user": [],
+        "suggested": [
+          {
+            "tag": "#highway",
+            "score": 1
+          }
+        ]
+      },
+      "image": null,
+      "imageAssets": [],
+      "imageTags": null,
+      "objectTags": [],
+      "englishPrompt": "A vehicle may stop on the ramp of a highway.",
+      "englishOptions": [],
+      "englishExplanation": "",
+      "correctOptionKey": "Wrong",
+      "generatedTranslation": {
+        "prompt": "Транспортное средство может остановиться на съездной полосе автомагистрали.",
+        "options": {},
+        "explanation": ""
+      },
+      "generationStatus": "generated",
+      "generationProvider": "openai",
+      "generationModel": "gpt-5-mini",
+      "needsHumanReview": true,
+      "reviewStatus": "pending",
+      "warnings": []
+    },
+    {
+      "qid": "q0083",
+      "number": 83,
+      "source": "english_master_backfill",
+      "lang": "ru",
+      "type": "row",
+      "topic": "vehicle-basics",
+      "subtopic": null,
+      "tags": {
+        "auto": [
+          "#row"
+        ],
+        "user": [],
+        "suggested": [
+          {
+            "tag": "#vehicle-basics",
+            "score": 1
+          }
+        ]
+      },
+      "image": null,
+      "imageAssets": [],
+      "imageTags": null,
+      "objectTags": [],
+      "englishPrompt": "When the vehicle has changed its direction due to a front tire blowout on the road, the driver should firmly hold the steering wheel with both hands to ensure the vehicle goes straight.",
+      "englishOptions": [],
+      "englishExplanation": "",
+      "correctOptionKey": "Right",
+      "generatedTranslation": {
+        "prompt": "При разрыве передней шины на дороге водитель должен крепко держать рулевое колесо обеими руками, чтобы автомобиль продолжал двигаться по прямой.",
+        "options": {},
+        "explanation": ""
+      },
+      "generationStatus": "generated",
+      "generationProvider": "openai",
+      "generationModel": "gpt-5-mini",
+      "needsHumanReview": true,
+      "reviewStatus": "pending",
+      "warnings": []
+    },
+    {
+      "qid": "q0084",
+      "number": 84,
+      "source": "english_master_backfill",
+      "lang": "ru",
+      "type": "row",
+      "topic": null,
+      "subtopic": null,
+      "tags": {
+        "auto": [
+          "#row"
+        ],
+        "user": [],
+        "suggested": []
+      },
+      "image": null,
+      "imageAssets": [],
+      "imageTags": null,
+      "objectTags": [],
+      "englishPrompt": "Driving and smoking has no harm on safe driving.",
+      "englishOptions": [],
+      "englishExplanation": "",
+      "correctOptionKey": "Wrong",
+      "generatedTranslation": {
+        "prompt": "Курение при управлении автомобилем не вредит безопасности вождения.",
+        "options": {},
+        "explanation": ""
+      },
+      "generationStatus": "generated",
+      "generationProvider": "openai",
+      "generationModel": "gpt-5-mini",
+      "needsHumanReview": true,
+      "reviewStatus": "pending",
+      "warnings": []
+    },
+    {
+      "qid": "q0102",
+      "number": 102,
+      "source": "english_master_backfill",
+      "lang": "ru",
+      "type": "row",
+      "topic": null,
+      "subtopic": null,
+      "tags": {
+        "auto": [
+          "#row"
+        ],
+        "user": [],
+        "suggested": []
+      },
+      "image": null,
+      "imageAssets": [],
+      "imageTags": null,
+      "objectTags": [],
+      "englishPrompt": "Emergency braking on a road covered by ice and snow can easily cause side skidding. The driver should use the engine braking to reduce speed.",
+      "englishOptions": [],
+      "englishExplanation": "",
+      "correctOptionKey": "Right",
+      "generatedTranslation": {
+        "prompt": "Экстренное торможение на дороге, покрытой льдом и снегом, может легко вызвать занос. Водитель должен использовать торможение двигателем для снижения скорости.",
+        "options": {},
+        "explanation": ""
+      },
+      "generationStatus": "generated",
+      "generationProvider": "openai",
+      "generationModel": "gpt-5-mini",
+      "needsHumanReview": true,
+      "reviewStatus": "pending",
+      "warnings": []
+    },
+    {
+      "qid": "q0103",
+      "number": 103,
+      "source": "english_master_backfill",
+      "lang": "ru",
+      "type": "row",
+      "topic": "highway",
+      "subtopic": null,
+      "tags": {
+        "auto": [
+          "#row"
+        ],
+        "user": [],
+        "suggested": [
+          {
+            "tag": "#highway",
+            "score": 1
+          }
+        ]
+      },
+      "image": null,
+      "imageAssets": [],
+      "imageTags": null,
+      "objectTags": [],
+      "englishPrompt": "Vehicles should drive on the right shoulder of a highway.",
+      "englishOptions": [],
+      "englishExplanation": "",
+      "correctOptionKey": "Wrong",
+      "generatedTranslation": {
+        "prompt": "Транспортные средства должны ехать по правой обочине автомагистрали.",
+        "options": {},
+        "explanation": ""
+      },
+      "generationStatus": "generated",
+      "generationProvider": "openai",
+      "generationModel": "gpt-5-mini",
+      "needsHumanReview": true,
+      "reviewStatus": "pending",
+      "warnings": []
+    },
+    {
+      "qid": "q0127",
+      "number": 127,
+      "source": "english_master_backfill",
+      "lang": "ru",
+      "type": "mcq",
+      "topic": null,
+      "subtopic": null,
+      "tags": {
+        "auto": [
+          "#mcq"
+        ],
+        "user": [],
+        "suggested": []
+      },
+      "image": null,
+      "imageAssets": [],
+      "imageTags": null,
+      "objectTags": [],
+      "englishPrompt": "When a vehicle coming in the opposite direction suddenly overtakes and occupies your lane, the correct way to deal with this situation is to __________.",
+      "englishOptions": [
+        {
+          "key": "A",
+          "id": "q0127_o1",
+          "text": "obstruct the way of that vehicle"
+        },
+        {
+          "key": "B",
+          "id": "q0127_o2",
+          "text": "maintain the original speed"
+        },
+        {
+          "key": "C",
+          "id": "q0127_o3",
+          "text": "reduce speed and avoid as much as possible, till stop"
+        },
+        {
+          "key": "D",
+          "id": "q0127_o4",
+          "text": "speed up and go forward"
+        }
+      ],
+      "englishExplanation": "",
+      "correctOptionKey": "C",
+      "generatedTranslation": {
+        "prompt": "Если едущий навстречу автомобиль внезапно обгоняет и выезжает на вашу полосу, правильное действие — __________.",
+        "options": {
+          "q0127_o1": "перегородить путь этому транспортному средству",
+          "q0127_o2": "сохранить исходную скорость",
+          "q0127_o3": "снизить скорость и по возможности уклониться, вплоть до остановки",
+          "q0127_o4": "увеличить скорость и продолжить движение"
+        },
+        "explanation": ""
+      },
+      "generationStatus": "generated",
+      "generationProvider": "openai",
+      "generationModel": "gpt-5-mini",
+      "needsHumanReview": true,
+      "reviewStatus": "pending",
+      "warnings": []
+    },
+    {
+      "qid": "q0133",
+      "number": 133,
+      "source": "english_master_backfill",
+      "lang": "ru",
+      "type": "mcq",
+      "topic": "traffic-lights",
+      "subtopic": null,
+      "tags": {
+        "auto": [
+          "#mcq"
+        ],
+        "user": [],
+        "suggested": [
+          {
+            "tag": "#traffic-lights",
+            "score": 1
+          }
+        ]
+      },
+      "image": null,
+      "imageAssets": [],
+      "imageTags": null,
+      "objectTags": [],
+      "englishPrompt": "When a vehicle enters a two-way tunnel, the driver should turn on ________.",
+      "englishOptions": [
+        {
+          "key": "A",
+          "id": "q0133_o1",
+          "text": "the hazard lights"
+        },
+        {
+          "key": "B",
+          "id": "q0133_o2",
+          "text": "the high beam light"
+        },
+        {
+          "key": "C",
+          "id": "q0133_o3",
+          "text": "the fog light"
+        },
+        {
+          "key": "D",
+          "id": "q0133_o4",
+          "text": "the sidelights or the low beam light"
+        }
+      ],
+      "englishExplanation": "",
+      "correctOptionKey": "D",
+      "generatedTranslation": {
+        "prompt": "При въезде в двухсторонний тоннель водитель должен включить ________.",
+        "options": {
+          "q0133_o1": "аварийную сигнализацию",
+          "q0133_o2": "дальний свет",
+          "q0133_o3": "противотуманные фары",
+          "q0133_o4": "габаритные огни или ближний свет фар"
+        },
+        "explanation": ""
+      },
+      "generationStatus": "generated",
+      "generationProvider": "openai",
+      "generationModel": "gpt-5-mini",
+      "needsHumanReview": true,
+      "reviewStatus": "pending",
+      "warnings": []
+    },
+    {
+      "qid": "q0135",
+      "number": 135,
+      "source": "english_master_backfill",
+      "lang": "ru",
+      "type": "mcq",
+      "topic": "right-of-way",
+      "subtopic": null,
+      "tags": {
+        "auto": [
+          "#mcq"
+        ],
+        "user": [],
+        "suggested": [
+          {
+            "tag": "#right-of-way",
+            "score": 1
+          }
+        ]
+      },
+      "image": null,
+      "imageAssets": [],
+      "imageTags": null,
+      "objectTags": [],
+      "englishPrompt": "When finding a vehicle in the opposite direction having difficulty to go forward and needing to borrow road while crossing each other, the driver should ________.",
+      "englishOptions": [
+        {
+          "key": "A",
+          "id": "q0135_o1",
+          "text": "not occupy the road of the other side and should go forward normally"
+        },
+        {
+          "key": "B",
+          "id": "q0135_o2",
+          "text": "indicate the other side to stop and yield"
+        },
+        {
+          "key": "C",
+          "id": "q0135_o3",
+          "text": "speed up and go forward by the right side"
+        },
+        {
+          "key": "D",
+          "id": "q0135_o4",
+          "text": "yield to the other side as much as possible"
+        }
+      ],
+      "englishExplanation": "",
+      "correctOptionKey": "D",
+      "generatedTranslation": {
+        "prompt": "При встрече с идущим навстречу транспортным средством, которому трудно проехать и которое вынуждено занять часть вашей полосы, водитель должен ________.",
+        "options": {
+          "q0135_o1": "не занимать полосу встречного движения и продолжать движение в обычном порядке",
+          "q0135_o2": "подать сигнал другой стороне, чтобы она остановилась и уступила",
+          "q0135_o3": "ускориться и проехать по правой стороне",
+          "q0135_o4": "по возможности уступить встречной стороне"
+        },
+        "explanation": ""
+      },
+      "generationStatus": "generated",
+      "generationProvider": "openai",
+      "generationModel": "gpt-5-mini",
+      "needsHumanReview": true,
+      "reviewStatus": "pending",
+      "warnings": []
+    },
+    {
+      "qid": "q0136",
+      "number": 136,
+      "source": "english_master_backfill",
+      "lang": "ru",
+      "type": "mcq",
+      "topic": "license",
+      "subtopic": "right-of-way",
+      "tags": {
+        "auto": [
+          "#mcq"
+        ],
+        "user": [],
+        "suggested": [
+          {
+            "tag": "#license",
+            "score": 1
+          },
+          {
+            "tag": "#right-of-way",
+            "score": 1
+          }
+        ]
+      },
+      "image": null,
+      "imageAssets": [],
+      "imageTags": null,
+      "objectTags": [],
+      "englishPrompt": "When a following vehicle gives the overtaking signal, the driver should ________ if conditions permit.",
+      "englishOptions": [
+        {
+          "key": "A",
+          "id": "q0136_o1",
+          "text": "move to the right side and speed up"
+        },
+        {
+          "key": "B",
+          "id": "q0136_o2",
+          "text": "voluntarily reduce speed and drive along the right side"
+        },
+        {
+          "key": "C",
+          "id": "q0136_o3",
+          "text": "yield a proper space and speed up"
+        },
+        {
+          "key": "D",
+          "id": "q0136_o4",
+          "text": "reduce speed rapidly or apply an emergency braking"
+        }
+      ],
+      "englishExplanation": "",
+      "correctOptionKey": "B",
+      "generatedTranslation": {
+        "prompt": "Когда следующая сзади машина подаёт сигнал об обгоне, водитель должен ________, если условия позволяют.",
+        "options": {
+          "q0136_o1": "перестроиться вправо и ускориться",
+          "q0136_o2": "добровольно снизить скорость и ехать по правой стороне",
+          "q0136_o3": "оставить достаточный зазор и ускориться",
+          "q0136_o4": "резко снизить скорость или применить экстренное торможение"
+        },
+        "explanation": ""
+      },
+      "generationStatus": "generated",
+      "generationProvider": "openai",
+      "generationModel": "gpt-5-mini",
+      "needsHumanReview": true,
+      "reviewStatus": "pending",
+      "warnings": []
+    },
+    {
+      "qid": "q0156",
+      "number": 156,
+      "source": "english_master_backfill",
+      "lang": "ru",
+      "type": "mcq",
+      "topic": null,
+      "subtopic": null,
+      "tags": {
+        "auto": [
+          "#mcq"
+        ],
+        "user": [],
+        "suggested": []
+      },
+      "image": null,
+      "imageAssets": [],
+      "imageTags": null,
+      "objectTags": [],
+      "englishPrompt": "When a vehicle passes a bump on the road, the driver should ________.",
+      "englishOptions": [
+        {
+          "key": "A",
+          "id": "q0156_o1",
+          "text": "speed up and dash over under inertia"
+        },
+        {
+          "key": "B",
+          "id": "q0156_o2",
+          "text": "change to the neutral gear and slide over"
+        },
+        {
+          "key": "C",
+          "id": "q0156_o3",
+          "text": "maintain the original speed and pass"
+        },
+        {
+          "key": "D",
+          "id": "q0156_o4",
+          "text": "pass slowly and steadily"
+        }
+      ],
+      "englishExplanation": "",
+      "correctOptionKey": "D",
+      "generatedTranslation": {
+        "prompt": "При проезде через лежачий полицейский (неровность) на дороге водитель должен ________.",
+        "options": {
+          "q0156_o1": "разогнаться и проскочить по инерции",
+          "q0156_o2": "переключиться на нейтральную передачу и проехать накатом",
+          "q0156_o3": "сохранить прежнюю скорость и проехать",
+          "q0156_o4": "проезжать медленно и плавно"
+        },
+        "explanation": ""
+      },
+      "generationStatus": "generated",
+      "generationProvider": "openai",
+      "generationModel": "gpt-5-mini",
+      "needsHumanReview": true,
+      "reviewStatus": "pending",
+      "warnings": []
+    },
+    {
+      "qid": "q0158",
+      "number": 158,
+      "source": "english_master_backfill",
+      "lang": "ru",
+      "type": "mcq",
+      "topic": null,
+      "subtopic": null,
+      "tags": {
+        "auto": [
+          "#mcq"
+        ],
+        "user": [],
+        "suggested": []
+      },
+      "image": null,
+      "imageAssets": [],
+      "imageTags": null,
+      "objectTags": [],
+      "englishPrompt": "When a vehicle stops temporarily at the roadside, the driver ________.",
+      "englishOptions": [
+        {
+          "key": "A",
+          "id": "q0158_o1",
+          "text": "is not allowed to stop in the opposite direction or in parallel"
+        },
+        {
+          "key": "B",
+          "id": "q0158_o2",
+          "text": "may stop anyway he likes as long as it is convenient for him to get out"
+        },
+        {
+          "key": "C",
+          "id": "q0158_o3",
+          "text": "may stop the vehicle in the opposite direction"
+        },
+        {
+          "key": "D",
+          "id": "q0158_o4",
+          "text": "may stop the vehicle in parallel"
+        }
+      ],
+      "englishExplanation": "",
+      "correctOptionKey": "A",
+      "generatedTranslation": {
+        "prompt": "Когда транспортное средство временно останавливается у обочины, водитель ________.",
+        "options": {
+          "q0158_o1": "не имеет права останавливать автомобиль навстречу движению или параллельно проезжей части",
+          "q0158_o2": "может остановиться так, как ему удобно, если это облегчает выход",
+          "q0158_o3": "может остановить автомобиль, направив его навстречу движению",
+          "q0158_o4": "может остановить автомобиль параллельно проезжей части"
+        },
+        "explanation": ""
+      },
+      "generationStatus": "generated",
+      "generationProvider": "openai",
+      "generationModel": "gpt-5-mini",
+      "needsHumanReview": true,
+      "reviewStatus": "pending",
+      "warnings": []
+    },
+    {
+      "qid": "q0168",
+      "number": 168,
+      "source": "english_master_backfill",
+      "lang": "ru",
+      "type": "mcq",
+      "topic": null,
+      "subtopic": null,
+      "tags": {
+        "auto": [
+          "#mcq"
+        ],
+        "user": [],
+        "suggested": []
+      },
+      "image": null,
+      "imageAssets": [],
+      "imageTags": null,
+      "objectTags": [],
+      "englishPrompt": "The main impact of the road conditions in icy and snowy weather is ______.",
+      "englishOptions": [
+        {
+          "key": "A",
+          "id": "q0168_o1",
+          "text": "possible short circuit of electronics"
+        },
+        {
+          "key": "B",
+          "id": "q0168_o2",
+          "text": "the visibility is lower and the field of vision is blurred"
+        },
+        {
+          "key": "C",
+          "id": "q0168_o3",
+          "text": "increased driving resistance"
+        },
+        {
+          "key": "D",
+          "id": "q0168_o4",
+          "text": "poor braking performance and deviation in direction control"
+        }
+      ],
+      "englishExplanation": "",
+      "correctOptionKey": "D",
+      "generatedTranslation": {
+        "prompt": "Основное влияние условий дорожного покрытия в гололёд и снег — ______.",
+        "options": {
+          "q0168_o1": "возможное короткое замыкание в электронике",
+          "q0168_o2": "снижение видимости и затуманивание поля зрения",
+          "q0168_o3": "увеличение сопротивления движению",
+          "q0168_o4": "снижение эффективности торможения и отклонения в управлении направлением движения"
+        },
+        "explanation": ""
+      },
+      "generationStatus": "generated",
+      "generationProvider": "openai",
+      "generationModel": "gpt-5-mini",
+      "needsHumanReview": true,
+      "reviewStatus": "pending",
+      "warnings": []
+    },
+    {
+      "qid": "q0186",
+      "number": 186,
+      "source": "english_master_backfill",
+      "lang": "ru",
+      "type": "mcq",
+      "topic": "right-of-way",
+      "subtopic": null,
+      "tags": {
+        "auto": [
+          "#mcq"
+        ],
+        "user": [],
+        "suggested": [
+          {
+            "tag": "#right-of-way",
+            "score": 2
+          }
+        ]
+      },
+      "image": null,
+      "imageAssets": [],
+      "imageTags": null,
+      "objectTags": [],
+      "englishPrompt": "If a vehicle has the right of way at an intersection but encounters a vehicle cutting in, the driver should _________.",
+      "englishOptions": [
+        {
+          "key": "A",
+          "id": "q0186_o1",
+          "text": "rush to pass"
+        },
+        {
+          "key": "B",
+          "id": "q0186_o2",
+          "text": "speed up in advance and pass"
+        },
+        {
+          "key": "C",
+          "id": "q0186_o3",
+          "text": "reduce speed and evade, or stop to yield when necessary"
+        },
+        {
+          "key": "D",
+          "id": "q0186_o4",
+          "text": "go forward at the normal speed according to the right of way and refuses to evade"
+        }
+      ],
+      "englishExplanation": "",
+      "correctOptionKey": "C",
+      "generatedTranslation": {
+        "prompt": "Если на перекрёстке у транспортного средства есть преимущество проезда, но встречается автомобиль, вклинивающийся в поток, водитель должен _________.",
+        "options": {
+          "q0186_o1": "торопиться проехать",
+          "q0186_o2": "заранее ускориться и проехать",
+          "q0186_o3": "снизить скорость и уклониться, либо при необходимости остановиться и уступить",
+          "q0186_o4": "продолжить движение с обычной скоростью в соответствии с правом проезда и отказаться от уклонения"
+        },
+        "explanation": ""
+      },
+      "generationStatus": "generated",
+      "generationProvider": "openai",
+      "generationModel": "gpt-5-mini",
+      "needsHumanReview": true,
+      "reviewStatus": "pending",
+      "warnings": []
+    }
+  ]
+}

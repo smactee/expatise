@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-01T13:47:59.542Z",
+  "generatedAt": "2026-05-02T07:03:26.153Z",
   "lang": "ru",
   "dataset": "2023-test1",
   "recommendation": "ship",
@@ -18,48 +18,30 @@
     "missingProductionStage": "qbank-tools/generated/staging/ru-discrepancy-missing-production-merge-candidates.json"
   },
   "fileHashes": {
-    "productionTranslationsSha256": "e1f6fe6f3c9913564089df68f023af380e5a006deae675127b2df68139900c1b",
-    "masterQuestionsSha256": "f25216798cd6d0d891985c33bc465200538b54a76b6251a4594ea556bdd4908d",
-    "rawMasterQuestionsSha256": "07f0b60d1db1df9ab13d9b22ff3c3716012606ab1e86ac8a462a0d1b8b9de960"
+    "productionTranslationsSha256": "a93c1d952bec2ee7c5a113957fd9e0618e29181bdfc08ffa830488fc70f84248",
+    "masterQuestionsSha256": "6d4acf6a01db336a4b8244d2c4cd3739711d3e3620a8fac9403a1271c83140a8",
+    "rawMasterQuestionsSha256": "4a2307123b9aad71044456df2af85c30366d1122530856d2b90b311d7adf97ad"
   },
   "counts": {
-    "masterQids": 985,
+    "masterQids": 984,
     "rawMasterQids": 985,
-    "rawOnlyMasterQids": [],
-    "productionRussianTranslations": 813,
-    "productionCoveragePercent": 82.54,
-    "missingQidsComparedToQuestionsJson": 172,
+    "rawOnlyMasterQids": [
+      "q0518"
+    ],
+    "productionRussianTranslations": 833,
+    "productionCoveragePercent": 84.65,
+    "missingQidsComparedToQuestionsJson": 151,
     "extraQidsNotInQuestionsJson": 0,
     "masterTypeCounts": {
-      "row": 410,
-      "mcq": 575
+      "row": 419,
+      "mcq": 565
     },
     "translatedTypeCounts": {
-      "row": 305,
-      "mcq": 508
+      "row": 319,
+      "mcq": 514
     }
   },
   "missingQids": [
-    "q0004",
-    "q0021",
-    "q0025",
-    "q0034",
-    "q0039",
-    "q0041",
-    "q0043",
-    "q0048",
-    "q0083",
-    "q0084",
-    "q0102",
-    "q0103",
-    "q0127",
-    "q0133",
-    "q0135",
-    "q0136",
-    "q0156",
-    "q0158",
-    "q0168",
-    "q0186",
     "q0206",
     "q0211",
     "q0213",
@@ -111,7 +93,6 @@
     "q0506",
     "q0509",
     "q0515",
-    "q0518",
     "q0556",
     "q0562",
     "q0569",
@@ -220,14 +201,23 @@
     "translatedMcqMissingOptions": [],
     "translatedMcqMissingLocaleAnswerKey": [],
     "localeAnswerKeyNotInSourceOrder": [],
-    "rowTranslationsWithMcqAnswerKey": [],
+    "rowTranslationsWithMcqAnswerKey": [
+      {
+        "qid": "q0975",
+        "localeCorrectOptionKey": "A"
+      },
+      {
+        "qid": "q0978",
+        "localeCorrectOptionKey": "B"
+      }
+    ],
     "counts": {
       "invalidLocaleAnswerKeys": 0,
       "invalidRowAnswers": 0,
       "translatedMcqMissingOptions": 0,
       "translatedMcqMissingLocaleAnswerKey": 0,
       "localeAnswerKeyNotInSourceOrder": 0,
-      "rowTranslationsWithMcqAnswerKey": 0
+      "rowTranslationsWithMcqAnswerKey": 2
     }
   },
   "duplicateQidConflicts": {
@@ -1681,7 +1671,7 @@
   },
   "criticalIssues": [],
   "warnings": [
-    "172 master qid(s) do not have Russian production translations",
+    "151 master qid(s) do not have Russian production translations",
     "20 create-new Right/Wrong items remain staged-only and accepted for this release context",
     "6 high-risk discrepancy items remain skipped by the conservative apply script and accepted for this release context"
   ]

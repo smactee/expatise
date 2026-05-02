@@ -1,0 +1,445 @@
+{
+  "generatedAt": "2026-05-02T06:55:13.935Z",
+  "source": "english_master_backfill_quality_review",
+  "lang": "ru",
+  "dataset": "2023-test1",
+  "inputPath": "qbank-tools/generated/staging/backfill.ru.generated-draft.json",
+  "qualityReviewPath": "qbank-tools/generated/reports/backfill-quality-review.ru.json",
+  "needsFixPath": "qbank-tools/generated/staging/backfill.ru.needs-fix.json",
+  "reviewedPath": "qbank-tools/generated/staging/backfill.ru.reviewed.json",
+  "model": "gpt-5-mini",
+  "aiReviewUsed": true,
+  "productionModified": false,
+  "counts": {
+    "inputItems": 20,
+    "sourceInputItems": 20,
+    "approved": 20,
+    "needsFix": 0,
+    "reject": 0,
+    "belowConfidenceThreshold": 0,
+    "answerKeyLogicRisk": 0,
+    "preflightErrors": 0,
+    "preflightWarnings": 0
+  },
+  "rules": {
+    "confidenceApprovalThreshold": 0.92,
+    "answerKeyLogicRiskRejects": true,
+    "humanOwnerMustReviewReportBeforeApply": true
+  },
+  "preflight": {
+    "valid": true,
+    "counts": {
+      "inputItems": 20,
+      "validItems": 20,
+      "errorCount": 0,
+      "warningCount": 0,
+      "duplicateQidCount": 0
+    },
+    "errors": [],
+    "warnings": [],
+    "items": [
+      {
+        "index": 0,
+        "qid": "q0004",
+        "type": "row",
+        "valid": true,
+        "errors": [],
+        "warnings": []
+      },
+      {
+        "index": 1,
+        "qid": "q0021",
+        "type": "row",
+        "valid": true,
+        "errors": [],
+        "warnings": []
+      },
+      {
+        "index": 2,
+        "qid": "q0025",
+        "type": "row",
+        "valid": true,
+        "errors": [],
+        "warnings": []
+      },
+      {
+        "index": 3,
+        "qid": "q0034",
+        "type": "row",
+        "valid": true,
+        "errors": [],
+        "warnings": []
+      },
+      {
+        "index": 4,
+        "qid": "q0039",
+        "type": "row",
+        "valid": true,
+        "errors": [],
+        "warnings": []
+      },
+      {
+        "index": 5,
+        "qid": "q0041",
+        "type": "row",
+        "valid": true,
+        "errors": [],
+        "warnings": []
+      },
+      {
+        "index": 6,
+        "qid": "q0043",
+        "type": "row",
+        "valid": true,
+        "errors": [],
+        "warnings": []
+      },
+      {
+        "index": 7,
+        "qid": "q0048",
+        "type": "row",
+        "valid": true,
+        "errors": [],
+        "warnings": []
+      },
+      {
+        "index": 8,
+        "qid": "q0083",
+        "type": "row",
+        "valid": true,
+        "errors": [],
+        "warnings": []
+      },
+      {
+        "index": 9,
+        "qid": "q0084",
+        "type": "row",
+        "valid": true,
+        "errors": [],
+        "warnings": []
+      },
+      {
+        "index": 10,
+        "qid": "q0102",
+        "type": "row",
+        "valid": true,
+        "errors": [],
+        "warnings": []
+      },
+      {
+        "index": 11,
+        "qid": "q0103",
+        "type": "row",
+        "valid": true,
+        "errors": [],
+        "warnings": []
+      },
+      {
+        "index": 12,
+        "qid": "q0127",
+        "type": "mcq",
+        "valid": true,
+        "errors": [],
+        "warnings": []
+      },
+      {
+        "index": 13,
+        "qid": "q0133",
+        "type": "mcq",
+        "valid": true,
+        "errors": [],
+        "warnings": []
+      },
+      {
+        "index": 14,
+        "qid": "q0135",
+        "type": "mcq",
+        "valid": true,
+        "errors": [],
+        "warnings": []
+      },
+      {
+        "index": 15,
+        "qid": "q0136",
+        "type": "mcq",
+        "valid": true,
+        "errors": [],
+        "warnings": []
+      },
+      {
+        "index": 16,
+        "qid": "q0156",
+        "type": "mcq",
+        "valid": true,
+        "errors": [],
+        "warnings": []
+      },
+      {
+        "index": 17,
+        "qid": "q0158",
+        "type": "mcq",
+        "valid": true,
+        "errors": [],
+        "warnings": []
+      },
+      {
+        "index": 18,
+        "qid": "q0168",
+        "type": "mcq",
+        "valid": true,
+        "errors": [],
+        "warnings": []
+      },
+      {
+        "index": 19,
+        "qid": "q0186",
+        "type": "mcq",
+        "valid": true,
+        "errors": [],
+        "warnings": []
+      }
+    ]
+  },
+  "items": [
+    {
+      "qid": "q0004",
+      "number": 4,
+      "qualityStatus": "approved",
+      "confidence": 0.95,
+      "answerKeyLogicMayBeWrong": false,
+      "issues": [],
+      "suggestedFix": null,
+      "reviewerReasoningSummary": "Перевод точно и полно передаёт смысл исходного утверждения, терминология корректна, логика ответа (Right) сохранена.",
+      "reviewedAt": "2026-05-02T06:55:13.932Z",
+      "reviewer": "ai-localization-quality-review"
+    },
+    {
+      "qid": "q0021",
+      "number": 21,
+      "qualityStatus": "approved",
+      "confidence": 0.95,
+      "answerKeyLogicMayBeWrong": false,
+      "issues": [],
+      "suggestedFix": null,
+      "reviewerReasoningSummary": "Перевод соответствует английскому тексту и сохраняет негативную (Wrong) оценку утверждения; терминология ('объездное движение', 'обочина', 'съехать с автомагистрали') уместна.",
+      "reviewedAt": "2026-05-02T06:55:13.935Z",
+      "reviewer": "ai-localization-quality-review"
+    },
+    {
+      "qid": "q0025",
+      "number": 25,
+      "qualityStatus": "approved",
+      "confidence": 0.95,
+      "answerKeyLogicMayBeWrong": false,
+      "issues": [],
+      "suggestedFix": null,
+      "reviewerReasoningSummary": "Перевод корректно отражает исходное утверждение о движении через затопленную дорогу и сохраняет правильность ключа (Wrong).",
+      "reviewedAt": "2026-05-02T06:55:13.935Z",
+      "reviewer": "ai-localization-quality-review"
+    },
+    {
+      "qid": "q0034",
+      "number": 34,
+      "qualityStatus": "approved",
+      "confidence": 0.95,
+      "answerKeyLogicMayBeWrong": false,
+      "issues": [],
+      "suggestedFix": null,
+      "reviewerReasoningSummary": "Перевод естественен и экзамен-ориентирован: смысл 'вежливый и оборонительный' передан корректно, ключ (Right) сохранён.",
+      "reviewedAt": "2026-05-02T06:55:13.935Z",
+      "reviewer": "ai-localization-quality-review"
+    },
+    {
+      "qid": "q0039",
+      "number": 39,
+      "qualityStatus": "approved",
+      "confidence": 0.95,
+      "answerKeyLogicMayBeWrong": false,
+      "issues": [],
+      "suggestedFix": null,
+      "reviewerReasoningSummary": "Перевод точно передаёт смысл исходного утверждения о вклинивании на кольце; терминология и логика ответа (Wrong) сохранены.",
+      "reviewedAt": "2026-05-02T06:55:13.935Z",
+      "reviewer": "ai-localization-quality-review"
+    },
+    {
+      "qid": "q0041",
+      "number": 41,
+      "qualityStatus": "approved",
+      "confidence": 0.96,
+      "answerKeyLogicMayBeWrong": false,
+      "issues": [],
+      "suggestedFix": null,
+      "reviewerReasoningSummary": "Перевод точно передаёт смысл английского текста; термин «полоса замедления» и порядок действий сохранены. Нет несоответствий с ключом ответа.",
+      "reviewedAt": "2026-05-02T06:55:13.935Z",
+      "reviewer": "ai-localization-quality-review"
+    },
+    {
+      "qid": "q0043",
+      "number": 43,
+      "qualityStatus": "approved",
+      "confidence": 0.96,
+      "answerKeyLogicMayBeWrong": false,
+      "issues": [],
+      "suggestedFix": null,
+      "reviewerReasoningSummary": "Перевод верный и естественный, все элементы ('своевременно, точно и быстро', 'пониженная передача') сохранены. Соответствие логике ответа подтверждено.",
+      "reviewedAt": "2026-05-02T06:55:13.935Z",
+      "reviewer": "ai-localization-quality-review"
+    },
+    {
+      "qid": "q0048",
+      "number": 48,
+      "qualityStatus": "approved",
+      "confidence": 0.95,
+      "answerKeyLogicMayBeWrong": false,
+      "issues": [],
+      "suggestedFix": null,
+      "reviewerReasoningSummary": "Прямой перевод утверждения сохранён («может остановиться»). Терминология приемлема для экзамена; ключ ответа (ложь) остаётся согласованным с оригиналом.",
+      "reviewedAt": "2026-05-02T06:55:13.935Z",
+      "reviewer": "ai-localization-quality-review"
+    },
+    {
+      "qid": "q0083",
+      "number": 83,
+      "qualityStatus": "approved",
+      "confidence": 0.96,
+      "answerKeyLogicMayBeWrong": false,
+      "issues": [],
+      "suggestedFix": null,
+      "reviewerReasoningSummary": "Перевод корректно отражает инструкцию по удержанию рулевого колеса при разрыве передней шины. Нет искажений значений или логики ответа.",
+      "reviewedAt": "2026-05-02T06:55:13.935Z",
+      "reviewer": "ai-localization-quality-review"
+    },
+    {
+      "qid": "q0084",
+      "number": 84,
+      "qualityStatus": "approved",
+      "confidence": 0.95,
+      "answerKeyLogicMayBeWrong": false,
+      "issues": [],
+      "suggestedFix": null,
+      "reviewerReasoningSummary": "Перевод правильно передаёт отрицательное утверждение о вреде курения при вождении; формулировка естественна и соответствует оригинальному ключу ответа.",
+      "reviewedAt": "2026-05-02T06:55:13.935Z",
+      "reviewer": "ai-localization-quality-review"
+    },
+    {
+      "qid": "q0102",
+      "number": 102,
+      "qualityStatus": "approved",
+      "confidence": 0.96,
+      "answerKeyLogicMayBeWrong": false,
+      "issues": [],
+      "suggestedFix": null,
+      "reviewerReasoningSummary": "Перевод точно передаёт смысл исходного утверждения (экстренное торможение на льду/снегу вызывает занос; следует использовать торможение двигателем). Нет вариантов; логика ответа (Right) сохраняется.",
+      "reviewedAt": "2026-05-02T06:55:13.935Z",
+      "reviewer": "ai-localization-quality-review"
+    },
+    {
+      "qid": "q0103",
+      "number": 103,
+      "qualityStatus": "approved",
+      "confidence": 0.95,
+      "answerKeyLogicMayBeWrong": false,
+      "issues": [],
+      "suggestedFix": null,
+      "reviewerReasoningSummary": "Прямой и корректный перевод утверждения о движении по правой обочине автомагистрали. Смысл сохранён; ответ (Wrong) остаётся корректным.",
+      "reviewedAt": "2026-05-02T06:55:13.935Z",
+      "reviewer": "ai-localization-quality-review"
+    },
+    {
+      "qid": "q0127",
+      "number": 127,
+      "qualityStatus": "approved",
+      "confidence": 0.96,
+      "answerKeyLogicMayBeWrong": false,
+      "issues": [],
+      "suggestedFix": null,
+      "reviewerReasoningSummary": "Все варианты соответствуют английским опциям по смыслу и порядку; ключ правильного ответа (C) сохранён. Формулировка на русском естественна и экзаменационно уместна.",
+      "reviewedAt": "2026-05-02T06:55:13.935Z",
+      "reviewer": "ai-localization-quality-review"
+    },
+    {
+      "qid": "q0133",
+      "number": 133,
+      "qualityStatus": "approved",
+      "confidence": 0.95,
+      "answerKeyLogicMayBeWrong": false,
+      "issues": [],
+      "suggestedFix": null,
+      "reviewerReasoningSummary": "Варианты переведены корректно и соответствуют английским (D — габаритные огни или ближний свет). Термин «двухсторонний тоннель» передаёт смысл «tunnel with two-way traffic» и приемлем в контексте.",
+      "reviewedAt": "2026-05-02T06:55:13.935Z",
+      "reviewer": "ai-localization-quality-review"
+    },
+    {
+      "qid": "q0135",
+      "number": 135,
+      "qualityStatus": "approved",
+      "confidence": 0.96,
+      "answerKeyLogicMayBeWrong": false,
+      "issues": [],
+      "suggestedFix": null,
+      "reviewerReasoningSummary": "Перевод сохраняет все варианты и порядок, ключ ответа D сохранён. Русский текст естественен и корректен с точки зрения дорожной терминологии.",
+      "reviewedAt": "2026-05-02T06:55:13.935Z",
+      "reviewer": "ai-localization-quality-review"
+    },
+    {
+      "qid": "q0136",
+      "number": 136,
+      "qualityStatus": "approved",
+      "confidence": 0.96,
+      "answerKeyLogicMayBeWrong": false,
+      "issues": [],
+      "suggestedFix": null,
+      "reviewerReasoningSummary": "Перевод точно передаёт смысл исходного вопроса и вариантов; соответствие ключа ответа (B) сохранено. Небольшая стилистическая шероховатость («следующая сзади машина»), но смысл ясен и приемлем для экзамена.",
+      "reviewedAt": "2026-05-02T06:55:13.935Z",
+      "reviewer": "ai-localization-quality-review"
+    },
+    {
+      "qid": "q0156",
+      "number": 156,
+      "qualityStatus": "approved",
+      "confidence": 0.96,
+      "answerKeyLogicMayBeWrong": false,
+      "issues": [],
+      "suggestedFix": null,
+      "reviewerReasoningSummary": "Перевод корректен и естественен; все варианты соответствуют оригиналу, логика правильного ответа (D) сохранена.",
+      "reviewedAt": "2026-05-02T06:55:13.935Z",
+      "reviewer": "ai-localization-quality-review"
+    },
+    {
+      "qid": "q0158",
+      "number": 158,
+      "qualityStatus": "approved",
+      "confidence": 0.96,
+      "answerKeyLogicMayBeWrong": false,
+      "issues": [],
+      "suggestedFix": null,
+      "reviewerReasoningSummary": "Перевод соответствует английскому тексту, терминология и порядок вариантов сохранены, ответ A корректно отражён.",
+      "reviewedAt": "2026-05-02T06:55:13.935Z",
+      "reviewer": "ai-localization-quality-review"
+    },
+    {
+      "qid": "q0168",
+      "number": 168,
+      "qualityStatus": "approved",
+      "confidence": 0.96,
+      "answerKeyLogicMayBeWrong": false,
+      "issues": [],
+      "suggestedFix": null,
+      "reviewerReasoningSummary": "Перевод точно передаёт смысл вариантов; ключ ответа (D) сохранён. Формулировка техническая и уместна.",
+      "reviewedAt": "2026-05-02T06:55:13.935Z",
+      "reviewer": "ai-localization-quality-review"
+    },
+    {
+      "qid": "q0186",
+      "number": 186,
+      "qualityStatus": "approved",
+      "confidence": 0.96,
+      "answerKeyLogicMayBeWrong": false,
+      "issues": [],
+      "suggestedFix": null,
+      "reviewerReasoningSummary": "Перевод верный и естественный, все варианты соответствуют исходнику, правильный ответ (C) сохранён.",
+      "reviewedAt": "2026-05-02T06:55:13.935Z",
+      "reviewer": "ai-localization-quality-review"
+    }
+  ]
+}

@@ -102,6 +102,28 @@ Notes:
 - Running `prepare-new-question-promotion-preview` writes `qbank-tools/generated/staging/new-question-promotion-preview.<lang>.<batch>.json` with preview-only `qx....` ids and appended master numbers.
 - Running `build-localization-coverage-report` writes `qbank-tools/generated/reports/localization-coverage-matrix.<lang>.<batch>.json`.
 
+Missing-qid backfill workflow:
+
+Use this when a shipped language is valid but incomplete. The English master `questions.json` remains the source of truth; missing target-language qids are generated from that master, reviewed, validated, then merged only after explicit approval.
+
+```bash
+npm run build-missing-localization-backfill -- --lang ru
+npm run generate-missing-localization-draft -- --lang ru --limit 20
+npm run review-generated-localization-quality -- --lang ru --input qbank-tools/generated/staging/backfill.ru.generated-draft.json
+npm run validate-missing-localization-backfill -- --lang ru
+npm run apply-reviewed-missing-localization-backfill -- --lang ru --input qbank-tools/generated/staging/backfill.ru.reviewed.json
+npm run apply-reviewed-missing-localization-backfill -- --lang ru --input qbank-tools/generated/staging/backfill.ru.reviewed.json --apply true
+```
+
+Notes:
+
+- `build-missing-localization-backfill` writes `qbank-tools/generated/staging/backfill.<lang>.missing-qids.json` with English prompt/options, correct answer metadata, tags, and image metadata for each qid missing from `translations.<lang>.json`.
+- `generate-missing-localization-draft` writes `qbank-tools/generated/staging/backfill.<lang>.generated-draft.json`. It currently creates review-ready scaffolding with `generationStatus: "not_generated"` unless safe generation is explicitly added later; it must not invent translations.
+- `review-generated-localization-quality` writes `qbank-tools/generated/reports/backfill-quality-review.<lang>.json` and `.md`, plus `qbank-tools/generated/staging/backfill.<lang>.needs-fix.json` and `qbank-tools/generated/staging/backfill.<lang>.reviewed.json`. It reviews generated target-language text against English master meaning, option mapping, answer logic, numeric/legal/traffic terminology, and image context. If no OpenAI key is available or confidence is below `0.92`, it fails closed into `needs_fix`; answer-key risk is always `reject`.
+- `validate-missing-localization-backfill` writes `qbank-tools/generated/reports/backfill-validation.<lang>.json` and `.md`, checking qid existence, production-missing status, duplicate qids, option coverage, answer mapping, and human-review requirements.
+- `apply-reviewed-missing-localization-backfill` is dry-run by default and writes `qbank-tools/generated/reports/backfill-production-merge.<lang>.json` and `.md`. It refuses unapproved items and refuses to overwrite existing production qids unless explicitly allowed.
+- Reviewed backfill files should keep `reviewStatus: "approved"` only after human review; do not merge generated draft output directly.
+
 Completed-batch cleanup:
 
 ```bash

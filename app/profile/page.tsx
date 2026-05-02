@@ -26,7 +26,7 @@ import type { EntitlementSource } from "@/lib/entitlements/types";
 import type { Locale } from '@/messages';
 import { useT } from '@/lib/i18n/useT';
 import { LANGUAGE_OPTIONS, getCurrentLanguageOption, isEnabledLanguageOption } from '@/lib/i18n/languageOptions';
-import { getTranslatedOnlyLocaleNotice, loadProductionTranslationCounts } from '@/lib/qbank/localeSupport';
+import { getLanguageQuestionCountNotice, loadLanguageQuestionCounts } from '@/lib/qbank/localeSupport';
 
 
 
@@ -46,7 +46,7 @@ function Inner() {
   const [saving, setSaving] = useState(false);
   const [saveMsg, setSaveMsg] = useState<string | null>(null);
   const [languageMenuOpen, setLanguageMenuOpen] = useState(false);
-  const [translationCounts, setTranslationCounts] = useState<Record<string, number>>({});
+  const [languageQuestionCounts, setLanguageQuestionCounts] = useState<Record<string, number>>({});
   const languageMenuRef = useRef<HTMLDivElement | null>(null);
   const languageMenuId = useId();
 
@@ -57,8 +57,8 @@ function Inner() {
   useEffect(() => {
     let alive = true;
 
-    loadProductionTranslationCounts().then((counts) => {
-      if (alive) setTranslationCounts(counts);
+    loadLanguageQuestionCounts().then((counts) => {
+      if (alive) setLanguageQuestionCounts(counts);
     });
 
     return () => {
@@ -616,9 +616,9 @@ const handleRestorePurchases = async (e: React.SyntheticEvent) => {
               {LANGUAGE_OPTIONS.map((option) => {
                 const isSelected = option.code === locale;
                 const enabled = isEnabledLanguageOption(option);
-                const translatedQuestionNotice = getTranslatedOnlyLocaleNotice(
+                const languageQuestionNotice = getLanguageQuestionCountNotice(
                   option.code,
-                  translationCounts[option.code] ?? 0,
+                  languageQuestionCounts[option.code] ?? 0,
                 );
 
                 return (
@@ -639,9 +639,9 @@ const handleRestorePurchases = async (e: React.SyntheticEvent) => {
                     }}
                   >
                     <span className={styles.languageOptionLabel}>{option.label}</span>
-                    {translatedQuestionNotice ? (
+                    {languageQuestionNotice ? (
                       <span className={styles.languageOptionMeta}>
-                        {translatedQuestionNotice}
+                        {languageQuestionNotice}
                       </span>
                     ) : !enabled ? (
                       <span className={`${styles.languageOptionMeta} ${styles.languageOptionStatus}`}>

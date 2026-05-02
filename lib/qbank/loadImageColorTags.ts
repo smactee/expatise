@@ -4,6 +4,11 @@ export type QuestionImageColorEntry = {
   assetSrcs?: string[];
   colorTags?: string[];
   objectTags?: string[];
+  pinyinText?: string[];
+  chineseText?: string[];
+  hanziText?: string[];
+  signText?: string[];
+  ocrText?: string[];
   dominantByAsset?: Array<{
     assetSrc: string;
     colors: Array<{

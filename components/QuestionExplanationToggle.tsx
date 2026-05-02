@@ -9,6 +9,10 @@ type QuestionExplanationToggleProps = {
   label: string;
 };
 
+function renderTrustedExplanationHtml(explanation: string) {
+  return { __html: explanation };
+}
+
 export default function QuestionExplanationToggle({
   explanation,
   label,
@@ -42,7 +46,10 @@ export default function QuestionExplanationToggle({
         <span className={styles.label}>{label}</span>
       </button>
 
-      {expanded ? <div className={styles.body}>{text}</div> : null}
+      {expanded ? (
+        // qbank explanations are bundled, trusted app content. Do not use this for user-generated text.
+        <div className={styles.body} dangerouslySetInnerHTML={renderTrustedExplanationHtml(text)} />
+      ) : null}
     </div>
   );
 }

@@ -22,7 +22,6 @@ import { attemptStore } from "@/lib/attempts/store";
 import type { Attempt } from "@/lib/attempts/attemptStore";
 import { useUserKey } from "@/components/useUserKey.client";
 import { isAnswerCorrect } from '@/lib/grading/isAnswerCorrect';
-import { DEFAULT_DATASET_ID } from '@/lib/qbank/datasets';
 import PremiumFeatureModal from '@/components/PremiumFeatureModal';
 import { useAuthStatus } from '@/components/useAuthStatus';
 import { useEntitlements } from '@/components/EntitlementsProvider.client';
@@ -52,6 +51,10 @@ function normalizeSearchText(value: string | null | undefined): string {
     .trim();
 }
 
+function isEmptySearchQuery(query: string | null | undefined): boolean {
+  return String(query ?? "").trim().length === 0;
+}
+
 function tokenizeSearchText(text: string | null | undefined): string[] {
   return normalizeSearchText(text)
     .split(" ")
@@ -79,8 +82,65 @@ function matchesSearchQuery(searchableText: string, queryTokens: string[]): bool
   return queryTokens.every((token) => matchesSearchToken(token, searchableText));
 }
 
-function hasImageAsset(item: Question): boolean {
-  return item.assets.some((asset) => asset?.kind === "image" && typeof asset?.src === "string" && asset.src.trim().length > 0);
+const IMAGE_FILTER_TOKEN_RE = /\bimage\b/i;
+const IMAGE_FILTER_TOKEN_GLOBAL_RE = /\bimage\b/gi;
+const UNCLASSIFIED_FILTER_TOKEN_RE = /\bunclassified\b/i;
+const UNCLASSIFIED_FILTER_TOKEN_GLOBAL_RE = /\bunclassified\b/gi;
+
+function queryWantsImageOnly(query: string): boolean {
+  return IMAGE_FILTER_TOKEN_RE.test(query);
+}
+
+function stripImageFilterToken(query: string): string {
+  return query.replace(IMAGE_FILTER_TOKEN_GLOBAL_RE, " ").replace(/\s+/g, " ").trim();
+}
+
+function queryWantsUnclassifiedOnly(query: string): boolean {
+  return UNCLASSIFIED_FILTER_TOKEN_RE.test(query);
+}
+
+function stripUnclassifiedFilterToken(query: string): string {
+  return query.replace(UNCLASSIFIED_FILTER_TOKEN_GLOBAL_RE, " ").replace(/\s+/g, " ").trim();
+}
+
+type QuestionSearchIndex = {
+  normalizedText: string;
+  rawFields: string[];
+};
+
+function rawSearchField(value: unknown): string {
+  return String(value ?? "").trim().toLowerCase();
+}
+
+function matchesRawSearchQuery(searchIndex: QuestionSearchIndex | undefined, rawQuery: string): boolean {
+  const needle = rawSearchField(rawQuery);
+  if (!needle) return true;
+
+  return searchIndex?.rawFields.some((field) => field.includes(needle)) ?? false;
+}
+
+function hasQuestionImage(item: Question): boolean {
+  return Array.isArray(item.assets) && item.assets.some((asset) =>
+    asset?.kind === "image" && typeof asset?.src === "string" && asset.src.trim().length > 0
+  );
+}
+
+function isConcreteClassificationTag(tag: string, type: "topic" | "subtopic"): boolean {
+  const normalized = String(tag ?? "").trim().toLowerCase();
+  if (!normalized || normalized === "unclassified" || normalized === "uncategorized" || normalized === "unknown") {
+    return false;
+  }
+
+  return type === "topic"
+    ? !normalized.includes(":")
+    : normalized.includes(":") && !normalized.endsWith(":all");
+}
+
+function isUnclassifiedQuestion(derivedTags: string[]): boolean {
+  const hasTopic = derivedTags.some((tag) => isConcreteClassificationTag(tag, "topic"));
+  const hasSubtopic = derivedTags.some((tag) => isConcreteClassificationTag(tag, "subtopic"));
+
+  return !(hasTopic && hasSubtopic);
 }
 
 function parseExplicitFilterTokens(value: string | null | undefined): string[] | null {
@@ -101,16 +161,42 @@ function matchesExplicitFilterToken(token: string, searchableText: string, quest
   return matchesSearchToken(token, searchableText);
 }
 
+function toSearchTermList(value: unknown): string[] {
+  const values = Array.isArray(value)
+    ? value
+    : value === null || value === undefined
+    ? []
+    : [value];
+
+  return values
+    .map((item) => String(item ?? "").trim())
+    .filter(Boolean);
+}
+
+function searchableImageMetadataTerms(colorEntry: QuestionImageColorEntry | undefined): string[] {
+  if (!colorEntry) return [];
+
+  return [
+    colorEntry.colorTags,
+    colorEntry.objectTags,
+    colorEntry.pinyinText,
+    colorEntry.chineseText,
+    colorEntry.hanziText,
+    colorEntry.signText,
+    colorEntry.ocrText,
+  ]
+    .flatMap(toSearchTermList);
+}
+
 function buildQuestionSearchIndex(
   item: Question,
   derivedTags: string[],
   colorEntry: QuestionImageColorEntry | undefined,
   t: ReturnType<typeof useT>["t"],
-): string {
+): QuestionSearchIndex {
   const tagLabels = derivedTags.map((tag) => labelForTag(tag, t));
   const colorTags = colorEntry?.colorTags ?? [];
-  const objectTags = colorEntry?.objectTags ?? [];
-  const hiddenTags = hasImageAsset(item) ? ["image"] : [];
+  const imageMetadataTerms = searchableImageMetadataTerms(colorEntry);
   const roadSignHeuristics: string[] = [];
   const isRoadSignQuestion =
     derivedTags.includes("traffic-signals:road-signs") ||
@@ -143,13 +229,16 @@ function buildQuestionSearchIndex(
     ...item.autoTags,
     ...derivedTags,
     ...tagLabels,
-    ...colorTags,
-    ...objectTags,
-    ...hiddenTags,
+    ...imageMetadataTerms,
     ...roadSignHeuristics,
   ];
 
-  return normalizeSearchText(parts.filter(Boolean).join(" "));
+  const rawFields = parts.map(rawSearchField).filter(Boolean);
+
+  return {
+    normalizedText: normalizeSearchText(parts.filter(Boolean).join(" ")),
+    rawFields,
+  };
 }
 
 
@@ -172,7 +261,6 @@ const userKey = useUserKey();
   // ✅ 3) now it's safe to use userKey
   const { idSet: bookmarkedSet, isBookmarked, toggle, removeMany } = useBookmarks(datasetId, userKey);
   const {
-  ids: clearedMistakeIds,
   idSet: clearedMistakesSet,
   clearMany: clearMistakesMany,
 } = useClearedMistakes(datasetId, userKey);
@@ -180,7 +268,7 @@ const userKey = useUserKey();
   
   const [q, setQ] = useState<Question[]>([]);
   const [imageColorTagsById, setImageColorTagsById] = useState<Record<string, QuestionImageColorEntry>>({});
-  const [loading, setLoading] = useState(true);
+  const [, setLoading] = useState(true);
   const [query, setQuery] = useState('');
   const [activeTopic, setActiveTopic] = useState<string | null>(null);
   const [activeSub, setActiveSub] = useState<string | null>(null);
@@ -248,12 +336,7 @@ useEffect(() => {
 const unclassified = useMemo(() => {
   return q.filter((item) => {
     const tags = derivedById.get(item.id) ?? [];
-
-    const hasTopic = tags.some((t) => !t.includes(":")); // e.g. "road-safety"
-    const hasSub = tags.some((t) => t.includes(":") && !t.endsWith(":all")); // e.g. "road-safety:accidents"
-
-    // ✅ require BOTH topic + subtopic to be considered "classified"
-    return !(hasTopic && hasSub);
+    return isUnclassifiedQuestion(tags);
   });
 }, [q, derivedById]);
 
@@ -272,7 +355,7 @@ useEffect(() => {
 }, [unclassified]);
 
 const searchIndexById = useMemo(() => {
-  const index = new Map<string, string>();
+  const index = new Map<string, QuestionSearchIndex>();
 
   for (const item of q) {
     const derivedTags = derivedById.get(item.id) ?? [];
@@ -291,34 +374,47 @@ useEffect(() => {
 
 
   const filtered = useMemo(() => {
-  const explicitFilterTokens = parseExplicitFilterTokens(query);
-  const qNorm = normalizeSearchText(query);
-  const queryTerms = explicitFilterTokens === null && qNorm ? qNorm.split(" ").filter(Boolean) : [];
+    const rawQuery = query.trim();
+    const wantsImageOnly = queryWantsImageOnly(rawQuery);
+    const wantsUnclassifiedOnly = queryWantsUnclassifiedOnly(rawQuery);
+    const queryWithoutImage = wantsImageOnly ? stripImageFilterToken(rawQuery) : rawQuery;
+    const textQuery = wantsUnclassifiedOnly ? stripUnclassifiedFilterToken(queryWithoutImage) : queryWithoutImage;
+    const isSearching = !isEmptySearchQuery(textQuery);
+    const explicitFilterTokens = parseExplicitFilterTokens(textQuery);
+    const qNorm = normalizeSearchText(textQuery);
+    const queryTerms = explicitFilterTokens === null && qNorm ? qNorm.split(" ").filter(Boolean) : [];
 
-  return q.filter((item) => {
-    const derivedTags = new Set(derivedById.get(item.id) ?? []);
-    const searchableText = searchIndexById.get(item.id) ?? "";
+    return q.filter((item) => {
+      const derivedTagList = derivedById.get(item.id) ?? [];
+      const derivedTags = new Set(derivedTagList);
+      const matchesTopic = !activeTopic || derivedTags.has(activeTopic);
+      const matchesSub = !activeTopic || !activeSub || derivedTags.has(activeSub);
+      if (!matchesTopic || !matchesSub) return false;
 
-        const qDigits = query.replace(/[^0-9]/g, ""); // allows "103", "#103", "103."
-   const matchesNumber = qDigits.length > 0 && Number(qDigits) === item.number;
+      if (wantsImageOnly && !hasQuestionImage(item)) return false;
+      if (wantsUnclassifiedOnly && !isUnclassifiedQuestion(derivedTagList)) return false;
+
+      const searchIndex = searchIndexById.get(item.id);
+      const searchableText = searchIndex?.normalizedText ?? "";
+
+      const qDigits = textQuery.replace(/[^0-9]/g, ""); // allows "103", "#103", "103."
+      const matchesNumber = qDigits.length > 0 && Number(qDigits) === item.number;
 
 
-    const matchesText =
-      explicitFilterTokens !== null
-        ? explicitFilterTokens.length === 0 ||
-          explicitFilterTokens.every((token) => matchesExplicitFilterToken(token, searchableText, item.number))
-        : queryTerms.length === 0 ||
-          matchesNumber ||
-          matchesSearchQuery(searchableText, queryTerms);
+      const matchesText =
+        !isSearching
+          ? true
+          : qNorm.length === 0
+          ? matchesRawSearchQuery(searchIndex, textQuery)
+          : explicitFilterTokens !== null
+          ? explicitFilterTokens.length === 0 ||
+            explicitFilterTokens.every((token) => matchesExplicitFilterToken(token, searchableText, item.number))
+          : matchesNumber ||
+            matchesSearchQuery(searchableText, queryTerms);
 
-
-    // Topic/subtopic filtering
-    const matchesTopic = !activeTopic || derivedTags.has(activeTopic);
-    const matchesSub = !activeTopic || !activeSub || derivedTags.has(activeSub);
-
-    return matchesText && matchesTopic && matchesSub;
-  });
-}, [q, query, activeTopic, activeSub, derivedById, searchIndexById]);
+      return matchesText;
+    });
+  }, [q, query, activeTopic, activeSub, derivedById, searchIndexById]);
 
 
 type MistakeMeta = { wrongCount: number; lastWrongAt: number };
