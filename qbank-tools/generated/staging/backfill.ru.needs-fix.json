@@ -1,12 +1,79 @@
 {
   "meta": {
-    "generatedAt": "2026-05-02T06:55:13.935Z",
+    "generatedAt": "2026-05-02T07:54:01.740Z",
     "source": "english_master_backfill_quality_review",
     "lang": "ru",
     "dataset": "2023-test1",
     "inputPath": "qbank-tools/generated/staging/backfill.ru.generated-draft.json",
     "productionModified": false,
-    "count": 0
+    "count": 1
   },
-  "items": []
+  "items": [
+    {
+      "qid": "q0264",
+      "number": 264,
+      "source": "english_master_backfill",
+      "lang": "ru",
+      "type": "row",
+      "topic": "accidents",
+      "subtopic": "traffic",
+      "tags": {
+        "auto": [
+          "#row",
+          "#traffic",
+          "#pic"
+        ],
+        "user": [],
+        "suggested": [
+          {
+            "tag": "#accidents",
+            "score": 1
+          }
+        ]
+      },
+      "image": null,
+      "imageAssets": [],
+      "imageTags": null,
+      "objectTags": [],
+      "englishPrompt": "Causing a traffic accident due to violating the law and regulations on road traffic safety is the rule-breaking act.",
+      "englishOptions": [],
+      "englishExplanation": "",
+      "correctOptionKey": "Wrong",
+      "generatedTranslation": {
+        "prompt": "Причинение дорожно-транспортного происшествия вследствие нарушения законов и правил в области безопасности дорожного движения является правонарушением.",
+        "options": {},
+        "explanation": ""
+      },
+      "generationStatus": "generated",
+      "generationProvider": "openai",
+      "generationModel": "gpt-5-mini",
+      "needsHumanReview": true,
+      "reviewStatus": "rejected",
+      "warnings": [],
+      "qualityReview": {
+        "qid": "q0264",
+        "number": 264,
+        "qualityStatus": "reject",
+        "confidence": 0.95,
+        "answerKeyLogicMayBeWrong": true,
+        "issues": [
+          {
+            "severity": "error",
+            "code": "answer-key-logic",
+            "message": "Содержательный перевод утверждения верен, но в исходном «correctOptionKey» указан 'Wrong', что, похоже, противоречит смыслу предложения (утверждение является истинным). Требуется сверка исходного ключа ответа."
+          }
+        ],
+        "suggestedFix": {
+          "prompt": "Проверьте и, при необходимости, исправьте ключ правильного ответа для этого пункта: предложение утверждает, что причинение ДТП вследствие нарушения правил дорожного движения является правонарушением. Если это утверждение верно, замените correctOptionKey на 'Right' в исходном английском мастере.",
+          "options": {
+            "optionId": ""
+          },
+          "explanation": "Русский перевод корректно передаёт смысл английского предложения. Однако логика ключа ответа (Wrong) выглядит неверной в отношении утверждения, которое по смыслу является истинным. Рекомендовано сверить оригинал/источники и при подтверждении поменять ключ на 'Right'."
+        },
+        "reviewerReasoningSummary": "Перевод точен и естественен, но обнаружено несоответствие между смыслом утверждения (является правонарушением) и заданным в исходнике правильным ответом ('Wrong'). Это потенциальная логическая ошибка ключа ответа, поэтому отклоняю и рекомендую проверить/исправить ключ.",
+        "reviewedAt": "2026-05-02T07:54:01.740Z",
+        "reviewer": "ai-localization-quality-review"
+      }
+    }
+  ]
 }

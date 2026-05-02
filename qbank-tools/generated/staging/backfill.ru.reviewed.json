@@ -1,6 +1,6 @@
 {
   "meta": {
-    "generatedAt": "2026-05-02T06:55:13.935Z",
+    "generatedAt": "2026-05-02T07:54:01.740Z",
     "source": "english_master_backfill_quality_review",
     "lang": "ru",
     "dataset": "2023-test1",
@@ -8,34 +8,45 @@
     "productionModified": false,
     "requiresHumanOwnerReportReview": true,
     "note": "Only AI-approved items are included. Review the quality report before applying to production.",
-    "count": 20
+    "count": 49
   },
   "items": [
     {
-      "qid": "q0004",
-      "number": 4,
+      "qid": "q0206",
+      "number": 206,
       "source": "english_master_backfill",
       "lang": "ru",
       "type": "row",
-      "topic": null,
-      "subtopic": null,
+      "topic": "vehicle-registration",
+      "subtopic": "license",
       "tags": {
         "auto": [
-          "#row"
+          "#row",
+          "#traffic",
+          "#pic"
         ],
         "user": [],
-        "suggested": []
+        "suggested": [
+          {
+            "tag": "#vehicle-registration",
+            "score": 3
+          },
+          {
+            "tag": "#license",
+            "score": 1
+          }
+        ]
       },
       "image": null,
       "imageAssets": [],
       "imageTags": null,
       "objectTags": [],
-      "englishPrompt": "When a vehicle changes lane, the driver should turn on the turn signal in advance,observe traffic conditions, maintain a safe distance and move into the new lane.",
+      "englishPrompt": "If the license plate of a vehicle has been destroyed, the owner of the vehicle should apply for reissuing or changing to the vehicle management station at the registration place.",
       "englishOptions": [],
       "englishExplanation": "",
       "correctOptionKey": "Right",
       "generatedTranslation": {
-        "prompt": "При перестроении водитель должен заранее включить указатель поворота, наблюдать за дорожной обстановкой, соблюдать безопасную дистанцию и перестроиться в другую полосу.",
+        "prompt": "Если номерной знак транспортного средства уничтожен, владелец должен обратиться в подразделение по учёту (регистрации) транспортных средств по месту регистрации для переоформления или замены.",
         "options": {},
         "explanation": ""
       },
@@ -46,31 +57,949 @@
       "reviewStatus": "approved",
       "warnings": [],
       "qualityReview": {
-        "qid": "q0004",
-        "number": 4,
+        "qid": "q0206",
+        "number": 206,
         "qualityStatus": "approved",
         "confidence": 0.95,
         "answerKeyLogicMayBeWrong": false,
         "issues": [],
         "suggestedFix": null,
-        "reviewerReasoningSummary": "Перевод точно и полно передаёт смысл исходного утверждения, терминология корректна, логика ответа (Right) сохранена.",
-        "reviewedAt": "2026-05-02T06:55:13.932Z",
+        "reviewerReasoningSummary": "Перевод точно передаёт смысл оригинала; терминология («подразделение по учёту (регистрации) транспортных средств», «переоформление или замена») естественна и экзаменационно уместна. Нет несоответствий в числах/логике/ключах.",
+        "reviewedAt": "2026-05-02T07:54:01.735Z",
         "reviewer": "ai-localization-quality-review"
       },
       "reviewedBy": "ai-quality-review",
-      "reviewedAt": "2026-05-02T06:55:13.932Z"
+      "reviewedAt": "2026-05-02T07:54:01.735Z"
     },
     {
-      "qid": "q0021",
-      "number": 21,
+      "qid": "q0211",
+      "number": 211,
+      "source": "english_master_backfill",
+      "lang": "ru",
+      "type": "row",
+      "topic": "license",
+      "subtopic": "vehicle-registration",
+      "tags": {
+        "auto": [
+          "#row",
+          "#traffic",
+          "#pic"
+        ],
+        "user": [],
+        "suggested": [
+          {
+            "tag": "#license",
+            "score": 1
+          },
+          {
+            "tag": "#vehicle-registration",
+            "score": 1
+          },
+          {
+            "tag": "#violations-penalties",
+            "score": 1
+          },
+          {
+            "tag": "#police-hand-signals",
+            "score": 1
+          }
+        ]
+      },
+      "image": null,
+      "imageAssets": [],
+      "imageTags": null,
+      "objectTags": [],
+      "englishPrompt": "Traffic police can detain a vehicle according to law if it runs on the road failing to place a label of inspection.",
+      "englishOptions": [],
+      "englishExplanation": "",
+      "correctOptionKey": "Right",
+      "generatedTranslation": {
+        "prompt": "Дорожная полиция вправе задержать транспортное средство в соответствии с законом, если оно эксплуатируется на дороге без размещённой наклейки техосмотра.",
+        "options": {},
+        "explanation": ""
+      },
+      "generationStatus": "generated",
+      "generationProvider": "openai",
+      "generationModel": "gpt-5-mini",
+      "needsHumanReview": true,
+      "reviewStatus": "approved",
+      "warnings": [],
+      "qualityReview": {
+        "qid": "q0211",
+        "number": 211,
+        "qualityStatus": "approved",
+        "confidence": 0.95,
+        "answerKeyLogicMayBeWrong": false,
+        "issues": [],
+        "suggestedFix": null,
+        "reviewerReasoningSummary": "Перевод корректно сохраняет значение: право дорожной полиции задерживать ТС без наклейки техосмотра. Формулировка естественная и соответствует терминологии ПДД.",
+        "reviewedAt": "2026-05-02T07:54:01.740Z",
+        "reviewer": "ai-localization-quality-review"
+      },
+      "reviewedBy": "ai-quality-review",
+      "reviewedAt": "2026-05-02T07:54:01.740Z"
+    },
+    {
+      "qid": "q0213",
+      "number": 213,
+      "source": "english_master_backfill",
+      "lang": "ru",
+      "type": "row",
+      "topic": "license",
+      "subtopic": "vehicle-registration",
+      "tags": {
+        "auto": [
+          "#row",
+          "#traffic",
+          "#pic"
+        ],
+        "user": [],
+        "suggested": [
+          {
+            "tag": "#license",
+            "score": 1
+          },
+          {
+            "tag": "#vehicle-registration",
+            "score": 1
+          },
+          {
+            "tag": "#violations-penalties",
+            "score": 1
+          },
+          {
+            "tag": "#police-hand-signals",
+            "score": 1
+          }
+        ]
+      },
+      "image": null,
+      "imageAssets": [],
+      "imageTags": null,
+      "objectTags": [],
+      "englishPrompt": "A traffic police has the right to detain a vehicle if the driver uses someone else's vehicle inspection sticker.",
+      "englishOptions": [],
+      "englishExplanation": "",
+      "correctOptionKey": "Right",
+      "generatedTranslation": {
+        "prompt": "Дорожная полиция имеет право задержать транспортное средство, если водитель использует чужую наклейку техосмотра.",
+        "options": {},
+        "explanation": ""
+      },
+      "generationStatus": "generated",
+      "generationProvider": "openai",
+      "generationModel": "gpt-5-mini",
+      "needsHumanReview": true,
+      "reviewStatus": "approved",
+      "warnings": [],
+      "qualityReview": {
+        "qid": "q0213",
+        "number": 213,
+        "qualityStatus": "approved",
+        "confidence": 0.95,
+        "answerKeyLogicMayBeWrong": false,
+        "issues": [],
+        "suggestedFix": null,
+        "reviewerReasoningSummary": "Перевод передаёт смысл оригинала (задержание при использовании чужой наклейки техосмотра). Лексика и структура соответствуют экзаменационному стилю.",
+        "reviewedAt": "2026-05-02T07:54:01.740Z",
+        "reviewer": "ai-localization-quality-review"
+      },
+      "reviewedBy": "ai-quality-review",
+      "reviewedAt": "2026-05-02T07:54:01.740Z"
+    },
+    {
+      "qid": "q0247",
+      "number": 247,
+      "source": "english_master_backfill",
+      "lang": "ru",
+      "type": "row",
+      "topic": "police-hand-signals",
+      "subtopic": "traffic",
+      "tags": {
+        "auto": [
+          "#row",
+          "#traffic",
+          "#pic"
+        ],
+        "user": [],
+        "suggested": [
+          {
+            "tag": "#police-hand-signals",
+            "score": 1
+          }
+        ]
+      },
+      "image": null,
+      "imageAssets": [],
+      "imageTags": null,
+      "objectTags": [],
+      "englishPrompt": "When causing a road accident involving human casualties, the driver should immediately rescue the injured people and report to the traffic police as soon as possible.",
+      "englishOptions": [],
+      "englishExplanation": "",
+      "correctOptionKey": "Right",
+      "generatedTranslation": {
+        "prompt": "При причинении дорожно-транспортного происшествия с пострадавшими водитель должен немедленно оказать помощь пострадавшим и как можно скорее сообщить в дорожную полицию.",
+        "options": {},
+        "explanation": ""
+      },
+      "generationStatus": "generated",
+      "generationProvider": "openai",
+      "generationModel": "gpt-5-mini",
+      "needsHumanReview": true,
+      "reviewStatus": "approved",
+      "warnings": [],
+      "qualityReview": {
+        "qid": "q0247",
+        "number": 247,
+        "qualityStatus": "approved",
+        "confidence": 0.95,
+        "answerKeyLogicMayBeWrong": false,
+        "issues": [],
+        "suggestedFix": null,
+        "reviewerReasoningSummary": "Перевод точно соответствует оригиналу: обязателен немедленный оказание помощи пострадавшим и как можно более скорое сообщение в дорожную полицию. Формулировка естественна.",
+        "reviewedAt": "2026-05-02T07:54:01.740Z",
+        "reviewer": "ai-localization-quality-review"
+      },
+      "reviewedBy": "ai-quality-review",
+      "reviewedAt": "2026-05-02T07:54:01.740Z"
+    },
+    {
+      "qid": "q0265",
+      "number": 265,
+      "source": "english_master_backfill",
+      "lang": "ru",
+      "type": "row",
+      "topic": "license",
+      "subtopic": "traffic",
+      "tags": {
+        "auto": [
+          "#row",
+          "#traffic",
+          "#pic"
+        ],
+        "user": [],
+        "suggested": [
+          {
+            "tag": "#license",
+            "score": 1
+          }
+        ]
+      },
+      "image": null,
+      "imageAssets": [],
+      "imageTags": null,
+      "objectTags": [],
+      "englishPrompt": "A person who has altered or forged a driver's license is criminally liable.",
+      "englishOptions": [],
+      "englishExplanation": "",
+      "correctOptionKey": "Right",
+      "generatedTranslation": {
+        "prompt": "Лицо, изменившее или подделавшее водительское удостоверение, несёт уголовную ответственность.",
+        "options": {},
+        "explanation": ""
+      },
+      "generationStatus": "generated",
+      "generationProvider": "openai",
+      "generationModel": "gpt-5-mini",
+      "needsHumanReview": true,
+      "reviewStatus": "approved",
+      "warnings": [],
+      "qualityReview": {
+        "qid": "q0265",
+        "number": 265,
+        "qualityStatus": "approved",
+        "confidence": 0.96,
+        "answerKeyLogicMayBeWrong": false,
+        "issues": [],
+        "suggestedFix": null,
+        "reviewerReasoningSummary": "Перевод точно отражает исходное утверждение о уголовной ответственности за подделку/изменение водительского удостоверения; формулировка естественна и уместна для экзамена.",
+        "reviewedAt": "2026-05-02T07:54:01.740Z",
+        "reviewer": "ai-localization-quality-review"
+      },
+      "reviewedBy": "ai-quality-review",
+      "reviewedAt": "2026-05-02T07:54:01.740Z"
+    },
+    {
+      "qid": "q0275",
+      "number": 275,
+      "source": "english_master_backfill",
+      "lang": "ru",
+      "type": "row",
+      "topic": "traffic",
+      "subtopic": null,
+      "tags": {
+        "auto": [
+          "#row",
+          "#traffic",
+          "#pic"
+        ],
+        "user": [],
+        "suggested": []
+      },
+      "image": null,
+      "imageAssets": [],
+      "imageTags": null,
+      "objectTags": [],
+      "englishPrompt": "If a driver chases and races while driving on road, commits serious acts, the driver is subject to a prison term of less than 3 years.",
+      "englishOptions": [],
+      "englishExplanation": "",
+      "correctOptionKey": "Wrong",
+      "generatedTranslation": {
+        "prompt": "Если водитель участвует в преследовании и уличных гонках, совершает тяжкие деяния, он может быть приговорён к лишению свободы на срок менее 3 лет.",
+        "options": {},
+        "explanation": ""
+      },
+      "generationStatus": "generated",
+      "generationProvider": "openai",
+      "generationModel": "gpt-5-mini",
+      "needsHumanReview": true,
+      "reviewStatus": "approved",
+      "warnings": [],
+      "qualityReview": {
+        "qid": "q0275",
+        "number": 275,
+        "qualityStatus": "approved",
+        "confidence": 0.96,
+        "answerKeyLogicMayBeWrong": false,
+        "issues": [],
+        "suggestedFix": null,
+        "reviewerReasoningSummary": "Русский перевод соответствует английскому тексту (участие в преследованиях/гонках и последующая уголовная санкция менее 3 лет) и сохраняет правильную логику ответа (Wrong).",
+        "reviewedAt": "2026-05-02T07:54:01.740Z",
+        "reviewer": "ai-localization-quality-review"
+      },
+      "reviewedBy": "ai-quality-review",
+      "reviewedAt": "2026-05-02T07:54:01.740Z"
+    },
+    {
+      "qid": "q0277",
+      "number": 277,
+      "source": "english_master_backfill",
+      "lang": "ru",
+      "type": "row",
+      "topic": "license",
+      "subtopic": "vehicle-registration",
+      "tags": {
+        "auto": [
+          "#row",
+          "#traffic",
+          "#pic"
+        ],
+        "user": [],
+        "suggested": [
+          {
+            "tag": "#license",
+            "score": 1
+          },
+          {
+            "tag": "#vehicle-registration",
+            "score": 1
+          },
+          {
+            "tag": "#violations-penalties",
+            "score": 1
+          },
+          {
+            "tag": "#police-hand-signals",
+            "score": 1
+          }
+        ]
+      },
+      "image": null,
+      "imageAssets": [],
+      "imageTags": null,
+      "objectTags": [],
+      "englishPrompt": "Traffic police only imposes a fine if a vehicle is suspected of using the falsified or altered label of inspection.",
+      "englishOptions": [],
+      "englishExplanation": "",
+      "correctOptionKey": "Wrong",
+      "generatedTranslation": {
+        "prompt": "Дорожная полиция ограничивается только наложением штрафа в случае подозрения, что транспортное средство использует поддельную или изменённую наклейку техосмотра.",
+        "options": {},
+        "explanation": ""
+      },
+      "generationStatus": "generated",
+      "generationProvider": "openai",
+      "generationModel": "gpt-5-mini",
+      "needsHumanReview": true,
+      "reviewStatus": "approved",
+      "warnings": [],
+      "qualityReview": {
+        "qid": "q0277",
+        "number": 277,
+        "qualityStatus": "approved",
+        "confidence": 0.96,
+        "answerKeyLogicMayBeWrong": false,
+        "issues": [],
+        "suggestedFix": null,
+        "reviewerReasoningSummary": "Перевод корректно передаёт смысл исходного утверждения о том, что ДПС якобы ограничивается только штрафом при использовании поддельной наклейки; формулировка естественна и сохраняет логику (Wrong).",
+        "reviewedAt": "2026-05-02T07:54:01.740Z",
+        "reviewer": "ai-localization-quality-review"
+      },
+      "reviewedBy": "ai-quality-review",
+      "reviewedAt": "2026-05-02T07:54:01.740Z"
+    },
+    {
+      "qid": "q0286",
+      "number": 286,
+      "source": "english_master_backfill",
+      "lang": "ru",
+      "type": "row",
+      "topic": "traffic",
+      "subtopic": null,
+      "tags": {
+        "auto": [
+          "#row",
+          "#pic",
+          "#traffic"
+        ],
+        "user": [],
+        "suggested": []
+      },
+      "image": "/qbank/2023-test1/images/img_90c2407e44d4797b115b496e620a0080.jpeg",
+      "imageAssets": [
+        "/qbank/2023-test1/images/img_90c2407e44d4797b115b496e620a0080.jpeg"
+      ],
+      "imageTags": {
+        "assetSrcs": [
+          "/qbank/2023-test1/images/img_90c2407e44d4797b115b496e620a0080.jpeg"
+        ],
+        "colorTags": [
+          "black"
+        ],
+        "objectTags": [
+          "pov",
+          "dark",
+          "night",
+          "pedestrian",
+          "building",
+          "tree"
+        ],
+        "dominantByAsset": [
+          {
+            "assetSrc": "/qbank/2023-test1/images/img_90c2407e44d4797b115b496e620a0080.jpeg",
+            "colors": [
+              {
+                "color": "gray",
+                "overallShare": 0.635,
+                "chromaticShare": null
+              },
+              {
+                "color": "white",
+                "overallShare": 0.119,
+                "chromaticShare": null
+              },
+              {
+                "color": "black",
+                "overallShare": 0.095,
+                "chromaticShare": null
+              },
+              {
+                "color": "brown",
+                "overallShare": 0.08,
+                "chromaticShare": 0.526
+              }
+            ]
+          }
+        ]
+      },
+      "objectTags": [
+        "pov",
+        "dark",
+        "night",
+        "pedestrian",
+        "building",
+        "tree"
+      ],
+      "englishPrompt": "Using the low beam light in such circumstances.",
+      "englishOptions": [],
+      "englishExplanation": "",
+      "correctOptionKey": "Right",
+      "generatedTranslation": {
+        "prompt": "Использование ближнего света фар в таких обстоятельствах.",
+        "options": {},
+        "explanation": ""
+      },
+      "generationStatus": "generated",
+      "generationProvider": "openai",
+      "generationModel": "gpt-5-mini",
+      "needsHumanReview": true,
+      "reviewStatus": "approved",
+      "warnings": [],
+      "qualityReview": {
+        "qid": "q0286",
+        "number": 286,
+        "qualityStatus": "approved",
+        "confidence": 0.96,
+        "answerKeyLogicMayBeWrong": false,
+        "issues": [],
+        "suggestedFix": null,
+        "reviewerReasoningSummary": "Перевод краткой фразы об использовании ближнего света верно отражает исходный, соответствует контексту изображения (ночь, пешеход) и сохранён правильный ответ (Right).",
+        "reviewedAt": "2026-05-02T07:54:01.740Z",
+        "reviewer": "ai-localization-quality-review"
+      },
+      "reviewedBy": "ai-quality-review",
+      "reviewedAt": "2026-05-02T07:54:01.740Z"
+    },
+    {
+      "qid": "q0287",
+      "number": 287,
+      "source": "english_master_backfill",
+      "lang": "ru",
+      "type": "row",
+      "topic": "traffic",
+      "subtopic": null,
+      "tags": {
+        "auto": [
+          "#row",
+          "#pic",
+          "#traffic"
+        ],
+        "user": [],
+        "suggested": []
+      },
+      "image": "/qbank/2023-test1/images/img_d43c83ae3a1b905829493fd87a290a1e.jpeg",
+      "imageAssets": [
+        "/qbank/2023-test1/images/img_d43c83ae3a1b905829493fd87a290a1e.jpeg"
+      ],
+      "imageTags": {
+        "assetSrcs": [
+          "/qbank/2023-test1/images/img_d43c83ae3a1b905829493fd87a290a1e.jpeg"
+        ],
+        "colorTags": [
+          "black"
+        ],
+        "objectTags": [
+          "pov",
+          "dark",
+          "night"
+        ],
+        "dominantByAsset": [
+          {
+            "assetSrc": "/qbank/2023-test1/images/img_d43c83ae3a1b905829493fd87a290a1e.jpeg",
+            "colors": [
+              {
+                "color": "gray",
+                "overallShare": 0.526,
+                "chromaticShare": null
+              },
+              {
+                "color": "black",
+                "overallShare": 0.27,
+                "chromaticShare": null
+              },
+              {
+                "color": "blue",
+                "overallShare": 0.153,
+                "chromaticShare": 0.758
+              },
+              {
+                "color": "green",
+                "overallShare": 0.042,
+                "chromaticShare": 0.209
+              }
+            ]
+          }
+        ]
+      },
+      "objectTags": [
+        "pov",
+        "dark",
+        "night"
+      ],
+      "englishPrompt": "Using the high and low beam lights alternately while driving on the road of this kind of sharp curve.",
+      "englishOptions": [],
+      "englishExplanation": "",
+      "correctOptionKey": "Right",
+      "generatedTranslation": {
+        "prompt": "Во время движения по такому резкому повороту следует попеременно включать дальний и ближний свет фар.",
+        "options": {},
+        "explanation": ""
+      },
+      "generationStatus": "generated",
+      "generationProvider": "openai",
+      "generationModel": "gpt-5-mini",
+      "needsHumanReview": true,
+      "reviewStatus": "approved",
+      "warnings": [],
+      "qualityReview": {
+        "qid": "q0287",
+        "number": 287,
+        "qualityStatus": "approved",
+        "confidence": 0.96,
+        "answerKeyLogicMayBeWrong": false,
+        "issues": [],
+        "suggestedFix": null,
+        "reviewerReasoningSummary": "Перевод адекватно передаёт идею попеременного включения дальнего и ближнего света на резком повороте; формулировка естественна и сохраняет правильный ответ (Right).",
+        "reviewedAt": "2026-05-02T07:54:01.740Z",
+        "reviewer": "ai-localization-quality-review"
+      },
+      "reviewedBy": "ai-quality-review",
+      "reviewedAt": "2026-05-02T07:54:01.740Z"
+    },
+    {
+      "qid": "q0294",
+      "number": 294,
+      "source": "english_master_backfill",
+      "lang": "ru",
+      "type": "row",
+      "topic": "vehicle-registration",
+      "subtopic": "violations-penalties",
+      "tags": {
+        "auto": [
+          "#row",
+          "#traffic",
+          "#pic"
+        ],
+        "user": [],
+        "suggested": [
+          {
+            "tag": "#vehicle-registration",
+            "score": 2
+          },
+          {
+            "tag": "#violations-penalties",
+            "score": 1
+          },
+          {
+            "tag": "#police-hand-signals",
+            "score": 1
+          }
+        ]
+      },
+      "image": null,
+      "imageAssets": [],
+      "imageTags": null,
+      "objectTags": [],
+      "englishPrompt": "Traffic police can detain the vehicle which is suspected of using other vehicles license plate and driver's license.",
+      "englishOptions": [],
+      "englishExplanation": "",
+      "correctOptionKey": "Right",
+      "generatedTranslation": {
+        "prompt": "Дорожная полиция может задержать транспортное средство, подозреваемое в использовании номерного знака другого транспортного средства и водительского удостоверения другого лица.",
+        "options": {},
+        "explanation": ""
+      },
+      "generationStatus": "generated",
+      "generationProvider": "openai",
+      "generationModel": "gpt-5-mini",
+      "needsHumanReview": true,
+      "reviewStatus": "approved",
+      "warnings": [],
+      "qualityReview": {
+        "qid": "q0294",
+        "number": 294,
+        "qualityStatus": "approved",
+        "confidence": 0.97,
+        "answerKeyLogicMayBeWrong": false,
+        "issues": [],
+        "suggestedFix": null,
+        "reviewerReasoningSummary": "Перевод точно передаёт смысл оригинала: полиция может задержать ТС, подозреваемое в использовании чужого номерного знака и чужого водительского удостоверения. Формулировка естественна и соответствуют экзаменационной лексике.",
+        "reviewedAt": "2026-05-02T07:54:01.740Z",
+        "reviewer": "ai-localization-quality-review"
+      },
+      "reviewedBy": "ai-quality-review",
+      "reviewedAt": "2026-05-02T07:54:01.740Z"
+    },
+    {
+      "qid": "q0298",
+      "number": 298,
+      "source": "english_master_backfill",
+      "lang": "ru",
+      "type": "row",
+      "topic": "vehicle-registration",
+      "subtopic": "license",
+      "tags": {
+        "auto": [
+          "#row",
+          "#traffic",
+          "#pic"
+        ],
+        "user": [],
+        "suggested": [
+          {
+            "tag": "#vehicle-registration",
+            "score": 2
+          },
+          {
+            "tag": "#license",
+            "score": 1
+          }
+        ]
+      },
+      "image": null,
+      "imageAssets": [],
+      "imageTags": null,
+      "objectTags": [],
+      "englishPrompt": "If the driver's license of a vehicle are lost, the vehicle owner should apply to the vehicle management station at the registration place for reissuing.",
+      "englishOptions": [],
+      "englishExplanation": "",
+      "correctOptionKey": "Right",
+      "generatedTranslation": {
+        "prompt": "Если водительское удостоверение утеряно, владелец транспортного средства должен обратиться в подразделение по учёту и регистрации транспортных средств по месту регистрации для повторной выдачи документа.",
+        "options": {},
+        "explanation": ""
+      },
+      "generationStatus": "generated",
+      "generationProvider": "openai",
+      "generationModel": "gpt-5-mini",
+      "needsHumanReview": true,
+      "reviewStatus": "approved",
+      "warnings": [],
+      "qualityReview": {
+        "qid": "q0298",
+        "number": 298,
+        "qualityStatus": "approved",
+        "confidence": 0.97,
+        "answerKeyLogicMayBeWrong": false,
+        "issues": [],
+        "suggestedFix": null,
+        "reviewerReasoningSummary": "Перевод корректно сохраняет смысл и необходимую терминологию: при утере водительского удостоверения владелец должен обратиться в подразделение по месту регистрации для повторной выдачи. Нет искажений чисел/логики.",
+        "reviewedAt": "2026-05-02T07:54:01.740Z",
+        "reviewer": "ai-localization-quality-review"
+      },
+      "reviewedBy": "ai-quality-review",
+      "reviewedAt": "2026-05-02T07:54:01.740Z"
+    },
+    {
+      "qid": "q0300",
+      "number": 300,
+      "source": "english_master_backfill",
+      "lang": "ru",
+      "type": "row",
+      "topic": "accidents",
+      "subtopic": "traffic",
+      "tags": {
+        "auto": [
+          "#row",
+          "#traffic",
+          "#pic"
+        ],
+        "user": [],
+        "suggested": [
+          {
+            "tag": "#accidents",
+            "score": 1
+          }
+        ]
+      },
+      "image": null,
+      "imageAssets": [],
+      "imageTags": null,
+      "objectTags": [],
+      "englishPrompt": "If a person who has caused a major traffic accident and if his act constitutes a crime, he may not be held for criminal liabilities.",
+      "englishOptions": [],
+      "englishExplanation": "",
+      "correctOptionKey": "Wrong",
+      "generatedTranslation": {
+        "prompt": "Если лицо, ставшее виновником крупного дорожно-транспортного происшествия, совершило деяние, составляющее преступление, такое лицо может не привлекаться к уголовной ответственности.",
+        "options": {},
+        "explanation": ""
+      },
+      "generationStatus": "generated",
+      "generationProvider": "openai",
+      "generationModel": "gpt-5-mini",
+      "needsHumanReview": true,
+      "reviewStatus": "approved",
+      "warnings": [],
+      "qualityReview": {
+        "qid": "q0300",
+        "number": 300,
+        "qualityStatus": "approved",
+        "confidence": 0.97,
+        "answerKeyLogicMayBeWrong": false,
+        "issues": [],
+        "suggestedFix": null,
+        "reviewerReasoningSummary": "Негативное утверждение переведено дословно и сохраняет логическую неверность исходного утверждения (корректный ключ 'Wrong'). Язык естественен и юридический смысл не искажен.",
+        "reviewedAt": "2026-05-02T07:54:01.740Z",
+        "reviewer": "ai-localization-quality-review"
+      },
+      "reviewedBy": "ai-quality-review",
+      "reviewedAt": "2026-05-02T07:54:01.740Z"
+    },
+    {
+      "qid": "q0306",
+      "number": 306,
+      "source": "english_master_backfill",
+      "lang": "ru",
+      "type": "row",
+      "topic": "parking",
+      "subtopic": "traffic",
+      "tags": {
+        "auto": [
+          "#row",
+          "#traffic",
+          "#pic"
+        ],
+        "user": [],
+        "suggested": [
+          {
+            "tag": "#parking",
+            "score": 1
+          }
+        ]
+      },
+      "image": null,
+      "imageAssets": [],
+      "imageTags": null,
+      "objectTags": [],
+      "englishPrompt": "Stopping temporarily on the road should not obstruct the passing of other vehicles and pedestrians.",
+      "englishOptions": [],
+      "englishExplanation": "",
+      "correctOptionKey": "Right",
+      "generatedTranslation": {
+        "prompt": "Временная остановка на дороге не должна препятствовать проезду других транспортных средств и движению пешеходов.",
+        "options": {},
+        "explanation": ""
+      },
+      "generationStatus": "generated",
+      "generationProvider": "openai",
+      "generationModel": "gpt-5-mini",
+      "needsHumanReview": true,
+      "reviewStatus": "approved",
+      "warnings": [],
+      "qualityReview": {
+        "qid": "q0306",
+        "number": 306,
+        "qualityStatus": "approved",
+        "confidence": 0.97,
+        "answerKeyLogicMayBeWrong": false,
+        "issues": [],
+        "suggestedFix": null,
+        "reviewerReasoningSummary": "Краткий нормативный приказ о временной остановке корректно переведён; терминология (временная остановка, не должна препятствовать проезду/движению) соответствует оригиналу.",
+        "reviewedAt": "2026-05-02T07:54:01.740Z",
+        "reviewer": "ai-localization-quality-review"
+      },
+      "reviewedBy": "ai-quality-review",
+      "reviewedAt": "2026-05-02T07:54:01.740Z"
+    },
+    {
+      "qid": "q0325",
+      "number": 325,
+      "source": "english_master_backfill",
+      "lang": "ru",
+      "type": "row",
+      "topic": "traffic",
+      "subtopic": null,
+      "tags": {
+        "auto": [
+          "#row",
+          "#traffic",
+          "#pic"
+        ],
+        "user": [],
+        "suggested": []
+      },
+      "image": null,
+      "imageAssets": [],
+      "imageTags": null,
+      "objectTags": [],
+      "englishPrompt": "A driver may drive on the road a vehicle overhauled which has reached the scraped standard.",
+      "englishOptions": [],
+      "englishExplanation": "",
+      "correctOptionKey": "Wrong",
+      "generatedTranslation": {
+        "prompt": "Водитель может управлять на дороге транспортным средством, прошедшим капитальный ремонт, которое при этом достигло критерия списания.",
+        "options": {},
+        "explanation": ""
+      },
+      "generationStatus": "generated",
+      "generationProvider": "openai",
+      "generationModel": "gpt-5-mini",
+      "needsHumanReview": true,
+      "reviewStatus": "approved",
+      "warnings": [],
+      "qualityReview": {
+        "qid": "q0325",
+        "number": 325,
+        "qualityStatus": "approved",
+        "confidence": 0.97,
+        "answerKeyLogicMayBeWrong": false,
+        "issues": [],
+        "suggestedFix": null,
+        "reviewerReasoningSummary": "Перевод точно передаёт смысл: управление на дороге ТС, прошедшим капитальный ремонт, но достигшим критерия списания. Сохранена логика утверждения (ключ 'Wrong'), терминология уместна.",
+        "reviewedAt": "2026-05-02T07:54:01.740Z",
+        "reviewer": "ai-localization-quality-review"
+      },
+      "reviewedBy": "ai-quality-review",
+      "reviewedAt": "2026-05-02T07:54:01.740Z"
+    },
+    {
+      "qid": "q0327",
+      "number": 327,
+      "source": "english_master_backfill",
+      "lang": "ru",
+      "type": "row",
+      "topic": "license",
+      "subtopic": "violations-penalties",
+      "tags": {
+        "auto": [
+          "#row",
+          "#traffic",
+          "#pic"
+        ],
+        "user": [],
+        "suggested": [
+          {
+            "tag": "#license",
+            "score": 1
+          },
+          {
+            "tag": "#violations-penalties",
+            "score": 1
+          },
+          {
+            "tag": "#points-system",
+            "score": 1
+          }
+        ]
+      },
+      "image": null,
+      "imageAssets": [],
+      "imageTags": null,
+      "objectTags": [],
+      "englishPrompt": "If the accumulated penalty points of a driver reach 12 points and the driver refuses to participate in the study course and also refuses to take tests, it should be publicly announced that his driving license should no longer be used.",
+      "englishOptions": [],
+      "englishExplanation": "",
+      "correctOptionKey": "Right",
+      "generatedTranslation": {
+        "prompt": "Если накопленные штрафные баллы водителя достигнут 12, и водитель отказывается пройти учебный курс и сдавать экзамены, следует публично объявить о недействительности его водительского удостоверения.",
+        "options": {},
+        "explanation": ""
+      },
+      "generationStatus": "generated",
+      "generationProvider": "openai",
+      "generationModel": "gpt-5-mini",
+      "needsHumanReview": true,
+      "reviewStatus": "approved",
+      "warnings": [],
+      "qualityReview": {
+        "qid": "q0327",
+        "number": 327,
+        "qualityStatus": "approved",
+        "confidence": 0.97,
+        "answerKeyLogicMayBeWrong": false,
+        "issues": [],
+        "suggestedFix": null,
+        "reviewerReasoningSummary": "Перевод точно передаёт смысл исходного утверждения, сохраняет формулировку о 12 штрафных баллах и отказе от курсов/экзаменов; русский текст естественен и экзаменационно уместен.",
+        "reviewedAt": "2026-05-02T07:54:01.740Z",
+        "reviewer": "ai-localization-quality-review"
+      },
+      "reviewedBy": "ai-quality-review",
+      "reviewedAt": "2026-05-02T07:54:01.740Z"
+    },
+    {
+      "qid": "q0332",
+      "number": 332,
       "source": "english_master_backfill",
       "lang": "ru",
       "type": "row",
       "topic": "highway",
-      "subtopic": null,
+      "subtopic": "traffic",
       "tags": {
         "auto": [
-          "#row"
+          "#row",
+          "#traffic",
+          "#pic"
         ],
         "user": [],
         "suggested": [
@@ -84,110 +1013,12 @@
       "imageAssets": [],
       "imageTags": null,
       "objectTags": [],
-      "englishPrompt": "When there’s a diversion traffic control on the highway, a driver can stop by the side to wait instead of leaving out of the highway, for continually running after the traffic control.",
-      "englishOptions": [],
-      "englishExplanation": "",
-      "correctOptionKey": "Wrong",
-      "generatedTranslation": {
-        "prompt": "Если на автомагистрали введено объездное движение, водитель может остановиться у обочины и ждать, вместо того чтобы съехать с автомагистрали и следовать по объездному маршруту.",
-        "options": {},
-        "explanation": ""
-      },
-      "generationStatus": "generated",
-      "generationProvider": "openai",
-      "generationModel": "gpt-5-mini",
-      "needsHumanReview": true,
-      "reviewStatus": "approved",
-      "warnings": [],
-      "qualityReview": {
-        "qid": "q0021",
-        "number": 21,
-        "qualityStatus": "approved",
-        "confidence": 0.95,
-        "answerKeyLogicMayBeWrong": false,
-        "issues": [],
-        "suggestedFix": null,
-        "reviewerReasoningSummary": "Перевод соответствует английскому тексту и сохраняет негативную (Wrong) оценку утверждения; терминология ('объездное движение', 'обочина', 'съехать с автомагистрали') уместна.",
-        "reviewedAt": "2026-05-02T06:55:13.935Z",
-        "reviewer": "ai-localization-quality-review"
-      },
-      "reviewedBy": "ai-quality-review",
-      "reviewedAt": "2026-05-02T06:55:13.935Z"
-    },
-    {
-      "qid": "q0025",
-      "number": 25,
-      "source": "english_master_backfill",
-      "lang": "ru",
-      "type": "row",
-      "topic": null,
-      "subtopic": null,
-      "tags": {
-        "auto": [
-          "#row"
-        ],
-        "user": [],
-        "suggested": []
-      },
-      "image": null,
-      "imageAssets": [],
-      "imageTags": null,
-      "objectTags": [],
-      "englishPrompt": "When passing through an overflowing road, a high gear should be used to pass rapidly.",
-      "englishOptions": [],
-      "englishExplanation": "",
-      "correctOptionKey": "Wrong",
-      "generatedTranslation": {
-        "prompt": "При движении через затопленную дорогу следует использовать высокую передачу, чтобы проехать быстро.",
-        "options": {},
-        "explanation": ""
-      },
-      "generationStatus": "generated",
-      "generationProvider": "openai",
-      "generationModel": "gpt-5-mini",
-      "needsHumanReview": true,
-      "reviewStatus": "approved",
-      "warnings": [],
-      "qualityReview": {
-        "qid": "q0025",
-        "number": 25,
-        "qualityStatus": "approved",
-        "confidence": 0.95,
-        "answerKeyLogicMayBeWrong": false,
-        "issues": [],
-        "suggestedFix": null,
-        "reviewerReasoningSummary": "Перевод корректно отражает исходное утверждение о движении через затопленную дорогу и сохраняет правильность ключа (Wrong).",
-        "reviewedAt": "2026-05-02T06:55:13.935Z",
-        "reviewer": "ai-localization-quality-review"
-      },
-      "reviewedBy": "ai-quality-review",
-      "reviewedAt": "2026-05-02T06:55:13.935Z"
-    },
-    {
-      "qid": "q0034",
-      "number": 34,
-      "source": "english_master_backfill",
-      "lang": "ru",
-      "type": "row",
-      "topic": null,
-      "subtopic": null,
-      "tags": {
-        "auto": [
-          "#row"
-        ],
-        "user": [],
-        "suggested": []
-      },
-      "image": null,
-      "imageAssets": [],
-      "imageTags": null,
-      "objectTags": [],
-      "englishPrompt": "When driving, the driver should be courteous and defensive, instead of being offensive.",
+      "englishPrompt": "Driving a vehicle on the highway is not allowed to exceed the marked maximum speed.",
       "englishOptions": [],
       "englishExplanation": "",
       "correctOptionKey": "Right",
       "generatedTranslation": {
-        "prompt": "При вождении водитель должен быть вежливым и придерживаться оборонительного, осторожного стиля вождения, а не вести себя агрессивно.",
+        "prompt": "При движении по автомагистрали запрещено превышать установленную максимальную скорость.",
         "options": {},
         "explanation": ""
       },
@@ -198,31 +1029,821 @@
       "reviewStatus": "approved",
       "warnings": [],
       "qualityReview": {
-        "qid": "q0034",
-        "number": 34,
+        "qid": "q0332",
+        "number": 332,
+        "qualityStatus": "approved",
+        "confidence": 0.97,
+        "answerKeyLogicMayBeWrong": false,
+        "issues": [],
+        "suggestedFix": null,
+        "reviewerReasoningSummary": "Фраза корректно передаёт запрет превышать установленную (маркированную) максимальную скорость на автомагистрали; смысл и логика сохранены.",
+        "reviewedAt": "2026-05-02T07:54:01.740Z",
+        "reviewer": "ai-localization-quality-review"
+      },
+      "reviewedBy": "ai-quality-review",
+      "reviewedAt": "2026-05-02T07:54:01.740Z"
+    },
+    {
+      "qid": "q0335",
+      "number": 335,
+      "source": "english_master_backfill",
+      "lang": "ru",
+      "type": "row",
+      "topic": "vehicle-registration",
+      "subtopic": "violations-penalties",
+      "tags": {
+        "auto": [
+          "#row",
+          "#traffic",
+          "#pic"
+        ],
+        "user": [],
+        "suggested": [
+          {
+            "tag": "#vehicle-registration",
+            "score": 2
+          },
+          {
+            "tag": "#violations-penalties",
+            "score": 1
+          },
+          {
+            "tag": "#police-hand-signals",
+            "score": 1
+          }
+        ]
+      },
+      "image": null,
+      "imageAssets": [],
+      "imageTags": null,
+      "objectTags": [],
+      "englishPrompt": "Traffic police can detain the vehicle according to law if it uses other vehicles license plate and driver's license.",
+      "englishOptions": [],
+      "englishExplanation": "",
+      "correctOptionKey": "Right",
+      "generatedTranslation": {
+        "prompt": "Дорожная полиция вправе задержать транспортное средство в соответствии с законом, если оно использует чужой номерной знак и водительское удостоверение другого лица.",
+        "options": {},
+        "explanation": ""
+      },
+      "generationStatus": "generated",
+      "generationProvider": "openai",
+      "generationModel": "gpt-5-mini",
+      "needsHumanReview": true,
+      "reviewStatus": "approved",
+      "warnings": [],
+      "qualityReview": {
+        "qid": "q0335",
+        "number": 335,
+        "qualityStatus": "approved",
+        "confidence": 0.97,
+        "answerKeyLogicMayBeWrong": false,
+        "issues": [],
+        "suggestedFix": null,
+        "reviewerReasoningSummary": "Перевод точно отражает право дорожной полиции задержать ТС при использовании чужого номерного знака и чужого водительского удостоверения; терминология и порядок слов естественны.",
+        "reviewedAt": "2026-05-02T07:54:01.740Z",
+        "reviewer": "ai-localization-quality-review"
+      },
+      "reviewedBy": "ai-quality-review",
+      "reviewedAt": "2026-05-02T07:54:01.740Z"
+    },
+    {
+      "qid": "q0338",
+      "number": 338,
+      "source": "english_master_backfill",
+      "lang": "ru",
+      "type": "row",
+      "topic": "license",
+      "subtopic": "traffic",
+      "tags": {
+        "auto": [
+          "#row",
+          "#traffic",
+          "#pic"
+        ],
+        "user": [],
+        "suggested": [
+          {
+            "tag": "#license",
+            "score": 1
+          }
+        ]
+      },
+      "image": null,
+      "imageAssets": [],
+      "imageTags": null,
+      "objectTags": [],
+      "englishPrompt": "The age should be 18~70 years old when applying for the driving license of small vehicle or three-wheeled automobile.",
+      "englishOptions": [],
+      "englishExplanation": "",
+      "correctOptionKey": "Right",
+      "generatedTranslation": {
+        "prompt": "При получении водительского удостоверения на малое транспортное средство или трёхколёсный автомобиль возраст заявителя должен быть от 18 до 70 лет.",
+        "options": {},
+        "explanation": ""
+      },
+      "generationStatus": "generated",
+      "generationProvider": "openai",
+      "generationModel": "gpt-5-mini",
+      "needsHumanReview": true,
+      "reviewStatus": "approved",
+      "warnings": [],
+      "qualityReview": {
+        "qid": "q0338",
+        "number": 338,
+        "qualityStatus": "approved",
+        "confidence": 0.97,
+        "answerKeyLogicMayBeWrong": false,
+        "issues": [],
+        "suggestedFix": null,
+        "reviewerReasoningSummary": "Возрастной диапазон 18–70 лет сохранён точно; формулировка о получении прав на малое ТС или трёхколёсный автомобиль адекватна и естественна на русском.",
+        "reviewedAt": "2026-05-02T07:54:01.740Z",
+        "reviewer": "ai-localization-quality-review"
+      },
+      "reviewedBy": "ai-quality-review",
+      "reviewedAt": "2026-05-02T07:54:01.740Z"
+    },
+    {
+      "qid": "q0339",
+      "number": 339,
+      "source": "english_master_backfill",
+      "lang": "ru",
+      "type": "row",
+      "topic": "license",
+      "subtopic": "violations-penalties",
+      "tags": {
+        "auto": [
+          "#row",
+          "#traffic",
+          "#pic"
+        ],
+        "user": [],
+        "suggested": [
+          {
+            "tag": "#license",
+            "score": 1
+          },
+          {
+            "tag": "#violations-penalties",
+            "score": 1
+          }
+        ]
+      },
+      "image": null,
+      "imageAssets": [],
+      "imageTags": null,
+      "objectTags": [],
+      "englishPrompt": "A driver who uses falsified or altered driving license is subject to a 12-point penalty.",
+      "englishOptions": [],
+      "englishExplanation": "",
+      "correctOptionKey": "Right",
+      "generatedTranslation": {
+        "prompt": "Водитель, использующий поддельное или изменённое водительское удостоверение, подлежит наказанию в виде 12 штрафных баллов.",
+        "options": {},
+        "explanation": ""
+      },
+      "generationStatus": "generated",
+      "generationProvider": "openai",
+      "generationModel": "gpt-5-mini",
+      "needsHumanReview": true,
+      "reviewStatus": "approved",
+      "warnings": [],
+      "qualityReview": {
+        "qid": "q0339",
+        "number": 339,
+        "qualityStatus": "approved",
+        "confidence": 0.97,
+        "answerKeyLogicMayBeWrong": false,
+        "issues": [],
+        "suggestedFix": null,
+        "reviewerReasoningSummary": "Перевод чётко передаёт, что использование поддельного/изменённого удостоверения влечёт начисление 12 штрафных баллов; числовые и смысловые элементы сохранены.",
+        "reviewedAt": "2026-05-02T07:54:01.740Z",
+        "reviewer": "ai-localization-quality-review"
+      },
+      "reviewedBy": "ai-quality-review",
+      "reviewedAt": "2026-05-02T07:54:01.740Z"
+    },
+    {
+      "qid": "q0341",
+      "number": 341,
+      "source": "english_master_backfill",
+      "lang": "ru",
+      "type": "row",
+      "topic": "violations-penalties",
+      "subtopic": "police-hand-signals",
+      "tags": {
+        "auto": [
+          "#row",
+          "#traffic",
+          "#pic"
+        ],
+        "user": [],
+        "suggested": [
+          {
+            "tag": "#violations-penalties",
+            "score": 1
+          },
+          {
+            "tag": "#police-hand-signals",
+            "score": 1
+          }
+        ]
+      },
+      "image": null,
+      "imageAssets": [],
+      "imageTags": null,
+      "objectTags": [],
+      "englishPrompt": "Traffic police can detain the vehicle according to law if the driver does not carry their ID card.",
+      "englishOptions": [],
+      "englishExplanation": "",
+      "correctOptionKey": "Wrong",
+      "generatedTranslation": {
+        "prompt": "Сотрудники дорожной полиции могут задержать транспортное средство в соответствии с законом, если водитель не имеет при себе удостоверения личности.",
+        "options": {},
+        "explanation": ""
+      },
+      "generationStatus": "generated",
+      "generationProvider": "openai",
+      "generationModel": "gpt-5-mini",
+      "needsHumanReview": true,
+      "reviewStatus": "approved",
+      "warnings": [],
+      "qualityReview": {
+        "qid": "q0341",
+        "number": 341,
+        "qualityStatus": "approved",
+        "confidence": 0.97,
+        "answerKeyLogicMayBeWrong": false,
+        "issues": [],
+        "suggestedFix": null,
+        "reviewerReasoningSummary": "Перевод точно и естественно передаёт смысл оригинального утверждения; нет изменений значений, чисел или логики ответа (корректный ключ: Wrong).",
+        "reviewedAt": "2026-05-02T07:54:01.740Z",
+        "reviewer": "ai-localization-quality-review"
+      },
+      "reviewedBy": "ai-quality-review",
+      "reviewedAt": "2026-05-02T07:54:01.740Z"
+    },
+    {
+      "qid": "q0343",
+      "number": 343,
+      "source": "english_master_backfill",
+      "lang": "ru",
+      "type": "row",
+      "topic": "traffic",
+      "subtopic": null,
+      "tags": {
+        "auto": [
+          "#row",
+          "#traffic",
+          "#pic"
+        ],
+        "user": [],
+        "suggested": []
+      },
+      "image": null,
+      "imageAssets": [],
+      "imageTags": null,
+      "objectTags": [],
+      "englishPrompt": "Turn on the right-turn signal and return immediately to the original lane after overtaking.",
+      "englishOptions": [],
+      "englishExplanation": "",
+      "correctOptionKey": "Wrong",
+      "generatedTranslation": {
+        "prompt": "Включите правый указатель поворота и немедленно вернитесь в исходную полосу после обгона.",
+        "options": {},
+        "explanation": ""
+      },
+      "generationStatus": "generated",
+      "generationProvider": "openai",
+      "generationModel": "gpt-5-mini",
+      "needsHumanReview": true,
+      "reviewStatus": "approved",
+      "warnings": [],
+      "qualityReview": {
+        "qid": "q0343",
+        "number": 343,
+        "qualityStatus": "approved",
+        "confidence": 0.97,
+        "answerKeyLogicMayBeWrong": false,
+        "issues": [],
+        "suggestedFix": null,
+        "reviewerReasoningSummary": "Фраза переведена дословно и естественно; смысл и логика ответа (Wrong) сохранены.",
+        "reviewedAt": "2026-05-02T07:54:01.740Z",
+        "reviewer": "ai-localization-quality-review"
+      },
+      "reviewedBy": "ai-quality-review",
+      "reviewedAt": "2026-05-02T07:54:01.740Z"
+    },
+    {
+      "qid": "q0344",
+      "number": 344,
+      "source": "english_master_backfill",
+      "lang": "ru",
+      "type": "row",
+      "topic": "traffic-signs",
+      "subtopic": "traffic",
+      "tags": {
+        "auto": [
+          "#row",
+          "#traffic",
+          "#pic"
+        ],
+        "user": [],
+        "suggested": [
+          {
+            "tag": "#traffic-signs",
+            "score": 1
+          }
+        ]
+      },
+      "image": null,
+      "imageAssets": [],
+      "imageTags": null,
+      "objectTags": [],
+      "englishPrompt": "When encountering slow-moving vehicles at an intersection that has no traffic signals, the vehicle should pass alternately.",
+      "englishOptions": [],
+      "englishExplanation": "",
+      "correctOptionKey": "Right",
+      "generatedTranslation": {
+        "prompt": "При встрече с медленно движущимися транспортными средствами на перекрёстке без светофоров транспортные средства должны проезжать поочерёдно.",
+        "options": {},
+        "explanation": ""
+      },
+      "generationStatus": "generated",
+      "generationProvider": "openai",
+      "generationModel": "gpt-5-mini",
+      "needsHumanReview": true,
+      "reviewStatus": "approved",
+      "warnings": [],
+      "qualityReview": {
+        "qid": "q0344",
+        "number": 344,
+        "qualityStatus": "approved",
+        "confidence": 0.97,
+        "answerKeyLogicMayBeWrong": false,
+        "issues": [],
+        "suggestedFix": null,
+        "reviewerReasoningSummary": "Перевод соответствует оригиналу по смыслу и стилю, формулировка естественна; правильный ключ Right сохранён.",
+        "reviewedAt": "2026-05-02T07:54:01.740Z",
+        "reviewer": "ai-localization-quality-review"
+      },
+      "reviewedBy": "ai-quality-review",
+      "reviewedAt": "2026-05-02T07:54:01.740Z"
+    },
+    {
+      "qid": "q0349",
+      "number": 349,
+      "source": "english_master_backfill",
+      "lang": "ru",
+      "type": "row",
+      "topic": "vehicle-registration",
+      "subtopic": "traffic",
+      "tags": {
+        "auto": [
+          "#row",
+          "#traffic",
+          "#pic"
+        ],
+        "user": [],
+        "suggested": [
+          {
+            "tag": "#vehicle-registration",
+            "score": 1
+          }
+        ]
+      },
+      "image": null,
+      "imageAssets": [],
+      "imageTags": null,
+      "objectTags": [],
+      "englishPrompt": "If a vehicle has reached the states mandatory write-off standard, its registration will not be handled.",
+      "englishOptions": [],
+      "englishExplanation": "",
+      "correctOptionKey": "Right",
+      "generatedTranslation": {
+        "prompt": "Если транспортное средство соответствует государственному нормативу обязательного списания, его регистрация не будет оформлена.",
+        "options": {},
+        "explanation": ""
+      },
+      "generationStatus": "generated",
+      "generationProvider": "openai",
+      "generationModel": "gpt-5-mini",
+      "needsHumanReview": true,
+      "reviewStatus": "approved",
+      "warnings": [],
+      "qualityReview": {
+        "qid": "q0349",
+        "number": 349,
+        "qualityStatus": "approved",
+        "confidence": 0.97,
+        "answerKeyLogicMayBeWrong": false,
+        "issues": [],
+        "suggestedFix": null,
+        "reviewerReasoningSummary": "Перевод точно передаёт значение оригинального утверждения (включая юридическую формулировку про обязательное списание); логика ответа (Right) сохранена.",
+        "reviewedAt": "2026-05-02T07:54:01.740Z",
+        "reviewer": "ai-localization-quality-review"
+      },
+      "reviewedBy": "ai-quality-review",
+      "reviewedAt": "2026-05-02T07:54:01.740Z"
+    },
+    {
+      "qid": "q0350",
+      "number": 350,
+      "source": "english_master_backfill",
+      "lang": "ru",
+      "type": "row",
+      "topic": "license",
+      "subtopic": "vehicle-registration",
+      "tags": {
+        "auto": [
+          "#row",
+          "#traffic",
+          "#pic"
+        ],
+        "user": [],
+        "suggested": [
+          {
+            "tag": "#license",
+            "score": 1
+          },
+          {
+            "tag": "#vehicle-registration",
+            "score": 1
+          }
+        ]
+      },
+      "image": null,
+      "imageAssets": [],
+      "imageTags": null,
+      "objectTags": [],
+      "englishPrompt": "A person whose driving license has been destroyed cannot drive a vehicle.",
+      "englishOptions": [],
+      "englishExplanation": "",
+      "correctOptionKey": "Right",
+      "generatedTranslation": {
+        "prompt": "Лицо, у которого водительское удостоверение было уничтожено, не может управлять транспортным средством.",
+        "options": {},
+        "explanation": ""
+      },
+      "generationStatus": "generated",
+      "generationProvider": "openai",
+      "generationModel": "gpt-5-mini",
+      "needsHumanReview": true,
+      "reviewStatus": "approved",
+      "warnings": [],
+      "qualityReview": {
+        "qid": "q0350",
+        "number": 350,
+        "qualityStatus": "approved",
+        "confidence": 0.97,
+        "answerKeyLogicMayBeWrong": false,
+        "issues": [],
+        "suggestedFix": null,
+        "reviewerReasoningSummary": "Перевод корректен и естественен, смысл совпадает с оригиналом; правильный ключ Right остаётся уместным.",
+        "reviewedAt": "2026-05-02T07:54:01.740Z",
+        "reviewer": "ai-localization-quality-review"
+      },
+      "reviewedBy": "ai-quality-review",
+      "reviewedAt": "2026-05-02T07:54:01.740Z"
+    },
+    {
+      "qid": "q0351",
+      "number": 351,
+      "source": "english_master_backfill",
+      "lang": "ru",
+      "type": "row",
+      "topic": "traffic",
+      "subtopic": null,
+      "tags": {
+        "auto": [
+          "#row",
+          "#traffic",
+          "#pic"
+        ],
+        "user": [],
+        "suggested": []
+      },
+      "image": null,
+      "imageAssets": [],
+      "imageTags": null,
+      "objectTags": [],
+      "englishPrompt": "When the road maintenance vehicle and the engineering vehicle are on duty, the passing vehicles should avoid with care.",
+      "englishOptions": [],
+      "englishExplanation": "",
+      "correctOptionKey": "Right",
+      "generatedTranslation": {
+        "prompt": "Когда машины дорожного обслуживания и инженерной службы находятся на дежурстве, проезжающие транспортные средства должны осторожно объезжать их.",
+        "options": {},
+        "explanation": ""
+      },
+      "generationStatus": "generated",
+      "generationProvider": "openai",
+      "generationModel": "gpt-5-mini",
+      "needsHumanReview": true,
+      "reviewStatus": "approved",
+      "warnings": [],
+      "qualityReview": {
+        "qid": "q0351",
+        "number": 351,
+        "qualityStatus": "approved",
+        "confidence": 0.96,
+        "answerKeyLogicMayBeWrong": false,
+        "issues": [],
+        "suggestedFix": null,
+        "reviewerReasoningSummary": "Russian translation accurately and naturally preserves the meaning that passing vehicles should carefully avoid road maintenance and engineering vehicles; no change needed.",
+        "reviewedAt": "2026-05-02T07:54:01.740Z",
+        "reviewer": "ai-localization-quality-review"
+      },
+      "reviewedBy": "ai-quality-review",
+      "reviewedAt": "2026-05-02T07:54:01.740Z"
+    },
+    {
+      "qid": "q0353",
+      "number": 353,
+      "source": "english_master_backfill",
+      "lang": "ru",
+      "type": "row",
+      "topic": "violations-penalties",
+      "subtopic": "traffic",
+      "tags": {
+        "auto": [
+          "#row",
+          "#traffic",
+          "#pic"
+        ],
+        "user": [],
+        "suggested": [
+          {
+            "tag": "#violations-penalties",
+            "score": 1
+          }
+        ]
+      },
+      "image": null,
+      "imageAssets": [],
+      "imageTags": null,
+      "objectTags": [],
+      "englishPrompt": "If a driver drives on the road after getting drunk is subject to a prison term of more than 3 years.",
+      "englishOptions": [],
+      "englishExplanation": "",
+      "correctOptionKey": "Wrong",
+      "generatedTranslation": {
+        "prompt": "Водитель, управляющий транспортным средством в состоянии алкогольного опьянения, подвергается наказанию в виде лишения свободы более чем на 3 года.",
+        "options": {},
+        "explanation": ""
+      },
+      "generationStatus": "generated",
+      "generationProvider": "openai",
+      "generationModel": "gpt-5-mini",
+      "needsHumanReview": true,
+      "reviewStatus": "approved",
+      "warnings": [],
+      "qualityReview": {
+        "qid": "q0353",
+        "number": 353,
         "qualityStatus": "approved",
         "confidence": 0.95,
         "answerKeyLogicMayBeWrong": false,
         "issues": [],
         "suggestedFix": null,
-        "reviewerReasoningSummary": "Перевод естественен и экзамен-ориентирован: смысл 'вежливый и оборонительный' передан корректно, ключ (Right) сохранён.",
-        "reviewedAt": "2026-05-02T06:55:13.935Z",
+        "reviewerReasoningSummary": "Translation correctly and naturally conveys the (false) assertion that drunk driving carries imprisonment over 3 years, matching the English master and preserving answer logic.",
+        "reviewedAt": "2026-05-02T07:54:01.740Z",
         "reviewer": "ai-localization-quality-review"
       },
       "reviewedBy": "ai-quality-review",
-      "reviewedAt": "2026-05-02T06:55:13.935Z"
+      "reviewedAt": "2026-05-02T07:54:01.740Z"
     },
     {
-      "qid": "q0039",
-      "number": 39,
+      "qid": "q0354",
+      "number": 354,
+      "source": "english_master_backfill",
+      "lang": "ru",
+      "type": "row",
+      "topic": "traffic",
+      "subtopic": null,
+      "tags": {
+        "auto": [
+          "#row",
+          "#traffic",
+          "#pic"
+        ],
+        "user": [],
+        "suggested": []
+      },
+      "image": null,
+      "imageAssets": [],
+      "imageTags": null,
+      "objectTags": [],
+      "englishPrompt": "Nobody is allowed to drive a vehicle that has safety hazards.",
+      "englishOptions": [],
+      "englishExplanation": "",
+      "correctOptionKey": "Right",
+      "generatedTranslation": {
+        "prompt": "Никому не разрешается управлять транспортным средством, имеющим неисправности, создающие опасность.",
+        "options": {},
+        "explanation": ""
+      },
+      "generationStatus": "generated",
+      "generationProvider": "openai",
+      "generationModel": "gpt-5-mini",
+      "needsHumanReview": true,
+      "reviewStatus": "approved",
+      "warnings": [],
+      "qualityReview": {
+        "qid": "q0354",
+        "number": 354,
+        "qualityStatus": "approved",
+        "confidence": 0.97,
+        "answerKeyLogicMayBeWrong": false,
+        "issues": [],
+        "suggestedFix": null,
+        "reviewerReasoningSummary": "Translation faithfully preserves the prohibition on driving vehicles with safety hazards; wording is natural and exam-appropriate.",
+        "reviewedAt": "2026-05-02T07:54:01.740Z",
+        "reviewer": "ai-localization-quality-review"
+      },
+      "reviewedBy": "ai-quality-review",
+      "reviewedAt": "2026-05-02T07:54:01.740Z"
+    },
+    {
+      "qid": "q0356",
+      "number": 356,
+      "source": "english_master_backfill",
+      "lang": "ru",
+      "type": "row",
+      "topic": "license",
+      "subtopic": "accidents",
+      "tags": {
+        "auto": [
+          "#row",
+          "#traffic",
+          "#pic"
+        ],
+        "user": [],
+        "suggested": [
+          {
+            "tag": "#license",
+            "score": 1
+          },
+          {
+            "tag": "#accidents",
+            "score": 1
+          }
+        ]
+      },
+      "image": null,
+      "imageAssets": [],
+      "imageTags": null,
+      "objectTags": [],
+      "englishPrompt": "If a person has caused a traffic accident and run away, and constitutes a crime, his driving license should be revoked and he is banned for lifetime from re-obtaining a driving license.",
+      "englishOptions": [],
+      "englishExplanation": "",
+      "correctOptionKey": "Right",
+      "generatedTranslation": {
+        "prompt": "Если лицо совершило дорожно-транспортное происшествие и скрылось с места, и это деяние квалифицируется как преступление, его водительское удостоверение подлежит аннулированию, и ему пожизненно запрещено повторно получать водительское удостоверение.",
+        "options": {},
+        "explanation": ""
+      },
+      "generationStatus": "generated",
+      "generationProvider": "openai",
+      "generationModel": "gpt-5-mini",
+      "needsHumanReview": true,
+      "reviewStatus": "approved",
+      "warnings": [],
+      "qualityReview": {
+        "qid": "q0356",
+        "number": 356,
+        "qualityStatus": "approved",
+        "confidence": 0.96,
+        "answerKeyLogicMayBeWrong": false,
+        "issues": [],
+        "suggestedFix": null,
+        "reviewerReasoningSummary": "Translation accurately reflects that causing an accident and fleeing, when constituting a crime, leads to license revocation and lifetime ban on re-obtaining a license; terminology is appropriate.",
+        "reviewedAt": "2026-05-02T07:54:01.740Z",
+        "reviewer": "ai-localization-quality-review"
+      },
+      "reviewedBy": "ai-quality-review",
+      "reviewedAt": "2026-05-02T07:54:01.740Z"
+    },
+    {
+      "qid": "q0358",
+      "number": 358,
+      "source": "english_master_backfill",
+      "lang": "ru",
+      "type": "row",
+      "topic": "parking",
+      "subtopic": "traffic",
+      "tags": {
+        "auto": [
+          "#row",
+          "#traffic",
+          "#pic"
+        ],
+        "user": [],
+        "suggested": [
+          {
+            "tag": "#parking",
+            "score": 2
+          }
+        ]
+      },
+      "image": null,
+      "imageAssets": [],
+      "imageTags": null,
+      "objectTags": [],
+      "englishPrompt": "A driver can park the vehicle by borrowing the sidewalk if he cannot find the parking area.",
+      "englishOptions": [],
+      "englishExplanation": "",
+      "correctOptionKey": "Wrong",
+      "generatedTranslation": {
+        "prompt": "Водитель может припарковать транспортное средство на тротуаре, если он не может найти парковочное место.",
+        "options": {},
+        "explanation": ""
+      },
+      "generationStatus": "generated",
+      "generationProvider": "openai",
+      "generationModel": "gpt-5-mini",
+      "needsHumanReview": true,
+      "reviewStatus": "approved",
+      "warnings": [],
+      "qualityReview": {
+        "qid": "q0358",
+        "number": 358,
+        "qualityStatus": "approved",
+        "confidence": 0.95,
+        "answerKeyLogicMayBeWrong": false,
+        "issues": [],
+        "suggestedFix": null,
+        "reviewerReasoningSummary": "Translation correctly states (falsely) that a driver may park on the sidewalk if no parking is found; preserves original meaning and answer key.",
+        "reviewedAt": "2026-05-02T07:54:01.740Z",
+        "reviewer": "ai-localization-quality-review"
+      },
+      "reviewedBy": "ai-quality-review",
+      "reviewedAt": "2026-05-02T07:54:01.740Z"
+    },
+    {
+      "qid": "q0360",
+      "number": 360,
+      "source": "english_master_backfill",
+      "lang": "ru",
+      "type": "row",
+      "topic": "traffic",
+      "subtopic": null,
+      "tags": {
+        "auto": [
+          "#row",
+          "#traffic",
+          "#pic"
+        ],
+        "user": [],
+        "suggested": []
+      },
+      "image": null,
+      "imageAssets": [],
+      "imageTags": null,
+      "objectTags": [],
+      "englishPrompt": "Reducing the speed when driving in sand, hail, rain, fog, ice and other weather conditions.",
+      "englishOptions": [],
+      "englishExplanation": "",
+      "correctOptionKey": "Right",
+      "generatedTranslation": {
+        "prompt": "Снижение скорости при движении по песку, в граде, дожде, тумане, на льду и в других погодных условиях.",
+        "options": {},
+        "explanation": ""
+      },
+      "generationStatus": "generated",
+      "generationProvider": "openai",
+      "generationModel": "gpt-5-mini",
+      "needsHumanReview": true,
+      "reviewStatus": "approved",
+      "warnings": [],
+      "qualityReview": {
+        "qid": "q0360",
+        "number": 360,
+        "qualityStatus": "approved",
+        "confidence": 0.96,
+        "answerKeyLogicMayBeWrong": false,
+        "issues": [],
+        "suggestedFix": null,
+        "reviewerReasoningSummary": "Перевод точно передаёт смысл оригинала; формулировка естественна и соответствует экзаменационной лексике. Нет опций для проверки.",
+        "reviewedAt": "2026-05-02T07:54:01.740Z",
+        "reviewer": "ai-localization-quality-review"
+      },
+      "reviewedBy": "ai-quality-review",
+      "reviewedAt": "2026-05-02T07:54:01.740Z"
+    },
+    {
+      "qid": "q0361",
+      "number": 361,
       "source": "english_master_backfill",
       "lang": "ru",
       "type": "row",
       "topic": "right-of-way",
-      "subtopic": null,
+      "subtopic": "traffic",
       "tags": {
         "auto": [
-          "#row"
+          "#row",
+          "#pic",
+          "#traffic"
         ],
         "user": [],
         "suggested": [
@@ -232,70 +1853,62 @@
           }
         ]
       },
-      "image": null,
-      "imageAssets": [],
-      "imageTags": null,
-      "objectTags": [],
-      "englishPrompt": "When a vehicle encounters the cut in by another vehicle in a roundabout, the driver may not evade as long as he has the right of way.",
-      "englishOptions": [],
-      "englishExplanation": "",
-      "correctOptionKey": "Wrong",
-      "generatedTranslation": {
-        "prompt": "Когда на кольце другой автомобиль вклинивается перед ним, водитель может не уклоняться при условии, что у него преимущество в движении.",
-        "options": {},
-        "explanation": ""
-      },
-      "generationStatus": "generated",
-      "generationProvider": "openai",
-      "generationModel": "gpt-5-mini",
-      "needsHumanReview": true,
-      "reviewStatus": "approved",
-      "warnings": [],
-      "qualityReview": {
-        "qid": "q0039",
-        "number": 39,
-        "qualityStatus": "approved",
-        "confidence": 0.95,
-        "answerKeyLogicMayBeWrong": false,
-        "issues": [],
-        "suggestedFix": null,
-        "reviewerReasoningSummary": "Перевод точно передаёт смысл исходного утверждения о вклинивании на кольце; терминология и логика ответа (Wrong) сохранены.",
-        "reviewedAt": "2026-05-02T06:55:13.935Z",
-        "reviewer": "ai-localization-quality-review"
-      },
-      "reviewedBy": "ai-quality-review",
-      "reviewedAt": "2026-05-02T06:55:13.935Z"
-    },
-    {
-      "qid": "q0041",
-      "number": 41,
-      "source": "english_master_backfill",
-      "lang": "ru",
-      "type": "row",
-      "topic": "highway",
-      "subtopic": null,
-      "tags": {
-        "auto": [
-          "#row"
+      "image": "/qbank/2023-test1/images/img_f5e5264d403c455cd1a74f22201af3d6.jpeg",
+      "imageAssets": [
+        "/qbank/2023-test1/images/img_f5e5264d403c455cd1a74f22201af3d6.jpeg"
+      ],
+      "imageTags": {
+        "assetSrcs": [
+          "/qbank/2023-test1/images/img_f5e5264d403c455cd1a74f22201af3d6.jpeg"
         ],
-        "user": [],
-        "suggested": [
+        "colorTags": [
+          "blue",
+          "gray"
+        ],
+        "objectTags": [
+          "pov",
+          "car",
+          "silver-car"
+        ],
+        "dominantByAsset": [
           {
-            "tag": "#highway",
-            "score": 1
+            "assetSrc": "/qbank/2023-test1/images/img_f5e5264d403c455cd1a74f22201af3d6.jpeg",
+            "colors": [
+              {
+                "color": "gray",
+                "overallShare": 0.669,
+                "chromaticShare": null
+              },
+              {
+                "color": "blue",
+                "overallShare": 0.189,
+                "chromaticShare": 0.632
+              },
+              {
+                "color": "green",
+                "overallShare": 0.069,
+                "chromaticShare": 0.232
+              },
+              {
+                "color": "brown",
+                "overallShare": 0.026,
+                "chromaticShare": 0.086
+              }
+            ]
           }
         ]
       },
-      "image": null,
-      "imageAssets": [],
-      "imageTags": null,
-      "objectTags": [],
-      "englishPrompt": "When a vehicle leaves a highway, it should reduce speed in the deceleration lane before entering the ramp.",
+      "objectTags": [
+        "pov",
+        "car",
+        "silver-car"
+      ],
+      "englishPrompt": "Reducing the speed to yield when encountering this situation in the intersection.",
       "englishOptions": [],
       "englishExplanation": "",
       "correctOptionKey": "Right",
       "generatedTranslation": {
-        "prompt": "При съезде с автомагистрали следует снизить скорость на полосе замедления перед съездом.",
+        "prompt": "Снижение скорости, чтобы уступить дорогу в этой ситуации на перекрёстке.",
         "options": {},
         "explanation": ""
       },
@@ -306,380 +1919,168 @@
       "reviewStatus": "approved",
       "warnings": [],
       "qualityReview": {
-        "qid": "q0041",
-        "number": 41,
+        "qid": "q0361",
+        "number": 361,
         "qualityStatus": "approved",
         "confidence": 0.96,
         "answerKeyLogicMayBeWrong": false,
         "issues": [],
         "suggestedFix": null,
-        "reviewerReasoningSummary": "Перевод точно передаёт смысл английского текста; термин «полоса замедления» и порядок действий сохранены. Нет несоответствий с ключом ответа.",
-        "reviewedAt": "2026-05-02T06:55:13.935Z",
+        "reviewerReasoningSummary": "Перевод корректно передаёт требование снизить скорость, чтобы уступить на перекрёстке; учитывает контекст изображения. Формулировка естественна и экзаменационно приемлема.",
+        "reviewedAt": "2026-05-02T07:54:01.740Z",
         "reviewer": "ai-localization-quality-review"
       },
       "reviewedBy": "ai-quality-review",
-      "reviewedAt": "2026-05-02T06:55:13.935Z"
+      "reviewedAt": "2026-05-02T07:54:01.740Z"
     },
     {
-      "qid": "q0043",
-      "number": 43,
-      "source": "english_master_backfill",
-      "lang": "ru",
-      "type": "row",
-      "topic": null,
-      "subtopic": null,
-      "tags": {
-        "auto": [
-          "#row"
-        ],
-        "user": [],
-        "suggested": []
-      },
-      "image": null,
-      "imageAssets": [],
-      "imageTags": null,
-      "objectTags": [],
-      "englishPrompt": "When a vehicle goes uphill on a mountain road, it should change to a lower gear in a timely, accurate and rapid manner so as to avoid a situation in which driving at a high gear can reduce the power of the engine.",
-      "englishOptions": [],
-      "englishExplanation": "",
-      "correctOptionKey": "Right",
-      "generatedTranslation": {
-        "prompt": "При подъёме по горной дороге водитель должен своевременно, точно и быстро переключиться на пониженную передачу, чтобы избежать ситуации, когда движение на высокой передаче может снизить мощность двигателя.",
-        "options": {},
-        "explanation": ""
-      },
-      "generationStatus": "generated",
-      "generationProvider": "openai",
-      "generationModel": "gpt-5-mini",
-      "needsHumanReview": true,
-      "reviewStatus": "approved",
-      "warnings": [],
-      "qualityReview": {
-        "qid": "q0043",
-        "number": 43,
-        "qualityStatus": "approved",
-        "confidence": 0.96,
-        "answerKeyLogicMayBeWrong": false,
-        "issues": [],
-        "suggestedFix": null,
-        "reviewerReasoningSummary": "Перевод верный и естественный, все элементы ('своевременно, точно и быстро', 'пониженная передача') сохранены. Соответствие логике ответа подтверждено.",
-        "reviewedAt": "2026-05-02T06:55:13.935Z",
-        "reviewer": "ai-localization-quality-review"
-      },
-      "reviewedBy": "ai-quality-review",
-      "reviewedAt": "2026-05-02T06:55:13.935Z"
-    },
-    {
-      "qid": "q0048",
-      "number": 48,
-      "source": "english_master_backfill",
-      "lang": "ru",
-      "type": "row",
-      "topic": "highway",
-      "subtopic": null,
-      "tags": {
-        "auto": [
-          "#row"
-        ],
-        "user": [],
-        "suggested": [
-          {
-            "tag": "#highway",
-            "score": 1
-          }
-        ]
-      },
-      "image": null,
-      "imageAssets": [],
-      "imageTags": null,
-      "objectTags": [],
-      "englishPrompt": "A vehicle may stop on the ramp of a highway.",
-      "englishOptions": [],
-      "englishExplanation": "",
-      "correctOptionKey": "Wrong",
-      "generatedTranslation": {
-        "prompt": "Транспортное средство может остановиться на съездной полосе автомагистрали.",
-        "options": {},
-        "explanation": ""
-      },
-      "generationStatus": "generated",
-      "generationProvider": "openai",
-      "generationModel": "gpt-5-mini",
-      "needsHumanReview": true,
-      "reviewStatus": "approved",
-      "warnings": [],
-      "qualityReview": {
-        "qid": "q0048",
-        "number": 48,
-        "qualityStatus": "approved",
-        "confidence": 0.95,
-        "answerKeyLogicMayBeWrong": false,
-        "issues": [],
-        "suggestedFix": null,
-        "reviewerReasoningSummary": "Прямой перевод утверждения сохранён («может остановиться»). Терминология приемлема для экзамена; ключ ответа (ложь) остаётся согласованным с оригиналом.",
-        "reviewedAt": "2026-05-02T06:55:13.935Z",
-        "reviewer": "ai-localization-quality-review"
-      },
-      "reviewedBy": "ai-quality-review",
-      "reviewedAt": "2026-05-02T06:55:13.935Z"
-    },
-    {
-      "qid": "q0083",
-      "number": 83,
-      "source": "english_master_backfill",
-      "lang": "ru",
-      "type": "row",
-      "topic": "vehicle-basics",
-      "subtopic": null,
-      "tags": {
-        "auto": [
-          "#row"
-        ],
-        "user": [],
-        "suggested": [
-          {
-            "tag": "#vehicle-basics",
-            "score": 1
-          }
-        ]
-      },
-      "image": null,
-      "imageAssets": [],
-      "imageTags": null,
-      "objectTags": [],
-      "englishPrompt": "When the vehicle has changed its direction due to a front tire blowout on the road, the driver should firmly hold the steering wheel with both hands to ensure the vehicle goes straight.",
-      "englishOptions": [],
-      "englishExplanation": "",
-      "correctOptionKey": "Right",
-      "generatedTranslation": {
-        "prompt": "При разрыве передней шины на дороге водитель должен крепко держать рулевое колесо обеими руками, чтобы автомобиль продолжал двигаться по прямой.",
-        "options": {},
-        "explanation": ""
-      },
-      "generationStatus": "generated",
-      "generationProvider": "openai",
-      "generationModel": "gpt-5-mini",
-      "needsHumanReview": true,
-      "reviewStatus": "approved",
-      "warnings": [],
-      "qualityReview": {
-        "qid": "q0083",
-        "number": 83,
-        "qualityStatus": "approved",
-        "confidence": 0.96,
-        "answerKeyLogicMayBeWrong": false,
-        "issues": [],
-        "suggestedFix": null,
-        "reviewerReasoningSummary": "Перевод корректно отражает инструкцию по удержанию рулевого колеса при разрыве передней шины. Нет искажений значений или логики ответа.",
-        "reviewedAt": "2026-05-02T06:55:13.935Z",
-        "reviewer": "ai-localization-quality-review"
-      },
-      "reviewedBy": "ai-quality-review",
-      "reviewedAt": "2026-05-02T06:55:13.935Z"
-    },
-    {
-      "qid": "q0084",
-      "number": 84,
-      "source": "english_master_backfill",
-      "lang": "ru",
-      "type": "row",
-      "topic": null,
-      "subtopic": null,
-      "tags": {
-        "auto": [
-          "#row"
-        ],
-        "user": [],
-        "suggested": []
-      },
-      "image": null,
-      "imageAssets": [],
-      "imageTags": null,
-      "objectTags": [],
-      "englishPrompt": "Driving and smoking has no harm on safe driving.",
-      "englishOptions": [],
-      "englishExplanation": "",
-      "correctOptionKey": "Wrong",
-      "generatedTranslation": {
-        "prompt": "Курение при управлении автомобилем не вредит безопасности вождения.",
-        "options": {},
-        "explanation": ""
-      },
-      "generationStatus": "generated",
-      "generationProvider": "openai",
-      "generationModel": "gpt-5-mini",
-      "needsHumanReview": true,
-      "reviewStatus": "approved",
-      "warnings": [],
-      "qualityReview": {
-        "qid": "q0084",
-        "number": 84,
-        "qualityStatus": "approved",
-        "confidence": 0.95,
-        "answerKeyLogicMayBeWrong": false,
-        "issues": [],
-        "suggestedFix": null,
-        "reviewerReasoningSummary": "Перевод правильно передаёт отрицательное утверждение о вреде курения при вождении; формулировка естественна и соответствует оригинальному ключу ответа.",
-        "reviewedAt": "2026-05-02T06:55:13.935Z",
-        "reviewer": "ai-localization-quality-review"
-      },
-      "reviewedBy": "ai-quality-review",
-      "reviewedAt": "2026-05-02T06:55:13.935Z"
-    },
-    {
-      "qid": "q0102",
-      "number": 102,
-      "source": "english_master_backfill",
-      "lang": "ru",
-      "type": "row",
-      "topic": null,
-      "subtopic": null,
-      "tags": {
-        "auto": [
-          "#row"
-        ],
-        "user": [],
-        "suggested": []
-      },
-      "image": null,
-      "imageAssets": [],
-      "imageTags": null,
-      "objectTags": [],
-      "englishPrompt": "Emergency braking on a road covered by ice and snow can easily cause side skidding. The driver should use the engine braking to reduce speed.",
-      "englishOptions": [],
-      "englishExplanation": "",
-      "correctOptionKey": "Right",
-      "generatedTranslation": {
-        "prompt": "Экстренное торможение на дороге, покрытой льдом и снегом, может легко вызвать занос. Водитель должен использовать торможение двигателем для снижения скорости.",
-        "options": {},
-        "explanation": ""
-      },
-      "generationStatus": "generated",
-      "generationProvider": "openai",
-      "generationModel": "gpt-5-mini",
-      "needsHumanReview": true,
-      "reviewStatus": "approved",
-      "warnings": [],
-      "qualityReview": {
-        "qid": "q0102",
-        "number": 102,
-        "qualityStatus": "approved",
-        "confidence": 0.96,
-        "answerKeyLogicMayBeWrong": false,
-        "issues": [],
-        "suggestedFix": null,
-        "reviewerReasoningSummary": "Перевод точно передаёт смысл исходного утверждения (экстренное торможение на льду/снегу вызывает занос; следует использовать торможение двигателем). Нет вариантов; логика ответа (Right) сохраняется.",
-        "reviewedAt": "2026-05-02T06:55:13.935Z",
-        "reviewer": "ai-localization-quality-review"
-      },
-      "reviewedBy": "ai-quality-review",
-      "reviewedAt": "2026-05-02T06:55:13.935Z"
-    },
-    {
-      "qid": "q0103",
-      "number": 103,
-      "source": "english_master_backfill",
-      "lang": "ru",
-      "type": "row",
-      "topic": "highway",
-      "subtopic": null,
-      "tags": {
-        "auto": [
-          "#row"
-        ],
-        "user": [],
-        "suggested": [
-          {
-            "tag": "#highway",
-            "score": 1
-          }
-        ]
-      },
-      "image": null,
-      "imageAssets": [],
-      "imageTags": null,
-      "objectTags": [],
-      "englishPrompt": "Vehicles should drive on the right shoulder of a highway.",
-      "englishOptions": [],
-      "englishExplanation": "",
-      "correctOptionKey": "Wrong",
-      "generatedTranslation": {
-        "prompt": "Транспортные средства должны ехать по правой обочине автомагистрали.",
-        "options": {},
-        "explanation": ""
-      },
-      "generationStatus": "generated",
-      "generationProvider": "openai",
-      "generationModel": "gpt-5-mini",
-      "needsHumanReview": true,
-      "reviewStatus": "approved",
-      "warnings": [],
-      "qualityReview": {
-        "qid": "q0103",
-        "number": 103,
-        "qualityStatus": "approved",
-        "confidence": 0.95,
-        "answerKeyLogicMayBeWrong": false,
-        "issues": [],
-        "suggestedFix": null,
-        "reviewerReasoningSummary": "Прямой и корректный перевод утверждения о движении по правой обочине автомагистрали. Смысл сохранён; ответ (Wrong) остаётся корректным.",
-        "reviewedAt": "2026-05-02T06:55:13.935Z",
-        "reviewer": "ai-localization-quality-review"
-      },
-      "reviewedBy": "ai-quality-review",
-      "reviewedAt": "2026-05-02T06:55:13.935Z"
-    },
-    {
-      "qid": "q0127",
-      "number": 127,
+      "qid": "q0363",
+      "number": 363,
       "source": "english_master_backfill",
       "lang": "ru",
       "type": "mcq",
-      "topic": null,
-      "subtopic": null,
+      "topic": "license",
+      "subtopic": "violations-penalties",
       "tags": {
         "auto": [
-          "#mcq"
+          "#mcq",
+          "#safe-driving",
+          "#pic"
         ],
         "user": [],
-        "suggested": []
+        "suggested": [
+          {
+            "tag": "#license",
+            "score": 2
+          },
+          {
+            "tag": "#violations-penalties",
+            "score": 1
+          }
+        ]
       },
       "image": null,
       "imageAssets": [],
       "imageTags": null,
       "objectTags": [],
-      "englishPrompt": "When a vehicle coming in the opposite direction suddenly overtakes and occupies your lane, the correct way to deal with this situation is to __________.",
+      "englishPrompt": "If a driving license is obtained by deception, bribery or other illegal means, the driving license should be revoked and the applicant is not allowed to re-apply for it _____ .",
       "englishOptions": [
         {
           "key": "A",
-          "id": "q0127_o1",
-          "text": "obstruct the way of that vehicle"
+          "id": "q0363_o1",
+          "text": "within 3 years"
         },
         {
           "key": "B",
-          "id": "q0127_o2",
-          "text": "maintain the original speed"
+          "id": "q0363_o2",
+          "text": "the whole life"
         },
         {
           "key": "C",
-          "id": "q0127_o3",
-          "text": "reduce speed and avoid as much as possible, till stop"
+          "id": "q0363_o3",
+          "text": "within 1 year"
         },
         {
           "key": "D",
-          "id": "q0127_o4",
-          "text": "speed up and go forward"
+          "id": "q0363_o4",
+          "text": "within 5 years"
+        }
+      ],
+      "englishExplanation": "",
+      "correctOptionKey": "A",
+      "generatedTranslation": {
+        "prompt": "Если водительское удостоверение получено обманом, подкупом или другими незаконными средствами, удостоверение следует аннулировать, и заявителю не разрешается повторно подавать заявление на его получение _____.",
+        "options": {
+          "q0363_o1": "в течение 3 лет",
+          "q0363_o2": "всю жизнь",
+          "q0363_o3": "в течение 1 года",
+          "q0363_o4": "в течение 5 лет"
+        },
+        "explanation": ""
+      },
+      "generationStatus": "generated",
+      "generationProvider": "openai",
+      "generationModel": "gpt-5-mini",
+      "needsHumanReview": true,
+      "reviewStatus": "approved",
+      "warnings": [],
+      "qualityReview": {
+        "qid": "q0363",
+        "number": 363,
+        "qualityStatus": "approved",
+        "confidence": 0.96,
+        "answerKeyLogicMayBeWrong": false,
+        "issues": [],
+        "suggestedFix": null,
+        "reviewerReasoningSummary": "Перевод вопроса и всех вариантов точен; соответствие ключей вариантов (A—в течение 3 лет и т.д.) сохранено. Лексика юридична и уместна.",
+        "reviewedAt": "2026-05-02T07:54:01.740Z",
+        "reviewer": "ai-localization-quality-review"
+      },
+      "reviewedBy": "ai-quality-review",
+      "reviewedAt": "2026-05-02T07:54:01.740Z"
+    },
+    {
+      "qid": "q0394",
+      "number": 394,
+      "source": "english_master_backfill",
+      "lang": "ru",
+      "type": "mcq",
+      "topic": "violations-penalties",
+      "subtopic": "points-system",
+      "tags": {
+        "auto": [
+          "#mcq",
+          "#safe-driving",
+          "#pic"
+        ],
+        "user": [],
+        "suggested": [
+          {
+            "tag": "#violations-penalties",
+            "score": 1
+          },
+          {
+            "tag": "#points-system",
+            "score": 1
+          }
+        ]
+      },
+      "image": null,
+      "imageAssets": [],
+      "imageTags": null,
+      "objectTags": [],
+      "englishPrompt": "The penalty points will be _____ if violating the traffic lights.",
+      "englishOptions": [
+        {
+          "key": "A",
+          "id": "q0394_o1",
+          "text": "2 point penalty"
+        },
+        {
+          "key": "B",
+          "id": "q0394_o2",
+          "text": "3 point penalty"
+        },
+        {
+          "key": "C",
+          "id": "q0394_o3",
+          "text": "6 point penalty"
+        },
+        {
+          "key": "D",
+          "id": "q0394_o4",
+          "text": "12 point penalty"
         }
       ],
       "englishExplanation": "",
       "correctOptionKey": "C",
       "generatedTranslation": {
-        "prompt": "Если едущий навстречу автомобиль внезапно обгоняет и выезжает на вашу полосу, правильное действие — __________.",
+        "prompt": "Штрафные баллы составят _____ при нарушении правил проезда на светофоре.",
         "options": {
-          "q0127_o1": "перегородить путь этому транспортному средству",
-          "q0127_o2": "сохранить исходную скорость",
-          "q0127_o3": "снизить скорость и по возможности уклониться, вплоть до остановки",
-          "q0127_o4": "увеличить скорость и продолжить движение"
+          "q0394_o1": "2 штрафных балла",
+          "q0394_o2": "3 штрафных балла",
+          "q0394_o3": "6 штрафных баллов",
+          "q0394_o4": "12 штрафных баллов"
         },
         "explanation": ""
       },
@@ -690,36 +2091,119 @@
       "reviewStatus": "approved",
       "warnings": [],
       "qualityReview": {
-        "qid": "q0127",
-        "number": 127,
+        "qid": "q0394",
+        "number": 394,
         "qualityStatus": "approved",
         "confidence": 0.96,
         "answerKeyLogicMayBeWrong": false,
         "issues": [],
         "suggestedFix": null,
-        "reviewerReasoningSummary": "Все варианты соответствуют английским опциям по смыслу и порядку; ключ правильного ответа (C) сохранён. Формулировка на русском естественна и экзаменационно уместна.",
-        "reviewedAt": "2026-05-02T06:55:13.935Z",
+        "reviewerReasoningSummary": "Перевод корректно отражает оригинал; варианты передачены точно, числовые значения и падежи адекватны для экзаменационного текста.",
+        "reviewedAt": "2026-05-02T07:54:01.740Z",
         "reviewer": "ai-localization-quality-review"
       },
       "reviewedBy": "ai-quality-review",
-      "reviewedAt": "2026-05-02T06:55:13.935Z"
+      "reviewedAt": "2026-05-02T07:54:01.740Z"
     },
     {
-      "qid": "q0133",
-      "number": 133,
+      "qid": "q0403",
+      "number": 403,
       "source": "english_master_backfill",
       "lang": "ru",
       "type": "mcq",
-      "topic": "traffic-lights",
+      "topic": "safe-driving",
       "subtopic": null,
       "tags": {
         "auto": [
-          "#mcq"
+          "#mcq",
+          "#safe-driving",
+          "#pic"
+        ],
+        "user": [],
+        "suggested": []
+      },
+      "image": null,
+      "imageAssets": [],
+      "imageTags": null,
+      "objectTags": [],
+      "englishPrompt": "How long can a driver drives without rest?",
+      "englishOptions": [
+        {
+          "key": "A",
+          "id": "q0403_o1",
+          "text": "less than 6hrs"
+        },
+        {
+          "key": "B",
+          "id": "q0403_o2",
+          "text": "less than 8hrs"
+        },
+        {
+          "key": "C",
+          "id": "q0403_o3",
+          "text": "less than 10hrs"
+        },
+        {
+          "key": "D",
+          "id": "q0403_o4",
+          "text": "less than 4hrs"
+        }
+      ],
+      "englishExplanation": "",
+      "correctOptionKey": "D",
+      "generatedTranslation": {
+        "prompt": "Как долго водитель может ехать без отдыха?",
+        "options": {
+          "q0403_o1": "менее 6 часов",
+          "q0403_o2": "менее 8 часов",
+          "q0403_o3": "менее 10 часов",
+          "q0403_o4": "менее 4 часов"
+        },
+        "explanation": ""
+      },
+      "generationStatus": "generated",
+      "generationProvider": "openai",
+      "generationModel": "gpt-5-mini",
+      "needsHumanReview": true,
+      "reviewStatus": "approved",
+      "warnings": [],
+      "qualityReview": {
+        "qid": "q0403",
+        "number": 403,
+        "qualityStatus": "approved",
+        "confidence": 0.96,
+        "answerKeyLogicMayBeWrong": false,
+        "issues": [],
+        "suggestedFix": null,
+        "reviewerReasoningSummary": "Перевод вопроса и вариантов точен; смысл «сколько водитель может ехать без отдыха» сохранён, варианты переведены соответствующе.",
+        "reviewedAt": "2026-05-02T07:54:01.740Z",
+        "reviewer": "ai-localization-quality-review"
+      },
+      "reviewedBy": "ai-quality-review",
+      "reviewedAt": "2026-05-02T07:54:01.740Z"
+    },
+    {
+      "qid": "q0431",
+      "number": 431,
+      "source": "english_master_backfill",
+      "lang": "ru",
+      "type": "mcq",
+      "topic": "license",
+      "subtopic": "violations-penalties",
+      "tags": {
+        "auto": [
+          "#mcq",
+          "#safe-driving",
+          "#pic"
         ],
         "user": [],
         "suggested": [
           {
-            "tag": "#traffic-lights",
+            "tag": "#license",
+            "score": 1
+          },
+          {
+            "tag": "#violations-penalties",
             "score": 1
           }
         ]
@@ -728,38 +2212,38 @@
       "imageAssets": [],
       "imageTags": null,
       "objectTags": [],
-      "englishPrompt": "When a vehicle enters a two-way tunnel, the driver should turn on ________.",
+      "englishPrompt": "The police can detain the vehicle if one drives a vehicle without a ______.",
       "englishOptions": [
         {
           "key": "A",
-          "id": "q0133_o1",
-          "text": "the hazard lights"
+          "id": "q0431_o1",
+          "text": "driving license"
         },
         {
           "key": "B",
-          "id": "q0133_o2",
-          "text": "the high beam light"
+          "id": "q0431_o2",
+          "text": "ID card"
         },
         {
           "key": "C",
-          "id": "q0133_o3",
-          "text": "the fog light"
+          "id": "q0431_o3",
+          "text": "pass paper"
         },
         {
           "key": "D",
-          "id": "q0133_o4",
-          "text": "the sidelights or the low beam light"
+          "id": "q0431_o4",
+          "text": "qualification certificate"
         }
       ],
       "englishExplanation": "",
-      "correctOptionKey": "D",
+      "correctOptionKey": "A",
       "generatedTranslation": {
-        "prompt": "При въезде в двухсторонний тоннель водитель должен включить ________.",
+        "prompt": "Полиция может задержать транспортное средство, если водитель управляет им без ______.",
         "options": {
-          "q0133_o1": "аварийную сигнализацию",
-          "q0133_o2": "дальний свет",
-          "q0133_o3": "противотуманные фары",
-          "q0133_o4": "габаритные огни или ближний свет фар"
+          "q0431_o1": "водительского удостоверения",
+          "q0431_o2": "удостоверения личности",
+          "q0431_o3": "пропуска",
+          "q0431_o4": "квалификационного свидетельства"
         },
         "explanation": ""
       },
@@ -770,34 +2254,48 @@
       "reviewStatus": "approved",
       "warnings": [],
       "qualityReview": {
-        "qid": "q0133",
-        "number": 133,
+        "qid": "q0431",
+        "number": 431,
         "qualityStatus": "approved",
-        "confidence": 0.95,
+        "confidence": 0.97,
         "answerKeyLogicMayBeWrong": false,
         "issues": [],
         "suggestedFix": null,
-        "reviewerReasoningSummary": "Варианты переведены корректно и соответствуют английским (D — габаритные огни или ближний свет). Термин «двухсторонний тоннель» передаёт смысл «tunnel with two-way traffic» и приемлем в контексте.",
-        "reviewedAt": "2026-05-02T06:55:13.935Z",
+        "reviewerReasoningSummary": "Перевод передаёт исходное значение вопроса и все варианты ответа точно; терминология («водительское удостоверение», «удостоверение личности» и т.д.) естественна и соответствует источнику; соответствие правильного ответа сохранено.",
+        "reviewedAt": "2026-05-02T07:54:01.740Z",
         "reviewer": "ai-localization-quality-review"
       },
       "reviewedBy": "ai-quality-review",
-      "reviewedAt": "2026-05-02T06:55:13.935Z"
+      "reviewedAt": "2026-05-02T07:54:01.740Z"
     },
     {
-      "qid": "q0135",
-      "number": 135,
+      "qid": "q0433",
+      "number": 433,
       "source": "english_master_backfill",
       "lang": "ru",
       "type": "mcq",
-      "topic": "right-of-way",
-      "subtopic": null,
+      "topic": "violations-penalties",
+      "subtopic": "license",
       "tags": {
         "auto": [
-          "#mcq"
+          "#mcq",
+          "#safe-driving",
+          "#pic"
         ],
         "user": [],
         "suggested": [
+          {
+            "tag": "#violations-penalties",
+            "score": 2
+          },
+          {
+            "tag": "#license",
+            "score": 1
+          },
+          {
+            "tag": "#vehicle-registration",
+            "score": 1
+          },
           {
             "tag": "#right-of-way",
             "score": 1
@@ -808,38 +2306,38 @@
       "imageAssets": [],
       "imageTags": null,
       "objectTags": [],
-      "englishPrompt": "When finding a vehicle in the opposite direction having difficulty to go forward and needing to borrow road while crossing each other, the driver should ________.",
+      "englishPrompt": "Which is subject to a 12-point penalty?",
       "englishOptions": [
         {
           "key": "A",
-          "id": "q0135_o1",
-          "text": "not occupy the road of the other side and should go forward normally"
+          "id": "q0433_o1",
+          "text": "driving a vehicle when driving license is temporarily detained"
         },
         {
           "key": "B",
-          "id": "q0135_o2",
-          "text": "indicate the other side to stop and yield"
+          "id": "q0433_o2",
+          "text": "applying for reissuing the driving license by concealment or deception"
         },
         {
           "key": "C",
-          "id": "q0135_o3",
-          "text": "speed up and go forward by the right side"
+          "id": "q0433_o3",
+          "text": "not yielding to the school bus according to regulations"
         },
         {
           "key": "D",
-          "id": "q0135_o4",
-          "text": "yield to the other side as much as possible"
+          "id": "q0433_o4",
+          "text": "running with the license plate deliberately stained"
         }
       ],
       "englishExplanation": "",
       "correctOptionKey": "D",
       "generatedTranslation": {
-        "prompt": "При встрече с идущим навстречу транспортным средством, которому трудно проехать и которое вынуждено занять часть вашей полосы, водитель должен ________.",
+        "prompt": "Что подпадает под наказание в 12 штрафных баллов?",
         "options": {
-          "q0135_o1": "не занимать полосу встречного движения и продолжать движение в обычном порядке",
-          "q0135_o2": "подать сигнал другой стороне, чтобы она остановилась и уступила",
-          "q0135_o3": "ускориться и проехать по правой стороне",
-          "q0135_o4": "по возможности уступить встречной стороне"
+          "q0433_o1": "управление транспортным средством при временном изъятии водительского удостоверения",
+          "q0433_o2": "подача заявления на повторное получение водительского удостоверения посредством сокрытия или обмана",
+          "q0433_o3": "неуступление дороги школьному автобусу в соответствии с правилами",
+          "q0433_o4": "движение с преднамеренно загрязнённым номерным знаком"
         },
         "explanation": ""
       },
@@ -850,23 +2348,320 @@
       "reviewStatus": "approved",
       "warnings": [],
       "qualityReview": {
-        "qid": "q0135",
-        "number": 135,
+        "qid": "q0433",
+        "number": 433,
         "qualityStatus": "approved",
-        "confidence": 0.96,
+        "confidence": 0.97,
         "answerKeyLogicMayBeWrong": false,
         "issues": [],
         "suggestedFix": null,
-        "reviewerReasoningSummary": "Перевод сохраняет все варианты и порядок, ключ ответа D сохранён. Русский текст естественен и корректен с точки зрения дорожной терминологии.",
-        "reviewedAt": "2026-05-02T06:55:13.935Z",
+        "reviewerReasoningSummary": "Все варианты переведены корректно и однозначно соответствуют английскому тексту; логика ответа (вариант D) сохранена; формулировки приемлемы для экзамена.",
+        "reviewedAt": "2026-05-02T07:54:01.740Z",
         "reviewer": "ai-localization-quality-review"
       },
       "reviewedBy": "ai-quality-review",
-      "reviewedAt": "2026-05-02T06:55:13.935Z"
+      "reviewedAt": "2026-05-02T07:54:01.740Z"
     },
     {
-      "qid": "q0136",
-      "number": 136,
+      "qid": "q0444",
+      "number": 444,
+      "source": "english_master_backfill",
+      "lang": "ru",
+      "type": "mcq",
+      "topic": "violations-penalties",
+      "subtopic": "parking",
+      "tags": {
+        "auto": [
+          "#mcq",
+          "#safe-driving",
+          "#pic"
+        ],
+        "user": [],
+        "suggested": [
+          {
+            "tag": "#violations-penalties",
+            "score": 1
+          },
+          {
+            "tag": "#parking",
+            "score": 1
+          }
+        ]
+      },
+      "image": "/qbank/2023-test1/images/img_e1fdb31f7cb095d6f1a1811306b0c97e.jpeg",
+      "imageAssets": [
+        "/qbank/2023-test1/images/img_e1fdb31f7cb095d6f1a1811306b0c97e.jpeg"
+      ],
+      "imageTags": {
+        "assetSrcs": [
+          "/qbank/2023-test1/images/img_e1fdb31f7cb095d6f1a1811306b0c97e.jpeg"
+        ],
+        "colorTags": [
+          "green",
+          "gray"
+        ],
+        "objectTags": [
+          "car",
+          "green-car",
+          "building",
+          "tree"
+        ],
+        "dominantByAsset": [
+          {
+            "assetSrc": "/qbank/2023-test1/images/img_e1fdb31f7cb095d6f1a1811306b0c97e.jpeg",
+            "colors": [
+              {
+                "color": "green",
+                "overallShare": 0.392,
+                "chromaticShare": 0.641
+              },
+              {
+                "color": "gray",
+                "overallShare": 0.284,
+                "chromaticShare": null
+              },
+              {
+                "color": "blue",
+                "overallShare": 0.189,
+                "chromaticShare": 0.309
+              },
+              {
+                "color": "white",
+                "overallShare": 0.099,
+                "chromaticShare": null
+              }
+            ]
+          }
+        ]
+      },
+      "objectTags": [
+        "car",
+        "green-car",
+        "building",
+        "tree"
+      ],
+      "englishPrompt": "What kind of violation does this car have while stopping temporarily by the roadside?",
+      "englishOptions": [
+        {
+          "key": "A",
+          "id": "q0444_o1",
+          "text": "stop occupying the lane for vehicles"
+        },
+        {
+          "key": "B",
+          "id": "q0444_o2",
+          "text": "stop more than 30cm from the roadside"
+        },
+        {
+          "key": "C",
+          "id": "q0444_o3",
+          "text": "stop in the section with no stopping marking"
+        },
+        {
+          "key": "D",
+          "id": "q0444_o4",
+          "text": "stop occupying the lane for non-vehicles"
+        }
+      ],
+      "englishExplanation": "",
+      "correctOptionKey": "C",
+      "generatedTranslation": {
+        "prompt": "Какое нарушение совершил этот автомобиль при временной остановке у обочины?",
+        "options": {
+          "q0444_o1": "остановка с занятием полосы для транспортных средств",
+          "q0444_o2": "остановка более чем в 30 см от обочины",
+          "q0444_o3": "остановка на участке, где нанесена разметка, запрещающая остановку",
+          "q0444_o4": "остановка с занятием полосы для немоторных транспортных средств"
+        },
+        "explanation": ""
+      },
+      "generationStatus": "generated",
+      "generationProvider": "openai",
+      "generationModel": "gpt-5-mini",
+      "needsHumanReview": true,
+      "reviewStatus": "approved",
+      "warnings": [],
+      "qualityReview": {
+        "qid": "q0444",
+        "number": 444,
+        "qualityStatus": "approved",
+        "confidence": 0.97,
+        "answerKeyLogicMayBeWrong": false,
+        "issues": [],
+        "suggestedFix": null,
+        "reviewerReasoningSummary": "Перевод вопроса с учётом контекста изображения точен; варианты ответов соответствуют исходным значениям (включая «разметка, запрещающая остановку»); правильный ответ (C) сохранён.",
+        "reviewedAt": "2026-05-02T07:54:01.740Z",
+        "reviewer": "ai-localization-quality-review"
+      },
+      "reviewedBy": "ai-quality-review",
+      "reviewedAt": "2026-05-02T07:54:01.740Z"
+    },
+    {
+      "qid": "q0462",
+      "number": 462,
+      "source": "english_master_backfill",
+      "lang": "ru",
+      "type": "mcq",
+      "topic": "vehicle-registration",
+      "subtopic": "violations-penalties",
+      "tags": {
+        "auto": [
+          "#mcq",
+          "#safe-driving",
+          "#pic"
+        ],
+        "user": [],
+        "suggested": [
+          {
+            "tag": "#vehicle-registration",
+            "score": 1
+          },
+          {
+            "tag": "#violations-penalties",
+            "score": 1
+          }
+        ]
+      },
+      "image": null,
+      "imageAssets": [],
+      "imageTags": null,
+      "objectTags": [],
+      "englishPrompt": "A driver who uses falsified and altered driver's license is subject to a ________.",
+      "englishOptions": [
+        {
+          "key": "A",
+          "id": "q0462_o1",
+          "text": "6-point penalty"
+        },
+        {
+          "key": "B",
+          "id": "q0462_o2",
+          "text": "3-point penalty"
+        },
+        {
+          "key": "C",
+          "id": "q0462_o3",
+          "text": "2-point penalty"
+        },
+        {
+          "key": "D",
+          "id": "q0462_o4",
+          "text": "12-point penalty"
+        }
+      ],
+      "englishExplanation": "",
+      "correctOptionKey": "D",
+      "generatedTranslation": {
+        "prompt": "Водитель, использующий поддельное или изменённое водительское удостоверение, подлежит наказанию в виде _______.",
+        "options": {
+          "q0462_o1": "6 штрафных баллов",
+          "q0462_o2": "3 штрафных балла",
+          "q0462_o3": "2 штрафных балла",
+          "q0462_o4": "12 штрафных баллов"
+        },
+        "explanation": ""
+      },
+      "generationStatus": "generated",
+      "generationProvider": "openai",
+      "generationModel": "gpt-5-mini",
+      "needsHumanReview": true,
+      "reviewStatus": "approved",
+      "warnings": [],
+      "qualityReview": {
+        "qid": "q0462",
+        "number": 462,
+        "qualityStatus": "approved",
+        "confidence": 0.97,
+        "answerKeyLogicMayBeWrong": false,
+        "issues": [],
+        "suggestedFix": null,
+        "reviewerReasoningSummary": "Чёткий и корректный перевод формулировки и числовых значений санкций; варианты с количеством штрафных баллов совпадают с английским источником; ответ D сохранён.",
+        "reviewedAt": "2026-05-02T07:54:01.740Z",
+        "reviewer": "ai-localization-quality-review"
+      },
+      "reviewedBy": "ai-quality-review",
+      "reviewedAt": "2026-05-02T07:54:01.740Z"
+    },
+    {
+      "qid": "q0473",
+      "number": 473,
+      "source": "english_master_backfill",
+      "lang": "ru",
+      "type": "mcq",
+      "topic": "safe-driving",
+      "subtopic": null,
+      "tags": {
+        "auto": [
+          "#mcq",
+          "#safe-driving",
+          "#pic"
+        ],
+        "user": [],
+        "suggested": []
+      },
+      "image": null,
+      "imageAssets": [],
+      "imageTags": null,
+      "objectTags": [],
+      "englishPrompt": "If the drivers household register has moved out of the original vehicle management station, the driver should apply to the vehicle management station _______ .",
+      "englishOptions": [
+        {
+          "key": "A",
+          "id": "q0473_o1",
+          "text": "at the former place of his household register"
+        },
+        {
+          "key": "B",
+          "id": "q0473_o2",
+          "text": "at the residential place"
+        },
+        {
+          "key": "C",
+          "id": "q0473_o3",
+          "text": "at the new place of his household register"
+        },
+        {
+          "key": "D",
+          "id": "q0473_o4",
+          "text": "at the location of his household register"
+        }
+      ],
+      "englishExplanation": "",
+      "correctOptionKey": "C",
+      "generatedTranslation": {
+        "prompt": "Если место регистрации (домашняя регистрация) водителя было перенесено из первоначального подразделения учёта транспортных средств, водитель должен подать заявление в подразделение учёта транспортных средств _______.",
+        "options": {
+          "q0473_o1": "по прежнему месту его регистрации",
+          "q0473_o2": "по месту жительства",
+          "q0473_o3": "по новому месту его регистрации",
+          "q0473_o4": "по месту его регистрации"
+        },
+        "explanation": ""
+      },
+      "generationStatus": "generated",
+      "generationProvider": "openai",
+      "generationModel": "gpt-5-mini",
+      "needsHumanReview": true,
+      "reviewStatus": "approved",
+      "warnings": [],
+      "qualityReview": {
+        "qid": "q0473",
+        "number": 473,
+        "qualityStatus": "approved",
+        "confidence": 0.97,
+        "answerKeyLogicMayBeWrong": false,
+        "issues": [],
+        "suggestedFix": null,
+        "reviewerReasoningSummary": "Перевод грамматически и терминологически корректен; все варианты соответствуют английским формулировкам и отвечают на тот же юридический нюанс; правильный ответ (C) соответствует исходнику.",
+        "reviewedAt": "2026-05-02T07:54:01.740Z",
+        "reviewer": "ai-localization-quality-review"
+      },
+      "reviewedBy": "ai-quality-review",
+      "reviewedAt": "2026-05-02T07:54:01.740Z"
+    },
+    {
+      "qid": "q0483",
+      "number": 483,
       "source": "english_master_backfill",
       "lang": "ru",
       "type": "mcq",
@@ -874,7 +2669,9 @@
       "subtopic": "right-of-way",
       "tags": {
         "auto": [
-          "#mcq"
+          "#mcq",
+          "#safe-driving",
+          "#pic"
         ],
         "user": [],
         "suggested": [
@@ -892,38 +2689,38 @@
       "imageAssets": [],
       "imageTags": null,
       "objectTags": [],
-      "englishPrompt": "When a following vehicle gives the overtaking signal, the driver should ________ if conditions permit.",
+      "englishPrompt": "What should the driver do if conditions permit when a following vehicle gives the overtaking signal on a road without a central line?",
       "englishOptions": [
         {
           "key": "A",
-          "id": "q0136_o1",
-          "text": "move to the right side and speed up"
+          "id": "q0483_o1",
+          "text": "maintain the original speed"
         },
         {
           "key": "B",
-          "id": "q0136_o2",
-          "text": "voluntarily reduce speed and drive along the right side"
+          "id": "q0483_o2",
+          "text": "speed up"
         },
         {
           "key": "C",
-          "id": "q0136_o3",
-          "text": "yield a proper space and speed up"
+          "id": "q0483_o3",
+          "text": "reduce speed, move to the right side and yield"
         },
         {
           "key": "D",
-          "id": "q0136_o4",
-          "text": "reduce speed rapidly or apply an emergency braking"
+          "id": "q0483_o4",
+          "text": "immediately stop and yield"
         }
       ],
       "englishExplanation": "",
-      "correctOptionKey": "B",
+      "correctOptionKey": "C",
       "generatedTranslation": {
-        "prompt": "Когда следующая сзади машина подаёт сигнал об обгоне, водитель должен ________, если условия позволяют.",
+        "prompt": "Что должен сделать водитель, если условия позволяют, когда автомобиль, следующий сзади, подаёт сигнал об опережении на дороге без центральной линии?",
         "options": {
-          "q0136_o1": "перестроиться вправо и ускориться",
-          "q0136_o2": "добровольно снизить скорость и ехать по правой стороне",
-          "q0136_o3": "оставить достаточный зазор и ускориться",
-          "q0136_o4": "резко снизить скорость или применить экстренное торможение"
+          "q0483_o1": "сохранить прежнюю скорость",
+          "q0483_o2": "увеличить скорость",
+          "q0483_o3": "снизить скорость, прижаться вправо и уступить",
+          "q0483_o4": "немедленно остановиться и уступить"
         },
         "explanation": ""
       },
@@ -934,262 +2731,39 @@
       "reviewStatus": "approved",
       "warnings": [],
       "qualityReview": {
-        "qid": "q0136",
-        "number": 136,
+        "qid": "q0483",
+        "number": 483,
         "qualityStatus": "approved",
-        "confidence": 0.96,
+        "confidence": 0.95,
         "answerKeyLogicMayBeWrong": false,
         "issues": [],
         "suggestedFix": null,
-        "reviewerReasoningSummary": "Перевод точно передаёт смысл исходного вопроса и вариантов; соответствие ключа ответа (B) сохранено. Небольшая стилистическая шероховатость («следующая сзади машина»), но смысл ясен и приемлем для экзамена.",
-        "reviewedAt": "2026-05-02T06:55:13.935Z",
+        "reviewerReasoningSummary": "Русский перевод точно передаёт смысл исходного вопроса и вариантов; порядок и соответствие ключей сохранены; формулировки естественны и экзамен-подходящи.",
+        "reviewedAt": "2026-05-02T07:54:01.740Z",
         "reviewer": "ai-localization-quality-review"
       },
       "reviewedBy": "ai-quality-review",
-      "reviewedAt": "2026-05-02T06:55:13.935Z"
+      "reviewedAt": "2026-05-02T07:54:01.740Z"
     },
     {
-      "qid": "q0156",
-      "number": 156,
+      "qid": "q0484",
+      "number": 484,
       "source": "english_master_backfill",
       "lang": "ru",
       "type": "mcq",
-      "topic": null,
-      "subtopic": null,
+      "topic": "parking",
+      "subtopic": "safe-driving",
       "tags": {
         "auto": [
-          "#mcq"
-        ],
-        "user": [],
-        "suggested": []
-      },
-      "image": null,
-      "imageAssets": [],
-      "imageTags": null,
-      "objectTags": [],
-      "englishPrompt": "When a vehicle passes a bump on the road, the driver should ________.",
-      "englishOptions": [
-        {
-          "key": "A",
-          "id": "q0156_o1",
-          "text": "speed up and dash over under inertia"
-        },
-        {
-          "key": "B",
-          "id": "q0156_o2",
-          "text": "change to the neutral gear and slide over"
-        },
-        {
-          "key": "C",
-          "id": "q0156_o3",
-          "text": "maintain the original speed and pass"
-        },
-        {
-          "key": "D",
-          "id": "q0156_o4",
-          "text": "pass slowly and steadily"
-        }
-      ],
-      "englishExplanation": "",
-      "correctOptionKey": "D",
-      "generatedTranslation": {
-        "prompt": "При проезде через лежачий полицейский (неровность) на дороге водитель должен ________.",
-        "options": {
-          "q0156_o1": "разогнаться и проскочить по инерции",
-          "q0156_o2": "переключиться на нейтральную передачу и проехать накатом",
-          "q0156_o3": "сохранить прежнюю скорость и проехать",
-          "q0156_o4": "проезжать медленно и плавно"
-        },
-        "explanation": ""
-      },
-      "generationStatus": "generated",
-      "generationProvider": "openai",
-      "generationModel": "gpt-5-mini",
-      "needsHumanReview": true,
-      "reviewStatus": "approved",
-      "warnings": [],
-      "qualityReview": {
-        "qid": "q0156",
-        "number": 156,
-        "qualityStatus": "approved",
-        "confidence": 0.96,
-        "answerKeyLogicMayBeWrong": false,
-        "issues": [],
-        "suggestedFix": null,
-        "reviewerReasoningSummary": "Перевод корректен и естественен; все варианты соответствуют оригиналу, логика правильного ответа (D) сохранена.",
-        "reviewedAt": "2026-05-02T06:55:13.935Z",
-        "reviewer": "ai-localization-quality-review"
-      },
-      "reviewedBy": "ai-quality-review",
-      "reviewedAt": "2026-05-02T06:55:13.935Z"
-    },
-    {
-      "qid": "q0158",
-      "number": 158,
-      "source": "english_master_backfill",
-      "lang": "ru",
-      "type": "mcq",
-      "topic": null,
-      "subtopic": null,
-      "tags": {
-        "auto": [
-          "#mcq"
-        ],
-        "user": [],
-        "suggested": []
-      },
-      "image": null,
-      "imageAssets": [],
-      "imageTags": null,
-      "objectTags": [],
-      "englishPrompt": "When a vehicle stops temporarily at the roadside, the driver ________.",
-      "englishOptions": [
-        {
-          "key": "A",
-          "id": "q0158_o1",
-          "text": "is not allowed to stop in the opposite direction or in parallel"
-        },
-        {
-          "key": "B",
-          "id": "q0158_o2",
-          "text": "may stop anyway he likes as long as it is convenient for him to get out"
-        },
-        {
-          "key": "C",
-          "id": "q0158_o3",
-          "text": "may stop the vehicle in the opposite direction"
-        },
-        {
-          "key": "D",
-          "id": "q0158_o4",
-          "text": "may stop the vehicle in parallel"
-        }
-      ],
-      "englishExplanation": "",
-      "correctOptionKey": "A",
-      "generatedTranslation": {
-        "prompt": "Когда транспортное средство временно останавливается у обочины, водитель ________.",
-        "options": {
-          "q0158_o1": "не имеет права останавливать автомобиль навстречу движению или параллельно проезжей части",
-          "q0158_o2": "может остановиться так, как ему удобно, если это облегчает выход",
-          "q0158_o3": "может остановить автомобиль, направив его навстречу движению",
-          "q0158_o4": "может остановить автомобиль параллельно проезжей части"
-        },
-        "explanation": ""
-      },
-      "generationStatus": "generated",
-      "generationProvider": "openai",
-      "generationModel": "gpt-5-mini",
-      "needsHumanReview": true,
-      "reviewStatus": "approved",
-      "warnings": [],
-      "qualityReview": {
-        "qid": "q0158",
-        "number": 158,
-        "qualityStatus": "approved",
-        "confidence": 0.96,
-        "answerKeyLogicMayBeWrong": false,
-        "issues": [],
-        "suggestedFix": null,
-        "reviewerReasoningSummary": "Перевод соответствует английскому тексту, терминология и порядок вариантов сохранены, ответ A корректно отражён.",
-        "reviewedAt": "2026-05-02T06:55:13.935Z",
-        "reviewer": "ai-localization-quality-review"
-      },
-      "reviewedBy": "ai-quality-review",
-      "reviewedAt": "2026-05-02T06:55:13.935Z"
-    },
-    {
-      "qid": "q0168",
-      "number": 168,
-      "source": "english_master_backfill",
-      "lang": "ru",
-      "type": "mcq",
-      "topic": null,
-      "subtopic": null,
-      "tags": {
-        "auto": [
-          "#mcq"
-        ],
-        "user": [],
-        "suggested": []
-      },
-      "image": null,
-      "imageAssets": [],
-      "imageTags": null,
-      "objectTags": [],
-      "englishPrompt": "The main impact of the road conditions in icy and snowy weather is ______.",
-      "englishOptions": [
-        {
-          "key": "A",
-          "id": "q0168_o1",
-          "text": "possible short circuit of electronics"
-        },
-        {
-          "key": "B",
-          "id": "q0168_o2",
-          "text": "the visibility is lower and the field of vision is blurred"
-        },
-        {
-          "key": "C",
-          "id": "q0168_o3",
-          "text": "increased driving resistance"
-        },
-        {
-          "key": "D",
-          "id": "q0168_o4",
-          "text": "poor braking performance and deviation in direction control"
-        }
-      ],
-      "englishExplanation": "",
-      "correctOptionKey": "D",
-      "generatedTranslation": {
-        "prompt": "Основное влияние условий дорожного покрытия в гололёд и снег — ______.",
-        "options": {
-          "q0168_o1": "возможное короткое замыкание в электронике",
-          "q0168_o2": "снижение видимости и затуманивание поля зрения",
-          "q0168_o3": "увеличение сопротивления движению",
-          "q0168_o4": "снижение эффективности торможения и отклонения в управлении направлением движения"
-        },
-        "explanation": ""
-      },
-      "generationStatus": "generated",
-      "generationProvider": "openai",
-      "generationModel": "gpt-5-mini",
-      "needsHumanReview": true,
-      "reviewStatus": "approved",
-      "warnings": [],
-      "qualityReview": {
-        "qid": "q0168",
-        "number": 168,
-        "qualityStatus": "approved",
-        "confidence": 0.96,
-        "answerKeyLogicMayBeWrong": false,
-        "issues": [],
-        "suggestedFix": null,
-        "reviewerReasoningSummary": "Перевод точно передаёт смысл вариантов; ключ ответа (D) сохранён. Формулировка техническая и уместна.",
-        "reviewedAt": "2026-05-02T06:55:13.935Z",
-        "reviewer": "ai-localization-quality-review"
-      },
-      "reviewedBy": "ai-quality-review",
-      "reviewedAt": "2026-05-02T06:55:13.935Z"
-    },
-    {
-      "qid": "q0186",
-      "number": 186,
-      "source": "english_master_backfill",
-      "lang": "ru",
-      "type": "mcq",
-      "topic": "right-of-way",
-      "subtopic": null,
-      "tags": {
-        "auto": [
-          "#mcq"
+          "#mcq",
+          "#safe-driving",
+          "#pic"
         ],
         "user": [],
         "suggested": [
           {
-            "tag": "#right-of-way",
-            "score": 2
+            "tag": "#parking",
+            "score": 1
           }
         ]
       },
@@ -1197,38 +2771,38 @@
       "imageAssets": [],
       "imageTags": null,
       "objectTags": [],
-      "englishPrompt": "If a vehicle has the right of way at an intersection but encounters a vehicle cutting in, the driver should _________.",
+      "englishPrompt": "When encountering stopping in turn or slow-moving vehicles in front at an intersection where lanes are reduced or on a road that suddenly narrows or merges into one lane, the vehicle should _________.",
       "englishOptions": [
         {
           "key": "A",
-          "id": "q0186_o1",
-          "text": "rush to pass"
+          "id": "q0484_o1",
+          "text": "enter the intersection from road shoulder by the right side of the vehicle in front"
         },
         {
           "key": "B",
-          "id": "q0186_o2",
-          "text": "speed up in advance and pass"
+          "id": "q0484_o2",
+          "text": "enter the intersection from the side of interspace"
         },
         {
           "key": "C",
-          "id": "q0186_o3",
-          "text": "reduce speed and evade, or stop to yield when necessary"
+          "id": "q0484_o3",
+          "text": "take turns from each lane, one car at a time to enter the intersection"
         },
         {
           "key": "D",
-          "id": "q0186_o4",
-          "text": "go forward at the normal speed according to the right of way and refuses to evade"
+          "id": "q0484_o4",
+          "text": "change to left lane and cut in to enter the intersection"
         }
       ],
       "englishExplanation": "",
       "correctOptionKey": "C",
       "generatedTranslation": {
-        "prompt": "Если на перекрёстке у транспортного средства есть преимущество проезда, но встречается автомобиль, вклинивающийся в поток, водитель должен _________.",
+        "prompt": "При встрече с остановившимися в очереди или медленно движущимися впереди транспортными средствами на перекрёстке, где число полос сокращается, либо на дороге, которая внезапно сужается или объединяется в одну полосу, транспортное средство должно _________.",
         "options": {
-          "q0186_o1": "торопиться проехать",
-          "q0186_o2": "заранее ускориться и проехать",
-          "q0186_o3": "снизить скорость и уклониться, либо при необходимости остановиться и уступить",
-          "q0186_o4": "продолжить движение с обычной скоростью в соответствии с правом проезда и отказаться от уклонения"
+          "q0484_o1": "въехать на перекрёсток по обочине справа от впереди идущего автомобиля",
+          "q0484_o2": "въехать на перекрёсток через боковой просвет",
+          "q0484_o3": "по очереди из каждой полосы по одному автомобилю въезжать на перекрёсток",
+          "q0484_o4": "перестроиться в левую полосу и вклиниться, чтобы въехать на перекрёсток"
         },
         "explanation": ""
       },
@@ -1239,19 +2813,723 @@
       "reviewStatus": "approved",
       "warnings": [],
       "qualityReview": {
-        "qid": "q0186",
-        "number": 186,
+        "qid": "q0484",
+        "number": 484,
         "qualityStatus": "approved",
-        "confidence": 0.96,
+        "confidence": 0.95,
         "answerKeyLogicMayBeWrong": false,
         "issues": [],
         "suggestedFix": null,
-        "reviewerReasoningSummary": "Перевод верный и естественный, все варианты соответствуют исходнику, правильный ответ (C) сохранён.",
-        "reviewedAt": "2026-05-02T06:55:13.935Z",
+        "reviewerReasoningSummary": "Перевод корректно отражает оригинал; все варианты соответствуют английским по смыслу и расположению; терминология уместна для ПДД.",
+        "reviewedAt": "2026-05-02T07:54:01.740Z",
         "reviewer": "ai-localization-quality-review"
       },
       "reviewedBy": "ai-quality-review",
-      "reviewedAt": "2026-05-02T06:55:13.935Z"
+      "reviewedAt": "2026-05-02T07:54:01.740Z"
+    },
+    {
+      "qid": "q0492",
+      "number": 492,
+      "source": "english_master_backfill",
+      "lang": "ru",
+      "type": "mcq",
+      "topic": "parking",
+      "subtopic": "safe-driving",
+      "tags": {
+        "auto": [
+          "#mcq",
+          "#safe-driving",
+          "#pic"
+        ],
+        "user": [],
+        "suggested": [
+          {
+            "tag": "#parking",
+            "score": 1
+          }
+        ]
+      },
+      "image": null,
+      "imageAssets": [],
+      "imageTags": null,
+      "objectTags": [],
+      "englishPrompt": "When encountering stopping and waiting in turn or slow-moving vehicles in front, the vehicle may _________.",
+      "englishOptions": [
+        {
+          "key": "A",
+          "id": "q0492_o1",
+          "text": "borrow road to overtake"
+        },
+        {
+          "key": "B",
+          "id": "q0492_o2",
+          "text": "occupy the opposite lane"
+        },
+        {
+          "key": "C",
+          "id": "q0492_o3",
+          "text": "follow the vehicles in front"
+        },
+        {
+          "key": "D",
+          "id": "q0492_o4",
+          "text": "cut in the waiting vehicles"
+        }
+      ],
+      "englishExplanation": "",
+      "correctOptionKey": "C",
+      "generatedTranslation": {
+        "prompt": "Если впереди транспортные средства остановились в очереди или движутся медленно, водитель может _________.",
+        "options": {
+          "q0492_o1": "выехать на участок дороги для обгона",
+          "q0492_o2": "занять полосу встречного движения",
+          "q0492_o3": "следовать за впереди идущими транспортными средствами",
+          "q0492_o4": "вклиниваться в очередь ожидающих транспортных средств"
+        },
+        "explanation": ""
+      },
+      "generationStatus": "generated",
+      "generationProvider": "openai",
+      "generationModel": "gpt-5-mini",
+      "needsHumanReview": true,
+      "reviewStatus": "approved",
+      "warnings": [],
+      "qualityReview": {
+        "qid": "q0492",
+        "number": 492,
+        "qualityStatus": "approved",
+        "confidence": 0.95,
+        "answerKeyLogicMayBeWrong": false,
+        "issues": [],
+        "suggestedFix": null,
+        "reviewerReasoningSummary": "Фраза и варианты адекватно передают английский текст; логика правильного ответа сохранена; нет искажений числовых или семантических данных.",
+        "reviewedAt": "2026-05-02T07:54:01.740Z",
+        "reviewer": "ai-localization-quality-review"
+      },
+      "reviewedBy": "ai-quality-review",
+      "reviewedAt": "2026-05-02T07:54:01.740Z"
+    },
+    {
+      "qid": "q0494",
+      "number": 494,
+      "source": "english_master_backfill",
+      "lang": "ru",
+      "type": "mcq",
+      "topic": "violations-penalties",
+      "subtopic": "safe-driving",
+      "tags": {
+        "auto": [
+          "#mcq",
+          "#safe-driving",
+          "#pic"
+        ],
+        "user": [],
+        "suggested": [
+          {
+            "tag": "#violations-penalties",
+            "score": 1
+          }
+        ]
+      },
+      "image": null,
+      "imageAssets": [],
+      "imageTags": null,
+      "objectTags": [],
+      "englishPrompt": "A driver who drives the vehicle which permission is different is subject to a ________.",
+      "englishOptions": [
+        {
+          "key": "A",
+          "id": "q0494_o1",
+          "text": "2-point penalty"
+        },
+        {
+          "key": "B",
+          "id": "q0494_o2",
+          "text": "3-point penalty"
+        },
+        {
+          "key": "C",
+          "id": "q0494_o3",
+          "text": "6-point penalty"
+        },
+        {
+          "key": "D",
+          "id": "q0494_o4",
+          "text": "12-point penalty"
+        }
+      ],
+      "englishExplanation": "",
+      "correctOptionKey": "D",
+      "generatedTranslation": {
+        "prompt": "Водитель, управляющий транспортным средством, на которое у него нет соответствующего разрешения, подлежит ________.",
+        "options": {
+          "q0494_o1": "2 штрафных балла",
+          "q0494_o2": "3 штрафных балла",
+          "q0494_o3": "6 штрафных баллов",
+          "q0494_o4": "12 штрафных баллов"
+        },
+        "explanation": ""
+      },
+      "generationStatus": "generated",
+      "generationProvider": "openai",
+      "generationModel": "gpt-5-mini",
+      "needsHumanReview": true,
+      "reviewStatus": "approved",
+      "warnings": [],
+      "qualityReview": {
+        "qid": "q0494",
+        "number": 494,
+        "qualityStatus": "approved",
+        "confidence": 0.95,
+        "answerKeyLogicMayBeWrong": false,
+        "issues": [],
+        "suggestedFix": null,
+        "reviewerReasoningSummary": "Перевод устраняет оригинальную неуклюжесть английской формулировки и даёт корректный юридически уместный русский вариант; все числовые значения и ключ ответа соответствуют исходнику.",
+        "reviewedAt": "2026-05-02T07:54:01.740Z",
+        "reviewer": "ai-localization-quality-review"
+      },
+      "reviewedBy": "ai-quality-review",
+      "reviewedAt": "2026-05-02T07:54:01.740Z"
+    },
+    {
+      "qid": "q0495",
+      "number": 495,
+      "source": "english_master_backfill",
+      "lang": "ru",
+      "type": "mcq",
+      "topic": "accidents",
+      "subtopic": "violations-penalties",
+      "tags": {
+        "auto": [
+          "#mcq",
+          "#safe-driving",
+          "#pic"
+        ],
+        "user": [],
+        "suggested": [
+          {
+            "tag": "#accidents",
+            "score": 1
+          },
+          {
+            "tag": "#violations-penalties",
+            "score": 1
+          }
+        ]
+      },
+      "image": null,
+      "imageAssets": [],
+      "imageTags": null,
+      "objectTags": [],
+      "englishPrompt": "A driver who escapes after causing a traffic accident but his conduct does not constitute a crime, is subject to a ________.",
+      "englishOptions": [
+        {
+          "key": "A",
+          "id": "q0495_o1",
+          "text": "3-point penalty"
+        },
+        {
+          "key": "B",
+          "id": "q0495_o2",
+          "text": "2-point penalty"
+        },
+        {
+          "key": "C",
+          "id": "q0495_o3",
+          "text": "12-point penalty"
+        },
+        {
+          "key": "D",
+          "id": "q0495_o4",
+          "text": "6-point penalty"
+        }
+      ],
+      "englishExplanation": "",
+      "correctOptionKey": "C",
+      "generatedTranslation": {
+        "prompt": "Водитель, который скрывается после совершения дорожно-транспортного происшествия, но его действия не образуют преступления, подлежит ________.",
+        "options": {
+          "q0495_o1": "3 штрафных балла",
+          "q0495_o2": "2 штрафных балла",
+          "q0495_o3": "12 штрафных баллов",
+          "q0495_o4": "6 штрафных баллов"
+        },
+        "explanation": ""
+      },
+      "generationStatus": "generated",
+      "generationProvider": "openai",
+      "generationModel": "gpt-5-mini",
+      "needsHumanReview": true,
+      "reviewStatus": "approved",
+      "warnings": [],
+      "qualityReview": {
+        "qid": "q0495",
+        "number": 495,
+        "qualityStatus": "approved",
+        "confidence": 0.95,
+        "answerKeyLogicMayBeWrong": false,
+        "issues": [],
+        "suggestedFix": null,
+        "reviewerReasoningSummary": "Перевод точен, варианты соответствуют исходным по смыслу и порядку; формулировка юридически и лексически корректна; ключ ответа сохранён.",
+        "reviewedAt": "2026-05-02T07:54:01.740Z",
+        "reviewer": "ai-localization-quality-review"
+      },
+      "reviewedBy": "ai-quality-review",
+      "reviewedAt": "2026-05-02T07:54:01.740Z"
+    },
+    {
+      "qid": "q0496",
+      "number": 496,
+      "source": "english_master_backfill",
+      "lang": "ru",
+      "type": "mcq",
+      "topic": "license",
+      "subtopic": "accidents",
+      "tags": {
+        "auto": [
+          "#mcq",
+          "#safe-driving",
+          "#pic"
+        ],
+        "user": [],
+        "suggested": [
+          {
+            "tag": "#license",
+            "score": 1
+          },
+          {
+            "tag": "#accidents",
+            "score": 1
+          }
+        ]
+      },
+      "image": null,
+      "imageAssets": [],
+      "imageTags": null,
+      "objectTags": [],
+      "englishPrompt": "If a person escapes after causing a traffic accident and constitutes a crime, his driving license should be revoked and he is banned _____ from re-obtaining a driving license.",
+      "englishOptions": [
+        {
+          "key": "A",
+          "id": "q0496_o1",
+          "text": "within 5 years"
+        },
+        {
+          "key": "B",
+          "id": "q0496_o2",
+          "text": "within 10 years"
+        },
+        {
+          "key": "C",
+          "id": "q0496_o3",
+          "text": "within 20 years"
+        },
+        {
+          "key": "D",
+          "id": "q0496_o4",
+          "text": "for lifetime"
+        }
+      ],
+      "englishExplanation": "",
+      "correctOptionKey": "D",
+      "generatedTranslation": {
+        "prompt": "Если лицо скрывается после того, как стало виновником дорожно-транспортного происшествия и его действия составляют преступление, его водительское удостоверение должно быть аннулировано, и ему запрещено _____ повторно получать водительское удостоверение.",
+        "options": {
+          "q0496_o1": "в течение 5 лет",
+          "q0496_o2": "в течение 10 лет",
+          "q0496_o3": "в течение 20 лет",
+          "q0496_o4": "пожизненно"
+        },
+        "explanation": ""
+      },
+      "generationStatus": "generated",
+      "generationProvider": "openai",
+      "generationModel": "gpt-5-mini",
+      "needsHumanReview": true,
+      "reviewStatus": "approved",
+      "warnings": [],
+      "qualityReview": {
+        "qid": "q0496",
+        "number": 496,
+        "qualityStatus": "approved",
+        "confidence": 0.98,
+        "answerKeyLogicMayBeWrong": false,
+        "issues": [],
+        "suggestedFix": null,
+        "reviewerReasoningSummary": "Перевод точно сохраняет смысл английского оригинала, порядок опций и ключи ответа. Русский текст естественен и уместен для экзамена.",
+        "reviewedAt": "2026-05-02T07:54:01.740Z",
+        "reviewer": "ai-localization-quality-review"
+      },
+      "reviewedBy": "ai-quality-review",
+      "reviewedAt": "2026-05-02T07:54:01.740Z"
+    },
+    {
+      "qid": "q0502",
+      "number": 502,
+      "source": "english_master_backfill",
+      "lang": "ru",
+      "type": "mcq",
+      "topic": "safe-driving",
+      "subtopic": null,
+      "tags": {
+        "auto": [
+          "#mcq",
+          "#safe-driving",
+          "#pic"
+        ],
+        "user": [],
+        "suggested": []
+      },
+      "image": null,
+      "imageAssets": [],
+      "imageTags": null,
+      "objectTags": [],
+      "englishPrompt": "What should the driver do when encountering a vehicle from the opposite direction on a road without a central line?",
+      "englishOptions": [
+        {
+          "key": "A",
+          "id": "q0502_o1",
+          "text": "driving closely by the roadside"
+        },
+        {
+          "key": "B",
+          "id": "q0502_o2",
+          "text": "driving by the central of the road"
+        },
+        {
+          "key": "C",
+          "id": "q0502_o3",
+          "text": "reducing speed and driving by right side"
+        },
+        {
+          "key": "D",
+          "id": "q0502_o4",
+          "text": "run by using the lane for non-vehicles"
+        }
+      ],
+      "englishExplanation": "",
+      "correctOptionKey": "C",
+      "generatedTranslation": {
+        "prompt": "Что должен сделать водитель при встрече с автомобилем из встречного направления на дороге без центральной линии?",
+        "options": {
+          "q0502_o1": "двигаться плотно у края проезжей части",
+          "q0502_o2": "двигаться по центру дороги",
+          "q0502_o3": "снизить скорость и держаться правой стороны",
+          "q0502_o4": "ехать по полосе для немоторных транспортных средств"
+        },
+        "explanation": ""
+      },
+      "generationStatus": "generated",
+      "generationProvider": "openai",
+      "generationModel": "gpt-5-mini",
+      "needsHumanReview": true,
+      "reviewStatus": "approved",
+      "warnings": [],
+      "qualityReview": {
+        "qid": "q0502",
+        "number": 502,
+        "qualityStatus": "approved",
+        "confidence": 0.98,
+        "answerKeyLogicMayBeWrong": false,
+        "issues": [],
+        "suggestedFix": null,
+        "reviewerReasoningSummary": "Перевод соответствует исходному смыслу, все варианты опций сохранены и корректно сопоставлены, формулировка естественна для ПДД.",
+        "reviewedAt": "2026-05-02T07:54:01.740Z",
+        "reviewer": "ai-localization-quality-review"
+      },
+      "reviewedBy": "ai-quality-review",
+      "reviewedAt": "2026-05-02T07:54:01.740Z"
+    },
+    {
+      "qid": "q0505",
+      "number": 505,
+      "source": "english_master_backfill",
+      "lang": "ru",
+      "type": "mcq",
+      "topic": "safe-driving",
+      "subtopic": null,
+      "tags": {
+        "auto": [
+          "#mcq",
+          "#pic",
+          "#safe-driving"
+        ],
+        "user": [],
+        "suggested": []
+      },
+      "image": "/qbank/2023-test1/images/img_f247aa5c64ce1d20146935d372ed02ac.jpeg",
+      "imageAssets": [
+        "/qbank/2023-test1/images/img_f247aa5c64ce1d20146935d372ed02ac.jpeg"
+      ],
+      "imageTags": {
+        "assetSrcs": [
+          "/qbank/2023-test1/images/img_f247aa5c64ce1d20146935d372ed02ac.jpeg"
+        ],
+        "colorTags": [
+          "blue",
+          "gray"
+        ],
+        "objectTags": [
+          "pov",
+          "120",
+          "clouds",
+          "alone",
+          "lonely"
+        ],
+        "dominantByAsset": [
+          {
+            "assetSrc": "/qbank/2023-test1/images/img_f247aa5c64ce1d20146935d372ed02ac.jpeg",
+            "colors": [
+              {
+                "color": "gray",
+                "overallShare": 0.582,
+                "chromaticShare": null
+              },
+              {
+                "color": "blue",
+                "overallShare": 0.264,
+                "chromaticShare": 0.825
+              },
+              {
+                "color": "white",
+                "overallShare": 0.091,
+                "chromaticShare": null
+              },
+              {
+                "color": "green",
+                "overallShare": 0.051,
+                "chromaticShare": 0.158
+              }
+            ]
+          }
+        ]
+      },
+      "objectTags": [
+        "pov",
+        "120",
+        "clouds",
+        "alone",
+        "lonely"
+      ],
+      "englishPrompt": "What is the minimum speed in this lane?",
+      "englishOptions": [
+        {
+          "key": "A",
+          "id": "q0505_o1",
+          "text": "60km/hr"
+        },
+        {
+          "key": "B",
+          "id": "q0505_o2",
+          "text": "90km/hr"
+        },
+        {
+          "key": "C",
+          "id": "q0505_o3",
+          "text": "100km/hr"
+        },
+        {
+          "key": "D",
+          "id": "q0505_o4",
+          "text": "110km/hr"
+        }
+      ],
+      "englishExplanation": "",
+      "correctOptionKey": "C",
+      "generatedTranslation": {
+        "prompt": "Какая минимальная скорость на этой полосе?",
+        "options": {
+          "q0505_o1": "60 км/ч",
+          "q0505_o2": "90 км/ч",
+          "q0505_o3": "100 км/ч",
+          "q0505_o4": "110 км/ч"
+        },
+        "explanation": ""
+      },
+      "generationStatus": "generated",
+      "generationProvider": "openai",
+      "generationModel": "gpt-5-mini",
+      "needsHumanReview": true,
+      "reviewStatus": "approved",
+      "warnings": [],
+      "qualityReview": {
+        "qid": "q0505",
+        "number": 505,
+        "qualityStatus": "approved",
+        "confidence": 0.98,
+        "answerKeyLogicMayBeWrong": false,
+        "issues": [],
+        "suggestedFix": null,
+        "reviewerReasoningSummary": "Краткий образный вопрос с зависимостью от изображения корректно переведен; числовые значения и единицы измерения (км/ч) сохранены точно.",
+        "reviewedAt": "2026-05-02T07:54:01.740Z",
+        "reviewer": "ai-localization-quality-review"
+      },
+      "reviewedBy": "ai-quality-review",
+      "reviewedAt": "2026-05-02T07:54:01.740Z"
+    },
+    {
+      "qid": "q0506",
+      "number": 506,
+      "source": "english_master_backfill",
+      "lang": "ru",
+      "type": "mcq",
+      "topic": "violations-penalties",
+      "subtopic": "safe-driving",
+      "tags": {
+        "auto": [
+          "#mcq",
+          "#safe-driving",
+          "#pic"
+        ],
+        "user": [],
+        "suggested": [
+          {
+            "tag": "#violations-penalties",
+            "score": 1
+          }
+        ]
+      },
+      "image": null,
+      "imageAssets": [],
+      "imageTags": null,
+      "objectTags": [],
+      "englishPrompt": "The driver who chases and races while driving on the road, and commits serious acts is subject to ______.",
+      "englishOptions": [
+        {
+          "key": "A",
+          "id": "q0506_o1",
+          "text": "a prison term of 6 months"
+        },
+        {
+          "key": "B",
+          "id": "q0506_o2",
+          "text": "a prison term of more than 1 year"
+        },
+        {
+          "key": "C",
+          "id": "q0506_o3",
+          "text": "a criminal restriction and a fine"
+        },
+        {
+          "key": "D",
+          "id": "q0506_o4",
+          "text": "a criminal detention and a fine"
+        }
+      ],
+      "englishExplanation": "",
+      "correctOptionKey": "D",
+      "generatedTranslation": {
+        "prompt": "Водитель, который во время движения по дороге преследует другие автомобили или участвует в гонках и при этом совершает серьёзные действия, подлежит ______.",
+        "options": {
+          "q0506_o1": "лишению свободы на 6 месяцев",
+          "q0506_o2": "лишению свободы более чем на 1 год",
+          "q0506_o3": "назначению наказания в виде ограничения свободы и штрафа",
+          "q0506_o4": "уголовному лишению свободы и штрафу"
+        },
+        "explanation": ""
+      },
+      "generationStatus": "generated",
+      "generationProvider": "openai",
+      "generationModel": "gpt-5-mini",
+      "needsHumanReview": true,
+      "reviewStatus": "approved",
+      "warnings": [],
+      "qualityReview": {
+        "qid": "q0506",
+        "number": 506,
+        "qualityStatus": "approved",
+        "confidence": 0.98,
+        "answerKeyLogicMayBeWrong": false,
+        "issues": [],
+        "suggestedFix": null,
+        "reviewerReasoningSummary": "Перевод вариантов наказаний соответствует английским формулировкам; терминология юридична и понятна в контексте экзамена, соответствие правильного ответа сохранено.",
+        "reviewedAt": "2026-05-02T07:54:01.740Z",
+        "reviewer": "ai-localization-quality-review"
+      },
+      "reviewedBy": "ai-quality-review",
+      "reviewedAt": "2026-05-02T07:54:01.740Z"
+    },
+    {
+      "qid": "q0509",
+      "number": 509,
+      "source": "english_master_backfill",
+      "lang": "ru",
+      "type": "mcq",
+      "topic": "traffic-lights",
+      "subtopic": "safe-driving",
+      "tags": {
+        "auto": [
+          "#mcq",
+          "#safe-driving",
+          "#pic"
+        ],
+        "user": [],
+        "suggested": [
+          {
+            "tag": "#traffic-lights",
+            "score": 1
+          }
+        ]
+      },
+      "image": null,
+      "imageAssets": [],
+      "imageTags": null,
+      "objectTags": [],
+      "englishPrompt": "How to use lights when pulling over on road?",
+      "englishOptions": [
+        {
+          "key": "A",
+          "id": "q0509_o1",
+          "text": "turn on the hazard lights"
+        },
+        {
+          "key": "B",
+          "id": "q0509_o2",
+          "text": "turn on the right-turn signal in advance"
+        },
+        {
+          "key": "C",
+          "id": "q0509_o3",
+          "text": "use the high and low beam lights alternately"
+        },
+        {
+          "key": "D",
+          "id": "q0509_o4",
+          "text": "not need to use any light to indicate"
+        }
+      ],
+      "englishExplanation": "",
+      "correctOptionKey": "B",
+      "generatedTranslation": {
+        "prompt": "Как следует использовать световые приборы при остановке на обочине дороги?",
+        "options": {
+          "q0509_o1": "включить аварийную сигнализацию",
+          "q0509_o2": "заранее включить правый поворотник",
+          "q0509_o3": "попеременно использовать дальний и ближний свет",
+          "q0509_o4": "не требуется использовать какие-либо световые сигналы"
+        },
+        "explanation": ""
+      },
+      "generationStatus": "generated",
+      "generationProvider": "openai",
+      "generationModel": "gpt-5-mini",
+      "needsHumanReview": true,
+      "reviewStatus": "approved",
+      "warnings": [],
+      "qualityReview": {
+        "qid": "q0509",
+        "number": 509,
+        "qualityStatus": "approved",
+        "confidence": 0.98,
+        "answerKeyLogicMayBeWrong": false,
+        "issues": [],
+        "suggestedFix": null,
+        "reviewerReasoningSummary": "Перевод вопроса и всех вариантов точен и естественен; смысл и порядок опций полностью соответствуют английскому оригиналу.",
+        "reviewedAt": "2026-05-02T07:54:01.740Z",
+        "reviewer": "ai-localization-quality-review"
+      },
+      "reviewedBy": "ai-quality-review",
+      "reviewedAt": "2026-05-02T07:54:01.740Z"
     }
   ]
 }
