@@ -1,8 +1,8 @@
 {
   "meta": {
     "locale": "ru",
-    "translatedQuestions": 932,
-    "generatedAt": "2026-05-02T08:45:27.488Z",
+    "translatedQuestions": 984,
+    "generatedAt": "2026-05-02T11:26:19.685Z",
     "mergedBatches": [
       "batch-001",
       "batch-002",
@@ -27,7 +27,10 @@
     "backfillMerges": [
       "missing-qid-backfill-2026-05-02T07:00:21.352Z",
       "missing-qid-backfill-2026-05-02T07:58:41.809Z",
-      "missing-qid-backfill-2026-05-02T08:45:27.488Z"
+      "missing-qid-backfill-2026-05-02T08:45:27.488Z",
+      "missing-qid-backfill-2026-05-02T10:35:10.898Z",
+      "missing-qid-backfill-2026-05-02T11:09:30.723Z",
+      "missing-qid-backfill-2026-05-02T11:26:19.685Z"
     ]
   },
   "questions": {
@@ -61577,6 +61580,120 @@
       ],
       "localeCorrectOptionKey": "B"
     },
+    "q0928": {
+      "prompt": "Что означает этот знак?",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready",
+      "options": {
+        "q0928_o1": "предупреждает, что впереди находится берег водоёма, озера или реки",
+        "q0928_o2": "предупреждает о крутом подъёме впереди",
+        "q0928_o3": "предупреждает о крутом спуске впереди",
+        "q0928_o4": "предупреждает о двух или более последовательных подъёмах впереди"
+      },
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "предупреждает, что впереди находится берег водоёма, озера или реки",
+          "sourceTextBody": "предупреждает, что впереди находится берег водоёма, озера или реки",
+          "canonicalOptionId": "q0928_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "reminding the side of a reservoir, lake or river ahead",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "предупреждает о крутом подъёме впереди",
+          "sourceTextBody": "предупреждает о крутом подъёме впереди",
+          "canonicalOptionId": "q0928_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "reminding the steep uphill road ahead",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "предупреждает о крутом спуске впереди",
+          "sourceTextBody": "предупреждает о крутом спуске впереди",
+          "canonicalOptionId": "q0928_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "reminding the steep downhill road ahead",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "предупреждает о двух или более последовательных подъёмах впереди",
+          "sourceTextBody": "предупреждает о двух или более последовательных подъёмах впереди",
+          "canonicalOptionId": "q0928_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "reminding continuous two or more up slopes ahead",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "предупреждает, что впереди находится берег водоёма, озера или реки",
+          "sourceTextBody": "предупреждает, что впереди находится берег водоёма, озера или реки",
+          "canonicalOptionId": "q0928_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "reminding the side of a reservoir, lake or river ahead",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "предупреждает о крутом подъёме впереди",
+          "sourceTextBody": "предупреждает о крутом подъёме впереди",
+          "canonicalOptionId": "q0928_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "reminding the steep uphill road ahead",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "предупреждает о крутом спуске впереди",
+          "sourceTextBody": "предупреждает о крутом спуске впереди",
+          "canonicalOptionId": "q0928_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "reminding the steep downhill road ahead",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "предупреждает о двух или более последовательных подъёмах впереди",
+          "sourceTextBody": "предупреждает о двух или более последовательных подъёмах впереди",
+          "canonicalOptionId": "q0928_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "reminding continuous two or more up slopes ahead",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "localeCorrectOptionKey": "C"
+    },
     "q0929": {
       "prompt": "Что означает данный знак?",
       "sourceMode": "direct",
@@ -61681,6 +61798,628 @@
         }
       ],
       "localeCorrectOptionKey": "D"
+    },
+    "q0930": {
+      "prompt": "Эти знаки предупреждают водителя об опасности впереди и о необходимости проезжать осторожно.",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready"
+    },
+    "q0931": {
+      "prompt": "Этот знак предупреждает водителя ехать медленно и осторожно и остерегаться транспортных средств, появляющихся с пересекающей дороги.",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready"
+    },
+    "q0932": {
+      "prompt": "Этот знак означает развилку (Y-образное пересечение) впереди.",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready"
+    },
+    "q0933": {
+      "prompt": "Этот знак предупреждает об препятствиях впереди и о необходимости снизить скорость, чтобы объехать их.",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready"
+    },
+    "q0934": {
+      "prompt": "Этот знак предупреждает о резком левом повороте впереди.",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready"
+    },
+    "q0935": {
+      "prompt": "Этот знак предупреждает о скользкой дороге впереди и рекомендует ехать медленно и осторожно.",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready"
+    },
+    "q0936": {
+      "prompt": "Этот знак предупреждает о двух соседних поворотах в противоположных направлениях впереди.",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready"
+    },
+    "q0937": {
+      "prompt": "Этот знак предупреждает, что ширина моста сужается впереди.",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready"
+    },
+    "q0938": {
+      "prompt": "Этот знак предупреждает, что полоса или дорога сужается справа впереди.",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready"
+    },
+    "q0939": {
+      "prompt": "Этот знак предупреждает, что впереди дорога или полоса сужается слева.",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready"
+    },
+    "q0940": {
+      "prompt": "Этот знак предупреждает, что впереди дорога или полоса сужается с обеих сторон.",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready"
+    },
+    "q0941": {
+      "prompt": "Этот знак предупреждает, что впереди начинается участок с двусторонним движением.",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready"
+    },
+    "q0942": {
+      "prompt": "Этот знак предупреждает водителя о пешеходном переходе впереди.",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready"
+    },
+    "q0943": {
+      "prompt": "Этот знак предупреждает водителя о школьной зоне впереди.",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready"
+    },
+    "q0944": {
+      "prompt": "Этот знак предупреждает водителя о светофоре впереди.",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready"
+    },
+    "q0945": {
+      "prompt": "Этот знак предупреждает об опасной дороге на склоне впереди.",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready"
+    },
+    "q0946": {
+      "prompt": "Этот знак предупреждает о сильном боковом ветре впереди.",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready"
+    },
+    "q0947": {
+      "prompt": "Этот знак предупреждает о резком повороте впереди.",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready"
+    },
+    "q0948": {
+      "prompt": "Этот знак предупреждает о дороге на насыпи впереди.",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready"
+    },
+    "q0949": {
+      "prompt": "Этот знак указывает, что дорога впереди проходит через населённый пункт.",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready"
+    },
+    "q0950": {
+      "prompt": "Этот знак предупреждает, что впереди находится односторонняя водопропускная труба с плохим освещением.",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready"
+    },
+    "q0951": {
+      "prompt": "Этот знак указывает, что впереди паром для транспортных средств.",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready"
+    },
+    "q0952": {
+      "prompt": "Этот знак предупреждает о серьёзной неровности на дороге впереди.",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready"
+    },
+    "q0953": {
+      "prompt": "Этот знак предупреждает о неровности дороги впереди, которая может вызвать тряску.",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready"
+    },
+    "q0954": {
+      "prompt": "Этот знак предупреждает о подтопленной дороге или затопленном мосте впереди.",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready"
+    },
+    "q0955": {
+      "prompt": "Этот знак предупреждает о неохраняемом железнодорожном переезде впереди.",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready"
+    },
+    "q0956": {
+      "prompt": "Этот знак предупреждает о неохраняемом железнодорожном переезде впереди.",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready"
+    },
+    "q0957": {
+      "prompt": "Этот знак предупреждает о полосе для немоторных транспортных средств впереди.",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready"
+    },
+    "q0958": {
+      "prompt": "Этот знак указывает на участок с пробкой впереди; проезжайте медленно.",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready"
+    },
+    "q0959": {
+      "prompt": "Этот знак указывает на участок дорожных работ впереди; объезд разрешён слева или справа.",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready"
+    },
+    "q0960": {
+      "prompt": "Этот знак указывает на препятствие впереди; объезд слева.",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready"
+    },
+    "q0961": {
+      "prompt": "Этот знак указывает на участок дороги с односторонним движением впереди.",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready"
+    },
+    "q0962": {
+      "prompt": "Этот знак указывает на участок, подверженный оползням, и на объезд.",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready"
+    },
+    "q0963": {
+      "prompt": "Этот знак указывает на необходимость снизить скорость или остановиться, чтобы пропустить транспортное средство на главной дороге.",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready"
+    },
+    "q0964": {
+      "prompt": "Этот знак означает, что встречный автомобиль должен остановиться и уступить при разъезде.",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready"
+    },
+    "q0965": {
+      "prompt": "Этот знак указывает на крытую парковку.",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready"
+    },
+    "q0966": {
+      "prompt": "Этот знак указывает на крытую парковку.",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready"
+    },
+    "q0967": {
+      "prompt": "Жёлтая разделительная линия на проезжей части служит для разделения потоков движения в противоположных направлениях; пересекать её для обгона или выполнения поворота разрешается, если это безопасно.",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready"
+    },
+    "q0968": {
+      "prompt": "Этот знак указывает на перекрёсток впереди.",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready"
+    },
+    "q0969": {
+      "prompt": "Двойные сплошные желтые линии посередине дороги, разделяющие встречные направления движения, используются для разделения потоков движения; пересечение этих линий, а также обгон или поворот разрешены, если это безопасно.",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready"
+    },
+    "q0970": {
+      "prompt": "Когда ваше транспортное средство обгоняют, и сзади вас следует ещё одно транспортное средство, водителю следует _____.",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready",
+      "options": {
+        "q0970_o1": "продолжать ускоряться и ехать",
+        "q0970_o2": "слегка повернуть вправо, держать безопасную боковую дистанцию",
+        "q0970_o3": "ехать по центру дороги",
+        "q0970_o4": "ускориться к правому краю, чтобы уступить"
+      },
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "продолжать ускоряться и ехать",
+          "sourceTextBody": "продолжать ускоряться и ехать",
+          "canonicalOptionId": "q0970_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "continue to speed up and run",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "слегка повернуть вправо, держать безопасную боковую дистанцию",
+          "sourceTextBody": "слегка повернуть вправо, держать безопасную боковую дистанцию",
+          "canonicalOptionId": "q0970_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "turn slightly to the right side, keep a safe horizontal distance",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "ехать по центру дороги",
+          "sourceTextBody": "ехать по центру дороги",
+          "canonicalOptionId": "q0970_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "run by road center",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "ускориться к правому краю, чтобы уступить",
+          "sourceTextBody": "ускориться к правому краю, чтобы уступить",
+          "canonicalOptionId": "q0970_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "speed up to the right side to yield",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "продолжать ускоряться и ехать",
+          "sourceTextBody": "продолжать ускоряться и ехать",
+          "canonicalOptionId": "q0970_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "continue to speed up and run",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "слегка повернуть вправо, держать безопасную боковую дистанцию",
+          "sourceTextBody": "слегка повернуть вправо, держать безопасную боковую дистанцию",
+          "canonicalOptionId": "q0970_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "turn slightly to the right side, keep a safe horizontal distance",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "ехать по центру дороги",
+          "sourceTextBody": "ехать по центру дороги",
+          "canonicalOptionId": "q0970_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "run by road center",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "ускориться к правому краю, чтобы уступить",
+          "sourceTextBody": "ускориться к правому краю, чтобы уступить",
+          "canonicalOptionId": "q0970_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "speed up to the right side to yield",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "localeCorrectOptionKey": "B"
+    },
+    "q0971": {
+      "prompt": "Для водителя коммерческого транспортного средства, управлявшего автомобилем в нетрезвом виде, помимо лишения водительского удостоверения, на какой срок ему будет запрещено повторно получать водительское удостоверение?",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready",
+      "options": {
+        "q0971_o1": "1 год",
+        "q0971_o2": "2 года",
+        "q0971_o3": "5 лет",
+        "q0971_o4": "10 лет"
+      },
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "1 год",
+          "sourceTextBody": "1 год",
+          "canonicalOptionId": "q0971_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "1 year",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "2 года",
+          "sourceTextBody": "2 года",
+          "canonicalOptionId": "q0971_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "2 year",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "5 лет",
+          "sourceTextBody": "5 лет",
+          "canonicalOptionId": "q0971_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "5 year",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "10 лет",
+          "sourceTextBody": "10 лет",
+          "canonicalOptionId": "q0971_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "10 year",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "1 год",
+          "sourceTextBody": "1 год",
+          "canonicalOptionId": "q0971_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "1 year",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "2 года",
+          "sourceTextBody": "2 года",
+          "canonicalOptionId": "q0971_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "2 year",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "5 лет",
+          "sourceTextBody": "5 лет",
+          "canonicalOptionId": "q0971_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "5 year",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "10 лет",
+          "sourceTextBody": "10 лет",
+          "canonicalOptionId": "q0971_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "10 year",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "localeCorrectOptionKey": "C"
+    },
+    "q0972": {
+      "prompt": "Для водителя коммерческого транспортного средства, управлявшего автомобилем в нетрезвом виде, помимо задержания органами дорожного надзора до трезвости, какое наказание ему будет назначено?",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready",
+      "options": {
+        "q0972_o1": "временное изъятие (задержание) транспортного средства",
+        "q0972_o2": "временное изъятие водительского удостоверения",
+        "q0972_o3": "отзыв водительского удостоверения",
+        "q0972_o4": "ему будет запрещено водить в течение жизни"
+      },
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "временное изъятие (задержание) транспортного средства",
+          "sourceTextBody": "временное изъятие (задержание) транспортного средства",
+          "canonicalOptionId": "q0972_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "temporary detainment of the motor vehicle",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "временное изъятие водительского удостоверения",
+          "sourceTextBody": "временное изъятие водительского удостоверения",
+          "canonicalOptionId": "q0972_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "temporary detainment of the driving license",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "отзыв водительского удостоверения",
+          "sourceTextBody": "отзыв водительского удостоверения",
+          "canonicalOptionId": "q0972_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "revocation of the motor vehicle driving license",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "ему будет запрещено водить в течение жизни",
+          "sourceTextBody": "ему будет запрещено водить в течение жизни",
+          "canonicalOptionId": "q0972_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "he/she will be banned from driving for life",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "временное изъятие (задержание) транспортного средства",
+          "sourceTextBody": "временное изъятие (задержание) транспортного средства",
+          "canonicalOptionId": "q0972_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "temporary detainment of the motor vehicle",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "временное изъятие водительского удостоверения",
+          "sourceTextBody": "временное изъятие водительского удостоверения",
+          "canonicalOptionId": "q0972_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "temporary detainment of the driving license",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "отзыв водительского удостоверения",
+          "sourceTextBody": "отзыв водительского удостоверения",
+          "canonicalOptionId": "q0972_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "revocation of the motor vehicle driving license",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "ему будет запрещено водить в течение жизни",
+          "sourceTextBody": "ему будет запрещено водить в течение жизни",
+          "canonicalOptionId": "q0972_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "he/she will be banned from driving for life",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "localeCorrectOptionKey": "C"
     },
     "q0973": {
       "prompt": "Вождение автотранспорта в состоянии алкогольного опьянения карается законом, и приговаривается к тюремному заключению сроком более 3 лет.",
@@ -61814,8 +62553,7 @@
           "canonicalOptionText": "Yes",
           "alignmentScore": 0,
           "alignmentMethod": "manual-answer-key-confirmed",
-          "manualAnswerKeyConfirmed": true,
-          "confirmedAsCorrectKey": true
+          "manualAnswerKeyConfirmed": true
         },
         {
           "sourceIndex": 1,
@@ -61839,8 +62577,7 @@
           "canonicalOptionText": "Yes",
           "alignmentScore": 0,
           "alignmentMethod": "manual-answer-key-confirmed",
-          "manualAnswerKeyConfirmed": true,
-          "confirmedAsCorrectKey": true
+          "manualAnswerKeyConfirmed": true
         },
         {
           "sourceKey": "B",
@@ -61852,8 +62589,128 @@
           "alignmentScore": 0,
           "alignmentMethod": "reviewed-gloss-meaning"
         }
+      ]
+    },
+    "q0976": {
+      "prompt": "Вливаясь с другой дороги, вы должны обращать внимание на движение автомобилей, расположенных диагонально позади вас.",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready"
+    },
+    "q0977": {
+      "prompt": "К какому из перечисленных типов относится этот дорожный знак?",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready",
+      "options": {
+        "q0977_o1": "предупреждающий знак",
+        "q0977_o2": "регулирующий знак",
+        "q0977_o3": "предписывающий знак",
+        "q0977_o4": "указательный знак"
+      },
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "предупреждающий знак",
+          "sourceTextBody": "предупреждающий знак",
+          "canonicalOptionId": "q0977_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "warning sign",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "регулирующий знак",
+          "sourceTextBody": "регулирующий знак",
+          "canonicalOptionId": "q0977_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "regulatory sign",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "предписывающий знак",
+          "sourceTextBody": "предписывающий знак",
+          "canonicalOptionId": "q0977_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "instruction sign",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "указательный знак",
+          "sourceTextBody": "указательный знак",
+          "canonicalOptionId": "q0977_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "guide sign",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
       ],
-      "localeCorrectOptionKey": "A"
+      "optionMeaningMap": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "предупреждающий знак",
+          "sourceTextBody": "предупреждающий знак",
+          "canonicalOptionId": "q0977_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "warning sign",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "регулирующий знак",
+          "sourceTextBody": "регулирующий знак",
+          "canonicalOptionId": "q0977_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "regulatory sign",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "предписывающий знак",
+          "sourceTextBody": "предписывающий знак",
+          "canonicalOptionId": "q0977_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "instruction sign",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "указательный знак",
+          "sourceTextBody": "указательный знак",
+          "canonicalOptionId": "q0977_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "guide sign",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "localeCorrectOptionKey": "B"
     },
     "q0978": {
       "prompt": "При появлении пешехода на проезжей части, не соблюдающего при этом правила безопасного прохода через дорогу, водитель имеет право не пропускать пешехода.",
@@ -61886,8 +62743,7 @@
           "canonicalOptionText": "Yes",
           "alignmentScore": 0,
           "alignmentMethod": "manual-answer-key-confirmed",
-          "manualAnswerKeyConfirmed": true,
-          "confirmedAsCorrectKey": true
+          "manualAnswerKeyConfirmed": true
         }
       ],
       "optionMeaningMap": [
@@ -61910,11 +62766,23 @@
           "canonicalOptionText": "Yes",
           "alignmentScore": 0,
           "alignmentMethod": "manual-answer-key-confirmed",
-          "manualAnswerKeyConfirmed": true,
-          "confirmedAsCorrectKey": true
+          "manualAnswerKeyConfirmed": true
         }
-      ],
-      "localeCorrectOptionKey": "B"
+      ]
+    },
+    "q0979": {
+      "prompt": "При управлении автомобилем вы обязаны соблюдать правила вежливого поведения на дороге и не должны вести себя агрессивно или совершать рискованные манёвры.",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready"
+    },
+    "q0980": {
+      "prompt": "Если вы управляете транспортным средством, которое подозревают в несоответствии стандартам утилизации, дорожная полиция может задержать такое транспортное средство в соответствии с законом.",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready"
     },
     "q0981": {
       "prompt": "За несоблюдение знаков светофора, водителю начисляется:",
@@ -62020,6 +62888,34 @@
         }
       ],
       "localeCorrectOptionKey": "D"
+    },
+    "q0982": {
+      "prompt": "Вы не должны управлять транспортным средством, представляющим риск для безопасности, на дороге.",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready"
+    },
+    "q0983": {
+      "prompt": "Транспортные средства и дорожные машины, выполняющие работы по содержанию дорог, обязаны уступать дорогу во время работ.",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready"
+    },
+    "q0984": {
+      "prompt": "Индикатор загорается при включении переключателя противотуманных фар.",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready"
+    },
+    "q0985": {
+      "prompt": "Если свидетельство о регистрации транспортного средства утеряно, владелец транспортного средства должен обратиться в орган регистрации транспортных средств по месту регистрации для повторной выдачи или продления свидетельства.",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready"
     }
   }
 }

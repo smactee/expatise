@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-02T08:45:27.583Z",
+  "generatedAt": "2026-05-02T11:31:32.330Z",
   "lang": "ru",
   "dataset": "2023-test1",
   "recommendation": "ship",
@@ -18,9 +18,9 @@
     "missingProductionStage": "qbank-tools/generated/staging/ru-discrepancy-missing-production-merge-candidates.json"
   },
   "fileHashes": {
-    "productionTranslationsSha256": "5e0e640d95d828aba7e46c1bc69ef38bd01bb994951c2f65a721afdf2fcab9bd",
-    "masterQuestionsSha256": "6d4acf6a01db336a4b8244d2c4cd3739711d3e3620a8fac9403a1271c83140a8",
-    "rawMasterQuestionsSha256": "4a2307123b9aad71044456df2af85c30366d1122530856d2b90b311d7adf97ad"
+    "productionTranslationsSha256": "cf2cc33582180c7a868318c73c087132682490cbf5dcd3a9de0a1c09902ddcc6",
+    "masterQuestionsSha256": "a32a323def51151b9147b3f1843d1f6c2fd55157a86320515a10b0dc112f84e5",
+    "rawMasterQuestionsSha256": "46bcd2795609e408d165ef5a8e992afadf1df5172a3c1f4a097aeabc70d59a38"
   },
   "counts": {
     "masterQids": 984,
@@ -28,73 +28,20 @@
     "rawOnlyMasterQids": [
       "q0518"
     ],
-    "productionRussianTranslations": 932,
-    "productionCoveragePercent": 94.72,
-    "missingQidsComparedToQuestionsJson": 52,
+    "productionRussianTranslations": 984,
+    "productionCoveragePercent": 100,
+    "missingQidsComparedToQuestionsJson": 0,
     "extraQidsNotInQuestionsJson": 0,
     "masterTypeCounts": {
       "row": 419,
       "mcq": 565
     },
     "translatedTypeCounts": {
-      "row": 372,
-      "mcq": 560
+      "row": 419,
+      "mcq": 565
     }
   },
-  "missingQids": [
-    "q0928",
-    "q0930",
-    "q0931",
-    "q0932",
-    "q0933",
-    "q0934",
-    "q0935",
-    "q0936",
-    "q0937",
-    "q0938",
-    "q0939",
-    "q0940",
-    "q0941",
-    "q0942",
-    "q0943",
-    "q0944",
-    "q0945",
-    "q0946",
-    "q0947",
-    "q0948",
-    "q0949",
-    "q0950",
-    "q0951",
-    "q0952",
-    "q0953",
-    "q0954",
-    "q0955",
-    "q0956",
-    "q0957",
-    "q0958",
-    "q0959",
-    "q0960",
-    "q0961",
-    "q0962",
-    "q0963",
-    "q0964",
-    "q0965",
-    "q0966",
-    "q0967",
-    "q0968",
-    "q0969",
-    "q0970",
-    "q0971",
-    "q0972",
-    "q0976",
-    "q0977",
-    "q0979",
-    "q0980",
-    "q0982",
-    "q0983",
-    "q0984",
-    "q0985"
-  ],
+  "missingQids": [],
   "extraQids": [],
   "validation": {
     "invalidLocaleAnswerKeys": [],
@@ -102,23 +49,14 @@
     "translatedMcqMissingOptions": [],
     "translatedMcqMissingLocaleAnswerKey": [],
     "localeAnswerKeyNotInSourceOrder": [],
-    "rowTranslationsWithMcqAnswerKey": [
-      {
-        "qid": "q0975",
-        "localeCorrectOptionKey": "A"
-      },
-      {
-        "qid": "q0978",
-        "localeCorrectOptionKey": "B"
-      }
-    ],
+    "rowTranslationsWithMcqAnswerKey": [],
     "counts": {
       "invalidLocaleAnswerKeys": 0,
       "invalidRowAnswers": 0,
       "translatedMcqMissingOptions": 0,
       "translatedMcqMissingLocaleAnswerKey": 0,
       "localeAnswerKeyNotInSourceOrder": 0,
-      "rowTranslationsWithMcqAnswerKey": 2
+      "rowTranslationsWithMcqAnswerKey": 0
     }
   },
   "duplicateQidConflicts": {
@@ -1566,13 +1504,12 @@
   ],
   "imageAssets": {
     "masterQidsWithImages": 498,
-    "translatedQidsWithMasterImages": 455,
+    "translatedQidsWithMasterImages": 498,
     "assetReferenceCount": 498,
     "missingAssetReferences": []
   },
   "criticalIssues": [],
   "warnings": [
-    "52 master qid(s) do not have Russian production translations",
     "20 create-new Right/Wrong items remain staged-only and accepted for this release context",
     "6 high-risk discrepancy items remain skipped by the conservative apply script and accepted for this release context"
   ]
