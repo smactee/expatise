@@ -79,6 +79,34 @@ Required workflow for additive tag updates:
 2. Run `npm run guard-protected-qbank-files`.
 3. If the guard reports non-additive paths, revert or split those changes into an explicit human-approved tag repair task.
 
+### Image Tag Correction Mode
+
+Use image tag correction mode only for an explicit manual tag repair, such as correcting a previously stored color or object tag after inspecting the image evidence. This mode allows value corrections inside existing `image-color-tags.json` entries, but it does not allow destructive edits.
+
+Allowed only in correction mode:
+
+- Change an existing tag value when the old value is wrong, for example `"white"` -> `"black"`.
+- Correct an existing dominant color value after image inspection.
+
+Allowed in normal mode:
+
+- Add a missing qid entry.
+- Append new tags while preserving all existing tags and order.
+
+Still blocked in correction mode:
+
+- Delete a qid entry.
+- Remove existing tags or shrink tag arrays.
+- Remove entire tag arrays or required fields.
+- Replace arrays with objects, objects with arrays, strings with numbers, or otherwise corrupt the structure.
+- Reorder existing arrays without a value correction.
+
+Run:
+
+```bash
+npm run guard-protected-qbank-files -- --allow-image-tag-correction true
+```
+
 ## Guard Command
 
 Run before localization commits:
@@ -93,3 +121,14 @@ For explicit human-approved master-data cleanup only:
 npm run guard-protected-qbank-files -- --allow-questions-master-edit true
 ```
 
+For explicit human-approved image tag corrections only:
+
+```bash
+npm run guard-protected-qbank-files -- --allow-image-tag-correction true
+```
+
+For combined master-data cleanup and image tag correction:
+
+```bash
+npm run guard-protected-qbank-files -- --allow-questions-master-edit true --allow-image-tag-correction true
+```

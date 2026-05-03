@@ -15,6 +15,7 @@ const IMAGE_TAGS_PATH = "public/qbank/2023-test1/image-color-tags.json";
 
 const args = parseArgs();
 const allowQuestionsMasterEdit = booleanArg(args, "allow-questions-master-edit", false);
+const allowImageTagCorrection = booleanArg(args, "allow-image-tag-correction", false);
 const violations = [];
 
 guardQuestionsJson();
@@ -61,52 +62,90 @@ function guardImageColorTags() {
     return;
   }
 
-  const additiveViolations = [];
-  assertAdditiveOnly(headJson, workingJson, IMAGE_TAGS_PATH, additiveViolations);
-  if (additiveViolations.length > 0) {
-    violations.push(`${IMAGE_TAGS_PATH} is additive-only, but non-additive changes were found:`);
-    for (const violation of additiveViolations.slice(0, 50)) {
+  const imageTagViolations = collectImageTagViolations(headJson, workingJson, IMAGE_TAGS_PATH);
+
+  if (imageTagViolations.destructive.length > 0) {
+    violations.push(`${IMAGE_TAGS_PATH} has deletions or structural changes that are not allowed:`);
+    for (const violation of imageTagViolations.destructive.slice(0, 50)) {
       violations.push(`  ${violation}`);
     }
-    if (additiveViolations.length > 50) {
-      violations.push(`  ... ${additiveViolations.length - 50} more violation(s) omitted`);
+    if (imageTagViolations.destructive.length > 50) {
+      violations.push(`  ... ${imageTagViolations.destructive.length - 50} more violation(s) omitted`);
+    }
+  }
+
+  if (imageTagViolations.changedValues.length > 0) {
+    if (allowImageTagCorrection) {
+      console.log("image-color-tags.json value corrections allowed by --allow-image-tag-correction true.");
+    } else {
+      violations.push(
+        "image-color-tags.json changed existing values. This is blocked unless --allow-image-tag-correction true is provided.",
+      );
+      for (const violation of imageTagViolations.changedValues.slice(0, 50)) {
+        violations.push(`  ${violation}`);
+      }
+      if (imageTagViolations.changedValues.length > 50) {
+        violations.push(`  ... ${imageTagViolations.changedValues.length - 50} more violation(s) omitted`);
+      }
     }
   }
 }
 
-function assertAdditiveOnly(baseValue, nextValue, jsonPath, out) {
+function collectImageTagViolations(baseValue, nextValue, jsonPath) {
+  const out = {
+    changedValues: [],
+    destructive: [],
+  };
+  assertImageTagsSafe(baseValue, nextValue, jsonPath, out);
+  return out;
+}
+
+function assertImageTagsSafe(baseValue, nextValue, jsonPath, out) {
   if (Array.isArray(baseValue)) {
     if (!Array.isArray(nextValue)) {
-      out.push(`${jsonPath}: array was replaced with ${typeName(nextValue)}`);
+      out.destructive.push(`${jsonPath}: array was replaced with ${typeName(nextValue)}`);
       return;
     }
     if (nextValue.length < baseValue.length) {
-      out.push(`${jsonPath}: array length shrank from ${baseValue.length} to ${nextValue.length}`);
+      out.destructive.push(`${jsonPath}: array length shrank from ${baseValue.length} to ${nextValue.length}`);
       return;
     }
+    if (isPrimitiveArray(baseValue) && hasSamePrimitiveMultiset(baseValue, nextValue.slice(0, baseValue.length))) {
+      for (let index = 0; index < baseValue.length; index += 1) {
+        if (!deepEqual(baseValue[index], nextValue[index])) {
+          out.destructive.push(`${jsonPath}: existing array entries were reordered`);
+          break;
+        }
+      }
+    }
     for (let index = 0; index < baseValue.length; index += 1) {
-      assertAdditiveOnly(baseValue[index], nextValue[index], `${jsonPath}[${index}]`, out);
+      assertImageTagsSafe(baseValue[index], nextValue[index], `${jsonPath}[${index}]`, out);
     }
     return;
   }
 
   if (isPlainObject(baseValue)) {
     if (!isPlainObject(nextValue)) {
-      out.push(`${jsonPath}: object was replaced with ${typeName(nextValue)}`);
+      out.destructive.push(`${jsonPath}: object was replaced with ${typeName(nextValue)}`);
       return;
     }
     for (const key of Object.keys(baseValue)) {
       if (!Object.prototype.hasOwnProperty.call(nextValue, key)) {
-        out.push(`${jsonPath}.${key}: existing key was deleted`);
+        out.destructive.push(`${jsonPath}.${key}: existing key was deleted`);
         continue;
       }
-      assertAdditiveOnly(baseValue[key], nextValue[key], `${jsonPath}.${key}`, out);
+      assertImageTagsSafe(baseValue[key], nextValue[key], `${jsonPath}.${key}`, out);
     }
     return;
   }
 
+  if (typeName(baseValue) !== typeName(nextValue)) {
+    out.destructive.push(`${jsonPath}: existing value type changed from ${typeName(baseValue)} to ${typeName(nextValue)}`);
+    return;
+  }
+
   if (!deepEqual(baseValue, nextValue)) {
-    out.push(`${jsonPath}: existing value changed from ${JSON.stringify(baseValue)} to ${JSON.stringify(nextValue)}`);
+    out.changedValues.push(`${jsonPath}: existing value changed from ${JSON.stringify(baseValue)} to ${JSON.stringify(nextValue)}`);
   }
 }
 
@@ -153,6 +192,30 @@ function booleanArg(source, key, fallback = false) {
 
 function isPlainObject(value) {
   return Boolean(value) && typeof value === "object" && !Array.isArray(value);
+}
+
+function isPrimitiveArray(value) {
+  return Array.isArray(value) && value.every((entry) => !entry || typeof entry !== "object");
+}
+
+function hasSamePrimitiveMultiset(left, right) {
+  if (left.length !== right.length) return false;
+  const counts = new Map();
+  for (const entry of left) {
+    const key = JSON.stringify(entry);
+    counts.set(key, (counts.get(key) ?? 0) + 1);
+  }
+  for (const entry of right) {
+    const key = JSON.stringify(entry);
+    const count = counts.get(key) ?? 0;
+    if (count === 0) return false;
+    if (count === 1) {
+      counts.delete(key);
+    } else {
+      counts.set(key, count - 1);
+    }
+  }
+  return counts.size === 0;
 }
 
 function typeName(value) {

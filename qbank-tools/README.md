@@ -144,8 +144,20 @@ Notes:
 Protected Master Files:
 
 ```bash
+# normal localization
 npm run guard-protected-qbank-files
+
+# master edit
 npm run guard-protected-qbank-files -- --allow-questions-master-edit true
+
+# image update (Codex)
+npm run guard-protected-qbank-files -- --allow-question-image-edit true
+
+# image tag correction (manual)
+npm run guard-protected-qbank-files -- --allow-image-tag-correction true
+
+# combined master + tag correction
+npm run guard-protected-qbank-files -- --allow-questions-master-edit true --allow-image-tag-correction true
 ```
 
 Notes:
@@ -154,6 +166,7 @@ Notes:
 - If a master issue is suspected, report it in an audit or decision note instead of rewriting `questions.json`.
 - Only explicit human-approved master-data cleanup tasks may edit `questions.json`, and those tasks must use `--allow-questions-master-edit true`.
 - `public/qbank/2023-test1/image-color-tags.json` is additive-only. New qid tag entries and appended tags are allowed; deleting, renaming, replacing, or reordering existing values is blocked.
+- Use `--allow-image-tag-correction true` only for intentional manual tag repairs. It permits existing value corrections such as `white` -> `black`, but still blocks deleted qids, removed tags, and structural corruption.
 - Run this guard before localization commits. See `qbank-tools/PROTECTED_FILES.md` for the full policy.
 
 New Question Promotion Gate:
