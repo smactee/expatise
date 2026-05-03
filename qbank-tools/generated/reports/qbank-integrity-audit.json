@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-03T14:08:25.622Z",
+  "generatedAt": "2026-05-03T14:49:23.505Z",
   "dataset": "2023-test1",
   "sourcePaths": {
     "questions": "public/qbank/2023-test1/questions.json",
@@ -17,7 +17,7 @@
     "public/qbank/2023-test1/questions.raw.json": "46bcd2795609e408d165ef5a8e992afadf1df5172a3c1f4a097aeabc70d59a38",
     "public/qbank/2023-test1/tags.patch.json": "40d4de0cd71028be5e311aff87075076d575d7f814721caf39ce0e21991f2bd5",
     "public/qbank/2023-test1/image-color-tags.json": "cbaf21b9ebffa5a7fbe38c417488102e3fcc2cb59b0d9d116ed114314beb6f9e",
-    "public/qbank/2023-test1/translations.ja.json": "b6764a245aeaaae4fa7ee4ebf297e356d3bebc99bc3cc15973783587d611ec47",
+    "public/qbank/2023-test1/translations.ja.json": "988d0f959d0addd866ab18998c47e754f14022ce37bfb12aff503eefa277f33b",
     "public/qbank/2023-test1/translations.ko.json": "451e4afaf3bdc82d7318b07e0f55a538f5712f65c51de41c69c45d188aa75666",
     "public/qbank/2023-test1/translations.ru.json": "cf2cc33582180c7a868318c73c087132682490cbf5dcd3a9de0a1c09902ddcc6"
   },
@@ -25,350 +25,17 @@
     "masterQids": 984,
     "rawQids": 985,
     "translationLanguages": 3,
-    "criticalBlockers": 10,
-    "warnings": 827,
+    "criticalBlockers": 0,
+    "warnings": 807,
     "duplicateCandidates": 25,
     "missingImageAssets": 0
   },
-  "criticalBlockers": [
-    {
-      "type": "row-translation-mcq-answer-key",
-      "qid": "q0958",
-      "reason": "ja: ROW translation contains MCQ answer-key metadata",
-      "details": {
-        "qid": "q0958",
-        "forbiddenKeys": [
-          {
-            "path": "localeCorrectOptionKey",
-            "value": "B"
-          }
-        ]
-      }
-    },
-    {
-      "type": "row-translation-mcq-answer-key",
-      "qid": "q0975",
-      "reason": "ja: ROW translation contains MCQ answer-key metadata",
-      "details": {
-        "qid": "q0975",
-        "forbiddenKeys": [
-          {
-            "path": "localeOptionOrder.0.confirmedAsCorrectKey",
-            "value": true
-          },
-          {
-            "path": "optionMeaningMap.0.confirmedAsCorrectKey",
-            "value": true
-          },
-          {
-            "path": "localeCorrectOptionKey",
-            "value": "A"
-          }
-        ]
-      }
-    },
-    {
-      "type": "row-translation-mcq-answer-key",
-      "qid": "q0976",
-      "reason": "ja: ROW translation contains MCQ answer-key metadata",
-      "details": {
-        "qid": "q0976",
-        "forbiddenKeys": [
-          {
-            "path": "localeOptionOrder.0.confirmedAsCorrectKey",
-            "value": true
-          },
-          {
-            "path": "optionMeaningMap.0.confirmedAsCorrectKey",
-            "value": true
-          },
-          {
-            "path": "localeCorrectOptionKey",
-            "value": "A"
-          }
-        ]
-      }
-    },
-    {
-      "type": "row-translation-mcq-answer-key",
-      "qid": "q0978",
-      "reason": "ja: ROW translation contains MCQ answer-key metadata",
-      "details": {
-        "qid": "q0978",
-        "forbiddenKeys": [
-          {
-            "path": "localeOptionOrder.0.confirmedAsCorrectKey",
-            "value": true
-          },
-          {
-            "path": "optionMeaningMap.0.confirmedAsCorrectKey",
-            "value": true
-          },
-          {
-            "path": "localeCorrectOptionKey",
-            "value": "A"
-          }
-        ]
-      }
-    },
-    {
-      "type": "row-translation-mcq-answer-key",
-      "qid": "q0979",
-      "reason": "ja: ROW translation contains MCQ answer-key metadata",
-      "details": {
-        "qid": "q0979",
-        "forbiddenKeys": [
-          {
-            "path": "localeOptionOrder.0.confirmedAsCorrectKey",
-            "value": true
-          },
-          {
-            "path": "optionMeaningMap.0.confirmedAsCorrectKey",
-            "value": true
-          },
-          {
-            "path": "localeCorrectOptionKey",
-            "value": "A"
-          }
-        ]
-      }
-    },
-    {
-      "type": "row-translation-mcq-answer-key",
-      "qid": "q0980",
-      "reason": "ja: ROW translation contains MCQ answer-key metadata",
-      "details": {
-        "qid": "q0980",
-        "forbiddenKeys": [
-          {
-            "path": "localeOptionOrder.0.confirmedAsCorrectKey",
-            "value": true
-          },
-          {
-            "path": "optionMeaningMap.0.confirmedAsCorrectKey",
-            "value": true
-          },
-          {
-            "path": "localeCorrectOptionKey",
-            "value": "A"
-          }
-        ]
-      }
-    },
-    {
-      "type": "row-translation-mcq-answer-key",
-      "qid": "q0982",
-      "reason": "ja: ROW translation contains MCQ answer-key metadata",
-      "details": {
-        "qid": "q0982",
-        "forbiddenKeys": [
-          {
-            "path": "localeOptionOrder.0.confirmedAsCorrectKey",
-            "value": true
-          },
-          {
-            "path": "optionMeaningMap.0.confirmedAsCorrectKey",
-            "value": true
-          },
-          {
-            "path": "localeCorrectOptionKey",
-            "value": "A"
-          }
-        ]
-      }
-    },
-    {
-      "type": "row-translation-mcq-answer-key",
-      "qid": "q0983",
-      "reason": "ja: ROW translation contains MCQ answer-key metadata",
-      "details": {
-        "qid": "q0983",
-        "forbiddenKeys": [
-          {
-            "path": "localeOptionOrder.1.confirmedAsCorrectKey",
-            "value": true
-          },
-          {
-            "path": "optionMeaningMap.1.confirmedAsCorrectKey",
-            "value": true
-          },
-          {
-            "path": "localeCorrectOptionKey",
-            "value": "B"
-          }
-        ]
-      }
-    },
-    {
-      "type": "row-translation-mcq-answer-key",
-      "qid": "q0984",
-      "reason": "ja: ROW translation contains MCQ answer-key metadata",
-      "details": {
-        "qid": "q0984",
-        "forbiddenKeys": [
-          {
-            "path": "localeOptionOrder.1.confirmedAsCorrectKey",
-            "value": true
-          },
-          {
-            "path": "optionMeaningMap.1.confirmedAsCorrectKey",
-            "value": true
-          },
-          {
-            "path": "localeCorrectOptionKey",
-            "value": "B"
-          }
-        ]
-      }
-    },
-    {
-      "type": "row-translation-mcq-answer-key",
-      "qid": "q0985",
-      "reason": "ja: ROW translation contains MCQ answer-key metadata",
-      "details": {
-        "qid": "q0985",
-        "forbiddenKeys": [
-          {
-            "path": "localeOptionOrder.0.confirmedAsCorrectKey",
-            "value": true
-          },
-          {
-            "path": "optionMeaningMap.0.confirmedAsCorrectKey",
-            "value": true
-          },
-          {
-            "path": "localeCorrectOptionKey",
-            "value": "A"
-          }
-        ]
-      }
-    }
-  ],
+  "criticalBlockers": [],
   "warnings": [
     {
       "type": "raw-only-qid",
       "qid": "q0518",
       "reason": "qid exists in questions.raw.json but not questions.json",
-      "details": {}
-    },
-    {
-      "type": "translation-missing-qid",
-      "qid": "q0011",
-      "reason": "ja: missing production translation",
-      "details": {}
-    },
-    {
-      "type": "translation-missing-qid",
-      "qid": "q0023",
-      "reason": "ja: missing production translation",
-      "details": {}
-    },
-    {
-      "type": "translation-missing-qid",
-      "qid": "q0034",
-      "reason": "ja: missing production translation",
-      "details": {}
-    },
-    {
-      "type": "translation-missing-qid",
-      "qid": "q0046",
-      "reason": "ja: missing production translation",
-      "details": {}
-    },
-    {
-      "type": "translation-missing-qid",
-      "qid": "q0083",
-      "reason": "ja: missing production translation",
-      "details": {}
-    },
-    {
-      "type": "translation-missing-qid",
-      "qid": "q0097",
-      "reason": "ja: missing production translation",
-      "details": {}
-    },
-    {
-      "type": "translation-missing-qid",
-      "qid": "q0285",
-      "reason": "ja: missing production translation",
-      "details": {}
-    },
-    {
-      "type": "translation-missing-qid",
-      "qid": "q0286",
-      "reason": "ja: missing production translation",
-      "details": {}
-    },
-    {
-      "type": "translation-missing-qid",
-      "qid": "q0298",
-      "reason": "ja: missing production translation",
-      "details": {}
-    },
-    {
-      "type": "translation-missing-qid",
-      "qid": "q0323",
-      "reason": "ja: missing production translation",
-      "details": {}
-    },
-    {
-      "type": "translation-missing-qid",
-      "qid": "q0332",
-      "reason": "ja: missing production translation",
-      "details": {}
-    },
-    {
-      "type": "translation-missing-qid",
-      "qid": "q0335",
-      "reason": "ja: missing production translation",
-      "details": {}
-    },
-    {
-      "type": "translation-missing-qid",
-      "qid": "q0338",
-      "reason": "ja: missing production translation",
-      "details": {}
-    },
-    {
-      "type": "translation-missing-qid",
-      "qid": "q0351",
-      "reason": "ja: missing production translation",
-      "details": {}
-    },
-    {
-      "type": "translation-missing-qid",
-      "qid": "q0354",
-      "reason": "ja: missing production translation",
-      "details": {}
-    },
-    {
-      "type": "translation-missing-qid",
-      "qid": "q0359",
-      "reason": "ja: missing production translation",
-      "details": {}
-    },
-    {
-      "type": "translation-missing-qid",
-      "qid": "q0360",
-      "reason": "ja: missing production translation",
-      "details": {}
-    },
-    {
-      "type": "translation-missing-qid",
-      "qid": "q0361",
-      "reason": "ja: missing production translation",
-      "details": {}
-    },
-    {
-      "type": "translation-missing-qid",
-      "qid": "q0363",
-      "reason": "ja: missing production translation",
-      "details": {}
-    },
-    {
-      "type": "translation-missing-qid",
-      "qid": "q0369",
-      "reason": "ja: missing production translation",
       "details": {}
     },
     {
@@ -8249,29 +7916,9 @@
     {
       "lang": "ja",
       "path": "public/qbank/2023-test1/translations.ja.json",
-      "translatedQids": 879,
-      "coveragePercent": 89.33,
+      "translatedQids": 899,
+      "coveragePercent": 91.36,
       "missingQids": [
-        "q0011",
-        "q0023",
-        "q0034",
-        "q0046",
-        "q0083",
-        "q0097",
-        "q0285",
-        "q0286",
-        "q0298",
-        "q0323",
-        "q0332",
-        "q0335",
-        "q0338",
-        "q0351",
-        "q0354",
-        "q0359",
-        "q0360",
-        "q0361",
-        "q0363",
-        "q0369",
         "q0372",
         "q0462",
         "q0473",
@@ -8366,181 +8013,18 @@
       "mcqMissingOptions": [],
       "mcqMissingLocaleAnswerKey": [],
       "localeAnswerKeyNotInOptions": [],
-      "rowTranslationsWithMcqAnswerKeys": [
-        {
-          "qid": "q0958",
-          "forbiddenKeys": [
-            {
-              "path": "localeCorrectOptionKey",
-              "value": "B"
-            }
-          ]
-        },
-        {
-          "qid": "q0975",
-          "forbiddenKeys": [
-            {
-              "path": "localeOptionOrder.0.confirmedAsCorrectKey",
-              "value": true
-            },
-            {
-              "path": "optionMeaningMap.0.confirmedAsCorrectKey",
-              "value": true
-            },
-            {
-              "path": "localeCorrectOptionKey",
-              "value": "A"
-            }
-          ]
-        },
-        {
-          "qid": "q0976",
-          "forbiddenKeys": [
-            {
-              "path": "localeOptionOrder.0.confirmedAsCorrectKey",
-              "value": true
-            },
-            {
-              "path": "optionMeaningMap.0.confirmedAsCorrectKey",
-              "value": true
-            },
-            {
-              "path": "localeCorrectOptionKey",
-              "value": "A"
-            }
-          ]
-        },
-        {
-          "qid": "q0978",
-          "forbiddenKeys": [
-            {
-              "path": "localeOptionOrder.0.confirmedAsCorrectKey",
-              "value": true
-            },
-            {
-              "path": "optionMeaningMap.0.confirmedAsCorrectKey",
-              "value": true
-            },
-            {
-              "path": "localeCorrectOptionKey",
-              "value": "A"
-            }
-          ]
-        },
-        {
-          "qid": "q0979",
-          "forbiddenKeys": [
-            {
-              "path": "localeOptionOrder.0.confirmedAsCorrectKey",
-              "value": true
-            },
-            {
-              "path": "optionMeaningMap.0.confirmedAsCorrectKey",
-              "value": true
-            },
-            {
-              "path": "localeCorrectOptionKey",
-              "value": "A"
-            }
-          ]
-        },
-        {
-          "qid": "q0980",
-          "forbiddenKeys": [
-            {
-              "path": "localeOptionOrder.0.confirmedAsCorrectKey",
-              "value": true
-            },
-            {
-              "path": "optionMeaningMap.0.confirmedAsCorrectKey",
-              "value": true
-            },
-            {
-              "path": "localeCorrectOptionKey",
-              "value": "A"
-            }
-          ]
-        },
-        {
-          "qid": "q0982",
-          "forbiddenKeys": [
-            {
-              "path": "localeOptionOrder.0.confirmedAsCorrectKey",
-              "value": true
-            },
-            {
-              "path": "optionMeaningMap.0.confirmedAsCorrectKey",
-              "value": true
-            },
-            {
-              "path": "localeCorrectOptionKey",
-              "value": "A"
-            }
-          ]
-        },
-        {
-          "qid": "q0983",
-          "forbiddenKeys": [
-            {
-              "path": "localeOptionOrder.1.confirmedAsCorrectKey",
-              "value": true
-            },
-            {
-              "path": "optionMeaningMap.1.confirmedAsCorrectKey",
-              "value": true
-            },
-            {
-              "path": "localeCorrectOptionKey",
-              "value": "B"
-            }
-          ]
-        },
-        {
-          "qid": "q0984",
-          "forbiddenKeys": [
-            {
-              "path": "localeOptionOrder.1.confirmedAsCorrectKey",
-              "value": true
-            },
-            {
-              "path": "optionMeaningMap.1.confirmedAsCorrectKey",
-              "value": true
-            },
-            {
-              "path": "localeCorrectOptionKey",
-              "value": "B"
-            }
-          ]
-        },
-        {
-          "qid": "q0985",
-          "forbiddenKeys": [
-            {
-              "path": "localeOptionOrder.0.confirmedAsCorrectKey",
-              "value": true
-            },
-            {
-              "path": "optionMeaningMap.0.confirmedAsCorrectKey",
-              "value": true
-            },
-            {
-              "path": "localeCorrectOptionKey",
-              "value": "A"
-            }
-          ]
-        }
-      ],
+      "rowTranslationsWithMcqAnswerKeys": [],
       "malformedObjects": [],
       "emptyTextIssues": [],
       "counts": {
-        "translatedQids": 879,
-        "missingQids": 106,
+        "translatedQids": 899,
+        "missingQids": 86,
         "extraQids": 1,
         "invalidLocaleAnswerKeys": 0,
         "mcqMissingOptions": 0,
         "mcqMissingLocaleAnswerKey": 0,
         "localeAnswerKeyNotInOptions": 0,
-        "rowTranslationsWithMcqAnswerKeys": 10,
+        "rowTranslationsWithMcqAnswerKeys": 0,
         "malformedObjects": 0,
         "emptyTextIssues": 0
       }
@@ -10870,8 +10354,8 @@
     "translatedImageCompatibility": [
       {
         "lang": "ja",
-        "translatedQidsWithMasterImages": 443,
-        "untranslatedQidsWithMasterImages": 55
+        "translatedQidsWithMasterImages": 445,
+        "untranslatedQidsWithMasterImages": 53
       },
       {
         "lang": "ko",
@@ -11874,7 +11358,6 @@
     ]
   },
   "recommendedNextActions": [
-    "Resolve critical blockers before shipping or starting another language.",
     "Review raw-only qids and decide whether each is intentional source retention or should be removed/backfilled into questions.json.",
     "Review warning tables before the next language run, especially tag/image mismatches."
   ]

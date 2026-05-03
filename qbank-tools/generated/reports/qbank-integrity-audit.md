@@ -1,56 +1,25 @@
 # QBank Integrity Audit
 
-Generated: 2026-05-03T14:08:25.622Z
+Generated: 2026-05-03T14:49:23.505Z
 
 ## Executive Summary
 
 - Master qids: 984
 - Raw qids: 985
 - Translation languages audited: 3
-- Critical blockers: 10
-- Warnings: 827
+- Critical blockers: 0
+- Warnings: 807
 - Duplicate candidates: 25
 
 ## Critical Blockers
 
-| type | qid | reason |
-| --- | --- | --- |
-| row-translation-mcq-answer-key | q0958 | ja: ROW translation contains MCQ answer-key metadata |
-| row-translation-mcq-answer-key | q0975 | ja: ROW translation contains MCQ answer-key metadata |
-| row-translation-mcq-answer-key | q0976 | ja: ROW translation contains MCQ answer-key metadata |
-| row-translation-mcq-answer-key | q0978 | ja: ROW translation contains MCQ answer-key metadata |
-| row-translation-mcq-answer-key | q0979 | ja: ROW translation contains MCQ answer-key metadata |
-| row-translation-mcq-answer-key | q0980 | ja: ROW translation contains MCQ answer-key metadata |
-| row-translation-mcq-answer-key | q0982 | ja: ROW translation contains MCQ answer-key metadata |
-| row-translation-mcq-answer-key | q0983 | ja: ROW translation contains MCQ answer-key metadata |
-| row-translation-mcq-answer-key | q0984 | ja: ROW translation contains MCQ answer-key metadata |
-| row-translation-mcq-answer-key | q0985 | ja: ROW translation contains MCQ answer-key metadata |
+None.
 
 ## Warnings
 
 | type | qid | reason |
 | --- | --- | --- |
 | raw-only-qid | q0518 | qid exists in questions.raw.json but not questions.json |
-| translation-missing-qid | q0011 | ja: missing production translation |
-| translation-missing-qid | q0023 | ja: missing production translation |
-| translation-missing-qid | q0034 | ja: missing production translation |
-| translation-missing-qid | q0046 | ja: missing production translation |
-| translation-missing-qid | q0083 | ja: missing production translation |
-| translation-missing-qid | q0097 | ja: missing production translation |
-| translation-missing-qid | q0285 | ja: missing production translation |
-| translation-missing-qid | q0286 | ja: missing production translation |
-| translation-missing-qid | q0298 | ja: missing production translation |
-| translation-missing-qid | q0323 | ja: missing production translation |
-| translation-missing-qid | q0332 | ja: missing production translation |
-| translation-missing-qid | q0335 | ja: missing production translation |
-| translation-missing-qid | q0338 | ja: missing production translation |
-| translation-missing-qid | q0351 | ja: missing production translation |
-| translation-missing-qid | q0354 | ja: missing production translation |
-| translation-missing-qid | q0359 | ja: missing production translation |
-| translation-missing-qid | q0360 | ja: missing production translation |
-| translation-missing-qid | q0361 | ja: missing production translation |
-| translation-missing-qid | q0363 | ja: missing production translation |
-| translation-missing-qid | q0369 | ja: missing production translation |
 | translation-missing-qid | q0372 | ja: missing production translation |
 | translation-missing-qid | q0462 | ja: missing production translation |
 | translation-missing-qid | q0473 | ja: missing production translation |
@@ -130,14 +99,34 @@ Generated: 2026-05-03T14:08:25.622Z
 | translation-missing-qid | q0964 | ja: missing production translation |
 | translation-missing-qid | q0965 | ja: missing production translation |
 | translation-missing-qid | q0966 | ja: missing production translation |
+| translation-missing-qid | q0967 | ja: missing production translation |
+| translation-missing-qid | q0968 | ja: missing production translation |
+| translation-missing-qid | q0969 | ja: missing production translation |
+| translation-missing-qid | q0970 | ja: missing production translation |
+| translation-missing-qid | q0971 | ja: missing production translation |
+| translation-missing-qid | q0972 | ja: missing production translation |
+| translation-missing-qid | q0973 | ja: missing production translation |
+| translation-extra-qid | q0518 | ja: translation qid is not in questions.json |
+| translation-extra-qid | q0518 | ko: translation qid is not in questions.json |
+| translation-mcq-missing-locale-answer-key | q0364 | ko: translated MCQ has no localeCorrectOptionKey |
+| translation-mcq-missing-locale-answer-key | q0365 | ko: translated MCQ has no localeCorrectOptionKey |
+| translation-mcq-missing-locale-answer-key | q0367 | ko: translated MCQ has no localeCorrectOptionKey |
+| translation-mcq-missing-locale-answer-key | q0372 | ko: translated MCQ has no localeCorrectOptionKey |
+| translation-mcq-missing-locale-answer-key | q0390 | ko: translated MCQ has no localeCorrectOptionKey |
+| translation-mcq-missing-locale-answer-key | q0422 | ko: translated MCQ has no localeCorrectOptionKey |
+| translation-mcq-missing-locale-answer-key | q0428 | ko: translated MCQ has no localeCorrectOptionKey |
+| translation-mcq-missing-locale-answer-key | q0437 | ko: translated MCQ has no localeCorrectOptionKey |
+| translation-mcq-missing-locale-answer-key | q0578 | ko: translated MCQ has no localeCorrectOptionKey |
+| translation-mcq-missing-locale-answer-key | q0591 | ko: translated MCQ has no localeCorrectOptionKey |
+| translation-mcq-missing-locale-answer-key | q0900 | ko: translated MCQ has no localeCorrectOptionKey |
 
-_Warning table truncated to 100 of 827._
+_Warning table truncated to 100 of 807._
 
 ## Language Coverage
 
 | lang | translated | coverage | missing | extra | invalidLocaleKeys | rowMcqKeys |
 | --- | --- | --- | --- | --- | --- | --- |
-| ja | 879 | 89.33% | 106 | 1 | 0 | 10 |
+| ja | 899 | 91.36% | 86 | 1 | 0 | 0 |
 | ko | 985 | 100.1% | 0 | 1 | 0 | 0 |
 | ru | 984 | 100% | 0 | 0 | 0 | 0 |
 
@@ -154,18 +143,7 @@ _Warning table truncated to 100 of 827._
 None.
 
 ### Translation Answer Issues
-| lang | qid | reason | localeCorrectOptionKey |
-| --- | --- | --- | --- |
-| ja | q0958 | localeCorrectOptionKey |  |
-| ja | q0975 | localeOptionOrder.0.confirmedAsCorrectKey, optionMeaningMap.0.confirmedAsCorrectKey, localeCorrectOptionKey |  |
-| ja | q0976 | localeOptionOrder.0.confirmedAsCorrectKey, optionMeaningMap.0.confirmedAsCorrectKey, localeCorrectOptionKey |  |
-| ja | q0978 | localeOptionOrder.0.confirmedAsCorrectKey, optionMeaningMap.0.confirmedAsCorrectKey, localeCorrectOptionKey |  |
-| ja | q0979 | localeOptionOrder.0.confirmedAsCorrectKey, optionMeaningMap.0.confirmedAsCorrectKey, localeCorrectOptionKey |  |
-| ja | q0980 | localeOptionOrder.0.confirmedAsCorrectKey, optionMeaningMap.0.confirmedAsCorrectKey, localeCorrectOptionKey |  |
-| ja | q0982 | localeOptionOrder.0.confirmedAsCorrectKey, optionMeaningMap.0.confirmedAsCorrectKey, localeCorrectOptionKey |  |
-| ja | q0983 | localeOptionOrder.1.confirmedAsCorrectKey, optionMeaningMap.1.confirmedAsCorrectKey, localeCorrectOptionKey |  |
-| ja | q0984 | localeOptionOrder.1.confirmedAsCorrectKey, optionMeaningMap.1.confirmedAsCorrectKey, localeCorrectOptionKey |  |
-| ja | q0985 | localeOptionOrder.0.confirmedAsCorrectKey, optionMeaningMap.0.confirmedAsCorrectKey, localeCorrectOptionKey |  |
+None.
 
 ## Duplicate Candidate Table
 
@@ -213,7 +191,6 @@ None.
 
 ## Recommended Next Actions
 
-- Resolve critical blockers before shipping or starting another language.
 - Review raw-only qids and decide whether each is intentional source retention or should be removed/backfilled into questions.json.
 - Review warning tables before the next language run, especially tag/image mismatches.
 

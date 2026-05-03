@@ -1,0 +1,457 @@
+{
+  "generatedAt": "2026-05-03T14:47:59.343Z",
+  "source": "english_master_backfill_quality_review",
+  "lang": "ja",
+  "dataset": "2023-test1",
+  "inputPath": "qbank-tools/generated/staging/backfill.ja.generated-draft.json",
+  "qualityReviewPath": "qbank-tools/generated/reports/backfill-quality-review.ja.json",
+  "needsFixPath": "qbank-tools/generated/staging/backfill.ja.needs-fix.json",
+  "reviewedPath": "qbank-tools/generated/staging/backfill.ja.reviewed.json",
+  "model": "gpt-5-mini",
+  "aiReviewUsed": true,
+  "productionModified": false,
+  "counts": {
+    "inputItems": 20,
+    "sourceInputItems": 20,
+    "approved": 20,
+    "needsFix": 0,
+    "reject": 0,
+    "belowConfidenceThreshold": 0,
+    "answerKeyLogicRisk": 0,
+    "preflightErrors": 0,
+    "preflightWarnings": 0
+  },
+  "rules": {
+    "confidenceApprovalThreshold": 0.92,
+    "answerKeyLogicRiskRejects": true,
+    "humanOwnerMustReviewReportBeforeApply": true
+  },
+  "preflight": {
+    "valid": true,
+    "counts": {
+      "inputItems": 20,
+      "validItems": 20,
+      "errorCount": 0,
+      "warningCount": 0,
+      "duplicateQidCount": 0
+    },
+    "errors": [],
+    "warnings": [],
+    "items": [
+      {
+        "index": 0,
+        "qid": "q0011",
+        "type": "row",
+        "valid": true,
+        "errors": [],
+        "warnings": []
+      },
+      {
+        "index": 1,
+        "qid": "q0023",
+        "type": "row",
+        "valid": true,
+        "errors": [],
+        "warnings": []
+      },
+      {
+        "index": 2,
+        "qid": "q0034",
+        "type": "row",
+        "valid": true,
+        "errors": [],
+        "warnings": []
+      },
+      {
+        "index": 3,
+        "qid": "q0046",
+        "type": "row",
+        "valid": true,
+        "errors": [],
+        "warnings": []
+      },
+      {
+        "index": 4,
+        "qid": "q0083",
+        "type": "row",
+        "valid": true,
+        "errors": [],
+        "warnings": []
+      },
+      {
+        "index": 5,
+        "qid": "q0097",
+        "type": "row",
+        "valid": true,
+        "errors": [],
+        "warnings": []
+      },
+      {
+        "index": 6,
+        "qid": "q0285",
+        "type": "row",
+        "valid": true,
+        "errors": [],
+        "warnings": []
+      },
+      {
+        "index": 7,
+        "qid": "q0286",
+        "type": "row",
+        "valid": true,
+        "errors": [],
+        "warnings": []
+      },
+      {
+        "index": 8,
+        "qid": "q0298",
+        "type": "row",
+        "valid": true,
+        "errors": [],
+        "warnings": []
+      },
+      {
+        "index": 9,
+        "qid": "q0323",
+        "type": "row",
+        "valid": true,
+        "errors": [],
+        "warnings": []
+      },
+      {
+        "index": 10,
+        "qid": "q0332",
+        "type": "row",
+        "valid": true,
+        "errors": [],
+        "warnings": []
+      },
+      {
+        "index": 11,
+        "qid": "q0335",
+        "type": "row",
+        "valid": true,
+        "errors": [],
+        "warnings": []
+      },
+      {
+        "index": 12,
+        "qid": "q0338",
+        "type": "row",
+        "valid": true,
+        "errors": [],
+        "warnings": []
+      },
+      {
+        "index": 13,
+        "qid": "q0351",
+        "type": "row",
+        "valid": true,
+        "errors": [],
+        "warnings": []
+      },
+      {
+        "index": 14,
+        "qid": "q0354",
+        "type": "row",
+        "valid": true,
+        "errors": [],
+        "warnings": []
+      },
+      {
+        "index": 15,
+        "qid": "q0359",
+        "type": "row",
+        "valid": true,
+        "errors": [],
+        "warnings": []
+      },
+      {
+        "index": 16,
+        "qid": "q0360",
+        "type": "row",
+        "valid": true,
+        "errors": [],
+        "warnings": []
+      },
+      {
+        "index": 17,
+        "qid": "q0361",
+        "type": "row",
+        "valid": true,
+        "errors": [],
+        "warnings": []
+      },
+      {
+        "index": 18,
+        "qid": "q0363",
+        "type": "mcq",
+        "valid": true,
+        "errors": [],
+        "warnings": []
+      },
+      {
+        "index": 19,
+        "qid": "q0369",
+        "type": "mcq",
+        "valid": true,
+        "errors": [],
+        "warnings": []
+      }
+    ]
+  },
+  "items": [
+    {
+      "qid": "q0011",
+      "number": 11,
+      "qualityStatus": "approved",
+      "confidence": 0.95,
+      "answerKeyLogicMayBeWrong": false,
+      "issues": [],
+      "suggestedFix": null,
+      "reviewerReasoningSummary": "Japanese translation accurately and naturally renders the English meaning ('do not stop' on landslide-prone mountain road). No options present; correct answer key 'Right' preserved.",
+      "reviewedAt": "2026-05-03T14:47:59.339Z",
+      "reviewer": "ai-localization-quality-review"
+    },
+    {
+      "qid": "q0023",
+      "number": 23,
+      "qualityStatus": "approved",
+      "confidence": 0.95,
+      "answerKeyLogicMayBeWrong": false,
+      "issues": [],
+      "suggestedFix": null,
+      "reviewerReasoningSummary": "Translation correctly conveys that after a tire blowout the driver should refrain from using the foot brake until speed control is regained, and warns of lateral swing danger. Terminology is natural and meaning preserved.",
+      "reviewedAt": "2026-05-03T14:47:59.341Z",
+      "reviewer": "ai-localization-quality-review"
+    },
+    {
+      "qid": "q0034",
+      "number": 34,
+      "qualityStatus": "approved",
+      "confidence": 0.95,
+      "answerKeyLogicMayBeWrong": false,
+      "issues": [],
+      "suggestedFix": null,
+      "reviewerReasoningSummary": "Translation preserves the contrast between courteous/defensive driving versus offensive driving; wording is natural and consistent with the English source.",
+      "reviewedAt": "2026-05-03T14:47:59.341Z",
+      "reviewer": "ai-localization-quality-review"
+    },
+    {
+      "qid": "q0046",
+      "number": 46,
+      "qualityStatus": "approved",
+      "confidence": 0.95,
+      "answerKeyLogicMayBeWrong": false,
+      "issues": [],
+      "suggestedFix": null,
+      "reviewerReasoningSummary": "Japanese version correctly states that a driver should check the dynamics of rear-side vehicles before merging from another road; meaning and intent match the English master.",
+      "reviewedAt": "2026-05-03T14:47:59.341Z",
+      "reviewer": "ai-localization-quality-review"
+    },
+    {
+      "qid": "q0083",
+      "number": 83,
+      "qualityStatus": "approved",
+      "confidence": 0.95,
+      "answerKeyLogicMayBeWrong": false,
+      "issues": [],
+      "suggestedFix": null,
+      "reviewerReasoningSummary": "Translation accurately instructs the driver to firmly hold the steering wheel with both hands after a front tire blowout to keep the vehicle straight; preserves technical detail and intent.",
+      "reviewedAt": "2026-05-03T14:47:59.341Z",
+      "reviewer": "ai-localization-quality-review"
+    },
+    {
+      "qid": "q0097",
+      "number": 97,
+      "qualityStatus": "approved",
+      "confidence": 0.96,
+      "answerKeyLogicMayBeWrong": false,
+      "issues": [],
+      "suggestedFix": null,
+      "reviewerReasoningSummary": "Japanese translation accurately and naturally conveys the English statement that turning on the signal alone before quickly entering a new lane is sufficient. Meaning and logical polarity preserved (English correctOptionKey = Wrong).",
+      "reviewedAt": "2026-05-03T14:47:59.341Z",
+      "reviewer": "ai-localization-quality-review"
+    },
+    {
+      "qid": "q0285",
+      "number": 285,
+      "qualityStatus": "approved",
+      "confidence": 0.95,
+      "answerKeyLogicMayBeWrong": false,
+      "issues": [],
+      "suggestedFix": null,
+      "reviewerReasoningSummary": "Translation correctly states that in sandstorm/dusty weather there is no need to turn on front/side/rear lights. Terminology is natural and preserves the original meaning and answer key (Wrong).",
+      "reviewedAt": "2026-05-03T14:47:59.341Z",
+      "reviewer": "ai-localization-quality-review"
+    },
+    {
+      "qid": "q0286",
+      "number": 286,
+      "qualityStatus": "approved",
+      "confidence": 0.95,
+      "answerKeyLogicMayBeWrong": false,
+      "issues": [],
+      "suggestedFix": null,
+      "reviewerReasoningSummary": "Translation succinctly and correctly mirrors the English: use low beam in such circumstances. Image-dependent phrasing preserved; answer key (Right) aligns.",
+      "reviewedAt": "2026-05-03T14:47:59.341Z",
+      "reviewer": "ai-localization-quality-review"
+    },
+    {
+      "qid": "q0298",
+      "number": 298,
+      "qualityStatus": "approved",
+      "confidence": 0.94,
+      "answerKeyLogicMayBeWrong": false,
+      "issues": [],
+      "suggestedFix": null,
+      "reviewerReasoningSummary": "Translation follows the English master wording ('driver's license' and vehicle owner applying for reissue at registration management station). Although English source may be imprecise, the Japanese preserves the original meaning and answer key (Right).",
+      "reviewedAt": "2026-05-03T14:47:59.341Z",
+      "reviewer": "ai-localization-quality-review"
+    },
+    {
+      "qid": "q0323",
+      "number": 323,
+      "qualityStatus": "approved",
+      "confidence": 0.95,
+      "answerKeyLogicMayBeWrong": false,
+      "issues": [],
+      "suggestedFix": null,
+      "reviewerReasoningSummary": "Translation accurately conveys that law/traffic safety violations and accidents while driving are considered traffic rule violations. Natural, exam-appropriate wording; answer key (Right) preserved.",
+      "reviewedAt": "2026-05-03T14:47:59.341Z",
+      "reviewer": "ai-localization-quality-review"
+    },
+    {
+      "qid": "q0332",
+      "number": 332,
+      "qualityStatus": "approved",
+      "confidence": 0.97,
+      "answerKeyLogicMayBeWrong": false,
+      "issues": [],
+      "suggestedFix": null,
+      "reviewerReasoningSummary": "日本語訳は原文の意味を正確に保っており、数値や論理（最高速度を超えてはならない）が一致している。形式も試験向けに自然。",
+      "reviewedAt": "2026-05-03T14:47:59.341Z",
+      "reviewer": "ai-localization-quality-review"
+    },
+    {
+      "qid": "q0335",
+      "number": 335,
+      "qualityStatus": "approved",
+      "confidence": 0.97,
+      "answerKeyLogicMayBeWrong": false,
+      "issues": [],
+      "suggestedFix": null,
+      "reviewerReasoningSummary": "訳は『他の車両のナンバープレートや他人の運転免許証を使用して車両を運転した場合、交通警察は法律に基づきその車両を押収することができる』と原文の意味を保持しており、試験文として自然。",
+      "reviewedAt": "2026-05-03T14:47:59.341Z",
+      "reviewer": "ai-localization-quality-review"
+    },
+    {
+      "qid": "q0338",
+      "number": 338,
+      "qualityStatus": "approved",
+      "confidence": 0.97,
+      "answerKeyLogicMayBeWrong": false,
+      "issues": [],
+      "suggestedFix": null,
+      "reviewerReasoningSummary": "年齢範囲（18~70歳）と申請対象（小型車・三輪自動車）の意味が正確に翻訳されており、語調も適切。",
+      "reviewedAt": "2026-05-03T14:47:59.341Z",
+      "reviewer": "ai-localization-quality-review"
+    },
+    {
+      "qid": "q0351",
+      "number": 351,
+      "qualityStatus": "approved",
+      "confidence": 0.97,
+      "answerKeyLogicMayBeWrong": false,
+      "issues": [],
+      "suggestedFix": null,
+      "reviewerReasoningSummary": "『道路維持車両および工事車両が作業中の場合、通行車両は注意して避けなければならない』は原文の指示（慎重に避ける）を正確に伝えており問題なし。",
+      "reviewedAt": "2026-05-03T14:47:59.341Z",
+      "reviewer": "ai-localization-quality-review"
+    },
+    {
+      "qid": "q0354",
+      "number": 354,
+      "qualityStatus": "approved",
+      "confidence": 0.97,
+      "answerKeyLogicMayBeWrong": false,
+      "issues": [],
+      "suggestedFix": null,
+      "reviewerReasoningSummary": "『安全上の危険がある車両は、誰も運転してはならない』は原文と意味が一致しており、自然で試験向けの表現。",
+      "reviewedAt": "2026-05-03T14:47:59.341Z",
+      "reviewer": "ai-localization-quality-review"
+    },
+    {
+      "qid": "q0359",
+      "number": 359,
+      "qualityStatus": "approved",
+      "confidence": 0.96,
+      "answerKeyLogicMayBeWrong": false,
+      "issues": [],
+      "suggestedFix": null,
+      "reviewerReasoningSummary": "翻訳は英語原文の意味を正確に保持しており、選択肢は無く、正誤キー（Wrong）との整合性に問題はない。表現は自然で試験向けに適切。",
+      "reviewedAt": "2026-05-03T14:47:59.341Z",
+      "reviewer": "ai-localization-quality-review"
+    },
+    {
+      "qid": "q0360",
+      "number": 360,
+      "qualityStatus": "approved",
+      "confidence": 0.96,
+      "answerKeyLogicMayBeWrong": false,
+      "issues": [],
+      "suggestedFix": null,
+      "reviewerReasoningSummary": "原文の意味（悪天候時は速度を落とす）が正確に反映されている。日本語表現は自然で選択肢なしの単純正誤問題として整合している。",
+      "reviewedAt": "2026-05-03T14:47:59.341Z",
+      "reviewer": "ai-localization-quality-review"
+    },
+    {
+      "qid": "q0361",
+      "number": 361,
+      "qualityStatus": "approved",
+      "confidence": 0.96,
+      "answerKeyLogicMayBeWrong": false,
+      "issues": [],
+      "suggestedFix": null,
+      "reviewerReasoningSummary": "画像依存の語句（'このような状況'）を含む原文を忠実に訳出しており、意味・論理・正誤（Right）に問題はない。",
+      "reviewedAt": "2026-05-03T14:47:59.341Z",
+      "reviewer": "ai-localization-quality-review"
+    },
+    {
+      "qid": "q0363",
+      "number": 363,
+      "qualityStatus": "approved",
+      "confidence": 0.95,
+      "answerKeyLogicMayBeWrong": false,
+      "issues": [
+        {
+          "severity": "warning",
+          "code": "stylistic-choice",
+          "message": "'3年以内' は原文の 'within 3 years' を直訳しており意味は合致するが、試験向けには '3年間' の方が自然に聞こえる場面がある。"
+        }
+      ],
+      "suggestedFix": null,
+      "reviewerReasoningSummary": "選択肢の対応（A=3年以内 等）と正解キー（A）は英語原文と一致。日本語は自然で法的意味も保持されている。軽微な表現の改善案のみあり。",
+      "reviewedAt": "2026-05-03T14:47:59.342Z",
+      "reviewer": "ai-localization-quality-review"
+    },
+    {
+      "qid": "q0369",
+      "number": 369,
+      "qualityStatus": "approved",
+      "confidence": 0.95,
+      "answerKeyLogicMayBeWrong": false,
+      "issues": [
+        {
+          "severity": "warning",
+          "code": "word-choice",
+          "message": "'押収する'（押収）は原文の 'detain the vehicle / detain' に対する翻訳として許容されるが、場合によっては '車両を拘留する/差し押さえる' 等の語も用いられる。意味は維持されている。"
+        }
+      ],
+      "suggestedFix": null,
+      "reviewerReasoningSummary": "選択肢の翻訳（運転免許証 等）と正解キー（A）が英語原文と一致。用語の語彙選択に注意点を付記したが、試験文として問題はない。",
+      "reviewedAt": "2026-05-03T14:47:59.342Z",
+      "reviewer": "ai-localization-quality-review"
+    }
+  ]
+}
