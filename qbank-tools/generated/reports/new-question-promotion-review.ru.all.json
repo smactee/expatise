@@ -1,0 +1,3850 @@
+{
+  "generatedAt": "2026-05-03T14:08:18.093Z",
+  "lang": "ru",
+  "batch": null,
+  "dataset": "2023-test1",
+  "strict": false,
+  "sourcePaths": {
+    "masterQuestions": "public/qbank/2023-test1/questions.json",
+    "imageColorTags": "public/qbank/2023-test1/image-color-tags.json",
+    "decisionMemory": "qbank-tools/history/decision-memory.json",
+    "inputs": [
+      "qbank-tools/history/decisions/new-question-candidates.ru.batch-001.json",
+      "qbank-tools/history/decisions/new-question-candidates.ru.batch-002.json",
+      "qbank-tools/history/decisions/new-question-candidates.ru.batch-03.json",
+      "qbank-tools/history/decisions/new-question-candidates.ru.batch-04.json",
+      "qbank-tools/history/decisions/new-question-candidates.ru.batch-05.json",
+      "qbank-tools/history/decisions/new-question-candidates.ru.batch-06.json",
+      "qbank-tools/history/decisions/new-question-candidates.ru.batch-07.json",
+      "qbank-tools/history/decisions/new-question-candidates.ru.batch-08.json",
+      "qbank-tools/history/decisions/new-question-candidates.ru.batch-09.json",
+      "qbank-tools/history/decisions/new-question-candidates.ru.batch-10.json",
+      "qbank-tools/history/decisions/new-question-candidates.ru.batch-11.json",
+      "qbank-tools/history/decisions/new-question-candidates.ru.batch-12.json",
+      "qbank-tools/history/decisions/new-question-candidates.ru.batch-13.json",
+      "qbank-tools/history/decisions/new-question-candidates.ru.batch-14.json",
+      "qbank-tools/history/decisions/new-question-candidates.ru.batch-15.json",
+      "qbank-tools/history/decisions/new-question-candidates.ru.batch-16.json",
+      "qbank-tools/history/decisions/new-question-candidates.ru.batch-17.json",
+      "qbank-tools/history/decisions/new-question-candidates.ru.batch-18.json"
+    ]
+  },
+  "counts": {
+    "inputFiles": 18,
+    "candidatesDiscovered": 31,
+    "candidatesReviewed": 31,
+    "likely_duplicate": 0,
+    "needs_human_review": 3,
+    "safe_to_promote": 28
+  },
+  "items": [
+    {
+      "candidateId": "nqc-ru-batch-001-001",
+      "lang": "ru",
+      "batch": "batch-001",
+      "sourceFile": "/Users/huni/dev-projects/expatise/qbank-tools/history/decisions/new-question-candidates.ru.batch-001.json",
+      "sourcePrompt": "Что означает данный знак?",
+      "translatedEnglishPrompt": "What does this sign mean?",
+      "type": "mcq",
+      "recommendation": "needs_human_review",
+      "risk": "medium",
+      "topMatches": [
+        {
+          "qid": "q0928",
+          "number": 928,
+          "score": 0.7495,
+          "reasonCodes": [
+            "prompt_exact_match",
+            "same_question_type",
+            "same_option_count",
+            "same_answer_letter"
+          ],
+          "masterPrompt": "What does this sign mean?",
+          "masterAnswer": "C",
+          "masterImage": "/qbank/2023-test1/images/img_428ad99c2bcc73d5a25a6e499a9ccd58.jpeg"
+        },
+        {
+          "qid": "q0927",
+          "number": 927,
+          "score": 0.7195,
+          "reasonCodes": [
+            "prompt_exact_match",
+            "same_question_type",
+            "same_option_count"
+          ],
+          "masterPrompt": "What does this sign mean?",
+          "masterAnswer": "B",
+          "masterImage": "/qbank/2023-test1/images/img_ff8d1a259c725eec7204e2039a449c81.jpeg"
+        },
+        {
+          "qid": "q0929",
+          "number": 929,
+          "score": 0.7138,
+          "reasonCodes": [
+            "prompt_exact_match",
+            "same_question_type",
+            "same_option_count"
+          ],
+          "masterPrompt": "What does this sign mean?",
+          "masterAnswer": "D",
+          "masterImage": "/qbank/2023-test1/images/img_65abd9b86ff75e64d880e8eb5bcb623d.jpeg"
+        },
+        {
+          "qid": "q0657",
+          "number": 657,
+          "score": 0.5018,
+          "reasonCodes": [
+            "same_question_type",
+            "same_option_count",
+            "same_answer_letter",
+            "linked_existing_asset_candidate"
+          ],
+          "masterPrompt": "What’s the meaning of this sign?",
+          "masterAnswer": "C",
+          "masterImage": "/qbank/2023-test1/images/img_c40f319b6d9456756166809ce41992db.jpeg"
+        },
+        {
+          "qid": "q0837",
+          "number": 837,
+          "score": 0.3467,
+          "reasonCodes": [
+            "same_question_type",
+            "same_option_count",
+            "same_answer_letter"
+          ],
+          "masterPrompt": "What’s the meaning of this sign?",
+          "masterAnswer": "C",
+          "masterImage": "/qbank/2023-test1/images/img_bfba774b9dfc501402ad1c34257ac29a.jpeg"
+        },
+        {
+          "qid": "q0897",
+          "number": 897,
+          "score": 0.324,
+          "reasonCodes": [
+            "same_question_type",
+            "same_option_count"
+          ],
+          "masterPrompt": "What’s the meaning of this sign?",
+          "masterAnswer": "A",
+          "masterImage": "/qbank/2023-test1/images/img_aaf4ff161d2a4b09a0bed8f492f28e87.jpeg"
+        },
+        {
+          "qid": "q0810",
+          "number": 810,
+          "score": 0.3233,
+          "reasonCodes": [
+            "same_question_type",
+            "same_option_count",
+            "same_answer_letter"
+          ],
+          "masterPrompt": "What is this traffic sign?",
+          "masterAnswer": "C",
+          "masterImage": "/qbank/2023-test1/images/img_67d7e673652ec50d459449c49e2c16b6.png"
+        },
+        {
+          "qid": "q0682",
+          "number": 682,
+          "score": 0.3184,
+          "reasonCodes": [
+            "same_question_type",
+            "same_option_count",
+            "same_answer_letter"
+          ],
+          "masterPrompt": "What’s the meaning of this sign?",
+          "masterAnswer": "C",
+          "masterImage": "/qbank/2023-test1/images/img_38965619add6948dd9a50993e3baea59.jpeg"
+        }
+      ],
+      "reasoningSummary": "Top match q0928 is plausible but not decisive: prompt_exact_match, same_question_type, same_option_count, same_answer_letter.",
+      "requiredHumanAction": "inspect_manually",
+      "candidateSignals": {
+        "answerKey": "C",
+        "correctOptionText": "Railway crossing without a guard post",
+        "sourceImage": "Screenshot 2026-04-19 at 18.46.46.png",
+        "imageAssets": [
+          "Screenshot 2026-04-19 at 18.46.46.png",
+          "/qbank/2023-test1/images/img_322187746e0663e85937fc1470821498.jpeg"
+        ],
+        "objectTags": [
+          "traffic-signals:road-signs",
+          "proper-driving:safe-driving"
+        ],
+        "hasDuplicateOptionLabels": false
+      }
+    },
+    {
+      "candidateId": "nqc-ru-batch-001-002",
+      "lang": "ru",
+      "batch": "batch-001",
+      "sourceFile": "/Users/huni/dev-projects/expatise/qbank-tools/history/decisions/new-question-candidates.ru.batch-001.json",
+      "sourcePrompt": "При встрече с встречным автотранспортом на узкой дороге без разметок — какие следует предпринять действия?",
+      "translatedEnglishPrompt": "When meeting oncoming vehicles on a narrow road without markings, what actions should be taken?",
+      "type": "mcq",
+      "recommendation": "safe_to_promote",
+      "risk": "low",
+      "topMatches": [
+        {
+          "qid": "q0502",
+          "number": 502,
+          "score": 0.2823,
+          "reasonCodes": [
+            "same_question_type",
+            "same_option_count"
+          ],
+          "masterPrompt": "What should the driver do when encountering a vehicle from the opposite direction on a road without a central line?",
+          "masterAnswer": "C",
+          "masterImage": null
+        },
+        {
+          "qid": "q0483",
+          "number": 483,
+          "score": 0.2684,
+          "reasonCodes": [
+            "same_question_type",
+            "same_option_count"
+          ],
+          "masterPrompt": "What should the driver do if conditions permit when a following vehicle gives the overtaking signal on a road without a central line?",
+          "masterAnswer": "C",
+          "masterImage": null
+        },
+        {
+          "qid": "q0159",
+          "number": 159,
+          "score": 0.2488,
+          "reasonCodes": [
+            "same_question_type",
+            "same_option_count",
+            "same_answer_letter"
+          ],
+          "masterPrompt": "When a vehicle follows another vehicle on a mountain road, it should ____.",
+          "masterAnswer": "A",
+          "masterImage": null
+        },
+        {
+          "qid": "q0779",
+          "number": 779,
+          "score": 0.247,
+          "reasonCodes": [
+            "same_question_type",
+            "same_option_count",
+            "same_answer_letter"
+          ],
+          "masterPrompt": "What’s the meaning of the yellow filled markings on the road?",
+          "masterAnswer": "A",
+          "masterImage": "/qbank/2023-test1/images/img_ac530dc22a5b40d5dc3578c7ab110d87.jpeg"
+        },
+        {
+          "qid": "q0512",
+          "number": 512,
+          "score": 0.2345,
+          "reasonCodes": [
+            "same_question_type",
+            "same_option_count",
+            "same_answer_letter"
+          ],
+          "masterPrompt": "How to cross each other on a narrow mountain road without the central dividing line?",
+          "masterAnswer": "A",
+          "masterImage": null
+        },
+        {
+          "qid": "q0178",
+          "number": 178,
+          "score": 0.2229,
+          "reasonCodes": [
+            "same_question_type",
+            "same_option_count",
+            "same_answer_letter"
+          ],
+          "masterPrompt": "When encountering children on the road, the driver should _________.",
+          "masterAnswer": "A",
+          "masterImage": null
+        },
+        {
+          "qid": "q0156",
+          "number": 156,
+          "score": 0.2206,
+          "reasonCodes": [
+            "same_question_type",
+            "same_option_count"
+          ],
+          "masterPrompt": "When a vehicle passes a bump on the road, the driver should ________.",
+          "masterAnswer": "D",
+          "masterImage": null
+        },
+        {
+          "qid": "q0863",
+          "number": 863,
+          "score": 0.2191,
+          "reasonCodes": [
+            "same_question_type",
+            "same_option_count",
+            "same_answer_letter"
+          ],
+          "masterPrompt": "What’s the meaning of this mark on the road?",
+          "masterAnswer": "A",
+          "masterImage": "/qbank/2023-test1/images/img_56061cbf0d976d2915e271867acedd16.png"
+        }
+      ],
+      "reasoningSummary": "No high-confidence duplicate found. Best match q0502 scored 0.2823.",
+      "requiredHumanAction": "can_prepare_promotion_preview",
+      "candidateSignals": {
+        "answerKey": "A",
+        "correctOptionText": "Slow down and keep to the right side",
+        "sourceImage": "Screenshot 2026-04-19 at 18.46.51.png",
+        "imageAssets": [
+          "Screenshot 2026-04-19 at 18.46.51.png"
+        ],
+        "objectTags": [
+          "proper-driving:safe-driving",
+          "road-safety:road-conditions",
+          "traffic-signals:road-markings"
+        ],
+        "hasDuplicateOptionLabels": false
+      }
+    },
+    {
+      "candidateId": "nqc-ru-batch-03-001",
+      "lang": "ru",
+      "batch": "batch-03",
+      "sourceFile": "/Users/huni/dev-projects/expatise/qbank-tools/history/decisions/new-question-candidates.ru.batch-03.json",
+      "sourcePrompt": "Сталкиваясь при движении с работающим автомобилем обслуживания дороги и технических работ, водителю следует уступить дорогу.",
+      "translatedEnglishPrompt": "When encountering a working road maintenance or technical service vehicle while driving, the driver should yield.",
+      "type": "row",
+      "recommendation": "safe_to_promote",
+      "risk": "low",
+      "topMatches": [
+        {
+          "qid": "q0305",
+          "number": 305,
+          "score": 0.2667,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "When encountering emergency vehicles, such as a fire truck, ambulance, or breakdown service vehicle while driving, the driver should yield the right of way.",
+          "masterAnswer": "Right",
+          "masterImage": null
+        },
+        {
+          "qid": "q0054",
+          "number": 54,
+          "score": 0.2327,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "When driving a vehicle on the road, the driver should drive safely at the prescribed speed.",
+          "masterAnswer": "Right",
+          "masterImage": null
+        },
+        {
+          "qid": "q0056",
+          "number": 56,
+          "score": 0.227,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "When a vehicle passes a crosswalk, the driver should yield to the pedestrians.",
+          "masterAnswer": "Right",
+          "masterImage": null
+        },
+        {
+          "qid": "q0917",
+          "number": 917,
+          "score": 0.1959,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "When a vehicle driving license is lost or destroyed to be unrecognizable, the driver should apply to the issuing vehicle management station for a reissue.",
+          "masterAnswer": "Right",
+          "masterImage": null
+        },
+        {
+          "qid": "q0019",
+          "number": 19,
+          "score": 0.1931,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "When crossing each other on a narrow road, the driver should slow down, yield and stop first.",
+          "masterAnswer": "Right",
+          "masterImage": null
+        },
+        {
+          "qid": "q0022",
+          "number": 22,
+          "score": 0.1931,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "When driving in a snowy day, the driver should drive along the vehicle tracks if there are any.",
+          "masterAnswer": "Right",
+          "masterImage": null
+        },
+        {
+          "qid": "q0288",
+          "number": 288,
+          "score": 0.1931,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "When a vehicle passes through narrow road or bridge, the maximum speed should not exceed 30km/hr.",
+          "masterAnswer": "Right",
+          "masterImage": null
+        },
+        {
+          "qid": "q0038",
+          "number": 38,
+          "score": 0.185,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "When encountering disabled people obstructing the traffic, the driver should voluntarily reduce speed and yield.",
+          "masterAnswer": "Right",
+          "masterImage": null
+        }
+      ],
+      "reasoningSummary": "No high-confidence duplicate found. Best match q0305 scored 0.2667.",
+      "requiredHumanAction": "can_prepare_promotion_preview",
+      "candidateSignals": {
+        "answerKey": null,
+        "correctOptionText": "Правильно",
+        "sourceImage": "screenshots/150.png",
+        "imageAssets": [
+          "screenshots/150.png"
+        ],
+        "objectTags": [
+          "proper-driving:safe-driving",
+          "traffic-signals:road-signs"
+        ],
+        "hasDuplicateOptionLabels": false
+      }
+    },
+    {
+      "candidateId": "nqc-ru-batch-05-001",
+      "lang": "ru",
+      "batch": "batch-05",
+      "sourceFile": "/Users/huni/dev-projects/expatise/qbank-tools/history/decisions/new-question-candidates.ru.batch-05.json",
+      "sourcePrompt": "До начала въезда в двусторонний туннель, следует выключить:",
+      "translatedEnglishPrompt": "Before entering a two-way tunnel, you should turn off:",
+      "type": "mcq",
+      "recommendation": "safe_to_promote",
+      "risk": "low",
+      "topMatches": [
+        {
+          "qid": "q0133",
+          "number": 133,
+          "score": 0.3504,
+          "reasonCodes": [
+            "same_question_type",
+            "same_option_count"
+          ],
+          "masterPrompt": "When a vehicle enters a two-way tunnel, the driver should turn on ________.",
+          "masterAnswer": "D",
+          "masterImage": null
+        },
+        {
+          "qid": "q0166",
+          "number": 166,
+          "score": 0.2538,
+          "reasonCodes": [
+            "same_question_type",
+            "same_option_count",
+            "same_answer_letter"
+          ],
+          "masterPrompt": "When a vehicle stops temporarily in a rainy day, the driver should turn on ______.",
+          "masterAnswer": "B",
+          "masterImage": null
+        },
+        {
+          "qid": "q0974",
+          "number": 974,
+          "score": 0.2531,
+          "reasonCodes": [
+            "same_question_type",
+            "same_option_count",
+            "option_overlap"
+          ],
+          "masterPrompt": "When driving in these weather conditions, how should you use your lights?",
+          "masterAnswer": "A",
+          "masterImage": "/qbank/2023-test1/images/img_cbfebbd46036ca60d82572a2131a7486.jpeg"
+        },
+        {
+          "qid": "q0134",
+          "number": 134,
+          "score": 0.2433,
+          "reasonCodes": [
+            "same_question_type",
+            "same_option_count",
+            "same_answer_letter"
+          ],
+          "masterPrompt": "When driving at night on a road that has good lighting, the driver should use _______.",
+          "masterAnswer": "B",
+          "masterImage": null
+        },
+        {
+          "qid": "q0114",
+          "number": 114,
+          "score": 0.217,
+          "reasonCodes": [
+            "same_question_type",
+            "same_option_count"
+          ],
+          "masterPrompt": "When a vehicle stops temporarily in snowy conditions, the driver should turn on _______.",
+          "masterAnswer": "D",
+          "masterImage": null
+        },
+        {
+          "qid": "q0497",
+          "number": 497,
+          "score": 0.2111,
+          "reasonCodes": [
+            "same_question_type",
+            "same_option_count"
+          ],
+          "masterPrompt": "Which is correct to use lights on rainy day when following a vehicle?",
+          "masterAnswer": "C",
+          "masterImage": "/qbank/2023-test1/images/img_833c8d25acfb074bd568e9789fc17479.jpeg"
+        },
+        {
+          "qid": "q0457",
+          "number": 457,
+          "score": 0.2011,
+          "reasonCodes": [
+            "same_question_type",
+            "same_option_count",
+            "same_answer_letter"
+          ],
+          "masterPrompt": "At what distance from an oncoming car should you turn off the high beam headlights and switch to the low beam headlights?",
+          "masterAnswer": "B",
+          "masterImage": null
+        },
+        {
+          "qid": "q0150",
+          "number": 150,
+          "score": 0.1971,
+          "reasonCodes": [
+            "same_question_type",
+            "same_option_count"
+          ],
+          "masterPrompt": "When driving in a foggy day, the driver should turn on ______.",
+          "masterAnswer": "C",
+          "masterImage": null
+        }
+      ],
+      "reasoningSummary": "No high-confidence duplicate found. Best match q0133 scored 0.3504.",
+      "requiredHumanAction": "can_prepare_promotion_preview",
+      "candidateSignals": {
+        "answerKey": "B",
+        "correctOptionText": "High beam headlights",
+        "sourceImage": "screenshots/Screenshot 2026-04-19 at 18.50.07.png",
+        "imageAssets": [
+          "screenshots/Screenshot 2026-04-19 at 18.50.07.png"
+        ],
+        "objectTags": [
+          "road-safety:road-conditions",
+          "proper-driving:safe-driving"
+        ],
+        "hasDuplicateOptionLabels": false
+      }
+    },
+    {
+      "candidateId": "nqc-ru-batch-05-001",
+      "lang": "ru",
+      "batch": "batch-05",
+      "sourceFile": "/Users/huni/dev-projects/expatise/qbank-tools/history/decisions/new-question-candidates.ru.batch-05.json",
+      "sourcePrompt": "За использование поддельного водительского удостоверения начисляется 12 баллов.",
+      "translatedEnglishPrompt": "Using a fake driver's license is assigned 12 points.",
+      "type": "row",
+      "recommendation": "safe_to_promote",
+      "risk": "low",
+      "topMatches": [
+        {
+          "qid": "q0347",
+          "number": 347,
+          "score": 0.2078,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "Counterfeiting, altering, or using a fake driver's license, the modification of which is a crime, entails a criminal offense and punishment.",
+          "masterAnswer": "Right",
+          "masterImage": null
+        },
+        {
+          "qid": "q0294",
+          "number": 294,
+          "score": 0.2028,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "Traffic police can detain the vehicle which is suspected of using other vehicles license plate and driver's license.",
+          "masterAnswer": "Right",
+          "masterImage": null
+        },
+        {
+          "qid": "q0265",
+          "number": 265,
+          "score": 0.1967,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "A person who has altered or forged a driver's license is criminally liable.",
+          "masterAnswer": "Right",
+          "masterImage": null
+        },
+        {
+          "qid": "q0293",
+          "number": 293,
+          "score": 0.194,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "Traffic police can detain the vehicle which is suspected of using the falsified or altered license plate and driver's license.",
+          "masterAnswer": "Right",
+          "masterImage": null
+        },
+        {
+          "qid": "q0234",
+          "number": 234,
+          "score": 0.1905,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "It is prohibited to drive a vehicle while your driver's license is temporarily suspended.",
+          "masterAnswer": "Right",
+          "masterImage": null
+        },
+        {
+          "qid": "q0339",
+          "number": 339,
+          "score": 0.185,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "A driver who uses falsified or altered driving license is subject to a 12-point penalty.",
+          "masterAnswer": "Right",
+          "masterImage": null
+        },
+        {
+          "qid": "q0322",
+          "number": 322,
+          "score": 0.18,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "A driver who uses other vehicles license plate and driver's license is subject to a 3-point penalty.",
+          "masterAnswer": "Wrong",
+          "masterImage": null
+        },
+        {
+          "qid": "q0279",
+          "number": 279,
+          "score": 0.1733,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "A driver who drives after drinking is subject to a 12-point penalty.",
+          "masterAnswer": "Right",
+          "masterImage": null
+        }
+      ],
+      "reasoningSummary": "No high-confidence duplicate found. Best match q0347 scored 0.2078.",
+      "requiredHumanAction": "can_prepare_promotion_preview",
+      "candidateSignals": {
+        "answerKey": null,
+        "correctOptionText": null,
+        "sourceImage": "screenshots/Screenshot 2026-04-19 at 18.50.01.png",
+        "imageAssets": [
+          "screenshots/Screenshot 2026-04-19 at 18.50.01.png"
+        ],
+        "objectTags": [
+          "road-safety:license"
+        ],
+        "hasDuplicateOptionLabels": false
+      }
+    },
+    {
+      "candidateId": "nqc-ru-batch-06-001",
+      "lang": "ru",
+      "batch": "batch-06",
+      "sourceFile": "/Users/huni/dev-projects/expatise/qbank-tools/history/decisions/new-question-candidates.ru.batch-06.json",
+      "sourcePrompt": "Как правильно припарковаться водителю на обочине?",
+      "translatedEnglishPrompt": "How should a driver properly park on the shoulder?",
+      "type": "mcq",
+      "recommendation": "safe_to_promote",
+      "risk": "low",
+      "topMatches": [
+        {
+          "qid": "q0158",
+          "number": 158,
+          "score": 0.3016,
+          "reasonCodes": [
+            "same_question_type",
+            "same_option_count"
+          ],
+          "masterPrompt": "When a vehicle stops temporarily at the roadside, the driver ________.",
+          "masterAnswer": "A",
+          "masterImage": null
+        },
+        {
+          "qid": "q0139",
+          "number": 139,
+          "score": 0.2747,
+          "reasonCodes": [
+            "same_question_type",
+            "same_option_count",
+            "same_answer_letter"
+          ],
+          "masterPrompt": "When a vehicle encounters a bike rider coming in the opposite direction on the road, the driver should ________.",
+          "masterAnswer": "C",
+          "masterImage": null
+        },
+        {
+          "qid": "q0150",
+          "number": 150,
+          "score": 0.2737,
+          "reasonCodes": [
+            "same_question_type",
+            "same_option_count",
+            "same_answer_letter"
+          ],
+          "masterPrompt": "When driving in a foggy day, the driver should turn on ______.",
+          "masterAnswer": "C",
+          "masterImage": null
+        },
+        {
+          "qid": "q0128",
+          "number": 128,
+          "score": 0.2646,
+          "reasonCodes": [
+            "same_question_type",
+            "same_option_count"
+          ],
+          "masterPrompt": "When a vehicle approaches a crosswalk, the driver should ________.",
+          "masterAnswer": "D",
+          "masterImage": null
+        },
+        {
+          "qid": "q0144",
+          "number": 144,
+          "score": 0.2619,
+          "reasonCodes": [
+            "same_question_type",
+            "same_option_count",
+            "same_answer_letter"
+          ],
+          "masterPrompt": "When a vehicle runs on a narrow mountain road, the driver should ______ if the party close to the mountain mass refuses to yield.",
+          "masterAnswer": "C",
+          "masterImage": null
+        },
+        {
+          "qid": "q0165",
+          "number": 165,
+          "score": 0.26,
+          "reasonCodes": [
+            "same_question_type",
+            "same_option_count",
+            "same_answer_letter"
+          ],
+          "masterPrompt": "When a vehicle reaches a sharp curve, the driver should _______.",
+          "masterAnswer": "C",
+          "masterImage": null
+        },
+        {
+          "qid": "q0149",
+          "number": 149,
+          "score": 0.2593,
+          "reasonCodes": [
+            "same_question_type",
+            "same_option_count",
+            "same_answer_letter"
+          ],
+          "masterPrompt": "When entering a highway toll gate, the driver should select a gate where _______.",
+          "masterAnswer": "C",
+          "masterImage": null
+        },
+        {
+          "qid": "q0121",
+          "number": 121,
+          "score": 0.2565,
+          "reasonCodes": [
+            "same_question_type",
+            "same_option_count"
+          ],
+          "masterPrompt": "When driving on a highway, if you miss your exit, the driver should:",
+          "masterAnswer": "B",
+          "masterImage": null
+        }
+      ],
+      "reasoningSummary": "No high-confidence duplicate found. Best match q0158 scored 0.3016.",
+      "requiredHumanAction": "can_prepare_promotion_preview",
+      "candidateSignals": {
+        "answerKey": "C",
+        "correctOptionText": "It is not allowed to stop parallel or on the oncoming lane",
+        "sourceImage": "screenshots/Screenshot 2026-04-19 at 18.51.32.png",
+        "imageAssets": [
+          "screenshots/Screenshot 2026-04-19 at 18.51.32.png"
+        ],
+        "objectTags": [
+          "road-safety:road-conditions",
+          "proper-driving:safe-driving",
+          "proper-driving:traffic-laws"
+        ],
+        "hasDuplicateOptionLabels": false
+      }
+    },
+    {
+      "candidateId": "nqc-ru-batch-07-001",
+      "lang": "ru",
+      "batch": "batch-07",
+      "sourceFile": "/Users/huni/dev-projects/expatise/qbank-tools/history/decisions/new-question-candidates.ru.batch-07.json",
+      "sourcePrompt": "На какой срок лишают права управления автотранспортным средством участника, совершившего наезд на человека, при этом покинувшего место преступления.",
+      "translatedEnglishPrompt": "For how long is the driving license revoked for a person who hit a person with a vehicle and left the scene of the crime?",
+      "type": "mcq",
+      "recommendation": "safe_to_promote",
+      "risk": "low",
+      "topMatches": [
+        {
+          "qid": "q0496",
+          "number": 496,
+          "score": 0.3571,
+          "reasonCodes": [
+            "same_question_type",
+            "same_option_count",
+            "option_overlap"
+          ],
+          "masterPrompt": "If a person escapes after causing a traffic accident and constitutes a crime, his driving license should be revoked and he is banned _____ from re-obtaining a driving license.",
+          "masterAnswer": "D",
+          "masterImage": null
+        },
+        {
+          "qid": "q0900",
+          "number": 900,
+          "score": 0.2869,
+          "reasonCodes": [
+            "same_question_type",
+            "same_option_count",
+            "same_answer_letter"
+          ],
+          "masterPrompt": "The validity of the driving license which is initially applied for is ______.",
+          "masterAnswer": "C",
+          "masterImage": null
+        },
+        {
+          "qid": "q0362",
+          "number": 362,
+          "score": 0.2656,
+          "reasonCodes": [
+            "same_question_type",
+            "same_option_count",
+            "same_answer_letter"
+          ],
+          "masterPrompt": "How long is the period of probation of a motor vehicle driver who has applied for a driver license for the first time?",
+          "masterAnswer": "C",
+          "masterImage": null
+        },
+        {
+          "qid": "q0971",
+          "number": 971,
+          "score": 0.2465,
+          "reasonCodes": [
+            "same_question_type",
+            "same_option_count",
+            "same_answer_letter"
+          ],
+          "masterPrompt": "For a driver who drives a commercial motor vehicle after drinking, besides revoking their driving license, how long will they be banned from re-obtaining a driver's license?",
+          "masterAnswer": "C",
+          "masterImage": null
+        },
+        {
+          "qid": "q0363",
+          "number": 363,
+          "score": 0.2381,
+          "reasonCodes": [
+            "same_question_type",
+            "same_option_count"
+          ],
+          "masterPrompt": "If a driving license is obtained by deception, bribery or other illegal means, the driving license should be revoked and the applicant is not allowed to re-apply for it _____ .",
+          "masterAnswer": "A",
+          "masterImage": null
+        },
+        {
+          "qid": "q0508",
+          "number": 508,
+          "score": 0.2316,
+          "reasonCodes": [
+            "same_question_type",
+            "same_option_count"
+          ],
+          "masterPrompt": "How long is the period of probation after a driver obtains his driving license for the first time or the permission to drive higher level vehicles?",
+          "masterAnswer": "B",
+          "masterImage": null
+        },
+        {
+          "qid": "q0404",
+          "number": 404,
+          "score": 0.2157,
+          "reasonCodes": [
+            "same_question_type",
+            "same_option_count"
+          ],
+          "masterPrompt": "Which of the following punishments is given to a driver who operates a vehicle unfit(reached write-off standard) for driving?",
+          "masterAnswer": "D",
+          "masterImage": null
+        },
+        {
+          "qid": "q0413",
+          "number": 413,
+          "score": 0.2144,
+          "reasonCodes": [
+            "same_question_type",
+            "same_option_count",
+            "same_answer_letter"
+          ],
+          "masterPrompt": "What will be subject to if submitting false materials to apply for driving license?",
+          "masterAnswer": "C",
+          "masterImage": null
+        }
+      ],
+      "reasoningSummary": "No high-confidence duplicate found. Best match q0496 scored 0.3571.",
+      "requiredHumanAction": "can_prepare_promotion_preview",
+      "candidateSignals": {
+        "answerKey": "C",
+        "correctOptionText": "For life",
+        "sourceImage": "screenshots/Screenshot 2026-04-19 at 18.51.55.png",
+        "imageAssets": [
+          "screenshots/Screenshot 2026-04-19 at 18.51.55.png"
+        ],
+        "objectTags": [
+          "road-safety:license"
+        ],
+        "hasDuplicateOptionLabels": false
+      }
+    },
+    {
+      "candidateId": "nqc-ru-batch-07-001",
+      "lang": "ru",
+      "batch": "batch-07",
+      "sourceFile": "/Users/huni/dev-projects/expatise/qbank-tools/history/decisions/new-question-candidates.ru.batch-07.json",
+      "sourcePrompt": "Курение за рулем не мешает вождению.",
+      "translatedEnglishPrompt": "Smoking while driving does not interfere with driving.",
+      "type": "row",
+      "recommendation": "safe_to_promote",
+      "risk": "low",
+      "topMatches": [
+        {
+          "qid": "q0084",
+          "number": 84,
+          "score": 0.194,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "Driving and smoking has no harm on safe driving.",
+          "masterAnswer": "Wrong",
+          "masterImage": null
+        },
+        {
+          "qid": "q0541",
+          "number": 541,
+          "score": 0.185,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "Does not affect normal driving when it lights.",
+          "masterAnswer": "Wrong",
+          "masterImage": "/qbank/2023-test1/images/img_25a7f86a8db6cc9f3974423cac729930.jpeg"
+        },
+        {
+          "qid": "q0026",
+          "number": 26,
+          "score": 0.1797,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "It is not allowed to overtake while driving through a tunnel.",
+          "masterAnswer": "Right",
+          "masterImage": null
+        },
+        {
+          "qid": "q0262",
+          "number": 262,
+          "score": 0.1797,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "It is allowed to throw objects onto the road while driving.",
+          "masterAnswer": "Wrong",
+          "masterImage": null
+        },
+        {
+          "qid": "q0091",
+          "number": 91,
+          "score": 0.1687,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "Using a mobile phone while driving is considered a violation.",
+          "masterAnswer": "Right",
+          "masterImage": null
+        },
+        {
+          "qid": "q0261",
+          "number": 261,
+          "score": 0.1687,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "It is allowed to watch videos while driving in good road conditions",
+          "masterAnswer": "Wrong",
+          "masterImage": null
+        },
+        {
+          "qid": "q0242",
+          "number": 242,
+          "score": 0.164,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "Children are allowed not to fasten their seat belts while driving.",
+          "masterAnswer": "Wrong",
+          "masterImage": null
+        },
+        {
+          "qid": "q0198",
+          "number": 198,
+          "score": 0.16,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "You can drive a vehicle a short distance after drinking as long as it does not interfere the driving operation.",
+          "masterAnswer": "Wrong",
+          "masterImage": null
+        }
+      ],
+      "reasoningSummary": "No high-confidence duplicate found. Best match q0084 scored 0.194.",
+      "requiredHumanAction": "can_prepare_promotion_preview",
+      "candidateSignals": {
+        "answerKey": null,
+        "correctOptionText": null,
+        "sourceImage": "screenshots/350.png",
+        "imageAssets": [
+          "screenshots/350.png"
+        ],
+        "objectTags": [
+          "proper-driving:safe-driving"
+        ],
+        "hasDuplicateOptionLabels": false
+      }
+    },
+    {
+      "candidateId": "nqc-ru-batch-07-002",
+      "lang": "ru",
+      "batch": "batch-07",
+      "sourceFile": "/Users/huni/dev-projects/expatise/qbank-tools/history/decisions/new-question-candidates.ru.batch-07.json",
+      "sourcePrompt": "При вождении транспортного средства на затопленной водой дороге, водителю следует:",
+      "translatedEnglishPrompt": "When driving a vehicle on a road flooded with water, the driver should:",
+      "type": "mcq",
+      "recommendation": "safe_to_promote",
+      "risk": "low",
+      "topMatches": [
+        {
+          "qid": "q0107",
+          "number": 107,
+          "score": 0.3862,
+          "reasonCodes": [
+            "prompt_overlap",
+            "same_question_type",
+            "same_option_count",
+            "same_answer_letter"
+          ],
+          "masterPrompt": "When driving a vehicle through a slightly flodded road with bicycles on both sides, the driver should _________.",
+          "masterAnswer": "A",
+          "masterImage": null
+        },
+        {
+          "qid": "q0153",
+          "number": 153,
+          "score": 0.3562,
+          "reasonCodes": [
+            "prompt_overlap",
+            "same_question_type",
+            "same_option_count"
+          ],
+          "masterPrompt": "When driving a vehicle through a slightly flodded road with pedestrians on both sides, the driver should ________.",
+          "masterAnswer": "D",
+          "masterImage": null
+        },
+        {
+          "qid": "q0156",
+          "number": 156,
+          "score": 0.3452,
+          "reasonCodes": [
+            "prompt_overlap",
+            "same_question_type",
+            "same_option_count"
+          ],
+          "masterPrompt": "When a vehicle passes a bump on the road, the driver should ________.",
+          "masterAnswer": "D",
+          "masterImage": null
+        },
+        {
+          "qid": "q0178",
+          "number": 178,
+          "score": 0.3279,
+          "reasonCodes": [
+            "same_question_type",
+            "same_option_count",
+            "same_answer_letter"
+          ],
+          "masterPrompt": "When encountering children on the road, the driver should _________.",
+          "masterAnswer": "A",
+          "masterImage": null
+        },
+        {
+          "qid": "q0123",
+          "number": 123,
+          "score": 0.2927,
+          "reasonCodes": [
+            "same_question_type",
+            "same_option_count"
+          ],
+          "masterPrompt": "When encountering a vehicle coming in the opposite direction on a mountain road, the driver should ______ when crossing each other.",
+          "masterAnswer": "D",
+          "masterImage": null
+        },
+        {
+          "qid": "q0139",
+          "number": 139,
+          "score": 0.2911,
+          "reasonCodes": [
+            "same_question_type",
+            "same_option_count"
+          ],
+          "masterPrompt": "When a vehicle encounters a bike rider coming in the opposite direction on the road, the driver should ________.",
+          "masterAnswer": "C",
+          "masterImage": null
+        },
+        {
+          "qid": "q0502",
+          "number": 502,
+          "score": 0.2901,
+          "reasonCodes": [
+            "same_question_type",
+            "same_option_count"
+          ],
+          "masterPrompt": "What should the driver do when encountering a vehicle from the opposite direction on a road without a central line?",
+          "masterAnswer": "C",
+          "masterImage": null
+        },
+        {
+          "qid": "q0128",
+          "number": 128,
+          "score": 0.2886,
+          "reasonCodes": [
+            "same_question_type",
+            "same_option_count"
+          ],
+          "masterPrompt": "When a vehicle approaches a crosswalk, the driver should ________.",
+          "masterAnswer": "D",
+          "masterImage": null
+        }
+      ],
+      "reasoningSummary": "No high-confidence duplicate found. Best match q0107 scored 0.3862.",
+      "requiredHumanAction": "can_prepare_promotion_preview",
+      "candidateSignals": {
+        "answerKey": "A",
+        "correctOptionText": "Pay special attention to reducing speed",
+        "sourceImage": "screenshots/Screenshot 2026-04-19 at 18.52.13 1.png",
+        "imageAssets": [
+          "screenshots/Screenshot 2026-04-19 at 18.52.13 1.png"
+        ],
+        "objectTags": [
+          "road-safety:road-conditions",
+          "driving-operations:gears",
+          "proper-driving:safe-driving"
+        ],
+        "hasDuplicateOptionLabels": false
+      }
+    },
+    {
+      "candidateId": "nqc-ru-batch-07-003",
+      "lang": "ru",
+      "batch": "batch-07",
+      "sourceFile": "/Users/huni/dev-projects/expatise/qbank-tools/history/decisions/new-question-candidates.ru.batch-07.json",
+      "sourcePrompt": "Водителю нужно придерживаться культурной езды за рулем, не желательно управлять автотранспортом в плохом состоянии здоровья или плохом настроении.",
+      "translatedEnglishPrompt": "A driver should practice courteous driving and should not drive when in poor health or in a bad mood.",
+      "type": "row",
+      "recommendation": "safe_to_promote",
+      "risk": "low",
+      "topMatches": [
+        {
+          "qid": "q0979",
+          "number": 979,
+          "score": 0.2044,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "When driving a car, you must follow driving manners and must not drive in a way that is forceful or takes risks.",
+          "masterAnswer": "Right",
+          "masterImage": null
+        },
+        {
+          "qid": "q0022",
+          "number": 22,
+          "score": 0.1931,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "When driving in a snowy day, the driver should drive along the vehicle tracks if there are any.",
+          "masterAnswer": "Right",
+          "masterImage": null
+        },
+        {
+          "qid": "q0034",
+          "number": 34,
+          "score": 0.1896,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "When driving, the driver should be courteous and defensive, instead of being offensive.",
+          "masterAnswer": "Right",
+          "masterImage": null
+        },
+        {
+          "qid": "q0054",
+          "number": 54,
+          "score": 0.185,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "When driving a vehicle on the road, the driver should drive safely at the prescribed speed.",
+          "masterAnswer": "Right",
+          "masterImage": null
+        },
+        {
+          "qid": "q0207",
+          "number": 207,
+          "score": 0.185,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "A driver should drive the vehicles in accordance with the qualification listed on the driving license.",
+          "masterAnswer": "Right",
+          "masterImage": null
+        },
+        {
+          "qid": "q0080",
+          "number": 80,
+          "score": 0.1769,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "When driving at night on a road with no or poor lighting, the driver should switch from the low beam light to the high beam light. But the vehicle following in the same direction is not allowed to use the high beam light.",
+          "masterAnswer": "Right",
+          "masterImage": null
+        },
+        {
+          "qid": "q0267",
+          "number": 267,
+          "score": 0.1733,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "When a vehicle runs in a foggy weather, the driver should turn on the fog light and the hazard lights.",
+          "masterAnswer": "Right",
+          "masterImage": null
+        },
+        {
+          "qid": "q0033",
+          "number": 33,
+          "score": 0.17,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "When driving in a heavy rain, the driver should control the speed to avoid the danger arising from water slide.",
+          "masterAnswer": "Right",
+          "masterImage": null
+        }
+      ],
+      "reasoningSummary": "No high-confidence duplicate found. Best match q0979 scored 0.2044.",
+      "requiredHumanAction": "can_prepare_promotion_preview",
+      "candidateSignals": {
+        "answerKey": null,
+        "correctOptionText": "Правильно",
+        "sourceImage": "screenshots/Screenshot 2026-04-19 at 18.52.16.png",
+        "imageAssets": [
+          "screenshots/Screenshot 2026-04-19 at 18.52.16.png"
+        ],
+        "objectTags": [
+          "proper-driving:safe-driving",
+          "proper-driving:traffic-laws"
+        ],
+        "hasDuplicateOptionLabels": false
+      }
+    },
+    {
+      "candidateId": "nqc-ru-batch-08-001",
+      "lang": "ru",
+      "batch": "batch-08",
+      "sourceFile": "/Users/huni/dev-projects/expatise/qbank-tools/history/decisions/new-question-candidates.ru.batch-08.json",
+      "sourcePrompt": "При движении транспортного средства на автомагистрали, разрешена остановка на дороге въезда.",
+      "translatedEnglishPrompt": "When driving a vehicle on a motorway, is stopping on the entry road allowed?",
+      "type": "row",
+      "recommendation": "safe_to_promote",
+      "risk": "low",
+      "topMatches": [
+        {
+          "qid": "q0281",
+          "number": 281,
+          "score": 0.248,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "Driving this vehicle on the road is not illegal.",
+          "masterAnswer": "Wrong",
+          "masterImage": "/qbank/2023-test1/images/img_432de8d340853be227e496fed26cf1f8.jpeg"
+        },
+        {
+          "qid": "q0054",
+          "number": 54,
+          "score": 0.2347,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "When driving a vehicle on the road, the driver should drive safely at the prescribed speed.",
+          "masterAnswer": "Right",
+          "masterImage": null
+        },
+        {
+          "qid": "q0086",
+          "number": 86,
+          "score": 0.2347,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "When a vehicle goes downhill on a mountain road, it is not allowed to overtake.",
+          "masterAnswer": "Right",
+          "masterImage": null
+        },
+        {
+          "qid": "q0332",
+          "number": 332,
+          "score": 0.2347,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "Driving a vehicle on the highway is not allowed to exceed the marked maximum speed.",
+          "masterAnswer": "Right",
+          "masterImage": null
+        },
+        {
+          "qid": "q0049",
+          "number": 49,
+          "score": 0.22,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "A vehicle is not allowed to reverse on the ramp of a highway.",
+          "masterAnswer": "Right",
+          "masterImage": null
+        },
+        {
+          "qid": "q0645",
+          "number": 645,
+          "score": 0.22,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "The vehicle is allowed to pass the intersection ahead when the green light on.",
+          "masterAnswer": "Right",
+          "masterImage": null
+        },
+        {
+          "qid": "q0237",
+          "number": 237,
+          "score": 0.2136,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "When running on the road having maximum speed limit signs, the vehicle is not allowed to exceed the marked maximum speed.",
+          "masterAnswer": "Right",
+          "masterImage": null
+        },
+        {
+          "qid": "q0010",
+          "number": 10,
+          "score": 0.206,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "A vehicle is not allowed to make a U-turn on the ramp of a highway.",
+          "masterAnswer": "Right",
+          "masterImage": null
+        }
+      ],
+      "reasoningSummary": "No high-confidence duplicate found. Best match q0281 scored 0.248.",
+      "requiredHumanAction": "can_prepare_promotion_preview",
+      "candidateSignals": {
+        "answerKey": null,
+        "correctOptionText": null,
+        "sourceImage": "screenshots/Screenshot 2026-04-19 at 18.53.08.png",
+        "imageAssets": [
+          "screenshots/Screenshot 2026-04-19 at 18.53.08.png"
+        ],
+        "objectTags": [
+          "proper-driving:safe-driving"
+        ],
+        "hasDuplicateOptionLabels": false
+      }
+    },
+    {
+      "candidateId": "nqc-ru-batch-08-001",
+      "lang": "ru",
+      "batch": "batch-08",
+      "sourceFile": "/Users/huni/dev-projects/expatise/qbank-tools/history/decisions/new-question-candidates.ru.batch-08.json",
+      "sourcePrompt": "Что следует сделать водителю спец. транспорта, имеющему преимущество на дороге, на перекрестке, если на его пути встречается другой транспорт?",
+      "translatedEnglishPrompt": "What should the driver of a special vehicle with priority on the road do at an intersection if another vehicle is encountered?",
+      "type": "mcq",
+      "recommendation": "safe_to_promote",
+      "risk": "low",
+      "topMatches": [
+        {
+          "qid": "q0186",
+          "number": 186,
+          "score": 0.3057,
+          "reasonCodes": [
+            "same_question_type",
+            "same_option_count"
+          ],
+          "masterPrompt": "If a vehicle has the right of way at an intersection but encounters a vehicle cutting in, the driver should _________.",
+          "masterAnswer": "C",
+          "masterImage": null
+        },
+        {
+          "qid": "q0156",
+          "number": 156,
+          "score": 0.2616,
+          "reasonCodes": [
+            "same_question_type",
+            "same_option_count",
+            "same_answer_letter"
+          ],
+          "masterPrompt": "When a vehicle passes a bump on the road, the driver should ________.",
+          "masterAnswer": "D",
+          "masterImage": null
+        },
+        {
+          "qid": "q0483",
+          "number": 483,
+          "score": 0.2591,
+          "reasonCodes": [
+            "same_question_type",
+            "same_option_count"
+          ],
+          "masterPrompt": "What should the driver do if conditions permit when a following vehicle gives the overtaking signal on a road without a central line?",
+          "masterAnswer": "C",
+          "masterImage": null
+        },
+        {
+          "qid": "q0153",
+          "number": 153,
+          "score": 0.2528,
+          "reasonCodes": [
+            "same_question_type",
+            "same_option_count",
+            "same_answer_letter"
+          ],
+          "masterPrompt": "When driving a vehicle through a slightly flodded road with pedestrians on both sides, the driver should ________.",
+          "masterAnswer": "D",
+          "masterImage": null
+        },
+        {
+          "qid": "q0123",
+          "number": 123,
+          "score": 0.2513,
+          "reasonCodes": [
+            "same_question_type",
+            "same_option_count",
+            "same_answer_letter"
+          ],
+          "masterPrompt": "When encountering a vehicle coming in the opposite direction on a mountain road, the driver should ______ when crossing each other.",
+          "masterAnswer": "D",
+          "masterImage": null
+        },
+        {
+          "qid": "q0163",
+          "number": 163,
+          "score": 0.2481,
+          "reasonCodes": [
+            "same_question_type",
+            "same_option_count",
+            "same_answer_letter"
+          ],
+          "masterPrompt": "When another vehicle overtakes you out of turn on a congested road section at reduced speed, you should:",
+          "masterAnswer": "D",
+          "masterImage": null
+        },
+        {
+          "qid": "q0170",
+          "number": 170,
+          "score": 0.2465,
+          "reasonCodes": [
+            "same_question_type",
+            "same_option_count"
+          ],
+          "masterPrompt": "If an improper place is chosen for crossing another vehicle, the driver should immediately _______.",
+          "masterAnswer": "A",
+          "masterImage": null
+        },
+        {
+          "qid": "q0131",
+          "number": 131,
+          "score": 0.2439,
+          "reasonCodes": [
+            "same_question_type",
+            "same_option_count"
+          ],
+          "masterPrompt": "When reaching an intersection, the driver should _____ if a turning vehicle cuts in.",
+          "masterAnswer": "A",
+          "masterImage": null
+        }
+      ],
+      "reasoningSummary": "No high-confidence duplicate found. Best match q0186 scored 0.3057.",
+      "requiredHumanAction": "can_prepare_promotion_preview",
+      "candidateSignals": {
+        "answerKey": "D",
+        "correctOptionText": "Slow down and yield, and also stop if necessary",
+        "sourceImage": "screenshots/Screenshot 2026-04-19 at 18.52.41.png",
+        "imageAssets": [
+          "screenshots/Screenshot 2026-04-19 at 18.52.41.png"
+        ],
+        "objectTags": [
+          "proper-driving:safe-driving",
+          "proper-driving:traffic-laws",
+          "traffic-signals:road-signs"
+        ],
+        "hasDuplicateOptionLabels": false
+      }
+    },
+    {
+      "candidateId": "nqc-ru-batch-08-002",
+      "lang": "ru",
+      "batch": "batch-08",
+      "sourceFile": "/Users/huni/dev-projects/expatise/qbank-tools/history/decisions/new-question-candidates.ru.batch-08.json",
+      "sourcePrompt": "Функция указательного знака заключается в:",
+      "translatedEnglishPrompt": "The function of a guide sign is:",
+      "type": "mcq",
+      "recommendation": "safe_to_promote",
+      "risk": "low",
+      "topMatches": [
+        {
+          "qid": "q0699",
+          "number": 699,
+          "score": 0.3532,
+          "reasonCodes": [
+            "same_question_type",
+            "same_option_count",
+            "same_answer_letter"
+          ],
+          "masterPrompt": "What’s the role of a directional sign?",
+          "masterAnswer": "C",
+          "masterImage": null
+        },
+        {
+          "qid": "q0735",
+          "number": 735,
+          "score": 0.3028,
+          "reasonCodes": [
+            "same_question_type",
+            "same_option_count",
+            "same_answer_letter"
+          ],
+          "masterPrompt": "What’s the role of a prohibitory sign?",
+          "masterAnswer": "C",
+          "masterImage": null
+        },
+        {
+          "qid": "q0825",
+          "number": 825,
+          "score": 0.258,
+          "reasonCodes": [
+            "same_question_type",
+            "same_option_count",
+            "same_answer_letter"
+          ],
+          "masterPrompt": "What’s the meaning of this sign?",
+          "masterAnswer": "C",
+          "masterImage": "/qbank/2023-test1/images/img_0a36e265b5fbe4e631f7c8a1aa7824ce.jpeg"
+        },
+        {
+          "qid": "q0759",
+          "number": 759,
+          "score": 0.2543,
+          "reasonCodes": [
+            "same_question_type",
+            "same_option_count",
+            "same_answer_letter"
+          ],
+          "masterPrompt": "What’s the meaning of this sign?",
+          "masterAnswer": "C",
+          "masterImage": "/qbank/2023-test1/images/img_a9365da8840388be2f93d6cd105b24c4.jpeg"
+        },
+        {
+          "qid": "q0698",
+          "number": 698,
+          "score": 0.2532,
+          "reasonCodes": [
+            "same_question_type",
+            "same_option_count"
+          ],
+          "masterPrompt": "What’s the role of indicative sign?",
+          "masterAnswer": "D",
+          "masterImage": null
+        },
+        {
+          "qid": "q0810",
+          "number": 810,
+          "score": 0.2501,
+          "reasonCodes": [
+            "same_question_type",
+            "same_option_count",
+            "same_answer_letter"
+          ],
+          "masterPrompt": "What is this traffic sign?",
+          "masterAnswer": "C",
+          "masterImage": "/qbank/2023-test1/images/img_67d7e673652ec50d459449c49e2c16b6.png"
+        },
+        {
+          "qid": "q0789",
+          "number": 789,
+          "score": 0.2466,
+          "reasonCodes": [
+            "same_question_type",
+            "same_option_count",
+            "same_answer_letter"
+          ],
+          "masterPrompt": "Which kind of sign is it?",
+          "masterAnswer": "C",
+          "masterImage": "/qbank/2023-test1/images/img_67a0920870de5c836cc60cbee5121c4c.jpeg"
+        },
+        {
+          "qid": "q0667",
+          "number": 667,
+          "score": 0.2447,
+          "reasonCodes": [
+            "same_question_type",
+            "same_option_count",
+            "same_answer_letter"
+          ],
+          "masterPrompt": "What’s the meaning of this sign?",
+          "masterAnswer": "C",
+          "masterImage": "/qbank/2023-test1/images/img_533aa6b7407f470de58caf8e85f9f18f.jpeg"
+        }
+      ],
+      "reasoningSummary": "No high-confidence duplicate found. Best match q0699 scored 0.3532.",
+      "requiredHumanAction": "can_prepare_promotion_preview",
+      "candidateSignals": {
+        "answerKey": "C",
+        "correctOptionText": "Providing information about direction",
+        "sourceImage": "screenshots/Screenshot 2026-04-19 at 18.52.55 1.png",
+        "imageAssets": [
+          "screenshots/Screenshot 2026-04-19 at 18.52.55 1.png"
+        ],
+        "objectTags": [
+          "traffic-signals:road-signs"
+        ],
+        "hasDuplicateOptionLabels": false
+      }
+    },
+    {
+      "candidateId": "nqc-ru-batch-08-003",
+      "lang": "ru",
+      "batch": "batch-08",
+      "sourceFile": "/Users/huni/dev-projects/expatise/qbank-tools/history/decisions/new-question-candidates.ru.batch-08.json",
+      "sourcePrompt": "За какое нарушение начисляется 12 баллов?",
+      "translatedEnglishPrompt": "For which violation are 12 points awarded?",
+      "type": "mcq",
+      "recommendation": "safe_to_promote",
+      "risk": "low",
+      "topMatches": [
+        {
+          "qid": "q0379",
+          "number": 379,
+          "score": 0.2223,
+          "reasonCodes": [
+            "same_question_type",
+            "same_option_count"
+          ],
+          "masterPrompt": "Which should be carried onboard?",
+          "masterAnswer": "B",
+          "masterImage": null
+        },
+        {
+          "qid": "q0517",
+          "number": 517,
+          "score": 0.2038,
+          "reasonCodes": [
+            "same_question_type",
+            "same_option_count",
+            "same_answer_letter"
+          ],
+          "masterPrompt": "Which should be taken along while driving?",
+          "masterAnswer": "C",
+          "masterImage": null
+        },
+        {
+          "qid": "q0433",
+          "number": 433,
+          "score": 0.2037,
+          "reasonCodes": [
+            "same_question_type",
+            "same_option_count"
+          ],
+          "masterPrompt": "Which is subject to a 12-point penalty?",
+          "masterAnswer": "D",
+          "masterImage": null
+        },
+        {
+          "qid": "q0493",
+          "number": 493,
+          "score": 0.2001,
+          "reasonCodes": [
+            "same_question_type",
+            "same_option_count",
+            "same_answer_letter"
+          ],
+          "masterPrompt": "What kind of violation does this stopping car have?",
+          "masterAnswer": "C",
+          "masterImage": "/qbank/2023-test1/images/img_32965d9b2ba20f4be6946d9edba4079a.jpeg"
+        },
+        {
+          "qid": "q0476",
+          "number": 476,
+          "score": 0.1969,
+          "reasonCodes": [
+            "same_question_type",
+            "same_option_count"
+          ],
+          "masterPrompt": "What kind of violation does this vehicle on road have?",
+          "masterAnswer": "B",
+          "masterImage": "/qbank/2023-test1/images/img_11c014faa00a85b6442798672a83d91d.jpeg"
+        },
+        {
+          "qid": "q0369",
+          "number": 369,
+          "score": 0.1841,
+          "reasonCodes": [
+            "same_question_type",
+            "same_option_count"
+          ],
+          "masterPrompt": "The police can detain the vehicle if one drives a vehicle without a ______.",
+          "masterAnswer": "A",
+          "masterImage": null
+        },
+        {
+          "qid": "q0422",
+          "number": 422,
+          "score": 0.1804,
+          "reasonCodes": [
+            "same_question_type",
+            "same_option_count",
+            "same_answer_letter"
+          ],
+          "masterPrompt": "In which situation will a driver not be allowed to drive?",
+          "masterAnswer": "C",
+          "masterImage": null
+        },
+        {
+          "qid": "q0521",
+          "number": 521,
+          "score": 0.1772,
+          "reasonCodes": [
+            "same_question_type",
+            "same_option_count",
+            "same_answer_letter"
+          ],
+          "masterPrompt": "Which is subject to a 6-point penalty?",
+          "masterAnswer": "C",
+          "masterImage": null
+        }
+      ],
+      "reasoningSummary": "No high-confidence duplicate found. Best match q0379 scored 0.2223.",
+      "requiredHumanAction": "can_prepare_promotion_preview",
+      "candidateSignals": {
+        "answerKey": "C",
+        "correctOptionText": "Obtaining a driver's license by fraudulent means",
+        "sourceImage": "screenshots/Screenshot 2026-04-19 at 18.53.08 1.png",
+        "imageAssets": [
+          "screenshots/Screenshot 2026-04-19 at 18.53.08 1.png"
+        ],
+        "objectTags": [
+          "road-safety:license",
+          "proper-driving:safe-driving",
+          "traffic-signals:road-signs"
+        ],
+        "hasDuplicateOptionLabels": false
+      }
+    },
+    {
+      "candidateId": "nqc-ru-batch-10-001",
+      "lang": "ru",
+      "batch": "batch-10",
+      "sourceFile": "/Users/huni/dev-projects/expatise/qbank-tools/history/decisions/new-question-candidates.ru.batch-10.json",
+      "sourcePrompt": "Водители транспортных средств совершающие обгон друг друга, при этом нарушающие правила дорожного движения, заключаются под стражу сроком до 3 лет лишения свободы.",
+      "translatedEnglishPrompt": "Drivers of vehicles overtaking each other, while violating traffic rules, are subject to imprisonment for up to 3 years.",
+      "type": "row",
+      "recommendation": "safe_to_promote",
+      "risk": "low",
+      "topMatches": [
+        {
+          "qid": "q0322",
+          "number": 322,
+          "score": 0.1524,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "A driver who uses other vehicles license plate and driver's license is subject to a 3-point penalty.",
+          "masterAnswer": "Wrong",
+          "masterImage": null
+        },
+        {
+          "qid": "q0323",
+          "number": 323,
+          "score": 0.1524,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "Violation of the law and traffic safety rules, and an accident while driving a vehicle, are considered a violation of traffic rules.",
+          "masterAnswer": "Right",
+          "masterImage": null
+        },
+        {
+          "qid": "q0275",
+          "number": 275,
+          "score": 0.15,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "If a driver chases and races while driving on road, commits serious acts, the driver is subject to a prison term of less than 3 years.",
+          "masterAnswer": "Wrong",
+          "masterImage": null
+        },
+        {
+          "qid": "q0321",
+          "number": 321,
+          "score": 0.1481,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "If a driver has caused a major accident in violation of the traffic regulations which has caused human death, the driver is subject to a prison term of more than 3 years.",
+          "masterAnswer": "Wrong",
+          "masterImage": null
+        },
+        {
+          "qid": "q0196",
+          "number": 196,
+          "score": 0.1446,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "If a driver has caused a major traffic accident in violation of the traffic regulations which has caused human death due to his escaping, the driver is subject to a prison term of 3~7 years.",
+          "masterAnswer": "Wrong",
+          "masterImage": null
+        },
+        {
+          "qid": "q0353",
+          "number": 353,
+          "score": 0.1436,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "If a driver drives on the road after getting drunk is subject to a prison term of more than 3 years.",
+          "masterAnswer": "Wrong",
+          "masterImage": null
+        },
+        {
+          "qid": "q0187",
+          "number": 187,
+          "score": 0.143,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "If a driver has caused a major accident in violation of the traffic regulations which has caused serious injury, the driver is subject to a prison term of less than 3 years or a criminal detention.",
+          "masterAnswer": "Right",
+          "masterImage": null
+        },
+        {
+          "qid": "q0348",
+          "number": 348,
+          "score": 0.14,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "A driver who violates of traffic signal lights is subject to a 6-point penalty.",
+          "masterAnswer": "Right",
+          "masterImage": null
+        }
+      ],
+      "reasoningSummary": "No high-confidence duplicate found. Best match q0322 scored 0.1524.",
+      "requiredHumanAction": "can_prepare_promotion_preview",
+      "candidateSignals": {
+        "answerKey": null,
+        "correctOptionText": null,
+        "sourceImage": "screenshots/Screenshot 2026-04-19 at 18.54.28 1.png",
+        "imageAssets": [
+          "screenshots/Screenshot 2026-04-19 at 18.54.28 1.png"
+        ],
+        "objectTags": [
+          "proper-driving:traffic-laws",
+          "proper-driving:safe-driving"
+        ],
+        "hasDuplicateOptionLabels": false
+      }
+    },
+    {
+      "candidateId": "nqc-ru-batch-10-001",
+      "lang": "ru",
+      "batch": "batch-10",
+      "sourceFile": "/Users/huni/dev-projects/expatise/qbank-tools/history/decisions/new-question-candidates.ru.batch-10.json",
+      "sourcePrompt": "Отрицательное влияние гололеда на движение заключается в том, что:",
+      "translatedEnglishPrompt": "The negative effect of ice on driving is that:",
+      "type": "mcq",
+      "recommendation": "safe_to_promote",
+      "risk": "low",
+      "topMatches": [
+        {
+          "qid": "q0168",
+          "number": 168,
+          "score": 0.3296,
+          "reasonCodes": [
+            "same_question_type",
+            "same_option_count",
+            "option_overlap",
+            "same_answer_letter"
+          ],
+          "masterPrompt": "The main impact of the road conditions in icy and snowy weather is ______.",
+          "masterAnswer": "D",
+          "masterImage": null
+        },
+        {
+          "qid": "q0175",
+          "number": 175,
+          "score": 0.3095,
+          "reasonCodes": [
+            "same_question_type",
+            "same_option_count"
+          ],
+          "masterPrompt": "The main impact of rainy weather on safe driving is that the _______.",
+          "masterAnswer": "A",
+          "masterImage": null
+        },
+        {
+          "qid": "q0113",
+          "number": 113,
+          "score": 0.3032,
+          "reasonCodes": [
+            "same_question_type",
+            "same_option_count",
+            "same_answer_letter"
+          ],
+          "masterPrompt": "The main impact of foggy weather on safe driving is _________.",
+          "masterAnswer": "D",
+          "masterImage": null
+        },
+        {
+          "qid": "q0169",
+          "number": 169,
+          "score": 0.2721,
+          "reasonCodes": [
+            "same_question_type",
+            "same_option_count"
+          ],
+          "masterPrompt": "The main impact of muddy roads on safe driving is _________.",
+          "masterAnswer": "B",
+          "masterImage": null
+        },
+        {
+          "qid": "q0180",
+          "number": 180,
+          "score": 0.2542,
+          "reasonCodes": [
+            "same_question_type",
+            "same_option_count"
+          ],
+          "masterPrompt": "The main impact of mountain roads on safe driving is _______.",
+          "masterAnswer": "B",
+          "masterImage": null
+        },
+        {
+          "qid": "q0126",
+          "number": 126,
+          "score": 0.2429,
+          "reasonCodes": [
+            "same_question_type",
+            "same_option_count"
+          ],
+          "masterPrompt": "The main impact of the road conditions at night on safe driving is ________.",
+          "masterAnswer": "A",
+          "masterImage": null
+        },
+        {
+          "qid": "q0475",
+          "number": 475,
+          "score": 0.2208,
+          "reasonCodes": [
+            "same_question_type",
+            "same_option_count"
+          ],
+          "masterPrompt": "Driving this kind of vehicle on road is a ______.",
+          "masterAnswer": "C",
+          "masterImage": "/qbank/2023-test1/images/img_060789982fc6c3743c66d398d2210880.jpeg"
+        },
+        {
+          "qid": "q0773",
+          "number": 773,
+          "score": 0.2113,
+          "reasonCodes": [
+            "same_question_type",
+            "same_option_count",
+            "same_answer_letter"
+          ],
+          "masterPrompt": "What marking is the white broken line on the road?",
+          "masterAnswer": "D",
+          "masterImage": "/qbank/2023-test1/images/img_1e518033e74492e47a0e296e7f85d43b.jpeg"
+        }
+      ],
+      "reasoningSummary": "No high-confidence duplicate found. Best match q0168 scored 0.3296.",
+      "requiredHumanAction": "can_prepare_promotion_preview",
+      "candidateSignals": {
+        "answerKey": "D",
+        "correctOptionText": "Difficulty braking and deviation from the correct direction",
+        "sourceImage": "screenshots/Screenshot 2026-04-19 at 18.54.38 1.png",
+        "imageAssets": [
+          "screenshots/Screenshot 2026-04-19 at 18.54.38 1.png"
+        ],
+        "objectTags": [
+          "road-safety:road-conditions"
+        ],
+        "hasDuplicateOptionLabels": false
+      }
+    },
+    {
+      "candidateId": "nqc-ru-batch-11-001",
+      "lang": "ru",
+      "batch": "batch-11",
+      "sourceFile": "/Users/huni/dev-projects/expatise/qbank-tools/history/decisions/new-question-candidates.ru.batch-11.json",
+      "sourcePrompt": "Значением разметки дороги является:",
+      "translatedEnglishPrompt": "The meaning of road markings is:",
+      "type": "mcq",
+      "recommendation": "safe_to_promote",
+      "risk": "low",
+      "topMatches": [
+        {
+          "qid": "q0778",
+          "number": 778,
+          "score": 0.3281,
+          "reasonCodes": [
+            "prompt_overlap",
+            "same_question_type",
+            "same_option_count",
+            "same_answer_letter"
+          ],
+          "masterPrompt": "What’s the meaning of the white markings on the road?",
+          "masterAnswer": "B",
+          "masterImage": "/qbank/2023-test1/images/img_bf4a6b50a1192d468c27f9686a3cef4c.jpeg"
+        },
+        {
+          "qid": "q0779",
+          "number": 779,
+          "score": 0.2868,
+          "reasonCodes": [
+            "same_question_type",
+            "same_option_count"
+          ],
+          "masterPrompt": "What’s the meaning of the yellow filled markings on the road?",
+          "masterAnswer": "A",
+          "masterImage": "/qbank/2023-test1/images/img_ac530dc22a5b40d5dc3578c7ab110d87.jpeg"
+        },
+        {
+          "qid": "q0753",
+          "number": 753,
+          "score": 0.2635,
+          "reasonCodes": [
+            "same_question_type",
+            "same_option_count",
+            "same_answer_letter"
+          ],
+          "masterPrompt": "What’s the meaning of this sign?",
+          "masterAnswer": "B",
+          "masterImage": "/qbank/2023-test1/images/img_81f9b1f1af856944ae26bc7344ac973c.jpeg"
+        },
+        {
+          "qid": "q0653",
+          "number": 653,
+          "score": 0.2627,
+          "reasonCodes": [
+            "same_question_type",
+            "same_option_count",
+            "same_answer_letter"
+          ],
+          "masterPrompt": "What’s the meaning of these white rectangle markings?",
+          "masterAnswer": "B",
+          "masterImage": "/qbank/2023-test1/images/img_e80dc5c4582f52b8286e70240be21206.jpeg"
+        },
+        {
+          "qid": "q0749",
+          "number": 749,
+          "score": 0.2602,
+          "reasonCodes": [
+            "same_question_type",
+            "same_option_count",
+            "same_answer_letter"
+          ],
+          "masterPrompt": "What’s the meaning of this sign?",
+          "masterAnswer": "B",
+          "masterImage": "/qbank/2023-test1/images/img_964c9b39677bccbf60c5cd165515a9d4.png"
+        },
+        {
+          "qid": "q0660",
+          "number": 660,
+          "score": 0.2588,
+          "reasonCodes": [
+            "same_question_type",
+            "same_option_count"
+          ],
+          "masterPrompt": "What’s the meaning of this sign?",
+          "masterAnswer": "D",
+          "masterImage": "/qbank/2023-test1/images/img_cde94ebc5864b5a6a25aa34b064cf741.jpeg"
+        },
+        {
+          "qid": "q0834",
+          "number": 834,
+          "score": 0.2581,
+          "reasonCodes": [
+            "same_question_type",
+            "same_option_count",
+            "same_answer_letter"
+          ],
+          "masterPrompt": "What’s the meaning of the diamond broken lines on the road?",
+          "masterAnswer": "B",
+          "masterImage": "/qbank/2023-test1/images/img_2b46408ab43500139041326894dc6bc9.jpeg"
+        },
+        {
+          "qid": "q0708",
+          "number": 708,
+          "score": 0.2554,
+          "reasonCodes": [
+            "same_question_type",
+            "same_option_count"
+          ],
+          "masterPrompt": "What’s the meaning of this figure mark on the road?",
+          "masterAnswer": "C",
+          "masterImage": "/qbank/2023-test1/images/img_acd8cbcc3c9224625867ea9b24b5bcad.jpeg"
+        }
+      ],
+      "reasoningSummary": "No high-confidence duplicate found. Best match q0778 scored 0.3281.",
+      "requiredHumanAction": "can_prepare_promotion_preview",
+      "candidateSignals": {
+        "answerKey": "B",
+        "correctOptionText": "Indication of passage",
+        "sourceImage": "screenshots/Screenshot 2026-04-19 at 18.55.26 1.png",
+        "imageAssets": [
+          "screenshots/Screenshot 2026-04-19 at 18.55.26 1.png"
+        ],
+        "objectTags": [
+          "traffic-signals:road-markings"
+        ],
+        "hasDuplicateOptionLabels": false
+      }
+    },
+    {
+      "candidateId": "nqc-ru-batch-12-001",
+      "lang": "ru",
+      "batch": "batch-12",
+      "sourceFile": "/Users/huni/dev-projects/expatise/qbank-tools/history/decisions/new-question-candidates.ru.batch-12.json",
+      "sourcePrompt": "Если после подсчета баллов за нарушение, общий бал превышает 12, водитель обязан повторно пройти курс обучения и сдачи экзаменов на вождение.",
+      "translatedEnglishPrompt": "If, after calculating the penalty points, the total exceeds 12, the driver is required to retake the training course and driving exams.",
+      "type": "row",
+      "recommendation": "safe_to_promote",
+      "risk": "low",
+      "topMatches": [
+        {
+          "qid": "q0312",
+          "number": 312,
+          "score": 0.1888,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "The driving license of a driver will be detained after his penalty scores reach 12 points in a scoring circle.",
+          "masterAnswer": "Right",
+          "masterImage": null
+        },
+        {
+          "qid": "q0327",
+          "number": 327,
+          "score": 0.1824,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "If the accumulated penalty points of a driver reach 12 points and the driver refuses to participate in the study course and also refuses to take tests, it should be publicly announced that his driving license should no longer be used.",
+          "masterAnswer": "Right",
+          "masterImage": null
+        },
+        {
+          "qid": "q0279",
+          "number": 279,
+          "score": 0.1808,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "A driver who drives after drinking is subject to a 12-point penalty.",
+          "masterAnswer": "Right",
+          "masterImage": null
+        },
+        {
+          "qid": "q0339",
+          "number": 339,
+          "score": 0.17,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "A driver who uses falsified or altered driving license is subject to a 12-point penalty.",
+          "masterAnswer": "Right",
+          "masterImage": null
+        },
+        {
+          "qid": "q0252",
+          "number": 252,
+          "score": 0.1669,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "If a driver reaches 12 penalty points during the period of probation, the probation qualification should be revoked.",
+          "masterAnswer": "Right",
+          "masterImage": null
+        },
+        {
+          "qid": "q0278",
+          "number": 278,
+          "score": 0.164,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "If a driver causes a traffic accident and runs away but his conduct does not constitute a crime, he is subject to a 12-point penalty.",
+          "masterAnswer": "Right",
+          "masterImage": null
+        },
+        {
+          "qid": "q0275",
+          "number": 275,
+          "score": 0.1617,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "If a driver chases and races while driving on road, commits serious acts, the driver is subject to a prison term of less than 3 years.",
+          "masterAnswer": "Wrong",
+          "masterImage": null
+        },
+        {
+          "qid": "q0280",
+          "number": 280,
+          "score": 0.1613,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "If a vehicle runs 50% faster than the specified speed limit, the driver is subject to a 3-point penalty.",
+          "masterAnswer": "Wrong",
+          "masterImage": null
+        }
+      ],
+      "reasoningSummary": "No high-confidence duplicate found. Best match q0312 scored 0.1888.",
+      "requiredHumanAction": "can_prepare_promotion_preview",
+      "candidateSignals": {
+        "answerKey": null,
+        "correctOptionText": "Правильно",
+        "sourceImage": "screenshots/Screenshot 2026-04-19 at 18.56.11.png",
+        "imageAssets": [
+          "screenshots/Screenshot 2026-04-19 at 18.56.11.png"
+        ],
+        "objectTags": [
+          "road-safety:license"
+        ],
+        "hasDuplicateOptionLabels": false
+      }
+    },
+    {
+      "candidateId": "nqc-ru-batch-12-002",
+      "lang": "ru",
+      "batch": "batch-12",
+      "sourceFile": "/Users/huni/dev-projects/expatise/qbank-tools/history/decisions/new-question-candidates.ru.batch-12.json",
+      "sourcePrompt": "Мигание зеленого сигнала светофора означает разрешение проехать перекресток.",
+      "translatedEnglishPrompt": "A flashing green traffic light means it is permitted to cross the intersection.",
+      "type": "row",
+      "recommendation": "safe_to_promote",
+      "risk": "low",
+      "topMatches": [
+        {
+          "qid": "q0645",
+          "number": 645,
+          "score": 0.2126,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "The vehicle is allowed to pass the intersection ahead when the green light on.",
+          "masterAnswer": "Right",
+          "masterImage": null
+        },
+        {
+          "qid": "q0649",
+          "number": 649,
+          "score": 0.185,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "The alternating flashing of two red traffic light signals at a railway crossing means stop and wait.",
+          "masterAnswer": "Right",
+          "masterImage": "/qbank/2023-test1/images/img_98cacb757be29145e9505cd91eba59f5.jpeg"
+        },
+        {
+          "qid": "q0067",
+          "number": 67,
+          "score": 0.18,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "When a vehicle passes a sharp curve, it may overtake if traffic is light.",
+          "masterAnswer": "Wrong",
+          "masterImage": null
+        },
+        {
+          "qid": "q0307",
+          "number": 307,
+          "score": 0.18,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "A vehicle is not allowed to stop in the section 50 meters to the intersection.",
+          "masterAnswer": "Right",
+          "masterImage": null
+        },
+        {
+          "qid": "q0058",
+          "number": 58,
+          "score": 0.1797,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "After the green light at an intersection is on, the vehicles may not yield if non-vehicles cut in.",
+          "masterAnswer": "Wrong",
+          "masterImage": null
+        },
+        {
+          "qid": "q0978",
+          "number": 978,
+          "score": 0.1755,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "If a pedestrian is committing a traffic violation, you do not have to yield to the pedestrian.",
+          "masterAnswer": "Right",
+          "masterImage": null
+        },
+        {
+          "qid": "q0648",
+          "number": 648,
+          "score": 0.1733,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "Continuously flashing yellow light signals are to warn the driver they should look and make sure it is safe to pass.",
+          "masterAnswer": "Right",
+          "masterImage": null
+        },
+        {
+          "qid": "q0647",
+          "number": 647,
+          "score": 0.1721,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "The continuously flashing yellow light means that the vehicle may speed up and pass.",
+          "masterAnswer": "Wrong",
+          "masterImage": null
+        }
+      ],
+      "reasoningSummary": "No high-confidence duplicate found. Best match q0645 scored 0.2126.",
+      "requiredHumanAction": "can_prepare_promotion_preview",
+      "candidateSignals": {
+        "answerKey": null,
+        "correctOptionText": null,
+        "sourceImage": "screenshots/Screenshot 2026-04-19 at 18.56.21 1.png",
+        "imageAssets": [
+          "screenshots/Screenshot 2026-04-19 at 18.56.21 1.png"
+        ],
+        "objectTags": [
+          "traffic-signals:signal-lights",
+          "traffic-signals:road-signs"
+        ],
+        "hasDuplicateOptionLabels": false
+      }
+    },
+    {
+      "candidateId": "nqc-ru-batch-12-003",
+      "lang": "ru",
+      "batch": "batch-12",
+      "sourceFile": "/Users/huni/dev-projects/expatise/qbank-tools/history/decisions/new-question-candidates.ru.batch-12.json",
+      "sourcePrompt": "Дорожная полиция имеет право задержать автотранспортное средство в том случае, если водитель не имеет при себе паспорт.",
+      "translatedEnglishPrompt": "Does the road police have the right to detain a vehicle if the driver does not have a passport with them?",
+      "type": "row",
+      "recommendation": "safe_to_promote",
+      "risk": "low",
+      "topMatches": [
+        {
+          "qid": "q0213",
+          "number": 213,
+          "score": 0.2375,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "A traffic police has the right to detain a vehicle if the driver uses someone else's vehicle inspection sticker.",
+          "masterAnswer": "Right",
+          "masterImage": null
+        },
+        {
+          "qid": "q0341",
+          "number": 341,
+          "score": 0.2375,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "Traffic police can detain the vehicle according to law if the driver does not carry their ID card.",
+          "masterAnswer": "Wrong",
+          "masterImage": null
+        },
+        {
+          "qid": "q0276",
+          "number": 276,
+          "score": 0.215,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "A traffic police has the right to confiscate the driver's license if the car is not equipped with an insurance policy sign.",
+          "masterAnswer": "Wrong",
+          "masterImage": null
+        },
+        {
+          "qid": "q0310",
+          "number": 310,
+          "score": 0.2025,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "If a vehicle causes a traffic accident on the road, the driver should immediately move the vehicle to the roadside.",
+          "masterAnswer": "Wrong",
+          "masterImage": null
+        },
+        {
+          "qid": "q0316",
+          "number": 316,
+          "score": 0.2025,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "If a vehicle runs on the road without a label of inspection, the traffic police can detain the vehicle.",
+          "masterAnswer": "Right",
+          "masterImage": null
+        },
+        {
+          "qid": "q0211",
+          "number": 211,
+          "score": 0.2,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "Traffic police can detain a vehicle according to law if it runs on the road failing to place a label of inspection.",
+          "masterAnswer": "Right",
+          "masterImage": null
+        },
+        {
+          "qid": "q0982",
+          "number": 982,
+          "score": 0.1945,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "You must not drive a vehicle with safety risks on the road.",
+          "masterAnswer": "Right",
+          "masterImage": null
+        },
+        {
+          "qid": "q0223",
+          "number": 223,
+          "score": 0.192,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "A driver who caused a traffic accident and fled the scene  is considered a criminal and does not have the right to apply for a driver's license.",
+          "masterAnswer": "Right",
+          "masterImage": null
+        }
+      ],
+      "reasoningSummary": "No high-confidence duplicate found. Best match q0213 scored 0.2375.",
+      "requiredHumanAction": "can_prepare_promotion_preview",
+      "candidateSignals": {
+        "answerKey": null,
+        "correctOptionText": null,
+        "sourceImage": "screenshots/Screenshot 2026-04-19 at 18.56.24.png",
+        "imageAssets": [
+          "screenshots/Screenshot 2026-04-19 at 18.56.24.png"
+        ],
+        "objectTags": [],
+        "hasDuplicateOptionLabels": false
+      }
+    },
+    {
+      "candidateId": "nqc-ru-batch-12-001",
+      "lang": "ru",
+      "batch": "batch-12",
+      "sourceFile": "/Users/huni/dev-projects/expatise/qbank-tools/history/decisions/new-question-candidates.ru.batch-12.json",
+      "sourcePrompt": "Разрешена остановка транспортных средств на пешеходном переходе, в том случае, когда нет места на стоянке.",
+      "translatedEnglishPrompt": "Is it allowed to stop vehicles on a pedestrian crossing if there is no parking space available?",
+      "type": "row",
+      "recommendation": "safe_to_promote",
+      "risk": "low",
+      "topMatches": [
+        {
+          "qid": "q0086",
+          "number": 86,
+          "score": 0.185,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "When a vehicle goes downhill on a mountain road, it is not allowed to overtake.",
+          "masterAnswer": "Right",
+          "masterImage": null
+        },
+        {
+          "qid": "q0026",
+          "number": 26,
+          "score": 0.1755,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "It is not allowed to overtake while driving through a tunnel.",
+          "masterAnswer": "Right",
+          "masterImage": null
+        },
+        {
+          "qid": "q0049",
+          "number": 49,
+          "score": 0.1713,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "A vehicle is not allowed to reverse on the ramp of a highway.",
+          "masterAnswer": "Right",
+          "masterImage": null
+        },
+        {
+          "qid": "q0307",
+          "number": 307,
+          "score": 0.1675,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "A vehicle is not allowed to stop in the section 50 meters to the intersection.",
+          "masterAnswer": "Right",
+          "masterImage": null
+        },
+        {
+          "qid": "q0967",
+          "number": 967,
+          "score": 0.1665,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "The yellow lane-dividing line in the picture is used to separate the traffic flow in opposite directions, crossing the line to overtake or make a turn is allowed if it is safe.",
+          "masterAnswer": "Right",
+          "masterImage": "/qbank/2023-test1/images/img_7745145c821c2a6d3ff7cd8579ddd54e.jpeg"
+        },
+        {
+          "qid": "q0010",
+          "number": 10,
+          "score": 0.164,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "A vehicle is not allowed to make a U-turn on the ramp of a highway.",
+          "masterAnswer": "Right",
+          "masterImage": null
+        },
+        {
+          "qid": "q0332",
+          "number": 332,
+          "score": 0.164,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "Driving a vehicle on the highway is not allowed to exceed the marked maximum speed.",
+          "masterAnswer": "Right",
+          "masterImage": null
+        },
+        {
+          "qid": "q0978",
+          "number": 978,
+          "score": 0.164,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "If a pedestrian is committing a traffic violation, you do not have to yield to the pedestrian.",
+          "masterAnswer": "Right",
+          "masterImage": null
+        }
+      ],
+      "reasoningSummary": "No high-confidence duplicate found. Best match q0086 scored 0.185.",
+      "requiredHumanAction": "can_prepare_promotion_preview",
+      "candidateSignals": {
+        "answerKey": null,
+        "correctOptionText": null,
+        "sourceImage": "screenshots/Screenshot 2026-04-19 at 18.56.00.png",
+        "imageAssets": [
+          "screenshots/Screenshot 2026-04-19 at 18.56.00.png"
+        ],
+        "objectTags": [
+          "proper-driving:traffic-laws",
+          "proper-driving:safe-driving"
+        ],
+        "hasDuplicateOptionLabels": false
+      }
+    },
+    {
+      "candidateId": "nqc-ru-batch-12-002",
+      "lang": "ru",
+      "batch": "batch-12",
+      "sourceFile": "/Users/huni/dev-projects/expatise/qbank-tools/history/decisions/new-question-candidates.ru.batch-12.json",
+      "sourcePrompt": "При движении транспортных средств по кольцевой дороге, при нарушении одним водителем правил обгона, можно не уступать ему дорогу.",
+      "translatedEnglishPrompt": "When driving vehicles on a ring road, if one driver violates the overtaking rules, you do not have to yield to them.",
+      "type": "row",
+      "recommendation": "safe_to_promote",
+      "risk": "low",
+      "topMatches": [
+        {
+          "qid": "q0978",
+          "number": 978,
+          "score": 0.2254,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "If a pedestrian is committing a traffic violation, you do not have to yield to the pedestrian.",
+          "masterAnswer": "Right",
+          "masterImage": null
+        },
+        {
+          "qid": "q0054",
+          "number": 54,
+          "score": 0.185,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "When driving a vehicle on the road, the driver should drive safely at the prescribed speed.",
+          "masterAnswer": "Right",
+          "masterImage": null
+        },
+        {
+          "qid": "q0533",
+          "number": 533,
+          "score": 0.1822,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "When the motor vehicle installed ABS system brakes, the braking distance will be greatly shortened, so you do not have to keep a safe distance between vehicles.",
+          "masterAnswer": "Wrong",
+          "masterImage": null
+        },
+        {
+          "qid": "q0031",
+          "number": 31,
+          "score": 0.1818,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "As the traffic flow at an interchange is generally one-way, the vehicles do not have to reduce speed when passing.",
+          "masterAnswer": "Wrong",
+          "masterImage": null
+        },
+        {
+          "qid": "q0310",
+          "number": 310,
+          "score": 0.1814,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "If a vehicle causes a traffic accident on the road, the driver should immediately move the vehicle to the roadside.",
+          "masterAnswer": "Wrong",
+          "masterImage": null
+        },
+        {
+          "qid": "q0029",
+          "number": 29,
+          "score": 0.178,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "A driver should stop on the highway at once to have a rest when he feel tired.",
+          "masterAnswer": "Wrong",
+          "masterImage": null
+        },
+        {
+          "qid": "q0208",
+          "number": 208,
+          "score": 0.178,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "When a vehicle returns to the original lane after overtaking, the driver should turn on the right-turn signal.",
+          "masterAnswer": "Right",
+          "masterImage": null
+        },
+        {
+          "qid": "q0056",
+          "number": 56,
+          "score": 0.1769,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "When a vehicle passes a crosswalk, the driver should yield to the pedestrians.",
+          "masterAnswer": "Right",
+          "masterImage": null
+        }
+      ],
+      "reasoningSummary": "No high-confidence duplicate found. Best match q0978 scored 0.2254.",
+      "requiredHumanAction": "can_prepare_promotion_preview",
+      "candidateSignals": {
+        "answerKey": null,
+        "correctOptionText": "Не правильно",
+        "sourceImage": "screenshots/Screenshot 2026-04-19 at 18.56.03.png",
+        "imageAssets": [
+          "screenshots/Screenshot 2026-04-19 at 18.56.03.png"
+        ],
+        "objectTags": [
+          "road-safety:road-conditions",
+          "proper-driving:safe-driving",
+          "proper-driving:traffic-laws",
+          "traffic-signals:road-signs"
+        ],
+        "hasDuplicateOptionLabels": false
+      }
+    },
+    {
+      "candidateId": "nqc-ru-batch-12-003",
+      "lang": "ru",
+      "batch": "batch-12",
+      "sourceFile": "/Users/huni/dev-projects/expatise/qbank-tools/history/decisions/new-question-candidates.ru.batch-12.json",
+      "sourcePrompt": "Автоинспектор имеет право лишь оштрафовать водитель автотранспорта за подделку или изменение гос. номера.",
+      "translatedEnglishPrompt": "A traffic inspector only has the right to fine a driver for forging or changing a license plate.",
+      "type": "row",
+      "recommendation": "safe_to_promote",
+      "risk": "low",
+      "topMatches": [
+        {
+          "qid": "q0206",
+          "number": 206,
+          "score": 0.206,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "If the license plate of a vehicle has been destroyed, the owner of the vehicle should apply for reissuing or changing to the vehicle management station at the registration place.",
+          "masterAnswer": "Right",
+          "masterImage": null
+        },
+        {
+          "qid": "q0276",
+          "number": 276,
+          "score": 0.1959,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "A traffic police has the right to confiscate the driver's license if the car is not equipped with an insurance policy sign.",
+          "masterAnswer": "Wrong",
+          "masterImage": null
+        },
+        {
+          "qid": "q0213",
+          "number": 213,
+          "score": 0.1931,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "A traffic police has the right to detain a vehicle if the driver uses someone else's vehicle inspection sticker.",
+          "masterAnswer": "Right",
+          "masterImage": null
+        },
+        {
+          "qid": "q0223",
+          "number": 223,
+          "score": 0.192,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "A driver who caused a traffic accident and fled the scene  is considered a criminal and does not have the right to apply for a driver's license.",
+          "masterAnswer": "Right",
+          "masterImage": null
+        },
+        {
+          "qid": "q0222",
+          "number": 222,
+          "score": 0.178,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "If the vehicle has no license plate, a label of inspection, or a label of insurance, preserve the scene and immediately report it to the police.",
+          "masterAnswer": "Right",
+          "masterImage": null
+        },
+        {
+          "qid": "q0917",
+          "number": 917,
+          "score": 0.178,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "When a vehicle driving license is lost or destroyed to be unrecognizable, the driver should apply to the issuing vehicle management station for a reissue.",
+          "masterAnswer": "Right",
+          "masterImage": null
+        },
+        {
+          "qid": "q0249",
+          "number": 249,
+          "score": 0.1748,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "If a driver allows his vehicle to be driven by a person whose driving license has been revoked, the traffic police will detain the driving license.",
+          "masterAnswer": "Right",
+          "masterImage": null
+        },
+        {
+          "qid": "q0921",
+          "number": 921,
+          "score": 0.1708,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "If the registration paper, license plate and driver's license of a vehicle are lost or destroyed, the vehicle owner should apply for reissuing or replacing them to the vehicle management station at the residential place.",
+          "masterAnswer": "Wrong",
+          "masterImage": null
+        }
+      ],
+      "reasoningSummary": "No high-confidence duplicate found. Best match q0206 scored 0.206.",
+      "requiredHumanAction": "can_prepare_promotion_preview",
+      "candidateSignals": {
+        "answerKey": null,
+        "correctOptionText": null,
+        "sourceImage": "screenshots/Screenshot 2026-04-19 at 18.56.15.png",
+        "imageAssets": [
+          "screenshots/Screenshot 2026-04-19 at 18.56.15.png"
+        ],
+        "objectTags": [
+          "road-safety:license"
+        ],
+        "hasDuplicateOptionLabels": false
+      }
+    },
+    {
+      "candidateId": "nqc-ru-batch-12-004",
+      "lang": "ru",
+      "batch": "batch-12",
+      "sourceFile": "/Users/huni/dev-projects/expatise/qbank-tools/history/decisions/new-question-candidates.ru.batch-12.json",
+      "sourcePrompt": "Следует обязательно сообщить о произошедшем ДТП и о количестве пострадавших в милицию.",
+      "translatedEnglishPrompt": "It is mandatory to report an accident and the number of injured persons to the police.",
+      "type": "row",
+      "recommendation": "safe_to_promote",
+      "risk": "low",
+      "topMatches": [
+        {
+          "qid": "q0215",
+          "number": 215,
+          "score": 0.2092,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "When the driver is suspected of drinking or drunk in a traffic accident, preserve the scene and immediately report to the police.",
+          "masterAnswer": "Right",
+          "masterImage": null
+        },
+        {
+          "qid": "q0214",
+          "number": 214,
+          "score": 0.1896,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "When a traffic accident causing human injuries, preserve the scene and immediately report to the police.",
+          "masterAnswer": "Right",
+          "masterImage": null
+        },
+        {
+          "qid": "q0203",
+          "number": 203,
+          "score": 0.185,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "Traffic police can detain the vehicle according to law if it is without the mandatory traffic accident insurance in accordance with state regulations.",
+          "masterAnswer": "Right",
+          "masterImage": null
+        },
+        {
+          "qid": "q0212",
+          "number": 212,
+          "score": 0.185,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "The traffic police has the right to detain vehicles involved in an accident to collect information and evidence.",
+          "masterAnswer": "Right",
+          "masterImage": null
+        },
+        {
+          "qid": "q0222",
+          "number": 222,
+          "score": 0.185,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "If the vehicle has no license plate, a label of inspection, or a label of insurance, preserve the scene and immediately report it to the police.",
+          "masterAnswer": "Right",
+          "masterImage": null
+        },
+        {
+          "qid": "q0247",
+          "number": 247,
+          "score": 0.178,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "When causing a road accident involving human casualties, the driver should immediately rescue the injured people and report to the traffic police as soon as possible.",
+          "masterAnswer": "Right",
+          "masterImage": null
+        },
+        {
+          "qid": "q0248",
+          "number": 248,
+          "score": 0.1733,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "Traffic police can detain the vehicle according to law if it is suspected of using the label of insurance from other vehicle.",
+          "masterAnswer": "Right",
+          "masterImage": null
+        },
+        {
+          "qid": "q0225",
+          "number": 225,
+          "score": 0.1675,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "Going though the intersection according to the traffic lights when traffic lights and command of the traffic police are inconsistent.",
+          "masterAnswer": "Wrong",
+          "masterImage": null
+        }
+      ],
+      "reasoningSummary": "No high-confidence duplicate found. Best match q0215 scored 0.2092.",
+      "requiredHumanAction": "can_prepare_promotion_preview",
+      "candidateSignals": {
+        "answerKey": null,
+        "correctOptionText": null,
+        "sourceImage": "screenshots/Screenshot 2026-04-19 at 18.56.30.png",
+        "imageAssets": [
+          "screenshots/Screenshot 2026-04-19 at 18.56.30.png"
+        ],
+        "objectTags": [
+          "road-safety:accidents"
+        ],
+        "hasDuplicateOptionLabels": false
+      }
+    },
+    {
+      "candidateId": "nqc-ru-batch-13-001",
+      "lang": "ru",
+      "batch": "batch-13",
+      "sourceFile": "/Users/huni/dev-projects/expatise/qbank-tools/history/decisions/new-question-candidates.ru.batch-13.json",
+      "sourcePrompt": "Разрешено управление неисправным автомобилем после капитального ремонта.",
+      "translatedEnglishPrompt": "Is it allowed to drive a faulty car after a major repair?",
+      "type": "row",
+      "recommendation": "safe_to_promote",
+      "risk": "low",
+      "topMatches": [
+        {
+          "qid": "q0026",
+          "number": 26,
+          "score": 0.2035,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "It is not allowed to overtake while driving through a tunnel.",
+          "masterAnswer": "Right",
+          "masterImage": null
+        },
+        {
+          "qid": "q0354",
+          "number": 354,
+          "score": 0.2035,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "Nobody is allowed to drive a vehicle that has safety hazards.",
+          "masterAnswer": "Right",
+          "masterImage": null
+        },
+        {
+          "qid": "q0086",
+          "number": 86,
+          "score": 0.185,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "When a vehicle goes downhill on a mountain road, it is not allowed to overtake.",
+          "masterAnswer": "Right",
+          "masterImage": null
+        },
+        {
+          "qid": "q0234",
+          "number": 234,
+          "score": 0.185,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "It is prohibited to drive a vehicle while your driver's license is temporarily suspended.",
+          "masterAnswer": "Right",
+          "masterImage": null
+        },
+        {
+          "qid": "q0089",
+          "number": 89,
+          "score": 0.18,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "It is not safe for a woman driver to wear high heels and drive a vehicle.",
+          "masterAnswer": "Right",
+          "masterImage": null
+        },
+        {
+          "qid": "q0262",
+          "number": 262,
+          "score": 0.1733,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "It is allowed to throw objects onto the road while driving.",
+          "masterAnswer": "Wrong",
+          "masterImage": null
+        },
+        {
+          "qid": "q0049",
+          "number": 49,
+          "score": 0.1684,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "A vehicle is not allowed to reverse on the ramp of a highway.",
+          "masterAnswer": "Right",
+          "masterImage": null
+        },
+        {
+          "qid": "q0261",
+          "number": 261,
+          "score": 0.1684,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "It is allowed to watch videos while driving in good road conditions",
+          "masterAnswer": "Wrong",
+          "masterImage": null
+        }
+      ],
+      "reasoningSummary": "No high-confidence duplicate found. Best match q0026 scored 0.2035.",
+      "requiredHumanAction": "can_prepare_promotion_preview",
+      "candidateSignals": {
+        "answerKey": null,
+        "correctOptionText": null,
+        "sourceImage": "screenshots/Screenshot 2026-04-19 at 18.56.51.png",
+        "imageAssets": [
+          "screenshots/Screenshot 2026-04-19 at 18.56.51.png"
+        ],
+        "objectTags": [
+          "road-safety:registration"
+        ],
+        "hasDuplicateOptionLabels": false
+      }
+    },
+    {
+      "candidateId": "nqc-ru-batch-15-001",
+      "lang": "ru",
+      "batch": "batch-15",
+      "sourceFile": "/Users/huni/dev-projects/expatise/qbank-tools/history/decisions/new-question-candidates.ru.batch-15.json",
+      "sourcePrompt": "Водителю запрещено непрерывно управлять транспортным средством более:",
+      "translatedEnglishPrompt": "A driver is prohibited from continuously driving a vehicle for more than:",
+      "type": "mcq",
+      "recommendation": "safe_to_promote",
+      "risk": "low",
+      "topMatches": [
+        {
+          "qid": "q0486",
+          "number": 486,
+          "score": 0.2412,
+          "reasonCodes": [
+            "same_question_type",
+            "same_option_count",
+            "same_answer_letter"
+          ],
+          "masterPrompt": "When descending a steep slope, the driver is prohibited from:",
+          "masterAnswer": "A",
+          "masterImage": null
+        },
+        {
+          "qid": "q0455",
+          "number": 455,
+          "score": 0.2112,
+          "reasonCodes": [
+            "same_question_type",
+            "same_option_count"
+          ],
+          "masterPrompt": "In which section is a vehicle runs prohibited from overtaking?",
+          "masterAnswer": "B",
+          "masterImage": null
+        },
+        {
+          "qid": "q0395",
+          "number": 395,
+          "score": 0.1984,
+          "reasonCodes": [
+            "same_question_type",
+            "same_option_count",
+            "same_answer_letter"
+          ],
+          "masterPrompt": "Which of these actions is acceptable for learning to drive a vehicle?",
+          "masterAnswer": "A",
+          "masterImage": null
+        },
+        {
+          "qid": "q0445",
+          "number": 445,
+          "score": 0.195,
+          "reasonCodes": [
+            "same_question_type",
+            "same_option_count"
+          ],
+          "masterPrompt": "If a driver has driven a vehicle for more than four hours running, he should stop the vehicle and rest for at least ____________.",
+          "masterAnswer": "C",
+          "masterImage": null
+        },
+        {
+          "qid": "q0170",
+          "number": 170,
+          "score": 0.19,
+          "reasonCodes": [
+            "same_question_type",
+            "same_option_count",
+            "same_answer_letter"
+          ],
+          "masterPrompt": "If an improper place is chosen for crossing another vehicle, the driver should immediately _______.",
+          "masterAnswer": "A",
+          "masterImage": null
+        },
+        {
+          "qid": "q0475",
+          "number": 475,
+          "score": 0.185,
+          "reasonCodes": [
+            "same_question_type",
+            "same_option_count"
+          ],
+          "masterPrompt": "Driving this kind of vehicle on road is a ______.",
+          "masterAnswer": "C",
+          "masterImage": "/qbank/2023-test1/images/img_060789982fc6c3743c66d398d2210880.jpeg"
+        },
+        {
+          "qid": "q0158",
+          "number": 158,
+          "score": 0.1841,
+          "reasonCodes": [
+            "same_question_type",
+            "same_option_count",
+            "same_answer_letter"
+          ],
+          "masterPrompt": "When a vehicle stops temporarily at the roadside, the driver ________.",
+          "masterAnswer": "A",
+          "masterImage": null
+        },
+        {
+          "qid": "q0107",
+          "number": 107,
+          "score": 0.183,
+          "reasonCodes": [
+            "same_question_type",
+            "same_option_count",
+            "same_answer_letter"
+          ],
+          "masterPrompt": "When driving a vehicle through a slightly flodded road with bicycles on both sides, the driver should _________.",
+          "masterAnswer": "A",
+          "masterImage": null
+        }
+      ],
+      "reasoningSummary": "No high-confidence duplicate found. Best match q0486 scored 0.2412.",
+      "requiredHumanAction": "can_prepare_promotion_preview",
+      "candidateSignals": {
+        "answerKey": "A",
+        "correctOptionText": "4 hours",
+        "sourceImage": "screenshots/Screenshot 2026-04-19 at 18.58.25.png",
+        "imageAssets": [
+          "screenshots/Screenshot 2026-04-19 at 18.58.25.png"
+        ],
+        "objectTags": [
+          "proper-driving:safe-driving",
+          "proper-driving:traffic-laws"
+        ],
+        "hasDuplicateOptionLabels": false
+      }
+    },
+    {
+      "candidateId": "nqc-ru-batch-16-001",
+      "lang": "ru",
+      "batch": "batch-16",
+      "sourceFile": "/Users/huni/dev-projects/expatise/qbank-tools/history/decisions/new-question-candidates.ru.batch-16.json",
+      "sourcePrompt": "Что следует сделать водителю, если безмоторные средства передвижения мешают проезду:",
+      "translatedEnglishPrompt": "What should a driver do if non-motorized vehicles are obstructing the road?",
+      "type": "mcq",
+      "recommendation": "safe_to_promote",
+      "risk": "low",
+      "topMatches": [
+        {
+          "qid": "q0483",
+          "number": 483,
+          "score": 0.3077,
+          "reasonCodes": [
+            "same_question_type",
+            "same_option_count",
+            "same_answer_letter"
+          ],
+          "masterPrompt": "What should the driver do if conditions permit when a following vehicle gives the overtaking signal on a road without a central line?",
+          "masterAnswer": "C",
+          "masterImage": null
+        },
+        {
+          "qid": "q0105",
+          "number": 105,
+          "score": 0.2864,
+          "reasonCodes": [
+            "same_question_type",
+            "same_option_count",
+            "same_answer_letter"
+          ],
+          "masterPrompt": "When encountering another vehicle cutting you off and taking your lane, the driver should _______.",
+          "masterAnswer": "C",
+          "masterImage": null
+        },
+        {
+          "qid": "q0164",
+          "number": 164,
+          "score": 0.2801,
+          "reasonCodes": [
+            "same_question_type",
+            "same_option_count"
+          ],
+          "masterPrompt": "When reversing on an ordinary road and discovering some vehicles are passing, the driver should _________.",
+          "masterAnswer": "B",
+          "masterImage": null
+        },
+        {
+          "qid": "q0120",
+          "number": 120,
+          "score": 0.28,
+          "reasonCodes": [
+            "same_question_type",
+            "same_option_count"
+          ],
+          "masterPrompt": "When encountering non-vehicles intending to bypass a stopping vehicle, the driver should ________.",
+          "masterAnswer": "B",
+          "masterImage": null
+        },
+        {
+          "qid": "q0502",
+          "number": 502,
+          "score": 0.2673,
+          "reasonCodes": [
+            "same_question_type",
+            "same_option_count",
+            "same_answer_letter"
+          ],
+          "masterPrompt": "What should the driver do when encountering a vehicle from the opposite direction on a road without a central line?",
+          "masterAnswer": "C",
+          "masterImage": null
+        },
+        {
+          "qid": "q0144",
+          "number": 144,
+          "score": 0.25,
+          "reasonCodes": [
+            "same_question_type",
+            "same_option_count",
+            "same_answer_letter"
+          ],
+          "masterPrompt": "When a vehicle runs on a narrow mountain road, the driver should ______ if the party close to the mountain mass refuses to yield.",
+          "masterAnswer": "C",
+          "masterImage": null
+        },
+        {
+          "qid": "q0171",
+          "number": 171,
+          "score": 0.2458,
+          "reasonCodes": [
+            "same_question_type",
+            "same_option_count"
+          ],
+          "masterPrompt": "When encountering school children crossing the road in a queue, the driver should ______.",
+          "masterAnswer": "B",
+          "masterImage": null
+        },
+        {
+          "qid": "q0165",
+          "number": 165,
+          "score": 0.2444,
+          "reasonCodes": [
+            "same_question_type",
+            "same_option_count",
+            "same_answer_letter"
+          ],
+          "masterPrompt": "When a vehicle reaches a sharp curve, the driver should _______.",
+          "masterAnswer": "C",
+          "masterImage": null
+        }
+      ],
+      "reasoningSummary": "No high-confidence duplicate found. Best match q0483 scored 0.3077.",
+      "requiredHumanAction": "can_prepare_promotion_preview",
+      "candidateSignals": {
+        "answerKey": "C",
+        "correctOptionText": "Slow down and yield",
+        "sourceImage": "screenshots/800.png",
+        "imageAssets": [
+          "screenshots/800.png"
+        ],
+        "objectTags": [
+          "proper-driving:safe-driving",
+          "traffic-signals:road-signs"
+        ],
+        "hasDuplicateOptionLabels": false
+      }
+    },
+    {
+      "candidateId": "nqc-ru-batch-17-001",
+      "lang": "ru",
+      "batch": "batch-17",
+      "sourceFile": "/Users/huni/dev-projects/expatise/qbank-tools/history/decisions/new-question-candidates.ru.batch-17.json",
+      "sourcePrompt": "При покидании места ДТП начисляется:",
+      "translatedEnglishPrompt": "For leaving the scene of an accident, how many points are given?",
+      "type": "mcq",
+      "recommendation": "needs_human_review",
+      "risk": "low",
+      "topMatches": [
+        {
+          "qid": "q0981",
+          "number": 981,
+          "score": 0.5498,
+          "reasonCodes": [
+            "same_question_type",
+            "same_option_count",
+            "option_meaning_match",
+            "correct_option_meaning_match",
+            "same_answer_logic"
+          ],
+          "masterPrompt": "If you use a forged or altered driver's license, how many points will you receive?",
+          "masterAnswer": "A",
+          "masterImage": null
+        },
+        {
+          "qid": "q0508",
+          "number": 508,
+          "score": 0.2292,
+          "reasonCodes": [
+            "same_question_type",
+            "same_option_count"
+          ],
+          "masterPrompt": "How long is the period of probation after a driver obtains his driving license for the first time or the permission to drive higher level vehicles?",
+          "masterAnswer": "B",
+          "masterImage": null
+        },
+        {
+          "qid": "q0362",
+          "number": 362,
+          "score": 0.2129,
+          "reasonCodes": [
+            "same_question_type",
+            "same_option_count"
+          ],
+          "masterPrompt": "How long is the period of probation of a motor vehicle driver who has applied for a driver license for the first time?",
+          "masterAnswer": "C",
+          "masterImage": null
+        },
+        {
+          "qid": "q0474",
+          "number": 474,
+          "score": 0.2083,
+          "reasonCodes": [
+            "same_question_type",
+            "same_option_count"
+          ],
+          "masterPrompt": "The cycle for recording the accumulated penalty points for violating road traffic regulations is __________.",
+          "masterAnswer": "B",
+          "masterImage": null
+        },
+        {
+          "qid": "q0469",
+          "number": 469,
+          "score": 0.1898,
+          "reasonCodes": [
+            "same_question_type",
+            "same_option_count",
+            "same_answer_letter"
+          ],
+          "masterPrompt": "How to run at this position when leaving the highway?",
+          "masterAnswer": "A",
+          "masterImage": "/qbank/2023-test1/images/img_dc1047dc9416ca4b70fbdf5a66b1e1c9.jpeg"
+        },
+        {
+          "qid": "q0900",
+          "number": 900,
+          "score": 0.1888,
+          "reasonCodes": [
+            "same_question_type",
+            "same_option_count"
+          ],
+          "masterPrompt": "The validity of the driving license which is initially applied for is ______.",
+          "masterAnswer": "C",
+          "masterImage": null
+        },
+        {
+          "qid": "q0448",
+          "number": 448,
+          "score": 0.1777,
+          "reasonCodes": [
+            "same_question_type",
+            "same_option_count",
+            "same_answer_letter"
+          ],
+          "masterPrompt": "For what period, due to special reasons such as military service or going abroad, can a driver postpone the verification of a driver's license?",
+          "masterAnswer": "A",
+          "masterImage": null
+        },
+        {
+          "qid": "q0495",
+          "number": 495,
+          "score": 0.1747,
+          "reasonCodes": [
+            "same_question_type",
+            "same_option_count"
+          ],
+          "masterPrompt": "A driver who escapes after causing a traffic accident but his conduct does not constitute a crime, is subject to a ________.",
+          "masterAnswer": "C",
+          "masterImage": null
+        }
+      ],
+      "reasoningSummary": "Top match q0981 is plausible but not decisive: same_question_type, same_option_count, option_meaning_match, correct_option_meaning_match, same_answer_logic.",
+      "requiredHumanAction": "inspect_manually",
+      "candidateSignals": {
+        "answerKey": "A",
+        "correctOptionText": "12 points",
+        "sourceImage": "screenshots/Screenshot 2026-04-19 at 18.59.49.png",
+        "imageAssets": [
+          "screenshots/Screenshot 2026-04-19 at 18.59.49.png"
+        ],
+        "objectTags": [
+          "proper-driving:traffic-laws",
+          "road-safety:accidents",
+          "traffic-signals:road-signs"
+        ],
+        "hasDuplicateOptionLabels": false
+      }
+    },
+    {
+      "candidateId": "nqc-ru-batch-17-002",
+      "lang": "ru",
+      "batch": "batch-17",
+      "sourceFile": "/Users/huni/dev-projects/expatise/qbank-tools/history/decisions/new-question-candidates.ru.batch-17.json",
+      "sourcePrompt": "Что означает данный знак?",
+      "translatedEnglishPrompt": "What does this sign mean?",
+      "type": "mcq",
+      "recommendation": "needs_human_review",
+      "risk": "medium",
+      "topMatches": [
+        {
+          "qid": "q0839",
+          "number": 839,
+          "score": 0.7232,
+          "reasonCodes": [
+            "same_question_type",
+            "same_option_count",
+            "linked_existing_asset_candidate",
+            "same_image"
+          ],
+          "masterPrompt": "What’s the meaning of this sign?",
+          "masterAnswer": "C",
+          "masterImage": "/qbank/2023-test1/images/img_5fa8e1a6acb74b94e63b42dd28fa6504.jpeg"
+        },
+        {
+          "qid": "q0927",
+          "number": 927,
+          "score": 0.7077,
+          "reasonCodes": [
+            "prompt_exact_match",
+            "same_question_type",
+            "same_option_count"
+          ],
+          "masterPrompt": "What does this sign mean?",
+          "masterAnswer": "B",
+          "masterImage": "/qbank/2023-test1/images/img_ff8d1a259c725eec7204e2039a449c81.jpeg"
+        },
+        {
+          "qid": "q0928",
+          "number": 928,
+          "score": 0.7077,
+          "reasonCodes": [
+            "prompt_exact_match",
+            "same_question_type",
+            "same_option_count"
+          ],
+          "masterPrompt": "What does this sign mean?",
+          "masterAnswer": "C",
+          "masterImage": "/qbank/2023-test1/images/img_428ad99c2bcc73d5a25a6e499a9ccd58.jpeg"
+        },
+        {
+          "qid": "q0929",
+          "number": 929,
+          "score": 0.7077,
+          "reasonCodes": [
+            "prompt_exact_match",
+            "same_question_type",
+            "same_option_count"
+          ],
+          "masterPrompt": "What does this sign mean?",
+          "masterAnswer": "D",
+          "masterImage": "/qbank/2023-test1/images/img_65abd9b86ff75e64d880e8eb5bcb623d.jpeg"
+        },
+        {
+          "qid": "q0685",
+          "number": 685,
+          "score": 0.3851,
+          "reasonCodes": [
+            "same_question_type",
+            "same_option_count",
+            "same_answer_letter"
+          ],
+          "masterPrompt": "What’s the meaning of this sign?",
+          "masterAnswer": "A",
+          "masterImage": "/qbank/2023-test1/images/img_527aa145fab46cc0174df31a3df5c264.jpeg"
+        },
+        {
+          "qid": "q0755",
+          "number": 755,
+          "score": 0.3548,
+          "reasonCodes": [
+            "same_question_type",
+            "same_option_count"
+          ],
+          "masterPrompt": "What’s the meaning of this sign?",
+          "masterAnswer": "C",
+          "masterImage": "/qbank/2023-test1/images/img_5638eb5d1220596566b2ff0ed37fe4a7.jpeg"
+        },
+        {
+          "qid": "q0756",
+          "number": 756,
+          "score": 0.3528,
+          "reasonCodes": [
+            "same_question_type",
+            "same_option_count",
+            "same_answer_letter"
+          ],
+          "masterPrompt": "What’s the meaning of this sign?",
+          "masterAnswer": "A",
+          "masterImage": "/qbank/2023-test1/images/img_f9758846d5b1ec1e5bc69f48ab940554.jpeg"
+        },
+        {
+          "qid": "q0770",
+          "number": 770,
+          "score": 0.3488,
+          "reasonCodes": [
+            "same_question_type",
+            "same_option_count",
+            "same_answer_letter"
+          ],
+          "masterPrompt": "What’s the meaning of this sign?",
+          "masterAnswer": "A",
+          "masterImage": "/qbank/2023-test1/images/img_80cd0d952314595268db07bec4c5767d.jpeg"
+        }
+      ],
+      "reasoningSummary": "Top match q0839 is plausible but not decisive: same_question_type, same_option_count, linked_existing_asset_candidate, same_image.",
+      "requiredHumanAction": "inspect_manually",
+      "candidateSignals": {
+        "answerKey": "A",
+        "correctOptionText": "Left turn prohibited",
+        "sourceImage": "screenshots/Screenshot 2026-04-19 at 19.00.08 1.png",
+        "imageAssets": [
+          "screenshots/Screenshot 2026-04-19 at 19.00.08 1.png",
+          "/qbank/2023-test1/images/img_5fa8e1a6acb74b94e63b42dd28fa6504.jpeg"
+        ],
+        "objectTags": [
+          "traffic-signals:road-signs",
+          "proper-driving:traffic-laws",
+          "proper-driving:safe-driving"
+        ],
+        "hasDuplicateOptionLabels": false
+      }
+    },
+    {
+      "candidateId": "nqc-ru-batch-18-001",
+      "lang": "ru",
+      "batch": "batch-18",
+      "sourceFile": "/Users/huni/dev-projects/expatise/qbank-tools/history/decisions/new-question-candidates.ru.batch-18.json",
+      "sourcePrompt": "При вождении автомобиля с поддельным гос.номером, водительским удостоверением или техническим паспортом средства, автоинспектор имеет право задержать автомобиль и поставить его на штраф-стоянку.",
+      "translatedEnglishPrompt": "When driving a car with a fake license plate, driver's license, or vehicle registration certificate, the traffic inspector has the right to detain the vehicle and place it in the impound lot.",
+      "type": "row",
+      "recommendation": "safe_to_promote",
+      "risk": "low",
+      "topMatches": [
+        {
+          "qid": "q0335",
+          "number": 335,
+          "score": 0.212,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "Traffic police can detain the vehicle according to law if it uses other vehicles license plate and driver's license.",
+          "masterAnswer": "Right",
+          "masterImage": null
+        },
+        {
+          "qid": "q0276",
+          "number": 276,
+          "score": 0.2049,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "A traffic police has the right to confiscate the driver's license if the car is not equipped with an insurance policy sign.",
+          "masterAnswer": "Wrong",
+          "masterImage": null
+        },
+        {
+          "qid": "q0213",
+          "number": 213,
+          "score": 0.2035,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "A traffic police has the right to detain a vehicle if the driver uses someone else's vehicle inspection sticker.",
+          "masterAnswer": "Right",
+          "masterImage": null
+        },
+        {
+          "qid": "q0293",
+          "number": 293,
+          "score": 0.1967,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "Traffic police can detain the vehicle which is suspected of using the falsified or altered license plate and driver's license.",
+          "masterAnswer": "Right",
+          "masterImage": null
+        },
+        {
+          "qid": "q0921",
+          "number": 921,
+          "score": 0.1945,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "If the registration paper, license plate and driver's license of a vehicle are lost or destroyed, the vehicle owner should apply for reissuing or replacing them to the vehicle management station at the residential place.",
+          "masterAnswer": "Wrong",
+          "masterImage": null
+        },
+        {
+          "qid": "q0222",
+          "number": 222,
+          "score": 0.1905,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "If the vehicle has no license plate, a label of inspection, or a label of insurance, preserve the scene and immediately report it to the police.",
+          "masterAnswer": "Right",
+          "masterImage": null
+        },
+        {
+          "qid": "q0249",
+          "number": 249,
+          "score": 0.1877,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "If a driver allows his vehicle to be driven by a person whose driving license has been revoked, the traffic police will detain the driving license.",
+          "masterAnswer": "Right",
+          "masterImage": null
+        },
+        {
+          "qid": "q0190",
+          "number": 190,
+          "score": 0.185,
+          "reasonCodes": [
+            "same_question_type"
+          ],
+          "masterPrompt": "The driver is required to attach the license plate to the car in accordance with the rules.",
+          "masterAnswer": "Right",
+          "masterImage": null
+        }
+      ],
+      "reasoningSummary": "No high-confidence duplicate found. Best match q0335 scored 0.212.",
+      "requiredHumanAction": "can_prepare_promotion_preview",
+      "candidateSignals": {
+        "answerKey": null,
+        "correctOptionText": "Правильно",
+        "sourceImage": "screenshots/Screenshot 2026-04-19 at 19.00.40.png",
+        "imageAssets": [
+          "screenshots/Screenshot 2026-04-19 at 19.00.40.png"
+        ],
+        "objectTags": [
+          "road-safety:registration",
+          "road-safety:license"
+        ],
+        "hasDuplicateOptionLabels": false
+      }
+    },
+    {
+      "candidateId": "nqc-ru-batch-18-001",
+      "lang": "ru",
+      "batch": "batch-18",
+      "sourceFile": "/Users/huni/dev-projects/expatise/qbank-tools/history/decisions/new-question-candidates.ru.batch-18.json",
+      "sourcePrompt": "При проезде дороги, которая резко сужается или соединяются в одну - как правильно проехать в этом случае?",
+      "translatedEnglishPrompt": "When driving on a road that suddenly narrows or merges into one lane, how should you proceed in this situation?",
+      "type": "mcq",
+      "recommendation": "safe_to_promote",
+      "risk": "low",
+      "topMatches": [
+        {
+          "qid": "q0484",
+          "number": 484,
+          "score": 0.4152,
+          "reasonCodes": [
+            "same_question_type",
+            "same_option_count",
+            "same_answer_letter"
+          ],
+          "masterPrompt": "When encountering stopping in turn or slow-moving vehicles in front at an intersection where lanes are reduced or on a road that suddenly narrows or merges into one lane, the vehicle should _________.",
+          "masterAnswer": "C",
+          "masterImage": null
+        },
+        {
+          "qid": "q0167",
+          "number": 167,
+          "score": 0.2192,
+          "reasonCodes": [
+            "same_question_type",
+            "same_option_count",
+            "same_answer_letter"
+          ],
+          "masterPrompt": "When driving in a rainy day, the driver should ______ when pedestrians holding umbrellas or in raincoats is walking on the roadway.",
+          "masterAnswer": "C",
+          "masterImage": null
+        },
+        {
+          "qid": "q0150",
+          "number": 150,
+          "score": 0.2183,
+          "reasonCodes": [
+            "same_question_type",
+            "same_option_count",
+            "same_answer_letter"
+          ],
+          "masterPrompt": "When driving in a foggy day, the driver should turn on ______.",
+          "masterAnswer": "C",
+          "masterImage": null
+        },
+        {
+          "qid": "q0174",
+          "number": 174,
+          "score": 0.2169,
+          "reasonCodes": [
+            "same_question_type",
+            "same_option_count",
+            "same_answer_letter"
+          ],
+          "masterPrompt": "When driving on a mountain road covered by ice and snow, the vehicle behind should ______ if the vehicle in front is climbing a slope.",
+          "masterAnswer": "C",
+          "masterImage": null
+        },
+        {
+          "qid": "q0491",
+          "number": 491,
+          "score": 0.2143,
+          "reasonCodes": [
+            "same_question_type",
+            "same_option_count",
+            "same_answer_letter"
+          ],
+          "masterPrompt": "How to do when encountering this situation of waiting in line?",
+          "masterAnswer": "C",
+          "masterImage": "/qbank/2023-test1/images/img_a54b4783d4e58de8abfc1a97c2bfc986.jpeg"
+        },
+        {
+          "qid": "q0148",
+          "number": 148,
+          "score": 0.2135,
+          "reasonCodes": [
+            "same_question_type",
+            "same_option_count"
+          ],
+          "masterPrompt": "When overtaking a vehicle parked on the right side, the driver should ________ in case that vehicle starts up suddenly or opens the door.",
+          "masterAnswer": "D",
+          "masterImage": null
+        },
+        {
+          "qid": "q0139",
+          "number": 139,
+          "score": 0.2087,
+          "reasonCodes": [
+            "same_question_type",
+            "same_option_count",
+            "same_answer_letter"
+          ],
+          "masterPrompt": "When a vehicle encounters a bike rider coming in the opposite direction on the road, the driver should ________.",
+          "masterAnswer": "C",
+          "masterImage": null
+        },
+        {
+          "qid": "q0479",
+          "number": 479,
+          "score": 0.2067,
+          "reasonCodes": [
+            "same_question_type",
+            "same_option_count",
+            "same_answer_letter"
+          ],
+          "masterPrompt": "How to use lights when changing to the left lane on road?",
+          "masterAnswer": "C",
+          "masterImage": null
+        }
+      ],
+      "reasoningSummary": "No high-confidence duplicate found. Best match q0484 scored 0.4152.",
+      "requiredHumanAction": "can_prepare_promotion_preview",
+      "candidateSignals": {
+        "answerKey": "C",
+        "correctOptionText": "Take turns from each lane, one car at a time",
+        "sourceImage": "screenshots/Screenshot 2026-04-19 at 19.00.51.png",
+        "imageAssets": [
+          "screenshots/Screenshot 2026-04-19 at 19.00.51.png"
+        ],
+        "objectTags": [
+          "proper-driving:safe-driving"
+        ],
+        "hasDuplicateOptionLabels": false
+      }
+    }
+  ]
+}

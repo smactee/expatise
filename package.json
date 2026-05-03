@@ -16,6 +16,8 @@
     "audit-qbank-integrity": "node scripts/audit-qbank-integrity.mjs",
     "build-decision-memory": "node scripts/build-decision-memory.mjs",
     "finalize-localization-run": "node scripts/finalize-localization-run.mjs",
+    "guard-protected-qbank-files": "node scripts/guard-protected-qbank-files.mjs",
+    "review-new-question-promotions": "node scripts/review-new-question-promotions.mjs",
     "cleanup-localization-batch": "node scripts/cleanup-localization-batch.mjs",
     "dry-run-asset-rename": "node scripts/dry-run-asset-rename.mjs",
     "extract-screenshot-intake": "node scripts/extract-screenshot-intake.mjs",
@@ -44,7 +46,9 @@
     "validate-localization-batch": "node scripts/validate-localization-batch.mjs",
     "report-localization-counts": "node scripts/report-production-localization-counts.mjs",
     "revenuecat:webhook:replay": "node scripts/replay-revenuecat-webhook.mjs",
-    "revenuecat:webhook:replay:sample": "node scripts/replay-revenuecat-webhook.mjs scripts/fixtures/revenuecat-webhook.sample.json"
+    "revenuecat:webhook:replay:sample": "node scripts/replay-revenuecat-webhook.mjs scripts/fixtures/revenuecat-webhook.sample.json",
+    "master-edit": "npm run guard-protected-qbank-files -- --allow-questions-master-edit true && npm run audit-qbank-integrity && npm run build",
+    "image-edit": "npm run guard-protected-qbank-files -- --allow-question-image-edit true && npm run audit-qbank-integrity && npm run build"
   },
   "dependencies": {
     "@capacitor/android": "^8.1.0",

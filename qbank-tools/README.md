@@ -141,6 +141,41 @@ Notes:
 - Warnings include raw/master qid drift such as raw-only qids, missing/extra translation qids, tag inconsistencies, and conservative duplicate candidates.
 - The default audit is report-only. `--strict true` exits nonzero when critical blockers are present.
 
+Protected Master Files:
+
+```bash
+npm run guard-protected-qbank-files
+npm run guard-protected-qbank-files -- --allow-questions-master-edit true
+```
+
+Notes:
+
+- `public/qbank/2023-test1/questions.json` is human-locked. Localization, matching, backfill, cleanup, tagging, audit, and Codex maintenance tasks must read it but not edit it.
+- If a master issue is suspected, report it in an audit or decision note instead of rewriting `questions.json`.
+- Only explicit human-approved master-data cleanup tasks may edit `questions.json`, and those tasks must use `--allow-questions-master-edit true`.
+- `public/qbank/2023-test1/image-color-tags.json` is additive-only. New qid tag entries and appended tags are allowed; deleting, renaming, replacing, or reordering existing values is blocked.
+- Run this guard before localization commits. See `qbank-tools/PROTECTED_FILES.md` for the full policy.
+
+New Question Promotion Gate:
+
+No language-discovered question can be promoted into the English master until duplicate detection has run. The English master remains human-locked; this gate writes reports only.
+
+```bash
+npm run review-new-question-promotions -- --lang ru --batch batch-08
+npm run review-new-question-promotions -- --lang ja --batch batch-001
+npm run review-new-question-promotions -- --lang ru --input qbank-tools/history/decisions/new-question-candidates.ru.batch-08.json
+npm run review-new-question-promotions -- --lang ru --batch batch-08 --strict true
+```
+
+Notes:
+
+- Reports are written to `qbank-tools/generated/reports/new-question-promotion-review.<lang>.<batch-or-all>.json` and `.md`.
+- `likely_duplicate` means reject the new-question promotion or attach the source item to an existing qid.
+- `needs_human_review` means inspect the top matches before deciding.
+- `safe_to_promote` means the candidate can move to a human-reviewed promotion preview, not directly into `questions.json`.
+- The gate checks prompt similarity, option/correct-answer meaning, ROW/MCQ type, image paths/hashes, object tags, linked asset candidates, and decision memory.
+- Duplicate findings should be preserved in decision memory after review.
+
 Decision Memory System:
 
 After a language run, normalize reusable decision intelligence into history:
