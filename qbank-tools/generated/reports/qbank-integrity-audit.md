@@ -1,6 +1,6 @@
 # QBank Integrity Audit
 
-Generated: 2026-05-03T14:49:23.505Z
+Generated: 2026-05-04T11:24:33.080Z
 
 ## Executive Summary
 
@@ -8,7 +8,7 @@ Generated: 2026-05-03T14:49:23.505Z
 - Raw qids: 985
 - Translation languages audited: 3
 - Critical blockers: 0
-- Warnings: 807
+- Warnings: 757
 - Duplicate candidates: 25
 
 ## Critical Blockers
@@ -20,56 +20,6 @@ None.
 | type | qid | reason |
 | --- | --- | --- |
 | raw-only-qid | q0518 | qid exists in questions.raw.json but not questions.json |
-| translation-missing-qid | q0372 | ja: missing production translation |
-| translation-missing-qid | q0462 | ja: missing production translation |
-| translation-missing-qid | q0473 | ja: missing production translation |
-| translation-missing-qid | q0539 | ja: missing production translation |
-| translation-missing-qid | q0555 | ja: missing production translation |
-| translation-missing-qid | q0571 | ja: missing production translation |
-| translation-missing-qid | q0581 | ja: missing production translation |
-| translation-missing-qid | q0639 | ja: missing production translation |
-| translation-missing-qid | q0657 | ja: missing production translation |
-| translation-missing-qid | q0679 | ja: missing production translation |
-| translation-missing-qid | q0684 | ja: missing production translation |
-| translation-missing-qid | q0735 | ja: missing production translation |
-| translation-missing-qid | q0750 | ja: missing production translation |
-| translation-missing-qid | q0819 | ja: missing production translation |
-| translation-missing-qid | q0854 | ja: missing production translation |
-| translation-missing-qid | q0900 | ja: missing production translation |
-| translation-missing-qid | q0901 | ja: missing production translation |
-| translation-missing-qid | q0902 | ja: missing production translation |
-| translation-missing-qid | q0903 | ja: missing production translation |
-| translation-missing-qid | q0904 | ja: missing production translation |
-| translation-missing-qid | q0905 | ja: missing production translation |
-| translation-missing-qid | q0906 | ja: missing production translation |
-| translation-missing-qid | q0907 | ja: missing production translation |
-| translation-missing-qid | q0908 | ja: missing production translation |
-| translation-missing-qid | q0909 | ja: missing production translation |
-| translation-missing-qid | q0910 | ja: missing production translation |
-| translation-missing-qid | q0911 | ja: missing production translation |
-| translation-missing-qid | q0912 | ja: missing production translation |
-| translation-missing-qid | q0913 | ja: missing production translation |
-| translation-missing-qid | q0914 | ja: missing production translation |
-| translation-missing-qid | q0915 | ja: missing production translation |
-| translation-missing-qid | q0916 | ja: missing production translation |
-| translation-missing-qid | q0917 | ja: missing production translation |
-| translation-missing-qid | q0918 | ja: missing production translation |
-| translation-missing-qid | q0919 | ja: missing production translation |
-| translation-missing-qid | q0920 | ja: missing production translation |
-| translation-missing-qid | q0921 | ja: missing production translation |
-| translation-missing-qid | q0922 | ja: missing production translation |
-| translation-missing-qid | q0924 | ja: missing production translation |
-| translation-missing-qid | q0925 | ja: missing production translation |
-| translation-missing-qid | q0926 | ja: missing production translation |
-| translation-missing-qid | q0927 | ja: missing production translation |
-| translation-missing-qid | q0928 | ja: missing production translation |
-| translation-missing-qid | q0930 | ja: missing production translation |
-| translation-missing-qid | q0931 | ja: missing production translation |
-| translation-missing-qid | q0932 | ja: missing production translation |
-| translation-missing-qid | q0933 | ja: missing production translation |
-| translation-missing-qid | q0934 | ja: missing production translation |
-| translation-missing-qid | q0935 | ja: missing production translation |
-| translation-missing-qid | q0936 | ja: missing production translation |
 | translation-missing-qid | q0937 | ja: missing production translation |
 | translation-missing-qid | q0938 | ja: missing production translation |
 | translation-missing-qid | q0939 | ja: missing production translation |
@@ -119,14 +69,64 @@ None.
 | translation-mcq-missing-locale-answer-key | q0578 | ko: translated MCQ has no localeCorrectOptionKey |
 | translation-mcq-missing-locale-answer-key | q0591 | ko: translated MCQ has no localeCorrectOptionKey |
 | translation-mcq-missing-locale-answer-key | q0900 | ko: translated MCQ has no localeCorrectOptionKey |
+| translation-mcq-missing-locale-answer-key | q0972 | ko: translated MCQ has no localeCorrectOptionKey |
+| translation-mcq-missing-locale-answer-key | q0105 | ko: translated MCQ has no localeCorrectOptionKey |
+| translation-mcq-missing-locale-answer-key | q0106 | ko: translated MCQ has no localeCorrectOptionKey |
+| translation-mcq-missing-locale-answer-key | q0107 | ko: translated MCQ has no localeCorrectOptionKey |
+| translation-mcq-missing-locale-answer-key | q0108 | ko: translated MCQ has no localeCorrectOptionKey |
+| translation-mcq-missing-locale-answer-key | q0109 | ko: translated MCQ has no localeCorrectOptionKey |
+| translation-mcq-missing-locale-answer-key | q0110 | ko: translated MCQ has no localeCorrectOptionKey |
+| translation-mcq-missing-locale-answer-key | q0111 | ko: translated MCQ has no localeCorrectOptionKey |
+| translation-mcq-missing-locale-answer-key | q0112 | ko: translated MCQ has no localeCorrectOptionKey |
+| translation-mcq-missing-locale-answer-key | q0113 | ko: translated MCQ has no localeCorrectOptionKey |
+| translation-mcq-missing-locale-answer-key | q0114 | ko: translated MCQ has no localeCorrectOptionKey |
+| translation-mcq-missing-locale-answer-key | q0115 | ko: translated MCQ has no localeCorrectOptionKey |
+| translation-mcq-missing-locale-answer-key | q0116 | ko: translated MCQ has no localeCorrectOptionKey |
+| translation-mcq-missing-locale-answer-key | q0117 | ko: translated MCQ has no localeCorrectOptionKey |
+| translation-mcq-missing-locale-answer-key | q0118 | ko: translated MCQ has no localeCorrectOptionKey |
+| translation-mcq-missing-locale-answer-key | q0119 | ko: translated MCQ has no localeCorrectOptionKey |
+| translation-mcq-missing-locale-answer-key | q0120 | ko: translated MCQ has no localeCorrectOptionKey |
+| translation-mcq-missing-locale-answer-key | q0121 | ko: translated MCQ has no localeCorrectOptionKey |
+| translation-mcq-missing-locale-answer-key | q0122 | ko: translated MCQ has no localeCorrectOptionKey |
+| translation-mcq-missing-locale-answer-key | q0123 | ko: translated MCQ has no localeCorrectOptionKey |
+| translation-mcq-missing-locale-answer-key | q0124 | ko: translated MCQ has no localeCorrectOptionKey |
+| translation-mcq-missing-locale-answer-key | q0125 | ko: translated MCQ has no localeCorrectOptionKey |
+| translation-mcq-missing-locale-answer-key | q0126 | ko: translated MCQ has no localeCorrectOptionKey |
+| translation-mcq-missing-locale-answer-key | q0127 | ko: translated MCQ has no localeCorrectOptionKey |
+| translation-mcq-missing-locale-answer-key | q0128 | ko: translated MCQ has no localeCorrectOptionKey |
+| translation-mcq-missing-locale-answer-key | q0129 | ko: translated MCQ has no localeCorrectOptionKey |
+| translation-mcq-missing-locale-answer-key | q0130 | ko: translated MCQ has no localeCorrectOptionKey |
+| translation-mcq-missing-locale-answer-key | q0131 | ko: translated MCQ has no localeCorrectOptionKey |
+| translation-mcq-missing-locale-answer-key | q0366 | ko: translated MCQ has no localeCorrectOptionKey |
+| translation-mcq-missing-locale-answer-key | q0373 | ko: translated MCQ has no localeCorrectOptionKey |
+| translation-mcq-missing-locale-answer-key | q0378 | ko: translated MCQ has no localeCorrectOptionKey |
+| translation-mcq-missing-locale-answer-key | q0380 | ko: translated MCQ has no localeCorrectOptionKey |
+| translation-mcq-missing-locale-answer-key | q0391 | ko: translated MCQ has no localeCorrectOptionKey |
+| translation-mcq-missing-locale-answer-key | q0397 | ko: translated MCQ has no localeCorrectOptionKey |
+| translation-mcq-missing-locale-answer-key | q0398 | ko: translated MCQ has no localeCorrectOptionKey |
+| translation-mcq-missing-locale-answer-key | q0399 | ko: translated MCQ has no localeCorrectOptionKey |
+| translation-mcq-missing-locale-answer-key | q0400 | ko: translated MCQ has no localeCorrectOptionKey |
+| translation-mcq-missing-locale-answer-key | q0402 | ko: translated MCQ has no localeCorrectOptionKey |
+| translation-mcq-missing-locale-answer-key | q0362 | ko: translated MCQ has no localeCorrectOptionKey |
+| translation-mcq-missing-locale-answer-key | q0363 | ko: translated MCQ has no localeCorrectOptionKey |
+| translation-mcq-missing-locale-answer-key | q0368 | ko: translated MCQ has no localeCorrectOptionKey |
+| translation-mcq-missing-locale-answer-key | q0369 | ko: translated MCQ has no localeCorrectOptionKey |
+| translation-mcq-missing-locale-answer-key | q0370 | ko: translated MCQ has no localeCorrectOptionKey |
+| translation-mcq-missing-locale-answer-key | q0371 | ko: translated MCQ has no localeCorrectOptionKey |
+| translation-mcq-missing-locale-answer-key | q0374 | ko: translated MCQ has no localeCorrectOptionKey |
+| translation-mcq-missing-locale-answer-key | q0375 | ko: translated MCQ has no localeCorrectOptionKey |
+| translation-mcq-missing-locale-answer-key | q0376 | ko: translated MCQ has no localeCorrectOptionKey |
+| translation-mcq-missing-locale-answer-key | q0377 | ko: translated MCQ has no localeCorrectOptionKey |
+| translation-mcq-missing-locale-answer-key | q0379 | ko: translated MCQ has no localeCorrectOptionKey |
+| translation-mcq-missing-locale-answer-key | q0381 | ko: translated MCQ has no localeCorrectOptionKey |
 
-_Warning table truncated to 100 of 807._
+_Warning table truncated to 100 of 757._
 
 ## Language Coverage
 
 | lang | translated | coverage | missing | extra | invalidLocaleKeys | rowMcqKeys |
 | --- | --- | --- | --- | --- | --- | --- |
-| ja | 899 | 91.36% | 86 | 1 | 0 | 0 |
+| ja | 949 | 96.44% | 36 | 1 | 0 | 0 |
 | ko | 985 | 100.1% | 0 | 1 | 0 | 0 |
 | ru | 984 | 100% | 0 | 0 | 0 | 0 |
 

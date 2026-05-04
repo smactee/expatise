@@ -1,17 +1,18 @@
 # Backfill Quality Review (ja)
 
-Generated at: 2026-05-03T14:47:59.343Z
+Generated at: 2026-05-04T11:15:40.036Z
 
 ## Summary
 
 - AI review used: yes
 - Model: gpt-5-mini
-- Input items: 20
-- Approved: 20
+- Input items: 50
+- Approved: 50
 - Needs fix: 0
 - Reject: 0
 - Below confidence threshold: 0
 - Answer-key logic risk: 0
+- Wrong-language heuristic rejects: 0
 - Production modified: no
 
 ## Rejected
@@ -22,24 +23,54 @@ Generated at: 2026-05-03T14:47:59.343Z
 
 ## Approved
 
-- q0011: confidence 0.95; Japanese translation accurately and naturally renders the English meaning ('do not stop' on landslide-prone mountain road). No options present; correct answer key 'Right' preserved.
-- q0023: confidence 0.95; Translation correctly conveys that after a tire blowout the driver should refrain from using the foot brake until speed control is regained, and warns of lateral swing danger. Terminology is natural and meaning preserved.
-- q0034: confidence 0.95; Translation preserves the contrast between courteous/defensive driving versus offensive driving; wording is natural and consistent with the English source.
-- q0046: confidence 0.95; Japanese version correctly states that a driver should check the dynamics of rear-side vehicles before merging from another road; meaning and intent match the English master.
-- q0083: confidence 0.95; Translation accurately instructs the driver to firmly hold the steering wheel with both hands after a front tire blowout to keep the vehicle straight; preserves technical detail and intent.
-- q0097: confidence 0.96; Japanese translation accurately and naturally conveys the English statement that turning on the signal alone before quickly entering a new lane is sufficient. Meaning and logical polarity preserved (English correctOptionKey = Wrong).
-- q0285: confidence 0.95; Translation correctly states that in sandstorm/dusty weather there is no need to turn on front/side/rear lights. Terminology is natural and preserves the original meaning and answer key (Wrong).
-- q0286: confidence 0.95; Translation succinctly and correctly mirrors the English: use low beam in such circumstances. Image-dependent phrasing preserved; answer key (Right) aligns.
-- q0298: confidence 0.94; Translation follows the English master wording ('driver's license' and vehicle owner applying for reissue at registration management station). Although English source may be imprecise, the Japanese preserves the original meaning and answer key (Right).
-- q0323: confidence 0.95; Translation accurately conveys that law/traffic safety violations and accidents while driving are considered traffic rule violations. Natural, exam-appropriate wording; answer key (Right) preserved.
-- q0332: confidence 0.97; 日本語訳は原文の意味を正確に保っており、数値や論理（最高速度を超えてはならない）が一致している。形式も試験向けに自然。
-- q0335: confidence 0.97; 訳は『他の車両のナンバープレートや他人の運転免許証を使用して車両を運転した場合、交通警察は法律に基づきその車両を押収することができる』と原文の意味を保持しており、試験文として自然。
-- q0338: confidence 0.97; 年齢範囲（18~70歳）と申請対象（小型車・三輪自動車）の意味が正確に翻訳されており、語調も適切。
-- q0351: confidence 0.97; 『道路維持車両および工事車両が作業中の場合、通行車両は注意して避けなければならない』は原文の指示（慎重に避ける）を正確に伝えており問題なし。
-- q0354: confidence 0.97; 『安全上の危険がある車両は、誰も運転してはならない』は原文と意味が一致しており、自然で試験向けの表現。
-- q0359: confidence 0.96; 翻訳は英語原文の意味を正確に保持しており、選択肢は無く、正誤キー（Wrong）との整合性に問題はない。表現は自然で試験向けに適切。
-- q0360: confidence 0.96; 原文の意味（悪天候時は速度を落とす）が正確に反映されている。日本語表現は自然で選択肢なしの単純正誤問題として整合している。
-- q0361: confidence 0.96; 画像依存の語句（'このような状況'）を含む原文を忠実に訳出しており、意味・論理・正誤（Right）に問題はない。
-- q0363: confidence 0.95; 選択肢の対応（A=3年以内 等）と正解キー（A）は英語原文と一致。日本語は自然で法的意味も保持されている。軽微な表現の改善案のみあり。
-- q0369: confidence 0.95; 選択肢の翻訳（運転免許証 等）と正解キー（A）が英語原文と一致。用語の語彙選択に注意点を付記したが、試験文として問題はない。
+- q0372: confidence 0.98; 本文と選択肢は原文の意味を正確に保持しており、選択肢順序および正答キー（D: 通行可）も一致。日本語表現は自然で試験文として適切。
+- q0462: confidence 0.97; 「偽造または改ざんした運転免許証を使用した運転者は______を受ける。」という翻訳は原文通りで、点数表記（6点・3点・2点・12点）と正答（D: 12点）も正確に反映。用語も適切。
+- q0473: confidence 0.95; 原文の趣旨（戸籍が元の車両管理所の管轄外に移転した場合の申請先）を正確に翻訳。選択肢（旧所在地・居住地・新所在地・戸籍所在地）と正答キー（C: 新所在地）も一致。
+- q0539: confidence 0.96; 真偽問題の原文「When ignition switch is in the START position, the starter starts.」を正確に日本語化しており、正答（Right＝正しい）に対応。表現は自然。
+- q0555: confidence 0.94; 原文「It lights when turning on the sidelights(parking lights).」の意味を保持して日本語化している。ダッシュボードの指示灯を示す文脈は画像依存だが、翻訳自体は正確で真偽問題として適切。
+- q0571: confidence 0.98; 原文の意味（シートベルト未装着時に点灯する表示）を正確に日本語で表現しており、選択肢はないため問題なし。表現は自然で試験向けに適切。
+- q0581: confidence 0.98; 各選択肢が原文の装置名を忠実に翻訳しており、選択肢キー（C＝リアワイパーとウォッシャー）も正しく保持されている。文体は自然。
+- q0639: confidence 0.98; 原文の『この状況では左折してはいけない』を日本語で適切に翻訳している。画像依存の文脈も損なわれていない。
+- q0657: confidence 0.98; 選択肢は原文の意味（高音・低音ホーン、ホーンを鳴らすべき、ホーン禁止）を保持しており、正答キー（C＝ホーンを鳴らすべきである）も正しい。表現は試験向けに許容範囲。
+- q0679: confidence 0.98; 『連続する下り坂』『急な下り坂』『急な上り坂』『連続する上り坂』と原文の選択肢を忠実に翻訳しており、正答キー（A）も保持されている。
+- q0684: confidence 0.97; 全体的に英語原文の意味・解答キー（B）を正確に保持しており、用語も適切。選択肢Aの語順のみやや自然さに欠けるため警告を付与。
+- q0735: confidence 0.97; 翻訳は原文の意味と解答（C）を正確に反映しており、用語も適切で自然。
+- q0750: confidence 0.97; 各選択肢と設問文が英語原文の意味を忠実に反映しており、試験表現として自然。
+- q0819: confidence 0.97; 全体として誤訳はなく、正答（D）も保持。選択肢Bの語句がやや不自然なため軽微な警告を付与。
+- q0854: confidence 0.97; 翻訳は英語原文の意味、選択肢順、正解（A）を正確に反映しており、日本語表現も適切。
+- q0900: confidence 0.96; 日本語訳は原文の意味・選択肢・正答（C=6年）を正確に保持しており、表現も自然で試験文に適している。
+- q0901: confidence 0.96; 原文の意味と選択肢（A=低速貨物車）が忠実に翻訳されている。日本語は試験用として許容される自然な表現である。
+- q0902: confidence 0.96; 原文の意味・選択肢・正答（D）が正確に維持されている。日本語表現は自然で、専門用語も許容範囲内である。
+- q0903: confidence 0.96; 真偽文（Right）を日本語で正確に表現しており、点数・期間に関する数値も一致している。
+- q0904: confidence 0.96; 原文の意味（Wrong）を正確に翻訳しており、数値表記も一致。日本語は自然で試験用に適している。
+- q0905: confidence 0.95; 訳は原文の意味を忠実に保持しており自然な日本語。選択肢は無く、正誤（Right）情報も矛盾なし。
+- q0906: confidence 0.95; 原文の否定的命題（Wrong）を正確に翻訳。日本語表現は自然で意味も一致。
+- q0907: confidence 0.95; 「6年」という有効期間の数値を正確に保持しており、文意も原文と一致する自然な日本語。
+- q0908: confidence 0.95; 「4年」という数値と否定の正誤（Wrong）を保持した正確な翻訳。表現も適切。
+- q0909: confidence 0.95; 設問文および各選択肢の意味が原文と一致。選択肢IDと順序も保持されており、正答（C）との整合性に問題なし。
+- q0910: confidence 0.98; 原文の意味と選択肢の対応（A＝大型トラック）を正確に保持しており、日本語表現も自然で試験文として適切。
+- q0911: confidence 0.98; 真偽問題の内容（科目2の項目列挙）を正確に訳出しており、専門用語も適切。
+- q0912: confidence 0.98; 科目3が2部分に分かれているという原文の意味を忠実に反映しており、日本語表現に問題なし。
+- q0913: confidence 0.98; 誤りを含む原文の主張をそのまま正確に翻訳しており（真偽キーはWrong）、表現に不備はない。
+- q0914: confidence 0.98; 受験票の有効期間内の予約回数に関する設問を正確に翻訳しており、選択肢の数値も一致している。
+- q0915: confidence 0.97; 原文の意味（受験票の有効期間は選択肢から選ぶ）を正確に反映しており、選択肢の順序・数値（1〜4年）と正答キー（C＝3年）も保持されている。日本語は自然で試験文として適切。
+- q0916: confidence 0.97; 原文の意味（予約をキャンセルする場合は前日までに申請しなければならず、無断欠席は不合格と判断される）を正確に翻訳している。日本語は自然で論理も保持されている。
+- q0917: confidence 0.97; 原文の意味（免許証を紛失または判読不能なほど損傷した場合は再発行を申請する）が正確に訳出されている。用語・語順とも試験文として適切。
+- q0918: confidence 0.97; 原文の否定的な主張（薬物服用・注射後に運転しても免許は取り消されない、という文）がそのまま正確に翻訳されている。真偽設定（Wrong＝誤り）も保たれている。
+- q0919: confidence 0.97; 原文の意味（コミュニティ薬物治療、強制隔離治療、または地域ベースのリハビリを受けた場合に免許が取り消される）を正確に翻訳。日本語は自然で誤訳はない。
+- q0920: confidence 0.96; 翻訳は原文の意味、選択肢の順序・対応、正答（登録地の車両管理所）を正確に保持しており、日本語表現も自然で試験向けとして適切。
+- q0921: confidence 0.96; 原文の真偽文を正確に反映した日本語翻訳。文意と正答（Wrong）が一致している。
+- q0922: confidence 0.96; 専門用語（臨時運行ナンバープレート等）と選択肢が原文どおりに翻訳されており、意味と選択肢の対応が正確。
+- q0924: confidence 0.96; 不正行為に関する真偽文の翻訳が原文と一致しており、法律的意味合いも適切に表現されている。
+- q0925: confidence 0.96; 「二重実線を横切ることは違法行為である」という原文の意図と選択肢対応を正確に翻訳しており、表現は自然で一貫している。
+- q0926: confidence 0.97; 訳文は原文の意味（横断歩道上での一時停止は法令違反である）を正確に反映しており、日本語として自然で試験向け。選択肢はないためキーの不整合もなし。
+- q0927: confidence 0.96; 設問文・各選択肢は英語原文の意味、順序、選択肢キー（B：前方に急な上り坂）を保持している。日本語表現も自然で適切。
+- q0928: confidence 0.96; 設問文・選択肢は原文の意味と順序（正答C：急な下り坂）を忠実に訳出しており、語句も試験向けに適切。
+- q0930: confidence 0.95; 訳文は『これらの標識は運転者に前方の危険を警告し、注意して通過するよう促す。』とあり、原文の意図（危険を警告し注意して通過させる）を正確に表現している。
+- q0931: confidence 0.95; 訳文は原文の意味（徐行して横から来る車両に注意する）を保持しているが、「注意」が重複して冗長なため、簡潔な代替案を提案した。意味や右・左等の数値的要素に誤りはない。
+- q0932: confidence 0.97; 英語原文の意味「この標識は前方にY字路があることを示す。」を正確に自然な日本語で訳しており、選択肢や数値は含まれていないため変更点はない。
+- q0933: confidence 0.97; 原文の「前方に障害物があり、減速して回避することを促す」という意味を自然な日本語で正確に表現している。
+- q0934: confidence 0.97; 「前方に急な左カーブがあることを警告する」を忠実かつ自然に訳しており、意味や論理は保持されている。
+- q0935: confidence 0.97; 原文の注意喚起（滑りやすい路面／徐行して注意）を正しく反映した自然な日本語訳である。
+- q0936: confidence 0.97; 「隣接する逆向きの2つのカーブがあることを警告する」という原文の意味を正確に翻訳している。
 
