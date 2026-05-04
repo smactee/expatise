@@ -11,6 +11,29 @@ import {
 
 export const BACKFILL_SOURCE = "english_master_backfill";
 
+const LANGUAGE_CONFIGS = {
+  ja: {
+    code: "ja",
+    englishName: "Japanese",
+    nativeName: "日本語",
+    outputLabel: "Japanese / 日本語",
+    textExample: "日本語の文章",
+    optionExample: "日本語の選択肢",
+    terminologyInstruction: "Use natural, exam-appropriate Japanese traffic, driving, legal, road-sign, and dashboard terminology.",
+    scriptInstruction: "Use Japanese kanji/kana. Do not output Russian, Cyrillic, English-only text, Chinese-only text, or romaji.",
+  },
+  ru: {
+    code: "ru",
+    englishName: "Russian",
+    nativeName: "русский",
+    outputLabel: "Russian / русский",
+    textExample: "Русский текст",
+    optionExample: "Русский вариант",
+    terminologyInstruction: "Use natural, exam-appropriate Russian driving/legal terminology.",
+    scriptInstruction: "Use Russian Cyrillic. Do not output Japanese, Chinese, English-only text, or romaji.",
+  },
+};
+
 export function backfillPaths({ lang, dataset = DEFAULT_DATASET, input = null } = {}) {
   const safeLang = normalizeLang(lang);
   const datasetDir = path.join(ROOT, "public", "qbank", dataset);
@@ -39,6 +62,77 @@ export function backfillPaths({ lang, dataset = DEFAULT_DATASET, input = null } 
 
 export function normalizeLang(value) {
   return String(value ?? "").trim().toLowerCase() || "ru";
+}
+
+export function targetLanguageConfig(lang) {
+  const normalized = normalizeLang(lang);
+  return LANGUAGE_CONFIGS[normalized] ?? {
+    code: normalized,
+    englishName: normalized,
+    nativeName: normalized,
+    outputLabel: normalized,
+    textExample: `${normalized} text`,
+    optionExample: `${normalized} option`,
+    terminologyInstruction: `Use natural, exam-appropriate ${normalized} driving/legal terminology.`,
+    scriptInstruction: `Use only the requested target language (${normalized}).`,
+  };
+}
+
+export function detectWrongLanguage(text, lang) {
+  const value = String(text ?? "").trim();
+  if (!value) {
+    return { wrong: false, reason: "", counts: languageScriptCounts(value) };
+  }
+
+  const config = targetLanguageConfig(lang);
+  const counts = languageScriptCounts(value);
+
+  if (config.code === "ja") {
+    if (counts.cyrillic > 0) {
+      return {
+        wrong: true,
+        reason: "contains Cyrillic/Russian script while target language is Japanese / 日本語",
+        counts,
+      };
+    }
+    if (counts.japanese === 0 && counts.latin >= 10) {
+      return {
+        wrong: true,
+        reason: "contains no Japanese script and appears to be English/romaji while target language is Japanese / 日本語",
+        counts,
+      };
+    }
+    return { wrong: false, reason: "", counts };
+  }
+
+  if (config.code === "ru") {
+    if (counts.japanese > 0) {
+      return {
+        wrong: true,
+        reason: "contains Japanese script while target language is Russian / русский",
+        counts,
+      };
+    }
+    if (counts.cyrillic === 0 && counts.latin >= 10) {
+      return {
+        wrong: true,
+        reason: "contains no Cyrillic script and appears to be English/romaji while target language is Russian / русский",
+        counts,
+      };
+    }
+    return { wrong: false, reason: "", counts };
+  }
+
+  return { wrong: false, reason: "", counts };
+}
+
+export function languageScriptCounts(text) {
+  const value = String(text ?? "");
+  return {
+    japanese: countMatches(value, /[\u3040-\u30ff\u3400-\u9fff]/gu),
+    cyrillic: countMatches(value, /[\u0400-\u04ff]/gu),
+    latin: countMatches(value, /[A-Za-z]/g),
+  };
 }
 
 export function parseLimit(value) {
@@ -177,6 +271,10 @@ export function deriveTopicInfo(question) {
 
 export function cleanTag(value) {
   return String(value ?? "").trim().replace(/^#/, "").toLowerCase() || null;
+}
+
+function countMatches(value, pattern) {
+  return [...String(value ?? "").matchAll(pattern)].length;
 }
 
 export function imageInfo(question, imageTagsDoc) {

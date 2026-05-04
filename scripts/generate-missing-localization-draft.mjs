@@ -8,9 +8,11 @@ import OpenAI from "openai";
 import {
   BACKFILL_SOURCE,
   backfillPaths,
+  detectWrongLanguage,
   generatedOptionsSkeleton,
   normalizeLang,
   parseLimit,
+  targetLanguageConfig,
 } from "../qbank-tools/lib/missing-localization-backfill.mjs";
 import {
   DEFAULT_DATASET,
@@ -20,26 +22,6 @@ import {
   readJson,
   writeJson,
 } from "../qbank-tools/lib/pipeline.mjs";
-
-const SYSTEM_PROMPT = `
-You translate English driving-test questions into Russian for a localization backfill.
-
-English master is the source of truth.
-
-Non-negotiable rules:
-- Return JSON only.
-- Preserve every qid exactly.
-- Translate into natural, exam-appropriate Russian.
-- Preserve answer logic exactly.
-- Preserve option keys exactly. Do not reorder, remap, rename, or omit options.
-- Preserve all numbers, distances, speed limits, penalties, dates, vehicle categories, road signs, dashboard symbols, and legal thresholds exactly.
-- Do not add details that are not in the English source.
-- For ROW / true-false questions, translate the statement only. Do not add answer options.
-- For MCQ, translate every option text, keyed by the exact option id supplied.
-- If the English explanation is empty, return an empty explanation string.
-- Use consistent Russian driving/legal terminology. If meaning is uncertain, keep a warning rather than guessing.
-- All items still require human review.
-`.trim();
 
 const args = parseArgs();
 const lang = normalizeLang(args.lang);
@@ -140,6 +122,7 @@ async function generateWithOpenAI({ client, model, lang, items, batchSize }) {
 }
 
 async function translateBatch({ client, model, lang, batch }) {
+  const language = targetLanguageConfig(lang);
   const payload = batch.map((item) => ({
     qid: item.qid,
     number: item.number,
@@ -157,10 +140,13 @@ async function translateBatch({ client, model, lang, batch }) {
     englishExplanation: item.englishExplanation ?? "",
   }));
   const prompt = [
-    `Target language: ${lang}`,
+    `Target language code: ${language.code}`,
+    `Target language label: ${language.outputLabel}`,
+    `Target language requirement: translate into ${language.englishName} (${language.nativeName}) only.`,
+    language.scriptInstruction,
     "Translate this batch.",
     "Return this exact JSON shape:",
-    '{ "items": [ { "qid": "q0001", "prompt": "Russian text", "options": { "q0001_o1": "Russian option" }, "explanation": "", "warnings": [] } ] }',
+    `{ "items": [ { "qid": "q0001", "prompt": "${language.textExample}", "options": { "q0001_o1": "${language.optionExample}" }, "explanation": "", "warnings": [] } ] }`,
     "",
     JSON.stringify({ items: payload }, null, 2),
   ].join("\n");
@@ -172,7 +158,7 @@ async function translateBatch({ client, model, lang, batch }) {
         input: [
           {
             role: "system",
-            content: [{ type: "input_text", text: SYSTEM_PROMPT }],
+            content: [{ type: "input_text", text: generationSystemPrompt(language) }],
           },
           {
             role: "user",
@@ -181,7 +167,7 @@ async function translateBatch({ client, model, lang, batch }) {
         ],
       });
       const parsed = parseJsonObject(String(response.output_text ?? "").trim());
-      validateBatchResponse(batch, parsed);
+      validateBatchResponse(batch, parsed, language);
       return parsed;
     } catch (error) {
       if (attempt >= 3) throw error;
@@ -193,7 +179,34 @@ async function translateBatch({ client, model, lang, batch }) {
   throw new Error("Unreachable generation retry state");
 }
 
-function validateBatchResponse(batch, parsed) {
+function generationSystemPrompt(language) {
+  return `
+You translate English driving-test questions for a localization backfill.
+
+Target language: ${language.outputLabel}.
+You must translate into ${language.englishName} (${language.nativeName}) only.
+${language.scriptInstruction}
+
+English master is the source of truth.
+
+Non-negotiable rules:
+- Return JSON only.
+- Preserve every qid exactly.
+- Translate into natural, exam-appropriate ${language.englishName} (${language.nativeName}).
+- Preserve answer logic exactly.
+- Preserve option keys exactly. Do not reorder, remap, rename, or omit options.
+- Preserve all numbers, distances, speed limits, penalties, dates, vehicle categories, road signs, dashboard symbols, and legal thresholds exactly.
+- Do not add details that are not in the English source.
+- For ROW / true-false questions, translate the statement only. Do not add answer options.
+- For MCQ, translate every option text, keyed by the exact option id supplied.
+- If the English explanation is empty, return an empty explanation string.
+- ${language.terminologyInstruction}
+- If meaning is uncertain, keep a warning rather than guessing.
+- All items still require human review.
+`.trim();
+}
+
+function validateBatchResponse(batch, parsed, language) {
   if (!parsed || !Array.isArray(parsed.items)) {
     throw new Error("Response JSON is missing an items array");
   }
@@ -209,7 +222,23 @@ function validateBatchResponse(batch, parsed) {
     if (!expectedQids.has(qid)) {
       throw new Error(`Response included unexpected qid ${qid}`);
     }
+    const textForLanguageCheck = generatedLanguageCheckText(item);
+    const languageCheck = detectWrongLanguage(textForLanguageCheck, language.code);
+    if (languageCheck.wrong) {
+      throw new Error(`Response for ${qid} is in the wrong language: ${languageCheck.reason}`);
+    }
   }
+}
+
+function generatedLanguageCheckText(item) {
+  const optionText = item?.options && typeof item.options === "object"
+    ? Object.values(item.options).join("\n")
+    : "";
+  return [
+    item?.prompt,
+    optionText,
+    item?.explanation,
+  ].map((value) => String(value ?? "").trim()).filter(Boolean).join("\n");
 }
 
 function normalizeGeneratedItem(sourceItem, generated, { provider, model }) {

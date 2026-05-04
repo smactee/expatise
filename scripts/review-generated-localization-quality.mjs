@@ -8,11 +8,13 @@ import OpenAI from "openai";
 import {
   BACKFILL_SOURCE,
   backfillPaths,
+  detectWrongLanguage,
   loadBackfillContext,
   normalizeLang,
   normalizeQid,
   parseLimit,
   questionType,
+  targetLanguageConfig,
   validateDraftItems,
 } from "../qbank-tools/lib/missing-localization-backfill.mjs";
 import {
@@ -24,32 +26,6 @@ import {
   writeJson,
   writeText,
 } from "../qbank-tools/lib/pipeline.mjs";
-
-const SYSTEM_PROMPT = `
-You review Russian translations of Chinese-driving-test-style English master questions.
-
-English master is the source of truth. The Russian translation must preserve exact meaning, answer logic, option ordering, option key mapping, numeric values, signs, penalties, distances, speeds, dates, and image-dependent semantics.
-
-Review standards:
-- prompt meaning matches English
-- all options match English option meanings
-- correct answer logic is preserved
-- option keys are not remapped incorrectly
-- Russian is natural and exam-appropriate
-- traffic/driving/legal terminology is consistent
-- no hallucinated details
-- no missing warnings/explanations when source requires them
-- image-dependent wording is not mistranslated
-- true/false questions remain true/false equivalent
-- numeric values, signs, penalties, distances, speeds, and dates are preserved exactly
-
-Rules:
-- If confidence is below 0.92, qualityStatus must be "needs_fix".
-- If any answer-key logic may be wrong, qualityStatus must be "reject" and answerKeyLogicMayBeWrong must be true.
-- Do not approve ambiguous legal, traffic, penalty, right-of-way, or numeric wording.
-- Do not approve empty or English-only Russian fields.
-- Return JSON only. Do not include markdown.
-`.trim();
 
 const args = parseArgs();
 const lang = normalizeLang(args.lang);
@@ -90,7 +66,7 @@ const reviewItems = client
   ? await reviewWithAi({ client, model, items, context, lang, batchSize })
   : items.map((item) => structuralFallbackReview(item, context, "AI reviewer unavailable; set OPENAI_API_KEY or pass a generated review from a trusted reviewer."));
 
-const normalizedReviews = reviewItems.map((review, index) => normalizeQualityReview(review, items[index], context));
+const normalizedReviews = reviewItems.map((review, index) => normalizeQualityReview(review, items[index], context, lang));
 const reviewedItems = [];
 const needsFixItems = [];
 
@@ -137,6 +113,7 @@ const report = {
     reject: normalizedReviews.filter((review) => review.qualityStatus === "reject").length,
     belowConfidenceThreshold: normalizedReviews.filter((review) => review.confidence < 0.92).length,
     answerKeyLogicRisk: normalizedReviews.filter((review) => review.answerKeyLogicMayBeWrong).length,
+    wrongLanguageRejects: normalizedReviews.filter((review) => review.issues.some((issue) => issue.code === "wrong-language-heuristic")).length,
     preflightErrors: preflight.counts.errorCount,
     preflightWarnings: preflight.counts.warningCount,
   },
@@ -208,8 +185,12 @@ async function reviewWithAi({ client, model, items, context, lang, batchSize }) 
 }
 
 async function reviewBatch({ client, model, lang, payload }) {
+  const language = targetLanguageConfig(lang);
   const userPrompt = [
-    `Target language: ${lang}`,
+    `Target language code: ${language.code}`,
+    `Target language label: ${language.outputLabel}`,
+    `Target language requirement: generated output must be ${language.englishName} (${language.nativeName}) only.`,
+    language.scriptInstruction,
     "Review these generated translations.",
     "Return this exact JSON shape:",
     '{ "reviews": [ { "qid": "q0001", "qualityStatus": "approved|needs_fix|reject", "confidence": 0.0, "answerKeyLogicMayBeWrong": false, "issues": [ { "severity": "warning|error", "code": "short-code", "message": "brief issue" } ], "suggestedFix": { "prompt": "", "options": { "optionId": "" }, "explanation": "" } | null, "reviewerReasoningSummary": "brief auditable summary" } ] }',
@@ -224,7 +205,7 @@ async function reviewBatch({ client, model, lang, payload }) {
         input: [
           {
             role: "system",
-            content: [{ type: "input_text", text: SYSTEM_PROMPT }],
+            content: [{ type: "input_text", text: reviewSystemPrompt(language) }],
           },
           {
             role: "user",
@@ -244,6 +225,39 @@ async function reviewBatch({ client, model, lang, payload }) {
   }
 
   throw new Error("Unreachable review retry state");
+}
+
+function reviewSystemPrompt(language) {
+  return `
+You review generated ${language.englishName} (${language.nativeName}) translations of Chinese-driving-test-style English master questions.
+
+Target language: ${language.outputLabel}.
+Reject any output that is not in ${language.englishName} (${language.nativeName}).
+${language.scriptInstruction}
+
+English master is the source of truth. The generated translation must preserve exact meaning, answer logic, option ordering, option key mapping, numeric values, signs, penalties, distances, speeds, dates, and image-dependent semantics.
+
+Review standards:
+- prompt meaning matches English
+- all options match English option meanings
+- correct answer logic is preserved
+- option keys are not remapped incorrectly
+- ${language.englishName} is natural and exam-appropriate
+- traffic/driving/legal terminology is consistent
+- no hallucinated details
+- no missing warnings/explanations when source requires them
+- image-dependent wording is not mistranslated
+- true/false questions remain true/false equivalent
+- numeric values, signs, penalties, distances, speeds, and dates are preserved exactly
+
+Rules:
+- If the generated text is in the wrong language, qualityStatus must be "reject".
+- If confidence is below 0.92, qualityStatus must be "needs_fix".
+- If any answer-key logic may be wrong, qualityStatus must be "reject" and answerKeyLogicMayBeWrong must be true.
+- Do not approve ambiguous legal, traffic, penalty, right-of-way, or numeric wording.
+- Do not approve empty or English-only fields.
+- Return JSON only. Do not include markdown.
+`.trim();
 }
 
 function reviewPayload(item, context) {
@@ -306,7 +320,7 @@ function structuralFallbackReview(item, context, reason) {
   };
 }
 
-function normalizeQualityReview(review, item, context) {
+function normalizeQualityReview(review, item, context, lang) {
   const qid = normalizeQid(review?.qid ?? item?.qid);
   const master = context.masterByQid.get(qid);
   const issues = Array.isArray(review?.issues)
@@ -324,8 +338,19 @@ function normalizeQualityReview(review, item, context) {
   let qualityStatus = ["approved", "needs_fix", "reject"].includes(review?.qualityStatus)
     ? review.qualityStatus
     : "needs_fix";
+  const languageCheck = detectWrongLanguage(generatedLanguageCheckText(item?.generatedTranslation), lang);
 
-  if (answerKeyLogicMayBeWrong) {
+  if (languageCheck.wrong && !issues.some((issue) => issue.code === "wrong-language-heuristic")) {
+    issues.push({
+      severity: "error",
+      code: "wrong-language-heuristic",
+      message: languageCheck.reason,
+    });
+  }
+
+  if (languageCheck.wrong) {
+    qualityStatus = "reject";
+  } else if (answerKeyLogicMayBeWrong) {
     qualityStatus = "reject";
   } else if (confidence < 0.92 && qualityStatus === "approved") {
     qualityStatus = "needs_fix";
@@ -352,6 +377,18 @@ function normalizeQualityReview(review, item, context) {
     reviewedAt: new Date().toISOString(),
     reviewer: review?.reviewer ?? "ai-localization-quality-review",
   };
+}
+
+function generatedLanguageCheckText(generatedTranslation) {
+  const generated = generatedTranslation && typeof generatedTranslation === "object" ? generatedTranslation : {};
+  const optionText = generated.options && typeof generated.options === "object"
+    ? Object.values(generated.options).join("\n")
+    : "";
+  return [
+    generated.prompt,
+    optionText,
+    generated.explanation,
+  ].map((value) => String(value ?? "").trim()).filter(Boolean).join("\n");
 }
 
 function isAnswerKeyLogicIssue(issue) {
@@ -396,6 +433,7 @@ function renderQualityMarkdown(report) {
     `- Reject: ${report.counts.reject}`,
     `- Below confidence threshold: ${report.counts.belowConfidenceThreshold}`,
     `- Answer-key logic risk: ${report.counts.answerKeyLogicRisk}`,
+    `- Wrong-language heuristic rejects: ${report.counts.wrongLanguageRejects}`,
     `- Production modified: no`,
     "",
     "## Rejected",

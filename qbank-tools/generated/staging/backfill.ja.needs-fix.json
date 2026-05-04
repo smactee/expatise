@@ -1,0 +1,419 @@
+{
+  "meta": {
+    "generatedAt": "2026-05-04T12:14:50.500Z",
+    "source": "english_master_backfill_quality_review",
+    "lang": "ja",
+    "dataset": "2023-test1",
+    "inputPath": "qbank-tools/generated/staging/backfill.ja.generated-draft.json",
+    "productionModified": false,
+    "count": 4
+  },
+  "items": [
+    {
+      "qid": "q0941",
+      "number": 941,
+      "source": "english_master_backfill",
+      "lang": "ja",
+      "type": "row",
+      "topic": "traffic-signs",
+      "subtopic": null,
+      "tags": {
+        "auto": [
+          "#row",
+          "#pic",
+          "#traffic-signs"
+        ],
+        "user": [],
+        "suggested": []
+      },
+      "image": "/qbank/2023-test1/images/img_202fa65ccd184f6a69410d9f87c5d587.jpeg",
+      "imageAssets": [
+        "/qbank/2023-test1/images/img_202fa65ccd184f6a69410d9f87c5d587.jpeg"
+      ],
+      "imageTags": {
+        "assetSrcs": [
+          "/qbank/2023-test1/images/img_202fa65ccd184f6a69410d9f87c5d587.jpeg"
+        ],
+        "colorTags": [
+          "yellow",
+          "white"
+        ],
+        "objectTags": [],
+        "dominantByAsset": [
+          {
+            "assetSrc": "/qbank/2023-test1/images/img_202fa65ccd184f6a69410d9f87c5d587.jpeg",
+            "colors": [
+              {
+                "color": "yellow",
+                "overallShare": 0.409,
+                "chromaticShare": 0.901
+              },
+              {
+                "color": "white",
+                "overallShare": 0.345,
+                "chromaticShare": null
+              },
+              {
+                "color": "black",
+                "overallShare": 0.176,
+                "chromaticShare": null
+              },
+              {
+                "color": "gray",
+                "overallShare": 0.026,
+                "chromaticShare": null
+              }
+            ]
+          }
+        ]
+      },
+      "objectTags": [],
+      "englishPrompt": "This sign reminds the road in front changes to inseparate two ways section.",
+      "englishOptions": [],
+      "englishExplanation": "",
+      "correctOptionKey": "Right",
+      "generatedTranslation": {
+        "prompt": "この標識は、前方の道路が対面通行（二方向通行）に変わることを示している。",
+        "options": {},
+        "explanation": ""
+      },
+      "generationStatus": "generated",
+      "generationProvider": "openai",
+      "generationModel": "gpt-5-mini",
+      "needsHumanReview": true,
+      "reviewStatus": "needs_fix",
+      "warnings": [
+        "原文の表現（意味）が不明瞭なため要確認。"
+      ],
+      "qualityReview": {
+        "qid": "q0941",
+        "number": 941,
+        "qualityStatus": "needs_fix",
+        "confidence": 0.89,
+        "answerKeyLogicMayBeWrong": false,
+        "issues": [
+          {
+            "severity": "error",
+            "code": "ambiguous-source",
+            "message": "英語原文の 'inseparate two ways section' が不明瞭で解釈によって意味が変わる可能性があります。翻訳は推測に基づいています。"
+          }
+        ],
+        "suggestedFix": {
+          "prompt": "英語原文の意図を確認してください。'inseparate two ways section' は「前方が対面通行（両方向通行）になる」または「車線が分離された両方向区間になる」のどちらを意味しますか？明確化後、以下のいずれかの翻訳を採用してください。",
+          "options": {
+            "optionId": ""
+          },
+          "explanation": "原文が曖昧なため、現行訳は推測で「前方が対面通行（両方向通行）になる」としました。英語の意図を確認してから最終訳を確定してください。"
+        },
+        "reviewerReasoningSummary": "英語原文があいまいであり、訳文は解釈に基づいているため確定できない。原文の意図確認を要請（翻訳の再確認が必要）。",
+        "reviewedAt": "2026-05-04T12:14:50.499Z",
+        "reviewer": "ai-localization-quality-review"
+      }
+    },
+    {
+      "qid": "q0948",
+      "number": 948,
+      "source": "english_master_backfill",
+      "lang": "ja",
+      "type": "row",
+      "topic": "traffic-signs",
+      "subtopic": null,
+      "tags": {
+        "auto": [
+          "#row",
+          "#pic",
+          "#traffic-signs"
+        ],
+        "user": [],
+        "suggested": []
+      },
+      "image": "/qbank/2023-test1/images/img_c0fab6145de469ca9ce59f22949c3ad5.jpeg",
+      "imageAssets": [
+        "/qbank/2023-test1/images/img_c0fab6145de469ca9ce59f22949c3ad5.jpeg"
+      ],
+      "imageTags": {
+        "assetSrcs": [
+          "/qbank/2023-test1/images/img_c0fab6145de469ca9ce59f22949c3ad5.jpeg"
+        ],
+        "colorTags": [
+          "yellow",
+          "white"
+        ],
+        "objectTags": [],
+        "dominantByAsset": [
+          {
+            "assetSrc": "/qbank/2023-test1/images/img_c0fab6145de469ca9ce59f22949c3ad5.jpeg",
+            "colors": [
+              {
+                "color": "white",
+                "overallShare": 0.414,
+                "chromaticShare": null
+              },
+              {
+                "color": "yellow",
+                "overallShare": 0.269,
+                "chromaticShare": 0.84
+              },
+              {
+                "color": "black",
+                "overallShare": 0.241,
+                "chromaticShare": null
+              },
+              {
+                "color": "green",
+                "overallShare": 0.027,
+                "chromaticShare": 0.083
+              }
+            ]
+          }
+        ]
+      },
+      "objectTags": [],
+      "englishPrompt": "This sign reminds embankment road ahead.",
+      "englishOptions": [],
+      "englishExplanation": "",
+      "correctOptionKey": "Wrong",
+      "generatedTranslation": {
+        "prompt": "この標識は、前方の道路が堤防上を通っていることを示している。",
+        "options": {},
+        "explanation": ""
+      },
+      "generationStatus": "generated",
+      "generationProvider": "openai",
+      "generationModel": "gpt-5-mini",
+      "needsHumanReview": true,
+      "reviewStatus": "needs_fix",
+      "warnings": [
+        "意味が不明瞭です。翻訳を確認してください。"
+      ],
+      "qualityReview": {
+        "qid": "q0948",
+        "number": 948,
+        "qualityStatus": "needs_fix",
+        "confidence": 0.94,
+        "answerKeyLogicMayBeWrong": false,
+        "issues": [
+          {
+            "severity": "warning",
+            "code": "意味不明",
+            "message": "原文の英語がやや不自然であるため、日本語訳も解釈によって異なる可能性があります。より明確な表現に改善してください。"
+          }
+        ],
+        "suggestedFix": {
+          "prompt": "原文の意図を明確にするため、以下のように訳すことを提案します：\"この標識は、前方の道路が堤防の上を通っていることを示しています。\"",
+          "options": {
+            "optionId": ""
+          },
+          "explanation": "「堤防上を通っている」という表現で原文の意味（embankment road の路面位置）を明確にし、自然な日本語に整えます。"
+        },
+        "reviewerReasoningSummary": "訳は大筋で原文に沿っているが、英語原文自体の曖昧さのため日本語表現を明確化する余地あり。意図通りなら上記の改定が望ましい。",
+        "reviewedAt": "2026-05-04T12:14:50.499Z",
+        "reviewer": "ai-localization-quality-review"
+      }
+    },
+    {
+      "qid": "q0950",
+      "number": 950,
+      "source": "english_master_backfill",
+      "lang": "ja",
+      "type": "row",
+      "topic": "traffic-signs",
+      "subtopic": null,
+      "tags": {
+        "auto": [
+          "#row",
+          "#pic",
+          "#traffic-signs"
+        ],
+        "user": [],
+        "suggested": []
+      },
+      "image": "/qbank/2023-test1/images/img_ebdab5a297a869a623ae35af37a53b89.jpeg",
+      "imageAssets": [
+        "/qbank/2023-test1/images/img_ebdab5a297a869a623ae35af37a53b89.jpeg"
+      ],
+      "imageTags": {
+        "assetSrcs": [
+          "/qbank/2023-test1/images/img_ebdab5a297a869a623ae35af37a53b89.jpeg"
+        ],
+        "colorTags": [
+          "yellow",
+          "white"
+        ],
+        "objectTags": [],
+        "dominantByAsset": [
+          {
+            "assetSrc": "/qbank/2023-test1/images/img_ebdab5a297a869a623ae35af37a53b89.jpeg",
+            "colors": [
+              {
+                "color": "white",
+                "overallShare": 0.481,
+                "chromaticShare": null
+              },
+              {
+                "color": "yellow",
+                "overallShare": 0.281,
+                "chromaticShare": 0.855
+              },
+              {
+                "color": "black",
+                "overallShare": 0.171,
+                "chromaticShare": null
+              },
+              {
+                "color": "brown",
+                "overallShare": 0.023,
+                "chromaticShare": 0.068
+              }
+            ]
+          }
+        ]
+      },
+      "objectTags": [],
+      "englishPrompt": "This sign reminds there is a one-way and poor lighting culvert ahead.",
+      "englishOptions": [],
+      "englishExplanation": "",
+      "correctOptionKey": "Wrong",
+      "generatedTranslation": {
+        "prompt": "この標識は、前方に照明が不十分な一方通行のカルバートがあることを示している。",
+        "options": {},
+        "explanation": ""
+      },
+      "generationStatus": "generated",
+      "generationProvider": "openai",
+      "generationModel": "gpt-5-mini",
+      "needsHumanReview": true,
+      "reviewStatus": "needs_fix",
+      "warnings": [
+        "意味が不明瞭です。翻訳を確認してください。"
+      ],
+      "qualityReview": {
+        "qid": "q0950",
+        "number": 950,
+        "qualityStatus": "needs_fix",
+        "confidence": 0.94,
+        "answerKeyLogicMayBeWrong": false,
+        "issues": [
+          {
+            "severity": "warning",
+            "code": "意味不明",
+            "message": "原文の英語（one-way and poor lighting culvert）がやや不明瞭で、適切な日本語専門用語の選択を検討してください。"
+          }
+        ],
+        "suggestedFix": {
+          "prompt": "より自然にするなら次の訳を検討してください：\"この標識は、前方に照明が不十分な片側通行のカルバートがあることを示しています。\"",
+          "options": {
+            "optionId": ""
+          },
+          "explanation": "「片側通行の」や「照明が不十分な」を明確に並べることで、日本語として読みやすくなります。原文の意味を変えない表現です。"
+        },
+        "reviewerReasoningSummary": "訳は原文の意味を概ね保っているが、専門用語（カルバート等）や「one-way」の解釈に幅があるため、表現の明確化を推奨。",
+        "reviewedAt": "2026-05-04T12:14:50.499Z",
+        "reviewer": "ai-localization-quality-review"
+      }
+    },
+    {
+      "qid": "q0957",
+      "number": 957,
+      "source": "english_master_backfill",
+      "lang": "ja",
+      "type": "row",
+      "topic": "traffic-signs",
+      "subtopic": null,
+      "tags": {
+        "auto": [
+          "#row",
+          "#pic",
+          "#traffic-signs"
+        ],
+        "user": [],
+        "suggested": []
+      },
+      "image": "/qbank/2023-test1/images/img_ba11b71c86e32561eeeba6ef635cfdf8.jpeg",
+      "imageAssets": [
+        "/qbank/2023-test1/images/img_ba11b71c86e32561eeeba6ef635cfdf8.jpeg"
+      ],
+      "imageTags": {
+        "assetSrcs": [
+          "/qbank/2023-test1/images/img_ba11b71c86e32561eeeba6ef635cfdf8.jpeg"
+        ],
+        "colorTags": [
+          "yellow",
+          "white"
+        ],
+        "objectTags": [
+          "bicycle"
+        ],
+        "dominantByAsset": [
+          {
+            "assetSrc": "/qbank/2023-test1/images/img_ba11b71c86e32561eeeba6ef635cfdf8.jpeg",
+            "colors": [
+              {
+                "color": "yellow",
+                "overallShare": 0.4,
+                "chromaticShare": 0.859
+              },
+              {
+                "color": "white",
+                "overallShare": 0.367,
+                "chromaticShare": null
+              },
+              {
+                "color": "black",
+                "overallShare": 0.152,
+                "chromaticShare": null
+              },
+              {
+                "color": "green",
+                "overallShare": 0.036,
+                "chromaticShare": 0.078
+              }
+            ]
+          }
+        ]
+      },
+      "objectTags": [
+        "bicycle"
+      ],
+      "englishPrompt": "This sign reminds the lane for non-vehicles ahead.",
+      "englishOptions": [],
+      "englishExplanation": "",
+      "correctOptionKey": "Wrong",
+      "generatedTranslation": {
+        "prompt": "この標識は前方に自動車以外の車両用の車線があることを示している。",
+        "options": {},
+        "explanation": ""
+      },
+      "generationStatus": "generated",
+      "generationProvider": "openai",
+      "generationModel": "gpt-5-mini",
+      "needsHumanReview": true,
+      "reviewStatus": "needs_fix",
+      "warnings": [],
+      "qualityReview": {
+        "qid": "q0957",
+        "number": 957,
+        "qualityStatus": "needs_fix",
+        "confidence": 0.86,
+        "answerKeyLogicMayBeWrong": false,
+        "issues": [
+          {
+            "severity": "warning",
+            "code": "ambiguous-term",
+            "message": "英語の 'non-vehicles' が曖昧です。訳文では「自動車以外の車両」としていますが、意図は『非自動車（例：自転車）用の車線』か『歩行者等を含む別の意味』か不明です。"
+          }
+        ],
+        "suggestedFix": {
+          "prompt": "この標識は前方に自転車などの非自動車用の車線があることを示している。",
+          "options": {
+            "optionId": ""
+          },
+          "explanation": "原文の 'non-vehicles' は曖昧なので、日本語では「自転車などの非自動車」と明示して意味を明確化しました。"
+        },
+        "reviewerReasoningSummary": "訳文は日本語で自然ですが、原文の 'non-vehicles' が曖昧なため意味を明確化する必要があります。",
+        "reviewedAt": "2026-05-04T12:14:50.500Z",
+        "reviewer": "ai-localization-quality-review"
+      }
+    }
+  ]
+}

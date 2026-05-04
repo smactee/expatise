@@ -1,6 +1,6 @@
 # QBank Integrity Audit
 
-Generated: 2026-05-04T11:24:33.080Z
+Generated: 2026-05-04T14:19:26.903Z
 
 ## Executive Summary
 
@@ -8,7 +8,7 @@ Generated: 2026-05-04T11:24:33.080Z
 - Raw qids: 985
 - Translation languages audited: 3
 - Critical blockers: 0
-- Warnings: 757
+- Warnings: 724
 - Duplicate candidates: 25
 
 ## Critical Blockers
@@ -20,42 +20,10 @@ None.
 | type | qid | reason |
 | --- | --- | --- |
 | raw-only-qid | q0518 | qid exists in questions.raw.json but not questions.json |
-| translation-missing-qid | q0937 | ja: missing production translation |
-| translation-missing-qid | q0938 | ja: missing production translation |
-| translation-missing-qid | q0939 | ja: missing production translation |
-| translation-missing-qid | q0940 | ja: missing production translation |
 | translation-missing-qid | q0941 | ja: missing production translation |
-| translation-missing-qid | q0942 | ja: missing production translation |
-| translation-missing-qid | q0943 | ja: missing production translation |
-| translation-missing-qid | q0944 | ja: missing production translation |
-| translation-missing-qid | q0945 | ja: missing production translation |
-| translation-missing-qid | q0946 | ja: missing production translation |
-| translation-missing-qid | q0947 | ja: missing production translation |
 | translation-missing-qid | q0948 | ja: missing production translation |
-| translation-missing-qid | q0949 | ja: missing production translation |
 | translation-missing-qid | q0950 | ja: missing production translation |
-| translation-missing-qid | q0951 | ja: missing production translation |
-| translation-missing-qid | q0952 | ja: missing production translation |
-| translation-missing-qid | q0953 | ja: missing production translation |
-| translation-missing-qid | q0954 | ja: missing production translation |
-| translation-missing-qid | q0955 | ja: missing production translation |
-| translation-missing-qid | q0956 | ja: missing production translation |
 | translation-missing-qid | q0957 | ja: missing production translation |
-| translation-missing-qid | q0959 | ja: missing production translation |
-| translation-missing-qid | q0960 | ja: missing production translation |
-| translation-missing-qid | q0961 | ja: missing production translation |
-| translation-missing-qid | q0962 | ja: missing production translation |
-| translation-missing-qid | q0963 | ja: missing production translation |
-| translation-missing-qid | q0964 | ja: missing production translation |
-| translation-missing-qid | q0965 | ja: missing production translation |
-| translation-missing-qid | q0966 | ja: missing production translation |
-| translation-missing-qid | q0967 | ja: missing production translation |
-| translation-missing-qid | q0968 | ja: missing production translation |
-| translation-missing-qid | q0969 | ja: missing production translation |
-| translation-missing-qid | q0970 | ja: missing production translation |
-| translation-missing-qid | q0971 | ja: missing production translation |
-| translation-missing-qid | q0972 | ja: missing production translation |
-| translation-missing-qid | q0973 | ja: missing production translation |
 | translation-extra-qid | q0518 | ja: translation qid is not in questions.json |
 | translation-extra-qid | q0518 | ko: translation qid is not in questions.json |
 | translation-mcq-missing-locale-answer-key | q0364 | ko: translated MCQ has no localeCorrectOptionKey |
@@ -119,14 +87,46 @@ None.
 | translation-mcq-missing-locale-answer-key | q0377 | ko: translated MCQ has no localeCorrectOptionKey |
 | translation-mcq-missing-locale-answer-key | q0379 | ko: translated MCQ has no localeCorrectOptionKey |
 | translation-mcq-missing-locale-answer-key | q0381 | ko: translated MCQ has no localeCorrectOptionKey |
+| translation-mcq-missing-locale-answer-key | q0382 | ko: translated MCQ has no localeCorrectOptionKey |
+| translation-mcq-missing-locale-answer-key | q0383 | ko: translated MCQ has no localeCorrectOptionKey |
+| translation-mcq-missing-locale-answer-key | q0384 | ko: translated MCQ has no localeCorrectOptionKey |
+| translation-mcq-missing-locale-answer-key | q0385 | ko: translated MCQ has no localeCorrectOptionKey |
+| translation-mcq-missing-locale-answer-key | q0386 | ko: translated MCQ has no localeCorrectOptionKey |
+| translation-mcq-missing-locale-answer-key | q0387 | ko: translated MCQ has no localeCorrectOptionKey |
+| translation-mcq-missing-locale-answer-key | q0388 | ko: translated MCQ has no localeCorrectOptionKey |
+| translation-mcq-missing-locale-answer-key | q0389 | ko: translated MCQ has no localeCorrectOptionKey |
+| translation-mcq-missing-locale-answer-key | q0392 | ko: translated MCQ has no localeCorrectOptionKey |
+| translation-mcq-missing-locale-answer-key | q0393 | ko: translated MCQ has no localeCorrectOptionKey |
+| translation-mcq-missing-locale-answer-key | q0394 | ko: translated MCQ has no localeCorrectOptionKey |
+| translation-mcq-missing-locale-answer-key | q0404 | ko: translated MCQ has no localeCorrectOptionKey |
+| translation-mcq-missing-locale-answer-key | q0405 | ko: translated MCQ has no localeCorrectOptionKey |
+| translation-mcq-missing-locale-answer-key | q0577 | ko: translated MCQ has no localeCorrectOptionKey |
+| translation-mcq-missing-locale-answer-key | q0581 | ko: translated MCQ has no localeCorrectOptionKey |
+| translation-mcq-missing-locale-answer-key | q0582 | ko: translated MCQ has no localeCorrectOptionKey |
+| translation-mcq-missing-locale-answer-key | q0585 | ko: translated MCQ has no localeCorrectOptionKey |
+| translation-mcq-missing-locale-answer-key | q0587 | ko: translated MCQ has no localeCorrectOptionKey |
+| translation-mcq-missing-locale-answer-key | q0588 | ko: translated MCQ has no localeCorrectOptionKey |
+| translation-mcq-missing-locale-answer-key | q0590 | ko: translated MCQ has no localeCorrectOptionKey |
+| translation-mcq-missing-locale-answer-key | q0592 | ko: translated MCQ has no localeCorrectOptionKey |
+| translation-mcq-missing-locale-answer-key | q0593 | ko: translated MCQ has no localeCorrectOptionKey |
+| translation-mcq-missing-locale-answer-key | q0595 | ko: translated MCQ has no localeCorrectOptionKey |
+| translation-mcq-missing-locale-answer-key | q0597 | ko: translated MCQ has no localeCorrectOptionKey |
+| translation-mcq-missing-locale-answer-key | q0598 | ko: translated MCQ has no localeCorrectOptionKey |
+| translation-mcq-missing-locale-answer-key | q0599 | ko: translated MCQ has no localeCorrectOptionKey |
+| translation-mcq-missing-locale-answer-key | q0132 | ko: translated MCQ has no localeCorrectOptionKey |
+| translation-mcq-missing-locale-answer-key | q0133 | ko: translated MCQ has no localeCorrectOptionKey |
+| translation-mcq-missing-locale-answer-key | q0134 | ko: translated MCQ has no localeCorrectOptionKey |
+| translation-mcq-missing-locale-answer-key | q0135 | ko: translated MCQ has no localeCorrectOptionKey |
+| translation-mcq-missing-locale-answer-key | q0136 | ko: translated MCQ has no localeCorrectOptionKey |
+| translation-mcq-missing-locale-answer-key | q0137 | ko: translated MCQ has no localeCorrectOptionKey |
 
-_Warning table truncated to 100 of 757._
+_Warning table truncated to 100 of 724._
 
 ## Language Coverage
 
 | lang | translated | coverage | missing | extra | invalidLocaleKeys | rowMcqKeys |
 | --- | --- | --- | --- | --- | --- | --- |
-| ja | 949 | 96.44% | 36 | 1 | 0 | 0 |
+| ja | 981 | 99.7% | 4 | 1 | 0 | 0 |
 | ko | 985 | 100.1% | 0 | 1 | 0 | 0 |
 | ru | 984 | 100% | 0 | 0 | 0 | 0 |
 
@@ -162,7 +162,6 @@ None.
 | medium | q0660, q0847 | D | What’s the meaning of this sign? |
 | medium | q0664, q0684, q0753, q0767, q0780, q0788, q0797, q0855, q0898 | B | What’s the meaning of this sign? |
 | medium | q0665, q0736, q0747, q0766, q0792, q0866 | C | What’s the meaning of this sign? |
-| medium | q0669, q0670, q0817, q0878 | D | What’s the meaning of this sign? |
 | medium | q0677, q0727, q0806 | C | This set of the hand signals of the traffic police indicates that the vehicles should ____ . |
 | medium | q0679, q0694, q0740, q0770, q0782, q0787, q0796, q0868, q0872 | A | What’s the meaning of this sign? |
 | medium | q0683, q0719, q0769 | B | What’s the meaning of this sign? |
@@ -173,6 +172,7 @@ None.
 | medium | q0741, q0798, q0800, q0815, q0854, q0892 | A | What’s the meaning of this sign? |
 | medium | q0772, q0825 | C | What’s the meaning of this sign? |
 | medium | q0776, q0848 | C | What’s the meaning of this guide arrow? |
+| medium | q0817, q0878 | D | What’s the meaning of this sign? |
 | medium | q0838, q0845 | D | What’s the meaning of this sign? |
 
 ## Image Asset Issues
@@ -187,7 +187,7 @@ None.
 - image-color-tags qids not in master: 0
 - image questions missing image tags: 0
 - questions without images but with image tags: 0
-- image questions missing objectTags: 127
+- image questions missing objectTags: 126
 
 ## Recommended Next Actions
 
