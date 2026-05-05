@@ -43,7 +43,8 @@ const output = {
   },
   counts: {
     masterQids: context.masterQuestions.length,
-    productionTranslations: context.translationQids.size,
+    productionTranslations: (context.productionTranslationQids ?? context.translationQids).size,
+    autoPropagationPlaceholders: context.placeholderQids?.size ?? 0,
     missingQids: context.missingQids.length,
     emittedItems: items.length,
   },

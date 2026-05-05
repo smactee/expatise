@@ -907,13 +907,15 @@ async function writeCandidateThumbnails(results) {
         .slice(0, 16);
       const fileName = `${result.qid}-rank${candidate.rank}-${key}.jpeg`;
       const outputPath = path.join(WORKBENCH_ASSETS_DIR, fileName);
-      await sharp(candidate.screenshotAbsolutePath, { limitInputPixels: false })
+      const previewInfo = await sharp(candidate.screenshotAbsolutePath, { limitInputPixels: false })
         .rotate()
         .extract(normalizeCrop(candidate.crop, cropToMetadata(candidate.crop)))
         .resize({ width: 360, withoutEnlargement: true })
         .jpeg({ quality: 88, mozjpeg: true })
         .toFile(outputPath);
       candidate.thumbnailPath = relativePath(outputPath);
+      candidate.previewWidth = previewInfo.width ?? null;
+      candidate.previewHeight = previewInfo.height ?? null;
     }
   }
 }
@@ -957,6 +959,8 @@ function serializeResult(result) {
       candidateDescriptor: candidate.candidateDescriptor,
       screenshotWidth: candidate.screenshotWidth,
       screenshotHeight: candidate.screenshotHeight,
+      previewWidth: candidate.previewWidth ?? null,
+      previewHeight: candidate.previewHeight ?? null,
     })),
   };
 }
@@ -980,6 +984,8 @@ function roundCrop(crop) {
 function buildHtml(workbench, { htmlPath, jsonPath }) {
   const rows = workbench.results.map((result) => buildResultSection(result, htmlPath)).join("\n");
   const jsonRelativePath = path.relative(path.dirname(htmlPath), jsonPath).split(path.sep).join("/");
+  const storageKey = `image-replacement-workbench:${workbench.dataset}:${workbench.qids.join(",")}`;
+  const exportFileName = `image-replacement-decisions-${workbench.dataset}.json`;
 
   return `<!doctype html>
 <html lang="en">
@@ -999,6 +1005,8 @@ function buildHtml(workbench, { htmlPath, jsonPath }) {
       --warn: #b45309;
       --bad: #b91c1c;
       --good: #047857;
+      --selected: #2563eb;
+      --selected-bg: #eff6ff;
     }
     body {
       margin: 0;
@@ -1032,13 +1040,42 @@ function buildHtml(workbench, { htmlPath, jsonPath }) {
       align-items: center;
       margin-top: 12px;
     }
-    input, select {
+    button, input, select, textarea {
       border: 1px solid var(--line);
       border-radius: 6px;
       background: #fff;
       color: var(--ink);
       font: inherit;
       padding: 8px 10px;
+    }
+    button {
+      cursor: pointer;
+      font-weight: 650;
+    }
+    button.primary {
+      border-color: #0f766e;
+      background: #0f766e;
+      color: #fff;
+    }
+    button.secondary {
+      background: #f8fafc;
+    }
+    button.danger {
+      border-color: #fecaca;
+      background: #fef2f2;
+      color: var(--bad);
+    }
+    button.selected {
+      border-color: var(--selected);
+      background: var(--selected-bg);
+      color: #1d4ed8;
+      box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.18);
+    }
+    textarea {
+      width: 100%;
+      min-height: 70px;
+      resize: vertical;
+      box-sizing: border-box;
     }
     main {
       padding: 20px 24px 36px;
@@ -1098,6 +1135,25 @@ function buildHtml(workbench, { htmlPath, jsonPath }) {
       gap: 16px;
       padding: 16px;
     }
+    .decision-panel {
+      border-top: 1px solid var(--line);
+      display: grid;
+      grid-template-columns: 1fr minmax(220px, 360px);
+      gap: 16px;
+      padding: 14px 16px 16px;
+      background: #fbfdff;
+    }
+    .decision-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+    .decision-state {
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 8px;
+    }
     .current img, .candidate img {
       display: block;
       max-width: 100%;
@@ -1123,6 +1179,35 @@ function buildHtml(workbench, { htmlPath, jsonPath }) {
       padding: 10px;
       background: #fff;
       min-width: 0;
+      cursor: pointer;
+      outline: none;
+      position: relative;
+      transition: border-color 120ms ease, box-shadow 120ms ease, background 120ms ease;
+    }
+    .candidate:hover {
+      border-color: #94a3b8;
+      box-shadow: 0 1px 10px rgba(15, 23, 42, 0.08);
+    }
+    .candidate.selected {
+      border: 3px solid var(--selected);
+      background: var(--selected-bg);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.18);
+      padding: 8px;
+    }
+    .candidate .selected-label {
+      display: none;
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      border-radius: 999px;
+      background: #1d4ed8;
+      color: #fff;
+      font-size: 12px;
+      font-weight: 800;
+      padding: 4px 8px;
+    }
+    .candidate.selected .selected-label {
+      display: inline-flex;
     }
     .candidate h3 {
       margin: 0 0 8px;
@@ -1135,9 +1220,26 @@ function buildHtml(workbench, { htmlPath, jsonPath }) {
       overflow-wrap: anywhere;
     }
     a { color: #0f766e; }
+    .export-status {
+      margin-top: 10px;
+      border: 1px solid #bfdbfe;
+      background: #eff6ff;
+      color: #1e3a8a;
+      border-radius: 8px;
+      padding: 10px 12px;
+      font-size: 13px;
+    }
+    .page-end {
+      margin-top: 22px;
+      padding: 16px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+    }
     .hidden { display: none; }
     @media (max-width: 760px) {
       .qid-body { grid-template-columns: 1fr; }
+      .decision-panel { grid-template-columns: 1fr; }
       header, main { padding-left: 14px; padding-right: 14px; }
     }
   </style>
@@ -1149,51 +1251,378 @@ function buildHtml(workbench, { htmlPath, jsonPath }) {
       Generated ${escapeHtml(workbench.generatedAt)} · dataset <code>${escapeHtml(workbench.dataset)}</code> · scanned ${workbench.screenshotsScanned} screenshots ·
       JSON <a href="${escapeAttribute(jsonRelativePath)}">${escapeHtml(jsonRelativePath)}</a>
     </div>
+    <div class="meta">
+      Clicking a candidate card automatically approves it. Use Needs manual search, Disregard, or Unsure to override.
+    </div>
     <div class="toolbar">
       <input id="search" type="search" placeholder="Filter qid or path">
-      <select id="status">
-        <option value="">All statuses</option>
+      <select id="decision-filter">
+        <option value="all">All decisions</option>
+        <option value="approve">Approve</option>
         <option value="needsManualSearch">Needs manual search</option>
-        <option value="lowConfidence">Low confidence</option>
-        <option value="mediumConfidence">Medium confidence</option>
-        <option value="highConfidence">High confidence</option>
+        <option value="disregard">Disregard / no replacement</option>
+        <option value="unsure">Unsure</option>
+        <option value="undecided">Undecided</option>
       </select>
+      <button type="button" class="primary export-decisions">Export Decisions JSON</button>
+      <button type="button" class="danger" id="clear-saved-decisions">Clear saved decisions</button>
     </div>
+    <div class="export-status" id="export-status" role="status" aria-live="polite" hidden></div>
   </header>
   <main>
-    <section class="summary">
-      ${summaryStat("Total", workbench.counts.total)}
-      ${summaryStat("Needs manual", workbench.counts.needsManualSearch)}
-      ${summaryStat("High", workbench.counts.highConfidence)}
-      ${summaryStat("Medium", workbench.counts.mediumConfidence)}
-      ${summaryStat("Low", workbench.counts.lowConfidence)}
-      ${summaryStat("Missing/errored", workbench.counts.missingOrErrored)}
+    <section class="summary" id="decision-summary">
+      ${summaryStat("Total", workbench.counts.total, "summary-total")}
+      ${summaryStat("Approved", 0, "summary-approve")}
+      ${summaryStat("Needs manual", 0, "summary-needsManualSearch")}
+      ${summaryStat("Disregard", 0, "summary-disregard")}
+      ${summaryStat("Unsure", 0, "summary-unsure")}
+      ${summaryStat("Undecided", workbench.counts.total, "summary-undecided")}
     </section>
     ${rows}
+    <section class="page-end">
+      <div class="toolbar">
+        <button type="button" class="primary export-decisions">Export Decisions JSON</button>
+        <span class="small">Downloads <code>${escapeHtml(exportFileName)}</code>. Saved review state key: <code>${escapeHtml(storageKey)}</code></span>
+      </div>
+    </section>
   </main>
   <script>
+    const WORKBENCH = ${serializeJsonForInlineScript(workbench)};
+    const RESULTS_BY_QID = new Map(WORKBENCH.results.map((result) => [result.qid, result]));
+    const STORAGE_KEY = ${JSON.stringify(storageKey)};
+    const EXPORT_FILE_NAME = ${JSON.stringify(exportFileName)};
     const searchInput = document.getElementById("search");
-    const statusSelect = document.getElementById("status");
+    const decisionFilter = document.getElementById("decision-filter");
+    const exportStatus = document.getElementById("export-status");
+    const DECISIONS = ["approve", "needsManualSearch", "disregard", "unsure", "undecided"];
+
+    function clone(value) {
+      return JSON.parse(JSON.stringify(value));
+    }
+
+    function baseState() {
+      const state = {};
+      for (const result of WORKBENCH.results) {
+        state[result.qid] = {
+          decision: "undecided",
+          selectedCandidateIndex: null,
+          notes: "",
+        };
+      }
+      return state;
+    }
+
+    function normalizeDecision(value) {
+      return DECISIONS.includes(value) ? value : "undecided";
+    }
+
+    function loadState() {
+      const fallback = baseState();
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) {
+          return fallback;
+        }
+        const parsed = JSON.parse(raw);
+        const source = parsed && typeof parsed === "object" && parsed.decisions && typeof parsed.decisions === "object"
+          ? parsed.decisions
+          : parsed;
+        for (const qid of WORKBENCH.qids) {
+          const stored = source?.[qid] || {};
+          const legacySelectedCandidate =
+            stored.selectedCandidateIndex ??
+            stored.candidateIndex ??
+            stored.selectedCandidate?.rank ??
+            stored.selectedCandidate;
+          const selectedCandidateIndex = Number.isFinite(Number(legacySelectedCandidate))
+            ? Number(legacySelectedCandidate)
+            : null;
+          const decision = normalizeDecision(stored.decision);
+          fallback[qid] = {
+            decision: selectedCandidateIndex && decision === "undecided" ? "approve" : decision,
+            selectedCandidateIndex,
+            notes: String(stored.notes ?? ""),
+          };
+        }
+        return fallback;
+      } catch {
+        return fallback;
+      }
+    }
+
+    let state = loadState();
+
+    function saveState() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+
+    function getState(qid) {
+      if (!state[qid]) {
+        state[qid] = { decision: "undecided", selectedCandidateIndex: null, notes: "" };
+      }
+      return state[qid];
+    }
+
+    function setExportStatus(message) {
+      const text = String(message ?? "").trim();
+      exportStatus.textContent = text;
+      exportStatus.hidden = !text;
+    }
+
+    function countDecisions() {
+      const counts = {
+        approve: 0,
+        needsManualSearch: 0,
+        disregard: 0,
+        unsure: 0,
+        undecided: 0,
+      };
+      for (const qid of WORKBENCH.qids) {
+        counts[normalizeDecision(getState(qid).decision)] += 1;
+      }
+      return counts;
+    }
+
+    function updateSummary() {
+      const counts = countDecisions();
+      for (const key of Object.keys(counts)) {
+        const element = document.getElementById("summary-" + key);
+        if (element) {
+          element.textContent = String(counts[key]);
+        }
+      }
+    }
+
+    function updateRow(qid) {
+      const row = document.querySelector("[data-qid=" + JSON.stringify(qid) + "]");
+      if (!row) {
+        return;
+      }
+      const qidState = getState(qid);
+      row.dataset.reviewDecision = normalizeDecision(qidState.decision);
+      row.querySelectorAll(".candidate").forEach((card) => {
+        const candidateIndex = Number(card.dataset.candidateIndex);
+        card.classList.toggle("selected", candidateIndex === Number(qidState.selectedCandidateIndex));
+      });
+      row.querySelectorAll("[data-decision]").forEach((button) => {
+        button.classList.toggle("selected", button.dataset.decision === qidState.decision);
+      });
+      const label = row.querySelector("[data-decision-label]");
+      if (label) {
+        const selected = qidState.selectedCandidateIndex ? " · selected candidate #" + qidState.selectedCandidateIndex : "";
+        label.textContent = "Decision: " + normalizeDecision(qidState.decision) + selected;
+      }
+      const notes = row.querySelector("[data-notes]");
+      if (notes && notes.value !== qidState.notes) {
+        notes.value = qidState.notes;
+      }
+    }
+
+    function selectCandidate(qid, candidateIndex) {
+      const qidState = getState(qid);
+      qidState.selectedCandidateIndex = Number(candidateIndex);
+      qidState.decision = "approve";
+      saveState();
+      updateRow(qid);
+      updateSummary();
+      applyFilters();
+    }
+
+    function setDecision(qid, decision) {
+      const qidState = getState(qid);
+      if (decision === "approve" && !qidState.selectedCandidateIndex) {
+        alert("Select a candidate before approving " + qid + ".");
+        return;
+      }
+      qidState.decision = normalizeDecision(decision);
+      saveState();
+      updateRow(qid);
+      updateSummary();
+      applyFilters();
+    }
+
+    function setNotes(qid, notes) {
+      getState(qid).notes = String(notes ?? "");
+      saveState();
+    }
+
     function applyFilters() {
       const needle = searchInput.value.trim().toLowerCase();
-      const status = statusSelect.value;
+      const decision = decisionFilter.value;
       for (const block of document.querySelectorAll(".qid-block")) {
         const text = block.dataset.search;
         const matchesText = !needle || text.includes(needle);
-        const matchesStatus = !status || block.dataset.status === status;
-        block.classList.toggle("hidden", !(matchesText && matchesStatus));
+        const blockDecision = block.dataset.reviewDecision || "undecided";
+        const matchesDecision = decision === "all" || blockDecision === decision;
+        block.classList.toggle("hidden", !(matchesText && matchesDecision));
       }
     }
+
+    function selectedCandidate(result, qidState) {
+      const selectedIndex = Number(qidState.selectedCandidateIndex);
+      return result.candidates.find((candidate) => Number(candidate.rank) === selectedIndex) || null;
+    }
+
+    function decisionForExport(result) {
+      const qidState = getState(result.qid);
+      const decision = normalizeDecision(qidState.decision);
+      const base = {
+        decision,
+        currentImagePath: result.currentAsset?.path ?? null,
+        questionText: result.question?.prompt ?? "",
+        notes: qidState.notes,
+      };
+
+      if (decision !== "approve") {
+        return base;
+      }
+
+      const candidate = selectedCandidate(result, qidState);
+      if (!candidate) {
+        return null;
+      }
+
+      return {
+        ...base,
+        approvedSourcePath: candidate.screenshotPath,
+        approvedPreviewPath: candidate.thumbnailPath ?? null,
+        candidateIndex: candidate.rank,
+        score: candidate.score,
+        cropMode: candidate.candidateDescriptor ?? null,
+        target: candidate.targetDescriptor ?? null,
+        sourceWidth: candidate.screenshotWidth ?? null,
+        sourceHeight: candidate.screenshotHeight ?? null,
+        previewWidth: candidate.previewWidth ?? null,
+        previewHeight: candidate.previewHeight ?? null,
+        box: clone(candidate.crop ?? null),
+        sourceCrop: clone(candidate.crop ?? null),
+        scoreParts: clone(candidate.scoreParts ?? null),
+      };
+    }
+
+    function buildExportPayload() {
+      const decisions = {};
+      for (const result of WORKBENCH.results) {
+        const qidState = getState(result.qid);
+        if (qidState.decision === "approve" && !qidState.selectedCandidateIndex) {
+          alert("Export blocked: " + result.qid + " is approved but has no selected candidate.");
+          document.querySelector("[data-qid=" + JSON.stringify(result.qid) + "]")?.scrollIntoView({ behavior: "smooth", block: "center" });
+          return null;
+        }
+        const exported = decisionForExport(result);
+        if (!exported) {
+          alert("Export blocked: " + result.qid + " is approved but the selected candidate was not found.");
+          return null;
+        }
+        decisions[result.qid] = exported;
+      }
+
+      return {
+        dataset: WORKBENCH.dataset,
+        generatedAt: new Date().toISOString(),
+        sourceWorkbenchGeneratedAt: WORKBENCH.generatedAt,
+        sourceWorkbenchJsonPath: ${JSON.stringify(relativePath(jsonPath))},
+        decisions,
+      };
+    }
+
+    function download(filename, content, type) {
+      const blob = new Blob([content], { type });
+      const url = URL.createObjectURL(blob);
+      const anchor = document.createElement("a");
+      anchor.href = url;
+      anchor.download = filename;
+      document.body.appendChild(anchor);
+      anchor.click();
+      anchor.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    function exportDecisions() {
+      const payload = buildExportPayload();
+      if (!payload) {
+        return;
+      }
+      const counts = countDecisions();
+      setExportStatus(
+        "Export summary before download: approved " + counts.approve +
+        " · needsManualSearch " + counts.needsManualSearch +
+        " · disregard " + counts.disregard +
+        " · unsure " + counts.unsure +
+        " · undecided " + counts.undecided
+      );
+      window.setTimeout(() => {
+        download(EXPORT_FILE_NAME, JSON.stringify(payload, null, 2) + "\\n", "application/json");
+        setExportStatus(
+          "Exported decisions. approved " + counts.approve +
+          " · needsManualSearch " + counts.needsManualSearch +
+          " · disregard " + counts.disregard +
+          " · unsure " + counts.unsure +
+          " · undecided " + counts.undecided
+        );
+      }, 0);
+    }
+
+    function clearSavedDecisions() {
+      if (!confirm("Clear saved image replacement decisions from this browser?")) {
+        return;
+      }
+      localStorage.removeItem(STORAGE_KEY);
+      state = baseState();
+      for (const qid of WORKBENCH.qids) {
+        updateRow(qid);
+      }
+      updateSummary();
+      applyFilters();
+      setExportStatus("Saved decisions cleared.");
+    }
+
+    document.querySelectorAll(".candidate").forEach((card) => {
+      card.addEventListener("click", () => {
+        selectCandidate(card.dataset.qid, card.dataset.candidateIndex);
+      });
+      card.addEventListener("keydown", (event) => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          selectCandidate(card.dataset.qid, card.dataset.candidateIndex);
+        }
+      });
+    });
+
+    document.querySelectorAll("[data-decision]").forEach((button) => {
+      button.addEventListener("click", () => {
+        setDecision(button.dataset.qid, button.dataset.decision);
+      });
+    });
+
+    document.querySelectorAll("[data-notes]").forEach((textarea) => {
+      textarea.addEventListener("input", () => {
+        setNotes(textarea.dataset.qid, textarea.value);
+      });
+    });
+
+    document.querySelectorAll(".export-decisions").forEach((button) => {
+      button.addEventListener("click", exportDecisions);
+    });
+
+    document.getElementById("clear-saved-decisions").addEventListener("click", clearSavedDecisions);
+
     searchInput.addEventListener("input", applyFilters);
-    statusSelect.addEventListener("change", applyFilters);
+    decisionFilter.addEventListener("change", applyFilters);
+
+    for (const qid of WORKBENCH.qids) {
+      updateRow(qid);
+    }
+    updateSummary();
+    applyFilters();
   </script>
 </body>
 </html>
 `;
 }
 
-function summaryStat(label, value) {
-  return `<div class="stat"><strong>${escapeHtml(value)}</strong><span>${escapeHtml(label)}</span></div>`;
+function summaryStat(label, value, id = null) {
+  return `<div class="stat"><strong${id ? ` id="${escapeAttribute(id)}"` : ""}>${escapeHtml(value)}</strong><span>${escapeHtml(label)}</span></div>`;
 }
 
 function buildResultSection(result, htmlPath) {
@@ -1208,10 +1637,10 @@ function buildResultSection(result, htmlPath) {
     ? path.relative(path.dirname(htmlPath), path.join(ROOT, result.currentAsset.path)).split(path.sep).join("/")
     : "";
   const candidateCards = (result.candidates ?? [])
-    .map((candidate) => buildCandidateCard(candidate, htmlPath))
+    .map((candidate) => buildCandidateCard(candidate, htmlPath, result.qid))
     .join("\n");
 
-  return `<section class="qid-block" data-qid="${escapeAttribute(result.qid)}" data-status="${escapeAttribute(status)}" data-search="${escapeAttribute(searchText)}">
+  return `<section class="qid-block" data-qid="${escapeAttribute(result.qid)}" data-status="${escapeAttribute(status)}" data-review-decision="undecided" data-search="${escapeAttribute(searchText)}">
   <div class="qid-head">
     <div>
       <h2>${escapeHtml(result.qid)}</h2>
@@ -1229,22 +1658,52 @@ function buildResultSection(result, htmlPath) {
       ${candidateCards || `<div class="small">${escapeHtml(result.error ?? "No candidates generated.")}</div>`}
     </div>
   </div>
+  <div class="decision-panel">
+    <div>
+      <div class="decision-buttons">
+        ${decisionButton(result.qid, "approve", "Approve selected candidate")}
+        ${decisionButton(result.qid, "needsManualSearch", "Needs manual search")}
+        ${decisionButton(result.qid, "disregard", "Disregard / no replacement")}
+        ${decisionButton(result.qid, "unsure", "Unsure")}
+      </div>
+      <div class="decision-state" data-decision-label>Decision: undecided</div>
+    </div>
+    <label class="small">Notes
+      <textarea data-notes data-qid="${escapeAttribute(result.qid)}" placeholder="Reviewer notes"></textarea>
+    </label>
+  </div>
 </section>`;
 }
 
-function buildCandidateCard(candidate, htmlPath) {
+function buildCandidateCard(candidate, htmlPath, qid) {
   const thumbSrc = candidate.thumbnailPath
     ? path.relative(path.dirname(htmlPath), path.join(ROOT, candidate.thumbnailPath)).split(path.sep).join("/")
     : "";
   const screenshotSrc = path.relative(path.dirname(htmlPath), path.join(ROOT, candidate.screenshotPath)).split(path.sep).join("/");
 
-  return `<article class="candidate">
+  return `<article class="candidate" role="button" tabindex="0" data-qid="${escapeAttribute(qid)}" data-candidate-index="${escapeAttribute(candidate.rank)}">
+  <span class="selected-label">✓ Selected</span>
   <h3>#${candidate.rank} · score ${escapeHtml(formatMaybeScore(candidate.score))}</h3>
-  ${thumbSrc ? `<a href="${escapeAttribute(screenshotSrc)}"><img loading="lazy" src="${escapeAttribute(thumbSrc)}" alt="Candidate crop ${candidate.rank}"></a>` : ""}
-  <p class="small"><code>${escapeHtml(candidate.screenshotPath)}</code></p>
-  <p class="small">crop <code>${escapeHtml(candidate.candidateDescriptor)}</code> · target <code>${escapeHtml(candidate.targetDescriptor)}</code></p>
+  ${thumbSrc ? `<img loading="lazy" src="${escapeAttribute(thumbSrc)}" alt="Candidate crop ${candidate.rank}">` : ""}
+  <p class="small">source <code>${escapeHtml(candidate.screenshotPath)}</code></p>
+  <p class="small">preview <code>${escapeHtml(candidate.thumbnailPath ?? "")}</code></p>
+  <p class="small">crop <code>${escapeHtml(candidate.candidateDescriptor)}</code> · target <code>${escapeHtml(candidate.targetDescriptor)}</code> · box <code>${escapeHtml(JSON.stringify(candidate.crop ?? null))}</code></p>
   <p class="small">pHash ${escapeHtml(formatMaybeScore(candidate.scoreParts?.pHash))} · hist ${escapeHtml(formatMaybeScore(candidate.scoreParts?.histogram))} · aspect ${escapeHtml(formatMaybeScore(candidate.scoreParts?.aspect))}</p>
+  <p class="small">full screenshot <code>${escapeHtml(screenshotSrc)}</code></p>
 </article>`;
+}
+
+function decisionButton(qid, decision, label) {
+  return `<button type="button" class="secondary" data-qid="${escapeAttribute(qid)}" data-decision="${escapeAttribute(decision)}">${escapeHtml(label)}</button>`;
+}
+
+function serializeJsonForInlineScript(value) {
+  return JSON.stringify(value)
+    .replace(/</g, "\\u003c")
+    .replace(/>/g, "\\u003e")
+    .replace(/&/g, "\\u0026")
+    .replace(/\u2028/g, "\\u2028")
+    .replace(/\u2029/g, "\\u2029");
 }
 
 function formatMaybeScore(value) {

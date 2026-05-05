@@ -1,6 +1,6 @@
 # QBank Integrity Audit
 
-Generated: 2026-05-05T01:35:47.713Z
+Generated: 2026-05-05T08:07:00.834Z
 
 ## Executive Summary
 
@@ -8,8 +8,8 @@ Generated: 2026-05-05T01:35:47.713Z
 - Raw qids: 985
 - Translation languages audited: 3
 - Critical blockers: 0
-- Warnings: 724
-- Duplicate candidates: 25
+- Warnings: 692
+- Duplicate candidates: 23
 
 ## Critical Blockers
 
@@ -120,15 +120,15 @@ None.
 | translation-mcq-missing-locale-answer-key | q0136 | ko: translated MCQ has no localeCorrectOptionKey |
 | translation-mcq-missing-locale-answer-key | q0137 | ko: translated MCQ has no localeCorrectOptionKey |
 
-_Warning table truncated to 100 of 724._
+_Warning table truncated to 100 of 692._
 
 ## Language Coverage
 
-| lang | translated | coverage | missing | extra | invalidLocaleKeys | rowMcqKeys |
-| --- | --- | --- | --- | --- | --- | --- |
-| ja | 981 | 99.7% | 4 | 1 | 0 | 0 |
-| ko | 985 | 100.1% | 0 | 1 | 0 | 0 |
-| ru | 984 | 100% | 0 | 0 | 0 | 0 |
+| lang | translated | coverage | placeholders | missing | extra | invalidLocaleKeys | rowMcqKeys |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| ja | 981 | 99.7% | 4 | 4 | 1 | 0 | 0 |
+| ko | 985 | 100.1% | 0 | 0 | 1 | 0 | 0 |
+| ru | 984 | 100% | 0 | 0 | 0 | 0 | 0 |
 
 ## Raw/Master Mismatch
 
@@ -157,22 +157,20 @@ None.
 | medium | q0583, q0607, q0620 | B | It lights to indicate that ______. |
 | medium | q0599, q0609, q0610 | A | What is this instrument? |
 | medium | q0604, q0612, q0628 | C | It lights to indicate that ______. |
-| medium | q0656, q0662, q0668, q0748, q0752, q0786, q0843, q0867 | D | What’s the meaning of this sign? |
+| medium | q0656, q0668, q0748, q0752, q0786 | D | What’s the meaning of this sign? |
 | medium | q0658, q0712 | A | What’s the meaning of this sign? |
 | medium | q0660, q0847 | D | What’s the meaning of this sign? |
 | medium | q0664, q0684, q0753, q0767, q0780, q0788, q0797, q0855, q0898 | B | What’s the meaning of this sign? |
-| medium | q0665, q0736, q0747, q0766, q0792, q0866 | C | What’s the meaning of this sign? |
+| medium | q0665, q0736, q0747, q0766, q0792 | C | What’s the meaning of this sign? |
 | medium | q0677, q0727, q0806 | C | This set of the hand signals of the traffic police indicates that the vehicles should ____ . |
 | medium | q0679, q0694, q0740, q0770, q0782, q0787, q0796, q0868, q0872 | A | What’s the meaning of this sign? |
-| medium | q0683, q0719, q0769 | B | What’s the meaning of this sign? |
-| medium | q0685, q0730, q0756, q0795 | A | What’s the meaning of this sign? |
+| medium | q0683, q0769 | B | What’s the meaning of this sign? |
+| medium | q0685, q0730, q0756 | A | What’s the meaning of this sign? |
 | medium | q0686, q0793 | D | What’s the meaning of this sign? |
 | medium | q0692, q0880, q0896 | D | This set of the hand signals of the traffic police indicates that the vehicles should ____ . |
-| medium | q0711, q0755, q0818, q0839 | C | What’s the meaning of this sign? |
+| medium | q0711, q0818 | C | What’s the meaning of this sign? |
 | medium | q0741, q0798, q0800, q0815, q0854, q0892 | A | What’s the meaning of this sign? |
-| medium | q0772, q0825 | C | What’s the meaning of this sign? |
 | medium | q0776, q0848 | C | What’s the meaning of this guide arrow? |
-| medium | q0817, q0878 | D | What’s the meaning of this sign? |
 | medium | q0838, q0845 | D | What’s the meaning of this sign? |
 
 ## Image Asset Issues
@@ -187,7 +185,7 @@ None.
 - image-color-tags qids not in master: 0
 - image questions missing image tags: 0
 - questions without images but with image tags: 0
-- image questions missing objectTags: 126
+- image questions missing objectTags: 96
 
 ## Recommended Next Actions
 

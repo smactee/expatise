@@ -230,7 +230,12 @@ function auditTranslations() {
     const doc = readJson(translationPath);
     const translations = translationQuestions(doc);
     const qids = new Set(Object.keys(translations).map(normalizeQid).filter(Boolean));
-    const missingQids = [...masterQids].filter((qid) => !qids.has(qid)).sort(compareQid);
+    const placeholderQids = new Set(Object.entries(translations)
+      .filter(([, entry]) => isAutoPropagationPlaceholder(entry))
+      .map(([qid]) => normalizeQid(qid))
+      .filter(Boolean));
+    const productionQids = new Set([...qids].filter((qid) => !placeholderQids.has(qid)));
+    const missingQids = [...masterQids].filter((qid) => !productionQids.has(qid)).sort(compareQid);
     const extraQids = [...qids].filter((qid) => !masterQids.has(qid)).sort(compareQid);
     const invalidLocaleAnswerKeys = [];
     const mcqMissingOptions = [];
@@ -244,6 +249,9 @@ function auditTranslations() {
       const qid = normalizeQid(rawQid);
       if (!entry || typeof entry !== "object" || Array.isArray(entry)) {
         malformedObjects.push({ qid, valueType: Array.isArray(entry) ? "array" : typeof entry });
+        continue;
+      }
+      if (isAutoPropagationPlaceholder(entry)) {
         continue;
       }
       const prompt = String(entry.prompt ?? entry.statement ?? "").trim();
@@ -285,8 +293,9 @@ function auditTranslations() {
     return {
       lang,
       path: rel(translationPath),
-      translatedQids: qids.size,
-      coveragePercent: percent(qids.size, masterQids.size),
+      translatedQids: productionQids.size,
+      coveragePercent: percent(productionQids.size, masterQids.size),
+      placeholderQids: [...placeholderQids].sort(compareQid),
       missingQids,
       extraQids,
       invalidLocaleAnswerKeys,
@@ -297,7 +306,8 @@ function auditTranslations() {
       malformedObjects,
       emptyTextIssues,
       counts: {
-        translatedQids: qids.size,
+        translatedQids: productionQids.size,
+        placeholderQids: placeholderQids.size,
         missingQids: missingQids.length,
         extraQids: extraQids.length,
         invalidLocaleAnswerKeys: invalidLocaleAnswerKeys.length,
@@ -332,7 +342,11 @@ function auditImages() {
 
   const translatedImageCompatibility = translations.map((langReport) => {
     const doc = readJson(path.join(DATASET_DIR, `translations.${langReport.lang}.json`));
-    const qids = new Set(Object.keys(translationQuestions(doc)).map(normalizeQid).filter(Boolean));
+    const translationEntries = translationQuestions(doc);
+    const qids = new Set(Object.entries(translationEntries)
+      .filter(([, entry]) => !isAutoPropagationPlaceholder(entry))
+      .map(([qid]) => normalizeQid(qid))
+      .filter(Boolean));
     return {
       lang: langReport.lang,
       translatedQidsWithMasterImages: [...masterImageQids].filter((qid) => qids.has(qid)).length,
@@ -450,11 +464,12 @@ function renderMarkdown(data) {
     lang: entry.lang,
     translated: entry.counts.translatedQids,
     coverage: `${entry.coveragePercent}%`,
+    placeholders: entry.counts.placeholderQids,
     missing: entry.counts.missingQids,
     extra: entry.counts.extraQids,
     invalidLocaleKeys: entry.counts.invalidLocaleAnswerKeys,
     rowMcqKeys: entry.counts.rowTranslationsWithMcqAnswerKeys,
-  })), ["lang", "translated", "coverage", "missing", "extra", "invalidLocaleKeys", "rowMcqKeys"]));
+  })), ["lang", "translated", "coverage", "placeholders", "missing", "extra", "invalidLocaleKeys", "rowMcqKeys"]));
   lines.push("");
   lines.push("## Raw/Master Mismatch", "");
   lines.push(`- qids in questions.json only: ${data.masterRaw.counts.masterOnlyQids}`);
@@ -521,6 +536,14 @@ function findForbiddenRowKeys(value, currentPath = "") {
     out.push(...findForbiddenRowKeys(nested, nestedPath));
   }
   return out;
+}
+
+function isAutoPropagationPlaceholder(entry) {
+  return !!entry
+    && typeof entry === "object"
+    && !Array.isArray(entry)
+    && String(entry.translationStatus ?? "").trim().toLowerCase() === "missing"
+    && String(entry.source ?? "").trim().toLowerCase() === "auto-propagation";
 }
 
 function sourceOptionKeys(entry) {

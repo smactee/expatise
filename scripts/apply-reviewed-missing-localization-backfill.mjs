@@ -6,6 +6,7 @@ import {
   loadBackfillContext,
   normalizeLang,
   normalizeQid,
+  isAutoPropagationPlaceholder,
   renderMergeMarkdown,
   reviewedTranslationToProductionEntry,
   validateDraftItems,
@@ -43,7 +44,7 @@ const validation = validateDraftItems({
 });
 const overlappingProductionQids = items
   .map((item) => normalizeQid(item?.qid))
-  .filter((qid) => qid && context.translationQids.has(qid));
+  .filter((qid) => qid && (context.productionTranslationQids ?? context.translationQids).has(qid));
 
 if (overlappingProductionQids.length && !allowOverwrite) {
   for (const qid of overlappingProductionQids) {
@@ -101,8 +102,8 @@ if (apply && validation.valid) {
   await writeJson(context.paths.translationsPath, nextDoc);
   report.applied = true;
   report.productionModified = true;
-  report.productionCountBefore = context.translationQids.size;
-  report.productionCountAfter = Object.keys(nextQuestions).length;
+  report.productionCountBefore = (context.productionTranslationQids ?? context.translationQids).size;
+  report.productionCountAfter = Object.values(nextQuestions).filter((entry) => !isAutoPropagationPlaceholder(entry)).length;
 }
 
 await writeJson(paths.mergeJsonPath, report);

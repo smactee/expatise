@@ -1,0 +1,81 @@
+{
+  "generatedAt": "2026-05-05T02:07:07.238Z",
+  "dataset": "2023-test1",
+  "source": "auto-propagation",
+  "masterPath": "public/qbank/2023-test1/questions.json",
+  "reportPaths": {
+    "json": "qbank-tools/generated/reports/propagation-report.json",
+    "markdown": "qbank-tools/generated/reports/propagation-report.md"
+  },
+  "summary": {
+    "masterQids": 984,
+    "languagesProcessed": 3,
+    "totalEntriesAdded": 4,
+    "newQidsDetectedCount": 4
+  },
+  "languagesProcessed": [
+    "ja",
+    "ko",
+    "ru"
+  ],
+  "newQidsDetected": [
+    "q0941",
+    "q0948",
+    "q0950",
+    "q0957"
+  ],
+  "entriesAddedPerLanguage": {
+    "ja": 4,
+    "ko": 0,
+    "ru": 0
+  },
+  "skippedExistingEntries": {
+    "ja": 980,
+    "ko": 984,
+    "ru": 984
+  },
+  "languages": [
+    {
+      "lang": "ja",
+      "path": "public/qbank/2023-test1/translations.ja.json",
+      "beforeCount": 981,
+      "afterCount": 985,
+      "addedCount": 4,
+      "addedQids": [
+        "q0941",
+        "q0948",
+        "q0950",
+        "q0957"
+      ],
+      "skippedExistingEntries": 980,
+      "extraTranslationQids": [
+        "q0518"
+      ],
+      "modified": true
+    },
+    {
+      "lang": "ko",
+      "path": "public/qbank/2023-test1/translations.ko.json",
+      "beforeCount": 985,
+      "afterCount": 985,
+      "addedCount": 0,
+      "addedQids": [],
+      "skippedExistingEntries": 984,
+      "extraTranslationQids": [
+        "q0518"
+      ],
+      "modified": false
+    },
+    {
+      "lang": "ru",
+      "path": "public/qbank/2023-test1/translations.ru.json",
+      "beforeCount": 984,
+      "afterCount": 984,
+      "addedCount": 0,
+      "addedQids": [],
+      "skippedExistingEntries": 984,
+      "extraTranslationQids": [],
+      "modified": false
+    }
+  ]
+}
