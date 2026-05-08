@@ -8,6 +8,7 @@ import {
   REPORTS_DIR,
   ROOT,
   STAGING_DIR,
+  booleanArg,
   ensurePipelineDirs,
   fileExists,
   getBatchFiles,
@@ -23,6 +24,9 @@ import {
 const args = parseArgs();
 const lang = String(args.lang ?? "ja").trim() || "ja";
 const dataset = String(args.dataset ?? DEFAULT_DATASET).trim() || DEFAULT_DATASET;
+const apply = booleanArg(args, "apply", false);
+const allowDangerousProductionEdit = booleanArg(args, "allow-dangerous-production-edit", false);
+const productionWriteAllowed = apply && allowDangerousProductionEdit;
 const batches = String(args.batches ?? "batch-001,batch-002,batch-003")
   .split(/[,\s]+/)
   .map((entry) => entry.trim())
@@ -317,7 +321,9 @@ if (validationFailures.length > 0) {
   throw new Error(`Retro auto-review validation failed:\n${JSON.stringify(validationFailures, null, 2)}`);
 }
 
-const productionChanged = changedPreviewQids.length > 0;
+const productionWouldChange = changedPreviewQids.length > 0;
+const productionWriteBlocked = productionWouldChange && !productionWriteAllowed;
+const productionChanged = productionWouldChange && productionWriteAllowed;
 if (productionChanged) {
   const nextDoc = {
     ...productionDoc,
@@ -350,6 +356,11 @@ const report = {
   stagedUnresolvedCount: stagedUnresolvedItems.length,
   productionJapaneseTranslatedCountBefore: productionCountBefore,
   productionJapaneseTranslatedCountAfter: productionChanged ? productionCountAfter : productionCountBefore,
+  applyRequested: apply,
+  dangerousProductionEditAllowed: allowDangerousProductionEdit,
+  productionWriteAllowed,
+  productionWouldChange,
+  productionWriteBlocked,
   productionChanged,
   filesChanged: [
     path.relative(process.cwd(), retroPreviewPath),
@@ -365,20 +376,30 @@ const report = {
   stagedUnresolvedItems,
   validations,
   retroPassCompletedCleanly: true,
+  requiredProductionFlags: [
+    "--apply true",
+    "--allow-dangerous-production-edit true",
+  ],
   note: productionChanged
     ? "Only production-safe existing-qid retro corrections were merged. No production qids were deleted in this pass."
-    : "Retro review introduced no production-safe changes.",
+    : productionWriteBlocked
+      ? "Dry-run/no-op for production. Production corrections were previewed but not merged because --apply true --allow-dangerous-production-edit true was not provided."
+      : "Retro review introduced no production-safe changes.",
   itemSummaries,
 };
 
 await writeJson(retroReportJsonPath, report);
 await writeText(retroReportMdPath, buildMarkdownReport(report));
 
-console.log(
-  productionChanged
-    ? `Applied retro auto-review corrections for ${lang}: ${changedPreviewQids.length} production qid update(s).`
-    : `Applied retro auto-review corrections for ${lang}: no production changes required.`,
-);
+if (productionChanged) {
+  console.log(`Applied retro auto-review corrections for ${lang}: ${changedPreviewQids.length} production qid update(s).`);
+} else if (productionWriteBlocked) {
+  console.log("Dry-run/no-op: production translations were not modified.");
+  console.log("Required flags to modify production: --apply true --allow-dangerous-production-edit true");
+  console.log(`Production qids that would change: ${changedPreviewQids.length}`);
+} else {
+  console.log(`Applied retro auto-review corrections for ${lang}: no production changes required.`);
+}
 
 function normalizeRetroDecision(item) {
   return {

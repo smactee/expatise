@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-05T08:07:00.834Z",
+  "generatedAt": "2026-05-08T13:39:11.738Z",
   "dataset": "2023-test1",
   "sourcePaths": {
     "questions": "public/qbank/2023-test1/questions.json",
@@ -13,12 +13,12 @@
     ]
   },
   "fileHashes": {
-    "public/qbank/2023-test1/questions.json": "79fea94c6a2e459b88128ddd8a69bb14c8fa2c3750448e366372e3b3e8e51f1a",
+    "public/qbank/2023-test1/questions.json": "bae0394338cf9269c086e55762c26ba6cdfc75efe94f9005add139cc33806290",
     "public/qbank/2023-test1/questions.raw.json": "934e2d089f031301623e1ddbf660cc16fcff7fa45e5b6949861eaf252d78c919",
     "public/qbank/2023-test1/tags.patch.json": "40d4de0cd71028be5e311aff87075076d575d7f814721caf39ce0e21991f2bd5",
-    "public/qbank/2023-test1/image-color-tags.json": "153723a6b370480d09d9db25cf2850ea2022e1eef621a8c6e44edc61bbef8398",
-    "public/qbank/2023-test1/translations.ja.json": "b2b5cb6c14a62f1235e3651ec85e545e103e9152c8fd6629625af2a31c5e652b",
-    "public/qbank/2023-test1/translations.ko.json": "451e4afaf3bdc82d7318b07e0f55a538f5712f65c51de41c69c45d188aa75666",
+    "public/qbank/2023-test1/image-color-tags.json": "76909f0310a201bb811355569d0816b811bc1d4f9c96968d253bf879071fd7bf",
+    "public/qbank/2023-test1/translations.ja.json": "eb0098fd2210e4616db1b99da6f75b06b454bc77955a452177e7e27450e4247f",
+    "public/qbank/2023-test1/translations.ko.json": "d5619e111fbbb3ae1034ea7d853b1e82a0c22a7bd7e4683e1f244007c6d0cd11",
     "public/qbank/2023-test1/translations.ru.json": "cf2cc33582180c7a868318c73c087132682490cbf5dcd3a9de0a1c09902ddcc6"
   },
   "summary": {
@@ -26,8 +26,8 @@
     "rawQids": 985,
     "translationLanguages": 3,
     "criticalBlockers": 0,
-    "warnings": 692,
-    "duplicateCandidates": 23,
+    "warnings": 591,
+    "duplicateCandidates": 22,
     "missingImageAssets": 0
   },
   "criticalBlockers": [],
@@ -37,150 +37,6 @@
       "qid": "q0518",
       "reason": "qid exists in questions.raw.json but not questions.json",
       "details": {}
-    },
-    {
-      "type": "translation-missing-qid",
-      "qid": "q0941",
-      "reason": "ja: missing production translation",
-      "details": {}
-    },
-    {
-      "type": "translation-missing-qid",
-      "qid": "q0948",
-      "reason": "ja: missing production translation",
-      "details": {}
-    },
-    {
-      "type": "translation-missing-qid",
-      "qid": "q0950",
-      "reason": "ja: missing production translation",
-      "details": {}
-    },
-    {
-      "type": "translation-missing-qid",
-      "qid": "q0957",
-      "reason": "ja: missing production translation",
-      "details": {}
-    },
-    {
-      "type": "translation-extra-qid",
-      "qid": "q0518",
-      "reason": "ja: translation qid is not in questions.json",
-      "details": {}
-    },
-    {
-      "type": "translation-extra-qid",
-      "qid": "q0518",
-      "reason": "ko: translation qid is not in questions.json",
-      "details": {}
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0364",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0364",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0365",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0365",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0367",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0367",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0372",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0372",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0390",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0390",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0422",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0422",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0428",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0428",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0437",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0437",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0578",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0578",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0591",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0591",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0900",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0900",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0972",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0972",
-        "localeCorrectOptionKey": null
-      }
     },
     {
       "type": "translation-mcq-missing-locale-answer-key",
@@ -422,438 +278,6 @@
       "reason": "ko: translated MCQ has no localeCorrectOptionKey",
       "details": {
         "qid": "q0131",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0366",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0366",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0373",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0373",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0378",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0378",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0380",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0380",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0391",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0391",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0397",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0397",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0398",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0398",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0399",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0399",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0400",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0400",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0402",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0402",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0362",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0362",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0363",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0363",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0368",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0368",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0369",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0369",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0370",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0370",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0371",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0371",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0374",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0374",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0375",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0375",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0376",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0376",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0377",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0377",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0379",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0379",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0381",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0381",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0382",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0382",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0383",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0383",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0384",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0384",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0385",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0385",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0386",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0386",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0387",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0387",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0388",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0388",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0389",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0389",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0392",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0392",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0393",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0393",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0394",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0394",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0404",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0404",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0405",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0405",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0577",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0577",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0581",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0581",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0582",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0582",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0585",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0585",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0587",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0587",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0588",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0588",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0590",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0590",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0592",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0592",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0593",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0593",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0595",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0595",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0597",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0597",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0598",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0598",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0599",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0599",
         "localeCorrectOptionKey": null
       }
     },
@@ -1354,6 +778,303 @@
     },
     {
       "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0362",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0362",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0363",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0363",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0364",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0364",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0365",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0365",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0366",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0366",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0367",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0367",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0368",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0368",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0369",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0369",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0370",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0370",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0371",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0371",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0372",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0372",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0373",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0373",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0374",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0374",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0375",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0375",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0376",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0376",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0377",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0377",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0378",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0378",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0379",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0379",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0380",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0380",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0381",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0381",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0382",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0382",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0383",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0383",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0384",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0384",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0385",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0385",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0386",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0386",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0387",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0387",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0388",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0388",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0389",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0389",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0390",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0390",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0391",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0391",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0392",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0392",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0393",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0393",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0394",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0394",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
       "qid": "q0395",
       "reason": "ko: translated MCQ has no localeCorrectOptionKey",
       "details": {
@@ -1372,6 +1093,42 @@
     },
     {
       "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0397",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0397",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0398",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0398",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0399",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0399",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0400",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0400",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
       "qid": "q0401",
       "reason": "ko: translated MCQ has no localeCorrectOptionKey",
       "details": {
@@ -1381,10 +1138,37 @@
     },
     {
       "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0402",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0402",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
       "qid": "q0403",
       "reason": "ko: translated MCQ has no localeCorrectOptionKey",
       "details": {
         "qid": "q0403",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0404",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0404",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0405",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0405",
         "localeCorrectOptionKey": null
       }
     },
@@ -1403,6 +1187,33 @@
       "reason": "ko: translated MCQ has no localeCorrectOptionKey",
       "details": {
         "qid": "q0407",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0408",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0408",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0409",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0409",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0410",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0410",
         "localeCorrectOptionKey": null
       }
     },
@@ -1435,10 +1246,46 @@
     },
     {
       "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0414",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0414",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0415",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0415",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0416",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0416",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
       "qid": "q0417",
       "reason": "ko: translated MCQ has no localeCorrectOptionKey",
       "details": {
         "qid": "q0417",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0418",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0418",
         "localeCorrectOptionKey": null
       }
     },
@@ -1471,6 +1318,15 @@
     },
     {
       "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0422",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0422",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
       "qid": "q0423",
       "reason": "ko: translated MCQ has no localeCorrectOptionKey",
       "details": {
@@ -1480,10 +1336,46 @@
     },
     {
       "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0424",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0424",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0425",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0425",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
       "qid": "q0426",
       "reason": "ko: translated MCQ has no localeCorrectOptionKey",
       "details": {
         "qid": "q0426",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0427",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0427",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0428",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0428",
         "localeCorrectOptionKey": null
       }
     },
@@ -1561,6 +1453,24 @@
     },
     {
       "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0437",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0437",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0438",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0438",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
       "qid": "q0439",
       "reason": "ko: translated MCQ has no localeCorrectOptionKey",
       "details": {
@@ -1583,6 +1493,33 @@
       "reason": "ko: translated MCQ has no localeCorrectOptionKey",
       "details": {
         "qid": "q0441",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0442",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0442",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0443",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0443",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0444",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0444",
         "localeCorrectOptionKey": null
       }
     },
@@ -1642,10 +1579,55 @@
     },
     {
       "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0451",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0451",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0452",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0452",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0453",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0453",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0454",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0454",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
       "qid": "q0455",
       "reason": "ko: translated MCQ has no localeCorrectOptionKey",
       "details": {
         "qid": "q0455",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0456",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0456",
         "localeCorrectOptionKey": null
       }
     },
@@ -1678,6 +1660,15 @@
     },
     {
       "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0460",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0460",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
       "qid": "q0461",
       "reason": "ko: translated MCQ has no localeCorrectOptionKey",
       "details": {
@@ -1705,6 +1696,24 @@
     },
     {
       "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0464",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0464",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0465",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0465",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
       "qid": "q0466",
       "reason": "ko: translated MCQ has no localeCorrectOptionKey",
       "details": {
@@ -1727,6 +1736,24 @@
       "reason": "ko: translated MCQ has no localeCorrectOptionKey",
       "details": {
         "qid": "q0468",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0469",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0469",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0470",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0470",
         "localeCorrectOptionKey": null
       }
     },
@@ -1768,6 +1795,24 @@
     },
     {
       "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0475",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0475",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0476",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0476",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
       "qid": "q0477",
       "reason": "ko: translated MCQ has no localeCorrectOptionKey",
       "details": {
@@ -1777,10 +1822,37 @@
     },
     {
       "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0478",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0478",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
       "qid": "q0479",
       "reason": "ko: translated MCQ has no localeCorrectOptionKey",
       "details": {
         "qid": "q0479",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0480",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0480",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0481",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0481",
         "localeCorrectOptionKey": null
       }
     },
@@ -1808,6 +1880,15 @@
       "reason": "ko: translated MCQ has no localeCorrectOptionKey",
       "details": {
         "qid": "q0484",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0485",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0485",
         "localeCorrectOptionKey": null
       }
     },
@@ -1849,10 +1930,37 @@
     },
     {
       "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0490",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0490",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0491",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0491",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
       "qid": "q0492",
       "reason": "ko: translated MCQ has no localeCorrectOptionKey",
       "details": {
         "qid": "q0492",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0493",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0493",
         "localeCorrectOptionKey": null
       }
     },
@@ -1880,6 +1988,15 @@
       "reason": "ko: translated MCQ has no localeCorrectOptionKey",
       "details": {
         "qid": "q0496",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0497",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0497",
         "localeCorrectOptionKey": null
       }
     },
@@ -1930,10 +2047,28 @@
     },
     {
       "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0503",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0503",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
       "qid": "q0504",
       "reason": "ko: translated MCQ has no localeCorrectOptionKey",
       "details": {
         "qid": "q0504",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0505",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0505",
         "localeCorrectOptionKey": null
       }
     },
@@ -1975,6 +2110,15 @@
     },
     {
       "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0510",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0510",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
       "qid": "q0511",
       "reason": "ko: translated MCQ has no localeCorrectOptionKey",
       "details": {
@@ -1988,6 +2132,15 @@
       "reason": "ko: translated MCQ has no localeCorrectOptionKey",
       "details": {
         "qid": "q0512",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0513",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0513",
         "localeCorrectOptionKey": null
       }
     },
@@ -2029,555 +2182,6 @@
     },
     {
       "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0521",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0521",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0579",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0579",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0596",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0596",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0625",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0625",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0626",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0626",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0698",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0698",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0699",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0699",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0709",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0709",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0735",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0735",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0873",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0873",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0885",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0885",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0901",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0901",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0902",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0902",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0909",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0909",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0910",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0910",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0914",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0914",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0915",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0915",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0920",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0920",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0922",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0922",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0923",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0923",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0925",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0925",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0970",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0970",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0971",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0971",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0408",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0408",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0409",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0409",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0410",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0410",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0414",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0414",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0415",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0415",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0416",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0416",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0418",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0418",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0424",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0424",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0425",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0425",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0427",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0427",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0438",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0438",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0442",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0442",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0443",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0443",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0444",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0444",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0451",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0451",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0452",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0452",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0453",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0453",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0454",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0454",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0456",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0456",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0460",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0460",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0464",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0464",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0465",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0465",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0469",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0469",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0470",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0470",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0475",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0475",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0476",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0476",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0478",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0478",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0480",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0480",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0481",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0481",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0485",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0485",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0490",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0490",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0491",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0491",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0493",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0493",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0497",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0497",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0503",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0503",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0505",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0505",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0510",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0510",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
-      "qid": "q0513",
-      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
-      "details": {
-        "qid": "q0513",
-        "localeCorrectOptionKey": null
-      }
-    },
-    {
-      "type": "translation-mcq-missing-locale-answer-key",
       "qid": "q0519",
       "reason": "ko: translated MCQ has no localeCorrectOptionKey",
       "details": {
@@ -2596,6 +2200,15 @@
     },
     {
       "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0521",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0521",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
       "qid": "q0576",
       "reason": "ko: translated MCQ has no localeCorrectOptionKey",
       "details": {
@@ -2605,10 +2218,55 @@
     },
     {
       "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0577",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0577",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0578",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0578",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0579",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0579",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
       "qid": "q0580",
       "reason": "ko: translated MCQ has no localeCorrectOptionKey",
       "details": {
         "qid": "q0580",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0581",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0581",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0582",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0582",
         "localeCorrectOptionKey": null
       }
     },
@@ -2632,10 +2290,37 @@
     },
     {
       "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0585",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0585",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
       "qid": "q0586",
       "reason": "ko: translated MCQ has no localeCorrectOptionKey",
       "details": {
         "qid": "q0586",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0587",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0587",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0588",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0588",
         "localeCorrectOptionKey": null
       }
     },
@@ -2650,10 +2335,91 @@
     },
     {
       "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0590",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0590",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0591",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0591",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0592",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0592",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0593",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0593",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
       "qid": "q0594",
       "reason": "ko: translated MCQ has no localeCorrectOptionKey",
       "details": {
         "qid": "q0594",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0595",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0595",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0596",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0596",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0597",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0597",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0598",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0598",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0599",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0599",
         "localeCorrectOptionKey": null
       }
     },
@@ -2879,6 +2645,24 @@
       "reason": "ko: translated MCQ has no localeCorrectOptionKey",
       "details": {
         "qid": "q0624",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0625",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0625",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0626",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0626",
         "localeCorrectOptionKey": null
       }
     },
@@ -3343,6 +3127,24 @@
     },
     {
       "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0698",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0698",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0699",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0699",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
       "qid": "q0700",
       "reason": "ko: translated MCQ has no localeCorrectOptionKey",
       "details": {
@@ -3419,6 +3221,15 @@
       "reason": "ko: translated MCQ has no localeCorrectOptionKey",
       "details": {
         "qid": "q0708",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0709",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0709",
         "localeCorrectOptionKey": null
       }
     },
@@ -3644,6 +3455,15 @@
       "reason": "ko: translated MCQ has no localeCorrectOptionKey",
       "details": {
         "qid": "q0734",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0735",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0735",
         "localeCorrectOptionKey": null
       }
     },
@@ -4882,6 +4702,15 @@
     },
     {
       "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0873",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0873",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
       "qid": "q0874",
       "reason": "ko: translated MCQ has no localeCorrectOptionKey",
       "details": {
@@ -4976,6 +4805,15 @@
       "reason": "ko: translated MCQ has no localeCorrectOptionKey",
       "details": {
         "qid": "q0884",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0885",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0885",
         "localeCorrectOptionKey": null
       }
     },
@@ -5107,6 +4945,105 @@
     },
     {
       "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0900",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0900",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0901",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0901",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0902",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0902",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0909",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0909",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0910",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0910",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0914",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0914",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0915",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0915",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0920",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0920",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0922",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0922",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0923",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0923",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0925",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0925",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
       "qid": "q0927",
       "reason": "ko: translated MCQ has no localeCorrectOptionKey",
       "details": {
@@ -5129,6 +5066,33 @@
       "reason": "ko: translated MCQ has no localeCorrectOptionKey",
       "details": {
         "qid": "q0929",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0970",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0970",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0971",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0971",
+        "localeCorrectOptionKey": null
+      }
+    },
+    {
+      "type": "translation-mcq-missing-locale-answer-key",
+      "qid": "q0972",
+      "reason": "ko: translated MCQ has no localeCorrectOptionKey",
+      "details": {
+        "qid": "q0972",
         "localeCorrectOptionKey": null
       }
     },
@@ -5166,579 +5130,15 @@
       "details": {}
     },
     {
-      "type": "image-question-missing-object-tags",
-      "qid": "q0526",
-      "reason": "question has image assets but no objectTags",
+      "type": "image-tags-without-image",
+      "qid": "q0001",
+      "reason": "question has image tags but no master image asset",
       "details": {}
     },
     {
-      "type": "image-question-missing-object-tags",
-      "qid": "q0528",
-      "reason": "question has image assets but no objectTags",
-      "details": {}
-    },
-    {
-      "type": "image-question-missing-object-tags",
-      "qid": "q0535",
-      "reason": "question has image assets but no objectTags",
-      "details": {}
-    },
-    {
-      "type": "image-question-missing-object-tags",
-      "qid": "q0538",
-      "reason": "question has image assets but no objectTags",
-      "details": {}
-    },
-    {
-      "type": "image-question-missing-object-tags",
-      "qid": "q0539",
-      "reason": "question has image assets but no objectTags",
-      "details": {}
-    },
-    {
-      "type": "image-question-missing-object-tags",
-      "qid": "q0542",
-      "reason": "question has image assets but no objectTags",
-      "details": {}
-    },
-    {
-      "type": "image-question-missing-object-tags",
-      "qid": "q0545",
-      "reason": "question has image assets but no objectTags",
-      "details": {}
-    },
-    {
-      "type": "image-question-missing-object-tags",
-      "qid": "q0556",
-      "reason": "question has image assets but no objectTags",
-      "details": {}
-    },
-    {
-      "type": "image-question-missing-object-tags",
-      "qid": "q0557",
-      "reason": "question has image assets but no objectTags",
-      "details": {}
-    },
-    {
-      "type": "image-question-missing-object-tags",
-      "qid": "q0558",
-      "reason": "question has image assets but no objectTags",
-      "details": {}
-    },
-    {
-      "type": "image-question-missing-object-tags",
-      "qid": "q0560",
-      "reason": "question has image assets but no objectTags",
-      "details": {}
-    },
-    {
-      "type": "image-question-missing-object-tags",
-      "qid": "q0561",
-      "reason": "question has image assets but no objectTags",
-      "details": {}
-    },
-    {
-      "type": "image-question-missing-object-tags",
-      "qid": "q0562",
-      "reason": "question has image assets but no objectTags",
-      "details": {}
-    },
-    {
-      "type": "image-question-missing-object-tags",
-      "qid": "q0563",
-      "reason": "question has image assets but no objectTags",
-      "details": {}
-    },
-    {
-      "type": "image-question-missing-object-tags",
-      "qid": "q0565",
-      "reason": "question has image assets but no objectTags",
-      "details": {}
-    },
-    {
-      "type": "image-question-missing-object-tags",
-      "qid": "q0567",
-      "reason": "question has image assets but no objectTags",
-      "details": {}
-    },
-    {
-      "type": "image-question-missing-object-tags",
-      "qid": "q0568",
-      "reason": "question has image assets but no objectTags",
-      "details": {}
-    },
-    {
-      "type": "image-question-missing-object-tags",
-      "qid": "q0569",
-      "reason": "question has image assets but no objectTags",
-      "details": {}
-    },
-    {
-      "type": "image-question-missing-object-tags",
-      "qid": "q0573",
-      "reason": "question has image assets but no objectTags",
-      "details": {}
-    },
-    {
-      "type": "image-question-missing-object-tags",
-      "qid": "q0576",
-      "reason": "question has image assets but no objectTags",
-      "details": {}
-    },
-    {
-      "type": "image-question-missing-object-tags",
-      "qid": "q0577",
-      "reason": "question has image assets but no objectTags",
-      "details": {}
-    },
-    {
-      "type": "image-question-missing-object-tags",
-      "qid": "q0580",
-      "reason": "question has image assets but no objectTags",
-      "details": {}
-    },
-    {
-      "type": "image-question-missing-object-tags",
-      "qid": "q0581",
-      "reason": "question has image assets but no objectTags",
-      "details": {}
-    },
-    {
-      "type": "image-question-missing-object-tags",
-      "qid": "q0582",
-      "reason": "question has image assets but no objectTags",
-      "details": {}
-    },
-    {
-      "type": "image-question-missing-object-tags",
-      "qid": "q0583",
-      "reason": "question has image assets but no objectTags",
-      "details": {}
-    },
-    {
-      "type": "image-question-missing-object-tags",
-      "qid": "q0586",
-      "reason": "question has image assets but no objectTags",
-      "details": {}
-    },
-    {
-      "type": "image-question-missing-object-tags",
-      "qid": "q0589",
-      "reason": "question has image assets but no objectTags",
-      "details": {}
-    },
-    {
-      "type": "image-question-missing-object-tags",
-      "qid": "q0591",
-      "reason": "question has image assets but no objectTags",
-      "details": {}
-    },
-    {
-      "type": "image-question-missing-object-tags",
-      "qid": "q0595",
-      "reason": "question has image assets but no objectTags",
-      "details": {}
-    },
-    {
-      "type": "image-question-missing-object-tags",
-      "qid": "q0597",
-      "reason": "question has image assets but no objectTags",
-      "details": {}
-    },
-    {
-      "type": "image-question-missing-object-tags",
-      "qid": "q0598",
-      "reason": "question has image assets but no objectTags",
-      "details": {}
-    },
-    {
-      "type": "image-question-missing-object-tags",
-      "qid": "q0599",
-      "reason": "question has image assets but no objectTags",
-      "details": {}
-    },
-    {
-      "type": "image-question-missing-object-tags",
-      "qid": "q0600",
-      "reason": "question has image assets but no objectTags",
-      "details": {}
-    },
-    {
-      "type": "image-question-missing-object-tags",
-      "qid": "q0603",
-      "reason": "question has image assets but no objectTags",
-      "details": {}
-    },
-    {
-      "type": "image-question-missing-object-tags",
-      "qid": "q0607",
-      "reason": "question has image assets but no objectTags",
-      "details": {}
-    },
-    {
-      "type": "image-question-missing-object-tags",
-      "qid": "q0608",
-      "reason": "question has image assets but no objectTags",
-      "details": {}
-    },
-    {
-      "type": "image-question-missing-object-tags",
-      "qid": "q0609",
-      "reason": "question has image assets but no objectTags",
-      "details": {}
-    },
-    {
-      "type": "image-question-missing-object-tags",
-      "qid": "q0610",
-      "reason": "question has image assets but no objectTags",
-      "details": {}
-    },
-    {
-      "type": "image-question-missing-object-tags",
-      "qid": "q0612",
-      "reason": "question has image assets but no objectTags",
-      "details": {}
-    },
-    {
-      "type": "image-question-missing-object-tags",
-      "qid": "q0613",
-      "reason": "question has image assets but no objectTags",
-      "details": {}
-    },
-    {
-      "type": "image-question-missing-object-tags",
-      "qid": "q0614",
-      "reason": "question has image assets but no objectTags",
-      "details": {}
-    },
-    {
-      "type": "image-question-missing-object-tags",
-      "qid": "q0620",
-      "reason": "question has image assets but no objectTags",
-      "details": {}
-    },
-    {
-      "type": "image-question-missing-object-tags",
-      "qid": "q0627",
-      "reason": "question has image assets but no objectTags",
-      "details": {}
-    },
-    {
-      "type": "image-question-missing-object-tags",
-      "qid": "q0628",
-      "reason": "question has image assets but no objectTags",
-      "details": {}
-    },
-    {
-      "type": "image-question-missing-object-tags",
-      "qid": "q0629",
-      "reason": "question has image assets but no objectTags",
-      "details": {}
-    },
-    {
-      "type": "image-question-missing-object-tags",
-      "qid": "q0654",
-      "reason": "question has image assets but no objectTags",
-      "details": {}
-    },
-    {
-      "type": "image-question-missing-object-tags",
-      "qid": "q0655",
-      "reason": "question has image assets but no objectTags",
-      "details": {}
-    },
-    {
-      "type": "image-question-missing-object-tags",
-      "qid": "q0656",
-      "reason": "question has image assets but no objectTags",
-      "details": {}
-    },
-    {
-      "type": "image-question-missing-object-tags",
-      "qid": "q0664",
-      "reason": "question has image assets but no objectTags",
-      "details": {}
-    },
-    {
-      "type": "image-question-missing-object-tags",
-      "qid": "q0665",
-      "reason": "question has image assets but no objectTags",
-      "details": {}
-    },
-    {
-      "type": "image-question-missing-object-tags",
-      "qid": "q0666",
-      "reason": "question has image assets but no objectTags",
-      "details": {}
-    },
-    {
-      "type": "image-question-missing-object-tags",
-      "qid": "q0668",
-      "reason": "question has image assets but no objectTags",
-      "details": {}
-    },
-    {
-      "type": "image-question-missing-object-tags",
-      "qid": "q0677",
-      "reason": "question has image assets but no objectTags",
-      "details": {}
-    },
-    {
-      "type": "image-question-missing-object-tags",
-      "qid": "q0679",
-      "reason": "question has image assets but no objectTags",
-      "details": {}
-    },
-    {
-      "type": "image-question-missing-object-tags",
-      "qid": "q0684",
-      "reason": "question has image assets but no objectTags",
-      "details": {}
-    },
-    {
-      "type": "image-question-missing-object-tags",
-      "qid": "q0692",
-      "reason": "question has image assets but no objectTags",
-      "details": {}
-    },
-    {
-      "type": "image-question-missing-object-tags",
-      "qid": "q0694",
-      "reason": "question has image assets but no objectTags",
-      "details": {}
-    },
-    {
-      "type": "image-question-missing-object-tags",
-      "qid": "q0724",
-      "reason": "question has image assets but no objectTags",
-      "details": {}
-    },
-    {
-      "type": "image-question-missing-object-tags",
-      "qid": "q0726",
-      "reason": "question has image assets but no objectTags",
-      "details": {}
-    },
-    {
-      "type": "image-question-missing-object-tags",
-      "qid": "q0727",
-      "reason": "question has image assets but no objectTags",
-      "details": {}
-    },
-    {
-      "type": "image-question-missing-object-tags",
-      "qid": "q0731",
-      "reason": "question has image assets but no objectTags",
-      "details": {}
-    },
-    {
-      "type": "image-question-missing-object-tags",
-      "qid": "q0736",
-      "reason": "question has image assets but no objectTags",
-      "details": {}
-    },
-    {
-      "type": "image-question-missing-object-tags",
-      "qid": "q0740",
-      "reason": "question has image assets but no objectTags",
-      "details": {}
-    },
-    {
-      "type": "image-question-missing-object-tags",
-      "qid": "q0747",
-      "reason": "question has image assets but no objectTags",
-      "details": {}
-    },
-    {
-      "type": "image-question-missing-object-tags",
-      "qid": "q0748",
-      "reason": "question has image assets but no objectTags",
-      "details": {}
-    },
-    {
-      "type": "image-question-missing-object-tags",
-      "qid": "q0752",
-      "reason": "question has image assets but no objectTags",
-      "details": {}
-    },
-    {
-      "type": "image-question-missing-object-tags",
-      "qid": "q0753",
-      "reason": "question has image assets but no objectTags",
-      "details": {}
-    },
-    {
-      "type": "image-question-missing-object-tags",
-      "qid": "q0766",
-      "reason": "question has image assets but no objectTags",
-      "details": {}
-    },
-    {
-      "type": "image-question-missing-object-tags",
-      "qid": "q0770",
-      "reason": "question has image assets but no objectTags",
-      "details": {}
-    },
-    {
-      "type": "image-question-missing-object-tags",
-      "qid": "q0773",
-      "reason": "question has image assets but no objectTags",
-      "details": {}
-    },
-    {
-      "type": "image-question-missing-object-tags",
-      "qid": "q0780",
-      "reason": "question has image assets but no objectTags",
-      "details": {}
-    },
-    {
-      "type": "image-question-missing-object-tags",
-      "qid": "q0782",
-      "reason": "question has image assets but no objectTags",
-      "details": {}
-    },
-    {
-      "type": "image-question-missing-object-tags",
-      "qid": "q0786",
-      "reason": "question has image assets but no objectTags",
-      "details": {}
-    },
-    {
-      "type": "image-question-missing-object-tags",
-      "qid": "q0787",
-      "reason": "question has image assets but no objectTags",
-      "details": {}
-    },
-    {
-      "type": "image-question-missing-object-tags",
-      "qid": "q0792",
-      "reason": "question has image assets but no objectTags",
-      "details": {}
-    },
-    {
-      "type": "image-question-missing-object-tags",
-      "qid": "q0797",
-      "reason": "question has image assets but no objectTags",
-      "details": {}
-    },
-    {
-      "type": "image-question-missing-object-tags",
-      "qid": "q0805",
-      "reason": "question has image assets but no objectTags",
-      "details": {}
-    },
-    {
-      "type": "image-question-missing-object-tags",
-      "qid": "q0806",
-      "reason": "question has image assets but no objectTags",
-      "details": {}
-    },
-    {
-      "type": "image-question-missing-object-tags",
-      "qid": "q0831",
-      "reason": "question has image assets but no objectTags",
-      "details": {}
-    },
-    {
-      "type": "image-question-missing-object-tags",
-      "qid": "q0855",
-      "reason": "question has image assets but no objectTags",
-      "details": {}
-    },
-    {
-      "type": "image-question-missing-object-tags",
-      "qid": "q0857",
-      "reason": "question has image assets but no objectTags",
-      "details": {}
-    },
-    {
-      "type": "image-question-missing-object-tags",
-      "qid": "q0864",
-      "reason": "question has image assets but no objectTags",
-      "details": {}
-    },
-    {
-      "type": "image-question-missing-object-tags",
-      "qid": "q0868",
-      "reason": "question has image assets but no objectTags",
-      "details": {}
-    },
-    {
-      "type": "image-question-missing-object-tags",
-      "qid": "q0872",
-      "reason": "question has image assets but no objectTags",
-      "details": {}
-    },
-    {
-      "type": "image-question-missing-object-tags",
-      "qid": "q0873",
-      "reason": "question has image assets but no objectTags",
-      "details": {}
-    },
-    {
-      "type": "image-question-missing-object-tags",
-      "qid": "q0875",
-      "reason": "question has image assets but no objectTags",
-      "details": {}
-    },
-    {
-      "type": "image-question-missing-object-tags",
-      "qid": "q0880",
-      "reason": "question has image assets but no objectTags",
-      "details": {}
-    },
-    {
-      "type": "image-question-missing-object-tags",
-      "qid": "q0887",
-      "reason": "question has image assets but no objectTags",
-      "details": {}
-    },
-    {
-      "type": "image-question-missing-object-tags",
-      "qid": "q0896",
-      "reason": "question has image assets but no objectTags",
-      "details": {}
-    },
-    {
-      "type": "image-question-missing-object-tags",
-      "qid": "q0898",
-      "reason": "question has image assets but no objectTags",
-      "details": {}
-    },
-    {
-      "type": "image-question-missing-object-tags",
-      "qid": "q0929",
-      "reason": "question has image assets but no objectTags",
-      "details": {}
-    },
-    {
-      "type": "image-question-missing-object-tags",
-      "qid": "q0930",
-      "reason": "question has image assets but no objectTags",
-      "details": {}
-    },
-    {
-      "type": "image-question-missing-object-tags",
-      "qid": "q0958",
-      "reason": "question has image assets but no objectTags",
-      "details": {}
-    },
-    {
-      "type": "image-question-missing-object-tags",
-      "qid": "q0967",
-      "reason": "question has image assets but no objectTags",
-      "details": {}
-    },
-    {
-      "type": "image-question-missing-object-tags",
-      "qid": "q0969",
-      "reason": "question has image assets but no objectTags",
-      "details": {}
-    },
-    {
-      "type": "image-question-missing-object-tags",
-      "qid": "q0984",
-      "reason": "question has image assets but no objectTags",
+      "type": "image-tags-without-image",
+      "qid": "q0003",
+      "reason": "question has image tags but no master image asset",
       "details": {}
     },
     {
@@ -5795,41 +5195,6 @@
     },
     {
       "type": "duplicate-candidate",
-      "qid": "q0576,q0586,q0613",
-      "reason": "medium confidence duplicate candidate",
-      "details": {
-        "confidence": "medium",
-        "qids": [
-          "q0576",
-          "q0586",
-          "q0613"
-        ],
-        "prompts": [
-          {
-            "qid": "q0576",
-            "prompt": "It lights to indicate that ______."
-          },
-          {
-            "qid": "q0586",
-            "prompt": "It lights to indicate that ______."
-          },
-          {
-            "qid": "q0613",
-            "prompt": "It lights to indicate that ______."
-          }
-        ],
-        "answerLogic": [
-          "A"
-        ],
-        "imageRefs": [
-          "/qbank/2023-test1/images/img_7c16f50f129934de770fecfab12c7f95.jpeg",
-          "/qbank/2023-test1/images/img_a8cd44581e1f7a16aa4af82c4dfa30c8.jpeg",
-          "/qbank/2023-test1/images/img_f0462c361b7bc23558b7bbbfaef20433.jpeg"
-        ]
-      }
-    },
-    {
-      "type": "duplicate-candidate",
       "qid": "q0577,q0581",
       "reason": "medium confidence duplicate candidate",
       "details": {
@@ -5859,51 +5224,17 @@
     },
     {
       "type": "duplicate-candidate",
-      "qid": "q0580,q0629",
-      "reason": "medium confidence duplicate candidate",
-      "details": {
-        "confidence": "medium",
-        "qids": [
-          "q0580",
-          "q0629"
-        ],
-        "prompts": [
-          {
-            "qid": "q0580",
-            "prompt": "It lights to indicate that ______."
-          },
-          {
-            "qid": "q0629",
-            "prompt": "It lights to indicate that ______."
-          }
-        ],
-        "answerLogic": [
-          "D"
-        ],
-        "imageRefs": [
-          "/qbank/2023-test1/images/img_7ae51200ea841830de1000cdad800d89.jpeg",
-          "/qbank/2023-test1/images/img_589944842eaf29ef41ac5737a2606d47.jpeg"
-        ]
-      }
-    },
-    {
-      "type": "duplicate-candidate",
-      "qid": "q0583,q0607,q0620",
+      "qid": "q0583,q0620",
       "reason": "medium confidence duplicate candidate",
       "details": {
         "confidence": "medium",
         "qids": [
           "q0583",
-          "q0607",
           "q0620"
         ],
         "prompts": [
           {
             "qid": "q0583",
-            "prompt": "It lights to indicate that ______."
-          },
-          {
-            "qid": "q0607",
             "prompt": "It lights to indicate that ______."
           },
           {
@@ -5916,21 +5247,48 @@
         ],
         "imageRefs": [
           "/qbank/2023-test1/images/img_af5f2fb3b3b9cebac5262595107b300a.jpeg",
-          "/qbank/2023-test1/images/img_c647798b3d5550b4a802306e46b080f3.jpeg",
           "/qbank/2023-test1/images/img_e71668f2b3368e3b7d4cf94b089b65eb.jpeg"
         ]
       }
     },
     {
       "type": "duplicate-candidate",
-      "qid": "q0599,q0609,q0610",
+      "qid": "q0586,q0613",
+      "reason": "medium confidence duplicate candidate",
+      "details": {
+        "confidence": "medium",
+        "qids": [
+          "q0586",
+          "q0613"
+        ],
+        "prompts": [
+          {
+            "qid": "q0586",
+            "prompt": "It lights to indicate that ______."
+          },
+          {
+            "qid": "q0613",
+            "prompt": "It lights to indicate that ______."
+          }
+        ],
+        "answerLogic": [
+          "A"
+        ],
+        "imageRefs": [
+          "/qbank/2023-test1/images/img_a8cd44581e1f7a16aa4af82c4dfa30c8.jpeg",
+          "/qbank/2023-test1/images/img_f0462c361b7bc23558b7bbbfaef20433.jpeg"
+        ]
+      }
+    },
+    {
+      "type": "duplicate-candidate",
+      "qid": "q0599,q0609",
       "reason": "medium confidence duplicate candidate",
       "details": {
         "confidence": "medium",
         "qids": [
           "q0599",
-          "q0609",
-          "q0610"
+          "q0609"
         ],
         "prompts": [
           {
@@ -5940,10 +5298,6 @@
           {
             "qid": "q0609",
             "prompt": "What is this instrument?"
-          },
-          {
-            "qid": "q0610",
-            "prompt": "What is this instrument?"
           }
         ],
         "answerLogic": [
@@ -5951,90 +5305,7 @@
         ],
         "imageRefs": [
           "/qbank/2023-test1/images/img_c23528a789d60e9da8c4a30e43bca394.jpeg",
-          "/qbank/2023-test1/images/img_12c0fa2bd0eb9aaa2238c4e71fb4afd0.jpeg",
-          "/qbank/2023-test1/images/img_a78603fbc73f97b11a5b001fc89bf760.jpeg"
-        ]
-      }
-    },
-    {
-      "type": "duplicate-candidate",
-      "qid": "q0604,q0612,q0628",
-      "reason": "medium confidence duplicate candidate",
-      "details": {
-        "confidence": "medium",
-        "qids": [
-          "q0604",
-          "q0612",
-          "q0628"
-        ],
-        "prompts": [
-          {
-            "qid": "q0604",
-            "prompt": "It lights to indicate that ______."
-          },
-          {
-            "qid": "q0612",
-            "prompt": "It lights to indicate that ______."
-          },
-          {
-            "qid": "q0628",
-            "prompt": "It lights to indicate that ______."
-          }
-        ],
-        "answerLogic": [
-          "C"
-        ],
-        "imageRefs": [
-          "/qbank/2023-test1/images/img_25a7f86a8db6cc9f3974423cac729930.jpeg",
-          "/qbank/2023-test1/images/img_eaba04c77a8456540f60c68a8ba61ec8.jpeg",
-          "/qbank/2023-test1/images/img_b42c75626210ff8eee113ffa66bfde77.jpeg"
-        ]
-      }
-    },
-    {
-      "type": "duplicate-candidate",
-      "qid": "q0656,q0668,q0748,q0752,q0786",
-      "reason": "medium confidence duplicate candidate",
-      "details": {
-        "confidence": "medium",
-        "qids": [
-          "q0656",
-          "q0668",
-          "q0748",
-          "q0752",
-          "q0786"
-        ],
-        "prompts": [
-          {
-            "qid": "q0656",
-            "prompt": "What’s the meaning of this sign?"
-          },
-          {
-            "qid": "q0668",
-            "prompt": "What’s the meaning of this sign?"
-          },
-          {
-            "qid": "q0748",
-            "prompt": "What’s the meaning of this sign?"
-          },
-          {
-            "qid": "q0752",
-            "prompt": "What’s the meaning of this sign?"
-          },
-          {
-            "qid": "q0786",
-            "prompt": "What’s the meaning of this sign?"
-          }
-        ],
-        "answerLogic": [
-          "D"
-        ],
-        "imageRefs": [
-          "/qbank/2023-test1/images/img_c34a168db5af4d80acbc8a825898a3fc.jpeg",
-          "/qbank/2023-test1/images/img_4a501b1fd8e744abfdc7c34046468905.jpeg",
-          "/qbank/2023-test1/images/img_973ceb6fedb60cfdfc3f4187f8ac30e1.jpeg",
-          "/qbank/2023-test1/images/img_32d6ac0985cefa47ec6e4df69dcdc24a.jpeg",
-          "/qbank/2023-test1/images/img_e2be2139c4c0de4e9d3d55b1e3e74f00.jpeg"
+          "/qbank/2023-test1/images/img_12c0fa2bd0eb9aaa2238c4e71fb4afd0.jpeg"
         ]
       }
     },
@@ -6098,119 +5369,30 @@
     },
     {
       "type": "duplicate-candidate",
-      "qid": "q0664,q0684,q0753,q0767,q0780,q0788,q0797,q0855,q0898",
+      "qid": "q0668,q0748",
       "reason": "medium confidence duplicate candidate",
       "details": {
         "confidence": "medium",
         "qids": [
-          "q0664",
-          "q0684",
-          "q0753",
-          "q0767",
-          "q0780",
-          "q0788",
-          "q0797",
-          "q0855",
-          "q0898"
+          "q0668",
+          "q0748"
         ],
         "prompts": [
           {
-            "qid": "q0664",
+            "qid": "q0668",
             "prompt": "What’s the meaning of this sign?"
           },
           {
-            "qid": "q0684",
-            "prompt": "What’s the meaning of this sign?"
-          },
-          {
-            "qid": "q0753",
-            "prompt": "What’s the meaning of this sign?"
-          },
-          {
-            "qid": "q0767",
-            "prompt": "What’s the meaning of this sign?"
-          },
-          {
-            "qid": "q0780",
-            "prompt": "What’s the meaning of this sign?"
-          },
-          {
-            "qid": "q0788",
-            "prompt": "What’s the meaning of this sign?"
-          },
-          {
-            "qid": "q0797",
-            "prompt": "What’s the meaning of this sign?"
-          },
-          {
-            "qid": "q0855",
-            "prompt": "What’s the meaning of this sign?"
-          },
-          {
-            "qid": "q0898",
+            "qid": "q0748",
             "prompt": "What’s the meaning of this sign?"
           }
         ],
         "answerLogic": [
-          "B"
+          "D"
         ],
         "imageRefs": [
-          "/qbank/2023-test1/images/img_3f1fb40c4147e43e0bde84ed26341f7f.jpeg",
-          "/qbank/2023-test1/images/img_bb4e35f803a8161dbc606d026172997d.jpeg",
-          "/qbank/2023-test1/images/img_81f9b1f1af856944ae26bc7344ac973c.jpeg",
-          "/qbank/2023-test1/images/img_adfe9258271958d83f02bc271f31e117.jpeg",
-          "/qbank/2023-test1/images/img_d2a41eec4685b9cdbb1f8d9168f78263.jpeg",
-          "/qbank/2023-test1/images/img_0ac65eec1758fe51160177349952542b.jpeg",
-          "/qbank/2023-test1/images/img_25120a7c2ea5de6c38afa07ab8a7e167.jpeg",
-          "/qbank/2023-test1/images/img_4b78c6a6959d3e8d24c3ff033706731d.png",
-          "/qbank/2023-test1/images/img_6236ee3631a1aee5c687bfa86d929444.jpeg"
-        ]
-      }
-    },
-    {
-      "type": "duplicate-candidate",
-      "qid": "q0665,q0736,q0747,q0766,q0792",
-      "reason": "medium confidence duplicate candidate",
-      "details": {
-        "confidence": "medium",
-        "qids": [
-          "q0665",
-          "q0736",
-          "q0747",
-          "q0766",
-          "q0792"
-        ],
-        "prompts": [
-          {
-            "qid": "q0665",
-            "prompt": "What’s the meaning of this sign?"
-          },
-          {
-            "qid": "q0736",
-            "prompt": "What’s the meaning of this sign?"
-          },
-          {
-            "qid": "q0747",
-            "prompt": "What’s the meaning of this sign?"
-          },
-          {
-            "qid": "q0766",
-            "prompt": "What’s the meaning of this sign?"
-          },
-          {
-            "qid": "q0792",
-            "prompt": "What’s the meaning of this sign?"
-          }
-        ],
-        "answerLogic": [
-          "C"
-        ],
-        "imageRefs": [
-          "/qbank/2023-test1/images/img_13a5463bf99109f96c203cb27cea474e.jpeg",
-          "/qbank/2023-test1/images/img_522120764d6230cc679a826e7f74c5ab.jpeg",
-          "/qbank/2023-test1/images/img_cd1d9c40b39cfe3932a5176f51b031a3.jpeg",
-          "/qbank/2023-test1/images/img_f3761fba9a4181903cf3b7459d2f86ab.jpeg",
-          "/qbank/2023-test1/images/img_382158d8af9518928a3139d0838a4e98.jpeg"
+          "/qbank/2023-test1/images/img_4a501b1fd8e744abfdc7c34046468905.jpeg",
+          "/qbank/2023-test1/images/img_973ceb6fedb60cfdfc3f4187f8ac30e1.jpeg"
         ]
       }
     },
@@ -6251,20 +5433,13 @@
     },
     {
       "type": "duplicate-candidate",
-      "qid": "q0679,q0694,q0740,q0770,q0782,q0787,q0796,q0868,q0872",
+      "qid": "q0679,q0787",
       "reason": "medium confidence duplicate candidate",
       "details": {
         "confidence": "medium",
         "qids": [
           "q0679",
-          "q0694",
-          "q0740",
-          "q0770",
-          "q0782",
-          "q0787",
-          "q0796",
-          "q0868",
-          "q0872"
+          "q0787"
         ],
         "prompts": [
           {
@@ -6272,35 +5447,7 @@
             "prompt": "What’s the meaning of this sign?"
           },
           {
-            "qid": "q0694",
-            "prompt": "What’s the meaning of this sign?"
-          },
-          {
-            "qid": "q0740",
-            "prompt": "What’s the meaning of this sign?"
-          },
-          {
-            "qid": "q0770",
-            "prompt": "What’s the meaning of this sign?"
-          },
-          {
-            "qid": "q0782",
-            "prompt": "What’s the meaning of this sign?"
-          },
-          {
             "qid": "q0787",
-            "prompt": "What’s the meaning of this sign?"
-          },
-          {
-            "qid": "q0796",
-            "prompt": "What’s the meaning of this sign?"
-          },
-          {
-            "qid": "q0868",
-            "prompt": "What’s the meaning of this sign?"
-          },
-          {
-            "qid": "q0872",
             "prompt": "What’s the meaning of this sign?"
           }
         ],
@@ -6309,14 +5456,7 @@
         ],
         "imageRefs": [
           "/qbank/2023-test1/images/img_d1f6c560dea19224fb8772147449b272.jpeg",
-          "/qbank/2023-test1/images/img_57f39b462b51f82e12cef9a65dd3eba6.jpeg",
-          "/qbank/2023-test1/images/img_5062bd48bf2f065e58f1a545ac9544d3.jpeg",
-          "/qbank/2023-test1/images/img_80cd0d952314595268db07bec4c5767d.jpeg",
-          "/qbank/2023-test1/images/img_04fdae10b067730db62a2ba85cea4f6e.jpeg",
-          "/qbank/2023-test1/images/img_78d138390e9d48167be1a4154141a88a.jpeg",
-          "/qbank/2023-test1/images/img_8bb5e07a106a68922230d42690272956.jpeg",
-          "/qbank/2023-test1/images/img_93ea28f95848a3d268193185f2196318.jpeg",
-          "/qbank/2023-test1/images/img_a44bd80c0fa6e2747a90e7eb197655d2.jpeg"
+          "/qbank/2023-test1/images/img_78d138390e9d48167be1a4154141a88a.jpeg"
         ]
       }
     },
@@ -6415,36 +5555,30 @@
     },
     {
       "type": "duplicate-candidate",
-      "qid": "q0692,q0880,q0896",
+      "qid": "q0694,q0782",
       "reason": "medium confidence duplicate candidate",
       "details": {
         "confidence": "medium",
         "qids": [
-          "q0692",
-          "q0880",
-          "q0896"
+          "q0694",
+          "q0782"
         ],
         "prompts": [
           {
-            "qid": "q0692",
-            "prompt": "This set of the hand signals of the traffic police indicates that the vehicles should ____ ."
+            "qid": "q0694",
+            "prompt": "What’s the meaning of this sign?"
           },
           {
-            "qid": "q0880",
-            "prompt": "This set of the hand signals of the traffic police indicates that the vehicles should ___ ."
-          },
-          {
-            "qid": "q0896",
-            "prompt": "This set of the hand signals of the traffic police indicates that the vehicles should ___ ."
+            "qid": "q0782",
+            "prompt": "What’s the meaning of this sign?"
           }
         ],
         "answerLogic": [
-          "D"
+          "A"
         ],
         "imageRefs": [
-          "/qbank/2023-test1/images/img_8186cb52035df346d563d71d6b25a24d.jpeg",
-          "/qbank/2023-test1/images/img_61803755af498e331b8fd1b530b3796b.jpeg",
-          "/qbank/2023-test1/images/img_01f5d51eb306f0c286566cabae215a71.jpeg"
+          "/qbank/2023-test1/images/img_57f39b462b51f82e12cef9a65dd3eba6.jpeg",
+          "/qbank/2023-test1/images/img_04fdae10b067730db62a2ba85cea4f6e.jpeg"
         ]
       }
     },
@@ -6532,6 +5666,64 @@
     },
     {
       "type": "duplicate-candidate",
+      "qid": "q0747,q0792",
+      "reason": "medium confidence duplicate candidate",
+      "details": {
+        "confidence": "medium",
+        "qids": [
+          "q0747",
+          "q0792"
+        ],
+        "prompts": [
+          {
+            "qid": "q0747",
+            "prompt": "What’s the meaning of this sign?"
+          },
+          {
+            "qid": "q0792",
+            "prompt": "What’s the meaning of this sign?"
+          }
+        ],
+        "answerLogic": [
+          "C"
+        ],
+        "imageRefs": [
+          "/qbank/2023-test1/images/img_cd1d9c40b39cfe3932a5176f51b031a3.jpeg",
+          "/qbank/2023-test1/images/img_382158d8af9518928a3139d0838a4e98.jpeg"
+        ]
+      }
+    },
+    {
+      "type": "duplicate-candidate",
+      "qid": "q0767,q0788",
+      "reason": "medium confidence duplicate candidate",
+      "details": {
+        "confidence": "medium",
+        "qids": [
+          "q0767",
+          "q0788"
+        ],
+        "prompts": [
+          {
+            "qid": "q0767",
+            "prompt": "What’s the meaning of this sign?"
+          },
+          {
+            "qid": "q0788",
+            "prompt": "What’s the meaning of this sign?"
+          }
+        ],
+        "answerLogic": [
+          "B"
+        ],
+        "imageRefs": [
+          "/qbank/2023-test1/images/img_adfe9258271958d83f02bc271f31e117.jpeg",
+          "/qbank/2023-test1/images/img_0ac65eec1758fe51160177349952542b.jpeg"
+        ]
+      }
+    },
+    {
+      "type": "duplicate-candidate",
       "qid": "q0776,q0848",
       "reason": "medium confidence duplicate candidate",
       "details": {
@@ -6585,6 +5777,35 @@
         "imageRefs": [
           "/qbank/2023-test1/images/img_f67347673870f08c3030dc015f60393d.jpeg",
           "/qbank/2023-test1/images/img_ea5a2c366106d8150a3422755766cc27.jpeg"
+        ]
+      }
+    },
+    {
+      "type": "duplicate-candidate",
+      "qid": "q0880,q0896",
+      "reason": "medium confidence duplicate candidate",
+      "details": {
+        "confidence": "medium",
+        "qids": [
+          "q0880",
+          "q0896"
+        ],
+        "prompts": [
+          {
+            "qid": "q0880",
+            "prompt": "This set of the hand signals of the traffic police indicates that the vehicles should ___ ."
+          },
+          {
+            "qid": "q0896",
+            "prompt": "This set of the hand signals of the traffic police indicates that the vehicles should ___ ."
+          }
+        ],
+        "answerLogic": [
+          "D"
+        ],
+        "imageRefs": [
+          "/qbank/2023-test1/images/img_61803755af498e331b8fd1b530b3796b.jpeg",
+          "/qbank/2023-test1/images/img_01f5d51eb306f0c286566cabae215a71.jpeg"
         ]
       }
     }
@@ -7120,23 +6341,11 @@
     {
       "lang": "ja",
       "path": "public/qbank/2023-test1/translations.ja.json",
-      "translatedQids": 981,
-      "coveragePercent": 99.7,
-      "placeholderQids": [
-        "q0941",
-        "q0948",
-        "q0950",
-        "q0957"
-      ],
-      "missingQids": [
-        "q0941",
-        "q0948",
-        "q0950",
-        "q0957"
-      ],
-      "extraQids": [
-        "q0518"
-      ],
+      "translatedQids": 984,
+      "coveragePercent": 100,
+      "placeholderQids": [],
+      "missingQids": [],
+      "extraQids": [],
       "invalidLocaleAnswerKeys": [],
       "mcqMissingOptions": [],
       "mcqMissingLocaleAnswerKey": [],
@@ -7145,10 +6354,10 @@
       "malformedObjects": [],
       "emptyTextIssues": [],
       "counts": {
-        "translatedQids": 981,
-        "placeholderQids": 4,
-        "missingQids": 4,
-        "extraQids": 1,
+        "translatedQids": 984,
+        "placeholderQids": 0,
+        "missingQids": 0,
+        "extraQids": 0,
         "invalidLocaleAnswerKeys": 0,
         "mcqMissingOptions": 0,
         "mcqMissingLocaleAnswerKey": 0,
@@ -7161,64 +6370,14 @@
     {
       "lang": "ko",
       "path": "public/qbank/2023-test1/translations.ko.json",
-      "translatedQids": 985,
-      "coveragePercent": 100.1,
+      "translatedQids": 984,
+      "coveragePercent": 100,
       "placeholderQids": [],
       "missingQids": [],
-      "extraQids": [
-        "q0518"
-      ],
+      "extraQids": [],
       "invalidLocaleAnswerKeys": [],
       "mcqMissingOptions": [],
       "mcqMissingLocaleAnswerKey": [
-        {
-          "qid": "q0364",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0365",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0367",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0372",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0390",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0422",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0428",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0437",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0578",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0591",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0900",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0972",
-          "localeCorrectOptionKey": null
-        },
         {
           "qid": "q0105",
           "localeCorrectOptionKey": null
@@ -7325,198 +6484,6 @@
         },
         {
           "qid": "q0131",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0366",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0373",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0378",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0380",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0391",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0397",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0398",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0399",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0400",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0402",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0362",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0363",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0368",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0369",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0370",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0371",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0374",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0375",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0376",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0377",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0379",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0381",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0382",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0383",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0384",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0385",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0386",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0387",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0388",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0389",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0392",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0393",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0394",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0404",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0405",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0577",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0581",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0582",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0585",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0587",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0588",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0590",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0592",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0593",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0595",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0597",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0598",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0599",
           "localeCorrectOptionKey": null
         },
         {
@@ -7740,6 +6707,138 @@
           "localeCorrectOptionKey": null
         },
         {
+          "qid": "q0362",
+          "localeCorrectOptionKey": null
+        },
+        {
+          "qid": "q0363",
+          "localeCorrectOptionKey": null
+        },
+        {
+          "qid": "q0364",
+          "localeCorrectOptionKey": null
+        },
+        {
+          "qid": "q0365",
+          "localeCorrectOptionKey": null
+        },
+        {
+          "qid": "q0366",
+          "localeCorrectOptionKey": null
+        },
+        {
+          "qid": "q0367",
+          "localeCorrectOptionKey": null
+        },
+        {
+          "qid": "q0368",
+          "localeCorrectOptionKey": null
+        },
+        {
+          "qid": "q0369",
+          "localeCorrectOptionKey": null
+        },
+        {
+          "qid": "q0370",
+          "localeCorrectOptionKey": null
+        },
+        {
+          "qid": "q0371",
+          "localeCorrectOptionKey": null
+        },
+        {
+          "qid": "q0372",
+          "localeCorrectOptionKey": null
+        },
+        {
+          "qid": "q0373",
+          "localeCorrectOptionKey": null
+        },
+        {
+          "qid": "q0374",
+          "localeCorrectOptionKey": null
+        },
+        {
+          "qid": "q0375",
+          "localeCorrectOptionKey": null
+        },
+        {
+          "qid": "q0376",
+          "localeCorrectOptionKey": null
+        },
+        {
+          "qid": "q0377",
+          "localeCorrectOptionKey": null
+        },
+        {
+          "qid": "q0378",
+          "localeCorrectOptionKey": null
+        },
+        {
+          "qid": "q0379",
+          "localeCorrectOptionKey": null
+        },
+        {
+          "qid": "q0380",
+          "localeCorrectOptionKey": null
+        },
+        {
+          "qid": "q0381",
+          "localeCorrectOptionKey": null
+        },
+        {
+          "qid": "q0382",
+          "localeCorrectOptionKey": null
+        },
+        {
+          "qid": "q0383",
+          "localeCorrectOptionKey": null
+        },
+        {
+          "qid": "q0384",
+          "localeCorrectOptionKey": null
+        },
+        {
+          "qid": "q0385",
+          "localeCorrectOptionKey": null
+        },
+        {
+          "qid": "q0386",
+          "localeCorrectOptionKey": null
+        },
+        {
+          "qid": "q0387",
+          "localeCorrectOptionKey": null
+        },
+        {
+          "qid": "q0388",
+          "localeCorrectOptionKey": null
+        },
+        {
+          "qid": "q0389",
+          "localeCorrectOptionKey": null
+        },
+        {
+          "qid": "q0390",
+          "localeCorrectOptionKey": null
+        },
+        {
+          "qid": "q0391",
+          "localeCorrectOptionKey": null
+        },
+        {
+          "qid": "q0392",
+          "localeCorrectOptionKey": null
+        },
+        {
+          "qid": "q0393",
+          "localeCorrectOptionKey": null
+        },
+        {
+          "qid": "q0394",
+          "localeCorrectOptionKey": null
+        },
+        {
           "qid": "q0395",
           "localeCorrectOptionKey": null
         },
@@ -7748,11 +6847,39 @@
           "localeCorrectOptionKey": null
         },
         {
+          "qid": "q0397",
+          "localeCorrectOptionKey": null
+        },
+        {
+          "qid": "q0398",
+          "localeCorrectOptionKey": null
+        },
+        {
+          "qid": "q0399",
+          "localeCorrectOptionKey": null
+        },
+        {
+          "qid": "q0400",
+          "localeCorrectOptionKey": null
+        },
+        {
           "qid": "q0401",
           "localeCorrectOptionKey": null
         },
         {
+          "qid": "q0402",
+          "localeCorrectOptionKey": null
+        },
+        {
           "qid": "q0403",
+          "localeCorrectOptionKey": null
+        },
+        {
+          "qid": "q0404",
+          "localeCorrectOptionKey": null
+        },
+        {
+          "qid": "q0405",
           "localeCorrectOptionKey": null
         },
         {
@@ -7761,6 +6888,18 @@
         },
         {
           "qid": "q0407",
+          "localeCorrectOptionKey": null
+        },
+        {
+          "qid": "q0408",
+          "localeCorrectOptionKey": null
+        },
+        {
+          "qid": "q0409",
+          "localeCorrectOptionKey": null
+        },
+        {
+          "qid": "q0410",
           "localeCorrectOptionKey": null
         },
         {
@@ -7776,7 +6915,23 @@
           "localeCorrectOptionKey": null
         },
         {
+          "qid": "q0414",
+          "localeCorrectOptionKey": null
+        },
+        {
+          "qid": "q0415",
+          "localeCorrectOptionKey": null
+        },
+        {
+          "qid": "q0416",
+          "localeCorrectOptionKey": null
+        },
+        {
           "qid": "q0417",
+          "localeCorrectOptionKey": null
+        },
+        {
+          "qid": "q0418",
           "localeCorrectOptionKey": null
         },
         {
@@ -7792,11 +6947,31 @@
           "localeCorrectOptionKey": null
         },
         {
+          "qid": "q0422",
+          "localeCorrectOptionKey": null
+        },
+        {
           "qid": "q0423",
           "localeCorrectOptionKey": null
         },
         {
+          "qid": "q0424",
+          "localeCorrectOptionKey": null
+        },
+        {
+          "qid": "q0425",
+          "localeCorrectOptionKey": null
+        },
+        {
           "qid": "q0426",
+          "localeCorrectOptionKey": null
+        },
+        {
+          "qid": "q0427",
+          "localeCorrectOptionKey": null
+        },
+        {
+          "qid": "q0428",
           "localeCorrectOptionKey": null
         },
         {
@@ -7832,6 +7007,14 @@
           "localeCorrectOptionKey": null
         },
         {
+          "qid": "q0437",
+          "localeCorrectOptionKey": null
+        },
+        {
+          "qid": "q0438",
+          "localeCorrectOptionKey": null
+        },
+        {
           "qid": "q0439",
           "localeCorrectOptionKey": null
         },
@@ -7841,6 +7024,18 @@
         },
         {
           "qid": "q0441",
+          "localeCorrectOptionKey": null
+        },
+        {
+          "qid": "q0442",
+          "localeCorrectOptionKey": null
+        },
+        {
+          "qid": "q0443",
+          "localeCorrectOptionKey": null
+        },
+        {
+          "qid": "q0444",
           "localeCorrectOptionKey": null
         },
         {
@@ -7868,7 +7063,27 @@
           "localeCorrectOptionKey": null
         },
         {
+          "qid": "q0451",
+          "localeCorrectOptionKey": null
+        },
+        {
+          "qid": "q0452",
+          "localeCorrectOptionKey": null
+        },
+        {
+          "qid": "q0453",
+          "localeCorrectOptionKey": null
+        },
+        {
+          "qid": "q0454",
+          "localeCorrectOptionKey": null
+        },
+        {
           "qid": "q0455",
+          "localeCorrectOptionKey": null
+        },
+        {
+          "qid": "q0456",
           "localeCorrectOptionKey": null
         },
         {
@@ -7884,6 +7099,10 @@
           "localeCorrectOptionKey": null
         },
         {
+          "qid": "q0460",
+          "localeCorrectOptionKey": null
+        },
+        {
           "qid": "q0461",
           "localeCorrectOptionKey": null
         },
@@ -7896,6 +7115,14 @@
           "localeCorrectOptionKey": null
         },
         {
+          "qid": "q0464",
+          "localeCorrectOptionKey": null
+        },
+        {
+          "qid": "q0465",
+          "localeCorrectOptionKey": null
+        },
+        {
           "qid": "q0466",
           "localeCorrectOptionKey": null
         },
@@ -7905,6 +7132,14 @@
         },
         {
           "qid": "q0468",
+          "localeCorrectOptionKey": null
+        },
+        {
+          "qid": "q0469",
+          "localeCorrectOptionKey": null
+        },
+        {
+          "qid": "q0470",
           "localeCorrectOptionKey": null
         },
         {
@@ -7924,11 +7159,31 @@
           "localeCorrectOptionKey": null
         },
         {
+          "qid": "q0475",
+          "localeCorrectOptionKey": null
+        },
+        {
+          "qid": "q0476",
+          "localeCorrectOptionKey": null
+        },
+        {
           "qid": "q0477",
           "localeCorrectOptionKey": null
         },
         {
+          "qid": "q0478",
+          "localeCorrectOptionKey": null
+        },
+        {
           "qid": "q0479",
+          "localeCorrectOptionKey": null
+        },
+        {
+          "qid": "q0480",
+          "localeCorrectOptionKey": null
+        },
+        {
+          "qid": "q0481",
           "localeCorrectOptionKey": null
         },
         {
@@ -7941,6 +7196,10 @@
         },
         {
           "qid": "q0484",
+          "localeCorrectOptionKey": null
+        },
+        {
+          "qid": "q0485",
           "localeCorrectOptionKey": null
         },
         {
@@ -7960,7 +7219,19 @@
           "localeCorrectOptionKey": null
         },
         {
+          "qid": "q0490",
+          "localeCorrectOptionKey": null
+        },
+        {
+          "qid": "q0491",
+          "localeCorrectOptionKey": null
+        },
+        {
           "qid": "q0492",
+          "localeCorrectOptionKey": null
+        },
+        {
+          "qid": "q0493",
           "localeCorrectOptionKey": null
         },
         {
@@ -7973,6 +7244,10 @@
         },
         {
           "qid": "q0496",
+          "localeCorrectOptionKey": null
+        },
+        {
+          "qid": "q0497",
           "localeCorrectOptionKey": null
         },
         {
@@ -7996,7 +7271,15 @@
           "localeCorrectOptionKey": null
         },
         {
+          "qid": "q0503",
+          "localeCorrectOptionKey": null
+        },
+        {
           "qid": "q0504",
+          "localeCorrectOptionKey": null
+        },
+        {
+          "qid": "q0505",
           "localeCorrectOptionKey": null
         },
         {
@@ -8016,11 +7299,19 @@
           "localeCorrectOptionKey": null
         },
         {
+          "qid": "q0510",
+          "localeCorrectOptionKey": null
+        },
+        {
           "qid": "q0511",
           "localeCorrectOptionKey": null
         },
         {
           "qid": "q0512",
+          "localeCorrectOptionKey": null
+        },
+        {
+          "qid": "q0513",
           "localeCorrectOptionKey": null
         },
         {
@@ -8040,250 +7331,6 @@
           "localeCorrectOptionKey": null
         },
         {
-          "qid": "q0521",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0579",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0596",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0625",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0626",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0698",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0699",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0709",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0735",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0873",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0885",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0901",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0902",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0909",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0910",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0914",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0915",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0920",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0922",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0923",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0925",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0970",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0971",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0408",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0409",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0410",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0414",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0415",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0416",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0418",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0424",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0425",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0427",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0438",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0442",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0443",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0444",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0451",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0452",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0453",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0454",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0456",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0460",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0464",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0465",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0469",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0470",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0475",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0476",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0478",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0480",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0481",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0485",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0490",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0491",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0493",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0497",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0503",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0505",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0510",
-          "localeCorrectOptionKey": null
-        },
-        {
-          "qid": "q0513",
-          "localeCorrectOptionKey": null
-        },
-        {
           "qid": "q0519",
           "localeCorrectOptionKey": null
         },
@@ -8292,11 +7339,35 @@
           "localeCorrectOptionKey": null
         },
         {
+          "qid": "q0521",
+          "localeCorrectOptionKey": null
+        },
+        {
           "qid": "q0576",
           "localeCorrectOptionKey": null
         },
         {
+          "qid": "q0577",
+          "localeCorrectOptionKey": null
+        },
+        {
+          "qid": "q0578",
+          "localeCorrectOptionKey": null
+        },
+        {
+          "qid": "q0579",
+          "localeCorrectOptionKey": null
+        },
+        {
           "qid": "q0580",
+          "localeCorrectOptionKey": null
+        },
+        {
+          "qid": "q0581",
+          "localeCorrectOptionKey": null
+        },
+        {
+          "qid": "q0582",
           "localeCorrectOptionKey": null
         },
         {
@@ -8308,7 +7379,19 @@
           "localeCorrectOptionKey": null
         },
         {
+          "qid": "q0585",
+          "localeCorrectOptionKey": null
+        },
+        {
           "qid": "q0586",
+          "localeCorrectOptionKey": null
+        },
+        {
+          "qid": "q0587",
+          "localeCorrectOptionKey": null
+        },
+        {
+          "qid": "q0588",
           "localeCorrectOptionKey": null
         },
         {
@@ -8316,7 +7399,43 @@
           "localeCorrectOptionKey": null
         },
         {
+          "qid": "q0590",
+          "localeCorrectOptionKey": null
+        },
+        {
+          "qid": "q0591",
+          "localeCorrectOptionKey": null
+        },
+        {
+          "qid": "q0592",
+          "localeCorrectOptionKey": null
+        },
+        {
+          "qid": "q0593",
+          "localeCorrectOptionKey": null
+        },
+        {
           "qid": "q0594",
+          "localeCorrectOptionKey": null
+        },
+        {
+          "qid": "q0595",
+          "localeCorrectOptionKey": null
+        },
+        {
+          "qid": "q0596",
+          "localeCorrectOptionKey": null
+        },
+        {
+          "qid": "q0597",
+          "localeCorrectOptionKey": null
+        },
+        {
+          "qid": "q0598",
+          "localeCorrectOptionKey": null
+        },
+        {
+          "qid": "q0599",
           "localeCorrectOptionKey": null
         },
         {
@@ -8417,6 +7536,14 @@
         },
         {
           "qid": "q0624",
+          "localeCorrectOptionKey": null
+        },
+        {
+          "qid": "q0625",
+          "localeCorrectOptionKey": null
+        },
+        {
+          "qid": "q0626",
           "localeCorrectOptionKey": null
         },
         {
@@ -8624,6 +7751,14 @@
           "localeCorrectOptionKey": null
         },
         {
+          "qid": "q0698",
+          "localeCorrectOptionKey": null
+        },
+        {
+          "qid": "q0699",
+          "localeCorrectOptionKey": null
+        },
+        {
           "qid": "q0700",
           "localeCorrectOptionKey": null
         },
@@ -8657,6 +7792,10 @@
         },
         {
           "qid": "q0708",
+          "localeCorrectOptionKey": null
+        },
+        {
+          "qid": "q0709",
           "localeCorrectOptionKey": null
         },
         {
@@ -8757,6 +7896,10 @@
         },
         {
           "qid": "q0734",
+          "localeCorrectOptionKey": null
+        },
+        {
+          "qid": "q0735",
           "localeCorrectOptionKey": null
         },
         {
@@ -9308,6 +8451,10 @@
           "localeCorrectOptionKey": null
         },
         {
+          "qid": "q0873",
+          "localeCorrectOptionKey": null
+        },
+        {
           "qid": "q0874",
           "localeCorrectOptionKey": null
         },
@@ -9349,6 +8496,10 @@
         },
         {
           "qid": "q0884",
+          "localeCorrectOptionKey": null
+        },
+        {
+          "qid": "q0885",
           "localeCorrectOptionKey": null
         },
         {
@@ -9408,6 +8559,50 @@
           "localeCorrectOptionKey": null
         },
         {
+          "qid": "q0900",
+          "localeCorrectOptionKey": null
+        },
+        {
+          "qid": "q0901",
+          "localeCorrectOptionKey": null
+        },
+        {
+          "qid": "q0902",
+          "localeCorrectOptionKey": null
+        },
+        {
+          "qid": "q0909",
+          "localeCorrectOptionKey": null
+        },
+        {
+          "qid": "q0910",
+          "localeCorrectOptionKey": null
+        },
+        {
+          "qid": "q0914",
+          "localeCorrectOptionKey": null
+        },
+        {
+          "qid": "q0915",
+          "localeCorrectOptionKey": null
+        },
+        {
+          "qid": "q0920",
+          "localeCorrectOptionKey": null
+        },
+        {
+          "qid": "q0922",
+          "localeCorrectOptionKey": null
+        },
+        {
+          "qid": "q0923",
+          "localeCorrectOptionKey": null
+        },
+        {
+          "qid": "q0925",
+          "localeCorrectOptionKey": null
+        },
+        {
           "qid": "q0927",
           "localeCorrectOptionKey": null
         },
@@ -9417,6 +8612,18 @@
         },
         {
           "qid": "q0929",
+          "localeCorrectOptionKey": null
+        },
+        {
+          "qid": "q0970",
+          "localeCorrectOptionKey": null
+        },
+        {
+          "qid": "q0971",
+          "localeCorrectOptionKey": null
+        },
+        {
+          "qid": "q0972",
           "localeCorrectOptionKey": null
         },
         {
@@ -9437,10 +8644,10 @@
       "malformedObjects": [],
       "emptyTextIssues": [],
       "counts": {
-        "translatedQids": 985,
+        "translatedQids": 984,
         "placeholderQids": 0,
         "missingQids": 0,
-        "extraQids": 1,
+        "extraQids": 0,
         "invalidLocaleAnswerKeys": 0,
         "mcqMissingOptions": 0,
         "mcqMissingLocaleAnswerKey": 565,
@@ -9487,8 +8694,8 @@
     "translatedImageCompatibility": [
       {
         "lang": "ja",
-        "translatedQidsWithMasterImages": 494,
-        "untranslatedQidsWithMasterImages": 4
+        "translatedQidsWithMasterImages": 498,
+        "untranslatedQidsWithMasterImages": 0
       },
       {
         "lang": "ko",
@@ -9549,36 +8756,6 @@
       {
         "confidence": "medium",
         "qids": [
-          "q0576",
-          "q0586",
-          "q0613"
-        ],
-        "prompts": [
-          {
-            "qid": "q0576",
-            "prompt": "It lights to indicate that ______."
-          },
-          {
-            "qid": "q0586",
-            "prompt": "It lights to indicate that ______."
-          },
-          {
-            "qid": "q0613",
-            "prompt": "It lights to indicate that ______."
-          }
-        ],
-        "answerLogic": [
-          "A"
-        ],
-        "imageRefs": [
-          "/qbank/2023-test1/images/img_7c16f50f129934de770fecfab12c7f95.jpeg",
-          "/qbank/2023-test1/images/img_a8cd44581e1f7a16aa4af82c4dfa30c8.jpeg",
-          "/qbank/2023-test1/images/img_f0462c361b7bc23558b7bbbfaef20433.jpeg"
-        ]
-      },
-      {
-        "confidence": "medium",
-        "qids": [
           "q0577",
           "q0581"
         ],
@@ -9603,41 +8780,12 @@
       {
         "confidence": "medium",
         "qids": [
-          "q0580",
-          "q0629"
-        ],
-        "prompts": [
-          {
-            "qid": "q0580",
-            "prompt": "It lights to indicate that ______."
-          },
-          {
-            "qid": "q0629",
-            "prompt": "It lights to indicate that ______."
-          }
-        ],
-        "answerLogic": [
-          "D"
-        ],
-        "imageRefs": [
-          "/qbank/2023-test1/images/img_7ae51200ea841830de1000cdad800d89.jpeg",
-          "/qbank/2023-test1/images/img_589944842eaf29ef41ac5737a2606d47.jpeg"
-        ]
-      },
-      {
-        "confidence": "medium",
-        "qids": [
           "q0583",
-          "q0607",
           "q0620"
         ],
         "prompts": [
           {
             "qid": "q0583",
-            "prompt": "It lights to indicate that ______."
-          },
-          {
-            "qid": "q0607",
             "prompt": "It lights to indicate that ______."
           },
           {
@@ -9650,16 +8798,38 @@
         ],
         "imageRefs": [
           "/qbank/2023-test1/images/img_af5f2fb3b3b9cebac5262595107b300a.jpeg",
-          "/qbank/2023-test1/images/img_c647798b3d5550b4a802306e46b080f3.jpeg",
           "/qbank/2023-test1/images/img_e71668f2b3368e3b7d4cf94b089b65eb.jpeg"
         ]
       },
       {
         "confidence": "medium",
         "qids": [
+          "q0586",
+          "q0613"
+        ],
+        "prompts": [
+          {
+            "qid": "q0586",
+            "prompt": "It lights to indicate that ______."
+          },
+          {
+            "qid": "q0613",
+            "prompt": "It lights to indicate that ______."
+          }
+        ],
+        "answerLogic": [
+          "A"
+        ],
+        "imageRefs": [
+          "/qbank/2023-test1/images/img_a8cd44581e1f7a16aa4af82c4dfa30c8.jpeg",
+          "/qbank/2023-test1/images/img_f0462c361b7bc23558b7bbbfaef20433.jpeg"
+        ]
+      },
+      {
+        "confidence": "medium",
+        "qids": [
           "q0599",
-          "q0609",
-          "q0610"
+          "q0609"
         ],
         "prompts": [
           {
@@ -9669,10 +8839,6 @@
           {
             "qid": "q0609",
             "prompt": "What is this instrument?"
-          },
-          {
-            "qid": "q0610",
-            "prompt": "What is this instrument?"
           }
         ],
         "answerLogic": [
@@ -9680,80 +8846,7 @@
         ],
         "imageRefs": [
           "/qbank/2023-test1/images/img_c23528a789d60e9da8c4a30e43bca394.jpeg",
-          "/qbank/2023-test1/images/img_12c0fa2bd0eb9aaa2238c4e71fb4afd0.jpeg",
-          "/qbank/2023-test1/images/img_a78603fbc73f97b11a5b001fc89bf760.jpeg"
-        ]
-      },
-      {
-        "confidence": "medium",
-        "qids": [
-          "q0604",
-          "q0612",
-          "q0628"
-        ],
-        "prompts": [
-          {
-            "qid": "q0604",
-            "prompt": "It lights to indicate that ______."
-          },
-          {
-            "qid": "q0612",
-            "prompt": "It lights to indicate that ______."
-          },
-          {
-            "qid": "q0628",
-            "prompt": "It lights to indicate that ______."
-          }
-        ],
-        "answerLogic": [
-          "C"
-        ],
-        "imageRefs": [
-          "/qbank/2023-test1/images/img_25a7f86a8db6cc9f3974423cac729930.jpeg",
-          "/qbank/2023-test1/images/img_eaba04c77a8456540f60c68a8ba61ec8.jpeg",
-          "/qbank/2023-test1/images/img_b42c75626210ff8eee113ffa66bfde77.jpeg"
-        ]
-      },
-      {
-        "confidence": "medium",
-        "qids": [
-          "q0656",
-          "q0668",
-          "q0748",
-          "q0752",
-          "q0786"
-        ],
-        "prompts": [
-          {
-            "qid": "q0656",
-            "prompt": "What’s the meaning of this sign?"
-          },
-          {
-            "qid": "q0668",
-            "prompt": "What’s the meaning of this sign?"
-          },
-          {
-            "qid": "q0748",
-            "prompt": "What’s the meaning of this sign?"
-          },
-          {
-            "qid": "q0752",
-            "prompt": "What’s the meaning of this sign?"
-          },
-          {
-            "qid": "q0786",
-            "prompt": "What’s the meaning of this sign?"
-          }
-        ],
-        "answerLogic": [
-          "D"
-        ],
-        "imageRefs": [
-          "/qbank/2023-test1/images/img_c34a168db5af4d80acbc8a825898a3fc.jpeg",
-          "/qbank/2023-test1/images/img_4a501b1fd8e744abfdc7c34046468905.jpeg",
-          "/qbank/2023-test1/images/img_973ceb6fedb60cfdfc3f4187f8ac30e1.jpeg",
-          "/qbank/2023-test1/images/img_32d6ac0985cefa47ec6e4df69dcdc24a.jpeg",
-          "/qbank/2023-test1/images/img_e2be2139c4c0de4e9d3d55b1e3e74f00.jpeg"
+          "/qbank/2023-test1/images/img_12c0fa2bd0eb9aaa2238c4e71fb4afd0.jpeg"
         ]
       },
       {
@@ -9807,109 +8900,25 @@
       {
         "confidence": "medium",
         "qids": [
-          "q0664",
-          "q0684",
-          "q0753",
-          "q0767",
-          "q0780",
-          "q0788",
-          "q0797",
-          "q0855",
-          "q0898"
+          "q0668",
+          "q0748"
         ],
         "prompts": [
           {
-            "qid": "q0664",
+            "qid": "q0668",
             "prompt": "What’s the meaning of this sign?"
           },
           {
-            "qid": "q0684",
-            "prompt": "What’s the meaning of this sign?"
-          },
-          {
-            "qid": "q0753",
-            "prompt": "What’s the meaning of this sign?"
-          },
-          {
-            "qid": "q0767",
-            "prompt": "What’s the meaning of this sign?"
-          },
-          {
-            "qid": "q0780",
-            "prompt": "What’s the meaning of this sign?"
-          },
-          {
-            "qid": "q0788",
-            "prompt": "What’s the meaning of this sign?"
-          },
-          {
-            "qid": "q0797",
-            "prompt": "What’s the meaning of this sign?"
-          },
-          {
-            "qid": "q0855",
-            "prompt": "What’s the meaning of this sign?"
-          },
-          {
-            "qid": "q0898",
+            "qid": "q0748",
             "prompt": "What’s the meaning of this sign?"
           }
         ],
         "answerLogic": [
-          "B"
+          "D"
         ],
         "imageRefs": [
-          "/qbank/2023-test1/images/img_3f1fb40c4147e43e0bde84ed26341f7f.jpeg",
-          "/qbank/2023-test1/images/img_bb4e35f803a8161dbc606d026172997d.jpeg",
-          "/qbank/2023-test1/images/img_81f9b1f1af856944ae26bc7344ac973c.jpeg",
-          "/qbank/2023-test1/images/img_adfe9258271958d83f02bc271f31e117.jpeg",
-          "/qbank/2023-test1/images/img_d2a41eec4685b9cdbb1f8d9168f78263.jpeg",
-          "/qbank/2023-test1/images/img_0ac65eec1758fe51160177349952542b.jpeg",
-          "/qbank/2023-test1/images/img_25120a7c2ea5de6c38afa07ab8a7e167.jpeg",
-          "/qbank/2023-test1/images/img_4b78c6a6959d3e8d24c3ff033706731d.png",
-          "/qbank/2023-test1/images/img_6236ee3631a1aee5c687bfa86d929444.jpeg"
-        ]
-      },
-      {
-        "confidence": "medium",
-        "qids": [
-          "q0665",
-          "q0736",
-          "q0747",
-          "q0766",
-          "q0792"
-        ],
-        "prompts": [
-          {
-            "qid": "q0665",
-            "prompt": "What’s the meaning of this sign?"
-          },
-          {
-            "qid": "q0736",
-            "prompt": "What’s the meaning of this sign?"
-          },
-          {
-            "qid": "q0747",
-            "prompt": "What’s the meaning of this sign?"
-          },
-          {
-            "qid": "q0766",
-            "prompt": "What’s the meaning of this sign?"
-          },
-          {
-            "qid": "q0792",
-            "prompt": "What’s the meaning of this sign?"
-          }
-        ],
-        "answerLogic": [
-          "C"
-        ],
-        "imageRefs": [
-          "/qbank/2023-test1/images/img_13a5463bf99109f96c203cb27cea474e.jpeg",
-          "/qbank/2023-test1/images/img_522120764d6230cc679a826e7f74c5ab.jpeg",
-          "/qbank/2023-test1/images/img_cd1d9c40b39cfe3932a5176f51b031a3.jpeg",
-          "/qbank/2023-test1/images/img_f3761fba9a4181903cf3b7459d2f86ab.jpeg",
-          "/qbank/2023-test1/images/img_382158d8af9518928a3139d0838a4e98.jpeg"
+          "/qbank/2023-test1/images/img_4a501b1fd8e744abfdc7c34046468905.jpeg",
+          "/qbank/2023-test1/images/img_973ceb6fedb60cfdfc3f4187f8ac30e1.jpeg"
         ]
       },
       {
@@ -9946,14 +8955,7 @@
         "confidence": "medium",
         "qids": [
           "q0679",
-          "q0694",
-          "q0740",
-          "q0770",
-          "q0782",
-          "q0787",
-          "q0796",
-          "q0868",
-          "q0872"
+          "q0787"
         ],
         "prompts": [
           {
@@ -9961,35 +8963,7 @@
             "prompt": "What’s the meaning of this sign?"
           },
           {
-            "qid": "q0694",
-            "prompt": "What’s the meaning of this sign?"
-          },
-          {
-            "qid": "q0740",
-            "prompt": "What’s the meaning of this sign?"
-          },
-          {
-            "qid": "q0770",
-            "prompt": "What’s the meaning of this sign?"
-          },
-          {
-            "qid": "q0782",
-            "prompt": "What’s the meaning of this sign?"
-          },
-          {
             "qid": "q0787",
-            "prompt": "What’s the meaning of this sign?"
-          },
-          {
-            "qid": "q0796",
-            "prompt": "What’s the meaning of this sign?"
-          },
-          {
-            "qid": "q0868",
-            "prompt": "What’s the meaning of this sign?"
-          },
-          {
-            "qid": "q0872",
             "prompt": "What’s the meaning of this sign?"
           }
         ],
@@ -9998,14 +8972,7 @@
         ],
         "imageRefs": [
           "/qbank/2023-test1/images/img_d1f6c560dea19224fb8772147449b272.jpeg",
-          "/qbank/2023-test1/images/img_57f39b462b51f82e12cef9a65dd3eba6.jpeg",
-          "/qbank/2023-test1/images/img_5062bd48bf2f065e58f1a545ac9544d3.jpeg",
-          "/qbank/2023-test1/images/img_80cd0d952314595268db07bec4c5767d.jpeg",
-          "/qbank/2023-test1/images/img_04fdae10b067730db62a2ba85cea4f6e.jpeg",
-          "/qbank/2023-test1/images/img_78d138390e9d48167be1a4154141a88a.jpeg",
-          "/qbank/2023-test1/images/img_8bb5e07a106a68922230d42690272956.jpeg",
-          "/qbank/2023-test1/images/img_93ea28f95848a3d268193185f2196318.jpeg",
-          "/qbank/2023-test1/images/img_a44bd80c0fa6e2747a90e7eb197655d2.jpeg"
+          "/qbank/2023-test1/images/img_78d138390e9d48167be1a4154141a88a.jpeg"
         ]
       },
       {
@@ -10089,31 +9056,25 @@
       {
         "confidence": "medium",
         "qids": [
-          "q0692",
-          "q0880",
-          "q0896"
+          "q0694",
+          "q0782"
         ],
         "prompts": [
           {
-            "qid": "q0692",
-            "prompt": "This set of the hand signals of the traffic police indicates that the vehicles should ____ ."
+            "qid": "q0694",
+            "prompt": "What’s the meaning of this sign?"
           },
           {
-            "qid": "q0880",
-            "prompt": "This set of the hand signals of the traffic police indicates that the vehicles should ___ ."
-          },
-          {
-            "qid": "q0896",
-            "prompt": "This set of the hand signals of the traffic police indicates that the vehicles should ___ ."
+            "qid": "q0782",
+            "prompt": "What’s the meaning of this sign?"
           }
         ],
         "answerLogic": [
-          "D"
+          "A"
         ],
         "imageRefs": [
-          "/qbank/2023-test1/images/img_8186cb52035df346d563d71d6b25a24d.jpeg",
-          "/qbank/2023-test1/images/img_61803755af498e331b8fd1b530b3796b.jpeg",
-          "/qbank/2023-test1/images/img_01f5d51eb306f0c286566cabae215a71.jpeg"
+          "/qbank/2023-test1/images/img_57f39b462b51f82e12cef9a65dd3eba6.jpeg",
+          "/qbank/2023-test1/images/img_04fdae10b067730db62a2ba85cea4f6e.jpeg"
         ]
       },
       {
@@ -10191,6 +9152,54 @@
       {
         "confidence": "medium",
         "qids": [
+          "q0747",
+          "q0792"
+        ],
+        "prompts": [
+          {
+            "qid": "q0747",
+            "prompt": "What’s the meaning of this sign?"
+          },
+          {
+            "qid": "q0792",
+            "prompt": "What’s the meaning of this sign?"
+          }
+        ],
+        "answerLogic": [
+          "C"
+        ],
+        "imageRefs": [
+          "/qbank/2023-test1/images/img_cd1d9c40b39cfe3932a5176f51b031a3.jpeg",
+          "/qbank/2023-test1/images/img_382158d8af9518928a3139d0838a4e98.jpeg"
+        ]
+      },
+      {
+        "confidence": "medium",
+        "qids": [
+          "q0767",
+          "q0788"
+        ],
+        "prompts": [
+          {
+            "qid": "q0767",
+            "prompt": "What’s the meaning of this sign?"
+          },
+          {
+            "qid": "q0788",
+            "prompt": "What’s the meaning of this sign?"
+          }
+        ],
+        "answerLogic": [
+          "B"
+        ],
+        "imageRefs": [
+          "/qbank/2023-test1/images/img_adfe9258271958d83f02bc271f31e117.jpeg",
+          "/qbank/2023-test1/images/img_0ac65eec1758fe51160177349952542b.jpeg"
+        ]
+      },
+      {
+        "confidence": "medium",
+        "qids": [
           "q0776",
           "q0848"
         ],
@@ -10235,13 +9244,37 @@
           "/qbank/2023-test1/images/img_f67347673870f08c3030dc015f60393d.jpeg",
           "/qbank/2023-test1/images/img_ea5a2c366106d8150a3422755766cc27.jpeg"
         ]
+      },
+      {
+        "confidence": "medium",
+        "qids": [
+          "q0880",
+          "q0896"
+        ],
+        "prompts": [
+          {
+            "qid": "q0880",
+            "prompt": "This set of the hand signals of the traffic police indicates that the vehicles should ___ ."
+          },
+          {
+            "qid": "q0896",
+            "prompt": "This set of the hand signals of the traffic police indicates that the vehicles should ___ ."
+          }
+        ],
+        "answerLogic": [
+          "D"
+        ],
+        "imageRefs": [
+          "/qbank/2023-test1/images/img_61803755af498e331b8fd1b530b3796b.jpeg",
+          "/qbank/2023-test1/images/img_01f5d51eb306f0c286566cabae215a71.jpeg"
+        ]
       }
     ],
     "truncated": false,
     "counts": {
-      "totalCandidates": 23,
+      "totalCandidates": 22,
       "high": 0,
-      "medium": 23,
+      "medium": 22,
       "low": 0
     }
   },
@@ -10251,105 +9284,11 @@
     ],
     "imageTagQidsNotInMaster": [],
     "questionsWithImageButNoImageTags": [],
-    "questionsWithNoImageButImageTags": [],
-    "questionsWithImageButNoObjectTags": [
-      "q0526",
-      "q0528",
-      "q0535",
-      "q0538",
-      "q0539",
-      "q0542",
-      "q0545",
-      "q0556",
-      "q0557",
-      "q0558",
-      "q0560",
-      "q0561",
-      "q0562",
-      "q0563",
-      "q0565",
-      "q0567",
-      "q0568",
-      "q0569",
-      "q0573",
-      "q0576",
-      "q0577",
-      "q0580",
-      "q0581",
-      "q0582",
-      "q0583",
-      "q0586",
-      "q0589",
-      "q0591",
-      "q0595",
-      "q0597",
-      "q0598",
-      "q0599",
-      "q0600",
-      "q0603",
-      "q0607",
-      "q0608",
-      "q0609",
-      "q0610",
-      "q0612",
-      "q0613",
-      "q0614",
-      "q0620",
-      "q0627",
-      "q0628",
-      "q0629",
-      "q0654",
-      "q0655",
-      "q0656",
-      "q0664",
-      "q0665",
-      "q0666",
-      "q0668",
-      "q0677",
-      "q0679",
-      "q0684",
-      "q0692",
-      "q0694",
-      "q0724",
-      "q0726",
-      "q0727",
-      "q0731",
-      "q0736",
-      "q0740",
-      "q0747",
-      "q0748",
-      "q0752",
-      "q0753",
-      "q0766",
-      "q0770",
-      "q0773",
-      "q0780",
-      "q0782",
-      "q0786",
-      "q0787",
-      "q0792",
-      "q0797",
-      "q0805",
-      "q0806",
-      "q0831",
-      "q0855",
-      "q0857",
-      "q0864",
-      "q0868",
-      "q0872",
-      "q0873",
-      "q0875",
-      "q0880",
-      "q0887",
-      "q0896",
-      "q0898",
-      "q0929",
-      "q0930",
-      "q0958",
-      "q0967",
-      "q0969",
-      "q0984"
-    ]
+    "questionsWithNoImageButImageTags": [
+      "q0001",
+      "q0003"
+    ],
+    "questionsWithImageButNoObjectTags": []
   },
   "recommendedNextActions": [
     "Review raw-only qids and decide whether each is intentional source retention or should be removed/backfilled into questions.json.",

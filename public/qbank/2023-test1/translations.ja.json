@@ -1,8 +1,8 @@
 {
   "meta": {
     "locale": "ja",
-    "translatedQuestions": 981,
-    "generatedAt": "2026-05-04T13:01:26.291Z",
+    "translatedQuestions": 984,
+    "generatedAt": "2026-05-05T12:09:18.845Z",
     "mergedBatches": [
       "batch-001",
       "batch-002",
@@ -37,6 +37,9 @@
       "missing-qid-backfill-2026-05-03T14:49:23.099Z",
       "missing-qid-backfill-2026-05-04T11:24:32.682Z",
       "missing-qid-backfill-2026-05-04T13:01:26.291Z"
+    ],
+    "qidSyncRuns": [
+      "ko-ja-qid-sync-2026-05-05T12:09:18.845Z"
     ]
   },
   "questions": {
@@ -27061,107 +27064,6 @@
         }
       ],
       "localeCorrectOptionKey": "B"
-    },
-    "q0518": {
-      "prompt": "道路交通安全違反行為の累積減点期間はどれか。",
-      "sourceMode": "direct",
-      "confidence": "high",
-      "reviewStatus": "ready",
-      "options": {
-        "q0518_o3": "3カ月",
-        "q0518_o4": "6カ月",
-        "q0518_o1": "12カ月",
-        "q0518_o2": "24カ月"
-      },
-      "localeOptionOrder": [
-        {
-          "sourceIndex": 0,
-          "sourceKey": "A",
-          "sourceText": "A 3カ月",
-          "sourceTextBody": "3カ月",
-          "canonicalOptionId": "q0518_o3",
-          "canonicalOptionKey": "C",
-          "canonicalOptionText": "3 months",
-          "alignmentScore": 1,
-          "alignmentMethod": "reviewed-gloss-meaning"
-        },
-        {
-          "sourceIndex": 1,
-          "sourceKey": "B",
-          "sourceText": "B 6カ月",
-          "sourceTextBody": "6カ月",
-          "canonicalOptionId": "q0518_o4",
-          "canonicalOptionKey": "D",
-          "canonicalOptionText": "6 months",
-          "alignmentScore": 1,
-          "alignmentMethod": "reviewed-gloss-meaning"
-        },
-        {
-          "sourceIndex": 2,
-          "sourceKey": "C",
-          "sourceText": "C 12カ月",
-          "sourceTextBody": "12カ月",
-          "canonicalOptionId": "q0518_o1",
-          "canonicalOptionKey": "A",
-          "canonicalOptionText": "12 months",
-          "alignmentScore": 1,
-          "alignmentMethod": "reviewed-gloss-meaning"
-        },
-        {
-          "sourceIndex": 3,
-          "sourceKey": "D",
-          "sourceText": "D 24カ月",
-          "sourceTextBody": "24カ月",
-          "canonicalOptionId": "q0518_o2",
-          "canonicalOptionKey": "B",
-          "canonicalOptionText": "24 months",
-          "alignmentScore": 1,
-          "alignmentMethod": "reviewed-gloss-meaning"
-        }
-      ],
-      "optionMeaningMap": [
-        {
-          "sourceKey": "A",
-          "sourceText": "A 3カ月",
-          "sourceTextBody": "3カ月",
-          "canonicalOptionId": "q0518_o3",
-          "canonicalOptionKey": "C",
-          "canonicalOptionText": "3 months",
-          "alignmentScore": 1,
-          "alignmentMethod": "reviewed-gloss-meaning"
-        },
-        {
-          "sourceKey": "B",
-          "sourceText": "B 6カ月",
-          "sourceTextBody": "6カ月",
-          "canonicalOptionId": "q0518_o4",
-          "canonicalOptionKey": "D",
-          "canonicalOptionText": "6 months",
-          "alignmentScore": 1,
-          "alignmentMethod": "reviewed-gloss-meaning"
-        },
-        {
-          "sourceKey": "C",
-          "sourceText": "C 12カ月",
-          "sourceTextBody": "12カ月",
-          "canonicalOptionId": "q0518_o1",
-          "canonicalOptionKey": "A",
-          "canonicalOptionText": "12 months",
-          "alignmentScore": 1,
-          "alignmentMethod": "reviewed-gloss-meaning"
-        },
-        {
-          "sourceKey": "D",
-          "sourceText": "D 24カ月",
-          "sourceTextBody": "24カ月",
-          "canonicalOptionId": "q0518_o2",
-          "canonicalOptionKey": "B",
-          "canonicalOptionText": "24 months",
-          "alignmentScore": 1,
-          "alignmentMethod": "reviewed-gloss-meaning"
-        }
-      ],
-      "localeCorrectOptionKey": "C"
     },
     "q0519": {
       "prompt": "この交差点は、どう左折するのが適切か。",
@@ -61743,6 +61645,13 @@
       "confidence": "medium",
       "reviewStatus": "ready"
     },
+    "q0941": {
+      "prompt": "この標識は、この先の道路が対面通行区間になることを警告している。",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready"
+    },
     "q0942": {
       "prompt": "この標識は、運転者に前方に横断歩道があることを警告している。",
       "explanation": "",
@@ -61785,8 +61694,22 @@
       "confidence": "medium",
       "reviewStatus": "ready"
     },
+    "q0948": {
+      "prompt": "この標識は、この先の道路脇に急な落差のある盛土区間があることを警告している。",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready"
+    },
     "q0949": {
       "prompt": "この標識は、先の道路が村や町を通ることを示しています。",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready"
+    },
+    "q0950": {
+      "prompt": "この標識は、この先にトンネルがあることを警告している。",
       "explanation": "",
       "sourceMode": "english_master_backfill",
       "confidence": "medium",
@@ -61829,6 +61752,13 @@
     },
     "q0956": {
       "prompt": "この標識は、先に無人の踏切があることを示しています。",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready"
+    },
+    "q0957": {
+      "prompt": "この標識は、この先に非動力車（自転車）専用レーンがあることを示している。",
       "explanation": "",
       "sourceMode": "english_master_backfill",
       "confidence": "medium",

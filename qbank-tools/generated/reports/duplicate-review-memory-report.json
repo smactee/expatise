@@ -1,0 +1,41 @@
+{
+  "generatedAt": "2026-05-05T09:04:43.108Z",
+  "inputPath": "qbank-tools/generated/staging/duplicate-review-decisions.json",
+  "memoryPath": "qbank-tools/history/decision-memory.json",
+  "created": 3,
+  "updated": 0,
+  "skipped": [],
+  "totalDuplicateDetectionRecords": 3,
+  "byDecision": {
+    "notDuplicate": 3
+  },
+  "reviewedPairs": [
+    {
+      "qid": "q0654",
+      "pairedQid": "q0803",
+      "decision": "notDuplicate",
+      "outcome": "rejected",
+      "reason": "Human review marked this prior exact-risk pair as a false positive. Same prompt/options wording but different source images/scenarios; do not treat as duplicate.",
+      "scoreAtReview": 0.74,
+      "categoryAtReview": "exact-duplicate-risk"
+    },
+    {
+      "qid": "q0727",
+      "pairedQid": "q0880",
+      "decision": "notDuplicate",
+      "outcome": "rejected",
+      "reason": "Human review marked this prior exact-risk pair as a false positive. Similar police hand-signal wording but distinct image/scenario; do not treat as duplicate.",
+      "scoreAtReview": 0.7325,
+      "categoryAtReview": "exact-duplicate-risk"
+    },
+    {
+      "qid": "q0743",
+      "pairedQid": "q0830",
+      "decision": "notDuplicate",
+      "outcome": "rejected",
+      "reason": "Opposite answer logic / different meaning: right-flow guide arrow versus left-flow guide arrow. Prior exact-risk classification was a false positive.",
+      "scoreAtReview": 0.7044,
+      "categoryAtReview": "exact-duplicate-risk"
+    }
+  ]
+}

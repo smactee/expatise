@@ -1,6 +1,8 @@
 import fs from "node:fs";
 import path from "node:path";
 
+import { candidateTagScore } from "./tag-intelligence.mjs";
+
 export const PROMOTION_RECOMMENDATIONS = new Set(["likely_duplicate", "needs_human_review", "safe_to_promote"]);
 export const RISK_LEVELS = new Set(["high", "medium", "low"]);
 
@@ -49,12 +51,18 @@ const STOPWORDS = new Set([
 
 export function loadMasterQuestions({ root = process.cwd(), dataset = "2023-test1" } = {}) {
   const questionsPath = path.join(root, "public", "qbank", dataset, "questions.json");
+  const rawQuestionsPath = path.join(root, "public", "qbank", dataset, "questions.raw.json");
   const imageTagsPath = path.join(root, "public", "qbank", dataset, "image-color-tags.json");
   const questionsDoc = readJson(questionsPath);
+  const rawQuestionsDoc = readJsonIfExists(rawQuestionsPath, { questions: [] });
   const imageTagsDoc = readJsonIfExists(imageTagsPath, { questions: {} });
-  const questions = questionArray(questionsDoc).map((question) => normalizeMasterQuestion(question, imageTagsDoc));
+  const rawByQid = new Map(questionArray(rawQuestionsDoc).map((question) => [normalizeQid(question.id ?? question.qid), question]));
+  const questions = questionArray(questionsDoc).map((question) =>
+    normalizeMasterQuestion(question, imageTagsDoc, rawByQid.get(normalizeQid(question.id ?? question.qid))),
+  );
   return {
     questionsPath,
+    rawQuestionsPath,
     imageTagsPath,
     questions,
     byQid: new Map(questions.map((question) => [question.qid, question])),
@@ -68,6 +76,16 @@ export function loadDecisionMemory({ root = process.cwd() } = {}) {
   return {
     memoryPath,
     records: Array.isArray(doc.records) ? doc.records : [],
+  };
+}
+
+export function loadDuplicateAudit({ root = process.cwd() } = {}) {
+  const auditPath = path.join(root, "qbank-tools", "generated", "reports", "duplicate-candidate-audit.json");
+  if (!fs.existsSync(auditPath)) return { auditPath, pairs: [] };
+  const doc = readJson(auditPath);
+  return {
+    auditPath,
+    pairs: Array.isArray(doc.pairs) ? doc.pairs : [],
   };
 }
 
@@ -246,6 +264,92 @@ export function reviewNewQuestionCandidates({ candidates, masterQuestions, decis
   });
 }
 
+export function reviewNewQuestionDuplicateSafety({
+  candidate,
+  masterQuestions,
+  decisionMemory = [],
+  duplicateAudit = null,
+  limit = 8,
+} = {}) {
+  const normalizedCandidate = candidate?.raw && Array.isArray(candidate?.options)
+    ? candidate
+    : normalizeCandidate(candidate ?? {});
+  const memoryIndex = buildDuplicateDecisionMemoryIndex(decisionMemory, duplicateAudit);
+  const qidHints = candidateExistingQidHints(normalizedCandidate);
+  const topMatches = masterQuestions
+    .map((masterQuestion) => compareCandidateToMaster(normalizedCandidate, masterQuestion, { decisionMemory: [] }))
+    .filter((match) => match.score > 0.08)
+    .map((match) => {
+      const memoryLabels = memoryLabelsForMatch(match.qid, qidHints, memoryIndex);
+      const memoryAdjustment = memoryLabels.reduce((sum, label) => sum + duplicateMemoryAdjustment(label), 0);
+      const adjustedScore = clamp(match.score + memoryAdjustment, 0, 1);
+      return {
+        ...match,
+        duplicateScore: Number(adjustedScore.toFixed(4)),
+        baseDuplicateScore: match.score,
+        memoryLabels,
+      };
+    })
+    .sort((left, right) => right.duplicateScore - left.duplicateScore || compareQid(left.qid, right.qid))
+    .slice(0, limit);
+
+  const authoritativeMemoryLabels = (match) => match.memoryLabels.filter((label) => label.source === "decision-memory");
+  const duplicateMemoryMatch = topMatches.find((match) =>
+    authoritativeMemoryLabels(match).some((label) => label.decision === "duplicate"),
+  );
+  const safeMemoryLabels = topMatches.flatMap((match) =>
+    authoritativeMemoryLabels(match).filter((label) =>
+      ["notDuplicate", "relatedButValid", "sameImageDifferentQuestion"].includes(label.decision),
+    ),
+  );
+  const top = topMatches[0] ?? null;
+  const highSimilarityWithoutMemory =
+    top && top.duplicateScore >= 0.62 && authoritativeMemoryLabels(top).length === 0;
+  const linkedExistingQid = topMatches.find((match) => match.reasonCodes?.includes("linked_existing_asset_candidate"));
+
+  let promotionRecommendation = "safeToPromote";
+  if (duplicateMemoryMatch) {
+    promotionRecommendation = "blockDuplicate";
+  } else if (
+    linkedExistingQid &&
+    linkedExistingQid.duplicateScore >= 0.72 &&
+    !authoritativeMemoryLabels(linkedExistingQid).some((label) =>
+      ["notDuplicate", "relatedButValid", "sameImageDifferentQuestion"].includes(label.decision),
+    )
+  ) {
+    promotionRecommendation = "linkToExistingQid";
+  } else if (highSimilarityWithoutMemory) {
+    promotionRecommendation = "needsDuplicateReview";
+  }
+
+  return {
+    candidateId: normalizedCandidate.candidateId,
+    nearestExistingQids: topMatches.map((match) => ({
+      qid: match.qid,
+      number: match.number,
+      duplicateScore: match.duplicateScore,
+      baseDuplicateScore: match.baseDuplicateScore,
+      reasonCodes: match.reasonCodes,
+      memoryLabels: match.memoryLabels,
+      masterPrompt: match.masterPrompt,
+      masterAnswer: match.masterAnswer,
+      masterImage: match.masterImage,
+    })),
+    duplicateScore: top?.duplicateScore ?? 0,
+    memoryLabelsFound: topMatches.flatMap((match) => match.memoryLabels.map((label) => ({ ...label, matchedQid: match.qid }))),
+    safeMemoryLabels,
+    promotionRecommendation,
+    blocked: promotionRecommendation === "blockDuplicate",
+    needsDuplicateReview: promotionRecommendation === "needsDuplicateReview",
+    linkToExistingQid: promotionRecommendation === "blockDuplicate"
+      ? duplicateMemoryMatch?.qid ?? null
+      : promotionRecommendation === "linkToExistingQid"
+        ? linkedExistingQid?.qid ?? null
+        : null,
+    explanation: duplicateSafetyExplanation({ promotionRecommendation, duplicateMemoryMatch, linkedExistingQid, top, safeMemoryLabels }),
+  };
+}
+
 export function producePromotionRecommendations(context) {
   return reviewNewQuestionCandidates(context);
 }
@@ -308,12 +412,15 @@ export function normalizeCandidate(item, { index = 0, inputPath = null, lang = n
   };
 }
 
-function normalizeMasterQuestion(question, imageTagsDoc) {
+function normalizeMasterQuestion(question, imageTagsDoc, rawQuestion = null) {
   const qid = normalizeQid(question.id ?? question.qid);
   const type = normalizeQuestionType(question.type);
   const options = masterOptions(question);
   const answerKey = masterAnswerKey(question, options, type);
-  const imageAssets = toArray(question.assets)
+  const imageAssets = [
+    ...toArray(question.assets),
+    ...(toArray(question.assets).length > 0 ? [] : toArray(rawQuestion?.assets)),
+  ]
     .filter((asset) => asset?.src)
     .map((asset) => String(asset.src));
   const tagEntry = imageTagsDoc?.questions?.[qid] ?? {};
@@ -324,9 +431,9 @@ function normalizeMasterQuestion(question, imageTagsDoc) {
     qid,
     number: Number(question.number ?? qid?.replace(/^q/i, "")) || null,
     type,
-    prompt: String(question.prompt ?? "").trim(),
-    normalizedPrompt: normalizePromptText(question.prompt),
-    promptTokens: tokenSet(question.prompt),
+    prompt: String(question.prompt ?? rawQuestion?.prompt ?? "").trim(),
+    normalizedPrompt: normalizePromptText(question.prompt ?? rawQuestion?.prompt),
+    promptTokens: tokenSet(question.prompt ?? rawQuestion?.prompt),
     options,
     answerKey,
     correctOptionText: correctOptionTextFor(options, answerKey),
@@ -469,9 +576,11 @@ function scoreImages(candidate, masterQuestion) {
 function scoreTags(candidate, masterQuestion) {
   const reasonCodes = [];
   if (!candidate.objectTags.length || !masterQuestion.objectTags.length) return { score: 0, reasonCodes };
-  const similarity = jaccardSimilarity(new Set(candidate.objectTags), new Set(masterQuestion.objectTags));
-  if (similarity >= 0.5) reasonCodes.push("object_tag_overlap");
-  return { score: similarity * 0.08, reasonCodes };
+  const tagReview = candidateTagScore(masterQuestion.qid, candidate.objectTags);
+  if (tagReview.exactScore >= 0.5) reasonCodes.push("object_tag_overlap");
+  if (tagReview.familyScore >= 0.5) reasonCodes.push("object_tag_family_overlap");
+  if (tagReview.oppositePairs.length) reasonCodes.push("opposite_object_tags");
+  return { score: tagReview.score * 0.08, reasonCodes };
 }
 
 function scoreDecisionMemory(candidate, masterQuestion, decisionMemory) {
@@ -499,6 +608,161 @@ function scoreDecisionMemory(candidate, masterQuestion, decisionMemory) {
   }
 
   return { score, reasonCodes };
+}
+
+function buildDuplicateDecisionMemoryIndex(decisionMemory = [], duplicateAudit = null) {
+  const byPair = new Map();
+
+  for (const record of Array.isArray(decisionMemory) ? decisionMemory : []) {
+    if ((record.type ?? record.decisionType) !== "duplicate-detection") continue;
+    const qid = normalizeQidSafe(record.qid);
+    const pairedQid = normalizeQidSafe(record.pairedQid ?? record.referencedQid);
+    if (!qid || !pairedQid || qid === pairedQid) continue;
+    addDuplicateLabel(byPair, qid, pairedQid, {
+      source: "decision-memory",
+      decision: normalizeDuplicateDecision(record.decision ?? record.finalDecision ?? record.outcome),
+      outcome: record.outcome ?? record.finalDecision ?? null,
+      reason: String(record.reason ?? record.reviewerNotes ?? "").trim(),
+      scoreAtReview: finiteNumber(record.scoreAtReview),
+      categoryAtReview: record.categoryAtReview ?? null,
+      sourceFiles: Array.isArray(record.sourceFiles) ? record.sourceFiles : [record.sourceFile].filter(Boolean),
+    });
+  }
+
+  for (const pair of Array.isArray(duplicateAudit?.pairs) ? duplicateAudit.pairs : []) {
+    const qidA = normalizeQidSafe(pair.qidA);
+    const qidB = normalizeQidSafe(pair.qidB);
+    if (!qidA || !qidB || qidA === qidB) continue;
+    addDuplicateLabel(byPair, qidA, qidB, {
+      source: "duplicate-candidate-audit",
+      decision: duplicateAuditDecision(pair),
+      outcome: null,
+      reason: String(pair.reason ?? pair.recommendedDecision ?? "").trim(),
+      scoreAtReview: finiteNumber(pair.duplicateScore),
+      categoryAtReview: pair.classification ?? null,
+      sourceFiles: ["qbank-tools/generated/reports/duplicate-candidate-audit.json"],
+    });
+  }
+
+  return { byPair };
+}
+
+function addDuplicateLabel(byPair, qidA, qidB, label) {
+  const key = duplicatePairKey(qidA, qidB);
+  const labels = byPair.get(key) ?? [];
+  const normalized = {
+    source: label.source,
+    decision: normalizeDuplicateDecision(label.decision),
+    outcome: label.outcome ?? null,
+    reason: label.reason ?? "",
+    scoreAtReview: label.scoreAtReview ?? null,
+    categoryAtReview: label.categoryAtReview ?? null,
+    sourceFiles: Array.isArray(label.sourceFiles) ? label.sourceFiles : [],
+    pairQids: key.split("::"),
+  };
+  if (
+    !labels.some(
+      (existing) =>
+        existing.source === normalized.source &&
+        existing.decision === normalized.decision &&
+        existing.reason === normalized.reason &&
+        existing.categoryAtReview === normalized.categoryAtReview,
+    )
+  ) {
+    labels.push(normalized);
+  }
+  byPair.set(key, labels);
+}
+
+function candidateExistingQidHints(candidate) {
+  const raw = candidate.raw ?? {};
+  const values = [
+    candidate.linkedExistingAssetCandidate?.qid,
+    raw.linkedExistingAssetCandidate?.qid,
+    raw.currentTopQid,
+    raw.approvedQid,
+    raw.match?.qid,
+    raw.matchQid,
+    raw.topCandidateQid,
+    ...toArray(raw.candidateQids),
+    ...toArray(raw.candidateQidHints),
+    ...toArray(raw.topCandidates).map((entry) => entry?.qid),
+    ...toArray(raw.candidates).map((entry) => entry?.qid),
+  ];
+  return [...new Set(values.map(normalizeQidSafe).filter(Boolean))];
+}
+
+function memoryLabelsForMatch(matchQid, qidHints, memoryIndex) {
+  const normalizedMatchQid = normalizeQidSafe(matchQid);
+  if (!normalizedMatchQid || !qidHints.length) return [];
+  const labels = [];
+  for (const qidHint of qidHints) {
+    const pairLabels = memoryIndex.byPair.get(duplicatePairKey(normalizedMatchQid, qidHint)) ?? [];
+    labels.push(...pairLabels.map((label) => ({ ...label, matchedViaQid: qidHint })));
+  }
+  return labels;
+}
+
+function duplicateMemoryAdjustment(label) {
+  if (label.source !== "decision-memory") return 0;
+  if (label.decision === "duplicate") return 0.35;
+  if (label.decision === "notDuplicate") return -0.4;
+  if (label.decision === "relatedButValid" || label.decision === "sameImageDifferentQuestion") return -0.28;
+  return 0;
+}
+
+function duplicateSafetyExplanation({ promotionRecommendation, duplicateMemoryMatch, linkedExistingQid, top, safeMemoryLabels }) {
+  if (promotionRecommendation === "blockDuplicate") {
+    const label = duplicateMemoryMatch?.memoryLabels?.find((entry) => entry.source === "decision-memory" && entry.decision === "duplicate");
+    return `Blocked by duplicate decision memory for ${duplicateMemoryMatch?.qid ?? "an existing qid"}${label?.reason ? `: ${label.reason}` : "."}`;
+  }
+  if (promotionRecommendation === "linkToExistingQid") {
+    return `High duplicate risk because the candidate is already linked to existing qid ${linkedExistingQid?.qid}; review as an existing-qid link instead of promotion.`;
+  }
+  if (promotionRecommendation === "needsDuplicateReview") {
+    return `High similarity to ${top?.qid ?? "an existing qid"} without prior duplicate-review memory; run/record duplicate review before promotion.`;
+  }
+  if (safeMemoryLabels.length) {
+    const label = safeMemoryLabels[0];
+    return `Prior duplicate-review memory says ${label.decision}; similarity alone is not blocking promotion${label.reason ? `: ${label.reason}` : "."}`;
+  }
+  if (top) return `No blocking duplicate memory found. Nearest qid ${top.qid} scored ${top.duplicateScore}.`;
+  return "No blocking duplicate memory or similar master qid found.";
+}
+
+function duplicateAuditDecision(pair) {
+  if (pair?.signals?.memoryDecision) return normalizeDuplicateDecision(pair.signals.memoryDecision);
+  if (Array.isArray(pair?.memoryRecords) && pair.memoryRecords.length) {
+    const decision = pair.memoryRecords.find((record) => record?.decision)?.decision;
+    if (decision) return normalizeDuplicateDecision(decision);
+  }
+  if (pair?.classification === "same-image-different-question") return "sameImageDifferentQuestion";
+  if (pair?.classification === "related-but-valid") return "relatedButValid";
+  return "unsure";
+}
+
+function normalizeDuplicateDecision(value) {
+  const raw = String(value ?? "").trim();
+  const compact = raw.toLowerCase().replace(/[-_\s]+/g, "");
+  if (compact === "duplicate" || compact === "approvedduplicate") return "duplicate";
+  if (compact === "notduplicate" || compact === "falseduplicate") return "notDuplicate";
+  if (compact === "relatedbutvalid") return "relatedButValid";
+  if (compact === "sameimagedifferentquestion") return "sameImageDifferentQuestion";
+  return raw || "unsure";
+}
+
+function duplicatePairKey(qidA, qidB) {
+  return [qidA, qidB].sort(compareQid).join("::");
+}
+
+function normalizeQidSafe(value) {
+  const qid = normalizeQid(value);
+  return /^q\d{4}$/i.test(qid) ? qid : null;
+}
+
+function finiteNumber(value) {
+  const number = Number(value);
+  return Number.isFinite(number) ? number : null;
 }
 
 function correctOptionTextFor(options, answerKey) {

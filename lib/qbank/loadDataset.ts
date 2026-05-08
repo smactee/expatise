@@ -105,14 +105,24 @@ async function loadTranslations(url?: string): Promise<TranslationPatch> {
 
     const patchLike = json as Partial<QuestionTranslationFile> & Record<string, QuestionTranslationEntry>;
     if (patchLike.questions && typeof patchLike.questions === 'object') {
-      return patchLike.questions as TranslationPatch;
+      return productionTranslationsOnly(patchLike.questions as TranslationPatch);
     }
 
-    return patchLike as TranslationPatch;
+    return productionTranslationsOnly(patchLike as TranslationPatch);
   } catch (e) {
     console.warn('[qbank] Translation patch fetch failed:', url, e);
     return {};
   }
+}
+
+function isAutoPropagationPlaceholder(entry: QuestionTranslationEntry | undefined): boolean {
+  return entry?.translationStatus === 'missing' && entry?.source === 'auto-propagation';
+}
+
+function productionTranslationsOnly(translations: TranslationPatch): TranslationPatch {
+  return Object.fromEntries(
+    Object.entries(translations).filter(([, entry]) => !isAutoPropagationPlaceholder(entry))
+  );
 }
 
 function applyPatchTags(q: Question, patchTags: string[] | undefined): Question {

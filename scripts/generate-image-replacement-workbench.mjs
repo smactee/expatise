@@ -15,6 +15,13 @@ import {
   writeJson,
   writeText,
 } from "../qbank-tools/lib/pipeline.mjs";
+import {
+  applyImageReplacementMemoryToCandidate,
+  countMemoryAdjustedCandidates,
+  getQidMemory,
+  loadImageReplacementDecisionMemory,
+  summarizeImageReplacementMemory,
+} from "../qbank-tools/lib/image-replacement-memory.mjs";
 import fs from "node:fs/promises";
 
 const DEFAULT_QIDS = [
@@ -49,6 +56,7 @@ async function main() {
   const topN = positiveIntegerArg(args, "top", DEFAULT_TOP_N);
   const confidenceThreshold = numericArg(args, "confidence-threshold", DEFAULT_CONFIDENCE_THRESHOLD);
   const concurrency = positiveIntegerArg(args, "concurrency", DEFAULT_CONCURRENCY);
+  const useMemory = booleanArg(args, "use-memory", true);
   const qids = parseQids(stringArg(args, "qids", null)) ?? DEFAULT_QIDS;
   const htmlPath = path.resolve(
     ROOT,
@@ -65,6 +73,7 @@ async function main() {
   const questionsPath = path.join(ROOT, "public", "qbank", dataset, "questions.json");
   const questionsDoc = readJson(questionsPath);
   const questionMap = buildQuestionMap(questionsDoc);
+  const decisionMemory = loadImageReplacementDecisionMemory({ root: ROOT, dataset, useMemory });
   const screenshotPaths = await listScreenshotFiles(path.join(ROOT, "imports"));
 
   if (screenshotPaths.length === 0) {
@@ -72,6 +81,7 @@ async function main() {
   }
 
   console.log(`Loading ${qids.length} qid target(s) from ${relativePath(questionsPath)}.`);
+  console.log(`Decision memory: ${decisionMemory.enabled ? `${decisionMemory.counts.records} image-replacement record(s)` : "disabled"}.`);
   const targets = await buildTargets({ dataset, qids, questionMap });
 
   console.log(`Indexing ${screenshotPaths.length} screenshot candidate(s).`);
@@ -97,7 +107,8 @@ async function main() {
       continue;
     }
 
-    const candidates = rankCandidates(target, screenshotIndex, topN);
+    const memoryInfo = getQidMemory(decisionMemory, target.qid);
+    const candidates = rankCandidates(target, screenshotIndex, topN, memoryInfo, decisionMemory);
     const topScore = candidates[0]?.score ?? 0;
     const runnerUpScore = candidates[1]?.score ?? 0;
     const margin = topScore - runnerUpScore;
@@ -110,11 +121,13 @@ async function main() {
       topScore,
       runnerUpScore,
       margin,
+      memory: summarizeImageReplacementMemory(memoryInfo),
       candidates,
     });
   }
 
   await writeCandidateThumbnails(results);
+  const memoryAdjustments = countMemoryAdjustedCandidates(results);
 
   const workbench = {
     generatedAt: stableNow(),
@@ -129,8 +142,19 @@ async function main() {
       topN,
       confidenceThreshold,
       concurrency,
+      useMemory,
+      memoryPath: decisionMemory.memoryPath,
     },
     counts: summarizeResults(results),
+    memory: {
+      enabled: decisionMemory.enabled,
+      exists: decisionMemory.exists,
+      warning: decisionMemory.warning ?? null,
+      records: decisionMemory.counts.records,
+      qids: decisionMemory.counts.qids,
+      boostedCandidates: memoryAdjustments.boosted,
+      downrankedCandidates: memoryAdjustments.downranked,
+    },
     screenshotsScanned: screenshotIndex.length,
     results: results.map(serializeResult),
   };
@@ -170,6 +194,13 @@ function numericArg(args, key, fallback) {
   }
   const parsed = Number(raw);
   return Number.isFinite(parsed) ? parsed : fallback;
+}
+
+function booleanArg(args, key, fallback) {
+  if (!(key in args)) {
+    return fallback;
+  }
+  return ["1", "true", "yes", "on"].includes(String(args[key]).toLowerCase());
 }
 
 function parseQids(raw) {
@@ -793,7 +824,7 @@ function normalizeVector(vector) {
   }
 }
 
-function rankCandidates(target, screenshotIndex, topN) {
+function rankCandidates(target, screenshotIndex, topN, memoryInfo, decisionMemory) {
   const ranked = [];
 
   for (const screenshot of screenshotIndex) {
@@ -831,7 +862,8 @@ function rankCandidates(target, screenshotIndex, topN) {
   }
 
   return ranked
-    .sort((left, right) => right.score - left.score)
+    .map((candidate) => applyImageReplacementMemoryToCandidate(candidate, memoryInfo, decisionMemory))
+    .sort((left, right) => (right.finalScore ?? right.score) - (left.finalScore ?? left.score))
     .slice(0, topN)
     .map((candidate, index) => ({
       ...candidate,
@@ -943,9 +975,12 @@ function serializeResult(result) {
     topScore: roundScore(result.topScore),
     runnerUpScore: roundScore(result.runnerUpScore),
     margin: roundScore(result.margin),
+    memory: result.memory ?? null,
     candidates: (result.candidates ?? []).map((candidate) => ({
       rank: candidate.rank,
       score: roundScore(candidate.score),
+      baseScore: roundScore(candidate.baseScore),
+      finalScore: roundScore(candidate.finalScore ?? candidate.score),
       scoreParts: Object.fromEntries(
         Object.entries(candidate.scoreParts ?? {}).map(([key, value]) => [key, roundScore(value)]),
       ),
@@ -961,6 +996,13 @@ function serializeResult(result) {
       screenshotHeight: candidate.screenshotHeight,
       previewWidth: candidate.previewWidth ?? null,
       previewHeight: candidate.previewHeight ?? null,
+      memoryMatch: Boolean(candidate.memoryMatch),
+      memoryOutcome: candidate.memoryOutcome ?? null,
+      memoryOperation: candidate.memoryOperation ?? null,
+      previousReviewerNotes: candidate.previousReviewerNotes ?? "",
+      memoryReason: candidate.memoryReason ?? "",
+      memoryMatchReason: candidate.memoryMatchReason ?? "",
+      memoryScoreAdjustment: roundScore(candidate.memoryScoreAdjustment),
     })),
   };
 }
@@ -1645,6 +1687,7 @@ function buildResultSection(result, htmlPath) {
     <div>
       <h2>${escapeHtml(result.qid)}</h2>
       <div class="small">top score ${escapeHtml(formatMaybeScore(result.topScore))} · margin ${escapeHtml(formatMaybeScore(result.margin))}</div>
+      ${buildMemorySummary(result.memory)}
     </div>
     <span class="badge ${escapeAttribute(status)}">${escapeHtml(status)}</span>
   </div>
@@ -1683,14 +1726,41 @@ function buildCandidateCard(candidate, htmlPath, qid) {
 
   return `<article class="candidate" role="button" tabindex="0" data-qid="${escapeAttribute(qid)}" data-candidate-index="${escapeAttribute(candidate.rank)}">
   <span class="selected-label">✓ Selected</span>
-  <h3>#${candidate.rank} · score ${escapeHtml(formatMaybeScore(candidate.score))}</h3>
+  <h3>#${candidate.rank} · final ${escapeHtml(formatMaybeScore(candidate.finalScore ?? candidate.score))}</h3>
   ${thumbSrc ? `<img loading="lazy" src="${escapeAttribute(thumbSrc)}" alt="Candidate crop ${candidate.rank}">` : ""}
+  ${buildCandidateMemory(candidate)}
   <p class="small">source <code>${escapeHtml(candidate.screenshotPath)}</code></p>
   <p class="small">preview <code>${escapeHtml(candidate.thumbnailPath ?? "")}</code></p>
   <p class="small">crop <code>${escapeHtml(candidate.candidateDescriptor)}</code> · target <code>${escapeHtml(candidate.targetDescriptor)}</code> · box <code>${escapeHtml(JSON.stringify(candidate.crop ?? null))}</code></p>
   <p class="small">pHash ${escapeHtml(formatMaybeScore(candidate.scoreParts?.pHash))} · hist ${escapeHtml(formatMaybeScore(candidate.scoreParts?.histogram))} · aspect ${escapeHtml(formatMaybeScore(candidate.scoreParts?.aspect))}</p>
   <p class="small">full screenshot <code>${escapeHtml(screenshotSrc)}</code></p>
 </article>`;
+}
+
+function buildMemorySummary(memory) {
+  if (!memory || memory.records === 0) {
+    return "";
+  }
+  const notes = (memory.previousReviewerNotes ?? []).join(" / ");
+  const assets = (memory.previousAppliedAssets ?? []).join(" / ");
+  const refs = (memory.successfulReferencedQids ?? []).join(", ");
+  return `<div class="small memory-summary">
+    memory records ${escapeHtml(memory.records)}${refs ? ` · referenced ${escapeHtml(refs)}` : ""}${assets ? ` · previous applied asset <code>${escapeHtml(assets)}</code>` : ""}${notes ? `<br>notes: ${escapeHtml(notes)}` : ""}
+  </div>`;
+}
+
+function buildCandidateMemory(candidate) {
+  const match = candidate.memoryMatch ? "yes" : "no";
+  const detail = [
+    candidate.memoryOutcome ? `outcome ${candidate.memoryOutcome}` : null,
+    candidate.memoryOperation ? `operation ${candidate.memoryOperation}` : null,
+    `base ${formatMaybeScore(candidate.baseScore ?? candidate.score)}`,
+    `memory adjustment ${formatMaybeScore(candidate.memoryScoreAdjustment ?? 0)}`,
+    `final ${formatMaybeScore(candidate.finalScore ?? candidate.score)}`,
+  ].filter(Boolean).join(" · ");
+  const notes = candidate.previousReviewerNotes ? `<br>notes: ${escapeHtml(candidate.previousReviewerNotes)}` : "";
+  const reason = candidate.memoryMatchReason || candidate.memoryReason ? `<br>reason: ${escapeHtml(candidate.memoryMatchReason || candidate.memoryReason)}` : "";
+  return `<p class="small memory-line">memoryMatch: ${escapeHtml(match)}${detail ? ` · ${escapeHtml(detail)}` : ""}${notes}${reason}</p>`;
 }
 
 function decisionButton(qid, decision, label) {

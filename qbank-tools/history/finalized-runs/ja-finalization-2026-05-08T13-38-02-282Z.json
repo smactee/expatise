@@ -1,0 +1,197 @@
+{
+  "generatedAt": "2026-05-08T13:38:02.367Z",
+  "lang": "ja",
+  "applyRequested": true,
+  "applied": true,
+  "safeToApply": true,
+  "validation": {
+    "checks": {
+      "missingBackfillQids": 0,
+      "extraTranslationQids": 0,
+      "shipReadinessRecommendation": "ship",
+      "integrityCriticalBlockers": 0,
+      "targetIntegrityCriticalBlockers": 0,
+      "trackedScreenshots": 0,
+      "decisionMemoryRecords": 18456
+    },
+    "readyToFinalize": true,
+    "missingQids": [],
+    "extraQids": [],
+    "trackedScreenshots": [],
+    "shipReportPath": "qbank-tools/generated/reports/ru-ship-readiness-report.json",
+    "integrityReportPath": "qbank-tools/generated/reports/qbank-integrity-audit.json",
+    "targetCriticalBlockers": []
+  },
+  "plan": {
+    "toHistory": [
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/staging/backfill.ja.generated-draft.json",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/history/decisions/backfill.ja.generated-draft.json",
+        "reason": "decision intelligence from active staging"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/staging/backfill.ja.reviewed.json",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/history/decisions/backfill.ja.reviewed.json",
+        "reason": "decision intelligence from active staging"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/backfill-production-merge.ja.json",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/history/decisions/backfill-production-merge.ja.json",
+        "reason": "decision/report intelligence"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/backfill-quality-review.ja.json",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/history/decisions/backfill-quality-review.ja.json",
+        "reason": "decision/report intelligence"
+      }
+    ],
+    "toArchive": [
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/staging/backfill.ja.missing-qids.json",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/generated/archive/finalized-runs/ja/2026-05-08T13-38-02-282Z/staging/backfill.ja.missing-qids.json",
+        "reason": "regenerable staging artifact"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/staging/backfill.ja.needs-fix.json",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/generated/archive/finalized-runs/ja/2026-05-08T13-38-02-282Z/staging/backfill.ja.needs-fix.json",
+        "reason": "regenerable staging artifact"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/backfill-production-merge.ja.md",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/generated/archive/finalized-runs/ja/2026-05-08T13-38-02-282Z/reports/backfill-production-merge.ja.md",
+        "reason": "regenerable report artifact"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/backfill-quality-review.ja.md",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/generated/archive/finalized-runs/ja/2026-05-08T13-38-02-282Z/reports/backfill-quality-review.ja.md",
+        "reason": "regenerable report artifact"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/backfill-validation.ja.json",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/generated/archive/finalized-runs/ja/2026-05-08T13-38-02-282Z/reports/backfill-validation.ja.json",
+        "reason": "regenerable report artifact"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/backfill-validation.ja.md",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/generated/archive/finalized-runs/ja/2026-05-08T13-38-02-282Z/reports/backfill-validation.ja.md",
+        "reason": "regenerable report artifact"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/ko-ja-qid-sync-apply-report.json",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/generated/archive/finalized-runs/ja/2026-05-08T13-38-02-282Z/reports/ko-ja-qid-sync-apply-report.json",
+        "reason": "regenerable report artifact"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/ko-ja-qid-sync-apply-report.md",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/generated/archive/finalized-runs/ja/2026-05-08T13-38-02-282Z/reports/ko-ja-qid-sync-apply-report.md",
+        "reason": "regenerable report artifact"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/ko-ja-qid-sync-plan.json",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/generated/archive/finalized-runs/ja/2026-05-08T13-38-02-282Z/reports/ko-ja-qid-sync-plan.json",
+        "reason": "regenerable report artifact"
+      },
+      {
+        "from": "/Users/huni/dev-projects/expatise/qbank-tools/generated/reports/ko-ja-qid-sync-plan.md",
+        "to": "/Users/huni/dev-projects/expatise/qbank-tools/generated/archive/finalized-runs/ja/2026-05-08T13-38-02-282Z/reports/ko-ja-qid-sync-plan.md",
+        "reason": "regenerable report artifact"
+      }
+    ],
+    "deleteJunk": [],
+    "keepActive": [
+      "qbank-tools/generated/reports/ru-ship-readiness-report.json",
+      "qbank-tools/generated/reports/ru-ship-readiness-report.md",
+      "qbank-tools/generated/reports/qbank-integrity-audit.json",
+      "qbank-tools/generated/reports/qbank-integrity-audit.md"
+    ],
+    "archiveRoot": "qbank-tools/generated/archive/finalized-runs/ja/2026-05-08T13-38-02-282Z",
+    "manifestPaths": {
+      "json": "qbank-tools/history/finalized-runs/ja-finalization-2026-05-08T13-38-02-282Z.json",
+      "md": "qbank-tools/history/finalized-runs/ja-finalization-2026-05-08T13-38-02-282Z.md"
+    }
+  },
+  "results": {
+    "filesMovedToHistory": [
+      {
+        "from": "qbank-tools/generated/staging/backfill.ja.generated-draft.json",
+        "to": "qbank-tools/history/decisions/backfill.ja.generated-draft.json",
+        "reason": "decision intelligence from active staging"
+      },
+      {
+        "from": "qbank-tools/generated/staging/backfill.ja.reviewed.json",
+        "to": "qbank-tools/history/decisions/backfill.ja.reviewed.json",
+        "reason": "decision intelligence from active staging"
+      },
+      {
+        "from": "qbank-tools/generated/reports/backfill-production-merge.ja.json",
+        "to": "qbank-tools/history/decisions/backfill-production-merge.ja.json",
+        "reason": "decision/report intelligence"
+      },
+      {
+        "from": "qbank-tools/generated/reports/backfill-quality-review.ja.json",
+        "to": "qbank-tools/history/decisions/backfill-quality-review.ja.json",
+        "reason": "decision/report intelligence"
+      }
+    ],
+    "filesMovedToArchive": [
+      {
+        "from": "qbank-tools/generated/staging/backfill.ja.missing-qids.json",
+        "to": "qbank-tools/generated/archive/finalized-runs/ja/2026-05-08T13-38-02-282Z/staging/backfill.ja.missing-qids.json",
+        "reason": "regenerable staging artifact"
+      },
+      {
+        "from": "qbank-tools/generated/staging/backfill.ja.needs-fix.json",
+        "to": "qbank-tools/generated/archive/finalized-runs/ja/2026-05-08T13-38-02-282Z/staging/backfill.ja.needs-fix.json",
+        "reason": "regenerable staging artifact"
+      },
+      {
+        "from": "qbank-tools/generated/reports/backfill-production-merge.ja.md",
+        "to": "qbank-tools/generated/archive/finalized-runs/ja/2026-05-08T13-38-02-282Z/reports/backfill-production-merge.ja.md",
+        "reason": "regenerable report artifact"
+      },
+      {
+        "from": "qbank-tools/generated/reports/backfill-quality-review.ja.md",
+        "to": "qbank-tools/generated/archive/finalized-runs/ja/2026-05-08T13-38-02-282Z/reports/backfill-quality-review.ja.md",
+        "reason": "regenerable report artifact"
+      },
+      {
+        "from": "qbank-tools/generated/reports/backfill-validation.ja.json",
+        "to": "qbank-tools/generated/archive/finalized-runs/ja/2026-05-08T13-38-02-282Z/reports/backfill-validation.ja.json",
+        "reason": "regenerable report artifact"
+      },
+      {
+        "from": "qbank-tools/generated/reports/backfill-validation.ja.md",
+        "to": "qbank-tools/generated/archive/finalized-runs/ja/2026-05-08T13-38-02-282Z/reports/backfill-validation.ja.md",
+        "reason": "regenerable report artifact"
+      },
+      {
+        "from": "qbank-tools/generated/reports/ko-ja-qid-sync-apply-report.json",
+        "to": "qbank-tools/generated/archive/finalized-runs/ja/2026-05-08T13-38-02-282Z/reports/ko-ja-qid-sync-apply-report.json",
+        "reason": "regenerable report artifact"
+      },
+      {
+        "from": "qbank-tools/generated/reports/ko-ja-qid-sync-apply-report.md",
+        "to": "qbank-tools/generated/archive/finalized-runs/ja/2026-05-08T13-38-02-282Z/reports/ko-ja-qid-sync-apply-report.md",
+        "reason": "regenerable report artifact"
+      },
+      {
+        "from": "qbank-tools/generated/reports/ko-ja-qid-sync-plan.json",
+        "to": "qbank-tools/generated/archive/finalized-runs/ja/2026-05-08T13-38-02-282Z/reports/ko-ja-qid-sync-plan.json",
+        "reason": "regenerable report artifact"
+      },
+      {
+        "from": "qbank-tools/generated/reports/ko-ja-qid-sync-plan.md",
+        "to": "qbank-tools/generated/archive/finalized-runs/ja/2026-05-08T13-38-02-282Z/reports/ko-ja-qid-sync-plan.md",
+        "reason": "regenerable report artifact"
+      }
+    ],
+    "filesDeleted": [],
+    "filesKeptActive": [
+      "qbank-tools/generated/reports/ru-ship-readiness-report.json",
+      "qbank-tools/generated/reports/ru-ship-readiness-report.md",
+      "qbank-tools/generated/reports/qbank-integrity-audit.json",
+      "qbank-tools/generated/reports/qbank-integrity-audit.md"
+    ],
+    "skipped": []
+  }
+}

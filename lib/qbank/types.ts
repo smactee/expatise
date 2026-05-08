@@ -31,11 +31,15 @@ export interface QuestionTranslationOptionAlignmentEntry {
   confirmedAsCorrectKey?: boolean;
 }
 
-export type QuestionTranslationSourceMode = 'pdf-adapted' | 'pdf-template-guided' | 'direct';
+export type QuestionTranslationSourceMode = 'pdf-adapted' | 'pdf-template-guided' | 'direct' | 'english_master_backfill';
 export type QuestionTranslationConfidence = 'high' | 'medium' | 'low';
 export type QuestionTranslationReviewStatus = 'ready' | 'needs-review';
 
 export interface QuestionTranslationEntry {
+  qid?: string;
+  translationStatus?: 'missing';
+  source?: 'auto-propagation';
+  createdAt?: string;
   prompt?: string;
   explanation?: string;
   options?: Record<string, string>;

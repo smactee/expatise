@@ -10,6 +10,8 @@ import {
 } from "./pipeline.mjs";
 
 export const BACKFILL_SOURCE = "english_master_backfill";
+export const AUTO_PROPAGATION_SOURCE = "auto-propagation";
+export const AUTO_PROPAGATION_STATUS = "missing";
 
 const LANGUAGE_CONFIGS = {
   ja: {
@@ -158,7 +160,12 @@ export function loadBackfillContext({ lang, dataset = DEFAULT_DATASET } = {}) {
   const masterByQid = new Map(masterQuestions.map((question) => [questionQid(question), question]).filter(([qid]) => qid));
   const translations = translationQuestions(translationsDoc);
   const translationQids = new Set(Object.keys(translations).map(normalizeQid).filter(Boolean));
-  const missingQids = [...masterByQid.keys()].filter((qid) => !translationQids.has(qid)).sort(compareQid);
+  const placeholderQids = new Set(Object.entries(translations)
+    .filter(([, entry]) => isAutoPropagationPlaceholder(entry))
+    .map(([qid]) => normalizeQid(qid))
+    .filter(Boolean));
+  const productionTranslationQids = new Set([...translationQids].filter((qid) => !placeholderQids.has(qid)));
+  const missingQids = [...masterByQid.keys()].filter((qid) => !productionTranslationQids.has(qid)).sort(compareQid);
 
   return {
     paths,
@@ -169,8 +176,18 @@ export function loadBackfillContext({ lang, dataset = DEFAULT_DATASET } = {}) {
     masterByQid,
     translations,
     translationQids,
+    productionTranslationQids,
+    placeholderQids,
     missingQids,
   };
+}
+
+export function isAutoPropagationPlaceholder(entry) {
+  return !!entry
+    && typeof entry === "object"
+    && !Array.isArray(entry)
+    && String(entry.translationStatus ?? "").trim().toLowerCase() === AUTO_PROPAGATION_STATUS
+    && String(entry.source ?? "").trim().toLowerCase() === AUTO_PROPAGATION_SOURCE;
 }
 
 export function questionArray(doc) {
@@ -418,7 +435,8 @@ export function validateDraftItems({ items, context, requireGeneratedText = fals
     if (qid && seen.has(qid)) itemErrors.push("duplicate qid in input");
     if (qid) seen.add(qid);
     if (qid && !master) itemErrors.push("qid does not exist in English master questions.json");
-    if (qid && context.translationQids.has(qid)) itemErrors.push("qid already exists in production translations");
+    const productionTranslationQids = context.productionTranslationQids ?? context.translationQids;
+    if (qid && productionTranslationQids.has(qid)) itemErrors.push("qid already exists in production translations");
 
     if (requireApproved && item?.reviewStatus !== "approved") {
       itemErrors.push(`reviewStatus must be approved, got ${String(item?.reviewStatus ?? "") || "missing"}`);

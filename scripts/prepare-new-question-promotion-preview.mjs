@@ -15,6 +15,13 @@ import {
   stableNow,
   writeJson,
 } from "../qbank-tools/lib/pipeline.mjs";
+import {
+  loadDecisionMemory,
+  loadDuplicateAudit,
+  loadMasterQuestions,
+  normalizeCandidate,
+  reviewNewQuestionDuplicateSafety,
+} from "../qbank-tools/lib/new-question-promotion-gate.mjs";
 
 const args = parseArgs();
 const { lang, batchId } = batchOptionsFromArgs(args);
@@ -26,16 +33,24 @@ const candidates = Array.isArray(candidatesDoc.items) ? candidatesDoc.items : []
 const knownLanguages = discoverKnownLanguages({ dataset });
 const highestQuestionNumber = highestMasterNumber(datasetPaths.questionsPath);
 const nextQxOrdinal = nextSyntheticOrdinal();
+const master = loadMasterQuestions({ dataset });
+const decisionMemory = loadDecisionMemory();
+const duplicateAudit = loadDuplicateAudit();
 
-const preview = {
-  generatedAt: stableNow(),
-  lang,
-  batchId,
-  dataset,
-  sourceCandidatesPath: path.relative(process.cwd(), newQuestionFiles.candidatesPath),
-  highestExistingQuestionNumber: highestQuestionNumber,
-  knownLanguages,
-  items: candidates.map((candidate, index) => ({
+const previewItems = candidates.map((candidate, index) => {
+  const duplicateSafety = reviewNewQuestionDuplicateSafety({
+    candidate: normalizeCandidate(candidate, {
+      index,
+      inputPath: newQuestionFiles.candidatesPath,
+      lang,
+      batch: batchId,
+    }),
+    masterQuestions: master.questions,
+    decisionMemory: decisionMemory.records,
+    duplicateAudit,
+  });
+
+  return {
     candidateId: candidate.candidateId,
     proposedQid: `qx${String(nextQxOrdinal + index).padStart(4, "0")}`,
     proposedMasterNumber: highestQuestionNumber + index + 1,
@@ -46,14 +61,38 @@ const preview = {
     provisionalTopic: candidate.provisionalTopic,
     provisionalSubtopics: candidate.provisionalSubtopics,
     linkedExistingAssetCandidate: candidate.linkedExistingAssetCandidate ?? null,
+    duplicateSafety,
+    nearestExistingQids: duplicateSafety.nearestExistingQids,
+    duplicateScore: duplicateSafety.duplicateScore,
+    memoryLabelsFound: duplicateSafety.memoryLabelsFound,
+    promotionRecommendation: duplicateSafety.promotionRecommendation,
     placeholderLocalizationCoverage: Object.fromEntries(
       knownLanguages.map((knownLang) => [
         knownLang,
         localizationPlaceholderState(candidate, knownLang),
       ]),
     ),
-    status: "preview-only",
-  })),
+    status: statusForDuplicateSafety(duplicateSafety),
+  };
+});
+
+const preview = {
+  generatedAt: stableNow(),
+  lang,
+  batchId,
+  dataset,
+  sourceCandidatesPath: path.relative(process.cwd(), newQuestionFiles.candidatesPath),
+  sourceDuplicateSafetyPaths: {
+    masterQuestions: path.relative(process.cwd(), master.questionsPath),
+    rawQuestions: path.relative(process.cwd(), master.rawQuestionsPath),
+    imageColorTags: path.relative(process.cwd(), master.imageTagsPath),
+    decisionMemory: path.relative(process.cwd(), decisionMemory.memoryPath),
+    duplicateAudit: path.relative(process.cwd(), duplicateAudit.auditPath),
+  },
+  duplicateSafetySummary: summarizeDuplicateSafety(previewItems),
+  highestExistingQuestionNumber: highestQuestionNumber,
+  knownLanguages,
+  items: previewItems,
 };
 
 await writeJson(newQuestionFiles.promotionPreviewPath, preview);
@@ -103,4 +142,20 @@ function localizationPlaceholderState(candidate, knownLang) {
   }
 
   return "missing-localization";
+}
+
+function statusForDuplicateSafety(duplicateSafety) {
+  if (duplicateSafety.promotionRecommendation === "blockDuplicate") return "blocked-duplicate";
+  if (duplicateSafety.promotionRecommendation === "linkToExistingQid") return "link-to-existing-qid";
+  if (duplicateSafety.promotionRecommendation === "needsDuplicateReview") return "needs-duplicate-review";
+  return "preview-only";
+}
+
+function summarizeDuplicateSafety(items) {
+  return {
+    candidatesBlocked: items.filter((item) => item.duplicateSafety?.promotionRecommendation === "blockDuplicate").length,
+    candidatesNeedingDuplicateReview: items.filter((item) => item.duplicateSafety?.promotionRecommendation === "needsDuplicateReview").length,
+    candidatesLinkedToExistingQid: items.filter((item) => item.duplicateSafety?.promotionRecommendation === "linkToExistingQid").length,
+    candidatesSafeToPromote: items.filter((item) => item.duplicateSafety?.promotionRecommendation === "safeToPromote").length,
+  };
 }

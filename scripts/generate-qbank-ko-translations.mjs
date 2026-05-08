@@ -21,6 +21,11 @@ const START_AT = Number(args.startAt ?? 0);
 const DRY_RUN = Boolean(args.dryRun);
 const IDS = args.ids ? parseIds(args.ids) : null;
 const REFINE_EXISTING_VISUAL = Boolean(args.refineExistingVisual);
+const APPLY = booleanArg(args.apply);
+const ALLOW_DANGEROUS_PRODUCTION_EDIT = booleanArg(args.allowDangerousProductionEdit);
+const PRODUCTION_WRITE_ALLOWED = APPLY && ALLOW_DANGEROUS_PRODUCTION_EDIT;
+const REQUIRED_WRITE_FLAGS =
+  "--apply true --allow-dangerous-production-edit true";
 
 const SOURCE_MODES = ["pdf-adapted", "pdf-template-guided", "direct"];
 const PDF_FIRST_TEMPLATE_CLASSES = new Set([
@@ -167,6 +172,8 @@ main().catch((err) => {
 });
 
 async function main() {
+  if (!ensureSafeExecutionMode()) return;
+
   const glossary = await fs.readFile(GLOSSARY_PATH, "utf8");
   const dataset = JSON.parse(await fs.readFile(DATASET_PATH, "utf8"));
   const patch = JSON.parse(await fs.readFile(TAG_PATCH_PATH, "utf8"));
@@ -179,7 +186,7 @@ async function main() {
     const existing = await loadExistingOutput();
     const refined = refineExistingVisualTranslations(existing, dataset.questions, patch);
     const finalized = finalizeMeta(refined);
-    if (!DRY_RUN) await writeOutput(finalized);
+    if (!DRY_RUN) await writeProductionOutput(finalized);
     logSummary(finalized);
     return;
   }
@@ -204,7 +211,7 @@ async function main() {
 
   if (pending.length === 0) {
     const finalized = finalizeMeta(existing);
-    if (!DRY_RUN) await writeOutput(finalized);
+    if (!DRY_RUN) await writeProductionOutput(finalized);
     logSummary(finalized);
     return;
   }
@@ -237,12 +244,12 @@ async function main() {
     console.log(`Processed ${processed}/${pending.length}`);
 
     if (!DRY_RUN) {
-      await writeOutput(out);
+      await writeProductionOutput(out);
     }
   }
 
   out = finalizeMeta(out);
-  if (!DRY_RUN) await writeOutput(out);
+  if (!DRY_RUN) await writeProductionOutput(out);
   logSummary(out);
 }
 
@@ -274,6 +281,32 @@ function parseArgs(argv) {
 
 function camelCase(value) {
   return value.replace(/-([a-z])/g, (_, c) => c.toUpperCase());
+}
+
+function booleanArg(value) {
+  if (value === true) return true;
+  return ["1", "true", "yes", "on"].includes(String(value ?? "").trim().toLowerCase());
+}
+
+function ensureSafeExecutionMode() {
+  if (DRY_RUN) {
+    console.log(
+      `Dry-run: ${path.relative(ROOT, OUTPUT_PATH)} will not be modified.`
+    );
+    return true;
+  }
+
+  if (PRODUCTION_WRITE_ALLOWED) return true;
+
+  console.error(
+    [
+      "Dry-run/no-op: production translation generation is blocked by default.",
+      `Target production file: ${path.relative(ROOT, OUTPUT_PATH)}`,
+      `To modify production translations, pass: ${REQUIRED_WRITE_FLAGS}`,
+      "Use --dry-run to run without writing production files.",
+    ].join("\n")
+  );
+  return false;
 }
 
 function parseIds(value) {
@@ -1570,6 +1603,15 @@ function finalizeMeta(file) {
 async function writeOutput(file) {
   await fs.mkdir(path.dirname(OUTPUT_PATH), { recursive: true });
   await fs.writeFile(OUTPUT_PATH, `${JSON.stringify(file, null, 2)}\n`, "utf8");
+}
+
+async function writeProductionOutput(file) {
+  if (!PRODUCTION_WRITE_ALLOWED) {
+    throw new Error(
+      `Production write blocked. Required flags: ${REQUIRED_WRITE_FLAGS}`
+    );
+  }
+  await writeOutput(file);
 }
 
 function logSummary(file) {

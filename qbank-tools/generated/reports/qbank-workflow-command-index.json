@@ -1,0 +1,3297 @@
+{
+  "generatedAt": "2026-05-06T11:10:03.660Z",
+  "sourcePaths": {
+    "packageJson": "package.json",
+    "scriptsDir": "scripts",
+    "qbankToolsLibDir": "qbank-tools/lib",
+    "generatedReportsDir": "qbank-tools/generated/reports"
+  },
+  "summary": {
+    "generatedAt": "2026-05-06T11:10:03.660Z",
+    "scriptsAudited": 109,
+    "packageCommandsAudited": 48,
+    "countsByRecommendedStatus": {
+      "active-production": 7,
+      "active-review-workflow": 43,
+      "active-memory-intelligence": 13,
+      "active-validation": 25,
+      "cleanup/archive": 10,
+      "legacy-compatible": 6,
+      "deprecated-candidate": 1,
+      "dangerous-production-edit": 4,
+      "unknown-review-needed": 0
+    },
+    "commandCountsByRecommendedStatus": {
+      "active-production": 5,
+      "active-review-workflow": 23,
+      "active-memory-intelligence": 3,
+      "active-validation": 9,
+      "cleanup/archive": 1,
+      "legacy-compatible": 6,
+      "deprecated-candidate": 1,
+      "dangerous-production-edit": 0,
+      "unknown-review-needed": 0
+    },
+    "activeProductionCount": 7,
+    "activeReviewWorkflowCount": 43,
+    "deprecatedCandidateCount": 1,
+    "dangerousProductionEditCount": 4,
+    "unknownReviewNeededCount": 0
+  },
+  "packageCommands": [
+    {
+      "name": "dev",
+      "command": "next dev --webpack",
+      "path": null,
+      "purpose": "Package command: dev (next dev --webpack)",
+      "modifiesProductionFiles": false,
+      "dryRunSupport": false,
+      "requiresGuardFlags": false,
+      "relatedPhase": "General app/repo workflow",
+      "recommendedStatus": "legacy-compatible",
+      "notes": "Package command does not directly map to a qbank script."
+    },
+    {
+      "name": "build",
+      "command": "next build",
+      "path": null,
+      "purpose": "Package command: build (next build)",
+      "modifiesProductionFiles": false,
+      "dryRunSupport": true,
+      "requiresGuardFlags": false,
+      "relatedPhase": "General app/repo workflow",
+      "recommendedStatus": "legacy-compatible",
+      "notes": "Package command does not directly map to a qbank script."
+    },
+    {
+      "name": "start",
+      "command": "next start",
+      "path": null,
+      "purpose": "Package command: start (next start)",
+      "modifiesProductionFiles": false,
+      "dryRunSupport": false,
+      "requiresGuardFlags": false,
+      "relatedPhase": "General app/repo workflow",
+      "recommendedStatus": "legacy-compatible",
+      "notes": "Package command does not directly map to a qbank script."
+    },
+    {
+      "name": "lint",
+      "command": "eslint",
+      "path": null,
+      "purpose": "Package command: lint (eslint)",
+      "modifiesProductionFiles": false,
+      "dryRunSupport": true,
+      "requiresGuardFlags": false,
+      "relatedPhase": "General app/repo workflow",
+      "recommendedStatus": "legacy-compatible",
+      "notes": "Package command does not directly map to a qbank script."
+    },
+    {
+      "name": "qbank:health",
+      "command": "node scripts/qbank-health-check.mjs",
+      "path": "scripts/qbank-health-check.mjs",
+      "purpose": "Run consolidated qbank validation, audit, and build checks.",
+      "modifiesProductionFiles": false,
+      "dryRunSupport": false,
+      "requiresGuardFlags": false,
+      "relatedPhase": "8. Repo cleanup / workflow hygiene",
+      "recommendedStatus": "active-validation",
+      "notes": "Wraps scripts/qbank-health-check.mjs."
+    },
+    {
+      "name": "build-match-index",
+      "command": "node scripts/build-match-index.mjs",
+      "path": "scripts/build-match-index.mjs",
+      "purpose": "Build Match Index",
+      "modifiesProductionFiles": false,
+      "dryRunSupport": true,
+      "requiresGuardFlags": false,
+      "relatedPhase": "6. Decision memory",
+      "recommendedStatus": "active-memory-intelligence",
+      "notes": "Wraps scripts/build-match-index.mjs."
+    },
+    {
+      "name": "propagate-new-master-qids",
+      "command": "node scripts/propagate-new-master-qids.mjs",
+      "path": "scripts/propagate-new-master-qids.mjs",
+      "purpose": "Create missing translation placeholders for new English master qids.",
+      "modifiesProductionFiles": true,
+      "dryRunSupport": false,
+      "requiresGuardFlags": false,
+      "relatedPhase": "3. Missing-qid backfill",
+      "recommendedStatus": "active-production",
+      "notes": "Wraps scripts/propagate-new-master-qids.mjs."
+    },
+    {
+      "name": "build-missing-localization-backfill",
+      "command": "node scripts/build-missing-localization-backfill.mjs",
+      "path": "scripts/build-missing-localization-backfill.mjs",
+      "purpose": "Build Missing Localization Backfill",
+      "modifiesProductionFiles": false,
+      "dryRunSupport": true,
+      "requiresGuardFlags": false,
+      "relatedPhase": "7. Tag intelligence",
+      "recommendedStatus": "active-review-workflow",
+      "notes": "Wraps scripts/build-missing-localization-backfill.mjs."
+    },
+    {
+      "name": "generate-missing-localization-draft",
+      "command": "node scripts/generate-missing-localization-draft.mjs",
+      "path": "scripts/generate-missing-localization-draft.mjs",
+      "purpose": "Generate Missing Localization Draft",
+      "modifiesProductionFiles": false,
+      "dryRunSupport": true,
+      "requiresGuardFlags": false,
+      "relatedPhase": "3. Missing-qid backfill",
+      "recommendedStatus": "active-review-workflow",
+      "notes": "Wraps scripts/generate-missing-localization-draft.mjs."
+    },
+    {
+      "name": "review-generated-localization-quality",
+      "command": "node scripts/review-generated-localization-quality.mjs",
+      "path": "scripts/review-generated-localization-quality.mjs",
+      "purpose": "Review Generated Localization Quality",
+      "modifiesProductionFiles": false,
+      "dryRunSupport": false,
+      "requiresGuardFlags": false,
+      "relatedPhase": "3. Missing-qid backfill",
+      "recommendedStatus": "active-review-workflow",
+      "notes": "Wraps scripts/review-generated-localization-quality.mjs."
+    },
+    {
+      "name": "validate-missing-localization-backfill",
+      "command": "node scripts/validate-missing-localization-backfill.mjs",
+      "path": "scripts/validate-missing-localization-backfill.mjs",
+      "purpose": "Validate Missing Localization Backfill",
+      "modifiesProductionFiles": false,
+      "dryRunSupport": true,
+      "requiresGuardFlags": false,
+      "relatedPhase": "3. Missing-qid backfill",
+      "recommendedStatus": "active-validation",
+      "notes": "Wraps scripts/validate-missing-localization-backfill.mjs."
+    },
+    {
+      "name": "apply-reviewed-missing-localization-backfill",
+      "command": "node scripts/apply-reviewed-missing-localization-backfill.mjs",
+      "path": "scripts/apply-reviewed-missing-localization-backfill.mjs",
+      "purpose": "Apply approved missing-qid backfill translations to production translations.",
+      "modifiesProductionFiles": true,
+      "dryRunSupport": true,
+      "requiresGuardFlags": true,
+      "relatedPhase": "3. Missing-qid backfill",
+      "recommendedStatus": "active-production",
+      "notes": "Wraps scripts/apply-reviewed-missing-localization-backfill.mjs."
+    },
+    {
+      "name": "audit-qbank-integrity",
+      "command": "node scripts/audit-qbank-integrity.mjs",
+      "path": "scripts/audit-qbank-integrity.mjs",
+      "purpose": "Run cross-language qbank integrity audit.",
+      "modifiesProductionFiles": false,
+      "dryRunSupport": true,
+      "requiresGuardFlags": false,
+      "relatedPhase": "7. Tag intelligence",
+      "recommendedStatus": "active-validation",
+      "notes": "Wraps scripts/audit-qbank-integrity.mjs."
+    },
+    {
+      "name": "build-decision-memory",
+      "command": "node scripts/build-decision-memory.mjs",
+      "path": "scripts/build-decision-memory.mjs",
+      "purpose": "Build reusable decision memory from production/history artifacts.",
+      "modifiesProductionFiles": false,
+      "dryRunSupport": true,
+      "requiresGuardFlags": false,
+      "relatedPhase": "8. Repo cleanup / workflow hygiene",
+      "recommendedStatus": "active-memory-intelligence",
+      "notes": "Wraps scripts/build-decision-memory.mjs."
+    },
+    {
+      "name": "finalize-localization-run",
+      "command": "node scripts/finalize-localization-run.mjs",
+      "path": "scripts/finalize-localization-run.mjs",
+      "purpose": "Finalize Localization Run",
+      "modifiesProductionFiles": false,
+      "dryRunSupport": true,
+      "requiresGuardFlags": true,
+      "relatedPhase": "8. Repo cleanup / workflow hygiene",
+      "recommendedStatus": "active-review-workflow",
+      "notes": "Wraps scripts/finalize-localization-run.mjs."
+    },
+    {
+      "name": "guard-protected-qbank-files",
+      "command": "node scripts/guard-protected-qbank-files.mjs",
+      "path": "scripts/guard-protected-qbank-files.mjs",
+      "purpose": "Guard protected production qbank files from unapproved edits.",
+      "modifiesProductionFiles": false,
+      "dryRunSupport": false,
+      "requiresGuardFlags": true,
+      "relatedPhase": "2. English master source-of-truth",
+      "recommendedStatus": "active-validation",
+      "notes": "Wraps scripts/guard-protected-qbank-files.mjs."
+    },
+    {
+      "name": "review-new-question-promotions",
+      "command": "node scripts/review-new-question-promotions.mjs",
+      "path": "scripts/review-new-question-promotions.mjs",
+      "purpose": "Review New Question Promotions",
+      "modifiesProductionFiles": false,
+      "dryRunSupport": false,
+      "requiresGuardFlags": false,
+      "relatedPhase": "6. Decision memory",
+      "recommendedStatus": "active-review-workflow",
+      "notes": "Wraps scripts/review-new-question-promotions.mjs."
+    },
+    {
+      "name": "cleanup-localization-batch",
+      "command": "node scripts/cleanup-localization-batch.mjs",
+      "path": "scripts/cleanup-localization-batch.mjs",
+      "purpose": "Cleanup Localization Batch",
+      "modifiesProductionFiles": false,
+      "dryRunSupport": true,
+      "requiresGuardFlags": false,
+      "relatedPhase": "8. Repo cleanup / workflow hygiene",
+      "recommendedStatus": "cleanup/archive",
+      "notes": "Wraps scripts/cleanup-localization-batch.mjs."
+    },
+    {
+      "name": "dry-run-asset-rename",
+      "command": "node scripts/dry-run-asset-rename.mjs",
+      "path": "scripts/dry-run-asset-rename.mjs",
+      "purpose": "Dry Run Asset Rename",
+      "modifiesProductionFiles": false,
+      "dryRunSupport": true,
+      "requiresGuardFlags": false,
+      "relatedPhase": "General app/repo workflow",
+      "recommendedStatus": "deprecated-candidate",
+      "notes": "Wraps scripts/dry-run-asset-rename.mjs."
+    },
+    {
+      "name": "extract-screenshot-intake",
+      "command": "node scripts/extract-screenshot-intake.mjs",
+      "path": "scripts/extract-screenshot-intake.mjs",
+      "purpose": "Extract Screenshot Intake",
+      "modifiesProductionFiles": false,
+      "dryRunSupport": false,
+      "requiresGuardFlags": true,
+      "relatedPhase": "General app/repo workflow",
+      "recommendedStatus": "active-review-workflow",
+      "notes": "Wraps scripts/extract-screenshot-intake.mjs."
+    },
+    {
+      "name": "generate-image-color-tags",
+      "command": "node scripts/generate-image-color-tags.mjs",
+      "path": "scripts/generate-image-color-tags.mjs",
+      "purpose": "Generate image color/object tag report artifacts.",
+      "modifiesProductionFiles": false,
+      "dryRunSupport": true,
+      "requiresGuardFlags": false,
+      "relatedPhase": "7. Tag intelligence",
+      "recommendedStatus": "active-memory-intelligence",
+      "notes": "Wraps scripts/generate-image-color-tags.mjs."
+    },
+    {
+      "name": "apply-unresolved-decisions",
+      "command": "node scripts/apply-unresolved-decisions.mjs",
+      "path": "scripts/apply-unresolved-decisions.mjs",
+      "purpose": "Apply Unresolved Decisions",
+      "modifiesProductionFiles": false,
+      "dryRunSupport": false,
+      "requiresGuardFlags": false,
+      "relatedPhase": "7. Tag intelligence",
+      "recommendedStatus": "active-review-workflow",
+      "notes": "Wraps scripts/apply-unresolved-decisions.mjs."
+    },
+    {
+      "name": "apply-answer-key-decisions",
+      "command": "node scripts/apply-answer-key-decisions.mjs",
+      "path": "scripts/apply-answer-key-decisions.mjs",
+      "purpose": "Apply Answer Key Decisions",
+      "modifiesProductionFiles": false,
+      "dryRunSupport": false,
+      "requiresGuardFlags": false,
+      "relatedPhase": "7. Tag intelligence",
+      "recommendedStatus": "active-review-workflow",
+      "notes": "Wraps scripts/apply-answer-key-decisions.mjs."
+    },
+    {
+      "name": "generate-batch-workbench",
+      "command": "node scripts/generate-batch-workbench.mjs",
+      "path": "scripts/generate-batch-workbench.mjs",
+      "purpose": "Generate Batch Workbench",
+      "modifiesProductionFiles": false,
+      "dryRunSupport": true,
+      "requiresGuardFlags": false,
+      "relatedPhase": "7. Tag intelligence",
+      "recommendedStatus": "active-review-workflow",
+      "notes": "Wraps scripts/generate-batch-workbench.mjs."
+    },
+    {
+      "name": "notebooklm-suggest-batch",
+      "command": "node scripts/notebooklm-suggest-batch.mjs",
+      "path": "scripts/notebooklm-suggest-batch.mjs",
+      "purpose": "Notebooklm Suggest Batch",
+      "modifiesProductionFiles": false,
+      "dryRunSupport": true,
+      "requiresGuardFlags": true,
+      "relatedPhase": "7. Tag intelligence",
+      "recommendedStatus": "active-review-workflow",
+      "notes": "Wraps scripts/notebooklm-suggest-batch.mjs."
+    },
+    {
+      "name": "notebooklm-rerank-workbench",
+      "command": "node scripts/notebooklm-rerank-workbench.mjs",
+      "path": "scripts/notebooklm-rerank-workbench.mjs",
+      "purpose": "Notebooklm Rerank Workbench",
+      "modifiesProductionFiles": false,
+      "dryRunSupport": false,
+      "requiresGuardFlags": false,
+      "relatedPhase": "7. Tag intelligence",
+      "recommendedStatus": "active-review-workflow",
+      "notes": "Wraps scripts/notebooklm-rerank-workbench.mjs."
+    },
+    {
+      "name": "apply-batch-workbench-decisions",
+      "command": "node scripts/apply-batch-workbench-decisions.mjs",
+      "path": "scripts/apply-batch-workbench-decisions.mjs",
+      "purpose": "Apply Batch Workbench Decisions",
+      "modifiesProductionFiles": false,
+      "dryRunSupport": true,
+      "requiresGuardFlags": false,
+      "relatedPhase": "7. Tag intelligence",
+      "recommendedStatus": "active-review-workflow",
+      "notes": "Wraps scripts/apply-batch-workbench-decisions.mjs."
+    },
+    {
+      "name": "apply-ru-discrepancy-review-decisions",
+      "command": "node scripts/apply-ru-discrepancy-review-decisions.mjs",
+      "path": "scripts/apply-ru-discrepancy-review-decisions.mjs",
+      "purpose": "Apply Ru Discrepancy Review Decisions",
+      "modifiesProductionFiles": false,
+      "dryRunSupport": true,
+      "requiresGuardFlags": false,
+      "relatedPhase": "7. Tag intelligence",
+      "recommendedStatus": "active-review-workflow",
+      "notes": "Wraps scripts/apply-ru-discrepancy-review-decisions.mjs."
+    },
+    {
+      "name": "apply-production-localization-merge",
+      "command": "node scripts/apply-production-localization-merge.mjs",
+      "path": "scripts/apply-production-localization-merge.mjs",
+      "purpose": "Merge validated localization staging preview into production translations.",
+      "modifiesProductionFiles": true,
+      "dryRunSupport": true,
+      "requiresGuardFlags": false,
+      "relatedPhase": "1. Russian ship-readiness",
+      "recommendedStatus": "active-production",
+      "notes": "Wraps scripts/apply-production-localization-merge.mjs."
+    },
+    {
+      "name": "prepare-dry-run-merge-review",
+      "command": "node scripts/prepare-dry-run-merge-review.mjs",
+      "path": "scripts/prepare-dry-run-merge-review.mjs",
+      "purpose": "Prepare Dry Run Merge Review",
+      "modifiesProductionFiles": false,
+      "dryRunSupport": true,
+      "requiresGuardFlags": false,
+      "relatedPhase": "7. Tag intelligence",
+      "recommendedStatus": "active-review-workflow",
+      "notes": "Wraps scripts/prepare-dry-run-merge-review.mjs."
+    },
+    {
+      "name": "build-full-batch-staging-preview",
+      "command": "node scripts/build-full-batch-staging-preview.mjs",
+      "path": "scripts/build-full-batch-staging-preview.mjs",
+      "purpose": "Build Full Batch Staging Preview",
+      "modifiesProductionFiles": false,
+      "dryRunSupport": true,
+      "requiresGuardFlags": false,
+      "relatedPhase": "7. Tag intelligence",
+      "recommendedStatus": "active-review-workflow",
+      "notes": "Wraps scripts/build-full-batch-staging-preview.mjs."
+    },
+    {
+      "name": "generate-answer-key-review",
+      "command": "node scripts/generate-answer-key-review.mjs",
+      "path": "scripts/generate-answer-key-review.mjs",
+      "purpose": "Generate Answer Key Review",
+      "modifiesProductionFiles": false,
+      "dryRunSupport": true,
+      "requiresGuardFlags": false,
+      "relatedPhase": "7. Tag intelligence",
+      "recommendedStatus": "active-review-workflow",
+      "notes": "Wraps scripts/generate-answer-key-review.mjs."
+    },
+    {
+      "name": "generate-batch-review-artifact",
+      "command": "node scripts/generate-batch-review-artifact.mjs",
+      "path": "scripts/generate-batch-review-artifact.mjs",
+      "purpose": "Generate Batch Review Artifact",
+      "modifiesProductionFiles": false,
+      "dryRunSupport": true,
+      "requiresGuardFlags": false,
+      "relatedPhase": "General app/repo workflow",
+      "recommendedStatus": "active-review-workflow",
+      "notes": "Wraps scripts/generate-batch-review-artifact.mjs."
+    },
+    {
+      "name": "generate-unresolved-review-artifact",
+      "command": "node scripts/generate-unresolved-review-artifact.mjs",
+      "path": "scripts/generate-unresolved-review-artifact.mjs",
+      "purpose": "Generate Unresolved Review Artifact",
+      "modifiesProductionFiles": false,
+      "dryRunSupport": true,
+      "requiresGuardFlags": false,
+      "relatedPhase": "7. Tag intelligence",
+      "recommendedStatus": "active-review-workflow",
+      "notes": "Wraps scripts/generate-unresolved-review-artifact.mjs."
+    },
+    {
+      "name": "stage-reviewed-batch",
+      "command": "node scripts/stage-reviewed-batch.mjs",
+      "path": "scripts/stage-reviewed-batch.mjs",
+      "purpose": "Stage Reviewed Batch",
+      "modifiesProductionFiles": false,
+      "dryRunSupport": false,
+      "requiresGuardFlags": false,
+      "relatedPhase": "7. Tag intelligence",
+      "recommendedStatus": "active-review-workflow",
+      "notes": "Wraps scripts/stage-reviewed-batch.mjs."
+    },
+    {
+      "name": "stage-new-question-candidates",
+      "command": "node scripts/stage-new-question-candidates.mjs",
+      "path": "scripts/stage-new-question-candidates.mjs",
+      "purpose": "Stage New Question Candidates",
+      "modifiesProductionFiles": false,
+      "dryRunSupport": false,
+      "requiresGuardFlags": false,
+      "relatedPhase": "7. Tag intelligence",
+      "recommendedStatus": "active-review-workflow",
+      "notes": "Wraps scripts/stage-new-question-candidates.mjs."
+    },
+    {
+      "name": "prepare-new-question-promotion-preview",
+      "command": "node scripts/prepare-new-question-promotion-preview.mjs",
+      "path": "scripts/prepare-new-question-promotion-preview.mjs",
+      "purpose": "Prepare New Question Promotion Preview",
+      "modifiesProductionFiles": false,
+      "dryRunSupport": true,
+      "requiresGuardFlags": false,
+      "relatedPhase": "7. Tag intelligence",
+      "recommendedStatus": "active-review-workflow",
+      "notes": "Wraps scripts/prepare-new-question-promotion-preview.mjs."
+    },
+    {
+      "name": "build-localization-coverage-report",
+      "command": "node scripts/build-localization-coverage-report.mjs",
+      "path": "scripts/build-localization-coverage-report.mjs",
+      "purpose": "Build Localization Coverage Report",
+      "modifiesProductionFiles": false,
+      "dryRunSupport": true,
+      "requiresGuardFlags": false,
+      "relatedPhase": "General app/repo workflow",
+      "recommendedStatus": "active-validation",
+      "notes": "Wraps scripts/build-localization-coverage-report.mjs."
+    },
+    {
+      "name": "process-screenshot-batch",
+      "command": "node scripts/process-screenshot-batch.mjs",
+      "path": "scripts/process-screenshot-batch.mjs",
+      "purpose": "Process Screenshot Batch",
+      "modifiesProductionFiles": false,
+      "dryRunSupport": false,
+      "requiresGuardFlags": false,
+      "relatedPhase": "General app/repo workflow",
+      "recommendedStatus": "active-review-workflow",
+      "notes": "Wraps scripts/process-screenshot-batch.mjs."
+    },
+    {
+      "name": "merge-reviewed-localizations",
+      "command": "node scripts/merge-reviewed-localizations.mjs",
+      "path": "scripts/merge-reviewed-localizations.mjs",
+      "purpose": "Merge Reviewed Localizations",
+      "modifiesProductionFiles": false,
+      "dryRunSupport": false,
+      "requiresGuardFlags": false,
+      "relatedPhase": "7. Tag intelligence",
+      "recommendedStatus": "active-review-workflow",
+      "notes": "Wraps scripts/merge-reviewed-localizations.mjs."
+    },
+    {
+      "name": "validate-screenshot-intake",
+      "command": "node scripts/validate-screenshot-intake.mjs",
+      "path": "scripts/validate-screenshot-intake.mjs",
+      "purpose": "Validate Screenshot Intake",
+      "modifiesProductionFiles": false,
+      "dryRunSupport": true,
+      "requiresGuardFlags": false,
+      "relatedPhase": "Cross-phase validation",
+      "recommendedStatus": "active-validation",
+      "notes": "Wraps scripts/validate-screenshot-intake.mjs."
+    },
+    {
+      "name": "validate-renamed-assets",
+      "command": "node scripts/validate-renamed-assets.mjs",
+      "path": "scripts/validate-renamed-assets.mjs",
+      "purpose": "Validate Renamed Assets",
+      "modifiesProductionFiles": false,
+      "dryRunSupport": true,
+      "requiresGuardFlags": false,
+      "relatedPhase": "5. Duplicate detection",
+      "recommendedStatus": "active-validation",
+      "notes": "Wraps scripts/validate-renamed-assets.mjs."
+    },
+    {
+      "name": "validate-localization-batch",
+      "command": "node scripts/validate-localization-batch.mjs",
+      "path": "scripts/validate-localization-batch.mjs",
+      "purpose": "Validate Localization Batch",
+      "modifiesProductionFiles": false,
+      "dryRunSupport": true,
+      "requiresGuardFlags": false,
+      "relatedPhase": "5. Duplicate detection",
+      "recommendedStatus": "active-validation",
+      "notes": "Wraps scripts/validate-localization-batch.mjs."
+    },
+    {
+      "name": "report-localization-counts",
+      "command": "node scripts/report-production-localization-counts.mjs",
+      "path": "scripts/report-production-localization-counts.mjs",
+      "purpose": "Report Production Localization Counts",
+      "modifiesProductionFiles": false,
+      "dryRunSupport": false,
+      "requiresGuardFlags": false,
+      "relatedPhase": "General app/repo workflow",
+      "recommendedStatus": "active-validation",
+      "notes": "Wraps scripts/report-production-localization-counts.mjs."
+    },
+    {
+      "name": "revenuecat:webhook:replay",
+      "command": "node scripts/replay-revenuecat-webhook.mjs",
+      "path": "scripts/replay-revenuecat-webhook.mjs",
+      "purpose": "Replay RevenueCat webhook fixtures for app billing workflow.",
+      "modifiesProductionFiles": false,
+      "dryRunSupport": false,
+      "requiresGuardFlags": false,
+      "relatedPhase": "General app/repo workflow",
+      "recommendedStatus": "legacy-compatible",
+      "notes": "Wraps scripts/replay-revenuecat-webhook.mjs."
+    },
+    {
+      "name": "revenuecat:webhook:replay:sample",
+      "command": "node scripts/replay-revenuecat-webhook.mjs scripts/fixtures/revenuecat-webhook.sample.json",
+      "path": "scripts/replay-revenuecat-webhook.mjs",
+      "purpose": "Replay RevenueCat webhook fixtures for app billing workflow.",
+      "modifiesProductionFiles": false,
+      "dryRunSupport": false,
+      "requiresGuardFlags": false,
+      "relatedPhase": "General app/repo workflow",
+      "recommendedStatus": "legacy-compatible",
+      "notes": "Wraps scripts/replay-revenuecat-webhook.mjs."
+    },
+    {
+      "name": "master-edit",
+      "command": "npm run guard-protected-qbank-files -- --allow-questions-master-edit true && npm run audit-qbank-integrity && npm run build",
+      "path": null,
+      "purpose": "Guarded production master edit validation chain.",
+      "modifiesProductionFiles": true,
+      "dryRunSupport": false,
+      "requiresGuardFlags": true,
+      "relatedPhase": "2. English master source-of-truth",
+      "recommendedStatus": "active-production",
+      "notes": "Guard command plus integrity audit and build; does not itself edit files but validates approved master edits."
+    },
+    {
+      "name": "image-edit",
+      "command": "npm run guard-protected-qbank-files -- --allow-question-image-edit true && npm run audit-qbank-integrity && npm run build",
+      "path": null,
+      "purpose": "Guarded production image metadata edit validation chain.",
+      "modifiesProductionFiles": true,
+      "dryRunSupport": false,
+      "requiresGuardFlags": true,
+      "relatedPhase": "2. English master source-of-truth",
+      "recommendedStatus": "active-production",
+      "notes": "Guard command plus integrity audit and build; does not itself edit files but validates approved image edits."
+    }
+  ],
+  "scripts": [
+    {
+      "path": "qbank-tools/lib/feature-bridge.mjs",
+      "npmCommands": [],
+      "purpose": "Feature extraction bridge shared by matching and memory systems.",
+      "inputs": [
+        "repository files inferred from script arguments"
+      ],
+      "outputs": [
+        "stdout/report-only or library exports"
+      ],
+      "modifiesProductionFiles": false,
+      "dryRunSupport": false,
+      "requiresGuardFlags": false,
+      "relatedPhase": "6. Decision memory",
+      "recommendedStatus": "active-memory-intelligence",
+      "notes": [
+        "Shared library, not a runnable cleanup target."
+      ]
+    },
+    {
+      "path": "qbank-tools/lib/image-replacement-memory.mjs",
+      "npmCommands": [],
+      "purpose": "Reusable memory helpers for image replacement workflows.",
+      "inputs": [
+        "qbank-tools/history/decision-memory.json"
+      ],
+      "outputs": [
+        "qbank-tools/generated/staging/*"
+      ],
+      "modifiesProductionFiles": false,
+      "dryRunSupport": false,
+      "requiresGuardFlags": false,
+      "relatedPhase": "6. Decision memory",
+      "recommendedStatus": "active-memory-intelligence",
+      "notes": [
+        "Shared library, not a runnable cleanup target."
+      ]
+    },
+    {
+      "path": "qbank-tools/lib/missing-localization-backfill.mjs",
+      "npmCommands": [],
+      "purpose": "Shared missing-localization backfill library.",
+      "inputs": [
+        "public/qbank/2023-test1/image-color-tags.json",
+        "public/qbank/2023-test1/questions.json",
+        "public/qbank/2023-test1/questions.raw.json",
+        "public/qbank/2023-test1/translations.<lang>.json",
+        "qbank-tools/generated/reports/*",
+        "qbank-tools/generated/staging/*"
+      ],
+      "outputs": [
+        "qbank-tools/generated/reports/*",
+        "qbank-tools/generated/staging/*"
+      ],
+      "modifiesProductionFiles": false,
+      "dryRunSupport": true,
+      "requiresGuardFlags": false,
+      "relatedPhase": "3. Missing-qid backfill",
+      "recommendedStatus": "active-review-workflow",
+      "notes": [
+        "Shared library for backfill commands.",
+        "Dry-run or apply-gated behavior detected."
+      ]
+    },
+    {
+      "path": "qbank-tools/lib/new-question-promotion-gate.mjs",
+      "npmCommands": [],
+      "purpose": "Shared gate logic for new-question promotion.",
+      "inputs": [
+        "public/qbank/2023-test1/image-color-tags.json",
+        "public/qbank/2023-test1/questions.json",
+        "public/qbank/2023-test1/questions.raw.json",
+        "qbank-tools/generated/reports/*",
+        "qbank-tools/history/decision-memory.json"
+      ],
+      "outputs": [
+        "qbank-tools/generated/reports/*"
+      ],
+      "modifiesProductionFiles": false,
+      "dryRunSupport": false,
+      "requiresGuardFlags": false,
+      "relatedPhase": "4. New-question promotion",
+      "recommendedStatus": "active-review-workflow",
+      "notes": [
+        "Shared library for promotion review/apply commands."
+      ]
+    },
+    {
+      "path": "qbank-tools/lib/pipeline.mjs",
+      "npmCommands": [],
+      "purpose": "Shared qbank pipeline utilities.",
+      "inputs": [
+        "imports/<lang>/<batch>/*",
+        "public/qbank/2023-test1/image-color-tags.json",
+        "public/qbank/2023-test1/questions.json",
+        "public/qbank/2023-test1/questions.raw.json",
+        "public/qbank/2023-test1/translations.<lang>.json",
+        "qbank-tools/generated/reports/*",
+        "qbank-tools/generated/staging/*"
+      ],
+      "outputs": [
+        "imports/<lang>/<batch>/*",
+        "qbank-tools/generated/reports/*",
+        "qbank-tools/generated/staging/*",
+        "qbank-tools/history/*"
+      ],
+      "modifiesProductionFiles": false,
+      "dryRunSupport": true,
+      "requiresGuardFlags": true,
+      "relatedPhase": "General app/repo workflow",
+      "recommendedStatus": "active-review-workflow",
+      "notes": [
+        "Core shared library used by active commands.",
+        "Dry-run or apply-gated behavior detected.",
+        "Guard/force/overwrite flag detected; use only with reviewed inputs."
+      ]
+    },
+    {
+      "path": "qbank-tools/lib/tag-intelligence.mjs",
+      "npmCommands": [],
+      "purpose": "Shared tag intelligence report builder.",
+      "inputs": [
+        "public/qbank/2023-test1/image-color-tags.json",
+        "public/qbank/2023-test1/questions.json",
+        "qbank-tools/generated/reports/*",
+        "qbank-tools/history/decision-memory.json"
+      ],
+      "outputs": [
+        "qbank-tools/generated/reports/*",
+        "qbank-tools/history/*"
+      ],
+      "modifiesProductionFiles": false,
+      "dryRunSupport": false,
+      "requiresGuardFlags": false,
+      "relatedPhase": "7. Tag intelligence",
+      "recommendedStatus": "active-memory-intelligence",
+      "notes": [
+        "Shared library for tag intelligence."
+      ]
+    },
+    {
+      "path": "scripts/add-explanations.mjs",
+      "npmCommands": [],
+      "purpose": "Legacy direct questions.json explanation editor.",
+      "inputs": [
+        "public/qbank/2023-test1/questions.json",
+        "public/qbank/2023-test1/translations.<lang>.json",
+        "qbank-tools/generated/reports/*"
+      ],
+      "outputs": [
+        "qbank-tools/generated/reports/*"
+      ],
+      "modifiesProductionFiles": true,
+      "dryRunSupport": true,
+      "requiresGuardFlags": true,
+      "relatedPhase": "2. English master source-of-truth",
+      "recommendedStatus": "dangerous-production-edit",
+      "notes": [
+        "Default is dry-run/no-op. Production write requires --apply true --allow-dangerous-production-edit true.",
+        "Detected write path into public/qbank production files.",
+        "Dry-run or apply-gated behavior detected.",
+        "Guard/force/overwrite flag detected; use only with reviewed inputs."
+      ]
+    },
+    {
+      "path": "scripts/apply-answer-key-decisions.mjs",
+      "npmCommands": [
+        "apply-answer-key-decisions"
+      ],
+      "purpose": "Apply Answer Key Decisions",
+      "inputs": [
+        "public/qbank/2023-test1/questions.json",
+        "public/qbank/2023-test1/questions.raw.json",
+        "public/qbank/2023-test1/translations.<lang>.json",
+        "qbank-tools/generated/reports/*",
+        "qbank-tools/generated/staging/*"
+      ],
+      "outputs": [
+        "qbank-tools/generated/reports/*",
+        "qbank-tools/generated/staging/*"
+      ],
+      "modifiesProductionFiles": false,
+      "dryRunSupport": false,
+      "requiresGuardFlags": false,
+      "relatedPhase": "7. Tag intelligence",
+      "recommendedStatus": "active-review-workflow",
+      "notes": [
+        "Package command(s): apply-answer-key-decisions."
+      ]
+    },
+    {
+      "path": "scripts/apply-approved-image-replacements.mjs",
+      "npmCommands": [],
+      "purpose": "Apply reviewed image replacement decisions to master/raw qbank assets.",
+      "inputs": [
+        "imports/<lang>/<batch>/*",
+        "public/qbank/2023-test1/image-color-tags.json",
+        "public/qbank/2023-test1/questions.json",
+        "public/qbank/2023-test1/questions.raw.json",
+        "qbank-tools/generated/reports/*",
+        "qbank-tools/generated/staging/*"
+      ],
+      "outputs": [
+        "imports/<lang>/<batch>/*",
+        "public/qbank/2023-test1/*",
+        "qbank-tools/generated/reports/*",
+        "qbank-tools/generated/staging/*"
+      ],
+      "modifiesProductionFiles": true,
+      "dryRunSupport": true,
+      "requiresGuardFlags": false,
+      "relatedPhase": "2. English master source-of-truth",
+      "recommendedStatus": "active-production",
+      "notes": [
+        "Production-changing script with dry-run/apply behavior and production reference validation.",
+        "Detected write path into public/qbank production files.",
+        "Dry-run or apply-gated behavior detected."
+      ]
+    },
+    {
+      "path": "scripts/apply-batch-workbench-decisions.mjs",
+      "npmCommands": [
+        "apply-batch-workbench-decisions"
+      ],
+      "purpose": "Apply Batch Workbench Decisions",
+      "inputs": [
+        "imports/<lang>/<batch>/*",
+        "public/qbank/2023-test1/questions.json",
+        "public/qbank/2023-test1/questions.raw.json",
+        "public/qbank/2023-test1/translations.<lang>.json",
+        "qbank-tools/generated/reports/*",
+        "qbank-tools/generated/staging/*"
+      ],
+      "outputs": [
+        "imports/<lang>/<batch>/*",
+        "qbank-tools/generated/reports/*",
+        "qbank-tools/generated/staging/*"
+      ],
+      "modifiesProductionFiles": false,
+      "dryRunSupport": true,
+      "requiresGuardFlags": false,
+      "relatedPhase": "7. Tag intelligence",
+      "recommendedStatus": "active-review-workflow",
+      "notes": [
+        "Package command(s): apply-batch-workbench-decisions.",
+        "Dry-run or apply-gated behavior detected."
+      ]
+    },
+    {
+      "path": "scripts/apply-consolidated-backlog-workbench-decisions.mjs",
+      "npmCommands": [],
+      "purpose": "Apply Consolidated Backlog Workbench Decisions",
+      "inputs": [
+        "public/qbank/2023-test1/translations.<lang>.json",
+        "qbank-tools/generated/reports/*",
+        "qbank-tools/generated/staging/*"
+      ],
+      "outputs": [
+        "qbank-tools/generated/reports/*",
+        "qbank-tools/generated/staging/*"
+      ],
+      "modifiesProductionFiles": false,
+      "dryRunSupport": false,
+      "requiresGuardFlags": false,
+      "relatedPhase": "7. Tag intelligence",
+      "recommendedStatus": "active-review-workflow",
+      "notes": [
+        "Classified by filename and source-code heuristics; review before removing or changing."
+      ]
+    },
+    {
+      "path": "scripts/apply-manual-decisions.mjs",
+      "npmCommands": [],
+      "purpose": "Apply Manual Decisions",
+      "inputs": [
+        "qbank-tools/generated/staging/*"
+      ],
+      "outputs": [
+        "stdout/report-only or library exports"
+      ],
+      "modifiesProductionFiles": false,
+      "dryRunSupport": false,
+      "requiresGuardFlags": false,
+      "relatedPhase": "7. Tag intelligence",
+      "recommendedStatus": "legacy-compatible",
+      "notes": [
+        "Classified by filename and source-code heuristics; review before removing or changing."
+      ]
+    },
+    {
+      "path": "scripts/apply-new-question-promotion.mjs",
+      "npmCommands": [],
+      "purpose": "Promote reviewed new-question candidates into raw master and translation files.",
+      "inputs": [
+        "imports/<lang>/<batch>/*",
+        "public/qbank/2023-test1/questions.raw.json",
+        "public/qbank/2023-test1/translations.<lang>.json",
+        "qbank-tools/generated/staging/*"
+      ],
+      "outputs": [
+        "imports/<lang>/<batch>/*",
+        "public/qbank/2023-test1/*",
+        "qbank-tools/generated/staging/*"
+      ],
+      "modifiesProductionFiles": true,
+      "dryRunSupport": false,
+      "requiresGuardFlags": false,
+      "relatedPhase": "4. New-question promotion",
+      "recommendedStatus": "active-production",
+      "notes": [
+        "Production-changing promotion script; requires reviewed promotion inputs.",
+        "Detected write path into public/qbank production files."
+      ]
+    },
+    {
+      "path": "scripts/apply-production-localization-merge.mjs",
+      "npmCommands": [
+        "apply-production-localization-merge"
+      ],
+      "purpose": "Merge validated localization staging preview into production translations.",
+      "inputs": [
+        "public/qbank/2023-test1/questions.json",
+        "public/qbank/2023-test1/translations.<lang>.json",
+        "qbank-tools/generated/reports/*",
+        "qbank-tools/generated/staging/*"
+      ],
+      "outputs": [
+        "public/qbank/2023-test1/*",
+        "qbank-tools/generated/reports/*",
+        "qbank-tools/generated/staging/*"
+      ],
+      "modifiesProductionFiles": true,
+      "dryRunSupport": true,
+      "requiresGuardFlags": false,
+      "relatedPhase": "1. Russian ship-readiness",
+      "recommendedStatus": "active-production",
+      "notes": [
+        "Production translation merge script gated by dry-run review inputs.",
+        "Package command(s): apply-production-localization-merge.",
+        "Detected write path into public/qbank production files.",
+        "Dry-run or apply-gated behavior detected."
+      ]
+    },
+    {
+      "path": "scripts/apply-release-cleanup.mjs",
+      "npmCommands": [],
+      "purpose": "Apply Release Cleanup",
+      "inputs": [
+        "repository files inferred from script arguments"
+      ],
+      "outputs": [
+        "qbank-tools/generated/archive/*",
+        "qbank-tools/generated/reports/*"
+      ],
+      "modifiesProductionFiles": false,
+      "dryRunSupport": true,
+      "requiresGuardFlags": false,
+      "relatedPhase": "8. Repo cleanup / workflow hygiene",
+      "recommendedStatus": "cleanup/archive",
+      "notes": [
+        "Dry-run or apply-gated behavior detected.",
+        "Archive/cleanup output detected; verify plan before apply."
+      ]
+    },
+    {
+      "path": "scripts/apply-retro-auto-review-corrections.mjs",
+      "npmCommands": [],
+      "purpose": "Apply retro auto-review corrections to localization production data.",
+      "inputs": [
+        "imports/<lang>/<batch>/*",
+        "public/qbank/2023-test1/translations.<lang>.json",
+        "qbank-tools/generated/reports/*",
+        "qbank-tools/generated/staging/*"
+      ],
+      "outputs": [
+        "imports/<lang>/<batch>/*",
+        "public/qbank/2023-test1/*",
+        "qbank-tools/generated/reports/*",
+        "qbank-tools/generated/staging/*"
+      ],
+      "modifiesProductionFiles": true,
+      "dryRunSupport": true,
+      "requiresGuardFlags": true,
+      "relatedPhase": "7. Tag intelligence",
+      "recommendedStatus": "dangerous-production-edit",
+      "notes": [
+        "Default writes preview/report only. Production write requires --apply true --allow-dangerous-production-edit true.",
+        "Detected write path into public/qbank production files.",
+        "Dry-run or apply-gated behavior detected.",
+        "Guard/force/overwrite flag detected; use only with reviewed inputs."
+      ]
+    },
+    {
+      "path": "scripts/apply-reviewed-missing-localization-backfill.mjs",
+      "npmCommands": [
+        "apply-reviewed-missing-localization-backfill"
+      ],
+      "purpose": "Apply approved missing-qid backfill translations to production translations.",
+      "inputs": [
+        "public/qbank/2023-test1/translations.<lang>.json"
+      ],
+      "outputs": [
+        "public/qbank/2023-test1/*"
+      ],
+      "modifiesProductionFiles": true,
+      "dryRunSupport": true,
+      "requiresGuardFlags": true,
+      "relatedPhase": "3. Missing-qid backfill",
+      "recommendedStatus": "active-production",
+      "notes": [
+        "Production translation merge script gated by approved reviewed backfill items.",
+        "Package command(s): apply-reviewed-missing-localization-backfill.",
+        "Detected write path into public/qbank production files.",
+        "Dry-run or apply-gated behavior detected.",
+        "Guard/force/overwrite flag detected; use only with reviewed inputs."
+      ]
+    },
+    {
+      "path": "scripts/apply-ru-discrepancy-review-decisions.mjs",
+      "npmCommands": [
+        "apply-ru-discrepancy-review-decisions"
+      ],
+      "purpose": "Apply Ru Discrepancy Review Decisions",
+      "inputs": [
+        "public/qbank/2023-test1/questions.json",
+        "public/qbank/2023-test1/translations.<lang>.json",
+        "qbank-tools/generated/reports/*",
+        "qbank-tools/generated/staging/*"
+      ],
+      "outputs": [
+        "qbank-tools/generated/reports/*",
+        "qbank-tools/generated/staging/*"
+      ],
+      "modifiesProductionFiles": false,
+      "dryRunSupport": true,
+      "requiresGuardFlags": false,
+      "relatedPhase": "7. Tag intelligence",
+      "recommendedStatus": "active-review-workflow",
+      "notes": [
+        "Package command(s): apply-ru-discrepancy-review-decisions.",
+        "Dry-run or apply-gated behavior detected."
+      ]
+    },
+    {
+      "path": "scripts/apply-unresolved-decisions.mjs",
+      "npmCommands": [
+        "apply-unresolved-decisions"
+      ],
+      "purpose": "Apply Unresolved Decisions",
+      "inputs": [
+        "imports/<lang>/<batch>/*",
+        "public/qbank/2023-test1/translations.<lang>.json",
+        "qbank-tools/generated/reports/*",
+        "qbank-tools/generated/staging/*"
+      ],
+      "outputs": [
+        "imports/<lang>/<batch>/*",
+        "qbank-tools/generated/reports/*",
+        "qbank-tools/generated/staging/*"
+      ],
+      "modifiesProductionFiles": false,
+      "dryRunSupport": false,
+      "requiresGuardFlags": false,
+      "relatedPhase": "7. Tag intelligence",
+      "recommendedStatus": "active-review-workflow",
+      "notes": [
+        "Package command(s): apply-unresolved-decisions."
+      ]
+    },
+    {
+      "path": "scripts/audit-missing-qid-backfill-system.mjs",
+      "npmCommands": [],
+      "purpose": "Audit Missing Qid Backfill System",
+      "inputs": [
+        "public/qbank/2023-test1/questions.json",
+        "public/qbank/2023-test1/translations.<lang>.json",
+        "qbank-tools/generated/reports/*",
+        "qbank-tools/generated/staging/*",
+        "qbank-tools/history/decision-memory.json"
+      ],
+      "outputs": [
+        "qbank-tools/generated/reports/*",
+        "qbank-tools/history/*"
+      ],
+      "modifiesProductionFiles": false,
+      "dryRunSupport": true,
+      "requiresGuardFlags": true,
+      "relatedPhase": "3. Missing-qid backfill",
+      "recommendedStatus": "active-validation",
+      "notes": [
+        "Dry-run or apply-gated behavior detected.",
+        "Guard/force/overwrite flag detected; use only with reviewed inputs."
+      ]
+    },
+    {
+      "path": "scripts/audit-preflight-downgrades.mjs",
+      "npmCommands": [],
+      "purpose": "Audit Preflight Downgrades",
+      "inputs": [
+        "repository files inferred from script arguments"
+      ],
+      "outputs": [
+        "stdout/report-only or library exports"
+      ],
+      "modifiesProductionFiles": false,
+      "dryRunSupport": true,
+      "requiresGuardFlags": false,
+      "relatedPhase": "Cross-phase validation",
+      "recommendedStatus": "active-validation",
+      "notes": [
+        "Dry-run or apply-gated behavior detected."
+      ]
+    },
+    {
+      "path": "scripts/audit-qbank-integrity.mjs",
+      "npmCommands": [
+        "audit-qbank-integrity"
+      ],
+      "purpose": "Run cross-language qbank integrity audit.",
+      "inputs": [
+        "public/qbank/2023-test1/image-color-tags.json",
+        "public/qbank/2023-test1/questions.json",
+        "public/qbank/2023-test1/questions.raw.json",
+        "public/qbank/2023-test1/translations.<lang>.json",
+        "qbank-tools/generated/reports/*"
+      ],
+      "outputs": [
+        "qbank-tools/generated/reports/*",
+        "qbank-tools/generated/reports/qbank-integrity-audit.json"
+      ],
+      "modifiesProductionFiles": false,
+      "dryRunSupport": true,
+      "requiresGuardFlags": false,
+      "relatedPhase": "7. Tag intelligence",
+      "recommendedStatus": "active-validation",
+      "notes": [
+        "Package command(s): audit-qbank-integrity.",
+        "Dry-run or apply-gated behavior detected."
+      ]
+    },
+    {
+      "path": "scripts/audit-qbank-system-phase-status.mjs",
+      "npmCommands": [],
+      "purpose": "Audit Qbank System Phase Status",
+      "inputs": [
+        "public/qbank/2023-test1/image-color-tags.json",
+        "public/qbank/2023-test1/questions.json",
+        "public/qbank/2023-test1/questions.raw.json",
+        "public/qbank/2023-test1/translations.<lang>.json",
+        "qbank-tools/generated/reports/*",
+        "qbank-tools/history/decision-memory.json"
+      ],
+      "outputs": [
+        "qbank-tools/generated/reports/*",
+        "qbank-tools/generated/reports/qbank-system-phase-status.json",
+        "qbank-tools/history/*"
+      ],
+      "modifiesProductionFiles": false,
+      "dryRunSupport": true,
+      "requiresGuardFlags": false,
+      "relatedPhase": "8. Repo cleanup / workflow hygiene",
+      "recommendedStatus": "active-validation",
+      "notes": [
+        "Dry-run or apply-gated behavior detected."
+      ]
+    },
+    {
+      "path": "scripts/audit-qbank-tools-files.mjs",
+      "npmCommands": [],
+      "purpose": "Audit Qbank Tools Files",
+      "inputs": [
+        "imports/<lang>/<batch>/*",
+        "qbank-tools/generated/reports/*",
+        "qbank-tools/generated/staging/*",
+        "qbank-tools/history/decision-memory.json"
+      ],
+      "outputs": [
+        "imports/<lang>/<batch>/*",
+        "qbank-tools/generated/archive/*",
+        "qbank-tools/generated/reports/*",
+        "qbank-tools/generated/reports/qbank-tools-cache-only-cleanup-apply-report.json",
+        "qbank-tools/generated/reports/qbank-tools-cache-only-cleanup-plan.json",
+        "qbank-tools/generated/reports/qbank-tools-file-audit.json",
+        "qbank-tools/generated/reports/qbank-tools-medium-archive-apply-report.json",
+        "qbank-tools/generated/reports/qbank-tools-safe-first-archive-plan.json",
+        "qbank-tools/generated/staging/*",
+        "qbank-tools/history/*"
+      ],
+      "modifiesProductionFiles": false,
+      "dryRunSupport": true,
+      "requiresGuardFlags": false,
+      "relatedPhase": "8. Repo cleanup / workflow hygiene",
+      "recommendedStatus": "cleanup/archive",
+      "notes": [
+        "Dry-run or apply-gated behavior detected.",
+        "Archive/cleanup output detected; verify plan before apply."
+      ]
+    },
+    {
+      "path": "scripts/audit-qbank-workflow-commands.mjs",
+      "npmCommands": [],
+      "purpose": "Audit Qbank Workflow Commands",
+      "inputs": [
+        "AI/NotebookLM/OpenAI runtime inputs",
+        "imports/<lang>/<batch>/*",
+        "public/qbank/2023-test1/image-color-tags.json",
+        "public/qbank/2023-test1/questions.json",
+        "public/qbank/2023-test1/questions.raw.json",
+        "public/qbank/2023-test1/translations.<lang>.json",
+        "qbank-tools/generated/reports/*",
+        "qbank-tools/generated/staging/*",
+        "qbank-tools/history/decision-memory.json"
+      ],
+      "outputs": [
+        "imports/<lang>/<batch>/*",
+        "public/qbank/2023-test1/*",
+        "qbank-tools/generated/archive/*",
+        "qbank-tools/generated/reports/*",
+        "qbank-tools/generated/staging/*",
+        "qbank-tools/history/*"
+      ],
+      "modifiesProductionFiles": false,
+      "dryRunSupport": true,
+      "requiresGuardFlags": true,
+      "relatedPhase": "8. Repo cleanup / workflow hygiene",
+      "recommendedStatus": "active-validation",
+      "notes": [
+        "Dry-run or apply-gated behavior detected.",
+        "Guard/force/overwrite flag detected; use only with reviewed inputs.",
+        "Archive/cleanup output detected; verify plan before apply.",
+        "External AI-assisted workflow; cache/rate-limit behavior should be checked before long runs."
+      ]
+    },
+    {
+      "path": "scripts/audit-ru-translation-discrepancy.mjs",
+      "npmCommands": [],
+      "purpose": "Audit Ru Translation Discrepancy",
+      "inputs": [
+        "imports/<lang>/<batch>/*",
+        "public/qbank/2023-test1/questions.json",
+        "public/qbank/2023-test1/questions.raw.json",
+        "public/qbank/2023-test1/translations.<lang>.json",
+        "qbank-tools/generated/reports/*",
+        "qbank-tools/generated/staging/*"
+      ],
+      "outputs": [
+        "imports/<lang>/<batch>/*",
+        "qbank-tools/generated/staging/*"
+      ],
+      "modifiesProductionFiles": false,
+      "dryRunSupport": true,
+      "requiresGuardFlags": false,
+      "relatedPhase": "8. Repo cleanup / workflow hygiene",
+      "recommendedStatus": "active-validation",
+      "notes": [
+        "Dry-run or apply-gated behavior detected."
+      ]
+    },
+    {
+      "path": "scripts/backfill-missing-image-object-tags.mjs",
+      "npmCommands": [],
+      "purpose": "Backfill missing image object tags into image-color-tags.json when apply is requested.",
+      "inputs": [
+        "public/qbank/2023-test1/image-color-tags.json",
+        "public/qbank/2023-test1/questions.json",
+        "public/qbank/2023-test1/questions.raw.json",
+        "qbank-tools/generated/reports/*"
+      ],
+      "outputs": [
+        "public/qbank/2023-test1/*",
+        "qbank-tools/generated/reports/*"
+      ],
+      "modifiesProductionFiles": true,
+      "dryRunSupport": true,
+      "requiresGuardFlags": false,
+      "relatedPhase": "7. Tag intelligence",
+      "recommendedStatus": "active-production",
+      "notes": [
+        "Production metadata update is apply-gated; default behavior writes reports.",
+        "Detected write path into public/qbank production files.",
+        "Dry-run or apply-gated behavior detected."
+      ]
+    },
+    {
+      "path": "scripts/build-adversarial-benchmark.mjs",
+      "npmCommands": [],
+      "purpose": "Build Adversarial Benchmark",
+      "inputs": [
+        "repository files inferred from script arguments"
+      ],
+      "outputs": [
+        "stdout/report-only or library exports"
+      ],
+      "modifiesProductionFiles": false,
+      "dryRunSupport": true,
+      "requiresGuardFlags": false,
+      "relatedPhase": "Cross-phase validation",
+      "recommendedStatus": "active-validation",
+      "notes": [
+        "Dry-run or apply-gated behavior detected."
+      ]
+    },
+    {
+      "path": "scripts/build-decision-memory.mjs",
+      "npmCommands": [
+        "build-decision-memory"
+      ],
+      "purpose": "Build reusable decision memory from production/history artifacts.",
+      "inputs": [
+        "AI/NotebookLM/OpenAI runtime inputs",
+        "imports/<lang>/<batch>/*",
+        "public/qbank/2023-test1/translations.<lang>.json",
+        "qbank-tools/generated/reports/*",
+        "qbank-tools/generated/staging/*",
+        "qbank-tools/history/decision-memory.json"
+      ],
+      "outputs": [
+        "imports/<lang>/<batch>/*",
+        "qbank-tools/generated/reports/*",
+        "qbank-tools/generated/reports/decision-memory-report.json",
+        "qbank-tools/generated/staging/*",
+        "qbank-tools/history/*"
+      ],
+      "modifiesProductionFiles": false,
+      "dryRunSupport": true,
+      "requiresGuardFlags": false,
+      "relatedPhase": "8. Repo cleanup / workflow hygiene",
+      "recommendedStatus": "active-memory-intelligence",
+      "notes": [
+        "Package command(s): build-decision-memory.",
+        "Dry-run or apply-gated behavior detected.",
+        "External AI-assisted workflow; cache/rate-limit behavior should be checked before long runs."
+      ]
+    },
+    {
+      "path": "scripts/build-duplicate-candidate-audit.mjs",
+      "npmCommands": [],
+      "purpose": "Detect and classify duplicate question candidates.",
+      "inputs": [
+        "public/qbank/2023-test1/image-color-tags.json",
+        "public/qbank/2023-test1/questions.json",
+        "public/qbank/2023-test1/questions.raw.json",
+        "qbank-tools/generated/reports/*",
+        "qbank-tools/generated/staging/*",
+        "qbank-tools/history/decision-memory.json"
+      ],
+      "outputs": [
+        "qbank-tools/generated/reports/*",
+        "qbank-tools/generated/reports/duplicate-candidate-audit.json",
+        "qbank-tools/generated/reports/duplicate-review-memory-report.json",
+        "qbank-tools/history/*"
+      ],
+      "modifiesProductionFiles": false,
+      "dryRunSupport": true,
+      "requiresGuardFlags": false,
+      "relatedPhase": "7. Tag intelligence",
+      "recommendedStatus": "active-memory-intelligence",
+      "notes": [
+        "Dry-run or apply-gated behavior detected."
+      ]
+    },
+    {
+      "path": "scripts/build-full-batch-staging-preview.mjs",
+      "npmCommands": [
+        "build-full-batch-staging-preview"
+      ],
+      "purpose": "Build Full Batch Staging Preview",
+      "inputs": [
+        "imports/<lang>/<batch>/*",
+        "public/qbank/2023-test1/questions.json",
+        "public/qbank/2023-test1/questions.raw.json",
+        "public/qbank/2023-test1/translations.<lang>.json",
+        "qbank-tools/generated/reports/*",
+        "qbank-tools/generated/staging/*"
+      ],
+      "outputs": [
+        "imports/<lang>/<batch>/*",
+        "qbank-tools/generated/reports/*",
+        "qbank-tools/generated/staging/*"
+      ],
+      "modifiesProductionFiles": false,
+      "dryRunSupport": true,
+      "requiresGuardFlags": false,
+      "relatedPhase": "7. Tag intelligence",
+      "recommendedStatus": "active-review-workflow",
+      "notes": [
+        "Package command(s): build-full-batch-staging-preview.",
+        "Dry-run or apply-gated behavior detected."
+      ]
+    },
+    {
+      "path": "scripts/build-localization-coverage-report.mjs",
+      "npmCommands": [
+        "build-localization-coverage-report"
+      ],
+      "purpose": "Build Localization Coverage Report",
+      "inputs": [
+        "public/qbank/2023-test1/questions.json",
+        "public/qbank/2023-test1/translations.<lang>.json"
+      ],
+      "outputs": [
+        "stdout/report-only or library exports"
+      ],
+      "modifiesProductionFiles": false,
+      "dryRunSupport": true,
+      "requiresGuardFlags": false,
+      "relatedPhase": "General app/repo workflow",
+      "recommendedStatus": "active-validation",
+      "notes": [
+        "Package command(s): build-localization-coverage-report.",
+        "Dry-run or apply-gated behavior detected."
+      ]
+    },
+    {
+      "path": "scripts/build-match-index.mjs",
+      "npmCommands": [
+        "build-match-index"
+      ],
+      "purpose": "Build Match Index",
+      "inputs": [
+        "qbank-tools/generated/reports/*"
+      ],
+      "outputs": [
+        "qbank-tools/generated/reports/*"
+      ],
+      "modifiesProductionFiles": false,
+      "dryRunSupport": true,
+      "requiresGuardFlags": false,
+      "relatedPhase": "6. Decision memory",
+      "recommendedStatus": "active-memory-intelligence",
+      "notes": [
+        "Package command(s): build-match-index.",
+        "Dry-run or apply-gated behavior detected."
+      ]
+    },
+    {
+      "path": "scripts/build-missing-localization-backfill.mjs",
+      "npmCommands": [
+        "build-missing-localization-backfill"
+      ],
+      "purpose": "Build Missing Localization Backfill",
+      "inputs": [
+        "public/qbank/2023-test1/image-color-tags.json",
+        "public/qbank/2023-test1/questions.json",
+        "public/qbank/2023-test1/translations.<lang>.json"
+      ],
+      "outputs": [
+        "qbank-tools/generated/staging/*"
+      ],
+      "modifiesProductionFiles": false,
+      "dryRunSupport": true,
+      "requiresGuardFlags": false,
+      "relatedPhase": "7. Tag intelligence",
+      "recommendedStatus": "active-review-workflow",
+      "notes": [
+        "Package command(s): build-missing-localization-backfill.",
+        "Dry-run or apply-gated behavior detected."
+      ]
+    },
+    {
+      "path": "scripts/build-qid-feature-store.mjs",
+      "npmCommands": [],
+      "purpose": "Build Qid Feature Store",
+      "inputs": [
+        "repository files inferred from script arguments"
+      ],
+      "outputs": [
+        "stdout/report-only or library exports"
+      ],
+      "modifiesProductionFiles": false,
+      "dryRunSupport": true,
+      "requiresGuardFlags": false,
+      "relatedPhase": "6. Decision memory",
+      "recommendedStatus": "active-memory-intelligence",
+      "notes": [
+        "Dry-run or apply-gated behavior detected."
+      ]
+    },
+    {
+      "path": "scripts/build-ru-discrepancy-blockers-review.mjs",
+      "npmCommands": [],
+      "purpose": "Build Ru Discrepancy Blockers Review",
+      "inputs": [
+        "imports/<lang>/<batch>/*",
+        "public/qbank/2023-test1/questions.json",
+        "public/qbank/2023-test1/translations.<lang>.json",
+        "qbank-tools/generated/reports/*",
+        "qbank-tools/generated/staging/*"
+      ],
+      "outputs": [
+        "imports/<lang>/<batch>/*",
+        "qbank-tools/generated/reports/*",
+        "qbank-tools/generated/staging/*"
+      ],
+      "modifiesProductionFiles": false,
+      "dryRunSupport": true,
+      "requiresGuardFlags": false,
+      "relatedPhase": "7. Tag intelligence",
+      "recommendedStatus": "active-review-workflow",
+      "notes": [
+        "Dry-run or apply-gated behavior detected."
+      ]
+    },
+    {
+      "path": "scripts/build-ru-discrepancy-review-workbench.mjs",
+      "npmCommands": [],
+      "purpose": "Build Ru Discrepancy Review Workbench",
+      "inputs": [
+        "imports/<lang>/<batch>/*",
+        "public/qbank/2023-test1/image-color-tags.json",
+        "public/qbank/2023-test1/questions.json",
+        "public/qbank/2023-test1/questions.raw.json",
+        "public/qbank/2023-test1/translations.<lang>.json",
+        "qbank-tools/generated/reports/*",
+        "qbank-tools/generated/staging/*"
+      ],
+      "outputs": [
+        "imports/<lang>/<batch>/*",
+        "qbank-tools/generated/staging/*"
+      ],
+      "modifiesProductionFiles": false,
+      "dryRunSupport": true,
+      "requiresGuardFlags": false,
+      "relatedPhase": "8. Repo cleanup / workflow hygiene",
+      "recommendedStatus": "active-review-workflow",
+      "notes": [
+        "Dry-run or apply-gated behavior detected."
+      ]
+    },
+    {
+      "path": "scripts/build-ru-ship-readiness-report.mjs",
+      "npmCommands": [],
+      "purpose": "Build Ru Ship Readiness Report",
+      "inputs": [
+        "public/qbank/2023-test1/questions.json",
+        "public/qbank/2023-test1/questions.raw.json",
+        "public/qbank/2023-test1/translations.<lang>.json",
+        "qbank-tools/generated/reports/*",
+        "qbank-tools/generated/staging/*"
+      ],
+      "outputs": [
+        "qbank-tools/generated/reports/*",
+        "qbank-tools/generated/reports/ru-ship-readiness-report.json"
+      ],
+      "modifiesProductionFiles": false,
+      "dryRunSupport": true,
+      "requiresGuardFlags": false,
+      "relatedPhase": "7. Tag intelligence",
+      "recommendedStatus": "active-validation",
+      "notes": [
+        "Dry-run or apply-gated behavior detected."
+      ]
+    },
+    {
+      "path": "scripts/calibrate-preflight-rules.mjs",
+      "npmCommands": [],
+      "purpose": "Calibrate Preflight Rules",
+      "inputs": [
+        "repository files inferred from script arguments"
+      ],
+      "outputs": [
+        "stdout/report-only or library exports"
+      ],
+      "modifiesProductionFiles": false,
+      "dryRunSupport": false,
+      "requiresGuardFlags": false,
+      "relatedPhase": "Cross-phase validation",
+      "recommendedStatus": "active-validation",
+      "notes": [
+        "Classified by filename and source-code heuristics; review before removing or changing."
+      ]
+    },
+    {
+      "path": "scripts/cleanup-localization-batch.mjs",
+      "npmCommands": [
+        "cleanup-localization-batch"
+      ],
+      "purpose": "Cleanup Localization Batch",
+      "inputs": [
+        "imports/<lang>/<batch>/*",
+        "public/qbank/2023-test1/translations.<lang>.json",
+        "qbank-tools/generated/reports/*",
+        "qbank-tools/generated/staging/*"
+      ],
+      "outputs": [
+        "imports/<lang>/<batch>/*",
+        "qbank-tools/generated/archive/*",
+        "qbank-tools/generated/reports/*",
+        "qbank-tools/generated/staging/*"
+      ],
+      "modifiesProductionFiles": false,
+      "dryRunSupport": true,
+      "requiresGuardFlags": false,
+      "relatedPhase": "8. Repo cleanup / workflow hygiene",
+      "recommendedStatus": "cleanup/archive",
+      "notes": [
+        "Package command(s): cleanup-localization-batch.",
+        "Dry-run or apply-gated behavior detected.",
+        "Archive/cleanup output detected; verify plan before apply."
+      ]
+    },
+    {
+      "path": "scripts/complete-ko-ja-qid-sync.mjs",
+      "npmCommands": [],
+      "purpose": "Complete Ko Ja Qid Sync",
+      "inputs": [
+        "public/qbank/2023-test1/questions.json",
+        "public/qbank/2023-test1/questions.raw.json",
+        "public/qbank/2023-test1/translations.<lang>.json",
+        "qbank-tools/generated/reports/*",
+        "qbank-tools/history/decision-memory.json"
+      ],
+      "outputs": [
+        "qbank-tools/generated/reports/*",
+        "qbank-tools/history/*"
+      ],
+      "modifiesProductionFiles": false,
+      "dryRunSupport": true,
+      "requiresGuardFlags": false,
+      "relatedPhase": "6. Decision memory",
+      "recommendedStatus": "active-production",
+      "notes": [
+        "Dry-run or apply-gated behavior detected."
+      ]
+    },
+    {
+      "path": "scripts/derive-correction-rules.mjs",
+      "npmCommands": [],
+      "purpose": "Derive reusable localization correction rules from reviewed artifacts.",
+      "inputs": [
+        "repository files inferred from script arguments"
+      ],
+      "outputs": [
+        "stdout/report-only or library exports"
+      ],
+      "modifiesProductionFiles": false,
+      "dryRunSupport": false,
+      "requiresGuardFlags": false,
+      "relatedPhase": "6. Decision memory",
+      "recommendedStatus": "active-memory-intelligence",
+      "notes": [
+        "Memory/intelligence helper; classify before cleanup but not production-changing."
+      ]
+    },
+    {
+      "path": "scripts/dry-run-asset-rename.mjs",
+      "npmCommands": [
+        "dry-run-asset-rename"
+      ],
+      "purpose": "Dry Run Asset Rename",
+      "inputs": [
+        "qbank-tools/generated/reports/*"
+      ],
+      "outputs": [
+        "qbank-tools/generated/reports/*"
+      ],
+      "modifiesProductionFiles": false,
+      "dryRunSupport": true,
+      "requiresGuardFlags": false,
+      "relatedPhase": "General app/repo workflow",
+      "recommendedStatus": "deprecated-candidate",
+      "notes": [
+        "Package command(s): dry-run-asset-rename.",
+        "Dry-run or apply-gated behavior detected."
+      ]
+    },
+    {
+      "path": "scripts/evaluate-adversarial-benchmark.mjs",
+      "npmCommands": [],
+      "purpose": "Evaluate Adversarial Benchmark",
+      "inputs": [
+        "repository files inferred from script arguments"
+      ],
+      "outputs": [
+        "stdout/report-only or library exports"
+      ],
+      "modifiesProductionFiles": false,
+      "dryRunSupport": false,
+      "requiresGuardFlags": false,
+      "relatedPhase": "Cross-phase validation",
+      "recommendedStatus": "active-validation",
+      "notes": [
+        "Classified by filename and source-code heuristics; review before removing or changing."
+      ]
+    },
+    {
+      "path": "scripts/export-duplicate-review-decisions.mjs",
+      "npmCommands": [],
+      "purpose": "Export Duplicate Review Decisions",
+      "inputs": [
+        "qbank-tools/generated/reports/*",
+        "qbank-tools/generated/staging/*",
+        "qbank-tools/history/decision-memory.json"
+      ],
+      "outputs": [
+        "qbank-tools/generated/reports/*",
+        "qbank-tools/generated/staging/*",
+        "qbank-tools/history/*"
+      ],
+      "modifiesProductionFiles": false,
+      "dryRunSupport": false,
+      "requiresGuardFlags": false,
+      "relatedPhase": "7. Tag intelligence",
+      "recommendedStatus": "active-review-workflow",
+      "notes": [
+        "Classified by filename and source-code heuristics; review before removing or changing."
+      ]
+    },
+    {
+      "path": "scripts/export-match-history.mjs",
+      "npmCommands": [],
+      "purpose": "Export matching history into reusable memory/training records.",
+      "inputs": [
+        "repository files inferred from script arguments"
+      ],
+      "outputs": [
+        "stdout/report-only or library exports"
+      ],
+      "modifiesProductionFiles": false,
+      "dryRunSupport": false,
+      "requiresGuardFlags": false,
+      "relatedPhase": "6. Decision memory",
+      "recommendedStatus": "active-memory-intelligence",
+      "notes": [
+        "Exports reviewed match history for reuse."
+      ]
+    },
+    {
+      "path": "scripts/extract-japanese-review-intelligence.mjs",
+      "npmCommands": [],
+      "purpose": "Extract Japanese Review Intelligence",
+      "inputs": [
+        "repository files inferred from script arguments"
+      ],
+      "outputs": [
+        "stdout/report-only or library exports"
+      ],
+      "modifiesProductionFiles": false,
+      "dryRunSupport": false,
+      "requiresGuardFlags": false,
+      "relatedPhase": "8. Repo cleanup / workflow hygiene",
+      "recommendedStatus": "active-review-workflow",
+      "notes": [
+        "Classified by filename and source-code heuristics; review before removing or changing."
+      ]
+    },
+    {
+      "path": "scripts/extract-manual-decisions.mjs",
+      "npmCommands": [],
+      "purpose": "Extract Manual Decisions",
+      "inputs": [
+        "repository files inferred from script arguments"
+      ],
+      "outputs": [
+        "stdout/report-only or library exports"
+      ],
+      "modifiesProductionFiles": false,
+      "dryRunSupport": false,
+      "requiresGuardFlags": false,
+      "relatedPhase": "7. Tag intelligence",
+      "recommendedStatus": "active-review-workflow",
+      "notes": [
+        "Classified by filename and source-code heuristics; review before removing or changing."
+      ]
+    },
+    {
+      "path": "scripts/extract-screenshot-intake.mjs",
+      "npmCommands": [
+        "extract-screenshot-intake"
+      ],
+      "purpose": "Extract Screenshot Intake",
+      "inputs": [
+        "AI/NotebookLM/OpenAI runtime inputs",
+        "imports/<lang>/<batch>/*",
+        "public/qbank/2023-test1/image-color-tags.json",
+        "qbank-tools/generated/reports/*"
+      ],
+      "outputs": [
+        "imports/<lang>/<batch>/*",
+        "qbank-tools/generated/reports/*"
+      ],
+      "modifiesProductionFiles": false,
+      "dryRunSupport": false,
+      "requiresGuardFlags": true,
+      "relatedPhase": "General app/repo workflow",
+      "recommendedStatus": "active-review-workflow",
+      "notes": [
+        "Package command(s): extract-screenshot-intake.",
+        "Guard/force/overwrite flag detected; use only with reviewed inputs.",
+        "External AI-assisted workflow; cache/rate-limit behavior should be checked before long runs."
+      ]
+    },
+    {
+      "path": "scripts/finalize-localization-run.mjs",
+      "npmCommands": [
+        "finalize-localization-run"
+      ],
+      "purpose": "Finalize Localization Run",
+      "inputs": [
+        "public/qbank/2023-test1/questions.json",
+        "public/qbank/2023-test1/translations.<lang>.json",
+        "qbank-tools/generated/reports/*",
+        "qbank-tools/generated/staging/*",
+        "qbank-tools/history/decision-memory.json"
+      ],
+      "outputs": [
+        "qbank-tools/generated/reports/*",
+        "qbank-tools/generated/staging/*",
+        "qbank-tools/history/*"
+      ],
+      "modifiesProductionFiles": false,
+      "dryRunSupport": true,
+      "requiresGuardFlags": true,
+      "relatedPhase": "8. Repo cleanup / workflow hygiene",
+      "recommendedStatus": "active-review-workflow",
+      "notes": [
+        "Package command(s): finalize-localization-run.",
+        "Dry-run or apply-gated behavior detected.",
+        "Guard/force/overwrite flag detected; use only with reviewed inputs."
+      ]
+    },
+    {
+      "path": "scripts/generate-answer-key-review.mjs",
+      "npmCommands": [
+        "generate-answer-key-review"
+      ],
+      "purpose": "Generate Answer Key Review",
+      "inputs": [
+        "imports/<lang>/<batch>/*",
+        "public/qbank/2023-test1/translations.<lang>.json",
+        "qbank-tools/generated/reports/*",
+        "qbank-tools/generated/staging/*"
+      ],
+      "outputs": [
+        "imports/<lang>/<batch>/*",
+        "qbank-tools/generated/reports/*",
+        "qbank-tools/generated/staging/*"
+      ],
+      "modifiesProductionFiles": false,
+      "dryRunSupport": true,
+      "requiresGuardFlags": false,
+      "relatedPhase": "7. Tag intelligence",
+      "recommendedStatus": "active-review-workflow",
+      "notes": [
+        "Package command(s): generate-answer-key-review.",
+        "Dry-run or apply-gated behavior detected."
+      ]
+    },
+    {
+      "path": "scripts/generate-batch-review-artifact.mjs",
+      "npmCommands": [
+        "generate-batch-review-artifact"
+      ],
+      "purpose": "Generate Batch Review Artifact",
+      "inputs": [
+        "imports/<lang>/<batch>/*",
+        "qbank-tools/generated/reports/*"
+      ],
+      "outputs": [
+        "imports/<lang>/<batch>/*",
+        "qbank-tools/generated/reports/*",
+        "qbank-tools/generated/staging/*"
+      ],
+      "modifiesProductionFiles": false,
+      "dryRunSupport": true,
+      "requiresGuardFlags": false,
+      "relatedPhase": "General app/repo workflow",
+      "recommendedStatus": "active-review-workflow",
+      "notes": [
+        "Package command(s): generate-batch-review-artifact.",
+        "Dry-run or apply-gated behavior detected."
+      ]
+    },
+    {
+      "path": "scripts/generate-batch-workbench.mjs",
+      "npmCommands": [
+        "generate-batch-workbench"
+      ],
+      "purpose": "Generate Batch Workbench",
+      "inputs": [
+        "AI/NotebookLM/OpenAI runtime inputs",
+        "imports/<lang>/<batch>/*",
+        "public/qbank/2023-test1/questions.json",
+        "qbank-tools/generated/reports/*",
+        "qbank-tools/generated/staging/*"
+      ],
+      "outputs": [
+        "imports/<lang>/<batch>/*",
+        "qbank-tools/generated/reports/*",
+        "qbank-tools/generated/staging/*"
+      ],
+      "modifiesProductionFiles": false,
+      "dryRunSupport": true,
+      "requiresGuardFlags": false,
+      "relatedPhase": "7. Tag intelligence",
+      "recommendedStatus": "active-review-workflow",
+      "notes": [
+        "Package command(s): generate-batch-workbench.",
+        "Dry-run or apply-gated behavior detected.",
+        "External AI-assisted workflow; cache/rate-limit behavior should be checked before long runs."
+      ]
+    },
+    {
+      "path": "scripts/generate-consolidated-backlog-workbench.mjs",
+      "npmCommands": [],
+      "purpose": "Generate Consolidated Backlog Workbench",
+      "inputs": [
+        "imports/<lang>/<batch>/*",
+        "public/qbank/2023-test1/translations.<lang>.json",
+        "qbank-tools/generated/reports/*",
+        "qbank-tools/generated/staging/*"
+      ],
+      "outputs": [
+        "qbank-tools/generated/reports/*",
+        "qbank-tools/generated/staging/*"
+      ],
+      "modifiesProductionFiles": false,
+      "dryRunSupport": true,
+      "requiresGuardFlags": false,
+      "relatedPhase": "7. Tag intelligence",
+      "recommendedStatus": "active-review-workflow",
+      "notes": [
+        "Dry-run or apply-gated behavior detected."
+      ]
+    },
+    {
+      "path": "scripts/generate-curated-snapshot.mjs",
+      "npmCommands": [],
+      "purpose": "Generate Curated Snapshot",
+      "inputs": [
+        "AI/NotebookLM/OpenAI runtime inputs",
+        "imports/<lang>/<batch>/*",
+        "public/qbank/2023-test1/image-color-tags.json",
+        "qbank-tools/generated/reports/*",
+        "qbank-tools/generated/staging/*"
+      ],
+      "outputs": [
+        "imports/<lang>/<batch>/*"
+      ],
+      "modifiesProductionFiles": false,
+      "dryRunSupport": true,
+      "requiresGuardFlags": false,
+      "relatedPhase": "General app/repo workflow",
+      "recommendedStatus": "active-review-workflow",
+      "notes": [
+        "Dry-run or apply-gated behavior detected."
+      ]
+    },
+    {
+      "path": "scripts/generate-image-color-tags.mjs",
+      "npmCommands": [
+        "generate-image-color-tags"
+      ],
+      "purpose": "Generate image color/object tag report artifacts.",
+      "inputs": [
+        "public/qbank/2023-test1/image-color-tags.json",
+        "public/qbank/2023-test1/questions.json"
+      ],
+      "outputs": [
+        "stdout/report-only or library exports"
+      ],
+      "modifiesProductionFiles": false,
+      "dryRunSupport": true,
+      "requiresGuardFlags": false,
+      "relatedPhase": "7. Tag intelligence",
+      "recommendedStatus": "active-memory-intelligence",
+      "notes": [
+        "Generates tag intelligence inputs/reports; production tag application is handled separately.",
+        "Package command(s): generate-image-color-tags.",
+        "Dry-run or apply-gated behavior detected."
+      ]
+    },
+    {
+      "path": "scripts/generate-image-replacement-second-pass-workbench.mjs",
+      "npmCommands": [],
+      "purpose": "Generate Image Replacement Second Pass Workbench",
+      "inputs": [
+        "imports/<lang>/<batch>/*",
+        "public/qbank/2023-test1/image-color-tags.json",
+        "public/qbank/2023-test1/questions.json",
+        "public/qbank/2023-test1/questions.raw.json",
+        "qbank-tools/generated/reports/*",
+        "qbank-tools/generated/staging/*",
+        "qbank-tools/history/decision-memory.json"
+      ],
+      "outputs": [
+        "imports/<lang>/<batch>/*",
+        "qbank-tools/generated/reports/*",
+        "qbank-tools/generated/reports/image-replacement-second-pass-workbench.json",
+        "qbank-tools/generated/staging/*",
+        "qbank-tools/history/*"
+      ],
+      "modifiesProductionFiles": false,
+      "dryRunSupport": true,
+      "requiresGuardFlags": true,
+      "relatedPhase": "7. Tag intelligence",
+      "recommendedStatus": "active-review-workflow",
+      "notes": [
+        "Dry-run or apply-gated behavior detected.",
+        "Guard/force/overwrite flag detected; use only with reviewed inputs."
+      ]
+    },
+    {
+      "path": "scripts/generate-image-replacement-workbench.mjs",
+      "npmCommands": [],
+      "purpose": "Generate Image Replacement Workbench",
+      "inputs": [
+        "imports/<lang>/<batch>/*",
+        "public/qbank/2023-test1/questions.json",
+        "qbank-tools/generated/reports/*"
+      ],
+      "outputs": [
+        "imports/<lang>/<batch>/*",
+        "qbank-tools/generated/reports/*",
+        "qbank-tools/generated/reports/image-replacement-workbench.json"
+      ],
+      "modifiesProductionFiles": false,
+      "dryRunSupport": true,
+      "requiresGuardFlags": false,
+      "relatedPhase": "6. Decision memory",
+      "recommendedStatus": "active-review-workflow",
+      "notes": [
+        "Dry-run or apply-gated behavior detected."
+      ]
+    },
+    {
+      "path": "scripts/generate-image-tag-review-workbench.mjs",
+      "npmCommands": [],
+      "purpose": "Generate Image Tag Review Workbench",
+      "inputs": [
+        "public/qbank/2023-test1/image-color-tags.json",
+        "public/qbank/2023-test1/questions.json",
+        "public/qbank/2023-test1/questions.raw.json",
+        "qbank-tools/generated/reports/*",
+        "qbank-tools/generated/staging/*"
+      ],
+      "outputs": [
+        "qbank-tools/generated/reports/*",
+        "qbank-tools/generated/reports/image-tag-review-workbench.json",
+        "qbank-tools/generated/staging/*"
+      ],
+      "modifiesProductionFiles": false,
+      "dryRunSupport": true,
+      "requiresGuardFlags": false,
+      "relatedPhase": "7. Tag intelligence",
+      "recommendedStatus": "active-review-workflow",
+      "notes": [
+        "Dry-run or apply-gated behavior detected."
+      ]
+    },
+    {
+      "path": "scripts/generate-ja-beta-enablement-report.mjs",
+      "npmCommands": [],
+      "purpose": "Generate Ja Beta Enablement Report",
+      "inputs": [
+        "public/qbank/2023-test1/translations.<lang>.json",
+        "qbank-tools/generated/reports/*"
+      ],
+      "outputs": [
+        "qbank-tools/generated/reports/*"
+      ],
+      "modifiesProductionFiles": false,
+      "dryRunSupport": true,
+      "requiresGuardFlags": false,
+      "relatedPhase": "General app/repo workflow",
+      "recommendedStatus": "active-validation",
+      "notes": [
+        "Dry-run or apply-gated behavior detected."
+      ]
+    },
+    {
+      "path": "scripts/generate-missing-localization-draft.mjs",
+      "npmCommands": [
+        "generate-missing-localization-draft"
+      ],
+      "purpose": "Generate Missing Localization Draft",
+      "inputs": [
+        "AI/NotebookLM/OpenAI runtime inputs"
+      ],
+      "outputs": [
+        "qbank-tools/generated/staging/*"
+      ],
+      "modifiesProductionFiles": false,
+      "dryRunSupport": true,
+      "requiresGuardFlags": false,
+      "relatedPhase": "3. Missing-qid backfill",
+      "recommendedStatus": "active-review-workflow",
+      "notes": [
+        "Package command(s): generate-missing-localization-draft.",
+        "Dry-run or apply-gated behavior detected.",
+        "External AI-assisted workflow; cache/rate-limit behavior should be checked before long runs."
+      ]
+    },
+    {
+      "path": "scripts/generate-qbank-ko-translations.mjs",
+      "npmCommands": [],
+      "purpose": "Legacy OpenAI-assisted Korean production translation generator.",
+      "inputs": [
+        "AI/NotebookLM/OpenAI runtime inputs",
+        "public/qbank/2023-test1/questions.json",
+        "public/qbank/2023-test1/translations.<lang>.json"
+      ],
+      "outputs": [
+        "public/qbank/2023-test1/*"
+      ],
+      "modifiesProductionFiles": true,
+      "dryRunSupport": true,
+      "requiresGuardFlags": true,
+      "relatedPhase": "3. Missing-qid backfill",
+      "recommendedStatus": "dangerous-production-edit",
+      "notes": [
+        "Not package-referenced. Default is dry-run/no-op. Production write requires --apply true --allow-dangerous-production-edit true.",
+        "Detected write path into public/qbank production files.",
+        "Dry-run or apply-gated behavior detected.",
+        "Guard/force/overwrite flag detected; use only with reviewed inputs.",
+        "External AI-assisted workflow; cache/rate-limit behavior should be checked before long runs."
+      ]
+    },
+    {
+      "path": "scripts/generate-single-answer-key-review.mjs",
+      "npmCommands": [],
+      "purpose": "Generate Single Answer Key Review",
+      "inputs": [
+        "imports/<lang>/<batch>/*",
+        "public/qbank/2023-test1/translations.<lang>.json",
+        "qbank-tools/generated/reports/*",
+        "qbank-tools/generated/staging/*"
+      ],
+      "outputs": [
+        "imports/<lang>/<batch>/*",
+        "qbank-tools/generated/reports/*",
+        "qbank-tools/generated/staging/*"
+      ],
+      "modifiesProductionFiles": false,
+      "dryRunSupport": true,
+      "requiresGuardFlags": false,
+      "relatedPhase": "7. Tag intelligence",
+      "recommendedStatus": "active-review-workflow",
+      "notes": [
+        "Dry-run or apply-gated behavior detected."
+      ]
+    },
+    {
+      "path": "scripts/generate-unresolved-review-artifact.mjs",
+      "npmCommands": [
+        "generate-unresolved-review-artifact"
+      ],
+      "purpose": "Generate Unresolved Review Artifact",
+      "inputs": [
+        "imports/<lang>/<batch>/*",
+        "qbank-tools/generated/reports/*",
+        "qbank-tools/generated/staging/*"
+      ],
+      "outputs": [
+        "imports/<lang>/<batch>/*",
+        "qbank-tools/generated/reports/*",
+        "qbank-tools/generated/staging/*"
+      ],
+      "modifiesProductionFiles": false,
+      "dryRunSupport": true,
+      "requiresGuardFlags": false,
+      "relatedPhase": "7. Tag intelligence",
+      "recommendedStatus": "active-review-workflow",
+      "notes": [
+        "Package command(s): generate-unresolved-review-artifact.",
+        "Dry-run or apply-gated behavior detected."
+      ]
+    },
+    {
+      "path": "scripts/guard-protected-qbank-files.mjs",
+      "npmCommands": [
+        "guard-protected-qbank-files"
+      ],
+      "purpose": "Guard protected production qbank files from unapproved edits.",
+      "inputs": [
+        "public/qbank/2023-test1/image-color-tags.json",
+        "public/qbank/2023-test1/questions.json"
+      ],
+      "outputs": [
+        "qbank-tools/generated/reports/*"
+      ],
+      "modifiesProductionFiles": false,
+      "dryRunSupport": false,
+      "requiresGuardFlags": true,
+      "relatedPhase": "2. English master source-of-truth",
+      "recommendedStatus": "active-validation",
+      "notes": [
+        "Used by guarded master/image edit package commands.",
+        "Package command(s): guard-protected-qbank-files.",
+        "Guard/force/overwrite flag detected; use only with reviewed inputs."
+      ]
+    },
+    {
+      "path": "scripts/japanese-review-intelligence-lib.mjs",
+      "npmCommands": [],
+      "purpose": "Japanese Review Intelligence Lib",
+      "inputs": [
+        "imports/<lang>/<batch>/*",
+        "public/qbank/2023-test1/translations.<lang>.json",
+        "qbank-tools/generated/reports/*",
+        "qbank-tools/generated/staging/*"
+      ],
+      "outputs": [
+        "imports/<lang>/<batch>/*",
+        "qbank-tools/generated/reports/*",
+        "qbank-tools/generated/staging/*"
+      ],
+      "modifiesProductionFiles": false,
+      "dryRunSupport": true,
+      "requiresGuardFlags": true,
+      "relatedPhase": "8. Repo cleanup / workflow hygiene",
+      "recommendedStatus": "active-review-workflow",
+      "notes": [
+        "Dry-run or apply-gated behavior detected.",
+        "Guard/force/overwrite flag detected; use only with reviewed inputs."
+      ]
+    },
+    {
+      "path": "scripts/merge-image-replacement-second-pass-decisions.mjs",
+      "npmCommands": [],
+      "purpose": "Merge image replacement second-pass decisions into staging.",
+      "inputs": [
+        "public/qbank/2023-test1/questions.json",
+        "qbank-tools/generated/staging/*"
+      ],
+      "outputs": [
+        "qbank-tools/generated/staging/*"
+      ],
+      "modifiesProductionFiles": false,
+      "dryRunSupport": false,
+      "requiresGuardFlags": false,
+      "relatedPhase": "2. English master source-of-truth",
+      "recommendedStatus": "active-review-workflow",
+      "notes": [
+        "Review workflow merger for image replacement decisions."
+      ]
+    },
+    {
+      "path": "scripts/merge-reviewed-localizations.mjs",
+      "npmCommands": [
+        "merge-reviewed-localizations"
+      ],
+      "purpose": "Merge Reviewed Localizations",
+      "inputs": [
+        "imports/<lang>/<batch>/*",
+        "public/qbank/2023-test1/translations.<lang>.json",
+        "qbank-tools/generated/reports/*",
+        "qbank-tools/generated/staging/*"
+      ],
+      "outputs": [
+        "imports/<lang>/<batch>/*",
+        "qbank-tools/generated/reports/*",
+        "qbank-tools/generated/staging/*"
+      ],
+      "modifiesProductionFiles": false,
+      "dryRunSupport": false,
+      "requiresGuardFlags": false,
+      "relatedPhase": "7. Tag intelligence",
+      "recommendedStatus": "active-review-workflow",
+      "notes": [
+        "Package command(s): merge-reviewed-localizations."
+      ]
+    },
+    {
+      "path": "scripts/merge-workbench-decisions.mjs",
+      "npmCommands": [],
+      "purpose": "Merge Workbench Decisions",
+      "inputs": [
+        "qbank-tools/generated/staging/*"
+      ],
+      "outputs": [
+        "stdout/report-only or library exports"
+      ],
+      "modifiesProductionFiles": false,
+      "dryRunSupport": false,
+      "requiresGuardFlags": false,
+      "relatedPhase": "7. Tag intelligence",
+      "recommendedStatus": "active-review-workflow",
+      "notes": [
+        "Classified by filename and source-code heuristics; review before removing or changing."
+      ]
+    },
+    {
+      "path": "scripts/next-language-preflight-audit-lib.mjs",
+      "npmCommands": [],
+      "purpose": "Next Language Preflight Audit Lib",
+      "inputs": [
+        "repository files inferred from script arguments"
+      ],
+      "outputs": [
+        "stdout/report-only or library exports"
+      ],
+      "modifiesProductionFiles": false,
+      "dryRunSupport": false,
+      "requiresGuardFlags": false,
+      "relatedPhase": "Cross-phase validation",
+      "recommendedStatus": "active-validation",
+      "notes": [
+        "Classified by filename and source-code heuristics; review before removing or changing."
+      ]
+    },
+    {
+      "path": "scripts/next-language-preflight-config.mjs",
+      "npmCommands": [],
+      "purpose": "Next Language Preflight Config",
+      "inputs": [
+        "repository files inferred from script arguments"
+      ],
+      "outputs": [
+        "stdout/report-only or library exports"
+      ],
+      "modifiesProductionFiles": false,
+      "dryRunSupport": false,
+      "requiresGuardFlags": false,
+      "relatedPhase": "Cross-phase validation",
+      "recommendedStatus": "active-validation",
+      "notes": [
+        "Classified by filename and source-code heuristics; review before removing or changing."
+      ]
+    },
+    {
+      "path": "scripts/next-language-preflight-lib.mjs",
+      "npmCommands": [],
+      "purpose": "Next Language Preflight Lib",
+      "inputs": [
+        "imports/<lang>/<batch>/*",
+        "public/qbank/2023-test1/image-color-tags.json"
+      ],
+      "outputs": [
+        "imports/<lang>/<batch>/*"
+      ],
+      "modifiesProductionFiles": false,
+      "dryRunSupport": false,
+      "requiresGuardFlags": true,
+      "relatedPhase": "Cross-phase validation",
+      "recommendedStatus": "active-validation",
+      "notes": [
+        "Guard/force/overwrite flag detected; use only with reviewed inputs."
+      ]
+    },
+    {
+      "path": "scripts/next-language-validation-lib.mjs",
+      "npmCommands": [],
+      "purpose": "Next Language Validation Lib",
+      "inputs": [
+        "imports/<lang>/<batch>/*"
+      ],
+      "outputs": [
+        "imports/<lang>/<batch>/*"
+      ],
+      "modifiesProductionFiles": false,
+      "dryRunSupport": false,
+      "requiresGuardFlags": false,
+      "relatedPhase": "4. New-question promotion",
+      "recommendedStatus": "legacy-compatible",
+      "notes": [
+        "Classified by filename and source-code heuristics; review before removing or changing."
+      ]
+    },
+    {
+      "path": "scripts/notebooklm-rerank-workbench.mjs",
+      "npmCommands": [
+        "notebooklm-rerank-workbench"
+      ],
+      "purpose": "Notebooklm Rerank Workbench",
+      "inputs": [
+        "AI/NotebookLM/OpenAI runtime inputs",
+        "imports/<lang>/<batch>/*",
+        "qbank-tools/generated/staging/*"
+      ],
+      "outputs": [
+        "imports/<lang>/<batch>/*",
+        "qbank-tools/generated/staging/*"
+      ],
+      "modifiesProductionFiles": false,
+      "dryRunSupport": false,
+      "requiresGuardFlags": false,
+      "relatedPhase": "7. Tag intelligence",
+      "recommendedStatus": "active-review-workflow",
+      "notes": [
+        "Package command(s): notebooklm-rerank-workbench.",
+        "External AI-assisted workflow; cache/rate-limit behavior should be checked before long runs."
+      ]
+    },
+    {
+      "path": "scripts/notebooklm-suggest-batch.mjs",
+      "npmCommands": [
+        "notebooklm-suggest-batch"
+      ],
+      "purpose": "Notebooklm Suggest Batch",
+      "inputs": [
+        "AI/NotebookLM/OpenAI runtime inputs",
+        "imports/<lang>/<batch>/*",
+        "qbank-tools/generated/staging/*"
+      ],
+      "outputs": [
+        "imports/<lang>/<batch>/*",
+        "qbank-tools/generated/reports/*",
+        "qbank-tools/generated/staging/*"
+      ],
+      "modifiesProductionFiles": false,
+      "dryRunSupport": true,
+      "requiresGuardFlags": true,
+      "relatedPhase": "7. Tag intelligence",
+      "recommendedStatus": "active-review-workflow",
+      "notes": [
+        "Package command(s): notebooklm-suggest-batch.",
+        "Dry-run or apply-gated behavior detected.",
+        "Guard/force/overwrite flag detected; use only with reviewed inputs.",
+        "External AI-assisted workflow; cache/rate-limit behavior should be checked before long runs."
+      ]
+    },
+    {
+      "path": "scripts/plan-japanese-cleanup.mjs",
+      "npmCommands": [],
+      "purpose": "Plan Japanese Cleanup",
+      "inputs": [
+        "repository files inferred from script arguments"
+      ],
+      "outputs": [
+        "qbank-tools/generated/archive/*"
+      ],
+      "modifiesProductionFiles": false,
+      "dryRunSupport": false,
+      "requiresGuardFlags": false,
+      "relatedPhase": "8. Repo cleanup / workflow hygiene",
+      "recommendedStatus": "cleanup/archive",
+      "notes": [
+        "Archive/cleanup output detected; verify plan before apply."
+      ]
+    },
+    {
+      "path": "scripts/plan-release-cleanup.mjs",
+      "npmCommands": [],
+      "purpose": "Plan Release Cleanup",
+      "inputs": [
+        "repository files inferred from script arguments"
+      ],
+      "outputs": [
+        "qbank-tools/generated/archive/*"
+      ],
+      "modifiesProductionFiles": false,
+      "dryRunSupport": false,
+      "requiresGuardFlags": false,
+      "relatedPhase": "8. Repo cleanup / workflow hygiene",
+      "recommendedStatus": "cleanup/archive",
+      "notes": [
+        "Archive/cleanup output detected; verify plan before apply."
+      ]
+    },
+    {
+      "path": "scripts/postprocess-qbank.mjs",
+      "npmCommands": [],
+      "purpose": "Legacy raw-to-master qbank postprocessor.",
+      "inputs": [
+        "public/qbank/2023-test1/questions.json",
+        "public/qbank/2023-test1/questions.raw.json",
+        "qbank-tools/generated/reports/*"
+      ],
+      "outputs": [
+        "qbank-tools/generated/reports/*"
+      ],
+      "modifiesProductionFiles": true,
+      "dryRunSupport": true,
+      "requiresGuardFlags": true,
+      "relatedPhase": "2. English master source-of-truth",
+      "recommendedStatus": "dangerous-production-edit",
+      "notes": [
+        "Default is dry-run/no-op. Output write requires --apply true --allow-dangerous-production-edit true.",
+        "Detected write path into public/qbank production files.",
+        "Dry-run or apply-gated behavior detected.",
+        "Guard/force/overwrite flag detected; use only with reviewed inputs."
+      ]
+    },
+    {
+      "path": "scripts/prepare-dry-run-merge-review.mjs",
+      "npmCommands": [
+        "prepare-dry-run-merge-review"
+      ],
+      "purpose": "Prepare Dry Run Merge Review",
+      "inputs": [
+        "public/qbank/2023-test1/questions.json",
+        "public/qbank/2023-test1/questions.raw.json",
+        "public/qbank/2023-test1/translations.<lang>.json",
+        "qbank-tools/generated/reports/*",
+        "qbank-tools/generated/staging/*"
+      ],
+      "outputs": [
+        "qbank-tools/generated/reports/*",
+        "qbank-tools/generated/staging/*"
+      ],
+      "modifiesProductionFiles": false,
+      "dryRunSupport": true,
+      "requiresGuardFlags": false,
+      "relatedPhase": "7. Tag intelligence",
+      "recommendedStatus": "active-review-workflow",
+      "notes": [
+        "Package command(s): prepare-dry-run-merge-review.",
+        "Dry-run or apply-gated behavior detected."
+      ]
+    },
+    {
+      "path": "scripts/prepare-new-question-promotion-preview.mjs",
+      "npmCommands": [
+        "prepare-new-question-promotion-preview"
+      ],
+      "purpose": "Prepare New Question Promotion Preview",
+      "inputs": [
+        "public/qbank/2023-test1/questions.json",
+        "public/qbank/2023-test1/questions.raw.json",
+        "qbank-tools/generated/staging/*"
+      ],
+      "outputs": [
+        "qbank-tools/generated/staging/*"
+      ],
+      "modifiesProductionFiles": false,
+      "dryRunSupport": true,
+      "requiresGuardFlags": false,
+      "relatedPhase": "7. Tag intelligence",
+      "recommendedStatus": "active-review-workflow",
+      "notes": [
+        "Package command(s): prepare-new-question-promotion-preview.",
+        "Dry-run or apply-gated behavior detected."
+      ]
+    },
+    {
+      "path": "scripts/prepare-qbank-tools-archive-plan.mjs",
+      "npmCommands": [],
+      "purpose": "Prepare Qbank Tools Archive Plan",
+      "inputs": [
+        "qbank-tools/generated/reports/*",
+        "qbank-tools/generated/staging/*",
+        "qbank-tools/history/decision-memory.json"
+      ],
+      "outputs": [
+        "qbank-tools/generated/archive/*",
+        "qbank-tools/generated/reports/*",
+        "qbank-tools/generated/reports/qbank-tools-archive-plan.json",
+        "qbank-tools/history/*"
+      ],
+      "modifiesProductionFiles": false,
+      "dryRunSupport": true,
+      "requiresGuardFlags": false,
+      "relatedPhase": "8. Repo cleanup / workflow hygiene",
+      "recommendedStatus": "cleanup/archive",
+      "notes": [
+        "Dry-run or apply-gated behavior detected.",
+        "Archive/cleanup output detected; verify plan before apply."
+      ]
+    },
+    {
+      "path": "scripts/prepare-qbank-tools-cache-only-cleanup.mjs",
+      "npmCommands": [],
+      "purpose": "Prepare Qbank Tools Cache Only Cleanup",
+      "inputs": [
+        "imports/<lang>/<batch>/*",
+        "qbank-tools/generated/reports/*"
+      ],
+      "outputs": [
+        "imports/<lang>/<batch>/*",
+        "qbank-tools/generated/archive/*",
+        "qbank-tools/generated/reports/*"
+      ],
+      "modifiesProductionFiles": false,
+      "dryRunSupport": true,
+      "requiresGuardFlags": true,
+      "relatedPhase": "8. Repo cleanup / workflow hygiene",
+      "recommendedStatus": "cleanup/archive",
+      "notes": [
+        "Dry-run or apply-gated behavior detected.",
+        "Guard/force/overwrite flag detected; use only with reviewed inputs.",
+        "Archive/cleanup output detected; verify plan before apply."
+      ]
+    },
+    {
+      "path": "scripts/prepare-qbank-tools-medium-archive-plan.mjs",
+      "npmCommands": [],
+      "purpose": "Prepare dry-run medium-risk qbank-tools archive plan.",
+      "inputs": [
+        "imports/<lang>/<batch>/*",
+        "qbank-tools/generated/reports/*",
+        "qbank-tools/generated/staging/*",
+        "qbank-tools/history/decision-memory.json"
+      ],
+      "outputs": [
+        "imports/<lang>/<batch>/*",
+        "qbank-tools/generated/archive/*",
+        "qbank-tools/generated/reports/*",
+        "qbank-tools/generated/reports/qbank-tools-medium-archive-plan.json",
+        "qbank-tools/history/*"
+      ],
+      "modifiesProductionFiles": false,
+      "dryRunSupport": true,
+      "requiresGuardFlags": false,
+      "relatedPhase": "8. Repo cleanup / workflow hygiene",
+      "recommendedStatus": "cleanup/archive",
+      "notes": [
+        "Dry-run or apply-gated behavior detected.",
+        "Archive/cleanup output detected; verify plan before apply."
+      ]
+    },
+    {
+      "path": "scripts/prepare-qbank-tools-safe-first-archive.mjs",
+      "npmCommands": [],
+      "purpose": "Prepare Qbank Tools Safe First Archive",
+      "inputs": [
+        "qbank-tools/generated/reports/*",
+        "qbank-tools/generated/staging/*"
+      ],
+      "outputs": [
+        "qbank-tools/generated/archive/*",
+        "qbank-tools/generated/reports/*"
+      ],
+      "modifiesProductionFiles": false,
+      "dryRunSupport": true,
+      "requiresGuardFlags": false,
+      "relatedPhase": "8. Repo cleanup / workflow hygiene",
+      "recommendedStatus": "cleanup/archive",
+      "notes": [
+        "Dry-run or apply-gated behavior detected.",
+        "Archive/cleanup output detected; verify plan before apply."
+      ]
+    },
+    {
+      "path": "scripts/process-screenshot-batch.mjs",
+      "npmCommands": [
+        "process-screenshot-batch"
+      ],
+      "purpose": "Process Screenshot Batch",
+      "inputs": [
+        "qbank-tools/generated/reports/*"
+      ],
+      "outputs": [
+        "qbank-tools/generated/reports/*"
+      ],
+      "modifiesProductionFiles": false,
+      "dryRunSupport": false,
+      "requiresGuardFlags": false,
+      "relatedPhase": "General app/repo workflow",
+      "recommendedStatus": "active-review-workflow",
+      "notes": [
+        "Package command(s): process-screenshot-batch."
+      ]
+    },
+    {
+      "path": "scripts/propagate-new-master-qids.mjs",
+      "npmCommands": [
+        "propagate-new-master-qids"
+      ],
+      "purpose": "Create missing translation placeholders for new English master qids.",
+      "inputs": [
+        "public/qbank/2023-test1/questions.json",
+        "public/qbank/2023-test1/translations.<lang>.json",
+        "qbank-tools/generated/reports/*"
+      ],
+      "outputs": [
+        "qbank-tools/generated/reports/*"
+      ],
+      "modifiesProductionFiles": true,
+      "dryRunSupport": false,
+      "requiresGuardFlags": false,
+      "relatedPhase": "3. Missing-qid backfill",
+      "recommendedStatus": "active-production",
+      "notes": [
+        "Appends missing placeholders to translation files; safe by design but production-changing.",
+        "Package command(s): propagate-new-master-qids.",
+        "Detected write path into public/qbank production files."
+      ]
+    },
+    {
+      "path": "scripts/qbank-health-check.mjs",
+      "npmCommands": [
+        "qbank:health"
+      ],
+      "purpose": "Run consolidated qbank validation, audit, and build checks.",
+      "inputs": [
+        "qbank-tools/generated/reports/*"
+      ],
+      "outputs": [
+        "qbank-tools/generated/reports/*",
+        "qbank-tools/generated/reports/qbank-health-check.json"
+      ],
+      "modifiesProductionFiles": false,
+      "dryRunSupport": false,
+      "requiresGuardFlags": false,
+      "relatedPhase": "8. Repo cleanup / workflow hygiene",
+      "recommendedStatus": "active-validation",
+      "notes": [
+        "Package command qbank:health; writes health-check reports and runs validation/build commands.",
+        "Package command(s): qbank:health."
+      ]
+    },
+    {
+      "path": "scripts/query-decision-memory.mjs",
+      "npmCommands": [],
+      "purpose": "Query Decision Memory",
+      "inputs": [
+        "qbank-tools/history/decision-memory.json"
+      ],
+      "outputs": [
+        "stdout/report-only or library exports"
+      ],
+      "modifiesProductionFiles": false,
+      "dryRunSupport": false,
+      "requiresGuardFlags": false,
+      "relatedPhase": "6. Decision memory",
+      "recommendedStatus": "active-memory-intelligence",
+      "notes": [
+        "Classified by filename and source-code heuristics; review before removing or changing."
+      ]
+    },
+    {
+      "path": "scripts/release-cleanup-lib.mjs",
+      "npmCommands": [],
+      "purpose": "Release Cleanup Lib",
+      "inputs": [
+        "imports/<lang>/<batch>/*",
+        "public/qbank/2023-test1/image-color-tags.json",
+        "public/qbank/2023-test1/questions.json",
+        "public/qbank/2023-test1/questions.raw.json",
+        "public/qbank/2023-test1/translations.<lang>.json",
+        "qbank-tools/generated/reports/*",
+        "qbank-tools/generated/staging/*"
+      ],
+      "outputs": [
+        "imports/<lang>/<batch>/*",
+        "qbank-tools/generated/archive/*",
+        "qbank-tools/generated/reports/*",
+        "qbank-tools/generated/staging/*"
+      ],
+      "modifiesProductionFiles": false,
+      "dryRunSupport": true,
+      "requiresGuardFlags": true,
+      "relatedPhase": "8. Repo cleanup / workflow hygiene",
+      "recommendedStatus": "cleanup/archive",
+      "notes": [
+        "Dry-run or apply-gated behavior detected.",
+        "Guard/force/overwrite flag detected; use only with reviewed inputs.",
+        "Archive/cleanup output detected; verify plan before apply."
+      ]
+    },
+    {
+      "path": "scripts/replay-revenuecat-webhook.mjs",
+      "npmCommands": [
+        "revenuecat:webhook:replay",
+        "revenuecat:webhook:replay:sample"
+      ],
+      "purpose": "Replay RevenueCat webhook fixtures for app billing workflow.",
+      "inputs": [
+        "RevenueCat webhook fixture/input"
+      ],
+      "outputs": [
+        "stdout/report-only or library exports"
+      ],
+      "modifiesProductionFiles": false,
+      "dryRunSupport": false,
+      "requiresGuardFlags": false,
+      "relatedPhase": "General app/repo workflow",
+      "recommendedStatus": "legacy-compatible",
+      "notes": [
+        "Not part of qbank multilingual workflow but kept for broader app operations.",
+        "Package command(s): revenuecat:webhook:replay, revenuecat:webhook:replay:sample."
+      ]
+    },
+    {
+      "path": "scripts/report-production-localization-counts.mjs",
+      "npmCommands": [
+        "report-localization-counts"
+      ],
+      "purpose": "Report Production Localization Counts",
+      "inputs": [
+        "public/qbank/2023-test1/translations.<lang>.json"
+      ],
+      "outputs": [
+        "stdout/report-only or library exports"
+      ],
+      "modifiesProductionFiles": false,
+      "dryRunSupport": false,
+      "requiresGuardFlags": false,
+      "relatedPhase": "General app/repo workflow",
+      "recommendedStatus": "active-validation",
+      "notes": [
+        "Package command(s): report-localization-counts."
+      ]
+    },
+    {
+      "path": "scripts/review-generated-localization-quality.mjs",
+      "npmCommands": [
+        "review-generated-localization-quality"
+      ],
+      "purpose": "Review Generated Localization Quality",
+      "inputs": [
+        "AI/NotebookLM/OpenAI runtime inputs",
+        "public/qbank/2023-test1/translations.<lang>.json"
+      ],
+      "outputs": [
+        "qbank-tools/generated/staging/*"
+      ],
+      "modifiesProductionFiles": false,
+      "dryRunSupport": false,
+      "requiresGuardFlags": false,
+      "relatedPhase": "3. Missing-qid backfill",
+      "recommendedStatus": "active-review-workflow",
+      "notes": [
+        "Package command(s): review-generated-localization-quality.",
+        "External AI-assisted workflow; cache/rate-limit behavior should be checked before long runs."
+      ]
+    },
+    {
+      "path": "scripts/review-new-question-promotions.mjs",
+      "npmCommands": [
+        "review-new-question-promotions"
+      ],
+      "purpose": "Review New Question Promotions",
+      "inputs": [
+        "public/qbank/2023-test1/questions.json",
+        "qbank-tools/generated/reports/*",
+        "qbank-tools/generated/staging/*"
+      ],
+      "outputs": [
+        "qbank-tools/generated/reports/*"
+      ],
+      "modifiesProductionFiles": false,
+      "dryRunSupport": false,
+      "requiresGuardFlags": false,
+      "relatedPhase": "6. Decision memory",
+      "recommendedStatus": "active-review-workflow",
+      "notes": [
+        "Package command(s): review-new-question-promotions."
+      ]
+    },
+    {
+      "path": "scripts/run-combination-rule-promotion.mjs",
+      "npmCommands": [],
+      "purpose": "Run Combination Rule Promotion",
+      "inputs": [
+        "repository files inferred from script arguments"
+      ],
+      "outputs": [
+        "stdout/report-only or library exports"
+      ],
+      "modifiesProductionFiles": false,
+      "dryRunSupport": false,
+      "requiresGuardFlags": false,
+      "relatedPhase": "4. New-question promotion",
+      "recommendedStatus": "active-review-workflow",
+      "notes": [
+        "Classified by filename and source-code heuristics; review before removing or changing."
+      ]
+    },
+    {
+      "path": "scripts/run-final-targeted-pass.mjs",
+      "npmCommands": [],
+      "purpose": "Run Final Targeted Pass",
+      "inputs": [
+        "imports/<lang>/<batch>/*"
+      ],
+      "outputs": [
+        "stdout/report-only or library exports"
+      ],
+      "modifiesProductionFiles": false,
+      "dryRunSupport": false,
+      "requiresGuardFlags": true,
+      "relatedPhase": "Cross-phase validation",
+      "recommendedStatus": "legacy-compatible",
+      "notes": [
+        "Guard/force/overwrite flag detected; use only with reviewed inputs."
+      ]
+    },
+    {
+      "path": "scripts/run-limited-next-language-pilot.mjs",
+      "npmCommands": [],
+      "purpose": "Run Limited Next Language Pilot",
+      "inputs": [
+        "imports/<lang>/<batch>/*"
+      ],
+      "outputs": [
+        "imports/<lang>/<batch>/*"
+      ],
+      "modifiesProductionFiles": false,
+      "dryRunSupport": false,
+      "requiresGuardFlags": false,
+      "relatedPhase": "Cross-phase validation",
+      "recommendedStatus": "legacy-compatible",
+      "notes": [
+        "Classified by filename and source-code heuristics; review before removing or changing."
+      ]
+    },
+    {
+      "path": "scripts/run-next-language-pilot.mjs",
+      "npmCommands": [],
+      "purpose": "Run Next Language Pilot",
+      "inputs": [
+        "repository files inferred from script arguments"
+      ],
+      "outputs": [
+        "stdout/report-only or library exports"
+      ],
+      "modifiesProductionFiles": false,
+      "dryRunSupport": false,
+      "requiresGuardFlags": false,
+      "relatedPhase": "Cross-phase validation",
+      "recommendedStatus": "legacy-compatible",
+      "notes": [
+        "Classified by filename and source-code heuristics; review before removing or changing."
+      ]
+    },
+    {
+      "path": "scripts/run-next-language-preflight.mjs",
+      "npmCommands": [],
+      "purpose": "Run Next Language Preflight",
+      "inputs": [
+        "repository files inferred from script arguments"
+      ],
+      "outputs": [
+        "stdout/report-only or library exports"
+      ],
+      "modifiesProductionFiles": false,
+      "dryRunSupport": false,
+      "requiresGuardFlags": false,
+      "relatedPhase": "Cross-phase validation",
+      "recommendedStatus": "active-validation",
+      "notes": [
+        "Classified by filename and source-code heuristics; review before removing or changing."
+      ]
+    },
+    {
+      "path": "scripts/run-second-batch-validation.mjs",
+      "npmCommands": [],
+      "purpose": "Run Second Batch Validation",
+      "inputs": [
+        "repository files inferred from script arguments"
+      ],
+      "outputs": [
+        "stdout/report-only or library exports"
+      ],
+      "modifiesProductionFiles": false,
+      "dryRunSupport": false,
+      "requiresGuardFlags": false,
+      "relatedPhase": "Cross-phase validation",
+      "recommendedStatus": "active-review-workflow",
+      "notes": [
+        "Classified by filename and source-code heuristics; review before removing or changing."
+      ]
+    },
+    {
+      "path": "scripts/stage-new-question-candidates.mjs",
+      "npmCommands": [
+        "stage-new-question-candidates"
+      ],
+      "purpose": "Stage New Question Candidates",
+      "inputs": [
+        "imports/<lang>/<batch>/*",
+        "public/qbank/2023-test1/questions.json",
+        "public/qbank/2023-test1/questions.raw.json"
+      ],
+      "outputs": [
+        "imports/<lang>/<batch>/*",
+        "qbank-tools/generated/staging/*"
+      ],
+      "modifiesProductionFiles": false,
+      "dryRunSupport": false,
+      "requiresGuardFlags": false,
+      "relatedPhase": "7. Tag intelligence",
+      "recommendedStatus": "active-review-workflow",
+      "notes": [
+        "Package command(s): stage-new-question-candidates."
+      ]
+    },
+    {
+      "path": "scripts/stage-reviewed-batch.mjs",
+      "npmCommands": [
+        "stage-reviewed-batch"
+      ],
+      "purpose": "Stage Reviewed Batch",
+      "inputs": [
+        "imports/<lang>/<batch>/*",
+        "public/qbank/2023-test1/translations.<lang>.json",
+        "qbank-tools/generated/staging/*"
+      ],
+      "outputs": [
+        "imports/<lang>/<batch>/*",
+        "qbank-tools/generated/staging/*"
+      ],
+      "modifiesProductionFiles": false,
+      "dryRunSupport": false,
+      "requiresGuardFlags": false,
+      "relatedPhase": "7. Tag intelligence",
+      "recommendedStatus": "active-review-workflow",
+      "notes": [
+        "Package command(s): stage-reviewed-batch."
+      ]
+    },
+    {
+      "path": "scripts/tag-dictionary.mjs",
+      "npmCommands": [],
+      "purpose": "Shared tag vocabulary and normalization helpers.",
+      "inputs": [
+        "repository files inferred from script arguments"
+      ],
+      "outputs": [
+        "stdout/report-only or library exports"
+      ],
+      "modifiesProductionFiles": false,
+      "dryRunSupport": false,
+      "requiresGuardFlags": false,
+      "relatedPhase": "7. Tag intelligence",
+      "recommendedStatus": "active-memory-intelligence",
+      "notes": [
+        "Shared tag vocabulary helper used by tag/duplicate intelligence."
+      ]
+    },
+    {
+      "path": "scripts/update-decision-memory.mjs",
+      "npmCommands": [],
+      "purpose": "Update Decision Memory",
+      "inputs": [
+        "imports/<lang>/<batch>/*",
+        "qbank-tools/generated/reports/*",
+        "qbank-tools/generated/staging/*",
+        "qbank-tools/history/decision-memory.json"
+      ],
+      "outputs": [
+        "imports/<lang>/<batch>/*",
+        "qbank-tools/generated/reports/*",
+        "qbank-tools/generated/staging/*",
+        "qbank-tools/history/*"
+      ],
+      "modifiesProductionFiles": false,
+      "dryRunSupport": true,
+      "requiresGuardFlags": false,
+      "relatedPhase": "7. Tag intelligence",
+      "recommendedStatus": "active-memory-intelligence",
+      "notes": [
+        "Dry-run or apply-gated behavior detected."
+      ]
+    },
+    {
+      "path": "scripts/validate-localization-batch.mjs",
+      "npmCommands": [
+        "validate-localization-batch"
+      ],
+      "purpose": "Validate Localization Batch",
+      "inputs": [
+        "imports/<lang>/<batch>/*",
+        "qbank-tools/generated/reports/*"
+      ],
+      "outputs": [
+        "qbank-tools/generated/reports/*"
+      ],
+      "modifiesProductionFiles": false,
+      "dryRunSupport": true,
+      "requiresGuardFlags": false,
+      "relatedPhase": "5. Duplicate detection",
+      "recommendedStatus": "active-validation",
+      "notes": [
+        "Package command(s): validate-localization-batch.",
+        "Dry-run or apply-gated behavior detected."
+      ]
+    },
+    {
+      "path": "scripts/validate-missing-localization-backfill.mjs",
+      "npmCommands": [
+        "validate-missing-localization-backfill"
+      ],
+      "purpose": "Validate Missing Localization Backfill",
+      "inputs": [
+        "qbank-tools/generated/staging/*"
+      ],
+      "outputs": [
+        "qbank-tools/generated/staging/*"
+      ],
+      "modifiesProductionFiles": false,
+      "dryRunSupport": true,
+      "requiresGuardFlags": false,
+      "relatedPhase": "3. Missing-qid backfill",
+      "recommendedStatus": "active-validation",
+      "notes": [
+        "Package command(s): validate-missing-localization-backfill.",
+        "Dry-run or apply-gated behavior detected."
+      ]
+    },
+    {
+      "path": "scripts/validate-qbank.mjs",
+      "npmCommands": [],
+      "purpose": "Validate Qbank",
+      "inputs": [
+        "public/qbank/2023-test1/questions.json"
+      ],
+      "outputs": [
+        "stdout/report-only or library exports"
+      ],
+      "modifiesProductionFiles": false,
+      "dryRunSupport": true,
+      "requiresGuardFlags": false,
+      "relatedPhase": "7. Tag intelligence",
+      "recommendedStatus": "active-validation",
+      "notes": [
+        "Dry-run or apply-gated behavior detected."
+      ]
+    },
+    {
+      "path": "scripts/validate-renamed-assets.mjs",
+      "npmCommands": [
+        "validate-renamed-assets"
+      ],
+      "purpose": "Validate Renamed Assets",
+      "inputs": [
+        "qbank-tools/generated/reports/*"
+      ],
+      "outputs": [
+        "qbank-tools/generated/reports/*"
+      ],
+      "modifiesProductionFiles": false,
+      "dryRunSupport": true,
+      "requiresGuardFlags": false,
+      "relatedPhase": "5. Duplicate detection",
+      "recommendedStatus": "active-validation",
+      "notes": [
+        "Package command(s): validate-renamed-assets.",
+        "Dry-run or apply-gated behavior detected."
+      ]
+    },
+    {
+      "path": "scripts/validate-screenshot-intake.mjs",
+      "npmCommands": [
+        "validate-screenshot-intake"
+      ],
+      "purpose": "Validate Screenshot Intake",
+      "inputs": [
+        "imports/<lang>/<batch>/*",
+        "qbank-tools/generated/reports/*"
+      ],
+      "outputs": [
+        "imports/<lang>/<batch>/*",
+        "qbank-tools/generated/reports/*"
+      ],
+      "modifiesProductionFiles": false,
+      "dryRunSupport": true,
+      "requiresGuardFlags": false,
+      "relatedPhase": "Cross-phase validation",
+      "recommendedStatus": "active-validation",
+      "notes": [
+        "Package command(s): validate-screenshot-intake.",
+        "Dry-run or apply-gated behavior detected."
+      ]
+    },
+    {
+      "path": "scripts/verify-release-readiness.mjs",
+      "npmCommands": [],
+      "purpose": "Verify Release Readiness",
+      "inputs": [
+        "repository files inferred from script arguments"
+      ],
+      "outputs": [
+        "stdout/report-only or library exports"
+      ],
+      "modifiesProductionFiles": false,
+      "dryRunSupport": false,
+      "requiresGuardFlags": false,
+      "relatedPhase": "8. Repo cleanup / workflow hygiene",
+      "recommendedStatus": "active-validation",
+      "notes": [
+        "Classified by filename and source-code heuristics; review before removing or changing."
+      ]
+    }
+  ],
+  "generatedReports": [
+    {
+      "path": "qbank-tools/generated/reports/decision-memory-report.json",
+      "size": 2183,
+      "modifiedAt": "2026-05-05T08:29:49.495Z",
+      "likelySourceScript": "scripts/build-decision-memory.mjs"
+    },
+    {
+      "path": "qbank-tools/generated/reports/duplicate-candidate-audit.json",
+      "size": 2020615,
+      "modifiedAt": "2026-05-05T09:57:06.606Z",
+      "likelySourceScript": "scripts/build-duplicate-candidate-audit.mjs"
+    },
+    {
+      "path": "qbank-tools/generated/reports/duplicate-review-memory-report.json",
+      "size": 1490,
+      "modifiedAt": "2026-05-05T09:04:43.215Z",
+      "likelySourceScript": "scripts/build-duplicate-candidate-audit.mjs"
+    },
+    {
+      "path": "qbank-tools/generated/reports/image-replacement-second-pass-workbench.json",
+      "size": 41726,
+      "modifiedAt": "2026-05-05T08:47:50.458Z",
+      "likelySourceScript": "scripts/generate-image-replacement-second-pass-workbench.mjs"
+    },
+    {
+      "path": "qbank-tools/generated/reports/image-replacement-workbench.json",
+      "size": 439715,
+      "modifiedAt": "2026-05-05T02:59:50.816Z",
+      "likelySourceScript": "scripts/generate-image-replacement-workbench.mjs"
+    },
+    {
+      "path": "qbank-tools/generated/reports/image-tag-review-workbench.json",
+      "size": 93992,
+      "modifiedAt": "2026-05-05T09:46:34.861Z",
+      "likelySourceScript": "scripts/generate-image-tag-review-workbench.mjs"
+    },
+    {
+      "path": "qbank-tools/generated/reports/qbank-health-check.json",
+      "size": 8918,
+      "modifiedAt": "2026-05-06T11:10:03.565Z",
+      "likelySourceScript": "scripts/qbank-health-check.mjs"
+    },
+    {
+      "path": "qbank-tools/generated/reports/qbank-integrity-audit.json",
+      "size": 262432,
+      "modifiedAt": "2026-05-06T11:10:03.289Z",
+      "likelySourceScript": "scripts/audit-qbank-integrity.mjs"
+    },
+    {
+      "path": "qbank-tools/generated/reports/qbank-system-phase-status.json",
+      "size": 9726,
+      "modifiedAt": "2026-05-06T11:10:03.561Z",
+      "likelySourceScript": "scripts/audit-qbank-system-phase-status.mjs"
+    },
+    {
+      "path": "qbank-tools/generated/reports/qbank-tools-archive-plan.json",
+      "size": 2168164,
+      "modifiedAt": "2026-05-05T10:10:29.684Z",
+      "likelySourceScript": "scripts/prepare-qbank-tools-archive-plan.mjs"
+    },
+    {
+      "path": "qbank-tools/generated/reports/qbank-tools-cache-only-cleanup-apply-report.json",
+      "size": 1391,
+      "modifiedAt": "2026-05-05T10:40:59.138Z",
+      "likelySourceScript": "scripts/audit-qbank-tools-files.mjs"
+    },
+    {
+      "path": "qbank-tools/generated/reports/qbank-tools-cache-only-cleanup-plan.json",
+      "size": 1267442,
+      "modifiedAt": "2026-05-05T10:14:36.090Z",
+      "likelySourceScript": "scripts/audit-qbank-tools-files.mjs"
+    },
+    {
+      "path": "qbank-tools/generated/reports/qbank-tools-file-audit.json",
+      "size": 2162507,
+      "modifiedAt": "2026-05-05T09:59:32.020Z",
+      "likelySourceScript": "scripts/audit-qbank-tools-files.mjs"
+    },
+    {
+      "path": "qbank-tools/generated/reports/qbank-tools-medium-archive-apply-report.json",
+      "size": 4060,
+      "modifiedAt": "2026-05-05T12:22:22.939Z",
+      "likelySourceScript": "scripts/audit-qbank-tools-files.mjs"
+    },
+    {
+      "path": "qbank-tools/generated/reports/qbank-tools-medium-archive-plan.json",
+      "size": 3218731,
+      "modifiedAt": "2026-05-05T12:18:34.779Z",
+      "likelySourceScript": "scripts/prepare-qbank-tools-medium-archive-plan.mjs"
+    },
+    {
+      "path": "qbank-tools/generated/reports/qbank-tools-safe-first-archive-plan.json",
+      "size": 2476222,
+      "modifiedAt": "2026-05-05T10:12:48.125Z",
+      "likelySourceScript": "scripts/audit-qbank-tools-files.mjs"
+    },
+    {
+      "path": "qbank-tools/generated/reports/ru-ship-readiness-report.json",
+      "size": 4592,
+      "modifiedAt": "2026-05-02T12:53:37.749Z",
+      "likelySourceScript": "scripts/build-ru-ship-readiness-report.mjs"
+    },
+    {
+      "path": "qbank-tools/generated/reports/tag-intelligence-report.json",
+      "size": 21061,
+      "modifiedAt": "2026-05-05T09:57:06.735Z",
+      "likelySourceScript": "qbank-tools/lib/tag-intelligence.mjs"
+    }
+  ]
+}

@@ -75,6 +75,16 @@ for (const candidate of Array.isArray(candidatesDoc?.items) ? candidatesDoc.item
     throw new Error(`Preview item not found for candidate ${candidateId}.`);
   }
 
+  const duplicateSafety = previewItem.duplicateSafety ?? candidate.duplicateSafety ?? null;
+  const promotionRecommendation =
+    duplicateSafety?.promotionRecommendation ?? previewItem.promotionRecommendation ?? candidate.promotionRecommendation ?? null;
+  if (["blockDuplicate", "needsDuplicateReview", "linkToExistingQid"].includes(promotionRecommendation)) {
+    const explanation = duplicateSafety?.explanation ? ` ${duplicateSafety.explanation}` : "";
+    throw new Error(
+      `Refusing to promote ${candidateId}: duplicate safety status is ${promotionRecommendation}.${explanation}`,
+    );
+  }
+
   const number = Number(previewItem?.proposedMasterNumber);
   if (!Number.isFinite(number)) {
     throw new Error(`Preview item ${candidateId} is missing a valid proposedMasterNumber.`);

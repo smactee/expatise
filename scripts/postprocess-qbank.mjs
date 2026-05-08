@@ -21,9 +21,16 @@ function parseArgs() {
     const i = a.indexOf(k);
     return i >= 0 ? a[i + 1] : null;
   };
+  const bool = (k) => {
+    const value = get(k);
+    if (value === null) return a.includes(k);
+    return ["1", "true", "yes", "on"].includes(String(value).trim().toLowerCase());
+  };
   return {
     input: get("--in"),
     output: get("--out"),
+    apply: bool("--apply"),
+    allowDangerousProductionEdit: bool("--allow-dangerous-production-edit"),
   };
 }
 
@@ -43,9 +50,9 @@ function buildSearchText(q) {
   return parts.join(" ");
 }
 
-const { input, output } = parseArgs();
+const { input, output, apply, allowDangerousProductionEdit } = parseArgs();
 if (!input || !output) {
-  console.error("Usage: node scripts/postprocess-qbank.mjs --in <questions.raw.json> --out <questions.json>");
+  console.error("Usage: node scripts/postprocess-qbank.mjs --in <questions.raw.json> --out <questions.json> [--apply true --allow-dangerous-production-edit true]");
   process.exit(1);
 }
 
@@ -81,5 +88,60 @@ const out = {
   questions: processed,
 };
 
-writeJson(output, out);
-console.log(`✅ Postprocessed ${processed.length} questions -> ${output}`);
+const productionWriteAllowed = apply && allowDangerousProductionEdit;
+const reportJsonPath = path.join(process.cwd(), "qbank-tools", "generated", "reports", "postprocess-qbank-report.json");
+const reportMdPath = path.join(process.cwd(), "qbank-tools", "generated", "reports", "postprocess-qbank-report.md");
+const report = {
+  generatedAt: new Date().toISOString(),
+  script: "scripts/postprocess-qbank.mjs",
+  mode: productionWriteAllowed ? "apply" : "dry-run",
+  input,
+  output,
+  applyRequested: apply,
+  dangerousProductionEditAllowed: allowDangerousProductionEdit,
+  productionWriteAllowed,
+  productionModified: false,
+  processedQuestionCount: processed.length,
+  requiredFlags: [
+    "--apply true",
+    "--allow-dangerous-production-edit true",
+  ],
+};
+
+if (productionWriteAllowed) {
+  writeJson(output, out);
+  report.productionModified = true;
+} else {
+  report.blockedOutputWrite = true;
+  report.message = "Dry-run only. Output was not written. Re-run with --apply true --allow-dangerous-production-edit true to write changes.";
+}
+
+writeJson(reportJsonPath, report);
+fs.writeFileSync(reportMdPath, renderMarkdown(report), "utf-8");
+
+if (report.productionModified) {
+  console.log(`Postprocessed ${processed.length} questions -> ${output}`);
+} else {
+  console.log("Dry-run/no-op: output was not written.");
+  console.log("Required flags to write output: --apply true --allow-dangerous-production-edit true");
+  console.log(`Questions that would be postprocessed: ${processed.length}`);
+}
+console.log(`Report: ${path.relative(process.cwd(), reportJsonPath)}`);
+
+function renderMarkdown(reportValue) {
+  return [
+    "# Postprocess QBank Report",
+    "",
+    `Generated: ${reportValue.generatedAt}`,
+    `Mode: ${reportValue.mode}`,
+    `Input: ${reportValue.input}`,
+    `Output: ${reportValue.output}`,
+    `Output written: ${reportValue.productionModified ? "yes" : "no"}`,
+    `Questions processed: ${reportValue.processedQuestionCount}`,
+    "",
+    "Required output flags:",
+    "- --apply true",
+    "- --allow-dangerous-production-edit true",
+    "",
+  ].join("\n");
+}

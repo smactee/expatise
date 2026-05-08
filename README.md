@@ -144,11 +144,30 @@ npm run lint
 Useful qbank localization scripts include:
 
 ```bash
+npm run propagate-new-master-qids
 npm run build-match-index
 npm run extract-screenshot-intake -- --lang ja --batch batch-001
 npm run process-screenshot-batch -- --lang ja --batch batch-001
 npm run generate-batch-workbench -- --lang ja --batch batch-001
 ```
+
+### Auto Propagation Workflow
+
+When new English master questions are added to `public/qbank/2023-test1/questions.json`, run:
+
+```bash
+npm run propagate-new-master-qids
+```
+
+The script scans every `translations.<lang>.json` file in the dataset and appends placeholder entries only for master qids that are missing in that language. Placeholder entries use `translationStatus: "missing"` and `source: "auto-propagation"`, and are treated as backfill-ready rather than production translations.
+
+After propagation, build a language backfill queue with:
+
+```bash
+npm run build-missing-localization-backfill -- --lang ja
+```
+
+Propagation reports are written to `qbank-tools/generated/reports/propagation-report.json` and `qbank-tools/generated/reports/propagation-report.md`.
 
 Environment variables are required for the connected backend, payment, and AI flows. See the code paths that reference `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY` or `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, `OPENAI_API_KEY`, `NEXT_PUBLIC_REVENUECAT_API_KEY_ANDROID`, `NEXT_PUBLIC_REVENUECAT_ENTITLEMENT_ID`, and the Supabase Edge Function secrets for RevenueCat and service-role workflows.
 

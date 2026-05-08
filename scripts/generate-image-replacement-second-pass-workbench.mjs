@@ -16,6 +16,19 @@ import {
   writeJson,
   writeText,
 } from "../qbank-tools/lib/pipeline.mjs";
+import {
+  applyImageReplacementMemoryToCandidate,
+  buildImageReplacementMemoryDebugReport,
+  countMemoryAdjustedCandidates,
+  getQidMemory,
+  loadImageReplacementDecisionMemory,
+  renderImageReplacementMemoryDebugMarkdown,
+  summarizeImageReplacementMemory,
+} from "../qbank-tools/lib/image-replacement-memory.mjs";
+import {
+  candidateTagScore,
+  createTagIntelligence,
+} from "../qbank-tools/lib/tag-intelligence.mjs";
 
 const ROOT = process.cwd();
 const GENERATED_DIR = path.join(ROOT, "qbank-tools", "generated");
@@ -26,6 +39,8 @@ const ASSETS_DIR = path.join(REPORTS_DIR, "image-replacement-second-pass-assets"
 const SCREENSHOT_DESCRIPTOR_CACHE_PATH = path.join(CACHE_DIR, "image-replacement-screenshot-descriptors.json");
 const DEFAULT_DECISIONS_PATH = path.join(STAGING_DIR, "image-replacement-decisions.json");
 const FIRST_PASS_WORKBENCH_PATH = path.join(REPORTS_DIR, "image-replacement-workbench.json");
+const MEMORY_DEBUG_JSON_PATH = path.join(REPORTS_DIR, "image-replacement-memory-debug.json");
+const MEMORY_DEBUG_MD_PATH = path.join(REPORTS_DIR, "image-replacement-memory-debug.md");
 const DEFAULT_TOP_N = 10;
 const DEFAULT_CONCURRENCY = 6;
 const DEFAULT_MAX_SCREENSHOTS = 500;
@@ -93,6 +108,7 @@ async function main() {
   const maxCropsPerScreenshot = boundedPositiveIntegerArg(args, "max-crops-per-screenshot", DEFAULT_MAX_CROPS_PER_SCREENSHOT, HARD_MAX_CROPS_PER_SCREENSHOT);
   const reuseCache = booleanArg(args, "reuse-cache", true);
   const forceRebuildCache = booleanArg(args, "force-rebuild-cache", false);
+  const useMemory = booleanArg(args, "use-memory", true);
   const decisionFilter = parseDecisionFilter(stringArg(args, "decision-filter", "needsManualSearch"));
   const decisionsPath = await resolveDecisionsPath(stringArg(args, "decisions", DEFAULT_DECISIONS_PATH), dataset);
   const htmlPath = path.resolve(
@@ -124,10 +140,12 @@ async function main() {
   const questionsDoc = readJson(questionsPath);
   const rawQuestionsDoc = readJson(rawQuestionsPath);
   const imageTagsDoc = readJson(imageTagsPath);
+  const tagIntelligence = createTagIntelligence({ root: ROOT, dataset, imageTagsDoc, questionsDoc });
   const questionMap = buildQuestionMap(questionsDoc);
   const rawQuestionMap = buildQuestionMap(rawQuestionsDoc);
   const imageTagsMap = buildImageTagsMap(imageTagsDoc);
   const productionImageIndex = buildProductionImageIndex(questionMap, imageTagsMap, dataset);
+  const decisionMemory = loadImageReplacementDecisionMemory({ root: ROOT, dataset, useMemory });
   const firstPass = await loadFirstPassWorkbench();
   const previousCandidateKeys = buildPreviousCandidateKeyMap(firstPass, requestedQids);
   const screenshotContext = buildScreenshotContext(firstPass, questionMap, imageTagsMap);
@@ -145,6 +163,7 @@ async function main() {
   console.log(`Decision filter: ${[...decisionFilter].join(", ")}`);
   console.log(`Bounds: limit-qids=${limitQids ?? "all"} max-screenshots=${maxScreenshots} max-crops-per-screenshot=${maxCropsPerScreenshot}`);
   console.log(`Screenshot descriptor cache: ${reuseCache ? "enabled" : "disabled"}${forceRebuildCache ? " (force rebuild)" : ""}`);
+  console.log(`Decision memory: ${decisionMemory.enabled ? `${decisionMemory.counts.records} image-replacement record(s)` : "disabled"}.`);
 
   const targets = await buildTargets({
     qids: requestedQids,
@@ -160,6 +179,11 @@ async function main() {
   console.log(`Indexing ${productionImageIndex.assets.length} production asset candidate(s).`);
   const productionCandidates = (await mapLimit(productionImageIndex.assets, concurrency, async (asset) =>
     buildProductionCandidate(asset, questionMap, rawQuestionMap, imageTagsMap),
+  )).filter(Boolean);
+  const memoryAssetSeeds = buildMemoryAssetSeeds(decisionMemory, requestedQids);
+  console.log(`Indexing ${memoryAssetSeeds.length} decision-memory asset candidate(s).`);
+  const memoryAssetCandidates = (await mapLimit(memoryAssetSeeds, concurrency, async (seed) =>
+    buildMemoryAssetCandidate(seed, questionMap, rawQuestionMap, imageTagsMap),
   )).filter(Boolean);
 
   console.log(`Indexing ${screenshotPaths.length}/${allScreenshotPaths.length} screenshot candidate source(s).`);
@@ -189,6 +213,7 @@ async function main() {
   const priorCropCandidates = await mapLimit(workbenchAssetCandidates, concurrency, buildPriorCropCandidate);
 
   const candidatePool = [
+    ...memoryAssetCandidates,
     ...productionCandidates,
     ...screenshotCandidates.filter(Boolean),
     ...priorCropCandidates.filter(Boolean),
@@ -208,10 +233,14 @@ async function main() {
       continue;
     }
 
+    const memoryInfo = getQidMemory(decisionMemory, target.qid);
     const ranked = annotateExistingQidMatches(rankSecondPassCandidates({
       target,
       candidatePool,
       previousKeys: previousCandidateKeys.get(target.qid) ?? new Set(),
+      memoryInfo,
+      decisionMemory,
+      tagIntelligence,
       topN,
     }), {
       target,
@@ -225,11 +254,13 @@ async function main() {
       question: target.question,
       tags: target.tags,
       keywords: [...target.keywords],
+      memory: summarizeImageReplacementMemory(memoryInfo),
       candidates: ranked,
     });
   }
 
   await writeCandidatePreviews(results);
+  const memoryAdjustments = countMemoryAdjustedCandidates(results);
 
   const workbench = {
     generatedAt: stableNow(),
@@ -253,11 +284,25 @@ async function main() {
       maxCropsPerScreenshot,
       reuseCache,
       forceRebuildCache,
+      useMemory,
+      memoryPath: decisionMemory.memoryPath,
     },
     cache: cacheStats,
+    memory: {
+      enabled: decisionMemory.enabled,
+      exists: decisionMemory.exists,
+      warning: decisionMemory.warning ?? null,
+      records: decisionMemory.counts.records,
+      qids: decisionMemory.counts.qids,
+      memoryAssetCandidates: memoryAssetCandidates.length,
+      boostedCandidates: memoryAdjustments.boosted,
+      downrankedCandidates: memoryAdjustments.downranked,
+    },
     counts: {
       qids: results.length,
       candidates: results.reduce((sum, result) => sum + (result.candidates?.length ?? 0), 0),
+      memoryBoostedCandidates: memoryAdjustments.boosted,
+      memoryDownrankedCandidates: memoryAdjustments.downranked,
       existingProductionImageMatches: results.reduce(
         (sum, result) => sum + (result.candidates ?? []).filter((candidate) => candidate.operation === "reuse-existing-qid-image").length,
         0,
@@ -265,6 +310,11 @@ async function main() {
       screenshotsScanned: screenshotPaths.length,
       screenshotsAvailable: allScreenshotPaths.length,
       productionAssetsScanned: productionImageIndex.assets.length,
+      memoryAssetsScanned: memoryAssetCandidates.length,
+      tagIntelligenceScoredCandidates: results.reduce(
+        (sum, result) => sum + (result.candidates ?? []).filter((candidate) => candidate.scoring?.tagIntelligence?.score > 0).length,
+        0,
+      ),
       priorPreviewCropsScanned: workbenchAssetCandidates.length,
     },
     results: results.map(serializeResult),
@@ -273,10 +323,21 @@ async function main() {
   await writeJson(jsonPath, workbench);
   await writeText(htmlPath, buildHtml(workbench, { htmlPath, jsonPath }));
   await writeText(mdPath, buildMarkdown(workbench));
+  const memoryDebug = buildImageReplacementMemoryDebugReport({
+    decisionMemory,
+    results: workbench.results,
+    dataset,
+    source: "image-replacement-second-pass-workbench",
+    generatedAt: workbench.generatedAt,
+  });
+  await writeJson(MEMORY_DEBUG_JSON_PATH, memoryDebug);
+  await writeText(MEMORY_DEBUG_MD_PATH, renderImageReplacementMemoryDebugMarkdown(memoryDebug));
 
   console.log(`Wrote ${relativePath(htmlPath)}.`);
   console.log(`Wrote ${relativePath(jsonPath)}.`);
   console.log(`Wrote ${relativePath(mdPath)}.`);
+  console.log(`Wrote ${relativePath(MEMORY_DEBUG_JSON_PATH)}.`);
+  console.log(`Wrote ${relativePath(MEMORY_DEBUG_MD_PATH)}.`);
 }
 
 function stringArg(args, key, fallback = null) {
@@ -571,6 +632,82 @@ async function buildProductionCandidate(asset, questionMap, rawQuestionMap, imag
       keywords,
       tags,
       contextQids: qids,
+    };
+  } catch {
+    return null;
+  }
+}
+
+function buildMemoryAssetSeeds(decisionMemory, qids) {
+  if (!decisionMemory?.enabled) {
+    return [];
+  }
+  const seeds = [];
+  const seen = new Set();
+  for (const qid of qids) {
+    const memory = getQidMemory(decisionMemory, qid);
+    for (const record of memory.successfulRecords) {
+      const sourcePath = record.finalAssetPath ?? record.referencedImagePath ?? null;
+      if (!sourcePath || !sourcePath.startsWith("public/qbank/")) {
+        continue;
+      }
+      const key = `${qid}:${sourcePath}:${record.referencedQid ?? ""}`;
+      if (seen.has(key)) {
+        continue;
+      }
+      seen.add(key);
+      seeds.push({
+        targetQid: qid,
+        sourcePath,
+        referencedQid: record.referencedQid ?? null,
+        referencedImagePath: record.referencedImagePath ?? sourcePath,
+        operation: record.operation ?? "reuse-existing-qid-image",
+        memoryOutcome: record.outcome ?? null,
+        memoryOperation: record.operation ?? null,
+      });
+    }
+  }
+  return seeds;
+}
+
+async function buildMemoryAssetCandidate(seed, questionMap, rawQuestionMap, imageTagsMap) {
+  const absolutePath = path.join(ROOT, seed.sourcePath);
+  if (!(await fileExists(absolutePath))) {
+    return null;
+  }
+  try {
+    const metadata = await sharp(absolutePath, { limitInputPixels: false }).metadata();
+    const crop = normalizeCrop({ left: 0, top: 0, width: metadata.width, height: metadata.height }, metadata);
+    const descriptor = await buildDescriptor(absolutePath, crop, "decision-memory-production-full");
+    const referencedQids = [seed.referencedQid].filter(Boolean);
+    const keywords = new Set([`memory-target-${seed.targetQid}`]);
+    const tags = new Set();
+    for (const qid of referencedQids) {
+      const summary = summarizeQuestion(questionMap.get(qid), rawQuestionMap.get(qid));
+      for (const token of buildKeywordSet(summary, flattenTags(imageTagsMap.get(qid)))) {
+        keywords.add(token);
+      }
+      for (const tag of flattenTags(imageTagsMap.get(qid))) {
+        tags.add(tag);
+      }
+    }
+    return {
+      sourceType: "decision-memory-approved-asset",
+      diversityBucket: "existing-production-qid",
+      operation: seed.operation === "reuse-existing-qid-image" ? "reuse-existing-qid-image" : "reuse-existing-qid-image",
+      sourcePath: seed.sourcePath,
+      absolutePath,
+      referencedQid: seed.referencedQid,
+      referencedQids,
+      referencedImagePath: seed.referencedImagePath ?? seed.sourcePath,
+      crop,
+      cropMode: "decision-memory-production-full",
+      width: metadata.width,
+      height: metadata.height,
+      descriptor,
+      keywords,
+      tags,
+      contextQids: referencedQids,
     };
   } catch {
     return null;
@@ -1076,7 +1213,7 @@ function median(values) {
   return sorted[Math.floor(sorted.length / 2)];
 }
 
-function rankSecondPassCandidates({ target, candidatePool, previousKeys, topN }) {
+function rankSecondPassCandidates({ target, candidatePool, previousKeys, memoryInfo, decisionMemory, tagIntelligence, topN }) {
   const targetNumber = qidNumber(target.qid);
   const ranked = [];
   for (const candidate of candidatePool) {
@@ -1094,7 +1231,8 @@ function rankSecondPassCandidates({ target, candidatePool, previousKeys, topN })
       continue;
     }
     const keywordScore = setSimilarity(target.keywords, candidate.keywords);
-    const tagScore = setSimilarity(new Set(target.tags), candidate.tags);
+    const tagReview = candidateTagScore(target.qid, candidate, tagIntelligence);
+    const tagScore = tagReview.score || setSimilarity(new Set(target.tags), candidate.tags);
     const shapeScore = clamp01(best.visualParts.aspect * 0.52 + best.visualParts.edge * 0.18 + best.visualParts.pHash * 0.3);
     const proximityScore = qidProximityScore(targetNumber, candidate.contextQids ?? []);
     const priorKey = candidateKey(candidate.sourcePath, candidate.crop);
@@ -1112,7 +1250,7 @@ function rankSecondPassCandidates({ target, candidatePool, previousKeys, topN })
     const nearQid = candidate.operation === "reuse-existing-qid-image" && qidProximityScore(targetNumber, candidate.contextQids ?? []) >= 0.7;
     const sourceType = nearQid ? "nearby-qid-production" : candidate.sourceType;
     const diversityBucket = nearQid ? "nearby-qid-production" : candidate.diversityBucket;
-    ranked.push({
+    const candidateWithScore = {
       ...candidate,
       sourceType,
       diversityBucket,
@@ -1121,6 +1259,7 @@ function rankSecondPassCandidates({ target, candidatePool, previousKeys, topN })
         visualScore: best.visualScore,
         keywordScore,
         tagScore,
+        tagIntelligence: tagReview,
         shapeScore,
         proximityScore,
         previousPenalty,
@@ -1132,6 +1271,11 @@ function rankSecondPassCandidates({ target, candidatePool, previousKeys, topN })
       targetDescriptor: best.targetDescriptor,
       candidateDescriptor: candidate.descriptor.name,
       reason: buildReason({ keywordScore, tagScore, shapeScore, proximityScore, previousPenalty, candidate }),
+    };
+    const memoryCandidate = applyImageReplacementMemoryToCandidate(candidateWithScore, memoryInfo, decisionMemory);
+    ranked.push({
+      ...memoryCandidate,
+      reason: [memoryCandidate.reason, memoryCandidate.memoryReason].filter(Boolean).join("; "),
     });
   }
   return diversifyCandidates(ranked, topN).map((candidate, index) => ({
@@ -1630,6 +1774,7 @@ function serializeResult(result) {
     question: result.question ?? null,
     tags: result.tags ?? [],
     keywords: result.keywords ?? [],
+    memory: result.memory ?? null,
     candidates: (result.candidates ?? []).map(serializeCandidate),
   };
 }
@@ -1646,6 +1791,8 @@ function serializeCandidate(candidate) {
     previewWidth: candidate.previewWidth ?? null,
     previewHeight: candidate.previewHeight ?? null,
     score: roundScore(candidate.score),
+    baseScore: roundScore(candidate.baseScore),
+    finalScore: roundScore(candidate.finalScore ?? candidate.score),
     scoring: Object.fromEntries(Object.entries(candidate.scoring ?? {}).map(([key, value]) => [key, roundScore(value)])),
     crop: roundCrop(candidate.crop),
     cropMode: candidate.cropMode,
@@ -1658,6 +1805,13 @@ function serializeCandidate(candidate) {
     reason: candidate.reason,
     possibleExistingQidMatches: candidate.possibleExistingQidMatches ?? [],
     likelyExistingQidMatch: candidate.likelyExistingQidMatch ?? null,
+    memoryMatch: Boolean(candidate.memoryMatch),
+    memoryOutcome: candidate.memoryOutcome ?? null,
+    memoryOperation: candidate.memoryOperation ?? null,
+    previousReviewerNotes: candidate.previousReviewerNotes ?? "",
+    memoryReason: candidate.memoryReason ?? "",
+    memoryMatchReason: candidate.memoryMatchReason ?? "",
+    memoryScoreAdjustment: roundScore(candidate.memoryScoreAdjustment),
   };
 }
 
@@ -2018,6 +2172,7 @@ function buildResultSection(result, htmlPath) {
         <p>${escapeHtml(result.question?.prompt ?? result.error ?? "")}</p>
         ${options ? `<ul class="options">${options}</ul>` : ""}
         ${tags ? `<div class="tagline">${tags}</div>` : ""}
+        ${buildMemorySummary(result.memory)}
       </div>
     </div>
     <div class="decision-panel">
@@ -2067,8 +2222,11 @@ function buildCandidateCard(candidate, htmlPath) {
       <div class="path"><strong>source:</strong> ${escapeHtml(candidate.sourcePath ?? "")}</div>
       ${candidate.referencedImagePath ? `<div class="path"><strong>image:</strong> ${escapeHtml(candidate.referencedImagePath)}</div>` : ""}
       ${matchList}
+      ${buildCandidateMemory(candidate)}
       <div class="score-grid">
-        <span>score ${formatNumber(candidate.score)}</span>
+        <span>base ${formatNumber(candidate.baseScore ?? candidate.score)}</span>
+        <span>memory ${formatNumber(candidate.memoryScoreAdjustment ?? 0)}</span>
+        <span>final ${formatNumber(candidate.finalScore ?? candidate.score)}</span>
         <span>visual ${formatNumber(candidate.scoring?.visualScore)}</span>
         <span>keyword ${formatNumber(candidate.scoring?.keywordScore)}</span>
         <span>tag ${formatNumber(candidate.scoring?.tagScore)}</span>
@@ -2084,6 +2242,32 @@ function buildCandidateCard(candidate, htmlPath) {
   </article>`;
 }
 
+function buildMemorySummary(memory) {
+  if (!memory || memory.records === 0) {
+    return "";
+  }
+  const notes = (memory.previousReviewerNotes ?? []).join(" / ");
+  const assets = (memory.previousAppliedAssets ?? []).join(" / ");
+  const refs = (memory.successfulReferencedQids ?? []).join(", ");
+  return `<div class="small memory-summary">
+    memory records ${escapeHtml(memory.records)}${refs ? ` · referenced ${escapeHtml(refs)}` : ""}${assets ? ` · previous applied asset <span class="path">${escapeHtml(assets)}</span>` : ""}${notes ? `<br>notes: ${escapeHtml(notes)}` : ""}
+  </div>`;
+}
+
+function buildCandidateMemory(candidate) {
+  const match = candidate.memoryMatch ? "yes" : "no";
+  const detail = [
+    candidate.memoryOutcome ? `outcome ${candidate.memoryOutcome}` : null,
+    candidate.memoryOperation ? `operation ${candidate.memoryOperation}` : null,
+    `base ${formatNumber(candidate.baseScore ?? candidate.score)}`,
+    `memory adjustment ${formatNumber(candidate.memoryScoreAdjustment ?? 0)}`,
+    `final ${formatNumber(candidate.finalScore ?? candidate.score)}`,
+  ].filter(Boolean).join(" · ");
+  const notes = candidate.previousReviewerNotes ? `<br>notes: ${escapeHtml(candidate.previousReviewerNotes)}` : "";
+  const reason = candidate.memoryMatchReason || candidate.memoryReason ? `<br>reason: ${escapeHtml(candidate.memoryMatchReason || candidate.memoryReason)}` : "";
+  return `<div class="small memory-line"><strong>memoryMatch:</strong> ${escapeHtml(match)}${detail ? ` · ${escapeHtml(detail)}` : ""}${notes}${reason}</div>`;
+}
+
 function buildMarkdown(workbench) {
   const lines = [
     "# Image Replacement Second-Pass Workbench",
@@ -2093,6 +2277,8 @@ function buildMarkdown(workbench) {
     `- decisionsPath: ${workbench.decisionsPath}`,
     `- qids searched again: ${workbench.settings.qids.join(", ")}`,
     `- candidates generated: ${workbench.counts.candidates}`,
+    `- memory boosted candidates: ${workbench.counts.memoryBoostedCandidates ?? 0}`,
+    `- memory downranked candidates: ${workbench.counts.memoryDownrankedCandidates ?? 0}`,
     `- existing-production-image matches found: ${workbench.counts.existingProductionImageMatches}`,
     "",
     "| qid | candidates | existing production matches | top score | top source |",

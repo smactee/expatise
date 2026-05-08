@@ -1,0 +1,172 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://expatise.local/qbank-tools/history/decision-memory.schema.json",
+  "title": "Expatise QBank Decision Memory",
+  "type": "object",
+  "additionalProperties": true,
+  "required": ["meta", "records"],
+  "properties": {
+    "meta": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "schemaVersion": {
+          "type": ["integer", "string"]
+        },
+        "updatedAt": {
+          "type": ["string", "null"],
+          "format": "date-time"
+        }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "records": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": true,
+        "required": ["id"],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "type": {
+            "enum": [
+              "localization-match",
+              "duplicate-detection",
+              "new-question-promotion",
+              "answer-key-review",
+              "image-replacement",
+              "missing-qid-backfill",
+              "translation-extra-qid-cleanup"
+            ]
+          },
+          "dataset": {
+            "type": ["string", "null"]
+          },
+          "qid": {
+            "type": ["string", "null"],
+            "pattern": "^q[0-9]{4}$"
+          },
+          "pairedQid": {
+            "type": ["string", "null"],
+            "pattern": "^q[0-9]{4}$"
+          },
+          "language": {
+            "type": ["string", "null"]
+          },
+          "source": {
+            "enum": [
+              "human-review",
+              "codex",
+              "notebooklm",
+              "script",
+              "script-apply",
+              "ai-review",
+              "manual",
+              "production-merge",
+              "integrity-audit",
+              null
+            ]
+          },
+          "decision": {
+            "type": ["string", "null"]
+          },
+          "reason": {
+            "type": ["string", "null"]
+          },
+          "operation": {
+            "type": ["string", "null"]
+          },
+          "approvedSourcePath": {
+            "type": ["string", "null"]
+          },
+          "approvedPreviewPath": {
+            "type": ["string", "null"]
+          },
+          "finalAssetPath": {
+            "type": ["string", "null"]
+          },
+          "previousAssetPath": {
+            "type": ["string", "null"]
+          },
+          "referencedQid": {
+            "type": ["string", "null"],
+            "pattern": "^q[0-9]{4}$"
+          },
+          "referencedImagePath": {
+            "type": ["string", "null"]
+          },
+          "candidateScore": {
+            "type": ["number", "null"],
+            "minimum": 0
+          },
+          "scoreAtReview": {
+            "type": ["number", "null"],
+            "minimum": 0
+          },
+          "categoryAtReview": {
+            "type": ["string", "null"]
+          },
+          "reviewerNotes": {
+            "type": ["string", "null"]
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "objectTags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "outcome": {
+            "enum": [
+              "proposed",
+              "approved",
+              "rejected",
+              "needsManualSearch",
+              "disregarded",
+              "applied",
+              "failed",
+              null
+            ]
+          },
+          "validationStatus": {
+            "type": ["string", "null"]
+          },
+          "warnings": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "createdAt": {
+            "type": ["string", "null"]
+          },
+          "updatedAt": {
+            "type": ["string", "null"]
+          },
+          "sourceFiles": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  }
+}

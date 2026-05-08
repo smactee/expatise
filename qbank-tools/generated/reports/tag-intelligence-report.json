@@ -1,0 +1,1139 @@
+{
+  "generatedAt": "2026-05-05T09:57:06.734Z",
+  "dataset": "2023-test1",
+  "sources": {
+    "imageColorTags": "public/qbank/2023-test1/image-color-tags.json",
+    "decisionMemory": "qbank-tools/history/decision-memory.json"
+  },
+  "summary": {
+    "totalMasterQids": 984,
+    "totalQidsWithObjectTags": 499,
+    "totalQidsMissingObjectTags": 485,
+    "trustedTagQids": 430,
+    "lowConfidenceTagQids": 69,
+    "missingTagQids": 485,
+    "imageQidsMissingObjectTags": 1,
+    "topTagCount": 40,
+    "tagsOutsideVocabulary": 0,
+    "oppositeTagPairsDetected": 154
+  },
+  "topTags": [
+    {
+      "tag": "pov",
+      "count": 98
+    },
+    {
+      "tag": "tree",
+      "count": 85
+    },
+    {
+      "tag": "car",
+      "count": 77
+    },
+    {
+      "tag": "arrow",
+      "count": 75
+    },
+    {
+      "tag": "building",
+      "count": 64
+    },
+    {
+      "tag": "sign",
+      "count": 45
+    },
+    {
+      "tag": "chinese-text",
+      "count": 42
+    },
+    {
+      "tag": "red-circle",
+      "count": 30
+    },
+    {
+      "tag": "arrows",
+      "count": 29
+    },
+    {
+      "tag": "crosswalk",
+      "count": 28
+    },
+    {
+      "tag": "trees",
+      "count": 27
+    },
+    {
+      "tag": "red-car",
+      "count": 26
+    },
+    {
+      "tag": "three-lights",
+      "count": 18
+    },
+    {
+      "tag": "buildings",
+      "count": 17
+    },
+    {
+      "tag": "blue-car",
+      "count": 16
+    },
+    {
+      "tag": "intersection",
+      "count": 15
+    },
+    {
+      "tag": "bicycle",
+      "count": 14
+    },
+    {
+      "tag": "two-arrows",
+      "count": 14
+    },
+    {
+      "tag": "green-car",
+      "count": 13
+    },
+    {
+      "tag": "pedestrian",
+      "count": 13
+    },
+    {
+      "tag": "alone",
+      "count": 12
+    },
+    {
+      "tag": "black-arrow",
+      "count": 12
+    },
+    {
+      "tag": "car-icon",
+      "count": 12
+    },
+    {
+      "tag": "dashboard-indicator",
+      "count": 12
+    },
+    {
+      "tag": "double-arrows",
+      "count": 12
+    },
+    {
+      "tag": "grass",
+      "count": 12
+    },
+    {
+      "tag": "indicator",
+      "count": 12
+    },
+    {
+      "tag": "p",
+      "count": 12
+    },
+    {
+      "tag": "railroad",
+      "count": 12
+    },
+    {
+      "tag": "warning-light",
+      "count": 12
+    },
+    {
+      "tag": "wiper",
+      "count": 12
+    },
+    {
+      "tag": "yellow-car-icon",
+      "count": 12
+    },
+    {
+      "tag": "fog",
+      "count": 11
+    },
+    {
+      "tag": "gray-background",
+      "count": 11
+    },
+    {
+      "tag": "green-light",
+      "count": 11
+    },
+    {
+      "tag": "traffic-light",
+      "count": 11
+    },
+    {
+      "tag": "train",
+      "count": 11
+    },
+    {
+      "tag": "control-lever",
+      "count": 10
+    },
+    {
+      "tag": "silver-car",
+      "count": 10
+    },
+    {
+      "tag": "stalk",
+      "count": 10
+    }
+  ],
+  "tagsNotInObjectVocabulary": [],
+  "possibleTagFamilies": {
+    "traffic-light": [
+      "traffic-light",
+      "red-light",
+      "yellow-light",
+      "green-light",
+      "signal-light",
+      "traffic-signal"
+    ],
+    "prohibition-sign": [
+      "red-circle"
+    ],
+    "warning-sign": [
+      "triangle"
+    ],
+    "mandatory-sign": [
+      "blue-sign"
+    ],
+    "direction": [
+      "arrow",
+      "left-turn",
+      "right-turn",
+      "straight"
+    ]
+  },
+  "oppositeTagPairsDetected": [
+    {
+      "qidA": "q0200",
+      "qidB": "q0284",
+      "tagA": "red-light",
+      "tagB": "green-light"
+    },
+    {
+      "qidA": "q0200",
+      "qidB": "q0284",
+      "tagA": "green-light",
+      "tagB": "red-light"
+    },
+    {
+      "qidA": "q0200",
+      "qidB": "q0414",
+      "tagA": "red-light",
+      "tagB": "green-light"
+    },
+    {
+      "qidA": "q0200",
+      "qidB": "q0414",
+      "tagA": "green-light",
+      "tagB": "red-light"
+    },
+    {
+      "qidA": "q0200",
+      "qidB": "q0631",
+      "tagA": "red-light",
+      "tagB": "green-light"
+    },
+    {
+      "qidA": "q0200",
+      "qidB": "q0631",
+      "tagA": "green-light",
+      "tagB": "red-light"
+    },
+    {
+      "qidA": "q0200",
+      "qidB": "q0633",
+      "tagA": "red-light",
+      "tagB": "green-light"
+    },
+    {
+      "qidA": "q0200",
+      "qidB": "q0633",
+      "tagA": "green-light",
+      "tagB": "red-light"
+    },
+    {
+      "qidA": "q0200",
+      "qidB": "q0649",
+      "tagA": "red-light",
+      "tagB": "green-light"
+    },
+    {
+      "qidA": "q0200",
+      "qidB": "q0649",
+      "tagA": "green-light",
+      "tagB": "red-light"
+    },
+    {
+      "qidA": "q0200",
+      "qidB": "q0729",
+      "tagA": "red-light",
+      "tagB": "green-light"
+    },
+    {
+      "qidA": "q0200",
+      "qidB": "q0729",
+      "tagA": "green-light",
+      "tagB": "red-light"
+    },
+    {
+      "qidA": "q0200",
+      "qidB": "q0849",
+      "tagA": "red-light",
+      "tagB": "green-light"
+    },
+    {
+      "qidA": "q0200",
+      "qidB": "q0849",
+      "tagA": "green-light",
+      "tagB": "red-light"
+    },
+    {
+      "qidA": "q0284",
+      "qidB": "q0372",
+      "tagA": "red-light",
+      "tagB": "green-light"
+    },
+    {
+      "qidA": "q0284",
+      "qidB": "q0372",
+      "tagA": "green-light",
+      "tagB": "red-light"
+    },
+    {
+      "qidA": "q0284",
+      "qidB": "q0408",
+      "tagA": "red-light",
+      "tagB": "green-light"
+    },
+    {
+      "qidA": "q0284",
+      "qidB": "q0408",
+      "tagA": "green-light",
+      "tagB": "red-light"
+    },
+    {
+      "qidA": "q0284",
+      "qidB": "q0418",
+      "tagA": "red-light",
+      "tagB": "green-light"
+    },
+    {
+      "qidA": "q0284",
+      "qidB": "q0418",
+      "tagA": "green-light",
+      "tagB": "red-light"
+    },
+    {
+      "qidA": "q0284",
+      "qidB": "q0464",
+      "tagA": "red-light",
+      "tagB": "green-light"
+    },
+    {
+      "qidA": "q0284",
+      "qidB": "q0464",
+      "tagA": "green-light",
+      "tagB": "red-light"
+    },
+    {
+      "qidA": "q0284",
+      "qidB": "q0491",
+      "tagA": "red-light",
+      "tagB": "green-light"
+    },
+    {
+      "qidA": "q0284",
+      "qidB": "q0491",
+      "tagA": "green-light",
+      "tagB": "red-light"
+    },
+    {
+      "qidA": "q0284",
+      "qidB": "q0519",
+      "tagA": "red-light",
+      "tagB": "green-light"
+    },
+    {
+      "qidA": "q0284",
+      "qidB": "q0519",
+      "tagA": "green-light",
+      "tagB": "red-light"
+    },
+    {
+      "qidA": "q0284",
+      "qidB": "q0632",
+      "tagA": "red-light",
+      "tagB": "green-light"
+    },
+    {
+      "qidA": "q0284",
+      "qidB": "q0632",
+      "tagA": "green-light",
+      "tagB": "red-light"
+    },
+    {
+      "qidA": "q0284",
+      "qidB": "q0634",
+      "tagA": "red-light",
+      "tagB": "green-light"
+    },
+    {
+      "qidA": "q0284",
+      "qidB": "q0634",
+      "tagA": "green-light",
+      "tagB": "red-light"
+    },
+    {
+      "qidA": "q0284",
+      "qidB": "q0638",
+      "tagA": "red-light",
+      "tagB": "green-light"
+    },
+    {
+      "qidA": "q0284",
+      "qidB": "q0638",
+      "tagA": "green-light",
+      "tagB": "red-light"
+    },
+    {
+      "qidA": "q0284",
+      "qidB": "q0650",
+      "tagA": "red-light",
+      "tagB": "green-light"
+    },
+    {
+      "qidA": "q0284",
+      "qidB": "q0650",
+      "tagA": "green-light",
+      "tagB": "red-light"
+    },
+    {
+      "qidA": "q0372",
+      "qidB": "q0414",
+      "tagA": "red-light",
+      "tagB": "green-light"
+    },
+    {
+      "qidA": "q0372",
+      "qidB": "q0414",
+      "tagA": "green-light",
+      "tagB": "red-light"
+    },
+    {
+      "qidA": "q0372",
+      "qidB": "q0631",
+      "tagA": "red-light",
+      "tagB": "green-light"
+    },
+    {
+      "qidA": "q0372",
+      "qidB": "q0631",
+      "tagA": "green-light",
+      "tagB": "red-light"
+    },
+    {
+      "qidA": "q0372",
+      "qidB": "q0633",
+      "tagA": "red-light",
+      "tagB": "green-light"
+    },
+    {
+      "qidA": "q0372",
+      "qidB": "q0633",
+      "tagA": "green-light",
+      "tagB": "red-light"
+    },
+    {
+      "qidA": "q0372",
+      "qidB": "q0649",
+      "tagA": "red-light",
+      "tagB": "green-light"
+    },
+    {
+      "qidA": "q0372",
+      "qidB": "q0649",
+      "tagA": "green-light",
+      "tagB": "red-light"
+    },
+    {
+      "qidA": "q0372",
+      "qidB": "q0729",
+      "tagA": "red-light",
+      "tagB": "green-light"
+    },
+    {
+      "qidA": "q0372",
+      "qidB": "q0729",
+      "tagA": "green-light",
+      "tagB": "red-light"
+    },
+    {
+      "qidA": "q0372",
+      "qidB": "q0849",
+      "tagA": "red-light",
+      "tagB": "green-light"
+    },
+    {
+      "qidA": "q0372",
+      "qidB": "q0849",
+      "tagA": "green-light",
+      "tagB": "red-light"
+    },
+    {
+      "qidA": "q0408",
+      "qidB": "q0414",
+      "tagA": "red-light",
+      "tagB": "green-light"
+    },
+    {
+      "qidA": "q0408",
+      "qidB": "q0414",
+      "tagA": "green-light",
+      "tagB": "red-light"
+    },
+    {
+      "qidA": "q0408",
+      "qidB": "q0631",
+      "tagA": "red-light",
+      "tagB": "green-light"
+    },
+    {
+      "qidA": "q0408",
+      "qidB": "q0631",
+      "tagA": "green-light",
+      "tagB": "red-light"
+    },
+    {
+      "qidA": "q0408",
+      "qidB": "q0633",
+      "tagA": "red-light",
+      "tagB": "green-light"
+    },
+    {
+      "qidA": "q0408",
+      "qidB": "q0633",
+      "tagA": "green-light",
+      "tagB": "red-light"
+    },
+    {
+      "qidA": "q0408",
+      "qidB": "q0649",
+      "tagA": "red-light",
+      "tagB": "green-light"
+    },
+    {
+      "qidA": "q0408",
+      "qidB": "q0649",
+      "tagA": "green-light",
+      "tagB": "red-light"
+    },
+    {
+      "qidA": "q0408",
+      "qidB": "q0729",
+      "tagA": "red-light",
+      "tagB": "green-light"
+    },
+    {
+      "qidA": "q0408",
+      "qidB": "q0729",
+      "tagA": "green-light",
+      "tagB": "red-light"
+    },
+    {
+      "qidA": "q0408",
+      "qidB": "q0849",
+      "tagA": "red-light",
+      "tagB": "green-light"
+    },
+    {
+      "qidA": "q0408",
+      "qidB": "q0849",
+      "tagA": "green-light",
+      "tagB": "red-light"
+    },
+    {
+      "qidA": "q0414",
+      "qidB": "q0418",
+      "tagA": "red-light",
+      "tagB": "green-light"
+    },
+    {
+      "qidA": "q0414",
+      "qidB": "q0418",
+      "tagA": "green-light",
+      "tagB": "red-light"
+    },
+    {
+      "qidA": "q0414",
+      "qidB": "q0464",
+      "tagA": "red-light",
+      "tagB": "green-light"
+    },
+    {
+      "qidA": "q0414",
+      "qidB": "q0464",
+      "tagA": "green-light",
+      "tagB": "red-light"
+    },
+    {
+      "qidA": "q0414",
+      "qidB": "q0491",
+      "tagA": "red-light",
+      "tagB": "green-light"
+    },
+    {
+      "qidA": "q0414",
+      "qidB": "q0491",
+      "tagA": "green-light",
+      "tagB": "red-light"
+    },
+    {
+      "qidA": "q0414",
+      "qidB": "q0519",
+      "tagA": "red-light",
+      "tagB": "green-light"
+    },
+    {
+      "qidA": "q0414",
+      "qidB": "q0519",
+      "tagA": "green-light",
+      "tagB": "red-light"
+    },
+    {
+      "qidA": "q0414",
+      "qidB": "q0632",
+      "tagA": "red-light",
+      "tagB": "green-light"
+    },
+    {
+      "qidA": "q0414",
+      "qidB": "q0632",
+      "tagA": "green-light",
+      "tagB": "red-light"
+    },
+    {
+      "qidA": "q0414",
+      "qidB": "q0634",
+      "tagA": "red-light",
+      "tagB": "green-light"
+    },
+    {
+      "qidA": "q0414",
+      "qidB": "q0634",
+      "tagA": "green-light",
+      "tagB": "red-light"
+    },
+    {
+      "qidA": "q0414",
+      "qidB": "q0638",
+      "tagA": "red-light",
+      "tagB": "green-light"
+    },
+    {
+      "qidA": "q0414",
+      "qidB": "q0638",
+      "tagA": "green-light",
+      "tagB": "red-light"
+    },
+    {
+      "qidA": "q0414",
+      "qidB": "q0650",
+      "tagA": "red-light",
+      "tagB": "green-light"
+    },
+    {
+      "qidA": "q0414",
+      "qidB": "q0650",
+      "tagA": "green-light",
+      "tagB": "red-light"
+    },
+    {
+      "qidA": "q0418",
+      "qidB": "q0631",
+      "tagA": "red-light",
+      "tagB": "green-light"
+    },
+    {
+      "qidA": "q0418",
+      "qidB": "q0631",
+      "tagA": "green-light",
+      "tagB": "red-light"
+    },
+    {
+      "qidA": "q0418",
+      "qidB": "q0633",
+      "tagA": "red-light",
+      "tagB": "green-light"
+    },
+    {
+      "qidA": "q0418",
+      "qidB": "q0633",
+      "tagA": "green-light",
+      "tagB": "red-light"
+    },
+    {
+      "qidA": "q0418",
+      "qidB": "q0649",
+      "tagA": "red-light",
+      "tagB": "green-light"
+    },
+    {
+      "qidA": "q0418",
+      "qidB": "q0649",
+      "tagA": "green-light",
+      "tagB": "red-light"
+    },
+    {
+      "qidA": "q0418",
+      "qidB": "q0729",
+      "tagA": "red-light",
+      "tagB": "green-light"
+    },
+    {
+      "qidA": "q0418",
+      "qidB": "q0729",
+      "tagA": "green-light",
+      "tagB": "red-light"
+    },
+    {
+      "qidA": "q0418",
+      "qidB": "q0849",
+      "tagA": "red-light",
+      "tagB": "green-light"
+    },
+    {
+      "qidA": "q0418",
+      "qidB": "q0849",
+      "tagA": "green-light",
+      "tagB": "red-light"
+    },
+    {
+      "qidA": "q0464",
+      "qidB": "q0631",
+      "tagA": "red-light",
+      "tagB": "green-light"
+    },
+    {
+      "qidA": "q0464",
+      "qidB": "q0631",
+      "tagA": "green-light",
+      "tagB": "red-light"
+    },
+    {
+      "qidA": "q0464",
+      "qidB": "q0633",
+      "tagA": "red-light",
+      "tagB": "green-light"
+    },
+    {
+      "qidA": "q0464",
+      "qidB": "q0633",
+      "tagA": "green-light",
+      "tagB": "red-light"
+    },
+    {
+      "qidA": "q0464",
+      "qidB": "q0649",
+      "tagA": "red-light",
+      "tagB": "green-light"
+    },
+    {
+      "qidA": "q0464",
+      "qidB": "q0649",
+      "tagA": "green-light",
+      "tagB": "red-light"
+    },
+    {
+      "qidA": "q0464",
+      "qidB": "q0729",
+      "tagA": "red-light",
+      "tagB": "green-light"
+    },
+    {
+      "qidA": "q0464",
+      "qidB": "q0729",
+      "tagA": "green-light",
+      "tagB": "red-light"
+    },
+    {
+      "qidA": "q0464",
+      "qidB": "q0849",
+      "tagA": "red-light",
+      "tagB": "green-light"
+    },
+    {
+      "qidA": "q0464",
+      "qidB": "q0849",
+      "tagA": "green-light",
+      "tagB": "red-light"
+    },
+    {
+      "qidA": "q0491",
+      "qidB": "q0631",
+      "tagA": "red-light",
+      "tagB": "green-light"
+    },
+    {
+      "qidA": "q0491",
+      "qidB": "q0631",
+      "tagA": "green-light",
+      "tagB": "red-light"
+    },
+    {
+      "qidA": "q0491",
+      "qidB": "q0633",
+      "tagA": "red-light",
+      "tagB": "green-light"
+    },
+    {
+      "qidA": "q0491",
+      "qidB": "q0633",
+      "tagA": "green-light",
+      "tagB": "red-light"
+    },
+    {
+      "qidA": "q0491",
+      "qidB": "q0649",
+      "tagA": "red-light",
+      "tagB": "green-light"
+    },
+    {
+      "qidA": "q0491",
+      "qidB": "q0649",
+      "tagA": "green-light",
+      "tagB": "red-light"
+    },
+    {
+      "qidA": "q0491",
+      "qidB": "q0729",
+      "tagA": "red-light",
+      "tagB": "green-light"
+    },
+    {
+      "qidA": "q0491",
+      "qidB": "q0729",
+      "tagA": "green-light",
+      "tagB": "red-light"
+    },
+    {
+      "qidA": "q0491",
+      "qidB": "q0849",
+      "tagA": "red-light",
+      "tagB": "green-light"
+    },
+    {
+      "qidA": "q0491",
+      "qidB": "q0849",
+      "tagA": "green-light",
+      "tagB": "red-light"
+    },
+    {
+      "qidA": "q0519",
+      "qidB": "q0631",
+      "tagA": "red-light",
+      "tagB": "green-light"
+    },
+    {
+      "qidA": "q0519",
+      "qidB": "q0631",
+      "tagA": "green-light",
+      "tagB": "red-light"
+    },
+    {
+      "qidA": "q0519",
+      "qidB": "q0633",
+      "tagA": "red-light",
+      "tagB": "green-light"
+    },
+    {
+      "qidA": "q0519",
+      "qidB": "q0633",
+      "tagA": "green-light",
+      "tagB": "red-light"
+    },
+    {
+      "qidA": "q0519",
+      "qidB": "q0649",
+      "tagA": "red-light",
+      "tagB": "green-light"
+    },
+    {
+      "qidA": "q0519",
+      "qidB": "q0649",
+      "tagA": "green-light",
+      "tagB": "red-light"
+    },
+    {
+      "qidA": "q0519",
+      "qidB": "q0729",
+      "tagA": "red-light",
+      "tagB": "green-light"
+    },
+    {
+      "qidA": "q0519",
+      "qidB": "q0729",
+      "tagA": "green-light",
+      "tagB": "red-light"
+    },
+    {
+      "qidA": "q0519",
+      "qidB": "q0849",
+      "tagA": "red-light",
+      "tagB": "green-light"
+    },
+    {
+      "qidA": "q0519",
+      "qidB": "q0849",
+      "tagA": "green-light",
+      "tagB": "red-light"
+    },
+    {
+      "qidA": "q0631",
+      "qidB": "q0632",
+      "tagA": "red-light",
+      "tagB": "green-light"
+    },
+    {
+      "qidA": "q0631",
+      "qidB": "q0632",
+      "tagA": "green-light",
+      "tagB": "red-light"
+    },
+    {
+      "qidA": "q0631",
+      "qidB": "q0634",
+      "tagA": "red-light",
+      "tagB": "green-light"
+    },
+    {
+      "qidA": "q0631",
+      "qidB": "q0634",
+      "tagA": "green-light",
+      "tagB": "red-light"
+    },
+    {
+      "qidA": "q0631",
+      "qidB": "q0638",
+      "tagA": "red-light",
+      "tagB": "green-light"
+    },
+    {
+      "qidA": "q0631",
+      "qidB": "q0638",
+      "tagA": "green-light",
+      "tagB": "red-light"
+    },
+    {
+      "qidA": "q0631",
+      "qidB": "q0650",
+      "tagA": "red-light",
+      "tagB": "green-light"
+    },
+    {
+      "qidA": "q0631",
+      "qidB": "q0650",
+      "tagA": "green-light",
+      "tagB": "red-light"
+    },
+    {
+      "qidA": "q0632",
+      "qidB": "q0633",
+      "tagA": "red-light",
+      "tagB": "green-light"
+    },
+    {
+      "qidA": "q0632",
+      "qidB": "q0633",
+      "tagA": "green-light",
+      "tagB": "red-light"
+    },
+    {
+      "qidA": "q0632",
+      "qidB": "q0649",
+      "tagA": "red-light",
+      "tagB": "green-light"
+    },
+    {
+      "qidA": "q0632",
+      "qidB": "q0649",
+      "tagA": "green-light",
+      "tagB": "red-light"
+    },
+    {
+      "qidA": "q0632",
+      "qidB": "q0729",
+      "tagA": "red-light",
+      "tagB": "green-light"
+    },
+    {
+      "qidA": "q0632",
+      "qidB": "q0729",
+      "tagA": "green-light",
+      "tagB": "red-light"
+    },
+    {
+      "qidA": "q0632",
+      "qidB": "q0849",
+      "tagA": "red-light",
+      "tagB": "green-light"
+    },
+    {
+      "qidA": "q0632",
+      "qidB": "q0849",
+      "tagA": "green-light",
+      "tagB": "red-light"
+    },
+    {
+      "qidA": "q0633",
+      "qidB": "q0634",
+      "tagA": "red-light",
+      "tagB": "green-light"
+    },
+    {
+      "qidA": "q0633",
+      "qidB": "q0634",
+      "tagA": "green-light",
+      "tagB": "red-light"
+    },
+    {
+      "qidA": "q0633",
+      "qidB": "q0638",
+      "tagA": "red-light",
+      "tagB": "green-light"
+    },
+    {
+      "qidA": "q0633",
+      "qidB": "q0638",
+      "tagA": "green-light",
+      "tagB": "red-light"
+    },
+    {
+      "qidA": "q0633",
+      "qidB": "q0650",
+      "tagA": "red-light",
+      "tagB": "green-light"
+    },
+    {
+      "qidA": "q0633",
+      "qidB": "q0650",
+      "tagA": "green-light",
+      "tagB": "red-light"
+    },
+    {
+      "qidA": "q0634",
+      "qidB": "q0649",
+      "tagA": "red-light",
+      "tagB": "green-light"
+    },
+    {
+      "qidA": "q0634",
+      "qidB": "q0649",
+      "tagA": "green-light",
+      "tagB": "red-light"
+    },
+    {
+      "qidA": "q0634",
+      "qidB": "q0729",
+      "tagA": "red-light",
+      "tagB": "green-light"
+    },
+    {
+      "qidA": "q0634",
+      "qidB": "q0729",
+      "tagA": "green-light",
+      "tagB": "red-light"
+    },
+    {
+      "qidA": "q0634",
+      "qidB": "q0849",
+      "tagA": "red-light",
+      "tagB": "green-light"
+    },
+    {
+      "qidA": "q0634",
+      "qidB": "q0849",
+      "tagA": "green-light",
+      "tagB": "red-light"
+    },
+    {
+      "qidA": "q0638",
+      "qidB": "q0649",
+      "tagA": "red-light",
+      "tagB": "green-light"
+    },
+    {
+      "qidA": "q0638",
+      "qidB": "q0649",
+      "tagA": "green-light",
+      "tagB": "red-light"
+    },
+    {
+      "qidA": "q0638",
+      "qidB": "q0729",
+      "tagA": "red-light",
+      "tagB": "green-light"
+    },
+    {
+      "qidA": "q0638",
+      "qidB": "q0729",
+      "tagA": "green-light",
+      "tagB": "red-light"
+    },
+    {
+      "qidA": "q0638",
+      "qidB": "q0849",
+      "tagA": "red-light",
+      "tagB": "green-light"
+    },
+    {
+      "qidA": "q0638",
+      "qidB": "q0849",
+      "tagA": "green-light",
+      "tagB": "red-light"
+    },
+    {
+      "qidA": "q0649",
+      "qidB": "q0650",
+      "tagA": "red-light",
+      "tagB": "green-light"
+    },
+    {
+      "qidA": "q0649",
+      "qidB": "q0650",
+      "tagA": "green-light",
+      "tagB": "red-light"
+    },
+    {
+      "qidA": "q0650",
+      "qidB": "q0729",
+      "tagA": "red-light",
+      "tagB": "green-light"
+    },
+    {
+      "qidA": "q0650",
+      "qidB": "q0729",
+      "tagA": "green-light",
+      "tagB": "red-light"
+    },
+    {
+      "qidA": "q0650",
+      "qidB": "q0849",
+      "tagA": "red-light",
+      "tagB": "green-light"
+    },
+    {
+      "qidA": "q0650",
+      "qidB": "q0849",
+      "tagA": "green-light",
+      "tagB": "red-light"
+    }
+  ],
+  "usage": {
+    "duplicateAuditTagScoreUsage": 469,
+    "newQuestionGateTagScoreUsage": "enabled",
+    "imageReplacementTagScoreUsage": "enabled"
+  }
+}

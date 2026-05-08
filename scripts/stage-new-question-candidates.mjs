@@ -13,6 +13,13 @@ import {
   stableNow,
   writeJson,
 } from "../qbank-tools/lib/pipeline.mjs";
+import {
+  loadDecisionMemory,
+  loadDuplicateAudit,
+  loadMasterQuestions,
+  normalizeCandidate,
+  reviewNewQuestionDuplicateSafety,
+} from "../qbank-tools/lib/new-question-promotion-gate.mjs";
 
 const args = parseArgs();
 const { lang, batchId } = batchOptionsFromArgs(args);
@@ -28,6 +35,9 @@ const decisionsDoc = readJson(reviewPaths.decisionsTemplateJsonPath);
 const decisionMap = new Map(
   (Array.isArray(decisionsDoc.items) ? decisionsDoc.items : []).map((item) => [item.itemId, normalizeDecision(item)]),
 );
+const master = loadMasterQuestions({ dataset });
+const decisionMemory = loadDecisionMemory();
+const duplicateAudit = loadDuplicateAudit();
 
 const decisionSnapshot = {
   generatedAt: stableNow(),
@@ -62,7 +72,7 @@ for (const item of reviewItems) {
     continue;
   }
 
-  candidateItems.push({
+  const candidate = {
     candidateId: `nqc-${lang}-${batchId}-${String(candidateOrdinal).padStart(3, "0")}`,
     sourceLang: lang,
     sourceImage: item.sourceImage ?? null,
@@ -80,6 +90,22 @@ for (const item of reviewItems) {
     linkedExistingAssetCandidate: linkedExistingAssetCandidate(item),
     reviewerNotes: decision.reviewerNotes,
     status: "pending-superset-review",
+  };
+  const duplicateSafety = reviewNewQuestionDuplicateSafety({
+    candidate: normalizeCandidate(candidate, {
+      inputPath: newQuestionFiles.candidatesPath,
+      lang,
+      batch: batchId,
+    }),
+    masterQuestions: master.questions,
+    decisionMemory: decisionMemory.records,
+    duplicateAudit,
+  });
+
+  candidateItems.push({
+    ...candidate,
+    duplicateSafety,
+    status: statusForDuplicateSafety(duplicateSafety),
   });
 
   candidateOrdinal += 1;
@@ -91,6 +117,14 @@ const candidateDoc = {
   batchId,
   dataset,
   sourceDecisionPath: path.relative(process.cwd(), newQuestionFiles.decisionsPath),
+  sourceDuplicateSafetyPaths: {
+    masterQuestions: path.relative(process.cwd(), master.questionsPath),
+    rawQuestions: path.relative(process.cwd(), master.rawQuestionsPath),
+    imageColorTags: path.relative(process.cwd(), master.imageTagsPath),
+    decisionMemory: path.relative(process.cwd(), decisionMemory.memoryPath),
+    duplicateAudit: path.relative(process.cwd(), duplicateAudit.auditPath),
+  },
+  duplicateSafetySummary: summarizeDuplicateSafety(candidateItems),
   items: candidateItems,
 };
 
@@ -160,5 +194,21 @@ function linkedExistingAssetCandidate(item) {
     currentAssetSrc: candidate.image?.currentAssetSrc ?? null,
     assetHashes: Array.isArray(candidate.image?.assetHashes) ? candidate.image.assetHashes : [],
     status: "unconfirmed-existing-production-asset",
+  };
+}
+
+function statusForDuplicateSafety(duplicateSafety) {
+  if (duplicateSafety.promotionRecommendation === "blockDuplicate") return "blocked-duplicate";
+  if (duplicateSafety.promotionRecommendation === "linkToExistingQid") return "link-to-existing-qid";
+  if (duplicateSafety.promotionRecommendation === "needsDuplicateReview") return "needs-duplicate-review";
+  return "pending-superset-review";
+}
+
+function summarizeDuplicateSafety(items) {
+  return {
+    candidatesBlocked: items.filter((item) => item.duplicateSafety?.promotionRecommendation === "blockDuplicate").length,
+    candidatesNeedingDuplicateReview: items.filter((item) => item.duplicateSafety?.promotionRecommendation === "needsDuplicateReview").length,
+    candidatesLinkedToExistingQid: items.filter((item) => item.duplicateSafety?.promotionRecommendation === "linkToExistingQid").length,
+    candidatesSafeToPromote: items.filter((item) => item.duplicateSafety?.promotionRecommendation === "safeToPromote").length,
   };
 }
