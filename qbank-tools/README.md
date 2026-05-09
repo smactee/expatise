@@ -65,6 +65,26 @@ npm run validate-localization-batch -- --lang ja --batch batch-003
 npm run generate-batch-workbench -- --lang ja --batch batch-003
 ```
 
+Codex recommendation snapshot workflow:
+
+```bash
+# Run this immediately after the Codex review pass and before human QC/export.
+npm run snapshot-codex-recommendations -- --lang ja --batch batch-003
+
+# After human QC/export, compare the original Codex pass with the final decisions.
+npm run build-codex-human-decision-memory -- --lang ja --batch batch-003
+npm run build-decision-memory
+```
+
+Notes:
+
+- Codex review passes should write their initial recommendation snapshot to `qbank-tools/generated/staging/<lang>-<batch>-codex-recommendations.json` before updating or exporting the editable workbench decisions file.
+- The editable human-facing file remains `qbank-tools/generated/staging/<lang>-<batch>-workbench-decisions.json`.
+- The snapshot preserves item ids, source screenshot/prompt context, recommended action, qid, locale answer key, rationale, top matcher qid, top-matcher disagreement, timestamp, and `modelToolLabel`.
+- For older batches where the original Codex recommendation has already been overwritten, run `snapshot-codex-recommendations` only with `--mark-unavailable true`; do not infer or backfill historical recommendations from human-final decisions.
+- `build-codex-human-decision-memory` writes per-batch audit reports to `qbank-tools/generated/reports/<lang>-<batch>-codex-vs-human-review.json` and `.md`.
+- `build-decision-memory` also writes the concise cross-language Codex-vs-human aggregate to `qbank-tools/generated/reports/qbank-decision-memory.json` and `.md`.
+
 After reviewing the single workbench HTML and exporting the unified decisions JSON:
 
 ```bash

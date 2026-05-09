@@ -450,6 +450,7 @@ export const ko = {
     bookmarksQuiz: '북마크 퀴즈',
     countAria: '{count}문항',
     searchPlaceholder: '문항 내용 검색...',
+    searchHelper: '문제 내용, 답변, 번호 또는 신호등, 횡단보도, 터널 같은 이미지 태그로 검색하세요.',
     deleteBookmarksAria: '북마크 {count}개 삭제',
     removeMistakesAria: '오답 {count}개를 목록에서 숨기기',
     selectAllVisibleAria: '보이는 항목 모두 선택',

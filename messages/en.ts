@@ -452,6 +452,7 @@ export const en = {
     bookmarksQuiz: 'Bookmarks Quiz',
     countAria: '{count} questions',
     searchPlaceholder: 'Search question text...',
+    searchHelper: 'Search by question text, answer, number, or image tags like traffic light, crosswalk, tunnel.',
     deleteBookmarksAria: 'Delete {count} bookmarks',
     removeMistakesAria: 'Remove {count} mistakes from view',
     selectAllVisibleAria: 'Select all visible',

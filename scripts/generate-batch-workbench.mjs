@@ -118,8 +118,10 @@ const sourceItems = [
 ];
 const notebookSuggestionsPath = path.join(STAGING_DIR, `${lang}-${batchId}-notebooklm-suggestions.json`);
 const combinedRecommendationsPath = path.join(STAGING_DIR, `${lang}-${batchId}-combined-recommendations.json`);
+const codexRecommendationsPath = path.join(STAGING_DIR, `${lang}-${batchId}-codex-recommendations.json`);
 const notebookSuggestionsDoc = fileExists(notebookSuggestionsPath) ? readJson(notebookSuggestionsPath) : null;
 const combinedRecommendationsDoc = fileExists(combinedRecommendationsPath) ? readJson(combinedRecommendationsPath) : null;
+const codexRecommendationsDoc = fileExists(codexRecommendationsPath) ? readJson(codexRecommendationsPath) : null;
 const enrichedSourceItems = enrichSourceItemsWithNotebookLm(sourceItems, {
   notebookSuggestionsDoc,
   combinedRecommendationsDoc,
@@ -143,6 +145,9 @@ const defaultDecisions = {
 const existingDecisions = fileExists(decisionsPath) ? readJson(decisionsPath) : null;
 const mergedDecisions = mergeExistingDecisions(defaultDecisions, existingDecisions);
 const displayPlan = buildWorkbenchDisplayPlan(enrichedSourceItems, mergedDecisions.items);
+const masterCandidateByQid = Object.fromEntries(
+  context.questions.map((question) => [question.qid, normalizeCandidate({ qid: question.qid }, Number.NaN, questionMap)]),
+);
 
 await writeJson(decisionsPath, mergedDecisions);
 await writeText(htmlPath, buildHtml({
@@ -174,11 +179,14 @@ await writeText(htmlPath, buildHtml({
   questionExplanationByQid: Object.fromEntries(
     context.questions.map((question) => [question.qid, typeof question.explanation === "string" ? question.explanation : ""]),
   ),
+  masterCandidateByQid,
   topicCatalog: buildTopicCatalog(context.questions),
   notebookArtifacts: {
     suggestionsPath: notebookSuggestionsDoc ? path.relative(REPORTS_DIR, notebookSuggestionsPath).split(path.sep).join("/") : null,
     combinedRecommendationsPath: combinedRecommendationsDoc ? path.relative(REPORTS_DIR, combinedRecommendationsPath).split(path.sep).join("/") : null,
+    codexRecommendationsPath: codexRecommendationsDoc ? path.relative(REPORTS_DIR, codexRecommendationsPath).split(path.sep).join("/") : null,
   },
+  codexRecommendations: Array.isArray(codexRecommendationsDoc?.items) ? codexRecommendationsDoc.items : [],
 }));
 
 console.log(`Wrote ${path.relative(process.cwd(), htmlPath)} and ${path.relative(process.cwd(), decisionsPath)}.`);
@@ -918,8 +926,10 @@ function buildHtml({
   storageKey,
   questionTypeByQid,
   questionExplanationByQid,
+  masterCandidateByQid,
   topicCatalog,
   notebookArtifacts,
+  codexRecommendations,
 }) {
   const displaySectionMap = new Map(Object.entries(displaySectionById ?? {}));
   const itemsInDisplaySection = (sectionId) =>
@@ -1314,6 +1324,15 @@ function buildHtml({
       color: var(--warn);
       font-size: 13px;
     }
+    .codex-snapshot {
+      font-size: 13px;
+    }
+    .codex-snapshot .value {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      align-items: center;
+    }
     .recommendation-review {
       display: grid;
       gap: 8px;
@@ -1326,6 +1345,22 @@ function buildHtml({
     .candidate-list {
       display: grid;
       gap: 10px;
+    }
+    .recommended-candidate-section {
+      display: grid;
+      gap: 8px;
+    }
+    .machine-candidates-details {
+      border: 1px dashed rgba(109, 98, 87, 0.28);
+      border-radius: 12px;
+      padding: 9px 10px 10px;
+      background: rgba(252, 248, 241, 0.55);
+    }
+    .machine-candidates-details[open] {
+      background: #fcf8f1;
+    }
+    .machine-candidates-details summary {
+      margin-bottom: 8px;
     }
     .candidate {
       border: 1px solid var(--line);
@@ -1743,8 +1778,18 @@ function buildHtml({
     const DISPLAY_INDEX_BY_ID = new Map(DISPLAY_ITEMS.map((item, index) => [item.id, index + 1]));
     const QUESTION_TYPE_BY_QID = ${serializeJsonForInlineScript(questionTypeByQid)};
     const QUESTION_EXPLANATION_BY_QID = ${serializeJsonForInlineScript(questionExplanationByQid)};
+    const MASTER_CANDIDATE_BY_QID = ${serializeJsonForInlineScript(masterCandidateByQid)};
     const TOPIC_CATALOG = ${serializeJsonForInlineScript(topicCatalog)};
     const NOTEBOOK_ARTIFACTS = ${serializeJsonForInlineScript(notebookArtifacts)};
+    const CODEX_RECOMMENDATIONS = ${serializeJsonForInlineScript(codexRecommendations)};
+    const CODEX_RECOMMENDATIONS_BY_ID = new Map(CODEX_RECOMMENDATIONS.map((item) => [String(item.id || item.rowId || ''), item]));
+    const CODEX_RECOMMENDATIONS_BY_ITEM_ID = new Map();
+    for (const item of CODEX_RECOMMENDATIONS) {
+      const key = String(item.itemId || item.sourceImage || '').trim();
+      if (key && !CODEX_RECOMMENDATIONS_BY_ITEM_ID.has(key)) {
+        CODEX_RECOMMENDATIONS_BY_ITEM_ID.set(key, item);
+      }
+    }
     const STORAGE_KEY = ${JSON.stringify(storageKey)};
     const EXPORT_FILE_NAME = ${JSON.stringify(decisionsFileName)};
     const ACTIVE_REVIEW_LOCALE = ${JSON.stringify(lang)};
@@ -2984,14 +3029,16 @@ function buildHtml({
       return '<article class="candidate' + (compact ? ' compact' : '') + '">' +
         '<div class="candidate-head">' +
           '<div class="candidate-badges">' +
+            (renderOptions.recommendationSource ? '<span class="pill note">' + escapeHtml(renderOptions.recommendationSource) + '</span>' : '') +
             '<span class="pill note">' + escapeHtml(candidate.qid || 'unknown') + '</span>' +
-            '<span class="pill">#' + escapeHtml(candidate.number ?? '') + '</span>' +
-            '<span class="pill">' + escapeHtml(candidate.type || '') + '</span>' +
+            (candidate.number != null && candidate.number !== '' ? '<span class="pill">#' + escapeHtml(candidate.number) + '</span>' : '') +
+            (candidate.type ? '<span class="pill">' + escapeHtml(candidate.type) + '</span>' : '') +
             (candidate.rawCandidateType && candidate.rawCandidateType !== candidate.type
               ? '<span class="pill warn">resolved from ' + escapeHtml(candidate.rawCandidateType) + '</span>'
               : '') +
-            '<span class="pill">score ' + escapeHtml(candidate.score ?? '') + '</span>' +
+            (candidate.score != null && candidate.score !== '' ? '<span class="pill">score ' + escapeHtml(candidate.score) + '</span>' : '') +
             (candidate.scoreGapFromTop != null ? '<span class="pill">gap ' + escapeHtml(candidate.scoreGapFromTop) + '</span>' : '') +
+            (rowValue || correctOptionKey ? '<span class="pill">correct ' + escapeHtml(rowValue ? getRowDisplayLabel(rowValue) : correctOptionKey) + '</span>' : '') +
             '<span class="pill">' + escapeHtml(candidate.hasImage ? 'has image' : 'no image') + '</span>' +
           '</div>' +
           '<button type="button" data-use-qid="' + escapeHtml(itemId) + '" data-qid="' + escapeHtml(candidate.qid || '') + '">Use qid</button>' +
@@ -3001,6 +3048,235 @@ function buildHtml({
         (candidateOptions ? (rowValue ? candidateOptions : '<ol class="options">' + candidateOptions + '</ol>') : '') +
         optionAlignment.warningHtml +
         '</article>';
+    }
+
+    function normalizeRecommendedQidValue(value) {
+      return normalizeDecisionQid(value) || null;
+    }
+
+    function getDecisionRecommendedQid(decision) {
+      const directFields = [
+        'codexRecommendedQid',
+        'recommendedQid',
+        'selectedQid',
+        'selectedCandidateQid',
+        'recommendedExistingQid',
+        'suggestedQid',
+        'aiRecommendedQid',
+      ];
+
+      for (const field of directFields) {
+        const qid = normalizeRecommendedQidValue(decision?.[field]);
+        if (qid) {
+          return qid;
+        }
+      }
+
+      return (
+        normalizeRecommendedQidValue(decision?.selectedCandidate?.qid) ||
+        normalizeRecommendedQidValue(decision?.aiReview?.recommendedQid) ||
+        null
+      );
+    }
+
+    function getCodexRecommendation(item) {
+      if (!item) {
+        return null;
+      }
+      return (
+        CODEX_RECOMMENDATIONS_BY_ID.get(String(item.id || '')) ||
+        CODEX_RECOMMENDATIONS_BY_ITEM_ID.get(String(item.itemId || item.sourceImage || '').trim()) ||
+        null
+      );
+    }
+
+    function normalizeSnapshotAction(value) {
+      const text = String(value || '').trim();
+      if (['approveExistingQid', 'createNewQuestion', 'keepUnresolved', 'deleteQuestion'].includes(text)) {
+        return text;
+      }
+      return null;
+    }
+
+    function getCurrentDecisionAction(decision) {
+      if (decision?.deleteQuestion === true) return 'deleteQuestion';
+      if (decision?.createNewQuestion === true) return 'createNewQuestion';
+      if (normalizeDecisionQid(decision?.approvedQid)) return 'approveExistingQid';
+      if (decision?.keepUnresolved === true) return 'keepUnresolved';
+      return null;
+    }
+
+    function getCodexRecommendationAnswerKey(recommendation) {
+      if (recommendation?.answerKeyUnknown === true) return 'UNKNOWN';
+      const value = String(recommendation?.recommendedLocaleAnswerKey || '').trim().toUpperCase();
+      return value === 'UNKNOWN' ? 'UNKNOWN' : normalizeDecisionChoiceKey(value);
+    }
+
+    function getCurrentDecisionAnswerKey(item, decision) {
+      if (decision?.answerKeyUnknown === true) return 'UNKNOWN';
+      return getSelectedAnswerKey(item, decision);
+    }
+
+    function codexRecommendationDiffers(item, decision, recommendation) {
+      if (!recommendation || recommendation.codexRecommendationAvailable === false) {
+        return false;
+      }
+      const codexAction = normalizeSnapshotAction(recommendation.recommendedAction);
+      const currentAction = getCurrentDecisionAction(decision);
+      if (codexAction !== currentAction) return true;
+      if (codexAction === 'approveExistingQid') {
+        const codexQid = normalizeDecisionQid(recommendation.recommendedQid);
+        const currentQid = normalizeDecisionQid(decision?.approvedQid);
+        if (codexQid !== currentQid) return true;
+      }
+      if (codexAction === 'approveExistingQid' || codexAction === 'createNewQuestion') {
+        const codexKey = getCodexRecommendationAnswerKey(recommendation);
+        const currentKey = getCurrentDecisionAnswerKey(item, decision);
+        if ((codexKey || currentKey) && codexKey !== currentKey) return true;
+      }
+      return false;
+    }
+
+    function renderCodexSnapshotBadge(item, decision) {
+      const recommendation = getCodexRecommendation(item);
+      if (!recommendation) {
+        return '';
+      }
+      if (recommendation.codexRecommendationAvailable === false) {
+        return '<div class="fact codex-snapshot"><span class="label">Codex Snapshot</span><div class="value"><span class="pill">unavailable</span></div></div>';
+      }
+      const codexAction = normalizeSnapshotAction(recommendation.recommendedAction) || 'unknown';
+      const codexQid = normalizeDecisionQid(recommendation.recommendedQid);
+      const codexKey = getCodexRecommendationAnswerKey(recommendation);
+      const differs = codexRecommendationDiffers(item, decision, recommendation);
+      const parts = [
+        codexAction,
+        codexQid,
+        codexKey ? 'key ' + codexKey : null,
+        differs ? 'differs from current' : 'same as current',
+      ].filter(Boolean);
+      return '<div class="fact codex-snapshot' + (differs ? ' warn' : '') + '"><span class="label">Codex Snapshot</span><div class="value">' +
+        parts.map((part, index) => '<span class="pill' + (index === 0 ? ' note' : (differs && part === 'differs from current' ? ' warn' : '')) + '">' + escapeHtml(part) + '</span>').join('') +
+      '</div></div>';
+    }
+
+    function findItemCandidateByQid(item, qid) {
+      const targetQid = normalizeRecommendedQidValue(qid);
+      if (!targetQid) {
+        return null;
+      }
+
+      return (Array.isArray(item?.topCandidates) ? item.topCandidates : []).find((candidate) =>
+        normalizeRecommendedQidValue(candidate?.qid) === targetQid
+      ) || null;
+    }
+
+    function resolveCandidateByQid(item, qid) {
+      const targetQid = normalizeRecommendedQidValue(qid);
+      if (!targetQid) {
+        return null;
+      }
+
+      return findItemCandidateByQid(item, targetQid) || MASTER_CANDIDATE_BY_QID[targetQid] || null;
+    }
+
+    function resolveRecommendedCandidate(item, decision) {
+      const approvedQid = normalizeRecommendedQidValue(decision?.approvedQid);
+      if (approvedQid) {
+        return {
+          qid: approvedQid,
+          sourceLabel: 'Codex approved',
+          candidate: resolveCandidateByQid(item, approvedQid),
+        };
+      }
+
+      const codexRecommendation = getCodexRecommendation(item);
+      const codexSnapshotQid = normalizeRecommendedQidValue(codexRecommendation?.recommendedQid);
+      if (codexRecommendation?.codexRecommendationAvailable !== false && codexSnapshotQid) {
+        return {
+          qid: codexSnapshotQid,
+          sourceLabel: 'Codex recommended',
+          candidate: resolveCandidateByQid(item, codexSnapshotQid),
+        };
+      }
+
+      const decisionRecommendedQid = getDecisionRecommendedQid(decision);
+      if (decisionRecommendedQid) {
+        return {
+          qid: decisionRecommendedQid,
+          sourceLabel: 'Codex recommended',
+          candidate: resolveCandidateByQid(item, decisionRecommendedQid),
+        };
+      }
+
+      const autoMatchedQid =
+        normalizeRecommendedQidValue(item?.initialSuggestedQid) ||
+        normalizeRecommendedQidValue(item?.matchedQid) ||
+        normalizeRecommendedQidValue(item?.qid);
+      if (autoMatchedQid) {
+        return {
+          qid: autoMatchedQid,
+          sourceLabel: 'Auto matched',
+          candidate: resolveCandidateByQid(item, autoMatchedQid),
+        };
+      }
+
+      const topCandidate = Array.isArray(item?.topCandidates) ? item.topCandidates[0] : null;
+      const topCandidateQid = normalizeRecommendedQidValue(topCandidate?.qid);
+      if (topCandidateQid) {
+        return {
+          qid: topCandidateQid,
+          sourceLabel: 'Top matcher fallback',
+          candidate: topCandidate,
+        };
+      }
+
+      return {
+        qid: null,
+        sourceLabel: null,
+        candidate: null,
+      };
+    }
+
+    function renderRecommendedCandidateSection(item, decision) {
+      const recommendation = resolveRecommendedCandidate(item, decision);
+      if (!recommendation.qid) {
+        return '<div class="recommended-candidate-section"><span class="label">Recommended Qid</span>' +
+          '<div class="fact"><div class="value">No recommended qid yet.</div></div>' +
+        '</div>';
+      }
+
+      if (!recommendation.candidate) {
+        return '<div class="recommended-candidate-section"><span class="label">Recommended Qid</span>' +
+          '<div class="fact warn"><span class="label">' + escapeHtml(recommendation.sourceLabel || 'Recommendation') + '</span>' +
+            '<div class="value">Recommended qid ' + escapeHtml(recommendation.qid) + ' was not found in the loaded master qbank or machine candidates.</div></div>' +
+        '</div>';
+      }
+
+      return '<div class="recommended-candidate-section"><span class="label">Recommended Qid</span>' +
+        renderCandidate(recommendation.candidate, item.id, {
+          sourceItem: item,
+          decision,
+          showOptionAlignment: true,
+          recommendationSource: recommendation.sourceLabel,
+        }) +
+      '</div>';
+    }
+
+    function renderMachineCandidatesDetails(item, decision) {
+      const candidates = Array.isArray(item?.topCandidates) ? item.topCandidates : [];
+      if (candidates.length === 0) {
+        return '';
+      }
+
+      return '<details class="machine-candidates-details"><summary>Show machine candidates</summary>' +
+        '<div class="candidate-list">' +
+          candidates.map((candidate) => renderCandidate(candidate, item.id, {
+            sourceItem: item,
+            decision,
+          })).join('') +
+        '</div>' +
+      '</details>';
     }
 
     function renderRecommendationReview(item, decision) {
@@ -3181,6 +3457,7 @@ function buildHtml({
           '<div class="eyebrow"><span class="filename-number">' + escapeHtml(displayNumber) + '.</span> ' + escapeHtml(item.section.replace('-', ' ')) + '</div>' +
           '<h3 class="' + assetTitleClass + '">' + escapeHtml(assetTitle) + '</h3>' +
           renderImage(item) +
+          renderCodexSnapshotBadge(item, decision) +
           (showPostImagePath ? '<div class="filename">' + escapeHtml(assetPath) + '</div>' : '') +
           (item.section !== 'answer-key'
             ? renderRecommendationReview(item, decision)
@@ -3200,9 +3477,7 @@ function buildHtml({
               '</div>'
               : '') +
             (item.section !== 'answer-key'
-              ? ((Array.isArray(item.topCandidates) && item.topCandidates.length > 0)
-                  ? '<div><span class="label">Candidates</span><div class="candidate-list">' + item.topCandidates.map((candidate) => renderCandidate(candidate, item.id)).join('') + '</div></div>'
-                  : '')
+              ? renderRecommendedCandidateSection(item, decision) + renderMachineCandidatesDetails(item, decision)
               : '<div><span class="label">Answer-Key Review</span><div class="fact"><div class="value">' + escapeHtml(item.answerKeyConfirmationReason || 'Manual confirmation required.') + '</div></div></div>') +
             (advancedFacts.length || item.analysis || item.sourceConceptSlots
               ? '<details><summary>Advanced Details</summary>' +

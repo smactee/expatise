@@ -1,0 +1,149 @@
+{
+  "generatedAt": "2026-05-09T02:38:59.142Z",
+  "lang": "fr",
+  "batchId": "batch-015",
+  "dataset": "2023-test1",
+  "matchIndexPath": "qbank-tools/generated/match-index.json",
+  "syntheticMatchIndexPath": "qbank-tools/generated/match-index.ja.synthetic.json",
+  "featureStorePath": "qbank-tools/history/qid-feature-store.json",
+  "featureStoreRebuilt": false,
+  "featureSchemaVersion": 3,
+  "correctionRulesPath": null,
+  "analysisMode": "standard",
+  "intakeStats": {
+    "originalItems": 50,
+    "itemsProcessed": 50,
+    "nonImageItemsSkipped": 0,
+    "imageOnly": false
+  },
+  "outputs": [
+    {
+      "kind": "matched",
+      "count": 0
+    },
+    {
+      "kind": "review-needed",
+      "count": 39
+    },
+    {
+      "kind": "unresolved",
+      "count": 11
+    }
+  ],
+  "decisionSummary": {
+    "byDisposition": {
+      "matched": {
+        "count": 0,
+        "profiles": {},
+        "reasonCodes": {}
+      },
+      "review-needed": {
+        "count": 39,
+        "profiles": {
+          "mcq-image": 22,
+          "row-image": 6,
+          "row-text": 7,
+          "mcq-text": 4
+        },
+        "reasonCodes": {
+          "total-low": 30,
+          "gap-small": 30,
+          "signal-separation-low": 23,
+          "runner-up-close": 22,
+          "structural-weak": 6,
+          "structural-penalty": 1,
+          "option-weak": 24,
+          "signal-agreement-low": 23,
+          "gloss-weak": 18,
+          "option-signature-weak": 23,
+          "numeric-group-mismatch": 1,
+          "weak-action-separation": 3,
+          "number-conflict": 1,
+          "numeric-mismatch": 1,
+          "prompt-family-mismatch": 1,
+          "top2-semantic-near-duplicate": 3,
+          "contrast-unclear": 3,
+          "insufficient-discriminative-evidence": 2,
+          "option-set-mismatch": 9,
+          "weak-family-separation": 3,
+          "image-weak": 1,
+          "option-set-near-match": 2,
+          "contradiction": 2,
+          "action-conflict": 1,
+          "signal-conflict": 2
+        }
+      },
+      "unresolved": {
+        "count": 11,
+        "profiles": {
+          "mcq-text": 6,
+          "row-text": 5
+        },
+        "reasonCodes": {
+          "review-floor": 11,
+          "total-low": 11,
+          "family-mismatch": 2,
+          "option-weak": 5,
+          "gloss-weak": 6,
+          "signal-agreement-low": 9,
+          "option-signature-weak": 5,
+          "indicator-vs-sign-conflict": 1,
+          "gap-small": 9,
+          "signal-separation-low": 7,
+          "runner-up-close": 6,
+          "top2-semantic-near-duplicate": 2,
+          "option-set-mismatch": 3,
+          "structural-weak": 2,
+          "contrast-unclear": 1,
+          "numeric-mismatch": 1,
+          "indicator-vs-action-conflict": 1,
+          "prompt-family-mismatch": 1
+        }
+      }
+    },
+    "byReasonCode": {
+      "total-low": 41,
+      "gap-small": 39,
+      "signal-separation-low": 30,
+      "runner-up-close": 28,
+      "structural-weak": 8,
+      "structural-penalty": 1,
+      "option-weak": 29,
+      "signal-agreement-low": 32,
+      "gloss-weak": 24,
+      "option-signature-weak": 28,
+      "numeric-group-mismatch": 1,
+      "weak-action-separation": 3,
+      "number-conflict": 1,
+      "numeric-mismatch": 2,
+      "prompt-family-mismatch": 2,
+      "top2-semantic-near-duplicate": 5,
+      "contrast-unclear": 4,
+      "insufficient-discriminative-evidence": 2,
+      "option-set-mismatch": 12,
+      "weak-family-separation": 3,
+      "image-weak": 1,
+      "option-set-near-match": 2,
+      "contradiction": 2,
+      "action-conflict": 1,
+      "signal-conflict": 2,
+      "review-floor": 11,
+      "family-mismatch": 2,
+      "indicator-vs-sign-conflict": 1,
+      "indicator-vs-action-conflict": 1
+    },
+    "byProfile": {
+      "matched": {},
+      "review-needed": {
+        "mcq-image": 22,
+        "row-image": 6,
+        "row-text": 7,
+        "mcq-text": 4
+      },
+      "unresolved": {
+        "mcq-text": 6,
+        "row-text": 5
+      }
+    }
+  }
+}

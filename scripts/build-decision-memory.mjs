@@ -20,6 +20,8 @@ const IMPORTS_RU_DIR = path.join(ROOT, "imports", "ru");
 const RU_TRANSLATIONS_PATH = path.join(ROOT, "public", "qbank", "2023-test1", "translations.ru.json");
 const OUT_JSON = path.join(HISTORY_DIR, "decision-memory.json");
 const OUT_MD = path.join(HISTORY_DIR, "decision-memory.md");
+const OUT_REPORT_JSON = path.join(REPORTS_DIR, "qbank-decision-memory.json");
+const OUT_REPORT_MD = path.join(REPORTS_DIR, "qbank-decision-memory.md");
 
 const files = unique([
   ...walkJsonFiles(DECISIONS_DIR),
@@ -27,7 +29,15 @@ const files = unique([
   ...walkJsonFiles(STAGING_DIR),
   ...walkJsonFiles(ARCHIVE_DIR),
   ...walkJsonFiles(IMPORTS_RU_DIR),
-].filter((file) => !file.endsWith(path.join("history", "decision-memory.json"))));
+].filter((file) => {
+  const basename = path.basename(file);
+  return (
+    !file.endsWith(path.join("history", "decision-memory.json")) &&
+    !basename.endsWith("-codex-recommendations.json") &&
+    !basename.endsWith("-codex-vs-human-review.json") &&
+    basename !== "qbank-decision-memory.json"
+  );
+}));
 
 const records = [];
 const seen = new Set();
@@ -68,11 +78,17 @@ const output = {
 };
 
 await fsp.mkdir(HISTORY_DIR, { recursive: true });
+await fsp.mkdir(REPORTS_DIR, { recursive: true });
 await fsp.writeFile(OUT_JSON, `${JSON.stringify(output, null, 2)}\n`);
 await fsp.writeFile(OUT_MD, renderMarkdown(output));
+const codexHumanDecisionMemory = buildCodexHumanDecisionMemory();
+await fsp.writeFile(OUT_REPORT_JSON, `${JSON.stringify(codexHumanDecisionMemory, null, 2)}\n`);
+await fsp.writeFile(OUT_REPORT_MD, renderCodexHumanDecisionMemoryMarkdown(codexHumanDecisionMemory));
 
 console.log(`Wrote ${rel(OUT_JSON)}`);
 console.log(`Wrote ${rel(OUT_MD)}`);
+console.log(`Wrote ${rel(OUT_REPORT_JSON)}`);
+console.log(`Wrote ${rel(OUT_REPORT_MD)}`);
 console.log(`Decision memory records: ${sortedRecords.length}`);
 
 function collectRecordsFromFile(filePath, doc) {
@@ -364,6 +380,165 @@ function renderMarkdown(output) {
   lines.push("- Keep staging short-lived; promote decision JSON to history after each completed language.");
   lines.push("");
   return `${lines.join("\n")}\n`;
+}
+
+function buildCodexHumanDecisionMemory() {
+  const reportFiles = walkJsonFiles(REPORTS_DIR)
+    .filter((filePath) => path.basename(filePath).endsWith("-codex-vs-human-review.json"))
+    .sort();
+  const reports = reportFiles
+    .map((filePath) => ({ filePath, doc: readJsonSafe(filePath) }))
+    .filter((entry) => entry.doc?.schemaVersion === 1 && entry.doc?.summary);
+  const rows = reports.flatMap(({ filePath, doc }) =>
+    array(doc.rows).map((row) => ({
+      ...row,
+      lang: doc.lang ?? row.lang ?? null,
+      batchId: doc.batchId ?? row.batchId ?? null,
+      sourceReport: rel(filePath),
+    })),
+  );
+  const differentRows = rows.filter((row) => row.comparable === true && row.same !== true);
+  const qidDifferenceRows = differentRows.filter((row) => row.qidChanged === true);
+  const changedAnswerKeyRows = differentRows.filter((row) => row.changedAnswerKey === true);
+  const knownRiskRows = differentRows.filter((row) => hasKnownRiskDomain(row));
+  const imageRows = differentRows.filter((row) => row.sourceImage);
+  const textAmbiguityRows = differentRows.filter((row) => hasTextAmbiguitySignal(row));
+
+  const summary = {
+    generatedAt: new Date().toISOString(),
+    sourceReportCount: reports.length,
+    totalCodexItems: sum(reports, (entry) => Number(entry.doc.summary.totalCodexItems ?? 0)),
+    totalCompared: sum(reports, (entry) => Number(entry.doc.summary.totalCompared ?? 0)),
+    codexHumanSameCount: sum(reports, (entry) => Number(entry.doc.summary.codexHumanSameCount ?? 0)),
+    codexHumanDifferentCount: sum(reports, (entry) => Number(entry.doc.summary.codexHumanDifferentCount ?? 0)),
+    codexUnavailableCount: sum(reports, (entry) => Number(entry.doc.summary.codexUnavailableCount ?? 0)),
+    changedAnswerKeyCount: changedAnswerKeyRows.length,
+    qidDifferenceCount: qidDifferenceRows.length,
+  };
+
+  return {
+    meta: {
+      generatedAt: summary.generatedAt,
+      schemaVersion: 1,
+      sourceReports: reports.map((entry) => rel(entry.filePath)),
+      note: "Aggregates Codex recommendation snapshots compared against final human workbench decisions. Missing historical Codex recommendations remain unavailable and are not inferred.",
+    },
+    summary: {
+      ...summary,
+      codexHumanSameRate: summary.totalCompared > 0 ? Number((summary.codexHumanSameCount / summary.totalCompared).toFixed(4)) : null,
+    },
+    repeatedQidConfusionPairs: topEntries(countBy(qidDifferenceRows, qidPairForRow), 30),
+    imageBasedConfusionPatterns: topEntries(countBy(imageRows, actionTransitionForRow), 20),
+    textAmbiguityPatterns: topEntries(countBy(textAmbiguityRows, textPatternForRow), 20),
+    answerKeyReorderWarnings: topEntries(countBy(changedAnswerKeyRows, answerKeyTransitionForRow), 30),
+    trafficSignDashboardIndicatorMistakes: knownRiskRows.slice(0, 30).map(memoryExampleForRow),
+    sourceLanguagePatterns: topEntries(countBy(differentRows, (row) => `${row.lang ?? "unknown"}: ${actionTransitionForRow(row)}`), 30),
+    examplesOfPriorHumanCorrections: differentRows.slice(0, 40).map(memoryExampleForRow),
+  };
+}
+
+function renderCodexHumanDecisionMemoryMarkdown(memory) {
+  const lines = [];
+  lines.push("# QBank Decision Memory", "");
+  lines.push(`Generated: ${memory.meta.generatedAt}`, "");
+  lines.push("## Codex vs Human Summary", "");
+  lines.push(`- Source reports: ${memory.summary.sourceReportCount}`);
+  lines.push(`- Total compared: ${memory.summary.totalCompared}`);
+  lines.push(`- Same: ${memory.summary.codexHumanSameCount}`);
+  lines.push(`- Different: ${memory.summary.codexHumanDifferentCount}`);
+  lines.push(`- Codex unavailable: ${memory.summary.codexUnavailableCount}`);
+  lines.push(`- Changed answer keys: ${memory.summary.changedAnswerKeyCount}`);
+  lines.push(`- Qid differences: ${memory.summary.qidDifferenceCount}`);
+  lines.push("");
+  lines.push("## Repeated Qid Confusion Pairs", "");
+  lines.push(...markdownTable(memory.repeatedQidConfusionPairs, ["key", "count"]));
+  lines.push("");
+  lines.push("## Image-Based Confusion Patterns", "");
+  lines.push(...markdownTable(memory.imageBasedConfusionPatterns, ["key", "count"]));
+  lines.push("");
+  lines.push("## Text Ambiguity Patterns", "");
+  lines.push(...markdownTable(memory.textAmbiguityPatterns, ["key", "count"]));
+  lines.push("");
+  lines.push("## Answer-Key Reorder Warnings", "");
+  lines.push(...markdownTable(memory.answerKeyReorderWarnings, ["key", "count"]));
+  lines.push("");
+  lines.push("## Traffic Sign / Dashboard Indicator Corrections", "");
+  lines.push(...markdownTable(memory.trafficSignDashboardIndicatorMistakes.slice(0, 20), ["lang", "batchId", "itemId", "codex", "human", "prompt"]));
+  lines.push("");
+  lines.push("## Examples For Future Reviews", "");
+  lines.push(...markdownTable(memory.examplesOfPriorHumanCorrections.slice(0, 25), ["lang", "batchId", "itemId", "codex", "human", "prompt"]));
+  lines.push("");
+  lines.push("## Prompt Guidance", "");
+  lines.push("- Always write `qbank-tools/generated/staging/<lang>-<batch>-codex-recommendations.json` before human QC.");
+  lines.push("- Use this memory as negative examples: inspect qid confusion pairs, image/sign/dashboard cases, and answer-key changes before approving a candidate.");
+  lines.push("- Treat unavailable historical Codex recommendations as missing evidence, not as agreement.");
+  lines.push("");
+  return `${lines.join("\n")}\n`;
+}
+
+function memoryExampleForRow(row) {
+  return {
+    lang: row.lang ?? null,
+    batchId: row.batchId ?? null,
+    itemId: row.itemId ?? row.id ?? null,
+    sourceImage: row.sourceImage ?? null,
+    codex: [row.codex?.action, row.codex?.qid, row.codex?.answerKey].filter(Boolean).join(" "),
+    human: [row.human?.action, row.human?.qid, row.human?.answerKey].filter(Boolean).join(" "),
+    prompt: truncate(row.sourcePromptGloss ?? row.sourcePromptRaw ?? "", 120),
+    reviewerNote: truncate(row.reviewerNote ?? "", 160),
+    sourceReport: row.sourceReport,
+  };
+}
+
+function qidPairForRow(row) {
+  return `${row.codex?.qid ?? "none"} -> ${row.human?.qid ?? "none"}`;
+}
+
+function actionTransitionForRow(row) {
+  return `${row.codex?.action ?? "unknown"} -> ${row.human?.action ?? "unknown"}`;
+}
+
+function answerKeyTransitionForRow(row) {
+  return `${row.codex?.answerKey ?? "none"} -> ${row.human?.answerKey ?? "none"}`;
+}
+
+function textPatternForRow(row) {
+  const text = rowText(row);
+  if (/\b(right|wrong|true|false)\b/i.test(text)) return "right/wrong or true/false wording";
+  if (/\b(front|rear|windshield|wiper|washer|defog|fog)\b/i.test(text)) return "front/rear windshield or fog/wiper wording";
+  if (/\b(speed|km|meter|metre|distance|points?|days?|months?)\b/i.test(text)) return "numeric distance/speed/points wording";
+  if (/\b(sign|signal|marking|lane|arrow)\b/i.test(text)) return "traffic sign/signal/marking wording";
+  return "other text ambiguity";
+}
+
+function hasTextAmbiguitySignal(row) {
+  return textPatternForRow(row) !== "other text ambiguity";
+}
+
+function hasKnownRiskDomain(row) {
+  const tags = Array.isArray(row.riskTags) ? row.riskTags : [];
+  if (tags.includes("known-risk-domain")) return true;
+  return /\b(sign|signal|traffic light|dashboard|indicator|wiper|washer|defog|fog|speed|penalty|points?)\b/i.test(rowText(row));
+}
+
+function rowText(row) {
+  return [
+    row.sourcePromptRaw,
+    row.sourcePromptGloss,
+    row.codexRationale,
+    row.reviewerNote,
+  ].filter(Boolean).join(" ");
+}
+
+function sum(items, fn) {
+  return items.reduce((total, item) => total + fn(item), 0);
+}
+
+function topEntries(counts, limit) {
+  return Object.entries(counts)
+    .map(([key, count]) => ({ key, count }))
+    .sort((left, right) => right.count - left.count || left.key.localeCompare(right.key))
+    .slice(0, limit);
 }
 
 function walkJsonFiles(dir) {

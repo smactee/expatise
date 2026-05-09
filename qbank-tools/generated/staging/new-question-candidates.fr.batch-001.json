@@ -1,0 +1,152 @@
+{
+  "generatedAt": "2026-05-09T10:19:21.865Z",
+  "lang": "fr",
+  "batchId": "batch-001",
+  "dataset": "2023-test1",
+  "sourceDecisionPath": "qbank-tools/generated/staging/new-question-decisions.fr.batch-001.json",
+  "items": [
+    {
+      "candidateId": "nqc-fr-batch-001-001",
+      "sourceLang": "fr",
+      "sourceImage": "screenshots/Screenshot 2026-05-08 at 21.24.41 1.png",
+      "effectiveQuestionType": "MCQ",
+      "promptRawJa": "Qu'indique le panneau ?",
+      "promptGlossEn": "What does this sign indicate?",
+      "optionsRawJa": [
+        "A interdiction de circuler pour les véhicules particuliers",
+        "B autorisation de circuler",
+        "C obligation de circuler",
+        "D interdiction de circuler"
+      ],
+      "optionsGlossEn": [
+        "A prohibition for private vehicles",
+        "B authorization to drive",
+        "C obligation to drive",
+        "D prohibition to drive"
+      ],
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "newQuestionLocalAnswerKey": "B",
+      "provisionalTopic": "traffic-signals",
+      "provisionalSubtopics": [
+        "traffic-signals:road-signs"
+      ],
+      "topicConfidence": 1,
+      "topicSignals": [
+        {
+          "topic": "traffic-signals",
+          "subtopic": "traffic-signals:road-signs",
+          "signal": "sign-family",
+          "weight": 1.4
+        }
+      ],
+      "linkedExistingAssetCandidate": {
+        "qid": "q0789",
+        "number": 789,
+        "score": 67.733,
+        "currentAssetSrc": "/qbank/2023-test1/images/img_replacement_q0789_4762e60a188b.jpeg",
+        "assetHashes": [
+          "4762e60a188b57e97648e8e864b17fe1"
+        ],
+        "status": "unconfirmed-existing-production-asset"
+      },
+      "reviewerNotes": "use same image asset as 789",
+      "status": "pending-superset-review"
+    },
+    {
+      "candidateId": "nqc-fr-batch-001-001",
+      "sourceLang": "fr",
+      "sourceImage": "screenshots/Screenshot 2026-05-08 at 21.24.43.png",
+      "effectiveQuestionType": "MCQ",
+      "promptRawJa": "Quels papiers le conducteur doit-il avoir sur lui ?",
+      "promptGlossEn": "Which documents must the driver have with them?",
+      "optionsRawJa": [
+        "document relatif à l'immatriculation du véhicule",
+        "document relatif à l'assurance",
+        "la Carte Grise du véhicule",
+        "le certificat d'autorisation de sortie"
+      ],
+      "optionsGlossEn": [
+        "document related to vehicle registration",
+        "document related to insurance",
+        "the vehicle registration certificate (Carte Grise)",
+        "the exit authorization certificate"
+      ],
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "newQuestionLocalAnswerKey": "C",
+      "provisionalTopic": "road-safety",
+      "provisionalSubtopics": [
+        "road-safety:registration"
+      ],
+      "topicConfidence": 0,
+      "topicSignals": [],
+      "linkedExistingAssetCandidate": null,
+      "reviewerNotes": "Source asks which papers the driver must carry, but options do not include the q0379/q0517 driver-license answer; no visible answer key. Keep for human QC.",
+      "status": "pending-superset-review"
+    },
+    {
+      "candidateId": "nqc-fr-batch-001-002",
+      "sourceLang": "fr",
+      "sourceImage": "screenshots/Screenshot 2026-05-08 at 21.24.52.png",
+      "effectiveQuestionType": "ROW",
+      "promptRawJa": "Il ne faut pas détourner le véhicule en sens inverse sur l'autoroute.",
+      "promptGlossEn": "You must not turn the vehicle around in the opposite direction on the highway.",
+      "optionsRawJa": [
+        "A Yes",
+        "B No"
+      ],
+      "optionsGlossEn": [
+        "Yes",
+        "No"
+      ],
+      "correctKeyRaw": "A",
+      "correctAnswerRaw": "Yes",
+      "newQuestionLocalAnswerKey": "A",
+      "provisionalTopic": "proper-driving",
+      "provisionalSubtopics": [
+        "proper-driving:safe-driving"
+      ],
+      "topicConfidence": 1,
+      "topicSignals": [
+        {
+          "topic": "proper-driving",
+          "subtopic": "proper-driving:traffic-laws",
+          "signal": "traffic-law",
+          "weight": 1.15
+        }
+      ],
+      "linkedExistingAssetCandidate": null,
+      "reviewerNotes": "No exact master qid for general no U-turn/opposite-direction travel on a highway; q0010 is ramp-only and q0297 is a penalty-points statement.",
+      "status": "pending-superset-review"
+    },
+    {
+      "candidateId": "nqc-fr-batch-001-003",
+      "sourceLang": "fr",
+      "sourceImage": "screenshots/Screenshot 2026-05-08 at 21.24.57.png",
+      "effectiveQuestionType": "ROW",
+      "promptRawJa": "Lors de la circulation sur la voie de grêle, la stabilité du véhicule est réduite, c'est facile de glisser en cas de frein brutal.",
+      "promptGlossEn": "When driving on a hail-covered road, vehicle stability is reduced, making it easy to skid if you brake sharply.",
+      "optionsRawJa": [
+        "A Yes",
+        "B No"
+      ],
+      "optionsGlossEn": [
+        "Yes",
+        "No"
+      ],
+      "correctKeyRaw": "A",
+      "correctAnswerRaw": "Yes",
+      "newQuestionLocalAnswerKey": "A",
+      "provisionalTopic": "road-safety",
+      "provisionalSubtopics": [
+        "road-safety:road-conditions"
+      ],
+      "topicConfidence": 0,
+      "topicSignals": [],
+      "linkedExistingAssetCandidate": null,
+      "reviewerNotes": "No exact master qid found for hail-covered road stability and sharp-braking skid risk; source answer is A/Yes.",
+      "status": "pending-superset-review"
+    }
+  ]
+}

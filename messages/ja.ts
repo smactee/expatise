@@ -468,6 +468,7 @@ export const ja = {
     bookmarksQuiz: 'ブックマークテスト',
     countAria: '{count}問',
     searchPlaceholder: '問題文を検索...',
+    searchHelper: '問題文、答え、番号、または信号機・横断歩道・トンネルなどの画像タグで検索できます。',
     deleteBookmarksAria: 'ブックマークを{count}件削除',
     removeMistakesAria: '表示中の間違いを{count}件削除',
     selectAllVisibleAria: '表示中をすべて選択',

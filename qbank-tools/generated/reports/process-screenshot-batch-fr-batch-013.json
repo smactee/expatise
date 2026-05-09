@@ -1,0 +1,145 @@
+{
+  "generatedAt": "2026-05-09T02:28:51.216Z",
+  "lang": "fr",
+  "batchId": "batch-013",
+  "dataset": "2023-test1",
+  "matchIndexPath": "qbank-tools/generated/match-index.json",
+  "syntheticMatchIndexPath": "qbank-tools/generated/match-index.ja.synthetic.json",
+  "featureStorePath": "qbank-tools/history/qid-feature-store.json",
+  "featureStoreRebuilt": false,
+  "featureSchemaVersion": 3,
+  "correctionRulesPath": null,
+  "analysisMode": "standard",
+  "intakeStats": {
+    "originalItems": 50,
+    "itemsProcessed": 50,
+    "nonImageItemsSkipped": 0,
+    "imageOnly": false
+  },
+  "outputs": [
+    {
+      "kind": "matched",
+      "count": 0
+    },
+    {
+      "kind": "review-needed",
+      "count": 41
+    },
+    {
+      "kind": "unresolved",
+      "count": 9
+    }
+  ],
+  "decisionSummary": {
+    "byDisposition": {
+      "matched": {
+        "count": 0,
+        "profiles": {},
+        "reasonCodes": {}
+      },
+      "review-needed": {
+        "count": 41,
+        "profiles": {
+          "row-text": 7,
+          "mcq-text": 8,
+          "mcq-image": 20,
+          "row-image": 6
+        },
+        "reasonCodes": {
+          "total-low": 29,
+          "gap-small": 24,
+          "signal-separation-low": 12,
+          "runner-up-close": 12,
+          "top2-semantic-near-duplicate": 5,
+          "contrast-unclear": 5,
+          "insufficient-discriminative-evidence": 4,
+          "option-weak": 21,
+          "signal-agreement-low": 25,
+          "option-signature-weak": 25,
+          "option-set-mismatch": 14,
+          "family-mismatch": 5,
+          "gloss-weak": 14,
+          "signal-conflict": 5,
+          "indicator-vs-sign-conflict": 5,
+          "structural-weak": 7,
+          "numeric-mismatch": 5,
+          "image-weak": 2,
+          "max-vs-min-conflict": 1,
+          "prompt-family-mismatch": 4,
+          "numeric-group-mismatch": 1,
+          "weak-family-separation": 8,
+          "duration-vs-penalty-conflict": 1,
+          "option-set-near-match": 1
+        }
+      },
+      "unresolved": {
+        "count": 9,
+        "profiles": {
+          "mcq-text": 6,
+          "row-text": 3
+        },
+        "reasonCodes": {
+          "review-floor": 9,
+          "total-low": 9,
+          "structural-weak": 2,
+          "option-weak": 6,
+          "signal-agreement-low": 5,
+          "option-signature-weak": 3,
+          "option-set-mismatch": 2,
+          "numeric-mismatch": 2,
+          "gloss-weak": 2,
+          "signal-conflict": 1,
+          "prompt-family-mismatch": 2,
+          "gap-small": 7,
+          "signal-separation-low": 5,
+          "runner-up-close": 5,
+          "top2-semantic-near-duplicate": 1,
+          "contrast-unclear": 1,
+          "weak-action-separation": 2,
+          "insufficient-discriminative-evidence": 2
+        }
+      }
+    },
+    "byReasonCode": {
+      "total-low": 38,
+      "gap-small": 31,
+      "signal-separation-low": 17,
+      "runner-up-close": 17,
+      "top2-semantic-near-duplicate": 6,
+      "contrast-unclear": 6,
+      "insufficient-discriminative-evidence": 6,
+      "option-weak": 27,
+      "signal-agreement-low": 30,
+      "option-signature-weak": 28,
+      "option-set-mismatch": 16,
+      "family-mismatch": 5,
+      "gloss-weak": 16,
+      "signal-conflict": 6,
+      "indicator-vs-sign-conflict": 5,
+      "structural-weak": 9,
+      "numeric-mismatch": 7,
+      "image-weak": 2,
+      "max-vs-min-conflict": 1,
+      "prompt-family-mismatch": 6,
+      "numeric-group-mismatch": 1,
+      "weak-family-separation": 8,
+      "duration-vs-penalty-conflict": 1,
+      "option-set-near-match": 1,
+      "review-floor": 9,
+      "weak-action-separation": 2
+    },
+    "byProfile": {
+      "matched": {},
+      "review-needed": {
+        "row-text": 7,
+        "mcq-text": 8,
+        "mcq-image": 20,
+        "row-image": 6
+      },
+      "unresolved": {
+        "mcq-text": 6,
+        "row-text": 3
+      }
+    }
+  }
+}

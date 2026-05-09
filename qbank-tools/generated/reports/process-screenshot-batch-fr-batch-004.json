@@ -1,0 +1,160 @@
+{
+  "generatedAt": "2026-05-09T01:43:30.027Z",
+  "lang": "fr",
+  "batchId": "batch-004",
+  "dataset": "2023-test1",
+  "matchIndexPath": "qbank-tools/generated/match-index.json",
+  "syntheticMatchIndexPath": "qbank-tools/generated/match-index.ja.synthetic.json",
+  "featureStorePath": "qbank-tools/history/qid-feature-store.json",
+  "featureStoreRebuilt": false,
+  "featureSchemaVersion": 3,
+  "correctionRulesPath": null,
+  "analysisMode": "standard",
+  "intakeStats": {
+    "originalItems": 50,
+    "itemsProcessed": 50,
+    "nonImageItemsSkipped": 0,
+    "imageOnly": false
+  },
+  "outputs": [
+    {
+      "kind": "matched",
+      "count": 1
+    },
+    {
+      "kind": "review-needed",
+      "count": 39
+    },
+    {
+      "kind": "unresolved",
+      "count": 10
+    }
+  ],
+  "decisionSummary": {
+    "byDisposition": {
+      "matched": {
+        "count": 1,
+        "profiles": {
+          "row-text": 1
+        },
+        "reasonCodes": {
+          "profile-pass": 1
+        }
+      },
+      "review-needed": {
+        "count": 39,
+        "profiles": {
+          "mcq-image": 18,
+          "row-image": 5,
+          "row-text": 11,
+          "mcq-text": 5
+        },
+        "reasonCodes": {
+          "option-weak": 22,
+          "option-signature-weak": 20,
+          "option-set-mismatch": 16,
+          "weak-family-separation": 13,
+          "total-low": 26,
+          "gap-small": 21,
+          "signal-separation-low": 13,
+          "runner-up-close": 12,
+          "structural-weak": 7,
+          "structural-penalty": 1,
+          "gloss-weak": 12,
+          "contradiction": 3,
+          "obligation-mismatch": 1,
+          "negation-conflict": 4,
+          "signal-agreement-low": 17,
+          "signal-conflict": 4,
+          "top2-semantic-near-duplicate": 3,
+          "contrast-unclear": 3,
+          "action-conflict": 2,
+          "family-mismatch": 3,
+          "indicator-vs-action-conflict": 2,
+          "weak-action-separation": 3,
+          "insufficient-discriminative-evidence": 3,
+          "image-weak": 1,
+          "option-set-near-match": 1,
+          "numeric-mismatch": 1,
+          "prompt-family-mismatch": 1,
+          "sign-vs-action-conflict": 1
+        }
+      },
+      "unresolved": {
+        "count": 10,
+        "profiles": {
+          "row-text": 6,
+          "mcq-text": 3,
+          "mcq-image": 1
+        },
+        "reasonCodes": {
+          "review-floor": 10,
+          "total-low": 10,
+          "gap-small": 9,
+          "signal-separation-low": 6,
+          "runner-up-close": 6,
+          "structural-weak": 3,
+          "family-mismatch": 2,
+          "indicator-vs-action-conflict": 2,
+          "gloss-weak": 5,
+          "top2-semantic-near-duplicate": 3,
+          "signal-agreement-low": 6,
+          "numeric-mismatch": 1,
+          "option-weak": 4,
+          "prompt-family-mismatch": 1,
+          "option-signature-weak": 3,
+          "option-set-mismatch": 2,
+          "weak-action-separation": 1
+        }
+      }
+    },
+    "byReasonCode": {
+      "profile-pass": 1,
+      "option-weak": 26,
+      "option-signature-weak": 23,
+      "option-set-mismatch": 18,
+      "weak-family-separation": 13,
+      "total-low": 36,
+      "gap-small": 30,
+      "signal-separation-low": 19,
+      "runner-up-close": 18,
+      "structural-weak": 10,
+      "structural-penalty": 1,
+      "gloss-weak": 17,
+      "contradiction": 3,
+      "obligation-mismatch": 1,
+      "negation-conflict": 4,
+      "signal-agreement-low": 23,
+      "signal-conflict": 4,
+      "top2-semantic-near-duplicate": 6,
+      "contrast-unclear": 3,
+      "action-conflict": 2,
+      "family-mismatch": 5,
+      "indicator-vs-action-conflict": 4,
+      "weak-action-separation": 4,
+      "insufficient-discriminative-evidence": 3,
+      "image-weak": 1,
+      "option-set-near-match": 1,
+      "numeric-mismatch": 2,
+      "prompt-family-mismatch": 2,
+      "sign-vs-action-conflict": 1,
+      "review-floor": 10
+    },
+    "byProfile": {
+      "matched": {
+        "row-text": 1
+      },
+      "review-needed": {
+        "mcq-image": 18,
+        "row-image": 5,
+        "row-text": 11,
+        "mcq-text": 5
+      },
+      "unresolved": {
+        "row-text": 6,
+        "mcq-text": 3,
+        "mcq-image": 1
+      }
+    }
+  }
+}

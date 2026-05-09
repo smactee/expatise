@@ -710,9 +710,13 @@ const betaNotice = getTranslatedOnlyLocaleNotice(locale, q.length);
           <input
             className={styles.search}
             placeholder={t("questionReview.searchPlaceholder")}
+            aria-describedby="all-questions-search-helper"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
           />
+          <p id="all-questions-search-helper" className={styles.searchHelper}>
+            {t("questionReview.searchHelper")}
+          </p>
         </div>
 {/* Row 1: Topics */}
 <div className={styles.chipsRow}>

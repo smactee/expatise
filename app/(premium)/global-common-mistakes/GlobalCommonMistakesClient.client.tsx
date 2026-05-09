@@ -11,6 +11,8 @@ import type { DatasetId } from "@/lib/qbank/datasets";
 import type { Question } from "@/lib/qbank/types";
 import { loadDataset } from "@/lib/qbank/loadDataset";
 import { getTranslatedOnlyLocaleNotice, isTranslatedOnlyQuestionLocale } from "@/lib/qbank/localeSupport";
+import { loadImageColorTags, type QuestionImageColorEntry } from "@/lib/qbank/loadImageColorTags";
+import { getImageTagSearchTerms, loadImageTagLocales, type ImageTagLocaleFile } from "@/lib/qbank/imageTagSearch";
 
 import { TAG_TAXONOMY, labelForTag } from "@/lib/qbank/tagTaxonomy";
 import { deriveTopicSubtags } from "@/lib/qbank/deriveTopicSubtags";
@@ -20,7 +22,6 @@ import { useUserKey } from "@/components/useUserKey.client";
 // ✅ Reuse the *same* CSS module to match All Questions exactly
 import styles from "../all-questions/all-questions.module.css";
 
-import { ROUTES } from "@/lib/routes";
 import PremiumFeatureModal from "@/components/PremiumFeatureModal";
 import { useAuthStatus } from "@/components/useAuthStatus";
 import { useEntitlements } from "@/components/EntitlementsProvider.client";
@@ -38,14 +39,6 @@ type GlobalRow = {
 function isCorrectMcq(item: Question, optId: string, optKey?: string) {
   if (item.type !== "MCQ" || !item.correctOptionId) return false;
   return item.correctOptionId === optId || (optKey && item.correctOptionId === optKey);
-}
-
-function normalizeRowChoice(v: string | null | undefined): "R" | "W" | null {
-  if (!v) return null;
-  const t = v.trim().toLowerCase();
-  if (t === "r" || t === "right") return "R";
-  if (t === "w" || t === "wrong") return "W";
-  return null;
 }
 
 function hash01(s: string) {
@@ -70,6 +63,8 @@ export default function GlobalCommonMistakesClient({ datasetId }: { datasetId: D
   const { isBookmarked, toggle } = useBookmarks(datasetId, userKey);
 
   const [q, setQ] = useState<Question[]>([]);
+  const [imageColorTagsById, setImageColorTagsById] = useState<Record<string, QuestionImageColorEntry>>({});
+  const [imageTagLocales, setImageTagLocales] = useState<ImageTagLocaleFile>({});
   const [loadingQ, setLoadingQ] = useState(true);
 
   const [rows, setRows] = useState<GlobalRow[]>([]);
@@ -106,11 +101,19 @@ export default function GlobalCommonMistakesClient({ datasetId }: { datasetId: D
     let alive = true;
     (async () => {
       try {
-        const data = await loadDataset(datasetId, {
-          locale,
-          translatedOnly: isTranslatedOnlyQuestionLocale(locale),
-        });
-        if (alive) setQ(data);
+        const [data, imageColorTags, loadedImageTagLocales] = await Promise.all([
+          loadDataset(datasetId, {
+            locale,
+            translatedOnly: isTranslatedOnlyQuestionLocale(locale),
+          }),
+          loadImageColorTags(datasetId),
+          loadImageTagLocales(datasetId),
+        ]);
+        if (alive) {
+          setQ(data);
+          setImageColorTagsById(imageColorTags);
+          setImageTagLocales(loadedImageTagLocales);
+        }
       } finally {
         if (alive) setLoadingQ(false);
       }
@@ -219,20 +222,26 @@ export default function GlobalCommonMistakesClient({ datasetId }: { datasetId: D
 
     return ranked.filter((item) => {
       const derivedTags = new Set(derivedById.get(item.id) ?? []);
+      const imageTagSearchText = getImageTagSearchTerms(
+        imageColorTagsById[item.id],
+        locale,
+        imageTagLocales,
+      ).join(" ").toLowerCase();
 
       const matchesNumber = qDigits.length > 0 && Number(qDigits) === item.number;
       const matchesText =
         !qNorm ||
         matchesNumber ||
         item.prompt.toLowerCase().includes(qNorm) ||
-        (item.autoTags ?? []).some((t) => t.toLowerCase().includes(qNorm));
+        (item.autoTags ?? []).some((t) => t.toLowerCase().includes(qNorm)) ||
+        imageTagSearchText.includes(qNorm);
 
       const matchesTopic = !activeTopic || derivedTags.has(activeTopic);
       const matchesSub = !activeTopic || !activeSub || derivedTags.has(activeSub);
 
       return matchesText && matchesTopic && matchesSub;
     });
-  }, [ranked, query, activeTopic, activeSub, derivedById]);
+  }, [ranked, query, activeTopic, activeSub, derivedById, imageColorTagsById, imageTagLocales, locale]);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -306,9 +315,13 @@ export default function GlobalCommonMistakesClient({ datasetId }: { datasetId: D
           <input
             className={styles.search}
             placeholder={t("questionReview.searchPlaceholder")}
+            aria-describedby="global-common-mistakes-search-helper"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
           />
+          <p id="global-common-mistakes-search-helper" className={styles.searchHelper}>
+            {t("questionReview.searchHelper")}
+          </p>
         </div>
 
         {/* Topic chips */}
