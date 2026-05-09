@@ -15,6 +15,7 @@ import { TAG_TAXONOMY, labelForTag } from '@/lib/qbank/tagTaxonomy';
 import { deriveTopicSubtags } from '@/lib/qbank/deriveTopicSubtags';
 import { getTranslatedOnlyLocaleNotice, isTranslatedOnlyQuestionLocale } from '@/lib/qbank/localeSupport';
 import { loadImageColorTags, type QuestionImageColorEntry } from '@/lib/qbank/loadImageColorTags';
+import { getImageTagSearchTerms, loadImageTagLocales, type ImageTagLocaleFile } from '@/lib/qbank/imageTagSearch';
 import { useBookmarks } from "@/lib/bookmarks/useBookmarks"; // adjust path if you use "@/lib/..."
 import BackButton from '@/components/BackButton';
 import { useClearedMistakes } from '@/lib/mistakes/useClearedMistakes';
@@ -192,11 +193,14 @@ function buildQuestionSearchIndex(
   item: Question,
   derivedTags: string[],
   colorEntry: QuestionImageColorEntry | undefined,
+  imageTagLocales: ImageTagLocaleFile,
+  locale: string,
   t: ReturnType<typeof useT>["t"],
 ): QuestionSearchIndex {
   const tagLabels = derivedTags.map((tag) => labelForTag(tag, t));
   const colorTags = colorEntry?.colorTags ?? [];
   const imageMetadataTerms = searchableImageMetadataTerms(colorEntry);
+  const localizedImageTagTerms = getImageTagSearchTerms(colorEntry, locale, imageTagLocales);
   const roadSignHeuristics: string[] = [];
   const isRoadSignQuestion =
     derivedTags.includes("traffic-signals:road-signs") ||
@@ -229,6 +233,7 @@ function buildQuestionSearchIndex(
     ...item.autoTags,
     ...derivedTags,
     ...tagLabels,
+    ...localizedImageTagTerms,
     ...imageMetadataTerms,
     ...roadSignHeuristics,
   ];
@@ -268,6 +273,7 @@ const userKey = useUserKey();
   
   const [q, setQ] = useState<Question[]>([]);
   const [imageColorTagsById, setImageColorTagsById] = useState<Record<string, QuestionImageColorEntry>>({});
+  const [imageTagLocales, setImageTagLocales] = useState<ImageTagLocaleFile>({});
   const [, setLoading] = useState(true);
   const [query, setQuery] = useState('');
   const [activeTopic, setActiveTopic] = useState<string | null>(null);
@@ -304,16 +310,18 @@ useEffect(() => {
     let alive = true;
     (async () => {
       try {
-        const [data, imageColorTags] = await Promise.all([
+        const [data, imageColorTags, loadedImageTagLocales] = await Promise.all([
           loadDataset(datasetId, {
             locale,
             translatedOnly: isTranslatedOnlyQuestionLocale(locale),
           }),
           loadImageColorTags(datasetId),
+          loadImageTagLocales(datasetId),
         ]);
         if (alive) {
           setQ(data);
           setImageColorTagsById(imageColorTags);
+          setImageTagLocales(loadedImageTagLocales);
         }
       } finally {
         if (alive) setLoading(false);
@@ -359,11 +367,18 @@ const searchIndexById = useMemo(() => {
 
   for (const item of q) {
     const derivedTags = derivedById.get(item.id) ?? [];
-    index.set(item.id, buildQuestionSearchIndex(item, derivedTags, imageColorTagsById[item.id], t));
+    index.set(item.id, buildQuestionSearchIndex(
+      item,
+      derivedTags,
+      imageColorTagsById[item.id],
+      imageTagLocales,
+      locale,
+      t,
+    ));
   }
 
   return index;
-}, [derivedById, imageColorTagsById, q, t]);
+}, [derivedById, imageColorTagsById, imageTagLocales, locale, q, t]);
 
 useEffect(() => {
   if (mode !== "bookmarks" && mode !== "mistakes") {

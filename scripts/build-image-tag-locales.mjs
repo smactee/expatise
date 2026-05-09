@@ -3,7 +3,6 @@
 import crypto from "node:crypto";
 import fs from "node:fs/promises";
 import path from "node:path";
-import process from "node:process";
 import { fileURLToPath } from "node:url";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -91,6 +90,7 @@ const EXACT_ALIASES = {
     "three-signals": ["세 개의 신호", "삼색 신호", "신호등"],
     "traffic-light": ["신호등", "교통 신호", "교통 신호등"],
     "traffic-signal": ["교통 신호", "신호등", "교통 신호등"],
+    "tunnel": ["터널"],
     "turn-signal": ["방향지시등", "깜빡이", "회전 신호"],
     "turn-signals": ["방향지시등", "깜빡이", "회전 신호등"],
     "vehicle-side-view": ["차량 측면도", "차 옆모습", "측면 차량"],
@@ -189,6 +189,7 @@ const EXACT_ALIASES = {
     "three-signals": ["三つの信号", "三色信号", "信号機"],
     "traffic-light": ["信号機", "交通信号", "交通信号機"],
     "traffic-signal": ["交通信号", "信号機", "交通信号機"],
+    "tunnel": ["トンネル"],
     "turn-signal": ["方向指示器", "ウインカー", "右左折信号"],
     "turn-signals": ["方向指示器", "ウインカー", "方向指示灯"],
     "vehicle-side-view": ["車両側面図", "車の横向き", "側面車両"],
@@ -287,6 +288,7 @@ const EXACT_ALIASES = {
     "three-signals": ["три сигнала", "трёхцветный сигнал", "светофор"],
     "traffic-light": ["светофор", "дорожный светофор", "сигнал светофора"],
     "traffic-signal": ["сигнал светофора", "светофор", "дорожный сигнал"],
+    "tunnel": ["туннель", "тоннель"],
     "turn-signal": ["указатель поворота", "поворотник", "сигнал поворота"],
     "turn-signals": ["указатели поворота", "поворотники", "сигналы поворота"],
     "vehicle-side-view": ["вид автомобиля сбоку", "боковой вид машины"],
