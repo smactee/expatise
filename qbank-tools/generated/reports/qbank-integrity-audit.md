@@ -1,6 +1,6 @@
 # QBank Integrity Audit
 
-Generated: 2026-05-08T13:39:11.738Z
+Generated: 2026-05-08T13:47:49.458Z
 
 ## Executive Summary
 
@@ -8,7 +8,7 @@ Generated: 2026-05-08T13:39:11.738Z
 - Raw qids: 985
 - Translation languages audited: 3
 - Critical blockers: 0
-- Warnings: 591
+- Warnings: 26
 - Duplicate candidates: 22
 
 ## Critical Blockers
@@ -20,107 +20,31 @@ None.
 | type | qid | reason |
 | --- | --- | --- |
 | raw-only-qid | q0518 | qid exists in questions.raw.json but not questions.json |
-| translation-mcq-missing-locale-answer-key | q0105 | ko: translated MCQ has no localeCorrectOptionKey |
-| translation-mcq-missing-locale-answer-key | q0106 | ko: translated MCQ has no localeCorrectOptionKey |
-| translation-mcq-missing-locale-answer-key | q0107 | ko: translated MCQ has no localeCorrectOptionKey |
-| translation-mcq-missing-locale-answer-key | q0108 | ko: translated MCQ has no localeCorrectOptionKey |
-| translation-mcq-missing-locale-answer-key | q0109 | ko: translated MCQ has no localeCorrectOptionKey |
-| translation-mcq-missing-locale-answer-key | q0110 | ko: translated MCQ has no localeCorrectOptionKey |
-| translation-mcq-missing-locale-answer-key | q0111 | ko: translated MCQ has no localeCorrectOptionKey |
-| translation-mcq-missing-locale-answer-key | q0112 | ko: translated MCQ has no localeCorrectOptionKey |
-| translation-mcq-missing-locale-answer-key | q0113 | ko: translated MCQ has no localeCorrectOptionKey |
-| translation-mcq-missing-locale-answer-key | q0114 | ko: translated MCQ has no localeCorrectOptionKey |
-| translation-mcq-missing-locale-answer-key | q0115 | ko: translated MCQ has no localeCorrectOptionKey |
-| translation-mcq-missing-locale-answer-key | q0116 | ko: translated MCQ has no localeCorrectOptionKey |
-| translation-mcq-missing-locale-answer-key | q0117 | ko: translated MCQ has no localeCorrectOptionKey |
-| translation-mcq-missing-locale-answer-key | q0118 | ko: translated MCQ has no localeCorrectOptionKey |
-| translation-mcq-missing-locale-answer-key | q0119 | ko: translated MCQ has no localeCorrectOptionKey |
-| translation-mcq-missing-locale-answer-key | q0120 | ko: translated MCQ has no localeCorrectOptionKey |
-| translation-mcq-missing-locale-answer-key | q0121 | ko: translated MCQ has no localeCorrectOptionKey |
-| translation-mcq-missing-locale-answer-key | q0122 | ko: translated MCQ has no localeCorrectOptionKey |
-| translation-mcq-missing-locale-answer-key | q0123 | ko: translated MCQ has no localeCorrectOptionKey |
-| translation-mcq-missing-locale-answer-key | q0124 | ko: translated MCQ has no localeCorrectOptionKey |
-| translation-mcq-missing-locale-answer-key | q0125 | ko: translated MCQ has no localeCorrectOptionKey |
-| translation-mcq-missing-locale-answer-key | q0126 | ko: translated MCQ has no localeCorrectOptionKey |
-| translation-mcq-missing-locale-answer-key | q0127 | ko: translated MCQ has no localeCorrectOptionKey |
-| translation-mcq-missing-locale-answer-key | q0128 | ko: translated MCQ has no localeCorrectOptionKey |
-| translation-mcq-missing-locale-answer-key | q0129 | ko: translated MCQ has no localeCorrectOptionKey |
-| translation-mcq-missing-locale-answer-key | q0130 | ko: translated MCQ has no localeCorrectOptionKey |
-| translation-mcq-missing-locale-answer-key | q0131 | ko: translated MCQ has no localeCorrectOptionKey |
-| translation-mcq-missing-locale-answer-key | q0132 | ko: translated MCQ has no localeCorrectOptionKey |
-| translation-mcq-missing-locale-answer-key | q0133 | ko: translated MCQ has no localeCorrectOptionKey |
-| translation-mcq-missing-locale-answer-key | q0134 | ko: translated MCQ has no localeCorrectOptionKey |
-| translation-mcq-missing-locale-answer-key | q0135 | ko: translated MCQ has no localeCorrectOptionKey |
-| translation-mcq-missing-locale-answer-key | q0136 | ko: translated MCQ has no localeCorrectOptionKey |
-| translation-mcq-missing-locale-answer-key | q0137 | ko: translated MCQ has no localeCorrectOptionKey |
-| translation-mcq-missing-locale-answer-key | q0138 | ko: translated MCQ has no localeCorrectOptionKey |
-| translation-mcq-missing-locale-answer-key | q0139 | ko: translated MCQ has no localeCorrectOptionKey |
-| translation-mcq-missing-locale-answer-key | q0140 | ko: translated MCQ has no localeCorrectOptionKey |
-| translation-mcq-missing-locale-answer-key | q0141 | ko: translated MCQ has no localeCorrectOptionKey |
-| translation-mcq-missing-locale-answer-key | q0142 | ko: translated MCQ has no localeCorrectOptionKey |
-| translation-mcq-missing-locale-answer-key | q0143 | ko: translated MCQ has no localeCorrectOptionKey |
-| translation-mcq-missing-locale-answer-key | q0144 | ko: translated MCQ has no localeCorrectOptionKey |
-| translation-mcq-missing-locale-answer-key | q0145 | ko: translated MCQ has no localeCorrectOptionKey |
-| translation-mcq-missing-locale-answer-key | q0146 | ko: translated MCQ has no localeCorrectOptionKey |
-| translation-mcq-missing-locale-answer-key | q0147 | ko: translated MCQ has no localeCorrectOptionKey |
-| translation-mcq-missing-locale-answer-key | q0148 | ko: translated MCQ has no localeCorrectOptionKey |
-| translation-mcq-missing-locale-answer-key | q0149 | ko: translated MCQ has no localeCorrectOptionKey |
-| translation-mcq-missing-locale-answer-key | q0150 | ko: translated MCQ has no localeCorrectOptionKey |
-| translation-mcq-missing-locale-answer-key | q0151 | ko: translated MCQ has no localeCorrectOptionKey |
-| translation-mcq-missing-locale-answer-key | q0152 | ko: translated MCQ has no localeCorrectOptionKey |
-| translation-mcq-missing-locale-answer-key | q0153 | ko: translated MCQ has no localeCorrectOptionKey |
-| translation-mcq-missing-locale-answer-key | q0154 | ko: translated MCQ has no localeCorrectOptionKey |
-| translation-mcq-missing-locale-answer-key | q0155 | ko: translated MCQ has no localeCorrectOptionKey |
-| translation-mcq-missing-locale-answer-key | q0156 | ko: translated MCQ has no localeCorrectOptionKey |
-| translation-mcq-missing-locale-answer-key | q0157 | ko: translated MCQ has no localeCorrectOptionKey |
-| translation-mcq-missing-locale-answer-key | q0158 | ko: translated MCQ has no localeCorrectOptionKey |
-| translation-mcq-missing-locale-answer-key | q0159 | ko: translated MCQ has no localeCorrectOptionKey |
-| translation-mcq-missing-locale-answer-key | q0160 | ko: translated MCQ has no localeCorrectOptionKey |
-| translation-mcq-missing-locale-answer-key | q0161 | ko: translated MCQ has no localeCorrectOptionKey |
-| translation-mcq-missing-locale-answer-key | q0162 | ko: translated MCQ has no localeCorrectOptionKey |
-| translation-mcq-missing-locale-answer-key | q0163 | ko: translated MCQ has no localeCorrectOptionKey |
-| translation-mcq-missing-locale-answer-key | q0164 | ko: translated MCQ has no localeCorrectOptionKey |
-| translation-mcq-missing-locale-answer-key | q0165 | ko: translated MCQ has no localeCorrectOptionKey |
-| translation-mcq-missing-locale-answer-key | q0166 | ko: translated MCQ has no localeCorrectOptionKey |
-| translation-mcq-missing-locale-answer-key | q0167 | ko: translated MCQ has no localeCorrectOptionKey |
-| translation-mcq-missing-locale-answer-key | q0168 | ko: translated MCQ has no localeCorrectOptionKey |
-| translation-mcq-missing-locale-answer-key | q0169 | ko: translated MCQ has no localeCorrectOptionKey |
-| translation-mcq-missing-locale-answer-key | q0170 | ko: translated MCQ has no localeCorrectOptionKey |
-| translation-mcq-missing-locale-answer-key | q0171 | ko: translated MCQ has no localeCorrectOptionKey |
-| translation-mcq-missing-locale-answer-key | q0172 | ko: translated MCQ has no localeCorrectOptionKey |
-| translation-mcq-missing-locale-answer-key | q0173 | ko: translated MCQ has no localeCorrectOptionKey |
-| translation-mcq-missing-locale-answer-key | q0174 | ko: translated MCQ has no localeCorrectOptionKey |
-| translation-mcq-missing-locale-answer-key | q0175 | ko: translated MCQ has no localeCorrectOptionKey |
-| translation-mcq-missing-locale-answer-key | q0176 | ko: translated MCQ has no localeCorrectOptionKey |
-| translation-mcq-missing-locale-answer-key | q0177 | ko: translated MCQ has no localeCorrectOptionKey |
-| translation-mcq-missing-locale-answer-key | q0178 | ko: translated MCQ has no localeCorrectOptionKey |
-| translation-mcq-missing-locale-answer-key | q0179 | ko: translated MCQ has no localeCorrectOptionKey |
-| translation-mcq-missing-locale-answer-key | q0180 | ko: translated MCQ has no localeCorrectOptionKey |
-| translation-mcq-missing-locale-answer-key | q0181 | ko: translated MCQ has no localeCorrectOptionKey |
-| translation-mcq-missing-locale-answer-key | q0182 | ko: translated MCQ has no localeCorrectOptionKey |
-| translation-mcq-missing-locale-answer-key | q0183 | ko: translated MCQ has no localeCorrectOptionKey |
-| translation-mcq-missing-locale-answer-key | q0184 | ko: translated MCQ has no localeCorrectOptionKey |
-| translation-mcq-missing-locale-answer-key | q0185 | ko: translated MCQ has no localeCorrectOptionKey |
-| translation-mcq-missing-locale-answer-key | q0186 | ko: translated MCQ has no localeCorrectOptionKey |
-| translation-mcq-missing-locale-answer-key | q0362 | ko: translated MCQ has no localeCorrectOptionKey |
-| translation-mcq-missing-locale-answer-key | q0363 | ko: translated MCQ has no localeCorrectOptionKey |
-| translation-mcq-missing-locale-answer-key | q0364 | ko: translated MCQ has no localeCorrectOptionKey |
-| translation-mcq-missing-locale-answer-key | q0365 | ko: translated MCQ has no localeCorrectOptionKey |
-| translation-mcq-missing-locale-answer-key | q0366 | ko: translated MCQ has no localeCorrectOptionKey |
-| translation-mcq-missing-locale-answer-key | q0367 | ko: translated MCQ has no localeCorrectOptionKey |
-| translation-mcq-missing-locale-answer-key | q0368 | ko: translated MCQ has no localeCorrectOptionKey |
-| translation-mcq-missing-locale-answer-key | q0369 | ko: translated MCQ has no localeCorrectOptionKey |
-| translation-mcq-missing-locale-answer-key | q0370 | ko: translated MCQ has no localeCorrectOptionKey |
-| translation-mcq-missing-locale-answer-key | q0371 | ko: translated MCQ has no localeCorrectOptionKey |
-| translation-mcq-missing-locale-answer-key | q0372 | ko: translated MCQ has no localeCorrectOptionKey |
-| translation-mcq-missing-locale-answer-key | q0373 | ko: translated MCQ has no localeCorrectOptionKey |
-| translation-mcq-missing-locale-answer-key | q0374 | ko: translated MCQ has no localeCorrectOptionKey |
-| translation-mcq-missing-locale-answer-key | q0375 | ko: translated MCQ has no localeCorrectOptionKey |
-| translation-mcq-missing-locale-answer-key | q0376 | ko: translated MCQ has no localeCorrectOptionKey |
-| translation-mcq-missing-locale-answer-key | q0377 | ko: translated MCQ has no localeCorrectOptionKey |
-| translation-mcq-missing-locale-answer-key | q0378 | ko: translated MCQ has no localeCorrectOptionKey |
-
-_Warning table truncated to 100 of 591._
+| tags-patch-qid-not-in-master | q0518 | tags.patch.json has qid not in questions.json |
+| image-tags-without-image | q0001 | question has image tags but no master image asset |
+| image-tags-without-image | q0003 | question has image tags but no master image asset |
+| duplicate-candidate | q0369,q0431 | medium confidence duplicate candidate |
+| duplicate-candidate | q0417,q0439 | medium confidence duplicate candidate |
+| duplicate-candidate | q0577,q0581 | medium confidence duplicate candidate |
+| duplicate-candidate | q0583,q0620 | medium confidence duplicate candidate |
+| duplicate-candidate | q0586,q0613 | medium confidence duplicate candidate |
+| duplicate-candidate | q0599,q0609 | medium confidence duplicate candidate |
+| duplicate-candidate | q0658,q0712 | medium confidence duplicate candidate |
+| duplicate-candidate | q0660,q0847 | medium confidence duplicate candidate |
+| duplicate-candidate | q0668,q0748 | medium confidence duplicate candidate |
+| duplicate-candidate | q0677,q0727,q0806 | medium confidence duplicate candidate |
+| duplicate-candidate | q0679,q0787 | medium confidence duplicate candidate |
+| duplicate-candidate | q0683,q0769 | medium confidence duplicate candidate |
+| duplicate-candidate | q0685,q0730,q0756 | medium confidence duplicate candidate |
+| duplicate-candidate | q0686,q0793 | medium confidence duplicate candidate |
+| duplicate-candidate | q0694,q0782 | medium confidence duplicate candidate |
+| duplicate-candidate | q0711,q0818 | medium confidence duplicate candidate |
+| duplicate-candidate | q0741,q0798,q0800,q0815,q0854,q0892 | medium confidence duplicate candidate |
+| duplicate-candidate | q0747,q0792 | medium confidence duplicate candidate |
+| duplicate-candidate | q0767,q0788 | medium confidence duplicate candidate |
+| duplicate-candidate | q0776,q0848 | medium confidence duplicate candidate |
+| duplicate-candidate | q0838,q0845 | medium confidence duplicate candidate |
+| duplicate-candidate | q0880,q0896 | medium confidence duplicate candidate |
 
 ## Language Coverage
 
