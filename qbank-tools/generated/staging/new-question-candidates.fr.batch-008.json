@@ -1,0 +1,50 @@
+{
+  "generatedAt": "2026-05-11T09:28:24.800Z",
+  "lang": "fr",
+  "batchId": "batch-008",
+  "dataset": "2023-test1",
+  "sourceDecisionPath": "qbank-tools/generated/staging/new-question-decisions.fr.batch-008.json",
+  "items": [
+    {
+      "candidateId": "nqc-fr-batch-008-001",
+      "sourceLang": "fr",
+      "sourceImage": "screenshots/Screenshot 2026-05-08 at 21.34.28.png",
+      "effectiveQuestionType": "ROW",
+      "promptRawJa": "Un conducteur ne peut prendre la route avec un permis de conduire endommagé.",
+      "promptGlossEn": "A driver cannot take the road with a damaged driver's license.",
+      "optionsRawJa": [
+        "A Yes",
+        "B No"
+      ],
+      "optionsGlossEn": [
+        "Yes",
+        "No"
+      ],
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "newQuestionLocalAnswerKey": "A",
+      "provisionalTopic": "road-safety",
+      "provisionalSubtopics": [
+        "road-safety:license"
+      ],
+      "topicConfidence": 0.5,
+      "topicSignals": [
+        {
+          "topic": "road-safety",
+          "subtopic": "road-safety:license",
+          "signal": "license",
+          "weight": 1.15
+        },
+        {
+          "topic": "proper-driving",
+          "subtopic": "proper-driving:traffic-laws",
+          "signal": "traffic-law",
+          "weight": 1.15
+        }
+      ],
+      "linkedExistingAssetCandidate": null,
+      "reviewerNotes": "Codex medium-risk keepUnresolved: Top candidate q0350 ('destroyed' license) is close but source says 'damaged' — legal nuance could differ. Not enough confidence to approve existing qid; needs human/legal check. Rejected top matcher: Top candidate q0350 uses 'destroyed' vs source 'damaged' — potential legal difference, so top match not accepted automatically.",
+      "status": "pending-superset-review"
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "generatedAt": "2026-05-11T12:06:13.433Z",
+  "lang": "fr",
+  "batchId": "batch-010",
+  "dataset": "2023-test1",
+  "sourceDecisionPath": "qbank-tools/generated/staging/new-question-decisions.fr.batch-010.json",
+  "items": [
+    {
+      "candidateId": "nqc-fr-batch-010-001",
+      "sourceLang": "fr",
+      "sourceImage": "screenshots/Screenshot 2026-05-08 at 21.40.25.png",
+      "effectiveQuestionType": "ROW",
+      "promptRawJa": "Si, en se lançant au secours de personnes accidentées, l'automobiliste fait perdre la trace des circonstances de l'accident, il doit marquer l'emplacement initial de ce qu'il a modifié.",
+      "promptGlossEn": "If, when going to help injured persons, the driver destroys evidence of the accident's circumstances, they must mark the original position of what they changed.",
+      "optionsRawJa": [
+        "A Yes",
+        "B No"
+      ],
+      "optionsGlossEn": [
+        "Yes",
+        "No"
+      ],
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "newQuestionLocalAnswerKey": "A",
+      "provisionalTopic": "road-safety",
+      "provisionalSubtopics": [
+        "road-safety:accidents"
+      ],
+      "topicConfidence": 1,
+      "topicSignals": [
+        {
+          "topic": "road-safety",
+          "subtopic": "road-safety:accidents",
+          "signal": "accident",
+          "weight": 1.15
+        }
+      ],
+      "linkedExistingAssetCandidate": null,
+      "reviewerNotes": "Codex medium-risk createNewQuestion: No close candidate match found. Source is a valid road-accident rule (mark original position if you moved evidence while assisting); not represented in top candidates — create new question. Local correct option is Yes=A.",
+      "status": "pending-superset-review"
+    }
+  ]
+}

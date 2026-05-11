@@ -1,0 +1,42 @@
+{
+  "generatedAt": "2026-05-11T03:58:05.908Z",
+  "lang": "fr",
+  "batchId": "batch-007",
+  "dataset": "2023-test1",
+  "sourceDecisionPath": "qbank-tools/generated/staging/new-question-decisions.fr.batch-007.json",
+  "items": [
+    {
+      "candidateId": "nqc-fr-batch-007-001",
+      "sourceLang": "fr",
+      "sourceImage": "screenshots/Screenshot 2026-05-08 at 21.34.19.png",
+      "effectiveQuestionType": "MCQ",
+      "promptRawJa": "Dans quelle situation le conducteur ne peut pas prendre la route ?",
+      "promptGlossEn": "In which situation can the driver not take the road?",
+      "optionsRawJa": [
+        "A les fenêtres du véhicule ne sont pas fermées",
+        "B les portes du véhicule ne sont pas fermées",
+        "C le conducteur n'a pas attaché sa ceinture de sécurité",
+        "D la fenêtre du toit du véhicule n'est pas fermée"
+      ],
+      "optionsGlossEn": [
+        "The vehicle's windows are not closed",
+        "The vehicle's doors are not closed",
+        "The driver has not fastened his/her seatbelt",
+        "The vehicle's sunroof is not closed"
+      ],
+      "correctKeyRaw": "C",
+      "correctAnswerRaw": "le conducteur n'a pas attaché sa ceinture de sécurité",
+      "newQuestionLocalAnswerKey": "C",
+      "provisionalTopic": "traffic-law",
+      "provisionalSubtopics": [
+        "traffic-law :driver-re pon ibilitie",
+        "proper-driving:safe-driving"
+      ],
+      "topicConfidence": 0,
+      "topicSignals": [],
+      "linkedExistingAssetCandidate": null,
+      "reviewerNotes": "Codex high-risk createNewQuestion: Source correct answer is C (driver has not fastened seatbelt). Similar master q0514 uses a doors-not-closed answer, so no safe existing qid matches this French item's answer semantics. Preserve source screenshot and create as a distinct MCQ for human QC.",
+      "status": "pending-superset-review"
+    }
+  ]
+}

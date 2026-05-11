@@ -1,0 +1,189 @@
+{
+  "generatedAt": "2026-05-11T12:56:54.450Z",
+  "lang": "fr",
+  "batchId": "batch-011",
+  "dataset": "2023-test1",
+  "sourceWorkbenchDecisionsPath": "qbank-tools/generated/staging/fr-batch-011-workbench-decisions.json",
+  "items": [
+    {
+      "qid": "q0184",
+      "confirmedCorrectOptionKey": "C",
+      "unknown": false,
+      "reviewerNotes": "Codex low-risk approveExistingQid: Prompt and options match q0184 about driving in thick fog. q0184's correct behaviour ('hazard lights + fog light and stop') maps to the source French option C (options reordered), so approve q0184 with locale key C."
+    },
+    {
+      "qid": "q0481",
+      "confirmedCorrectOptionKey": "B",
+      "unknown": false,
+      "reviewerNotes": "Codex high-risk keepUnresolved: Image tags and top machine candidate suggest a 90 km/h sign but source options do not include 90; top candidates disagree (40/50/70/90). Optionset mismatch and no clear candidate match -> unresolved."
+    },
+    {
+      "qid": "q0373",
+      "confirmedCorrectOptionKey": "A",
+      "unknown": false,
+      "reviewerNotes": "Codex medium-risk approveExistingQid: Image shows a sharp curve; q0373's correct action is 'reduce speed and honk' which corresponds to the source French option A ('ralentir en klaxonnant'). Good semantic match despite candidate ranking variance."
+    },
+    {
+      "qid": "q0517",
+      "confirmedCorrectOptionKey": "B",
+      "unknown": false,
+      "reviewerNotes": "Codex medium-risk approveExistingQid: Source asks which document/card the driver must carry. q0517 is the closest prompt/option-row match ('Which should be taken along while driving?'); French option B is driver's license. Rejected q0369 because it is a detention-without-license prompt rather than the carry-onboard question."
+    },
+    {
+      "qid": "q0672",
+      "confirmedCorrectOptionKey": "A",
+      "unknown": false,
+      "reviewerNotes": "Codex low-risk approveExistingQid: Blue tunnel sign with '2500 m' matches q0672 image/color tags exactly. Master answer 'distance from tunnel exit' maps to French option A (distance remaining before tunnel exit)."
+    },
+    {
+      "qid": "q0693",
+      "confirmedCorrectOptionKey": "A",
+      "unknown": false,
+      "reviewerNotes": "Codex medium-risk approveExistingQid: Source image is a yellow T-intersection warning sign. q0693 has T-intersection image semantics while top q0764 is a generic/cross-intersection sign; French option A = T intersection."
+    },
+    {
+      "qid": "q0451",
+      "confirmedCorrectOptionKey": "A",
+      "unknown": false,
+      "reviewerNotes": "Codex medium-risk approveExistingQid: Source traffic-light question asks amber/yellow-light meaning ('imminent red' / warning). q0451 is the closest existing yellow-light meaning/option set; local option A carries the warning/imminent-red meaning."
+    },
+    {
+      "qid": "q0701",
+      "confirmedCorrectOptionKey": "A",
+      "unknown": false,
+      "reviewerNotes": "Codex low-risk approveExistingQid: Blue tourist/observation pictogram (tree/water/mountain + 'P') matches q0701 (observation deck); source correct = A."
+    },
+    {
+      "qid": "q0409",
+      "confirmedCorrectOptionKey": "B",
+      "unknown": false,
+      "reviewerNotes": "Codex medium-risk approveExistingQid: Image shows blue '60' sign (minimum speed). Candidate q0409 asks minimum speed with master correct = 60km/h; in this localized option order 60 km/h is source option B."
+    },
+    {
+      "qid": "q0148",
+      "confirmedCorrectOptionKey": "A",
+      "unknown": false,
+      "reviewerNotes": "Codex medium-risk approveExistingQid: Prompt matches q0148 (overtaking parked vehicle on right). Master correct = keep safe lateral distance and reduce speed; localized option A ('ralentir et s'écarter du véhicule') corresponds to that."
+    },
+    {
+      "qid": "q0652",
+      "confirmedCorrectOptionKey": "C",
+      "unknown": false,
+      "reviewerNotes": "Codex low-risk approveExistingQid: Red circular sign with Chinese text indicating customs/frontier; master q0652 includes 'customs' and localized source option C = 'inspection de douane' matches that meaning."
+    },
+    {
+      "qid": "q0423",
+      "confirmedCorrectOptionKey": "C",
+      "unknown": false,
+      "reviewerNotes": "Codex medium-risk approveExistingQid: Topic and correct meaning (reduce speed) match q0423. Master correct option maps to French option C (réduire sa vitesse) so return C."
+    },
+    {
+      "qid": "q0368",
+      "confirmedCorrectOptionKey": "D",
+      "unknown": false,
+      "reviewerNotes": "Codex medium-risk approveExistingQid: Source asks highway following distance above 100 km/h; option row and numeric answer exactly match q0368. French 'minibus' is treated as the localized small passenger vehicle wording; local answer is D (>100 m)."
+    },
+    {
+      "qid": "q0513",
+      "confirmedCorrectOptionKey": "D",
+      "unknown": false,
+      "reviewerNotes": "Codex medium-risk keepUnresolved: Visual shows roadside warning but top candidate is dashboard-indicator q0602 (mismatch). Prompt asks specific parking-distance — no clear matching qid found."
+    },
+    {
+      "qid": "q0395",
+      "confirmedCorrectOptionKey": "A",
+      "unknown": false,
+      "reviewerNotes": "Codex low-risk approveExistingQid: Prompt about lawful driving practice for learners matches q0395. French option A corresponds to master correct choice (training vehicle with instructor)."
+    },
+    {
+      "qid": "q0858",
+      "confirmedCorrectOptionKey": "A",
+      "unknown": false,
+      "reviewerNotes": "Codex medium-risk keepUnresolved: Diagram of intersection with yellow dashed lines likely about lane-connection markings but top candidates are mixed (dashboard indicators and cross-hatch q0804). Insufficient clear match to approve."
+    },
+    {
+      "qid": "q0688",
+      "confirmedCorrectOptionKey": "D",
+      "unknown": false,
+      "reviewerNotes": "Codex low-risk approveExistingQid: Green rectangular sign with telephone and number (1212) visually and semantically matches q0761 (highway emergency phone). French option C = 'poste d'appel d'urgence' matches master."
+    },
+    {
+      "qid": "q0114",
+      "confirmedCorrectOptionKey": "D",
+      "unknown": false,
+      "reviewerNotes": "Codex low-risk approveExistingQid: Question about which lights when stopping in snow matches q0114; master correct = hazard lights. French option D = 'feux de détresse' => D."
+    },
+    {
+      "qid": "q0880",
+      "confirmedCorrectOptionKey": "D",
+      "unknown": false,
+      "reviewerNotes": "Codex medium-risk approveExistingQid: Image of police giving arm signals and prompt asking meaning; q0880 candidate corresponds to 'turn left'. French option D = 'tourner à gauche' matches q0880 master."
+    },
+    {
+      "qid": "q0444",
+      "confirmedCorrectOptionKey": "D",
+      "unknown": false,
+      "reviewerNotes": "Codex medium-risk approveExistingQid: Source roadside-stopping image and option set match q0444's no-stopping/no-parking marking violation. Master correct 'stop in no-stopping marking' maps to French option D."
+    },
+    {
+      "qid": "q0432",
+      "confirmedCorrectOptionKey": "B",
+      "unknown": false,
+      "reviewerNotes": "Codex low-risk approveExistingQid: Text-only question matches q0432 exactly (age limit options identical). Machine match is q0432 with correct answer '18~70 years'."
+    },
+    {
+      "qid": "q0777",
+      "confirmedCorrectOptionKey": "D",
+      "unknown": false,
+      "reviewerNotes": "Codex low-risk approveExistingQid: Source guide arrow shows straight + U-turn. q0707 is the exact straight-or-U-turn guide-arrow item; top q0848 only covers U-turn alone. French option C maps to q0707's correct meaning."
+    },
+    {
+      "qid": "q0374",
+      "confirmedCorrectOptionKey": "D",
+      "unknown": false,
+      "reviewerNotes": "Codex medium-risk approveExistingQid: Prompt asks max speed on narrow road/bridge; q0374 specifically asks that and its correct answer is 30 km/h. In source options 30 km/h = D. Top machine candidate was q0142 (different topic), so selected q0374. Rejected top matcher: Top machine match (q0142) is about acceleration lanes/highway speed, not narrow road/bridge; q0374 is a better semantic match."
+    },
+    {
+      "qid": "q0592",
+      "confirmedCorrectOptionKey": "D",
+      "unknown": false,
+      "reviewerNotes": "Codex medium-risk approveExistingQid: Image of a stalk control lever; top candidate q0592 corresponds to windshield-wiper switch. In the French options 'essuie-glace' is D, so map master answer to source letter D. Some ambiguity with turn-signal stalks exists so confidence is moderate."
+    },
+    {
+      "qid": "q0680",
+      "confirmedCorrectOptionKey": "A",
+      "unknown": false,
+      "reviewerNotes": "Codex low-risk approveExistingQid: Image is a triangular warning sign indicating road narrows on both sides; q0680 matches with answer A."
+    },
+    {
+      "qid": "q0703",
+      "confirmedCorrectOptionKey": "A",
+      "unknown": false,
+      "reviewerNotes": "Codex low-risk approveExistingQid: Brown rectangular sign with tourist symbols matches 'tourist zone sign' (tourisme). q0703 correct = A."
+    },
+    {
+      "qid": "q0871",
+      "confirmedCorrectOptionKey": "A",
+      "unknown": false,
+      "reviewerNotes": "Codex medium-risk approveExistingQid: Blue rectangular sign with bicycle + downward arrow = bicycle lane / voie réservée aux cyclistes. Candidate q0845 means 'bicycle lane' (master correct D) which maps to source option C. Rejected top matcher: Top machine match (q0755) indicates a turn lane, which conflicts with the bicycle-lane visual; q0845 is a better semantic match."
+    },
+    {
+      "qid": "q0598",
+      "confirmedCorrectOptionKey": "C",
+      "unknown": false,
+      "reviewerNotes": "Codex medium-risk keepUnresolved: Dashboard lamp symbol ambiguous from image/text (could be master light switch, fog/rear fog, high/low beam). Not enough disambiguating visual detail to map to an existing qid."
+    },
+    {
+      "qid": "q0750",
+      "confirmedCorrectOptionKey": "B",
+      "unknown": false,
+      "reviewerNotes": "Codex medium-risk approveExistingQid: Yellow triangular warning sign with '!' and car hazard indicates 'accident-prone / danger' section. Master q0750 correct = 'accident-prone section' (master A) which corresponds to source option B (risque d'accident)."
+    },
+    {
+      "qid": "q0581",
+      "confirmedCorrectOptionKey": "B",
+      "unknown": false,
+      "reviewerNotes": "Codex low-risk approveExistingQid: Symbol is windshield wiper. Master q0603 correct = 'the windshield wiper' (master D) which corresponds to source option B ('l'essui-glace nettoyant le pare-brise avant')."
+    }
+  ]
+}
