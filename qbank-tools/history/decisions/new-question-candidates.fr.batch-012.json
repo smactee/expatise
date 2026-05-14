@@ -1,0 +1,69 @@
+{
+  "generatedAt": "2026-05-12T03:50:22.938Z",
+  "lang": "fr",
+  "batchId": "batch-012",
+  "dataset": "2023-test1",
+  "sourceDecisionPath": "qbank-tools/generated/staging/new-question-decisions.fr.batch-012.json",
+  "items": [
+    {
+      "candidateId": "nqc-fr-batch-012-001",
+      "sourceLang": "fr",
+      "sourceImage": "screenshots/Screenshot 2026-05-08 at 21.41.40 1.png",
+      "effectiveQuestionType": "ROW",
+      "promptRawJa": "Un conducteur qui enfreint une disposition du code de la route doit être puni.",
+      "promptGlossEn": "A driver who breaks a provision of the highway code must be punished.",
+      "optionsRawJa": [
+        "A Yes",
+        "B No"
+      ],
+      "optionsGlossEn": [
+        "Yes",
+        "No"
+      ],
+      "correctKeyRaw": "A",
+      "correctAnswerRaw": "Yes",
+      "newQuestionLocalAnswerKey": "A",
+      "provisionalTopic": "proper-driving",
+      "provisionalSubtopics": [
+        "proper-driving:traffic-laws"
+      ],
+      "topicConfidence": 0,
+      "topicSignals": [],
+      "linkedExistingAssetCandidate": null,
+      "reviewerNotes": "Codex medium-risk createNewQuestion: Statement 'A driver who breaks a provision of the highway code must be punished' is a valid true/false item but no clear existing candidate match; recommend creating new question with answer A (Yes).",
+      "status": "pending-superset-review"
+    },
+    {
+      "candidateId": "nqc-fr-batch-012-001",
+      "sourceLang": "fr",
+      "sourceImage": "screenshots/Screenshot 2026-05-08 at 21.41.27 1.png",
+      "effectiveQuestionType": "MCQ",
+      "promptRawJa": "Si un minibus circule sur l'autoroute à moins de 100 km/h, quelle distance de sécurité doit-il respecter ?",
+      "promptGlossEn": "If a minibus is driving on the highway at less than 100 km/h, what safety distance must it keep?",
+      "optionsRawJa": [
+        "A au moins 50 m",
+        "B au moins 30 m",
+        "C au moins 20 m",
+        "D au moins 10 m"
+      ],
+      "optionsGlossEn": [
+        "at least 50 m",
+        "at least 30 m",
+        "at least 20 m",
+        "at least 10 m"
+      ],
+      "correctKeyRaw": "A",
+      "correctAnswerRaw": "au moins 50 m",
+      "newQuestionLocalAnswerKey": "A",
+      "provisionalTopic": "proper-driving",
+      "provisionalSubtopics": [
+        "proper-driving:safe-driving"
+      ],
+      "topicConfidence": 0,
+      "topicSignals": [],
+      "linkedExistingAssetCandidate": null,
+      "reviewerNotes": "Codex medium-risk createNewQuestion: Specific numeric question about minibus safety distance (<100 km/h → at least 50 m). No existing candidate precisely covers 'minibus <100 km/h' distance; recommend creating new localized item. Source indicates option A (50 m).",
+      "status": "pending-superset-review"
+    }
+  ]
+}

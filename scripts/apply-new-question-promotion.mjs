@@ -7,6 +7,11 @@ import path from "node:path";
 import sharp from "sharp";
 
 import {
+  RANGE_RULES,
+  inRange,
+  suggestTagsForText,
+} from "./tag-dictionary.mjs";
+import {
   DEFAULT_DATASET,
   ROOT,
   fileExists,
@@ -34,8 +39,11 @@ const configPath = args["config-path"]
 
 const datasetPaths = getDatasetPaths(dataset, lang);
 const newQuestionFiles = getNewQuestionFiles(lang, batchId);
+const questionsDoc = readJson(datasetPaths.questionsPath);
+const questions = Array.isArray(questionsDoc?.questions) ? questionsDoc.questions : [];
 const rawDoc = readJson(datasetPaths.rawQuestionsPath);
 const rawQuestions = Array.isArray(rawDoc?.questions) ? rawDoc.questions : [];
+const rawQuestionById = new Map(rawQuestions.map((question) => [String(question?.id ?? "").trim(), question]));
 const translationDoc = fileExists(datasetPaths.translationPath)
   ? readJson(datasetPaths.translationPath)
   : { meta: { locale: lang }, questions: {} };
@@ -56,7 +64,10 @@ const previewByCandidateId = new Map(
   (Array.isArray(previewDoc?.items) ? previewDoc.items : []).map((item) => [String(item?.candidateId ?? ""), item]),
 );
 const sourceBatchByImage = buildSourceBatchByImage(Array.isArray(decisionsDoc?.items) ? decisionsDoc.items : []);
-const existingQids = new Set(rawQuestions.map((question) => String(question?.id ?? "")));
+const existingQids = new Set([
+  ...questions.map((question) => String(question?.id ?? "")),
+  ...rawQuestions.map((question) => String(question?.id ?? "")),
+]);
 
 await fs.mkdir(datasetPaths.imagesDir, { recursive: true });
 
@@ -106,12 +117,13 @@ for (const candidate of Array.isArray(candidatesDoc?.items) ? candidatesDoc.item
   });
 
   const type = resolveCanonicalType(candidate, overrides);
-  const asset = await maybeCreateAsset({
+  const generatedAsset = await maybeCreateAsset({
     dataset,
     datasetPaths,
     screenshotPath,
     crop: normalizeCrop(overrides.assetCrop),
   });
+  const asset = generatedAsset ?? linkedExistingAsset(candidate, rawQuestionById);
   const region = await buildRegion({
     screenshotPath,
     asset,
@@ -172,6 +184,22 @@ const nextRawDoc = {
   questions: nextRawQuestions,
 };
 
+const processedAppendedQuestions = appendedQuestions.map((question) => buildProcessedQuestion(question));
+const nextQuestions = [...questions, ...processedAppendedQuestions].sort((left, right) => {
+  const leftNumber = Number(left?.number) || 0;
+  const rightNumber = Number(right?.number) || 0;
+  return leftNumber - rightNumber || String(left?.id ?? "").localeCompare(String(right?.id ?? ""));
+});
+
+const nextQuestionsDoc = {
+  ...questionsDoc,
+  meta: {
+    ...(questionsDoc?.meta ?? {}),
+    questionCount: nextQuestions.length,
+  },
+  questions: nextQuestions,
+};
+
 const nextTranslationDoc = {
   meta: {
     ...(translationDoc?.meta ?? {}),
@@ -186,6 +214,7 @@ const nextTranslationDoc = {
   questions: sortObjectByKey(nextTranslationQuestions),
 };
 
+await writeJson(datasetPaths.questionsPath, nextQuestionsDoc);
 await writeJson(datasetPaths.rawQuestionsPath, nextRawDoc);
 await writeJson(datasetPaths.translationPath, nextTranslationDoc);
 
@@ -499,6 +528,78 @@ async function maybeCreateAsset({ dataset, datasetPaths, screenshotPath, crop })
     page: 1,
     bbox: [crop.left, crop.top, crop.left + crop.width, crop.top + crop.height],
     hash,
+  };
+}
+
+function linkedExistingAsset(candidate, rawQuestionById) {
+  const linkedQid = normalizeText(candidate?.linkedExistingAssetCandidate?.qid);
+  if (!linkedQid) {
+    return null;
+  }
+
+  const linkedQuestion = rawQuestionById.get(linkedQid);
+  const linkedAssetSrc = normalizeText(candidate?.linkedExistingAssetCandidate?.currentAssetSrc);
+  const assets = Array.isArray(linkedQuestion?.assets) ? linkedQuestion.assets : [];
+  const matchingAsset = assets.find((asset) => normalizeText(asset?.src) === linkedAssetSrc) ??
+    assets.find((asset) => normalizeText(asset?.src));
+
+  if (!matchingAsset) {
+    throw new Error(`Linked existing asset for ${linkedQid} was not found in questions.raw.json.`);
+  }
+
+  return {
+    kind: "image",
+    src: matchingAsset.src,
+    page: matchingAsset.page ?? linkedQuestion?.regions?.[0]?.page ?? 1,
+    bbox: Array.isArray(matchingAsset.bbox) ? matchingAsset.bbox : linkedQuestion?.regions?.[0]?.bbox ?? [0, 0, 0, 0],
+    hash: matchingAsset.hash ?? imageHashFromSrc(matchingAsset.src),
+    linkedFromQid: linkedQid,
+  };
+}
+
+function imageHashFromSrc(src) {
+  const match = String(src ?? "").match(/img_([a-f0-9]{16,})/i);
+  return match?.[1] ?? null;
+}
+
+function autoRangeTags(number) {
+  const out = [];
+  for (const rangeRule of RANGE_RULES) {
+    if (inRange(number, rangeRule)) {
+      out.push(...(rangeRule.add || []));
+    }
+  }
+  return Array.from(new Set(out));
+}
+
+function buildSearchText(question) {
+  const parts = [question.prompt];
+  if (question.type === "mcq") {
+    for (const option of question.options || []) {
+      parts.push(option.text);
+    }
+  }
+  return parts.join(" ");
+}
+
+function buildProcessedQuestion(question) {
+  const auto = new Set();
+
+  auto.add(question.type === "mcq" ? "#mcq" : "#row");
+  if ((question.assets || []).length > 0) {
+    auto.add("#pic");
+  }
+  for (const tag of autoRangeTags(question.number)) {
+    auto.add(tag);
+  }
+
+  return {
+    ...question,
+    tags: {
+      auto: Array.from(auto),
+      user: [],
+      suggested: suggestTagsForText(buildSearchText(question), { maxTags: 6 }),
+    },
   };
 }
 

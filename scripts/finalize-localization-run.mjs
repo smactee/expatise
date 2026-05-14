@@ -22,6 +22,7 @@ const DATASET_DIR = path.join(ROOT, "public", "qbank", "2023-test1");
 const args = parseArgs();
 const lang = normalizeLang(args.lang ?? "ru");
 const apply = booleanArg(args, "apply", false);
+const allowShipWithWarnings = booleanArg(args, "allow-ship-with-warnings", false);
 const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
 const runArchiveDir = path.join(ARCHIVE_DIR, "finalized-runs", lang, timestamp);
 const manifestJsonPath = path.join(FINALIZED_RUNS_DIR, `${lang}-finalization-${timestamp}.json`);
@@ -36,8 +37,10 @@ const manifest = {
   generatedAt: new Date().toISOString(),
   lang,
   applyRequested: apply,
+  allowShipWithWarnings,
   applied,
   safeToApply,
+  finalizedWithWarnings: validation.finalizedWithWarnings,
   validation,
   plan,
   results: {
@@ -89,15 +92,41 @@ function buildValidation() {
   const integrity = readJsonIfExists(integrityPath, null);
   const trackedScreenshots = trackedScreenshotFiles();
   const decisionMemory = readJsonIfExists(path.join(HISTORY_DIR, "decision-memory.json"), null);
-  const criticalBlockers = Array.isArray(integrity?.criticalBlockers) ? integrity.criticalBlockers : null;
+  const criticalBlockers = Array.isArray(integrity?.criticalBlockers)
+    ? integrity.criticalBlockers
+    : Array.isArray(integrity?.critical)
+      ? integrity.critical
+      : null;
+  const warnings = Array.isArray(integrity?.warnings) ? integrity.warnings : [];
   const targetCriticalBlockers = criticalBlockers
     ? criticalBlockers.filter((issue) => isGlobalIntegrityIssue(issue) || String(issue.reason ?? "").startsWith(`${lang}:`))
     : null;
+  const readiness = shipReport?.recommendation ?? null;
+  const buildStatus = resolveBuildStatus(shipReport);
+  const buildAllowsFinalization = buildStatus === null || buildStatus.passed === true;
+  const readinessAllowsFinalization = readiness === "ship"
+    || (readiness === "ship-with-warnings" && allowShipWithWarnings);
+  const finalizedWithWarnings = readiness === "ship-with-warnings" && allowShipWithWarnings;
+  const acceptedWarnings = {
+    overrideUsed: allowShipWithWarnings,
+    finalizedWithWarnings,
+    readiness,
+    integrityWarningCount: warnings.length,
+    integrityWarningCategories: countBy(warnings, (warning) => warning?.type ?? "unknown"),
+    shipWarningReasons: Array.isArray(shipReport?.validation?.warningReasons)
+      ? shipReport.validation.warningReasons
+      : [],
+    shipSummary: shipReport?.summary ?? null,
+  };
 
   const checks = {
     missingBackfillQids: missingQids.length,
     extraTranslationQids: extraQids.length,
-    shipReadinessRecommendation: shipReport?.recommendation ?? null,
+    shipReadinessRecommendation: readiness,
+    allowShipWithWarnings,
+    finalizedWithWarnings,
+    buildStatus: buildStatus?.status ?? null,
+    buildStatusAllowsFinalization: buildAllowsFinalization,
     integrityCriticalBlockers: criticalBlockers?.length ?? null,
     targetIntegrityCriticalBlockers: targetCriticalBlockers?.length ?? null,
     trackedScreenshots: trackedScreenshots.length,
@@ -106,9 +135,13 @@ function buildValidation() {
 
   return {
     checks,
+    finalizedWithWarnings,
+    acceptedWarnings,
     readyToFinalize: checks.missingBackfillQids === 0
       && checks.extraTranslationQids === 0
-      && checks.shipReadinessRecommendation === "ship"
+      && readinessAllowsFinalization
+      && checks.shipReadinessRecommendation !== "do-not-ship"
+      && buildAllowsFinalization
       && checks.targetIntegrityCriticalBlockers === 0
       && checks.trackedScreenshots === 0,
     missingQids,
@@ -125,10 +158,42 @@ function isGlobalIntegrityIssue(issue) {
   return !/^[a-z]{2,3}:/.test(reason);
 }
 
+function resolveBuildStatus(shipReport) {
+  const candidates = [
+    shipReport?.build?.passed,
+    shipReport?.buildPassed,
+    shipReport?.validation?.buildPassed,
+    shipReport?.checks?.buildPassed,
+  ];
+  for (const candidate of candidates) {
+    if (candidate === undefined || candidate === null) continue;
+    if (candidate === true) return { status: "passed", passed: true };
+    if (candidate === false) return { status: "failed", passed: false };
+    const text = String(candidate).trim().toLowerCase();
+    if (["passed", "pass", "ok", "success", "true"].includes(text)) {
+      return { status: text, passed: true };
+    }
+    if (["failed", "fail", "error", "false"].includes(text)) {
+      return { status: text, passed: false };
+    }
+    return { status: text, passed: false };
+  }
+  return null;
+}
+
+function countBy(items, keyFn) {
+  const counts = {};
+  for (const item of items) {
+    const key = keyFn(item);
+    counts[key] = (counts[key] ?? 0) + 1;
+  }
+  return counts;
+}
+
 function buildPlan() {
   const keepActive = [
-    rel(path.join(REPORTS_DIR, "ru-ship-readiness-report.json")),
-    rel(path.join(REPORTS_DIR, "ru-ship-readiness-report.md")),
+    rel(path.join(REPORTS_DIR, `${lang}-ship-readiness-report.json`)),
+    rel(path.join(REPORTS_DIR, `${lang}-ship-readiness-report.md`)),
     rel(path.join(REPORTS_DIR, "qbank-integrity-audit.json")),
     rel(path.join(REPORTS_DIR, "qbank-integrity-audit.md")),
   ];
@@ -291,12 +356,26 @@ function renderMarkdown(data) {
   lines.push(`# ${data.lang.toUpperCase()} Localization Run Finalization`, "");
   lines.push(`Generated: ${data.generatedAt}`, "");
   lines.push(`Apply requested: ${data.applyRequested ? "yes" : "no"}`);
+  lines.push(`Allow ship-with-warnings: ${data.allowShipWithWarnings ? "yes" : "no"}`);
   lines.push(`Applied: ${data.applied ? "yes" : "no"}`);
   lines.push(`Safe to apply: ${data.safeToApply ? "yes" : "no"}`);
+  lines.push(`Finalized with warnings: ${data.finalizedWithWarnings ? "yes" : "no"}`);
   lines.push("");
   lines.push("## Validation", "");
   for (const [key, value] of Object.entries(data.validation.checks)) {
     lines.push(`- ${key}: ${Array.isArray(value) ? value.length : value}`);
+  }
+  if (data.validation.acceptedWarnings?.finalizedWithWarnings) {
+    lines.push("");
+    lines.push("## Accepted Warnings", "");
+    lines.push(`- Readiness: ${data.validation.acceptedWarnings.readiness}`);
+    lines.push(`- Explicit override used: ${data.validation.acceptedWarnings.overrideUsed ? "yes" : "no"}`);
+    lines.push(`- Integrity warning count: ${data.validation.acceptedWarnings.integrityWarningCount}`);
+    lines.push(`- Integrity warning categories: ${Object.entries(data.validation.acceptedWarnings.integrityWarningCategories ?? {}).map(([key, value]) => `${key} ${value}`).join(", ") || "none"}`);
+    lines.push("- Ship warning reasons:");
+    for (const reason of data.validation.acceptedWarnings.shipWarningReasons ?? []) {
+      lines.push(`  - ${reason}`);
+    }
   }
   lines.push("");
   lines.push("## Planned Moves", "");

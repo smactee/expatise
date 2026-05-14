@@ -1,0 +1,376 @@
+{
+  "generatedAt": "2026-05-13T13:48:02.226Z",
+  "lang": "fr",
+  "dataset": "2023-test1",
+  "sourceDecisionPath": "qbank-tools/generated/staging/fr-wrapup-workbench-decisions.json",
+  "items": [
+    {
+      "candidateId": "nqc-fr-wrapup-001",
+      "sourceBatch": "batch-007",
+      "sourceImage": "screenshots/Screenshot 2026-05-08 at 21.34.22.png",
+      "sourceItemId": "screenshots/Screenshot 2026-05-08 at 21.34.22.png",
+      "newQuestionLocalAnswerKey": "D",
+      "provisionalTopic": "proper-driving",
+      "provisionalSubtopics": [
+        "road-safety:road-conditions",
+        "proper-driving:safe-driving",
+        "proper-driving:traffic-laws",
+        "traffic-signals:road-signs"
+      ],
+      "reviewerNotes": "Codex low-risk approveExistingQid: Prompt and options match q0123: on narrow/dangerous roads you should reduce speed or stop and yield. Source option D corresponds to the same instruction.",
+      "status": "pending-superset-review"
+    },
+    {
+      "candidateId": "nqc-fr-wrapup-002",
+      "sourceBatch": "batch-012",
+      "sourceImage": "screenshots/Screenshot 2026-05-08 at 21.41.44.png",
+      "sourceItemId": "screenshots/Screenshot 2026-05-08 at 21.41.44.png",
+      "newQuestionLocalAnswerKey": "B",
+      "provisionalTopic": null,
+      "provisionalSubtopics": [],
+      "reviewerNotes": "Codex medium-risk createNewQuestion: Question about whether an end-of-life vehicle, after full repair, may be used is a regulatory/legal item not matched by top candidates. The likely correct answer is 'No' (French option B), but existing qids don't represent this exact rule — create new localized question and human-verify.",
+      "status": "pending-superset-review"
+    },
+    {
+      "candidateId": "nqc-fr-wrapup-003",
+      "sourceBatch": "batch-012",
+      "sourceImage": "screenshots/Screenshot 2026-05-08 at 21.41.47.png",
+      "sourceItemId": "screenshots/Screenshot 2026-05-08 at 21.41.47.png",
+      "newQuestionLocalAnswerKey": "A",
+      "provisionalTopic": "proper-driving",
+      "provisionalSubtopics": [
+        "proper-driving:traffic-laws"
+      ],
+      "reviewerNotes": "Codex medium-risk createNewQuestion: Statement that a vehicle deemed unusable under national regulation cannot be registered is a specific legal assertion not covered by candidate items. Recommend creating a new question; source answer appears to be Yes (French option A).",
+      "status": "pending-superset-review"
+    },
+    {
+      "candidateId": "nqc-fr-wrapup-004",
+      "sourceBatch": "batch-016",
+      "sourceImage": "screenshots/Screenshot 2026-05-08 at 21.43.59 1.png",
+      "sourceItemId": "screenshots/Screenshot 2026-05-08 at 21.43.59 1.png",
+      "newQuestionLocalAnswerKey": "C",
+      "provisionalTopic": "proper-driving",
+      "provisionalSubtopics": [
+        "proper-driving:safe-driving"
+      ],
+      "reviewerNotes": "Codex ultra-strict approveExistingQid: MCQ option rows align; French key C (Slow down and let pass) maps to master C (reduce speed and yield). Prompt and option-row concepts were checked against qbank; answer key follows French order.",
+      "status": "pending-superset-review"
+    },
+    {
+      "candidateId": "nqc-fr-wrapup-005",
+      "sourceBatch": "batch-016",
+      "sourceImage": "screenshots/Screenshot 2026-05-08 at 21.44.05.png",
+      "sourceItemId": "screenshots/Screenshot 2026-05-08 at 21.44.05.png",
+      "newQuestionLocalAnswerKey": "B",
+      "provisionalTopic": "traffic-signals",
+      "provisionalSubtopics": [
+        "traffic-signals:road-signs"
+      ],
+      "reviewerNotes": "Codex high-risk keepUnresolved: Hard-locked qid q0758 is already present in French production/merged history (translations.fr.json). Do not reuse for this source item without manual duplicate review; previous approved match is withheld for QC.",
+      "status": "pending-superset-review"
+    },
+    {
+      "candidateId": "nqc-fr-wrapup-006",
+      "sourceBatch": "batch-016",
+      "sourceImage": "screenshots/Screenshot 2026-05-08 at 21.43.50.png",
+      "sourceItemId": "screenshots/Screenshot 2026-05-08 at 21.43.50.png",
+      "newQuestionLocalAnswerKey": "B",
+      "provisionalTopic": "road-safety",
+      "provisionalSubtopics": [
+        "road-safety:accidents"
+      ],
+      "reviewerNotes": "Codex high-risk keepUnresolved: Legal nuance unclear: candidates disagree whether police may order drivers to leave/evacuate after property-damage collisions. Insufficient evidence to map to an existing qid or to choose True/False. Rejected top matcher: Top candidate (q0250) asserts police cannot order leave; conflicting candidates and legal nuance make automatic acceptance unsafe.",
+      "status": "pending-superset-review"
+    },
+    {
+      "candidateId": "nqc-fr-wrapup-007",
+      "sourceBatch": "batch-016",
+      "sourceImage": "screenshots/Screenshot 2026-05-08 at 21.43.58.png",
+      "sourceItemId": "screenshots/Screenshot 2026-05-08 at 21.43.58.png",
+      "newQuestionLocalAnswerKey": "D",
+      "provisionalTopic": "road-safety",
+      "provisionalSubtopics": [
+        "road-safety:license"
+      ],
+      "reviewerNotes": "Codex high-risk keepUnresolved: Potential new question but local answer key is unknown; kept unresolved for human review. Rejected top matcher: Potential new question but local answer key is unknown; kept unresolved for human review.",
+      "status": "pending-superset-review"
+    },
+    {
+      "candidateId": "nqc-fr-wrapup-008",
+      "sourceBatch": "batch-017",
+      "sourceImage": "screenshots/Screenshot 2026-05-08 at 21.44.52 1.png",
+      "sourceItemId": "screenshots/Screenshot 2026-05-08 at 21.44.52 1.png",
+      "newQuestionLocalAnswerKey": "A",
+      "provisionalTopic": "proper-driving",
+      "provisionalSubtopics": [
+        "proper-driving:safe-driving"
+      ],
+      "reviewerNotes": "Codex high-risk keepUnresolved: Hard-locked qid q0117 is already present in French production/merged history (translations.fr.json). Do not reuse for this source item without manual duplicate review; previous approved match is withheld for QC.",
+      "status": "pending-superset-review"
+    },
+    {
+      "candidateId": "nqc-fr-wrapup-009",
+      "sourceBatch": "batch-017",
+      "sourceImage": "screenshots/Screenshot 2026-05-08 at 21.44.53.png",
+      "sourceItemId": "screenshots/Screenshot 2026-05-08 at 21.44.53.png",
+      "newQuestionLocalAnswerKey": "D",
+      "provisionalTopic": "traffic-signals",
+      "provisionalSubtopics": [
+        "traffic-signals:signal-lights",
+        "proper-driving:safe-driving"
+      ],
+      "reviewerNotes": "Codex high-risk keepUnresolved: Hard-locked qid q0118 is already present in French production/merged history (translations.fr.json). Do not reuse for this source item without manual duplicate review; previous approved match is withheld for QC.",
+      "status": "pending-superset-review"
+    },
+    {
+      "candidateId": "nqc-fr-wrapup-010",
+      "sourceBatch": "batch-017",
+      "sourceImage": "screenshots/Screenshot 2026-05-08 at 21.44.27.png",
+      "sourceItemId": "screenshots/Screenshot 2026-05-08 at 21.44.27.png",
+      "newQuestionLocalAnswerKey": "C",
+      "provisionalTopic": "proper-driving",
+      "provisionalSubtopics": [
+        "proper-driving:safe-driving"
+      ],
+      "reviewerNotes": "Codex medium-risk keepUnresolved: Prompt asks when hazard warning lights may be used. Options include 'traffic jam' and 'follow preceding vehicles' which are ambiguous across jurisdictions; no clear matching qid in candidates. Keep unresolved until legal/local guideline confirmed (likely only for breakdown/emergency).",
+      "status": "pending-superset-review"
+    },
+    {
+      "candidateId": "nqc-fr-wrapup-011",
+      "sourceBatch": "batch-018",
+      "sourceImage": "screenshots/Screenshot 2026-05-08 at 21.45.09.png",
+      "sourceItemId": "screenshots/Screenshot 2026-05-08 at 21.45.09.png",
+      "newQuestionLocalAnswerKey": "B",
+      "provisionalTopic": "road-safety",
+      "provisionalSubtopics": [
+        "road-safety:road-conditions",
+        "proper-driving:safe-driving"
+      ],
+      "reviewerNotes": "Codex high-risk keepUnresolved: Potential match q0120 is now hard-locked in French production/merged history (translations.fr.json; batches 001-016 merged). Source/candidate evidence is not strong enough for duplicate override; kept unresolved for manual QC.",
+      "status": "pending-superset-review"
+    },
+    {
+      "candidateId": "nqc-fr-wrapup-012",
+      "sourceBatch": "batch-018",
+      "sourceImage": "screenshots/Screenshot 2026-05-08 at 21.45.18.png",
+      "sourceItemId": "screenshots/Screenshot 2026-05-08 at 21.45.18.png",
+      "newQuestionLocalAnswerKey": "C",
+      "provisionalTopic": "traffic-signals",
+      "provisionalSubtopics": [
+        "traffic-signals:road-signs",
+        "traffic-signals:road-markings",
+        "proper-driving:safe-driving",
+        "proper-driving:traffic-laws"
+      ],
+      "reviewerNotes": "Codex medium-risk keepUnresolved: Road marking photo is ambiguous (multiple painted arrows, one crossed). Candidates disagree on which movement is forbidden. Needs human verification of the exact painted symbols.",
+      "status": "pending-superset-review"
+    },
+    {
+      "candidateId": "nqc-fr-wrapup-013",
+      "sourceBatch": "batch-018",
+      "sourceImage": "screenshots/Screenshot 2026-05-08 at 21.45.17.png",
+      "sourceItemId": "screenshots/Screenshot 2026-05-08 at 21.45.17.png",
+      "newQuestionLocalAnswerKey": "B",
+      "provisionalTopic": "traffic-signals",
+      "provisionalSubtopics": [
+        "traffic-signals:road-markings",
+        "road-safety:license"
+      ],
+      "reviewerNotes": "Codex medium-risk keepUnresolved: Soft-locked qid q0446 was already selected for 018 screenshots/Screenshot 2026-05-08 at 21.45.13.png. Avoiding duplicate qid reuse; manual QC should decide whether this is duplicate coverage, a distinct new question, or a justified override.",
+      "status": "pending-superset-review"
+    },
+    {
+      "candidateId": "nqc-fr-wrapup-014",
+      "sourceBatch": "batch-018",
+      "sourceImage": "screenshots/Screenshot 2026-05-08 at 21.45.19.png",
+      "sourceItemId": "screenshots/Screenshot 2026-05-08 at 21.45.19.png",
+      "newQuestionLocalAnswerKey": "C",
+      "provisionalTopic": "proper-driving",
+      "provisionalSubtopics": [
+        "proper-driving:safe-driving"
+      ],
+      "reviewerNotes": "Codex medium-risk keepUnresolved: Source asks about politely letting vehicles merge into congested traffic. Rejected q0970 because it asks about being overtaken and keeping horizontal distance; potential q0135 is hard-locked and concerns borrowing an opposite lane, not this merge scenario. Kept unresolved rather than forcing a broad traffic-courtesy match.",
+      "status": "pending-superset-review"
+    },
+    {
+      "candidateId": "nqc-fr-wrapup-015",
+      "sourceBatch": "batch-018",
+      "sourceImage": "screenshots/Screenshot 2026-05-08 at 21.45.36.png",
+      "sourceItemId": "screenshots/Screenshot 2026-05-08 at 21.45.36.png",
+      "newQuestionLocalAnswerKey": "B",
+      "provisionalTopic": "traffic-signals",
+      "provisionalSubtopics": [
+        "traffic-signals:road-signs"
+      ],
+      "reviewerNotes": "Codex medium-risk keepUnresolved: Placement distance and direction for warning triangle on motorway has conflicting candidate guidance (behind vehicle, in-coming direction, opposite lane); source specifies 'opposite lane' creating mismatch — cannot safely map to existing qid.",
+      "status": "pending-superset-review"
+    },
+    {
+      "candidateId": "nqc-fr-wrapup-016",
+      "sourceBatch": "batch-001",
+      "sourceImage": "screenshots/Screenshot 2026-05-08 at 21.24.52.png",
+      "sourceItemId": "screenshots/Screenshot 2026-05-08 at 21.24.52.png",
+      "newQuestionLocalAnswerKey": "A",
+      "provisionalTopic": "proper-driving",
+      "provisionalSubtopics": [
+        "proper-driving:safe-driving"
+      ],
+      "reviewerNotes": "No exact master qid for general no U-turn/opposite-direction travel on a highway; q0010 is ramp-only and q0297 is a penalty-points statement.",
+      "status": "pending-superset-review"
+    },
+    {
+      "candidateId": "nqc-fr-wrapup-017",
+      "sourceBatch": "batch-001",
+      "sourceImage": "screenshots/Screenshot 2026-05-08 at 21.24.57.png",
+      "sourceItemId": "screenshots/Screenshot 2026-05-08 at 21.24.57.png",
+      "newQuestionLocalAnswerKey": "A",
+      "provisionalTopic": "road-safety",
+      "provisionalSubtopics": [
+        "road-safety:road-conditions"
+      ],
+      "reviewerNotes": "No exact master qid found for hail-covered road stability and sharp-braking skid risk; source answer is A/Yes.",
+      "status": "pending-superset-review"
+    },
+    {
+      "candidateId": "nqc-fr-wrapup-018",
+      "sourceBatch": "batch-002",
+      "sourceImage": "screenshots/Screenshot 2026-05-08 at 21.25.13 1.png",
+      "sourceItemId": "screenshots/Screenshot 2026-05-08 at 21.25.13 1.png",
+      "newQuestionLocalAnswerKey": "A",
+      "provisionalTopic": "proper-driving",
+      "provisionalSubtopics": [
+        "proper-driving:safe-driving"
+      ],
+      "reviewerNotes": "Decision memory indicates consecutive-driving-hours items are not exact matches to q0445 rest-time wording. Source is valid MCQ; create new with local C (8 hours).",
+      "status": "pending-superset-review"
+    },
+    {
+      "candidateId": "nqc-fr-wrapup-019",
+      "sourceBatch": "batch-004",
+      "sourceImage": "screenshots/Screenshot 2026-05-08 at 21.26.41.png",
+      "sourceItemId": "screenshots/Screenshot 2026-05-08 at 21.26.41.png",
+      "newQuestionLocalAnswerKey": "D",
+      "provisionalTopic": "road-safety",
+      "provisionalSubtopics": [
+        "road-safety:road-conditions"
+      ],
+      "reviewerNotes": "Codex low-risk createNewQuestion: No close existing candidate; correct answer is clearly 'réduire la visibilité' (D) for fog. Recommend creating new question with D.",
+      "status": "pending-superset-review"
+    },
+    {
+      "candidateId": "nqc-fr-wrapup-020",
+      "sourceBatch": "batch-004",
+      "sourceImage": "screenshots/Screenshot 2026-05-08 at 21.26.52 1.png",
+      "sourceItemId": "screenshots/Screenshot 2026-05-08 at 21.26.52 1.png",
+      "newQuestionLocalAnswerKey": "B",
+      "provisionalTopic": "proper-driving",
+      "provisionalSubtopics": [
+        "proper-driving:safe-driving"
+      ],
+      "reviewerNotes": "Codex low-risk approveExistingQid: q0084 matches the assertion that smoking while driving has no impact — that assertion is false. Approve existing qid with answer No (B).",
+      "status": "pending-superset-review"
+    },
+    {
+      "candidateId": "nqc-fr-wrapup-021",
+      "sourceBatch": "batch-009",
+      "sourceImage": "screenshots/Screenshot 2026-05-08 at 21.39.10 1.png",
+      "sourceItemId": "screenshots/Screenshot 2026-05-08 at 21.39.10 1.png",
+      "newQuestionLocalAnswerKey": "C",
+      "provisionalTopic": null,
+      "provisionalSubtopics": [],
+      "reviewerNotes": "Codex low-risk createNewQuestion: Valid MCQ asking maximum speed through a dangerous curve (explicitly 30 km/h, source option C). No existing candidate clearly matches this exact context (top candidate refers to railway crossing), so create new question and map answer to source C. Rejected top matcher: Top candidate q0382 concerns railway crossing (different context) despite sharing numeric answer; therefore not appropriate to approve.",
+      "status": "pending-superset-review"
+    },
+    {
+      "candidateId": "nqc-fr-wrapup-022",
+      "sourceBatch": "batch-012",
+      "sourceImage": "screenshots/Screenshot 2026-05-08 at 21.41.27 1.png",
+      "sourceItemId": "screenshots/Screenshot 2026-05-08 at 21.41.27 1.png",
+      "newQuestionLocalAnswerKey": "A",
+      "provisionalTopic": "proper-driving",
+      "provisionalSubtopics": [
+        "proper-driving:safe-driving"
+      ],
+      "reviewerNotes": "Codex medium-risk createNewQuestion: Specific numeric question about minibus safety distance (<100 km/h → at least 50 m). No existing candidate precisely covers 'minibus <100 km/h' distance; recommend creating new localized item. Source indicates option A (50 m).",
+      "status": "pending-superset-review"
+    },
+    {
+      "candidateId": "nqc-fr-wrapup-023",
+      "sourceBatch": "batch-013",
+      "sourceImage": "screenshots/Screenshot 2026-05-08 at 21.42.18.png",
+      "sourceItemId": "screenshots/Screenshot 2026-05-08 at 21.42.18.png",
+      "newQuestionLocalAnswerKey": "A",
+      "provisionalTopic": "driving-operations",
+      "provisionalSubtopics": [
+        "driving-operations:indicators"
+      ],
+      "reviewerNotes": "Codex medium-risk createNewQuestion: Image shows fuel‑pump/fuel indicator. Source asks if light means add gasoline — a valid ROW (Yes/No) item. No clear existing candidate for fuel indicator in top matches, so create new question; source 'Yes' = A.",
+      "status": "pending-superset-review"
+    },
+    {
+      "candidateId": "nqc-fr-wrapup-024",
+      "sourceBatch": "batch-014",
+      "sourceImage": "screenshots/Screenshot 2026-05-08 at 21.42.40.png",
+      "sourceItemId": "screenshots/Screenshot 2026-05-08 at 21.42.40.png",
+      "newQuestionLocalAnswerKey": "B",
+      "provisionalTopic": "driving-operations",
+      "provisionalSubtopics": [
+        "driving-operations:gears"
+      ],
+      "reviewerNotes": "Codex low-risk createNewQuestion: Source asks which action to take to avoid a tire puncture; correct meaning is 'check your tires periodically' (French B). Top candidate q0125 is about the wrong measure (mismatch). No existing candidate clearly matches the positive phrasing, so create new. Rejected top matcher: Top candidate q0125 asks for the 'wrong' measure (opposite intent), not the positive action in the source.",
+      "status": "pending-superset-review"
+    },
+    {
+      "candidateId": "nqc-fr-wrapup-025",
+      "sourceBatch": "batch-015",
+      "sourceImage": "screenshots/Screenshot 2026-05-08 at 21.43.24.png",
+      "sourceItemId": "screenshots/Screenshot 2026-05-08 at 21.43.24.png",
+      "newQuestionLocalAnswerKey": "A",
+      "provisionalTopic": "road-safety",
+      "provisionalSubtopics": [
+        "road-safety:road-conditions"
+      ],
+      "reviewerNotes": "Codex medium-risk createNewQuestion: Statement 'Snow plows or road maintenance trucks in active operation are given priority' is a valid traffic-safety assertion but no close candidate qid in the shortlist matches this exact rule; recommend creating a new localized question. Answer is 'Yes' (A). Rejected top matcher: Top candidates are snow/icy-driving advice (q0022 etc.) but none explicitly state priority for active snowplows; therefore create new question.",
+      "status": "pending-superset-review"
+    },
+    {
+      "candidateId": "nqc-fr-wrapup-026",
+      "sourceBatch": "batch-015",
+      "sourceImage": "screenshots/Screenshot 2026-05-08 at 21.43.41.png",
+      "sourceItemId": "screenshots/Screenshot 2026-05-08 at 21.43.41.png",
+      "newQuestionLocalAnswerKey": "C",
+      "provisionalTopic": "proper-driving",
+      "provisionalSubtopics": [
+        "proper-driving:safe-driving",
+        "traffic-signals:road-signs"
+      ],
+      "reviewerNotes": "Codex medium-risk createNewQuestion: Safe-driving item about encountering a group of schoolchildren — correct behaviour 'ralentir et passer à vitesse réduite' matches source option C. No strong matching existing qid in shortlist; create new localized question.",
+      "status": "pending-superset-review"
+    },
+    {
+      "candidateId": "nqc-fr-wrapup-027",
+      "sourceBatch": "batch-017",
+      "sourceImage": "screenshots/Screenshot 2026-05-08 at 21.44.49 1.png",
+      "sourceItemId": "screenshots/Screenshot 2026-05-08 at 21.44.49 1.png",
+      "newQuestionLocalAnswerKey": "B",
+      "provisionalTopic": null,
+      "provisionalSubtopics": [],
+      "reviewerNotes": "Codex medium-risk createNewQuestion: No candidate in shortlist exactly addresses 'hitting monuments or public installations' obligation to stop/report; source correct answer is 'No' (B). Create new localized question as no clear existing qid matches. Rejected top matcher: Top candidates were not about responsibility after hitting public installations; none matched semantics closely enough to reuse.",
+      "status": "pending-superset-review"
+    },
+    {
+      "candidateId": "nqc-fr-wrapup-028",
+      "sourceBatch": "batch-015",
+      "sourceImage": "screenshots/Screenshot 2026-05-08 at 21.43.33.png",
+      "sourceItemId": "screenshots/Screenshot 2026-05-08 at 21.43.33.png",
+      "newQuestionLocalAnswerKey": "A",
+      "provisionalTopic": "road-safety",
+      "provisionalSubtopics": [
+        "road-safety:road-conditions"
+      ],
+      "reviewerNotes": "Codex high-risk keepUnresolved: Embedded indicator image is blue (visual semantics suggest high-beam), but French options list low-beam/fog/side/rear fog only; no 'high beam' option — conflict between image semantics and available answers. Cannot resolve reliably.",
+      "status": "pending-superset-review"
+    }
+  ]
+}

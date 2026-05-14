@@ -16,6 +16,7 @@ const IMAGE_TAGS_PATH = "public/qbank/2023-test1/image-color-tags.json";
 const args = parseArgs();
 const allowQuestionsMasterEdit = booleanArg(args, "allow-questions-master-edit", false);
 const allowImageTagCorrection = booleanArg(args, "allow-image-tag-correction", false);
+const allowImageTagStructuralCorrection = booleanArg(args, "allow-image-tag-structural-correction", false);
 const violations = [];
 
 guardQuestionsJson();
@@ -65,12 +66,33 @@ function guardImageColorTags() {
   const imageTagViolations = collectImageTagViolations(headJson, workingJson, IMAGE_TAGS_PATH);
 
   if (imageTagViolations.destructive.length > 0) {
-    violations.push(`${IMAGE_TAGS_PATH} has deletions or structural changes that are not allowed:`);
-    for (const violation of imageTagViolations.destructive.slice(0, 50)) {
-      violations.push(`  ${violation}`);
-    }
-    if (imageTagViolations.destructive.length > 50) {
-      violations.push(`  ... ${imageTagViolations.destructive.length - 50} more violation(s) omitted`);
+    if (allowImageTagCorrection && allowImageTagStructuralCorrection) {
+      console.warn(
+        [
+          "WARNING: image-color-tags.json structural corrections are explicitly allowed.",
+          `Affected structural/deletion/reorder checks: ${imageTagViolations.destructive.length}.`,
+          "This override applies only to public/qbank/2023-test1/image-color-tags.json.",
+        ].join(" "),
+      );
+      for (const violation of imageTagViolations.destructive.slice(0, 10)) {
+        console.warn(`  allowed: ${violation}`);
+      }
+      if (imageTagViolations.destructive.length > 10) {
+        console.warn(`  ... ${imageTagViolations.destructive.length - 10} more structural correction(s) allowed`);
+      }
+    } else {
+      if (allowImageTagStructuralCorrection && !allowImageTagCorrection) {
+        violations.push(
+          "image-color-tags.json structural corrections require both --allow-image-tag-correction true and --allow-image-tag-structural-correction true.",
+        );
+      }
+      violations.push(`${IMAGE_TAGS_PATH} has deletions or structural changes that are not allowed:`);
+      for (const violation of imageTagViolations.destructive.slice(0, 50)) {
+        violations.push(`  ${violation}`);
+      }
+      if (imageTagViolations.destructive.length > 50) {
+        violations.push(`  ... ${imageTagViolations.destructive.length - 50} more violation(s) omitted`);
+      }
     }
   }
 

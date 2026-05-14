@@ -1,0 +1,159 @@
+{
+  "generatedAt": "2026-05-13T04:11:28.649Z",
+  "lang": "fr",
+  "batchId": "batch-016",
+  "dataset": "2023-test1",
+  "scope": "review-preview-only",
+  "sourceWorkbenchDecisionsPath": "qbank-tools/generated/staging/fr-batch-016-workbench-decisions.json",
+  "sourceFullAnswerKeyDecisionsPath": "qbank-tools/generated/staging/fr-batch-016-answer-key-decisions.json",
+  "previewQidCount": 35,
+  "excludedQids": [
+    "q0420"
+  ],
+  "items": [
+    {
+      "qid": "q0870",
+      "confirmedCorrectOptionKey": "A",
+      "unknown": false,
+      "reviewerNotes": "Codex low-risk createNewQuestion: Blue sign shows arrows straight + left (lane allowing straight or left turn). No existing candidate QID clearly encodes 'go straight and turn left' exactly, so create new question; correct local option = A."
+    },
+    {
+      "qid": "q0663",
+      "confirmedCorrectOptionKey": "A",
+      "unknown": false,
+      "reviewerNotes": "Codex high-risk keepUnresolved: Hard-locked qid q0884 is already present in French production/merged history (translations.fr.json). Do not reuse for this source item without manual duplicate review; previous approved match is withheld for QC."
+    },
+    {
+      "qid": "q0507",
+      "confirmedCorrectOptionKey": "B",
+      "unknown": false,
+      "reviewerNotes": "Codex ultra-strict approveExistingQid: Options reordered; French key B (Detention and fine) maps to master C (criminal detention and a fine). Prompt and option-row concepts were checked against qbank; answer key follows French order."
+    },
+    {
+      "qid": "q0767",
+      "confirmedCorrectOptionKey": "C",
+      "unknown": false,
+      "reviewerNotes": "Codex ultra-strict approveExistingQid: Options reordered; French key C (attention danger) maps to master B (watch for danger). Prompt and option-row concepts were checked against qbank; answer key follows French order. Image/tags checked: source tags ! yellow/black; qid tags ! yellow/black."
+    },
+    {
+      "qid": "q0754",
+      "confirmedCorrectOptionKey": "B",
+      "unknown": false,
+      "reviewerNotes": "Codex medium-risk createNewQuestion: Source blue mandatory sign means go straight and turn left; no existing qid safely matches that exact sign/option row. Keep source image and create new with local answer C."
+    },
+    {
+      "qid": "q0453",
+      "confirmedCorrectOptionKey": "B",
+      "unknown": false,
+      "reviewerNotes": "Codex ultra-strict approveExistingQid: MCQ option rows align; French key B (fog lights) maps to master B (use fog lights). Prompt and option-row concepts were checked against qbank; answer key follows French order. Image/tags checked: source tags pov/fog/interior gray/black/white; qid tags pov/fog/mist/foggy white/gray. Rejected top q0497: it is weaker on the strict prompt/option/detail comparison."
+    },
+    {
+      "qid": "q0135",
+      "confirmedCorrectOptionKey": "D",
+      "unknown": false,
+      "reviewerNotes": "Codex ultra-strict approveExistingQid: MCQ option rows align; French key D (Give way to them out of courtesy) maps to master D (yield to the other side as much as possible). Prompt and option-row concepts were checked against qbank; answer key follows French order."
+    },
+    {
+      "qid": "q0722",
+      "confirmedCorrectOptionKey": "C",
+      "unknown": false,
+      "reviewerNotes": "Codex ultra-strict approveExistingQid: Options reordered; French key C (confirm the distance between vehicles) maps to master A (ascertaining the distance between the vehicles). Prompt and option-row concepts were checked against qbank; answer key follows French order. Image/tags checked: source tags pov gray/white/green; qid tags red-circle/roadway green/gray. Rejected top q0598: it is weaker on the strict prompt/option/detail comparison."
+    },
+    {
+      "qid": "q0753",
+      "confirmedCorrectOptionKey": "D",
+      "unknown": false,
+      "reviewerNotes": "Codex medium-risk keepUnresolved: Blue circular sign with a white arrow pointing down-right could mean 'keep right' or 'turn right' depending on local sign convention; source options include both interpretations (B vs D). Visual semantics ambiguous, so unresolved. Rejected top matcher: Machine top candidate (q0868) interprets as 'turn right' but visual/layout and option set allow multiple legitimate readings."
+    },
+    {
+      "qid": "q0389",
+      "confirmedCorrectOptionKey": "C",
+      "unknown": false,
+      "reviewerNotes": "Codex ultra-strict approveExistingQid: Options reordered; French key C (Forbid passengers from getting in or out of the vehicle) maps to master B (passengers cannot get off). Prompt and option-row concepts were checked against qbank; answer key follows French order. Rejected top q0381: it is weaker on the strict prompt/option/detail comparison."
+    },
+    {
+      "qid": "q0408",
+      "confirmedCorrectOptionKey": "A",
+      "unknown": false,
+      "reviewerNotes": "Codex ultra-strict approveExistingQid: MCQ option rows align; French key A (the far left lane) maps to master A (the far left lane). Prompt and option-row concepts were checked against qbank; answer key follows French order. Image/tags checked: source tags pov/intersection/arrow blue/green/white; qid tags pov/green-light blue/gray."
+    },
+    {
+      "qid": "q0618",
+      "confirmedCorrectOptionKey": "A",
+      "unknown": false,
+      "reviewerNotes": "Codex high-risk keepUnresolved: Image shows a left stalk; machine top q0618 indicates a combined 'headlights and turn signals' control (master correct D), but none of the source options explicitly say 'headlights and turn signals'. Source option A ('headlight switch') is narrower. Insufficient confidence to map master answer to a source letter."
+    },
+    {
+      "qid": "q0381",
+      "confirmedCorrectOptionKey": "A",
+      "unknown": false,
+      "reviewerNotes": "Codex ultra-strict approveExistingQid: MCQ option rows align; French key A (turn on its hazard lights) maps to master A (turn on the hazard lights). Prompt and option-row concepts were checked against qbank; answer key follows French order."
+    },
+    {
+      "qid": "q0605",
+      "confirmedCorrectOptionKey": "A",
+      "unknown": false,
+      "reviewerNotes": "Codex ultra-strict approveExistingQid: MCQ option rows align; French key A (The seatbelt is not properly fastened) maps to master A (driver is has not fastened their seatbelt). Prompt and option-row concepts were checked against qbank; answer key follows French order. Image/tags checked: source tags seatbelt/dashboard-indicator red/gray; qid tags seatbelt red/gray."
+    },
+    {
+      "qid": "q0850",
+      "confirmedCorrectOptionKey": "A",
+      "unknown": false,
+      "reviewerNotes": "Codex ultra-strict approveExistingQid: Options reordered; French key A (It is forbidden to drive in the lanes on each side of the vehicle) maps to master D (can not run in the lane of neither side). Prompt and option-row concepts were checked against qbank; answer key follows French order. Image/tags checked: source tags pov/blue car/city/traffic-light blue/green/gray; qid tags pov/car/blue-car/building blue/gray."
+    },
+    {
+      "qid": "q0155",
+      "confirmedCorrectOptionKey": "B",
+      "unknown": false,
+      "reviewerNotes": "Codex ultra-strict approveExistingQid: MCQ option rows align; French key B (do not enter the intersection) maps to master B (cannot enter the intersection). Prompt and option-row concepts were checked against qbank; answer key follows French order."
+    },
+    {
+      "qid": "q0664",
+      "confirmedCorrectOptionKey": "C",
+      "unknown": false,
+      "reviewerNotes": "Codex high-risk keepUnresolved: Hard-locked qid q0782 is already present in French production/merged history (translations.fr.json). Do not reuse for this source item without manual duplicate review; previous approved match is withheld for QC."
+    },
+    {
+      "qid": "q0378",
+      "confirmedCorrectOptionKey": "B",
+      "unknown": false,
+      "reviewerNotes": "Codex ultra-strict approveExistingQid: MCQ option rows align; French key B (yield in due time) maps to master B (yield). Prompt and option-row concepts were checked against qbank; answer key follows French order. Image/tags checked: source tags red-car/police-car red/white/black; qid tags car/red-car/police-car/popo white/gray."
+    },
+    {
+      "qid": "q0745",
+      "confirmedCorrectOptionKey": "B",
+      "unknown": false,
+      "reviewerNotes": "Codex ultra-strict approveExistingQid: Options reordered; French key B (road width gradually increases) maps to master A (gradual road width). Prompt and option-row concepts were checked against qbank; answer key follows French order. Image/tags checked: source tags roadway/yellow-line yellow/gray/white; qid tags red-circle/yellow-line/yellow-sign/roadway gray/yellow."
+    },
+    {
+      "qid": "q0447",
+      "confirmedCorrectOptionKey": "D",
+      "unknown": false,
+      "reviewerNotes": "Codex ultra-strict approveExistingQid: Options reordered; French key D (30) maps to master A (30 days). Prompt and option-row concepts were checked against qbank; answer key follows French order. Rejected top q0142: it is weaker on the strict prompt/option/detail comparison."
+    },
+    {
+      "qid": "q0873",
+      "confirmedCorrectOptionKey": "C",
+      "unknown": false,
+      "reviewerNotes": "Codex ultra-strict approveExistingQid: Options reordered; French key C (Lane separator that cannot be crossed for traffic in opposite directions) maps to master B (opposite direction lanes dividing line that can not be crossed). Prompt and option-row concepts were checked against qbank; answer key follows French order. Image/tags checked: source tags car yellow/white/gray; qid tags needs-tag-review yellow/gray."
+    },
+    {
+      "qid": "q0804",
+      "confirmedCorrectOptionKey": "C",
+      "unknown": false,
+      "reviewerNotes": "Codex ultra-strict approveExistingQid: MCQ option rows align; French key C (yellow grid) maps to master C (cross-hatched marking). Prompt and option-row concepts were checked against qbank; answer key follows French order. Image/tags checked: source tags intersection/roadway yellow/gray/white; qid tags intersection/crosswalk/square/yellow-square gray/white/yellow."
+    },
+    {
+      "qid": "q0818",
+      "confirmedCorrectOptionKey": "C",
+      "unknown": false,
+      "reviewerNotes": "Codex ultra-strict approveExistingQid: MCQ option rows align; French key C (one-way road straight ahead) maps to master C (straight one-way road). Prompt and option-row concepts were checked against qbank; answer key follows French order. Image/tags checked: source tags arrow blue/white; qid tags arrow blue/white."
+    },
+    {
+      "qid": "q0883",
+      "confirmedCorrectOptionKey": "B",
+      "unknown": false,
+      "reviewerNotes": "Codex ultra-strict approveExistingQid: Options reordered; French key B (warning of the right highway exit) maps to master A (highway right exit ahead). Prompt and option-row concepts were checked against qbank; answer key follows French order. Image/tags checked: source tags arrow/chinese-text/48 green/white/red; qid tags chinese-text/g24/48 green/white/red."
+    }
+  ]
+}

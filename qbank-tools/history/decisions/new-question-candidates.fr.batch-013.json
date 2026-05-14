@@ -1,0 +1,46 @@
+{
+  "generatedAt": "2026-05-12T05:16:31.953Z",
+  "lang": "fr",
+  "batchId": "batch-013",
+  "dataset": "2023-test1",
+  "sourceDecisionPath": "qbank-tools/generated/staging/new-question-decisions.fr.batch-013.json",
+  "items": [
+    {
+      "candidateId": "nqc-fr-batch-013-001",
+      "sourceLang": "fr",
+      "sourceImage": "screenshots/Screenshot 2026-05-08 at 21.42.18.png",
+      "effectiveQuestionType": "ROW",
+      "promptRawJa": "Quand s'allume, il faut verser de l'essence dans le moteur.",
+      "promptGlossEn": "When this light comes on, you need to pour gasoline into the engine.",
+      "optionsRawJa": [
+        "A Yes",
+        "B No"
+      ],
+      "optionsGlossEn": [
+        "Yes",
+        "No"
+      ],
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "newQuestionLocalAnswerKey": "A",
+      "provisionalTopic": "driving-operations",
+      "provisionalSubtopics": [
+        "driving-operations:indicators"
+      ],
+      "topicConfidence": 0,
+      "topicSignals": [],
+      "linkedExistingAssetCandidate": {
+        "qid": "q0542",
+        "number": 542,
+        "score": 70.352,
+        "currentAssetSrc": "/qbank/2023-test1/images/img_b564bb5061f7b52e40500214725f59e2.jpeg",
+        "assetHashes": [
+          "b564bb5061f7b52e40500214725f59e2"
+        ],
+        "status": "unconfirmed-existing-production-asset"
+      },
+      "reviewerNotes": "Codex medium-risk createNewQuestion: Image shows fuel‑pump/fuel indicator. Source asks if light means add gasoline — a valid ROW (Yes/No) item. No clear existing candidate for fuel indicator in top matches, so create new question; source 'Yes' = A.",
+      "status": "pending-superset-review"
+    }
+  ]
+}
