@@ -34,6 +34,16 @@ const LANGUAGE_CONFIGS = {
     terminologyInstruction: "Use natural, exam-appropriate Russian driving/legal terminology.",
     scriptInstruction: "Use Russian Cyrillic. Do not output Japanese, Chinese, English-only text, or romaji.",
   },
+  fr: {
+    code: "fr",
+    englishName: "French",
+    nativeName: "français",
+    outputLabel: "French / français",
+    textExample: "Texte français",
+    optionExample: "Option française",
+    terminologyInstruction: "Use natural, exam-appropriate French traffic, driving, legal, road-sign, and dashboard terminology.",
+    scriptInstruction: "Use French. Do not output Japanese, Chinese, Russian, Cyrillic, or English-only text.",
+  },
 };
 
 export function backfillPaths({ lang, dataset = DEFAULT_DATASET, input = null } = {}) {
@@ -119,6 +129,31 @@ export function detectWrongLanguage(text, lang) {
       return {
         wrong: true,
         reason: "contains no Cyrillic script and appears to be English/romaji while target language is Russian / русский",
+        counts,
+      };
+    }
+    return { wrong: false, reason: "", counts };
+  }
+
+  if (config.code === "fr") {
+    if (counts.japanese > 0) {
+      return {
+        wrong: true,
+        reason: "contains Japanese/Chinese script while target language is French / français",
+        counts,
+      };
+    }
+    if (counts.cyrillic > 0) {
+      return {
+        wrong: true,
+        reason: "contains Cyrillic/Russian script while target language is French / français",
+        counts,
+      };
+    }
+    if (looksEnglishOnly(value)) {
+      return {
+        wrong: true,
+        reason: "appears to be English-only text while target language is French / français",
         counts,
       };
     }
@@ -292,6 +327,22 @@ export function cleanTag(value) {
 
 function countMatches(value, pattern) {
   return [...String(value ?? "").matchAll(pattern)].length;
+}
+
+function looksEnglishOnly(text) {
+  const value = String(text ?? "").toLowerCase();
+  const frenchSignals = [
+    /[àâæçéèêëîïôœùûüÿ]/u,
+    /\b(le|la|les|un|une|des|du|de|dans|sur|avec|pour|par|est|sont|doit|doivent|conducteur|véhicule|route|feu|panneau|interdit|autorisé|avant|arrière|droite|gauche)\b/u,
+  ];
+  if (frenchSignals.some((pattern) => pattern.test(value))) {
+    return false;
+  }
+
+  const englishSignals = [
+    /\b(the|and|should|must|driver|vehicle|road|traffic|sign|light|speed|when|where|which|what|can|may|not|wrong|right)\b/u,
+  ];
+  return englishSignals.some((pattern) => pattern.test(value));
 }
 
 export function imageInfo(question, imageTagsDoc) {

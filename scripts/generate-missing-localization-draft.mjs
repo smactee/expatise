@@ -29,8 +29,10 @@ const dataset = String(args.dataset ?? DEFAULT_DATASET).trim() || DEFAULT_DATASE
 const limit = parseLimit(args.limit);
 const apply = booleanArg(args, "apply", false);
 const noAi = booleanArg(args, "no-ai", false);
+const resume = booleanArg(args, "resume", false);
 const model = String(args.model ?? "gpt-5-mini").trim() || "gpt-5-mini";
 const batchSize = parseBatchSize(args["batch-size"] ?? 10);
+const requestTimeoutMs = parsePositiveInteger(args["request-timeout-ms"] ?? 60000, "--request-timeout-ms");
 const paths = backfillPaths({ lang, dataset, input: args.input });
 const inputPath = args.input ? paths.generatedDraftPath : paths.missingItemsPath;
 
@@ -42,9 +44,12 @@ const inputDoc = readJson(inputPath);
 const sourceItems = Array.isArray(inputDoc?.items) ? inputDoc.items : [];
 const items = limit ? sourceItems.slice(0, limit) : sourceItems;
 const apiKey = noAi ? null : process.env.OPENAI_API_KEY ?? (await readOpenAIKeyFromDotenv());
-const client = apiKey ? new OpenAI({ apiKey }) : null;
+const client = apiKey ? new OpenAI({ apiKey, timeout: requestTimeoutMs }) : null;
+const resumeByQid = resume && fileExists(paths.generatedDraftPath)
+  ? reusableGeneratedItems(readJson(paths.generatedDraftPath))
+  : new Map();
 const generatedItems = client
-  ? await generateWithOpenAI({ client, model, lang, items, batchSize })
+  ? await generateWithOpenAI({ client, model, lang, items, batchSize, resumeByQid })
   : items.map((item) => placeholderItem(item, {
       provider: null,
       model: null,
@@ -68,6 +73,8 @@ const output = {
     outputPath: relative(paths.generatedDraftPath),
     limit,
     batchSize,
+    requestTimeoutMs,
+    resume,
     note: client
       ? "Generated from English master. All items still require human review before merge."
       : "No AI generation was available; output contains fail-closed placeholders only.",
@@ -89,36 +96,61 @@ console.log(`AI generation used: ${client ? "yes" : "no"}`);
 console.log(`Generated translations: ${generatedCount}`);
 console.log("Production translations modified: no");
 
-async function generateWithOpenAI({ client, model, lang, items, batchSize }) {
-  const out = [];
-  for (let index = 0; index < items.length; index += batchSize) {
-    const batch = items.slice(index, index + batchSize);
+async function generateWithOpenAI({ client, model, lang, items, batchSize, resumeByQid }) {
+  const generatedByQid = new Map(resumeByQid);
+  const pendingItems = items.filter((item) => !generatedByQid.has(item.qid));
+
+  if (generatedByQid.size > 0) {
+    console.log(`Resuming from ${generatedByQid.size} reusable generated item(s).`);
+  }
+
+  for (let index = 0; index < pendingItems.length; index += batchSize) {
+    const batch = pendingItems.slice(index, index + batchSize);
     try {
       const parsed = await translateBatch({ client, model, lang, batch });
       const byQid = new Map(parsed.items.map((item) => [String(item.qid ?? "").trim(), item]));
       for (const sourceItem of batch) {
         const generated = byQid.get(sourceItem.qid);
         if (!generated) {
-          out.push(placeholderItem(sourceItem, {
+          generatedByQid.set(sourceItem.qid, placeholderItem(sourceItem, {
             provider: "openai",
             model,
             warning: "OpenAI response omitted this qid; no trusted translation was produced.",
           }));
           continue;
         }
-        out.push(normalizeGeneratedItem(sourceItem, generated, { provider: "openai", model }));
+        generatedByQid.set(sourceItem.qid, normalizeGeneratedItem(sourceItem, generated, { provider: "openai", model }));
       }
     } catch (error) {
       for (const sourceItem of batch) {
-        out.push(placeholderItem(sourceItem, {
+        generatedByQid.set(sourceItem.qid, placeholderItem(sourceItem, {
           provider: "openai",
           model,
           warning: `OpenAI generation failed for this batch: ${error.message ?? error}`,
         }));
       }
     }
+    await writeProgressDraft({
+      items,
+      generatedByQid,
+      sourceItems,
+      client,
+      model,
+      limit,
+      batchSize,
+      requestTimeoutMs,
+      resume,
+      inputPath,
+      paths,
+    });
+    console.log(`Progress: ${Math.min(index + batch.length, pendingItems.length)}/${pendingItems.length} pending batch items processed.`);
   }
-  return out;
+
+  return items.map((item) => generatedByQid.get(item.qid) ?? placeholderItem(item, {
+    provider: "openai",
+    model,
+    warning: "Generation did not complete for this qid.",
+  }));
 }
 
 async function translateBatch({ client, model, lang, batch }) {
@@ -323,6 +355,71 @@ function baseGeneratedItem(sourceItem, { generatedTranslation, generationStatus,
   };
 }
 
+async function writeProgressDraft({
+  items,
+  generatedByQid,
+  sourceItems,
+  client,
+  model,
+  limit,
+  batchSize,
+  requestTimeoutMs,
+  resume,
+  inputPath,
+  paths,
+}) {
+  const progressItems = items.map((item) => generatedByQid.get(item.qid) ?? placeholderItem(item, {
+    provider: "openai",
+    model,
+    warning: "Generation pending; progress draft was written before this qid completed.",
+  }));
+  const generatedCount = progressItems.filter((item) => item.generationStatus === "generated").length;
+  await writeJson(paths.generatedDraftPath, {
+    meta: {
+      generatedAt: new Date().toISOString(),
+      source: BACKFILL_SOURCE,
+      lang,
+      dataset,
+      applyRequested: apply,
+      aiGenerationUsed: Boolean(client),
+      generationModel: client ? model : null,
+      productionModified: false,
+      inputPath: relative(inputPath),
+      outputPath: relative(paths.generatedDraftPath),
+      limit,
+      batchSize,
+      requestTimeoutMs,
+      resume,
+      progressDraft: true,
+      note: "Progress draft from English master generation. Completed items can be reused with --resume true.",
+    },
+    counts: {
+      inputItems: sourceItems.length,
+      emittedItems: progressItems.length,
+      generatedItems: generatedCount,
+      notGeneratedItems: progressItems.length - generatedCount,
+    },
+    items: progressItems,
+  });
+}
+
+function reusableGeneratedItems(doc) {
+  const out = new Map();
+  const items = Array.isArray(doc?.items) ? doc.items : [];
+  for (const item of items) {
+    if (!isReusableGeneratedItem(item)) continue;
+    out.set(String(item.qid), item);
+  }
+  return out;
+}
+
+function isReusableGeneratedItem(item) {
+  if (!item?.qid) return false;
+  if (!["generated", "partial"].includes(String(item.generationStatus ?? ""))) return false;
+  const prompt = String(item?.generatedTranslation?.prompt ?? "").trim();
+  return Boolean(prompt);
+}
+
 async function readOpenAIKeyFromDotenv() {
   for (const fileName of [".env.local", ".env"]) {
     try {
@@ -351,6 +448,14 @@ function parseBatchSize(value) {
   const parsed = Number(value);
   if (!Number.isInteger(parsed) || parsed <= 0 || parsed > 25) {
     throw new Error(`Invalid --batch-size: ${value}. Use 1-25.`);
+  }
+  return parsed;
+}
+
+function parsePositiveInteger(value, label) {
+  const parsed = Number(value);
+  if (!Number.isInteger(parsed) || parsed <= 0) {
+    throw new Error(`Invalid ${label}: ${value}. Use a positive integer.`);
   }
   return parsed;
 }

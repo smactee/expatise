@@ -14,10 +14,31 @@ const reportMdPath = path.join(REPORTS_DIR, "fr-ship-readiness-report.md");
 const questions = questionArray(readJson(path.join(DATASET_DIR, "questions.json")));
 const rawQuestions = questionArray(readJson(path.join(DATASET_DIR, "questions.raw.json")));
 const frTranslations = translationQuestions(readJson(path.join(DATASET_DIR, "translations.fr.json")));
-const finalPreview = readJson(path.join(STAGING_DIR, "fr-new-question-promotion-final-preview.json"));
-const unresolved = readJsonIfExists(path.join(STAGING_DIR, "fr-new-question-promotion-unresolved.json"), { items: [] });
-const rejected = readJsonIfExists(path.join(STAGING_DIR, "fr-new-question-promotion-rejected.json"), { items: [] });
-const workbenchDecisions = readJsonIfExists(path.join(STAGING_DIR, "fr-new-question-promotion-workbench-decisions.json"), { items: [] });
+const previousReadiness = readJsonIfExists(reportJsonPath, null);
+const finalPreview = readJsonIfExists(
+  path.join(STAGING_DIR, "fr-new-question-promotion-final-preview.json"),
+  previousReadiness
+    ? { items: asArray(previousReadiness.promotedQids).map((qid) => ({ proposedQid: qid })), recoveredFromPreviousReadinessReport: true }
+    : { items: [], missingArtifact: true },
+);
+const unresolved = readJsonIfExists(
+  path.join(STAGING_DIR, "fr-new-question-promotion-unresolved.json"),
+  previousReadiness
+    ? { items: asArray(previousReadiness.unresolvedRemaining).map((itemId) => ({ itemId })), recoveredFromPreviousReadinessReport: true }
+    : { items: [], missingArtifact: true },
+);
+const rejected = readJsonIfExists(
+  path.join(STAGING_DIR, "fr-new-question-promotion-rejected.json"),
+  previousReadiness
+    ? { items: asArray(previousReadiness.rejectedRemaining).map((itemId) => ({ itemId })), recoveredFromPreviousReadinessReport: true }
+    : { items: [], missingArtifact: true },
+);
+const workbenchDecisions = readJsonIfExists(
+  path.join(STAGING_DIR, "fr-new-question-promotion-workbench-decisions.json"),
+  previousReadiness
+    ? { items: asArray(previousReadiness.skippedRemaining).map((itemId) => ({ itemId, reviewed: false })), recoveredFromPreviousReadinessReport: true }
+    : { items: [], missingArtifact: true },
+);
 const promotionApplyReport = readJsonIfExists(path.join(REPORTS_DIR, "fr-new-question-promotion-apply-report.json"), null);
 const propagationReport = readJsonIfExists(path.join(REPORTS_DIR, "propagation-report.json"), null);
 const coverageReport = readJsonIfExists(path.join(REPORTS_DIR, "localization-coverage-matrix.fr.wrapup.json"), null);
@@ -133,6 +154,12 @@ const report = {
     warnings: warnings.length,
     warningTypes: countBy(warnings, (warning) => warning?.type ?? "unknown"),
   },
+  artifactSources: {
+    promotionPreviewRecoveredFromPreviousReport: finalPreview.recoveredFromPreviousReadinessReport === true,
+    unresolvedRecoveredFromPreviousReport: unresolved.recoveredFromPreviousReadinessReport === true,
+    rejectedRecoveredFromPreviousReport: rejected.recoveredFromPreviousReadinessReport === true,
+    skippedRecoveredFromPreviousReport: workbenchDecisions.recoveredFromPreviousReadinessReport === true,
+  },
 };
 
 fs.mkdirSync(REPORTS_DIR, { recursive: true });
@@ -160,6 +187,10 @@ function questionArray(doc) {
 
 function translationQuestions(doc) {
   return doc?.questions && typeof doc.questions === "object" && !Array.isArray(doc.questions) ? doc.questions : {};
+}
+
+function asArray(value) {
+  return Array.isArray(value) ? value : [];
 }
 
 function questionArrayQids(items) {

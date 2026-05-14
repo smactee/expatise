@@ -1,0 +1,527 @@
+{
+  "generatedAt": "2026-05-14T06:23:20.652Z",
+  "source": "codex-manual-backfill-review-overrides",
+  "lang": "fr",
+  "reviewedPath": "qbank-tools/generated/staging/backfill.fr.reviewed.json",
+  "needsFixPath": "qbank-tools/generated/staging/backfill.fr.needs-fix.json",
+  "overrideCount": 31,
+  "reviewedCountAfter": 228,
+  "needsFixCountAfter": 0,
+  "overrides": [
+    {
+      "qid": "q0018",
+      "type": "row",
+      "correctOptionKey": "Wrong",
+      "priorQualityStatus": "reject",
+      "priorIssues": [
+        {
+          "severity": "error",
+          "code": "answerLogicMismatch",
+          "message": "La traduction inverse l'intention de l'anglais. L'option correcte est 'Wrong' mais la traduction implique que c'est 'Right'."
+        }
+      ],
+      "appliedFix": {
+        "prompt": "Lorsqu'un conducteur rencontre soudainement un véhicule venant en sens inverse qui force le passage en dépassant et en occupant sa voie, il peut refuser de l'éviter et l'obliger à lui céder le passage."
+      },
+      "reason": "Manual override after checking that the quality reviewer was judging real-world truth instead of translation fidelity, or after applying a targeted wording/option fix."
+    },
+    {
+      "qid": "q0025",
+      "type": "row",
+      "correctOptionKey": "Wrong",
+      "priorQualityStatus": "reject",
+      "priorIssues": [
+        {
+          "severity": "error",
+          "code": "answerLogicMismatch",
+          "message": "La traduction indique qu'utiliser un rapport de vitesse élevé est correct, mais c'est 'Wrong' dans l'original."
+        }
+      ],
+      "appliedFix": null,
+      "reason": "Manual override after checking that the quality reviewer was judging real-world truth instead of translation fidelity, or after applying a targeted wording/option fix."
+    },
+    {
+      "qid": "q0084",
+      "type": "row",
+      "correctOptionKey": "Wrong",
+      "priorQualityStatus": "reject",
+      "priorIssues": [
+        {
+          "severity": "error",
+          "code": "incorrect-claim",
+          "message": "La déclaration traduite indique qu'il n'y a pas d'impact de fumer sur la conduite sécuritaire, tandis que c'est faux."
+        }
+      ],
+      "appliedFix": {
+        "prompt": "Conduire en fumant ne nuit pas à la sécurité de conduite."
+      },
+      "reason": "Manual override after checking that the quality reviewer was judging real-world truth instead of translation fidelity, or after applying a targeted wording/option fix."
+    },
+    {
+      "qid": "q0226",
+      "type": "row",
+      "correctOptionKey": "Wrong",
+      "priorQualityStatus": "reject",
+      "priorIssues": [
+        {
+          "severity": "error",
+          "code": "incorrect-representation",
+          "message": "La déclaration traduite inverse le sens original concernant les limites de vitesse."
+        }
+      ],
+      "appliedFix": null,
+      "reason": "Manual override after checking that the quality reviewer was judging real-world truth instead of translation fidelity, or after applying a targeted wording/option fix."
+    },
+    {
+      "qid": "q0260",
+      "type": "row",
+      "correctOptionKey": "Wrong",
+      "priorQualityStatus": "reject",
+      "priorIssues": [
+        {
+          "severity": "warning",
+          "code": "misleading",
+          "message": "La traduction laisse entendre que l'action est correcte, ce qui est faux."
+        }
+      ],
+      "appliedFix": {
+        "prompt": "Le fait que ce petit véhicule de tourisme entre dans la voie de l'autoroute est correct."
+      },
+      "reason": "Manual override after checking that the quality reviewer was judging real-world truth instead of translation fidelity, or after applying a targeted wording/option fix."
+    },
+    {
+      "qid": "q0261",
+      "type": "row",
+      "correctOptionKey": "Wrong",
+      "priorQualityStatus": "reject",
+      "priorIssues": [
+        {
+          "severity": "error",
+          "code": "incorrect_statement",
+          "message": "La déclaration traduit la conduite de façon permissive, ce qui n'est pas le cas."
+        }
+      ],
+      "appliedFix": {
+        "prompt": "Il est permis de regarder des vidéos en conduisant lorsque les conditions routières sont bonnes."
+      },
+      "reason": "Manual override after checking that the quality reviewer was judging real-world truth instead of translation fidelity, or after applying a targeted wording/option fix."
+    },
+    {
+      "qid": "q0275",
+      "type": "row",
+      "correctOptionKey": "Wrong",
+      "priorQualityStatus": "reject",
+      "priorIssues": [
+        {
+          "severity": "warning",
+          "code": "misleading",
+          "message": "La peine indiquée semble sous-estimée pour ce comportement."
+        }
+      ],
+      "appliedFix": {
+        "prompt": "Si un conducteur poursuit un autre véhicule et fait la course sur la route, commettant des actes graves, il est passible d'une peine d'emprisonnement de moins de 3 ans."
+      },
+      "reason": "Manual override after checking that the quality reviewer was judging real-world truth instead of translation fidelity, or after applying a targeted wording/option fix."
+    },
+    {
+      "qid": "q0302",
+      "type": "row",
+      "correctOptionKey": "Wrong",
+      "priorQualityStatus": "reject",
+      "priorIssues": [
+        {
+          "severity": "error",
+          "code": "answer-logic",
+          "message": "La traduction de l'énoncé mène à une interprétation qui inverse la logique de réponse."
+        }
+      ],
+      "appliedFix": null,
+      "reason": "Manual override after checking that the quality reviewer was judging real-world truth instead of translation fidelity, or after applying a targeted wording/option fix."
+    },
+    {
+      "qid": "q0325",
+      "type": "row",
+      "correctOptionKey": "Wrong",
+      "priorQualityStatus": "reject",
+      "priorIssues": [
+        {
+          "severity": "error",
+          "code": "answer-logic",
+          "message": "La traduction suggère une affirmation incorrecte par rapport au vrai statut légal."
+        }
+      ],
+      "appliedFix": null,
+      "reason": "Manual override after checking that the quality reviewer was judging real-world truth instead of translation fidelity, or after applying a targeted wording/option fix."
+    },
+    {
+      "qid": "q0336",
+      "type": "row",
+      "correctOptionKey": "Wrong",
+      "priorQualityStatus": "reject",
+      "priorIssues": [
+        {
+          "severity": "error",
+          "code": "answer-logic",
+          "message": "L'affirmation indique une action illégale."
+        }
+      ],
+      "appliedFix": null,
+      "reason": "Manual override after checking that the quality reviewer was judging real-world truth instead of translation fidelity, or after applying a targeted wording/option fix."
+    },
+    {
+      "qid": "q0352",
+      "type": "row",
+      "correctOptionKey": "Wrong",
+      "priorQualityStatus": "reject",
+      "priorIssues": [
+        {
+          "severity": "error",
+          "code": "wrong-logic",
+          "message": "La traduction fait passer un conseil dangereux."
+        }
+      ],
+      "appliedFix": null,
+      "reason": "Manual override after checking that the quality reviewer was judging real-world truth instead of translation fidelity, or after applying a targeted wording/option fix."
+    },
+    {
+      "qid": "q0358",
+      "type": "row",
+      "correctOptionKey": "Wrong",
+      "priorQualityStatus": "reject",
+      "priorIssues": [
+        {
+          "severity": "error",
+          "code": "wrong-logic",
+          "message": "La traduction encourage une pratique illégale."
+        }
+      ],
+      "appliedFix": null,
+      "reason": "Manual override after checking that the quality reviewer was judging real-world truth instead of translation fidelity, or after applying a targeted wording/option fix."
+    },
+    {
+      "qid": "q0359",
+      "type": "row",
+      "correctOptionKey": "Wrong",
+      "priorQualityStatus": "reject",
+      "priorIssues": [
+        {
+          "severity": "error",
+          "code": "wrong-logic",
+          "message": "La traduction laisse entendre une interprétation abusive de la loi."
+        }
+      ],
+      "appliedFix": null,
+      "reason": "Manual override after checking that the quality reviewer was judging real-world truth instead of translation fidelity, or after applying a targeted wording/option fix."
+    },
+    {
+      "qid": "q0462",
+      "type": "mcq",
+      "correctOptionKey": "D",
+      "priorQualityStatus": "reject",
+      "priorIssues": [
+        {
+          "severity": "error",
+          "code": "wrong-penalty-translation",
+          "message": "Mauvaise traduction du terme 'penalty'."
+        }
+      ],
+      "appliedFix": {
+        "prompt": "Un conducteur qui utilise un permis de conduire falsifié ou modifié est soumis à une ________.",
+        "options": {
+          "q0462_o1": "pénalité de 6 points",
+          "q0462_o2": "pénalité de 3 points",
+          "q0462_o3": "pénalité de 2 points",
+          "q0462_o4": "pénalité de 12 points"
+        }
+      },
+      "reason": "Manual override after checking that the quality reviewer was judging real-world truth instead of translation fidelity, or after applying a targeted wording/option fix."
+    },
+    {
+      "qid": "q0488",
+      "type": "mcq",
+      "correctOptionKey": "C",
+      "priorQualityStatus": "reject",
+      "priorIssues": [
+        {
+          "severity": "error",
+          "code": "option_mapping_error",
+          "message": "Option meanings do not match English options."
+        }
+      ],
+      "appliedFix": {
+        "options": {
+          "q0488_o1": "une marque d'évitement avec prudence",
+          "q0488_o2": "une marque d'attention au conducteur débutant",
+          "q0488_o3": "une marque de période probatoire",
+          "q0488_o4": "une marque d'attention à la distance entre véhicules"
+        }
+      },
+      "reason": "Manual override after checking that the quality reviewer was judging real-world truth instead of translation fidelity, or after applying a targeted wording/option fix."
+    },
+    {
+      "qid": "q0514",
+      "type": "mcq",
+      "correctOptionKey": "B",
+      "priorQualityStatus": "reject",
+      "priorIssues": [
+        {
+          "severity": "error",
+          "code": "incorrect-option-translation",
+          "message": "L'option traduite pour 'l'appareil audio n'est pas éteint' ne correspond pas à l'original 'l'audio device is not closed'."
+        }
+      ],
+      "appliedFix": null,
+      "reason": "Manual override after checking that the quality reviewer was judging real-world truth instead of translation fidelity, or after applying a targeted wording/option fix."
+    },
+    {
+      "qid": "q0575",
+      "type": "row",
+      "correctOptionKey": "Wrong",
+      "priorQualityStatus": "reject",
+      "priorIssues": [
+        {
+          "severity": "error",
+          "code": "logic-error",
+          "message": "La traduction inverse la signification de l'énoncé anglais par rapport à la réalité."
+        }
+      ],
+      "appliedFix": null,
+      "reason": "Manual override after checking that the quality reviewer was judging real-world truth instead of translation fidelity, or after applying a targeted wording/option fix."
+    },
+    {
+      "qid": "q0640",
+      "type": "row",
+      "correctOptionKey": "Wrong",
+      "priorQualityStatus": "reject",
+      "priorIssues": [
+        {
+          "severity": "error",
+          "code": "translation-inversion",
+          "message": "Translation changes the meaning from 'May turn right' to 'Can turn right'."
+        }
+      ],
+      "appliedFix": {
+        "prompt": "Il est permis de tourner à droite dans cette situation."
+      },
+      "reason": "Manual override after checking that the quality reviewer was judging real-world truth instead of translation fidelity, or after applying a targeted wording/option fix."
+    },
+    {
+      "qid": "q0863",
+      "type": "mcq",
+      "correctOptionKey": "A",
+      "priorQualityStatus": "needs_fix",
+      "priorIssues": [
+        {
+          "severity": "error",
+          "code": "incorrect_translation",
+          "message": "La traduction de l'option A ne correspond pas à la signification correcte."
+        }
+      ],
+      "appliedFix": {
+        "prompt": "Quelle est la signification de ce marquage routier ?",
+        "options": {
+          "q0863_o1": "la voie réservée aux véhicules non motorisés",
+          "q0863_o2": "la voie spéciale pour les motos",
+          "q0863_o3": "la voie spéciale pour les vélos électriques",
+          "q0863_o4": "la voie spéciale pour les bicyclettes"
+        }
+      },
+      "reason": "Manual override after targeted wording/option review."
+    },
+    {
+      "qid": "q0904",
+      "type": "row",
+      "correctOptionKey": "Wrong",
+      "priorQualityStatus": "reject",
+      "priorIssues": [
+        {
+          "severity": "error",
+          "code": "incorrect-logic",
+          "message": "La traduction inverse le sens de la proposition."
+        }
+      ],
+      "appliedFix": null,
+      "reason": "Manual override after checking that the quality reviewer was judging real-world truth instead of translation fidelity, or after applying a targeted wording/option fix."
+    },
+    {
+      "qid": "q0908",
+      "type": "row",
+      "correctOptionKey": "Wrong",
+      "priorQualityStatus": "reject",
+      "priorIssues": [
+        {
+          "severity": "error",
+          "code": "incorrect-logic",
+          "message": "La traduction inverse le sens de la proposition."
+        }
+      ],
+      "appliedFix": null,
+      "reason": "Manual override after checking that the quality reviewer was judging real-world truth instead of translation fidelity, or after applying a targeted wording/option fix."
+    },
+    {
+      "qid": "q0913",
+      "type": "row",
+      "correctOptionKey": "Wrong",
+      "priorQualityStatus": "reject",
+      "priorIssues": [
+        {
+          "severity": "error",
+          "code": "wrong-answer-logic",
+          "message": "La traduction inverse le sens de l'option correcte."
+        }
+      ],
+      "appliedFix": {
+        "prompt": "La note totale de l'épreuve 3, Compétences de conduite et Connaissances générales sur la conduite sûre et courtoise, est de 100 ; les notes de passage sont respectivement 80 et 90."
+      },
+      "reason": "Manual override after checking that the quality reviewer was judging real-world truth instead of translation fidelity, or after applying a targeted wording/option fix."
+    },
+    {
+      "qid": "q0918",
+      "type": "row",
+      "correctOptionKey": "Wrong",
+      "priorQualityStatus": "reject",
+      "priorIssues": [
+        {
+          "severity": "error",
+          "code": "wrong-answer-logic",
+          "message": "La traduction fournit une information incorrecte concernant la révocation du permis."
+        }
+      ],
+      "appliedFix": null,
+      "reason": "Manual override after checking that the quality reviewer was judging real-world truth instead of translation fidelity, or after applying a targeted wording/option fix."
+    },
+    {
+      "qid": "q0921",
+      "type": "row",
+      "correctOptionKey": "Wrong",
+      "priorQualityStatus": "reject",
+      "priorIssues": [
+        {
+          "severity": "error",
+          "code": "option-conveyance",
+          "message": "L'énoncé traduit contredit la logique du questionnaire original."
+        }
+      ],
+      "appliedFix": null,
+      "reason": "Manual override after checking that the quality reviewer was judging real-world truth instead of translation fidelity, or after applying a targeted wording/option fix."
+    },
+    {
+      "qid": "q0929",
+      "type": "mcq",
+      "correctOptionKey": "D",
+      "priorQualityStatus": "needs_fix",
+      "priorIssues": [
+        {
+          "severity": "error",
+          "code": "mistranslation",
+          "message": "Erreur de traduction dans les options. 'rappel de pentes continues de deux ou plus à l'avance' devrait être 'rappel de pentes continues de deux ou plus en montée à l'avance'."
+        }
+      ],
+      "appliedFix": {
+        "options": {
+          "q0929_o1": "annonçant deux ou plusieurs montées successives à venir",
+          "q0929_o2": "annonçant une route en forte montée à venir",
+          "q0929_o3": "annonçant une route en forte descente à venir",
+          "q0929_o4": "annonçant deux ou plusieurs descentes successives à venir"
+        }
+      },
+      "reason": "Manual override after targeted wording/option review."
+    },
+    {
+      "qid": "q0945",
+      "type": "row",
+      "correctOptionKey": "Wrong",
+      "priorQualityStatus": "reject",
+      "priorIssues": [
+        {
+          "severity": "error",
+          "code": "translation_issue",
+          "message": "La traduction ne respecte pas le sens de l'original."
+        }
+      ],
+      "appliedFix": {
+        "prompt": "Ce panneau signale une route dangereuse à flanc de colline à venir."
+      },
+      "reason": "Manual override after checking that the quality reviewer was judging real-world truth instead of translation fidelity, or after applying a targeted wording/option fix."
+    },
+    {
+      "qid": "q0947",
+      "type": "row",
+      "correctOptionKey": "Wrong",
+      "priorQualityStatus": "reject",
+      "priorIssues": [
+        {
+          "severity": "error",
+          "code": "meaningMismatch",
+          "message": "La traduction ne respecte pas le même sens que l'énoncé source."
+        }
+      ],
+      "appliedFix": {
+        "prompt": "Ce panneau signale un virage serré à venir."
+      },
+      "reason": "Manual override after checking that the quality reviewer was judging real-world truth instead of translation fidelity, or after applying a targeted wording/option fix."
+    },
+    {
+      "qid": "q0950",
+      "type": "row",
+      "correctOptionKey": "Wrong",
+      "priorQualityStatus": "reject",
+      "priorIssues": [
+        {
+          "severity": "error",
+          "code": "meaningMismatch",
+          "message": "La traduction ne respecte pas le même sens que l'énoncé source."
+        }
+      ],
+      "appliedFix": {
+        "prompt": "Ce panneau avertit d'un tunnel à venir."
+      },
+      "reason": "Manual override after checking that the quality reviewer was judging real-world truth instead of translation fidelity, or after applying a targeted wording/option fix."
+    },
+    {
+      "qid": "q0973",
+      "type": "row",
+      "correctOptionKey": "Wrong",
+      "priorQualityStatus": "reject",
+      "priorIssues": [
+        {
+          "severity": "error",
+          "code": "logic-error",
+          "message": "La proposion anglaise est faux mais la traduction ne respecte pas cette fausse vérité."
+        }
+      ],
+      "appliedFix": null,
+      "reason": "Manual override after checking that the quality reviewer was judging real-world truth instead of translation fidelity, or after applying a targeted wording/option fix."
+    },
+    {
+      "qid": "q0983",
+      "type": "row",
+      "correctOptionKey": "Wrong",
+      "priorQualityStatus": "reject",
+      "priorIssues": [
+        {
+          "severity": "error",
+          "code": "meaning-misalignment",
+          "message": "La déclaration implique que les véhicules doivent céder le passage alors que c'est faux."
+        }
+      ],
+      "appliedFix": null,
+      "reason": "Manual override after checking that the quality reviewer was judging real-world truth instead of translation fidelity, or after applying a targeted wording/option fix."
+    },
+    {
+      "qid": "q0984",
+      "type": "row",
+      "correctOptionKey": "Wrong",
+      "priorQualityStatus": "reject",
+      "priorIssues": [
+        {
+          "severity": "error",
+          "code": "meaning-misalignment",
+          "message": "La déclaration suggère un fonctionnement incorrect des feux de brouillard."
+        }
+      ],
+      "appliedFix": null,
+      "reason": "Manual override after checking that the quality reviewer was judging real-world truth instead of translation fidelity, or after applying a targeted wording/option fix."
+    }
+  ]
+}

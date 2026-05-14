@@ -1,20 +1,20 @@
 # French Ship Readiness Report
 
-Generated: 2026-05-14T04:53:37.967Z
+Generated: 2026-05-14T06:24:41.499Z
 Recommendation: ship-with-warnings
 
 ## Summary
 
-- Final French usable coverage: 778
+- Final French usable coverage: 1006
 - French entries including placeholders: 1006
-- French placeholder entries: 228
+- French placeholder entries: 0
 - Newly promoted qids: 23
 - Unresolved remaining: 3
 - Skipped remaining: 1
 - Rejected remaining: 0
 - Master question count: 1006
 - Critical blockers: 0
-- Integrity warnings: 316
+- Integrity warnings: 88
 - Duplicate warnings: 8
 
 ## Promoted QIDs
@@ -29,10 +29,9 @@ q0986, q0987, q0988, q0989, q0991, q0992, q0993, q0994, q0995, q0996, q0998, q09
 
 ## Warning Reasons
 
-- integrity warnings: 316
+- integrity warnings: 88
 - unresolved promotion candidates: 3
 - skipped unreviewed promotion candidates: 1
-- French placeholder translations: 228
 
 ## Propagation
 

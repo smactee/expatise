@@ -34,6 +34,8 @@ const limit = parseLimit(args.limit);
 const model = String(args.model ?? "gpt-5-mini").trim() || "gpt-5-mini";
 const batchSize = Number(args["batch-size"] ?? 5);
 const noAi = booleanArg(args, "no-ai", false);
+const resume = booleanArg(args, "resume", false);
+const requestTimeoutMs = parsePositiveInteger(args["request-timeout-ms"] ?? 60000, "--request-timeout-ms");
 const paths = backfillPaths({ lang, dataset, input: args.input });
 const inputPath = args.input ? paths.generatedDraftPath : paths.generatedDraftPath;
 const qualityJsonPath = path.join(path.dirname(paths.validationJsonPath), `backfill-quality-review.${lang}.json`);
@@ -61,103 +63,68 @@ const preflight = validateDraftItems({
 });
 
 const apiKey = noAi ? null : process.env.OPENAI_API_KEY ?? (await readOpenAIKeyFromDotenv());
-const client = apiKey ? new OpenAI({ apiKey }) : null;
+const client = apiKey ? new OpenAI({ apiKey, timeout: requestTimeoutMs }) : null;
+const resumeByQid = resume && fileExists(qualityJsonPath)
+  ? reusableQualityReviews(readJson(qualityJsonPath))
+  : new Map();
 const reviewItems = client
-  ? await reviewWithAi({ client, model, items, context, lang, batchSize })
+  ? await reviewWithAi({
+      client,
+      model,
+      items,
+      context,
+      lang,
+      batchSize,
+      resumeByQid,
+      onProgress: async ({ reviewByQid, processedPending, pendingCount }) => {
+        const progressReviews = items.map((item) => {
+          const qid = normalizeQid(item.qid);
+          return reviewByQid.get(qid) ?? pendingQualityReview(item);
+        });
+        const progressNormalizedReviews = progressReviews.map((review, index) => normalizeQualityReview(review, items[index], context, lang));
+        await writeQualityOutputs(buildQualityArtifacts({
+          normalizedReviews: progressNormalizedReviews,
+          items,
+          sourceItems,
+          preflight,
+          client,
+          model,
+          lang,
+          dataset,
+          inputPath,
+          qualityJsonPath,
+          needsFixPath,
+          reviewedPath,
+          requestTimeoutMs,
+          resume,
+          progressDraft: true,
+        }));
+        console.log(`Progress: ${processedPending}/${pendingCount} pending review item(s) processed.`);
+      },
+    })
   : items.map((item) => structuralFallbackReview(item, context, "AI reviewer unavailable; set OPENAI_API_KEY or pass a generated review from a trusted reviewer."));
 
 const normalizedReviews = reviewItems.map((review, index) => normalizeQualityReview(review, items[index], context, lang));
-const reviewedItems = [];
-const needsFixItems = [];
-
-for (const [index, item] of items.entries()) {
-  const qualityReview = normalizedReviews[index];
-  const enriched = {
-    ...item,
-    qualityReview,
-    needsHumanReview: true,
-  };
-
-  if (qualityReview.qualityStatus === "approved") {
-    reviewedItems.push({
-      ...enriched,
-      reviewStatus: "approved",
-      reviewedBy: "ai-quality-review",
-      reviewedAt: qualityReview.reviewedAt,
-    });
-  } else {
-    needsFixItems.push({
-      ...enriched,
-      reviewStatus: qualityReview.qualityStatus === "reject" ? "rejected" : "needs_fix",
-    });
-  }
-}
-
-const report = {
-  generatedAt: new Date().toISOString(),
-  source: `${BACKFILL_SOURCE}_quality_review`,
+const artifacts = buildQualityArtifacts({
+  normalizedReviews,
+  items,
+  sourceItems,
+  preflight,
+  client,
+  model,
   lang,
   dataset,
-  inputPath: relative(inputPath),
-  qualityReviewPath: relative(qualityJsonPath),
-  needsFixPath: relative(needsFixPath),
-  reviewedPath: relative(reviewedPath),
-  model: client ? model : null,
-  aiReviewUsed: Boolean(client),
-  productionModified: false,
-  counts: {
-    inputItems: items.length,
-    sourceInputItems: sourceItems.length,
-    approved: normalizedReviews.filter((review) => review.qualityStatus === "approved").length,
-    needsFix: normalizedReviews.filter((review) => review.qualityStatus === "needs_fix").length,
-    reject: normalizedReviews.filter((review) => review.qualityStatus === "reject").length,
-    belowConfidenceThreshold: normalizedReviews.filter((review) => review.confidence < 0.92).length,
-    answerKeyLogicRisk: normalizedReviews.filter((review) => review.answerKeyLogicMayBeWrong).length,
-    wrongLanguageRejects: normalizedReviews.filter((review) => review.issues.some((issue) => issue.code === "wrong-language-heuristic")).length,
-    preflightErrors: preflight.counts.errorCount,
-    preflightWarnings: preflight.counts.warningCount,
-  },
-  rules: {
-    confidenceApprovalThreshold: 0.92,
-    answerKeyLogicRiskRejects: true,
-    humanOwnerMustReviewReportBeforeApply: true,
-  },
-  preflight,
-  items: normalizedReviews,
-};
+  inputPath,
+  qualityJsonPath,
+  needsFixPath,
+  reviewedPath,
+  requestTimeoutMs,
+  resume,
+  progressDraft: false,
+});
 
-const needsFixDoc = {
-  meta: {
-    generatedAt: report.generatedAt,
-    source: report.source,
-    lang,
-    dataset,
-    inputPath: relative(inputPath),
-    productionModified: false,
-    count: needsFixItems.length,
-  },
-  items: needsFixItems,
-};
-
-const reviewedDoc = {
-  meta: {
-    generatedAt: report.generatedAt,
-    source: report.source,
-    lang,
-    dataset,
-    inputPath: relative(inputPath),
-    productionModified: false,
-    requiresHumanOwnerReportReview: true,
-    note: "Only AI-approved items are included. Review the quality report before applying to production.",
-    count: reviewedItems.length,
-  },
-  items: reviewedItems,
-};
-
-await writeJson(qualityJsonPath, report);
-await writeText(qualityMdPath, renderQualityMarkdown(report));
-await writeJson(needsFixPath, needsFixDoc);
-await writeJson(reviewedPath, reviewedDoc);
+await writeQualityOutputs(artifacts);
+const { report } = artifacts;
 
 console.log(`Wrote ${relative(qualityJsonPath)}`);
 console.log(`Wrote ${relative(qualityMdPath)}`);
@@ -169,19 +136,163 @@ console.log(`Needs fix: ${report.counts.needsFix}`);
 console.log(`Reject: ${report.counts.reject}`);
 console.log("Production translations modified: no");
 
-async function reviewWithAi({ client, model, items, context, lang, batchSize }) {
-  const reviews = [];
-  for (let index = 0; index < items.length; index += batchSize) {
-    const batch = items.slice(index, index + batchSize);
+function buildQualityArtifacts({
+  normalizedReviews,
+  items,
+  sourceItems,
+  preflight,
+  client,
+  model,
+  lang,
+  dataset,
+  inputPath,
+  qualityJsonPath,
+  needsFixPath,
+  reviewedPath,
+  requestTimeoutMs,
+  resume,
+  progressDraft,
+}) {
+  const generatedAt = new Date().toISOString();
+  const reviewedItems = [];
+  const needsFixItems = [];
+
+  for (const [index, item] of items.entries()) {
+    const qualityReview = normalizedReviews[index];
+    const enriched = {
+      ...item,
+      qualityReview,
+      needsHumanReview: true,
+    };
+
+    if (qualityReview.qualityStatus === "approved") {
+      reviewedItems.push({
+        ...enriched,
+        reviewStatus: "approved",
+        reviewedBy: "ai-quality-review",
+        reviewedAt: qualityReview.reviewedAt,
+      });
+    } else {
+      needsFixItems.push({
+        ...enriched,
+        reviewStatus: qualityReview.qualityStatus === "reject" ? "rejected" : "needs_fix",
+      });
+    }
+  }
+
+  const report = {
+    generatedAt,
+    source: `${BACKFILL_SOURCE}_quality_review`,
+    lang,
+    dataset,
+    inputPath: relative(inputPath),
+    qualityReviewPath: relative(qualityJsonPath),
+    needsFixPath: relative(needsFixPath),
+    reviewedPath: relative(reviewedPath),
+    model: client ? model : null,
+    aiReviewUsed: Boolean(client),
+    requestTimeoutMs,
+    resume,
+    progressDraft,
+    productionModified: false,
+    counts: {
+      inputItems: items.length,
+      sourceInputItems: sourceItems.length,
+      approved: normalizedReviews.filter((review) => review.qualityStatus === "approved").length,
+      needsFix: normalizedReviews.filter((review) => review.qualityStatus === "needs_fix").length,
+      reject: normalizedReviews.filter((review) => review.qualityStatus === "reject").length,
+      belowConfidenceThreshold: normalizedReviews.filter((review) => review.confidence < 0.92).length,
+      answerKeyLogicRisk: normalizedReviews.filter((review) => review.answerKeyLogicMayBeWrong).length,
+      wrongLanguageRejects: normalizedReviews.filter((review) => review.issues.some((issue) => issue.code === "wrong-language-heuristic")).length,
+      preflightErrors: preflight.counts.errorCount,
+      preflightWarnings: preflight.counts.warningCount,
+    },
+    rules: {
+      confidenceApprovalThreshold: 0.92,
+      answerKeyLogicRiskRejects: true,
+      humanOwnerMustReviewReportBeforeApply: true,
+    },
+    preflight,
+    items: normalizedReviews,
+  };
+
+  const needsFixDoc = {
+    meta: {
+      generatedAt: report.generatedAt,
+      source: report.source,
+      lang,
+      dataset,
+      inputPath: relative(inputPath),
+      productionModified: false,
+      count: needsFixItems.length,
+    },
+    items: needsFixItems,
+  };
+
+  const reviewedDoc = {
+    meta: {
+      generatedAt: report.generatedAt,
+      source: report.source,
+      lang,
+      dataset,
+      inputPath: relative(inputPath),
+      productionModified: false,
+      requiresHumanOwnerReportReview: true,
+      note: "Only AI-approved items are included. Review the quality report before applying to production.",
+      count: reviewedItems.length,
+    },
+    items: reviewedItems,
+  };
+
+  return { report, needsFixDoc, reviewedDoc };
+}
+
+async function writeQualityOutputs({ report, needsFixDoc, reviewedDoc }) {
+  await writeJson(qualityJsonPath, report);
+  await writeText(qualityMdPath, renderQualityMarkdown(report));
+  await writeJson(needsFixPath, needsFixDoc);
+  await writeJson(reviewedPath, reviewedDoc);
+}
+
+async function reviewWithAi({ client, model, items, context, lang, batchSize, resumeByQid, onProgress }) {
+  const reviewByQid = new Map(resumeByQid);
+  const pendingItems = items.filter((item) => !reviewByQid.has(normalizeQid(item.qid)));
+
+  if (reviewByQid.size > 0) {
+    console.log(`Resuming from ${reviewByQid.size} reusable quality review item(s).`);
+  }
+
+  for (let index = 0; index < pendingItems.length; index += batchSize) {
+    const batch = pendingItems.slice(index, index + batchSize);
     const payload = batch.map((item) => reviewPayload(item, context));
-    const parsed = await reviewBatch({ client, model, lang, payload });
+    let parsed;
+    try {
+      parsed = await reviewBatch({ client, model, lang, payload });
+    } catch (error) {
+      parsed = {
+        reviews: batch.map((item) => structuralFallbackReview(
+          item,
+          context,
+          `AI quality review failed for this batch: ${error.message ?? error}`,
+        )),
+      };
+    }
     const byQid = new Map(parsed.reviews.map((review) => [normalizeQid(review.qid), review]));
     for (const item of batch) {
       const qid = normalizeQid(item.qid);
-      reviews.push(byQid.get(qid) ?? structuralFallbackReview(item, context, "AI response omitted this qid."));
+      reviewByQid.set(qid, byQid.get(qid) ?? structuralFallbackReview(item, context, "AI response omitted this qid."));
+    }
+
+    if (onProgress) {
+      await onProgress({
+        reviewByQid,
+        processedPending: Math.min(index + batch.length, pendingItems.length),
+        pendingCount: pendingItems.length,
+      });
     }
   }
-  return reviews;
+
+  return items.map((item) => reviewByQid.get(normalizeQid(item.qid)) ?? pendingQualityReview(item));
 }
 
 async function reviewBatch({ client, model, lang, payload }) {
@@ -237,6 +348,17 @@ ${language.scriptInstruction}
 
 English master is the source of truth. The generated translation must preserve exact meaning, answer logic, option ordering, option key mapping, numeric values, signs, penalties, distances, speeds, dates, and image-dependent semantics.
 
+Question type handling:
+- "row" means a Right/Wrong true-false statement. For row questions, generated options are intentionally empty. Never reject a row item for missing MCQ options, and never request Right/Wrong option rows.
+- For row questions, review only whether the French statement preserves the same true/false proposition as the English master and whether the Right/Wrong answer metadata still makes sense.
+- MCQ questions must preserve each option's meaning and option id/key mapping.
+
+Translation-fidelity rule:
+- Some English master ROW statements and MCQ distractors are intentionally false, unsafe, illegal, or bad advice because the correct answer is "Wrong" or a different MCQ option.
+- Do not reject a translation merely because the statement/distractor is false in the real world.
+- Approve when the ${language.englishName} text faithfully preserves the same false claim, bad advice, legal detail, and answer metadata from the English master.
+- Mark answer-key logic risky only when the translation reverses or changes the English meaning, not when it accurately translates an intentionally false source statement.
+
 Review standards:
 - prompt meaning matches English
 - all options match English option meanings
@@ -284,6 +406,25 @@ function reviewPayload(item, context) {
   };
 }
 
+function pendingQualityReview(item) {
+  return {
+    qid: normalizeQid(item.qid),
+    qualityStatus: "needs_fix",
+    confidence: 0,
+    answerKeyLogicMayBeWrong: false,
+    issues: [
+      {
+        severity: "warning",
+        code: "quality-review-pending",
+        message: "Quality review is pending in this progress draft.",
+      },
+    ],
+    suggestedFix: null,
+    reviewerReasoningSummary: "Quality review pending; not approved.",
+    reviewer: "ai-localization-quality-review",
+  };
+}
+
 function structuralFallbackReview(item, context, reason) {
   const qid = normalizeQid(item.qid);
   const master = context.masterByQid.get(qid);
@@ -320,10 +461,34 @@ function structuralFallbackReview(item, context, reason) {
   };
 }
 
+function reusableQualityReviews(doc) {
+  const out = new Map();
+  const reviews = Array.isArray(doc?.items) ? doc.items : [];
+  for (const review of reviews) {
+    if (!isReusableQualityReview(review)) continue;
+    out.set(normalizeQid(review.qid), review);
+  }
+  return out;
+}
+
+function isReusableQualityReview(review) {
+  const qid = normalizeQid(review?.qid);
+  if (!qid) return false;
+  if (!["approved", "needs_fix", "reject"].includes(String(review?.qualityStatus ?? ""))) return false;
+  const issueCodes = Array.isArray(review?.issues)
+    ? review.issues.map((issue) => String(issue?.code ?? "").toLowerCase())
+    : [];
+  if (issueCodes.includes("quality-review-pending") || issueCodes.includes("ai-review-unavailable")) {
+    return false;
+  }
+  return !String(review?.reviewerReasoningSummary ?? "").toLowerCase().includes("quality review pending");
+}
+
 function normalizeQualityReview(review, item, context, lang) {
   const qid = normalizeQid(review?.qid ?? item?.qid);
   const master = context.masterByQid.get(qid);
-  const issues = Array.isArray(review?.issues)
+  const type = item?.type ?? questionType(master);
+  let issues = Array.isArray(review?.issues)
     ? review.issues.map((issue) => ({
         severity: ["info", "warning", "error"].includes(String(issue?.severity ?? "").toLowerCase())
           ? String(issue.severity).toLowerCase()
@@ -332,6 +497,11 @@ function normalizeQualityReview(review, item, context, lang) {
         message: String(issue?.message ?? issue ?? "").trim(),
       })).filter((issue) => issue.message)
     : [];
+
+  if (type === "row") {
+    issues = issues.filter((issue) => !isMissingOptionIssue(issue));
+  }
+
   const confidence = Math.max(0, Math.min(1, Number(review?.confidence ?? 0)));
   const answerKeyLogicMayBeWrong = review?.answerKeyLogicMayBeWrong === true
     || issues.some((issue) => isAnswerKeyLogicIssue(issue) && issue.severity === "error");
@@ -408,6 +578,17 @@ function isAnswerKeyLogicIssue(issue) {
   ].some((needle) => text.includes(needle));
 }
 
+function isMissingOptionIssue(issue) {
+  const code = String(issue?.code ?? "").toLowerCase().replaceAll("_", "-");
+  const message = String(issue?.message ?? "").toLowerCase();
+  return code.includes("missing-option")
+    || code.includes("missing-options")
+    || code.includes("option-missing")
+    || message.includes("options are missing")
+    || message.includes("options manquent")
+    || message.includes("options sont absentes");
+}
+
 function normalizeSuggestedFix(value) {
   if (!value || typeof value !== "object") return null;
   return {
@@ -480,6 +661,14 @@ function parseJsonObject(text) {
     throw new Error("Model did not return a JSON object");
   }
   return JSON.parse(text.slice(start, end + 1));
+}
+
+function parsePositiveInteger(value, label) {
+  const parsed = Number(value);
+  if (!Number.isInteger(parsed) || parsed <= 0) {
+    throw new Error(`Invalid ${label}: ${value}. Use a positive integer.`);
+  }
+  return parsed;
 }
 
 function sleep(ms) {

@@ -1,6 +1,6 @@
 # QBank Integrity Audit
 
-Generated: 2026-05-14T05:14:54.197Z
+Generated: 2026-05-14T06:23:50.484Z
 
 ## Executive Summary
 
@@ -8,7 +8,7 @@ Generated: 2026-05-14T05:14:54.197Z
 - Raw qids: 1008
 - Translation languages audited: 4
 - Critical blockers: 0
-- Warnings: 316
+- Warnings: 88
 - Duplicate candidates: 8
 
 ## Critical Blockers
@@ -21,112 +21,98 @@ None.
 | --- | --- | --- |
 | raw-only-qid | q0518 | qid exists in questions.raw.json but not questions.json |
 | raw-only-qid | q0906 | qid exists in questions.raw.json but not questions.json |
-| translation-missing-qid | q0011 | fr: missing production translation |
-| translation-missing-qid | q0018 | fr: missing production translation |
-| translation-missing-qid | q0025 | fr: missing production translation |
-| translation-missing-qid | q0027 | fr: missing production translation |
-| translation-missing-qid | q0030 | fr: missing production translation |
-| translation-missing-qid | q0034 | fr: missing production translation |
-| translation-missing-qid | q0038 | fr: missing production translation |
-| translation-missing-qid | q0044 | fr: missing production translation |
-| translation-missing-qid | q0046 | fr: missing production translation |
-| translation-missing-qid | q0049 | fr: missing production translation |
-| translation-missing-qid | q0057 | fr: missing production translation |
-| translation-missing-qid | q0064 | fr: missing production translation |
-| translation-missing-qid | q0069 | fr: missing production translation |
-| translation-missing-qid | q0084 | fr: missing production translation |
-| translation-missing-qid | q0104 | fr: missing production translation |
-| translation-missing-qid | q0105 | fr: missing production translation |
-| translation-missing-qid | q0113 | fr: missing production translation |
-| translation-missing-qid | q0122 | fr: missing production translation |
-| translation-missing-qid | q0123 | fr: missing production translation |
-| translation-missing-qid | q0125 | fr: missing production translation |
-| translation-missing-qid | q0133 | fr: missing production translation |
-| translation-missing-qid | q0136 | fr: missing production translation |
-| translation-missing-qid | q0151 | fr: missing production translation |
-| translation-missing-qid | q0156 | fr: missing production translation |
-| translation-missing-qid | q0161 | fr: missing production translation |
-| translation-missing-qid | q0163 | fr: missing production translation |
-| translation-missing-qid | q0169 | fr: missing production translation |
-| translation-missing-qid | q0170 | fr: missing production translation |
-| translation-missing-qid | q0171 | fr: missing production translation |
-| translation-missing-qid | q0172 | fr: missing production translation |
-| translation-missing-qid | q0173 | fr: missing production translation |
-| translation-missing-qid | q0174 | fr: missing production translation |
-| translation-missing-qid | q0176 | fr: missing production translation |
-| translation-missing-qid | q0181 | fr: missing production translation |
-| translation-missing-qid | q0183 | fr: missing production translation |
-| translation-missing-qid | q0209 | fr: missing production translation |
-| translation-missing-qid | q0210 | fr: missing production translation |
-| translation-missing-qid | q0211 | fr: missing production translation |
-| translation-missing-qid | q0224 | fr: missing production translation |
-| translation-missing-qid | q0226 | fr: missing production translation |
-| translation-missing-qid | q0247 | fr: missing production translation |
-| translation-missing-qid | q0250 | fr: missing production translation |
-| translation-missing-qid | q0251 | fr: missing production translation |
-| translation-missing-qid | q0260 | fr: missing production translation |
-| translation-missing-qid | q0261 | fr: missing production translation |
-| translation-missing-qid | q0264 | fr: missing production translation |
-| translation-missing-qid | q0265 | fr: missing production translation |
-| translation-missing-qid | q0275 | fr: missing production translation |
-| translation-missing-qid | q0286 | fr: missing production translation |
-| translation-missing-qid | q0298 | fr: missing production translation |
-| translation-missing-qid | q0302 | fr: missing production translation |
-| translation-missing-qid | q0320 | fr: missing production translation |
-| translation-missing-qid | q0325 | fr: missing production translation |
-| translation-missing-qid | q0336 | fr: missing production translation |
-| translation-missing-qid | q0337 | fr: missing production translation |
-| translation-missing-qid | q0338 | fr: missing production translation |
-| translation-missing-qid | q0340 | fr: missing production translation |
-| translation-missing-qid | q0349 | fr: missing production translation |
-| translation-missing-qid | q0350 | fr: missing production translation |
-| translation-missing-qid | q0351 | fr: missing production translation |
-| translation-missing-qid | q0352 | fr: missing production translation |
-| translation-missing-qid | q0354 | fr: missing production translation |
-| translation-missing-qid | q0358 | fr: missing production translation |
-| translation-missing-qid | q0359 | fr: missing production translation |
-| translation-missing-qid | q0360 | fr: missing production translation |
-| translation-missing-qid | q0361 | fr: missing production translation |
-| translation-missing-qid | q0362 | fr: missing production translation |
-| translation-missing-qid | q0382 | fr: missing production translation |
-| translation-missing-qid | q0384 | fr: missing production translation |
-| translation-missing-qid | q0388 | fr: missing production translation |
-| translation-missing-qid | q0393 | fr: missing production translation |
-| translation-missing-qid | q0398 | fr: missing production translation |
-| translation-missing-qid | q0403 | fr: missing production translation |
-| translation-missing-qid | q0411 | fr: missing production translation |
-| translation-missing-qid | q0418 | fr: missing production translation |
-| translation-missing-qid | q0425 | fr: missing production translation |
-| translation-missing-qid | q0431 | fr: missing production translation |
-| translation-missing-qid | q0434 | fr: missing production translation |
-| translation-missing-qid | q0435 | fr: missing production translation |
-| translation-missing-qid | q0437 | fr: missing production translation |
-| translation-missing-qid | q0441 | fr: missing production translation |
-| translation-missing-qid | q0446 | fr: missing production translation |
-| translation-missing-qid | q0458 | fr: missing production translation |
-| translation-missing-qid | q0459 | fr: missing production translation |
-| translation-missing-qid | q0462 | fr: missing production translation |
-| translation-missing-qid | q0468 | fr: missing production translation |
-| translation-missing-qid | q0473 | fr: missing production translation |
-| translation-missing-qid | q0482 | fr: missing production translation |
-| translation-missing-qid | q0488 | fr: missing production translation |
-| translation-missing-qid | q0489 | fr: missing production translation |
-| translation-missing-qid | q0490 | fr: missing production translation |
-| translation-missing-qid | q0492 | fr: missing production translation |
-| translation-missing-qid | q0495 | fr: missing production translation |
-| translation-missing-qid | q0497 | fr: missing production translation |
-| translation-missing-qid | q0505 | fr: missing production translation |
-| translation-missing-qid | q0511 | fr: missing production translation |
-| translation-missing-qid | q0512 | fr: missing production translation |
-| translation-missing-qid | q0514 | fr: missing production translation |
-
-_Warning table truncated to 100 of 316._
+| translation-missing-qid | q0986 | ja: missing production translation |
+| translation-missing-qid | q0987 | ja: missing production translation |
+| translation-missing-qid | q0988 | ja: missing production translation |
+| translation-missing-qid | q0989 | ja: missing production translation |
+| translation-missing-qid | q0991 | ja: missing production translation |
+| translation-missing-qid | q0992 | ja: missing production translation |
+| translation-missing-qid | q0993 | ja: missing production translation |
+| translation-missing-qid | q0994 | ja: missing production translation |
+| translation-missing-qid | q0995 | ja: missing production translation |
+| translation-missing-qid | q0996 | ja: missing production translation |
+| translation-missing-qid | q0998 | ja: missing production translation |
+| translation-missing-qid | q0999 | ja: missing production translation |
+| translation-missing-qid | q1001 | ja: missing production translation |
+| translation-missing-qid | q1002 | ja: missing production translation |
+| translation-missing-qid | q1003 | ja: missing production translation |
+| translation-missing-qid | q1004 | ja: missing production translation |
+| translation-missing-qid | q1005 | ja: missing production translation |
+| translation-missing-qid | q1006 | ja: missing production translation |
+| translation-missing-qid | q1007 | ja: missing production translation |
+| translation-missing-qid | q1008 | ja: missing production translation |
+| translation-missing-qid | q1009 | ja: missing production translation |
+| translation-missing-qid | q1011 | ja: missing production translation |
+| translation-missing-qid | q1012 | ja: missing production translation |
+| translation-extra-qid | q0906 | ja: translation qid is not in questions.json |
+| translation-missing-qid | q0986 | ko: missing production translation |
+| translation-missing-qid | q0987 | ko: missing production translation |
+| translation-missing-qid | q0988 | ko: missing production translation |
+| translation-missing-qid | q0989 | ko: missing production translation |
+| translation-missing-qid | q0991 | ko: missing production translation |
+| translation-missing-qid | q0992 | ko: missing production translation |
+| translation-missing-qid | q0993 | ko: missing production translation |
+| translation-missing-qid | q0994 | ko: missing production translation |
+| translation-missing-qid | q0995 | ko: missing production translation |
+| translation-missing-qid | q0996 | ko: missing production translation |
+| translation-missing-qid | q0998 | ko: missing production translation |
+| translation-missing-qid | q0999 | ko: missing production translation |
+| translation-missing-qid | q1001 | ko: missing production translation |
+| translation-missing-qid | q1002 | ko: missing production translation |
+| translation-missing-qid | q1003 | ko: missing production translation |
+| translation-missing-qid | q1004 | ko: missing production translation |
+| translation-missing-qid | q1005 | ko: missing production translation |
+| translation-missing-qid | q1006 | ko: missing production translation |
+| translation-missing-qid | q1007 | ko: missing production translation |
+| translation-missing-qid | q1008 | ko: missing production translation |
+| translation-missing-qid | q1009 | ko: missing production translation |
+| translation-missing-qid | q1011 | ko: missing production translation |
+| translation-missing-qid | q1012 | ko: missing production translation |
+| translation-extra-qid | q0906 | ko: translation qid is not in questions.json |
+| translation-missing-qid | q0986 | ru: missing production translation |
+| translation-missing-qid | q0987 | ru: missing production translation |
+| translation-missing-qid | q0988 | ru: missing production translation |
+| translation-missing-qid | q0989 | ru: missing production translation |
+| translation-missing-qid | q0991 | ru: missing production translation |
+| translation-missing-qid | q0992 | ru: missing production translation |
+| translation-missing-qid | q0993 | ru: missing production translation |
+| translation-missing-qid | q0994 | ru: missing production translation |
+| translation-missing-qid | q0995 | ru: missing production translation |
+| translation-missing-qid | q0996 | ru: missing production translation |
+| translation-missing-qid | q0998 | ru: missing production translation |
+| translation-missing-qid | q0999 | ru: missing production translation |
+| translation-missing-qid | q1001 | ru: missing production translation |
+| translation-missing-qid | q1002 | ru: missing production translation |
+| translation-missing-qid | q1003 | ru: missing production translation |
+| translation-missing-qid | q1004 | ru: missing production translation |
+| translation-missing-qid | q1005 | ru: missing production translation |
+| translation-missing-qid | q1006 | ru: missing production translation |
+| translation-missing-qid | q1007 | ru: missing production translation |
+| translation-missing-qid | q1008 | ru: missing production translation |
+| translation-missing-qid | q1009 | ru: missing production translation |
+| translation-missing-qid | q1011 | ru: missing production translation |
+| translation-missing-qid | q1012 | ru: missing production translation |
+| translation-extra-qid | q0906 | ru: translation qid is not in questions.json |
+| tags-patch-qid-not-in-master | q0518 | tags.patch.json has qid not in questions.json |
+| tags-patch-qid-not-in-master | q0906 | tags.patch.json has qid not in questions.json |
+| image-question-missing-tags | q1008 | question has image assets but no image color/object tag entry |
+| image-tags-without-image | q0001 | question has image tags but no master image asset |
+| image-tags-without-image | q0003 | question has image tags but no master image asset |
+| image-question-missing-object-tags | q1008 | question has image assets but no objectTags |
+| duplicate-candidate | q0369,q0431 | medium confidence duplicate candidate |
+| duplicate-candidate | q0417,q0439 | medium confidence duplicate candidate |
+| duplicate-candidate | q0577,q0581 | medium confidence duplicate candidate |
+| duplicate-candidate | q0583,q0620 | medium confidence duplicate candidate |
+| duplicate-candidate | q0677,q0727 | medium confidence duplicate candidate |
+| duplicate-candidate | q0695,q0711 | medium confidence duplicate candidate |
+| duplicate-candidate | q0747,q0792 | medium confidence duplicate candidate |
+| duplicate-candidate | q0752,q0842 | medium confidence duplicate candidate |
 
 ## Language Coverage
 
 | lang | translated | coverage | placeholders | missing | extra | invalidLocaleKeys | rowMcqKeys |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| fr | 778 | 77.34% | 228 | 228 | 0 | 0 | 0 |
+| fr | 1006 | 100% | 0 | 0 | 0 | 0 | 0 |
 | ja | 984 | 97.81% | 23 | 23 | 1 | 0 | 0 |
 | ko | 984 | 97.81% | 23 | 23 | 1 | 0 | 0 |
 | ru | 984 | 97.81% | 23 | 23 | 1 | 0 | 0 |
